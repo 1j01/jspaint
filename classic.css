@@ -1,14 +1,4 @@
 
-.jspaint-current-colors, tool.selected {
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQIW2PcvXv3f1dXV0ZGBiAAcQBCfwczEgEQgwAAAABJRU5ErkJggg==) repeat;
-}
-.overlay-container {
-	position: relative;
-}
-.overlay {
-	position: absolute;
-    pointer-events: none;
-}
 
 body {
 	background: #BBB;
@@ -27,12 +17,6 @@ body {
     pointer-events: none;
 }
 
-.jspaint-toolbar-buttons {
-	display: flex;
-	flex-flow: row wrap;
-	height: 200px;
-	width: 50px;
-}
 tool {
 	display: block;
 	margin: 0;
@@ -42,3 +26,14 @@ tool {
 	border: 1px outset;
 	box-shadow: 0 0 0 1px #000;
 }
+tool.selected {
+	border: 1px outset #000;
+	box-shadow: 1px 1px 0 0px #7B7B7B inset;
+}
+.jspaint-current-colors, tool.selected {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
+}
+/*
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQIW2PcvXv3f1dXV0ZGBiAAcQBCfwczEgEQgwAAAABJRU5ErkJggg==
+*/
+
