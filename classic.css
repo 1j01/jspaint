@@ -21,16 +21,32 @@ tool {
 	display: block;
 	margin: 0;
 	padding: 0;
-	width: 22px;
-	height: 22px;
-	border: 1px outset;
-	box-shadow: 0 0 0 1px #000;
+	box-sizing: border-box;
+	width: 25px;
+	height: 25px;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	position: relative;
+}
+tool:before {
+	content: " ";
+	position: absolute;
+	z-index: -1;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	border-top: 1px solid white;
+	border-left: 1px solid white;
+	border-right: 1px solid #7b7b7b;
+	border-bottom: 1px solid #7b7b7b;
 }
 tool.selected {
-	border: 1px outset #000;
-	box-shadow: 1px 1px 0 0px #7B7B7B inset;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
 }
-.jspaint-current-colors, tool.selected {
+.jspaint-current-colors,
+tool.selected {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
 }
 /*
