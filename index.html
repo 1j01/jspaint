@@ -20,17 +20,23 @@
 				padding: 0;
 				border: 0;
 			}
+			.jspaint * {
+				display: flex;
+			}
 			.jspaint {
 				display: flex;
 				flex-flow: column;
-			}
-			.jspaint, .jspaint-upper {
 				flex: 1;
 			}
-			.jspaint, .jspaint-lower {
+			.jspaint-upper {
+				flex: 1;
+				flex-flow: row;
+			}
+			.jspaint-lower {
 				flex-basis: 47px;
 				/*flex-basis: 14px;
 				flex-grow: 33px;*/
+				align-content: center;
 			}
 			.overlay-container {
 				position: relative;
