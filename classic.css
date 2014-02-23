@@ -31,7 +31,7 @@ tool {
 tool:before {
 	content: " ";
 	position: absolute;
-	z-index: -1;
+	z-index: 1;
 	top: 0px;
 	left: 0px;
 	right: 0px;
@@ -42,11 +42,20 @@ tool:before {
 	border-bottom: 1px solid #7b7b7b;
 }
 tool.selected {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
 	border-right: 1px solid white;
 	border-bottom: 1px solid white;
 }
-.jspaint-current-colors,
-tool.selected {
+tool.selected:before {
+	border-top: 1px solid #7b7b7b;
+	border-left: 1px solid #7b7b7b;
+	border-right: 1px solid #bdbdbd;
+	border-bottom: 1px solid #bdbdbd;
+}
+
+tool.selected,
+.jspaint-current-colors {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
 }
 /*
