@@ -44,6 +44,7 @@ data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQIW2
 
 .jspaint-main {
 	background: #7b7b7b;
+	border: 1px inset;
 }
 
 .jspaint-colors {
