@@ -37,6 +37,11 @@ tool.selected {
 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQIW2PcvXv3f1dXV0ZGBiAAcQBCfwczEgEQgwAAAABJRU5ErkJggg==
 */
 
+.jspaint-toolbar {
+	padding-left: 4px;
+	padding-right: 2px;
+}
+
 .jspaint-main {
 	background: #7b7b7b;
 }
