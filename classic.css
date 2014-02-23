@@ -37,3 +37,11 @@ tool.selected {
 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQIW2PcvXv3f1dXV0ZGBiAAcQBCfwczEgEQgwAAAABJRU5ErkJggg==
 */
 
+ .jspaint-canvas {
+ 	background: #7b7b7b;
+ }
+ 
+.jspaint-colors img {
+	width: 257px;
+	height: 33px;
+}
