@@ -1,0 +1,44 @@
+
+.jspaint-current-colors, tool.selected {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQIW2PcvXv3f1dXV0ZGBiAAcQBCfwczEgEQgwAAAABJRU5ErkJggg==) repeat;
+}
+.overlay-container {
+	position: relative;
+}
+.overlay {
+	position: absolute;
+    pointer-events: none;
+}
+
+body {
+	background: #BBB;
+}
+#cont {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #afa; /*To show the boundaries of the element*/
+}
+#cont:before {
+    position: absolute;
+    content: '';
+    background: rgba(0,0,0,0.5);
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+}
+
+.jspaint-toolbar-buttons {
+	display: flex;
+	flex-flow: row wrap;
+	height: 200px;
+	width: 50px;
+}
+tool {
+	display: block;
+	margin: 0;
+	padding: 0;
+	width: 22px;
+	height: 22px;
+	border: 1px outset;
+	box-shadow: 0 0 0 1px #000;
+}

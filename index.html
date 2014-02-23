@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>untitled - Paint</title>
+		
+		<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js'></script>
+		<script src='app.js'></script>
+		
+		<link href='reset.css' rel='stylesheet' type='text/css'>
+		<link href='classic.css' rel='stylesheet' type='text/css'>
+		
+		<link rel='icon' href='mspaint-icon.png' sizes="16x16" type='image/png'>
+		
+		<style>
+			html, body, .jspaint {
+				display: flex;
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+			.jspaint, .jspaint-upper {
+				flex: 1;
+			}
+			.jspaint, .jspaint-lower {
+				flex: 1;
+			}
+		</style>
+	</head>
+	<body>
+		<div class='jspaint'>
+			<div class='jspaint-upper'>
+				<div class="jspaint-toolbar">
+					<div class="jspaint-toolbar-buttons overlay-container">
+						<img class="overlay" src="mspaint-toolbar.png">
+						<tool id="free-form-select"></tool>
+						<tool id="select"></tool>
+						<tool id="eraser"></tool>
+						<tool id="fill"></tool>
+						<tool id="pick-color"></tool>
+						<tool id="magnifier"></tool>
+						<tool id="pencil" class="selected"></tool>
+						<tool id="brush"></tool>
+						<tool id="airbrush"></tool>
+						<tool id="text"></tool>
+						<tool id="line"></tool>
+						<tool id="curve"></tool>
+						<tool id="rectangle"></tool>
+						<tool id="polygon"></tool>
+						<tool id="ellipse"></tool>
+						<tool id="rounded-rectangle"></tool>
+					</div>
+					<div class="jspaint-tool-options">
+						
+					</div>
+				</div>
+				<div class="jspaint-main">
+					<div class="jspaint-canvas">
+						<canvas/>
+					</div>
+				</div>
+			</div>
+			<div class='jspaint-lower'>
+				<div class="jspaint-colors">
+					<img src="mspaint-palette.png">
+					<div class="jspaint-current-colors"></div>
+					<div class="jspaint-palette">
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
