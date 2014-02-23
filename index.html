@@ -7,55 +7,11 @@
 		<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js'></script>
 		<script src='app.js'></script>
 		
-		<link href='reset.css' rel='stylesheet' type='text/css'>
+		<link href='layout.css' rel='stylesheet' type='text/css'>
 		<link href='classic.css' rel='stylesheet' type='text/css'>
 		
 		<link rel='icon' href='mspaint-icon.png' sizes="16x16" type='image/png'>
 		
-		<style>
-			html, body, .jspaint {
-				width: 100%;
-				height: 100%;
-				margin: 0;
-				padding: 0;
-				border: 0;
-			}
-			.jspaint * {
-				display: flex;
-			}
-			.jspaint {
-				display: flex;
-				flex-flow: column;
-				flex: 1;
-			}
-			.jspaint-upper {
-				flex: 1;
-				flex-flow: row;
-			}
-			.jspaint-lower {
-				flex-basis: 47px;
-				/*flex-basis: 14px;
-				flex-grow: 33px;*/
-				align-items: center;
-			}
-			.overlay-container {
-				position: relative;
-			}
-			.overlay {
-				position: absolute;
-				z-index: 1;
-			    pointer-events: none;
-			}
-			.jspaint-toolbar-buttons {
-				display: flex;
-				flex-flow: row wrap;
-				height: 200px;
-				width: 50px;
-			}
-			.jspaint-main {
-				flex: 1;
-			}
-		</style>
 	</head>
 	<body>
 		<div class='jspaint'>
