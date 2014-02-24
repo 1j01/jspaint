@@ -125,23 +125,16 @@ app.open = function(){
 			wide: $bottom,
 		}[orientation]);
 		
-		var ox=0, oy=0, x=0, y=0, dragging = false;
-		var w=0, h=0, $ghost=null;
+		var ox, oy, x, y, w, h;
+		var dragging = false;
+		var $dock_to;
+		var $ghost;
 		$c.on("mousedown",function(e){
 			w = $c.width();
 			h = $c.height();
 			ox = $c.position().left - e.clientX;
 			oy = $c.position().top - e.clientY;
 			dragging = true;
-			e.preventDefault();
-		});
-		$el.on("mousedown",function(e){
-			return false;
-		});
-		$(window).on("mousemove",function(e){
-			if(!dragging)return;
-			x = e.clientX + ox;
-			y = e.clientY + oy;
 			
 			if(!$ghost){
 				$ghost = $("<div class='jspaint-component-ghost'>");
@@ -150,19 +143,65 @@ app.open = function(){
 					display: "block",
 					width: w,
 					height: h,
-					border: "1px dotted black"
+					border: "1px solid black",
+					left: e.clientX + ox,
+					top: e.clientY + oy
 				});
 				$ghost.appendTo("body");
 			}
+			
+			e.preventDefault();
+		});
+		$el.on("mousedown",function(e){
+			return false;
+		});
+		$(window).on("mousemove",function(e){
+			if(!dragging)return;
+			
 			$ghost.css({
-				left: x,
-				top: y
+				left: e.clientX + ox,
+				top: e.clientY + oy,
 			});
+			
+			$dock_to = null;
+			
+			var ghost = $ghost[0].getBoundingClientRect();
+			var q = 5;
+			if(orientation === "tall"){
+				if(ghost.left-q < $left[0].getBoundingClientRect().right){
+					$dock_to = $left;
+				}
+				if(ghost.right+q > $right[0].getBoundingClientRect().left){
+					$dock_to = $right;
+				}
+			}else{
+				if(ghost.top-q < $top[0].getBoundingClientRect().bottom){
+					$dock_to = $top;
+				}
+				if(ghost.bottom+q > $bottom[0].getBoundingClientRect().top){
+					$dock_to = $bottom;
+				}
+			}
+			
+			if($dock_to){
+				$ghost.css({border:"1px solid black"});
+			}else{
+				$ghost.css({border:"2px dotted black"});
+			}
+			
 			e.preventDefault();
 		});
 		$(window).on("mouseup",function(e){
+			if(!dragging)return;
+			
 			dragging = false;
 			$ghost && $ghost.remove(), $ghost = null;
+			
+			if($dock_to){
+				$dock_to.append($c);
+			}else{
+				console.log("------");
+			}
 		});
 		return $c;
 	}
