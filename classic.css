@@ -31,17 +31,22 @@
 	border-right: 1px solid #7b7b7b;
 	border-bottom: 1px solid #7b7b7b;
 }
-.jspaint-tool.selected {
+.jspaint-tool.selected,
+.jspaint-tool:active {
 	border-top: 1px solid black;
 	border-left: 1px solid black;
 	border-right: 1px solid white;
 	border-bottom: 1px solid white;
 }
-.jspaint-tool.selected:before {
+.jspaint-tool.selected:before,
+.jspaint-tool:active:before {
 	border-top: 1px solid #7b7b7b;
 	border-left: 1px solid #7b7b7b;
 	border-right: 1px solid #bdbdbd;
 	border-bottom: 1px solid #bdbdbd;
+}
+.jspaint-tool:active {
+	padding: 1px;
 }
 
 .jspaint-tool.selected,
