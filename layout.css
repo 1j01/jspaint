@@ -14,16 +14,24 @@ html, body, .jspaint {
 	flex-flow: column;
 	flex: 1;
 }
-.jspaint-upper {
-	flex: 1;
+.jspaint-horizontal {
 	flex-flow: row;
+	flex: 1;
 }
-.jspaint-lower {
+.jspaint-vertical {
+	flex-flow: column;
+	flex: 1;
+}
+
+.jspaint-vertical > div + c-area { /*hax*/
 	flex-basis: 47px;
-	/*flex-basis: 14px;
-	flex-grow: 33px;*/
 	align-items: center;
 }
+.jspaint-tool-box {
+	padding-left: 4px;
+	padding-right: 2px;
+}
+
 .overlay-container {
 	position: relative;
 }
@@ -32,7 +40,7 @@ html, body, .jspaint {
 	z-index: 1;
     pointer-events: none;
 }
-.jspaint-toolbar-buttons {
+.jspaint-tools {
 	display: flex;
 	flex-flow: row wrap;
 	height: 200px;

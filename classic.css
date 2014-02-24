@@ -1,34 +1,24 @@
 
 
-body {
+.jspaint {
 	background: #BBB;
 }
-#cont {
-    width: 200px;
-    height: 200px;
-    border: 1px solid #afa; /*To show the boundaries of the element*/
-}
-#cont:before {
-    position: absolute;
-    content: '';
-    background: rgba(0,0,0,0.5);
-    width: 200px;
-    height: 200px;
-    pointer-events: none;
-}
 
-tool {
+.jspaint-tool {
 	display: block;
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 	width: 25px;
 	height: 25px;
+	border: 0;
 	border-right: 1px solid black;
 	border-bottom: 1px solid black;
 	position: relative;
+	background: transparent;
+	outline: 0;
 }
-tool:before {
+.jspaint-tool:before {
 	content: " ";
 	position: absolute;
 	z-index: 1;
@@ -41,30 +31,22 @@ tool:before {
 	border-right: 1px solid #7b7b7b;
 	border-bottom: 1px solid #7b7b7b;
 }
-tool.selected {
+.jspaint-tool.selected {
 	border-top: 1px solid black;
 	border-left: 1px solid black;
 	border-right: 1px solid white;
 	border-bottom: 1px solid white;
 }
-tool.selected:before {
+.jspaint-tool.selected:before {
 	border-top: 1px solid #7b7b7b;
 	border-left: 1px solid #7b7b7b;
 	border-right: 1px solid #bdbdbd;
 	border-bottom: 1px solid #bdbdbd;
 }
 
-tool.selected,
+.jspaint-tool.selected,
 .jspaint-current-colors {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
-}
-/*
-data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQIW2PcvXv3f1dXV0ZGBiAAcQBCfwczEgEQgwAAAABJRU5ErkJggg==
-*/
-
-.jspaint-toolbar {
-	padding-left: 4px;
-	padding-right: 2px;
 }
 
 .jspaint-main {
