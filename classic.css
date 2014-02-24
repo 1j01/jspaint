@@ -64,3 +64,7 @@
 	width: 257px;
 	height: 33px;
 }
+
+.jspaint-tool-options {
+	border: 1px inset;
+}

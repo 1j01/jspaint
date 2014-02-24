@@ -76,8 +76,6 @@ app.open = function(){
 		var $tools = $("<div class='jspaint-tools'>");
 		var $tool_options = $("<div class='jspaint-tool-options'>");
 		
-		$tb.append($tools, $tool_options);
-		
 		var $buttons;
 		$.each(tools, function(i, tool){
 			var $b = $("<button class='jspaint-tool'>");
@@ -108,7 +106,7 @@ app.open = function(){
 		});
 		$buttons = $tools.find(".jspaint-tool");
 		
-		return $Component("Tools", "tall", $tb);
+		return $Component("Tools", "tall", $tools.add($tool_options));
 	}
 	function $ColorBox(){
 		var $cb = $("<div>").addClass("jspaint-tool-box");
@@ -120,6 +118,7 @@ app.open = function(){
 	function $Component(name, orientation, $el){
 		//a draggable widget that can be undocked into a window
 		var $c = $("<div>").addClass("jspaint-component");
+		$c.addClass("jspaint-"+name+"-component");
 		$c.append($el);
 		$c.appendTo({
 			tall: $left,
@@ -137,7 +136,7 @@ app.open = function(){
 			e.preventDefault();
 		});
 		$el.on("mousedown",function(e){
-			//return false;
+			return false;
 		});
 		$(window).on("mousemove",function(e){
 			if(!dragging)return;

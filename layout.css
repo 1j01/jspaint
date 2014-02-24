@@ -24,13 +24,22 @@ html, body, .jspaint {
 	flex: 1;
 }
 
-.jspaint-vertical > div + c-area { /*hax*/
-	flex-basis: 47px;
+.jspaint-Colors-component { /*hax*/
+	height: 47px;
 	align-items: center;
 }
-.jspaint-tool-box {
+.jspaint-Tools-component { /*hax*/
+	height: 280px;
+	align-items: center;
 	padding-left: 4px;
 	padding-right: 2px;
+	flex-flow: column;
+}
+.jspaint-tool-options {
+	margin-top: 3px;
+	width: 41px;
+	height: 66px;
+	box-sizing: border-box;
 }
 
 .overlay-container {
