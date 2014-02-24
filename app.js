@@ -72,8 +72,7 @@ app.open = function(){
 	var $colorbox = $ColorBox();
 	
 	function $ToolBox(){
-		var $tb = $Component("Tools", "place-vertically");
-		$tb.addClass("jspaint-tool-box");
+		var $tb = $("<div>").addClass("jspaint-tool-box");
 		var $tools = $("<div class='jspaint-tools'>");
 		var $tool_options = $("<div class='jspaint-tool-options'>");
 		
@@ -107,23 +106,65 @@ app.open = function(){
 				$b.addClass("selected");
 			});
 		});
-		$buttons = $(".jspaint-tool");
+		$buttons = $tools.find(".jspaint-tool");
 		
-		return $tb;
+		return $Component("Tools", "tall", $tb);
 	}
 	function $ColorBox(){
-		var $cb = $Component("Colors", "place-horizontally");
+		var $cb = $("<div>").addClass("jspaint-tool-box");
 		$cb.addClass("jspaint-color-box");
 		$cb.html('<img src="mspaint-palette.png">');
-		return $cb;
+		
+		return $Component("Colors", "wide", $cb);
 	}
-	function $Component(name, orientation){
+	function $Component(name, orientation, $el){
 		//a draggable widget that can be undocked into a window
 		var $c = $("<div>").addClass("jspaint-component");
+		$c.append($el);
 		$c.appendTo({
-			"place-vertically": $left,
-			"place-horizontally": $bottom,
+			tall: $left,
+			wide: $bottom,
 		}[orientation]);
+		
+		var ox=0, oy=0, x=0, y=0, dragging = false;
+		var w=0, h=0, $ghost=null;
+		$c.on("mousedown",function(e){
+			w = $c.width();
+			h = $c.height();
+			ox = $c.position().left - e.clientX;
+			oy = $c.position().top - e.clientY;
+			dragging = true;
+			e.preventDefault();
+		});
+		$el.on("mousedown",function(e){
+			//return false;
+		});
+		$(window).on("mousemove",function(e){
+			if(!dragging)return;
+			x = e.clientX + ox;
+			y = e.clientY + oy;
+			
+			if(!$ghost){
+				$ghost = $("<div class='jspaint-component-ghost'>");
+				$ghost.css({
+					position: "absolute",
+					display: "block",
+					width: w,
+					height: h,
+					border: "1px dotted black"
+				});
+				$ghost.appendTo("body");
+			}
+			$ghost.css({
+				left: x,
+				top: y
+			});
+			e.preventDefault();
+		});
+		$(window).on("mouseup",function(e){
+			dragging = false;
+			$ghost && $ghost.remove(), $ghost = null;
+		});
 		return $c;
 	}
 };
