@@ -76,13 +76,14 @@ app.open = function(){
 			var $icon = $("<span/>");
 			$icon.appendTo($b);
 			var bx = (i%2)*24;
-			var by = ((i/2)|0)*25 - 1;
+			var by = ((i/2)|0)*25;
 			$icon.css({
 				display: "block",
 				width: "100%",
 				height: "100%",
-				background: "url(mspaint-toolbar.png)",
-				backgroundPosition: bx+"px "+by+"px"
+				backgroundImage: "url(mspaint-toolbar.png)",
+				backgroundPositionX: bx,
+				backgroundPositionY: -by,
 			});
 			
 			$b.on("click", function(){
