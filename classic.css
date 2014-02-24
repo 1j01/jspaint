@@ -32,24 +32,25 @@
 	border-bottom: 1px solid #7b7b7b;
 }
 .jspaint-tool.selected,
-.jspaint-tool:active {
+.jspaint-tool:hover:active {
 	border-top: 1px solid black;
 	border-left: 1px solid black;
 	border-right: 1px solid white;
 	border-bottom: 1px solid white;
 }
 .jspaint-tool.selected:before,
-.jspaint-tool:active:before {
+.jspaint-tool:hover:active:before {
 	border-top: 1px solid #7b7b7b;
 	border-left: 1px solid #7b7b7b;
 	border-right: 1px solid #bdbdbd;
 	border-bottom: 1px solid #bdbdbd;
 }
-.jspaint-tool:active {
+.jspaint-tool:hover:active {
 	padding: 1px;
+	background: transparent !important;
 }
 
-.jspaint-tool.selected:not(:active),
+.jspaint-tool.selected,
 .jspaint-current-colors {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
 }
