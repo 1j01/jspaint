@@ -47,6 +47,7 @@
 }
 .jspaint-tool:active {
 	padding: 1px;
+	background: transparent !important;
 }
 
 .jspaint-tool.selected,
