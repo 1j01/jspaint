@@ -7,7 +7,40 @@
 	background: #7b7b7b;
 	border: 1px inset;
 }
-
+::-webkit-scrollbar {
+    width: 13px;
+    height: 13px;
+}
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+    width: 13px;
+    height: 13px;
+    background: #c0c0c0;
+    border-top: 1px solid #c0c0c0;
+    border-left: 1px solid #c0c0c0;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
+}
+::-webkit-scrollbar-corner {
+    background: #c0c0c0;
+}
+::-webkit-scrollbar-button {
+	background-position: center;
+	background-repeat: no-repeat;
+}
+::-webkit-scrollbar-button:horizontal:decrement {
+    background-image: url(scroll-left.png);
+}
+::-webkit-scrollbar-button:horizontal:increment {
+    background-image: url(scroll-left.png);
+}
+::-webkit-scrollbar-button:vertical:decrement {
+    background-image: url(scroll-up.png);
+}
+::-webkit-scrollbar-button:vertical:increment {
+    background-image: url(scroll-down.png);
+}
 
 
 .jspaint-tool-options {
@@ -62,7 +95,8 @@
 }
 
 .jspaint-tool.selected,
-.jspaint-current-colors {
+.jspaint-current-colors,
+::-webkit-scrollbar {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
 }
 
@@ -133,4 +167,3 @@
 .jspaint-component-ghost:not(.dock):before {
 	outline-offset: 2px;
 }
-
