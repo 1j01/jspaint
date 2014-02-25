@@ -33,7 +33,7 @@
     background-image: url(scroll-left.png);
 }
 ::-webkit-scrollbar-button:horizontal:increment {
-    background-image: url(scroll-left.png);
+    background-image: url(scroll-right.png);
 }
 ::-webkit-scrollbar-button:vertical:decrement {
     background-image: url(scroll-up.png);
