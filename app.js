@@ -135,12 +135,12 @@ app.open = function(){
 			position: "absolute",
 			zIndex: 1,
 			left: 2,
-			top: 2,
+			top: 4,
 		});
 		$color2.css({
 			position: "absolute",
-			right: 2,
-			bottom: 2,
+			right: 3,
+			bottom: 3,
 		});
 		
 		$.each(palette, function(i, color){

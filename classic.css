@@ -11,7 +11,9 @@
 
 
 .jspaint-tool-options {
-	border: 1px inset;
+	border: 1px solid white;
+	border-top-color: #7b7b7b;
+	border-left-color: #7b7b7b;
 }
 .jspaint-tool {
 	display: block;
@@ -70,18 +72,43 @@
 	box-sizing: border-box;
 	border: 2px inset;
 }
-.jspaint-current-colors > * {
+.jspaint-color-selection {
 	box-sizing: border-box;
-	border: 1px outset !important;
+	border-top: 1px solid #fff;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #7B7B7B;
+	border-bottom: 1px solid #7B7B7B;
+}
+.jspaint-color-selection:after {
+	content: '';
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	border: 1px solid #bbb;
 }
 .jspaint-current-colors,
 .jspaint-color-button {
-	border-top: 1px solid #7F7F7F;
-	border-left: 1px solid #7F7F7F;
-	border-right: 1px solid #BEBEBE;
-	border-bottom: 1px solid #BEBEBE;
+	border-top: 1px solid #7B7B7B;
+	border-left: 1px solid #7B7B7B;
+	border-right: 1px solid #BBBBBB;
+	border-bottom: 1px solid #BBBBBB;
 	position: relative;
-	box-shadow: 1px 1px 0px white, 1px 1px 0px black inset;
+	box-shadow: 1px 1px 0px black inset;
+	
+	position: relative;
+}
+.jspaint-current-colors:after,
+.jspaint-color-button:after {
+	content: '';
+	position: absolute;
+	left: -1px;
+	top: -1px;
+	right: -2px;
+	bottom: -2px;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
 }
 
 
