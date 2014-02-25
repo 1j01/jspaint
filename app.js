@@ -18,9 +18,11 @@ app.open = function(){
 	},{
 		name: "Pick Color",
 		description: "Picks up a color from the picture for drawing.",
+		deselectable: true,
 	},{
 		name: "Magnifier",
 		description: "Changes the magnification.",
+		deselectable: true,
 	},{
 		name: "Pencil",
 		description: "Draws a free-form line one pixel wide.",
@@ -88,6 +90,7 @@ app.open = function(){
 		$.each(tools, function(i, tool){
 			var $b = $("<button class='jspaint-tool'>");
 			$b.appendTo($tools);
+			tool.$button = $b;
 			
 			$b.attr("title", tool.name);
 			if(tool === selected_tool){
@@ -109,7 +112,21 @@ app.open = function(){
 			
 			$b.on("click", function(){
 				$buttons.removeClass("selected");
-				$b.addClass("selected");
+				
+				if(selected_tool === tool && tool.deselectable){
+					$.each(tools, function(j, _tool){
+						if(_tool === previous_tool){
+							selected_tool = previous_tool;
+							previous_tool.$button.addClass("selected");
+						}
+					});
+				}else{
+					if(!tool.deselectable){
+						previous_tool = selected_tool;
+					}
+					selected_tool = tool;
+					$b.addClass("selected");
+				}
 			});
 		});
 		$buttons = $tools.find(".jspaint-tool");
