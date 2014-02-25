@@ -3,7 +3,16 @@
 .jspaint {
 	background: #BBB;
 }
+.jspaint-main {
+	background: #7b7b7b;
+	border: 1px inset;
+}
 
+
+
+.jspaint-tool-options {
+	border: 1px inset;
+}
 .jspaint-tool {
 	display: block;
 	margin: 0;
@@ -56,12 +65,27 @@
 }
 
 
+
+.jspaint-color-box, .jspaint-palette {
+	height: 32px;
+}
+.jspaint-current-colors {
+	box-sizing: border-box;
+	border: 2px inset;
+}
+.jspaint-current-colors > * {
+	box-sizing: border-box;
+	border: 1px outset !important;
+}
+.jspaint-palette {
+	width: 225px;
+}
 .jspaint-color-button {
-	margin: 2px;
+	margin: 1px;
 	padding: 0;
 	box-sizing: border-box;
-	width: 16px;
-	height: 16px;
+	width: 14px;
+	height: 14px;
 	border: 0;
 	border-right: 1px solid black;
 	border-bottom: 1px solid black;
@@ -69,19 +93,7 @@
 	outline: 1px solid white;
 }
 
-.jspaint-main {
-	background: #7b7b7b;
-	border: 1px inset;
-}
 
-.jspaint-colors {
-	width: 257px;
-	height: 33px;
-}
-
-.jspaint-tool-options {
-	border: 1px inset;
-}
 
 .jspaint-component-ghost.dock {
 	outline: 1px solid black;
