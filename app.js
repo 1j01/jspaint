@@ -122,7 +122,7 @@ app.open = function(){
 					});
 				}else{
 					if(!tool.deselectable){
-						previous_tool = selected_tool;
+						previous_tool = tool;
 					}
 					selected_tool = tool;
 					$b.addClass("selected");
