@@ -286,4 +286,7 @@ $(function(){
 	$("body").on("contextmenu",function(e){
 		return false;
 	});
+	$("body").on("mousedown",function(e){
+		e.preventDefault();
+	});
 });
