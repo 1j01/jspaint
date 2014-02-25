@@ -22,6 +22,10 @@
     border-bottom: 1px solid #000;
     box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
 }
+::-webkit-scrollbar-button:hover:active {
+    border: 1px solid #7b7b7b;
+    box-shadow: none;
+}
 ::-webkit-scrollbar-corner {
     background: #c0c0c0;
 }
