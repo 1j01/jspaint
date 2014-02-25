@@ -130,20 +130,19 @@ app.open = function(){
 		var $dock_to;
 		var $ghost;
 		$c.on("mousedown",function(e){
-			w = $c.width();
-			h = $c.height();
+			w = (($c.width()/2)|0)*2+1;//make sure these dimensions are odd numbers
+			h = (($c.height()/2)|0)*2+1;
 			ox = $c.position().left - e.clientX;
 			oy = $c.position().top - e.clientY;
 			dragging = true;
 			
 			if(!$ghost){
-				$ghost = $("<div class='jspaint-component-ghost'>");
+				$ghost = $("<div class='jspaint-component-ghost dock'>");
 				$ghost.css({
 					position: "absolute",
 					display: "block",
 					width: w,
 					height: h,
-					border: "1px solid black",
 					left: e.clientX + ox,
 					top: e.clientY + oy
 				});
@@ -187,9 +186,9 @@ app.open = function(){
 			pos = ghost[pos_axis];
 			
 			if($dock_to){
-				$ghost.css({border:"1px solid black"});
+				$ghost.addClass("dock");
 			}else{
-				$ghost.css({border:"2px dotted black"});
+				$ghost.removeClass("dock");
 			}
 			
 			e.preventDefault();

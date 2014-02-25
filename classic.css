@@ -68,3 +68,26 @@
 .jspaint-tool-options {
 	border: 1px inset;
 }
+
+.jspaint-component-ghost.dock {
+	outline: 1px solid black;
+	outline: 1px solid invert;
+}
+.jspaint-component-ghost:not(.dock) {
+	outline: 1px dotted black;
+	outline: 1px dotted invert;
+}
+.jspaint-component-ghost:not(.dock):after,
+.jspaint-component-ghost:not(.dock):before {
+	content: '';
+	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+	outline: 1px dotted black;
+	outline: 1px dotted invert;
+}
+.jspaint-component-ghost:not(.dock):after {
+	outline-offset: 1px;
+}
+.jspaint-component-ghost:not(.dock):before {
+	outline-offset: 2px;
+}
+
