@@ -66,9 +66,6 @@
 
 
 
-.jspaint-color-box, .jspaint-palette {
-	height: 32px;
-}
 .jspaint-current-colors {
 	box-sizing: border-box;
 	border: 2px inset;
@@ -76,9 +73,6 @@
 .jspaint-current-colors > * {
 	box-sizing: border-box;
 	border: 1px outset !important;
-}
-.jspaint-palette {
-	width: 225px;
 }
 .jspaint-color-button {
 	margin: 1px;
