@@ -124,9 +124,9 @@ app.open = function(){
 		
 		$cb.append($current_colors, $palette);
 		
-		var $color1 = $("<div class='jspaint-color-button'>");
-		var $color2 = $("<div class='jspaint-color-button'>");
-		$current_colors.append($color1,$color2);
+		var $color1 = $("<div class='jspaint-color-selection'>");
+		var $color2 = $("<div class='jspaint-color-selection'>");
+		$current_colors.append($color1, $color2);
 		
 		$current_colors.css({
 			position: "relative",

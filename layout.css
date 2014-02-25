@@ -61,10 +61,18 @@ html, body, .jspaint {
 	height: 32px;
 }
 .jspaint-current-colors {
-	width: 32px;
-	height: 32px;
+	width: 31px;
+	height: 31px;
 }
-
+.jspaint-color-button,
+.jspaint-color-selection {
+	margin: 1px;
+	padding: 0;
+	box-sizing: border-box;
+	width: 14px;
+	height: 14px;
+	border: 0;
+}
 
 .jspaint-main {
 	flex: 1;

@@ -74,19 +74,15 @@
 	box-sizing: border-box;
 	border: 1px outset !important;
 }
+.jspaint-current-colors,
 .jspaint-color-button {
-	margin: 1px;
-	padding: 0;
-	box-sizing: border-box;
-	width: 14px;
-	height: 14px;
-	border: 0;
-	border-right: 1px solid black;
-	border-bottom: 1px solid black;
+	border-top: 1px solid #7F7F7F;
+	border-left: 1px solid #7F7F7F;
+	border-right: 1px solid #BEBEBE;
+	border-bottom: 1px solid #BEBEBE;
 	position: relative;
-	outline: 1px solid white;
+	box-shadow: 1px 1px 0px white, 1px 1px 0px black inset;
 }
-
 
 
 .jspaint-component-ghost.dock {
