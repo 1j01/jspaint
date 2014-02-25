@@ -125,7 +125,7 @@ app.open = function(){
 			wide: $bottom,
 		}[orientation]);
 		
-		var ox, oy, x, y, w, h;
+		var ox, oy, w, h, pos, pos_axis;
 		var dragging = false;
 		var $dock_to;
 		var $ghost;
@@ -168,6 +168,7 @@ app.open = function(){
 			var ghost = $ghost[0].getBoundingClientRect();
 			var q = 5;
 			if(orientation === "tall"){
+				pos_axis = "top";
 				if(ghost.left-q < $left[0].getBoundingClientRect().right){
 					$dock_to = $left;
 				}
@@ -175,6 +176,7 @@ app.open = function(){
 					$dock_to = $right;
 				}
 			}else{
+				pos_axis = "left";
 				if(ghost.top-q < $top[0].getBoundingClientRect().bottom){
 					$dock_to = $top;
 				}
@@ -182,6 +184,7 @@ app.open = function(){
 					$dock_to = $bottom;
 				}
 			}
+			pos = ghost[pos_axis];
 			
 			if($dock_to){
 				$ghost.css({border:"1px solid black"});
@@ -193,15 +196,25 @@ app.open = function(){
 		});
 		$(window).on("mouseup",function(e){
 			if(!dragging)return;
-			
 			dragging = false;
-			$ghost && $ghost.remove(), $ghost = null;
 			
 			if($dock_to){
 				$dock_to.append($c);
+				
+				pos = Math.max(pos, 0);
+				if(pos_axis === "top"){
+					pos = Math.min(pos, $dock_to.height() - $ghost.height());
+				}else{
+					pos = Math.min(pos, $dock_to.width() - $ghost.width());
+				}
+				
+				$c.css("position", "relative");
+				$c.css(pos_axis, pos);
 			}else{
 				console.log("------");
 			}
+			
+			$ghost && $ghost.remove(), $ghost = null;
 		});
 		return $c;
 	}
