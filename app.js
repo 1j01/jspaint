@@ -105,7 +105,7 @@ app.open = function(){
 				display: "block",
 				width: "100%",
 				height: "100%",
-				backgroundImage: "url(mspaint-toolbar.png)",
+				backgroundImage: "url(images/toolbar-icons.png)",
 				backgroundPositionX: bx,
 				backgroundPositionY: -by,
 			});

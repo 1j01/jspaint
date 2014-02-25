@@ -34,16 +34,16 @@
 	background-repeat: no-repeat;
 }
 ::-webkit-scrollbar-button:horizontal:decrement {
-    background-image: url(scroll-left.png);
+    background-image: url(images/scroll-left.png);
 }
 ::-webkit-scrollbar-button:horizontal:increment {
-    background-image: url(scroll-right.png);
+    background-image: url(images/scroll-right.png);
 }
 ::-webkit-scrollbar-button:vertical:decrement {
-    background-image: url(scroll-up.png);
+    background-image: url(images/scroll-up.png);
 }
 ::-webkit-scrollbar-button:vertical:increment {
-    background-image: url(scroll-down.png);
+    background-image: url(images/scroll-down.png);
 }
 
 
