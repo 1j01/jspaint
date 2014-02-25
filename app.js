@@ -191,8 +191,9 @@ app.open = function(){
 		$c.on("mousedown",function(e){
 			if(e.button !== 0) return;
 			
-			w = (($c.width()/2)|0)*2+1;//make sure these dimensions are odd numbers
-			h = (($c.height()/2)|0)*2+1;
+			var rect = $c[0].getBoundingClientRect();
+			w = ((rect.width/2)|0)*2+1;//make sure these dimensions are odd numbers
+			h = ((rect.height/2)|0)*2+1;
 			ox = $c.position().left - e.clientX;
 			oy = $c.position().top - e.clientY;
 			dragging = true;
