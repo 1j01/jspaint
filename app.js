@@ -59,6 +59,7 @@ app.open = function(){
 	];
 	
 	var selected_tool = tools[6];
+	var previous_tool = selected_tool;
 	
 	var color1 = "black";
 	var color2 = "white";
@@ -188,6 +189,8 @@ app.open = function(){
 		var $dock_to;
 		var $ghost;
 		$c.on("mousedown",function(e){
+			if(e.button !== 0) return;
+			
 			w = (($c.width()/2)|0)*2+1;//make sure these dimensions are odd numbers
 			h = (($c.height()/2)|0)*2+1;
 			ox = $c.position().left - e.clientX;
@@ -213,7 +216,7 @@ app.open = function(){
 			return false;
 		});
 		$(window).on("mousemove",function(e){
-			if(!dragging)return;
+			if(!dragging) return;
 			
 			$ghost.css({
 				left: e.clientX + ox,
@@ -252,7 +255,7 @@ app.open = function(){
 			e.preventDefault();
 		});
 		$(window).on("mouseup",function(e){
-			if(!dragging)return;
+			if(!dragging) return;
 			dragging = false;
 			
 			if($dock_to){
