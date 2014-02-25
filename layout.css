@@ -24,11 +24,8 @@ html, body, .jspaint {
 	flex: 1;
 }
 
-.jspaint-Colors-component { /*hax*/
-	height: 47px;
-	align-items: center;
-}
-.jspaint-Tools-component { /*hax*/
+
+.jspaint-Tools-component {
 	height: 280px;
 	align-items: center;
 	padding-left: 4px;
@@ -41,15 +38,6 @@ html, body, .jspaint {
 	height: 66px;
 	box-sizing: border-box;
 }
-
-.overlay-container {
-	position: relative;
-}
-.overlay {
-	position: absolute;
-	z-index: 1;
-    pointer-events: none;
-}
 .jspaint-tools {
 	display: flex;
 	flex-flow: row wrap;
@@ -57,6 +45,11 @@ html, body, .jspaint {
 	width: 50px;
 }
 
+
+.jspaint-Colors-component {
+	height: 47px;
+	align-items: center;
+}
 .jspaint-palette {
 	display: flex;
 	flex-flow: row wrap;
