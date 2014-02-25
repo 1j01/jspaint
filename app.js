@@ -2,9 +2,6 @@
 var app = {};
 
 app.open = function(){
-	var color1 = "black";
-	var color2 = "white";
-	var color3 = "transparent";
 	
 	var tools = [{
 		name: "Free-Form Select",
@@ -56,7 +53,17 @@ app.open = function(){
 		description: "Draws a rounded rectangle with the selected fill style.",
 	}];
 	
+	var palette = [
+		"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
+		"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
+	];
+	
 	var selected_tool = tools[6];
+	
+	var color1 = "black";
+	var color2 = "white";
+	var color3 = "transparent";
+	
 	
 	
 	var $main = $(".jspaint-main");
@@ -109,11 +116,62 @@ app.open = function(){
 		return $Component("Tools", "tall", $tools.add($tool_options));
 	}
 	function $ColorBox(){
-		var $cb = $("<div>").addClass("jspaint-tool-box");
+		var $cb = $("<div>").addClass("jspaint-color-box");
 		$cb.addClass("jspaint-color-box");
-		$cb.html('<img src="mspaint-palette.png">');
+		
+		var $current_colors = $("<div>").addClass("jspaint-current-colors");
+		var $palette = $("<div>").addClass("jspaint-palette");
+		
+		$cb.append($current_colors, $palette);
+		
+		var $color1 = $("<div class='jspaint-color-button'>");
+		var $color2 = $("<div class='jspaint-color-button'>");
+		$current_colors.append($color1,$color2);
+		
+		$current_colors.css({
+			position: "relative",
+		});
+		$color1.css({
+			position: "absolute",
+			zIndex: 1,
+			left: 2,
+			top: 2,
+		});
+		$color2.css({
+			position: "absolute",
+			right: 2,
+			bottom: 2,
+		});
+		
+		$.each(palette, function(i, color){
+			var $b = $("<button class='jspaint-color-button'>");
+			$b.appendTo($palette);
+			
+			$b.css({background:color});
+			
+			$b.on("mousedown", function(e){
+				e.preventDefault();
+				if(e.ctrlKey){
+					color3 = color;
+				}else if(e.button === 0){
+					color1 = color;
+				}else if(e.button === 2){
+					color2 = color;
+				}
+				update_colors();
+			});
+		});
+		update_colors();
 		
 		return $Component("Colors", "wide", $cb);
+		
+		function update_colors(){
+			if(color3 !== "transparent"){
+				$current_colors.css({background:color3});
+			}
+			$color1.css({background:color1});
+			$color2.css({background:color2});
+		}
 	}
 	function $Component(name, orientation, $el){
 		//a draggable widget that can be undocked into a window
@@ -221,4 +279,7 @@ app.open = function(){
 
 $(function(){
 	app.open();
+	$("body").on("contextmenu",function(e){
+		return false;
+	});
 });

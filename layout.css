@@ -56,6 +56,19 @@ html, body, .jspaint {
 	height: 200px;
 	width: 50px;
 }
+
+.jspaint-palette {
+	display: flex;
+	flex-flow: row wrap;
+	height: 40px;
+	width: 280px;
+}
+.jspaint-current-colors {
+	width: 32px;
+	height: 32px;
+}
+
+
 .jspaint-main {
 	flex: 1;
 }
