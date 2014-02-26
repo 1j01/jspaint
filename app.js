@@ -147,6 +147,7 @@ app.open = function(){
 						ctx.fillStyle = color2;
 						ctx.fillRect(0,0,width,height);
 					}
+					$handles.trigger("update");
 				});
 			});
 		}
@@ -185,7 +186,7 @@ app.open = function(){
 	$(window).on("resize",function(){
 		$handles.trigger("update");
 	});
-	setInterval(function(){
+	setTimeout(function(){
 		$handles.trigger("update");
 	},50);
 	
