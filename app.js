@@ -85,6 +85,7 @@ app.open = function(){
 		var resizes_width = pos_x === "right" && pos_y !== "top";
 		var width = default_width;
 		var height = default_height;
+		var dragged = false;
 		if(!(resizes_width || resizes_height)){
 			$h.addClass("jspaint-useless-handle");
 		}else{
@@ -100,6 +101,7 @@ app.open = function(){
 			
 			var mousemove = function(e){
 				$resize_ghost.appendTo("body");
+				dragged = true;
 				
 				var rect = canvas.getBoundingClientRect();
 				$resize_ghost.css({
@@ -111,6 +113,7 @@ app.open = function(){
 				});
 			};
 			$h.on("mousedown", function(e){
+				dragged = false;
 				if(e.button === 0){
 					$(window).on("mousemove", mousemove);
 					$("body").css({cursor:cursor});
@@ -120,12 +123,13 @@ app.open = function(){
 					$("body").css({cursor:"auto"});
 					
 					$resize_ghost.remove();
-					//@TODO: non-destructive resize
-					console.log(width, height);
-					canvas.width = Math.max(1, width);
-					canvas.height = Math.max(1, height);
-					ctx.fillStyle = color2;
-					ctx.fillRect(0,0,width,height);
+					if(dragged){
+						//@TODO: non-destructive resize
+						canvas.width = Math.max(1, width);
+						canvas.height = Math.max(1, height);
+						ctx.fillStyle = color2;
+						ctx.fillRect(0,0,width,height);
+					}
 				});
 			});
 		}
