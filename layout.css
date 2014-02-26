@@ -75,7 +75,7 @@ html, body, .jspaint {
 }
 
 
-.jspaint-main {
+.jspaint-canvas-area {
 	flex: 1;
 	display: block;
 	overflow: auto;

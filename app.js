@@ -71,15 +71,32 @@ app.open = function(){
 	var default_height = 384;
 	
 	
-	var $main = $(".jspaint-main");
-	var $canvas_area = $(".jspaint-canvas");
-	var $canvas = $("canvas");
+	
+	var $app = $("<div class='jspaint'>").appendTo("body");
+	
+	var $V = $("<div class='jspaint-vertical'>").appendTo($app);
+	var $H = $("<div class='jspaint-horizontal'>").appendTo($V);
+	
+	var $canvas_area = $("<div class='jspaint-canvas-area'>").appendTo($H);
+	var $canvas = $("<canvas>").appendTo($canvas_area);
+	
+	var $top = $("<c-area>").prependTo($V);
+	var $bottom = $("<c-area>").appendTo($V);
+	var $left = $("<c-area>").prependTo($H);
+	var $right = $("<c-area>").appendTo($H);
+	
+	
+	var $toolbox = $ToolBox();
+	var $colorbox = $ColorBox();
+	
+	
 	var canvas = $canvas[0];
 	var ctx = canvas.getContext("2d");
 	var $resize_ghost = $("<div class='jspaint-canvas-resize-ghost'>");
+	
 	function $Handle(pos_y, pos_x){
 		var $h = $("<div>").addClass("jspaint-handle");
-		$h.appendTo($main);
+		$h.appendTo($canvas_area);
 		
 		var resizes_height = pos_x !== "left" && pos_y === "bottom";
 		var resizes_width = pos_x === "right" && pos_y !== "top";
@@ -172,16 +189,6 @@ app.open = function(){
 		$handles.trigger("update");
 	},50);
 	
-	
-	var $H = $(".jspaint-horizontal");
-	var $V = $(".jspaint-vertical");
-	var $top = $("<c-area>").prependTo($V);
-	var $bottom = $("<c-area>").appendTo($V);
-	var $left = $("<c-area>").prependTo($H);
-	var $right = $("<c-area>").appendTo($H);
-	
-	var $toolbox = $ToolBox();
-	var $colorbox = $ColorBox();
 	
 	file_new();
 	
