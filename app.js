@@ -67,9 +67,15 @@ app.open = function(){
 	var color2 = "white";
 	var color3 = "transparent";
 	
+	var default_width = 683;
+	var default_height = 384;
 	
 	
 	var $main = $(".jspaint-main");
+	var $canvas_area = $(".jspaint-canvas");
+	var $canvas = $("canvas");
+	var canvas = $canvas[0];
+	var ctx = canvas.getContext("2d");
 	
 	var $H = $(".jspaint-horizontal");
 	var $V = $(".jspaint-vertical");
@@ -80,6 +86,20 @@ app.open = function(){
 	
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
+	
+	file_new();
+	
+	function file_new(){
+		color1 = "black";
+		color2 = "white";
+		color3 = "transparent";
+		
+		canvas.width = default_width;
+		canvas.height = default_height;
+		
+		ctx.fillStyle = color2;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
 	
 	function $ToolBox(){
 		var $tb = $("<div>").addClass("jspaint-tool-box");
@@ -289,7 +309,7 @@ app.open = function(){
 				$c.css("position", "relative");
 				$c.css(pos_axis, pos);
 			}else{
-				console.log("------");
+				//put component in window
 			}
 			
 			$ghost && $ghost.remove(), $ghost = null;

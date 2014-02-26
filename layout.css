@@ -79,11 +79,5 @@ html, body, .jspaint {
 	flex: 1;
 	display: block;
 	overflow: auto;
-}
-.jspaint-canvas {
-	display: block;
-	background: white;
-	width: 1800px;
-	height: 640px;
-	margin: 3px;
+	padding: 3px;
 }
