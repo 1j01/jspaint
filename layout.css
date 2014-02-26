@@ -81,3 +81,8 @@ html, body, .jspaint {
 	overflow: auto;
 	padding: 3px;
 }
+.jspaint-handle {
+	position: absolute;
+	width: 3px;
+	height: 3px;
+}

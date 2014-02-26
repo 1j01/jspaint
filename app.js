@@ -76,6 +76,98 @@ app.open = function(){
 	var $canvas = $("canvas");
 	var canvas = $canvas[0];
 	var ctx = canvas.getContext("2d");
+	var $resize_ghost = $("<div class='jspaint-canvas-resize-ghost'>");
+	function $Handle(pos_y, pos_x){
+		var $h = $("<div>").addClass("jspaint-handle");
+		$h.appendTo($main);
+		
+		var resizes_height = pos_x !== "left" && pos_y === "bottom";
+		var resizes_width = pos_x === "right" && pos_y !== "top";
+		var width = default_width;
+		var height = default_height;
+		if(!(resizes_width || resizes_height)){
+			$h.addClass("jspaint-useless-handle");
+		}else{
+			var cursor;
+			if(resizes_width && resizes_height){
+				cursor = "nwse-resize";
+			}else if(resizes_width){
+				cursor = "ew-resize";
+			}else if(resizes_height){
+				cursor = "ns-resize";
+			}
+			$h.css({cursor:cursor});
+			
+			var mousemove = function(e){
+				$resize_ghost.appendTo("body");
+				
+				var rect = canvas.getBoundingClientRect();
+				$resize_ghost.css({
+					position: "absolute",
+					left: rect.left,
+					top: rect.top,
+					width: width = (resizes_width? (e.clientX - rect.left) : (rect.width)),
+					height: height = (resizes_height? (e.clientY - rect.top) : (rect.height)),
+				});
+			};
+			$h.on("mousedown", function(e){
+				if(e.button === 0){
+					$(window).on("mousemove", mousemove);
+					$("body").css({cursor:cursor});
+				}
+				$(window).one("mouseup", function(e){
+					$(window).off("mousemove", mousemove);
+					$("body").css({cursor:"auto"});
+					
+					$resize_ghost.remove();
+					//@TODO: non-destructive resize
+					console.log(width, height);
+					canvas.width = Math.max(1, width);
+					canvas.height = Math.max(1, height);
+					ctx.fillStyle = color2;
+					ctx.fillRect(0,0,width,height);
+				});
+			});
+		}
+		$h.on("update", function(){
+			var rect = canvas.getBoundingClientRect();
+			var hs = $h.width();
+			if(pos_x === "middle"){
+				$h.css({ left: rect.left + rect.width/2 - hs/2 });
+			}else if(pos_x === "left"){
+				$h.css({ left: rect.left - hs });
+			}else if(pos_x === "right"){
+				$h.css({ left: rect.right });
+			}
+			if(pos_y === "middle"){
+				$h.css({ top: rect.top + rect.height/2 - hs/2 });
+			}else if(pos_y === "top"){
+				$h.css({ top: rect.top - hs });
+			}else if(pos_y === "bottom"){
+				$h.css({ top: rect.bottom });
+			}
+		});
+	}
+	$.each([
+		["top", "right"],//↗
+		["top", "middle"],//↑
+		["top", "left"],//↖
+		["middle", "left"],//←
+		["bottom", "left"],//↙
+		["bottom", "middle"],//↓
+		["bottom", "right"],//↘
+		["middle", "right"],//→
+	],function(i,pos){
+		$Handle(pos[0], pos[1]);
+	});
+	var $handles = $(".jspaint-handle");
+	$(window).on("resize",function(){
+		$handles.trigger("update");
+	});
+	setInterval(function(){
+		$handles.trigger("update");
+	},50);
+	
 	
 	var $H = $(".jspaint-horizontal");
 	var $V = $(".jspaint-vertical");
