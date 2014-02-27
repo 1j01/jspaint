@@ -60,8 +60,7 @@ app.open = function(){
 		name: "Line",
 		description: "Draws a straight line with the selected line width.",
 		shape: function(ctx, x, y, w, h){
-			ctx.moveTo(x, y);
-			ctx.lineTo(x+w, y+h);
+			line(ctx, x, y, x+w, y+h);
 		}
 	},{
 		name: "Curve",
@@ -70,7 +69,7 @@ app.open = function(){
 		name: "Rectangle",
 		description: "Draws a rectangle with the selected fill style.",
 		shape: function(ctx, x, y, w, h){
-			ctx.rect(x, y, w, h);
+			ctx.rect(x-0.5, y-0.5, w, h);
 		}
 	},{
 		name: "Polygon",
@@ -443,7 +442,33 @@ app.open = function(){
 		});
 	});
 	
+	function bresenham(x1, y1, x2, y2, callback){
+		// Bresenham's line algorithm
+		
+		x1=x1|0,x2=x2|0,y1=y1|0,y2=y2|0;
+		
+		var dx = Math.abs(x2 - x1);
+		var dy = Math.abs(y2 - y1);
+		var sx = (x1 < x2) ? 1 : -1;
+		var sy = (y1 < y2) ? 1 : -1;
+		var err = dx - dy;
+		
+		while(1){
+			callback(x1, y1);
+			
+			if(x1===x2 && y1===y2) break;
+			var e2 = err*2;
+			if(e2 >-dy){ err -= dy; x1 += sx; }
+			if(e2 < dx){ err += dx; y1 += sy; }
+		}
+		
+	}
 	
+	function line(ctx, x1, y1, x2, y2){
+		bresenham(x1, y1, x2, y2, function(x,y){
+			ctx.fillRect(x,y,1,1);
+		});
+	}
 	
 	function $ToolBox(){
 		var $tb = $("<div>").addClass("jspaint-tool-box");
