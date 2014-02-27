@@ -87,14 +87,12 @@ app.open = function(){
 			xm = x + w / 2,       // x-middle
 			ym = y + h / 2;       // y-middle
 			
-			ctx.beginPath();
 			ctx.moveTo(x, ym);
 			ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
 			ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
 			ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
 			ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
 			ctx.closePath();
-			ctx.stroke();
 		}
 	},{
 		name: "Rounded Rectangle",
@@ -102,18 +100,59 @@ app.open = function(){
 		shape: function(ctx, x, y, w, h){
 			if(w<0){ x+=w; w=-w; }
 			if(h<0){ y+=h; h=-h; }
-			var radius = Math.min(10, w/2, h/2);
-			ctx.beginPath();
-			ctx.moveTo(x + radius, y);
-			ctx.lineTo(x + w - radius, y);
-			ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
-			ctx.lineTo(x + w, y + h - radius);
-			ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
-			ctx.lineTo(x + radius, y + h);
-			ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
-			ctx.lineTo(x, y + radius);
-			ctx.quadraticCurveTo(x, y, x + radius, y);
-			ctx.closePath();
+			var radius = Math.min(7, w/2, h/2);
+			
+			
+			var iw = w-radius*2;
+			var ih = h-radius*2;
+			var ix = x+radius;
+			var iy = y+radius;
+			
+			var fill = ctx.fillStyle;
+			var stroke = ctx.strokeStyle;
+			
+			var r1 = Math.round;
+			var r2 = Math.round;
+			for(var r=0; r<Math.PI*2; r+=0.05){
+				var rx = Math.cos(r) * radius;
+				var ry = Math.sin(r) * radius;
+				ctx.fillStyle = stroke;
+				ctx.fillRect(
+					r1(1+ix+rx),
+					r1(iy+ry),
+					r2(iw-rx*2),
+					r2(ih-ry*2)
+				);
+				ctx.fillRect(
+					r1(ix+rx),
+					r1(1+iy+ry),
+					r2(iw-rx*2),
+					r2(ih-ry*2)
+				);
+				ctx.fillRect(
+					r1(-1+ix+rx),
+					r1(iy+ry),
+					r2(iw-rx*2),
+					r2(ih-ry*2)
+				);
+				ctx.fillRect(
+					r1(ix+rx),
+					r1(-1+iy+ry),
+					r2(iw-rx*2),
+					r2(ih-ry*2)
+				);
+			}
+			for(var r=0; r<Math.PI*2; r+=0.05){
+				var rx = Math.cos(r) * radius;
+				var ry = Math.sin(r) * radius;
+				ctx.fillStyle = fill;
+				ctx.fillRect(
+					r1(ix+rx),
+					r1(iy+ry),
+					r2(iw-rx*2),
+					r2(ih-ry*2)
+				);
+			}
 		}
 	}];
 	
