@@ -26,33 +26,93 @@ app.open = function(){
 	},{
 		name: "Pencil",
 		description: "Draws a free-form line one pixel wide.",
+		continuous: true,
+		paint: function(ctx, x, y){
+			ctx.fillRect(x, y, 1, 1);
+		}
 	},{
 		name: "Brush",
 		description: "Draws using a brush with the selected shape and size.",
+		continuous: true,
+		paint: function(ctx, x, y){
+			ctx.drawImage(selected_brush_img, x, y);
+		}
 	},{
 		name: "Airbrush",
 		description: "Draws using an airbrush of the selected size.",
+		continuous: false,
+		paint: function(ctx, x, y){
+			var radius = 15;//@TODO: options
+			var sqr = radius * radius;
+			for(var i=0; i<100; i++){
+				var rx = (Math.random()*2-1)*radius;
+				var ry = (Math.random()*2-1)*radius;
+				var d = rx*rx + ry*ry;
+				if(d <= radius){
+					ctx.fillRect(x+rx, y+ry, 1, 1);
+				}
+			}
+		}
 	},{
 		name: "Text",
 		description: "Inserts text into the picture.",
 	},{
 		name: "Line",
 		description: "Draws a straight line with the selected line width.",
+		shape: function(ctx, x, y, w, h){
+			ctx.moveTo(x, y);
+			ctx.lineTo(x+w, y+h);
+		}
 	},{
 		name: "Curve",
 		description: "Draws a curved line with the selected line width.",
 	},{
 		name: "Rectangle",
 		description: "Draws a rectangle with the selected fill style.",
+		shape: function(ctx, x, y, w, h){
+			ctx.rect(x, y, w, h);
+		}
 	},{
 		name: "Polygon",
 		description: "Draws a polygon with the selected fill style.",
 	},{
 		name: "Ellipse",
 		description: "Draws an ellipse with the selected fill style.",
+		shape: function(ctx, x, y, w, h){
+			var kappa = 0.5522848,
+			ox = (w / 2) * kappa, // control point offset horizontal
+			oy = (h / 2) * kappa, // control point offset vertical
+			xe = x + w,           // x-end
+			ye = y + h,           // y-end
+			xm = x + w / 2,       // x-middle
+			ym = y + h / 2;       // y-middle
+			
+			ctx.beginPath();
+			ctx.moveTo(x, ym);
+			ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+			ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+			ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+			ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+			ctx.closePath();
+			ctx.stroke();
+		}
 	},{
 		name: "Rounded Rectangle",
 		description: "Draws a rounded rectangle with the selected fill style.",
+		shape: function(ctx, x, y, w, h){
+			var radius = 10;//ish
+			ctx.beginPath();
+			ctx.moveTo(x + radius, y);
+			ctx.lineTo(x + w - radius, y);
+			ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+			ctx.lineTo(x + w, y + h - radius);
+			ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+			ctx.lineTo(x + radius, y + h);
+			ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+			ctx.lineTo(x, y + radius);
+			ctx.quadraticCurveTo(x, y, x + radius, y);
+			ctx.closePath();
+		}
 	}];
 	
 	var palette = [
@@ -62,14 +122,10 @@ app.open = function(){
 	
 	var selected_tool = tools[6];
 	var previous_tool = selected_tool;
-	
-	var color1 = "black";
-	var color2 = "white";
-	var color3 = "transparent";
+	var color1, color2, color3;
 	
 	var default_width = 683;
 	var default_height = 384;
-	
 	
 	
 	var $app = $("<div class='jspaint'>").appendTo("body");
@@ -78,7 +134,10 @@ app.open = function(){
 	var $H = $("<div class='jspaint-horizontal'>").appendTo($V);
 	
 	var $canvas_area = $("<div class='jspaint-canvas-area'>").appendTo($H);
+	var $resize_ghost = $("<div class='jspaint-canvas-resize-ghost'>");
 	var $canvas = $("<canvas>").appendTo($canvas_area);
+	var canvas = $canvas[0];
+	var ctx = canvas.getContext("2d");
 	
 	var $top = $("<c-area>").prependTo($V);
 	var $bottom = $("<c-area>").appendTo($V);
@@ -86,16 +145,28 @@ app.open = function(){
 	var $right = $("<c-area>").appendTo($H);
 	
 	
+	file_new();
+	
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
 	
 	
-	var canvas = $canvas[0];
-	var ctx = canvas.getContext("2d");
-	var $resize_ghost = $("<div class='jspaint-canvas-resize-ghost'>");
 	
 	var undos = [];
 	var redos = [];
+	
+	
+	function file_new(){
+		color1 = "black";
+		color2 = "white";
+		color3 = "transparent";
+		
+		canvas.width = default_width;
+		canvas.height = default_height;
+		
+		ctx.fillStyle = color2;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
 	
 	function undoable(){
 		var c = document.createElement("canvas");
@@ -197,11 +268,16 @@ app.open = function(){
 					$resize_ghost.remove();
 					if(dragged){
 						undoable();
-						//@TODO: non-destructive resize
+						
 						canvas.width = Math.max(1, width);
 						canvas.height = Math.max(1, height);
 						ctx.fillStyle = color2;
 						ctx.fillRect(0,0,width,height);
+						
+						var previous_canvas = undos[undos.length-1];
+						if(previous_canvas){
+							ctx.drawImage(previous_canvas,0,0);
+						}
 					}
 					$handles.trigger("update");
 				});
@@ -247,46 +323,116 @@ app.open = function(){
 	setTimeout(update_handles,50);
 	
 	
-	file_new();
 	
 	$(window).on("keydown",function(e){
-		switch(String.fromCharCode(e.keyCode).toUpperCase()){
-			case "Z"://undo (+shift=redo)
-				e.shiftKey ? redo() : undo();
-			break;
-			case "Y"://redo
-				redo();
-			break;
-			case "A"://select all
-				//select_all();
-				e.preventDefault();
-			break;
-			case "D"://deselect all
-				//deselect();
-			break;
-			case "C"://copy selection
-				console.log(e);
-			break;
-			case "V"://paste
-				//undoable();
-				//console.log(e);
-			break;
-			case "S"://save (+shift=save as)
-				//
-			break;
+		if(e.keyCode === 27){//Escape
+			//if(tool_active){
+			//	cancel();
+			//}else{
+			//	deselect();
+			//}
+		}else if(e.keyCode === 27){//F4
+			redo();
+		}else if(e.ctrlKey){
+			switch(String.fromCharCode(e.keyCode).toUpperCase()){
+				case "Z"://undo (+shift=redo)
+					e.shiftKey ? redo() : undo();
+				break;
+				case "Y"://redo
+					redo();
+				break;
+				case "A"://select all
+					//select_all();
+					e.preventDefault();
+				break;
+			}
 		}
 	});
-	function file_new(){
-		color1 = "black";
-		color2 = "white";
-		color3 = "transparent";
+	$(document).on("paste", function(e){
+		var items = e.originalEvent.clipboardData.items;
+		$.each(items, function(i, item){
+			if(item.type.match(/image/)){
+				var blob = item.getAsFile();
+				var reader = new FileReader();
+				reader.onload = function(e){
+					console.log(e.target.result);
+				};
+				reader.readAsDataURL(blob);
+				return false;
+			}
+		});
+	});
+	
+	var mouse_start, mouse_previous, reverse;
+	var e2c = function(e){
+		var rect = canvas.getBoundingClientRect();
+		var cx = e.clientX - rect.left;
+		var cy = e.clientY - rect.top;
+		return {
+			x: (cx / rect.width * canvas.width)|0,
+			y: (cy / rect.height * canvas.height)|0,
+		};
+	};
+	var canvas_mouse_move = function(e){
+		var mouse = e2c(e);
+		var previous_canvas = undos[undos.length-1];
+		if(selected_tool.shape){
+			if(previous_canvas){
+				ctx.clearRect(0,0,canvas.width,canvas.height);
+				ctx.drawImage(previous_canvas,0,0);
+			}
+			if(reverse){
+				ctx.fillStyle = color1;
+				ctx.strokeStyle = color2;
+			}else{
+				ctx.fillStyle = color2;
+				ctx.strokeStyle = color1;
+			}
+			ctx.beginPath();
+			selected_tool.shape(ctx, mouse_start.x, mouse_start.y, mouse.x-mouse_start.x, mouse.y-mouse_start.y);
+			ctx.fill();
+			ctx.stroke();
+		}
+		if(selected_tool.paint){
+			if(reverse){
+				ctx.fillStyle = color2;
+				ctx.strokeStyle = color2;
+			}else{
+				ctx.fillStyle = color1;
+				ctx.strokeStyle = color1;
+			}
+			if(selected_tool.continuous){
+				selected_tool.paint(ctx, mouse.x, mouse.y);
+			}else{
+				selected_tool.paint(ctx, mouse.x, mouse.y);
+			}
+		}
+		mouse_previous = mouse;
+	};
+	$canvas.on("mousedown",function(e){
+		if(e.button === 0){
+			reverse = false;
+		}else if(e.button === 2){
+			reverse = true;
+		}else{
+			return false;
+		}
 		
-		canvas.width = default_width;
-		canvas.height = default_height;
+		if(selected_tool.shape || selected_tool.paint){
+			undoable();
+		}
+		mouse_start = e2c(e);
+		if(selected_tool.paint){
+			canvas_mouse_move(e);
+		}
 		
-		ctx.fillStyle = color2;
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-	}
+		$canvas.on("mousemove", canvas_mouse_move);
+		$(window).one("mouseup", function(e){
+			$canvas.off("mousemove",canvas_mouse_move);
+		});
+	});
+	
+	
 	
 	function $ToolBox(){
 		var $tb = $("<div>").addClass("jspaint-tool-box");
@@ -500,6 +646,8 @@ app.open = function(){
 			}
 			
 			$ghost && $ghost.remove(), $ghost = null;
+			
+			update_handles();
 		});
 		return $c;
 	}
