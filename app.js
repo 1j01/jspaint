@@ -183,12 +183,12 @@ app.open = function(){
 		$Handle(pos[0], pos[1]);
 	});
 	var $handles = $(".jspaint-handle");
-	$(window).on("resize",function(){
+	var update_handles = function(){
 		$handles.trigger("update");
-	});
-	setTimeout(function(){
-		$handles.trigger("update");
-	},50);
+	};
+	$(window).on("resize",update_handles);
+	$canvas_area.on("scroll",update_handles);
+	setTimeout(update_handles,50);
 	
 	
 	file_new();
