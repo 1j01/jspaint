@@ -94,6 +94,61 @@ app.open = function(){
 	var ctx = canvas.getContext("2d");
 	var $resize_ghost = $("<div class='jspaint-canvas-resize-ghost'>");
 	
+	var undos = [];
+	var redos = [];
+	
+	function undoable(){
+		var c = document.createElement("canvas");
+		c.width = canvas.width;
+		c.height = canvas.height;
+		var x = c.getContext("2d");
+		x.drawImage(canvas,0,0);
+		
+		undos.push(c);
+		if(redos.length){
+			console.log(redos.length+" redos lost.");
+		}
+		redos = [];
+	}
+	function undo(){
+		if(undos.length<1) return false;
+		
+		var c = document.createElement("canvas");
+		c.width = canvas.width;
+		c.height = canvas.height;
+		var x = c.getContext("2d");
+		x.drawImage(canvas,0,0);
+		
+		redos.push(c);
+		
+		c = undos.pop();
+		canvas.width = c.width;
+		canvas.height = c.height;
+		ctx.drawImage(c,0,0);
+		$handles.trigger("update");
+		
+		return true;
+	}
+	function redo(){
+		if(redos.length<1) return false;
+		
+		var c = document.createElement("canvas");
+		c.width = canvas.width;
+		c.height = canvas.height;
+		var x = c.getContext("2d");
+		x.drawImage(canvas,0,0);
+		
+		undos.push(c);
+		
+		c = redos.pop();
+		canvas.width = c.width;
+		canvas.height = c.height;
+		ctx.drawImage(c,0,0);
+		$handles.trigger("update");
+		
+		return true;
+	}
+	
 	function $Handle(pos_y, pos_x){
 		var $h = $("<div>").addClass("jspaint-handle");
 		$h.appendTo($canvas_area);
@@ -141,6 +196,7 @@ app.open = function(){
 					
 					$resize_ghost.remove();
 					if(dragged){
+						undoable();
 						//@TODO: non-destructive resize
 						canvas.width = Math.max(1, width);
 						canvas.height = Math.max(1, height);
@@ -193,6 +249,33 @@ app.open = function(){
 	
 	file_new();
 	
+	$(window).on("keydown",function(e){
+		switch(String.fromCharCode(e.keyCode).toUpperCase()){
+			case "Z"://undo (+shift=redo)
+				e.shiftKey ? redo() : undo();
+			break;
+			case "Y"://redo
+				redo();
+			break;
+			case "A"://select all
+				//select_all();
+				e.preventDefault();
+			break;
+			case "D"://deselect all
+				//deselect();
+			break;
+			case "C"://copy selection
+				console.log(e);
+			break;
+			case "V"://paste
+				//undoable();
+				//console.log(e);
+			break;
+			case "S"://save (+shift=save as)
+				//
+			break;
+		}
+	});
 	function file_new(){
 		color1 = "black";
 		color2 = "white";
