@@ -59,6 +59,7 @@ app.open = function(){
 	},{
 		name: "Line",
 		description: "Draws a straight line with the selected line width.",
+		stroke_only: true,
 		shape: function(ctx, x, y, w, h){
 			line(ctx, x, y, x+w, y+h);
 		}
@@ -99,7 +100,9 @@ app.open = function(){
 		name: "Rounded Rectangle",
 		description: "Draws a rounded rectangle with the selected fill style.",
 		shape: function(ctx, x, y, w, h){
-			var radius = 10;//ish
+			if(w<0){ x+=w; w=-w; }
+			if(h<0){ y+=h; h=-h; }
+			var radius = Math.min(10, w/2, h/2);
 			ctx.beginPath();
 			ctx.moveTo(x + radius, y);
 			ctx.lineTo(x + w - radius, y);
@@ -379,7 +382,7 @@ app.open = function(){
 				ctx.clearRect(0,0,canvas.width,canvas.height);
 				ctx.drawImage(previous_canvas,0,0);
 			}
-			if(reverse){
+			if(reverse ^ selected_tool.stroke_only){
 				ctx.fillStyle = color1;
 				ctx.strokeStyle = color2;
 			}else{
@@ -399,8 +402,11 @@ app.open = function(){
 				ctx.fillStyle = color1;
 				ctx.strokeStyle = color1;
 			}
-			if(selected_tool.continuous){
-				selected_tool.paint(ctx, mouse.x, mouse.y);
+			if(selected_tool.continuous === "space"){
+				bresenham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x,y){
+					selected_tool.paint(ctx, x, y);
+				});
+				
 			}else{
 				selected_tool.paint(ctx, mouse.x, mouse.y);
 			}
@@ -423,7 +429,7 @@ app.open = function(){
 		if(selected_tool.shape || selected_tool.paint){
 			undoable();
 		}
-		mouse_start = mouse = e2c(e);
+		mouse_start = mouse_previous = mouse = e2c(e);
 		if(selected_tool.paint){
 			tool_go();
 		}
