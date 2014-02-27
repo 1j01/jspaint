@@ -26,21 +26,21 @@ app.open = function(){
 	},{
 		name: "Pencil",
 		description: "Draws a free-form line one pixel wide.",
-		continuous: true,
+		continuous: "space",
 		paint: function(ctx, x, y){
 			ctx.fillRect(x, y, 1, 1);
 		}
 	},{
 		name: "Brush",
 		description: "Draws using a brush with the selected shape and size.",
-		continuous: true,
+		continuous: "space",
 		paint: function(ctx, x, y){
 			ctx.drawImage(selected_brush_img, x, y);
 		}
 	},{
 		name: "Airbrush",
 		description: "Draws using an airbrush of the selected size.",
-		continuous: false,
+		continuous: "time",
 		paint: function(ctx, x, y){
 			var radius = 15;//@TODO: options
 			var sqr = radius * radius;
@@ -49,7 +49,7 @@ app.open = function(){
 				var ry = (Math.random()*2-1)*radius;
 				var d = rx*rx + ry*ry;
 				if(d <= radius){
-					ctx.fillRect(x+rx, y+ry, 1, 1);
+					ctx.fillRect(x+rx|0, y+ry|0, 1, 1);
 				}
 			}
 		}
@@ -363,7 +363,7 @@ app.open = function(){
 		});
 	});
 	
-	var mouse_start, mouse_previous, reverse;
+	var mouse, mouse_start, mouse_previous, reverse;
 	var e2c = function(e){
 		var rect = canvas.getBoundingClientRect();
 		var cx = e.clientX - rect.left;
@@ -373,10 +373,9 @@ app.open = function(){
 			y: (cy / rect.height * canvas.height)|0,
 		};
 	};
-	var canvas_mouse_move = function(e){
-		var mouse = e2c(e);
-		var previous_canvas = undos[undos.length-1];
+	var tool_go = function(){
 		if(selected_tool.shape){
+			var previous_canvas = undos[undos.length-1];
 			if(previous_canvas){
 				ctx.clearRect(0,0,canvas.width,canvas.height);
 				ctx.drawImage(previous_canvas,0,0);
@@ -407,6 +406,10 @@ app.open = function(){
 				selected_tool.paint(ctx, mouse.x, mouse.y);
 			}
 		}
+	};
+	var canvas_mouse_move = function(e){
+		mouse = e2c(e);
+		tool_go();
 		mouse_previous = mouse;
 	};
 	$canvas.on("mousedown",function(e){
@@ -421,14 +424,22 @@ app.open = function(){
 		if(selected_tool.shape || selected_tool.paint){
 			undoable();
 		}
-		mouse_start = e2c(e);
+		mouse_start = mouse = e2c(e);
 		if(selected_tool.paint){
-			canvas_mouse_move(e);
+			tool_go();
 		}
 		
 		$canvas.on("mousemove", canvas_mouse_move);
+		if(selected_tool.continuous === "time"){
+			var iid = setInterval(function(){
+				tool_go();
+			},10);
+		}
 		$(window).one("mouseup", function(e){
 			$canvas.off("mousemove",canvas_mouse_move);
+			if(iid){
+				clearInterval(iid);
+			}
 		});
 	});
 	
