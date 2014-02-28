@@ -22,6 +22,11 @@ app.open = function(){
 	},{
 		name: "Eraser/Color Eraser",
 		description: "Erases a portion of the picture, using the selected eraser shape.",
+		continuous: "space",
+		paint: function(ctx, x, y){
+			ctx.fillStyle = color2;
+			ctx.fillRect(x-4, y-4, 8, 8);
+		}
 	},{
 		name: "Fill With Color",
 		description: "Fills an area with the selected drawing color.",
