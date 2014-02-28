@@ -4,13 +4,14 @@ var app = {};
 app.open = function(){
 	
 	var stroke_width = 1;
-	//var stroke_color;
-	//var fill_color;
+	var stroke_color;
+	var fill_color;
 	
 	var brush_image = new Image();
 	brush_image.src = "images/toolbar-icons.png";
 	var brush_canvas = $("<canvas>")[0];
 	var brush_ctx = brush_canvas.getContext("2d");
+	var brush_rendered_color;
 	
 	var tools = [{
 		name: "Free-Form Select",
@@ -43,18 +44,19 @@ app.open = function(){
 		name: "Brush",
 		description: "Draws using a brush with the selected shape and size.",
 		continuous: "space",
-		mousedown: function(ctx){
-			//note: handling this in mousedown won't work with color3
-			brush_canvas.width = 16;
-			brush_canvas.height = 16;
-			brush_ctx.clearRect(0,0,16,16);
-			brush_ctx.drawImage(brush_image,0,0);
-			brush_ctx.globalCompositeOperation = "source-atop";
-			brush_ctx.fillStyle = ctx.strokeStyle;
-			brush_ctx.fillRect(0,0,16,16);
-			brush_ctx.globalCompositeOperation = "source-over";
-		},
 		paint: function(ctx, x, y){
+			if(brush_rendered_color !== stroke_color){
+				brush_canvas.width = 16;
+				brush_canvas.height = 16;
+				brush_ctx.clearRect(0,0,16,16);
+				brush_ctx.drawImage(brush_image,0,0);
+				brush_ctx.globalCompositeOperation = "source-atop";
+				brush_ctx.fillStyle = stroke_color;
+				brush_ctx.fillRect(0,0,16,16);
+				brush_ctx.globalCompositeOperation = "source-over";
+				
+				brush_rendered_color = stroke_color;
+			}
 			ctx.drawImage(brush_canvas, x, y);
 		}
 	},{
@@ -90,7 +92,10 @@ app.open = function(){
 		name: "Rectangle",
 		description: "Draws a rectangle with the selected fill style.",
 		shape: function(ctx, x, y, w, h){
+			ctx.beginPath();
 			ctx.rect(x-0.5, y-0.5, w, h);
+			ctx.fill();
+			ctx.stroke();
 		}
 	},{
 		name: "Polygon",
@@ -491,7 +496,8 @@ app.open = function(){
 		});
 	});
 	
-	var mouse, mouse_start, mouse_previous, reverse;
+	var mouse, mouse_start, mouse_previous;
+	var reverse, ctrl;
 	var e2c = function(e){
 		var rect = canvas.getBoundingClientRect();
 		var cx = e.clientX - rect.left;
@@ -515,19 +521,9 @@ app.open = function(){
 				ctx.fillStyle = color2;
 				ctx.strokeStyle = color1;
 			}
-			ctx.beginPath();
 			selected_tool.shape(ctx, mouse_start.x, mouse_start.y, mouse.x-mouse_start.x, mouse.y-mouse_start.y);
-			ctx.fill();
-			ctx.stroke();
-		}
-		if(selected_tool.paint){
-			if(reverse){
-				ctx.fillStyle = color2;
-				ctx.strokeStyle = color2;
-			}else{
-				ctx.fillStyle = color1;
-				ctx.strokeStyle = color1;
-			}
+		}else if(selected_tool.paint){
+			ctx.fillStyle = ctx.strokeStyle = stroke_color = (ctrl&&color3) ? color3 : reverse ? color2 : color1;
 			if(selected_tool[event]){
 				selected_tool[event](ctx, mouse.x, mouse.y);
 			}
@@ -539,12 +535,17 @@ app.open = function(){
 			}else{
 				selected_tool.paint(ctx, mouse.x, mouse.y);
 			}
+		}else{
+			if(selected_tool[event]){
+				selected_tool[event](ctx, mouse.x, mouse.y);
+			}
 		}
 	};
 	var canvas_mouse_move = function(e){
 		mouse = e2c(e);
 		tool_go();
 		mouse_previous = mouse;
+		ctrl = e.ctrlKey;
 	};
 	$canvas.on("mousedown",function(e){
 		if(e.button === 0){
@@ -554,6 +555,7 @@ app.open = function(){
 		}else{
 			return false;
 		}
+		ctrl = e.ctrlKey;
 		
 		if(selected_tool.shape || selected_tool.paint){
 			if(!undoable()) return;
