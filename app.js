@@ -485,14 +485,14 @@ app.open = function(){
 			tool_go();
 		}
 		
-		$canvas.on("mousemove", canvas_mouse_move);
+		$(window).on("mousemove", canvas_mouse_move);
 		if(selected_tool.continuous === "time"){
 			var iid = setInterval(function(){
 				tool_go();
 			},10);
 		}
 		$(window).one("mouseup", function(e){
-			$canvas.off("mousemove",canvas_mouse_move);
+			$(window).off("mousemove",canvas_mouse_move);
 			if(iid){
 				clearInterval(iid);
 			}
