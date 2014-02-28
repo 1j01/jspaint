@@ -192,22 +192,37 @@ app.open = function(){
 	var $left = $("<c-area>").prependTo($H);
 	var $right = $("<c-area>").appendTo($H);
 	
-	
-	file_new();
-	
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
-	
 	
 	
 	var undos = [];
 	var redos = [];
 	
+	file_new();
 	
-	function file_new(){
+	
+	
+	function are_you_sure(action){
+		if(undos.length || redos.length){
+			//@TODO: window within DOM
+			confirm("Are you sure? Of everything?") && action();
+		}else{
+			action();
+		}
+	}
+	
+	function reset_colors(){
 		color1 = "black";
 		color2 = "white";
-		color3 = "transparent";
+		color3 = "";
+		$colorbox.update_colors();
+	}
+	
+	function file_new(){
+		undos = [];
+		redos = [];
+		reset_colors();
 		
 		canvas.width = default_width;
 		canvas.height = default_height;
@@ -216,7 +231,48 @@ app.open = function(){
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 	
+	function file_open(){
+		var $input = $("<input type=file>")
+		.appendTo("body")
+		.hide()
+		.click()
+		.on("change", function(){
+			$.each(this.files, function(i, file){
+				if(file.type.match(/image/)){
+					var reader = new FileReader();
+					reader.onload = function(e){
+						var img = new Image();
+						img.onload = function(){
+							undos = [];
+							redos = [];
+							reset_colors();
+							
+							canvas.width = img.naturalWidth;
+							canvas.height = img.naturalHeight;
+							
+							ctx.clearRect(0, 0, canvas.width, canvas.height);
+							ctx.drawImage(img,0,0);
+						};
+						img.src = e.target.result;
+					};
+					reader.readAsDataURL(file);
+					return false;
+				}
+			});
+			$input.remove();
+		});
+	}
+	
 	function undoable(){
+		if(redos.length > 5){
+			if(confirm("Discard "+redos.length+" possible redo-able actions? \n(Ctrl+Y to redo)")){
+				redos = [];
+			}
+			return false;
+		}else{
+			redos = [];
+		}
+		
 		var c = document.createElement("canvas");
 		c.width = canvas.width;
 		c.height = canvas.height;
@@ -224,10 +280,8 @@ app.open = function(){
 		x.drawImage(canvas,0,0);
 		
 		undos.push(c);
-		if(redos.length){
-			console.log(redos.length+" redos lost.");
-		}
-		redos = [];
+		
+		return true;
 	}
 	function undo(){
 		if(undos.length<1) return false;
@@ -315,16 +369,16 @@ app.open = function(){
 					
 					$resize_ghost.remove();
 					if(dragged){
-						undoable();
-						
-						canvas.width = Math.max(1, width);
-						canvas.height = Math.max(1, height);
-						ctx.fillStyle = color2;
-						ctx.fillRect(0,0,width,height);
-						
-						var previous_canvas = undos[undos.length-1];
-						if(previous_canvas){
-							ctx.drawImage(previous_canvas,0,0);
+						if(undoable()){
+							canvas.width = Math.max(1, width);
+							canvas.height = Math.max(1, height);
+							ctx.fillStyle = color2;
+							ctx.fillRect(0,0,width,height);
+							
+							var previous_canvas = undos[undos.length-1];
+							if(previous_canvas){
+								ctx.drawImage(previous_canvas,0,0);
+							}
 						}
 					}
 					$handles.trigger("update");
@@ -405,8 +459,9 @@ app.open = function(){
 				reader.onload = function(e){
 					var img = new Image();
 					img.onload = function(){
-						undoable();
-						ctx.drawImage(img,0,0);
+						if(undoable()){
+							ctx.drawImage(img,0,0);
+						}
 					};
 					img.src = e.target.result;
 				};
@@ -478,7 +533,7 @@ app.open = function(){
 		}
 		
 		if(selected_tool.shape || selected_tool.paint){
-			undoable();
+			if(!undoable()) return;
 		}
 		mouse_start = mouse_previous = mouse = e2c(e);
 		if(selected_tool.paint){
@@ -607,6 +662,12 @@ app.open = function(){
 			bottom: 3,
 		});
 		
+		function update_colors(){
+			$current_colors.css({background:color3});
+			$color1.css({background:color1});
+			$color2.css({background:color2});
+		}
+		
 		$.each(palette, function(i, color){
 			var $b = $("<button class='jspaint-color-button'>");
 			$b.appendTo($palette);
@@ -625,17 +686,11 @@ app.open = function(){
 				update_colors();
 			});
 		});
-		update_colors();
 		
-		return $Component("Colors", "wide", $cb);
+		var $c = $Component("Colors", "wide", $cb);
+		$c.update_colors = update_colors;
+		return $c;
 		
-		function update_colors(){
-			if(color3 !== "transparent"){
-				$current_colors.css({background:color3});
-			}
-			$color1.css({background:color1});
-			$color2.css({background:color2});
-		}
 	}
 	function $Component(name, orientation, $el){
 		//a draggable widget that can be undocked into a window
