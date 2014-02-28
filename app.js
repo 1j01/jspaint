@@ -3,6 +3,15 @@ var app = {};
 
 app.open = function(){
 	
+	var stroke_width = 1;
+	//var stroke_color;
+	//var fill_color;
+	
+	var brush_image = new Image();
+	brush_image.src = "images/toolbar-icons.png";
+	var brush_canvas = $("<canvas>")[0];
+	var brush_ctx = brush_canvas.getContext("2d");
+	
 	var tools = [{
 		name: "Free-Form Select",
 		description: "Selects a free-form part of the picture to move, copy, or edit.",
@@ -34,8 +43,19 @@ app.open = function(){
 		name: "Brush",
 		description: "Draws using a brush with the selected shape and size.",
 		continuous: "space",
+		mousedown: function(ctx){
+			//note: handling this in mousedown won't work with color3
+			brush_canvas.width = 16;
+			brush_canvas.height = 16;
+			brush_ctx.clearRect(0,0,16,16);
+			brush_ctx.drawImage(brush_image,0,0);
+			brush_ctx.globalCompositeOperation = "source-atop";
+			brush_ctx.fillStyle = ctx.strokeStyle;
+			brush_ctx.fillRect(0,0,16,16);
+			brush_ctx.globalCompositeOperation = "source-over";
+		},
 		paint: function(ctx, x, y){
-			ctx.drawImage(selected_brush_img, x, y);
+			ctx.drawImage(brush_canvas, x, y);
 		}
 	},{
 		name: "Airbrush",
@@ -481,7 +501,7 @@ app.open = function(){
 			y: (cy / rect.height * canvas.height)|0,
 		};
 	};
-	var tool_go = function(){
+	var tool_go = function(event){
 		if(selected_tool.shape){
 			var previous_canvas = undos[undos.length-1];
 			if(previous_canvas){
@@ -507,6 +527,9 @@ app.open = function(){
 			}else{
 				ctx.fillStyle = color1;
 				ctx.strokeStyle = color1;
+			}
+			if(selected_tool[event]){
+				selected_tool[event](ctx, mouse.x, mouse.y);
 			}
 			if(selected_tool.continuous === "space"){
 				bresenham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x,y){
@@ -537,7 +560,7 @@ app.open = function(){
 		}
 		mouse_start = mouse_previous = mouse = e2c(e);
 		if(selected_tool.paint){
-			tool_go();
+			tool_go("mousedown");
 		}
 		
 		$(window).on("mousemove", canvas_mouse_move);
