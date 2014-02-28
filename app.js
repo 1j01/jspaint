@@ -79,20 +79,40 @@ app.open = function(){
 		name: "Ellipse",
 		description: "Draws an ellipse with the selected fill style.",
 		shape: function(ctx, x, y, w, h){
-			var kappa = 0.5522848,
-			ox = (w / 2) * kappa, // control point offset horizontal
-			oy = (h / 2) * kappa, // control point offset vertical
-			xe = x + w,           // x-end
-			ye = y + h,           // y-end
-			xm = x + w / 2,       // x-middle
-			ym = y + h / 2;       // y-middle
+			var fill = ctx.fillStyle;
+			var stroke = ctx.strokeStyle;
 			
-			ctx.moveTo(x, ym);
-			ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-			ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-			ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-			ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
-			ctx.closePath();
+			var r1 = Math.round;
+			var r2 = Math.round;
+			
+			var cx = x + w/2;
+			var cy = y + h/2;
+			ctx.fillStyle = stroke;
+			for(var r=0; r<Math.PI*2; r+=0.01){
+				var rx = Math.cos(r) * w/2;
+				var ry = Math.sin(r) * h/2;
+				
+				var rect_x = r1(cx+rx);
+				var rect_y = r1(cy+ry);
+				var rect_w = r2(-rx*2);
+				var rect_h = r2(-ry*2);
+				
+				ctx.fillRect(rect_x+1, rect_y, rect_w, rect_h);
+				ctx.fillRect(rect_x, rect_y+1, rect_w, rect_h);
+				ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
+				ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
+			}
+			ctx.fillStyle = fill;
+			for(var r=0; r<Math.PI*2; r+=0.01){
+				var rx = Math.cos(r) * w/2;
+				var ry = Math.sin(r) * h/2;
+				ctx.fillRect(
+					r1(cx+rx),
+					r1(cy+ry),
+					r2(-rx*2),
+					r2(-ry*2)
+				);
+			}
 		}
 	},{
 		name: "Rounded Rectangle",
@@ -113,39 +133,26 @@ app.open = function(){
 			
 			var r1 = Math.round;
 			var r2 = Math.round;
+			
+			ctx.fillStyle = stroke;
 			for(var r=0; r<Math.PI*2; r+=0.05){
 				var rx = Math.cos(r) * radius;
 				var ry = Math.sin(r) * radius;
-				ctx.fillStyle = stroke;
-				ctx.fillRect(
-					r1(1+ix+rx),
-					r1(iy+ry),
-					r2(iw-rx*2),
-					r2(ih-ry*2)
-				);
-				ctx.fillRect(
-					r1(ix+rx),
-					r1(1+iy+ry),
-					r2(iw-rx*2),
-					r2(ih-ry*2)
-				);
-				ctx.fillRect(
-					r1(-1+ix+rx),
-					r1(iy+ry),
-					r2(iw-rx*2),
-					r2(ih-ry*2)
-				);
-				ctx.fillRect(
-					r1(ix+rx),
-					r1(-1+iy+ry),
-					r2(iw-rx*2),
-					r2(ih-ry*2)
-				);
+				
+				var rect_x = r1(ix+rx);
+				var rect_y = r1(iy+ry);
+				var rect_w = r2(iw-rx*2);
+				var rect_h = r2(ih-ry*2);
+				
+				ctx.fillRect(rect_x+1, rect_y, rect_w, rect_h);
+				ctx.fillRect(rect_x, rect_y+1, rect_w, rect_h);
+				ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
+				ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
 			}
+			ctx.fillStyle = fill;
 			for(var r=0; r<Math.PI*2; r+=0.05){
 				var rx = Math.cos(r) * radius;
 				var ry = Math.sin(r) * radius;
-				ctx.fillStyle = fill;
 				ctx.fillRect(
 					r1(ix+rx),
 					r1(iy+ry),
@@ -396,7 +403,12 @@ app.open = function(){
 				var blob = item.getAsFile();
 				var reader = new FileReader();
 				reader.onload = function(e){
-					console.log(e.target.result);
+					var img = new Image();
+					img.onload = function(){
+						undoable();
+						ctx.drawImage(img,0,0);
+					};
+					img.src = e.target.result;
 				};
 				reader.readAsDataURL(blob);
 				return false;
