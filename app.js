@@ -8,7 +8,7 @@ app.open = function(){
 	var fill_color;
 	
 	var brush_image = new Image();
-	brush_image.src = "images/toolbar-icons.png";
+	brush_image.src = "images/scroll-left.png";
 	var brush_canvas = $("<canvas>")[0];
 	var brush_ctx = brush_canvas.getContext("2d");
 	var brush_rendered_color;
@@ -45,19 +45,20 @@ app.open = function(){
 		description: "Draws using a brush with the selected shape and size.",
 		continuous: "space",
 		paint: function(ctx, x, y){
+			var sz = 16;
 			if(brush_rendered_color !== stroke_color){
-				brush_canvas.width = 16;
-				brush_canvas.height = 16;
-				brush_ctx.clearRect(0,0,16,16);
-				brush_ctx.drawImage(brush_image,0,0);
+				brush_canvas.width = sz;
+				brush_canvas.height = sz;
+				brush_ctx.clearRect(0,0,sz,sz);
+				brush_ctx.drawImage(brush_image,sz/2-brush_image.width/2,sz/2-brush_image.height/2);
 				brush_ctx.globalCompositeOperation = "source-atop";
 				brush_ctx.fillStyle = stroke_color;
-				brush_ctx.fillRect(0,0,16,16);
+				brush_ctx.fillRect(0,0,sz,sz);
 				brush_ctx.globalCompositeOperation = "source-over";
 				
 				brush_rendered_color = stroke_color;
 			}
-			ctx.drawImage(brush_canvas, x, y);
+			ctx.drawImage(brush_canvas, x-sz/2, y-sz/2);
 		}
 	},{
 		name: "Airbrush",
