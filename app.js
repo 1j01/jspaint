@@ -1,5 +1,6 @@
 
 var app = {};
+var TAU = 2 * Math.PI;
 
 app.open = function(){
 	
@@ -612,12 +613,41 @@ app.open = function(){
 		}
 	};
 	var canvas_mouse_move = function(e){
+		ctrl = e.ctrlKey;
 		mouse = e2c(e);
+		if(e.shiftKey){
+			if(selected_tool.name === "Line"){
+				var dist = Math.sqrt(
+					(mouse.y - mouse_start.y) * (mouse.y - mouse_start.y) +
+					(mouse.x - mouse_start.x) * (mouse.x - mouse_start.x)
+				);
+				var octurn = (TAU / 8)
+				var dir08 = Math.atan2(mouse.y - mouse_start.y, mouse.x - mouse_start.x) / octurn;
+				var dir = Math.round(dir08) * octurn;
+				mouse.x = Math.round(mouse_start.x + Math.cos(dir) * dist);
+				mouse.y = Math.round(mouse_start.y + Math.sin(dir) * dist);
+			}else if(selected_tool.shape){
+				var w = Math.abs(mouse.x - mouse_start.x);
+				var h = Math.abs(mouse.y - mouse_start.y);
+				if(w < h){
+					if(mouse.y > mouse_start.y){
+						mouse.y = mouse_start.y + w;
+					}else{
+						mouse.y = mouse_start.y - w;
+					}
+				}else{
+					if(mouse.x > mouse_start.x){
+						mouse.x = mouse_start.x + h;
+					}else{
+						mouse.x = mouse_start.x - h;
+					}
+				}
+			}
+		}
 		tool_go();
 		mouse_previous = mouse;
-		ctrl = e.ctrlKey;
 	};
-	$canvas.on("mousedown",function(e){
+	$canvas.on("mousedown", function(e){
 		if(e.button === 0){
 			reverse = false;
 		}else if(e.button === 2){
