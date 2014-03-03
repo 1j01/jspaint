@@ -17,9 +17,11 @@ app.open = function(){
 	var tools = [{
 		name: "Free-Form Select",
 		description: "Selects a free-form part of the picture to move, copy, or edit.",
+		passive: true,
 	},{
 		name: "Select",
 		description: "Selects a rectangular part of the picture to move, copy, or edit.",
+		passive: true,
 	},{
 		name: "Eraser/Color Eraser",
 		description: "Erases a portion of the picture, using the selected eraser shape.",
@@ -31,14 +33,96 @@ app.open = function(){
 	},{
 		name: "Fill With Color",
 		description: "Fills an area with the selected drawing color.",
+		mousedown: function(ctx, x, y){
+			var _c = document.createElement("canvas");
+			_c.width = _c.height = 1;
+			var _ctx = _c.getContext("2d");
+			_ctx.fillStyle = fill_color;
+			_ctx.fillRect(0,0,1,1);
+			var _id = _ctx.getImageData(0,0,1,1);
+			var fill_r = _id.data[0];
+			var fill_g = _id.data[1];
+			var fill_b = _id.data[2];
+			
+			var stack = [[x, y]];
+			var c_width = canvas.width;
+			var c_height = canvas.height;
+			var id = ctx.getImageData(0,0,c_width,c_height);
+			pixel_pos = (y*c_width + x) * 4;
+			var start_r = id.data[pixel_pos+0];
+			var start_g = id.data[pixel_pos+1];
+			var start_b = id.data[pixel_pos+2];
+			if(fill_r === start_r
+			&& fill_g === start_g
+			&& fill_b === start_b){
+				return;
+			}
+			while(stack.length){
+				var new_pos, x, y, pixel_pos, reach_left, reach_right;
+				new_pos = stack.pop();
+				x = new_pos[0];
+				y = new_pos[1];
+
+				pixel_pos = (y*c_width + x) * 4;
+				while(match_start_color(pixel_pos)){
+					pixel_pos -= c_width * 4, y--;
+				}
+				pixel_pos += c_width * 4, y++;
+				reach_left = false;
+				reach_right = false;
+				while(y++ < c_height-1 && match_start_color(pixel_pos)){
+					colorPixel(pixel_pos);
+
+					if(x > 0){
+						if(match_start_color(pixel_pos - 4)){
+							if(!reach_left){
+								stack.push([x - 1, y]);
+								reach_left = true;
+							}
+						}else if(reach_left){
+							reach_left = false;
+						}
+					}
+
+					if(x < c_width-1){
+						if(match_start_color(pixel_pos + 4)){
+							if(!reach_right){
+								stack.push([x + 1, y]);
+								reach_right = true;
+							}
+						}else if(reach_right){
+							reach_right = false;
+						}
+					}
+
+					pixel_pos += c_width * 4;
+				}
+			}
+			ctx.putImageData(id, 0, 0);
+
+			function match_start_color(pixel_pos){
+				return (id.data[pixel_pos+0] === start_r
+				     && id.data[pixel_pos+1] === start_g
+				     && id.data[pixel_pos+2] === start_b);
+			}
+
+			function colorPixel(pixel_pos){
+				id.data[pixel_pos+0] = fill_r;
+				id.data[pixel_pos+1] = fill_g;
+				id.data[pixel_pos+2] = fill_b;
+				id.data[pixel_pos+3] = 255;
+			}
+		}
 	},{
 		name: "Pick Color",
 		description: "Picks up a color from the picture for drawing.",
 		deselectable: true,
+		passive: true,
 	},{
 		name: "Magnifier",
 		description: "Changes the magnification.",
 		deselectable: true,
+		passive: true,
 	},{
 		name: "Pencil",
 		description: "Draws a free-form line one pixel wide.",
@@ -578,7 +662,7 @@ app.open = function(){
 			y: (cy / rect.height * canvas.height)|0,
 		};
 	};
-	var tool_go = function(event){
+	var tool_go = function(event_name){
 		if(selected_tool.shape){
 			var previous_canvas = undos[undos.length-1];
 			if(previous_canvas){
@@ -593,22 +677,23 @@ app.open = function(){
 				ctx.strokeStyle = color1;
 			}
 			selected_tool.shape(ctx, mouse_start.x, mouse_start.y, mouse.x-mouse_start.x, mouse.y-mouse_start.y);
-		}else if(selected_tool.paint){
-			ctx.fillStyle = ctx.strokeStyle = stroke_color = (ctrl&&color3) ? color3 : reverse ? color2 : color1;
-			if(selected_tool[event]){
-				selected_tool[event](ctx, mouse.x, mouse.y);
-			}
+		}
+		
+		ctx.fillStyle = fill_color = 
+		ctx.strokeStyle = stroke_color = 
+			(ctrl&&color3) ? color3 :
+			reverse ? color2 : color1;
+		
+		if(selected_tool[event_name]){
+			selected_tool[event_name](ctx, mouse.x, mouse.y);
+		}
+		if(selected_tool.paint){
 			if(selected_tool.continuous === "space"){
 				bresenham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x,y){
 					selected_tool.paint(ctx, x, y);
 				});
-				
 			}else{
 				selected_tool.paint(ctx, mouse.x, mouse.y);
-			}
-		}else{
-			if(selected_tool[event]){
-				selected_tool[event](ctx, mouse.x, mouse.y);
 			}
 		}
 	};
@@ -656,12 +741,12 @@ app.open = function(){
 			return false;
 		}
 		ctrl = e.ctrlKey;
+		mouse_start = mouse_previous = mouse = e2c(e);
 		
-		if(selected_tool.shape || selected_tool.paint){
+		if(!selected_tool.passive){
 			if(!undoable()) return;
 		}
-		mouse_start = mouse_previous = mouse = e2c(e);
-		if(selected_tool.paint){
+		if(selected_tool.paint || selected_tool.mousedown){
 			tool_go("mousedown");
 		}
 		
