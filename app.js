@@ -512,7 +512,6 @@ app.open = function(){
 		}else if(e.keyCode === 27){//F4
 			redo();
 		}else if(e.ctrlKey){
-			e.preventDefault();
 			switch(String.fromCharCode(e.keyCode).toUpperCase()){
 				case "Z":
 					e.shiftKey ? redo() : undo();
@@ -522,6 +521,11 @@ app.open = function(){
 				break;
 				case "G":
 					render_GIF();
+				break;
+				case "F":
+					//show image fullscreen
+					canvas.requestFullscreen && canvas.requestFullscreen();
+					canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
 				break;
 				case "O":
 					file_open();
@@ -535,7 +539,10 @@ app.open = function(){
 				case "A":
 					//select_all();
 				break;
+				default: return true;
 			}
+			e.preventDefault();
+			return false;
 		}
 	});
 	$(document).on("paste", function(e){
