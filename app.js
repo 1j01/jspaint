@@ -70,8 +70,8 @@ app.open = function(){
 				pixel_pos += c_width * 4, y++;
 				reach_left = false;
 				reach_right = false;
-				while(y++ < c_height-1 && match_start_color(pixel_pos)){
-					colorPixel(pixel_pos);
+				while(y++ < c_height && match_start_color(pixel_pos)){
+					color_pixel(pixel_pos);
 
 					if(x > 0){
 						if(match_start_color(pixel_pos - 4)){
@@ -106,7 +106,7 @@ app.open = function(){
 				     && id.data[pixel_pos+2] === start_b);
 			}
 
-			function colorPixel(pixel_pos){
+			function color_pixel(pixel_pos){
 				id.data[pixel_pos+0] = fill_r;
 				id.data[pixel_pos+1] = fill_g;
 				id.data[pixel_pos+2] = fill_b;
@@ -630,7 +630,7 @@ app.open = function(){
 			return false;
 		}
 	});
-	$(document).on("paste", function(e){
+	$(window).on("paste", function(e){
 		var items = e.originalEvent.clipboardData.items;
 		$.each(items, function(i, item){
 			if(item.type.match(/image/)){
@@ -640,6 +640,14 @@ app.open = function(){
 					var img = new Image();
 					img.onload = function(){
 						if(undoable()){
+							if(img.width > canvas.width || img.height > canvas.height){
+								//todo: don't use confirm
+								if(confirm("The image is bigger than the canvas. Would you like the canvas to be enlarged?")){
+									canvas.width = img.width;
+									canvas.height = img.height;
+								}
+							}
+							//todo: make draggable selection object
 							ctx.drawImage(img,0,0);
 						}
 					};
