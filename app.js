@@ -7,6 +7,8 @@ app.open = function(){
 	var stroke_width = 1;
 	var stroke_color;
 	var fill_color;
+	var stroke_color_i = 0;
+	var fill_color_i = 0;
 	
 	var brush_image = new Image();
 	brush_image.src = "images/scroll-left.png";
@@ -27,7 +29,7 @@ app.open = function(){
 		description: "Erases a portion of the picture, using the selected eraser shape.",
 		continuous: "space",
 		paint: function(ctx, x, y){
-			ctx.fillStyle = color2;
+			ctx.fillStyle = colors[1];
 			ctx.fillRect(x-4, y-4, 8, 8);
 		}
 	},{
@@ -116,12 +118,31 @@ app.open = function(){
 	},{
 		name: "Pick Color",
 		description: "Picks up a color from the picture for drawing.",
-		deselectable: true,
+		deselect: true,
 		passive: true,
+		
+		current_color: "",
+		display_current_color: function(){
+			//todo: display current color in tool options area
+			console.log(this.current_color);
+		},
+		paint: function(ctx, x, y){
+			var id = ctx.getImageData(x|0, y|0, 1, 1);
+			var r = id.data[0];
+			var g = id.data[1];
+			var b = id.data[2];
+			var a = id.data[3];
+			this.current_color = "rgba("+r+","+g+","+b+","+a/255+")";
+			this.display_current_color();
+		},
+		mouseup: function(){
+			colors[fill_color_i] = this.current_color;
+			$colorbox && $colorbox.update_colors();
+		}
 	},{
 		name: "Magnifier",
 		description: "Changes the magnification.",
-		deselectable: true,
+		deselect: true,
 		passive: true,
 	},{
 		name: "Pencil",
@@ -195,15 +216,12 @@ app.open = function(){
 		name: "Ellipse",
 		description: "Draws an ellipse with the selected fill style.",
 		shape: function(ctx, x, y, w, h){
-			var fill = ctx.fillStyle;
-			var stroke = ctx.strokeStyle;
-			
 			var r1 = Math.round;
 			var r2 = Math.round;
 			
 			var cx = x + w/2;
 			var cy = y + h/2;
-			ctx.fillStyle = stroke;
+			ctx.fillStyle = stroke_color;
 			for(var r=0; r<Math.PI*2; r+=0.01){
 				var rx = Math.cos(r) * w/2;
 				var ry = Math.sin(r) * h/2;
@@ -218,7 +236,7 @@ app.open = function(){
 				ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
 				ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
 			}
-			ctx.fillStyle = fill;
+			ctx.fillStyle = fill_color;
 			for(var r=0; r<Math.PI*2; r+=0.01){
 				var rx = Math.cos(r) * w/2;
 				var ry = Math.sin(r) * h/2;
@@ -244,13 +262,10 @@ app.open = function(){
 			var ix = x+radius;
 			var iy = y+radius;
 			
-			var fill = ctx.fillStyle;
-			var stroke = ctx.strokeStyle;
-			
 			var r1 = Math.round;
 			var r2 = Math.round;
 			
-			ctx.fillStyle = stroke;
+			ctx.fillStyle = stroke_color;
 			for(var r=0; r<Math.PI*2; r+=0.05){
 				var rx = Math.cos(r) * radius;
 				var ry = Math.sin(r) * radius;
@@ -265,7 +280,7 @@ app.open = function(){
 				ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
 				ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
 			}
-			ctx.fillStyle = fill;
+			ctx.fillStyle = fill_color;
 			for(var r=0; r<Math.PI*2; r+=0.05){
 				var rx = Math.cos(r) * radius;
 				var ry = Math.sin(r) * radius;
@@ -286,7 +301,7 @@ app.open = function(){
 	
 	var selected_tool = tools[6];
 	var previous_tool = selected_tool;
-	var color1, color2, color3;
+	var colors = [];
 	
 	var default_width = 683;
 	var default_height = 384;
@@ -329,10 +344,8 @@ app.open = function(){
 	}
 	
 	function reset_colors(){
-		color1 = "black";
-		color2 = "white";
-		color3 = "";
-		$colorbox.update_colors();
+		colors = ["black", "white", ""];
+		$colorbox && $colorbox.update_colors();
 	}
 	
 	function file_new(){
@@ -343,7 +356,7 @@ app.open = function(){
 		canvas.width = default_width;
 		canvas.height = default_height;
 		
-		ctx.fillStyle = color2;
+		ctx.fillStyle = colors[1];
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 	
@@ -533,7 +546,7 @@ app.open = function(){
 						if(undoable()){
 							canvas.width = Math.max(1, width);
 							canvas.height = Math.max(1, height);
-							ctx.fillStyle = color2;
+							ctx.fillStyle = colors[1];
 							ctx.fillRect(0,0,width,height);
 							
 							var previous_canvas = undos[undos.length-1];
@@ -678,19 +691,26 @@ app.open = function(){
 				ctx.drawImage(previous_canvas,0,0);
 			}
 			if(reverse ^ selected_tool.stroke_only){
-				ctx.fillStyle = color1;
-				ctx.strokeStyle = color2;
+				fill_color_i = 0;
+				stroke_color_i = 1;
 			}else{
-				ctx.fillStyle = color2;
-				ctx.strokeStyle = color1;
+				fill_color_i = 1;
+				stroke_color_i = 0;
 			}
+			ctx.fillStyle = fill_color = colors[fill_color_i];
+			ctx.strokeStyle = stroke_color = colors[stroke_color_i];
+			
 			selected_tool.shape(ctx, mouse_start.x, mouse_start.y, mouse.x-mouse_start.x, mouse.y-mouse_start.y);
+		}else{
+			ctx.fillStyle = fill_color = 
+			ctx.strokeStyle = stroke_color = 
+				colors[
+					fill_color_i =
+					stroke_color_i =
+						(ctrl && colors[2]) ? 2 :
+						(reverse ? 1 : 0)
+				];
 		}
-		
-		ctx.fillStyle = fill_color = 
-		ctx.strokeStyle = stroke_color = 
-			(ctrl&&color3) ? color3 :
-			reverse ? color2 : color1;
 		
 		if(selected_tool[event_name]){
 			selected_tool[event_name](ctx, mouse.x, mouse.y);
@@ -765,6 +785,9 @@ app.open = function(){
 			},10);
 		}
 		$(window).one("mouseup", function(e){
+			if(selected_tool.mouseup){
+				selected_tool.mouseup();
+			}
 			$(window).off("mousemove",canvas_mouse_move);
 			if(iid){
 				clearInterval(iid);
@@ -832,7 +855,7 @@ app.open = function(){
 			$b.on("click", function(){
 				$buttons.removeClass("selected");
 				
-				if(selected_tool === tool && tool.deselectable){
+				if(selected_tool === tool && tool.deselect){
 					$.each(tools, function(j, _tool){
 						if(_tool === previous_tool){
 							selected_tool = previous_tool;
@@ -840,7 +863,7 @@ app.open = function(){
 						}
 					});
 				}else{
-					if(!tool.deselectable){
+					if(!tool.deselect){
 						previous_tool = tool;
 					}
 					selected_tool = tool;
@@ -861,29 +884,29 @@ app.open = function(){
 		
 		$cb.append($current_colors, $palette);
 		
+		var $color0 = $("<div class='jspaint-color-selection'>");
 		var $color1 = $("<div class='jspaint-color-selection'>");
-		var $color2 = $("<div class='jspaint-color-selection'>");
-		$current_colors.append($color1, $color2);
+		$current_colors.append($color0, $color1);
 		
 		$current_colors.css({
 			position: "relative",
 		});
-		$color1.css({
+		$color0.css({
 			position: "absolute",
 			zIndex: 1,
 			left: 2,
 			top: 4,
 		});
-		$color2.css({
+		$color1.css({
 			position: "absolute",
 			right: 3,
 			bottom: 3,
 		});
 		
 		function update_colors(){
-			$current_colors.css({background:color3});
-			$color1.css({background:color1});
-			$color2.css({background:color2});
+			$current_colors.css({background:colors[2]});
+			$color0.css({background:colors[0]});
+			$color1.css({background:colors[1]});
 		}
 		
 		$.each(palette, function(i, color){
@@ -895,11 +918,11 @@ app.open = function(){
 			$b.on("mousedown", function(e){
 				e.preventDefault();
 				if(e.ctrlKey){
-					color3 = color;
+					colors[2] = color;
 				}else if(e.button === 0){
-					color1 = color;
+					colors[0] = color;
 				}else if(e.button === 2){
-					color2 = color;
+					colors[1] = color;
 				}
 				update_colors();
 			});
