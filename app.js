@@ -621,7 +621,7 @@ app.open = function(){
 					(mouse.y - mouse_start.y) * (mouse.y - mouse_start.y) +
 					(mouse.x - mouse_start.x) * (mouse.x - mouse_start.x)
 				);
-				var octurn = (TAU / 8)
+				var octurn = (TAU / 8);
 				var dir08 = Math.atan2(mouse.y - mouse_start.y, mouse.x - mouse_start.x) / octurn;
 				var dir = Math.round(dir08) * octurn;
 				mouse.x = Math.round(mouse_start.x + Math.cos(dir) * dist);
