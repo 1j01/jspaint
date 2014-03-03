@@ -182,3 +182,90 @@
 .jspaint-component-ghost:not(.dock):before {
 	outline-offset: 2px;
 }
+
+
+.jspaint-window {
+	background: #c0c0c0;
+	border-top: 1px solid #dfdfdf;
+	border-left: 1px solid #dfdfdf;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	padding: 2px;
+}
+.jspaint-window:after {
+	content: '';
+	pointer-events: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	border-top: 1px solid #fff;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #7b7b7b;
+	border-bottom: 1px solid #7b7b7b;
+}
+.jspaint-window > * {
+	margin: 1px;
+}
+.jspaint-window-titlebar {
+	background: #000080; /* fallback to standard color */
+	background: -moz-linear-gradient(left, #000080 0%, #1084d0 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%, #000080), color-stop(100%, #1084d0)); /* Chrome, Safari4+ */
+	background: -webkit-linear-gradient(left, #000080 0%, #1084d0 100%); /* Chrome10+, Safari5.1+ */
+	background: -o-linear-gradient(left, #000080 0%, #1084d0 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left, #000080 0%, #1084d0 100%); /* IE10+ */
+	background: linear-gradient(to right, #000080 0%, #1084d0 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000080', endColorstr='#1084d0', GradientType=1 ); /* IE6-9 */
+	
+	color: white;
+	font: menu;
+}
+.jspaint-window-title {
+	padding-left: 2px;
+}
+.jspaint-window-close-button {
+	padding: 0;
+	margin: 2px;
+	vertical-align: middle;
+	font-size: 12px;
+	background: #c0c0c0;
+	border-top: 1px solid #fff;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	position: relative;
+}
+.jspaint-window-close-button:after {
+	content: '';
+	pointer-events: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	border-top: 1px solid #dfdfdf;
+	border-left: 1px solid #dfdfdf;
+	border-right: 1px solid #808080;
+	border-bottom: 1px solid #808080;
+}
+.jspaint-window-close-button:hover:active {
+	border-top: 1px solid #000;
+	border-left: 1px solid #000;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+}
+.jspaint-window-close-button:hover:active:after {
+	border-top: 1px solid #808080;
+	border-left: 1px solid #808080;
+	border-right: 1px solid #dfdfdf;
+	border-bottom: 1px solid #dfdfdf;
+}
+.jspaint-window-close-button:before {
+	right: 0px;
+	top: -3px;
+}
+.jspaint-window-close-button:hover:active:before {
+	right: -1px;
+	top: -2px;
+}

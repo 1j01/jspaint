@@ -294,6 +294,46 @@ app.open = function(){
 		});
 	}
 	
+	function renderGIF(){
+		var $win = $Window();
+		$win.title("Rendering GIF");
+		var $output = $win.$content;
+		
+		if(typeof GIF === "undefined"){
+			$.getScript("gif.js/gif.js",go);
+			$output.text("Fetching GIF.js");
+		}else{
+			go();
+		}
+		function go(){
+			
+			var gif = new GIF({
+				workers: Math.floor(undos.length/50)+1,
+				workerScript: 'gif.js/gif.worker.js',
+				width: canvas.width,
+				height: canvas.height,
+			});
+			
+			gif.on('progress', function(p){
+				$output.text(~~(p*100)+'%');
+			});
+			
+			gif.on('finished', function(blob){
+				$win.title("Rendered GIF");
+				$output.empty().append(
+					$("<img>").attr("src", URL.createObjectURL(blob))
+				);
+			});
+			
+			for(var i=0; i<undos.length; i++){
+				gif.addFrame(undos[i], {delay: 200});
+			}
+			gif.addFrame(canvas, {delay: 200});
+			gif.render();
+
+		}
+	}
+	
 	function undoable(){
 		if(redos.length > 5){
 			if(confirm("Discard "+redos.length+" possible redo-able actions? \n(Ctrl+Y to redo)")){
@@ -473,6 +513,10 @@ app.open = function(){
 				break;
 				case "Y"://redo
 					redo();
+				break;
+				case "G"://redo
+					renderGIF();
+					e.preventDefault();
 				break;
 				case "A"://select all
 					//select_all();
@@ -829,6 +873,37 @@ app.open = function(){
 			update_handles();
 		});
 		return $c;
+	}
+	function $Window(){
+		var $w = $("<div class='jspaint-window'/>").appendTo("body");
+		$w.$titlebar = $("<div class='jspaint-window-titlebar'/>").appendTo($w);
+		$w.$title = $("<span class='jspaint-window-title'/>").appendTo($w.$titlebar);
+		$w.$x = $("<button class='jspaint-window-close-button'/>").appendTo($w.$titlebar);
+		$w.$content = $("<div class='jspaint-window-content'/>").appendTo($w);
+		
+		$w.$x.on("click", function(){
+			$w.close();
+		});
+		
+		$w.title = function(title){
+			if(title){
+				$w.$title.text(title);
+				return $w;
+			}else{
+				return $w.$title.text();
+			}
+		};
+		$w.close = function(){
+			$w.remove();
+		};
+		
+		$w.css({
+			position: "absolute",
+			right: 50,
+			top: 50
+		});
+		
+		return $w;
 	}
 };
 

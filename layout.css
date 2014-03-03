@@ -86,3 +86,21 @@ html, body, .jspaint {
 	width: 3px;
 	height: 3px;
 }
+
+
+.jspaint-window-title {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	cursor: default;
+}
+.jspaint-window-close-button {
+	display: inline-block;
+	float: right;
+	width: 13px;
+	height: 11px;
+}
+.jspaint-window-close-button:before {
+	content: '×';
+	position: relative;
+}
