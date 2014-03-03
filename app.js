@@ -294,7 +294,12 @@ app.open = function(){
 		});
 	}
 	
-	function renderGIF(){
+	function file_save(){
+		window.open(canvas.toDataURL());
+	}
+	
+	
+	function render_GIF(){
 		var $win = $Window();
 		$win.title("Rendering GIF");
 		var $output = $win.$content;
@@ -507,20 +512,28 @@ app.open = function(){
 		}else if(e.keyCode === 27){//F4
 			redo();
 		}else if(e.ctrlKey){
+			e.preventDefault();
 			switch(String.fromCharCode(e.keyCode).toUpperCase()){
-				case "Z"://undo (+shift=redo)
+				case "Z":
 					e.shiftKey ? redo() : undo();
 				break;
-				case "Y"://redo
+				case "Y":
 					redo();
 				break;
-				case "G"://redo
-					renderGIF();
-					e.preventDefault();
+				case "G":
+					render_GIF();
 				break;
-				case "A"://select all
+				case "O":
+					file_open();
+				break;
+				case "N":
+					file_new();
+				break;
+				case "S":
+					file_save();
+				break;
+				case "A":
 					//select_all();
-					e.preventDefault();
 				break;
 			}
 		}
