@@ -852,9 +852,6 @@ app.open = function(){
 			tool.$button = $b;
 			
 			$b.attr("title", tool.name);
-			if(tool === selected_tool){
-				$b.addClass("selected");
-			}
 			
 			var $icon = $("<span/>");
 			$icon.appendTo($b);
@@ -870,8 +867,6 @@ app.open = function(){
 			});
 			
 			$b.on("click", function(){
-				$buttons.removeClass("selected");
-				
 				if(selected_tool === tool && tool.deselect){
 					selected_tool = previous_tool;
 				}else{
@@ -880,13 +875,18 @@ app.open = function(){
 					}
 					selected_tool = tool;
 				}
-				
-				selected_tool.$button.addClass("selected");
+				$c.update_selected_tool();
 			});
 		});
-		$buttons = $tools.find(".jspaint-tool");
+		$buttons = $tools.find("button");
 		
-		return $Component("Tools", "tall", $tools.add($tool_options));
+		var $c = $Component("Tools", "tall", $tools.add($tool_options));
+		$c.update_selected_tool = function(){
+			$buttons.removeClass("selected");
+			selected_tool.$button.addClass("selected");
+		};
+		$c.update_selected_tool();
+		return $c;
 	}
 	function $ColorBox(){
 		var $cb = $("<div>").addClass("jspaint-color-box");
