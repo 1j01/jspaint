@@ -804,6 +804,10 @@ app.open = function(){
 			if(selected_tool.mouseup){
 				selected_tool.mouseup();
 			}
+			if(selected_tool.deselect){
+				selected_tool = previous_tool;
+				$toolbox && $toolbox.update_selected_tool();
+			}
 			$(window).off("mousemove",canvas_mouse_move);
 			if(iid){
 				clearInterval(iid);
