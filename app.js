@@ -719,11 +719,13 @@ app.open = function(){
 			ctx.fillStyle = fill_color = 
 			ctx.strokeStyle = stroke_color = 
 				colors[
-					fill_color_i =
-					stroke_color_i =
-						(ctrl && colors[2]) ? 2 :
-						(reverse ? 1 : 0)
+					(ctrl && colors[2]) ? 2 :
+					(reverse ? 1 : 0)
 				];
+			
+			fill_color_i =
+			stroke_color_i =
+				ctrl ? 2 : (reverse ? 1 : 0)
 		}
 		
 		if(selected_tool[event_name]){
@@ -871,19 +873,15 @@ app.open = function(){
 				$buttons.removeClass("selected");
 				
 				if(selected_tool === tool && tool.deselect){
-					$.each(tools, function(j, _tool){
-						if(_tool === previous_tool){
-							selected_tool = previous_tool;
-							previous_tool.$button.addClass("selected");
-						}
-					});
+					selected_tool = previous_tool;
 				}else{
 					if(!tool.deselect){
 						previous_tool = tool;
 					}
 					selected_tool = tool;
-					$b.addClass("selected");
 				}
+				
+				selected_tool.$button.addClass("selected");
 			});
 		});
 		$buttons = $tools.find(".jspaint-tool");
