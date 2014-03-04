@@ -16,6 +16,8 @@ app.open = function(){
 	var brush_ctx = brush_canvas.getContext("2d");
 	var brush_rendered_color;
 	
+	var $tool_options_area = $();
+	
 	var tools = [{
 		name: "Free-Form Select",
 		description: "Selects a free-form part of the picture to move, copy, or edit.",
@@ -123,16 +125,28 @@ app.open = function(){
 		
 		current_color: "",
 		display_current_color: function(){
-			//todo: display current color in tool options area
-			console.log(this.current_color);
+			$tool_options_area.css({
+				background: this.current_color
+			});
+		},
+		mousedown: function(){
+			$(window).one("mouseup",function(){
+				$tool_options_area.css({
+					background: ""
+				});
+			});
 		},
 		paint: function(ctx, x, y){
-			var id = ctx.getImageData(x|0, y|0, 1, 1);
-			var r = id.data[0];
-			var g = id.data[1];
-			var b = id.data[2];
-			var a = id.data[3];
-			this.current_color = "rgba("+r+","+g+","+b+","+a/255+")";
+			if(x >= 0 && y >= 0 && x < canvas.width && y < canvas.height){
+				var id = ctx.getImageData(x|0, y|0, 1, 1);
+				var r = id.data[0];
+				var g = id.data[1];
+				var b = id.data[2];
+				var a = id.data[3];
+				this.current_color = "rgba("+r+","+g+","+b+","+a/255+")";
+			}else{
+				this.current_color = "white";
+			}
 			this.display_current_color();
 		},
 		mouseup: function(){
@@ -827,6 +841,7 @@ app.open = function(){
 		var $tb = $("<div>").addClass("jspaint-tool-box");
 		var $tools = $("<div class='jspaint-tools'>");
 		var $tool_options = $("<div class='jspaint-tool-options'>");
+		$tool_options_area = $tool_options;
 		
 		var $buttons;
 		$.each(tools, function(i, tool){
