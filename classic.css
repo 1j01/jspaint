@@ -57,6 +57,46 @@
     background-image: url(images/scroll-down.png);
 }
 
+.jspaint-window-content button {
+	margin: 3px;
+	padding: 3px;
+	box-sizing: border-box;
+	border: 0;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	position: relative;
+	background: transparent;
+	outline: 0;
+}
+.jspaint-window-content button:before {
+	content: " ";
+	position: absolute;
+	z-index: 1;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	border-top: 1px solid white;
+	border-left: 1px solid white;
+	border-right: 1px solid #7b7b7b;
+	border-bottom: 1px solid #7b7b7b;
+}
+.jspaint-window-content button:hover:active,
+.jspaint-tool:hover:active,
+.jspaint-tool.selected {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
+}
+.jspaint-window-content button:hover:active:before,
+.jspaint-tool:hover:active:before,
+.jspaint-tool.selected:before {
+	border-top: 1px solid #7b7b7b;
+	border-left: 1px solid #7b7b7b;
+	border-right: 1px solid #bdbdbd;
+	border-bottom: 1px solid #bdbdbd;
+}
 
 .jspaint-tool-options {
 	border: 1px solid white;
@@ -89,20 +129,6 @@
 	border-left: 1px solid white;
 	border-right: 1px solid #7b7b7b;
 	border-bottom: 1px solid #7b7b7b;
-}
-.jspaint-tool.selected,
-.jspaint-tool:hover:active {
-	border-top: 1px solid black;
-	border-left: 1px solid black;
-	border-right: 1px solid white;
-	border-bottom: 1px solid white;
-}
-.jspaint-tool.selected:before,
-.jspaint-tool:hover:active:before {
-	border-top: 1px solid #7b7b7b;
-	border-left: 1px solid #7b7b7b;
-	border-right: 1px solid #bdbdbd;
-	border-bottom: 1px solid #bdbdbd;
 }
 .jspaint-tool:hover:active {
 	padding: 1px;

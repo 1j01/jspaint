@@ -350,8 +350,21 @@ app.open = function(){
 	
 	function are_you_sure(action){
 		if(undos.length || redos.length){
-			//@TODO: window within DOM
-			confirm("Are you sure? Of everything?") && action();
+			var $w = new $Window();
+			$w.title("Paint");
+			$w.$content.text("Save changes to untitled?");
+			$w.$Button("Save", function(){
+				$w.close();
+				file_save();
+				action();
+			});
+			$w.$Button("Discard", function(){
+				$w.close();
+				action();
+			});
+			$w.$Button("Cancel", function(){
+				$w.close();
+			});
 		}else{
 			action();
 		}
@@ -453,9 +466,16 @@ app.open = function(){
 	
 	function undoable(){
 		if(redos.length > 5){
-			if(confirm("Discard "+redos.length+" possible redo-able actions? \n(Ctrl+Y to redo)")){
+			var $w = new $Window();
+			$w.title("Paint");
+			$w.$content.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y to redo)<br>");
+			$w.$Button("Discard", function(){
+				$w.close();
 				redos = [];
-			}
+			});
+			$w.$Button("Keep", function(){
+				$w.close();
+			});
 			return false;
 		}else{
 			redos = [];
@@ -640,10 +660,10 @@ app.open = function(){
 					canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
 				break;
 				case "O":
-					file_open();
+					are_you_sure(file_open);
 				break;
 				case "N":
-					file_new();
+					are_you_sure(file_new);
 				break;
 				case "S":
 					file_save();
@@ -666,16 +686,34 @@ app.open = function(){
 				reader.onload = function(e){
 					var img = new Image();
 					img.onload = function(){
-						if(undoable()){
-							if(img.width > canvas.width || img.height > canvas.height){
-								//todo: don't use confirm
-								if(confirm("The image is bigger than the canvas. Would you like the canvas to be enlarged?")){
+						if(img.width > canvas.width || img.height > canvas.height){
+							var $w = new $Window();
+							$w.title("Paint");
+							$w.$content.html(
+								"The image is bigger than the canvas.<br>"
+								+"Would you like the canvas to be enlarged?<br>"
+							);
+							$w.$Button("Enlarge", function(){
+								//additional undo
+								if(undoable()){
+									//todo: non-destructive resize
 									canvas.width = img.width;
 									canvas.height = img.height;
+									paste_img();
 								}
-							}
+							});
+							$w.$Button("Crop", function(){
+								paste_img();
+							});
+							$w.$Button("Cancel", function(){});
+						}else{
+							paste_img();
+						}
+						function paste_img(){
 							//todo: make draggable selection object
-							ctx.drawImage(img,0,0);
+							if(undoable()){
+								ctx.drawImage(img,0,0);
+							}
 						}
 					};
 					img.src = e.target.result;
@@ -1068,6 +1106,16 @@ app.open = function(){
 			$w.close();
 		});
 		
+		$w.$Button = function(text, handler){
+			$w.$content.append(
+				$("<button>")
+					.text(text)
+					.on("click", function(){
+						handler();
+						$w.close();
+					})
+			);
+		};
 		$w.title = function(title){
 			if(title){
 				$w.$title.text(title);
