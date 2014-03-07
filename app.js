@@ -1043,28 +1043,30 @@ app.open = function(){
 			
 			$dock_to = null;
 			
-			var ghost = $ghost[0].getBoundingClientRect();
+			var ghost_rect = $ghost[0].getBoundingClientRect();
 			var q = 5;
 			if(orientation === "tall"){
 				pos_axis = "top";
-				if(ghost.left-q < $left[0].getBoundingClientRect().right){
+				if(ghost_rect.left-q < $left[0].getBoundingClientRect().right){
 					$dock_to = $left;
 				}
-				if(ghost.right+q > $right[0].getBoundingClientRect().left){
+				if(ghost_rect.right+q > $right[0].getBoundingClientRect().left){
 					$dock_to = $right;
 				}
 			}else{
 				pos_axis = "left";
-				if(ghost.top-q < $top[0].getBoundingClientRect().bottom){
+				if(ghost_rect.top-q < $top[0].getBoundingClientRect().bottom){
 					$dock_to = $top;
 				}
-				if(ghost.bottom+q > $bottom[0].getBoundingClientRect().top){
+				if(ghost_rect.bottom+q > $bottom[0].getBoundingClientRect().top){
 					$dock_to = $bottom;
 				}
 			}
-			pos = ghost[pos_axis];
+			pos = ghost_rect[pos_axis];
 			
 			if($dock_to){
+				var dock_to_rect = $dock_to[0].getBoundingClientRect();
+				pos -= dock_to_rect[pos_axis];
 				$ghost.addClass("dock");
 			}else{
 				$ghost.removeClass("dock");
