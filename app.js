@@ -344,9 +344,66 @@ app.open = function(){
 	var undos = [];
 	var redos = [];
 	
-	file_new();
+	reset();
 	
+	function reset(){
+		undos = [];
+		redos = [];
+		reset_colors();
+		
+		canvas.width = default_width;
+		canvas.height = default_height;
+		
+		ctx.fillStyle = colors[1];
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
 	
+	function reset_colors(){
+		colors = ["black", "white", ""];
+		$colorbox && $colorbox.update_colors();
+	}
+	
+	function file_new(){
+		are_you_sure(reset);
+	}
+	
+	function file_open(){
+		var $input = $("<input type=file>")
+		.appendTo("body")
+		.hide()
+		.click()
+		.on("change", function(){
+			$.each(this.files, function(i, file){
+				if(file.type.match(/image/)){
+					var reader = new FileReader();
+					reader.onload = function(e){
+						var img = new Image();
+						img.onload = function(){
+							are_you_sure(function(){
+								undos = [];
+								redos = [];
+								reset_colors();
+								
+								canvas.width = img.naturalWidth;
+								canvas.height = img.naturalHeight;
+								
+								ctx.clearRect(0, 0, canvas.width, canvas.height);
+								ctx.drawImage(img,0,0);
+							});
+						};
+						img.src = e.target.result;
+					};
+					reader.readAsDataURL(file);
+					return false;
+				}
+			});
+			$input.remove();
+		});
+	}
+	
+	function file_save(){
+		window.open(canvas.toDataURL());
+	}
 	
 	function are_you_sure(action){
 		if(undos.length || redos.length){
@@ -369,60 +426,6 @@ app.open = function(){
 			action();
 		}
 	}
-	
-	function reset_colors(){
-		colors = ["black", "white", ""];
-		$colorbox && $colorbox.update_colors();
-	}
-	
-	function file_new(){
-		undos = [];
-		redos = [];
-		reset_colors();
-		
-		canvas.width = default_width;
-		canvas.height = default_height;
-		
-		ctx.fillStyle = colors[1];
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-	}
-	
-	function file_open(){
-		var $input = $("<input type=file>")
-		.appendTo("body")
-		.hide()
-		.click()
-		.on("change", function(){
-			$.each(this.files, function(i, file){
-				if(file.type.match(/image/)){
-					var reader = new FileReader();
-					reader.onload = function(e){
-						var img = new Image();
-						img.onload = function(){
-							undos = [];
-							redos = [];
-							reset_colors();
-							
-							canvas.width = img.naturalWidth;
-							canvas.height = img.naturalHeight;
-							
-							ctx.clearRect(0, 0, canvas.width, canvas.height);
-							ctx.drawImage(img,0,0);
-						};
-						img.src = e.target.result;
-					};
-					reader.readAsDataURL(file);
-					return false;
-				}
-			});
-			$input.remove();
-		});
-	}
-	
-	function file_save(){
-		window.open(canvas.toDataURL());
-	}
-	
 	
 	function render_GIF(){
 		var $win = $Window();
@@ -660,10 +663,10 @@ app.open = function(){
 					canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
 				break;
 				case "O":
-					are_you_sure(file_open);
+					file_open();
 				break;
 				case "N":
-					are_you_sure(file_new);
+					file_new();
 				break;
 				case "S":
 					file_save();
