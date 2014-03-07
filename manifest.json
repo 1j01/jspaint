@@ -1,0 +1,37 @@
+{
+	"manifest_version": 2,
+	
+	"name": "Paint",
+	"description": "An MS Paint remake.",
+	"version": "0.1",
+	
+	"icons": {
+		"16": "images/icons/16.png",
+		"48": "images/icons/48.png",
+		"128": "images/icons/128.png"
+	},
+	
+	"app": {
+		"background": {
+			"scripts": ["chrome-app.js"]
+		}
+	},
+	
+	"permissions": [
+		"fullscreen"
+	],
+	"optional_permissions": [
+		"unlimited_storage",
+		"fileSystem",
+		"wallpaper"
+	],
+	
+	"file_handlers": {
+		"edit": {
+			"types": [
+				"image/*"
+			],
+			"title": "Paint"
+		}	
+	}
+}
