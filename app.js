@@ -21,15 +21,21 @@ app.open = function(){
 	var tools = [{
 		name: "Free-Form Select",
 		description: "Selects a free-form part of the picture to move, copy, or edit.",
+		cursor: ["precise", [16, 16], "crosshair"],
 		passive: true,
+		implemented: false,
 	},{
 		name: "Select",
 		description: "Selects a rectangular part of the picture to move, copy, or edit.",
+		cursor: ["precise", [16, 16], "crosshair"],
 		passive: true,
+		implemented: false,
 	},{
 		name: "Eraser/Color Eraser",
 		description: "Erases a portion of the picture, using the selected eraser shape.",
 		continuous: "space",
+		cursor: ["precise", [16, 16], "crosshair"],//todo: draw square on canvas
+		implemented: "partially",
 		paint: function(ctx, x, y){
 			ctx.fillStyle = colors[1];
 			ctx.fillRect(x-4, y-4, 8, 8);
@@ -37,6 +43,7 @@ app.open = function(){
 	},{
 		name: "Fill With Color",
 		description: "Fills an area with the selected drawing color.",
+		cursor: ["fill-bucket", [8, 22], "crosshair"],
 		mousedown: function(ctx, x, y){
 			var _c = document.createElement("canvas");
 			_c.width = _c.height = 1;
@@ -120,6 +127,7 @@ app.open = function(){
 	},{
 		name: "Pick Color",
 		description: "Picks up a color from the picture for drawing.",
+		cursor: ["eye-dropper", [9, 22], "crosshair"],
 		deselect: true,
 		passive: true,
 		
@@ -156,11 +164,14 @@ app.open = function(){
 	},{
 		name: "Magnifier",
 		description: "Changes the magnification.",
+		cursor: ["magnifier", [16, 16], "zoom-in"],//todo: use zoom-in/zoom-out
 		deselect: true,
 		passive: true,
+		implemented: false,
 	},{
 		name: "Pencil",
 		description: "Draws a free-form line one pixel wide.",
+		cursor: ["pencil", [13, 23], "crosshair"],
 		continuous: "space",
 		paint: function(ctx, x, y){
 			ctx.fillRect(x, y, 1, 1);
@@ -168,6 +179,7 @@ app.open = function(){
 	},{
 		name: "Brush",
 		description: "Draws using a brush with the selected shape and size.",
+		cursor: ["precise-dotted", [16, 16], "crosshair"],
 		continuous: "space",
 		paint: function(ctx, x, y){
 			var sz = 16;
@@ -188,6 +200,7 @@ app.open = function(){
 	},{
 		name: "Airbrush",
 		description: "Draws using an airbrush of the selected size.",
+		cursor: ["airbrush", [7, 22], "crosshair"],
 		continuous: "time",
 		paint: function(ctx, x, y){
 			var radius = 15;//@TODO: options
@@ -204,9 +217,12 @@ app.open = function(){
 	},{
 		name: "Text",
 		description: "Inserts text into the picture.",
+		cursor: ["precise", [16, 16], "crosshair"],
+		implemented: false,
 	},{
 		name: "Line",
 		description: "Draws a straight line with the selected line width.",
+		cursor: ["precise", [16, 16], "crosshair"],
 		stroke_only: true,
 		shape: function(ctx, x, y, w, h){
 			line(ctx, x, y, x+w, y+h);
@@ -214,9 +230,12 @@ app.open = function(){
 	},{
 		name: "Curve",
 		description: "Draws a curved line with the selected line width.",
+		cursor: ["precise", [16, 16], "crosshair"],
+		implemented: false,
 	},{
 		name: "Rectangle",
 		description: "Draws a rectangle with the selected fill style.",
+		cursor: ["precise", [16, 16], "crosshair"],
 		shape: function(ctx, x, y, w, h){
 			ctx.beginPath();
 			ctx.rect(x-0.5, y-0.5, w, h);
@@ -226,9 +245,12 @@ app.open = function(){
 	},{
 		name: "Polygon",
 		description: "Draws a polygon with the selected fill style.",
+		cursor: ["precise", [16, 16], "crosshair"],
+		implemented: false,
 	},{
 		name: "Ellipse",
 		description: "Draws an ellipse with the selected fill style.",
+		cursor: ["precise", [16, 16], "crosshair"],
 		shape: function(ctx, x, y, w, h){
 			var r1 = Math.round;
 			var r2 = Math.round;
@@ -265,6 +287,7 @@ app.open = function(){
 	},{
 		name: "Rounded Rectangle",
 		description: "Draws a rounded rectangle with the selected fill style.",
+		cursor: ["precise", [16, 16], "crosshair"],
 		shape: function(ctx, x, y, w, h){
 			if(w<0){ x+=w; w=-w; }
 			if(h<0){ y+=h; h=-h; }
@@ -553,6 +576,9 @@ app.open = function(){
 			}else if(resizes_height){
 				cursor = "ns-resize";
 			}
+			if(cursor){
+				cursor = "url(images/cursors/"+cursor+".png) 16 16, "+cursor;
+			}
 			$h.css({cursor:cursor});
 			
 			var mousemove = function(e){
@@ -573,10 +599,12 @@ app.open = function(){
 				if(e.button === 0){
 					$(window).on("mousemove", mousemove);
 					$("body").css({cursor:cursor});
+					$canvas.css({pointerEvents:"none"});
 				}
 				$(window).one("mouseup", function(e){
 					$(window).off("mousemove", mousemove);
 					$("body").css({cursor:"auto"});
+					$canvas.css({pointerEvents:""});
 					
 					$resize_ghost.remove();
 					if(dragged){
@@ -929,6 +957,11 @@ app.open = function(){
 		$c.update_selected_tool = function(){
 			$buttons.removeClass("selected");
 			selected_tool.$button.addClass("selected");
+			$canvas.css({
+				cursor: "url(images/cursors/" + selected_tool.cursor[0] + ".png) "
+					+ selected_tool.cursor[1].join(" ")
+					+ ", " + selected_tool.cursor[2]
+			});
 		};
 		$c.update_selected_tool();
 		return $c;
