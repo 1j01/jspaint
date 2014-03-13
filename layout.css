@@ -23,7 +23,11 @@ html, body, .jspaint {
 	flex-flow: column;
 	flex: 1;
 }
-
+.jspaint-canvas-resize-ghost,
+.jspaint-selection:not(.instantiated),
+.jspaint-component-ghost {
+	pointer-events: none;
+}
 
 .jspaint-Tools-component {
 	height: 273px;
@@ -78,6 +82,7 @@ html, body, .jspaint {
 .jspaint-canvas-area {
 	flex: 1;
 	display: block;
+	position: relative;
 	overflow: auto;
 	padding: 3px;
 }

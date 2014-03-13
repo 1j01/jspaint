@@ -30,6 +30,91 @@ app.open = function(){
 		cursor: ["precise", [16, 16], "crosshair"],
 		passive: true,
 		implemented: false,
+		mousedown: function(){
+			if(selection){
+				selection.destroy();
+			}
+			var s = selection = {
+				x: mouse.x,
+				y: mouse.y,
+				w: 1,
+				h: 1,
+				_x: mouse.x,
+				_y: mouse.y,
+				_w: 1,
+				_h: 1,
+				instantiate: function(){
+					selection.$ghost.addClass("instantiated").css({
+						cursor: Cursor(["move", [8, 8], "move"])
+					});
+					selection.canvas = document.createElement("canvas");
+					selection.canvas.width = selection._w;
+					selection.canvas.height = selection._h;
+					selection.ctx = selection.canvas.getContext("2d");
+					selection.ctx.drawImage(
+						canvas,
+						selection._x, selection._y,
+						selection._w, selection._h,
+						0, 0,
+						selection._w, selection._h
+					);
+				},
+				destroy: function(){
+					selection.$ghost.remove();
+					$handles.show();
+				},
+				crop: function(){
+					var c = selection.canvas;
+					if(selection.canvas && undoable()){
+						canvas.width = c.width;
+						canvas.height = c.height;
+						ctx.drawImage(c, 0, 0);
+					}
+				}
+			};
+			$handles.hide();
+			selection.$ghost = $("<div class='jspaint-selection'>").appendTo($canvas_area);
+			$canvas.one("mousedown", function(){
+				if(selection === s){
+					selection.destroy();
+					selection = null;
+				}
+			});
+		},
+		paint: function(){
+			if(!selection){return;}
+			selection.w = selection.x - mouse.x;
+			selection.h = selection.y - mouse.y;
+			var x1 = Math.max(0, Math.min(selection.x, mouse.x));
+			var y1 = Math.max(0, Math.min(selection.y, mouse.y));
+			var x2 = Math.min(canvas.width, Math.max(selection.x, mouse.x));
+			var y2 = Math.min(canvas.height, Math.max(selection.y, mouse.y));
+			selection._x = x1;
+			selection._y = y1;
+			selection._w = Math.max(1, x2 - x1);
+			selection._h = Math.max(1, y2 - y1);
+			selection.$ghost.css({
+				position: "absolute",
+				left: selection._x + 3,
+				top: selection._y + 3,
+				width: selection._w,
+				height: selection._h,
+			});
+		},
+		mouseup: function(){
+			if(!selection){return;}
+			
+			selection.instantiate();
+			if(ctrl){
+				selection.crop();
+				deselect();
+			}
+		},
+		cancel: function(){
+			if(!selection){return;}
+			selection.destroy();
+			selection = null;
+		},
 	},{
 		name: "Eraser/Color Eraser",
 		description: "Erases a portion of the picture, using the selected eraser shape.",
@@ -363,7 +448,7 @@ app.open = function(){
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
 	
-	
+	var selection;
 	var undos = [];
 	var redos = [];
 	
@@ -559,6 +644,12 @@ app.open = function(){
 		if(!selected_tool.passive) undo();
 		$(window).triggerHandler("mouseup", "cancel");
 	}
+	function deselect(){
+		if(selection){
+			selection.destroy();
+			selection = null;
+		}
+	}
 	
 	function invert(){
 		if(undoable()){
@@ -573,12 +664,12 @@ app.open = function(){
 	}
 	
 	
-	function $Handle(pos_y, pos_x){
+	function $Handle(y_axis, x_axis){
 		var $h = $("<div>").addClass("jspaint-handle");
 		$h.appendTo($canvas_area);
 		
-		var resizes_height = pos_x !== "left" && pos_y === "bottom";
-		var resizes_width = pos_x === "right" && pos_y !== "top";
+		var resizes_height = x_axis !== "left" && y_axis === "bottom";
+		var resizes_width = x_axis === "right" && y_axis !== "top";
 		var width = default_width;
 		var height = default_height;
 		var dragged = false;
@@ -594,7 +685,7 @@ app.open = function(){
 				cursor = "ns-resize";
 			}
 			if(cursor){
-				cursor = "url(images/cursors/"+cursor+".png) 16 16, "+cursor;
+				cursor = Cursor([cursor, [16, 16], cursor]);
 			}
 			$h.css({cursor:cursor});
 			
@@ -604,9 +695,9 @@ app.open = function(){
 				
 				var rect = canvas.getBoundingClientRect();
 				$resize_ghost.css({
-					position: "absolute",
-					left: rect.left,
-					top: rect.top,
+					position: "relative",
+					left: 0,
+					top: 0,
 					width: width = (resizes_width? (e.clientX - rect.left) : (rect.width)),
 					height: height = (resizes_height? (e.clientY - rect.top) : (rect.height)),
 				});
@@ -644,19 +735,19 @@ app.open = function(){
 		$h.on("update", function(){
 			var rect = canvas.getBoundingClientRect();
 			var hs = $h.width();
-			if(pos_x === "middle"){
-				$h.css({ left: rect.left + rect.width/2 - hs/2 });
-			}else if(pos_x === "left"){
-				$h.css({ left: rect.left - hs });
-			}else if(pos_x === "right"){
-				$h.css({ left: rect.right });
+			if(x_axis === "middle"){
+				$h.css({ left: (rect.width + hs) / 2 });
+			}else if(x_axis === "left"){
+				$h.css({ left: 0 });
+			}else if(x_axis === "right"){
+				$h.css({ left: rect.width + hs });
 			}
-			if(pos_y === "middle"){
-				$h.css({ top: rect.top + rect.height/2 - hs/2 });
-			}else if(pos_y === "top"){
-				$h.css({ top: rect.top - hs });
-			}else if(pos_y === "bottom"){
-				$h.css({ top: rect.bottom });
+			if(y_axis === "middle"){
+				$h.css({ top: (rect.height + hs) / 2 });
+			}else if(y_axis === "top"){
+				$h.css({ top: 0 });
+			}else if(y_axis === "bottom"){
+				$h.css({ top: rect.height + hs });
 			}
 		});
 	}
@@ -676,19 +767,19 @@ app.open = function(){
 	var update_handles = function(){
 		$handles.trigger("update");
 	};
-	$(window).on("resize",update_handles);
-	$canvas_area.on("scroll",update_handles);
-	setTimeout(update_handles,50);
+	$(window).on("resize", update_handles);
+	$canvas_area.on("scroll", update_handles);
+	setTimeout(update_handles, 50);
 	
 	
 	
 	$(window).on("keydown",function(e){
 		if(e.keyCode === 27){//Escape
-			//if(tool_active){
+			if(selection){
+				deselect();
+			}else{
 				cancel();
-			//}else{
-			//	deselect();
-			//}
+			}
 		}else if(e.keyCode === 27){//F4
 			redo();
 		}else if(e.ctrlKey){
@@ -777,16 +868,19 @@ app.open = function(){
 	
 	var mouse, mouse_start, mouse_previous;
 	var reverse, ctrl, button;
-	var e2c = function(e){
+	function c2e(canvas_pos){
 		var rect = canvas.getBoundingClientRect();
-		var cx = e.clientX - rect.left;
-		var cy = e.clientY - rect.top;
+		var x = (canvas_pos.x / canvas.width * rect.width);
+		var y = (canvas_pos.y / canvas.height * rect.height);
 		return {
-			x: (cx / rect.width * canvas.width)|0,
-			y: (cy / rect.height * canvas.height)|0,
+			clientX: x + rect.left,
+			clientY: y + rect.top,
+			offsetX: x,
+			offsetY: y,
 		};
-	};
-	var tool_go = function(event_name){
+	}
+	
+	function tool_go(event_name){
 		if(selected_tool.shape){
 			var previous_canvas = undos[undos.length-1];
 			if(previous_canvas){
@@ -829,8 +923,8 @@ app.open = function(){
 				selected_tool.paint(ctx, mouse.x, mouse.y);
 			}
 		}
-	};
-	var canvas_mouse_move = function(e){
+	}
+	function canvas_mouse_move(e){
 		ctrl = e.ctrlKey;
 		mouse = e2c(e);
 		if(e.shiftKey){
@@ -864,7 +958,7 @@ app.open = function(){
 		}
 		tool_go();
 		mouse_previous = mouse;
-	};
+	}
 	$canvas.on("mousedown", function(e){
 		if(e.button === 0){
 			reverse = false;
@@ -897,6 +991,9 @@ app.open = function(){
 			button = undefined;
 			if(selected_tool.mouseup && !canceling){
 				selected_tool.mouseup();
+			}
+			if(selected_tool.cancel && canceling){
+				selected_tool.cancel();
 			}
 			if(selected_tool.deselect){
 				selected_tool = previous_tool;
@@ -983,9 +1080,7 @@ app.open = function(){
 			$buttons.removeClass("selected");
 			selected_tool.$button.addClass("selected");
 			$canvas.css({
-				cursor: "url(images/cursors/" + selected_tool.cursor[0] + ".png) "
-					+ selected_tool.cursor[1].join(" ")
-					+ ", " + selected_tool.cursor[2]
+				cursor: Cursor(selected_tool.cursor)
 			});
 		};
 		$c.update_selected_tool();
@@ -1198,6 +1293,11 @@ app.open = function(){
 		});
 		
 		return $w;
+	}
+	function Cursor(cursor_def){
+		return "url(images/cursors/" + cursor_def[0] + ".png) "
+			+ cursor_def[1].join(" ")
+			+ ", " + cursor_def[2]
 	}
 };
 

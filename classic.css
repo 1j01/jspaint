@@ -7,6 +7,10 @@
 	background: #7b7b7b;
 	border: 1px inset;
 }
+.jspaint-selection {
+	box-sizing: border-box;
+	border: 1px dashed black;
+}
 .jspaint-handle {
 	background: #000080;
 }
