@@ -171,8 +171,6 @@
 	border-bottom: 1px solid #BBBBBB;
 	position: relative;
 	box-shadow: 1px 1px 0px black inset;
-	
-	position: relative;
 }
 .jspaint-current-colors:after,
 .jspaint-color-button:after {
