@@ -556,8 +556,8 @@ app.open = function(){
 		return true;
 	}
 	function cancel(){
-		$(window).triggerHandler("mouseup");
-		undo();
+		if(!selected_tool.passive) undo();
+		$(window).triggerHandler("mouseup", "cancel");
 	}
 	
 	function invert(){
@@ -893,9 +893,9 @@ app.open = function(){
 				tool_go();
 			},10);
 		}
-		$(window).one("mouseup", function(e){
+		$(window).one("mouseup", function(e, canceling){
 			button = undefined;
-			if(selected_tool.mouseup){
+			if(selected_tool.mouseup && !canceling){
 				selected_tool.mouseup();
 			}
 			if(selected_tool.deselect){
