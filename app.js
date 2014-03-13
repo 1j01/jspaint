@@ -484,7 +484,7 @@ app.open = function(){
 			for(var i=0; i<undos.length; i++){
 				gif.addFrame(undos[i], {delay: 200});
 			}
-			gif.addFrame(canvas, {delay: 200});
+			gif.addFrame(canvas, {delay: 200, copy: true});
 			gif.render();
 
 		}
