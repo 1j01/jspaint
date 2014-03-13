@@ -556,6 +556,19 @@ app.open = function(){
 		return true;
 	}
 	
+	function invert(){
+		if(undoable()){
+			var id = ctx.getImageData(0,0,canvas.width,canvas.height);
+			for(var i=0; i<id.data.length; i+=4){
+				id.data[i+0] = 255 - id.data[i+0];
+				id.data[i+1] = 255 - id.data[i+1];
+				id.data[i+2] = 255 - id.data[i+2];
+			}
+			ctx.putImageData(id,0,0);
+		}
+	}
+	
+	
 	function $Handle(pos_y, pos_x){
 		var $h = $("<div>").addClass("jspaint-handle");
 		$h.appendTo($canvas_area);
@@ -701,6 +714,9 @@ app.open = function(){
 				break;
 				case "A":
 					//select_all();
+				break;
+				case "I":
+					invert();
 				break;
 				default: return true;
 			}
