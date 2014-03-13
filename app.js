@@ -555,6 +555,9 @@ app.open = function(){
 		
 		return true;
 	}
+	function cancel(){
+		undo();
+	}
 	
 	function invert(){
 		if(undoable()){
@@ -681,7 +684,7 @@ app.open = function(){
 	$(window).on("keydown",function(e){
 		if(e.keyCode === 27){//Escape
 			//if(tool_active){
-			//	cancel();
+				cancel();
 			//}else{
 			//	deselect();
 			//}
@@ -772,7 +775,7 @@ app.open = function(){
 	});
 	
 	var mouse, mouse_start, mouse_previous;
-	var reverse, ctrl;
+	var reverse, ctrl, button;
 	var e2c = function(e){
 		var rect = canvas.getBoundingClientRect();
 		var cx = e.clientX - rect.left;
@@ -869,6 +872,12 @@ app.open = function(){
 		}else{
 			return false;
 		}
+		if(reverse ? (button === 0) : (button === 2)){
+			$(window).triggerHandler("mouseup");
+			cancel();
+			return;
+		}
+		button = e.button;
 		ctrl = e.ctrlKey;
 		mouse_start = mouse_previous = mouse = e2c(e);
 		
@@ -886,6 +895,7 @@ app.open = function(){
 			},10);
 		}
 		$(window).one("mouseup", function(e){
+			button = undefined;
 			if(selected_tool.mouseup){
 				selected_tool.mouseup();
 			}
