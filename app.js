@@ -868,15 +868,13 @@ app.open = function(){
 	
 	var mouse, mouse_start, mouse_previous;
 	var reverse, ctrl, button;
-	function c2e(canvas_pos){
+	function e2c(e){
 		var rect = canvas.getBoundingClientRect();
-		var x = (canvas_pos.x / canvas.width * rect.width);
-		var y = (canvas_pos.y / canvas.height * rect.height);
+		var cx = e.clientX - rect.left;
+		var cy = e.clientY - rect.top;
 		return {
-			clientX: x + rect.left,
-			clientY: y + rect.top,
-			offsetX: x,
-			offsetY: y,
+			x: (cx / rect.width * canvas.width)|0,
+			y: (cy / rect.height * canvas.height)|0,
 		};
 	}
 	
