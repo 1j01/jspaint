@@ -556,6 +556,7 @@ app.open = function(){
 		return true;
 	}
 	function cancel(){
+		$(window).triggerHandler("mouseup");
 		undo();
 	}
 	
@@ -873,9 +874,7 @@ app.open = function(){
 			return false;
 		}
 		if(reverse ? (button === 0) : (button === 2)){
-			$(window).triggerHandler("mouseup");
-			cancel();
-			return;
+			return cancel();
 		}
 		button = e.button;
 		ctrl = e.ctrlKey;
