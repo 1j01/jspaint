@@ -1,0 +1,23 @@
+
+html, body, .jspaint {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+}
+
+.jspaint-canvas-area,
+.jspaint-canvas-area canvas {
+	position: fixed;
+	left: 0;
+	top: 0;
+	max-width: 100%;
+}
+
+.jspaint-window,
+.jspaint-handle,
+c-area {
+	display: none !important;
+}
