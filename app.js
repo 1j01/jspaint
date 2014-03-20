@@ -496,6 +496,8 @@ app.open = function(){
 	var undos = [];
 	var redos = [];
 	
+	var file_name;
+	
 	reset();
 	
 	function reset(){
@@ -503,11 +505,18 @@ app.open = function(){
 		redos = [];
 		reset_colors();
 		
+		file_name = "untitled";
+		update_title();
+		
 		canvas.width = default_width;
 		canvas.height = default_height;
 		
 		ctx.fillStyle = colors[1];
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	
+	function update_title(){
+		document.title = file_name + " - Paint";
 	}
 	
 	function reset_colors(){
@@ -535,6 +544,9 @@ app.open = function(){
 								undos = [];
 								redos = [];
 								reset_colors();
+								
+								file_name = file.name;
+								update_title();
 								
 								canvas.width = img.naturalWidth;
 								canvas.height = img.naturalHeight;
