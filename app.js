@@ -34,6 +34,15 @@ app.open = function(){
 			if(selection){
 				selection.destroy();
 			}
+			var mouse_has_moved = false;
+			$(window).one("mousemove", function(){
+				mouse_has_moved = true;
+			});
+			$(window).one("mouseup", function(){
+				if(!mouse_has_moved){
+					selection && selection.destroy();
+				}
+			});
 			var s = selection = {
 				x: mouse.x,
 				y: mouse.y,
@@ -58,6 +67,41 @@ app.open = function(){
 						0, 0,
 						selection._w, selection._h
 					);
+					
+					// cut the selection from the canvas
+					//@TODO: transparency
+					//ctx.globalCompositeOperation = "destination-out";
+					//ctx.drawImage()...
+					ctx.fillStyle = colors[1];
+					ctx.fillRect(
+						selection._x, selection._y,
+						selection._w, selection._h
+					);
+					
+					
+					var mox, moy;
+					var mousemove = function(e){
+						var m = e2c(e);
+						selection._x = Math.max(Math.min(m.x - mox, canvas.width), -selection._w);
+						selection._y = Math.max(Math.min(m.y - moy, canvas.height), -selection._h);
+						//@TODO: DRY
+						selection.$ghost.css({
+							position: "absolute",
+							left: selection._x + 3,
+							top: selection._y + 3,
+							width: selection._w,
+							height: selection._h,
+						});
+					};
+					selection.$ghost.on("mousedown", function(e){
+						e.preventDefault();
+						mox = e.offsetX;
+						moy = e.offsetY;
+						$(window).on("mousemove", mousemove);
+						$(window).one("mouseup", function(){
+							$(window).off("mousemove", mousemove);
+						});
+					});
 				},
 				destroy: function(){
 					selection.$ghost.remove();
