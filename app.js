@@ -1,6 +1,6 @@
 
 var app = {};
-var TAU = 2 * Math.PI;
+var TAU /*C/r*/ = /*C/d*/Math.PI + /*C/d*/Math.PI;
 
 app.open = function(){
 	
@@ -343,7 +343,7 @@ app.open = function(){
 			var cx = x + w/2;
 			var cy = y + h/2;
 			ctx.fillStyle = stroke_color;
-			for(var r=0; r<Math.PI*2; r+=0.01){
+			for(var r=0; r<TAU; r+=0.01){
 				var rx = Math.cos(r) * w/2;
 				var ry = Math.sin(r) * h/2;
 				
@@ -358,7 +358,7 @@ app.open = function(){
 				ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
 			}
 			ctx.fillStyle = fill_color;
-			for(var r=0; r<Math.PI*2; r+=0.01){
+			for(var r=0; r<TAU; r+=0.01){
 				var rx = Math.cos(r) * w/2;
 				var ry = Math.sin(r) * h/2;
 				ctx.fillRect(
@@ -388,7 +388,7 @@ app.open = function(){
 			var r2 = Math.round;
 			
 			ctx.fillStyle = stroke_color;
-			for(var r=0; r<Math.PI*2; r+=0.05){
+			for(var r=0; r<TAU; r+=0.05){
 				var rx = Math.cos(r) * radius;
 				var ry = Math.sin(r) * radius;
 				
@@ -403,7 +403,7 @@ app.open = function(){
 				ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
 			}
 			ctx.fillStyle = fill_color;
-			for(var r=0; r<Math.PI*2; r+=0.05){
+			for(var r=0; r<TAU; r+=0.05){
 				var rx = Math.cos(r) * radius;
 				var ry = Math.sin(r) * radius;
 				ctx.fillRect(
