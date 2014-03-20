@@ -1,6 +1,26 @@
 
 var app = {};
-var TAU /*C/r*/ = /*C/d*/Math.PI + /*C/d*/Math.PI;
+var TAU =     //////|//////
+          /////     |     /////
+       ///         tau         ///     Tau is the circumference divided by the radius.
+     ///     ...--> | <--...     ///
+   ///     -'   one | turn  '-     ///    One whole turn in radians.
+  //     .'         |         '.     //
+ //     /           |           \     //
+//     |            | <-..       |     //
+//    |          .->|     \       |    //
+//    |         /   |      |      |    //    Pi is half a turn, as shown in this diagram.
+- - - - - - Math.PI + Math.PI - - - - - 0
+//    |         \   |      |      |    //
+//    |          '->|     /       |    //
+//     |            | <-''       |     //
+ //     \           |           /     //
+  //     '.         |         .'     //
+   ///     -.       |       .-     ///
+     ///     '''----|----'''     ///
+       ///          |          ///
+         //////     |     /////
+              //////|//////
 
 app.open = function(){
 	
