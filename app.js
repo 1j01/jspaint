@@ -63,81 +63,7 @@ app.open = function(){
 					selection && selection.destroy();
 				}
 			});
-			var s = selection = {
-				x: mouse.x,
-				y: mouse.y,
-				w: 1,
-				h: 1,
-				_x: mouse.x,
-				_y: mouse.y,
-				_w: 1,
-				_h: 1,
-				instantiate: function(){
-					selection.$ghost.addClass("instantiated").css({
-						cursor: Cursor(["move", [8, 8], "move"])
-					});
-					selection.canvas = document.createElement("canvas");
-					selection.canvas.width = selection._w;
-					selection.canvas.height = selection._h;
-					selection.ctx = selection.canvas.getContext("2d");
-					selection.ctx.drawImage(
-						canvas,
-						selection._x, selection._y,
-						selection._w, selection._h,
-						0, 0,
-						selection._w, selection._h
-					);
-					
-					// cut the selection from the canvas
-					//@TODO: transparency
-					//ctx.globalCompositeOperation = "destination-out";
-					//ctx.drawImage()...
-					ctx.fillStyle = colors[1];
-					ctx.fillRect(
-						selection._x, selection._y,
-						selection._w, selection._h
-					);
-					
-					
-					var mox, moy;
-					var mousemove = function(e){
-						var m = e2c(e);
-						selection._x = Math.max(Math.min(m.x - mox, canvas.width), -selection._w);
-						selection._y = Math.max(Math.min(m.y - moy, canvas.height), -selection._h);
-						//@TODO: DRY
-						selection.$ghost.css({
-							position: "absolute",
-							left: selection._x + 3,
-							top: selection._y + 3,
-							width: selection._w,
-							height: selection._h,
-						});
-					};
-					selection.$ghost.on("mousedown", function(e){
-						e.preventDefault();
-						mox = e.offsetX;
-						moy = e.offsetY;
-						$(window).on("mousemove", mousemove);
-						$(window).one("mouseup", function(){
-							$(window).off("mousemove", mousemove);
-						});
-					});
-				},
-				destroy: function(){
-					selection.$ghost.remove();
-					$handles.show();
-				},
-				crop: function(){
-					var c = selection.canvas;
-					if(selection.canvas && undoable()){
-						canvas.width = c.width;
-						canvas.height = c.height;
-						ctx.drawImage(c, 0, 0);
-					}
-				}
-			};
-			$handles.hide();
-			selection.$ghost = $("<div class='jspaint-selection'>").appendTo($canvas_area);
+			var s = selection = new Selection(mouse.x, mouse.y, 1, 1);
 			$canvas.one("mousedown", function(){
 				if(selection === s){
 					selection.destroy();
@@ -485,6 +411,97 @@ app.open = function(){
 		"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
 	];
 	
+	function Selection(x, y, w, h){
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		this._x = x;
+		this._y = y;
+		this._w = w;
+		this._h = h;
+		
+		this.$ghost = $("<div class='jspaint-selection'>").appendTo($canvas_area);
+		$canvas_handles.hide();
+	}
+	Selection.prototype.instantiate = function(_img){
+		var sel = this;
+		
+		sel.$ghost.addClass("instantiated").css({
+			cursor: Cursor(["move", [8, 8], "move"])
+		});
+		sel.position();
+		
+		if(!undoable()){
+			sel.destroy();
+			return;
+		}
+		
+		if(_img){
+			sel.canvas = _img;
+			sel.canvas.width = sel._w;
+			sel.canvas.height = sel._h;
+		}else{
+			sel.canvas = document.createElement("canvas");
+			sel.canvas.width = sel._w;
+			sel.canvas.height = sel._h;
+			sel.ctx = sel.canvas.getContext("2d");
+			sel.ctx.drawImage(
+				canvas,
+				sel._x, sel._y,
+				sel._w, sel._h,
+				0, 0,
+				sel._w, sel._h
+			);
+			// cut the selection from the canvas
+			//@TODO: transparency
+			//ctx.globalCompositeOperation = "destination-out";
+			//ctx.drawImage()...
+			ctx.fillStyle = colors[1];
+			ctx.fillRect(
+				sel._x, sel._y,
+				sel._w, sel._h
+			);
+		}
+		
+		var mox, moy;
+		var mousemove = function(e){
+			var m = e2c(e);
+			sel._x = Math.max(Math.min(m.x - mox, canvas.width), -sel._w);
+			sel._y = Math.max(Math.min(m.y - moy, canvas.height), -sel._h);
+			sel.position();
+		};
+		sel.$ghost.on("mousedown", function(e){
+			e.preventDefault();
+			mox = e.offsetX;
+			moy = e.offsetY;
+			$(window).on("mousemove", mousemove);
+			$(window).one("mouseup", function(){
+				$(window).off("mousemove", mousemove);
+			});
+		});
+	};
+	Selection.prototype.position = function(){
+		this.$ghost.css({
+			position: "absolute",
+			left: this._x + 3,
+			top: this._y + 3,
+			width: this._w,
+			height: this._h,
+		});
+	};
+	Selection.prototype.destroy = function(){
+		this.$ghost.remove();
+		$canvas_handles.show();
+	};
+	Selection.prototype.crop = function(){
+		if(this.canvas && undoable()){
+			canvas.width = this.canvas.width;
+			canvas.height = this.canvas.height;
+			ctx.drawImage(this.canvas, 0, 0);
+		}
+	}
+	
 	var selected_tool = tools[6];
 	var previous_tool = selected_tool;
 	var colors = [];
@@ -693,7 +710,7 @@ app.open = function(){
 		canvas.width = c.width;
 		canvas.height = c.height;
 		ctx.drawImage(c,0,0);
-		$handles.trigger("update");
+		$canvas_handles.trigger("update");
 		
 		return true;
 	}
@@ -712,7 +729,7 @@ app.open = function(){
 		canvas.width = c.width;
 		canvas.height = c.height;
 		ctx.drawImage(c,0,0);
-		$handles.trigger("update");
+		$canvas_handles.trigger("update");
 		
 		return true;
 	}
@@ -804,7 +821,7 @@ app.open = function(){
 							}
 						}
 					}
-					$handles.trigger("update");
+					$canvas_handles.trigger("update");
 				});
 			});
 		}
@@ -839,9 +856,9 @@ app.open = function(){
 	],function(i,pos){
 		$Handle(pos[0], pos[1]);
 	});
-	var $handles = $(".jspaint-handle");
+	var $canvas_handles = $(".jspaint-handle");
 	var update_handles = function(){
-		$handles.trigger("update");
+		$canvas_handles.trigger("update");
 	};
 	$(window).on("resize", update_handles);
 	$canvas_area.on("scroll", update_handles);
@@ -929,9 +946,11 @@ app.open = function(){
 						}
 						function paste_img(){
 							//todo: make draggable selection object
-							if(undoable()){
-								ctx.drawImage(img,0,0);
+							if(selection){
+								selection.destroy();
 							}
+							selection = new Selection(0, 0, img.width, img.height);
+							selection.instantiate(img);
 						}
 					};
 					img.src = e.target.result;
