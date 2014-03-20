@@ -535,7 +535,7 @@ app.open = function(){
 		}
 	}
 	
-	function render_GIF(){
+	function render_history_as_gif(){
 		var $win = $Window();
 		$win.title("Rendering GIF");
 		var $output = $win.$content;
@@ -791,7 +791,7 @@ app.open = function(){
 					redo();
 				break;
 				case "G":
-					render_GIF();
+					render_history_as_gif();
 				break;
 				case "F":
 					//show image fullscreen
