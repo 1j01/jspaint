@@ -109,7 +109,7 @@ app.open = function(){
 		name: "Eraser/Color Eraser",
 		description: "Erases a portion of the picture, using the selected eraser shape.",
 		continuous: "space",
-		cursor: ["precise", [16, 16], "crosshair"],//todo: draw square on canvas
+		cursor: ["precise", [16, 16], "crosshair"],//@todo: draw square on canvas
 		implemented: "partially",
 		paint: function(ctx, x, y){
 			ctx.fillStyle = colors[1];
@@ -239,7 +239,7 @@ app.open = function(){
 	},{
 		name: "Magnifier",
 		description: "Changes the magnification.",
-		cursor: ["magnifier", [16, 16], "zoom-in"],//todo: use zoom-in/zoom-out
+		cursor: ["magnifier", [16, 16], "zoom-in"],//@todo: use zoom-in/zoom-out
 		deselect: true,
 		passive: true,
 		implemented: false,
@@ -278,7 +278,7 @@ app.open = function(){
 		cursor: ["airbrush", [7, 22], "crosshair"],
 		continuous: "time",
 		paint: function(ctx, x, y){
-			var radius = 15;//@TODO: options
+			var radius = 15;//@todo: options
 			var sqr = radius * radius;
 			for(var i=0; i<100; i++){
 				var rx = (Math.random()*2-1)*radius;
@@ -463,6 +463,7 @@ app.open = function(){
 				sel._w, sel._h
 			);
 		}
+		sel.$ghost.append(sel.canvas);
 		
 		var mox, moy;
 		var mousemove = function(e){
@@ -470,6 +471,10 @@ app.open = function(){
 			sel._x = Math.max(Math.min(m.x - mox, canvas.width), -sel._w);
 			sel._y = Math.max(Math.min(m.y - moy, canvas.height), -sel._h);
 			sel.position();
+			
+			if(e.shiftKey){
+				ctx.drawImage(sel.canvas, sel._x, sel._y);
+			}
 		};
 		sel.$ghost.on("mousedown", function(e){
 			e.preventDefault();
@@ -491,6 +496,10 @@ app.open = function(){
 		});
 	};
 	Selection.prototype.destroy = function(){
+		if(this.canvas){
+			try{ctx.drawImage(this.canvas, this._x, this._y);}catch(e){}
+		}
+		
 		this.$ghost.remove();
 		$canvas_handles.show();
 	};
@@ -912,53 +921,67 @@ app.open = function(){
 			return false;
 		}
 	});
-	$(window).on("paste", function(e){
-		var items = e.originalEvent.clipboardData.items;
-		$.each(items, function(i, item){
-			if(item.type.match(/image/)){
-				var blob = item.getAsFile();
-				var reader = new FileReader();
-				reader.onload = function(e){
-					var img = new Image();
-					img.onload = function(){
-						if(img.width > canvas.width || img.height > canvas.height){
-							var $w = new $Window();
-							$w.title("Paint");
-							$w.$content.html(
-								"The image is bigger than the canvas.<br>"
-								+"Would you like the canvas to be enlarged?<br>"
-							);
-							$w.$Button("Enlarge", function(){
-								//additional undo
-								if(undoable()){
-									//todo: non-destructive resize
-									canvas.width = img.width;
-									canvas.height = img.height;
-									paste_img();
-								}
-							});
-							$w.$Button("Crop", function(){
-								paste_img();
-							});
-							$w.$Button("Cancel", function(){});
-						}else{
-							paste_img();
-						}
-						function paste_img(){
-							//todo: make draggable selection object
-							if(selection){
-								selection.destroy();
-							}
-							selection = new Selection(0, 0, img.width, img.height);
-							selection.instantiate(img);
-						}
-					};
-					img.src = e.target.result;
-				};
-				reader.readAsDataURL(blob);
-				return false;
+	$(window).on("cut copy paste", function(e){
+		e.preventDefault();
+		var cd = e.originalEvent.clipboardData || window.clipboardData;
+		if(!cd){ return console.log("No clipboardData"); }
+		
+		if(e.type === "copy" || e.type === "cut"){
+			if(selection && selection.canvas){
+				var data = selection.canvas.toDataURL("image/png");
+				cd.setData("URL", data);
+				cd.setData("image/png", data);
+				if(e.type === "cut"){
+					selection.destroy();
+					selection = null;
+				}
 			}
-		});
+		}else if(e.type === "paste"){
+			$.each(cd.items, function(i, item){
+				if(item.type.match(/image/)){
+					var blob = item.getAsFile();
+					var reader = new FileReader();
+					reader.onload = function(e){
+						var img = new Image();
+						img.onload = function(){
+							if(img.width > canvas.width || img.height > canvas.height){
+								var $w = new $Window();
+								$w.title("Paint");
+								$w.$content.html(
+									"The image is bigger than the canvas.<br>"
+									+"Would you like the canvas to be enlarged?<br>"
+								);
+								$w.$Button("Enlarge", function(){
+									//additional undo
+									if(undoable()){
+										//@todo: non-destructive resize
+										canvas.width = img.width;
+										canvas.height = img.height;
+										paste_img();
+									}
+								});
+								$w.$Button("Crop", function(){
+									paste_img();
+								});
+								$w.$Button("Cancel", function(){});
+							}else{
+								paste_img();
+							}
+							function paste_img(){
+								if(selection){
+									selection.destroy();
+								}
+								selection = new Selection(0, 0, img.width, img.height);
+								selection.instantiate(img);
+							}
+						};
+						img.src = e.target.result;
+					};
+					reader.readAsDataURL(blob);
+					return false;
+				}
+			});
+		}
 	});
 	
 	var mouse, mouse_start, mouse_previous;
