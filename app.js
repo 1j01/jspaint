@@ -663,8 +663,13 @@ app.open = function(){
 			
 			gif.on('finished', function(blob){
 				$win.title("Rendered GIF");
+				var url = URL.createObjectURL(blob);
 				$output.empty().append(
-					$("<img>").attr("src", URL.createObjectURL(blob))
+					$("<a>").attr({href: url, target: "_blank"}).append(
+						$("<img>").attr({src: url})
+					).on("click", function(e){
+						$win.close();
+					})
 				);
 			});
 			
