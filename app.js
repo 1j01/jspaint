@@ -49,7 +49,7 @@ app.open = function(){
 		description: "Selects a rectangular part of the picture to move, copy, or edit.",
 		cursor: ["precise", [16, 16], "crosshair"],
 		passive: true,
-		implemented: false,
+		implemented: "kinda",
 		mousedown: function(){
 			if(selection){
 				selection.destroy();
@@ -538,9 +538,10 @@ app.open = function(){
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
 	
-	var selection;
-	var undos = [];
-	var redos = [];
+	var selection;//the one and only Selection
+	var undos = [];//array of <canvas>
+	var redos = [];//array of <canvas>
+	var frames = [];//array of {speed:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
 	
 	var file_name;
 	
@@ -651,7 +652,7 @@ app.open = function(){
 		function go(){
 			
 			var gif = new GIF({
-				workers: Math.floor(undos.length/50)+1,
+				workers: Math.min(5, Math.floor(undos.length/50)+1),
 				workerScript: 'gif.js/gif.worker.js',
 				width: canvas.width,
 				height: canvas.height,
