@@ -83,13 +83,7 @@ app.open = function(){
 			selection._y = y1;
 			selection._w = Math.max(1, x2 - x1);
 			selection._h = Math.max(1, y2 - y1);
-			selection.$ghost.css({
-				position: "absolute",
-				left: selection._x + 3,
-				top: selection._y + 3,
-				width: selection._w,
-				height: selection._h,
-			});
+			selection.position();
 		},
 		mouseup: function(){
 			if(!selection){return;}
@@ -547,6 +541,10 @@ app.open = function(){
 	
 	reset();
 	
+	if(window.file_entry){
+		open_from_FileEntry(file_entry);
+	}
+	
 	function reset(){
 		undos = [];
 		redos = [];
@@ -571,56 +569,125 @@ app.open = function(){
 		$colorbox && $colorbox.update_colors();
 	}
 	
+	function open_from_Image(img, new_file_name){
+		are_you_sure(function(){
+			undos = [];
+			redos = [];
+			reset_colors();
+			
+			file_name = new_file_name;
+			update_title();
+			
+			canvas.width = img.naturalWidth;
+			canvas.height = img.naturalHeight;
+			
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.drawImage(img,0,0);
+		});
+	}
+	function open_from_File(file){
+		var reader = new FileReader();
+		reader.onload = function(e){
+			var img = new Image();
+			img.onload = function(){
+				open_from_Image(img, file.name);
+			};
+			img.src = e.target.result;
+		};
+		reader.readAsDataURL(file);
+	}
+	function open_from_FileList(files){
+		$.each(files, function(i, file){
+			if(file.type.match(/image/)){
+				open_from_File(file);
+				return false;
+			}
+		});
+	}
+	function open_from_FileEntry(entry){
+		entry.file(open_from_File);
+	}
+	function save_to_FileEntry(entry){
+		entry.createWriter(function(file_writer){
+			file_writer.onwriteend = function(e){
+				if(this.error){
+					console.error(this.error + '\n\n\n@ ' + e);
+				}else{
+					console.log("File written!");
+				}
+			};
+			canvas.toBlob(function(blob){
+				file_writer.write(blob);
+			});
+		});
+	}
+	
 	function file_new(){
 		are_you_sure(reset);
 	}
 	
 	function file_open(){
-		var $input = $("<input type=file>")
-		.appendTo("body")
-		.hide()
-		.click()
-		.on("change", function(){
-			$.each(this.files, function(i, file){
-				if(file.type.match(/image/)){
-					var reader = new FileReader();
-					reader.onload = function(e){
-						var img = new Image();
-						img.onload = function(){
-							are_you_sure(function(){
-								undos = [];
-								redos = [];
-								reset_colors();
-								
-								file_name = file.name;
-								update_title();
-								
-								canvas.width = img.naturalWidth;
-								canvas.height = img.naturalHeight;
-								
-								ctx.clearRect(0, 0, canvas.width, canvas.height);
-								ctx.drawImage(img,0,0);
-							});
-						};
-						img.src = e.target.result;
-					};
-					reader.readAsDataURL(file);
-					return false;
+		if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+			chrome.fileSystem.chooseEntry({
+				type: "openFile",
+				accepts: [{mimeTypes: ["image/*"]}]
+			}, function(entry){
+				file_entry = entry;
+				if(chrome.runtime.lastError){
+					return console.error(chrome.runtime.lastError.message);
 				}
+				open_from_FileEntry(entry);
 			});
-			$input.remove();
-		});
+		}else{
+			var $input = $("<input type=file>")
+				.on("change", function(){
+					open_from_FileList(this.files);
+					$input.remove();
+				})
+				.appendTo("body")
+				.hide()
+				.click();
+		}
 	}
 	
 	function file_save(){
-		window.open(canvas.toDataURL());
+		if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+			if(window.file_entry){
+				save_to_FileEntry(file_entry);
+			}else{
+				file_save_as();
+			}
+		}else{
+			window.open(canvas.toDataURL());
+		}
 	}
+	
+	function file_save_as(){
+		if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+			chrome.fileSystem.chooseEntry({
+				type: 'saveFile',
+				suggestedName: file_name,
+				accepts: [{mimeTypes: ["image/*"]}]
+			}, function(entry){
+				if(chrome.runtime.lastError){
+					return console.error(chrome.runtime.lastError.message);
+				}
+				file_entry = entry;
+				file_name = entry.name;
+				update_title();
+				save_to_FileEntry(file_entry);
+			});
+		}else{
+			window.open(canvas.toDataURL());
+		}
+	}
+	
 	
 	function are_you_sure(action){
 		if(undos.length || redos.length){
 			var $w = new $Window();
 			$w.title("Paint");
-			$w.$content.text("Save changes to untitled?");
+			$w.$content.text("Save changes to "+file_name+"?");
 			$w.$Button("Save", function(){
 				$w.close();
 				file_save();
@@ -879,6 +946,17 @@ app.open = function(){
 	$canvas_area.on("scroll", update_handles);
 	setTimeout(update_handles, 50);
 	
+	$("body").on("dragover dragenter", function(e){
+		e.preventDefault();
+		e.stopPropagation();
+	}).on("drop", function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		var dt = e.originalEvent.dataTransfer
+		if(dt && dt.files && dt.files.length){
+			open_from_FileList(dt.files);
+		}
+	});
 	
 	
 	$(window).on("keydown",function(e){
@@ -913,7 +991,7 @@ app.open = function(){
 					file_new();
 				break;
 				case "S":
-					file_save();
+					e.shiftKey ? file_save_as() : file_save();
 				break;
 				case "A":
 					//select_all();

@@ -15,17 +15,19 @@
 	},
 	"offline_enabled": true,
 	"permissions": [
-		"fullscreen"
+		"fullscreen",
+		"clipboardRead",
+		"clipboardWrite",
+		{"fileSystem": ["write"]}
 	],
 	"optional_permissions": [
 		//"wallpaper",
-		"unlimited_storage",
-		"fileSystem"
+		"unlimited_storage"
 	],
 	"file_handlers": {
 		"edit": {
 			"types": ["image/*"],
 			"title": "Paint"
-		}	
+		}
 	}
 }
