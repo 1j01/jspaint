@@ -710,44 +710,55 @@ app.open = function(){
 		$win.title("Rendering GIF");
 		var $output = $win.$content;
 		
-		if(typeof GIF === "undefined"){
-			$.getScript("gif.js/gif.js",go);
-			$output.text("Fetching GIF.js");
-		}else{
-			go();
+		var gif = new GIF({
+			workers: Math.min(5, Math.floor(undos.length/50)+1),
+			workerScript: 'lib/gif.js/gif.worker.js',
+			width: canvas.width,
+			height: canvas.height,
+		});
+		
+		gif.on('progress', function(p){
+			$output.text(~~(p*100)+'%');
+		});
+		
+		gif.on('finished', function(blob){
+			$win.title("Rendered GIF");
+			var url = URL.createObjectURL(blob);
+			$output.empty().append(
+				$("<a>").attr({href: url, target: "_blank"}).append(
+					$("<img>").attr({src: url})
+				).on("click", function(e){
+					$win.close();
+					if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+						chrome.fileSystem.chooseEntry({
+							type: 'saveFile',
+							suggestedName: file_name+" history",
+							accepts: [{mimeTypes: ["image/gif"]}]
+						}, function(entry){
+							if(chrome.runtime.lastError){
+								return console.error(chrome.runtime.lastError.message);
+							}
+							entry.createWriter(function(file_writer){
+								file_writer.onwriteend = function(e){
+									if(this.error){
+										console.error(this.error + '\n\n\n@ ' + e);
+									}else{
+										console.log("File written!");
+									}
+								};
+								file_writer.write(blob);
+							});
+						});
+					}
+				})
+			);
+		});
+		
+		for(var i=0; i<undos.length; i++){
+			gif.addFrame(undos[i], {delay: 200});
 		}
-		function go(){
-			
-			var gif = new GIF({
-				workers: Math.min(5, Math.floor(undos.length/50)+1),
-				workerScript: 'gif.js/gif.worker.js',
-				width: canvas.width,
-				height: canvas.height,
-			});
-			
-			gif.on('progress', function(p){
-				$output.text(~~(p*100)+'%');
-			});
-			
-			gif.on('finished', function(blob){
-				$win.title("Rendered GIF");
-				var url = URL.createObjectURL(blob);
-				$output.empty().append(
-					$("<a>").attr({href: url, target: "_blank"}).append(
-						$("<img>").attr({src: url})
-					).on("click", function(e){
-						$win.close();
-					})
-				);
-			});
-			
-			for(var i=0; i<undos.length; i++){
-				gif.addFrame(undos[i], {delay: 200});
-			}
-			gif.addFrame(canvas, {delay: 200, copy: true});
-			gif.render();
-
-		}
+		gif.addFrame(canvas, {delay: 200, copy: true});
+		gif.render();
 	}
 	
 	function undoable(){
