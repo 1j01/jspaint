@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Paint",
-	"version": "0.1",
+	"version": "0.1.1",
 	"description": "An MS Paint remake.",
 	"icons": {
 		"16": "images/icons/16.png",
@@ -21,7 +21,6 @@
 		{"fileSystem": ["write"]}
 	],
 	"optional_permissions": [
-		//"wallpaper",
 		"unlimited_storage"
 	],
 	"file_handlers": {
