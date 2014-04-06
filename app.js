@@ -1364,7 +1364,6 @@ app.open = function(){
 			});
 			
 			function set_color(col){
-				console.log("set_color", col);
 				if(ctrl){
 					colors[2] = col;
 				}else if(button === 0){
