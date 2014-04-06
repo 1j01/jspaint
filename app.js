@@ -1334,20 +1334,53 @@ app.open = function(){
 		$.each(palette, function(i, color){
 			var $b = $("<button class='jspaint-color-button'>");
 			$b.appendTo($palette);
+			$b.css("background-color", color);
 			
-			$b.css({background:color});
+			var $i = $("<input type='color'>");
+			$i.appendTo($b);
+			$i.on("change", function(){
+				color = $i.val();
+				$b.css("background-color", color);
+				set_color(color);
+			});
+			$i.css("pointer-events", "none");
+			$i.css("opacity", 0);
 			
+			$i.val(rgb2hex($b.css("background-color")));
+			
+			var button, ctrl;
 			$b.on("mousedown", function(e){
-				e.preventDefault();
-				if(e.ctrlKey){
-					colors[2] = color;
-				}else if(e.button === 0){
-					colors[0] = color;
-				}else if(e.button === 2){
-					colors[1] = color;
+				ctrl = e.ctrlKey;
+				button = e.button;
+				
+				set_color($b.css("background-color"));
+				
+				$i.val(rgb2hex($b.css("background-color")));
+				
+				$i.css("pointer-events", "all");
+				setTimeout(function(){
+					$i.css("pointer-events", "none");
+				}, 400);
+			});
+			
+			function set_color(col){
+				console.log("set_color", col);
+				if(ctrl){
+					colors[2] = col;
+				}else if(button === 0){
+					colors[0] = col;
+				}else if(button === 2){
+					colors[1] = col;
 				}
 				update_colors();
-			});
+			};
+			function rgb2hex(col){
+				var rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+				function hex(x){
+					return ("0" + parseInt(x).toString(16)).slice(-2);
+				}
+				return rgb ? ("#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])) : col;
+			}
 		});
 		
 		var $c = $Component("Colors", "wide", $cb);
