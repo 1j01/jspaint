@@ -23,6 +23,8 @@ var TAU =     //////|//////
               //////|//////
 
 app.open = function(){
+	var $body = $(document.body||"body");
+	var $G = $(window);
 	
 	var stroke_width = 1;
 	var stroke_color;
@@ -32,7 +34,7 @@ app.open = function(){
 	
 	var brush_image = new Image();
 	brush_image.src = "images/scroll-left.png";
-	var brush_canvas = $("<canvas>")[0];
+	var brush_canvas = E("canvas");
 	var brush_ctx = brush_canvas.getContext("2d");
 	var brush_rendered_color;
 	
@@ -55,10 +57,10 @@ app.open = function(){
 				selection.destroy();
 			}
 			var mouse_has_moved = false;
-			$(window).one("mousemove", function(){
+			$G.one("mousemove", function(){
 				mouse_has_moved = true;
 			});
-			$(window).one("mouseup", function(){
+			$G.one("mouseup", function(){
 				if(!mouse_has_moved){
 					selection && selection.destroy();
 				}
@@ -207,7 +209,7 @@ app.open = function(){
 			});
 		},
 		mousedown: function(){
-			$(window).one("mouseup",function(){
+			$G.one("mouseup",function(){
 				$tool_options_area.css({
 					background: ""
 				});
@@ -415,7 +417,7 @@ app.open = function(){
 		this._w = w;
 		this._h = h;
 		
-		this.$ghost = $("<div class='jspaint-selection'>").appendTo($canvas_area);
+		this.$ghost = $(E("div")).addClass("jspaint-selection").appendTo($canvas_area);
 		$canvas_handles.hide();
 	}
 	Selection.prototype.instantiate = function(_img){
@@ -474,9 +476,9 @@ app.open = function(){
 			e.preventDefault();
 			mox = e.offsetX;
 			moy = e.offsetY;
-			$(window).on("mousemove", mousemove);
-			$(window).one("mouseup", function(){
-				$(window).off("mousemove", mousemove);
+			$G.on("mousemove", mousemove);
+			$G.one("mouseup", function(){
+				$G.off("mousemove", mousemove);
 			});
 		});
 	};
@@ -513,21 +515,21 @@ app.open = function(){
 	var default_height = 384;
 	
 	
-	var $app = $("<div class='jspaint'>").appendTo("body");
+	var $app = $(E("div")).addClass("jspaint").appendTo("body");
 	
-	var $V = $("<div class='jspaint-vertical'>").appendTo($app);
-	var $H = $("<div class='jspaint-horizontal'>").appendTo($V);
+	var $V = $(E("div")).addClass("jspaint-vertical").appendTo($app);
+	var $H = $(E("div")).addClass("jspaint-horizontal").appendTo($V);
 	
-	var $canvas_area = $("<div class='jspaint-canvas-area'>").appendTo($H);
-	var $resize_ghost = $("<div class='jspaint-canvas-resize-ghost'>");
-	var $canvas = $("<canvas>").appendTo($canvas_area);
-	var canvas = $canvas[0];
+	var $canvas_area = $(E("div")).addClass("jspaint-canvas-area").appendTo($H);
+	var $resize_ghost = $(E("div")).addClass("jspaint-canvas-resize-ghost");
+	var canvas = E("canvas");
 	var ctx = canvas.getContext("2d");
+	var $canvas = $(canvas).appendTo($canvas_area);
 	
-	var $top = $("<c-area>").prependTo($V);
-	var $bottom = $("<c-area>").appendTo($V);
-	var $left = $("<c-area>").prependTo($H);
-	var $right = $("<c-area>").appendTo($H);
+	var $top = $(E("c-area")).prependTo($V);
+	var $bottom = $(E("c-area")).appendTo($V);
+	var $left = $(E("c-area")).prependTo($H);
+	var $right = $(E("c-area")).appendTo($H);
 	
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
@@ -639,7 +641,7 @@ app.open = function(){
 				open_from_FileEntry(entry);
 			});
 		}else{
-			var $input = $("<input type=file>")
+			var $input = $(E("input")).attr({type:"file"})
 				.on("change", function(){
 					open_from_FileList(this.files);
 					$input.remove();
@@ -725,8 +727,8 @@ app.open = function(){
 			$win.title("Rendered GIF");
 			var url = URL.createObjectURL(blob);
 			$output.empty().append(
-				$("<a>").attr({href: url, target: "_blank"}).append(
-					$("<img>").attr({src: url})
+				$(E("a")).attr({href: url, target: "_blank"}).append(
+					$(E("img")).attr({src: url})
 				).on("click", function(e){
 					$win.close();
 					if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
@@ -828,7 +830,7 @@ app.open = function(){
 	}
 	function cancel(){
 		if(!selected_tool.passive) undo();
-		$(window).triggerHandler("mouseup", "cancel");
+		$G.triggerHandler("mouseup", "cancel");
 	}
 	function deselect(){
 		if(selection){
@@ -851,7 +853,7 @@ app.open = function(){
 	
 	
 	function $Handle(y_axis, x_axis){
-		var $h = $("<div>").addClass("jspaint-handle");
+		var $h = $(E("div")).addClass("jspaint-handle");
 		$h.appendTo($canvas_area);
 		
 		var resizes_height = x_axis !== "left" && y_axis === "bottom";
@@ -891,13 +893,13 @@ app.open = function(){
 			$h.on("mousedown", function(e){
 				dragged = false;
 				if(e.button === 0){
-					$(window).on("mousemove", mousemove);
-					$("body").css({cursor:cursor});
+					$G.on("mousemove", mousemove);
+					$body.css({cursor:cursor});
 					$canvas.css({pointerEvents:"none"});
 				}
-				$(window).one("mouseup", function(e){
-					$(window).off("mousemove", mousemove);
-					$("body").css({cursor:"auto"});
+				$G.one("mouseup", function(e){
+					$G.off("mousemove", mousemove);
+					$body.css({cursor:"auto"});
 					$canvas.css({pointerEvents:""});
 					
 					$resize_ghost.remove();
@@ -949,15 +951,15 @@ app.open = function(){
 	],function(i,pos){
 		$Handle(pos[0], pos[1]);
 	});
-	var $canvas_handles = $(".jspaint-handle");
+	var $canvas_handles = $(".jspaint-handle");//@todo: don't do this selection
 	var update_handles = function(){
 		$canvas_handles.trigger("update");
 	};
-	$(window).on("resize", update_handles);
+	$G.on("resize", update_handles);
 	$canvas_area.on("scroll", update_handles);
 	setTimeout(update_handles, 50);
 	
-	$("body").on("dragover dragenter", function(e){
+	$body.on("dragover dragenter", function(e){
 		e.preventDefault();
 		e.stopPropagation();
 	}).on("drop", function(e){
@@ -970,7 +972,7 @@ app.open = function(){
 	});
 	
 	
-	$(window).on("keydown",function(e){
+	$G.on("keydown",function(e){
 		if(e.keyCode === 27){//Escape
 			if(selection){
 				deselect();
@@ -1016,7 +1018,7 @@ app.open = function(){
 			return false;
 		}
 	});
-	$(window).on("cut copy paste", function(e){
+	$G.on("cut copy paste", function(e){
 		e.preventDefault();
 		var cd = e.originalEvent.clipboardData || window.clipboardData;
 		if(!cd){ return console.log("No clipboardData"); }
@@ -1192,13 +1194,13 @@ app.open = function(){
 			tool_go("mousedown");
 		}
 		
-		$(window).on("mousemove", canvas_mouse_move);
+		$G.on("mousemove", canvas_mouse_move);
 		if(selected_tool.continuous === "time"){
 			var iid = setInterval(function(){
 				tool_go();
 			},10);
 		}
-		$(window).one("mouseup", function(e, canceling){
+		$G.one("mouseup", function(e, canceling){
 			button = undefined;
 			if(selected_tool.mouseup && !canceling){
 				selected_tool.mouseup();
@@ -1210,12 +1212,20 @@ app.open = function(){
 				selected_tool = previous_tool;
 				$toolbox && $toolbox.update_selected_tool();
 			}
-			$(window).off("mousemove",canvas_mouse_move);
+			$G.off("mousemove",canvas_mouse_move);
 			if(iid){
 				clearInterval(iid);
 			}
 		});
 	});
+	
+	$body.on("contextmenu",function(e){
+		return false;
+	});
+	$body.on("mousedown",function(e){
+		e.preventDefault();
+	});
+	
 	
 	function bresenham(x1, y1, x2, y2, callback){
 		// Bresenham's line algorithm
@@ -1246,20 +1256,20 @@ app.open = function(){
 	}
 	
 	function $ToolBox(){
-		var $tb = $("<div>").addClass("jspaint-tool-box");
-		var $tools = $("<div class='jspaint-tools'>");
-		var $tool_options = $("<div class='jspaint-tool-options'>");
+		var $tb = $(E("div")).addClass("jspaint-tool-box");
+		var $tools = $(E("div")).addClass("jspaint-tools");
+		var $tool_options = $(E("div")).addClass("jspaint-tool-options");
 		$tool_options_area = $tool_options;
 		
 		var $buttons;
 		$.each(tools, function(i, tool){
-			var $b = $("<button class='jspaint-tool'>");
+			var $b = $(E("button")).addClass("jspaint-tool");
 			$b.appendTo($tools);
 			tool.$button = $b;
 			
 			$b.attr("title", tool.name);
 			
-			var $icon = $("<span/>");
+			var $icon = $(E("span"));
 			$icon.appendTo($b);
 			var bx = (i%2)*24;
 			var by = ((i/2)|0)*25;
@@ -1298,16 +1308,16 @@ app.open = function(){
 		return $c;
 	}
 	function $ColorBox(){
-		var $cb = $("<div>").addClass("jspaint-color-box");
+		var $cb = $(E("div")).addClass("jspaint-color-box");
 		$cb.addClass("jspaint-color-box");
 		
-		var $current_colors = $("<div>").addClass("jspaint-current-colors");
-		var $palette = $("<div>").addClass("jspaint-palette");
+		var $current_colors = $(E("div")).addClass("jspaint-current-colors");
+		var $palette = $(E("div")).addClass("jspaint-palette");
 		
 		$cb.append($current_colors, $palette);
 		
-		var $color0 = $("<div class='jspaint-color-selection'>");
-		var $color1 = $("<div class='jspaint-color-selection'>");
+		var $color0 = $(E("div")).addClass("jspaint-color-selection");
+		var $color1 = $(E("div")).addClass("jspaint-color-selection");
 		$current_colors.append($color0, $color1);
 		
 		$current_colors.css({
@@ -1332,11 +1342,11 @@ app.open = function(){
 		}
 		
 		$.each(palette, function(i, color){
-			var $b = $("<button class='jspaint-color-button'>");
+			var $b = $(E("button")).addClass("jspaint-color-button");
 			$b.appendTo($palette);
 			$b.css("background-color", color);
 			
-			var $i = $("<input type='color'>");
+			var $i = $(E("input")).attr({type:"color"});
 			$i.appendTo($b);
 			$i.on("change", function(){
 				color = $i.val();
@@ -1389,7 +1399,7 @@ app.open = function(){
 	}
 	function $Component(name, orientation, $el){
 		//a draggable widget that can be undocked into a window
-		var $c = $("<div>").addClass("jspaint-component");
+		var $c = $(E("div")).addClass("jspaint-component");
 		$c.addClass("jspaint-"+name+"-component");
 		$c.append($el);
 		$c.appendTo({
@@ -1412,7 +1422,7 @@ app.open = function(){
 			dragging = true;
 			
 			if(!$ghost){
-				$ghost = $("<div class='jspaint-component-ghost dock'>");
+				$ghost = $(E("div")).addClass("jspaint-component-ghost dock");
 				$ghost.css({
 					position: "absolute",
 					display: "block",
@@ -1429,7 +1439,7 @@ app.open = function(){
 		$el.on("mousedown",function(e){
 			return false;
 		});
-		$(window).on("mousemove",function(e){
+		$G.on("mousemove",function(e){
 			if(!dragging) return;
 			
 			$ghost.css({
@@ -1470,7 +1480,7 @@ app.open = function(){
 			
 			e.preventDefault();
 		});
-		$(window).on("mouseup",function(e){
+		$G.on("mouseup",function(e){
 			if(!dragging) return;
 			dragging = false;
 			
@@ -1497,11 +1507,11 @@ app.open = function(){
 		return $c;
 	}
 	function $Window(){
-		var $w = $("<div class='jspaint-window'/>").appendTo("body");
-		$w.$titlebar = $("<div class='jspaint-window-titlebar'/>").appendTo($w);
-		$w.$title = $("<span class='jspaint-window-title'/>").appendTo($w.$titlebar);
-		$w.$x = $("<button class='jspaint-window-close-button'/>").appendTo($w.$titlebar);
-		$w.$content = $("<div class='jspaint-window-content'/>").appendTo($w);
+		var $w = $(E("div")).addClass("jspaint-window").appendTo("body");
+		$w.$titlebar = $(E("div")).addClass("jspaint-window-titlebar").appendTo($w);
+		$w.$title = $(E("span")).addClass("jspaint-window-title").appendTo($w.$titlebar);
+		$w.$x = $(E("button")).addClass("jspaint-window-close-button").appendTo($w.$titlebar);
+		$w.$content = $(E("div")).addClass("jspaint-window-content").appendTo($w);
 		
 		$w.$x.on("click", function(){
 			$w.close();
@@ -1509,7 +1519,7 @@ app.open = function(){
 		
 		$w.$Button = function(text, handler){
 			$w.$content.append(
-				$("<button>")
+				$(E("button"))
 					.text(text)
 					.on("click", function(){
 						handler();
@@ -1542,14 +1552,10 @@ app.open = function(){
 			+ cursor_def[1].join(" ")
 			+ ", " + cursor_def[2]
 	}
+	
+	function E(t){
+		return document.createElement(t);
+	}
 };
 
-$(function(){
-	app.open();
-	$("body").on("contextmenu",function(e){
-		return false;
-	});
-	$("body").on("mousedown",function(e){
-		e.preventDefault();
-	});
-});
+$(app.open);
