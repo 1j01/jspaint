@@ -54,6 +54,7 @@ app.open = function(){
 		implemented: "kinda",
 		mousedown: function(){
 			if(selection){
+				selection.draw();
 				selection.destroy();
 			}
 			var mouse_has_moved = false;
@@ -61,13 +62,16 @@ app.open = function(){
 				mouse_has_moved = true;
 			});
 			$G.one("mouseup", function(){
-				if(!mouse_has_moved){
-					selection && selection.destroy();
+				if(!mouse_has_moved && selection){
+					selection.draw();
+					selection.destroy();
+					selection = null;
 				}
 			});
 			var s = selection = new Selection(mouse.x, mouse.y, 1, 1);
 			$canvas.one("mousedown", function(){
 				if(selection === s){
+					selection.draw();
 					selection.destroy();
 					selection = null;
 				}
@@ -469,7 +473,7 @@ app.open = function(){
 			sel.position();
 			
 			if(e.shiftKey){
-				ctx.drawImage(sel.canvas, sel._x, sel._y);
+				sel.draw();
 			}
 		};
 		sel.$ghost.on("mousedown", function(e){
@@ -491,11 +495,10 @@ app.open = function(){
 			height: this._h,
 		});
 	};
+	Selection.prototype.draw = function(){
+		try{ctx.drawImage(this.canvas, this._x, this._y);}catch(e){}
+	};
 	Selection.prototype.destroy = function(){
-		if(this.canvas){
-			try{ctx.drawImage(this.canvas, this._x, this._y);}catch(e){}
-		}
-		
 		this.$ghost.remove();
 		$canvas_handles.show();
 	};
@@ -1029,6 +1032,7 @@ app.open = function(){
 				cd.setData("URL", data);
 				cd.setData("image/png", data);
 				if(e.type === "cut"){
+					selection.draw();
 					selection.destroy();
 					selection = null;
 				}
@@ -1066,6 +1070,7 @@ app.open = function(){
 							}
 							function paste_img(){
 								if(selection){
+									selection.draw();
 									selection.destroy();
 								}
 								selection = new Selection(0, 0, img.width, img.height);
