@@ -548,6 +548,8 @@ app.open = function(){
 	
 	if(window.file_entry){
 		open_from_FileEntry(file_entry);
+	}else if(window.intent){
+		open_from_URI(window.intent.data, "intent");
 	}
 	
 	function reset(){
@@ -590,14 +592,17 @@ app.open = function(){
 			ctx.drawImage(img,0,0);
 		});
 	}
+	function open_from_URI(uri, new_file_name){
+		var img = new Image();
+		img.onload = function(){
+			open_from_Image(img, new_file_name);
+		};
+		img.src = uri;
+	}
 	function open_from_File(file){
 		var reader = new FileReader();
 		reader.onload = function(e){
-			var img = new Image();
-			img.onload = function(){
-				open_from_Image(img, file.name);
-			};
-			img.src = e.target.result;
+			open_from_URI(e.target.result, file.name);
 		};
 		reader.readAsDataURL(file);
 	}
