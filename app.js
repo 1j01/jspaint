@@ -485,6 +485,8 @@ app.open = function(){
 				$G.off("mousemove", mousemove);
 			});
 		});
+		$status_position.text("");
+		$status_size.text("");
 	};
 	Selection.prototype.position = function(){
 		this.$ghost.css({
@@ -494,6 +496,8 @@ app.open = function(){
 			width: this._w,
 			height: this._h,
 		});
+		$status_position.text(this._x + "," + this._y);
+		$status_size.text(this._w + "," + this._h);
 	};
 	Selection.prototype.draw = function(){
 		try{ctx.drawImage(this.canvas, this._x, this._y);}catch(e){}
@@ -534,13 +538,23 @@ app.open = function(){
 	var $left = $(E("c-area")).prependTo($H);
 	var $right = $(E("c-area")).appendTo($H);
 	
+	var $status_area = $(E("div")).addClass("jspaint-status-area").appendTo($V);
+	var $status_text = $(E("div")).addClass("jspaint-status-text").appendTo($status_area);
+	var $status_position = $(E("div")).addClass("jspaint-status-coordinates").appendTo($status_area);
+	var $status_size = $(E("div")).addClass("jspaint-status-coordinates").appendTo($status_area);
+	
+	$status_text.default = function(){
+		$status_text.text("For Help, click Help Topics on the Help Menu.");
+	};
+	$status_text.default();
+	
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
 	
 	var selection;//the one and only Selection
 	var undos = [];//array of <canvas>
 	var redos = [];//array of <canvas>
-	var frames = [];//array of {speed:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
+	var frames = [];//array of {delay:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
 	
 	var file_name;
 	
@@ -1182,6 +1196,13 @@ app.open = function(){
 		tool_go();
 		mouse_previous = mouse;
 	}
+	$canvas.on("mousemove", function(e){
+		mouse = e2c(e);
+		$status_position.text(mouse.x + "," + mouse.y);
+	});
+	$canvas.on("mouseleave", function(e){
+		$status_position.text("");
+	});
 	$canvas.on("mousedown", function(e){
 		if(e.button === 0){
 			reverse = false;
@@ -1271,6 +1292,12 @@ app.open = function(){
 		var $tool_options = $(E("div")).addClass("jspaint-tool-options");
 		$tool_options_area = $tool_options;
 		
+		var showing_tooltips = false;
+		$tools.on("mouseleave", function(){
+			showing_tooltips = false;
+			$status_text.default();
+		});
+		
 		var $buttons;
 		$.each(tools, function(i, tool){
 			var $b = $(E("button")).addClass("jspaint-tool");
@@ -1302,6 +1329,21 @@ app.open = function(){
 					selected_tool = tool;
 				}
 				$c.update_selected_tool();
+			});
+			
+			$b.on("mouseenter", function(){
+				var show_tooltip = function(){
+					showing_tooltips = true;
+					$status_text.text(tool.description);
+				};
+				if(showing_tooltips){
+					show_tooltip();
+				}else{
+					var tid = setTimeout(show_tooltip, 300);
+					$b.on("mouseleave", function(){
+						clearTimeout(tid);
+					});
+				}
 			});
 		});
 		$buttons = $tools.find("button");
