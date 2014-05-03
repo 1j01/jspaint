@@ -861,10 +861,15 @@ app.open = function(){
 			selection = null;
 		}
 	}
+	function select_all(){
+		deselect();
+		selection = new Selection(0, 0, canvas.width, canvas.height);
+		selection.instantiate();
+	}
 	
 	function invert(){
 		if(undoable()){
-			var id = ctx.getImageData(0,0,canvas.width,canvas.height);
+			var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
 			for(var i=0; i<id.data.length; i+=4){
 				id.data[i+0] = 255 - id.data[i+0];
 				id.data[i+1] = 255 - id.data[i+1];
@@ -1030,7 +1035,7 @@ app.open = function(){
 					e.shiftKey ? file_save_as() : file_save();
 				break;
 				case "A":
-					//select_all();
+					select_all();
 				break;
 				case "I":
 					invert();
