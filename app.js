@@ -856,6 +856,7 @@ app.open = function(){
 	}
 	function deselect(){
 		if(selection){
+			selection.draw();
 			selection.destroy();
 			selection = null;
 		}
@@ -1355,6 +1356,7 @@ app.open = function(){
 			$canvas.css({
 				cursor: Cursor(selected_tool.cursor)
 			});
+			deselect();
 		};
 		$c.update_selected_tool();
 		return $c;
