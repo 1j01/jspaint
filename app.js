@@ -1407,8 +1407,9 @@ app.open = function(){
 				$b.css("background-color", color);
 				set_color(color);
 			});
-			$i.css("pointer-events", "none");
+			
 			$i.css("opacity", 0);
+			$i.prop("enabled", false);
 			
 			$i.val(rgb2hex($b.css("background-color")));
 			
@@ -1421,10 +1422,20 @@ app.open = function(){
 				
 				$i.val(rgb2hex($b.css("background-color")));
 				
-				$i.css("pointer-events", "all");
+				$i.prop("enabled", true);
 				setTimeout(function(){
-					$i.css("pointer-events", "none");
+					$i.prop("enabled", false);
 				}, 400);
+			});
+			$i.on("mousedown", function(e){
+				if(e.button === button && $i.prop("enabled")){
+					$i.trigger("click", "synthetic");
+				}
+			});
+			$i.on("click", function(e, synthetic){
+				if(!synthetic){
+					e.preventDefault();
+				}
 			});
 			
 			function set_color(col){
