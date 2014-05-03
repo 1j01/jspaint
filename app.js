@@ -861,6 +861,12 @@ app.open = function(){
 			selection = null;
 		}
 	}
+	function delete_selection(){
+		if(selection){
+			selection.destroy();
+			selection = null;
+		}
+	}
 	function select_all(){
 		deselect();
 		selection = new Selection(0, 0, canvas.width, canvas.height);
@@ -1007,8 +1013,10 @@ app.open = function(){
 			}else{
 				cancel();
 			}
-		}else if(e.keyCode === 27){//F4
+		}else if(e.keyCode === 115){//F4
 			redo();
+		}else if(e.keyCode === 46){//Delete
+			delete_selection();
 		}else if(e.ctrlKey){
 			switch(String.fromCharCode(e.keyCode).toUpperCase()){
 				case "Z":
