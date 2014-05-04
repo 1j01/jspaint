@@ -48,7 +48,7 @@ app.open = function(){
 		cursor: ["precise", [16, 16], "crosshair"],
 		passive: true,
 		implemented: false,
-	},{
+	}, {
 		name: "Select",
 		description: "Selects a rectangular part of the picture to move, copy, or edit.",
 		cursor: ["precise", [16, 16], "crosshair"],
@@ -107,17 +107,17 @@ app.open = function(){
 			selection.destroy();
 			selection = null;
 		},
-	},{
+	}, {
 		name: "Eraser/Color Eraser",
 		description: "Erases a portion of the picture, using the selected eraser shape.",
 		continuous: "space",
-		cursor: ["precise", [16, 16], "crosshair"],//@todo: draw square on canvas
+		cursor: ["precise", [16, 16], "crosshair"], //@todo: draw square on canvas
 		implemented: "partially",
 		paint: function(ctx, x, y){
 			ctx.fillStyle = colors[1];
 			ctx.fillRect(x-4, y-4, 8, 8);
 		}
-	},{
+	}, {
 		name: "Fill With Color",
 		description: "Fills an area with the selected drawing color.",
 		cursor: ["fill-bucket", [8, 22], "crosshair"],
@@ -126,8 +126,8 @@ app.open = function(){
 			_c.width = _c.height = 1;
 			var _ctx = _c.getContext("2d");
 			_ctx.fillStyle = fill_color;
-			_ctx.fillRect(0,0,1,1);
-			var _id = _ctx.getImageData(0,0,1,1);
+			_ctx.fillRect(0, 0, 1, 1);
+			var _id = _ctx.getImageData(0, 0, 1, 1);
 			var fill_r = _id.data[0];
 			var fill_g = _id.data[1];
 			var fill_b = _id.data[2];
@@ -135,7 +135,7 @@ app.open = function(){
 			var stack = [[x, y]];
 			var c_width = canvas.width;
 			var c_height = canvas.height;
-			var id = ctx.getImageData(0,0,c_width,c_height);
+			var id = ctx.getImageData(0, 0, c_width, c_height);
 			pixel_pos = (y*c_width + x) * 4;
 			var start_r = id.data[pixel_pos+0];
 			var start_g = id.data[pixel_pos+1];
@@ -201,7 +201,7 @@ app.open = function(){
 				id.data[pixel_pos+3] = 255;
 			}
 		}
-	},{
+	}, {
 		name: "Pick Color",
 		description: "Picks up a color from the picture for drawing.",
 		cursor: ["eye-dropper", [9, 22], "crosshair"],
@@ -215,7 +215,7 @@ app.open = function(){
 			});
 		},
 		mousedown: function(){
-			$G.one("mouseup",function(){
+			$G.one("mouseup", function(){
 				$tool_options_area.css({
 					background: ""
 				});
@@ -223,7 +223,7 @@ app.open = function(){
 		},
 		paint: function(ctx, x, y){
 			if(x >= 0 && y >= 0 && x < canvas.width && y < canvas.height){
-				var id = ctx.getImageData(x|0, y|0, 1, 1);
+				var id = ctx.getImageData(~~x, ~~y, 1, 1);
 				var r = id.data[0];
 				var g = id.data[1];
 				var b = id.data[2];
@@ -238,14 +238,14 @@ app.open = function(){
 			colors[fill_color_i] = this.current_color;
 			$colorbox && $colorbox.update_colors();
 		}
-	},{
+	}, {
 		name: "Magnifier",
 		description: "Changes the magnification.",
-		cursor: ["magnifier", [16, 16], "zoom-in"],//@todo: use zoom-in/zoom-out
+		cursor: ["magnifier", [16, 16], "zoom-in"], //@todo: use zoom-in/zoom-out
 		deselect: true,
 		passive: true,
 		implemented: false,
-	},{
+	}, {
 		name: "Pencil",
 		description: "Draws a free-form line one pixel wide.",
 		cursor: ["pencil", [13, 23], "crosshair"],
@@ -254,7 +254,7 @@ app.open = function(){
 		paint: function(ctx, x, y){
 			ctx.fillRect(x, y, 1, 1);
 		}
-	},{
+	}, {
 		name: "Brush",
 		description: "Draws using a brush with the selected shape and size.",
 		cursor: ["precise-dotted", [16, 16], "crosshair"],
@@ -264,40 +264,40 @@ app.open = function(){
 			if(brush_rendered_color !== stroke_color){
 				brush_canvas.width = sz;
 				brush_canvas.height = sz;
-				brush_ctx.clearRect(0,0,sz,sz);
-				brush_ctx.drawImage(brush_image,sz/2-brush_image.width/2,sz/2-brush_image.height/2);
+				brush_ctx.clearRect(0, 0, sz, sz);
+				brush_ctx.drawImage(brush_image, sz/2-brush_image.width/2, sz/2-brush_image.height/2);
 				brush_ctx.globalCompositeOperation = "source-atop";
 				brush_ctx.fillStyle = stroke_color;
-				brush_ctx.fillRect(0,0,sz,sz);
+				brush_ctx.fillRect(0, 0, sz, sz);
 				brush_ctx.globalCompositeOperation = "source-over";
 				
 				brush_rendered_color = stroke_color;
 			}
 			ctx.drawImage(brush_canvas, x-sz/2, y-sz/2);
 		}
-	},{
+	}, {
 		name: "Airbrush",
 		description: "Draws using an airbrush of the selected size.",
 		cursor: ["airbrush", [7, 22], "crosshair"],
 		continuous: "time",
 		paint: function(ctx, x, y){
-			var radius = 15;//@todo: options
+			var radius = 15; //@todo: options
 			var sqr = radius * radius;
 			for(var i=0; i<100; i++){
 				var rx = (Math.random()*2-1)*radius;
 				var ry = (Math.random()*2-1)*radius;
 				var d = rx*rx + ry*ry;
 				if(d <= radius){
-					ctx.fillRect(x+rx|0, y+ry|0, 1, 1);
+					ctx.fillRect(x + ~~rx, y + ~~ry, 1, 1);
 				}
 			}
 		}
-	},{
+	}, {
 		name: "Text",
 		description: "Inserts text into the picture.",
 		cursor: ["precise", [16, 16], "crosshair"],
 		implemented: false,
-	},{
+	}, {
 		name: "Line",
 		description: "Draws a straight line with the selected line width.",
 		cursor: ["precise", [16, 16], "crosshair"],
@@ -305,12 +305,12 @@ app.open = function(){
 		shape: function(ctx, x, y, w, h){
 			draw_line(ctx, x, y, x+w, y+h);
 		}
-	},{
+	}, {
 		name: "Curve",
 		description: "Draws a curved line with the selected line width.",
 		cursor: ["precise", [16, 16], "crosshair"],
 		implemented: false,
-	},{
+	}, {
 		name: "Rectangle",
 		description: "Draws a rectangle with the selected fill style.",
 		cursor: ["precise", [16, 16], "crosshair"],
@@ -320,17 +320,17 @@ app.open = function(){
 			ctx.fill();
 			ctx.stroke();
 		}
-	},{
+	}, {
 		name: "Polygon",
 		description: "Draws a polygon with the selected fill style.",
 		cursor: ["precise", [16, 16], "crosshair"],
 		implemented: false,
-	},{
+	}, {
 		name: "Ellipse",
 		description: "Draws an ellipse with the selected fill style.",
 		cursor: ["precise", [16, 16], "crosshair"],
 		shape: draw_ellipse
-	},{
+	}, {
 		name: "Rounded Rectangle",
 		description: "Draws a rounded rectangle with the selected fill style.",
 		cursor: ["precise", [16, 16], "crosshair"],
@@ -440,8 +440,8 @@ app.open = function(){
 	}
 	function draw_line(ctx, x1, y1, x2, y2){
 		if(aliasing){
-			bresenham(x1, y1, x2, y2, function(x,y){
-				ctx.fillRect(x,y,1,1);
+			bresenham(x1, y1, x2, y2, function(x, y){
+				ctx.fillRect(x, y, 1, 1);
 			});
 		}else{
 			ctx.beginPath();
@@ -453,7 +453,7 @@ app.open = function(){
 	function bresenham(x1, y1, x2, y2, callback){
 		// Bresenham's line algorithm
 		
-		x1=x1|0,x2=x2|0,y1=y1|0,y2=y2|0;
+		x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 		
 		var dx = Math.abs(x2 - x1);
 		var dy = Math.abs(y2 - y1);
@@ -617,10 +617,10 @@ app.open = function(){
 	var $toolbox = $ToolBox();
 	var $colorbox = $ColorBox();
 	
-	var selection;//the one and only Selection
-	var undos = [];//array of <canvas>
-	var redos = [];//array of <canvas>
-	var frames = [];//array of {delay:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
+	var selection; //the one and only Selection
+	var undos = []; //array of <canvas>
+	var redos = []; //array of <canvas>
+	var frames = []; //array of {delay:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
 	
 	var file_name;
 	
@@ -669,7 +669,7 @@ app.open = function(){
 			canvas.height = img.naturalHeight;
 			
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.drawImage(img,0,0);
+			ctx.drawImage(img, 0, 0);
 		});
 	}
 	function open_from_URI(uri, new_file_name){
@@ -872,7 +872,7 @@ app.open = function(){
 		c.width = canvas.width;
 		c.height = canvas.height;
 		var x = c.getContext("2d");
-		x.drawImage(canvas,0,0);
+		x.drawImage(canvas, 0, 0);
 		
 		undos.push(c);
 		
@@ -885,14 +885,14 @@ app.open = function(){
 		c.width = canvas.width;
 		c.height = canvas.height;
 		var x = c.getContext("2d");
-		x.drawImage(canvas,0,0);
+		x.drawImage(canvas, 0, 0);
 		
 		redos.push(c);
 		
 		c = undos.pop();
 		canvas.width = c.width;
 		canvas.height = c.height;
-		ctx.drawImage(c,0,0);
+		ctx.drawImage(c, 0, 0);
 		$canvas_handles.trigger("update");
 		
 		return true;
@@ -904,14 +904,14 @@ app.open = function(){
 		c.width = canvas.width;
 		c.height = canvas.height;
 		var x = c.getContext("2d");
-		x.drawImage(canvas,0,0);
+		x.drawImage(canvas, 0, 0);
 		
 		undos.push(c);
 		
 		c = redos.pop();
 		canvas.width = c.width;
 		canvas.height = c.height;
-		ctx.drawImage(c,0,0);
+		ctx.drawImage(c, 0, 0);
 		$canvas_handles.trigger("update");
 		
 		return true;
@@ -947,7 +947,7 @@ app.open = function(){
 				id.data[i+1] = 255 - id.data[i+1];
 				id.data[i+2] = 255 - id.data[i+2];
 			}
-			ctx.putImageData(id,0,0);
+			ctx.putImageData(id, 0, 0);
 		}
 	}
 	
@@ -1008,11 +1008,11 @@ app.open = function(){
 							canvas.width = Math.max(1, width);
 							canvas.height = Math.max(1, height);
 							ctx.fillStyle = colors[1];
-							ctx.fillRect(0,0,width,height);
+							ctx.fillRect(0, 0, width, height);
 							
 							var previous_canvas = undos[undos.length-1];
 							if(previous_canvas){
-								ctx.drawImage(previous_canvas,0,0);
+								ctx.drawImage(previous_canvas, 0, 0);
 							}
 						}
 					}
@@ -1040,18 +1040,18 @@ app.open = function(){
 		});
 	}
 	$.each([
-		["top", "right"],//↗
-		["top", "middle"],//↑
-		["top", "left"],//↖
-		["middle", "left"],//←
-		["bottom", "left"],//↙
-		["bottom", "middle"],//↓
-		["bottom", "right"],//↘
-		["middle", "right"],//→
-	],function(i,pos){
+		["top", "right"], //↗
+		["top", "middle"], //↑
+		["top", "left"], //↖
+		["middle", "left"], //←
+		["bottom", "left"], //↙
+		["bottom", "middle"], //↓
+		["bottom", "right"], //↘
+		["middle", "right"], //→
+	], function(i, pos){
 		$Handle(pos[0], pos[1]);
 	});
-	var $canvas_handles = $(".jspaint-handle");//@todo: don't do this selection
+	var $canvas_handles = $(".jspaint-handle"); //@todo: don't do this selection
 	var update_handles = function(){
 		$canvas_handles.trigger("update");
 	};
@@ -1072,16 +1072,16 @@ app.open = function(){
 	});
 	
 	
-	$G.on("keydown",function(e){
-		if(e.keyCode === 27){//Escape
+	$G.on("keydown", function(e){
+		if(e.keyCode === 27){ //Escape
 			if(selection){
 				deselect();
 			}else{
 				cancel();
 			}
-		}else if(e.keyCode === 115){//F4
+		}else if(e.keyCode === 115){ //F4
 			redo();
-		}else if(e.keyCode === 46){//Delete
+		}else if(e.keyCode === 46){ //Delete
 			delete_selection();
 		}else if(e.ctrlKey){
 			switch(String.fromCharCode(e.keyCode).toUpperCase()){
@@ -1192,15 +1192,15 @@ app.open = function(){
 		var cx = e.clientX - rect.left;
 		var cy = e.clientY - rect.top;
 		return {
-			x: (cx / rect.width * canvas.width)|0,
-			y: (cy / rect.height * canvas.height)|0,
+			x: ~~(cx / rect.width * canvas.width),
+			y: ~~(cy / rect.height * canvas.height),
 		};
 	}
 	
 	function tool_go(event_name){
 		
-		ctx.fillStyle = fill_color = 
-		ctx.strokeStyle = stroke_color = 
+		ctx.fillStyle = fill_color =
+		ctx.strokeStyle = stroke_color =
 			colors[
 				(ctrl && colors[2]) ? 2 :
 				(reverse ? 1 : 0)
@@ -1213,8 +1213,8 @@ app.open = function(){
 		if(selected_tool.shape){
 			var previous_canvas = undos[undos.length-1];
 			if(previous_canvas){
-				ctx.clearRect(0,0,canvas.width,canvas.height);
-				ctx.drawImage(previous_canvas,0,0);
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.drawImage(previous_canvas, 0, 0);
 			}
 			if(!selected_tool.stroke_only){
 				if(reverse){
@@ -1236,7 +1236,7 @@ app.open = function(){
 		}
 		if(selected_tool.paint){
 			if(selected_tool.continuous === "space"){
-				bresenham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x,y){
+				bresenham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x, y){
 					selected_tool.paint(ctx, x, y);
 				});
 			}else{
@@ -1312,7 +1312,7 @@ app.open = function(){
 		if(selected_tool.continuous === "time"){
 			var iid = setInterval(function(){
 				tool_go();
-			},10);
+			}, 10);
 		}
 		$G.one("mouseup", function(e, canceling){
 			button = undefined;
@@ -1326,17 +1326,17 @@ app.open = function(){
 				selected_tool = previous_tool;
 				$toolbox && $toolbox.update_selected_tool();
 			}
-			$G.off("mousemove",canvas_mouse_move);
+			$G.off("mousemove", canvas_mouse_move);
 			if(iid){
 				clearInterval(iid);
 			}
 		});
 	});
 	
-	$body.on("contextmenu",function(e){
+	$body.on("contextmenu", function(e){
 		return false;
 	});
-	$body.on("mousedown",function(e){
+	$body.on("mousedown", function(e){
 		e.preventDefault();
 	});
 	
@@ -1363,7 +1363,7 @@ app.open = function(){
 			var $icon = $(E("span"));
 			$icon.appendTo($b);
 			var bx = (i%2)*24;
-			var by = ((i/2)|0)*25;
+			var by = (~~(i/2))*25;
 			$icon.css({
 				display: "block",
 				width: "100%",
@@ -1529,12 +1529,12 @@ app.open = function(){
 		var dragging = false;
 		var $dock_to;
 		var $ghost;
-		$c.on("mousedown",function(e){
+		$c.on("mousedown", function(e){
 			if(e.button !== 0) return;
 			
 			var rect = $c[0].getBoundingClientRect();
-			w = ((rect.width/2)|0)*2+1;//make sure these dimensions are odd numbers
-			h = ((rect.height/2)|0)*2+1;
+			w = (~~(rect.width/2))*2 + 1; //make sure these dimensions are odd numbers
+			h = (~~(rect.height/2))*2 + 1;
 			ox = $c.position().left - e.clientX;
 			oy = $c.position().top - e.clientY;
 			dragging = true;
@@ -1554,10 +1554,10 @@ app.open = function(){
 			
 			e.preventDefault();
 		});
-		$el.on("mousedown",function(e){
+		$el.on("mousedown", function(e){
 			return false;
 		});
-		$G.on("mousemove",function(e){
+		$G.on("mousemove", function(e){
 			if(!dragging) return;
 			
 			$ghost.css({
@@ -1598,7 +1598,7 @@ app.open = function(){
 			
 			e.preventDefault();
 		});
-		$G.on("mouseup",function(e){
+		$G.on("mouseup", function(e){
 			if(!dragging) return;
 			dragging = false;
 			
