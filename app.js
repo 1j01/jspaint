@@ -26,6 +26,8 @@ app.open = function(){
 	var $body = $(document.body||"body");
 	var $G = $(window);
 	
+	var aliasing = true;
+	
 	var stroke_width = 1;
 	var stroke_color;
 	var fill_color;
@@ -248,6 +250,7 @@ app.open = function(){
 		description: "Draws a free-form line one pixel wide.",
 		cursor: ["pencil", [13, 23], "crosshair"],
 		continuous: "space",
+		stroke_only: true,
 		paint: function(ctx, x, y){
 			ctx.fillRect(x, y, 1, 1);
 		}
@@ -300,7 +303,7 @@ app.open = function(){
 		cursor: ["precise", [16, 16], "crosshair"],
 		stroke_only: true,
 		shape: function(ctx, x, y, w, h){
-			line(ctx, x, y, x+w, y+h);
+			draw_line(ctx, x, y, x+w, y+h);
 		}
 	},{
 		name: "Curve",
@@ -326,12 +329,28 @@ app.open = function(){
 		name: "Ellipse",
 		description: "Draws an ellipse with the selected fill style.",
 		cursor: ["precise", [16, 16], "crosshair"],
+		shape: draw_ellipse
+	},{
+		name: "Rounded Rectangle",
+		description: "Draws a rounded rectangle with the selected fill style.",
+		cursor: ["precise", [16, 16], "crosshair"],
 		shape: function(ctx, x, y, w, h){
-			var r1 = Math.round;
-			var r2 = Math.round;
+			if(w<0){ x+=w; w=-w; }
+			if(h<0){ y+=h; h=-h; }
+			var radius = Math.min(7, w/2, h/2);
 			
-			var cx = x + w/2;
-			var cy = y + h/2;
+			draw_rounded_rectangle(ctx, x, y, w, h, radius);
+		}
+	}];
+	
+	function draw_ellipse(ctx, x, y, w, h){
+		var r1 = Math.round;
+		var r2 = Math.round;
+		
+		var cx = x + w/2;
+		var cy = y + h/2;
+		
+		if(aliasing){
 			ctx.fillStyle = stroke_color;
 			for(var r=0; r<TAU; r+=0.01){
 				var rx = Math.cos(r) * w/2;
@@ -358,19 +377,19 @@ app.open = function(){
 					r2(-ry*2)
 				);
 			}
-		}
-	},{
-		name: "Rounded Rectangle",
-		description: "Draws a rounded rectangle with the selected fill style.",
-		cursor: ["precise", [16, 16], "crosshair"],
-		shape: function(ctx, x, y, w, h){
+		}else{
 			if(w<0){ x+=w; w=-w; }
 			if(h<0){ y+=h; h=-h; }
-			var radius = Math.min(7, w/2, h/2);
-			
-			
-			var iw = w-radius*2;
-			var ih = h-radius*2;
+			ctx.beginPath();
+			ctx.ellipse(cx, cy, w/2, h/2, 0, TAU, false);
+			ctx.stroke();
+			ctx.fill();
+		}
+	}
+	function draw_rounded_rectangle(ctx, x, y, width, height, radius){
+		if(aliasing){
+			var iw = width - radius*2;
+			var ih = height - radius*2;
 			var ix = x+radius;
 			var iy = y+radius;
 			
@@ -403,8 +422,55 @@ app.open = function(){
 					r2(ih-ry*2)
 				);
 			}
+		}else{
+			ctx.beginPath();
+			ctx.moveTo(x + radius, y);
+			ctx.lineTo(x + width - radius, y);
+			ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+			ctx.lineTo(x + width, y + height - radius);
+			ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+			ctx.lineTo(x + radius, y + height);
+			ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+			ctx.lineTo(x, y + radius);
+			ctx.quadraticCurveTo(x, y, x + radius, y);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
 		}
-	}];
+	}
+	function draw_line(ctx, x1, y1, x2, y2){
+		if(aliasing){
+			bresenham(x1, y1, x2, y2, function(x,y){
+				ctx.fillRect(x,y,1,1);
+			});
+		}else{
+			ctx.beginPath();
+			ctx.moveTo(x1, y1);
+			ctx.lineTo(x2, y2);
+			ctx.stroke();
+		}
+	}
+	function bresenham(x1, y1, x2, y2, callback){
+		// Bresenham's line algorithm
+		
+		x1=x1|0,x2=x2|0,y1=y1|0,y2=y2|0;
+		
+		var dx = Math.abs(x2 - x1);
+		var dy = Math.abs(y2 - y1);
+		var sx = (x1 < x2) ? 1 : -1;
+		var sy = (y1 < y2) ? 1 : -1;
+		var err = dx - dy;
+		
+		while(1){
+			callback(x1, y1);
+			
+			if(x1===x2 && y1===y2) break;
+			var e2 = err*2;
+			if(e2 >-dy){ err -= dy; x1 += sx; }
+			if(e2 < dx){ err += dx; y1 += sy; }
+		}
+		
+	}
 	
 	var palette = [
 		"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
@@ -1132,34 +1198,37 @@ app.open = function(){
 	}
 	
 	function tool_go(event_name){
+		
+		ctx.fillStyle = fill_color = 
+		ctx.strokeStyle = stroke_color = 
+			colors[
+				(ctrl && colors[2]) ? 2 :
+				(reverse ? 1 : 0)
+			];
+		
+		fill_color_i =
+		stroke_color_i =
+			ctrl ? 2 : (reverse ? 1 : 0)
+		
 		if(selected_tool.shape){
 			var previous_canvas = undos[undos.length-1];
 			if(previous_canvas){
 				ctx.clearRect(0,0,canvas.width,canvas.height);
 				ctx.drawImage(previous_canvas,0,0);
 			}
-			if(reverse ^ selected_tool.stroke_only){
-				fill_color_i = 0;
-				stroke_color_i = 1;
-			}else{
-				fill_color_i = 1;
-				stroke_color_i = 0;
+			if(!selected_tool.stroke_only){
+				if(reverse){
+					fill_color_i = 0;
+					stroke_color_i = 1;
+				}else{
+					fill_color_i = 1;
+					stroke_color_i = 0;
+				}
 			}
 			ctx.fillStyle = fill_color = colors[fill_color_i];
 			ctx.strokeStyle = stroke_color = colors[stroke_color_i];
 			
 			selected_tool.shape(ctx, mouse_start.x, mouse_start.y, mouse.x-mouse_start.x, mouse.y-mouse_start.y);
-		}else{
-			ctx.fillStyle = fill_color = 
-			ctx.strokeStyle = stroke_color = 
-				colors[
-					(ctrl && colors[2]) ? 2 :
-					(reverse ? 1 : 0)
-				];
-			
-			fill_color_i =
-			stroke_color_i =
-				ctrl ? 2 : (reverse ? 1 : 0)
 		}
 		
 		if(selected_tool[event_name]){
@@ -1270,35 +1339,6 @@ app.open = function(){
 	$body.on("mousedown",function(e){
 		e.preventDefault();
 	});
-	
-	
-	function bresenham(x1, y1, x2, y2, callback){
-		// Bresenham's line algorithm
-		
-		x1=x1|0,x2=x2|0,y1=y1|0,y2=y2|0;
-		
-		var dx = Math.abs(x2 - x1);
-		var dy = Math.abs(y2 - y1);
-		var sx = (x1 < x2) ? 1 : -1;
-		var sy = (y1 < y2) ? 1 : -1;
-		var err = dx - dy;
-		
-		while(1){
-			callback(x1, y1);
-			
-			if(x1===x2 && y1===y2) break;
-			var e2 = err*2;
-			if(e2 >-dy){ err -= dy; x1 += sx; }
-			if(e2 < dx){ err += dx; y1 += sy; }
-		}
-		
-	}
-	
-	function line(ctx, x1, y1, x2, y2){
-		bresenham(x1, y1, x2, y2, function(x,y){
-			ctx.fillRect(x,y,1,1);
-		});
-	}
 	
 	function $ToolBox(){
 		var $tb = $(E("div")).addClass("jspaint-tool-box");
