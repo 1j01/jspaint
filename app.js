@@ -44,7 +44,7 @@ var canvas = E("canvas");
 var ctx = canvas.getContext("2d");
 var $canvas = $(canvas).appendTo($canvas_area);
 
-var $canvas_handles = $Handles($canvas_area, canvas, {outset: 4, offset: 4});
+var $canvas_handles = $Handles($canvas_area, canvas, {outset: 4, offset: 4, size_only: true});
 
 var $top = $(E("c-area")).prependTo($V);
 var $bottom = $(E("c-area")).appendTo($V);

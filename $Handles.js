@@ -1,7 +1,8 @@
 
 function $Handles($container, canvas, options){
-	var outset = options.outset;
+	var outset = options.outset || 0;
 	var offset = options.offset || 0;
+	var size_only = options.size_only || false;
 	
 	var $resize_ghost = $(E("div")).addClass("jspaint-canvas-resize-ghost");
 	var handles = $.map([
@@ -20,24 +21,33 @@ function $Handles($container, canvas, options){
 		var $h = $(E("div")).addClass("jspaint-handle");
 		$h.appendTo($container);
 		
-		var resizes_height = x_axis !== "left" && y_axis === "bottom";
-		var resizes_width = x_axis === "right" && y_axis !== "top";
 		var width, height;
 		var dragged = false;
-		if(!(resizes_width || resizes_height)){
+		var resizes_height = y_axis !== "middle";
+		var resizes_width = x_axis !== "middle";
+		if(size_only && (y_axis === "top" || x_axis === "left")){
 			$h.addClass("jspaint-useless-handle");
 		}else{
-			var cursor;
-			if(resizes_width && resizes_height){
-				cursor = "nwse-resize";
+			
+			var cursor_fname;
+			if((x_axis === "left" && y_axis === "top") || (x_axis === "right" && y_axis === "bottom")){
+				cursor_fname = "nwse-resize";
+			}else if((x_axis === "right" && y_axis === "top") || (x_axis === "left" && y_axis === "bottom")){
+				cursor_fname = "nesw-resize";
 			}else if(resizes_width){
-				cursor = "ew-resize";
+				cursor_fname = "ew-resize";
 			}else if(resizes_height){
-				cursor = "ns-resize";
+				cursor_fname = "ns-resize";
 			}
-			if(cursor){
-				cursor = Cursor([cursor, [16, 16], cursor]);
-			}
+			
+			var cursor = "";
+			if(y_axis === "top"){ cursor += "n"; }
+			if(y_axis === "bottom"){ cursor += "s"; }
+			if(x_axis === "left"){ cursor += "w"; }
+			if(x_axis === "right"){ cursor += "e"; }
+			
+			cursor += "-resize";
+			cursor = Cursor([cursor_fname, [16, 16], cursor]);
 			$h.css({cursor:cursor});
 			
 			var drag = function(e){
