@@ -39,10 +39,12 @@ var $V = $(E("div")).addClass("jspaint-vertical").appendTo($app);
 var $H = $(E("div")).addClass("jspaint-horizontal").appendTo($V);
 
 var $canvas_area = $(E("div")).addClass("jspaint-canvas-area").appendTo($H);
-var $resize_ghost = $(E("div")).addClass("jspaint-canvas-resize-ghost");
+
 var canvas = E("canvas");
 var ctx = canvas.getContext("2d");
 var $canvas = $(canvas).appendTo($canvas_area);
+
+var $canvas_handles = $Handles($canvas_area, canvas);
 
 var $top = $(E("c-area")).prependTo($V);
 var $bottom = $(E("c-area")).appendTo($V);
@@ -70,25 +72,19 @@ if(window.file_entry){
 	open_from_URI(window.intent.data, "intent");
 }
 
-$.each([
-	["top", "right"], //↗
-	["top", "middle"], //↑
-	["top", "left"], //↖
-	["middle", "left"], //←
-	["bottom", "left"], //↙
-	["bottom", "middle"], //↓
-	["bottom", "right"], //↘
-	["middle", "right"], //→
-], function(i, pos){
-	$Handle(pos[0], pos[1]);
+$canvas.on("user-resized", function(e, width, height){
+	if(undoable()){
+		canvas.width = Math.max(1, width);
+		canvas.height = Math.max(1, height);
+		ctx.fillStyle = colors[1];
+		ctx.fillRect(0, 0, width, height);
+		
+		var previous_canvas = undos[undos.length-1];
+		if(previous_canvas){
+			ctx.drawImage(previous_canvas, 0, 0);
+		}
+	}
 });
-var $canvas_handles = $(".jspaint-handle"); //@todo: don't do this selection
-var update_handles = function(){
-	$canvas_handles.trigger("update");
-};
-$G.on("resize", update_handles);
-$canvas_area.on("scroll", update_handles);
-setTimeout(update_handles, 50);
 
 $body.on("dragover dragenter", function(e){
 	e.preventDefault();
@@ -162,7 +158,6 @@ $G.on("cut copy paste", function(e){
 			cd.setData("URL", data);
 			cd.setData("image/png", data);
 			if(e.type === "cut"){
-				selection.draw();
 				selection.destroy();
 				selection = null;
 			}

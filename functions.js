@@ -17,6 +17,8 @@ function reset(){
 	
 	ctx.fillStyle = colors[1];
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	
+	$canvas_area.trigger("resize");
 }
 
 function update_title(){
@@ -37,6 +39,8 @@ function open_from_Image(img, new_file_name){
 		
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(img, 0, 0);
+		
+		$canvas_area.trigger("resize");
 	});
 }
 function open_from_URI(uri, new_file_name){
@@ -260,7 +264,8 @@ function undo(){
 	canvas.width = c.width;
 	canvas.height = c.height;
 	ctx.drawImage(c, 0, 0);
-	$canvas_handles.trigger("update");
+	
+	$canvas_area.trigger("resize");
 	
 	return true;
 }
@@ -279,7 +284,8 @@ function redo(){
 	canvas.width = c.width;
 	canvas.height = c.height;
 	ctx.drawImage(c, 0, 0);
-	$canvas_handles.trigger("update");
+	
+	$canvas_area.trigger("resize");
 	
 	return true;
 }
@@ -316,93 +322,4 @@ function invert(){
 		}
 		ctx.putImageData(id, 0, 0);
 	}
-}
-
-
-function $Handle(y_axis, x_axis){
-	var $h = $(E("div")).addClass("jspaint-handle");
-	$h.appendTo($canvas_area);
-	
-	var resizes_height = x_axis !== "left" && y_axis === "bottom";
-	var resizes_width = x_axis === "right" && y_axis !== "top";
-	var width = default_width;
-	var height = default_height;
-	var dragged = false;
-	if(!(resizes_width || resizes_height)){
-		$h.addClass("jspaint-useless-handle");
-	}else{
-		var cursor;
-		if(resizes_width && resizes_height){
-			cursor = "nwse-resize";
-		}else if(resizes_width){
-			cursor = "ew-resize";
-		}else if(resizes_height){
-			cursor = "ns-resize";
-		}
-		if(cursor){
-			cursor = Cursor([cursor, [16, 16], cursor]);
-		}
-		$h.css({cursor:cursor});
-		
-		var mousemove = function(e){
-			$resize_ghost.appendTo("body");
-			dragged = true;
-			
-			var rect = canvas.getBoundingClientRect();
-			$resize_ghost.css({
-				position: "relative",
-				left: 0,
-				top: 0,
-				width: width = (resizes_width? (e.clientX - rect.left) : (rect.width)),
-				height: height = (resizes_height? (e.clientY - rect.top) : (rect.height)),
-			});
-		};
-		$h.on("mousedown", function(e){
-			dragged = false;
-			if(e.button === 0){
-				$G.on("mousemove", mousemove);
-				$body.css({cursor:cursor});
-				$canvas.css({pointerEvents:"none"});
-			}
-			$G.one("mouseup", function(e){
-				$G.off("mousemove", mousemove);
-				$body.css({cursor:"auto"});
-				$canvas.css({pointerEvents:""});
-				
-				$resize_ghost.remove();
-				if(dragged){
-					if(undoable()){
-						canvas.width = Math.max(1, width);
-						canvas.height = Math.max(1, height);
-						ctx.fillStyle = colors[1];
-						ctx.fillRect(0, 0, width, height);
-						
-						var previous_canvas = undos[undos.length-1];
-						if(previous_canvas){
-							ctx.drawImage(previous_canvas, 0, 0);
-						}
-					}
-				}
-				$canvas_handles.trigger("update");
-			});
-		});
-	}
-	$h.on("update", function(){
-		var rect = canvas.getBoundingClientRect();
-		var hs = $h.width();
-		if(x_axis === "middle"){
-			$h.css({ left: (rect.width + hs) / 2 });
-		}else if(x_axis === "left"){
-			$h.css({ left: 0 });
-		}else if(x_axis === "right"){
-			$h.css({ left: rect.width + hs });
-		}
-		if(y_axis === "middle"){
-			$h.css({ top: (rect.height + hs) / 2 });
-		}else if(y_axis === "top"){
-			$h.css({ top: 0 });
-		}else if(y_axis === "bottom"){
-			$h.css({ top: rect.height + hs });
-		}
-	});
 }
