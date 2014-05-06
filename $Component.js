@@ -104,7 +104,7 @@ function $Component(name, orientation, $el){
 		
 		$ghost && $ghost.remove(), $ghost = null;
 		
-		update_handles();
+		$G.trigger("resize");
 	});
 	return $c;
 }
