@@ -1,6 +1,9 @@
 
-function $Handles($container, canvas){
-	var $resize_ghost = $(E("div")).addClass("jspaint-resize-ghost");
+function $Handles($container, canvas, options){
+	var outset = options.outset;
+	var offset = options.offset || 0;
+	
+	var $resize_ghost = $(E("div")).addClass("jspaint-canvas-resize-ghost");
 	var handles = $.map([
 		["top", "right"], //↗
 		["top", "middle"], //↑
@@ -38,14 +41,14 @@ function $Handles($container, canvas){
 			$h.css({cursor:cursor});
 			
 			var drag = function(e){
-				$resize_ghost.appendTo("body");
+				$resize_ghost.appendTo($container);
 				dragged = true;
 				
 				var rect = canvas.getBoundingClientRect();
 				$resize_ghost.css({
-					position: "relative",
-					left: 0,
-					top: 0,
+					position: "absolute",
+					left: offset,
+					top: offset,
 					width: width = (resizes_width? (e.clientX - rect.left) : (rect.width)),
 					height: height = (resizes_height? (e.clientY - rect.top) : (rect.height)),
 				});
@@ -75,18 +78,18 @@ function $Handles($container, canvas){
 			var rect = canvas.getBoundingClientRect();
 			var hs = $h.width();
 			if(x_axis === "middle"){
-				$h.css({ left: (rect.width + hs) / 2 });
+				$h.css({ left: offset + (rect.width - hs) / 2 });
 			}else if(x_axis === "left"){
-				$h.css({ left: 0 });
+				$h.css({ left: offset - outset });
 			}else if(x_axis === "right"){
-				$h.css({ left: rect.width + hs });
+				$h.css({ left: offset + rect.width - hs/2 });
 			}
 			if(y_axis === "middle"){
-				$h.css({ top: (rect.height + hs) / 2 });
+				$h.css({ top: offset + (rect.height - hs) / 2 });
 			}else if(y_axis === "top"){
-				$h.css({ top: 0 });
+				$h.css({ top: offset - outset });
 			}else if(y_axis === "bottom"){
-				$h.css({ top: rect.height + hs });
+				$h.css({ top: offset + rect.height - hs/2 });
 			}
 		};
 		
