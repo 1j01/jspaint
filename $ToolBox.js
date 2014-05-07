@@ -28,8 +28,7 @@ function $ToolBox(){
 			width: "100%",
 			height: "100%",
 			backgroundImage: "url(images/toolbar-icons.png)",
-			backgroundPositionX: bx,
-			backgroundPositionY: -by,
+			backgroundPosition: bx + "px " + -by + "px",
 		});
 		
 		$b.on("click", function(){
