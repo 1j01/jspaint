@@ -5,6 +5,8 @@ var brush_canvas = E("canvas");
 var brush_ctx = brush_canvas.getContext("2d");
 var brush_rendered_color;
 
+var eraser_size = 8;
+
 tools = [{
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
@@ -69,8 +71,12 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"], //@todo: draw square on canvas
 	implemented: "partially",
 	paint: function(ctx, x, y){
-		ctx.fillStyle = colors[1];
-		ctx.fillRect(x-4, y-4, 8, 8);
+		if(transparency){
+			ctx.clearRect(x-eraser_size/2, y-eraser_size/2, eraser_size, eraser_size);
+		}else{
+			ctx.fillStyle = colors[1];
+			ctx.fillRect(x-eraser_size/2, y-eraser_size/2, eraser_size, eraser_size);
+		}
 	}
 }, {
 	name: "Fill With Color",

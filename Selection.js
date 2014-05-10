@@ -43,14 +43,15 @@ Selection.prototype.instantiate = function(_img){
 			sel._w, sel._h
 		);
 		// cut the selection from the canvas
-		//@TODO: transparency
+		//@TODO: proper transparency for Free-Form Select
 		//ctx.globalCompositeOperation = "destination-out";
 		//ctx.drawImage()...
-		ctx.fillStyle = colors[1];
-		ctx.fillRect(
-			sel._x, sel._y,
-			sel._w, sel._h
-		);
+		if(transparency){
+			ctx.clearRect(sel._x, sel._y, sel._w, sel._h);
+		}else{
+			ctx.fillStyle = colors[1];
+			ctx.fillRect(sel._x, sel._y, sel._w, sel._h);
+		}
 	}
 	sel.$ghost.append(sel.canvas);
 	

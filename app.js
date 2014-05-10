@@ -76,8 +76,12 @@ $canvas.on("user-resized", function(e, width, height){
 	if(undoable()){
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
-		ctx.fillStyle = colors[1];
-		ctx.fillRect(0, 0, width, height);
+		if(transparency){
+			ctx.clearRect(0, 0, width, height);
+		}else{
+			ctx.fillStyle = colors[1];
+			ctx.fillRect(0, 0, width, height);
+		}
 		
 		var previous_canvas = undos[undos.length-1];
 		if(previous_canvas){
@@ -180,10 +184,16 @@ $G.on("cut copy paste", function(e){
 							$w.$Button("Enlarge", function(){
 								//additional undo
 								if(undoable()){
-									//@todo: non-destructive resize
-									canvas.width = img.width;
-									canvas.height = img.height;
+									var original = undos[undos.length-1];
+									canvas.width = Math.max(original.width, img.width);
+									canvas.height = Math.max(original.height, img.height);
+									if(!transparency){
+										ctx.fillStyle = colors[1];
+										ctx.fillRect(0, 0, canvas.width, canvas.height);
+									}
+									ctx.drawImage(original, 0, 0);
 									paste_img();
+									$canvas_area.trigger("resize");
 								}
 							});
 							$w.$Button("Crop", function(){
