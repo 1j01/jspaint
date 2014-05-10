@@ -65,10 +65,15 @@ Selection.prototype.instantiate = function(_img){
 			sel.draw();
 		}
 	};
-	sel.$ghost.on("mousedown", function(e){
+	$(sel.canvas).on("mousedown", function(e){
 		e.preventDefault();
-		mox = e.offsetX;
-		moy = e.offsetY;
+		
+		var rect = sel.canvas.getBoundingClientRect();
+		var cx = e.clientX - rect.left;
+		var cy = e.clientY - rect.top;
+		mox = ~~(cx / rect.width * sel.canvas.width);
+		moy = ~~(cy / rect.height * sel.canvas.height);
+		
 		$G.on("mousemove", mousemove);
 		$G.one("mouseup", function(){
 			$G.off("mousemove", mousemove);

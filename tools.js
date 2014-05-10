@@ -16,7 +16,6 @@ tools = [{
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
-	implemented: "kinda",
 	mousedown: function(){
 		if(selection){
 			selection.draw();
@@ -33,14 +32,7 @@ tools = [{
 				selection = null;
 			}
 		});
-		var s = selection = new Selection(mouse.x, mouse.y, 1, 1);
-		$canvas.one("mousedown", function(){
-			if(selection === s){
-				selection.draw();
-				selection.destroy();
-				selection = null;
-			}
-		});
+		selection = new Selection(mouse.x, mouse.y, 1, 1);
 	},
 	paint: function(){
 		if(!selection){return;}
