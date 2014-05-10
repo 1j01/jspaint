@@ -9,6 +9,7 @@
 }
 .jspaint-selection {
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	border: 1px dashed black;
 }
 .jspaint-handle {
@@ -82,11 +83,15 @@
 ::-webkit-scrollbar-button:vertical:increment {
     background-image: url(images/scroll-down.png);
 }
+::-webkit-scrollbar {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
+}
 
 .jspaint-window-content button {
 	margin: 3px;
 	padding: 3px;
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	border: 0;
 	border-right: 1px solid black;
 	border-bottom: 1px solid black;
@@ -134,6 +139,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	width: 25px;
 	height: 25px;
 	border: 0;
@@ -162,8 +168,7 @@
 }
 
 .jspaint-tool.selected,
-.jspaint-current-colors,
-::-webkit-scrollbar {
+.jspaint-current-colors {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
 }
 
@@ -171,10 +176,12 @@
 
 .jspaint-current-colors {
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	border: 2px inset;
 }
 .jspaint-color-selection {
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	border-top: 1px solid #fff;
 	border-left: 1px solid #fff;
 	border-right: 1px solid #7B7B7B;

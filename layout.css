@@ -41,6 +41,7 @@ html, body, .jspaint {
 	width: 41px;
 	height: 66px;
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 .jspaint-tools {
 	display: flex;
@@ -73,6 +74,7 @@ html, body, .jspaint {
 	margin-left: 1px;
 	padding: 0;
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	width: 15px;
 	height: 15px;
 	border: 0;
