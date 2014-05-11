@@ -128,6 +128,8 @@ $G.on("keydown", function(e){
 				brush_size = Math.max(1, Math.min(brush_size + delta, 500));
 			}else if(selected_tool.name === "Eraser/Color Eraser"){
 				eraser_size = Math.max(1, Math.min(eraser_size + delta, 500));
+			}else if(selected_tool.name === "Airbrush"){
+				airbrush_size = Math.max(1, Math.min(airbrush_size + delta, 500));
 			}else if(selected_tool.name === "Pencil"){
 				pencil_size = Math.max(1, Math.min(pencil_size + delta, 50));
 			}

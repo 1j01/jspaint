@@ -4,6 +4,7 @@ var brush_ctx = brush_canvas.getContext("2d");
 
 var brush_size = 5;
 var eraser_size = 8;
+var airbrush_size = 9;
 var pencil_size = 1;
 var stroke_size = 1; // lines, curves, shape outlines
 
@@ -245,13 +246,11 @@ tools = [{
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
 	paint: function(ctx, x, y){
-		var radius = 15; //@todo: options
-		var sqr = radius * radius;
-		for(var i=0; i<100; i++){
-			var rx = (Math.random()*2-1)*radius;
-			var ry = (Math.random()*2-1)*radius;
+		for(var i=0; i<25; i++){
+			var rx = (Math.random()*2-1) * airbrush_size;
+			var ry = (Math.random()*2-1) * airbrush_size;
 			var d = rx*rx + ry*ry;
-			if(d <= radius){
+			if(d <= airbrush_size * airbrush_size){
 				ctx.fillRect(x + ~~rx, y + ~~ry, 1, 1);
 			}
 		}
