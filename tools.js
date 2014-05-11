@@ -1,11 +1,11 @@
 
-var brush_image = new Image();
-brush_image.src = "images/scroll-left.png";
 var brush_canvas = E("canvas");
 var brush_ctx = brush_canvas.getContext("2d");
-var brush_rendered_color;
 
+var brush_size = 5;
 var eraser_size = 8;
+var pencil_size = 1;
+var stroke_size = 1; // lines, curves, shape outlines
 
 tools = [{
 	name: "Free-Form Select",
@@ -72,10 +72,10 @@ tools = [{
 	implemented: "partially",
 	paint: function(ctx, x, y){
 		if(transparency){
-			ctx.clearRect(x-eraser_size/2, y-eraser_size/2, eraser_size, eraser_size);
+			ctx.clearRect(~~(x-eraser_size/2), ~~(y-eraser_size/2), eraser_size, eraser_size);
 		}else{
 			ctx.fillStyle = colors[1];
-			ctx.fillRect(x-eraser_size/2, y-eraser_size/2, eraser_size, eraser_size);
+			ctx.fillRect(~~(x-eraser_size/2), ~~(y-eraser_size/2), eraser_size, eraser_size);
 		}
 	}
 }, {
@@ -220,21 +220,24 @@ tools = [{
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
 	continuous: "space",
+	rendered_color: "",
+	rendered_size: 0,
 	paint: function(ctx, x, y){
-		var sz = 16;
-		if(brush_rendered_color !== stroke_color){
-			brush_canvas.width = sz;
-			brush_canvas.height = sz;
-			brush_ctx.clearRect(0, 0, sz, sz);
-			brush_ctx.drawImage(brush_image, sz/2-brush_image.width/2, sz/2-brush_image.height/2);
+		var sz = brush_size;
+		var csz = sz * 2.1;
+		if(this.rendered_color !== stroke_color || this.rendered_size !== sz){
+			brush_canvas.width = csz;
+			brush_canvas.height = csz;
+			draw_ellipse(brush_ctx, (csz-sz-3)/2, (csz-sz-1)/2, sz, sz);
 			brush_ctx.globalCompositeOperation = "source-atop";
 			brush_ctx.fillStyle = stroke_color;
-			brush_ctx.fillRect(0, 0, sz, sz);
+			brush_ctx.fillRect(0, 0, csz, csz);
 			brush_ctx.globalCompositeOperation = "source-over";
 			
-			brush_rendered_color = stroke_color;
+			this.rendered_color = stroke_color;
+			this.rendered_size = sz;
 		}
-		ctx.drawImage(brush_canvas, x-sz/2, y-sz/2);
+		ctx.drawImage(brush_canvas, x-csz/2, y-csz/2);
 	}
 }, {
 	name: "Airbrush",

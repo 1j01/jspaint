@@ -10,7 +10,6 @@ var palette = [
 	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
 ];
 
-var stroke_width = 1;
 var stroke_color;
 var fill_color;
 var stroke_color_i = 0;
@@ -104,6 +103,10 @@ $body.on("dragover dragenter", function(e){
 
 
 $G.on("keydown", function(e){
+	if(e.altKey){
+		//find key codes
+		console.log(e.keyCode);
+	}
 	if(e.keyCode === 27){ //Escape
 		if(selection){
 			deselect();
@@ -114,6 +117,23 @@ $G.on("keydown", function(e){
 		redo();
 	}else if(e.keyCode === 46){ //Delete
 		delete_selection();
+	}else if(e.keyCode === 107 || e.keyCode === 109){
+		var plus = e.keyCode === 107;
+		var minus = e.keyCode === 109;
+		if(selection){
+			//scale selection
+		}else{
+			var delta = plus - minus;
+			if(selected_tool.name === "Brush"){
+				brush_size = Math.max(1, Math.min(brush_size + delta, 500));
+			}else if(selected_tool.name === "Eraser/Color Eraser"){
+				eraser_size = Math.max(1, Math.min(eraser_size + delta, 500));
+			}else if(selected_tool.name === "Pencil"){
+				pencil_size = Math.max(1, Math.min(pencil_size + delta, 50));
+			}
+		}
+		e.preventDefault();
+		return false;
 	}else if(e.ctrlKey){
 		switch(String.fromCharCode(e.keyCode).toUpperCase()){
 			case "Z":
