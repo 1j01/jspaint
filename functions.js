@@ -226,7 +226,7 @@ function undoable(){
 	if(redos.length > 5){
 		var $w = new $Window();
 		$w.title("Paint");
-		$w.$content.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y to redo)<br>");
+		$w.$content.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
 		$w.$Button("Discard", function(){
 			$w.close();
 			redos = [];
