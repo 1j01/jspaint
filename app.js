@@ -95,14 +95,70 @@ $body.on("dragover dragenter", function(e){
 }).on("drop", function(e){
 	e.preventDefault();
 	e.stopPropagation();
-	var dt = e.originalEvent.dataTransfer
+	var dt = e.originalEvent.dataTransfer;
 	if(dt && dt.files && dt.files.length){
 		open_from_FileList(dt.files);
 	}
 });
 
-
+var keys = {};
+$G.on("keyup", function(e){
+	delete keys[e.keyCode];
+});
 $G.on("keydown", function(e){
+	var brush_shapes = {
+		circle: [
+			0, 1, 0,
+			1, 0, 1,
+			0, 1, 0
+		],
+		diagonal: [
+			1, 0, 0,
+			0, 0, 0,
+			0, 0, 1
+		],
+		reverse_diagonal: [
+			0, 0, 1,
+			0, 0, 0,
+			1, 0, 0
+		],
+		horizontal: [
+			0, 0, 0,
+			1, 0, 1,
+			0, 0, 0
+		],
+		vertical: [
+			0, 1, 0,
+			0, 0, 0,
+			0, 1, 0
+		],
+		square: [
+			0, 0, 0,
+			0, 1, 0,
+			0, 0, 0
+		]
+	};
+	keys[e.keyCode] = true;
+	for(var k in brush_shapes){
+		var bs = brush_shapes[k];
+		var fits_shape = true;
+		for(var i=0; i<9; i++){
+			if(bs[i] && !keys[[103, 104, 105, 100, 101, 102, 97, 98, 99][i]]){
+				fits_shape = false;
+			}
+		}
+		if(fits_shape){
+			brush_shape = k;
+			break;
+		}
+	}
+	if(e.keyCode === 96){
+		brush_shape = "circle";
+	}
+	if(e.keyCode === 111){
+		brush_shape = "diagonal";
+	}
+	
 	if(e.altKey){
 		//find key codes
 		console.log(e.keyCode);
@@ -294,7 +350,8 @@ function tool_go(event_name){
 	}
 	if(selected_tool.paint){
 		if(selected_tool.continuous === "space"){
-			bresenham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x, y){
+			var ham = brush_shape.match(/diagonal/) ? brosandham : bresenham;
+			ham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x, y){
 				selected_tool.paint(ctx, x, y);
 			});
 		}else{

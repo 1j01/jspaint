@@ -125,3 +125,23 @@ function bresenham(x1, y1, x2, y2, callback){
 		if(e2 < dx){ err += dx; y1 += sy; }
 	}
 }
+function brosandham(x1, y1, x2, y2, callback){
+	// Bresenham's line algorithm modified to callback in-between going horizontal and vertical
+	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
+	
+	var dx = Math.abs(x2 - x1);
+	var dy = Math.abs(y2 - y1);
+	var sx = (x1 < x2) ? 1 : -1;
+	var sy = (y1 < y2) ? 1 : -1;
+	var err = dx - dy;
+	
+	while(1){
+		callback(x1, y1);
+		
+		if(x1===x2 && y1===y2) break;
+		var e2 = err*2;
+		if(e2 >-dy){ err -= dy; x1 += sx; }
+		callback(x1, y1);
+		if(e2 < dx){ err += dx; y1 += sy; }
+	}
+}

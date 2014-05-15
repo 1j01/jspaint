@@ -1,8 +1,8 @@
 
 var brush_canvas = E("canvas");
 var brush_ctx = brush_canvas.getContext("2d");
-
-var brush_size = 5;
+var brush_shape = "circle";
+var brush_size = 3;
 var eraser_size = 8;
 var airbrush_size = 9;
 var pencil_size = 1;
@@ -223,22 +223,35 @@ tools = [{
 	continuous: "space",
 	rendered_color: "",
 	rendered_size: 0,
+	rendered_shape: "",
 	paint: function(ctx, x, y){
 		var sz = brush_size;
-		var csz = sz * 2.1;
-		if(this.rendered_color !== stroke_color || this.rendered_size !== sz){
+		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
+		var m = csz / 2;
+		if(this.rendered_shape !== brush_shape || this.rendered_color !== stroke_color || this.rendered_size !== brush_size){
 			brush_canvas.width = csz;
 			brush_canvas.height = csz;
-			draw_ellipse(brush_ctx, (csz-sz-3)/2, (csz-sz-1)/2, sz, sz);
-			brush_ctx.globalCompositeOperation = "source-atop";
-			brush_ctx.fillStyle = stroke_color;
-			brush_ctx.fillRect(0, 0, csz, csz);
-			brush_ctx.globalCompositeOperation = "source-over";
+
+			brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
+			if(brush_shape === "circle"){
+				draw_ellipse(brush_ctx, ~~(csz-brush_size)/2, ~~(csz-brush_size)/2, brush_size, brush_size);
+			}else if(brush_shape === "square"){
+				brush_ctx.fillRect(0, 0, csz, csz);
+			}else if(brush_shape === "diagonal"){
+				draw_line(brush_ctx, 0, 0, csz, csz);
+			}else if(brush_shape === "reverse_diagonal"){
+				draw_line(brush_ctx, 0, csz, csz, 0);
+			}else if(brush_shape === "horizontal"){
+				draw_line(brush_ctx, 0, m, csz, m);
+			}else if(brush_shape === "vertical"){
+				draw_line(brush_ctx, m, 0, m, csz);
+			}
 			
 			this.rendered_color = stroke_color;
-			this.rendered_size = sz;
+			this.rendered_size = brush_size;
+			this.rendered_shape = brush_shape;
 		}
-		ctx.drawImage(brush_canvas, x-csz/2, y-csz/2);
+		ctx.drawImage(brush_canvas, ~~(x-csz/2), ~~(y-csz/2));
 	}
 }, {
 	name: "Airbrush",
