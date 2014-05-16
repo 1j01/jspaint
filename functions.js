@@ -112,6 +112,10 @@ function file_open(){
 }
 
 function file_save(){
+	if(file_name.match(/\.svg$/)){
+		file_name += ".png";
+		return file_save_as();
+	}
 	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
 		if(window.file_entry){
 			save_to_FileEntry(file_entry);
