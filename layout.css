@@ -43,6 +43,9 @@ html, body, .jspaint {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
+.jspaint-tool-options > div {
+	flex: 1;
+}
 .jspaint-tools {
 	display: flex;
 	flex-flow: row wrap;

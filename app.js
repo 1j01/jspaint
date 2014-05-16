@@ -15,8 +15,6 @@ var fill_color;
 var stroke_color_i = 0;
 var fill_color_i = 0;
 
-var $tool_options_area = $();
-
 var selected_tool = tools[6];
 var previous_tool = selected_tool;
 var colors = ["", "", ""];

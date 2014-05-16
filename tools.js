@@ -8,12 +8,25 @@ var airbrush_size = 9;
 var pencil_size = 1;
 var stroke_size = 1; // lines, curves, shape outlines
 
+var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'>&lt;<br>place tool options here<br>&gt;</i>";
+var $choose_brush = $(_);
+var $choose_airbrush = $(_);
+var $choose_brush = $(_);
+var $choose_eraser = $(_);
+var $choose_line = $(_);
+var $choose_transparency = $(_);
+var $choose_magnification = $(_);
+var $ChooseShapeStyle = function(){
+	return $(_);
+};
+
 tools = [{
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
 	implemented: false,
+	$options: $choose_transparency
 }, {
 	name: "Select",
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
@@ -65,6 +78,7 @@ tools = [{
 		selection.destroy();
 		selection = null;
 	},
+	$options: $choose_transparency
 }, {
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
@@ -78,7 +92,8 @@ tools = [{
 			ctx.fillStyle = colors[1];
 			ctx.fillRect(~~(x-eraser_size/2), ~~(y-eraser_size/2), eraser_size, eraser_size);
 		}
-	}
+	},
+	$options: $choose_eraser
 }, {
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
@@ -172,13 +187,14 @@ tools = [{
 	
 	current_color: "",
 	display_current_color: function(){
-		$tool_options_area.css({
+		this.$options.css({
 			background: this.current_color
 		});
 	},
 	mousedown: function(){
+		var _this = this;
 		$G.one("mouseup", function(){
-			$tool_options_area.css({
+			_this.$options.css({
 				background: ""
 			});
 		});
@@ -199,7 +215,8 @@ tools = [{
 	mouseup: function(){
 		colors[fill_color_i] = this.current_color;
 		$colorbox && $colorbox.update_colors();
-	}
+	},
+	$options: $(E("div"))
 }, {
 	name: "Magnifier",
 	description: "Changes the magnification.",
@@ -207,6 +224,7 @@ tools = [{
 	deselect: true,
 	passive: true,
 	implemented: false,
+	$options: $choose_magnification
 }, {
 	name: "Pencil",
 	description: "Draws a free-form line one pixel wide.",
@@ -252,7 +270,8 @@ tools = [{
 			this.rendered_shape = brush_shape;
 		}
 		ctx.drawImage(brush_canvas, ~~(x-csz/2), ~~(y-csz/2));
-	}
+	},
+	$options: $choose_brush
 }, {
 	name: "Airbrush",
 	description: "Draws using an airbrush of the selected size.",
@@ -267,12 +286,14 @@ tools = [{
 				ctx.fillRect(x + ~~rx, y + ~~ry, 1, 1);
 			}
 		}
-	}
+	},
+	$options: $choose_airbrush
 }, {
 	name: "Text",
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	implemented: false,
+	$options: $choose_transparency
 }, {
 	name: "Line",
 	description: "Draws a straight line with the selected line width.",
@@ -280,12 +301,14 @@ tools = [{
 	stroke_only: true,
 	shape: function(ctx, x, y, w, h){
 		draw_line(ctx, x, y, x+w, y+h);
-	}
+	},
+	$options: $choose_line
 }, {
 	name: "Curve",
 	description: "Draws a curved line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	implemented: false,
+	$options: $choose_line
 }, {
 	name: "Rectangle",
 	description: "Draws a rectangle with the selected fill style.",
@@ -295,17 +318,20 @@ tools = [{
 		ctx.rect(x-0.5, y-0.5, w, h);
 		ctx.fill();
 		ctx.stroke();
-	}
+	},
+	$options: $ChooseShapeStyle()
 }, {
 	name: "Polygon",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	implemented: false,
+	$options: $ChooseShapeStyle()
 }, {
 	name: "Ellipse",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	shape: draw_ellipse
+	shape: draw_ellipse,
+	$options: $ChooseShapeStyle()
 }, {
 	name: "Rounded Rectangle",
 	description: "Draws a rounded rectangle with the selected fill style.",
@@ -316,5 +342,6 @@ tools = [{
 		var radius = Math.min(7, w/2, h/2);
 		
 		draw_rounded_rectangle(ctx, x, y, w, h, radius);
-	}
+	},
+	$options: $ChooseShapeStyle()
 }];
