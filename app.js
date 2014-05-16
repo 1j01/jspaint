@@ -201,7 +201,7 @@ $G.on("keydown", function(e){
 				redo();
 			break;
 			case "G":
-				render_history_as_gif();
+				e.shiftKey ? render_history_as_gif() : toggle_grid();
 			break;
 			case "F":
 				//show image fullscreen
