@@ -7,6 +7,14 @@ html, body, .jspaint {
 	border: 0;
 	overflow: hidden;
 }
+.jspaint-choose-shape-style {
+	flex-flow: column;
+}
+.jspaint-choose-eraser {
+	flex-flow: column;
+	align-items: center;
+	justify-content: space-around;
+}
 .jspaint-choose-brush {
 	flex-flow: row wrap;
 	justify-content: space-around;

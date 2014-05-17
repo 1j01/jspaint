@@ -15,70 +15,132 @@ var render_brush = function(ctx, shape, size){
 	}else if(shape.match(/diagonal/)){
 		size -= 0.4;
 	}
-	var middle = ctx.canvas.width / 2;
-	var start = ~~(middle - size/2);
-	var end = ~~(middle + size/2);
+	
+	var mid_x = ctx.canvas.width / 2;
+	var left = ~~(mid_x - size/2);
+	var right = ~~(mid_x + size/2);
+	var mid_y = ctx.canvas.height / 2;
+	var top = ~~(mid_y - size/2);
+	var bottom = ~~(mid_y + size/2);
+	
 	if(shape === "circle"){
-		draw_ellipse(ctx, start, start, size, size);
+		draw_ellipse(ctx, left, top, size, size);
 	}else if(shape === "square"){
-		ctx.fillRect(start, start, ~~size, ~~size);
+		ctx.fillRect(left, top, ~~size, ~~size);
 	}else if(shape === "diagonal"){
-		draw_line(ctx, start, start, end, end);
+		draw_line(ctx, left, top, right, bottom);
 	}else if(shape === "reverse_diagonal"){
-		draw_line(ctx, start, end, end, start);
+		draw_line(ctx, left, bottom, right, top);
 	}else if(shape === "horizontal"){
-		draw_line(ctx, start, middle, size, middle);
+		draw_line(ctx, left, mid_y, size, mid_y);
 	}else if(shape === "vertical"){
-		draw_line(ctx, middle, start, middle, size);
+		draw_line(ctx, mid_x, top, mid_x, size);
 	}
 };
 
-var $Choose = function(things){
-	return $(_);
-};
-var $ChooseShapeStyle = function(){
-	return $(_);
-};
-
-var $choose_brush = (function(){
-	var $cb = $(E("div")).addClass("jspaint-choose-brush");
-	$cb.on("update", function(){
-		$cb.empty();
-		var brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
-		var brush_sizes = [8, 5, 2];
-		for(var brush_shape_i in brush_shapes){
-			for(var brush_size_i in brush_sizes){
-				(function(brush_size_i, brush_shape_i){
-					var shape = brush_shapes[brush_shape_i];
-					var size = brush_sizes[brush_size_i];
-					var canvas = E("canvas");
-					var ctx = canvas.getContext("2d");
-					if(shape === "circle"){
-						size -= 1;
-					}
-					
-					var csz = 10;
-					canvas.width = csz;
-					canvas.height = csz;
-					
-					render_brush(ctx, shape, size);
-					
-					$cb.append(canvas);
-					$(canvas).on("mousedown", function(){
-						brush_shape = shape;
-						brush_size = size;
-						console.log("set brush to BRUSH_"+brush_shape.toUpperCase()+"_"+brush_size + " enifed#");
-					});
-				})(brush_size_i, brush_shape_i);
-			}
+var $Choose = function(things, display, choose){
+	var $div = $(E("div"));
+	$div.on("update", function(){
+		$div.empty();
+		for(var i=0; i<things.length; i++){
+			(function(thing){
+				var $thing = $(display(thing));
+				$div.append($thing);
+				$thing.on("mousedown click", function(){
+					console.log("choose", thing);
+					choose(thing);
+				});
+			})(things[i]);
 		}
 	});
-	return $cb;
-})();
+	return $div;
+};
+var $ChooseShapeStyle = function(){
+	return $Choose(
+		[
+			[1, 0], [1, 1], [0, 1]
+		],
+		function(o){
+			var canvas = E("canvas");
+			var ctx = canvas.getContext("2d");
+			
+			canvas.width = 39;
+			canvas.height = 21;
+			var b = 5;
+			ctx.rect(b, b, canvas.width-b*2, canvas.height-b*2);
+			
+			ctx.strokeStyle = "#000";
+			ctx.fillStyle = "#777";
+			
+			if(o[0]){
+				ctx.stroke();
+			}
+			if(o[1]){
+				ctx.fill();
+			}
+			
+			return canvas;
+		},
+		function(){
+			alert("Sorry, you can't do that yet!");
+		}
+	).addClass("jspaint-choose-shape-style");
+};
+
+var $choose_brush = $Choose(
+	(function(){
+		var brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
+		var brush_sizes = [8, 5, 2];
+		var things = [];
+		for(var brush_shape_i in brush_shapes){
+			for(var brush_size_i in brush_sizes){
+				things.push({
+					shape: brush_shapes[brush_shape_i],
+					size: brush_sizes[brush_size_i],
+				});
+			}
+		}
+		return things;
+	})(), 
+	function(o){
+		var canvas = E("canvas");
+		var ctx = canvas.getContext("2d");
+		if(o.shape === "circle"){
+			o.size -= 1;
+		}
+		
+		canvas.width = canvas.height = 10;
+		
+		render_brush(ctx, o.shape, o.size);
+		
+		return canvas;
+	},
+	function(o){
+		brush_shape = o.shape;
+		brush_size = o.size;
+		console.log("set brush to BRUSH_"+brush_shape.toUpperCase()+"_"+brush_size + " enifed#");
+	}
+).addClass("jspaint-choose-brush");
 
 var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'>&lt;<br>place tool options here<br>&gt;</i>";
 var $choose_airbrush = $(_);
-var $choose_eraser = $(_);
+var $choose_eraser = $Choose(
+	[4, 6, 8, 10],
+	function(size){
+		var canvas = E("canvas");
+		var ctx = canvas.getContext("2d");
+		
+		canvas.width = 39;
+		canvas.height = 16;
+		render_brush(ctx, "square", size);
+		
+		return canvas;
+	},
+	function(size){
+		eraser_size = size;
+	}
+).addClass("jspaint-choose-eraser");
+
 var $choose_line = $(_);
 var $choose_transparency = $(_);
 var $choose_magnification = $(_);
