@@ -8,17 +8,80 @@ var airbrush_size = 9;
 var pencil_size = 1;
 var stroke_size = 1; // lines, curves, shape outlines
 
+var render_brush = function(ctx, shape, size){
+	if(shape === "circle"){
+		size /= 2;
+		size += 0.25;
+	}else if(shape.match(/diagonal/)){
+		size -= 0.4;
+	}
+	var middle = ctx.canvas.width / 2;
+	var start = ~~(middle - size/2);
+	var end = ~~(middle + size/2);
+	if(shape === "circle"){
+		draw_ellipse(ctx, start, start, size, size);
+	}else if(shape === "square"){
+		ctx.fillRect(start, start, ~~size, ~~size);
+	}else if(shape === "diagonal"){
+		draw_line(ctx, start, start, end, end);
+	}else if(shape === "reverse_diagonal"){
+		draw_line(ctx, start, end, end, start);
+	}else if(shape === "horizontal"){
+		draw_line(ctx, start, middle, size, middle);
+	}else if(shape === "vertical"){
+		draw_line(ctx, middle, start, middle, size);
+	}
+};
+
+var $Choose = function(things){
+	return $(_);
+};
+var $ChooseShapeStyle = function(){
+	return $(_);
+};
+
+var $choose_brush = (function(){
+	var $cb = $(E("div")).addClass("jspaint-choose-brush");
+	$cb.on("update", function(){
+		$cb.empty();
+		var brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
+		var brush_sizes = [8, 5, 2];
+		for(var brush_shape_i in brush_shapes){
+			for(var brush_size_i in brush_sizes){
+				(function(brush_size_i, brush_shape_i){
+					var shape = brush_shapes[brush_shape_i];
+					var size = brush_sizes[brush_size_i];
+					var canvas = E("canvas");
+					var ctx = canvas.getContext("2d");
+					if(shape === "circle"){
+						size -= 1;
+					}
+					
+					var csz = 10;
+					canvas.width = csz;
+					canvas.height = csz;
+					
+					render_brush(ctx, shape, size);
+					
+					$cb.append(canvas);
+					$(canvas).on("mousedown", function(){
+						brush_shape = shape;
+						brush_size = size;
+						console.log("set brush to BRUSH_"+brush_shape.toUpperCase()+"_"+brush_size + " enifed#");
+					});
+				})(brush_size_i, brush_shape_i);
+			}
+		}
+	});
+	return $cb;
+})();
+
 var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'>&lt;<br>place tool options here<br>&gt;</i>";
-var $choose_brush = $(_);
 var $choose_airbrush = $(_);
-var $choose_brush = $(_);
 var $choose_eraser = $(_);
 var $choose_line = $(_);
 var $choose_transparency = $(_);
 var $choose_magnification = $(_);
-var $ChooseShapeStyle = function(){
-	return $(_);
-};
 
 tools = [{
 	name: "Free-Form Select",
@@ -243,27 +306,13 @@ tools = [{
 	rendered_size: 0,
 	rendered_shape: "",
 	paint: function(ctx, x, y){
-		var sz = brush_size;
 		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
-		var m = csz / 2;
 		if(this.rendered_shape !== brush_shape || this.rendered_color !== stroke_color || this.rendered_size !== brush_size){
 			brush_canvas.width = csz;
 			brush_canvas.height = csz;
 
 			brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
-			if(brush_shape === "circle"){
-				draw_ellipse(brush_ctx, ~~(csz-brush_size)/2, ~~(csz-brush_size)/2, brush_size, brush_size);
-			}else if(brush_shape === "square"){
-				brush_ctx.fillRect(0, 0, csz, csz);
-			}else if(brush_shape === "diagonal"){
-				draw_line(brush_ctx, 0, 0, csz, csz);
-			}else if(brush_shape === "reverse_diagonal"){
-				draw_line(brush_ctx, 0, csz, csz, 0);
-			}else if(brush_shape === "horizontal"){
-				draw_line(brush_ctx, 0, m, csz, m);
-			}else if(brush_shape === "vertical"){
-				draw_line(brush_ctx, m, 0, m, csz);
-			}
+			render_brush(brush_ctx, brush_shape, brush_size);
 			
 			this.rendered_color = stroke_color;
 			this.rendered_size = brush_size;

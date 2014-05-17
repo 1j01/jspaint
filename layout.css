@@ -7,6 +7,15 @@ html, body, .jspaint {
 	border: 0;
 	overflow: hidden;
 }
+.jspaint-choose-brush {
+	flex-flow: row wrap;
+	justify-content: space-around;
+	align-content: space-around;
+}
+.jspaint-choose-brush canvas {
+	width: 10px;
+	height: 10px;
+}
 .jspaint * {
 	display: flex;
 }
