@@ -122,9 +122,7 @@ var $choose_brush = $Choose(
 	}
 ).addClass("jspaint-choose-brush");
 
-var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'>&lt;<br>place tool options here<br>&gt;</i>";
-var $choose_airbrush = $(_);
-var $choose_eraser = $Choose(
+var $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
 	function(size){
 		var canvas = E("canvas");
@@ -141,9 +139,29 @@ var $choose_eraser = $Choose(
 	}
 ).addClass("jspaint-choose-eraser");
 
-var $choose_line = $(_);
-var $choose_transparency = $(_);
-var $choose_magnification = $(_);
+var $choose_stroke_size = $Choose(
+	[1, 2, 3, 4, 5],
+	function(size){
+		var canvas = E("canvas");
+		var ctx = canvas.getContext("2d");
+		
+		canvas.width = 39;
+		canvas.height = 16;
+		
+		ctx.fillStyle = "#000";
+		ctx.fillRect(5, ~~((canvas.height-size)/2), canvas.width-5-5, size);
+		
+		return canvas;
+	},
+	function(size){
+		stroke_size = size;
+	}
+).addClass("jspaint-choose-eraser");
+
+var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'>&lt;<br>place tool options here<br>&gt;</i>";
+var $choose_airbrush_size = $(_).text("choose airbrush size");
+var $choose_transparency = $(_).text("either transparent or opaque");
+var $choose_magnification = $(_).text("choose magnification");
 
 tools = [{
 	name: "Free-Form Select",
@@ -218,7 +236,7 @@ tools = [{
 			ctx.fillRect(~~(x-eraser_size/2), ~~(y-eraser_size/2), eraser_size, eraser_size);
 		}
 	},
-	$options: $choose_eraser
+	$options: $choose_eraser_size
 }, {
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
@@ -398,7 +416,7 @@ tools = [{
 			}
 		}
 	},
-	$options: $choose_airbrush
+	$options: $choose_airbrush_size
 }, {
 	name: "Text",
 	description: "Inserts text into the picture.",
@@ -413,13 +431,13 @@ tools = [{
 	shape: function(ctx, x, y, w, h){
 		draw_line(ctx, x, y, x+w, y+h);
 	},
-	$options: $choose_line
+	$options: $choose_stroke_size
 }, {
 	name: "Curve",
 	description: "Draws a curved line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	implemented: false,
-	$options: $choose_line
+	$options: $choose_stroke_size
 }, {
 	name: "Rectangle",
 	description: "Draws a rectangle with the selected fill style.",
