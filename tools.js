@@ -38,7 +38,7 @@ var render_brush = function(ctx, shape, size){
 	}
 };
 
-var $Choose = function(things, display, choose){
+var $Choose = function(things, display, choose, is_chosen){
 	var $div = $(E("div"));
 	$div.on("update", function(){
 		$div.empty();
@@ -46,9 +46,30 @@ var $Choose = function(things, display, choose){
 			(function(thing){
 				var $thing = $(display(thing));
 				$div.append($thing);
-				$thing.on("mousedown click", function(){
-					console.log("choose", thing);
+				var update_thing = function(){
+					$thing.css({
+						background: is_chosen(thing) ? "rgb(255, 255, "+(255-123)+")" : "",
+						filter: is_chosen(thing) ? "invert()" : "",
+						webkitFilter: is_chosen(thing) ? "invert()" : "",
+					});
+				};
+				var choose_thing = function(){
 					choose(thing);
+					$div.children().css({
+						background: "",
+						filter: "",
+						webkitFilter: "",
+					});
+					update_thing();
+				}
+				update_thing();
+				
+				$thing.on("mousedown click", choose_thing);
+				$div.on("mousedown", function(){
+					$thing.on("mouseenter", choose_thing);
+				});
+				$(window).on("mouseup", function(){
+					$thing.off("mouseenter", choose_thing);
 				});
 			})(things[i]);
 		}
@@ -60,29 +81,37 @@ var $ChooseShapeStyle = function(){
 		[
 			[1, 0], [1, 1], [0, 1]
 		],
-		function(o){
+		function(a){
 			var canvas = E("canvas");
 			var ctx = canvas.getContext("2d");
 			
 			canvas.width = 39;
 			canvas.height = 21;
 			var b = 5;
-			ctx.rect(b, b, canvas.width-b*2, canvas.height-b*2);
 			
-			ctx.strokeStyle = "#000";
-			ctx.fillStyle = "#777";
+			ctx.fillStyle = "#000";
 			
-			if(o[0]){
-				ctx.stroke();
+			if(a[0]){
+				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
 			}
-			if(o[1]){
-				ctx.fill();
+			b++;
+			ctx.fillStyle = "#777";
+			if(a[1]){
+				if(!a[1]){
+					b--;
+				}
+				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
+			}else{
+				ctx.clearRect(b, b, canvas.width-b*2, canvas.height-b*2);
 			}
 			
 			return canvas;
 		},
-		function(){
-			alert("Sorry, you can't do that yet!");
+		function(a){
+			alert("Shape styles are not yet supported.");
+		},
+		function(a){
+			return a[1] && a[0];
 		}
 	).addClass("jspaint-choose-shape-style");
 };
@@ -105,20 +134,25 @@ var $choose_brush = $Choose(
 	function(o){
 		var canvas = E("canvas");
 		var ctx = canvas.getContext("2d");
-		if(o.shape === "circle"){
-			o.size -= 1;
+		
+		var shape = o.shape;
+		var size = o.size;
+		if(shape === "circle"){
+			size -= 1;
 		}
 		
 		canvas.width = canvas.height = 10;
 		
-		render_brush(ctx, o.shape, o.size);
+		render_brush(ctx, shape, size);
 		
 		return canvas;
 	},
 	function(o){
 		brush_shape = o.shape;
 		brush_size = o.size;
-		console.log("set brush to BRUSH_"+brush_shape.toUpperCase()+"_"+brush_size + " enifed#");
+	},
+	function(o){
+		return brush_shape === o.shape && brush_size === o.size;
 	}
 ).addClass("jspaint-choose-brush");
 
@@ -136,6 +170,9 @@ var $choose_eraser_size = $Choose(
 	},
 	function(size){
 		eraser_size = size;
+	},
+	function(size){
+		return eraser_size === size;
 	}
 ).addClass("jspaint-choose-eraser");
 
@@ -146,7 +183,7 @@ var $choose_stroke_size = $Choose(
 		var ctx = canvas.getContext("2d");
 		
 		canvas.width = 39;
-		canvas.height = 16;
+		canvas.height = 12;
 		
 		ctx.fillStyle = "#000";
 		ctx.fillRect(5, ~~((canvas.height-size)/2), canvas.width-5-5, size);
@@ -155,13 +192,45 @@ var $choose_stroke_size = $Choose(
 	},
 	function(size){
 		stroke_size = size;
+	},
+	function(size){
+		return stroke_size === size;
 	}
-).addClass("jspaint-choose-eraser");
+).addClass("jspaint-choose-stroke-size");
 
-var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'>&lt;<br>place tool options here<br>&gt;</i>";
+var $choose_magnification = $Choose(
+	[1, 2, 6, 8/*, 10*/],
+	function(size){
+		var canvas = E("canvas");
+		var ctx = canvas.getContext("2d");
+		
+		canvas.width = 39;
+		canvas.height = 12;
+		
+		ctx.fillStyle = "#000";
+		
+		ctx.translate(5, 0);
+		render_brush(ctx, "square", size);
+		
+		ctx.textBaseline = "middle";
+		ctx.textAlign = "right";
+		ctx.fillText(size+"x", 10, canvas.height/2);
+		
+		return canvas;
+	},
+	function(size){
+		alert("Magnification is not yet supported.");
+	},
+	function(size){
+		return size === 1;
+	}
+).addClass("jspaint-choose-magnification");
+
+var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'></i>";
+
 var $choose_airbrush_size = $(_).text("choose airbrush size");
+
 var $choose_transparency = $(_).text("either transparent or opaque");
-var $choose_magnification = $(_).text("choose magnification");
 
 tools = [{
 	name: "Free-Form Select",

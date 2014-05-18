@@ -63,7 +63,8 @@ function $ToolBox(){
 	$c.update_selected_tool = function(){
 		$buttons.removeClass("selected");
 		selected_tool.$button.addClass("selected");
-		$tool_options.empty().append(selected_tool.$options);
+		$tool_options.children().detach();
+		$tool_options.append(selected_tool.$options);
 		$tool_options.children().trigger("update");
 		$canvas.css({
 			cursor: Cursor(selected_tool.cursor)
