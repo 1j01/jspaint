@@ -9,8 +9,8 @@ var my_canvas_height = default_canvas_height;
 
 try{
 	if(localStorage){
-		my_canvas_width = Number(localStorage.width);
-		my_canvas_height = Number(localStorage.height);
+		my_canvas_width = Number(localStorage.width) || default_canvas_width;
+		my_canvas_height = Number(localStorage.height) || default_canvas_height;
 	}
 }catch(e){}
 
