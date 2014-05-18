@@ -2,8 +2,17 @@
 var aliasing = true;
 var transparency = false;
 
-var default_width = 683;
-var default_height = 384;
+var default_canvas_width = 683;
+var default_canvas_height = 384;
+var my_canvas_width = default_canvas_width;
+var my_canvas_height = default_canvas_height;
+
+try{
+	if(localStorage){
+		my_canvas_width = Number(localStorage.width);
+		my_canvas_height = Number(localStorage.height);
+	}
+}catch(e){}
 
 var palette = [
 	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
@@ -84,6 +93,11 @@ $canvas.on("user-resized", function(e, width, height){
 		if(previous_canvas){
 			ctx.drawImage(previous_canvas, 0, 0);
 		}
+		
+		try{
+			localStorage.width = width;
+			localStorage.height = height;
+		}catch(e){}
 	}
 });
 

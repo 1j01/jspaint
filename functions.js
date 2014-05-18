@@ -12,8 +12,8 @@ function reset(){
 	file_name = "untitled";
 	update_title();
 	
-	canvas.width = default_width;
-	canvas.height = default_height;
+	canvas.width = my_canvas_width;
+	canvas.height = my_canvas_height;
 	
 	ctx.fillStyle = colors[1];
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
