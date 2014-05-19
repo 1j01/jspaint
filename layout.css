@@ -10,7 +10,10 @@ html, body, .jspaint {
 .jspaint-choose-shape-style {
 	flex-flow: column;
 }
-.jspaint-choose-eraser, .jspaint-choose-magnification, .jspaint-choose-stroke-size {
+.jspaint-choose-eraser,
+.jspaint-choose-magnification,
+.jspaint-choose-stroke-size,
+.jspaint-choose-transparency {
 	flex-flow: column;
 	align-items: center;
 	justify-content: space-around;

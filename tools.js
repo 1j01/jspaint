@@ -44,33 +44,32 @@ var $Choose = function(things, display, choose, is_chosen){
 		$div.empty();
 		for(var i=0; i<things.length; i++){
 			(function(thing){
-				var $thing = $(display(thing));
-				$div.append($thing);
-				var update_thing = function(){
-					$thing.css({
-						background: is_chosen(thing) ? "rgb(255, 255, "+(255-123)+")" : "",
-						filter: is_chosen(thing) ? "invert()" : "",
-						webkitFilter: is_chosen(thing) ? "invert()" : "",
-					});
-				};
+				var $option_container = $(E("div")).appendTo($div);
+				var $option = $();
 				var choose_thing = function(){
 					choose(thing);
-					$div.children().css({
-						background: "",
-						filter: "",
-						webkitFilter: "",
-					});
-					update_thing();
+					$div.children().trigger("redraw");
+					update();
 				}
-				update_thing();
+				var update = function(){
+					$option_container.css({
+						backgroundColor: is_chosen(thing) ? "rgb(0, 0, 123)" : ""
+					});
+					$option_container.empty();
+					$option = $(display(thing, is_chosen(thing)));
+					$option.appendTo($option_container);
+				};
+				update();
+				$option_container.on("redraw", update);
 				
-				$thing.on("mousedown click", choose_thing);
+				$option_container.on("mousedown click", choose_thing);
 				$div.on("mousedown", function(){
-					$thing.on("mouseenter", choose_thing);
+					$option_container.on("mouseenter", choose_thing);
 				});
 				$(window).on("mouseup", function(){
-					$thing.off("mouseenter", choose_thing);
+					$option_container.off("mouseenter", choose_thing);
 				});
+				
 			})(things[i]);
 		}
 	});
@@ -81,7 +80,7 @@ var $ChooseShapeStyle = function(){
 		[
 			[1, 0], [1, 1], [0, 1]
 		],
-		function(a){
+		function(a, is_chosen){
 			var canvas = E("canvas");
 			var ctx = canvas.getContext("2d");
 			
@@ -89,7 +88,7 @@ var $ChooseShapeStyle = function(){
 			canvas.height = 21;
 			var b = 5;
 			
-			ctx.fillStyle = "#000";
+			ctx.fillStyle = is_chosen ? "#fff" : "#000";
 			
 			if(a[0]){
 				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
@@ -131,7 +130,7 @@ var $choose_brush = $Choose(
 		}
 		return things;
 	})(), 
-	function(o){
+	function(o, is_chosen){
 		var canvas = E("canvas");
 		var ctx = canvas.getContext("2d");
 		
@@ -143,6 +142,7 @@ var $choose_brush = $Choose(
 		
 		canvas.width = canvas.height = 10;
 		
+		ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		render_brush(ctx, shape, size);
 		
 		return canvas;
@@ -158,12 +158,14 @@ var $choose_brush = $Choose(
 
 var $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
-	function(size){
+	function(size, is_chosen){
 		var canvas = E("canvas");
 		var ctx = canvas.getContext("2d");
 		
 		canvas.width = 39;
 		canvas.height = 16;
+		
+		ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		render_brush(ctx, "square", size);
 		
 		return canvas;
@@ -178,14 +180,14 @@ var $choose_eraser_size = $Choose(
 
 var $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
-	function(size){
+	function(size, is_chosen){
 		var canvas = E("canvas");
 		var ctx = canvas.getContext("2d");
 		
 		canvas.width = 39;
 		canvas.height = 12;
 		
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		ctx.fillRect(5, ~~((canvas.height-size)/2), canvas.width-5-5, size);
 		
 		return canvas;
@@ -200,14 +202,14 @@ var $choose_stroke_size = $Choose(
 
 var $choose_magnification = $Choose(
 	[1, 2, 6, 8/*, 10*/],
-	function(size){
+	function(size, is_chosen){
 		var canvas = E("canvas");
 		var ctx = canvas.getContext("2d");
 		
 		canvas.width = 39;
 		canvas.height = 12;
 		
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		
 		ctx.translate(5, 0);
 		render_brush(ctx, "square", size);
@@ -230,7 +232,25 @@ var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'></i>";
 
 var $choose_airbrush_size = $(_).text("choose airbrush size");
 
-var $choose_transparency = $(_).text("either transparent or opaque");
+var $choose_transparency = $Choose(
+	["opaque", "transparent"],
+	function(t_o, is_chosen){
+		var e = E("div");
+		$(e).css({
+			backgroundImage: "url(images/options-transparency.png)",
+			backgroundPosition: "0px "+(t_o === "opaque" ? 0 : 23)+"px",
+			width: "35px",
+			height: "23px"
+		});
+		return e;
+	},
+	function(t_o){
+		alert("Transparency is not yet supported.");
+	},
+	function(t_o){
+		return t_o === "opaque";
+	}
+).addClass("jspaint-choose-transparency");
 
 tools = [{
 	name: "Free-Form Select",
