@@ -1,5 +1,8 @@
 
 function draw_ellipse(ctx, x, y, w, h){
+	var stroke_color = ctx.strokeStyle;
+	var fill_color = ctx.fillStyle;
+	
 	var r1 = Math.round;
 	var r2 = Math.round;
 	
@@ -43,6 +46,9 @@ function draw_ellipse(ctx, x, y, w, h){
 	}
 }
 function draw_rounded_rectangle(ctx, x, y, width, height, radius){
+	var stroke_color = ctx.strokeStyle;
+	var fill_color = ctx.fillStyle;
+	
 	if(aliasing){
 		var iw = width - radius*2;
 		var ih = height - radius*2;
