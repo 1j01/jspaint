@@ -30,10 +30,10 @@ function draw_ellipse(ctx, x, y, w, h){
 			var rx = Math.cos(r) * w/2;
 			var ry = Math.sin(r) * h/2;
 			ctx.fillRect(
-				r1(cx-rx),
-				r1(cy-ry),
-				r2(rx*2),
-				r2(ry*2)
+				r1(cx+rx),
+				r1(cy+ry),
+				r2(-rx*2),
+				r2(-ry*2)
 			);
 		}
 	}else{

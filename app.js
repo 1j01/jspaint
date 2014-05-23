@@ -439,7 +439,7 @@ $canvas.on("mousedown", function(e){
 	if(selected_tool.continuous === "time"){
 		var iid = setInterval(function(){
 			tool_go();
-		}, 10);
+		}, 5);
 	}
 	$G.one("mouseup", function(e, canceling){
 		button = undefined;

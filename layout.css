@@ -18,7 +18,8 @@ html, body, .jspaint {
 	align-items: center;
 	justify-content: space-around;
 }
-.jspaint-choose-brush {
+.jspaint-choose-brush,
+.jspaint-choose-airbrush-size {
 	flex-flow: row wrap;
 	justify-content: space-around;
 	align-content: space-around;

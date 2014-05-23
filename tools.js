@@ -2,7 +2,7 @@
 var brush_canvas = E("canvas");
 var brush_ctx = brush_canvas.getContext("2d");
 var brush_shape = "circle";
-var brush_size = 3;
+var brush_size = 5;
 var eraser_size = 8;
 var airbrush_size = 9;
 var pencil_size = 1;
@@ -228,9 +228,31 @@ var $choose_magnification = $Choose(
 	}
 ).addClass("jspaint-choose-magnification");
 
-var _ = "<i style='font-family:monospace;font-size:8px;text-align:center'></i>";
-
-var $choose_airbrush_size = $(_).text("choose airbrush size");
+var airbrush_sizes = [9, 16, 24];
+var $choose_airbrush_size = $Choose(
+	airbrush_sizes,
+	function(size, is_chosen){
+		var e = E("div");
+		var sprite_width = 72;
+		var pos = airbrush_sizes.indexOf(size) / airbrush_sizes.length * -sprite_width;
+		var is_bottom = size === 24;
+		var _ = 4 * !is_bottom;
+		$(e).css({
+			backgroundImage: "url(images/options-airbrush-size.png)",
+			backgroundPosition: pos - _  + "px 0px",
+			width: (72 / 3 - _*2) + "px",
+			height: "23px",
+			webkitFilter: is_chosen ? "invert()" : "" // @todo: invert and upscale with canvas
+		});
+		return e;
+	},
+	function(size){
+		airbrush_size = size;
+	},
+	function(size){
+		return size === airbrush_size;
+	}
+).addClass("jspaint-choose-airbrush-size");
 
 var $choose_transparency = $Choose(
 	["opaque", "transparent"],
@@ -496,11 +518,12 @@ tools = [{
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
 	paint: function(ctx, x, y){
-		for(var i=0; i<25; i++){
-			var rx = (Math.random()*2-1) * airbrush_size;
-			var ry = (Math.random()*2-1) * airbrush_size;
+		var r = airbrush_size / 2;
+		for(var i = 0; i < 6 + r/5; i++){
+			var rx = (Math.random()*2-1) * r;
+			var ry = (Math.random()*2-1) * r;
 			var d = rx*rx + ry*ry;
-			if(d <= airbrush_size * airbrush_size){
+			if(d <= r * r){
 				ctx.fillRect(x + ~~rx, y + ~~ry, 1, 1);
 			}
 		}
