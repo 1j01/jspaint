@@ -68,7 +68,7 @@ html, body, .jspaint {
 .jspaint-menu-item {
 	display: block;
 }
-u {
+.jspaint-menu-hotkey {
 	display: inline !important;
 }
 

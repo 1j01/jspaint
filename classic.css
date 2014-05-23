@@ -1,7 +1,7 @@
 
 
 .jspaint {
-	background: #BBB;
+	background: #c0c0c0;
 }
 .jspaint-canvas-area {
 	background: #7b7b7b;
@@ -32,15 +32,33 @@
 	padding: 3px 5px;
 }
 .jspaint-menu-popup {
-	background: #BBB;
+	background: #c0c0c0;
+	border-top: 1px solid #c0c0c0;
+	border-left: 1px solid #c0c0c0;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
 }
 .jspaint-menu-item {
-	padding: 3px 5px;
+	padding: 1px 3px;
+	margin: 2px;
 }
 .jspaint-menu-item:hover, 
 .jspaint-menu-item.active {
 	background: #007;
 	color: #fff;
+}
+.jspaint-menu-hr {
+	display: block;
+	height: 0;
+	width: auto;
+	border: 0;
+	border-top: 1px solid #808080;
+	border-bottom: 1px solid #ffffff;
+	margin: 0px 2px;
+}
+.jspaint-menu-hotkey {
+	text-decoration: underline;
 }
 
 .jspaint-status-area {

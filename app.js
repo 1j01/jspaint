@@ -248,7 +248,7 @@ $.each({
 }, function(menu_key, menu_items){
 	var _html = function(menu_key){
 		return menu_key.replace(/&(.)/, function(m){
-			return "<u>" + m[1] + "</u>";
+			return "<span class='jspaint-menu-hotkey'>" + m[1] + "</span>";
 		});
 	};
 	var _hotkey = function(menu_key){
