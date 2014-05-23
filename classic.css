@@ -23,6 +23,26 @@
 	outline: 1px dotted #7b7b7b; /* what it is */
 	outline: 1px dotted invert; /* what it should be */
 }
+
+.jspaint-menus * {
+	font: menu;
+	cursor: default;
+}
+.jspaint-menu-button {
+	padding: 3px 5px;
+}
+.jspaint-menu-popup {
+	background: #BBB;
+}
+.jspaint-menu-item {
+	padding: 3px 5px;
+}
+.jspaint-menu-item:hover, 
+.jspaint-menu-item.active {
+	background: #007;
+	color: #fff;
+}
+
 .jspaint-status-area {
 	overflow: hidden;
 	white-space: nowrap;

@@ -19,6 +19,7 @@ html, body, .jspaint {
 .jspaint-window,
 .jspaint-handle,
 .jspaint-status-area,
+.jspaint-menus,
 c-area {
 	display: none !important;
 }

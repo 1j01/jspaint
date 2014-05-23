@@ -67,6 +67,208 @@ $status_text.default = function(){
 };
 $status_text.default();
 
+var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
+var ____________________________ = "A HORIZONTAL RULE";
+$.each({
+	"&File": [
+		{
+			item: "&New",
+			shortcut: "Ctrl+N",
+			action: file_new
+		},
+		{
+			item: "&Open",
+			shortcut: "Ctrl+O",
+			action: file_open
+		},
+		{
+			item: "&Save",
+			shortcut: "Ctrl+S",
+			action: file_save
+		},
+		{
+			item: "Save &As",
+			shortcut: "Ctrl+Shift+S",
+			action: file_save_as
+		},
+		____________________________,
+		{
+			item: "Print Pre&view"
+		},
+		{
+			item: "Page Se&tup"
+		},
+		{
+			item: "&Print",
+			shortcut: "Ctrl+P",
+			action: function(){print();}
+		},
+		____________________________,
+		{
+			item: "Set As &Wallpaper (Tiled)"
+		},
+		{
+			item: "Set As Wa&llpaper (Centered)"
+		},
+		____________________________,
+		{
+			item: "Recent File",
+			disabled: true
+		},
+		____________________________,
+		{
+			item: "E&xit :O :O :O",
+			shortcut: "Alt+F4",
+			action: function(){
+				window.close();
+			}
+		}
+	],
+	"&Edit": [
+		{
+			item: "&Undo",
+			shortcut: "Ctrl+Z",
+			action: undo
+		},
+		{
+			item: "&Repeat",
+			shortcut: "F4",
+			action: redo,
+			disabled: true
+		},
+		____________________________,
+		{
+			item: "Cu&t",
+			shortcut: "Ctrl+X",
+			disabled: true
+		},
+		{
+			item: "&Copy",
+			shortcut: "Ctrl+C",
+			disabled: true
+		},
+		{
+			item: "&Paste",
+			shortcut: "Ctrl+V",
+			disabled: true
+		},
+		{
+			item: "C&lear Selection",
+			shortcut: "Del",
+			action: delete_selection,
+			disabled: true
+		},
+		{
+			item: "Select &All",
+			shortcut: "Ctrl+A",
+			action: select_all
+		},
+		____________________________,
+		{
+			item: "C&opy To...",
+			disabled: true
+		},
+		{
+			item: "Paste &From..."
+		}
+	],
+	"&View": [
+		{
+			item: "&Tool Box",
+			shortcut: "Ctrl+T",
+			checkbox: {}
+		},
+		{
+			item: "&Color Box",
+			shortcut: "Ctrl+L",
+			checkbox: {}
+		},
+		{
+			item: "&Status Bar",
+			checkbox: {}
+		},
+		{
+			item: "T&ext Toolbar",
+			disabled: true,
+			checkbox: {}
+		},
+		____________________________,
+		{
+			item: "&Zoom",
+			submenu: []
+		},
+		{
+			item: "&View Bitmap",
+			shortcut: "Ctrl+F",
+			action: view_bitmap
+		}
+	],
+	"&Image": [
+		{
+			item: "&Flip/Rotate",
+			shortcut: "Ctrl+R"
+		},
+		{
+			item: "&Stretch/Skew",
+			shortcut: "Ctrl+W"
+		},
+		{
+			item: "&Invert Colors",
+			shortcut: "Ctrl+I"
+		},
+		{
+			item: "&Attributes...",
+			shortcut: "Ctrl+E"
+		},
+		{
+			item: "&Clear Image",
+			shortcut: "Ctrl+Shft+N"
+		},
+		{
+			item: "&Draw Opaque",
+			checkbox: {}
+		}
+	],
+	"&Colors": [
+		{
+			item: "&Edit Colors...",
+			action: function(){}
+		}
+	],
+	"&Help": [
+		{
+			item: "&Help Topics",
+			action: function(){}
+		},
+		{
+			item: "&About Paint",
+			action: function(){}
+		}
+	],
+}, function(menu_key, menu_items){
+	var _html = function(menu_key){
+		return menu_key.replace(/&(.)/, function(m){
+			return "<u>" + m[1] + "</u>";
+		});
+	};
+	var _hotkey = function(menu_key){
+		return menu_key[menu_key.indexOf("&")+1].toUpperCase();
+	};
+	var $menu_container = $(E("div")).addClass("jspaint-menu-container").appendTo($menus);
+	var $menu_button = $(E("div")).addClass("jspaint-menu-button").appendTo($menu_container);
+	var $menu_popup = $(E("div")).addClass("jspaint-menu-popup").appendTo($menu_container);
+	$menu_button.html(_html(menu_key));
+	$.map(menu_items, function(item){
+		if(item === ____________________________){
+			var $hr = $(E("hr")).addClass("jspaint-menu-hr").appendTo($menu_popup);
+		}else{
+			var $item = $(E("div")).addClass("jspaint-menu-item").appendTo($menu_popup);
+			$item.html(_html(item.item));
+			$item.click(item.action);
+		}
+	});
+});
+
 var $toolbox = $ToolBox();
 var $colorbox = $ColorBox();
 
@@ -216,9 +418,7 @@ $G.on("keydown", function(e){
 				e.shiftKey ? render_history_as_gif() : toggle_grid();
 			break;
 			case "F":
-				//show image fullscreen
-				canvas.requestFullscreen && canvas.requestFullscreen();
-				canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
+				view_bitmap();
 			break;
 			case "O":
 				file_open();

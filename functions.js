@@ -327,3 +327,8 @@ function invert(){
 		ctx.putImageData(id, 0, 0);
 	}
 }
+
+function view_bitmap(){
+	canvas.requestFullscreen && canvas.requestFullscreen();
+	canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
+}
