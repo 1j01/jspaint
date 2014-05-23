@@ -28,8 +28,21 @@
 	font: menu;
 	cursor: default;
 }
+.jspaint-menu-container {
+	margin-bottom: 1px;
+}
 .jspaint-menu-button {
-	padding: 3px 5px;
+	padding: 2px 5px;
+	position: relative;
+}
+.jspaint-menu-button:hover {
+	box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
+}
+.jspaint-menu-button:active,
+.jspaint-menu-button.active {
+	box-shadow: 1px 1px 0 #707070 inset, -1px -1px 0 white inset;
+	top: 1px;
+	left: 1px;
 }
 .jspaint-menu-popup {
 	background: #c0c0c0;

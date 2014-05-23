@@ -55,15 +55,15 @@ html, body, .jspaint {
 }
 .jspaint-menu-popup {
 	display: none;
-}
-.jspaint-menu-container:hover .jspaint-menu-popup {
-	display: block;
 	position: absolute;
 	top: 20px;
 	left: 0;
 	z-index: 4;
 	min-width: 107px;
 	box-sizing: border-box;
+}
+.jspaint-menu-popup.visible {
+	display: block;
 }
 .jspaint-menu-item {
 	display: block;
