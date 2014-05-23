@@ -142,7 +142,7 @@ var $choose_brush = $Choose(
 		
 		canvas.width = canvas.height = 10;
 		
-		ctx.fillStyle = is_chosen ? "#fff" : "#000";
+		ctx.fillStyle = ctx.strokeStyle = is_chosen ? "#fff" : "#000";
 		render_brush(ctx, shape, size);
 		
 		return canvas;
