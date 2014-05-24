@@ -118,7 +118,7 @@ $.each({
 		},
 		____________________________,
 		{
-			item: "E&xit :O :O :O",
+			item: "E&xit",
 			shortcut: "Alt+F4",
 			action: function(){
 				window.close();
@@ -307,11 +307,15 @@ $.each({
 			var $label = $(E("td")).addClass("jspaint-menu-item-label");
 			var $shortcut = $(E("td")).addClass("jspaint-menu-item-shortcut");
 			var $submenu_area = $(E("td")).addClass("jspaint-menu-item-submenu-area");
+			$item.append($checkbox_area, $label, $shortcut, $submenu_area);
 			
 			$label.html(_html(item.item));
 			$shortcut.text(item.shortcut);
+			$item.attr("disabled", item.disabled);
+			if(item.checkbox){
+				$checkbox_area.text("✓");
+			}
 			
-			$item.append($checkbox_area, $label, $shortcut, $submenu_area);
 			$item.on("click", function(){
 				$menus.find(".jspaint-menu-button").trigger("release");
 				item.action && item.action();

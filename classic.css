@@ -58,10 +58,17 @@
 	padding: 1px 3px;
 	margin: 2px;
 }
+.jspaint-menu-item[disabled] {
+	text-shadow: 0.8px 0.8px 0px #fff;
+}
 .jspaint-menu-item:hover, 
 .jspaint-menu-item.active {
 	background: #007;
 	color: #fff;
+	text-shadow: none;
+}
+.jspaint-menu-item[disabled] {
+	color: #808080;
 }
 .jspaint-menu-hr {
 	display: block !important;
@@ -74,6 +81,10 @@
 }
 .jspaint-menu-hotkey {
 	text-decoration: underline;
+}
+.jspaint-menu-item-checkbox-area,
+.jspaint-menu-item-submenu-area {
+	text-align: center;
 }
 
 .jspaint-status-area {
