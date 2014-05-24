@@ -68,7 +68,8 @@ $status_text.default = function(){
 $status_text.default();
 
 var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
-var ____________________________ = "A HORIZONTAL RULE";
+var selecting_menus = false;
+var ____________________________ = "A HORIZONTAL RULE / DIVIDER";
 $.each({
 	"&File": [
 		{
@@ -214,7 +215,8 @@ $.each({
 		},
 		{
 			item: "&Invert Colors",
-			shortcut: "Ctrl+I"
+			shortcut: "Ctrl+I",
+			action: invert
 		},
 		{
 			item: "&Attributes...",
@@ -254,19 +256,63 @@ $.each({
 	var _hotkey = function(menu_key){
 		return menu_key[menu_key.indexOf("&")+1].toUpperCase();
 	};
+	var this_click_opened_the_menu = false;
 	var $menu_container = $(E("div")).addClass("jspaint-menu-container").appendTo($menus);
 	var $menu_button = $(E("div")).addClass("jspaint-menu-button").appendTo($menu_container);
 	var $menu_popup = $(E("div")).addClass("jspaint-menu-popup").appendTo($menu_container);
 	$menu_button.html(_html(menu_key));
+	$menu_button.on("mousedown mousemove", function(e){
+		if(e.type === "mousemove" && !selecting_menus){
+			return;
+		}
+		if(e.type === "mousedown"){
+			if(!$menu_button.hasClass("active")){
+				this_click_opened_the_menu = true;
+			}
+		}
+		
+		$menus.find(".jspaint-menu-button").trigger("release");
+		
+		$menu_button.addClass("active");
+		$menu_popup.addClass("visible");
+		
+		selecting_menus = true;
+	});
+	$menu_button.on("mouseup", function(e){
+		if(this_click_opened_the_menu){
+			this_click_opened_the_menu = false;
+			return;
+		}
+		if($menu_button.hasClass("active")){
+			$menus.find(".jspaint-menu-button").trigger("release");
+		}
+	});
+	$menu_button.on("release", function(e){
+		selecting_menus = false;
+		
+		$menu_button.removeClass("active");
+		$menu_popup.removeClass("visible");
+	});
 	$.map(menu_items, function(item){
 		if(item === ____________________________){
 			var $hr = $(E("hr")).addClass("jspaint-menu-hr").appendTo($menu_popup);
 		}else{
 			var $item = $(E("div")).addClass("jspaint-menu-item").appendTo($menu_popup);
 			$item.html(_html(item.item));
-			$item.click(item.action);
+			$item.click(function(){
+				$menus.find(".jspaint-menu-button").trigger("release");
+				item.action && item.action();
+			});
 		}
 	});
+});
+$(window).on("keypress", function(e){
+	$menus.find(".jspaint-menu-button").trigger("release");
+});
+$(window).on("mousedown mouseup", function(e){
+	if(!$.contains($menus.get(0), e.target)){
+		$menus.find(".jspaint-menu-button").trigger("release");
+	}
 });
 
 var $toolbox = $ToolBox();
