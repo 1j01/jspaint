@@ -23,3 +23,7 @@ html, body, .jspaint {
 c-area {
 	display: none !important;
 }
+
+* {
+	background: transparent !important;
+}
