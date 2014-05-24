@@ -44,7 +44,9 @@
 	top: 1px;
 	left: 1px;
 }
-.jspaint-menu-popup {
+.jspaint-menu-popup:not(.something-else) { /* CSS specifity hack */
+	display: block;
+	padding: 2px;
 	background: #c0c0c0;
 	border-top: 1px solid #c0c0c0;
 	border-left: 1px solid #c0c0c0;
@@ -62,7 +64,7 @@
 	color: #fff;
 }
 .jspaint-menu-hr {
-	display: block;
+	display: block !important;
 	height: 0;
 	width: auto;
 	border: 0;
@@ -186,7 +188,7 @@
 	border-left-color: #7b7b7b;
 }
 .jspaint-tool {
-	display: block;
+	display: block !important;
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;

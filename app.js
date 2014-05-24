@@ -242,6 +242,7 @@ $.each({
 			item: "&Help Topics",
 			action: function(){}
 		},
+		____________________________,
 		{
 			item: "&About Paint",
 			action: function(){}
@@ -260,6 +261,8 @@ $.each({
 	var $menu_container = $(E("div")).addClass("jspaint-menu-container").appendTo($menus);
 	var $menu_button = $(E("div")).addClass("jspaint-menu-button").appendTo($menu_container);
 	var $menu_popup = $(E("div")).addClass("jspaint-menu-popup").appendTo($menu_container);
+	var $menu_popup_table = $(E("table")).addClass("jspaint-menu-popup-table").appendTo($menu_popup);
+	$menu_popup.hide();
 	$menu_button.html(_html(menu_key));
 	$menu_button.on("mousedown mousemove", function(e){
 		if(e.type === "mousemove" && !selecting_menus){
@@ -274,7 +277,7 @@ $.each({
 		$menus.find(".jspaint-menu-button").trigger("release");
 		
 		$menu_button.addClass("active");
-		$menu_popup.addClass("visible");
+		$menu_popup.show();
 		
 		selecting_menus = true;
 	});
@@ -291,15 +294,25 @@ $.each({
 		selecting_menus = false;
 		
 		$menu_button.removeClass("active");
-		$menu_popup.removeClass("visible");
+		$menu_popup.hide();
 	});
 	$.map(menu_items, function(item){
+		var $row = $(E("tr")).addClass("jspaint-menu-row").appendTo($menu_popup_table)
 		if(item === ____________________________){
-			var $hr = $(E("hr")).addClass("jspaint-menu-hr").appendTo($menu_popup);
+			var $td = $(E("td")).attr({colspan: 4}).appendTo($row);
+			var $hr = $(E("hr")).addClass("jspaint-menu-hr").appendTo($td);
 		}else{
-			var $item = $(E("div")).addClass("jspaint-menu-item").appendTo($menu_popup);
-			$item.html(_html(item.item));
-			$item.click(function(){
+			var $item = $row.addClass("jspaint-menu-item");
+			var $checkbox_area = $(E("td")).addClass("jspaint-menu-item-checkbox-area");
+			var $label = $(E("td")).addClass("jspaint-menu-item-label");
+			var $shortcut = $(E("td")).addClass("jspaint-menu-item-shortcut");
+			var $submenu_area = $(E("td")).addClass("jspaint-menu-item-submenu-area");
+			
+			$label.html(_html(item.item));
+			$shortcut.text(item.shortcut);
+			
+			$item.append($checkbox_area, $label, $shortcut, $submenu_area);
+			$item.on("click", function(){
 				$menus.find(".jspaint-menu-button").trigger("release");
 				item.action && item.action();
 			});

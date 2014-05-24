@@ -28,7 +28,7 @@ html, body, .jspaint {
 	width: 10px;
 	height: 10px;
 }
-.jspaint * {
+.jspaint :not(table):not(tbody):not(tr):not(td) {
 	display: flex;
 }
 .jspaint {
@@ -54,22 +54,24 @@ html, body, .jspaint {
 	position: relative;
 }
 .jspaint-menu-popup {
-	display: none;
 	position: absolute;
 	top: 20px;
 	left: 0;
 	z-index: 4;
-	min-width: 107px;
 	box-sizing: border-box;
 }
-.jspaint-menu-popup.visible {
-	display: block;
+.jspaint-menu-popup-table {
+	border-collapse: collapse;
 }
 .jspaint-menu-item {
-	display: block;
+	white-space: nowrap;
 }
 .jspaint-menu-hotkey {
 	display: inline !important;
+}
+.jspaint-menu-item-checkbox-area,
+.jspaint-menu-item-submenu-area {
+	min-width: 16px;
 }
 
 .jspaint-Tools-component {
@@ -135,7 +137,7 @@ html, body, .jspaint {
 
 .jspaint-canvas-area {
 	flex: 1;
-	display: block;
+	display: block !important;
 	position: relative;
 	overflow: auto;
 	padding: 3px;
@@ -148,13 +150,13 @@ html, body, .jspaint {
 
 
 .jspaint-window-title {
-	display: inline-block;
+	display: inline-block !important;
 	margin: 0;
 	padding: 0;
 	cursor: default;
 }
 .jspaint-window-close-button {
-	display: inline-block;
+	display: inline-block !important;
 	float: right;
 	width: 13px;
 	height: 11px;
