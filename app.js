@@ -224,7 +224,7 @@ $.each({
 		},
 		{
 			item: "&Clear Image",
-			shortcut: "Ctrl+Shft+N"
+			shortcut: "Ctrl+Shift+N"
 		},
 		{
 			item: "&Draw Opaque",
