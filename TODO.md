@@ -4,15 +4,25 @@
 * Improve README
 	* Make it more than 4 words
 		* (If you exclude "words" that have acronyms in them, there is only one two-letter word: "in")
-	* Explain the project
-		* Current state
-		* [Goals](#extended-editing)
-	* Link to the hosted version
-	* Show how to install it as a chrome app
-	* Make it pretty with images
+	* Make it better than the TODO list at introducing the project
+		* Explain the project
+			* Current state
+			* [Goals](#extended-editing)
+		* Link to the hosted version
+		* Show how to install it as a chrome app
+		* Make it pretty with images
 
 
 * Menus!
+	* Pixel Perfection
+	* Keyboard Navigation
+	* Mouse navigation
+	* Use keyboard shortcuts defined in the `menus` data structure (which isn't currently saved to a variable) to declaratively setup hotkeys
+		* To do this, do this:
+		* on key press, loop through the menus
+			* if shortcut matches
+				* "call to action"
+				* break
 
 
 * Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
@@ -129,3 +139,7 @@ As a prank, wait for next user input before fullscreening and bluescreening
 	* [chrome.fileSystem](http://developer.chrome.com/apps/fileSystem)
 
 * Minimum Window Size ✓
+
+* Themed window border
+
+* Publish to webstore!?!?!?
