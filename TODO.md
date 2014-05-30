@@ -2,15 +2,16 @@
 # Todo
 
 * Improve README
-	* Make it more than 4 words
-		* (If you exclude "words" that have acronyms in them, there is only one two-letter word: "in")
-	* Make it better than the TODO list at introducing the project
-		* Explain the project
-			* Current state
-			* [Goals](#extended-editing)
-		* Link to the hosted version
-		* Show how to install it as a chrome app
+	* Make it more than 4 words ✓
+	* Make it better than the TODO list at introducing the project ✓
+		* Explain the project ✓
+			* Current state ✓
+			* [Goals](#extended-editing) ✓
+		* Link to the hosted version ✓ (is a link in the header visible enough?)
+		* ~~Show how to install it as a chrome app~~
+		* Publish jspaint to the webstore, link to that also
 		* Make it pretty with images
+	* I feel like the tone is sort of weird...
 
 
 * Menus!
@@ -29,13 +30,13 @@
 * Do warn about losing unsaved files (close button, etc.)
 
 
-* Use win98 default scrollbar size
+* Use win98 default scrollbar size @easy
 * Minor color differences (0x808080 != 0x7b7b7b)
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
 	* Brush Scaling ✓
 	* Custom Brushes ✓
-	* The 'Stamp' Tool (Draw the selection on click, not just drag)
+	* The 'Stamp' Tool (Draw the selection on click, not just drag) @easy
 	* Image Scaling (Ctrl+Plus and Ctrl+Minus on the Numpad to scale the selection by factors of 2)
 	* Color Replacement (see [Tools](#tools))
 	* The Grid (Ctrl+G + zoom6x+)
@@ -95,6 +96,7 @@
 	* *find a better fill algorithm*
 
 * Text tool
+	* Make it
 	* Save text and record transformations so it can be saved as an SVG with invisible selectable elements
 
 * Strokes
@@ -138,8 +140,9 @@ As a prank, wait for next user input before fullscreening and bluescreening
 	* [Manifest - File Handlers](http://developer.chrome.com/apps/manifest/file_handlers)
 	* [chrome.fileSystem](http://developer.chrome.com/apps/fileSystem)
 
-* Minimum Window Size ✓
+* Minimum window size ✓
 
 * Themed window border
+	* Minimum window size might need updating
 
 * Publish to webstore!?!?!?
