@@ -37,7 +37,10 @@
 	* Scroll Wheel draws line down and to the right (let's maybe not implement this hm?)
 
 * BUG: cropping dupes the image a bit
-* BUG: sometimes editting ability is suddenly lost
+* BUG: sometimes editing ability is suddenly lost (this may be fixed)
+* Handle some edge cases
+	* Undoing/redoing should stop brush drawing
+	* Undoing/redoing should destroy the selection
 
 ### Extended editing
 

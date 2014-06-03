@@ -677,15 +677,15 @@ $canvas.on("mouseleave", function(e){
 	$status_position.text("");
 });
 $canvas.on("mousedown", function(e){
+	if(reverse ? (button === 2) : (button === 0)){
+		return cancel();
+	}
 	if(e.button === 0){
 		reverse = false;
 	}else if(e.button === 2){
 		reverse = true;
 	}else{
 		return false;
-	}
-	if(reverse ? (button === 0) : (button === 2)){
-		return cancel();
 	}
 	button = e.button;
 	ctrl = e.ctrlKey;
