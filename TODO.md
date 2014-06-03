@@ -2,24 +2,17 @@
 # Todo
 
 * Improve README
-	* Make it more than 4 words ✓
-	* Make it better than the TODO list at introducing the project ✓
-		* Explain the project ✓
-			* Current state ✓
-			* [Goals](#extended-editing) ✓
-		* Link to the hosted version ✓ (is a link in the header visible enough?)
-		* ~~Show how to install it as a chrome app~~
-		* Publish jspaint to the webstore, link to that also
-		* Make it pretty with images
-	* I feel like the tone is sort of weird...
-
+	* Introduce and explain the project ✓ ...better?
+	* Is a link in the header visible enough?
+	* Publish jspaint to the webstore and link to that
+	* I feel like the tone is sort of weird or something
+	* Make it pretty with images
 
 * Menus!
 	* Pixel Perfection
 	* Keyboard Navigation
 	* Mouse navigation
 	* Use keyboard shortcuts defined in the `menus` data structure (which isn't currently saved to a variable) to declaratively setup hotkeys
-		* To do this, do this:
 		* on key press, loop through the menus
 			* if shortcut matches
 				* "call to action"
@@ -43,6 +36,8 @@
 	* Quick Undo ✓ (I also made it redoable, in case you do it by accident)
 	* Scroll Wheel draws line down and to the right (let's maybe not implement this hm?)
 
+* BUG: cropping dupes the image a bit
+* BUG: sometimes editting ability is suddenly lost
 
 ### Extended editing
 
@@ -62,12 +57,6 @@
 	* Skew
 	* Invert
 	* Clear
-	* Make these all as (canvas)-> new Canvas?
-		* rotated(canvas, degrees)?
-		* flipped(canvas, vertical)?
-		* skewed(canvas, skewX, skewY)?
-		* inverted(canvas)?
-		* cleared(canvas)???
 * Undo/Redo History to Frames
 
 ### Tools
@@ -87,7 +76,7 @@
 * Use stroke width
 
 * Color Eraser
-	* right click with the eraser to selectively replace color1 with color2 (background)
+	* right click with the eraser to selectively replace color1 with color2
 
 * Fill Bucket
 	* get into those corners!
@@ -105,10 +94,7 @@
 
 
 ### Colors
-* Double-left-click a color to choose primary color. ✓
-* Double-right-click to choose the secondary color. ✓
-* Double-ctrl-click to choose the ternary color. ✓
-* (not in mspaint) Double?-Click one of the selected colors to change it directly?
+This isn't in mspaint, but maybe use should be able to click (double-click?) one of the selected colors to change it directly?
 
 ### Components / Windows
 * Drag components into a window
@@ -135,12 +121,6 @@ As a prank, wait for next user input before fullscreening and bluescreening
 			}, function(){});
 	
 	* I'd need to test this on Chrome OS
-
-* Handle files: ✓
-	* [Manifest - File Handlers](http://developer.chrome.com/apps/manifest/file_handlers)
-	* [chrome.fileSystem](http://developer.chrome.com/apps/fileSystem)
-
-* Minimum window size ✓
 
 * Themed window border
 	* Minimum window size might need updating
