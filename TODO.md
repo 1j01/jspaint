@@ -24,8 +24,6 @@
 
 * BUG: sometimes editing ability is suddenly lost (this may be fixed)
 	`var mouse_was_pressed = false;`
-* BUG: save (new) file and then >New and then save saves over old file irreversibly
-	`window.file_entry = null;`
 * BUG: status text gets cut off
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 

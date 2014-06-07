@@ -9,6 +9,7 @@ function reset(){
 	redos = [];
 	reset_colors();
 	
+	file_entry = null;
 	file_name = "untitled";
 	update_title();
 	
