@@ -22,6 +22,25 @@
 * Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
 * Do warn about losing unsaved files (close button, etc.)
 
+* BUG: cropping dupes the image a bit
+* BUG: sometimes editing ability is suddenly lost (this may be fixed)
+	`var mouse_was_pressed = false;`
+* BUG: save (new) file and then >New and then save saves over old file irreversibly
+	`fileEntry = null;`
+* BUG: clicking on the animated gif doesn't prevent the default of opening the image in a new tab (from the chrome app)
+	`event.preventDefault();`
+* Handle some edge cases
+	* Undoing/redoing should stop brush drawing
+	* Undoing/redoing should destroy the selection
+	* Switching frames in the future should also do the above.
+	* `this_one_is_a_frame_changer_guys();`
+	* `invert` is also a frame-changer
+	* `file_new` (`reset`) is a frame-changer
+	* The window can be smaller than the minimum window area of mspaint
+	* Subwindows should go away at some point. There should only be one of most of them.
+
+* Set up minification?
+
 
 * Use win98 default scrollbar size @easy
 * Minor color differences (0x808080 != 0x7b7b7b)
@@ -35,12 +54,6 @@
 	* The Grid (Ctrl+G + zoom6x+)
 	* Quick Undo ✓ (I also made it redoable, in case you do it by accident)
 	* Scroll Wheel draws line down and to the right (let's maybe not implement this hm?)
-
-* BUG: cropping dupes the image a bit
-* BUG: sometimes editing ability is suddenly lost (this may be fixed)
-* Handle some edge cases
-	* Undoing/redoing should stop brush drawing
-	* Undoing/redoing should destroy the selection
 
 ### Extended editing
 
@@ -109,7 +122,7 @@ This isn't in mspaint, but maybe use should be able to click (double-click?) one
 
 Press `/~ to bluescreen
 
-As a prank, wait for next user input before fullscreening and bluescreening
+Prankily wait for next user input before fullscreening and bluescreening
 
 
 ### Chrome App
