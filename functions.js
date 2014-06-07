@@ -195,6 +195,7 @@ function render_history_as_gif(){
 			).on("click", function(e){
 				$win.close();
 				if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+					e.preventDefault();
 					chrome.fileSystem.chooseEntry({
 						type: 'saveFile',
 						suggestedName: file_name+" history",

@@ -22,13 +22,13 @@
 * Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
 * Do warn about losing unsaved files (close button, etc.)
 
-* BUG: cropping dupes the image a bit
 * BUG: sometimes editing ability is suddenly lost (this may be fixed)
 	`var mouse_was_pressed = false;`
 * BUG: save (new) file and then >New and then save saves over old file irreversibly
-	`fileEntry = null;`
-* BUG: clicking on the animated gif doesn't prevent the default of opening the image in a new tab (from the chrome app)
-	`event.preventDefault();`
+	`window.file_entry = null;`
+* BUG: status text gets cut off
+	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
+
 * Handle some edge cases
 	* Undoing/redoing should stop brush drawing
 	* Undoing/redoing should destroy the selection
