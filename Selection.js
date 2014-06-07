@@ -21,67 +21,70 @@ Selection.prototype.instantiate = function(_img){
 	});
 	sel.position();
 	
-	if(!undoable()){
+	if(!undoable(instantiate)){
 		sel.destroy();
-		return;
 	}
 	
-	if(_img){
-		sel.canvas = _img;
-		sel.canvas.width = sel._w;
-		sel.canvas.height = sel._h;
-	}else{
-		sel.canvas = document.createElement("canvas");
-		sel.canvas.width = sel._w;
-		sel.canvas.height = sel._h;
-		sel.ctx = sel.canvas.getContext("2d");
-		sel.ctx.drawImage(
-			canvas,
-			sel._x, sel._y,
-			sel._w, sel._h,
-			0, 0,
-			sel._w, sel._h
-		);
-		// cut the selection from the canvas
-		//@TODO: proper transparency for Free-Form Select
-		//ctx.globalCompositeOperation = "destination-out";
-		//ctx.drawImage()...
-		if(transparency){
-			ctx.clearRect(sel._x, sel._y, sel._w, sel._h);
+	function instantiate(){
+		if(_img){
+			sel.canvas = _img;
+			sel.canvas.width = sel._w;
+			sel.canvas.height = sel._h;
 		}else{
-			ctx.fillStyle = colors[1];
-			ctx.fillRect(sel._x, sel._y, sel._w, sel._h);
+			sel.canvas = document.createElement("canvas");
+			sel.canvas.width = sel._w;
+			sel.canvas.height = sel._h;
+			sel.ctx = sel.canvas.getContext("2d");
+			sel.ctx.drawImage(
+				canvas,
+				sel._x, sel._y,
+				sel._w, sel._h,
+				0, 0,
+				sel._w, sel._h
+			);
+			// cut the selection from the canvas
+			//@TODO: proper transparency for Free-Form Select
+			//ctx.globalCompositeOperation = "destination-out";
+			//ctx.drawImage()...
+			if(transparency){
+				ctx.clearRect(sel._x, sel._y, sel._w, sel._h);
+			}else{
+				ctx.fillStyle = colors[1];
+				ctx.fillRect(sel._x, sel._y, sel._w, sel._h);
+			}
 		}
-	}
-	sel.$ghost.append(sel.canvas);
-	
-	var mox, moy;
-	var mousemove = function(e){
-		var m = e2c(e);
-		sel._x = Math.max(Math.min(m.x - mox, canvas.width), -sel._w);
-		sel._y = Math.max(Math.min(m.y - moy, canvas.height), -sel._h);
-		sel.position();
+		sel.$ghost.append(sel.canvas);
 		
-		if(e.shiftKey){
-			sel.draw();
-		}
-	};
-	$(sel.canvas).on("mousedown", function(e){
-		e.preventDefault();
-		
-		var rect = sel.canvas.getBoundingClientRect();
-		var cx = e.clientX - rect.left;
-		var cy = e.clientY - rect.top;
-		mox = ~~(cx / rect.width * sel.canvas.width);
-		moy = ~~(cy / rect.height * sel.canvas.height);
-		
-		$G.on("mousemove", mousemove);
-		$G.one("mouseup", function(){
-			$G.off("mousemove", mousemove);
+		var mox, moy;
+		var mousemove = function(e){
+			var m = e2c(e);
+			sel._x = Math.max(Math.min(m.x - mox, canvas.width), -sel._w);
+			sel._y = Math.max(Math.min(m.y - moy, canvas.height), -sel._h);
+			sel.position();
+			
+			if(e.shiftKey){
+				sel.draw();
+			}
+		};
+		$(sel.canvas).on("mousedown", function(e){
+			e.preventDefault();
+			
+			var rect = sel.canvas.getBoundingClientRect();
+			var cx = e.clientX - rect.left;
+			var cy = e.clientY - rect.top;
+			mox = ~~(cx / rect.width * sel.canvas.width);
+			moy = ~~(cy / rect.height * sel.canvas.height);
+			
+			$G.on("mousemove", mousemove);
+			$G.one("mouseup", function(){
+				$G.off("mousemove", mousemove);
+			});
 		});
-	});
-	$status_position.text("");
-	$status_size.text("");
+		$status_position.text("");
+		$status_size.text("");
+		
+		$canvas_area.trigger("resize");
+	}
 };
 
 Selection.prototype.position = function(){
@@ -106,9 +109,10 @@ Selection.prototype.destroy = function(){
 };
 
 Selection.prototype.crop = function(){
-	if(this.canvas && undoable()){
-		canvas.width = this.canvas.width;
-		canvas.height = this.canvas.height;
-		ctx.drawImage(this.canvas, 0, 0);
-	}
+	var _this = this;
+	this.canvas && undoable(function(){
+		canvas.width = _this.canvas.width;
+		canvas.height = _this.canvas.height;
+		ctx.drawImage(_this.canvas, 0, 0);
+	});
 };

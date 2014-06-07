@@ -344,7 +344,7 @@ if(window.file_entry){
 }
 
 $canvas.on("user-resized", function(e, width, height){
-	if(undoable()){
+	undoable(0, function(){
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
 		if(transparency){
@@ -363,7 +363,7 @@ $canvas.on("user-resized", function(e, width, height){
 			localStorage.width = width;
 			localStorage.height = height;
 		}catch(e){}
-	}
+	});
 });
 
 $body.on("dragover dragenter", function(e){
@@ -536,7 +536,7 @@ $G.on("cut copy paste", function(e){
 							);
 							$w.$Button("Enlarge", function(){
 								//additional undo
-								if(undoable()){
+								undoable(function(){
 									var original = undos[undos.length-1];
 									canvas.width = Math.max(original.width, img.width);
 									canvas.height = Math.max(original.height, img.height);
@@ -547,7 +547,7 @@ $G.on("cut copy paste", function(e){
 									ctx.drawImage(original, 0, 0);
 									paste_img();
 									$canvas_area.trigger("resize");
-								}
+								});
 							});
 							$w.$Button("Crop", function(){
 								paste_img();
@@ -691,36 +691,41 @@ $canvas.on("mousedown", function(e){
 	ctrl = e.ctrlKey;
 	mouse_start = mouse_previous = mouse = e2c(e);
 	
-	if(!selected_tool.passive){
-		if(!undoable()) return;
-	}
-	if(selected_tool.paint || selected_tool.mousedown){
-		tool_go("mousedown");
-	}
+	var mousedown_action = function(){
+		if(selected_tool.paint || selected_tool.mousedown){
+			tool_go("mousedown");
+		}
+		
+		$G.on("mousemove", canvas_mouse_move);
+		if(selected_tool.continuous === "time"){
+			var iid = setInterval(function(){
+				tool_go();
+			}, 5);
+		}
+		$G.one("mouseup", function(e, canceling){
+			button = undefined;
+			if(selected_tool.mouseup && !canceling){
+				selected_tool.mouseup();
+			}
+			if(selected_tool.cancel && canceling){
+				selected_tool.cancel();
+			}
+			if(selected_tool.deselect){
+				selected_tool = previous_tool;
+				$toolbox && $toolbox.update_selected_tool();
+			}
+			$G.off("mousemove", canvas_mouse_move);
+			if(iid){
+				clearInterval(iid);
+			}
+		});
+	};
 	
-	$G.on("mousemove", canvas_mouse_move);
-	if(selected_tool.continuous === "time"){
-		var iid = setInterval(function(){
-			tool_go();
-		}, 5);
+	if(selected_tool.passive){
+		mousedown_action();
+	}else{
+		undoable(mousedown_action);
 	}
-	$G.one("mouseup", function(e, canceling){
-		button = undefined;
-		if(selected_tool.mouseup && !canceling){
-			selected_tool.mouseup();
-		}
-		if(selected_tool.cancel && canceling){
-			selected_tool.cancel();
-		}
-		if(selected_tool.deselect){
-			selected_tool = previous_tool;
-			$toolbox && $toolbox.update_selected_tool();
-		}
-		$G.off("mousemove", canvas_mouse_move);
-		if(iid){
-			clearInterval(iid);
-		}
-	});
 });
 
 $body.on("contextmenu", function(e){

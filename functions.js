@@ -226,14 +226,15 @@ function render_history_as_gif(){
 	gif.render();
 }
 
-function undoable(){
+function undoable(callback, action){
 	if(redos.length > 5){
 		var $w = new $Window();
 		$w.title("Paint");
 		$w.$content.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
-		$w.$Button("Discard", function(){
+		$w.$Button(action ? "Discard and Apply" : "Discard", function(){
 			$w.close();
 			redos = [];
+			action && action();
 		});
 		$w.$Button("Keep", function(){
 			$w.close();
@@ -251,6 +252,8 @@ function undoable(){
 	
 	undos.push(c);
 	
+	action && action();
+	callback && callback();
 	return true;
 }
 function undo(){
@@ -317,7 +320,7 @@ function select_all(){
 }
 
 function invert(){
-	if(undoable()){
+	undoable(0, function(){
 		var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		for(var i=0; i<id.data.length; i+=4){
 			id.data[i+0] = 255 - id.data[i+0];
@@ -325,7 +328,7 @@ function invert(){
 			id.data[i+2] = 255 - id.data[i+2];
 		}
 		ctx.putImageData(id, 0, 0);
-	}
+	});
 }
 
 function view_bitmap(){

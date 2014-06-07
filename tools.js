@@ -49,7 +49,8 @@ tools = [{
 		selection.instantiate();
 		if(ctrl){
 			selection.crop();
-			deselect();
+			selection.destroy();
+			selection = null;
 		}
 	},
 	cancel: function(){
