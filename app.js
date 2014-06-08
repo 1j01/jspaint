@@ -676,10 +676,18 @@ $canvas.on("mousemove", function(e){
 $canvas.on("mouseleave", function(e){
 	$status_position.text("");
 });
+
+var mouse_was_pressed = false;
 $canvas.on("mousedown", function(e){
-	if(reverse ? (button === 2) : (button === 0)){
+	if(mouse_was_pressed && (reverse ? (button === 2) : (button === 0))){
+		mouse_was_pressed = false;
 		return cancel();
 	}
+	mouse_was_pressed = true;
+	$G.one("mouseup", function(e){
+		mouse_was_pressed = false;
+	});
+	
 	if(e.button === 0){
 		reverse = false;
 	}else if(e.button === 2){

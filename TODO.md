@@ -22,8 +22,6 @@
 * Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
 * Do warn about losing unsaved files (close button, etc.)
 
-* BUG: sometimes editing ability is suddenly lost (this may be fixed)
-	`var mouse_was_pressed = false;`
 * BUG: status text gets cut off
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 * BUG: cropping doesn't update the canvas handles
