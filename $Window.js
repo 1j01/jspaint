@@ -8,6 +8,8 @@ function $Window($component){
 	
 	if($component){
 		$w.addClass("jspaint-component-window");
+	}else{
+		setTimeout(function(){ $w.center(); });
 	}
 	
 	$w.$x.on("click", function(){
@@ -32,7 +34,6 @@ function $Window($component){
 		$w.apply_bounds();
 	};
 	
-	setTimeout(function(){ $w.center(); });
 	
 	$(window).on("resize", $w.apply_bounds);
 	
@@ -55,6 +56,7 @@ function $Window($component){
 	$w.$Button = function(text, handler){
 		$w.$content.append(
 			$(E("button"))
+			.addClass("jspaint-dialogue-button")
 			.text(text)
 			.on("click", function(){
 				handler();

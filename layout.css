@@ -31,6 +31,10 @@ html, body, .jspaint {
 .jspaint :not(table):not(tbody):not(tr):not(td) {
 	display: flex;
 }
+.jspaint-component-window .jspaint-window-content,
+.jspaint-component-window .jspaint-window-content :not(table):not(tbody):not(tr):not(td) {
+	display: flex;
+}
 .jspaint {
 	display: flex;
 	flex-flow: column;
@@ -106,7 +110,6 @@ html, body, .jspaint {
 .jspaint-palette {
 	display: flex;
 	flex-flow: row wrap;
-	height: 40px;
 	width: 225px;
 }
 .jspaint-color-box,

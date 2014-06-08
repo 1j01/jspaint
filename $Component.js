@@ -21,8 +21,8 @@ function $Component(name, orientation, $el){
 		var rect = $c[0].getBoundingClientRect();
 		w = (~~(rect.width/2))*2 + 1; //make sure these dimensions are odd numbers
 		h = (~~(rect.height/2))*2 + 1;
-		ox = $c.position().left - e.clientX;
-		oy = $c.position().top - e.clientY;
+		ox = rect.left - e.clientX;
+		oy = rect.top - e.clientY;
 		dragging = true;
 		
 		if(!$ghost){
@@ -106,8 +106,10 @@ function $Component(name, orientation, $el){
 			$c.css("position", "relative");
 			$c.css(pos_axis, pos);
 		}else{
+			$c.css("position", "relative");
+			$c.css(pos_axis, "");
+			
 			//put component in a window
-			/*
 			$w = new $Window($c);
 			$w.title(name);
 			$w.$content.append($c);
@@ -119,7 +121,6 @@ function $Component(name, orientation, $el){
 				left: e.clientX + ox,
 				top: e.clientY + oy
 			});
-			*/
 		}
 		
 		$ghost && $ghost.remove(), $ghost = null;
