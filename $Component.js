@@ -9,6 +9,8 @@ function $Component(name, orientation, $el){
 		wide: $bottom,
 	}[orientation]);
 	
+	var $w;
+	
 	var ox, oy, w, h, pos, pos_axis;
 	var dragging = false;
 	var $dock_to;
@@ -86,7 +88,12 @@ function $Component(name, orientation, $el){
 		if(!dragging) return;
 		dragging = false;
 		
+		if($w){
+			$w.close();
+			$w = null;
+		}
 		if($dock_to){
+			//dock component to $dock_to
 			$dock_to.append($c);
 			
 			pos = Math.max(pos, 0);
@@ -99,7 +106,20 @@ function $Component(name, orientation, $el){
 			$c.css("position", "relative");
 			$c.css(pos_axis, pos);
 		}else{
-			//put component in window
+			//put component in a window
+			/*
+			$w = new $Window($c);
+			$w.title(name);
+			$w.$content.append($c);
+			$w.$content.addClass({
+				tall: "jspaint-vertical",
+				wide: "jspaint-horizontal",
+			}[orientation]);
+			$w.css({
+				left: e.clientX + ox,
+				top: e.clientY + oy
+			});
+			*/
 		}
 		
 		$ghost && $ghost.remove(), $ghost = null;

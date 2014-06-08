@@ -192,7 +192,9 @@ function render_history_as_gif(){
 		var url = URL.createObjectURL(blob);
 		$output.empty().append(
 			$(E("a")).attr({href: url, target: "_blank"}).append(
-				$(E("img")).attr({src: url})
+				$(E("img")).on("load", function(){
+					$win.center();
+				}).attr({src: url})
 			).on("click", function(e){
 				$win.close();
 				if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){

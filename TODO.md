@@ -26,6 +26,7 @@
 	`var mouse_was_pressed = false;`
 * BUG: status text gets cut off
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
+* BUG: cropping doesn't update the canvas handles
 
 * Handle some edge cases
 	* Undoing/redoing should stop brush drawing
@@ -112,7 +113,7 @@ This isn't in mspaint, but maybe use should be able to click (double-click?) one
 
 ### Components / Windows
 * Drag components into a window
-* Drag windows
+* Drag windows by the contained component seamlessly
 * Double-click a component window's titlebar to dock the component to its most recent location.
 
 
