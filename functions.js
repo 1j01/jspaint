@@ -5,6 +5,8 @@ function reset_colors(){
 }
 
 function reset(){
+	this_ones_a_frame_changer();
+	
 	undos = [];
 	redos = [];
 	reset_colors();
@@ -28,6 +30,8 @@ function update_title(){
 
 function open_from_Image(img, new_file_name){
 	are_you_sure(function(){
+		this_ones_a_frame_changer();
+		
 		undos = [];
 		redos = [];
 		reset_colors();
@@ -262,6 +266,7 @@ function undoable(callback, action){
 }
 function undo(){
 	if(undos.length<1) return false;
+	this_ones_a_frame_changer();
 	
 	var c = document.createElement("canvas");
 	c.width = canvas.width;
@@ -282,6 +287,7 @@ function undo(){
 }
 function redo(){
 	if(redos.length<1) return false;
+	this_ones_a_frame_changer();
 	
 	var c = document.createElement("canvas");
 	c.width = canvas.width;
@@ -302,6 +308,10 @@ function redo(){
 }
 function cancel(){
 	if(!selected_tool.passive) undo();
+	$G.triggerHandler("mouseup", "cancel");
+}
+function this_ones_a_frame_changer(){
+	deselect();
 	$G.triggerHandler("mouseup", "cancel");
 }
 function deselect(){
@@ -325,6 +335,8 @@ function select_all(){
 
 function invert(){
 	undoable(0, function(){
+		this_ones_a_frame_changer();
+		
 		var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		for(var i=0; i<id.data.length; i+=4){
 			id.data[i+0] = 255 - id.data[i+0];
@@ -338,4 +350,12 @@ function invert(){
 function view_bitmap(){
 	canvas.requestFullscreen && canvas.requestFullscreen();
 	canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
+}
+
+
+function show_message(title, text){
+	var $win = new $Window();
+	$win.title(title).$content.text(text);
+	$win.$Button("Okay", function(){});
+	return $win;
 }

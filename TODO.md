@@ -26,15 +26,14 @@
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 * BUG: cropping doesn't update the canvas handles
 
+* It's not supposed to show the canavas handles when there is a selection. It used to hide them but now it doesn't.
+
 * Handle some edge cases
-	* Undoing/redoing should stop brush drawing
-	* Undoing/redoing should destroy the selection
-	* Switching frames in the future should also do the above.
-	* `this_one_is_a_frame_changer_guys();`
-	* `invert` is also a frame-changer
-	* `file_new` (`reset`) is a frame-changer
+	* `this_ones_a_frame_changer();` (undo, redo, reset, file_open, ... switching between frames of an animation)
+	* That's not how mspaint handles these edge cases. It disables actions while you're drawing. Maybe I should do that. (It does allow actions when you have a selection, and handles this like I tried to)
+	
 	* The window can be smaller than the minimum window area of mspaint
-	* Subwindows should go away at some point. There should only be one of most of them.
+	* Subwindows should go away at some point. Also, there should only be one of most of them at a time.
 
 * Set up minification?
 
