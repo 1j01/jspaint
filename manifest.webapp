@@ -1,0 +1,27 @@
+{
+	"name": "Paint",
+	"version": "0.1.1",
+	"description": "An MS Paint remake.",
+	"icons": {
+		"16": "/jspaint/images/icons/16.png",
+		"48": "/jspaint/images/icons/48.png",
+		"128": "/jspaint/images/icons/128.png"
+	},
+	"activities": {
+		"edit": {
+			"filters": {
+				"type": [ "image/*", "image/png" ]
+			},
+			"href": "/jspaint/",
+			"disposition": "window",
+			"returnValue": true
+		}
+	},
+	"permissions": {},
+	"developer": {
+		"name": "Isaiah Odhner",
+		"url": "http://1j01.github.io/"
+	},
+	"launch_path": "/jspaint/",
+	"default_locale": "en"
+}
