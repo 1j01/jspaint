@@ -106,10 +106,39 @@ $.each({
 		},
 		____________________________,
 		{
-			item: "Set As &Wallpaper (Tiled)"
+			item: "Set As &Wallpaper (Tiled)",
+			action: function(){
+				var wp = document.createElement("canvas");
+				wp.width = screen.width;
+				wp.height = screen.height;
+				var wpctx = wp.getContext("2d");
+				for(var x=0; x<wp.width; x+=canvas.width){
+					for(var y=0; y<wp.height; y+=canvas.height){
+						wpctx.drawImage(canvas, x, y);
+					}
+				}
+				if(window.chrome && chrome.wallpaper){
+					chrome.wallpaper.setWallpaper({
+						url: wp.toDataURL(),
+						layout: 'CENTER_CROPPED',
+						name: file_name,
+						thumbnail: false,
+					}, function(){});
+				}else{
+					window.open(wp.toDataURL());
+				}
+			}
 		},
 		{
-			item: "Set As Wa&llpaper (Centered)"
+			item: "Set As Wa&llpaper (Centered)",
+			action: function(){
+				chrome.wallpaper.setWallpaper({
+					url: canvas.toDataURL(),
+					layout: 'CENTER_CROPPED',
+					name: file_name,
+					thumbnail: false,
+				}, function(){});
+			}
 		},
 		____________________________,
 		{
@@ -438,7 +467,7 @@ $G.on("keydown", function(e){
 	
 	if(e.altKey){
 		//find key codes
-		console.log(e.keyCode);
+		window.console && console.log(e.keyCode);
 	}
 	if(e.keyCode === 27){ //Escape
 		if(selection){
@@ -507,7 +536,7 @@ $G.on("keydown", function(e){
 $G.on("cut copy paste", function(e){
 	e.preventDefault();
 	var cd = e.originalEvent.clipboardData || window.clipboardData;
-	if(!cd){ return console.log("No clipboardData"); }
+	if(!cd){ return; }
 	
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
