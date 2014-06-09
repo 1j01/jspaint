@@ -5,7 +5,7 @@ A web-based MSPaint remake and more...
 The goal is to completely remake paint (including its [little-known features](#did-you-know)), improve on it, and to extend the types of images it can edit.
 
 Current improvements include:
-* Unlimited undos/redos (as opposed to a measly three)
+* Unlimited undos/redos (as opposed to a measly three in Windows XP, or a somewhat less measly 50 in Windows 7)
 * Create an animated GIF from the current undo history with Ctrl+Shift+G
 * Cross-platform, I guess
 

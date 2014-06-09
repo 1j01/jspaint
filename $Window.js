@@ -26,7 +26,6 @@ function $Window($component){
 	};
 	
 	$w.center = function(){
-		console.log($w.width(), $w.height());
 		$w.css({
 			left: (innerWidth - $w.width()) / 2,
 			top: (innerHeight - $w.height()) / 2,

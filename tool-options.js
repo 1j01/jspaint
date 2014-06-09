@@ -107,7 +107,7 @@ var $ChooseShapeStyle = function(){
 			return canvas;
 		},
 		function(a){
-			alert("Shape styles are not yet supported.");
+			show_message("Unsupported", "Shape styles are not yet supported.");
 		},
 		function(a){
 			return a[1] && a[0];
@@ -221,7 +221,7 @@ var $choose_magnification = $Choose(
 		return canvas;
 	},
 	function(size){
-		alert("Magnification is not yet supported.");
+		show_message("Unsupported", "Magnification is not yet supported.");
 	},
 	function(size){
 		return size === 1;
@@ -267,7 +267,7 @@ var $choose_transparency = $Choose(
 		return e;
 	},
 	function(t_o){
-		alert("Transparency is not yet supported.");
+		show_message("Unsupported", "Transparency is not yet supported.");
 	},
 	function(t_o){
 		return t_o === "opaque";

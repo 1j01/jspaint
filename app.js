@@ -122,7 +122,6 @@ $.each({
 						url: wp.toDataURL(),
 						layout: 'CENTER_CROPPED',
 						name: file_name,
-						thumbnail: false,
 					}, function(){});
 				}else{
 					window.open(wp.toDataURL());
@@ -136,7 +135,6 @@ $.each({
 					url: canvas.toDataURL(),
 					layout: 'CENTER_CROPPED',
 					name: file_name,
-					thumbnail: false,
 				}, function(){});
 			}
 		},
