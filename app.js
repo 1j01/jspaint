@@ -447,7 +447,8 @@ $G.on("keydown", function(e){
 		var bs = brush_shapes[k];
 		var fits_shape = true;
 		for(var i=0; i<9; i++){
-			if(bs[i] && !keys[[103, 104, 105, 100, 101, 102, 97, 98, 99][i]]){
+			var keyCode = [103, 104, 105, 100, 101, 102, 97, 98, 99][i];
+			if(bs[i] && !keys[keyCode]){
 				fits_shape = false;
 			}
 		}
@@ -483,7 +484,8 @@ $G.on("keydown", function(e){
 		if(selection){
 			//scale selection
 		}else{
-			var delta = plus - minus;
+			var delta = +plus++ -minus--;//Δ = ±±±±
+			
 			if(selected_tool.name === "Brush"){
 				brush_size = Math.max(1, Math.min(brush_size + delta, 500));
 			}else if(selected_tool.name === "Eraser/Color Eraser"){
@@ -492,7 +494,11 @@ $G.on("keydown", function(e){
 				airbrush_size = Math.max(1, Math.min(airbrush_size + delta, 500));
 			}else if(selected_tool.name === "Pencil"){
 				pencil_size = Math.max(1, Math.min(pencil_size + delta, 50));
+			}else if(selected_tool.name.match(/Line|Curve|Rectangle|Ellipse|Polygon/)){
+				stroke_size = Math.max(1, Math.min(stroke_size + delta, 500));
 			}
+			
+			$(".jspaint-chooser").triggerHandler("redraw");
 		}
 		e.preventDefault();
 		return false;
@@ -525,7 +531,9 @@ $G.on("keydown", function(e){
 			case "I":
 				invert();
 			break;
-			default: return true;
+			default:
+				// This shortcut is not handled, do not (try to) prevent the default.
+				return true;
 		}
 		e.preventDefault();
 		return false;
@@ -614,6 +622,8 @@ function e2c(e){
 }
 
 function tool_go(event_name){
+	
+	ctx.lineWidth = stroke_size;
 	
 	ctx.fillStyle = fill_color =
 	ctx.strokeStyle = stroke_color =

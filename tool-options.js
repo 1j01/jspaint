@@ -39,16 +39,16 @@ var render_brush = function(ctx, shape, size){
 };
 
 var $Choose = function(things, display, choose, is_chosen){
-	var $div = $(E("div"));
-	$div.on("update", function(){
-		$div.empty();
+	var $chooser = $(E("div")).addClass("jspaint-chooser");
+	$chooser.on("update", function(){
+		$chooser.empty();
 		for(var i=0; i<things.length; i++){
 			(function(thing){
-				var $option_container = $(E("div")).appendTo($div);
+				var $option_container = $(E("div")).appendTo($chooser);
 				var $option = $();
 				var choose_thing = function(){
 					choose(thing);
-					$div.children().trigger("redraw");
+					$chooser.trigger("redraw");
 					update();
 				}
 				var update = function(){
@@ -60,10 +60,10 @@ var $Choose = function(things, display, choose, is_chosen){
 					$option.appendTo($option_container);
 				};
 				update();
-				$option_container.on("redraw", update);
+				$chooser.on("redraw", update);
 				
 				$option_container.on("mousedown click", choose_thing);
-				$div.on("mousedown", function(){
+				$chooser.on("mousedown", function(){
 					$option_container.on("mouseenter", choose_thing);
 				});
 				$(window).on("mouseup", function(){
@@ -73,7 +73,7 @@ var $Choose = function(things, display, choose, is_chosen){
 			})(things[i]);
 		}
 	});
-	return $div;
+	return $chooser;
 };
 var $ChooseShapeStyle = function(){
 	return $Choose(

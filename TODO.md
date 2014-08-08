@@ -26,7 +26,7 @@
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 * BUG: cropping doesn't update the canvas handles
 
-* It's not supposed to show the canavas handles when there is a selection. It used to hide them but now it doesn't.
+* It's not supposed to show the canvas handles when there is a selection. It used to hide them but now it doesn't.
 
 * Handle some edge cases
 	* `this_ones_a_frame_changer();` (undo, redo, reset, file_open, ... switching between frames of an animation)
@@ -54,7 +54,12 @@
 ### Extended editing
 
 * Transparent PNGs
+	* Detect transparency when opening an image
+		* Don't forget to assume jpegs are opaque. Because they are.
+	* Option in Image > Attributes...
 * Animated GIFs
+	* Use ternary color as transparent color?
+* Animated Transparent (A)PNGs
 * Multisize Icons
 
 ### Mobile support
@@ -67,11 +72,13 @@
 	* Rotate
 	* Flip
 	* Skew
-	* Invert
+	* Invert ✓
 	* Clear
 * Undo/Redo History to Frames
 
 ### Tools
+
+* Curve tool
 
 * OPTIONS
 	* shapes all have their own settings for [fill | stroke | stroke_fill]
