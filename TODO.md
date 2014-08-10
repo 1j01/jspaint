@@ -80,6 +80,12 @@
 
 * Curve tool
 
+* Polygon tool
+	* Issue with extra undoables
+	* Ending the operation when switching tools
+	* Self-intersecting shapes are handled differently by mspaint than with the Canvas API
+	* Aliasing
+
 * OPTIONS
 	* shapes all have their own settings for [fill | stroke | stroke_fill]
 	* shapes, lines and curves all use one setting for stroke width

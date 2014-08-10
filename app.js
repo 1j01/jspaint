@@ -675,7 +675,7 @@ function canvas_mouse_move(e){
 	ctrl = e.ctrlKey;
 	mouse = e2c(e);
 	if(e.shiftKey){
-		if(selected_tool.name === "Line"){
+		if(selected_tool.name.match(/Line|Curve/)){
 			var dist = Math.sqrt(
 				(mouse.y - mouse_start.y) * (mouse.y - mouse_start.y) +
 				(mouse.x - mouse_start.x) * (mouse.x - mouse_start.x)
@@ -749,11 +749,11 @@ $canvas.on("mousedown", function(e){
 		}
 		$G.one("mouseup", function(e, canceling){
 			button = undefined;
-			if(selected_tool.mouseup && !canceling){
-				selected_tool.mouseup();
-			}
-			if(selected_tool.cancel && canceling){
-				selected_tool.cancel();
+			if(canceling){
+				selected_tool.cancel && selected_tool.cancel();
+			}else{
+				mouse = e2c(e);
+				selected_tool.mouseup && selected_tool.mouseup(ctx, mouse.x, mouse.y);
 			}
 			if(selected_tool.deselect){
 				selected_tool = previous_tool;
@@ -766,7 +766,9 @@ $canvas.on("mousedown", function(e){
 		});
 	};
 	
-	if(selected_tool.passive){
+	// this would be a lot nicer in ruby (or ooplie)
+	// it would be just "if selected_tool.passive" (or in ooplie, "If the selected tool is passive")
+	if((typeof selected_tool.passive === "function") ? selected_tool.passive() : selected_tool.passive){
 		mousedown_action();
 	}else{
 		undoable(mousedown_action);

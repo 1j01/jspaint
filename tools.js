@@ -275,6 +275,10 @@ tools = [{
 	description: "Draws a curved line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	implemented: false,
+	stroke_only: true,
+	shape: function(ctx, x, y, w, h){
+		draw_line(ctx, x, y, x+w, y+h);
+	},
 	$options: $choose_stroke_size
 }, {
 	name: "Rectangle",
@@ -292,6 +296,72 @@ tools = [{
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	implemented: false,
+	points: [],
+	last_click: {x: 0, y: 0, time: 0},//for double-clicking
+	passive: function(){
+		// actions are passive if you've already started using the tool
+		// but the first action should be undoable
+		return this.points.length > 0;
+	},
+	mouseup: function(ctx, x, y){
+		if(this.points.length < 1){ return; }
+		
+		var i = this.points.length - 1;
+		this.points[i].x = x;
+		this.points[i].y = y;
+		var dx = this.points[i].x - this.points[0].x;
+		var dy = this.points[i].y - this.points[0].y;
+		var d = Math.sqrt(dx*dx + dy*dy);
+		if(d < stroke_size*5.349205){//it's kinda weird how this is dependant on stroke_width but I guess it makes sense
+			this.complete(ctx, x, y);
+		}
+	},
+	mousedown: function(ctx, x, y){
+		if(this.points.length < 1){
+			var thine = this;
+			undoable(function(){//=>
+				thine.points.push({x: x, y: y});
+				//second point so first action draws a line
+				thine.points.push({x: x, y: y});
+			});
+		}else{
+			this.points.push({x: x, y: y});
+		}
+	},
+	paint: function(ctx, x, y){
+		if(this.points.length < 1){ return; }
+		
+		var i = this.points.length - 1;
+		this.points[i].x = x;
+		this.points[i].y = y;
+		
+		ctx.beginPath();
+		ctx.moveTo(this.points[0].x, this.points[0].y)
+		for(var i=1; i<this.points.length; i++){
+			ctx.lineTo(this.points[i].x, this.points[i].y);
+		}
+		//ctx.closePath();
+		ctx.stroke();
+		//ctx.fill();
+	},
+	complete: function(ctx, x, y){
+		if(this.points.length < 1){ return; }
+		
+		ctx.beginPath();
+		ctx.moveTo(this.points[0].x, this.points[0].y)
+		for(var i=1; i<this.points.length; i++){
+			ctx.lineTo(this.points[i].x, this.points[i].y);
+		}
+		ctx.closePath();
+		ctx.stroke();
+		ctx.fill();
+		
+		this.points = [];
+	},
+	cancel: function(){
+		this.points = [];
+	},
+	shape: function(){true},
 	$options: $ChooseShapeStyle()
 }, {
 	name: "Ellipse",
