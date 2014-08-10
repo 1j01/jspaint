@@ -4,10 +4,17 @@ function $Component(name, orientation, $el){
 	var $c = $(E("div")).addClass("jspaint-component");
 	$c.addClass("jspaint-"+name+"-component");
 	$c.append($el);
+	
 	$c.appendTo({
 		tall: $left,
 		wide: $bottom,
 	}[orientation]);
+	
+	// nudge the Colors component over a tiny bit
+	if(name === "Colors"){
+		$c.css("position", "relative");
+		$c.css("left", "3px");
+	}
 	
 	var $w;
 	
