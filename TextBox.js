@@ -10,7 +10,6 @@ function TextBox(x, y, w, h){
 	this._h = h;
 	
 	this.$ghost = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
-	//this.$editor = $(E("div")).addClass("jspaint-textbox-editor").attr("contenteditable", true);
 	this.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
 	this.$editor.css({
 		fontFamily: "Arial",
@@ -34,7 +33,8 @@ TextBox.prototype.instantiate = function(){
 	
 	function instantiate(){
 		
-		tb.$ghost.append(tb.$editor.focus());
+		tb.$ghost.append(tb.$editor);
+		tb.$editor.focus();
 		
 		var mox, moy;
 		var mousemove = function(e){
@@ -86,7 +86,6 @@ TextBox.prototype.draw = function(){
 	var text = tb.$editor.val();
 	if(text){
 		undoable(0, function(){
-			//ctx.fillStyle = 
 			ctx.font = "12pt Arial";
 			ctx.textBaseline = "top";
 			var lines = text.split("\n")
