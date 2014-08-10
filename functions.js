@@ -325,6 +325,7 @@ function deselect(){
 		textbox.destroy();
 		texbox = null;
 	}
+	selected_tool.end && selected_tool.end();
 }
 function delete_selection(){
 	if(selection){

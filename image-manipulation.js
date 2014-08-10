@@ -106,10 +106,11 @@ function draw_line(ctx, x1, y1, x2, y2){
 			ctx.fillRect(x, y, 1, 1);
 		});
 	}else{
-		ctx.lineCap = "round";
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y2);
+		
+		ctx.lineCap = "round";
 		ctx.stroke();
 		ctx.lineCap = "butt";
 	}

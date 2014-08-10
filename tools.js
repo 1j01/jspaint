@@ -316,11 +316,66 @@ tools = [{
 	name: "Curve",
 	description: "Draws a curved line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	implemented: false,
 	stroke_only: true,
-	shape: function(ctx, x, y, w, h){
-		draw_line(ctx, x, y, x+w, y+h);
+	points: [],
+	passive: function(){
+		// actions are passive if you've already started using the tool
+		// but the first action should be undoable
+		return this.points.length > 0;
 	},
+	mouseup: function(ctx, x, y){
+		if(this.points.length >= 4){
+			this.points = [];
+		}
+	},
+	mousedown: function(ctx, x, y){
+		if(this.points.length < 1){
+			var thine = this;
+			undoable(function(){//=>
+				thine.points.push({x: x, y: y});
+				//second point so first action draws a line
+				thine.points.push({x: x, y: y});
+			});
+		}else{
+			this.points.push({x: x, y: y});
+		}
+	},
+	paint: function(ctx, x, y){
+		if(this.points.length < 1){ return; }
+		
+		var i = this.points.length - 1;
+		this.points[i].x = x;
+		this.points[i].y = y;
+		
+		ctx.beginPath();
+		ctx.moveTo(this.points[0].x, this.points[0].y);
+		if(this.points.length === 4){
+			ctx.bezierCurveTo(
+				this.points[2].x, this.points[2].y,
+				this.points[3].x, this.points[3].y,
+				this.points[1].x, this.points[1].y
+			);
+		}else if(this.points.length === 3){
+			ctx.quadraticCurveTo(
+				this.points[2].x, this.points[2].y,
+				this.points[1].x, this.points[1].y
+			);
+		}else{
+			ctx.lineTo(
+				this.points[1].x, this.points[1].y
+			);
+		}
+		ctx.lineCap = "round";
+		ctx.stroke();
+		ctx.lineCap = "butt";
+	},
+	cancel: function(){
+		this.points = [];
+	},
+	end: function(){
+		this.points = [];
+	},
+	shape: function(){true},
 	$options: $choose_stroke_size
 }, {
 	name: "Rectangle",
@@ -339,7 +394,6 @@ tools = [{
 	name: "Polygon",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	implemented: false,
 	points: [],
 	last_click: {x: 0, y: 0, time: 0},//for double-clicking
 	passive: function(){
@@ -380,7 +434,7 @@ tools = [{
 		this.points[i].y = y;
 		
 		ctx.beginPath();
-		ctx.moveTo(this.points[0].x, this.points[0].y)
+		ctx.moveTo(this.points[0].x, this.points[0].y);
 		for(var i=1; i<this.points.length; i++){
 			ctx.lineTo(this.points[i].x, this.points[i].y);
 		}
@@ -392,7 +446,7 @@ tools = [{
 		if(this.points.length < 1){ return; }
 		
 		ctx.beginPath();
-		ctx.moveTo(this.points[0].x, this.points[0].y)
+		ctx.moveTo(this.points[0].x, this.points[0].y);
 		for(var i=1; i<this.points.length; i++){
 			ctx.lineTo(this.points[i].x, this.points[i].y);
 		}
@@ -403,6 +457,9 @@ tools = [{
 		this.points = [];
 	},
 	cancel: function(){
+		this.points = [];
+	},
+	end: function(){
 		this.points = [];
 	},
 	shape: function(){true},
