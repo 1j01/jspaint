@@ -327,10 +327,12 @@ tools = [{
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape: function(ctx, x, y, w, h){
-		ctx.beginPath();
-		ctx.rect(x-0.5, y-0.5, w, h);
-		ctx.fill();
-		ctx.stroke();
+		if(this.$options.fill){
+			ctx.fillRect(x, y, w, h);
+		}
+		if(this.$options.stroke){
+			ctx.strokeRect(x-0.5, y-0.5, w, h);
+		}
 	},
 	$options: $ChooseShapeStyle()
 }, {
@@ -409,7 +411,9 @@ tools = [{
 	name: "Ellipse",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	shape: draw_ellipse,
+	shape: function(ctx, x, y, w, h){
+		draw_ellipse(ctx, x, y, w, h, this.$options.stroke, this.$options.fill);
+	},
 	$options: $ChooseShapeStyle()
 }, {
 	name: "Rounded Rectangle",

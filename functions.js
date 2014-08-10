@@ -357,10 +357,3 @@ function view_bitmap(){
 	canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
 }
 
-
-function show_message(title, text){
-	var $win = new $Window();
-	$win.title(title).$content.text(text);
-	$win.$Button("Okay", function(){});
-	return $win;
-}

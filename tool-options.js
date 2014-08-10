@@ -7,6 +7,7 @@ var eraser_size = 8;
 var airbrush_size = 9;
 var pencil_size = 1;
 var stroke_size = 1; // lines, curves, shape outlines
+var transparent_opaque = "opaque";
 
 var render_brush = function(ctx, shape, size){
 	if(shape === "circle"){
@@ -76,7 +77,7 @@ var $Choose = function(things, display, choose, is_chosen){
 	return $chooser;
 };
 var $ChooseShapeStyle = function(){
-	return $Choose(
+	var $chooser = $Choose(
 		[
 			[1, 0], [1, 1], [0, 1]
 		],
@@ -96,9 +97,6 @@ var $ChooseShapeStyle = function(){
 			b++;
 			ctx.fillStyle = "#777";
 			if(a[1]){
-				if(!a[1]){
-					b--;
-				}
 				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
 			}else{
 				ctx.clearRect(b, b, canvas.width-b*2, canvas.height-b*2);
@@ -107,12 +105,17 @@ var $ChooseShapeStyle = function(){
 			return canvas;
 		},
 		function(a){
-			show_message("Unsupported", "Shape styles are not yet supported.");
+			$chooser.stroke = a[0];
+			$chooser.fill = a[1];
 		},
 		function(a){
-			return a[1] && a[0];
+			if($chooser.fill === undefined) $chooser.fill = 0;
+			if($chooser.stroke === undefined) $chooser.stroke = 1;
+			return $chooser.stroke === a[0] && $chooser.fill === a[1];
 		}
 	).addClass("jspaint-choose-shape-style");
+	
+	return $chooser;
 };
 
 var $choose_brush = $Choose(
@@ -221,7 +224,7 @@ var $choose_magnification = $Choose(
 		return canvas;
 	},
 	function(size){
-		show_message("Unsupported", "Magnification is not yet supported.");
+		
 	},
 	function(size){
 		return size === 1;
@@ -239,7 +242,7 @@ var $choose_airbrush_size = $Choose(
 		var _ = 4 * !is_bottom;
 		$(e).css({
 			backgroundImage: "url(images/options-airbrush-size.png)",
-			backgroundPosition: pos - _  + "px 0px",
+			backgroundPosition: pos - _ + "px 0px",
 			width: (72 / 3 - _*2) + "px",
 			height: "23px",
 			webkitFilter: is_chosen ? "invert()" : "" // @todo: invert and upscale with canvas
@@ -267,9 +270,9 @@ var $choose_transparency = $Choose(
 		return e;
 	},
 	function(t_o){
-		show_message("Unsupported", "Transparency is not yet supported.");
+		transparent_opaque = t_o;
 	},
 	function(t_o){
-		return t_o === "opaque";
+		return t_o === transparent_opaque;
 	}
 ).addClass("jspaint-choose-transparency");

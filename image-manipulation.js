@@ -1,5 +1,5 @@
 
-function draw_ellipse(ctx, x, y, w, h){
+function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 	var stroke_color = ctx.strokeStyle;
 	var fill_color = ctx.fillStyle;
 	
