@@ -13,7 +13,7 @@ function Selection(x, y, w, h){
 	$canvas_handles.hide();
 }
 
-Selection.prototype.instantiate = function(_img){
+Selection.prototype.instantiate = function(_img, _passive){
 	var sel = this;
 	
 	sel.$ghost.addClass("instantiated").css({
@@ -21,7 +21,9 @@ Selection.prototype.instantiate = function(_img){
 	});
 	sel.position();
 	
-	if(!undoable(instantiate)){
+	if(_passive){
+		instantiate();
+	}else if(!undoable(instantiate)){
 		sel.destroy();
 	}
 	
@@ -46,11 +48,13 @@ Selection.prototype.instantiate = function(_img){
 			//@TODO: proper transparency for Free-Form Select
 			//ctx.globalCompositeOperation = "destination-out";
 			//ctx.drawImage()...
-			if(transparency){
-				ctx.clearRect(sel._x, sel._y, sel._w, sel._h);
-			}else{
-				ctx.fillStyle = colors[1];
-				ctx.fillRect(sel._x, sel._y, sel._w, sel._h);
+			if(!_passive){
+				if(transparency){
+					ctx.clearRect(sel._x, sel._y, sel._w, sel._h);
+				}else{
+					ctx.fillStyle = colors[1];
+					ctx.fillRect(sel._x, sel._y, sel._w, sel._h);
+				}
 			}
 		}
 		sel.$ghost.append(sel.canvas);
@@ -114,9 +118,13 @@ Selection.prototype.destroy = function(){
 
 Selection.prototype.crop = function(){
 	var _this = this;
-	this.canvas && undoable(function(){
-		canvas.width = _this.canvas.width;
-		canvas.height = _this.canvas.height;
-		ctx.drawImage(_this.canvas, 0, 0);
-	});
+	this.instantiate(null, "passive");
+	if(this.canvas){
+		undoable(0, function(){
+			canvas.width = _this.canvas.width;
+			canvas.height = _this.canvas.height;
+			ctx.drawImage(_this.canvas, 0, 0);
+			$canvas.trigger("update"); //update handles
+		});
+	}
 };

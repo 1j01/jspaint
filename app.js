@@ -386,6 +386,8 @@ $canvas.on("user-resized", function(e, width, height){
 			ctx.drawImage(previous_canvas, 0, 0);
 		}
 		
+		$canvas.trigger("update"); //update handles
+		
 		try{
 			localStorage.width = width;
 			localStorage.height = height;

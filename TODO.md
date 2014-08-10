@@ -24,7 +24,6 @@
 
 * BUG: status text gets cut off
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
-* BUG: cropping doesn't update the canvas handles
 
 * It's not supposed to show the canvas handles when there is a selection. It used to hide them but now it doesn't.
 

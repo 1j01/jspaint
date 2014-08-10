@@ -46,11 +46,12 @@ tools = [{
 	mouseup: function(){
 		if(!selection){return;}
 		
-		selection.instantiate();
 		if(ctrl){
 			selection.crop();
 			selection.destroy();
 			selection = null;
+		}else{
+			selection.instantiate();
 		}
 	},
 	cancel: function(){
