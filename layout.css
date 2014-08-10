@@ -53,6 +53,14 @@ html, body, .jspaint {
 .jspaint-component-ghost {
 	pointer-events: none;
 }
+.jspaint-textbox-editor {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	resize: none;
+}
 
 .jspaint-menu-container {
 	position: relative;

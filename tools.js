@@ -260,7 +260,48 @@ tools = [{
 	name: "Text",
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	implemented: false,
+	passive: true,
+	mousedown: function(){
+		if(textbox){
+			textbox.draw();
+			textbox.destroy();
+		}
+		var mouse_has_moved = false;
+		$G.one("mousemove", function(){
+			mouse_has_moved = true;
+		});
+		$G.one("mouseup", function(){
+			if(!mouse_has_moved && textbox){
+				textbox.draw();
+				textbox.destroy();
+				textbox = null;
+			}
+		});
+		textbox = new TextBox(mouse.x, mouse.y, 1, 1);
+	},
+	paint: function(){
+		if(!textbox){return;}
+		textbox.w = textbox.x - mouse.x;
+		textbox.h = textbox.y - mouse.y;
+		var x1 = Math.max(0, Math.min(textbox.x, mouse.x));
+		var y1 = Math.max(0, Math.min(textbox.y, mouse.y));
+		var x2 = Math.min(canvas.width, Math.max(textbox.x, mouse.x));
+		var y2 = Math.min(canvas.height, Math.max(textbox.y, mouse.y));
+		textbox._x = x1;
+		textbox._y = y1;
+		textbox._w = Math.max(1, x2 - x1);
+		textbox._h = Math.max(1, y2 - y1);
+		textbox.position();
+	},
+	mouseup: function(){
+		if(!textbox){return;}
+		textbox.instantiate();
+	},
+	cancel: function(){
+		if(!textbox){return;}
+		textbox.destroy();
+		textbox = null;
+	},
 	$options: $choose_transparency
 }, {
 	name: "Line",

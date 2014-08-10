@@ -10,6 +10,8 @@ function Selection(x, y, w, h){
 	this._h = h;
 	
 	this.$ghost = $(E("div")).addClass("jspaint-selection").appendTo($canvas_area);
+	
+	
 	$canvas_handles.hide();
 }
 

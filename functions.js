@@ -320,6 +320,11 @@ function deselect(){
 		selection.destroy();
 		selection = null;
 	}
+	if(textbox){
+		textbox.draw();
+		textbox.destroy();
+		texbox = null;
+	}
 }
 function delete_selection(){
 	if(selection){

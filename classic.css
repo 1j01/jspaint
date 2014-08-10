@@ -7,7 +7,7 @@
 	background: #7b7b7b;
 	border: 1px inset;
 }
-.jspaint-selection {
+.jspaint-selection, .jspaint-textbox {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	border: 1px dashed black;

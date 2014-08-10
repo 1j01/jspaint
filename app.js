@@ -29,6 +29,7 @@ var previous_tool = selected_tool;
 var colors = ["", "", ""];
 
 var selection; //the one and only Selection
+var textbox; //the one and only TextBox
 var undos = []; //array of <canvas>
 var redos = []; //array of <canvas>
 var frames = []; //array of {delay:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
@@ -505,7 +506,20 @@ $G.on("keydown", function(e){
 		e.preventDefault();
 		return false;
 	}else if(e.ctrlKey){
-		switch(String.fromCharCode(e.keyCode).toUpperCase()){
+		var key = String.fromCharCode(e.keyCode).toUpperCase();
+		if(textbox){
+			switch(key){
+				case "A":
+				case "Z":
+				case "Y":
+				case "I":
+				case "B":
+				case "U":
+					// Don't prevent the default. Allow text editing commands.
+					return true;
+			}
+		}
+		switch(key){
 			case "Z":
 				e.shiftKey ? redo() : undo();
 			break;
@@ -542,6 +556,7 @@ $G.on("keydown", function(e){
 	}
 });
 $G.on("cut copy paste", function(e){
+	if(textbox){ return; }
 	e.preventDefault();
 	var cd = e.originalEvent.clipboardData || window.clipboardData;
 	if(!cd){ return; }
