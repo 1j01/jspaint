@@ -9,7 +9,6 @@
 	* Make it pretty with images
 
 * Menus!
-	* Pixel Perfection
 	* Keyboard Navigation
 	* Mouse navigation
 	* Use keyboard shortcuts defined in the `menus` data structure (which isn't currently saved to a variable) to declaratively setup hotkeys
@@ -17,6 +16,7 @@
 			* if shortcut matches
 				* "call to action"
 				* break
+	* Pixel Perfection
 
 
 * Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
@@ -33,7 +33,7 @@
 	* That's not how mspaint handles these edge cases. It disables actions while you're drawing. Maybe I should do that. (It does allow actions when you have a selection, and handles this like I tried to)
 	
 	* The window can be smaller than the minimum window area of mspaint
-	* Subwindows should go away at some point. Also, there should only be one of most of them at a time.
+	* Dialogue windows should go away at some point. Also, there should only be one of most of them at a time.
 
 * Set up minification?
 
@@ -44,7 +44,7 @@
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
 	* Brush Scaling ✓
 	* Custom Brushes ✓
-	* The 'Stamp' Tool (Draw the selection on click, not just drag) @easy
+	* The 'Stamp' Tool ✓
 	* Image Scaling (Ctrl+Plus and Ctrl+Minus on the Numpad to scale the selection by factors of 2)
 	* Color Replacement (see [Tools](#tools))
 	* The Grid (Ctrl+G + zoom6x+)
@@ -55,7 +55,7 @@
 
 * Transparent PNGs
 	* Detect transparency when opening an image
-		* Don't forget to assume jpegs are opaque. Because they are.
+		* Optimization: Don't forget to assume jpegs are opaque. Because they are.
 	* Option in Image > Attributes...
 * Animated GIFs
 	* Use ternary color as transparent color?
@@ -137,17 +137,9 @@ Prankily wait for next user input before fullscreening and bluescreening
 ### Chrome App
 
 * Use the chrome.wallpaper API to change the ChromeOS wallpaper.
-	* Code:
-
-			chrome.wallpaper.setWallpaper({
-				url: canvas.toDataURL(),
-				layout: 'CENTER_CROPPED',
-				name: file_name
-			}, function(){});
-	
-	* I'd need to test this on Chrome OS
+	* Test this on Chrome OS
 
 * Themed window border
-	* Minimum window size might need updating
+	* (Note: Minimum window size might need updating)
 
 * Publish to webstore!?!?!?

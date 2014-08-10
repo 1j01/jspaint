@@ -79,6 +79,10 @@ Selection.prototype.instantiate = function(_img){
 			$G.one("mouseup", function(){
 				$G.off("mousemove", mousemove);
 			});
+			
+			if(e.shiftKey){
+				sel.draw();
+			}
 		});
 		$status_position.text("");
 		$status_size.text("");
