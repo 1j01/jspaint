@@ -1,23 +1,44 @@
 
 function TextBox(x, y, w, h){
-	this.x = x;
-	this.y = y;
-	this.w = w;
-	this.h = h;
-	this._x = x;
-	this._y = y;
-	this._w = w;
-	this._h = h;
+	var tb = this;
 	
-	this.$ghost = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
-	this.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
-	this.$editor.css({
-		fontFamily: "Arial",
-		fontSize: "12pt"
-	});
-	this.$editor.on("mousedown", function(e){
+	tb.x = x;
+	tb.y = y;
+	tb.w = w;
+	tb.h = h;
+	tb._x = x;
+	tb._y = y;
+	tb._w = w;
+	tb._h = h;
+	
+	tb.$ghost = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
+	tb.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
+	tb.$editor.on("mousedown", function(e){
 		e.stopPropagation();
 	});
+	
+	tb.fontFamily = "Arial";
+	tb.fontSize = "12pt";
+	tb.lineHeight = 20;
+	
+	var update = function(){
+		tb.color = colors[0];
+		tb.background = ({
+			transparent: "transparent",
+			opaque: colors[1]
+		}[transparent_opaque]);
+		
+		tb.$editor.css({
+			fontFamily: tb.fontFamily,
+			fontSize: tb.fontSize,
+			lineHeight: tb.lineHeight + "px",
+			color: tb.color,
+			background: tb.background
+		});
+	};
+	update();
+	$G.on("option-changed", update);
+	
 	$canvas_handles.hide();
 }
 
@@ -86,11 +107,15 @@ TextBox.prototype.draw = function(){
 	var text = tb.$editor.val();
 	if(text){
 		undoable(0, function(){
-			ctx.font = "12pt Arial";
-			ctx.textBaseline = "top";
+			ctx.fillStyle = tb.background;
+			ctx.fillRect(tb._x, tb._y, tb._w, tb._h);
+			
+			ctx.fillStyle = tb.color;
+			ctx.font = tb.fontSize + " " + tb.fontFamily;
+			ctx.textBaseline = "middle";
 			var lines = text.split("\n")
 			for(var i=0; i<lines.length; i++){
-				ctx.fillText(lines[i], tb._x+1, tb._y+1 + i*19, tb._w);
+				ctx.fillText(lines[i], tb._x+1, tb._y+1 + (i+0.5)*tb.lineHeight, tb._w);
 			}
 		});
 	}

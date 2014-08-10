@@ -48,9 +48,11 @@ var $Choose = function(things, display, choose, is_chosen){
 				var $option_container = $(E("div")).appendTo($chooser);
 				var $option = $();
 				var choose_thing = function(){
+					if(is_chosen(thing)){
+						return; //optimization
+					}
 					choose(thing);
-					$chooser.trigger("redraw");
-					update();
+					$G.trigger("option-changed");
 				}
 				var update = function(){
 					$option_container.css({
@@ -62,6 +64,7 @@ var $Choose = function(things, display, choose, is_chosen){
 				};
 				update();
 				$chooser.on("redraw", update);
+				$G.on("option-changed", update);
 				
 				$option_container.on("mousedown click", choose_thing);
 				$chooser.on("mousedown", function(){

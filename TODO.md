@@ -22,7 +22,7 @@
 * Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
 * Do warn about losing unsaved files (close button, etc.)
 
-* BUG: status text gets cut off
+* Issue: status text gets cut off
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 
 * It's not supposed to show the canvas handles when there is a selection. It used to hide them but now it doesn't.
@@ -64,6 +64,7 @@
 ### Mobile support
 
 * Multitouch (use pointer events polyfill)
+* Click current colors area to swap
 
 ### Actions
 
@@ -109,8 +110,15 @@
 	* *find a better fill algorithm*
 
 * Text tool
-	* Make it
+	* Foreground color, background color ✓
+	* Handles
+	* Wrapping
+	* Expanding to new lines
+	* Fonts (with `FontBox`)
 	* Save text and record transformations so it can be saved as an SVG with invisible selectable elements
+
+* Select tool
+	* Handles
 
 * Strokes
 	* Rectangle: The stroke is within the rectangle.
@@ -122,7 +130,7 @@ This isn't in mspaint, but maybe use should be able to click (double-click?) one
 
 ### Components / Windows
 * Drag components into a window
-* Drag windows by the contained component seamlessly
+* Drag window and component together seamlessly
 * Double-click a component window's titlebar to dock the component to its most recent location.
 
 

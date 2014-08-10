@@ -501,7 +501,7 @@ $G.on("keydown", function(e){
 				stroke_size = Math.max(1, Math.min(stroke_size + delta, 500));
 			}
 			
-			$(".jspaint-chooser").triggerHandler("redraw");
+			$G.trigger("option-changed");
 		}
 		e.preventDefault();
 		return false;
