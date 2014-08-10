@@ -13,7 +13,7 @@ function TextBox(x, y, w, h){
 	
 	tb.$ghost = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
 	tb.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
-	tb.$editor.on("mousedown", function(e){
+	tb.$editor.on("mousedown dragover dragenter drop contextmenu", function(e){
 		e.stopPropagation();
 	});
 	
