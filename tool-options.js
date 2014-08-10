@@ -268,7 +268,8 @@ var $choose_transparency = $Choose(
 			backgroundImage: "url(images/options-transparency.png)",
 			backgroundPosition: "0px "+(t_o === "opaque" ? 0 : 23)+"px",
 			width: "35px",
-			height: "23px"
+			height: "23px",
+			margin: "2px"
 		});
 		return e;
 	},
