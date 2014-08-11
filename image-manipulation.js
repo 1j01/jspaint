@@ -102,7 +102,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius){
 }
 function draw_line(ctx, x1, y1, x2, y2){
 	if(aliasing){
-		bresenham(x1, y1, x2, y2, function(x, y){
+		bresenham_line(x1, y1, x2, y2, function(x, y){
 			ctx.fillRect(x, y, 1, 1);
 		});
 	}else{
@@ -115,7 +115,7 @@ function draw_line(ctx, x1, y1, x2, y2){
 		ctx.lineCap = "butt";
 	}
 }
-function bresenham(x1, y1, x2, y2, callback){
+function bresenham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	
@@ -134,7 +134,7 @@ function bresenham(x1, y1, x2, y2, callback){
 		if(e2 < dx){ err += dx; y1 += sy; }
 	}
 }
-function brosandham(x1, y1, x2, y2, callback){
+function brosandham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm modified to callback in-between going horizontal and vertical
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	

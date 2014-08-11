@@ -679,7 +679,7 @@ function tool_go(event_name){
 	}
 	if(selected_tool.paint){
 		if(selected_tool.continuous === "space"){
-			var ham = brush_shape.match(/diagonal/) ? brosandham : bresenham;
+			var ham = brush_shape.match(/diagonal/) ? brosandham_line : bresenham_line;
 			ham(mouse_previous.x, mouse_previous.y, mouse.x, mouse.y, function(x, y){
 				selected_tool.paint(ctx, x, y);
 			});
