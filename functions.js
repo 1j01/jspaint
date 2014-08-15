@@ -176,6 +176,7 @@ function are_you_sure(action){
 }
 
 function render_history_as_gif(){
+	// @TODO: Cancel rendering when closing the window. Also add cancel button. Also add progress bar.
 	var $win = $Window();
 	$win.title("Rendering GIF");
 	var $output = $win.$content;

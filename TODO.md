@@ -19,8 +19,9 @@
 	* Pixel Perfection
 
 
-* Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
-* Do warn about losing unsaved files (close button, etc.)
+* Keep track of what's saved
+	* Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
+	* Do warn about losing unsaved files (close button, etc.)
 
 * Issue: status text gets cut off
 	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
@@ -79,6 +80,7 @@
 ### Tools
 
 * Curve tool
+	* Aliasing
 
 * Polygon tool
 	* Issue with extra undoables
@@ -87,32 +89,25 @@
 	* Aliasing
 
 * OPTIONS
-	* shapes all have their own settings for [fill | stroke | stroke_fill]
-	* shapes, lines and curves all use one setting for stroke width
-	* selection + free-form selection + text use one setting for [opaque/transparent]
+	* shapes all have their own settings for [fill | stroke | stroke_fill] ✓
+	* shapes, lines and curves all use one setting for stroke width ✓
+	* selection + free-form selection + text use one setting for [opaque/transparent] ✓
 	* secret 10x zoom by clicking the area just underneath the 8x zoom
 	* visual area is different from selection highlight area is different from clickable area
 
 * fill bucket and airbrush cursors are supposed to be inverty :\
 
-* Shapes respond to Ctrl, by...
-	* It's complicated.
-
-* Use stroke width
-
 * Color Eraser
 	* right click with the eraser to selectively replace color1 with color2
 
 * Fill Bucket
-	* get into those corners!
-	* handle transparency also
-	* man, this fill algorithm is pretty bad
-	* *find a better fill algorithm*
+	* Find a better fill algorithm!
+		* get into those corners!
+		* handle transparency
 
 * Text tool
-	* Foreground color, background color ✓
 	* Handles
-	* Wrapping
+	* Wrapping!
 	* Expanding to new lines
 	* Fonts (with `FontBox`)
 	* Save text and record transformations so it can be saved as an SVG with invisible selectable elements
@@ -121,12 +116,17 @@
 	* Handles
 
 * Strokes
+	* Shapes respond to Ctrl, by...
+		* It's complicated.
+	* Use stroke width
 	* Rectangle: The stroke is within the rectangle.
 	* Rounded Rectangle / Ellipse: If the width/height is less than the stroke width, it draws the fillstroke.
 
 
 ### Colors
 This isn't in mspaint, but maybe use should be able to click (double-click?) one of the selected colors to change it directly?
+
+Or for mobile, click to switch colors.
 
 ### Components / Windows
 * Drag components into a window
@@ -144,6 +144,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 ### Chrome App
 
 * Use the chrome.wallpaper API to change the ChromeOS wallpaper.
+	* Theoretical support ✓
 	* Test this on Chrome OS
 
 * Themed window border
