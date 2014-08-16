@@ -170,6 +170,7 @@ function are_you_sure(action){
 		$w.$Button("Cancel", function(){
 			$w.close();
 		});
+		$w.center();
 	}else{
 		action();
 	}
@@ -179,6 +180,7 @@ function render_history_as_gif(){
 	// @TODO: Cancel rendering when closing the window. Also add cancel button. Also add progress bar.
 	var $win = $Window();
 	$win.title("Rendering GIF");
+	$win.center();
 	var $output = $win.$content;
 	
 	var gif = new GIF({
@@ -248,6 +250,7 @@ function undoable(callback, action){
 		$w.$Button("Keep", function(){
 			$w.close();
 		});
+		$w.center();
 		return false;
 	}else{
 		redos = [];
@@ -324,7 +327,7 @@ function deselect(){
 	if(textbox){
 		textbox.draw();
 		textbox.destroy();
-		texbox = null;
+		textbox = null;
 	}
 	selected_tool.end && selected_tool.end();
 }

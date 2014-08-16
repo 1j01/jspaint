@@ -52,7 +52,33 @@ TextBox.prototype.instantiate = function(){
 	
 	instantiate();
 	
+	if(TextBox.$fontbox && TextBox.$fontbox.closed){
+		TextBox.$fontbox = null;
+	}
+	var $fb = TextBox.$fontbox = TextBox.$fontbox || new $FontBox();
+	
+	// move the font box out of the way if it's overlapping the TextBox
+	var $tb = tb.$ghost;
+	var fb_rect = $fb[0].getBoundingClientRect();
+	var tb_rect = $tb[0].getBoundingClientRect();
+	
+	if(
+		// the fontbox overlaps textbox
+		fb_rect.left <= tb_rect.right &&
+		tb_rect.left <= fb_rect.right &&
+		fb_rect.top <= tb_rect.bottom &&
+		tb_rect.top <= fb_rect.bottom
+	){
+		// move the font box out of the way
+		$fb.css({
+			top: $tb.position().top - $fb.height()
+		});
+	}
+		
+	$fb.applyBounds();
+	
 	function instantiate(){
+		// this doesn't need to be a seperate function
 		
 		tb.$ghost.append(tb.$editor);
 		tb.$editor.focus();
@@ -124,4 +150,9 @@ TextBox.prototype.draw = function(){
 TextBox.prototype.destroy = function(){
 	this.$ghost.remove();
 	$canvas_handles.show();
+	
+	if(TextBox.$fontbox && !TextBox.$fontbox.closed){
+		TextBox.$fontbox.close();
+	}
+	TextBox.$fontbox = null;
 };

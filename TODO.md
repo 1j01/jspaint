@@ -109,8 +109,10 @@
 	* Handles
 	* Wrapping!
 	* Expanding to new lines
+	* Minimum size of 3em x 1em (that is, the width of 3 'm's by the height of one line)
 	* Fonts (with `FontBox`)
-	* Save text and record transformations so it can be saved as an SVG with invisible selectable elements
+	* Keep the old textbox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using now)
+	* Save text and record transformations so it can be saved as an SVG (or HTML?) with invisible selectable elements
 
 * Select tool
 	* Handles
@@ -127,6 +129,8 @@
 This isn't in mspaint, but maybe use should be able to click (double-click?) one of the selected colors to change it directly?
 
 Or for mobile, click to switch colors.
+
+Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 ### Components / Windows
 * Drag components into a window
@@ -151,3 +155,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* (Note: Minimum window size might need updating)
 
 * Publish to webstore!?!?!?
+
+### Also
+
+Anything marked `@TODO` in the source code is to be done.

@@ -605,6 +605,7 @@ $G.on("cut copy paste", function(e){
 								paste_img();
 							});
 							$w.$Button("Cancel", function(){});
+							$w.center();
 						}else{
 							paste_img();
 						}
@@ -796,5 +797,8 @@ $body.on("contextmenu", function(e){
 	return false;
 });
 $body.on("mousedown", function(e){
+	if(e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement){
+		return true;
+	}
 	e.preventDefault();
 });

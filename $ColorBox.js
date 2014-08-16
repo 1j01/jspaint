@@ -1,7 +1,6 @@
 
 function $ColorBox(){
 	var $cb = $(E("div")).addClass("jspaint-color-box");
-	$cb.addClass("jspaint-color-box");
 	
 	var $current_colors = $(E("div")).addClass("jspaint-current-colors");
 	var $palette = $(E("div")).addClass("jspaint-palette");
@@ -39,7 +38,7 @@ function $ColorBox(){
 		$b.appendTo($palette);
 		$b.css("background-color", color);
 		
-		var $i = $(E("input")).attr({type:"color"});
+		var $i = $(E("input")).attr({type: "color"});
 		$i.appendTo($b);
 		$i.on("change", function(){
 			color = $i.val();

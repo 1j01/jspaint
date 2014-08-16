@@ -8,17 +8,17 @@ function $Window($component){
 	
 	if($component){
 		$w.addClass("jspaint-component-window");
-	}else{
-		setTimeout(function(){ $w.center(); });
 	}
 	
+	$w.closed = false;
 	$w.$x.on("click", function(){
 		$w.close();
+		$w.closed = true;
 	});
 	
 	$w.css({position: "absolute"});
 	
-	$w.apply_bounds = function(){
+	$w.applyBounds = function(){
 		$w.css({
 			left: Math.max(0, Math.min(innerWidth - $w.width(), $w[0].getBoundingClientRect().left)),
 			top: Math.max(0, Math.min(innerHeight - $w.height(), $w[0].getBoundingClientRect().top)),
@@ -30,11 +30,11 @@ function $Window($component){
 			left: (innerWidth - $w.width()) / 2,
 			top: (innerHeight - $w.height()) / 2,
 		});
-		$w.apply_bounds();
+		$w.applyBounds();
 	};
 	
 	
-	$(window).on("resize", $w.apply_bounds);
+	$(window).on("resize", $w.applyBounds);
 	
 	var mx, my;
 	var drag = function(e){
@@ -77,6 +77,10 @@ function $Window($component){
 		}
 		$w.remove();
 	};
+	
+	if(!$component){
+		$w.center();
+	}
 	
 	return $w;
 }
