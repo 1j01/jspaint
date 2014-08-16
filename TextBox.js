@@ -17,23 +17,29 @@ function TextBox(x, y, w, h){
 		e.stopPropagation();
 	});
 	
-	tb.fontFamily = "Arial";
-	tb.fontSize = "12pt";
-	tb.lineHeight = 20;
-	
 	var update = function(){
-		tb.color = colors[0];
-		tb.background = ({
+		font.color = colors[0];
+		font.background = ({
 			transparent: "transparent",
 			opaque: colors[1]
 		}[transparent_opaque]);
 		
 		tb.$editor.css({
-			fontFamily: tb.fontFamily,
-			fontSize: tb.fontSize,
-			lineHeight: tb.lineHeight + "px",
-			color: tb.color,
-			background: tb.background
+			fontFamily: font.family,
+			fontSize: font.size + "px",
+			fontWeight: font.bold ? "bold" : "normal",
+			fontStyle: font.italic ? "italic" : "none",
+			textDecoration: font.underline ? "underline" : "none",
+			writingMode: font.vertical ? "vertical-lr" : "",
+			oWritingMode: font.vertical ? "vertical-lr" : "",
+			msWritingMode: font.vertical ? "vertical-lr" : "",
+			mozWritingMode: font.vertical ? "vertical-lr" : "",
+			kxmlWritingMode: font.vertical ? "vertical-lr" : "",
+			khtmlWritingMode: font.vertical ? "vertical-lr" : "",
+			webkitWritingMode: font.vertical ? "vertical-lr" : "",
+			lineHeight: font.size * font.line_scale + "px",
+			color: font.color,
+			background: font.background
 		});
 	};
 	update();
@@ -133,15 +139,16 @@ TextBox.prototype.draw = function(){
 	var text = tb.$editor.val();
 	if(text){
 		undoable(0, function(){
-			ctx.fillStyle = tb.background;
+			ctx.fillStyle = font.background;
 			ctx.fillRect(tb._x, tb._y, tb._w, tb._h);
 			
-			ctx.fillStyle = tb.color;
-			ctx.font = tb.fontSize + " " + tb.fontFamily;
+			ctx.fillStyle = font.color;
+			var style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
+			ctx.font = style_ + font.size + "px " + font.family;
 			ctx.textBaseline = "middle";
 			var lines = text.split("\n")
 			for(var i=0; i<lines.length; i++){
-				ctx.fillText(lines[i], tb._x+1, tb._y+1 + (i+0.5)*tb.lineHeight, tb._w);
+				ctx.fillText(lines[i], tb._x+1, tb._y+1 + (i+0.5)*(font.size * font.line_scale), tb._w);
 			}
 		});
 	}

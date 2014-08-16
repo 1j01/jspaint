@@ -111,6 +111,8 @@
 	* Expanding to new lines
 	* Minimum size of 3em x 1em (that is, the width of 3 'm's by the height of one line)
 	* Fonts (with `FontBox`)
+		* Detect fonts
+		
 	* Keep the old textbox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using now)
 	* Save text and record transformations so it can be saved as an SVG (or HTML?) with invisible selectable elements
 

@@ -30,6 +30,12 @@ var colors = ["", "", ""];
 
 var selection; //the one and only Selection
 var textbox; //the one and only TextBox
+var font = {
+	family: "Arial",
+	size: 12,
+	line_scale: 20 / 12
+};
+
 var undos = []; //array of <canvas>
 var redos = []; //array of <canvas>
 var frames = []; //array of {delay:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
