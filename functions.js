@@ -177,12 +177,12 @@ function are_you_sure(action){
 }
 
 function render_history_as_gif(){
-	// @TODO: Cancel rendering when closing the window. Also add cancel button. Also add progress bar.
+	// @TODO: Cancel rendering when closing the window. Also add cancel button.
 	var $win = $Window();
 	$win.title("Rendering GIF");
 	$win.center();
 	var $output = $win.$content;
-	
+	var $progress = $(E("progress")).appendTo($output);
 	var gif = new GIF({
 		workers: Math.min(5, Math.floor(undos.length/50)+1),
 		workerScript: 'lib/gif.js/gif.worker.js',
@@ -191,7 +191,7 @@ function render_history_as_gif(){
 	});
 	
 	gif.on('progress', function(p){
-		$output.text(~~(p*100)+'%');
+		$progress.val(p);
 	});
 	
 	gif.on('finished', function(blob){
