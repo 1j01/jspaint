@@ -10,10 +10,8 @@ function $Window($component){
 		$w.addClass("jspaint-component-window");
 	}
 	
-	$w.closed = false;
 	$w.$x.on("click", function(){
 		$w.close();
-		$w.closed = true;
 	});
 	$w.$x.on("mousedown", function(e){
 		e.preventDefault();
@@ -62,7 +60,7 @@ function $Window($component){
 			.addClass("jspaint-dialogue-button")
 			.text(text)
 			.on("click", function(){
-				handler();
+				handler && handler();
 				$w.close();
 			})
 		);
@@ -76,11 +74,14 @@ function $Window($component){
 		}
 	};
 	$w.close = function(){
+		$w.trigger("close");
 		if($component){
 			$component.detach();
 		}
 		$w.remove();
+		$w.closed = true;
 	};
+	$w.closed = false;
 	
 	if(!$component){
 		$w.center();
