@@ -258,7 +258,8 @@ $.each({
 		},
 		{
 			item: "&Clear Image",
-			shortcut: "Ctrl+Shift+N"
+			shortcut: "Ctrl+Shift+N",
+			action: clear
 		},
 		{
 			item: "&Draw Opaque",
@@ -382,10 +383,10 @@ $canvas.on("user-resized", function(e, width, height){
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
 		if(transparency){
-			ctx.clearRect(0, 0, width, height);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 		}else{
 			ctx.fillStyle = colors[1];
-			ctx.fillRect(0, 0, width, height);
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 		
 		var previous_canvas = undos[undos.length-1];
@@ -396,8 +397,8 @@ $canvas.on("user-resized", function(e, width, height){
 		$canvas.trigger("update"); //update handles
 		
 		try{
-			localStorage.width = width;
-			localStorage.height = height;
+			localStorage.width = canvas.width;
+			localStorage.height = canvas.height;
 		}catch(e){}
 	});
 });
@@ -463,14 +464,17 @@ $G.on("keydown", function(e){
 		}
 		if(fits_shape){
 			brush_shape = k;
+			$G.trigger("option-changed");
 			break;
 		}
 	}
 	if(e.keyCode === 96){
 		brush_shape = "circle";
+		$G.trigger("option-changed");
 	}
 	if(e.keyCode === 111){
 		brush_shape = "diagonal";
+		$G.trigger("option-changed");
 	}
 	
 	if(e.altKey){
@@ -542,7 +546,7 @@ $G.on("keydown", function(e){
 				file_open();
 			break;
 			case "N":
-				file_new();
+				e.shiftKey ? clear() : file_new();
 			break;
 			case "S":
 				e.shiftKey ? file_save_as() : file_save();

@@ -19,7 +19,7 @@
 	* Pixel Perfection
 	* MAKE THINGS DO THINGS
 		* Image > Attributes
-		* Image > Clear Image
+		* Image > Clear Image ✓
 		* View > Show/Hide stuff
 		* Edit > Paste From
 		* Other stuff
@@ -89,7 +89,7 @@
 	* Flip
 	* Skew
 	* Invert ✓
-	* Clear
+	* Clear ✓
 * Undo/Redo History to Frames
 
 ### Tools

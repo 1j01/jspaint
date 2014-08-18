@@ -363,6 +363,19 @@ function invert(){
 	});
 }
 
+function clear(){
+	undoable(0, function(){
+		this_ones_a_frame_changer();
+		
+		if(transparency){
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+		}else{
+			ctx.fillStyle = colors[1];
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+	});
+}
+
 function view_bitmap(){
 	canvas.requestFullscreen && canvas.requestFullscreen();
 	canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
