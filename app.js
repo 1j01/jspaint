@@ -204,7 +204,8 @@ $.each({
 			disabled: true
 		},
 		{
-			item: "Paste &From..."
+			item: "Paste &From...",
+			action: paste_from
 		}
 	],
 	"&View": [
@@ -584,53 +585,7 @@ $G.on("cut copy paste", function(e){
 	}else if(e.type === "paste"){
 		$.each(cd.items, function(i, item){
 			if(item.type.match(/image/)){
-				var blob = item.getAsFile();
-				var reader = new FileReader();
-				reader.onload = function(e){
-					var img = new Image();
-					img.onload = function(){
-						if(img.width > canvas.width || img.height > canvas.height){
-							var $w = new $Window();
-							$w.title("Paint");
-							$w.$content.html(
-								"The image is bigger than the canvas.<br>"
-								+"Would you like the canvas to be enlarged?<br>"
-							);
-							$w.$Button("Enlarge", function(){
-								//additional undo
-								undoable(function(){
-									var original = undos[undos.length-1];
-									canvas.width = Math.max(original.width, img.width);
-									canvas.height = Math.max(original.height, img.height);
-									if(!transparency){
-										ctx.fillStyle = colors[1];
-										ctx.fillRect(0, 0, canvas.width, canvas.height);
-									}
-									ctx.drawImage(original, 0, 0);
-									paste_img();
-									$canvas_area.trigger("resize");
-								});
-							});
-							$w.$Button("Crop", function(){
-								paste_img();
-							});
-							$w.$Button("Cancel", function(){});
-							$w.center();
-						}else{
-							paste_img();
-						}
-						function paste_img(){
-							if(selection){
-								selection.draw();
-								selection.destroy();
-							}
-							selection = new Selection(0, 0, img.width, img.height);
-							selection.instantiate(img);
-						}
-					};
-					img.src = e.target.result;
-				};
-				reader.readAsDataURL(blob);
+				paste_file(item.getAsFile());
 				return false;
 			}
 		});

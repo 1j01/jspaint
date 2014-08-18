@@ -21,7 +21,8 @@
 		* Image > Attributes
 		* Image > Clear Image ✓
 		* View > Show/Hide stuff
-		* Edit > Paste From
+		* Edit > Paste From... ✓
+			* Select the selection tool
 		* Other stuff
 		* About paint
 

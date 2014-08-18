@@ -28,6 +28,17 @@ function update_title(){
 	document.title = file_name + " - Paint";
 }
 
+function get_FileList(callback){
+	var $input = $(E("input")).attr({type: "file"})
+		.on("change", function(){
+			callback(this.files);
+			$input.remove();
+		})
+		.appendTo("body")
+		.hide()
+		.click();
+}
+
 function open_from_Image(img, new_file_name){
 	are_you_sure(function(){
 		this_ones_a_frame_changer();
@@ -105,14 +116,7 @@ function file_open(){
 			open_from_FileEntry(entry);
 		});
 	}else{
-		var $input = $(E("input")).attr({type:"file"})
-			.on("change", function(){
-				open_from_FileList(this.files);
-				$input.remove();
-			})
-			.appendTo("body")
-			.hide()
-			.click();
+		get_FileList(open_from_FileList);
 	}
 }
 
@@ -173,6 +177,73 @@ function are_you_sure(action){
 		$w.center();
 	}else{
 		action();
+	}
+}
+
+function paste_file(blob){
+	var reader = new FileReader();
+	reader.onload = function(e){
+		var img = new Image();
+		img.onload = function(){
+			paste(img);
+		};
+		img.src = e.target.result;
+	};
+	reader.readAsDataURL(blob);
+}
+
+function paste_from(){
+	get_FileList(function(files){
+		$.each(files, function(i, file){
+			if(file.type.match(/image/)){
+				paste_file(file);
+				return false;
+			}
+		});
+	});
+	// @TODO: select the selection tool
+}
+
+function paste(img){
+	
+	if(img.width > canvas.width || img.height > canvas.height){
+		var $w = new $Window();
+		$w.title("Paint");
+		$w.$content.html(
+			"The image is bigger than the canvas.<br>" +
+			"Would you like the canvas to be enlarged?<br>"
+		);
+		$w.$Button("Enlarge", function(){
+			//additional undo
+			undoable(function(){
+				var original = undos[undos.length-1];
+				canvas.width = Math.max(original.width, img.width);
+				canvas.height = Math.max(original.height, img.height);
+				if(!transparency){
+					ctx.fillStyle = colors[1];
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+				}
+				ctx.drawImage(original, 0, 0);
+				paste_img();
+				$canvas_area.trigger("resize");
+			});
+		});
+		$w.$Button("Crop", function(){
+			paste_img();
+		});
+		$w.$Button("Cancel", function(){});
+		$w.center();
+	}else{
+		paste_img();
+	}
+	
+	function paste_img(){
+		if(selection){
+			selection.draw();
+			selection.destroy();
+		}
+		selection = new Selection(0, 0, img.width, img.height);
+		selection.instantiate(img);
 	}
 }
 
