@@ -28,8 +28,6 @@
 * For tools, don't draw for every single pixel the mouse moves, when drawing once would have the same effect but be 10x-300x+ faster!
 	* Firefox's canvas is slow which makes the difference very obvious!
 
-* Tool button images are offset in Firefox
-
 * `filter: invert();` doesn't work yet in Firefox
 	* Invert the image with canvas
 		* Make class $UpscaledCanvas

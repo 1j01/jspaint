@@ -24,8 +24,11 @@ function $ToolBox(){
 		var by = (~~(i/2))*25;
 		$icon.css({
 			display: "block",
-			width: "100%",
-			height: "100%",
+			position: "absolute",
+			left: 0,
+			top: 0,
+			width: 24,
+			height: 24,
 			backgroundImage: "url(images/toolbar-icons.png)",
 			backgroundPosition: bx + "px " + -by + "px",
 		});
