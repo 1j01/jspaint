@@ -15,9 +15,17 @@ function $FontBox(){
 	
 	var update_font = function(){
 		font.size = Number($size.val());
-		//font.family = $family.val(); (would currently just break the font)
+		font.family = $family.val();
 		$G.trigger("option-changed");
 	};
+	
+	FontDetective.each(function(fontFamily){
+		var $option = $(E("option"));
+		$option.val(fontFamily).text(fontFamily);
+		$family.append($option);
+	});
+	
+	$family.val(font.family);
 	
 	$family.on("change", update_font);
 	$size.on("change", update_font);
@@ -55,3 +63,16 @@ function $FontBox(){
 		return $button;
 	}
 }
+
+// @TODO: detective work
+FontDetective = {
+	psuedo: ["sans-serif", "serif", "monospace", "fantasy"],
+	each: function(callback){
+		for(var i=0; i<FontDetective.psuedo.length; i++){
+			callback(FontDetective.psuedo[i]);
+		}
+	},
+	all: function(callback){
+		callback(FontDetective.psuedo);
+	}
+};
