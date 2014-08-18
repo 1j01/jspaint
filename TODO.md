@@ -59,7 +59,7 @@
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
 	* Brush Scaling ✓
 	* Custom Brushes ✓
-	* The 'Stamp' Tool ✓
+	* The 'Stamp' "Tool" ✓
 	* Image Scaling (Ctrl+Plus and Ctrl+Minus on the Numpad to scale the selection by factors of 2)
 	* Color Replacement (see [Tools](#tools))
 	* The Grid (Ctrl+G + zoom6x+)
@@ -80,7 +80,7 @@
 ### Mobile support
 
 * Multitouch (use pointer events polyfill)
-* Click current colors area to swap
+* Tap (/click?) current colors area to swap
 
 ### Actions
 
@@ -102,6 +102,7 @@
 	* Ending the operation when switching tools
 	* Self-intersecting shapes are handled differently by mspaint than with the Canvas API
 	* Aliasing
+	* Close the polygon when switching tools
 
 * OPTIONS
 	* shapes all have their own settings for [fill | stroke | stroke_fill] ✓
@@ -134,25 +135,28 @@
 
 * Select tool
 	* Handles
+	* Image is blurry
 
 * Strokes
-	* Polygon tool should be VERY @easy to make respond to fill/stroke options DO THIS
+	* Polygon tool: respond to fill/stroke options
 	* Shapes respond to Ctrl, by...
 		* It's complicated.
-	* Use stroke width
+	* Use stroke size
 	* Rectangle: The stroke is within the rectangle.
-	* Rounded Rectangle / Ellipse: If the width/height is less than the stroke width, it draws the fillstroke.
+	* Rounded Rectangle / Ellipse: If the width/height is less than the stroke size, it fills a similar shape with the stroke color.
 
 
 ### Colors
+
 This isn't in mspaint, but maybe use should be able to click (double-click?) one of the selected colors to change it directly?
 
-Or for mobile, click to switch colors.
+Or, for mobile, tap/click to switch colors. Yeah, that sounds better.
 
 Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 ### Components / Windows
-* Drag components into a window
+
+* Drag components into a window ✓
 * Drag window and component together seamlessly
 * Double-click a component window's titlebar to dock the component to its most recent location.
 
@@ -177,4 +181,4 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 ### Also
 
-Anything marked `@TODO` in the source code is to be done.
+Anything marked `@TODO` in the source code is also to be done.

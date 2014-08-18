@@ -410,7 +410,8 @@ tools = [{
 		var dx = this.points[i].x - this.points[0].x;
 		var dy = this.points[i].y - this.points[0].y;
 		var d = Math.sqrt(dx*dx + dy*dy);
-		if(d < stroke_size*5.349205){//it's kinda weird how this is dependant on stroke_width but I guess it makes sense
+		if(d < stroke_size*5.349205){//it's kinda weird how this is dependant on stroke_size but I guess it makes sense
+			// the canvas doesn't get cleared to the previous image before calling complete, which it should @TODO
 			this.complete(ctx, x, y);
 		}
 	},
@@ -450,9 +451,15 @@ tools = [{
 		for(var i=1; i<this.points.length; i++){
 			ctx.lineTo(this.points[i].x, this.points[i].y);
 		}
+		ctx.lineTo(this.points[0].x, this.points[0].y);
 		ctx.closePath();
-		ctx.stroke();
-		ctx.fill();
+		
+		if(this.$options.fill){
+			ctx.fill();
+		}
+		if(this.$options.stroke){
+			ctx.stroke();
+		}
 		
 		this.points = [];
 	},

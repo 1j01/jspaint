@@ -82,7 +82,9 @@ var $Choose = function(things, display, choose, is_chosen){
 var $ChooseShapeStyle = function(){
 	var $chooser = $Choose(
 		[
-			[1, 0], [1, 1], [0, 1]
+			{stroke: true, fill: false},
+			{stroke: true, fill: true},
+			{stroke: false, fill: true}
 		],
 		function(a, is_chosen){
 			var canvas = E("canvas");
@@ -94,12 +96,12 @@ var $ChooseShapeStyle = function(){
 			
 			ctx.fillStyle = is_chosen ? "#fff" : "#000";
 			
-			if(a[0]){
+			if(a.stroke){
 				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
 			}
 			b++;
 			ctx.fillStyle = "#777";
-			if(a[1]){
+			if(a.fill){
 				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
 			}else{
 				ctx.clearRect(b, b, canvas.width-b*2, canvas.height-b*2);
@@ -108,13 +110,13 @@ var $ChooseShapeStyle = function(){
 			return canvas;
 		},
 		function(a){
-			$chooser.stroke = a[0];
-			$chooser.fill = a[1];
+			$chooser.stroke = a.stroke;
+			$chooser.fill = a.fill;
 		},
 		function(a){
-			if($chooser.fill === undefined) $chooser.fill = 0;
-			if($chooser.stroke === undefined) $chooser.stroke = 1;
-			return $chooser.stroke === a[0] && $chooser.fill === a[1];
+			if($chooser.fill === undefined) $chooser.fill = false;
+			if($chooser.stroke === undefined) $chooser.stroke = true;
+			return $chooser.stroke === a.stroke && $chooser.fill === a.fill;
 		}
 	).addClass("jspaint-choose-shape-style");
 	
