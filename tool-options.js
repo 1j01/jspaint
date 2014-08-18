@@ -248,6 +248,9 @@ var $choose_airbrush_size = $Choose(
 			backgroundPosition: pos - _ + "px 0px",
 			width: (72 / 3 - _*2) + "px",
 			height: "23px",
+			filter: is_chosen ? "invert()" : "",
+			msFilter: is_chosen ? "invert()" : "",
+			mozFilter: is_chosen ? "invert()" : "",
 			webkitFilter: is_chosen ? "invert()" : "" // @todo: invert and upscale with canvas
 		});
 		return e;

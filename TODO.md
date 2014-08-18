@@ -17,7 +17,22 @@
 				* "call to action"
 				* break
 	* Pixel Perfection
+	* MAKE THINGS DO THINGS
+		* Image > Attributes
+		* Image > Clear Image
+		* View > Show/Hide stuff
+		* Edit > Paste From
+		* Other stuff
+		* About paint
 
+* For tools, don't draw for every single pixel the mouse moves, when drawing once would have the same effect but be 10x-300x+ faster!
+	* Firefox's canvas is slow which makes the difference very obvious!
+
+* Tool button images are offset in Firefox
+
+* `filter: invert();` doesn't work yet in Firefox
+	* Invert the image with canvas
+		* Make class $UpscaledCanvas
 
 * Keep track of what's saved
 	* Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
@@ -110,9 +125,10 @@
 	* Wrapping!
 	* Expanding to new lines
 	* Minimum size of 3em x 1em (that is, the width of 3 'm's by the height of one line)
-	* Fonts (with `FontBox`)
+	* Fonts (`FontBox`)
 		* Detect fonts
-		
+		* Implement underline (Probably after wrapping!)
+		* Store position
 	* Keep the old textbox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using now)
 	* Save text and record transformations so it can be saved as an SVG (or HTML?) with invisible selectable elements
 
@@ -120,6 +136,7 @@
 	* Handles
 
 * Strokes
+	* Polygon tool should be VERY @easy to make respond to fill/stroke options DO THIS
 	* Shapes respond to Ctrl, by...
 		* It's complicated.
 	* Use stroke width
