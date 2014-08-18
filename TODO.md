@@ -2,10 +2,9 @@
 # Todo
 
 * Improve README
-	* Introduce and explain the project ✓ ...better?
+	* Introduce and explain the project ...better?
 	* Is a link in the header visible enough?
 	* Publish jspaint to the webstore and link to that
-	* I feel like the tone is sort of weird or something
 	* Make it pretty with images
 
 * Menus!
@@ -139,7 +138,6 @@
 	* Image is blurry
 
 * Strokes
-	* Polygon tool: respond to fill/stroke options
 	* Shapes respond to Ctrl, by...
 		* It's complicated.
 	* Use stroke size
