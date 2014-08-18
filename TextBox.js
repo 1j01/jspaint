@@ -89,6 +89,8 @@ TextBox.prototype.instantiate = function(){
 		tb.$ghost.append(tb.$editor);
 		tb.$editor.focus();
 		
+		//tb.$handles = $Handles(tb.$ghost, tb.$editor[0], {outset: 2});
+		
 		var mox, moy;
 		var mousemove = function(e){
 			var m = e2c(e);

@@ -61,6 +61,8 @@ Selection.prototype.instantiate = function(_img, _passive){
 		}
 		sel.$ghost.append(sel.canvas);
 		
+		//sel.$handles = $Handles(sel.$ghost, sel.canvas, {outset: 2});
+		
 		var mox, moy;
 		var mousemove = function(e){
 			var m = e2c(e);

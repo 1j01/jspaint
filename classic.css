@@ -23,6 +23,9 @@
 	outline: 1px dotted #7b7b7b; /* what it is */
 	outline: 1px dotted invert; /* what it should be */
 }
+.jspaint-cursor-bully * {
+	cursor: inherit !important;
+}
 
 .jspaint-menus * {
 	font: menu;
