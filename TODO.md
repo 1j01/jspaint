@@ -24,6 +24,8 @@
 			* Select the selection tool
 		* Other stuff
 		* About paint
+	* Repeat is always grayed out, but is functional
+	* Clear Selection is always grayed out, but is functional
 
 * For tools, don't draw for every single pixel the mouse moves, when drawing once would have the same effect but be 10x-300x+ faster!
 	* Firefox's canvas is slow which makes the difference very obvious!
@@ -58,7 +60,7 @@
 	* Brush Scaling ✓
 	* Custom Brushes ✓
 	* The 'Stamp' "Tool" ✓
-	* Image Scaling (Ctrl+Plus and Ctrl+Minus on the Numpad to scale the selection by factors of 2)
+	* Image Scaling ✓
 	* Color Replacement (see [Tools](#tools))
 	* The Grid (Ctrl+G + zoom6x+)
 	* Quick Undo ✓ (I also made it redoable, in case you do it by accident)

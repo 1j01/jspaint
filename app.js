@@ -495,10 +495,25 @@ $G.on("keydown", function(e){
 	}else if(e.keyCode === 107 || e.keyCode === 109){
 		var plus = e.keyCode === 107;
 		var minus = e.keyCode === 109;
+		var delta = +plus++ -minus--;//Δ = ±±±±
+		
 		if(selection){
 			//scale selection
+			
+			var cx = selection._x + selection._w/2;
+			var cy = selection._y + selection._h/2;
+			var w = selection._w * Math.pow(2, delta);
+			var h = selection._h * Math.pow(2, delta);
+			
+			selection._x = cx - w/2;
+			selection._y = cy - h/2;
+			selection._w = w;
+			selection._h = h;
+			
+			selection.position();
+			selection.resize();
+			
 		}else{
-			var delta = +plus++ -minus--;//Δ = ±±±±
 			
 			if(selected_tool.name === "Brush"){
 				brush_size = Math.max(1, Math.min(brush_size + delta, 500));

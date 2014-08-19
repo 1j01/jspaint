@@ -69,23 +69,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 			sel._w = width;
 			sel._h = height;
 			sel.position();
-			
-			var new_canvas = E("canvas");
-			new_canvas.width = width;
-			new_canvas.height = height;
-			var new_ctx = new_canvas.getContext("2d");
-			new_ctx.imageSmoothingEnabled = false;
-			new_ctx.mozImageSmoothingEnabled = false;
-			new_ctx.webkitImageSmoothingEnabled = false;
-			new_ctx.drawImage(sel.canvas, 0, 0, width, height);
-			
-			$(sel.canvas).replaceWith(new_canvas);
-			sel.canvas = new_canvas;
-			sel.ctx = new_ctx;
-			
-			$(sel.canvas).on("mousedown", canvas_mousedown);
-			sel.$ghost.triggerHandler("new-element", [sel.canvas]);
-			sel.$ghost.triggerHandler("resize");
+			sel.resize();
 		});
 		
 		var mox, moy;
@@ -100,12 +84,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 			}
 		};
 		
-		$(sel.canvas).on("mousedown", canvas_mousedown);
-		$canvas_area.trigger("resize");
-		$status_position.text("");
-		$status_size.text("");
-		
-		function canvas_mousedown(e){
+		sel.canvas_mousedown = function(e){
 			e.preventDefault();
 			
 			var rect = sel.canvas.getBoundingClientRect();
@@ -122,7 +101,13 @@ Selection.prototype.instantiate = function(_img, _passive){
 			if(e.shiftKey){
 				sel.draw();
 			}
-		}
+		};
+		
+		$(sel.canvas).on("mousedown", sel.canvas_mousedown);
+		$canvas_area.trigger("resize");
+		$status_position.text("");
+		$status_size.text("");
+		
 	}
 };
 
@@ -137,6 +122,29 @@ Selection.prototype.position = function(){
 	$status_position.text(this._x + "," + this._y);
 	$status_size.text(this._w + "," + this._h);
 };
+Selection.prototype.resize = function(){
+	var sel = this;
+	var width = sel._w;
+	var height = sel._h;
+	
+	var new_canvas = E("canvas");
+	new_canvas.width = width;
+	new_canvas.height = height;
+	
+	var new_ctx = new_canvas.getContext("2d");
+	new_ctx.imageSmoothingEnabled = false;
+	new_ctx.mozImageSmoothingEnabled = false;
+	new_ctx.webkitImageSmoothingEnabled = false;
+	new_ctx.drawImage(sel.canvas, 0, 0, width, height);
+
+	$(sel.canvas).replaceWith(new_canvas);
+	sel.canvas = new_canvas;
+	sel.ctx = new_ctx;
+
+	$(sel.canvas).on("mousedown", sel.canvas_mousedown);
+	sel.$ghost.triggerHandler("new-element", [sel.canvas]);
+	sel.$ghost.triggerHandler("resize");
+};
 
 Selection.prototype.draw = function(){
 	try{ctx.drawImage(this.canvas, this._x, this._y);}catch(e){}
@@ -148,13 +156,13 @@ Selection.prototype.destroy = function(){
 };
 
 Selection.prototype.crop = function(){
-	var _this = this;
-	this.instantiate(null, "passive");
-	if(this.canvas){
+	var sel = this;
+	sel.instantiate(null, "passive");
+	if(sel.canvas){
 		undoable(0, function(){
-			canvas.width = _this.canvas.width;
-			canvas.height = _this.canvas.height;
-			ctx.drawImage(_this.canvas, 0, 0);
+			canvas.width = sel.canvas.width;
+			canvas.height = sel.canvas.height;
+			ctx.drawImage(sel.canvas, 0, 0);
 			$canvas.trigger("update"); //update handles
 		});
 	}

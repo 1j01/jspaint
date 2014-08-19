@@ -54,7 +54,7 @@ I want to make jspaint to be able to edit...
 	* Brush Scaling ✓ (in jspaint you don't need to hold Ctrl!)
 	* "Custom Brushes" ✓
 	* The 'Stamp' "Tool" ✓
-	* Image Scaling (Ctrl+Plus and Ctrl+Minus on the Numpad to scale the selection by factors of 2)
+	* Image Scaling ✓ (Plus and Minus on the Numpad to scale the selection by factors of 2)
 	* Color Replacement
 	* The Grid (Ctrl+G + zoom6x+)
 	* Quick Undo ✓ (I also made it redoable, in case you do it by accident! And you _will_ do it by accident, probably.)
