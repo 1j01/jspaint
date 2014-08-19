@@ -19,7 +19,7 @@
 	background: #fff;
 	box-shadow: 1px 1px 0 #000080 inset;
 }
-.jspaint-canvas-resize-ghost {
+.jspaint-resize-ghost {
 	outline: 1px dotted #7b7b7b; /* what it is */
 	outline: 1px dotted invert; /* what it should be */
 }

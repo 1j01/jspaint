@@ -38,7 +38,7 @@ var font = {
 
 var undos = []; //array of <canvas>
 var redos = []; //array of <canvas>
-var frames = []; //array of {delay:N, undos:[<canvas>], redos:[<canvas>], canvas:<canvas>}
+//var frames = []; //array of {delay: N, undos: [<canvas>], redos: [<canvas>], canvas: <canvas>}? array of Frames?
 
 var file_name;
 
@@ -379,7 +379,7 @@ if(window.file_entry){
 	open_from_URI(window.intent.data, "intent");
 }
 
-$canvas.on("user-resized", function(e, width, height){
+$canvas.on("user-resized", function(e, _x, _y, width, height){
 	undoable(0, function(){
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);

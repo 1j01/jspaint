@@ -1,10 +1,14 @@
 
-function $Handles($container, canvas, options){
+function $Handles($container, element, options){
 	var outset = options.outset || 0;
 	var offset = options.offset || 0;
 	var size_only = options.size_only || false;
+	var el = element;
+	$container.on("new-element", function(e, element){
+		el = element;
+	});
 	
-	var $resize_ghost = $(E("div")).addClass("jspaint-canvas-resize-ghost");
+	var $resize_ghost = $(E("div")).addClass("jspaint-resize-ghost");
 	var handles = $.map([
 		["top", "right"], //↗
 		["top", "middle"], //↑
@@ -21,7 +25,7 @@ function $Handles($container, canvas, options){
 		var $h = $(E("div")).addClass("jspaint-handle");
 		$h.appendTo($container);
 		
-		var width, height;
+		var x, y, width, height;
 		var dragged = false;
 		var resizes_height = y_axis !== "middle";
 		var resizes_width = x_axis !== "middle";
@@ -48,13 +52,13 @@ function $Handles($container, canvas, options){
 			
 			cursor += "-resize";
 			cursor = Cursor([cursor_fname, [16, 16], cursor]);
-			$h.css({cursor:cursor});
+			$h.css({cursor: cursor});
 			
 			var drag = function(e){
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
-				var rect = canvas.getBoundingClientRect();
+				var rect = el.getBoundingClientRect();
 				$resize_ghost.css({
 					position: "absolute",
 					left: offset,
@@ -67,15 +71,15 @@ function $Handles($container, canvas, options){
 				dragged = false;
 				if(e.button === 0){
 					$G.on("mousemove", drag);
-					$body.css({cursor:cursor}).addClass("jspaint-cursor-bully");
+					$body.css({cursor: cursor}).addClass("jspaint-cursor-bully");
 				}
 				$G.one("mouseup", function(e){
 					$G.off("mousemove", drag);
-					$body.css({cursor:""}).removeClass("jspaint-cursor-bully");
+					$body.css({cursor: ""}).removeClass("jspaint-cursor-bully");
 					
 					$resize_ghost.remove();
 					if(dragged){
-						$(canvas).trigger("user-resized", [width, height]);
+						$(el).trigger("user-resized", [x, y, width, height]);
 					}
 					$container.trigger("update");
 				});
@@ -87,7 +91,7 @@ function $Handles($container, canvas, options){
 		}
 		
 		var update_handle = function(){
-			var rect = canvas.getBoundingClientRect();
+			var rect = el.getBoundingClientRect();
 			var hs = $h.width();
 			if(x_axis === "middle"){
 				$h.css({ left: offset + (rect.width - hs) / 2 });
@@ -109,6 +113,5 @@ function $Handles($container, canvas, options){
 		$G.on("resize", update_handle);
 		setTimeout(update_handle, 50);
 	});
-	
 	return $(handles);
 }

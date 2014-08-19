@@ -63,6 +63,31 @@ Selection.prototype.instantiate = function(_img, _passive){
 		
 		//sel.$handles = $Handles(sel.$ghost, sel.canvas, {outset: 2});
 		
+		sel.$ghost.on("user-resized", function(e, x, y, width, height){
+			//tb._x = x;
+			//tb._y = y;
+			sel._w = width;
+			sel._h = height;
+			sel.position();
+			
+			var new_canvas = E("canvas");
+			new_canvas.width = width;
+			new_canvas.height = height;
+			var new_ctx = new_canvas.getContext("2d");
+			new_ctx.imageSmoothingEnabled = false;
+			new_ctx.mozImageSmoothingEnabled = false;
+			new_ctx.webkitImageSmoothingEnabled = false;
+			new_ctx.drawImage(sel.canvas, 0, 0, width, height);
+			
+			$(sel.canvas).replaceWith(new_canvas);
+			sel.canvas = new_canvas;
+			sel.ctx = new_ctx;
+			
+			$(sel.canvas).on("mousedown", canvas_mousedown);
+			sel.$ghost.triggerHandler("new-element", [sel.canvas]);
+			sel.$ghost.triggerHandler("resize");
+		});
+		
 		var mox, moy;
 		var mousemove = function(e){
 			var m = e2c(e);
@@ -74,7 +99,13 @@ Selection.prototype.instantiate = function(_img, _passive){
 				sel.draw();
 			}
 		};
-		$(sel.canvas).on("mousedown", function(e){
+		
+		$(sel.canvas).on("mousedown", canvas_mousedown);
+		$canvas_area.trigger("resize");
+		$status_position.text("");
+		$status_size.text("");
+		
+		function canvas_mousedown(e){
 			e.preventDefault();
 			
 			var rect = sel.canvas.getBoundingClientRect();
@@ -91,11 +122,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 			if(e.shiftKey){
 				sel.draw();
 			}
-		});
-		$status_position.text("");
-		$status_size.text("");
-		
-		$canvas_area.trigger("resize");
+		}
 	}
 };
 

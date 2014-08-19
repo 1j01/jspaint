@@ -27,9 +27,9 @@ function $ColorBox(){
 	});
 	
 	function update_colors(){
-		$current_colors.css({background:colors[2]});
-		$color0.css({background:colors[0]});
-		$color1.css({background:colors[1]});
+		$current_colors.css({background: colors[2]});
+		$color0.css({background: colors[0]});
+		$color1.css({background: colors[1]});
 		$G.trigger("option-changed");
 	}
 	

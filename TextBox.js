@@ -91,6 +91,14 @@ TextBox.prototype.instantiate = function(){
 		
 		//tb.$handles = $Handles(tb.$ghost, tb.$editor[0], {outset: 2});
 		
+		tb.$ghost.on("user-resized", function(e, x, y, width, height){
+			//tb._x = x;
+			//tb._y = y;
+			tb._w = width;
+			tb._h = height;
+			tb.position();
+		});
+		
 		var mox, moy;
 		var mousemove = function(e){
 			var m = e2c(e);
