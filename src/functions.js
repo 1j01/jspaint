@@ -261,7 +261,7 @@ function render_history_as_gif(){
 	$win.$Button('Cancel');
 	
 	var gif = new GIF({
-		workers: Math.min(5, Math.floor(undos.length/50)+1),
+		//workers: Math.min(5, Math.floor(undos.length/50)+1),
 		workerScript: 'lib/gif.js/gif.worker.js',
 		width: canvas.width,
 		height: canvas.height,
