@@ -17,8 +17,13 @@
 				* break
 	* Pixel Perfection
 	* MAKE THINGS DO THINGS
-		* Image > Attributes
-		* Image > Clear Image ✓
+		* Image
+			* Flip / Rotate
+			* Stretch / Skew
+			* Invert Colors ✓
+			* Attributes...
+			* Clear Image ✓
+			* Draw Opaque
 		* View > Show/Hide stuff
 		* Edit > Paste From... ✓
 			* Select the selection tool
@@ -39,7 +44,7 @@
 	* Do warn about losing unsaved files (close button, etc.)
 
 * Issue: status text gets cut off
-	Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
+	* Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 
 * It's not supposed to show the canvas handles when there is a selection. It used to hide them but now it doesn't.
 
@@ -50,7 +55,6 @@
 	* The window can be smaller than the minimum window area of mspaint
 	* Dialogue windows should go away at some point. Also, there should only be one of most of them at a time.
 
-* Set up minification?
 
 
 * Use win98 default scrollbar size @easy
@@ -79,18 +83,16 @@
 
 ### Mobile support
 
-* Multitouch (use pointer events polyfill)
+* Use pointer events polyfill
+* Multitouch
+	* Two-finger drag to pan
+* Unitouch (mobile devices without multitouch support)
+	* Awkwardly fit in pan tool?
 * Tap (/click?) current colors area to swap
-
-### Actions
-
-* Canvas Manipulations
-	* Rotate
-	* Flip
-	* Skew
-	* Invert ✓
-	* Clear ✓
-* Undo/Redo History to Frames
+* Panel for things that would normally require a keyboard? (hidden by default?)
+	* Numpad plus & minus (...it's not just phones that don't always have numpads...)
+	* Shift = "Proportional" / "Smear" / "Snap to 8 directions"?
+	* Ctrl+Shift+G = Render GIF?
 
 ### Tools
 
@@ -105,9 +107,6 @@
 	* Close the polygon when switching tools
 
 * OPTIONS
-	* shapes all have their own settings for [fill | stroke | stroke_fill] ✓
-	* shapes, lines and curves all use one setting for stroke width ✓
-	* selection + free-form selection + text use one setting for [opaque/transparent] ✓
 	* secret 10x zoom by clicking the area just underneath the 8x zoom
 	* visual area is different from selection highlight area is different from clickable area
 
@@ -135,7 +134,8 @@
 
 * Select tool
 	* Handles
-	* Image is blurry
+	* Image is blurry in the selection
+	* Proportionally resize selection by holding Shift
 
 * Strokes
 	* Shapes respond to Ctrl, by...
@@ -168,6 +168,12 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 ### Chrome App
+
+* Set up build process
+	* Concatenate + Minify?
+	* Increment version
+	* Move things into zip file
+	* Upload? Notify of new bug reports, stats? haha I'm thinking of things I might put in multiism/multi-platform once many people were using it
 
 * Use the chrome.wallpaper API to change the ChromeOS wallpaper.
 	* Theoretical support ✓
