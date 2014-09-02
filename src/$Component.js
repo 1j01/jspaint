@@ -16,12 +16,18 @@ function $Component(name, orientation, $el){
 		$c.css("left", "3px");
 	}
 	
-	var $w;
-	
 	var ox, oy, w, h, pos, pos_axis;
+	
+	if(orientation === "tall"){
+		pos_axis = "top";
+	}else{
+		pos_axis = "left";
+	}
+	
 	var dragging = false;
 	var $dock_to;
 	var $ghost;
+	var $w;
 	$c.on("mousedown", function(e){
 		if(e.button !== 0) return;
 		
@@ -116,7 +122,7 @@ function $Component(name, orientation, $el){
 			$c.css("position", "relative");
 			$c.css(pos_axis, "");
 			
-			//put component in a window
+			//put the component in a window
 			$w = new $Window($c);
 			$w.title(name);
 			$w.$content.append($c);
