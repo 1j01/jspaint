@@ -279,6 +279,9 @@ $G.on("keydown", function(e){
 			case "I":
 				invert();
 			break;
+			case "E":
+				image_attributes();
+			break;
 			default:
 				// This shortcut is not handled, do not (try to) prevent the default.
 				return true;

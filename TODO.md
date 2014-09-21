@@ -22,7 +22,7 @@
 			* Flip / Rotate
 			* Stretch / Skew
 			* Invert Colors ✓
-			* Attributes...
+			* Attributes... ✓
 			* Clear Image ✓
 			* Draw Opaque
 		* View > Show/Hide stuff

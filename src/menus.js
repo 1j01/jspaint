@@ -2,6 +2,60 @@
 var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
 var selecting_menus = false;
 var ____________________________ = "A HORIZONTAL RULE / DIVIDER";
+
+var $image_attributes;
+var image_attributes = function(){
+	if($image_attributes){
+		$image_attributes.close();
+	}
+	$image_attributes = new $Window();
+	$image_attributes.title("Attributes");
+	
+	var $form = $(E("form")).appendTo($image_attributes.$content);
+	var table = {
+		"File last saved": "Not available",
+		"Size on disk": "Not available",
+		"Resolution": "72 x 72 dots per inch",
+	};
+	var $table = $(E("table")).appendTo($form);
+	for(var k in table){
+		var $tr = $(E("tr")).appendTo($table);
+		var $key = $(E("td")).appendTo($tr).text(k + ":");
+		var $value = $(E("td")).appendTo($tr).text(table[k]);
+	}
+	
+	var $width_label = $(E("label")).appendTo($form).text("Width:");
+	var $height_label = $(E("label")).appendTo($form).text("Height:");
+	var $width = $(E("input")).appendTo($width_label).val(canvas.width);
+	var $height = $(E("input")).appendTo($height_label).val(canvas.height);
+	$([$width[0], $height[0]]).css({width: "40px"});
+	
+	var $button_group = $(E("div")).appendTo($form);
+	var $okay = $(E("button")).appendTo($button_group).text("Okay");
+	var $cancel = $(E("button")).appendTo($button_group).text("Cancel");
+	var $default = $(E("button")).appendTo($button_group).text("Default");
+	$button_group.find("button")
+		.css({padding: "3px 5px"})
+		.addClass("jspaint-button jspaint-window-button"); //this should really not be needed @TODO
+	
+	$okay.click(function(e){
+		e.preventDefault();
+		$canvas.trigger("user-resized", [0, 0, $width.val(), $height.val()]);
+		$image_attributes.close();
+	});
+	$cancel.click(function(e){
+		e.preventDefault();
+		$image_attributes.close();
+	});
+	$default.click(function(e){
+		e.preventDefault();
+		$width.val(default_canvas_width);
+		$height.val(default_canvas_height);
+	});
+	
+	$image_attributes.center();
+};
+
 $.each({
 	"&File": [
 		{
@@ -180,7 +234,8 @@ $.each({
 		},
 		{
 			item: "&Attributes...",
-			shortcut: "Ctrl+E"
+			shortcut: "Ctrl+E",
+			action: image_attributes
 		},
 		{
 			item: "&Clear Image",
