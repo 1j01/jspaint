@@ -146,6 +146,36 @@ var set_as_wallpaper_centered = function(c){
 	}
 };
 
+var save_selection_to_file = function(){
+	if(selection && selection.canvas){
+		if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+			chrome.fileSystem.chooseEntry({
+				type: 'saveFile',
+				suggestedName: 'Selection',
+				accepts: [{mimeTypes: ["image/*"]}]
+			}, function(entry){
+				if(chrome.runtime.lastError){
+					return console.error(chrome.runtime.lastError.message);
+				}
+				entry.createWriter(function(file_writer){
+					file_writer.onwriteend = function(e){
+						if(this.error){
+							console.error(this.error + '\n\n\n@ ' + e);
+						}else{
+							console.log("Wrote selection to file!");
+						}
+					};
+					selection.canvas.toBlob(function(blob){
+						file_writer.write(blob);
+					});
+				});
+			});
+		}else{
+			window.open(selection.canvas.toDataURL());
+		}
+	}
+};
+
 $.each({
 	"&File": [
 		{
@@ -245,7 +275,8 @@ $.each({
 		____________________________,
 		{
 			item: "C&opy To...",
-			disabled: true
+			disabled: true,
+			action: save_selection_to_file
 		},
 		{
 			item: "Paste &From...",

@@ -28,7 +28,7 @@
 			* Print Preview
 			* Page Setup
 		* Edit
-			* Copy To...
+			* Cut, Copy, Paste: Possibly impossible
 		* View
 			* Show/Hide stuff
 			* Zoom should have a submenu
@@ -41,7 +41,7 @@
 		* Help
 			* Help Topics ✓ um...
 			* About paint ✓ um......
-	* Enable items (Repeat, Clear Selection) when they are applicable
+	* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
 	* Animation
 
 
