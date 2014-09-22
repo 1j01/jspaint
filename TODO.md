@@ -28,11 +28,10 @@
 			* Draw Opaque
 		* View > Show/Hide stuff
 		* Edit > Paste From... ✓
-			* Select the selection tool
+			* Select the selection tool ✓
 		* Other stuff
 		* About paint
-	* Repeat is always grayed out, but is functional
-	* Clear Selection is always grayed out, but is functional
+	* Repeat (redo) and Clear Selection are always grayed out, but they work
 
 
 * For tools, don't draw for every single pixel the mouse moves, when drawing once would have the same effect but be 10x-300x+ faster!

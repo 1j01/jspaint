@@ -238,10 +238,9 @@ function paste(img){
 	}
 	
 	function paste_img(){
-		if(selection){
-			selection.draw();
-			selection.destroy();
-		}
+		// note: selecting a tool calls deselect();
+		select_tool("Select");
+		
 		selection = new Selection(0, 0, img.width, img.height);
 		selection.instantiate(img);
 	}
@@ -450,5 +449,15 @@ function clear(){
 function view_bitmap(){
 	canvas.requestFullscreen && canvas.requestFullscreen();
 	canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
+}
+
+function select_tool(name){
+	previous_tool = selected_tool;
+	for(var i=0; i<tools.length; i++){
+		if(tools[i].name == name){
+			selected_tool = tools[i];
+		}
+	}
+	$toolbox && $toolbox.update_selected_tool();
 }
 
