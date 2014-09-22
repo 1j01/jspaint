@@ -27,7 +27,6 @@
 		* File
 			* Print Preview
 			* Page Setup
-			* Set As Wallpaper (Centered)
 		* Edit
 			* Copy To...
 		* View
@@ -40,8 +39,8 @@
 		* Colors
 			* Edit Colors...
 		* Help
-			* Help Topics
-			* About paint
+			* Help Topics ✓ um...
+			* About paint ✓ um......
 	* Enable items (Repeat, Clear Selection) when they are applicable
 	* Animation
 
@@ -70,6 +69,9 @@
 
 
 * It's not supposed to show the canvas handles when there is a selection. It used to hide them it no longer does.
+
+
+* Visual glitch where button borders go above windows due to z-index
 
 
 * Handle some edge cases

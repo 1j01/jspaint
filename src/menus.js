@@ -116,6 +116,36 @@ var image_attributes = function(){
 	image_attributes.$window.center();
 };
 
+var set_as_wallpaper_tiled = function(c){
+	c = c || canvas;
+	
+	var wp = document.createElement("canvas");
+	wp.width = screen.width;
+	wp.height = screen.height;
+	var wpctx = wp.getContext("2d");
+	for(var x=0; x<wp.width; x+=c.width){
+		for(var y=0; y<wp.height; y+=c.height){
+			wpctx.drawImage(c, x, y);
+		}
+	}
+	
+	set_as_wallpaper_centered(wp);
+};
+
+var set_as_wallpaper_centered = function(c){
+	c = c || canvas;
+	
+	if(window.chrome && chrome.wallpaper){
+		chrome.wallpaper.setWallpaper({
+			url: c.toDataURL(),
+			layout: 'CENTER_CROPPED',
+			name: file_name,
+		}, function(){});
+	}else{
+		window.open(c.toDataURL());
+	}
+};
+
 $.each({
 	"&File": [
 		{
@@ -153,36 +183,11 @@ $.each({
 		____________________________,
 		{
 			item: "Set As &Wallpaper (Tiled)",
-			action: function(){
-				var wp = document.createElement("canvas");
-				wp.width = screen.width;
-				wp.height = screen.height;
-				var wpctx = wp.getContext("2d");
-				for(var x=0; x<wp.width; x+=canvas.width){
-					for(var y=0; y<wp.height; y+=canvas.height){
-						wpctx.drawImage(canvas, x, y);
-					}
-				}
-				if(window.chrome && chrome.wallpaper){
-					chrome.wallpaper.setWallpaper({
-						url: wp.toDataURL(),
-						layout: 'CENTER_CROPPED',
-						name: file_name,
-					}, function(){});
-				}else{
-					window.open(wp.toDataURL());
-				}
-			}
+			action: set_as_wallpaper_tiled
 		},
 		{
 			item: "Set As Wa&llpaper (Centered)",
-			action: function(){
-				chrome.wallpaper.setWallpaper({
-					url: canvas.toDataURL(),
-					layout: 'CENTER_CROPPED',
-					name: file_name,
-				}, function(){});
-			}
+			action: set_as_wallpaper_centered
 		},
 		____________________________,
 		{
@@ -316,12 +321,31 @@ $.each({
 	"&Help": [
 		{
 			item: "&Help Topics",
-			action: function(){}
+			action: function(){
+				var $msgbox = new $Window();
+				$msgbox.title("Help Topics");
+				var url = "";
+				$msgbox.$content.html(
+					"<p style='padding:0;margin:5px'>Sorry, no help is available at this time.</p>" +
+					"<br>You can however try <a href='https://www.google.com/search?q=ms+paint+tutorials' target='_blank'>searching for tutorials</a> for MS Paint." +
+					"<br>There will be differences, but it could help."
+				).css({padding: "15px"});
+				$msgbox.center();
+			}
 		},
 		____________________________,
 		{
 			item: "&About Paint",
-			action: function(){}
+			action: function(){
+				var $msgbox = new $Window();
+				$msgbox.title("About Paint");
+				$msgbox.$content.html(
+					"This is <a href='https://github.com/1j01/jspaint'>JS Paint</a>." +
+					"<br>" +
+					"Yeah.<br>"
+				).css({padding: "45px"});
+				$msgbox.center();
+			}
 		}
 	],
 }, function(menu_key, menu_items){

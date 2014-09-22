@@ -1,5 +1,5 @@
 
-# ![](images/icons/32.png) [JS Paint](http://1j01.github.io/jspaint/)
+# [![](images/icons/32.png) JS Paint](http://1j01.github.io/jspaint/)
 
 A nice web-based MS Paint remake and more... [Try it out!](http://1j01.github.io/jspaint/)
 
