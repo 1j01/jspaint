@@ -1,16 +1,18 @@
-# [![](images/icons/32.png) jspaint](http://1j01.github.io/jspaint/)
 
-A nice web-based MS Paint remake and more...
+# ![](images/icons/32.png) [JS Paint](http://1j01.github.io/jspaint/)
+
+A nice web-based MS Paint remake and more... [Try it out!](http://1j01.github.io/jspaint/)
 
 The goal is to remake paint (including its [little-known features](#did-you-know)), improve on it, and to extend the types of images it can edit.
 
 Current improvements include:
 
 * Unlimited undos/redos (as opposed to a measly three in Windows XP, or a somewhat less measly 50 in Windows 7)
-* Create an animated GIF from the current undo history with Ctrl+Shift+G (pretty nifty, you should try it out)
+* Create an animated GIF from the current undo history with <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
 * Cross-platform, I guess
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
-* Oh yeah, sort of a small thing, but the scrollbars are never disabled.
+* When you do Edit > Paste From... you can select an animated and/or transparent image. You can then smear it across the canvas while it animates! (Hold <kbd>Shift</kbd> while dragging the selection to smear it.)
+* It can open SVG files (by accident)
 
 Possible improvements include:
 
@@ -18,8 +20,19 @@ Possible improvements include:
 * Mobile support
 * Proportionally resize selection by holding Shift
 * After adding text, be able to save as SVG or HTML with selectable text
+* <kbd>Alt</kbd> as a shortcut for the eyedropper
+* Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
 
-A lot of stuff isn't done yet.
+A lot of stuff isn't done yet:
+
+* Magnification
+* Free-Form Selection
+* Color Replacement with the "Eraser/Color Eraser" tool
+* Lots of menu items
+* Copying the selection to the clipboard (You can paste, though!)
+
+There's [a lot to do.](TODO.md)
+
 
 ## Staying True to the Original
 
@@ -41,26 +54,28 @@ So that's why I'm making jspaint. I want to bring good old paint into the modern
 Also, it's totally retro. There might be themes later, though.
 What was this section titled? Oh, um yeah I'm doing that too.
 
+
 ## Extended Editing
 
 I want to make jspaint to be able to edit...
 
-* Transparent PNGs (the main thing that's lacking in old mspaint)
+* Transparent PNGs (the main thing that's lacking in old ms paint)
 * Animated GIFs (yes, that entails a fully featured (but simple) animation editor)
 * Animated Transparent APNGs
 * Multi-size Icons (ICO for windows and ICNS for mac)
 * Scalable Vector Graphics (kidding, but actually it could always open SVG files in browsers that can handle SVGs, and I've now made it try not to save over the original SVG. That's pretty decent SVG support, for a 100% raster image editor.)
 * Text Files (just kidding*)
 
+
 ## Did you know?
 
-* Tips and Tricks from [this tutorial for mspaint](http://www.albinoblacksheep.com/tutorial/mspaint) that also work in jspaint if they have a checkmark:
+* These Tips and Tricks from [This tutorial for MS Paint](http://www.albinoblacksheep.com/tutorial/mspaint) also work in jspaint if they have a checkmark:
 
-	* [x] Brush Scaling (in jspaint you don't need to hold Ctrl!)
-	* [x] "Custom Brushes"
-	* [x] The 'Stamp' "Tool"
-	* [x] Image Scaling (+/- on the Numpad (no Ctrl needed) to scale the selection by factors of 2)
-	* [ ] Color Replacement
-	* [ ] The Grid (Ctrl+G + zoom6x+)
-	* [x] Quick Undo (I also made it redoable, in case you do it by accident!)
-	* [ ] Scroll Wheel draws line down and to the right (hmm, let's maybe not recreate this? ah who am I kidding I'll make it an option)
+	* [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to adjust brush size)
+	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
+	* [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
+	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
+	* [ ] Color Replacement (right mouse button in Eraser selectively replaces the foreground color with the background color)
+	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
+	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing. I also made it redoable, in case you do it by accident!)
+	* [ ] Scroll Wheel bug (hmm, let's maybe not recreate this? ah who am I kidding I'll make it an option)

@@ -1,46 +1,63 @@
 
-# Todo
+# ![](images/icons/32.png) JS Paint Todo
 
 * Improve README
 	* Introduce and explain the project ...better?
-	* Is a link in the header visible enough?
 	* Publish jspaint to the webstore (and link to that)
 	* Make it pretty with images
+
+
+* Pixel Perfection
+	* Use win98 default scrollbar size
+	* Minor color differences (0x808080 != 0x7b7b7b)
+	* Some window layouts are bad
+	* I want to give most things a revisit later on
 
 
 * Menus
 	* Keyboard Navigation
 	* Mouse navigation ✓
-	* Use keyboard shortcuts defined in the menu data structure (which isn't yet saved to a variable) to declaratively setup hotkeys
-		* on key press, loop through the menus
-			* if shortcut matches
-				* "call to action"
-				* break
-	* Pixel Perfection
+	* Descriptions of menu items in the status bar
+	* Use keyboard shortcuts defined in the menu data structure to declaratively setup hotkeys
+		* `On key press, loop through the menus`
+			* `If the key event matches the menu item's shortcut`
+				* `Perform menu item's action`
+				* `Break loop`
 	* MAKE THINGS DO THINGS
+		* File
+			* Print Preview
+			* Page Setup
+			* Set As Wallpaper (Centered)
+		* Edit
+			* Copy To...
+		* View
+			* Show/Hide stuff
+			* Zoom should have a submenu
 		* Image
-			* Most of these things should apply to the selection if there is one
 			* Flip / Rotate
 			* Stretch / Skew
-			* Invert Colors ✓
-			* Attributes... ✓
-			* Clear Image ✓
 			* Draw Opaque
-		* View > Show/Hide stuff
-		* Edit > Paste From... ✓
-			* Select the selection tool ✓
-		* Other stuff
-		* About paint
-	* Repeat (redo) and Clear Selection are always grayed out, but they work
+		* Colors
+			* Edit Colors...
+		* Help
+			* Help Topics
+			* About paint
+	* Enable items (Repeat, Clear Selection) when they are applicable
+	* Animation
 
 
-* For tools, don't draw for every single pixel the mouse moves, when drawing once would have the same effect but be 10x-300x+ faster!
-	* Firefox's canvas is slow which makes the difference obvious!
+* Image operations should apply to the selection if there is one
 
 
-* `filter: invert();` doesn't work yet in Firefox
+* Close dialogues with Esc (and also Enter)
+
+
+* Clicking off of the canvas should apply & destroy the selection (and also Enter)
+
+
+* `filter: invert()` doesn't work yet in Firefox
 	* Invert the image with canvas
-		* Make class $UpscaledCanvas
+		* Make class $UpscaledCanvas or something that I can use to make lots of things crisp and pixely when zoomed in or on higher resolution displays
 
 
 * Keep track of what's saved
@@ -52,7 +69,7 @@
 	* Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 
 
-* It's not supposed to show the canvas handles when there is a selection. It used to hide them but now it doesn't.
+* It's not supposed to show the canvas handles when there is a selection. It used to hide them it no longer does.
 
 
 * Handle some edge cases
@@ -61,11 +78,6 @@
 	
 	* The window can be smaller than the minimum window area of mspaint
 	* Dialogue windows should go away at some point. Also, there should only be one of most of them at a time.
-
-
-
-* Use win98 default scrollbar size @easy
-* Minor color differences (0x808080 != 0x7b7b7b)
 
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
@@ -83,32 +95,45 @@
 
 * Transparent PNGs
 	* Detect transparency when opening an image
-		* Optimization: Don't forget to assume jpegs are opaque.
+		* Optimization: Don't forget to assume JPEGs are opaque.
+		* Raster file formats that support transparency include GIF, PNG, BMP and TIFF
 	* Option in Image > Attributes...
 * Animated GIFs
 	* Use ternary color as transparent color?
 * Animated Transparent APNGs
 * Multi-size Icons
 
+
 ### Mobile support
 
 * Use pointer events polyfill
-* Multitouch
+* Multi-touch devices
 	* Two-finger drag to pan
-* Unitouch (mobile devices without multitouch support)
-	* Pan tool awkwardly shoved into the toolbox?
-* Tap/click current colors area to swap bg/fg
+* Single-touch devices
+	* Pan tool
+* Tap/click current colors area to swap bg/fg colors
 * Panel for things that would normally require a keyboard?
-	* Numpad +/- (Note: it's not just phones that don't always have numpads...)
-	* Shift = "Proportional" / "Smear" / "Snap to 8 directions"? "Octosnap"?
-	* Ctrl+Shift+G = Render GIF
-	* Pan tool for unitouch
+	* Numpad +/- (Note: laptops often also lack numpads)
+	* Shift = "Proportional", "Smear", "Snap to 8 directions" / "Octosnap"?
+	* Ctrl+Shift+G = "Render GIF"
+	* Pan tool for single-touch devices
 	* Hidden by default?
+	* You can't use the Eraser/Color Eraser tool as a "Color Eraser"
+	* You also can't see tooltips, probably
+
 
 ### Tools
 
 * Curve
 	* Aliasing
+
+
+* Rounded Rectangle
+	* Support shape styles!
+
+
+* Ellipse
+	* Support shape styles!
 
 
 * Polygon
@@ -126,8 +151,10 @@
 
 * Fill With Color
 	* Find a better fill algorithm!
-		* get into those corners!
-		* handle transparency
+		* get into those corners
+		* handle transparency correctly
+		* keep speed
+		* move function out of tools.js
 
 
 * Text
@@ -138,13 +165,13 @@
 	* Minimum size of 3em x 1em (that is, the width of 3 'm's by the height of one line)
 	* Detect fonts
 	* Store position of FontBox
-	* Keep an old textbox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using now)
+	* Keep an old textbox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
 	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
 
 
 * Select
 	* Handles
-	* Image is blurry in the selection
+	* Image appears blurry in the selection
 	* Proportionally resize selection by holding Shift
 
 
@@ -164,17 +191,20 @@
 * Inverty fill bucket and airbrush cursors
 
 
+* In Firefox while drawing an ellipse, it lags *a lot* but only while the mouse is on the canvas
+
+
 ### Colors
 
-This isn't in mspaint, but maybe use should be able to click (double-click?) one of the selected colors to change it directly?
+This isn't in mspaint, but maybe you should be able to click (double-click?) one of the selected colors to change it directly?
 
 Or, for mobile, tap/click selected colors area to switch colors. Yeah, that seems more useful.
 
 Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
+
 ### Components / Windows
 
-* Drag components into a window ✓
 * Drag window and component together seamlessly
 * Double-click a component window's titlebar to dock the component to its most recent location.
 
@@ -200,11 +230,12 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Test this on Chrome OS
 
 
-* Themed window border
+* Custom window frame
 	* (Note: Minimum window size might need updating)
 
 
 * Publish to webstore!?!?!?
+
 
 ### Also
 
