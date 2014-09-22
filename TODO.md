@@ -36,13 +36,11 @@
 			* Flip / Rotate
 			* Stretch / Skew
 			* Draw Opaque
-		* Colors
-			* Edit Colors...
 		* Help
 			* Help Topics ✓ um...
 			* About paint ✓ um......
 	* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
-	* Animation
+	* Sliding animation / transition effects
 
 
 * Image operations should apply to the selection if there is one
@@ -88,7 +86,7 @@
 	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
 
 
-* CSS: buttons shouldn't need a class `.jspaint-button`
+* CSS: buttons shouldn't need a class `.jspaint-button`; color cells shouldn't be buttons
 
 * JS: chill down on the global event handlers; they're interfering with inputs
 

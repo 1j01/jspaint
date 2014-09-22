@@ -346,7 +346,26 @@ $.each({
 	"&Colors": [
 		{
 			item: "&Edit Colors...",
-			action: function(){}
+			action: function(){
+				var input;
+				
+				// Note: MS Paint uses the last color cell selected as the foreground color,
+				// where I am instead finding color cells that match the current foreground color.
+				// If you select a color with the color picker that isn't in the palette it will fail.
+				// This implementation is therefore inferior.
+				
+				$(".jspaint-color-button input").each(function(){
+					var button = this.parentElement;
+					var cs = document.querySelector(".jspaint-color-selection");
+					if(getComputedStyle(button).backgroundColor === getComputedStyle(cs).backgroundColor){
+						input = this;
+						return false;//break each loop
+					}
+				});
+				
+				$(input).parent().trigger({type: "mousedown", ctrlKey: false, button: 0});
+				$(input).trigger("click", "synthetic");
+			}
 		}
 	],
 	"&Help": [
@@ -359,7 +378,7 @@ $.each({
 				$msgbox.$content.html(
 					"<p style='padding:0;margin:5px'>Sorry, no help is available at this time.</p>" +
 					"<br>You can however try <a href='https://www.google.com/search?q=ms+paint+tutorials' target='_blank'>searching for tutorials</a> for MS Paint." +
-					"<br>There will be differences, but it could help."
+					"<br>There will be differences, but the basics are there."
 				).css({padding: "15px"});
 				$msgbox.center();
 			}

@@ -28,7 +28,7 @@ A lot of stuff isn't done yet:
 * Magnification
 * Free-Form Selection
 * Color Replacement with the "Eraser/Color Eraser" tool
-* Lots of menu items
+* Some menu items
 * Copying the selection to the clipboard (You can paste, though!)
 
 There's [a lot to do.](TODO.md)

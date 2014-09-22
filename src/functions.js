@@ -1,6 +1,7 @@
 
 function reset_colors(){
-	colors = ["black", "white", ""];
+	// note: these need to be in the same format as in the palette to be counted as the same as the colors in the palette for Colors > Edit Colors...
+	colors = ["#000000", "#ffffff", ""];
 	$colorbox && $colorbox.update_colors();
 }
 
