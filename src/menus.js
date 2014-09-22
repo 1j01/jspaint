@@ -393,8 +393,10 @@ $.each({
 			}
 			
 			$item.on("click", function(){
-				$menus.find(".jspaint-menu-button").trigger("release");
-				item.action && item.action();
+				if(item.action){
+					$menus.find(".jspaint-menu-button").trigger("release");
+					item.action();
+				}
 			});
 		}
 	});
