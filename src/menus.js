@@ -3,57 +3,117 @@ var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
 var selecting_menus = false;
 var ____________________________ = "A HORIZONTAL RULE / DIVIDER";
 
-var $image_attributes;
 var image_attributes = function(){
-	if($image_attributes){
-		$image_attributes.close();
+	if(image_attributes.$window){
+		image_attributes.$window.close();
 	}
-	$image_attributes = new $Window();
-	$image_attributes.title("Attributes");
+	image_attributes.$window = new $Window();
+	image_attributes.$window.title("Attributes");
 	
-	var $form = $(E("form")).appendTo($image_attributes.$content);
+	var $form = $(E("form")).appendTo(image_attributes.$window.$content);
+	var $form_left = $(E("div")).appendTo($form);
+	var $form_right = $(E("div")).appendTo($form);
+	$form.addClass("jspaint-horizontal").css({display: "flex"});
+	
+	// Information
+	
 	var table = {
 		"File last saved": "Not available",
 		"Size on disk": "Not available",
 		"Resolution": "72 x 72 dots per inch",
 	};
-	var $table = $(E("table")).appendTo($form);
+	var $table = $(E("table")).appendTo($form_left);
 	for(var k in table){
 		var $tr = $(E("tr")).appendTo($table);
 		var $key = $(E("td")).appendTo($tr).text(k + ":");
 		var $value = $(E("td")).appendTo($tr).text(table[k]);
 	}
 	
-	var $width_label = $(E("label")).appendTo($form).text("Width:");
-	var $height_label = $(E("label")).appendTo($form).text("Height:");
-	var $width = $(E("input")).appendTo($width_label).val(canvas.width);
-	var $height = $(E("input")).appendTo($height_label).val(canvas.height);
-	$([$width[0], $height[0]]).css({width: "40px"});
+	// Dimensions
 	
-	var $button_group = $(E("div")).appendTo($form);
-	var $okay = $(E("button")).appendTo($button_group).text("Okay");
-	var $cancel = $(E("button")).appendTo($button_group).text("Cancel");
-	var $default = $(E("button")).appendTo($button_group).text("Default");
-	$button_group.find("button")
-		.css({padding: "3px 5px"})
-		.addClass("jspaint-button jspaint-window-button"); //this should really not be needed @TODO
+	var unit_sizes_in_px = {px: 1, in: 72, cm: 28.3465};
+	var current_unit = image_attributes.unit = image_attributes.unit || "px";
+	var width_in_px = canvas.width;
+	var height_in_px = canvas.height;
+	
+	var $width_label = $(E("label")).appendTo($form_left).text("Width:");
+	var $height_label = $(E("label")).appendTo($form_left).text("Height:");
+	var $width = $(E("input")).appendTo($width_label);
+	var $height = $(E("input")).appendTo($height_label);
+	$([$width[0], $height[0]])
+		.css({width: "40px"})
+		.on("change keyup keydown keypress mousedown mousemove paste drop", function(){
+			if($(this).is($width)){
+				width_in_px = $width.val() * unit_sizes_in_px[current_unit];
+			}
+			if($(this).is($height)){
+				height_in_px = $height.val() * unit_sizes_in_px[current_unit];
+			}
+		});
+	
+	// Fieldsets
+	
+	var $units = $(E("fieldset")).appendTo($form_left).append('<legend>Transparency</legend>');
+	$units.append('<label><input type="radio" name="units" value="in">Inches</label>');
+	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
+	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
+	$units.find("[value=" + current_unit + "]").attr({checked: true});
+	$units.on("change", function(){
+		var new_unit = $units.find(":checked").val();
+		$width.val(width_in_px / unit_sizes_in_px[new_unit]);
+		$height.val(height_in_px / unit_sizes_in_px[new_unit]);
+		current_unit = new_unit;
+	}).triggerHandler("change");
+	
+	var $transparency = $(E("fieldset")).appendTo($form_left).append('<legend>Transparency</legend>');
+	$transparency.append('<label><input type="radio" name="transparency" value="transparent">Transparent</label>');
+	$transparency.append('<label><input type="radio" name="transparency" value="opaque">Opaque</label>');
+	$transparency.find("[value=" + (transparency ? "transparent" : "opaque") + "]").attr({checked: true});
+	
+	// Buttons on the right
+	
+	var $okay = $(E("button")).appendTo($form_right).text("Okay");
+	var $cancel = $(E("button")).appendTo($form_right).text("Cancel");
+	var $default = $(E("button")).appendTo($form_right).text("Default");
+	
+	$form_right
+		.css({width: 85})
+		.find("button")
+		.css({padding: "3px 5px", width: "95%"})
+		//this should really not be needed @TODO
+		.addClass("jspaint-button jspaint-window-button");
 	
 	$okay.click(function(e){
 		e.preventDefault();
-		$canvas.trigger("user-resized", [0, 0, $width.val(), $height.val()]);
-		$image_attributes.close();
+		
+		var to = $transparency.find(":checked").val();
+		var unit = $units.find(":checked").val();
+		
+		image_attributes.unit = unit;
+		transparency = (to == "transparent");
+		
+		var unit_to_px = unit_sizes_in_px[unit];
+		var width = $width.val() * unit_to_px;
+		var height = $height.val() * unit_to_px;
+		$canvas.trigger("user-resized", [0, 0, ~~width, ~~height]);
+		
+		image_attributes.$window.close();
 	});
 	$cancel.click(function(e){
 		e.preventDefault();
-		$image_attributes.close();
+		image_attributes.$window.close();
 	});
 	$default.click(function(e){
 		e.preventDefault();
-		$width.val(default_canvas_width);
-		$height.val(default_canvas_height);
+		width_in_px = default_canvas_width;
+		height_in_px = default_canvas_height;
+		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
+		$height.val(height_in_px / unit_sizes_in_px[current_unit]);
 	});
 	
-	$image_attributes.center();
+	// Reposition the window
+	
+	image_attributes.$window.center();
 };
 
 $.each({

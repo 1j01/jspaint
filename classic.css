@@ -352,6 +352,9 @@
 .jspaint-window-button {
 	margin: 2px;
 }
+.jspaint-window-content {
+	font: message-box;
+}
 .jspaint-button {
 	padding: 0;
 	vertical-align: middle;

@@ -8,9 +8,9 @@
 	* Make it pretty with images
 
 
-* Menus!
+* Menus
 	* Keyboard Navigation
-	* Mouse navigation
+	* Mouse navigation ✓
 	* Use keyboard shortcuts defined in the menu data structure (which isn't yet saved to a variable) to declaratively setup hotkeys
 		* on key press, loop through the menus
 			* if shortcut matches
@@ -19,6 +19,7 @@
 	* Pixel Perfection
 	* MAKE THINGS DO THINGS
 		* Image
+			* Most of these things should apply to the selection if there is one
 			* Flip / Rotate
 			* Stretch / Skew
 			* Invert Colors ✓
@@ -72,6 +73,11 @@
 	* Color Replacement (see [Tools](#tools))
 	* The Grid (Ctrl+G + zoom6x+)
 	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
+
+
+* CSS: buttons shouldn't need a class `.jspaint-button`
+
+* JS: chill down on the global event handlers; they're interfering with inputs
 
 
 ### Extended editing
