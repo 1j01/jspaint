@@ -347,24 +347,10 @@ $.each({
 		{
 			item: "&Edit Colors...",
 			action: function(){
-				var input;
-				
-				// Note: MS Paint uses the last color cell selected as the foreground color,
-				// where I am instead finding color cells that match the current foreground color.
-				// If you select a color with the color picker that isn't in the palette it will fail.
-				// This implementation is therefore inferior.
-				
-				$(".jspaint-color-button input").each(function(){
-					var button = this.parentElement;
-					var cs = document.querySelector(".jspaint-color-selection");
-					if(getComputedStyle(button).backgroundColor === getComputedStyle(cs).backgroundColor){
-						input = this;
-						return false;//break each loop
-					}
-				});
-				
-				$(input).parent().trigger({type: "mousedown", ctrlKey: false, button: 0});
-				$(input).trigger("click", "synthetic");
+				// Edit the last color cell that's been selected as the foreground color.
+				var $b = $colorbox.get_last_foreground_color_$button();
+				$b.trigger({type: "mousedown", ctrlKey: false, button: 0});
+				$b.find("input").trigger("click", "synthetic");
 			}
 		}
 	],

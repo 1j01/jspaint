@@ -33,10 +33,18 @@ function $ColorBox(){
 		$G.trigger("option-changed");
 	}
 	
+	// the only color editted by Colors > Edit Colors...
+	var $last_fg_color_button;
+	
 	$.each(palette, function(i, color){
 		var $b = $(E("button")).addClass("jspaint-color-button");
 		$b.appendTo($palette);
 		$b.css("background-color", color);
+		
+		// the last foreground color button starts out as the first one
+		if(i === 0){
+			$last_fg_color_button = $b;
+		}
 		
 		var $i = $(E("input")).attr({type: "color"});
 		$i.appendTo($b);
@@ -55,6 +63,9 @@ function $ColorBox(){
 		$b.on("mousedown", function(e){
 			ctrl = e.ctrlKey;
 			button = e.button;
+			if(button === 0){
+				$last_fg_color_button = $b;
+			}
 			
 			set_color($b.css("background-color"));
 			
@@ -97,5 +108,8 @@ function $ColorBox(){
 	
 	var $c = $Component("Colors", "wide", $cb);
 	$c.update_colors = update_colors;
+	$c.get_last_foreground_color_$button = function(){
+		return $last_fg_color_button;
+	};
 	return $c;
 }
