@@ -194,6 +194,10 @@ $G.on("keydown", function(e){
 		}else{
 			cancel();
 		}
+	}else if(e.keyCode === 13){ //Enter
+		if(selection){
+			deselect();
+		}
 	}else if(e.keyCode === 115){ //F4
 		redo();
 	}else if(e.keyCode === 46){ //Delete
@@ -291,7 +295,9 @@ $G.on("keydown", function(e){
 	}
 });
 $G.on("cut copy paste", function(e){
+	// @TODO: check document.activeElement for any input related elements
 	if(textbox){ return; }
+	
 	e.preventDefault();
 	var cd = e.originalEvent.clipboardData || window.clipboardData;
 	if(!cd){ return; }
@@ -473,8 +479,9 @@ $canvas.on("mousedown", function(e){
 		});
 	};
 	
-	// this would be a lot nicer in ruby (or ooplie)
-	// it would be just "if selected_tool.passive" (or in ooplie, "If the selected tool is passive")
+	// this would be a lot nicer in ruby (or ooplie!)
+	// it would be just "if selected_tool.passive"
+	// (or in ooplie, just "If the selected tool is passive")
 	if((typeof selected_tool.passive === "function") ? selected_tool.passive() : selected_tool.passive){
 		mousedown_action();
 	}else{
@@ -482,10 +489,17 @@ $canvas.on("mousedown", function(e){
 	}
 });
 
-$body.on("contextmenu", function(e){
-	return false;
+$canvas_area.on("mousedown", function(e){
+	if(e.button === 0){
+		if($canvas_area.is(e.target)){
+			if(selection){
+				deselect();
+			}
+		}
+	}
 });
-$body.on("mousedown", function(e){
+
+$body.on("mousedown contextmenu", function(e){
 	if(e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement){
 		return true;
 	}

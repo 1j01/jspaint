@@ -30,6 +30,7 @@
 		* Edit
 			* Cut, Copy, Paste: Possibly impossible
 		* View
+			* Show/Hide $FontBox
 			* Zoom should have an actual submenu
 		* Image
 			* Flip / Rotate
@@ -49,9 +50,6 @@
 
 
 * Close dialogues with Esc (and also Enter)
-
-
-* Clicking off of the canvas should apply & destroy the selection (and also Enter)
 
 
 * `filter: invert()` doesn't work yet in Firefox
@@ -175,6 +173,7 @@
 	* Handles
 	* Image appears blurry in the selection
 	* Proportionally resize selection by holding Shift
+	* Creates undoable even if you do nothing
 
 
 * OPTIONS

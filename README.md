@@ -19,8 +19,8 @@ Possible improvements include:
 * [Extended Editing](#extended-editing)
 * Mobile support
 * Proportionally resize selection by holding Shift
-* After adding text, be able to save as SVG or HTML with selectable text
-* <kbd>Alt</kbd> as a shortcut for the eyedropper
+* After adding text, save as SVG or HTML with selectable text
+* <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
 
 A lot of stuff isn't done yet:
@@ -29,7 +29,7 @@ A lot of stuff isn't done yet:
 * Free-Form Selection
 * Color Replacement with the "Eraser/Color Eraser" tool
 * Some menu items
-* Copying the selection to the clipboard (You can paste, though!)
+* Copying the selection to the clipboard (I can't get this to work. You can paste, though!)
 
 There's [a lot to do.](TODO.md)
 
@@ -64,7 +64,7 @@ I want to make jspaint to be able to edit...
 * Animated Transparent APNGs
 * Multi-size Icons (ICO for windows and ICNS for mac)
 * Scalable Vector Graphics (kidding, but actually it could always open SVG files in browsers that can handle SVGs, and I've now made it try not to save over the original SVG. That's pretty decent SVG support, for a 100% raster image editor.)
-* Text Files (just kidding*)
+* Text Files (just kidding)
 
 
 ## Did you know?
