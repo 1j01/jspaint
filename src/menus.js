@@ -176,7 +176,7 @@ var save_selection_to_file = function(){
 	}
 };
 
-$.each({
+var menus = {
 	"&File": [
 		{
 			item: "&New",
@@ -287,16 +287,28 @@ $.each({
 		{
 			item: "&Tool Box",
 			shortcut: "Ctrl+T",
-			checkbox: {}
+			checkbox: {
+				toggle: function(){
+					return $toolbox.toggle().is(":visible");
+				}
+			}
 		},
 		{
 			item: "&Color Box",
 			shortcut: "Ctrl+L",
-			checkbox: {}
+			checkbox: {
+				toggle: function(){
+					return $colorbox.toggle().is(":visible");
+				}
+			}
 		},
 		{
 			item: "&Status Bar",
-			checkbox: {}
+			checkbox: {
+				toggle: function(){
+					return $status_area.toggle().is(":visible");
+				}
+			}
 		},
 		{
 			item: "T&ext Toolbar",
@@ -379,12 +391,14 @@ $.each({
 					"This is <a href='https://github.com/1j01/jspaint'>JS Paint</a>." +
 					"<br>" +
 					"Yeah.<br>"
-				).css({padding: "45px"});
+				).css({padding: "15px"});
 				$msgbox.center();
 			}
 		}
 	],
-}, function(menu_key, menu_items){
+};
+
+$.each(menus, function(menu_key, menu_items){
 	var _html = function(menu_key){
 		return menu_key.replace(/&(.)/, function(m){
 			return "<span class='jspaint-menu-hotkey'>" + m[1] + "</span>";
@@ -453,7 +467,12 @@ $.each({
 			}
 			
 			$item.on("click", function(){
-				if(item.action){
+				if(item.checkbox){
+					if(item.checkbox.toggle){
+						var check = item.checkbox.toggle();
+						$checkbox_area.text(check ? "✓" : "");
+					}
+				}else if(item.action){
 					$menus.find(".jspaint-menu-button").trigger("release");
 					item.action();
 				}

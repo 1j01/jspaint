@@ -30,7 +30,6 @@
 		* Edit
 			* Cut, Copy, Paste: Possibly impossible
 		* View
-			* Show/Hide stuff
 			* Zoom should have a submenu
 		* Image
 			* Flip / Rotate
@@ -41,6 +40,9 @@
 			* About paint ✓ um......
 	* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
 	* Sliding animation / transition effects
+
+
+* Colors > Edit Colors... doesn't work when the $colorbox is hidden
 
 
 * Image operations should apply to the selection if there is one
