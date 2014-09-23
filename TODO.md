@@ -33,8 +33,8 @@
 			* Show/Hide $FontBox
 			* Zoom should have an actual submenu
 		* Image
-			* Flip / Rotate
-			* Stretch / Skew
+			* Flip / Rotate (functionality)
+			* Stretch / Skew (functionality)
 			* Draw Opaque
 		* Help
 			* Help Topics ✓ um...
@@ -86,7 +86,7 @@
 	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
 
 
-* CSS: buttons shouldn't need a class `.jspaint-button`; color cells shouldn't be buttons
+* CSS: buttons shouldn't need a class `.jspaint-button`; color cells shouldn't be buttons; there also shouldn't be classes `.jspaint-window-button` or `.jspaint-dialogue-button` (the fact that there are *both*, ...)
 
 * JS: chill down on the global event handlers; they're interfering with inputs
 

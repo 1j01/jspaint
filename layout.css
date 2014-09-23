@@ -177,6 +177,14 @@ html, body, .jspaint {
 	position: relative;
 }
 
+.jspaint-window-content .jspaint-button-group {
+	width: 85px;
+}
+.jspaint-window-content .jspaint-button-group > button {
+	width: 95%;
+	padding: 3px 5px;
+}
+
 ::before, ::after {
 	pointer-events: none;
 }

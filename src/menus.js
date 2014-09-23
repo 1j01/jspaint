@@ -3,17 +3,41 @@ var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
 var selecting_menus = false;
 var ____________________________ = "A HORIZONTAL RULE / DIVIDER";
 
+function $FormWindow(title){
+	var $w = new $Window();
+	
+	$w.title(title);
+	$w.$form = $form = $(E("form")).appendTo($w.$content);
+	$w.$form_left = $(E("div")).appendTo($w.$form);
+	$w.$form_right = $(E("div")).appendTo($w.$form).addClass("jspaint-button-group");
+	$w.$form.addClass("jspaint-horizontal").css({display: "flex"});
+	
+	$w.$Button = function(label, action){
+		var $b = $(E("button")).appendTo($w.$form_right).text(label);
+		$b.on("click", function(e){
+			// prevent the form from submitting
+			e.preventDefault();
+			
+			action();
+		});
+		
+		// this should really not be needed @TODO
+		$b.addClass("jspaint-button jspaint-window-button");
+		
+		return $b;
+	};
+	
+	return $w;
+};
+
 var image_attributes = function(){
 	if(image_attributes.$window){
 		image_attributes.$window.close();
 	}
-	image_attributes.$window = new $Window();
-	image_attributes.$window.title("Attributes");
+	var $w = image_attributes.$window = new $FormWindow("Attributes");
 	
-	var $form = $(E("form")).appendTo(image_attributes.$window.$content);
-	var $form_left = $(E("div")).appendTo($form);
-	var $form_right = $(E("div")).appendTo($form);
-	$form.addClass("jspaint-horizontal").css({display: "flex"});
+	var $form_left = $w.$form_left;
+	var $form_right = $w.$form_right;
 	
 	// Information
 	
@@ -72,20 +96,7 @@ var image_attributes = function(){
 	
 	// Buttons on the right
 	
-	var $okay = $(E("button")).appendTo($form_right).text("Okay");
-	var $cancel = $(E("button")).appendTo($form_right).text("Cancel");
-	var $default = $(E("button")).appendTo($form_right).text("Default");
-	
-	$form_right
-		.css({width: 85})
-		.find("button")
-		.css({padding: "3px 5px", width: "95%"})
-		//this should really not be needed @TODO
-		.addClass("jspaint-button jspaint-window-button");
-	
-	$okay.click(function(e){
-		e.preventDefault();
-		
+	$w.$Button("Okay", function(){
 		var to = $transparency.find(":checked").val();
 		var unit = $units.find(":checked").val();
 		
@@ -99,12 +110,12 @@ var image_attributes = function(){
 		
 		image_attributes.$window.close();
 	});
-	$cancel.click(function(e){
-		e.preventDefault();
+	
+	$w.$Button("Cancel", function(){
 		image_attributes.$window.close();
 	});
-	$default.click(function(e){
-		e.preventDefault();
+	
+	$w.$Button("Default", function(){
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
@@ -114,6 +125,62 @@ var image_attributes = function(){
 	// Reposition the window
 	
 	image_attributes.$window.center();
+};
+
+var flip_and_rotate = function(){
+	var $w = new $FormWindow("Flip and Rotate");
+	
+	var $fieldset = $(E("fieldset")).appendTo($w.$form_left);
+	$fieldset.append("<legend>Flip or rotate</legend>");
+	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-horizontal' checked/>Flip horizontal</label>");
+	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-vertical'/>Flip vertical</label>");
+	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='rotate-by-angle'/>Rotate by angle<div></div></label>");
+	
+	var $rotate_by_angle = $fieldset.find("div")
+	$rotate_by_angle.css({paddingLeft: "30px"});
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='90' checked/>90°</label>");
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='180'/>180°</label>");
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='270'/>270°</label>");
+	$rotate_by_angle.find("input").attr({disabled: true});
+	
+	$fieldset.find("input").on("change", function(){
+		$rotate_by_angle.find("input").attr({
+			disabled: ($fieldset.find("input[name='flip-or-rotate']:checked").val() !== 'rotate-by-angle')
+		});
+	});
+	
+	$fieldset.find("label").css({display: "block"});
+	
+	$w.$Button("Okay", function(){
+		$w.close();
+	}).on("mouseover", function(){
+		$(this).text("NOT OKAY");
+	});
+	$w.$Button("Cancel", function(){
+		$w.close();
+	});
+	
+	$w.center();
+};
+
+var stretch_and_skew = function(){
+	var $w = new $FormWindow("Stretch and Skew");
+	
+	var $fieldset_stretch = $(E("fieldset")).appendTo($w.$form_left);
+	$fieldset_stretch.append("<legend>Stretch</legend>");
+	var $fieldset_skew = $(E("fieldset")).appendTo($w.$form_left);
+	$fieldset_skew.append("<legend>Skew</legend>");
+	
+	$w.$Button("Okay", function(){
+		$w.close();
+	}).on("mouseover", function(){
+		$(this).text("NOT OKAY");
+	});
+	$w.$Button("Cancel", function(){
+		$w.close();
+	});
+	
+	$w.center();
 };
 
 var set_as_wallpaper_tiled = function(c){
@@ -355,11 +422,13 @@ var menus = {
 	"&Image": [
 		{
 			item: "&Flip/Rotate",
-			shortcut: "Ctrl+R"
+			shortcut: "Ctrl+R",
+			action: flip_and_rotate
 		},
 		{
 			item: "&Stretch/Skew",
-			shortcut: "Ctrl+W"
+			shortcut: "Ctrl+W",
+			action: stretch_and_skew
 		},
 		{
 			item: "&Invert Colors",

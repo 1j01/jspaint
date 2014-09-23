@@ -205,7 +205,7 @@ $G.on("keydown", function(e){
 	}else if(e.keyCode === 107 || e.keyCode === 109){
 		var plus = e.keyCode === 107;
 		var minus = e.keyCode === 109;
-		var delta = +plus++ -minus--;//Δ = ±±±±
+		var delta = plus - minus; // +plus++ -minus--; // Δ = ±±±±
 		
 		if(selection){
 			//scale selection
