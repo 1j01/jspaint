@@ -318,7 +318,33 @@ var menus = {
 		____________________________,
 		{
 			item: "&Zoom",
-			submenu: []
+			submenu: [
+				{
+					item: "&Normal Size",
+					shorcut: "Ctrl+PgUp"
+				},
+				{
+					item: "&Large Size",
+					shorcut: "Ctrl+PgDn",
+					disabled: true
+				},
+				{
+					item: "C&ustom...",
+					disabled: true
+				},
+				____________________________,
+				{
+					item: "Show &Grid",
+					shorcut: "Ctrl+G",
+					checkbox: {},
+					disabled: true
+				},
+				{
+					item: "Show T&humbnail",
+					checkbox: {},
+					disabled: true
+				}
+			]
 		},
 		{
 			item: "&View Bitmap",
@@ -457,13 +483,35 @@ $.each(menus, function(menu_key, menu_items){
 			var $label = $(E("td")).addClass("jspaint-menu-item-label");
 			var $shortcut = $(E("td")).addClass("jspaint-menu-item-shortcut");
 			var $submenu_area = $(E("td")).addClass("jspaint-menu-item-submenu-area");
+			
 			$item.append($checkbox_area, $label, $shortcut, $submenu_area);
 			
 			$label.html(_html(item.item));
 			$shortcut.text(item.shortcut);
+			
 			$item.attr("disabled", item.disabled);
+			
 			if(item.checkbox){
 				$checkbox_area.text("✓");
+			}
+			
+			if(item.submenu){
+				$submenu_area.text("▶");
+				var open_tid, close_tid;
+				$item.on("mouseover", function(){
+					if(open_tid){clearTimeout(open_tid);}
+					if(close_tid){clearTimeout(close_tid);}
+					open_tid = setTimeout(function(){
+						$submenu_area.text("▽");
+					}, 200);
+				});
+				$item.on("mouseout", function(){
+					if(open_tid){clearTimeout(open_tid);}
+					if(close_tid){clearTimeout(close_tid);}
+					open_tid = setTimeout(function(){
+						$submenu_area.text("▶");
+					}, 200);
+				});
 			}
 			
 			$item.on("click", function(){

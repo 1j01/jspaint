@@ -30,7 +30,7 @@
 		* Edit
 			* Cut, Copy, Paste: Possibly impossible
 		* View
-			* Zoom should have a submenu
+			* Zoom should have an actual submenu
 		* Image
 			* Flip / Rotate
 			* Stretch / Skew
@@ -84,7 +84,7 @@
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
 	* Color Replacement (see [Tools](#tools))
-	* The Grid (Ctrl+G + zoom6x+)
+	* The Grid (Ctrl+G & zoom6x+)
 	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
 
 
