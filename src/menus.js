@@ -167,9 +167,34 @@ var stretch_and_skew = function(){
 	var $w = new $FormWindow("Stretch and Skew");
 	
 	var $fieldset_stretch = $(E("fieldset")).appendTo($w.$form_left);
-	$fieldset_stretch.append("<legend>Stretch</legend>");
+	$fieldset_stretch.append("<legend>Stretch</legend><table></table>");
 	var $fieldset_skew = $(E("fieldset")).appendTo($w.$form_left);
-	$fieldset_skew.append("<legend>Skew</legend>");
+	$fieldset_skew.append("<legend>Skew</legend><table></table>");
+	
+	var $RowInput = function($table, img_src, label_text, default_value, label_unit){
+		var $tr = $(E("tr")).appendTo($table);
+		var $img = $(E("img")).attr({
+			src: "images/transforms/" + img_src + ".png"
+		}).css({
+			marginRight: "20px"
+		});
+		var $input = $(E("input")).attr({
+			value: default_value
+		}).css({
+			width: "40px"
+		});
+		$(E("td")).appendTo($tr).append($img);
+		$(E("td")).appendTo($tr).text(label_text);
+		$(E("td")).appendTo($tr).append($input);
+		$(E("td")).appendTo($tr).text(label_unit);
+		
+		return $input;
+	};
+	
+	var stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%");
+	var stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%");
+	var skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees");
+	var skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Horizontal:", 0, "Degrees");
 	
 	$w.$Button("Okay", function(){
 		$w.close();
