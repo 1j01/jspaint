@@ -538,7 +538,18 @@ var menus = {
 		},
 		{
 			item: "&Draw Opaque",
-			checkbox: {}
+			checkbox: {
+				toggle: function(){
+					transparent_opaque = {
+						"opaque": "transparent",
+						"transparent": "opaque",
+					}[transparent_opaque];
+					
+					$G.trigger("option-changed");
+					
+					return transparent_opaque === "opaque";
+				}
+			}
 		}
 	],
 	"&Colors": [

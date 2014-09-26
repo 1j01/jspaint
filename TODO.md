@@ -34,11 +34,11 @@
 			* Zoom should have an actual submenu
 		* Image
 			* Stretch / Skew (functionality)
-			* Draw Opaque
 		* Help
 			* Help Topics ✓ um...
 			* About paint ✓ um......
 	* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
+	* Disable Image > Clear Image when there is a selection
 	* Sliding animation / transition effects
 
 
