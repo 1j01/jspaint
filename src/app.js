@@ -488,7 +488,12 @@ $canvas_area.on("mousedown", function(e){
 });
 
 $body.on("mousedown contextmenu", function(e){
-	if(e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement){
+	if(
+		e.target instanceof HTMLSelectElement ||
+		e.target instanceof HTMLTextAreaElement ||
+		e.target instanceof HTMLInputElement &&
+		e.target.type !== "color"
+	){
 		return true;
 	}
 	e.preventDefault();
