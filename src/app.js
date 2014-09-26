@@ -101,7 +101,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 			ctx.drawImage(previous_canvas, 0, 0);
 		}
 		
-		$canvas.trigger("update"); //update handles
+		$canvas.trigger("update"); // update handles
 		
 		try{
 			localStorage.width = canvas.width;
@@ -208,20 +208,8 @@ $G.on("keydown", function(e){
 		var delta = plus - minus; // +plus++ -minus--; // Δ = ±±±±
 		
 		if(selection){
-			//scale selection
 			
-			var cx = selection._x + selection._w/2;
-			var cy = selection._y + selection._h/2;
-			var w = selection._w * Math.pow(2, delta);
-			var h = selection._h * Math.pow(2, delta);
-			
-			selection._x = cx - w/2;
-			selection._y = cy - h/2;
-			selection._w = w;
-			selection._h = h;
-			
-			selection.position();
-			selection.resize();
+			selection.scale(Math.pow(2, delta));
 			
 		}else{
 			

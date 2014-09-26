@@ -420,16 +420,14 @@ function select_all(){
 }
 
 function invert(){
-	undoable(0, function(){
-		this_ones_a_frame_changer();
-		
-		var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+		var id = original_ctx.getImageData(0, 0, original_canvas.width, original_canvas.height);
 		for(var i=0; i<id.data.length; i+=4){
 			id.data[i+0] = 255 - id.data[i+0];
 			id.data[i+1] = 255 - id.data[i+1];
 			id.data[i+2] = 255 - id.data[i+2];
 		}
-		ctx.putImageData(id, 0, 0);
+		new_ctx.putImageData(id, 0, 0);
 	});
 }
 

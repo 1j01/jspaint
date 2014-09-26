@@ -33,7 +33,6 @@
 			* Show/Hide $FontBox
 			* Zoom should have an actual submenu
 		* Image
-			* Flip / Rotate (functionality)
 			* Stretch / Skew (functionality)
 			* Draw Opaque
 		* Help
@@ -44,9 +43,6 @@
 
 
 * Colors > Edit Colors... doesn't work when the $colorbox is hidden
-
-
-* Image operations should apply to the selection if there is one
 
 
 * Close dialogues with Esc (and also Enter)
@@ -86,18 +82,28 @@
 	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
 
 
-* CSS: buttons shouldn't need a class `.jspaint-button`; color cells shouldn't be buttons; there also shouldn't be classes `.jspaint-window-button` or `.jspaint-dialogue-button` (the fact that there are *both*, ...)
 
-* JS: chill down on the global event handlers; they're interfering with inputs
+* CSS
+	* Buttons shouldn't need a class `.jspaint-button`
+	* Color cells probably shouldn't be buttons
+	* There also shouldn't be classes `.jspaint-window-button` (`.jspaint-window-titlebar button`) or `.jspaint-dialogue-button` (`.jspaint-window-content button`) at all
+	* DRY, especially for the buttons
+
+
+* JS
+	* Chill down on the global event handlers; they're interfering with inputs
+	* Selection.js and TextBox.js contain a lot of duplicated code.
+	* Outdated names like sel.$ghost = div.jspaint-selection
+	* Everything is in random files! functions.js, REALLY? menus.js contains way too much non-menu stuff.
 
 
 ### Extended editing
 
 * Transparent PNGs
 	* Detect transparency when opening an image
-		* Optimization: Don't forget to assume JPEGs are opaque.
+		* Optimization: Don't forget to assume JPEGs are opaque. (Some other file types too)
 		* Raster file formats that support transparency include GIF, PNG, BMP and TIFF
-	* Option in Image > Attributes...
+	* Option in Image > Attributes... ✓
 * Animated GIFs
 	* Use ternary color as transparent color?
 * Animated Transparent APNGs
@@ -119,7 +125,7 @@
 	* Pan tool for single-touch devices
 	* Hidden by default?
 	* You can't use the Eraser/Color Eraser tool as a "Color Eraser"
-	* You also can't see tooltips, probably
+	* Also, you probably can't see tooltips on mobile
 
 
 ### Tools
@@ -146,15 +152,15 @@
 
 
 * Eraser/Color Eraser
-	* right click with the eraser to selectively replace color1 with color2
+	* Right click with the eraser to selectively replace color1 with color2
 
 
 * Fill With Color
+	* Move fill function out of tools.js
 	* Find a better fill algorithm!
-		* get into those corners
-		* handle transparency correctly
-		* keep speed
-		* move function out of tools.js
+		* Get into those corners
+		* Handle transparency correctly
+		* Keep speed
 
 
 * Text

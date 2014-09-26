@@ -122,6 +122,7 @@ Selection.prototype.position = function(){
 	$status_position.text(this._x + "," + this._y);
 	$status_size.text(this._w + "," + this._h);
 };
+
 Selection.prototype.resize = function(){
 	var sel = this;
 	var width = sel._w;
@@ -136,6 +137,29 @@ Selection.prototype.resize = function(){
 	new_ctx.mozImageSmoothingEnabled = false;
 	new_ctx.webkitImageSmoothingEnabled = false;
 	new_ctx.drawImage(sel.canvas, 0, 0, width, height);
+	
+	sel.replace_canvas(new_canvas);
+};
+
+Selection.prototype.replace_canvas = function(new_canvas){
+	var sel = this;
+	
+	var cx = sel._x + sel._w/2;
+	var cy = sel._y + sel._h/2;
+	var new_width = new_canvas.width;
+	var new_height = new_canvas.height;
+	
+	sel._x = cx - new_width/2;
+	sel._y = cy - new_height/2;
+	sel._w = new_width;
+	sel._h = new_height;
+	
+	sel.position();
+	
+	var new_ctx = new_canvas.getContext("2d");
+	new_ctx.imageSmoothingEnabled = false;
+	new_ctx.mozImageSmoothingEnabled = false;
+	new_ctx.webkitImageSmoothingEnabled = false;
 
 	$(sel.canvas).replaceWith(new_canvas);
 	sel.canvas = new_canvas;
@@ -144,6 +168,20 @@ Selection.prototype.resize = function(){
 	$(sel.canvas).on("mousedown", sel.canvas_mousedown);
 	sel.$ghost.triggerHandler("new-element", [sel.canvas]);
 	sel.$ghost.triggerHandler("resize");
+};
+
+Selection.prototype.scale = function(factor){
+	var sel = this;
+	
+	var original_canvas = sel.canvas;
+	
+	var new_canvas = E("canvas");
+	new_canvas.width = sel._w * factor;
+	new_canvas.height = sel._h * factor;
+	sel.replace_canvas(new_canvas);
+	
+	var new_ctx = new_canvas.getContext("2d");
+	new_ctx.drawImage(original_canvas, 0, 0, new_canvas.width, new_canvas.height);
 };
 
 Selection.prototype.draw = function(){

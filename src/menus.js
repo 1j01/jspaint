@@ -22,13 +22,44 @@ function $FormWindow(title){
 		});
 		
 		// this should really not be needed @TODO
-		$b.addClass("jspaint-button jspaint-window-button");
+		$b.addClass("jspaint-button jspaint-dialogue-button");
 		
 		return $b;
 	};
 	
 	return $w;
 };
+
+function apply_image_transformation(fn){
+	// Apply an image transformation function to either the selection or the entire canvas
+	var new_canvas = E("canvas");
+	var original_canvas =
+		selection? selection.
+		canvas: canvas;
+	
+	var new_ctx = new_canvas.getContext("2d");
+	var original_ctx = original_canvas.getContext("2d");
+	
+	new_canvas.width = original_canvas.width;
+	new_canvas.height = original_canvas.height;
+	
+	fn(original_canvas, original_ctx, new_canvas, new_ctx);
+	
+	if(selection){
+		selection.replace_canvas(new_canvas);
+	}else{
+		undoable(0, function(){
+			this_ones_a_frame_changer();
+			
+			canvas.width = new_canvas.width;
+			canvas.height = new_canvas.height;
+			
+			ctx.drawImage(new_canvas, 0, 0);
+			
+			$canvas.trigger("update"); // update handles
+		});
+	}
+}
 
 var image_attributes = function(){
 	if(image_attributes.$window){
@@ -144,17 +175,52 @@ var flip_and_rotate = function(){
 	$rotate_by_angle.find("input").attr({disabled: true});
 	
 	$fieldset.find("input").on("change", function(){
+		var flip_or_rotate = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		$rotate_by_angle.find("input").attr({
-			disabled: ($fieldset.find("input[name='flip-or-rotate']:checked").val() !== 'rotate-by-angle')
+			disabled: flip_or_rotate !== 'rotate-by-angle'
 		});
 	});
 	
 	$fieldset.find("label").css({display: "block"});
 	
 	$w.$Button("Okay", function(){
+		apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+			var flip_or_rotate = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+			var rotate_by_angle = $fieldset.find("input[name='rotate-by-angle']:checked").val();
+			
+			switch(flip_or_rotate){
+				case "flip-horizontal":
+					new_ctx.translate(new_canvas.width, 0);
+					new_ctx.scale(-1, 1);
+					break;
+				case "flip-vertical":
+					new_ctx.translate(0, new_canvas.height);
+					new_ctx.scale(1, -1);
+					break;
+				case "rotate-by-angle":
+					switch(rotate_by_angle){
+						case "90":
+							new_canvas.width = original_canvas.height;
+							new_canvas.height = original_canvas.width;
+							new_ctx.translate(new_canvas.width, 0);
+							new_ctx.rotate(TAU / 4);
+							break;
+						case "180":
+							new_ctx.translate(new_canvas.width, new_canvas.height);
+							new_ctx.rotate(TAU / 2);
+							break;
+						case "270":
+							new_canvas.width = original_canvas.height;
+							new_canvas.height = original_canvas.width;
+							new_ctx.translate(0, new_canvas.height);
+							new_ctx.rotate(TAU / -4);
+							break;
+					}
+					break;
+			}
+			new_ctx.drawImage(original_canvas, 0, 0);
+		});
 		$w.close();
-	}).on("mouseover", function(){
-		$(this).text("NOT OKAY");
 	});
 	$w.$Button("Cancel", function(){
 		$w.close();
