@@ -65,9 +65,6 @@
 * It's not supposed to show the canvas handles when there is a selection. It used to hide them it no longer does.
 
 
-* Visual glitch where button borders go above windows due to z-index
-
-
 * Handle some edge cases
 	* `this_ones_a_frame_changer();` (undo, redo, reset, file_open, ... switching between frames of an animation)
 	* That's not how mspaint handles these edge cases. It disables actions while you're drawing. Maybe I should do that. (It does allow actions when you have a selection, and handles this like I tried to)
@@ -95,6 +92,7 @@
 	* Selection.js and TextBox.js contain a lot of duplicated code.
 	* Outdated names like sel.$ghost = div.jspaint-selection
 	* Everything is in random files! functions.js, REALLY? menus.js contains way too much non-menu stuff.
+	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
 
 
 ### Extended editing

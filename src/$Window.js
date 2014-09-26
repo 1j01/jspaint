@@ -1,4 +1,6 @@
 
+$Window.Z_INDEX = 5;
+
 function $Window($component){
 	var $w = $(E("div")).addClass("jspaint-window").appendTo("body");
 	$w.$titlebar = $(E("div")).addClass("jspaint-window-titlebar").appendTo($w);
@@ -18,7 +20,15 @@ function $Window($component){
 		e.stopPropagation();
 	});
 	
-	$w.css({position: "absolute"});
+	$w.css({
+		position: "absolute",
+		zIndex: $Window.Z_INDEX++
+	});
+	$w.on("mousedown", function(){
+		$w.css({
+			zIndex: $Window.Z_INDEX++
+		});
+	});
 	
 	$w.applyBounds = function(){
 		$w.css({
