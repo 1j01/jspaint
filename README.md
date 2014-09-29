@@ -11,18 +11,19 @@ You can also install it as a chrome app.
 #### Current improvements include:
 
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP, or a somewhat less measly but still annoying 50 in Windows 7)
+* Edit transparent images!
 * Create an animated GIF from the current undo history with <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
 * Cross-platform, I guess
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
 * When you do Edit > Paste From... you can select transparent images. You can paste a transparent animated gif... and then smear it across the canvas while it animates! (Hold <kbd>Shift</kbd> while dragging the selection to smear it.)
 * It can open SVG files (by accident)
-* You can crop the image by holding <kbd>Ctrl</kbd> while making a selection
+* You can crop the image by holding <kbd>Ctrl</kbd> and making a selection
 
 #### Possible improvements include:
 
 * [Extended Editing](#extended-editing)
 * Mobile support
-* Proportionally resize selection by holding Shift
+* Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
 * After adding text, save as SVG or HTML with selectable text
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)

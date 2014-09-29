@@ -57,6 +57,8 @@ function open_from_Image(img, new_file_name){
 		ctx.drawImage(img, 0, 0);
 		
 		$canvas_area.trigger("resize");
+		
+		detect_transparency();
 	});
 }
 function open_from_URI(uri, new_file_name){
@@ -459,3 +461,16 @@ function select_tool(name){
 	$toolbox && $toolbox.update_selected_tool();
 }
 
+function detect_transparency(){
+	transparency = false;
+	
+	// @TODO Optimization: Assume JPEGs and some other file types are opaque.
+	// Raster file formats that support transparency include GIF, PNG, BMP and TIFF
+	
+	var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	for(var i=0, l=id.data.length; i<l; i+=4){
+		if(id.data[i+3] < 255){
+			transparency = true;
+		}
+	}
+}

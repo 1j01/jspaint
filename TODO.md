@@ -6,7 +6,7 @@
 	* Some dialogue buttons are messed up
 	* Use win98 default scrollbar size
 	* Minor color differences (0x808080 != 0x7b7b7b)
-	* I want to give most things a revisit later on
+	* I want to give most things a revisit later on for Pixel Perfection
 
 
 * Keep track of what's saved
@@ -96,19 +96,29 @@
 * Keyboard interaction with dialogues
 	* Close dialogues with Escape
 	* Navigating form windows
+	* Left/Right, Enter/Space
 
 
 ### Extended editing
 
-* Transparent PNGs
-	* Detect transparency when opening an image
-		* Optimization: Don't forget to assume JPEGs are opaque. (Some other file types too)
-		* Raster file formats that support transparency include GIF, PNG, BMP and TIFF
+* Transparent Images ✓
+	* Detect transparency when opening an image ✓
 	* Option in Image > Attributes... ✓
-* Animated GIFs
-	* Use ternary color as transparent color?
-* Animated Transparent APNGs
-* Multi-size Icons
+	* Color opacity slider
+	* Toggle between normal and copy blend modes
+	* Checkered background pattern representing transparency
+
+
+* Images with multiple sub-images
+	* Component to switch between sub-images
+	* Deal with undo/redo for sub-images
+	* Animated GIFs
+		* Transparency ([jnordberg/gif.js issue #5](https://github.com/jnordberg/gif.js/issues/5))
+	* Animated Transparent APNGs
+		* APNG Library ([this kickstarter wants $15,000 to make this](https://www.kickstarter.com/projects/374397522/apngasm-foss-animated-png-tools-and-apng-standardi))
+	* Multi-size Icons
+		* Windows ICO ([jBinary can read](http://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
+		* Mac ICNS
 
 
 ### Mobile support
@@ -183,6 +193,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * Select
 	* Handles
+	* Transparency with selected background color
 	* Selection appears blurry
 	* Proportionally resize selection while holding Shift
 	* Creates an undoable state even if you do nothing
