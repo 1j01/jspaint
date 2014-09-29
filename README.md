@@ -1,20 +1,24 @@
 
 # [![](images/icons/32.png) JS Paint](http://1j01.github.io/jspaint/)
 
-A nice web-based MS Paint remake and more... [Try it out!](http://1j01.github.io/jspaint/)
+A nice web-based MS Paint remake and more...
+[Try it out!](http://1j01.github.io/jspaint/)
 
 The goal is to remake paint (including its [little-known features](#did-you-know)), improve on it, and to extend the types of images it can edit.
 
-Current improvements include:
+You can also install it as a chrome app.
 
-* Unlimited undos/redos (as opposed to a measly three in Windows XP, or a somewhat less measly 50 in Windows 7)
+#### Current improvements include:
+
+* Unlimited undos/redos (as opposed to a measly 3 in Windows XP, or a somewhat less measly but still annoying 50 in Windows 7)
 * Create an animated GIF from the current undo history with <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
 * Cross-platform, I guess
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
-* When you do Edit > Paste From... you can select an animated and/or transparent image. You can then smear it across the canvas while it animates! (Hold <kbd>Shift</kbd> while dragging the selection to smear it.)
+* When you do Edit > Paste From... you can select transparent images. You can paste a transparent animated gif... and then smear it across the canvas while it animates! (Hold <kbd>Shift</kbd> while dragging the selection to smear it.)
 * It can open SVG files (by accident)
+* You can crop the image by holding <kbd>Ctrl</kbd> while making a selection
 
-Possible improvements include:
+#### Possible improvements include:
 
 * [Extended Editing](#extended-editing)
 * Mobile support
@@ -23,15 +27,17 @@ Possible improvements include:
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
 
-A lot of stuff isn't done yet:
+#### [A lot of stuff](TODO.md) isn't done yet:
 
 * Magnification
 * Free-Form Selection
 * Color Replacement with the "Eraser/Color Eraser" tool
-* Some menu items
-* Copying the selection to the clipboard (I can't get this to work. You can paste, though!)
+* A few menu items
 
-There's [a lot to do.](TODO.md)
+One thing that seams like it may never be done is full clipboard support.
+You can paste with <kbd>Ctrl+V</kbd>, but you can't copy or cut, and the menu items are disabled.
+After all, it would be terrible if webpages were able to access your clipboard.
+Maybe I can get it working in the chrome app or in a node-webkit app.
 
 
 ## Staying True to the Original
@@ -69,7 +75,8 @@ I want to make jspaint to be able to edit...
 
 ## Did you know?
 
-* These Tips and Tricks from [This tutorial for MS Paint](http://www.albinoblacksheep.com/tutorial/mspaint) also work in jspaint if they have a checkmark:
+* These Tips and Tricks from [a tutorial for MS Paint](http://www.albinoblacksheep.com/tutorial/mspaint)
+  also work in JS Paint if they have a checkmark:
 
 	* [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to adjust brush size)
 	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
