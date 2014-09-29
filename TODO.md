@@ -1,56 +1,12 @@
 
 # ![](images/icons/32.png) JS Paint Todo
 
-* Improve README
-	* Introduce and explain the project ...better?
-	* Publish jspaint to the webstore (and link to that)
-	* Make it pretty with images
-
-
-* Pixel Perfection
+* Visual
+	* Some window layouts are bad
+	* Some dialogue buttons are messed up
 	* Use win98 default scrollbar size
 	* Minor color differences (0x808080 != 0x7b7b7b)
-	* Some window layouts are bad
 	* I want to give most things a revisit later on
-
-
-* Menus
-	* Keyboard Navigation
-	* Mouse navigation ✓
-	* Descriptions of menu items in the status bar
-	* Use keyboard shortcuts defined in the menu data structure to declaratively setup hotkeys
-		* `On key press, loop through the menus`
-			* `If the key event matches the menu item's shortcut`
-				* `Perform menu item's action`
-				* `Break loop`
-	* MAKE THINGS DO THINGS
-		* File
-			* Print Preview
-			* Page Setup
-		* Edit
-			* Cut, Copy, Paste: Possibly impossible
-		* View
-			* Show/Hide $FontBox
-			* Zoom should have an actual submenu
-		* Image
-			* Stretch / Skew (functionality)
-		* Help
-			* Help Topics ✓ um...
-			* About paint ✓ um......
-	* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
-	* Disable Image > Clear Image when there is a selection
-	* Sliding animation / transition effects
-
-
-* Colors > Edit Colors... doesn't work when the $colorbox is hidden
-
-
-* Close dialogues with Esc (and also Enter)
-
-
-* `filter: invert()` doesn't work yet in Firefox
-	* Invert the image with canvas
-		* Make class $UpscaledCanvas or something that I can use to make lots of things crisp and pixely when zoomed in or on higher resolution displays
 
 
 * Keep track of what's saved
@@ -58,19 +14,13 @@
 	* Do warn about losing unsaved files (close button, etc.)
 
 
-* Issue: status text gets cut off
-	* Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
+* Hide the canvas handles when there is a selection. (This used to work!)
 
 
-* It's not supposed to show the canvas handles when there is a selection. It used to hide them it no longer does.
+* Gracefully hide things as the window gets smaller (With media queries!)
 
 
-* Handle some edge cases
-	* `this_ones_a_frame_changer();` (undo, redo, reset, file_open, ... switching between frames of an animation)
-	* That's not how mspaint handles these edge cases. It disables actions while you're drawing. Maybe I should do that. (It does allow actions when you have a selection, and handles this like I tried to)
-	
-	* The window can be smaller than the minimum window area of mspaint
-	* Dialogue windows should go away at some point. Also, there should only be one of most of them at a time.
+* Inverty fill bucket and airbrush cursors
 
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
@@ -79,20 +29,73 @@
 	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
 
 
+* Issues
+	* Colors > Edit Colors... doesn't work when the $colorbox is hidden
+	* Component windows are gone forever once closed
+	* Status text gets cut off
+		* Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
+	* Firefox
+		* It lags unusably when using tools
+			* For some tools it only happens while dragging the mouse on the canvas
+		* Tool options that have images flicker... *and lag*
+		* Airbrush options aren't inverted when selected because `filter: invert()` doesn't work yet in Firefox
+			* Invert the image with canvas
+				* Make class $UpscaledCanvas or something that I can also use to make lots of things crisp and pixely when zoomed in and on higher resolution displays
+	* Global event handlers interfering with stuff
+		* (In Image > Attributes)
+			* You can't Copy, Paste, Cut or Drag&Drop in the inputs
+			* You can't click on the radio option labels when text is selected!
+		
 
-* CSS
-	* Buttons shouldn't need a class `.jspaint-button`
-	* Color cells probably shouldn't be buttons
-	* There also shouldn't be classes `.jspaint-window-button` (`.jspaint-window-titlebar button`) or `.jspaint-dialogue-button` (`.jspaint-window-content button`) at all
-	* DRY, especially for the buttons
+* Handling actions that interfere with each other
+	* I currently have a function `this_ones_a_frame_changer();` that finalizes the selection among other things at various times (undo, redo, reset, file_open, ... switching between frames of an animation)
+	* MS Paint disables actions while you're drawing. Maybe I should do that? It does allow actions when you have a selection and finalizes it as I am doing.
 
 
-* JS
-	* Chill down on the global event handlers; they're interfering with inputs
-	* Selection.js and TextBox.js contain a lot of duplicated code.
-	* Outdated names like sel.$ghost = div.jspaint-selection
-	* Everything is in random files! functions.js, REALLY? menus.js contains way too much non-menu stuff.
-	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
+### Menus
+
+* Mouse navigation ✓
+* Keyboard Navigation
+* Descriptions of menu items in the status bar
+* Use keyboard shortcuts defined in the menu data structure to declaratively setup hotkeys
+	* ```
+	On key press, loop through the menus
+		If the key event matches the menu item's shortcut
+			Perform menu item's action
+			Break loop
+	```
+* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
+* Disable Image > Clear Image when there is a selection like mspaint does?
+* Sliding animation / transition effects
+
+
+* Menu Items
+	* File
+		* Print Preview
+		* Page Setup (what should these do? call `print`?)
+	* Edit
+		* Cut, Copy, Paste: Possibly impossible
+	* View
+		* Show/Hide FontBox
+		* Zoom should have an actual submenu
+	* Image
+		* Stretch / Skew (functionality)
+	* Help
+		* Help Topics ✓ um...
+		* About paint ✓ um......
+
+
+### Components / Windows
+
+* Drag window and component together seamlessly
+
+
+* Double-click a component window's titlebar to dock the component to its most recent location.
+
+
+* Keyboard interaction with dialogues
+	* Close dialogues with Escape
+	* Navigating form windows
 
 
 ### Extended editing
@@ -111,19 +114,33 @@
 ### Mobile support
 
 * Use pointer events polyfill
-* Multi-touch devices
-	* Two-finger drag to pan
-* Single-touch devices
-	* Pan tool
-* Tap/click current colors area to swap bg/fg colors
-* Panel for things that would normally require a keyboard?
-	* Numpad +/- (Note: laptops often also lack numpads)
-	* Shift = "Proportional", "Smear", "Snap to 8 directions" / "Octosnap"?
-	* Ctrl+Shift+G = "Render GIF"
-	* Pan tool for single-touch devices
-	* Hidden by default?
-	* You can't use the Eraser/Color Eraser tool as a "Color Eraser"
-	* Also, you probably can't see tooltips on mobile
+	* Multi-touch devices
+		* Second touch cancels current action just like a second button does on the desktop
+		* Two-finger drag to pan
+	* Single-touch devices
+		* Pan tool
+
+
+* You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
+* Also, you probably can't see tooltips on mobile
+
+
+* Panel for things that would normally require a keyboard (with a numpad!)
+	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
+	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
+	* Ctrl+Shift+G: "Render GIF"
+
+
+* Should the pan tool go in the toolbox along with a new Color Eraser tool?
+
+
+### Colors
+
+For mobile, tap (or click) the selected colors area to swap background/foreground colors.
+
+The ability to change the current color without changing the palette
+
+Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 
 ### Tools
@@ -132,21 +149,12 @@
 	* Aliasing
 
 
-* Rounded Rectangle
-	* Support shape styles!
-
-
-* Ellipse
-	* Support shape styles!
-
-
 * Polygon
-	* Issue with extra undoables
-	* Ending the operation when switching tools
-	* The canvas API handles self-intersecting shapes differently than mspaint
 	* Aliasing
+	* The canvas API handles self-intersecting shapes differently than mspaint
 	* The above two items mean I would have to re-implement drawing polygons
-	* Close the polygon when switching tools
+	* Issue with extra undoables
+	* Close the polygon when switching to a different tool
 
 
 * Eraser/Color Eraser
@@ -169,49 +177,29 @@
 	* Minimum size of 3em x 1em (that is, the width of 3 'm's by the height of one line)
 	* Detect fonts
 	* Store position of FontBox
-	* Keep an old textbox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
+	* Keep an old TextBox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
 	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
 
 
 * Select
 	* Handles
-	* Image appears blurry in the selection
-	* Proportionally resize selection by holding Shift
-	* Creates undoable even if you do nothing
+	* Selection appears blurry
+	* Proportionally resize selection while holding Shift
+	* Creates an undoable state even if you do nothing
 
 
-* OPTIONS
-	* secret 10x zoom by clicking the area just underneath the 8x zoom
-	* in mspaint, visual area =/= selection highlight area =/= clickable area
+* **Options**
+	* Secret 10x zoom by clicking the area just underneath the 8x zoom
+	* In mspaint, visual area =/= selection highlight area =/= clickable area
 
 
-* Strokes
-	* Shapes respond to Ctrl, by...
-		* It's complicated.
-	* Use stroke size
-	* Rectangle: The stroke is within the rectangle.
-	* Rounded Rectangle / Ellipse: If the width/height is less than the stroke size, it fills a similar shape with the stroke color.
-
-
-* Inverty fill bucket and airbrush cursors
-
-
-* In Firefox while drawing an ellipse, it lags *a lot* but only while the mouse is on the canvas
-
-
-### Colors
-
-This isn't in mspaint, but maybe you should be able to click (double-click?) one of the selected colors to change it directly?
-
-Or, for mobile, tap/click selected colors area to switch colors. Yeah, that seems more useful.
-
-Load palettes with [palette.js](https://github.com/1j01/palette.js/)
-
-
-### Components / Windows
-
-* Drag window and component together seamlessly
-* Double-click a component window's titlebar to dock the component to its most recent location.
+* **Shape Styles and Strokes**
+	* Shapes: respond to Ctrl (It's complicated)
+	* Lots of things: Use stroke size
+	* Rectangle: The stroke should go within the rectangle
+	* Rounded Rectangle / Ellipse:
+		* If the width/height is less than the stroke size, it should a shape with no stroke, filled with the color that would normally be used for the stroke.
+		* Support shape styles!
 
 
 ### BSOD
@@ -244,4 +232,34 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 ### Also
 
-Anything marked `@TODO` in the source code
+* Anything marked `@TODO` in the source code
+
+
+* Improve README
+	* Introduce and explain the project ...better?
+	* Publish jspaint to the webstore (and link to that)
+	* Make it pretty with (moar) images
+
+
+* Stop improving TODO
+	* It's just a TODO
+	* You're wasting your time
+	* Why did I make this a markdown document?
+	* Work on the project
+
+
+* CSS
+	* Buttons shouldn't need a class `.jspaint-button`
+	* Color cells probably shouldn't be buttons
+	* There also shouldn't be classes `.jspaint-window-button` (`.jspaint-window-titlebar button`) or `.jspaint-dialogue-button` (`.jspaint-window-content button`) at all
+	* DRY, especially for the buttons
+	* Move into folder (called what? styles? stylesheets? css?)
+
+
+* JS
+	* Selection.js and TextBox.js contain a lot of duplicated code.
+	* Outdated names like sel.$ghost = div.jspaint-selection
+	* Everything is in random files! functions.js, REALLY? menus.js contains way too much non-menu stuff.
+	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
+	* Refactor old code
+
