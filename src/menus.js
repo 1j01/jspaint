@@ -569,11 +569,10 @@ var menus = {
 			action: function(){
 				var $msgbox = new $Window();
 				$msgbox.title("Help Topics");
-				var url = "";
+				var a_attr = "href='https://www.google.com/search?q=ms+paint+tutorials' target='_blank'";
 				$msgbox.$content.html(
-					"<p style='padding:0;margin:5px'>Sorry, no help is available at this time.</p>" +
-					"<br>You can however try <a href='https://www.google.com/search?q=ms+paint+tutorials' target='_blank'>searching for tutorials</a> for MS Paint." +
-					"<br>There will be differences, but the basics are there."
+					"<p>There's no help specifically for JS Paint, but you can try <a "+a_attr+">searching for tutorials</a> for MS Paint." +
+					"<p>There will be differences, but most of the basics are there.</p>"
 				).css({padding: "15px"});
 				$msgbox.center();
 			}
@@ -585,9 +584,9 @@ var menus = {
 				var $msgbox = new $Window();
 				$msgbox.title("About Paint");
 				$msgbox.$content.html(
-					"This is <a href='https://github.com/1j01/jspaint'>JS Paint</a>." +
-					"<br>" +
-					"Yeah.<br>"
+					"<h1><img src='images/icons/32.png'/> JS Paint<hr/></h1>" +
+					"<p>JS Paint is a web-based remake of MS Paint by <a href='http://1j01.github.io/'>Isaiah Odhner</a>.</p>" +
+					"<p>You can check out the project <a href='https://github.com/1j01/jspaint'>on github</a>.</p>"
 				).css({padding: "15px"});
 				$msgbox.center();
 			}

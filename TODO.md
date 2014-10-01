@@ -7,6 +7,7 @@
 	* Use win98 default scrollbar size
 	* Minor color differences (0x808080 != 0x7b7b7b)
 	* I want to give most things a revisit later on for Pixel Perfection
+	* Inverty fill bucket and airbrush cursors
 
 
 * Keep track of what's saved
@@ -18,9 +19,6 @@
 
 
 * Gracefully hide things as the window gets smaller (With media queries!)
-
-
-* Inverty fill bucket and airbrush cursors
 
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
@@ -45,6 +43,8 @@
 		* (In Image > Attributes)
 			* You can't Copy, Paste, Cut or Drag&Drop in the inputs
 			* You can't click on the radio option labels when text is selected!
+		* (In Help > *)
+			* You can't select text
 		
 
 * Handling actions that interfere with each other
@@ -80,9 +80,6 @@
 		* Zoom should have an actual submenu
 	* Image
 		* Stretch / Skew (functionality)
-	* Help
-		* Help Topics ✓ um...
-		* About paint ✓ um......
 
 
 ### Components / Windows
@@ -223,7 +220,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 ### Chrome App
 
 * Set up build process
-	* Concatenate + Minify? Why?
+	* ~~Concatenate + Minify~~ (Why?)
 	* Increment version?
 	* Compress into zip file
 	* Upload? Notify of new bug reports, stats? haha I'm thinking of things I might put in multiism/multi-platform once people were using it
@@ -248,8 +245,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 * Improve README
 	* Introduce and explain the project ...better?
-	* Publish jspaint to the webstore (and link to that)
-	* Make it pretty with (moar) images
+	* Make it pretty with (moar) images (screenshots plz)
 
 
 * Stop improving TODO
@@ -268,9 +264,18 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * JS
+	* Refactor old code
 	* Selection.js and TextBox.js contain a lot of duplicated code.
 	* Outdated names like sel.$ghost = div.jspaint-selection
 	* Everything is in random files! functions.js, REALLY? menus.js contains way too much non-menu stuff.
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
-	* Refactor old code
+
+
+* Help
+	* Actual Help Topics
+	* Interactive tutorial(s)?
+
+
+* Search Engine Optimization
+	* Load the About Paint content from an element on the page that gets hidden by code
 
