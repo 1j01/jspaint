@@ -40,10 +40,10 @@
 			* Invert the image with canvas
 				* Make class $UpscaledCanvas or something that I can also use to make lots of things crisp and pixely when zoomed in and on higher resolution displays
 	* Global event handlers interfering with stuff
-		* (In Image > Attributes)
+		* In Image > Attributes and other places
 			* You can't Copy, Paste, Cut or Drag&Drop in the inputs
 			* You can't click on the radio option labels when text is selected!
-		* (In Help > *)
+		* In Help > About Paint and other places
 			* You can't select text
 		
 
@@ -172,7 +172,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Move fill function out of tools.js
 	* Find a better fill algorithm!
 		* Get into those corners
-		* Handle transparency correctly
+		* Handle transparency correctly (✓)
 		* Keep speed
 
 

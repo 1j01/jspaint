@@ -89,6 +89,7 @@ tools = [{
 		var fill_r = _id.data[0];
 		var fill_g = _id.data[1];
 		var fill_b = _id.data[2];
+		var fill_a = _id.data[3];
 		
 		var stack = [[x, y]];
 		var c_width = canvas.width;
@@ -98,11 +99,17 @@ tools = [{
 		var start_r = id.data[pixel_pos+0];
 		var start_g = id.data[pixel_pos+1];
 		var start_b = id.data[pixel_pos+2];
-		if(fill_r === start_r
-		&& fill_g === start_g
-		&& fill_b === start_b){
+		var start_a = id.data[pixel_pos+3];
+		
+		if(
+			fill_r === start_r &&
+			fill_g === start_g &&
+			fill_b === start_b &&
+			fill_a === start_a
+		){
 			return;
 		}
+		
 		while(stack.length){
 			var new_pos, x, y, pixel_pos, reach_left, reach_right;
 			new_pos = stack.pop();
@@ -147,16 +154,19 @@ tools = [{
 		ctx.putImageData(id, 0, 0);
 
 		function match_start_color(pixel_pos){
-			return (id.data[pixel_pos+0] === start_r
-			     && id.data[pixel_pos+1] === start_g
-			     && id.data[pixel_pos+2] === start_b);
+			return (
+				id.data[pixel_pos+0] === start_r &&
+				id.data[pixel_pos+1] === start_g &&
+				id.data[pixel_pos+2] === start_b &&
+				id.data[pixel_pos+3] === start_a
+			);
 		}
 
 		function color_pixel(pixel_pos){
 			id.data[pixel_pos+0] = fill_r;
 			id.data[pixel_pos+1] = fill_g;
 			id.data[pixel_pos+2] = fill_b;
-			id.data[pixel_pos+3] = 255;
+			id.data[pixel_pos+3] = fill_a;
 		}
 	}
 }, {
