@@ -154,3 +154,83 @@ function brosandham_line(x1, y1, x2, y2, callback){
 		if(e2 < dx){ err += dx; y1 += sy; }
 	}
 }
+function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
+	
+	var stack = [[x, y]];
+	var c_width = canvas.width;
+	var c_height = canvas.height;
+	var id = ctx.getImageData(0, 0, c_width, c_height);
+	pixel_pos = (y*c_width + x) * 4;
+	var start_r = id.data[pixel_pos+0];
+	var start_g = id.data[pixel_pos+1];
+	var start_b = id.data[pixel_pos+2];
+	var start_a = id.data[pixel_pos+3];
+	
+	if(
+		fill_r === start_r &&
+		fill_g === start_g &&
+		fill_b === start_b &&
+		fill_a === start_a
+	){
+		return;
+	}
+	
+	while(stack.length){
+		var new_pos, x, y, pixel_pos, reach_left, reach_right;
+		new_pos = stack.pop();
+		x = new_pos[0];
+		y = new_pos[1];
+
+		pixel_pos = (y*c_width + x) * 4;
+		while(match_start_color(pixel_pos)){
+			pixel_pos -= c_width * 4, y--;
+		}
+		pixel_pos += c_width * 4, y++;
+		reach_left = false;
+		reach_right = false;
+		while(y++ < c_height && match_start_color(pixel_pos)){
+			color_pixel(pixel_pos);
+
+			if(x > 0){
+				if(match_start_color(pixel_pos - 4)){
+					if(!reach_left){
+						stack.push([x - 1, y]);
+						reach_left = true;
+					}
+				}else if(reach_left){
+					reach_left = false;
+				}
+			}
+
+			if(x < c_width-1){
+				if(match_start_color(pixel_pos + 4)){
+					if(!reach_right){
+						stack.push([x + 1, y]);
+						reach_right = true;
+					}
+				}else if(reach_right){
+					reach_right = false;
+				}
+			}
+
+			pixel_pos += c_width * 4;
+		}
+	}
+	ctx.putImageData(id, 0, 0);
+
+	function match_start_color(pixel_pos){
+		return (
+			id.data[pixel_pos+0] === start_r &&
+			id.data[pixel_pos+1] === start_g &&
+			id.data[pixel_pos+2] === start_b &&
+			id.data[pixel_pos+3] === start_a
+		);
+	}
+
+	function color_pixel(pixel_pos){
+		id.data[pixel_pos+0] = fill_r;
+		id.data[pixel_pos+1] = fill_g;
+		id.data[pixel_pos+2] = fill_b;
+		id.data[pixel_pos+3] = fill_a;
+	}
+}

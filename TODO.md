@@ -169,7 +169,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 
 * Fill With Color
-	* Move fill function out of tools.js
 	* Find a better fill algorithm!
 		* Get into those corners
 		* Handle transparency correctly (✓)
