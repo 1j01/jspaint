@@ -7,7 +7,9 @@
 	* Use win98 default scrollbar size
 	* Minor color differences (0x808080 != 0x7b7b7b)
 	* I want to give most things a revisit later on for Pixel Perfection
-	* Inverty fill bucket and airbrush cursors
+	* Dynamic cursors
+		* Inverty fill bucket and airbrush cursors
+		* Previewy brush and eraser cursors
 
 
 * Keep track of what's saved
@@ -22,7 +24,6 @@
 
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
-	* Color Replacement (see [Tools](#tools))
 	* The Grid (Ctrl+G & zoom6x+)
 	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
 
@@ -162,10 +163,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* The above two items mean I would have to re-implement drawing polygons
 	* Issue with extra undoables
 	* Close the polygon when switching to a different tool
-
-
-* Eraser/Color Eraser
-	* Right click with the eraser to selectively replace color1 with color2
 
 
 * Fill With Color

@@ -28,12 +28,12 @@ You can also install it as a chrome app.
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
 
-#### [A lot of stuff](TODO.md) isn't done yet:
+#### A lot of stuff isn't done yet:
 
 * Magnification
 * Free-Form Selection
-* Color Replacement with the "Eraser/Color Eraser" tool
 * A few menu items
+* [A lot of stuff](TODO.md)
 
 One thing that seams like it may never be done is full clipboard support.
 You can paste with <kbd>Ctrl+V</kbd>, but you can't copy or cut, and the menu items are disabled.
@@ -83,7 +83,7 @@ I want to make jspaint to be able to edit...
 	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
 	* [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
 	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
-	* [ ] Color Replacement (right mouse button in Eraser selectively replaces the foreground color with the background color)
+	* [x] Color Replacement (right mouse button in Eraser selectively replaces the foreground color with the background color)
 	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
 	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing. I also made it redoable, in case you do it by accident!)
 	* [ ] Scroll Wheel bug (hmm, let's maybe not recreate this? ah who am I kidding I'll make it an option)

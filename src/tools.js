@@ -67,11 +67,44 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"], //@todo: draw square on canvas
 	implemented: "partially",
 	paint: function(ctx, x, y){
-		if(transparency){
-			ctx.clearRect(~~(x-eraser_size/2), ~~(y-eraser_size/2), eraser_size, eraser_size);
+		
+		var rect_x = ~~(x - eraser_size/2);
+		var rect_y = ~~(y - eraser_size/2);
+		var rect_w = eraser_size;
+		var rect_h = eraser_size;
+		
+		if(button === 0){
+			// Eraser
+			if(transparency){
+				ctx.clearRect(rect_x, rect_y, rect_w, rect_h);
+			}else{
+				ctx.fillStyle = colors[1];
+				ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
+			}
 		}else{
-			ctx.fillStyle = colors[1];
-			ctx.fillRect(~~(x-eraser_size/2), ~~(y-eraser_size/2), eraser_size, eraser_size);
+			// Color Eraser
+			// Right click with the eraser to selectively replace the selected foreground color with the selected background color
+			
+			var fg_rgba = get_rgba_from_color(colors[0]);
+			var bg_rgba = get_rgba_from_color(colors[1]);
+			
+			var id = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+			
+			for(var i=0, l=id.data.length; i<l; i+=4){
+				if(
+					id.data[i+0] === fg_rgba[0] &&
+					id.data[i+1] === fg_rgba[1] &&
+					id.data[i+2] === fg_rgba[2] &&
+					id.data[i+3] === fg_rgba[3]
+				){
+					id.data[i+0] = bg_rgba[0];
+					id.data[i+1] = bg_rgba[1];
+					id.data[i+2] = bg_rgba[2];
+					id.data[i+3] = bg_rgba[3];
+				}
+			}
+			
+			ctx.putImageData(id, rect_x, rect_y);
 		}
 	},
 	$options: $choose_eraser_size
@@ -82,19 +115,10 @@ tools = [{
 	mousedown: function(ctx, x, y){
 		
 		// Get the rgba values of the selected fill color
-		var _c = E("canvas");
-		_c.width = _c.height = 1;
-		var _ctx = _c.getContext("2d");
-		_ctx.fillStyle = fill_color;
-		_ctx.fillRect(0, 0, 1, 1);
-		var _id = _ctx.getImageData(0, 0, 1, 1);
-		var fill_r = _id.data[0];
-		var fill_g = _id.data[1];
-		var fill_b = _id.data[2];
-		var fill_a = _id.data[3];
+		var rgba = get_rgba_from_color(fill_color);
 		
 		// Perform the fill operation
-		draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a);
+		draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
 		
 	}
 }, {
