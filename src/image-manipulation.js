@@ -242,6 +242,17 @@ function apply_image_transformation(fn){
 		selection? selection.
 		canvas: canvas;
 	
+	// sometimes selection.canvas is an Image
+	// maybe that should be changed instead having of this
+	if(!original_canvas.getContext){
+		var _c = E("canvas");
+		_c.width = original_canvas.width;
+		_c.height = original_canvas.height;
+		var _ctx = _c.getContext("2d");
+		_ctx.drawImage(original_canvas, 0, 0);
+		original_canvas = _c;
+	}
+	
 	var new_ctx = new_canvas.getContext("2d");
 	var original_ctx = original_canvas.getContext("2d");
 	
