@@ -35,10 +35,10 @@ You can also install it as a chrome app.
 * A few menu items
 * [A lot of stuff](TODO.md)
 
-One thing that seams like it may never be done is full clipboard support.
-You can paste with <kbd>Ctrl+V</kbd>, but you can't copy or cut, and the menu items are disabled.
-After all, it would be terrible if webpages were able to access your clipboard.
-Maybe I can get it working in the chrome app or in a node-webkit app.
+One thing that may not be doable is full clipboard support.
+You can paste with <kbd>Ctrl+V</kbd>, but you can't copy or cut, and you can't use the menu items.
+After all, it would be terrible if web pages were able to access your clipboard at will...
+It would be nice if web pages could *request* it, though!
 
 
 ## Staying True to the Original

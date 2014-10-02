@@ -203,7 +203,6 @@ function paste_from(){
 			}
 		});
 	});
-	// @TODO: select the selection tool
 }
 
 function paste(img){

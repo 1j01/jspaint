@@ -25,7 +25,7 @@
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
 	* The Grid (Ctrl+G & zoom6x+)
-	* Scroll Wheel draws line down and to the right (um, this is a bug, though)
+	* Scroll Wheel Bug (um...)
 
 
 * Issues
@@ -42,10 +42,11 @@
 				* Make class $UpscaledCanvas or something that I can also use to make lots of things crisp and pixely when zoomed in and on higher resolution displays
 	* Global event handlers interfering with stuff
 		* In Image > Attributes and other places
-			* You can't Copy, Paste, Cut or Drag&Drop in the inputs
+			* You can't copy, paste, cut or drag&drop in the inputs
 			* You can't click on the radio option labels when text is selected!
 		* In Help > About Paint and other places
 			* You can't select text
+			* You can't drag links
 		
 
 * Handling actions that interfere with each other
@@ -103,7 +104,7 @@
 	* Detect transparency when opening an image ✓
 	* Option in Image > Attributes... ✓
 	* Color opacity slider
-	* Toggle between normal and copy blend modes
+	* Toggle between blend and copy modes
 	* Checkered background pattern representing transparency
 
 
@@ -153,35 +154,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 ### Tools
 
-* Curve
-	* Aliasing
-
-
-* Polygon
-	* Aliasing
-	* The canvas API handles self-intersecting shapes differently than mspaint
-	* The above two items mean I would have to re-implement drawing polygons
-	* Issue with extra undoables
-	* Close the polygon when switching to a different tool
-
-
-* Fill With Color
-	* Find a better fill algorithm!
-		* Get into those corners
-		* Handle transparency correctly (✓)
-		* Keep speed
-
-
-* Text
-	* Handles
-	* Wrapping!
-	* Underline
-	* Expanding to new lines
-	* Minimum size of 3em x 1em (that is, the width of 3 'm's by the height of one line)
-	* Detect fonts
-	* Store position of FontBox
-	* Keep an old TextBox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
-	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
+* Free-Form Select (!)
 
 
 * Select
@@ -192,6 +165,74 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Creates an undoable state even if you do nothing
 
 
+* Eraser/Color Eraser ✓
+
+
+* Fill With Color
+	* Find a better fill algorithm!
+		* Get into those corners
+		* Handle transparency correctly (✓)
+		* (Keep speed)
+
+
+* Pick Color ✓
+
+
+* Magnifier (!)
+	* Everything
+
+
+* Pencil
+	* Adjust size
+
+
+* Brush ✓
+
+
+* Airbrush ✓
+
+
+* Text
+	* Handles
+	* Wrapping!
+	* Underline
+	* Expanding to new lines
+	* Minimum size of 3em x 1em
+	* Detect fonts
+	* Store position of FontBox
+	* Keep an old TextBox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
+	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
+
+
+* Line
+	* Stroke size (when aliased)
+
+
+* Curve
+	* Aliasing
+
+
+* Rectangle
+	* The stroke should go within the rectangle
+	* Pixel-sharp at all stroke sizes (it's currently blurry)
+
+
+* Polygon
+	* Aliasing
+	* The canvas API handles self-intersecting shapes differently than mspaint
+	* The above two items mean I would have to re-implement drawing polygons
+	* Issue with extra undoables
+	* Close the polygon when switching to a different tool
+
+
+* Ellipse
+	* See below
+
+
+* Rounded Rectangle
+	* See below
+
+
 * **Options**
 	* Secret 10x zoom by clicking the area just underneath the 8x zoom
 	* In mspaint, visual area =/= selection highlight area =/= clickable area
@@ -200,9 +241,8 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 * **Shape Styles and Strokes**
 	* Shapes: respond to Ctrl (It's complicated)
 	* Lots of things: Use stroke size
-	* Rectangle: The stroke should go within the rectangle
-	* Rounded Rectangle / Ellipse:
-		* If the width/height is less than the stroke size, it should a shape with no stroke, filled with the color that would normally be used for the stroke.
+	* Rounded Rectangle & Ellipse:
+		* If the width/height is less than the stroke size, it should draw a shape with no stroke filled with the color that would normally be used for the stroke.
 		* Support shape styles!
 
 
@@ -216,7 +256,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 ### Chrome App
 
 * Set up build process
-	* ~~Concatenate + Minify~~ (Why?)
+	* ~~Concatenate & Minify~~ (Why?)
 	* Increment version?
 	* Compress into zip file
 	* Upload? Notify of new bug reports, stats? haha I'm thinking of things I might put in multiism/multi-platform once people were using it
