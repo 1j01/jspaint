@@ -99,3 +99,30 @@ function $Window($component){
 	
 	return $w;
 }
+
+function $FormWindow(title){
+	var $w = new $Window();
+	
+	$w.title(title);
+	$w.$form = $form = $(E("form")).appendTo($w.$content);
+	$w.$form_left = $(E("div")).appendTo($w.$form);
+	$w.$form_right = $(E("div")).appendTo($w.$form).addClass("jspaint-button-group");
+	$w.$form.addClass("jspaint-horizontal").css({display: "flex"});
+	
+	$w.$Button = function(label, action){
+		var $b = $(E("button")).appendTo($w.$form_right).text(label);
+		$b.on("click", function(e){
+			// prevent the form from submitting
+			e.preventDefault();
+			
+			action();
+		});
+		
+		// this should really not be needed @TODO
+		$b.addClass("jspaint-button jspaint-dialogue-button");
+		
+		return $b;
+	};
+	
+	return $w;
+};

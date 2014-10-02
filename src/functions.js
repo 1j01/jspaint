@@ -420,7 +420,7 @@ function select_all(){
 	selection.instantiate();
 }
 
-function invert(){
+function image_invert(){
 	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
 		var id = original_ctx.getImageData(0, 0, original_canvas.width, original_canvas.height);
 		for(var i=0; i<id.data.length; i+=4){
@@ -470,6 +470,279 @@ function detect_transparency(){
 	for(var i=0, l=id.data.length; i<l; i+=4){
 		if(id.data[i+3] < 255){
 			transparency = true;
+		}
+	}
+}
+
+function image_attributes(){
+	if(image_attributes.$window){
+		image_attributes.$window.close();
+	}
+	var $w = image_attributes.$window = new $FormWindow("Attributes");
+	
+	var $form_left = $w.$form_left;
+	var $form_right = $w.$form_right;
+	
+	// Information
+	
+	var table = {
+		"File last saved": "Not available",
+		"Size on disk": "Not available",
+		"Resolution": "72 x 72 dots per inch",
+	};
+	var $table = $(E("table")).appendTo($form_left);
+	for(var k in table){
+		var $tr = $(E("tr")).appendTo($table);
+		var $key = $(E("td")).appendTo($tr).text(k + ":");
+		var $value = $(E("td")).appendTo($tr).text(table[k]);
+	}
+	
+	// Dimensions
+	
+	var unit_sizes_in_px = {px: 1, in: 72, cm: 28.3465};
+	var current_unit = image_attributes.unit = image_attributes.unit || "px";
+	var width_in_px = canvas.width;
+	var height_in_px = canvas.height;
+	
+	var $width_label = $(E("label")).appendTo($form_left).text("Width:");
+	var $height_label = $(E("label")).appendTo($form_left).text("Height:");
+	var $width = $(E("input")).appendTo($width_label);
+	var $height = $(E("input")).appendTo($height_label);
+	$([$width[0], $height[0]])
+		.css({width: "40px"})
+		.on("change keyup keydown keypress mousedown mousemove paste drop", function(){
+			if($(this).is($width)){
+				width_in_px = $width.val() * unit_sizes_in_px[current_unit];
+			}
+			if($(this).is($height)){
+				height_in_px = $height.val() * unit_sizes_in_px[current_unit];
+			}
+		});
+	
+	// Fieldsets
+	
+	var $units = $(E("fieldset")).appendTo($form_left).append('<legend>Transparency</legend>');
+	$units.append('<label><input type="radio" name="units" value="in">Inches</label>');
+	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
+	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
+	$units.find("[value=" + current_unit + "]").attr({checked: true});
+	$units.on("change", function(){
+		var new_unit = $units.find(":checked").val();
+		$width.val(width_in_px / unit_sizes_in_px[new_unit]);
+		$height.val(height_in_px / unit_sizes_in_px[new_unit]);
+		current_unit = new_unit;
+	}).triggerHandler("change");
+	
+	var $transparency = $(E("fieldset")).appendTo($form_left).append('<legend>Transparency</legend>');
+	$transparency.append('<label><input type="radio" name="transparency" value="transparent">Transparent</label>');
+	$transparency.append('<label><input type="radio" name="transparency" value="opaque">Opaque</label>');
+	$transparency.find("[value=" + (transparency ? "transparent" : "opaque") + "]").attr({checked: true});
+	
+	// Buttons on the right
+	
+	$w.$Button("Okay", function(){
+		var to = $transparency.find(":checked").val();
+		var unit = $units.find(":checked").val();
+		
+		image_attributes.unit = unit;
+		transparency = (to == "transparent");
+		
+		var unit_to_px = unit_sizes_in_px[unit];
+		var width = $width.val() * unit_to_px;
+		var height = $height.val() * unit_to_px;
+		$canvas.trigger("user-resized", [0, 0, ~~width, ~~height]);
+		
+		image_attributes.$window.close();
+	});
+	
+	$w.$Button("Cancel", function(){
+		image_attributes.$window.close();
+	});
+	
+	$w.$Button("Default", function(){
+		width_in_px = default_canvas_width;
+		height_in_px = default_canvas_height;
+		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
+		$height.val(height_in_px / unit_sizes_in_px[current_unit]);
+	});
+	
+	// Reposition the window
+	
+	image_attributes.$window.center();
+}
+
+function image_flip_and_rotate(){
+	var $w = new $FormWindow("Flip and Rotate");
+	
+	var $fieldset = $(E("fieldset")).appendTo($w.$form_left);
+	$fieldset.append("<legend>Flip or rotate</legend>");
+	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-horizontal' checked/>Flip horizontal</label>");
+	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-vertical'/>Flip vertical</label>");
+	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='rotate-by-angle'/>Rotate by angle<div></div></label>");
+	
+	var $rotate_by_angle = $fieldset.find("div")
+	$rotate_by_angle.css({paddingLeft: "30px"});
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='90' checked/>90°</label>");
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='180'/>180°</label>");
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='270'/>270°</label>");
+	$rotate_by_angle.find("input").attr({disabled: true});
+	
+	$fieldset.find("input").on("change", function(){
+		var flip_or_rotate = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+		$rotate_by_angle.find("input").attr({
+			disabled: flip_or_rotate !== 'rotate-by-angle'
+		});
+	});
+	
+	$fieldset.find("label").css({display: "block"});
+	
+	$w.$Button("Okay", function(){
+		apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+			var flip_or_rotate = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+			var rotate_by_angle = $fieldset.find("input[name='rotate-by-angle']:checked").val();
+			
+			switch(flip_or_rotate){
+				case "flip-horizontal":
+					new_ctx.translate(new_canvas.width, 0);
+					new_ctx.scale(-1, 1);
+					break;
+				case "flip-vertical":
+					new_ctx.translate(0, new_canvas.height);
+					new_ctx.scale(1, -1);
+					break;
+				case "rotate-by-angle":
+					switch(rotate_by_angle){
+						case "90":
+							new_canvas.width = original_canvas.height;
+							new_canvas.height = original_canvas.width;
+							new_ctx.translate(new_canvas.width, 0);
+							new_ctx.rotate(TAU / 4);
+							break;
+						case "180":
+							new_ctx.translate(new_canvas.width, new_canvas.height);
+							new_ctx.rotate(TAU / 2);
+							break;
+						case "270":
+							new_canvas.width = original_canvas.height;
+							new_canvas.height = original_canvas.width;
+							new_ctx.translate(0, new_canvas.height);
+							new_ctx.rotate(TAU / -4);
+							break;
+					}
+					break;
+			}
+			new_ctx.drawImage(original_canvas, 0, 0);
+		});
+		$w.close();
+	});
+	$w.$Button("Cancel", function(){
+		$w.close();
+	});
+	
+	$w.center();
+}
+
+function image_stretch_and_skew(){
+	var $w = new $FormWindow("Stretch and Skew");
+	
+	var $fieldset_stretch = $(E("fieldset")).appendTo($w.$form_left);
+	$fieldset_stretch.append("<legend>Stretch</legend><table></table>");
+	var $fieldset_skew = $(E("fieldset")).appendTo($w.$form_left);
+	$fieldset_skew.append("<legend>Skew</legend><table></table>");
+	
+	var $RowInput = function($table, img_src, label_text, default_value, label_unit){
+		var $tr = $(E("tr")).appendTo($table);
+		var $img = $(E("img")).attr({
+			src: "images/transforms/" + img_src + ".png"
+		}).css({
+			marginRight: "20px"
+		});
+		var $input = $(E("input")).attr({
+			value: default_value
+		}).css({
+			width: "40px"
+		});
+		$(E("td")).appendTo($tr).append($img);
+		$(E("td")).appendTo($tr).text(label_text);
+		$(E("td")).appendTo($tr).append($input);
+		$(E("td")).appendTo($tr).text(label_unit);
+		
+		return $input;
+	};
+	
+	var stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%");
+	var stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%");
+	var skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees");
+	var skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Horizontal:", 0, "Degrees");
+	
+	$w.$Button("Okay", function(){
+		$w.close();
+	}).on("mouseover", function(){
+		$(this).text("NOT OKAY");
+	});
+	$w.$Button("Cancel", function(){
+		$w.close();
+	});
+	
+	$w.center();
+}
+
+function set_as_wallpaper_tiled(c){
+	c = c || canvas;
+	
+	var wp = document.createElement("canvas");
+	wp.width = screen.width;
+	wp.height = screen.height;
+	var wpctx = wp.getContext("2d");
+	for(var x=0; x<wp.width; x+=c.width){
+		for(var y=0; y<wp.height; y+=c.height){
+			wpctx.drawImage(c, x, y);
+		}
+	}
+	
+	set_as_wallpaper_centered(wp);
+}
+
+function set_as_wallpaper_centered(c){
+	c = c || canvas;
+	
+	if(window.chrome && chrome.wallpaper){
+		chrome.wallpaper.setWallpaper({
+			url: c.toDataURL(),
+			layout: 'CENTER_CROPPED',
+			name: file_name,
+		}, function(){});
+	}else{
+		window.open(c.toDataURL());
+	}
+}
+
+function save_selection_to_file(){
+	if(selection && selection.canvas){
+		if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+			chrome.fileSystem.chooseEntry({
+				type: 'saveFile',
+				suggestedName: 'Selection',
+				accepts: [{mimeTypes: ["image/*"]}]
+			}, function(entry){
+				if(chrome.runtime.lastError){
+					return console.error(chrome.runtime.lastError.message);
+				}
+				entry.createWriter(function(file_writer){
+					file_writer.onwriteend = function(e){
+						if(this.error){
+							console.error(this.error + '\n\n\n@ ' + e);
+						}else{
+							console.log("Wrote selection to file!");
+						}
+					};
+					selection.canvas.toBlob(function(blob){
+						file_writer.write(blob);
+					});
+				});
+			});
+		}else{
+			window.open(selection.canvas.toDataURL());
 		}
 	}
 }

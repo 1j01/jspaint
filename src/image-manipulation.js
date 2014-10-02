@@ -234,3 +234,35 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 		id.data[pixel_pos+3] = fill_a;
 	}
 }
+
+function apply_image_transformation(fn){
+	// Apply an image transformation function to either the selection or the entire canvas
+	var new_canvas = E("canvas");
+	var original_canvas =
+		selection? selection.
+		canvas: canvas;
+	
+	var new_ctx = new_canvas.getContext("2d");
+	var original_ctx = original_canvas.getContext("2d");
+	
+	new_canvas.width = original_canvas.width;
+	new_canvas.height = original_canvas.height;
+	
+	fn(original_canvas, original_ctx, new_canvas, new_ctx);
+	
+	if(selection){
+		selection.replace_canvas(new_canvas);
+	}else{
+		undoable(0, function(){
+			this_ones_a_frame_changer();
+			
+			canvas.width = new_canvas.width;
+			canvas.height = new_canvas.height;
+			
+			ctx.drawImage(new_canvas, 0, 0);
+			
+			$canvas.trigger("update"); // update handles
+		});
+	}
+}
+
