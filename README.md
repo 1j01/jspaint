@@ -36,9 +36,8 @@ You can also install it as a chrome app.
 * [A lot of stuff](TODO.md)
 
 One thing that may not be doable is full clipboard support.
-You can paste with <kbd>Ctrl+V</kbd>, but you can't copy or cut, and you can't use the menu items.
-After all, it would be terrible if web pages were able to access your clipboard at will...
-It would be nice if web pages could *request* it, though!
+You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
+but copied data can only be pasted into other instances of jspaint, and you can't use the menu items.
 
 
 ## Staying True to the Original

@@ -292,9 +292,10 @@ $G.on("cut copy paste", function(e){
 	
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
-			var data = selection.canvas.toDataURL("image/png");
-			cd.setData("URL", data);
-			cd.setData("image/png", data);
+			var data_url = selection.canvas.toDataURL();
+			cd.setData("text/x-data-uri; type=image/png", data_url);
+			cd.setData("text/uri-list", data_url);
+			cd.setData("URL", data_url);
 			if(e.type === "cut"){
 				selection.destroy();
 				selection = null;
@@ -302,9 +303,18 @@ $G.on("cut copy paste", function(e){
 		}
 	}else if(e.type === "paste"){
 		$.each(cd.items, function(i, item){
-			if(item.type.match(/image/)){
+			if(item.type.match(/^text\/(?:x-data-)?uri/)){
+				item.getAsString(function(str){
+					var img = E("img");
+					img.onload = function(){
+						paste(img);
+					};
+					img.src = str;
+				});
+				return false; // break $.each
+			}else if(item.type.match(/^image/)){
 				paste_file(item.getAsFile());
-				return false;
+				return false; // break $.each
 			}
 		});
 	}
