@@ -254,64 +254,82 @@ function render_history_as_gif(){
 	var $output = $win.$content;
 	var $progress = $(E("progress")).appendTo($output);
 	
+	$win.$Button('Cancel');
+	
 	$win.on('close', function(){
 		gif.abort();
 	});
 	
-	$win.$Button('Cancel');
+	try {
+		var gif = new GIF({
+			//workers: Math.min(5, Math.floor(undos.length/50)+1),
+			workerScript: 'lib/gif.js/gif.worker.js',
+			width: canvas.width,
+			height: canvas.height,
+		});
 	
-	var gif = new GIF({
-		//workers: Math.min(5, Math.floor(undos.length/50)+1),
-		workerScript: 'lib/gif.js/gif.worker.js',
-		width: canvas.width,
-		height: canvas.height,
-	});
+		gif.on('progress', function(p){
+			$progress.val(p);
+		});
 	
-	gif.on('progress', function(p){
-		$progress.val(p);
-	});
-	
-	gif.on('finished', function(blob){
-		$win.title("Rendered GIF");
-		var url = URL.createObjectURL(blob);
-		$output.empty().append(
-			$(E("a")).attr({href: url, target: "_blank"}).append(
-				$(E("img")).on("load", function(){
-					$win.center();
-				}).attr({src: url})
-			).on("click", function(e){
-				$win.close();
-				if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
-					e.preventDefault();
-					chrome.fileSystem.chooseEntry({
-						type: 'saveFile',
-						suggestedName: file_name+" history",
-						accepts: [{mimeTypes: ["image/gif"]}]
-					}, function(entry){
-						if(chrome.runtime.lastError){
-							return console.error(chrome.runtime.lastError.message);
-						}
-						entry.createWriter(function(file_writer){
-							file_writer.onwriteend = function(e){
-								if(this.error){
-									console.error(this.error + '\n\n\n@ ' + e);
-								}else{
-									console.log("File written!");
-								}
-							};
-							file_writer.write(blob);
+		gif.on('finished', function(blob){
+			$win.title("Rendered GIF");
+			var url = URL.createObjectURL(blob);
+			$output.empty().append(
+				$(E("a")).attr({href: url, target: "_blank"}).append(
+					$(E("img")).on("load", function(){
+						$win.center();
+					}).attr({src: url})
+				).on("click", function(e){
+					$win.close();
+					if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
+						e.preventDefault();
+						chrome.fileSystem.chooseEntry({
+							type: 'saveFile',
+							suggestedName: file_name+" history",
+							accepts: [{mimeTypes: ["image/gif"]}]
+						}, function(entry){
+							if(chrome.runtime.lastError){
+								return console.error(chrome.runtime.lastError.message);
+							}
+							entry.createWriter(function(file_writer){
+								file_writer.onwriteend = function(e){
+									if(this.error){
+										console.error(this.error + '\n\n\n@ ' + e);
+									}else{
+										console.log("File written!");
+									}
+								};
+								file_writer.write(blob);
+							});
 						});
-					});
-				}
-			})
-		);
-	});
+					}
+				})
+			);
+		});
 	
-	for(var i=0; i<undos.length; i++){
-		gif.addFrame(undos[i], {delay: 200});
+		for(var i=0; i<undos.length; i++){
+			gif.addFrame(undos[i], {delay: 200});
+		}
+		gif.addFrame(canvas, {delay: 200, copy: true});
+		gif.render();
+		
+	} catch(e) {
+		$progress.replaceWith(
+			$(E("p")).text("Failed to render GIF:\n").append(
+				$(E("pre")).text(e.stack).css({
+					background: "#A00",
+					color: "white",
+					fontFamily: "monospace",
+					width: "500px",
+					overflow: "auto"
+				})
+			)
+		);
+		$win.title("Error Rendering GIF");
+		$win.center();
+		console.error("Failed to render GIF:\n", e);
 	}
-	gif.addFrame(canvas, {delay: 200, copy: true});
-	gif.render();
 }
 
 function undoable(callback, action){
