@@ -253,6 +253,11 @@ function render_history_as_gif(){
 	$win.center();
 	var $output = $win.$content;
 	var $progress = $(E("progress")).appendTo($output);
+	var $progress_percent = $(E("span")).appendTo($output).css({
+		width: "2.3em",
+		display: "inline-block",
+		textAlign: "center",
+	});
 	
 	$win.$Button('Cancel');
 	
@@ -270,6 +275,7 @@ function render_history_as_gif(){
 	
 		gif.on('progress', function(p){
 			$progress.val(p);
+			$progress_percent.text(~~(p*100)+"%");
 		});
 	
 		gif.on('finished', function(blob){
@@ -315,14 +321,14 @@ function render_history_as_gif(){
 		gif.render();
 		
 	} catch(e) {
-		$progress.replaceWith(
+		$output.empty().append(
 			$(E("p")).text("Failed to render GIF:\n").append(
 				$(E("pre")).text(e.stack).css({
 					background: "#A00",
 					color: "white",
 					fontFamily: "monospace",
 					width: "500px",
-					overflow: "auto"
+					overflow: "auto",
 				})
 			)
 		);
