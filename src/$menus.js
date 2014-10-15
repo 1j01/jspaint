@@ -106,7 +106,7 @@ $.each(menus, function(menu_key, menu_items){
 		}
 	});
 });
-$(window).on("keypress", function(e){
+$(window).on("keypress blur", function(e){
 	$menus.find(".jspaint-menu-button").trigger("release");
 });
 $(window).on("mousedown mouseup", function(e){
