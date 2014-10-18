@@ -418,6 +418,7 @@ function cancel(){
 function this_ones_a_frame_changer(){
 	deselect();
 	$G.triggerHandler("mouseup", "cancel");
+	$G.triggerHandler("session-update");
 }
 function deselect(){
 	if(selection){

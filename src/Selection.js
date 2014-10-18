@@ -191,6 +191,7 @@ Selection.prototype.draw = function(){
 Selection.prototype.destroy = function(){
 	this.$ghost.remove();
 	$canvas_handles.show();
+	$G.triggerHandler("session-update");
 };
 
 Selection.prototype.crop = function(){
