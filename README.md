@@ -18,6 +18,7 @@ You can also install it as a chrome app.
 * When you do Edit > Paste From... you can select transparent images. You can paste a transparent animated gif... and then smear it across the canvas while it animates! (Hold <kbd>Shift</kbd> while dragging the selection to smear it.)
 * It can open SVG files (by accident)
 * You can crop the image by holding <kbd>Ctrl</kbd> and making a selection
+* **Multiplayer**: start up a session at [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455) and send the link to your friends
 
 #### Possible improvements include:
 
@@ -37,7 +38,8 @@ You can also install it as a chrome app.
 
 One thing that may not be doable is full clipboard support.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
-but copied data can only be pasted into other instances of jspaint, and you can't use the menu items.
+but copied data can only be pasted into other instances of jspaint,
+and you can't use the menu items unless your browser is really insecure.
 
 
 ## Staying True to the Original

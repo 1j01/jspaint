@@ -276,7 +276,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 ### Also
 
-* Anything marked `@TODO` in the source code
+* Anything marked `@TODO` or `@FIXME` in the source code
 
 
 * Improve README
@@ -287,7 +287,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 * Stop improving TODO
 	* It's just a TODO
 	* You're wasting your time
-	* Why did I make this a markdown document?
+	* Why did I even make this a markdown document?
 	* Work on the project
 
 
@@ -305,6 +305,11 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Outdated names like sel.$ghost = div.jspaint-selection
 	* Everything is in random files! functions.js, REALLY? menus.js contains way too much non-menu stuff.
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
+
+
+* Images
+	* Optimize
+	* Use a sprite sheet
 
 
 * Help
