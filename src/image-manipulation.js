@@ -277,3 +277,91 @@ function apply_image_transformation(fn){
 	}
 }
 
+function cut_polygon(points, x_min, y_min, x_max, y_max){
+	
+	var cutout = E("canvas");
+	var cutctx = cutout.getContext("2d");
+	
+	var X_MIN = x_min; //|| 0;
+	var X_MAX = x_max; //|| canvas.width;
+	var Y_MIN = y_min; //|| 0;
+	var Y_MAX = y_max; //|| canvas.height;
+	var WIDTH = X_MAX - X_MIN;
+	var HEIGHT = Y_MAX - Y_MIN;
+	
+	cutout.width = WIDTH;
+	cutout.height = HEIGHT;
+	
+	// Take image data from main canvas context
+	var id_from_main = ctx.getImageData(X_MIN, Y_MIN, WIDTH, HEIGHT);
+	var id_for_cutout = cutctx.createImageData(WIDTH, HEIGHT);
+	
+	// Based off of some public-domain code by Darel Rex Finley, 2007
+	
+	var nodes; // length of the nodeX array
+	var nodeX = new Array(points.length);
+	var swap;
+	var i, j;
+
+	// Loop through the rows of the image.
+	for(var y = Y_MIN; y < Y_MAX; y++){
+
+		// Build a list of nodes.
+		// (In this context, 'nodes' are one-dimensional points of intersection)
+		// (Also, nodes is treated as the length of the nodeX array)
+		nodes = 0;
+		j = points.length - 1;
+		for(i = 0; i < points.length; i++){
+			if(points[i].y < y && points[j].y >= y
+			|| points[j].y < y && points[i].y >= y){
+				nodeX[nodes++] = points[i].x +
+					(y - points[i].y) / (points[j].y - points[i].y) * (points[j].x - points[i].x);
+			}
+			j = i;
+		}
+
+		// Sort the nodes, via a simple “Bubble” sort.
+		i = 0;
+		while(i < nodes-1){
+			if(nodeX[i] > nodeX[i+1]){
+				swap = nodeX[i];
+				nodeX[i] = nodeX[i+1];
+				nodeX[i+1] = swap;
+				if (i) i--;
+			}else{
+				i++;
+			}
+		}
+		// Browsers optimize sorting numbers, so just use Array::sort
+		/*nodeX.sort(function(a, b){
+			return a - b;
+		});*/
+		// But this array can contain undefineds; it's defined not by its length but by 'nodes'
+
+
+		// Fill the pixels between node pairs.
+		for(i = 0; i < nodes; i += 2){
+			if(nodeX[i+0] >= X_MAX) break;
+			if(nodeX[i+1] > X_MIN){
+				if(nodeX[i+0] < X_MIN) nodeX[i+0] = X_MIN;
+				if(nodeX[i+1] > X_MAX) nodeX[i+1] = X_MAX;
+				for(var x = nodeX[i]; x < nodeX[i+1]; x++){
+					// fill pixel at (x, y)
+					var idi = ((y-Y_MIN)*WIDTH + ~~(x-X_MIN))*4;
+					id_for_cutout.data[idi+0] = id_from_main.data[idi+0];
+					id_for_cutout.data[idi+1] = id_from_main.data[idi+1];
+					id_for_cutout.data[idi+2] = id_from_main.data[idi+2];
+					id_for_cutout.data[idi+3] = id_from_main.data[idi+3];
+				}
+			}
+		}
+	}
+	
+	// Done boom okay
+	cutctx.putImageData(id_for_cutout, 0, 0);
+	//cutctx.fillStyle = "#f00";
+	//cutctx.fillRect(5, 5, 5, 5);
+	return cutout;
+	
+}
+

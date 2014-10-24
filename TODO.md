@@ -157,7 +157,8 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 ### Tools
 
-* Free-Form Select (!)
+* Free-Form Select
+	* Passive
 
 
 * Select
@@ -182,7 +183,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 
 * Magnifier (!)
-	* Everything
+	* Make it, even if it's blurry (better than zooming in the entire page blurrily)
 
 
 * Pencil
@@ -223,9 +224,9 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 * Polygon
 	* Aliasing
 	* The canvas API handles self-intersecting shapes differently than mspaint
-	* The above two items mean I would have to re-implement drawing polygons
 	* Issue with extra undoables
-	* Close the polygon when switching to a different tool
+	* Close and finalize the polygon when switching to a different tool
+	* Double-click to close the shape
 
 
 * Ellipse

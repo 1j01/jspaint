@@ -3,8 +3,125 @@ tools = [{
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: true,
-	implemented: false,
+	//passive: true, @TODO
+	// the vertices of the polygon
+	points: [],
+	// the boundaries of the polygon
+	x_min: +Infinity,
+	x_max: -Infinity,
+	y_min: +Infinity,
+	y_max: -Infinity,
+	
+	mousedown: function(){
+		var tool = this;
+		tool.x_min = mouse.x;
+		tool.x_max = mouse.x+1;
+		tool.y_min = mouse.y;
+		tool.y_max = mouse.y+1;
+		tool.points = [];
+		
+		if(selection){
+			selection.draw();
+			selection.destroy();
+			selection = null;
+		}
+		// the brush is continuous in space, but we only need to record individual mouse events
+		var onmousemove = function(e){
+			var mouse = e2c(e);
+			// constrain the mouse to the canvas
+			mouse.x = Math.min(canvas.width, mouse.x);
+			mouse.x = Math.max(0, mouse.x);
+			mouse.y = Math.min(canvas.height, mouse.y);
+			mouse.y = Math.max(0, mouse.y);
+			// add the point
+			tool.points.push(mouse);
+			// update the boundaries of the polygon
+			tool.x_min = Math.min(mouse.x, tool.x_min);
+			tool.x_max = Math.max(mouse.x, tool.x_max);
+			tool.y_min = Math.min(mouse.y, tool.y_min);
+			tool.y_max = Math.max(mouse.y, tool.y_max);
+		};
+		$G.on("mousemove", onmousemove);
+		$G.one("mouseup", function(){
+			$G.off("mousemove", onmousemove);
+		});
+	},
+	continuous: "space",
+	paint: function(ctx, x, y){
+		
+		// constrain the brush position to the canvas
+		x = Math.min(canvas.width, x);
+		x = Math.max(0, x);
+		y = Math.min(canvas.height, y);
+		y = Math.max(0, y);
+		
+		var inverty_size = 2;
+		var rect_x = ~~(x - inverty_size/2);
+		var rect_y = ~~(y - inverty_size/2);
+		var rect_w = inverty_size;
+		var rect_h = inverty_size;
+		
+		if(!undos.length){
+			undoable();//ugh... this is supposed to be passive
+		}
+		var ctx_prev = undos[undos.length-1].getContext("2d");
+		
+		var id = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+		var id_prev = ctx_prev.getImageData(rect_x, rect_y, rect_w, rect_h);
+		
+		for(var i=0, l=id.data.length; i<l; i+=4){
+			id.data[i+0] = 255 - id_prev.data[i+0];
+			id.data[i+1] = 255 - id_prev.data[i+1];
+			id.data[i+2] = 255 - id_prev.data[i+2];
+			id.data[i+3] = 255;//id_prev.data[i+3];
+		}
+		
+		ctx.putImageData(id, rect_x, rect_y);
+		
+	},
+	mouseup: function(){
+		// Revert the inverty brush paint
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(undos[undos.length-1], 0, 0);
+		
+		// Cut out the polygon
+		var cutout = cut_polygon(
+			this.points, 
+			this.x_min,
+			this.y_min,
+			this.x_max,
+			this.y_max
+		);
+		
+		// Make the selection
+		selection = new Selection(
+			this.x_min,
+			this.y_min,
+			this.x_max - this.x_min,
+			this.y_max - this.y_min
+		);
+		//selection.instantiate(cutout);//doesn't work for some reason
+		// The rest of this function is totally hacky
+		selection.instantiate(new Image);//hacky hack
+		selection.replace_canvas(cutout);//hack
+		ctx.save();
+		//this should be somewhere else:
+		if(transparency){
+			ctx.globalCompositeOperation = "destination-out";
+			ctx.drawImage(cutout, this.x_min, this.y_min);
+		}else{
+			var colored_canvas = E("canvas");
+			var colored_ctx = colored_canvas.getContext("2d");
+			colored_canvas.width = cutout.width;
+			colored_canvas.height = cutout.height;
+			colored_ctx.drawImage(cutout, 0, 0);
+			colored_ctx.fillStyle = colors[1];
+			colored_ctx.globalCompositeOperation = "source-in";
+			colored_ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
+			ctx.drawImage(colored_canvas, this.x_min, this.y_min);
+		}
+		ctx.restore();
+	},
 	$options: $choose_transparency
 }, {
 	name: "Select",
@@ -15,6 +132,7 @@ tools = [{
 		if(selection){
 			selection.draw();
 			selection.destroy();
+			selection = null;
 		}
 		var mouse_has_moved = false;
 		$G.one("mousemove", function(){
@@ -22,7 +140,7 @@ tools = [{
 		});
 		$G.one("mouseup", function(){
 			if(!mouse_has_moved && selection){
-				selection.draw();
+				selection.draw();//?
 				selection.destroy();
 				selection = null;
 			}
@@ -63,9 +181,8 @@ tools = [{
 }, {
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
-	continuous: "space",
 	cursor: ["precise", [16, 16], "crosshair"], //@todo: draw square on canvas
-	implemented: "partially",
+	continuous: "space",
 	paint: function(ctx, x, y){
 		
 		var rect_x = ~~(x - eraser_size/2);
@@ -431,7 +548,9 @@ tools = [{
 	end: function(){
 		this.points = [];
 	},
-	shape: function(){true},
+	shape: function(){
+		true; // Yes, this is a shape tool.
+	},
 	$options: $ChooseShapeStyle()
 }, {
 	name: "Ellipse",

@@ -46,10 +46,6 @@ Selection.prototype.instantiate = function(_img, _passive){
 				0, 0,
 				sel._w, sel._h
 			);
-			// cut the selection from the canvas
-			//@TODO: proper transparency for Free-Form Select
-			//ctx.globalCompositeOperation = "destination-out";
-			//ctx.drawImage()...
 			if(!_passive){
 				if(transparency){
 					ctx.clearRect(sel._x, sel._y, sel._w, sel._h);

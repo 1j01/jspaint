@@ -49,8 +49,7 @@ You can also install it as a Chrome app.
 #### A lot of stuff isn't done yet:
 
 * Magnification
-* Free-Form Selection
-* A few menu items
+* A couple menu items
 * Shape styles on most of the shape tools
 * [A lot of stuff](TODO.md)
 
