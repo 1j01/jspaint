@@ -32,8 +32,8 @@ Selection.prototype.instantiate = function(_img, _passive){
 	function instantiate(){
 		if(_img){
 			sel.canvas = _img;
-			sel.canvas.width = sel._w;
-			sel.canvas.height = sel._h;
+			if(sel.canvas.width !== sel._w){ sel.canvas.width = sel._w; }
+			if(sel.canvas.height !== sel._h){ sel.canvas.height = sel._h; }
 		}else{
 			sel.canvas = document.createElement("canvas");
 			sel.canvas.width = sel._w;
@@ -47,12 +47,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 				sel._w, sel._h
 			);
 			if(!_passive){
-				if(transparency){
-					ctx.clearRect(sel._x, sel._y, sel._w, sel._h);
-				}else{
-					ctx.fillStyle = colors[1];
-					ctx.fillRect(sel._x, sel._y, sel._w, sel._h);
-				}
+				sel.cut_out_background();
 			}
 		}
 		sel.$ghost.append(sel.canvas);
@@ -104,6 +99,27 @@ Selection.prototype.instantiate = function(_img, _passive){
 		$status_position.text("");
 		$status_size.text("");
 		
+	}
+};
+
+Selection.prototype.cut_out_background = function(){
+	var sel = this;
+	var cutout = sel.canvas;
+	if(transparency){
+		ctx.save();
+		ctx.globalCompositeOperation = "destination-out";
+		ctx.drawImage(cutout, sel._x, sel._y);
+		ctx.restore();
+	}else{
+		var colored_canvas = E("canvas");
+		var colored_ctx = colored_canvas.getContext("2d");
+		colored_canvas.width = cutout.width;
+		colored_canvas.height = cutout.height;
+		colored_ctx.drawImage(cutout, 0, 0);
+		colored_ctx.fillStyle = colors[1];
+		colored_ctx.globalCompositeOperation = "source-in";
+		colored_ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
+		ctx.drawImage(colored_canvas, sel._x, sel._y);
 	}
 };
 
@@ -163,7 +179,7 @@ Selection.prototype.replace_canvas = function(new_canvas){
 
 	$(sel.canvas).on("mousedown", sel.canvas_mousedown);
 	sel.$ghost.triggerHandler("new-element", [sel.canvas]);
-	sel.$ghost.triggerHandler("resize");
+	sel.$ghost.triggerHandler("resize");//?
 };
 
 Selection.prototype.scale = function(factor){

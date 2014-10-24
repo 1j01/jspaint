@@ -100,27 +100,8 @@ tools = [{
 			this.x_max - this.x_min,
 			this.y_max - this.y_min
 		);
-		//selection.instantiate(cutout);//doesn't work for some reason
-		// The rest of this function is totally hacky
-		selection.instantiate(new Image);//hacky hack
-		selection.replace_canvas(cutout);//hack
-		ctx.save();
-		//this should be somewhere else:
-		if(transparency){
-			ctx.globalCompositeOperation = "destination-out";
-			ctx.drawImage(cutout, this.x_min, this.y_min);
-		}else{
-			var colored_canvas = E("canvas");
-			var colored_ctx = colored_canvas.getContext("2d");
-			colored_canvas.width = cutout.width;
-			colored_canvas.height = cutout.height;
-			colored_ctx.drawImage(cutout, 0, 0);
-			colored_ctx.fillStyle = colors[1];
-			colored_ctx.globalCompositeOperation = "source-in";
-			colored_ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
-			ctx.drawImage(colored_canvas, this.x_min, this.y_min);
-		}
-		ctx.restore();
+		selection.instantiate(cutout);
+		selection.cut_out_background();
 	},
 	$options: $choose_transparency
 }, {
