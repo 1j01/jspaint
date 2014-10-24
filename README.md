@@ -11,14 +11,14 @@ You can also install it as a chrome app.
 #### Current improvements include:
 
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP, or a somewhat less measly but still annoying 50 in Windows 7)
-* Edit transparent images!
-* Create an animated GIF from the current undo history with <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
+* Edit transparent images! To create a transparent image, go to Image > Attributes... and select Transparent, then Okay, and then Image > Clear Image
+* Create an animated GIF from the current document history with <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
 * Cross-platform, I guess
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
 * When you do Edit > Paste From... you can select transparent images. You can paste a transparent animated gif... and then smear it across the canvas while it animates! (Hold <kbd>Shift</kbd> while dragging the selection to smear it.)
 * It can open SVG files (by accident)
 * You can crop the image by holding <kbd>Ctrl</kbd> and making a selection
-* **Multiplayer**: start up a session at [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455) and send the link to your friends
+* Rudimentary multiplayer support: start up a session at [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455) and send the link to your friends! (Currently when someone changes the canvas, you're annoyingly interrupted. It's very rudimentary.)
 
 #### Possible improvements include:
 
@@ -28,12 +28,15 @@ You can also install it as a chrome app.
 * After adding text, save as SVG or HTML with selectable text
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
+* Rotate image by arbitrary angle
+* Alternate themes (You can already style it like any website with browser extensions like Stylebot or Stylish)
 
 #### A lot of stuff isn't done yet:
 
 * Magnification
 * Free-Form Selection
 * A few menu items
+* Shape styles on most of the shape tools
 * [A lot of stuff](TODO.md)
 
 One thing that may not be doable is full clipboard support.
@@ -67,11 +70,11 @@ What was this section titled? Oh, um yeah I'm doing that too.
 
 I want to make jspaint to be able to edit...
 
-* Transparent PNGs (the main thing that's lacking in old ms paint)
-* Animated GIFs (yes, that entails a fully featured (but simple) animation editor)
-* Animated Transparent APNGs
+* Transparent PNGs (the main thing that's lacking in old ms paint) - This works!
+* Animated GIFs (yes, that entails a fully featured (but simple) animation editor) - You can currently only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
+* Animated Transparent APNGs (better than GIFs, but with less support)
 * Multi-size Icons (ICO for windows and ICNS for mac)
-* Scalable Vector Graphics (kidding, but actually it could always open SVG files in browsers that can handle SVGs, and I've now made it try not to save over the original SVG. That's pretty decent SVG support, for a 100% raster image editor.)
+* Scalable Vector Graphics (kidding) - Actually, it could always open SVG files in browsers that can handle SVGs, and I've made it try not to save over the original SVG. That's pretty decent SVG support, for a 100% raster image editor.
 * Text Files (just kidding)
 
 
@@ -87,4 +90,5 @@ I want to make jspaint to be able to edit...
 	* [x] Color Replacement (right mouse button in Eraser selectively replaces the foreground color with the background color)
 	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
 	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing. I also made it redoable, in case you do it by accident!)
-	* [ ] Scroll Wheel bug (hmm, let's maybe not recreate this? ah who am I kidding I'll make it an option)
+	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this? Ah who am I kidding I'll make it an option)
+

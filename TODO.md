@@ -3,7 +3,9 @@
 
 * Visual
 	* Some window layouts are bad
-	* Some dialogue buttons are messed up
+	* Some dialogue buttons are seriously messed up
+	* The window close button uses text; font rendering is not consistent
+	* The progress bar (Rendering GIF) is left native
 	* Use win98 default scrollbar size
 	* Minor color differences (0x808080 != 0x7b7b7b)
 	* I want to give most things a revisit later on for Pixel Perfection
@@ -30,7 +32,7 @@
 
 * Issues
 	* Colors > Edit Colors... doesn't work when the $colorbox is hidden
-	* Component windows are gone forever once closed
+	* Component windows are gone forever once closed (can't be shown from View menu)
 	* Status text gets cut off
 		* Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
 	* Firefox
@@ -100,12 +102,13 @@
 
 ### Extended editing
 
-* Transparent Images ✓
+* Transparency ✓
 	* Detect transparency when opening an image ✓
 	* Option in Image > Attributes... ✓
 	* Color opacity slider
 	* Toggle between blend and copy modes
 	* Checkered background pattern representing transparency
+	* Maybe equivalise any rgba(X, X, X, 0) in fill algorithm
 
 
 * Images with multiple sub-images
@@ -119,6 +122,9 @@
 		* Windows ICO ([jBinary can read](http://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
 		* Mac ICNS
 
+* Multiplayer
+	* See [multiplayer.js](multiplayer.js)
+
 
 ### Mobile support
 
@@ -131,16 +137,17 @@
 
 
 * You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
-* Also, you probably can't see tooltips on mobile
+* Make sure anything that uses hovering is paralleled on mobile (tooltips, :hover effects)
 
 
-* Panel for things that would normally require a keyboard (with a numpad!)
+* Panel for things that would normally require a keyboard (with a numpad)
 	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
 	* Ctrl+Shift+G: "Render GIF"
 
 
-* Should the pan tool go in the toolbox along with a new Color Eraser tool?
+* Add Pan and Color Eraser tools to the toolbox
+	* What about multitouch devices that don't need a pan tool? Maybe add some other random tool?
 
 
 ### Colors
