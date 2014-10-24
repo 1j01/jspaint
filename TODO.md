@@ -74,12 +74,9 @@
 
 
 * Menu Items
-	* File
-		* Print Preview
-		* Page Setup (what should these do? call `print`?)
 	* View
 		* Show/Hide FontBox
-		* Zoom should have an actual submenu
+		* Zoom should have an actual submenu (but it's pointless without zoom functionality)
 	* Image
 		* Stretch / Skew (functionality)
 

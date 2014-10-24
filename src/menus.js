@@ -26,9 +26,15 @@ var menus = {
 		____________________________,
 		{
 			item: "Print Pre&view",
+			action: function(){
+				print();
+			},
 		},
 		{
 			item: "Page Se&tup",
+			action: function(){
+				print();
+			},
 		},
 		{
 			item: "&Print",
