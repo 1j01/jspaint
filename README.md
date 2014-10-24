@@ -4,21 +4,35 @@
 A nice web-based MS Paint remake and more...
 [Try it out!](http://1j01.github.io/jspaint/)
 
-The goal is to remake paint (including its [little-known features](#did-you-know)), improve on it, and to extend the types of images it can edit.
+The goal is to remake MS Paint
+(including its [little-known features](#did-you-know)),
+improve on it, and to extend the types of images it can edit.
 
-You can also install it as a chrome app.
+You can also install it as a Chrome app.
+
 
 #### Current improvements include:
 
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP, or a somewhat less measly but still annoying 50 in Windows 7)
-* Edit transparent images! To create a transparent image, go to Image > Attributes... and select Transparent, then Okay, and then Image > Clear Image
-* Create an animated GIF from the current document history with <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
+* Edit transparent images! To create a transparent image,
+  go to Image > Attributes... and select Transparent,
+  then Okay, and then Image > Clear Image
+* Create an animated GIF from the current document history with
+  <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
 * Cross-platform, I guess
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
-* When you do Edit > Paste From... you can select transparent images. You can paste a transparent animated gif... and then smear it across the canvas while it animates! (Hold <kbd>Shift</kbd> while dragging the selection to smear it.)
+* When you do Edit > Paste From... you can select transparent images and animated GIFs.
+  You can even paste a transparent animated GIF and then
+  hold <kbd>Shift</kbd> while dragging the selection to
+  smear it across the canvas *while it animates*!
 * It can open SVG files (by accident)
-* You can crop the image by holding <kbd>Ctrl</kbd> and making a selection
-* Rudimentary multiplayer support: start up a session at [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455) and send the link to your friends! (Currently when someone changes the canvas, you're annoyingly interrupted. It's very rudimentary.)
+* You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
+* Rudimentary **multiplayer** support:
+  Start up a session at
+  [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
+  and send the link to your friends!
+  (Currently when someone changes the canvas, you're annoyingly interrupted. It's very rudimentary.)
+
 
 #### Possible improvements include:
 
@@ -31,6 +45,7 @@ You can also install it as a chrome app.
 * Rotate image by arbitrary angle
 * Alternate themes (You can already style it like any website with browser extensions like Stylebot or Stylish)
 
+
 #### A lot of stuff isn't done yet:
 
 * Magnification
@@ -39,10 +54,11 @@ You can also install it as a chrome app.
 * Shape styles on most of the shape tools
 * [A lot of stuff](TODO.md)
 
-One thing that may not be doable is full clipboard support.
+Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
-but copied data can only be pasted into other instances of jspaint,
-and you can't use the menu items unless your browser is really insecure.
+but copied data can only be pasted into other instances of JS Paint.
+To use the menu items, you need to install the Chrome app.
+The menu items will still be grayed out, though.
 
 
 ## Staying True to the Original

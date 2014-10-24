@@ -6,50 +6,50 @@ var menus = {
 		{
 			item: "&New",
 			shortcut: "Ctrl+N",
-			action: file_new
+			action: file_new,
 		},
 		{
 			item: "&Open",
 			shortcut: "Ctrl+O",
-			action: file_open
+			action: file_open,
 		},
 		{
 			item: "&Save",
 			shortcut: "Ctrl+S",
-			action: file_save
+			action: file_save,
 		},
 		{
 			item: "Save &As",
 			shortcut: "Ctrl+Shift+S",
-			action: file_save_as
+			action: file_save_as,
 		},
 		____________________________,
 		{
-			item: "Print Pre&view"
+			item: "Print Pre&view",
 		},
 		{
-			item: "Page Se&tup"
+			item: "Page Se&tup",
 		},
 		{
 			item: "&Print",
 			shortcut: "Ctrl+P",
 			action: function(){
 				print();
-			}
+			},
 		},
 		____________________________,
 		{
 			item: "Set As &Wallpaper (Tiled)",
-			action: set_as_wallpaper_tiled
+			action: set_as_wallpaper_tiled,
 		},
 		{
 			item: "Set As Wa&llpaper (Centered)",
-			action: set_as_wallpaper_centered
+			action: set_as_wallpaper_centered,
 		},
 		____________________________,
 		{
 			item: "Recent File",
-			disabled: true
+			disabled: true,
 		},
 		____________________________,
 		{
@@ -57,57 +57,66 @@ var menus = {
 			shortcut: "Alt+F4",
 			action: function(){
 				close();
-			}
+			},
 		}
 	],
 	"&Edit": [
 		{
 			item: "&Undo",
 			shortcut: "Ctrl+Z",
-			action: undo
+			action: undo,
 		},
 		{
 			item: "&Repeat",
 			shortcut: "F4",
+			disabled: true,
 			action: redo,
-			disabled: true
 		},
 		____________________________,
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
-			disabled: true
+			disabled: true,
+			action: function(){
+				document.execCommand("cut");
+			},
 		},
 		{
 			item: "&Copy",
 			shortcut: "Ctrl+C",
-			disabled: true
+			disabled: true,
+			action: function(){
+				document.execCommand("copy");
+			},
 		},
 		{
 			item: "&Paste",
 			shortcut: "Ctrl+V",
-			disabled: true
+			disabled: true,
+			action: function(){
+				document.execCommand("paste");
+			},
 		},
 		{
 			item: "C&lear Selection",
 			shortcut: "Del",
+			disabled: true,
 			action: delete_selection,
-			disabled: true
 		},
 		{
 			item: "Select &All",
 			shortcut: "Ctrl+A",
-			action: select_all
+			action: select_all,
 		},
 		____________________________,
 		{
 			item: "C&opy To...",
 			disabled: true,
-			action: save_selection_to_file
+			action: save_selection_to_file,
 		},
 		{
 			item: "Paste &From...",
-			action: paste_from
+			action: paste_from,
 		}
 	],
 	"&View": [
@@ -117,8 +126,8 @@ var menus = {
 			checkbox: {
 				toggle: function(){
 					return $toolbox.toggle().is(":visible");
-				}
-			}
+				},
+			},
 		},
 		{
 			item: "&Color Box",
@@ -126,21 +135,21 @@ var menus = {
 			checkbox: {
 				toggle: function(){
 					return $colorbox.toggle().is(":visible");
-				}
-			}
+				},
+			},
 		},
 		{
 			item: "&Status Bar",
 			checkbox: {
 				toggle: function(){
 					return $status_area.toggle().is(":visible");
-				}
-			}
+				},
+			},
 		},
 		{
 			item: "T&ext Toolbar",
 			disabled: true,
-			checkbox: {}
+			checkbox: {},
 		},
 		____________________________,
 		{
@@ -148,62 +157,62 @@ var menus = {
 			submenu: [
 				{
 					item: "&Normal Size",
-					shorcut: "Ctrl+PgUp"
+					shorcut: "Ctrl+PgUp",
 				},
 				{
 					item: "&Large Size",
 					shorcut: "Ctrl+PgDn",
-					disabled: true
+					disabled: true,
 				},
 				{
 					item: "C&ustom...",
-					disabled: true
+					disabled: true,
 				},
 				____________________________,
 				{
 					item: "Show &Grid",
 					shorcut: "Ctrl+G",
+					disabled: true,
 					checkbox: {},
-					disabled: true
 				},
 				{
 					item: "Show T&humbnail",
+					disabled: true,
 					checkbox: {},
-					disabled: true
 				}
 			]
 		},
 		{
 			item: "&View Bitmap",
 			shortcut: "Ctrl+F",
-			action: view_bitmap
+			action: view_bitmap,
 		}
 	],
 	"&Image": [
 		{
 			item: "&Flip/Rotate",
 			shortcut: "Ctrl+R",
-			action: image_flip_and_rotate
+			action: image_flip_and_rotate,
 		},
 		{
 			item: "&Stretch/Skew",
 			shortcut: "Ctrl+W",
-			action: image_stretch_and_skew
+			action: image_stretch_and_skew,
 		},
 		{
 			item: "&Invert Colors",
 			shortcut: "Ctrl+I",
-			action: image_invert
+			action: image_invert,
 		},
 		{
 			item: "&Attributes...",
 			shortcut: "Ctrl+E",
-			action: image_attributes
+			action: image_attributes,
 		},
 		{
 			item: "&Clear Image",
 			shortcut: "Ctrl+Shift+N",
-			action: clear
+			action: clear,
 		},
 		{
 			item: "&Draw Opaque",
@@ -217,8 +226,8 @@ var menus = {
 					$G.trigger("option-changed");
 					
 					return transparent_opaque === "opaque";
-				}
-			}
+				},
+			},
 		}
 	],
 	"&Colors": [
@@ -229,7 +238,7 @@ var menus = {
 				var $b = $colorbox.get_last_foreground_color_$button();
 				$b.trigger({type: "mousedown", ctrlKey: false, button: 0});
 				$b.find("input").trigger("click", "synthetic");
-			}
+			},
 		}
 	],
 	"&Help": [
@@ -244,7 +253,7 @@ var menus = {
 					"<p>There will be differences, but most of the basics are there.</p>"
 				).css({padding: "15px"});
 				$msgbox.center();
-			}
+			},
 		},
 		____________________________,
 		{
@@ -258,7 +267,7 @@ var menus = {
 					"<p>You can check out the project <a href='https://github.com/1j01/jspaint'>on github</a>.</p>"
 				).css({padding: "15px"});
 				$msgbox.center();
-			}
+			},
 		}
 	],
 };

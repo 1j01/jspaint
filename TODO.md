@@ -77,8 +77,6 @@
 	* File
 		* Print Preview
 		* Page Setup (what should these do? call `print`?)
-	* Edit
-		* Cut, Copy, Paste: Possibly impossible
 	* View
 		* Show/Hide FontBox
 		* Zoom should have an actual submenu
@@ -143,6 +141,7 @@
 * Panel for things that would normally require a keyboard (with a numpad)
 	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
+	* Ctrl (toggle??): Uh, crop tool instead of selection tool (this should really be an additional tool)
 	* Ctrl+Shift+G: "Render GIF"
 
 
