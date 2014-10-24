@@ -3,7 +3,6 @@
 
 * Visual
 	* Some window layouts are bad
-	* Some dialogue buttons are seriously messed up
 	* The window close button uses text; font rendering is not consistent
 	* The progress bar (Rendering GIF) is left native
 	* Use win98 default scrollbar size
@@ -17,9 +16,6 @@
 * Keep track of what's saved
 	* Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
 	* Do warn about losing unsaved files (close button, etc.)
-
-
-* Hide the canvas handles when there is a selection. (This used to work!)
 
 
 * Gracefully hide things as the window gets smaller (With media queries!)
@@ -49,7 +45,10 @@
 		* In Help > About Paint and other places
 			* You can't select text
 			* You can't drag links
-		
+	* Fonts become serif in the menubar and/or statusbar
+	  (To temporarily reproduce, you can
+	  drag the canvas handles twice,
+	  but sometimes it happens and stays)
 
 * Handling actions that interfere with each other
 	* I currently have a function `this_ones_a_frame_changer();` that finalizes the selection among other things at various times (undo, redo, reset, file_open, ... switching between frames of an animation)
@@ -69,7 +68,7 @@
 			Break loop
 	```
 * Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
-* Disable Image > Clear Image when there is a selection like mspaint does?
+* Disable Image > Clear Image when there is a selection like MS Paint does?
 * Sliding animation / transition effects
 
 
@@ -158,15 +157,13 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 ### Tools
 
 * Free-Form Select
-	* Passive
+	* Passive: create no undoables until you do something
+	* See [On-Canvas Objects](#on-canvas-objects) for Selection
 
 
 * Select
-	* Handles
-	* Transparency with selected background color
-	* Selection appears blurry
-	* Proportionally resize selection while holding Shift
-	* Creates an undoable state even if you do nothing
+	* Passive: create no undoables until you do something
+	* See [On-Canvas Objects](#on-canvas-objects) for Selection
 
 
 * Eraser/Color Eraser ✓
@@ -206,10 +203,11 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Store position of FontBox
 	* Keep an old TextBox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
 	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
+	* See [On-Canvas Objects](#on-canvas-objects)
 
 
 * Line
-	* Stroke size (when aliased)
+	* Stroke size when aliased
 
 
 * Curve
@@ -223,7 +221,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * Polygon
 	* Aliasing
-	* The canvas API handles self-intersecting shapes differently than mspaint
+	* The canvas API handles self-intersecting shapes differently than MS Paint
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
 	* Double-click to close the shape
@@ -239,7 +237,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * **Options**
 	* Secret 10x zoom by clicking the area just underneath the 8x zoom
-	* In mspaint, visual area =/= selection highlight area =/= clickable area
+	* In MS Paint, visual area =/= selection highlight area =/= clickable area
 
 
 * **Shape Styles and Strokes**
@@ -248,6 +246,24 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Rounded Rectangle & Ellipse:
 		* If the width/height is less than the stroke size, it should draw a shape with no stroke filled with the color that would normally be used for the stroke.
 		* Support shape styles!
+
+
+### On-Canvas Objects
+
+* Selection
+	* Handles
+		* Hide the canvas handles when there is a selection. (This used to work!)
+		* I have a git stash where I'm trying to improve selections. Canvas hiding is fixed there, but other stuff is broken
+	* Transparency with selected background color
+	* Proportionally resize selection while holding Shift
+	* Don't cut until you drag or do something else (In MS Paint, you can make a selection, change the background color and drag it, leaving the new background color behind.)
+
+
+* TextBox
+	* See Text tool
+
+
+* Selection and TextBox should inherit from a base class for on-canvas objects
 
 
 ### BSOD
@@ -300,14 +316,15 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Color cells probably shouldn't be buttons
 	* There also shouldn't be classes `.jspaint-window-button` (`.jspaint-window-titlebar button`) or `.jspaint-dialogue-button` (`.jspaint-window-content button`) at all
 	* DRY, especially for the buttons
+	* Seriously, the buttons
 	* Move into folder (called what? styles? stylesheets? css?)
 
 
 * JS
 	* Refactor old code
-	* Selection.js and TextBox.js contain a lot of duplicated code.
-	* Outdated names like sel.$ghost = div.jspaint-selection
-	* Everything is in random files! functions.js, REALLY? menus.js contains way too much non-menu stuff.
+	* Selection and TextBox contain a lot of duplicated code
+	* Outdated names like sel.$ghost = div.jspaint-selection (not exactly a ghost)
+	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
 
 
