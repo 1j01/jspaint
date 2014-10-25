@@ -265,6 +265,9 @@ tools = [{
 	deselect: true,
 	passive: true,
 	implemented: false,
+	mousedown: function(){
+		//canvas.style.zoom = 1;
+	},
 	$options: $choose_magnification
 }, {
 	name: "Pencil",

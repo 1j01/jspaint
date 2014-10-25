@@ -327,6 +327,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Outdated names like sel.$ghost = div.jspaint-selection (not exactly a ghost)
 	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
+	* Image inversion code is duplicated in ChooserCanvas in tool-options.js
 
 
 * Images

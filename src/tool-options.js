@@ -39,6 +39,31 @@ var render_brush = function(ctx, shape, size){
 	}
 };
 
+var ChooserCanvas = function(url, invert, width, height, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight){
+	var c = new Canvas(width, height);
+	var img = ChooserCanvas.cache[url];
+	if(!img){
+		img = ChooserCanvas.cache[url] = E("img");
+		img.src = url;
+	}
+	var render = function(){
+		c.ctx.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+		if(invert){
+			var id = c.ctx.getImageData(0, 0, c.width, c.height);
+			for(var i=0; i<id.data.length; i+=4){
+				id.data[i+0] = 255 - id.data[i+0];
+				id.data[i+1] = 255 - id.data[i+1];
+				id.data[i+2] = 255 - id.data[i+2];
+			}
+			c.ctx.putImageData(id, 0, 0);
+		}
+	};
+	$(img).load(render);
+	render();
+	return c;
+};
+ChooserCanvas.cache = {};
+
 var $Choose = function(things, display, choose, is_chosen){
 	var $chooser = $(E("div")).addClass("jspaint-chooser");
 	$chooser.on("update", function(){
@@ -203,27 +228,18 @@ var $choose_stroke_size = $Choose(
 	}
 ).addClass("jspaint-choose-stroke-size");
 
+var magnification_sizes = [1, 2, 6, 8/*, 10*/]; // ten is secret
 var $choose_magnification = $Choose(
-	[1, 2, 6, 8/*, 10*/],
+	magnification_sizes,
 	function(size, is_chosen){
-		var cmcanvas = new Canvas(39, 12);
-		
-		cmcanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
-		
-		cmcanvas.ctx.translate(5, 0);
-		render_brush(cmcanvas.ctx, "square", size);
-		
-		cmcanvas.ctx.textBaseline = "middle";
-		cmcanvas.ctx.textAlign = "right";
-		cmcanvas.ctx.fillText(size+"x", 10, cmcanvas.height/2);
-		
-		return cmcanvas;
+		var x = magnification_sizes.indexOf(size);
+		return ChooserCanvas("images/options-magnification.png", is_chosen, 39, 13, x*23, 0, 23, 9, 8, 2, 23, 9);
 	},
 	function(size){
-		
+		//canvas.style.zoom = size;
 	},
 	function(size){
-		return size === 1;
+		return size === 1;//(+canvas.style.zoom||1);
 	}
 ).addClass("jspaint-choose-magnification");
 
