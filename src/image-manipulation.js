@@ -237,20 +237,15 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 
 function apply_image_transformation(fn){
 	// Apply an image transformation function to either the selection or the entire canvas
-	var new_canvas = E("canvas");
+	var new_canvas = new Canvas();
 	var original_canvas =
 		selection? selection.
 		canvas: canvas;
 	
 	// sometimes selection.canvas is an Image
-	// maybe that should be changed instead having of this
+	// maybe that should be changed instead having of this here
 	if(!original_canvas.getContext){
-		var _c = E("canvas");
-		_c.width = original_canvas.width;
-		_c.height = original_canvas.height;
-		var _ctx = _c.getContext("2d");
-		_ctx.drawImage(original_canvas, 0, 0);
-		original_canvas = _c;
+		original_canvas = new Canvas(original_canvas);
 	}
 	
 	var new_ctx = new_canvas.getContext("2d");
@@ -279,8 +274,7 @@ function apply_image_transformation(fn){
 
 function cut_polygon(points, x_min, y_min, x_max, y_max){
 	
-	var cutout = E("canvas");
-	var cutctx = cutout.getContext("2d");
+	var cutout = new Canvas();
 	
 	var X_MIN = x_min; //|| 0;
 	var X_MAX = x_max; //|| canvas.width;
@@ -294,7 +288,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 	
 	// Take image data from main canvas context
 	var id_from_main = ctx.getImageData(X_MIN, Y_MIN, WIDTH, HEIGHT);
-	var id_for_cutout = cutctx.createImageData(WIDTH, HEIGHT);
+	var id_for_cutout = cutout.ctx.createImageData(WIDTH, HEIGHT);
 	
 	// Based off of some public-domain code by Darel Rex Finley, 2007
 	
@@ -358,9 +352,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 	}
 	
 	// Done boom okay
-	cutctx.putImageData(id_for_cutout, 0, 0);
-	//cutctx.fillStyle = "#f00";
-	//cutctx.fillRect(5, 5, 5, 5);
+	cutout.ctx.putImageData(id_for_cutout, 0, 0);
 	return cutout;
 	
 }

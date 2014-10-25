@@ -1,5 +1,5 @@
 
-var brush_canvas = E("canvas");
+var brush_canvas = new Canvas();
 var brush_ctx = brush_canvas.getContext("2d");
 var brush_shape = "circle";
 var brush_size = 5;
@@ -87,27 +87,30 @@ var $ChooseShapeStyle = function(){
 			{stroke: false, fill: true}
 		],
 		function(a, is_chosen){
-			var canvas = E("canvas");
-			var ctx = canvas.getContext("2d");
+			var sscanvas = new Canvas(39, 21);
+			var ssctx = sscanvas.ctx;
 			
-			canvas.width = 39;
-			canvas.height = 21;
+			// border px inwards amount
 			var b = 5;
-			
-			ctx.fillStyle = is_chosen ? "#fff" : "#000";
+			ssctx.fillStyle = is_chosen ? "#fff" : "#000";
 			
 			if(a.stroke){
-				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
-			}
-			b++;
-			ctx.fillStyle = "#777";
-			if(a.fill){
-				ctx.fillRect(b, b, canvas.width-b*2, canvas.height-b*2);
-			}else{
-				ctx.clearRect(b, b, canvas.width-b*2, canvas.height-b*2);
+				// just using a solid rectangle for the stroke
+				// so as not to have to deal with the pixel grid with strokes
+				ssctx.fillRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
 			}
 			
-			return canvas;
+			// go inward a pixel for the fill
+			b += 1;
+			ssctx.fillStyle = "#777";
+			
+			if(a.fill){
+				ssctx.fillRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
+			}else{
+				ssctx.clearRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
+			}
+			
+			return sscanvas;
 		},
 		function(a){
 			$chooser.stroke = a.stroke;
@@ -139,8 +142,7 @@ var $choose_brush = $Choose(
 		return things;
 	})(), 
 	function(o, is_chosen){
-		var canvas = E("canvas");
-		var ctx = canvas.getContext("2d");
+		var cbcanvas = new Canvas(10, 10);
 		
 		var shape = o.shape;
 		var size = o.size;
@@ -148,12 +150,13 @@ var $choose_brush = $Choose(
 			size -= 1;
 		}
 		
-		canvas.width = canvas.height = 10;
+		cbcanvas.ctx.fillStyle =
+		cbcanvas.ctx.strokeStyle =
+			is_chosen ? "#fff" : "#000";
 		
-		ctx.fillStyle = ctx.strokeStyle = is_chosen ? "#fff" : "#000";
-		render_brush(ctx, shape, size);
+		render_brush(cbcanvas.ctx, shape, size);
 		
-		return canvas;
+		return cbcanvas;
 	},
 	function(o){
 		brush_shape = o.shape;
@@ -167,16 +170,12 @@ var $choose_brush = $Choose(
 var $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
 	function(size, is_chosen){
-		var canvas = E("canvas");
-		var ctx = canvas.getContext("2d");
+		var cecanvas = new Canvas(39, 16);
 		
-		canvas.width = 39;
-		canvas.height = 16;
+		cecanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
+		render_brush(cecanvas.ctx, "square", size);
 		
-		ctx.fillStyle = is_chosen ? "#fff" : "#000";
-		render_brush(ctx, "square", size);
-		
-		return canvas;
+		return cecanvas;
 	},
 	function(size){
 		eraser_size = size;
@@ -189,16 +188,12 @@ var $choose_eraser_size = $Choose(
 var $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
 	function(size, is_chosen){
-		var canvas = E("canvas");
-		var ctx = canvas.getContext("2d");
-		
-		canvas.width = 39;
-		canvas.height = 12;
-		
-		ctx.fillStyle = is_chosen ? "#fff" : "#000";
-		ctx.fillRect(5, ~~((canvas.height-size)/2), canvas.width-5-5, size);
-		
-		return canvas;
+		var w = 39, h = 12, b = 5;
+		var cscanvas = new Canvas(w, h);
+		var center_y = (h - size) / 2;
+		cscanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
+		cscanvas.ctx.fillRect(b, ~~center_y, w - b*2, size);
+		return cscanvas;
 	},
 	function(size){
 		stroke_size = size;
@@ -211,22 +206,18 @@ var $choose_stroke_size = $Choose(
 var $choose_magnification = $Choose(
 	[1, 2, 6, 8/*, 10*/],
 	function(size, is_chosen){
-		var canvas = E("canvas");
-		var ctx = canvas.getContext("2d");
+		var cmcanvas = new Canvas(39, 12);
 		
-		canvas.width = 39;
-		canvas.height = 12;
+		cmcanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		
-		ctx.fillStyle = is_chosen ? "#fff" : "#000";
+		cmcanvas.ctx.translate(5, 0);
+		render_brush(cmcanvas.ctx, "square", size);
 		
-		ctx.translate(5, 0);
-		render_brush(ctx, "square", size);
+		cmcanvas.ctx.textBaseline = "middle";
+		cmcanvas.ctx.textAlign = "right";
+		cmcanvas.ctx.fillText(size+"x", 10, cmcanvas.height/2);
 		
-		ctx.textBaseline = "middle";
-		ctx.textAlign = "right";
-		ctx.fillText(size+"x", 10, canvas.height/2);
-		
-		return canvas;
+		return cmcanvas;
 	},
 	function(size){
 		

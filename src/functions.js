@@ -357,13 +357,7 @@ function undoable(callback, action){
 		redos = [];
 	}
 	
-	var c = document.createElement("canvas");
-	c.width = canvas.width;
-	c.height = canvas.height;
-	var x = c.getContext("2d");
-	x.drawImage(canvas, 0, 0);
-	
-	undos.push(c);
+	undos.push(new Canvas(canvas));
 	
 	action && action();
 	callback && callback();
@@ -373,15 +367,9 @@ function undo(){
 	if(undos.length<1) return false;
 	this_ones_a_frame_changer();
 	
-	var c = document.createElement("canvas");
-	c.width = canvas.width;
-	c.height = canvas.height;
-	var x = c.getContext("2d");
-	x.drawImage(canvas, 0, 0);
+	redos.push(new Canvas(canvas));
 	
-	redos.push(c);
-	
-	c = undos.pop();
+	var c = undos.pop();
 	canvas.width = c.width;
 	canvas.height = c.height;
 	ctx.drawImage(c, 0, 0);
@@ -394,15 +382,9 @@ function redo(){
 	if(redos.length<1) return false;
 	this_ones_a_frame_changer();
 	
-	var c = document.createElement("canvas");
-	c.width = canvas.width;
-	c.height = canvas.height;
-	var x = c.getContext("2d");
-	x.drawImage(canvas, 0, 0);
+	undos.push(new Canvas(canvas));
 	
-	undos.push(c);
-	
-	c = redos.pop();
+	var c = redos.pop();
 	canvas.width = c.width;
 	canvas.height = c.height;
 	ctx.drawImage(c, 0, 0);
@@ -715,13 +697,10 @@ function image_stretch_and_skew(){
 function set_as_wallpaper_tiled(c){
 	c = c || canvas;
 	
-	var wp = document.createElement("canvas");
-	wp.width = screen.width;
-	wp.height = screen.height;
-	var wpctx = wp.getContext("2d");
+	var wp = new Canvas(screen.width, screen.height);
 	for(var x=0; x<wp.width; x+=c.width){
 		for(var y=0; y<wp.height; y+=c.height){
-			wpctx.drawImage(c, x, y);
+			wp.ctx.drawImage(c, x, y);
 		}
 	}
 	

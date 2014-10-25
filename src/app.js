@@ -53,8 +53,8 @@ var $H = $(E("div")).addClass("jspaint-horizontal").appendTo($V);
 
 var $canvas_area = $(E("div")).addClass("jspaint-canvas-area").appendTo($H);
 
-var canvas = E("canvas");
-var ctx = canvas.getContext("2d");
+var canvas = new Canvas();
+var ctx = canvas.ctx;
 var $canvas = $(canvas).appendTo($canvas_area);
 
 var $canvas_handles = $Handles($canvas_area, canvas, {outset: 4, offset: 4, size_only: true});

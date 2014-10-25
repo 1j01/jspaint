@@ -35,10 +35,8 @@ Selection.prototype.instantiate = function(_img, _passive){
 			if(sel.canvas.width !== sel._w){ sel.canvas.width = sel._w; }
 			if(sel.canvas.height !== sel._h){ sel.canvas.height = sel._h; }
 		}else{
-			sel.canvas = document.createElement("canvas");
-			sel.canvas.width = sel._w;
-			sel.canvas.height = sel._h;
-			sel.ctx = sel.canvas.getContext("2d");
+			sel.canvas = new Canvas(sel._w, sel._h);
+			sel.ctx = sel.canvas.ctx;
 			sel.ctx.drawImage(
 				canvas,
 				sel._x, sel._y,
@@ -111,14 +109,10 @@ Selection.prototype.cut_out_background = function(){
 		ctx.drawImage(cutout, sel._x, sel._y);
 		ctx.restore();
 	}else{
-		var colored_canvas = E("canvas");
-		var colored_ctx = colored_canvas.getContext("2d");
-		colored_canvas.width = cutout.width;
-		colored_canvas.height = cutout.height;
-		colored_ctx.drawImage(cutout, 0, 0);
-		colored_ctx.fillStyle = colors[1];
-		colored_ctx.globalCompositeOperation = "source-in";
-		colored_ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
+		var colored_canvas = new Canvas(cutout);
+		colored_canvas.ctx.globalCompositeOperation = "source-in";
+		colored_canvas.ctx.fillStyle = colors[1];
+		colored_canvas.ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
 		ctx.drawImage(colored_canvas, sel._x, sel._y);
 	}
 };
@@ -140,15 +134,9 @@ Selection.prototype.resize = function(){
 	var width = sel._w;
 	var height = sel._h;
 	
-	var new_canvas = E("canvas");
-	new_canvas.width = width;
-	new_canvas.height = height;
+	var new_canvas = new Canvas(width, height);
 	
-	var new_ctx = new_canvas.getContext("2d");
-	new_ctx.imageSmoothingEnabled = false;
-	new_ctx.mozImageSmoothingEnabled = false;
-	new_ctx.webkitImageSmoothingEnabled = false;
-	new_ctx.drawImage(sel.canvas, 0, 0, width, height);
+	new_canvas.ctx.drawImage(sel.canvas, 0, 0, width, height);
 	
 	sel.replace_canvas(new_canvas);
 };
@@ -187,13 +175,10 @@ Selection.prototype.scale = function(factor){
 	
 	var original_canvas = sel.canvas;
 	
-	var new_canvas = E("canvas");
-	new_canvas.width = sel._w * factor;
-	new_canvas.height = sel._h * factor;
+	var new_canvas = new Canvas(sel._w * factor, sel._h * factor);
 	sel.replace_canvas(new_canvas);
 	
-	var new_ctx = new_canvas.getContext("2d");
-	new_ctx.drawImage(original_canvas, 0, 0, new_canvas.width, new_canvas.height);
+	new_canvas.ctx.drawImage(original_canvas, 0, 0, new_canvas.width, new_canvas.height);
 };
 
 Selection.prototype.draw = function(){

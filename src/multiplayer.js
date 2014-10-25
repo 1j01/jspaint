@@ -88,10 +88,8 @@
 			var other_user = snap.val();
 			
 			// Draw the cursor
-			var cursor_canvas = E("canvas");
-			cursor_canvas.width = 32;
-			cursor_canvas.height = 32;
-			var cursor_ctx = cursor_canvas.getContext("2d");
+			var cursor_canvas = new Canvas(32, 32);
+			var cursor_ctx = cursor_canvas.ctx;
 			var img = new Image();
 			img.onload = function(){
 				cursor_ctx.fillStyle = other_user.color;

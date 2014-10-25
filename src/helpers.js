@@ -33,7 +33,7 @@ function E(t){
 
 function get_rgba_from_color(color){
 	
-	var _c = E("canvas");
+	var _c = new Canvas();
 	_c.width = _c.height = 1;
 	
 	var _ctx = _c.getContext("2d");
@@ -49,4 +49,27 @@ function get_rgba_from_color(color){
 	var fill_a = _id.data[3];
 	return [fill_r, fill_g, fill_b, fill_a];
 	
+}
+
+function Canvas(width, height){
+	var new_canvas = E("canvas");
+	var new_ctx = new_canvas.getContext("2d");
+	new_ctx.imageSmoothingEnabled = false;
+	new_ctx.mozImageSmoothingEnabled = false;
+	new_ctx.webkitImageSmoothingEnabled = false;
+	if(width && height){
+		// new Canvas(width, height)
+		new_canvas.width = width;
+		new_canvas.height = height;
+	}else{
+		// new Canvas(image)
+		var copy_of = width;
+		if(copy_of){
+			new_canvas.width = copy_of.width;
+			new_canvas.height = copy_of.height;
+			new_ctx.drawImage(copy_of, 0, 0);
+		}
+	}
+	new_canvas.ctx = new_ctx;
+	return new_canvas;
 }
