@@ -11,7 +11,6 @@ function Selection(x, y, w, h){
 	
 	this.$ghost = $(E("div")).addClass("jspaint-selection").appendTo($canvas_area);
 	
-	
 	$canvas_handles.hide();
 }
 
@@ -36,8 +35,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 			if(sel.canvas.height !== sel._h){ sel.canvas.height = sel._h; }
 		}else{
 			sel.canvas = new Canvas(sel._w, sel._h);
-			sel.ctx = sel.canvas.ctx;
-			sel.ctx.drawImage(
+			sel.canvas.ctx.drawImage(
 				canvas,
 				sel._x, sel._y,
 				sel._w, sel._h,
@@ -156,14 +154,8 @@ Selection.prototype.replace_canvas = function(new_canvas){
 	
 	sel.position();
 	
-	var new_ctx = new_canvas.getContext("2d");
-	new_ctx.imageSmoothingEnabled = false;
-	new_ctx.mozImageSmoothingEnabled = false;
-	new_ctx.webkitImageSmoothingEnabled = false;
-
 	$(sel.canvas).replaceWith(new_canvas);
 	sel.canvas = new_canvas;
-	sel.ctx = new_ctx;
 
 	$(sel.canvas).on("mousedown", sel.canvas_mousedown);
 	sel.$ghost.triggerHandler("new-element", [sel.canvas]);

@@ -279,7 +279,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* ~~Concatenate & Minify~~ (Why?)
 	* Increment version?
 	* Compress into zip file
-	* Upload? Notify of new bug reports, stats? haha I'm thinking of things I might put in multiism/multi-platform once people were using it
+	* Upload new version to the Chrome Web Store?
 
 
 * Use the chrome.wallpaper API to change the ChromeOS wallpaper.
@@ -291,7 +291,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* (Note: Minimum window size might need updating)
 
 
-* Publish to webstore!?!?!?
+* Publish to the Chrome Web Store
 
 
 ### Also
@@ -323,6 +323,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 * JS
 	* Refactor old code
 	* Selection and TextBox contain a lot of duplicated code
+	* Remove either `selection.x/y/w/h` or `._x/_y/_w/_h`; and use `x/y/width/height`
 	* Outdated names like sel.$ghost = div.jspaint-selection (not exactly a ghost)
 	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
