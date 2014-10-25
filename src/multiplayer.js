@@ -90,16 +90,6 @@
 			// The user of the cursor we'll be drawing
 			var other_user = snap.val();
 			
-			// Is this user a zombie?
-			// (Zombies are created when fb.update() is called after
-			// the user was deleted, resurrecting the user's cursor)
-			if(other_user.color == null){
-				// Clean up this zombie user from the Firebase
-				fb_other_user.remove();
-				// This user doesn't exist anymore; we're done here
-				return;
-			}
-			
 			// Draw the cursor
 			var cursor_canvas = new Canvas(32, 32);
 			var cursor_ctx = cursor_canvas.ctx;
@@ -204,8 +194,16 @@
 		
 		// Update the cursor status
 		
+		var dead = false;
+		session.fb_user.on("value", function(snap){
+			if(snap.val() == null){
+				dead = true;
+			}
+		});
+		
 		$G.on("mousemove.session-hook", function(e){
 			var canvas_rect = canvas.getBoundingClientRect();
+			if(dead) return;
 			session.fb_user.child("cursor").update({
 				x: e.clientX - canvas_rect.left,
 				y: e.clientY - canvas_rect.top,
@@ -214,6 +212,7 @@
 		});
 		
 		$G.on("blur", function(e){
+			if(dead) return;
 			session.fb_user.child("cursor").update({
 				away: true,
 			});
@@ -225,7 +224,7 @@
 	
 	Session.prototype.end = function(){
 		$("*").off(".session-hook");
-		$(window).off(".session-hook");
+		$G.off(".session-hook");
 		session.fb_data.off("value", session.fb_data_on_value);
 		session.fb_users.off("child_added", session.fb_users_on_child_added);
 		session.fb_user.remove();
@@ -243,7 +242,7 @@
 			session = null;
 		}
 	};
-	$(window).on("hashchange", function(){
+	$G.on("hashchange", function(){
 		var match = location.hash.match(/^#?session:([0-9a-f]+)$/i);
 		if(match){
 			var session_id = match[1];
