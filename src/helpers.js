@@ -36,13 +36,12 @@ function get_rgba_from_color(color){
 	var _c = new Canvas();
 	_c.width = _c.height = 1;
 	
-	var _ctx = _c.getContext("2d");
-	_ctx.fillStyle = color;
-	_ctx.fillRect(0, 0, 1, 1);
+	_c.ctx.fillStyle = color;
+	_c.ctx.fillRect(0, 0, 1, 1);
 	
-	var _id = _ctx.getImageData(0, 0, 1, 1);
+	var _id = _c.ctx.getImageData(0, 0, 1, 1);
 	
-	// We could return _id.data, but we don't need to let that object out of this function.
+	// We could just return _id.data, but let's return an array instead
 	var fill_r = _id.data[0];
 	var fill_g = _id.data[1];
 	var fill_b = _id.data[2];

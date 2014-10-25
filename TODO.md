@@ -330,6 +330,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
 	* Image inversion code is duplicated in ChooserCanvas in tool-options.js
+	* render_brush shouldn't be in tool-options.js
 
 
 * Images

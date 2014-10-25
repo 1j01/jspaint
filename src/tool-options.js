@@ -1,6 +1,6 @@
 
 var brush_canvas = new Canvas();
-var brush_ctx = brush_canvas.getContext("2d");
+var brush_ctx = brush_canvas.ctx;
 var brush_shape = "circle";
 var brush_size = 5;
 var eraser_size = 8;
@@ -292,15 +292,15 @@ var $choose_airbrush_size = $Choose(
 var $choose_transparency = $Choose(
 	["opaque", "transparent"],
 	function(t_o, is_chosen){
-		var e = E("div");
-		$(e).css({
-			backgroundImage: "url(images/options-transparency.png)",
-			backgroundPosition: "0px "+(t_o === "opaque" ? 0 : 23)+"px",
-			width: "35px",
-			height: "23px",
-			margin: "2px"
-		});
-		return e;
+		var sw = 35, sh = 23; // width, height from source image
+		var b = 2; // margin by which the source image is inset on the destination
+		return ChooserCanvas(
+			"images/options-transparency.png",
+			false, // never invert it
+			b+sw+b, b+sh+b, // width, height of created destination canvas
+			0, (t_o === "opaque" ? 0 : 22), sw, sh, // x, y, width, height from source image
+			b, b, sw, sh // x, y, width, height on created destination canvas
+		);
 	},
 	function(t_o){
 		transparent_opaque = t_o;
