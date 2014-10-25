@@ -39,7 +39,12 @@ var render_brush = function(ctx, shape, size){
 	}
 };
 
-var ChooserCanvas = function(url, invert, width, height, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight){
+var ChooserCanvas = function(
+	url, invert,
+	width, height,
+	sourceX, sourceY, sourceWidth, sourceHeight,
+	destX, destY, destWidth, destHeight
+){
 	var c = new Canvas(width, height);
 	var img = ChooserCanvas.cache[url];
 	if(!img){
@@ -47,7 +52,11 @@ var ChooserCanvas = function(url, invert, width, height, sourceX, sourceY, sourc
 		img.src = url;
 	}
 	var render = function(){
-		c.ctx.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+		c.ctx.drawImage(
+			img,
+			sourceX, sourceY, sourceWidth, sourceHeight,
+			destX, destY, destWidth, destHeight
+		);
 		if(invert){
 			var id = c.ctx.getImageData(0, 0, c.width, c.height);
 			for(var i=0; i<id.data.length; i+=4){
@@ -233,7 +242,13 @@ var $choose_magnification = $Choose(
 	magnification_sizes,
 	function(size, is_chosen){
 		var x = magnification_sizes.indexOf(size);
-		return ChooserCanvas("images/options-magnification.png", is_chosen, 39, 13, x*23, 0, 23, 9, 8, 2, 23, 9);
+		return ChooserCanvas(
+			"images/options-magnification.png",
+			is_chosen, // invert if chosen
+			39, 13, // width, height of destination canvas
+			x*23, 0, 23, 9, // x, y, width, height from source image
+			8, 2, 23, 9 // x, y, width, height on destination
+		);
 	},
 	function(size){
 		//canvas.style.zoom = size;
@@ -247,22 +262,24 @@ var airbrush_sizes = [9, 16, 24];
 var $choose_airbrush_size = $Choose(
 	airbrush_sizes,
 	function(size, is_chosen){
-		var e = E("div");
-		var sprite_width = 72;
-		var pos = airbrush_sizes.indexOf(size) / airbrush_sizes.length * -sprite_width;
-		var is_bottom = size === 24;
-		var _ = 4 * !is_bottom;
-		$(e).css({
-			backgroundImage: "url(images/options-airbrush-size.png)",
-			backgroundPosition: pos - _ + "px 0px",
-			width: (72 / 3 - _*2) + "px",
-			height: "23px",
-			filter: is_chosen ? "invert()" : "",
-			msFilter: is_chosen ? "invert()" : "",
-			mozFilter: is_chosen ? "invert()" : "",
-			webkitFilter: is_chosen ? "invert()" : "" // @todo: invert and upscale with canvas
-		});
-		return e;
+		
+		var image_width = 72; // width of source image
+		var i = airbrush_sizes.indexOf(size); // 0 or 1 or 2
+		var l = airbrush_sizes.length; // 3
+		var is_bottom = (i === 2);
+		
+		var shrink = 4 * !is_bottom;
+		var w = image_width / l - shrink * 2;
+		var h = 23;
+		var source_x = image_width / l * i + shrink;
+		
+		return ChooserCanvas(
+			"images/options-airbrush-size.png",
+			is_chosen, // invert if chosen
+			w, h, // width, height of created destination canvas
+			source_x, 0, w, h, // x, y, width, height from source image
+			0, 0, w, h // x, y, width, height on created destination canvas
+		);
 	},
 	function(size){
 		airbrush_size = size;

@@ -31,7 +31,8 @@ You can also install it as a Chrome app.
   Start up a session at
   [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
   and send the link to your friends!
-  (Currently when someone changes the canvas, you're annoyingly interrupted. It's very rudimentary.)
+  (It doesn't yet work very well, though.
+  Currently when someone changes the canvas, you're annoyingly interrupted)
 
 
 #### Possible improvements include:
@@ -56,7 +57,8 @@ You can also install it as a Chrome app.
 Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but copied data can only be pasted into other instances of JS Paint.
-To use the menu items, you need to install the Chrome app.
+It would be a security issue if browsers let webpages access the clipboard at will, so the menus can't access the clipboard.
+To use the clipboard menu items, you need to install the Chrome app.
 The menu items will still be grayed out, though.
 
 

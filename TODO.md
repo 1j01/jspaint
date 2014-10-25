@@ -11,6 +11,7 @@
 	* Dynamic cursors
 		* Inverty fill bucket and airbrush cursors
 		* Previewy brush and eraser cursors
+	* Pixelate graphics when zoomed in
 
 
 * Keep track of what's saved
@@ -30,14 +31,12 @@
 	* Colors > Edit Colors... doesn't work when the $colorbox is hidden
 	* Component windows are gone forever once closed (can't be shown from View menu)
 	* Status text gets cut off
-		* Also, it should gracefully push the dimension displays off the edge instead of covering up the text with usually blank space
+		* Also, it should gracefully push the dimension displays off the edge
+		  instead of covering up the text with usually blank space
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
-		* Tool options that have images flicker... *and lag*
-		* Airbrush options aren't inverted when selected because `filter: invert()` doesn't work yet in Firefox
-			* Invert the image with canvas
-				* Make class $UpscaledCanvas or something that I can also use to make lots of things crisp and pixely when zoomed in and on higher resolution displays
+		* Tool options flicker... *and lag*, when they're redrawn in quick succession
 	* Global event handlers interfering with stuff
 		* In Image > Attributes and other places
 			* You can't copy, paste, cut or drag&drop in the inputs
@@ -50,9 +49,12 @@
 	  drag the canvas handles twice,
 	  but sometimes it happens and stays)
 
+
 * Handling actions that interfere with each other
-	* I currently have a function `this_ones_a_frame_changer();` that finalizes the selection among other things at various times (undo, redo, reset, file_open, ... switching between frames of an animation)
-	* MS Paint disables actions while you're drawing. Maybe I should do that? It does allow actions when you have a selection and finalizes it as I am doing.
+	* I currently have a function `this_ones_a_frame_changer();`
+	  that finalizes the selection among other things at various times
+	  (undo, redo, reset, file_open, ... switching between frames of an animation)
+	* MS Paint disables actions while you're drawing. Maybe I should do that?
 
 
 ### Menus
