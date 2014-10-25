@@ -84,8 +84,21 @@
 				return;
 			}
 			
+			// Get the Firebase reference for this user
+			var fb_other_user = snap.ref();
+			
 			// The user of the cursor we'll be drawing
 			var other_user = snap.val();
+			
+			// Is this user a zombie?
+			// (Zombies are created when fb.update() is called after
+			// the user was deleted, resurrecting the user's cursor)
+			if(other_user.color == null){
+				// Clean up this zombie user from the Firebase
+				fb_other_user.remove();
+				// This user doesn't exist anymore; we're done here
+				return;
+			}
 			
 			// Draw the cursor
 			var cursor_canvas = new Canvas(32, 32);
@@ -112,7 +125,7 @@
 			});
 			
 			// @FIXME: This listener leaks and wreaks
-			snap.ref().on("value", function(snap){
+			fb_other_user.on("value", function(snap){
 				other_user = snap.val();
 				// If the user has left
 				if(other_user == null){
