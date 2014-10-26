@@ -8,17 +8,22 @@
 	};
 	
 	
-	
-	// @TODO: persist user id and color with localStorage
-	
+	// The user id is not persistent
+	// A person can enter a session multiple times,
+	// and is always given a new user id
 	var user_id;
+	// I could make the color persistent, though.
+	// You could still have multiple cursors and they would just be the same color.
+	// (@TODO)
 	
+	// The data in this object is stored in the server when you enter a session
+	// It is (supposed to be) removed when you leave
 	var user = {
 		// Cursor status
 		cursor: {
 			// cursor position in canvas coordinates
 			x: 0, y: 0,
-			// whether the user is elsewhere, for example in another tab
+			// whether the user is elsewhere, such as in another tab
 			away: true,
 		},
 		// Currently selected tool (@TODO)
@@ -26,14 +31,14 @@
 		// color components
 		hue: ~~(Math.random() * 360),
 		saturation: ~~(Math.random() * 50) + 50,
-		lightness: ~~(Math.random() * 50) + 50,
+		lightness: ~~(Math.random() * 40) + 50,
 	};
 	
 	// the main cursor color
 	user.color = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 1)";
 	// not used
 	user.color_transparent = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 0.5)";
-	// the color used in the toolbar indicating to other users it is selected by this user
+	// (@TODO) the color used in the toolbar indicating to other users it is selected by this user
 	user.color_desaturated = "hsla(" + user.hue + ", " + ~~(user.saturation*0.4) + "%, " + user.lightness + "%, 0.8)";
 	
 	
@@ -64,6 +69,14 @@
 	Session.prototype.start = function(){
 		var session = this;
 		
+		// Wrap the Firebase API because they don't
+		// provide a great way to clean up event listeners
+		session._fb_listeners = [];
+		var _fb_on = function(fb, event_type, callback){
+			session._fb_listeners.push([fb, event_type, callback]);
+			fb.on(event_type, callback);
+		};
+		
 		session.fb = Session.fb_root.child(session.id);
 		session.fb_data = session.fb.child("data");
 		session.fb_users = session.fb.child("users");
@@ -76,7 +89,7 @@
 		session.fb_user.onDisconnect().remove();
 		session.fb_user.set(user);
 		
-		session.fb_users.on("child_added", session.fb_users_on_child_added = function(snap){
+		_fb_on(session.fb_users, "child_added", function(snap){
 			
 			// Is this you?
 			if(snap.name() === user_id){
@@ -103,19 +116,21 @@
 				cursor_ctx.drawImage(img, 0, 0);
 			};
 			img.src = "images/cursors/default.png";
+			// @TODO: display other cursor types?
+			// @TODO: display mouse button state?
 			
 			// Make the $cursor element
 			var $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
 			$cursor.css({
 				display: "none",
 				position: "absolute",
-				zIndex: 500,
+				zIndex: 500, // arbitrary; maybe too high
 				pointerEvents: "none",
 				transition: "opacity 0.5s",
 			});
 			
-			// @FIXME: This listener leaks and wreaks
-			fb_other_user.on("value", function(snap){
+			// When the cursor data changes
+			_fb_on(fb_other_user, "value", function(snap){
 				other_user = snap.val();
 				// If the user has left
 				if(other_user == null){
@@ -136,7 +151,8 @@
 		});
 		
 		var previous_uri;
-		session.set_data = function(){
+		var sync = function(){
+			// Sync the data from this client to the server (one-way)
 			var uri = canvas.toDataURL();
 			if(previous_uri !== uri){
 				debug("set data");
@@ -148,12 +164,12 @@
 		};
 		
 		// Any time we recieve the image data or the data changes...
-		session.fb_data.on("value", session.fb_data_on_value = function(snap){
-			debug("data changed");
+		_fb_on(session.fb_data, "value", function(snap){
+			debug("data update");
 			
 			var uri = snap.val();
 			if(uri == null){
-				session.set_data();
+				sync();
 			}else{
 				previous_uri = uri;
 				
@@ -178,14 +194,10 @@
 		
 		// Hook into some events that imply a change might have occured
 		
-		var sync = function(){
-			session.set_data();
-		};
-		
 		$canvas.on("user-resized.session-hook", sync);
 		
 		$(".jspaint-canvas-area").on("mousedown.session-hook", "*", function(){
-			$G.one("mouseup", sync);
+			$G.one("mouseup.session-hook", sync);
 		});
 		
 		$G.on("session-update.session-hook", function(){
@@ -194,16 +206,8 @@
 		
 		// Update the cursor status
 		
-		var dead = false;
-		session.fb_user.on("value", function(snap){
-			if(snap.val() == null){
-				dead = true;
-			}
-		});
-		
 		$G.on("mousemove.session-hook", function(e){
 			var canvas_rect = canvas.getBoundingClientRect();
-			if(dead) return;
 			session.fb_user.child("cursor").update({
 				x: e.clientX - canvas_rect.left,
 				y: e.clientY - canvas_rect.top,
@@ -211,8 +215,7 @@
 			});
 		});
 		
-		$G.on("blur", function(e){
-			if(dead) return;
+		$G.on("blur.session-hook", function(e){
 			session.fb_user.child("cursor").update({
 				away: true,
 			});
@@ -223,40 +226,55 @@
 	};
 	
 	Session.prototype.end = function(){
-		$("*").off(".session-hook");
+		var session = this;
+		
+		// Remove session-related hooks
+		$app.find("*").off(".session-hook");
 		$G.off(".session-hook");
-		session.fb_data.off("value", session.fb_data_on_value);
-		session.fb_users.off("child_added", session.fb_users_on_child_added);
+		
+		// Remove collected Firebase event listeners
+		var _;
+		while(_ = session._fb_listeners.pop()){
+			debug("remove listener for " + _[0].path.toString() + " .on " + _[1]);
+			_[0].off(_[1], _[2]);
+		}
+		
+		// Remove the user from the session
 		session.fb_user.remove();
+		
+		// Remove any $cursors
 		$app.find(".user-cursor").remove();
 		
+		// Reset the file name
 		file_name = "untitled";
 		update_title();
 	};
 	
-	var session;
-	var end_session = function(){
-		if(session){
+	// Handle the starting, switching, and ending of sessions from the location.hash
+	
+	var current_session;
+	var end_current_session = function(){
+		if(current_session){
 			debug("ending current session");
-			session.end();
-			session = null;
+			current_session.end();
+			current_session = null;
 		}
 	};
 	$G.on("hashchange", function(){
 		var match = location.hash.match(/^#?session:([0-9a-f]+)$/i);
 		if(match){
 			var session_id = match[1];
-			if(session && session.id === session_id){
+			if(current_session && current_session.id === session_id){
 				debug("hash changed to current session id?");
 			}else{
 				debug("hash changed, session id: "+session_id);
-				end_session();
+				end_current_session();
 				debug("starting a new session");
-				session = new Session(session_id);
+				current_session = new Session(session_id);
 			}
 		}else{
 			debug("hash changed, no session id");
-			end_session();
+			end_current_session();
 		}
 	}).triggerHandler("hashchange");
 	
