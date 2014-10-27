@@ -23,13 +23,15 @@
 
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
-	* The Grid (Ctrl+G & zoom6x+)
-	* Scroll Wheel Bug (um...)
+	* The Grid (Ctrl+G & zoom6x+) (prerequisite: zooming)
+	* Scroll Wheel Bug (um... it's not really a feature)
 
 
 * Issues
-	* Colors > Edit Colors... doesn't work when the $colorbox is hidden
-	* Component windows are gone forever once closed (can't be shown from View menu)
+	* Components
+		* Colors > Edit Colors... doesn't work when the $colorbox is hidden
+		* Component windows are gone forever once closed (can't be shown from the View menu)
+		* Components in windows hidden from the View menu don't hide their windows
 	* Status text gets cut off
 		* Also, it should gracefully push the dimension displays off the edge
 		  instead of covering up the text with usually blank space
@@ -62,6 +64,23 @@
 * Mouse navigation ✓
 * Keyboard Navigation
 * Descriptions of menu items in the status bar
+
+
+* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
+* Disable Image > Clear Image when there is a selection like MS Paint does?
+
+
+* Menu Items
+	* View
+		* Show/Hide FontBox
+		* Zoom should have an actual submenu (prerequisite: zooming)
+	* Image
+		* Stretch / Skew (functionality)
+
+
+* Sliding animation / transition effects
+
+
 * Use keyboard shortcuts defined in the menu data structure to declaratively setup hotkeys
 	* ```
 	On key press, loop through the menus
@@ -69,17 +88,6 @@
 			Perform menu item's action
 			Break loop
 	```
-* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
-* Disable Image > Clear Image when there is a selection like MS Paint does?
-* Sliding animation / transition effects
-
-
-* Menu Items
-	* View
-		* Show/Hide FontBox
-		* Zoom should have an actual submenu (but it's pointless without zoom functionality)
-	* Image
-		* Stretch / Skew (functionality)
 
 
 ### Components / Windows
@@ -120,6 +128,7 @@
 
 * Multiplayer
 	* See [multiplayer.js](multiplayer.js)
+	* Deal with undo/redo for sessions
 
 
 ### Mobile support
@@ -259,13 +268,14 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Transparency with selected background color
 	* Proportionally resize selection while holding Shift
 	* Don't cut until you drag or do something else (In MS Paint, you can make a selection, change the background color and drag it, leaving the new background color behind.)
+	* Classic transparency where the selected background color is considered transparent
 
 
 * TextBox
 	* See Text tool
 
 
-* Selection and TextBox should inherit from a base class for on-canvas objects
+* Selection and TextBox should inherit from a base class
 
 
 ### BSOD

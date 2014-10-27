@@ -77,6 +77,7 @@
 			fb.on(event_type, callback);
 		};
 		
+		// Get Firebase references
 		session.fb = Session.fb_root.child(session.id);
 		session.fb_data = session.fb.child("data");
 		session.fb_users = session.fb.child("users");
@@ -86,9 +87,13 @@
 			session.fb_user = session.fb_users.push();
 			user_id = session.fb_user.name();
 		}
+		
+		// Remove the user from the session when they disconnect
 		session.fb_user.onDisconnect().remove();
+		// Make the user present in the session
 		session.fb_user.set(user);
 		
+		// For each existing and new user
 		_fb_on(session.fb_users, "child_added", function(snap){
 			
 			// Is this you?
@@ -100,7 +105,7 @@
 			// Get the Firebase reference for this user
 			var fb_other_user = snap.ref();
 			
-			// The user of the cursor we'll be drawing
+			// Get the user object stored on the server
 			var other_user = snap.val();
 			
 			// Draw the cursor
@@ -115,9 +120,11 @@
 				cursor_ctx.globalCompositeOperation = "destination-atop";
 				cursor_ctx.drawImage(img, 0, 0);
 			};
+			// @TODO @FIXME: stop requesting this image for each and every user
 			img.src = "images/cursors/default.png";
 			// @TODO: display other cursor types?
 			// @TODO: display mouse button state?
+			// @TODO: display selections
 			
 			// Make the $cursor element
 			var $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
@@ -163,18 +170,23 @@
 			}
 		};
 		
-		// Any time we recieve the image data or the data changes...
+		// Any time we change or recieve the image data
 		_fb_on(session.fb_data, "value", function(snap){
 			debug("data update");
 			
 			var uri = snap.val();
+			// Is there a value at this session's data location?
 			if(uri == null){
+				// This is a new session
+				// Sync the current data to it
 				sync();
 			}else{
 				previous_uri = uri;
 				
+				// Cancel any in-progress mouse operations
 				$G.triggerHandler("mouseup", "cancel");
 				
+				// Write the image data to the canvas
 				var img = new Image();
 				img.onload = function(){
 					canvas.width = img.naturalWidth;
@@ -197,6 +209,7 @@
 		$canvas.on("user-resized.session-hook", sync);
 		
 		$(".jspaint-canvas-area").on("mousedown.session-hook", "*", function(){
+			// @TODO: update immediately on mousedown with fill tool
 			$G.one("mouseup.session-hook", sync);
 		});
 		
@@ -219,6 +232,7 @@
 			session.fb_user.child("cursor").update({
 				away: true,
 			});
+			// @CHANGEME: avoid fb.update()
 		});
 		
 		// @FIXME: the cursor can come back from "away" via a mouse event
@@ -289,5 +303,7 @@
 	}).triggerHandler("hashchange");
 	
 	// @TODO: Session GUI
-	// @TODO: /#session:new to create a new session
+	// @TODO: URL to create a new session: /#session: and/or /#session:new
+	// @TODO: Show user when the session id is invalid
+	// @TODO: Show user when the session changes
 })();
