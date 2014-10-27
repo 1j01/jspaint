@@ -28,19 +28,23 @@
 		},
 		// Currently selected tool (@TODO)
 		tool: "Pencil",
-		// color components
+		// Color components
 		hue: ~~(Math.random() * 360),
 		saturation: ~~(Math.random() * 50) + 50,
 		lightness: ~~(Math.random() * 40) + 50,
 	};
 	
-	// the main cursor color
+	// The main cursor color
 	user.color = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 1)";
-	// not used
+	// Unused
 	user.color_transparent = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 0.5)";
-	// (@TODO) the color used in the toolbar indicating to other users it is selected by this user
+	// (@TODO) The color used in the toolbar indicating to other users it is selected by this user
 	user.color_desaturated = "hsla(" + user.hue + ", " + ~~(user.saturation*0.4) + "%, " + user.lightness + "%, 0.8)";
 	
+	
+	// The image used for other people's cursors
+	var cursor_image = new Image();
+	cursor_image.src = "images/cursors/default.png";
 	
 	
 	var Session = function(session_id){
@@ -108,25 +112,13 @@
 			// Get the user object stored on the server
 			var other_user = snap.val();
 			
-			// Draw the cursor
-			var cursor_canvas = new Canvas(32, 32);
-			var cursor_ctx = cursor_canvas.ctx;
-			var img = new Image();
-			img.onload = function(){
-				cursor_ctx.fillStyle = other_user.color;
-				cursor_ctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
-				cursor_ctx.globalCompositeOperation = "darker";
-				cursor_ctx.drawImage(img, 0, 0);
-				cursor_ctx.globalCompositeOperation = "destination-atop";
-				cursor_ctx.drawImage(img, 0, 0);
-			};
-			// @TODO @FIXME: stop requesting this image for each and every user
-			img.src = "images/cursors/default.png";
 			// @TODO: display other cursor types?
 			// @TODO: display mouse button state?
 			// @TODO: display selections
 			
-			// Make the $cursor element
+			var cursor_canvas = new Canvas(32, 32);
+			
+			// Make the cursor element
 			var $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
 			$cursor.css({
 				display: "none",
@@ -141,10 +133,29 @@
 				other_user = snap.val();
 				// If the user has left
 				if(other_user == null){
-					// Remove the $cursor
+					// Remove the cursor element
 					$cursor.remove();
 				}else{
-					// Update the $cursor
+					// Draw the cursor
+					var draw_cursor = function(){
+						cursor_canvas.width = cursor_image.width;
+						cursor_canvas.height = cursor_image.height;
+						var cctx = cursor_canvas.ctx;
+						cctx.fillStyle = other_user.color;
+						cctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
+						cctx.globalCompositeOperation = "darker";
+						cctx.drawImage(cursor_image, 0, 0);
+						cctx.globalCompositeOperation = "destination-atop";
+						cctx.drawImage(cursor_image, 0, 0);
+					};
+					
+					if(cursor_image.complete){
+						draw_cursor();
+					}else{
+						$(cursor_image).one("load", draw_cursor);
+					}
+					
+					// Update the cursor element
 					var canvas_rect = canvas.getBoundingClientRect();
 					$cursor.css({
 						display: "block",
@@ -238,7 +249,6 @@
 			session.fb_user.child("cursor").update({
 				away: true,
 			});
-			// @CHANGEME: avoid fb.update()
 		});
 		
 		// @FIXME: the cursor can come back from "away" via a mouse event
@@ -262,7 +272,7 @@
 		// Remove the user from the session
 		session.fb_user.remove();
 		
-		// Remove any $cursors
+		// Remove any cursor elements
 		$app.find(".user-cursor").remove();
 		
 		// Reset the file name
