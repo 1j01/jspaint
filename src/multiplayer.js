@@ -209,8 +209,14 @@
 		$canvas.on("user-resized.session-hook", sync);
 		
 		$(".jspaint-canvas-area").on("mousedown.session-hook", "*", function(){
-			// @TODO: update immediately on mousedown with fill tool
-			$G.one("mouseup.session-hook", sync);
+			// If you're using the fill tool
+			if(selected_tool.name.match(/Fill/)){
+				// Sync immediately
+				sync();
+			}else{
+				// Sync on mouseup
+				$G.one("mouseup.session-hook", sync);
+			}
 		});
 		
 		$G.on("session-update.session-hook", function(){
