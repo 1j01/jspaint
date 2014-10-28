@@ -34,6 +34,8 @@ $.each(menus, function(menu_key, menu_items){
 		$menu_popup.show();
 		
 		selecting_menus = true;
+		
+		$status_text.text("");
 	});
 	$menu_button.on("mouseup", function(e){
 		if(this_click_opened_the_menu){
@@ -49,6 +51,8 @@ $.each(menus, function(menu_key, menu_items){
 		
 		$menu_button.removeClass("active");
 		$menu_popup.hide();
+		
+		$status_text.default();
 	});
 	$.map(menu_items, function(item){
 		var $row = $(E("tr")).addClass("jspaint-menu-row").appendTo($menu_popup_table)
@@ -101,7 +105,22 @@ $.each(menus, function(menu_key, menu_items){
 				}else if(item.action){
 					$menus.find(".jspaint-menu-button").trigger("release");
 					item.action();
+					// a mouseleave event listener changes the status text
+					$item.one("mouseleave", function(){
+						// we want to change it back to the default
+						$status_text.default();
+					});
 				}
+			});
+			$item.on("mouseenter", function(){
+				if(item.submenu){
+					$status_text.text("");
+				}else{
+					$status_text.text(item.description || "");
+				}
+			});
+			$item.on("mouseleave", function(){
+				$status_text.text("");
 			});
 		}
 	});

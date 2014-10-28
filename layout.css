@@ -86,6 +86,24 @@ html, body, .jspaint {
 	min-width: 16px;
 }
 
+.jspaint-status-area {
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: default;
+	height: 1.25em;
+}
+.jspaint-status-text {
+	flex: 1;
+	overflow: hidden;
+}
+.jspaint-status-coordinates {
+	flex-basis: 114px;
+	flex-grow: 0;
+	min-width: 0px;
+	padding-left: 3px;
+	border-left: 1px solid #7b7b7b;
+}
+
 .jspaint-Tools-component {
 	height: 273px;
 	align-items: center;

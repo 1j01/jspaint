@@ -63,7 +63,6 @@
 
 * Mouse navigation ✓
 * Keyboard Navigation
-* Descriptions of menu items in the status bar
 
 
 * Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
