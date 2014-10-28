@@ -46,7 +46,7 @@ function $Window($component){
 	};
 	
 	
-	$(window).on("resize", $w.applyBounds);
+	$G.on("resize", $w.applyBounds);
 	
 	var mx, my;
 	var drag = function(e){

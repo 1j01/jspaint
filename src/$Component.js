@@ -16,7 +16,10 @@ function $Component(name, orientation, $el){
 		$c.css("left", "3px");
 	}
 	
-	var ox, oy, w, h, pos, pos_axis;
+	var ox, oy;
+	var w, h;
+	var pos = 0;
+	var pos_axis;
 	
 	if(orientation === "tall"){
 		pos_axis = "top";
@@ -41,6 +44,10 @@ function $Component(name, orientation, $el){
 		
 		$c.css("position", "relative");
 		$c.css(pos_axis, pos);
+		
+		// Save where it's now docked to
+		$last_docked_to = $dock_to;
+		last_docked_to_pos = pos;
 	};
 	
 	var last_docked_to_pos;
@@ -164,7 +171,8 @@ function $Component(name, orientation, $el){
 			});
 		}
 		
-		$ghost && $ghost.remove(), $ghost = null;
+		$ghost && $ghost.remove();
+		$ghost = null;
 		
 		$G.trigger("resize");
 	};
