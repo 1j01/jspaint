@@ -154,9 +154,13 @@ function $Component(name, orientation, $el){
 				tall: "jspaint-vertical",
 				wide: "jspaint-horizontal",
 			}[orientation]);
+			var window_rect = $w[0].getBoundingClientRect();
+			var window_content_rect = $w.$content[0].getBoundingClientRect();
+			var dx = window_content_rect.left - window_rect.left;
+			var dy = window_content_rect.top - window_rect.top;
 			$w.css({
-				left: e.clientX + ox,
-				top: e.clientY + oy
+				left: e.clientX + ox - dx,
+				top: e.clientY + oy - dy,
 			});
 		}
 		

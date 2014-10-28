@@ -91,7 +91,9 @@
 
 ### Components / Windows
 
-* Drag window and component together seamlessly
+* Make the component ghost go in front of the window
+* Make dragging on the window titlebar use the ghost
+* Make the component ghost account for the window titlebar
 
 
 * Keyboard interaction with dialogues
