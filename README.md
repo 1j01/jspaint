@@ -7,13 +7,15 @@ A nice web-based MS Paint remake and more...
 The goal is to remake MS Paint
 (including its [little-known features](#did-you-know)),
 improve on it, and to extend the types of images it can edit.
+So far, it does this pretty well.
 
 You can also install it as a Chrome app.
 
 
 #### Current improvements include:
 
-* Unlimited undos/redos (as opposed to a measly 3 in Windows XP, or a somewhat less measly but still annoying 50 in Windows 7)
+* Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
+  or a somewhat less measly but still annoying 50 in Windows 7)
 * Edit transparent images! To create a transparent image,
   go to Image > Attributes... and select Transparent,
   then Okay, and then Image > Clear Image
@@ -31,7 +33,7 @@ You can also install it as a Chrome app.
   Start up a session at
   [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
   and send the link to your friends!
-  (It doesn't yet work very well, though.
+  (It doesn't work very well yet, though.
   Currently when someone changes the canvas, you're annoyingly interrupted)
 
 
@@ -44,20 +46,24 @@ You can also install it as a Chrome app.
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
 * Rotate image by arbitrary angle
-* Alternate themes (You can already style it like any website with browser extensions like Stylebot or Stylish)
+* Keyboard shortcuts for rotation
+* Alternate themes (You can already style it with browser extensions like Stylebot or Stylish)
 
 
 #### A lot of stuff isn't done yet:
 
 * Magnification
-* A couple menu items
 * Shape styles on most of the shape tools
-* [A lot of stuff](TODO.md)
+* The polygon tool is pretty bad
+* Menu items don't get enabled/disabled dynamically
+* [This entire document full of things to do](TODO.md)
 
 Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but copied data can only be pasted into other instances of JS Paint.
-It would be a security issue if browsers let webpages access the clipboard at will, so the menus can't access the clipboard.
+The clipboard-related menu items can't access the clipboard
+because it would be a huge security issue if
+browsers let web pages access the clipboard at will.
 To use the clipboard menu items, you need to install the Chrome app.
 The menu items will still be grayed out, though.
 
@@ -78,14 +84,14 @@ But now we want transparency.
 And we want to undo more than three actions.
 We can't just keep using the old paint.
 
-So that's why I'm making jspaint. I want to bring good old paint into the modern era.
+So that's why I'm making JS Paint. I want to bring good old paint into the modern era.
 Also, it's totally retro. There might be themes later, though.
-What was this section titled? Oh, um yeah I'm doing that too.
+What was this section titled? Oh, um yeah I'm doing that too, I guess.
 
 
 ## Extended Editing
 
-I want to make jspaint to be able to edit...
+I want to make JS Paint to be able to edit...
 
 * Transparent PNGs (the main thing that's lacking in old ms paint) - This works!
 * Animated GIFs (yes, that entails a fully featured (but simple) animation editor) - You can currently only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
@@ -96,6 +102,16 @@ I want to make jspaint to be able to edit...
 
 
 ## Did you know?
+
+* You can drag the color box and tool box around if you grab them by the right place.
+  You can even drag them into a little window.
+  You can dock the window back to the side by double-clicking on it's titlebar.
+
+* In addition to the left-click foreground color and the right-click background color,
+  there's also a third color you can access by holding <kbd>Ctrl</kbd> while you draw.
+  It starts out with no color so you'll need to hold <kbd>Ctrl</kbd> and select a color first.
+  The slightly fancy thing about this color is you can
+  press and release <kbd>Ctrl</kbd> to switch colors while drawing.
 
 * These Tips and Tricks from [a tutorial for MS Paint](http://www.albinoblacksheep.com/tutorial/mspaint)
   also work in JS Paint if they have a checkmark:
