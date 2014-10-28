@@ -20,7 +20,7 @@ html, body, .jspaint {
 .jspaint-handle,
 .jspaint-status-area,
 .jspaint-menus,
-c-area {
+.jspaint-component-area {
 	display: none !important;
 }
 

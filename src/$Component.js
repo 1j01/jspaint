@@ -24,11 +24,37 @@ function $Component(name, orientation, $el){
 		pos_axis = "left";
 	}
 	
-	var dragging = false;
+	var dock_to = function($dock_to){
+		if($w){
+			$w.close();
+			$w = null;
+		}
+		
+		$dock_to.append($c);
+		
+		pos = Math.max(pos, 0);
+		if(pos_axis === "top"){
+			pos = Math.min(pos, $dock_to.height() - $c.height());
+		}else{
+			pos = Math.min(pos, $dock_to.width() - $c.width());
+		}
+		
+		$c.css("position", "relative");
+		$c.css(pos_axis, pos);
+	};
+	
+	var last_docked_to_pos;
+	var $last_docked_to;
 	var $dock_to;
 	var $ghost;
 	var $w;
 	$c.on("mousedown", function(e){
+		$G.on("mousemove", drag_onmousemove);
+		$G.one("mouseup", function(e){
+			$G.off("mousemove", drag_onmousemove);
+			drag_onmouseup(e);
+		});
+		
 		if(e.button !== 0) return;
 		
 		var rect = $c[0].getBoundingClientRect();
@@ -36,7 +62,6 @@ function $Component(name, orientation, $el){
 		h = (~~(rect.height/2))*2 + 1;
 		ox = rect.left - e.clientX;
 		oy = rect.top - e.clientY;
-		dragging = true;
 		
 		if(!$ghost){
 			$ghost = $(E("div")).addClass("jspaint-component-ghost dock");
@@ -54,10 +79,10 @@ function $Component(name, orientation, $el){
 		e.preventDefault();
 	});
 	$el.on("mousedown", function(e){
-		return false;
+		//e.preventDefault();
+		e.stopPropagation();
 	});
-	$G.on("mousemove", function(e){
-		if(!dragging) return;
+	var drag_onmousemove = function(e){
 		
 		$ghost.css({
 			left: e.clientX + ox,
@@ -96,33 +121,32 @@ function $Component(name, orientation, $el){
 		}
 		
 		e.preventDefault();
-	});
-	$G.on("mouseup", function(e){
-		if(!dragging) return;
-		dragging = false;
+	};
+	
+	var drag_onmouseup = function(e){
 		
 		if($w){
 			$w.close();
 			$w = null;
 		}
-		if($dock_to){
-			//dock component to $dock_to
-			$dock_to.append($c);
-			
-			pos = Math.max(pos, 0);
-			if(pos_axis === "top"){
-				pos = Math.min(pos, $dock_to.height() - $ghost.height());
-			}else{
-				pos = Math.min(pos, $dock_to.width() - $ghost.width());
+		
+		// If the component is docked to a component area (a side)
+		if($c.parent().is(".jspaint-component-area")){
+			// Save where it's docked so we can dock back later
+			$last_docked_to = $c.parent();
+			if($dock_to){
+				last_docked_to_pos = pos;
 			}
-			
-			$c.css("position", "relative");
-			$c.css(pos_axis, pos);
+		}
+		
+		if($dock_to){
+			// Dock component to $dock_to
+			dock_to($dock_to);
 		}else{
 			$c.css("position", "relative");
 			$c.css(pos_axis, "");
 			
-			//put the component in a window
+			// Put the component in a new window
 			$w = new $Window($c);
 			$w.title(name);
 			$w.$content.append($c);
@@ -139,6 +163,12 @@ function $Component(name, orientation, $el){
 		$ghost && $ghost.remove(), $ghost = null;
 		
 		$G.trigger("resize");
-	});
+	};
+	
+	$c.dock = function(){
+		pos = last_docked_to_pos;
+		dock_to($last_docked_to);
+	};
+	
 	return $c;
 }

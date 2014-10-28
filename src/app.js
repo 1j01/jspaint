@@ -59,10 +59,10 @@ var $canvas = $(canvas).appendTo($canvas_area);
 
 var $canvas_handles = $Handles($canvas_area, canvas, {outset: 4, offset: 4, size_only: true});
 
-var $top = $(E("c-area")).prependTo($V);
-var $bottom = $(E("c-area")).appendTo($V);
-var $left = $(E("c-area")).prependTo($H);
-var $right = $(E("c-area")).appendTo($H);
+var $top = $(E("div")).addClass("jspaint-component-area").prependTo($V);
+var $bottom = $(E("div")).addClass("jspaint-component-area").appendTo($V);
+var $left = $(E("div")).addClass("jspaint-component-area").prependTo($H);
+var $right = $(E("div")).addClass("jspaint-component-area").appendTo($H);
 
 var $status_area = $(E("div")).addClass("jspaint-status-area").appendTo($V);
 var $status_text = $(E("div")).addClass("jspaint-status-text").appendTo($status_area);

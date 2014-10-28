@@ -94,13 +94,13 @@
 * Drag window and component together seamlessly
 
 
-* Double-click a component window's titlebar to dock the component to its most recent location.
-
-
 * Keyboard interaction with dialogues
 	* Close dialogues with Escape
 	* Navigating form windows
 	* Left/Right, Enter/Space
+
+
+* Handle windows going off the screen
 
 
 ### Extended editing
