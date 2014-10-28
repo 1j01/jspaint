@@ -292,6 +292,9 @@
 }
 
 
+.jspaint-component-ghost {
+	z-index: 500;
+}
 .jspaint-component-ghost.dock {
 	outline: 1px solid black;
 	outline: 1px solid invert;

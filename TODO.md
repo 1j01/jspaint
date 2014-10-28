@@ -47,9 +47,9 @@
 			* You can't select text
 			* You can't drag links
 	* Fonts become serif in the menubar and/or statusbar
-	  (To temporarily reproduce, you can
-	  drag the canvas handles twice,
-	  but sometimes it happens and stays)
+	  To reproduce temporarily, drag the canvas handles twice.
+	  To reproduce persistently, open something from the window.
+	  (Duplicate the tab, go fullscreen, etc.)
 
 
 * Handling actions that interfere with each other
@@ -91,8 +91,7 @@
 
 ### Components / Windows
 
-* Make the component ghost go in front of the window
-* Make dragging on the window titlebar use the ghost
+* Use the ghost when dragging on a component window's titlebar
 * Make the component ghost account for the window titlebar
 
 
@@ -331,6 +330,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* DRY, especially for the buttons
 	* Seriously, the buttons
 	* Move into folder (called what? styles? stylesheets? css?)
+	* Deal with z-indexes
 
 
 * JS
