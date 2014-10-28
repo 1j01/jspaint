@@ -64,7 +64,9 @@ function $Window($component){
 		$G.off("mousemove", drag);
 	});
 	$w.$titlebar.on("dblclick", function(e){
-		$component.dock();
+		if($component){
+			$component.dock();
+		}
 	});
 	
 	$w.$Button = function(text, handler){
