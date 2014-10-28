@@ -7,21 +7,26 @@ var menus = {
 			item: "&New",
 			shortcut: "Ctrl+N",
 			action: file_new,
+			description: "Creates a new document.",
 		},
 		{
 			item: "&Open",
 			shortcut: "Ctrl+O",
 			action: file_open,
+			description: "Opens an existing document.",
 		},
 		{
 			item: "&Save",
 			shortcut: "Ctrl+S",
 			action: file_save,
+			description: "Saves the active document.",
 		},
 		{
 			item: "Save &As",
 			shortcut: "Ctrl+Shift+S",
+			//shortcut: "",
 			action: file_save_as,
+			description: "Saves the active document with a new name.",
 		},
 		____________________________,
 		{
@@ -29,12 +34,16 @@ var menus = {
 			action: function(){
 				print();
 			},
+			description: "Prints the active document and sets printing options.",
+			//description: "Displays full pages.",
 		},
 		{
 			item: "Page Se&tup",
 			action: function(){
 				print();
 			},
+			description: "Prints the active document and sets printing options.",
+			//description: "Changes the page layout.",
 		},
 		{
 			item: "&Print",
@@ -42,20 +51,24 @@ var menus = {
 			action: function(){
 				print();
 			},
+			description: "Prints the active document and sets printing options.",
 		},
 		____________________________,
 		{
 			item: "Set As &Wallpaper (Tiled)",
 			action: set_as_wallpaper_tiled,
+			description: "Tiles this bitmap as the desktop background.",
 		},
 		{
 			item: "Set As Wa&llpaper (Centered)",
 			action: set_as_wallpaper_centered,
+			description: "Centers this bitmap as the desktop background.",
 		},
 		____________________________,
 		{
 			item: "Recent File",
 			disabled: true,
+			description: "",
 		},
 		____________________________,
 		{
@@ -64,6 +77,7 @@ var menus = {
 			action: function(){
 				close();
 			},
+			description: "Quits Paint.",
 		}
 	],
 	"&Edit": [
@@ -71,12 +85,14 @@ var menus = {
 			item: "&Undo",
 			shortcut: "Ctrl+Z",
 			action: undo,
+			description: "Undoes the last action.",
 		},
 		{
 			item: "&Repeat",
 			shortcut: "F4",
 			disabled: true,
 			action: redo,
+			description: "Redoes the previously undone action.",
 		},
 		____________________________,
 		{
@@ -86,6 +102,7 @@ var menus = {
 			action: function(){
 				document.execCommand("cut");
 			},
+			description: "Cuts the selection and puts it on the Clipboard.",
 		},
 		{
 			item: "&Copy",
@@ -94,6 +111,7 @@ var menus = {
 			action: function(){
 				document.execCommand("copy");
 			},
+			description: "Copies the selection and puts it on the Clipboard.",
 		},
 		{
 			item: "&Paste",
@@ -102,27 +120,32 @@ var menus = {
 			action: function(){
 				document.execCommand("paste");
 			},
+			description: "Inserts the contents of the Clipboard.",
 		},
 		{
 			item: "C&lear Selection",
 			shortcut: "Del",
 			disabled: true,
 			action: delete_selection,
+			description: "Deletes the selection.",
 		},
 		{
 			item: "Select &All",
 			shortcut: "Ctrl+A",
 			action: select_all,
+			description: "Selects everything.",
 		},
 		____________________________,
 		{
 			item: "C&opy To...",
 			disabled: true,
 			action: save_selection_to_file,
+			description: "Copies the selection to a file.",
 		},
 		{
 			item: "Paste &From...",
 			action: paste_from,
+			description: "Pastes a file into the selection.",
 		}
 	],
 	"&View": [
@@ -134,6 +157,7 @@ var menus = {
 					return $toolbox.toggle().is(":visible");
 				},
 			},
+			description: "Shows or hides the tool box.",
 		},
 		{
 			item: "&Color Box",
@@ -143,6 +167,7 @@ var menus = {
 					return $colorbox.toggle().is(":visible");
 				},
 			},
+			description: "Shows or hides the color box.",
 		},
 		{
 			item: "&Status Bar",
@@ -151,11 +176,13 @@ var menus = {
 					return $status_area.toggle().is(":visible");
 				},
 			},
+			description: "Shows or hides the status bar.",
 		},
 		{
 			item: "T&ext Toolbar",
 			disabled: true,
 			checkbox: {},
+			description: "Shows or hides the text toolbar.",
 		},
 		____________________________,
 		{
@@ -164,15 +191,18 @@ var menus = {
 				{
 					item: "&Normal Size",
 					shorcut: "Ctrl+PgUp",
+					description: "Zooms the picture to 100%.",
 				},
 				{
 					item: "&Large Size",
 					shorcut: "Ctrl+PgDn",
 					disabled: true,
+					description: "Zooms the picture to 400%.",
 				},
 				{
 					item: "C&ustom...",
 					disabled: true,
+					description: "Zooms the picture.",
 				},
 				____________________________,
 				{
@@ -180,11 +210,13 @@ var menus = {
 					shorcut: "Ctrl+G",
 					disabled: true,
 					checkbox: {},
+					description: "Shows or hides the grid.",
 				},
 				{
 					item: "Show T&humbnail",
 					disabled: true,
 					checkbox: {},
+					description: "Shows or hides the thumbnail view of the picture.",
 				}
 			]
 		},
@@ -192,6 +224,7 @@ var menus = {
 			item: "&View Bitmap",
 			shortcut: "Ctrl+F",
 			action: view_bitmap,
+			description: "Displays the entire picture.",
 		}
 	],
 	"&Image": [
@@ -199,26 +232,32 @@ var menus = {
 			item: "&Flip/Rotate",
 			shortcut: "Ctrl+R",
 			action: image_flip_and_rotate,
+			description: "Flips or rotates the picture or a selection.",
 		},
 		{
 			item: "&Stretch/Skew",
 			shortcut: "Ctrl+W",
 			action: image_stretch_and_skew,
+			description: "Stretches or skews the picture or a selection.",
 		},
 		{
 			item: "&Invert Colors",
 			shortcut: "Ctrl+I",
 			action: image_invert,
+			description: "Inverts the colors of the picture or a selection.",
 		},
 		{
 			item: "&Attributes...",
 			shortcut: "Ctrl+E",
 			action: image_attributes,
+			description: "Changes the attributes of the picture.",
 		},
 		{
 			item: "&Clear Image",
 			shortcut: "Ctrl+Shift+N",
+			//shortcut: "Ctrl+Shft+N",
 			action: clear,
+			description: "Clears the picture or selection.",
 		},
 		{
 			item: "&Draw Opaque",
@@ -234,6 +273,7 @@ var menus = {
 					return transparent_opaque === "opaque";
 				},
 			},
+			description: "Makes the current selection either opaque or transparent.",
 		}
 	],
 	"&Colors": [
@@ -245,7 +285,24 @@ var menus = {
 				$b.trigger({type: "mousedown", ctrlKey: false, button: 0});
 				$b.find("input").trigger("click", "synthetic");
 			},
+			description: "Creates a new color.",
 		}
+		/*
+		{
+			item: "&Get Colors",
+			action: function(){
+				@TODO
+			},
+			description: "Uses a previously saved palette of colors.",
+		},
+		{
+			item: "&Save Colors",
+			action: function(){
+				@TODO
+			},
+			description: "Saves the current palette of colors to a file.",
+		}
+		*/
 	],
 	"&Help": [
 		{
@@ -260,6 +317,7 @@ var menus = {
 				).css({padding: "15px"});
 				$msgbox.center();
 			},
+			description: "Displays Help for the current task or command.",
 		},
 		____________________________,
 		{
@@ -274,6 +332,8 @@ var menus = {
 				).css({padding: "15px"});
 				$msgbox.center();
 			},
+			description: "Displays information about this application.",
+			//description: "Displays program information, version number, and copyright.",
 		}
 	],
 };
