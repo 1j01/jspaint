@@ -215,7 +215,7 @@ function paste(img){
 			"Would you like the canvas to be enlarged?<br>"
 		);
 		$w.$Button("Enlarge", function(){
-			//additional undo
+			// Additional undoable
 			undoable(function(){
 				var original = undos[undos.length-1];
 				canvas.width = Math.max(original.width, img.width);
@@ -239,7 +239,7 @@ function paste(img){
 	}
 	
 	function paste_img(){
-		// note: selecting a tool calls deselect();
+		// Note: selecting a tool calls deselect();
 		select_tool("Select");
 		
 		selection = new Selection(0, 0, img.width, img.height);
@@ -282,16 +282,21 @@ function render_history_as_gif(){
 			$win.title("Rendered GIF");
 			var url = URL.createObjectURL(blob);
 			$output.empty().append(
-				$(E("a")).attr({href: url, target: "_blank"}).append(
+				$(E("a")).attr({
+					href: url,
+					target: "_blank",
+				}).append(
 					$(E("img")).on("load", function(){
 						$win.center();
-					}).attr({src: url})
+					}).attr({
+						src: url,
+					})
 				).on("click", function(e){
 					$win.close();
 					if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
 						e.preventDefault();
 						chrome.fileSystem.chooseEntry({
-							type: 'saveFile',
+							type: "saveFile",
 							suggestedName: file_name+" history",
 							accepts: [{mimeTypes: ["image/gif"]}]
 						}, function(entry){
@@ -317,7 +322,10 @@ function render_history_as_gif(){
 		for(var i=0; i<undos.length; i++){
 			gif.addFrame(undos[i], {delay: 200});
 		}
-		gif.addFrame(canvas, {delay: 200, copy: true});
+		gif.addFrame(canvas, {
+			delay: 200,
+			copy: true,
+		});
 		gif.render();
 		
 	} catch(e) {
@@ -364,7 +372,7 @@ function undoable(callback, action){
 	return true;
 }
 function undo(){
-	if(undos.length<1) return false;
+	if(undos.length<1){ return false; }
 	this_ones_a_frame_changer();
 	
 	redos.push(new Canvas(canvas));
@@ -379,7 +387,7 @@ function undo(){
 	return true;
 }
 function redo(){
-	if(redos.length<1) return false;
+	if(redos.length<1){ return false; }
 	this_ones_a_frame_changer();
 	
 	undos.push(new Canvas(canvas));
@@ -394,7 +402,7 @@ function redo(){
 	return true;
 }
 function cancel(){
-	if(!selected_tool.passive) undo();
+	if(!selected_tool.passive){ undo(); }
 	$G.triggerHandler("mouseup", "cancel");
 }
 function this_ones_a_frame_changer(){
@@ -413,7 +421,9 @@ function deselect(){
 		textbox.destroy();
 		textbox = null;
 	}
-	selected_tool.end && selected_tool.end();
+	if(selected_tool.end){
+		selected_tool.end();
+	}
 }
 function delete_selection(){
 	if(selection){
@@ -453,8 +463,8 @@ function clear(){
 }
 
 function view_bitmap(){
-	canvas.requestFullscreen && canvas.requestFullscreen();
-	canvas.webkitRequestFullscreen && canvas.webkitRequestFullscreen();
+	if(canvas.requestFullscreen){ canvas.requestFullscreen(); }
+	if(canvas.webkitRequestFullscreen){ canvas.webkitRequestFullscreen(); }
 }
 
 function select_tool(name){
@@ -464,7 +474,9 @@ function select_tool(name){
 			selected_tool = tools[i];
 		}
 	}
-	$toolbox && $toolbox.update_selected_tool();
+	if($toolbox){
+		$toolbox.update_selected_tool();
+	}
 }
 
 function detect_transparency(){
@@ -515,7 +527,8 @@ function image_attributes(){
 	var $height_label = $(E("label")).appendTo($form_left).text("Height:");
 	var $width = $(E("input")).appendTo($width_label);
 	var $height = $(E("input")).appendTo($height_label);
-	$([$width[0], $height[0]])
+	
+	$form_left.find("input")
 		.css({width: "40px"})
 		.on("change keyup keydown keypress mousedown mousemove paste drop", function(){
 			if($(this).is($width)){

@@ -1,15 +1,18 @@
 
 function draw_ellipse(ctx, x, y, w, h, stroke, fill){
+	
 	var stroke_color = ctx.strokeStyle;
 	var fill_color = ctx.fillStyle;
-	
-	var r1 = Math.round;
-	var r2 = Math.round;
 	
 	var cx = x + w/2;
 	var cy = y + h/2;
 	
 	if(aliasing){
+		// @TODO: use proper raster ellipse algorithm
+		
+		var r1 = Math.round;
+		var r2 = Math.round;
+		
 		ctx.fillStyle = stroke_color;
 		for(var r=0; r<TAU; r+=0.01){
 			var rx = Math.cos(r) * w/2;
@@ -37,23 +40,27 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 			);
 		}
 	}else{
-		if(w<0){ x+=w; w=-w; }
-		if(h<0){ y+=h; h=-h; }
+		if(w < 0){ x += w; w = -w; }
+		if(h < 0){ y += h; h = -h; }
 		ctx.beginPath();
 		ctx.ellipse(cx, cy, w/2, h/2, 0, TAU, false);
 		ctx.stroke();
 		ctx.fill();
 	}
 }
+
 function draw_rounded_rectangle(ctx, x, y, width, height, radius){
+	
 	var stroke_color = ctx.strokeStyle;
 	var fill_color = ctx.fillStyle;
 	
 	if(aliasing){
+		// @TODO: use proper raster rounded rectangle algorithm
+		
 		var iw = width - radius*2;
 		var ih = height - radius*2;
-		var ix = x+radius;
-		var iy = y+radius;
+		var ix = x + radius;
+		var iy = y + radius;
 		
 		var r1 = Math.round;
 		var r2 = Math.round;
@@ -100,6 +107,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius){
 		ctx.fill();
 	}
 }
+
 function draw_line(ctx, x1, y1, x2, y2){
 	if(aliasing){
 		bresenham_line(x1, y1, x2, y2, function(x, y){
@@ -115,6 +123,7 @@ function draw_line(ctx, x1, y1, x2, y2){
 		ctx.lineCap = "butt";
 	}
 }
+
 function bresenham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
@@ -134,6 +143,7 @@ function bresenham_line(x1, y1, x2, y2, callback){
 		if(e2 < dx){ err += dx; y1 += sy; }
 	}
 }
+
 function brosandham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm modified to callback in-between going horizontal and vertical
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
@@ -154,6 +164,7 @@ function brosandham_line(x1, y1, x2, y2, callback){
 		if(e2 < dx){ err += dx; y1 += sy; }
 	}
 }
+
 function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	
 	var stack = [[x, y]];
@@ -239,11 +250,11 @@ function apply_image_transformation(fn){
 	// Apply an image transformation function to either the selection or the entire canvas
 	var new_canvas = new Canvas();
 	var original_canvas =
-		selection? selection.
-		canvas: canvas;
+		selection? selection. // Selection!? Selection!
+		canvas: canvas; // Canvas, canvas, canvas.
 	
-	// sometimes selection.canvas is an Image
-	// maybe that should be changed instead having of this here
+	// Sometimes selection.canvas is an Image
+	// Maybe that should be changed instead having of this here
 	if(!original_canvas.getContext){
 		original_canvas = new Canvas(original_canvas);
 	}
@@ -290,7 +301,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 	var id_from_main = ctx.getImageData(X_MIN, Y_MIN, WIDTH, HEIGHT);
 	var id_for_cutout = cutout.ctx.createImageData(WIDTH, HEIGHT);
 	
-	// Based off of some public-domain code by Darel Rex Finley, 2007
+	// Loosely based off of some public-domain code by Darel Rex Finley, 2007
 	
 	var nodes; // length of the nodeX array
 	var nodeX = new Array(points.length);
@@ -356,4 +367,3 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 	return cutout;
 	
 }
-

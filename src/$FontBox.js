@@ -3,7 +3,12 @@ function $FontBox(){
 	var $fb = $(E("div")).addClass("jspaint-font-box");
 	
 	var $family = $(E("select"));
-	var $size = $(E("input")).attr({type: "number", min: 8, max: 72, value: font.size});
+	var $size = $(E("input")).attr({
+		type: "number",
+		min: 8,
+		max: 72,
+		value: font.size,
+	});
 	var $button_group = $(E("span"));
 	var $bold = $Toggle(0, "bold");
 	var $italic = $Toggle(1, "italic");
@@ -66,13 +71,13 @@ function $FontBox(){
 
 // @TODO: detective work
 FontDetective = {
-	psuedo: ["sans-serif", "serif", "monospace", "fantasy"],
+	keywords: ["sans-serif", "serif", "monospace", "fantasy"],
 	each: function(callback){
-		for(var i=0; i<FontDetective.psuedo.length; i++){
-			callback(FontDetective.psuedo[i]);
+		for(var i=0; i<FontDetective.keywords.length; i++){
+			callback(FontDetective.keywords[i]);
 		}
 	},
 	all: function(callback){
-		callback(FontDetective.psuedo);
-	}
+		callback(FontDetective.keywords);
+	},
 };

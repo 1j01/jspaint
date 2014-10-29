@@ -10,14 +10,14 @@ function $Handles($container, element, options){
 	
 	var $resize_ghost = $(E("div")).addClass("jspaint-resize-ghost");
 	var handles = $.map([
-		["top", "right"], //↗
-		["top", "middle"], //↑
-		["top", "left"], //↖
-		["middle", "left"], //←
-		["bottom", "left"], //↙
-		["bottom", "middle"], //↓
-		["bottom", "right"], //↘
-		["middle", "right"], //→
+		["top", "right"], // ↗
+		["top", "middle"], // ↑
+		["top", "left"], // ↖
+		["middle", "left"], // ←
+		["bottom", "left"], // ↙
+		["bottom", "middle"], // ↓
+		["bottom", "right"], // ↘
+		["middle", "right"], // →
 	], function(pos){
 		var y_axis = pos[0];
 		var x_axis = pos[1];

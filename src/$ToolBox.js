@@ -10,8 +10,7 @@ function $ToolBox(){
 		$status_text.default();
 	});
 	
-	var $buttons;
-	$.each(tools, function(i, tool){
+	var $buttons = $($.map(tools, function(tool, i){
 		var $b = $(E("button")).addClass("jspaint-tool");
 		$b.appendTo($tools);
 		tool.$button = $b;
@@ -59,8 +58,9 @@ function $ToolBox(){
 				});
 			}
 		});
-	});
-	$buttons = $tools.find("button");
+		
+		return $b[0];
+	}));
 	
 	var $c = $Component("Tools", "tall", $tools.add($tool_options));
 	$c.update_selected_tool = function(){
@@ -70,7 +70,7 @@ function $ToolBox(){
 		$tool_options.append(selected_tool.$options);
 		$tool_options.children().trigger("update");
 		$canvas.css({
-			cursor: Cursor(selected_tool.cursor)
+			cursor: Cursor(selected_tool.cursor),
 		});
 		deselect();
 	};

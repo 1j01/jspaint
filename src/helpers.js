@@ -22,9 +22,9 @@ var TAU =     //////|//////
               //////|//////          C/r;
 
 function Cursor(cursor_def){
-	return "url(images/cursors/" + cursor_def[0] + ".png) "
-		+ cursor_def[1].join(" ")
-		+ ", " + cursor_def[2]
+	return "url(images/cursors/" + cursor_def[0] + ".png) " +
+		cursor_def[1].join(" ") +
+		", " + cursor_def[2]
 }
 
 function E(t){
@@ -33,8 +33,7 @@ function E(t){
 
 function get_rgba_from_color(color){
 	
-	var _c = new Canvas();
-	_c.width = _c.height = 1;
+	var _c = new Canvas(1, 1);
 	
 	_c.ctx.fillStyle = color;
 	_c.ctx.fillRect(0, 0, 1, 1);

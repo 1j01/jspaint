@@ -7,29 +7,29 @@ function $ColorBox(){
 	
 	$cb.append($current_colors, $palette);
 	
-	var $color0 = $(E("div")).addClass("jspaint-color-selection");
-	var $color1 = $(E("div")).addClass("jspaint-color-selection");
-	$current_colors.append($color0, $color1);
+	var $foreground_color = $(E("div")).addClass("jspaint-color-selection");
+	var $background_color = $(E("div")).addClass("jspaint-color-selection");
+	$current_colors.append($foreground_color, $background_color);
 	
 	$current_colors.css({
 		position: "relative",
 	});
-	$color0.css({
+	$foreground_color.css({
 		position: "absolute",
 		zIndex: 1,
 		left: 2,
 		top: 4,
 	});
-	$color1.css({
+	$background_color.css({
 		position: "absolute",
 		right: 3,
 		bottom: 3,
 	});
 	
 	function update_colors(){
+		$foreground_color.css({background: colors[0]});
+		$background_color.css({background: colors[1]});
 		$current_colors.css({background: colors[2]});
-		$color0.css({background: colors[0]});
-		$color1.css({background: colors[1]});
 		$G.trigger("option-changed");
 	}
 	

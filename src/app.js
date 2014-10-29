@@ -44,7 +44,7 @@ var file_name;
 
 
 
-var $body = $(document.body||"body");
+var $body = $("body");
 var $G = $(window);
 var $app = $(E("div")).addClass("jspaint").appendTo("body");
 

@@ -3,10 +3,12 @@ tools = [{
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	//passive: true, @TODO
-	// the vertices of the polygon
+	// @TODO: passive: true,
+	
+	// The vertices of the polygon
 	points: [],
-	// the boundaries of the polygon
+	
+	// The boundaries of the polygon
 	x_min: +Infinity,
 	x_max: -Infinity,
 	y_min: +Infinity,
@@ -25,17 +27,19 @@ tools = [{
 			selection.destroy();
 			selection = null;
 		}
-		// the brush is continuous in space, but we only need to record individual mouse events
+		// The inverty brush is continuous in space which means
+		// paint(ctx, x, y) will be called for each pixel the mouse moves
+		// and we only need to record individual mouse events to make the polygon
 		var onmousemove = function(e){
 			var mouse = e2c(e);
-			// constrain the mouse to the canvas
+			// Constrain the mouse to the canvas
 			mouse.x = Math.min(canvas.width, mouse.x);
 			mouse.x = Math.max(0, mouse.x);
 			mouse.y = Math.min(canvas.height, mouse.y);
 			mouse.y = Math.max(0, mouse.y);
-			// add the point
+			// Add the point
 			tool.points.push(mouse);
-			// update the boundaries of the polygon
+			// Update the boundaries of the polygon
 			tool.x_min = Math.min(mouse.x, tool.x_min);
 			tool.x_max = Math.max(mouse.x, tool.x_max);
 			tool.y_min = Math.min(mouse.y, tool.y_min);
@@ -49,34 +53,38 @@ tools = [{
 	continuous: "space",
 	paint: function(ctx, x, y){
 		
-		// constrain the brush position to the canvas
+		// Constrain the inverty paint brush position to the canvas
 		x = Math.min(canvas.width, x);
 		x = Math.max(0, x);
 		y = Math.min(canvas.height, y);
 		y = Math.max(0, y);
 		
+		// Find the dimensions on the canvas of the tiny square to invert
 		var inverty_size = 2;
 		var rect_x = ~~(x - inverty_size/2);
 		var rect_y = ~~(y - inverty_size/2);
 		var rect_w = inverty_size;
 		var rect_h = inverty_size;
 		
+		// @TODO @FIXME get rid of this part:
 		if(!undos.length){
 			undoable();//ugh... this is supposed to be passive
+		}//phhh
+		var ctx_src = undos[undos.length-1].getContext("2d");//psh
+		
+		// Make two tiny ImageData objects,
+		var id_dest = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+		var id_src = ctx_src.getImageData(rect_x, rect_y, rect_w, rect_h);
+		
+		for(var i=0, l=id_dest.data.length; i<l; i+=4){
+			id_dest.data[i+0] = 255 - id_src.data[i+0];
+			id_dest.data[i+1] = 255 - id_src.data[i+1];
+			id_dest.data[i+2] = 255 - id_src.data[i+2];
+			id_dest.data[i+3] = 255;
+			// @TODO maybe: invert based on id_src.data[i+3] and the background
 		}
-		var ctx_prev = undos[undos.length-1].getContext("2d");
 		
-		var id = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
-		var id_prev = ctx_prev.getImageData(rect_x, rect_y, rect_w, rect_h);
-		
-		for(var i=0, l=id.data.length; i<l; i+=4){
-			id.data[i+0] = 255 - id_prev.data[i+0];
-			id.data[i+1] = 255 - id_prev.data[i+1];
-			id.data[i+2] = 255 - id_prev.data[i+2];
-			id.data[i+3] = 255;//id_prev.data[i+3];
-		}
-		
-		ctx.putImageData(id, rect_x, rect_y);
+		ctx.putImageData(id_dest, rect_x, rect_y);
 		
 	},
 	mouseup: function(){
@@ -129,7 +137,7 @@ tools = [{
 		selection = new Selection(mouse.x, mouse.y, 1, 1);
 	},
 	paint: function(){
-		if(!selection){return;}
+		if(!selection){ return; }
 		selection.w = selection.x - mouse.x;
 		selection.h = selection.y - mouse.y;
 		var x1 = Math.max(0, Math.min(selection.x, mouse.x));
@@ -143,7 +151,7 @@ tools = [{
 		selection.position();
 	},
 	mouseup: function(){
-		if(!selection){return;}
+		if(!selection){ return; }
 		
 		if(ctrl){
 			selection.crop();
@@ -181,7 +189,8 @@ tools = [{
 			}
 		}else{
 			// Color Eraser
-			// Right click with the eraser to selectively replace the selected foreground color with the selected background color
+			// Right click with the eraser to selectively replace
+			// the selected foreground color with the selected background color
 			
 			var fg_rgba = get_rgba_from_color(colors[0]);
 			var bg_rgba = get_rgba_from_color(colors[1]);
@@ -288,7 +297,11 @@ tools = [{
 	rendered_shape: "",
 	paint: function(ctx, x, y){
 		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
-		if(this.rendered_shape !== brush_shape || this.rendered_color !== stroke_color || this.rendered_size !== brush_size){
+		if(
+			this.rendered_shape !== brush_shape ||
+			this.rendered_color !== stroke_color ||
+			this.rendered_size !== brush_size
+		){
 			brush_canvas.width = csz;
 			brush_canvas.height = csz;
 
@@ -343,7 +356,7 @@ tools = [{
 		textbox = new TextBox(mouse.x, mouse.y, 1, 1);
 	},
 	paint: function(){
-		if(!textbox){return;}
+		if(!textbox){ return; }
 		textbox.w = textbox.x - mouse.x;
 		textbox.h = textbox.y - mouse.y;
 		var x1 = Math.max(0, Math.min(textbox.x, mouse.x));
@@ -357,11 +370,11 @@ tools = [{
 		textbox.position();
 	},
 	mouseup: function(){
-		if(!textbox){return;}
+		if(!textbox){ return; }
 		textbox.instantiate();
 	},
 	cancel: function(){
-		if(!textbox){return;}
+		if(!textbox){ return; }
 		textbox.destroy();
 		textbox = null;
 	},
@@ -382,8 +395,8 @@ tools = [{
 	stroke_only: true,
 	points: [],
 	passive: function(){
-		// actions are passive if you've already started using the tool
-		// but the first action should be undoable
+		// Actions are passive if you've already started using the tool,
+		// but the first action should be undoable / cancelable
 		return this.points.length > 0;
 	},
 	mouseup: function(ctx, x, y){
@@ -393,10 +406,11 @@ tools = [{
 	},
 	mousedown: function(ctx, x, y){
 		if(this.points.length < 1){
+			// This would be so much better in CoffeeScript
 			var thine = this;
-			undoable(function(){//=>
+			undoable(function(){
 				thine.points.push({x: x, y: y});
-				//second point so first action draws a line
+				// second point so first action draws a line
 				thine.points.push({x: x, y: y});
 			});
 		}else{
@@ -457,8 +471,12 @@ tools = [{
 	name: "Polygon",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
+	
+	// record the last click for double-clicking (@TODO)
+	last_click: {x: 0, y: 0, time: 0},
+	
 	points: [],
-	last_click: {x: 0, y: 0, time: 0},//for double-clicking
+	
 	passive: function(){
 		// actions are passive if you've already started using the tool
 		// but the first action should be undoable
@@ -473,17 +491,18 @@ tools = [{
 		var dx = this.points[i].x - this.points[0].x;
 		var dy = this.points[i].y - this.points[0].y;
 		var d = Math.sqrt(dx*dx + dy*dy);
-		if(d < stroke_size*5.349205){//it's kinda weird how this is dependant on stroke_size but I guess it makes sense
-			// the canvas doesn't get cleared to the previous image before calling complete, which it should @TODO
+		if(d < stroke_size*5.349205){
+			// the canvas doesn't get cleared to the previous image
+			// before calling complete, which it should @TODO
 			this.complete(ctx, x, y);
 		}
 	},
 	mousedown: function(ctx, x, y){
 		if(this.points.length < 1){
 			var thine = this;
-			undoable(function(){//=>
+			undoable(function(){
 				thine.points.push({x: x, y: y});
-				//second point so first action draws a line
+				// second point so first action draws a line
 				thine.points.push({x: x, y: y});
 			});
 		}else{
@@ -502,9 +521,7 @@ tools = [{
 		for(var i=1; i<this.points.length; i++){
 			ctx.lineTo(this.points[i].x, this.points[i].y);
 		}
-		//ctx.closePath();
 		ctx.stroke();
-		//ctx.fill();
 	},
 	complete: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
@@ -533,7 +550,8 @@ tools = [{
 		this.points = [];
 	},
 	shape: function(){
-		true; // Yes, this is a shape tool.
+		// Yes, this is a shape tool.
+		// See? It has a function here.
 	},
 	$options: $ChooseShapeStyle()
 }, {
@@ -549,8 +567,8 @@ tools = [{
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape: function(ctx, x, y, w, h){
-		if(w<0){ x+=w; w=-w; }
-		if(h<0){ y+=h; h=-h; }
+		if(w < 0){ x += w; w = -w; }
+		if(h < 0){ y += h; h = -h; }
 		var radius = Math.min(7, w/2, h/2);
 		
 		draw_rounded_rectangle(ctx, x, y, w, h, radius);

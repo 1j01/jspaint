@@ -83,7 +83,7 @@ var $Choose = function(things, display, choose, is_chosen){
 				var $option = $();
 				var choose_thing = function(){
 					if(is_chosen(thing)){
-						return; //optimization
+						return; // unnecessary optimization
 					}
 					choose(thing);
 					$G.trigger("option-changed");
@@ -104,7 +104,7 @@ var $Choose = function(things, display, choose, is_chosen){
 				$chooser.on("mousedown", function(){
 					$option_container.on("mouseenter", choose_thing);
 				});
-				$(window).on("mouseup", function(){
+				$G.on("mouseup", function(){
 					$option_container.off("mouseenter", choose_thing);
 				});
 				
@@ -151,11 +151,12 @@ var $ChooseShapeStyle = function(){
 			$chooser.fill = a.fill;
 		},
 		function(a){
-			if($chooser.fill === undefined) $chooser.fill = false;
-			if($chooser.stroke === undefined) $chooser.stroke = true;
 			return $chooser.stroke === a.stroke && $chooser.fill === a.fill;
 		}
 	).addClass("jspaint-choose-shape-style");
+	
+	$chooser.fill = false;
+	$chooser.stroke = true;
 	
 	return $chooser;
 };
@@ -174,7 +175,7 @@ var $choose_brush = $Choose(
 			}
 		}
 		return things;
-	})(), 
+	})(),
 	function(o, is_chosen){
 		var cbcanvas = new Canvas(10, 10);
 		

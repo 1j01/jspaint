@@ -330,7 +330,8 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* DRY, especially for the buttons
 	* Seriously, the buttons
 	* Move into folder (called what? styles? stylesheets? css?)
-	* Deal with z-indexes
+	* Deal with `z-index`es
+	* Comment everything
 
 
 * JS
@@ -342,6 +343,8 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
 	* Image inversion code is duplicated in ChooserCanvas in tool-options.js
 	* render_brush shouldn't be in tool-options.js
+	* `$w.$form.addClass("jspaint-horizontal").css({display: "flex"});`
+	* Comment everything
 
 
 * Images

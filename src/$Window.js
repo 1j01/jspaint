@@ -75,7 +75,9 @@ function $Window($component){
 			.addClass("jspaint-dialogue-button")
 			.text(text)
 			.on("click", function(){
-				handler && handler();
+				if(handler){
+					handler();
+				}
 				$w.close();
 			})
 		);
@@ -118,6 +120,7 @@ function $FormWindow(title){
 		var $b = $(E("button")).appendTo($w.$form_right).text(label);
 		$b.on("click", function(e){
 			// prevent the form from submitting
+			// @TODO: instead, prevent the form's submit event
 			e.preventDefault();
 			
 			action();
