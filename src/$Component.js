@@ -56,13 +56,13 @@ function $Component(name, orientation, $el){
 	var $ghost;
 	var $w;
 	$c.on("mousedown", function(e){
+		if(e.button !== 0) return;
+		
 		$G.on("mousemove", drag_onmousemove);
 		$G.one("mouseup", function(e){
 			$G.off("mousemove", drag_onmousemove);
 			drag_onmouseup(e);
 		});
-		
-		if(e.button !== 0) return;
 		
 		var rect = $c[0].getBoundingClientRect();
 		w = (~~(rect.width/2))*2 + 1; //make sure these dimensions are odd numbers
