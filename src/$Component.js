@@ -87,7 +87,9 @@ function $Component(name, orientation, $el){
 		e.preventDefault();
 	});
 	$el.on("mousedown", function(e){
-		//e.preventDefault();
+		// Prevent text selection anywhere within the component
+		e.preventDefault();
+		// Don't let this event be handled as the start of a drag of the component
 		e.stopPropagation();
 	});
 	var drag_onmousemove = function(e){
