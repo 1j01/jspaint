@@ -94,7 +94,7 @@ tools = [{
 		
 		// Cut out the polygon
 		var cutout = cut_polygon(
-			this.points, 
+			this.points,
 			this.x_min,
 			this.y_min,
 			this.x_max,
@@ -472,10 +472,17 @@ tools = [{
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	
-	// record the last click for double-clicking (@TODO)
+	// Record the last click for double-clicking (@TODO)
 	last_click: {x: 0, y: 0, time: 0},
 	
+	// The vertices of the polygon
 	points: [],
+	
+	// The boundaries of the polygon
+	x_min: +Infinity,
+	x_max: -Infinity,
+	y_min: +Infinity,
+	y_max: -Infinity,
 	
 	passive: function(){
 		// actions are passive if you've already started using the tool
@@ -492,21 +499,39 @@ tools = [{
 		var dy = this.points[i].y - this.points[0].y;
 		var d = Math.sqrt(dx*dx + dy*dy);
 		if(d < stroke_size*5.349205){
-			// the canvas doesn't get cleared to the previous image
-			// before calling complete, which it should @TODO
 			this.complete(ctx, x, y);
 		}
 	},
 	mousedown: function(ctx, x, y){
-		if(this.points.length < 1){
-			var thine = this;
+		
+		var tool = this;
+		if(tool.points.length < 1){
+			tool.x_min = x;
+			tool.x_max = x+1;
+			tool.y_min = y;
+			tool.y_max = y+1;
+			tool.points = [];
+			// @TODO: stop needing this:
+			tool.canvas_base = canvas;
+			
 			undoable(function(){
-				thine.points.push({x: x, y: y});
-				// second point so first action draws a line
-				thine.points.push({x: x, y: y});
+				// @TODO: stop needing this:
+				tool.canvas_base = undos[undos.length-1];
+				
+				// Add the first point of the polygon
+				tool.points.push({x: x, y: y});
+				// Add a second point so first action draws a line
+				tool.points.push({x: x, y: y});
 			});
 		}else{
-			this.points.push({x: x, y: y});
+			// Add the point
+			tool.points.push({x: x, y: y});
+			// Update the boundaries of the polygon
+			// @TODO: this boundary stuff in less places (DRY)
+			tool.x_min = Math.min(x, tool.x_min);
+			tool.x_max = Math.max(x, tool.x_max);
+			tool.y_min = Math.min(y, tool.y_min);
+			tool.y_max = Math.max(y, tool.y_max);
 		}
 	},
 	paint: function(ctx, x, y){
@@ -516,16 +541,22 @@ tools = [{
 		this.points[i].x = x;
 		this.points[i].y = y;
 		
-		ctx.beginPath();
-		ctx.moveTo(this.points[0].x, this.points[0].y);
-		for(var i=1; i<this.points.length; i++){
-			ctx.lineTo(this.points[i].x, this.points[i].y);
+		ctx.fillStyle = stroke_color;
+		for(var i=0, j=1; j<this.points.length; i++, j++){
+			draw_line(ctx,
+				this.points[i].x, this.points[i].y,
+				this.points[j].x, this.points[j].y
+			);
 		}
-		ctx.stroke();
 	},
 	complete: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
 		
+		// Clear the canvas to the previous image
+		// Get rid of strokes drawn while constructing the shape
+		ctx.drawImage(this.canvas_base, 0, 0);
+		
+		// Draw an antialiased polygon
 		ctx.beginPath();
 		ctx.moveTo(this.points[0].x, this.points[0].y);
 		for(var i=1; i<this.points.length; i++){
@@ -535,11 +566,61 @@ tools = [{
 		ctx.closePath();
 		
 		if(this.$options.fill){
+			ctx.fillStyle = fill_color;
 			ctx.fill();
 		}
 		if(this.$options.stroke){
+			ctx.fillStyle = stroke_color;
 			ctx.stroke();
 		}
+		
+		/*
+		if(this.$options.fill){
+			// Make a solid-colored canvas
+			var colored_canvas = new Canvas(canvas.width, canvas.height);
+			colored_canvas.ctx.fillStyle = fill_color;
+			colored_canvas.ctx.fillRect(0, 0, canvas.width, canvas.height);
+			
+			for(var i=0; i<this.points.length; i++){
+				// Update the boundaries of the polygon
+				// @TODO: this boundary stuff in less places (DRY)
+				this.x_min = Math.min(this.points[i].x, this.x_min);
+				this.x_max = Math.max(this.points[i].x, this.x_max);
+				this.y_min = Math.min(this.points[i].y, this.y_min);
+				this.y_max = Math.max(this.points[i].y, this.y_max);
+			}
+			
+			// Cut a colored polygon out of the solid-colored canvas
+			var colored_polygon = cut_polygon(
+				this.points,
+				this.x_min,
+				this.y_min,
+				this.x_max,
+				this.y_max,
+				colored_canvas,
+				0.25
+			);
+			
+			// Draw the colored polygon to the canvas
+			ctx.drawImage(colored_polygon, this.x_min, this.y_min);
+			
+		}
+		if(this.$options.stroke){
+			ctx.fillStyle = stroke_color;
+			for(var i=0, j=1; j<this.points.length; i++, j++){
+				draw_line(ctx,
+					this.points[i].x, this.points[i].y,
+					this.points[j].x, this.points[j].y
+				);
+			}
+			j = 0;
+			i = this.points.length - 1;
+			draw_line(ctx,
+				this.points[i].x, this.points[i].y,
+				this.points[j].x, this.points[j].y
+			);
+		}
+		*/
 		
 		this.points = [];
 	},

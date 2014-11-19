@@ -96,6 +96,7 @@
 		session.fb_user.onDisconnect().remove();
 		// Make the user present in the session
 		session.fb_user.set(user);
+		// @TODO: Execute the above two lines when .info/connected
 		
 		// For each existing and new user
 		_fb_on(session.fb_users, "child_added", function(snap){
@@ -294,6 +295,7 @@
 		var match = location.hash.match(/^#?session:(.*)$/i);
 		if(match){
 			var session_id = match[1];
+			// @TODO: URL to create a new session: /#session: and/or /#session:new
 			if(session_id === ""){
 				debug("session id is empty (not a valid location)");
 				end_current_session();
@@ -304,6 +306,7 @@
 				if(current_session && current_session.id === session_id){
 					debug("hash changed to current session id?");
 				}else{
+					// @TODO: Ask about saving before starting a new session 
 					end_current_session();
 					debug("starting a new session, id: "+session_id+"");
 					current_session = new Session(session_id);
@@ -319,7 +322,6 @@
 	}).triggerHandler("hashchange");
 	
 	// @TODO: Session GUI
-	// @TODO: URL to create a new session: /#session: and/or /#session:new
-	// @TODO: Show user when the session id is invalid
-	// @TODO: Show user when the session changes
+	// @TODO: Show the user when the session id is invalid
+	// @TODO: Show the user when the session changes
 })();

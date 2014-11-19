@@ -283,23 +283,24 @@ function apply_image_transformation(fn){
 	}
 }
 
-function cut_polygon(points, x_min, y_min, x_max, y_max){
+function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
+	// Cut out the polygon given by points bounded by x/y_min/max from from_canvas
 	
-	var cutout = new Canvas();
+	from_canvas = from_canvas || canvas;
 	
-	var X_MIN = x_min; //|| 0;
-	var X_MAX = x_max; //|| canvas.width;
-	var Y_MIN = y_min; //|| 0;
-	var Y_MAX = y_max; //|| canvas.height;
+	var X_MIN = x_min; // || 0;
+	var X_MAX = x_max; // || canvas.width;
+	var Y_MIN = y_min; // || 0;
+	var Y_MAX = y_max; // || canvas.height;
 	var WIDTH = X_MAX - X_MIN;
 	var HEIGHT = Y_MAX - Y_MIN;
 	
-	cutout.width = WIDTH;
-	cutout.height = HEIGHT;
+	var cutout = new Canvas(WIDTH, HEIGHT);
 	
-	// Take image data from main canvas context
-	var id_from_main = ctx.getImageData(X_MIN, Y_MIN, WIDTH, HEIGHT);
-	var id_for_cutout = cutout.ctx.createImageData(WIDTH, HEIGHT);
+	// Take image data from source canvas context
+	var id_src = from_canvas.ctx.getImageData(X_MIN, Y_MIN, WIDTH, HEIGHT);
+	// Create image data to draw the polygon onto
+	var id_dest = cutout.ctx.createImageData(WIDTH, HEIGHT);
 	
 	// Loosely based off of some public-domain code by Darel Rex Finley, 2007
 	
@@ -307,20 +308,26 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 	var nodeX = new Array(points.length);
 	var swap;
 	var i, j;
-
+	//var edge_points = [];
+	
 	// Loop through the rows of the image.
 	for(var y = Y_MIN; y < Y_MAX; y++){
-
+		
 		// Build a list of nodes.
-		// (In this context, 'nodes' are one-dimensional points of intersection)
-		// (Also, nodes is treated as the length of the nodeX array)
+		// (In this context, "nodes" are one-dimensional points of intersection)
+		// (Also, `nodes` is treated as the length of the nodeX array)
 		nodes = 0;
 		j = points.length - 1;
 		for(i = 0; i < points.length; i++){
-			if(points[i].y < y && points[j].y >= y
-			|| points[j].y < y && points[i].y >= y){
-				nodeX[nodes++] = points[i].x +
-					(y - points[i].y) / (points[j].y - points[i].y) * (points[j].x - points[i].x);
+			if(
+				points[i].y < y && points[j].y >= y ||
+				points[j].y < y && points[i].y >= y
+			){
+				nodeX[nodes++] =
+					points[i].x +
+					(y - points[i].y) /
+					(points[j].y - points[i].y) *
+					(points[j].x - points[i].x);
 			}
 			j = i;
 		}
@@ -332,7 +339,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 				swap = nodeX[i];
 				nodeX[i] = nodeX[i+1];
 				nodeX[i+1] = swap;
-				if (i) i--;
+				if(i){ i--; }
 			}else{
 				i++;
 			}
@@ -341,9 +348,10 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 		/*nodeX.sort(function(a, b){
 			return a - b;
 		});*/
-		// But this array can contain undefineds; it's defined not by its length but by 'nodes'
-
-
+		// But this array can contain undefineds [citation needed]
+		// It's not defined by its length but by the variable `nodes`
+		
+		
 		// Fill the pixels between node pairs.
 		for(i = 0; i < nodes; i += 2){
 			if(nodeX[i+0] >= X_MAX) break;
@@ -353,17 +361,20 @@ function cut_polygon(points, x_min, y_min, x_max, y_max){
 				for(var x = nodeX[i]; x < nodeX[i+1]; x++){
 					// fill pixel at (x, y)
 					var idi = ((y-Y_MIN)*WIDTH + ~~(x-X_MIN))*4;
-					id_for_cutout.data[idi+0] = id_from_main.data[idi+0];
-					id_for_cutout.data[idi+1] = id_from_main.data[idi+1];
-					id_for_cutout.data[idi+2] = id_from_main.data[idi+2];
-					id_for_cutout.data[idi+3] = id_from_main.data[idi+3];
+					id_dest.data[idi+0] = id_src.data[idi+0];
+					id_dest.data[idi+1] = id_src.data[idi+1];
+					id_dest.data[idi+2] = id_src.data[idi+2];
+					id_dest.data[idi+3] = id_src.data[idi+3];
 				}
+				//edge_points.push({x: nodeX[i+0], y: y});
+				//edge_points.push({x: nodeX[i+1], y: y});
 			}
 		}
 	}
 	
 	// Done boom okay
-	cutout.ctx.putImageData(id_for_cutout, 0, 0);
+	cutout.ctx.putImageData(id_dest, 0, 0);
+	//cutout.edge_points = edge_points;
 	return cutout;
 	
 }
