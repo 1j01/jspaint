@@ -508,3 +508,8 @@ $body.on("mousedown contextmenu", function(e){
 	}
 	e.preventDefault();
 });
+
+// Stop drawing (or dragging or whatver) if you Alt+Tab or whatever
+$G.on("blur", function(e){
+	$G.triggerHandler("mouseup");
+});
