@@ -30,8 +30,9 @@
 	box-shadow: 1px 1px 0 #000080 inset;
 }
 .jspaint-resize-ghost {
-	outline: 1px dotted #7b7b7b; /* what it is */
-	outline: 1px dotted invert; /* what it should be */
+	outline: 1px dotted #7b7b7b;
+	/*outline: 1px dotted invert;*/
+	/* I want this to be inverty, but in chrome this makes it invisible */
 }
 .jspaint-cursor-bully * {
 	cursor: inherit !important;
@@ -297,18 +298,18 @@
 }
 .jspaint-component-ghost.dock {
 	outline: 1px solid black;
-	outline: 1px solid invert;
+	/*outline: 1px solid invert;*/
 }
 .jspaint-component-ghost:not(.dock) {
 	outline: 1px dotted black;
-	outline: 1px dotted invert;
+	/*outline: 1px dotted invert;*/
 }
 .jspaint-component-ghost:not(.dock):after,
 .jspaint-component-ghost:not(.dock):before {
 	content: '';
 	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
 	outline: 1px dotted black;
-	outline: 1px dotted invert;
+	/*outline: 1px dotted invert;*/
 }
 .jspaint-component-ghost:not(.dock):after {
 	outline-offset: 1px;
