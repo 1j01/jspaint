@@ -39,7 +39,8 @@
 }
 
 .jspaint-menus * {
-	font: menu;
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
 	cursor: default;
 }
 .jspaint-menu-container {
@@ -102,7 +103,8 @@
 }
 
 .jspaint-status-area {
-	font: status-bar;
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
 	padding: 3px 2px;
 	padding-top: 4px;
 	border-top: 1px solid #7b7b7b;
@@ -354,7 +356,8 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000080', endColorstr='#1084d0', GradientType=1 ); /* IE6-9 */
 	
 	color: white;
-	font: menu;
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
 }
 .jspaint-window-title {
 	padding-left: 2px;
@@ -363,11 +366,13 @@
 	margin: 2px;
 }
 .jspaint-window-content {
-	font: message-box;
+	font-family: Arial, sans-serif;
+	font-size: 16px;
 }
 .jspaint-button {
 	padding: 0;
 	vertical-align: middle;
+	font-family: Arial, sans-serif;
 	font-size: 12px;
 	background: #c0c0c0;
 	border-top: 1px solid #fff;

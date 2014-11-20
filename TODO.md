@@ -46,10 +46,6 @@
 		* In Help > About Paint and other places
 			* You can't select text
 			* You can't drag links
-	* Fonts become serif in the menubar and/or statusbar
-	  To reproduce temporarily, drag the canvas handles twice.
-	  To reproduce persistently, open something from the window.
-	  (Duplicate the tab, go fullscreen, etc.)
 
 
 * Handling actions that interfere with each other
