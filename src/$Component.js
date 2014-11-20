@@ -1,6 +1,6 @@
 
 function $Component(name, orientation, $el){
-	//a draggable widget that can be undocked into a window
+	// A draggable widget that can be undocked into a window
 	var $c = $(E("div")).addClass("jspaint-component");
 	$c.addClass("jspaint-"+name+"-component");
 	$c.append($el);
@@ -10,7 +10,7 @@ function $Component(name, orientation, $el){
 		wide: $bottom,
 	}[orientation]);
 	
-	// nudge the Colors component over a tiny bit
+	// Nudge the Colors component over a tiny bit
 	if(name === "Colors"){
 		$c.css("position", "relative");
 		$c.css("left", "3px");
@@ -56,7 +56,9 @@ function $Component(name, orientation, $el){
 	var $ghost;
 	var $w;
 	$c.on("mousedown", function(e){
+		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
+		if(!$c.is(e.target)){ return; }
 		
 		$G.on("mousemove", drag_onmousemove);
 		$G.one("mouseup", function(e){
@@ -84,13 +86,8 @@ function $Component(name, orientation, $el){
 			$ghost.appendTo("body");
 		}
 		
-		e.preventDefault();
-	});
-	$el.on("mousedown", function(e){
 		// Prevent text selection anywhere within the component
 		e.preventDefault();
-		// Don't let this event be handled as the start of a drag of the component
-		e.stopPropagation();
 	});
 	var drag_onmousemove = function(e){
 		
