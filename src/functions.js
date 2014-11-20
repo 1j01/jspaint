@@ -1,7 +1,7 @@
 
 function reset_colors(){
 	colors = ["#000000", "#ffffff", ""];
-	$colorbox && $colorbox.update_colors();
+	$G.trigger("option-changed");
 }
 
 function reset(){

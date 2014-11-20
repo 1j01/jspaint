@@ -26,12 +26,11 @@ function $ColorBox(){
 		bottom: 3,
 	});
 	
-	function update_colors(){
+	$G.on("option-changed", function(){
 		$foreground_color.css({background: colors[0]});
 		$background_color.css({background: colors[1]});
 		$current_colors.css({background: colors[2]});
-		$G.trigger("option-changed");
-	}
+	});
 	
 	// the only color editted by Colors > Edit Colors...
 	var $last_fg_color_button;
@@ -95,7 +94,7 @@ function $ColorBox(){
 			}else if(button === 2){
 				colors[1] = col;
 			}
-			update_colors();
+			$G.trigger("option-changed");
 		};
 		function rgb2hex(col){
 			var rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
@@ -107,7 +106,6 @@ function $ColorBox(){
 	});
 	
 	var $c = $Component("Colors", "wide", $cb);
-	$c.update_colors = update_colors;
 	$c.get_last_foreground_color_$button = function(){
 		return $last_fg_color_button;
 	};

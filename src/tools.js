@@ -264,7 +264,7 @@ tools = [{
 	},
 	mouseup: function(){
 		colors[fill_color_i] = this.current_color;
-		$colorbox && $colorbox.update_colors();
+		$G.trigger("option-changed");
 	},
 	$options: $(E("div"))
 }, {
