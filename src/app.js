@@ -283,8 +283,13 @@ $G.on("keydown", function(e){
 	}
 });
 $G.on("cut copy paste", function(e){
-	// @TODO: check document.activeElement for any input related elements
-	if(textbox){ return; }
+	if(
+		document.activeElement instanceof HTMLInputElement ||
+		document.activeElement instanceof HTMLTextAreaElement
+	){
+		// Don't prevent or interfere with cutting/copying/pasting within inputs or textareas
+		return;
+	}
 	
 	e.preventDefault();
 	var cd = e.originalEvent.clipboardData || window.clipboardData;
@@ -501,8 +506,8 @@ $body.on("mousedown contextmenu", function(e){
 	if(
 		e.target instanceof HTMLSelectElement ||
 		e.target instanceof HTMLTextAreaElement ||
-		e.target instanceof HTMLInputElement &&
-		e.target.type !== "color"
+		(e.target instanceof HTMLLabelElement && e.type !== "contextmenu") ||
+		(e.target instanceof HTMLInputElement && e.target.type !== "color")
 	){
 		return true;
 	}

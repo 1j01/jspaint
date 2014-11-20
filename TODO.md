@@ -41,8 +41,7 @@
 		* Tool options flicker... *and lag*, when they're redrawn in quick succession
 	* Global event handlers interfering with stuff
 		* In Image > Attributes and other places
-			* You can't copy, paste, cut or drag&drop in the inputs
-			* You can't click on the radio option labels when text is selected!
+			* You can't drag&drop in the inputs
 		* In Help > About Paint and other places
 			* You can't select text
 			* You can't drag links
