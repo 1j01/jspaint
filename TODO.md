@@ -57,32 +57,26 @@
 
 ### Menus
 
-* Mouse navigation ✓
 * Keyboard Navigation
 
 
-* Enable items (Repeat, Clear Selection, Copy To...) when they are applicable
-* Disable Image > Clear Image when there is a selection like MS Paint does?
+* Enable/disable items based on their applicability
+	* Enable Repeat, Clear Selection, Copy To... when they are applicable
+	* Disable Image > Clear Image when there is a selection like MS Paint does?
 
 
 * Menu Items
 	* View
-		* Show/Hide FontBox
-		* Zoom should have an actual submenu (prerequisite: zooming)
+		* Show/Hide Text Toolbar
+		* Zoom submenu
 	* Image
-		* Stretch / Skew (functionality)
+		* Stretch / Skew functionality
 
 
-* Sliding animation / transition effects
+* Sliding animation
 
 
 * Use keyboard shortcuts defined in the menu data structure to declaratively setup hotkeys
-	* ```
-	On key press, loop through the menus
-		If the key event matches the menu item's shortcut
-			Perform menu item's action
-			Break loop
-	```
 
 
 ### Components / Windows
@@ -107,7 +101,7 @@
 	* Option in Image > Attributes... ✓
 	* Color opacity slider
 	* Toggle between blend and copy modes
-	* Checkered background pattern representing transparency
+	* Represent transparency with a checkered background pattern
 	* Maybe equivalise any rgba(X, X, X, 0) in fill algorithm
 
 
@@ -177,10 +171,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 
 * Fill With Color
-	* Find a better fill algorithm!
-		* Get into those corners
-		* Handle transparency correctly (✓)
-		* (Keep speed)
+	* Find a better fill algorithm that gets into all the corners
 
 
 * Pick Color ✓
@@ -210,7 +201,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Store position of FontBox
 	* Keep an old TextBox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
 	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
-	* See [On-Canvas Objects](#on-canvas-objects)
 
 
 * Line
@@ -271,9 +261,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* See Text tool
 
 
-* Selection and TextBox should inherit from a base class
-
-
 ### BSOD
 
 Press ~ to bluescreen (or maybe something on the numpad?)
@@ -285,12 +272,12 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 * Set up build process
 	* ~~Concatenate & Minify~~ (Why?)
-	* Increment version?
+	* Increment version
 	* Compress into zip file
 	* Upload new version to the Chrome Web Store?
 
 
-* Use the chrome.wallpaper API to change the ChromeOS wallpaper.
+* Use the chrome.wallpaper API to change the ChromeOS wallpaper
 	* Theoretical support ✓
 	* Test this on Chrome OS
 
@@ -299,7 +286,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* (Note: Minimum window size might need updating)
 
 
-* Publish to the Chrome Web Store
+* Publish to the Chrome Web Store!
 
 
 ### Also
@@ -309,7 +296,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 * Improve README
 	* Introduce and explain the project ...better?
-	* Make it pretty with (moar) images (screenshots plz)
+	* Make it pretty with images (screenshots plz)
 
 
 * Stop improving TODO
@@ -327,20 +314,20 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Seriously, the buttons
 	* Move into folder (called what? styles? stylesheets? css?)
 	* Deal with `z-index`es
-	* Comment everything
+	* Comment stuff
 
 
 * JS
 	* Refactor old code
-	* Selection and TextBox contain a lot of duplicated code
+	* Selection and TextBox should inherit from a base class
 	* Remove either `selection.x/y/w/h` or `._x/_y/_w/_h`; and use `x/y/width/height`
 	* Outdated names like sel.$ghost = div.jspaint-selection (not exactly a ghost)
 	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
-	* Image inversion code is duplicated in ChooserCanvas in tool-options.js
+	* Image inversion code is duplicated in ChooserCanvas from tool-options.js but should go in image-manipulation.js
 	* render_brush shouldn't be in tool-options.js
 	* `$w.$form.addClass("jspaint-horizontal").css({display: "flex"});`
-	* Comment everything
+	* Comment everything and then try to make the code as obvious as the comments
 
 
 * Images

@@ -1,6 +1,6 @@
 {
 	"name": "Paint",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "An MS Paint remake.",
 	"icons": {
 		"16": "images/icons/16.png",
