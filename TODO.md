@@ -213,7 +213,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * Rectangle
 	* The stroke should go within the rectangle
-	* It's currently blurry at odd stroke sizes
 
 
 * Polygon

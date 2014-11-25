@@ -463,7 +463,11 @@ tools = [{
 			ctx.fillRect(x, y, w, h);
 		}
 		if(this.$options.stroke){
-			ctx.strokeRect(x-0.5, y-0.5, w, h);
+			if((stroke_size % 2) === 1){
+				ctx.strokeRect(x-0.5, y-0.5, w, h);
+			}else{
+				ctx.strokeRect(x, y, w, h);
+			}
 		}
 	},
 	$options: $ChooseShapeStyle()
