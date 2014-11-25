@@ -61,17 +61,17 @@ You can also install it as a Chrome app.
 
 Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
-but copied data can only be pasted into other instances of JS Paint.
+but data copied from JS Paint can only be pasted into other instances of JS Paint.
 The clipboard-related menu items can't access the clipboard
-because it would be a huge security issue if
-browsers let web pages access the clipboard at will.
+because it would be a huge security issue if browsers let web pages access the clipboard at will.
 To use the clipboard menu items, you need to install the Chrome app.
 The menu items will still be grayed out, though.
 
 
 ## Staying True to the Original
 
-Ah yes, good old paint. Not the one with the [ribbons](https://www.google.com/search?tbm=isch&q=ms+paint+windows+7+ribbons&gs_l=img.3...7238.8547.0.8696.8.8.0.0.0.0.121.634.6j2.8.0....0...1c.1.45.img..7.1.84.3kcQ3AxAcpM#facrc=_&imgdii=_&imgrc=9QWxEa18YDeIXM%253A%3BTCC8aIEVP4RP2M%3Bhttp%253A%252F%252Fwinsupersite.com%252Fcontent%252Fcontent%252F126917%252Ffaq%252Fwin7_faq_paint.jpg%3Bhttp%253A%252F%252Fwinsupersite.com%252Farticle%252Ffaqtip%252Fwindows-7-faq%3B720%3B320)
+Ah yes, good old paint. Not the one with the
+[ribbons](https://www.google.com/search?tbm=isch&q=ms+paint+windows+7+ribbons)
 or the [new one](https://www.google.com/search?q=freshpaint&tbm=isch)
 with the interface that can take up nearly half the screen.
 
@@ -94,12 +94,26 @@ What was this section titled? Oh, um yeah I'm doing that too, I guess.
 
 I want to make JS Paint to be able to edit...
 
-* Transparent PNGs (the main thing that's lacking in old ms paint) - This works!
-* Animated GIFs (yes, that entails a fully featured (but simple) animation editor) - You can currently only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
-* Animated Transparent APNGs (better than GIFs, but with less support)
-* Multi-size Icons (ICO for windows and ICNS for mac)
-* Scalable Vector Graphics (kidding) - Actually, it could always open SVG files in browsers that can handle SVGs, and I've made it try not to save over the original SVG. That's pretty decent SVG support, for a 100% raster image editor.
-* Text Files (just kidding)
+* Transparent [PNGs][PNG] - Done!
+* Animated [GIFs][GIF]
+  (yes, that entails a fully featured (but simple) animation editor) -
+  You can currently only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
+* Animated Transparent [APNGs][APNG]
+  (better than GIFs, but with less support)
+* Multi-size Icons ([ICO][ICO] for windows and [ICNS][ICNS] for mac)
+* [Scalable Vector Graphics][SVG] (kidding) -
+  Actually, it could always open SVG files in browsers that can handle SVGs,
+  and I've made it try not to save over the original SVG.
+  That's pretty decent SVG support, for a 100% raster image editor.
+* [Text Files][TXT] (definitely just kidding maybe)
+
+[PNG]: http://en.wikipedia.org/wiki/Portable_Network_Graphics "Microsoft Icon Image format"
+[GIF]: http://en.wikipedia.org/wiki/Graphics_Interchange_Format "Graphics Interchange Format"
+[APNG]: http://en.wikipedia.org/wiki/APNG "Animated Portable Network Graphics"
+[ICO]: http://en.wikipedia.org/wiki/ICO_(file_format) "Microsoft Icon Image format"
+[ICNS]: http://en.wikipedia.org/wiki/Apple_Icon_Image_format "Apple Icon Image format"
+[SVG]: http://en.wikipedia.org/wiki/Scalable_Vector_Graphics "Scalable Vector Graphics"
+[TXT]: http://en.wikipedia.org/wiki/Text_file "Text file"
 
 
 ## Did you know?

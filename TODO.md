@@ -20,6 +20,7 @@
 
 
 * Gracefully hide things as the window gets smaller (With media queries!)
+	* This could be animated ;)
 
 
 * Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
@@ -49,8 +50,8 @@
 
 * Handling actions that interfere with each other
 	* I currently have a function `this_ones_a_frame_changer();`
-	  that finalizes the selection among other things at various times
-	  (undo, redo, reset, file_open, ... switching between frames of an animation)
+	  that finalizes the selection among other things, called at various times
+	  (undo, redo, reset, file_open, ...and in the future, switching between frames of an animation)
 	* MS Paint disables actions while you're drawing. Maybe I should do that?
 
 
@@ -120,7 +121,7 @@
 	* Deal with undo/redo for sessions
 
 
-### Mobile support
+### Device support
 
 * Use pointer events polyfill
 	* Multi-touch devices
@@ -196,7 +197,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Underline
 	* Expanding to new lines
 	* Minimum size of 3em x 1em
-	* Detect fonts
+	* Detect fonts with [Font Detective](https://github.com/1j01/font-detective/)
 	* Store position of FontBox
 	* Keep an old TextBox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
 	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
@@ -212,7 +213,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * Rectangle
 	* The stroke should go within the rectangle
-	* Pixel-sharp at all stroke sizes (it's currently blurry)
+	* It's currently blurry at odd stroke sizes
 
 
 * Polygon
