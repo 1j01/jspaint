@@ -476,8 +476,11 @@ tools = [{
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	
-	// Record the last click for double-clicking (@TODO)
-	last_click: {x: 0, y: 0, time: 0},
+	// Record the last click for double-clicking
+	// A double click happens on mousedown of a second click
+	// (within a cylindrical volume in 2d space + 1d time)
+	last_click_mousedown: {x: -Infinity, y: -Infinity, time: -Infinity},
+	last_click_mouseup: {x: -Infinity, y: -Infinity, time: -Infinity},
 	
 	// The vertices of the polygon
 	points: [],
@@ -492,6 +495,7 @@ tools = [{
 		// actions are passive if you've already started using the tool
 		// but the first action should be undoable
 		return this.points.length > 0;
+		// In other words, it's supposed to be one undoable action
 	},
 	mouseup: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
@@ -502,19 +506,22 @@ tools = [{
 		var dx = this.points[i].x - this.points[0].x;
 		var dy = this.points[i].y - this.points[0].y;
 		var d = Math.sqrt(dx*dx + dy*dy);
-		if(d < stroke_size*5.349205){
+		if(d < stroke_size * 5.1010101){ // arbitrary 101
 			this.complete(ctx, x, y);
 		}
+		
+		this.last_click_mouseup = {x: x, y: y, time: +(new Date)};
 	},
 	mousedown: function(ctx, x, y){
-		
 		var tool = this;
+		
 		if(tool.points.length < 1){
 			tool.x_min = x;
 			tool.x_max = x+1;
 			tool.y_min = y;
 			tool.y_max = y+1;
 			tool.points = [];
+			
 			// @TODO: stop needing this:
 			tool.canvas_base = canvas;
 			
@@ -528,18 +535,39 @@ tools = [{
 				tool.points.push({x: x, y: y});
 			});
 		}else{
-			// Add the point
-			tool.points.push({x: x, y: y});
-			// Update the boundaries of the polygon
-			// @TODO: this boundary stuff in less places (DRY)
-			tool.x_min = Math.min(x, tool.x_min);
-			tool.x_max = Math.max(x, tool.x_max);
-			tool.y_min = Math.min(y, tool.y_min);
-			tool.y_max = Math.max(y, tool.y_max);
+			var lx = tool.last_click_mousedown.x;
+			var ly = tool.last_click_mousedown.y;
+			var lt = tool.last_click_mousedown.time;
+			var dx = x - lx;
+			var dy = y - ly;
+			var dt = +(new Date) - lt;
+			var d = Math.sqrt(dx*dx + dy*dy);
+			if(d < 4.1010101 && dt < 250){ // arbitrary 101
+				tool.complete(ctx, x, y);
+				// Release the mouse to prevent tool.paint()
+				// being called and clearing the canvas
+				$canvas.trigger("mouseup");
+			}else{
+				// Add the point
+				tool.points.push({x: x, y: y});
+				// Update the boundaries of the polygon
+				// @TODO: this boundary stuff in less places (DRY)
+				tool.x_min = Math.min(x, tool.x_min);
+				tool.x_max = Math.max(x, tool.x_max);
+				tool.y_min = Math.min(y, tool.y_min);
+				tool.y_max = Math.max(y, tool.y_max);
+			}
 		}
+		tool.last_click_mousedown = {x: x, y: y, time: +new Date};
 	},
 	paint: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
+		
+		// Clear the canvas to the previous image
+		// Get rid of strokes drawn while constructing the shape
+		// @TODO: stop needing this
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(this.canvas_base, 0, 0);
 		
 		var i = this.points.length - 1;
 		this.points[i].x = x;
@@ -558,6 +586,8 @@ tools = [{
 		
 		// Clear the canvas to the previous image
 		// Get rid of strokes drawn while constructing the shape
+		// @TODO: stop needing this
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(this.canvas_base, 0, 0);
 		
 		// Draw an antialiased polygon
@@ -626,18 +656,20 @@ tools = [{
 		}
 		*/
 		
-		this.points = [];
+		this.reset();
 	},
 	cancel: function(){
-		this.points = [];
+		this.reset();
 	},
 	end: function(){
+		this.reset();
+	},
+	reset: function(){
 		this.points = [];
+		this.last_click_mousedown = {x: -Infinity, y: -Infinity, time: -Infinity};
+		this.last_click_mouseup = {x: -Infinity, y: -Infinity, time: -Infinity};
 	},
-	shape: function(){
-		// Yes, this is a shape tool.
-		// See? It has a function here.
-	},
+	shape_colors: true,
 	$options: $ChooseShapeStyle()
 }, {
 	name: "Ellipse",

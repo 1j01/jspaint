@@ -220,7 +220,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* The canvas API handles self-intersecting shapes differently than MS Paint
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
-	* Double-click to close the shape
 
 
 * Ellipse

@@ -358,6 +358,8 @@ function tool_go(event_name){
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.drawImage(previous_canvas, 0, 0);
 		}
+	}
+	if(selected_tool.shape || selected_tool.shape_colors){
 		if(!selected_tool.stroke_only){
 			if(reverse){
 				fill_color_i = 0;
@@ -369,7 +371,8 @@ function tool_go(event_name){
 		}
 		ctx.fillStyle = fill_color = colors[fill_color_i];
 		ctx.strokeStyle = stroke_color = colors[stroke_color_i];
-		
+	}
+	if(selected_tool.shape){
 		selected_tool.shape(ctx, mouse_start.x, mouse_start.y, mouse.x-mouse_start.x, mouse.y-mouse_start.y);
 	}
 	
@@ -482,9 +485,10 @@ $canvas.on("mousedown", function(e){
 		});
 	};
 	
-	// this would be a lot nicer in ruby (or ooplie!)
-	// it would be just "if selected_tool.passive"
-	// (or in ooplie, just "If the selected tool is passive")
+	// This would be a lot nicer in ruby (or in OOPLiE!)
+	// It would be just `if selected_tool.passive`
+	// (Or in OOPLiE, `If the selected tool is passive`)
+	// Or it could use a getter
 	if((typeof selected_tool.passive === "function") ? selected_tool.passive() : selected_tool.passive){
 		mousedown_action();
 	}else{
