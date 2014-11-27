@@ -75,8 +75,9 @@ Selection.prototype.instantiate = function(_img, _passive){
 			e.preventDefault();
 			
 			var rect = sel.canvas.getBoundingClientRect();
-			var cx = e.clientX - rect.left;
-			var cy = e.clientY - rect.top;
+			var z = (+$canvas_area.css("zoom")||1);
+			var cx = e.clientX / z - rect.left;
+			var cy = e.clientY / z - rect.top;
 			mox = ~~(cx / rect.width * sel.canvas.width);
 			moy = ~~(cy / rect.height * sel.canvas.height);
 			

@@ -59,12 +59,13 @@ function $Handles($container, element, options){
 				dragged = true;
 				
 				var rect = el.getBoundingClientRect();
+				var z = (+$canvas_area.css("zoom")||1);
 				$resize_ghost.css({
 					position: "absolute",
 					left: offset,
 					top: offset,
-					width: width = (resizes_width? (e.clientX - rect.left) : (rect.width)),
-					height: height = (resizes_height? (e.clientY - rect.top) : (rect.height)),
+					width: width = (resizes_width? (e.clientX / z - rect.left) : (rect.width)),
+					height: height = (resizes_height? (e.clientY / z - rect.top) : (rect.height)),
 				});
 			};
 			$h.on("mousedown", function(e){

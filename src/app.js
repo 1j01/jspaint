@@ -329,8 +329,9 @@ var mouse, mouse_start, mouse_previous;
 var reverse, ctrl, button;
 function e2c(e){
 	var rect = canvas.getBoundingClientRect();
-	var cx = e.clientX - rect.left;
-	var cy = e.clientY - rect.top;
+	var z = (+$canvas_area.css("zoom")||1);
+	var cx = e.clientX / z - rect.left;
+	var cy = e.clientY / z - rect.top;
 	return {
 		x: ~~(cx / rect.width * canvas.width),
 		y: ~~(cy / rect.height * canvas.height),

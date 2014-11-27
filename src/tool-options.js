@@ -252,12 +252,20 @@ var $choose_magnification = $Choose(
 		);
 	},
 	function(size){
-		//canvas.style.zoom = size;
+		$canvas_area.css("zoom", size);
+		if(size > 1){
+			$choose_magnification.enlarged_magnification = size;
+		}
 	},
 	function(size){
-		return size === 1;//(+canvas.style.zoom||1);
+		return size === (+$canvas_area.css("zoom")||1);
 	}
 ).addClass("jspaint-choose-magnification");
+
+// The default enlarged magnification, zoomed to when you click,
+// is 4x, which isn't an option you can get to from the tool options.
+$choose_magnification.enlarged_magnification = 4;
+
 
 var airbrush_sizes = [9, 16, 24];
 var $choose_airbrush_size = $Choose(

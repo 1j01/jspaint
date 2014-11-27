@@ -273,9 +273,13 @@ tools = [{
 	cursor: ["magnifier", [16, 16], "zoom-in"], //@todo: use zoom-in/zoom-out
 	deselect: true,
 	passive: true,
-	implemented: false,
+	// @TODO: choose and preview viewport with rectangular cursor
 	mousedown: function(){
-		//canvas.style.zoom = 1;
+		if((+$canvas_area.css("zoom")||1) > 1){
+			$canvas_area.css("zoom", 1);
+		}else{
+			$canvas_area.css("zoom", this.$options.enlarged_magnification);
+		}
 	},
 	$options: $choose_magnification
 }, {

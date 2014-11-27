@@ -177,8 +177,9 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 * Pick Color ✓
 
 
-* Magnifier (!)
-	* Make it, even if it's blurry (better than zooming in the entire page blurrily)
+* Magnifier
+	* Less silly
+	* Choose and preview viewport with rectangular cursor
 
 
 * Pencil

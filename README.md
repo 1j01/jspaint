@@ -53,7 +53,7 @@ You can also install it as a Chrome app.
 
 #### A lot of stuff isn't done yet:
 
-* Magnification
+* Non-silly magnification
 * Shape styles on most of the shape tools
 * The polygon tool is pretty bad
 * Menu items don't get enabled/disabled dynamically
