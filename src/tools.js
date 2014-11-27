@@ -3,7 +3,7 @@ tools = [{
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	// @TODO: passive: true,
+	// passive: @TODO,
 	
 	// The vertices of the polygon
 	points: [],

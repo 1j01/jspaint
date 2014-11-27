@@ -23,11 +23,6 @@
 	* This could be animated ;)
 
 
-* Tips and Tricks from [this tutorial](http://www.albinoblacksheep.com/tutorial/mspaint)
-	* The Grid (Ctrl+G & zoom6x+) (prerequisite: zooming)
-	* Scroll Wheel Bug (um... it's not really a feature)
-
-
 * Issues
 	* Components
 		* Colors > Edit Colors... doesn't work when the $colorbox is hidden
@@ -46,6 +41,7 @@
 		* In Help > About Paint and other places
 			* You can't select text
 			* You can't drag links
+	* Free-form select can leave behind inverty brush in multiplayer
 
 
 * Handling actions that interfere with each other
@@ -135,15 +131,16 @@
 * Make sure anything that uses hovering is paralleled on mobile (tooltips, :hover effects)
 
 
-* Panel for things that would normally require a keyboard (with a numpad)
+* Access to functionality that would normally require a keyboard (with a numpad!)
 	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
-	* Ctrl (toggle??): Uh, crop tool instead of selection tool (this should really be an additional tool)
+	* Ctrl+Select: Crop tool
 	* Ctrl+Shift+G: "Render GIF"
 
 
 * Add Pan and Color Eraser tools to the toolbox
-	* What about multitouch devices that don't need a pan tool? Maybe add some other random tool?
+	* What about multitouch devices that don't need a pan tool?
+	  Maybe add some other random tool?
 
 
 ### Colors
@@ -200,8 +197,9 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Minimum size of 3em x 1em
 	* Detect fonts with [Font Detective](https://github.com/1j01/font-detective/)
 	* Store position of FontBox
-	* Keep an old TextBox while drawing a new one (this somewhat complicates the "singleton" pattern I'm using)
-	* Save text and record transformations so the image can be saved as SVG (or HTML?) with invisible selectable transformed text elements
+	* Keep an old TextBox while drawing a new one
+	* Save text and record transformations so the image can be saved as
+	  SVG (or HTML?) with invisible selectable transformed text elements
 
 
 * Line
@@ -218,7 +216,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * Polygon
 	* Aliasing
-	* The canvas API handles self-intersecting shapes differently than MS Paint
+	* Handle self-intersecting shapes like MS Paint, not like the canvas API
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
 
@@ -240,8 +238,10 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 	* Shapes: respond to Ctrl (It's complicated)
 	* Lots of things: Use stroke size
 	* Rounded Rectangle & Ellipse:
-		* If the width/height is less than the stroke size, it should draw a shape with no stroke filled with the color that would normally be used for the stroke.
 		* Support shape styles!
+		* If the width/height is less than the stroke size,
+		  it should draw a shape with no stroke, filled with
+		  the color that would normally be used for the stroke.
 
 
 ### On-Canvas Objects
@@ -249,10 +249,12 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 * Selection
 	* Handles
 		* Hide the canvas handles when there is a selection. (This used to work!)
-		* I have a git stash where I'm trying to improve selections. Canvas hiding is fixed there, but other stuff is broken
-	* Transparency with selected background color
+		* I have a git stash where I'm trying to improve selections.
+		  Canvas handles hiding is fixed there, but other stuff is broken
 	* Proportionally resize selection while holding Shift
-	* Don't cut until you drag or do something else (In MS Paint, you can make a selection, change the background color and drag it, leaving the new background color behind.)
+	* Don't cut until you drag or do something else
+	  (In MS Paint, you can make a selection, change the background color
+	  and drag it, leaving the new background color behind.)
 	* Classic transparency where the selected background color is considered transparent
 
 
@@ -286,6 +288,8 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * Publish to the Chrome Web Store!
+	* Analytics
+	* Basic things that people would complain about
 
 
 ### Also

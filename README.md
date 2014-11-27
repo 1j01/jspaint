@@ -49,6 +49,7 @@ You can also install it as a Chrome app.
 * Keyboard shortcuts for rotation
 * Alternate themes (You can already style it with browser extensions like Stylebot or Stylish)
 * Noncontiguous fill (Probably by holding <kbd>Shift</kbd> and using the fill tool)
+* Optionally treat almost-equal colors as equal
 
 
 #### A lot of stuff isn't done yet:
