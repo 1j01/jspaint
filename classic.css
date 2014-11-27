@@ -30,7 +30,7 @@
 	box-shadow: 1px 1px 0 #000080 inset;
 }
 .jspaint-resize-ghost {
-	outline: 1px dotted #7b7b7b;
+	outline: 1px dotted black;
 	/*outline: 1px dotted invert;*/
 	/* I want this to be inverty, but in chrome this makes it invisible */
 }
