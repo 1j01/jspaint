@@ -124,6 +124,9 @@
 			$cursor.css({
 				display: "none",
 				position: "absolute",
+				left: 0,
+				top: 0,
+				opacity: 0,
 				zIndex: 500, // arbitrary; maybe too high
 				pointerEvents: "none",
 				transition: "opacity 0.5s",
