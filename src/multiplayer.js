@@ -161,11 +161,12 @@
 					
 					// Update the cursor element
 					var canvas_rect = canvas.getBoundingClientRect();
+					var z = +($canvas.css("zoom") || 1);
 					$cursor.css({
 						display: "block",
 						position: "absolute",
-						left: canvas_rect.left + other_user.cursor.x,
-						top: canvas_rect.top + other_user.cursor.y,
+						left: canvas_rect.left + z * other_user.cursor.x,
+						top: canvas_rect.top + z * other_user.cursor.y,
 						opacity: 1 - other_user.cursor.away,
 					});
 				}
@@ -241,10 +242,10 @@
 		// Update the cursor status
 		
 		$G.on("mousemove.session-hook", function(e){
-			var canvas_rect = canvas.getBoundingClientRect();
+			var m = e2c(e);
 			session.fb_user.child("cursor").update({
-				x: e.clientX - canvas_rect.left,
-				y: e.clientY - canvas_rect.top,
+				x: m.x,
+				y: m.y,
 				away: false,
 			});
 		});

@@ -59,13 +59,15 @@ function $Handles($container, element, options){
 				dragged = true;
 				
 				var rect = el.getBoundingClientRect();
-				var z = (+$canvas_area.css("zoom")||1);
+				var z = (+$canvas.css("zoom")||1);
+				width = ~~(resizes_width? (e.clientX / z - rect.left) : (rect.width));
+				height = ~~(resizes_height? (e.clientY / z - rect.top) : (rect.height));
 				$resize_ghost.css({
 					position: "absolute",
 					left: offset,
 					top: offset,
-					width: width = (resizes_width? (e.clientX / z - rect.left) : (rect.width)),
-					height: height = (resizes_height? (e.clientY / z - rect.top) : (rect.height)),
+					width: z * width,
+					height: z * height,
 				});
 			};
 			$h.on("mousedown", function(e){
@@ -94,19 +96,20 @@ function $Handles($container, element, options){
 		var update_handle = function(){
 			var rect = el.getBoundingClientRect();
 			var hs = $h.width();
+			var z = (+$canvas.css("zoom") || 1);
 			if(x_axis === "middle"){
-				$h.css({ left: offset + (rect.width - hs) / 2 });
+				$h.css({ left: offset + (z * rect.width - hs) / 2 });
 			}else if(x_axis === "left"){
 				$h.css({ left: offset - outset });
 			}else if(x_axis === "right"){
-				$h.css({ left: offset + rect.width - hs/2 });
+				$h.css({ left: offset + (z * rect.width - hs/2) });
 			}
 			if(y_axis === "middle"){
-				$h.css({ top: offset + (rect.height - hs) / 2 });
+				$h.css({ top: offset + (z * rect.height - hs) / 2 });
 			}else if(y_axis === "top"){
 				$h.css({ top: offset - outset });
 			}else if(y_axis === "bottom"){
-				$h.css({ top: offset + rect.height - hs/2 });
+				$h.css({ top: offset + (z * rect.height - hs/2) });
 			}
 		};
 		

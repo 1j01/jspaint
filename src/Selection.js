@@ -75,9 +75,8 @@ Selection.prototype.instantiate = function(_img, _passive){
 			e.preventDefault();
 			
 			var rect = sel.canvas.getBoundingClientRect();
-			var z = (+$canvas_area.css("zoom")||1);
-			var cx = e.clientX / z - rect.left;
-			var cy = e.clientY / z - rect.top;
+			var cx = e.clientX - rect.left;
+			var cy = e.clientY - rect.top;
 			mox = ~~(cx / rect.width * sel.canvas.width);
 			moy = ~~(cy / rect.height * sel.canvas.height);
 			
@@ -117,12 +116,13 @@ Selection.prototype.cut_out_background = function(){
 };
 
 Selection.prototype.position = function(){
+	var z = (+$canvas.css("zoom")||1);
 	this.$ghost.css({
 		position: "absolute",
-		left: this._x + 3,
-		top: this._y + 3,
-		width: this._w,
-		height: this._h,
+		left: z * this._x + 3,
+		top: z * this._y + 3,
+		width: z * this._w,
+		height: z * this._h,
 	});
 	$status_position.text(this._x + "," + this._y);
 	$status_size.text(this._w + "," + this._h);

@@ -42,6 +42,12 @@
 			* You can't select text
 			* You can't drag links
 	* Free-form select can leave behind inverty brush in multiplayer
+	* The TextBox scrollbars have extra buttons
+	* The TextBox contents move down and right when rasterizing
+	* Multiplayer cursors that go outside the parent can cause the page to be scrollable
+	* Multiplayer interupts you:
+		* If you try to make a selection when there's a selection
+		* If you try to play with multiple players
 
 
 * Handling actions that interfere with each other
@@ -175,7 +181,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 
 * Magnifier
-	* Less silly
 	* Choose and preview viewport with rectangular cursor
 
 

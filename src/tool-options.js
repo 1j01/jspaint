@@ -252,13 +252,17 @@ var $choose_magnification = $Choose(
 		);
 	},
 	function(size){
-		$canvas_area.css("zoom", size);
+		//$canvas.css("width", canvas.width * size);
+		//$canvas.css("height", canvas.height * size);
+		$canvas.css("zoom", size);
+		$G.triggerHandler("resize");
 		if(size > 1){
 			$choose_magnification.enlarged_magnification = size;
 		}
 	},
 	function(size){
-		return size === (+$canvas_area.css("zoom")||1);
+		//return size === ((+$canvas.css("width") || canvas.width) / canvas.width);
+		return size === ((+$canvas.css("zoom") || 1));
 	}
 ).addClass("jspaint-choose-magnification");
 

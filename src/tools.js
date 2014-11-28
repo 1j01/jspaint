@@ -275,11 +275,12 @@ tools = [{
 	passive: true,
 	// @TODO: choose and preview viewport with rectangular cursor
 	mousedown: function(){
-		if((+$canvas_area.css("zoom")||1) > 1){
-			$canvas_area.css("zoom", 1);
+		if((+$canvas.css("zoom")||1) > 1){
+			$canvas.css("zoom", 1);
 		}else{
-			$canvas_area.css("zoom", this.$options.enlarged_magnification);
+			$canvas.css("zoom", this.$options.enlarged_magnification);
 		}
+		$G.triggerHandler("resize");
 	},
 	$options: $choose_magnification
 }, {
