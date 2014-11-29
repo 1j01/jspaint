@@ -67,7 +67,7 @@ var menus = {
 		____________________________,
 		{
 			item: "Recent File",
-			enabled: false,
+			enabled: false, // @TODO for chrome app
 			description: "",
 		},
 		____________________________,
@@ -228,7 +228,7 @@ var menus = {
 				},
 				{
 					item: "C&ustom...",
-					enabled: false,
+					enabled: false, // @TODO
 					description: "Zooms the picture.",
 				},
 				____________________________,

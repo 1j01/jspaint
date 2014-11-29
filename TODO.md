@@ -21,6 +21,8 @@
 
 * Gracefully hide things as the window gets smaller (With media queries!)
 	* This could be animated ;)
+	* Gracefully push the dimension displays off the edge
+	  instead of covering up the text with (usually blank) space
 
 
 * Issues
@@ -28,9 +30,6 @@
 		* Colors > Edit Colors... doesn't work when the $colorbox is hidden
 		* Component windows are gone forever once closed (can't be shown from the View menu)
 		* Components in windows hidden from the View menu don't hide their windows
-	* Status text gets cut off
-		* Also, it should gracefully push the dimension displays off the edge
-		  instead of covering up the text with usually blank space
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
@@ -60,25 +59,8 @@
 ### Menus
 
 * Keyboard Navigation
-
-
-* Enable/disable items based on their applicability
-	* Enable Repeat, Clear Selection, Copy To... when they are applicable
-	* Disable Image > Clear Image when there is a selection like MS Paint does?
-
-
-* Menu Items
-	* View
-		* Show/Hide Text Toolbar
-		* Zoom submenu
-	* Image
-		* Stretch / Skew functionality
-
-
-* Sliding animation
-
-
 * Use keyboard shortcuts defined in the menu data structure to declaratively setup hotkeys
+* Sliding animation
 
 
 ### Components / Windows
@@ -252,10 +234,6 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 ### On-Canvas Objects
 
 * Selection
-	* Handles
-		* Hide the canvas handles when there is a selection. (This used to work!)
-		* I have a git stash where I'm trying to improve selections.
-		  Canvas handles hiding is fixed there, but other stuff is broken
 	* Proportionally resize selection while holding Shift
 	* Don't cut until you drag or do something else
 	  (In MS Paint, you can make a selection, change the background color
@@ -265,6 +243,12 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * TextBox
 	* See Text tool
+
+
+* Handles
+	* Hide the canvas handles when there is a selection. (This used to work!)
+	* I have a git stash where I'm trying to improve selections.
+	  Canvas handles hiding is fixed there, but other stuff is broken
 
 
 ### BSOD
