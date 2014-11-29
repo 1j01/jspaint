@@ -67,7 +67,7 @@ var menus = {
 		____________________________,
 		{
 			item: "Recent File",
-			disabled: true,
+			enabled: false,
 			description: "",
 		},
 		____________________________,
@@ -84,13 +84,18 @@ var menus = {
 		{
 			item: "&Undo",
 			shortcut: "Ctrl+Z",
+			enabled: function(){
+				return undos.length >= 1;
+			},
 			action: undo,
 			description: "Undoes the last action.",
 		},
 		{
 			item: "&Repeat",
 			shortcut: "F4",
-			disabled: true,
+			enabled: function(){
+				return redos.length >= 1;
+			},
 			action: redo,
 			description: "Redoes the previously undone action.",
 		},
@@ -98,7 +103,10 @@ var menus = {
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
-			disabled: true,
+			enabled: function(){
+				// @TODO disable if no selection (image or text)
+				return (typeof chrome !== "undefined") && chrome.permissions;
+			},
 			action: function(){
 				document.execCommand("cut");
 			},
@@ -107,7 +115,10 @@ var menus = {
 		{
 			item: "&Copy",
 			shortcut: "Ctrl+C",
-			disabled: true,
+			enabled: function(){
+				// @TODO disable if no selection (image or text)
+				return (typeof chrome !== "undefined") && chrome.permissions;
+			},
 			action: function(){
 				document.execCommand("copy");
 			},
@@ -116,7 +127,9 @@ var menus = {
 		{
 			item: "&Paste",
 			shortcut: "Ctrl+V",
-			disabled: true,
+			enabled: function(){
+				return (typeof chrome !== "undefined") && chrome.permissions;
+			},
 			action: function(){
 				document.execCommand("paste");
 			},
@@ -125,7 +138,7 @@ var menus = {
 		{
 			item: "C&lear Selection",
 			shortcut: "Del",
-			disabled: true,
+			enabled: function(){ return !!selection; },
 			action: delete_selection,
 			description: "Deletes the selection.",
 		},
@@ -138,7 +151,7 @@ var menus = {
 		____________________________,
 		{
 			item: "C&opy To...",
-			disabled: true,
+			enabled: function(){ return !!selection; },
 			action: save_selection_to_file,
 			description: "Copies the selection to a file.",
 		},
@@ -154,7 +167,8 @@ var menus = {
 			shortcut: "Ctrl+T",
 			checkbox: {
 				toggle: function(){
-					return $toolbox.toggle().is(":visible");
+					$toolbox.toggle();
+					return $toolbox.is(":visible");
 				},
 			},
 			description: "Shows or hides the tool box.",
@@ -164,7 +178,8 @@ var menus = {
 			shortcut: "Ctrl+L",
 			checkbox: {
 				toggle: function(){
-					return $colorbox.toggle().is(":visible");
+					$colorbox.toggle();
+					return $colorbox.is(":visible");
 				},
 			},
 			description: "Shows or hides the color box.",
@@ -173,14 +188,15 @@ var menus = {
 			item: "&Status Bar",
 			checkbox: {
 				toggle: function(){
-					return $status_area.toggle().is(":visible");
+					$status_area.toggle();
+					return $status_area.is(":visible");
 				},
 			},
 			description: "Shows or hides the status bar.",
 		},
 		{
 			item: "T&ext Toolbar",
-			disabled: true,
+			enabled: false, // @TODO
 			checkbox: {},
 			description: "Shows or hides the text toolbar.",
 		},
@@ -192,6 +208,9 @@ var menus = {
 					item: "&Normal Size",
 					shorcut: "Ctrl+PgUp",
 					description: "Zooms the picture to 100%.",
+					enabled: function(){
+						return magnification !== 1;
+					},
 					action: function(){
 						set_magnification(1);
 					},
@@ -200,26 +219,29 @@ var menus = {
 					item: "&Large Size",
 					shorcut: "Ctrl+PgDn",
 					description: "Zooms the picture to 400%.",
+					enabled: function(){
+						return magnification !== 4;
+					},
 					action: function(){
 						set_magnification(4);
 					},
 				},
 				{
 					item: "C&ustom...",
-					disabled: true,
+					enabled: false,
 					description: "Zooms the picture.",
 				},
 				____________________________,
 				{
 					item: "Show &Grid",
 					shorcut: "Ctrl+G",
-					disabled: true,
+					enabled: false, // @TODO
 					checkbox: {},
 					description: "Shows or hides the grid.",
 				},
 				{
 					item: "Show T&humbnail",
-					disabled: true,
+					enabled: false, // @TODO
 					checkbox: {},
 					description: "Shows or hides the thumbnail view of the picture.",
 				}
@@ -260,7 +282,7 @@ var menus = {
 		{
 			item: "&Clear Image",
 			shortcut: "Ctrl+Shift+N",
-			//shortcut: "Ctrl+Shft+N",
+			//shortcut: "Ctrl+Shft+N", [sic]
 			action: clear,
 			description: "Clears the picture or selection.",
 		},
@@ -284,6 +306,10 @@ var menus = {
 	"&Colors": [
 		{
 			item: "&Edit Colors...",
+			enabled: function(){
+				// @FIXME: make it work when the colorbox is hidden
+				return $colorbox.is(":visible");
+			},
 			action: function(){
 				// Edit the last color cell that's been selected as the foreground color.
 				var $b = $colorbox.get_last_foreground_color_$button();

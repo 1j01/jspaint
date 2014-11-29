@@ -19,6 +19,16 @@
 		$(".jspaint-menu-popup").hide();
 	};
 	
+	var is_disabled = function(item){
+		if(typeof item.enabled === "function"){
+			return !item.enabled();
+		}else if(typeof item.enabled === "boolean"){
+			return !item.enabled;
+		}else{
+			return false;
+		}
+	};
+	
 	function $MenuPopup(menu_items){
 		var $menu_popup = $(E("div")).addClass("jspaint-menu-popup");
 		var $menu_popup_table = $(E("table")).addClass("jspaint-menu-popup-table").appendTo($menu_popup);
@@ -40,7 +50,12 @@
 				$label.html(_html(item.item));
 				$shortcut.text(item.shortcut);
 				
-				$item.attr("disabled", item.disabled);
+				$menu_popup.on("update", function(){
+					$item.attr("disabled", is_disabled(item));
+				});
+				$item.on("mouseover", function(){
+					$item.attr("disabled", is_disabled(item));
+				});
 				
 				if(item.checkbox){
 					$checkbox_area.text("✓");
@@ -62,6 +77,7 @@
 						if(close_tid){clearTimeout(close_tid);}
 						open_tid = setTimeout(function(){
 							$submenu_popup.show();
+							$submenu_popup.triggerHandler("update");
 							var rect = $submenu_area[0].getBoundingClientRect();
 							$submenu_popup.css({
 								position: "absolute",
@@ -129,6 +145,7 @@
 			
 			$menu_button.addClass("active");
 			$menu_popup.show();
+			$menu_popup.triggerHandler("update");
 			
 			selecting_menus = true;
 			
