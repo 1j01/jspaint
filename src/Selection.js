@@ -116,13 +116,12 @@ Selection.prototype.cut_out_background = function(){
 };
 
 Selection.prototype.position = function(){
-	var z = (+$canvas.css("zoom")||1);
 	this.$ghost.css({
 		position: "absolute",
-		left: z * this._x + 3,
-		top: z * this._y + 3,
-		width: z * this._w,
-		height: z * this._h,
+		left: magnification * this._x + 3,
+		top: magnification * this._y + 3,
+		width: magnification * this._w,
+		height: magnification * this._h,
 	});
 	$status_position.text(this._x + "," + this._y);
 	$status_size.text(this._w + "," + this._h);

@@ -161,12 +161,11 @@
 					
 					// Update the cursor element
 					var canvas_rect = canvas.getBoundingClientRect();
-					var z = +($canvas.css("zoom") || 1);
 					$cursor.css({
 						display: "block",
 						position: "absolute",
-						left: canvas_rect.left + z * other_user.cursor.x,
-						top: canvas_rect.top + z * other_user.cursor.y,
+						left: canvas_rect.left + magnification * other_user.cursor.x,
+						top: canvas_rect.top + magnification * other_user.cursor.y,
 						opacity: 1 - other_user.cursor.away,
 					});
 				}
@@ -280,9 +279,8 @@
 		// Remove any cursor elements
 		$app.find(".user-cursor").remove();
 		
-		// Reset the file name
-		file_name = "untitled";
-		update_title();
+		// Reset to "untitled"
+		reset_file();
 	};
 	
 	// Handle the starting, switching, and ending of sessions from the location.hash

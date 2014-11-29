@@ -24,10 +24,9 @@ function TextBox(x, y, w, h){
 			opaque: colors[1],
 		}[transparent_opaque]);
 		
-		var z = (+$canvas.css("zoom") || 1);
 		tb.$editor.css({
 			fontFamily: font.family,
-			fontSize: z * font.size + "px",
+			fontSize: font.size * magnification + "px",
 			fontWeight: font.bold ? "bold" : "normal",
 			fontStyle: font.italic ? "italic" : "none",
 			textDecoration: font.underline ? "underline" : "none",
@@ -38,10 +37,9 @@ function TextBox(x, y, w, h){
 			kxmlWritingMode: font.vertical ? "vertical-lr" : "",
 			khtmlWritingMode: font.vertical ? "vertical-lr" : "",
 			webkitWritingMode: font.vertical ? "vertical-lr" : "",
-			lineHeight: z * font.size * font.line_scale + "px",
+			lineHeight: font.size * font.line_scale * magnification + "px",
 			color: font.color,
 			background: font.background,
-			//zoom: (+$canvas.css("zoom") || 1),
 		});
 	};
 	update();
@@ -135,13 +133,12 @@ TextBox.prototype.instantiate = function(){
 };
 
 TextBox.prototype.position = function(){
-	var z = (+$canvas.css("zoom")||1);
 	this.$ghost.css({
 		position: "absolute",
-		left: z * this._x + 3,
-		top: z * this._y + 3,
-		width: z * this._w,
-		height: z * this._h,
+		left: magnification * this._x + 3,
+		top: magnification * this._y + 3,
+		width: magnification * this._w,
+		height: magnification * this._h,
 	});
 	$status_position.text(this._x + "," + this._y);
 	$status_size.text(this._w + "," + this._h);

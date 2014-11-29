@@ -238,35 +238,31 @@ var $choose_stroke_size = $Choose(
 	}
 ).addClass("jspaint-choose-stroke-size");
 
-var magnification_sizes = [1, 2, 6, 8/*, 10*/]; // ten is secret
+var magnifications = [1, 2, 6, 8/*, 10*/]; // ten is secret
 var $choose_magnification = $Choose(
-	magnification_sizes,
-	function(size, is_chosen){
-		var x = magnification_sizes.indexOf(size);
+	magnifications,
+	function(scale, is_chosen){
+		var i = magnifications.indexOf(scale);
 		return ChooserCanvas(
 			"images/options-magnification.png",
 			is_chosen, // invert if chosen
 			39, 13, // width, height of destination canvas
-			x*23, 0, 23, 9, // x, y, width, height from source image
+			i*23, 0, 23, 9, // x, y, width, height from source image
 			8, 2, 23, 9 // x, y, width, height on destination
 		);
 	},
-	function(size){
-		//$canvas.css("width", canvas.width * size);
-		//$canvas.css("height", canvas.height * size);
-		$canvas.css("zoom", size);
-		$G.triggerHandler("resize");
-		if(size > 1){
-			$choose_magnification.enlarged_magnification = size;
+	function(scale){
+		set_magnification(scale);
+		if(scale > 1){
+			$choose_magnification.enlarged_magnification = scale;
 		}
 	},
-	function(size){
-		//return size === ((+$canvas.css("width") || canvas.width) / canvas.width);
-		return size === ((+$canvas.css("zoom") || 1));
+	function(scale){
+		return scale === magnification;
 	}
 ).addClass("jspaint-choose-magnification");
 
-// The default enlarged magnification, zoomed to when you click,
+// The default enlarged (>1) magnification for when you use the tool
 // is 4x, which isn't an option you can get to from the tool options.
 $choose_magnification.enlarged_magnification = 4;
 

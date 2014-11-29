@@ -192,12 +192,18 @@ var menus = {
 					item: "&Normal Size",
 					shorcut: "Ctrl+PgUp",
 					description: "Zooms the picture to 100%.",
+					action: function(){
+						set_magnification(1);
+					},
 				},
 				{
 					item: "&Large Size",
 					shorcut: "Ctrl+PgDn",
 					disabled: true,
 					description: "Zooms the picture to 400%.",
+					action: function(){
+						set_magnification(4);
+					},
 				},
 				{
 					item: "C&ustom...",

@@ -2,6 +2,8 @@
 var aliasing = true;
 var transparency = false;
 
+var magnification = 1;
+
 var default_canvas_width = 683;
 var default_canvas_height = 384;
 var my_canvas_width = default_canvas_width;
@@ -77,7 +79,10 @@ $status_text.default();
 var $toolbox = $ToolBox();
 var $colorbox = $ColorBox();
 
-reset();
+reset_file();
+reset_colors();
+reset_canvas(); // (with newly reset colors)
+reset_magnification();
 
 if(window.file_entry){
 	open_from_FileEntry(window.file_entry);
@@ -106,7 +111,9 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 		try{
 			localStorage.width = canvas.width;
 			localStorage.height = canvas.height;
-		}catch(e){}
+		}catch(e){
+			// oh well
+		}
 	});
 });
 
@@ -208,11 +215,8 @@ $G.on("keydown", function(e){
 		var delta = plus - minus; // +plus++ -minus--; // Δ = ±±±±
 		
 		if(selection){
-			
 			selection.scale(Math.pow(2, delta));
-			
 		}else{
-			
 			if(selected_tool.name === "Brush"){
 				brush_size = Math.max(1, Math.min(brush_size + delta, 500));
 			}else if(selected_tool.name === "Eraser/Color Eraser"){
@@ -275,7 +279,7 @@ $G.on("keydown", function(e){
 				image_attributes();
 			break;
 			default:
-				// This shortcut is not handled, do not (try to) prevent the default.
+				// This shortcut is not handled, do not try to prevent the default.
 				return true;
 		}
 		e.preventDefault();
@@ -287,7 +291,7 @@ $G.on("cut copy paste", function(e){
 		document.activeElement instanceof HTMLInputElement ||
 		document.activeElement instanceof HTMLTextAreaElement
 	){
-		// Don't prevent or interfere with cutting/copying/pasting within inputs or textareas
+		// Don't prevent cutting/copying/pasting within inputs or textareas
 		return;
 	}
 	
@@ -329,10 +333,8 @@ var mouse, mouse_start, mouse_previous;
 var reverse, ctrl, button;
 function e2c(e){
 	var rect = canvas.getBoundingClientRect();
-	//var z = (+$canvas_area.css("width") || canvas.width) / canvas.width;
-	var z = (+$canvas.css("zoom") || 1);
-	var cx = e.clientX / z - rect.left;
-	var cy = e.clientY / z - rect.top;
+	var cx = e.clientX / magnification - rect.left;
+	var cy = e.clientY / magnification - rect.top;
 	return {
 		x: ~~(cx / rect.width * canvas.width),
 		y: ~~(cy / rect.height * canvas.height),

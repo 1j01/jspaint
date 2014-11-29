@@ -1,19 +1,28 @@
 
+function set_magnification(scale){
+	magnification = scale;
+	$canvas.css("zoom", scale);
+	$G.triggerHandler("resize");
+}
+
+function reset_magnification(){
+	set_magnification(1);
+}
+
 function reset_colors(){
 	colors = ["#000000", "#ffffff", ""];
 	$G.trigger("option-changed");
 }
 
-function reset(){
-	this_ones_a_frame_changer();
-	
-	undos = [];
-	redos = [];
-	reset_colors();
-	
+function reset_file(){
 	file_entry = null;
 	file_name = "untitled";
 	update_title();
+}
+
+function reset_canvas(){
+	undos = [];
+	redos = [];
 	
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
@@ -43,13 +52,14 @@ function open_from_Image(img, new_file_name){
 	are_you_sure(function(){
 		this_ones_a_frame_changer();
 		
-		undos = [];
-		redos = [];
 		reset_colors();
+		reset_canvas(); // (with newly reset colors)
+		reset_magnification();
 		
 		file_name = new_file_name;
 		update_title();
 		
+		// @TODO: use copy helper
 		canvas.width = img.naturalWidth;
 		canvas.height = img.naturalHeight;
 		
@@ -102,7 +112,14 @@ function save_to_FileEntry(entry){
 }
 
 function file_new(){
-	are_you_sure(reset);
+	are_you_sure(function(){
+		this_ones_a_frame_changer();
+		
+		reset_file();
+		reset_colors();
+		reset_canvas(); // (with newly reset colors)
+		reset_magnification();
+	});
 }
 
 function file_open(){

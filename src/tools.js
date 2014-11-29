@@ -270,17 +270,18 @@ tools = [{
 }, {
 	name: "Magnifier",
 	description: "Changes the magnification.",
-	cursor: ["magnifier", [16, 16], "zoom-in"], //@todo: use zoom-in/zoom-out
+	cursor: ["magnifier", [16, 16], "zoom-in"],
+	// @TODO: use zoom-in/zoom-out as default,
+	// even though the custom cursor image is less descriptive
 	deselect: true,
 	passive: true,
 	// @TODO: choose and preview viewport with rectangular cursor
 	mousedown: function(){
-		if((+$canvas.css("zoom")||1) > 1){
-			$canvas.css("zoom", 1);
+		if(magnification > 1){
+			reset_magnification();
 		}else{
-			$canvas.css("zoom", this.$options.enlarged_magnification);
+			set_magnification(this.$options.enlarged_magnification);
 		}
-		$G.triggerHandler("resize");
 	},
 	$options: $choose_magnification
 }, {

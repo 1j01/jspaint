@@ -293,7 +293,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * Publish to the Chrome Web Store!
-	* Analytics
+	* [Analytics](https://developer.chrome.com/apps/analytics)
 	* Basic things that people would complain about
 
 
