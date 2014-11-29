@@ -283,6 +283,56 @@ function apply_image_transformation(fn){
 	}
 }
 
+function stretch_and_skew(xscale, yscale, hsa, vsa){
+	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+		var w = original_canvas.width * xscale;
+		var h = original_canvas.height * yscale;
+		
+		var bb_min_x = +Infinity;
+		var bb_max_x = -Infinity;
+		var bb_min_y = +Infinity;
+		var bb_max_y = -Infinity;
+		var corner = function(x01, y01){
+			var x = Math.tan(hsa)*h*x01 + w*y01;
+			var y = Math.tan(vsa)*w*y01 + h*x01;
+			bb_min_x = Math.min(bb_min_x, x);
+			bb_max_x = Math.max(bb_max_x, x);
+			bb_min_y = Math.min(bb_min_y, y);
+			bb_max_y = Math.max(bb_max_y, y);
+		};
+		
+		corner(0, 0);
+		corner(0, 1);
+		corner(1, 0);
+		corner(1, 1);
+		
+		var bb_x = bb_min_x;
+		var bb_y = bb_min_y;
+		var bb_w = bb_max_x - bb_min_x;
+		var bb_h = bb_max_y - bb_min_y;
+		
+		new_canvas.width = bb_w;
+		new_canvas.height = bb_h;
+		
+		if(!transparency){
+			new_ctx.fillStyle = colors[1];
+			new_ctx.fillRect(0, 0, new_canvas.width, new_canvas.height);
+		}
+		
+		new_ctx.save();
+		new_ctx.transform(
+			1, // x scale
+			Math.tan(vsa), // vertical skew (skewY)
+			Math.tan(hsa), // horizontal skew (skewX)
+			1, // y scale
+			bb_x, // x translation
+			bb_y // y translation
+		);
+		new_ctx.drawImage(original_canvas, 0, 0, w, h);
+		new_ctx.restore();
+	});
+}
+
 function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 	// Cut out the polygon given by points bounded by x/y_min/max from from_canvas
 	

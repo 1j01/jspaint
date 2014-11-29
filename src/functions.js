@@ -710,12 +710,15 @@ function image_stretch_and_skew(){
 	var stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%");
 	var stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%");
 	var skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees");
-	var skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Horizontal:", 0, "Degrees");
+	var skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees");
 	
 	$w.$Button("Okay", function(){
+		var xscale = parseFloat(stretch_x.val())/100;
+		var yscale = parseFloat(stretch_y.val())/100;
+		var hskew = parseFloat(skew_x.val())/360*TAU;
+		var vskew = parseFloat(skew_y.val())/360*TAU;
+		stretch_and_skew(xscale, yscale, hskew, vskew);
 		$w.close();
-	}).on("mouseover", function(){
-		$(this).text("NOT OKAY");
 	});
 	$w.$Button("Cancel", function(){
 		$w.close();
