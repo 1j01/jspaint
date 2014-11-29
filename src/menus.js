@@ -199,7 +199,6 @@ var menus = {
 				{
 					item: "&Large Size",
 					shorcut: "Ctrl+PgDn",
-					disabled: true,
 					description: "Zooms the picture to 400%.",
 					action: function(){
 						set_magnification(4);

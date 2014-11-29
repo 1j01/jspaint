@@ -38,7 +38,8 @@
 	cursor: inherit !important;
 }
 
-.jspaint-menus * {
+.jspaint-menus *,
+.jspaint-menu-popup * {
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 	cursor: default;
