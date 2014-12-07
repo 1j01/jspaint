@@ -48,60 +48,71 @@ function get_FileList(callback){
 		.click();
 }
 
-function open_from_Image(img, new_file_name){
+function open_from_Image(img, callback){
 	are_you_sure(function(){
 		this_ones_a_frame_changer();
 		
+		reset_file();
 		reset_colors();
 		reset_canvas(); // (with newly reset colors)
 		reset_magnification();
 		
-		file_name = new_file_name;
-		update_title();
-		
 		// @TODO: use copy helper
 		canvas.width = img.naturalWidth;
 		canvas.height = img.naturalHeight;
-		
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(img, 0, 0);
 		
 		$canvas_area.trigger("resize");
 		
 		detect_transparency();
+		
+		callback && callback();
 	});
 }
-function open_from_URI(uri, new_file_name){
+function open_from_URI(uri, callback){
 	var img = new Image();
 	img.onload = function(){
-		open_from_Image(img, new_file_name);
+		open_from_Image(img, callback);
 	};
 	img.src = uri;
 }
-function open_from_File(file){
+function open_from_File(file, callback){
+	// @TODO: use URL.createObjectURL(file) when available
+	// use URL.revokeObjectURL() too
 	var reader = new FileReader();
 	reader.onload = function(e){
-		open_from_URI(e.target.result, file.name);
+		open_from_URI(e.target.result, function(){
+			file_name = file.name;
+			update_title();
+			callback && callback();
+		});
 	};
 	reader.readAsDataURL(file);
 }
-function open_from_FileList(files){
+function open_from_FileList(files, callback){
 	$.each(files, function(i, file){
 		if(file.type.match(/image/)){
-			open_from_File(file);
+			open_from_File(file, callback);
 			return false;
 		}
 	});
 }
-function open_from_FileEntry(entry){
-	entry.file(open_from_File);
+function open_from_FileEntry(entry, callback){
+	entry.file(function(file){
+		open_from_File(file, function(){
+			file_entry = entry;
+			callback && callback();
+		});
+	});
 }
-function save_to_FileEntry(entry){
+function save_to_FileEntry(entry, callback){
 	entry.createWriter(function(file_writer){
 		file_writer.onwriteend = function(e){
 			if(this.error){
 				console.error(this.error + '\n\n\n@ ' + e);
 			}else{
+				callback && callback();
 				console.log("File written!");
 			}
 		};
@@ -142,6 +153,7 @@ function file_open(){
 function file_save(){
 	if(file_name.match(/\.svg$/)){
 		file_name += ".png";
+		//update_title()?
 		return file_save_as();
 	}
 	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){

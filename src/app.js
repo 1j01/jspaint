@@ -87,7 +87,7 @@ reset_magnification();
 if(window.file_entry){
 	open_from_FileEntry(window.file_entry);
 }else if(window.intent){
-	open_from_URI(window.intent.data, "intent");
+	open_from_URI(window.intent.data);
 }
 
 $canvas.on("user-resized", function(e, _x, _y, width, height){
