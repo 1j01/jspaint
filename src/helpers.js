@@ -26,7 +26,7 @@ var $G = $(window);
 function Cursor(cursor_def){
 	return "url(images/cursors/" + cursor_def[0] + ".png) " +
 		cursor_def[1].join(" ") +
-		", " + cursor_def[2]
+		", " + cursor_def[2];
 }
 
 function E(t){
@@ -52,24 +52,31 @@ function get_rgba_from_color(color){
 }
 
 function Canvas(width, height){
+	var image = width;
+	
 	var new_canvas = E("canvas");
 	var new_ctx = new_canvas.getContext("2d");
+	
 	new_ctx.imageSmoothingEnabled = false;
 	new_ctx.mozImageSmoothingEnabled = false;
 	new_ctx.webkitImageSmoothingEnabled = false;
+	
+	new_canvas.ctx = new_ctx;
+	
+	new_ctx.copy = function(image){
+		new_canvas.width = image.naturalWidth || image.width;
+		new_canvas.height = image.naturalHeight || image.height;
+		new_ctx.drawImage(image, 0, 0);
+	};
+	
 	if(width && height){
 		// new Canvas(width, height)
 		new_canvas.width = width;
 		new_canvas.height = height;
-	}else{
+	}else if(image){
 		// new Canvas(image)
-		var copy_of = width;
-		if(copy_of){
-			new_canvas.width = copy_of.width;
-			new_canvas.height = copy_of.height;
-			new_ctx.drawImage(copy_of, 0, 0);
-		}
+		new_ctx.copy(image);
 	}
-	new_canvas.ctx = new_ctx;
+	
 	return new_canvas;
 }

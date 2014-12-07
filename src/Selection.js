@@ -102,6 +102,7 @@ Selection.prototype.cut_out_background = function(){
 	var sel = this;
 	var cutout = sel.canvas;
 	if(transparency){
+		// @FIXME: this doesn't work so well with transparency between 0 and 1
 		ctx.save();
 		ctx.globalCompositeOperation = "destination-out";
 		ctx.drawImage(cutout, sel._x, sel._y);
@@ -129,12 +130,11 @@ Selection.prototype.position = function(){
 
 Selection.prototype.resize = function(){
 	var sel = this;
-	var width = sel._w;
-	var height = sel._h;
+	var new_width = sel._w;
+	var new_height = sel._h;
 	
-	var new_canvas = new Canvas(width, height);
-	
-	new_canvas.ctx.drawImage(sel.canvas, 0, 0, width, height);
+	var new_canvas = new Canvas(new_width, new_height);
+	new_canvas.ctx.drawImage(sel.canvas, 0, 0, new_width, new_height);
 	
 	sel.replace_canvas(new_canvas);
 };
@@ -156,7 +156,7 @@ Selection.prototype.replace_canvas = function(new_canvas){
 	
 	$(sel.canvas).replaceWith(new_canvas);
 	sel.canvas = new_canvas;
-
+	
 	$(sel.canvas).on("mousedown", sel.canvas_mousedown);
 	sel.$ghost.triggerHandler("new-element", [sel.canvas]);
 	sel.$ghost.triggerHandler("resize");//?
@@ -188,9 +188,7 @@ Selection.prototype.crop = function(){
 	sel.instantiate(null, "passive");
 	if(sel.canvas){
 		undoable(0, function(){
-			canvas.width = sel.canvas.width;
-			canvas.height = sel.canvas.height;
-			ctx.drawImage(sel.canvas, 0, 0);
+			ctx.copy(sel.canvas);
 			$canvas.trigger("update"); //update handles
 		});
 	}

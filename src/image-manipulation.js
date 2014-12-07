@@ -273,10 +273,7 @@ function apply_image_transformation(fn){
 		undoable(0, function(){
 			this_ones_a_frame_changer();
 			
-			canvas.width = new_canvas.width;
-			canvas.height = new_canvas.height;
-			
-			ctx.drawImage(new_canvas, 0, 0);
+			ctx.copy(new_canvas);
 			
 			$canvas.trigger("update"); // update handles
 		});

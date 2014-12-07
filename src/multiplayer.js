@@ -204,17 +204,13 @@
 				// Write the image data to the canvas
 				var img = new Image();
 				img.onload = function(){
-					canvas.width = img.naturalWidth;
-					canvas.height = img.naturalHeight;
-					
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					ctx.drawImage(img, 0, 0);
-					
+					ctx.copy(img);
+					// detect_transparency() here would probably just be annoying (and slow things a bit)
 					$canvas_area.trigger("resize");
+					
+					// @TODO: playback recorded in-progress mouse operations here
 				};
 				img.src = uri;
-				
-				// @TODO: playback recorded in-progress mouse operations here
 			}
 		});
 		

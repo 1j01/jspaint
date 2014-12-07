@@ -89,8 +89,7 @@ tools = [{
 	},
 	mouseup: function(){
 		// Revert the inverty brush paint
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(undos[undos.length-1], 0, 0);
+		ctx.copy(undos[undos.length-1]);
 		
 		// Cut out the polygon
 		var cutout = cut_polygon(
@@ -170,7 +169,8 @@ tools = [{
 }, {
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
-	cursor: ["precise", [16, 16], "crosshair"], //@todo: draw square on canvas
+	cursor: ["precise", [16, 16], "crosshair"],
+	// @TODO: draw square on canvas as cursor
 	continuous: "space",
 	paint: function(ctx, x, y){
 		
@@ -569,11 +569,10 @@ tools = [{
 	paint: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
 		
-		// Clear the canvas to the previous image
-		// Get rid of strokes drawn while constructing the shape
+		// Clear the canvas to the previous image to get
+		// rid of lines drawn while constructing the shape
 		// @TODO: stop needing this
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(this.canvas_base, 0, 0);
+		ctx.copy(this.canvas_base);
 		
 		var i = this.points.length - 1;
 		this.points[i].x = x;
@@ -590,11 +589,10 @@ tools = [{
 	complete: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
 		
-		// Clear the canvas to the previous image
-		// Get rid of strokes drawn while constructing the shape
+		// Clear the canvas to the previous image to get
+		// rid of lines drawn while constructing the shape
 		// @TODO: stop needing this
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(this.canvas_base, 0, 0);
+		ctx.copy(this.canvas_base);
 		
 		// Draw an antialiased polygon
 		ctx.beginPath();

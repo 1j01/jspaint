@@ -57,15 +57,9 @@ function open_from_Image(img, callback){
 		reset_canvas(); // (with newly reset colors)
 		reset_magnification();
 		
-		// @TODO: use copy helper
-		canvas.width = img.naturalWidth;
-		canvas.height = img.naturalHeight;
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(img, 0, 0);
-		
-		$canvas_area.trigger("resize");
-		
+		ctx.copy(img);
 		detect_transparency();
+		$canvas_area.trigger("resize");
 		
 		callback && callback();
 	});
@@ -406,10 +400,7 @@ function undo(){
 	
 	redos.push(new Canvas(canvas));
 	
-	var c = undos.pop();
-	canvas.width = c.width;
-	canvas.height = c.height;
-	ctx.drawImage(c, 0, 0);
+	ctx.copy(undos.pop());
 	
 	$canvas_area.trigger("resize");
 	
@@ -421,10 +412,7 @@ function redo(){
 	
 	undos.push(new Canvas(canvas));
 	
-	var c = redos.pop();
-	canvas.width = c.width;
-	canvas.height = c.height;
-	ctx.drawImage(c, 0, 0);
+	ctx.copy(redos.pop());
 	
 	$canvas_area.trigger("resize");
 	
