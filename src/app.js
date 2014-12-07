@@ -46,8 +46,6 @@ var file_name;
 
 
 
-var $body = $("body");
-var $G = $(window);
 var $app = $(E("div")).addClass("jspaint").appendTo("body");
 
 var $V = $(E("div")).addClass("jspaint-vertical").appendTo($app);
@@ -117,7 +115,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 	});
 });
 
-$body.on("dragover dragenter", function(e){
+$("body").on("dragover dragenter", function(e){
 	e.preventDefault();
 	e.stopPropagation();
 }).on("drop", function(e){
@@ -510,7 +508,7 @@ $canvas_area.on("mousedown", function(e){
 	}
 });
 
-$body.on("mousedown contextmenu", function(e){
+$("body").on("mousedown contextmenu", function(e){
 	if(
 		e.target instanceof HTMLSelectElement ||
 		e.target instanceof HTMLTextAreaElement ||

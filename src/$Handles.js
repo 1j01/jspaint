@@ -73,11 +73,11 @@ function $Handles($container, element, options){
 				dragged = false;
 				if(e.button === 0){
 					$G.on("mousemove", drag);
-					$body.css({cursor: cursor}).addClass("jspaint-cursor-bully");
+					$("body").css({cursor: cursor}).addClass("jspaint-cursor-bully");
 				}
 				$G.one("mouseup", function(e){
 					$G.off("mousemove", drag);
-					$body.css({cursor: ""}).removeClass("jspaint-cursor-bully");
+					$("body").css({cursor: ""}).removeClass("jspaint-cursor-bully");
 					
 					$resize_ghost.remove();
 					if(dragged){

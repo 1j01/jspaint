@@ -21,6 +21,8 @@ var TAU =     //////|//////
          //////     |     /////
               //////|//////          C/r;
 
+var $G = $(window);
+
 function Cursor(cursor_def){
 	return "url(images/cursors/" + cursor_def[0] + ".png) " +
 		cursor_def[1].join(" ") +
