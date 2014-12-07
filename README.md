@@ -56,17 +56,14 @@ You can also install it as a Chrome app.
 
 * The Magnifier's viewport preview
 * Shape styles on most of the shape tools
-* The polygon tool is pretty bad
-* Menu items don't get enabled/disabled dynamically
+* The polygon tool needs some work
 * [This entire document full of things to do](TODO.md)
 
 Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
-The clipboard-related menu items can't access the clipboard
-because it would be a huge security issue if browsers let web pages access the clipboard at will.
 To use the clipboard menu items, you need to install the Chrome app.
-The menu items will still be grayed out, though.
+(It would be a huge security issue if browsers let web pages access the clipboard at will.)
 
 
 ## Staying True to the Original
