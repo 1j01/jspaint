@@ -368,8 +368,8 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 			Math.tan(vsa), // vertical skew (skewY)
 			Math.tan(hsa), // horizontal skew (skewX)
 			1, // y scale
-			bb_x, // x translation
-			bb_y // y translation
+			-bb_x, // x translation
+			-bb_y // y translation
 		);
 		new_ctx.drawImage(original_canvas, 0, 0, w, h);
 		new_ctx.restore();
