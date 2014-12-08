@@ -30,6 +30,7 @@ You can also install it as a Chrome app.
 * It can open SVG files (by accident)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
+* Rotate image by arbitrary angle!
 * Rudimentary **multiplayer** support:
   Start up a session at
   [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
@@ -46,7 +47,6 @@ You can also install it as a Chrome app.
 * After adding text, save as SVG or HTML with selectable text
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
-* Rotate image by arbitrary angle!
 * Alternate themes (You can already style it with browser extensions like Stylebot or Stylish)
 * Noncontiguous fill (Probably by holding <kbd>Shift</kbd> and using the fill tool)
 * Optionally treat almost-equal colors as equal

@@ -622,6 +622,7 @@ function image_flip_and_rotate(){
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='90' checked/>90°</label>");
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='180'/>180°</label>");
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='270'/>270°</label>");
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='arbitrary'/><input type='number' min='-360' max='360' name='rotate-by-arbitrary-angle' value=''/> Degrees</label>");
 	$rotate_by_angle.find("input").attr({disabled: true});
 	
 	$fieldset.find("input").on("change", function(){
@@ -630,12 +631,28 @@ function image_flip_and_rotate(){
 			disabled: action !== "rotate-by-angle"
 		});
 	});
+	$rotate_by_angle.find("label, input").on("click", function(e){
+		// Select "Rotate by angle" and enable subfields
+		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
+		$fieldset.find("input").triggerHandler("change");
+		
+		var $label = $(this).closest("label");
+		// Focus the numerical input if this field has one
+		$label.find("input[type='number']").focus();
+		// Select the radio for this field
+		$label.find("input[type='radio']").prop("checked", true);
+	});
+	// @TODO: enable all controls that are accessable to the mouse
 	
 	$fieldset.find("label").css({display: "block"});
 	
 	$w.$Button("Okay", function(){
 		var action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
-		var angle_deg = + $fieldset.find("input[name='rotate-by-angle']:checked").val();
+		var angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
+		if(angle_val === "arbitrary"){
+			angle_val = $fieldset.find("input[name='rotate-by-arbitrary-angle']").val();
+		}
+		var angle_deg = parseFloat(angle_val);
 		var angle = angle_deg / 360 * TAU;
 		
 		switch(action){
