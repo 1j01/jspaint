@@ -298,6 +298,7 @@ function flip_vertical(){
 
 function rotate(angle){
 	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+		new_ctx.save();
 		switch(angle){
 			case TAU / 4:
 			case TAU * -3/4:
@@ -319,10 +320,47 @@ function rotate(angle){
 				new_ctx.rotate(TAU / -4);
 				break;
 			default:
-				throw new Error("@TODO");
+				var w = original_canvas.width;
+				var h = original_canvas.height;
+				
+				var bb_min_x = +Infinity;
+				var bb_max_x = -Infinity;
+				var bb_min_y = +Infinity;
+				var bb_max_y = -Infinity;
+				var corner = function(x01, y01){
+					var x = Math.sin(-angle)*h*x01 + Math.cos(+angle)*w*y01;
+					var y = Math.sin(+angle)*w*y01 + Math.cos(-angle)*h*x01;
+					bb_min_x = Math.min(bb_min_x, x);
+					bb_max_x = Math.max(bb_max_x, x);
+					bb_min_y = Math.min(bb_min_y, y);
+					bb_max_y = Math.max(bb_max_y, y);
+				};
+				
+				corner(0, 0);
+				corner(0, 1);
+				corner(1, 0);
+				corner(1, 1);
+				
+				var bb_x = bb_min_x;
+				var bb_y = bb_min_y;
+				var bb_w = bb_max_x - bb_min_x;
+				var bb_h = bb_max_y - bb_min_y;
+				
+				new_canvas.width = bb_w;
+				new_canvas.height = bb_h;
+				
+				if(!transparency){
+					new_ctx.fillStyle = colors[1];
+					new_ctx.fillRect(0, 0, new_canvas.width, new_canvas.height);
+				}
+				
+				new_ctx.translate(-bb_x,-bb_y);
+				new_ctx.rotate(angle);
+				new_ctx.drawImage(original_canvas, 0, 0, w, h);
 				break;
 		}
 		new_ctx.drawImage(original_canvas, 0, 0);
+		new_ctx.restore();
 	});
 }
 

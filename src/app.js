@@ -246,12 +246,12 @@ $G.on("keydown", function(e){
 			}
 		}
 		switch(e.keyCode){
-			case 188: // <
-			case 219: // [
+			case 188: // , <
+			case 219: // [ {
 				rotate(-TAU/4);
 			break;
-			case 190: // >
-			case 221: // ]
+			case 190: // . >
+			case 221: // ] }
 				rotate(+TAU/4);
 			break;
 		}
