@@ -245,6 +245,16 @@ $G.on("keydown", function(e){
 					return true;
 			}
 		}
+		switch(e.keyCode){
+			case 188: // <
+			case 219: // [
+				rotate(-TAU/4);
+			break;
+			case 190: // >
+			case 221: // ]
+				rotate(+TAU/4);
+			break;
+		}
 		switch(key){
 			case "Z":
 				e.shiftKey ? redo() : undo();

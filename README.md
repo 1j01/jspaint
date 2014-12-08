@@ -29,6 +29,7 @@ You can also install it as a Chrome app.
   smear it across the canvas *while it animates*!
 * It can open SVG files (by accident)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
+* Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
 * Rudimentary **multiplayer** support:
   Start up a session at
   [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
@@ -46,7 +47,6 @@ You can also install it as a Chrome app.
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
 * Rotate image by arbitrary angle
-* Keyboard shortcuts for rotation
 * Alternate themes (You can already style it with browser extensions like Stylebot or Stylish)
 * Noncontiguous fill (Probably by holding <kbd>Shift</kbd> and using the fill tool)
 * Optionally treat almost-equal colors as equal
@@ -125,6 +125,8 @@ I want to make JS Paint to be able to edit...
   It starts out with no color so you'll need to hold <kbd>Ctrl</kbd> and select a color first.
   The slightly fancy thing about this color is you can
   press and release <kbd>Ctrl</kbd> to switch colors while drawing.
+
+* You can apply image transformations like Flip/Rotate, Stretch/Skew or Invert (in the Image menu) either to the whole image or to a selection. If you make a selection with the Select or Free-Form Select tool, the transformations apply to the selection.
 
 * These Tips and Tricks from [a tutorial for MS Paint](http://www.albinoblacksheep.com/tutorial/mspaint)
   also work in JS Paint if they have a checkmark:

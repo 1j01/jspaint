@@ -625,51 +625,31 @@ function image_flip_and_rotate(){
 	$rotate_by_angle.find("input").attr({disabled: true});
 	
 	$fieldset.find("input").on("change", function(){
-		var flip_or_rotate = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+		var action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		$rotate_by_angle.find("input").attr({
-			disabled: flip_or_rotate !== 'rotate-by-angle'
+			disabled: action !== "rotate-by-angle"
 		});
 	});
 	
 	$fieldset.find("label").css({display: "block"});
 	
 	$w.$Button("Okay", function(){
-		apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
-			var flip_or_rotate = $fieldset.find("input[name='flip-or-rotate']:checked").val();
-			var rotate_by_angle = $fieldset.find("input[name='rotate-by-angle']:checked").val();
-			
-			switch(flip_or_rotate){
-				case "flip-horizontal":
-					new_ctx.translate(new_canvas.width, 0);
-					new_ctx.scale(-1, 1);
-					break;
-				case "flip-vertical":
-					new_ctx.translate(0, new_canvas.height);
-					new_ctx.scale(1, -1);
-					break;
-				case "rotate-by-angle":
-					switch(rotate_by_angle){
-						case "90":
-							new_canvas.width = original_canvas.height;
-							new_canvas.height = original_canvas.width;
-							new_ctx.translate(new_canvas.width, 0);
-							new_ctx.rotate(TAU / 4);
-							break;
-						case "180":
-							new_ctx.translate(new_canvas.width, new_canvas.height);
-							new_ctx.rotate(TAU / 2);
-							break;
-						case "270":
-							new_canvas.width = original_canvas.height;
-							new_canvas.height = original_canvas.width;
-							new_ctx.translate(0, new_canvas.height);
-							new_ctx.rotate(TAU / -4);
-							break;
-					}
-					break;
-			}
-			new_ctx.drawImage(original_canvas, 0, 0);
-		});
+		var action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+		var angle_deg = + $fieldset.find("input[name='rotate-by-angle']:checked").val();
+		var angle = angle_deg / 360 * TAU;
+		
+		switch(action){
+			case "flip-horizontal":
+				flip_horizontal();
+				break;
+			case "flip-vertical":
+				flip_vertical();
+				break;
+			case "rotate-by-angle":
+				rotate(angle);
+				break;
+		}
+		
 		$w.close();
 	});
 	$w.$Button("Cancel", function(){

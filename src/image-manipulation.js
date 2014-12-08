@@ -280,6 +280,52 @@ function apply_image_transformation(fn){
 	}
 }
 
+function flip_horizontal(){
+	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+		new_ctx.translate(new_canvas.width, 0);
+		new_ctx.scale(-1, 1);
+		new_ctx.drawImage(original_canvas, 0, 0);
+	});
+}
+
+function flip_vertical(){
+	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+		new_ctx.translate(0, new_canvas.height);
+		new_ctx.scale(1, -1);
+		new_ctx.drawImage(original_canvas, 0, 0);
+	});
+}
+
+function rotate(angle){
+	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+		switch(angle){
+			case TAU / 4:
+			case TAU * -3/4:
+				new_canvas.width = original_canvas.height;
+				new_canvas.height = original_canvas.width;
+				new_ctx.translate(new_canvas.width, 0);
+				new_ctx.rotate(TAU / 4);
+				break;
+			case TAU / 2:
+			case TAU / -2:
+				new_ctx.translate(new_canvas.width, new_canvas.height);
+				new_ctx.rotate(TAU / 2);
+				break;
+			case TAU * 3/4:
+			case TAU / -4:
+				new_canvas.width = original_canvas.height;
+				new_canvas.height = original_canvas.width;
+				new_ctx.translate(0, new_canvas.height);
+				new_ctx.rotate(TAU / -4);
+				break;
+			default:
+				throw new Error("@TODO");
+				break;
+		}
+		new_ctx.drawImage(original_canvas, 0, 0);
+	});
+}
+
 function stretch_and_skew(xscale, yscale, hsa, vsa){
 	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
 		var w = original_canvas.width * xscale;
