@@ -35,6 +35,7 @@ You can also install it as a Chrome app.
   Start up a session at
   [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
   and send the link to your friends!
+  It isn't perfectly seamless, and you may lose your drawing or be interrupted.
 
 
 #### Possible improvements include:

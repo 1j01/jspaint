@@ -225,7 +225,6 @@
 						$canvas.triggerHandler(e, ["synthetic"]);
 						$G.triggerHandler(e, ["synthetic"]);
 					}
-					mouse_operations = [];
 				};
 				img.src = uri;
 			}
@@ -238,45 +237,29 @@
 		
 		$canvas_area.on("mousedown.session-hook", "*", function(e, synthetic){
 			console.log(e.type, "| synthetic?", synthetic);
+			if(synthetic){ return; }
+			
 			// If you're using the fill tool
 			if(selected_tool.name.match(/Fill/)){
 				// Sync immediately
 				sync();
 			}else{
-				if(!synthetic){
-					mouse_operations = [e];
-				}
-				/*
-				mouse_operations = [];
-				var canvas_rect = canvas.getBoundingClientRect();
-				mouse_operations.push({
-					type: "mousedown",
-					x: e.clientX - canvas_rect.left,
-					y: e.clientY - canvas_rect.top,
-				});*/
+				mouse_operations = [e];
 				var mousemove = function(e, synthetic){
 					console.log(e.type, "| synthetic?", synthetic);
-					if(!synthetic){
-						mouse_operations.push(e);
-					}
-					/*var canvas_rect = canvas.getBoundingClientRect();
-					mouse_operations.push({
-						type: "mousemove",
-						x: e.clientX - canvas_rect.left,
-						y: e.clientY - canvas_rect.top,
-					});*/
+					if(synthetic){ return; }
+					
+					mouse_operations.push(e);
 				};
 				$G.on("mousemove.session-hook", mousemove);
 				$G.one("mouseup.session-hook", function(e, synthetic){
 					console.log(e.type, "| synthetic?", synthetic);
+					if(synthetic){ return; }
+					
 					$G.off("mousemove.session-hook", mousemove);
-					///  // ///// Clear the mouse operations unless this event is synthesized
-					/////  / // // in the place that's about to try to use the mouse operations
-					if(!synthetic){
-						///// mouse_operations = [];
-						// a change might have occured
-						sync();
-					}
+					
+					// a change might have occured
+					sync();
 				});
 			}
 		});
