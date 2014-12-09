@@ -173,10 +173,14 @@
 		});
 		
 		var previous_uri;
+		var mouse_operations = [];
+		
 		var sync = function(){
 			// Sync the data from this client to the server (one-way)
 			var uri = canvas.toDataURL();
 			if(previous_uri !== uri){
+				debug(["clear mouse operations to set data", mouse_operations]);
+				mouse_operations = [];
 				debug("set data");
 				session.fb_data.set(uri);
 				previous_uri = uri;
@@ -198,17 +202,30 @@
 			}else{
 				previous_uri = uri;
 				
-				// Cancel any in-progress mouse operations
-				$G.triggerHandler("mouseup", "cancel");
-				
-				// Write the image data to the canvas
+				// Load the new image data
 				var img = new Image();
 				img.onload = function(){
-					ctx.copy(img);
-					// detect_transparency() here would probably just be annoying (and slow things a bit)
-					$canvas_area.trigger("resize");
+					// Cancel any in-progress mouse operations
+					if(mouse_operations.length){
+						$G.triggerHandler("mouseup", "cancel");
+					}
 					
-					// @TODO: playback recorded in-progress mouse operations here
+					// Write the image data to the canvas
+					ctx.copy(img);
+					$canvas_area.trigger("resize");
+					// (detect_transparency() here would not be ideal
+					// Perhaps a better way of syncing transparency
+					// and other options will be established)
+					
+					// Playback recorded in-progress mouse operations
+					console.log("playback", mouse_operations);
+					for(var i=0; i<mouse_operations.length; i++){
+						var e = mouse_operations[i];
+						// Trigger the event at each place it is listened for
+						$canvas.triggerHandler(e, ["synthetic"]);
+						$G.triggerHandler(e, ["synthetic"]);
+					}
+					mouse_operations = [];
 				};
 				img.src = uri;
 			}
@@ -219,14 +236,48 @@
 		
 		$canvas.on("user-resized.session-hook", sync);
 		
-		$(".jspaint-canvas-area").on("mousedown.session-hook", "*", function(){
+		$canvas_area.on("mousedown.session-hook", "*", function(e, synthetic){
+			console.log(e.type, "| synthetic?", synthetic);
 			// If you're using the fill tool
 			if(selected_tool.name.match(/Fill/)){
 				// Sync immediately
 				sync();
 			}else{
-				// Sync on mouseup
-				$G.one("mouseup.session-hook", sync);
+				if(!synthetic){
+					mouse_operations = [e];
+				}
+				/*
+				mouse_operations = [];
+				var canvas_rect = canvas.getBoundingClientRect();
+				mouse_operations.push({
+					type: "mousedown",
+					x: e.clientX - canvas_rect.left,
+					y: e.clientY - canvas_rect.top,
+				});*/
+				var mousemove = function(e, synthetic){
+					console.log(e.type, "| synthetic?", synthetic);
+					if(!synthetic){
+						mouse_operations.push(e);
+					}
+					/*var canvas_rect = canvas.getBoundingClientRect();
+					mouse_operations.push({
+						type: "mousemove",
+						x: e.clientX - canvas_rect.left,
+						y: e.clientY - canvas_rect.top,
+					});*/
+				};
+				$G.on("mousemove.session-hook", mousemove);
+				$G.one("mouseup.session-hook", function(e, synthetic){
+					console.log(e.type, "| synthetic?", synthetic);
+					$G.off("mousemove.session-hook", mousemove);
+					///  // ///// Clear the mouse operations unless this event is synthesized
+					/////  / // // in the place that's about to try to use the mouse operations
+					if(!synthetic){
+						///// mouse_operations = [];
+						// a change might have occured
+						sync();
+					}
+				});
 			}
 		});
 		
