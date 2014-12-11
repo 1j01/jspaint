@@ -1,4 +1,34 @@
 
+function render_brush(ctx, shape, size){
+	if(shape === "circle"){
+		size /= 2;
+		size += 0.25;
+	}else if(shape.match(/diagonal/)){
+		size -= 0.4;
+	}
+	
+	var mid_x = ctx.canvas.width / 2;
+	var left = ~~(mid_x - size/2);
+	var right = ~~(mid_x + size/2);
+	var mid_y = ctx.canvas.height / 2;
+	var top = ~~(mid_y - size/2);
+	var bottom = ~~(mid_y + size/2);
+	
+	if(shape === "circle"){
+		draw_ellipse(ctx, left, top, size, size);
+	}else if(shape === "square"){
+		ctx.fillRect(left, top, ~~size, ~~size);
+	}else if(shape === "diagonal"){
+		draw_line(ctx, left, top, right, bottom);
+	}else if(shape === "reverse_diagonal"){
+		draw_line(ctx, left, bottom, right, top);
+	}else if(shape === "horizontal"){
+		draw_line(ctx, left, mid_y, size, mid_y);
+	}else if(shape === "vertical"){
+		draw_line(ctx, mid_x, top, mid_x, size);
+	}
+};
+
 function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 	
 	var stroke_color = ctx.strokeStyle;
