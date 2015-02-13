@@ -20,7 +20,7 @@ You can also install it as a Chrome app.
   go to Image > Attributes... and select Transparent,
   then Okay, and then Image > Clear Image
 * Create an animated GIF from the current document history with
-  <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out)
+  <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out (after editing *a fairly small image*))
 * Cross-platform, I guess
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
 * When you do Edit > Paste From... you can select transparent images and animated GIFs.
@@ -30,7 +30,7 @@ You can also install it as a Chrome app.
 * It can open SVG files (by accident)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
-* Rotate image by arbitrary angle!
+* Rotate image by arbitrary angle! Available in Image > Flip/Rotate
 * Rudimentary **multiplayer** support:
   Start up a session at
   [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
@@ -46,8 +46,8 @@ You can also install it as a Chrome app.
 * After adding text, save as SVG or HTML with selectable text
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
-* Alternate themes (You can already style it with browser extensions like Stylebot or Stylish)
-* Noncontiguous fill (Probably by holding <kbd>Shift</kbd> and using the fill tool)
+* Alternate themes (You can already style it with browser extensions like Stylebot or Stylish though!)
+* Noncontiguous fill (Probably by holding <kbd>Shift</kbd> when using the fill tool)
 * Optionally treat almost-equal colors as equal
 
 
@@ -92,9 +92,16 @@ What was this section titled? Oh, um yeah I'm doing that too, I guess.
 I want to make JS Paint to be able to edit...
 
 * Transparent [PNGs][PNG] - Done!
+  Enable transparency for an image by going to Image > Attributes or pressing <kbd>Ctrl+E</kbd>
+  and selecting Transparent. (Hit Okay.)
+  Then you'll want to remove some of the background.
+  You can use the Eraser tool a bit, then use the Color Picker to
+  pick up a transparent color and use the Fill tool to remove bigger areas.
+  Images that are partially transparent will automatically open in Transparent mode.
+  Otherwise they will open in Opaque mode.
 * Animated [GIFs][GIF]
   (yes, that entails a fully featured (but simple) animation editor) -
-  You can currently only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
+  Currently you can only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
 * Animated Transparent [APNGs][APNG]
   (better than GIFs, but with less support)
 * Multi-size Icons ([ICO][ICO] for windows and [ICNS][ICNS] for mac)

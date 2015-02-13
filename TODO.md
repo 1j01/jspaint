@@ -26,6 +26,10 @@
 
 
 * Issues
+	* **ADD CRASH PROTECTION**
+	* Crashes when saving large images
+	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
+	* Dragging the selection fails when zoomed in
 	* Components
 		* Colors > Edit Colors... doesn't work when the $colorbox is hidden
 		* Component windows are gone forever once closed (can't be shown from the View menu)
@@ -323,6 +327,8 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Image inversion code is duplicated in ChooserCanvas from tool-options.js but should go in image-manipulation.js
 	* `$w.$form.addClass("jspaint-horizontal").css({display: "flex"});`
 	* Comment everything and then try to make the code as obvious as the comments
+	* Improve code quality: https://codeclimate.com/github/1j01/jspaint
+	* Store the current colors in an object ({bg, fg, ternary}?)
 
 
 * Images
