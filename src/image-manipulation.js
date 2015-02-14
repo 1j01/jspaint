@@ -1,4 +1,21 @@
 
+var stroke_canvas;
+var stroke_canvas_size;
+var stroke_canvas_color;
+var update_stroke_canvas = function(ctx, x, y){
+	if(
+		stroke_canvas_size !== stroke_size ||
+		stroke_canvas_color !== stroke_color ||
+		!stroke_canvas
+	){
+		var d = stroke_canvas_size = stroke_size;
+		stroke_canvas_color = stroke_color;
+		stroke_canvas = new Canvas(d, d);
+		stroke_canvas.ctx.fillStyle = stroke_canvas_color;
+		draw_ellipse(stroke_canvas.ctx, 0, 0, d, d, false, true);
+	}
+};
+
 function render_brush(ctx, shape, size){
 	if(shape === "circle"){
 		size /= 2;
@@ -15,7 +32,7 @@ function render_brush(ctx, shape, size){
 	var bottom = ~~(mid_y + size/2);
 	
 	if(shape === "circle"){
-		draw_ellipse(ctx, left, top, size, size);
+		draw_ellipse(ctx, left, top, size, size, false, true);
 	}else if(shape === "square"){
 		ctx.fillRect(left, top, ~~size, ~~size);
 	}else if(shape === "diagonal"){
@@ -27,55 +44,81 @@ function render_brush(ctx, shape, size){
 	}else if(shape === "vertical"){
 		draw_line(ctx, mid_x, top, mid_x, size);
 	}
-};
+}
 
 function draw_ellipse(ctx, x, y, w, h, stroke, fill){
-	
 	var stroke_color = ctx.strokeStyle;
 	var fill_color = ctx.fillStyle;
 	
 	var cx = x + w/2;
 	var cy = y + h/2;
+	if(w < 0){ x += w; w = -w; }
+	if(h < 0){ y += h; h = -h; }
 	
 	if(aliasing){
-		// @TODO: use proper raster ellipse algorithm
 		
-		var r1 = Math.round;
-		var r2 = Math.round;
+		if(w < stroke_size*2 || h < stroke_size*2){
+			stroke = false;
+			fill = true;
+			fill_color = stroke_color;
+		}
 		
-		ctx.fillStyle = stroke_color;
-		for(var r=0; r<TAU; r+=0.01){
-			var rx = Math.cos(r) * w/2;
-			var ry = Math.sin(r) * h/2;
-			
-			var rect_x = r1(cx+rx);
-			var rect_y = r1(cy+ry);
-			var rect_w = r2(-rx*2);
-			var rect_h = r2(-ry*2);
-			
-			ctx.fillRect(rect_x+1, rect_y, rect_w, rect_h);
-			ctx.fillRect(rect_x, rect_y+1, rect_w, rect_h);
-			ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
-			ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
+		if(fill){
+			ctx.fillStyle = fill_color;
+			ellipse_iterate(cx, cy, w/2, h/2, function(cx, cy, x, y){
+				var min_x = Math.round(Math.min(cx-x, cx));
+				var min_y = Math.round(Math.min(cy-y, cy));
+				var width = Math.round(Math.abs(cx+x) - min_x) + 1;
+				var height = Math.round(Math.abs(cy+y) - min_y) + 1;
+				//var width = Math.round(Math.abs(x));
+				//var height = Math.round(Math.abs(y));
+				//ctx.fillRect(~~cx, ~~cy, 1, 1);
+				ctx.fillRect(min_x, min_y, width, height);
+				//ctx.fillRect(min_x-1, min_y-1, width+2, height+2);
+				
+				/*var rect_x = Math.round(cx - Math.abs(x));
+				var rect_y = Math.round(cy - Math.abs(y));
+				var rect_w = Math.max(1, Math.round(Math.abs(x*2)));
+				var rect_h = Math.max(1, Math.round(Math.abs(y*2)));
+				
+				ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
+				/*ctx.fillRect(rect_x+1, rect_y, rect_w, rect_h);
+				ctx.fillRect(rect_x, rect_y+1, rect_w, rect_h);
+				ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
+				ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);*/
+			});
 		}
-		ctx.fillStyle = fill_color;
-		for(var r=0; r<TAU; r+=0.01){
-			var rx = Math.cos(r) * w/2;
-			var ry = Math.sin(r) * h/2;
-			ctx.fillRect(
-				r1(cx+rx),
-				r1(cy+ry),
-				r2(-rx*2),
-				r2(-ry*2)
-			);
+		if(stroke){
+			//ctx.fillStyle = stroke_color;
+			update_stroke_canvas();
+			ellipse_iterate(cx, cy, w/2, h/2, function(cx, cy, x, y){
+				//ctx.fillRect(~~(cx+x), ~~(cy+y), 1, 1);
+				/*var ox = ((x < 0) - (x > 0)) * (stroke_canvas.width - 1);
+				var oy = ((y < 0) - (y > 0)) * (stroke_canvas.height - 1);
+				ctx.drawImage(stroke_canvas, ~~(cx+x+ox), ~~(cy+y+oy));
+				ctx.drawImage(stroke_canvas, ~~(cx-x-ox), ~~(cy+y+oy));
+				ctx.drawImage(stroke_canvas, ~~(cx+x+ox), ~~(cy-y-oy));
+				ctx.drawImage(stroke_canvas, ~~(cx-x-ox), ~~(cy-y-oy));*/
+				ctx.drawImage(stroke_canvas, cx+x, cy+y);
+				ctx.drawImage(stroke_canvas, cx-x, cy+y);
+				ctx.drawImage(stroke_canvas, cx+x, cy-y);
+				ctx.drawImage(stroke_canvas, cx-x, cy-y);
+				/*var x = cx+x;
+				var y = cy+y;
+				var w = stroke_canvas.width;
+				var h = stroke_canvas.height;
+				ctx.drawImage(stroke_canvas, );
+				ctx.drawImage(stroke_canvas, cx-x, cy+y);
+				ctx.drawImage(stroke_canvas, cx+x, cy-y);
+				ctx.drawImage(stroke_canvas, cx-x, cy-y);*/
+			});
 		}
+		
 	}else{
-		if(w < 0){ x += w; w = -w; }
-		if(h < 0){ y += h; h = -h; }
 		ctx.beginPath();
 		ctx.ellipse(cx, cy, w/2, h/2, 0, TAU, false);
-		ctx.stroke();
-		ctx.fill();
+		if(stroke){ ctx.stroke(); }
+		if(fill){ ctx.fill(); }
 	}
 }
 
@@ -140,7 +183,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius){
 
 function draw_line(ctx, x1, y1, x2, y2){
 	if(aliasing){
-		bresenham_line(x1, y1, x2, y2, function(x, y){
+		bresenham_iterate(x1, y1, x2, y2, function(x, y){
 			ctx.fillRect(x, y, 1, 1);
 		});
 	}else{
@@ -154,7 +197,7 @@ function draw_line(ctx, x1, y1, x2, y2){
 	}
 }
 
-function bresenham_line(x1, y1, x2, y2, callback){
+function bresenham_iterate(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	
@@ -174,7 +217,7 @@ function bresenham_line(x1, y1, x2, y2, callback){
 	}
 }
 
-function brosandham_line(x1, y1, x2, y2, callback){
+function brosandham_iterate(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm modified to callback in-between going horizontal and vertical
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	
@@ -192,6 +235,54 @@ function brosandham_line(x1, y1, x2, y2, callback){
 		if(e2 >-dy){ err -= dy; x1 += sx; }
 		callback(x1, y1);
 		if(e2 < dx){ err += dx; y1 += sy; }
+	}
+}
+
+function ellipse_iterate(cx, cy, a, b, plot_points){
+	// From http://stackoverflow.com/a/15482128/2624876
+	// From http://geofhagopian.net/sablog/Slog-october/slog-10-25-05.htm
+	// See also https://web.archive.org/web/20120225095359/http://homepage.smc.edu/kennedy_john/belipse.pdf
+	var a2 = a * a;
+	var b2 = b * b;
+	var twoa2 = 2 * a2;
+	var twob2 = 2 * b2;
+	var p;
+	var x = 0;
+	var y = b;
+	var px = 0;
+	var py = twoa2 * y;
+
+	// Plot the initial point in each quadrant.
+	plot_points(cx, cy, x, y);
+
+	// Region 1
+	p = Math.round(b2 - (a2 * b) + (0.25 * a2));
+	while(px < py){
+		x++;
+		px += twob2;
+		if(p < 0){
+			p += b2 + px;
+		}else{
+			y--;
+			py -= twoa2;
+			p += b2 + px - py;
+		}
+		plot_points(cx, cy, x, y);
+	}
+
+	// Region 2
+	p = Math.round(b2 * (x+0.5) * (x+0.5) + a2 * (y-1) * (y-1) - a2 * b2);
+	while(y > 0){
+		y--;
+		py -= twoa2;
+		if(p > 0){
+			p += a2 - py;
+		}else{
+			x++;
+			px += twob2;
+			p += a2 - py + px;
+		}
+		plot_points(cx, cy, x, y);
 	}
 }
 

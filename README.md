@@ -54,7 +54,7 @@ You can also install it as a Chrome app.
 #### A lot of stuff isn't done yet:
 
 * The Magnifier's viewport preview
-* Shape styles on most of the shape tools
+* Shape styles on most of the shape tools...
 * The polygon tool needs some work
 * [This entire document full of things to do](TODO.md)
 

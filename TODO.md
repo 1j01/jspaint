@@ -227,7 +227,7 @@ Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 * **Shape Styles and Strokes**
 	* Shapes: respond to Ctrl (It's complicated)
-	* Lots of things: Use stroke size
+	* Lots of things: Use stroke size!
 	* Rounded Rectangle & Ellipse:
 		* Support shape styles!
 		* If the width/height is less than the stroke size,
@@ -316,8 +316,9 @@ Prankily wait for next user input before fullscreening and bluescreening
 * JS
 	* Refactor old code
 	* Selection and TextBox should inherit from a base class
-	* Remove either `selection.x/y/w/h` or `._x/_y/_w/_h`; and use `x/y/width/height`
+	* Remove either `x/y/w/h` or `_x/_y/_w/_h` properties from selections, and use `x/y/width/height` everywhere
 	* Outdated names like sel.$ghost = div.jspaint-selection (not exactly a ghost)
+	* draw_fill should be renamed to include "flood"
 	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
 	* Image inversion code is duplicated in ChooserCanvas from tool-options.js but should go in image-manipulation.js
