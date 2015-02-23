@@ -26,7 +26,6 @@
 
 
 * Issues
-	* **ADD CRASH HANDLING!111**
 	* Crashes when saving large images
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* Dragging the selection fails when zoomed in

@@ -8,13 +8,38 @@
 	};
 	
 	
+	var LocalSession = function(session_id){
+		var lsid = "image#" + session_id;
+		debug("localStorage id: "+lsid);
+		
+		var uri = localStorage[lsid];
+		if(uri){
+			open_from_URI(uri);
+		}
+		
+		$canvas.on("change.session-hook", function(){
+			localStorage[lsid] = canvas.toDataURL("image/png");
+		});
+	};
+	LocalSession.prototype.end = function(){
+		//?
+		// @TODO: clean up localStorage sessions (when?)
+		
+		// Remove session-related hooks
+		$app.find("*").off(".session-hook");
+		$G.off(".session-hook");
+	};
+	
+	
 	// The user id is not persistent
 	// A person can enter a session multiple times,
 	// and is always given a new user id
 	var user_id;
 	// I could make the color persistent, though.
 	// You could still have multiple cursors and they would just be the same color.
-	// (@TODO)
+	// Colors can happen to be similar anyways, so it could only improve things
+	// if you kept the same color where possible (@TODO)
+	// There could also be an option to change your color
 	
 	// The data in this object is stored in the server when you enter a session
 	// It is (supposed to be) removed when you leave
@@ -47,7 +72,7 @@
 	cursor_image.src = "images/cursors/default.png";
 	
 	
-	var Session = function(session_id){
+	var FireSession = function(session_id){
 		var session = this;
 		session.id = session_id;
 		
@@ -60,9 +85,9 @@
 			
 			session.start();
 		};
-		if(!Session.fb_root){
+		if(!FireSession.fb_root){
 			$.getScript("lib/firebase.js", function(){
-				Session.fb_root = new Firebase("https://jspaint.firebaseio.com/");
+				FireSession.fb_root = new Firebase("https://jspaint.firebaseio.com/");
 				on_firebase_loaded();
 			});
 		}else{
@@ -70,7 +95,7 @@
 		}
 	};
 	
-	Session.prototype.start = function(){
+	FireSession.prototype.start = function(){
 		var session = this;
 		
 		// Wrap the Firebase API because they don't
@@ -82,7 +107,7 @@
 		};
 		
 		// Get Firebase references
-		session.fb = Session.fb_root.child(session.id);
+		session.fb = FireSession.fb_root.child(session.id);
 		session.fb_data = session.fb.child("data");
 		session.fb_users = session.fb.child("users");
 		if(user_id){
@@ -189,7 +214,7 @@
 			}
 		};
 		
-		$canvas.on("change", sync);
+		$canvas.on("change.session-hook", sync);
 		
 		// Any time we change or recieve the image data
 		_fb_on(session.fb_data, "value", function(snap){
@@ -253,11 +278,11 @@
 		// while the window is blurred and stay there when the user goes away
 	};
 	
-	Session.prototype.end = function(){
+	FireSession.prototype.end = function(){
 		var session = this;
 		
 		// Remove session-related hooks
-		//$app.find("*").off(".session-hook");
+		$app.find("*").off(".session-hook");
 		$G.off(".session-hook");
 		
 		// Remove collected Firebase event listeners
@@ -288,36 +313,41 @@
 		}
 	};
 	$G.on("hashchange", function(){
-		var match = location.hash.match(/^#?session:(.*)$/i);
+		var match = location.hash.match(/^#?(session|local):(.*)$/i);
 		if(match){
-			var session_id = match[1];
-			// @TODOmaybe: URL to create a new session: /#session: and/or /#session:new
+			var local = match[1] === "local";
+			var session_id = match[2];
 			if(session_id === ""){
-				debug("session id is empty (not a valid location)");
+				debug("session id is empty");
 				end_current_session();
-			}else if(session_id.match(/[\.\/\[\]$]/)){
-				debug("session id is not a valid location");
+			}else if(!local && session_id.match(/[\.\/\[\]#$]/)){
+				debug("session id is not a valid Firebase location for multiplayer (cannot contain any of ./[]#$)");
 				end_current_session();
-			}else if(session_id.match(/[\-0-9A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]+/)){
-				if(current_session && current_session.id === session_id){
-					debug("hash changed to current session id?");
-				}else{
-					// @TODO: Ask about saving before starting a new session 
-					end_current_session();
-					debug("starting a new session, id: "+session_id+"");
-					current_session = new Session(session_id);
-				}
-			}else{
+			}else if(!session_id.match(/[\-0-9A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]+/)){
 				debug("invalid session id");
 				end_current_session();
+			}else if(current_session && current_session.id === session_id){
+				debug("hash changed to current session id? #wut");
+			}else{
+				// @TODO: Ask if you want to save before starting a new session
+				end_current_session();
+				if(local){
+					debug("starting a new local session, id: "+session_id);
+					current_session = new LocalSession(session_id);
+				}else{
+					debug("starting a new Firebase session, id: "+session_id);
+					current_session = new FireSession(session_id);
+				}
 			}
 		}else{
 			debug("no session id in hash");
 			end_current_session();
+			var session_id = (Math.random()*Math.pow(2, 32)).toString(16);
+			location.hash = "local:" + session_id;
 		}
 	}).triggerHandler("hashchange");
 	
-	// @TODO: Session GUI
+	// @TODO: FireSession GUI
 	// @TODO: Indicate when the session id is invalid
 	// @TODO: Indicate when the session switches
 })();

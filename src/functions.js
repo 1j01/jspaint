@@ -183,6 +183,7 @@ function file_save_as(){
 
 
 function are_you_sure(action){
+	// @TODO: if you're in a session, you can be pretty sure
 	if(undos.length || redos.length){
 		var $w = new $Window();
 		$w.title("Paint");
