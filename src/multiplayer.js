@@ -14,7 +14,10 @@
 		
 		var uri = localStorage[lsid];
 		if(uri){
-			open_from_URI(uri);
+			open_from_URI(uri, function(){
+				saved = false; // it's safe, sure, but you haven't "Saved" it
+				// @FIXME this doesn't actually work
+			});
 		}
 		
 		$canvas.on("change.session-hook", function(){
@@ -228,6 +231,8 @@
 				sync();
 			}else{
 				previous_uri = uri;
+				
+				saved = true; // hopefully
 				
 				// Load the new image data
 				var img = new Image();

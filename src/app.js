@@ -10,6 +10,7 @@ var my_canvas_width = default_canvas_width;
 var my_canvas_height = default_canvas_height;
 
 try{
+	// @TODO support for chrome app where only chrome.storage is available
 	if(localStorage){
 		my_canvas_width = Number(localStorage.width) || default_canvas_width;
 		my_canvas_height = Number(localStorage.height) || default_canvas_height;
@@ -43,6 +44,7 @@ var redos = []; //array of <canvas>
 //var frames = []; //array of {delay: N, undos: [<canvas>], redos: [<canvas>], canvas: <canvas>}? array of Frames?
 
 var file_name;
+var saved = true;
 
 
 

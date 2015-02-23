@@ -18,6 +18,7 @@ function reset_file(){
 	file_entry = null;
 	file_name = "untitled";
 	update_title();
+	saved = true;
 }
 
 function reset_canvas(){
@@ -79,6 +80,7 @@ function open_from_File(file, callback){
 		open_from_URI(e.target.result, function(){
 			file_name = file.name;
 			update_title();
+			saved = true;
 			callback && callback();
 		});
 	};
@@ -158,6 +160,7 @@ function file_save(){
 		}
 	}else{
 		window.open(canvas.toDataURL());
+		//saved = true;
 	}
 }
 
@@ -178,12 +181,18 @@ function file_save_as(){
 		});
 	}else{
 		window.open(canvas.toDataURL());
+		//saved = true;
 	}
 }
 
 
 function are_you_sure(action){
 	// @TODO: if you're in a session, you can be pretty sure
+	console.log(saved);
+	if(saved){
+		action();
+		return;
+	}
 	if(undos.length || redos.length){
 		var $w = new $Window();
 		$w.title("Paint");
@@ -289,7 +298,7 @@ function render_history_as_gif(){
 		gif.abort();
 	});
 	
-	try {
+	try{
 		var gif = new GIF({
 			//workers: Math.min(5, Math.floor(undos.length/50)+1),
 			workerScript: 'lib/gif.js/gif.worker.js',
@@ -352,7 +361,7 @@ function render_history_as_gif(){
 		});
 		gif.render();
 		
-	} catch(e) {
+	}catch(e){
 		$output.empty().append(
 			$(E("p")).text("Failed to render GIF:\n").append(
 				$(E("pre")).text(e.stack).css({
@@ -371,6 +380,7 @@ function render_history_as_gif(){
 }
 
 function undoable(callback, action){
+	saved = false;
 	if(redos.length > 5){
 		var $w = new $Window();
 		$w.title("Paint");
@@ -425,6 +435,7 @@ function cancel(){
 }
 function this_ones_a_frame_changer(){
 	deselect();
+	saved = false;
 	$G.triggerHandler("mouseup", "cancel");
 	$G.triggerHandler("session-update");
 }
@@ -501,7 +512,8 @@ function detect_transparency(){
 	transparency = false;
 	
 	// @TODO Optimization: Assume JPEGs and some other file types are opaque.
-	// Raster file formats that support transparency include GIF, PNG, BMP and TIFF
+	// Raster file formats that SUPPORT transparency include GIF, PNG, BMP and TIFF
+	// (Yes, even BMPs support transparency!)
 	
 	var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	for(var i=0, l=id.data.length; i<l; i+=4){

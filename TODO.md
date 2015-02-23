@@ -14,11 +14,6 @@
 	* Pixelate graphics when zoomed in
 
 
-* Keep track of what's saved
-	* Don't warn about saving saved files (Ctrl+S and then Ctrl+N)
-	* Do warn about losing unsaved files (close button, etc.)
-
-
 * Gracefully hide things as the window gets smaller (With media queries!)
 	* This could be animated ;)
 	* Gracefully push the dimension displays off the edge
@@ -50,13 +45,6 @@
 	* Multiplayer interupts you:
 		* If you try to make a selection when there's a selection
 		* If you try to play with multiple players
-
-
-* Handling actions that interfere with each other
-	* I currently have a function `this_ones_a_frame_changer();`
-	  that finalizes the selection among other things, called at various times
-	  (undo, redo, reset, file_open, ...and in the future, switching between frames of an animation)
-	* MS Paint disables actions while you're drawing. Maybe I should do that?
 
 
 ### Menus

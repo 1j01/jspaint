@@ -33,7 +33,7 @@ You can also install it as a Chrome app.
 * Rotate image by arbitrary angle! Available in Image > Flip/Rotate
 * Rudimentary **multiplayer** support:
   Start up a session at
-  [jspaint.ml/#session:bad455](http://1j01.github.io/jspaint/#session:bad455)
+  [jspaint.ml/#session:multiplayer-test](http://1j01.github.io/jspaint/#session:multiplayer-test)
   and send the link to your friends!
   It isn't perfectly seamless, and you may lose your drawing or be interrupted.
 
