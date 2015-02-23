@@ -189,6 +189,8 @@
 			}
 		};
 		
+		$canvas.on("change", sync);
+		
 		// Any time we change or recieve the image data
 		_fb_on(session.fb_data, "value", function(snap){
 			debug("data update");
@@ -230,44 +232,6 @@
 			}
 		});
 		
-		
-		// Hook into some events that imply a change might have occured
-		
-		$canvas.on("user-resized.session-hook", sync);
-		
-		$canvas_area.on("mousedown.session-hook", "*", function(e, synthetic){
-			console.log(e.type, "| synthetic?", synthetic);
-			if(synthetic){ return; }
-			
-			// If you're using the fill tool
-			if(selected_tool.name.match(/Fill/)){
-				// Sync immediately
-				sync();
-			}else{
-				mouse_operations = [e];
-				var mousemove = function(e, synthetic){
-					console.log(e.type, "| synthetic?", synthetic);
-					if(synthetic){ return; }
-					
-					mouse_operations.push(e);
-				};
-				$G.on("mousemove.session-hook", mousemove);
-				$G.one("mouseup.session-hook", function(e, synthetic){
-					console.log(e.type, "| synthetic?", synthetic);
-					if(synthetic){ return; }
-					
-					$G.off("mousemove.session-hook", mousemove);
-					
-					// a change might have occured
-					sync();
-				});
-			}
-		});
-		
-		$G.on("session-update.session-hook", function(){
-			setTimeout(sync);
-		});
-		
 		// Update the cursor status
 		
 		$G.on("mousemove.session-hook", function(e){
@@ -293,7 +257,7 @@
 		var session = this;
 		
 		// Remove session-related hooks
-		$app.find("*").off(".session-hook");
+		//$app.find("*").off(".session-hook");
 		$G.off(".session-hook");
 		
 		// Remove collected Firebase event listeners
@@ -327,7 +291,7 @@
 		var match = location.hash.match(/^#?session:(.*)$/i);
 		if(match){
 			var session_id = match[1];
-			// @TODO: URL to create a new session: /#session: and/or /#session:new
+			// @TODOmaybe: URL to create a new session: /#session: and/or /#session:new
 			if(session_id === ""){
 				debug("session id is empty (not a valid location)");
 				end_current_session();
@@ -354,6 +318,6 @@
 	}).triggerHandler("hashchange");
 	
 	// @TODO: Session GUI
-	// @TODO: Show the user when the session id is invalid
-	// @TODO: Show the user when the session changes
+	// @TODO: Indicate when the session id is invalid
+	// @TODO: Indicate when the session switches
 })();
