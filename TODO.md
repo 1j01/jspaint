@@ -11,7 +11,7 @@
 	* Dynamic cursors
 		* Inverty fill bucket and airbrush cursors
 		* Previewy brush and eraser cursors
-	* Pixelate graphics when zoomed in
+	* Pixelize GUI when zoomed in
 
 
 * Gracefully hide things as the window gets smaller (With media queries!)

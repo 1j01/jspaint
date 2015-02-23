@@ -57,10 +57,6 @@ function Canvas(width, height){
 	var new_canvas = E("canvas");
 	var new_ctx = new_canvas.getContext("2d");
 	
-	new_ctx.imageSmoothingEnabled = false;
-	new_ctx.mozImageSmoothingEnabled = false;
-	new_ctx.webkitImageSmoothingEnabled = false;
-	
 	new_canvas.ctx = new_ctx;
 	
 	new_ctx.copy = function(image){
@@ -77,6 +73,11 @@ function Canvas(width, height){
 		// new Canvas(image)
 		new_ctx.copy(image);
 	}
+	
+	// This must come after sizing the canvas
+	new_ctx.imageSmoothingEnabled = false;
+	new_ctx.mozImageSmoothingEnabled = false;
+	new_ctx.webkitImageSmoothingEnabled = false;
 	
 	return new_canvas;
 }
