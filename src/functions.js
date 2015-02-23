@@ -187,13 +187,9 @@ function file_save_as(){
 
 
 function are_you_sure(action){
-	// @TODO: if you're in a session, you can be pretty sure
-	console.log(saved);
 	if(saved){
 		action();
-		return;
-	}
-	if(undos.length || redos.length){
+	}else{
 		var $w = new $Window();
 		$w.title("Paint");
 		$w.$content.text("Save changes to "+file_name+"?");
@@ -210,8 +206,6 @@ function are_you_sure(action){
 			$w.close();
 		});
 		$w.center();
-	}else{
-		action();
 	}
 }
 

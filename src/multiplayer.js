@@ -7,6 +7,10 @@
 		}
 	};
 	
+	// @TODO: keep other data in addition to the image data
+	// such as the file_name and other state
+	// (maybe even whether it's considered saved? idk about that)
+	// I could have the image in one storage slot and the state in another
 	
 	var LocalSession = function(session_id){
 		var lsid = "image#" + session_id;
@@ -16,7 +20,6 @@
 		if(uri){
 			open_from_URI(uri, function(){
 				saved = false; // it's safe, sure, but you haven't "Saved" it
-				// @FIXME this doesn't actually work
 			});
 		}
 		
@@ -352,7 +355,7 @@
 		}
 	}).triggerHandler("hashchange");
 	
-	// @TODO: FireSession GUI
+	// @TODO: Session GUI
 	// @TODO: Indicate when the session id is invalid
 	// @TODO: Indicate when the session switches
 })();
