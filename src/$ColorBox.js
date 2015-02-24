@@ -27,9 +27,9 @@ function $ColorBox(){
 	});
 	
 	$G.on("option-changed", function(){
-		$foreground_color.css({background: colors[0]});
-		$background_color.css({background: colors[1]});
-		$current_colors.css({background: colors[2]});
+		$foreground_color.css({background: colors.foreground});
+		$background_color.css({background: colors.background});
+		$current_colors.css({background: colors.ternary});
 	});
 	
 	// the only color editted by Colors > Edit Colors...
@@ -88,11 +88,11 @@ function $ColorBox(){
 		
 		function set_color(col){
 			if(ctrl){
-				colors[2] = col;
+				colors.ternary = col;
 			}else if(button === 0){
-				colors[0] = col;
+				colors.foreground = col;
 			}else if(button === 2){
-				colors[1] = col;
+				colors.background = col;
 			}
 			$G.trigger("option-changed");
 		};

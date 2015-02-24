@@ -18,10 +18,10 @@ function TextBox(x, y, w, h){
 	});
 	
 	var update = function(){
-		font.color = colors[0];
+		font.color = colors.foreground;
 		font.background = ({
 			transparent: "transparent",
-			opaque: colors[1],
+			opaque: colors.background,
 		}[transparent_opaque]);
 		
 		tb.$editor.css({

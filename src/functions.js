@@ -10,7 +10,11 @@ function reset_magnification(){
 }
 
 function reset_colors(){
-	colors = ["#000000", "#ffffff", ""];
+	colors = {
+		foreground: "#000000",
+		background: "#ffffff",
+		ternary: "",
+	};
 	$G.trigger("option-changed");
 }
 
@@ -28,7 +32,7 @@ function reset_canvas(){
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
 	
-	ctx.fillStyle = colors[1];
+	ctx.fillStyle = colors.background;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	
 	$canvas_area.trigger("resize");
@@ -248,7 +252,7 @@ function paste(img){
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
 				if(!transparency){
-					ctx.fillStyle = colors[1];
+					ctx.fillStyle = colors.background;
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
 				}
 				ctx.drawImage(original, 0, 0);
@@ -479,7 +483,7 @@ function clear(){
 		if(transparency){
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 		}else{
-			ctx.fillStyle = colors[1];
+			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 	});

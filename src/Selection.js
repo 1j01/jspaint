@@ -110,7 +110,7 @@ Selection.prototype.cut_out_background = function(){
 	}else{
 		var colored_canvas = new Canvas(cutout);
 		colored_canvas.ctx.globalCompositeOperation = "source-in";
-		colored_canvas.ctx.fillStyle = colors[1];
+		colored_canvas.ctx.fillStyle = colors.background;
 		colored_canvas.ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
 		ctx.drawImage(colored_canvas, sel._x, sel._y);
 	}

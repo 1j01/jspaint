@@ -315,7 +315,6 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* `$w.$form.addClass("jspaint-horizontal").css({display: "flex"});`
 	* Comment everything and then try to make the code as obvious as the comments
 	* Improve code quality: https://codeclimate.com/github/1j01/jspaint
-	* Store the current colors in an object ({bg, fg, ternary}?)
 
 
 * Images

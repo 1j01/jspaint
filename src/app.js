@@ -24,12 +24,16 @@ var palette = [
 
 var stroke_color;
 var fill_color;
-var stroke_color_i = 0;
-var fill_color_i = 0;
+var stroke_color_k = 0;
+var fill_color_k = 0;
 
 var selected_tool = tools[6];
 var previous_tool = selected_tool;
-var colors = ["", "", ""];
+var colors = {
+	foreground: "",
+	background: "",
+	ternary: "",
+};
 
 var selection; //the one and only Selection
 var textbox; //the one and only TextBox
@@ -97,7 +101,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 		if(transparency){
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 		}else{
-			ctx.fillStyle = colors[1];
+			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 		
@@ -358,13 +362,13 @@ function tool_go(event_name){
 	ctx.fillStyle = fill_color =
 	ctx.strokeStyle = stroke_color =
 		colors[
-			(ctrl && colors[2]) ? 2 :
-			(reverse ? 1 : 0)
+			(ctrl && colors.ternary) ? "ternary" :
+			(reverse ? "background" : "foreground")
 		];
 	
-	fill_color_i =
-	stroke_color_i =
-		ctrl ? 2 : (reverse ? 1 : 0)
+	fill_color_k =
+	stroke_color_k =
+		ctrl ? "ternary" : (reverse ? "background" : "foreground")
 	
 	if(selected_tool.shape){
 		var previous_canvas = undos[undos.length-1];
@@ -376,15 +380,15 @@ function tool_go(event_name){
 	if(selected_tool.shape || selected_tool.shape_colors){
 		if(!selected_tool.stroke_only){
 			if(reverse){
-				fill_color_i = 0;
-				stroke_color_i = 1;
+				fill_color_k = 0;
+				stroke_color_k = 1;
 			}else{
-				fill_color_i = 1;
-				stroke_color_i = 0;
+				fill_color_k = 1;
+				stroke_color_k = 0;
 			}
 		}
-		ctx.fillStyle = fill_color = colors[fill_color_i];
-		ctx.strokeStyle = stroke_color = colors[stroke_color_i];
+		ctx.fillStyle = fill_color = colors[fill_color_k];
+		ctx.strokeStyle = stroke_color = colors[stroke_color_k];
 	}
 	if(selected_tool.shape){
 		selected_tool.shape(ctx, mouse_start.x, mouse_start.y, mouse.x-mouse_start.x, mouse.y-mouse_start.y);

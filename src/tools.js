@@ -184,7 +184,7 @@ tools = [{
 			if(transparency){
 				ctx.clearRect(rect_x, rect_y, rect_w, rect_h);
 			}else{
-				ctx.fillStyle = colors[1];
+				ctx.fillStyle = colors.background;
 				ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 			}
 		}else{
@@ -192,8 +192,8 @@ tools = [{
 			// Right click with the eraser to selectively replace
 			// the selected foreground color with the selected background color
 			
-			var fg_rgba = get_rgba_from_color(colors[0]);
-			var bg_rgba = get_rgba_from_color(colors[1]);
+			var fg_rgba = get_rgba_from_color(colors.foreground);
+			var bg_rgba = get_rgba_from_color(colors.background);
 			
 			var id = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			
@@ -263,7 +263,7 @@ tools = [{
 		this.display_current_color();
 	},
 	mouseup: function(){
-		colors[fill_color_i] = this.current_color;
+		colors[fill_color_k] = this.current_color;
 		$G.trigger("option-changed");
 	},
 	$options: $(E("div"))
