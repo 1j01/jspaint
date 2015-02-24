@@ -57,7 +57,7 @@
 ### Components / Windows
 
 * Use the ghost when dragging on a component window's titlebar
-* Make the component ghost account for the window titlebar
+* Make the component ghost account for the window's titlebar
 
 
 * Keyboard interaction with dialogues
@@ -283,7 +283,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 * Improve README
 	* Introduce and explain the project ...better?
-	* Make it pretty with images (screenshots plz)
+	* More images? Animated GIFs perhaps?
 
 
 * Stop improving TODO
@@ -294,7 +294,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * CSS
-	* Buttons shouldn't need a class `.jspaint-button`
+	* Buttons shouldn't need a class `.jspaint-button`!
 	* Color cells probably shouldn't be buttons
 	* There also shouldn't be classes `.jspaint-window-button` (`.jspaint-window-titlebar button`) or `.jspaint-dialogue-button` (`.jspaint-window-content button`) at all
 	* DRY, especially for the buttons
@@ -302,10 +302,11 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Move into folder (called what? styles? stylesheets? css?)
 	* Deal with `z-index`es
 	* Comment stuff
+	* Buttons
+	* Srsly
 
 
 * JS
-	* Refactor old code
 	* Selection and TextBox should inherit from a base class
 	* Remove either `selection.x/y/w/h` or `._x/_y/_w/_h`; and use `x/y/width/height`
 	* Outdated names like sel.$ghost = div.jspaint-selection (not exactly a ghost)
