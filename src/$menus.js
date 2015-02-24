@@ -4,13 +4,13 @@
 	var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
 	var selecting_menus = false;
 	
-	var _html = function(menu_key){
-		return menu_key.replace(/&(.)/, function(m){
+	var _html = function(menus_key){
+		return menus_key.replace(/&(.)/, function(m){
 			return "<span class='jspaint-menu-hotkey'>" + m[1] + "</span>";
 		});
 	};
-	var _hotkey = function(menu_key){
-		return menu_key[menu_key.indexOf("&")+1].toUpperCase();
+	var _hotkey = function(menus_key){
+		return menus_key[menus_key.indexOf("&")+1].toUpperCase();
 	};
 	
 	var close_menus = function(){
@@ -124,13 +124,13 @@
 		return $menu_popup;
 	}
 	
-	$.each(menus, function(menu_key, menu_items){
+	$.each(menus, function(menus_key, menu_items){
 		var this_click_opened_the_menu = false;
 		var $menu_container = $(E("div")).addClass("jspaint-menu-container").appendTo($menus);
 		var $menu_button = $(E("div")).addClass("jspaint-menu-button").appendTo($menu_container);
 		var $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
 		$menu_popup.hide();
-		$menu_button.html(_html(menu_key));
+		$menu_button.html(_html(menus_key));
 		$menu_button.on("mousedown mousemove", function(e){
 			if(e.type === "mousemove" && !selecting_menus){
 				return;
