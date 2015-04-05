@@ -9,8 +9,7 @@
 	},
 	"file_handlers": {
 		"edit": {
-			"types": ["image/*"],
-			"title": "Paint"
+			"types": ["image/*"]
 		}
 	},
 	"permissions": [

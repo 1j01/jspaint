@@ -757,6 +757,25 @@ function set_as_wallpaper_centered(c){
 			layout: 'CENTER_CROPPED',
 			name: file_name,
 		}, function(){});
+	}else if(window.require){
+		var gui = require("nw.gui");
+		var fs = require("fs");
+		var wallpaper = require("wallpaper");
+		
+		var base64 = c.toDataURL().replace(/^data:image\/png;base64,/, "");
+		var imgPath = require("path").join(gui.App.dataPath, "bg.png");
+		
+		fs.writeFile(imgPath, base64, "base64", function(err){
+			if(err){
+				alert("Failed to set as desktop background:\nCouldn't write temporary image file");
+			}else{
+				wallpaper.set(imgPath, function(err){
+					if(err){
+						alert("Failed to set as desktop background!\n" + err);
+					}
+				});
+			}
+		});
 	}else{
 		window.open(c.toDataURL());
 	}

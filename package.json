@@ -1,0 +1,24 @@
+{
+  "name": "jspaint",
+  "version": "0.1.2",
+  "description": "An MS Paint remake.",
+  "main": "index.html",
+  "scripts": {
+    "start": "nw"
+  },
+  "window": {
+    "icon": "images/icons/48.png",
+    "toolbar": false
+  },
+  "dependencies": {
+    "nw": "^0.12.0-1",
+    "wallpaper": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/1j01/jspaint.git"
+  },
+  "bugs": {
+    "url": "http://github.com/1j01/jspaint/issues"
+  }
+}
