@@ -48,6 +48,11 @@ html, body, .jspaint {
 	flex-flow: column;
 	flex: 1;
 }
+.jspaint-status-area,
+.jspaint-component-area,
+.jspaint-menus {
+	flex: 0 0 auto;
+}
 .jspaint-selection > img,
 .jspaint-selection > canvas {
 	width: 100%;
