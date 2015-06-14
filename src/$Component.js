@@ -10,6 +10,14 @@ function $Component(name, orientation, $el){
 		wide: $bottom,
 	}[orientation]);
 	
+	var $w = new $Window($c);
+	$w.title(name);
+	$w.hide();
+	$w.$content.addClass({
+		tall: "jspaint-vertical",
+		wide: "jspaint-horizontal",
+	}[orientation]);
+	
 	// Nudge the Colors component over a tiny bit
 	if(name === "Colors"){
 		$c.css("position", "relative");
@@ -28,10 +36,7 @@ function $Component(name, orientation, $el){
 	}
 	
 	var dock_to = function($dock_to){
-		if($w){
-			$w.close();
-			$w = null;
-		}
+		$w.hide();
 		
 		$dock_to.append($c);
 		
@@ -54,7 +59,6 @@ function $Component(name, orientation, $el){
 	var $last_docked_to;
 	var $dock_to;
 	var $ghost;
-	var $w;
 	$c.on("mousedown", function(e){
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
@@ -132,10 +136,7 @@ function $Component(name, orientation, $el){
 	
 	var drag_onmouseup = function(e){
 		
-		if($w){
-			$w.close();
-			$w = null;
-		}
+		$w.hide();
 		
 		// If the component is docked to a component area (a side)
 		if($c.parent().is(".jspaint-component-area")){
@@ -153,14 +154,10 @@ function $Component(name, orientation, $el){
 			$c.css("position", "relative");
 			$c.css(pos_axis, "");
 			
-			// Put the component in a new window
-			$w = new $Window($c);
-			$w.title(name);
+			// Put the component in the window
 			$w.$content.append($c);
-			$w.$content.addClass({
-				tall: "jspaint-vertical",
-				wide: "jspaint-horizontal",
-			}[orientation]);
+			// Show and position the window
+			$w.show();
 			var window_rect = $w[0].getBoundingClientRect();
 			var window_content_rect = $w.$content[0].getBoundingClientRect();
 			var dx = window_content_rect.left - window_rect.left;
@@ -180,6 +177,24 @@ function $Component(name, orientation, $el){
 	$c.dock = function(){
 		pos = last_docked_to_pos;
 		dock_to($last_docked_to);
+	};
+	
+	$c.show = function(){
+		$($c[0]).show();
+		if($.contains($w[0], $c[0])){
+			$w.show();
+		}
+	};
+	$c.hide = function(){
+		$c.add($w).hide();
+	};
+	$c.toggle = function(){
+		console.log("toggle", $c.is(":visible"), $w);
+		if($c.is(":visible")){
+			$c.hide();
+		}else{
+			$c.show();
+		}
 	};
 	
 	return $c;

@@ -27,7 +27,6 @@
 	* Components
 		* Colors > Edit Colors... doesn't work when the $colorbox is hidden
 		* Component windows are gone forever once closed (can't be shown from the View menu)
-		* Components in windows hidden from the View menu don't hide their windows
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
