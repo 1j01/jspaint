@@ -168,6 +168,8 @@ var menus = {
 			checkbox: {
 				toggle: function(){
 					$toolbox.toggle();
+				},
+				check: function(){
 					return $toolbox.is(":visible");
 				},
 			},
@@ -179,6 +181,8 @@ var menus = {
 			checkbox: {
 				toggle: function(){
 					$colorbox.toggle();
+				},
+				check: function(){
 					return $colorbox.is(":visible");
 				},
 			},
@@ -189,6 +193,8 @@ var menus = {
 			checkbox: {
 				toggle: function(){
 					$status_area.toggle();
+				},
+				check: function(){
 					return $status_area.is(":visible");
 				},
 			},
@@ -296,7 +302,8 @@ var menus = {
 					}[transparent_opaque];
 					
 					$G.trigger("option-changed");
-					
+				},
+				check: function(){
 					return transparent_opaque === "opaque";
 				},
 			},

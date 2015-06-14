@@ -52,6 +52,9 @@
 				
 				$menu_popup.on("update", function(){
 					$item.attr("disabled", is_disabled(item));
+					if(item.checkbox && item.checkbox.check){
+						$checkbox_area.text(item.checkbox.check() ? "✓" : "");
+					}
 				});
 				$item.on("mouseover", function(){
 					$item.attr("disabled", is_disabled(item));
@@ -98,9 +101,9 @@
 				$item.on("click", function(){
 					if(item.checkbox){
 						if(item.checkbox.toggle){
-							var check = item.checkbox.toggle();
-							$checkbox_area.text(check ? "✓" : "");
+							item.checkbox.toggle();
 						}
+						$menu_popup.triggerHandler("update");
 					}else if(item.action){
 						close_menus();
 						item.action();

@@ -24,9 +24,7 @@
 	* Crashes when saving large images
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* Dragging the selection fails when zoomed in
-	* Components
-		* Colors > Edit Colors... doesn't work when the $colorbox is hidden
-		* View menu doesn't update when component windows are closed
+	* Colors > Edit Colors... doesn't work when the $colorbox is hidden
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
