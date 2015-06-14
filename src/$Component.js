@@ -197,5 +197,10 @@ function $Component(name, orientation, $el){
 		}
 	};
 	
+	$w.on("close", function(e){
+		e.preventDefault();
+		$w.hide();
+	});
+	
 	return $c;
 }

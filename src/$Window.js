@@ -91,7 +91,11 @@ function $Window($component){
 		}
 	};
 	$w.close = function(){
-		$w.trigger("close");
+		var e = $.Event("close");
+		$w.trigger(e);
+		if(e.isDefaultPrevented()){
+			return;
+		}
 		if($component){
 			$component.detach();
 		}

@@ -26,7 +26,7 @@
 	* Dragging the selection fails when zoomed in
 	* Components
 		* Colors > Edit Colors... doesn't work when the $colorbox is hidden
-		* Component windows are gone forever once closed (can't be shown from the View menu)
+		* View menu doesn't update when component windows are closed
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
