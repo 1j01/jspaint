@@ -313,15 +313,8 @@ var menus = {
 	"&Colors": [
 		{
 			item: "&Edit Colors...",
-			enabled: function(){
-				// @FIXME: make it work when the colorbox is hidden
-				return $colorbox.is(":visible");
-			},
 			action: function(){
-				// Edit the last color cell that's been selected as the foreground color.
-				var $b = $colorbox.get_last_foreground_color_$button();
-				$b.trigger({type: "mousedown", ctrlKey: false, button: 0});
-				$b.find("input").trigger("click", "synthetic");
+				$colorbox.edit_last_color();
 			},
 			description: "Creates a new color.",
 		}

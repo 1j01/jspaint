@@ -184,9 +184,11 @@ function $Component(name, orientation, $el){
 		if($.contains($w[0], $c[0])){
 			$w.show();
 		}
+		return $c;
 	};
 	$c.hide = function(){
 		$c.add($w).hide();
+		return $c;
 	};
 	$c.toggle = function(){
 		console.log("toggle", $c.is(":visible"), $w);
@@ -195,6 +197,7 @@ function $Component(name, orientation, $el){
 		}else{
 			$c.show();
 		}
+		return $c;
 	};
 	
 	$w.on("close", function(e){

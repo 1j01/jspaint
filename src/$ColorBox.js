@@ -106,8 +106,15 @@ function $ColorBox(){
 	});
 	
 	var $c = $Component("Colors", "wide", $cb);
-	$c.get_last_foreground_color_$button = function(){
-		return $last_fg_color_button;
+	
+	var $input = $("<input type=color>").appendTo($app).css({width: 0, height: 0, padding: 0, border: 0, flex: "0 0 0"});
+	$c.edit_last_color = function(){
+		// Edit the last color cell that's been selected as the foreground color.
+		$input.click().one("change", function(){
+			$last_fg_color_button.trigger({type: "mousedown", ctrlKey: false, button: 0});
+			$last_fg_color_button.find("input").val($input.val()).triggerHandler("change");
+		});
 	};
+	
 	return $c;
 }
