@@ -191,7 +191,6 @@ function $Component(name, orientation, $el){
 		return $c;
 	};
 	$c.toggle = function(){
-		console.log("toggle", $c.is(":visible"), $w);
 		if($c.is(":visible")){
 			$c.hide();
 		}else{

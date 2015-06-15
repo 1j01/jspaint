@@ -11,11 +11,10 @@
 	* Dynamic cursors
 		* Inverty fill bucket and airbrush cursors
 		* Previewy brush and eraser cursors
-	* Pixelize GUI when zoomed in
+	* Pixelize icons, images, checkered backgrounds when zoomed in
 
 
-* Gracefully hide things as the window gets smaller (With media queries!)
-	* This could be animated ;)
+* Gracefully hide things as the window gets smaller (with media queries!)
 	* Gracefully push the dimension displays off the edge
 	  instead of covering up the text with (usually blank) space
 
@@ -23,6 +22,8 @@
 * Issues
 	* Crashes when saving large images
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
+	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
+	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
 	* Dragging the selection fails when zoomed in
 	* Firefox
 		* It lags unusably when using tools
@@ -34,9 +35,9 @@
 		* In Help > About Paint and other places
 			* You can't select text
 			* You can't drag links
-	* Free-form select can leave behind inverty brush in multiplayer
 	* The TextBox scrollbars have extra buttons
 	* The TextBox contents move down and right when rasterizing
+	* Free-form select can leave behind inverty brush in multiplayer
 	* Multiplayer cursors that go outside the parent can cause the page to be scrollable
 	* Multiplayer interupts you:
 		* If you try to make a selection when there's a selection
@@ -46,7 +47,6 @@
 ### Menus
 
 * Keyboard Navigation
-* Use keyboard shortcuts defined in the menu data structure to declaratively setup hotkeys
 * Sliding animation
 
 
@@ -118,8 +118,6 @@
 
 
 * Add Pan and Color Eraser tools to the toolbox
-	* What about multitouch devices that don't need a pan tool?
-	  Maybe add some other random tool?
 
 
 ### Colors
@@ -252,7 +250,6 @@ Prankily wait for next user input before fullscreening and bluescreening
 ### Chrome App
 
 * Set up build process
-	* ~~Concatenate & Minify~~ (Why?)
 	* Increment version
 	* Compress into zip file
 	* Upload new version to the Chrome Web Store?
@@ -279,14 +276,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 * Improve README
 	* Introduce and explain the project ...better?
-	* More images? Animated GIFs perhaps?
-
-
-* Stop improving TODO
-	* It's just a TODO
-	* You're wasting your time
-	* Why did I even make this a markdown document?
-	* Work on the project
+	* More images? Animated GIFs perhaps? :)
 
 
 * CSS
@@ -295,11 +285,14 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* There also shouldn't be classes `.jspaint-window-button` (`.jspaint-window-titlebar button`) or `.jspaint-dialogue-button` (`.jspaint-window-content button`) at all
 	* DRY, especially for the buttons
 	* Seriously, the buttons
-	* Move into folder (called what? styles? stylesheets? css?)
+	* Move into styles folder
 	* Deal with `z-index`es
 	* Comment stuff
 	* Buttons
 	* Srsly
+	* C'mon
+	* Buttons
+	* Also other `.jspaint-` classes
 
 
 * JS
@@ -315,8 +308,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * Images
-	* Optimize
-	* Use a sprite sheet
+	* Use a global sprite sheet, and optimize it
 
 
 * Help

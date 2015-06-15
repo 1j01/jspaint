@@ -18,12 +18,14 @@ You can also install it as a Chrome app.
 
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
   or a somewhat less measly but still annoying 50 in Windows 7)
+* Automatically saves if local storage is allowed
+  (Try refreshing the page to make sure, and to check it out)
 * Edit transparent images! To create a transparent image,
   go to Image > Attributes... and select Transparent,
   then Okay, and then Image > Clear Image
 * Create an animated GIF from the current document history with
   <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out (after editing *a fairly small image*))
-* Cross-platform, I guess
+* Cross-platform, I suppose
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
 * When you do Edit > Paste From... you can select transparent images and animated GIFs.
   ~~You can even paste a transparent animated GIF and then
@@ -151,5 +153,5 @@ I want to make JS Paint to be able to edit...
 	* [x] Color Replacement (right mouse button in Eraser selectively replaces the foreground color with the background color)
 	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
 	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing. I also made it redoable, in case you do it by accident!)
-	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this? Ah who am I kidding I'll make it an option)
+	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
 
