@@ -317,15 +317,25 @@ var menus = {
 				$colorbox.edit_last_color();
 			},
 			description: "Creates a new color.",
-		}
-		/*
+		},
 		{
 			item: "&Get Colors",
 			action: function(){
-				@TODO
+				$file_input.click().one("change", function(){
+					var file = $file_input[0].files[0];
+					Palette.load(file, function(err, new_palette){
+						if(err){
+							alert("This file is not in a format the paint recognizes, or no colors were found.");
+						}else{
+							palette = new_palette;
+							$colorbox.rebuild_palette();
+						}
+					});
+				});
 			},
 			description: "Uses a previously saved palette of colors.",
-		},
+		}
+		/*
 		{
 			item: "&Save Colors",
 			action: function(){

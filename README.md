@@ -43,6 +43,8 @@ You can also install it as a Chrome app.
   [jspaint.ml/#session:multiplayer-test](http://1j01.github.io/jspaint/#session:multiplayer-test)
   and send the link to your friends!
   It isn't perfectly seamless, and you may lose your drawing or be interrupted.
+* Load many different palette formats with Colors > Get Colors
+  (I made a [library](https://github.com/1j01/palette.js/) for this)
 
 
 #### Possible improvements include:
@@ -52,7 +54,6 @@ You can also install it as a Chrome app.
 * Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
 * After adding text, save as SVG or HTML with selectable text
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
-* Loading palettes (I've started a [project](https://github.com/1j01/palette.js/) for this)
 * Alternate themes (You can already style it with browser extensions like Stylebot or Stylish though!)
 * Noncontiguous fill (Probably by holding <kbd>Shift</kbd> when using the fill tool)
 * Optionally treat almost-equal colors as equal

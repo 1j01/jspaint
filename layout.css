@@ -146,7 +146,6 @@ html, body, .jspaint {
 .jspaint-palette {
 	display: flex;
 	flex-flow: row wrap;
-	width: 225px;
 }
 .jspaint-color-box,
 .jspaint-palette {

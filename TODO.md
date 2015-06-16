@@ -106,6 +106,9 @@
 		* Pan tool
 
 
+* Tap (or click) the selected colors area to swap background/foreground colors
+
+
 * You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
 * Make sure anything that uses hovering is paralleled on mobile (tooltips, :hover effects)
 
@@ -118,15 +121,6 @@
 
 
 * Add Pan and Color Eraser tools to the toolbox
-
-
-### Colors
-
-For mobile, tap (or click) the selected colors area to swap background/foreground colors.
-
-The ability to change the current color without changing the palette
-
-Load palettes with [palette.js](https://github.com/1j01/palette.js/)
 
 
 ### Tools

@@ -75,10 +75,11 @@ var $status_text = $(E("div")).addClass("jspaint-status-text").appendTo($status_
 var $status_position = $(E("div")).addClass("jspaint-status-coordinates").appendTo($status_area);
 var $status_size = $(E("div")).addClass("jspaint-status-coordinates").appendTo($status_area);
 
-$status_text.default = function(){
+($status_text.default = function(){
 	$status_text.text("For Help, click Help Topics on the Help Menu.");
-};
-$status_text.default();
+})();
+
+var $file_input = $("<input type=file>").appendTo($app).css({width: 0, height: 0, padding: 0, border: 0, flex: "0 0 0"});
 
 var $toolbox = $ToolBox();
 var $colorbox = $ColorBox();
