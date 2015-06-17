@@ -334,16 +334,15 @@ var menus = {
 				});
 			},
 			description: "Uses a previously saved palette of colors.",
-		}
-		/*
+		},
 		{
 			item: "&Save Colors",
 			action: function(){
-				@TODO
+				var blob = new Blob([JSON.stringify(palette)], {type: "application/json"});
+				saveAs(blob, "colors.json");
 			},
 			description: "Saves the current palette of colors to a file.",
 		}
-		*/
 	],
 	"&Help": [
 		{
