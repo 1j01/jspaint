@@ -156,15 +156,10 @@ function file_save(){
 		//update_title()?
 		return file_save_as();
 	}
-	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
-		if(window.file_entry){
-			save_to_FileEntry(file_entry);
-		}else{
-			file_save_as();
-		}
+	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry && window.file_entry){
+		save_to_FileEntry(file_entry);
 	}else{
-		window.open(canvas.toDataURL());
-		//saved = true;
+		file_save_as();
 	}
 }
 
@@ -184,8 +179,13 @@ function file_save_as(){
 			save_to_FileEntry(file_entry);
 		});
 	}else{
-		window.open(canvas.toDataURL());
-		//saved = true;
+		canvas.toBlob(function(blob){
+			var file_saver = saveAs(blob, file_name);
+			file_saver.onwriteend = function(){
+				// this won't fire in chrome
+				saved = true;
+			};
+		});
 	}
 }
 
@@ -533,8 +533,8 @@ function image_attributes(){
 	// Information
 	
 	var table = {
-		"File last saved": "Not available",
-		"Size on disk": "Not available",
+		"File last saved": "Not available", // @TODO
+		"Size on disk": "Not available", // @TODO
 		"Resolution": "72 x 72 dots per inch",
 	};
 	var $table = $(E("table")).appendTo($form_left);
