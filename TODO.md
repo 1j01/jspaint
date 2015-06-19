@@ -14,11 +14,6 @@
 	* Pixelize icons, images, checkered backgrounds when zoomed in
 
 
-* Gracefully hide things as the window gets smaller (with media queries!)
-	* Gracefully push the dimension displays off the edge
-	  instead of covering up the text with (usually blank) space
-
-
 * Issues
 	* Image > Flip/Rotate, Rotate by angle, `       ` Degrees sort of nullifies the image
 	* Crashes when saving large images

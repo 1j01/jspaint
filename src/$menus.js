@@ -15,7 +15,7 @@
 	
 	var close_menus = function(){
 		$menus.find(".jspaint-menu-button").trigger("release");
-		// Close any rouge floating submenus
+		// Close any rogue floating submenus
 		$(".jspaint-menu-popup").hide();
 	};
 	
@@ -131,7 +131,7 @@
 					if(e.ctrlKey || e.shiftKey || e.altKey){
 						return;
 					}
-					if(e.keyCode === 13){ // enter
+					if(e.keyCode === 13){ // Enter
 						e.preventDefault();
 						e.stopPropagation();
 						$item.click();
@@ -168,24 +168,20 @@
 		$menu_container.on("keydown", function(e){
 			var $focused_item = $menu_popup.find(".jspaint-menu-item:focus");
 			switch(e.keyCode){
-				case 37: // left
+				case 37: // Left
 					$menu_container.prev().find(".jspaint-menu-button").trigger("mousedown");
-					// $menu_container.prev().find(".jspaint-menu-item").first().focus();
 					break;
-				case 39: // right
-					// console.log($focused_item.is(":contains(.jspaint-menu-item-submenu-area)"), $focused_item.is(":contains(.jspaint-menu-item-submenu-area:not(:empty))"));
+				case 39: // Right
 					if($focused_item.find(".jspaint-menu-item-submenu-area:not(:empty)").length){
 						$focused_item.click();
 						$(".jspaint-menu-popup .jspaint-menu-item").first().focus();
 						e.preventDefault();
 					}else{
 						$menu_container.next().find(".jspaint-menu-button").trigger("mousedown");
-						// $menu_container.next().find(".jspaint-menu-item").first().focus();
 					}
 					break;
-				case 40: // down
+				case 40: // Down
 					if($menu_popup.is(":visible") && $focused_item.length){
-						// $focused_item.next(".jspaint-menu-item").focus();
 						var $next = $focused_item.next();
 						while($next.length && !$next.is(".jspaint-menu-item")){
 							$next = $next.next();
@@ -196,9 +192,8 @@
 						$menu_popup.find(".jspaint-menu-item").first().focus();
 					}
 					break;
-				case 38: // up
+				case 38: // Up
 					if($menu_popup.is(":visible") && $focused_item.length){
-						// $focused_item.prev(".jspaint-menu-item").focus();
 						var $prev = $focused_item.prev();
 						while($prev.length && !$prev.is(".jspaint-menu-item")){
 							$prev = $prev.prev();
@@ -265,7 +260,7 @@
 		});
 	});
 	$G.on("keypress", function(e){
-		if(e.keyCode === 27){ // esc
+		if(e.keyCode === 27){ // Esc
 			close_menus();
 		}
 	});

@@ -48,6 +48,21 @@ html, body, .jspaint {
 	flex-flow: column;
 	flex: 1;
 }
+@media (max-width: 300px) {
+	.jspaint-horizontal > .jspaint-component-area {
+		display: none;
+	}
+}
+@media (max-height: 340px) {
+	.jspaint-vertical > .jspaint-component-area {
+		display: none;
+	}
+}
+@media (max-height: 370px) {
+	.jspaint-vertical > .jspaint-status-area {
+		display: none !important;
+	}
+}
 .jspaint-status-area,
 .jspaint-component-area,
 .jspaint-menus {
@@ -103,12 +118,14 @@ html, body, .jspaint {
 	height: 1.25em;
 }
 .jspaint-status-text {
-	flex: 1;
+	flex-basis: auto;
+	flex-grow: 1;
+	flex-shrink: 0;
+	padding-right: 2px;
 	overflow: hidden;
 }
 .jspaint-status-coordinates {
-	flex-basis: 114px;
-	flex-grow: 0;
+	flex: 0 0 114px;
 	min-width: 0px;
 	padding-left: 3px;
 	border-left: 1px solid #7b7b7b;
