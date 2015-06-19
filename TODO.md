@@ -20,6 +20,7 @@
 
 
 * Issues
+	* Image > Flip/Rotate, Rotate by angle, `       ` Degrees sort of nullifies the image
 	* Crashes when saving large images
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
@@ -54,12 +55,6 @@
 
 * Use the ghost when dragging on a component window's titlebar
 * Make the component ghost account for the window's titlebar
-
-
-* Keyboard interaction with dialogues
-	* Close dialogues with Escape
-	* Navigating form windows
-	* Left/Right, Enter/Space
 
 
 * Handle windows going off the screen
@@ -296,7 +291,6 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
 	* Image inversion code is duplicated in ChooserCanvas from tool-options.js but should go in image-manipulation.js
-	* `$w.$form.addClass("jspaint-horizontal").css({display: "flex"});`
 	* Comment everything and then try to make the code as obvious as the comments
 	* Improve code quality: https://codeclimate.com/github/1j01/jspaint
 

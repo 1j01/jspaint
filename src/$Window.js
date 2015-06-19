@@ -1,6 +1,13 @@
 
 $Window.Z_INDEX = 5;
 
+// $.fn.isBefore = function(elem){
+// 	if(!(elem instanceof $)){
+// 		elem = $(elem);
+// 	}
+// 	return this.add(elem).index(elem) > 0;
+// };
+
 function $Window($component){
 	var $w = $(E("div")).addClass("jspaint-window").appendTo("body");
 	$w.$titlebar = $(E("div")).addClass("jspaint-window-titlebar").appendTo($w);
@@ -29,6 +36,74 @@ function $Window($component){
 			zIndex: $Window.Z_INDEX++
 		});
 	});
+	
+	$w.on("keydown", function(e){
+		if(e.ctrlKey || e.altKey || e.shiftKey){
+			return;
+		}
+		var $buttons = $w.$content.find("button.jspaint-button");
+		var $focused = $(document.activeElement);
+		var focused_index = $buttons.index($focused);
+		// if(focused_index === -1){
+		// 	if($focused.isBefore($buttons.first())){
+		// 		focused_index = 0;
+		// 	}else{
+		// 		focused_index = $buttons.length - 1;
+		// 	}
+		// }
+		// console.log(e.keyCode);
+		switch(e.keyCode){
+			case 40: // down
+			case 39: // right
+				if($focused.is("button")){
+					if(focused_index < $buttons.length - 1){
+						$buttons.get(focused_index + 1).focus();
+						e.preventDefault();
+					}
+				}
+				break;
+			case 38: // up
+			case 37: // left
+				if($focused.is("button")){
+					if(focused_index > 0){
+						$buttons.get(focused_index - 1).focus();
+						e.preventDefault();
+					}
+				}
+				break;
+			case 32: // space
+			case 13: // enter (doesn't actually work (in chrome), the button gets clicked immediately)
+				if($focused.is("button")){
+					$focused.addClass("pressed");
+					var release = function(){
+						$focused.removeClass("pressed");
+						$focused.off("focusout", release);
+						$(window).off("keyup", keyup);
+					};
+					var keyup = function(e){
+						if(e.keyCode === 32 || e.keyCode === 13){
+							release();
+						}
+					};
+					$focused.on("focusout", release);
+					$(window).on("keyup", keyup);
+				}
+				break;
+			case 9: // tab
+				// wrap around when tabbing through controls in a window
+				var $controls = $w.$content.find("input, textarea, select, button, a");
+				var focused_control_index = $controls.index($focused);
+				if(focused_control_index === $controls.length - 1){
+					e.preventDefault();
+					$controls[0].focus();
+				}
+				break;
+			case 27: // escape
+				$w.close();
+				break;
+		}
+	});
+	// @TODO: restore last focused controls when clicking/mousing down on the window
 	
 	$w.applyBounds = function(){
 		$w.css({
@@ -69,9 +144,19 @@ function $Window($component){
 		}
 	});
 	
+	// $w.updateTabIndexes = function(){
+	// 	var ti = 1;
+	// 	$w.find("button").each(function(){
+	// 		this.tabIndex = ti++;
+	// 	});
+	// 	$w.find("input, select").each(function(){
+	// 		this.tabIndex = ti++;
+	// 	});
+	// };
+	
 	$w.$Button = function(text, handler){
-		$w.$content.append(
-			$(E("button"))
+		var $b = $(E("button"))
+			.appendTo($w.$content)
 			.addClass("jspaint-dialogue-button")
 			.text(text)
 			.on("click", function(){
@@ -79,8 +164,9 @@ function $Window($component){
 					handler();
 				}
 				$w.close();
-			})
-		);
+			});
+		// $w.updateTabIndexes();
+		return $b;
 	};
 	$w.title = function(title){
 		if(title){
@@ -116,12 +202,11 @@ function $FormWindow(title){
 	
 	$w.title(title);
 	$w.$form = $form = $(E("form")).appendTo($w.$content);
-	$w.$form_left = $(E("div")).appendTo($w.$form);
-	$w.$form_right = $(E("div")).appendTo($w.$form).addClass("jspaint-button-group");
-	$w.$form.addClass("jspaint-horizontal").css({display: "flex"});
+	$w.$main = $(E("div")).appendTo($w.$form);
+	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("jspaint-button-group");
 	
 	$w.$Button = function(label, action){
-		var $b = $(E("button")).appendTo($w.$form_right).text(label);
+		var $b = $(E("button")).appendTo($w.$buttons).text(label);
 		$b.on("click", function(e){
 			// prevent the form from submitting
 			// @TODO: instead, prevent the form's submit event
@@ -132,6 +217,12 @@ function $FormWindow(title){
 		
 		// this should really not be needed @TODO
 		$b.addClass("jspaint-button jspaint-dialogue-button");
+		
+		// $w.updateTabIndexes();
+		
+		$b.on("mousedown", function(){
+			$b.focus();
+		});
 		
 		return $b;
 	};

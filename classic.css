@@ -181,6 +181,7 @@
 	border-bottom: 1px solid #7b7b7b;
 }
 .jspaint-window-content .jspaint-dialogue-button:hover:active,
+.jspaint-window-content .jspaint-dialogue-button.pressed,
 .jspaint-tool:hover:active,
 .jspaint-tool.selected {
 	padding-bottom: 2px;
@@ -194,6 +195,7 @@
 	border-bottom: 1px solid white;
 }
 .jspaint-window-content .jspaint-dialogue-button:hover:active:before,
+.jspaint-window-content .jspaint-dialogue-button.pressed:before,
 .jspaint-tool:hover:active:before,
 .jspaint-tool.selected:before {
 	top: 0px;
@@ -396,6 +398,7 @@
 	border-bottom: 1px solid #808080;
 }
 .jspaint-button:hover:active,
+.jspaint-button.pressed,
 .jspaint-button.selected {
 	border-top: 1px solid #000;
 	border-left: 1px solid #000;
@@ -403,6 +406,7 @@
 	border-bottom: 1px solid #fff;
 }
 .jspaint-button:hover:active:after,
+.jspaint-button.pressed:after,
 .jspaint-button.selected:after {
 	border-top: 1px solid #808080;
 	border-left: 1px solid #808080;
@@ -413,7 +417,12 @@
 	right: 0px;
 	top: -3px;
 }
-.jspaint-button:hover:active:before {
+.jspaint-button:hover:active:before,
+.jspaint-button.pressed:before {
 	right: -1px;
 	top: -2px;
+}
+.jspaint-button:focus {
+	outline: 1px dotted black;
+	outline-offset: -4px;
 }

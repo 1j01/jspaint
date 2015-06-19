@@ -64,7 +64,7 @@ You can also install it as a Chrome app.
 * The Magnifier's viewport preview
 * Shape styles on most of the shape tools
 * The polygon tool needs some work
-* Keyboard support in the menus and dialogues
+* Keyboard support in the menus
 * [This entire document full of things to do](TODO.md)
 
 Clipboard support is somewhat limited.

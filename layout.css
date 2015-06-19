@@ -205,11 +205,26 @@ html, body, .jspaint {
 }
 
 .jspaint-window-content .jspaint-button-group {
-	width: 85px;
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: column;
 }
 .jspaint-window-content .jspaint-button-group > button {
-	width: 95%;
+	width: 80px;
 	padding: 3px 5px;
+}
+.jspaint-window-content > form {
+	display: flex;
+	flex-flow: row;
+}
+.jspaint-dialogue-window .jspaint-window-content > form {
+	flex-flow: column;
+}
+.jspaint-dialogue-window .jspaint-window-content > form > .jspaint-button-group {
+	flex-flow: row;
+}
+.jspaint-dialogue-window .jspaint-window-content > form > div:first-child {
+	padding: 5px;
 }
 
 ::before, ::after {

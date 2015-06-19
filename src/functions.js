@@ -194,14 +194,14 @@ function are_you_sure(action){
 	if(saved){
 		action();
 	}else{
-		var $w = new $Window();
+		var $w = new $FormWindow().addClass("jspaint-dialogue-window");
 		$w.title("Paint");
-		$w.$content.text("Save changes to "+file_name+"?");
+		$w.$main.text("Save changes to "+file_name+"?");
 		$w.$Button("Save", function(){
 			$w.close();
 			file_save();
 			action();
-		});
+		}).focus();
 		$w.$Button("Discard", function(){
 			$w.close();
 			action();
@@ -259,7 +259,7 @@ function paste(img){
 				paste_img();
 				$canvas_area.trigger("resize");
 			});
-		});
+		}).focus();
 		$w.$Button("Crop", function(){
 			paste_img();
 		});
@@ -380,14 +380,14 @@ function render_history_as_gif(){
 function undoable(callback, action){
 	saved = false;
 	if(redos.length > 5){
-		var $w = new $Window();
+		var $w = new $FormWindow().addClass("jspaint-dialogue-window");
 		$w.title("Paint");
-		$w.$content.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
+		$w.$main.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
 		$w.$Button(action ? "Discard and Apply" : "Discard", function(){
 			$w.close();
 			redos = [];
 			action && action();
-		});
+		}).focus();
 		$w.$Button("Keep", function(){
 			$w.close();
 		});
@@ -527,8 +527,8 @@ function image_attributes(){
 	}
 	var $w = image_attributes.$window = new $FormWindow("Attributes");
 	
-	var $form_left = $w.$form_left;
-	var $form_right = $w.$form_right;
+	var $main = $w.$main;
+	var $buttons = $w.$buttons;
 	
 	// Information
 	
@@ -537,7 +537,7 @@ function image_attributes(){
 		"Size on disk": "Not available", // @TODO
 		"Resolution": "72 x 72 dots per inch",
 	};
-	var $table = $(E("table")).appendTo($form_left);
+	var $table = $(E("table")).appendTo($main);
 	for(var k in table){
 		var $tr = $(E("tr")).appendTo($table);
 		var $key = $(E("td")).appendTo($tr).text(k + ":");
@@ -551,12 +551,12 @@ function image_attributes(){
 	var width_in_px = canvas.width;
 	var height_in_px = canvas.height;
 	
-	var $width_label = $(E("label")).appendTo($form_left).text("Width:");
-	var $height_label = $(E("label")).appendTo($form_left).text("Height:");
+	var $width_label = $(E("label")).appendTo($main).text("Width:");
+	var $height_label = $(E("label")).appendTo($main).text("Height:");
 	var $width = $(E("input")).appendTo($width_label);
 	var $height = $(E("input")).appendTo($height_label);
 	
-	$form_left.find("input")
+	$main.find("input")
 		.css({width: "40px"})
 		.on("change keyup keydown keypress mousedown mousemove paste drop", function(){
 			if($(this).is($width)){
@@ -569,7 +569,7 @@ function image_attributes(){
 	
 	// Fieldsets
 	
-	var $units = $(E("fieldset")).appendTo($form_left).append('<legend>Transparency</legend>');
+	var $units = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
 	$units.append('<label><input type="radio" name="units" value="in">Inches</label>');
 	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
 	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
@@ -581,7 +581,7 @@ function image_attributes(){
 		current_unit = new_unit;
 	}).triggerHandler("change");
 	
-	var $transparency = $(E("fieldset")).appendTo($form_left).append('<legend>Transparency</legend>');
+	var $transparency = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
 	$transparency.append('<label><input type="radio" name="transparency" value="transparent">Transparent</label>');
 	$transparency.append('<label><input type="radio" name="transparency" value="opaque">Opaque</label>');
 	$transparency.find("[value=" + (transparency ? "transparent" : "opaque") + "]").attr({checked: true});
@@ -601,7 +601,7 @@ function image_attributes(){
 		$canvas.trigger("user-resized", [0, 0, ~~width, ~~height]);
 		
 		image_attributes.$window.close();
-	});
+	}).focus();
 	
 	$w.$Button("Cancel", function(){
 		image_attributes.$window.close();
@@ -622,7 +622,7 @@ function image_attributes(){
 function image_flip_and_rotate(){
 	var $w = new $FormWindow("Flip and Rotate");
 	
-	var $fieldset = $(E("fieldset")).appendTo($w.$form_left);
+	var $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append("<legend>Flip or rotate</legend>");
 	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-horizontal' checked/>Flip horizontal</label>");
 	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-vertical'/>Flip vertical</label>");
@@ -679,7 +679,7 @@ function image_flip_and_rotate(){
 		}
 		
 		$w.close();
-	});
+	}).focus();
 	$w.$Button("Cancel", function(){
 		$w.close();
 	});
@@ -690,9 +690,9 @@ function image_flip_and_rotate(){
 function image_stretch_and_skew(){
 	var $w = new $FormWindow("Stretch and Skew");
 	
-	var $fieldset_stretch = $(E("fieldset")).appendTo($w.$form_left);
+	var $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_stretch.append("<legend>Stretch</legend><table></table>");
-	var $fieldset_skew = $(E("fieldset")).appendTo($w.$form_left);
+	var $fieldset_skew = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_skew.append("<legend>Skew</legend><table></table>");
 	
 	var $RowInput = function($table, img_src, label_text, default_value, label_unit){
@@ -727,7 +727,8 @@ function image_stretch_and_skew(){
 		var vskew = parseFloat(skew_y.val())/360*TAU;
 		stretch_and_skew(xscale, yscale, hskew, vskew);
 		$w.close();
-	});
+	}).focus();
+	
 	$w.$Button("Cancel", function(){
 		$w.close();
 	});
