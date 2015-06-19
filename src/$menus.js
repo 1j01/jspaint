@@ -47,6 +47,8 @@
 				
 				$item.append($checkbox_area, $label, $shortcut, $submenu_area);
 				
+				$item.attr("tabIndex", -1);
+				
 				$label.html(_html(item.item));
 				$shortcut.text(item.shortcut);
 				
@@ -57,7 +59,8 @@
 					}
 				});
 				$item.on("mouseover", function(){
-					$item.attr("disabled", is_disabled(item));
+					$menu_popup.triggerHandler("update");
+					$item.focus();
 				});
 				
 				if(item.checkbox){
@@ -70,6 +73,16 @@
 					var $submenu_popup = $MenuPopup(item.submenu).appendTo("body");
 					$submenu_popup.hide();
 					
+					var open_submenu = function(){
+						$submenu_popup.show();
+						$submenu_popup.triggerHandler("update");
+						var rect = $submenu_area[0].getBoundingClientRect();
+						$submenu_popup.css({
+							position: "absolute",
+							left: rect.right,
+							top: rect.top,
+						});
+					};
 					var open_tid, close_tid;
 					$item.add($submenu_popup).on("mouseover", function(e){
 						if(open_tid){clearTimeout(open_tid);}
@@ -78,16 +91,7 @@
 					$item.on("mouseover", function(e){
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
-						open_tid = setTimeout(function(){
-							$submenu_popup.show();
-							$submenu_popup.triggerHandler("update");
-							var rect = $submenu_area[0].getBoundingClientRect();
-							$submenu_popup.css({
-								position: "absolute",
-								left: rect.right,
-								top: rect.top,
-							});
-						}, 200);
+						open_tid = setTimeout(open_submenu, 200);
 					});
 					$item.add($submenu_popup).on("mouseout", function(){
 						if(open_tid){clearTimeout(open_tid);}
@@ -96,6 +100,7 @@
 							$submenu_popup.hide();
 						}, 200);
 					});
+					$item.on("mousedown click", open_submenu);
 				}
 				
 				$item.on("click", function(){
@@ -121,6 +126,28 @@
 						$status_text.text("");
 					}
 				});
+				
+				$item.on("keydown", function(e){
+					if(e.ctrlKey || e.shiftKey || e.altKey){
+						return;
+					}
+					if(e.keyCode === 13){ // enter
+						e.preventDefault();
+						e.stopPropagation();
+						$item.click();
+					}
+				});
+				
+				$menu_popup.on("keydown", function(e){
+					if(e.ctrlKey || e.shiftKey || e.altKey){
+						return;
+					}
+					if(String.fromCharCode(e.keyCode) === _hotkey(item.item)){
+						e.preventDefault();
+						e.stopPropagation();
+						$item.click();
+					}
+				});
 			}
 		});
 		
@@ -134,6 +161,70 @@
 		var $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
 		$menu_popup.hide();
 		$menu_button.html(_html(menus_key));
+		$menu_button.attr("tabIndex", -1)
+		$menu_button.on("mousedown", function(){
+			$menu_button.focus();
+		});
+		$menu_container.on("keydown", function(e){
+			var $focused_item = $menu_popup.find(".jspaint-menu-item:focus");
+			switch(e.keyCode){
+				case 37: // left
+					$menu_container.prev().find(".jspaint-menu-button").trigger("mousedown");
+					// $menu_container.prev().find(".jspaint-menu-item").first().focus();
+					break;
+				case 39: // right
+					// console.log($focused_item.is(":contains(.jspaint-menu-item-submenu-area)"), $focused_item.is(":contains(.jspaint-menu-item-submenu-area:not(:empty))"));
+					if($focused_item.find(".jspaint-menu-item-submenu-area:not(:empty)").length){
+						$focused_item.click();
+						$(".jspaint-menu-popup .jspaint-menu-item").first().focus();
+						e.preventDefault();
+					}else{
+						$menu_container.next().find(".jspaint-menu-button").trigger("mousedown");
+						// $menu_container.next().find(".jspaint-menu-item").first().focus();
+					}
+					break;
+				case 40: // down
+					if($menu_popup.is(":visible") && $focused_item.length){
+						// $focused_item.next(".jspaint-menu-item").focus();
+						var $next = $focused_item.next();
+						while($next.length && !$next.is(".jspaint-menu-item")){
+							$next = $next.next();
+						}
+						$next.focus();
+					}else{
+						$menu_button.mousedown();
+						$menu_popup.find(".jspaint-menu-item").first().focus();
+					}
+					break;
+				case 38: // up
+					if($menu_popup.is(":visible") && $focused_item.length){
+						// $focused_item.prev(".jspaint-menu-item").focus();
+						var $prev = $focused_item.prev();
+						while($prev.length && !$prev.is(".jspaint-menu-item")){
+							$prev = $prev.prev();
+						}
+						$prev.focus();
+					}else{
+						$menu_button.mousedown(); // or maybe do nothing?
+						$menu_popup.find(".jspaint-menu-item").last().focus();
+					}
+					break;
+			}
+		});
+		$G.on("keydown", function(e){
+			if(e.ctrlKey){ // Ctrl+...
+				if(e.keyCode !== 17){ // anything but Ctrl
+					close_menus();
+				}
+				return;
+			}
+			if(e.altKey){
+				if(String.fromCharCode(e.keyCode) === _hotkey(menus_key)){
+					e.preventDefault();
+					$menu_button.mousedown();
+				}
+			}
+		});
 		$menu_button.on("mousedown mousemove", function(e){
 			if(e.type === "mousemove" && !selecting_menus){
 				return;
@@ -146,6 +237,7 @@
 			
 			close_menus();
 			
+			$menu_button.focus();
 			$menu_button.addClass("active");
 			$menu_popup.show();
 			$menu_popup.triggerHandler("update");
@@ -172,9 +264,12 @@
 			$status_text.default();
 		});
 	});
-	$G.on("keypress blur", function(e){
-		close_menus();
+	$G.on("keypress", function(e){
+		if(e.keyCode === 27){ // esc
+			close_menus();
+		}
 	});
+	$G.on("blur", close_menus);
 	$G.on("mousedown mouseup", function(e){
 		if($(e.target).closest(".jspaint-menus, .jspaint-menu-popup").length === 0){
 			close_menus();

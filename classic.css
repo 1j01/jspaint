@@ -50,6 +50,7 @@
 .jspaint-menu-button {
 	padding: 2px 5px;
 	position: relative;
+	outline: 0;
 }
 .jspaint-menu-button:hover {
 	box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
@@ -77,11 +78,12 @@
 .jspaint-menu-item[disabled] {
 	text-shadow: 0.8px 0.8px 0px #fff;
 }
-.jspaint-menu-item:hover, 
+.jspaint-menu-item:focus, 
 .jspaint-menu-item.active {
 	background: #007;
 	color: #fff;
 	text-shadow: none;
+	outline: 0;
 }
 .jspaint-menu-item[disabled] {
 	color: #808080;

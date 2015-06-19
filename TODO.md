@@ -2,7 +2,7 @@
 # ![](images/icons/32.png) JS Paint Todo
 
 * Visual
-	* Some window layouts are bad
+	* Warning sign for "Save changes to X?" dialogue
 	* The window close button uses text; font rendering is not consistent
 	* The progress bar (Rendering GIF) is left native
 	* Use win98 default scrollbar size
@@ -47,8 +47,8 @@
 
 ### Menus
 
-* Keyboard Navigation
-* Sliding animation
+* Full keyboard Navigation
+* Sliding animation (optional)
 
 
 ### Components / Windows
