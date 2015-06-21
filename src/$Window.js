@@ -1,13 +1,6 @@
 
 $Window.Z_INDEX = 5;
 
-// $.fn.isBefore = function(elem){
-// 	if(!(elem instanceof $)){
-// 		elem = $(elem);
-// 	}
-// 	return this.add(elem).index(elem) > 0;
-// };
-
 function $Window($component){
 	var $w = $(E("div")).addClass("jspaint-window").appendTo("body");
 	$w.$titlebar = $(E("div")).addClass("jspaint-window-titlebar").appendTo($w);
@@ -18,6 +11,8 @@ function $Window($component){
 	if($component){
 		$w.addClass("jspaint-component-window");
 	}
+	
+	$w.attr("touch-action", "none");
 	
 	$w.$x.on("click", function(){
 		$w.close();
@@ -44,17 +39,10 @@ function $Window($component){
 		var $buttons = $w.$content.find("button.jspaint-button");
 		var $focused = $(document.activeElement);
 		var focused_index = $buttons.index($focused);
-		// if(focused_index === -1){
-		// 	if($focused.isBefore($buttons.first())){
-		// 		focused_index = 0;
-		// 	}else{
-		// 		focused_index = $buttons.length - 1;
-		// 	}
-		// }
 		// console.log(e.keyCode);
 		switch(e.keyCode){
-			case 40: // down
-			case 39: // right
+			case 40: // Down
+			case 39: // Right
 				if($focused.is("button")){
 					if(focused_index < $buttons.length - 1){
 						$buttons.get(focused_index + 1).focus();
@@ -62,8 +50,8 @@ function $Window($component){
 					}
 				}
 				break;
-			case 38: // up
-			case 37: // left
+			case 38: // Up
+			case 37: // Left
 				if($focused.is("button")){
 					if(focused_index > 0){
 						$buttons.get(focused_index - 1).focus();
@@ -71,8 +59,8 @@ function $Window($component){
 					}
 				}
 				break;
-			case 32: // space
-			case 13: // enter (doesn't actually work (in chrome), the button gets clicked immediately)
+			case 32: // Space
+			case 13: // Enter (doesn't actually work in chrome because the button gets clicked immediately)
 				if($focused.is("button")){
 					$focused.addClass("pressed");
 					var release = function(){
@@ -89,7 +77,7 @@ function $Window($component){
 					$(window).on("keyup", keyup);
 				}
 				break;
-			case 9: // tab
+			case 9: // Tab
 				// wrap around when tabbing through controls in a window
 				var $controls = $w.$content.find("input, textarea, select, button, a");
 				var focused_control_index = $controls.index($focused);
@@ -98,7 +86,7 @@ function $Window($component){
 					$controls[0].focus();
 				}
 				break;
-			case 27: // escape
+			case 27: // Esc
 				$w.close();
 				break;
 		}
@@ -144,16 +132,6 @@ function $Window($component){
 		}
 	});
 	
-	// $w.updateTabIndexes = function(){
-	// 	var ti = 1;
-	// 	$w.find("button").each(function(){
-	// 		this.tabIndex = ti++;
-	// 	});
-	// 	$w.find("input, select").each(function(){
-	// 		this.tabIndex = ti++;
-	// 	});
-	// };
-	
 	$w.$Button = function(text, handler){
 		var $b = $(E("button"))
 			.appendTo($w.$content)
@@ -165,7 +143,6 @@ function $Window($component){
 				}
 				$w.close();
 			});
-		// $w.updateTabIndexes();
 		return $b;
 	};
 	$w.title = function(title){
@@ -217,8 +194,6 @@ function $FormWindow(title){
 		
 		// this should really not be needed @TODO
 		$b.addClass("jspaint-button jspaint-dialogue-button");
-		
-		// $w.updateTabIndexes();
 		
 		$b.on("mousedown", function(){
 			$b.focus();

@@ -15,7 +15,7 @@
 
 
 * Issues
-	* Image > Flip/Rotate, Rotate by angle, `       ` Degrees sort of nullifies the image
+	* Image > Flip/Rotate, Rotate by angle, `[_________]` Degrees sort of nullifies the image
 	* Crashes when saving large images
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
@@ -88,7 +88,7 @@
 
 ### Device support
 
-* Use pointer events polyfill
+* Use pointer events polyfill...
 	* Multi-touch devices
 		* Second touch cancels current action just like a second button does on the desktop
 		* Two-finger drag to pan
