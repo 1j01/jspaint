@@ -124,11 +124,21 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 });
 
 $("body").on("dragover dragenter", function(e){
+	if(
+		e.target instanceof HTMLInputElement ||
+		e.target instanceof HTMLTextAreaElement
+	){
+		return;
+	}
 	e.preventDefault();
-	e.stopPropagation();
 }).on("drop", function(e){
+	if(
+		e.target instanceof HTMLInputElement ||
+		e.target instanceof HTMLTextAreaElement
+	){
+		return;
+	}
 	e.preventDefault();
-	e.stopPropagation();
 	var dt = e.originalEvent.dataTransfer;
 	if(dt && dt.files && dt.files.length){
 		open_from_FileList(dt.files);
@@ -140,6 +150,15 @@ $G.on("keyup", function(e){
 	delete keys[e.keyCode];
 });
 $G.on("keydown", function(e){
+	if(e.isDefaultPrevented()){
+		return;
+	}
+	if(
+		e.target instanceof HTMLInputElement ||
+		e.target instanceof HTMLTextAreaElement
+	){
+		return;
+	}
 	var brush_shapes = {
 		circle: [
 			0, 1, 0,
@@ -238,7 +257,7 @@ $G.on("keydown", function(e){
 			$G.trigger("option-changed");
 		}
 		e.preventDefault();
-		return false;
+		return;
 	}else if(e.ctrlKey){
 		var key = String.fromCharCode(e.keyCode).toUpperCase();
 		if(textbox){
@@ -250,7 +269,7 @@ $G.on("keydown", function(e){
 				case "B":
 				case "U":
 					// Don't prevent the default. Allow text editing commands.
-					return true;
+					return;
 			}
 		}
 		switch(e.keyCode){
@@ -295,11 +314,9 @@ $G.on("keydown", function(e){
 				image_attributes();
 			break;
 			default:
-				// This shortcut is not handled, do not try to prevent the default.
-				return true;
+				return; // don't preventDefault
 		}
 		e.preventDefault();
-		return false;
 	}
 });
 $G.on("cut copy paste", function(e){
@@ -336,10 +353,10 @@ $G.on("cut copy paste", function(e){
 					};
 					img.src = str;
 				});
-				return false; // break $.each
+				return false; // break out of $.each loop
 			}else if(item.type.match(/^image/)){
 				paste_file(item.getAsFile());
-				return false; // break $.each
+				return false; // break out of $.each loop
 			}
 		});
 	}
@@ -457,7 +474,8 @@ var pointer_was_pressed = false;
 $canvas.on("pointerdown", function(e){
 	if(pointer_was_pressed && (reverse ? (button === 2) : (button === 0))){
 		pointer_was_pressed = false;
-		return cancel();
+		cancel();
+		return;
 	}
 	pointer_was_pressed = true;
 	$G.one("pointerup", function(e){
@@ -469,7 +487,7 @@ $canvas.on("pointerdown", function(e){
 	}else if(e.button === 2){
 		reverse = true;
 	}else{
-		return false;
+		return;
 	}
 	button = e.button;
 	ctrl = e.ctrlKey;
@@ -503,10 +521,6 @@ $canvas.on("pointerdown", function(e){
 		});
 	};
 	
-	// This would be a lot nicer in ruby (or in OOPLiE!)
-	// It would be just `if selected_tool.passive`
-	// (Or in OOPLiE, `If the selected tool is passive`)
-	// Or it could use a getter
 	if((typeof selected_tool.passive === "function") ? selected_tool.passive() : selected_tool.passive){
 		pointerdown_action();
 	}else{
@@ -524,14 +538,14 @@ $canvas_area.on("pointerdown", function(e){
 	}
 });
 
-$("body").on("mousedown selectstart contextmenu", function(e){
+$app.on("mousedown selectstart contextmenu", function(e){
 	if(
 		e.target instanceof HTMLSelectElement ||
 		e.target instanceof HTMLTextAreaElement ||
 		(e.target instanceof HTMLLabelElement && e.type !== "contextmenu") ||
 		(e.target instanceof HTMLInputElement && e.target.type !== "color")
 	){
-		return true;
+		return;
 	}
 	e.preventDefault();
 });

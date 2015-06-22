@@ -13,9 +13,6 @@ function TextBox(x, y, w, h){
 	
 	tb.$ghost = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
 	tb.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
-	tb.$editor.on("pointerdown dragover dragenter drop contextmenu", function(e){
-		e.stopPropagation();
-	});
 	
 	var update = function(){
 		font.color = colors.foreground;
@@ -37,6 +34,9 @@ function TextBox(x, y, w, h){
 			kxmlWritingMode: font.vertical ? "vertical-lr" : "",
 			khtmlWritingMode: font.vertical ? "vertical-lr" : "",
 			webkitWritingMode: font.vertical ? "vertical-lr" : "",
+			linesupWritingMode: font.vertical ? "vertical-lr" : "",
+			nonsenseWritingMode: font.vertical ? "vertical-lr" : "",
+			totesfakeWritingMode: font.vertical ? "vertical-lr" : "",
 			lineHeight: font.size * font.line_scale * magnification + "px",
 			color: font.color,
 			background: font.background,
@@ -111,6 +111,12 @@ TextBox.prototype.instantiate = function(){
 			}
 		};
 		tb.$ghost.on("pointerdown", function(e){
+			if(
+				e.target instanceof HTMLInputElement ||
+				e.target instanceof HTMLTextAreaElement
+			){
+				return;
+			}
 			e.preventDefault();
 			
 			var rect = tb.$ghost[0].getBoundingClientRect();

@@ -86,8 +86,7 @@ function $Handles($container, element, options){
 					$container.trigger("update");
 				});
 			});
-			$h.on("pointerdown selectstart", function(e){
-				e.stopPropagation();
+			$h.on("mousedown selectstart", function(e){
 				e.preventDefault();
 			});
 		}

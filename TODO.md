@@ -25,12 +25,6 @@
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
 		* Tool options flicker... *and lag*, when they're redrawn in quick succession
-	* Global event handlers interfering with stuff
-		* In Image > Attributes and other places
-			* You can't drag&drop in the inputs
-		* In Help > About Paint and other places
-			* You can't select text
-			* You can't drag links
 	* The TextBox scrollbars have extra buttons
 	* The TextBox contents move down and right when rasterizing
 	* Free-form select can leave behind inverty brush in multiplayer

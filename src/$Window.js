@@ -17,11 +17,8 @@ function $Window($component){
 	$w.$x.on("click", function(){
 		$w.close();
 	});
-	$w.$x.on("mousedown", function(e){
+	$w.$x.on("mousedown selectstart", function(e){
 		e.preventDefault();
-	});
-	$w.$x.on("pointerdown", function(e){
-		e.stopPropagation();
 	});
 	
 	$w.css({
@@ -113,16 +110,23 @@ function $Window($component){
 	
 	$G.on("resize", $w.applyBounds);
 	
-	var mx, my;
+	var drag_offset_x, drag_offset_y;
 	var drag = function(e){
 		$w.css({
-			left: e.clientX - mx,
-			top: e.clientY - my,
+			left: e.clientX - drag_offset_x,
+			top: e.clientY - drag_offset_y,
 		});
 	};
+	
+	$w.$titlebar.on("mousedown selectstart", function(e){
+		e.preventDefault();
+	});
 	$w.$titlebar.on("pointerdown", function(e){
-		mx = e.clientX - $w[0].getBoundingClientRect().left;
-		my = e.clientY - $w[0].getBoundingClientRect().top;
+		if($(e.target).is("button")){
+			return;
+		}
+		drag_offset_x = e.clientX - $w[0].getBoundingClientRect().left;
+		drag_offset_y = e.clientY - $w[0].getBoundingClientRect().top;
 		$G.on("pointermove", drag);
 	});
 	$G.on("pointerup", function(e){

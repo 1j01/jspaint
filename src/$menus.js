@@ -137,7 +137,6 @@
 					}
 					if(e.keyCode === 13){ // Enter
 						e.preventDefault();
-						e.stopPropagation();
 						$item.click();
 					}
 				});
@@ -148,7 +147,6 @@
 					}
 					if(String.fromCharCode(e.keyCode) === _hotkey(item.item)){
 						e.preventDefault();
-						e.stopPropagation();
 						$item.click();
 					}
 				});
