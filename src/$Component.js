@@ -59,15 +59,15 @@ function $Component(name, orientation, $el){
 	var $last_docked_to;
 	var $dock_to;
 	var $ghost;
-	$c.on("mousedown", function(e){
+	$c.on("pointerdown", function(e){
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
 		if(!$c.is(e.target)){ return; }
 		
-		$G.on("mousemove", drag_onmousemove);
-		$G.one("mouseup", function(e){
-			$G.off("mousemove", drag_onmousemove);
-			drag_onmouseup(e);
+		$G.on("pointermove", drag_onpointermove);
+		$G.one("pointerup", function(e){
+			$G.off("pointermove", drag_onpointermove);
+			drag_onpointerup(e);
 		});
 		
 		var rect = $c[0].getBoundingClientRect();
@@ -93,7 +93,7 @@ function $Component(name, orientation, $el){
 		// Prevent text selection anywhere within the component
 		e.preventDefault();
 	});
-	var drag_onmousemove = function(e){
+	var drag_onpointermove = function(e){
 		
 		$ghost.css({
 			left: e.clientX + ox,
@@ -134,7 +134,7 @@ function $Component(name, orientation, $el){
 		e.preventDefault();
 	};
 	
-	var drag_onmouseup = function(e){
+	var drag_onpointerup = function(e){
 		
 		$w.hide();
 		

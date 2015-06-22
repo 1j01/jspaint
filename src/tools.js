@@ -14,12 +14,12 @@ tools = [{
 	y_min: +Infinity,
 	y_max: -Infinity,
 	
-	mousedown: function(){
+	pointerdown: function(){
 		var tool = this;
-		tool.x_min = mouse.x;
-		tool.x_max = mouse.x+1;
-		tool.y_min = mouse.y;
-		tool.y_max = mouse.y+1;
+		tool.x_min = pointer.x;
+		tool.x_max = pointer.x+1;
+		tool.y_min = pointer.y;
+		tool.y_max = pointer.y+1;
 		tool.points = [];
 		
 		if(selection){
@@ -28,26 +28,26 @@ tools = [{
 			selection = null;
 		}
 		// The inverty brush is continuous in space which means
-		// paint(ctx, x, y) will be called for each pixel the mouse moves
-		// and we only need to record individual mouse events to make the polygon
-		var onmousemove = function(e){
-			var mouse = e2c(e);
-			// Constrain the mouse to the canvas
-			mouse.x = Math.min(canvas.width, mouse.x);
-			mouse.x = Math.max(0, mouse.x);
-			mouse.y = Math.min(canvas.height, mouse.y);
-			mouse.y = Math.max(0, mouse.y);
+		// paint(ctx, x, y) will be called for each pixel the pointer moves
+		// and we only need to record individual pointer events to make the polygon
+		var onpointermove = function(e){
+			var pointer = e2c(e);
+			// Constrain the pointer to the canvas
+			pointer.x = Math.min(canvas.width, pointer.x);
+			pointer.x = Math.max(0, pointer.x);
+			pointer.y = Math.min(canvas.height, pointer.y);
+			pointer.y = Math.max(0, pointer.y);
 			// Add the point
-			tool.points.push(mouse);
+			tool.points.push(pointer);
 			// Update the boundaries of the polygon
-			tool.x_min = Math.min(mouse.x, tool.x_min);
-			tool.x_max = Math.max(mouse.x, tool.x_max);
-			tool.y_min = Math.min(mouse.y, tool.y_min);
-			tool.y_max = Math.max(mouse.y, tool.y_max);
+			tool.x_min = Math.min(pointer.x, tool.x_min);
+			tool.x_max = Math.max(pointer.x, tool.x_max);
+			tool.y_min = Math.min(pointer.y, tool.y_min);
+			tool.y_max = Math.max(pointer.y, tool.y_max);
 		};
-		$G.on("mousemove", onmousemove);
-		$G.one("mouseup", function(){
-			$G.off("mousemove", onmousemove);
+		$G.on("pointermove", onpointermove);
+		$G.one("pointerup", function(){
+			$G.off("pointermove", onpointermove);
 		});
 	},
 	continuous: "space",
@@ -87,7 +87,7 @@ tools = [{
 		ctx.putImageData(id_dest, rect_x, rect_y);
 		
 	},
-	mouseup: function(){
+	pointerup: function(){
 		// Revert the inverty brush paint
 		ctx.copy(undos[undos.length-1]);
 		
@@ -116,40 +116,40 @@ tools = [{
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
-	mousedown: function(){
+	pointerdown: function(){
 		if(selection){
 			selection.draw();
 			selection.destroy();
 			selection = null;
 		}
-		var mouse_has_moved = false;
-		$G.one("mousemove", function(){
-			mouse_has_moved = true;
+		var pointer_has_moved = false;
+		$G.one("pointermove", function(){
+			pointer_has_moved = true;
 		});
-		$G.one("mouseup", function(){
-			if(!mouse_has_moved && selection){
+		$G.one("pointerup", function(){
+			if(!pointer_has_moved && selection){
 				selection.draw();//?
 				selection.destroy();
 				selection = null;
 			}
 		});
-		selection = new Selection(mouse.x, mouse.y, 1, 1);
+		selection = new Selection(pointer.x, pointer.y, 1, 1);
 	},
 	paint: function(){
 		if(!selection){ return; }
-		selection.w = selection.x - mouse.x;
-		selection.h = selection.y - mouse.y;
-		var x1 = Math.max(0, Math.min(selection.x, mouse.x));
-		var y1 = Math.max(0, Math.min(selection.y, mouse.y));
-		var x2 = Math.min(canvas.width, Math.max(selection.x, mouse.x));
-		var y2 = Math.min(canvas.height, Math.max(selection.y, mouse.y));
+		selection.w = selection.x - pointer.x;
+		selection.h = selection.y - pointer.y;
+		var x1 = Math.max(0, Math.min(selection.x, pointer.x));
+		var y1 = Math.max(0, Math.min(selection.y, pointer.y));
+		var x2 = Math.min(canvas.width, Math.max(selection.x, pointer.x));
+		var y2 = Math.min(canvas.height, Math.max(selection.y, pointer.y));
 		selection._x = x1;
 		selection._y = y1;
 		selection._w = Math.max(1, x2 - x1);
 		selection._h = Math.max(1, y2 - y1);
 		selection.position();
 	},
-	mouseup: function(){
+	pointerup: function(){
 		if(!selection){ return; }
 		
 		if(ctrl){
@@ -219,7 +219,7 @@ tools = [{
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
-	mousedown: function(ctx, x, y){
+	pointerdown: function(ctx, x, y){
 		
 		// Get the rgba values of the selected fill color
 		var rgba = get_rgba_from_color(fill_color);
@@ -241,9 +241,9 @@ tools = [{
 			background: this.current_color
 		});
 	},
-	mousedown: function(){
+	pointerdown: function(){
 		var _this = this;
-		$G.one("mouseup", function(){
+		$G.one("pointerup", function(){
 			_this.$options.css({
 				background: ""
 			});
@@ -262,7 +262,7 @@ tools = [{
 		}
 		this.display_current_color();
 	},
-	mouseup: function(){
+	pointerup: function(){
 		colors[fill_color_k] = this.current_color;
 		$G.trigger("option-changed");
 	},
@@ -276,7 +276,7 @@ tools = [{
 	deselect: true,
 	passive: true,
 	// @TODO: choose and preview viewport with rectangular cursor
-	mousedown: function(){
+	pointerdown: function(){
 		if(magnification > 1){
 			reset_magnification();
 		}else{
@@ -343,39 +343,39 @@ tools = [{
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
-	mousedown: function(){
+	pointerdown: function(){
 		if(textbox){
 			textbox.draw();
 			textbox.destroy();
 		}
-		var mouse_has_moved = false;
-		$G.one("mousemove", function(){
-			mouse_has_moved = true;
+		var pointer_has_moved = false;
+		$G.one("pointermove", function(){
+			pointer_has_moved = true;
 		});
-		$G.one("mouseup", function(){
-			if(!mouse_has_moved && textbox){
+		$G.one("pointerup", function(){
+			if(!pointer_has_moved && textbox){
 				textbox.draw();
 				textbox.destroy();
 				textbox = null;
 			}
 		});
-		textbox = new TextBox(mouse.x, mouse.y, 1, 1);
+		textbox = new TextBox(pointer.x, pointer.y, 1, 1);
 	},
 	paint: function(){
 		if(!textbox){ return; }
-		textbox.w = textbox.x - mouse.x;
-		textbox.h = textbox.y - mouse.y;
-		var x1 = Math.max(0, Math.min(textbox.x, mouse.x));
-		var y1 = Math.max(0, Math.min(textbox.y, mouse.y));
-		var x2 = Math.min(canvas.width, Math.max(textbox.x, mouse.x));
-		var y2 = Math.min(canvas.height, Math.max(textbox.y, mouse.y));
+		textbox.w = textbox.x - pointer.x;
+		textbox.h = textbox.y - pointer.y;
+		var x1 = Math.max(0, Math.min(textbox.x, pointer.x));
+		var y1 = Math.max(0, Math.min(textbox.y, pointer.y));
+		var x2 = Math.min(canvas.width, Math.max(textbox.x, pointer.x));
+		var y2 = Math.min(canvas.height, Math.max(textbox.y, pointer.y));
 		textbox._x = x1;
 		textbox._y = y1;
 		textbox._w = Math.max(1, x2 - x1);
 		textbox._h = Math.max(1, y2 - y1);
 		textbox.position();
 	},
-	mouseup: function(){
+	pointerup: function(){
 		if(!textbox){ return; }
 		textbox.instantiate();
 	},
@@ -405,12 +405,12 @@ tools = [{
 		// but the first action should be undoable / cancelable
 		return this.points.length > 0;
 	},
-	mouseup: function(ctx, x, y){
+	pointerup: function(ctx, x, y){
 		if(this.points.length >= 4){
 			this.points = [];
 		}
 	},
-	mousedown: function(ctx, x, y){
+	pointerdown: function(ctx, x, y){
 		if(this.points.length < 1){
 			// This would be so much better in CoffeeScript
 			var thine = this;
@@ -483,10 +483,10 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	
 	// Record the last click for double-clicking
-	// A double click happens on mousedown of a second click
+	// A double click happens on pointerdown of a second click
 	// (within a cylindrical volume in 2d space + 1d time)
-	last_click_mousedown: {x: -Infinity, y: -Infinity, time: -Infinity},
-	last_click_mouseup: {x: -Infinity, y: -Infinity, time: -Infinity},
+	last_click_pointerdown: {x: -Infinity, y: -Infinity, time: -Infinity},
+	last_click_pointerup: {x: -Infinity, y: -Infinity, time: -Infinity},
 	
 	// The vertices of the polygon
 	points: [],
@@ -503,7 +503,7 @@ tools = [{
 		return this.points.length > 0;
 		// In other words, it's supposed to be one undoable action
 	},
-	mouseup: function(ctx, x, y){
+	pointerup: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
 		
 		var i = this.points.length - 1;
@@ -516,9 +516,9 @@ tools = [{
 			this.complete(ctx, x, y);
 		}
 		
-		this.last_click_mouseup = {x: x, y: y, time: +(new Date)};
+		this.last_click_pointerup = {x: x, y: y, time: +(new Date)};
 	},
-	mousedown: function(ctx, x, y){
+	pointerdown: function(ctx, x, y){
 		var tool = this;
 		
 		if(tool.points.length < 1){
@@ -541,18 +541,18 @@ tools = [{
 				tool.points.push({x: x, y: y});
 			});
 		}else{
-			var lx = tool.last_click_mousedown.x;
-			var ly = tool.last_click_mousedown.y;
-			var lt = tool.last_click_mousedown.time;
+			var lx = tool.last_click_pointerdown.x;
+			var ly = tool.last_click_pointerdown.y;
+			var lt = tool.last_click_pointerdown.time;
 			var dx = x - lx;
 			var dy = y - ly;
 			var dt = +(new Date) - lt;
 			var d = Math.sqrt(dx*dx + dy*dy);
 			if(d < 4.1010101 && dt < 250){ // arbitrary 101
 				tool.complete(ctx, x, y);
-				// Release the mouse to prevent tool.paint()
+				// Release the pointer to prevent tool.paint()
 				// being called and clearing the canvas
-				$canvas.trigger("mouseup");
+				$canvas.trigger("pointerup");
 			}else{
 				// Add the point
 				tool.points.push({x: x, y: y});
@@ -564,7 +564,7 @@ tools = [{
 				tool.y_max = Math.max(y, tool.y_max);
 			}
 		}
-		tool.last_click_mousedown = {x: x, y: y, time: +new Date};
+		tool.last_click_pointerdown = {x: x, y: y, time: +new Date};
 	},
 	paint: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
@@ -670,8 +670,8 @@ tools = [{
 	},
 	reset: function(){
 		this.points = [];
-		this.last_click_mousedown = {x: -Infinity, y: -Infinity, time: -Infinity};
-		this.last_click_mouseup = {x: -Infinity, y: -Infinity, time: -Infinity};
+		this.last_click_pointerdown = {x: -Infinity, y: -Infinity, time: -Infinity};
+		this.last_click_pointerup = {x: -Infinity, y: -Infinity, time: -Infinity};
 	},
 	shape_colors: true,
 	$options: $ChooseShapeStyle()

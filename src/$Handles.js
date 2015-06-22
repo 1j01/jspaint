@@ -69,14 +69,14 @@ function $Handles($container, element, options){
 					height: magnification * height,
 				});
 			};
-			$h.on("mousedown", function(e){
+			$h.on("pointerdown", function(e){
 				dragged = false;
 				if(e.button === 0){
-					$G.on("mousemove", drag);
+					$G.on("pointermove", drag);
 					$("body").css({cursor: cursor}).addClass("jspaint-cursor-bully");
 				}
-				$G.one("mouseup", function(e){
-					$G.off("mousemove", drag);
+				$G.one("pointerup", function(e){
+					$G.off("pointermove", drag);
 					$("body").css({cursor: ""}).removeClass("jspaint-cursor-bully");
 					
 					$resize_ghost.remove();
@@ -86,7 +86,7 @@ function $Handles($container, element, options){
 					$container.trigger("update");
 				});
 			});
-			$h.on("mousedown selectstart", function(e){
+			$h.on("pointerdown selectstart", function(e){
 				e.stopPropagation();
 				e.preventDefault();
 			});

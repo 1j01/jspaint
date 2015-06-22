@@ -5,7 +5,7 @@ function $ToolBox(){
 	var $tool_options = $(E("div")).addClass("jspaint-tool-options");
 	
 	var showing_tooltips = false;
-	$tools.on("mouseleave", function(){
+	$tools.on("pointerleave", function(){
 		showing_tooltips = false;
 		$status_text.default();
 	});
@@ -44,7 +44,7 @@ function $ToolBox(){
 			$c.update_selected_tool();
 		});
 		
-		$b.on("mouseenter", function(){
+		$b.on("pointerenter", function(){
 			var show_tooltip = function(){
 				showing_tooltips = true;
 				$status_text.text(tool.description);
@@ -53,7 +53,7 @@ function $ToolBox(){
 				show_tooltip();
 			}else{
 				var tid = setTimeout(show_tooltip, 300);
-				$b.on("mouseleave", function(){
+				$b.on("pointerleave", function(){
 					clearTimeout(tid);
 				});
 			}

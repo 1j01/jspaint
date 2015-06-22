@@ -70,12 +70,12 @@ var $Choose = function(things, display, choose, is_chosen){
 				$chooser.on("redraw", update);
 				$G.on("option-changed", update);
 				
-				$option_container.on("mousedown click", choose_thing);
-				$chooser.on("mousedown", function(){
-					$option_container.on("mouseenter", choose_thing);
+				$option_container.on("pointerdown click", choose_thing);
+				$chooser.on("pointerdown", function(){
+					$option_container.on("pointerenter", choose_thing);
 				});
-				$G.on("mouseup", function(){
-					$option_container.off("mouseenter", choose_thing);
+				$G.on("pointerup", function(){
+					$option_container.off("pointerenter", choose_thing);
 				});
 				
 			})(things[i]);

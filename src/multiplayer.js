@@ -145,7 +145,7 @@
 			var other_user = snap.val();
 			
 			// @TODO: display other cursor types?
-			// @TODO: display mouse button state?
+			// @TODO: display pointer button state?
 			// @TODO: display selections
 			
 			var cursor_canvas = new Canvas(32, 32);
@@ -204,14 +204,14 @@
 		});
 		
 		var previous_uri;
-		var mouse_operations = [];
+		var pointer_operations = [];
 		
 		var sync = function(){
 			// Sync the data from this client to the server (one-way)
 			var uri = canvas.toDataURL();
 			if(previous_uri !== uri){
-				debug(["clear mouse operations to set data", mouse_operations]);
-				mouse_operations = [];
+				debug(["clear pointer operations to set data", pointer_operations]);
+				pointer_operations = [];
 				debug("set data");
 				session.fb_data.set(uri);
 				previous_uri = uri;
@@ -240,9 +240,9 @@
 				// Load the new image data
 				var img = new Image();
 				img.onload = function(){
-					// Cancel any in-progress mouse operations
-					if(mouse_operations.length){
-						$G.triggerHandler("mouseup", "cancel");
+					// Cancel any in-progress pointer operations
+					if(pointer_operations.length){
+						$G.triggerHandler("pointerup", "cancel");
 					}
 					
 					// Write the image data to the canvas
@@ -252,10 +252,10 @@
 					// Perhaps a better way of syncing transparency
 					// and other options will be established)
 					
-					// Playback recorded in-progress mouse operations
-					console.log("playback", mouse_operations);
-					for(var i=0; i<mouse_operations.length; i++){
-						var e = mouse_operations[i];
+					// Playback recorded in-progress pointer operations
+					console.log("playback", pointer_operations);
+					for(var i=0; i<pointer_operations.length; i++){
+						var e = pointer_operations[i];
 						// Trigger the event at each place it is listened for
 						$canvas.triggerHandler(e, ["synthetic"]);
 						$G.triggerHandler(e, ["synthetic"]);
@@ -267,7 +267,7 @@
 		
 		// Update the cursor status
 		
-		$G.on("mousemove.session-hook", function(e){
+		$G.on("pointermove.session-hook", function(e){
 			var m = e2c(e);
 			session.fb_user.child("cursor").update({
 				x: m.x,
@@ -282,7 +282,7 @@
 			});
 		});
 		
-		// @FIXME: the cursor can come back from "away" via a mouse event
+		// @FIXME: the cursor can come back from "away" via a pointer event
 		// while the window is blurred and stay there when the user goes away
 	};
 	

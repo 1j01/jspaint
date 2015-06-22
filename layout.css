@@ -63,6 +63,13 @@ html, body, .jspaint {
 		display: none !important;
 	}
 }
+.jspaint-component-area,
+.jspaint-menus {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
 .jspaint-status-area,
 .jspaint-component-area,
 .jspaint-menus {

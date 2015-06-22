@@ -429,12 +429,12 @@ function redo(){
 }
 function cancel(){
 	if(!selected_tool.passive){ undo(); }
-	$G.triggerHandler("mouseup", "cancel");
+	$G.triggerHandler("pointerup", "cancel");
 }
 function this_ones_a_frame_changer(){
 	deselect();
 	saved = false;
-	$G.triggerHandler("mouseup", "cancel");
+	$G.triggerHandler("pointerup", "cancel");
 	$G.triggerHandler("session-update");
 }
 function deselect(){
@@ -558,7 +558,7 @@ function image_attributes(){
 	
 	$main.find("input")
 		.css({width: "40px"})
-		.on("change keyup keydown keypress mousedown mousemove paste drop", function(){
+		.on("change keyup keydown keypress pointerdown pointermove paste drop", function(){
 			if($(this).is($width)){
 				width_in_px = $width.val() * unit_sizes_in_px[current_unit];
 			}
@@ -653,7 +653,7 @@ function image_flip_and_rotate(){
 		// Select the radio for this field
 		$label.find("input[type='radio']").prop("checked", true);
 	});
-	// @TODO: enable all controls that are accessable to the mouse
+	// @TODO: enable all controls that are accessable to the pointer
 	
 	$fieldset.find("label").css({display: "block"});
 	

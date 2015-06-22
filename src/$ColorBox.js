@@ -32,6 +32,13 @@ function $ColorBox(){
 		$current_colors.css({background: colors.ternary});
 	});
 	
+	$current_colors.on("pointerdown", function(){
+		var new_bg = colors.foreground;
+		colors.foreground = colors.background;
+		colors.background = new_bg;
+		$G.triggerHandler("option-changed");
+	});
+	
 	// the only color editted by Colors > Edit Colors...
 	var $last_fg_color_button;
 	var build_palette = function(){
@@ -60,7 +67,7 @@ function $ColorBox(){
 			$i.val(rgb2hex($b.css("background-color")));
 			
 			var button, ctrl;
-			$b.on("mousedown", function(e){
+			$b.on("pointerdown", function(e){
 				ctrl = e.ctrlKey;
 				button = e.button;
 				if(button === 0){
@@ -76,7 +83,7 @@ function $ColorBox(){
 					$i.prop("enabled", false);
 				}, 400);
 			});
-			$i.on("mousedown", function(e){
+			$i.on("pointerdown", function(e){
 				if(e.button === button && $i.prop("enabled")){
 					$i.trigger("click", "synthetic");
 				}
@@ -117,7 +124,7 @@ function $ColorBox(){
 	$c.edit_last_color = function(){
 		// Edit the last color cell that's been selected as the foreground color.
 		$input.click().one("change", function(){
-			$last_fg_color_button.trigger({type: "mousedown", ctrlKey: false, button: 0});
+			$last_fg_color_button.trigger({type: "pointerdown", ctrlKey: false, button: 0});
 			$last_fg_color_button.find("input").val($input.val()).triggerHandler("change");
 		});
 	};

@@ -13,7 +13,7 @@ function TextBox(x, y, w, h){
 	
 	tb.$ghost = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
 	tb.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
-	tb.$editor.on("mousedown dragover dragenter drop contextmenu", function(e){
+	tb.$editor.on("pointerdown dragover dragenter drop contextmenu", function(e){
 		e.stopPropagation();
 	});
 	
@@ -100,7 +100,7 @@ TextBox.prototype.instantiate = function(){
 		});
 		
 		var mox, moy;
-		var mousemove = function(e){
+		var pointermove = function(e){
 			var m = e2c(e);
 			tb._x = Math.max(Math.min(m.x - mox, canvas.width), -tb._w);
 			tb._y = Math.max(Math.min(m.y - moy, canvas.height), -tb._h);
@@ -110,7 +110,7 @@ TextBox.prototype.instantiate = function(){
 				tb.draw();
 			}
 		};
-		tb.$ghost.on("mousedown", function(e){
+		tb.$ghost.on("pointerdown", function(e){
 			e.preventDefault();
 			
 			var rect = tb.$ghost[0].getBoundingClientRect();
@@ -119,9 +119,9 @@ TextBox.prototype.instantiate = function(){
 			mox = ~~(cx);
 			moy = ~~(cy);
 			
-			$G.on("mousemove", mousemove);
-			$G.one("mouseup", function(){
-				$G.off("mousemove", mousemove);
+			$G.on("pointermove", pointermove);
+			$G.one("pointerup", function(){
+				$G.off("pointermove", pointermove);
 			});
 			
 		});

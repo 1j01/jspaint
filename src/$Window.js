@@ -19,6 +19,8 @@ function $Window($component){
 	});
 	$w.$x.on("mousedown", function(e){
 		e.preventDefault();
+	});
+	$w.$x.on("pointerdown", function(e){
 		e.stopPropagation();
 	});
 	
@@ -26,7 +28,7 @@ function $Window($component){
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++
 	});
-	$w.on("mousedown", function(){
+	$w.on("pointerdown", function(){
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
@@ -118,13 +120,13 @@ function $Window($component){
 			top: e.clientY - my,
 		});
 	};
-	$w.$titlebar.on("mousedown", function(e){
+	$w.$titlebar.on("pointerdown", function(e){
 		mx = e.clientX - $w[0].getBoundingClientRect().left;
 		my = e.clientY - $w[0].getBoundingClientRect().top;
-		$G.on("mousemove", drag);
+		$G.on("pointermove", drag);
 	});
-	$G.on("mouseup", function(e){
-		$G.off("mousemove", drag);
+	$G.on("pointerup", function(e){
+		$G.off("pointermove", drag);
 	});
 	$w.$titlebar.on("dblclick", function(e){
 		if($component){
@@ -195,7 +197,7 @@ function $FormWindow(title){
 		// this should really not be needed @TODO
 		$b.addClass("jspaint-button jspaint-dialogue-button");
 		
-		$b.on("mousedown", function(){
+		$b.on("pointerdown", function(){
 			$b.focus();
 		});
 		

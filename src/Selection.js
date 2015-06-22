@@ -60,7 +60,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 		});
 		
 		var mox, moy;
-		var mousemove = function(e){
+		var pointermove = function(e){
 			var m = e2c(e);
 			sel._x = Math.max(Math.min(m.x - mox, canvas.width), -sel._w);
 			sel._y = Math.max(Math.min(m.y - moy, canvas.height), -sel._h);
@@ -71,7 +71,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 			}
 		};
 		
-		sel.canvas_mousedown = function(e){
+		sel.canvas_pointerdown = function(e){
 			e.preventDefault();
 			
 			var rect = sel.canvas.getBoundingClientRect();
@@ -80,9 +80,9 @@ Selection.prototype.instantiate = function(_img, _passive){
 			mox = ~~(cx / rect.width * sel.canvas.width);
 			moy = ~~(cy / rect.height * sel.canvas.height);
 			
-			$G.on("mousemove", mousemove);
-			$G.one("mouseup", function(){
-				$G.off("mousemove", mousemove);
+			$G.on("pointermove", pointermove);
+			$G.one("pointerup", function(){
+				$G.off("pointermove", pointermove);
 			});
 			
 			if(e.shiftKey){
@@ -90,7 +90,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 			}
 		};
 		
-		$(sel.canvas).on("mousedown", sel.canvas_mousedown);
+		$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
 		$canvas_area.trigger("resize");
 		$status_position.text("");
 		$status_size.text("");
@@ -157,7 +157,7 @@ Selection.prototype.replace_canvas = function(new_canvas){
 	$(sel.canvas).replaceWith(new_canvas);
 	sel.canvas = new_canvas;
 	
-	$(sel.canvas).on("mousedown", sel.canvas_mousedown);
+	$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
 	sel.$ghost.triggerHandler("new-element", [sel.canvas]);
 	sel.$ghost.triggerHandler("resize");//?
 };

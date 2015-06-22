@@ -18,7 +18,7 @@
 	
 	$canvas.on("user-resized.ugly-hook", may_be_changed);
 	
-	$canvas_area.on("mousedown.ugly-hook", "*", function(e, synthetic){
+	$canvas_area.on("pointerdown.ugly-hook", "*", function(e, synthetic){
 		debug_event(e, synthetic);
 		if(synthetic){ return; }
 		
@@ -28,19 +28,19 @@
 			may_be_changed();
 		}else{
 			// Changes may occur when you release from a stroke
-			mouse_operations = [e];
-			var mousemove = function(e, synthetic){
+			pointer_operations = [e];
+			var pointermove = function(e, synthetic){
 				debug_event(e, synthetic);
 				if(synthetic){ return; }
 				
-				mouse_operations.push(e);
+				pointer_operations.push(e);
 			};
-			$G.on("mousemove.ugly-hook", mousemove);
-			$G.one("mouseup.ugly-hook", function(e, synthetic){
+			$G.on("pointermove.ugly-hook", pointermove);
+			$G.one("pointerup.ugly-hook", function(e, synthetic){
 				debug_event(e, synthetic);
 				if(synthetic){ return; }
 				
-				$G.off("mousemove.ugly-hook", mousemove);
+				$G.off("pointermove.ugly-hook", pointermove);
 				
 				may_be_changed();
 			});

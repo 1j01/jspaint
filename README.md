@@ -45,12 +45,13 @@ You can also install it as a Chrome app.
   It isn't perfectly seamless, and you may lose your drawing or be interrupted.
 * Load many different palette formats with Colors > Get Colors
   (I made a [library](https://github.com/1j01/palette.js/) for this)
+* Mobile support
+* Click/tap the selected colors area to swap the foreground and background colors
 
 
 #### Possible improvements include:
 
 * [Extended Editing](#extended-editing)
-* Mobile support
 * Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
 * After adding text, save as SVG or HTML with selectable text
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus

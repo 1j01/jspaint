@@ -88,15 +88,13 @@
 
 ### Device support
 
-* Use pointer events polyfill...
-	* Multi-touch devices
-		* Second touch cancels current action just like a second button does on the desktop
-		* Two-finger drag to pan
-	* Single-touch devices
-		* Pan tool
+* Multi-touch devices
+	* Two-finger drag to pan (the second touch cancels the default action just like normal)
+* Single-touch devices
+	* Pan tool
 
 
-* Tap (or click) the selected colors area to swap background/foreground colors
+* Enlarge GUI elements on touch devices
 
 
 * You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
@@ -104,13 +102,11 @@
 
 
 * Access to functionality that would normally require a keyboard (with a numpad!)
+	* Slide pointer between menu buttons and menu items
 	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
 	* Ctrl+Select: Crop tool
 	* Ctrl+Shift+G: "Render GIF"
-
-
-* Add Pan and Color Eraser tools to the toolbox
 
 
 ### Tools

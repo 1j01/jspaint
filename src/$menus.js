@@ -14,6 +14,7 @@
 	};
 	
 	var close_menus = function(){
+		// console.log("close menus");
 		$menus.find(".jspaint-menu-button").trigger("release");
 		// Close any rogue floating submenus
 		$(".jspaint-menu-popup").hide();
@@ -58,7 +59,7 @@
 						$checkbox_area.text(item.checkbox.check() ? "✓" : "");
 					}
 				});
-				$item.on("mouseover", function(){
+				$item.on("pointerover", function(){
 					$menu_popup.triggerHandler("update");
 					$item.focus();
 				});
@@ -84,26 +85,29 @@
 						});
 					};
 					var open_tid, close_tid;
-					$item.add($submenu_popup).on("mouseover", function(e){
+					$item.add($submenu_popup).on("pointerover", function(e){
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 					});
-					$item.on("mouseover", function(e){
+					$item.on("pointerover", function(e){
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 						open_tid = setTimeout(open_submenu, 200);
 					});
-					$item.add($submenu_popup).on("mouseout", function(){
+					$item.add($submenu_popup).on("pointerout", function(){
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 						close_tid = setTimeout(function(){
 							$submenu_popup.hide();
 						}, 200);
 					});
-					$item.on("mousedown click", open_submenu);
+					$item.on("click pointerdown", open_submenu);
 				}
 				
-				$item.on("click", function(){
+				$item.on("pointerup", function(e){
+					if(e.pointerType === "mouse" && e.button !== 0){
+						return;
+					}
 					if(item.checkbox){
 						if(item.checkbox.toggle){
 							item.checkbox.toggle();
@@ -114,14 +118,14 @@
 						item.action();
 					}
 				});
-				$item.on("mouseenter", function(){
+				$item.on("pointerenter", function(){
 					if(item.submenu){
 						$status_text.text("");
 					}else{
 						$status_text.text(item.description || "");
 					}
 				});
-				$item.on("mouseleave", function(){
+				$item.on("pointerleave", function(){
 					if($item.is(":visible")){
 						$status_text.text("");
 					}
@@ -162,14 +166,11 @@
 		$menu_popup.hide();
 		$menu_button.html(_html(menus_key));
 		$menu_button.attr("tabIndex", -1)
-		$menu_button.on("mousedown", function(){
-			$menu_button.focus();
-		});
 		$menu_container.on("keydown", function(e){
 			var $focused_item = $menu_popup.find(".jspaint-menu-item:focus");
 			switch(e.keyCode){
 				case 37: // Left
-					$menu_container.prev().find(".jspaint-menu-button").trigger("mousedown");
+					$menu_container.prev().find(".jspaint-menu-button").trigger("pointerdown");
 					break;
 				case 39: // Right
 					if($focused_item.find(".jspaint-menu-item-submenu-area:not(:empty)").length){
@@ -177,7 +178,7 @@
 						$(".jspaint-menu-popup .jspaint-menu-item").first().focus();
 						e.preventDefault();
 					}else{
-						$menu_container.next().find(".jspaint-menu-button").trigger("mousedown");
+						$menu_container.next().find(".jspaint-menu-button").trigger("pointerdown");
 					}
 					break;
 				case 40: // Down
@@ -188,7 +189,7 @@
 						}
 						$next.focus();
 					}else{
-						$menu_button.mousedown();
+						$menu_button.pointerdown();
 						$menu_popup.find(".jspaint-menu-item").first().focus();
 					}
 					break;
@@ -200,7 +201,7 @@
 						}
 						$prev.focus();
 					}else{
-						$menu_button.mousedown(); // or maybe do nothing?
+						$menu_button.pointerdown(); // or maybe do nothing?
 						$menu_popup.find(".jspaint-menu-item").last().focus();
 					}
 					break;
@@ -216,21 +217,20 @@
 			if(e.altKey){
 				if(String.fromCharCode(e.keyCode) === _hotkey(menus_key)){
 					e.preventDefault();
-					$menu_button.mousedown();
+					$menu_button.pointerdown();
 				}
 			}
 		});
-		$menu_button.on("mousedown mousemove", function(e){
-			if(e.type === "mousemove" && !selecting_menus){
+		$menu_button.on("pointerdown pointerenter", function(e){
+			if(e.type === "pointerenter" && !selecting_menus){
 				return;
 			}
-			if(e.type === "mousedown"){
-				if(!$menu_button.hasClass("active")){
-					this_click_opened_the_menu = true;
-				}
+			if(!$menu_button.hasClass("active")){
+				this_click_opened_the_menu = true;
 			}
 			
 			close_menus();
+			// console.log("open menu");
 			
 			$menu_button.focus();
 			$menu_button.addClass("active");
@@ -241,12 +241,13 @@
 			
 			$status_text.text("");
 		});
-		$menu_button.on("mouseup", function(e){
+		$menu_button.on("pointerup", function(e){
 			if(this_click_opened_the_menu){
 				this_click_opened_the_menu = false;
 				return;
 			}
 			if($menu_button.hasClass("active")){
+				// console.log(e.type, "occurred and this click didn't open the menu, so...");
 				close_menus();
 			}
 		});
@@ -264,9 +265,13 @@
 			close_menus();
 		}
 	});
-	$G.on("blur", close_menus);
-	$G.on("mousedown mouseup", function(e){
+	$G.on("blur", function(e){
+		// console.log("blur", e.target, document.activeElement);
+		close_menus();
+	});
+	$G.on("pointerdown pointerup", function(e){
 		if($(e.target).closest(".jspaint-menus, .jspaint-menu-popup").length === 0){
+			// console.log(e.type, "occurred outside of menus (on ", e.target, ") so...");
 			close_menus();
 		}
 	});
