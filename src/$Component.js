@@ -4,6 +4,7 @@ function $Component(name, orientation, $el){
 	var $c = $(E("div")).addClass("jspaint-component");
 	$c.addClass("jspaint-"+name+"-component");
 	$c.append($el);
+	$c.attr("touch-action", "none");
 	
 	$c.appendTo({
 		tall: $left,

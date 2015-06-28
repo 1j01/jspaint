@@ -25,6 +25,8 @@ function $Handles($container, element, options){
 		var $h = $(E("div")).addClass("jspaint-handle");
 		$h.appendTo($container);
 		
+		$h.attr("touch-action", "none");
+		
 		var x, y, width, height;
 		var dragged = false;
 		var resizes_height = y_axis !== "middle";

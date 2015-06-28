@@ -54,6 +54,8 @@ TextBox.prototype.instantiate = function(){
 	tb.$ghost.addClass("instantiated").css({
 		cursor: Cursor(["move", [8, 8], "move"])
 	});
+	tb.$ghost.attr("touch-action", "none");
+	
 	tb.position();
 	
 	instantiate();

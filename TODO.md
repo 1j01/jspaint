@@ -96,7 +96,6 @@
 
 
 * Access to functionality that would normally require a keyboard (with a numpad!)
-	* Slide pointer between menu buttons and menu items
 	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
 	* Ctrl+Select: Crop tool

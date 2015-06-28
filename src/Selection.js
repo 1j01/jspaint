@@ -20,6 +20,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 	sel.$ghost.addClass("instantiated").css({
 		cursor: Cursor(["move", [8, 8], "move"])
 	});
+	sel.$ghost.attr("touch-action", "none");
 	sel.position();
 	
 	if(_passive){

@@ -117,7 +117,7 @@ function $Window($component){
 			top: e.clientY - drag_offset_y,
 		});
 	};
-	
+	$w.$titlebar.attr("touch-action", "none");
 	$w.$titlebar.on("mousedown selectstart", function(e){
 		e.preventDefault();
 	});

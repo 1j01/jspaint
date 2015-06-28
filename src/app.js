@@ -58,6 +58,7 @@ var $V = $(E("div")).addClass("jspaint-vertical").appendTo($app);
 var $H = $(E("div")).addClass("jspaint-horizontal").appendTo($V);
 
 var $canvas_area = $(E("div")).addClass("jspaint-canvas-area").appendTo($H);
+$canvas_area.attr("touch-action", "pan-x pan-y");
 
 var canvas = new Canvas();
 var ctx = canvas.ctx;

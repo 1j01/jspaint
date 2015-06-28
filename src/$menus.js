@@ -2,6 +2,7 @@
 (function(){
 	
 	var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
+	$menus.attr("touch-action", "none");
 	var selecting_menus = false;
 	
 	var _html = function(menus_key){
