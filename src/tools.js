@@ -343,6 +343,9 @@ tools = [{
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
+	activate: function(){
+		setTimeout(FontDetective.preload, 10);
+	},
 	pointerdown: function(){
 		if(textbox){
 			textbox.draw();

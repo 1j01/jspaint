@@ -73,6 +73,9 @@ function $ToolBox(){
 			cursor: Cursor(selected_tool.cursor),
 		});
 		deselect();
+		if(selected_tool.activate){
+			selected_tool.activate();
+		}
 	};
 	$c.update_selected_tool();
 	return $c;

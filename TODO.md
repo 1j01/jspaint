@@ -144,7 +144,6 @@
 	* Underline
 	* Expanding to new lines
 	* Minimum size of 3em x 1em
-	* Detect fonts with [Font Detective](https://github.com/1j01/font-detective/)
 	* Store position of FontBox
 	* Keep an old TextBox while drawing a new one
 	* Save text and record transformations so the image can be saved as

@@ -24,9 +24,9 @@ function $FontBox(){
 		$G.trigger("option-changed");
 	};
 	
-	FontDetective.each(function(fontFamily){
+	FontDetective.each(function(font){
 		var $option = $(E("option"));
-		$option.val(fontFamily).text(fontFamily);
+		$option.val(font).text(font.name);
 		$family.append($option);
 	});
 	
@@ -68,16 +68,3 @@ function $FontBox(){
 		return $button;
 	}
 }
-
-// @TODO: detective work
-FontDetective = {
-	keywords: ["sans-serif", "serif", "monospace", "fantasy"],
-	each: function(callback){
-		for(var i=0; i<FontDetective.keywords.length; i++){
-			callback(FontDetective.keywords[i]);
-		}
-	},
-	all: function(callback){
-		callback(FontDetective.keywords);
-	},
-};
