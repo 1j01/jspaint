@@ -92,10 +92,16 @@
 			session.start();
 		};
 		if(!FireSession.fb_root){
-			$.getScript("lib/firebase.js", function(){
-				FireSession.fb_root = new Firebase("https://jspaint.firebaseio.com/");
-				on_firebase_loaded();
-			});
+			$.getScript("lib/firebase.js")
+				.done(function(){
+					FireSession.fb_root = new Firebase("https://jspaint.firebaseio.com/");
+					on_firebase_loaded();
+				})
+				.fail(function(){
+					alert("Failed to load Firebase; the document will not load, and changes will not be saved.");
+					file_name = "[Failed to load "+session.id+"]";
+					update_title();
+				});
 		}else{
 			on_firebase_loaded();
 		}
