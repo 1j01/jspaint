@@ -105,10 +105,7 @@
 					$item.on("click pointerdown", open_submenu);
 				}
 				
-				$item.on("pointerup", function(e){
-					if(e.pointerType === "mouse" && e.button !== 0){
-						return;
-					}
+				var item_action = function(){
 					if(item.checkbox){
 						if(item.checkbox.toggle){
 							item.checkbox.toggle();
@@ -118,6 +115,12 @@
 						close_menus();
 						item.action();
 					}
+				};
+				$item.on("pointerup", function(e){
+					if(e.pointerType === "mouse" && e.button !== 0){
+						return;
+					}
+					item_action();
 				});
 				$item.on("pointerenter", function(){
 					if(item.submenu){
@@ -138,7 +141,7 @@
 					}
 					if(e.keyCode === 13){ // Enter
 						e.preventDefault();
-						$item.click();
+						item_action();
 					}
 				});
 				
@@ -188,7 +191,7 @@
 						}
 						$next.focus();
 					}else{
-						$menu_button.pointerdown();
+						$menu_button.trigger("pointerdown");
 						$menu_popup.find(".jspaint-menu-item").first().focus();
 					}
 					break;
@@ -200,7 +203,7 @@
 						}
 						$prev.focus();
 					}else{
-						$menu_button.pointerdown(); // or maybe do nothing?
+						$menu_button.trigger("pointerdown"); // or maybe do nothing?
 						$menu_popup.find(".jspaint-menu-item").last().focus();
 					}
 					break;
@@ -216,7 +219,7 @@
 			if(e.altKey){
 				if(String.fromCharCode(e.keyCode) === _hotkey(menus_key)){
 					e.preventDefault();
-					$menu_button.pointerdown();
+					$menu_button.trigger("pointerdown");
 				}
 			}
 		});

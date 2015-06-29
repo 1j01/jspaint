@@ -37,8 +37,8 @@
 
 ### Menus
 
-* Fix keyboard Navigation
-* Sliding animation (optional)
+* Keyboard navigation of submenus
+* <kbd>Alt</kbd> (by itself)?
 
 
 ### Components / Windows
