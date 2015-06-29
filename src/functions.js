@@ -279,77 +279,59 @@ function paste(img){
 }
 
 function render_history_as_gif(){
-	var $win = $Window();
+	var $win = $FormWindow();
 	$win.title("Rendering GIF");
 	$win.center();
-	var $output = $win.$content;
+	var $output = $win.$main;
 	var $progress = $(E("progress")).appendTo($output);
 	var $progress_percent = $(E("span")).appendTo($output).css({
 		width: "2.3em",
 		display: "inline-block",
 		textAlign: "center",
 	});
+	$win.$main.css({padding: 5});
 	
-	$win.$Button('Cancel');
+	var $cancel = $win.$Button('Cancel', function(){
+		$win.close();
+	});
 	
 	$win.on('close', function(){
 		gif.abort();
 	});
 	
 	try{
+		var width = canvas.width;
+		var height = canvas.height;
 		var gif = new GIF({
 			//workers: Math.min(5, Math.floor(undos.length/50)+1),
-			workerScript: 'lib/gif.js/gif.worker.js',
-			width: canvas.width,
-			height: canvas.height,
+			workerScript: "lib/gif.js/gif.worker.js",
+			width: width,
+			height: height,
 		});
-	
-		gif.on('progress', function(p){
+		
+		gif.on("progress", function(p){
 			$progress.val(p);
 			$progress_percent.text(~~(p*100)+"%");
 		});
-	
-		gif.on('finished', function(blob){
+		
+		gif.on("finished", function(blob){
 			$win.title("Rendered GIF");
 			var url = URL.createObjectURL(blob);
 			$output.empty().append(
-				$(E("a")).attr({
-					href: url,
-					target: "_blank",
-				}).append(
-					$(E("img")).on("load", function(){
-						$win.center();
-					}).attr({
-						src: url,
-					})
-				).on("click", function(e){
-					$win.close();
-					if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
-						e.preventDefault();
-						chrome.fileSystem.chooseEntry({
-							type: "saveFile",
-							suggestedName: file_name+" history",
-							accepts: [{mimeTypes: ["image/gif"]}]
-						}, function(entry){
-							if(chrome.runtime.lastError){
-								return console.error(chrome.runtime.lastError.message);
-							}
-							entry.createWriter(function(file_writer){
-								file_writer.onwriteend = function(e){
-									if(this.error){
-										console.error(this.error + '\n\n\n@ ' + e);
-									}else{
-										console.log("File written!");
-									}
-								};
-								file_writer.write(blob);
-							});
-						});
-					}
+				$(E("img")).attr({
+					src: url,
+					width: width,
+					height: height,
 				})
 			);
+			$win.$Button("Save", function(){
+				$win.close();
+				saveAs(blob, file_name + " history");
+			});
+			$cancel.appendTo($win.$buttons);
+			$win.center();
 		});
-	
+		
 		for(var i=0; i<undos.length; i++){
 			gif.addFrame(undos[i], {delay: 200});
 		}

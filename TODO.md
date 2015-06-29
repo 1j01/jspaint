@@ -4,6 +4,7 @@
 * Visual
 	* Warning sign for "Save changes to X?" dialogue
 	* The window close button uses text; font rendering is not consistent
+	* The menus use text; the arrow character is converted to an icon on some mobile devices
 	* The progress bar (Rendering GIF) is left native
 	* Use win98 default scrollbar size
 	* Minor color differences (0x808080 != 0x7b7b7b)
@@ -36,7 +37,7 @@
 
 ### Menus
 
-* Full keyboard Navigation
+* Fix keyboard Navigation
 * Sliding animation (optional)
 
 
@@ -89,6 +90,8 @@
 
 
 * Enlarge GUI elements on touch devices
+	* Menus!
+	* Resize handles
 
 
 * You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
