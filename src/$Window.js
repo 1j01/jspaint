@@ -184,7 +184,7 @@ function $FormWindow(title){
 	var $w = new $Window();
 	
 	$w.title(title);
-	$w.$form = $form = $(E("form")).appendTo($w.$content);
+	$w.$form = $(E("form")).appendTo($w.$content);
 	$w.$main = $(E("div")).appendTo($w.$form);
 	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("jspaint-button-group");
 	
