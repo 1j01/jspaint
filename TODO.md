@@ -74,7 +74,7 @@
 	* Layered images?
 		* Photoshop PSD ([via psd.js](https://github.com/trevorlinton/psd.js))
 		* OpenRaster ORA ([via ora.js](https://github.com/zsgalusz/ora.js/tree/master))
-		
+
 
 * Multiplayer
 	* See [multiplayer.js](multiplayer.js)

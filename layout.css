@@ -43,6 +43,7 @@ html, body, .jspaint {
 .jspaint-horizontal {
 	flex-flow: row;
 	flex: 1;
+	overflow: hidden;
 }
 .jspaint-vertical {
 	flex-flow: column;
