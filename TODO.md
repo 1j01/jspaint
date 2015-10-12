@@ -16,8 +16,7 @@
 
 
 * Issues
-	* Image > Flip/Rotate, Rotate by angle, `[_________]` Degrees sort of nullifies the image
-	* Crashes when saving large images
+	* Address `localStorage` quota limits
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted

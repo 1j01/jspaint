@@ -654,6 +654,15 @@ function image_flip_and_rotate(){
 		var angle_deg = parseFloat(angle_val);
 		var angle = angle_deg / 360 * TAU;
 		
+		if(isNaN(angle)){
+			var $msgw = new $FormWindow("Invalid Value").addClass("jspaint-dialogue-window");
+			$msgw.$main.text("The value specified for Degrees was invalid.");
+			$msgw.$Button("Okay", function(){
+				$msgw.close();
+			});
+			return;
+		}
+		
 		switch(action){
 			case "flip-horizontal":
 				flip_horizontal();
