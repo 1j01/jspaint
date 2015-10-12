@@ -1,7 +1,23 @@
 
 (function(){
-	
-	var $menus = $(E("div")).addClass("jspaint-menus").prependTo($V);
+	var $ = jQuery;
+	var $G = $(self);
+	var go_outside_frame = false;
+	if(frameElement){
+		try{
+			parent.jQuery.should_exist; // (will throw otherwise)
+			parent.PointerEventsPolyfill.should_also_exist; // (will throw otherwise)
+			$ = parent.jQuery;
+			$G = $([self, parent]);
+			go_outside_frame = true;
+		}catch(e){}
+	}
+	var $menus = $(E("div")).addClass("jspaint-menus");
+	if(go_outside_frame){
+		$menus.insertBefore(frameElement);
+	}else{
+		$menus.prependTo($V);
+	}
 	$menus.attr("touch-action", "none");
 	var selecting_menus = false;
 	
