@@ -441,7 +441,9 @@ function delete_selection(){
 	}
 }
 function select_all(){
-	deselect();
+	// Note: selecting a tool calls deselect();
+	select_tool("Select");
+	
 	selection = new Selection(0, 0, canvas.width, canvas.height);
 	selection.instantiate();
 }
