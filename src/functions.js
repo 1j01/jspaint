@@ -239,13 +239,14 @@ function paste_from(){
 function paste(img){
 	
 	if(img.width > canvas.width || img.height > canvas.height){
-		var $w = new $Window();
+		var $w = new $FormWindow().addClass("jspaint-dialogue-window");
 		$w.title("Paint");
-		$w.$content.html(
+		$w.$main.html(
 			"The image is bigger than the canvas.<br>" +
 			"Would you like the canvas to be enlarged?<br>"
 		);
 		$w.$Button("Enlarge", function(){
+			$w.close();
 			// Additional undoable
 			undoable(function(){
 				var original = undos[undos.length-1];
@@ -261,9 +262,12 @@ function paste(img){
 			});
 		}).focus();
 		$w.$Button("Crop", function(){
+			$w.close();
 			paste_img();
 		});
-		$w.$Button("Cancel", function(){});
+		$w.$Button("Cancel", function(){
+			$w.close();
+		});
 		$w.center();
 	}else{
 		paste_img();
