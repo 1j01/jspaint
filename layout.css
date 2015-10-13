@@ -252,6 +252,32 @@ html, body, .jspaint {
 	padding: 5px;
 }
 
+.help-window .jspaint-window-content {
+	display: flex;
+	flex-flow: row;
+}
+.help-window .contents {
+	background: white;
+	overflow: auto;
+}
+.help-window ul {
+	margin: 0;
+	padding: 0;
+}
+.help-window li {
+	display: block;
+}
+.help-window .folder:not(.expanded) ul {
+	display: none;
+}
+.help-window iframe {
+	flex: 1;
+}
+
+.dragging iframe {
+	pointer-events: none;
+}
+
 ::before, ::after {
 	pointer-events: none;
 }

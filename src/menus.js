@@ -347,16 +347,7 @@ var menus = {
 	"&Help": [
 		{
 			item: "&Help Topics",
-			action: function(){
-				var $msgbox = new $Window();
-				$msgbox.title("Help Topics");
-				var a_attr = "href='https://www.google.com/search?q=ms+paint+tutorials' target='_blank'";
-				$msgbox.$content.html(
-					"<p>There's no help specifically for JS Paint, but you can try <a "+a_attr+">searching for tutorials</a> for MS Paint." +
-					"<p>There will be differences, but most of the basics are there.</p>"
-				).css({padding: "15px"});
-				$msgbox.center();
-			},
+			action: show_help,
 			description: "Displays Help for the current task or command.",
 		},
 		____________________________,

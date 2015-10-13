@@ -38,6 +38,7 @@ You can also install it as a Chrome app.
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
 * Rotate image by arbitrary angle! Available in Image > Flip/Rotate
+* In Image > Stretch/Skew, you can stretch more than 500% at once
 * Rudimentary **multiplayer** support:
   Start up a session at
   [jspaint.ml/#session:multiplayer-test](http://1j01.github.io/jspaint/#session:multiplayer-test)

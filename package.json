@@ -1,7 +1,23 @@
 {
   "name": "jspaint",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "An MS Paint remake.",
+  "keywords": [
+    "paint",
+    "jspaint",
+    "mspaint",
+    "drawing",
+    "draw",
+    "create",
+    "image",
+    "picture",
+    "editor",
+    "edit",
+    "canvas",
+    "app",
+    "nw-app",
+    "web-app"
+  ],
   "main": "index.html",
   "scripts": {
     "start": "nw"
