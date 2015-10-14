@@ -445,8 +445,5 @@
 	background-position: -16px 0;
 }
 .help-window .page:before {
-	background-position: -48px 0;
-}
-.help-window .page.default:before {
 	background-position: -32px 0;
 }
