@@ -3,6 +3,7 @@
 
 * Visual
 	* Warning sign for "Save changes to X?" dialogue
+	* Error symbol for error message dialogues
 	* The window close button uses text; font rendering is not consistent
 	* The menus use text; the arrow character is converted to an icon on some mobile devices
 	* The progress bar (Rendering GIF) is left native
@@ -16,7 +17,6 @@
 
 
 * Issues
-	* Address `localStorage` quota limits
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
@@ -241,6 +241,11 @@ Prankily wait for next user input before fullscreening and bluescreening
 * Publish to the Chrome Web Store!
 	* [Analytics](https://developer.chrome.com/apps/analytics)
 	* Basic things that people would complain about
+
+
+* Save/manage application state
+	* On restart, reopen images from storage
+	* On close / Exit, ask to save, remove image from storage
 
 
 ### Also

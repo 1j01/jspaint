@@ -9,14 +9,6 @@ var default_canvas_height = 384;
 var my_canvas_width = default_canvas_width;
 var my_canvas_height = default_canvas_height;
 
-try{
-	// @TODO support for chrome app where only chrome.storage is available
-	if(localStorage){
-		my_canvas_width = Number(localStorage.width) || default_canvas_width;
-		my_canvas_height = Number(localStorage.height) || default_canvas_height;
-	}
-}catch(e){}
-
 var palette = [
 	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
 	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
@@ -101,9 +93,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 	undoable(0, function(){
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
-		if(transparency){
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-		}else{
+		if(!transparency){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
@@ -115,13 +105,29 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 		
 		$canvas.trigger("update"); // update handles
 		
-		try{
-			localStorage.width = canvas.width;
-			localStorage.height = canvas.height;
-		}catch(e){
+		storage.set({
+			width: canvas.width,
+			height: canvas.height,
+		}, function(err){
 			// oh well
-		}
+		})
 	});
+});
+
+storage.get({
+	width: default_canvas_width,
+	height: default_canvas_height,
+}, function(err, values){
+	if(err){return;}
+	my_canvas_width = values.width;
+	my_canvas_height = values.height;
+	canvas.width = Math.max(1, my_canvas_width);
+	canvas.height = Math.max(1, my_canvas_height);
+	if(!transparency){
+		ctx.fillStyle = colors.background;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	$canvas.trigger("update"); // update handles
 });
 
 $("body").on("dragover dragenter", function(e){

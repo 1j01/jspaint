@@ -2,7 +2,7 @@
 (function(){
 	
 	var debug = function(text){
-		if(console){
+		if(typeof console !== "undefined"){
 			console.log(text);
 		}
 	};
@@ -14,23 +14,37 @@
 	
 	var LocalSession = function(session_id){
 		var lsid = "image#" + session_id;
-		debug("localStorage id: "+lsid);
+		debug("local storage id: " + lsid);
 		
-		var uri = localStorage[lsid];
-		if(uri){
-			open_from_URI(uri, function(){
-				saved = false; // it's safe, sure, but you haven't "Saved" it
-			});
-		}
+		storage.get(lsid, function(err, uri){
+			if(err){
+				$w = $FormWindow().title("Error").addClass("jspaint-dialogue-window");
+				$w.$main.text("Error retrieving image from localStorage:");
+				$(E("pre")).text(err.toString()).appendTo($w.$main);
+				$w.$Button("OK", function(){
+					$w.close();
+				});
+			}else if(uri){
+				open_from_URI(uri, function(){
+					saved = false; // it's safe, sure, but you haven't "Saved" it
+				});
+			}
+		});
 		
 		$canvas.on("change.session-hook", function(){
-			localStorage[lsid] = canvas.toDataURL("image/png");
+			storage.set(lsid, canvas.toDataURL("image/png"), function(err){
+				if(err){
+					if(err.quotaExceeded){
+						storage_quota_exceeded();
+					}else{
+						// e.g. localStorage is disabled
+						// (or there's some other error?)
+					}
+				}
+			});
 		});
 	};
 	LocalSession.prototype.end = function(){
-		//?
-		// @TODO: clean up localStorage sessions (when?)
-		
 		// Remove session-related hooks
 		$app.find("*").off(".session-hook");
 		$G.off(".session-hook");

@@ -17,19 +17,13 @@
 	<body>
 		<script src="lib/jquery.min.js"></script>
 		<script src="lib/pep.js"></script>
-		<script>
-			$.event.props.push("button", "buttons", "clientX", "clientY", "offsetX", "offsetY", "pageX", "pageY", "screenX", "screenY", "toElement");
-			$.event.props.push("pointerType", "pointerId", "width", "height", "pressure", "tiltX", "tiltY", "hwTimestamp", "isPrimary");
-		</script>
 		<script src="lib/canvas.toBlob.js"></script>
 		<script src="lib/gif.js/gif.js"></script>
 		<script src="lib/palette.js"></script>
 		<script src="lib/FileSaver.js"></script>
 		<script src="lib/font-detective.js"></script>
-		<script>
-			FontDetective.swf = "./lib/FontList.swf"
-		</script>
 		<script src="src/helpers.js"></script>
+		<script src="src/storage.js"></script>
 		<script src="src/$Component.js"></script>
 		<script src="src/$Window.js"></script>
 		<script src="src/$ToolBox.js"></script>
@@ -46,6 +40,7 @@
 		<script src="src/menus.js"></script>
 		<script src="src/app.js"></script>
 		<script src="src/$menus.js"></script>
+		<script src="src/manage-storage.js"></script>
 		<script src="src/canvas-change.js"></script>
 		<script src="src/multiplayer.js"></script> <!-- @TODO: rename -->
 	</body>

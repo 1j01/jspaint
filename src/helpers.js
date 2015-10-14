@@ -1,4 +1,12 @@
 
+// make jQuery play well with PEP
+$.event.props.push("button", "buttons", "clientX", "clientY", "offsetX", "offsetY", "pageX", "pageY", "screenX", "screenY", "toElement");
+$.event.props.push("pointerType", "pointerId", "width", "height", "pressure", "tiltX", "tiltY", "hwTimestamp", "isPrimary");
+
+// configure Font Detective
+FontDetective.swf = "./lib/FontList.swf";
+
+
 var TAU =     //////|//////
           /////     |     /////
        ///         tau         ///

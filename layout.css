@@ -235,8 +235,9 @@ html, body, .jspaint {
 	flex-flow: column;
 }
 .jspaint-window-content .jspaint-button-group > button {
-	width: 80px;
+	min-width: 80px;
 	padding: 3px 5px;
+	white-space: nowrap;
 }
 .jspaint-window-content > form {
 	display: flex;
