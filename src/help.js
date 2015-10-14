@@ -5,8 +5,7 @@ function show_help(){
 	if($help_window){
 		$help_window.close();
 	}
-	// $help_window = $Window().title("Windows Help");
-	$help_window = $Window().title("Help Topics");
+	$help_window = $Window().title("Paint Help"); // "Help Topics" // "Windows Help"
 	$help_window.addClass("help-window");
 	// $toolbar = $(E("div")).addClass("toolbar");
 	// $help_window.$content.append($toolbar);
@@ -28,7 +27,7 @@ function show_help(){
 		return object;
 	};
 	
-	var $default_item_li = $(E("li")).addClass("default page");
+	var $default_item_li = $(E("li")).addClass("page");
 	$default_item_li.text("Welcome to Help").click(function(e){
 		$iframe.attr({src: "help/default.htm"});
 	});
@@ -45,6 +44,7 @@ function show_help(){
 			
 			$folder_li.on("click", function(e){
 				if($folder_li.is(e.target)){
+					$contents.find(".folder").not($folder_li).removeClass("expanded");
 					$folder_li.toggleClass("expanded");
 				}
 			});
