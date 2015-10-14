@@ -284,11 +284,6 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Use a global sprite sheet, and optimize it
 
 
-* Help
-	* Actual Help Topics
-	* Interactive tutorial(s)?
-
-
 * Search Engine Optimization
 	* Load the About Paint content from an element on the page that gets hidden by code
 

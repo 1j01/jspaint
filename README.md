@@ -58,7 +58,8 @@ You can also install it as a Chrome app.
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Alternate themes (You can already style it with browser extensions like Stylebot or Stylish though!)
 * Noncontiguous fill (Probably by holding <kbd>Shift</kbd> when using the fill tool)
-* Optionally treat almost-equal colors as equal
+* Optional fill tolerance (slider that you enable from a settings menu?)
+* Interactive tutorial(s)?
 
 
 #### A lot of stuff isn't done yet:
@@ -119,7 +120,7 @@ I want to make JS Paint to be able to edit...
 * [Scalable Vector Graphics][SVG] (kidding) -
   Actually, it could always open SVG files in browsers that can handle SVGs,
   and I've made it try not to save over the original SVG.
-  That's pretty decent SVG support, for a 100% raster image editor.
+  That's pretty decent SVG support for a 100% raster image editor.
 * [Text Files][TXT] (definitely just kidding maybe)
 
 [PNG]: http://en.wikipedia.org/wiki/Portable_Network_Graphics "Microsoft Icon Image format"

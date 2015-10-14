@@ -1,120 +1,203 @@
 /* Cascading Style Sheet for IE4.01 last updated 1-28-98 */
 
+body {
+	background: #FFFFFF;
+	/*font-size: 75%; */ /* K2 and Proxy */
+	font-size: 70%; /* SMS, NT5, and Win98 */
+	font-family: Verdana, Arial, Helvetica, MS Sans Serif;
+}
 
-body		{ background: #FFFFFF;  
-		/*font-size: 75%;  */			 /* K2 and Proxy */
-		font-size: 70%;  		/* SMS, NT5, and Win98 */
-		font-family: Verdana, Arial, Helvetica, MS Sans Serif  }
+a:link {
+	color: #0000CC;
+}
 
-a:link		{ color: #0000CC; } 
+a:active {
+	color: #996699;
+}
 
-a:active	{ color: #996699; }
+a:visited {
+	color: #996699;
+}
 
-a:visited 	{ color: #996699; }
+p {
+	margin-top: .6em;
+	margin-bottom: .6em;
+}
 
-p		{ margin-top: .6em; margin-bottom: .6em	}
+p.bigfix {
+	margin-top: -.4em;
+	margin-bottom: 0em;
+}
 
-p.bigfix	{ margin-top: -.4em; margin-bottom: 0em;}
+p.margin {
+	/* for SMS links */
+	margin-left: 2em;
+	margin-top: -1.75em;
+}
 
-p.margin	{ margin-left: 2em; margin-top: -1.75em;}	/*for SMS links*/
+p.K2 {
+	margin-top: 0em;
+	margin-left: 10pt;
+}
 
-p.K2		{ margin-top: 0em; margin-left: 10pt;}
+/* HEADING TAGS */
 
-/*	HEADING TAGS	*/
+h1 {
+	font-size: 145%;
+	margin-bottom: .5em;
+}
 
-h1		{ font-size: 145%; 
-		margin-bottom: .5em; }
+h2 {
+	font-size: 125%;
+	margin-top: 1.5em;
+	margin-bottom: .5em;
+}
 
-h2		{ font-size: 125%;  
-		margin-top: 1.5em;
-		margin-bottom: .5em;  }
+h3 {
+	font-size: 110%;
+	margin-top: 1.2em;
+	margin-bottom: .5em;
+}
 
-h3		{ font-size: 110%; 
-		margin-top: 1.2em;  
-		margin-bottom: .5em;  }
+h4 {
+	font-size: 105%;
+	margin-top: 1.2em;
+	margin-bottom: .5em;
+}
 
-h4		{font-size: 105%;
-		margin-top: 1.2em;
-		margin-bottom: .5em  }
+h5 {
+	font-size: 100%;
+	margin-top: 1.2em;
+	margin-bottom: .5em;
+}
 
-h5		{font-size: 100%;
-		margin-top: 1.2em;
-		margin-bottom: .5em }
+big {
+	font-weight: bold;
+	font-size: 105%;
+}
 
-big		{  font-weight: bold; 
-		font-size: 105%;  }
+p.proclabel {
+	/* procedure heading */
+	font-weight: bold;
+	font-size: 100%;
+	margin-top: 1.2em;
+}
+
+
+/* LIST TAGS */
+
+ol {
+	margin-top: .6em;
+	margin-bottom: 0em;
+	margin-left: 4em;
+}
+
+ul {
+	margin-top: .6em;
+	margin-bottom: 0em;
+}
+
+ol ul {
+	list-style: disc;
+	margin-top: .6em;
+}
+
+ul ul {
+	list-style: disc;
+}
+
+li {
+	margin-bottom: .7em;
+	margin-left: -2em;
+}
 		
-p.proclabel		{ font-weight: bold;
-				font-size: 100%;
-				margin-top: 1.2em }  	/*procedure heading*/
-
-
-/*	LIST TAGS	*/
-
-ol		{ margin-top: .6em; margin-bottom: 0em; margin-left: 4em }	
-	
-ul		{ margin-top: .6em; margin-bottom: 0em }	
-
-ol ul	{ list-style: disc; margin-top: .6em  }
-
-ul ul	{ list-style: disc }
-
-li		{ margin-bottom: .7em;
-		margin-left: -2em }
-		
 		
 
-/*	TERM AND DEFINITION TAGS	*/
+/* TERM AND DEFINITION TAGS */
 
-dl		{ margin-top: 0em }
+dl {
+	margin-top: 0em;
+}
 
-dt		{ font-weight: bold;
-		margin-top: 1em;
-		/* margin-left: 0em; */ 	/*for SMS terms*/ 
-		margin-left: 1.5em;  }
+dt {
+	font-weight: bold;
+	margin-top: 1em;
+	/* margin-left: 0em; */ /* for SMS terms */
+	margin-left: 1.5em;
+}
 
-dd		{ margin-bottom: 0em;	/*not currently working*/
-		margin-left: 1.5em  }
+dd {
+	margin-bottom: 0em;
+	/*not currently working*/
+	margin-left: 1.5em;
+}
 
-dl li	{ margin-bottom: .7em }	/*list item inside a term/def list*/
+dl li {
+	margin-bottom: .7em;
+}	/*list item inside a term/def list*/
 
-dl dl	{  margin-top: 0em;
-		margin-left: 0em  }	/*term/def list inside a term/def list*/
-
-
-
-/*	TABLE TAGS	*/
-
-
-table	{ font-size: 100%;
-		margin-top: 1em; 
-		margin-bottom: 1em }
-		
-th		{ text-align: left;
-		vertical-align: bottom;
-		background: #dddddd	}
-		
-th.center	{ text-align: center }
-		
-tr		{ vertical-align: top }
-
-td		{ vertical-align: top;
-		background: #eeeeee }	/*not used for K2*/
+dl dl {
+	margin-top: 0em;
+	margin-left: 0em;
+}	/*term/def list inside a term/def list*/
 
 
-/*	MISC. TAGS	*/
 
-pre			{ font-family: Courier;
-			font-size: 125%; 
-			margin-top: 1.2em;
-			margin-bottom: 1.5em  }
-		
-code		{ font-family: Courier;
-			font-size: 125%;  }
-		
-pre code	{ font-size: 100%; }
-							
-hr.sms	{ color: black; text-align: left  }  /*SMS specific rule used under procedure title*/
+/* TABLE TAGS */
 
-hr.iis		{  color: black }		/*IIS specific - preceding copyright*/
 
+table {
+	font-size: 100%;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+th {
+	text-align: left;
+	vertical-align: bottom;
+	background: #dddddd;
+}
+
+th.center {
+	text-align: center;
+}
+
+tr {
+	vertical-align: top;
+}
+
+td {
+	/* not used for K2 */
+	vertical-align: top;
+	background: #eeeeee;
+}
+
+
+/* MISC. TAGS */
+
+pre {
+	font-family: Courier;
+	font-size: 125%;
+	margin-top: 1.2em;
+	margin-bottom: 1.5em;
+}
+
+code {
+	font-family: Courier;
+	font-size: 125%;
+}
+
+pre code {
+	font-size: 100%;
+}
+
+hr.sms {
+	/* SMS specific rule used under procedure title */
+	color: black;
+	text-align: left;
+}
+
+hr.iis {
+	/* IIS specific - preceding copyright */
+	color: black;
+}

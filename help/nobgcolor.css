@@ -1,172 +1,246 @@
 /* Cascading Style Sheet for IE4 build 1008+ */
 
-body		{ /*background: #FEFEFE; */	/*SMS yellow background*/
-		/*background: #FFFFFF; */ 		/*K2 and Proxy white background*/
-		background: url(flag&clouds.gif) no-repeat;
-		font-size: 70%;    		
-		font-family: Verdana, Arial, Helvetica, MS Sans Serif }
+body {
+	background: url(flag&clouds.gif) no-repeat;
+	font-size: 70%;
+	font-family: Verdana, Arial, Helvetica, MS Sans Serif;
+}
 
-a:link		{  background: transparent;	
-		color: #0000CC; } 
+a:link {
+	background: transparent;
+	color: #0000CC;
+}
 
-a:active	{ color: #996699; }
+a:active {
+	color: #996699;
+}
 
-a:visited 	{  color: #996699; }
+a:visited {
+	color: #996699;
+}
 
-h1		{ font-size: 145%; 
-		margin-bottom: .5em; }
+h1 {
+	font-size: 145%;
+	margin-bottom: .5em;
+}
 
-h2		{ font-size: 125%;  
-		margin-top: 1.5em;
-		margin-bottom: .5em;  }
+h2 {
+	font-size: 125%;
+	margin-top: 1.5em;
+	margin-bottom: .5em;
+}
 
-h3		{ font-size: 110%; 
-		margin-top: 1.2em;  
-		margin-bottom: .5em;  }
+h3 {
+	font-size: 110%;
+	margin-top: 1.2em;
+	margin-bottom: .5em;
+}
 
-h4	{font-size: 105%;  }
+h4 {
+	font-size: 105%;
+}
 
-h5	{font-size: 100%;  }
-		
-p.proclabel		{ font-weight: bold; 
-				font-size: 100%;	}
-	
-p		{ margin-top: .6em; margin-bottom: .6em;	}
-	
-li p		{ margin-top: 0;
-		margin-bottom: .6em;  }
-		
-ol		{margin-top: .5em; margin-bottom: 0em; margin-left: 4em}	
-	
-ul		{margin-top: .6em; 	
-		margin-bottom: 0em  }	
+h5 {
+	font-size: 100%;
+}
 
-ol ul		{  list-style: disc; margin-top: 2em;  }
+p.proclabel {
+	font-weight: bold;
+	font-size: 100%;
+}
 
-li		{padding-bottom: .7em;
-		margin-left: -2em;  }
+p {
+	margin-top: .6em;
+	margin-bottom: .6em;
+}
 
-dl ul		{ margin-top: 2em;  
-		margin-bottom: 0em;  }	/*list item inside a def/term*/
+li p {
+	margin-top: 0;
+	margin-bottom: .6em;
+}
 
-dl		{ margin-top: -1em;  }
+ol {
+	margin-top: .5em;
+	margin-bottom: 0em;
+	margin-left: 4em;
+}
 
-ol dl		{ margin-top: -1.5em;
-		 margin-left: 0em;  }		/*term/def list inside a numbered list*/
+ul {
+	margin-top: .6em;
+	margin-bottom: 0em;
+}
 
-ol dl dl	{  margin-top: 0em;
-		margin-left: .2em;  }		/*term/def list inside a term/def list*/
+ol ul {
+	list-style: disc;
+	margin-top: 2em;
+}
 
-dd		{ margin-bottom: 0em;	/*not currently working*/
-		margin-left: 1.5em;  }
+li {
+	padding-bottom: .7em;
+	margin-left: -2em;
+}
 
-dt		{  padding-top: 2em;
-		font-weight: bold; 
-		margin-left: 1.5em;  }
+dl ul {
+	/* list item inside a def/term */
+	margin-top: 2em;
+	margin-bottom: 0em;
+}
 
-pre		{ margin-top: 0em;
-		margin-bottom: 1.5em; 
-		font-family: Courier;
-		font-size: 125% }
+dl {
+	margin-top: -1em;
+}
 
-table	{ font-size: 100%;
-		margin-top: 1em; 
-		margin-bottom: 1em;}
+ol dl {
+	/* term/def list inside a numbered list */
+	margin-top: -1.5em;
+	margin-left: 0em;
+}
 
-th.center	{ text-align: center; }
-		
-th		{ text-align: left;
-		background: #dddddd;
-		margin: 3pt;
-		vertical-align: bottom;	}
-		
-tr		{ vertical-align: top; }
+ol dl dl {
+	/* term/def list inside a term/def list */
+	margin-top: 0em;
+	margin-left: .2em;
+}
 
-td		{ margin: 3pt;
-		vertical-align: top;	}
+dd {
+	margin-bottom: 0em;
+    /* not currently working */
+	margin-left: 1.5em;
+}
 
+dt {
+	padding-top: 2em;
+	font-weight: bold;
+	margin-left: 1.5em;
+}
+
+pre {
+	margin-top: 0em;
+	margin-bottom: 1.5em;
+	font-family: Courier;
+	font-size: 125%;
+}
+
+table {
+	font-size: 100%;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+th.center {
+	text-align: center;
+}
+
+th {
+	text-align: left;
+	background: #dddddd;
+	margin: 3pt;
+	vertical-align: bottom;
+}
+
+tr {
+	vertical-align: top;
+}
+
+td {
+	margin: 3pt;
+	vertical-align: top;
+}
 /*	MISC. TAGS	*/
-					
-hr.sms	{ color: red; text-align: left;  }  /*SMS specific rule used under procedure title*/
 
-hr.iis		{  color: red; }		/*IIS specific - preceding copyright*/
+hr.sms {
+	/* SMS specific rule used under procedure title */
+	color: red;
+	text-align: left;
+}
 
+hr.iis {
+	color: red;
+}
+/*IIS specific - preceding copyright*/
+/* IE 4.0 TAGS */
+/*
+a:visited {
+	color: #0000FF;
+}
+*/
 
+p.dis {
+	font-size: 6pt;
+}
 
+ul.onestep {
+	list-style: square;
+}
 
-/*     IE 4.0 TAGS     */
+h5 {
+}
 
-
-/*  a:visited	{ color: #0000FF; }  */
-			
-
-p.dis	{ font-size: 6pt;
-		}
-
-ul.onestep	{ list-style: square;
-			}
-
-h5			{
-			}
-
-
-h5.active		{ background: #000000;
-			color: #FFCC99;
-			}
-
+h5.active {
+	background: #000000;
+	color: #FFCC99;
+}
 /* -- subheading -- */
 
-h5.subh		{ color: #660000;
-			margin-bottom: -1em;
-			margin-top: 1.5em;
-			}
-
+h5.subh {
+	color: #660000;
+	margin-bottom: -1em;
+	margin-top: 1.5em;
+}
 /* -- procedure heading -- */
 
-h5.proch		{ margin-bottom: 4pt;
-			color: #003399;}
+h5.proch {
+	margin-bottom: 4pt;
+	color: #003399;
+}
 
 /* -- topic heading -- */
-
-h5.topich		{ color: #FF0033;
-			margin-bottom: -1em;
-			}
+h5.topich {
+	color: #FF0033;
+	margin-bottom: -1em;
+}
 
 /* -- note 'n' tip heading -- */
-
-h5.note		{ margin-top: 2em;
-			margin-bottom: -1em;
-			color: #99CC99}
+h5.note {
+	margin-top: 2em;
+	margin-bottom: -1em;
+	color: #99CC99;
+}
 
 /* -- related topics heading -- */
-
-h5.relh		{ margin-top: 2.25em;
-			margin-bottom: -1em;
-			color: #9933CC;}
+h5.relh {
+	margin-top: 2.25em;
+	margin-bottom: -1em;
+	color: #9933CC;
+}
 
 /* -------------- miscellany 'n' stuff -------------- */
-
 /* intended to applied with <div></div> tags to groups of links */
 
-.dectree		{ margin-left: 1.33em;
-			margin-top: 1.5em;
-			}
+.dectree {
+	margin-left: 1.33em;
+	margin-top: 1.5em;
+}
 
-div.dectree p 	{ margin-top: 1em;
-			color: orange;
-			}
+div.dectree p {
+	margin-top: 1em;
+	color: orange;
+}
 
-div.dectree p:first-letter 	{ font-size: 3em;
-						color: orange;
-						}
+div.dectree p:first-letter {
+	font-size: 3em;
+	color: orange;
+}
 
-a:link .dectree p	{ color: yellow; }
+a:link .dectree p {
+	color: yellow;
+}
 
-.reltopics			{ line-height: .5em;
-				margin-top: 2em;
-				}
-			
-div.reltopics p	{ margin-top: 1em;
-				}
+.reltopics {
+	line-height: .5em;
+	margin-top: 2em;
+}
 
-
+div.reltopics p {
+	margin-top: 1em;
+}
