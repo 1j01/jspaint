@@ -38,7 +38,9 @@ function show_help(){
 		$item.on("click", function(){
 			var $li = $item.parent();
 			if($li.is(".folder")){
-				$last_expanded.not($li).removeClass("expanded");
+				if($last_expanded){
+					$last_expanded.not($li).removeClass("expanded");
+				}
 				$li.toggleClass("expanded");
 				$last_expanded = $li;
 			}
