@@ -435,6 +435,11 @@
 	font-size: 12px;
 	padding: 0 2px;
 }
+.help-window .item:hover {
+	text-decoration: underline;
+	color: #0000ff;
+	cursor: pointer;
+}
 .help-window li ul {
 	padding-left: 16px;
 }
