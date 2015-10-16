@@ -279,6 +279,16 @@ html, body, .jspaint {
 	pointer-events: none;
 }
 
+.storage-manager table {
+	max-height: 400px;
+	overflow: auto;
+	display: block;
+}
+.storage-manager img {
+	max-width: 60px;
+	max-height: 60px;
+}
+
 ::before, ::after {
 	pointer-events: none;
 }
