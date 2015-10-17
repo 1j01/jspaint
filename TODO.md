@@ -1,6 +1,31 @@
 
 # ![](images/icons/32.png) JS Paint Todo
 
+* Trigger save dialogues
+	* Edit > Copy To...
+	* File > Set as Wallpaper
+		* Update help topic
+
+
+* Help Topics
+	* Text is not selectable!
+	* Link-esque things
+		* Popups (I'll probably make the text selectable within these)
+		* Related topics (I'll probably make this a heading with links instead of the weird context menu thing)
+	* Note unsupported features
+		* "To use black and white instead of color"
+		* "To display gridlines"
+	* Less OS-specific in "To create custom colors"
+	* Rename
+		* `paint_squares` to `paint_rectangles`
+		* `*.htm` to `*.html`
+		* Everything
+	* "Tips and Tricks" is just a lame section
+	* Transparency
+		* Replace "To use black and white instead of color"?
+	* Multiplayer / collaboration / sharing the document
+
+
 * Visual
 	* Warning sign for "Save changes to X?" dialogue
 	* Error symbol for error message dialogues
@@ -8,6 +33,7 @@
 	* The menus use text; the arrow character is converted to an icon on some mobile devices
 	* The progress bar (Rendering GIF) is left native
 	* Use win98 default scrollbar size
+	* Menu seperator spacing
 	* Minor color differences (0x808080 != 0x7b7b7b)
 	* I want to give most things a revisit later on for Pixel Perfection
 	* Dynamic cursors
@@ -76,7 +102,7 @@
 
 
 * Multiplayer
-	* See [multiplayer.js](multiplayer.js)
+	* See [multiplayer.js](src/multiplayer.js)
 	* Deal with undo/redo for sessions
 
 
@@ -281,7 +307,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* Everything is in random files! "functions.js", REALLY?
 	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
 	* Image inversion code is duplicated in ChooserCanvas from tool-options.js but should go in image-manipulation.js
-	* Comment everything and then try to make the code as obvious as the comments
+	* Make code obvious
 	* Improve code quality: https://codeclimate.com/github/1j01/jspaint
 
 
