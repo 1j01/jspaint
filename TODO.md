@@ -8,7 +8,6 @@
 
 
 * Help Topics
-	* Text is not selectable!
 	* Link-esque things
 		* Popups (I'll probably make the text selectable within these)
 		* Related topics (I'll probably make this a heading with links instead of the weird context menu thing)
