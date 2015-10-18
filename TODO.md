@@ -8,6 +8,8 @@
 
 
 * Help Topics
+	* Resizable panes
+	* Resizable window
 	* Link-esque things
 		* Popups (I'll probably make the text selectable within the popups)
 		* Related topics (I'll probably make this a heading with links instead of the weird context menu thing)
@@ -23,6 +25,8 @@
 	* Transparency
 		* Replace "To use black and white instead of color"?
 	* Multiplayer / collaboration / sharing the document
+	* Index
+	* Search
 
 
 * Visual

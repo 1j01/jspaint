@@ -259,6 +259,9 @@ html, body, .jspaint {
 }
 .help-window .contents {
 	background: white;
+	flex-basis: 300px; /* normally the default is 200px, but that leaves a scrollbar and we don't have rollover viewing of longer titles (@TODO) */
+	flex-grow: 0;
+	flex-shrink: 0;
 	overflow: auto;
 }
 .help-window ul {
@@ -267,6 +270,7 @@ html, body, .jspaint {
 }
 .help-window li {
 	display: block;
+	white-space: nowrap;
 }
 .help-window .folder:not(.expanded) ul {
 	display: none;
