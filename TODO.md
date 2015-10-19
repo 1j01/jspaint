@@ -16,17 +16,24 @@
 	* Note unsupported features
 		* "To use black and white instead of color"
 		* "To display gridlines"
-	* Less OS-specific in "To create custom colors"
-	* Rename
-		* `paint_squares` to `paint_rectangles`
-		* `*.htm` to `*.html`
-		* Everything
-	* "Tips and Tricks" is just a lame section
-	* Transparency
-		* Replace "To use black and white instead of color"?
-	* Multiplayer / collaboration / sharing the document
+	* Update topics
+		* Less OS-specific in "To create custom colors"
+		* "To enlarge the size of the viewing area" (`paint_enlarge_area.htm`):
+		  jspaint currently allows you to draw while "Viewing the Bitmap"
+		* "To zoom in or out of a picture", "To type and format text":
+		  "You can enter text into a picture only in Normal view."
+		  — jspaint handles this case (well, as well as it handles the Normal case)
+	* Add topics
+		* In "Tips and Tricks" (which is just a lame section)
+		* Transparency
+			* Replace "To use black and white instead of color"?
+		* Multiplayer / collaboration / "sharing the document"
 	* Index
 	* Search
+	* Keyboard support
+	* Rename everything
+		* `paint_squares` to `paint_rectangles`
+		* `*.htm` to `*.html`
 
 
 * Visual
@@ -46,6 +53,8 @@
 
 
 * Issues
+	* GIFs are sometimes saved as "PNG HISTORY" or "BITMAP HISTORY" files from the chrome app
+	  (e.g. `filename.bmp history.bmp history`, with no `.gif` extension)
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
@@ -267,14 +276,16 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* (Note: Minimum window size might need updating)
 
 
-* Publish to the Chrome Web Store!
-	* [Analytics](https://developer.chrome.com/apps/analytics)
-	* Basic things that people would complain about
-
-
 * Save/manage application state
 	* On restart, reopen images from storage
 	* On close / Exit, ask to save, remove image from storage
+
+
+* Publish to the Chrome Web Store!
+	* Basic things that people would complain about
+
+
+* [Analytics](https://developer.chrome.com/apps/analytics)
 
 
 ### Also
@@ -283,8 +294,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * Improve README
-	* Introduce and explain the project ...better?
-	* More images? Animated GIFs perhaps? :)
+	* More images! Animated GIFs perhaps? :)
 
 
 * CSS
