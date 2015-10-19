@@ -330,7 +330,7 @@ function render_history_as_gif(){
 			);
 			$win.$Button("Save", function(){
 				$win.close();
-				saveAs(blob, file_name + " history");
+				saveAs(blob, file_name + " history.gif");
 			});
 			$cancel.appendTo($win.$buttons);
 			$win.center();

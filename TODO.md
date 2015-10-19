@@ -53,8 +53,6 @@
 
 
 * Issues
-	* GIFs are sometimes saved as "PNG HISTORY" or "BITMAP HISTORY" files from the chrome app
-	  (e.g. `filename.bmp history.bmp history`, with no `.gif` extension)
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
