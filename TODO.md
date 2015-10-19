@@ -1,12 +1,6 @@
 
 # ![](images/icons/32.png) JS Paint Todo
 
-* Trigger save dialogues
-	* Edit > Copy To...
-	* File > Set as Wallpaper
-		* Update help topic
-
-
 * Help Topics
 	* Resizable panes
 	* Resizable window
@@ -17,7 +11,10 @@
 		* "To use black and white instead of color"
 		* "To display gridlines"
 	* Update topics
-		* Less OS-specific in "To create custom colors"
+		* "To use a picture as the desktop background":
+		  add a third step? It's not quite that easy (at least in the browser)
+		* "To create custom colors": way too OS-specific
+		  (unless I'm gonna emulate the color selection dialogue)
 		* "To enlarge the size of the viewing area" (`paint_enlarge_area.htm`):
 		  jspaint currently allows you to draw while "Viewing the Bitmap"
 		* "To zoom in or out of a picture", "To type and format text":

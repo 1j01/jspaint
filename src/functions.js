@@ -775,7 +775,9 @@ function set_as_wallpaper_centered(c){
 			}
 		});
 	}else{
-		window.open(c.toDataURL());
+		canvas.toBlob(function(blob){
+			saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)/) + " wallpaper.png");
+		});
 	}
 }
 
@@ -804,7 +806,9 @@ function save_selection_to_file(){
 				});
 			});
 		}else{
-			window.open(selection.canvas.toDataURL());
+			selection.canvas.toBlob(function(blob){
+				saveAs(blob, "selection.png");
+			});
 		}
 	}
 }
