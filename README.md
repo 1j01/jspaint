@@ -14,7 +14,7 @@ The goal is to remake MS Paint
 improve on it, and to [extend](#extended-editing) the types of images it can edit.
 So far, it does this pretty well.
 
-![Screenshot](http://isaiahodhner.ml/images/projects/jspaint.png)
+![Screenshot](http://1j01.github.io/images/projects/jspaint.png)
 
 Ah yes, good old paint. Not the one with the [ribbons][]
 or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
@@ -66,6 +66,8 @@ I want to bring good old paint into the modern era.
   (I made a [library](https://github.com/1j01/palette.js/) for this)
 * Mobile support
 * Click/tap the selected colors area to swap the foreground and background colors
+
+![JS Paint drawing of JS Paint on a phone](images/readme/mobipaint.png)
 
 
 #### Possible improvements include:
