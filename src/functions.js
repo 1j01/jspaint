@@ -775,8 +775,8 @@ function set_as_wallpaper_centered(c){
 			}
 		});
 	}else{
-		canvas.toBlob(function(blob){
-			saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)/) + " wallpaper.png");
+		c.toBlob(function(blob){
+			saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)/, "") + " wallpaper.png");
 		});
 	}
 }
