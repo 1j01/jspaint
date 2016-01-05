@@ -54,6 +54,7 @@
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
 	* Dragging the selection fails when zoomed in
+	* Middle-click scrolling is prevented
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas

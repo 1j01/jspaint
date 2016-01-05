@@ -49,6 +49,9 @@ html, body, .jspaint {
 	flex-flow: column;
 	flex: 1;
 }
+.jspaint > .jspaint-vertical {
+	height: 100%;
+}
 @media (max-width: 300px) {
 	.jspaint-horizontal > .jspaint-component-area {
 		display: none;
