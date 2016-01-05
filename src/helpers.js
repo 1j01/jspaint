@@ -85,7 +85,7 @@ function Canvas(width, height){
 	// This must come after sizing the canvas
 	new_ctx.imageSmoothingEnabled = false;
 	new_ctx.mozImageSmoothingEnabled = false;
-	new_ctx.webkitImageSmoothingEnabled = false;
+	new_ctx.msImageSmoothingEnabled = false;
 	
 	return new_canvas;
 }
