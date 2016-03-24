@@ -116,8 +116,8 @@
 		* OpenRaster ORA ([via ora.js](https://github.com/zsgalusz/ora.js/tree/master))
 
 
-* Multiplayer
-	* See [multiplayer.js](src/multiplayer.js)
+* Multiplayer and local sessions
+	* See [sessions.js](src/sessions.js)
 	* Deal with undo/redo for sessions
 
 
