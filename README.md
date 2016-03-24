@@ -1,7 +1,7 @@
 
-# [![](images/icons/32.png) JS Paint][jspaint website]
+# [![](images/icons/32.png) JS Paint][jspaint web app]
 
-A nice web-based MS Paint remake and more... [Try it out!][jspaint website]
+A nice web-based MS Paint remake and more... [Try it out!][jspaint web app]
 
 <!-- It's not published yet...
 You can also install it [on the Chrome Web Store][jspaint chrome app].
@@ -41,9 +41,10 @@ I want to bring good old paint into the modern era.
   (Try refreshing the page to make sure, and to check it out)
 * Edit transparent images! To create a transparent image,
   go to Image > Attributes... and select Transparent,
-  then Okay, and then Image > Clear Image
+  then Okay, and then Image > Clear Image or use the Eraser tool.
+  Images with any transparent pixels will open in Transparent mode.
 * Create an animated GIF from the current document history with
-  <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out (after editing *a fairly small image*))
+  <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out after editing a small to medium sized image)
 * Cross-platform, I suppose
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
 * When you do Edit > Paste From... you can select transparent images and GIFs.
@@ -52,7 +53,7 @@ I want to bring good old paint into the modern era.
   smear it across the canvas *while it animates*!~~
   Update: This was [due to not-to-spec behavior in Chrome.](http://christianheilmann.com/2014/04/16/browser-inconsistencies-animated-gif-and-drawimage/)
   I may reimplement this in the future as I really liked this feature.
-* It can open SVG files (by accident)
+* It can open SVG files (simply because browsers support SVG)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
 * Rotate image by arbitrary angle! Available in Image > Flip/Rotate
@@ -75,12 +76,12 @@ I want to bring good old paint into the modern era.
 * [Extended Editing](#extended-editing)
 * Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
 * After adding text, save as SVG or HTML with selectable text
+  (invisible text positioned over an embeded bitmap image)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
-* Alternate themes (You can already style it with browser extensions like Stylebot or Stylish though!)
+* Alternate themes (You can already theoretically style it with browser extensions like Stylebot or Stylish)
 * Noncontiguous fill (Probably by holding <kbd>Shift</kbd> when using the fill tool)
 * Optional fill tolerance (slider that you enable from a settings menu?)
 * Interactive tutorial(s)?
-* Themes
 
 
 #### A lot of stuff isn't done yet:
@@ -103,28 +104,27 @@ To use the clipboard menu items, you need to install [the Chrome app][jspaint ch
 
 I want to make JS Paint to be able to edit...
 
-* Transparent [PNGs][PNG] - Done!
+* Transparent [PNG][]s - Done!
   Images that are partially transparent will automatically open in Transparent mode.
-  Otherwise they will open in Opaque mode.
-  Enable transparency for an image by going to Image > Attributes or pressing <kbd>Ctrl+E</kbd>
-  and selecting Transparent. (Hit Okay.)
+  To enable transparency for an image, go to Image > Attributes or press <kbd>Ctrl+E</kbd>,
+  select Transparent, and hit Okay.
   Then you'll want to remove some of the background.
   You can use the Eraser tool a bit, then use the Color Picker to
   pick up where you erased and then use the Fill tool to remove bigger areas.
-* Animated [GIFs][GIF]
+* Animated [GIF][]s
   (yes, that entails a fully featured (but simple) animation editor) -
   Currently you can only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
-* Animated Transparent [APNGs][APNG]
+* Animated Transparent [APNG][]s
   (better than GIFs, but with less support)
-* Multi-size Icons ([ICO][ICO] for windows and [ICNS][ICNS] for mac)
+* Multi-size Icons ([ICO][] for windows and [ICNS][] for mac)
 * [Scalable Vector Graphics][SVG] (kidding) -
   Actually, it could always open SVG files in browsers that can handle SVGs,
   and I've made it try not to save over the original SVG.
   That's pretty decent SVG support for a 100% raster image editor.
-* [Text Files][TXT] (definitely just kidding maybe)
+* [Text files][TXT] (definitely just kidding maybe)
 
 
-[PNG]: http://en.wikipedia.org/wiki/Portable_Network_Graphics "Microsoft Icon Image format"
+[PNG]: http://en.wikipedia.org/wiki/Portable_Network_Graphics "Portable Network Graphics"
 [GIF]: http://en.wikipedia.org/wiki/Graphics_Interchange_Format "Graphics Interchange Format"
 [APNG]: http://en.wikipedia.org/wiki/APNG "Animated Portable Network Graphics"
 [ICO]: http://en.wikipedia.org/wiki/ICO_(file_format) "Microsoft Icon Image format"
@@ -161,8 +161,8 @@ I want to make JS Paint to be able to edit...
 
 
 [jspaint chrome app]: https://chrome.google.com/webstore/detail/dgfedgcofbjmeohonbpcoagiabgnddjh
-[jspaint website]: http://jspaint.ml
+[jspaint web app]: http://jspaint.ml
 
 [ribbons]: https://www.google.com/search?tbm=isch&q=MS+Paint+Windows+7+ribbons "Google Search: MS Paint Windows 7 ribbons"
-[freshpaint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
+[Fresh Paint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
 

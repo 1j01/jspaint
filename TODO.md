@@ -33,6 +33,10 @@
 		* `*.htm` to `*.html`
 
 
+* Make storage quota dialogue clearer
+	* Also add a message like "All cleaned up!" (probably with an additional Close button)
+
+
 * Visual
 	* Warning sign for "Save changes to X?" dialogue
 	* Error symbol for error message dialogues
@@ -53,7 +57,10 @@
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
-	* Dragging the selection fails when zoomed in
+	* Selections
+		* Completely broken in Firefox
+		* Broken in Edge when zoomed in
+		* https://github.com/1j01/jspaint/issues/3
 	* Middle-click scrolling is prevented
 	* Firefox
 		* It lags unusably when using tools
@@ -245,7 +252,7 @@
 * Handles
 	* Hide the canvas handles when there is a selection. (This used to work!)
 	* I have a git stash where I'm trying to improve selections.
-	  Canvas handles hiding is fixed there, but other stuff is broken
+	  Hiding canvas handles is fixed there, but other stuff is broken
 
 
 ### BSOD
@@ -277,11 +284,22 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* On close / Exit, ask to save, remove image from storage
 
 
-* Publish to the Chrome Web Store!
-	* Basic things that people would complain about
+* Basic things that people would complain about
 
 
 * [Analytics](https://developer.chrome.com/apps/analytics)
+
+
+* Publish to the Chrome Web Store!
+
+
+### Native App
+
+* Proper clipboard support
+* A dialogue when closing
+* Subwindows outside the main window
+* A different way of handling always-saved documents
+  (recovery?)
 
 
 ### Also
@@ -310,14 +328,13 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * JS
-	* Selection and TextBox should inherit from a base class
+	* `Selection` and `TextBox` should inherit from a base class
 	* Remove either `selection.x/y/w/h` or `._x/_y/_w/_h`; and use `x/y/width/height`
-	* Outdated names like sel.$ghost = div.jspaint-selection (not exactly a ghost)
+	* Outdated names like `sel.$ghost` being `div.jspaint-selection` (not exactly a ghost)
 	* Everything is in random files! "functions.js", REALLY?
-	* $Window has a $Button facility; $FormWindow overrides it with essentially a better one
-	* Image inversion code is duplicated in ChooserCanvas from tool-options.js but should go in image-manipulation.js
-	* Make code obvious
-	* Improve code quality: https://codeclimate.com/github/1j01/jspaint
+	* `$Window` has a `$Button` facility; `$FormWindow` overrides it with essentially a better one
+	* Image inversion code is duplicated in `ChooserCanvas` from tool-options.js but should go in image-manipulation.js
+	* Make code clearer / improve code quality: https://codeclimate.com/github/1j01/jspaint
 
 
 * Images
