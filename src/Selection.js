@@ -9,7 +9,7 @@ function Selection(x, y, w, h){
 	this._w = w;
 	this._h = h;
 	
-	this.$ghost = $(E("div")).addClass("jspaint-selection").appendTo($canvas_area);
+	this.$el = $(E("div")).addClass("jspaint-selection").appendTo($canvas_area);
 	
 	$canvas_handles.hide();
 }
@@ -17,10 +17,10 @@ function Selection(x, y, w, h){
 Selection.prototype.instantiate = function(_img, _passive){
 	var sel = this;
 	
-	sel.$ghost.addClass("instantiated").css({
+	sel.$el.addClass("instantiated").css({
 		cursor: Cursor(["move", [8, 8], "move"])
 	});
-	sel.$ghost.attr("touch-action", "none");
+	sel.$el.attr("touch-action", "none");
 	sel.position();
 	
 	if(_passive){
@@ -47,11 +47,11 @@ Selection.prototype.instantiate = function(_img, _passive){
 				sel.cut_out_background();
 			}
 		}
-		sel.$ghost.append(sel.canvas);
+		sel.$el.append(sel.canvas);
 		
-		//sel.$handles = $Handles(sel.$ghost, sel.canvas, {outset: 2});
+		//sel.$handles = $Handles(sel.$el, sel.canvas, {outset: 2});
 		
-		sel.$ghost.on("user-resized", function(e, x, y, width, height){
+		sel.$el.on("user-resized", function(e, x, y, width, height){
 			//tb._x = x;
 			//tb._y = y;
 			sel._w = width;
@@ -118,7 +118,7 @@ Selection.prototype.cut_out_background = function(){
 };
 
 Selection.prototype.position = function(){
-	this.$ghost.css({
+	this.$el.css({
 		position: "absolute",
 		left: magnification * this._x + 3,
 		top: magnification * this._y + 3,
@@ -159,8 +159,8 @@ Selection.prototype.replace_canvas = function(new_canvas){
 	sel.canvas = new_canvas;
 	
 	$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
-	sel.$ghost.triggerHandler("new-element", [sel.canvas]);
-	sel.$ghost.triggerHandler("resize");//?
+	sel.$el.triggerHandler("new-element", [sel.canvas]);
+	sel.$el.triggerHandler("resize");//?
 };
 
 Selection.prototype.scale = function(factor){
@@ -179,7 +179,7 @@ Selection.prototype.draw = function(){
 };
 
 Selection.prototype.destroy = function(){
-	this.$ghost.remove();
+	this.$el.remove();
 	$canvas_handles.show();
 	$G.triggerHandler("session-update");
 };

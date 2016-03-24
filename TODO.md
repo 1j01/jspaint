@@ -330,7 +330,6 @@ Prankily wait for next user input before fullscreening and bluescreening
 * JS
 	* `Selection` and `TextBox` should inherit from a base class
 	* Remove either `selection.x/y/w/h` or `._x/_y/_w/_h`; and use `x/y/width/height`
-	* Outdated names like `sel.$ghost` being `div.jspaint-selection` (not exactly a ghost)
 	* Everything is in random files! "functions.js", REALLY?
 	* `$Window` has a `$Button` facility; `$FormWindow` overrides it with essentially a better one
 	* Image inversion code is duplicated in `ChooserCanvas` from tool-options.js but should go in image-manipulation.js
