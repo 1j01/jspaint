@@ -1,14 +1,11 @@
 
 function Selection(x, y, width, height){
-	this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
+	OnCanvasObject.call(this, x, y, width, height);
 	
-	this.$el = $(E("div")).addClass("jspaint-selection").appendTo($canvas_area);
-	
-	$canvas_handles.hide();
+	this.$el.addClass("jspaint-selection");
 }
+
+Selection.prototype = Object.create(OnCanvasObject.prototype);
 
 Selection.prototype.instantiate = function(_img, _passive){
 	var sel = this;
@@ -99,7 +96,7 @@ Selection.prototype.cut_out_background = function(){
 	var sel = this;
 	var cutout = sel.canvas;
 	if(transparency){
-		// @FIXME: this doesn't work so well with transparency between 0 and 1
+		// @FIXME: this doesn't work well with transparency between 0 and 1
 		ctx.save();
 		ctx.globalCompositeOperation = "destination-out";
 		ctx.drawImage(cutout, sel.x, sel.y);
@@ -111,18 +108,6 @@ Selection.prototype.cut_out_background = function(){
 		colored_canvas.ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
 		ctx.drawImage(colored_canvas, sel.x, sel.y);
 	}
-};
-
-Selection.prototype.position = function(){
-	this.$el.css({
-		position: "absolute",
-		left: magnification * this.x + 3,
-		top: magnification * this.y + 3,
-		width: magnification * this.width,
-		height: magnification * this.height,
-	});
-	$status_position.text(this.x + "," + this.y);
-	$status_size.text(this.width + "," + this.height);
 };
 
 Selection.prototype.resize = function(){
@@ -175,8 +160,7 @@ Selection.prototype.draw = function(){
 };
 
 Selection.prototype.destroy = function(){
-	this.$el.remove();
-	$canvas_handles.show();
+	OnCanvasObject.prototype.destroy.call(this);
 	$G.triggerHandler("session-update");
 };
 

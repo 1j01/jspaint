@@ -2,12 +2,9 @@
 function TextBox(x, y, width, height){
 	var tb = this;
 	
-	tb.x = x;
-	tb.y = y;
-	tb.width = width;
-	tb.height = height;
+	OnCanvasObject.call(tb, x, y, width, height);
 	
-	tb.$el = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
+	tb.$el.addClass("jspaint-textbox");
 	tb.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
 	
 	var update = function(){
@@ -40,9 +37,9 @@ function TextBox(x, y, width, height){
 	};
 	update();
 	$G.on("option-changed", update);
-	
-	$canvas_handles.hide();
 }
+
+TextBox.prototype = Object.create(OnCanvasObject.prototype);
 
 TextBox.prototype.instantiate = function(){
 	var tb = this;
@@ -132,20 +129,8 @@ TextBox.prototype.instantiate = function(){
 		$status_position.text("");
 		$status_size.text("");
 		
-		$canvas_area.trigger("resize");
+		$canvas_area.trigger("resize"); // ?
 	}
-};
-
-TextBox.prototype.position = function(){
-	this.$el.css({
-		position: "absolute",
-		left: magnification * this.x + 3,
-		top: magnification * this.y + 3,
-		width: magnification * this.width,
-		height: magnification * this.height,
-	});
-	$status_position.text(this.x + "," + this.y);
-	$status_size.text(this.width + "," + this.height);
 };
 
 TextBox.prototype.draw = function(){
@@ -169,8 +154,7 @@ TextBox.prototype.draw = function(){
 };
 
 TextBox.prototype.destroy = function(){
-	this.$el.remove();
-	$canvas_handles.show();
+	OnCanvasObject.prototype.destroy.call(this);
 	
 	if(TextBox.$fontbox && !TextBox.$fontbox.closed){
 		TextBox.$fontbox.close();

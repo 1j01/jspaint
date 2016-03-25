@@ -24,7 +24,7 @@
 		* In "Tips and Tricks" (which is just a lame section)
 		* Transparency
 			* Replace "To use black and white instead of color"?
-		* Multiplayer / collaboration / "sharing the document"
+		* Multiplayer / collaboration / "To share the document On-Line" or whatever
 	* Index
 	* Search
 	* Keyboard support
@@ -44,7 +44,7 @@
 	* The menus use text; the arrow character is converted to an icon on some mobile devices
 	* The progress bar (Rendering GIF) is left native
 	* Use win98 default scrollbar size
-	* Menu seperator spacing
+	* Menu separator spacing
 	* Minor color differences (0x808080 != 0x7b7b7b)
 	* I want to give most things a revisit later on for Pixel Perfection
 	* Dynamic cursors
@@ -68,6 +68,8 @@
 		* Tool options flicker... *and lag*, when they're redrawn in quick succession
 	* The TextBox scrollbars have extra buttons
 	* The TextBox contents move down and right when rasterizing
+	* Free-form select twice and the first selection is destroyed
+	  (there is a feature to implement that would probably fix this)
 	* Free-form select can leave behind inverty brush in multiplayer
 	* Multiplayer cursors that go outside the parent can cause the page to be scrollable
 	* Multiplayer interupts you:
@@ -250,9 +252,6 @@
 
 
 * Handles
-	* Hide the canvas handles when there is a selection. (This used to work!)
-	* I have a git stash where I'm trying to improve selections.
-	  Hiding canvas handles is fixed there, but other stuff is broken
 
 
 ### BSOD
@@ -328,7 +327,6 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * JS
-	* `Selection` and `TextBox` should inherit from a base class
 	* Everything is in random files! "functions.js", REALLY?
 	* `$Window` has a `$Button` facility; `$FormWindow` overrides it with essentially a better one
 	* Image inversion code is duplicated in `ChooserCanvas` from tool-options.js but should go in image-manipulation.js
