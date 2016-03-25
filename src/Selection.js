@@ -1,13 +1,9 @@
 
-function Selection(x, y, w, h){
+function Selection(x, y, width, height){
 	this.x = x;
 	this.y = y;
-	this.w = w;
-	this.h = h;
-	this._x = x;
-	this._y = y;
-	this._w = w;
-	this._h = h;
+	this.width = width;
+	this.height = height;
 	
 	this.$el = $(E("div")).addClass("jspaint-selection").appendTo($canvas_area);
 	
@@ -32,16 +28,16 @@ Selection.prototype.instantiate = function(_img, _passive){
 	function instantiate(){
 		if(_img){
 			sel.canvas = _img;
-			if(sel.canvas.width !== sel._w){ sel.canvas.width = sel._w; }
-			if(sel.canvas.height !== sel._h){ sel.canvas.height = sel._h; }
+			if(sel.canvas.width !== sel.width){ sel.canvas.width = sel.width; }
+			if(sel.canvas.height !== sel.height){ sel.canvas.height = sel.height; }
 		}else{
-			sel.canvas = new Canvas(sel._w, sel._h);
+			sel.canvas = new Canvas(sel.width, sel.height);
 			sel.canvas.ctx.drawImage(
 				canvas,
-				sel._x, sel._y,
-				sel._w, sel._h,
+				sel.x, sel.y,
+				sel.width, sel.height,
 				0, 0,
-				sel._w, sel._h
+				sel.width, sel.height
 			);
 			if(!_passive){
 				sel.cut_out_background();
@@ -52,10 +48,10 @@ Selection.prototype.instantiate = function(_img, _passive){
 		//sel.$handles = $Handles(sel.$el, sel.canvas, {outset: 2});
 		
 		sel.$el.on("user-resized", function(e, x, y, width, height){
-			//tb._x = x;
-			//tb._y = y;
-			sel._w = width;
-			sel._h = height;
+			//sel.x = x;
+			//sel.y = y;
+			sel.width = width;
+			sel.height = height;
 			sel.position();
 			sel.resize();
 		});
@@ -63,8 +59,8 @@ Selection.prototype.instantiate = function(_img, _passive){
 		var mox, moy;
 		var pointermove = function(e){
 			var m = e2c(e);
-			sel._x = Math.max(Math.min(m.x - mox, canvas.width), -sel._w);
-			sel._y = Math.max(Math.min(m.y - moy, canvas.height), -sel._h);
+			sel.x = Math.max(Math.min(m.x - mox, canvas.width), -sel.width);
+			sel.y = Math.max(Math.min(m.y - moy, canvas.height), -sel.height);
 			sel.position();
 			
 			if(e.shiftKey){
@@ -106,33 +102,33 @@ Selection.prototype.cut_out_background = function(){
 		// @FIXME: this doesn't work so well with transparency between 0 and 1
 		ctx.save();
 		ctx.globalCompositeOperation = "destination-out";
-		ctx.drawImage(cutout, sel._x, sel._y);
+		ctx.drawImage(cutout, sel.x, sel.y);
 		ctx.restore();
 	}else{
 		var colored_canvas = new Canvas(cutout);
 		colored_canvas.ctx.globalCompositeOperation = "source-in";
 		colored_canvas.ctx.fillStyle = colors.background;
 		colored_canvas.ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
-		ctx.drawImage(colored_canvas, sel._x, sel._y);
+		ctx.drawImage(colored_canvas, sel.x, sel.y);
 	}
 };
 
 Selection.prototype.position = function(){
 	this.$el.css({
 		position: "absolute",
-		left: magnification * this._x + 3,
-		top: magnification * this._y + 3,
-		width: magnification * this._w,
-		height: magnification * this._h,
+		left: magnification * this.x + 3,
+		top: magnification * this.y + 3,
+		width: magnification * this.width,
+		height: magnification * this.height,
 	});
-	$status_position.text(this._x + "," + this._y);
-	$status_size.text(this._w + "," + this._h);
+	$status_position.text(this.x + "," + this.y);
+	$status_size.text(this.width + "," + this.height);
 };
 
 Selection.prototype.resize = function(){
 	var sel = this;
-	var new_width = sel._w;
-	var new_height = sel._h;
+	var new_width = sel.width;
+	var new_height = sel.height;
 	
 	var new_canvas = new Canvas(new_width, new_height);
 	new_canvas.ctx.drawImage(sel.canvas, 0, 0, new_width, new_height);
@@ -143,15 +139,15 @@ Selection.prototype.resize = function(){
 Selection.prototype.replace_canvas = function(new_canvas){
 	var sel = this;
 	
-	var cx = sel._x + sel._w/2;
-	var cy = sel._y + sel._h/2;
+	var cx = sel.x + sel.width/2;
+	var cy = sel.y + sel.height/2;
 	var new_width = new_canvas.width;
 	var new_height = new_canvas.height;
 	
-	sel._x = cx - new_width/2;
-	sel._y = cy - new_height/2;
-	sel._w = new_width;
-	sel._h = new_height;
+	sel.x = cx - new_width/2;
+	sel.y = cy - new_height/2;
+	sel.width = new_width;
+	sel.height = new_height;
 	
 	sel.position();
 	
@@ -168,14 +164,14 @@ Selection.prototype.scale = function(factor){
 	
 	var original_canvas = sel.canvas;
 	
-	var new_canvas = new Canvas(sel._w * factor, sel._h * factor);
+	var new_canvas = new Canvas(sel.width * factor, sel.height * factor);
 	sel.replace_canvas(new_canvas);
 	
 	new_canvas.ctx.drawImage(original_canvas, 0, 0, new_canvas.width, new_canvas.height);
 };
 
 Selection.prototype.draw = function(){
-	try{ctx.drawImage(this.canvas, this._x, this._y);}catch(e){}
+	try{ctx.drawImage(this.canvas, this.x, this.y);}catch(e){}
 };
 
 Selection.prototype.destroy = function(){

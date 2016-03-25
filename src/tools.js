@@ -116,7 +116,11 @@ tools = [{
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
+	drag_start_x: 0,
+	drag_start_y: 0,
 	pointerdown: function(){
+		this.drag_start_x = pointer.x;
+		this.drag_start_y = pointer.y;
 		if(selection){
 			selection.draw();
 			selection.destroy();
@@ -137,16 +141,14 @@ tools = [{
 	},
 	paint: function(){
 		if(!selection){ return; }
-		selection.w = selection.x - pointer.x;
-		selection.h = selection.y - pointer.y;
-		var x1 = Math.max(0, Math.min(selection.x, pointer.x));
-		var y1 = Math.max(0, Math.min(selection.y, pointer.y));
-		var x2 = Math.min(canvas.width, Math.max(selection.x, pointer.x));
-		var y2 = Math.min(canvas.height, Math.max(selection.y, pointer.y));
-		selection._x = x1;
-		selection._y = y1;
-		selection._w = Math.max(1, x2 - x1);
-		selection._h = Math.max(1, y2 - y1);
+		var x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
+		var y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
+		var x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
+		var y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
+		selection.x = x1;
+		selection.y = y1;
+		selection.width = Math.max(1, x2 - x1);
+		selection.height = Math.max(1, y2 - y1);
 		selection.position();
 	},
 	pointerup: function(){
@@ -346,7 +348,11 @@ tools = [{
 	activate: function(){
 		setTimeout(FontDetective.preload, 10);
 	},
+	drag_start_x: 0,
+	drag_start_y: 0,
 	pointerdown: function(){
+		this.drag_start_x = pointer.x;
+		this.drag_start_y = pointer.y;
 		if(textbox){
 			textbox.draw();
 			textbox.destroy();
@@ -366,16 +372,14 @@ tools = [{
 	},
 	paint: function(){
 		if(!textbox){ return; }
-		textbox.w = textbox.x - pointer.x;
-		textbox.h = textbox.y - pointer.y;
-		var x1 = Math.max(0, Math.min(textbox.x, pointer.x));
-		var y1 = Math.max(0, Math.min(textbox.y, pointer.y));
-		var x2 = Math.min(canvas.width, Math.max(textbox.x, pointer.x));
-		var y2 = Math.min(canvas.height, Math.max(textbox.y, pointer.y));
-		textbox._x = x1;
-		textbox._y = y1;
-		textbox._w = Math.max(1, x2 - x1);
-		textbox._h = Math.max(1, y2 - y1);
+		var x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
+		var y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
+		var x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
+		var y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
+		textbox.x = x1;
+		textbox.y = y1;
+		textbox.width = Math.max(1, x2 - x1);
+		textbox.height = Math.max(1, y2 - y1);
 		textbox.position();
 	},
 	pointerup: function(){

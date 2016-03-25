@@ -1,15 +1,11 @@
 
-function TextBox(x, y, w, h){
+function TextBox(x, y, width, height){
 	var tb = this;
 	
 	tb.x = x;
 	tb.y = y;
-	tb.w = w;
-	tb.h = h;
-	tb._x = x;
-	tb._y = y;
-	tb._w = w;
-	tb._h = h;
+	tb.width = width;
+	tb.height = height;
 	
 	tb.$el = $(E("div")).addClass("jspaint-textbox").appendTo($canvas_area);
 	tb.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
@@ -94,18 +90,18 @@ TextBox.prototype.instantiate = function(){
 		//tb.$handles = $Handles(tb.$el, tb.$editor[0], {outset: 2});
 		
 		tb.$el.on("user-resized", function(e, x, y, width, height){
-			//tb._x = x;
-			//tb._y = y;
-			tb._w = width;
-			tb._h = height;
+			//tb.x = x;
+			//tb.y = y;
+			tb.width = width;
+			tb.height = height;
 			tb.position();
 		});
 		
 		var mox, moy;
 		var pointermove = function(e){
 			var m = e2c(e);
-			tb._x = Math.max(Math.min(m.x - mox, canvas.width), -tb._w);
-			tb._y = Math.max(Math.min(m.y - moy, canvas.height), -tb._h);
+			tb.x = Math.max(Math.min(m.x - mox, canvas.width), -tb.width);
+			tb.y = Math.max(Math.min(m.y - moy, canvas.height), -tb.height);
 			tb.position();
 			
 			if(e.shiftKey){
@@ -143,13 +139,13 @@ TextBox.prototype.instantiate = function(){
 TextBox.prototype.position = function(){
 	this.$el.css({
 		position: "absolute",
-		left: magnification * this._x + 3,
-		top: magnification * this._y + 3,
-		width: magnification * this._w,
-		height: magnification * this._h,
+		left: magnification * this.x + 3,
+		top: magnification * this.y + 3,
+		width: magnification * this.width,
+		height: magnification * this.height,
 	});
-	$status_position.text(this._x + "," + this._y);
-	$status_size.text(this._w + "," + this._h);
+	$status_position.text(this.x + "," + this.y);
+	$status_size.text(this.width + "," + this.height);
 };
 
 TextBox.prototype.draw = function(){
@@ -158,7 +154,7 @@ TextBox.prototype.draw = function(){
 	if(text){
 		undoable(0, function(){
 			ctx.fillStyle = font.background;
-			ctx.fillRect(tb._x, tb._y, tb._w, tb._h);
+			ctx.fillRect(tb.x, tb.y, tb.width, tb.height);
 			
 			ctx.fillStyle = font.color;
 			var style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
@@ -166,7 +162,7 @@ TextBox.prototype.draw = function(){
 			ctx.textBaseline = "middle";
 			var lines = text.split("\n")
 			for(var i=0; i<lines.length; i++){
-				ctx.fillText(lines[i], tb._x+1, tb._y+1 + (i+0.5)*(font.size * font.line_scale), tb._w);
+				ctx.fillText(lines[i], tb.x+1, tb.y+1 + (i+0.5)*(font.size * font.line_scale), tb.width);
 			}
 		});
 	}

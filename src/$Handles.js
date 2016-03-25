@@ -115,6 +115,8 @@ function $Handles($container, element, options){
 		$container.on("update resize scroll", update_handle);
 		$G.on("resize", update_handle);
 		setTimeout(update_handle, 50);
+		
+		return $h[0];
 	});
 	return $(handles);
 }
