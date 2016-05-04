@@ -119,7 +119,7 @@ function $ColorBox(){
 	
 	var $c = $Component("Colors", "wide", $cb);
 	
-	var $input = $("<input type=color>").appendTo($app).css({width: 0, height: 0, padding: 0, border: 0, flex: "0 0 0"});
+	var $input = $("<input type=color>").appendTo($app).css({width: 0, height: 0, padding: 0, border: 0, position: "absolute"});
 	
 	$c.edit_last_color = function(){
 		// Edit the last color cell that's been selected as the foreground color.
