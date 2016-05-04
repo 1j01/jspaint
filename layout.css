@@ -42,7 +42,7 @@ html, body, .jspaint {
 }
 .jspaint-horizontal {
 	flex-flow: row;
-	flex: 1;
+	flex: 1 1 0;
 	overflow: hidden;
 }
 .jspaint-vertical {

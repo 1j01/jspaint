@@ -58,7 +58,6 @@
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
 	* https://github.com/1j01/jspaint/issues/3
-	* Canvas area doesn't handle overflow properly in Edge or Firefox when zoomed in
 	* Middle-click scrolling is prevented
 	* Firefox
 		* It lags unusably when using tools
