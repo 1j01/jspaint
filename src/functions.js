@@ -1,7 +1,12 @@
 
+function update_magnified_canvas_size(){
+	$canvas.css("width", canvas.width * magnification);
+	$canvas.css("height", canvas.height * magnification);
+}
+
 function set_magnification(scale){
 	magnification = scale;
-	$canvas.css("zoom", scale);
+	update_magnified_canvas_size();
 	$G.triggerHandler("resize");
 }
 

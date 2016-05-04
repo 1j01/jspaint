@@ -103,7 +103,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 			ctx.drawImage(previous_canvas, 0, 0);
 		}
 		
-		$canvas.trigger("update"); // update handles
+		$canvas_area.trigger("resize");
 		
 		storage.set({
 			width: canvas.width,
@@ -112,6 +112,10 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 			// oh well
 		})
 	});
+});
+
+$canvas_area.on("resize", function(){
+	update_magnified_canvas_size();
 });
 
 storage.get({
@@ -373,8 +377,8 @@ var pointer, pointer_start, pointer_previous;
 var reverse, ctrl, button;
 function e2c(e){
 	var rect = canvas.getBoundingClientRect();
-	var cx = e.clientX / magnification - rect.left;
-	var cy = e.clientY / magnification - rect.top;
+	var cx = e.clientX - rect.left;
+	var cy = e.clientY - rect.top;
 	return {
 		x: ~~(cx / rect.width * canvas.width),
 		y: ~~(cy / rect.height * canvas.height),

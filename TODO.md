@@ -57,16 +57,14 @@
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
-	* Selections
-		* Completely broken in Firefox
-		* Broken in Edge when zoomed in
-		* https://github.com/1j01/jspaint/issues/3
+	* https://github.com/1j01/jspaint/issues/3
+	* Canvas area doesn't handle overflow properly in Edge or Firefox when zoomed in
 	* Middle-click scrolling is prevented
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
 		* Tool options flicker... *and lag*, when they're redrawn in quick succession
-	* The TextBox scrollbars have extra buttons
+	* The TextBox `-webkit-scrollbar`s get extra buttons
 	* The TextBox contents move down and right when rasterizing
 	* Free-form select twice and the first selection is destroyed
 	  (there is a feature to implement that would probably fix this)

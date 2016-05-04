@@ -97,18 +97,18 @@ function $Handles($container, element, options){
 			var rect = el.getBoundingClientRect();
 			var hs = $h.width();
 			if(x_axis === "middle"){
-				$h.css({ left: offset + (magnification * rect.width - hs) / 2 });
+				$h.css({ left: offset + (rect.width - hs) / 2 });
 			}else if(x_axis === "left"){
 				$h.css({ left: offset - outset });
 			}else if(x_axis === "right"){
-				$h.css({ left: offset + (magnification * rect.width - hs/2) });
+				$h.css({ left: offset + (rect.width - hs/2) });
 			}
 			if(y_axis === "middle"){
-				$h.css({ top: offset + (magnification * rect.height - hs) / 2 });
+				$h.css({ top: offset + (rect.height - hs) / 2 });
 			}else if(y_axis === "top"){
 				$h.css({ top: offset - outset });
 			}else if(y_axis === "bottom"){
-				$h.css({ top: offset + (magnification * rect.height - hs/2) });
+				$h.css({ top: offset + (rect.height - hs/2) });
 			}
 		};
 		
