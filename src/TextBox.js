@@ -84,11 +84,11 @@ TextBox.prototype.instantiate = function(){
 		tb.$el.append(tb.$editor);
 		tb.$editor.focus();
 		
-		//tb.$handles = $Handles(tb.$el, tb.$editor[0], {outset: 2});
+		tb.$handles = $Handles(tb.$el, tb.$editor[0], {outset: 2});
 		
-		tb.$el.on("user-resized", function(e, x, y, width, height){
-			//tb.x = x;
-			//tb.y = y;
+		tb.$el.on("user-resized", function(e, delta_x, delta_y, width, height){
+			tb.x += delta_x;
+			tb.y += delta_y;
 			tb.width = width;
 			tb.height = height;
 			tb.position();
@@ -108,7 +108,8 @@ TextBox.prototype.instantiate = function(){
 		tb.$el.on("pointerdown", function(e){
 			if(
 				e.target instanceof HTMLInputElement ||
-				e.target instanceof HTMLTextAreaElement
+				e.target instanceof HTMLTextAreaElement ||
+				e.target.classList.contains("jspaint-handle")
 			){
 				return;
 			}

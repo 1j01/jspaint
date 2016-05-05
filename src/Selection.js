@@ -42,11 +42,11 @@ Selection.prototype.instantiate = function(_img, _passive){
 		}
 		sel.$el.append(sel.canvas);
 		
-		//sel.$handles = $Handles(sel.$el, sel.canvas, {outset: 2});
+		sel.$handles = $Handles(sel.$el, sel.canvas, {outset: 2});
 		
-		sel.$el.on("user-resized", function(e, x, y, width, height){
-			//sel.x = x;
-			//sel.y = y;
+		sel.$el.on("user-resized", function(e, delta_x, delta_y, width, height){
+			sel.x += delta_x;
+			sel.y += delta_y;
 			sel.width = width;
 			sel.height = height;
 			sel.position();

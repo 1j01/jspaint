@@ -27,7 +27,7 @@ function $Handles($container, element, options){
 		
 		$h.attr("touch-action", "none");
 		
-		var x, y, width, height;
+		var delta_x = 0, delta_y = 0, width, height;
 		var dragged = false;
 		var resizes_height = y_axis !== "middle";
 		var resizes_width = x_axis !== "middle";
@@ -61,12 +61,31 @@ function $Handles($container, element, options){
 				dragged = true;
 				
 				var rect = el.getBoundingClientRect();
-				width = ~~(resizes_width ? (e.clientX / magnification - rect.left) : (rect.width));
-				height = ~~(resizes_height ? (e.clientY / magnification - rect.top) : (rect.height));
+				var mx = e.clientX / magnification;
+				var my = e.clientY / magnification;
+				// TODO: decide between Math.floor/Math.ceil/Math.round for these values
+				if(x_axis === "right"){
+					delta_x = 0;
+					width = ~~(mx - rect.left);
+				}else if(x_axis === "left"){
+					delta_x = ~~(mx - rect.left);
+					width = ~~(rect.right - mx);
+				}else{
+					width = ~~(rect.width);
+				}
+				if(y_axis === "bottom"){
+					delta_y = 0;
+					height = ~~(my - rect.top);
+				}else if(y_axis === "top"){
+					delta_y = ~~(my - rect.top);
+					height = ~~(rect.bottom - my);
+				}else{
+					height = ~~(rect.height);
+				}
 				$resize_ghost.css({
 					position: "absolute",
-					left: offset,
-					top: offset,
+					left: magnification * delta_x + offset,
+					top: magnification * delta_y + offset,
 					width: magnification * width,
 					height: magnification * height,
 				});
@@ -83,7 +102,7 @@ function $Handles($container, element, options){
 					
 					$resize_ghost.remove();
 					if(dragged){
-						$(el).trigger("user-resized", [x, y, width, height]);
+						$(el).trigger("user-resized", [delta_x, delta_y, width, height]);
 					}
 					$container.trigger("update");
 				});
