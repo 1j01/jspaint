@@ -22,11 +22,12 @@ tools = [{
 		tool.y_max = pointer.y+1;
 		tool.points = [];
 		
-		if(selection){
-			selection.draw();
-			selection.destroy();
-			selection = null;
-		}
+    // End prior selection, drawing it to the canvas
+    deselect();
+    // Checkpoint so we can roll back inverty brush
+    // @TODO Still probably need to use something other than the undo stack
+    undoable();
+
 		// The inverty brush is continuous in space which means
 		// paint(ctx, x, y) will be called for each pixel the pointer moves
 		// and we only need to record individual pointer events to make the polygon
@@ -66,10 +67,6 @@ tools = [{
 		var rect_w = inverty_size;
 		var rect_h = inverty_size;
 		
-		// @TODO @FIXME get rid of this part:
-		if(!undos.length){
-			undoable();//ugh... this is supposed to be passive
-		}//phhh
 		var ctx_src = undos[undos.length-1].getContext("2d");//psh
 		
 		// Make two tiny ImageData objects,
