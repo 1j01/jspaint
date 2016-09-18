@@ -22,11 +22,11 @@ tools = [{
 		tool.y_max = pointer.y+1;
 		tool.points = [];
 		
-    // End prior selection, drawing it to the canvas
-    deselect();
-    // Checkpoint so we can roll back inverty brush
-    // @TODO Still probably need to use something other than the undo stack
-    undoable();
+		// End prior selection, drawing it to the canvas
+		deselect();
+		// Checkpoint so we can roll back inverty brush
+		// @TODO Still probably need to use something other than the undo stack
+		undoable();
 
 		// The inverty brush is continuous in space which means
 		// paint(ctx, x, y) will be called for each pixel the pointer moves
