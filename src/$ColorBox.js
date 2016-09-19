@@ -119,14 +119,14 @@ function $ColorBox(){
 	
 	var $c = $Component("Colors", "wide", $cb);
 	
-	var $input = $("<input type=color>").appendTo($app).css({width: 0, height: 0, padding: 0, border: 0, position: "absolute"});
-	
 	$c.edit_last_color = function(){
 		// Edit the last color cell that's been selected as the foreground color.
-		$input.click().one("change", function(){
+		create_and_trigger_input({type: "color"}, function(input){
+			console.log(input, input.value);
 			$last_fg_color_button.trigger({type: "pointerdown", ctrlKey: false, button: 0});
-			$last_fg_color_button.find("input").val($input.val()).triggerHandler("change");
-		});
+			$last_fg_color_button.find("input").val(input.value).triggerHandler("change");
+		})
+		.show().css({width: 0, height: 0, padding: 0, border: 0, position: "absolute", pointerEvents: "none", overflow: "hidden"});
 	};
 	
 	$c.rebuild_palette = build_palette;

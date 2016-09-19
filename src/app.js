@@ -73,8 +73,6 @@ var $status_size = $(E("div")).addClass("jspaint-status-coordinates").appendTo($
 	$status_text.text("For Help, click Help Topics on the Help Menu.");
 })();
 
-var $file_input = $("<input type=file>").appendTo($app).css({width: 0, height: 0, padding: 0, border: 0, position: "absolute"});
-
 var $toolbox = $ToolBox();
 var $colorbox = $ColorBox();
 

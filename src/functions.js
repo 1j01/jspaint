@@ -47,15 +47,22 @@ function update_title(){
 	document.title = file_name + " - Paint";
 }
 
-function get_FileList(callback){
-	var $input = $(E("input")).attr({type: "file"})
+function create_and_trigger_input(attrs, callback){
+	var $input = $(E("input")).attr(attrs)
 		.on("change", function(){
-			callback(this.files);
+			callback(this);
 			$input.remove();
 		})
-		.appendTo("body")
+		.appendTo($app)
 		.hide()
 		.click();
+	return $input;
+}
+
+function get_FileList(callback){
+	create_and_trigger_input({type: "file"}, function(input){
+		callback(input.files);
+	});
 }
 
 function open_from_Image(img, callback){

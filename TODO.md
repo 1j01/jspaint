@@ -54,7 +54,6 @@
 
 
 * Issues
-	* The `<input type="file">` used for File > Open is showing up (barely) and blocking File, Edit, and View in Chrome
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted

@@ -321,8 +321,8 @@ var menus = {
 		{
 			item: "&Get Colors",
 			action: function(){
-				$file_input.click().one("change", function(){
-					var file = $file_input[0].files[0];
+				get_FileList(function(files){
+					var file = files[0];
 					Palette.load(file, function(err, new_palette){
 						if(err){
 							alert("This file is not in a format the paint recognizes, or no colors were found.");
