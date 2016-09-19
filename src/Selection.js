@@ -170,7 +170,7 @@ Selection.prototype.crop = function(){
 	if(sel.canvas){
 		undoable(0, function(){
 			ctx.copy(sel.canvas);
-			$canvas.trigger("update"); //update handles
+			$canvas_area.trigger("resize");
 		});
 	}
 };

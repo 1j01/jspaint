@@ -131,7 +131,7 @@ storage.get({
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
-	$canvas.trigger("update"); // update handles
+	$canvas_area.trigger("resize");
 });
 
 $("body").on("dragover dragenter", function(e){
