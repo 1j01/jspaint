@@ -57,7 +57,6 @@
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
-	* https://github.com/1j01/jspaint/issues/3
 	* Middle-click scrolling is prevented
 	* Firefox
 		* It lags unusably when using tools
@@ -65,13 +64,12 @@
 		* Tool options flicker... *and lag*, when they're redrawn in quick succession
 	* The TextBox `-webkit-scrollbar`s get extra buttons
 	* The TextBox contents move down and right when rasterizing
-	* Free-form select twice and the first selection is destroyed
-	  (there is a feature to implement that would probably fix this)
 	* Free-form select can leave behind inverty brush in multiplayer
 	* Multiplayer cursors that go outside the parent can cause the page to be scrollable
 	* Multiplayer interupts you:
 		* If you try to make a selection when there's a selection
 		* If you try to play with multiple players
+	* If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
 
 
 ### Menus
@@ -118,6 +116,8 @@
 * Multiplayer and local sessions
 	* See [sessions.js](src/sessions.js)
 	* Deal with undo/redo for sessions
+		* Particularly it might be helpful to undo to the state after your last change, not just before that;
+		  this could happen automatically if there have been changes since your last change
 
 
 ### Device support
@@ -148,11 +148,13 @@
 
 * Free-Form Select
 	* Passive: create no undoables until you do something
+		* You should be able to make a selection, then change the secondary color, then drag the selection cutting it out with the color you selected
 	* See [On-Canvas Objects](#on-canvas-objects) for Selection
 
 
 * Select
 	* Passive: create no undoables until you do something
+		* You should be able to make a selection, then change the secondary color, then drag the selection cutting it out with the color you selected
 	* See [On-Canvas Objects](#on-canvas-objects) for Selection
 
 
@@ -171,7 +173,7 @@
 
 
 * Pencil
-	* Adjust size
+	* Adjust size (with numpad)
 
 
 * Brush ✓
@@ -205,17 +207,17 @@
 
 * Polygon
 	* Aliasing
-	* Handle self-intersecting shapes like MS Paint, not like the canvas API
+	* Handle self-intersecting shapes like MS Paint, with an `"evenodd"` [winding rule](http://blogs.adobe.com/webplatform/2013/01/30/winding-rules-in-canvas/)
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
 
 
 * Ellipse
-	* See below
+	* See Shape Styles and Strokes below
 
 
 * Rounded Rectangle
-	* See below
+	* See Shape Styles and Strokes below
 
 
 * **Options**
@@ -317,6 +319,8 @@ Prankily wait for next user input before fullscreening and bluescreening
 	* C'mon
 	* Buttons
 	* Also other `.jspaint-` classes
+	* Use a CSS preprocessor so we can do color-swap themes (maybe even load Windows theme files)
+	* Stuff should go in an OS GUI library with themes for Windows 98 and other OSes
 
 
 * JS
