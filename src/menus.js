@@ -66,6 +66,12 @@ var menus = {
 		},
 		____________________________,
 		{
+			item: "Manage Storage",
+			action: manage_storage,
+			description: "Manages storage of previously created or opened pictures.",
+		},
+		____________________________,
+		{
 			item: "Recent File",
 			enabled: false, // @TODO for chrome app
 			description: "",
