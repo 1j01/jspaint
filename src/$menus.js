@@ -138,7 +138,7 @@
 					}
 					item_action();
 				});
-				$item.on("pointerenter", function(){
+				$item.on("pointerenter mouseenter", function(){
 					if(item.submenu){
 						$status_text.text("");
 					}else{
