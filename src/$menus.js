@@ -112,6 +112,7 @@
 						open_tid = setTimeout(open_submenu, 200);
 					});
 					$item.add($submenu_popup).on("pointerout", function(){
+						$menu_popup.closest(".jspaint-menu-container").find(".jspaint-menu-button").focus();
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 						close_tid = setTimeout(function(){
@@ -138,16 +139,17 @@
 					}
 					item_action();
 				});
-				$item.on("pointerenter mouseenter", function(){
+				$item.on("pointerover", function(){
 					if(item.submenu){
 						$status_text.text("");
 					}else{
 						$status_text.text(item.description || "");
 					}
 				});
-				$item.on("pointerleave", function(){
+				$item.on("pointerout", function(){
 					if($item.is(":visible")){
 						$status_text.text("");
+						$menu_popup.closest(".jspaint-menu-container").find(".jspaint-menu-button").focus();
 					}
 				});
 				
@@ -239,8 +241,8 @@
 				}
 			}
 		});
-		$menu_button.on("pointerdown pointerenter", function(e){
-			if(e.type === "pointerenter" && !selecting_menus){
+		$menu_button.on("pointerdown pointerover", function(e){
+			if(e.type === "pointerover" && !selecting_menus){
 				return;
 			}
 			if(!$menu_button.hasClass("active")){
