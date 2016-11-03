@@ -179,8 +179,8 @@
 		return $menu_popup;
 	}
 	
+	var this_click_opened_the_menu = false;
 	$.each(menus, function(menus_key, menu_items){
-		var this_click_opened_the_menu = false;
 		var $menu_container = $(E("div")).addClass("jspaint-menu-container").appendTo($menus);
 		var $menu_button = $(E("div")).addClass("jspaint-menu-button").appendTo($menu_container);
 		var $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
@@ -246,12 +246,13 @@
 			if(e.type === "pointerover" && !selecting_menus){
 				return;
 			}
-			if(!$menu_button.hasClass("active")){
-				this_click_opened_the_menu = true;
+			if(e.type !== "pointerover"){
+				if(!$menu_button.hasClass("active")){
+					this_click_opened_the_menu = true;
+				}
 			}
 			
 			close_menus();
-			// console.log("open menu");
 			
 			$menu_button.focus();
 			$menu_button.addClass("active");
@@ -268,7 +269,6 @@
 				return;
 			}
 			if($menu_button.hasClass("active")){
-				// console.log(e.type, "occurred and this click didn't open the menu, so...");
 				close_menus();
 			}
 		});

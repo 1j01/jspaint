@@ -373,4 +373,25 @@ var menus = {
 			//description: "Displays program information, version number, and copyright.",
 		}
 	],
+	// "E&xtras": [
+	// 	{
+	// 		item: "&Render History as GIF",
+	// 		action: render_history_as_gif,
+	// 		description: "Create an animation from the document history.",
+	// 	},
+	// 	{
+	// 		item: "&Additional Tools",
+	// 		action: function(){
+	// 			// ;)
+	// 		},
+	// 		description: "Enable extra editing tools.",
+	// 	},
+	// 	{
+	// 		item: "&Preferences",
+	// 		action: function(){
+	// 			// :)
+	// 		},
+	// 		description: "Configure JS Paint.",
+	// 	}
+	// ],
 };
