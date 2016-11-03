@@ -86,7 +86,8 @@
 				}
 				
 				if(item.submenu){
-					$submenu_area.text("▶");
+					// TODO: just use an svg; this still renders as an emoji on some devices
+					$submenu_area.html("&#x25b6;&#xFE0E;");
 					
 					var $submenu_popup = $MenuPopup(item.submenu).appendTo("body");
 					$submenu_popup.hide();
