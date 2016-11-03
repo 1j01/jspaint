@@ -38,37 +38,43 @@ function manage_storage(){
 	if($storage_manager){
 		$storage_manager.close();
 	}
-	$storage_manager = $Window().title("Manage Storage").addClass("storage-manager");
+	$storage_manager = $FormWindow().title("Manage Storage").addClass("storage-manager jspaint-dialogue-window");
 	// @TODO: remove all button (with confirmation)
-	// @TODO: move this text to the bottom?
-	$storage_manager.$content.html(
-		"<p>Any images you've saved to your computer with <b>File > Save</b> will not be affected.</p>"
+	var $table = $(E("table")).appendTo($storage_manager.$main);
+	var $message = $(E("p")).appendTo($storage_manager.$main).html(
+		"Any images you've saved to your computer with <b>File > Save</b> will not be affected."
 	);
-	var $table = $(E("table")).appendTo($storage_manager.$content);
+	$storage_manager.$Button("Close", function(){
+		$storage_manager.close();
+	});
 	
-	var addRowFor = function(k, imgSrc){
+	var addRow = function(k, imgSrc){
 		var $tr = $(E("tr")).appendTo($table);
 		
 		var $img = $(E("img")).attr({src: imgSrc});
 		var $remove = $(E("button")).addClass("jspaint-button jspaint-dialogue-button").text("Remove");
-		var $a = $(E("a")).attr({href: "#" + k.replace("image#", "local:"), target: "__blank"}).text(k.replace("image#", "local:"));
-		
-		$(E("td")).append($a).appendTo($tr);
-		$(E("td")).append($img).appendTo($tr);
+		var href = "#" + k.replace("image#", "local:");
+		var $link = $(E("a")).attr({href: href, target: "__blank"});
+		$link.append($img);
+		$link.append($(E("span")).text("View"));
+		$(E("td")).append($link).appendTo($tr);
 		$(E("td")).append($remove).appendTo($tr);
 		
 		$remove.click(function(){
 			localStorage.removeItem(k);
 			$tr.remove();
+			if($table.find("tr").length == 0){
+				$message.html("<p>All cleaned up!</p>");
+			}
 		});
 	};
 	
 	for(var k in localStorage){
 		if(k.match(/^image#/)){
 			var v = localStorage[k];
-			addRowFor(k, v[0] === '"' ? JSON.parse(v) : v);
+			addRow(k, v[0] === '"' ? JSON.parse(v) : v);
 		}
 	}
-	$storage_manager.width(500);
+	$storage_manager.width(450);
 	$storage_manager.center();
 }
