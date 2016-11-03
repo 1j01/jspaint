@@ -31,7 +31,6 @@
 	};
 	
 	var close_menus = function(){
-		// console.log("close menus");
 		$menus.find(".jspaint-menu-button").trigger("release");
 		// Close any rogue floating submenus
 		$(".jspaint-menu-popup").hide();
@@ -86,8 +85,7 @@
 				}
 				
 				if(item.submenu){
-					// TODO: just use an svg; this still renders as an emoji on some devices
-					$submenu_area.html("&#x25b6;&#xFE0E;");
+					$submenu_area.html('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="11" viewBox="0 0 10 11" style="fill:currentColor;display:inline-block;vertical-align:middle"><path d="M7.5 4.33L0 8.66L0 0z"/></svg>');
 					
 					var $submenu_popup = $MenuPopup(item.submenu).appendTo("body");
 					$submenu_popup.hide();
