@@ -6,8 +6,8 @@ A nice web-based MS Paint remake and more... [Try it out!][jspaint web app]
 <!-- It's not published yet...
 You can also install it [on the Chrome Web Store][jspaint chrome app].
 -->
-You can also install it as a Chrome app.
-<!-- Coming Soon to Web Stores near you! -->
+<!-- You can also install it as a Chrome app. -->
+
 
 The goal is to remake MS Paint
 (including its [little-known features](#did-you-know)),
@@ -76,7 +76,7 @@ I want to bring good old paint into the modern era.
 * [Extended Editing](#extended-editing)
 * Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
 * After adding text, save as SVG or HTML with selectable text
-  (invisible text positioned over an embeded bitmap image)
+  (invisible text positioned over an embedded bitmap image)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Alternate themes (You can already theoretically style it with browser extensions like Stylebot or Stylish)
 * Noncontiguous fill (Probably by holding <kbd>Shift</kbd> when using the fill tool)
@@ -89,7 +89,6 @@ I want to bring good old paint into the modern era.
 * The Magnifier's viewport preview
 * Shape styles on most of the shape tools
 * The polygon tool needs some work
-* Handles on selections and text boxes
 * [This entire document full of things to do](TODO.md)
 
 Clipboard support is somewhat limited.

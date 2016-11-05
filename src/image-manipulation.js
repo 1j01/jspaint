@@ -27,7 +27,7 @@ function render_brush(ctx, shape, size){
 	}else if(shape === "vertical"){
 		draw_line(ctx, mid_x, top, mid_x, size);
 	}
-};
+}
 
 function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 	
@@ -175,7 +175,7 @@ function bresenham_line(x1, y1, x2, y2, callback){
 }
 
 function brosandham_line(x1, y1, x2, y2, callback){
-	// Bresenham's line algorithm modified to callback in-between going horizontal and vertical
+	// Bresenham's line argorithm with a callback between going horizontal and vertical
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	
 	var dx = Math.abs(x2 - x1);
@@ -279,9 +279,7 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 function apply_image_transformation(fn){
 	// Apply an image transformation function to either the selection or the entire canvas
 	var new_canvas = new Canvas();
-	var original_canvas =
-		selection? selection. // Selection!? Selection!
-		canvas: canvas; // Canvas, canvas, canvas.
+	var original_canvas = selection ? selection.canvas: canvas;
 	
 	// Sometimes selection.canvas is an Image
 	// Maybe that should be changed instead having of this here

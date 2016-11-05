@@ -33,15 +33,10 @@
 		* `*.htm` to `*.html`
 
 
-* Make storage quota dialogue clearer
-	* Also add a message like "All cleaned up!" (probably with an additional Close button)
-
-
 * Visual
 	* Warning sign for "Save changes to X?" dialogue
 	* Error symbol for error message dialogues
 	* The window close button uses text; font rendering is not consistent
-	* The menus use text; the arrow character is converted to an icon on some mobile devices
 	* The progress bar (Rendering GIF) is left native
 	* Use win98 default scrollbar size
 	* Menu separator spacing
@@ -183,9 +178,8 @@
 
 
 * Text
-	* Wrapping!
 	* Underline
-	* Expanding to new lines
+	* Expand box to make room for new lines
 	* Minimum size of 3em x 1em
 	* Store position of FontBox
 	* Keep an old TextBox while drawing a new one
