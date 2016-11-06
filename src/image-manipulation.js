@@ -138,16 +138,30 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius){
 	}
 }
 
-function draw_line(ctx, x1, y1, x2, y2){
+function draw_line(ctx, x1, y1, x2, y2, stroke_size){
+	stroke_size = stroke_size || 1;
 	if(aliasing){
-		bresenham_line(x1, y1, x2, y2, function(x, y){
-			ctx.fillRect(x, y, 1, 1);
-		});
+		if(stroke_size > 1){
+			var csz = stroke_size * 2.1; // XXX: magic constant duplicated from tools.js
+			var brush_canvas = new Canvas(csz, csz);
+			brush_canvas.width = csz;
+			brush_canvas.height = csz;
+			brush_canvas.ctx.fillStyle = brush_canvas.ctx.strokeStyle = stroke_color;
+			render_brush(brush_canvas.ctx, "circle", stroke_size);
+			bresenham_line(x1, y1, x2, y2, function(x, y){
+				ctx.drawImage(brush_canvas, ~~(x - brush_canvas.width/2), ~~(y - brush_canvas.height/2));
+			});
+		}else{
+			bresenham_line(x1, y1, x2, y2, function(x, y){
+				ctx.fillRect(x, y, 1, 1);
+			});
+		}
 	}else{
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y2);
 		
+		ctx.lineWidth = stroke_size;
 		ctx.lineCap = "round";
 		ctx.stroke();
 		ctx.lineCap = "butt";

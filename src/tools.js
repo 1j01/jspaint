@@ -395,7 +395,7 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	shape: function(ctx, x, y, w, h){
-		draw_line(ctx, x, y, x+w, y+h);
+		draw_line(ctx, x, y, x+w, y+h, stroke_size);
 	},
 	$options: $choose_stroke_size
 }, {
@@ -586,7 +586,8 @@ tools = [{
 		for(var i=0, j=1; j<this.points.length; i++, j++){
 			draw_line(ctx,
 				this.points[i].x, this.points[i].y,
-				this.points[j].x, this.points[j].y
+				this.points[j].x, this.points[j].y,
+				stroke_size
 			);
 		}
 	},
@@ -607,12 +608,14 @@ tools = [{
 		ctx.lineTo(this.points[0].x, this.points[0].y);
 		ctx.closePath();
 		
+		ctx.lineWidth = stroke_size;
+		ctx.lineJoin = "bevel";
 		if(this.$options.fill){
 			ctx.fillStyle = fill_color;
 			ctx.fill();
 		}
 		if(this.$options.stroke){
-			ctx.fillStyle = stroke_color;
+			ctx.strokeStyle = stroke_color;
 			ctx.stroke();
 		}
 		
@@ -652,14 +655,16 @@ tools = [{
 			for(var i=0, j=1; j<this.points.length; i++, j++){
 				draw_line(ctx,
 					this.points[i].x, this.points[i].y,
-					this.points[j].x, this.points[j].y
+					this.points[j].x, this.points[j].y,
+					stroke_size
 				);
 			}
 			j = 0;
 			i = this.points.length - 1;
 			draw_line(ctx,
 				this.points[i].x, this.points[i].y,
-				this.points[j].x, this.points[j].y
+				this.points[j].x, this.points[j].y,
+				stroke_size
 			);
 		}
 		*/

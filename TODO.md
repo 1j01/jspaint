@@ -187,10 +187,6 @@
 	  SVG (or HTML?) with invisible selectable transformed text elements
 
 
-* Line
-	* Stroke size when aliased
-
-
 * Curve
 	* Aliasing
 
@@ -221,12 +217,10 @@
 
 * **Shape Styles and Strokes**
 	* Shapes: respond to Ctrl (It's complicated)
-	* Lots of things: Use stroke size
 	* Rounded Rectangle & Ellipse:
-		* Support shape styles!
-		* If the width/height is less than the stroke size,
-		  it should draw a shape with no stroke, filled with
-		  the color that would normally be used for the stroke.
+		* Support stroke size and shape styles!
+	* Rectangle, Rounded Rectangle & Ellipse:
+		* Stroke should be entirely inside the dragged region
 
 
 ### On-Canvas Objects

@@ -130,91 +130,18 @@ TextBox.prototype.instantiate = function(){
 		$status_position.text("");
 		$status_size.text("");
 		
-		$canvas_area.trigger("resize"); // ?
+		$canvas_area.trigger("resize"); // to update handles, get them to hide?
 	}
 };
 
-// var wrap = function(ctx, text, x, y, maxWidth, lineHeight) {
-// 	var original_lines = text.split(/(\r\n|[\n\v\f\r\x85\u2028\u2029])/);
-// 	var lines = [];
-// 	for(var i = 0; i < original_lines.length; i++){
-// 		var original_line = original_lines[i];
-// 		var words = original_line.split(' ');
-// 		var line = '';
-// 		for(var n = 0, len = words.length; n < len; n++){
-// 			var word = words[n];
-// 			var testLine = line + word + ' ';
-// 			var metrics = ctx.measureText(testLine);
-// 			var testWidth = metrics.width;
-// 			if (testWidth > maxWidth) {
-// 				// we need to break this,
-// 				// but let's see if we can start the next line with this word,
-// 				// or if we need to break the word
-// 				testLine = word + ' ';
-// 				metrics = ctx.measureText(testLine);
-// 				testWidth = metrics.width;
-// 				if (testWidth > maxWidth) {
-// 					// break this word
-// 					console.log("breaking word", word);
-// 					// if(word.indexOf('-') > -1){
-						
-// 					// }
-// 					var remaining_word = word;
-// 					var include_start_of_line = true;
-// 					while(remaining_word.length){
-// 						for(var slice_index = remaining_word.length; slice_index >= 0; slice_index--){
-// 							testLine = remaining_word.slice(0, slice_index);
-// 							if (include_start_of_line) {
-// 								testLine = line + testLine;
-// 							}
-// 							console.log(include_start_of_line, slice_index, line, testLine);
-// 							metrics = ctx.measureText(testLine);
-// 							testWidth = metrics.width;
-// 							if (testWidth <= maxWidth) {
-// 								line = testLine;
-// 								lines.push({ text: line, x: x, y: y });
-// 								remaining_word = remaining_word.slice(slice_index);
-// 								y += lineHeight;
-// 								break;
-// 							}
-// 							if (slice_index === 0) {
-// 								console.log("discarding", remaining_word);
-// 								remaining_word = "";
-// 							}
-// 						}
-// 						include_start_of_line = false;
-// 					}
-// 					line = remaining_word + ' ';
-// 					// lines.push({ text: line, x: x, y: y });
-// 					// line = word + ' ';
-// 					// y += lineHeight;
-// 				} else {
-// 					// start the next line with this word
-// 					lines.push({ text: line, x: x, y: y });
-// 					line = testLine;
-// 					y += lineHeight;
-// 				}
-// 			} else {
-// 				line = testLine;
-// 			}
-// 		}
-		
-// 		lines.push({ text: line, x: x, y: y });
-// 		y += lineHeight;
-// 	}
-// 	return lines;
-// };
-
 function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
 	var original_lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
-	// console.log("original_lines", original_lines);
 	for(var j = 0; j < original_lines.length; j++){
 		var original_line = original_lines[j];
 		var words = original_line.split(' ');
 		var line = '';
 		var test;
 		var metrics;
-		// ctx.fillRect(x-5, y, 5, 5);
 		for (var i = 0; i < words.length; i++) {
 			test = words[i];
 			metrics = ctx.measureText(test);
@@ -257,15 +184,7 @@ TextBox.prototype.draw = function(){
 			var style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
 			ctx.font = style_ + font.size + "px " + font.family;
 			ctx.textBaseline = "top";
-			// var lines = text.split("\n");
-			// for(var i=0; i<lines.length; i++){
-			// 	ctx.fillText(lines[i], tb.x+1, tb.y+1 + (i+0.5)*(font.size * font.line_scale), tb.width);
-			// }
-			// var lines = wrap(ctx, text, tb.x+1, tb.y+1, tb.width, font.size * font.line_scale);
-			// for (var i = 0; i < lines.length; i++){
-			//     var line = lines[i];
-			//     ctx.fillText(line.text, line.x, line.y);
-			// }
+			
 			var max_width = Math.max(tb.width, font.size);
 			draw_text_wrapped(ctx, text, tb.x+1, tb.y+1, max_width, font.size * font.line_scale);
 		});

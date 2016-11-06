@@ -396,7 +396,7 @@ function tool_go(event_name){
 	
 	fill_color_k =
 	stroke_color_k =
-		ctrl ? "ternary" : (reverse ? "background" : "foreground")
+		ctrl ? "ternary" : (reverse ? "background" : "foreground");
 	
 	if(selected_tool.shape){
 		var previous_canvas = undos[undos.length-1];
@@ -408,11 +408,11 @@ function tool_go(event_name){
 	if(selected_tool.shape || selected_tool.shape_colors){
 		if(!selected_tool.stroke_only){
 			if(reverse){
-				fill_color_k = 0;
-				stroke_color_k = 1;
+				fill_color_k = "foreground";
+				stroke_color_k = "background";
 			}else{
-				fill_color_k = 1;
-				stroke_color_k = 0;
+				fill_color_k = "background";
+				stroke_color_k = "foreground";
 			}
 		}
 		ctx.fillStyle = fill_color = colors[fill_color_k];
