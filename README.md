@@ -14,7 +14,7 @@ The goal is to remake MS Paint
 improve on it, and to [extend](#extended-editing) the types of images it can edit.
 So far, it does this pretty well.
 
-![Screenshot](http://1j01.github.io/images/projects/jspaint.png)
+![Screenshot](images/readme/main-screenshot.png)
 
 Ah yes, good old paint. Not the one with the [ribbons][]
 or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
