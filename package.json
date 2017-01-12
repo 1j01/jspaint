@@ -20,7 +20,10 @@
   ],
   "main": "index.html",
   "scripts": {
-    "start": "nw"
+    "start": "nw",
+    "dev": "live-server --port=11822",
+    "test": "casperjs test test.js --engine=slimerjs",
+    "test-verbose": "casperjs test test.js --engine=slimerjs --verbose --log-level=debug"
   },
   "window": {
     "icon": "images/icons/48.png",
@@ -36,5 +39,9 @@
   },
   "bugs": {
     "url": "http://github.com/1j01/jspaint/issues"
+  },
+  "devDependencies": {
+    "cross-spawn": "^5.0.1",
+    "phantomcss": "^1.1.4"
   }
 }
