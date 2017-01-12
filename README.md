@@ -3,10 +3,7 @@
 
 A nice web-based MS Paint remake and more... [Try it out!][jspaint web app]
 
-<!-- It's not published yet...
-You can also install it [on the Chrome Web Store][jspaint chrome app].
--->
-<!-- You can also install it as a Chrome app. -->
+<!-- You can also run it as a desktop app... -->
 
 
 The goal is to remake MS Paint
@@ -18,6 +15,7 @@ So far, it does this pretty well.
 
 Ah yes, good old paint. Not the one with the [ribbons][]
 or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
+And sorry, not the even newer [Paint 3D Preview][] that you can't install unless you're on a prerelease build (which is why my computer is barely functional at the moment, and I can't switch to an earlier build because I can't open the Settings, and I can't give feedback because I can't open Feedback, and I can't open the Start menu among other things.)
 
 Windows 95, 98, and XP were the golden years of paint.
 You had a tool box and a color box, a foreground color and a background color,
@@ -79,7 +77,7 @@ I want to bring good old paint into the modern era.
   (invisible text positioned over an embedded bitmap image)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Alternate themes (You can already theoretically style it with browser extensions like Stylebot or Stylish)
-* Noncontiguous fill (Probably by holding <kbd>Shift</kbd> when using the fill tool)
+* Noncontiguous fill AKA replace color (Probably by holding <kbd>Shift</kbd> when using the fill tool)
 * Optional fill tolerance (slider that you enable from a settings menu?)
 * Interactive tutorial(s)?
 
@@ -164,4 +162,5 @@ I want to make JS Paint to be able to edit...
 
 [ribbons]: https://www.google.com/search?tbm=isch&q=MS+Paint+Windows+7+ribbons "Google Search: MS Paint Windows 7 ribbons"
 [Fresh Paint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
+[Paint 3D Preview]: https://www.microsoft.com/en-us/store/p/paint-3d-preview/9nblggh5fv99
 
