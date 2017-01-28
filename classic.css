@@ -7,11 +7,6 @@
 	background: #7b7b7b;
 	border: 1px inset;
 }
-.jspaint-selection,
-.jspaint-textbox {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-}
 .jspaint-selection:after,
 .jspaint-textbox:after {
 	content: '';
@@ -89,9 +84,6 @@
 	color: #808080;
 }
 .jspaint-menu-hr {
-	display: block !important;
-	height: 0;
-	width: auto;
 	border: 0;
 	border-top: 1px solid #808080;
 	border-bottom: 1px solid #ffffff;
@@ -99,10 +91,6 @@
 }
 .jspaint-menu-hotkey {
 	text-decoration: underline;
-}
-.jspaint-menu-item-checkbox-area,
-.jspaint-menu-item-submenu-area {
-	text-align: center;
 }
 
 .jspaint-status-area {
@@ -300,9 +288,6 @@
 }
 
 
-.jspaint-component-ghost {
-	z-index: 500;
-}
 .jspaint-component-ghost.dock {
 	outline: 1px solid black;
 	/*outline: 1px solid invert;*/
@@ -430,7 +415,6 @@
 }
 
 .help-window .item {
-	display: inline-block;
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 	padding: 0 2px;

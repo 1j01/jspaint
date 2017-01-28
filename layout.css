@@ -79,6 +79,11 @@ html, body, .jspaint {
 .jspaint-menus {
 	flex: 0 0 auto;
 }
+.jspaint-selection,
+.jspaint-textbox {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
 .jspaint-selection > img,
 .jspaint-selection > canvas {
 	width: 100%;
@@ -88,6 +93,9 @@ html, body, .jspaint {
 .jspaint-selection:not(.instantiated),
 .jspaint-component-ghost {
 	pointer-events: none;
+}
+.jspaint-component-ghost {
+	z-index: 500;
 }
 .jspaint-textbox-editor {
 	width: 100%;
@@ -114,12 +122,21 @@ html, body, .jspaint {
 .jspaint-menu-item {
 	white-space: nowrap;
 }
+.jspaint-menu-hr {
+	display: block !important;
+	height: 0;
+	width: auto;
+}
 .jspaint-menu-hotkey {
 	display: inline !important;
 }
 .jspaint-menu-item-checkbox-area,
 .jspaint-menu-item-submenu-area {
 	min-width: 16px;
+}
+.jspaint-menu-item-checkbox-area,
+.jspaint-menu-item-submenu-area {
+	text-align: center;
 }
 
 .jspaint-status-area {
@@ -275,6 +292,9 @@ html, body, .jspaint {
 .help-window li {
 	display: block;
 	white-space: nowrap;
+}
+.help-window .item {
+	display: inline-block;
 }
 .help-window .folder:not(.expanded) ul {
 	display: none;
