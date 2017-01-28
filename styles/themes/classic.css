@@ -130,19 +130,19 @@
 	background-repeat: no-repeat;
 }
 ::-webkit-scrollbar-button:horizontal:decrement {
-	background-image: url(images/scroll-left.png);
+	background-image: url("../../images/scroll-left.png");
 }
 ::-webkit-scrollbar-button:horizontal:increment {
-	background-image: url(images/scroll-right.png);
+	background-image: url("../../images/scroll-right.png");
 }
 ::-webkit-scrollbar-button:vertical:decrement {
-	background-image: url(images/scroll-up.png);
+	background-image: url("../../images/scroll-up.png");
 }
 ::-webkit-scrollbar-button:vertical:increment {
-	background-image: url(images/scroll-down.png);
+	background-image: url("../../images/scroll-down.png");
 }
 ::-webkit-scrollbar {
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC") repeat;
 }
 
 .jspaint-window-content .jspaint-dialogue-button {
@@ -239,7 +239,7 @@
 .jspaint-tool.selected,
 .jspaint-button.selected,
 .jspaint-current-colors {
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC") repeat;
 }
 
 
@@ -433,7 +433,7 @@
 	vertical-align: middle;
 	width: 16px;
 	height: 16px;
-	background-image: url("images/help-icons.png");
+	background-image: url("../../images/help-icons.png");
 	background-position: 0 0;
 	margin-right: 2px;
 }
