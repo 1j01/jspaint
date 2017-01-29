@@ -182,6 +182,16 @@
 		var $menu_container = $(E("div")).addClass("jspaint-menu-container").appendTo($menus);
 		var $menu_button = $(E("div")).addClass("jspaint-menu-button").appendTo($menu_container);
 		var $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
+		
+		var menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
+		$menu_button.addClass("jspaint-" + menu_id + "-menu-button");
+		if(menu_id == "extras"){
+			// TODO: refactor shared key string, move to function
+			if(localStorage["jspaint extras menu visible"] != "true"){
+				$menu_button.hide();
+			}
+		}
+		
 		$menu_popup.hide();
 		$menu_button.html(_html(menus_key));
 		$menu_button.attr("tabIndex", -1)

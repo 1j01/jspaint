@@ -16,7 +16,7 @@ function $ColorBox(){
 	});
 	$foreground_color.css({
 		position: "absolute",
-		zIndex: 1,
+		zIndex: 1, // @FIXME: overlaps menu; don't need to use z-index
 		left: 2,
 		top: 4,
 	});

@@ -49,6 +49,8 @@
 
 
 * Issues
+	* Stretch/skew and rotate don't update the canvas size
+	* Since when does clicking with the other mouse button not cancel the action by undoing it?
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted

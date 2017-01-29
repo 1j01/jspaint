@@ -41,9 +41,11 @@ I want to bring good old paint into the modern era.
   go to Image > Attributes... and select Transparent,
   then Okay, and then Image > Clear Image or use the Eraser tool.
   Images with any transparent pixels will open in Transparent mode.
-* Create an animated GIF from the current document history with
+* Go to View > Extras Menu to enable access to additional features
+* Switch themes from the Extras menu
+* Create an animated GIF from the current document history from the Extras menu or with
   <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out after editing a small to medium sized image)
-* Cross-platform, I suppose
+* Cross-platform, I suppose, since it's web-based
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
 * When you do Edit > Paste From... you can select transparent images and GIFs.
   ~~You can even paste a transparent animated GIF and then
@@ -54,7 +56,7 @@ I want to bring good old paint into the modern era.
 * It can open SVG files (simply because browsers support SVG)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
-* Rotate image by arbitrary angle! Available in Image > Flip/Rotate
+* Rotate image by arbitrary angle in Image > Flip/Rotate
 * In Image > Stretch/Skew, you can stretch more than 500% at once
 * Rudimentary **multiplayer** support:
   Start up a session at
@@ -76,7 +78,6 @@ I want to bring good old paint into the modern era.
 * After adding text, save as SVG or HTML with selectable text
   (invisible text positioned over an embedded bitmap image)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
-* Alternate themes (You can already theoretically style it with browser extensions like Stylebot or Stylish)
 * Noncontiguous fill AKA replace color (Probably by holding <kbd>Shift</kbd> when using the fill tool)
 * Optional fill tolerance (slider that you enable from a settings menu?)
 * Interactive tutorial(s)?

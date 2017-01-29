@@ -14,17 +14,23 @@
 					return "styles/themes/" + theme;
 				};
 				try{
-					var theme = localStorage[theme_storage_key];
+					var current_theme = localStorage[theme_storage_key];
 				}catch(e){}
 				
-				theme = theme || default_theme;
-				document.write('<link rel="stylesheet" type="text/css" href="' + href_for(theme) + '" id="theme-link" />');
+				current_theme = current_theme || default_theme;
+				document.write('<link rel="stylesheet" type="text/css" href="' + href_for(current_theme) + '" id="theme-link" />');
 				
 				var theme_link = document.getElementById("theme-link");
 				self.set_theme = function(theme){
-					localStorage[theme_storage_key] = theme;
-					theme_link.href = href_for(theme);
-				}
+					current_theme = theme;
+					try{
+						localStorage[theme_storage_key] = current_theme;
+					}catch(e){}
+					theme_link.href = href_for(current_theme);
+				};
+				self.get_theme = function(){
+					return current_theme;
+				};
 			})();
 		</script>
 		<link rel="icon" href="images/icons/16.png" sizes="16x16" type="image/png">

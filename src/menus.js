@@ -214,6 +214,22 @@ var menus = {
 		},
 		____________________________,
 		{
+			item: "E&xtras Menu",
+			checkbox: {
+				toggle: function(){
+					$(".jspaint-extras-menu-button").toggle();
+					try{
+						localStorage["jspaint extras menu visible"] = this.check();
+					}catch(e){}
+				},
+				check: function(){
+					return $(".jspaint-extras-menu-button").is(":visible");
+				}
+			},
+			description: "Shows or hides the Extras menu.",
+		},
+		____________________________,
+		{
 			item: "&Zoom",
 			submenu: [
 				{
@@ -373,25 +389,81 @@ var menus = {
 			//description: "Displays program information, version number, and copyright.",
 		}
 	],
-	// "E&xtras": [
-	// 	{
-	// 		item: "&Render History as GIF",
-	// 		action: render_history_as_gif,
-	// 		description: "Create an animation from the document history.",
-	// 	},
-	// 	{
-	// 		item: "&Additional Tools",
-	// 		action: function(){
-	// 			// ;)
-	// 		},
-	// 		description: "Enable extra editing tools.",
-	// 	},
-	// 	{
-	// 		item: "&Preferences",
-	// 		action: function(){
-	// 			// :)
-	// 		},
-	// 		description: "Configure JS Paint.",
-	// 	}
-	// ],
+	"E&xtras": [
+		{
+			item: "&Render History as GIF",
+			// shortcut: "Ctrl+Shift+G",
+			action: render_history_as_gif,
+			description: "Creates an animation from the document history.",
+		},
+		// {
+		// 	item: "&Additional Tools",
+		// 	action: function(){
+		// 		// ;)
+		// 	},
+		// 	description: "Enables extra editing tools.",
+		// },
+		// {
+		// 	item: "&Preferences",
+		// 	action: function(){
+		// 		// :)
+		// 	},
+		// 	description: "Configures JS Paint.",
+		// }
+		{
+			item: "&Multiplayer",
+			submenu: [
+				{
+					item: "&New Session From Document",
+					action: function(){
+						var name = prompt("Enter the session name that will be used in the URL for sharing.");
+						if(typeof name == "string"){
+							name = name.trim();
+							if(name == ""){
+								alert("The session name cannot be empty.");
+							}else if(name.match(/[.\/\[\]#$]/)){
+								alert("The session name cannot contain any of ./[]#$");
+							}else{
+								location.hash = "session:" + name;
+							}
+						}
+					},
+					description: "Starts a new multiplayer session from the current document.",
+				},
+				{
+					item: "New &Blank Session",
+					action: function(){
+						alert("Not supported yet");
+					},
+					enabled: false,
+					description: "Starts a new multiplayer session from an empty document.",
+				},
+			]
+		},
+		{
+			item: "&Themes",
+			submenu: [
+				{
+					item: "&Classic",
+					action: function(){
+						set_theme("classic.css");
+					},
+					enabled: function(){
+						return get_theme() != "classic.css"
+					},
+					description: "Makes JS Paint look like MS Paint from Windows 98.",
+				},
+				{
+					item: "&Modern (WIP)",
+					action: function(){
+						set_theme("modern.css");
+					},
+					enabled: function(){
+						return get_theme() != "modern.css"
+					},
+					description: "Makes JS Paint look a bit more modern.",
+				},
+			]
+		},
+	],
 };
