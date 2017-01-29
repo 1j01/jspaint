@@ -54,7 +54,10 @@ body {
 }
 
 .jspaint-menu-button {
-	padding: 16px;
+	/*padding: 16px;*/
+	padding: 3px 7px 5px 7px;
+	margin-top: 2px;
+	border: 1px solid transparent;
 }
 .jspaint-menu-button:hover {
 	background: #eeeeee;
@@ -77,8 +80,13 @@ body {
 	padding: 8px 0;
 }
 
+/*.jspaint-menu-item {
+	padding: 6px 10px 6px 30px;
+}*/
 .jspaint-menu-item td {
-	height: 32px;
+	/*height: 32px;*/
+	height: 27px;
+	padding: 0;
 }
 .jspaint-menu-item td:first-child {
 	padding-left: 16px;
@@ -94,10 +102,15 @@ body {
 }
 .jspaint-menu-hr {
 	/*height: 32px;*/
+	margin-top: 6px;
+	margin-bottom: 6px;
 	border: 0;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
-.jspaint-menu-item-shortcut {
+.jspaint-menu-item .jspaint-menu-item-checkbox-area {
+	padding-right: 8px;
+}
+.jspaint-menu-item .jspaint-menu-item-shortcut {
 	padding-left: 16px;
 }
 
