@@ -9,14 +9,13 @@ function $ColorBox(){
 	
 	var $foreground_color = $(E("div")).addClass("jspaint-color-selection");
 	var $background_color = $(E("div")).addClass("jspaint-color-selection");
-	$current_colors.append($foreground_color, $background_color);
+	$current_colors.append($background_color, $foreground_color);
 	
 	$current_colors.css({
 		position: "relative",
 	});
 	$foreground_color.css({
 		position: "absolute",
-		zIndex: 1, // @FIXME: overlaps menu; don't need to use z-index
 		left: 2,
 		top: 4,
 	});
