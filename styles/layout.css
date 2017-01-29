@@ -68,11 +68,16 @@ html, body, .jspaint {
 	}
 }
 .jspaint-component-area,
-.jspaint-menus {
+.jspaint-menus *,
+.jspaint-window-titlebar {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+.jspaint-menus *,
+.jspaint-menu-popup * {
+	cursor: default;
 }
 .jspaint-status-area,
 .jspaint-component-area,
@@ -111,7 +116,7 @@ html, body, .jspaint {
 }
 .jspaint-menu-popup {
 	position: absolute;
-	top: 20px;
+	top: 100%;
 	left: 0;
 	z-index: 4;
 	box-sizing: border-box;
@@ -179,8 +184,12 @@ html, body, .jspaint {
 .jspaint-tools {
 	display: flex;
 	flex-flow: row wrap;
-	height: 200px;
-	width: 50px;
+}
+.jspaint-tool {
+	display: block !important;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: relative;
 }
 
 
@@ -241,8 +250,6 @@ html, body, .jspaint {
 .jspaint-window-close-button {
 	display: inline-block !important;
 	float: right;
-	width: 13px;
-	height: 11px;
 }
 .jspaint-window-close-button:before {
 	content: '×';

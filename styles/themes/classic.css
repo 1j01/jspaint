@@ -37,7 +37,6 @@
 .jspaint-menu-popup * {
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
-	cursor: default;
 }
 .jspaint-menu-container {
 	margin-bottom: 1px;
@@ -204,17 +203,13 @@
 	border-left-color: #7b7b7b;
 }
 .jspaint-tool {
-	display: block !important;
 	margin: 0;
 	padding: 0;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	width: 25px;
 	height: 25px;
 	border: 0;
 	border-right: 1px solid black;
 	border-bottom: 1px solid black;
-	position: relative;
 	background: transparent;
 	outline: 0;
 }
@@ -242,6 +237,10 @@
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC") repeat;
 }
 
+.jspaint-tools {
+	height: 200px;
+	width: 50px;
+}
 
 
 .jspaint-current-colors {
@@ -351,6 +350,10 @@
 }
 .jspaint-window-title {
 	padding-left: 2px;
+}
+.jspaint-window-close-button {
+	width: 13px;
+	height: 11px;
 }
 .jspaint-window-button {
 	margin: 2px;
