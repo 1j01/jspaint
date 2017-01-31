@@ -18,15 +18,14 @@
 		
 		storage.get(lsid, function(err, uri){
 			if(err){
-				$w = $FormWindow().title("Error").addClass("jspaint-dialogue-window");
-				$w.$main.text("Error retrieving image from localStorage:");
-				$(E("pre")).text(err.toString()).appendTo($w.$main);
-				$w.$Button("OK", function(){
-					$w.close();
-				});
+				show_error_message("Error retrieving image from localStorage:", err);
 			}else if(uri){
-				open_from_URI(uri, function(){
-					saved = false; // it's safe, sure, but you haven't "Saved" it
+				open_from_URI(uri, function(err){
+					if(err){
+						show_error_message("Error opening image from localStorage:", err);
+					}else{
+						saved = false; // it may be safe, sure, but you haven't "Saved" it
+					}
 				});
 			}
 		});
@@ -273,7 +272,7 @@
 					// and other options will be established)
 					
 					// Playback recorded in-progress pointer operations
-					console.log("playback", pointer_operations);
+					window.console && console.log("playback", pointer_operations);
 					for(var i=0; i<pointer_operations.length; i++){
 						var e = pointer_operations[i];
 						// Trigger the event at each place it is listened for

@@ -2,15 +2,15 @@
 (function(){
 	
 	var may_be_changed = function(){
-		console.log("change may have occured");
+		window.console && console.log("change may have occured");
 		$canvas.triggerHandler("change");
 	};
 	
 	var debug_event = function(e, synthetic){
 		if(synthetic){
-			console.debug(e.type + " (synthetic)");
+			window.console && console.debug && console.debug(e.type + " (synthetic)");
 		}else{
-			console.debug(e.type + " (not synthetic)");
+			window.console && console.debug && console.debug(e.type + " (not synthetic)");
 		}
 	};
 	

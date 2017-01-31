@@ -83,8 +83,6 @@ reset_magnification();
 
 if(window.file_entry){
 	open_from_FileEntry(window.file_entry);
-}else if(window.intent){
-	open_from_URI(window.intent.data);
 }
 
 $canvas.on("user-resized", function(e, _x, _y, width, height){
@@ -150,7 +148,11 @@ $("body").on("dragover dragenter", function(e){
 	e.preventDefault();
 	var dt = e.originalEvent.dataTransfer;
 	if(dt && dt.files && dt.files.length){
-		open_from_FileList(dt.files);
+		open_from_FileList(dt.files, function(err){
+			if(err){
+				show_error_message("Failed to open file:", err);
+			}
+		});
 	}
 });
 

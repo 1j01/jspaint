@@ -65,7 +65,7 @@ function get_FileList(callback){
 	});
 }
 
-function open_from_Image(img, callback){
+function open_from_Image(img, callback, canceled){
 	are_you_sure(function(){
 		this_ones_a_frame_changer();
 		
@@ -79,40 +79,54 @@ function open_from_Image(img, callback){
 		$canvas_area.trigger("resize");
 		
 		callback && callback();
-	});
+	}, canceled);
 }
-function open_from_URI(uri, callback){
+function open_from_URI(uri, callback, canceled){
 	var img = new Image();
 	img.onload = function(){
-		open_from_Image(img, callback);
+		if(!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0){
+            return callback() && callback(new Error("Image failed to load; naturalWidth == " + this.naturalWidth));
+		}
+		open_from_Image(img, callback, canceled);
+	};
+	img.onerror = function(){
+		callback && callback(new Error("Image failed to load"));
 	};
 	img.src = uri;
 }
 function open_from_File(file, callback){
-	// @TODO: use URL.createObjectURL(file) when available
-	// use URL.revokeObjectURL() too
-	var reader = new FileReader();
-	reader.onload = function(e){
-		open_from_URI(e.target.result, function(){
-			file_name = file.name;
-			update_title();
-			saved = true;
-			callback && callback();
-		});
-	};
-	reader.readAsDataURL(file);
+	var url = URL.createObjectURL(file);
+	open_from_URI(url, function(err){
+		console.log("opened or error, revokeObjectURL");
+		URL.revokeObjectURL(file);
+		if(err){ return callback && callback(err); }
+		file_name = file.name;
+		update_title();
+		saved = true;
+		callback && callback();
+	}, function(){
+		console.log("canceled, revokeObjectURL");
+		URL.revokeObjectURL(file);
+	});
 }
 function open_from_FileList(files, callback){
-	$.each(files, function(i, file){
-		if(file.type.match(/image/)){
+	for(var i=0; i<files.length; i++){
+		var file = files[i];
+		if(file.type.match(/^image/)){
 			open_from_File(file, callback);
-			return false;
+			return;
 		}
-	});
+	}
+	if(files.length > 1){
+		callback(new Error("None of the given files appear to be images"));
+	}else{
+		callback(new Error("File does not appear to be an image"));
+	}
 }
 function open_from_FileEntry(entry, callback){
 	entry.file(function(file){
-		open_from_File(file, function(){
+		open_from_File(file, function(err){
+			if(err){ return callback && callback(err); }
 			file_entry = entry;
 			callback && callback();
 		});
@@ -146,6 +160,11 @@ function file_new(){
 }
 
 function file_open(){
+	var callback = function(err){
+		if(err){
+			show_error_message("Failed to open file:", err);
+		}
+	};
 	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
 		chrome.fileSystem.chooseEntry({
 			type: "openFile",
@@ -155,10 +174,12 @@ function file_open(){
 			if(chrome.runtime.lastError){
 				return console.error(chrome.runtime.lastError.message);
 			}
-			open_from_FileEntry(entry);
+			open_from_FileEntry(entry, callback);
 		});
 	}else{
-		get_FileList(open_from_FileList);
+		get_FileList(function(files){
+			open_from_FileList(files, callback);
+		});
 	}
 }
 
@@ -202,7 +223,7 @@ function file_save_as(){
 }
 
 
-function are_you_sure(action){
+function are_you_sure(action, canceled){
 	if(saved){
 		action();
 	}else{
@@ -220,10 +241,36 @@ function are_you_sure(action){
 		});
 		$w.$Button("Cancel", function(){
 			$w.close();
+			canceled && canceled();
+		});
+		$w.$x.on("click", function(){
+			canceled && canceled();
 		});
 		$w.center();
 	}
 }
+
+function show_error_message(message, error){
+	$w = $FormWindow().title("Error").addClass("jspaint-dialogue-window");
+	$w.$main.text(message);
+	$(E("pre"))
+		.appendTo($w.$main)
+		.text(error.stack || error.toString())
+		.css({
+			background: "white",
+			color: "#333",
+			// background: "#A00",
+			// color: "white",
+			fontFamily: "monospace",
+			width: "500px",
+			overflow: "auto",
+		});
+	$w.$Button("OK", function(){
+		$w.close();
+	});
+	console.error(message, error);
+}
+
 
 function paste_file(blob){
 	var reader = new FileReader();
@@ -232,6 +279,7 @@ function paste_file(blob){
 		img.onload = function(){
 			paste(img);
 		};
+		// TODO: error handling
 		img.src = e.target.result;
 	};
 	reader.readAsDataURL(blob);
@@ -357,21 +405,9 @@ function render_history_as_gif(){
 		});
 		gif.render();
 		
-	}catch(e){
-		$output.empty().append(
-			$(E("p")).text("Failed to render GIF:\n").append(
-				$(E("pre")).text(e.stack).css({
-					background: "#A00",
-					color: "white",
-					fontFamily: "monospace",
-					width: "500px",
-					overflow: "auto",
-				})
-			)
-		);
-		$win.title("Error Rendering GIF");
-		$win.center();
-		console.error("Failed to render GIF:\n", e);
+	}catch(err){
+		$win.close();
+		show_error_message("Failed to render GIF:", err);
 	}
 }
 
