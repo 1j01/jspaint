@@ -1,36 +1,6 @@
-/*
-	Require and initialise PhantomCSS module
-	Paths are relative to CasperJs directory
-*/
 
 var fs = require('fs');
 var phantomcss = require('phantomcss');
-// var server = require('webserver').create();
-// 
-// var html = fs.read( fs.absolute( fs.workingDirectory + '/index.html' ));
-// 
-// server.listen(8080,function(req,res){
-// 	res.statusCode = 200;
-// 	res.headers = {
-// 		'Cache': 'no-cache',
-// 		'Content-Type': 'text/html;charset=utf-8'
-// 	};
-// 	res.write(html);
-// 	res.close();
-// });
-
-// 
-// var static = require( 'node-static' );
-// var http = require( 'http' );
-// var port = 8080;
-// 
-// var file = new static.Server();
-// 
-// http.createServer( function ( request, response ) {
-// 	request.addListener( 'end', function () {
-// 		file.serve( request, response );
-// 	} ).resume();
-// } ).listen( port );
 
 casper.test.begin( 'jspaint visual tests', function ( test ) {
 
@@ -40,13 +10,9 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 		casper: casper,
 		libraryRoot: fs.absolute( fs.workingDirectory + '/node_modules/phantomcss' ), //module._getFilename('phantomcss'), //require.resolve('phantomcss'),
 		screenshotRoot: fs.absolute( fs.workingDirectory + '/screenshots' ),
-		failedComparisonsRoot: fs.absolute( fs.workingDirectory + '/demo/failures' ),
+		failedComparisonsRoot: fs.absolute( fs.workingDirectory + '/screenshots/failures' ),
 		addLabelToFailedImage: false,
 		/*
-		screenshotRoot: '/screenshots',
-		failedComparisonsRoot: '/failures'
-		casper: specific_instance_of_casper,
-		libraryRoot: '/phantomcss',
 		fileNameGetter: function overide_file_naming(){},
 		onPass: function passCallback(){},
 		onFail: function failCallback(){},
@@ -66,7 +32,7 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 	} );
 
 	casper.on( 'remote.message', function ( msg ) {
-		this.echo( msg );
+		this.echo( "[page] " + msg );
 	} );
 
 	casper.on( 'error', function ( err ) {
@@ -80,16 +46,11 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 		The test scenario
 	*/
 
-	// casper.log("pre-start");
 	casper.start( 'http://localhost:11822' );
-	// casper.log("post-start");
 
 	casper.viewport( 1024, 768 );
 	
-	// casper.log("um...");
-	
 	casper.then( function () {
-		// casper.log("hello?");
 		phantomcss.screenshot( '.jspaint', 'app screen initial' );
 		phantomcss.screenshot( '.jspaint-menus', 'menu bar initial' );
 		phantomcss.screenshot( '.jspaint-Tools-component', 'toolbox initial' );
@@ -97,10 +58,17 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 	} );
 	
 	casper.then( function () {
-		casper.sendKeys( 'body', 'e', { modifiers: 'ctrl' } )
+		// casper.sendKeys( 'body', 'e', { modifiers: 'ctrl' } )
+		// casper.sendKeys( '.jspaint', 'e', { modifiers: 'ctrl' } )
 		
 		var after = function(ms, fn){ setTimeout(fn, ms); };
 		
+		// casper.clickLabel("Edit");
+		// casper.click(".jspaint-edit-menu"); // if we merge newer changes, this could simplify the selector, but...
+		
+		casper.evaluate(function() {
+			image_attributes();
+		});
 		// casper.waitUntilVisible( ".jspaint-menu-container:nth-child(4) .jspaint-menu-button", function () {
 		// 	// after(50, function(){
 		// 		casper.click( '.jspaint-menu-container:nth-child(4) .jspaint-menu-button' );
@@ -134,49 +102,6 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 		// 	// } );
 		// } );
 	} );
-	
-	// casper.then( function () {
-	// 	phantomcss.screenshot( '#coffee-machine-wrapper', 'open coffee machine button' );
-	// } );
-
-	// casper.then( function () {
-	// 	casper.click( '#coffee-machine-button' );
-	// 
-	// 	// wait for modal to fade-in
-	// 	casper.waitForSelector( '#myModal:not([style*="display: none"])',
-	// 		function success() {
-	// 			phantomcss.screenshot( '#myModal', 'coffee machine dialog' );
-	// 		},
-	// 		function timeout() {
-	// 			casper.test.fail( 'Should see coffee machine' );
-	// 		}
-	// 	);
-	// } );
-	// 
-	// casper.then( function () {
-	// 	casper.click( '#cappuccino-button' );
-	// 	phantomcss.screenshot( '#myModal', 'cappuccino success' );
-	// } );
-	// 
-	// casper.then( function () {
-	// 	casper.click( '#close' );
-	// 
-	// 	// wait for modal to fade-out
-	// 	casper.waitForSelector( '#myModal[style*="display: none"]',
-	// 		function success() {
-	// 			phantomcss.screenshot( {
-	// 				'Coffee machine close success': {
-	// 					selector: '#coffee-machine-wrapper',
-	// 					ignore: '.selector'
-	// 				},
-	// 				'Coffee machine button success': '#coffee-machine-button'
-	// 			} );
-	// 		},
-	// 		function timeout() {
-	// 			casper.test.fail( 'Should be able to walk away from the coffee machine' );
-	// 		}
-	// 	);
-	// } );
 	
 	casper.then( function now_check_the_screenshots() {
 		// compare screenshots
