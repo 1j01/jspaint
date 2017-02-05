@@ -2,22 +2,22 @@
 var fs = require('fs');
 var phantomcss = require('phantomcss');
 
-casper.test.begin( 'jspaint visual tests', function ( test ) {
-
-	phantomcss.init( {
-		rebase: casper.cli.get( "rebase" ),
+casper.test.begin('jspaint visual tests', function(test){
+	
+	phantomcss.init({
+		rebase: casper.cli.get('rebase'),
 		// SlimerJS needs explicit knowledge of this Casper, and lots of absolute paths
 		casper: casper,
-		libraryRoot: fs.absolute( fs.workingDirectory + '/node_modules/phantomcss' ), //module._getFilename('phantomcss'), //require.resolve('phantomcss'),
-		screenshotRoot: fs.absolute( fs.workingDirectory + '/screenshots' ),
-		failedComparisonsRoot: fs.absolute( fs.workingDirectory + '/screenshots/failures' ),
+		libraryRoot: fs.absolute(fs.workingDirectory + '/node_modules/phantomcss'), //module._getFilename('phantomcss'), //require.resolve('phantomcss'),
+		screenshotRoot: fs.absolute(fs.workingDirectory + '/screenshots'),
+		failedComparisonsRoot: fs.absolute(fs.workingDirectory + '/screenshots/failures'),
 		addLabelToFailedImage: false,
 		/*
 		fileNameGetter: function overide_file_naming(){},
-		onPass: function passCallback(){},
-		onFail: function failCallback(){},
-		onTimeout: function timeoutCallback(){},
-		onComplete: function completeCallback(){},
+		onPass: function pass_callback(){},
+		onFail: function fail_callback(){},
+		onTimeout: function timeout_callback(){},
+		onComplete: function complete_callback(){},
 		hideElements: '#thing.selector',
 		addLabelToFailedImage: true,
 		outputSettings: {
@@ -29,36 +29,35 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 			errorType: 'movement',
 			transparency: 0.3
 		}*/
-	} );
-
-	casper.on( 'remote.message', function ( msg ) {
-		this.echo( "[page] " + msg );
-	} );
-
-	casper.on( 'error', function ( err ) {
-		this.die( "PhantomJS has errored: " + err );
-	} );
-
-	casper.on( 'resource.error', function ( err ) {
-		casper.log( 'Resource load error: ' + err, 'warning' );
-	} );
+	});
+	
+	casper.on('remote.message', function(msg){
+		this.echo("[page] " + msg);
+	});
+	
+	casper.on('error', function(err){
+		this.die("PhantomJS has errored: " + err);
+	});
+	
+	casper.on('resource.error', function(err){
+		casper.log('Resource load error: ' + err, 'warning');
+	});
 	/*
 		The test scenario
 	*/
-
-	casper.start( 'http://localhost:11822' );
-
-	casper.viewport( 1024, 768 );
 	
-	casper.then( function () {
-		phantomcss.screenshot( '.jspaint', 'app screen initial' );
-		phantomcss.screenshot( '.jspaint-menus', 'menu bar initial' );
-		phantomcss.screenshot( '.jspaint-Tools-component', 'toolbox initial' );
-		phantomcss.screenshot( '.jspaint-Colors-component', 'color box initial' );
-	} );
+	casper.start('http://localhost:11822');
+	
+	casper.viewport(1024, 768);
+	
+	casper.then(function(){
+		phantomcss.screenshot('.jspaint', 'app screen initial');
+		phantomcss.screenshot('.jspaint-menus', 'menu bar initial');
+		phantomcss.screenshot('.jspaint-Tools-component', 'toolbox initial');
+		phantomcss.screenshot('.jspaint-Colors-component', 'color box initial');
+	});
 	
 	var screenshot_and_close_window = function(screenshot_name){
-		// var after = function(ms, fn){ setTimeout(fn, ms); };
 		// var window_title = "Attributes";
 		// var selector = {
 		// 	type: "xpath",
@@ -67,18 +66,18 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 		var selector = ".jspaint-window:not([style*='display: none'])";
 		
 		casper.then(function(){
-			casper.waitUntilVisible( selector,
-				function success() {
-					phantomcss.screenshot( selector, screenshot_name );
+			casper.waitUntilVisible(selector,
+				function success(){
+					phantomcss.screenshot(selector, screenshot_name);
 				}
 			);
-		} );
-		// casper.thenEvaluate( function(selector){
+		});
+		// casper.thenEvaluate(function(selector){
 		// 	$(selector).find(".jspaint-window-close-button").click();
 		// }, selector);
-		casper.then( function () {
+		casper.then(function close_the_window(){
 			casper.click(selector + " .jspaint-window-close-button");
-		} );
+		});
 	};
 	
 	casper.thenEvaluate(function(){
@@ -101,29 +100,13 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 	});
 	screenshot_and_close_window('help window');
 	
-	// casper.then( function () {
-	// 	// casper.sendKeys( 'body', 'e', { modifiers: 'ctrl' } )
-	// 	
-	// 	
-	// 	// casper.click(".jspaint-edit-menu");
-	// 	
-	// 	casper.evaluate(function() {
-	// 		image_attributes();
-	// 	});
-	// 	
-	// } );
-	
-	casper.then( function now_check_the_screenshots() {
-		// compare screenshots
+	casper.then(function now_check_the_screenshots(){
 		phantomcss.compareAll();
-	} );
-
-	/*
-	Casper runs tests
-	*/
-	casper.run( function () {
-		console.log( '\nTHE END.' );
+	});
+	
+	casper.run(function(){
+		console.log('\nTHE END.');
 		// phantomcss.getExitStatus() // pass or fail?
 		casper.test.done();
-	} );
-} );
+	});
+});
