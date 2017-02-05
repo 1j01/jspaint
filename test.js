@@ -57,51 +57,61 @@ casper.test.begin( 'jspaint visual tests', function ( test ) {
 		phantomcss.screenshot( '.jspaint-Colors-component', 'color box initial' );
 	} );
 	
-	casper.then( function () {
-		// casper.sendKeys( 'body', 'e', { modifiers: 'ctrl' } )
-		// casper.sendKeys( '.jspaint', 'e', { modifiers: 'ctrl' } )
+	var screenshot_and_close_window = function(screenshot_name){
+		// var after = function(ms, fn){ setTimeout(fn, ms); };
+		// var window_title = "Attributes";
+		// var selector = {
+		// 	type: "xpath",
+		// 	path: "//div[contains(concat(' ', normalize-space(@class), ' '), ' jspaint-window ')][//span[contains(concat(' ', normalize-space(@class), ' '), ' jspaint-window-title ')][.='" + window_title + "']]"
+		// };
+		var selector = ".jspaint-window:not([style*='display: none'])";
 		
-		var after = function(ms, fn){ setTimeout(fn, ms); };
-		
-		// casper.clickLabel("Edit");
-		// casper.click(".jspaint-edit-menu"); // if we merge newer changes, this could simplify the selector, but...
-		
-		casper.evaluate(function() {
-			image_attributes();
-		});
-		// casper.waitUntilVisible( ".jspaint-menu-container:nth-child(4) .jspaint-menu-button", function () {
-		// 	// after(50, function(){
-		// 		casper.click( '.jspaint-menu-container:nth-child(4) .jspaint-menu-button' );
-		// 		// casper.waitUntilVisible( ".jspaint-menu-popup", function () {
-		// 		casper.waitUntilVisible( ".jspaint-menu-container:nth-child(4) .jspaint-menu-row:nth-child(4)", function () {
-		// 			// after(50, function(){
-		// 				casper.click( '.jspaint-menu-container:nth-child(4) .jspaint-menu-row:nth-child(4)' );
-						
-						var window_title = "Attributes";
-						// var selector = {
-						// 	type: "xpath",
-						// 	path: "//div[contains(concat(' ', normalize-space(@class), ' '), ' jspaint-window ')][//span[contains(concat(' ', normalize-space(@class), ' '), ' jspaint-window-title ')][.='" + window_title + "']]"
-						// };
-						var selector = ".jspaint-window:not([style*='display: none'])";
-						
-						// casper.waitForSelector( '.jspaint-window:not([style*="display: none"])',
-						// casper.waitUntilVisible( '.jspaint-window',
-						casper.waitUntilVisible( selector,
-							function success() {
-								// phantomcss.screenshot( '.jspaint-window', 'attributes window' );
-								// phantomcss.screenshot( '.jspaint-window:not([style*="display: none"])', 'attributes window' );
-								phantomcss.screenshot( selector, 'attributes window' );
-								
-							}//,
-							// function timeout() {
-							// 	casper.test.fail( 'Window not found'- );
-							// }
-						);
-		// 			// } );
-		// 		} );
-		// 	// } );
-		// } );
-	} );
+		casper.then(function(){
+			casper.waitUntilVisible( selector,
+				function success() {
+					phantomcss.screenshot( selector, screenshot_name );
+				}
+			);
+		} );
+		// casper.thenEvaluate( function(selector){
+		// 	$(selector).find(".jspaint-window-close-button").click();
+		// }, selector);
+		casper.then( function () {
+			casper.click(selector + " .jspaint-window-close-button");
+		} );
+	};
+	
+	casper.thenEvaluate(function(){
+		image_attributes();
+	});
+	screenshot_and_close_window('attributes window');
+	
+	casper.thenEvaluate(function(){
+		image_flip_and_rotate();
+	});
+	screenshot_and_close_window('flip and rotate window');
+	
+	casper.thenEvaluate(function(){
+		image_stretch_and_skew();
+	});
+	screenshot_and_close_window('stretch and skew window');
+	
+	casper.thenEvaluate(function(){
+		show_help();
+	});
+	screenshot_and_close_window('help window');
+	
+	// casper.then( function () {
+	// 	// casper.sendKeys( 'body', 'e', { modifiers: 'ctrl' } )
+	// 	
+	// 	
+	// 	// casper.click(".jspaint-edit-menu");
+	// 	
+	// 	casper.evaluate(function() {
+	// 		image_attributes();
+	// 	});
+	// 	
+	// } );
 	
 	casper.then( function now_check_the_screenshots() {
 		// compare screenshots
