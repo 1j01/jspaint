@@ -106,48 +106,6 @@
 	outline-offset: 1px;
 }
 
-::-webkit-scrollbar {
-	width: 13px;
-	height: 13px;
-}
-::-webkit-scrollbar-thumb,
-::-webkit-scrollbar-button {
-	width: 13px;
-	height: 13px;
-	background: #c0c0c0;
-	border-top: 1px solid #c0c0c0;
-	border-left: 1px solid #c0c0c0;
-	border-right: 1px solid #000;
-	border-bottom: 1px solid #000;
-	box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
-}
-::-webkit-scrollbar-button:hover:active {
-	border: 1px solid #7b7b7b;
-	box-shadow: none;
-}
-::-webkit-scrollbar-corner {
-	background: #c0c0c0;
-}
-::-webkit-scrollbar-button {
-	background-position: center;
-	background-repeat: no-repeat;
-}
-::-webkit-scrollbar-button:horizontal:decrement {
-	background-image: url("../../images/scroll-left.png");
-}
-::-webkit-scrollbar-button:horizontal:increment {
-	background-image: url("../../images/scroll-right.png");
-}
-::-webkit-scrollbar-button:vertical:decrement {
-	background-image: url("../../images/scroll-up.png");
-}
-::-webkit-scrollbar-button:vertical:increment {
-	background-image: url("../../images/scroll-down.png");
-}
-::-webkit-scrollbar {
-	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC") repeat;
-}
-
 .jspaint-window-content .jspaint-dialogue-button {
 	margin: 3px;
 	padding: 3px;
@@ -457,3 +415,70 @@
 	outline: 1px dotted #ffffaa;
 	outline-offset: -1px;
 }
+
+
+::selection {
+	background-color: #000080;
+	color: white;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+	width: 16px;
+	height: 16px;
+}
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button {
+	background: #c0c0c0;
+	border-top: 1px solid #c0c0c0;
+	border-left: 1px solid #c0c0c0;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+	box-shadow: 1px 1px 0 white inset, -1px -1px 0 #707070 inset;
+}
+::-webkit-scrollbar-button:hover:active {
+	border: 1px solid #7b7b7b;
+	box-shadow: none;
+}
+::-webkit-scrollbar-corner {
+	background: #c0c0c0;
+}
+::-webkit-scrollbar-button {
+	background-position: center;
+	background-repeat: no-repeat;
+}
+::-webkit-scrollbar-button {
+	background-image: url("../../images/arrows.png");
+}
+::-webkit-scrollbar-button:horizontal:decrement:disabled {
+	background-position: calc(-24px + 1px) 1px; /* left */
+}
+::-webkit-scrollbar-button:horizontal:increment:disabled {
+	background-position: calc(-36px + 1px) 1px; /* right */
+}
+::-webkit-scrollbar-button:vertical:decrement:disabled {
+	background-position: calc(-12px + 1px) 1px; /* up */
+}
+::-webkit-scrollbar-button:vertical:increment:disabled {
+	background-position: calc(-0px + 1px) 1px; /* down */
+}
+::-webkit-scrollbar-button:horizontal:decrement {
+	background-position: calc(-24px + 1px) calc(-12px + 1px); /* left */
+}
+::-webkit-scrollbar-button:horizontal:increment {
+	background-position: calc(-36px + 1px) calc(-12px + 1px); /* right */
+}
+::-webkit-scrollbar-button:vertical:decrement {
+	background-position: calc(-12px + 1px) calc(-12px + 1px); /* up */
+}
+::-webkit-scrollbar-button:vertical:increment {
+	background-position: calc(-0px + 1px) calc(-12px + 1px); /* down */
+}
+::-webkit-scrollbar {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC) repeat;
+}
+::-webkit-scrollbar-track-piece:active {
+	background: black;
+}
+

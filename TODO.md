@@ -38,7 +38,6 @@
 	* Error symbol for error message dialogues
 	* The window close button uses text; font rendering is not consistent
 	* The progress bar (Rendering GIF) is left native
-	* Use win98 default scrollbar size
 	* Menu separator spacing
 	* Minor color differences (0x808080 != 0x7b7b7b)
 	* I want to give most things a revisit later on for Pixel Perfection
