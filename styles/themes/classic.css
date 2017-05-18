@@ -7,6 +7,10 @@
 	background: #7b7b7b;
 	border: 1px inset;
 }
+* {
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+}
 .jspaint-selection:after,
 .jspaint-textbox:after {
 	content: '';

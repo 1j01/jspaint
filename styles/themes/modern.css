@@ -4,6 +4,13 @@ body {
 	font-size: 15px;
 }
 
+.jspaint-canvas-area canvas,
+.jspaint-selection canvas,
+.jspaint-selection img {
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+}
+
 .jspaint-window,
 .jspaint-menu-popup {
 	border-radius: 2px;

@@ -45,7 +45,6 @@
 	* Dynamic cursors
 		* Inverty fill bucket and airbrush cursors
 		* Previewy brush and eraser cursors
-	* Pixelize icons, images, checkered backgrounds when zoomed in
 
 
 * Issues
