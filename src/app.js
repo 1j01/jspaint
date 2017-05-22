@@ -482,14 +482,29 @@ $canvas.on("pointerleave", function(e){
 });
 
 var pointer_was_pressed = false;
+// NOTE: mousedown and pointerdown can happen in either order
+// $canvas.on("mousedown", function(e){
+// 	console.log("MOUSEDOWN");
+// 	if(e.buttons == (1|2)){
+// 		if(pointer_was_pressed){
+// 			pointer_was_pressed = false;
+// 			cancel();
+// 			console.log("CANCEL");
+// 			e.preventDefault();
+// 		}
+// 	}
+// });
 $canvas.on("pointerdown", function(e){
-	if(pointer_was_pressed && (reverse ? (button === 2) : (button === 0))){
-		pointer_was_pressed = false;
-		cancel();
-		return;
-	}
+	// console.log("POINTERDOWN");
+	// if(pointer_was_pressed && (reverse ? (button === 2) : (button === 0))){
+	// 	pointer_was_pressed = false;
+	// 	cancel();
+	// 	console.log("CANCEL");
+	// 	return;
+	// }
 	pointer_was_pressed = true;
 	$G.one("pointerup", function(e){
+		console.log("pup");
 		pointer_was_pressed = false;
 	});
 	
@@ -536,6 +551,16 @@ $canvas.on("pointerdown", function(e){
 		pointerdown_action();
 	}else{
 		undoable(pointerdown_action);
+	}
+});
+$canvas.on("pointermove", function(e){
+	// TODO: touch (reimplement)
+	// TODO: if the pen eraser button is pressed while the pointer was already down, cancel
+	if(pointer_was_pressed && e.buttons === 3){
+		pointer_was_pressed = false;
+		console.log("pointermove > CANCEL");
+		cancel();
+		return;
 	}
 });
 

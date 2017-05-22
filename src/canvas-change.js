@@ -7,11 +7,8 @@
 	};
 	
 	var debug_event = function(e, synthetic){
-		if(synthetic){
-			window.console && console.debug && console.debug(e.type + " (synthetic)");
-		}else{
-			window.console && console.debug && console.debug(e.type + " (not synthetic)");
-		}
+		// var label = synthetic ? "(synthetic)" : "(normal)";
+		// window.console && console.debug && console.debug(e.type, label);
 	};
 	
 	// Hook into some events that imply a change might have occured
