@@ -194,7 +194,7 @@
 }
 
 .jspaint-tool.selected,
-.jspaint-button.selected,
+button.selected,
 .jspaint-current-colors {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEW9vb3///8EwsWUAAAADElEQVQI12NoYHAAAAHEAMFJRSpJAAAAAElFTkSuQmCC") repeat;
 }
@@ -324,7 +324,7 @@
 	font-family: Arial, sans-serif;
 	font-size: 16px;
 }
-.jspaint-button {
+button {
 	padding: 0;
 	vertical-align: middle;
 	font-family: Arial, sans-serif;
@@ -336,7 +336,7 @@
 	border-bottom: 1px solid #000;
 	position: relative;
 }
-.jspaint-button:after {
+button:after {
 	content: '';
 	pointer-events: none;
 	position: absolute;
@@ -349,32 +349,32 @@
 	border-right: 1px solid #808080;
 	border-bottom: 1px solid #808080;
 }
-.jspaint-button:hover:active,
-.jspaint-button.pressed,
-.jspaint-button.selected {
+button:hover:active,
+button.pressed,
+button.selected {
 	border-top: 1px solid #000;
 	border-left: 1px solid #000;
 	border-right: 1px solid #fff;
 	border-bottom: 1px solid #fff;
 }
-.jspaint-button:hover:active:after,
-.jspaint-button.pressed:after,
-.jspaint-button.selected:after {
+button:hover:active:after,
+button.pressed:after,
+button.selected:after {
 	border-top: 1px solid #808080;
 	border-left: 1px solid #808080;
 	border-right: 1px solid #dfdfdf;
 	border-bottom: 1px solid #dfdfdf;
 }
-.jspaint-button:before {
+button:before {
 	right: 0px;
 	top: -3px;
 }
-.jspaint-button:hover:active:before,
-.jspaint-button.pressed:before {
+button:hover:active:before,
+button.pressed:before {
 	right: -1px;
 	top: -2px;
 }
-.jspaint-button:focus {
+button:focus {
 	outline: 1px dotted black;
 	outline-offset: -4px;
 }

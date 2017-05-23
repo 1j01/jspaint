@@ -43,7 +43,7 @@ function $ColorBox(){
 	var build_palette = function(){
 		$palette.empty();
 		$.each(palette, function(i, color){
-			var $b = $(E("button")).addClass("jspaint-color-button");
+			var $b = $(E("div")).addClass("jspaint-color-button");
 			$b.appendTo($palette);
 			$b.css("background-color", color);
 			

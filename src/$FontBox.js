@@ -43,7 +43,7 @@ function $FontBox(){
 	
 	
 	function $Toggle(xi, thing){
-		var $button = $(E("button")).addClass("jspaint-button");
+		var $button = $(E("button"));
 		var $image = $(E("span")).appendTo($button);
 		$button.css({
 			width: 23,

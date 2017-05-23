@@ -5,7 +5,7 @@ function $Window($component){
 	var $w = $(E("div")).addClass("jspaint-window").appendTo("body");
 	$w.$titlebar = $(E("div")).addClass("jspaint-window-titlebar").appendTo($w);
 	$w.$title = $(E("span")).addClass("jspaint-window-title").appendTo($w.$titlebar);
-	$w.$x = $(E("button")).addClass("jspaint-window-close-button jspaint-window-button jspaint-button").appendTo($w.$titlebar);
+	$w.$x = $(E("button")).addClass("jspaint-window-close-button jspaint-window-button").appendTo($w.$titlebar);
 	$w.$content = $(E("div")).addClass("jspaint-window-content").appendTo($w);
 	
 	if($component){
@@ -201,7 +201,7 @@ function $FormWindow(title){
 		});
 		
 		// this should really not be needed @TODO
-		$b.addClass("jspaint-button jspaint-dialogue-button");
+		$b.addClass("jspaint-dialogue-button");
 		
 		$b.on("pointerdown", function(){
 			$b.focus();

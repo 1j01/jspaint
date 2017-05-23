@@ -52,7 +52,7 @@ function manage_storage(){
 		var $tr = $(E("tr")).appendTo($table);
 		
 		var $img = $(E("img")).attr({src: imgSrc});
-		var $remove = $(E("button")).addClass("jspaint-button jspaint-dialogue-button").text("Remove");
+		var $remove = $(E("button")).addClass("jspaint-dialogue-button").text("Remove");
 		var href = "#" + k.replace("image#", "local:");
 		var $link = $(E("a")).attr({href: href, target: "__blank"});
 		$link.append($img);
