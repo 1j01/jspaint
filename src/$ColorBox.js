@@ -1,14 +1,14 @@
 
 function $ColorBox(){
-	var $cb = $(E("div")).addClass("jspaint-color-box");
+	var $cb = $(E("div")).addClass("color-box");
 	
-	var $current_colors = $(E("div")).addClass("jspaint-current-colors");
-	var $palette = $(E("div")).addClass("jspaint-palette");
+	var $current_colors = $(E("div")).addClass("current-colors");
+	var $palette = $(E("div")).addClass("palette");
 	
 	$cb.append($current_colors, $palette);
 	
-	var $foreground_color = $(E("div")).addClass("jspaint-color-selection");
-	var $background_color = $(E("div")).addClass("jspaint-color-selection");
+	var $foreground_color = $(E("div")).addClass("color-selection");
+	var $background_color = $(E("div")).addClass("color-selection");
 	$current_colors.append($background_color, $foreground_color);
 	
 	$current_colors.css({
@@ -43,7 +43,7 @@ function $ColorBox(){
 	var build_palette = function(){
 		$palette.empty();
 		$.each(palette, function(i, color){
-			var $b = $(E("div")).addClass("jspaint-color-button");
+			var $b = $(E("div")).addClass("color-button");
 			$b.appendTo($palette);
 			$b.css("background-color", color);
 			

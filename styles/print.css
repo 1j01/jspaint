@@ -8,19 +8,19 @@ html, body, .jspaint {
 	overflow: hidden;
 }
 
-.jspaint-canvas-area,
-.jspaint-canvas-area canvas {
+.canvas-area,
+.canvas-area canvas {
 	position: fixed;
 	left: 0;
 	top: 0;
 	max-width: 100%;
 }
 
-.jspaint-window,
-.jspaint-handle,
-.jspaint-status-area,
-.jspaint-menus,
-.jspaint-component-area {
+.window,
+.handle,
+.status-area,
+.menus,
+.component-area {
 	display: none !important;
 }
 

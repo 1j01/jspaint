@@ -1,8 +1,8 @@
 
 function $Component(name, orientation, $el){
 	// A draggable widget that can be undocked into a window
-	var $c = $(E("div")).addClass("jspaint-component");
-	$c.addClass("jspaint-"+name+"-component");
+	var $c = $(E("div")).addClass("component");
+	$c.addClass(""+name+"-component");
 	$c.append($el);
 	$c.attr("touch-action", "none");
 	
@@ -15,8 +15,8 @@ function $Component(name, orientation, $el){
 	$w.title(name);
 	$w.hide();
 	$w.$content.addClass({
-		tall: "jspaint-vertical",
-		wide: "jspaint-horizontal",
+		tall: "vertical",
+		wide: "horizontal",
 	}[orientation]);
 	
 	// Nudge the Colors component over a tiny bit
@@ -79,7 +79,7 @@ function $Component(name, orientation, $el){
 		oy = rect.top - e.clientY;
 		
 		if(!$ghost){
-			$ghost = $(E("div")).addClass("jspaint-component-ghost dock");
+			$ghost = $(E("div")).addClass("component-ghost dock");
 			$ghost.css({
 				position: "absolute",
 				display: "block",
@@ -140,7 +140,7 @@ function $Component(name, orientation, $el){
 		$w.hide();
 		
 		// If the component is docked to a component area (a side)
-		if($c.parent().is(".jspaint-component-area")){
+		if($c.parent().is(".component-area")){
 			// Save where it's docked so we can dock back later
 			$last_docked_to = $c.parent();
 			if($dock_to){

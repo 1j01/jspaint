@@ -11,7 +11,7 @@ function storage_quota_exceeded(){
 	if(ignoring_quota_exceeded){
 		return;
 	}
-	var $w = $FormWindow().title("Storage Error").addClass("jspaint-dialogue-window");
+	var $w = $FormWindow().title("Storage Error").addClass("dialogue-window");
 	$w.$main.html(
 		"<p>JS Paint stores images as you work on them so that if you " +
 		"close your browser or tab or reload the page " +
@@ -38,7 +38,7 @@ function manage_storage(){
 	if($storage_manager){
 		$storage_manager.close();
 	}
-	$storage_manager = $FormWindow().title("Manage Storage").addClass("storage-manager jspaint-dialogue-window");
+	$storage_manager = $FormWindow().title("Manage Storage").addClass("storage-manager dialogue-window");
 	// @TODO: remove all button (with confirmation)
 	var $table = $(E("table")).appendTo($storage_manager.$main);
 	var $message = $(E("p")).appendTo($storage_manager.$main).html(

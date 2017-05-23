@@ -1,6 +1,6 @@
 
 function $FontBox(){
-	var $fb = $(E("div")).addClass("jspaint-font-box");
+	var $fb = $(E("div")).addClass("font-box");
 	
 	var $family = $(E("select"));
 	var $size = $(E("input")).attr({

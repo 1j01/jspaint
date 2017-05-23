@@ -4,45 +4,45 @@ body {
 	font-size: 15px;
 }
 
-.jspaint-canvas-area canvas,
-.jspaint-selection canvas,
-.jspaint-selection img {
+.canvas-area canvas,
+.selection canvas,
+.selection img {
 	image-rendering: crisp-edges;
 	image-rendering: pixelated;
 }
 
-.jspaint-window,
-.jspaint-menu-popup {
+.window,
+.menu-popup {
 	border-radius: 2px;
 	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
-.jspaint-window,
-.jspaint-window-titlebar {
+.window,
+.window-titlebar {
 	/*border-top-left-radius: 2px;*/
 	/*border-top-right-radius: 2px;*/
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
 }
-.jspaint-window-titlebar {
+.window-titlebar {
 	background: #3f51b5;
 	color: white;
 	/*padding: 16px;*/
 	/*height: 32px;*/
 	padding: 8px;
 }
-.jspaint-window-content {
+.window-content {
 	padding: 16px;
 	background: white;
 	border-bottom-left-radius: 2px;
 	border-bottom-right-radius: 2px;
 }
-.jspaint-component-window .jspaint-window-content {
+.component-window .window-content {
 	padding: 0;
 }
-.jspaint-component-window .jspaint-component {
+.component-window .component {
 	padding: 16px;
 }
-.jspaint-window-close-button {
+.window-close-button {
 	border: 0;
 	background: none;
 	color: inherit;
@@ -50,111 +50,111 @@ body {
 	transform: scale(1.5);
 }
 
-.jspaint-menus {
+.menus {
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
 	z-index: 1;
 }
 
-.jspaint-menu-button,
-.jspaint-menu-item {
+.menu-button,
+.menu-item {
 	outline: 0;
 }
 
-.jspaint-menu-button {
+.menu-button {
 	/*padding: 16px;*/
 	padding: 3px 7px 5px 7px;
 	margin-top: 2px;
 	border: 1px solid transparent;
 }
-.jspaint-menu-button:hover {
+.menu-button:hover {
 	background: #eeeeee;
 }
-.jspaint-menu-button:active,
-.jspaint-menu-button.active {
+.menu-button:active,
+.menu-button.active {
 	background: #e5e5e5;
 }
 
-.jspaint-menu-item:hover {
+.menu-item:hover {
 	background: #eeeeee;
 }
-.jspaint-menu-item:active,
-.jspaint-menu-item.active {
+.menu-item:active,
+.menu-item.active {
 	background: #e5e5e5;
 }
 
-.jspaint-menu-popup {
+.menu-popup {
 	background: white;
 	padding: 8px 0;
 }
 
-/*.jspaint-menu-item {
+/*.menu-item {
 	padding: 6px 10px 6px 30px;
 }*/
-.jspaint-menu-item td {
+.menu-item td {
 	/*height: 32px;*/
 	height: 27px;
 	padding: 0;
 }
-.jspaint-menu-item td:first-child {
+.menu-item td:first-child {
 	padding-left: 16px;
 }
-.jspaint-menu-item td:last-child {
+.menu-item td:last-child {
 	padding-right: 16px;
 }
-.jspaint-menu-item[disabled] {
+.menu-item[disabled] {
 	color: #bdbdbd;
 }
-.jspaint-menu-item.active {
+.menu-item.active {
 	background: #eeeeee;
 }
-.jspaint-menu-hr {
+.menu-hr {
 	/*height: 32px;*/
 	margin-top: 6px;
 	margin-bottom: 6px;
 	border: 0;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
-.jspaint-menu-item .jspaint-menu-item-checkbox-area {
+.menu-item .menu-item-checkbox-area {
 	padding-right: 8px;
 }
-.jspaint-menu-item .jspaint-menu-item-shortcut {
+.menu-item .menu-item-shortcut {
 	padding-left: 16px;
 }
 
-.jspaint-color-selection {
+.color-selection {
 	/*border-radius: 50%; */
 	border: 1px solid rgba(0, 0, 0, 0.5);
 	/* border: 1px outset; */
 	width: 18px;
 	height: 18px;
 }
-.jspaint-color-button {
+.color-button {
 	border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
-.jspaint-tools {
+.tools {
 	width: 50px;
 }
-.jspaint-tool {
+.tool {
 	border: 0;
 	background: 0;
 	width: 24px;
 	height: 24px;
 }
-.jspaint-tool.selected {
+.tool.selected {
 	background: rgba(0, 0, 0, 0.24);
 }
 
-.jspaint-tool-options {
+.tool-options {
 	/* the layout currently depends on the exact pixel width (specifically the brush tool options) */
 	border: 1px solid rgba(0, 0, 0, 0.24);
 }
 
-.jspaint-component-area,
-.jspaint-status-area {
+.component-area,
+.status-area {
 	background: #f1f1f1;
 }
-.jspaint-canvas-area {
+.canvas-area {
 	background: #7b7b7b;
 	/*background: #e9e9e9;*/
 	padding: 8px;

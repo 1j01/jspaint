@@ -2,7 +2,7 @@
 function Selection(x, y, width, height){
 	OnCanvasObject.call(this, x, y, width, height);
 	
-	this.$el.addClass("jspaint-selection");
+	this.$el.addClass("selection");
 }
 
 Selection.prototype = Object.create(OnCanvasObject.prototype);

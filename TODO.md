@@ -294,7 +294,6 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 * CSS
 	* DRY, especially button styles
-	* Get rid of all `.jspaint-` prefixes
 	* Deal with `z-index` rules?
 	* Comment stuff?
 	* Use a CSS preprocessor so we can do color-swap themes (maybe even load Windows theme files)

@@ -217,13 +217,13 @@ var menus = {
 			item: "E&xtras Menu",
 			checkbox: {
 				toggle: function(){
-					$(".jspaint-extras-menu-button").toggle();
+					$(".extras-menu-button").toggle();
 					try{
 						localStorage["jspaint extras menu visible"] = this.check();
 					}catch(e){}
 				},
 				check: function(){
-					return $(".jspaint-extras-menu-button").is(":visible");
+					return $(".extras-menu-button").is(":visible");
 				}
 			},
 			description: "Shows or hides the Extras menu.",

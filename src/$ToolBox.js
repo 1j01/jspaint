@@ -1,8 +1,8 @@
 
 function $ToolBox(){
-	var $tb = $(E("div")).addClass("jspaint-tool-box");
-	var $tools = $(E("div")).addClass("jspaint-tools");
-	var $tool_options = $(E("div")).addClass("jspaint-tool-options");
+	var $tb = $(E("div")).addClass("tool-box");
+	var $tools = $(E("div")).addClass("tools");
+	var $tool_options = $(E("div")).addClass("tool-options");
 	
 	var showing_tooltips = false;
 	$tools.on("pointerleave", function(){
@@ -11,7 +11,7 @@ function $ToolBox(){
 	});
 	
 	var $buttons = $($.map(tools, function(tool, i){
-		var $b = $(E("div")).addClass("jspaint-tool");
+		var $b = $(E("div")).addClass("tool");
 		$b.appendTo($tools);
 		tool.$button = $b;
 		

@@ -8,7 +8,7 @@ function $Handles($container, element, options){
 		el = element;
 	});
 	
-	var $resize_ghost = $(E("div")).addClass("jspaint-resize-ghost");
+	var $resize_ghost = $(E("div")).addClass("resize-ghost");
 	var handles = $.map([
 		["top", "right"], // ↗
 		["top", "middle"], // ↑
@@ -22,7 +22,7 @@ function $Handles($container, element, options){
 		var y_axis = pos[0];
 		var x_axis = pos[1];
 		
-		var $h = $(E("div")).addClass("jspaint-handle");
+		var $h = $(E("div")).addClass("handle");
 		$h.appendTo($container);
 		
 		$h.attr("touch-action", "none");
@@ -32,7 +32,7 @@ function $Handles($container, element, options){
 		var resizes_height = y_axis !== "middle";
 		var resizes_width = x_axis !== "middle";
 		if(size_only && (y_axis === "top" || x_axis === "left")){
-			$h.addClass("jspaint-useless-handle");
+			$h.addClass("useless-handle");
 		}else{
 			
 			var cursor_fname;
@@ -94,11 +94,11 @@ function $Handles($container, element, options){
 				dragged = false;
 				if(e.button === 0){
 					$G.on("pointermove", drag);
-					$("body").css({cursor: cursor}).addClass("jspaint-cursor-bully");
+					$("body").css({cursor: cursor}).addClass("cursor-bully");
 				}
 				$G.one("pointerup", function(e){
 					$G.off("pointermove", drag);
-					$("body").css({cursor: ""}).removeClass("jspaint-cursor-bully");
+					$("body").css({cursor: ""}).removeClass("cursor-bully");
 					
 					$resize_ghost.remove();
 					if(dragged){

@@ -44,7 +44,7 @@ var ChooserCanvas = function(
 ChooserCanvas.cache = {};
 
 var $Choose = function(things, display, choose, is_chosen){
-	var $chooser = $(E("div")).addClass("jspaint-chooser");
+	var $chooser = $(E("div")).addClass("chooser");
 	$chooser.on("update", function(){
 		$chooser.empty();
 		for(var i=0; i<things.length; i++){
@@ -123,7 +123,7 @@ var $ChooseShapeStyle = function(){
 		function(a){
 			return $chooser.stroke === a.stroke && $chooser.fill === a.fill;
 		}
-	).addClass("jspaint-choose-shape-style");
+	).addClass("choose-shape-style");
 	
 	$chooser.fill = false;
 	$chooser.stroke = true;
@@ -170,7 +170,7 @@ var $choose_brush = $Choose(
 	function(o){
 		return brush_shape === o.shape && brush_size === o.size;
 	}
-).addClass("jspaint-choose-brush");
+).addClass("choose-brush");
 
 var $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
@@ -188,7 +188,7 @@ var $choose_eraser_size = $Choose(
 	function(size){
 		return eraser_size === size;
 	}
-).addClass("jspaint-choose-eraser");
+).addClass("choose-eraser");
 
 var $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
@@ -206,7 +206,7 @@ var $choose_stroke_size = $Choose(
 	function(size){
 		return stroke_size === size;
 	}
-).addClass("jspaint-choose-stroke-size");
+).addClass("choose-stroke-size");
 
 var magnifications = [1, 2, 6, 8/*, 10*/]; // ten is secret
 var $choose_magnification = $Choose(
@@ -230,7 +230,7 @@ var $choose_magnification = $Choose(
 	function(scale){
 		return scale === magnification;
 	}
-).addClass("jspaint-choose-magnification");
+).addClass("choose-magnification");
 
 // The default enlarged (>1) magnification for when you use the tool
 // is 4x, which isn't an option you can get to from the tool options.
@@ -266,7 +266,7 @@ var $choose_airbrush_size = $Choose(
 	function(size){
 		return size === airbrush_size;
 	}
-).addClass("jspaint-choose-airbrush-size");
+).addClass("choose-airbrush-size");
 
 var $choose_transparency = $Choose(
 	["opaque", "transparent"],
@@ -287,4 +287,4 @@ var $choose_transparency = $Choose(
 	function(t_o){
 		return t_o === transparent_opaque;
 	}
-).addClass("jspaint-choose-transparency");
+).addClass("choose-transparency");

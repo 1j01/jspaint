@@ -12,7 +12,7 @@
 			go_outside_frame = true;
 		}catch(e){}
 	}
-	var $menus = $(E("div")).addClass("jspaint-menus");
+	var $menus = $(E("div")).addClass("menus");
 	if(go_outside_frame){
 		$menus.insertBefore(frameElement);
 	}else{
@@ -23,7 +23,7 @@
 	
 	var _html = function(menus_key){
 		return menus_key.replace(/&(.)/, function(m){
-			return "<span class='jspaint-menu-hotkey'>" + m[1] + "</span>";
+			return "<span class='menu-hotkey'>" + m[1] + "</span>";
 		});
 	};
 	var _hotkey = function(menus_key){
@@ -31,9 +31,9 @@
 	};
 	
 	var close_menus = function(){
-		$menus.find(".jspaint-menu-button").trigger("release");
+		$menus.find(".menu-button").trigger("release");
 		// Close any rogue floating submenus
-		$(".jspaint-menu-popup").hide();
+		$(".menu-popup").hide();
 	};
 	
 	var is_disabled = function(item){
@@ -47,20 +47,20 @@
 	};
 	
 	function $MenuPopup(menu_items){
-		var $menu_popup = $(E("div")).addClass("jspaint-menu-popup");
-		var $menu_popup_table = $(E("table")).addClass("jspaint-menu-popup-table").appendTo($menu_popup);
+		var $menu_popup = $(E("div")).addClass("menu-popup");
+		var $menu_popup_table = $(E("table")).addClass("menu-popup-table").appendTo($menu_popup);
 		
 		$.map(menu_items, function(item){
-			var $row = $(E("tr")).addClass("jspaint-menu-row").appendTo($menu_popup_table)
+			var $row = $(E("tr")).addClass("menu-row").appendTo($menu_popup_table)
 			if(item === ____________________________){
 				var $td = $(E("td")).attr({colspan: 4}).appendTo($row);
-				var $hr = $(E("hr")).addClass("jspaint-menu-hr").appendTo($td);
+				var $hr = $(E("hr")).addClass("menu-hr").appendTo($td);
 			}else{
-				var $item = $row.addClass("jspaint-menu-item");
-				var $checkbox_area = $(E("td")).addClass("jspaint-menu-item-checkbox-area");
-				var $label = $(E("td")).addClass("jspaint-menu-item-label");
-				var $shortcut = $(E("td")).addClass("jspaint-menu-item-shortcut");
-				var $submenu_area = $(E("td")).addClass("jspaint-menu-item-submenu-area");
+				var $item = $row.addClass("menu-item");
+				var $checkbox_area = $(E("td")).addClass("menu-item-checkbox-area");
+				var $label = $(E("td")).addClass("menu-item-label");
+				var $shortcut = $(E("td")).addClass("menu-item-shortcut");
+				var $submenu_area = $(E("td")).addClass("menu-item-submenu-area");
 				
 				$item.append($checkbox_area, $label, $shortcut, $submenu_area);
 				
@@ -111,7 +111,7 @@
 						open_tid = setTimeout(open_submenu, 200);
 					});
 					$item.add($submenu_popup).on("pointerout", function(){
-						$menu_popup.closest(".jspaint-menu-container").find(".jspaint-menu-button").focus();
+						$menu_popup.closest(".menu-container").find(".menu-button").focus();
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 						close_tid = setTimeout(function(){
@@ -148,7 +148,7 @@
 				$item.on("pointerout", function(){
 					if($item.is(":visible")){
 						$status_text.text("");
-						$menu_popup.closest(".jspaint-menu-container").find(".jspaint-menu-button").focus();
+						$menu_popup.closest(".menu-container").find(".menu-button").focus();
 					}
 				});
 				
@@ -179,12 +179,12 @@
 	
 	var this_click_opened_the_menu = false;
 	$.each(menus, function(menus_key, menu_items){
-		var $menu_container = $(E("div")).addClass("jspaint-menu-container").appendTo($menus);
-		var $menu_button = $(E("div")).addClass("jspaint-menu-button").appendTo($menu_container);
+		var $menu_container = $(E("div")).addClass("menu-container").appendTo($menus);
+		var $menu_button = $(E("div")).addClass("menu-button").appendTo($menu_container);
 		var $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
 		
 		var menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
-		$menu_button.addClass("jspaint-" + menu_id + "-menu-button");
+		$menu_button.addClass("" + menu_id + "-menu-button");
 		if(menu_id == "extras"){
 			// TODO: refactor shared key string, move to function
 			if(localStorage["jspaint extras menu visible"] != "true"){
@@ -196,42 +196,42 @@
 		$menu_button.html(_html(menus_key));
 		$menu_button.attr("tabIndex", -1)
 		$menu_container.on("keydown", function(e){
-			var $focused_item = $menu_popup.find(".jspaint-menu-item:focus");
+			var $focused_item = $menu_popup.find(".menu-item:focus");
 			switch(e.keyCode){
 				case 37: // Left
-					$menu_container.prev().find(".jspaint-menu-button").trigger("pointerdown");
+					$menu_container.prev().find(".menu-button").trigger("pointerdown");
 					break;
 				case 39: // Right
-					if($focused_item.find(".jspaint-menu-item-submenu-area:not(:empty)").length){
+					if($focused_item.find(".menu-item-submenu-area:not(:empty)").length){
 						$focused_item.click();
-						$(".jspaint-menu-popup .jspaint-menu-item").first().focus();
+						$(".menu-popup .menu-item").first().focus();
 						e.preventDefault();
 					}else{
-						$menu_container.next().find(".jspaint-menu-button").trigger("pointerdown");
+						$menu_container.next().find(".menu-button").trigger("pointerdown");
 					}
 					break;
 				case 40: // Down
 					if($menu_popup.is(":visible") && $focused_item.length){
 						var $next = $focused_item.next();
-						while($next.length && !$next.is(".jspaint-menu-item")){
+						while($next.length && !$next.is(".menu-item")){
 							$next = $next.next();
 						}
 						$next.focus();
 					}else{
 						$menu_button.trigger("pointerdown");
-						$menu_popup.find(".jspaint-menu-item").first().focus();
+						$menu_popup.find(".menu-item").first().focus();
 					}
 					break;
 				case 38: // Up
 					if($menu_popup.is(":visible") && $focused_item.length){
 						var $prev = $focused_item.prev();
-						while($prev.length && !$prev.is(".jspaint-menu-item")){
+						while($prev.length && !$prev.is(".menu-item")){
 							$prev = $prev.prev();
 						}
 						$prev.focus();
 					}else{
 						$menu_button.trigger("pointerdown"); // or maybe do nothing?
-						$menu_popup.find(".jspaint-menu-item").last().focus();
+						$menu_popup.find(".menu-item").last().focus();
 					}
 					break;
 			}
@@ -299,7 +299,7 @@
 		close_menus();
 	});
 	$G.on("pointerdown pointerup", function(e){
-		if($(e.target).closest(".jspaint-menus, .jspaint-menu-popup").length === 0){
+		if($(e.target).closest(".menus, .menu-popup").length === 0){
 			// console.log(e.type, "occurred outside of menus (on ", e.target, ") so...");
 			close_menus();
 		}

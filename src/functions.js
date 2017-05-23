@@ -227,7 +227,7 @@ function are_you_sure(action, canceled){
 	if(saved){
 		action();
 	}else{
-		var $w = new $FormWindow().addClass("jspaint-dialogue-window");
+		var $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.text("Save changes to "+file_name+"?");
 		$w.$Button("Save", function(){
@@ -251,7 +251,7 @@ function are_you_sure(action, canceled){
 }
 
 function show_error_message(message, error){
-	$w = $FormWindow().title("Error").addClass("jspaint-dialogue-window");
+	$w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.text(message);
 	$(E("pre"))
 		.appendTo($w.$main)
@@ -299,7 +299,7 @@ function paste_from(){
 function paste(img){
 	
 	if(img.width > canvas.width || img.height > canvas.height){
-		var $w = new $FormWindow().addClass("jspaint-dialogue-window");
+		var $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.html(
 			"The image is bigger than the canvas.<br>" +
@@ -414,7 +414,7 @@ function render_history_as_gif(){
 function undoable(callback, action){
 	saved = false;
 	if(redos.length > 5){
-		var $w = new $FormWindow().addClass("jspaint-dialogue-window");
+		var $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
 		$w.$Button(action ? "Discard and Apply" : "Discard", function(){
@@ -703,7 +703,7 @@ function image_flip_and_rotate(){
 		var angle = angle_deg / 360 * TAU;
 		
 		if(isNaN(angle)){
-			var $msgw = new $FormWindow("Invalid Value").addClass("jspaint-dialogue-window");
+			var $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
 			$msgw.$main.text("The value specified for Degrees was invalid.");
 			$msgw.$Button("Okay", function(){
 				$msgw.close();

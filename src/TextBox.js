@@ -4,8 +4,8 @@ function TextBox(x, y, width, height){
 	
 	OnCanvasObject.call(tb, x, y, width, height);
 	
-	tb.$el.addClass("jspaint-textbox");
-	tb.$editor = $(E("textarea")).addClass("jspaint-textbox-editor");
+	tb.$el.addClass("textbox");
+	tb.$editor = $(E("textarea")).addClass("textbox-editor");
 	
 	var update = function(){
 		font.color = colors.foreground;
@@ -109,7 +109,7 @@ TextBox.prototype.instantiate = function(){
 			if(
 				e.target instanceof HTMLInputElement ||
 				e.target instanceof HTMLTextAreaElement ||
-				e.target.classList.contains("jspaint-handle")
+				e.target.classList.contains("handle")
 			){
 				return;
 			}

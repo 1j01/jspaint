@@ -5,7 +5,7 @@ function OnCanvasObject(x, y, width, height){
 	this.width = width;
 	this.height = height;
 	
-	this.$el = $(E("div")).addClass("jspaint-on-canvas-object").appendTo($canvas_area);
+	this.$el = $(E("div")).addClass("on-canvas-object").appendTo($canvas_area);
 	
 	$canvas_handles.hide();
 }

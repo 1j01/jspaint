@@ -46,10 +46,10 @@ var saved = true;
 
 var $app = $(E("div")).addClass("jspaint").appendTo("body");
 
-var $V = $(E("div")).addClass("jspaint-vertical").appendTo($app);
-var $H = $(E("div")).addClass("jspaint-horizontal").appendTo($V);
+var $V = $(E("div")).addClass("vertical").appendTo($app);
+var $H = $(E("div")).addClass("horizontal").appendTo($V);
 
-var $canvas_area = $(E("div")).addClass("jspaint-canvas-area").appendTo($H);
+var $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
 $canvas_area.attr("touch-action", "pan-x pan-y");
 
 var canvas = new Canvas();
@@ -59,15 +59,15 @@ $canvas.attr("touch-action", "none");
 
 var $canvas_handles = $Handles($canvas_area, canvas, {outset: 4, offset: 4, size_only: true});
 
-var $top = $(E("div")).addClass("jspaint-component-area").prependTo($V);
-var $bottom = $(E("div")).addClass("jspaint-component-area").appendTo($V);
-var $left = $(E("div")).addClass("jspaint-component-area").prependTo($H);
-var $right = $(E("div")).addClass("jspaint-component-area").appendTo($H);
+var $top = $(E("div")).addClass("component-area").prependTo($V);
+var $bottom = $(E("div")).addClass("component-area").appendTo($V);
+var $left = $(E("div")).addClass("component-area").prependTo($H);
+var $right = $(E("div")).addClass("component-area").appendTo($H);
 
-var $status_area = $(E("div")).addClass("jspaint-status-area").appendTo($V);
-var $status_text = $(E("div")).addClass("jspaint-status-text").appendTo($status_area);
-var $status_position = $(E("div")).addClass("jspaint-status-coordinates").appendTo($status_area);
-var $status_size = $(E("div")).addClass("jspaint-status-coordinates").appendTo($status_area);
+var $status_area = $(E("div")).addClass("status-area").appendTo($V);
+var $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
+var $status_position = $(E("div")).addClass("status-coordinates").appendTo($status_area);
+var $status_size = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 
 ($status_text.default = function(){
 	$status_text.text("For Help, click Help Topics on the Help Menu.");

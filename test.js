@@ -52,18 +52,18 @@ casper.test.begin('jspaint visual tests', function(test){
 	
 	casper.then(function(){
 		phantomcss.screenshot('.jspaint', 'app screen initial');
-		phantomcss.screenshot('.jspaint-menus', 'menu bar initial');
-		phantomcss.screenshot('.jspaint-Tools-component', 'toolbox initial');
-		phantomcss.screenshot('.jspaint-Colors-component', 'color box initial');
+		phantomcss.screenshot('.menus', 'menu bar initial');
+		phantomcss.screenshot('.Tools-component', 'toolbox initial');
+		phantomcss.screenshot('.Colors-component', 'color box initial');
 	});
 	
 	var screenshot_and_close_window = function(screenshot_name){
 		// var window_title = "Attributes";
 		// var selector = {
 		// 	type: "xpath",
-		// 	path: "//div[contains(concat(' ', normalize-space(@class), ' '), ' jspaint-window ')][//span[contains(concat(' ', normalize-space(@class), ' '), ' jspaint-window-title ')][.='" + window_title + "']]"
+		// 	path: "//div[contains(concat(' ', normalize-space(@class), ' '), ' window ')][//span[contains(concat(' ', normalize-space(@class), ' '), ' window-title ')][.='" + window_title + "']]"
 		// };
-		var selector = ".jspaint-window:not([style*='display: none'])";
+		var selector = ".window:not([style*='display: none'])";
 		
 		casper.then(function(){
 			casper.waitUntilVisible(selector,
@@ -73,10 +73,10 @@ casper.test.begin('jspaint visual tests', function(test){
 			);
 		});
 		// casper.thenEvaluate(function(selector){
-		// 	$(selector).find(".jspaint-window-close-button").click();
+		// 	$(selector).find(".window-close-button").click();
 		// }, selector);
 		casper.then(function close_the_window(){
-			casper.click(selector + " .jspaint-window-close-button");
+			casper.click(selector + " .window-close-button");
 		});
 	};
 	
