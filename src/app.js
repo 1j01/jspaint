@@ -551,7 +551,10 @@ $canvas_area.on("pointerdown", function(e){
 	}
 });
 
-$app.on("mousedown selectstart contextmenu", function(e){
+$app
+.add($toolbox)
+.add($colorbox)
+.on("mousedown selectstart contextmenu", function(e){
 	if(
 		e.target instanceof HTMLSelectElement ||
 		e.target instanceof HTMLTextAreaElement ||
