@@ -27,7 +27,7 @@
 			// A change might occur immediately
 			may_be_changed();
 		}else{
-			// Changes may occur when you release from a stroke
+			// Changes may occur when you release
 			pointer_operations = [e];
 			var pointermove = function(e, synthetic){
 				debug_event(e, synthetic);

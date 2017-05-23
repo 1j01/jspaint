@@ -443,16 +443,18 @@ function canvas_pointer_move(e){
 	pointer = e2c(e);
 	if(e.shiftKey){
 		if(selected_tool.name.match(/Line|Curve/)){
+			// snap to eight directions
 			var dist = Math.sqrt(
 				(pointer.y - pointer_start.y) * (pointer.y - pointer_start.y) +
 				(pointer.x - pointer_start.x) * (pointer.x - pointer_start.x)
 			);
-			var octurn = (TAU / 8);
-			var dir08 = Math.atan2(pointer.y - pointer_start.y, pointer.x - pointer_start.x) / octurn;
-			var dir = Math.round(dir08) * octurn;
-			pointer.x = Math.round(pointer_start.x + Math.cos(dir) * dist);
-			pointer.y = Math.round(pointer_start.y + Math.sin(dir) * dist);
+			var eighth_turn = TAU / 8;
+			var angle_0_to_8 = Math.atan2(pointer.y - pointer_start.y, pointer.x - pointer_start.x) / eighth_turn;
+			var angle = Math.round(angle_0_to_8) * eighth_turn;
+			pointer.x = Math.round(pointer_start.x + Math.cos(angle) * dist);
+			pointer.y = Math.round(pointer_start.y + Math.sin(angle) * dist);
 		}else if(selected_tool.shape){
+			// snap to four diagonals
 			var w = Math.abs(pointer.x - pointer_start.x);
 			var h = Math.abs(pointer.y - pointer_start.y);
 			if(w < h){
