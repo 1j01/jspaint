@@ -57,7 +57,6 @@
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
 		* Tool options flicker... *and lag*, when they're redrawn in quick succession
-	* The TextBox `-webkit-scrollbar`s get extra buttons
 	* The TextBox contents move down and right when rasterizing
 	* Free-form select can leave behind inverty brush in multiplayer
 	* Multiplayer cursors that go outside the parent can cause the page to be scrollable
