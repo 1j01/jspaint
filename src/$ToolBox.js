@@ -11,7 +11,7 @@ function $ToolBox(){
 	});
 	
 	var $buttons = $($.map(tools, function(tool, i){
-		var $b = $(E("button")).addClass("jspaint-tool");
+		var $b = $(E("div")).addClass("jspaint-tool");
 		$b.appendTo($tools);
 		tool.$button = $b;
 		

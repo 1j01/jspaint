@@ -293,11 +293,9 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * CSS
-	* Shouldn't need classes `.jspaint-window-button` (`.jspaint-window-titlebar button`) or `.jspaint-dialogue-button` (`.jspaint-window-content button`) at all
-	* DRY, especially for the buttons
-	* Seriously, the buttons
-	* Also other `.jspaint-` classes
-	* Deal with `z-index`es
+	* DRY, especially button styles
+	* Get rid of all `.jspaint-` prefixes
+	* Deal with `z-index` rules?
 	* Comment stuff?
 	* Use a CSS preprocessor so we can do color-swap themes (maybe even load Windows theme files)
 	* Stuff should go in an OS GUI library with themes for Windows 98 and other OSes

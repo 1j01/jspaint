@@ -106,7 +106,7 @@
 	outline-offset: 1px;
 }
 
-.jspaint-window-content .jspaint-dialogue-button {
+.jspaint-window-content button {
 	margin: 3px;
 	padding: 3px;
 	box-sizing: border-box;
@@ -118,7 +118,7 @@
 	background: transparent;
 	outline: 0;
 }
-.jspaint-window-content .jspaint-dialogue-button:before {
+.jspaint-window-content button:before {
 	content: " ";
 	position: absolute;
 	z-index: 1;
@@ -131,8 +131,8 @@
 	border-right: 1px solid #7b7b7b;
 	border-bottom: 1px solid #7b7b7b;
 }
-.jspaint-window-content .jspaint-dialogue-button:hover:active,
-.jspaint-window-content .jspaint-dialogue-button.pressed,
+.jspaint-window-content button:hover:active,
+.jspaint-window-content button.pressed,
 .jspaint-tool:hover:active,
 .jspaint-tool.selected {
 	padding-bottom: 2px;
@@ -145,8 +145,8 @@
 	border-right: 1px solid white;
 	border-bottom: 1px solid white;
 }
-.jspaint-window-content .jspaint-dialogue-button:hover:active:before,
-.jspaint-window-content .jspaint-dialogue-button.pressed:before,
+.jspaint-window-content button:hover:active:before,
+.jspaint-window-content button.pressed:before,
 .jspaint-tool:hover:active:before,
 .jspaint-tool.selected:before {
 	top: 0px;
@@ -317,7 +317,7 @@ button.selected,
 	width: 13px;
 	height: 11px;
 }
-.jspaint-window-button {
+.jspaint-window-titlebar button {
 	margin: 2px;
 }
 .jspaint-window-content {
