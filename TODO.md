@@ -155,10 +155,6 @@
 * Eraser/Color Eraser ✓
 
 
-* Fill With Color
-	* Find a better fill algorithm that gets into all the corners
-
-
 * Pick Color ✓
 
 

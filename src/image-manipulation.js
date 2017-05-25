@@ -237,17 +237,24 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 		y = new_pos[1];
 
 		pixel_pos = (y*c_width + x) * 4;
-		while(match_start_color(pixel_pos)){
-			pixel_pos -= c_width * 4, y--;
+		while(matches_start_color(pixel_pos)){
+			y--;
+			pixel_pos = (y*c_width + x) * 4;
 		}
-		pixel_pos += c_width * 4, y++;
 		reach_left = false;
 		reach_right = false;
-		while(y++ < c_height && match_start_color(pixel_pos)){
+		while(true){
+			y++;
+			pixel_pos = (y*c_width + x) * 4;
+			
+			if(!(y < c_height && matches_start_color(pixel_pos))){
+				break;
+			}
+			
 			color_pixel(pixel_pos);
 
 			if(x > 0){
-				if(match_start_color(pixel_pos - 4)){
+				if(matches_start_color(pixel_pos - 4)){
 					if(!reach_left){
 						stack.push([x - 1, y]);
 						reach_left = true;
@@ -258,7 +265,7 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 			}
 
 			if(x < c_width-1){
-				if(match_start_color(pixel_pos + 4)){
+				if(matches_start_color(pixel_pos + 4)){
 					if(!reach_right){
 						stack.push([x + 1, y]);
 						reach_right = true;
@@ -273,7 +280,7 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	}
 	ctx.putImageData(id, 0, 0);
 
-	function match_start_color(pixel_pos){
+	function matches_start_color(pixel_pos){
 		return (
 			id.data[pixel_pos+0] === start_r &&
 			id.data[pixel_pos+1] === start_g &&
