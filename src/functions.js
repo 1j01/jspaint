@@ -605,7 +605,7 @@ function image_attributes(){
 	
 	// Fieldsets
 	
-	var $units = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
+	var $units = $(E("fieldset")).appendTo($main).append('<legend>Units</legend>');
 	$units.append('<label><input type="radio" name="units" value="in">Inches</label>');
 	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
 	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
