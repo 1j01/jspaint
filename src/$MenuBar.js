@@ -1,23 +1,13 @@
 
-(function(){
+$MenuBar.DIVIDER = "DIVIDER";
+
+function $MenuBar(menus){
+	
 	var $ = jQuery;
 	var $G = $(self);
-	var go_outside_frame = false;
-	if(frameElement){
-		try{
-			parent.jQuery.should_exist; // (will throw otherwise)
-			parent.PointerEventsPolyfill.should_also_exist; // (will throw otherwise)
-			$ = parent.jQuery;
-			$G = $([self, parent]);
-			go_outside_frame = true;
-		}catch(e){}
-	}
+	
 	var $menus = $(E("div")).addClass("menus");
-	if(go_outside_frame){
-		$menus.insertBefore(frameElement);
-	}else{
-		$menus.prependTo($V);
-	}
+	
 	$menus.attr("touch-action", "none");
 	var selecting_menus = false;
 	
@@ -46,13 +36,14 @@
 		}
 	};
 	
+	// TODO: API for context menus (i.e. floating menu popups)
 	function $MenuPopup(menu_items){
 		var $menu_popup = $(E("div")).addClass("menu-popup");
 		var $menu_popup_table = $(E("table")).addClass("menu-popup-table").appendTo($menu_popup);
 		
 		$.map(menu_items, function(item){
 			var $row = $(E("tr")).addClass("menu-row").appendTo($menu_popup_table)
-			if(item === ____________________________){
+			if(item === $MenuBar.DIVIDER){
 				var $td = $(E("td")).attr({colspan: 4}).appendTo($row);
 				var $hr = $(E("hr")).addClass("menu-hr").appendTo($td);
 			}else{
@@ -140,14 +131,14 @@
 				});
 				$item.on("pointerover", function(){
 					if(item.submenu){
-						$status_text.text("");
+						$menus.triggerHandler("info", "");
 					}else{
-						$status_text.text(item.description || "");
+						$menus.triggerHandler("info", item.description || "");
 					}
 				});
 				$item.on("pointerout", function(){
 					if($item.is(":visible")){
-						$status_text.text("");
+						$menus.triggerHandler("info", "");
 						$menu_popup.closest(".menu-container").find(".menu-button").focus();
 					}
 				});
@@ -269,7 +260,7 @@
 			
 			selecting_menus = true;
 			
-			$status_text.text("");
+			$menus.triggerHandler("info", "");
 		});
 		$menu_button.on("pointerup", function(e){
 			if(this_click_opened_the_menu){
@@ -286,7 +277,7 @@
 			$menu_button.removeClass("active");
 			$menu_popup.hide();
 			
-			$status_text.default();
+			$menus.triggerHandler("default-info");
 		});
 	});
 	$G.on("keypress", function(e){
@@ -304,5 +295,7 @@
 			close_menus();
 		}
 	});
+	
+	return $menus;
 
-})();
+}

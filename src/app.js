@@ -69,9 +69,10 @@ var $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
 var $status_position = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 var $status_size = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 
-($status_text.default = function(){
+$status_text.default = function(){
 	$status_text.text("For Help, click Help Topics on the Help Menu.");
-})();
+};
+$status_text.default();
 
 var $toolbox = $ToolBox();
 var $colorbox = $ColorBox();

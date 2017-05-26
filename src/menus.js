@@ -1,6 +1,4 @@
 
-var ____________________________ = "A HORIZONTAL RULE / DIVIDER";
-
 var menus = {
 	"&File": [
 		{
@@ -28,7 +26,7 @@ var menus = {
 			action: file_save_as,
 			description: "Saves the active document with a new name.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "Print Pre&view",
 			action: function(){
@@ -53,7 +51,7 @@ var menus = {
 			},
 			description: "Prints the active document and sets printing options.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "Set As &Wallpaper (Tiled)",
 			action: set_as_wallpaper_tiled,
@@ -64,19 +62,19 @@ var menus = {
 			action: set_as_wallpaper_centered,
 			description: "Centers this bitmap as the desktop background.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "Manage Storage",
 			action: manage_storage,
 			description: "Manages storage of previously created or opened pictures.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "Recent File",
 			enabled: false, // @TODO for chrome app
 			description: "",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "E&xit",
 			shortcut: "Alt+F4",
@@ -105,7 +103,7 @@ var menus = {
 			action: redo,
 			description: "Redoes the previously undone action.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
@@ -154,7 +152,7 @@ var menus = {
 			action: select_all,
 			description: "Selects everything.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "C&opy To...",
 			enabled: function(){ return !!selection; },
@@ -212,23 +210,23 @@ var menus = {
 			checkbox: {},
 			description: "Shows or hides the text toolbar.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "E&xtras Menu",
 			checkbox: {
 				toggle: function(){
-					$(".extras-menu-button").toggle();
+					$extras_menu_button.toggle();
 					try{
 						localStorage["jspaint extras menu visible"] = this.check();
 					}catch(e){}
 				},
 				check: function(){
-					return $(".extras-menu-button").is(":visible");
+					return $extras_menu_button.is(":visible");
 				}
 			},
 			description: "Shows or hides the Extras menu.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "&Zoom",
 			submenu: [
@@ -259,7 +257,7 @@ var menus = {
 					enabled: false, // @TODO
 					description: "Zooms the picture.",
 				},
-				____________________________,
+				$MenuBar.DIVIDER,
 				{
 					item: "Show &Grid",
 					shorcut: "Ctrl+G",
@@ -372,7 +370,7 @@ var menus = {
 			action: show_help,
 			description: "Displays Help for the current task or command.",
 		},
-		____________________________,
+		$MenuBar.DIVIDER,
 		{
 			item: "&About Paint",
 			action: function(){
@@ -467,3 +465,32 @@ var menus = {
 		},
 	],
 };
+
+var go_outside_frame = false;
+if(frameElement){
+	try{
+		if(parent.$MenuBar){
+			$MenuBar = parent.$MenuBar;
+			go_outside_frame = true;
+		}
+	}catch(e){}
+}
+var $menu_bar = $MenuBar(menus);
+if(go_outside_frame){
+	$menu_bar.insertBefore(frameElement);
+}else{
+	$menu_bar.prependTo($V);
+}
+
+$menu_bar.on("info", function(e, info){
+	$status_text.text(info);
+});
+$menu_bar.on("default-info", function(e){
+	$status_text.default();
+});
+
+var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
+// TODO: refactor shared key string
+if(localStorage["jspaint extras menu visible"] != "true"){
+	$extras_menu_button.hide();
+}
