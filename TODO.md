@@ -83,13 +83,13 @@
 
 ### Extended editing
 
-* Transparency ✓
-	* Detect transparency when opening an image ✓
-	* Option in Image > Attributes... ✓
-	* Color opacity slider
-	* Toggle between blend and copy modes
-	* Represent transparency with a checkered background pattern
-	* Maybe equivalise any rgba(X, X, X, 0) in fill algorithm
+* Transparency
+	* [x] Detect transparency when opening an image
+	* [x] Option in Image > Attributes...
+	* [ ] Color opacity slider
+	* [ ] Toggle between blend and copy modes
+	* [x] Represent transparency with a checkered background pattern
+	* [ ] Maybe equivalise any rgba(X, X, X, 0) in fill algorithm
 
 
 * Images with multiple sub-images
