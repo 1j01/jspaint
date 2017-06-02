@@ -15,7 +15,11 @@ So far, it does this pretty well.
 
 Ah yes, good old paint. Not the one with the [ribbons][]
 or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
-And sorry, not the even newer [Paint 3D Preview][] that you can't install unless you're on a prerelease build (which is why my computer is barely functional at the moment, and I can't switch to an earlier build because I can't open the Settings, and I can't give feedback because I can't open Feedback, and I can't open the Start menu among other things.)
+And sorry, not the even newer [Paint 3D][].
+
+[ribbons]: https://www.google.com/search?tbm=isch&q=MS+Paint+Windows+7+ribbons "Google Search: MS Paint Windows 7 ribbons"
+[Fresh Paint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
+[Paint 3D]: https://www.microsoft.com/en-us/store/p/paint-3d-preview/9nblggh5fv99
 
 Windows 95, 98, and XP were the golden years of paint.
 You had a tool box and a color box, a foreground color and a background color,
@@ -75,6 +79,7 @@ I want to bring good old paint into the modern era.
 
 * [Extended Editing](#extended-editing)
 * Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
+  (or maybe that should be the default)
 * After adding text, save as SVG or HTML with selectable text
   (invisible text positioned over an embedded bitmap image)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
@@ -94,8 +99,9 @@ Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
 There's apparently no way for web apps to properly copy image data to the clipboard.
+"[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)" is currently the top starred issue of chromium.
 To use the clipboard menu items, you need to install [the Chrome app][jspaint chrome app].
-(It would be a huge security issue if browsers let web pages access the clipboard at will.)
+<!-- or the native app. -->
 
 
 ## Extended Editing
@@ -135,7 +141,7 @@ I want to make JS Paint to be able to edit...
 
 * You can drag the color box and tool box around if you grab them by the right place.
   You can even drag them out into little windows.
-  You can dock the windows back to the side by double-clicking on their titlebars.
+  You can dock the windows back to the side by double-clicking on their title bars.
 
 * In addition to the left-click foreground color and the right-click background color,
   there's also a third color you can access by holding <kbd>Ctrl</kbd> while you draw.
@@ -154,14 +160,10 @@ I want to make JS Paint to be able to edit...
 	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
 	* [x] Color Replacement (right mouse button in Eraser selectively replaces the foreground color with the background color)
 	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
-	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing. I also made it redoable, in case you do it by accident!)
+	* [ ] Quick Undo (Pressing a second mouse button cancels the action you were performing. I also made it redoable, in case you do it by accident! But [it broke at some point in Chrome.](https://github.com/1j01/jspaint/issues/9))
 	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
 
 
 [jspaint chrome app]: https://chrome.google.com/webstore/detail/dgfedgcofbjmeohonbpcoagiabgnddjh
 [jspaint web app]: http://jspaint.ml
-
-[ribbons]: https://www.google.com/search?tbm=isch&q=MS+Paint+Windows+7+ribbons "Google Search: MS Paint Windows 7 ribbons"
-[Fresh Paint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
-[Paint 3D Preview]: https://www.microsoft.com/en-us/store/p/paint-3d-preview/9nblggh5fv99
 

@@ -5,8 +5,8 @@
 	* Resizable panes
 	* Resizable window
 	* Link-esque things
-		* Popups (I'll probably make the text selectable within the popups)
-		* Related topics (I'll probably make this a heading with links instead of the weird context menu thing)
+		* Popups (I'd probably make the text within the popups selectable)
+		* Related topics (I'd probably make this a heading with links instead of the weird context menu thing)
 	* Note unsupported features
 		* "To use black and white instead of color"
 		* "To display gridlines"
@@ -47,8 +47,8 @@
 
 
 * Issues
-	* Stretch/skew and rotate don't update the canvas size
-	* Since when does clicking with the other mouse button not cancel the action by undoing it?
+	* [Stretch/skew and rotate don't update the canvas size](https://github.com/1j01/jspaint/issues/8)
+	* ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
 	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
@@ -56,7 +56,7 @@
 	* Firefox
 		* It lags unusably when using tools
 			* For some tools it only happens while dragging the mouse on the canvas
-		* Tool options flicker... *and lag*, when they're redrawn in quick succession
+		* Tool options lag unusably when they're redrawn in quick succession
 	* The TextBox contents move down and right when rasterizing
 	* Free-form select can leave behind inverty brush in multiplayer
 	* Multiplayer cursors that go outside the parent can cause the page to be scrollable
@@ -74,8 +74,8 @@
 
 ### Components / Windows
 
-* Use the ghost when dragging on a component window's titlebar
-* Make the component ghost account for the window's titlebar
+* Use the ghost when dragging on a component window's title bar
+* Make the component ghost account for the window's title bar
 
 
 * Handle windows going off the screen
@@ -123,7 +123,7 @@
 
 
 * Enlarge GUI elements on touch devices
-	* Menus!
+	* Menus
 	* Resize handles
 
 
@@ -152,24 +152,12 @@
 	* See [On-Canvas Objects](#on-canvas-objects) for Selection
 
 
-* Eraser/Color Eraser ✓
-
-
-* Pick Color ✓
-
-
 * Magnifier
 	* Choose and preview viewport with rectangular cursor
 
 
 * Pencil
 	* Adjust size (with numpad)
-
-
-* Brush ✓
-
-
-* Airbrush ✓
 
 
 * Text
@@ -222,6 +210,7 @@
 
 * Selection
 	* Proportionally resize selection while holding Shift
+	  (or maybe by default? I feel like that should be the default.)
 	* Don't cut until you drag or do something else
 	  (In MS Paint, you can make a selection, change the background color
 	  and drag it, leaving the new background color behind.)
@@ -232,36 +221,11 @@
 	* See Text tool
 
 
-### BSOD
-
-Press ~ to bluescreen (or maybe something on the numpad?)
-
-Prankily wait for next user input before fullscreening and bluescreening
-
-
 ### Chrome App
 
-* Set up build process
-	* Increment version
-	* Compress into zip file
-	* Upload new version to the Chrome Web Store?
+I started making a packaged, windowed app, but a hosted app would be simpler.
 
-
-* Use the chrome.wallpaper API to change the ChromeOS wallpaper
-	* Theoretical support ✓
-	* Test this on Chrome OS
-
-
-* Custom window frame
-	* (Note: Minimum window size might need updating)
-
-
-* Save/manage application state
-	* On restart, reopen images from storage
-	* On close / Exit, ask to save, remove image from storage
-
-
-* Basic things that people would complain about
+I implemented theoretical support for changing the wallpaper on Chrome OS, but I don't know if it works.
 
 
 * [Analytics](https://developer.chrome.com/apps/analytics)
@@ -272,7 +236,7 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 ### Native App
 
-* Proper clipboard support
+* Proper clipboard support; Electron has an API for copying images
 * A dialogue when closing
 * Subwindows outside the main window
 * A different way of handling always-saved documents
@@ -297,14 +261,14 @@ Prankily wait for next user input before fullscreening and bluescreening
 
 
 * JS
-	* Everything is in random files! "functions.js", REALLY?
+	* Everything is in random files! "`functions.js`", REALLY?
 	* `$Window` has a `$Button` facility; `$FormWindow` overrides it with essentially a better one
 	* Image inversion code is duplicated in `ChooserCanvas` from tool-options.js but should go in image-manipulation.js
 	* Make code clearer / improve code quality: https://codeclimate.com/github/1j01/jspaint
 
 
 * Images
-	* Use a global sprite sheet, and optimize it
+	* Use a shared sprite sheet per theme, and optimize it
 
 
 * Search Engine Optimization
