@@ -28,9 +28,6 @@
 	* Index
 	* Search
 	* Keyboard support
-	* Rename everything
-		* `paint_squares` to `paint_rectangles`
-		* `*.htm` to `*.html`
 
 
 * Visual
