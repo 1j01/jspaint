@@ -253,6 +253,11 @@ button.selected,
 	border-left: 1px solid black;
 	border-top: 1px solid black;
 }
+.current-colors.pattern:before,
+.color-button.pattern:before {
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+}
 .current-colors:after,
 .color-button:after {
 	content: '';

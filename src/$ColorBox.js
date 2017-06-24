@@ -11,8 +11,7 @@ function $ColorBox(){
 	var $background_color = $(E("div")).addClass("color-selection");
 	$current_colors.append($background_color, $foreground_color);
 	
-	// TODO: show patterns when selected
-	// TODO: show black outline all around when displaying patterns
+	// TODO: show patterns when selected, including black outline
 	$current_colors.css({
 		position: "relative",
 	});
@@ -55,8 +54,12 @@ function $ColorBox(){
 			var swatch_canvas = new Canvas();
 			$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
 			
-			// $b.css("background-color", color);
-			var update_swatch_canvas = function(){
+			var update_swatch_display = function(){
+				if(color instanceof CanvasPattern){
+					$b.addClass("pattern");
+				}else{
+					$b.removeClass("pattern");
+				}
 				swatch_canvas.width = swatch_canvas_width;
 				swatch_canvas.height = swatch_canvas_width;
 				// swatch_canvas.width = $b.innerWidth();
@@ -64,7 +67,7 @@ function $ColorBox(){
 				swatch_canvas.ctx.fillStyle = color;
 				swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
 			};
-			update_swatch_canvas();
+			update_swatch_display();
 			
 			// the last foreground color button starts out as the first one
 			if(i === 0){
@@ -75,8 +78,7 @@ function $ColorBox(){
 			$i.appendTo($b);
 			$i.on("change", function(){
 				color = $i.val();
-				// $b.css("background-color", color);
-				update_swatch_canvas();
+				update_swatch_display();
 				set_color(color);
 			});
 			

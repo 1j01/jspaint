@@ -576,16 +576,6 @@ function make_monochrome_pattern(lightness){
 	
 	var pattern_image_data = ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
 	
-	// for(var i = 0, px_i = 0; i < pattern_image_data.data.length; i += 4, px_i += 1){
-	// 	// var px_white = (px_i % lightness_index) == 0;
-	// 	// var px_white = Math.random() < lightness;
-	// 	// var px_white = ((px_i * lightness) % 2 * lightness) > lightness;
-	// 	var px_white = Math.sin(px_i) * lightness < lightness;
-	// 	pattern_image_data.data[i + 0] = px_white * 255;
-	// 	pattern_image_data.data[i + 1] = px_white * 255;
-	// 	pattern_image_data.data[i + 2] = px_white * 255;
-	// 	pattern_image_data.data[i + 3] = 255;
-	// }
 	for(var x = 0; x < pattern_canvas.width; x += 1){
 		for(var y = 0; y < pattern_canvas.width; y += 1){
 			var map_value = dither_threshold_table[(x & 7) + ((y & 7) << 3)];
@@ -608,11 +598,6 @@ function switch_to_monochrome(){
 	// (offer as opposed to forcing it)
 	
 	palette = [];
-	// var n_colors = 28;
-	// for(var i=0; i<n_colors; i++){
-	// 	var lightness = i / n_colors;
-	// 	palette[i] = make_monochrome_pattern(lightness);
-	// }
 	var n_colors_per_row = 14;
 	var n_colors = n_colors_per_row * 2;
 	for(var i=0; i<n_colors_per_row; i++){
