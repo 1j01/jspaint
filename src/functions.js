@@ -557,6 +557,77 @@ function detect_transparency(){
 	}
 }
 
+function make_monochrome_pattern(lightness){
+	
+	var dither_threshold_table = Array.from({length: 64}, function(undef, p){
+		var q = p ^ (p >> 3);
+		return (
+			((p & 4) >> 2) | ((q & 4) >> 1) |
+			((p & 2) << 1) | ((q & 2) << 2) |
+			((p & 1) << 4) | ((q & 1) << 5)
+		) / 64;
+	});
+
+	var pattern_canvas = document.createElement("canvas");
+	var pattern_ctx = pattern_canvas.getContext("2d");
+	
+	pattern_canvas.width = 8;
+	pattern_canvas.height = 8;
+	
+	var pattern_image_data = ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
+	
+	// for(var i = 0, px_i = 0; i < pattern_image_data.data.length; i += 4, px_i += 1){
+	// 	// var px_white = (px_i % lightness_index) == 0;
+	// 	// var px_white = Math.random() < lightness;
+	// 	// var px_white = ((px_i * lightness) % 2 * lightness) > lightness;
+	// 	var px_white = Math.sin(px_i) * lightness < lightness;
+	// 	pattern_image_data.data[i + 0] = px_white * 255;
+	// 	pattern_image_data.data[i + 1] = px_white * 255;
+	// 	pattern_image_data.data[i + 2] = px_white * 255;
+	// 	pattern_image_data.data[i + 3] = 255;
+	// }
+	for(var x = 0; x < pattern_canvas.width; x += 1){
+		for(var y = 0; y < pattern_canvas.width; y += 1){
+			var map_value = dither_threshold_table[(x & 7) + ((y & 7) << 3)];
+			var px_white = lightness > map_value;
+			var index = ((y * pattern_image_data.height) + x) * 4;
+			pattern_image_data.data[index + 0] = px_white * 255;
+			pattern_image_data.data[index + 1] = px_white * 255;
+			pattern_image_data.data[index + 2] = px_white * 255;
+			pattern_image_data.data[index + 3] = 255;
+		}
+	}
+	
+	pattern_ctx.putImageData(pattern_image_data, 0, 0);
+	
+	return ctx.createPattern(pattern_canvas, "repeat");
+}
+
+function switch_to_monochrome(){
+	// TODO: maybe *offer* to convert the existing image to monochrome
+	// (offer as opposed to forcing it)
+	
+	palette = [];
+	// var n_colors = 28;
+	// for(var i=0; i<n_colors; i++){
+	// 	var lightness = i / n_colors;
+	// 	palette[i] = make_monochrome_pattern(lightness);
+	// }
+	var n_colors_per_row = 14;
+	var n_colors = n_colors_per_row * 2;
+	for(var i=0; i<n_colors_per_row; i++){
+		var lightness = i / n_colors;
+		palette.push(make_monochrome_pattern(lightness));
+	}
+	for(var i=0; i<n_colors_per_row; i++){
+		var lightness = 1 - i / n_colors;
+		palette.push(make_monochrome_pattern(lightness));
+	}
+	$colorbox.rebuild_palette();
+	
+	reset_colors();
+}
+
 function image_attributes(){
 	if(image_attributes.$window){
 		image_attributes.$window.close();
@@ -617,6 +688,11 @@ function image_attributes(){
 		current_unit = new_unit;
 	}).triggerHandler("change");
 	
+	var $colors = $(E("fieldset")).appendTo($main).append('<legend>Colors</legend>');
+	$colors.append('<label><input type="radio" name="colors" value="monochrome">Black and White</label>');
+	$colors.append('<label><input type="radio" name="colors" value="polychrome">Color</label>');
+	$colors.find("[value=" + (monochrome ? "monochrome" : "polychrome") + "]").attr({checked: true});
+	
 	var $transparency = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
 	$transparency.append('<label><input type="radio" name="transparency" value="transparent">Transparent</label>');
 	$transparency.append('<label><input type="radio" name="transparency" value="opaque">Opaque</label>');
@@ -625,11 +701,19 @@ function image_attributes(){
 	// Buttons on the right
 	
 	$w.$Button("Okay", function(){
-		var to = $transparency.find(":checked").val();
+		var transparency_option = $transparency.find(":checked").val();
+		var colors_option = $colors.find(":checked").val();
 		var unit = $units.find(":checked").val();
 		
+		var was_monochrome = monochrome;
+		
 		image_attributes.unit = unit;
-		transparency = (to == "transparent");
+		transparency = (transparency_option == "transparent");
+		monochrome = (colors_option == "monochrome");
+		
+		if(monochrome && !was_monochrome){
+			switch_to_monochrome();
+		}
 		
 		var unit_to_px = unit_sizes_in_px[unit];
 		var width = $width.val() * unit_to_px;

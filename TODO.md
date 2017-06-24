@@ -7,8 +7,8 @@
 	* Link-esque things
 		* Popups (I'd probably make the text within the popups selectable)
 		* Related topics (I'd probably make this a heading with links instead of the weird context menu thing)
-	* Note unsupported features
-		* "To use black and white instead of color"
+	* Note unsupported features (or just implement these)
+		* "To use black and white instead of color" (partially implemented)
 		* "To display gridlines"
 	* Update topics
 		* "To use a picture as the desktop background":
@@ -23,7 +23,6 @@
 	* Add topics
 		* In "Tips and Tricks" (which is just a lame section)
 		* Transparency
-			* Replace "To use black and white instead of color"?
 		* Multiplayer / collaboration / "To share the document On-Line" or whatever
 	* Index
 	* Search

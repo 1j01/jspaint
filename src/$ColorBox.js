@@ -11,6 +11,8 @@ function $ColorBox(){
 	var $background_color = $(E("div")).addClass("color-selection");
 	$current_colors.append($background_color, $foreground_color);
 	
+	// TODO: show patterns when selected
+	// TODO: show black outline all around when displaying patterns
 	$current_colors.css({
 		position: "relative",
 	});
@@ -38,14 +40,31 @@ function $ColorBox(){
 		$G.triggerHandler("option-changed");
 	});
 	
-	// the only color editted by Colors > Edit Colors...
+	// the one color editted by "Edit Colors..."
 	var $last_fg_color_button;
+	
+	// TODO: un-hardcode.. or "softcode" this
+	var button_width = 16;
+	var swatch_canvas_width = 13;
+	
 	var build_palette = function(){
 		$palette.empty();
 		$.each(palette, function(i, color){
 			var $b = $(E("div")).addClass("color-button");
 			$b.appendTo($palette);
-			$b.css("background-color", color);
+			var swatch_canvas = new Canvas();
+			$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
+			
+			// $b.css("background-color", color);
+			var update_swatch_canvas = function(){
+				swatch_canvas.width = swatch_canvas_width;
+				swatch_canvas.height = swatch_canvas_width;
+				// swatch_canvas.width = $b.innerWidth();
+				// swatch_canvas.height = $b.innerHeight();
+				swatch_canvas.ctx.fillStyle = color;
+				swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
+			};
+			update_swatch_canvas();
 			
 			// the last foreground color button starts out as the first one
 			if(i === 0){
@@ -56,14 +75,15 @@ function $ColorBox(){
 			$i.appendTo($b);
 			$i.on("change", function(){
 				color = $i.val();
-				$b.css("background-color", color);
+				// $b.css("background-color", color);
+				update_swatch_canvas();
 				set_color(color);
 			});
 			
 			$i.css("opacity", 0);
 			$i.prop("enabled", false);
 			
-			$i.val(rgb2hex($b.css("background-color")));
+			$i.val(rgb2hex(color));
 			
 			var button, ctrl;
 			$b.on("pointerdown", function(e){
@@ -73,9 +93,9 @@ function $ColorBox(){
 					$last_fg_color_button = $b;
 				}
 				
-				set_color($b.css("background-color"));
+				set_color(color);
 				
-				$i.val(rgb2hex($b.css("background-color")));
+				$i.val(rgb2hex(color));
 				
 				$i.prop("enabled", true);
 				setTimeout(function(){
@@ -104,6 +124,9 @@ function $ColorBox(){
 				$G.trigger("option-changed");
 			};
 			function rgb2hex(col){
+				if(!col.match){ // i.e. CanvasPattern
+					return "#000000";
+				}
 				var rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
 				function hex(x){
 					return ("0" + parseInt(x).toString(16)).slice(-2);
@@ -111,7 +134,6 @@ function $ColorBox(){
 				return rgb ? ("#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])) : col;
 			}
 		});
-		var button_width = 16;
 		$palette.width(Math.ceil(palette.length/2) * button_width);
 	};
 	build_palette();
