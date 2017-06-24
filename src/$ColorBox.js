@@ -1,9 +1,6 @@
 
 
-var swatch_canvas_width = 13;
-
-
-function $Swatch(color){
+function $Swatch(size, color){
 	var $b = $(E("div")).addClass("swatch");
 	var swatch_canvas = new Canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
@@ -16,12 +13,13 @@ function $Swatch(color){
 		}
 		
 		// TODO: base this on the element size
-		swatch_canvas.width = swatch_canvas_width;
-		swatch_canvas.height = swatch_canvas_width;
+		swatch_canvas.width = size;
+		swatch_canvas.height = size;
 		
-		swatch_canvas.ctx.fillStyle = color;
-		swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
-		
+		if(color){
+			swatch_canvas.ctx.fillStyle = color;
+			swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
+		}
 	};
 	$b.update(color);
 	
@@ -31,16 +29,15 @@ function $Swatch(color){
 function $ColorBox(){
 	var $cb = $(E("div")).addClass("color-box");
 	
-	var $current_colors = $(E("div")).addClass("current-colors");
+	var $current_colors = $Swatch(28).addClass("current-colors");
 	var $palette = $(E("div")).addClass("palette");
 	
 	$cb.append($current_colors, $palette);
 	
-	var $foreground_color = $(E("div")).addClass("color-selection");
-	var $background_color = $(E("div")).addClass("color-selection");
+	var $foreground_color = $Swatch(13).addClass("color-selection");
+	var $background_color = $Swatch(13).addClass("color-selection");
 	$current_colors.append($background_color, $foreground_color);
 	
-	// TODO: show patterns when selected, including black outline
 	$current_colors.css({
 		position: "relative",
 	});
@@ -56,9 +53,9 @@ function $ColorBox(){
 	});
 	
 	$G.on("option-changed", function(){
-		$foreground_color.css({background: colors.foreground});
-		$background_color.css({background: colors.background});
-		$current_colors.css({background: colors.ternary});
+		$foreground_color.update(colors.foreground);
+		$background_color.update(colors.background);
+		$current_colors.update(colors.ternary);
 	});
 	
 	$current_colors.on("pointerdown", function(){
@@ -71,13 +68,13 @@ function $ColorBox(){
 	// the one color editted by "Edit Colors..."
 	var $last_fg_color_button;
 	
-	// TODO: base this on the element size
-	var button_width = 16;
+	// TODO: base this on the element sizes
+	var width_per_button = 16;
 	
 	var build_palette = function(){
 		$palette.empty();
 		$.each(palette, function(i, color){
-			var $b = $Swatch(color).addClass("color-button");
+			var $b = $Swatch(13, color).addClass("color-button");
 			$b.appendTo($palette);
 			
 			// the "last foreground color button" starts out as the first in the palette
@@ -147,7 +144,7 @@ function $ColorBox(){
 				return rgb ? ("#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])) : col;
 			}
 		});
-		$palette.width(Math.ceil(palette.length/2) * button_width);
+		$palette.width(Math.ceil(palette.length/2) * width_per_button);
 	};
 	build_palette();
 	

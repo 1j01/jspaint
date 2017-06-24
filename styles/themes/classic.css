@@ -242,19 +242,27 @@ button.selected,
 	position: relative;
 	/*box-shadow: 1px 1px 0px black inset;*/
 }
-.current-colors:before,
-.color-button:before {
+.swatch:before {
 	content: '';
 	position: absolute;
 	left: 0;
 	top: 0;
 	right: 0;
 	bottom: 0;
+}
+.color-selection:before {
+	left: 1px;
+	top: 1px;
+	right: 1px;
+	bottom: 1px;
+}
+.color-button:before,
+.current-colors:before,
+.swatch.pattern:before {
 	border-left: 1px solid black;
 	border-top: 1px solid black;
 }
-.current-colors.pattern:before,
-.color-button.pattern:before {
+.swatch.pattern:before {
 	border-right: 1px solid black;
 	border-bottom: 1px solid black;
 }
