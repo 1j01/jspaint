@@ -107,15 +107,14 @@ function $ColorBox(){
 				
 				$i.val(rgb2hex(color));
 				
+				if(e.button === button && $i.prop("enabled")){
+					$i.trigger("click", "synthetic");
+				}
+				
 				$i.prop("enabled", true);
 				setTimeout(function(){
 					$i.prop("enabled", false);
 				}, 400);
-			});
-			$i.on("pointerdown", function(e){
-				if(e.button === button && $i.prop("enabled")){
-					$i.trigger("click", "synthetic");
-				}
 			});
 			$i.on("click", function(e, synthetic){
 				if(!synthetic){
