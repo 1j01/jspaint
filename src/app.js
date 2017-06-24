@@ -10,10 +10,16 @@ var default_canvas_height = 384;
 var my_canvas_width = default_canvas_width;
 var my_canvas_height = default_canvas_height;
 
+var canvas = new Canvas();
+var ctx = canvas.ctx;
+
 var palette = [
 	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
 	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
 ];
+var polychrome_palette = palette;
+var monochrome_palette = make_monochrome_palette();
+
 
 var stroke_color;
 var fill_color;
@@ -53,8 +59,6 @@ var $H = $(E("div")).addClass("horizontal").appendTo($V);
 var $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
 $canvas_area.attr("touch-action", "pan-x pan-y");
 
-var canvas = new Canvas();
-var ctx = canvas.ctx;
 var $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
 

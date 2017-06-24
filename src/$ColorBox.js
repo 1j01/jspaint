@@ -1,4 +1,33 @@
 
+
+var swatch_canvas_width = 13;
+
+
+function $Swatch(color){
+	var $b = $(E("div")).addClass("swatch");
+	var swatch_canvas = new Canvas();
+	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
+	
+	$b.update = function(color){
+		if(color instanceof CanvasPattern){
+			$b.addClass("pattern");
+		}else{
+			$b.removeClass("pattern");
+		}
+		
+		// TODO: base this on the element size
+		swatch_canvas.width = swatch_canvas_width;
+		swatch_canvas.height = swatch_canvas_width;
+		
+		swatch_canvas.ctx.fillStyle = color;
+		swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
+		
+	};
+	$b.update(color);
+	
+	return $b;
+}
+
 function $ColorBox(){
 	var $cb = $(E("div")).addClass("color-box");
 	
@@ -42,34 +71,16 @@ function $ColorBox(){
 	// the one color editted by "Edit Colors..."
 	var $last_fg_color_button;
 	
-	// TODO: un-hardcode.. or "softcode" this
+	// TODO: base this on the element size
 	var button_width = 16;
-	var swatch_canvas_width = 13;
 	
 	var build_palette = function(){
 		$palette.empty();
 		$.each(palette, function(i, color){
-			var $b = $(E("div")).addClass("color-button");
+			var $b = $Swatch(color).addClass("color-button");
 			$b.appendTo($palette);
-			var swatch_canvas = new Canvas();
-			$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
 			
-			var update_swatch_display = function(){
-				if(color instanceof CanvasPattern){
-					$b.addClass("pattern");
-				}else{
-					$b.removeClass("pattern");
-				}
-				swatch_canvas.width = swatch_canvas_width;
-				swatch_canvas.height = swatch_canvas_width;
-				// swatch_canvas.width = $b.innerWidth();
-				// swatch_canvas.height = $b.innerHeight();
-				swatch_canvas.ctx.fillStyle = color;
-				swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
-			};
-			update_swatch_display();
-			
-			// the last foreground color button starts out as the first one
+			// the "last foreground color button" starts out as the first in the palette
 			if(i === 0){
 				$last_fg_color_button = $b;
 			}
@@ -78,7 +89,7 @@ function $ColorBox(){
 			$i.appendTo($b);
 			$i.on("change", function(){
 				color = $i.val();
-				update_swatch_display();
+				$b.update(color);
 				set_color(color);
 			});
 			

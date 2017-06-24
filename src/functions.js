@@ -593,11 +593,11 @@ function make_monochrome_pattern(lightness){
 	return ctx.createPattern(pattern_canvas, "repeat");
 }
 
-function switch_to_monochrome(){
+function make_monochrome_palette(){
 	// TODO: maybe *offer* to convert the existing image to monochrome
 	// (offer as opposed to forcing it)
 	
-	palette = [];
+	var palette = [];
 	var n_colors_per_row = 14;
 	var n_colors = n_colors_per_row * 2;
 	for(var i=0; i<n_colors_per_row; i++){
@@ -608,9 +608,12 @@ function switch_to_monochrome(){
 		var lightness = 1 - i / n_colors;
 		palette.push(make_monochrome_pattern(lightness));
 	}
-	$colorbox.rebuild_palette();
 	
-	reset_colors();
+	return palette;
+}
+
+function switch_to_polychrome_palette(){
+	
 }
 
 function image_attributes(){
@@ -696,8 +699,15 @@ function image_attributes(){
 		transparency = (transparency_option == "transparent");
 		monochrome = (colors_option == "monochrome");
 		
-		if(monochrome && !was_monochrome){
-			switch_to_monochrome();
+		if(monochrome != was_monochrome){
+			if(monochrome){
+				palette = monochrome_palette;
+			}else{
+				palette = polychrome_palette;
+			}
+			
+			$colorbox.rebuild_palette();
+			reset_colors();
 		}
 		
 		var unit_to_px = unit_sizes_in_px[unit];
