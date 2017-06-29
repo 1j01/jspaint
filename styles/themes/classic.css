@@ -239,7 +239,6 @@ button.selected,
 	border-left: 1px solid #7B7B7B;
 	border-right: 1px solid #BBBBBB;
 	border-bottom: 1px solid #BBBBBB;
-	position: relative;
 	/*box-shadow: 1px 1px 0px black inset;*/
 }
 .swatch:before {

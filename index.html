@@ -22,12 +22,24 @@
 				document.write('<link rel="stylesheet" type="text/css" href="' + href_for(current_theme) + '" id="theme-link" />');
 				
 				var theme_link = document.getElementById("theme-link");
+				var theme_style = document.createElement("style");
+				
 				self.set_theme = function(theme){
 					current_theme = theme;
 					try{
-						localStorage[theme_storage_key] = current_theme;
+						localStorage[theme_storage_key] = theme;
 					}catch(e){}
-					theme_link.href = href_for(current_theme);
+					fetch(href_for(theme)).then(function(response) {
+						return response.text();
+					}).then(function(css) {
+						if(theme_link){
+							theme_link.parentElement.removeChild(theme_link);
+							theme_link = null;
+						}
+						theme_style.textContent = css;
+						document.head.appendChild(theme_style);
+						$(window).triggerHandler("theme-load");
+					});
 				};
 				self.get_theme = function(){
 					return current_theme;

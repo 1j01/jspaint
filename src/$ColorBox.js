@@ -1,26 +1,31 @@
 
 
-function $Swatch(size, color){
+function $Swatch(color){
 	var $b = $(E("div")).addClass("swatch");
 	var swatch_canvas = new Canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
 	
-	$b.update = function(color){
+	$b.update = function(_color){
+		color = _color;
 		if(color instanceof CanvasPattern){
 			$b.addClass("pattern");
 		}else{
 			$b.removeClass("pattern");
 		}
 		
-		// TODO: base this on the element size
-		swatch_canvas.width = size;
-		swatch_canvas.height = size;
-		
-		if(color){
-			swatch_canvas.ctx.fillStyle = color;
-			swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
-		}
+		requestAnimationFrame(function(){
+			swatch_canvas.width = $b.innerWidth();
+			swatch_canvas.height = $b.innerHeight();
+			
+			if(color){
+				swatch_canvas.ctx.fillStyle = color;
+				swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
+			}
+		});
 	};
+	$G.on("theme-load", function(){
+		$b.update(color);
+	});
 	$b.update(color);
 	
 	return $b;
@@ -29,13 +34,13 @@ function $Swatch(size, color){
 function $ColorBox(){
 	var $cb = $(E("div")).addClass("color-box");
 	
-	var $current_colors = $Swatch(28).addClass("current-colors");
+	var $current_colors = $Swatch().addClass("current-colors");
 	var $palette = $(E("div")).addClass("palette");
 	
 	$cb.append($current_colors, $palette);
 	
-	var $foreground_color = $Swatch(13).addClass("color-selection");
-	var $background_color = $Swatch(13).addClass("color-selection");
+	var $foreground_color = $Swatch().addClass("color-selection");
+	var $background_color = $Swatch().addClass("color-selection");
 	$current_colors.append($background_color, $foreground_color);
 	
 	$current_colors.css({
@@ -74,7 +79,7 @@ function $ColorBox(){
 	var build_palette = function(){
 		$palette.empty();
 		$.each(palette, function(i, color){
-			var $b = $Swatch(13, color).addClass("color-button");
+			var $b = $Swatch(color).addClass("color-button");
 			$b.appendTo($palette);
 			
 			// the "last foreground color button" starts out as the first in the palette

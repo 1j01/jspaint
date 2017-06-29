@@ -209,6 +209,10 @@ html, body, .jspaint {
 	width: 30px;
 	height: 31px;
 }
+.current-colors,
+.color-button {
+	position: relative;
+}
 .color-button,
 .color-selection {
 	margin-left: 1px;
