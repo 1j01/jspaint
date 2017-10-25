@@ -395,6 +395,12 @@ var menus = {
 			description: "Creates an animation from the document history.",
 		},
 		// {
+		// 	item: "Render History as &APNG",
+		// 	// shortcut: "Ctrl+Shift+A",
+		// 	action: render_history_as_apng,
+		// 	description: "Creates an animation from the document history.",
+		// },
+		// {
 		// 	item: "&Additional Tools",
 		// 	action: function(){
 		// 		// ;)

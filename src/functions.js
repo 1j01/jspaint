@@ -411,6 +411,62 @@ function render_history_as_gif(){
 	}
 }
 
+/*
+function render_history_as_apng(){
+	var $win = $FormWindow();
+	$win.title("Rendering APNG");
+	$win.center();
+	var $output = $win.$main;
+	var $progress = $(E("progress")).appendTo($output);
+	var $progress_percent = $(E("span")).appendTo($output).css({
+		width: "2.3em",
+		display: "inline-block",
+		textAlign: "center",
+	});
+	$win.$main.css({padding: 5});
+	
+	var $cancel = $win.$Button('Cancel', function(){
+		$win.close();
+	});
+	
+	$win.on('close', function(){
+		// abort any workers
+	});
+	
+	try{
+		var width = canvas.width;
+		var height = canvas.height;
+		// var frames = undos.concat([canvas]);
+		// var apng = new APNG(frames, {loops: Infinity}, function(blob){
+		var apng = new APNG({loops: Infinity})
+		for(var i=0; i<undos.length; i++){
+			apng.addFrame(undos[i], {delay: 200});
+		}
+		apng.addFrame(canvas, {delay: 200});
+		apng.render(function(blob){
+			$win.title("Rendered APNG");
+			var url = URL.createObjectURL(blob);
+			$output.empty().append(
+				$(E("img")).attr({
+					src: url,
+					width: width,
+					height: height,
+				})
+			);
+			$win.$Button("Save", function(){
+				$win.close();
+				saveAs(blob, file_name + " history.png");
+			});
+			$cancel.appendTo($win.$buttons);
+			$win.center();
+		});
+	}catch(err){
+		$win.close();
+		show_error_message("Failed to render APNG:", err);
+	}
+}
+*/
+
 function undoable(callback, action){
 	saved = false;
 	if(redos.length > 5){
