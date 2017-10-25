@@ -14,7 +14,7 @@ function show_help(){
 	$contents = $(E("ul")).addClass("contents");
 	$help_window.$content.append($contents, $iframe);
 	$help_window.$content.css({width: 800, height: 600});
-	$iframe.attr({name: "help-frame", src: "help/default.htm"});
+	$iframe.attr({name: "help-frame", src: "help/default.html"});
 	$iframe.css({backgroundColor: "white"});
 	$help_window.center();
 	
@@ -50,10 +50,10 @@ function show_help(){
 	
 	var $default_item_li = $(E("li")).addClass("page");
 	$default_item_li.append($Item("Welcome to Help").click(function(e){
-		$iframe.attr({src: "help/default.htm"});
+		$iframe.attr({src: "help/default.html"});
 	}));
 	$contents.append($default_item_li);
-		
+	
 	$.get("help/mspaint.hhc", function(hhc){
 		$($.parseHTML(hhc)).filter("ul").children().each(function(i, li){
 			
