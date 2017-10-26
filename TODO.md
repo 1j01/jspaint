@@ -1,65 +1,66 @@
 
 # ![](images/icons/32.png) JS Paint Todo
 
-* Help Topics
-	* Resizable panes
-	* Resizable window
-	* Link-esque things
-		* Popups (I'd probably make the text within the popups selectable)
-		* Related topics (I'd probably make this a heading with links instead of the weird context menu thing)
-	* Note unsupported features (or just implement these)
-		* "To use black and white instead of color" (partially implemented)
-		* "To display gridlines"
-	* Update topics
-		* "To use a picture as the desktop background":
-		  add a third step? It's not quite that easy (at least in the browser)
-		* "To create custom colors": way too OS-specific
-		  (unless I'm gonna emulate the color selection dialogue)
-		* "To enlarge the size of the viewing area" (`paint_enlarge_area.htm`):
-		  jspaint currently allows you to draw while "Viewing the Bitmap"
-		* "To zoom in or out of a picture", "To type and format text":
-		  "You can enter text into a picture only in Normal view."
-		  — jspaint handles this case (well, as well as it handles the Normal case)
-	* Add topics
-		* In "Tips and Tricks" (which is just a lame section)
-		* Transparency
-		* Multiplayer / collaboration / "To share the document On-Line" or whatever
-	* Index
-	* Search
-	* Keyboard support
+### Help
+
+* Resizable panes
+* Resizable window
+* Link-esque things
+	* Popups (I'd probably make the text within the popups selectable)
+	* Related topics (I'd probably make this a heading with links instead of the weird context menu thing)
+* Note unsupported features (or just implement these)
+	* "To use black and white instead of color" (partially implemented)
+	* "To display gridlines"
+* Update topics
+	* "To use a picture as the desktop background":
+	add a third step? It's not quite that easy (at least in the browser)
+	* "To create custom colors": way too OS-specific
+	(unless I'm gonna emulate the color selection dialogue)
+	* "To enlarge the size of the viewing area" (`paint_enlarge_area.htm`):
+	jspaint currently allows you to draw while "Viewing the Bitmap"
+	* "To zoom in or out of a picture", "To type and format text":
+	"You can enter text into a picture only in Normal view."
+	— jspaint handles this case (well, as well as it handles the Normal case)
+* Add topics
+	* In "Tips and Tricks" (which is just a lame section)
+	* Transparency
+	* Multiplayer / collaboration / "To share the document On-Line" or whatever
+* Index
+* Search
+* Keyboard support
 
 
-* Visual
-	* Warning sign for "Save changes to X?" dialogue
-	* Error symbol for error message dialogues
-	* The window close button uses text; font rendering is not consistent
-	* The progress bar (Rendering GIF) is left native
-	* Menu separator spacing
-	* Minor color differences (0x808080 != 0x7b7b7b)
-	* I want to give most things a revisit later on for Pixel Perfection
-	* Dynamic cursors
-		* Inverty fill bucket and airbrush cursors
-		* Previewy brush and eraser cursors
+### Visual
+
+* Warning sign for "Save changes to X?" dialogue
+* Error symbol for error message dialogues
+* The window close button uses text; font rendering is not consistent
+* The progress bar (Rendering GIF) is left native
+* Menu separator spacing
+* Minor color differences (0x808080 != 0x7b7b7b)
+* I want to give most things a revisit later on for Pixel Perfection
+* Dynamic cursors
+	* Inverty fill bucket and airbrush cursors
+	* Previewy brush and eraser cursors
 
 
-* Issues
-	* [Stretch/skew and rotate don't update the canvas size](https://github.com/1j01/jspaint/issues/8)
-	* ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
-	* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
-	* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
-	  then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
-	* Middle-click scrolling is prevented
-	* Firefox
-		* It lags unusably when using tools
-			* For some tools it only happens while dragging the mouse on the canvas
-		* Tool options lag unusably when they're redrawn in quick succession
-	* The TextBox contents move down and right when rasterizing
-	* Free-form select can leave behind inverty brush in multiplayer
-	* Multiplayer cursors that go outside the parent can cause the page to be scrollable
-	* Multiplayer interupts you:
-		* If you try to make a selection when there's a selection
-		* If you try to play with multiple players
-	* If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
+### Issues
+
+* [Stretch/skew and rotate don't update the canvas size](https://github.com/1j01/jspaint/issues/8)
+* ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
+* If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
+* If you zoom in with the magnifier without previously changing the magnification on the toolbar,
+then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
+* Middle-click scrolling is prevented
+(Note: not a thing allowed by MS Paint)
+* Firefox
+	* Image is downloaded without file extension (`.png`)
+	* There was a lot of lag previously, especially while dragging the mouse over the canvas (which shouldn't cause extra lag versus drawing the same shape with the mouse off the canvas); it seems fine now, so Firefox probably optimized some stuff
+* Can't glide thru tool options in Firefox, mobile Chrome;
+might be a pointer events spec interpretation issue, and it could easily be that the more technically correct browsers are where it's not working
+(Note: not a thing allowed by MS Paint)
+* The TextBox contents move down and right when rasterizing
+* If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
 
 
 ### Menus
@@ -80,13 +81,12 @@
 ### Extended editing
 
 * Transparency
-	* [x] Detect transparency when opening an image
-	* [x] Option in Image > Attributes...
-	* [ ] Color opacity slider
-	* [ ] Toggle between blend and copy modes
-	* [x] Represent transparency with a checkered background pattern
-	* [ ] Maybe equivalise any rgba(X, X, X, 0) in fill algorithm
-
+	* Color opacity slider
+	* Toggle between blend and copy modes
+	* Maybe equivalise any rgba(X, X, X, 0) in fill algorithm?
+	There'd still be the possibility of 1/255th opacity pixels,
+	but if you're creating transparent colors not from a palette but a color picker and opacity slider,
+	you might naturally introduce differing zero-opacity color values.
 
 * Images with multiple sub-images
 	* Component to switch between sub-images
@@ -94,7 +94,9 @@
 	* Animated GIFs
 		* Transparency ([jnordberg/gif.js issue #5](https://github.com/jnordberg/gif.js/issues/5))
 	* Animated Transparent APNGs
-		* APNG Library ([this kickstarter wants $15,000 to make this](https://www.kickstarter.com/projects/374397522/apngasm-foss-animated-png-tools-and-apng-standardi))
+		* APNG Library ([this kickstarter wants $15,000 to make this](https://www.kickstarter.com/projects/374397522/apngasm-foss-animated-png-tools-and-apng-standardi);
+		I was able to compile their C++ implementation to JS with [emscripten](https://github.com/kripken/emscripten) though;
+		I'll publish that at some point)
 	* Multi-size Icons
 		* Windows ICO ([jBinary can read](http://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
 		* Mac ICNS
@@ -107,7 +109,14 @@
 	* See [sessions.js](src/sessions.js)
 	* Deal with undo/redo for sessions
 		* Particularly it might be helpful to undo to the state after your last change, not just before that;
-		  this could happen automatically if there have been changes since your last change
+		this could happen automatically if there have been changes since your last change
+	* Issues
+		* You get interrupted if you try to make a selection when there's a selection
+		* You get interrupted if you try to draw at the same time as another person (you basically have to take turns - lame!)
+		* Free-form select can leave behind inverty brush
+		(this should be fixed by improving how the selection tools work;
+		the inverty-ness shouldn't be drawn to the main canvas in the first place)
+		* Cursors from other users that go outside the parent can cause the page to be scrollable
 
 
 ### Device support
@@ -124,14 +133,13 @@
 
 
 * You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
-* Make sure anything that uses hovering is paralleled on mobile (tooltips, :hover effects)
+* Make sure anything that uses hovering is paralleled on mobile (tooltips, `:hover` effects)
 
 
 * Access to functionality that would normally require a keyboard (with a numpad!)
 	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
-	* Ctrl+Select: Crop tool
-	* Ctrl+Shift+G: "Render GIF"
+	* Ctrl+Select: Crop tool or "Crop to selection" option
 
 
 ### Tools
@@ -163,7 +171,7 @@
 	* Store position of FontBox
 	* Keep an old TextBox while drawing a new one
 	* Save text and record transformations so the image can be saved as
-	  SVG (or HTML?) with invisible selectable transformed text elements
+	SVG (or HTML?) with invisible selectable transformed text elements?
 
 
 * Curve
@@ -206,10 +214,10 @@
 
 * Selection
 	* Proportionally resize selection while holding Shift
-	  (or maybe by default? I feel like that should be the default.)
+	(or maybe by default? I feel like it should be the default.)
 	* Don't cut until you drag or do something else
-	  (In MS Paint, you can make a selection, change the background color
-	  and drag it, leaving the new background color behind.)
+	(In MS Paint, you can make a selection, change the background color
+	and drag it, leaving the new background color behind.)
 	* Classic transparency where the selected background color is considered transparent
 
 
@@ -236,7 +244,7 @@ I implemented theoretical support for changing the wallpaper on Chrome OS, but I
 * A dialogue when closing
 * Subwindows outside the main window
 * A different way of handling always-saved documents
-  (recovery?)
+(recovery?)
 
 
 ### Also
@@ -264,7 +272,7 @@ I implemented theoretical support for changing the wallpaper on Chrome OS, but I
 
 
 * Images
-	* Use a shared sprite sheet per theme, and optimize it
+	* Use a shared sprite sheet per theme (and optimize it I guess)
 
 
 * Search Engine Optimization
