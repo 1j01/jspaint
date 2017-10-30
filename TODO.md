@@ -42,25 +42,25 @@
 * Dynamic cursors
 	* Inverty fill bucket and airbrush cursors
 	* Previewy brush and eraser cursors
+* Custom cursors in Edge; apparently they require `.cur` files? ugh
 
 
 ### Issues
 
+* Image is saved without `.png` file extension in Firefox, and Edge actually gives it a `.txt` extension!
 * [Stretch/skew and rotate don't update the canvas size](https://github.com/1j01/jspaint/issues/8)
 * ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
 * If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 * If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
-* Middle-click scrolling is prevented
-(Note: not a thing allowed by MS Paint)
-* Firefox
-	* Image is downloaded without file extension (`.png`)
-	* There was a lot of lag previously, especially while dragging the mouse over the canvas (which shouldn't cause extra lag versus drawing the same shape with the mouse off the canvas); it seems fine now, so Firefox probably optimized some stuff
+* Unshielded `localStorage` access for Extras menu visibility value
+* The TextBox contents move down and right when rasterizing
+* If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
 * Can't glide thru tool options in Firefox, mobile Chrome;
 might be a pointer events spec interpretation issue, and it could easily be that the more technically correct browsers are where it's not working
 (Note: not a thing allowed by MS Paint)
-* The TextBox contents move down and right when rasterizing
-* If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
+* Middle-click scrolling is prevented
+(Note: not a thing allowed by MS Paint)
 
 
 ### Menus
@@ -85,8 +85,8 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Toggle between blend and copy modes
 	* Maybe equivalise any rgba(X, X, X, 0) in fill algorithm?
 	There'd still be the possibility of 1/255th opacity pixels,
-	but if you're creating transparent colors not from a palette but a color picker and opacity slider,
-	you might naturally introduce differing zero-opacity color values.
+	but if you're creating colors from the combination of a color picker and an opacity slider,
+	you might naturally introduce differing zero-opacity color values a lot.
 
 * Images with multiple sub-images
 	* Component to switch between sub-images
@@ -94,8 +94,8 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Animated GIFs
 		* Transparency ([jnordberg/gif.js issue #5](https://github.com/jnordberg/gif.js/issues/5))
 	* Animated Transparent APNGs
-		* APNG Library ([this kickstarter wants $15,000 to make this](https://www.kickstarter.com/projects/374397522/apngasm-foss-animated-png-tools-and-apng-standardi);
-		I was able to compile their C++ implementation to JS with [emscripten](https://github.com/kripken/emscripten) though;
+		* APNG Library ([this kickstarter wanted $15,000 to make this](https://www.kickstarter.com/projects/374397522/apngasm-foss-animated-png-tools-and-apng-standardi);
+		I was able to compile their [C++ implementation](https://github.com/apngasm/apngasm) to JS with [emscripten](https://github.com/kripken/emscripten) though;
 		I'll publish that at some point)
 	* Multi-size Icons
 		* Windows ICO ([jBinary can read](http://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
@@ -108,8 +108,8 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * Multiplayer and local sessions
 	* See [sessions.js](src/sessions.js)
 	* Deal with undo/redo for sessions
-		* Particularly it might be helpful to undo to the state after your last change, not just before that;
-		this could happen automatically if there have been changes since your last change
+		* Particularly it might be helpful to undo *to* your last change, not just to right before it (by undoing it);
+		this could automatically be the behavior of undo if there have been changes since your last change
 	* Issues
 		* You get interrupted if you try to make a selection when there's a selection
 		* You get interrupted if you try to draw at the same time as another person (you basically have to take turns - lame!)
@@ -275,6 +275,7 @@ I implemented theoretical support for changing the wallpaper on Chrome OS, but I
 	* Use a shared sprite sheet per theme (and optimize it I guess)
 
 
-* Search Engine Optimization
-	* Load the About Paint content from an element on the page that gets hidden by code
+* Load the About Paint content from an element on the page that gets hidden by code
+in order to hopefully show up nicer in search engines.
+Currently shows up in Google with some text from the menus as the description.
 
