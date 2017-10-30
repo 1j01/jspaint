@@ -47,7 +47,6 @@
 
 ### Issues
 
-* Image is saved without `.png` file extension in Firefox, and Edge actually gives it a `.txt` extension!
 * [Stretch/skew and rotate don't update the canvas size](https://github.com/1j01/jspaint/issues/8)
 * ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
 * If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options

@@ -185,7 +185,7 @@ function file_open(){
 
 function file_save(){
 	if(file_name.match(/\.svg$/)){
-		file_name += ".png";
+		file_name = file_name.replace(/\.svg$/, "") + ".png";
 		//update_title()?
 		return file_save_as();
 	}
@@ -213,7 +213,7 @@ function file_save_as(){
 		});
 	}else{
 		canvas.toBlob(function(blob){
-			var file_saver = saveAs(blob, file_name);
+			var file_saver = saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + ".png");
 			file_saver.onwriteend = function(){
 				// this won't fire in chrome
 				saved = true;
@@ -390,7 +390,7 @@ function render_history_as_gif(){
 			);
 			$win.$Button("Save", function(){
 				$win.close();
-				saveAs(blob, file_name + " history.gif");
+				saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + " history.gif");
 			});
 			$cancel.appendTo($win.$buttons);
 			$win.center();
@@ -959,7 +959,7 @@ function set_as_wallpaper_centered(c){
 		});
 	}else{
 		c.toBlob(function(blob){
-			saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)/, "") + " wallpaper.png");
+			saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + " wallpaper.png");
 		});
 	}
 }
