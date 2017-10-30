@@ -64,16 +64,20 @@ function manage_storage(){
 			localStorage.removeItem(k);
 			$tr.remove();
 			if($table.find("tr").length == 0){
-				$message.html("<p>All cleaned up!</p>");
+				$message.html("<p>All clear!</p>");
 			}
 		});
 	};
 	
+	// @TODO: handle localStorage unavailable
 	for(var k in localStorage){
 		if(k.match(/^image#/)){
 			var v = localStorage[k];
 			addRow(k, v[0] === '"' ? JSON.parse(v) : v);
 		}
+	}
+	if($table.find("tr").length == 0){
+		$message.html("<p>All clear!</p>");
 	}
 	$storage_manager.width(450);
 	$storage_manager.center();

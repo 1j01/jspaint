@@ -54,10 +54,8 @@
 	// A person can enter a session multiple times,
 	// and is always given a new user id
 	var user_id;
-	// I could make the color persistent, though.
+	// @TODO: I could make the color persistent, though.
 	// You could still have multiple cursors and they would just be the same color.
-	// Colors can happen to be similar anyways, so it could only improve things
-	// if you kept the same color where possible (@TODO)
 	// There could also be an option to change your color
 	
 	// The data in this object is stored in the server when you enter a session
@@ -246,9 +244,8 @@
 			debug("data update");
 			
 			var uri = snap.val();
-			// Is there a value at this session's data location?
 			if(uri == null){
-				// This is a new session
+				// If there's no value at the data location, this is a new session
 				// Sync the current data to it
 				sync();
 			}else{
@@ -303,6 +300,8 @@
 		
 		// @FIXME: the cursor can come back from "away" via a pointer event
 		// while the window is blurred and stay there when the user goes away
+		// maybe replace "away" with a timestamp of activity and then
+		// clients can decide whether a given cursor should be visible
 	};
 	
 	FireSession.prototype.end = function(){
@@ -345,16 +344,17 @@
 			var local = match[1] === "local";
 			var session_id = match[2];
 			if(session_id === ""){
-				debug("session id is empty");
+				debug("invalid session id; session id cannot be empty");
 				end_current_session();
 			}else if(!local && session_id.match(/[\.\/\[\]#$]/)){
-				debug("session id is not a valid Firebase location for multiplayer (cannot contain any of ./[]#$)");
+				debug("session id is not a valid Firebase location; it cannot contain any of ./[]#$");
 				end_current_session();
 			}else if(!session_id.match(/[\-0-9A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]+/)){
-				debug("invalid session id");
+				debug("invalid session id; it must consist of 'alphanumeric-esque' character");
 				end_current_session();
 			}else if(current_session && current_session.id === session_id){
-				debug("hash changed to current session id? #wut");
+				// @TODO: Handle switching between local and collaborative sessions of the same id
+				debug("hash changed but the session id is the same");
 			}else{
 				// @TODO: Ask if you want to save before starting a new session
 				end_current_session();
