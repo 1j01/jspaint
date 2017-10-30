@@ -496,7 +496,9 @@ $menu_bar.on("default-info", function(e){
 });
 
 var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
-// TODO: refactor shared key string
-if(localStorage["jspaint extras menu visible"] != "true"){
-	$extras_menu_button.hide();
-}
+try{
+	// TODO: refactor shared key string
+	if(localStorage["jspaint extras menu visible"] != "true"){
+		$extras_menu_button.hide();
+	}
+}catch(e){}

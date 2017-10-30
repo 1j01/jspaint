@@ -178,9 +178,11 @@ function $MenuBar(menus){
 		$menu_button.addClass("" + menu_id + "-menu-button");
 		if(menu_id == "extras"){
 			// TODO: refactor shared key string, move to function
-			if(localStorage["jspaint extras menu visible"] != "true"){
-				$menu_button.hide();
-			}
+			try{
+				if(localStorage["jspaint extras menu visible"] != "true"){
+					$menu_button.hide();
+				}
+			}catch(e){}
 		}
 		
 		$menu_popup.hide();
