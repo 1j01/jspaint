@@ -857,6 +857,8 @@ function image_flip_and_rotate(){
 				rotate(angle);
 				break;
 		}
+
+		$canvas_area.trigger("resize");
 		
 		$w.close();
 	}).focus();
@@ -906,6 +908,7 @@ function image_stretch_and_skew(){
 		var hskew = parseFloat(skew_x.val())/360*TAU;
 		var vskew = parseFloat(skew_y.val())/360*TAU;
 		stretch_and_skew(xscale, yscale, hskew, vskew);
+		$canvas_area.trigger("resize");
 		$w.close();
 	}).focus();
 	

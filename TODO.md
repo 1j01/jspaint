@@ -47,7 +47,6 @@
 
 ### Issues
 
-* [Stretch/skew and rotate don't update the canvas size](https://github.com/1j01/jspaint/issues/8)
 * ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
 * If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 * If you zoom in with the magnifier without previously changing the magnification on the toolbar,

@@ -293,10 +293,12 @@ $G.on("keydown", function(e){
 			case 188: // , <
 			case 219: // [ {
 				rotate(-TAU/4);
+				$canvas_area.trigger("resize");
 			break;
 			case 190: // . >
 			case 221: // ] }
 				rotate(+TAU/4);
+				$canvas_area.trigger("resize");
 			break;
 		}
 		switch(key){
