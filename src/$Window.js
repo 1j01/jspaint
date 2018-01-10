@@ -21,6 +21,8 @@ function $Window($component){
 		e.preventDefault();
 	});
 	
+	// TODO: prevent selection *outside* of the window *via* the window
+
 	$w.css({
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++

@@ -67,6 +67,8 @@ function get_FileList(callback){
 
 function open_from_Image(img, callback, canceled){
 	are_you_sure(function(){
+		// TODO: shouldn't open_from_* start a new session?
+
 		this_ones_a_frame_changer();
 		
 		reset_file();
@@ -192,27 +194,16 @@ function file_load_from_url(){
 	var $w = new $FormWindow().addClass("dialogue-window");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
-	$w.$main.html("<label>URL: <input type='url' value='' class='url-input'/></label>");
-	var $error = $("<div class='error'></div>").appendTo($w.$main)
+	// TODO: URL validation (input has to be in a form (and we don't want the form to submit))
+	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input'/></label>");
 	var $input = $w.$main.find(".url-input");
-	$input.on("change input", function(){
-		$error.text("");
-	});
 	$w.$Button("Load", function(){
-		// TODO: make $error into $load_status and indicate loading?
-		open_from_URI($input.val(), function(err){
-			// $w.close();
-			// if(err){
-			// 	this doesn't give a helpful message, and apparently we can't distinguish cross-origin errors:
-			// 	show_error_message("Failed to load an image from the given URL:", err);
-			// }
-			if(err){
-				$error.text("Failed to load the image.");
-				console.log("open_from_URI failed:", err);
-			}else{
-				$w.close();
-			}
-		});
+		$w.close();
+		// TODO: retry loading if same URL entered
+		// actually, make it change the hash only after loading successfully
+		// (but still load from the hash when necessary)
+		// make sure it doesn't overwrite the old session before switching
+		location.hash = "load:" + encodeURIComponent($input.val());
 	}).focus();
 	$w.$Button("Cancel", function(){
 		$w.close();
@@ -291,7 +282,8 @@ function are_you_sure(action, canceled){
 function show_error_message(message, error){
 	$w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.text(message);
-	$(E("pre"))
+	if(error){
+		$(E("pre"))
 		.appendTo($w.$main)
 		.text(error.stack || error.toString())
 		.css({
@@ -303,13 +295,15 @@ function show_error_message(message, error){
 			width: "500px",
 			overflow: "auto",
 		});
+	}
 	$w.$Button("OK", function(){
 		$w.close();
 	});
+	$w.center();
 	console.error(message, error);
 }
 
-
+// TODO: split out paste_image and make paste_uri
 function paste_file(blob){
 	var reader = new FileReader();
 	reader.onload = function(e){

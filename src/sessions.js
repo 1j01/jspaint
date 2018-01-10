@@ -372,16 +372,52 @@
 					current_session = new FireSession(session_id);
 				}
 			}
+		}else if(load_from_url_match){
+			var url = decodeURIComponent(load_from_url_match[2]);
+			var hash_loading_url_from = location.hash;
+			
+			end_current_session();
+
+			open_from_URI(url, function(err){
+				if(err){
+					// NOTE: err doesn't give us a useful message; apparently distinguishing cross-origin errors is disallowed
+					var $w = $FormWindow().title("Error").addClass("dialogue-window");
+					$w.$main.html(
+						"<p>Failed to load image.</p>" +
+						"<p>Make sure to use an image host that supports " +
+						"<a href='https://en.wikipedia.org/wiki/Cross-origin_resource_sharing'>Cross-Origin Resource Sharing</a>" +
+						", such as <a href='https://imgur.com/'>Imgur</a>."
+					);
+					$w.$main.css({maxWidth: "500px"});
+					$w.$Button("OK", function(){
+						$w.close();
+					});
+					$w.center();
+					// TODO: close are_you_sure windows and these Error windows when switching sessions
+					// because things can get confusing
+				}
+				// NOTE: the following is intended to run regardless of error (as opposed to returning if there's an error)
+				// FIXME: race condition (make the timeout long and try to fix it with a flag or something )
+				setTimeout(function(){
+					// NOTE: this "change" event doesn't *guarantee* there was a change :/
+					// let alone that there was a user interaction with the currently loaded document
+					// that is, it also triggers for session changes, which I'm trying to avoid here
+					$canvas.one("change", function(){
+						if(location.hash === hash_loading_url_from){
+							debug("switching to new session from #load: URL because of user interaction");
+							end_current_session();
+							var session_id = (Math.random()*Math.pow(2, 32)).toString(16);
+							location.hash = "local:" + session_id;
+						}
+					});
+				}, 100);
+			});
+
 		}else{
 			debug("no session id in hash");
 			end_current_session();
 			var session_id = (Math.random()*Math.pow(2, 32)).toString(16);
 			location.hash = "local:" + session_id;
-			// TODO: for "load:" URLs, don't change the URL to "local:" until a change is made
-			if(load_from_url_match){
-				var url = decodeURIComponent(load_from_url_match[2]);
-				open_from_URI(url);
-			}
 		}
 	}).triggerHandler("hashchange");
 	
