@@ -1,7 +1,8 @@
 
 function $Handles($container, element, options){
 	var outset = options.outset || 0;
-	var offset = options.offset || 0;
+	var get_offset_left = options.get_offset_left || function(){ return 0; };
+	var get_offset_top = options.get_offset_top || function(){ return 0; };
 	var size_only = options.size_only || false;
 	var el = element;
 	$container.on("new-element", function(e, element){
@@ -84,8 +85,8 @@ function $Handles($container, element, options){
 				}
 				$resize_ghost.css({
 					position: "absolute",
-					left: magnification * delta_x + offset,
-					top: magnification * delta_y + offset,
+					left: magnification * delta_x + get_offset_left(),
+					top: magnification * delta_y + get_offset_top(),
 					width: magnification * width,
 					height: magnification * height,
 				});
@@ -116,18 +117,18 @@ function $Handles($container, element, options){
 			var rect = el.getBoundingClientRect();
 			var hs = $h.width();
 			if(x_axis === "middle"){
-				$h.css({ left: offset + (rect.width - hs) / 2 });
+				$h.css({ left: get_offset_left() + (rect.width - hs) / 2 });
 			}else if(x_axis === "left"){
-				$h.css({ left: offset - outset });
+				$h.css({ left: get_offset_left() - outset });
 			}else if(x_axis === "right"){
-				$h.css({ left: offset + (rect.width - hs/2) });
+				$h.css({ left: get_offset_left() + (rect.width - hs/2) });
 			}
 			if(y_axis === "middle"){
-				$h.css({ top: offset + (rect.height - hs) / 2 });
+				$h.css({ top: get_offset_top() + (rect.height - hs) / 2 });
 			}else if(y_axis === "top"){
-				$h.css({ top: offset - outset });
+				$h.css({ top: get_offset_top() - outset });
 			}else if(y_axis === "bottom"){
-				$h.css({ top: offset + (rect.height - hs/2) });
+				$h.css({ top: get_offset_top() + (rect.height - hs/2) });
 			}
 		};
 		

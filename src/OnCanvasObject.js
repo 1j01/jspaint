@@ -11,10 +11,12 @@ function OnCanvasObject(x, y, width, height){
 }
 
 OnCanvasObject.prototype.position = function(){
+	var offset_left = parseFloat($canvas_area.css("padding-left"));
+	var offset_top = parseFloat($canvas_area.css("padding-top"));
 	this.$el.css({
 		position: "absolute",
-		left: magnification * this.x + 3,
-		top: magnification * this.y + 3,
+		left: magnification * this.x + offset_left,
+		top: magnification * this.y + offset_top,
 		width: magnification * this.width,
 		height: magnification * this.height,
 	});

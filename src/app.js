@@ -62,7 +62,12 @@ $canvas_area.attr("touch-action", "pan-x pan-y");
 var $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
 
-var $canvas_handles = $Handles($canvas_area, canvas, {outset: 4, offset: 4, size_only: true});
+var $canvas_handles = $Handles($canvas_area, canvas, {
+	outset: 4,
+	get_offset_left: function(){ return parseFloat($canvas_area.css("padding-left")) + 1; },
+	get_offset_top: function(){ return parseFloat($canvas_area.css("padding-top")) + 1; },
+	size_only: true
+});
 
 var $top = $(E("div")).addClass("component-area").prependTo($V);
 var $bottom = $(E("div")).addClass("component-area").appendTo($V);

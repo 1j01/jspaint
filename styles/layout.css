@@ -341,3 +341,7 @@ html, body, .jspaint {
 ::before, ::after {
 	pointer-events: none;
 }
+
+.cursor-bully * {
+	cursor: inherit !important;
+}

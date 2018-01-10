@@ -39,9 +39,6 @@
 	/*outline: 1px dotted invert;*/
 	/* I want this to be inverty, but in chrome this makes it invisible */
 }
-.cursor-bully * {
-	cursor: inherit !important;
-}
 
 .menus *,
 .menu-popup * {

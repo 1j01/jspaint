@@ -18,6 +18,32 @@ body {
 	image-rendering: pixelated;
 }
 
+.selection:after,
+.textbox:after {
+	content: '';
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	border: 1px dashed black;
+}
+.handle {
+	background: #000080;
+	/* TODO: enlarge handles for usability (need to update code to handle it though) */
+	/* width: 5px;
+	height: 5px; */
+}
+.useless-handle {
+	background: #fff;
+	box-shadow: 1px 1px 0 #000080 inset;
+}
+.resize-ghost {
+	outline: 1px dotted black;
+	/*outline: 1px dotted invert;*/
+	/* I want this to be inverty, but in chrome this makes it invisible */
+}
+
 .window,
 .menu-popup {
 	border-radius: 2px;
