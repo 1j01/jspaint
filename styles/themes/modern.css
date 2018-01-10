@@ -31,6 +31,7 @@ body {
 .handle {
 	background: #000080;
 	/* TODO: enlarge handles for usability (need to update code to handle it though) */
+	/* or at least increase functional size */
 	/* width: 5px;
 	height: 5px; */
 }
@@ -193,6 +194,30 @@ body {
 	padding: 8px;
 }
 
+/* NOTE: copy/pasted from classic.css */
+/* TODO: actually show a preview of the component itself when dragging for the modern theme */
+/* TODO: cursor maybe? just when already dragging? */
+.component-ghost.dock {
+	outline: 1px solid black;
+	/*outline: 1px solid invert;*/
+}
+.component-ghost:not(.dock) {
+	outline: 1px dotted black;
+	/*outline: 1px dotted invert;*/
+}
+.component-ghost:not(.dock):after,
+.component-ghost:not(.dock):before {
+	content: '';
+	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+	outline: 1px dotted black;
+	/*outline: 1px dotted invert;*/
+}
+.component-ghost:not(.dock):after {
+	outline-offset: 1px;
+}
+.component-ghost:not(.dock):before {
+	outline-offset: 2px;
+}
 
 .help-window li ul {
 	padding-left: 16px;
