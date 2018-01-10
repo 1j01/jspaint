@@ -34,6 +34,7 @@
 
 * Warning sign for "Save changes to X?" dialogue
 * Error symbol for error message dialogues
+* 3D inset border for inputs
 * The window close button uses text; font rendering is not consistent
 * The progress bar (Rendering GIF) is left native
 * Menu separator spacing
@@ -43,6 +44,7 @@
 	* Inverty fill bucket and airbrush cursors
 	* Previewy brush and eraser cursors
 * Custom cursors in Edge; apparently they require `.cur` files? ugh
+* The canvas-area's border is different in Firefox and Edge from Chrome
 
 
 ### Issues

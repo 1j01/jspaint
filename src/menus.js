@@ -14,6 +14,12 @@ var menus = {
 			description: "Opens an existing document.",
 		},
 		{
+			item: "&Load From URL",
+			// shortcut: "Ctrl+L",
+			action: file_load_from_url,
+			description: "Opens an image from the web.",
+		},
+		{
 			item: "&Save",
 			shortcut: "Ctrl+S",
 			action: file_save,

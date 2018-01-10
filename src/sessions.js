@@ -339,10 +339,16 @@
 		}
 	};
 	$G.on("hashchange", function(){
-		var match = location.hash.match(/^#?(session|local):(.*)$/i);
-		if(match){
-			var local = match[1] === "local";
-			var session_id = match[2];
+		// TODO: should load: be separate from session:/local:
+		// and be able to load *into* a session, rather than just start one?
+		// well I guess loading into a session wouldn't be that helpful if it makes a new image anyways
+		// but it would be useful for collaborative sessions if collaborative sessions actually worked well enough to be useful
+		// well, but you can paste images too, so you could just do that
+		var session_match = location.hash.match(/^#?(session|local):(.*)$/i);
+		var load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);
+		if(session_match){
+			var local = session_match[1] === "local";
+			var session_id = session_match[2];
 			if(session_id === ""){
 				debug("invalid session id; session id cannot be empty");
 				end_current_session();
@@ -371,6 +377,11 @@
 			end_current_session();
 			var session_id = (Math.random()*Math.pow(2, 32)).toString(16);
 			location.hash = "local:" + session_id;
+			// TODO: for "load:" URLs, don't change the URL to "local:" until a change is made
+			if(load_from_url_match){
+				var url = decodeURIComponent(load_from_url_match[2]);
+				open_from_URI(url);
+			}
 		}
 	}).triggerHandler("hashchange");
 	

@@ -214,7 +214,6 @@ button.selected,
 .current-colors {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	border: 2px inset;
 }
 .color-selection {
 	box-sizing: border-box;
@@ -445,6 +444,15 @@ button:focus {
 	outline-offset: -1px;
 }
 
+input[type=text],
+input[type=url] {
+	/* TODO: fancy 3d inset border (might need a surrounding element because pseudo elements won't work with input) */
+	/* I guess an image border could work; maybe I should be using (svg) image borders for stuff */
+	/* (css inset border style doesn't look good and isn't consistent between browsers) */
+	border: 1px solid gray;
+	background: white;
+	color: black;
+}
 
 ::selection {
 	background-color: #000080;

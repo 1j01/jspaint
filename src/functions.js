@@ -83,6 +83,7 @@ function open_from_Image(img, callback, canceled){
 }
 function open_from_URI(uri, callback, canceled){
 	var img = new Image();
+	img.crossOrigin = "Anonymous";
 	img.onload = function(){
 		if(!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0){
             return callback() && callback(new Error("Image failed to load; naturalWidth == " + this.naturalWidth));
@@ -181,6 +182,43 @@ function file_open(){
 			open_from_FileList(files, callback);
 		});
 	}
+}
+
+var $file_load_from_url_window;
+function file_load_from_url(){
+	if($file_load_from_url_window){
+		$file_load_from_url_window.close();
+	}
+	var $w = new $FormWindow().addClass("dialogue-window");
+	$file_load_from_url_window = $w;
+	$w.title("Load from URL");
+	$w.$main.html("<label>URL: <input type='url' value='' class='url-input'/></label>");
+	var $error = $("<div class='error'></div>").appendTo($w.$main)
+	var $input = $w.$main.find(".url-input");
+	$input.on("change input", function(){
+		$error.text("");
+	});
+	$w.$Button("Load", function(){
+		// TODO: make $error into $load_status and indicate loading?
+		open_from_URI($input.val(), function(err){
+			// $w.close();
+			// if(err){
+			// 	this doesn't give a helpful message, and apparently we can't distinguish cross-origin errors:
+			// 	show_error_message("Failed to load an image from the given URL:", err);
+			// }
+			if(err){
+				$error.text("Failed to load the image.");
+				console.log("open_from_URI failed:", err);
+			}else{
+				$w.close();
+			}
+		});
+	}).focus();
+	$w.$Button("Cancel", function(){
+		$w.close();
+	});
+	$w.center();
+	$input.focus();
 }
 
 function file_save(){
