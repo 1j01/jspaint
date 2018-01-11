@@ -583,6 +583,9 @@ $app
 	){
 		return;
 	}
+	if(e.button === 1){
+		return; // allow middle-click scrolling
+	}
 	e.preventDefault();
 });
 

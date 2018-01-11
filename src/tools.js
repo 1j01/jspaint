@@ -473,6 +473,10 @@ tools = [{
 			ctx.fillRect(x, y, w, h);
 		}
 		if(this.$options.stroke){
+			// FIXME: can draw 1x2 or 2x1 pixels of a rectangle with a stroke of 1px (the default)
+			// which doesn't get drawn at full opacity
+			// or more generally, a 0-width or 0-height rectangle gives
+			// non-full-opacity pixels at either side of the resulting line drawn
 			if((stroke_size % 2) === 1){
 				ctx.strokeRect(x-0.5, y-0.5, w, h);
 			}else{

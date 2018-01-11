@@ -58,8 +58,6 @@ then switch back to the magnifier, the toolbar doesn't show any magnification hi
 * Can't glide thru tool options in Firefox, mobile Chrome;
 might be a pointer events spec interpretation issue, and it could easily be that the more technically correct browsers are where it's not working
 (Note: not a thing allowed by MS Paint)
-* Middle-click scrolling is prevented
-(Note: not a thing allowed by MS Paint)
 
 
 ### Menus

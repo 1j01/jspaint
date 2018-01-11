@@ -96,7 +96,7 @@ Selection.prototype.cut_out_background = function(){
 	var sel = this;
 	var cutout = sel.canvas;
 	if(transparency){
-		// @FIXME: this doesn't work well with transparency between 0 and 1
+		// @FIXME: this doesn't work well with nonbinary transparency
 		ctx.save();
 		ctx.globalCompositeOperation = "destination-out";
 		ctx.drawImage(cutout, sel.x, sel.y);
