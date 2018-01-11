@@ -59,7 +59,9 @@ function create_and_trigger_input(attrs, callback){
 	return $input;
 }
 
-function get_FileList(callback){
+// TODO: rename these functions to lowercase (and maybe say "files" in this case)
+function get_FileList_from_file_select_dialog(callback){
+	// TODO: specify mime types?
 	create_and_trigger_input({type: "file"}, function(input){
 		callback(input.files);
 	});
@@ -103,33 +105,41 @@ function open_from_URI(uri, callback, canceled){
 		open_from_Image(img, callback, canceled);
 	});
 }
-function open_from_File(file, callback){
-	var url = URL.createObjectURL(file);
-	open_from_URI(url, function(err){
-		console.log("regardless of error, revokeObjectURL");
+function open_from_File(file, callback, canceled){
+	var blob_url = URL.createObjectURL(file);
+	load_image_from_URI(blob_url, function(err, img){
+		// revoke object URL regardless of error
 		URL.revokeObjectURL(file);
-		if(err){ return callback && callback(err); }
-		file_name = file.name;
-		update_title();
-		saved = true;
-		callback && callback();
-	}, function(){
-		console.log("canceled, revokeObjectURL");
-		URL.revokeObjectURL(file);
+		if(err){ return callback(err); }
+
+		open_from_Image(img, function(){
+			file_name = file.name;
+			update_title();
+			saved = true;
+			callback();
+		}, canceled);
 	});
 }
-function open_from_FileList(files, callback){
+function get_image_file_from_FileList_or_show_error(files, file_list_user_input_method_verb_past_tense){
 	for(var i=0; i<files.length; i++){
 		var file = files[i];
 		if(file.type.match(/^image/)){
-			open_from_File(file, callback);
-			return;
+			return file;
 		}
 	}
 	if(files.length > 1){
-		callback(new Error("None of the given files appear to be images"));
+		show_error_message("None of the files " + file_list_user_input_method_verb_past_tense + " appear to be images.");
 	}else{
-		callback(new Error("File does not appear to be an image"));
+		// TODO: ucfirst(file_list_user_input_method_verb_past_tense) + " file" might be more natural
+		show_error_message("File " + file_list_user_input_method_verb_past_tense + " does not appear to be an image.");
+	}
+}
+function open_from_FileList(files, user_input_method_verb_past_tense){
+	var file = get_image_file_from_FileList_or_show_error(files);
+	if(file){
+		open_from_File(file, function(err){
+			if(err){ return show_error_message("Failed to open file:", err); }
+		});
 	}
 }
 function open_from_FileEntry(entry, callback){
@@ -168,15 +178,11 @@ function file_new(){
 	});
 }
 
-// TODO: factor out open_file_dialog or open_select_file_dialog/choose/whatever
+// TODO: factor out open_select/choose_file_dialog or get_file_from_file_select_dialog or whatever
 // all these open_from_* things are done backwards, basically
 // there's this little thing called Inversion of Control...
+// use the chooseEntry thing for paste_from_file_select_dialog as well or drop support for that
 function file_open(){
-	var callback = function(err){
-		if(err){
-			show_error_message("Failed to open file:", err);
-		}
-	};
 	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
 		chrome.fileSystem.chooseEntry({
 			type: "openFile",
@@ -186,11 +192,15 @@ function file_open(){
 			if(chrome.runtime.lastError){
 				return console.error(chrome.runtime.lastError.message);
 			}
-			open_from_FileEntry(entry, callback);
+			open_from_FileEntry(entry, function(err){
+				if(err){
+					show_error_message("Failed to open file:", err);
+				}
+			});
 		});
 	}else{
-		get_FileList(function(files){
-			open_from_FileList(files, callback);
+		get_FileList_from_file_select_dialog(function(files){
+			open_from_FileList(files, "selected");
 		});
 	}
 }
@@ -224,7 +234,7 @@ function file_load_from_url(){
 function file_save(){
 	if(file_name.match(/\.svg$/)){
 		file_name = file_name.replace(/\.svg$/, "") + ".png";
-		//update_title()?
+		//TODO: update_title();?
 		return file_save_as();
 	}
 	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry && window.file_entry){
@@ -330,39 +340,33 @@ function show_resource_load_error_message(){
 	$w.center();
 }
 
-// TODO: DRY between these functions and open_from_* functions?
+// TODO: DRY between these functions and open_from_* functions further?
 
-function paste_image_from_URI(uri){
-	load_image_from_URI(uri, function(err, img){
-		if(err){
-			return show_resource_load_error_message();
-		}
-		paste(img);
-	});
-};
+// function paste_image_from_URI(uri, callback){
+// 	load_image_from_URI(uri, function(err, img){
+// 		if(err){ return callback(err); }
+// 		paste(img);
+// 	});
+// };
 
-function paste_image_from_file(blob){
-	// var reader = new FileReader();
-	// reader.onload = function(e){
-	// 	paste_image_from_URI(e.target.result);
-	// };
-	// reader.onerror = function(e){
-	// 	show_error_message("Failed to read file:", e.error);
-	// };
-	// reader.readAsDataURL(blob);
+function paste_image_from_file(file){
+	// TODO: revoke object URL
 	var blob_url = URL.createObjectURL(file);
-	paste_image_from_URI(blob_url);
+	// paste_image_from_URI(blob_url);
+	load_image_from_URI(blob_url, function(err, img){
+		if(err){ return show_resource_load_error_message(); }
+		paste(img);
+		console.log("revokeObjectURL", blob_url);
+		URL.revokeObjectURL(blob_url);
+	});
 }
 
-// alternatively "paste_from_file_dialog"
-function open_file_dialog_to_paste_from(){
-	get_FileList(function(files){
-		$.each(files, function(i, file){
-			if(file.type.match(/image/)){
-				paste_image_from_file(file);
-				return false;
-			}
-		});
+function paste_from_file_select_dialog(){
+	get_FileList_from_file_select_dialog(function(files){
+		var file = get_image_file_from_FileList_or_show_error(files, "selected");
+		if(file){
+			paste_image_from_file(file);
+		}
 	});
 }
 
@@ -539,6 +543,7 @@ function render_history_as_apng(){
 
 function undoable(callback, action){
 	saved = false;
+	// TODO: this is annoying and arbitrary. nonlinear undo would be much better.
 	if(redos.length > 5){
 		var $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
@@ -619,7 +624,7 @@ function delete_selection(){
 	}
 }
 function select_all(){
-	// Note: selecting a tool calls deselect();
+	// Note: relying on select_tool to call deselect();
 	select_tool("Select");
 	
 	selection = new Selection(0, 0, canvas.width, canvas.height);
@@ -1021,14 +1026,13 @@ function set_as_wallpaper_centered(c){
 		
 		fs.writeFile(imgPath, base64, "base64", function(err){
 			if(err){
-				show_error_message("Failed to set as desktop background:\nCouldn't write temporary image file", err);
-			}else{
-				wallpaper.set(imgPath, function(err){
-					if(err){
-						show_error_message("Failed to set as desktop background!", err);
-					}
-				});
+				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
 			}
+			wallpaper.set(imgPath, function(err){
+				if(err){
+					show_error_message("Failed to set as desktop background!", err);
+				}
+			});
 		});
 	}else{
 		c.toBlob(function(blob){
@@ -1046,7 +1050,9 @@ function save_selection_to_file(){
 				accepts: [{mimeTypes: ["image/*"]}]
 			}, function(entry){
 				if(chrome.runtime.lastError){
-					// should show an error unless this can also be the user just canceling
+					// TODO: should show an error unless this can also be the user just canceling
+					// also in other places
+					// or just drop support for chrome.fileSystem stuff
 					// show_error_message("Failed to write selection to file:", chrome.runtime.lastError);
 					return console.error(chrome.runtime.lastError.message);
 				}

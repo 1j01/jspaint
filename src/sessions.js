@@ -18,14 +18,13 @@
 		
 		storage.get(lsid, function(err, uri){
 			if(err){
-				show_error_message("Error retrieving image from localStorage:", err);
+				show_error_message("Failed to retrieve image from local storage:", err);
 			}else if(uri){
 				open_from_URI(uri, function(err){
 					if(err){
-						show_error_message("Error opening image from localStorage:", err);
-					}else{
-						saved = false; // it may be safe, sure, but you haven't "Saved" it
+						return show_error_message("Failed to open image from local storage:", err);
 					}
+					saved = false; // it may be safe, sure, but you haven't "Saved" it
 				});
 			}
 		});
@@ -382,6 +381,7 @@
 				if(err){
 					show_resource_load_error_message();
 				}
+				// TODO: saved = false;?
 				// NOTE: the following is intended to run regardless of error (as opposed to returning if there's an error)
 				// FIXME: race condition (make the timeout long and try to fix it with a flag or something )
 				setTimeout(function(){

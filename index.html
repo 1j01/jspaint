@@ -29,9 +29,12 @@
 					try{
 						localStorage[theme_storage_key] = theme;
 					}catch(e){}
-					fetch(href_for(theme)).then(function(response) {
-						return response.text();
-					}).then(function(css) {
+					fetch(href_for(theme))
+					.catch(function(err){
+						show_error_message("Failed to load theme. You can probably reload the app to finish switching themes.", err);
+					})
+					.then(function(response) {
+						var css = response.text();
 						if(theme_link){
 							theme_link.parentElement.removeChild(theme_link);
 							theme_link = null;

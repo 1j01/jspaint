@@ -159,11 +159,7 @@ $("body").on("dragover dragenter", function(e){
 	e.preventDefault();
 	var dt = e.originalEvent.dataTransfer;
 	if(dt && dt.files && dt.files.length){
-		open_from_FileList(dt.files, function(err){
-			if(err){
-				show_error_message("Failed to open file:", err);
-			}
-		});
+		open_from_FileList(dt.files, "dropped");
 	}
 });
 
@@ -383,7 +379,10 @@ $G.on("cut copy paste", function(e){
 				item.getAsString(function(text){
 					// parse text/uri-list (might as well do it properly)
 					var uris = text.split(/[\n\r]+/).filter(function(line){return line[0] !== "#" && line});
-					paste_image_from_URI(uris[0]);
+					load_image_from_URI(uris[0], function(err, img){
+						if(err){ return show_resource_load_error_message(); }
+						paste(img);
+					});
 				});
 				return false; // break out of $.each loop
 			}else if(item.type.match(/^image\//)){

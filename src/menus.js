@@ -167,7 +167,7 @@ var menus = {
 		},
 		{
 			item: "Paste &From...",
-			action: open_file_dialog_to_paste_from,
+			action: paste_from_file_select_dialog,
 			description: "Pastes a file into the selection.",
 		}
 	],
@@ -347,7 +347,7 @@ var menus = {
 		{
 			item: "&Get Colors",
 			action: function(){
-				get_FileList(function(files){
+				get_FileList_from_file_select_dialog(function(files){
 					var file = files[0];
 					Palette.load(file, function(err, new_palette){
 						if(err){
