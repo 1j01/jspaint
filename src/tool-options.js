@@ -289,18 +289,6 @@ var $choose_transparency = $Choose(
 	}
 ).addClass("choose-transparency");
 
-// var $choose_transparency_unsupported =
-// 	$choose_transparency
-// 	.trigger("update")
-// 	.clone()
-// 	.attr("title", "This transparency option is not supported yet for selections.")
-// 	.css({filter: "saturation(0)"});
-// $choose_transparency_unsupported.find("canvas").each(function(index, canvas){
-// 	var image = $choose_transparency.find("canvas")[index];
-// 	canvas.getContext("2d").drawImage(image, 0, 0);
-// });
-// ^ doesn't work because ChooserCanvas has to load an image asynchronously
-
 var $choose_transparency_unsupported = $Choose(
 	["opaque", "transparent"],
 	function(t_o, is_chosen){
@@ -321,6 +309,6 @@ var $choose_transparency_unsupported = $Choose(
 		return t_o === "opaque";//transparent_opaque;
 	}
 ).addClass("choose-transparency")
-.attr("title", "This option for transparency is not supported yet.")
+.attr("title", "Option is not supported yet.")
 .css({filter: "grayscale() opacity(0.5)"});
 

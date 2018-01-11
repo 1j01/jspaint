@@ -167,7 +167,7 @@ var menus = {
 		},
 		{
 			item: "Paste &From...",
-			action: paste_from,
+			action: open_file_dialog_to_paste_from,
 			description: "Pastes a file into the selection.",
 		}
 	],

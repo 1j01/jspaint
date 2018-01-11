@@ -380,21 +380,7 @@
 
 			open_from_URI(url, function(err){
 				if(err){
-					// NOTE: err doesn't give us a useful message; apparently distinguishing cross-origin errors is disallowed
-					var $w = $FormWindow().title("Error").addClass("dialogue-window");
-					$w.$main.html(
-						"<p>Failed to load image.</p>" +
-						"<p>Make sure to use an image host that supports " +
-						"<a href='https://en.wikipedia.org/wiki/Cross-origin_resource_sharing'>Cross-Origin Resource Sharing</a>" +
-						", such as <a href='https://imgur.com/'>Imgur</a>."
-					);
-					$w.$main.css({maxWidth: "500px"});
-					$w.$Button("OK", function(){
-						$w.close();
-					});
-					$w.center();
-					// TODO: close are_you_sure windows and these Error windows when switching sessions
-					// because things can get confusing
+					show_resource_load_error_message();
 				}
 				// NOTE: the following is intended to run regardless of error (as opposed to returning if there's an error)
 				// FIXME: race condition (make the timeout long and try to fix it with a flag or something )

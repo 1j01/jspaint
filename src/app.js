@@ -355,13 +355,23 @@ $G.on("cut copy paste", function(e){
 	e.preventDefault();
 	var cd = e.originalEvent.clipboardData || window.clipboardData;
 	if(!cd){ return; }
-	
+
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
 			var data_url = selection.canvas.toDataURL();
 			cd.setData("text/x-data-uri; type=image/png", data_url);
 			cd.setData("text/uri-list", data_url);
 			cd.setData("URL", data_url);
+			// var svg = `
+			// 	<svg
+			// 		xmlns="http://www.w3.org/2000/svg" version="1.1"
+			// 		viewBox="0 0 ${selection.canvas.width} ${selection.canvas.height}" preserveAspectRatio="xMidYMid slice">
+			// 		<image xlink:href="${data_url}" x="0" y="0" height="${selection.canvas.height}" width="${selection.canvas.width}"/>
+			// 	</svg>
+			// `;
+			// cd.setData("image/svg+xml", svg);
+			// cd.setData("text/html", svg);
+
 			if(e.type === "cut"){
 				selection.destroy();
 				selection = null;
@@ -369,17 +379,15 @@ $G.on("cut copy paste", function(e){
 		}
 	}else if(e.type === "paste"){
 		$.each(cd.items, function(i, item){
-			if(item.type.match(/^text\/(?:x-data-)?uri/)){
-				item.getAsString(function(str){
-					var img = E("img");
-					img.onload = function(){
-						paste(img);
-					};
-					img.src = str;
+			if(item.type.match(/^text\/(?:x-data-uri|uri-list|plain)|URL$/)){
+				item.getAsString(function(text){
+					// parse text/uri-list (might as well do it properly)
+					var uris = text.split(/[\n\r]+/).filter(function(line){return line[0] !== "#" && line});
+					paste_image_from_URI(uris[0]);
 				});
 				return false; // break out of $.each loop
-			}else if(item.type.match(/^image/)){
-				paste_file(item.getAsFile());
+			}else if(item.type.match(/^image\//)){
+				paste_image_from_file(item.getAsFile());
 				return false; // break out of $.each loop
 			}
 		});

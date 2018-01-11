@@ -83,24 +83,30 @@ function open_from_Image(img, callback, canceled){
 		callback && callback();
 	}, canceled);
 }
-function open_from_URI(uri, callback, canceled){
+function load_image_from_URI(uri, callback){
 	var img = new Image();
 	img.crossOrigin = "Anonymous";
 	img.onload = function(){
 		if(!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0){
-            return callback() && callback(new Error("Image failed to load; naturalWidth == " + this.naturalWidth));
+            return callback && callback(new Error("Image failed to load; naturalWidth == " + this.naturalWidth));
 		}
-		open_from_Image(img, callback, canceled);
+		callback(null, img);
 	};
-	img.onerror = function(){
+	img.onerror = function(e){
 		callback && callback(new Error("Image failed to load"));
 	};
 	img.src = uri;
 }
+function open_from_URI(uri, callback, canceled){
+	load_image_from_URI(uri, function(err, img){
+		if(err){ return callback(err); }
+		open_from_Image(img, callback, canceled);
+	});
+}
 function open_from_File(file, callback){
 	var url = URL.createObjectURL(file);
 	open_from_URI(url, function(err){
-		console.log("opened or error, revokeObjectURL");
+		console.log("regardless of error, revokeObjectURL");
 		URL.revokeObjectURL(file);
 		if(err){ return callback && callback(err); }
 		file_name = file.name;
@@ -162,6 +168,9 @@ function file_new(){
 	});
 }
 
+// TODO: factor out open_file_dialog or open_select_file_dialog/choose/whatever
+// all these open_from_* things are done backwards, basically
+// there's this little thing called Inversion of Control...
 function file_open(){
 	var callback = function(err){
 		if(err){
@@ -303,25 +312,54 @@ function show_error_message(message, error){
 	console.error(message, error);
 }
 
-// TODO: split out paste_image and make paste_uri
-function paste_file(blob){
-	var reader = new FileReader();
-	reader.onload = function(e){
-		var img = new Image();
-		img.onload = function(){
-			paste(img);
-		};
-		// TODO: error handling
-		img.src = e.target.result;
-	};
-	reader.readAsDataURL(blob);
+// TODO: close are_you_sure windows and these Error windows when switching sessions
+// because it can get pretty confusing
+function show_resource_load_error_message(){
+	// NOTE: apparently distinguishing cross-origin errors is disallowed
+	var $w = $FormWindow().title("Error").addClass("dialogue-window");
+	$w.$main.html(
+		"<p>Failed to load image.</p>" +
+		"<p>Make sure to use an image host that supports " +
+		"<a href='https://en.wikipedia.org/wiki/Cross-origin_resource_sharing'>Cross-Origin Resource Sharing</a>" +
+		", such as <a href='https://imgur.com/'>Imgur</a>."
+	);
+	$w.$main.css({maxWidth: "500px"});
+	$w.$Button("OK", function(){
+		$w.close();
+	});
+	$w.center();
 }
 
-function paste_from(){
+// TODO: DRY between these functions and open_from_* functions?
+
+function paste_image_from_URI(uri){
+	load_image_from_URI(uri, function(err, img){
+		if(err){
+			return show_resource_load_error_message();
+		}
+		paste(img);
+	});
+};
+
+function paste_image_from_file(blob){
+	// var reader = new FileReader();
+	// reader.onload = function(e){
+	// 	paste_image_from_URI(e.target.result);
+	// };
+	// reader.onerror = function(e){
+	// 	show_error_message("Failed to read file:", e.error);
+	// };
+	// reader.readAsDataURL(blob);
+	var blob_url = URL.createObjectURL(file);
+	paste_image_from_URI(blob_url);
+}
+
+// alternatively "paste_from_file_dialog"
+function open_file_dialog_to_paste_from(){
 	get_FileList(function(files){
 		$.each(files, function(i, file){
 			if(file.type.match(/image/)){
-				paste_file(file);
+				paste_image_from_file(file);
 				return false;
 			}
 		});
@@ -349,24 +387,24 @@ function paste(img){
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
 				}
 				ctx.drawImage(original, 0, 0);
-				paste_img();
+				do_the_paste();
 				$canvas_area.trigger("resize");
 			});
 		}).focus();
 		$w.$Button("Crop", function(){
 			$w.close();
-			paste_img();
+			do_the_paste();
 		});
 		$w.$Button("Cancel", function(){
 			$w.close();
 		});
 		$w.center();
 	}else{
-		paste_img();
+		do_the_paste();
 	}
 	
-	function paste_img(){
-		// Note: selecting a tool calls deselect();
+	function do_the_paste(){
+		// Note: relying on select_tool to call deselect();
 		select_tool("Select");
 		
 		selection = new Selection(0, 0, img.width, img.height);
@@ -983,11 +1021,11 @@ function set_as_wallpaper_centered(c){
 		
 		fs.writeFile(imgPath, base64, "base64", function(err){
 			if(err){
-				alert("Failed to set as desktop background:\nCouldn't write temporary image file");
+				show_error_message("Failed to set as desktop background:\nCouldn't write temporary image file", err);
 			}else{
 				wallpaper.set(imgPath, function(err){
 					if(err){
-						alert("Failed to set as desktop background!\n" + err);
+						show_error_message("Failed to set as desktop background!", err);
 					}
 				});
 			}
@@ -1008,11 +1046,14 @@ function save_selection_to_file(){
 				accepts: [{mimeTypes: ["image/*"]}]
 			}, function(entry){
 				if(chrome.runtime.lastError){
+					// should show an error unless this can also be the user just canceling
+					// show_error_message("Failed to write selection to file:", chrome.runtime.lastError);
 					return console.error(chrome.runtime.lastError.message);
 				}
 				entry.createWriter(function(file_writer){
 					file_writer.onwriteend = function(e){
 						if(this.error){
+							show_error_message("Failed to write selection to file:", this.error);
 							console.error(this.error + '\n\n\n@ ' + e);
 						}else{
 							console.log("Wrote selection to file!");
