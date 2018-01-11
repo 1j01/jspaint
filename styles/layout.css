@@ -316,6 +316,24 @@ html, body, .jspaint {
 .help-window iframe {
 	flex: 1;
 }
+.help-window li ul {
+	padding-left: 16px;
+}
+.help-window li:before {
+	content: "";
+	display: inline-block;
+	vertical-align: middle;
+	width: 16px;
+	height: 16px;
+	background-position: 0 0;
+	margin-right: 2px;
+}
+.help-window .folder.expanded:before {
+	background-position: -16px 0;
+}
+.help-window .page:before {
+	background-position: -32px 0;
+}
 
 .dragging iframe {
 	pointer-events: none;

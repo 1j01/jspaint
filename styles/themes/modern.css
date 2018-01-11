@@ -165,7 +165,19 @@ body {
 .color-button {
 	border: 1px solid rgba(0, 0, 0, 0.5);
 }
+/*
+.swatch:hover:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+*/
 
+/* TODO: padding/margin on the top at least when in the sidebar */
 .tools {
 	width: 50px;
 }
@@ -219,6 +231,37 @@ body {
 	outline-offset: 2px;
 }
 
-.help-window li ul {
-	padding-left: 16px;
+.help-window .window-content {
+	padding: 0;
 }
+.help-window iframe {
+	border: 0;
+	/* TODO ideally, apply a padding: 16px on the body in the iframe, except for on the landing page (which has a background) */
+}
+.help-window ul.contents {
+	padding: 16px;
+	border-right: 1px solid rgba(128, 128, 128, 0.5);
+}
+.help-window .item {
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
+	padding: 0 2px;
+}
+.help-window .item:hover {
+	text-decoration: underline;
+	color: #1976D2;
+	cursor: pointer;
+}
+.help-window li:before {
+	/* TODO: more modern icons */
+	background-image: url("../../images/help-icons.png");
+}
+.help-window .item.selected {
+	/* @TODO: separate .help-window .contents.focused .item.selected */
+	background-color: #2196f3;
+	color: white;
+}
+/* ::selection {
+	background-color: #2196f3;
+	color: white;
+} */
