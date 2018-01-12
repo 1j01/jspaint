@@ -34,7 +34,13 @@
 						show_error_message("Failed to load theme. You can probably reload the app to finish switching themes.", err);
 					})
 					.then(function(response) {
-						var css = response.text();
+						// I'm gonna tell a funny joke, just wait..
+						// Q: why is this a separate step?
+						// A: because response.text() returns a Promise
+						// 😂😂😂 WHO DID THIS 😂😂😂😂 XD
+						return response.text();
+					})
+					.then(function(css) {
 						if(theme_link){
 							theme_link.parentElement.removeChild(theme_link);
 							theme_link = null;
