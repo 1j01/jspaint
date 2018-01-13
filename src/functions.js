@@ -299,7 +299,7 @@ function are_you_sure(action, canceled){
 }
 
 function show_error_message(message, error){
-	$w = $FormWindow().title("Error").addClass("dialogue-window");
+	var $w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.text(message);
 	if(error){
 		$(E("pre"))

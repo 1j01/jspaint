@@ -107,7 +107,7 @@ tools = [{
 		selection.instantiate(cutout);
 		selection.cut_out_background();
 	},
-	$options: $choose_transparency_unsupported
+	$options: $choose_transparency
 }, {
 	name: "Select",
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
@@ -164,7 +164,7 @@ tools = [{
 		selection.destroy();
 		selection = null;
 	},
-	$options: $choose_transparency_unsupported
+	$options: $choose_transparency
 }, {
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",

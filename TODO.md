@@ -215,7 +215,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Don't cut until you drag or do something else
 	(In MS Paint, you can make a selection, change the background color
 	and drag it, leaving the new background color behind.)
-	* Classic transparency where the selected background color is considered transparent
+	* Support switching tool options after cutting out the selection
 
 
 * TextBox

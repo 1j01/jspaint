@@ -98,17 +98,71 @@ Selection.prototype.instantiate = function(_img, _passive){
 Selection.prototype.cut_out_background = function(){
 	var sel = this;
 	var cutout = sel.canvas;
-	if(transparency){
-		// @FIXME: this doesn't work well with nonbinary transparency
-		ctx.save();
-		ctx.globalCompositeOperation = "destination-out";
-		ctx.drawImage(cutout, sel.x, sel.y);
-		ctx.restore();
-	}else{
+
+	// doc/sel or canvas/cutout, either of which would be the same variable name length which is nice
+	var canvasImageData = ctx.getImageData(sel.x, sel.y, sel.width, sel.height);
+	var cutoutImageData = cutout.ctx.getImageData(0, 0, sel.width, sel.height);
+	// cutoutImageData is initialzed with the shape to be cut out (whether rectangular or polygonal)
+	// and should end up as the cut out image data for the selection
+	// canvasImageData is initially the portion of image data on the canvas,
+	// and should end up as... the portion of image data on the canvas that it should end up as.
+
+	// if(!transparency){ // now if !transparency or if transparent_opaque == "transparent"
+		// this is mainly in order to support patterns as the background color
+		// NOTE: must come before cutout canvas is modified
 		var colored_canvas = new Canvas(cutout);
 		colored_canvas.ctx.globalCompositeOperation = "source-in";
 		colored_canvas.ctx.fillStyle = colors.background;
 		colored_canvas.ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
+		var colored_canvas_image_data = colored_canvas.ctx.getImageData(0, 0, sel.width, sel.height);
+		// TODO: should we check based on patterns for the background for transparent_opaque == "transparent"
+		// or should we only check against a solid color? if so, from what offset in the pattern?
+		// or should the feature be disabled?
+		// let's see...
+		// mspaint treats it as white, regardless of the pattern, even if the selected background is pure black
+		// we should probably do something more like that, but...
+		// we allow any kind of image data while in our "b&w mode"
+		// our b&w mode is basically patterns in the palette
+	// }
+
+	for(var i=0; i<cutoutImageData.data.length; i+=4){
+		var in_cutout = cutoutImageData.data[i+3] > 0;
+		if(transparent_opaque == "transparent"){
+			// TODO: support switching the transparent_opaque tool option
+			// so remove this code from here, and store a hidden source canvas for the selection
+			// and apply this logic when switching tool options based on that offscreen canvas,
+			// updating the sel.canvas
+			// FIXME: work with transparent selected background color
+			// (support treating partially transparent background colors as transparency)
+			if(
+				canvasImageData.data[i+0] === colored_canvas_image_data.data[i+0] &&
+				canvasImageData.data[i+1] === colored_canvas_image_data.data[i+1] &&
+				canvasImageData.data[i+2] === colored_canvas_image_data.data[i+2] &&
+				canvasImageData.data[i+3] === colored_canvas_image_data.data[i+3]
+			){
+				in_cutout = false;
+			}
+		}
+		if(in_cutout){
+			cutoutImageData.data[i+0] = canvasImageData.data[i+0];
+			cutoutImageData.data[i+1] = canvasImageData.data[i+1];
+			cutoutImageData.data[i+2] = canvasImageData.data[i+2];
+			cutoutImageData.data[i+3] = canvasImageData.data[i+3];
+			canvasImageData.data[i+0] = 0;
+			canvasImageData.data[i+1] = 0;
+			canvasImageData.data[i+2] = 0;
+			canvasImageData.data[i+3] = 0;
+		}else{
+			cutoutImageData.data[i+0] = 0;
+			cutoutImageData.data[i+1] = 0;
+			cutoutImageData.data[i+2] = 0;
+			cutoutImageData.data[i+3] = 0;
+		}
+	}
+	ctx.putImageData(canvasImageData, sel.x, sel.y);
+	cutout.ctx.putImageData(cutoutImageData, 0, 0);
+
+	if(!transparency){
 		ctx.drawImage(colored_canvas, sel.x, sel.y);
 	}
 };

@@ -283,32 +283,12 @@ var $choose_transparency = $Choose(
 	},
 	function(t_o){
 		transparent_opaque = t_o;
+		if(selection){
+			return show_error_message("Changing this option after making a selection is not supported yet. It's planned, though!");
+		}
 	},
 	function(t_o){
 		return t_o === transparent_opaque;
 	}
 ).addClass("choose-transparency");
-
-var $choose_transparency_unsupported = $Choose(
-	["opaque", "transparent"],
-	function(t_o, is_chosen){
-		var sw = 35, sh = 23; // width, height from source image
-		var b = 2; // margin by which the source image is inset on the destination
-		return ChooserCanvas(
-			"images/options-transparency.png",
-			false, // never invert it
-			b+sw+b, b+sh+b, // width, height of created destination canvas
-			0, (t_o === "opaque" ? 0 : 22), sw, sh, // x, y, width, height from source image
-			b, b, sw, sh // x, y, width, height on created destination canvas
-		);
-	},
-	function(t_o){
-		// transparent_opaque = t_o;
-	},
-	function(t_o){
-		return t_o === "opaque";//transparent_opaque;
-	}
-).addClass("choose-transparency")
-.attr("title", "Option is not supported yet.")
-.css({filter: "grayscale() opacity(0.5)"});
 
