@@ -26,18 +26,25 @@
 				
 				self.set_theme = function(theme){
 					current_theme = theme;
+					var can_probably_refresh_to_switch = true;
 					try{
 						localStorage[theme_storage_key] = theme;
-					}catch(e){}
+					}catch(e){
+						can_probably_refresh_to_switch = false;
+					}
 					fetch(href_for(theme))
 					.catch(function(err){
-						show_error_message("Failed to load theme. You can probably reload the app to finish switching themes.", err);
+						show_error_message(
+							"Failed to load theme." +
+							(can_probably_refresh_to_switch ? " You can probably reload the app to finish switching themes." : ""),
+							err
+						);
 					})
+					// I'm gonna tell a funny joke, just wait..
 					.then(function(response) {
-						// I'm gonna tell a funny joke, just wait..
-						// Q: why is this a separate step?
-						// A: because response.text() returns a Promise
-						// 😂😂😂 WHO DID THIS 😂😂😂😂 XD
+						// Q: Why is this a separate step?
+						// A: Because response.text() returns a Promise!
+						// XD: 😂😂😂 WHO DID THIS 😂😂😂😂 XD
 						return response.text();
 					})
 					.then(function(css) {
