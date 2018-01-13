@@ -24,7 +24,10 @@ Selection.prototype.instantiate = function(_img, _passive){
 	
 	function instantiate(){
 		if(_img){
-			sel.canvas = _img;
+			// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
+			// (width vs naturalWidth?)
+			// it is called sel.canvas after all tho
+			sel.canvas = new Canvas(_img);
 			if(sel.canvas.width !== sel.width){ sel.canvas.width = sel.width; }
 			if(sel.canvas.height !== sel.height){ sel.canvas.height = sel.height; }
 		}else{
