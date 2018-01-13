@@ -127,13 +127,20 @@ Selection.prototype.resize = function(){
 Selection.prototype.replace_canvas = function(new_canvas){
 	var sel = this;
 	
-	var cx = sel.x + sel.width/2;
-	var cy = sel.y + sel.height/2;
+	var center_x = sel.x + sel.width/2;
+	var center_y = sel.y + sel.height/2;
 	var new_width = new_canvas.width;
 	var new_height = new_canvas.height;
 	
-	sel.x = cx - new_width/2;
-	sel.y = cy - new_height/2;
+	// NOTE: flooring the coordinates to integers avoids blurring
+	// but it introduces "inching", where the selection can move along by pixels if you rotate it repeatedly
+	// could introduce an "error offset" just to avoid this but that seems overkill
+	// and then that would be weird hidden behavior, probably not worth it
+	// Math.round() might make it do it on fewer occasions(?),
+	// but then it goes down *and* to the right, 2 directions vs One Direction
+	// and Math.ceil() is the worst of both worlds
+	sel.x = ~~(center_x - new_width/2);
+	sel.y = ~~(center_y - new_height/2);
 	sel.width = new_width;
 	sel.height = new_height;
 	
