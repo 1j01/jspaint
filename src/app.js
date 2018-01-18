@@ -382,6 +382,12 @@ $G.on("cut copy paste", function(e){
 					// TODO: check that it's actually a URI,
 					// and if text/plain maybe silently ignore the paste
 					// but definitely generally show a better error than show_resource_load_error_message()
+					// "The information on the Clipboard can't be inserted into Paint."
+					// also
+					// "Downloading picture"
+					// "Reading data from the device (%1!ld!%% complete)"
+					// "Processing data (%1!ld!%% complete)"
+					// "Transferring data (%1!ld!%% complete)"
 					load_image_from_URI(uris[0], function(err, img){
 						if(err){ return show_resource_load_error_message(); }
 						paste(img);
