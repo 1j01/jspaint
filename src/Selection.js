@@ -132,11 +132,11 @@ Selection.prototype.cut_out_background = function(){
 	// if(!transparency){ // now if !transparency or if transparent_opaque == "transparent"
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
-		var colored_canvas = new Canvas(cutout);
-		colored_canvas.ctx.globalCompositeOperation = "source-in";
-		colored_canvas.ctx.fillStyle = colors.background;
-		colored_canvas.ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
-		var colored_canvas_image_data = colored_canvas.ctx.getImageData(0, 0, sel.width, sel.height);
+		var colored_cutout = new Canvas(cutout);
+		colored_cutout.ctx.globalCompositeOperation = "source-in";
+		colored_cutout.ctx.fillStyle = colors.background;
+		colored_cutout.ctx.fillRect(0, 0, colored_cutout.width, colored_cutout.height);
+		var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, sel.width, sel.height);
 	// }
 
 	for(var i=0; i<cutoutImageData.data.length; i+=4){
@@ -173,7 +173,7 @@ Selection.prototype.cut_out_background = function(){
 	// and even if you do, if you do it after creating a selection, it still won't work,
 	// because you will have already *not cut out* the selection from the canvas
 	if(!transparency || transparent_opaque=="transparent"){
-		ctx.drawImage(colored_canvas, sel.x, sel.y);
+		ctx.drawImage(colored_cutout, sel.x, sel.y);
 	}
 };
 
