@@ -41,25 +41,23 @@ function E(t){
 	return document.createElement(t);
 }
 
-// TODO optimization: could keep one canvas for this purpose
-function get_rgba_from_color(color){
-	
-	var _c = new Canvas(1, 1);
-	
-	_c.ctx.fillStyle = color;
-	_c.ctx.fillRect(0, 0, 1, 1);
-	
-	var _id = _c.ctx.getImageData(0, 0, 1, 1);
-	
-	// We could just return _id.data, but let's return an array instead
-	// Could also do Array.from(_id.data)
-	var fill_r = _id.data[0];
-	var fill_g = _id.data[1];
-	var fill_b = _id.data[2];
-	var fill_a = _id.data[3];
-	return [fill_r, fill_g, fill_b, fill_a];
-	
-}
+var get_rgba_from_color = (function(){
+	var _single_pixel_canvas = new Canvas(1, 1);
+
+	function get_rgba_from_color(color){
+		
+		_single_pixel_canvas.ctx.fillStyle = color;
+		_single_pixel_canvas.ctx.fillRect(0, 0, 1, 1);
+		
+		var _id = _single_pixel_canvas.ctx.getImageData(0, 0, 1, 1);
+		
+		// We could just return _id.data, but let's return an Array instead
+		// I'm not totally sure _id.data wouldn't keep _id around in memory
+		return Array.from(_id.data);
+	}
+
+	return get_rgba_from_color;
+}());
 
 function Canvas(width, height){
 	var image = width;

@@ -211,6 +211,15 @@ function brosandham_line(x1, y1, x2, y2, callback){
 
 function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	
+	// TODO: split up processing in case it takes too long?
+	// progress bar and abort button (outside of image-manipulation.js)
+	// or at least just free up the main thread every once in a while
+	// TODO: speed up with typed arrays? https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
+	// could avoid endianness issues if only copying colors
+	// the jsperf only shows ~15% improvement
+	// maybe do something fancier like special-casing large chunks of single-color image
+	// (octree? or just have a higher level stack of chunks to fill and check at if a chunk is homogeneous)
+
 	var stack = [[x, y]];
 	var c_width = canvas.width;
 	var c_height = canvas.height;
