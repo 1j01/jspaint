@@ -81,7 +81,7 @@ function show_help(){
 	// $help_window.on("keydown", function(e){
 	// 	switch(e.keyCode){
 	// 		case 37:
-	// 			alert("MOVE IT");
+	// 			show_error_message("MOVE IT");
 	// 			break;
 	// 	}
 	// });

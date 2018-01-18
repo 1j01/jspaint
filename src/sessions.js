@@ -108,7 +108,7 @@
 					on_firebase_loaded();
 				})
 				.fail(function(){
-					alert("Failed to load Firebase; the document will not load, and changes will not be saved.");
+					show_error_message("Failed to load Firebase; the document will not load, and changes will not be saved.");
 					file_name = "[Failed to load "+session.id+"]";
 					update_title();
 				});

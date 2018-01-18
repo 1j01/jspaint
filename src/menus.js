@@ -351,7 +351,7 @@ var menus = {
 					var file = files[0];
 					Palette.load(file, function(err, new_palette){
 						if(err){
-							alert("This file is not in a format the paint recognizes, or no colors were found.");
+							show_error_message("This file is not in a format that paint recognizes, or no colors were found.");
 						}else{
 							palette = new_palette;
 							$colorbox.rebuild_palette();
@@ -430,9 +430,9 @@ var menus = {
 						if(typeof name == "string"){
 							name = name.trim();
 							if(name == ""){
-								alert("The session name cannot be empty.");
+								show_error_message("The session name cannot be empty.");
 							}else if(name.match(/[.\/\[\]#$]/)){
-								alert("The session name cannot contain any of ./[]#$");
+								show_error_message("The session name cannot contain any of ./[]#$");
 							}else{
 								location.hash = "session:" + name;
 							}
@@ -443,7 +443,7 @@ var menus = {
 				{
 					item: "New &Blank Session",
 					action: function(){
-						alert("Not supported yet");
+						show_error_message("Not supported yet");
 					},
 					enabled: false,
 					description: "Starts a new multiplayer session from an empty document.",
