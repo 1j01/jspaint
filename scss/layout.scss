@@ -1,0 +1,365 @@
+
+html, body, .jspaint {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+}
+.choose-shape-style {
+	flex-flow: column;
+}
+.choose-eraser,
+.choose-magnification,
+.choose-stroke-size,
+.choose-transparency {
+	flex-flow: column;
+	align-items: center;
+	justify-content: space-around;
+}
+.choose-brush,
+.choose-airbrush-size {
+	flex-flow: row wrap;
+	justify-content: space-around;
+	align-content: space-around;
+}
+.choose-brush canvas {
+	width: 10px;
+	height: 10px;
+}
+.jspaint :not(table):not(tbody):not(tr):not(td) {
+	display: flex;
+}
+.component-window .window-content,
+.component-window .window-content :not(table):not(tbody):not(tr):not(td) {
+	display: flex;
+}
+.jspaint {
+	display: flex;
+	flex-flow: column;
+	flex: 1;
+}
+.horizontal {
+	flex-flow: row;
+	flex: 1 1 0;
+	overflow: hidden;
+}
+.vertical {
+	flex-flow: column;
+	flex: 1;
+}
+.jspaint > .vertical {
+	height: 100%;
+}
+@media (max-width: 300px) {
+	.horizontal > .component-area {
+		display: none;
+	}
+}
+@media (max-height: 340px) {
+	.vertical > .component-area {
+		display: none;
+	}
+}
+@media (max-height: 370px) {
+	.vertical > .status-area {
+		display: none !important;
+	}
+}
+.component-area,
+.menus *,
+.window-titlebar {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.menus *,
+.menu-popup * {
+	cursor: default;
+}
+.status-area,
+.component-area,
+.menus {
+	flex: 0 0 auto;
+}
+.selection,
+.textbox {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+.selection > img,
+.selection > canvas {
+	width: 100%;
+	height: 100%;
+}
+.resize-ghost,
+.selection:not(.instantiated),
+.component-ghost {
+	pointer-events: none;
+}
+.component-ghost {
+	z-index: 500;
+}
+.textbox-editor {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	resize: none;
+}
+
+.menu-container {
+	position: relative;
+}
+.menu-popup {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 9;
+	box-sizing: border-box;
+}
+.menu-popup-table {
+	border-collapse: collapse;
+}
+.menu-item {
+	white-space: nowrap;
+}
+.menu-hr {
+	display: block !important;
+	height: 0;
+	width: auto;
+}
+.menu-hotkey {
+	display: inline !important;
+}
+.menu-item-checkbox-area,
+.menu-item-submenu-area {
+	min-width: 16px;
+}
+.menu-item-checkbox-area,
+.menu-item-submenu-area {
+	text-align: center;
+}
+
+.status-area {
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: default;
+	height: 1.25em;
+}
+.status-text {
+	flex-basis: auto;
+	flex-grow: 1;
+	flex-shrink: 0;
+	padding-right: 2px;
+	overflow: hidden;
+}
+.status-coordinates {
+	flex: 0 0 114px;
+	min-width: 0px;
+	padding-left: 3px;
+	border-left: 1px solid #7b7b7b;
+}
+
+.Tools-component {
+	height: 273px;
+	align-items: center;
+	padding-left: 4px;
+	padding-right: 2px;
+	flex-flow: column;
+}
+.tool-options {
+	margin-top: 3px;
+	width: 41px;
+	height: 66px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+.tool-options > div {
+	flex: 1;
+}
+.tools {
+	display: flex;
+	flex-flow: row wrap;
+}
+.tool {
+	display: block !important;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: relative;
+}
+
+
+.Colors-component {
+	height: 47px;
+	align-items: center;
+}
+.palette {
+	display: flex;
+	flex-flow: row wrap;
+}
+.color-box,
+.palette {
+	height: 32px;
+}
+.current-colors {
+	width: 30px;
+	height: 31px;
+}
+.current-colors,
+.color-button {
+	position: relative;
+}
+.color-button,
+.color-selection {
+	margin-left: 1px;
+	padding: 0;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 15px;
+	height: 15px;
+	border: 0;
+}
+.color-button input {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+
+.canvas-area {
+	flex: 1;
+	display: block !important;
+	position: relative;
+	overflow: auto;
+	padding: 3px;
+}
+.handle {
+	position: absolute;
+	width: 3px;
+	height: 3px;
+}
+
+
+.window-title {
+	display: inline-block !important;
+	margin: 0;
+	padding: 0;
+	cursor: default;
+}
+.window-close-button {
+	display: inline-block !important;
+	float: right;
+}
+.window-close-button:before {
+	content: '×';
+	position: relative;
+}
+
+.window-content .button-group {
+	display: flex;
+	flex: 0 0 auto;
+	flex-flow: column;
+}
+.window-content .button-group > button {
+	min-width: 80px;
+	padding: 3px 5px;
+	white-space: nowrap;
+}
+.window-content > form {
+	display: flex;
+	flex-flow: row;
+}
+.dialogue-window .window-content > form {
+	flex-flow: column;
+}
+.dialogue-window .window-content > form > .button-group {
+	flex-flow: row;
+	justify-content: flex-end;
+}
+.dialogue-window .window-content > form > div:first-child {
+	padding: 5px;
+}
+
+.help-window .window-content {
+	display: flex;
+	flex-flow: row;
+}
+.help-window .contents {
+	background: white;
+	flex-basis: 300px; /* normally the default is 200px, but that leaves a scrollbar and we don't have rollover viewing of longer titles (@TODO) */
+	flex-grow: 0;
+	flex-shrink: 0;
+	overflow: auto;
+}
+.help-window ul {
+	margin: 0;
+	padding: 0;
+}
+.help-window li {
+	display: block;
+	white-space: nowrap;
+}
+.help-window .item {
+	display: inline-block;
+}
+.help-window .folder:not(.expanded) ul {
+	display: none;
+}
+.help-window iframe {
+	flex: 1;
+}
+.help-window li ul {
+	padding-left: 16px;
+}
+.help-window li:before {
+	content: "";
+	display: inline-block;
+	vertical-align: middle;
+	width: 16px;
+	height: 16px;
+	background-position: 0 0;
+	margin-right: 2px;
+}
+.help-window .folder.expanded:before {
+	background-position: -16px 0;
+}
+.help-window .page:before {
+	background-position: -32px 0;
+}
+
+.dragging iframe {
+	pointer-events: none;
+}
+
+.storage-manager table {
+	max-height: 400px;
+	overflow: auto;
+	display: block;
+}
+.storage-manager a > img {
+	max-width: 100px;
+	max-height: 100px;
+	vertical-align: middle;
+	margin: 5px;
+}
+.storage-manager a > span,
+.storage-manager a > img,
+.storage-manager p {
+	margin: 5px;
+}
+
+::before, ::after {
+	pointer-events: none;
+}
+
+.cursor-bully * {
+	cursor: inherit !important;
+}

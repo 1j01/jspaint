@@ -1,365 +1,562 @@
-
+@charset "UTF-8";
 html, body, .jspaint {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	overflow: hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
 }
+
 .choose-shape-style {
-	flex-flow: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
 }
+
 .choose-eraser,
 .choose-magnification,
 .choose-stroke-size,
 .choose-transparency {
-	flex-flow: column;
-	align-items: center;
-	justify-content: space-around;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
 }
+
 .choose-brush,
 .choose-airbrush-size {
-	flex-flow: row wrap;
-	justify-content: space-around;
-	align-content: space-around;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
+  -webkit-align-content: space-around;
+      -ms-flex-line-pack: distribute;
+          align-content: space-around;
 }
+
 .choose-brush canvas {
-	width: 10px;
-	height: 10px;
+  width: 10px;
+  height: 10px;
 }
+
 .jspaint :not(table):not(tbody):not(tr):not(td) {
-	display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
+
 .component-window .window-content,
 .component-window .window-content :not(table):not(tbody):not(tr):not(td) {
-	display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
+
 .jspaint {
-	display: flex;
-	flex-flow: column;
-	flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
+
 .horizontal {
-	flex-flow: row;
-	flex: 1 1 0;
-	overflow: hidden;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row;
+      -ms-flex-flow: row;
+          flex-flow: row;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 0;
+      -ms-flex: 1 1 0px;
+          flex: 1 1 0;
+  overflow: hidden;
 }
+
 .vertical {
-	flex-flow: column;
-	flex: 1;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
+
 .jspaint > .vertical {
-	height: 100%;
+  height: 100%;
 }
+
 @media (max-width: 300px) {
-	.horizontal > .component-area {
-		display: none;
-	}
+  .horizontal > .component-area {
+    display: none;
+  }
 }
+
 @media (max-height: 340px) {
-	.vertical > .component-area {
-		display: none;
-	}
+  .vertical > .component-area {
+    display: none;
+  }
 }
+
 @media (max-height: 370px) {
-	.vertical > .status-area {
-		display: none !important;
-	}
+  .vertical > .status-area {
+    display: none !important;
+  }
 }
+
 .component-area,
 .menus *,
 .window-titlebar {
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
+
 .menus *,
 .menu-popup * {
-	cursor: default;
+  cursor: default;
 }
+
 .status-area,
 .component-area,
 .menus {
-	flex: 0 0 auto;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
 }
+
 .selection,
 .textbox {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
+
 .selection > img,
 .selection > canvas {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
+
 .resize-ghost,
 .selection:not(.instantiated),
 .component-ghost {
-	pointer-events: none;
+  pointer-events: none;
 }
+
 .component-ghost {
-	z-index: 500;
+  z-index: 500;
 }
+
 .textbox-editor {
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
-	border: 0;
-	resize: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  resize: none;
 }
 
 .menu-container {
-	position: relative;
+  position: relative;
 }
+
 .menu-popup {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	z-index: 4;
-	box-sizing: border-box;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9;
+  box-sizing: border-box;
 }
+
 .menu-popup-table {
-	border-collapse: collapse;
+  border-collapse: collapse;
 }
+
 .menu-item {
-	white-space: nowrap;
+  white-space: nowrap;
 }
+
 .menu-hr {
-	display: block !important;
-	height: 0;
-	width: auto;
+  display: block !important;
+  height: 0;
+  width: auto;
 }
+
 .menu-hotkey {
-	display: inline !important;
+  display: inline !important;
 }
+
 .menu-item-checkbox-area,
 .menu-item-submenu-area {
-	min-width: 16px;
+  min-width: 16px;
 }
+
 .menu-item-checkbox-area,
 .menu-item-submenu-area {
-	text-align: center;
+  text-align: center;
 }
 
 .status-area {
-	overflow: hidden;
-	white-space: nowrap;
-	cursor: default;
-	height: 1.25em;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: default;
+  height: 1.25em;
 }
+
 .status-text {
-	flex-basis: auto;
-	flex-grow: 1;
-	flex-shrink: 0;
-	padding-right: 2px;
-	overflow: hidden;
+  -webkit-flex-basis: auto;
+      -ms-flex-preferred-size: auto;
+          flex-basis: auto;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+  padding-right: 2px;
+  overflow: hidden;
 }
+
 .status-coordinates {
-	flex: 0 0 114px;
-	min-width: 0px;
-	padding-left: 3px;
-	border-left: 1px solid #7b7b7b;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 114px;
+      -ms-flex: 0 0 114px;
+          flex: 0 0 114px;
+  min-width: 0px;
+  padding-left: 3px;
+  border-left: 1px solid #7b7b7b;
 }
 
 .Tools-component {
-	height: 273px;
-	align-items: center;
-	padding-left: 4px;
-	padding-right: 2px;
-	flex-flow: column;
-}
-.tool-options {
-	margin-top: 3px;
-	width: 41px;
-	height: 66px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-}
-.tool-options > div {
-	flex: 1;
-}
-.tools {
-	display: flex;
-	flex-flow: row wrap;
-}
-.tool {
-	display: block !important;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	position: relative;
+  height: 273px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-left: 4px;
+  padding-right: 2px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
 }
 
+.tool-options {
+  margin-top: 3px;
+  width: 41px;
+  height: 66px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.tool-options > div {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.tools {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+}
+
+.tool {
+  display: block !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  position: relative;
+}
 
 .Colors-component {
-	height: 47px;
-	align-items: center;
+  height: 47px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
+
 .palette {
-	display: flex;
-	flex-flow: row wrap;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
 }
+
 .color-box,
 .palette {
-	height: 32px;
+  height: 32px;
 }
+
 .current-colors {
-	width: 30px;
-	height: 31px;
+  width: 30px;
+  height: 31px;
 }
+
 .current-colors,
 .color-button {
-	position: relative;
+  position: relative;
 }
+
 .color-button,
 .color-selection {
-	margin-left: 1px;
-	padding: 0;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	width: 15px;
-	height: 15px;
-	border: 0;
-}
-.color-button input {
-	margin: 0;
-	padding: 0;
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
+  margin-left: 1px;
+  padding: 0;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: 15px;
+  height: 15px;
+  border: 0;
 }
 
+.color-button input {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
 
 .canvas-area {
-	flex: 1;
-	display: block !important;
-	position: relative;
-	overflow: auto;
-	padding: 3px;
-}
-.handle {
-	position: absolute;
-	width: 3px;
-	height: 3px;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: block !important;
+  position: relative;
+  overflow: auto;
+  padding: 3px;
 }
 
+.handle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+}
 
 .window-title {
-	display: inline-block !important;
-	margin: 0;
-	padding: 0;
-	cursor: default;
+  display: inline-block !important;
+  margin: 0;
+  padding: 0;
+  cursor: default;
 }
+
 .window-close-button {
-	display: inline-block !important;
-	float: right;
+  display: inline-block !important;
+  float: right;
 }
+
 .window-close-button:before {
-	content: '×';
-	position: relative;
+  content: '×';
+  position: relative;
 }
 
 .window-content .button-group {
-	display: flex;
-	flex: 0 0 auto;
-	flex-flow: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
 }
+
 .window-content .button-group > button {
-	min-width: 80px;
-	padding: 3px 5px;
-	white-space: nowrap;
+  min-width: 80px;
+  padding: 3px 5px;
+  white-space: nowrap;
 }
+
 .window-content > form {
-	display: flex;
-	flex-flow: row;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row;
+      -ms-flex-flow: row;
+          flex-flow: row;
 }
+
 .dialogue-window .window-content > form {
-	flex-flow: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
 }
+
 .dialogue-window .window-content > form > .button-group {
-	flex-flow: row;
-	justify-content: flex-end;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row;
+      -ms-flex-flow: row;
+          flex-flow: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
+
 .dialogue-window .window-content > form > div:first-child {
-	padding: 5px;
+  padding: 5px;
 }
 
 .help-window .window-content {
-	display: flex;
-	flex-flow: row;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row;
+      -ms-flex-flow: row;
+          flex-flow: row;
 }
+
 .help-window .contents {
-	background: white;
-	flex-basis: 300px; /* normally the default is 200px, but that leaves a scrollbar and we don't have rollover viewing of longer titles (@TODO) */
-	flex-grow: 0;
-	flex-shrink: 0;
-	overflow: auto;
+  background: white;
+  -webkit-flex-basis: 300px;
+      -ms-flex-preferred-size: 300px;
+          flex-basis: 300px;
+  /* normally the default is 200px, but that leaves a scrollbar and we don't have rollover viewing of longer titles (@TODO) */
+  -webkit-box-flex: 0;
+  -webkit-flex-grow: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+  overflow: auto;
 }
+
 .help-window ul {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
+
 .help-window li {
-	display: block;
-	white-space: nowrap;
+  display: block;
+  white-space: nowrap;
 }
+
 .help-window .item {
-	display: inline-block;
+  display: inline-block;
 }
+
 .help-window .folder:not(.expanded) ul {
-	display: none;
+  display: none;
 }
+
 .help-window iframe {
-	flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
+
 .help-window li ul {
-	padding-left: 16px;
+  padding-left: 16px;
 }
+
 .help-window li:before {
-	content: "";
-	display: inline-block;
-	vertical-align: middle;
-	width: 16px;
-	height: 16px;
-	background-position: 0 0;
-	margin-right: 2px;
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background-position: 0 0;
+  margin-right: 2px;
 }
+
 .help-window .folder.expanded:before {
-	background-position: -16px 0;
+  background-position: -16px 0;
 }
+
 .help-window .page:before {
-	background-position: -32px 0;
+  background-position: -32px 0;
 }
 
 .dragging iframe {
-	pointer-events: none;
+  pointer-events: none;
 }
 
 .storage-manager table {
-	max-height: 400px;
-	overflow: auto;
-	display: block;
+  max-height: 400px;
+  overflow: auto;
+  display: block;
 }
+
 .storage-manager a > img {
-	max-width: 100px;
-	max-height: 100px;
-	vertical-align: middle;
-	margin: 5px;
+  max-width: 100px;
+  max-height: 100px;
+  vertical-align: middle;
+  margin: 5px;
 }
+
 .storage-manager a > span,
 .storage-manager a > img,
 .storage-manager p {
-	margin: 5px;
+  margin: 5px;
 }
 
 ::before, ::after {
-	pointer-events: none;
+  pointer-events: none;
 }
 
 .cursor-bully * {
-	cursor: inherit !important;
+  cursor: inherit !important;
 }
