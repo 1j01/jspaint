@@ -25,7 +25,8 @@ tools = [{
 		// End prior selection, drawing it to the canvas
 		deselect();
 		// Checkpoint so we can roll back inverty brush
-		// @TODO Still probably need to use something other than the undo stack
+		// XXX: Shouldn't use the undo stack for this at all!
+		// TODO: Create an OnCanvasObject for the inverty brush, and make selection a passive action
 		undoable();
 
 		// The inverty brush is continuous in space which means

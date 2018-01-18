@@ -49,7 +49,9 @@
 
 ### Issues
 
+* [Selection is not included in the image when you save (it should deselect)](https://github.com/1j01/jspaint/issues/14)
 * ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
+* [Resizing the canvas or selection is broken when magnified](https://github.com/1j01/jspaint/issues/13)
 * If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 * If you zoom in with the magnifier without previously changing the magnification on the toolbar,
 then switch back to the magnifier, the toolbar doesn't show any magnification highlighted
@@ -126,7 +128,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Enlarge GUI elements on touch devices
 	* Menus
-	* Resize handles
+	* Resize handles (at least functionally; in Win7 Paint, the hitbox size is much larger than the visible size, like maybe 32px)
 
 
 * You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
@@ -211,7 +213,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Selection
 	* Proportionally resize selection while holding Shift
-	(or maybe by default? I feel like it should be the default.)
+	(or maybe by default? I feel like it should be the default, tbh.)
 	* Don't cut until you drag or do something else
 	(In MS Paint, you can make a selection, change the background color
 	and drag it, leaving the new background color behind.)

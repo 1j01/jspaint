@@ -168,6 +168,10 @@ Selection.prototype.cut_out_background = function(){
 	// (and it would be complicated to make it update the canvas when switching tool options (as opposed to just the selection))
 	// I'm having it use the transparent_opaque option here, so you could at least choose beforehand
 	// (and this might actually give you more options, although it could be confusingly inconsistent)
+	// FIXME: yeah, this is confusing; if you have both transparency modes on and you try to clear an area to transparency, it doesn't work
+	// and there's no indication that you should try the other selection transparency mode,
+	// and even if you do, if you do it after creating a selection, it still won't work,
+	// because you will have already *not cut out* the selection from the canvas
 	if(!transparency || transparent_opaque=="transparent"){
 		ctx.drawImage(colored_canvas, sel.x, sel.y);
 	}

@@ -379,6 +379,9 @@ $G.on("cut copy paste", function(e){
 				item.getAsString(function(text){
 					// parse text/uri-list (might as well do it properly)
 					var uris = text.split(/[\n\r]+/).filter(function(line){return line[0] !== "#" && line});
+					// TODO: check that it's actually a URI,
+					// and if text/plain maybe silently ignore the paste
+					// but definitely generally show a better error than show_resource_load_error_message()
 					load_image_from_URI(uris[0], function(err, img){
 						if(err){ return show_resource_load_error_message(); }
 						paste(img);
