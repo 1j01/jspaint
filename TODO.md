@@ -49,7 +49,6 @@
 
 ### Issues
 
-* [Selection is not included in the image when you save (it should deselect)](https://github.com/1j01/jspaint/issues/14)
 * ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
 * [Resizing the canvas or selection is broken when magnified](https://github.com/1j01/jspaint/issues/13)
 * If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options

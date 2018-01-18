@@ -232,6 +232,7 @@ function file_load_from_url(){
 }
 
 function file_save(){
+	deselect();
 	if(file_name.match(/\.svg$/)){
 		file_name = file_name.replace(/\.svg$/, "") + ".png";
 		//TODO: update_title();?
@@ -245,6 +246,7 @@ function file_save(){
 }
 
 function file_save_as(){
+	deselect();
 	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
 		chrome.fileSystem.chooseEntry({
 			type: 'saveFile',
