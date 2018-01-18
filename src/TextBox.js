@@ -36,7 +36,7 @@ function TextBox(x, y, width, height){
 		});
 	};
 	update();
-	$G.on("option-changed", update);
+	$G.on("option-changed", this._on_option_changed = update);
 }
 
 TextBox.prototype = Object.create(OnCanvasObject.prototype);
@@ -198,4 +198,5 @@ TextBox.prototype.destroy = function(){
 		TextBox.$fontbox.close();
 	}
 	TextBox.$fontbox = null;
+	$G.off("option-changed", this._on_option_changed);
 };

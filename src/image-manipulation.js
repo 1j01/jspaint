@@ -299,25 +299,17 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 
 function apply_image_transformation(fn){
 	// Apply an image transformation function to either the selection or the entire canvas
-	var new_canvas = new Canvas();
-	var original_canvas = selection ? selection.canvas: canvas;
+	var original_canvas = selection ? selection.source_canvas: canvas;
 	
-	// Sometimes selection.canvas is an Image
-	// Maybe that should be changed instead having of this here
-	if(!original_canvas.getContext){
-		original_canvas = new Canvas(original_canvas);
-	}
-	
-	var new_ctx = new_canvas.getContext("2d");
+	var new_canvas = new Canvas(original_canvas.width, original_canvas.height);
+
 	var original_ctx = original_canvas.getContext("2d");
-	
-	new_canvas.width = original_canvas.width;
-	new_canvas.height = original_canvas.height;
-	
+	var new_ctx = new_canvas.getContext("2d");
+
 	fn(original_canvas, original_ctx, new_canvas, new_ctx);
 	
 	if(selection){
-		selection.replace_canvas(new_canvas);
+		selection.replace_source_canvas(new_canvas);
 	}else{
 		undoable(0, function(){
 			this_ones_a_frame_changer();

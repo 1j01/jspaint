@@ -1,8 +1,27 @@
 
 function Selection(x, y, width, height){
-	OnCanvasObject.call(this, x, y, width, height);
+	var sel = this;
+	OnCanvasObject.call(sel, x, y, width, height);
 	
-	this.$el.addClass("selection");
+	sel.$el.addClass("selection");
+
+	var last_transparent_opaque_option = transparent_opaque;
+	var last_background_color = colors.background;
+
+	this._on_option_changed = function(){
+		if(!sel.source_canvas){
+			return;
+		}
+		if(
+			last_transparent_opaque_option !== transparent_opaque ||
+			last_background_color !== colors.background
+		){
+			last_transparent_opaque_option = transparent_opaque;
+			last_background_color = colors.background;
+			sel.update_transparent_opaque();
+		}
+	};
+	$G.on("option-changed", this._on_option_changed);
 }
 
 Selection.prototype = Object.create(OnCanvasObject.prototype);
@@ -24,21 +43,24 @@ Selection.prototype.instantiate = function(_img, _passive){
 	
 	function instantiate(){
 		if(_img){
+			// (this applies when pasting a selection)
 			// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
 			// (width vs naturalWidth?)
-			// it is called sel.canvas after all tho
-			sel.canvas = new Canvas(_img);
-			if(sel.canvas.width !== sel.width){ sel.canvas.width = sel.width; }
-			if(sel.canvas.height !== sel.height){ sel.canvas.height = sel.height; }
+			// and at least apply_image_transformation needs a canvas
+			sel.source_canvas = new Canvas(_img);
+			if(sel.source_canvas.width !== sel.width){ sel.source_canvas.width = sel.width; }
+			if(sel.source_canvas.height !== sel.height){ sel.source_canvas.height = sel.height; }
+			sel.canvas = new Canvas(sel.source_canvas);
 		}else{
-			sel.canvas = new Canvas(sel.width, sel.height);
-			sel.canvas.ctx.drawImage(
+			sel.source_canvas = new Canvas(sel.width, sel.height);
+			sel.source_canvas.ctx.drawImage(
 				canvas,
 				sel.x, sel.y,
 				sel.width, sel.height,
 				0, 0,
 				sel.width, sel.height
 			);
+			sel.canvas = new Canvas(sel.source_canvas);
 			if(!_passive){
 				sel.cut_out_background();
 			}
@@ -115,34 +137,10 @@ Selection.prototype.cut_out_background = function(){
 		colored_canvas.ctx.fillStyle = colors.background;
 		colored_canvas.ctx.fillRect(0, 0, colored_canvas.width, colored_canvas.height);
 		var colored_canvas_image_data = colored_canvas.ctx.getImageData(0, 0, sel.width, sel.height);
-		// TODO: should we check based on patterns for the background for transparent_opaque == "transparent"
-		// or should we only check against a solid color? if so, from what offset in the pattern?
-		// or should the feature be disabled?
-		// let's see...
-		// mspaint treats it as white, regardless of the pattern, even if the selected background is pure black
-		// we should probably do something more like that, but...
-		// we allow any kind of image data while in our "b&w mode"
-		// our b&w mode is basically patterns in the palette
 	// }
 
 	for(var i=0; i<cutoutImageData.data.length; i+=4){
 		var in_cutout = cutoutImageData.data[i+3] > 0;
-		if(transparent_opaque == "transparent"){
-			// TODO: support switching the transparent_opaque tool option
-			// so remove this code from here, and store a hidden source canvas for the selection
-			// and apply this logic when switching tool options based on that offscreen canvas,
-			// updating the sel.canvas
-			// FIXME: work with transparent selected background color
-			// (support treating partially transparent background colors as transparency)
-			if(
-				canvasImageData.data[i+0] === colored_canvas_image_data.data[i+0] &&
-				canvasImageData.data[i+1] === colored_canvas_image_data.data[i+1] &&
-				canvasImageData.data[i+2] === colored_canvas_image_data.data[i+2] &&
-				canvasImageData.data[i+3] === colored_canvas_image_data.data[i+3]
-			){
-				in_cutout = false;
-			}
-		}
 		if(in_cutout){
 			cutoutImageData.data[i+0] = canvasImageData.data[i+0];
 			cutoutImageData.data[i+1] = canvasImageData.data[i+1];
@@ -162,25 +160,68 @@ Selection.prototype.cut_out_background = function(){
 	ctx.putImageData(canvasImageData, sel.x, sel.y);
 	cutout.ctx.putImageData(cutoutImageData, 0, 0);
 
-	if(!transparency){
+	sel.update_transparent_opaque();
+
+	// NOTE: in case you want to use the transparent_opaque=="transparent" mode
+	// in a document with transparency (for an operation in an area where there's a local background color)
+	// (and since currently switching to the opaque document mode makes the image opaque)
+	// (and it would be complicated to make it update the canvas when switching tool options (as opposed to just the selection))
+	// I'm having it use the transparent_opaque option here, so you could at least choose beforehand
+	// (and this might actually give you more options, although it could be confusingly inconsistent)
+	if(!transparency || transparent_opaque=="transparent"){
 		ctx.drawImage(colored_canvas, sel.x, sel.y);
 	}
 };
 
-Selection.prototype.resize = function(){
+Selection.prototype.update_transparent_opaque = function(){
 	var sel = this;
-	var new_width = sel.width;
-	var new_height = sel.height;
-	
-	var new_canvas = new Canvas(new_width, new_height);
-	new_canvas.ctx.drawImage(sel.canvas, 0, 0, new_width, new_height);
-	
-	sel.replace_canvas(new_canvas);
+
+	var sourceImageData = sel.source_canvas.ctx.getImageData(0, 0, sel.width, sel.height);
+	var cutoutImageData = sel.canvas.ctx.createImageData(sel.width, sel.height);
+	var background_color_rgba = get_rgba_from_color(colors.background);
+	// NOTE: In b&w mode, mspaint treats the transparency color as white,
+	// regardless of the pattern selected, even if the selected background color is pure black.
+	// We allow any kind of image data while in our "b&w mode".
+	// Our b&w mode is essentially 'patterns in the palette'.
+
+	for(var i=0; i<cutoutImageData.data.length; i+=4){
+		var in_cutout = sourceImageData.data[i+3] > 0;
+		if(transparent_opaque == "transparent"){
+			// FIXME: work with transparent selected background color
+			// (support treating partially transparent background colors as transparency)
+			if(
+				sourceImageData.data[i+0] === background_color_rgba[0] &&
+				sourceImageData.data[i+1] === background_color_rgba[1] &&
+				sourceImageData.data[i+2] === background_color_rgba[2] &&
+				sourceImageData.data[i+3] === background_color_rgba[3]
+			){
+				in_cutout = false;
+			}
+		}
+		if(in_cutout){
+			cutoutImageData.data[i+0] = sourceImageData.data[i+0];
+			cutoutImageData.data[i+1] = sourceImageData.data[i+1];
+			cutoutImageData.data[i+2] = sourceImageData.data[i+2];
+			cutoutImageData.data[i+3] = sourceImageData.data[i+3];
+		}else{
+			// cutoutImageData.data[i+0] = 0;
+			// cutoutImageData.data[i+1] = 0;
+			// cutoutImageData.data[i+2] = 0;
+			// cutoutImageData.data[i+3] = 0;
+		}
+	}
+	sel.canvas.ctx.putImageData(cutoutImageData, 0, 0);
 };
 
-Selection.prototype.replace_canvas = function(new_canvas){
+Selection.prototype.replace_source_canvas = function(new_source_canvas){
 	var sel = this;
-	
+
+	sel.source_canvas = new_source_canvas;
+
+	var new_canvas = new Canvas(new_source_canvas);
+	$(sel.canvas).replaceWith(new_canvas);
+	sel.canvas = new_canvas;
+
 	var center_x = sel.x + sel.width/2;
 	var center_y = sel.y + sel.height/2;
 	var new_width = new_canvas.width;
@@ -200,23 +241,29 @@ Selection.prototype.replace_canvas = function(new_canvas){
 	
 	sel.position();
 	
-	$(sel.canvas).replaceWith(new_canvas);
-	sel.canvas = new_canvas;
-	
 	$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
 	sel.$el.triggerHandler("new-element", [sel.canvas]);
 	sel.$el.triggerHandler("resize");//?
+
+	sel.update_transparent_opaque();
+};
+
+Selection.prototype.resize = function(){
+	var sel = this;
+	
+	var new_source_canvas = new Canvas(sel.width, sel.height);
+	new_source_canvas.ctx.drawImage(sel.source_canvas, 0, 0, sel.width, sel.height);
+	
+	sel.replace_source_canvas(new_source_canvas);
 };
 
 Selection.prototype.scale = function(factor){
 	var sel = this;
 	
-	var original_canvas = sel.canvas;
-	
-	var new_canvas = new Canvas(sel.width * factor, sel.height * factor);
-	sel.replace_canvas(new_canvas);
-	
-	new_canvas.ctx.drawImage(original_canvas, 0, 0, new_canvas.width, new_canvas.height);
+	var new_source_canvas = new Canvas(sel.width * factor, sel.height * factor);
+	new_source_canvas.ctx.drawImage(sel.source_canvas, 0, 0, new_source_canvas.width, new_source_canvas.height);
+
+	sel.replace_source_canvas(new_source_canvas);
 };
 
 Selection.prototype.draw = function(){
@@ -225,7 +272,8 @@ Selection.prototype.draw = function(){
 
 Selection.prototype.destroy = function(){
 	OnCanvasObject.prototype.destroy.call(this);
-	$G.triggerHandler("session-update");
+	$G.triggerHandler("session-update"); // what does this mean, and why is it needed?
+	$G.off("option-changed", this._on_option_changed);
 };
 
 Selection.prototype.crop = function(){

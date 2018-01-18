@@ -283,9 +283,6 @@ var $choose_transparency = $Choose(
 	},
 	function(t_o){
 		transparent_opaque = t_o;
-		if(selection){
-			return show_error_message("Changing this option after making a selection is not supported yet. It's planned, though!");
-		}
 	},
 	function(t_o){
 		return t_o === transparent_opaque;
