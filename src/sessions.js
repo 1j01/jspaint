@@ -337,8 +337,11 @@
 			current_session = null;
 		}
 	};
-	$G.on("hashchange", function(){
-		// TODO: should load: be separate from session:/local:
+	var generate_session_id = function(){
+		return (Math.random()*Math.pow(2, 32)).toString(16).replace(".", "");
+	};
+	var update_session_from_location_hash = function(e){
+		// TODO: should #load: be separate from #session:/#local:,
 		// and be able to load *into* a session, rather than just start one?
 		// well I guess loading into a session wouldn't be that helpful if it makes a new image anyways
 		// but it would be useful for collaborative sessions if collaborative sessions actually worked well enough to be useful
@@ -392,8 +395,8 @@
 						if(location.hash === hash_loading_url_from){
 							debug("switching to new session from #load: URL because of user interaction");
 							end_current_session();
-							var session_id = (Math.random()*Math.pow(2, 32)).toString(16);
-							location.hash = "local:" + session_id;
+							var new_session_id = generate_session_id();
+							location.hash = "local:" + new_session_id;
 						}
 					});
 				}, 100);
@@ -402,10 +405,17 @@
 		}else{
 			debug("no session id in hash");
 			end_current_session();
-			var session_id = (Math.random()*Math.pow(2, 32)).toString(16);
-			location.hash = "local:" + session_id;
+			var new_session_id = generate_session_id();
+			history.replaceState(null, document.title, "#local:" + new_session_id);
 		}
-	}).triggerHandler("hashchange");
+	};
+	
+	$G.on("hashchange popstate", function(e){
+		window.console && console.log(e.type, location.hash);
+		update_session_from_location_hash();
+	});
+	window.console && console.log("init with location hash", location.hash);
+	update_session_from_location_hash();
 	
 	// @TODO: Session GUI
 	// @TODO: Indicate when the session id is invalid
