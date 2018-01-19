@@ -78,10 +78,7 @@ var menus = {
 		{
 			item: "Upload to &Imgur",
 			shortcut: "Ctrl+I",
-			action: function(){
-				// print();
-				alert('UPLOADING')
-			},
+			action: upload_to_imgur,
 			description: "Uploads the active document to Imgur",
 		},
 		$MenuBar.DIVIDER,
