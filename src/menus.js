@@ -76,6 +76,16 @@ var menus = {
 		},
 		$MenuBar.DIVIDER,
 		{
+			item: "Upload to &Imgur",
+			shortcut: "Ctrl+I",
+			action: function(){
+				// print();
+				alert('UPLOADING')
+			},
+			description: "Uploads the active document to Imgur",
+		},
+		$MenuBar.DIVIDER,
+		{
 			item: "Recent File",
 			enabled: false, // @TODO for chrome app
 			description: "",
@@ -326,7 +336,7 @@ var menus = {
 						"opaque": "transparent",
 						"transparent": "opaque",
 					}[transparent_opaque];
-					
+
 					$G.trigger("option-changed");
 				},
 				check: function(){
