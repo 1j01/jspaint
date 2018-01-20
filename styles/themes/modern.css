@@ -26,7 +26,8 @@ body {
 	top: 0px;
 	right: 0px;
 	bottom: 0px;
-	border: 1px dashed black;
+	outline: 1px dashed black;
+	box-shadow: 0 0 0 1px white;
 }
 .handle {
 	background: #000080;
