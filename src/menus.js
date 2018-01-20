@@ -14,12 +14,6 @@ var menus = {
 			description: "Opens an existing document.",
 		},
 		{
-			item: "&Load From URL",
-			// shortcut: "Ctrl+L",
-			action: file_load_from_url,
-			description: "Opens an image from the web.",
-		},
-		{
 			item: "&Save",
 			shortcut: "Ctrl+S",
 			action: file_save,
@@ -28,12 +22,19 @@ var menus = {
 		{
 			item: "Save &As",
 			shortcut: "Ctrl+Shift+S",
-			//shortcut: "",
+			// in mspaint, no shortcut is listed, but it supports F12; it doesn't support Ctrl+Shift+S
 			action: file_save_as,
 			description: "Saves the active document with a new name.",
 		},
+		$MenuBar.DIVIDER,
 		{
-			item: "Upload To &Imgur",
+			item: "&Load From URL",
+			// shortcut: "Ctrl+L",
+			action: file_load_from_url,
+			description: "Opens an image from the web.",
+		},
+		{
+			item: "&Upload To Imgur",
 			action: upload_to_imgur,
 			description: "Uploads the active document to Imgur",
 		},
@@ -75,14 +76,14 @@ var menus = {
 			description: "Tiles this bitmap as the desktop background.",
 		},
 		{
-			item: "Set As Wa&llpaper (Centered)",
+			item: "Set As Wallpaper (&Centered)", // in mspaint it's Wa&llpaper
 			action: set_as_wallpaper_centered,
 			description: "Centers this bitmap as the desktop background.",
 		},
 		$MenuBar.DIVIDER,
 		{
 			item: "Recent File",
-			enabled: false, // @TODO for chrome app
+			enabled: false, // @TODO for chrome app / desktop app
 			description: "",
 		},
 		$MenuBar.DIVIDER,
@@ -400,7 +401,7 @@ var menus = {
 	],
 	"E&xtras": [
 		{
-			item: "&Render History as GIF",
+			item: "&Render History As GIF",
 			// shortcut: "Ctrl+Shift+G",
 			action: render_history_as_gif,
 			description: "Creates an animation from the document history.",
