@@ -4,7 +4,7 @@ function upload_to_imgur(){
   if($imgur_window){
     $imgur_window.close();
   }
-  $imgur_window = $FormWindow().title("Upload to Imgur").addClass("dialogue-window");
+  $imgur_window = $FormWindow().title("Upload To Imgur").addClass("dialogue-window");
   $imgur_window.$main.html(
     "<label>URL: </label>" +
     "<label id='imgur-description'>Click to upload</label>" +
