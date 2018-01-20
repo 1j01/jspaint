@@ -62,9 +62,9 @@ I want to bring good old paint into the modern era.
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
 * Rotate image by arbitrary angle in Image > Flip/Rotate
 * In Image > Stretch/Skew, you can stretch more than 500% at once
-* Rudimentary **multiplayer** support:
+* Rudimentary **multi-user** support:
   Start up a session at
-  [jspaint.ml/#session:multiplayer-test](http://1j01.github.io/jspaint/#session:multiplayer-test)
+  [jspaint.ml/#session:multi-user-test](http://1j01.github.io/jspaint/#session:multi-user-test)
   and send the link to your friends!
   It isn't perfectly seamless, and you may lose your drawing or be interrupted.
 * Load many different palette formats with Colors > Get Colors

@@ -427,7 +427,7 @@ var menus = {
 		// 	description: "Configures JS Paint.",
 		// }
 		{
-			item: "&Multiplayer",
+			item: "&Multi-User",
 			submenu: [
 				{
 					item: "&New Session From Document",
@@ -444,7 +444,7 @@ var menus = {
 							}
 						}
 					},
-					description: "Starts a new multiplayer session from the current document.",
+					description: "Starts a new multi-user session from the current document.",
 				},
 				{
 					item: "New &Blank Session",
@@ -452,7 +452,7 @@ var menus = {
 						show_error_message("Not supported yet");
 					},
 					enabled: false,
-					description: "Starts a new multiplayer session from an empty document.",
+					description: "Starts a new multi-user session from an empty document.",
 				},
 			]
 		},

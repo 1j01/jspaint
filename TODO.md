@@ -24,7 +24,7 @@
 * Add topics
 	* In "Tips and Tricks" (which is just a lame section)
 	* Transparency
-	* Multiplayer / collaboration / "To share the document On-Line" or whatever
+	* Multi-user / collaboration / "To share the document On-Line" or whatever
 * Index
 * Search
 * Keyboard support
@@ -103,7 +103,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* OpenRaster ORA ([via ora.js](https://github.com/zsgalusz/ora.js/tree/master))
 
 
-* Multiplayer and local sessions
+* Online (multi-user) and local (single-user) sessions
 	* See [sessions.js](src/sessions.js)
 	* Deal with undo/redo for sessions
 		* Particularly it might be helpful to undo *to* your last change, not just to right before it (by undoing it);
