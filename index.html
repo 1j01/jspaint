@@ -10,20 +10,20 @@
 			(function(){
 				var default_theme = "classic.css";
 				var theme_storage_key = "jspaint theme";
-				
+
 				var href_for = function(theme){
 					return "styles/themes/" + theme;
 				};
 				try{
 					var current_theme = localStorage[theme_storage_key];
 				}catch(e){}
-				
+
 				current_theme = current_theme || default_theme;
 				document.write('<link rel="stylesheet" type="text/css" href="' + href_for(current_theme) + '" id="theme-link" />');
-				
+
 				var theme_link = document.getElementById("theme-link");
 				var theme_style = document.createElement("style");
-				
+
 				self.set_theme = function(theme){
 					current_theme = theme;
 					var can_probably_refresh_to_switch = true;
@@ -94,6 +94,7 @@
 		<script src="src/tools.js"></script>
 		<script src="src/functions.js"></script>
 		<script src="src/manage-storage.js"></script>
+		<script src="src/imgur.js"></script>
 		<script src="src/help.js"></script>
 		<script src="src/app.js"></script>
 		<script src="src/menus.js"></script>

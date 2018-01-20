@@ -32,6 +32,17 @@ var menus = {
 			action: file_save_as,
 			description: "Saves the active document with a new name.",
 		},
+		{
+			item: "Upload To &Imgur",
+			action: upload_to_imgur,
+			description: "Uploads the active document to Imgur",
+		},
+		$MenuBar.DIVIDER,
+		{
+			item: "Manage Storage",
+			action: manage_storage,
+			description: "Manages storage of previously created or opened pictures.",
+		},
 		$MenuBar.DIVIDER,
 		{
 			item: "Print Pre&view",
@@ -67,12 +78,6 @@ var menus = {
 			item: "Set As Wa&llpaper (Centered)",
 			action: set_as_wallpaper_centered,
 			description: "Centers this bitmap as the desktop background.",
-		},
-		$MenuBar.DIVIDER,
-		{
-			item: "Manage Storage",
-			action: manage_storage,
-			description: "Manages storage of previously created or opened pictures.",
 		},
 		$MenuBar.DIVIDER,
 		{
@@ -326,7 +331,7 @@ var menus = {
 						"opaque": "transparent",
 						"transparent": "opaque",
 					}[transparent_opaque];
-					
+
 					$G.trigger("option-changed");
 				},
 				check: function(){
