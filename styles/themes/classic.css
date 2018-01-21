@@ -26,7 +26,8 @@
 	top: 0px;
 	right: 0px;
 	bottom: 0px;
-	border: 1px dashed black;
+	outline: 1px dashed black;
+	box-shadow: 0 0 0 1px white;
 }
 .handle {
 	background: #000080;
@@ -80,7 +81,7 @@
 .menu-item[disabled] {
 	text-shadow: 0.8px 0.8px 0px #fff;
 }
-.menu-item:focus, 
+.menu-item:focus,
 .menu-item.active {
 	background: #007;
 	color: #fff;
@@ -331,7 +332,7 @@ button.selected,
 	background: -ms-linear-gradient(left, #000080 0%, #1084d0 100%); /* IE10+ */
 	background: linear-gradient(to right, #000080 0%, #1084d0 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000080', endColorstr='#1084d0', GradientType=1 ); /* IE6-9 */
-	
+
 	color: white;
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
