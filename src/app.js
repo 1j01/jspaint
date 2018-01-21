@@ -518,17 +518,13 @@ function canvas_pointer_move(e){
 	shift = e.shiftKey;
 	pointer = e2c(e);
 	if(e.shiftKey){
-		if(selected_tool.name.match(/Line|Curve/)){
-			// snap to eight directions
-			var dist = Math.sqrt(
-				(pointer.y - pointer_start.y) * (pointer.y - pointer_start.y) +
-				(pointer.x - pointer_start.x) * (pointer.x - pointer_start.x)
+		if(selected_tool.fixed_direction_on_shift){
+			var new_pointer = calculate_new_fixed_pointer_direction(
+				pointer,
+				pointer_start
 			);
-			var eighth_turn = TAU / 8;
-			var angle_0_to_8 = Math.atan2(pointer.y - pointer_start.y, pointer.x - pointer_start.x) / eighth_turn;
-			var angle = Math.round(angle_0_to_8) * eighth_turn;
-			pointer.x = Math.round(pointer_start.x + Math.cos(angle) * dist);
-			pointer.y = Math.round(pointer_start.y + Math.sin(angle) * dist);
+			pointer.x = new_pointer.x;
+			pointer.y = new_pointer.y;
 		}else if(selected_tool.shape){
 			// snap to four diagonals
 			var w = Math.abs(pointer.x - pointer_start.x);
@@ -551,6 +547,28 @@ function canvas_pointer_move(e){
 	tool_go();
 	pointer_previous = pointer;
 }
+
+function calculate_new_fixed_pointer_direction(pointer, pointer_start){
+	var number_of_available_directions = 8;
+	var distance = Math.sqrt(
+		(pointer.y - pointer_start.y) * (pointer.y - pointer_start.y) +
+		(pointer.x - pointer_start.x) * (pointer.x - pointer_start.x)
+	);
+	var nth_turn     = TAU / number_of_available_directions; /* global TAU */
+	var angle_0_to_n = (
+		Math.atan2(
+			pointer.y - pointer_start.y,
+			pointer.x - pointer_start.x
+		) / nth_turn
+	);
+	var angle = Math.round(angle_0_to_n) * nth_turn;
+
+	return {
+		x: Math.round(pointer_start.x + Math.cos(angle) * distance),
+		y: Math.round(pointer_start.y + Math.sin(angle) * distance)
+	}
+}
+
 $canvas.on("pointermove", function(e){
 	pointer = e2c(e);
 	$status_position.text(pointer.x + "," + pointer.y);
