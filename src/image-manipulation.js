@@ -451,6 +451,10 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 		}
 		
 		new_ctx.save();
+
+		// do a "nearest-neighbor" resize to keep pixelated edges
+		new_ctx.imageSmoothingEnabled = false;
+
 		new_ctx.transform(
 			1, // x scale
 			Math.tan(vsa), // vertical skew (skewY)
