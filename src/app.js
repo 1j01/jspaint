@@ -87,14 +87,14 @@ $status_text.default();
 var $toolbox = $ToolBox();
 var $colorbox = $ColorBox();
 
+if(window.file_entry){
+	open_from_FileEntry(window.file_entry);
+}
+
 reset_file();
 reset_colors();
 reset_canvas(); // (with newly reset colors)
 reset_magnification();
-
-if(window.file_entry){
-	open_from_FileEntry(window.file_entry);
-}
 
 $canvas.on("user-resized", function(e, _x, _y, width, height){
 	undoable(0, function(){
@@ -104,14 +104,14 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
-		
+
 		var previous_canvas = undos[undos.length-1];
 		if(previous_canvas){
 			ctx.drawImage(previous_canvas, 0, 0);
 		}
-		
+
 		$canvas_area.trigger("resize");
-		
+
 		storage.set({
 			width: canvas.width,
 			height: canvas.height,
@@ -233,7 +233,7 @@ $G.on("keydown", function(e){
 		brush_shape = "diagonal";
 		$G.trigger("option-changed");
 	}
-	
+
 	if(e.altKey){
 		//find key codes
 		window.console && console.log(e.keyCode);
@@ -256,7 +256,7 @@ $G.on("keydown", function(e){
 		var plus = e.keyCode === 107;
 		var minus = e.keyCode === 109;
 		var delta = plus - minus; // +plus++ -minus--; // Δ = ±±±±
-		
+
 		if(selection){
 			selection.scale(Math.pow(2, delta));
 		}else{
@@ -271,7 +271,7 @@ $G.on("keydown", function(e){
 			}else if(selected_tool.name.match(/Line|Curve|Rectangle|Ellipse|Polygon/)){
 				stroke_size = Math.max(1, Math.min(stroke_size + delta, 500));
 			}
-			
+
 			$G.trigger("option-changed");
 		}
 		e.preventDefault();
@@ -347,7 +347,7 @@ $G.on("cut copy paste", function(e){
 		// Don't prevent cutting/copying/pasting within inputs or textareas
 		return;
 	}
-	
+
 	e.preventDefault();
 	var cd = e.originalEvent.clipboardData || window.clipboardData;
 	if(!cd){ return; }
@@ -415,20 +415,20 @@ function e2c(e){
 }
 
 function tool_go(event_name){
-	
+
 	ctx.lineWidth = stroke_size;
-	
+
 	ctx.fillStyle = fill_color =
 	ctx.strokeStyle = stroke_color =
 		colors[
 			(ctrl && colors.ternary) ? "ternary" :
 			(reverse ? "background" : "foreground")
 		];
-	
+
 	fill_color_k =
 	stroke_color_k =
 		ctrl ? "ternary" : (reverse ? "background" : "foreground");
-	
+
 	if(selected_tool.shape){
 		var previous_canvas = undos[undos.length-1];
 		if(previous_canvas){
@@ -452,7 +452,7 @@ function tool_go(event_name){
 	if(selected_tool.shape){
 		selected_tool.shape(ctx, pointer_start.x, pointer_start.y, pointer.x-pointer_start.x, pointer.y-pointer_start.y);
 	}
-	
+
 	if(selected_tool[event_name]){
 		selected_tool[event_name](ctx, pointer.x, pointer.y);
 	}
@@ -523,7 +523,7 @@ $canvas.on("pointerdown", function(e){
 	$G.one("pointerup", function(e){
 		pointer_was_pressed = false;
 	});
-	
+
 	if(e.button === 0){
 		reverse = false;
 	}else if(e.button === 2){
@@ -534,12 +534,12 @@ $canvas.on("pointerdown", function(e){
 	button = e.button;
 	ctrl = e.ctrlKey;
 	pointer_start = pointer_previous = pointer = e2c(e);
-	
+
 	var pointerdown_action = function(){
 		if(selected_tool.paint || selected_tool.pointerdown){
 			tool_go("pointerdown");
 		}
-		
+
 		$G.on("pointermove", canvas_pointer_move);
 		if(selected_tool.continuous === "time"){
 			var iid = setInterval(tool_go, 5);
@@ -562,7 +562,7 @@ $canvas.on("pointerdown", function(e){
 			}
 		});
 	};
-	
+
 	if((typeof selected_tool.passive === "function") ? selected_tool.passive() : selected_tool.passive){
 		pointerdown_action();
 	}else{
