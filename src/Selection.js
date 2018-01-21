@@ -107,6 +107,9 @@ Selection.prototype.instantiate = function(_img, _passive){
 			if(e.shiftKey){
 				sel.draw();
 			}
+			else if(e.ctrlKey){
+				sel.draw();
+			}   
 		};
 		
 		$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
