@@ -46,8 +46,10 @@ Selection.prototype.instantiate = function(_img, _passive){
 			// (this applies when pasting a selection)
 			// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
 			// (width vs naturalWidth?)
-			// and at least apply_image_transformation needs a canvas
+			// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
 			sel.source_canvas = new Canvas(_img);
+			// TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
+			// but maybe we should assert in some way that the widths are the same, or resize the selection?
 			if(sel.source_canvas.width !== sel.width){ sel.source_canvas.width = sel.width; }
 			if(sel.source_canvas.height !== sel.height){ sel.source_canvas.height = sel.height; }
 			sel.canvas = new Canvas(sel.source_canvas);
@@ -121,7 +123,7 @@ Selection.prototype.cut_out_background = function(){
 	var sel = this;
 	var cutout = sel.canvas;
 
-	// doc/sel or canvas/cutout, either of which would be the same variable name length which is nice
+	// doc/sel or canvas/cutout, either of those pairs would result in variable names of equal length which is nice :)
 	var canvasImageData = ctx.getImageData(sel.x, sel.y, sel.width, sel.height);
 	var cutoutImageData = cutout.ctx.getImageData(0, 0, sel.width, sel.height);
 	// cutoutImageData is initialzed with the shape to be cut out (whether rectangular or polygonal)
@@ -129,6 +131,8 @@ Selection.prototype.cut_out_background = function(){
 	// canvasImageData is initially the portion of image data on the canvas,
 	// and should end up as... the portion of image data on the canvas that it should end up as.
 
+	// TODO: could simplify by making the later (shared) condition just if(colored_cutout){}
+	// but might change how it works anyways so whatever
 	// if(!transparency){ // now if !transparency or if transparent_opaque == "transparent"
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
@@ -216,6 +220,8 @@ Selection.prototype.update_transparent_opaque = function(){
 	}
 	sel.canvas.ctx.putImageData(cutoutImageData, 0, 0);
 };
+
+// TODO: should Image > Invert apply to sel.source_canvas or to sel.canvas (replacing sel.source_canvas with the result)?
 
 Selection.prototype.replace_source_canvas = function(new_source_canvas){
 	var sel = this;

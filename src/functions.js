@@ -36,6 +36,7 @@ function reset_canvas(){
 	
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
+	ctx.disable_image_smoothing();
 	
 	ctx.fillStyle = colors.background;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -388,6 +389,7 @@ function paste(img){
 				var original = undos[undos.length-1];
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
+				ctx.disable_image_smoothing();
 				if(!transparency){
 					ctx.fillStyle = colors.background;
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
