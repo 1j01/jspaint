@@ -1,4 +1,5 @@
-(function(window, $) {
+(function() {
+	/* global window, document, $ */
 	var default_theme = "classic.css";
 	var theme_storage_key = "jspaint theme";
 
@@ -86,4 +87,4 @@
 
 		$(window).triggerHandler("theme-load");
 	}
-})(window, jQuery);
+})();
