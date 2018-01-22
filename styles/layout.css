@@ -344,16 +344,24 @@ html, body, .jspaint {
 	overflow: auto;
 	display: block;
 }
-.storage-manager a > img {
-	max-width: 100px;
-	max-height: 100px;
-	vertical-align: middle;
-	margin: 5px;
+.storage-manager .thumbnail-container {
+	width: 64px;
+	height: 64px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
-.storage-manager a > span,
-.storage-manager a > img,
+.storage-manager .thumbnail-container > img {
+	max-width: 64px;
+	max-height: 64px;
+	flex: 0 0 auto;
+}
+.storage-manager .thumbnail-container,
 .storage-manager p {
 	margin: 5px;
+}
+.storage-manager .remove-button {
+	margin-left: 15px;
 }
 
 ::before, ::after {
