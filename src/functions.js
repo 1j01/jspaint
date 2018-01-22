@@ -304,6 +304,7 @@ function are_you_sure(action, canceled){
 function show_error_message(message, error){
 	var $w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.text(message);
+	$w.$main.css("max-width", "600px");
 	if(error){
 		$(E("pre"))
 		.appendTo($w.$main)

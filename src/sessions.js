@@ -131,6 +131,16 @@
 	FireSession.prototype.start = function(){
 		var session = this;
 		
+		// TODO: how do you actually detect if it's failing???
+		// TODO: better formatting, title of window etc., if we really can't detect this
+		show_error_message(
+			"The Firebase quota was exceeded very quickly when JS Paint got a ton of traffic. " +
+			"I haven't found any way to actually *detect* this case, " +
+			"so for now I'm showing this message, regardless of whether it's working (technically), " +
+			"but it probably isn't working! " +
+			"The document 'probably' will not load, and changes 'probably' will not be saved."
+		);
+		
 		// Wrap the Firebase API because they don't
 		// provide a great way to clean up event listeners
 		session._fb_listeners = [];
