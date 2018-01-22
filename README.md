@@ -37,19 +37,21 @@ I want to bring good old paint into the modern era.
 
 #### Current improvements include:
 
+* Cross-platform
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
-  or a somewhat less measly but still annoying 50 in Windows 7)
-* Automatically saves if local storage is allowed
-  (Try refreshing the page to make sure, and to check it out)
+  or a measly 50 in Windows 7)
+* Autosaves if you allow local storage.
+  (Try refreshing the page to make sure this works, and to check it out)
 * Edit transparent images! To create a transparent image,
   go to Image > Attributes... and select Transparent,
   then Okay, and then Image > Clear Image or use the Eraser tool.
-  Images with any transparent pixels will open in Transparent mode.
-* Go to View > Extras Menu to enable access to additional features
+  Images with *any* transparent pixels will open in Transparent mode.
+* Go to View > Extras Menu to enable access to additional features not available in MS Paint
 * Switch themes from the Extras menu
-* Create an animated GIF from the current document history from the Extras menu or with
-  <kbd>Ctrl+Shift+G</kbd> (pretty nifty, you should try it out after editing a small to medium sized image)
-* Cross-platform, I suppose, since it's web-based
+* Create an animated GIF from the current document history.
+  Accessible from the Extras menu or with <kbd>Ctrl+Shift+G</kbd>.
+  It's pretty nifty, you should try it out!
+  You might want to limit the size of the image though.
 * You can shoot at it [Asteroids style](http://kickassapp.com/)
 * When you do Edit > Paste From... you can select transparent images and GIFs.
   ~~You can even paste a transparent animated GIF and then
@@ -57,18 +59,21 @@ I want to bring good old paint into the modern era.
   smear it across the canvas *while it animates*!~~
   Update: This was [due to not-to-spec behavior in Chrome.](http://christianheilmann.com/2014/04/16/browser-inconsistencies-animated-gif-and-drawimage/)
   I may reimplement this in the future as I really liked this feature.
-* It can open SVG files (simply because browsers support SVG)
+* You can open SVG files (because browsers support SVG).
+  It's still a completely raster image editor though.
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
-* Rotate image by arbitrary angle in Image > Flip/Rotate
+* Rotate by any arbitrary angle in Image > Flip/Rotate
 * In Image > Stretch/Skew, you can stretch more than 500% at once
-* Rudimentary **multi-user** support:
+* Rudimentary **multi-user** support.
   Start up a session at
   [jspaint.ml/#session:multi-user-test](http://1j01.github.io/jspaint/#session:multi-user-test)
   and send the link to your friends!
-  It isn't perfectly seamless, and you may lose your drawing or be interrupted.
-* Load many different palette formats with Colors > Get Colors
-  (I made a [library](https://github.com/1j01/palette.js/) for this)
+  It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
+  Sessions are not private, and you may lose your work at any time.
+  If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
+* Load many different palette formats with Colors > Get Colors.
+  (I made a [library](https://github.com/1j01/palette.js/) for this.)
 * Mobile support
 * Click/tap the selected colors area to swap the foreground and background colors
 
@@ -99,7 +104,8 @@ Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
 There's apparently no way for web apps to properly copy image data to the clipboard.
-"[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)" is currently the top starred issue of chromium.
+"[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)"
+is currently the top starred issue of chromium.
 To use the clipboard menu items, you need to install [the Chrome app][jspaint chrome app].
 <!-- or the native app. -->
 
@@ -116,8 +122,9 @@ I want to make JS Paint to be able to edit...
   You can use the Eraser tool a bit, then use the Color Picker to
   pick up where you erased and then use the Fill tool to remove bigger areas.
 * Animated [GIF][]s
-  (yes, that entails a fully featured (but simple) animation editor) -
-  Currently you can only make GIFs of the document history with <kbd>Ctrl+Shift+G</kbd>
+  (yes, that entails a fully featured (but simple) animation editor). -
+  Currently you can only make GIFs of the document *history*,
+  with <kbd>Ctrl+Shift+G</kbd> or from the Extras menu.
 * Animated Transparent [APNG][]s
   (better than GIFs, but with less support)
 * Multi-size Icons ([ICO][] for windows and [ICNS][] for mac)
@@ -126,6 +133,8 @@ I want to make JS Paint to be able to edit...
   and I've made it try not to save over the original SVG.
   That's pretty decent SVG support for a 100% raster image editor.
 * [Text files][TXT] (definitely just kidding maybe)
+* Tesselating patterns, and textures on 3D models;
+  that might be a pipe dream, but [then again...](https://github.com/1j01/pipes)
 
 
 [PNG]: http://en.wikipedia.org/wiki/Portable_Network_Graphics "Portable Network Graphics"
@@ -144,12 +153,13 @@ I want to make JS Paint to be able to edit...
   You can dock the windows back to the side by double-clicking on their title bars.
 
 * In addition to the left-click foreground color and the right-click background color,
-  there's also a third color you can access by holding <kbd>Ctrl</kbd> while you draw.
+  there's a third color you can access by holding <kbd>Ctrl</kbd> while you draw.
   It starts out with no color so you'll need to hold <kbd>Ctrl</kbd> and select a color first.
-  The slightly fancy thing about this color is you can
+  The fancy thing about this color slot is you can
   press and release <kbd>Ctrl</kbd> to switch colors while drawing.
 
-* You can apply image transformations like Flip/Rotate, Stretch/Skew or Invert (in the Image menu) either to the whole image or to a selection. If you make a selection with the Select or Free-Form Select tool, the transformations apply to the selection.
+* You can apply image transformations like Flip/Rotate, Stretch/Skew or Invert (in the Image menu) either to the whole image or to a selection.
+  If you make a selection with the Select or Free-Form Select tool, the transformations apply to the selection.
 
 * These Tips and Tricks from [a tutorial for MS Paint](http://www.albinoblacksheep.com/tutorial/mspaint)
   also work in JS Paint if they have a checkmark:
@@ -158,9 +168,10 @@ I want to make JS Paint to be able to edit...
 	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
 	* [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
 	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
-	* [x] Color Replacement (right mouse button in Eraser selectively replaces the foreground color with the background color)
+	* [x] Color Replacement (right mouse button with Eraser to selectively replace the foreground color with the background color)
 	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
-	* [ ] Quick Undo (Pressing a second mouse button cancels the action you were performing. I also made it redoable, in case you do it by accident! But [it broke at some point in Chrome.](https://github.com/1j01/jspaint/issues/9))
+	* [ ] Quick Undo (Pressing a second mouse button cancels the action you were performing.
+	      I also made it redoable, in case you do it by accident! But [it broke at some point in Chrome.](https://github.com/1j01/jspaint/issues/9))
 	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
 
 
