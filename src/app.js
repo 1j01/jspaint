@@ -88,7 +88,7 @@ $status_size.default = function(){
 	$status_size.text("");
 };
 $status_size.showSize = function(width, height){
-	$status_size.text(`${width} x ${height}`);
+	$status_size.text(`${width}x${height}`);
 };
 $status_size.default();
 
@@ -128,6 +128,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 		}
 		
 		$canvas_area.trigger("resize");
+		$status_size.default();
 		
 		storage.set({
 			width: canvas.width,
