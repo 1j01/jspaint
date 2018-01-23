@@ -389,9 +389,9 @@ var menus = {
 				var $msgbox = new $Window();
 				$msgbox.title("About Paint");
 				$msgbox.$content.html(
-					"<h1><img src='images/icons/32.png'/> JS Paint<hr/></h1>" +
+					"<h1><img src='images/icons/32.png'/> JS Paint version 1.0<hr/></h1>" +
 					"<p>JS Paint is a web-based remake of MS Paint by <a href='http://1j01.github.io/'>Isaiah Odhner</a>.</p>" +
-					"<p>You can check out the project <a href='https://github.com/1j01/jspaint'>on github</a>.</p>"
+					"<p>You can check out the project <a href='https://github.com/1j01/jspaint'>on Github</a>.</p>"
 				).css({padding: "15px"});
 				$msgbox.center();
 			},
