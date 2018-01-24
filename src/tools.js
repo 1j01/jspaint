@@ -220,13 +220,33 @@ tools = [{
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
 	pointerdown: function(ctx, x, y){
-		
 		// Get the rgba values of the selected fill color
 		var rgba = get_rgba_from_color(fill_color);
-		
-		// Perform the fill operation
-		draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
-		
+
+		$G.one("pointerdown", function(e) {
+			if(e.shiftKey) {	
+				var pixel_pos = (y*canvas.width + x) * 4;			
+				var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				var start_r = imageData.data[pixel_pos+0];
+				var start_g = imageData.data[pixel_pos+1];
+				var start_b = imageData.data[pixel_pos+2];
+				
+				for (var i = 0; i < imageData.data.length; i += 4) {
+					if (imageData.data[i] == start_r && imageData.data[i + 1] == start_g && imageData.data[i + 2] == start_b) {
+						imageData.data[i] = rgba[0];
+						imageData.data[i + 1] = rgba[1];
+						imageData.data[i + 2] = rgba[2];
+					}
+				}
+				ctx.putImageData(imageData, 0, 0);
+				ctx.closePath();
+				ctx.save();
+			}
+			else {
+				// Perform the fill operation
+			 	draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+			}
+		});	
 	}
 }, {
 	name: "Pick Color",
