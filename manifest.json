@@ -13,6 +13,8 @@
 		}
 	},
 	"permissions": [
+		"http://*/*",
+		"https://*/*",
 		"storage",
 		"fullscreen",
 		"clipboardRead",
