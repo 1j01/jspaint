@@ -417,7 +417,7 @@ function e2c(e){
 	};
 }
 
-function tool_go(event_name, event){
+function tool_go(event_name){
 	
 	ctx.lineWidth = stroke_size;
 	
@@ -457,7 +457,7 @@ function tool_go(event_name, event){
 	}
 	
 	if(selected_tool[event_name]){
-		selected_tool[event_name](ctx, pointer.x, pointer.y, event);
+		selected_tool[event_name](ctx, pointer.x, pointer.y);
 	}
 	if(selected_tool.paint){
 		if(selected_tool.continuous === "space"){
