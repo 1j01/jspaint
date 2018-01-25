@@ -24,9 +24,8 @@ html, body, .jspaint {
 	justify-content: space-around;
 	align-content: space-around;
 }
-.choose-brush canvas {
-	width: 10px;
-	height: 10px;
+.tool-options canvas {
+	flex: 0 0 auto;
 }
 .jspaint :not(table):not(tbody):not(tr):not(td) {
 	display: flex;
