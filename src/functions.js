@@ -1025,11 +1025,25 @@ function set_as_wallpaper_centered(c){
 	c = c || canvas;
 
 	if(window.chrome && chrome.wallpaper){
-		chrome.wallpaper.setWallpaper({
-			url: c.toDataURL(),
-			layout: 'CENTER_CROPPED',
-			name: file_name,
-		}, function(){});
+		var file_reader = new FileReader();
+
+		file_reader.onloadend = function() {
+			chrome.wallpaper.setWallpaper({
+				data: file_reader.result,
+				layout: 'CENTER_CROPPED',
+				filename: file_name,
+			}, function() {
+			});
+		};
+
+		file_reader.onerror = function() {
+			console.log('failed to read image data');
+		};
+
+
+		c.toBlob(function(blob) {
+			file_reader.readAsArrayBuffer(blob);
+		});
 	}else if(window.require){
 		var gui = require("nw.gui");
 		var fs = require("fs");
