@@ -417,7 +417,7 @@ function e2c(e){
 	};
 }
 
-function tool_go(event_name){
+function tool_go(event_name, event){
 	
 	ctx.lineWidth = stroke_size;
 	
@@ -457,7 +457,7 @@ function tool_go(event_name){
 	}
 	
 	if(selected_tool[event_name]){
-		selected_tool[event_name](ctx, pointer.x, pointer.y);
+		selected_tool[event_name](ctx, pointer.x, pointer.y, event);
 	}
 	if(selected_tool.paint){
 		if(selected_tool.continuous === "space"){
@@ -472,6 +472,7 @@ function tool_go(event_name){
 }
 function canvas_pointer_move(e){
 	ctrl = e.ctrlKey;
+	shift = e.shiftKey;
 	pointer = e2c(e);
 	if(e.shiftKey){
 		if(selected_tool.name.match(/Line|Curve/)){
@@ -536,6 +537,7 @@ $canvas.on("pointerdown", function(e){
 	}
 	button = e.button;
 	ctrl = e.ctrlKey;
+	shift = e.shiftKey;
 	pointer_start = pointer_previous = pointer = e2c(e);
 	
 	var pointerdown_action = function(){

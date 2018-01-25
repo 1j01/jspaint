@@ -224,9 +224,13 @@ tools = [{
 		// Get the rgba values of the selected fill color
 		var rgba = get_rgba_from_color(fill_color);
 		
-		// Perform the fill operation
-		draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
-		
+		if(shift){
+			// Perform a global (non-contiguous) fill operation, AKA color replacement
+			draw_noncontiguous_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+		} else {
+			// Perform a normal fill operation
+			draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+		}
 	}
 }, {
 	name: "Pick Color",

@@ -306,6 +306,51 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	}
 }
 
+function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
+	
+	var c_width = canvas.width;
+	var c_height = canvas.height;
+	var id = ctx.getImageData(0, 0, c_width, c_height);
+	pixel_pos = (y*c_width + x) * 4;
+	var start_r = id.data[pixel_pos+0];
+	var start_g = id.data[pixel_pos+1];
+	var start_b = id.data[pixel_pos+2];
+	var start_a = id.data[pixel_pos+3];
+	
+	if(
+		fill_r === start_r &&
+		fill_g === start_g &&
+		fill_b === start_b &&
+		fill_a === start_a
+	){
+		return;
+	}
+	
+	for(var i=0; i<id.data.length; i+=4){
+		if(matches_start_color(i)){
+			color_pixel(i);
+		}
+	}
+	
+	ctx.putImageData(id, 0, 0);
+
+	function matches_start_color(pixel_pos){
+		return (
+			id.data[pixel_pos+0] === start_r &&
+			id.data[pixel_pos+1] === start_g &&
+			id.data[pixel_pos+2] === start_b &&
+			id.data[pixel_pos+3] === start_a
+		);
+	}
+
+	function color_pixel(pixel_pos){
+		id.data[pixel_pos+0] = fill_r;
+		id.data[pixel_pos+1] = fill_g;
+		id.data[pixel_pos+2] = fill_b;
+		id.data[pixel_pos+3] = fill_a;
+	}
+}
+
 function apply_image_transformation(fn){
 	// Apply an image transformation function to either the selection or the entire canvas
 	var original_canvas = selection ? selection.source_canvas: canvas;

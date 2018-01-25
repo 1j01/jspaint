@@ -678,6 +678,8 @@ function select_tool(name){
 	}
 }
 
+// TODO: factor this into a simple (pure) function, to be used like:
+// transparency = has_any_transparency(ctx);
 function detect_transparency(){
 	transparency = false;
 	
@@ -689,6 +691,7 @@ function detect_transparency(){
 	for(var i=0, l=id.data.length; i<l; i+=4){
 		if(id.data[i+3] < 255){
 			transparency = true;
+			return;
 		}
 	}
 }

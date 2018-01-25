@@ -65,6 +65,7 @@ I want to bring good old paint into the modern era.
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
 * Rotate by any arbitrary angle in Image > Flip/Rotate
 * In Image > Stretch/Skew, you can stretch more than 500% at once
+* Replace a color in the entire image by holding <kbd>Shift</kbd> and using the fill tool (AKA non-contiguous fill)
 * Rudimentary **multi-user** support.
   Start up a session at
   [jspaint.ml/#session:multi-user-test](http://1j01.github.io/jspaint/#session:multi-user-test)
@@ -88,7 +89,6 @@ I want to bring good old paint into the modern era.
 * After adding text, save as SVG or HTML with selectable text
   (invisible text positioned over an embedded bitmap image)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
-* Noncontiguous fill AKA replace color (Probably by holding <kbd>Shift</kbd> when using the fill tool)
 * Optional fill tolerance (slider that you enable from a settings menu?)
 * Interactive tutorial(s)?
 
