@@ -31,6 +31,7 @@
 }
 .handle {
 	background: #000080;
+	z-index: 1;
 }
 .useless-handle {
 	background: #fff;

@@ -32,6 +32,7 @@ body {
 }
 .handle {
 	background: #000080;
+	z-index: 1;
 	/* TODO: enlarge handles for usability (need to update code to handle it though) */
 	/* or at least increase functional size */
 	/* width: 5px;
