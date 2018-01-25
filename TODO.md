@@ -34,7 +34,7 @@
 
 * Warning sign for "Save changes to X?" dialogue
 * Error symbol for error message dialogues
-* 3D inset border for inputs
+* 3D inset border for inputs - SVG `image-border`?
 * The window close button uses text; font rendering is not consistent
 * The progress bar (Rendering GIF) is left native
 * Menu separator spacing
@@ -248,15 +248,20 @@ I implemented theoretical support for changing the wallpaper on Chrome OS, but I
 * Anything marked `@TODO` or `@FIXME` in the source code
 
 
+* See [Issues on GitHub](https://github.com/1j01/jspaint/issues)
+
+
 * Improve README
 	* More images! Animated GIFs perhaps? :)
 
 
 * CSS
-	* DRY, especially button styles
-	* Deal with `z-index` rules?
+	* DRY, especially button styles - SVG `border-image`?
 	* Comment stuff?
-	* Use a CSS preprocessor so we can do color-swap themes (maybe even load Windows theme files)
+	* Use a CSS preprocessor
+		* DRY
+		* Clearer `z-index` handling?
+		* Color-swap themes (maybe even load Windows theme files)
 	* Stuff should go in an OS GUI library with themes for Windows 98 and other OSes
 
 
