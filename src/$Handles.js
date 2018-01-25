@@ -83,12 +83,15 @@ function $Handles($container, element, options){
 				}else{
 					height = ~~(rect.height);
 				}
+
+				$canvas.trigger("user-resizing", [width, height]);
+
 				$resize_ghost.css({
 					position: "absolute",
 					left: magnification * delta_x + get_offset_left(),
 					top: magnification * delta_y + get_offset_top(),
-					width: magnification * width,
-					height: magnification * height,
+					width: width * magnification,
+					height: height * magnification,
 				});
 			};
 			$h.on("pointerdown", function(e){

@@ -84,6 +84,14 @@ $status_text.default = function(){
 };
 $status_text.default();
 
+$status_size.default = function(){
+	$status_size.text("");
+};
+$status_size.showSize = function(width, height){
+	$status_size.text(`${width}x${height}`);
+};
+$status_size.default();
+
 var $toolbox = $ToolBox();
 var $colorbox = $ColorBox();
 
@@ -95,6 +103,13 @@ reset_magnification();
 if(window.file_entry){
 	open_from_FileEntry(window.file_entry);
 }
+
+$canvas.on("user-resizing", function(e, width, height){
+	width = Math.max(1, width);
+	height = Math.max(1, height);
+
+	$status_size.showSize(width, height);
+});
 
 $canvas.on("user-resized", function(e, _x, _y, width, height){
 	undoable(0, function(){
@@ -113,6 +128,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 		}
 		
 		$canvas_area.trigger("resize");
+		$status_size.default();
 		
 		storage.set({
 			width: canvas.width,
