@@ -16,6 +16,7 @@ function $Swatch(color){
 		requestAnimationFrame(function(){
 			swatch_canvas.width = $b.innerWidth();
 			swatch_canvas.height = $b.innerHeight();
+			// I don't think disable_image_smoothing() is needed here
 			
 			if(color){
 				swatch_canvas.ctx.fillStyle = color;

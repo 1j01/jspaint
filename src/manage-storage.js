@@ -52,12 +52,13 @@ function manage_storage(){
 		var $tr = $(E("tr")).appendTo($table);
 		
 		var $img = $(E("img")).attr({src: imgSrc});
-		var $remove = $(E("button")).text("Remove");
+		var $remove = $(E("button")).text("Remove").addClass("remove-button");
 		var href = "#" + k.replace("image#", "local:");
-		var $link = $(E("a")).attr({href: href, target: "__blank"});
-		$link.append($img);
-		$link.append($(E("span")).text("View"));
-		$(E("td")).append($link).appendTo($tr);
+		var $open_link = $(E("a")).attr({href: href, target: "_blank"}).text("Open");
+		var $thumbnail_open_link = $(E("a")).attr({href: href, target: "_blank"}).addClass("thumbnail-container");
+		$thumbnail_open_link.append($img);
+		$(E("td")).append($thumbnail_open_link).appendTo($tr);
+		$(E("td")).append($open_link).appendTo($tr);
 		$(E("td")).append($remove).appendTo($tr);
 		
 		$remove.click(function(){

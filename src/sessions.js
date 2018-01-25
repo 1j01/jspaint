@@ -104,7 +104,18 @@
 		if(!FireSession.fb_root){
 			$.getScript("lib/firebase.js")
 				.done(function(){
-					FireSession.fb_root = new Firebase("https://jspaint.firebaseio.com/");
+
+					var config = {
+						apiKey: "AIzaSyBgau8Vu9ZE8u_j0rp-Lc044gYTX5O3X9k",
+						authDomain: "jspaint.firebaseapp.com",
+						databaseURL: "https://jspaint.firebaseio.com",
+						projectId: "firebase-jspaint",
+						storageBucket: "",
+						messagingSenderId: "63395010995"
+					};
+					firebase.initializeApp(config);
+
+					FireSession.fb_root = firebase.database().ref("/");
 					on_firebase_loaded();
 				})
 				.fail(function(){
@@ -120,12 +131,22 @@
 	FireSession.prototype.start = function(){
 		var session = this;
 		
+		// TODO: how do you actually detect if it's failing???
+		// TODO: better formatting, title of window etc., if we really can't detect this
+		show_error_message(
+			"The Firebase quota was exceeded very quickly when JS Paint got a ton of traffic. " +
+			"I haven't found any way to actually *detect* this case, " +
+			"so for now I'm showing this message, regardless of whether it's working (technically), " +
+			"but it probably isn't working! " +
+			"The document 'probably' will not load, and changes 'probably' will not be saved."
+		);
+		
 		// Wrap the Firebase API because they don't
 		// provide a great way to clean up event listeners
 		session._fb_listeners = [];
-		var _fb_on = function(fb, event_type, callback){
-			session._fb_listeners.push([fb, event_type, callback]);
-			fb.on(event_type, callback);
+		var _fb_on = function(fb, event_type, callback, error_callback){
+			session._fb_listeners.push([fb, event_type, callback, error_callback]);
+			fb.on(event_type, callback, error_callback);
 		};
 		
 		// Get Firebase references
@@ -136,7 +157,7 @@
 			session.fb_user = session.fb_users.child(user_id);
 		}else{
 			session.fb_user = session.fb_users.push();
-			user_id = session.fb_user.name();
+			user_id = session.fb_user.key;
 		}
 		
 		// Remove the user from the session when they disconnect
@@ -149,13 +170,13 @@
 		_fb_on(session.fb_users, "child_added", function(snap){
 			
 			// Is this you?
-			if(snap.name() === user_id){
+			if(snap.key === user_id){
 				// You already have a cursor.
 				return;
 			}
 			
 			// Get the Firebase reference for this user
-			var fb_other_user = snap.ref();
+			var fb_other_user = snap.ref;
 			
 			// Get the user object stored on the server
 			var other_user = snap.val();
@@ -278,6 +299,10 @@
 				};
 				img.src = uri;
 			}
+		}, function(error){
+			show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
+			file_name = "[Failed to load "+session.id+"]";
+			update_title();
 		});
 		
 		// Update the cursor status
@@ -314,7 +339,7 @@
 		var _;
 		while(_ = session._fb_listeners.pop()){
 			debug("remove listener for " + _[0].path.toString() + " .on " + _[1]);
-			_[0].off(_[1], _[2]);
+			_[0].off(_[1], _[2], _[3]);
 		}
 		
 		// Remove the user from the session

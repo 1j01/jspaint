@@ -196,7 +196,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * **Options**
-	* Secret 10x zoom by clicking the area just underneath the 8x zoom
 	* In MS Paint, visual area =/= selection highlight area =/= clickable area
 
 

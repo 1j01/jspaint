@@ -100,6 +100,8 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 	undoable(0, function(){
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
+		ctx.disable_image_smoothing();
+		
 		if(!transparency){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -134,6 +136,7 @@ storage.get({
 	my_canvas_height = values.height;
 	canvas.width = Math.max(1, my_canvas_width);
 	canvas.height = Math.max(1, my_canvas_height);
+	ctx.disable_image_smoothing();
 	if(!transparency){
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);

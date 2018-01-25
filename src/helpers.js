@@ -67,9 +67,24 @@ function Canvas(width, height){
 	
 	new_canvas.ctx = new_ctx;
 	
+	new_ctx.disable_image_smoothing = function(image){
+		new_ctx.mozImageSmoothingEnabled = false;
+		new_ctx.webkitImageSmoothingEnabled = false;
+		new_ctx.msImageSmoothingEnabled = false;
+		new_ctx.imageSmoothingEnabled = false;
+	};
+	
+	// TODO: simplify the abstraction by defining setters for width/height
+	// that reset the image smoothing to disabled
+	// and remove all external calls to disable_image_smoothing
+	
 	new_ctx.copy = function(image){
 		new_canvas.width = image.naturalWidth || image.width;
 		new_canvas.height = image.naturalHeight || image.height;
+		
+		// setting width/height resets image smoothing (along with everything)
+		new_ctx.disable_image_smoothing();
+		
 		new_ctx.drawImage(image, 0, 0);
 	};
 	
@@ -77,15 +92,12 @@ function Canvas(width, height){
 		// new Canvas(width, height)
 		new_canvas.width = width;
 		new_canvas.height = height;
+		// setting width/height resets image smoothing (along with everything)
+		new_ctx.disable_image_smoothing();
 	}else if(image){
 		// new Canvas(image)
 		new_ctx.copy(image);
 	}
-	
-	// This must come after sizing the canvas
-	new_ctx.imageSmoothingEnabled = false;
-	new_ctx.mozImageSmoothingEnabled = false;
-	new_ctx.msImageSmoothingEnabled = false;
 	
 	return new_canvas;
 }

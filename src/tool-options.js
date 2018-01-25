@@ -244,18 +244,23 @@ var $choose_stroke_size = $Choose(
 	}
 ).addClass("choose-stroke-size");
 
-var magnifications = [1, 2, 6, 8/*, 10*/]; // ten is secret
+var magnifications = [1, 2, 6, 8, 10];
 var $choose_magnification = $Choose(
 	magnifications,
 	function(scale, is_chosen){
 		var i = magnifications.indexOf(scale);
-		return ChooserCanvas(
+		var secret = scale === 10; // 10x is secret
+		var chooser_canvas = ChooserCanvas(
 			"images/options-magnification.png",
 			is_chosen, // invert if chosen
-			39, 13, // width, height of destination canvas
+			39, (secret ? 2 : 13), // width, height of destination canvas
 			i*23, 0, 23, 9, // x, y, width, height from source image
 			8, 2, 23, 9 // x, y, width, height on destination
 		);
+		if(secret){
+			$(chooser_canvas).addClass("secret-option");
+		}
+		return chooser_canvas;
 	},
 	function(scale){
 		set_magnification(scale);
@@ -266,7 +271,15 @@ var $choose_magnification = $Choose(
 	function(scale){
 		return scale === magnification;
 	}
-).addClass("choose-magnification");
+).addClass("choose-magnification")
+.css({position: "relative"}); // positioning context for above `position: "absolute"` canvas
+
+$choose_magnification.on("update", function(){
+	$choose_magnification
+		.find(".secret-option")
+		.parent()
+		.css({position: "absolute", bottom: "-2px", left: 0, opacity: 0});
+});
 
 // The default enlarged (>1) magnification for when you use the tool
 // is 4x, which isn't an option you can get to from the tool options.

@@ -354,6 +354,7 @@ function rotate(angle){
 			case TAU * -3/4:
 				new_canvas.width = original_canvas.height;
 				new_canvas.height = original_canvas.width;
+				new_ctx.disable_image_smoothing();
 				new_ctx.translate(new_canvas.width, 0);
 				new_ctx.rotate(TAU / 4);
 				break;
@@ -366,6 +367,7 @@ function rotate(angle){
 			case TAU / -4:
 				new_canvas.width = original_canvas.height;
 				new_canvas.height = original_canvas.width;
+				new_ctx.disable_image_smoothing();
 				new_ctx.translate(0, new_canvas.height);
 				new_ctx.rotate(TAU / -4);
 				break;
@@ -398,6 +400,7 @@ function rotate(angle){
 				
 				new_canvas.width = bb_w;
 				new_canvas.height = bb_h;
+				new_ctx.disable_image_smoothing();
 				
 				if(!transparency){
 					new_ctx.fillStyle = colors.background;
@@ -444,6 +447,7 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 		
 		new_canvas.width = bb_w;
 		new_canvas.height = bb_h;
+		new_ctx.disable_image_smoothing();
 		
 		if(!transparency){
 			new_ctx.fillStyle = colors.background;

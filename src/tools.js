@@ -310,6 +310,7 @@ tools = [{
 		){
 			brush_canvas.width = csz;
 			brush_canvas.height = csz;
+			// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
 
 			brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
 			render_brush(brush_ctx, brush_shape, brush_size);
