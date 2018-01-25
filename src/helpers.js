@@ -41,23 +41,18 @@ function E(t){
 	return document.createElement(t);
 }
 
-var get_rgba_from_color = (function(){
-	var _single_pixel_canvas = new Canvas(1, 1);
-
-	function get_rgba_from_color(color){
-		
-		_single_pixel_canvas.ctx.fillStyle = color;
-		_single_pixel_canvas.ctx.fillRect(0, 0, 1, 1);
-		
-		var _id = _single_pixel_canvas.ctx.getImageData(0, 0, 1, 1);
-		
-		// We could just return _id.data, but let's return an Array instead
-		// I'm not totally sure _id.data wouldn't keep _id around in memory
-		return Array.from(_id.data);
-	}
-
-	return get_rgba_from_color;
-}());
+function get_rgba_from_color(color){
+	var single_pixel_canvas = new Canvas(1, 1);
+	
+	single_pixel_canvas.ctx.fillStyle = color;
+	single_pixel_canvas.ctx.fillRect(0, 0, 1, 1);
+	
+	var image_data = single_pixel_canvas.ctx.getImageData(0, 0, 1, 1);
+	
+	// We could just return image_data.data, but let's return an Array instead
+	// I'm not totally sure image_data.data wouldn't keep image_data around in memory
+	return Array.from(image_data.data);
+}
 
 function Canvas(width, height){
 	var image = width;
