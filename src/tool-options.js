@@ -22,7 +22,7 @@ var show_shape_styles_warning = function(){
 	var $w = $shape_styles_warning_window = $FormWindow().title("Warning").addClass("dialogue-window");
 	$w.$main.html(
 		"<p>Shape styles and line widths are not implemented for all tools.</p>" +
-		"<p>See issue <a href='https://github.com/1j01/jspaint/issues/7'>#7</a>" +
+		"<p>See issue <a href='https://github.com/1j01/jspaint/issues/7'>#7</a></p>" +
 		"<label><input type='checkbox' class='dont-tell-me-again'> Don't tell me again</label>"
 	);
 	$w.$main.find(".dont-tell-me-again").on("change", function(){
