@@ -1025,7 +1025,7 @@ function set_as_wallpaper_centered(c){
 	c = c || canvas;
 
 	if(window.chrome && chrome.wallpaper){
-		read_canvas_image_to_array_buffer(c)
+		get_array_buffer_from_canvas(c)
 			.then(function(buffer) {
 				chrome.wallpaper.setWallpaper({
 					data: buffer,
@@ -1061,7 +1061,11 @@ function set_as_wallpaper_centered(c){
 	}
 }
 
-function read_canvas_image_to_array_buffer(canvas) {
+/**
+ * @param {HTMLElement} canvas
+ * @return {Promise}
+ */
+function get_array_buffer_from_canvas(canvas) {
 	return new Promise(function(resolve, reject) {
 		var file_reader = new FileReader();
 
