@@ -1037,9 +1037,8 @@ function set_as_wallpaper_centered(c){
 		};
 
 		file_reader.onerror = function() {
-			console.log('failed to read image data');
+			show_error_message("Failed to set as desktop background: couldn't read image file.");
 		};
-
 
 		c.toBlob(function(blob) {
 			file_reader.readAsArrayBuffer(blob);
