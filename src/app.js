@@ -144,25 +144,24 @@ storage.get({
 	$canvas_area.trigger("resize");
 });
 
+
 $("body").on("dragover dragenter", function(e){
-	if(
-		e.target instanceof HTMLInputElement ||
-		e.target instanceof HTMLTextAreaElement
-	){
-		return;
-	}
-	e.preventDefault();
-}).on("drop", function(e){
-	if(
-		e.target instanceof HTMLInputElement ||
-		e.target instanceof HTMLTextAreaElement
-	){
-		return;
-	}
-	e.preventDefault();
 	var dt = e.originalEvent.dataTransfer;
-	if(dt && dt.files && dt.files.length){
-		open_from_FileList(dt.files, "dropped");
+	var has_files = Array.from(dt.types).indexOf("Files") !== -1;
+	if(has_files){
+		e.preventDefault();
+	}
+}).on("drop", function(e){
+	if(e.isDefaultPrevented()){
+		return;
+	}
+	var dt = e.originalEvent.dataTransfer;
+	var has_files = Array.from(dt.types).indexOf("Files") !== -1;
+	if(has_files){
+		e.preventDefault();
+		if(dt && dt.files && dt.files.length){
+			open_from_FileList(dt.files, "dropped");
+		}
 	}
 });
 
@@ -343,11 +342,15 @@ $G.on("keydown", function(e){
 	}
 });
 $G.on("cut copy paste", function(e){
+	if(e.isDefaultPrevented()){
+		return;
+	}
 	if(
 		document.activeElement instanceof HTMLInputElement ||
-		document.activeElement instanceof HTMLTextAreaElement
+		document.activeElement instanceof HTMLTextAreaElement ||
+		!window.getSelection().isCollapsed
 	){
-		// Don't prevent cutting/copying/pasting within inputs or textareas
+		// Don't prevent cutting/copying/pasting within inputs or textareas, or if there's a selection
 		return;
 	}
 
@@ -589,6 +592,9 @@ $app
 .add($toolbox)
 .add($colorbox)
 .on("mousedown selectstart contextmenu", function(e){
+	if(e.isDefaultPrevented()){
+		return;
+	}
 	if(
 		e.target instanceof HTMLSelectElement ||
 		e.target instanceof HTMLTextAreaElement ||
@@ -601,6 +607,10 @@ $app
 		return; // allow middle-click scrolling
 	}
 	e.preventDefault();
+	// we're just trying to prevent selection
+	// but part of the default for mousedown is *deselection*
+	// so we have to do that ourselves explicitly
+	window.getSelection().removeAllRanges();
 });
 
 // Stop drawing (or dragging or whatver) if you Alt+Tab or whatever
