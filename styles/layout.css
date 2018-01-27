@@ -298,6 +298,12 @@ html, body, .jspaint {
 	padding: 5px;
 }
 
+.version-number {
+	/* TODO: separate into a shared.css? (not really layout!) */
+	font-size: 0.6em;
+	color: #7b7b7b;
+}
+
 .help-window .window-content {
 	display: flex;
 	flex-flow: row;
