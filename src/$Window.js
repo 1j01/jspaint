@@ -173,12 +173,15 @@ function $Window($component){
 		}
 		$w.remove();
 		$w.closed = true;
+		dialogOpen = false;
 	};
 	$w.closed = false;
 	
 	if(!$component){
 		$w.center();
 	}
+	
+	dialogOpen = true;
 	
 	return $w;
 }
