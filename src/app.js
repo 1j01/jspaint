@@ -41,6 +41,7 @@ var font = {
 	size: 12,
 	line_scale: 20 / 12
 };
+var dialogOpen = false; // Will prevent key shortcuts if true
 
 var undos = []; //array of <canvas>
 var redos = []; //array of <canvas>
@@ -170,7 +171,7 @@ $G.on("keyup", function(e){
 	delete keys[e.keyCode];
 });
 $G.on("keydown", function(e){
-	if(e.isDefaultPrevented()){
+	if((e.isDefaultPrevented()) || (dialogOpen)){
 		return;
 	}
 	if(
