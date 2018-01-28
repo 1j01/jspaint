@@ -171,6 +171,7 @@ $G.on("keyup", function(e){
 	delete keys[e.keyCode];
 });
 $G.on("keydown", function(e){
+	// If there is an open dialog, ignore key inputs to prevent interference
 	if((e.isDefaultPrevented()) || (dialogOpen)){
 		return;
 	}
