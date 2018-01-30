@@ -91,6 +91,30 @@ Selection.prototype.instantiate = function(_img, _passive){
 				sel.draw();
 			}
 		};
+
+		$G.keydown(function(e) { 
+			e.preventDefault();
+			
+			switch(e.keyCode) {
+				case 38:
+					sel.y = sel.y - 1;
+					sel.position();	
+					break;
+				case 40: 
+					sel.y = sel.y + 1;
+					sel.position();
+					break;
+				case 39: 
+					sel.x = sel.x + 1;
+					sel.position();
+					break;
+				case 37:
+					sel.x = sel.x - 1; 
+					sel.position();
+					break;
+			}
+		});
+
 		
 		sel.canvas_pointerdown = function(e){
 			e.preventDefault();
