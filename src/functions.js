@@ -1025,11 +1025,17 @@ function set_as_wallpaper_centered(c){
 	c = c || canvas;
 
 	if(window.chrome && chrome.wallpaper){
-		chrome.wallpaper.setWallpaper({
-			url: c.toDataURL(),
-			layout: 'CENTER_CROPPED',
-			name: file_name,
-		}, function(){});
+		get_array_buffer_from_canvas(c)
+			.then(function(buffer) {
+				chrome.wallpaper.setWallpaper({
+					data: buffer,
+					layout: "CENTER_CROPPED",
+					filename: file_name,
+				}, function on_thumbnail_created() {
+				});
+			}).catch(function(error) {
+				show_error_message("Failed to set as desktop background: couldn't read image file.", error);
+			});
 	}else if(window.require){
 		var gui = require("nw.gui");
 		var fs = require("fs");
@@ -1053,6 +1059,28 @@ function set_as_wallpaper_centered(c){
 			saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + " wallpaper.png");
 		});
 	}
+}
+
+/**
+ * @param {HTMLElement} canvas
+ * @return {Promise}
+ */
+function get_array_buffer_from_canvas(canvas) {
+	return new Promise(function(resolve, reject) {
+		var file_reader = new FileReader();
+
+		file_reader.onloadend = function() {
+			resolve(file_reader.result);
+		};
+
+		file_reader.onerror = function() {
+			reject(new Error("Failed to read canvas image to array buffer"));
+		};
+
+		canvas.toBlob(function(blob) {
+			file_reader.readAsArrayBuffer(blob);
+		});
+	});
 }
 
 function save_selection_to_file(){

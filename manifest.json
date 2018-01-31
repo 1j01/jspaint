@@ -15,6 +15,7 @@
 	"permissions": [
 		"http://*/*",
 		"https://*/*",
+		"wallpaper",
 		"storage",
 		"fullscreen",
 		"clipboardRead",
