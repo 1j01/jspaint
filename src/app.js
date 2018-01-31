@@ -173,12 +173,25 @@ $G.on("keydown", function(e){
 	if(e.isDefaultPrevented()){
 		return;
 	}
+	// TODO: return if menus/menubar focused or focus in dialog window
+	// or maybe there's a better way to do this that works more generally
+	// maybe it should only handle the event if document.activeElement is the body or html element?
+	// (or $app could have a tabIndex and no focus style and be focused under various conditions,
+	// if that turned out to make more sense for some reason)
 	if(
 		e.target instanceof HTMLInputElement ||
 		e.target instanceof HTMLTextAreaElement
 	){
 		return;
 	}
+
+	// TODO: preventDefault in all cases where the event is handled
+	// also, ideally check that modifiers *aren't* pressed
+	// probably best to use a library at this point!
+	
+	// TODO: probably get rid of this silly feature
+	// it's kinda fun, but it's a lot of code for something I've virtually never used
+	// (and it's not based on any version of mspaint, it was just a fun idea I had)
 	var brush_shapes = {
 		circle: [
 			0, 1, 0,
@@ -240,6 +253,33 @@ $G.on("keydown", function(e){
 		//find key codes
 		window.console && console.log(e.keyCode);
 	}
+	
+	if(selection){
+		var nudge_selection = function(delta_x, delta_y){
+			selection.x += delta_x;
+			selection.y += delta_y;
+			selection.position();
+		};
+		switch(e.keyCode){
+			case 37: // Left
+				nudge_selection(-1, 0);
+				e.preventDefault();
+				break;
+			case 39: // Right
+				nudge_selection(+1, 0);
+				e.preventDefault();
+				break;
+			case 40: // Down
+				nudge_selection(0, +1);
+				e.preventDefault();
+				break;
+			case 38: // Up
+				nudge_selection(0, -1);
+				e.preventDefault();
+				break;
+		}
+	}
+
 	if(e.keyCode === 27){ //Escape
 		if(selection){
 			deselect();
