@@ -12,6 +12,14 @@ chrome.app.runtime.onLaunched.addListener(function(launch_data) {
 		},
 		function(window) {
 			window.contentWindow.file_entry = entry;
+
+			window.contentWindow.document.addEventListener('click', function(event) {
+				let anchor = event.target;
+
+				if (is_anchor(anchor) && is_external_link(anchor.href)) {
+					set_anchor_target_to_open_new_tab(anchor);
+				}
+			});
 		});
 	}
 
@@ -21,3 +29,26 @@ chrome.app.runtime.onLaunched.addListener(function(launch_data) {
 		open_image();
 	}
 });
+
+/**
+ * @param {HTMLElement} anchor
+ * @return string
+ */
+function is_anchor(anchor) {
+	return anchor.nodeName === 'A';
+}
+
+/**
+ * @param {string} href
+ * @return {boolean}
+ */
+function is_external_link(href) {
+	return href.match(/(http|https):\/\//);
+}
+
+/**
+ * @param {HTMLElement} anchor
+ */
+function set_anchor_target_to_open_new_tab(anchor) {
+	anchor.target = '_blank';
+}
