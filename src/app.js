@@ -41,6 +41,7 @@ var font = {
 	size: 12,
 	line_scale: 20 / 12
 };
+var dialogOpen = false; // Will prevent key shortcuts if true
 
 var undos = []; //array of <canvas>
 var redos = []; //array of <canvas>
@@ -170,7 +171,8 @@ $G.on("keyup", function(e){
 	delete keys[e.keyCode];
 });
 $G.on("keydown", function(e){
-	if(e.isDefaultPrevented()){
+	// If there is an open dialog, ignore key inputs to prevent interference
+	if((e.isDefaultPrevented()) || (dialogOpen)){
 		return;
 	}
 	// TODO: return if menus/menubar focused or focus in dialog window
