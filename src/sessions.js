@@ -1,9 +1,9 @@
 
 (function(){
 	
-	var debug = function(text){
+	var log = function(){
 		if(typeof console !== "undefined"){
-			console.log(text);
+			console.log.apply(console, arguments);
 		}
 	};
 	
@@ -14,7 +14,7 @@
 	
 	var LocalSession = function(session_id){
 		var lsid = "image#" + session_id;
-		debug("local storage id: " + lsid);
+		log("local storage id: " + lsid);
 		
 		storage.get(lsid, function(err, uri){
 			if(err){
@@ -247,13 +247,13 @@
 			// Sync the data from this client to the server (one-way)
 			var uri = canvas.toDataURL();
 			if(previous_uri !== uri){
-				debug(["clear pointer operations to set data", pointer_operations]);
+				log("clear pointer operations to set data", pointer_operations);
 				pointer_operations = [];
-				debug("set data");
+				log("set data");
 				session.fb_data.set(uri);
 				previous_uri = uri;
 			}else{
-				debug("don't set data; it hasn't changed");
+				log("don't set data; it hasn't changed");
 			}
 		};
 		
@@ -261,7 +261,7 @@
 		
 		// Any time we change or recieve the image data
 		_fb_on(session.fb_data, "value", function(snap){
-			debug("data update");
+			log("data update");
 			
 			var uri = snap.val();
 			if(uri == null){
@@ -338,7 +338,7 @@
 		// Remove collected Firebase event listeners
 		var _;
 		while(_ = session._fb_listeners.pop()){
-			debug("remove listener for " + _[0].path.toString() + " .on " + _[1]);
+			log("remove listener for " + _[0].path.toString() + " .on " + _[1]);
 			_[0].off(_[1], _[2], _[3]);
 		}
 		
@@ -357,7 +357,7 @@
 	var current_session;
 	var end_current_session = function(){
 		if(current_session){
-			debug("ending current session");
+			log("ending current session");
 			current_session.end();
 			current_session = null;
 		}
@@ -377,25 +377,25 @@
 			var local = session_match[1] === "local";
 			var session_id = session_match[2];
 			if(session_id === ""){
-				debug("invalid session id; session id cannot be empty");
+				log("invalid session id; session id cannot be empty");
 				end_current_session();
 			}else if(!local && session_id.match(/[\.\/\[\]#$]/)){
-				debug("session id is not a valid Firebase location; it cannot contain any of ./[]#$");
+				log("session id is not a valid Firebase location; it cannot contain any of ./[]#$");
 				end_current_session();
 			}else if(!session_id.match(/[\-0-9A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]+/)){
-				debug("invalid session id; it must consist of 'alphanumeric-esque' character");
+				log("invalid session id; it must consist of 'alphanumeric-esque' character");
 				end_current_session();
 			}else if(current_session && current_session.id === session_id){
 				// @TODO: Handle switching between local and collaborative sessions of the same id
-				debug("hash changed but the session id is the same");
+				log("hash changed but the session id is the same");
 			}else{
 				// @TODO: Ask if you want to save before starting a new session
 				end_current_session();
 				if(local){
-					debug("starting a new local session, id: "+session_id);
+					log("starting a new local session, id: "+session_id);
 					current_session = new LocalSession(session_id);
 				}else{
-					debug("starting a new Firebase session, id: "+session_id);
+					log("starting a new Firebase session, id: "+session_id);
 					current_session = new FireSession(session_id);
 				}
 			}
@@ -418,7 +418,7 @@
 					// that is, it also triggers for session changes, which I'm trying to avoid here
 					$canvas.one("change", function(){
 						if(location.hash === hash_loading_url_from){
-							debug("switching to new session from #load: URL because of user interaction");
+							log("switching to new session from #load: URL because of user interaction");
 							end_current_session();
 							var new_session_id = generate_session_id();
 							location.hash = "local:" + new_session_id;
@@ -428,21 +428,26 @@
 			});
 
 		}else{
-			debug("no session id in hash");
+			log("no session id in hash");
 			end_current_session();
 			var new_session_id = generate_session_id();
 			history.replaceState(null, document.title, "#local:" + new_session_id);
+			log("after replaceState", location.hash);
+			update_session_from_location_hash();
 		}
 	};
 	
 	$G.on("hashchange popstate", function(e){
-		window.console && console.log(e.type, location.hash);
+		log(e.type, location.hash);
 		update_session_from_location_hash();
 	});
-	window.console && console.log("init with location hash", location.hash);
+	log("init with location hash", location.hash);
 	update_session_from_location_hash();
 	
 	// @TODO: Session GUI
 	// @TODO: Indicate when the session id is invalid
 	// @TODO: Indicate when the session switches
+
+	// @TODO: Indicate when there is no session!
+	// Probably in app.js so as to handle the possibility of sessions.js failing to load. 
 })();
