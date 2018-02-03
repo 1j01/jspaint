@@ -136,10 +136,10 @@
 		show_error_message(
 			"The Firebase quota was exceeded very quickly when JS Paint got a ton of traffic. " +
 			"I haven't found any way to actually *detect* this case, " +
-			"so for now I'm showing this message, regardless of whether it's working (technically), " +
-			"but it probably isn't working! " +
-			"The document 'probably' will not load, and changes 'probably' will not be saved. " +
-			"If you're interested in using this feature, please subscribe to and thumbs-up this issue (sorry for non-link URL): " +
+			"so for now I'm showing this message, regardless of whether it's working. " +
+			"There's a bit more quota at the start of the month, " +
+			"but the document may not load, and changes may not be saved. " +
+			"If you're interested in using this feature, please subscribe to and thumbs-up this issue (sorry for the non-link URL): " +
 			"https://github.com/1j01/jspaint/issues/68"
 		);
 		
