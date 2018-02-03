@@ -138,7 +138,9 @@
 			"I haven't found any way to actually *detect* this case, " +
 			"so for now I'm showing this message, regardless of whether it's working (technically), " +
 			"but it probably isn't working! " +
-			"The document 'probably' will not load, and changes 'probably' will not be saved."
+			"The document 'probably' will not load, and changes 'probably' will not be saved. " +
+			"If you're interested in using this feature, please subscribe to and thumbs-up this issue (sorry for non-link URL): " +
+			"https://github.com/1j01/jspaint/issues/68"
 		);
 		
 		// Wrap the Firebase API because they don't
