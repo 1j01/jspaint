@@ -44,13 +44,28 @@ function manage_storage(){
 	var $message = $(E("p")).appendTo($storage_manager.$main).html(
 		"Any images you've saved to your computer with <b>File > Save</b> will not be affected."
 	);
+
+	// check if there are some images in storage
+	var imagesInStorage = Object.keys(localStorage).some(k => {return k.match(/^image#/);});
+
+	$remove_all = $storage_manager.$Button("Remove All", function(){
+		for(var k in localStorage){
+			if(k.match(/^image#/)){
+				localStorage.removeItem(k);
+			}
+		}
+		$table.empty();
+		$remove_all.prop('disabled', true);
+		$message.html("<p>All clear!</p>");
+	}).prop('disabled', !imagesInStorage);
+
 	$storage_manager.$Button("Close", function(){
 		$storage_manager.close();
 	});
-	
+
 	var addRow = function(k, imgSrc){
 		var $tr = $(E("tr")).appendTo($table);
-		
+
 		var $img = $(E("img")).attr({src: imgSrc});
 		var $remove = $(E("button")).text("Remove").addClass("remove-button");
 		var href = "#" + k.replace("image#", "local:");
@@ -60,7 +75,7 @@ function manage_storage(){
 		$(E("td")).append($thumbnail_open_link).appendTo($tr);
 		$(E("td")).append($open_link).appendTo($tr);
 		$(E("td")).append($remove).appendTo($tr);
-		
+
 		$remove.click(function(){
 			localStorage.removeItem(k);
 			$tr.remove();
@@ -69,7 +84,7 @@ function manage_storage(){
 			}
 		});
 	};
-	
+
 	// @TODO: handle localStorage unavailable
 	for(var k in localStorage){
 		if(k.match(/^image#/)){
