@@ -12,6 +12,20 @@
 	// (maybe even whether it's considered saved? idk about that)
 	// I could have the image in one storage slot and the state in another
 
+	// save the current canvas to session (lsid)
+	var save_image_to_storage = function(lsid){
+		storage.set(lsid, canvas.toDataURL("image/png"), function(err){
+			if(err){
+				if(err.quotaExceeded){
+					storage_quota_exceeded();
+				}else{
+					// e.g. localStorage is disabled
+					// (or there's some other error?)
+				}
+			}
+		});
+	}
+
 	var LocalSession = function(session_id){
 		var lsid = "image#" + session_id;
 		log("local storage id: " + lsid);
@@ -28,30 +42,12 @@
 				});
 			} else {
 				// no uri so lets save the blank canvas
-				storage.set(lsid, canvas.toDataURL("image/png"), function(err){
-					if(err){
-						if(err.quotaExceeded){
-							storage_quota_exceeded();
-						}else{
-							// e.g. localStorage is disabled
-							// (or there's some other error?)
-						}
-					}
-				});
+				save_image_to_storage(lsid);
 			}
 		});
 
 		$canvas.on("change.session-hook", function(){
-			storage.set(lsid, canvas.toDataURL("image/png"), function(err){
-				if(err){
-					if(err.quotaExceeded){
-						storage_quota_exceeded();
-					}else{
-						// e.g. localStorage is disabled
-						// (or there's some other error?)
-					}
-				}
-			});
+			save_image_to_storage(lsid);
 		});
 	};
 	LocalSession.prototype.end = function(){
