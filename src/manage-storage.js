@@ -46,9 +46,16 @@ function manage_storage(){
 	);
 
 	// check if there are some images in storage
-	var imagesInStorage = Object.keys(localStorage).some(k => {return k.match(/^image#/);});
+	var images_in_storage =(function(){
+		for(var k in localStorage){
+			if(k.match(/^image#/)){
+				return true;
+			}
+		}
+		return false;
+	})();
 
-	$remove_all = $storage_manager.$Button("Remove All", function(){
+	var $remove_all = $storage_manager.$Button("Remove All", function(){
 		for(var k in localStorage){
 			if(k.match(/^image#/)){
 				localStorage.removeItem(k);
@@ -57,7 +64,7 @@ function manage_storage(){
 		$table.empty();
 		$remove_all.prop('disabled', true);
 		$message.html("<p>All clear!</p>");
-	}).prop('disabled', !imagesInStorage);
+	}).prop('disabled', !images_in_storage);
 
 	$storage_manager.$Button("Close", function(){
 		$storage_manager.close();
