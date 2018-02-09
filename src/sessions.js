@@ -1,35 +1,23 @@
 
 (function(){
-	
+
 	var log = function(){
 		if(typeof console !== "undefined"){
 			console.log.apply(console, arguments);
 		}
 	};
-	
+
 	// @TODO: keep other data in addition to the image data
 	// such as the file_name and other state
 	// (maybe even whether it's considered saved? idk about that)
 	// I could have the image in one storage slot and the state in another
-	
+
 	var LocalSession = function(session_id){
 		var lsid = "image#" + session_id;
 		log("local storage id: " + lsid);
-		
-		storage.get(lsid, function(err, uri){
-			if(err){
-				show_error_message("Failed to retrieve image from local storage:", err);
-			}else if(uri){
-				open_from_URI(uri, function(err){
-					if(err){
-						return show_error_message("Failed to open image from local storage:", err);
-					}
-					saved = false; // it may be safe, sure, but you haven't "Saved" it
-				});
-			}
-		});
-		
-		$canvas.on("change.session-hook", function(){
+
+		// save image to storage
+		var save_image_to_storage = function(){
 			storage.set(lsid, canvas.toDataURL("image/png"), function(err){
 				if(err){
 					if(err.quotaExceeded){
@@ -40,15 +28,34 @@
 					}
 				}
 			});
+		}
+
+		storage.get(lsid, function(err, uri){
+			if(err){
+				show_error_message("Failed to retrieve image from local storage:", err);
+			}else if(uri){
+				open_from_URI(uri, function(err){
+					if(err){
+						return show_error_message("Failed to open image from local storage:", err);
+					}
+					saved = false; // it may be safe, sure, but you haven't "Saved" it
+				});
+			} else {
+				// no uri so lets save the blank canvas
+				save_image_to_storage();
+			}
 		});
+
+		$canvas.on("change.session-hook", save_image_to_storage);
+
 	};
 	LocalSession.prototype.end = function(){
 		// Remove session-related hooks
 		$app.find("*").off(".session-hook");
 		$G.off(".session-hook");
 	};
-	
-	
+
+
 	// The user id is not persistent
 	// A person can enter a session multiple times,
 	// and is always given a new user id
@@ -56,7 +63,7 @@
 	// @TODO: I could make the color persistent, though.
 	// You could still have multiple cursors and they would just be the same color.
 	// There could also be an option to change your color
-	
+
 	// The data in this object is stored in the server when you enter a session
 	// It is (supposed to be) removed when you leave
 	var user = {
@@ -74,31 +81,31 @@
 		saturation: ~~(Math.random() * 50) + 50,
 		lightness: ~~(Math.random() * 40) + 50,
 	};
-	
+
 	// The main cursor color
 	user.color = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 1)";
 	// Unused
 	user.color_transparent = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 0.5)";
 	// (@TODO) The color used in the toolbar indicating to other users it is selected by this user
 	user.color_desaturated = "hsla(" + user.hue + ", " + ~~(user.saturation*0.4) + "%, " + user.lightness + "%, 0.8)";
-	
-	
+
+
 	// The image used for other people's cursors
 	var cursor_image = new Image();
 	cursor_image.src = "images/cursors/default.png";
-	
-	
+
+
 	var FireSession = function(session_id){
 		var session = this;
 		session.id = session_id;
-		
+
 		file_name = "[Loading "+session.id+"]";
 		update_title();
-		
+
 		var on_firebase_loaded = function(){
 			file_name = "["+session.id+"]";
 			update_title();
-			
+
 			session.start();
 		};
 		if(!FireSession.fb_root){
@@ -127,10 +134,10 @@
 			on_firebase_loaded();
 		}
 	};
-	
+
 	FireSession.prototype.start = function(){
 		var session = this;
-		
+
 		// TODO: how do you actually detect if it's failing???
 		// TODO: better formatting, title of window etc., if we really can't detect this
 		show_error_message(
@@ -142,7 +149,7 @@
 			"If you're interested in using this feature, please subscribe to and thumbs-up this issue (sorry for the non-link URL): " +
 			"https://github.com/1j01/jspaint/issues/68"
 		);
-		
+
 		// Wrap the Firebase API because they don't
 		// provide a great way to clean up event listeners
 		session._fb_listeners = [];
@@ -150,7 +157,7 @@
 			session._fb_listeners.push([fb, event_type, callback, error_callback]);
 			fb.on(event_type, callback, error_callback);
 		};
-		
+
 		// Get Firebase references
 		session.fb = FireSession.fb_root.child(session.id);
 		session.fb_data = session.fb.child("data");
@@ -161,34 +168,34 @@
 			session.fb_user = session.fb_users.push();
 			user_id = session.fb_user.key;
 		}
-		
+
 		// Remove the user from the session when they disconnect
 		session.fb_user.onDisconnect().remove();
 		// Make the user present in the session
 		session.fb_user.set(user);
 		// @TODO: Execute the above two lines when .info/connected
-		
+
 		// For each existing and new user
 		_fb_on(session.fb_users, "child_added", function(snap){
-			
+
 			// Is this you?
 			if(snap.key === user_id){
 				// You already have a cursor.
 				return;
 			}
-			
+
 			// Get the Firebase reference for this user
 			var fb_other_user = snap.ref;
-			
+
 			// Get the user object stored on the server
 			var other_user = snap.val();
-			
+
 			// @TODO: display other cursor types?
 			// @TODO: display pointer button state?
 			// @TODO: display selections
-			
+
 			var cursor_canvas = new Canvas(32, 32);
-			
+
 			// Make the cursor element
 			var $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
 			$cursor.css({
@@ -201,7 +208,7 @@
 				pointerEvents: "none",
 				transition: "opacity 0.5s",
 			});
-			
+
 			// When the cursor data changes
 			_fb_on(fb_other_user, "value", function(snap){
 				other_user = snap.val();
@@ -222,13 +229,13 @@
 						cctx.globalCompositeOperation = "destination-atop";
 						cctx.drawImage(cursor_image, 0, 0);
 					};
-					
+
 					if(cursor_image.complete){
 						draw_cursor();
 					}else{
 						$(cursor_image).one("load", draw_cursor);
 					}
-					
+
 					// Update the cursor element
 					var canvas_rect = canvas.getBoundingClientRect();
 					$cursor.css({
@@ -241,10 +248,10 @@
 				}
 			});
 		});
-		
+
 		var previous_uri;
 		var pointer_operations = [];
-		
+
 		var sync = function(){
 			// Sync the data from this client to the server (one-way)
 			var uri = canvas.toDataURL();
@@ -258,13 +265,13 @@
 				log("don't set data; it hasn't changed");
 			}
 		};
-		
+
 		$canvas.on("change.session-hook", sync);
-		
+
 		// Any time we change or recieve the image data
 		_fb_on(session.fb_data, "value", function(snap){
 			log("data update");
-			
+
 			var uri = snap.val();
 			if(uri == null){
 				// If there's no value at the data location, this is a new session
@@ -272,9 +279,9 @@
 				sync();
 			}else{
 				previous_uri = uri;
-				
+
 				saved = true; // hopefully
-				
+
 				// Load the new image data
 				var img = new Image();
 				img.onload = function(){
@@ -282,14 +289,14 @@
 					if(pointer_operations.length){
 						$G.triggerHandler("pointerup", "cancel");
 					}
-					
+
 					// Write the image data to the canvas
 					ctx.copy(img);
 					$canvas_area.trigger("resize");
 					// (detect_transparency() here would not be ideal
 					// Perhaps a better way of syncing transparency
 					// and other options will be established)
-					
+
 					// Playback recorded in-progress pointer operations
 					window.console && console.log("playback", pointer_operations);
 					for(var i=0; i<pointer_operations.length; i++){
@@ -306,9 +313,9 @@
 			file_name = "[Failed to load "+session.id+"]";
 			update_title();
 		});
-		
+
 		// Update the cursor status
-		
+
 		$G.on("pointermove.session-hook", function(e){
 			var m = e2c(e);
 			session.fb_user.child("cursor").update({
@@ -317,45 +324,45 @@
 				away: false,
 			});
 		});
-		
+
 		$G.on("blur.session-hook", function(e){
 			session.fb_user.child("cursor").update({
 				away: true,
 			});
 		});
-		
+
 		// @FIXME: the cursor can come back from "away" via a pointer event
 		// while the window is blurred and stay there when the user goes away
 		// maybe replace "away" with a timestamp of activity and then
 		// clients can decide whether a given cursor should be visible
 	};
-	
+
 	FireSession.prototype.end = function(){
 		var session = this;
-		
+
 		// Remove session-related hooks
 		$app.find("*").off(".session-hook");
 		$G.off(".session-hook");
-		
+
 		// Remove collected Firebase event listeners
 		var _;
 		while(_ = session._fb_listeners.pop()){
 			log("remove listener for " + _[0].path.toString() + " .on " + _[1]);
 			_[0].off(_[1], _[2], _[3]);
 		}
-		
+
 		// Remove the user from the session
 		session.fb_user.remove();
-		
+
 		// Remove any cursor elements
 		$app.find(".user-cursor").remove();
-		
+
 		// Reset to "untitled"
 		reset_file();
 	};
-	
+
 	// Handle the starting, switching, and ending of sessions from the location.hash
-	
+
 	var current_session;
 	var end_current_session = function(){
 		if(current_session){
@@ -404,7 +411,7 @@
 		}else if(load_from_url_match){
 			var url = decodeURIComponent(load_from_url_match[2]);
 			var hash_loading_url_from = location.hash;
-			
+
 			end_current_session();
 
 			open_from_URI(url, function(err){
@@ -438,18 +445,18 @@
 			update_session_from_location_hash();
 		}
 	};
-	
+
 	$G.on("hashchange popstate", function(e){
 		log(e.type, location.hash);
 		update_session_from_location_hash();
 	});
 	log("init with location hash", location.hash);
 	update_session_from_location_hash();
-	
+
 	// @TODO: Session GUI
 	// @TODO: Indicate when the session id is invalid
 	// @TODO: Indicate when the session switches
 
 	// @TODO: Indicate when there is no session!
-	// Probably in app.js so as to handle the possibility of sessions.js failing to load. 
+	// Probably in app.js so as to handle the possibility of sessions.js failing to load.
 })();
