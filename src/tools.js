@@ -294,7 +294,8 @@ tools = [{
 	cursor: ["pencil", [13, 23], "crosshair"],
 	continuous: "space",
 	stroke_only: true,
-	fixed_direction_on_shift: true,
+	fixed_angle: null,
+	fixed_number_of_directions_on_shift: 4,
 	paint: function(ctx, x, y){
 		ctx.fillRect(x, y, 1, 1);
 	}
@@ -306,7 +307,7 @@ tools = [{
 	rendered_color: "",
 	rendered_size: 0,
 	rendered_shape: "",
-	fixed_direction_on_shift: true,
+	fixed_number_of_directions_on_shift: 8,
 	paint: function(ctx, x, y){
 		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
 		if(
@@ -333,7 +334,7 @@ tools = [{
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
-	fixed_direction_on_shift: true,
+	fixed_number_of_directions_on_shift: 8,
 	paint: function(ctx, x, y){
 		var r = airbrush_size / 2;
 		for(var i = 0; i < 6 + r/5; i++){
@@ -403,7 +404,7 @@ tools = [{
 	description: "Draws a straight line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
-	fixed_direction_on_shift: true,
+	fixed_number_of_directions_on_shift: 8,
 	shape: function(ctx, x, y, w, h){
 		draw_line(ctx, x, y, x+w, y+h, stroke_size);
 	},
@@ -413,7 +414,7 @@ tools = [{
 	description: "Draws a curved line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
-	fixed_direction_on_shift: true,
+	fixed_number_of_directions_on_shift: 8,
 	points: [],
 	passive: function(){
 		// Actions are passive if you've already started using the tool,

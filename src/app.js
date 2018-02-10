@@ -518,13 +518,34 @@ function canvas_pointer_move(e){
 	shift = e.shiftKey;
 	pointer = e2c(e);
 	if(e.shiftKey){
-		if(selected_tool.fixed_direction_on_shift){
-			var new_pointer = calculate_new_fixed_pointer_direction(
-				pointer,
-				pointer_start
-			);
-			pointer.x = new_pointer.x;
-			pointer.y = new_pointer.y;
+		if(selected_tool.fixed_number_of_directions_on_shift){
+			var new_pointer;
+			console.log(selected_tool);
+
+			if (selected_tool.fixed_angle === null) {
+				selected_tool.fixed_angle = {
+					start: { x: pointer_previous.x, y: pointer_previous.y },
+					end: { x: pointer.x, y: pointer.y },
+				};
+			} else if (selected_tool.fixed_angle) {
+				new_pointer = calculate_new_fixed_gradient_pointer(
+					selected_tool.fixed_angle.start,
+					selected_tool.fixed_angle.end,
+					{ x: pointer.x, y: pointer.y }
+				);
+
+				pointer.x = new_pointer.x;
+				pointer.y = new_pointer.y;
+			} else {
+				new_pointer = calculate_new_fixed_pointer_direction(
+					pointer,
+					pointer_start,
+					selected_tool.fixed_number_of_directions_on_shift
+				);
+
+				pointer.x = new_pointer.x;
+				pointer.y = new_pointer.y;
+			}
 		}else if(selected_tool.shape){
 			// snap to four diagonals
 			var w = Math.abs(pointer.x - pointer_start.x);
@@ -543,13 +564,21 @@ function canvas_pointer_move(e){
 				}
 			}
 		}
+	} else {
+		if (selected_tool.fixed_angle) {
+			selected_tool.fixed_angle = null;
+			pointer_start = pointer;
+		}
 	}
 	tool_go();
 	pointer_previous = pointer;
 }
 
-function calculate_new_fixed_pointer_direction(pointer, pointer_start){
-	var number_of_available_directions = 8;
+function calculate_new_fixed_pointer_direction(
+	pointer,
+	pointer_start,
+	number_of_available_directions
+) {
 	var distance = Math.sqrt(
 		(pointer.y - pointer_start.y) * (pointer.y - pointer_start.y) +
 		(pointer.x - pointer_start.x) * (pointer.x - pointer_start.x)
@@ -566,6 +595,49 @@ function calculate_new_fixed_pointer_direction(pointer, pointer_start){
 	return {
 		x: Math.round(pointer_start.x + Math.cos(angle) * distance),
 		y: Math.round(pointer_start.y + Math.sin(angle) * distance)
+	}
+}
+
+function calculate_new_fixed_gradient_pointer(start, middle, end) {
+	// Find the equation of the line y = mx + c through start and middle
+	var dy = middle.y - start.y;
+	var dx = middle.x - start.x;
+
+	// Edge cases
+	if (dy === 0) {
+		// Gradient is a horizonal
+		return {
+			x: end.x,
+			y: middle.y,
+		}
+	} else if (dx === 0) {
+		// Gradient is a vertical
+		return {
+			x: middle.x,
+			y: end.y,
+		}
+	}
+
+	// General case
+	var m = (dy / dx);
+	var c = middle.y - (m * middle.x);
+
+	// Find where this equation intersects the vertical and horizontal of the end pointer
+	var possible_y = Math.round((m * end.x) + c);
+	var possible_x = Math.round((end.y - c) / m);
+
+	if (possible_y <= end.y) {
+		return {
+			x: end.x,
+			y: possible_y
+		};
+	} else if (possible_x <= end.x) {
+		return {
+			x: possible_x,
+			y: end.y
+		}
+	} else {
+		return middle;
 	}
 }
 
