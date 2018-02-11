@@ -307,7 +307,6 @@ tools = [{
 	rendered_color: "",
 	rendered_size: 0,
 	rendered_shape: "",
-	fixed_number_of_directions_on_shift: 8,
 	paint: function(ctx, x, y){
 		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
 		if(
@@ -334,7 +333,6 @@ tools = [{
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
-	fixed_number_of_directions_on_shift: 8,
 	paint: function(ctx, x, y){
 		var r = airbrush_size / 2;
 		for(var i = 0; i < 6 + r/5; i++){
