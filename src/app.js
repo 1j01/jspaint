@@ -520,15 +520,16 @@ function canvas_pointer_move(e){
 	if(e.shiftKey){
 		if(selected_tool.fixed_number_of_directions_on_shift){
 			var new_pointer;
-			console.log(selected_tool);
 
 			if (selected_tool.fixed_angle === null) {
+				// Started pressing SHIFT, so fix the angle/gradient till SHIFT is released
 				selected_tool.fixed_angle = {
 					start: { x: pointer_previous.x, y: pointer_previous.y },
 					end: { x: pointer.x, y: pointer.y },
 				};
 			} else if (selected_tool.fixed_angle) {
-				new_pointer = calculate_new_fixed_gradient_pointer(
+				// Gradient is fixed, so calculate the new pointer based on this
+				new_pointer = calculate_new_fixed_angle_pointer(
 					selected_tool.fixed_angle.start,
 					selected_tool.fixed_angle.end,
 					{ x: pointer.x, y: pointer.y }
@@ -537,6 +538,7 @@ function canvas_pointer_move(e){
 				pointer.x = new_pointer.x;
 				pointer.y = new_pointer.y;
 			} else {
+				// Calculate the pointer based on the number of directions it is fixed to
 				new_pointer = calculate_new_fixed_pointer_direction(
 					pointer,
 					pointer_start,
@@ -565,15 +567,21 @@ function canvas_pointer_move(e){
 			}
 		}
 	} else {
+		// SHIFT is released, so release any fixed angle
 		if (selected_tool.fixed_angle) {
 			selected_tool.fixed_angle = null;
-			pointer_start = pointer;
 		}
 	}
 	tool_go();
 	pointer_previous = pointer;
 }
 
+/**
+ * @param {object} pointer
+ * @param {object} pointer_start
+ * @param {integer} number_of_available_directions
+ * @return {object}
+ */
 function calculate_new_fixed_pointer_direction(
 	pointer,
 	pointer_start,
@@ -598,24 +606,24 @@ function calculate_new_fixed_pointer_direction(
 	}
 }
 
-function calculate_new_fixed_gradient_pointer(start, middle, end) {
+/**
+ * @param {object} start
+ * @param {object} middle
+ * @param {object} end
+ * @return {object}
+ */
+function calculate_new_fixed_angle_pointer(start, middle, end) {
 	// Find the equation of the line y = mx + c through start and middle
 	var dy = middle.y - start.y;
 	var dx = middle.x - start.x;
 
 	// Edge cases
 	if (dy === 0) {
-		// Gradient is a horizonal
-		return {
-			x: end.x,
-			y: middle.y,
-		}
+		// Line is horizonal, so go to end.x
+		return { x: end.x, y: middle.y };
 	} else if (dx === 0) {
-		// Gradient is a vertical
-		return {
-			x: middle.x,
-			y: end.y,
-		}
+		// Line is vertical, so go to end.y
+		return { x: middle.x, y: end.y };
 	}
 
 	// General case
@@ -627,16 +635,13 @@ function calculate_new_fixed_gradient_pointer(start, middle, end) {
 	var possible_x = Math.round((end.y - c) / m);
 
 	if (possible_y <= end.y) {
-		return {
-			x: end.x,
-			y: possible_y
-		};
+		// Interects within the y-boundary, so use possible_y
+		return { x: end.x, y: possible_y };
 	} else if (possible_x <= end.x) {
-		return {
-			x: possible_x,
-			y: end.y
-		}
+		// Interects within the x-boundary, so use possible_x
+		return { x: possible_x, y: end.y };
 	} else {
+		// Only intersects outside, so don't continue beyond middle
 		return middle;
 	}
 }
