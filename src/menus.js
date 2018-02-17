@@ -415,11 +415,18 @@ var menus = {
 		// 	description: "Creates an animation from the document history.",
 		// },
 		// {
-		// 	item: "&Additional Tools",
-		// 	action: function(){
-		// 		// ;)
+		// 	item: "Extra T&ool Box",
+		// 	checkbox: {
+		// 		toggle: function(){
+		// 			// this doesn't really work well at all to have two toolboxes
+		// 			// (this was not the original plan either)
+		// 			$toolbox2.toggle();
+		// 		},
+		// 		check: function(){
+		// 			return $toolbox2.is(":visible");
+		// 		},
 		// 	},
-		// 	description: "Enables extra editing tools.",
+		// 	description: "Shows or hides an extra tool box.",
 		// },
 		// {
 		// 	item: "&Preferences",

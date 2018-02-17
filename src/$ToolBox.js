@@ -1,5 +1,5 @@
 
-function $ToolBox(){
+function $ToolBox(tools, is_extras){
 	var $tb = $(E("div")).addClass("tool-box");
 	var $tools = $(E("div")).addClass("tools");
 	var $tool_options = $(E("div")).addClass("tool-options");
@@ -34,14 +34,10 @@ function $ToolBox(){
 		
 		$b.on("click", function(){
 			if(selected_tool === tool && tool.deselect){
-				selected_tool = previous_tool;
+				select_tool(previous_tool);
 			}else{
-				if(!tool.deselect){
-					previous_tool = tool;
-				}
-				selected_tool = tool;
+				select_tool(tool);
 			}
-			$c.update_selected_tool();
 		});
 		
 		$b.on("pointerenter", function(){
@@ -62,7 +58,7 @@ function $ToolBox(){
 		return $b[0];
 	}));
 	
-	var $c = $Component("Tools", "tall", $tools.add($tool_options));
+	var $c = $Component(is_extras ? "Extra Tools" : "Tools", "tall", $tools.add($tool_options));
 	$c.update_selected_tool = function(){
 		$buttons.removeClass("selected");
 		selected_tool.$button.addClass("selected");
@@ -72,10 +68,6 @@ function $ToolBox(){
 		$canvas.css({
 			cursor: Cursor(selected_tool.cursor),
 		});
-		deselect();
-		if(selected_tool.activate){
-			selected_tool.activate();
-		}
 	};
 	$c.update_selected_tool();
 	return $c;

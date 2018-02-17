@@ -420,7 +420,7 @@ function paste(img){
 
 	function do_the_paste(){
 		// Note: relying on select_tool to call deselect();
-		select_tool("Select");
+		select_tool(get_tool_by_name("Select"));
 
 		selection = new Selection(0, 0, img.width, img.height);
 		selection.instantiate(img);
@@ -636,7 +636,7 @@ function delete_selection(){
 }
 function select_all(){
 	// Note: relying on select_tool to call deselect();
-	select_tool("Select");
+	select_tool(get_tool_by_name("Select"));
 
 	selection = new Selection(0, 0, canvas.width, canvas.height);
 	selection.instantiate();
@@ -672,16 +672,32 @@ function view_bitmap(){
 	if(canvas.webkitRequestFullscreen){ canvas.webkitRequestFullscreen(); }
 }
 
-function select_tool(name){
-	previous_tool = selected_tool;
+function get_tool_by_name(name){
 	for(var i=0; i<tools.length; i++){
 		if(tools[i].name == name){
-			selected_tool = tools[i];
+			return tools[i];
 		}
 	}
-	if($toolbox){
-		$toolbox.update_selected_tool();
+	for(var i=0; i<extra_tools.length; i++){
+		if(extra_tools[i].name == name){
+			return extra_tools[i];
+		}
 	}
+}
+
+function select_tool(tool){
+	if(!selected_tool.deselect){
+		previous_tool = selected_tool;
+	}
+	selected_tool = tool;
+	
+	deselect();
+	if(selected_tool.activate){
+		selected_tool.activate();
+	}
+	
+	$toolbox.update_selected_tool();
+	// $toolbox2.update_selected_tool();
 }
 
 // TODO: factor this into a simple (pure) function, to be used like:

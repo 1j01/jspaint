@@ -84,7 +84,12 @@ $status_text.default = function(){
 };
 $status_text.default();
 
-var $toolbox = $ToolBox();
+var $toolbox = $ToolBox(tools);
+// var $toolbox2 = $ToolBox(extra_tools, true);//.hide();
+// Note: a second $ToolBox doesn't work because they use the same tool options (which could be remedied)
+// and also the UI isn't designed for multiple vertical components (or horizontal ones)
+// If there's to be extra tools, they should probably get a window, with different UI
+// so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 var $colorbox = $ColorBox();
 
 if(window.file_entry){
@@ -601,8 +606,7 @@ $canvas.on("pointerdown", function(e){
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
 			}
 			if(selected_tool.deselect){
-				selected_tool = previous_tool;
-				$toolbox && $toolbox.update_selected_tool();
+				select_tool(previous_tool);
 			}
 			$G.off("pointermove", canvas_pointer_move);
 			if(iid){
@@ -630,6 +634,7 @@ $canvas_area.on("pointerdown", function(e){
 
 $app
 .add($toolbox)
+// .add($toolbox2)
 .add($colorbox)
 .on("mousedown selectstart contextmenu", function(e){
 	if(e.isDefaultPrevented()){
