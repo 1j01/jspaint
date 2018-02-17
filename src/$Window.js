@@ -23,6 +23,8 @@ function $Window($component){
 	
 	// TODO: prevent selection *outside* of the window *via* the window
 
+	// TODO: keep track of last focused control in the window, and focus it when clicking on / focusing the window
+
 	$w.css({
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++
@@ -37,7 +39,7 @@ function $Window($component){
 		if(e.ctrlKey || e.altKey || e.shiftKey){
 			return;
 		}
-		var $buttons = $w.$content.find("button.button");
+		var $buttons = $w.$content.find("button");
 		var $focused = $(document.activeElement);
 		var focused_index = $buttons.index($focused);
 		// console.log(e.keyCode);
@@ -79,7 +81,9 @@ function $Window($component){
 				}
 				break;
 			case 9: // Tab
+				// TODO: handle shift+tab as well (note: early return at top of function)
 				// wrap around when tabbing through controls in a window
+				// TODO: other element types? also [tabIndex]
 				var $controls = $w.$content.find("input, textarea, select, button, a");
 				var focused_control_index = $controls.index($focused);
 				if(focused_control_index === $controls.length - 1){
@@ -92,7 +96,6 @@ function $Window($component){
 				break;
 		}
 	});
-	// @TODO: restore last focused controls when clicking/mousing down on the window
 	
 	$w.applyBounds = function(){
 		$w.css({
