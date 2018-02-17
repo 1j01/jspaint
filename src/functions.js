@@ -1011,6 +1011,11 @@ function image_stretch_and_skew(){
 function set_as_wallpaper_tiled(c){
 	c = c || canvas;
 
+	// Note: we can't just poke in a different set_as_wallpaper_tiled function, because it's stored in menus.js
+	if(window.systemSetAsWallpaperTiled){
+		return window.systemSetAsWallpaperTiled(c);
+	}
+
 	var wp = new Canvas(screen.width, screen.height);
 	for(var x=0; x<wp.width; x+=c.width){
 		for(var y=0; y<wp.height; y+=c.height){
@@ -1023,6 +1028,14 @@ function set_as_wallpaper_tiled(c){
 
 function set_as_wallpaper_centered(c){
 	c = c || canvas;
+	
+	// Note: we can't just poke in a different set_as_wallpaper_centered function, because it's stored in menus.js
+	if(window.systemSetAsWallpaperCentered){
+		return window.systemSetAsWallpaperCentered(c);
+	}
+
+	// TODO: move the chrome handling into chrome-app.js using the system-specific override
+	// can do it for nw.js too, although that doesn't have a separate file yet (i.e. nw-app.js)
 
 	if(window.chrome && chrome.wallpaper){
 		get_array_buffer_from_canvas(c)
