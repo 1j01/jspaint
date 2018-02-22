@@ -23,7 +23,8 @@
     "start": "nw",
     "dev": "live-server",
     "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
-    "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
+    "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\"",
+    "prettier": "prettier --single-quote --trailing-comma es5 --write \"{src,styles}/**/*.{js,css}\""
   },
   "window": {
     "icon": "images/icons/48.png",
@@ -45,6 +46,7 @@
     "http-server": "^0.11.1",
     "live-server": "^1.2.0",
     "parallelshell": "^3.0.2",
-    "phantomcss": "^1.4.0"
+    "phantomcss": "^1.4.0",
+    "prettier": "1.10.2"
   }
 }
