@@ -35,6 +35,11 @@ Selection.prototype.instantiate = function(_img, _passive){
 	sel.$el.attr("touch-action", "none");
 	sel.position();
 	
+	// dis-gray Edit menus.
+	$.map(menus["&Edit"], function(menu){
+		$(menu).prop("enabled", true);
+	});
+
 	if(_passive){
 		instantiate();
 	}else if(!undoable(instantiate)){
