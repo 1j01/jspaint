@@ -96,7 +96,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		I was able to compile their [C++ implementation](https://github.com/apngasm/apngasm) to JS with [emscripten](https://github.com/kripken/emscripten) though;
 		I'll publish that at some point)
 	* Multi-size Icons
-		* Windows ICO ([jBinary can read](http://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
+		* Windows ICO ([jBinary can read](https://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
 		* Mac ICNS
 	* Layered images?
 		* Photoshop PSD ([via psd.js](https://github.com/trevorlinton/psd.js))
@@ -182,7 +182,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Polygon
 	* Aliasing
-	* Handle self-intersecting shapes like MS Paint, with an `"evenodd"` [winding rule](http://blogs.adobe.com/webplatform/2013/01/30/winding-rules-in-canvas/)
+	* Handle self-intersecting shapes like MS Paint, with an `"evenodd"` [winding rule](https://blogs.adobe.com/webplatform/2013/01/30/winding-rules-in-canvas/)
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
 

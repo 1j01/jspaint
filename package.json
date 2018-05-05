@@ -35,10 +35,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/1j01/jspaint.git"
+    "url": "https://github.com/1j01/jspaint.git"
   },
   "bugs": {
-    "url": "http://github.com/1j01/jspaint/issues"
+    "url": "https://github.com/1j01/jspaint/issues"
   },
   "devDependencies": {
     "cross-spawn": "^5.1.0",
