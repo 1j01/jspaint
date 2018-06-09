@@ -68,7 +68,7 @@ I want to bring good old paint into the modern era.
 * Replace a color in the entire image by holding <kbd>Shift</kbd> and using the fill tool (AKA non-contiguous fill)
 * Rudimentary **multi-user** support.
   Start up a session at
-  [jspaint.ml/#session:multi-user-test](https://jspaint.ml/#session:multi-user-test)
+  [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
   and send the link to your friends!
   It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
   Sessions are not private, and you may lose your work at any time.
@@ -176,5 +176,5 @@ I want to make JS Paint to be able to edit...
 
 
 [jspaint chrome app]: https://chrome.google.com/webstore/detail/dgfedgcofbjmeohonbpcoagiabgnddjh
-[jspaint web app]: https://jspaint.ml
+[jspaint web app]: https://jspaint.app
 
