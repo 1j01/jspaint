@@ -174,7 +174,21 @@ I want to make JS Paint to be able to edit...
 	      I also made it redoable, in case you do it by accident! But [it broke at some point in Chrome.](https://github.com/1j01/jspaint/issues/9))
 	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
 
+## Development Setup
+
+[Clone the repo.](https://help.github.com/articles/cloning-a-repository/)
+
+There's currently no build step of any kind.
+You just need an HTTP server.
+
+[Live Server][] is nice (it auto reloads when you save changes),
+and it's included in `package.json` so if you want you can do
+`npm i` to install dependencies and `npm run dev` to run it.
+
+Alternatively you can install it globally with `npm i -g live-server`
+and run it with `live-server`.
+
+[Live Server]: https://github.com/tapio/live-server
 
 [jspaint chrome app]: https://chrome.google.com/webstore/detail/dgfedgcofbjmeohonbpcoagiabgnddjh
 [jspaint web app]: https://jspaint.app
-
