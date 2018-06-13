@@ -390,7 +390,7 @@ var menus = {
 				$msgbox.title("About Paint");
 				$msgbox.$content.html(
 					"<h1><img src='images/icons/32.png'/> JS Paint <small class='version-number' title='Is that a thing? What I mean is, expect bugs!'>Public Alpha</small><hr/></h1>" +
-					"<p>JS Paint is a web-based remake of MS Paint by <a href='https://1j01.github.io/'>Isaiah Odhner</a>.</p>" +
+					"<p>JS Paint is a web-based remake of MS Paint by <a href='https://isaiahodhner.ml/'>Isaiah Odhner</a>.</p>" +
 					"<p>Read about the project and <b>extra features</b> on <a href='https://github.com/1j01/jspaint#readme'>the README</a>.</p>" +
 					"<p>Request features and report bugs <a href='https://github.com/1j01/jspaint/issues'>on GitHub</a> " +
 					"or <a href='mailto:isaiahodhner@gmail.com?subject=JS%20Paint'>by email</a>.</p>"
