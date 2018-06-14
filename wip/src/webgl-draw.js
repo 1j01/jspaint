@@ -13,14 +13,10 @@ function initWebGL(canvas) {
   var width = canvas.offsetWidth;
   var height = canvas.offsetHeight;
 
-  // won't be fragment shader bound, so accomodate high-dpi displays
-  // TODO(bckenny): may cause problem on non-integer pixel ratios
-  var resolutionScale = window.devicePixelRatio || 1;
+  canvas.width = width;
+  canvas.height = height;
 
-  canvas.width = width * resolutionScale;
-  canvas.height = height * resolutionScale;
-
-  gl.viewport(0, 0, width * resolutionScale, height * resolutionScale);
+  gl.viewport(0, 0, width, height);
 
   polyProgram = createShaderProgram();
   positionLoc = gl.getAttribLocation(polyProgram, 'position');
