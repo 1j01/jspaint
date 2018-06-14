@@ -10,13 +10,7 @@ function initWebGL(canvas) {
   gl = canvas.getContext('webgl', { antialias: false });
   // TODO: experimental-webgl for Edge? (ugh)
 
-  var width = canvas.offsetWidth;
-  var height = canvas.offsetHeight;
-
-  canvas.width = width;
-  canvas.height = height;
-
-  gl.viewport(0, 0, width, height);
+  gl.viewport(0, 0, canvas.width, canvas.height);
 
   polyProgram = createShaderProgram();
   positionLoc = gl.getAttribLocation(polyProgram, 'position');

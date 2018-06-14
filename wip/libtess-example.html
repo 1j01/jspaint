@@ -20,7 +20,9 @@
     <script>
       /* global draw, initArrayBuffer, initWebGL, triangulate */
 
-      var canvas;
+      var polygonFillCanvas = document.createElement("canvas");
+      // var polygonOutlineCanvas = document.createElement("canvas");
+      var polyViewCanvas;
       var filledMode = true;
 
       var NUM_VERTS = 500;
@@ -28,9 +30,11 @@
       var polyTriangles;
 
       function init() {
-        canvas = document.getElementById('poly-view');
+        polyViewCanvas = document.getElementById('poly-view');
+        polygonFillCanvas.width = polyViewCanvas.width;
+        polygonFillCanvas.height = polyViewCanvas.height;
 
-        initWebGL(canvas);
+        initWebGL(polygonFillCanvas);
 
         contours = [
           new Float32Array(generateNoisyLoop(NUM_VERTS, true, 0.8, 0.1)),
@@ -41,6 +45,24 @@
         initArrayBuffer(polyTriangles);
 
         draw(filledMode);
+
+        var polyViewCtx = polyViewCanvas.getContext("2d");
+        polyViewCtx.drawImage(polygonFillCanvas, 0, 0);
+
+        polyViewCtx.beginPath();
+        polyViewCtx.scale(polygonFillCanvas.width/2, -polygonFillCanvas.height/2);
+        polyViewCtx.translate(1, -1);
+        for(var i=0; i<contours.length; i++){
+          var contour = contours[i];
+          polyViewCtx.moveTo(contour[0], contour[1]);
+          for(var j=2; j<contour.length; j+=2){
+            polyViewCtx.lineTo(contour[j], contour[j+1]);
+          }
+        }
+        // polyViewCtx.closePath();
+        polyViewCtx.strokeStyle = "red";
+        polyViewCtx.lineWidth = 1/polygonFillCanvas.width ;
+        polyViewCtx.stroke();
       }
 
       function generateNoisyLoop(count, ccw, radius, noiseSize) {
