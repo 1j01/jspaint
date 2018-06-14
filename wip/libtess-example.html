@@ -49,17 +49,45 @@
         var polyViewCtx = polyViewCanvas.getContext("2d");
         polyViewCtx.drawImage(polygonFillCanvas, 0, 0);
 
-        polyViewCtx.beginPath();
         for(var i=0; i<contours.length; i++){
           var contour = contours[i];
-          polyViewCtx.moveTo((contour[0] + 1) * polygonFillCanvas.width/2, (1 - contour[1]) * polygonFillCanvas.height/2);
-          for(var j=2; j<contour.length; j+=2){
-            polyViewCtx.lineTo((contour[j] + 1) * polygonFillCanvas.width/2, (1 - contour[j+1]) * polygonFillCanvas.height/2);
+          polyViewCtx.fillStyle = "red";
+          for(var j=0; j<contour.length; j+=2){
+            polyViewCtx.lineTo(
+              (contour[j] + 1) * polygonFillCanvas.width/2,
+              (1 - contour[j+1]) * polygonFillCanvas.height/2,
+            );
+            bresenhamLine(
+              (contour[j] + 1) * polygonFillCanvas.width/2,
+              (1 - contour[j+1]) * polygonFillCanvas.height/2,
+              (contour[(j+2)%contour.length] + 1) * polygonFillCanvas.width/2,
+              (1 - contour[(j+3)%contour.length]) * polygonFillCanvas.height/2,
+              function(x, y){
+                polyViewCtx.fillRect(x, y, 1, 1);
+              }
+            );
           }
         }
-        polyViewCtx.strokeStyle = "red";
-        polyViewCtx.lineWidth = 1;
-        polyViewCtx.stroke();
+      }
+
+      function bresenhamLine(x1, y1, x2, y2, callback){
+        // Bresenham's line algorithm
+        x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
+        
+        var dx = Math.abs(x2 - x1);
+        var dy = Math.abs(y2 - y1);
+        var sx = (x1 < x2) ? 1 : -1;
+        var sy = (y1 < y2) ? 1 : -1;
+        var err = dx - dy;
+        
+        while(1){
+          callback(x1, y1);
+          
+          if(x1===x2 && y1===y2) break;
+          var e2 = err*2;
+          if(e2 >-dy){ err -= dy; x1 += sx; }
+          if(e2 < dx){ err += dx; y1 += sy; }
+        }
       }
 
       function generateNoisyLoop(count, ccw, radius, noiseSize) {
