@@ -50,18 +50,15 @@
         polyViewCtx.drawImage(polygonFillCanvas, 0, 0);
 
         polyViewCtx.beginPath();
-        polyViewCtx.scale(polygonFillCanvas.width/2, -polygonFillCanvas.height/2);
-        polyViewCtx.translate(1, -1);
         for(var i=0; i<contours.length; i++){
           var contour = contours[i];
-          polyViewCtx.moveTo(contour[0], contour[1]);
+          polyViewCtx.moveTo((contour[0] + 1) * polygonFillCanvas.width/2, (1 - contour[1]) * polygonFillCanvas.height/2);
           for(var j=2; j<contour.length; j+=2){
-            polyViewCtx.lineTo(contour[j], contour[j+1]);
+            polyViewCtx.lineTo((contour[j] + 1) * polygonFillCanvas.width/2, (1 - contour[j+1]) * polygonFillCanvas.height/2);
           }
         }
-        // polyViewCtx.closePath();
         polyViewCtx.strokeStyle = "red";
-        polyViewCtx.lineWidth = 1/polygonFillCanvas.width ;
+        polyViewCtx.lineWidth = 1;
         polyViewCtx.stroke();
       }
 
