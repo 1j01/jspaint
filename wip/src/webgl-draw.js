@@ -7,7 +7,8 @@ var polygonArrayBuffer;
 var triangleCount = 0;
 
 function initWebGL(canvas) {
-  gl = canvas.getContext('experimental-webgl');
+  gl = canvas.getContext('webgl', { antialias: false });
+  // TODO: experimental-webgl for Edge? (ugh)
 
   var width = canvas.offsetWidth;
   var height = canvas.offsetHeight;
