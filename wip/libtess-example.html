@@ -7,10 +7,16 @@
       body {
         margin: 0;
         padding: 0;
+        background: #58548e;
       }
       #poly-view {
-        width: 800px;
-        height: 800px;
+        image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
+        image-rendering: -moz-crisp-edges;          /* Firefox                        */
+        image-rendering: -o-crisp-edges;            /* Opera                          */
+        image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+        image-rendering: pixelated; /* Chrome */
+        image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+        -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
       }
     </style>
 
@@ -37,8 +43,8 @@
         initWebGL(polygonFillCanvas);
 
         contours = [
-          new Float32Array(generateFunkyFreshLoop(NUM_VERTS, true, 0.2, 3)),
-          new Float32Array(generateFunkyFreshLoop(NUM_VERTS, false, 0.4, 3))
+          new Float32Array(generateFunkyFreshLoop(NUM_VERTS, true, 0.5, 0.5)),
+          new Float32Array(generateFunkyFreshLoop(NUM_VERTS, false, 14, 3))
         ];
         
         polyTriangles = triangulate(contours);
@@ -96,7 +102,7 @@
         var backwards = ccw ? -1 : 1;
         for (var i = 0; i < count; i++) {
           var theta = thetaPer * i * backwards;
-          var randomRadius = radius * (1.5 + Math.sin(i/5+Math.cos(i+radius+noiseSize) / 2) * noiseSize);
+          var randomRadius = radius * (1 + Math.sin(i/5+Math.cos(i+radius+noiseSize) / 2) * noiseSize);
           verts[i*2] = Math.cos(theta) * randomRadius;
           verts[i*2+1] = Math.sin(theta) * randomRadius;
         }
