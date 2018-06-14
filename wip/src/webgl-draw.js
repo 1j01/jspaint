@@ -3,6 +3,7 @@
 var gl;
 var polyProgram;
 var positionLoc;
+var colorLoc;
 var polygonArrayBuffer;
 var triangleCount = 0;
 
@@ -15,9 +16,12 @@ function initWebGL(canvas) {
   polyProgram = createShaderProgram();
   positionLoc = gl.getAttribLocation(polyProgram, 'position');
   gl.enableVertexAttribArray(positionLoc);
+  colorLoc = gl.getUniformLocation(polyProgram, 'color');
 }
 
-function draw(fillPolygon) {
+// TODO: to be consistent, maybe this should be setColor and then draw but whatever
+function draw(fillPolygon, color) {
+  gl.uniform4fv(colorLoc, color);
   var renderType = fillPolygon ? gl.TRIANGLES : gl.LINE_LOOP;
   gl.drawArrays(renderType, 0, triangleCount);
 }
@@ -56,9 +60,9 @@ function createShaderProgram() {
   // create fragment shader
   var fragmentSrc = [
     'precision mediump float;',
+    'uniform vec4 color;',
     'void main() {',
-    '  /* set all pixels to green */',
-    '  gl_FragColor = vec4(.1, .8, 0.08, 1.);',
+    '  gl_FragColor = color;',
     '}'
   ].join('');
   var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
