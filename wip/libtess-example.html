@@ -37,8 +37,8 @@
         initWebGL(polygonFillCanvas);
 
         contours = [
-          new Float32Array(generateNoisyLoop(NUM_VERTS, true, 0.8, 0.1)),
-          new Float32Array(generateNoisyLoop(NUM_VERTS, false, 0.4, 10))
+          new Float32Array(generateFunkyFreshLoop(NUM_VERTS, true, 0.2, 3)),
+          new Float32Array(generateFunkyFreshLoop(NUM_VERTS, false, 0.4, 3))
         ];
         
         polyTriangles = triangulate(contours);
@@ -51,7 +51,7 @@
 
         for(var i=0; i<contours.length; i++){
           var contour = contours[i];
-          polyViewCtx.fillStyle = "red";
+          polyViewCtx.fillStyle = "black";
           for(var j=0; j<contour.length; j+=2){
             polyViewCtx.lineTo(
               (contour[j] + 1) * polygonFillCanvas.width/2,
@@ -90,13 +90,13 @@
         }
       }
 
-      function generateNoisyLoop(count, ccw, radius, noiseSize) {
+      function generateFunkyFreshLoop(count, ccw, radius, noiseSize) {
         var verts = new Array(count * 2);
         var thetaPer = Math.PI * 2 / count;
         var backwards = ccw ? -1 : 1;
         for (var i = 0; i < count; i++) {
           var theta = thetaPer * i * backwards;
-          var randomRadius = radius * (1 + Math.random() * noiseSize);
+          var randomRadius = radius * (1.5 + Math.sin(i/5+Math.cos(i+radius+noiseSize) / 2) * noiseSize);
           verts[i*2] = Math.cos(theta) * randomRadius;
           verts[i*2+1] = Math.sin(theta) * randomRadius;
         }
