@@ -38,11 +38,8 @@
           new Float32Array(generateNoisyLoop(NUM_VERTS, false, 0.4, 10))
         ];
         
-        var startTime = window.nowish();
         polyTriangles = triangulate(contours);
         initArrayBuffer(polyTriangles);
-        var endTime = window.nowish();
-        console.log('total tesselation/webgl time: ' + (endTime - startTime).toFixed(2) + 'ms');
 
         scheduleUpdate();
       }
@@ -84,10 +81,6 @@
           function(callback) {
             return window.setTimeout(callback, 1000 / 60);
           };
-
-      // performance.now polyfill
-      window.nowish = window.performance.now ?
-          window.performance.now.bind(window.performance) : Date.now;
 
       document.addEventListener('DOMContentLoaded', init, false);
     </script>
