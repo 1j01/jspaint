@@ -45,7 +45,13 @@
         polyTriangles = triangulate(contours);
         initArrayBuffer(polyTriangles);
 
-        draw(filledMode);
+        draw(filledMode, [0.1, 0.8, 0.08, 1.0]);
+
+        for(var i=0; i<contours.length; i++){
+          var contour = contours[i];
+          initArrayBuffer(contour);
+          draw(false, [0, 0, 0, 1.0]);
+        }
       }
 
       function generateFunkyFreshLoop(count, ccw, radius, noiseSize) {
