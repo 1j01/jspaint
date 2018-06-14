@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!-- saved from url=(0092)https://rawgit.com/brendankenny/libtess.js/gh-pages/examples/simple_triangulation/index.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Simple Triangulation</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #poly-view {
+        width: 800px;
+        height: 800px;
+      }
+    </style>
+
+    <script src="./Simple Triangulation_files/libtess.min.js.download"></script>
+    <script src="./Simple Triangulation_files/webgl_draw.js.download"></script>
+    <script src="./Simple Triangulation_files/triangulate.js.download"></script>
+    <script>
+      /* global draw, initArrayBuffer, initWebGL, triangulate */
+
+      var canvas;
+      var updateScheduled = false;
+      var filledMode = true;
+
+      var NUM_VERTS = 500;
+      var contours;
+      var polyTriangles;
+
+      function init() {
+        canvas = document.getElementById('poly-view');
+
+        initWebGL(canvas);
+
+        contours = [
+          new Float32Array(generateNoisyLoop(NUM_VERTS, true, 0.8, 0.1)),
+          new Float32Array(generateNoisyLoop(NUM_VERTS, false, 0.4, 0.1))
+        ];
+        
+        var startTime = window.nowish();
+        polyTriangles = triangulate(contours);
+        initArrayBuffer(polyTriangles);
+        var endTime = window.nowish();
+        console.log('total tesselation/webgl time: ' + (endTime - startTime).toFixed(2) + 'ms');
+
+        scheduleUpdate();
+      }
+
+      function generateNoisyLoop(count, ccw, radius, noiseSize) {
+        var verts = new Array(count * 2);
+        var thetaPer = Math.PI * 2 / count;
+        var backwards = ccw ? -1 : 1;
+        for (var i = 0; i < count; i++) {
+          var theta = thetaPer * i * backwards;
+          var randomRadius = radius * (1 + Math.random() * noiseSize);
+          verts[i*2] = Math.cos(theta) * randomRadius;
+          verts[i*2+1] = Math.sin(theta) * randomRadius;
+        }
+
+        return verts;
+      }
+
+      function update() {
+        updateScheduled = false;
+        draw(filledMode);
+      }
+
+      function scheduleUpdate() {
+        if (updateScheduled) {
+          return;
+        }
+        updateScheduled = true;
+        window.requestAnimFrame(update);
+      }
+
+      // requestAnimationFrame polyfill
+      window.requestAnimFrame =
+          window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          window.oRequestAnimationFrame ||
+          window.msRequestAnimationFrame ||
+          function(callback) {
+            return window.setTimeout(callback, 1000 / 60);
+          };
+
+      // performance.now polyfill
+      window.nowish = window.performance.now ?
+          window.performance.now.bind(window.performance) : Date.now;
+
+      document.addEventListener('DOMContentLoaded', init, false);
+    </script>
+  </head>
+
+  <body>
+    <canvas id="poly-view" width="800" height="800"></canvas>
+  
+</body></html>
