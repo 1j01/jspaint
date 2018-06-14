@@ -58,11 +58,8 @@ function triangulate(contours) {
     tessy.gluTessEndContour();
   }
 
-  // finish polygon (and time triangulation process)
-  var startTime = window.nowish();
+  // finish polygon
   tessy.gluTessEndPolygon();
-  var endTime = window.nowish();
-  console.log('tesselation time: ' + (endTime - startTime).toFixed(2) + 'ms');
 
   return triangleVerts;
 }
