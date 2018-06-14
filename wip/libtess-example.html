@@ -21,7 +21,6 @@
       /* global draw, initArrayBuffer, initWebGL, triangulate */
 
       var canvas;
-      var updateScheduled = false;
       var filledMode = true;
 
       var NUM_VERTS = 500;
@@ -41,7 +40,7 @@
         polyTriangles = triangulate(contours);
         initArrayBuffer(polyTriangles);
 
-        scheduleUpdate();
+        draw(filledMode);
       }
 
       function generateNoisyLoop(count, ccw, radius, noiseSize) {
@@ -57,30 +56,6 @@
 
         return verts;
       }
-
-      function update() {
-        updateScheduled = false;
-        draw(filledMode);
-      }
-
-      function scheduleUpdate() {
-        if (updateScheduled) {
-          return;
-        }
-        updateScheduled = true;
-        window.requestAnimFrame(update);
-      }
-
-      // requestAnimationFrame polyfill
-      window.requestAnimFrame =
-          window.requestAnimationFrame ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame ||
-          window.oRequestAnimationFrame ||
-          window.msRequestAnimationFrame ||
-          function(callback) {
-            return window.setTimeout(callback, 1000 / 60);
-          };
 
       document.addEventListener('DOMContentLoaded', init, false);
     </script>
