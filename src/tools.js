@@ -523,10 +523,14 @@ tools = [{
 		var i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
+		// this.x_min = Math.min(x, this.x_min);
+		// this.x_max = Math.max(x + 1, this.x_max);
+		// this.y_min = Math.min(y, this.y_min);
+		// this.y_max = Math.max(y + 1, this.y_max);
 		var dx = this.points[i].x - this.points[0].x;
 		var dy = this.points[i].y - this.points[0].y;
 		var d = Math.sqrt(dx*dx + dy*dy);
-		if(d < stroke_size * 5.1010101){ // arbitrary 101
+		if(d < stroke_size * 5.1010101){ // arbitrary 101 (TODO: find correct value (or formula))
 			this.complete(ctx, x, y);
 		}
 		
@@ -536,11 +540,11 @@ tools = [{
 		var tool = this;
 		
 		if(tool.points.length < 1){
-			tool.x_min = x;
-			tool.x_max = x+1;
-			tool.y_min = y;
-			tool.y_max = y+1;
-			tool.points = [];
+			// tool.x_min = x;
+			// tool.x_max = x+1;
+			// tool.y_min = y;
+			// tool.y_max = y+1;
+			// tool.points = [];
 			
 			// @TODO: stop needing this:
 			tool.canvas_base = canvas;
@@ -570,12 +574,12 @@ tools = [{
 			}else{
 				// Add the point
 				tool.points.push({x: x, y: y});
-				// Update the boundaries of the polygon
-				// @TODO: this boundary stuff in less places (DRY)
-				tool.x_min = Math.min(x, tool.x_min);
-				tool.x_max = Math.max(x, tool.x_max);
-				tool.y_min = Math.min(y, tool.y_min);
-				tool.y_max = Math.max(y, tool.y_max);
+				// // Update the boundaries of the polygon
+				// // @TODO: this boundary stuff in less places (DRY)
+				// tool.x_min = Math.min(x, tool.x_min);
+				// tool.x_max = Math.max(x + 1, tool.x_max);
+				// tool.y_min = Math.min(y, tool.y_min);
+				// tool.y_max = Math.max(y + 1, tool.y_max);
 			}
 		}
 		tool.last_click_pointerdown = {x: x, y: y, time: +new Date};
@@ -610,24 +614,36 @@ tools = [{
 		ctx.copy(this.canvas_base);
 		
 		// Draw an antialiased polygon
-		ctx.beginPath();
-		ctx.moveTo(this.points[0].x, this.points[0].y);
-		for(var i=1; i<this.points.length; i++){
-			ctx.lineTo(this.points[i].x, this.points[i].y);
-		}
-		ctx.lineTo(this.points[0].x, this.points[0].y);
-		ctx.closePath();
+		// ctx.beginPath();
+		// ctx.moveTo(this.points[0].x, this.points[0].y);
+		// for(var i=1; i<this.points.length; i++){
+		// 	ctx.lineTo(this.points[i].x, this.points[i].y);
+		// }
+		// ctx.lineTo(this.points[0].x, this.points[0].y);
+		// ctx.closePath();
 		
-		ctx.lineWidth = stroke_size;
-		ctx.lineJoin = "bevel";
-		if(this.$options.fill){
-			ctx.fillStyle = fill_color;
-			ctx.fill();
-		}
-		if(this.$options.stroke){
-			ctx.strokeStyle = stroke_color;
-			ctx.stroke();
-		}
+		// ctx.lineWidth = stroke_size;
+		// ctx.lineJoin = "bevel";
+		// if(this.$options.fill){
+		ctx.fillStyle = fill_color;
+		// 	ctx.fill();
+		// }
+		// if(this.$options.stroke){
+		ctx.strokeStyle = stroke_color;
+		// 	ctx.stroke();
+		// }
+
+		// Draw an ANTI-anti-aliased polygon :)
+		draw_polygon(
+			ctx,
+			this.points,
+			// this.x_min,
+			// this.x_max,
+			// this.y_min,
+			// this.y_max,
+			this.$options.stroke,
+			this.$options.fill
+		);
 		
 		/*
 		if(this.$options.fill){

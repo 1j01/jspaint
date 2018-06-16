@@ -181,10 +181,15 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * Polygon
-	* Aliasing
-	* Handle self-intersecting shapes like MS Paint, with an `"evenodd"` [winding rule](https://blogs.adobe.com/webplatform/2013/01/30/winding-rules-in-canvas/)
+	* Line width
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
+	* Don't start making the polygon until you click and drag more than the auto-finalization distance
+	* Cancel the polygon if you end up within the auto-finalization distance on the first gesture
+	* Preview invertily (like Free-Form Select) when fill-only is selected for the shape style option
+	* Use WebGL for the preview so strokes don't change slightly when finalizing
+	* Bug: jumping to 0, 0 (only saw it happen once so far; could it have to do with the dialog box?)
+	* Bug: unclosed polygon (last segment of stroke) (only saw it happen once so far)
 
 
 * Ellipse
