@@ -653,7 +653,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		// libtess will take 3d verts and flatten to a plane for tesselation
 		// since only doing 2d tesselation here, provide z=1 normal to skip
 		// iterating over verts only to get the same answer.
-		// comment out to test normal-generation code
 		tessy.gluTessNormal(0, 0, 1);
 
 		var triangleVerts = [];
@@ -669,7 +668,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 			tessy.gluTessEndContour();
 		}
 
-		// finish polygon
 		tessy.gluTessEndPolygon();
 
 		return triangleVerts;
@@ -677,33 +675,33 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 
 
 	var gl;
-	var polyProgram;
 	var positionLoc;
 	var colorLoc;
-	var polygonArrayBuffer;
-	var triangleCount = 0;
 
 	function initWebGL(canvas) {
 		gl = canvas.getContext('webgl', { antialias: false });
-		// TODO: experimental-webgl for Edge? (ugh)
 
-		polyProgram = createShaderProgram();
-		positionLoc = gl.getAttribLocation(polyProgram, 'position');
+		var program = createShaderProgram();
+		positionLoc = gl.getAttribLocation(program, 'position');
 		gl.enableVertexAttribArray(positionLoc);
-		colorLoc = gl.getUniformLocation(polyProgram, 'color');
+		colorLoc = gl.getUniformLocation(program, 'color');
 	}
 
-	function initArrayBuffer(triangleVerts) {
-		// triangleVerts = contours[0];
-		triangleCount = triangleVerts.length / 2;
-
+	function initArrayBuffer(triangleVertexCoords) {
 		// put triangle coordinates into a WebGL ArrayBuffer and bind to
 		// shader's 'position' attribute variable
-		var rawData = new Float32Array(triangleVerts);
-		polygonArrayBuffer = gl.createBuffer();
+		var rawData = new Float32Array(triangleVertexCoords);
+		var polygonArrayBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, polygonArrayBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, rawData, gl.STATIC_DRAW);
 		gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+		return triangleVertexCoords.length / 2;
+	}
+
+	function setDrawColor(color){
+		var color4fv = get_rgba_from_color(color).map((colorComponent)=> colorComponent / 255);
+		gl.uniform4fv(colorLoc, color4fv);
 	}
 
 	function createShaderProgram() {
@@ -801,27 +799,18 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 			coords[i*2+1] = 1 - (points[i].y - y_min) / polygonFillCanvas.height * 2;
 			// TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
         }
-		var contours = [coords];
-
-		var polyTriangles = triangulate(contours);
-		initArrayBuffer(polyTriangles);
-
-		var setDrawColor = function(color){
-			var color4fv = get_rgba_from_color(color).map((colorComponent)=> colorComponent / 255);
-			gl.uniform4fv(colorLoc, color4fv);
-		};
 
 		if(fill){
 			setDrawColor(fill_color);
-			gl.drawArrays(gl.TRIANGLES, 0, triangleCount);
+			var contours = [coords];
+			var polyTriangles = triangulate(contours);
+			var numVertices = initArrayBuffer(polyTriangles);
+			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 		}
 		if(stroke){
 			setDrawColor(stroke_color);
-			for(var i=0; i<contours.length; i++){
-				var contour = contours[i];
-				initArrayBuffer(contour);
-				gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, triangleCount);
-			}
+			var numVertices = initArrayBuffer(coords);
+			gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, numVertices);
 		}
 
 		ctx.drawImage(polygonFillCanvas, x_min, y_min);
