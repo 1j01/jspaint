@@ -693,13 +693,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		colorLoc = gl.getUniformLocation(polyProgram, 'color');
 	}
 
-	// TODO: to be consistent, maybe this should be setColor and then draw but whatever
-	function draw(fillPolygon, color) {
-		gl.uniform4fv(colorLoc, color);
-		var renderType = fillPolygon ? gl.TRIANGLES : gl.LINE_LOOP;
-		gl.drawArrays(renderType, 0, triangleCount);
-	}
-
 	function initArrayBuffer(triangleVerts) {
 		// triangleVerts = contours[0];
 		triangleCount = triangleVerts.length / 2;
@@ -768,7 +761,14 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 
 	initWebGL(polygonFillCanvas);
 
+	window.draw_line_strip = function(ctx, points){
+		draw_polygon_or_line_strip(ctx, points, true, false, true);
+	};
 	window.draw_polygon = function(ctx, points, stroke, fill){
+		draw_polygon_or_line_strip(ctx, points, stroke, fill, false);
+	};
+
+	window.draw_polygon_or_line_strip = function(ctx, points, stroke, fill, as_polyline){
 		var stroke_color = ctx.strokeStyle;
 		var fill_color = ctx.fillStyle;
 
@@ -793,6 +793,8 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		polygonFillCanvas.height = y_max - y_min;
 		gl.viewport(0, 0, polygonFillCanvas.width, polygonFillCanvas.height);
 
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
 		var coords = new Float32Array(numCoords);
         for (var i = 0; i < numPoints; i++) {
 			coords[i*2+0] = (points[i].x - x_min) / polygonFillCanvas.width * 2 - 1;
@@ -804,14 +806,21 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		var polyTriangles = triangulate(contours);
 		initArrayBuffer(polyTriangles);
 
+		var setDrawColor = function(color){
+			var color4fv = get_rgba_from_color(color).map((colorComponent)=> colorComponent / 255);
+			gl.uniform4fv(colorLoc, color4fv);
+		};
+
 		if(fill){
-			draw(true, get_rgba_from_color(fill_color).map((colorComponent)=> colorComponent / 255));
+			setDrawColor(fill_color);
+			gl.drawArrays(gl.TRIANGLES, 0, triangleCount);
 		}
 		if(stroke){
+			setDrawColor(stroke_color);
 			for(var i=0; i<contours.length; i++){
 				var contour = contours[i];
 				initArrayBuffer(contour);
-				draw(false, get_rgba_from_color(stroke_color).map((colorComponent)=> colorComponent / 255));
+				gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, triangleCount);
 			}
 		}
 
