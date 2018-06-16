@@ -765,11 +765,9 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 
 
 	var polygonFillCanvas = document.createElement('canvas');
-	// document.body.appendChild(polygonFillCanvas);
 
 	initWebGL(polygonFillCanvas);
 
-	// window.draw_polygon = function(ctx, points, x_min, x_max, y_min, y_max){
 	window.draw_polygon = function(ctx, points, stroke, fill){
 		var stroke_color = ctx.strokeStyle;
 		var fill_color = ctx.fillStyle;
@@ -816,11 +814,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 				draw(false, get_rgba_from_color(stroke_color).map((colorComponent)=> colorComponent / 255));
 			}
 		}
-
-		// TODO: remove me
-		// $canvas_area.append(polygonFillCanvas);
-		// ctx.fillStyle = "rgba(255, 0, 255, 0.1)";
-		// ctx.fillRect(x_min, y_min, polygonFillCanvas.width, polygonFillCanvas.height);
 
 		ctx.drawImage(polygonFillCanvas, x_min, y_min);
 	};
