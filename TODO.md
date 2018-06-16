@@ -187,7 +187,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Don't start making the polygon until you click and drag more than the auto-finalization distance
 	* Cancel the polygon if you end up within the auto-finalization distance on the first gesture
 	* Preview invertily (like Free-Form Select) when fill-only is selected for the shape style option
-	* Use WebGL for the preview so strokes don't change slightly when finalizing
+	* Regression: fix performance of the preview lines (now using WebGL so strokes don't change slightly when finalizing)
 	* Bug: jumping to 0, 0 (only saw it happen once so far; could it have to do with the dialog box?)
 	* Bug: unclosed polygon (last segment of stroke) (only saw it happen once so far)
 

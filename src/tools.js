@@ -596,14 +596,11 @@ tools = [{
 		this.points[i].x = x;
 		this.points[i].y = y;
 		
-		ctx.fillStyle = stroke_color;
-		for(var i=0, j=1; j<this.points.length; i++, j++){
-			draw_line(ctx,
-				this.points[i].x, this.points[i].y,
-				this.points[j].x, this.points[j].y,
-				stroke_size
-			);
-		}
+		ctx.strokeStyle = stroke_color;
+		draw_line_strip(
+			ctx,
+			this.points
+		);
 	},
 	complete: function(ctx, x, y){
 		if(this.points.length < 1){ return; }
