@@ -613,87 +613,15 @@ tools = [{
 		// @TODO: stop needing this
 		ctx.copy(this.canvas_base);
 		
-		// Draw an antialiased polygon
-		// ctx.beginPath();
-		// ctx.moveTo(this.points[0].x, this.points[0].y);
-		// for(var i=1; i<this.points.length; i++){
-		// 	ctx.lineTo(this.points[i].x, this.points[i].y);
-		// }
-		// ctx.lineTo(this.points[0].x, this.points[0].y);
-		// ctx.closePath();
-		
-		// ctx.lineWidth = stroke_size;
-		// ctx.lineJoin = "bevel";
-		// if(this.$options.fill){
 		ctx.fillStyle = fill_color;
-		// 	ctx.fill();
-		// }
-		// if(this.$options.stroke){
 		ctx.strokeStyle = stroke_color;
-		// 	ctx.stroke();
-		// }
 
-		// Draw an ANTI-anti-aliased polygon :)
 		draw_polygon(
 			ctx,
 			this.points,
-			// this.x_min,
-			// this.x_max,
-			// this.y_min,
-			// this.y_max,
 			this.$options.stroke,
 			this.$options.fill
 		);
-		
-		/*
-		if(this.$options.fill){
-			// Make a solid-colored canvas
-			var colored_canvas = new Canvas(canvas.width, canvas.height);
-			colored_canvas.ctx.fillStyle = fill_color;
-			colored_canvas.ctx.fillRect(0, 0, canvas.width, canvas.height);
-			
-			for(var i=0; i<this.points.length; i++){
-				// Update the boundaries of the polygon
-				// @TODO: this boundary stuff in less places (DRY)
-				this.x_min = Math.min(this.points[i].x, this.x_min);
-				this.x_max = Math.max(this.points[i].x, this.x_max);
-				this.y_min = Math.min(this.points[i].y, this.y_min);
-				this.y_max = Math.max(this.points[i].y, this.y_max);
-			}
-			
-			// Cut a colored polygon out of the solid-colored canvas
-			var colored_polygon = cut_polygon(
-				this.points,
-				this.x_min,
-				this.y_min,
-				this.x_max,
-				this.y_max,
-				colored_canvas,
-				0.25
-			);
-			
-			// Draw the colored polygon to the canvas
-			ctx.drawImage(colored_polygon, this.x_min, this.y_min);
-			
-		}
-		if(this.$options.stroke){
-			ctx.fillStyle = stroke_color;
-			for(var i=0, j=1; j<this.points.length; i++, j++){
-				draw_line(ctx,
-					this.points[i].x, this.points[i].y,
-					this.points[j].x, this.points[j].y,
-					stroke_size
-				);
-			}
-			j = 0;
-			i = this.points.length - 1;
-			draw_line(ctx,
-				this.points[i].x, this.points[i].y,
-				this.points[j].x, this.points[j].y,
-				stroke_size
-			);
-		}
-		*/
 		
 		this.reset();
 	},
