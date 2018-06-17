@@ -755,11 +755,11 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 	}
 
 
-	var polygonWebGLCanvas = document.createElement('canvas');
-	var polygonStrokeCanvas = document.createElement('canvas');
-	var polygonStrokeCtx = polygonStrokeCanvas.getContext("2d");
+	var polygon_webgl_canvas = document.createElement('canvas');
+	var polygon_canvas_2d = document.createElement('canvas');
+	var polygon_ctx_2d = polygon_canvas_2d.getContext("2d");
 
-	initWebGL(polygonWebGLCanvas);
+	initWebGL(polygon_webgl_canvas);
 
 	window.draw_line_strip = function(ctx, points){
 		draw_polygon_or_line_strip(ctx, points, true, false, true);
@@ -767,6 +767,13 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 	window.draw_polygon = function(ctx, points, stroke, fill){
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, false);
 	};
+
+	function replace_colors_with_swatch(ctx, swatch){
+		// mainly for patterns support (for black & white mode)
+		ctx.globalCompositeOperation = "source-in";
+		ctx.fillStyle = swatch;
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	}
 
 	// TODO: cleanup: instead of as_polyline, the opposite, close_path
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, as_polyline){
@@ -790,53 +797,54 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		x_max += 1;
 		y_max += 1;
 
-		var polygonStrokeMargin = ~~(stroke_size * 1.1);
-		polygonStrokeCanvas.width = x_max - x_min + polygonStrokeMargin * 2;
-		polygonStrokeCanvas.height = y_max - y_min + polygonStrokeMargin * 2;
-		polygonWebGLCanvas.width = x_max - x_min;
-		polygonWebGLCanvas.height = y_max - y_min;
-		gl.viewport(0, 0, polygonWebGLCanvas.width, polygonWebGLCanvas.height);
+		polygon_webgl_canvas.width = x_max - x_min;
+		polygon_webgl_canvas.height = y_max - y_min;
+		gl.viewport(0, 0, polygon_webgl_canvas.width, polygon_webgl_canvas.height);
 
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
 		var coords = new Float32Array(numCoords);
 		for (var i = 0; i < numPoints; i++) {
-			coords[i*2+0] = (points[i].x - x_min) / polygonWebGLCanvas.width * 2 - 1;
-			coords[i*2+1] = 1 - (points[i].y - y_min) / polygonWebGLCanvas.height * 2;
+			coords[i*2+0] = (points[i].x - x_min) / polygon_webgl_canvas.width * 2 - 1;
+			coords[i*2+1] = 1 - (points[i].y - y_min) / polygon_webgl_canvas.height * 2;
 			// TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
 		}
 
 		if(fill){
+			// TODO: remove draw color if we're not using it since we're using replace_colors_with_swatch
 			setDrawColor(fill_color);
 			var contours = [coords];
 			var polyTriangles = triangulate(contours);
 			var numVertices = initArrayBuffer(polyTriangles);
 			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 
-			// TODO: try to simplify this back to where it's just one drawImage at the end
-			// or even multiple drawImages would probably be better if they're cleanly separated, one for the fill and one for the stroke
-			if(!stroke){
-				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
-			}
+			polygon_canvas_2d.width = polygon_webgl_canvas.width;
+			polygon_canvas_2d.height = polygon_webgl_canvas.height;
+			// polygon_ctx_2d.clearRect(0, 0, polygon_canvas_2d.width, polygon_canvas_2d.height);
+			polygon_ctx_2d.drawImage(polygon_webgl_canvas, 0, 0);
+			replace_colors_with_swatch(polygon_ctx_2d, fill_color);
+			ctx.drawImage(polygon_canvas_2d, x_min, y_min);
 		}
 		if(stroke){
+			// polygon_ctx_2d.clearRect(0, 0, polygon_canvas_2d.width, polygon_canvas_2d.height);
 			if(stroke_size > 1){
-				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
-
+				var polygon_stroke_margin = ~~(stroke_size * 1.1);
+				polygon_canvas_2d.width = x_max - x_min + polygon_stroke_margin * 2;
+				polygon_canvas_2d.height = y_max - y_min + polygon_stroke_margin * 2;
 				for (var i = 0; i < numPoints - (as_polyline ? 1 : 0); i++) {
 					var point_a = points[i];
 					var point_b = points[(i + 1) % numPoints];
 					draw_line(
-						polygonStrokeCtx,
-						point_a.x - x_min + polygonStrokeMargin,
-						point_a.y - y_min + polygonStrokeMargin,
-						point_b.x - x_min + polygonStrokeMargin,
-						point_b.y - y_min + polygonStrokeMargin,
+						polygon_ctx_2d,
+						point_a.x - x_min + polygon_stroke_margin,
+						point_a.y - y_min + polygon_stroke_margin,
+						point_b.x - x_min + polygon_stroke_margin,
+						point_b.y - y_min + polygon_stroke_margin,
 						stroke_size
 					)
 				}
 
-				// polygonStrokeCtx.beginPath();
+				// polygon_ctx_2d.beginPath();
 				// for (var i = 0; i < numPoints - (as_polyline ? 1 : 0); i++) {
 				// 	var point_a = points[i];
 				// 	var point_b = points[(i + 1) % numPoints];
@@ -849,22 +857,22 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 				// 		point_b.y
 				// 	)
 				// }
-				// polygonStrokeCtx.lineWidth = stroke_size;
-				// polygonStrokeCtx.strokeStyle = "#f0f";
-				// polygonStrokeCtx.stroke();
+				// polygon_ctx_2d.lineWidth = stroke_size;
+				// polygon_ctx_2d.strokeStyle = "#f0f";
+				// polygon_ctx_2d.stroke();
 
-				polygonStrokeCtx.globalCompositeOperation = "source-in";
-				polygonStrokeCtx.fillStyle = stroke_color;
-				polygonStrokeCtx.fillRect(0, 0, polygonStrokeCanvas.width, polygonStrokeCanvas.height);
-
-				ctx.drawImage(polygonStrokeCanvas, x_min - polygonStrokeMargin, y_min - polygonStrokeMargin);
+				replace_colors_with_swatch(polygon_ctx_2d, stroke_color);
+				ctx.drawImage(polygon_canvas_2d, x_min - polygon_stroke_margin, y_min - polygon_stroke_margin);
 			}else{
 				setDrawColor(stroke_color);
 				var numVertices = initArrayBuffer(coords);
 				gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, numVertices);
 
-				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
-				// TODO: use pattern fill
+				polygon_canvas_2d.width = polygon_webgl_canvas.width;
+				polygon_canvas_2d.height = polygon_webgl_canvas.height;
+				polygon_ctx_2d.drawImage(polygon_webgl_canvas, 0, 0);
+				replace_colors_with_swatch(polygon_ctx_2d, stroke_color);
+				ctx.drawImage(polygon_canvas_2d, x_min, y_min);
 			}
 		}
 	};
