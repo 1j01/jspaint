@@ -181,7 +181,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * Polygon
-	* Line width
+	* Remove `show_shape_styles_warning` (for Polygon specifically, or implement shape styles for the rest of the tools)
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
 	* Don't start making the polygon until you click and drag more than the auto-finalization distance

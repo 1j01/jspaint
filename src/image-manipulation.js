@@ -755,9 +755,11 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 	}
 
 
-	var polygonFillCanvas = document.createElement('canvas');
+	var polygonWebGLCanvas = document.createElement('canvas');
+	// var polygonStrokeCanvas = document.createElement('canvas');
+	// var polygonStrokeCtx = polygonStrokeCanvas.getContext("2d");
 
-	initWebGL(polygonFillCanvas);
+	initWebGL(polygonWebGLCanvas);
 
 	window.draw_line_strip = function(ctx, points){
 		draw_polygon_or_line_strip(ctx, points, true, false, true);
@@ -766,7 +768,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, false);
 	};
 
-	window.draw_polygon_or_line_strip = function(ctx, points, stroke, fill, as_polyline){
+	function draw_polygon_or_line_strip(ctx, points, stroke, fill, as_polyline){
 		var stroke_color = ctx.strokeStyle;
 		var fill_color = ctx.fillStyle;
 
@@ -787,16 +789,16 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		x_max += 1;
 		y_max += 1;
 
-		polygonFillCanvas.width = x_max - x_min;
-		polygonFillCanvas.height = y_max - y_min;
-		gl.viewport(0, 0, polygonFillCanvas.width, polygonFillCanvas.height);
+		polygonWebGLCanvas.width = x_max - x_min;
+		polygonWebGLCanvas.height = y_max - y_min;
+		gl.viewport(0, 0, polygonWebGLCanvas.width, polygonWebGLCanvas.height);
 
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
 		var coords = new Float32Array(numCoords);
 		for (var i = 0; i < numPoints; i++) {
-			coords[i*2+0] = (points[i].x - x_min) / polygonFillCanvas.width * 2 - 1;
-			coords[i*2+1] = 1 - (points[i].y - y_min) / polygonFillCanvas.height * 2;
+			coords[i*2+0] = (points[i].x - x_min) / polygonWebGLCanvas.width * 2 - 1;
+			coords[i*2+1] = 1 - (points[i].y - y_min) / polygonWebGLCanvas.height * 2;
 			// TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
 		}
 
@@ -806,14 +808,43 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 			var polyTriangles = triangulate(contours);
 			var numVertices = initArrayBuffer(polyTriangles);
 			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+
+			// TODO: try to simplify this back to where it's just one drawImage at the end
+			// or even multiple drawImages would probably be better if they're cleanly separated, one for the fill and one for the stroke
+			if(!stroke){
+				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
+			}
 		}
 		if(stroke){
-			setDrawColor(stroke_color);
-			var numVertices = initArrayBuffer(coords);
-			gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, numVertices);
-		}
+			if(stroke_size > 1){
+				// antiantialias();
+				// polygonStrokeCtx.beginPath();
+				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
 
-		ctx.drawImage(polygonFillCanvas, x_min, y_min);
+				for (var i = 0; i < numPoints - (as_polyline ? 1 : 0); i++) {
+					var point_a = points[i];
+					var point_b = points[(i + 1) % numPoints];
+					draw_line(
+						ctx,
+						// coords[i*2+0],
+						// coords[i*2+1],
+						// coords[(i*2+2) % numCoords],
+						// coords[(i*2+3) % numCoords],
+						point_a.x,
+						point_a.y,
+						point_b.x,
+						point_b.y,
+						stroke_size
+					)
+				}
+			}else{
+				setDrawColor(stroke_color);
+				var numVertices = initArrayBuffer(coords);
+				gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, numVertices);
+
+				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
+			}
+		}
 	};
 
 })();
