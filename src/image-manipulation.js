@@ -617,7 +617,7 @@ function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_
 	ctx.beginPath();
 	ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	ctx.save();
-	ctx.translate(x_offset_from_global_canvas, y_offset_from_global_canvas);
+	ctx.translate(-x_offset_from_global_canvas, -y_offset_from_global_canvas);
 	ctx.fill();
 	ctx.restore();
 }
