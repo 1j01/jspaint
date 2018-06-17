@@ -756,8 +756,8 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 
 
 	var polygonWebGLCanvas = document.createElement('canvas');
-	// var polygonStrokeCanvas = document.createElement('canvas');
-	// var polygonStrokeCtx = polygonStrokeCanvas.getContext("2d");
+	var polygonStrokeCanvas = document.createElement('canvas');
+	var polygonStrokeCtx = polygonStrokeCanvas.getContext("2d");
 
 	initWebGL(polygonWebGLCanvas);
 
@@ -768,6 +768,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, false);
 	};
 
+	// TODO: cleanup: instead of as_polyline, the opposite, close_path
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, as_polyline){
 		var stroke_color = ctx.strokeStyle;
 		var fill_color = ctx.fillStyle;
@@ -789,6 +790,9 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		x_max += 1;
 		y_max += 1;
 
+		var polygonStrokeMargin = ~~(stroke_size * 1.1);
+		polygonStrokeCanvas.width = x_max - x_min + polygonStrokeMargin * 2;
+		polygonStrokeCanvas.height = y_max - y_min + polygonStrokeMargin * 2;
 		polygonWebGLCanvas.width = x_max - x_min;
 		polygonWebGLCanvas.height = y_max - y_min;
 		gl.viewport(0, 0, polygonWebGLCanvas.width, polygonWebGLCanvas.height);
@@ -817,32 +821,50 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		}
 		if(stroke){
 			if(stroke_size > 1){
-				// antiantialias();
-				// polygonStrokeCtx.beginPath();
 				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
 
 				for (var i = 0; i < numPoints - (as_polyline ? 1 : 0); i++) {
 					var point_a = points[i];
 					var point_b = points[(i + 1) % numPoints];
 					draw_line(
-						ctx,
-						// coords[i*2+0],
-						// coords[i*2+1],
-						// coords[(i*2+2) % numCoords],
-						// coords[(i*2+3) % numCoords],
-						point_a.x,
-						point_a.y,
-						point_b.x,
-						point_b.y,
+						polygonStrokeCtx,
+						point_a.x - x_min + polygonStrokeMargin,
+						point_a.y - y_min + polygonStrokeMargin,
+						point_b.x - x_min + polygonStrokeMargin,
+						point_b.y - y_min + polygonStrokeMargin,
 						stroke_size
 					)
 				}
+
+				// polygonStrokeCtx.beginPath();
+				// for (var i = 0; i < numPoints - (as_polyline ? 1 : 0); i++) {
+				// 	var point_a = points[i];
+				// 	var point_b = points[(i + 1) % numPoints];
+				// 	ctx.moveTo(
+				// 		point_a.x,
+				// 		point_a.y
+				// 	)
+				// 	ctx.lineTo(
+				// 		point_b.x,
+				// 		point_b.y
+				// 	)
+				// }
+				// polygonStrokeCtx.lineWidth = stroke_size;
+				// polygonStrokeCtx.strokeStyle = "#f0f";
+				// polygonStrokeCtx.stroke();
+
+				polygonStrokeCtx.globalCompositeOperation = "source-in";
+				polygonStrokeCtx.fillStyle = stroke_color;
+				polygonStrokeCtx.fillRect(0, 0, polygonStrokeCanvas.width, polygonStrokeCanvas.height);
+
+				ctx.drawImage(polygonStrokeCanvas, x_min - polygonStrokeMargin, y_min - polygonStrokeMargin);
 			}else{
 				setDrawColor(stroke_color);
 				var numVertices = initArrayBuffer(coords);
 				gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, numVertices);
 
 				ctx.drawImage(polygonWebGLCanvas, x_min, y_min);
+				// TODO: use pattern fill
 			}
 		}
 	};
