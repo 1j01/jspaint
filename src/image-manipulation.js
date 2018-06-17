@@ -760,11 +760,16 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
 	};
 
-	function replace_colors_with_swatch(ctx, swatch){
+	function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_offset_from_global_canvas){
 		// mainly for patterns support (for black & white mode)
 		ctx.globalCompositeOperation = "source-in";
 		ctx.fillStyle = swatch;
-		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		ctx.beginPath();
+		ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		ctx.save();
+		ctx.translate(x_offset_from_global_canvas, y_offset_from_global_canvas);
+		ctx.fill();
+		ctx.restore();
 	}
 
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path){
@@ -810,7 +815,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 			polygon_canvas_2d.height = polygon_webgl_canvas.height;
 
 			polygon_ctx_2d.drawImage(polygon_webgl_canvas, 0, 0);
-			replace_colors_with_swatch(polygon_ctx_2d, fill_color);
+			replace_colors_with_swatch(polygon_ctx_2d, fill_color, x_min, y_min);
 			ctx.drawImage(polygon_canvas_2d, x_min, y_min);
 		}
 		if(stroke){
@@ -833,8 +838,10 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 					)
 				}
 
-				replace_colors_with_swatch(polygon_ctx_2d, stroke_color);
-				ctx.drawImage(polygon_canvas_2d, x_min - polygon_stroke_margin, y_min - polygon_stroke_margin);
+				var x = x_min - polygon_stroke_margin;
+				var y = y_min - polygon_stroke_margin;
+				replace_colors_with_swatch(polygon_ctx_2d, stroke_color, x, y);
+				ctx.drawImage(polygon_canvas_2d, x, y);
 			}else{
 				var numVertices = initArrayBuffer(coords);
 				gl.clear(gl.COLOR_BUFFER_BIT);
@@ -844,7 +851,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 				polygon_canvas_2d.height = polygon_webgl_canvas.height;
 
 				polygon_ctx_2d.drawImage(polygon_webgl_canvas, 0, 0);
-				replace_colors_with_swatch(polygon_ctx_2d, stroke_color);
+				replace_colors_with_swatch(polygon_ctx_2d, stroke_color, x_min, y_min);
 				ctx.drawImage(polygon_canvas_2d, x_min, y_min);
 			}
 		}

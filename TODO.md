@@ -181,7 +181,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * Polygon
-	* Align patterns (black & white mode) with global coordinates (I did a premature optimization) (...but there's also `setTransform` so maybe I could use that)
 	* Remove `show_shape_styles_warning` (for Polygon specifically, or implement shape styles for the rest of the tools)
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
