@@ -801,8 +801,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		polygon_webgl_canvas.height = y_max - y_min;
 		gl.viewport(0, 0, polygon_webgl_canvas.width, polygon_webgl_canvas.height);
 
-		gl.clear(gl.COLOR_BUFFER_BIT);
-
 		var coords = new Float32Array(numCoords);
 		for (var i = 0; i < numPoints; i++) {
 			coords[i*2+0] = (points[i].x - x_min) / polygon_webgl_canvas.width * 2 - 1;
@@ -816,6 +814,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 			var contours = [coords];
 			var polyTriangles = triangulate(contours);
 			var numVertices = initArrayBuffer(polyTriangles);
+			gl.clear(gl.COLOR_BUFFER_BIT);
 			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 
 			polygon_canvas_2d.width = polygon_webgl_canvas.width;
@@ -866,6 +865,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 			}else{
 				setDrawColor(stroke_color);
 				var numVertices = initArrayBuffer(coords);
+				gl.clear(gl.COLOR_BUFFER_BIT);
 				gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, numVertices);
 
 				polygon_canvas_2d.width = polygon_webgl_canvas.width;
