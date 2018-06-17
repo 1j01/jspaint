@@ -676,7 +676,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 
 	var gl;
 	var positionLoc;
-	var colorLoc;
 
 	function initWebGL(canvas) {
 		gl = canvas.getContext('webgl', { antialias: false });
@@ -684,7 +683,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		var program = createShaderProgram();
 		positionLoc = gl.getAttribLocation(program, 'position');
 		gl.enableVertexAttribArray(positionLoc);
-		colorLoc = gl.getUniformLocation(program, 'color');
 	}
 
 	function initArrayBuffer(triangleVertexCoords) {
@@ -697,11 +695,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
 
 		return triangleVertexCoords.length / 2;
-	}
-
-	function setDrawColor(color){
-		var color4fv = get_rgba_from_color(color).map((colorComponent)=> colorComponent / 255);
-		gl.uniform4fv(colorLoc, color4fv);
 	}
 
 	function createShaderProgram() {
@@ -727,9 +720,8 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		// create fragment shader
 		var fragmentSrc = [
 			'precision mediump float;',
-			'uniform vec4 color;',
 			'void main() {',
-			'    gl_FragColor = color;',
+			'    gl_FragColor = vec4(0, 0, 0, 1);',
 			'}'
 		].join('');
 		var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -809,8 +801,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		}
 
 		if(fill){
-			// TODO: remove draw color if we're not using it since we're using replace_colors_with_swatch
-			setDrawColor(fill_color);
 			var contours = [coords];
 			var polyTriangles = triangulate(contours);
 			var numVertices = initArrayBuffer(polyTriangles);
@@ -863,7 +853,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 				replace_colors_with_swatch(polygon_ctx_2d, stroke_color);
 				ctx.drawImage(polygon_canvas_2d, x_min - polygon_stroke_margin, y_min - polygon_stroke_margin);
 			}else{
-				setDrawColor(stroke_color);
 				var numVertices = initArrayBuffer(coords);
 				gl.clear(gl.COLOR_BUFFER_BIT);
 				gl.drawArrays(as_polyline ? gl.LINE_STRIP : gl.LINE_LOOP, 0, numVertices);
