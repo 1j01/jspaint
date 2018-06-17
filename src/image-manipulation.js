@@ -777,7 +777,7 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		var x_max = -Infinity;
 		var y_min = +Infinity;
 		var y_max = -Infinity;
-        for (var i = 0; i < numPoints; i++) {
+		for (var i = 0; i < numPoints; i++) {
 			var {x, y} = points[i];
 			x_min = Math.min(x, x_min);
 			x_max = Math.max(x, x_max);
@@ -794,11 +794,11 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
 		var coords = new Float32Array(numCoords);
-        for (var i = 0; i < numPoints; i++) {
+		for (var i = 0; i < numPoints; i++) {
 			coords[i*2+0] = (points[i].x - x_min) / polygonFillCanvas.width * 2 - 1;
 			coords[i*2+1] = 1 - (points[i].y - y_min) / polygonFillCanvas.height * 2;
 			// TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
-        }
+		}
 
 		if(fill){
 			setDrawColor(fill_color);
