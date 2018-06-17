@@ -610,6 +610,32 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 	
 }
 
+function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_offset_from_global_canvas){
+	// mainly for patterns support (for black & white mode)
+	ctx.globalCompositeOperation = "source-in";
+	ctx.fillStyle = swatch;
+	ctx.beginPath();
+	ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	ctx.save();
+	ctx.translate(x_offset_from_global_canvas, y_offset_from_global_canvas);
+	ctx.fill();
+	ctx.restore();
+}
+
+/*
+function alpha_threshold(ctx, threshold){
+	var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+	for(var i=0; i<id.data.length; i+=4){
+		if(id.data[i+3] < threshold){
+			id.data[i+3] = 0;
+		}
+	}
+
+	ctx.putImageData(id, 0, 0);
+}
+*/
+
 (function(){
 
 	var tessy = (function initTesselator() {
@@ -759,18 +785,6 @@ function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
 	window.draw_polygon = function(ctx, points, stroke, fill){
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
 	};
-
-	function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_offset_from_global_canvas){
-		// mainly for patterns support (for black & white mode)
-		ctx.globalCompositeOperation = "source-in";
-		ctx.fillStyle = swatch;
-		ctx.beginPath();
-		ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
-		ctx.save();
-		ctx.translate(x_offset_from_global_canvas, y_offset_from_global_canvas);
-		ctx.fill();
-		ctx.restore();
-	}
 
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path){
 		var stroke_color = ctx.strokeStyle;
