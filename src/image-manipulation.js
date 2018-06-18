@@ -139,15 +139,29 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius){
 }
 
 var line_brush_canvas;
-
+var line_brush_canvas_rendered_shape;
+var line_brush_canvas_rendered_color;
+var line_brush_canvas_rendered_size;
 function update_brush_for_drawing_lines(stroke_size){
 	if(aliasing && stroke_size > 1){
-		var csz = stroke_size * 2.1; // XXX: magic constant duplicated from tools.js
-		line_brush_canvas = new Canvas(csz, csz);
-		line_brush_canvas.width = csz;
-		line_brush_canvas.height = csz;
-		line_brush_canvas.ctx.fillStyle = line_brush_canvas.ctx.strokeStyle = stroke_color;
-		render_brush(line_brush_canvas.ctx, "circle", stroke_size);
+		// TODO: DRY brush caching code
+		if(
+			line_brush_canvas_rendered_shape !== "circle" ||
+			line_brush_canvas_rendered_color !== stroke_color ||
+			line_brush_canvas_rendered_size !== stroke_size
+		){
+			// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
+			var csz = stroke_size * 2.1; // XXX: magic constant duplicated from tools.js
+			line_brush_canvas = new Canvas(csz, csz);
+			line_brush_canvas.width = csz;
+			line_brush_canvas.height = csz;
+			line_brush_canvas.ctx.fillStyle = line_brush_canvas.ctx.strokeStyle = stroke_color;
+			render_brush(line_brush_canvas.ctx, "circle", stroke_size);
+
+			line_brush_canvas_rendered_shape = "circle";
+			line_brush_canvas_rendered_color = stroke_color;
+			line_brush_canvas_rendered_size = stroke_size;
+		}
 	}
 }
 

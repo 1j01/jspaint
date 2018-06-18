@@ -172,10 +172,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	SVG (or HTML?) with invisible selectable transformed text elements?
 
 
-* Curve
-	* Aliasing
-
-
 * Rectangle
 	* The stroke should go within the rectangle
 
@@ -187,9 +183,8 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Don't start making the polygon until you click and drag more than the auto-finalization distance
 	* Cancel the polygon if you end up within the auto-finalization distance on the first gesture
 	* Preview invertily (like Free-Form Select) when fill-only is selected for the shape style option
-	* Regression: fix performance of the preview lines (now using WebGL so strokes don't change slightly when finalizing)
-	* Bug: jumping to 0, 0 (only saw it happen once so far; could it have to do with the dialog box?)
-	* Bug: unclosed polygon (last segment of stroke) (only saw it happen once so far)
+	* Investigate bug: jumping to 0, 0 (only saw it happen once so far; could it have had to do with the dialog box?)
+	* Investigate bug: unclosed polygon (last segment of stroke) (only saw it happen once so far)
 
 
 * Ellipse
@@ -210,6 +205,9 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* Support stroke size and shape styles!
 	* Rectangle, Rounded Rectangle & Ellipse:
 		* Stroke should be entirely inside the dragged region
+	* Handle patterns (black and white mode)
+		* Still needed for line, curve, brush, and fill
+		* Alignment should be fixed for selection tools (and checked for all of them)
 
 
 ### On-Canvas Objects
