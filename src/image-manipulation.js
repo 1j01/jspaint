@@ -757,6 +757,10 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 		var numPoints = points.length;
 		var numCoords = numPoints * 2
 
+		if(numPoints === 0){
+			return;
+		}
+
 		var x_min = +Infinity;
 		var x_max = -Infinity;
 		var y_min = +Infinity;
@@ -838,7 +842,8 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 
 	window.copy_contents_within_polygon = function(canvas, points, x_min, y_min, x_max, y_max){
 		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
-		
+		x_max = Math.max(x_max, x_min + 1);
+		y_max = Math.max(y_max, y_min + 1);
 		var width = x_max - x_min;
 		var height = y_max - y_min;
 		
