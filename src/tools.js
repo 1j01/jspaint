@@ -510,12 +510,6 @@ tools = [{
 	// The vertices of the polygon
 	points: [],
 	
-	// The boundaries of the polygon
-	x_min: +Infinity,
-	x_max: -Infinity,
-	y_min: +Infinity,
-	y_max: -Infinity,
-	
 	passive: function(){
 		// actions are passive if you've already started using the tool
 		// but the first action should be undoable
@@ -528,10 +522,6 @@ tools = [{
 		var i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
-		// this.x_min = Math.min(x, this.x_min);
-		// this.x_max = Math.max(x + 1, this.x_max);
-		// this.y_min = Math.min(y, this.y_min);
-		// this.y_max = Math.max(y + 1, this.y_max);
 		var dx = this.points[i].x - this.points[0].x;
 		var dy = this.points[i].y - this.points[0].y;
 		var d = Math.sqrt(dx*dx + dy*dy);
@@ -545,12 +535,6 @@ tools = [{
 		var tool = this;
 		
 		if(tool.points.length < 1){
-			// tool.x_min = x;
-			// tool.x_max = x+1;
-			// tool.y_min = y;
-			// tool.y_max = y+1;
-			// tool.points = [];
-			
 			// @TODO: stop needing this:
 			tool.canvas_base = canvas;
 			
@@ -571,7 +555,7 @@ tools = [{
 			var dy = y - ly;
 			var dt = +(new Date) - lt;
 			var d = Math.sqrt(dx*dx + dy*dy);
-			if(d < 4.1010101 && dt < 250){ // arbitrary 101
+			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (TODO: find correct value (or formula))
 				tool.complete(ctx, x, y);
 				// Release the pointer to prevent tool.paint()
 				// being called and clearing the canvas
@@ -579,12 +563,6 @@ tools = [{
 			}else{
 				// Add the point
 				tool.points.push({x: x, y: y});
-				// // Update the boundaries of the polygon
-				// // @TODO: this boundary stuff in less places (DRY)
-				// tool.x_min = Math.min(x, tool.x_min);
-				// tool.x_max = Math.max(x + 1, tool.x_max);
-				// tool.y_min = Math.min(y, tool.y_min);
-				// tool.y_max = Math.max(y + 1, tool.y_max);
 			}
 		}
 		tool.last_click_pointerdown = {x: x, y: y, time: +new Date};
