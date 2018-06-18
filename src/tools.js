@@ -89,24 +89,22 @@ tools = [{
 		// Revert the inverty brush paint
 		ctx.copy(undos[undos.length-1]);
 		
-		// Cut out the polygon
-		var cutout = cut_polygon(
+		var contents_within_polygon = copy_contents_within_polygon(
+			canvas,
 			this.points,
 			this.x_min,
 			this.y_min,
 			this.x_max,
-			this.y_max,
-			canvas
+			this.y_max
 		);
 		
-		// Make the selection
 		selection = new Selection(
 			this.x_min,
 			this.y_min,
 			this.x_max - this.x_min,
 			this.y_max - this.y_min
 		);
-		selection.instantiate(cutout);
+		selection.instantiate(contents_within_polygon);
 		selection.cut_out_background();
 	},
 	$options: $choose_transparency

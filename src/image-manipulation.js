@@ -836,7 +836,7 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 		}
 	};
 
-	window.cut_polygon = function(points, x_min, y_min, x_max, y_max, from_canvas){
+	window.copy_contents_within_polygon = function(canvas, points, x_min, y_min, x_max, y_max){
 		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
 		
 		var width = x_max - x_min;
@@ -844,27 +844,13 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 		
 		// TODO: maybe have the cutout only the width/height of the bounds
 		// var cutout = new Canvas(width, height);
-		// var cutout = new Canvas(from_canvas.width, from_canvas.height);
-		var cutout = new Canvas(from_canvas);
+		var cutout = new Canvas(canvas);
 
 		cutout.ctx.save();
 		cutout.ctx.globalCompositeOperation = "destination-in";
 		draw_polygon(cutout.ctx, points, false, true);
 		cutout.ctx.restore();
 		
-		// take the contents of the polygon from the canvas
-		// todo: handle transparency the source-in/atop isn't gonna work for both of these situations is it?
-		// cutout.ctx.save();
-		// cutout.ctx.globalCompositeOperation = "source-atop";
-		// // cutout.ctx.drawImage(from_canvas, 0, 0);
-		// cutout.ctx.restore();
-
-		// delete the polygon from the canvas
-		// ctx.save();
-		// ctx.globalCompositeOperation = "destination-out"; // or something
-		// ctx.drawImage(cutout, 0, 0);
-		// ctx.restore();
-
 		var cutout_crop = new Canvas(width, height);
 		cutout_crop.ctx.drawImage(cutout, x_min, y_min, width, height, 0, 0, width, height);
 
