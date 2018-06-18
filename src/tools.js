@@ -440,27 +440,31 @@ tools = [{
 		this.points[i].x = x;
 		this.points[i].y = y;
 		
-		ctx.beginPath();
-		ctx.moveTo(this.points[0].x, this.points[0].y);
 		if(this.points.length === 4){
-			ctx.bezierCurveTo(
+			draw_bezier_curve(
+				ctx,
+				this.points[0].x, this.points[0].y,
 				this.points[2].x, this.points[2].y,
 				this.points[3].x, this.points[3].y,
-				this.points[1].x, this.points[1].y
+				this.points[1].x, this.points[1].y,
+				stroke_size
 			);
 		}else if(this.points.length === 3){
-			ctx.quadraticCurveTo(
+			draw_quadratic_curve(
+				ctx,
+				this.points[0].x, this.points[0].y,
 				this.points[2].x, this.points[2].y,
-				this.points[1].x, this.points[1].y
+				this.points[1].x, this.points[1].y,
+				stroke_size
 			);
 		}else{
-			ctx.lineTo(
-				this.points[1].x, this.points[1].y
+			draw_line(
+				ctx,
+				this.points[0].x, this.points[0].y,
+				this.points[1].x, this.points[1].y,
+				stroke_size
 			);
 		}
-		ctx.lineCap = "round";
-		ctx.stroke();
-		ctx.lineCap = "butt";
 	},
 	cancel: function(){
 		this.points = [];

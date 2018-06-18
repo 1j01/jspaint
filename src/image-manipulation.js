@@ -142,6 +142,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 	stroke_size = stroke_size || 1;
 	if(aliasing){
 		if(stroke_size > 1){
+			// @TODON'T: rerender every time
 			var csz = stroke_size * 2.1; // XXX: magic constant duplicated from tools.js
 			var brush_canvas = new Canvas(csz, csz);
 			brush_canvas.width = csz;
@@ -635,6 +636,45 @@ function alpha_threshold(ctx, threshold){
 	ctx.putImageData(id, 0, 0);
 }
 */
+
+// adapted from https://github.com/Pomax/bezierjs
+function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y){
+	// TODO: get rid of this array of objects construction
+	var p = [{x: start_x, y: start_y}, {x: control_1_x, y: control_1_y}, {x: control_2_x, y: control_2_y}, {x: end_x, y: end_y}];
+	var mt = 1-t;
+	var mt2 = mt*mt;
+	var t2 = t*t;
+	var a, b, c, d = 0;
+	// if(this.order===2) {
+	// 	p = [p[0], p[1], p[2], {x: 0, y: 0}];
+	// 	a = mt2;
+	// 	b = mt*t*2;
+	// 	c = t2;
+	// }
+	// else if(this.order===3) {
+	a = mt2*mt;
+	b = mt2*t*3;
+	c = mt*t2*3;
+	d = t*t2;
+	// }
+	return {
+		x: a*p[0].x + b*p[1].x + c*p[2].x + d*p[3].x,
+		y: a*p[0].y + b*p[1].y + c*p[2].y + d*p[3].y
+	};
+}
+
+function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
+	var steps = 100;
+	var point_a = {x: start_x, y: start_y};
+	for(var t=0; t<1; t+=1/steps){
+		var point_b = compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y);
+		draw_line(ctx, point_a.x, point_a.y, point_b.x, point_b.y, stroke_size);
+		point_a = point_b;
+	}
+};
+function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x, end_y, stroke_size) {
+	draw_bezier_curve(ctx, start_x, start_y, control_x, control_y, control_x, control_y, end_x, end_y, stroke_size);
+};
 
 (function(){
 
