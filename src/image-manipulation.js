@@ -534,103 +534,6 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 	});
 }
 
-function cut_polygon(points, x_min, y_min, x_max, y_max, from_canvas){
-	// Cut out the polygon given by points bounded by x/y_min/max from from_canvas
-	// TODO: use webgl polygon code
-	
-	from_canvas = from_canvas || canvas;
-	
-	var X_MIN = x_min; // || 0;
-	var X_MAX = x_max; // || canvas.width;
-	var Y_MIN = y_min; // || 0;
-	var Y_MAX = y_max; // || canvas.height;
-	var WIDTH = X_MAX - X_MIN;
-	var HEIGHT = Y_MAX - Y_MIN;
-	
-	var cutout = new Canvas(WIDTH, HEIGHT);
-	
-	// Take image data from source canvas context
-	var id_src = from_canvas.ctx.getImageData(X_MIN, Y_MIN, WIDTH, HEIGHT);
-	// Create image data to draw the polygon onto
-	var id_dest = cutout.ctx.createImageData(WIDTH, HEIGHT);
-	
-	// Loosely based off of some public-domain code by Darel Rex Finley, 2007
-	
-	var nodes; // length of the nodeX array
-	var nodeX = new Array(points.length);
-	var swap;
-	var i, j;
-	//var edge_points = [];
-	
-	// Loop through the rows of the image.
-	for(var y = Y_MIN; y < Y_MAX; y++){
-		
-		// Build a list of nodes.
-		// (In this context, "nodes" are one-dimensional points of intersection)
-		// (Also, `nodes` is treated as the length of the nodeX array)
-		nodes = 0;
-		j = points.length - 1;
-		for(i = 0; i < points.length; i++){
-			if(
-				points[i].y < y && points[j].y >= y ||
-				points[j].y < y && points[i].y >= y
-			){
-				nodeX[nodes++] =
-					points[i].x +
-					(y - points[i].y) /
-					(points[j].y - points[i].y) *
-					(points[j].x - points[i].x);
-			}
-			j = i;
-		}
-
-		// Sort the nodes, via a simple “Bubble” sort.
-		i = 0;
-		while(i < nodes-1){
-			if(nodeX[i] > nodeX[i+1]){
-				swap = nodeX[i];
-				nodeX[i] = nodeX[i+1];
-				nodeX[i+1] = swap;
-				if(i){ i--; }
-			}else{
-				i++;
-			}
-		}
-		// Browsers optimize sorting numbers, so just use Array::sort
-		/*nodeX.sort(function(a, b){
-			return a - b;
-		});*/
-		// But this array can contain undefineds [citation needed]
-		// It's not defined by its length but by the variable `nodes`
-		
-		
-		// Fill the pixels between node pairs.
-		for(i = 0; i < nodes; i += 2){
-			if(nodeX[i+0] >= X_MAX) break;
-			if(nodeX[i+1] > X_MIN){
-				if(nodeX[i+0] < X_MIN) nodeX[i+0] = X_MIN;
-				if(nodeX[i+1] > X_MAX) nodeX[i+1] = X_MAX;
-				for(var x = nodeX[i]; x < nodeX[i+1]; x++){
-					// fill pixel at (x, y)
-					var idi = ((y-Y_MIN)*WIDTH + ~~(x-X_MIN))*4;
-					id_dest.data[idi+0] = id_src.data[idi+0];
-					id_dest.data[idi+1] = id_src.data[idi+1];
-					id_dest.data[idi+2] = id_src.data[idi+2];
-					id_dest.data[idi+3] = id_src.data[idi+3];
-				}
-				//edge_points.push({x: nodeX[i+0], y: y});
-				//edge_points.push({x: nodeX[i+1], y: y});
-			}
-		}
-	}
-	
-	// Done boom okay
-	cutout.ctx.putImageData(id_dest, 0, 0);
-	//cutout.edge_points = edge_points;
-	return cutout;
-	
-}
-
 function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_offset_from_global_canvas){
 	// mainly for patterns support (for black & white mode)
 	ctx.globalCompositeOperation = "source-in";
@@ -932,5 +835,40 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 			}
 		}
 	};
+
+	window.cut_polygon = function(points, x_min, y_min, x_max, y_max, from_canvas){
+		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
+		
+		var width = x_max - x_min;
+		var height = y_max - y_min;
+		
+		// TODO: maybe have the cutout only the width/height of the bounds
+		// var cutout = new Canvas(width, height);
+		// var cutout = new Canvas(from_canvas.width, from_canvas.height);
+		var cutout = new Canvas(from_canvas);
+
+		cutout.ctx.save();
+		cutout.ctx.globalCompositeOperation = "destination-in";
+		draw_polygon(cutout.ctx, points, false, true);
+		cutout.ctx.restore();
+		
+		// take the contents of the polygon from the canvas
+		// todo: handle transparency the source-in/atop isn't gonna work for both of these situations is it?
+		// cutout.ctx.save();
+		// cutout.ctx.globalCompositeOperation = "source-atop";
+		// // cutout.ctx.drawImage(from_canvas, 0, 0);
+		// cutout.ctx.restore();
+
+		// delete the polygon from the canvas
+		// ctx.save();
+		// ctx.globalCompositeOperation = "destination-out"; // or something
+		// ctx.drawImage(cutout, 0, 0);
+		// ctx.restore();
+
+		var cutout_crop = new Canvas(width, height);
+		cutout_crop.ctx.drawImage(cutout, x_min, y_min, width, height, 0, 0, width, height);
+
+		return cutout_crop;
+	}
 
 })();

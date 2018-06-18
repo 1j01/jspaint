@@ -140,6 +140,7 @@ Selection.prototype.cut_out_background = function(){
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
 		var colored_cutout = new Canvas(cutout);
+		// TODO: use replace_colors_with_swatch with sel.x, sel.y to support patterns properly (fix the offset)
 		colored_cutout.ctx.globalCompositeOperation = "source-in";
 		colored_cutout.ctx.fillStyle = colors.background;
 		colored_cutout.ctx.fillRect(0, 0, colored_cutout.width, colored_cutout.height);

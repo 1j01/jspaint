@@ -95,7 +95,8 @@ tools = [{
 			this.x_min,
 			this.y_min,
 			this.x_max,
-			this.y_max
+			this.y_max,
+			canvas
 		);
 		
 		// Make the selection
