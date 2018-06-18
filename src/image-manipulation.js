@@ -900,10 +900,10 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 				polygon_canvas_2d.width = x_max - x_min + polygon_stroke_margin * 2;
 				polygon_canvas_2d.height = y_max - y_min + polygon_stroke_margin * 2;
 
+				update_brush_for_drawing_lines(stroke_size);
 				for (var i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
 					var point_a = points[i];
 					var point_b = points[(i + 1) % numPoints];
-					update_brush_for_drawing_lines(stroke_size);
 					draw_line(
 						polygon_ctx_2d,
 						point_a.x - x_min + polygon_stroke_margin,
