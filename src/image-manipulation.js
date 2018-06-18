@@ -138,19 +138,25 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius){
 	}
 }
 
+var line_brush_canvas;
+
+function update_brush_for_drawing_lines(stroke_size){
+	if(aliasing && stroke_size > 1){
+		var csz = stroke_size * 2.1; // XXX: magic constant duplicated from tools.js
+		line_brush_canvas = new Canvas(csz, csz);
+		line_brush_canvas.width = csz;
+		line_brush_canvas.height = csz;
+		line_brush_canvas.ctx.fillStyle = line_brush_canvas.ctx.strokeStyle = stroke_color;
+		render_brush(line_brush_canvas.ctx, "circle", stroke_size);
+	}
+}
+
 function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 	stroke_size = stroke_size || 1;
 	if(aliasing){
 		if(stroke_size > 1){
-			// @TODON'T: rerender every time
-			var csz = stroke_size * 2.1; // XXX: magic constant duplicated from tools.js
-			var brush_canvas = new Canvas(csz, csz);
-			brush_canvas.width = csz;
-			brush_canvas.height = csz;
-			brush_canvas.ctx.fillStyle = brush_canvas.ctx.strokeStyle = stroke_color;
-			render_brush(brush_canvas.ctx, "circle", stroke_size);
 			bresenham_line(x1, y1, x2, y2, function(x, y){
-				ctx.drawImage(brush_canvas, ~~(x - brush_canvas.width/2), ~~(y - brush_canvas.height/2));
+				ctx.drawImage(line_brush_canvas, ~~(x - line_brush_canvas.width/2), ~~(y - line_brush_canvas.height/2));
 			});
 		}else{
 			bresenham_line(x1, y1, x2, y2, function(x, y){
@@ -664,6 +670,7 @@ function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2
 }
 
 function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
+	update_brush_for_drawing_lines(stroke_size);
 	var steps = 100;
 	var point_a = {x: start_x, y: start_y};
 	for(var t=0; t<1; t+=1/steps){
@@ -882,6 +889,7 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 				for (var i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
 					var point_a = points[i];
 					var point_b = points[(i + 1) % numPoints];
+					update_brush_for_drawing_lines(stroke_size);
 					draw_line(
 						polygon_ctx_2d,
 						point_a.x - x_min + polygon_stroke_margin,

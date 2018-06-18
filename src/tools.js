@@ -401,6 +401,7 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	shape: function(ctx, x, y, w, h){
+		update_brush_for_drawing_lines(stroke_size);
 		draw_line(ctx, x, y, x+w, y+h, stroke_size);
 	},
 	$options: $choose_stroke_size
@@ -458,6 +459,7 @@ tools = [{
 				stroke_size
 			);
 		}else{
+			update_brush_for_drawing_lines(stroke_size);
 			draw_line(
 				ctx,
 				this.points[0].x, this.points[0].y,
