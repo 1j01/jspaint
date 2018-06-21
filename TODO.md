@@ -277,9 +277,3 @@ I implemented theoretical support for changing the wallpaper on Chrome OS, but I
 
 * Images
 	* Use a shared sprite sheet per theme (and optimize it I guess)
-
-
-* Load the About Paint content from an element on the page that gets hidden by code
-in order to hopefully show up nicer in search engines.
-Currently shows up in Google with some text from the menus as the description.
-
