@@ -177,7 +177,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * Polygon
-	* Remove `show_shape_styles_warning` (for Polygon specifically, or implement shape styles for the rest of the tools)
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
 	* Don't start making the polygon until you click and drag more than the auto-finalization distance
@@ -206,8 +205,9 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Rectangle, Rounded Rectangle & Ellipse:
 		* Stroke should be entirely inside the dragged region
 	* Handle patterns (black and white mode)
-		* Still needed for line, curve, brush, and fill
-		* Alignment should be fixed for selection tools (and checked for all of them)
+		* Still needed for brush and fill
+		* Check to make sure patterns are aligned properly for all the tools
+	* Remove `show_shape_styles_warning` (for Polygon & Line & Curve (& Rectangle), or implement shape styles for the rest of the tools)
 
 
 ### On-Canvas Objects

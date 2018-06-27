@@ -93,12 +93,10 @@ I want to bring good old paint into the modern era.
 * Interactive tutorial(s)?
 
 
-#### A lot of stuff isn't done yet:
+#### Limitations:
 
-* The Magnifier's viewport preview
-* Shape styles on most of the shape tools
-* The polygon tool needs some work
-* [This entire document full of things to do](TODO.md)
+A lot of stuff isn't done yet.
+[See: the big long todo list.](TODO.md)
 
 Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
@@ -106,7 +104,7 @@ but data copied from JS Paint can only be pasted into other instances of JS Pain
 There's apparently no way for web apps to properly copy image data to the clipboard.
 "[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)"
 is currently the top starred issue of chromium.
-To use the clipboard menu items, you need to install [the Chrome app][jspaint chrome app].
+<!-- To use the clipboard menu items, you need to install [the Chrome app][jspaint chrome app]. -->
 <!-- or the native app. -->
 
 

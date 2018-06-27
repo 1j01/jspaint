@@ -19,13 +19,13 @@ function render_brush(ctx, shape, size){
 	}else if(shape === "square"){
 		ctx.fillRect(left, top, ~~size, ~~size);
 	}else if(shape === "diagonal"){
-		draw_line(ctx, left, top, right, bottom);
+		draw_line_without_pattern_support(ctx, left, top, right, bottom);
 	}else if(shape === "reverse_diagonal"){
-		draw_line(ctx, left, bottom, right, top);
+		draw_line_without_pattern_support(ctx, left, bottom, right, top);
 	}else if(shape === "horizontal"){
-		draw_line(ctx, left, mid_y, size, mid_y);
+		draw_line_without_pattern_support(ctx, left, mid_y, size, mid_y);
 	}else if(shape === "vertical"){
-		draw_line(ctx, mid_x, top, mid_x, size);
+		draw_line_without_pattern_support(ctx, mid_x, top, mid_x, size);
 	}
 }
 
@@ -165,7 +165,7 @@ function update_brush_for_drawing_lines(stroke_size){
 	}
 }
 
-function draw_line(ctx, x1, y1, x2, y2, stroke_size){
+function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size){
 	stroke_size = stroke_size || 1;
 	if(aliasing){
 		if(stroke_size > 1){
@@ -535,7 +535,8 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 }
 
 function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_offset_from_global_canvas){
-	// mainly for patterns support (for black & white mode)
+	// USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas)
+	// This function is mainly for patterns support (for black & white mode) but naturally handles solid colors as well.
 	ctx.globalCompositeOperation = "source-in";
 	ctx.fillStyle = swatch;
 	ctx.beginPath();
@@ -586,19 +587,43 @@ function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2
 	};
 }
 
-function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
+function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
 	update_brush_for_drawing_lines(stroke_size);
 	var steps = 100;
 	var point_a = {x: start_x, y: start_y};
 	for(var t=0; t<1; t+=1/steps){
 		var point_b = compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y);
-		draw_line(ctx, point_a.x, point_a.y, point_b.x, point_b.y, stroke_size);
+		// TODO: carry "error" from Bresenham line algorithm between iterations? and/or get a proper Bezier drawing algorithm
+		draw_line_without_pattern_support(ctx, point_a.x, point_a.y, point_b.x, point_b.y, stroke_size);
 		point_a = point_b;
 	}
 };
 function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x, end_y, stroke_size) {
 	draw_bezier_curve(ctx, start_x, start_y, control_x, control_y, control_x, control_y, end_x, end_y, stroke_size);
 };
+
+function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
+	// could calculate bounds of Bezier curve with something like bezier-js
+	// but just using the control points should be fine
+	var min_x = Math.min(start_x, control_1_x, control_2_x, end_x);
+	var min_y = Math.min(start_y, control_1_y, control_2_y, end_y);
+	var max_x = Math.max(start_x, control_1_x, control_2_x, end_x);
+	var max_y = Math.max(start_y, control_1_y, control_2_y, end_y);
+	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, function(op_ctx_2d){
+		draw_bezier_curve_without_pattern_support(op_ctx_2d, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size);
+	});
+}
+function draw_line(ctx, x1, y1, x2, y2, stroke_size){
+	var min_x = Math.min(x1, x2);
+	var min_y = Math.min(y1, y2);
+	var max_x = Math.max(x1, x2);
+	var max_y = Math.max(y1, y2);
+	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, function(op_ctx_2d){
+		draw_line_without_pattern_support(op_ctx_2d, x1, y1, x2, y2, stroke_size);
+	});
+	// also works:
+	draw_line_strip(ctx, [{x: x1, y: y1}, {x: x2, y: y2}]);
+}
 
 (function(){
 
@@ -737,11 +762,11 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 	}
 
 
-	var polygon_webgl_canvas = document.createElement('canvas');
-	var polygon_canvas_2d = document.createElement('canvas');
-	var polygon_ctx_2d = polygon_canvas_2d.getContext("2d");
+	var op_canvas_webgl = document.createElement('canvas');
+	var op_canvas_2d = document.createElement('canvas');
+	var op_ctx_2d = op_canvas_2d.getContext("2d");
 
-	initWebGL(polygon_webgl_canvas);
+	initWebGL(op_canvas_webgl);
 
 	window.draw_line_strip = function(ctx, points){
 		draw_polygon_or_line_strip(ctx, points, true, false, false);
@@ -775,14 +800,14 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 		x_max += 1;
 		y_max += 1;
 
-		polygon_webgl_canvas.width = x_max - x_min;
-		polygon_webgl_canvas.height = y_max - y_min;
-		gl.viewport(0, 0, polygon_webgl_canvas.width, polygon_webgl_canvas.height);
+		op_canvas_webgl.width = x_max - x_min;
+		op_canvas_webgl.height = y_max - y_min;
+		gl.viewport(0, 0, op_canvas_webgl.width, op_canvas_webgl.height);
 
 		var coords = new Float32Array(numCoords);
 		for (var i = 0; i < numPoints; i++) {
-			coords[i*2+0] = (points[i].x - x_min) / polygon_webgl_canvas.width * 2 - 1;
-			coords[i*2+1] = 1 - (points[i].y - y_min) / polygon_webgl_canvas.height * 2;
+			coords[i*2+0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
+			coords[i*2+1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
 			// TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
 		}
 
@@ -793,49 +818,49 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 			gl.clear(gl.COLOR_BUFFER_BIT);
 			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 
-			polygon_canvas_2d.width = polygon_webgl_canvas.width;
-			polygon_canvas_2d.height = polygon_webgl_canvas.height;
+			op_canvas_2d.width = op_canvas_webgl.width;
+			op_canvas_2d.height = op_canvas_webgl.height;
 
-			polygon_ctx_2d.drawImage(polygon_webgl_canvas, 0, 0);
-			replace_colors_with_swatch(polygon_ctx_2d, fill_color, x_min, y_min);
-			ctx.drawImage(polygon_canvas_2d, x_min, y_min);
+			op_ctx_2d.drawImage(op_canvas_webgl, 0, 0);
+			replace_colors_with_swatch(op_ctx_2d, fill_color, x_min, y_min);
+			ctx.drawImage(op_canvas_2d, x_min, y_min);
 		}
 		if(stroke){
 			if(stroke_size > 1){
-				var polygon_stroke_margin = ~~(stroke_size * 1.1);
+				var stroke_margin = ~~(stroke_size * 1.1);
 
-				polygon_canvas_2d.width = x_max - x_min + polygon_stroke_margin * 2;
-				polygon_canvas_2d.height = y_max - y_min + polygon_stroke_margin * 2;
+				op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
+				op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
 
 				update_brush_for_drawing_lines(stroke_size);
 				for (var i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
 					var point_a = points[i];
 					var point_b = points[(i + 1) % numPoints];
-					draw_line(
-						polygon_ctx_2d,
-						point_a.x - x_min + polygon_stroke_margin,
-						point_a.y - y_min + polygon_stroke_margin,
-						point_b.x - x_min + polygon_stroke_margin,
-						point_b.y - y_min + polygon_stroke_margin,
+					draw_line_without_pattern_support(
+						op_ctx_2d,
+						point_a.x - x_min + stroke_margin,
+						point_a.y - y_min + stroke_margin,
+						point_b.x - x_min + stroke_margin,
+						point_b.y - y_min + stroke_margin,
 						stroke_size
-					)
+					);
 				}
 
-				var x = x_min - polygon_stroke_margin;
-				var y = y_min - polygon_stroke_margin;
-				replace_colors_with_swatch(polygon_ctx_2d, stroke_color, x, y);
-				ctx.drawImage(polygon_canvas_2d, x, y);
+				var x = x_min - stroke_margin;
+				var y = y_min - stroke_margin;
+				replace_colors_with_swatch(op_ctx_2d, stroke_color, x, y);
+				ctx.drawImage(op_canvas_2d, x, y);
 			}else{
 				var numVertices = initArrayBuffer(coords);
 				gl.clear(gl.COLOR_BUFFER_BIT);
 				gl.drawArrays(close_path ? gl.LINE_LOOP : gl.LINE_STRIP, 0, numVertices);
 
-				polygon_canvas_2d.width = polygon_webgl_canvas.width;
-				polygon_canvas_2d.height = polygon_webgl_canvas.height;
+				op_canvas_2d.width = op_canvas_webgl.width;
+				op_canvas_2d.height = op_canvas_webgl.height;
 
-				polygon_ctx_2d.drawImage(polygon_webgl_canvas, 0, 0);
-				replace_colors_with_swatch(polygon_ctx_2d, stroke_color, x_min, y_min);
-				ctx.drawImage(polygon_canvas_2d, x_min, y_min);
+				op_ctx_2d.drawImage(op_canvas_webgl, 0, 0);
+				replace_colors_with_swatch(op_ctx_2d, stroke_color, x_min, y_min);
+				ctx.drawImage(op_canvas_2d, x_min, y_min);
 			}
 		}
 	};
@@ -862,4 +887,28 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 		return cutout_crop;
 	}
 
+	// TODO: maybe shouldn't be external...
+	window.draw_with_swatch = function(ctx, x_min, y_min, x_max, y_max, swatch, callback) {
+		var stroke_margin = ~~(stroke_size * 1.1);
+		
+		x_max = Math.max(x_max, x_min + 1);
+		y_max = Math.max(y_max, y_min + 1);
+		op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
+		op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
+
+		var x = x_min - stroke_margin;
+		var y = y_min - stroke_margin;
+
+		op_ctx_2d.save();
+		op_ctx_2d.translate(-x, -y);
+		callback(op_ctx_2d);
+		op_ctx_2d.restore(); // for replace_colors_with_swatch!
+
+		replace_colors_with_swatch(op_ctx_2d, swatch, x, y);
+		ctx.drawImage(op_canvas_2d, x, y);
+
+		// for debug:
+		// ctx.fillStyle = "rgba(255, 0, 255, 0.1)";
+		// ctx.fillRect(x, y, op_canvas_2d.width, op_canvas_2d.height);
+	}
 })();
