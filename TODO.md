@@ -187,15 +187,18 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * **Shape Styles and Strokes**
+	* Shapes: use primary color for fill for fill-only mode
 	* Shapes: respond to Ctrl (It's complicated)
 	* Tools that use circle "brushes" for strokes should treat the stroke size as a simple diameter
-	* Rounded Rectangle & Ellipse:
+	* Ellipse:
 		* Support stroke size and shape styles!
+	* Rounded Rectangle & Ellipse:
 		* Stroke should be entirely inside the dragged region
 	* Handle patterns (black and white mode)
-		* Still needed for brush and fill
+		* Still needed for brush and fill and right click with the eraser tool (i.e. replace color)
 		* Check to make sure patterns are aligned properly for all the tools
-	* Remove `show_shape_styles_warning` (for Polygon & Line & Curve & Rectangle, or implement shape styles for the rest of the tools)
+		* There's supposed to be a mapping between color values and pattern fills, used by the text tool and for the palette when switching between modes (colors should be kept between going to black and white mode and back)
+	* Remove `show_shape_styles_warning` (for Polygon & Line & Curve & Rectangle & Rounded Rectangle, or just implement shape styles for Ellipse!)
 
 
 ### On-Canvas Objects

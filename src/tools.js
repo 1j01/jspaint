@@ -484,16 +484,6 @@ tools = [{
 			ctx.fillRect(x, y, w, h);
 		}
 		if(this.$options.stroke){
-
-			// if(Math.abs(w) < stroke_size * 2 || Math.abs(h) < stroke_size * 2){
-			// 	ctx.save();
-			// 	ctx.fillStyle = ctx.strokeStyle;
-			// 	ctx.fillRect(x, y, w, h);
-			// 	ctx.restore();
-			// }else{
-			// 	ctx.strokeRect(x + stroke_size / 2, y + stroke_size / 2, w - stroke_size, h - stroke_size);
-			// }
-
 			var normalized_x = Math.min(x, x + w);
 			var normalized_y = Math.min(y, y + h);
 			var normalized_w = Math.abs(w);
@@ -646,9 +636,51 @@ tools = [{
 	shape: function(ctx, x, y, w, h){
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
-		var radius = Math.min(7, w/2, h/2);
+		// alternatively:
+		// var normalized_x = Math.min(x, x + w);
+		// var normalized_y = Math.min(y, y + h);
+		// var normalized_w = Math.abs(w);
+		// var normalized_h = Math.abs(h);
+		// or probably:
+		// x = Math.min(x, x + w);
+		// y = Math.min(y, y + h);
+		// w = Math.abs(w);
+		// h = Math.abs(h);
+
+		var radius = Math.min(8, w/2, h/2);
 		
-		draw_rounded_rectangle(ctx, x, y, w, h, radius);
+		// if(w < stroke_size * 2 || h < stroke_size * 2){
+		// 	ctx.save();
+		// 	ctx.fillStyle = ctx.strokeStyle;
+		// 	ctx.fillRect(x, y, w, h);
+		// 	ctx.restore();
+		// }else{
+		// 	ctx.strokeRect(x + stroke_size / 2, y + stroke_size / 2, w - stroke_size, h - stroke_size);
+		// }
+
+		if(w < stroke_size || h < stroke_size){
+			ctx.fillStyle = ctx.strokeStyle;
+			draw_rounded_rectangle(
+				ctx,
+				x, y, w, h,
+				radius,
+				false,
+				true
+			);
+		}else{
+			draw_rounded_rectangle(
+				ctx,
+				x, y, w, h,
+				// TODO: inset - but need to fix the ellipse brush rendering first
+				// x + stroke_size / 2,
+				// y + stroke_size / 2,
+				// w - stroke_size,
+				// h - stroke_size,
+				radius,
+				this.$options.stroke,
+				this.$options.fill
+			);
+		}
 	},
 	$options: $ChooseShapeStyle()
 }];

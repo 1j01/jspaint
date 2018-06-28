@@ -83,48 +83,64 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 	}
 }
 
-function draw_rounded_rectangle(ctx, x, y, width, height, radius){
+function draw_rounded_rectangle(ctx, x, y, width, height, radius, stroke, fill){
 	
 	var stroke_color = ctx.strokeStyle;
 	var fill_color = ctx.fillStyle;
 	
 	if(aliasing){
-		// @TODO: use proper raster rounded rectangle algorithm
-		
-		var iw = width - radius*2;
-		var ih = height - radius*2;
-		var ix = x + radius;
-		var iy = y + radius;
-		
-		var r1 = Math.round;
-		var r2 = Math.round;
-		
-		ctx.fillStyle = stroke_color;
-		for(var r=0; r<TAU; r+=0.05){
-			var rx = Math.cos(r) * radius;
-			var ry = Math.sin(r) * radius;
-			
-			var rect_x = r1(ix+rx);
-			var rect_y = r1(iy+ry);
-			var rect_w = r2(iw-rx*2);
-			var rect_h = r2(ih-ry*2);
-			
-			ctx.fillRect(rect_x+1, rect_y, rect_w, rect_h);
-			ctx.fillRect(rect_x, rect_y+1, rect_w, rect_h);
-			ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
-			ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
-		}
-		ctx.fillStyle = fill_color;
-		for(var r=0; r<TAU; r+=0.05){
-			var rx = Math.cos(r) * radius;
-			var ry = Math.sin(r) * radius;
-			ctx.fillRect(
-				r1(ix+rx),
-				r1(iy+ry),
-				r2(iw-rx*2),
-				r2(ih-ry*2)
-			);
-		}
+		var points = [];
+		var moveTo = (x, y)=> {
+			points.push({x, y});
+		};
+		var lineTo = (x, y)=> {
+			points.push({x, y});
+		};
+		// var quadraticCurveTo = (control_x, control_y, x, y)=> {
+
+		// };
+		var arc = (x, y, radius, startAngle, endAngle)=> {
+			var step = 0.05;
+			for(var theta = startAngle; theta < endAngle; theta += step){
+				points.push({
+					x: x + Math.cos(theta) * radius,
+					y: y + Math.sin(theta) * radius,
+				});
+			}
+			// not just doing `theta <= endAngle` above because that doesn't account for floating point rounding errors
+			points.push({
+				x: x + Math.cos(endAngle) * radius,
+				y: y + Math.sin(endAngle) * radius,
+			});
+		};
+		// var closePath = ()=> {
+		// 	points.push(points[0]);
+		// };
+		// moveTo(x + radius, y);
+		// lineTo(x + width - radius, y);
+		// quadraticCurveTo(x + width, y, x + width, y + radius);
+		// lineTo(x + width, y + height - radius);
+		// quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+		// lineTo(x + radius, y + height);
+		// quadraticCurveTo(x, y + height, x, y + height - radius);
+		// lineTo(x, y + radius);
+		// quadraticCurveTo(x, y, x + radius, y);
+
+		var r = radius;
+		var sx = x;
+		var sy = y;
+		var ex = x + width;
+		var ey = y + height;
+		arc(ex-r,sy+r,r,TAU*3/4,TAU,false);
+		lineTo(ex,ey-r);
+		arc(ex-r,ey-r,r,0,TAU*1/4,false);
+		lineTo(sx+r,ey);
+		arc(sx+r,ey-r,r,TAU*1/4,TAU*1/2,false);
+		lineTo(sx,sy+r);
+		arc(sx+r,sy+r,r,TAU/2,TAU*3/4,false);
+		// closePath();
+
+		draw_polygon(ctx, points, stroke, fill);
 	}else{
 		ctx.beginPath();
 		ctx.moveTo(x + radius, y);
@@ -137,8 +153,12 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius){
 		ctx.lineTo(x, y + radius);
 		ctx.quadraticCurveTo(x, y, x + radius, y);
 		ctx.closePath();
-		ctx.stroke();
-		ctx.fill();
+		if(stroke){
+			ctx.stroke();
+		}
+		if(fill){
+			ctx.fill();
+		}
 	}
 }
 
@@ -539,7 +559,7 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 }
 
 function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_offset_from_global_canvas){
-	// USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas)
+	// USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas, and presumably for the pattern alignment as well)
 	// This function is mainly for patterns support (for black & white mode) but naturally handles solid colors as well.
 	ctx.globalCompositeOperation = "source-in";
 	ctx.fillStyle = swatch;
@@ -803,6 +823,8 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 		}
 		x_max += 1;
 		y_max += 1;
+		x_min -= 1;
+		y_min -= 1;
 
 		op_canvas_webgl.width = x_max - x_min;
 		op_canvas_webgl.height = y_max - y_min;
