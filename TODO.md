@@ -172,10 +172,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	SVG (or HTML?) with invisible selectable transformed text elements?
 
 
-* Rectangle
-	* The stroke should go within the rectangle
-
-
 * Polygon
 	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
@@ -186,28 +182,20 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Investigate bug: unclosed polygon (last segment of stroke) (only saw it happen once so far)
 
 
-* Ellipse
-	* See Shape Styles and Strokes below
-
-
-* Rounded Rectangle
-	* See Shape Styles and Strokes below
-
-
 * **Options**
 	* In MS Paint, visual area =/= selection highlight area =/= clickable area
 
 
 * **Shape Styles and Strokes**
 	* Shapes: respond to Ctrl (It's complicated)
+	* Tools that use circle "brushes" for strokes should treat the stroke size as a simple diameter
 	* Rounded Rectangle & Ellipse:
 		* Support stroke size and shape styles!
-	* Rectangle, Rounded Rectangle & Ellipse:
 		* Stroke should be entirely inside the dragged region
 	* Handle patterns (black and white mode)
 		* Still needed for brush and fill
 		* Check to make sure patterns are aligned properly for all the tools
-	* Remove `show_shape_styles_warning` (for Polygon & Line & Curve (& Rectangle), or implement shape styles for the rest of the tools)
+	* Remove `show_shape_styles_warning` (for Polygon & Line & Curve & Rectangle, or implement shape styles for the rest of the tools)
 
 
 ### On-Canvas Objects

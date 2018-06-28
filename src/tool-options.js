@@ -187,6 +187,7 @@ var $choose_brush = $Choose(
 		var shape = o.shape;
 		var size = o.size;
 		if(shape === "circle"){
+			// FIXME: remove this nonsense
 			size -= 1;
 		}
 		

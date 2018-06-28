@@ -484,14 +484,27 @@ tools = [{
 			ctx.fillRect(x, y, w, h);
 		}
 		if(this.$options.stroke){
-			// FIXME: can draw 1x2 or 2x1 pixels of a rectangle with a stroke of 1px (the default)
-			// which doesn't get drawn at full opacity
-			// or more generally, a 0-width or 0-height rectangle gives
-			// non-full-opacity pixels at either side of the resulting line drawn
-			if((stroke_size % 2) === 1){
-				ctx.strokeRect(x-0.5, y-0.5, w, h);
+
+			// if(Math.abs(w) < stroke_size * 2 || Math.abs(h) < stroke_size * 2){
+			// 	ctx.save();
+			// 	ctx.fillStyle = ctx.strokeStyle;
+			// 	ctx.fillRect(x, y, w, h);
+			// 	ctx.restore();
+			// }else{
+			// 	ctx.strokeRect(x + stroke_size / 2, y + stroke_size / 2, w - stroke_size, h - stroke_size);
+			// }
+
+			var normalized_x = Math.min(x, x + w);
+			var normalized_y = Math.min(y, y + h);
+			var normalized_w = Math.abs(w);
+			var normalized_h = Math.abs(h);
+			if(normalized_w < stroke_size * 2 || normalized_h < stroke_size * 2){
+				ctx.save();
+				ctx.fillStyle = ctx.strokeStyle;
+				ctx.fillRect(normalized_x, normalized_y, normalized_w, normalized_h);
+				ctx.restore();
 			}else{
-				ctx.strokeRect(x, y, w, h);
+				ctx.strokeRect(normalized_x + stroke_size / 2, normalized_y + stroke_size / 2, normalized_w - stroke_size, normalized_h - stroke_size);
 			}
 		}
 	},

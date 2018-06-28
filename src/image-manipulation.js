@@ -1,6 +1,10 @@
 
 function render_brush(ctx, shape, size){
 	if(shape === "circle"){
+		// FIXME: remove this nonsense
+		// this function is currently geared towards approximating the brush previews in the tool options
+		// and it's not done very well anyways
+		// the stroke size should be treated as an exact diameter
 		size /= 2;
 		size += 0.25;
 	}else if(shape.match(/diagonal/)){
