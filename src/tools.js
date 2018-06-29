@@ -440,6 +440,8 @@ tools = [{
 		this.points[i].x = x;
 		this.points[i].y = y;
 		
+		update_brush_for_drawing_lines(stroke_size);
+		
 		if(this.points.length === 4){
 			draw_bezier_curve(
 				ctx,
@@ -458,7 +460,6 @@ tools = [{
 				stroke_size
 			);
 		}else{
-			update_brush_for_drawing_lines(stroke_size);
 			draw_line(
 				ctx,
 				this.points[0].x, this.points[0].y,

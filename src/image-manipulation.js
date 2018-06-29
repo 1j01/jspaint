@@ -1,5 +1,6 @@
 
 function render_brush(ctx, shape, size){
+	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of draw_ellipse)
 	if(shape.match(/diagonal/)){
 		size -= 0.4;
 	}
@@ -110,6 +111,7 @@ var line_brush_canvas_rendered_shape;
 var line_brush_canvas_rendered_color;
 var line_brush_canvas_rendered_size;
 function update_brush_for_drawing_lines(stroke_size){
+	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 	if(aliasing && stroke_size > 1){
 		// TODO: DRY brush caching code
 		if(
@@ -533,7 +535,6 @@ function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2
 }
 
 function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
-	update_brush_for_drawing_lines(stroke_size);
 	var steps = 100;
 	var point_a = {x: start_x, y: start_y};
 	for(var t=0; t<1; t+=1/steps){
@@ -721,6 +722,15 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 	};
 
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path){
+
+		// this must be before stuff is done with op_canvas
+		// otherwise update_brush_for_drawing_lines calls render_brush calls draw_ellipse calls draw_polygon calls draw_polygon_or_line_strip
+		// trying to use the same op_canvas
+		// (also, avoiding infinite recursion by checking for stroke; assuming brushes will never have outlines)
+		if(stroke && stroke_size > 1){
+			update_brush_for_drawing_lines(stroke_size);
+		}
+
 		var stroke_color = ctx.strokeStyle;
 		var fill_color = ctx.fillStyle;
 
@@ -781,11 +791,10 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 
 				op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
 				op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
-
-				update_brush_for_drawing_lines(stroke_size);
 				for (var i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
 					var point_a = points[i];
 					var point_b = points[(i + 1) % numPoints];
+					// Note: update_brush_for_drawing_lines way above
 					draw_line_without_pattern_support(
 						op_ctx_2d,
 						point_a.x - x,

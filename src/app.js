@@ -319,7 +319,9 @@ $G.on("keydown", function(e){
 			}
 
 			$G.trigger("option-changed");
-			// TODO: rerender current operation (maybe trigger a mousemove?)
+			if(button !== undefined){
+				tool_go();
+			}
 		}
 		e.preventDefault();
 		return;
