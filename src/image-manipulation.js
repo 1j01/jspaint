@@ -28,20 +28,16 @@ function render_brush(ctx, shape, size){
 }
 
 function draw_ellipse(ctx, x, y, w, h, stroke, fill){
-	
-	var stroke_color = ctx.strokeStyle;
-	var fill_color = ctx.fillStyle;
-	
-	var cx = x + w/2;
-	var cy = y + h/2;
+	var center_x = x + w/2;
+	var center_y = y + h/2;
 	
 	if(aliasing){
 		var points = [];
 		var step = 0.05;
 		for(var theta = 0; theta < TAU; theta += step){
 			points.push({
-				x: x + w/2 + Math.cos(theta) * w/2,
-				y: y + h/2 + Math.sin(theta) * h/2,
+				x: center_x + Math.cos(theta) * w/2,
+				y: center_y + Math.sin(theta) * h/2,
 			});
 		}
 		draw_polygon(ctx, points, stroke, fill);
@@ -49,7 +45,7 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
 		ctx.beginPath();
-		ctx.ellipse(cx, cy, w/2, h/2, 0, TAU, false);
+		ctx.ellipse(center_x, center_y, w/2, h/2, 0, TAU, false);
 		ctx.stroke();
 		ctx.fill();
 	}
@@ -57,20 +53,11 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 
 function draw_rounded_rectangle(ctx, x, y, width, height, radius, stroke, fill){
 	
-	var stroke_color = ctx.strokeStyle;
-	var fill_color = ctx.fillStyle;
-	
 	if(aliasing){
 		var points = [];
-		var moveTo = (x, y)=> {
-			points.push({x, y});
-		};
 		var lineTo = (x, y)=> {
 			points.push({x, y});
 		};
-		// var quadraticCurveTo = (control_x, control_y, x, y)=> {
-
-		// };
 		var arc = (x, y, radius, startAngle, endAngle)=> {
 			var step = 0.05;
 			for(var theta = startAngle; theta < endAngle; theta += step){
@@ -85,32 +72,16 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius, stroke, fill){
 				y: y + Math.sin(endAngle) * radius,
 			});
 		};
-		// var closePath = ()=> {
-		// 	points.push(points[0]);
-		// };
-		// moveTo(x + radius, y);
-		// lineTo(x + width - radius, y);
-		// quadraticCurveTo(x + width, y, x + width, y + radius);
-		// lineTo(x + width, y + height - radius);
-		// quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-		// lineTo(x + radius, y + height);
-		// quadraticCurveTo(x, y + height, x, y + height - radius);
-		// lineTo(x, y + radius);
-		// quadraticCurveTo(x, y, x + radius, y);
 
-		var r = radius;
-		var sx = x;
-		var sy = y;
-		var ex = x + width;
-		var ey = y + height;
-		arc(ex-r,sy+r,r,TAU*3/4,TAU,false);
-		lineTo(ex,ey-r);
-		arc(ex-r,ey-r,r,0,TAU*1/4,false);
-		lineTo(sx+r,ey);
-		arc(sx+r,ey-r,r,TAU*1/4,TAU*1/2,false);
-		lineTo(sx,sy+r);
-		arc(sx+r,sy+r,r,TAU/2,TAU*3/4,false);
-		// closePath();
+		var x2 = x + width;
+		var y2 = y + height;
+		arc(x2 - radius, y + radius, radius, TAU*3/4, TAU, false);
+		lineTo(x2, y2 - radius);
+		arc(x2 - radius, y2 - radius, radius, 0, TAU*1/4, false);
+		lineTo(x + radius, y2);
+		arc(x + radius, y2 - radius, radius, TAU*1/4, TAU*1/2, false);
+		lineTo(x, y + radius);
+		arc(x + radius, y + radius, radius, TAU/2, TAU*3/4, false);
 
 		draw_polygon(ctx, points, stroke, fill);
 	}else{
@@ -543,43 +514,21 @@ function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_
 	ctx.restore();
 }
 
-/*
-function alpha_threshold(ctx, threshold){
-	var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-	for(var i=0; i<id.data.length; i+=4){
-		if(id.data[i+3] < threshold){
-			id.data[i+3] = 0;
-		}
-	}
-
-	ctx.putImageData(id, 0, 0);
-}
-*/
-
 // adapted from https://github.com/Pomax/bezierjs
 function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y){
-	// TODO: get rid of this array of objects construction
-	var p = [{x: start_x, y: start_y}, {x: control_1_x, y: control_1_y}, {x: control_2_x, y: control_2_y}, {x: end_x, y: end_y}];
 	var mt = 1-t;
 	var mt2 = mt*mt;
 	var t2 = t*t;
 	var a, b, c, d = 0;
-	// if(this.order===2) {
-	// 	p = [p[0], p[1], p[2], {x: 0, y: 0}];
-	// 	a = mt2;
-	// 	b = mt*t*2;
-	// 	c = t2;
-	// }
-	// else if(this.order===3) {
+
 	a = mt2*mt;
 	b = mt2*t*3;
 	c = mt*t2*3;
 	d = t*t2;
-	// }
+
 	return {
-		x: a*p[0].x + b*p[1].x + c*p[2].x + d*p[3].x,
-		y: a*p[0].y + b*p[1].y + c*p[2].y + d*p[3].y
+		x: a*start_x + b*control_1_x + c*control_2_x + d*end_x,
+		y: a*start_y + b*control_1_y + c*control_2_y + d*end_y
 	};
 }
 

@@ -480,22 +480,21 @@ tools = [{
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape: function(ctx, x, y, w, h){
+		if(w < 0){ x += w; w = -w; }
+		if(h < 0){ y += h; h = -h; }
+		
 		if(this.$options.fill){
 			ctx.fillRect(x, y, w, h);
 		}
 		if(this.$options.stroke){
-			var normalized_x = Math.min(x, x + w);
-			var normalized_y = Math.min(y, y + h);
-			var normalized_w = Math.abs(w);
-			var normalized_h = Math.abs(h);
-			if(normalized_w < stroke_size * 2 || normalized_h < stroke_size * 2){
+			if(w < stroke_size * 2 || h < stroke_size * 2){
 				ctx.save();
 				ctx.fillStyle = ctx.strokeStyle;
-				ctx.fillRect(normalized_x, normalized_y, normalized_w, normalized_h);
+				ctx.fillRect(x, y, w, h);
 				ctx.restore();
 			}else{
 				// TODO: shouldn't that be ~~(stroke_size / 2)?
-				ctx.strokeRect(normalized_x + stroke_size / 2, normalized_y + stroke_size / 2, normalized_w - stroke_size, normalized_h - stroke_size);
+				ctx.strokeRect(x + stroke_size / 2, y + stroke_size / 2, w - stroke_size, h - stroke_size);
 			}
 		}
 	},

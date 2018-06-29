@@ -433,6 +433,7 @@ $G.on("cut copy paste", function(e){
 					// TODO: check that it's actually a URI,
 					// and if text/plain maybe silently ignore the paste
 					// but definitely generally show a better error than show_resource_load_error_message()
+					// some strings from mspaint:
 					// "The information on the Clipboard can't be inserted into Paint."
 					// also
 					// "Downloading picture"
