@@ -413,16 +413,17 @@ function tool_go(event_name){
 
 	ctx.lineWidth = stroke_size;
 
+	var reverse_because_fill_only = selected_tool.$options && !selected_tool.$options.stroke;
 	ctx.fillStyle = fill_color =
 	ctx.strokeStyle = stroke_color =
 		colors[
 			(ctrl && colors.ternary) ? "ternary" :
-			(reverse ? "background" : "foreground")
+			((reverse ^ reverse_because_fill_only) ? "background" : "foreground")
 		];
 
 	fill_color_k =
 	stroke_color_k =
-		ctrl ? "ternary" : (reverse ? "background" : "foreground");
+		ctrl ? "ternary" : ((reverse ^ reverse_because_fill_only) ? "background" : "foreground");
 
 	if(selected_tool.shape){
 		var previous_canvas = undos[undos.length-1];
@@ -433,7 +434,7 @@ function tool_go(event_name){
 	}
 	if(selected_tool.shape || selected_tool.shape_colors){
 		if(!selected_tool.stroke_only){
-			if(reverse){
+			if((reverse ^ reverse_because_fill_only)){
 				fill_color_k = "foreground";
 				stroke_color_k = "background";
 			}else{
