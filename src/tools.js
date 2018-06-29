@@ -293,8 +293,28 @@ tools = [{
 	cursor: ["pencil", [13, 23], "crosshair"],
 	continuous: "space",
 	stroke_only: true,
+	pencil_canvas: Canvas(),
 	paint: function(ctx, x, y){
-		ctx.fillRect(x, y, 1, 1);
+		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
+		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)
+		var csz = pencil_size * 2.1;
+		if(
+			this.rendered_shape !== "circle" ||
+			this.rendered_color !== stroke_color ||
+			this.rendered_size !== pencil_size
+		){
+			this.pencil_canvas.width = csz;
+			this.pencil_canvas.height = csz;
+			// don't need to do this.pencil_canvas.ctx.disable_image_smoothing() currently because images aren't drawn to the brush
+
+			this.pencil_canvas.ctx.fillStyle = this.pencil_canvas.ctx.strokeStyle = stroke_color;
+			render_brush(this.pencil_canvas.ctx, "circle", pencil_size);
+			
+			this.rendered_color = stroke_color;
+			this.rendered_size = pencil_size;
+			this.rendered_shape = "circle";
+		}
+		ctx.drawImage(this.pencil_canvas, ~~(x-csz/2), ~~(y-csz/2));
 	}
 }, {
 	name: "Brush",

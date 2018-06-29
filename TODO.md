@@ -158,10 +158,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Choose and preview viewport with rectangular cursor
 
 
-* Pencil
-	* Adjust size (with numpad)
-
-
 * Text
 	* Underline
 	* Expand box to make room for new lines
