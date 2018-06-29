@@ -43,17 +43,17 @@ I want to bring good old paint into the modern era.
 * Autosaves if you allow local storage.
   (Try refreshing the page to make sure this works, and to check it out)
 * Edit transparent images! To create a transparent image,
-  go to Image > Attributes... and select Transparent,
-  then Okay, and then Image > Clear Image or use the Eraser tool.
+  go to **Image > Attributes...** and select Transparent,
+  then Okay, and then **Image > Clear Image** or use the Eraser tool.
   Images with *any* transparent pixels will open in Transparent mode.
-* Go to View > Extras Menu to enable access to additional features not available in MS Paint
+* Go to **View > Extras Menu** to enable access to additional features not available in MS Paint
 * Switch themes from the Extras menu
 * Create an animated GIF from the current document history.
   Accessible from the Extras menu or with <kbd>Ctrl+Shift+G</kbd>.
   It's pretty nifty, you should try it out!
   You might want to limit the size of the image though.
 * You can shoot at it [Asteroids style](https://kickassapp.com/)
-* When you do Edit > Paste From... you can select transparent images and GIFs.
+* When you do **Edit > Paste From...** you can select transparent images and GIFs.
   ~~You can even paste a transparent animated GIF and then
   hold <kbd>Shift</kbd> while dragging the selection to
   smear it across the canvas *while it animates*!~~
@@ -62,9 +62,9 @@ I want to bring good old paint into the modern era.
 * You can open SVG files (because browsers support SVG).
   It's still a completely raster image editor though.
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
-* Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd>/<kbd>></kbd>)
-* Rotate by any arbitrary angle in Image > Flip/Rotate
-* In Image > Stretch/Skew, you can stretch more than 500% at once
+* Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd> and <kbd>></kbd>)
+* Rotate by any arbitrary angle in **Image > Flip/Rotate**
+* In **Image > Stretch/Skew**, you can stretch more than 500% at once
 * Replace a color in the entire image by holding <kbd>Shift</kbd> and using the fill tool (AKA non-contiguous fill)
 * Rudimentary **multi-user** support.
   Start up a session at
@@ -73,7 +73,7 @@ I want to bring good old paint into the modern era.
   It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
   Sessions are not private, and you may lose your work at any time.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
-* Load many different palette formats with Colors > Get Colors.
+* Load many different palette formats with **Colors > Get Colors**.
   (I made a [library](https://github.com/1j01/palette.js/) for this.)
 * Mobile support
 * Click/tap the selected colors area to swap the foreground and background colors
@@ -81,13 +81,11 @@ I want to bring good old paint into the modern era.
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
 
-#### Possible improvements include:
+#### Possible future improvements:
 
 * [Extended Editing](#extended-editing)
 * Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
-  (or maybe that should be the default)
-* After adding text, save as SVG or HTML with selectable text
-  (invisible text positioned over an embedded bitmap image)
+  (or maybe that should be the default, really!)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
 * Optional fill tolerance (slider that you enable from a settings menu?)
 * Interactive tutorial(s)?
@@ -96,7 +94,7 @@ I want to bring good old paint into the modern era.
 #### Limitations:
 
 A lot of stuff isn't done yet.
-[See: the big long todo list.](TODO.md)
+See: [the big long todo list.](TODO.md)
 
 Clipboard support is somewhat limited.
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
@@ -113,7 +111,7 @@ I want to make JS Paint to be able to edit...
 
 * Transparent [PNG][]s - Done!
   Images that are partially transparent will automatically open in Transparent mode.
-  To enable transparency for an image, go to Image > Attributes or press <kbd>Ctrl+E</kbd>,
+  To enable transparency for an image, go to **Image > Attributes...** or press <kbd>Ctrl+E</kbd>,
   select Transparent, and hit Okay.
   Then you'll want to remove some of the background.
   You can use the Eraser tool a bit, then use the Color Picker to
@@ -131,7 +129,7 @@ I want to make JS Paint to be able to edit...
   That's pretty decent SVG support for a 100% raster image editor.
 * [Text files][TXT] (definitely just kidding maybe)
 * Tesselating patterns, and textures on 3D models;
-  that might be a pipe dream, but [then again...](https://github.com/1j01/pipes)
+  that might be a pipe dream, but [then again...](https://github.com/1j01/pipes) [hm...](https://github.com/1j01/mopaint)
 
 
 [PNG]: https://en.wikipedia.org/wiki/Portable_Network_Graphics "Portable Network Graphics"
@@ -145,6 +143,9 @@ I want to make JS Paint to be able to edit...
 
 ## Did you know?
 
+* There's a black and white mode with *patterns* instead of colors in the palette,
+  which you can get to from **Image > Attributes...**
+
 * You can drag the color box and tool box around if you grab them by the right place.
   You can even drag them out into little windows.
   You can dock the windows back to the side by double-clicking on their title bars.
@@ -156,7 +157,7 @@ I want to make JS Paint to be able to edit...
   press and release <kbd>Ctrl</kbd> to switch colors while drawing.
 
 * You can apply image transformations like Flip/Rotate, Stretch/Skew or Invert (in the Image menu) either to the whole image or to a selection.
-  If you make a selection with the Select or Free-Form Select tool, the transformations apply to the selection.
+  Try scribbling with the Free-Form Select tool and the doing **Image > Invert**
 
 * These Tips and Tricks from [a tutorial for MS Paint](https://www.albinoblacksheep.com/tutorial/mspaint)
   also work in JS Paint if they have a checkmark:
