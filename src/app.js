@@ -413,7 +413,7 @@ function tool_go(event_name){
 
 	ctx.lineWidth = stroke_size;
 
-	var reverse_because_fill_only = selected_tool.$options && !selected_tool.$options.stroke;
+	var reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
 	ctx.fillStyle = fill_color =
 	ctx.strokeStyle = stroke_color =
 		colors[
