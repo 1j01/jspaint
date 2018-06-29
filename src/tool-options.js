@@ -9,40 +9,6 @@ var pencil_size = 1;
 var stroke_size = 1; // lines, curves, shape outlines
 var transparent_opaque = "opaque"; // TODO: make this a boolean (and think of a good name)
 
-
-var $shape_styles_warning_window;
-var dont_show_shape_styles_warning_again = false;
-try{
-	dont_show_shape_styles_warning_again = localStorage["don't show shape styles not implemented warning again"];
-}catch(e){}
-var show_shape_styles_warning = function(){
-	if($shape_styles_warning_window || dont_show_shape_styles_warning_again){
-		return;
-	}
-	var $w = $shape_styles_warning_window = $FormWindow().title("Warning").addClass("dialogue-window");
-	$w.$main.html(
-		"<p>Shape styles and line widths are not implemented for all tools.</p>" +
-		"<p>See issue <a href='https://github.com/1j01/jspaint/issues/7'>#7</a></p>" +
-		"<label><input type='checkbox' class='dont-tell-me-again'> Don't tell me again</label>"
-	);
-	$w.$main.find(".dont-tell-me-again").on("change", function(){
-		dont_show_shape_styles_warning_again = $(this).is(":checked");
-		try{
-			if(dont_show_shape_styles_warning_again){
-				localStorage["don't show shape styles not implemented warning again"] = "yeah, shush";
-			}else{
-				delete localStorage["don't show shape styles not implemented warning again"];
-			}
-		}catch(e){}
-	});
-	$w.$Button("OK", function(){
-		$w.close();
-		$shape_styles_warning_window = null;
-	});
-	$w.center();
-};
-
-
 var ChooserCanvas = function(
 	url, invert,
 	width, height,
@@ -153,7 +119,6 @@ var $ChooseShapeStyle = function(){
 		function(a){
 			$chooser.stroke = a.stroke;
 			$chooser.fill = a.fill;
-			show_shape_styles_warning();
 		},
 		function(a){
 			return $chooser.stroke === a.stroke && $chooser.fill === a.fill;
@@ -236,7 +201,6 @@ var $choose_stroke_size = $Choose(
 	},
 	function(size){
 		stroke_size = size;
-		show_shape_styles_warning();
 	},
 	function(size){
 		return stroke_size === size;

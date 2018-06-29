@@ -193,7 +193,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* Still needed for brush and fill and right click with the eraser tool (i.e. replace color)
 		* Check to make sure patterns are aligned properly for all the tools
 		* There's supposed to be a mapping between color values and pattern fills, used by the text tool and for the palette when switching between modes (colors should be kept between going to black and white mode and back)
-	* Remove `show_shape_styles_warning`!
 
 
 ### On-Canvas Objects
