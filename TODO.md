@@ -205,21 +205,11 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* See Text tool
 
 
-### Chrome App
-
-I started making a packaged, windowed app, but a hosted app would be simpler.
-
-I implemented theoretical support for changing the wallpaper on Chrome OS, but I don't know if it works.
-
-
-* [Analytics](https://developer.chrome.com/apps/analytics)
-
-
-* Publish to the Chrome Web Store!
-
-
 ### Native App
 
+* Switch from NW.js to Electron
+* Use a boilerplate for autoupdating and such
+* File association support
 * Proper clipboard support; Electron has an API for copying images
 * A dialogue when closing
 * Subwindows outside the main window

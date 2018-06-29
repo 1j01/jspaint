@@ -1,7 +1,7 @@
 
-# [![](images/icons/32.png) JS Paint][jspaint web app]
+# [![](images/icons/32.png) JS Paint](https://jspaint.app)
 
-A nice web-based MS Paint remake and more... [Try it out!][jspaint web app]
+A nice web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
 
 <!-- You can also run it as a desktop app... -->
 
@@ -104,8 +104,7 @@ but data copied from JS Paint can only be pasted into other instances of JS Pain
 There's apparently no way for web apps to properly copy image data to the clipboard.
 "[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)"
 is currently the top starred issue of chromium.
-<!-- To use the clipboard menu items, you need to install [the Chrome app][jspaint chrome app]. -->
-<!-- or the native app. -->
+<!-- TODO: To use the clipboard menu items, you need to install the native app. -->
 
 
 ## Extended Editing
@@ -187,6 +186,3 @@ Alternatively you can install it globally with `npm i -g live-server`
 and run it with `live-server`.
 
 [Live Server]: https://github.com/tapio/live-server
-
-[jspaint chrome app]: https://chrome.google.com/webstore/detail/dgfedgcofbjmeohonbpcoagiabgnddjh
-[jspaint web app]: https://jspaint.app
