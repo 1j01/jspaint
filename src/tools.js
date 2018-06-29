@@ -677,23 +677,28 @@ tools = [{
 		if(w < stroke_size || h < stroke_size){
 			ctx.fillStyle = ctx.strokeStyle;
 			var radius = Math.min(8, w/2, h/2);
-			// TODO: separate x/y radii
+			// var radius_x = Math.min(8, w/2);
+			// var radius_y = Math.min(8, h/2);
 			draw_rounded_rectangle(
 				ctx,
 				x, y, w, h,
-				radius,
+				radius, radius,
+				// radius_x, radius_y,
 				false,
 				true
 			);
 		}else{
 			var radius = Math.min(8, (w - stroke_size)/2, (h - stroke_size)/2);
+			// var radius_x = Math.min(8, (w - stroke_size)/2);
+			// var radius_y = Math.min(8, (h - stroke_size)/2);
 			draw_rounded_rectangle(
 				ctx,
 				x + ~~(stroke_size / 2),
 				y + ~~(stroke_size / 2),
 				w - stroke_size,
 				h - stroke_size,
-				radius,
+				radius, radius,
+				// radius_x, radius_y,
 				this.$options.stroke,
 				this.$options.fill
 			);
