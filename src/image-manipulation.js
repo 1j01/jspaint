@@ -776,6 +776,9 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 			if(stroke_size > 1){
 				var stroke_margin = ~~(stroke_size * 1.1);
 
+				var x = x_min - stroke_margin;
+				var y = y_min - stroke_margin;
+
 				op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
 				op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
 
@@ -785,16 +788,14 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 					var point_b = points[(i + 1) % numPoints];
 					draw_line_without_pattern_support(
 						op_ctx_2d,
-						point_a.x - x_min + stroke_margin,
-						point_a.y - y_min + stroke_margin,
-						point_b.x - x_min + stroke_margin,
-						point_b.y - y_min + stroke_margin,
+						point_a.x - x,
+						point_a.y - y,
+						point_b.x - x,
+						point_b.y - y,
 						stroke_size
 					);
 				}
 
-				var x = x_min - stroke_margin;
-				var y = y_min - stroke_margin;
 				replace_colors_with_swatch(op_ctx_2d, stroke_color, x, y);
 				ctx.drawImage(op_canvas_2d, x, y);
 			}else{
