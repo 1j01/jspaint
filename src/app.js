@@ -194,65 +194,6 @@ $G.on("keydown", function(e){
 	// also, ideally check that modifiers *aren't* pressed
 	// probably best to use a library at this point!
 	
-	// TODO: remove this silly feature (not based on mspaint)
-	// it was a fun idea, and fun to implement, but it's a lot of code and not really useful
-	var brush_shapes = {
-		circle: [
-			0, 1, 0,
-			1, 0, 1,
-			0, 1, 0
-		],
-		diagonal: [
-			1, 0, 0,
-			0, 0, 0,
-			0, 0, 1
-		],
-		reverse_diagonal: [
-			0, 0, 1,
-			0, 0, 0,
-			1, 0, 0
-		],
-		horizontal: [
-			0, 0, 0,
-			1, 0, 1,
-			0, 0, 0
-		],
-		vertical: [
-			0, 1, 0,
-			0, 0, 0,
-			0, 1, 0
-		],
-		square: [
-			0, 0, 0,
-			0, 1, 0,
-			0, 0, 0
-		]
-	};
-	keys[e.keyCode] = true;
-	for(var k in brush_shapes){
-		var bs = brush_shapes[k];
-		var fits_shape = true;
-		for(var i=0; i<9; i++){
-			var keyCode = [103, 104, 105, 100, 101, 102, 97, 98, 99][i];
-			if(bs[i] && !keys[keyCode]){
-				fits_shape = false;
-			}
-		}
-		if(fits_shape){
-			brush_shape = k;
-			$G.trigger("option-changed");
-			break;
-		}
-	}
-	if(e.keyCode === 96){
-		brush_shape = "circle";
-		$G.trigger("option-changed");
-	}
-	if(e.keyCode === 111){
-		brush_shape = "diagonal";
-		$G.trigger("option-changed");
-	}
-
 	if(e.altKey){
 		//find key codes
 		window.console && console.log(e.keyCode);
