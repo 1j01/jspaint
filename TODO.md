@@ -189,8 +189,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * **Shape Styles and Strokes**
 	* Shapes: use primary color for fill for fill-only mode
 	* Shapes: respond to Ctrl (It's complicated)
-	* Rounded Rectangle:
-		* Stroke should be entirely inside the dragged region
 	* Handle patterns (black and white mode)
 		* Still needed for brush and fill and right click with the eraser tool (i.e. replace color)
 		* Check to make sure patterns are aligned properly for all the tools
