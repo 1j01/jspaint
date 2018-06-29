@@ -3,7 +3,7 @@
 body {
 	background: #FFFFFF;
 	font-size: 70%;
-	font-family: Verdana, Arial, Helvetica, MS Sans Serif;
+	font-family: Verdana, Arial, Helvetica, "MS Sans Serif";
 	/* Chrome apps have text selection disabled by default */
 	-webkit-user-select: text;
 	cursor: auto;

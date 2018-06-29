@@ -1,9 +1,9 @@
 /* Cascading Style Sheet for IE4 build 1008+ */
 
 body {
-	background: url(flag&clouds.gif) no-repeat;
+	background: url("flag&clouds.gif") no-repeat;
 	font-size: 70%;
-	font-family: Verdana, Arial, Helvetica, MS Sans Serif;
+	font-family: Verdana, Arial, Helvetica, "MS Sans Serif";
 	/* Chrome apps have text selection disabled by default */
 	-webkit-user-select: text;
 	cursor: auto;
