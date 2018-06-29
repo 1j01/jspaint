@@ -194,9 +194,8 @@ $G.on("keydown", function(e){
 	// also, ideally check that modifiers *aren't* pressed
 	// probably best to use a library at this point!
 	
-	// TODO: probably get rid of this silly feature
-	// it's kinda fun, but it's a lot of code for something I've virtually never used
-	// (and it's not based on any version of mspaint, it was just a fun idea I had)
+	// TODO: remove this silly feature (not based on mspaint)
+	// it was a fun idea, and fun to implement, but it's a lot of code and not really useful
 	var brush_shapes = {
 		circle: [
 			0, 1, 0,
@@ -299,10 +298,10 @@ $G.on("keydown", function(e){
 		redo();
 	}else if(e.keyCode === 46){ //Delete
 		delete_selection();
-	}else if(e.keyCode === 107 || e.keyCode === 109){
+	}else if(e.keyCode === 107 || e.keyCode === 109){ // Numpad Plus and Minus
 		var plus = e.keyCode === 107;
 		var minus = e.keyCode === 109;
-		var delta = plus - minus; // +plus++ -minus--; // Δ = ±±±±
+		var delta = plus - minus; // var delta = +plus++ -minus--; // Δ = ±±±±
 
 		if(selection){
 			selection.scale(Math.pow(2, delta));
@@ -320,6 +319,7 @@ $G.on("keydown", function(e){
 			}
 
 			$G.trigger("option-changed");
+			// TODO: rerender current operation (maybe trigger a mousemove?)
 		}
 		e.preventDefault();
 		return;

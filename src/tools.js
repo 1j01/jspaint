@@ -494,6 +494,7 @@ tools = [{
 				ctx.fillRect(normalized_x, normalized_y, normalized_w, normalized_h);
 				ctx.restore();
 			}else{
+				// TODO: shouldn't that be ~~(stroke_size / 2)?
 				ctx.strokeRect(normalized_x + stroke_size / 2, normalized_y + stroke_size / 2, normalized_w - stroke_size, normalized_h - stroke_size);
 			}
 		}
@@ -626,7 +627,24 @@ tools = [{
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape: function(ctx, x, y, w, h){
-		draw_ellipse(ctx, x, y, w, h, this.$options.stroke, this.$options.fill);
+		if(w < 0){ x += w; w = -w; }
+		if(h < 0){ y += h; h = -h; }
+
+		if(w < stroke_size || h < stroke_size){
+			ctx.fillStyle = ctx.strokeStyle;
+			draw_ellipse(ctx, x, y, w, h, false, true);
+		}else{
+			draw_ellipse(
+				ctx,
+				x + ~~(stroke_size / 2),
+				y + ~~(stroke_size / 2),
+				w - stroke_size,
+				h - stroke_size,
+				this.$options.stroke,
+				this.$options.fill
+			);
+		}
+		// draw_ellipse(ctx, x, y, w, h, this.$options.stroke, this.$options.fill);
 	},
 	$options: $ChooseShapeStyle()
 }, {
@@ -671,9 +689,9 @@ tools = [{
 			draw_rounded_rectangle(
 				ctx,
 				x, y, w, h,
-				// TODO: inset - but need to fix the ellipse brush rendering first
-				// x + stroke_size / 2,
-				// y + stroke_size / 2,
+				// TODO: inset! - ~~need to fix the ellipse brush rendering first~~
+				// x + ~~(stroke_size / 2),
+				// y + ~~(stroke_size / 2),
 				// w - stroke_size,
 				// h - stroke_size,
 				radius,

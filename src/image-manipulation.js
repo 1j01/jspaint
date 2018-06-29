@@ -1,13 +1,6 @@
 
 function render_brush(ctx, shape, size){
-	if(shape === "circle"){
-		// FIXME: remove this nonsense
-		// this function is currently geared towards approximating the brush previews in the tool options
-		// and it's not done very well anyways
-		// the stroke size should be treated as an exact diameter
-		size /= 2;
-		size += 0.25;
-	}else if(shape.match(/diagonal/)){
+	if(shape.match(/diagonal/)){
 		size -= 0.4;
 	}
 	
@@ -19,7 +12,8 @@ function render_brush(ctx, shape, size){
 	var bottom = ~~(mid_y + size/2);
 	
 	if(shape === "circle"){
-		draw_ellipse(ctx, left, top, size, size);
+		// TODO: ideally _without_pattern_support
+		draw_ellipse(ctx, left, top, size, size, false, true);
 	}else if(shape === "square"){
 		ctx.fillRect(left, top, ~~size, ~~size);
 	}else if(shape === "diagonal"){
@@ -42,37 +36,15 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 	var cy = y + h/2;
 	
 	if(aliasing){
-		// @TODO: use proper raster ellipse algorithm
-		
-		var r1 = Math.round;
-		var r2 = Math.round;
-		
-		ctx.fillStyle = stroke_color;
-		for(var r=0; r<TAU; r+=0.01){
-			var rx = Math.cos(r) * w/2;
-			var ry = Math.sin(r) * h/2;
-			
-			var rect_x = r1(cx+rx);
-			var rect_y = r1(cy+ry);
-			var rect_w = r2(-rx*2);
-			var rect_h = r2(-ry*2);
-			
-			ctx.fillRect(rect_x+1, rect_y, rect_w, rect_h);
-			ctx.fillRect(rect_x, rect_y+1, rect_w, rect_h);
-			ctx.fillRect(rect_x-1, rect_y, rect_w, rect_h);
-			ctx.fillRect(rect_x, rect_y-1, rect_w, rect_h);
+		var points = [];
+		var step = 0.05;
+		for(var theta = 0; theta < TAU; theta += step){
+			points.push({
+				x: x + w/2 + Math.cos(theta) * w/2,
+				y: y + h/2 + Math.sin(theta) * h/2,
+			});
 		}
-		ctx.fillStyle = fill_color;
-		for(var r=0; r<TAU; r+=0.01){
-			var rx = Math.cos(r) * w/2;
-			var ry = Math.sin(r) * h/2;
-			ctx.fillRect(
-				r1(cx+rx),
-				r1(cy+ry),
-				r2(-rx*2),
-				r2(-ry*2)
-			);
-		}
+		draw_polygon(ctx, points, stroke, fill);
 	}else{
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
