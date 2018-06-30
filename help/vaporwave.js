@@ -12,8 +12,13 @@ var ctx = canvas.getContext("2d");
 var animate = function () {
 	rAF_ID = requestAnimationFrame(animate);
 
-	canvas.width = canvas.parentElement.offsetWidth;
-	canvas.height = canvas.parentElement.offsetHeight;
+	if(
+		canvas.width !== canvas.parentElement.offsetWidth || 
+		canvas.height !== canvas.parentElement.offsetHeight
+	){
+		canvas.width = canvas.parentElement.offsetWidth;
+		canvas.height = canvas.parentElement.offsetHeight;
+	}
 
 	var clouds_scale = 1;
 	var clouds_width = clouds_img.width * clouds_scale;
@@ -44,6 +49,7 @@ var animate = function () {
 	}
 	ctx.globalCompositeOperation = "screen";
 	ctx.drawImage(mask_img, 0, 0);
+	ctx.globalCompositeOperation = "source-over";
 	ctx.fillStyle = "white";
 	ctx.fillRect(0, mask_img.naturalHeight, mask_img.naturalWidth, canvas.height);
 	ctx.fillRect(mask_img.naturalWidth, 0, 50, canvas.height); // for scrollbar
