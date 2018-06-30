@@ -1,8 +1,6 @@
-/* Cascading Style Sheet for IE4 build 1008+ */
+/* Originally: Cascading Style Sheet for IE4 build 1008+ */
 
 body {
-	/* background: url("clouds.jpg") repeat, url("cloud-mask.png") no-repeat;
-	background-blend-mode: normal, multiply; */
 	font-size: 70%;
 	font-family: Verdana, Arial, Helvetica, "MS Sans Serif";
 	/* Chrome apps have text selection disabled by default */
@@ -22,7 +20,6 @@ body {
 	top: 0;
 	right: 0;
 	bottom: 0;
-	/* background: url("clouds.jpg") repeat, url("cloud-mask.png") no-repeat; */
 	overflow: hidden;
 }
 #foreground-contents {
