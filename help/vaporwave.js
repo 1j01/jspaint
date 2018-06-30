@@ -44,7 +44,11 @@ var animate = function () {
 	if(something_img.complete && something_img.naturalWidth > 1){
 		let t = now / 5000;
 		ctx.globalAlpha = 0.3 + Math.max(0, Math.sin(-t) * 1);
-		ctx.drawImage(something_img, Math.sin(-t) * canvas.width * 0.7, Math.cos(-t) * 70);
+		ctx.drawImage(
+			something_img,
+			~~(Math.sin(-t) * canvas.width * 0.7),
+			~~(Math.cos(-t) * 70)
+		);
 		ctx.globalAlpha = 1;
 	}
 	ctx.globalCompositeOperation = "screen";

@@ -32,6 +32,9 @@ body {
 	margin-top: 10px;
 	overflow: auto;
 }
+#os-logo-link {
+	text-decoration: none;
+}
 
 a:link {
 	color: #0000CC;
