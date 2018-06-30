@@ -371,7 +371,9 @@ var menus = {
 			item: "&Save Colors",
 			action: function(){
 				var blob = new Blob([JSON.stringify(palette)], {type: "application/json"});
-				saveAs(blob, "colors.json");
+				sanity_check_blob(blob, function(){
+					saveAs(blob, "colors.json");
+				});
 			},
 			description: "Saves the current palette of colors to a file.",
 		}
