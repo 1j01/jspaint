@@ -35,6 +35,21 @@ body {
 #os-logo-link {
 	text-decoration: none;
 }
+#os-logo-colorbar {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 79px;
+	pointer-events: none;
+	border: 0;
+	height: 1px;
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff3100+0,ff3100+14,f7df1e+14,f7df1e+29,63ce30+29,63ce30+43,009cff+43,009cff+43 */
+	background: #ff3100; /* Old browsers */
+	background: -moz-linear-gradient(left, #ff3100 0%, #ff3100 14%, #f7df1e 14%, #f7df1e 29%, #63ce30 29%, #63ce30 43%, #009cff 43%, #009cff 43%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left, #ff3100 0%,#ff3100 14%,#f7df1e 14%,#f7df1e 29%,#63ce30 29%,#63ce30 43%,#009cff 43%,#009cff 43%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right, #ff3100 0%,#ff3100 14%,#f7df1e 14%,#f7df1e 29%,#63ce30 29%,#63ce30 43%,#009cff 43%,#009cff 43%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3100', endColorstr='#009cff',GradientType=1 ); /* IE6-9 */
+}
 
 a:link {
 	color: #0000CC;
