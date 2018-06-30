@@ -1,12 +1,39 @@
 /* Cascading Style Sheet for IE4 build 1008+ */
 
 body {
-	background: url("flag&clouds.gif") no-repeat;
+	/* background: url("clouds.jpg") repeat, url("cloud-mask.png") no-repeat;
+	background-blend-mode: normal, multiply; */
 	font-size: 70%;
 	font-family: Verdana, Arial, Helvetica, "MS Sans Serif";
 	/* Chrome apps have text selection disabled by default */
 	-webkit-user-select: text;
 	cursor: auto;
+}
+
+html,
+body {
+	margin: 0;
+	height: 100%;
+}
+
+#background-animation {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	/* background: url("clouds.jpg") repeat, url("cloud-mask.png") no-repeat; */
+	overflow: hidden;
+}
+#foreground-contents {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	margin-left: 35px;
+	margin-top: 10px;
+	overflow: auto;
 }
 
 a:link {
