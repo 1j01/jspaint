@@ -352,6 +352,17 @@ function show_resource_load_error_message(){
 	$w.center();
 }
 
+var $about_paint_window;
+var $about_paint_content = $("#about-paint");
+function show_about_paint(){
+	if($about_paint_window){
+		$about_paint_window.close();
+	}
+	$about_paint_window = $Window().title("About Paint");
+	$about_paint_window.$content.append($about_paint_content.show()).css({padding: "15px"});
+	$about_paint_window.center();
+}
+
 // TODO: DRY between these functions and open_from_* functions further?
 
 // function paste_image_from_URI(uri, callback){
