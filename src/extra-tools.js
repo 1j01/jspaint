@@ -10,7 +10,7 @@ extra_tools = [{
 	paint: function(ctx, x, y){
 		// XXX: copy pasted all this brush caching/rendering code!
 		// TODO: DRY!
-		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
+		var csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
 			this.rendered_color !== stroke_color ||
@@ -28,7 +28,7 @@ extra_tools = [{
 			this.rendered_shape = brush_shape;
 		}
 		var draw_brush = function(x, y){
-			ctx.drawImage(brush_canvas, ~~(x-csz/2), ~~(y-csz/2));
+			ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 		};
 		var r = airbrush_size * 2;
 		for(var i = 0; i < 6 + r/5; i++){
@@ -66,7 +66,7 @@ extra_tools = [{
 	paint: function(ctx, x, y){
 		// XXX: copy pasted all this brush caching/rendering code!
 		// TODO: DRY!
-		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
+		var csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
 			this.rendered_color !== stroke_color ||
@@ -84,7 +84,7 @@ extra_tools = [{
 			this.rendered_shape = brush_shape;
 		}
 		var draw_brush = function(x, y){
-			ctx.drawImage(brush_canvas, ~~(x-csz/2), ~~(y-csz/2));
+			ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 		};
 		for(var i = 0; i < 60; i++){
 			var x_diff = x - this.position.x;

@@ -1,20 +1,30 @@
 
+function get_brush_canvas_size(brush_size, brush_shape){
+	// brush_shape optional, only matters if it's circle
+	// TODO: does it actually still matter? the ellipse drawing code has changed
+	
+	// round to nearest even number in order for the canvas to be drawn centered at a point reasonably
+	return Math.ceil(brush_size * (brush_shape === "circle" ? 2.1 : 1) / 2) * 2;
+}
 function render_brush(ctx, shape, size){
 	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of draw_ellipse)
 	if(shape.match(/diagonal/)){
 		size -= 0.4;
 	}
 	
-	var mid_x = ctx.canvas.width / 2;
-	var left = ~~(mid_x - size/2);
-	var right = ~~(mid_x + size/2);
-	var mid_y = ctx.canvas.height / 2;
-	var top = ~~(mid_y - size/2);
-	var bottom = ~~(mid_y + size/2);
+	var mid_x = Math.round(ctx.canvas.width / 2);
+	var left = Math.round(mid_x - size/2);
+	var right = Math.round(mid_x + size/2);
+	var mid_y = Math.round(ctx.canvas.height / 2);
+	var top = Math.round(mid_y - size/2);
+	var bottom = Math.round(mid_y + size/2);
 	
 	if(shape === "circle"){
 		// TODO: ideally _without_pattern_support
 		draw_ellipse(ctx, left, top, size, size, false, true);
+		// was useful for testing:
+		// ctx.fillStyle = "red";
+		// ctx.fillRect(mid_x, mid_y, 1, 1);
 	}else if(shape === "square"){
 		ctx.fillRect(left, top, ~~size, ~~size);
 	}else if(shape === "diagonal"){
@@ -120,7 +130,7 @@ function update_brush_for_drawing_lines(stroke_size){
 			line_brush_canvas_rendered_size !== stroke_size
 		){
 			// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
-			var csz = stroke_size * 2.1; // XXX: magic constant duplicated from tools.js
+			var csz = get_brush_canvas_size(stroke_size, "circle");
 			line_brush_canvas = new Canvas(csz, csz);
 			line_brush_canvas.width = csz;
 			line_brush_canvas.height = csz;

@@ -297,7 +297,7 @@ tools = [{
 	paint: function(ctx, x, y){
 		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
 		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)
-		var csz = pencil_size * 2.1;
+		var csz = get_brush_canvas_size(pencil_size, "circle");
 		if(
 			this.rendered_shape !== "circle" ||
 			this.rendered_color !== stroke_color ||
@@ -314,7 +314,7 @@ tools = [{
 			this.rendered_size = pencil_size;
 			this.rendered_shape = "circle";
 		}
-		ctx.drawImage(this.pencil_canvas, ~~(x-csz/2), ~~(y-csz/2));
+		ctx.drawImage(this.pencil_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 	}
 }, {
 	name: "Brush",
@@ -325,7 +325,7 @@ tools = [{
 	rendered_size: 0,
 	rendered_shape: "",
 	paint: function(ctx, x, y){
-		var csz = brush_size * (brush_shape === "circle" ? 2.1 : 1);
+		var csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
 			this.rendered_color !== stroke_color ||
@@ -342,7 +342,7 @@ tools = [{
 			this.rendered_size = brush_size;
 			this.rendered_shape = brush_shape;
 		}
-		ctx.drawImage(brush_canvas, ~~(x-csz/2), ~~(y-csz/2));
+		ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 	},
 	$options: $choose_brush
 }, {
