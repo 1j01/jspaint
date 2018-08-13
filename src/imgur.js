@@ -35,8 +35,14 @@ function show_imgur_uploader(){
 				var form_data = new FormData();
 				form_data.append('image', blob);
 
+				var $progress = $(E("progress")).appendTo($imgur_window.$main);
+				var $progress_percent = $(E("span")).appendTo($imgur_window.$main).css({
+					width: "2.3em",
+					display: "inline-block",
+					textAlign: "center",
+				});
+
 				// send HTTP request to the Imgur image upload API
-				// TODO: progress bar for upload
 				$.ajax({
 					type: "POST",
 					url: "https://api.imgur.com/3/image",
@@ -47,10 +53,25 @@ function show_imgur_uploader(){
 					data: form_data, // what we're sending
 					processData: false, // don't try to process the form data (avoid "Illegal invocation")
 					contentType: false, // don't send an incorrect Content-Type header please (avoid 500 error from Imgur)
+					xhr: function() {
+						var myXhr = $.ajaxSettings.xhr();
+						if(myXhr.upload){
+							myXhr.upload.addEventListener('progress', function(event){
+								if(event.lengthComputable){
+									var progress_value = event.loaded / event.total;
+									var percentage_text = Math.floor(progress_value * 100) + "%";
+									$progress.val(progress_value);
+									$progress_percent.text(percentage_text);
+								}
+							}, false);
+						}
+						return myXhr;
+					},
 					beforeSend: function(){
 						$imgur_description.text("Loading...");
 					},
 					success: function(data){
+						$progress.add($progress_percent).remove();
 						if(!data.success){
 							$imgur_description.text("Failed to upload image :(");
 							return;
@@ -87,6 +108,7 @@ function show_imgur_uploader(){
 						});
 					},
 					error: function(error){
+						$progress.add($progress_percent).remove();
 						$imgur_description.text("Error uploading image :(");
 					},
 				})
