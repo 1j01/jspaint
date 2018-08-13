@@ -169,7 +169,9 @@ function save_to_FileEntry(entry, callback){
 			}
 		};
 		canvas.toBlob(function(blob){
-			file_writer.write(blob);
+			sanity_check_blob(blob, function(){
+				file_writer.write(blob);
+			});
 		});
 	});
 }
@@ -1126,7 +1128,9 @@ function get_array_buffer_from_canvas(canvas) {
 		};
 
 		canvas.toBlob(function(blob) {
-			file_reader.readAsArrayBuffer(blob);
+			sanity_check_blob(blob, function(){
+				file_reader.readAsArrayBuffer(blob);
+			});
 		});
 	});
 }
@@ -1156,7 +1160,9 @@ function save_selection_to_file(){
 						}
 					};
 					selection.canvas.toBlob(function(blob){
-						file_writer.write(blob);
+						sanity_check_blob(blob, function(){
+							file_writer.write(blob);
+						});
 					});
 				});
 			});
@@ -1178,7 +1184,7 @@ function sanity_check_blob(blob, okay_callback){
 		$w.$main.html(
 			"<p>Tried to save file, but file was empty.</p>" +
 			"<p>Try again, or if the problem persists, report here: " +
-			"<a href='https://github.com/1j01/jspaint/issues/118'>https://github.com/1j01/jspaint/issues/118</a>"
+			"<a href='https://github.com/1j01/jspaint/issues/118'>Issue #118</a>"
 		);
 		$w.$main.css({maxWidth: "500px"});
 		$w.$Button("OK", function(){
