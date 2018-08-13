@@ -22,9 +22,7 @@ function show_imgur_uploader(){
 	// which would work well for GIFs as well, passing in a blob to upload
 	// (TODO: add an option to upload rendered GIFs)
 	
-	// TODO: prevent uploading a ton of times at once by holding down enter
-	// by reworking the UI
-	$imgur_window.$Button("Upload", function(){
+	var $upload_button = $imgur_window.$Button("Upload", function(){
 		// (don't assume a selection won't be made between opening the dialogue and uploading)
 		// include the selection in the saved image (by deselecting)
 		deselect();
@@ -34,6 +32,9 @@ function show_imgur_uploader(){
 
 				var form_data = new FormData();
 				form_data.append('image', blob);
+
+				$upload_button.remove();
+				$cancel_button.remove(); // TODO: allow canceling upload request
 
 				var $progress = $(E("progress")).appendTo($imgur_window.$main);
 				var $progress_percent = $(E("span")).appendTo($imgur_window.$main).css({
@@ -81,7 +82,7 @@ function show_imgur_uploader(){
 						$imgur_url.text(url);
 						$imgur_url.attr('href', url);
 
-						$imgur_window.$Button("Delete", function(){
+						var $delete_button = $imgur_window.$Button("Delete", function(){
 							$.ajax({
 								type: "DELETE",
 								url: "https://api.imgur.com/3/image/" + data.data.deletehash,
@@ -93,6 +94,7 @@ function show_imgur_uploader(){
 									$imgur_description.text("Loading...");
 								},
 								success: function(data){
+									$delete_button.remove();
 									if(data.success){
 										$imgur_url.text('');
 										$imgur_url.attr('href', '#');
@@ -106,6 +108,9 @@ function show_imgur_uploader(){
 								},
 							});
 						});
+						var $okay_button = $imgur_window.$Button("OK", function(){
+							$imgur_window.close();
+						});
 					},
 					error: function(error){
 						$progress.add($progress_percent).remove();
@@ -115,7 +120,7 @@ function show_imgur_uploader(){
 			});
 		});
 	});
-	$imgur_window.$Button("Cancel", function(){
+	var $cancel_button = $imgur_window.$Button("Cancel", function(){
 		$imgur_window.close();
 	});
 	$imgur_window.width(300);
