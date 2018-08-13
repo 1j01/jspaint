@@ -49,8 +49,10 @@ function upload_to_imgur(){
 				$imgur_description.text("Loading...");
 			},
 			success: function(data){
-				// TODO: check for success code (or that the URL exists at least)
-				// if(data.success){
+				if(!data.success){
+					$imgur_description.text("Failed to upload image :(");
+					return;
+				}
 				var url = data.data.link;
 				$imgur_description.text("");
 				$imgur_url.text(url);
