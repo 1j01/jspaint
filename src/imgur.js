@@ -1,6 +1,6 @@
 var $imgur_window;
 
-function upload_to_imgur(){
+function show_imgur_uploader(){
 	if($imgur_window){
 		$imgur_window.close();
 	}
@@ -29,65 +29,69 @@ function upload_to_imgur(){
 		// include the selection in the saved image (by deselecting)
 		deselect();
 
-		// base64 encoding to send to Imgur API
-		// TODO: send a Blob instead (and sanity_check_blob first)
-		var base64 = canvas.toDataURL().split(",")[1];
-		var payload = {
-			image: base64,
-		};
+		canvas.toBlob(function(blob){
+			sanity_check_blob(blob, function(){
 
-		// send HTTP request to the Imgur image upload API
-		$.ajax({
-			type: "POST",
-			url: "https://api.imgur.com/3/image",
-			headers: {
-				"Authorization": "Client-ID 203da2f300125a1",
-			},
-			dataType: 'json', // of what's expected from the server, NOT what we're sending
-			data: payload, // what we're sending
-			beforeSend: function(){
-				$imgur_description.text("Loading...");
-			},
-			success: function(data){
-				if(!data.success){
-					$imgur_description.text("Failed to upload image :(");
-					return;
-				}
-				var url = data.data.link;
-				$imgur_description.text("");
-				$imgur_url.text(url);
-				$imgur_url.attr('href', url);
+				var form_data = new FormData();
+				form_data.append('image', blob);
 
-				$imgur_window.$Button("Delete", function(){
-					$.ajax({
-						type: "DELETE",
-						url: "https://api.imgur.com/3/image/" + data.data.deletehash,
-						headers: {
-							"Authorization": "Client-ID 203da2f300125a1",
-						},
-						dataType: 'json', // of what's expected from the server
-						beforeSend: function(){
-							$imgur_description.text("Loading...");
-						},
-						success: function(data){
-							if(data.success){
-								$imgur_url.text('');
-								$imgur_url.attr('href', '#');
-								$imgur_description.text("Deleted successfully");
-							}else{
-								$imgur_description.text("Failed to delete image :(");
-							}
-						},
-						error: function(error){
-							$imgur_description.text("Error deleting image :(");
-						},
-					});
-				});
-			},
-			error: function(error){
-				$imgur_description.text("Error uploading image :(");
-			},
-		})
+				// send HTTP request to the Imgur image upload API
+				// TODO: progress bar for upload
+				$.ajax({
+					type: "POST",
+					url: "https://api.imgur.com/3/image",
+					headers: {
+						"Authorization": "Client-ID 203da2f300125a1",
+					},
+					dataType: 'json', // of what's expected from the server, NOT what we're sending
+					data: form_data, // what we're sending
+					processData: false, // don't try to process the form data (avoid "Illegal invocation")
+					contentType: false, // don't send an incorrect Content-Type header please (avoid 500 error from Imgur)
+					beforeSend: function(){
+						$imgur_description.text("Loading...");
+					},
+					success: function(data){
+						if(!data.success){
+							$imgur_description.text("Failed to upload image :(");
+							return;
+						}
+						var url = data.data.link;
+						$imgur_description.text("");
+						$imgur_url.text(url);
+						$imgur_url.attr('href', url);
+
+						$imgur_window.$Button("Delete", function(){
+							$.ajax({
+								type: "DELETE",
+								url: "https://api.imgur.com/3/image/" + data.data.deletehash,
+								headers: {
+									"Authorization": "Client-ID 203da2f300125a1",
+								},
+								dataType: 'json', // of what's expected from the server
+								beforeSend: function(){
+									$imgur_description.text("Loading...");
+								},
+								success: function(data){
+									if(data.success){
+										$imgur_url.text('');
+										$imgur_url.attr('href', '#');
+										$imgur_description.text("Deleted successfully");
+									}else{
+										$imgur_description.text("Failed to delete image :(");
+									}
+								},
+								error: function(error){
+									$imgur_description.text("Error deleting image :(");
+								},
+							});
+						});
+					},
+					error: function(error){
+						$imgur_description.text("Error uploading image :(");
+					},
+				})
+			});
+		});
 	});
 	$imgur_window.$Button("Cancel", function(){
 		$imgur_window.close();

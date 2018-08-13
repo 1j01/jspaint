@@ -35,7 +35,9 @@ var menus = {
 		},
 		{
 			item: "&Upload To Imgur",
-			action: upload_to_imgur,
+			action: function(){
+				show_imgur_uploader();
+			},
 			description: "Uploads the active document to Imgur",
 		},
 		$MenuBar.DIVIDER,
