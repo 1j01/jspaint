@@ -8,7 +8,7 @@ function upload_to_imgur(){
 	$imgur_window.$main.html(
 		"<label>URL: </label>" +
 		"<label id='imgur-description'>Click to upload</label>" +
-		"<a id='imgur-url' href='' target='_blank'></a>"
+		"<a id='imgur-url' href='#' target='_blank'></a>"
 	);
 	// TODO: a button to copy the URL directly (to the clipboard)
 
@@ -49,12 +49,38 @@ function upload_to_imgur(){
 				$imgur_description.text("Loading...");
 			},
 			success: function(data){
+				// TODO: check for success code (or that the URL exists at least)
+				// if(data.success){
 				var url = data.data.link;
 				$imgur_description.text("");
 				$imgur_url.text(url);
 				$imgur_url.attr('href', url);
-				// TODO: option to delete the uploaded image, using:
-				// "https://api.imgur.com/3/image/" + data.deletehash
+
+				$imgur_window.$Button("Delete", function(){
+					$.ajax({
+						type: "DELETE",
+						url: "https://api.imgur.com/3/image/" + data.data.deletehash,
+						headers: {
+							"Authorization": "Client-ID 203da2f300125a1",
+						},
+						dataType: 'json', // of what's expected from the server
+						beforeSend: function(){
+							$imgur_description.text("Loading...");
+						},
+						success: function(data){
+							if(data.success){
+								$imgur_url.text('');
+								$imgur_url.attr('href', '#');
+								$imgur_description.text("Deleted successfully");
+							}else{
+								$imgur_description.text("Failed to delete image :(");
+							}
+						},
+						error: function(error){
+							$imgur_description.text("Error deleting image :(");
+						},
+					});
+				});
 			},
 			error: function(error){
 				$imgur_description.text("Error uploading image :(");
