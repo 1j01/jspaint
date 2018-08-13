@@ -36,7 +36,14 @@ var menus = {
 		{
 			item: "&Upload To Imgur",
 			action: function(){
-				show_imgur_uploader();
+				// include the selection in the saved image
+				deselect();
+
+				canvas.toBlob(function(blob){
+					sanity_check_blob(blob, function(){
+						show_imgur_uploader(blob);
+					});
+				});
 			},
 			description: "Uploads the active document to Imgur",
 		},

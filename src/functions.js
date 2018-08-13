@@ -488,6 +488,12 @@ function render_history_as_gif(){
 					height: height,
 				})
 			);
+			$win.$Button("Upload to Imgur", function(){
+				$win.close();
+				sanity_check_blob(blob, function(){
+					show_imgur_uploader(blob);
+				});
+			});
 			$win.$Button("Save", function(){
 				$win.close();
 				sanity_check_blob(blob, function(){
