@@ -43,44 +43,72 @@ function show_imgur_uploader(blob){
 			textAlign: "center",
 		});
 
-		var form_data = new FormData();
-		form_data.append('image', blob);
+		var parseImgurResponseJSON = function(responseJSON){
+			try {
+				var response = JSON.parse(responseJSON);
+			} catch(error) {
+				$imgur_status.text("Received an invalid JSON response from Imgur: ");
+				// .append($(E("pre")).text(responseJSON));
 
-		// send HTTP request to the Imgur image upload API
-		$.ajax({
-			type: "POST",
-			url: "https://api.imgur.com/3/image",
-			headers: {
-				"Authorization": "Client-ID 203da2f300125a1",
-			},
-			dataType: 'json', // of what's expected from the server, NOT what we're sending
-			data: form_data, // what we're sending
-			processData: false, // don't try to process the form data (avoid "Illegal invocation")
-			contentType: false, // don't send an incorrect Content-Type header please (avoid 500 error from Imgur)
-			xhr: function() {
-				var myXhr = $.ajaxSettings.xhr();
-				if(myXhr.upload){
-					myXhr.upload.addEventListener('progress', function(event){
-						if(event.lengthComputable){
-							var progress_value = event.loaded / event.total;
-							var percentage_text = Math.floor(progress_value * 100) + "%";
-							$progress.val(progress_value);
-							$progress_percent.text(percentage_text);
-						}
-					}, false);
+				// show_error_message("Received an invalid JSON response from Imgur: ", responseJSON);
+				// show_error_message("Received an invalid JSON response from Imgur: ", responseJSON, but also error);
+				// $imgur_window.close();
+
+				// TODO: DRY, including with show_error_message
+				$(E("pre"))
+				.appendTo($imgur_status)
+				.text(responseJSON)
+				.css({
+					background: "white",
+					color: "#333",
+					fontFamily: "monospace",
+					width: "500px",
+					overflow: "auto",
+				});
+				$(E("pre"))
+				.appendTo($imgur_status)
+				.text(error.toString())
+				.css({
+					background: "white",
+					color: "#333",
+					fontFamily: "monospace",
+					width: "500px",
+					overflow: "auto",
+				});
+				$imgur_window.css({width: "auto"});
+				$imgur_window.center();
+			}
+			return response;
+		};
+
+		// make an HTTP request to the Imgur image upload API
+
+		var req = new XMLHttpRequest();
+
+		if(req.upload){
+			req.upload.addEventListener('progress', function(event){
+				if(event.lengthComputable){
+					var progress_value = event.loaded / event.total;
+					var percentage_text = Math.floor(progress_value * 100) + "%";
+					$progress.val(progress_value);
+					$progress_percent.text(percentage_text);
 				}
-				return myXhr;
-			},
-			beforeSend: function(){
-				$imgur_status.text("Uploading...");
-			},
-			success: function(data){
+			}, false);
+		}
+
+		req.addEventListener("readystatechange", function() { 
+			if(req.readyState == 4 && req.status == 200){
 				$progress.add($progress_percent).remove();
-				if(!data.success){
+
+				var response = parseImgurResponseJSON(req.responseText);
+				if(!response) return;
+
+				if(!response.success){
 					$imgur_status.text("Failed to upload image :(");
 					return;
 				}
-				var url = data.data.link;
+				var url = response.data.link;
+
 				$imgur_status.text("");
 
 				var $imgur_url = $(E("a")).attr({id: "imgur-url", target: "_blank"});
@@ -90,42 +118,57 @@ function show_imgur_uploader(blob){
 				$imgur_url_area.append(
 					"<label>URL: </label>"
 				).append($imgur_url);
-				// TODO: a button to copy the URL directly (to the clipboard)
+				// TODO: a button to copy the URL to the clipboard
+				// (also maybe put the URL in a readonly input)
 				
 				var $delete_button = $imgur_window.$Button("Delete", function(){
-					$.ajax({
-						type: "DELETE",
-						url: "https://api.imgur.com/3/image/" + data.data.deletehash,
-						headers: {
-							"Authorization": "Client-ID 203da2f300125a1",
-						},
-						dataType: 'json', // of what's expected from the server
-						beforeSend: function(){
-							$imgur_status.text("Deleting...");
-						},
-						success: function(data){
+					var req = new XMLHttpRequest();
+
+					req.addEventListener("readystatechange", function() { 
+						if(req.readyState == 4 && req.status == 200){
 							$delete_button.remove();
-							if(data.success){
+
+							var response = parseImgurResponseJSON(req.responseText);
+							if(!response) return;
+
+							if(response.success){
 								$imgur_url_area.remove();
 								$imgur_status.text("Deleted successfully");
 							}else{
 								$imgur_status.text("Failed to delete image :(");
 							}
-						},
-						error: function(error){
+						}else if(req.readyState == 4){
 							$imgur_status.text("Error deleting image :(");
-						},
+						}
 					});
+
+					req.open("DELETE", "https://api.imgur.com/3/image/" + response.data.deletehash, true);
+					
+					req.setRequestHeader("Authorization", "Client-ID 203da2f300125a1");
+					req.setRequestHeader("Accept", "application/json");
+					req.send(null);
+
+					$imgur_status.text("Deleting...");
 				});
 				var $okay_button = $imgur_window.$Button("OK", function(){
 					$imgur_window.close();
 				});
-			},
-			error: function(error){
+			}else if(req.readyState == 4){
 				$progress.add($progress_percent).remove();
 				$imgur_status.text("Error uploading image :(");
-			},
+			}
 		});
+
+		req.open("POST", "https://api.imgur.com/3/image", true);
+		
+		var form_data = new FormData();
+		form_data.append("image", blob);
+
+		req.setRequestHeader("Authorization", "Client-ID 203da2f300125a1");
+		req.setRequestHeader("Accept", "application/json");
+		req.send(form_data);
+
+		$imgur_status.text("Uploading...");
 	});
 	var $cancel_button = $imgur_window.$Button("Cancel", function(){
 		$imgur_window.close();
