@@ -40,6 +40,13 @@ const createWindow = () => {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  // Open links externally.
+  mainWindow.webContents.on('will-navigate', function(e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal(url);
+  });
+
 };
 
 // This method will be called when Electron has finished

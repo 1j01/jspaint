@@ -80,7 +80,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Transparency
 	* Color opacity slider
-	* Toggle between blend and copy modes
+	* Toggle between blend and copy (overwrite) modes
 	* Maybe equivalise any rgba(X, X, X, 0) in fill algorithm?
 	There'd still be the possibility of 1/255th opacity pixels,
 	but if you're creating colors from the combination of a color picker and an opacity slider,
@@ -207,7 +207,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 ### Native App
 
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
-* Handle external links
 * Remember window position/state
 * Add icon to built executable
 * Set up autoupdating
