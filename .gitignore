@@ -1,4 +1,7 @@
 
+# electron forge output
+out/
+
 # npm
 node_modules/
 *.log
