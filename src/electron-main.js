@@ -20,7 +20,9 @@ const createWindow = () => {
     icon: require("path").join(__dirname, "../images/icons",
       process.platform === "win32" ?
         "windows.ico" :
-        "48.png"
+        process.platform === "darwin" ?
+          "mac.icns" :
+          "48.png"
     ),
     title: "JS Paint",
   });
