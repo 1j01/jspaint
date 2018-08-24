@@ -1,7 +1,8 @@
 {
   "name": "jspaint",
+  "productName": "JS Paint",
   "version": "1.0.0",
-  "description": "An MS Paint remake.",
+  "description": "Classic MS Paint clone with extra features",
   "keywords": [
     "paint",
     "jspaint",
@@ -22,14 +23,61 @@
     "image-editor",
     "bitmap"
   ],
-  "main": "index.html",
+  "author": "Isaiah Odhner <isaiahodhner@gmail.com>",
+  "main": "src/electron-main.js",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "jspaint"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "wallpaper": "^2.6.0",
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.22",
+    "@electron-forge/maker-deb": "^6.0.0-beta.22",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.22",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.22",
+    "@electron-forge/maker-zip": "^6.0.0-beta.22",
+    "electron": "2.0.8",
+    "cross-spawn": "^5.1.0",
+    "http-server": "^0.11.1",
+    "live-server": "^1.2.0",
+    "parallelshell": "^3.0.2",
+    "phantomcss": "^1.4.0"
+  },
   "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\"",
     "dev": "live-server",
     "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
     "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
-  },
-  "dependencies": {
-    "wallpaper": "^2.6.0"
   },
   "repository": {
     "type": "git",
@@ -37,12 +85,5 @@
   },
   "bugs": {
     "url": "https://github.com/1j01/jspaint/issues"
-  },
-  "devDependencies": {
-    "cross-spawn": "^5.1.0",
-    "http-server": "^0.11.1",
-    "live-server": "^1.2.0",
-    "parallelshell": "^3.0.2",
-    "phantomcss": "^1.4.0"
   }
 }

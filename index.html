@@ -66,6 +66,10 @@
 				<!--<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">-->
 			</form>
 		</div>
+
+		<!-- for Electron, so libraries don't get confused and export to `module` instead of the window -->
+		<script> if (typeof module === 'object') { window.module = module; module = undefined; } </script>
+
 		<script src="lib/jquery.min.js"></script>
 		<script src="lib/pep.js"></script>
 		<script src="lib/canvas.toBlob.js"></script>
@@ -73,7 +77,10 @@
 		<script src="lib/palette.js"></script>
 		<script src="lib/FileSaver.js"></script>
 		<script src="lib/font-detective.js"></script>
-		<script src="./lib/libtess.min.js"></script>
+		<script src="lib/libtess.min.js"></script>
+
+		<!-- <script> if (window.module) { module = window.module; } </script> -->
+
 		<script src="src/helpers.js"></script>
 		<script src="src/storage.js"></script>
 		<script src="src/$Component.js"></script>

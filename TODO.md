@@ -206,14 +206,16 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 ### Native App
 
-* Use [Electron Forge](https://electronforge.io/)
-* Enable autoupdating
-* File association support
+* [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
+* Remember window position/state
+* Add icon
+* Deduplicate the menubars (remove the native menubar for the classic theme, maybe use it for the "modern" theme)
+* Set up autoupdating
+* File association support (allow setting jspaint as default image editor)
 * [Copy images to the clipboard](https://electronjs.org/docs/api/clipboard#clipboardwriteimageimage-type)
 * A dialogue when closing
 * Subwindows outside the main window
-* A different way of handling always-saved documents
-(recovery?)
+* A document recovery story
 
 
 ### Also
