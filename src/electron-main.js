@@ -16,6 +16,9 @@ const createWindow = () => {
     height: 600,
   });
 
+  // TODO: maybe use the native menu for the "Modern" theme
+  mainWindow.setMenu(null);
+
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/../index.html`);
 
