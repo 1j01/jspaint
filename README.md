@@ -3,7 +3,7 @@
 
 A nice web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
 
-<!-- You can also run it as a desktop app... -->
+<!-- TODO: You can also run it as a [desktop app...](#desktop-app) -->
 
 
 The goal is to remake MS Paint
@@ -96,13 +96,14 @@ I want to bring good old paint into the modern era.
 A lot of stuff isn't done yet.
 See: [the big long todo list.](TODO.md)
 
-Clipboard support is somewhat limited.
+Clipboard support is somewhat limited (in the web app).
 You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
-There's apparently no way for web apps to properly copy image data to the clipboard.
+There's no way for web apps to properly copy image data to the clipboard yet.
 "[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)"
 is currently the top starred issue of chromium.
-To use the clipboard menu items, you need to install the native app.
+
+For full clipboard support, you need to install the [desktop app](#desktop-app).
 
 
 ## Extended Editing
@@ -172,18 +173,44 @@ I want to make JS Paint to be able to edit...
 	      I also made it redoable, in case you do it by accident! But [it broke at some point in Chrome.](https://github.com/1j01/jspaint/issues/9))
 	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
 
+
+## Desktop App
+
+Install JS Paint as a desktop app. Built with [Electron][], and [Electron Forge][].
+
+There are no releases yet. See Development Setup below if you want to set it up (such as for development).
+
+[Electron]: https://electronjs.org/
+[Electron Forge]: https://electronforge.io/
+
+
 ## Development Setup
 
 [Clone the repo.](https://help.github.com/articles/cloning-a-repository/)
 
-There's currently no build step of any kind.
+Install [Node.js][] if you don't have it, then open up a command prompt / terminal in the project directory.
+
+### Web App (https://jspaint.app)
+
 You just need an HTTP server.
 
-[Live Server][] is nice (it auto reloads when you save changes),
-and it's included in `package.json` so if you want you can do
-`npm i` to install dependencies and `npm run dev` to run it.
+[Live Server][] is great; it auto reloads when you save changes.
 
-Alternatively you can install it globally with `npm i -g live-server`
-and run it with `live-server`.
+You can install it globally with `npm i -g live-server`
+and run it with `live-server`
+
+It's also included in `package.json` so if you've already installed dependencies (`npm i`) you can use `npm run dev` to run it.
+
+### Desktop App (Electron)
+
+- Install dependencies with `npm i`
+- Start the electron app with `npm start`
+
+[electron-debug][] and [devtron][] are included, so you can use <kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools, and there's a Devtron tab with tools specific to Electron like an IPC message inspector.
+
+You can build for production with `npm run make`
 
 [Live Server]: https://github.com/tapio/live-server
+[Node.js]: https://nodejs.org/
+[electron-debug]: https://github.com/sindresorhus/electron-debug
+[devtron]: https://electronjs.org/devtron
