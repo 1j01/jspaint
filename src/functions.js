@@ -1076,7 +1076,7 @@ function set_as_wallpaper_centered(c){
 	}
 
 	// TODO: move the chrome handling into chrome-app.js using the system-specific override
-	// can do it for nw.js too, although that doesn't have a separate file yet (i.e. nw-app.js)
+	// can do it for nw.js / electron too
 
 	if(window.chrome && chrome.wallpaper){
 		get_array_buffer_from_canvas(c)
@@ -1090,11 +1090,14 @@ function set_as_wallpaper_centered(c){
 			}).catch(function(error) {
 				show_error_message("Failed to set as desktop background: couldn't read image file.", error);
 			});
-	}else if(window.require){
+	}
+	/*else if(window.require){
+		// TODO: for electron, app.getPath("userData")
 		var gui = require("nw.gui");
 		var fs = require("fs");
 		var wallpaper = require("wallpaper");
 
+		// TODO: don't use base64
 		var base64 = c.toDataURL().replace(/^data:image\/png;base64,/, "");
 		var imgPath = require("path").join(gui.App.dataPath, "bg.png");
 
@@ -1108,7 +1111,8 @@ function set_as_wallpaper_centered(c){
 				}
 			});
 		});
-	}else{
+	}*/
+	else{
 		c.toBlob(function(blob){
 			sanity_check_blob(blob, function(){
 				saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + " wallpaper.png");

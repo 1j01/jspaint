@@ -206,10 +206,10 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 ### Native App
 
-* Switch from NW.js to Electron
-* Use a boilerplate for autoupdating and such
+* Use [Electron Forge](https://electronforge.io/)
+* Enable autoupdating
 * File association support
-* Proper clipboard support; Electron has an API for copying images
+* [Copy images to the clipboard](https://electronjs.org/docs/api/clipboard#clipboardwriteimageimage-type)
 * A dialogue when closing
 * Subwindows outside the main window
 * A different way of handling always-saved documents

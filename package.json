@@ -15,22 +15,20 @@
     "edit",
     "canvas",
     "app",
-    "nw-app",
-    "web-app"
+    "web-app",
+    "recreation",
+    "clone",
+    "image-editing",
+    "image-editor",
+    "bitmap"
   ],
   "main": "index.html",
   "scripts": {
-    "start": "nw",
     "dev": "live-server",
     "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
     "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
   },
-  "window": {
-    "icon": "images/icons/48.png",
-    "toolbar": false
-  },
   "dependencies": {
-    "nw": "^0.27.4",
     "wallpaper": "^2.6.0"
   },
   "repository": {
