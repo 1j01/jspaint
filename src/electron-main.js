@@ -14,6 +14,11 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: require("path").join(__dirname, "../images/icons",
+      process.platform === "win32" ?
+        "windows.ico" :
+        "48.png"
+    ),
   });
 
   // TODO: maybe use the native menu for the "Modern" theme

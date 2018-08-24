@@ -208,7 +208,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
-* Add icon
+* Add icon to built executable
 * Set up autoupdating
 * File association support (allow setting jspaint as default image editor)
 * [Copy images to the clipboard](https://electronjs.org/docs/api/clipboard#clipboardwriteimageimage-type)
