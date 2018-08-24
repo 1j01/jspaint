@@ -207,6 +207,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 ### Native App
 
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
+* Handle external links
 * Remember window position/state
 * Add icon to built executable
 * Set up autoupdating
@@ -215,6 +216,8 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * A dialogue when closing
 * Subwindows outside the main window
 * A document recovery story
+* macOS: `setRepresentedFilename`, `setDocumentEdited` etc., maybe even "sheets"?
+* Windows: maybe handle `session-end` event?
 
 
 ### Also
