@@ -22,6 +22,7 @@ const createWindow = () => {
         "windows.ico" :
         "48.png"
     ),
+    title: "JS Paint",
   });
 
   // TODO: maybe use the native menu for the "Modern" theme
