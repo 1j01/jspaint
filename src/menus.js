@@ -1,4 +1,8 @@
 
+var is_chrome_app = window.chrome && chrome.permissions;
+var is_electron_or_nwjs = window.require && window.process;
+var is_electron_or_nwjs_or_chrome_app = is_chrome_app || is_electron_or_nwjs;
+
 var menus = {
 	"&File": [
 		{
@@ -130,7 +134,7 @@ var menus = {
 			shortcut: "Ctrl+X",
 			enabled: function(){
 				// @TODO disable if no selection (image or text)
-				return (typeof chrome !== "undefined") && chrome.permissions;
+				return is_electron_or_nwjs_or_chrome_app;
 			},
 			action: function(){
 				document.execCommand("cut");
@@ -142,7 +146,7 @@ var menus = {
 			shortcut: "Ctrl+C",
 			enabled: function(){
 				// @TODO disable if no selection (image or text)
-				return (typeof chrome !== "undefined") && chrome.permissions;
+				return is_electron_or_nwjs_or_chrome_app;
 			},
 			action: function(){
 				document.execCommand("copy");
@@ -153,7 +157,7 @@ var menus = {
 			item: "&Paste",
 			shortcut: "Ctrl+V",
 			enabled: function(){
-				return (typeof chrome !== "undefined") && chrome.permissions;
+				return is_electron_or_nwjs_or_chrome_app;
 			},
 			action: function(){
 				document.execCommand("paste");

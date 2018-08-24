@@ -1203,3 +1203,20 @@ function sanity_check_blob(blob, okay_callback){
 		$w.center();
 	}
 }
+
+function blob_to_buffer(blob, callback) {
+	const file_reader = new FileReader()
+
+	file_reader.addEventListener("loadend", event => {
+		if (file_reader.error) {
+			callback(file_reader.error)
+		} else {
+			callback(null, new Buffer(file_reader.result))
+		}
+	}, false)
+
+	// Read the blob as a typed array.
+	file_reader.readAsArrayBuffer(blob)
+
+	return file_reader
+}

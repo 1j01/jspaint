@@ -348,20 +348,34 @@ $G.on("cut copy paste", function(e){
 
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
-			var data_url = selection.canvas.toDataURL();
-			cd.setData("text/x-data-uri; type=image/png", data_url);
-			cd.setData("text/uri-list", data_url);
-			cd.setData("URL", data_url);
-			// var svg = `
-			// 	<svg
-			// 		xmlns="http://www.w3.org/2000/svg" version="1.1"
-			// 		viewBox="0 0 ${selection.canvas.width} ${selection.canvas.height}" preserveAspectRatio="xMidYMid slice">
-			// 		<image xlink:href="${data_url}" x="0" y="0" height="${selection.canvas.height}" width="${selection.canvas.width}"/>
-			// 	</svg>
-			// `;
-			// cd.setData("image/svg+xml", svg);
-			// cd.setData("text/html", svg);
-
+			if(window.require && window.process){
+				const {clipboard, nativeImage} = require('electron');
+				selection.canvas.toBlob(function(blob){
+					sanity_check_blob(blob, function(){
+						blob_to_buffer(blob, function(err, buffer){
+							if(err){
+								return show_error_message("Failed to copy to clipboard! (Technically, failed to convert a Blob to a Buffer.)", err);
+							}
+							var native_image = nativeImage.createFromBuffer(buffer);
+							clipboard.writeImage(native_image);
+						});
+					});
+				});
+			} else {
+				var data_url = selection.canvas.toDataURL();
+				cd.setData("text/x-data-uri; type=image/png", data_url);
+				cd.setData("text/uri-list", data_url);
+				cd.setData("URL", data_url);
+				// var svg = `
+				// 	<svg
+				// 		xmlns="http://www.w3.org/2000/svg" version="1.1"
+				// 		viewBox="0 0 ${selection.canvas.width} ${selection.canvas.height}" preserveAspectRatio="xMidYMid slice">
+				// 		<image xlink:href="${data_url}" x="0" y="0" height="${selection.canvas.height}" width="${selection.canvas.width}"/>
+				// 	</svg>
+				// `;
+				// cd.setData("image/svg+xml", svg);
+				// cd.setData("text/html", svg);
+			}
 			if(e.type === "cut"){
 				selection.destroy();
 				selection = null;

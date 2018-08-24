@@ -102,7 +102,7 @@ but data copied from JS Paint can only be pasted into other instances of JS Pain
 There's apparently no way for web apps to properly copy image data to the clipboard.
 "[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)"
 is currently the top starred issue of chromium.
-<!-- TODO: To use the clipboard menu items, you need to install the native app. -->
+To use the clipboard menu items, you need to install the native app.
 
 
 ## Extended Editing

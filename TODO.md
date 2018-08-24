@@ -211,7 +211,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * Add icon to built executable
 * Set up autoupdating
 * File association support (allow setting jspaint as default image editor)
-* [Copy images to the clipboard](https://electronjs.org/docs/api/clipboard#clipboardwriteimageimage-type)
 * A dialogue when closing
 * Subwindows outside the main window
 * A document recovery story
