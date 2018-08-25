@@ -204,16 +204,23 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* See Text tool
 
 
-### Native App
+### Desktop App (Electron)
 
+* Why doesn't the process exit when the window is closed? It has code to `quit`, from the example boilerplate.
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
+* Minimum and default size of window
 * Add icon to built executable
 * Set up autoupdating
+* Maybe keep window hidden until loaded (`show: false`)
 * File association support (allow setting jspaint as default image editor)
-* A dialogue when closing
-* Subwindows outside the main window
-* A document recovery story
+* A dialog when closing
+* Subwindows as separate windows
+* Document recovery, other than File > Manage Storage
+* Show link URLs when you hover over them, in the status bar (we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, but it could probably be implemented with mouse events and such if that's not sufficient)
+* Recent files (could also be implemented for 98.js.org in the future)
+* Create a landing page / home page for the desktop app (like e.g. https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
+* Remove usage of `prompt` (and ideally `alert`/`confirm` too! shouldn't be using these anyways!)
 * macOS: `setRepresentedFilename`, `setDocumentEdited` etc., maybe even "sheets"?
 * Windows: maybe handle `session-end` event?
 
