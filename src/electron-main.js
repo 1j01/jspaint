@@ -42,12 +42,14 @@ const createWindow = () => {
     mainWindow = null;
   });
 
-  // Open links externally.
-  mainWindow.webContents.on('will-navigate', function(e, url) {
+  const handleRedirect = function(e, url) {
     e.preventDefault();
     require('electron').shell.openExternal(url);
-  });
-
+  };
+  // Open links without target=_blank externally.
+  mainWindow.webContents.on('will-navigate', handleRedirect);
+  // Open links with target=_blank externally.
+  mainWindow.webContents.on('new-window', handleRedirect);
 };
 
 // This method will be called when Electron has finished
