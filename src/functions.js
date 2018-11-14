@@ -1079,6 +1079,9 @@ function set_as_wallpaper_centered(c){
 
 	// Also: this currently doesn't necessarily set as centered; it can set as stretched on Windows 10.
 	// TODO: rename set_as_wallpaper and implement set_as_wallpaper_centered similar to tiled
+	// altho doing that would mean it wouldn't respect the system wallpaper background color
+	// so maybe on macOS it should still use the canvas directly, and use the scale option center
+	// https://www.npmjs.com/package/wallpaper
 
 	if(window.chrome && chrome.wallpaper){
 		get_array_buffer_from_canvas(c)
@@ -1098,21 +1101,21 @@ function set_as_wallpaper_centered(c){
 		}else if(window.nw){
 			var dataPath = nw.App.dataPath;
 		}
+		var imgPath = require("path").join(dataPath, "bg.png");
 		var fs = require("fs");
 		var wallpaper = require("wallpaper");
 
-		// TODO: don't use base64
-		var base64 = c.toDataURL().replace(/^data:image\/png;base64,/, "");
-		var imgPath = require("path").join(dataPath, "bg.png");
-
-		fs.writeFile(imgPath, base64, "base64", function(err){
-			if(err){
-				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
-			}
-			wallpaper.set(imgPath, function(err){
+		get_array_buffer_from_canvas(c).then(function(array_buffer){
+			var buffer = new Buffer(array_buffer);
+			fs.writeFile(imgPath, buffer, function(err){
 				if(err){
-					show_error_message("Failed to set as desktop background!", err);
+					return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
 				}
+				wallpaper.set(imgPath, function(err){
+					if(err){
+						show_error_message("Failed to set as desktop background!", err);
+					}
+				});
 			});
 		});
 	}else{
