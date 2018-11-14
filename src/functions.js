@@ -1077,6 +1077,9 @@ function set_as_wallpaper_centered(c){
 	// TODO: move the chrome handling into chrome-app.js using the system-specific override
 	// can do it for nw.js / electron too
 
+	// Also: this currently doesn't necessarily set as centered; it can set as stretched on Windows 10.
+	// TODO: rename set_as_wallpaper and implement set_as_wallpaper_centered similar to tiled
+
 	if(window.chrome && chrome.wallpaper){
 		get_array_buffer_from_canvas(c)
 			.then(function(buffer) {
@@ -1089,16 +1092,18 @@ function set_as_wallpaper_centered(c){
 			}).catch(function(error) {
 				show_error_message("Failed to set as desktop background: couldn't read image file.", error);
 			});
-	}
-	/*else if(window.require){
-		// TODO: for electron, app.getPath("userData")
-		var gui = require("nw.gui");
+	}else if(window.require){
+		if(window.process && process.versions && process.versions.electron){
+			var dataPath = require('electron').remote.app.getPath("userData");
+		}else if(window.nw){
+			var dataPath = nw.App.dataPath;
+		}
 		var fs = require("fs");
 		var wallpaper = require("wallpaper");
 
 		// TODO: don't use base64
 		var base64 = c.toDataURL().replace(/^data:image\/png;base64,/, "");
-		var imgPath = require("path").join(gui.App.dataPath, "bg.png");
+		var imgPath = require("path").join(dataPath, "bg.png");
 
 		fs.writeFile(imgPath, base64, "base64", function(err){
 			if(err){
@@ -1110,8 +1115,7 @@ function set_as_wallpaper_centered(c){
 				}
 			});
 		});
-	}*/
-	else{
+	}else{
 		c.toBlob(function(blob){
 			sanity_check_blob(blob, function(){
 				saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + " wallpaper.png");
