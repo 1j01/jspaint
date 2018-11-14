@@ -127,7 +127,7 @@ function open_from_File(file, callback, canceled){
 		}, canceled);
 	});
 }
-function get_image_file_from_FileList_or_show_error(files, file_list_user_input_method_verb_past_tense){
+function get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense){
 	for(var i=0; i<files.length; i++){
 		var file = files[i];
 		if(file.type.match(/^image/)){
@@ -135,14 +135,13 @@ function get_image_file_from_FileList_or_show_error(files, file_list_user_input_
 		}
 	}
 	if(files.length > 1){
-		show_error_message("None of the files " + file_list_user_input_method_verb_past_tense + " appear to be images.");
+		show_error_message("None of the files " + user_input_method_verb_past_tense + " appear to be images.");
 	}else{
-		// TODO: ucfirst(file_list_user_input_method_verb_past_tense) + " file" might be more natural
-		show_error_message("File " + file_list_user_input_method_verb_past_tense + " does not appear to be an image.");
+		show_error_message("File " + user_input_method_verb_past_tense + " does not appear to be an image.");
 	}
 }
 function open_from_FileList(files, user_input_method_verb_past_tense){
-	var file = get_image_file_from_FileList_or_show_error(files);
+	var file = get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense);
 	if(file){
 		open_from_File(file, function(err){
 			if(err){ return show_error_message("Failed to open file:", err); }
