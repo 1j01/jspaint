@@ -81,7 +81,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * Transparency
 	* Color opacity slider
 	* Toggle between blend and copy (overwrite) modes
-	* Maybe equivalise any rgba(X, X, X, 0) in fill algorithm?
+	* Maybe equivalize any rgba(X, X, X, 0) in fill algorithm?
 	There'd still be the possibility of 1/255th opacity pixels,
 	but if you're creating colors from the combination of a color picker and an opacity slider,
 	you might naturally introduce differing zero-opacity color values a lot.
@@ -207,6 +207,8 @@ might be a pointer events spec interpretation issue, and it could easily be that
 ### Desktop App (Electron)
 
 * Why doesn't the process exit when the window is closed? It has code to `quit`, from the example boilerplate.
+  **Update:** It seems it's `electron-forge start` that doesn't exit, which appears to match [this bug](https://github.com/electron-userland/electron-forge/issues/545).
+  Should I update to the beta so that `npm start` can quit normally?
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
 * Minimum and default size of window
@@ -216,13 +218,13 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * File association support (allow setting jspaint as default image editor)
 * A dialog when closing
 * Subwindows as separate windows
-* Document recovery, other than File > Manage Storage
+* Document recovery without having to know File > Manage Storage exists (pop up contextually with a dialog when you need it)
 * Show link URLs when you hover over them, in the status bar (we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, but it could probably be implemented with mouse events and such if that's not sufficient)
 * Recent files (could also be implemented for 98.js.org in the future)
-* Create a landing page / home page for the desktop app (like e.g. https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
+* Create a landing page / home page for the desktop app (similar to https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
 * Remove usage of `prompt` (and ideally `alert`/`confirm` too! shouldn't be using these anyways!)
 * macOS: `setRepresentedFilename`, `setDocumentEdited` etc., maybe even "sheets"?
-* Windows: maybe handle `session-end` event?
+* Windows: maybe handle `session-end` event and ask to save?
 
 
 ### Also
