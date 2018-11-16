@@ -51,8 +51,11 @@ const createWindow = () => {
   });
 
   const handleRedirect = function(e, url) {
-    e.preventDefault();
-    require('electron').shell.openExternal(url);
+    // check that the URL is not part of the app
+    if(url.indexOf("file://") === -1){
+      e.preventDefault();
+      require('electron').shell.openExternal(url);
+    }
   };
   // Open links without target=_blank externally.
   mainWindow.webContents.on('will-navigate', handleRedirect);
