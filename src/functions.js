@@ -259,7 +259,7 @@ function file_save_as(){
 		chrome.fileSystem.chooseEntry({
 			type: 'saveFile',
 			suggestedName: file_name,
-			accepts: [{mimeTypes: ["image/*"]}]
+			accepts: [{mimeTypes: ["image/png"]}]
 		}, function(entry){
 			if(chrome.runtime.lastError){
 				return console.error(chrome.runtime.lastError.message);
