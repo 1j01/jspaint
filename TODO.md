@@ -207,6 +207,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 ### Desktop App (Electron)
 
 * Choose different file types when saving (also wanted in the browser; and on mobile (chrome for android at least) you currently can't set a filename, so a dialog would be good! see: [#59](https://github.com/1j01/jspaint/issues/59), [#55](https://github.com/1j01/jspaint/issues/55), [#54](https://github.com/1j01/jspaint/issues/54))
+* Save to existing files with Save (currently it does the same as Save As)
 * Why doesn't the process exit when the window is closed? It has code to `quit`, from the example boilerplate.
   **Update:** It seems it's `electron-forge start` that doesn't exit, which appears to match [this bug](https://github.com/electron-userland/electron-forge/issues/545).
   Should I update to the beta so that `npm start` can quit normally?
@@ -215,7 +216,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * Minimum and default size of window
 * Add icon to built executable
 * Set up autoupdating
-* Maybe keep window hidden until loaded (`show: false`)
+* Keep window hidden until loaded (`show: false`) ([`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))
 * File association support (allow setting jspaint as default image editor)
 * A dialog when closing
 * Subwindows as separate windows

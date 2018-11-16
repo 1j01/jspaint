@@ -59,3 +59,31 @@ window.saveAs = function(blob, fileName){
 	});
 	return fileWriter; // not doing events, but we can prevent an error
 };
+
+window.systemSetAsWallpaperCentered = function(c){
+	var dataPath = require('electron').remote.app.getPath("userData");
+
+	var imgPath = require("path").join(dataPath, "bg.png");
+	var fs = require("fs");
+	var wallpaper = require("wallpaper");
+
+	// This currently doesn't necessarily set as centered; it can set as stretched on Windows 10.
+	// TODO: implement centered similar to tiled (drawing to a larger canvas)
+	// altho doing that would mean it wouldn't respect the system background color
+	// so maybe on macOS it should still use the canvas directly, and use the scale option center
+	// https://www.npmjs.com/package/wallpaper
+
+	get_array_buffer_from_canvas(c).then(function(array_buffer){
+		var buffer = new Buffer(array_buffer);
+		fs.writeFile(imgPath, buffer, function(err){
+			if(err){
+				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
+			}
+			wallpaper.set(imgPath, function(err){
+				if(err){
+					show_error_message("Failed to set as desktop background!", err);
+				}
+			});
+		});
+	});
+};

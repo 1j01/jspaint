@@ -20,6 +20,22 @@ chrome.app.runtime.onLaunched.addListener(function(launch_data) {
 					set_anchor_target_to_open_new_tab(anchor);
 				}
 			});
+
+			if(chrome.wallpaper){
+				window.contentWindow.systemSetAsWallpaperCentered = function(c){
+					get_array_buffer_from_canvas(c)
+						.then(function(buffer) {
+							chrome.wallpaper.setWallpaper({
+								data: buffer,
+								layout: "CENTER_CROPPED",
+								filename: window.contentWindow.file_name,
+							}, function on_thumbnail_created() {
+							});
+						}).catch(function(error) {
+							window.contentWindow.show_error_message("Failed to set as desktop background: couldn't read image file.", error);
+						});
+				};
+			}
 		});
 	}
 

@@ -272,7 +272,7 @@ function file_save_as(){
 	}else{
 		canvas.toBlob(function(blob){
 			sanity_check_blob(blob, function(){
-				var file_saver = saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + ".png");
+				var file_saver = saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png");
 				file_saver.onwriteend = function(){
 					// this won't fire in chrome
 					saved = true;
@@ -496,7 +496,7 @@ function render_history_as_gif(){
 			$win.$Button("Save", function(){
 				$win.close();
 				sanity_check_blob(blob, function(){
-					saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + " history.gif");
+					saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + " history.gif");
 				});
 			});
 			$cancel.appendTo($win.$buttons);
@@ -1074,57 +1074,11 @@ function set_as_wallpaper_centered(c){
 		return window.systemSetAsWallpaperCentered(c);
 	}
 
-	// TODO: move the chrome handling into chrome-app.js using the system-specific override
-	// can do it for nw.js / electron too
-
-	// Also: this currently doesn't necessarily set as centered; it can set as stretched on Windows 10.
-	// TODO: rename set_as_wallpaper and implement set_as_wallpaper_centered similar to tiled
-	// altho doing that would mean it wouldn't respect the system wallpaper background color
-	// so maybe on macOS it should still use the canvas directly, and use the scale option center
-	// https://www.npmjs.com/package/wallpaper
-
-	if(window.chrome && chrome.wallpaper){
-		get_array_buffer_from_canvas(c)
-			.then(function(buffer) {
-				chrome.wallpaper.setWallpaper({
-					data: buffer,
-					layout: "CENTER_CROPPED",
-					filename: file_name,
-				}, function on_thumbnail_created() {
-				});
-			}).catch(function(error) {
-				show_error_message("Failed to set as desktop background: couldn't read image file.", error);
-			});
-	}else if(window.require){
-		if(window.process && process.versions && process.versions.electron){
-			var dataPath = require('electron').remote.app.getPath("userData");
-		}else if(window.nw){
-			var dataPath = nw.App.dataPath;
-		}
-		var imgPath = require("path").join(dataPath, "bg.png");
-		var fs = require("fs");
-		var wallpaper = require("wallpaper");
-
-		get_array_buffer_from_canvas(c).then(function(array_buffer){
-			var buffer = new Buffer(array_buffer);
-			fs.writeFile(imgPath, buffer, function(err){
-				if(err){
-					return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
-				}
-				wallpaper.set(imgPath, function(err){
-					if(err){
-						show_error_message("Failed to set as desktop background!", err);
-					}
-				});
-			});
+	c.toBlob(function(blob){
+		sanity_check_blob(blob, function(){
+			saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + " wallpaper.png");
 		});
-	}else{
-		c.toBlob(function(blob){
-			sanity_check_blob(blob, function(){
-				saveAs(blob, file_name.replace(/\.(bmp|png|gif|jpe?g|tiff|webp)$/, "") + " wallpaper.png");
-			});
-		});
-	}
+	});
 }
 
 /**
