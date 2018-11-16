@@ -72,6 +72,12 @@ window.systemSetAsWallpaperCentered = function(c){
 	// altho doing that would mean it wouldn't respect the system background color
 	// so maybe on macOS it should still use the canvas directly, and use the scale option center
 	// https://www.npmjs.com/package/wallpaper
+	// ...actually, if we generate a transparent image, it might work with the system background color
+
+	// var wp = new Canvas(screen.width, screen.height);
+	// var x = (screen.width - c.width) / 2;
+	// var y = (screen.height - c.height) / 2;
+	// wp.ctx.drawImage(c, ~~x, ~~y);
 
 	get_array_buffer_from_canvas(c).then(function(array_buffer){
 		var buffer = new Buffer(array_buffer);

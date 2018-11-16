@@ -1056,14 +1056,12 @@ function set_as_wallpaper_tiled(c){
 		return window.systemSetAsWallpaperTiled(c);
 	}
 
-	var wp = new Canvas(screen.width, screen.height);
-	for(var x=0; x<wp.width; x+=c.width){
-		for(var y=0; y<wp.height; y+=c.height){
-			wp.ctx.drawImage(c, x, y);
-		}
-	}
+	var wallpaperCanvas = new Canvas(screen.width, screen.height);
+	var pattern = wallpaperCanvas.ctx.createPattern(c, "repeat");
+	wallpaperCanvas.ctx.fillStyle = pattern;
+	wallpaperCanvas.ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
 
-	set_as_wallpaper_centered(wp);
+	set_as_wallpaper_centered(wallpaperCanvas);
 }
 
 function set_as_wallpaper_centered(c){
