@@ -176,9 +176,11 @@ I want to make JS Paint to be able to edit...
 
 ## Desktop App
 
-Install JS Paint as a desktop app. Built with [Electron][], and [Electron Forge][].
+I've started work on a desktop app, built with [Electron][] and [Electron Forge][].
 
-There are no releases yet. See Development Setup below if you want to set it up (such as for development).
+There are no releases yet, but the groundwork has been laid, and several features implemented. 
+
+If you want to help out, see Development Setup below, and comment on [this issue](https://github.com/1j01/jspaint/issues/2) to show your interest.
 
 [Electron]: https://electronjs.org/
 [Electron Forge]: https://electronforge.io/
