@@ -27,7 +27,7 @@
 	],
 	"app": {
 		"background": {
-			"scripts": ["chrome-app.js"]
+			"scripts": ["src/chrome-app.js"]
 		}
 	},
 	"offline_enabled": true,
