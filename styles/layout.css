@@ -51,7 +51,7 @@ html, body, .jspaint {
 .jspaint > .vertical {
 	height: 100%;
 }
-@media (max-width: 300px) {
+@media (max-width: 200px) {
 	.horizontal > .component-area {
 		display: none;
 	}
@@ -61,7 +61,7 @@ html, body, .jspaint {
 		display: none;
 	}
 }
-@media (max-height: 370px) {
+@media (max-height: 359px) {
 	.vertical > .status-area {
 		display: none !important;
 	}

@@ -16,8 +16,13 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    useContentSize: true,
+    autoHideMenuBar: true, // it adds height for a native menu bar unless we hide it here
+    // setMenu(null) below is too late; it's already decided on the size by then
     width: 800,
     height: 600,
+    minWidth: 260,
+    minHeight: 360,
     icon: require("path").join(__dirname, "../images/icons",
       process.platform === "win32" ?
         "windows.ico" :
