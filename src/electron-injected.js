@@ -67,25 +67,25 @@ window.systemSetAsWallpaperCentered = function(c){
 	var fs = require("fs");
 	var wallpaper = require("wallpaper");
 
-	// This currently doesn't necessarily set as centered; it can set as stretched on Windows 10.
-	// TODO: implement centered similar to tiled (drawing to a larger canvas)
-	// altho doing that would mean it wouldn't respect the system background color
-	// so maybe on macOS it should still use the canvas directly, and use the scale option center
-	// https://www.npmjs.com/package/wallpaper
-	// ...actually, if we generate a transparent image, it might work with the system background color
+	// TODO: implement centered option for Windows and Linux in https://www.npmjs.com/package/wallpaper
+	// currently it's only supported on macOS
+	if(process.platform === "darwin"){
+		var wallpaperCanvas = c;
+	}else{
+		var wallpaperCanvas = new Canvas(screen.width, screen.height);
+		var x = (screen.width - c.width) / 2;
+		var y = (screen.height - c.height) / 2;
+		wallpaperCanvas.ctx.drawImage(c, ~~x, ~~y);
+	}
 
-	// var wp = new Canvas(screen.width, screen.height);
-	// var x = (screen.width - c.width) / 2;
-	// var y = (screen.height - c.height) / 2;
-	// wp.ctx.drawImage(c, ~~x, ~~y);
-
-	get_array_buffer_from_canvas(c).then(function(array_buffer){
+	get_array_buffer_from_canvas(wallpaperCanvas).then(function(array_buffer){
 		var buffer = new Buffer(array_buffer);
 		fs.writeFile(imgPath, buffer, function(err){
 			if(err){
 				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
 			}
-			wallpaper.set(imgPath, function(err){
+			// {scale: "center"} only supported on macOS; see above workaround
+			wallpaper.set(imgPath, {scale: "center"}, function(err){
 				if(err){
 					show_error_message("Failed to set as desktop background!", err);
 				}
