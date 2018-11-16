@@ -26,6 +26,9 @@ const createWindow = () => {
           "48.png"
     ),
     title: "JS Paint",
+    webPreferences: {
+      preload: require("path").join(__dirname, "/electron-injected.js"),
+    },
   });
 
   // TODO: maybe use the native menu for the "Modern" theme
