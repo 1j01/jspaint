@@ -106,7 +106,7 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
 		ctx.disable_image_smoothing();
-		
+
 		if(!transparency){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -193,12 +193,12 @@ $G.on("keydown", function(e){
 	// TODO: preventDefault in all cases where the event is handled
 	// also, ideally check that modifiers *aren't* pressed
 	// probably best to use a library at this point!
-	
+
 	if(e.altKey){
 		//find key codes
 		window.console && console.log(e.keyCode);
 	}
-	
+
 	if(selection){
 		var nudge_selection = function(delta_x, delta_y){
 			selection.x += delta_x;
@@ -266,7 +266,7 @@ $G.on("keydown", function(e){
 		}
 		e.preventDefault();
 		return;
-	}else if(e.ctrlKey){
+	}else if(e.ctrlKey || e.metaKey){
 		var key = String.fromCharCode(e.keyCode).toUpperCase();
 		if(textbox){
 			switch(key){
