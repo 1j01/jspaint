@@ -485,7 +485,7 @@ function canvas_pointer_move(e){
 				}
 				break;
 			case "touch":
-				// TODO: Handle touch events.
+				// Handled by pointerdown event listener.
 				break;
 			default:
 				// Unknown devices are handled as mouse
