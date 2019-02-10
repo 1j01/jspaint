@@ -400,7 +400,7 @@ $G.on("cut copy paste", function(e){
 	}
 });
 
-var pointer, pointer_start, pointer_previous;
+var pointer, pointer_start, pointer_previous, pointer_type;
 var reverse, ctrl, button;
 function e2c(e){
 	var rect = canvas.getBoundingClientRect();
@@ -472,6 +472,35 @@ function canvas_pointer_move(e){
 	ctrl = e.ctrlKey;
 	shift = e.shiftKey;
 	pointer = e2c(e);
+	if(pointer_was_pressed && e.button != -1){
+		if(e.pointerType != pointer_type){
+			// Different input devices
+			pointer_was_pressed = false;
+			cancel();
+			return;
+		}
+		switch(pointer_type){
+			case "pen":
+				// TODO: Handle pen events.
+				// Pen cancel button
+				if(e.buttons & 32){
+					pointer_was_pressed = false;
+					cancel();
+					return;
+				}
+				break;
+			case "touch":
+				// Handled by pointerdown event listener.
+				break;
+			default:
+				// Unknown devices are handled as mouse
+				if((e.buttons & 3) === 3){
+					pointer_was_pressed = false;
+					cancel();
+					return;
+				}
+		}
+	}
 	if(e.shiftKey){
 		if(selected_tool.name.match(/Line|Curve/)){
 			// snap to eight directions
@@ -522,6 +551,7 @@ $canvas.on("pointerdown", function(e){
 		return;
 	}
 	pointer_was_pressed = true;
+	pointer_type = e.pointerType;
 	$G.one("pointerup", function(e){
 		pointer_was_pressed = false;
 	});
