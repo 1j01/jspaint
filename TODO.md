@@ -206,26 +206,28 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 ### Desktop App (Electron)
 
-* Choose different file types when saving (also wanted in the browser; and on mobile (chrome for android at least) you currently can't set a filename, so a dialog would be good! see: [#59](https://github.com/1j01/jspaint/issues/59), [#55](https://github.com/1j01/jspaint/issues/55), [#54](https://github.com/1j01/jspaint/issues/54))
-* Save to existing files with Save (currently it does the same as Save As)
-* Why doesn't the process exit when the window is closed? It has code to `quit`, from the example boilerplate.
-  **Update:** It seems it's `electron-forge start` that doesn't exit, which appears to match [this bug](https://github.com/electron-userland/electron-forge/issues/545).
+Boilerplate:
+
+* [`electron-forge start` has a bug that prevents it from exiting when the window is closed.](https://github.com/electron-userland/electron-forge/issues/545)
   Should I update to the beta so that `npm start` can quit normally?
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
-* Minimum and default size of window
 * Add icon to built executable
 * Set up autoupdating
 * Keep window hidden until loaded (`show: false`) ([`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))
+* Ideally name executable `jspaint.exe` rather than `JS Paint.exe`
+
+Functionality:
+
 * File association support (allow setting jspaint as default image editor)
 * A dialog when closing
 * Subwindows as separate windows
 * Document recovery without having to know File > Manage Storage exists (pop up contextually with a dialog when you need it)
-* Show link URLs when you hover over them, in the status bar (we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, but it could probably be implemented with mouse events and such if that's not sufficient)
+* Show link URLs when you hover over them, in the status bar (because we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, or it could be implemented with mouse events)
 * Recent files (could also be implemented for 98.js.org in the future)
 * Create a landing page / home page for the desktop app (similar to https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
 * Remove usage of `prompt` (and ideally `alert`/`confirm` too! shouldn't be using these anyways!)
-* macOS: `setRepresentedFilename`, `setDocumentEdited` etc., maybe even "sheets"?
+* macOS: `open-file` event, `setRepresentedFilename`, `setDocumentEdited` etc.
 * Windows: maybe handle `session-end` event and ask to save?
 
 
