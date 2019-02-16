@@ -1,63 +1,87 @@
 // Electron-specific code injected into the renderer process
 // to provide integrations, for the desktop app
 
-// so libraries don't get confused and export to `module` instead of the window
+// so libraries don't get confused and export to `module` instead of the `window`
 global.module = undefined;
 
-// (TODO: stop trying to shim saveAs; instead make a wrapper. This approach won't make sense
-// once allowing the user to choose a file type in the save dialog, because we don't want to take and convert a blob,
-// we want to simply encode the correct file type from the image data directly)
 var dialog = require("electron").remote.dialog;
 var fs = require("fs");
-window.saveAs = function(blob, fileName){
-	var fileWriter = {}; // not gonna be going with this approach so let's not bother with events
-	var splitByDots = fileName.split(/\./g);
-	var extension = splitByDots[splitByDots.length - 1].toLowerCase();
-	var filterName = {
-		"jpg": "JPEG",
-		// "jpeg": "JPEG",
-		// "gif": "GIF",
-		"tif": "TIFF",
-		// "png": "PNG",
-		// "apng": "Animated PNG",
-	}[extension] || extension.toUpperCase();
-	var filterExtensions = {
-		// "Monochrome Bitmap": ["bmp", "dib"],
-		// "16 Color Bitmap": ["bmp", "dib"],
-		// "256 Color Bitmap": ["bmp", "dib"],
-		// "24-bit Bitmap": ["bmp", "dib"],
-		"JPEG": ["jpg", "jpeg", "jpe", "jfif"],
-		// "GIF": ["gif"],
-		"TIFF": ["tif", "tiff"],
-		// "PNG": ["png"],
-		// "Animated PNG": ["apng"] // also "png"...
-	}[filterName] || [extension];
+// TODO: window.platform.saveCanvasAs etc. or platformIntegration or system or something
+window.systemSaveCanvasAs = function(canvas, fileName, savedCallback){
+	var getExtension = function(filePathOrName){
+		var splitByDots = filePathOrName.split(/\./g);
+		return splitByDots[splitByDots.length - 1].toLowerCase();
+	};
+	var extension = getExtension(fileName);
+	var filters = [
+		// top one is considered default by electron
+		{name: "PNG", extensions: ["png"]},
+		// TODO: enable more formats
+		// {name: "Monochrome Bitmap", extensions: ["bmp", "dib"]},
+		// {name: "16 Color Bitmap", extensions: ["bmp", "dib"]},
+		// {name: "256 Color Bitmap", extensions: ["bmp", "dib"]},
+		// {name: "24-bit Bitmap", extensions: ["bmp", "dib"]},
+		{name: "JPEG", extensions: ["jpg", "jpeg", "jpe", "jfif"]},
+		// {name: "GIF", extensions: ["gif"]},
+		// {name: "TIFF", extensions: ["tif", "tiff"]},
+		// {name: "PNG", extensions: ["png"]},
+		{name: "WebP", extensions: ["webp"]},
+	];
 	// TODO: pass BrowserWindow to make dialog modal?
 	// TODO: pass defaultPath of last opened file (w/ different file name)?
 	// also maybe sanitize fileName?
 	dialog.showSaveDialog({
-		// title: "Save As",
 		defaultPath: fileName,
-		// TODO: show multiple possible file types to save as
-		// and then use the resulting filePath to determine the file type to save as
-		filters: [{name: filterName, extensions: filterExtensions}]
+		filters: filters,
 	}, function(filePath) {
 		if(!filePath){
 			return; // user canceled
 		}
-		
-		blob_to_buffer(blob, function(err, buffer){
-			if(err){
-				return show_error_message("Failed to save! (Technically, failed to convert a Blob to a Buffer.)", err);
+		var extension = getExtension(filePath);
+		if(!extension){
+			// TODO: Linux/Unix?? you're not supposed to need file extensions
+			return show_error_message("Missing file extension - try adding .png to the file name");
+		}
+		var typeNameMatched = ((filters.find(function(filter){return filter.extensions.indexOf(extension) > -1})) || {}).name;
+		if(!typeNameMatched){
+			return show_error_message("Can't save as *." +extension + " - try adding .png to the file name");
+		}
+
+		var mimeType = {
+			"JPEG": "image/jpeg",
+			"PNG": "image/png",
+			"GIF": "image/gif",
+			"WebP": "image/webp",
+			// "Monochrome Bitmap": "image/bitmap",
+			// "16 Color Bitmap": "image/bitmap",
+			// "256 Color Bitmap": "image/bitmap",
+			// "24-bit Bitmap": "image/bitmap",
+		}[typeNameMatched];
+		if(!mimeType){
+			return show_error_message("Can't save as " + typeNameMatched + ". Format is not supported.");
+		}
+		// if(mimeType === "image/gif"){
+		// 	new GIF();
+		// }
+		canvas.toBlob(function(blob){
+			if(blob.type !== mimeType){
+				return show_error_message("Failed to save as " + typeNameMatched + " (your browser doesn't support exporting a canvas as \"" + mimeType + "\")");
 			}
-			fs.writeFile(filePath, buffer, function(err){
-				if(err){
-					return show_error_message("Failed to save file!", err);
-				}
+			sanity_check_blob(blob, function(){
+				blob_to_buffer(blob, function(err, buffer){
+					if(err){
+						return show_error_message("Failed to save! (Technically, failed to convert a Blob to a Buffer.)", err);
+					}
+					fs.writeFile(filePath, buffer, function(err){
+						if(err){
+							return show_error_message("Failed to save file!", err);
+						}
+						savedCallback();
+					});
+				});
 			});
-		});
+		}, mimeType);
 	});
-	return fileWriter; // not doing events, but we can prevent an error
 };
 
 window.systemSetAsWallpaperCentered = function(c){

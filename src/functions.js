@@ -270,14 +270,9 @@ function file_save_as(){
 			save_to_FileEntry(file_entry);
 		});
 	}else{
-		canvas.toBlob(function(blob){
-			sanity_check_blob(blob, function(){
-				var file_saver = saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png");
-				file_saver.onwriteend = function(){
-					// this won't fire in chrome
-					saved = true;
-				};
-			});
+		// TODO: remember file as "open", i.e. name in title bar and have File > Save save over the file
+		save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", function(){
+			saved = true;
 		});
 	}
 }
@@ -1048,10 +1043,29 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
+// TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
+function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
+	// Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
+	if(window.systemSaveCanvasAs){
+		return window.systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
+	}
+
+	// TODO: file name + type dialog
+	canvas.toBlob(function(blob){
+		sanity_check_blob(blob, function(){
+			var file_saver = saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png");
+			file_saver.onwriteend = function(){
+				// this won't fire in chrome
+				savedCallbackUnreliable();
+			};
+		});
+	});
+}
+
 function set_as_wallpaper_tiled(c){
 	c = c || canvas;
 
-	// Note: we can't just poke in a different set_as_wallpaper_tiled function, because it's stored in menus.js
+	// Note: we can't just poke in a different set_as_wallpaper_tiled function, because it's stored by reference in menus.js
 	if(window.systemSetAsWallpaperTiled){
 		return window.systemSetAsWallpaperTiled(c);
 	}
@@ -1067,7 +1081,7 @@ function set_as_wallpaper_tiled(c){
 function set_as_wallpaper_centered(c){
 	c = c || canvas;
 	
-	// Note: we can't just poke in a different set_as_wallpaper_centered function, because it's stored in menus.js
+	// Note: we can't just poke in a different set_as_wallpaper_centered function, because it's stored by reference in menus.js
 	if(window.systemSetAsWallpaperCentered){
 		return window.systemSetAsWallpaperCentered(c);
 	}
