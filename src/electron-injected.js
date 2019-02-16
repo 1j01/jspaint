@@ -6,13 +6,78 @@ global.module = undefined;
 
 var dialog = require("electron").remote.dialog;
 var fs = require("fs");
+var path = require("path");
+var argv = require("electron").remote.process.argv;
+
+if (process.platform == "win32" && argv.length >= 2) {
+	if (argv[1] === ".") { // in development, "path/to/electron.exe" "." "maybe/a/file.png" ...maybe?
+		window.document_file_path_to_open = argv[2];
+	} else { // in production, "path/to/JS Paint.exe" "maybe/a/file.png"
+		window.document_file_path_to_open = argv[1];
+	}
+}
+
+window.open_from_file_path = function(file_path, callback, canceled){
+	fs.readFile(file_path, function(err, buffer) {
+		if(err){
+			return callback(err);
+		}
+		var file = new File([new Uint8Array(buffer)], path.basename(file_path));
+		// can't set file.path directly, but we can do this:
+		Object.defineProperty(file, 'path', {
+			value: file_path,
+		});
+
+		open_from_File(file, callback, canceled);
+	});
+};
+
+window.save_to_file_path = function(filePath, formatName, savedCallback){
+	var mimeType = {
+		"JPEG": "image/jpeg",
+		"PNG": "image/png",
+		"GIF": "image/gif",
+		"WebP": "image/webp",
+		// "Monochrome Bitmap": "image/bitmap",
+		// "16 Color Bitmap": "image/bitmap",
+		// "256 Color Bitmap": "image/bitmap",
+		// "24-bit Bitmap": "image/bitmap",
+	}[formatName];
+	if(!mimeType){
+		return show_error_message("Can't save as " + formatName + ". Format is not supported.");
+	}
+	// if(mimeType === "image/gif"){
+	// 	new GIF();
+	// }
+	canvas.toBlob(function(blob){
+		if(blob.type !== mimeType){
+			return show_error_message("Failed to save as " + formatName + " (your browser doesn't support exporting a canvas as \"" + mimeType + "\")");
+		}
+		sanity_check_blob(blob, function(){
+			blob_to_buffer(blob, function(err, buffer){
+				if(err){
+					return show_error_message("Failed to save! (Technically, failed to convert a Blob to a Buffer.)", err);
+				}
+				fs.writeFile(filePath, buffer, function(err){
+					if(err){
+						return show_error_message("Failed to save file!", err);
+					}
+					var fileName = path.basename(filePath);
+					savedCallback(filePath, fileName);
+				});
+			});
+		});
+	}, mimeType);
+};
+
 // TODO: window.platform.saveCanvasAs etc. or platformIntegration or system or something
-window.systemSaveCanvasAs = function(canvas, fileName, savedCallback){
+window.systemSaveCanvasAs = function(canvas, suggestedFileName, savedCallback){
 	var getExtension = function(filePathOrName){
 		var splitByDots = filePathOrName.split(/\./g);
 		return splitByDots[splitByDots.length - 1].toLowerCase();
 	};
-	var extension = getExtension(fileName);
+	// TODO: default to existing extension, except it would be awkward to rearrange the list...
+	// var suggestedExtension = getExtension(suggestedFileName);
 	var filters = [
 		// top one is considered default by electron
 		{name: "PNG", extensions: ["png"]},
@@ -28,10 +93,9 @@ window.systemSaveCanvasAs = function(canvas, fileName, savedCallback){
 		{name: "WebP", extensions: ["webp"]},
 	];
 	// TODO: pass BrowserWindow to make dialog modal?
-	// TODO: pass defaultPath of last opened file (w/ different file name)?
-	// also maybe sanitize fileName?
+	// TODO: should suggestedFileName be sanitized in some way?
 	dialog.showSaveDialog({
-		defaultPath: fileName,
+		defaultPath: suggestedFileName,
 		filters: filters,
 	}, function(filePath) {
 		if(!filePath){
@@ -42,45 +106,12 @@ window.systemSaveCanvasAs = function(canvas, fileName, savedCallback){
 			// TODO: Linux/Unix?? you're not supposed to need file extensions
 			return show_error_message("Missing file extension - try adding .png to the file name");
 		}
-		var typeNameMatched = ((filters.find(function(filter){return filter.extensions.indexOf(extension) > -1})) || {}).name;
-		if(!typeNameMatched){
+		var formatNameMatched = ((filters.find(function(filter){return filter.extensions.indexOf(extension) > -1})) || {}).name;
+		if(!formatNameMatched){
 			return show_error_message("Can't save as *." +extension + " - try adding .png to the file name");
 		}
 
-		var mimeType = {
-			"JPEG": "image/jpeg",
-			"PNG": "image/png",
-			"GIF": "image/gif",
-			"WebP": "image/webp",
-			// "Monochrome Bitmap": "image/bitmap",
-			// "16 Color Bitmap": "image/bitmap",
-			// "256 Color Bitmap": "image/bitmap",
-			// "24-bit Bitmap": "image/bitmap",
-		}[typeNameMatched];
-		if(!mimeType){
-			return show_error_message("Can't save as " + typeNameMatched + ". Format is not supported.");
-		}
-		// if(mimeType === "image/gif"){
-		// 	new GIF();
-		// }
-		canvas.toBlob(function(blob){
-			if(blob.type !== mimeType){
-				return show_error_message("Failed to save as " + typeNameMatched + " (your browser doesn't support exporting a canvas as \"" + mimeType + "\")");
-			}
-			sanity_check_blob(blob, function(){
-				blob_to_buffer(blob, function(err, buffer){
-					if(err){
-						return show_error_message("Failed to save! (Technically, failed to convert a Blob to a Buffer.)", err);
-					}
-					fs.writeFile(filePath, buffer, function(err){
-						if(err){
-							return show_error_message("Failed to save file!", err);
-						}
-						savedCallback();
-					});
-				});
-			});
-		}, mimeType);
+		save_to_file_path(filePath, formatNameMatched, savedCallback);
 	});
 };
 

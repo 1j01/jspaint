@@ -24,7 +24,7 @@ function reset_colors(){
 }
 
 function reset_file(){
-	// document_file_path = null;
+	document_file_path = null;
 	file_name = "untitled";
 	update_title();
 	saved = true;
@@ -121,6 +121,7 @@ function open_from_File(file, callback, canceled){
 
 		open_from_Image(img, function(){
 			file_name = file.name;
+			document_file_path = file.path; // available in Electron
 			update_title();
 			saved = true;
 			callback();
@@ -165,7 +166,6 @@ function file_new(){
 // there's this little thing called Inversion of Control...
 // also paste_from_file_select_dialog
 function file_open(){
-	// TODO: remember file as "open" in electron
 	get_FileList_from_file_select_dialog(function(files){
 		open_from_FileList(files, "selected");
 	});
@@ -200,19 +200,29 @@ function file_load_from_url(){
 function file_save(){
 	deselect();
 	if(file_name.match(/\.svg$/)){
+		//TODO: only affect suggested name in save dialog, don't change file_name
 		file_name = file_name.replace(/\.svg$/, "") + ".png";
-		//TODO: update_title();?
 		return file_save_as();
 	}
-	// TODO: save over "open" file in electron
+	if(document_file_path){
+		// TODO: save as JPEG by default if the previously opened/saved file was a JPEG?
+		return save_to_file_path(document_file_path, "PNG", function(saved_file_path, saved_file_name){
+			saved = true;
+			document_file_path = saved_file_path;
+			file_name = saved_file_name;
+			update_title();
+		});
+	}
 	file_save_as();
 }
 
 function file_save_as(){
 	deselect();
-	// TODO: remember file as "open", i.e. name in title bar and have File > Save save over the file
-	save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", function(){
+	save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", function(saved_file_path, saved_file_name){
 		saved = true;
+		document_file_path = saved_file_path;
+		file_name = saved_file_name;
+		update_title();
 	});
 }
 
@@ -983,10 +993,10 @@ function image_stretch_and_skew(){
 }
 
 // TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
+// Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
 function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
-	// Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
 	if(window.systemSaveCanvasAs){
-		return window.systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
+		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
 	}
 
 	// TODO: file name + type dialog

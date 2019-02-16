@@ -47,6 +47,7 @@ var redos = []; //array of <canvas>
 //var frames = []; //array of {delay: N, undos: [<canvas>], redos: [<canvas>], canvas: <canvas>}? array of Frames?
 
 var file_name;
+var document_file_path;
 var saved = true;
 
 
@@ -92,16 +93,18 @@ var $toolbox = $ToolBox(tools);
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 var $colorbox = $ColorBox();
 
-// TODO: open from file path in Electron
-// and set this via program arguments
-// if(window.document_file_path){
-// 	open_from_file_path(window.document_file_path);
-// }
-
 reset_file();
 reset_colors();
 reset_canvas(); // (with newly reset colors)
 reset_magnification();
+
+if(window.document_file_path_to_open){
+	open_from_file_path(document_file_path_to_open, function(err){
+		if(err){
+			return show_error_message("Failed to open file " + document_file_path_to_open, err);
+		}
+	});
+}
 
 $canvas.on("user-resized", function(e, _x, _y, width, height){
 	undoable(0, function(){
