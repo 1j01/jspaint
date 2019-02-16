@@ -92,9 +92,11 @@ var $toolbox = $ToolBox(tools);
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 var $colorbox = $ColorBox();
 
-if(window.file_entry){
-	open_from_FileEntry(window.file_entry);
-}
+// TODO: open from file path in Electron
+// and set this via program arguments
+// if(window.document_file_path){
+// 	open_from_file_path(window.document_file_path);
+// }
 
 reset_file();
 reset_colors();

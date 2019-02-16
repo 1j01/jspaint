@@ -24,7 +24,7 @@ function reset_colors(){
 }
 
 function reset_file(){
-	file_entry = null;
+	// document_file_path = null;
 	file_name = "untitled";
 	update_title();
 	saved = true;
@@ -148,32 +148,6 @@ function open_from_FileList(files, user_input_method_verb_past_tense){
 		});
 	}
 }
-function open_from_FileEntry(entry, callback){
-	entry.file(function(file){
-		open_from_File(file, function(err){
-			if(err){ return callback && callback(err); }
-			file_entry = entry;
-			callback && callback();
-		});
-	});
-}
-function save_to_FileEntry(entry, callback){
-	entry.createWriter(function(file_writer){
-		file_writer.onwriteend = function(e){
-			if(this.error){
-				console.error(this.error + '\n\n\n@ ' + e);
-			}else{
-				callback && callback();
-				console.log("File written!");
-			}
-		};
-		canvas.toBlob(function(blob){
-			sanity_check_blob(blob, function(){
-				file_writer.write(blob);
-			});
-		});
-	});
-}
 
 function file_new(){
 	are_you_sure(function(){
@@ -189,28 +163,12 @@ function file_new(){
 // TODO: factor out open_select/choose_file_dialog or get_file_from_file_select_dialog or whatever
 // all these open_from_* things are done backwards, basically
 // there's this little thing called Inversion of Control...
-// use the chooseEntry thing for paste_from_file_select_dialog as well or drop support for that
+// also paste_from_file_select_dialog
 function file_open(){
-	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
-		chrome.fileSystem.chooseEntry({
-			type: "openFile",
-			accepts: [{mimeTypes: ["image/*"]}]
-		}, function(entry){
-			file_entry = entry;
-			if(chrome.runtime.lastError){
-				return console.error(chrome.runtime.lastError.message);
-			}
-			open_from_FileEntry(entry, function(err){
-				if(err){
-					show_error_message("Failed to open file:", err);
-				}
-			});
-		});
-	}else{
-		get_FileList_from_file_select_dialog(function(files){
-			open_from_FileList(files, "selected");
-		});
-	}
+	// TODO: remember file as "open" in electron
+	get_FileList_from_file_select_dialog(function(files){
+		open_from_FileList(files, "selected");
+	});
 }
 
 var $file_load_from_url_window;
@@ -246,35 +204,16 @@ function file_save(){
 		//TODO: update_title();?
 		return file_save_as();
 	}
-	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry && window.file_entry){
-		save_to_FileEntry(file_entry);
-	}else{
-		file_save_as();
-	}
+	// TODO: save over "open" file in electron
+	file_save_as();
 }
 
 function file_save_as(){
 	deselect();
-	if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
-		chrome.fileSystem.chooseEntry({
-			type: 'saveFile',
-			suggestedName: file_name,
-			accepts: [{mimeTypes: ["image/png"]}]
-		}, function(entry){
-			if(chrome.runtime.lastError){
-				return console.error(chrome.runtime.lastError.message);
-			}
-			file_entry = entry;
-			file_name = entry.name;
-			update_title();
-			save_to_FileEntry(file_entry);
-		});
-	}else{
-		// TODO: remember file as "open", i.e. name in title bar and have File > Save save over the file
-		save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", function(){
-			saved = true;
-		});
-	}
+	// TODO: remember file as "open", i.e. name in title bar and have File > Save save over the file
+	save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", function(){
+		saved = true;
+	});
 }
 
 
@@ -1119,42 +1058,11 @@ function get_array_buffer_from_canvas(canvas) {
 
 function save_selection_to_file(){
 	if(selection && selection.canvas){
-		if(window.chrome && chrome.fileSystem && chrome.fileSystem.chooseEntry){
-			chrome.fileSystem.chooseEntry({
-				type: 'saveFile',
-				suggestedName: 'Selection',
-				accepts: [{mimeTypes: ["image/*"]}]
-			}, function(entry){
-				if(chrome.runtime.lastError){
-					// TODO: should show an error unless this can also be the user just canceling
-					// also in other places
-					// or just drop support for chrome.fileSystem stuff
-					// show_error_message("Failed to write selection to file:", chrome.runtime.lastError);
-					return console.error(chrome.runtime.lastError.message);
-				}
-				entry.createWriter(function(file_writer){
-					file_writer.onwriteend = function(e){
-						if(this.error){
-							show_error_message("Failed to write selection to file:", this.error);
-							console.error(this.error + '\n\n\n@ ' + e);
-						}else{
-							console.log("Wrote selection to file!");
-						}
-					};
-					selection.canvas.toBlob(function(blob){
-						sanity_check_blob(blob, function(){
-							file_writer.write(blob);
-						});
-					});
-				});
+		selection.canvas.toBlob(function(blob){
+			sanity_check_blob(blob, function(){
+				saveAs(blob, "selection.png");
 			});
-		}else{
-			selection.canvas.toBlob(function(blob){
-				sanity_check_blob(blob, function(){
-					saveAs(blob, "selection.png");
-				});
-			});
-		}
+		});
 	}
 }
 

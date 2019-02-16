@@ -1,7 +1,5 @@
 
-var is_chrome_app = window.chrome && chrome.permissions;
 var is_electron_or_nwjs = window.require && window.process;
-var is_electron_or_nwjs_or_chrome_app = is_chrome_app || is_electron_or_nwjs;
 
 var menus = {
 	"&File": [
@@ -96,7 +94,7 @@ var menus = {
 		$MenuBar.DIVIDER,
 		{
 			item: "Recent File",
-			enabled: false, // @TODO for chrome app / desktop app
+			enabled: false, // @TODO for desktop app
 			description: "",
 		},
 		$MenuBar.DIVIDER,
@@ -134,7 +132,7 @@ var menus = {
 			shortcut: "Ctrl+X",
 			enabled: function(){
 				// @TODO disable if no selection (image or text)
-				return is_electron_or_nwjs_or_chrome_app;
+				return is_electron_or_nwjs;
 			},
 			action: function(){
 				document.execCommand("cut");
@@ -146,7 +144,7 @@ var menus = {
 			shortcut: "Ctrl+C",
 			enabled: function(){
 				// @TODO disable if no selection (image or text)
-				return is_electron_or_nwjs_or_chrome_app;
+				return is_electron_or_nwjs;
 			},
 			action: function(){
 				document.execCommand("copy");
@@ -157,7 +155,7 @@ var menus = {
 			item: "&Paste",
 			shortcut: "Ctrl+V",
 			enabled: function(){
-				return is_electron_or_nwjs_or_chrome_app;
+				return is_electron_or_nwjs;
 			},
 			action: function(){
 				document.execCommand("paste");
