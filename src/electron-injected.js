@@ -4,13 +4,32 @@
 // so libraries don't get confused and export to `module` instead of the `window`
 global.module = undefined;
 
+var is_dev = require("electron-is-dev");
 var dialog = require("electron").remote.dialog;
 var fs = require("fs");
 var path = require("path");
 var argv = require("electron").remote.process.argv;
 
+// TODO: let user apply this setting somewhere in the UI
+// (and ideally revert it)
+// (Note: it would be better to use REG.EXE to apply the change, rather than a .reg file)
+// This registry modification changes the right click > Edit option for images in Windows Explorer
+var reg_contents = `Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\SystemFileAssociations\image\shell\edit\command]
+@="\\\"${argv[0].replace(/\\/g, "\\\\")}\\\" ${is_dev ? "\\\".\\\" " : ""}\\\"%1\\\""
+`; // oof \\\\
+var reg_file_path = path.join(is_dev ? "." : path.dirname(argv[0]), `set-jspaint${is_dev ? "-DEV-MODE" : ""}-as-default-image-editor.reg`);
+if(process.platform == "win32" && !is_dev){
+	fs.writeFile(reg_file_path, reg_contents, function(err){
+		if(err){
+			return console.error(err);
+		}
+	});
+}
+
 if (process.platform == "win32" && argv.length >= 2) {
-	if (argv[1] === ".") { // in development, "path/to/electron.exe" "." "maybe/a/file.png" ...maybe?
+	if (is_dev) { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
 		window.document_file_path_to_open = argv[2];
 	} else { // in production, "path/to/JS Paint.exe" "maybe/a/file.png"
 		window.document_file_path_to_open = argv[1];

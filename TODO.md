@@ -206,29 +206,29 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 ### Desktop App (Electron)
 
-Boilerplate:
+Electron boilerplate stuff:
 
-* [`electron-forge start` has a bug that prevents it from exiting when the window is closed.](https://github.com/electron-userland/electron-forge/issues/545)
-  Should I update to the beta so that `npm start` can quit normally?
+* [`electron-forge start` has a bug where it won't exit.](https://github.com/electron-userland/electron-forge/issues/545)
+  Should I update to the beta so that `npm start` can quit normally when you close the window?
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
 * Add icon to built executable
 * Set up autoupdating
-* Keep window hidden until loaded (`show: false`) ([`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))
-* Ideally name executable `jspaint.exe` rather than `JS Paint.exe`
+* Keep window hidden until loaded (`show: false`, [`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))
+* Ideally name the executable `jspaint.exe` instead of `JS Paint.exe`
 
 Functionality:
 
-* File association support (allow setting jspaint as default image editor)
 * A dialog when closing
 * Subwindows as separate windows
-* Document recovery without having to know File > Manage Storage exists (pop up contextually with a dialog when you need it)
+* Document recovery without having to know about File > Manage Storage - pop up contextually with a dialog when you need it
 * Show link URLs when you hover over them, in the status bar (because we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, or it could be implemented with mouse events)
 * Recent files (could also be implemented for 98.js.org in the future)
 * Create a landing page / home page for the desktop app (similar to https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
 * Remove usage of `prompt` (and ideally `alert`/`confirm` too! shouldn't be using these anyways!)
 * macOS: `open-file` event, `setRepresentedFilename`, `setDocumentEdited` etc.
 * Windows: maybe handle `session-end` event and ask to save?
+* Detect if file changes on disk, ask if you want to reload it?
 
 
 ### Also
