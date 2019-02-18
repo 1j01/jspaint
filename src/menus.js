@@ -1,5 +1,5 @@
 
-var is_electron_or_nwjs = window.require && window.process;
+var is_electron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
 
 var menus = {
 	"&File": [
@@ -132,7 +132,7 @@ var menus = {
 			shortcut: "Ctrl+X",
 			enabled: function(){
 				// @TODO disable if no selection (image or text)
-				return is_electron_or_nwjs;
+				return is_electron;
 			},
 			action: function(){
 				document.execCommand("cut");
@@ -144,7 +144,7 @@ var menus = {
 			shortcut: "Ctrl+C",
 			enabled: function(){
 				// @TODO disable if no selection (image or text)
-				return is_electron_or_nwjs;
+				return is_electron;
 			},
 			action: function(){
 				document.execCommand("copy");
@@ -155,7 +155,7 @@ var menus = {
 			item: "&Paste",
 			shortcut: "Ctrl+V",
 			enabled: function(){
-				return is_electron_or_nwjs;
+				return is_electron;
 			},
 			action: function(){
 				document.execCommand("paste");
