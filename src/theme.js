@@ -45,7 +45,15 @@
 	
 		return (
 			fetch(href_for(theme))
-			.catch(function(error) {
+			.then(function(response) {
+				response.text().then(function(css) {
+					replace_existing_theme_with_loaded_css(
+						theme_link,
+						theme_style,
+						css
+					);
+				})
+			}, function(error) {
 				var error_message = "Failed to load theme.";
 
 				if (can_probably_refresh_to_switch) {
@@ -53,18 +61,6 @@
 				}
 
 				show_error_message(error_message, error);
-			})
-			.then(function(response) {
-				// FIXME: catch and then are both called on error
-				// this then gets an error because response is undefined
-				return response.text();
-			})
-			.then(function(css) {
-				replace_existing_theme_with_loaded_css(
-					theme_link,
-					theme_style,
-					css
-				);
 			})
 		);
 	}
