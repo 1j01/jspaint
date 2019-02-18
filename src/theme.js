@@ -37,9 +37,12 @@
 			localStorage[theme_storage_key] = theme;
 		} catch(error) {}
 
+		// note not supported on in all browser browzars
+		theme_link.addEventListener("load", function onload(){
+			theme_link.removeEventListener("load", onload);
+			$(window).triggerHandler("theme-load");
+		});
 		theme_link.href = href_for(theme);
-		// TODO: (how?)
-		// $(window).triggerHandler("theme-load");
 	}
 
 	/**
