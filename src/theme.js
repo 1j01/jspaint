@@ -16,8 +16,6 @@
 	theme_link.id = "theme-link";
 	document.head.appendChild(theme_link);
 
-	var theme_style = document.createElement("style");
-
 	window.set_theme = set_theme;
 	window.get_theme = get_theme;
 
@@ -35,34 +33,13 @@
 	function set_theme(theme) {
 		current_theme = theme;
 
-		var can_probably_refresh_to_switch = true;
-
 		try {
 			localStorage[theme_storage_key] = theme;
-		} catch(error) {
-			can_probably_refresh_to_switch = false;
-		}
-	
-		return (
-			fetch(href_for(theme))
-			.then(function(response) {
-				response.text().then(function(css) {
-					replace_existing_theme_with_loaded_css(
-						theme_link,
-						theme_style,
-						css
-					);
-				})
-			}, function(error) {
-				var error_message = "Failed to load theme.";
+		} catch(error) {}
 
-				if (can_probably_refresh_to_switch) {
-					error_message += " You can probably reload the app to finish switching themes.";
-				}
-
-				show_error_message(error_message, error);
-			})
-		);
+		theme_link.href = href_for(theme);
+		// TODO: (how?)
+		// $(window).triggerHandler("theme-load");
 	}
 
 	/**
@@ -71,26 +48,5 @@
 	 */
 	function href_for(theme) {
 		return "styles/themes/" + theme;
-	}
-
-	/**
-	 * @param {HTMLElement} theme_link
-	 * @param {HTMLElement} theme_style
-	 * @param {string} css_content
-	 */
-	function replace_existing_theme_with_loaded_css(
-		theme_link,
-		theme_style,
-		css_content
-	) {
-		if (theme_link.parentElement) {
-			theme_link.parentElement.removeChild(theme_link);
-		}
-
-		theme_style.textContent = css_content;
-
-		document.head.appendChild(theme_style);
-
-		$(window).triggerHandler("theme-load");
 	}
 })();
