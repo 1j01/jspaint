@@ -679,6 +679,21 @@ function image_invert(){
 	});
 }
 
+function image_blur(){
+	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+		
+		let id = original_ctx.getImageData(0, 0, original_canvas.width, original_canvas.height);
+		new_ctx.putImageData(id, 0, 0);
+		new_ctx.globalAlpha = 0.3;
+
+		let offset = 2;
+		for (let i = 1; i<=10; i++){
+			new_ctx.drawImage(new_canvas, offset, 0, new_canvas.width - offset, new_canvas.height, 0, 0, new_canvas.width - offset, new_canvas.height);
+			new_ctx.drawImage(new_canvas, 0, offset, new_canvas.width, new_canvas.height - offset, 0, 0, new_canvas.width, new_canvas.height - offset);
+		}
+	});
+}
+
 function clear(){
 	undoable(0, function(){
 		this_ones_a_frame_changer();

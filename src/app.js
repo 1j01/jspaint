@@ -320,6 +320,9 @@ $G.on("keydown", function(e){
 			case "I":
 				image_invert();
 			break;
+			case "B":
+				image_blur();
+			break;
 			case "E":
 				image_attributes();
 			break;

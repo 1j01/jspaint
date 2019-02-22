@@ -321,6 +321,12 @@ var menus = {
 			description: "Inverts the colors of the picture or a selection.",
 		},
 		{
+			item: "&Blur",
+			shortcut: "Ctrl+B",
+			action: image_blur,
+			description: "Blurs the picture.",
+		},
+		{
 			item: "&Attributes...",
 			shortcut: "Ctrl+E",
 			action: image_attributes,
