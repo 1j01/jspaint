@@ -20,18 +20,26 @@
   ],
   "main": "main.js",
   "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -mwl",
     "start": "electron .",
     "nw": "nw",
     "dev": "live-server",
     "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
     "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
   },
+  "build": {
+    "appId": "com.app.com",
+    "mac": {
+      "category": "com.app.com.category",
+      "icon": "build/icon.icns"
+    }
+  },
   "window": {
     "icon": "images/icons/48.png",
     "toolbar": false
   },
   "dependencies": {
-    "electron": "^4.1.1",
     "nw": "^0.37.1",
     "wallpaper": "^2.6.0"
   },
@@ -44,6 +52,8 @@
   },
   "devDependencies": {
     "cross-spawn": "^5.1.0",
+    "electron": "^4.1.1",
+    "electron-builder": "^20.39.0",
     "http-server": "^0.11.1",
     "live-server": "^1.2.1",
     "parallelshell": "^3.0.2",
