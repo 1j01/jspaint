@@ -53,24 +53,24 @@
     }
   },
   "dependencies": {
-    "electron-is-dev": "^0.3.0",
+    "electron-is-dev": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
-    "wallpaper": "4.1.0"
+    "wallpaper": "4.4.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.22",
-    "@electron-forge/maker-deb": "^6.0.0-beta.22",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.22",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.22",
-    "@electron-forge/maker-zip": "^6.0.0-beta.22",
-    "cross-spawn": "^5.1.0",
+    "@electron-forge/cli": "^6.0.0-beta.34",
+    "@electron-forge/maker-deb": "^6.0.0-beta.34",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.34",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.34",
+    "@electron-forge/maker-zip": "^6.0.0-beta.34",
+    "cross-spawn": "^6.0.5",
     "devtron": "^1.4.0",
-    "electron": "2.0.8",
-    "electron-debug": "^2.0.0",
+    "electron": "4.1.4",
+    "electron-debug": "^2.2.0",
     "http-server": "^0.11.1",
-    "live-server": "^1.2.0",
+    "live-server": "^1.2.1",
     "parallelshell": "^3.0.2",
-    "phantomcss": "^1.4.0"
+    "phantomcss": "^1.6.0"
   },
   "scripts": {
     "start": "electron-forge start",
