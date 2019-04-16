@@ -208,8 +208,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 Electron boilerplate stuff:
 
-* [`electron-forge start` has a bug where it won't exit.](https://github.com/electron-userland/electron-forge/issues/545)
-  Should I update to the beta so that `npm start` can quit normally when you close the window?
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
 * Add icon to built executable
