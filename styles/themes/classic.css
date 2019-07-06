@@ -1,4 +1,6 @@
-
+:root {
+	--theme-loaded: "classic.css";
+}
 
 .jspaint {
 	background: #c0c0c0;

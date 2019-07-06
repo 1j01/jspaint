@@ -1,3 +1,6 @@
+:root {
+	--theme-loaded: "modern.css";
+}
 
 body {
 	font-family: Roboto, sans-serif;
