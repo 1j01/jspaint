@@ -1,24 +1,16 @@
 (function() {
-	/* global window, document, $ */
 	var default_theme = "classic.css";
 	var theme_storage_key = "jspaint theme";
+	var href_for = function(theme) {
+		return "styles/themes/" + theme;
+	};
+	
 	var current_theme;
 	try {
 		current_theme = localStorage[theme_storage_key] || default_theme;
 	} catch (error) {
 		current_theme = default_theme;
 	}
-
-	var theme_link = document.createElement("link");
-	
-	theme_link.rel = "stylesheet";
-	theme_link.type = "text/css";
-	theme_link.href = href_for(current_theme);
-	theme_link.id = "theme-link";
-	document.head.appendChild(theme_link);
-
-	window.set_theme = set_theme;
-	window.get_theme = get_theme;
 
 	var iid;
 	function wait_for_theme_loaded(theme, callback) {
@@ -35,18 +27,18 @@
 		}, 15);
 	}
 
-	/**
-	 * @return {string}
-	 */
-	function get_theme() {
-		return current_theme;
-	}
+	var theme_link = document.createElement("link");
+	theme_link.rel = "stylesheet";
+	theme_link.type = "text/css";
+	theme_link.href = href_for(current_theme);
+	theme_link.id = "theme-link";
+	document.head.appendChild(theme_link);
 
-	/**
-	 * @param {string} theme
-	 * @return {Promise}
-	 */
-	function set_theme(theme) {
+	window.get_theme = function() {
+		return current_theme;
+	};
+
+	window.set_theme = function(theme) {
 		current_theme = theme;
 
 		try {
@@ -58,13 +50,5 @@
 		});
 		theme_link.href = href_for(theme);
 		$(window).triggerHandler("theme-load");
-	}
-
-	/**
-	 * @param {string} theme
-	 * @return {string}
-	 */
-	function href_for(theme) {
-		return "styles/themes/" + theme;
-	}
+	};
 })();
