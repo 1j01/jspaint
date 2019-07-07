@@ -33,9 +33,6 @@
 	theme_link.href = href_for(current_theme);
 	theme_link.id = "theme-link";
 	document.head.appendChild(theme_link);
-	wait_for_theme_loaded(current_theme, function(){
-		$(window).triggerHandler("theme-load");
-	});
 
 	window.get_theme = function() {
 		return current_theme;
