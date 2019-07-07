@@ -26,28 +26,6 @@
 		<meta name="twitter:site" content="@isaiahodhner">
 		<meta name="twitter:creator" content="@isaiahodhner">
 
-		<script type="text/javascript">
-			// Partial support for IE with a general polyfill
-			if(/MSIE \d|Trident.*rv:/.test(navigator.userAgent)){
-				document.write('<script src="https://cdn.polyfill.io/v2/polyfill.min.js"><\/script>');
-				
-				// document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js"><\/script>');
-				// this polyfill doesn't support base64 data URIs, leading to a confusing error message when loading the document from localStorage
-				// we shouldn't really be storing images as data URIs tho (ideally)
-				
-				document.write('<style>.help-window iframe { height: 100% } .horizontal { flex-shrink: 0; flex-grow: 1; flex-basis: 0; } </style>');
-				
-				var last_error_message_time = +new Date;
-				var error_message_debounce_ms = 200;
-				window.onerror = function(){
-					var current_time = +new Date;
-					if(!last_error_message_time || (current_time > last_error_message_time + error_message_debounce_ms)){
-						alert("Internet Explorer is not supported!");
-						last_error_message_time = +new Date;
-					}
-				};
-			}
-		</script>
 		<script src="src/theme.js"></script>
 	</head>
 	<body>
@@ -97,5 +75,19 @@
 		<script src="src/sessions.js"></script>
 		<script src="lib/konami.js"></script>
 		<script src="src/vaporwave-fun.js"></script>
+
+		<script type="text/javascript">
+			// Partial support for IE with a general polyfill
+			if(/MSIE \d|Trident.*rv:/.test(navigator.userAgent)){
+				document.write(
+					// '<script src="https://cdn.polyfill.io/v2/polyfill.min.js"><\/script>' +
+					'<style>body { text-align: center; }</style>' +
+					'<div className="not-supported">' +
+						'<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
+						'<p className="not-supported-details">Try Chrome, Firefox, or Edge.</p>' +
+					'</div>'
+				);
+			}
+		</script>
 	</body>
 </html>
