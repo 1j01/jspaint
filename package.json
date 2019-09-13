@@ -67,6 +67,7 @@
     "devtron": "^1.4.0",
     "electron": "4.1.4",
     "electron-debug": "^2.2.0",
+    "eslint": "6.3.0",
     "http-server": "^0.11.1",
     "live-server": "^1.2.1",
     "parallelshell": "^3.0.2",
@@ -78,7 +79,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\"",
+    "lint": "eslint src/",
     "dev": "live-server",
     "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
     "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
