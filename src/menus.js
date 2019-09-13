@@ -131,11 +131,11 @@ var menus = {
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
 			enabled: function(){
-				// @TODO disable if no selection (image or text)
-				return is_electron;
+				// support cutting selected text with this menu item as well (e.g. in the text tool text box)
+				return !!selection;
 			},
 			action: function(){
-				document.execCommand("cut");
+				edit_cut(true);
 			},
 			description: "Cuts the selection and puts it on the Clipboard.",
 		},
@@ -143,11 +143,11 @@ var menus = {
 			item: "&Copy",
 			shortcut: "Ctrl+C",
 			enabled: function(){
-				// @TODO disable if no selection (image or text)
-				return is_electron;
+				// support copying selected text with this menu item as well (e.g. in the text tool text box)
+				return !!selection;
 			},
 			action: function(){
-				document.execCommand("copy");
+				edit_copy(true);
 			},
 			description: "Copies the selection and puts it on the Clipboard.",
 		},
@@ -155,10 +155,11 @@ var menus = {
 			item: "&Paste",
 			shortcut: "Ctrl+V",
 			enabled: function(){
-				return is_electron;
+				// TODO: disable if nothing in clipboard or wrong type (if we can access that)
+				return true;
 			},
 			action: function(){
-				document.execCommand("paste");
+				edit_paste(true);
 			},
 			description: "Inserts the contents of the Clipboard.",
 		},

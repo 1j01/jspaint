@@ -15,7 +15,7 @@
 	* "To use a picture as the desktop background":
 	add a third step? It's not quite that easy (at least in the browser)
 	* "To create custom colors": way too OS-specific
-	(unless I'm gonna emulate the color selection dialogue)
+	(unless I'm gonna emulate the color selection dialog)
 	* "To enlarge the size of the viewing area" (`paint_enlarge_area.htm`):
 	jspaint currently allows you to draw while "Viewing the Bitmap"
 	* "To zoom in or out of a picture", "To type and format text":
@@ -32,8 +32,8 @@
 
 ### Visual
 
-* Warning sign for "Save changes to X?" dialogue
-* Error symbol for error message dialogues
+* Warning sign for "Save changes to X?" dialog
+* Error symbol for error message dialogs
 * 3D inset border for inputs - SVG `image-border`?
 * The window close button uses text; font rendering is not consistent
 * The progress bar (Rendering GIF) is left native

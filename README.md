@@ -96,14 +96,14 @@ I want to bring good old paint into the modern era.
 A lot of stuff isn't done yet.
 See: [the big long todo list.](TODO.md)
 
-Clipboard support is somewhat limited (in the web app).
-You can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
-but data copied from JS Paint can only be pasted into other instances of JS Paint.
-There's no way for web apps to properly copy image data to the clipboard yet.
-"[Support programmatical copying of images to clipboard](https://bugs.chromium.org/p/chromium/issues/detail?id=150835)"
-is currently the top starred issue of chromium.
+Full clipboard support in the web app requires a browser supporting the [Async Clipboard API w/ Images](https://developers.google.com/web/updates/2019/07/image-support-for-async-clipboard), namely Chrome 76+ at the time of writing.
 
-For full clipboard support, you need to install the [desktop app](#desktop-app).
+In other browsers you can still can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
+but data copied from JS Paint can only be pasted into other instances of JS Paint.
+External images can be pasted in.
+
+There's also a [desktop app](#desktop-app) version you can install that has full clipboard support.
+In which you can also set the wallpaper.
 
 
 ## Extended Editing
@@ -129,7 +129,7 @@ I want to make JS Paint to be able to edit...
   and I've made it try not to save over the original SVG.
   That's pretty decent SVG support for a 100% raster image editor.
 * [Text files][TXT] (definitely just kidding maybe)
-* Tesselating patterns, and textures on 3D models;
+* Tessellating patterns, and textures on 3D models;
   that might be a pipe dream, but [then again...](https://github.com/1j01/pipes) [hm...](https://github.com/1j01/mopaint)
 
 

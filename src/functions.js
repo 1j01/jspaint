@@ -285,7 +285,7 @@ function show_resource_load_error_message(){
 	// NOTE: apparently distinguishing cross-origin errors is disallowed
 	var $w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.html(
-		"<p>Failed to load image.</p>" +
+		"<p>Failed to load image from URL.</p>" +
 		"<p>Make sure to use an image host that supports " +
 		"<a href='https://en.wikipedia.org/wiki/Cross-origin_resource_sharing'>Cross-Origin Resource Sharing</a>" +
 		", such as <a href='https://imgur.com/'>Imgur</a>."
@@ -322,6 +322,7 @@ function paste_image_from_file(file){
 	var blob_url = URL.createObjectURL(file);
 	// paste_image_from_URI(blob_url);
 	load_image_from_URI(blob_url, function(err, img){
+		// TODO: this shouldn't really have the CORS error message, if it's from a blob URI
 		if(err){ return show_resource_load_error_message(); }
 		paste(img);
 		console.log("revokeObjectURL", blob_url);
@@ -608,6 +609,113 @@ function select_all(){
 
 	selection = new Selection(0, 0, canvas.width, canvas.height);
 	selection.instantiate();
+}
+
+const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
+async function edit_copy(execCommandFallback){
+	// TODO: DRY
+	if (!navigator.clipboard) {
+		if (execCommandFallback) {
+			if (document.queryCommandEnabled("copy")) { // not a reliable source for whether it'll work
+				document.execCommand("copy");
+				show_error_message("That copy probably didn't work. " + browserRecommendationForClipboardAccess);
+			} else {
+				show_error_message("Can't copy to the Clipboard. " + browserRecommendationForClipboardAccess);
+			}
+		} else {
+			throw new Error("Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+		}
+		return;
+	}
+	if (!navigator.clipboard) {
+		show_error_message("The Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+	}
+	// TODO: handle copying text (textarea or otherwise) w/ navigator.clipboard.writeText
+	
+	selection.canvas.toBlob(function(blob) {
+		sanity_check_blob(blob, function(){
+			navigator.clipboard.write([
+				new ClipboardItem(Object.defineProperty({}, blob.type, {
+					value: blob,
+					enumerable: true,
+				}))
+			]).then(function(){
+				console.log("Copied image to the clipboard");
+			}, function(error){
+				show_error_message();
+			});
+		});
+	});
+}
+function edit_cut(execCommandFallback){
+	if (!navigator.clipboard) {
+		if (execCommandFallback) {
+			if (document.queryCommandEnabled("cut")) { // not a reliable source for whether it'll work
+				document.execCommand("cut");
+				show_error_message("That cut probably didn't work. " + browserRecommendationForClipboardAccess);
+			} else {
+				show_error_message("Can't copy to the Clipboard. " + browserRecommendationForClipboardAccess);
+			}
+		} else {
+			throw new Error("Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+		}
+		return;
+	}
+	if (!navigator.clipboard) {
+		show_error_message("The Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+	}
+	edit_copy();
+	delete_selection();
+}
+async function edit_paste(execCommandFallback){
+	if (!navigator.clipboard) {
+		if (execCommandFallback) {
+			if (document.queryCommandEnabled("paste")) { // not a reliable source for whether it'll work
+				document.execCommand("paste");
+				show_error_message("That paste probably didn't work. " + browserRecommendationForClipboardAccess);
+			} else {
+				show_error_message("Can't paste from the Clipboard. " + browserRecommendationForClipboardAccess);
+			}
+		} else {
+			throw new Error("Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+		}
+		return;
+	}
+	if (!navigator.clipboard) {
+		show_error_message("The Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+	}
+	try {
+		const clipboardItems = await navigator.clipboard.read();
+		console.log(clipboardItems);
+		const blob = await clipboardItems[0].getType("image/png");
+		paste_image_from_file(blob);
+		console.log("Image pasted.");
+	} catch(error) {
+		if (error.name === "NotFoundError") {
+			// TODO: support pasting text into textarea like with the text tool
+			try {
+				const clipboardText = await navigator.clipboard.readText();
+				if(
+					document.activeElement instanceof HTMLInputElement ||
+					document.activeElement instanceof HTMLTextAreaElement
+				){
+					document.execCommand("InsertText", false, clipboardText);
+				} else if(clipboardText) { // TODO: valid URL checking!
+					// and like share with the other thing that does this, does text/uri parsing
+					load_image_from_URI(clipboardText, function(err, img){
+						if(err){ return show_resource_load_error_message(); }
+						paste(img);
+					});
+				} else {
+					show_error_message("PNG image data not found on the Clipboard. (Nor a URL pointing to an image.)");
+				}
+			} catch(error) {
+				show_error_message("Failed to read from the Clipboard.", error);
+			}
+		} else {
+			show_error_message("Failed to read from the Clipboard.", error);
+		}
+	}
 }
 
 function image_invert(){
