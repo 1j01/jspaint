@@ -390,22 +390,15 @@ $G.on("cut copy paste", function(e){
 		$.each(cd.items, function(i, item){
 			if(item.type.match(/^text\/(?:x-data-uri|uri-list|plain)|URL$/)){
 				item.getAsString(function(text){
-					// parse text/uri-list (might as well do it properly)
-					var uris = text.split(/[\n\r]+/).filter(function(line){return line[0] !== "#" && line});
-					// TODO: check that it's actually a URI,
-					// and if text/plain maybe silently ignore the paste
-					// but definitely generally show a better error than show_resource_load_error_message()
-					// some strings from mspaint:
-					// "The information on the Clipboard can't be inserted into Paint."
-					// also
-					// "Downloading picture"
-					// "Reading data from the device (%1!ld!%% complete)"
-					// "Processing data (%1!ld!%% complete)"
-					// "Transferring data (%1!ld!%% complete)"
-					load_image_from_URI(uris[0], function(err, img){
-						if(err){ return show_resource_load_error_message(); }
-						paste(img);
-					});
+					var uris = get_URIs(text);
+					if (uris.length > 0) {
+						load_image_from_URI(uris[0], function(err, img){
+							if(err){ return show_resource_load_error_message(); }
+							paste(img);
+						});
+					} else {
+						show_error_message("The information on the Clipboard can't be inserted into Paint.");
+					}
 				});
 				return false; // break out of $.each loop
 			}else if(item.type.match(/^image\//)){

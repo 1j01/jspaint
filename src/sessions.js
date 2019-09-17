@@ -418,6 +418,11 @@
 			var url = decodeURIComponent(load_from_url_match[2]);
 			var hash_loading_url_from = location.hash;
 
+			var uris = get_URIs(url);
+			if (uris.length === 0) {
+				show_error_message("Invalid URL to load (after #load: in the address bar). It must include a protocol (https:// or http://)");
+				return;
+			}
 			end_current_session();
 
 			open_from_URI(url, function(err){

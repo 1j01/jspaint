@@ -85,7 +85,27 @@ function open_from_Image(img, callback, canceled){
 		callback && callback();
 	}, canceled);
 }
+function get_URIs(text) {
+	// parse text/uri-list
+	// get lines, discarding comments
+	var lines = text.split(/[\n\r]+/).filter(function(line){return line[0] !== "#" && line});
+	// discard text with too many lines (likely pasted HTML or something) - may want to revisit this
+	if (lines.length > 15) {
+		return [];
+	}
+	// parse URLs, discarding anything that parses as a relative URL
+	var uris = [];
+	for (var i=0; i<lines.length; i++) {
+		// TODO: handle errors?
+		var url = new URL(lines[i], "https://relative-urls-are-invalid.example.com"); // TODO: is this necessary? I assumed it would use the current page URL by default as a base
+		if (-1 === url.host.indexOf("relative-urls-are-invalid.example.com")) {
+			uris.push(url.href);
+		}
+	}
+	return uris;
+}
 function load_image_from_URI(uri, callback){
+	// TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
 	fetch(uri)
 	.then(function(response) {
 		return response.blob();
@@ -188,7 +208,12 @@ function file_load_from_url(){
 		// actually, make it change the hash only after loading successfully
 		// (but still load from the hash when necessary)
 		// make sure it doesn't overwrite the old session before switching
-		location.hash = "load:" + encodeURIComponent($input.val());
+		var uris = get_URIs($input.val());
+		if (uris.length > 0) {
+			location.hash = "load:" + encodeURIComponent(uris[0]);
+		} else {
+			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
+		}
 	}).focus();
 	$w.$Button("Cancel", function(){
 		$w.close();
@@ -286,6 +311,7 @@ function show_resource_load_error_message(){
 	var $w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.html(
 		"<p>Failed to load image from URL.</p>" +
+		"<p>Check your browser's devtools for details.</p>" +
 		"<p>Make sure to use an image host that supports " +
 		"<a href='https://en.wikipedia.org/wiki/Cross-origin_resource_sharing'>Cross-Origin Resource Sharing</a>" +
 		", such as <a href='https://imgur.com/'>Imgur</a>."
@@ -700,14 +726,18 @@ async function edit_paste(execCommandFallback){
 					document.activeElement instanceof HTMLTextAreaElement
 				){
 					document.execCommand("InsertText", false, clipboardText);
-				} else if(clipboardText) { // TODO: valid URL checking!
-					// and like share with the other thing that does this, does text/uri parsing
-					load_image_from_URI(clipboardText, function(err, img){
-						if(err){ return show_resource_load_error_message(); }
-						paste(img);
-					});
+				} else if(clipboardText) {
+					var uris = get_URIs(clipboardText);
+					if (uris.length > 0) {
+						load_image_from_URI(uris[0], function(err, img){
+							if(err){ return show_resource_load_error_message(); }
+							paste(img);
+						});
+					} else {
+						show_error_message("The information on the Clipboard can't be inserted into Paint.");
+					}
 				} else {
-					show_error_message("PNG image data not found on the Clipboard. (Nor a URL pointing to an image.)");
+					show_error_message("The information on the Clipboard can't be inserted into Paint.");
 				}
 			} catch(error) {
 				show_error_message("Failed to read from the Clipboard.", error);
