@@ -640,11 +640,12 @@ function select_all(){
 const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
 function try_exec_command(commandId) {
 	if (document.queryCommandEnabled(commandId)) { // not a reliable source for whether it'll work, if I recall
-		// TODO: execCommand actually works in Firefox
 		document.execCommand(commandId);
-		return show_error_message(`That ${commandId} probably didn't work. The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+		if (navigator.userAgent.indexOf("Firefox") === -1 || commandId === "paste") {
+			return show_error_message(`That ${commandId} probably didn't work. ${browserRecommendationForClipboardAccess}`);
+		}
 	} else {
-		return show_error_message(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+		return show_error_message(`Cannot perform ${commandId}. ${browserRecommendationForClipboardAccess}`);
 	}
 }
 async function edit_copy(execCommandFallback){
