@@ -96,11 +96,11 @@ function get_URIs(text) {
 	// parse URLs, discarding anything that parses as a relative URL
 	var uris = [];
 	for (var i=0; i<lines.length; i++) {
-		// TODO: handle errors?
-		var url = new URL(lines[i], "https://relative-urls-are-invalid.example.com"); // TODO: is this necessary? I assumed it would use the current page URL by default as a base
-		if (-1 === url.host.indexOf("relative-urls-are-invalid.example.com")) {
+		try {
+			var url = new URL(lines[i]);
 			uris.push(url.href);
-		}
+		// eslint-disable-next-line no-empty
+		} catch(e) {}
 	}
 	return uris;
 }
@@ -654,7 +654,7 @@ async function edit_copy(execCommandFallback){
 		return;
 	}
 	if (!navigator.clipboard) {
-		show_error_message("The Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+		show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 	}
 	// TODO: handle copying text (textarea or otherwise) w/ navigator.clipboard.writeText
 	
@@ -688,7 +688,7 @@ function edit_cut(execCommandFallback){
 		return;
 	}
 	if (!navigator.clipboard) {
-		show_error_message("The Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+		show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 	}
 	edit_copy();
 	delete_selection();
@@ -708,7 +708,7 @@ async function edit_paste(execCommandFallback){
 		return;
 	}
 	if (!navigator.clipboard) {
-		show_error_message("The Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
+		show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 	}
 	try {
 		const clipboardItems = await navigator.clipboard.read();

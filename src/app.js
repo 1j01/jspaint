@@ -353,13 +353,7 @@ $G.on("cut copy paste", function(e){
 
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
-			try {
-				if (e.type === "cut") {
-					edit_cut();
-				} else {
-					edit_copy();
-				}
-			} catch(e) {
+			var do_sync_clipboard_copy_or_cut = function() {
 				if(window.require && window.process){
 					// TODO: remove special electron handling for clipboard stuff if I can upgrade to a version that supports the async clipboard API with images
 					const {clipboard, nativeImage} = require('electron');
@@ -384,6 +378,18 @@ $G.on("cut copy paste", function(e){
 				if(e.type === "cut"){
 					delete_selection();
 				}
+			};
+			if (!navigator.clipboard) {
+				return do_sync_clipboard_copy_or_cut();
+			}
+			try {
+				if (e.type === "cut") {
+					edit_cut();
+				} else {
+					edit_copy();
+				}
+			} catch(e) {
+				do_sync_clipboard_copy_or_cut();
 			}
 		}
 	}else if(e.type === "paste"){
