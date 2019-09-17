@@ -203,13 +203,13 @@ function file_load_from_url(){
 	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input'/></label>");
 	var $input = $w.$main.find(".url-input");
 	$w.$Button("Load", function(){
-		$w.close();
-		// TODO: retry loading if same URL entered
-		// actually, make it change the hash only after loading successfully
-		// (but still load from the hash when necessary)
-		// make sure it doesn't overwrite the old session before switching
 		var uris = get_URIs($input.val());
 		if (uris.length > 0) {
+			// TODO: retry loading if same URL entered
+			// actually, make it change the hash only after loading successfully
+			// (but still load from the hash when necessary)
+			// make sure it doesn't overwrite the old session before switching
+			$w.close();
 			location.hash = "load:" + encodeURIComponent(uris[0]);
 		} else {
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");

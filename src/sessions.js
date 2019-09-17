@@ -425,6 +425,7 @@
 			}
 			end_current_session();
 
+			// TODO: fix loading duplicately, from popstate and hashchange
 			open_from_URI(url, function(err){
 				if(err){
 					show_resource_load_error_message();
