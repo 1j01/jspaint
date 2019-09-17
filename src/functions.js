@@ -640,7 +640,8 @@ function select_all(){
 const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
 async function edit_copy(execCommandFallback){
 	// TODO: DRY
-	if (!navigator.clipboard) {
+	// TODO: handle copying text (textarea or otherwise) w/ navigator.clipboard.writeText
+	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
 			if (document.queryCommandEnabled("copy")) { // not a reliable source for whether it'll work
 				document.execCommand("copy");
@@ -653,10 +654,6 @@ async function edit_copy(execCommandFallback){
 		}
 		return;
 	}
-	if (!navigator.clipboard) {
-		show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
-	}
-	// TODO: handle copying text (textarea or otherwise) w/ navigator.clipboard.writeText
 	
 	selection.canvas.toBlob(function(blob) {
 		sanity_check_blob(blob, function(){
@@ -674,7 +671,7 @@ async function edit_copy(execCommandFallback){
 	});
 }
 function edit_cut(execCommandFallback){
-	if (!navigator.clipboard) {
+	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
 			if (document.queryCommandEnabled("cut")) { // not a reliable source for whether it'll work
 				document.execCommand("cut");
@@ -694,7 +691,8 @@ function edit_cut(execCommandFallback){
 	delete_selection();
 }
 async function edit_paste(execCommandFallback){
-	if (!navigator.clipboard) {
+	// TODO: support pasting text, with navigator.clipboard.readText
+	if (!navigator.clipboard || !navigator.clipboard.read) {
 		if (execCommandFallback) {
 			if (document.queryCommandEnabled("paste")) { // not a reliable source for whether it'll work
 				document.execCommand("paste");
@@ -706,9 +704,6 @@ async function edit_paste(execCommandFallback){
 			throw new Error("Async Clipboard API not supported by this browser. " + browserRecommendationForClipboardAccess);
 		}
 		return;
-	}
-	if (!navigator.clipboard) {
-		show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 	}
 	try {
 		const clipboardItems = await navigator.clipboard.read();

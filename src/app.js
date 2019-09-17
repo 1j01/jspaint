@@ -379,7 +379,7 @@ $G.on("cut copy paste", function(e){
 					delete_selection();
 				}
 			};
-			if (!navigator.clipboard) {
+			if (!navigator.clipboard || !navigator.clipboard.write) {
 				return do_sync_clipboard_copy_or_cut();
 			}
 			try {
