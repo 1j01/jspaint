@@ -186,6 +186,14 @@ function file_new(){
 // there's this little thing called Inversion of Control...
 // also paste_from_file_select_dialog
 function file_open(){
+	if (window.systemOpenFile) {
+		return window.systemOpenFile(function(file){
+			open_from_File(file, function(err){
+				if(err){ return show_error_message("Failed to open file:", err); }
+			});
+		});
+	}
+
 	get_FileList_from_file_select_dialog(function(files){
 		open_from_FileList(files, "selected");
 	});
