@@ -638,21 +638,23 @@ function select_all(){
 }
 
 const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
+function try_exec_command(commandId) {
+	if (document.queryCommandEnabled(commandId)) { // not a reliable source for whether it'll work, if I recall
+		// TODO: execCommand actually works in Firefox
+		document.execCommand(commandId);
+		return show_error_message(`That ${commandId} probably didn't work. The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+	} else {
+		return show_error_message(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+	}
+}
 async function edit_copy(execCommandFallback){
-	// TODO: DRY
 	// TODO: handle copying text (textarea or otherwise) w/ navigator.clipboard.writeText
 	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
-			if (document.queryCommandEnabled("copy")) { // not a reliable source for whether it'll work
-				document.execCommand("copy");
-				return show_error_message("That copy probably didn't work. " + browserRecommendationForClipboardAccess);
-			} else {
-				return show_error_message("Can't copy to the Clipboard. " + browserRecommendationForClipboardAccess);
-			}
+			return try_exec_command("copy");
 		} else {
 			throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 		}
-		return show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 	}
 	
 	selection.canvas.toBlob(function(blob) {
@@ -671,19 +673,12 @@ async function edit_copy(execCommandFallback){
 	});
 }
 function edit_cut(execCommandFallback){
-	console.log(execCommandFallback);
 	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
-			if (document.queryCommandEnabled("cut")) { // not a reliable source for whether it'll work
-				document.execCommand("cut");
-				return show_error_message("That cut probably didn't work. " + browserRecommendationForClipboardAccess);
-			} else {
-				return show_error_message("Can't copy to the Clipboard. " + browserRecommendationForClipboardAccess);
-			}
+			return try_exec_command("cut");
 		} else {
 			throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 		}
-		return show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 	}
 	edit_copy();
 	delete_selection();
@@ -692,16 +687,10 @@ async function edit_paste(execCommandFallback){
 	// TODO: support pasting text, with navigator.clipboard.readText
 	if (!navigator.clipboard || !navigator.clipboard.read) {
 		if (execCommandFallback) {
-			if (document.queryCommandEnabled("paste")) { // not a reliable source for whether it'll work
-				document.execCommand("paste");
-				return show_error_message("That paste probably didn't work. " + browserRecommendationForClipboardAccess);
-			} else {
-				return show_error_message("Can't paste from the Clipboard. " + browserRecommendationForClipboardAccess);
-			}
+			return try_exec_command("paste");
 		} else {
 			throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 		}
-		return show_error_message("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 	}
 	try {
 		const clipboardItems = await navigator.clipboard.read();
