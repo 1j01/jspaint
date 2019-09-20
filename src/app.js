@@ -36,7 +36,7 @@ var colors = {
 };
 
 var selection; //the one and only OnCanvasSelection
-var textbox; //the one and only TextBox
+var textbox; //the one and only OnCanvasTextBox
 var font = {
 	family: "Arial",
 	size: 12,

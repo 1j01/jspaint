@@ -163,7 +163,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Expand box to make room for new lines
 	* Minimum size of 3em x 1em
 	* Store position of FontBox
-	* Keep an old TextBox while drawing a new one
+	* Keep an old OnCanvasTextBox while drawing a new one
 	* Save text and record transformations so the image can be saved as
 	SVG (or HTML?) with invisible selectable transformed text elements?
 
@@ -192,7 +192,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 ### On-Canvas Objects
 
-* Selection
+* `OnCanvasSelection`
 	* Proportionally resize selection while holding Shift
 	(or maybe by default? I feel like it should be the default, tbh.)
 	* Don't cut until you drag or do something else
@@ -200,7 +200,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	and drag it, leaving the new background color behind.)
 
 
-* TextBox
+* `OnCanvasTextBox`
 	* See Text tool
 
 

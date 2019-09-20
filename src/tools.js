@@ -390,7 +390,7 @@ tools = [{
 				textbox = null;
 			}
 		});
-		textbox = new TextBox(pointer.x, pointer.y, 1, 1);
+		textbox = new OnCanvasTextBox(pointer.x, pointer.y, 1, 1);
 	},
 	paint: function(){
 		if(!textbox){ return; }
