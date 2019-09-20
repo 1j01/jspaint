@@ -33,7 +33,7 @@ function $ToolBox(tools, is_extras){
 		});
 		
 		$b.on("click", function(e){
-			if (e.shiftKey) {
+			if (e.shiftKey || e.ctrlKey) {
 				select_tool(tool, true);
 				return;
 			}
