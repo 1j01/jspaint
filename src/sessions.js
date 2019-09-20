@@ -142,13 +142,14 @@
 
 		var $w = $FormWindow().title("Warning").addClass("dialogue-window");
 		$w.$main.html(
-			"<p>The Firebase quota was exceeded very quickly when JS Paint got a ton of traffic.</p>" +
-			"<p>I haven't found any way to actually <i>detect</i> this case, " +
-			"so for now I'm showing this message, regardless of whether it's working.</p>" +
-			"<p>There's a bit more quota at the start of the month, " +
-			"but the document may not load, and changes may not be saved.</p>" +
-			"<p>If you're interested in using this feature, please subscribe to and thumbs-up " +
-			"<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a>.</p>"
+			"<p>The document may not load. Changes may not save.</p>" +
+			"<p>Multiuser sessions are public. There is no security.</p>"
+
+			// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +
+			// "<p>I haven't found a way to detect Firebase quota limits being exceeded, " +
+			// "so for now I'm showing this message regardless of whether it's working.</p>" +
+			// "<p>If you're interested in using multiuser mode, please thumbs-up " +
+			// "<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a> to show interest, and/or subscribe for updates.</p>"
 		);
 		$w.$main.css({maxWidth: "500px"});
 		$w.$Button("OK", function(){
