@@ -137,7 +137,7 @@ function $ColorBox(){
 					colors.background = col;
 				}
 				$G.trigger("option-changed");
-			};
+			}
 			function rgb2hex(col){
 				if(!col.match){ // i.e. CanvasPattern
 					return "#000000";

@@ -240,8 +240,10 @@ var menus = {
 			checkbox: {
 				toggle: function(){
 					$extras_menu_button.toggle();
+					var checked = this.check();
 					try{
-						localStorage["jspaint extras menu visible"] = this.check();
+						localStorage["jspaint extras menu visible"] = checked;
+					// eslint-disable-next-line no-empty
 					}catch(e){}
 				},
 				check: function(){
@@ -449,7 +451,7 @@ var menus = {
 							name = name.trim();
 							if(name == ""){
 								show_error_message("The session name cannot be empty.");
-							}else if(name.match(/[.\/\[\]#$]/)){
+							}else if(name.match(/[./[\]#$]/)){
 								show_error_message("The session name cannot contain any of ./[]#$");
 							}else{
 								location.hash = "session:" + name;
@@ -503,6 +505,7 @@ if(frameElement){
 			$MenuBar = parent.$MenuBar;
 			go_outside_frame = true;
 		}
+	// eslint-disable-next-line no-empty
 	}catch(e){}
 }
 var $menu_bar = $MenuBar(menus);
@@ -520,9 +523,14 @@ $menu_bar.on("default-info", function(e){
 });
 
 var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
+// if localStorage is not avaiable, the default setting is visible
+var extras_menu_should_start_visible = true;
 try{
+	// if localStorage is avaiable, the default setting is invisible
 	// TODO: refactor shared key string
-	if(localStorage["jspaint extras menu visible"] != "true"){
-		$extras_menu_button.hide();
-	}
+	extras_menu_should_start_visible = localStorage["jspaint extras menu visible"] != "true"
+// eslint-disable-next-line no-empty
 }catch(e){}
+if(extras_menu_should_start_visible){
+	$extras_menu_button.hide();
+}

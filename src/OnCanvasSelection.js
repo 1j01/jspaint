@@ -278,6 +278,7 @@ OnCanvasSelection.prototype.scale = function(factor){
 };
 
 OnCanvasSelection.prototype.draw = function(){
+	// eslint-disable-next-line no-empty
 	try{ctx.drawImage(this.canvas, this.x, this.y);}catch(e){}
 };
 

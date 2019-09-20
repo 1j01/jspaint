@@ -767,6 +767,7 @@ function get_tool_by_name(name){
 			return tools[i];
 		}
 	}
+	// eslint-disable-next-line no-redeclare
 	for(var i=0; i<extra_tools.length; i++){
 		if(extra_tools[i].name == name){
 			return extra_tools[i];
@@ -880,7 +881,9 @@ function make_monochrome_palette(){
 		var lightness = i / n_colors;
 		palette.push(make_monochrome_pattern(lightness));
 	}
+	// eslint-disable-next-line no-redeclare
 	for(var i=0; i<n_colors_per_row; i++){
+		// eslint-disable-next-line no-redeclare
 		var lightness = 1 - i / n_colors;
 		palette.push(make_monochrome_pattern(lightness));
 	}
