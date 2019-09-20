@@ -35,7 +35,7 @@ var colors = {
 	ternary: "",
 };
 
-var selection; //the one and only Selection
+var selection; //the one and only OnCanvasSelection
 var textbox; //the one and only TextBox
 var font = {
 	family: "Arial",

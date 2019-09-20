@@ -407,7 +407,7 @@ function paste(img){
 		// Note: relying on select_tool to call deselect();
 		select_tool(get_tool_by_name("Select"));
 
-		selection = new Selection(0, 0, img.width, img.height);
+		selection = new OnCanvasSelection(0, 0, img.width, img.height);
 		selection.instantiate(img);
 	}
 }
@@ -633,7 +633,7 @@ function select_all(){
 	// Note: relying on select_tool to call deselect();
 	select_tool(get_tool_by_name("Select"));
 
-	selection = new Selection(0, 0, canvas.width, canvas.height);
+	selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
 	selection.instantiate();
 }
 

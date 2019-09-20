@@ -98,7 +98,7 @@ tools = [{
 			this.y_max
 		);
 		
-		selection = new Selection(
+		selection = new OnCanvasSelection(
 			this.x_min,
 			this.y_min,
 			this.x_max - this.x_min,
@@ -134,7 +134,7 @@ tools = [{
 				selection = null;
 			}
 		});
-		selection = new Selection(pointer.x, pointer.y, 1, 1);
+		selection = new OnCanvasSelection(pointer.x, pointer.y, 1, 1);
 	},
 	paint: function(){
 		if(!selection){ return; }

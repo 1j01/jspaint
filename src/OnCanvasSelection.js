@@ -1,5 +1,5 @@
 
-function Selection(x, y, width, height){
+function OnCanvasSelection(x, y, width, height){
 	var sel = this;
 	OnCanvasObject.call(sel, x, y, width, height);
 	
@@ -24,9 +24,9 @@ function Selection(x, y, width, height){
 	$G.on("option-changed", this._on_option_changed);
 }
 
-Selection.prototype = Object.create(OnCanvasObject.prototype);
+OnCanvasSelection.prototype = Object.create(OnCanvasObject.prototype);
 
-Selection.prototype.instantiate = function(_img, _passive){
+OnCanvasSelection.prototype.instantiate = function(_img, _passive){
 	var sel = this;
 	
 	sel.$el.addClass("instantiated").css({
@@ -122,7 +122,7 @@ Selection.prototype.instantiate = function(_img, _passive){
 	}
 };
 
-Selection.prototype.cut_out_background = function(){
+OnCanvasSelection.prototype.cut_out_background = function(){
 	var sel = this;
 	var cutout = sel.canvas;
 
@@ -182,7 +182,7 @@ Selection.prototype.cut_out_background = function(){
 	}
 };
 
-Selection.prototype.update_transparent_opaque = function(){
+OnCanvasSelection.prototype.update_transparent_opaque = function(){
 	var sel = this;
 
 	var sourceImageData = sel.source_canvas.ctx.getImageData(0, 0, sel.width, sel.height);
@@ -224,7 +224,7 @@ Selection.prototype.update_transparent_opaque = function(){
 
 // TODO: should Image > Invert apply to sel.source_canvas or to sel.canvas (replacing sel.source_canvas with the result)?
 
-Selection.prototype.replace_source_canvas = function(new_source_canvas){
+OnCanvasSelection.prototype.replace_source_canvas = function(new_source_canvas){
 	var sel = this;
 
 	sel.source_canvas = new_source_canvas;
@@ -259,7 +259,7 @@ Selection.prototype.replace_source_canvas = function(new_source_canvas){
 	sel.update_transparent_opaque();
 };
 
-Selection.prototype.resize = function(){
+OnCanvasSelection.prototype.resize = function(){
 	var sel = this;
 	
 	var new_source_canvas = new Canvas(sel.width, sel.height);
@@ -268,7 +268,7 @@ Selection.prototype.resize = function(){
 	sel.replace_source_canvas(new_source_canvas);
 };
 
-Selection.prototype.scale = function(factor){
+OnCanvasSelection.prototype.scale = function(factor){
 	var sel = this;
 	
 	var new_source_canvas = new Canvas(sel.width * factor, sel.height * factor);
@@ -277,17 +277,17 @@ Selection.prototype.scale = function(factor){
 	sel.replace_source_canvas(new_source_canvas);
 };
 
-Selection.prototype.draw = function(){
+OnCanvasSelection.prototype.draw = function(){
 	try{ctx.drawImage(this.canvas, this.x, this.y);}catch(e){}
 };
 
-Selection.prototype.destroy = function(){
+OnCanvasSelection.prototype.destroy = function(){
 	OnCanvasObject.prototype.destroy.call(this);
 	$G.triggerHandler("session-update"); // what does this mean, and why is it needed?
 	$G.off("option-changed", this._on_option_changed);
 };
 
-Selection.prototype.crop = function(){
+OnCanvasSelection.prototype.crop = function(){
 	var sel = this;
 	sel.instantiate(null, "passive");
 	if(sel.canvas){
