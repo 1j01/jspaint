@@ -774,20 +774,32 @@ function get_tool_by_name(name){
 	}
 }
 
-function select_tool(tool, add){
+function select_tool(tool, toggle){
 	if(!selected_tool.deselect){
 		previous_tool = selected_tool;
 	}
-	selected_tool = tool;
-	if (add) {
-		selected_tools.push(tool);
+	if (toggle) {
+		var index = selected_tools.indexOf(tool);
+		if (index === -1) {
+			selected_tools.push(tool);
+		} else {
+			selected_tools.splice(index, 1);
+		}
+		if (selected_tools.length > 0) {
+			selected_tool = selected_tools[selected_tools.length - 1];
+		} else {
+			selected_tool = tools[6];
+			selected_tools = [selected_tool];
+		}
 	} else {
+		selected_tool = tool;
 		selected_tools = [tool];
 	}
 	
 	deselect();
-	if(selected_tool.activate){
-		selected_tool.activate();
+
+	if(tool.preload){
+		tool.preload();
 	}
 	
 	$toolbox.update_selected_tool();

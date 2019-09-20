@@ -367,7 +367,7 @@ tools = [{
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
-	activate: function(){
+	preload: function(){
 		setTimeout(FontDetective.preload, 10);
 	},
 	drag_start_x: 0,

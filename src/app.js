@@ -555,6 +555,8 @@ $canvas.on("pointerdown", function(e){
 	pointer_start = pointer_previous = pointer = e2c(e);
 
 	var pointerdown_action = function(){
+	selected_tools.forEach((selected_tool)=> {
+
 		if(selected_tool.paint || selected_tool.pointerdown){
 			tool_go("pointerdown");
 		}
@@ -571,14 +573,17 @@ $canvas.on("pointerdown", function(e){
 				pointer = e2c(e);
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
 			}
+			if (selected_tools.length === 0) {
 			if(selected_tool.deselect){
 				select_tool(previous_tool);
+			}
 			}
 			$G.off("pointermove", canvas_pointer_move);
 			if(iid){
 				clearInterval(iid);
 			}
 		});
+	});
 	};
 
 	if((typeof selected_tool.passive === "function") ? selected_tool.passive() : selected_tool.passive){

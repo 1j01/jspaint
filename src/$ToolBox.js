@@ -33,10 +33,14 @@ function $ToolBox(tools, is_extras){
 		});
 		
 		$b.on("click", function(e){
+			if (e.shiftKey) {
+				select_tool(tool, true);
+				return;
+			}
 			if(selected_tool === tool && tool.deselect){
 				select_tool(previous_tool);
 			}else{
-				select_tool(tool, e.shiftKey);
+				select_tool(tool);
 			}
 		});
 		
