@@ -27,6 +27,7 @@ var stroke_color_k = 0;
 var fill_color_k = 0;
 
 var selected_tool = tools[6];
+var selected_tools = [selected_tool];
 var previous_tool = selected_tool;
 var colors = {
 	foreground: "",
@@ -428,6 +429,7 @@ function e2c(e){
 }
 
 function tool_go(event_name){
+selected_tools.forEach((selected_tool)=> {
 
 	ctx.lineWidth = stroke_size;
 
@@ -480,6 +482,7 @@ function tool_go(event_name){
 			selected_tool.paint(ctx, pointer.x, pointer.y);
 		}
 	}
+});
 }
 function canvas_pointer_move(e){
 	ctrl = e.ctrlKey;

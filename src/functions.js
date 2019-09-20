@@ -774,11 +774,16 @@ function get_tool_by_name(name){
 	}
 }
 
-function select_tool(tool){
+function select_tool(tool, add){
 	if(!selected_tool.deselect){
 		previous_tool = selected_tool;
 	}
 	selected_tool = tool;
+	if (add) {
+		selected_tools.push(tool);
+	} else {
+		selected_tools = [tool];
+	}
 	
 	deselect();
 	if(selected_tool.activate){
