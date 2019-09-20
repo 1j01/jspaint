@@ -782,6 +782,15 @@ function select_tool(tool, toggle){
 		var index = selected_tools.indexOf(tool);
 		if (index === -1) {
 			selected_tools.push(tool);
+			selected_tools.sort((a, b)=> {
+				if (tools.indexOf(a) < tools.indexOf(b)) {
+					return -1;
+				}
+				if (tools.indexOf(a) > tools.indexOf(b)) {
+					return +1;
+				}
+				return 0;
+			});
 		} else {
 			selected_tools.splice(index, 1);
 		}
