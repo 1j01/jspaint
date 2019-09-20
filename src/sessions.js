@@ -351,9 +351,9 @@
 		$G.off(".session-hook");
 
 		// Remove collected Firebase event listeners
-		session._fb_listeners.forEach((listener)=> {
-			log("remove listener for " + listener.fb.path.toString() + " .on " + listener.event_type);
-			listener.fb.off(listener.event_type, listener.callback, listener.error_callback);
+		session._fb_listeners.forEach(({fb, event_type, callback, error_callback})=> {
+			log("remove listener for " + fb.path.toString() + " .on " + event_type);
+			fb.off(event_type, callback);
 		});
 		session._fb_listeners.length = 0;
 
