@@ -55,7 +55,7 @@
   "dependencies": {
     "electron-is-dev": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
-    "wallpaper": "4.4.0"
+    "wallpaper": "4.4.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "6.0.0-beta.45",
@@ -63,11 +63,11 @@
     "@electron-forge/maker-rpm": "6.0.0-beta.45",
     "@electron-forge/maker-squirrel": "6.0.0-beta.45",
     "@electron-forge/maker-zip": "6.0.0-beta.45",
-    "cross-spawn": "^6.0.5",
+    "cross-spawn": "^7.0.0",
     "devtron": "^1.4.0",
     "electron": "6.0.10",
-    "electron-debug": "^2.2.0",
-    "eslint": "6.3.0",
+    "electron-debug": "^3.0.1",
+    "eslint": "6.4.0",
     "http-server": "^0.11.1",
     "live-server": "^1.2.1",
     "parallelshell": "^3.0.2",
