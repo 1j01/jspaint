@@ -265,7 +265,7 @@ html, body, .jspaint {
 	cursor: default;
 }
 .window-close-button {
-	display: inline-block !important;
+	display: block !important;
 	float: right;
 }
 .window-close-button:before {

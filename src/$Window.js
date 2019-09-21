@@ -212,4 +212,4 @@ function $FormWindow(title){
 	};
 	
 	return $w;
-};
+}

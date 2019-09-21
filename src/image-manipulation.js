@@ -553,10 +553,10 @@ function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, contro
 		draw_line_without_pattern_support(ctx, point_a.x, point_a.y, point_b.x, point_b.y, stroke_size);
 		point_a = point_b;
 	}
-};
+}
 function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x, end_y, stroke_size) {
 	draw_bezier_curve(ctx, start_x, start_y, control_x, control_y, control_x, control_y, end_x, end_y, stroke_size);
-};
+}
 
 function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
 	// could calculate bounds of Bezier curve with something like bezier-js
@@ -830,7 +830,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 				ctx.drawImage(op_canvas_2d, x_min, y_min);
 			}
 		}
-	};
+	}
 
 	window.copy_contents_within_polygon = function(canvas, points, x_min, y_min, x_max, y_max){
 		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max

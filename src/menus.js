@@ -519,6 +519,7 @@ $menu_bar.on("default-info", function(e){
 });
 
 var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
+// TODO: DRY with $MenuBar
 // if localStorage is not available, the default setting is visible
 var extras_menu_should_start_visible = true;
 try{

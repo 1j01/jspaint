@@ -33,6 +33,7 @@
 					}else{
 						// e.g. localStorage is disabled
 						// (or there's some other error?)
+						// TODO: show warning with "Don't tell me again" type option
 					}
 				}
 			});

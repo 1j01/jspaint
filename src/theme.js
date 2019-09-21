@@ -18,7 +18,7 @@
 		iid = setInterval(function() {
 			var theme_loaded =
 				getComputedStyle(document.documentElement)
-	    			.getPropertyValue("--theme-loaded")
+					.getPropertyValue("--theme-loaded")
 					.replace(/['"]+/g, "").trim();
 			if (theme_loaded === theme) {
 				clearInterval(iid);
@@ -43,6 +43,7 @@
 
 		try {
 			localStorage[theme_storage_key] = theme;
+		// eslint-disable-next-line no-empty
 		} catch(error) {}
 
 		wait_for_theme_loaded(theme, function(){

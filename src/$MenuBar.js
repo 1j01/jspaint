@@ -180,11 +180,16 @@ function $MenuBar(menus){
 		$menu_button.addClass("" + menu_id + "-menu-button");
 		if(menu_id == "extras"){
 			// TODO: refactor shared key string, move to function
-			try{
-				if(localStorage["jspaint extras menu visible"] != "true"){
-					$menu_button.hide();
-				}
-			}catch(e){}
+			// if localStorage is not available, the default setting is visible
+			var extras_menu_should_be_visible = true;
+			try {
+				// if localStorage is available, the default setting is invisible (for now)
+				extras_menu_should_be_visible = localStorage["jspaint extras menu visible"] == "true";
+			// eslint-disable-next-line no-empty
+			} catch(e) {}
+			if(!extras_menu_should_be_visible){
+				$menu_button.hide();
+			}
 		}
 		
 		$menu_popup.hide();

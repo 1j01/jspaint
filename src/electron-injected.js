@@ -16,8 +16,8 @@ var argv = require("electron").remote.process.argv;
 // This registry modification changes the right click > Edit option for images in Windows Explorer
 var reg_contents = `Windows Registry Editor Version 5.00
 
-[HKEY_CLASSES_ROOT\SystemFileAssociations\image\shell\edit\command]
-@="\\\"${argv[0].replace(/\\/g, "\\\\")}\\\" ${is_dev ? "\\\".\\\" " : ""}\\\"%1\\\""
+[HKEY_CLASSES_ROOT\\SystemFileAssociations\\image\\shell\\edit\\command]
+@="\\"${argv[0].replace(/\\/g, "\\\\")}\\" ${is_dev ? "\\\".\\\" " : ""}\\"%1\\""
 `; // oof \\\\
 var reg_file_path = path.join(is_dev ? "." : path.dirname(argv[0]), `set-jspaint${is_dev ? "-DEV-MODE" : ""}-as-default-image-editor.reg`);
 if(process.platform == "win32" && !is_dev){
