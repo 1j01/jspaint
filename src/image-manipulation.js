@@ -178,7 +178,8 @@ function bresenham_line(x1, y1, x2, y2, callback){
 	var sy = (y1 < y2) ? 1 : -1;
 	var err = dx - dy;
 	
-	while(1){
+	// eslint-disable-next-line no-constant-condition
+	while(true){
 		callback(x1, y1);
 		
 		if(x1===x2 && y1===y2) break;
@@ -198,7 +199,8 @@ function brosandham_line(x1, y1, x2, y2, callback){
 	var sy = (y1 < y2) ? 1 : -1;
 	var err = dx - dy;
 	
-	while(1){
+	// eslint-disable-next-line no-constant-condition
+	while(true){
 		callback(x1, y1);
 		
 		if(x1===x2 && y1===y2) break;
@@ -252,6 +254,7 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 		}
 		reach_left = false;
 		reach_right = false;
+		// eslint-disable-next-line no-constant-condition
 		while(true){
 			y++;
 			pixel_pos = (y*c_width + x) * 4;

@@ -143,10 +143,11 @@ window.systemSetAsWallpaperCentered = function(c){
 
 	// TODO: implement centered option for Windows and Linux in https://www.npmjs.com/package/wallpaper
 	// currently it's only supported on macOS
+	var wallpaperCanvas;
 	if(process.platform === "darwin"){
-		var wallpaperCanvas = c;
+		wallpaperCanvas = c;
 	}else{
-		var wallpaperCanvas = new Canvas(screen.width, screen.height);
+		wallpaperCanvas = new Canvas(screen.width, screen.height);
 		var x = (screen.width - c.width) / 2;
 		var y = (screen.height - c.height) / 2;
 		wallpaperCanvas.ctx.drawImage(c, ~~x, ~~y);
