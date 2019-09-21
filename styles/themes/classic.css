@@ -20,8 +20,9 @@
 	image-rendering: pixelated;
 	image-rendering: -moz-crisp-edges;
 	/* only works on macOS, and not on a standards track: */
-	font-smooth: none;
-	-webkit-font-smoothing: none;
+	/* font-smooth: none;
+	-webkit-font-smoothing: none; */
+	/* also may cause the text to be completely unreadable https://github.com/1j01/jspaint/issues/130 */
 }
 .selection:after,
 .textbox:after {
