@@ -1,6 +1,4 @@
 
-var is_electron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
-
 var menus = {
 	"&File": [
 		{

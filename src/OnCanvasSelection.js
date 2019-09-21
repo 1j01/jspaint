@@ -141,7 +141,7 @@ OnCanvasSelection.prototype.cut_out_background = function(){
 		// NOTE: must come before cutout canvas is modified
 		var colored_cutout = new Canvas(cutout);
 		replace_colors_with_swatch(colored_cutout.ctx, colors.background, sel.x, sel.y);
-		var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, sel.width, sel.height);
+		// var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, sel.width, sel.height);
 	// }
 
 	for(var i=0; i<cutoutImageData.data.length; i+=4){
