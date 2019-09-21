@@ -668,7 +668,7 @@ async function edit_copy(execCommandFallback){
 			]).then(function(){
 				console.log("Copied image to the clipboard");
 			}, function(error){
-				show_error_message();
+				show_error_message("Failed to copy to the Clipboard.", error);
 			});
 		});
 	});
