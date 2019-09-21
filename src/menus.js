@@ -519,14 +519,14 @@ $menu_bar.on("default-info", function(e){
 });
 
 var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
-// if localStorage is not avaiable, the default setting is visible
+// if localStorage is not available, the default setting is visible
 var extras_menu_should_start_visible = true;
 try{
-	// if localStorage is avaiable, the default setting is invisible
+	// if localStorage is available, the default setting is invisible (for now)
 	// TODO: refactor shared key string
-	extras_menu_should_start_visible = localStorage["jspaint extras menu visible"] != "true"
+	extras_menu_should_start_visible = localStorage["jspaint extras menu visible"] == "true"
 // eslint-disable-next-line no-empty
 }catch(e){}
-if(extras_menu_should_start_visible){
+if(!extras_menu_should_start_visible){
 	$extras_menu_button.hide();
 }
