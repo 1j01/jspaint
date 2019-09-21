@@ -94,6 +94,7 @@ function manage_storage(){
 	}
 
 	if (!localStorageAvailable) {
+		// TODO: DRY with similar message
 		// TODO: instructions for your browser; it's called Cookies in chrome/chromium at least, and "storage" gives NO results
 		$message.html("<p>Please enable local storage in your browser's settings for local backup. It's may be called Cookies, Storage, or Site Data.</p>");
 	} else if($table.find("tr").length == 0) {
