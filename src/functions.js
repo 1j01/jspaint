@@ -798,13 +798,12 @@ function view_bitmap(){
 }
 
 function get_tool_by_name(name){
-	for(var i=0; i<tools.length; i++){
+	for(let i=0; i<tools.length; i++){
 		if(tools[i].name == name){
 			return tools[i];
 		}
 	}
-	// eslint-disable-next-line no-redeclare
-	for(var i=0; i<extra_tools.length; i++){
+	for(let i=0; i<extra_tools.length; i++){
 		if(extra_tools[i].name == name){
 			return extra_tools[i];
 		}
@@ -920,14 +919,12 @@ function make_monochrome_palette(){
 	var palette = [];
 	var n_colors_per_row = 14;
 	var n_colors = n_colors_per_row * 2;
-	for(var i=0; i<n_colors_per_row; i++){
-		var lightness = i / n_colors;
+	for(let i=0; i<n_colors_per_row; i++){
+		let lightness = i / n_colors;
 		palette.push(make_monochrome_pattern(lightness));
 	}
-	// eslint-disable-next-line no-redeclare
-	for(var i=0; i<n_colors_per_row; i++){
-		// eslint-disable-next-line no-redeclare
-		var lightness = 1 - i / n_colors;
+	for(let i=0; i<n_colors_per_row; i++){
+		let lightness = 1 - i / n_colors;
 		palette.push(make_monochrome_pattern(lightness));
 	}
 

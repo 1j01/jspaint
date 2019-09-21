@@ -211,7 +211,7 @@ function brosandham_line(x1, y1, x2, y2, callback){
 	}
 }
 
-function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
+function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	
 	// TODO: split up processing in case it takes too long?
 	// progress bar and abort button (outside of image-manipulation.js)
@@ -222,7 +222,7 @@ function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	// maybe do something fancier like special-casing large chunks of single-color image
 	// (octree? or just have a higher level stack of chunks to fill and check at if a chunk is homogeneous)
 
-	var stack = [[x, y]];
+	var stack = [[start_x, start_y]];
 	var c_width = canvas.width;
 	var c_height = canvas.height;
 	var id = ctx.getImageData(0, 0, c_width, c_height);
@@ -775,7 +775,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 		gl.viewport(0, 0, op_canvas_webgl.width, op_canvas_webgl.height);
 
 		var coords = new Float32Array(numCoords);
-		for (var i = 0; i < numPoints; i++) {
+		for (let i = 0; i < numPoints; i++) {
 			coords[i*2+0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
 			coords[i*2+1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
 			// TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
@@ -784,7 +784,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 		if(fill){
 			var contours = [coords];
 			var polyTriangles = triangulate(contours);
-			var numVertices = initArrayBuffer(polyTriangles);
+			let numVertices = initArrayBuffer(polyTriangles);
 			gl.clear(gl.COLOR_BUFFER_BIT);
 			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 
@@ -799,21 +799,21 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 			if(stroke_size > 1){
 				var stroke_margin = ~~(stroke_size * 1.1);
 
-				var x = x_min - stroke_margin;
-				var y = y_min - stroke_margin;
+				var op_canvas_x = x_min - stroke_margin;
+				var op_canvas_y = y_min - stroke_margin;
 
 				op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
 				op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
-				for (var i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
+				for (let i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
 					var point_a = points[i];
 					var point_b = points[(i + 1) % numPoints];
 					// Note: update_brush_for_drawing_lines way above
 					draw_line_without_pattern_support(
 						op_ctx_2d,
-						point_a.x - x,
-						point_a.y - y,
-						point_b.x - x,
-						point_b.y - y,
+						point_a.x - op_canvas_x,
+						point_a.y - op_canvas_y,
+						point_b.x - op_canvas_x,
+						point_b.y - op_canvas_y,
 						stroke_size
 					);
 				}
@@ -821,7 +821,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 				replace_colors_with_swatch(op_ctx_2d, stroke_color, x, y);
 				ctx.drawImage(op_canvas_2d, x, y);
 			}else{
-				var numVertices = initArrayBuffer(coords);
+				let numVertices = initArrayBuffer(coords);
 				gl.clear(gl.COLOR_BUFFER_BIT);
 				gl.drawArrays(close_path ? gl.LINE_LOOP : gl.LINE_STRIP, 0, numVertices);
 
