@@ -28,7 +28,7 @@ var fill_color_k = 0;
 
 var selected_tool = tools[6];
 var selected_tools = [selected_tool];
-var previous_tool = selected_tool;
+var return_to_tools = [selected_tool];
 var colors = {
 	foreground: "",
 	background: "",
@@ -574,9 +574,9 @@ $canvas.on("pointerdown", function(e){
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
 			}
 			if (selected_tools.length === 1) {
-			if(selected_tool.deselect){
-				select_tool(previous_tool);
-			}
+				if (selected_tool.deselect) {
+					select_tools(return_to_tools);
+				}
 			}
 			$G.off("pointermove", canvas_pointer_move);
 			if(iid){

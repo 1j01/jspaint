@@ -38,7 +38,7 @@ function $ToolBox(tools, is_extras){
 				return;
 			}
 			if(selected_tool === tool && tool.deselect){
-				select_tool(previous_tool);
+				select_tools(return_to_tools);
 			}else{
 				select_tool(tool);
 			}

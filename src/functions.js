@@ -775,9 +775,17 @@ function get_tool_by_name(name){
 	}
 }
 
+// hacky but whatever
+// this whole "multiple tools" thing is hacky for now
+function select_tools(tools) {
+	for (var i=0; i<tools.length; i++) {
+		select_tool(tools[i], i > 0);
+	}
+}
+
 function select_tool(tool, toggle){
-	if(!selected_tool.deselect){
-		previous_tool = selected_tool;
+	if(!(selected_tools.length === 1 && selected_tool.deselect)){
+		return_to_tools = [...selected_tools];
 	}
 	if (toggle) {
 		var index = selected_tools.indexOf(tool);
