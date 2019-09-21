@@ -355,27 +355,11 @@ $G.on("cut copy paste", function(e){
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
 			var do_sync_clipboard_copy_or_cut = function() {
-				if(window.require && window.process){
-					// TODO: remove special electron handling for clipboard stuff if I can upgrade to a version that supports the async clipboard API with images
-					const {clipboard, nativeImage} = require('electron');
-					selection.canvas.toBlob(function(blob){
-						sanity_check_blob(blob, function(){
-							blob_to_buffer(blob, function(err, buffer){
-								if(err){
-									return show_error_message("Failed to copy to clipboard! (Technically, failed to convert a Blob to a Buffer.)", err);
-								}
-								var native_image = nativeImage.createFromBuffer(buffer);
-								clipboard.writeImage(native_image);
-							});
-						});
-					});
-				} else {
-					// works only for pasting within a jspaint instance
-					var data_url = selection.canvas.toDataURL();
-					cd.setData("text/x-data-uri; type=image/png", data_url);
-					cd.setData("text/uri-list", data_url);
-					cd.setData("URL", data_url);
-				}
+				// works only for pasting within a jspaint instance
+				var data_url = selection.canvas.toDataURL();
+				cd.setData("text/x-data-uri; type=image/png", data_url);
+				cd.setData("text/uri-list", data_url);
+				cd.setData("URL", data_url);
 				if(e.type === "cut"){
 					delete_selection();
 				}
