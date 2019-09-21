@@ -824,22 +824,21 @@ function select_tool(tool, toggle){
 	// $toolbox2.update_selected_tool();
 }
 
-// TODO: factor this into a simple (pure) function, to be used like:
-// transparency = has_any_transparency(ctx);
-function detect_transparency(){
-	transparency = false;
-
+function has_any_transparency(ctx) {
 	// @TODO Optimization: Assume JPEGs and some other file types are opaque.
 	// Raster file formats that SUPPORT transparency include GIF, PNG, BMP and TIFF
 	// (Yes, even BMPs support transparency!)
-
 	var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	for(var i=0, l=id.data.length; i<l; i+=4){
 		if(id.data[i+3] < 255){
-			transparency = true;
-			return;
+			return true;
 		}
 	}
+	return false;
+}
+
+function detect_transparency(){
+	transparency = has_any_transparency(ctx);
 }
 
 function make_monochrome_pattern(lightness){
