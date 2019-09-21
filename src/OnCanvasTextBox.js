@@ -9,10 +9,7 @@ function OnCanvasTextBox(x, y, width, height){
 	
 	var update = function(){
 		font.color = colors.foreground;
-		font.background = ({
-			transparent: "transparent",
-			opaque: colors.background,
-		}[transparent_opaque]);
+		font.background = tool_transparent_mode ? "transparent" : colors.background;
 		
 		tb.$editor.css({
 			fontFamily: font.family,

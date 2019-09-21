@@ -107,7 +107,7 @@ tools = [{
 		selection.instantiate(contents_within_polygon);
 		selection.cut_out_background();
 	},
-	$options: $choose_transparency
+	$options: $choose_transparent_mode
 }, {
 	name: "Select",
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
@@ -164,7 +164,7 @@ tools = [{
 		selection.destroy();
 		selection = null;
 	},
-	$options: $choose_transparency
+	$options: $choose_transparent_mode
 }, {
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
@@ -413,7 +413,7 @@ tools = [{
 		textbox.destroy();
 		textbox = null;
 	},
-	$options: $choose_transparency
+	$options: $choose_transparent_mode
 }, {
 	name: "Line",
 	description: "Draws a straight line with the selected line width.",

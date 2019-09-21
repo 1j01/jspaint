@@ -342,15 +342,11 @@ var menus = {
 			item: "&Draw Opaque",
 			checkbox: {
 				toggle: function(){
-					transparent_opaque = {
-						"opaque": "transparent",
-						"transparent": "opaque",
-					}[transparent_opaque];
-
+					tool_transparent_mode = !tool_transparent_mode;
 					$G.trigger("option-changed");
 				},
 				check: function(){
-					return transparent_opaque === "opaque";
+					return !tool_transparent_mode;
 				},
 			},
 			description: "Makes the current selection either opaque or transparent.",

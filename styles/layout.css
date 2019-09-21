@@ -13,7 +13,7 @@ html, body, .jspaint {
 .choose-eraser,
 .choose-magnification,
 .choose-stroke-size,
-.choose-transparency {
+.choose-transparent-mode {
 	flex-flow: column;
 	align-items: center;
 	justify-content: space-around;

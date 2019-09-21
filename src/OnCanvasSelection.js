@@ -5,7 +5,7 @@ function OnCanvasSelection(x, y, width, height){
 	
 	sel.$el.addClass("selection");
 
-	var last_transparent_opaque_option = transparent_opaque;
+	var last_tool_transparent_mode = tool_transparent_mode;
 	var last_background_color = colors.background;
 
 	this._on_option_changed = function(){
@@ -13,12 +13,12 @@ function OnCanvasSelection(x, y, width, height){
 			return;
 		}
 		if(
-			last_transparent_opaque_option !== transparent_opaque ||
+			last_tool_transparent_mode !== tool_transparent_mode ||
 			last_background_color !== colors.background
 		){
-			last_transparent_opaque_option = transparent_opaque;
+			last_tool_transparent_mode = tool_transparent_mode;
 			last_background_color = colors.background;
-			sel.update_transparent_opaque();
+			sel.update_tool_transparent_mode();
 		}
 	};
 	$G.on("option-changed", this._on_option_changed);
@@ -136,7 +136,7 @@ OnCanvasSelection.prototype.cut_out_background = function(){
 
 	// TODO: could simplify by making the later (shared) condition just if(colored_cutout){}
 	// but might change how it works anyways so whatever
-	// if(!transparency){ // now if !transparency or if transparent_opaque == "transparent"
+	// if(!transparency){ // now if !transparency or if tool_transparent_mode
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
 		var colored_cutout = new Canvas(cutout);
@@ -165,24 +165,24 @@ OnCanvasSelection.prototype.cut_out_background = function(){
 	ctx.putImageData(canvasImageData, sel.x, sel.y);
 	cutout.ctx.putImageData(cutoutImageData, 0, 0);
 
-	sel.update_transparent_opaque();
+	sel.update_tool_transparent_mode();
 
-	// NOTE: in case you want to use the transparent_opaque=="transparent" mode
+	// NOTE: in case you want to use the tool_transparent_mode
 	// in a document with transparency (for an operation in an area where there's a local background color)
 	// (and since currently switching to the opaque document mode makes the image opaque)
 	// (and it would be complicated to make it update the canvas when switching tool options (as opposed to just the selection))
-	// I'm having it use the transparent_opaque option here, so you could at least choose beforehand
+	// I'm having it use the tool_transparent_mode option here, so you could at least choose beforehand
 	// (and this might actually give you more options, although it could be confusingly inconsistent)
 	// FIXME: yeah, this is confusing; if you have both transparency modes on and you try to clear an area to transparency, it doesn't work
 	// and there's no indication that you should try the other selection transparency mode,
 	// and even if you do, if you do it after creating a selection, it still won't work,
 	// because you will have already *not cut out* the selection from the canvas
-	if(!transparency || transparent_opaque=="transparent"){
+	if(!transparency || tool_transparent_mode){
 		ctx.drawImage(colored_cutout, sel.x, sel.y);
 	}
 };
 
-OnCanvasSelection.prototype.update_transparent_opaque = function(){
+OnCanvasSelection.prototype.update_tool_transparent_mode = function(){
 	var sel = this;
 
 	var sourceImageData = sel.source_canvas.ctx.getImageData(0, 0, sel.width, sel.height);
@@ -195,7 +195,7 @@ OnCanvasSelection.prototype.update_transparent_opaque = function(){
 
 	for(var i=0; i<cutoutImageData.data.length; i+=4){
 		var in_cutout = sourceImageData.data[i+3] > 0;
-		if(transparent_opaque == "transparent"){
+		if(tool_transparent_mode){
 			// FIXME: work with transparent selected background color
 			// (support treating partially transparent background colors as transparency)
 			if(
@@ -256,7 +256,7 @@ OnCanvasSelection.prototype.replace_source_canvas = function(new_source_canvas){
 	sel.$el.triggerHandler("new-element", [sel.canvas]);
 	sel.$el.triggerHandler("resize");//?
 
-	sel.update_transparent_opaque();
+	sel.update_tool_transparent_mode();
 };
 
 OnCanvasSelection.prototype.resize = function(){
