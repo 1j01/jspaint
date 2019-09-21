@@ -1,4 +1,6 @@
 
+// TODO: make menus not take focus so we can support copy/pasting text in the text tool textarea from the menus
+
 $MenuBar.DIVIDER = "DIVIDER";
 
 function $MenuBar(menus){

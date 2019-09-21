@@ -648,30 +648,58 @@ function try_exec_command(commandId) {
 		return show_error_message(`Cannot perform ${commandId}. ${browserRecommendationForClipboardAccess}`);
 	}
 }
+
+function getSelectionText() {
+    var text = "";
+    var activeEl = document.activeElement;
+    var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
+    if (
+      (activeElTagName == "textarea") || (activeElTagName == "input" &&
+      /^(?:text|search|password|tel|url)$/i.test(activeEl.type)) &&
+      (typeof activeEl.selectionStart == "number")
+    ) {
+        text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
+    } else if (window.getSelection) {
+        text = window.getSelection().toString();
+    }
+    return text;
+}
+
 async function edit_copy(execCommandFallback){
-	// TODO: handle copying text (textarea or otherwise) w/ navigator.clipboard.writeText
-	if (!navigator.clipboard || !navigator.clipboard.write) {
-		if (execCommandFallback) {
-			return try_exec_command("copy");
-		} else {
-			throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+	var text = getSelectionText();
+
+	if (text.length > 0) {
+		if (!navigator.clipboard || !navigator.clipboard.writeText) {
+			if (execCommandFallback) {
+				return try_exec_command("copy");
+			} else {
+				throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+			}
 		}
-	}
-	
-	selection.canvas.toBlob(function(blob) {
-		sanity_check_blob(blob, function(){
-			navigator.clipboard.write([
-				new ClipboardItem(Object.defineProperty({}, blob.type, {
-					value: blob,
-					enumerable: true,
-				}))
-			]).then(function(){
-				console.log("Copied image to the clipboard");
-			}, function(error){
-				show_error_message("Failed to copy to the Clipboard.", error);
+		navigator.clipboard.writeText(text);
+	} else if(selection && selection.canvas) {
+		if (!navigator.clipboard || !navigator.clipboard.write) {
+			if (execCommandFallback) {
+				return try_exec_command("copy");
+			} else {
+				throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+			}
+		}
+		selection.canvas.toBlob(function(blob) {
+			sanity_check_blob(blob, function(){
+				navigator.clipboard.write([
+					new ClipboardItem(Object.defineProperty({}, blob.type, {
+						value: blob,
+						enumerable: true,
+					}))
+				]).then(function(){
+					console.log("Copied image to the clipboard");
+				}, function(error){
+					show_error_message("Failed to copy to the Clipboard.", error);
+				});
 			});
 		});
-	});
+	}
 }
 function edit_cut(execCommandFallback){
 	if (!navigator.clipboard || !navigator.clipboard.write) {
@@ -685,7 +713,21 @@ function edit_cut(execCommandFallback){
 	delete_selection();
 }
 async function edit_paste(execCommandFallback){
-	// TODO: support pasting text, with navigator.clipboard.readText
+	if(
+		document.activeElement instanceof HTMLInputElement ||
+		document.activeElement instanceof HTMLTextAreaElement
+	){
+		if (!navigator.clipboard || !navigator.clipboard.readText) {
+			if (execCommandFallback) {
+				return try_exec_command("paste");
+			} else {
+				throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+			}
+		}
+		const clipboardText = await navigator.clipboard.readText();
+		document.execCommand("InsertText", false, clipboardText);
+		return;
+	}
 	if (!navigator.clipboard || !navigator.clipboard.read) {
 		if (execCommandFallback) {
 			return try_exec_command("paste");
@@ -701,15 +743,9 @@ async function edit_paste(execCommandFallback){
 		console.log("Image pasted.");
 	} catch(error) {
 		if (error.name === "NotFoundError") {
-			// TODO: support pasting text into textarea like with the text tool
 			try {
 				const clipboardText = await navigator.clipboard.readText();
-				if(
-					document.activeElement instanceof HTMLInputElement ||
-					document.activeElement instanceof HTMLTextAreaElement
-				){
-					document.execCommand("InsertText", false, clipboardText);
-				} else if(clipboardText) {
+				if(clipboardText) {
 					var uris = get_URIs(clipboardText);
 					if (uris.length > 0) {
 						load_image_from_URI(uris[0], function(err, img){
