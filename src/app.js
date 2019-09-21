@@ -573,7 +573,7 @@ $canvas.on("pointerdown", function(e){
 				pointer = e2c(e);
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
 			}
-			if (selected_tools.length === 0) {
+			if (selected_tools.length === 1) {
 			if(selected_tool.deselect){
 				select_tool(previous_tool);
 			}
