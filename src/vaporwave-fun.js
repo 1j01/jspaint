@@ -1,5 +1,5 @@
 (function () {
-	var rAF_ID, rotologo, $window, space_phase_key_handler, player;
+	var rAF_ID, rotologo, $window, space_phase_key_handler, player, player_placeholder;
 	var vaporwave_active = false;
 
 	if (parent && frameElement && parent.$) {
@@ -37,6 +37,8 @@
 			player.destroy();
 			player = null;
 		}
+		$(player_placeholder).remove();
+
 		// vaporwave is dead. long live vaporwave.
 		// bepis pepsi isded pepsi isded
 	};
@@ -106,7 +108,7 @@
 		};
 		animate();
 
-		var player_placeholder = document.createElement("div");
+		player_placeholder = document.createElement("div");
 		document.querySelector(".canvas-area").appendChild(player_placeholder);
 		$(player_placeholder).css({
 			position: "absolute",
