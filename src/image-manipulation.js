@@ -226,7 +226,7 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	var c_width = canvas.width;
 	var c_height = canvas.height;
 	var id = ctx.getImageData(0, 0, c_width, c_height);
-	pixel_pos = (y*c_width + x) * 4;
+	pixel_pos = (start_y*c_width + start_x) * 4;
 	var start_r = id.data[pixel_pos+0];
 	var start_g = id.data[pixel_pos+1];
 	var start_b = id.data[pixel_pos+2];
