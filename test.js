@@ -73,7 +73,7 @@ casper.test.begin('jspaint visual tests', function(test){
 			);
 		});
 		// casper.thenEvaluate(function(selector){
-		// 	$(selector).find(".window-close-button").click();
+		// 	$(selector).find(".window-close-button").trigger("click");
 		// }, selector);
 		casper.then(function close_the_window(){
 			casper.click(selector + " .window-close-button");

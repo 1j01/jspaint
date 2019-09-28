@@ -55,7 +55,7 @@ function create_and_trigger_input(attrs, callback){
 		})
 		.appendTo($app)
 		.hide()
-		.click();
+		.trigger("click");
 	return $input;
 }
 
@@ -214,12 +214,12 @@ function file_load_from_url(){
 		} else {
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}
-	}).focus();
+	});
 	$w.$Button("Cancel", function(){
 		$w.close();
 	});
 	$w.center();
-	$input.focus();
+	$input[0].focus();
 }
 
 function file_save(){
@@ -263,7 +263,7 @@ function are_you_sure(action, canceled){
 			$w.close();
 			file_save();
 			action();
-		}).focus();
+		})[0].focus();
 		$w.$Button("Discard", function(){
 			$w.close();
 			action();
@@ -390,7 +390,7 @@ function paste(img){
 				do_the_paste();
 				$canvas_area.trigger("resize");
 			});
-		}).focus();
+		})[0].focus();
 		$w.$Button("Crop", function(){
 			$w.close();
 			do_the_paste();
@@ -558,7 +558,7 @@ function undoable(callback, action){
 			$w.close();
 			redos = [];
 			action && action();
-		}).focus();
+		})[0].focus();
 		$w.$Button("Keep", function(){
 			$w.close();
 		});
@@ -1035,7 +1035,7 @@ function image_attributes(){
 		$canvas.trigger("user-resized", [0, 0, ~~width, ~~height]);
 
 		image_attributes.$window.close();
-	}).focus();
+	})[0].focus();
 
 	$w.$Button("Cancel", function(){
 		image_attributes.$window.close();
@@ -1083,7 +1083,10 @@ function image_flip_and_rotate(){
 
 		var $label = $(this).closest("label");
 		// Focus the numerical input if this field has one
-		$label.find("input[type='number']").focus();
+		var num_input = $label.find("input[type='number']")[0];
+		if (num_input) {
+			num_input.focus();
+		}
 		// Select the radio for this field
 		$label.find("input[type='radio']").prop("checked", true);
 	});
@@ -1124,7 +1127,7 @@ function image_flip_and_rotate(){
 		$canvas_area.trigger("resize");
 
 		$w.close();
-	}).focus();
+	})[0].focus();
 	$w.$Button("Cancel", function(){
 		$w.close();
 	});
@@ -1173,7 +1176,7 @@ function image_stretch_and_skew(){
 		stretch_and_skew(xscale, yscale, hskew, vskew);
 		$canvas_area.trigger("resize");
 		$w.close();
-	}).focus();
+	})[0].focus();
 
 	$w.$Button("Cancel", function(){
 		$w.close();

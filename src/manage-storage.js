@@ -61,7 +61,7 @@ function manage_storage(){
 		$(E("td")).append($open_link).appendTo($tr);
 		$(E("td")).append($remove).appendTo($tr);
 		
-		$remove.click(function(){
+		$remove.on("click", function(){
 			localStorage.removeItem(k);
 			$tr.remove();
 			if($table.find("tr").length == 0){

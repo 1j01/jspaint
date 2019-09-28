@@ -181,7 +181,7 @@ function $Component(name, orientation, $el){
 	};
 	
 	$c.show = function(){
-		$($c[0]).show();
+		$($c[0]).show(); // avoid recursion
 		if($.contains($w[0], $c[0])){
 			$w.show();
 		}

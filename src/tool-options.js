@@ -37,7 +37,7 @@ var ChooserCanvas = function(
 			c.ctx.putImageData(id, 0, 0);
 		}
 	};
-	$(img).load(render);
+	$(img).on("load", render);
 	render();
 	return c;
 };

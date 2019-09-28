@@ -70,7 +70,7 @@ function $MenuBar(menus){
 				});
 				$item.on("pointerover", function(){
 					$menu_popup.triggerHandler("update");
-					$item.focus();
+					$item[0].focus();
 				});
 				
 				if(item.checkbox){
@@ -104,7 +104,7 @@ function $MenuBar(menus){
 						open_tid = setTimeout(open_submenu, 200);
 					});
 					$item.add($submenu_popup).on("pointerout", function(){
-						$menu_popup.closest(".menu-container").find(".menu-button").focus();
+						$menu_popup.closest(".menu-container").find(".menu-button")[0].focus();
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 						close_tid = setTimeout(function(){
@@ -141,7 +141,11 @@ function $MenuBar(menus){
 				$item.on("pointerout", function(){
 					if($item.is(":visible")){
 						$menus.triggerHandler("info", "");
-						$menu_popup.closest(".menu-container").find(".menu-button").focus();
+						// may not exist for submenu popups
+						var menu_button = $menu_popup.closest(".menu-container").find(".menu-button")[0];
+						if(menu_button){
+							menu_button.focus();
+						}
 					}
 				});
 				
@@ -161,7 +165,7 @@ function $MenuBar(menus){
 					}
 					if(String.fromCharCode(e.keyCode) === _hotkey(item.item)){
 						e.preventDefault();
-						$item.click();
+						$item.trogger("click");
 					}
 				});
 			}
@@ -203,8 +207,8 @@ function $MenuBar(menus){
 					break;
 				case 39: // Right
 					if($focused_item.find(".menu-item-submenu-area:not(:empty)").length){
-						$focused_item.click();
-						$(".menu-popup .menu-item").first().focus();
+						$focused_item.trigger("click");
+						$(".menu-popup .menu-item")[0].focus(); // first item
 						e.preventDefault();
 					}else{
 						$menu_container.next().find(".menu-button").trigger("pointerdown");
@@ -216,10 +220,10 @@ function $MenuBar(menus){
 						while($next.length && !$next.is(".menu-item")){
 							$next = $next.next();
 						}
-						$next.focus();
+						$next[0].focus();
 					}else{
 						$menu_button.trigger("pointerdown");
-						$menu_popup.find(".menu-item").first().focus();
+						$menu_popup.find(".menu-item")[0].focus(); // first item
 					}
 					break;
 				case 38: // Up
@@ -228,10 +232,10 @@ function $MenuBar(menus){
 						while($prev.length && !$prev.is(".menu-item")){
 							$prev = $prev.prev();
 						}
-						$prev.focus();
+						$prev[0].focus();
 					}else{
 						$menu_button.trigger("pointerdown"); // or maybe do nothing?
-						$menu_popup.find(".menu-item").last().focus();
+						$menu_popup.find(".menu-item").last()[0].focus();
 					}
 					break;
 			}
@@ -262,7 +266,7 @@ function $MenuBar(menus){
 			
 			close_menus();
 			
-			$menu_button.focus();
+			$menu_button[0].focus();
 			$menu_button.addClass("active");
 			$menu_popup.show();
 			$menu_popup.triggerHandler("update");

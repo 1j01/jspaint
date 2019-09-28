@@ -79,7 +79,7 @@ OnCanvasTextBox.prototype.instantiate = function(){
 		// this doesn't need to be a seperate function
 		
 		tb.$el.append(tb.$editor);
-		tb.$editor.focus();
+		tb.$editor[0].focus();
 		
 		tb.$handles = $Handles(tb.$el, tb.$editor[0], {outset: 2});
 		

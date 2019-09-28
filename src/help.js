@@ -18,11 +18,11 @@ function show_help(){
 	$iframe.css({backgroundColor: "white"});
 	$help_window.center();
 	
-	var parse_object = function($object){
-		// parse an $(<object>) to an object
+	var parse_object_params = function($object){
+		// parse an $(<object>) to a plain object of key value pairs
 		var object = {};
 		$object.children("param").each(function(i, param){
-			object[$(param).attr("name")] = $(param).attr("value");
+			object[param.name] = param.value;
 		});
 		return object;
 	};
@@ -49,7 +49,7 @@ function show_help(){
 	};
 	
 	var $default_item_li = $(E("li")).addClass("page");
-	$default_item_li.append($Item("Welcome to Help").click(function(e){
+	$default_item_li.append($Item("Welcome to Help").on("click", function(e){
 		$iframe.attr({src: "help/default.html"});
 	}));
 	$contents.append($default_item_li);
@@ -57,7 +57,7 @@ function show_help(){
 	$.get("help/mspaint.hhc", function(hhc){
 		$($.parseHTML(hhc)).filter("ul").children().each(function(i, li){
 			
-			var object = parse_object($(li).children("object"));
+			var object = parse_object_params($(li).children("object"));
 			
 			var $folder_li = $(E("li")).addClass("folder");
 			$folder_li.append($Item(object.Name));
@@ -67,9 +67,9 @@ function show_help(){
 			$folder_li.append($folder_items_ul);
 			
 			$(li).children("ul").children().each(function(i, li){
-				var object = parse_object($(li).children("object"));
+				var object = parse_object_params($(li).children("object"));
 				var $item_li = $(E("li")).addClass("page");
-				$item_li.append($Item(object.Name).click(function(e){
+				$item_li.append($Item(object.Name).on("click", function(e){
 					$iframe.attr({src: "help/" + object.Local});
 				}));
 				$folder_items_ul.append($item_li);

@@ -48,7 +48,7 @@ function $Window($component){
 			case 39: // Right
 				if($focused.is("button")){
 					if(focused_index < $buttons.length - 1){
-						$buttons.get(focused_index + 1).focus();
+						$buttons[focused_index + 1].focus();
 						e.preventDefault();
 					}
 				}
@@ -57,7 +57,7 @@ function $Window($component){
 			case 37: // Left
 				if($focused.is("button")){
 					if(focused_index > 0){
-						$buttons.get(focused_index - 1).focus();
+						$buttons[focused_index - 1].focus();
 						e.preventDefault();
 					}
 				}
@@ -205,7 +205,7 @@ function $FormWindow(title){
 		});
 		
 		$b.on("pointerdown", function(){
-			$b.focus();
+			$b[0].focus();
 		});
 		
 		return $b;
