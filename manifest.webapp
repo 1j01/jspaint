@@ -8,7 +8,7 @@
 	"start_url": ".",
 	"lang": "en-US",
 	"theme_color": "#008080",
-	"background_color": "#7b7b7b",
+	"background_color": "#008080",
 	"screenshots": [
 		{
 			"src": "images/meta/main-screenshot.png",
@@ -55,6 +55,11 @@
 		{
 			"src": "images/icons/android-icon-192x192.png",
 			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "images/icons/512.png",
+			"sizes": "512x512",
 			"type": "image/png"
 		}
 	]
