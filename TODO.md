@@ -1,5 +1,5 @@
 
-# ![](images/icons/32.png) JS Paint Todo
+# ![](images/icons/32x32.png) JS Paint Todo
 
 ### Help
 
