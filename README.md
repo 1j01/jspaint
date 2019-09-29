@@ -169,8 +169,8 @@ I want to make JS Paint to be able to edit...
 	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
 	* [x] Color Replacement (right mouse button with Eraser to selectively replace the foreground color with the background color)
 	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
-	* [ ] Quick Undo (Pressing a second mouse button cancels the action you were performing.
-	      I also made it redoable, in case you do it by accident! But [it broke at some point in Chrome.](https://github.com/1j01/jspaint/issues/9))
+	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing.
+	      I also made it redoable, in case you do it by accident!)
 	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
 
 

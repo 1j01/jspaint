@@ -472,10 +472,14 @@ function canvas_pointer_move(e){
 	ctrl = e.ctrlKey;
 	shift = e.shiftKey;
 	pointer = e2c(e);
-	if(pointer_was_pressed && e.button != -1){
+	
+	// Quick Undo
+	// (Note: pointermove also occurs when the set of buttons pressed changes,
+	// except when another event would fire like pointerdown)
+	if(pointer_active && e.button != -1){
 		if(e.pointerType != pointer_type){
 			// Different input devices
-			pointer_was_pressed = false;
+			pointer_active = false;
 			cancel();
 			return;
 		}
@@ -484,7 +488,7 @@ function canvas_pointer_move(e){
 				// TODO: Handle pen events.
 				// Pen cancel button
 				if(e.buttons & 32){
-					pointer_was_pressed = false;
+					pointer_active = false;
 					cancel();
 					return;
 				}
@@ -495,12 +499,13 @@ function canvas_pointer_move(e){
 			default:
 				// Unknown devices are handled as mouse
 				if((e.buttons & 3) === 3){
-					pointer_was_pressed = false;
+					pointer_active = false;
 					cancel();
 					return;
 				}
 		}
 	}
+
 	if(e.shiftKey){
 		if(selected_tool.name.match(/Line|Curve/)){
 			// snap to eight directions
@@ -543,17 +548,19 @@ $canvas.on("pointerleave", function(e){
 	$status_position.text("");
 });
 
-var pointer_was_pressed = false;
+var pointer_active = false;
 $canvas.on("pointerdown", function(e){
-	if(pointer_was_pressed && (reverse ? (button === 2) : (button === 0))){
-		pointer_was_pressed = false;
+	// Quick Undo when there are multiple pointers (i.e. for touch)
+	// see pointermove for other pointer types
+	if(pointer_active && (reverse ? (button === 2) : (button === 0))){
+		pointer_active = false;
 		cancel();
 		return;
 	}
-	pointer_was_pressed = true;
+	pointer_active = true;
 	pointer_type = e.pointerType;
 	$G.one("pointerup", function(e){
-		pointer_was_pressed = false;
+		pointer_active = false;
 	});
 
 	if(e.button === 0){

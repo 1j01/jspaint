@@ -49,7 +49,6 @@
 
 ### Issues
 
-* ["Quick Undo" stopped working in Chrome](https://github.com/1j01/jspaint/issues/9)
 * [Resizing the canvas or selection is broken when magnified](https://github.com/1j01/jspaint/issues/13)
 * If you open an image it resets the zoom but if you're on the magnification tool it doesn't update the options
 * If you zoom in with the magnifier without previously changing the magnification on the toolbar,
