@@ -14,12 +14,14 @@ body {
 	background-size: 8px;
 }
 
-.canvas-area canvas,
-.selection canvas,
-.selection img {
-	image-rendering: crisp-edges;
-	image-rendering: pixelated;
-	image-rendering: -moz-crisp-edges;
+@media (resolution: 1x), (resolution: 2x), (min-resolution: 3x) {
+	.canvas-area canvas,
+	.selection canvas,
+	.selection img {
+		image-rendering: crisp-edges;
+		image-rendering: pixelated;
+		image-rendering: -moz-crisp-edges;
+	}
 }
 
 .selection:after,
