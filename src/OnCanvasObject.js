@@ -1,13 +1,16 @@
 
-function OnCanvasObject(x, y, width, height){
+function OnCanvasObject(x, y, width, height, hideMainCanvasHandles){
 	this.x = x;
 	this.y = y;
 	this.width = width;
 	this.height = height;
+	this.hideMainCanvasHandles = hideMainCanvasHandles;
 	
 	this.$el = $(E("div")).addClass("on-canvas-object").appendTo($canvas_area);
 	
-	$canvas_handles.hide();
+	if (this.hideMainCanvasHandles) {
+		$canvas_handles.hide();
+	}
 }
 
 OnCanvasObject.prototype.position = function(){
@@ -26,5 +29,7 @@ OnCanvasObject.prototype.position = function(){
 
 OnCanvasObject.prototype.destroy = function(){
 	this.$el.remove();
-	$canvas_handles.show();
+	if (this.hideMainCanvasHandles) {
+		$canvas_handles.show();
+	}
 };

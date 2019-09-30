@@ -2,7 +2,7 @@
 function OnCanvasTextBox(x, y, width, height){
 	var tb = this;
 	
-	OnCanvasObject.call(tb, x, y, width, height);
+	OnCanvasObject.call(tb, x, y, width, height, true);
 	
 	tb.$el.addClass("textbox");
 	tb.$editor = $(E("textarea")).addClass("textbox-editor");

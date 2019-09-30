@@ -1,5 +1,5 @@
-function OnCanvasHelperLayer(x, y, width, height){
-	OnCanvasObject.call(this, x, y, width, height);
+function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles){
+	OnCanvasObject.call(this, x, y, width, height, hideMainCanvasHandles);
 	
 	this.$el.addClass("helper-layer");
 	this.$el.css({

@@ -27,7 +27,7 @@ tools = [{
 		if (tool.helper_layer) {
 			tool.helper_layer.destroy();
 		}
-		tool.helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height);
+		tool.helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, true);
 
 		// End prior selection, drawing it to the canvas
 		deselect();

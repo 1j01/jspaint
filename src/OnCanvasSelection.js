@@ -1,7 +1,7 @@
 
 function OnCanvasSelection(x, y, width, height){
 	var sel = this;
-	OnCanvasObject.call(sel, x, y, width, height);
+	OnCanvasObject.call(sel, x, y, width, height, true);
 	
 	sel.$el.addClass("selection");
 
