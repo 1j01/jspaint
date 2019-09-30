@@ -122,7 +122,8 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 
 		var previous_imagedata = undos[undos.length-1];
 		if(previous_imagedata){
-			ctx.putImageData(previous_imagedata, 0, 0);
+			var temp_canvas = new Canvas(previous_imagedata);
+			ctx.drawImage(temp_canvas, 0, 0);
 		}
 
 		$canvas_area.trigger("resize");

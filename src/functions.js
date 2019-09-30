@@ -1043,6 +1043,7 @@ function image_attributes(){
 		if(monochrome != was_monochrome){
 			if(monochrome){
 				palette = monochrome_palette;
+				// TODO: offer to convert to monochrome (with some threshold) (but don't require it)
 			}else{
 				palette = polychrome_palette;
 			}
