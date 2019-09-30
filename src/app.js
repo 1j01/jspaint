@@ -267,7 +267,9 @@ $G.on("keydown", function(e){
 
 			$G.trigger("option-changed");
 			if(button !== undefined){
-				tool_go();
+				selected_tools.forEach((selected_tool)=> {
+					tool_go(selected_tool);
+				});
 			}
 		}
 		e.preventDefault();
@@ -412,8 +414,7 @@ function e2c(e){
 	};
 }
 
-function tool_go(event_name){
-selected_tools.forEach((selected_tool)=> {
+function tool_go(selected_tool, event_name){
 
 	ctx.lineWidth = stroke_size;
 
@@ -466,7 +467,6 @@ selected_tools.forEach((selected_tool)=> {
 			selected_tool.paint(ctx, pointer.x, pointer.y);
 		}
 	}
-});
 }
 function canvas_pointer_move(e){
 	ctrl = e.ctrlKey;
@@ -537,7 +537,9 @@ function canvas_pointer_move(e){
 			}
 		}
 	}
-	tool_go();
+	selected_tools.forEach((selected_tool)=> {
+		tool_go(selected_tool);
+	});
 	pointer_previous = pointer;
 }
 $canvas.on("pointermove", function(e){
@@ -579,12 +581,12 @@ $canvas.on("pointerdown", function(e){
 	selected_tools.forEach((selected_tool)=> {
 
 		if(selected_tool.paint || selected_tool.pointerdown){
-			tool_go("pointerdown");
+			tool_go(selected_tool, "pointerdown");
 		}
 
 		$G.on("pointermove", canvas_pointer_move);
 		if(selected_tool.continuous === "time"){
-			var iid = setInterval(tool_go, 5);
+			var iid = setInterval(()=> { tool_go(selected_tool); }, 5);
 		}
 		$G.one("pointerup", function(e, canceling){
 			button = undefined;
