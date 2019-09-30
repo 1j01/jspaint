@@ -610,6 +610,11 @@ function draw_grid(ctx, wanted_width, wanted_height) {
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
+function draw_grid_and_tool_previews(ctx, scale_x, scale_y) {
+	// TODO: eraser border goes on top of the grid, fill underneath
+	draw_grid(ctx, scale_x, scale_y);
+}
+
 (function(){
 
 	var tessy = (function initTesselator() {

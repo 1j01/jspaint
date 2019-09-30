@@ -5,14 +5,14 @@ function update_magnified_canvas_size(){
 }
 
 function update_grid() {
-	if (grid) {
-		grid.destroy();
+	if (helper_layer) {
+		helper_layer.destroy();
 	}
 	if (magnification >= 4) {
 		var hiDPI = true;
-		grid = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
+		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
 		var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
-		draw_grid(grid.canvas.ctx, scale, scale);
+		draw_grid_and_tool_previews(helper_layer.canvas.ctx, scale, scale);
 	}
 }
 
