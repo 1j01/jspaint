@@ -611,8 +611,29 @@ function draw_grid(ctx, wanted_width, wanted_height) {
 }
 
 function draw_grid_and_tool_previews(ctx, scale_x, scale_y) {
-	// TODO: eraser border goes on top of the grid, fill underneath
-	draw_grid(ctx, scale_x, scale_y);
+	ctx.save();
+	// ctx.translate();
+	ctx.scale(scale_x, scale_y);
+	selected_tools.forEach((selected_tool)=> {
+		if(selected_tool.drawPreviewUnderGrid){
+			selected_tool.drawPreviewUnderGrid(ctx, pointer.x, pointer.y);
+		}
+	});
+	ctx.restore();
+
+	if (magnification >= 4 && show_grid) {
+		draw_grid(ctx, scale_x, scale_y);
+	}
+
+	ctx.save();
+	// ctx.translate();
+	ctx.scale(scale_x, scale_y);
+	selected_tools.forEach((selected_tool)=> {
+		if(selected_tool.drawPreviewAboveGrid){
+			selected_tool.drawPreviewAboveGrid(ctx, pointer.x, pointer.y);
+		}
+	});
+	ctx.restore();
 }
 
 (function(){

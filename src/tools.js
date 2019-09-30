@@ -183,6 +183,25 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	// @TODO: draw square on canvas as cursor
 	continuous: "space",
+	drawPreviewUnderGrid: function(ctx, x, y) {
+		var rect_x = ~~(x - eraser_size/2);
+		var rect_y = ~~(y - eraser_size/2);
+		var rect_w = eraser_size;
+		var rect_h = eraser_size;
+		
+		ctx.fillStyle = colors.background;
+		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
+	},
+	drawPreviewAboveGrid: function(ctx, x, y) {
+		var rect_x = ~~(x - eraser_size/2);
+		var rect_y = ~~(y - eraser_size/2);
+		var rect_w = eraser_size;
+		var rect_h = eraser_size;
+		
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 1; // TODO: hairline
+		ctx.strokeRect(rect_x+0.5, rect_y+0.5, rect_w-1, rect_h-1); // TODO: hairline
+	},
 	paint: function(ctx, x, y){
 		
 		var rect_x = ~~(x - eraser_size/2);

@@ -8,12 +8,20 @@ function update_grid() {
 	if (helper_layer) {
 		helper_layer.destroy();
 	}
-	if (magnification >= 4 && show_grid) {
-		var hiDPI = true;
+	var hiDPI = true;
+	helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
+	var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
+	draw_grid_and_tool_previews(helper_layer.canvas.ctx, scale, scale);
+}
+function redraw_helper_layer() {
+	var hiDPI = true;
+	if (helper_layer) {
+		helper_layer.canvas.ctx.clearRect(0, 0, helper_layer.canvas.width, helper_layer.canvas.height);
+	} else {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
-		var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
-		draw_grid_and_tool_previews(helper_layer.canvas.ctx, scale, scale);
 	}
+	var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
+	draw_grid_and_tool_previews(helper_layer.canvas.ctx, scale, scale);
 }
 function update_disable_aa() {
 	var dots_per_canvas_px = window.devicePixelRatio * magnification;
