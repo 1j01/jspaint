@@ -29,6 +29,12 @@ OnCanvasSelection.prototype = Object.create(OnCanvasObject.prototype);
 OnCanvasSelection.prototype.instantiate = function(_img, _passive){
 	var sel = this;
 	
+	if (sel.$el.hasClass("instantiated")) {
+		// for silly multitools feature
+		// TODO: select a rectangle minus the polygon, or xor the polygon
+		return;
+	}
+
 	sel.$el.addClass("instantiated").css({
 		cursor: Cursor(["move", [8, 8], "move"])
 	});

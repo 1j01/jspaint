@@ -24,6 +24,9 @@ tools = [{
 		tool.y_min = pointer.y;
 		tool.y_max = pointer.y+1;
 		tool.points = [];
+		if (tool.helper_layer) {
+			tool.helper_layer.destroy();
+		}
 		tool.helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height);
 
 		// End prior selection, drawing it to the canvas
@@ -85,7 +88,7 @@ tools = [{
 	pointerup: function(){
 		this.helper_layer.destroy();
 		this.helper_layer = null;
-		
+
 		var contents_within_polygon = copy_contents_within_polygon(
 			canvas,
 			this.points,
@@ -95,6 +98,13 @@ tools = [{
 			this.y_max
 		);
 		
+		if(selection){
+			// for silly multitools feature
+			// TODO: select a rectangle minus the polygon, or xor the polygon
+			selection.draw();
+			selection.destroy();
+			selection = null;
+		}
 		selection = new OnCanvasSelection(
 			this.x_min,
 			this.y_min,
