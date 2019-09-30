@@ -110,9 +110,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Issues
 		* You get interrupted if you try to make a selection when there's a selection
 		* You get interrupted if you try to draw at the same time as another person (you basically have to take turns - lame!)
-		* Free-form select can leave behind inverty brush
-		(this should be fixed by improving how the selection tools work;
-		the inverty-ness shouldn't be drawn to the main canvas in the first place)
 		* Cursors from other users that go outside the parent can cause the page to be scrollable
 
 

@@ -4,6 +4,9 @@ tools = [{
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	// passive: @TODO,
+
+	// A canvas layer for inverty-brush showing a preview of the shape
+	helper_layer: null, // OnCanvasHelperLayer
 	
 	// The vertices of the polygon
 	points: [],
@@ -21,13 +24,10 @@ tools = [{
 		tool.y_min = pointer.y;
 		tool.y_max = pointer.y+1;
 		tool.points = [];
-		
+		tool.helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height);
+
 		// End prior selection, drawing it to the canvas
 		deselect();
-		// Checkpoint so we can roll back inverty brush
-		// XXX: Shouldn't use the undo stack for this at all!
-		// TODO: Create an OnCanvasObject for the inverty brush, and make selection a passive action
-		undoable();
 
 		// The inverty brush is continuous in space which means
 		// paint(ctx, x, y) will be called for each pixel the pointer moves
@@ -68,11 +68,9 @@ tools = [{
 		var rect_w = inverty_size;
 		var rect_h = inverty_size;
 		
-		var ctx_src = undos[undos.length-1].getContext("2d");//psh
-		
-		// Make two tiny ImageData objects,
-		var id_dest = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
-		var id_src = ctx_src.getImageData(rect_x, rect_y, rect_w, rect_h);
+		var ctx_dest = this.helper_layer.canvas.ctx;
+		var id_src = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+		var id_dest = ctx_dest.getImageData(rect_x, rect_y, rect_w, rect_h);
 		
 		for(var i=0, l=id_dest.data.length; i<l; i+=4){
 			id_dest.data[i+0] = 255 - id_src.data[i+0];
@@ -82,12 +80,11 @@ tools = [{
 			// @TODO maybe: invert based on id_src.data[i+3] and the background
 		}
 		
-		ctx.putImageData(id_dest, rect_x, rect_y);
-		
+		ctx_dest.putImageData(id_dest, rect_x, rect_y);
 	},
 	pointerup: function(){
-		// Revert the inverty brush paint
-		ctx.copy(undos[undos.length-1]);
+		this.helper_layer.destroy();
+		this.helper_layer = null;
 		
 		var contents_within_polygon = copy_contents_within_polygon(
 			canvas,
@@ -106,6 +103,11 @@ tools = [{
 		);
 		selection.instantiate(contents_within_polygon);
 		selection.cut_out_background();
+	},
+	cancel: function(){
+		if(!this.helper_layer){return;}
+		this.helper_layer.destroy();
+		this.helper_layer = null;
 	},
 	$options: $choose_transparent_mode
 }, {

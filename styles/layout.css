@@ -99,7 +99,8 @@ html, body, .jspaint {
 	-moz-box-sizing: border-box;
 }
 .selection > img,
-.selection > canvas {
+.selection > canvas,
+.helper-layer > canvas {
 	width: 100%;
 	height: 100%;
 }

@@ -386,7 +386,7 @@ function paste(img){
 					ctx.fillStyle = colors.background;
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
 				}
-				ctx.drawImage(original, 0, 0);
+				ctx.putImageData(original, 0, 0);
 				do_the_paste();
 				$canvas_area.trigger("resize");
 			});
@@ -474,13 +474,13 @@ function render_history_as_gif(){
 			$win.center();
 		});
 
-		for(var i=0; i<undos.length; i++){
-			gif.addFrame(undos[i], {delay: 200});
+		var gif_canvas = new Canvas(width, height);
+		var frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
+		for(var i=0; i<frames.length; i++){
+			gif_canvas.ctx.clearRect(0, 0, gif_canvas.width, gif_canvas.height);
+			gif_canvas.ctx.putImageData(frames[i], 0, 0);
+			gif.addFrame(gif_canvas, {delay: 200, copy: true});
 		}
-		gif.addFrame(canvas, {
-			delay: 200,
-			copy: true,
-		});
 		gif.render();
 
 	}catch(err){
@@ -514,13 +514,12 @@ function render_history_as_apng(){
 	try{
 		var width = canvas.width;
 		var height = canvas.height;
-		// var frames = undos.concat([canvas]);
+		var frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
 		// var apng = new APNG(frames, {loops: Infinity}, function(blob){
 		var apng = new APNG({loops: Infinity})
-		for(var i=0; i<undos.length; i++){
-			apng.addFrame(undos[i], {delay: 200});
+		for(var i=0; i<frames.length; i++){
+			apng.addFrame(frames[i], {delay: 200});
 		}
-		apng.addFrame(canvas, {delay: 200});
 		apng.render(function(blob){
 			$win.title("Rendered APNG");
 			var url = URL.createObjectURL(blob);
@@ -568,7 +567,7 @@ function undoable(callback, action){
 		redos = [];
 	}
 
-	undos.push(new Canvas(canvas));
+	undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
 	action && action();
 	callback && callback();
@@ -578,7 +577,7 @@ function undo(){
 	if(undos.length<1){ return false; }
 	this_ones_a_frame_changer();
 
-	redos.push(new Canvas(canvas));
+	redos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
 	ctx.copy(undos.pop());
 
@@ -590,7 +589,7 @@ function redo(){
 	if(redos.length<1){ return false; }
 	this_ones_a_frame_changer();
 
-	undos.push(new Canvas(canvas));
+	undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
 	ctx.copy(redos.pop());
 

@@ -43,9 +43,9 @@ var font = {
 	line_scale: 20 / 12
 };
 
-var undos = []; //array of <canvas>
-var redos = []; //array of <canvas>
-//var frames = []; //array of {delay: N, undos: [<canvas>], redos: [<canvas>], canvas: <canvas>}? array of Frames?
+var undos = []; //array of ImageData
+var redos = []; //array of ImageData
+//var frames = []; //array of {delay: N, undos: [ImageData], redos: [ImageData], image: ImageData}? array of Frames?
 
 var file_name;
 var document_file_path;
@@ -118,9 +118,9 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		var previous_canvas = undos[undos.length-1];
-		if(previous_canvas){
-			ctx.drawImage(previous_canvas, 0, 0);
+		var previous_imagedata = undos[undos.length-1];
+		if(previous_imagedata){
+			ctx.putImageData(previous_imagedata, 0, 0);
 		}
 
 		$canvas_area.trigger("resize");
@@ -430,10 +430,10 @@ selected_tools.forEach((selected_tool)=> {
 		ctrl ? "ternary" : ((reverse ^ reverse_because_fill_only) ? "background" : "foreground");
 
 	if(selected_tool.shape){
-		var previous_canvas = undos[undos.length-1];
-		if(previous_canvas){
+		var previous_imagedata = undos[undos.length-1];
+		if(previous_imagedata){
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.drawImage(previous_canvas, 0, 0);
+			ctx.putImageData(previous_imagedata, 0, 0);
 		}
 	}
 	if(selected_tool.shape || selected_tool.shape_colors){

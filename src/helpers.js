@@ -76,7 +76,11 @@ function Canvas(width, height){
 		// setting width/height resets image smoothing (along with everything)
 		new_ctx.disable_image_smoothing();
 		
-		new_ctx.drawImage(image, 0, 0);
+		if (image instanceof ImageData) {
+			new_ctx.putImageData(image, 0, 0);
+		} else {
+			new_ctx.drawImage(image, 0, 0);
+		}
 	};
 	
 	if(width && height){
