@@ -192,15 +192,17 @@ tools = [{
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 	},
-	drawPreviewAboveGrid: function(ctx, x, y) {
+	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount) {
+		var hairline_width = 1/scaled_by_amount;
+
 		var rect_x = ~~(x - eraser_size/2);
 		var rect_y = ~~(y - eraser_size/2);
 		var rect_w = eraser_size;
 		var rect_h = eraser_size;
 		
 		ctx.strokeStyle = "black";
-		ctx.lineWidth = 1; // TODO: hairline
-		ctx.strokeRect(rect_x+0.5, rect_y+0.5, rect_w-1, rect_h-1); // TODO: hairline
+		ctx.lineWidth = hairline_width;
+		ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
 	},
 	paint: function(ctx, x, y){
 		

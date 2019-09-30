@@ -585,23 +585,18 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 }
 
 var grid_pattern;
-function draw_grid(ctx, wanted_width, wanted_height) {
-	// var wanted_width = window.devicePixelRatio * magnification;
-	// var wanted_height = window.devicePixelRatio * magnification;
-	if (!grid_pattern || grid_pattern.width !== wanted_width || grid_pattern.height !== wanted_height) {
-		var grid_pattern_canvas = new Canvas(wanted_width, wanted_height);
-		// console.log(wanted_width, grid_pattern_canvas.width);
+function draw_grid(ctx, wanted_size) {
+	if (!grid_pattern || grid_pattern.width !== wanted_size || grid_pattern.height !== wanted_size) {
+		var grid_pattern_canvas = new Canvas(wanted_size, wanted_size);
 		var dark_gray = "#808080";
 		var light_gray = "#c0c0c0";
 		grid_pattern_canvas.ctx.fillStyle = dark_gray;
-		grid_pattern_canvas.ctx.fillRect(0, 0, 1, wanted_height);
+		grid_pattern_canvas.ctx.fillRect(0, 0, 1, wanted_size);
 		grid_pattern_canvas.ctx.fillStyle = dark_gray;
-		grid_pattern_canvas.ctx.fillRect(0, 0, wanted_width, 1);
+		grid_pattern_canvas.ctx.fillRect(0, 0, wanted_size, 1);
 		grid_pattern_canvas.ctx.fillStyle = light_gray;
-		for (let i=1; i<wanted_width; i+=2) {
+		for (let i=1; i<wanted_size; i+=2) {
 			grid_pattern_canvas.ctx.fillRect(i, 0, 1, 1);
-		}
-		for (let i=1; i<wanted_height; i+=2) {
 			grid_pattern_canvas.ctx.fillRect(0, i, 1, 1);
 		}
 		grid_pattern = ctx.createPattern(grid_pattern_canvas, "repeat");
@@ -610,27 +605,27 @@ function draw_grid(ctx, wanted_width, wanted_height) {
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
-function draw_grid_and_tool_previews(ctx, scale_x, scale_y) {
+function draw_grid_and_tool_previews(ctx, scale) {
 	ctx.save();
 	// ctx.translate();
-	ctx.scale(scale_x, scale_y);
+	ctx.scale(scale, scale);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewUnderGrid){
-			selected_tool.drawPreviewUnderGrid(ctx, pointer.x, pointer.y);
+			selected_tool.drawPreviewUnderGrid(ctx, pointer.x, pointer.y, scale);
 		}
 	});
 	ctx.restore();
 
 	if (magnification >= 4 && show_grid) {
-		draw_grid(ctx, scale_x, scale_y);
+		draw_grid(ctx, scale);
 	}
 
 	ctx.save();
 	// ctx.translate();
-	ctx.scale(scale_x, scale_y);
+	ctx.scale(scale, scale);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewAboveGrid){
-			selected_tool.drawPreviewAboveGrid(ctx, pointer.x, pointer.y);
+			selected_tool.drawPreviewAboveGrid(ctx, pointer.x, pointer.y, scale);
 		}
 	});
 	ctx.restore();
