@@ -19,8 +19,7 @@ function update_grid() {
 function set_magnification(scale){
 	magnification = scale;
 	update_magnified_canvas_size();
-	update_grid(); // should this be in update_magnified_canvas_size?
-	$G.triggerHandler("resize");
+	$G.triggerHandler("resize"); // updates grid
 }
 
 function reset_magnification(){

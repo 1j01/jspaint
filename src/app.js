@@ -157,6 +157,7 @@ storage.get({
 	$canvas_area.trigger("resize");
 });
 
+$G.on("resize", update_grid); // for browser zoom, and in-app zoom of the canvas
 
 $("body").on("dragover dragenter", function(e){
 	var dt = e.originalEvent.dataTransfer;
