@@ -9,8 +9,10 @@ function update_grid() {
 		grid.destroy();
 	}
 	if (magnification >= 4) {
-		grid = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, true);
-		draw_grid(grid.canvas.ctx);
+		var hiDPI = true;
+		grid = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
+		var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
+		draw_grid(grid.canvas.ctx, scale, scale);
 	}
 }
 

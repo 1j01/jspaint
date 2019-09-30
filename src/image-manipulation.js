@@ -585,11 +585,12 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 }
 
 var grid_pattern;
-function draw_grid(ctx) {
-	var wanted_width = window.devicePixelRatio * magnification;
-	var wanted_height = window.devicePixelRatio * magnification;
+function draw_grid(ctx, wanted_width, wanted_height) {
+	// var wanted_width = window.devicePixelRatio * magnification;
+	// var wanted_height = window.devicePixelRatio * magnification;
 	if (!grid_pattern || grid_pattern.width !== wanted_width || grid_pattern.height !== wanted_height) {
 		var grid_pattern_canvas = new Canvas(wanted_width, wanted_height);
+		// console.log(wanted_width, grid_pattern_canvas.width);
 		var dark_gray = "#808080";
 		var light_gray = "#c0c0c0";
 		grid_pattern_canvas.ctx.fillStyle = dark_gray;

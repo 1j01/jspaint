@@ -7,7 +7,7 @@ function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles, hiDPI){
 	});
 	this.position();
 	
-	var scale = hiDPI ? magnification * window.devicePixelRatio : 1;
+	var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in update_grid
 	this.canvas = new Canvas(this.width * scale, this.height * scale);
 	this.$el.append(this.canvas);
 }
