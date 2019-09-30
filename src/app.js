@@ -409,7 +409,7 @@ $G.on("cut copy paste", function(e){
 	}
 });
 
-var pointer, pointer_start, pointer_previous, pointer_type;
+var pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
 var reverse, ctrl, button;
 function e2c(e){
 	var rect = canvas.getBoundingClientRect();
@@ -484,32 +484,10 @@ function canvas_pointer_move(e){
 	// (Note: pointermove also occurs when the set of buttons pressed changes,
 	// except when another event would fire like pointerdown)
 	if(pointer_active && e.button != -1){
-		if(e.pointerType != pointer_type){
-			// Different input devices
+		if(e.pointerType != pointer_type || e.buttons != pointer_buttons){
 			pointer_active = false;
 			cancel();
 			return;
-		}
-		switch(pointer_type){
-			case "pen":
-				// TODO: Handle pen events.
-				// Pen cancel button
-				if(e.buttons & 32){
-					pointer_active = false;
-					cancel();
-					return;
-				}
-				break;
-			case "touch":
-				// Handled by pointerdown event listener.
-				break;
-			default:
-				// Unknown devices are handled as mouse
-				if((e.buttons & 3) === 3){
-					pointer_active = false;
-					cancel();
-					return;
-				}
 		}
 	}
 
@@ -568,6 +546,7 @@ $canvas.on("pointerdown", function(e){
 	}
 	pointer_active = true;
 	pointer_type = e.pointerType;
+	pointer_buttons = e.buttons;
 	$G.one("pointerup", function(e){
 		pointer_active = false;
 	});
