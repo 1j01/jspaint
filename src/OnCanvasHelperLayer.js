@@ -1,4 +1,4 @@
-function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles){
+function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles, hiDPI){
 	OnCanvasObject.call(this, x, y, width, height, hideMainCanvasHandles);
 	
 	this.$el.addClass("helper-layer");
@@ -7,7 +7,8 @@ function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles){
 	});
 	this.position();
 	
-	this.canvas = new Canvas(this.width, this.height);
+	var scale = hiDPI ? magnification * window.devicePixelRatio : 1;
+	this.canvas = new Canvas(this.width * scale, this.height * scale);
 	this.$el.append(this.canvas);
 }
 

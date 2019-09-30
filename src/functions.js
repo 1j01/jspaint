@@ -4,9 +4,20 @@ function update_magnified_canvas_size(){
 	$canvas.css("height", canvas.height * magnification);
 }
 
+function update_grid() {
+	if (grid) {
+		grid.destroy();
+	}
+	if (magnification >= 4) {
+		grid = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, true);
+		draw_grid(grid.canvas.ctx);
+	}
+}
+
 function set_magnification(scale){
 	magnification = scale;
 	update_magnified_canvas_size();
+	update_grid(); // should this be in update_magnified_canvas_size?
 	$G.triggerHandler("resize");
 }
 

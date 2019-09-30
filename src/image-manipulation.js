@@ -584,6 +584,31 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 	// draw_line_strip(ctx, [{x: x1, y: y1}, {x: x2, y: y2}]);
 }
 
+var grid_pattern;
+function draw_grid(ctx) {
+	var wanted_width = window.devicePixelRatio * magnification;
+	var wanted_height = window.devicePixelRatio * magnification;
+	if (!grid_pattern || grid_pattern.width !== wanted_width || grid_pattern.height !== wanted_height) {
+		var grid_pattern_canvas = new Canvas(wanted_width, wanted_height);
+		var dark_gray = "#808080";
+		var light_gray = "#c0c0c0";
+		grid_pattern_canvas.ctx.fillStyle = dark_gray;
+		grid_pattern_canvas.ctx.fillRect(0, 0, 1, wanted_height);
+		grid_pattern_canvas.ctx.fillStyle = dark_gray;
+		grid_pattern_canvas.ctx.fillRect(0, 0, wanted_width, 1);
+		grid_pattern_canvas.ctx.fillStyle = light_gray;
+		for (let i=1; i<wanted_width; i+=2) {
+			grid_pattern_canvas.ctx.fillRect(i, 0, 1, 1);
+		}
+		for (let i=1; i<wanted_height; i+=2) {
+			grid_pattern_canvas.ctx.fillRect(0, i, 1, 1);
+		}
+		grid_pattern = ctx.createPattern(grid_pattern_canvas, "repeat");
+	}
+	ctx.fillStyle = grid_pattern;
+	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
 (function(){
 
 	var tessy = (function initTesselator() {

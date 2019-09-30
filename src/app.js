@@ -37,6 +37,7 @@ var colors = {
 
 var selection; //the one and only OnCanvasSelection
 var textbox; //the one and only OnCanvasTextBox
+var grid; //the OnCanvasLayer for the grid (TODO: one layer for grid and tool previews as well; eraser border goes on top of the grid, fill underneath)
 var font = {
 	family: "Arial",
 	size: 12,
