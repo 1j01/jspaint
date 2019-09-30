@@ -181,7 +181,6 @@ tools = [{
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	// @TODO: draw square on canvas as cursor
 	continuous: "space",
 	drawPreviewUnderGrid: function(ctx, x, y) {
 		var rect_x = ~~(x - eraser_size/2);
