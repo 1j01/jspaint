@@ -202,7 +202,11 @@ tools = [{
 		
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = hairline_width;
-		ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
+		if (magnification >= 4 && show_grid) {
+			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
+		} else {
+			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
+		}
 	},
 	paint: function(ctx, x, y){
 		
