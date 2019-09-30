@@ -23,6 +23,11 @@ body {
 		image-rendering: -moz-crisp-edges;
 	}
 }
+.disable-aa {
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+}
 
 .selection:after,
 .textbox:after {

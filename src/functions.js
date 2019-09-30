@@ -15,6 +15,11 @@ function update_grid() {
 		draw_grid_and_tool_previews(helper_layer.canvas.ctx, scale, scale);
 	}
 }
+function update_disable_aa() {
+	var dots_per_canvas_px = window.devicePixelRatio * magnification;
+	var round = Math.floor(dots_per_canvas_px) === dots_per_canvas_px;
+	$canvas.toggleClass("disable-aa", dots_per_canvas_px >= 3 || round);
+}
 
 function set_magnification(scale){
 	magnification = scale;

@@ -157,7 +157,10 @@ storage.get({
 	$canvas_area.trigger("resize");
 });
 
-$G.on("resize", update_grid); // for browser zoom, and in-app zoom of the canvas
+$G.on("resize", function(){ // for browser zoom, and in-app zoom of the canvas
+	update_grid();
+	update_disable_aa();
+});
 
 $("body").on("dragover dragenter", function(e){
 	var dt = e.originalEvent.dataTransfer;
