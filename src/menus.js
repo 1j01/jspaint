@@ -313,7 +313,7 @@ var menus = {
 		},
 		{
 			item: "&Stretch/Skew",
-			shortcut: "Ctrl+W",
+			// shortcut: "Ctrl+W", // closes browser tab
 			action: image_stretch_and_skew,
 			description: "Stretches or skews the picture or a selection.",
 		},
