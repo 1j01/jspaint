@@ -38,6 +38,7 @@ var colors = {
 var selection; //the one and only OnCanvasSelection
 var textbox; //the one and only OnCanvasTextBox
 var helper_layer; //the OnCanvasHelperLayer for the grid and tool previews
+var show_grid = false;
 var font = {
 	family: "Arial",
 	size: 12,

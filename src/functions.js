@@ -8,7 +8,7 @@ function update_grid() {
 	if (helper_layer) {
 		helper_layer.destroy();
 	}
-	if (magnification >= 4) {
+	if (magnification >= 4 && show_grid) {
 		var hiDPI = true;
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
 		var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
@@ -25,6 +25,12 @@ function set_magnification(scale){
 
 function reset_magnification(){
 	set_magnification(1);
+}
+
+function toggle_grid() {
+	show_grid = !show_grid;
+	// $G.trigger("option-changed");
+	update_grid();
 }
 
 function reset_colors(){

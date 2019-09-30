@@ -168,7 +168,7 @@ I want to make JS Paint to be able to edit...
 	* [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
 	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
 	* [x] Color Replacement (right mouse button with Eraser to selectively replace the foreground color with the background color)
-	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
+	* [x] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 4x+)
 	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing.
 	      I also made it redoable, in case you do it by accident!)
 	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)

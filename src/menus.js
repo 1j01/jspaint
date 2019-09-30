@@ -285,8 +285,15 @@ var menus = {
 				{
 					item: "Show &Grid",
 					shorcut: "Ctrl+G",
-					enabled: false, // @TODO
-					checkbox: {},
+					enabled: function() {
+						return magnification >= 4;
+					},
+					checkbox: {
+						toggle: toggle_grid,
+						check: function(){
+							return show_grid;
+						},
+					},
 					description: "Shows or hides the grid.",
 				},
 				{
