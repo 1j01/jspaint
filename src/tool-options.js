@@ -227,9 +227,6 @@ var $choose_magnification = $Choose(
 	},
 	function(scale){
 		set_magnification(scale);
-		if(scale > 1){
-			$choose_magnification.enlarged_magnification = scale;
-		}
 	},
 	function(scale){
 		return scale === magnification;
