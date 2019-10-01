@@ -38,6 +38,10 @@ function OnCanvasTextBox(x, y, width, height){
 
 OnCanvasTextBox.prototype = Object.create(OnCanvasObject.prototype);
 
+OnCanvasTextBox.prototype.position = function(){
+	OnCanvasObject.prototype.position.call(this, true);
+}
+
 OnCanvasTextBox.prototype.instantiate = function(){
 	var tb = this;
 	

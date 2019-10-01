@@ -13,7 +13,7 @@ function OnCanvasObject(x, y, width, height, hideMainCanvasHandles){
 	}
 }
 
-OnCanvasObject.prototype.position = function(){
+OnCanvasObject.prototype.position = function(updateStatus){
 	var offset_left = parseFloat($canvas_area.css("padding-left"));
 	var offset_top = parseFloat($canvas_area.css("padding-top"));
 	this.$el.css({
@@ -23,8 +23,10 @@ OnCanvasObject.prototype.position = function(){
 		width: magnification * this.width,
 		height: magnification * this.height,
 	});
-	$status_position.text(this.x + "," + this.y);
-	$status_size.text(this.width + "," + this.height);
+	if (updateStatus) {
+		$status_position.text(this.x + "," + this.y);
+		$status_size.text(this.width + "," + this.height);
+	}
 };
 
 OnCanvasObject.prototype.destroy = function(){

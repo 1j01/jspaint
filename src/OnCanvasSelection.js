@@ -26,6 +26,10 @@ function OnCanvasSelection(x, y, width, height){
 
 OnCanvasSelection.prototype = Object.create(OnCanvasObject.prototype);
 
+OnCanvasSelection.prototype.position = function(){
+	OnCanvasObject.prototype.position.call(this, true);
+}
+
 OnCanvasSelection.prototype.instantiate = function(_img, _passive){
 	var sel = this;
 	
