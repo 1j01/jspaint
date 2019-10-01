@@ -552,10 +552,6 @@ $canvas.on("pointerleave", function(e){
 
 	$status_position.text("");
 
-	if (!pointer_active) {
-		pointer.x = -100;
-		pointer.y = -100;
-	}
 	update_helper_layer();
 	
 	if (!pointer_active && update_helper_layer_on_pointermove_active) {

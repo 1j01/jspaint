@@ -117,6 +117,7 @@ tools = [{
 		this.preview_canvas.height = 1;
 	},
 	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		if(!pointer_active && !pointer_over_canvas){return;}
 		if(!this.preview_canvas){return;}
 		ctx.drawImage(this.preview_canvas, 0, 0);
 	},
@@ -184,6 +185,7 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	continuous: "space",
 	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		if(!pointer_active && !pointer_over_canvas){return;}
 		var rect_x = ~~(x - eraser_size/2);
 		var rect_y = ~~(y - eraser_size/2);
 		var rect_w = eraser_size;
@@ -193,6 +195,7 @@ tools = [{
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 	},
 	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		if(!pointer_active && !pointer_over_canvas){return;}
 		var hairline_width = 1/scaled_by_amount;
 
 		var rect_x = ~~(x - eraser_size/2);
@@ -382,6 +385,7 @@ tools = [{
 		ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 	},
 	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		if(!pointer_active && !pointer_over_canvas){return;}
 		this.paint(ctx, x, y);
 	},
 	$options: $choose_brush
