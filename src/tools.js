@@ -5,8 +5,8 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	// passive: @TODO,
 
-	// A canvas layer for inverty-brush showing a preview of the shape
-	helper_layer: null, // OnCanvasHelperLayer
+	// A canvas for showing a preview of the shape
+	preview_canvas: null,
 	
 	// The vertices of the polygon
 	points: [],
@@ -24,10 +24,7 @@ tools = [{
 		tool.y_min = pointer.y;
 		tool.y_max = pointer.y+1;
 		tool.points = [];
-		if (tool.helper_layer) {
-			tool.helper_layer.destroy();
-		}
-		tool.helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, true);
+		tool.preview_canvas = new Canvas(canvas.width, canvas.height);
 
 		// End prior selection, drawing it to the canvas
 		deselect();
@@ -71,7 +68,7 @@ tools = [{
 		var rect_w = inverty_size;
 		var rect_h = inverty_size;
 		
-		var ctx_dest = this.helper_layer.canvas.ctx;
+		var ctx_dest = this.preview_canvas.ctx;
 		var id_src = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 		var id_dest = ctx_dest.getImageData(rect_x, rect_y, rect_w, rect_h);
 		
@@ -86,8 +83,8 @@ tools = [{
 		ctx_dest.putImageData(id_dest, rect_x, rect_y);
 	},
 	pointerup: function(){
-		this.helper_layer.destroy();
-		this.helper_layer = null;
+		this.preview_canvas.width = 1;
+		this.preview_canvas.height = 1;
 
 		var contents_within_polygon = copy_contents_within_polygon(
 			canvas,
@@ -115,9 +112,13 @@ tools = [{
 		selection.cut_out_background();
 	},
 	cancel: function(){
-		if(!this.helper_layer){return;}
-		this.helper_layer.destroy();
-		this.helper_layer = null;
+		if(!this.preview_canvas){return;}
+		this.preview_canvas.width = 1;
+		this.preview_canvas.height = 1;
+	},
+	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		if(!this.preview_canvas){return;}
+		ctx.drawImage(this.preview_canvas, 0, 0);
 	},
 	$options: $choose_transparent_mode
 }, {
@@ -182,7 +183,7 @@ tools = [{
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	continuous: "space",
-	drawPreviewUnderGrid: function(ctx, x, y) {
+	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
 		var rect_x = ~~(x - eraser_size/2);
 		var rect_y = ~~(y - eraser_size/2);
 		var rect_w = eraser_size;
