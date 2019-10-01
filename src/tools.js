@@ -482,12 +482,10 @@ tools = [{
 	},
 	pointerdown: function(ctx, x, y){
 		if(this.points.length < 1){
-			// This would be so much better in CoffeeScript
-			var thine = this;
-			undoable(function(){
-				thine.points.push({x: x, y: y});
+			undoable(()=> {
+				this.points.push({x: x, y: y});
 				// second point so first action draws a line
-				thine.points.push({x: x, y: y});
+				this.points.push({x: x, y: y});
 			});
 		}else{
 			this.points.push({x: x, y: y});
