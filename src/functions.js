@@ -5,8 +5,6 @@ function update_magnified_canvas_size(){
 }
 function update_helper_layer() {
 	var scale = Math.floor(magnification * window.devicePixelRatio);
-	var scalev = 1;
-	var scalel = 1/scale;
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
@@ -21,15 +19,17 @@ function update_helper_layer() {
 	var viewport_x = Math.max($canvas_area.scrollLeft() - margin, 0);
 	var viewport_y = Math.max($canvas_area.scrollTop() - margin, 0);
 	// console.log($canvas_area.width(), $canvas_area.height(), viewport_width, viewport_height);
+	var resolution_width = Math.floor(viewport_width);
+	var resolution_height = Math.floor(viewport_height);
 	if (
-		hcanvas.width !== viewport_width * scalev ||
-		hcanvas.height !== viewport_height * scalev
+		hcanvas.width !== resolution_width ||
+		hcanvas.height !== resolution_height
 	) {
-		hcanvas.width = viewport_width * scalev;
-		hcanvas.height = viewport_height * scalev;
+		hcanvas.width = resolution_width;
+		hcanvas.height = resolution_height;
 		hcanvas.ctx.disable_image_smoothing();
-		helper_layer.width = Math.floor(viewport_width * scalel);
-		helper_layer.height = Math.floor(viewport_height * scalel);
+		helper_layer.width = Math.floor(viewport_width / scale);
+		helper_layer.height = Math.floor(viewport_height / scale);
 	}
 	helper_layer.x = Math.floor(viewport_x / magnification);
 	helper_layer.y = Math.floor(viewport_y / magnification);
