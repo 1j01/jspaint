@@ -162,6 +162,9 @@ $G.on("resize", function(){ // for browser zoom, and in-app zoom of the canvas
 	update_helper_layer();
 	update_disable_aa();
 });
+$canvas_area.on("scroll", function() {
+	update_helper_layer();
+});
 
 $("body").on("dragover dragenter", function(e){
 	var dt = e.originalEvent.dataTransfer;
