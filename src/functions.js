@@ -14,10 +14,10 @@ function update_helper_layer() {
 	var hctx = hcanvas.ctx;
 
 	var margin = 50;
-	var viewport_width = Math.min($canvas_area.width() + margin, canvas.width * magnification);
-	var viewport_height = Math.min($canvas_area.height() + margin, canvas.height * magnification);
-	var viewport_x = Math.max($canvas_area.scrollLeft() - margin, 0);
-	var viewport_y = Math.max($canvas_area.scrollTop() - margin, 0);
+	var viewport_width = Math.min($canvas_area.width() / magnification + margin*2, canvas.width);
+	var viewport_height = Math.min($canvas_area.height() / magnification + margin*2, canvas.height);
+	var viewport_x = Math.max($canvas_area.scrollLeft() / magnification - margin, 0);
+	var viewport_y = Math.max($canvas_area.scrollTop() / magnification - margin, 0);
 	// console.log($canvas_area.width(), $canvas_area.height(), viewport_width, viewport_height);
 	var resolution_width = Math.floor(viewport_width);
 	var resolution_height = Math.floor(viewport_height);
@@ -28,11 +28,11 @@ function update_helper_layer() {
 		hcanvas.width = resolution_width;
 		hcanvas.height = resolution_height;
 		hcanvas.ctx.disable_image_smoothing();
-		helper_layer.width = Math.floor(viewport_width / scale);
-		helper_layer.height = Math.floor(viewport_height / scale);
+		helper_layer.width = Math.floor(viewport_width);
+		helper_layer.height = Math.floor(viewport_height);
 	}
-	helper_layer.x = Math.floor(viewport_x / magnification);
-	helper_layer.y = Math.floor(viewport_y / magnification);
+	helper_layer.x = Math.floor(viewport_x);
+	helper_layer.y = Math.floor(viewport_y);
 	helper_layer.position();
 
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
