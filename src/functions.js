@@ -6,7 +6,7 @@ function update_magnified_canvas_size(){
 function update_helper_layer() {
 	var scale = Math.floor(magnification * window.devicePixelRatio);
 	var scalev = 1;
-	var scalel = 1/magnification;
+	var scalel = 1/scale;
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
@@ -31,8 +31,8 @@ function update_helper_layer() {
 		helper_layer.width = viewport_width * scalel;
 		helper_layer.height = viewport_height * scalel;
 	}
-	helper_layer.x = viewport_x / magnification;
-	helper_layer.y = viewport_y / magnification;
+	helper_layer.x = Math.floor(viewport_x / magnification);
+	helper_layer.y = Math.floor(viewport_y / magnification);
 	helper_layer.position();
 
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
