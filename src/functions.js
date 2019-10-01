@@ -9,10 +9,11 @@ function update_helper_layer() {
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
 	}
-	var viewport_width = Math.min($canvas_area.width(), canvas.width);
-	var viewport_height = Math.min($canvas_area.height(), canvas.height);
-	var viewport_x = Math.max($canvas_area.scrollLeft(), 0);
-	var viewport_y = Math.max($canvas_area.scrollTop(), 0);
+	var margin = 50;
+	var viewport_width = Math.min($canvas_area.width() + margin, canvas.width);
+	var viewport_height = Math.min($canvas_area.height() + margin, canvas.height);
+	var viewport_x = Math.max($canvas_area.scrollLeft() - margin, 0);
+	var viewport_y = Math.max($canvas_area.scrollTop() - margin, 0);
 	if (
 		helper_layer.canvas.width !== viewport_width * scale / magnification ||
 		helper_layer.canvas.height !== viewport_height * scale / magnification
