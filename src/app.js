@@ -424,21 +424,24 @@ function e2c(e){
 	};
 }
 
-function tool_go(selected_tool, event_name){
-
+function update_fill_and_stroke_colors_and_lineWidth() {
 	ctx.lineWidth = stroke_size;
 
 	var reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
 	ctx.fillStyle = fill_color =
 	ctx.strokeStyle = stroke_color =
 		colors[
-			(ctrl && colors.ternary) ? "ternary" :
+			(ctrl && colors.ternary && pointer_active) ? "ternary" :
 			((reverse ^ reverse_because_fill_only) ? "background" : "foreground")
 		];
-
+		
 	fill_color_k =
 	stroke_color_k =
 		ctrl ? "ternary" : ((reverse ^ reverse_because_fill_only) ? "background" : "foreground");
+}
+
+function tool_go(selected_tool, event_name){
+	update_fill_and_stroke_colors_and_lineWidth();
 
 	if(selected_tool.shape){
 		var previous_imagedata = undos[undos.length-1];
@@ -533,7 +536,7 @@ function canvas_pointer_move(e){
 $canvas.on("pointermove", function(e){
 	pointer = e2c(e);
 	$status_position.text(pointer.x + "," + pointer.y);
-
+	
 	update_helper_layer();
 });
 $canvas.on("pointerleave", function(e){
@@ -549,13 +552,16 @@ $canvas.on("pointerdown", function(e){
 		cancel();
 		return;
 	}
+	
 	pointer_active = true;
 	pointer_type = e.pointerType;
 	pointer_buttons = e.buttons;
 	$G.one("pointerup", function(e){
 		pointer_active = false;
+		reverse = false;
+		update_helper_layer();
 	});
-
+	
 	if(e.button === 0){
 		reverse = false;
 	}else if(e.button === 2){
@@ -563,6 +569,7 @@ $canvas.on("pointerdown", function(e){
 	}else{
 		return;
 	}
+
 	button = e.button;
 	ctrl = e.ctrlKey;
 	shift = e.shiftKey;
@@ -605,6 +612,8 @@ $canvas.on("pointerdown", function(e){
 	}else{
 		undoable(pointerdown_action);
 	}
+	
+	update_helper_layer();
 });
 
 $canvas_area.on("pointerdown", function(e){
