@@ -28,8 +28,8 @@ function update_helper_layer() {
 		hcanvas.width = viewport_width * scalev;
 		hcanvas.height = viewport_height * scalev;
 		hcanvas.ctx.disable_image_smoothing();
-		helper_layer.width = viewport_width * scalel;
-		helper_layer.height = viewport_height * scalel;
+		helper_layer.width = Math.floor(viewport_width * scalel);
+		helper_layer.height = Math.floor(viewport_height * scalel);
 	}
 	helper_layer.x = Math.floor(viewport_x / magnification);
 	helper_layer.y = Math.floor(viewport_y / magnification);
