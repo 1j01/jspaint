@@ -536,14 +536,37 @@ function canvas_pointer_move(e){
 $canvas.on("pointermove", function(e){
 	pointer = e2c(e);
 	$status_position.text(pointer.x + "," + pointer.y);
-	
+});
+$canvas.on("pointerenter", function(e){
+	pointer_over_canvas = true;
+
 	update_helper_layer();
+
+	if (!update_helper_layer_on_pointermove_active) {
+		$G.on("pointermove", update_helper_layer);
+		update_helper_layer_on_pointermove_active = true;
+	}
 });
 $canvas.on("pointerleave", function(e){
+	pointer_over_canvas = false;
+
 	$status_position.text("");
+
+	if (!pointer_active) {
+		pointer.x = -100;
+		pointer.y = -100;
+	}
+	update_helper_layer();
+	
+	if (!pointer_active && update_helper_layer_on_pointermove_active) {
+		$G.off("pointermove", update_helper_layer);
+		update_helper_layer_on_pointermove_active = false;
+	}
 });
 
 var pointer_active = false;
+var pointer_over_canvas = false;
+var update_helper_layer_on_pointermove_active = false;
 $canvas.on("pointerdown", function(e){
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
@@ -560,6 +583,11 @@ $canvas.on("pointerdown", function(e){
 		pointer_active = false;
 		reverse = false;
 		update_helper_layer();
+		
+		if (!pointer_over_canvas && update_helper_layer_on_pointermove_active) {
+			$G.off("pointermove", update_helper_layer);
+			update_helper_layer_on_pointermove_active = false;
+		}
 	});
 	
 	if(e.button === 0){

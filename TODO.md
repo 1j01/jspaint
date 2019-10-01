@@ -40,7 +40,6 @@
 * I want to give most things a revisit later on for Pixel Perfection
 * Dynamic cursors
 	* Inverty fill bucket and airbrush cursors
-	* Tool previews: hide if mouse outside canvas and not drawing
 * Custom cursors in Edge; apparently they require `.cur` files? ugh
 * The canvas-area's border is different in Firefox and Edge from Chrome
 
