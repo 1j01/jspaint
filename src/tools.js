@@ -381,6 +381,9 @@ tools = [{
 		}
 		ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 	},
+	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		this.paint(ctx, x, y);
+	},
 	$options: $choose_brush
 }, {
 	name: "Airbrush",
