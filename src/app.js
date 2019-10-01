@@ -159,7 +159,7 @@ storage.get({
 });
 
 $G.on("resize", function(){ // for browser zoom, and in-app zoom of the canvas
-	update_grid();
+	update_helper_layer();
 	update_disable_aa();
 });
 
@@ -531,7 +531,7 @@ $canvas.on("pointermove", function(e){
 	pointer = e2c(e);
 	$status_position.text(pointer.x + "," + pointer.y);
 
-	redraw_helper_layer();
+	update_helper_layer();
 });
 $canvas.on("pointerleave", function(e){
 	$status_position.text("");

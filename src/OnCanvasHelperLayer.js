@@ -1,4 +1,4 @@
-function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles, hiDPI){
+function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles, pixelRatio=1){
 	OnCanvasObject.call(this, x, y, width, height, hideMainCanvasHandles);
 	
 	this.$el.addClass("helper-layer");
@@ -7,8 +7,7 @@ function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles, hiDPI){
 	});
 	this.position();
 	
-	var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in update_grid
-	this.canvas = new Canvas(this.width * scale, this.height * scale);
+	this.canvas = new Canvas(this.width * pixelRatio, this.height * pixelRatio);
 	this.$el.append(this.canvas);
 }
 

@@ -3,25 +3,37 @@ function update_magnified_canvas_size(){
 	$canvas.css("width", canvas.width * magnification);
 	$canvas.css("height", canvas.height * magnification);
 }
-
-function update_grid() {
-	if (helper_layer) {
-		helper_layer.destroy();
-	}
-	var hiDPI = true;
-	helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
-	var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
-	draw_grid_and_tool_previews(helper_layer.canvas.ctx, scale, scale);
-}
-function redraw_helper_layer() {
-	var hiDPI = true;
+function update_helper_layer() {
+	var scale = Math.floor(magnification * window.devicePixelRatio);
 	if (helper_layer) {
 		helper_layer.canvas.ctx.clearRect(0, 0, helper_layer.canvas.width, helper_layer.canvas.height);
 	} else {
-		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, hiDPI);
+		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
 	}
-	var scale = hiDPI ? Math.floor(magnification * window.devicePixelRatio) : 1; // same as in OnCanvasHelperLayer
-	draw_grid_and_tool_previews(helper_layer.canvas.ctx, scale, scale);
+	
+	ctx.save();
+	ctx.scale(scale, scale);
+	// ctx.translate();
+	selected_tools.forEach((selected_tool)=> {
+		if(selected_tool.drawPreviewUnderGrid){
+			selected_tool.drawPreviewUnderGrid(ctx, pointer.x, pointer.y, scale);
+		}
+	});
+	ctx.restore();
+
+	if (magnification >= 4 && show_grid) {
+		draw_grid(ctx, scale);
+	}
+
+	ctx.save();
+	// ctx.translate();
+	ctx.scale(scale, scale);
+	selected_tools.forEach((selected_tool)=> {
+		if(selected_tool.drawPreviewAboveGrid){
+			selected_tool.drawPreviewAboveGrid(ctx, pointer.x, pointer.y, scale);
+		}
+	});
+	ctx.restore();
 }
 function update_disable_aa() {
 	var dots_per_canvas_px = window.devicePixelRatio * magnification;
@@ -42,7 +54,7 @@ function reset_magnification(){
 function toggle_grid() {
 	show_grid = !show_grid;
 	// $G.trigger("option-changed");
-	update_grid();
+	update_helper_layer();
 }
 
 function reset_colors(){

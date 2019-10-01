@@ -605,32 +605,6 @@ function draw_grid(ctx, wanted_size) {
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
-function draw_grid_and_tool_previews(ctx, scale) {
-	ctx.save();
-	// ctx.translate();
-	ctx.scale(scale, scale);
-	selected_tools.forEach((selected_tool)=> {
-		if(selected_tool.drawPreviewUnderGrid){
-			selected_tool.drawPreviewUnderGrid(ctx, pointer.x, pointer.y, scale);
-		}
-	});
-	ctx.restore();
-
-	if (magnification >= 4 && show_grid) {
-		draw_grid(ctx, scale);
-	}
-
-	ctx.save();
-	// ctx.translate();
-	ctx.scale(scale, scale);
-	selected_tools.forEach((selected_tool)=> {
-		if(selected_tool.drawPreviewAboveGrid){
-			selected_tool.drawPreviewAboveGrid(ctx, pointer.x, pointer.y, scale);
-		}
-	});
-	ctx.restore();
-}
-
 (function(){
 
 	var tessy = (function initTesselator() {
