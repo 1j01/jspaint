@@ -5,15 +5,14 @@ function update_magnified_canvas_size(){
 }
 function update_helper_layer() {
 	var scale = Math.floor(magnification * window.devicePixelRatio);
-	// var scale = Math.floor(window.devicePixelRatio);
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
 	}
-	var viewport_width = $canvas_area.width();
-	var viewport_height = $canvas_area.height();
-	var viewport_x = $canvas_area.scrollLeft();
-	var viewport_y = $canvas_area.scrollTop();
+	var viewport_width = Math.min($canvas_area.width(), canvas.width);
+	var viewport_height = Math.min($canvas_area.height(), canvas.height);
+	var viewport_x = Math.max($canvas_area.scrollLeft(), 0);
+	var viewport_y = Math.max($canvas_area.scrollTop(), 0);
 	if (
 		helper_layer.canvas.width !== viewport_width * scale / magnification ||
 		helper_layer.canvas.height !== viewport_height * scale / magnification
