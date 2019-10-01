@@ -5,35 +5,50 @@ function update_magnified_canvas_size(){
 }
 function update_helper_layer() {
 	var scale = Math.floor(magnification * window.devicePixelRatio);
-	if (helper_layer) {
-		helper_layer.canvas.ctx.clearRect(0, 0, helper_layer.canvas.width, helper_layer.canvas.height);
-	} else {
+
+	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
 	}
-	
-	ctx.save();
-	ctx.scale(scale, scale);
-	// ctx.translate();
-	selected_tools.forEach((selected_tool)=> {
-		if(selected_tool.drawPreviewUnderGrid){
-			selected_tool.drawPreviewUnderGrid(ctx, pointer.x, pointer.y, scale);
-		}
-	});
-	ctx.restore();
-
-	if (magnification >= 4 && show_grid) {
-		draw_grid(ctx, scale);
+	if (
+		helper_layer.canvas.width !== canvas.width * scale ||
+		helper_layer.canvas.height !== canvas.height * scale
+	) {
+		helper_layer.canvas.width = canvas.width * scale;
+		helper_layer.canvas.height = canvas.height * scale;
+		helper_layer.width = canvas.width;
+		helper_layer.height = canvas.height;
+		helper_layer.canvas.ctx.disable_image_smoothing();
+		helper_layer.position();
 	}
 
-	ctx.save();
-	// ctx.translate();
-	ctx.scale(scale, scale);
+	var hcanvas = helper_layer.canvas;
+	var hctx = hcanvas.ctx;
+
+	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
+	
+	hctx.save();
+	hctx.scale(scale, scale);
+	// hctx.translate();
 	selected_tools.forEach((selected_tool)=> {
-		if(selected_tool.drawPreviewAboveGrid){
-			selected_tool.drawPreviewAboveGrid(ctx, pointer.x, pointer.y, scale);
+		if(selected_tool.drawPreviewUnderGrid){
+			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, scale);
 		}
 	});
-	ctx.restore();
+	hctx.restore();
+
+	if (magnification >= 4 && show_grid) {
+		draw_grid(hctx, scale);
+	}
+
+	hctx.save();
+	// hctx.translate();
+	hctx.scale(scale, scale);
+	selected_tools.forEach((selected_tool)=> {
+		if(selected_tool.drawPreviewAboveGrid){
+			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, scale);
+		}
+	});
+	hctx.restore();
 }
 function update_disable_aa() {
 	var dots_per_canvas_px = window.devicePixelRatio * magnification;
