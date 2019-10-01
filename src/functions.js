@@ -14,11 +14,15 @@ function update_helper_layer() {
 	var hctx = hcanvas.ctx;
 
 	var margin = 15;
-	var viewport_width = Math.floor(Math.min($canvas_area.width() / magnification + margin*2, canvas.width));
-	var viewport_height = Math.floor(Math.min($canvas_area.height() / magnification + margin*2, canvas.height));
+	// var viewport_width = Math.floor(Math.min($canvas_area.width() / magnification + margin*2, canvas.width));
+	// var viewport_height = Math.floor(Math.min($canvas_area.height() / magnification + margin*2, canvas.height));
 	var viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
 	var viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification - margin, 0));
-	console.log($canvas_area.width(), $canvas_area.height(), viewport_width, viewport_height);
+	var viewport_x2 = Math.floor(Math.min(viewport_x + $canvas_area.width() / magnification + margin*2, canvas.width));
+	var viewport_y2 = Math.floor(Math.min(viewport_y + $canvas_area.height() / magnification + margin*2, canvas.height));
+	var viewport_width = viewport_x2 - viewport_x;
+	var viewport_height = viewport_y2 - viewport_y;
+	// console.log($canvas_area.width(), $canvas_area.height(), viewport_width, viewport_height, canvas.width, canvas.height);
 	var resolution_width = viewport_width * scale;
 	var resolution_height = viewport_height * scale;
 	if (
