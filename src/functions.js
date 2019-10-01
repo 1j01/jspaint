@@ -5,31 +5,35 @@ function update_magnified_canvas_size(){
 }
 function update_helper_layer() {
 	var scale = Math.floor(magnification * window.devicePixelRatio);
+	var scalev = 1;
+	var scalel = 1/magnification;
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
 	}
+
+	var hcanvas = helper_layer.canvas;
+	var hctx = hcanvas.ctx;
+
 	var margin = 50;
-	var viewport_width = Math.min($canvas_area.width() + margin, canvas.width);
-	var viewport_height = Math.min($canvas_area.height() + margin, canvas.height);
+	var viewport_width = Math.min($canvas_area.width() + margin, canvas.width * magnification);
+	var viewport_height = Math.min($canvas_area.height() + margin, canvas.height * magnification);
 	var viewport_x = Math.max($canvas_area.scrollLeft() - margin, 0);
 	var viewport_y = Math.max($canvas_area.scrollTop() - margin, 0);
+	// console.log($canvas_area.width(), $canvas_area.height(), viewport_width, viewport_height);
 	if (
-		helper_layer.canvas.width !== viewport_width * scale / magnification ||
-		helper_layer.canvas.height !== viewport_height * scale / magnification
+		hcanvas.width !== viewport_width * scalev ||
+		hcanvas.height !== viewport_height * scalev
 	) {
-		helper_layer.canvas.width = viewport_width * scale / magnification;
-		helper_layer.canvas.height = viewport_height * scale / magnification;
-		helper_layer.canvas.ctx.disable_image_smoothing();
-		helper_layer.width = viewport_width / magnification;
-		helper_layer.height = viewport_height / magnification;
+		hcanvas.width = viewport_width * scalev;
+		hcanvas.height = viewport_height * scalev;
+		hcanvas.ctx.disable_image_smoothing();
+		helper_layer.width = viewport_width * scalel;
+		helper_layer.height = viewport_height * scalel;
 	}
 	helper_layer.x = viewport_x / magnification;
 	helper_layer.y = viewport_y / magnification;
 	helper_layer.position();
-
-	var hcanvas = helper_layer.canvas;
-	var hctx = hcanvas.ctx;
 
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
 	
