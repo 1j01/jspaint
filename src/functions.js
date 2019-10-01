@@ -5,21 +5,28 @@ function update_magnified_canvas_size(){
 }
 function update_helper_layer() {
 	var scale = Math.floor(magnification * window.devicePixelRatio);
+	// var scale = Math.floor(window.devicePixelRatio);
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
 	}
+	var viewport_width = $canvas_area.width();
+	var viewport_height = $canvas_area.height();
+	var viewport_x = $canvas_area.scrollLeft();
+	var viewport_y = $canvas_area.scrollTop();
 	if (
-		helper_layer.canvas.width !== canvas.width * scale ||
-		helper_layer.canvas.height !== canvas.height * scale
+		helper_layer.canvas.width !== viewport_width * scale / magnification ||
+		helper_layer.canvas.height !== viewport_height * scale / magnification
 	) {
-		helper_layer.canvas.width = canvas.width * scale;
-		helper_layer.canvas.height = canvas.height * scale;
-		helper_layer.width = canvas.width;
-		helper_layer.height = canvas.height;
+		helper_layer.canvas.width = viewport_width * scale / magnification;
+		helper_layer.canvas.height = viewport_height * scale / magnification;
 		helper_layer.canvas.ctx.disable_image_smoothing();
-		helper_layer.position();
+		helper_layer.width = viewport_width / magnification;
+		helper_layer.height = viewport_height / magnification;
 	}
+	helper_layer.x = viewport_x / magnification;
+	helper_layer.y = viewport_y / magnification;
+	helper_layer.position();
 
 	var hcanvas = helper_layer.canvas;
 	var hctx = hcanvas.ctx;
