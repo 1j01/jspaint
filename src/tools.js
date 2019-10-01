@@ -191,7 +191,7 @@ tools = [{
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 	},
-	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount) {
+	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
 		var hairline_width = 1/scaled_by_amount;
 
 		var rect_x = ~~(x - eraser_size/2);
@@ -201,7 +201,7 @@ tools = [{
 		
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = hairline_width;
-		if (magnification >= 4 && show_grid) {
+		if (grid_visible) {
 			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
 		} else {
 			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);

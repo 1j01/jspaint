@@ -4,6 +4,8 @@ function update_magnified_canvas_size(){
 	$canvas.css("height", canvas.height * magnification);
 }
 function update_helper_layer() {
+	var grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;
+
 	var scale = Math.floor(magnification * window.devicePixelRatio);
 
 	if (!helper_layer) {
@@ -46,12 +48,12 @@ function update_helper_layer() {
 	hctx.translate(-viewport_x, -viewport_y);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewUnderGrid){
-			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, scale);
+			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, scale, grid_visible);
 		}
 	});
 	hctx.restore();
 
-	if (magnification >= 4 && show_grid) {
+	if (grid_visible) {
 		draw_grid(hctx, scale);
 	}
 
@@ -60,7 +62,7 @@ function update_helper_layer() {
 	hctx.translate(-viewport_x, -viewport_y);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewAboveGrid){
-			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, scale);
+			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, scale, grid_visible);
 		}
 	});
 	hctx.restore();
