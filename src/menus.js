@@ -278,8 +278,8 @@ var menus = {
 				},
 				{
 					item: "C&ustom...",
-					enabled: false, // @TODO
 					description: "Zooms the picture.",
+					action: show_custom_zoom_window,
 				},
 				$MenuBar.DIVIDER,
 				{

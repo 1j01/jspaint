@@ -10,7 +10,6 @@
 	* Related topics (I'd probably make this a heading with links instead of the weird context menu thing)
 * Update topics
 	* "To use black and white instead of color" ("If you change back to color, only new work will be in color." only applies if converting to black and white when switching to black and white mode)
-	* "To display gridlines" - View > Zoom > Custom?
 	* "To use a picture as the desktop background":
 	add a third step? It's not quite that easy (at least in the browser)
 	* "To create custom colors": way too OS-specific

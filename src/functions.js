@@ -83,6 +83,78 @@ function reset_magnification(){
 	set_magnification(1);
 }
 
+var $custom_zoom_window;
+function show_custom_zoom_window() {
+	if ($custom_zoom_window) {
+		$custom_zoom_window.close();
+	}
+	var $w = new $FormWindow("Custom Zoom");
+	$custom_zoom_window = $w;
+
+	// TODO: show Current zoom: blah% ?
+	var $fieldset = $(E("fieldset")).appendTo($w.$main);
+	$fieldset.append("<legend>Zoom to</legend>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='1'/>100%</label>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='2'/>200%</label>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='4'/>400%</label>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='6'/>600%</label>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='8'/>800%</label>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='really-custom'/><input type='number' min='10' max='1000' name='really-custom-zoom-input' value=''/>%</label>");
+	var is_custom = true;
+	$fieldset.find("input[type=radio]").get().forEach((el)=> {
+		if (parseFloat(el.value) === magnification) {
+			el.checked = true;
+			is_custom = false;
+		}
+	});
+	var $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
+	var $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
+
+	$really_custom_input.closest("label").on("click", function(e){
+		$really_custom_radio_option.prop("checked", true);
+		$really_custom_input[0].focus();
+	});
+
+	if (is_custom) {
+		$really_custom_input.val(magnification * 100);
+		$really_custom_radio_option.prop("checked", true);
+	}
+
+	$fieldset.find("label").css({display: "block"});
+
+	$w.$Button("Okay", function(){
+		var option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
+		var mag;
+		if(option_val === "really-custom"){
+			option_val = $really_custom_input.val();
+			if(`${option_val}`.match(/\dx$/)) { // ...you can't actually type an x; oh well...
+				mag = parseFloat(option_val);
+			}else if(`${option_val}`.match(/\d%?$/)) {
+				mag = parseFloat(option_val) / 100;
+			}
+			if(isNaN(mag)){
+				var $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
+				$msgw.$main.text("The value specified for custom zoom was invalid.");
+				$msgw.$Button("Okay", function(){
+					$msgw.close();
+				});
+				return;
+			}
+		}else{
+			mag = parseFloat(option_val);
+		}
+
+		set_magnification(mag);
+
+		$w.close();
+	})[0].focus();
+	$w.$Button("Cancel", function(){
+		$w.close();
+	});
+
+	$w.center();
+}
+
 function toggle_grid() {
 	show_grid = !show_grid;
 	// $G.trigger("option-changed");
