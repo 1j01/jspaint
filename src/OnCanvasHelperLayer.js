@@ -4,7 +4,6 @@ function OnCanvasHelperLayer(x, y, width, height, hideMainCanvasHandles, pixelRa
 	this.$el.addClass("helper-layer");
 	this.$el.css({
 		pointerEvents: "none",
-		overflow: "hidden",
 	});
 	this.position();
 	
