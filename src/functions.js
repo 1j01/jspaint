@@ -43,7 +43,7 @@ function update_helper_layer() {
 	
 	hctx.save();
 	hctx.scale(scale, scale);
-	// hctx.translate();
+	hctx.translate(-viewport_x, -viewport_y);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewUnderGrid){
 			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, scale);
@@ -56,8 +56,8 @@ function update_helper_layer() {
 	}
 
 	hctx.save();
-	// hctx.translate();
 	hctx.scale(scale, scale);
+	hctx.translate(-viewport_x, -viewport_y);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewAboveGrid){
 			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, scale);
