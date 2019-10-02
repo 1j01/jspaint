@@ -77,12 +77,9 @@ function update_disable_aa() {
 
 function set_magnification(scale){
 	magnification = scale;
-	if(scale > 1){
-		$choose_magnification.enlarged_magnification = scale;
+	if(scale !== 1){
+		return_to_magnification = scale;
 	}
-	// if(scale < 1){
-	// 	$choose_magnification.enlarged_magnification = 4;
-	// }
 	update_magnified_canvas_size();
 	$G.triggerHandler("resize"); // updates grid
 }

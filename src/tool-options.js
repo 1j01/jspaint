@@ -241,11 +241,6 @@ $choose_magnification.on("update", function(){
 		.css({position: "absolute", bottom: "-2px", left: 0, opacity: 0});
 });
 
-// The default enlarged (>1) magnification for when you use the tool
-// is 4x, which isn't an option you can get to from the tool options.
-$choose_magnification.enlarged_magnification = 4;
-
-
 var airbrush_sizes = [9, 16, 24];
 var $choose_airbrush_size = $Choose(
 	airbrush_sizes,

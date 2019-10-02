@@ -4,6 +4,7 @@ var transparency = false;
 var monochrome = false;
 
 var magnification = 1;
+var return_to_magnification = 4;
 
 var default_canvas_width = 683;
 var default_canvas_height = 384;

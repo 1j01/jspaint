@@ -320,10 +320,10 @@ tools = [{
 	passive: true,
 	// @TODO: choose and preview viewport with rectangular cursor
 	pointerdown: function(){
-		if(magnification > 1){
+		if(magnification !== 1){
 			reset_magnification();
 		}else{
-			set_magnification(this.$options.enlarged_magnification);
+			set_magnification(return_to_magnification);
 		}
 	},
 	$options: $choose_magnification
