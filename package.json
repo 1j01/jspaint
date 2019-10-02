@@ -69,6 +69,7 @@
     "electron-debug": "^3.0.1",
     "eslint": "6.4.0",
     "http-server": "^0.11.1",
+    "license-checker": "^25.0.1",
     "live-server": "^1.2.1",
     "parallelshell": "^3.0.2",
     "phantomcss": "^1.6.0"
@@ -83,6 +84,7 @@
     "dev": "live-server",
     "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
     "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
+    "license-checker": "license-checker --production --customPath ./customLicenseFormat.json --out 3rdpartylicenses.txt"
   },
   "repository": {
     "type": "git",

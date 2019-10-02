@@ -1,0 +1,501 @@
+├─ debug@2.6.9
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/visionmedia/debug
+│  ├─ licenseText: (The MIT License)
+
+Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+and associated documentation files (the 'Software'), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+│  └─ copyright: Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
+├─ electron-is-dev@1.1.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/sindresorhus/electron-is-dev
+│  ├─ url: sindresorhus.com
+│  ├─ licenseText: MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+│  └─ copyright: Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+├─ electron-squirrel-startup@1.0.0
+│  ├─ licenses: Apache-2.0
+│  ├─ repository: https://github.com/mongodb-js/electron-squirrel-startup
+│  ├─ url: http://imlucas.com
+│  ├─ licenseText: Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+"License" shall mean the terms and conditions for use, reproduction,
+and distribution as defined by Sections 1 through 9 of this document.
+
+"Licensor" shall mean the copyright owner or entity authorized by
+the copyright owner that is granting the License.
+
+"Legal Entity" shall mean the union of the acting entity and all
+other entities that control, are controlled by, or are under common
+control with that entity. For the purposes of this definition,
+"control" means (i) the power, direct or indirect, to cause the
+direction or management of such entity, whether by contract or
+otherwise, or (ii) ownership of fifty percent (50%) or more of the
+outstanding shares, or (iii) beneficial ownership of such entity.
+
+"You" (or "Your") shall mean an individual or Legal Entity
+exercising permissions granted by this License.
+
+"Source" form shall mean the preferred form for making modifications,
+including but not limited to software source code, documentation
+source, and configuration files.
+
+"Object" form shall mean any form resulting from mechanical
+transformation or translation of a Source form, including but
+not limited to compiled object code, generated documentation,
+and conversions to other media types.
+
+"Work" shall mean the work of authorship, whether in Source or
+Object form, made available under the License, as indicated by a
+copyright notice that is included in or attached to the work
+(an example is provided in the Appendix below).
+
+"Derivative Works" shall mean any work, whether in Source or Object
+form, that is based on (or derived from) the Work and for which the
+editorial revisions, annotations, elaborations, or other modifications
+represent, as a whole, an original work of authorship. For the purposes
+of this License, Derivative Works shall not include works that remain
+separable from, or merely link (or bind by name) to the interfaces of,
+the Work and Derivative Works thereof.
+
+"Contribution" shall mean any work of authorship, including
+the original version of the Work and any modifications or additions
+to that Work or Derivative Works thereof, that is intentionally
+submitted to Licensor for inclusion in the Work by the copyright owner
+or by an individual or Legal Entity authorized to submit on behalf of
+the copyright owner. For the purposes of this definition, "submitted"
+means any form of electronic, verbal, or written communication sent
+to the Licensor or its representatives, including but not limited to
+communication on electronic mailing lists, source code control systems,
+and issue tracking systems that are managed by, or on behalf of, the
+Licensor for the purpose of discussing and improving the Work, but
+excluding communication that is conspicuously marked or otherwise
+designated in writing by the copyright owner as "Not a Contribution."
+
+"Contributor" shall mean Licensor and any individual or Legal Entity
+on behalf of whom a Contribution has been received by Licensor and
+subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of
+this License, each Contributor hereby grants to You a perpetual,
+worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+copyright license to reproduce, prepare Derivative Works of,
+publicly display, publicly perform, sublicense, and distribute the
+Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of
+this License, each Contributor hereby grants to You a perpetual,
+worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+(except as stated in this section) patent license to make, have made,
+use, offer to sell, sell, import, and otherwise transfer the Work,
+where such license applies only to those patent claims licensable
+by such Contributor that are necessarily infringed by their
+Contribution(s) alone or by combination of their Contribution(s)
+with the Work to which such Contribution(s) was submitted. If You
+institute patent litigation against any entity (including a
+cross-claim or counterclaim in a lawsuit) alleging that the Work
+or a Contribution incorporated within the Work constitutes direct
+or contributory patent infringement, then any patent licenses
+granted to You under this License for that Work shall terminate
+as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the
+Work or Derivative Works thereof in any medium, with or without
+modifications, and in Source or Object form, provided that You
+meet the following conditions:
+
+(a) You must give any other recipients of the Work or
+Derivative Works a copy of this License; and
+
+(b) You must cause any modified files to carry prominent notices
+stating that You changed the files; and
+
+(c) You must retain, in the Source form of any Derivative Works
+that You distribute, all copyright, patent, trademark, and
+attribution notices from the Source form of the Work,
+excluding those notices that do not pertain to any part of
+the Derivative Works; and
+
+(d) If the Work includes a "NOTICE" text file as part of its
+distribution, then any Derivative Works that You distribute must
+include a readable copy of the attribution notices contained
+within such NOTICE file, excluding those notices that do not
+pertain to any part of the Derivative Works, in at least one
+of the following places: within a NOTICE text file distributed
+as part of the Derivative Works; within the Source form or
+documentation, if provided along with the Derivative Works; or,
+within a display generated by the Derivative Works, if and
+wherever such third-party notices normally appear. The contents
+of the NOTICE file are for informational purposes only and
+do not modify the License. You may add Your own attribution
+notices within Derivative Works that You distribute, alongside
+or as an addendum to the NOTICE text from the Work, provided
+that such additional attribution notices cannot be construed
+as modifying the License.
+
+You may add Your own copyright statement to Your modifications and
+may provide additional or different license terms and conditions
+for use, reproduction, or distribution of Your modifications, or
+for any such Derivative Works as a whole, provided Your use,
+reproduction, and distribution of the Work otherwise complies with
+the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise,
+any Contribution intentionally submitted for inclusion in the Work
+by You to the Licensor shall be under the terms and conditions of
+this License, without any additional terms or conditions.
+Notwithstanding the above, nothing herein shall supersede or modify
+the terms of any separate license agreement you may have executed
+with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade
+names, trademarks, service marks, or product names of the Licensor,
+except as required for reasonable and customary use in describing the
+origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or
+agreed to in writing, Licensor provides the Work (and each
+Contributor provides its Contributions) on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied, including, without limitation, any warranties or conditions
+of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+PARTICULAR PURPOSE. You are solely responsible for determining the
+appropriateness of using or redistributing the Work and assume any
+risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory,
+whether in tort (including negligence), contract, or otherwise,
+unless required by applicable law (such as deliberate and grossly
+negligent acts) or agreed to in writing, shall any Contributor be
+liable to You for damages, including any direct, indirect, special,
+incidental, or consequential damages of any character arising as a
+result of this License or out of the use or inability to use the
+Work (including but not limited to damages for loss of goodwill,
+work stoppage, computer failure or malfunction, or any and all
+other commercial damages or losses), even if such Contributor
+has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing
+the Work or Derivative Works thereof, You may choose to offer,
+and charge a fee for, acceptance of support, warranty, indemnity,
+or other liability obligations and/or rights consistent with this
+License. However, in accepting such obligations, You may act only
+on Your own behalf and on Your sole responsibility, not on behalf
+of any other Contributor, and only if You agree to indemnify,
+defend, and hold each Contributor harmless for any liability
+incurred by, or claims asserted against, such Contributor by reason
+of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+APPENDIX: How to apply the Apache License to your work.
+
+To apply the Apache License to your work, attach the following
+boilerplate notice, with the fields enclosed by brackets "{}"
+replaced with your own identifying information. (Don't include
+the brackets!)  The text should be enclosed in the appropriate
+comment syntax for the file format. We also recommend that a
+file or class name and description of purpose be included on the
+same "printed page" as the copyright notice for easier
+identification within third-party archives.
+
+Copyright {yyyy} {name of copyright owner}
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+│  └─ copyright: Copyright {yyyy} {name of copyright owner}
+├─ jspaint@1.0.0
+│  ├─ licenses: Custom: https://jspaint.app
+│  ├─ repository: https://github.com/1j01/jspaint
+│  └─ licenseText: # [![](images/icons/32x32.png) JS Paint](https://jspaint.app)
+
+A nice web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
+
+<!-- TODO: You can also run it as a [desktop app...](#desktop-app) -->
+
+
+The goal is to remake MS Paint
+(including its [little-known features](#did-you-know)),
+improve on it, and to [extend](#extended-editing) the types of images it can edit.
+So far, it does this pretty well.
+
+![Screenshot](images/meta/main-screenshot.png)
+
+Ah yes, good old paint. Not the one with the [ribbons][]
+or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
+And sorry, not the even newer [Paint 3D][].
+
+[ribbons]: https://www.google.com/search?tbm=isch&q=MS+Paint+Windows+7+ribbons "Google Search: MS Paint Windows 7 ribbons"
+[Fresh Paint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
+[Paint 3D]: https://www.microsoft.com/en-us/store/p/paint-3d-preview/9nblggh5fv99
+
+Windows 95, 98, and XP were the golden years of paint.
+You had a tool box and a color box, a foreground color and a background color,
+and that was all you needed.
+
+Things were simple.
+
+But we want to undo more than three actions.
+We want to edit transparent images.
+We can't just keep using the old paint.
+
+So that's why I'm making JS Paint.
+I want to bring good old paint into the modern era.
+
+
+#### Current improvements include:
+
+* Cross-platform
+* Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
+  or a measly 50 in Windows 7)
+* Autosaves if you allow local storage.
+  (Try refreshing the page to make sure this works, and to check it out)
+* Edit transparent images! To create a transparent image,
+  go to **Image > Attributes...** and select Transparent,
+  then Okay, and then **Image > Clear Image** or use the Eraser tool.
+  Images with *any* transparent pixels will open in Transparent mode.
+* Go to **View > Extras Menu** to enable access to additional features not available in MS Paint
+* Switch themes from the Extras menu
+* Create an animated GIF from the current document history.
+  Accessible from the Extras menu or with <kbd>Ctrl+Shift+G</kbd>.
+  It's pretty nifty, you should try it out!
+  You might want to limit the size of the image though.
+* You can shoot at it [Asteroids style](https://kickassapp.com/)
+* When you do **Edit > Paste From...** you can select transparent images and GIFs.
+  ~~You can even paste a transparent animated GIF and then
+  hold <kbd>Shift</kbd> while dragging the selection to
+  smear it across the canvas *while it animates*!~~
+  Update: This was [due to not-to-spec behavior in Chrome.](https://christianheilmann.com/2014/04/16/browser-inconsistencies-animated-gif-and-drawimage/)
+  I may reimplement this in the future as I really liked this feature.
+* You can open SVG files (because browsers support SVG).
+  It's still a completely raster image editor though.
+* You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
+* Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd> and <kbd>></kbd>)
+* Rotate by any arbitrary angle in **Image > Flip/Rotate**
+* In **Image > Stretch/Skew**, you can stretch more than 500% at once
+* Replace a color in the entire image by holding <kbd>Shift</kbd> and using the fill tool (AKA non-contiguous fill)
+* Rudimentary **multi-user** support.
+  Start up a session at
+  [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
+  and send the link to your friends!
+  It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
+  Sessions are not private, and you may lose your work at any time.
+  If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
+* Load many different palette formats with **Colors > Get Colors**.
+  (I made a [library](https://github.com/1j01/palette.js/) for this.)
+* Mobile support
+* Click/tap the selected colors area to swap the foreground and background colors
+
+![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
+
+
+#### Possible future improvements:
+
+* [Extended Editing](#extended-editing)
+* Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
+  (or maybe that should be the default, really!)
+* <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
+* Optional fill tolerance (slider that you enable from a settings menu?)
+* Interactive tutorial(s)?
+
+
+#### Limitations:
+
+A lot of stuff isn't done yet.
+See: [the big long todo list.](TODO.md)
+
+Full clipboard support in the web app requires a browser supporting the [Async Clipboard API w/ Images](https://developers.google.com/web/updates/2019/07/image-support-for-async-clipboard), namely Chrome 76+ at the time of writing.
+
+In other browsers you can still can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
+but data copied from JS Paint can only be pasted into other instances of JS Paint.
+External images can be pasted in.
+
+There's also a [desktop app](#desktop-app) version you can install that has full clipboard support.
+In which you can also set the wallpaper.
+
+
+## Extended Editing
+
+I want to make JS Paint to be able to edit...
+
+* Transparent [PNG][]s - Done!
+  Images that are partially transparent will automatically open in Transparent mode.
+  To enable transparency for an image, go to **Image > Attributes...** or press <kbd>Ctrl+E</kbd>,
+  select Transparent, and hit Okay.
+  Then you'll want to remove some of the background.
+  You can use the Eraser tool a bit, then use the Color Picker to
+  pick up where you erased and then use the Fill tool to remove bigger areas.
+* Animated [GIF][]s
+  (yes, that entails a fully featured (but simple) animation editor). -
+  Currently you can only make GIFs of the document *history*,
+  with <kbd>Ctrl+Shift+G</kbd> or from the Extras menu.
+* Animated Transparent [APNG][]s
+  (better than GIFs, but with less support)
+* Multi-size Icons ([ICO][] for windows and [ICNS][] for mac)
+* [Scalable Vector Graphics][SVG] (kidding) -
+  Actually, it could always open SVG files in browsers that can handle SVGs,
+  and I've made it try not to save over the original SVG.
+  That's pretty decent SVG support for a 100% raster image editor.
+* [Text files][TXT] (definitely just kidding maybe)
+* Tessellating patterns, and textures on 3D models;
+  that might be a pipe dream, but [then again...](https://github.com/1j01/pipes) [hm...](https://github.com/1j01/mopaint)
+
+
+[PNG]: https://en.wikipedia.org/wiki/Portable_Network_Graphics "Portable Network Graphics"
+[GIF]: https://en.wikipedia.org/wiki/Graphics_Interchange_Format "Graphics Interchange Format"
+[APNG]: https://en.wikipedia.org/wiki/APNG "Animated Portable Network Graphics"
+[ICO]: https://en.wikipedia.org/wiki/ICO_(file_format) "Microsoft Icon Image format"
+[ICNS]: https://en.wikipedia.org/wiki/Apple_Icon_Image_format "Apple Icon Image format"
+[SVG]: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics "Scalable Vector Graphics"
+[TXT]: https://en.wikipedia.org/wiki/Text_file "Text file"
+
+
+## Did you know?
+
+* There's a black and white mode with *patterns* instead of colors in the palette,
+  which you can get to from **Image > Attributes...**
+
+* You can drag the color box and tool box around if you grab them by the right place.
+  You can even drag them out into little windows.
+  You can dock the windows back to the side by double-clicking on their title bars.
+
+* In addition to the left-click foreground color and the right-click background color,
+  there's a third color you can access by holding <kbd>Ctrl</kbd> while you draw.
+  It starts out with no color so you'll need to hold <kbd>Ctrl</kbd> and select a color first.
+  The fancy thing about this color slot is you can
+  press and release <kbd>Ctrl</kbd> to switch colors while drawing.
+
+* You can apply image transformations like Flip/Rotate, Stretch/Skew or Invert (in the Image menu) either to the whole image or to a selection.
+  Try scribbling with the Free-Form Select tool and the doing **Image > Invert**
+
+* These Tips and Tricks from [a tutorial for MS Paint](https://www.albinoblacksheep.com/tutorial/mspaint)
+  also work in JS Paint if they have a checkmark:
+
+	* [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to adjust brush size)
+	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
+	* [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
+	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
+	* [x] Color Replacement (right mouse button with Eraser to selectively replace the foreground color with the background color)
+	* [ ] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 6x+)
+	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing.
+	      I also made it redoable, in case you do it by accident!)
+	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
+
+
+## Desktop App
+
+I've started work on a desktop app, built with [Electron][] and [Electron Forge][].
+
+There are no releases yet, but the groundwork has been laid, and several features implemented. 
+
+If you want to help out, see Development Setup below, and comment on [this issue](https://github.com/1j01/jspaint/issues/2) to show your interest.
+
+[Electron]: https://electronjs.org/
+[Electron Forge]: https://electronforge.io/
+
+
+## Development Setup
+
+[Clone the repo.](https://help.github.com/articles/cloning-a-repository/)
+
+Install [Node.js][] if you don't have it, then open up a command prompt / terminal in the project directory.
+
+### Web App (https://jspaint.app)
+
+You just need an HTTP server.
+
+[Live Server][] is great; it auto reloads when you save changes.
+
+You can install it globally with `npm i -g live-server`
+and run it with `live-server`
+
+It's also included in `package.json` so if you've already installed dependencies (`npm i`) you can use `npm run dev` to run it.
+
+### Desktop App (Electron)
+
+- Install dependencies with `npm i`
+- Start the electron app with `npm start`
+
+[electron-debug][] and [devtron][] are included, so you can use <kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools, and there's a Devtron tab with tools specific to Electron like an IPC message inspector.
+
+You can build for production with `npm run make`
+
+[Live Server]: https://github.com/tapio/live-server
+[Node.js]: https://nodejs.org/
+[electron-debug]: https://github.com/sindresorhus/electron-debug
+[devtron]: https://electronjs.org/devtron
+├─ ms@2.0.0
+│  ├─ licenses: MIT
+│  ├─ repository: https://github.com/zeit/ms
+│  ├─ licenseText: The MIT License (MIT)
+
+Copyright (c) 2016 Zeit, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+│  └─ copyright: Copyright (c) 2016 Zeit, Inc.
+└─ wallpaper@4.4.1
+   ├─ licenses: MIT
+   ├─ repository: https://github.com/sindresorhus/wallpaper
+   ├─ url: sindresorhus.com
+   ├─ licenseText: MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+   └─ copyright: Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
