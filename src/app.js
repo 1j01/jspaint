@@ -490,7 +490,9 @@ function canvas_pointer_move(e){
 	// (Note: pointermove also occurs when the set of buttons pressed changes,
 	// except when another event would fire like pointerdown)
 	if(pointer_active && e.button != -1){
-		if(e.pointerType != pointer_type || e.buttons != pointer_buttons){
+		// compare buttons other than middle mouse button by using bitwise OR to make that bit of the number the same
+		const MMB = 4;
+		if(e.pointerType != pointer_type || (e.buttons | MMB) != (pointer_buttons | MMB)){
 			pointer_active = false;
 			cancel();
 			return;
