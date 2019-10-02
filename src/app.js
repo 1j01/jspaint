@@ -457,11 +457,13 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 function tool_go(selected_tool, event_name){
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
 
-	if(selected_tool.shape){
-		var previous_imagedata = undos[undos.length-1];
-		if(previous_imagedata){
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.putImageData(previous_imagedata, 0, 0);
+	if(selected_tools.length <= 1){
+		if(selected_tool.shape){
+			var previous_imagedata = undos[undos.length-1];
+			if(previous_imagedata){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.putImageData(previous_imagedata, 0, 0);
+			}
 		}
 	}
 	if(selected_tool.shape){
