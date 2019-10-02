@@ -424,7 +424,7 @@ function e2c(e){
 	};
 }
 
-function update_fill_and_stroke_colors_and_lineWidth() {
+function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	ctx.lineWidth = stroke_size;
 
 	var reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
@@ -438,18 +438,7 @@ function update_fill_and_stroke_colors_and_lineWidth() {
 	fill_color_k =
 	stroke_color_k =
 		ctrl ? "ternary" : ((reverse ^ reverse_because_fill_only) ? "background" : "foreground");
-}
-
-function tool_go(selected_tool, event_name){
-	update_fill_and_stroke_colors_and_lineWidth();
-
-	if(selected_tool.shape){
-		var previous_imagedata = undos[undos.length-1];
-		if(previous_imagedata){
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.putImageData(previous_imagedata, 0, 0);
-		}
-	}
+		
 	if(selected_tool.shape || selected_tool.shape_colors){
 		if(!selected_tool.stroke_only){
 			if((reverse ^ reverse_because_fill_only)){
@@ -462,6 +451,18 @@ function tool_go(selected_tool, event_name){
 		}
 		ctx.fillStyle = fill_color = colors[fill_color_k];
 		ctx.strokeStyle = stroke_color = colors[stroke_color_k];
+	}
+}
+
+function tool_go(selected_tool, event_name){
+	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
+
+	if(selected_tool.shape){
+		var previous_imagedata = undos[undos.length-1];
+		if(previous_imagedata){
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.putImageData(previous_imagedata, 0, 0);
+		}
 	}
 	if(selected_tool.shape){
 		selected_tool.shape(ctx, pointer_start.x, pointer_start.y, pointer.x-pointer_start.x, pointer.y-pointer_start.y);

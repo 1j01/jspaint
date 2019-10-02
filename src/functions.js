@@ -4,7 +4,7 @@ function update_magnified_canvas_size(){
 	$canvas.css("height", canvas.height * magnification);
 }
 function update_helper_layer() {
-	update_fill_and_stroke_colors_and_lineWidth();
+	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
 	
 	var grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;
 
