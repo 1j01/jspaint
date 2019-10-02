@@ -7,8 +7,8 @@
 	"display": "standalone",
 	"start_url": ".",
 	"lang": "en-US",
-	"theme_color": "#008080",
-	"background_color": "#008080",
+	"theme_color": "#00008b",
+	"background_color": "#c0c0c0",
 	"screenshots": [
 		{
 			"src": "images/meta/main-screenshot.png",
