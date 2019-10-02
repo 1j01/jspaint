@@ -72,7 +72,7 @@ function update_helper_layer() {
 function update_disable_aa() {
 	var dots_per_canvas_px = window.devicePixelRatio * magnification;
 	var round = Math.floor(dots_per_canvas_px) === dots_per_canvas_px;
-	$canvas.toggleClass("disable-aa", dots_per_canvas_px >= 3 || round);
+	$canvas_area.toggleClass("disable-aa-for-things-at-main-canvas-scale", dots_per_canvas_px >= 3 || round);
 }
 
 function set_magnification(scale){

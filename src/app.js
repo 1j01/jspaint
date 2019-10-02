@@ -11,6 +11,7 @@ var my_canvas_width = default_canvas_width;
 var my_canvas_height = default_canvas_height;
 
 var canvas = new Canvas();
+canvas.classList.add("main-canvas");
 var ctx = canvas.ctx;
 
 var palette = [

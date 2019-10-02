@@ -23,7 +23,8 @@ body {
 		image-rendering: -moz-crisp-edges;
 	}
 }
-.disable-aa {
+.disable-aa-for-things-at-main-canvas-scale .main-canvas,
+.disable-aa-for-things-at-main-canvas-scale .selection canvas {
 	image-rendering: crisp-edges;
 	image-rendering: pixelated;
 	image-rendering: -moz-crisp-edges;
