@@ -136,6 +136,7 @@ function $Window($component){
 		$("body").addClass("dragging");
 	});
 	$G.on("pointerup", function(e){
+		$w.applyBounds();
 		$G.off("pointermove", drag);
 		$("body").removeClass("dragging");
 	});
