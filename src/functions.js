@@ -3,7 +3,15 @@ function update_magnified_canvas_size(){
 	$canvas.css("width", canvas.width * magnification);
 	$canvas.css("height", canvas.height * magnification);
 }
-function update_helper_layer() {
+var remembered_event_for_updating_pointer_on_scroll;
+function update_helper_layer(e) {
+	if (e) {
+		remembered_event_for_updating_pointer_on_scroll = e; // XXX: TODO: remember less
+	}
+	if (remembered_event_for_updating_pointer_on_scroll) {
+		pointer = e2c(remembered_event_for_updating_pointer_on_scroll);
+	}
+
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
 	
 	var grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;

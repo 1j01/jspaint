@@ -607,6 +607,7 @@ $canvas.on("pointerdown", function(e){
 	pointer_start = pointer_previous = pointer = e2c(e);
 
 	var pointerdown_action = function(){
+	// TODO for multitools: don't register event listeners for each tool
 	selected_tools.forEach((selected_tool)=> {
 
 		if(selected_tool.paint || selected_tool.pointerdown){
