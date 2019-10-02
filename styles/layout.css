@@ -66,16 +66,6 @@ html, body, .jspaint {
 		display: none !important;
 	}
 }
-.menus {
-	z-index: 5000; /*
-		really high so the menu popups go over subwindows (which dynamically increase z-index)
-		and also over other-user cursors in multi-user mode
-		also at least 2 so popups go over the canvas handles,
-		and at least 1 so that the modern theme's menubar can have a shadow
-	*/
-	/* TODO: put the menu popups in their own container, separate from the menubar */
-	/* FIXME: ..especially since now the text of the buttons goes over windows */
-}
 .component-area,
 .menus *,
 .window-titlebar {
@@ -128,7 +118,12 @@ html, body, .jspaint {
 	position: absolute;
 	top: 100%;
 	left: 0;
-	z-index: 4;
+	z-index: 5000; /*
+		really high so the menu popups go over subwindows (which dynamically increase z-index)
+		and also over other-user cursors in multi-user mode
+		also at least 2 so popups go over the canvas handles,
+		and at least 1 so that the modern theme's menubar can have a shadow
+	*/
 	box-sizing: border-box;
 }
 .menu-popup-table {
