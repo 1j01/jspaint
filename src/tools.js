@@ -192,32 +192,62 @@ tools = [{
 		delete this.y2;
 		$canvas_handles.show();
 	},
-	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+	drawDots: function(ctx, x, y, go_x, go_y) {
+
+		const len = 4 / magnification;
+		const w = 1;
+		// const hairline_width = 1/scaled_by_amount;
+
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.globalCompositeOperation = "difference";
+		// ctx.fillStyle = "white";
+		// ctx.fillRect(0, 0, 100, 100);
+
+		ctx.translate(0.5, 0.5);
+		ctx.strokeStyle = "white";
+		ctx.lineWidth = w;
+		ctx.beginPath();
+		if (go_x) {
+			for (var gone_x=0; gone_x<go_x; gone_x += len * 2) {
+				ctx.moveTo(gone_x, 0);
+				ctx.lineTo(gone_x + len, 0);
+			}
+		} else {
+			for (var gone_y=0; gone_y<go_y; gone_y += len * 2) {
+				ctx.moveTo(0, gone_y);
+				ctx.lineTo(0, gone_y + len);
+			}
+		}
+		ctx.stroke();
+		ctx.restore();
+	},
+	// TODO: might be above? but would need to do things differently wrt drawImage and inverting and the grid
+	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		if(!pointer_active && !pointer_over_canvas){return;}
+		if(typeof this.x1 === "undefined"){return;}
+
 		// draw selection border
 
 		// the dots of the border are sized such that at 4x zoom, they're squares equal to one canvas pixel
 		// they're off by a screen pixel tho
 		
-		const len = 4 / magnification;
-		const w = 1;
-		
-		if(!pointer_active && !pointer_over_canvas){return;}
-		var hairline_width = 1/scaled_by_amount;
+		ctx.drawImage(canvas, 0, 0);
 
 		var rect_x = ~~(this.x1);
 		var rect_y = ~~(this.y1);
 		var rect_w = ~~(this.x2 - this.x1);
 		var rect_h = ~~(this.y2 - this.y1);
-		
+		this.drawDots(ctx, rect_x, rect_y, rect_w, 0);
+		this.drawDots(ctx, rect_x, rect_y, 0, rect_h);
+		this.drawDots(ctx, rect_x + rect_w, rect_y, 0, rect_h);
+		this.drawDots(ctx, rect_x, rect_y + rect_h, rect_w, 0);
 
-		
-		ctx.strokeStyle = "red";
-		ctx.lineWidth = hairline_width;
-		if (grid_visible) {
-			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
-		} else {
-			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
-		}
+		// if (grid_visible) {
+		// 	ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
+		// } else {
+		// 	ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
+		// }
 	},
 	$options: $choose_transparent_mode
 }, {
