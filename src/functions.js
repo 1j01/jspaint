@@ -763,6 +763,7 @@ function cancel(){
 	);
 	if(!passive){ undo(); }
 	$G.triggerHandler("pointerup", "cancel");
+	update_helper_layer();
 }
 function this_ones_a_frame_changer(){
 	deselect();
