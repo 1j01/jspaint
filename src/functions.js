@@ -758,7 +758,10 @@ function redo(){
 	return true;
 }
 function cancel(){
-	if(!selected_tool.passive){ undo(); }
+	var passive = selected_tools.every((tool)=>
+		(typeof tool.passive === "function") ? tool.passive() : tool.passive
+	);
+	if(!passive){ undo(); }
 	$G.triggerHandler("pointerup", "cancel");
 }
 function this_ones_a_frame_changer(){

@@ -19,8 +19,11 @@
 		debug_event(e, synthetic);
 		if(synthetic){ return; }
 		
-		// If you're using the fill tool
-		if(selected_tool.name.match(/Fill/)){
+		// If you're using the fill tool, basically
+		var immediate_action = selected_tools.some((tool)=>
+			tool.pointerdown && !tool.pointermove && !tool.paint && !tool.cancel && !tool.passive
+		)
+		if(immediate_action){
 			// A change might occur immediately
 			may_be_changed();
 		}else{
