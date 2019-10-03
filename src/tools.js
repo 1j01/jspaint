@@ -6,7 +6,7 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
 
-	// A canvas for rendering a preview of the shape
+	// A canvas for rendering a preview of the selection polygon
 	preview_canvas: null,
 	
 	// The vertices of the polygon
@@ -107,9 +107,9 @@ tools = [{
 			this.x_min,
 			this.y_min,
 			this.x_max - this.x_min,
-			this.y_max - this.y_min
+			this.y_max - this.y_min,
+			contents_within_polygon
 		);
-		selection.instantiate(contents_within_polygon);
 		selection.cut_out_background();
 	},
 	cancel: function(){
@@ -135,54 +135,84 @@ tools = [{
 	passive: true,
 	drag_start_x: 0,
 	drag_start_y: 0,
+	
 	pointerdown: function(){
 		this.drag_start_x = pointer.x;
 		this.drag_start_y = pointer.y;
 		if(selection){
-			selection.draw();
+			selection.draw(); // TODO: isn't this.. not passive??
 			selection.destroy();
 			selection = null;
 		}
-		var pointer_has_moved = false;
-		$G.one("pointermove", function(){
-			pointer_has_moved = true;
-		});
-		$G.one("pointerup", function(){
-			if(!pointer_has_moved && selection){
-				selection.draw();//?
-				selection.destroy();
-				selection = null;
-			}
-		});
-		selection = new OnCanvasSelection(pointer.x, pointer.y, 1, 1);
+		// TODO: port this behavior over
+		// var pointer_has_moved = false;
+		// $G.one("pointermove", function(){
+		// 	pointer_has_moved = true;
+		// });
+		// $G.one("pointerup", function(){
+		// 	if(!pointer_has_moved && selection){
+		// 		selection.draw();//?
+		// 		selection.destroy();
+		// 		selection = null;
+		// 	}
+		// });
 	},
 	paint: function(){
-		if(!selection){ return; }
-		var x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
-		var y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
-		var x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
-		var y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
-		selection.x = x1;
-		selection.y = y1;
-		selection.width = Math.max(1, x2 - x1);
-		selection.height = Math.max(1, y2 - y1);
-		selection.position();
+		this.x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
+		this.y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
+		this.x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
+		this.y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
 	},
 	pointerup: function(){
-		if(!selection){ return; }
-		
+		if(selection){
+			selection.draw(); // TODO: isn't this.. not passive??
+			selection.destroy();
+			selection = null;
+		}
+		selection = new OnCanvasSelection(this.x1, this.y1, this.x2 - this.x1, this.y2 - this.y1);
+		delete this.x1;
+		delete this.x2;
+		delete this.y1;
+		delete this.y2;
+
 		if(ctrl){
 			selection.crop();
 			selection.destroy();
 			selection = null;
-		}else{
-			selection.instantiate();
 		}
 	},
 	cancel: function(){
-		if(!selection){return;}
-		selection.destroy();
-		selection = null;
+		delete this.x1;
+		delete this.x2;
+		delete this.y1;
+		delete this.y2;
+	},
+	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		// draw selection border
+
+		// the dots of the border are sized such that at 4x zoom, they're squares equal to one canvas pixel
+		// they're off by a screen pixel tho
+		
+		const len = 4 / magnification;
+		const w = 1;
+		
+		if(!pointer_active && !pointer_over_canvas){return;}
+		var hairline_width = 1/scaled_by_amount;
+
+		var rect_x = ~~(this.x1);
+		var rect_y = ~~(this.y1);
+		var rect_w = ~~(this.x2 - this.x1);
+		var rect_h = ~~(this.y2 - this.y1);
+		
+
+		
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = hairline_width;
+		if (grid_visible) {
+			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
+		} else {
+			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
+		}
 	},
 	$options: $choose_transparent_mode
 }, {

@@ -1,5 +1,5 @@
 
-function OnCanvasSelection(x, y, width, height){
+function OnCanvasSelection(x, y, width, height, _img){
 	var sel = this;
 	OnCanvasObject.call(sel, x, y, width, height, true);
 	
@@ -22,6 +22,91 @@ function OnCanvasSelection(x, y, width, height){
 		}
 	};
 	$G.on("option-changed", this._on_option_changed);
+
+	
+	sel.$el.css({
+		cursor: Cursor(["move", [8, 8], "move"])
+	});
+	sel.$el.attr("touch-action", "none");
+	sel.position();
+	
+	if(_img){
+		// (this applies when pasting a selection)
+		// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
+		// (width vs naturalWidth?)
+		// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
+		sel.source_canvas = new Canvas(_img);
+		// TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
+		// but maybe we should assert in some way that the widths are the same, or resize the selection?
+		if(sel.source_canvas.width !== sel.width){ sel.source_canvas.width = sel.width; }
+		if(sel.source_canvas.height !== sel.height){ sel.source_canvas.height = sel.height; }
+		sel.canvas = new Canvas(sel.source_canvas);
+	}else{
+		sel.source_canvas = new Canvas(sel.width, sel.height);
+		sel.source_canvas.ctx.drawImage(
+			canvas,
+			sel.x, sel.y,
+			sel.width, sel.height,
+			0, 0,
+			sel.width, sel.height
+		);
+		sel.canvas = new Canvas(sel.source_canvas);
+		// if(!_passive){
+		// 	sel.cut_out_background();
+		// }
+	}
+	sel.$el.append(sel.canvas);
+	
+	sel.$handles = $Handles(sel.$el, sel.canvas, {outset: 2});
+	
+	sel.$el.on("user-resized", function(e, delta_x, delta_y, width, height){
+		sel.x += delta_x;
+		sel.y += delta_y;
+		sel.width = width;
+		sel.height = height;
+		sel.position();
+		sel.resize();
+	});
+	
+	var mox, moy;
+	var pointermove = function(e){
+		var m = e2c(e);
+		sel.x = Math.max(Math.min(m.x - mox, canvas.width), -sel.width);
+		sel.y = Math.max(Math.min(m.y - moy, canvas.height), -sel.height);
+		sel.position();
+		
+		if(e.shiftKey){
+			sel.draw();
+		}
+	};
+	
+	sel.canvas_pointerdown = function(e){
+		e.preventDefault();
+		
+		var rect = sel.canvas.getBoundingClientRect();
+		var cx = e.clientX - rect.left;
+		var cy = e.clientY - rect.top;
+		mox = ~~(cx / rect.width * sel.canvas.width);
+		moy = ~~(cy / rect.height * sel.canvas.height);
+		
+		$G.on("pointermove", pointermove);
+		$G.one("pointerup", function(){
+			$G.off("pointermove", pointermove);
+		});
+		
+		undoable(null, ()=> {
+			sel.cut_out_background();
+			// TODO: how should this work for macOS? where ctrl+click = secondary click?
+			if(e.shiftKey || e.ctrlKey){
+				sel.draw();
+			}
+		});
+	};
+	
+	$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
+	$canvas_area.trigger("resize");
+	$status_position.text("");
+	$status_size.text("");
 }
 
 OnCanvasSelection.prototype = Object.create(OnCanvasObject.prototype);
@@ -29,109 +114,6 @@ OnCanvasSelection.prototype = Object.create(OnCanvasObject.prototype);
 OnCanvasSelection.prototype.position = function(){
 	OnCanvasObject.prototype.position.call(this, true);
 }
-
-OnCanvasSelection.prototype.instantiate = function(_img, _passive){
-	var sel = this;
-	
-	if (sel.$el.hasClass("instantiated")) {
-		// for silly multitools feature
-		// TODO: select a rectangle minus the polygon, or xor the polygon
-		return;
-	}
-
-	sel.$el.addClass("instantiated").css({
-		cursor: Cursor(["move", [8, 8], "move"])
-	});
-	sel.$el.attr("touch-action", "none");
-	sel.position();
-	
-	if(_passive){
-		instantiate();
-	}else if(!undoable(instantiate)){
-		sel.destroy();
-	}
-	
-	function instantiate(){
-		if(_img){
-			// (this applies when pasting a selection)
-			// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
-			// (width vs naturalWidth?)
-			// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
-			sel.source_canvas = new Canvas(_img);
-			// TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
-			// but maybe we should assert in some way that the widths are the same, or resize the selection?
-			if(sel.source_canvas.width !== sel.width){ sel.source_canvas.width = sel.width; }
-			if(sel.source_canvas.height !== sel.height){ sel.source_canvas.height = sel.height; }
-			sel.canvas = new Canvas(sel.source_canvas);
-		}else{
-			sel.source_canvas = new Canvas(sel.width, sel.height);
-			sel.source_canvas.ctx.drawImage(
-				canvas,
-				sel.x, sel.y,
-				sel.width, sel.height,
-				0, 0,
-				sel.width, sel.height
-			);
-			sel.canvas = new Canvas(sel.source_canvas);
-			if(!_passive){
-				sel.cut_out_background();
-			}
-		}
-		sel.$el.append(sel.canvas);
-		
-		sel.$handles = $Handles(sel.$el, sel.canvas, {outset: 2});
-		
-		sel.$el.on("user-resized", function(e, delta_x, delta_y, width, height){
-			sel.x += delta_x;
-			sel.y += delta_y;
-			sel.width = width;
-			sel.height = height;
-			sel.position();
-			sel.resize();
-		});
-		
-		var mox, moy;
-		var pointermove = function(e){
-			var m = e2c(e);
-			sel.x = Math.max(Math.min(m.x - mox, canvas.width), -sel.width);
-			sel.y = Math.max(Math.min(m.y - moy, canvas.height), -sel.height);
-			sel.position();
-			
-			if(e.shiftKey){
-				sel.draw();
-			}
-		};
-		
-		sel.canvas_pointerdown = function(e){
-			e.preventDefault();
-			
-			var rect = sel.canvas.getBoundingClientRect();
-			var cx = e.clientX - rect.left;
-			var cy = e.clientY - rect.top;
-			mox = ~~(cx / rect.width * sel.canvas.width);
-			moy = ~~(cy / rect.height * sel.canvas.height);
-			
-			$G.on("pointermove", pointermove);
-			$G.one("pointerup", function(){
-				$G.off("pointermove", pointermove);
-			});
-			
-			if(e.shiftKey){
-				sel.draw();
-			}
-			// TODO: how should this work for macOS? where ctrl+click = secondary click?
-			else if(e.ctrlKey){
-				sel.draw();
-			}   
-		};
-		
-		$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
-		$canvas_area.trigger("resize");
-		$status_position.text("");
-		$status_size.text("");
-		
-	}
-};
 
 OnCanvasSelection.prototype.cut_out_background = function(){
 	var sel = this;
@@ -301,9 +283,9 @@ OnCanvasSelection.prototype.destroy = function(){
 
 OnCanvasSelection.prototype.crop = function(){
 	var sel = this;
-	sel.instantiate(null, "passive");
+	// TODO: cut out background if not sel.canvas?
 	if(sel.canvas){
-		undoable(0, function(){
+		undoable(null, ()=> {
 			ctx.copy(sel.canvas);
 			$canvas_area.trigger("resize");
 		});

@@ -29,25 +29,65 @@ function OnCanvasTextBox(x, y, width, height){
 	};
 	update();
 	$G.on("option-changed", this._on_option_changed = update);
-}
 
-OnCanvasTextBox.prototype = Object.create(OnCanvasObject.prototype);
-
-OnCanvasTextBox.prototype.position = function(){
-	OnCanvasObject.prototype.position.call(this, true);
-}
-
-OnCanvasTextBox.prototype.instantiate = function(){
-	var tb = this;
 	
-	tb.$el.addClass("instantiated").css({
+	tb.$el.css({
 		cursor: Cursor(["move", [8, 8], "move"])
 	});
 	tb.$el.attr("touch-action", "none");
 	
 	tb.position();
 	
-	instantiate();
+	tb.$el.append(tb.$editor);
+	tb.$editor[0].focus();
+	
+	tb.$handles = $Handles(tb.$el, tb.$editor[0], {outset: 2});
+	
+	tb.$el.on("user-resized", function(e, delta_x, delta_y, width, height){
+		tb.x += delta_x;
+		tb.y += delta_y;
+		tb.width = width;
+		tb.height = height;
+		tb.position();
+	});
+	
+	var mox, moy;
+	var pointermove = function(e){
+		var m = e2c(e);
+		tb.x = Math.max(Math.min(m.x - mox, canvas.width), -tb.width);
+		tb.y = Math.max(Math.min(m.y - moy, canvas.height), -tb.height);
+		tb.position();
+		
+		if(e.shiftKey){
+			tb.draw();
+		}
+	};
+	tb.$el.on("pointerdown", function(e){
+		if(
+			e.target instanceof HTMLInputElement ||
+			e.target instanceof HTMLTextAreaElement ||
+			e.target.classList.contains("handle")
+		){
+			return;
+		}
+		e.preventDefault();
+		
+		var rect = tb.$el[0].getBoundingClientRect();
+		var cx = e.clientX - rect.left;
+		var cy = e.clientY - rect.top;
+		mox = ~~(cx);
+		moy = ~~(cy);
+		
+		$G.on("pointermove", pointermove);
+		$G.one("pointerup", function(){
+			$G.off("pointermove", pointermove);
+		});
+		
+	});
+	$status_position.text("");
+	$status_size.text("");
+	
+	$canvas_area.trigger("resize"); // to update handles, get them to hide?
 	
 	if(OnCanvasTextBox.$fontbox && OnCanvasTextBox.$fontbox.closed){
 		OnCanvasTextBox.$fontbox = null;
@@ -73,62 +113,13 @@ OnCanvasTextBox.prototype.instantiate = function(){
 	}
 		
 	$fb.applyBounds();
-	
-	function instantiate(){
-		// this doesn't need to be a seperate function
-		
-		tb.$el.append(tb.$editor);
-		tb.$editor[0].focus();
-		
-		tb.$handles = $Handles(tb.$el, tb.$editor[0], {outset: 2});
-		
-		tb.$el.on("user-resized", function(e, delta_x, delta_y, width, height){
-			tb.x += delta_x;
-			tb.y += delta_y;
-			tb.width = width;
-			tb.height = height;
-			tb.position();
-		});
-		
-		var mox, moy;
-		var pointermove = function(e){
-			var m = e2c(e);
-			tb.x = Math.max(Math.min(m.x - mox, canvas.width), -tb.width);
-			tb.y = Math.max(Math.min(m.y - moy, canvas.height), -tb.height);
-			tb.position();
-			
-			if(e.shiftKey){
-				tb.draw();
-			}
-		};
-		tb.$el.on("pointerdown", function(e){
-			if(
-				e.target instanceof HTMLInputElement ||
-				e.target instanceof HTMLTextAreaElement ||
-				e.target.classList.contains("handle")
-			){
-				return;
-			}
-			e.preventDefault();
-			
-			var rect = tb.$el[0].getBoundingClientRect();
-			var cx = e.clientX - rect.left;
-			var cy = e.clientY - rect.top;
-			mox = ~~(cx);
-			moy = ~~(cy);
-			
-			$G.on("pointermove", pointermove);
-			$G.one("pointerup", function(){
-				$G.off("pointermove", pointermove);
-			});
-			
-		});
-		$status_position.text("");
-		$status_size.text("");
-		
-		$canvas_area.trigger("resize"); // to update handles, get them to hide?
-	}
-};
+}
+
+OnCanvasTextBox.prototype = Object.create(OnCanvasObject.prototype);
+
+OnCanvasTextBox.prototype.position = function(){
+	OnCanvasObject.prototype.position.call(this, true);
+}
 
 function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
 	var original_lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);

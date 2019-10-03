@@ -84,9 +84,12 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* Particularly it might be helpful to undo *to* your last change, not just to right before it (by undoing it);
 		this could automatically be the behavior of undo if there have been changes since your last change
 	* Issues
-		* You get interrupted if you try to make a selection when there's a selection
+    	* You can drag an image to jspaint in a multiplayer selection and it will overwrite the entire document with no way to undo - and not even a prompt first!
+		* You get interrupted if you try to ~~make~~ (drag? now that selections are passive?) a selection when there's a selection
 		* You get interrupted if you try to draw at the same time as another person (you basically have to take turns - lame!)
 		* Cursors from other users that go outside the parent can cause the page to be scrollable
+		* Cursors from other users should update position when you scroll or zoom the canvas, similar to what I did for the tool preview cursors
+		* Cursors from other users can stick around as ghosts for indeterminate periods of time
 
 
 ### Device support
@@ -116,17 +119,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Unless with two fingers perhaps
 
 ### Tools
-
-* Free-Form Select
-	* Passive: create no undoables until you do something
-		* You should be able to make a selection, then change the secondary color, then drag the selection cutting it out with the color you selected
-	* See [On-Canvas Objects](#on-canvas-objects) for Selection
-
-
-* Select
-	* Passive: create no undoables until you do something
-		* You should be able to make a selection, then change the secondary color, then drag the selection cutting it out with the color you selected
-	* See [On-Canvas Objects](#on-canvas-objects) for Selection
 
 
 * Text
@@ -166,9 +158,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * `OnCanvasSelection`
 	* Proportionally resize selection while holding Shift
 	(or maybe by default? I feel like it should be the default, tbh.)
-	* Don't cut until you drag or do something else
-	(In MS Paint, you can make a selection, change the background color
-	and drag it, leaving the new background color behind.)
 
 
 * `OnCanvasTextBox`
