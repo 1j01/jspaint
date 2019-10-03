@@ -204,19 +204,19 @@ tools = [{
 		// ctx.fillStyle = "white";
 		// ctx.fillRect(0, 0, 100, 100);
 
-		ctx.translate(0.5, 0.5);
+		// ctx.translate(0.5, 0.5);
 		ctx.strokeStyle = "white";
 		ctx.lineWidth = w;
 		ctx.beginPath();
 		if (go_x) {
 			for (var gone_x=0; gone_x<go_x; gone_x += len * 2) {
 				ctx.moveTo(gone_x, 0);
-				ctx.lineTo(gone_x + len, 0);
+				ctx.lineTo(Math.min(gone_x + len, go_x), 0);
 			}
 		} else {
 			for (var gone_y=0; gone_y<go_y; gone_y += len * 2) {
 				ctx.moveTo(0, gone_y);
-				ctx.lineTo(0, gone_y + len);
+				ctx.lineTo(0, Math.min(gone_y + len, go_y));
 			}
 		}
 		ctx.stroke();
@@ -236,12 +236,12 @@ tools = [{
 
 		var rect_x = ~~(this.x1);
 		var rect_y = ~~(this.y1);
-		var rect_w = ~~(this.x2 - this.x1);
-		var rect_h = ~~(this.y2 - this.y1);
-		this.drawDots(ctx, rect_x, rect_y, rect_w, 0);
-		this.drawDots(ctx, rect_x, rect_y, 0, rect_h);
+		var rect_w = ~~(this.x2 - this.x1) - 1;
+		var rect_h = ~~(this.y2 - this.y1) - 1;
+		this.drawDots(ctx, rect_x, rect_y, rect_w - 1, 0);
+		this.drawDots(ctx, rect_x, rect_y + 1, 0, rect_h - 2);
 		this.drawDots(ctx, rect_x + rect_w, rect_y, 0, rect_h);
-		this.drawDots(ctx, rect_x, rect_y + rect_h, rect_w, 0);
+		this.drawDots(ctx, rect_x, rect_y + rect_h, rect_w - 1, 0);
 
 		// if (grid_visible) {
 		// 	ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
