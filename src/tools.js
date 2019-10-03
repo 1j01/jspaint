@@ -3,9 +3,9 @@ tools = [{
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	// passive: @TODO,
+	passive: true,
 
-	// A canvas for showing a preview of the shape
+	// A canvas for rendering a preview of the shape
 	preview_canvas: null,
 	
 	// The vertices of the polygon
