@@ -40,12 +40,11 @@ I want to bring good old paint into the modern era.
 * Cross-platform
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
   or a measly 50 in Windows 7)
-* Autosaves if you allow local storage.
-  (Try refreshing the page to make sure this works, and to check it out)
+* Autosaves a backup of your image. Only one backup tho, which is apparently not enough, because the browser may clear the canvas to free up memory, and you're likely to lose the backup when this happens because it gets overwritten. If this happens (canvas becomes a checkerboard), try to undo (a few times), and if that doesn't work, try to refresh the page. Remember to save with File > Save!
 * Edit transparent images! To create a transparent image,
   go to **Image > Attributes...** and select Transparent,
   then Okay, and then **Image > Clear Image** or use the Eraser tool.
-  Images with *any* transparent pixels will open in Transparent mode.
+  Images with *any* translucent pixels will open in Transparent mode.
 * Go to **View > Extras Menu** to enable access to additional features not available in MS Paint
 * Switch themes from the Extras menu
 * Create an animated GIF from the current document history.
@@ -53,7 +52,7 @@ I want to bring good old paint into the modern era.
   It's pretty nifty, you should try it out!
   You might want to limit the size of the image though.
 * You can shoot at it [Asteroids style](https://kickassapp.com/)
-* When you do **Edit > Paste From...** you can select transparent images and GIFs.
+* When you do **Edit > Paste From...** you can select transparent images.
   ~~You can even paste a transparent animated GIF and then
   hold <kbd>Shift</kbd> while dragging the selection to
   smear it across the canvas *while it animates*!~~
@@ -61,11 +60,13 @@ I want to bring good old paint into the modern era.
   I may reimplement this in the future as I really liked this feature.
 * You can open SVG files (because browsers support SVG).
   It's still a completely raster image editor though.
+  (And you can't choose a size to render the SVG at. It may open super large, or tiny.)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd> and <kbd>></kbd>)
 * Rotate by any arbitrary angle in **Image > Flip/Rotate**
 * In **Image > Stretch/Skew**, you can stretch more than 500% at once
-* Replace a color in the entire image by holding <kbd>Shift</kbd> and using the fill tool (AKA non-contiguous fill)
+* Zoom to an arbitrary scale in **View > Zoom > Custom...**
+* Non-contiguous fill: Replace a color in the entire image by holding <kbd>Shift</kbd> when using the fill tool
 * Rudimentary **multi-user** support.
   Start up a session at
   [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
@@ -75,7 +76,7 @@ I want to bring good old paint into the modern era.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
 * Load many different palette formats with **Colors > Get Colors**.
   (I made a [library](https://github.com/1j01/palette.js/) for this.)
-* Mobile support
+* Mobile support (altho fairly lacking in some areas. it'd be nice if you could pan and zoom with two fingers)
 * Click/tap the selected colors area to swap the foreground and background colors
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
@@ -102,8 +103,8 @@ In other browsers you can still can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>C
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
 External images can be pasted in.
 
-There's also a [desktop app](#desktop-app) version you can install that has full clipboard support.
-In which you can also set the wallpaper.
+There's also a [desktop app](#desktop-app) version you can install that has full clipboard support,  
+which also lets you set the wallpaper.
 
 
 ## Extended Editing
