@@ -236,13 +236,21 @@ tools = [{
 
 		var rect_x = ~~(this.x1);
 		var rect_y = ~~(this.y1);
-		var rect_w = ~~(this.x2 - this.x1) - 1;
-		var rect_h = ~~(this.y2 - this.y1) - 1;
-		this.drawDots(ctx, rect_x, rect_y, rect_w - 1, 0);
-		this.drawDots(ctx, rect_x, rect_y + 1, 0, rect_h - 2);
-		this.drawDots(ctx, rect_x + rect_w, rect_y, 0, rect_h);
-		this.drawDots(ctx, rect_x, rect_y + rect_h, rect_w - 1, 0);
+		var rect_w = ~~(this.x2 - this.x1);
+		var rect_h = ~~(this.y2 - this.y1);
+		// ctx.save();
+		// ctx.translate(1/scaled_by_amount/2, 1/scaled_by_amount/2);
+		// this.drawDots(ctx, rect_x, rect_y, rect_w - 1, 0); // top
+		// this.drawDots(ctx, rect_x, rect_y + 1, 0, rect_h - 2); // left
+		// this.drawDots(ctx, rect_x + rect_w, rect_y, 0, rect_h); // right
+		// this.drawDots(ctx, rect_x, rect_y + rect_h, rect_w - 1, 0); // bottom
 
+		this.drawDots(ctx, rect_x, rect_y, rect_w - 1, 0); // top
+		this.drawDots(ctx, rect_x, rect_y + 1, 0, rect_h - 2); // left
+		this.drawDots(ctx, rect_x + rect_w, rect_y, 0, rect_h); // right
+		this.drawDots(ctx, rect_x, rect_y + rect_h, rect_w - 1, 0); // bottom
+		
+		// ctx.restore();
 		// if (grid_visible) {
 		// 	ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
 		// } else {
