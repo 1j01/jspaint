@@ -271,7 +271,7 @@
 		});
 
 		var previous_uri;
-		var pointer_operations = [];
+		pointer_operations = [];
 
 		var sync = function(){
 			// Sync the data from this client to the server (one-way)
