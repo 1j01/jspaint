@@ -106,10 +106,8 @@
 		<script src="src/vaporwave-fun.js"></script>
 
 		<script>
-			// Partial support for IE with a general polyfill
 			if(/MSIE \d|Trident.*rv:/.test(navigator.userAgent)){
 				document.write(
-					// '<script src="https://cdn.polyfill.io/v2/polyfill.min.js"><\/script>' +
 					'<style>body { text-align: center; }</style>' +
 					'<div className="not-supported">' +
 						'<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
@@ -118,5 +116,18 @@
 				);
 			}
 		</script>
+		<noscript>
+			<h1><img src="images/icons/32x32.png" alt=""/> JS Paint</h1>
+
+			<p>This application requires JavaScript to run.</p>
+
+			<p>
+				Assuming this is the official instance of jspaint,
+				at <a href="https://jspaint.app">https://jspaint.app</a>,
+				you can safely enable JavaScript.
+			</p>
+
+			<p>You can also check out <a href="https://github.com/1j01/jspaint">the source code and project info</a>.</p>
+		</noscript>
 	</body>
 </html>
