@@ -105,8 +105,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* Particularly it might be helpful to undo *to* your last change, not just to right before it (by undoing it);
 		this could automatically be the behavior of undo if there have been changes since your last change
 	* Issues
-		* You get interrupted if you try to make a selection when there's a selection
-		* You get interrupted if you try to draw at the same time as another person (you basically have to take turns - lame!)
+		* User operations on the document can be lost easily if multiple users edit at near the same time
 		* Cursors from other users that go outside the parent can cause the page to be scrollable
 
 

@@ -23,19 +23,26 @@
 		var immediate_action = selected_tools.some((tool)=>
 			tool.pointerdown && !tool.pointermove && !tool.paint && !tool.cancel && !tool.passive
 		)
+		// selection tools, eyedropper, magnifier
+		var purely_passive = selected_tools.every((tool)=>
+			tool.passive === true // can be a function (for polygon tool) but here we want only always passive tools
+		);
 		if(immediate_action){
 			// A change might occur immediately
 			may_be_changed();
 		}else{
 			// Changes may occur when you release
-			pointer_operations = [e];
-			var pointermove = function(e, synthetic){
-				debug_event(e, synthetic);
-				if(synthetic){ return; }
-				
+			pointer_operations = [];
+			if (!purely_passive) {
 				pointer_operations.push(e);
-			};
-			$G.on("pointermove.ugly-hook", pointermove);
+				var pointermove = function(e, synthetic){
+					debug_event(e, synthetic);
+					if(synthetic){ return; }
+					
+					pointer_operations.push(e);
+				};
+				$G.on("pointermove.ugly-hook", pointermove);
+			}
 			$G.one("pointerup.ugly-hook", function(e, synthetic){
 				debug_event(e, synthetic);
 				if(synthetic){ return; }
