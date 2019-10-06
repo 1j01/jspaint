@@ -105,7 +105,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* Particularly it might be helpful to undo *to* your last change, not just to right before it (by undoing it);
 		this could automatically be the behavior of undo if there have been changes since your last change
 	* Issues
-		* User operations on the document can be lost easily if multiple users edit at near the same time
+		* User operations on the document can be lost easily if multiple users edit at (near) the same time, and/or due to network latency, and/or bugs. It's not a good system
 		* Cursors from other users that go outside the parent can cause the page to be scrollable
 
 

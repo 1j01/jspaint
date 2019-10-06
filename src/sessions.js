@@ -277,13 +277,12 @@
 			// Sync the data from this client to the server (one-way)
 			var uri = canvas.toDataURL();
 			if(previous_uri !== uri){
-				log("clear pointer operations to set data", pointer_operations);
+				log(`clear ${pointer_operations.length} events representing current user gesture and set canvas data`);
 				pointer_operations = [];
-				log("set data");
 				session.fb_data.set(uri);
 				previous_uri = uri;
 			}else{
-				log("don't set data; it hasn't changed");
+				log("don't set canvas data; it hasn't changed");
 			}
 		};
 
@@ -291,7 +290,7 @@
 
 		// Any time we change or recieve the image data
 		_fb_on(session.fb_data, "value", function(snap){
-			log("data update");
+			log("canvas data update");
 
 			var uri = snap.val();
 			if(uri == null){
@@ -319,19 +318,21 @@
 					// and other options will be established)
 
 					// Playback recorded in-progress pointer operations
-					window.console && console.log("playback", pointer_operations);
-					for(var i=0; i<pointer_operations.length; i++){
-						var e = pointer_operations[i];
-						// Trigger the event at each place it is listened for
-						$canvas.triggerHandler(e, ["synthetic"]);
-						$G.triggerHandler(e, ["synthetic"]);
+					if (pointer_operations.length) {
+						log(`playback ${pointer_operations.length} events from the current user gesture (to rebase ontop of the new canvas data)`);
+						for(var i=0; i<pointer_operations.length; i++){
+							var e = pointer_operations[i];
+							// Trigger the event at each place it is listened for
+							$canvas.triggerHandler(e, ["synthetic"]);
+							$G.triggerHandler(e, ["synthetic"]);
+						}
 					}
 				};
 				img.src = uri;
 			}
 		}, function(error){
 			show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
-			file_name = "[Failed to load "+session.id+"]";
+			file_name = `[Failed to load ${session.id}]`;
 			update_title();
 		});
 
@@ -367,7 +368,7 @@
 
 		// Remove collected Firebase event listeners
 		session._fb_listeners.forEach(({fb, event_type, callback, error_callback})=> {
-			log("remove listener for " + fb.path.toString() + " .on " + event_type);
+			log(`remove listener for ${fb.path.toString()} .on ${event_type}`);
 			fb.off(event_type, callback);
 		});
 		session._fb_listeners.length = 0;

@@ -6,9 +6,12 @@
 		$canvas.triggerHandler("change");
 	};
 	
+	var debug = (...args)=> {
+		window.console && console.debug && console.debug(...args);
+	};
 	var debug_event = function(e, synthetic){
 		// var label = synthetic ? "(synthetic)" : "(normal)";
-		// window.console && console.debug && console.debug(e.type, label);
+		// debug(e.type, label);
 	};
 	
 	// Hook into some events that imply a change might have occured
@@ -46,6 +49,9 @@
 			$G.one("pointerup.ugly-hook", function(e, synthetic){
 				debug_event(e, synthetic);
 				if(synthetic){ return; }
+
+				debug(`clear ${pointer_operations.length} events of user gesture`);
+				pointer_operations = [];
 				
 				$G.off("pointermove.ugly-hook", pointermove);
 				
