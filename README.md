@@ -22,7 +22,7 @@ And sorry, not the even newer [Paint 3D][].
 [Paint 3D]: https://www.microsoft.com/en-us/store/p/paint-3d-preview/9nblggh5fv99
 
 Windows 95, 98, and XP were the golden years of paint.
-You had a tool box and a color box, a foreground color and a background color,
+You had a toolbox and a color box, a foreground color and a background color,
 and that was all you needed.
 
 Things were simple.
@@ -38,12 +38,12 @@ I want to bring good old paint into the modern era.
 #### Current improvements include:
 
 * Cross-platform
-* Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
+* Unlimited undo/redos (as opposed to a measly 3 in Windows XP,
   or a measly 50 in Windows 7)
-* Autosaves a backup of your image. Only one backup tho, which is apparently not enough, because the browser may clear the canvas to free up memory, and you're likely to lose the backup when this happens because it gets overwritten. If this happens (canvas becomes a checkerboard), try to undo (a few times), and if that doesn't work, try to refresh the page. Remember to save with File > Save!
+* Autosaves a backup of your image. Only one backup tho, is not enough, because the browser may clear the canvas to free up memory, and you're likely to lose the backup when this happens because it gets overwritten. If this happens (canvas becomes a checkerboard), try to undo (a few times), and if that doesn't work, try to refresh the page. Remember to save with File > Save!
 * Edit transparent images! To create a transparent image,
   go to **Image > Attributes...** and select Transparent,
-  then Okay, and then **Image > Clear Image** or use the Eraser tool.
+  than Okay, and then **Image > Clear Image** or use the Eraser tool.
   Images with *any* translucent pixels will open in Transparent mode.
 * Go to **View > Extras Menu** to enable access to additional features not available in MS Paint
 * Switch themes from the Extras menu
@@ -57,7 +57,7 @@ I want to bring good old paint into the modern era.
   hold <kbd>Shift</kbd> while dragging the selection to
   smear it across the canvas *while it animates*!~~
   Update: This was [due to not-to-spec behavior in Chrome.](https://christianheilmann.com/2014/04/16/browser-inconsistencies-animated-gif-and-drawimage/)
-  I may reimplement this in the future as I really liked this feature.
+  I may reimplement this in the future as I liked this feature.
 * You can open SVG files (because browsers support SVG).
   It's still a completely raster image editor though.
   (And you can't choose a size to render the SVG at. It may open super large, or tiny.)
@@ -71,7 +71,7 @@ I want to bring good old paint into the modern era.
   Start up a session at
   [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
   and send the link to your friends!
-  It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
+  It isn't seamless; actions by other users interrupt what you're doing, and visa Versa.
   Sessions are not private, and you may lose your work at any time.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
 * Load many different palette formats with **Colors > Get Colors**.
@@ -88,7 +88,7 @@ I want to bring good old paint into the modern era.
 * Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
   (or maybe that should be the default, really!)
 * <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
-* Optional fill tolerance (slider that you enable from a settings menu?)
+* Optional fill tolerance (a slider that you enable from a settings menu?)
 * Interactive tutorial(s)?
 
 
@@ -115,18 +115,17 @@ I want to make JS Paint to be able to edit...
   Images that are partially transparent will automatically open in Transparent mode.
   To enable transparency for an image, go to **Image > Attributes...** or press <kbd>Ctrl+E</kbd>,
   select Transparent, and hit Okay.
-  Then you'll want to remove some of the background.
-  You can use the Eraser tool a bit, then use the Color Picker to
-  pick up where you erased and then use the Fill tool to remove bigger areas.
+  Then you'll want to remove some of the backgrounds.
+  You can use the Eraser tool a bit, then use the Color Picker to pick up where you erased and then use the Fill tool to remove bigger areas.
 * Animated [GIF][]s
-  (yes, that entails a fully featured (but simple) animation editor). -
-  Currently you can only make GIFs of the document *history*,
+  (yes, that entails a fully-featured (but simple) animation editor). -
+  Currently, you can only make GIFs of the document *history*,
   with <kbd>Ctrl+Shift+G</kbd> or from the Extras menu.
 * Animated Transparent [APNG][]s
   (better than GIFs, but with less support)
 * Multi-size Icons ([ICO][] for windows and [ICNS][] for mac)
 * [Scalable Vector Graphics][SVG] (kidding) -
-  Actually, it could always open SVG files in browsers that can handle SVGs,
+  It could always open SVG files in browsers that can handle SVGs,
   and I've made it try not to save over the original SVG.
   That's pretty decent SVG support for a 100% raster image editor.
 * [Text files][TXT] (definitely just kidding maybe)
@@ -148,13 +147,13 @@ I want to make JS Paint to be able to edit...
 * There's a black and white mode with *patterns* instead of colors in the palette,
   which you can get to from **Image > Attributes...**
 
-* You can drag the color box and tool box around if you grab them by the right place.
+* You can drag the color box and toolbox around if you grab them by the right place.
   You can even drag them out into little windows.
   You can dock the windows back to the side by double-clicking on their title bars.
 
 * In addition to the left-click foreground color and the right-click background color,
   there's a third color you can access by holding <kbd>Ctrl</kbd> while you draw.
-  It starts out with no color so you'll need to hold <kbd>Ctrl</kbd> and select a color first.
+  It starts with no color so you'll need to hold <kbd>Ctrl</kbd> and select a color first.
   The fancy thing about this color slot is you can
   press and release <kbd>Ctrl</kbd> to switch colors while drawing.
 
@@ -164,15 +163,15 @@ I want to make JS Paint to be able to edit...
 * These Tips and Tricks from [a tutorial for MS Paint](https://www.albinoblacksheep.com/tutorial/mspaint)
   also work in JS Paint if they have a checkmark:
 
-	* [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to adjust brush size)
-	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
-	* [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
-	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
-	* [x] Color Replacement (right mouse button with Eraser to selectively replace the foreground color with the background color)
-	* [x] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 4x+)
-	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing.
-	      I also made it redoable, in case you do it by accident!)
-	* [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
+    * [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to adjust brush size)
+    * [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
+    * [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
+    * [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
+    * [x] Color Replacement (right mouse button with Eraser to selectively replace the foreground color with the background color)
+    * [x] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 4x+)
+    * [x] Quick Undo (Pressing a second mouse button cancels the action you were performing.
+          I also made it redoable, in case you do it by accident!)
+    * [ ] Scroll Wheel Bug (Hmm, let's maybe not recreate this?)
 
 
 ## Desktop App
@@ -191,7 +190,7 @@ If you want to help out, see Development Setup below, and comment on [this issue
 
 [Clone the repo.](https://help.github.com/articles/cloning-a-repository/)
 
-Install [Node.js][] if you don't have it, then open up a command prompt / terminal in the project directory.
+Install [Node.js][] if you don't have it, then open up a command prompt/terminal in the project directory.
 
 ### Web App (https://jspaint.app)
 
