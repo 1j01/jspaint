@@ -249,6 +249,7 @@ $G.on("keydown", function(e){
 		}else{
 			cancel();
 		}
+		stopSimulatingGestures();
 	}else if(e.keyCode === 13){ //Enter
 		if(selection){
 			deselect();

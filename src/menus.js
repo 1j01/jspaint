@@ -442,6 +442,22 @@ var menus = {
 		// 	description: "Configures JS Paint.",
 		// }
 		{
+			item: "&Draw Randomly",
+			checkbox: {
+				toggle: function(){
+					if (window.simulatingGestures) {
+						stopSimulatingGestures();
+					} else {
+						simulateRandomGesturesPeriodically();
+					}
+				},
+				check: function(){
+					return window.simulatingGestures;
+				},
+			},
+			description: "Draws randomly with different tools.",
+		},
+		{
 			item: "&Multi-User",
 			submenu: [
 				{
