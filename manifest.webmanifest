@@ -1,14 +1,13 @@
 {
 	"name": "JS Paint",
 	"short_name": "Paint",
-	"version": "1.0.0",
 	"description": "An MS Paint remake.",
-	"categories": ["photo", "utilities", "image", "art"],
+	"categories": ["photo", "utilities", "entertainment"],
 	"display": "standalone",
 	"start_url": ".",
 	"lang": "en-US",
-	"theme_color": "#008080",
-	"background_color": "#008080",
+	"theme_color": "#000080",
+	"background_color": "#7b7b7b",
 	"screenshots": [
 		{
 			"src": "images/meta/main-screenshot.png",
