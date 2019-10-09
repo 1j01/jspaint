@@ -584,9 +584,6 @@ $canvas.on("pointerdown", function(e){
 	pointer_buttons = e.buttons;
 	$G.one("pointerup", function(e){
 		pointer_active = false;
-		setTimeout(()=> { // quick fix for eye dropper
-			reverse = false;
-		});
 		update_helper_layer();
 		
 		if (!pointer_over_canvas && update_helper_layer_on_pointermove_active) {
@@ -622,6 +619,7 @@ $canvas.on("pointerdown", function(e){
 		}
 		$G.one("pointerup", function(e, canceling){
 			button = undefined;
+			reverse = false;
 			if(canceling){
 				selected_tool.cancel && selected_tool.cancel();
 			}else{
