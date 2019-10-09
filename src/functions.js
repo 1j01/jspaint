@@ -757,11 +757,13 @@ function redo(){
 
 	return true;
 }
-function cancel(){
-	var passive = selected_tools.every((tool)=>
+function isPassive(tools) {
+	return tools.every((tool)=>
 		(typeof tool.passive === "function") ? tool.passive() : tool.passive
 	);
-	if(!passive){ undo(); }
+}
+function cancel(){
+	if(!isPassive(selected_tools)){ undo(); }
 	$G.triggerHandler("pointerup", "cancel");
 	update_helper_layer();
 }

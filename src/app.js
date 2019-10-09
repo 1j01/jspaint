@@ -639,10 +639,7 @@ $canvas.on("pointerdown", function(e){
 	});
 	};
 
-	var passive = selected_tools.every((tool)=>
-		(typeof tool.passive === "function") ? tool.passive() : tool.passive
-	);
-	if(passive){
+	if(isPassive(selected_tools)){
 		pointerdown_action();
 	}else{
 		undoable(pointerdown_action);
