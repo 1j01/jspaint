@@ -20,7 +20,7 @@
 	
 	$canvas_area.on("pointerdown.ugly-hook", "*", function(e, synthetic){
 		debug_event(e, synthetic);
-		if(synthetic){ return; }
+		// if(synthetic){ return; }
 		
 		// If you're using the fill tool, basically
 		var immediate_action = selected_tools.some((tool)=>
@@ -35,7 +35,8 @@
 			may_be_changed();
 		}else{
 			// Changes may occur when you release
-			pointer_operations = [];
+			// debug(`clear ${pointer_operations.length} events of user gesture`);
+			// pointer_operations = [];
 			if (!purely_passive) {
 				pointer_operations.push(e);
 				var pointermove = function(e, synthetic){
@@ -48,13 +49,14 @@
 			}
 			$G.one("pointerup.ugly-hook", function(e, synthetic){
 				debug_event(e, synthetic);
-				if(synthetic){ return; }
 
 				debug(`clear ${pointer_operations.length} events of user gesture`);
 				pointer_operations = [];
 				
 				$G.off("pointermove.ugly-hook", pointermove);
 				
+				// if(synthetic){ return; }
+
 				may_be_changed();
 			});
 		}

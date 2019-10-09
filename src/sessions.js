@@ -305,9 +305,12 @@
 				// Load the new image data
 				var img = new Image();
 				img.onload = function(){
+					var _pointer_operations = pointer_operations;
+
 					// Cancel any in-progress pointer operations
 					if(pointer_operations.length){
 						$G.triggerHandler("pointerup", "cancel");
+						pointer_operations = [];
 					}
 
 					// Write the image data to the canvas
@@ -318,10 +321,10 @@
 					// and other options will be established)
 
 					// Playback recorded in-progress pointer operations
-					if (pointer_operations.length) {
-						log(`playback ${pointer_operations.length} events from the current user gesture (to rebase ontop of the new canvas data)`);
-						for(var i=0; i<pointer_operations.length; i++){
-							var e = pointer_operations[i];
+					if (_pointer_operations.length) {
+						log(`playback ${_pointer_operations.length} events from the current user gesture (to rebase ontop of the new canvas data)`);
+						for(var i=0; i<_pointer_operations.length; i++){
+							var e = _pointer_operations[i];
 							// Trigger the event at each place it is listened for
 							$canvas.triggerHandler(e, ["synthetic"]);
 							$G.triggerHandler(e, ["synthetic"]);
