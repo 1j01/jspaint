@@ -1,5 +1,6 @@
 
 tools = [{
+	// @#: polygonal selection, polygon selection, shape selection, freeform selection
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -123,6 +124,7 @@ tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
+	// @#: rectangle selection, rectangular selection
 	name: "Select",
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -180,6 +182,7 @@ tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
+	// @#: eraser but also color replacer
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -255,6 +258,7 @@ tools = [{
 	},
 	$options: $choose_eraser_size
 }, {
+	// @#: fill bucket, flood fill
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
@@ -272,6 +276,7 @@ tools = [{
 		}
 	}
 }, {
+	// @#: eyedropper, eye dropper, Pasteur pipette, select colors, pick colors
 	name: "Pick Color",
 	description: "Picks up a color from the picture for drawing.",
 	cursor: ["eye-dropper", [9, 22], "crosshair"],
@@ -311,6 +316,7 @@ tools = [{
 	},
 	$options: $(E("div"))
 }, {
+	// @#: magnifying glass, zoom
 	name: "Magnifier",
 	description: "Changes the magnification.",
 	cursor: ["magnifier", [16, 16], "zoom-in"],
@@ -390,6 +396,7 @@ tools = [{
 	},
 	$options: $choose_brush
 }, {
+	// @#: spray paint
 	name: "Airbrush",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
@@ -539,6 +546,7 @@ tools = [{
 	shape: function(){true},
 	$options: $choose_stroke_size
 }, {
+	// @#: square
 	name: "Rectangle",
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -685,6 +693,7 @@ tools = [{
 	shape_colors: true,
 	$options: $ChooseShapeStyle()
 }, {
+	// @#: circle
 	name: "Ellipse",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -709,6 +718,7 @@ tools = [{
 	},
 	$options: $ChooseShapeStyle()
 }, {
+	// @#: rounded square
 	name: "Rounded Rectangle",
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
