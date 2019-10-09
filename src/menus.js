@@ -441,7 +441,7 @@ var menus = {
 		// 	},
 		// 	description: "Configures JS Paint.",
 		// }
-		{
+		/*{
 			item: "&Draw Randomly",
 			checkbox: {
 				toggle: function(){
@@ -456,7 +456,7 @@ var menus = {
 				},
 			},
 			description: "Draws randomly with different tools.",
-		},
+		},*/
 		{
 			item: "&Multi-User",
 			submenu: [
