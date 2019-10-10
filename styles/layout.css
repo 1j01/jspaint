@@ -391,10 +391,10 @@ html, body, .jspaint {
 }
 
 #news {
-	max-height: 1000px;
+	max-height: 500px;
 	overflow: auto;
 }
-@media (max-height: 1050px) {
+@media (max-height: 550px) {
 	#news {
 		max-height: calc(100vh - 50px);
 	}
