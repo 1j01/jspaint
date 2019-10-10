@@ -489,15 +489,6 @@ var $news_window;
 var $this_version_news = $("#news");
 var $latest_news = $this_version_news;
 
-$("#refresh-to-update").click((e)=> {
-	e.preventDefault();
-	location.reload();
-});
-
-$("#view-project-news").on("click", (e)=> {
-	show_news();
-});
-
 // not included directly in the HTML as a simple way of not showing it if it's loaded with fetch
 // (...not sure how to phrase this clearly and concisely...)
 // $this_version_news.prepend("<p>Showing the news as of this version of JS Paint. For the latest, see <a href='https://jspaint.app'>jspaint.app</a></p>");
@@ -516,6 +507,15 @@ function show_about_paint(){
 	$about_paint_window.center();
 	$about_paint_window.center(); // XXX - but it helps tho
 
+	$("#refresh-to-update").on("click", (e)=> {
+		e.preventDefault();
+		location.reload();
+	});
+	
+	$("#view-project-news").on("click", (e)=> {
+		show_news();
+	});
+	
 	var url =
 		// ".";
 		// "test-news-newer.html";
