@@ -41,8 +41,26 @@
 	</head>
 	<body>
 		<div id="about-paint" style="display: none">
-			<h1><img src="images/icons/32x32.png" width="32" height="32" alt=""/> JS Paint <small class="version-number" title="Is that a thing? What I mean is, expect bugs!">Public Alpha</small></h1>
-			<hr/>
+			<h1><img src="images/icons/32x32.png" width="32" height="32" alt=""/> JS Paint <small id="jspaint-version" title="expect bugs!">Alpha</small></h1>
+			<div id="maybe-outdated-view-project-news" hidden>
+				<div id="outdated" hidden>
+					<div class="on-official-host">
+						There's a new version of JS Paint. <a id="refresh-to-update" href=".">Refresh</a> to get it.
+					</div>
+					<div class="on-third-party-host">
+						This instance of JS Paint is outdated compared to <a href="https://jspaint.app" target="_blank">jspaint.app</a>.
+					</div>
+					<div class="on-dev-host">
+						This version of JS Paint is outdated compared to <a href="https://jspaint.app" target="_blank">jspaint.app</a>.
+					</div>
+				</div>
+				<div id="failed-to-check-if-outdated" hidden>
+					Couldn't check for updates.
+					<span class="navigator-offline">You're offline.</span>
+					<span class="navigator-online">JS Paint may be outdated.</span>
+				</div>
+				<button id="view-project-news">View Project News</button>
+			</div>
 			<p>JS Paint is a web-based remake of MS Paint by <a href="https://isaiahodhner.ml/">Isaiah Odhner</a>.</p>
 			<p>Read about the project and <b>extra features</b> on <a href="https://github.com/1j01/jspaint#readme">the README</a>.</p>
 			<p>Request features and report bugs <a href="https://github.com/1j01/jspaint/issues">on GitHub</a>
@@ -50,6 +68,39 @@
 			<p>If you want to support the project &amp; cover domain fees:
 				<a href="https://www.paypal.me/IsaiahOdhner" target="_blank">paypal.me/IsaiahOdhner</a>
 			</p>
+		</div>
+		<div id="news" hidden>
+			<article class="news-entry" id="news-2019-grid-zoom-cursors">
+				<h1>The Grid, Custom Zoom, and Dynamic Cursors</h1>
+				<time datetime="2019-10-09">2019-10-09</time>
+				<p>
+					<b class="new">New:</b> The Grid. Zoom to 4x+ and use <b>View > Zoom > Show Grid</b> or <kbd>Ctrl+G</kbd> to enable.
+					This works with browser zoom as well to provide crisp gridlines even if you zoom in with your browser.
+				</p>
+				<p>
+					<b class="new">New:</b> <b>View > Zoom > Custom Zoom</b>,
+					including an actually-custom numerical zoom option, unlike MS Paint.
+				</p>
+				<p>
+					<b class="new">New:</b> Dynamic cursors for brush and eraser,
+					so you now have a preview of exactly where the tool will draw.
+				</p>
+				<p>
+					Also, in the event that your browser clears canvases to free up memory,
+					you should be more likely to be able to undo to get back to a useful state.
+				</p>
+			</article>
+			<article class="news-entry" id="news-2019-async-clipboard">
+				<h1>Full Clipboard Support</h1>
+				<time datetime="2019-09-21">2019-09-21</time>
+				<p>
+					JS Paint now lets you copy real image data to the Clipboard, both with keyboard shortcuts and from the Edit menu.
+					This feature is available in Chrome 76+. Other browsers don't support it yet, as of Sep 2019.
+				</p>
+				<p>
+					Also: paste a URL to an image, and JS Paint will load it, as an alternative to <b>File > Load from URL</b>.
+				</p>
+			</article>
 		</div>
 
 		<script

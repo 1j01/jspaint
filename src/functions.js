@@ -485,14 +485,117 @@ function show_resource_load_error_message(){
 
 var $about_paint_window;
 var $about_paint_content = $("#about-paint");
+var $news_window;
+var $this_version_news = $("#news");
+var $latest_news = $this_version_news;
+
+$("#refresh-to-update").click((e)=> {
+	e.preventDefault();
+	location.reload();
+});
+
+$("#view-project-news").on("click", (e)=> {
+	show_news();
+});
+
+// not included directly in the HTML as a simple way of not showing it if it's loaded with fetch
+// (...not sure how to phrase this clearly and concisely...)
+// $this_version_news.prepend("<p>Showing the news as of this version of JS Paint. For the latest, see <a href='https://jspaint.app'>jspaint.app</a></p>");
+$this_version_news.prepend("<p>For the latest news, visit <a href='https://jspaint.app'>jspaint.app</a></p>");
+
 function show_about_paint(){
 	if($about_paint_window){
 		$about_paint_window.close();
 	}
 	$about_paint_window = $Window().title("About Paint");
+
+	$("#maybe-outdated-view-project-news").removeAttr("hidden");
+	$("#failed-to-check-if-outdated").attr("hidden", "hidden");
+
 	$about_paint_window.$content.append($about_paint_content.show()).css({padding: "15px"});
 	$about_paint_window.center();
+	$about_paint_window.center(); // XXX - but it helps tho
+
+	var url =
+		// ".";
+		// "test-news-newer.html";
+		"https://jspaint.app";
+	fetch(url)
+	.then((response)=> response.text())
+	.then((text)=> {
+		var parser = new DOMParser();
+		var htmlDoc = parser.parseFromString(text, "text/html");
+		$latest_news = $(htmlDoc).find("#news");
+
+		var $latest_entries = $latest_news.find(".news-entry");
+		var $this_version_entries = $this_version_news.find(".news-entry");
+
+		if (!$latest_entries.length) {
+			$latest_news = $this_version_news;
+			throw new Error(`No news found at fetched site (${url})`);
+		}
+
+		function this_version_has_update(id) {
+			return $this_version_entries.get().some((el_from_this_version)=> 
+				id === el_from_this_version.id
+			);
+		}
+
+		// TODO: visibly mark entries that overlap
+		entries_newer_than_this_version =
+			$latest_entries.get().filter((el_from_latest)=>
+				!this_version_has_update(el_from_latest.id)
+			);
+
+		if (entries_newer_than_this_version.length > 0) {
+			$("#outdated").removeAttr("hidden");
+		}
+
+		update_css_classes_for_conditional_messages();
+	}).catch((exception)=> {
+		$("#failed-to-check-if-outdated").removeAttr("hidden");
+		update_css_classes_for_conditional_messages();
+		console.log("Couldn't check for updates.", exception);
+	});
 }
+// show_about_paint(); // for testing
+
+function update_css_classes_for_conditional_messages() {
+
+	$(".on-dev-host, .on-third-party-host, .on-official-host").hide();
+	if (location.hostname.match(/localhost|127.0.0.1/)) {
+		$(".on-dev-host").show();
+	} else if (location.hostname.match(/jspaint.app/)) {
+		$(".on-official-host").show();
+	} else {
+		$(".on-third-party-host").show();
+	}
+
+	$(".navigator-online, .navigator-offline").hide();
+	if (navigator.onLine) {
+		$(".navigator-online").show();
+	} else {
+		$(".navigator-offline").show();
+	}
+}
+
+function show_news(){
+	if($news_window){
+		$news_window.close();
+	}
+	$news_window = $Window().title("Project News");
+
+	// var $latest_entries = $latest_news.find(".news-entry");
+	// var latest_entry = $latest_entries[$latest_entries.length - 1];
+	// console.log("LATEST MEWS:", $latest_news);
+	// console.log("LATEST ENTRY:", latest_entry);
+
+	$news_window.$content.append($latest_news.removeAttr("hidden"));
+
+	$news_window.center();
+	$news_window.center(); // XXX - but it helps tho
+}
+
 
 // TODO: DRY between these functions and open_from_* functions further?
 

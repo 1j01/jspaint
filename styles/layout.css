@@ -299,10 +299,11 @@ html, body, .jspaint {
 	padding: 5px;
 }
 
-.version-number {
+#jspaint-version {
 	/* TODO: separate into a shared.css? (not really layout!) */
 	font-size: 0.6em;
 	color: #7b7b7b;
+
 }
 
 .help-window .window-content {
@@ -387,4 +388,35 @@ html, body, .jspaint {
 
 .cursor-bully * {
 	cursor: inherit !important;
+}
+
+#news {
+	max-height: 1000px;
+	overflow: auto;
+}
+@media (max-height: 1050px) {
+	#news {
+		max-height: calc(100vh - 50px);
+	}
+}
+
+.news-entry {
+	background: white;
+	border-radius: 5px;
+	border: 1px solid gray;
+	padding: 10px;
+	max-width: 30em;
+	margin: 10px;
+}
+.news-entry > h1 {
+	font-size: 1.3em;
+	margin: 0;
+	margin-bottom: 0.5em;
+}
+.news-entry > time {
+	font-size: 1.3em;
+	color: gray;
+}
+.news-entry .new {
+	color: green;
 }
