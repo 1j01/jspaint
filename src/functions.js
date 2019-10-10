@@ -500,10 +500,13 @@ function show_about_paint(){
 	}
 	$about_paint_window = $Window().title("About Paint");
 
-	$("#maybe-outdated-view-project-news").removeAttr("hidden");
-	$("#failed-to-check-if-outdated").attr("hidden", "hidden");
-
 	$about_paint_window.$content.append($about_paint_content.show()).css({padding: "15px"});
+
+	$("#maybe-outdated-view-project-news").removeAttr("hidden");
+
+	$("#failed-to-check-if-outdated").attr("hidden", "hidden");
+	$("#outdated").attr("hidden", "hidden");
+
 	$about_paint_window.center();
 	$about_paint_window.center(); // XXX - but it helps tho
 

@@ -299,13 +299,6 @@ html, body, .jspaint {
 	padding: 5px;
 }
 
-#jspaint-version {
-	/* TODO: separate into a shared.css? (not really layout!) */
-	font-size: 0.6em;
-	color: #7b7b7b;
-
-}
-
 .help-window .window-content {
 	display: flex;
 	flex-flow: row;
@@ -390,6 +383,33 @@ html, body, .jspaint {
 	cursor: inherit !important;
 }
 
+#about-paint-header {
+	display: flex;
+	flex-direction: row;
+	margin: 0;
+	margin-top: 30px;
+	margin-bottom: 10px;
+}
+#jspaint-project-name {
+	margin-left: 10px;
+	margin-right: 8px;
+}
+#jspaint-version {
+	/* TODO: separate into a shared.css? (not really layout!) */
+	font-size: 0.6em;
+	color: #7b7b7b;
+}
+#maybe-outdated-line {
+	font-style: italic;
+	height: 2em;
+}
+#view-project-news {
+	margin: auto;
+	margin-right: 40px;
+	width: 150px;
+	height: 2.2em;
+}
+
 #news {
 	max-height: 500px;
 	overflow: auto;
@@ -398,10 +418,4 @@ html, body, .jspaint {
 	#news {
 		max-height: calc(100vh - 50px);
 	}
-}
-/* #maybe-outdated-view-project-news {
-	height: 3em;
-} */
-#maybe-outdated-line {
-	height: 1em;
 }
