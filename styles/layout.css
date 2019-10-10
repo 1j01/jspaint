@@ -399,24 +399,3 @@ html, body, .jspaint {
 		max-height: calc(100vh - 50px);
 	}
 }
-
-.news-entry {
-	background: white;
-	border-radius: 5px;
-	border: 1px solid gray;
-	padding: 10px;
-	max-width: 30em;
-	margin: 10px;
-}
-.news-entry > h1 {
-	font-size: 1.3em;
-	margin: 0;
-	margin-bottom: 0.5em;
-}
-.news-entry > time {
-	font-size: 1.3em;
-	color: gray;
-}
-.news-entry .new {
-	color: green;
-}

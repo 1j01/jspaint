@@ -590,6 +590,10 @@ function show_news(){
 	// console.log("LATEST MEWS:", $latest_news);
 	// console.log("LATEST ENTRY:", latest_entry);
 
+	$latest_news_style = $latest_news.find("style");
+	$this_version_news.find("style").remove();
+	$latest_news.append($latest_news_style); // in case $this_version_news is $latest_news
+
 	$news_window.$content.append($latest_news.removeAttr("hidden"));
 
 	$news_window.center();
