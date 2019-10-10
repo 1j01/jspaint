@@ -516,6 +516,8 @@ function show_about_paint(){
 		show_news();
 	});
 	
+	$("#checking-for-updates").removeAttr("hidden");
+
 	var url =
 		// ".";
 		// "test-news-newer.html";
@@ -551,9 +553,11 @@ function show_about_paint(){
 			$("#outdated").removeAttr("hidden");
 		}
 
+		$("#checking-for-updates").attr("hidden", "hidden");
 		update_css_classes_for_conditional_messages();
 	}).catch((exception)=> {
 		$("#failed-to-check-if-outdated").removeAttr("hidden");
+		$("#checking-for-updates").attr("hidden", "hidden");
 		update_css_classes_for_conditional_messages();
 		console.log("Couldn't check for updates.", exception);
 	});

@@ -399,3 +399,9 @@ html, body, .jspaint {
 		max-height: calc(100vh - 50px);
 	}
 }
+/* #maybe-outdated-view-project-news {
+	height: 3em;
+} */
+#maybe-outdated-line {
+	height: 1em;
+}
