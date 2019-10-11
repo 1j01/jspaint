@@ -839,8 +839,8 @@ function draw_grid(ctx, wanted_size) {
 					);
 				}
 
-				replace_colors_with_swatch(op_ctx_2d, stroke_color, x, y);
-				ctx.drawImage(op_canvas_2d, x, y);
+				replace_colors_with_swatch(op_ctx_2d, stroke_color, op_canvas_x, op_canvas_y);
+				ctx.drawImage(op_canvas_2d, op_canvas_x, op_canvas_y);
 			}else{
 				let numVertices = initArrayBuffer(coords);
 				gl.clear(gl.COLOR_BUFFER_BIT);
