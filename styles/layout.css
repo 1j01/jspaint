@@ -66,6 +66,10 @@ html, body, .jspaint {
 		display: none !important;
 	}
 }
+.window,
+.window-content {
+	max-width: calc(100vw - 4px);
+}
 .component-area,
 .menus *,
 .window-titlebar {
