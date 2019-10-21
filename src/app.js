@@ -73,6 +73,7 @@ $canvas_area.attr("touch-action", "pan-x pan-y");
 
 var $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
+var canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
 
 var $canvas_handles = $Handles($canvas_area, canvas, {
 	outset: 4,
@@ -145,10 +146,6 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 	});
 });
 
-$canvas_area.on("resize", function(){
-	update_magnified_canvas_size();
-});
-
 storage.get({
 	width: default_canvas_width,
 	height: default_canvas_height,
@@ -167,10 +164,21 @@ storage.get({
 });
 
 $G.on("resize", function(){ // for browser zoom, and in-app zoom of the canvas
+	canvas_bounding_client_rect = canvas.getBoundingClientRect();
+
 	update_helper_layer();
 	update_disable_aa();
 });
 $canvas_area.on("scroll", function() {
+	canvas_bounding_client_rect = canvas.getBoundingClientRect();
+
+	update_helper_layer();
+});
+$canvas_area.on("resize", function() {
+	update_magnified_canvas_size();
+	
+	canvas_bounding_client_rect = canvas.getBoundingClientRect();
+
 	update_helper_layer();
 });
 
@@ -424,7 +432,7 @@ $G.on("cut copy paste", function(e){
 var pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
 var reverse, ctrl, button;
 function e2c(e){
-	var rect = canvas.getBoundingClientRect();
+	var rect = canvas_bounding_client_rect;
 	var cx = e.clientX - rect.left;
 	var cy = e.clientY - rect.top;
 	return {
@@ -578,6 +586,8 @@ var pointer_active = false;
 var pointer_over_canvas = false;
 var update_helper_layer_on_pointermove_active = false;
 $canvas.on("pointerdown", function(e){
+	canvas_bounding_client_rect = canvas.getBoundingClientRect();
+
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
 	if(pointer_active && (reverse ? (button === 2) : (button === 0))){
