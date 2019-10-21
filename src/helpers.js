@@ -1,8 +1,4 @@
 
-// configure Font Detective
-FontDetective.swf = "./lib/FontList.swf";
-
-
 var TAU =     //////|//////
           /////     |     /////
        ///         tau         ///
