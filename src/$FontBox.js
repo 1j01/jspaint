@@ -62,7 +62,6 @@ function $FontBox(){
 			display: "block",
 			width: 16,
 			height: 16,
-			marginLeft: 2,
 			backgroundImage: "url(images/text-tools.png)",
 			backgroundPosition: xi*-16 + "px 0px"
 		});
