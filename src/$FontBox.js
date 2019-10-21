@@ -7,7 +7,7 @@ function $FontBox(){
 		type: "number",
 		min: 8,
 		max: 72,
-		value: font.size,
+		value: text_tool_font.size,
 	});
 	var $button_group = $(E("span"));
 	var $bold = $Toggle(0, "bold");
@@ -19,8 +19,8 @@ function $FontBox(){
 	$fb.append($family, $size, $button_group);
 	
 	var update_font = function(){
-		font.size = Number($size.val());
-		font.family = $family.val();
+		text_tool_font.size = Number($size.val());
+		text_tool_font.family = $family.val();
 		$G.trigger("option-changed");
 	};
 	
@@ -28,10 +28,15 @@ function $FontBox(){
 		var $option = $(E("option"));
 		$option.val(font).text(font.name);
 		$family.append($option);
+		if (!text_tool_font.family) {
+			update_font();
+		}
 	});
 	
-	$family.val(font.family);
-	
+	if (text_tool_font.family) {
+		$family.val(text_tool_font.family);
+	}
+
 	$family.on("change", update_font);
 	$size.on("change", update_font);
 	
@@ -59,10 +64,10 @@ function $FontBox(){
 		});
 		$button.on("click", function(){
 			$button.toggleClass("selected");
-			font[thing] = $button.hasClass("selected");
+			text_tool_font[thing] = $button.hasClass("selected");
 			update_font();
 		});
-		if(font[thing]){
+		if(text_tool_font[thing]){
 			$button.addClass("selected");
 		}
 		return $button;

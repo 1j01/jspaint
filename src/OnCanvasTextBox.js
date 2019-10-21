@@ -8,6 +8,8 @@ function OnCanvasTextBox(x, y, width, height){
 	tb.$editor = $(E("textarea")).addClass("textbox-editor");
 	
 	var update = function(){
+		var font = text_tool_font;
+
 		font.color = colors.foreground;
 		font.background = tool_transparent_mode ? "transparent" : colors.background;
 		
@@ -178,6 +180,8 @@ OnCanvasTextBox.prototype.draw = function(){
 	var text = tb.$editor.val();
 	if(text){
 		undoable(0, function(){
+			var font = text_tool_font;
+
 			ctx.fillStyle = font.background;
 			ctx.fillRect(tb.x, tb.y, tb.width, tb.height);
 			

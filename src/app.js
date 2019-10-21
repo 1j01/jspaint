@@ -41,10 +41,16 @@ var selection; //the one and only OnCanvasSelection
 var textbox; //the one and only OnCanvasTextBox
 var helper_layer; //the OnCanvasHelperLayer for the grid and tool previews
 var show_grid = false;
-var font = {
-	family: "Arial",
+var text_tool_font = {
+	family: '"Arial"', // should be an exact value detected by Font Detective
 	size: 12,
-	line_scale: 20 / 12
+	line_scale: 20 / 12,
+	bold: false,
+	italic: false,
+	underline: false,
+	vertical: false,
+	color: "",
+	background: "",
 };
 
 var undos = []; //array of ImageData
