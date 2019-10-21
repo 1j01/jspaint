@@ -3,13 +3,17 @@ function update_magnified_canvas_size(){
 	$canvas.css("width", canvas.width * magnification);
 	$canvas.css("height", canvas.height * magnification);
 }
-var _eventlike_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
+var info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
 function update_helper_layer(e) {
 	if (e) {
-		_eventlike_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY};
+		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
 	}
-	if (_eventlike_for_updating_pointer) {
-		pointer = e2c(_eventlike_for_updating_pointer);
+	if (info_for_updating_pointer) {
+		var rescale = info_for_updating_pointer.devicePixelRatio / devicePixelRatio;
+		info_for_updating_pointer.clientX *= rescale;
+		info_for_updating_pointer.clientY *= rescale;
+		info_for_updating_pointer.devicePixelRatio = devicePixelRatio;
+		pointer = e2c(info_for_updating_pointer);
 	}
 
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
