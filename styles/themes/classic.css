@@ -176,6 +176,13 @@
 	border-bottom: 1px solid #bdbdbd;
 }
 
+.text-toolbar-button-group button:not(:first-child) {
+	margin-left: 0;
+}
+.text-toolbar-button-group button:not(:last-child) {
+	margin-right: 0;
+}
+
 .tool-options {
 	border: 1px solid white;
 	border-top-color: #7b7b7b;

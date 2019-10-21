@@ -9,7 +9,7 @@ function $FontBox(){
 		max: 72,
 		value: text_tool_font.size,
 	});
-	var $button_group = $(E("span"));
+	var $button_group = $(E("span")).addClass("text-toolbar-button-group");
 	var $bold = $Toggle(0, "bold");
 	var $italic = $Toggle(1, "italic");
 	var $underline = $Toggle(2, "underline");
