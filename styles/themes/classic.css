@@ -148,7 +148,7 @@
 	border-right: 1px solid #7b7b7b;
 	border-bottom: 1px solid #7b7b7b;
 }
-.window-content button:hover:active,
+.window-content button:hover:active:not([disabled]),
 .window-content button.pressed,
 .tool:hover:active,
 .tool.selected {
@@ -162,7 +162,7 @@
 	border-right: 1px solid white;
 	border-bottom: 1px solid white;
 }
-.window-content button:hover:active:before,
+.window-content button:hover:active:not([disabled]):before,
 .window-content button.pressed:before,
 .tool:hover:active:before,
 .tool.selected:before {
@@ -388,7 +388,7 @@ button:after {
 	border-right: 1px solid #808080;
 	border-bottom: 1px solid #808080;
 }
-button:hover:active,
+button:hover:active:not([disabled]),
 button.pressed,
 button.selected {
 	border-top: 1px solid #000;
@@ -396,7 +396,7 @@ button.selected {
 	border-right: 1px solid #fff;
 	border-bottom: 1px solid #fff;
 }
-button:hover:active:after,
+button:hover:active:not([disabled]):after,
 button.pressed:after,
 button.selected:after {
 	border-top: 1px solid #808080;
@@ -408,7 +408,7 @@ button:before {
 	right: 0px;
 	top: -3px;
 }
-button:hover:active:before,
+button:hover:active:not([disabled]):before,
 button.pressed:before {
 	right: -1px;
 	top: -2px;

@@ -14,7 +14,11 @@ function $FontBox(){
 	var $italic = $Toggle(1, "italic");
 	var $underline = $Toggle(2, "underline");
 	var $vertical = $Toggle(3, "vertical");
-	
+	$vertical.attr("disabled", true);
+	$vertical.find("span").css({
+		filter: "grayscale(1) contrast(0.3) brightness(1.3) drop-shadow(1px 1px 0px white)" // approximate
+	});
+
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);
 	
