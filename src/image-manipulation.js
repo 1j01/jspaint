@@ -747,6 +747,12 @@ function draw_grid(ctx, wanted_size) {
 	var op_ctx_2d = op_canvas_2d.getContext("2d");
 
 	initWebGL(op_canvas_webgl);
+	op_canvas_webgl.addEventListener("webglcontextlost", (e)=> {
+		e.preventDefault();
+	}, false);
+	op_canvas_webgl.addEventListener("webglcontextrestored", ()=> {
+		initWebGL(op_canvas_webgl);
+	}, false);
 
 	window.draw_line_strip = function(ctx, points){
 		draw_polygon_or_line_strip(ctx, points, true, false, false);
