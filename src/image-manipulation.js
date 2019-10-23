@@ -675,6 +675,8 @@ function draw_grid(ctx, wanted_size) {
 	function initWebGL(canvas) {
 		gl = canvas.getContext('webgl', { antialias: false });
 
+		window.WEBGL_lose_context = gl.getExtension("WEBGL_lose_context");
+		
 		var program = createShaderProgram();
 		positionLoc = gl.getAttribLocation(program, 'position');
 		gl.enableVertexAttribArray(positionLoc);
@@ -752,6 +754,12 @@ function draw_grid(ctx, wanted_size) {
 	}, false);
 	op_canvas_webgl.addEventListener("webglcontextrestored", ()=> {
 		initWebGL(op_canvas_webgl);
+
+		// this is a very narrow fix, for only the brush tool
+		brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
+		render_brush(brush_ctx, brush_shape, brush_size);
+		$G.triggerHandler("option-changed"); // redraw tool options
+		// TODO: update "brush canvases" for Pencil and shape tools w/ line width
 	}, false);
 
 	window.draw_line_strip = function(ctx, points){
