@@ -20,12 +20,73 @@
 	// (maybe even whether it's considered saved? idk about that)
 	// I could have the image in one storage slot and the state in another
 
+
+	var $no_image_data_warning_window;
+	function show_no_image_data_warning(no_longer_blank) {
+		$no_image_data_warning_window && $no_image_data_warning_window.close();
+		var $w = $no_image_data_warning_window = $Window();
+		$w.title("Data Loss");
+		var backup_impossible = false;
+		try{window.localStorage}catch(e){backup_impossible = true;}
+		$w.$content.append($(`
+			<h1>Woah!</h1>
+			<p>Your browser may have cleared the canvas due to memory usage.</p>
+			${
+				backup_impossible ?
+					"<p>No automatic backup is possible unless you enable Cookies in your browser.</p>"
+					: (
+						no_longer_blank ?
+							`<p>
+								Note: normally a backup is saved automatically,<br>
+								but autosave is paused while this dialog is open<br>
+								to avoid overwriting the backup.
+							</p>
+							<p>
+								(See <b>File &gt; Manage Storage</b> to view backups.)
+							</p>`
+							: ""
+					)
+				}
+			}
+		`));
+		$w.$Button("Restore Document", ()=> {
+			undo();
+			$w.close();
+			// TODO: allow undoing multiple times
+		});
+		$w.$Button("Keep Blank", ()=> {
+			$w.close();
+		});
+		// $w.title("Potential Data Loss");
+		// $w.$content.append($(`
+		// 	<p>The canvas became blank.</p>
+		// `));
+		// $w.$Button("Undo", ()=> {
+		// 	undo();
+		// });
+		// $w.$Button("Close", ()=> {
+		// 	$w.close();
+		// });
+		$w.center();
+	}
+
+	var canvas_has_any_apparent_image_data = ()=>
+		canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v)=> v > 0);
+
 	var LocalSession = function(session_id){
 		var lsid = "image#" + session_id;
 		log("local storage id: " + lsid);
 
 		// save image to storage
 		var save_image_to_storage = function(){
+			if (!canvas_has_any_apparent_image_data()) {
+				show_no_image_data_warning();
+				return;
+			}
+			if ($no_image_data_warning_window) {
+				show_no_image_data_warning(true);
+				return;
+			}
 			storage.set(lsid, canvas.toDataURL("image/png"), function(err){
 				if(err){
 					if(err.quotaExceeded){
@@ -274,6 +335,14 @@
 		var pointer_operations = [];
 
 		var sync = function(){
+			if (!canvas_has_any_apparent_image_data()) {
+				show_no_image_data_warning();
+				return;
+			}
+			if ($no_image_data_warning_window) {
+				show_no_image_data_warning(true);
+				return;
+			}
 			// Sync the data from this client to the server (one-way)
 			var uri = canvas.toDataURL();
 			if(previous_uri !== uri){
