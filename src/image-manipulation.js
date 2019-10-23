@@ -751,9 +751,12 @@ function draw_grid(ctx, wanted_size) {
 	initWebGL(op_canvas_webgl);
 	op_canvas_webgl.addEventListener("webglcontextlost", (e)=> {
 		e.preventDefault();
+		clamp_brush_sizes();
 	}, false);
 	op_canvas_webgl.addEventListener("webglcontextrestored", ()=> {
 		initWebGL(op_canvas_webgl);
+
+		clamp_brush_sizes();
 
 		// this is a very narrow fix, for only the brush tool
 		brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
@@ -761,6 +764,22 @@ function draw_grid(ctx, wanted_size) {
 		$G.triggerHandler("option-changed"); // redraw tool options
 		// TODO: update "brush canvases" for Pencil and shape tools w/ line width
 	}, false);
+
+	function clamp_brush_sizes() {
+		var max_size = 100;
+		if (brush_size > max_size) {
+			brush_size = max_size;
+			show_error_message(`Brush size clamped to ${max_size}`);
+		}
+		if (pencil_size > max_size) {
+			pencil_size = max_size;
+			show_error_message(`Pencil size clamped to ${max_size}`);
+		}
+		if (stroke_size > max_size) {
+			stroke_size = max_size;
+			show_error_message(`Stroke size clamped to ${max_size}`);
+		}
+	}
 
 	window.draw_line_strip = function(ctx, points){
 		draw_polygon_or_line_strip(ctx, points, true, false, false);
