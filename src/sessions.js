@@ -30,7 +30,6 @@
 		var $w = $recovery_window = $FormWindow();
 		$w.on("close", ()=> {
 			$recovery_window = null;
-			save_paused = false;
 		});
 		$w.title("Recover Document");
 		var backup_impossible = false;
@@ -77,19 +76,18 @@
 		$w.center();
 	}
 
-	var save_paused = false;
 	function handle_data_loss() {
 		var window_is_open = $recovery_window && !$recovery_window.closed;
 		if (!canvas_has_any_apparent_image_data()) {
-			save_paused = true;
 			if (!window_is_open) {
 				show_recovery_window();
 			}
-			show_recovery_window();
+			return true;
 		} else if (window_is_open) {
 			show_recovery_window(true);
+			return true;
 		}
-		return save_paused;
+		return false;
 	}
 	
 	var LocalSession = function(session_id){
