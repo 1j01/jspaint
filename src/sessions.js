@@ -35,13 +35,14 @@
 		$w.$content.append($(`
 			<h1>Woah!</h1>
 			<p>Your browser may have cleared the canvas due to memory usage.</p>
+			<p>Undo to recover the document, and remember to save with <b>File > Save</b>.</p>
 			${
 				backup_impossible ?
-					"<p>No automatic backup is possible unless you enable Cookies in your browser.</p>"
+					"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>"
 					: (
 						no_longer_blank ?
 							`<p>
-								Note: normally a backup is saved automatically,<br>
+								<b>Note:</b> normally a backup is saved automatically,<br>
 								but autosave is paused while this dialog is open<br>
 								to avoid overwriting the backup.
 							</p>
@@ -53,37 +54,6 @@
 				}
 			}
 		`));
-		$w.$Button("Restore Document", ()=> {
-			show_undo_redo_window();
-			$w.close();
-		});
-		$w.$Button("Keep Blank", ()=> {
-			$w.close();
-		});
-		// $w.title("Potential Data Loss");
-		// $w.$content.append($(`
-		// 	<p>The canvas became blank.</p>
-		// `));
-		// $w.$Button("Undo", ()=> {
-		// 	undo();
-		// });
-		// $w.$Button("Close", ()=> {
-		// 	$w.close();
-		// });
-		$w.center();
-	}
-
-	function show_undo_redo_window() {
-		$undo_redo_window && $undo_redo_window.close();
-		var $w = $undo_redo_window = $Window();
-		$w.on("close", ()=> {
-			$undo_redo_window = null;
-		});
-		$w.title("Restore Document");
-
-		$w.$content.append($(`
-			Undo until the document is restored.
-		`));
 		
 		$w.$Button("Undo", ()=> {
 			undo();
@@ -91,9 +61,10 @@
 		$w.$Button("Redo", ()=> {
 			redo();
 		});
-		$w.$Button("Done", ()=> {
+		$w.$Button("Close", ()=> {
 			$w.close();
 		});
+		$w.center();
 	}
 
 	var canvas_has_any_apparent_image_data = ()=>
