@@ -21,21 +21,24 @@
 	// I could have the image in one storage slot and the state in another
 
 
-	var $no_image_data_warning_window;
-	var $undo_redo_window;
-	function show_no_image_data_warning(no_longer_blank) {
-		$no_image_data_warning_window && $no_image_data_warning_window.close();
-		var $w = $no_image_data_warning_window = $Window();
+	var canvas_has_any_apparent_image_data = ()=>
+		canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v)=> v > 0);
+
+	var $recovery_window;
+	function show_recovery_window(no_longer_blank) {
+		$recovery_window && $recovery_window.close();
+		var $w = $recovery_window = $FormWindow();
 		$w.on("close", ()=> {
-			$no_image_data_warning_window = null;
+			$recovery_window = null;
+			save_paused = false;
 		});
-		$w.title("Data Loss");
+		$w.title("Recover Document");
 		var backup_impossible = false;
 		try{window.localStorage}catch(e){backup_impossible = true;}
-		$w.$content.append($(`
+		$w.$main.append($(`
 			<h1>Woah!</h1>
 			<p>Your browser may have cleared the canvas due to memory usage.</p>
-			<p>Undo to recover the document, and remember to save with <b>File > Save</b>.</p>
+			<p>Undo to recover the document, and remember to save with <b>File > Save</b>!</p>
 			${
 				backup_impossible ?
 					"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>"
@@ -44,7 +47,7 @@
 							`<p>
 								<b>Note:</b> normally a backup is saved automatically,<br>
 								but autosave is paused while this dialog is open<br>
-								to avoid overwriting the backup.
+								to avoid overwriting the (singular) backup.
 							</p>
 							<p>
 								(See <b>File &gt; Manage Storage</b> to view backups.)
@@ -55,37 +58,47 @@
 			}
 		`));
 		
-		$w.$Button("Undo", ()=> {
+		var $undo = $w.$Button("Undo", ()=> {
 			undo();
 		});
-		$w.$Button("Redo", ()=> {
+		var $redo = $w.$Button("Redo", ()=> {
 			redo();
 		});
+		var update_buttons_disabled = ()=> {
+			$undo.attr("disabled", undos.length < 1);
+			$redo.attr("disabled", redos.length < 1);
+		}
+		$canvas.on("change.session-hook", update_buttons_disabled);
+		update_buttons_disabled();
+
 		$w.$Button("Close", ()=> {
 			$w.close();
 		});
 		$w.center();
 	}
 
-	var canvas_has_any_apparent_image_data = ()=>
-		canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v)=> v > 0);
-
+	var save_paused = false;
+	function handle_data_loss() {
+		var window_is_open = $recovery_window && !$recovery_window.closed;
+		if (!canvas_has_any_apparent_image_data()) {
+			save_paused = true;
+			if (!window_is_open) {
+				show_recovery_window();
+			}
+			show_recovery_window();
+		} else if (window_is_open) {
+			show_recovery_window(true);
+		}
+		return save_paused;
+	}
+	
 	var LocalSession = function(session_id){
 		var lsid = "image#" + session_id;
 		log("local storage id: " + lsid);
 
 		// save image to storage
 		var save_image_to_storage = function(){
-			// TODO: DRY
-			if (!canvas_has_any_apparent_image_data()) {
-				show_no_image_data_warning();
-				return;
-			}
-			if ($undo_redo_window) {
-				return;
-			}
-			if ($no_image_data_warning_window) {
-				show_no_image_data_warning(true);
+			if (handle_data_loss()) {
 				return;
 			}
 			storage.set(lsid, canvas.toDataURL("image/png"), function(err){
@@ -336,16 +349,7 @@
 		var pointer_operations = [];
 
 		var sync = function(){
-			// TODO: DRY
-			if (!canvas_has_any_apparent_image_data()) {
-				show_no_image_data_warning();
-				return;
-			}
-			if ($undo_redo_window) {
-				return;
-			}
-			if ($no_image_data_warning_window) {
-				show_no_image_data_warning(true);
+			if (handle_data_loss()) {
 				return;
 			}
 			// Sync the data from this client to the server (one-way)
