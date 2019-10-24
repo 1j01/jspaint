@@ -22,9 +22,13 @@
 
 
 	var $no_image_data_warning_window;
+	var $undo_redo_window;
 	function show_no_image_data_warning(no_longer_blank) {
 		$no_image_data_warning_window && $no_image_data_warning_window.close();
 		var $w = $no_image_data_warning_window = $Window();
+		$w.on("close", ()=> {
+			$no_image_data_warning_window = null;
+		});
 		$w.title("Data Loss");
 		var backup_impossible = false;
 		try{window.localStorage}catch(e){backup_impossible = true;}
@@ -50,9 +54,8 @@
 			}
 		`));
 		$w.$Button("Restore Document", ()=> {
-			undo();
+			show_undo_redo_window();
 			$w.close();
-			// TODO: allow undoing multiple times
 		});
 		$w.$Button("Keep Blank", ()=> {
 			$w.close();
@@ -70,6 +73,29 @@
 		$w.center();
 	}
 
+	function show_undo_redo_window() {
+		$undo_redo_window && $undo_redo_window.close();
+		var $w = $undo_redo_window = $Window();
+		$w.on("close", ()=> {
+			$undo_redo_window = null;
+		});
+		$w.title("Restore Document");
+
+		$w.$content.append($(`
+			Undo until the document is restored.
+		`));
+		
+		$w.$Button("Undo", ()=> {
+			undo();
+		});
+		$w.$Button("Redo", ()=> {
+			redo();
+		});
+		$w.$Button("Done", ()=> {
+			$w.close();
+		});
+	}
+
 	var canvas_has_any_apparent_image_data = ()=>
 		canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v)=> v > 0);
 
@@ -79,8 +105,12 @@
 
 		// save image to storage
 		var save_image_to_storage = function(){
+			// TODO: DRY
 			if (!canvas_has_any_apparent_image_data()) {
 				show_no_image_data_warning();
+				return;
+			}
+			if ($undo_redo_window) {
 				return;
 			}
 			if ($no_image_data_warning_window) {
@@ -335,8 +365,12 @@
 		var pointer_operations = [];
 
 		var sync = function(){
+			// TODO: DRY
 			if (!canvas_has_any_apparent_image_data()) {
 				show_no_image_data_warning();
+				return;
+			}
+			if ($undo_redo_window) {
 				return;
 			}
 			if ($no_image_data_warning_window) {
