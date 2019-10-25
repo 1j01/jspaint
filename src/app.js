@@ -133,23 +133,6 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 	});
 });
 
-storage.get({
-	width: default_canvas_width,
-	height: default_canvas_height,
-}, function(err, values){
-	if(err){return;}
-	my_canvas_width = values.width;
-	my_canvas_height = values.height;
-	canvas.width = Math.max(1, my_canvas_width);
-	canvas.height = Math.max(1, my_canvas_height);
-	ctx.disable_image_smoothing();
-	if(!transparency){
-		ctx.fillStyle = colors.background;
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-	}
-	$canvas_area.trigger("resize");
-});
-
 $G.on("resize", function(){ // for browser zoom, and in-app zoom of the canvas
 	canvas_bounding_client_rect = canvas.getBoundingClientRect();
 
@@ -420,6 +403,23 @@ reset_file();
 reset_colors();
 reset_canvas(); // (with newly reset colors)
 reset_magnification();
+
+storage.get({
+	width: default_canvas_width,
+	height: default_canvas_height,
+}, function(err, values){
+	if(err){return;}
+	my_canvas_width = values.width;
+	my_canvas_height = values.height;
+	canvas.width = Math.max(1, my_canvas_width);
+	canvas.height = Math.max(1, my_canvas_height);
+	ctx.disable_image_smoothing();
+	if(!transparency){
+		ctx.fillStyle = colors.background;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	$canvas_area.trigger("resize");
+});
 
 if(window.document_file_path_to_open){
 	open_from_file_path(document_file_path_to_open, function(err){
