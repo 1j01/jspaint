@@ -96,7 +96,8 @@
 
 		// save image to storage
 		var save_image_to_storage = function(){
-			if (handle_data_loss()) {
+			var save_paused = handle_data_loss();
+			if (save_paused) {
 				return;
 			}
 			storage.set(lsid, canvas.toDataURL("image/png"), function(err){
@@ -347,7 +348,8 @@
 		var pointer_operations = [];
 
 		var sync = function(){
-			if (handle_data_loss()) {
+			var save_paused = handle_data_loss();
+			if (save_paused) {
 				return;
 			}
 			// Sync the data from this client to the server (one-way)
