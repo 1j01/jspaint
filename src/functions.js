@@ -93,7 +93,7 @@ function set_magnification(scale){
 		return_to_magnification = scale;
 	}
 	update_magnified_canvas_size();
-	$G.triggerHandler("resize"); // updates grid
+	$G.triggerHandler("resize"); // updates handles & grid
 }
 
 function reset_magnification(){

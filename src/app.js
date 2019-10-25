@@ -105,19 +105,6 @@ var $toolbox = $ToolBox(tools);
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 var $colorbox = $ColorBox();
 
-reset_file();
-reset_colors();
-reset_canvas(); // (with newly reset colors)
-reset_magnification();
-
-if(window.document_file_path_to_open){
-	open_from_file_path(document_file_path_to_open, function(err){
-		if(err){
-			return show_error_message("Failed to open file " + document_file_path_to_open, err);
-		}
-	});
-}
-
 $canvas.on("user-resized", function(e, _x, _y, width, height){
 	undoable(0, function(){
 		canvas.width = Math.max(1, width);
@@ -428,6 +415,19 @@ $G.on("cut copy paste", function(e){
 		});
 	}
 });
+
+reset_file();
+reset_colors();
+reset_canvas(); // (with newly reset colors)
+reset_magnification();
+
+if(window.document_file_path_to_open){
+	open_from_file_path(document_file_path_to_open, function(err){
+		if(err){
+			return show_error_message("Failed to open file " + document_file_path_to_open, err);
+		}
+	});
+}
 
 var pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
 var reverse, ctrl, button;
