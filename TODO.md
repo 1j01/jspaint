@@ -147,10 +147,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* See [On-Canvas Objects](#on-canvas-objects) for Selection
 
 
-* Magnifier
-	* Choose and preview viewport with rectangular cursor
-
-
 * Text
 	* Underline
 	* Expand box to make room for new lines

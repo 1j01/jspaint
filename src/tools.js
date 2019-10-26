@@ -324,12 +324,53 @@ tools = [{
 	// even though the custom cursor image is less descriptive
 	deselect: true,
 	passive: true,
-	// @TODO: choose and preview viewport with rectangular cursor
-	pointerdown: function(){
+	
+	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+		if(!pointer_active && !pointer_over_canvas){return;}
+		if(pointer_active) { return; } // TODO: fix flash / whatever
+		// TODO: hide if would be zooming out
+
+		var hairline_width = 1/scaled_by_amount;
+
+		// TODO: size rectangle based on viewport
+		var w = 500;
+		var h = 500;
+		var rect_x1 = ~~(x - w/2);
+		var rect_y1 = ~~(y - h/2);
+		var rect_x2 = ~~(x + w/2);
+		var rect_y2 = ~~(y + h/2);
+
+		rect_x1 = Math.max(0, rect_x1);
+		rect_y1 = Math.max(0, rect_y1);
+		rect_x2 = Math.min(canvas.width, rect_x2);
+		rect_y2 = Math.min(canvas.height, rect_y2);
+		
+		var rect_w = rect_x2 - rect_x1;
+		var rect_h = rect_y2 - rect_y1;
+		
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = hairline_width;
+		if (grid_visible) {
+			ctx.strokeRect(rect_x1+ctx.lineWidth/2, rect_y1+ctx.lineWidth/2, rect_w, rect_h);
+		} else {
+			ctx.strokeRect(rect_x1+ctx.lineWidth/2, rect_y1+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
+		}
+	},
+	pointerdown: function(ctx, x, y){
 		if(magnification !== 1){
 			reset_magnification();
 		}else{
+			var prev_magnification = magnification;
+			// TODO: dedupe update_helper_layer
 			set_magnification(return_to_magnification);
+			var scroll_left = $canvas_area.scrollLeft();
+			var scroll_top = $canvas_area.scrollTop();
+			// TODO: size rectangle based on viewport, and get position actually right
+			scroll_left = (x - 500/2) * magnification / prev_magnification;
+			scroll_top = (y - 500/2) * magnification / prev_magnification;
+			$canvas_area.scrollLeft(scroll_left);
+			$canvas_area.scrollTop(scroll_top);
+			update_helper_layer();
 		}
 	},
 	$options: $choose_magnification
