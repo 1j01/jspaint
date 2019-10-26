@@ -58,11 +58,9 @@ function update_helper_layer(e) {
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
 	
 	hctx.save();
-	hctx.scale(scale, scale);
-	hctx.translate(-viewport_x, -viewport_y);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewUnderGrid && pointer){
-			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, scale, grid_visible);
+			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
 		}
 	});
 	hctx.restore();
@@ -72,11 +70,9 @@ function update_helper_layer(e) {
 	}
 
 	hctx.save();
-	hctx.scale(scale, scale);
-	hctx.translate(-viewport_x, -viewport_y);
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewAboveGrid && pointer){
-			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, scale, grid_visible);
+			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
 		}
 	});
 	hctx.restore();

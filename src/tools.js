@@ -78,7 +78,7 @@ tools = [{
 			id_dest.data[i+1] = 255 - id_src.data[i+1];
 			id_dest.data[i+2] = 255 - id_src.data[i+2];
 			id_dest.data[i+3] = 255;
-			// @TODO maybe: invert based on id_src.data[i+3] and the background
+			// @TODO maybe: invert based on id_src.data[i+3] and the checkered background
 		}
 		
 		ctx_dest.putImageData(id_dest, rect_x, rect_y);
@@ -117,9 +117,13 @@ tools = [{
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 	},
-	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(!this.preview_canvas){return;}
+
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
+
 		ctx.drawImage(this.preview_canvas, 0, 0);
 	},
 	$options: $choose_transparent_mode
@@ -187,25 +191,31 @@ tools = [{
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	continuous: "space",
-	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		var rect_x = ~~(x - eraser_size/2);
 		var rect_y = ~~(y - eraser_size/2);
 		var rect_w = eraser_size;
 		var rect_h = eraser_size;
 		
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
+
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 	},
-	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+	drawPreviewAboveGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
-		var hairline_width = 1/scaled_by_amount;
-
+		
 		var rect_x = ~~(x - eraser_size/2);
 		var rect_y = ~~(y - eraser_size/2);
 		var rect_w = eraser_size;
 		var rect_h = eraser_size;
 		
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
+		var hairline_width = 1/scale;
+
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = hairline_width;
 		if (grid_visible) {
@@ -329,14 +339,12 @@ tools = [{
 		magnification === 1 ? return_to_magnification : 1
 	),
 
-	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+	drawPreviewAboveGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(pointer_active) { return; }
 		var prospective_magnification = this.getProspectiveMagnification();
 
 		if(prospective_magnification < magnification) { return; } // hide if would be zooming out
-
-		var hairline_width = 1/scaled_by_amount;
 
 		// prospective viewport size in document coords
 		var w = $canvas_area.width() / prospective_magnification;
@@ -362,15 +370,47 @@ tools = [{
 		
 		var rect_w = rect_x2 - rect_x1;
 		var rect_h = rect_y2 - rect_y1;
+		var rect_x = rect_x1;
+		var rect_y = rect_y1;
+
+		var id_src = canvas.ctx.getImageData(rect_x, rect_y, rect_w+1, rect_h+1);
+		var id_dest = ctx.getImageData((rect_x+translate_x)*scale, (rect_y+translate_y)*scale, rect_w*scale+1, rect_h*scale+1);
 		
-		ctx.strokeStyle = "black";
-		ctx.lineWidth = hairline_width;
-		// TODO: inverty rectangle
-		if (grid_visible) {
-			ctx.strokeRect(rect_x1+ctx.lineWidth/2, rect_y1+ctx.lineWidth/2, rect_w, rect_h);
-		} else {
-			ctx.strokeRect(rect_x1+ctx.lineWidth/2, rect_y1+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
+		function copyPixelInverted(x_dest, y_dest) {
+			var x_src = ~~(x_dest / scale);
+			var y_src = ~~(y_dest / scale);
+			var index_src = (x_src + y_src * id_src.width) * 4;
+			var index_dest = (x_dest + y_dest * id_dest.width) * 4;
+			id_dest.data[index_dest+0] = 255 - id_src.data[index_src+0];
+			id_dest.data[index_dest+1] = 255 - id_src.data[index_src+1];
+			id_dest.data[index_dest+2] = 255 - id_src.data[index_src+2];
+			id_dest.data[index_dest+3] = 255;
+			// @TODO maybe: invert based on id_src.data[index_src+3] and the checkered background
 		}
+
+		for(let x=0, limit=id_dest.width; x<limit; x+=1){
+			copyPixelInverted(x, 0);
+			copyPixelInverted(x, id_dest.height-1);
+		}
+		for(let y=1, limit=id_dest.height-1; y<limit; y+=1){
+			copyPixelInverted(0, y);
+			copyPixelInverted(id_dest.width-1, y);
+		}
+
+		// for debug: fill rect
+		// for(let x=0, x_limit=id_dest.width; x<x_limit; x+=1){
+		// 	for(let y=1, y_limit=id_dest.height-1; y<y_limit; y+=1){
+		// 		copyPixelInverted(x, y);
+		// 	}
+		// }
+		
+		ctx.putImageData(id_dest, (rect_x+translate_x)*scale, (rect_y+translate_y)*scale);
+
+		// debug:
+		// ctx.scale(scale, scale);
+		// ctx.translate(translate_x, translate_y);
+		// ctx.strokeStyle = "#f0f";
+		// ctx.strokeRect(rect_x1, rect_y1, rect_w, rect_h);
 	},
 	pointerdown: function(ctx, x, y){
 		var prev_magnification = magnification;
@@ -451,8 +491,12 @@ tools = [{
 		}
 		ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 	},
-	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
+		
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
+
 		this.paint(ctx, x, y);
 	},
 	$options: $choose_brush
