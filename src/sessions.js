@@ -124,7 +124,7 @@
 					show_error_message("Failed to retrieve image from local storage:", err);
 				} else {
 					// TODO: DRY with storage manager message
-					show_error_message("Please enable local storage in your browser's settings for local backup. It's may be called Cookies, Storage, or Site Data.");
+					show_error_message("Please enable local storage in your browser's settings for local backup. It may be called Cookies, Storage, or Site Data.");
 				}
 			}else if(uri){
 				open_from_URI(uri, function(err){
