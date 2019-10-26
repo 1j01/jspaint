@@ -338,9 +338,10 @@ tools = [{
 
 		var hairline_width = 1/scaled_by_amount;
 
-		// TODO: size rectangle based on viewport
-		var w = 500;
-		var h = 500;
+		// prospective viewport size in document coords
+		var w = $canvas_area.width() / prospective_magnification;
+		var h = $canvas_area.height() / prospective_magnification;
+
 		var rect_x1 = ~~(x - w/2);
 		var rect_y1 = ~~(y - h/2);
 		var rect_x2 = ~~(x + w/2);
@@ -369,16 +370,20 @@ tools = [{
 		// TODO: dedupe update_helper_layer
 		set_magnification(prospective_magnification);
 
-		if (prospective_magnification > prev_magnification) {
-			var scroll_left = $canvas_area.scrollLeft();
-			var scroll_top = $canvas_area.scrollTop();
-			// TODO: size rectangle based on viewport, and get position actually right
-			scroll_left = (x - 500/2) * magnification / prev_magnification;
-			scroll_top = (y - 500/2) * magnification / prev_magnification;
+		if (magnification > prev_magnification) {
+
+			// (new) viewport size in document coords
+			var w = $canvas_area.width() / magnification;
+			var h = $canvas_area.height() / magnification;
+
+			var scroll_left = (x - w/2) * magnification / prev_magnification;
+			var scroll_top = (y - h/2) * magnification / prev_magnification;
+			
 			$canvas_area.scrollLeft(scroll_left);
 			$canvas_area.scrollTop(scroll_top);
 			update_helper_layer();
 		}
+		// TODO: else rescale viewport
 	},
 	$options: $choose_magnification
 }, {
