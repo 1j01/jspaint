@@ -4,43 +4,43 @@ var menus = {
 		{
 			item: "&New",
 			shortcut: "Ctrl+N",
-			action: file_new,
+			action: ()=> { file_new(); },
 			description: "Creates a new document.",
 		},
 		{
 			item: "&Open",
 			shortcut: "Ctrl+O",
-			action: file_open,
+			action: ()=> { file_open(); },
 			description: "Opens an existing document.",
 		},
 		{
 			item: "&Save",
 			shortcut: "Ctrl+S",
-			action: file_save,
+			action: ()=> { file_save(); },
 			description: "Saves the active document.",
 		},
 		{
 			item: "Save &As",
 			shortcut: "Ctrl+Shift+S",
 			// in mspaint, no shortcut is listed, but it supports F12; it doesn't support Ctrl+Shift+S
-			action: file_save_as,
+			action: ()=> { file_save_as(); },
 			description: "Saves the active document with a new name.",
 		},
 		$MenuBar.DIVIDER,
 		{
 			item: "&Load From URL",
 			// shortcut: "Ctrl+L",
-			action: file_load_from_url,
+			action: ()=> { file_load_from_url(); },
 			description: "Opens an image from the web.",
 		},
 		{
 			item: "&Upload To Imgur",
-			action: function(){
+			action: ()=> {
 				// include the selection in the saved image
 				deselect();
 
-				canvas.toBlob(function(blob){
-					sanity_check_blob(blob, function(){
+				canvas.toBlob((blob)=> {
+					sanity_check_blob(blob, ()=> {
 						show_imgur_uploader(blob);
 					});
 				});
@@ -50,13 +50,13 @@ var menus = {
 		$MenuBar.DIVIDER,
 		{
 			item: "Manage Storage",
-			action: manage_storage,
+			action: ()=> { manage_storage(); },
 			description: "Manages storage of previously created or opened pictures.",
 		},
 		$MenuBar.DIVIDER,
 		{
 			item: "Print Pre&view",
-			action: function(){
+			action: ()=> {
 				print();
 			},
 			description: "Prints the active document and sets printing options.",
@@ -64,7 +64,7 @@ var menus = {
 		},
 		{
 			item: "Page Se&tup",
-			action: function(){
+			action: ()=> {
 				print();
 			},
 			description: "Prints the active document and sets printing options.",
@@ -73,7 +73,7 @@ var menus = {
 		{
 			item: "&Print",
 			shortcut: "Ctrl+P",
-			action: function(){
+			action: ()=> {
 				print();
 			},
 			description: "Prints the active document and sets printing options.",
@@ -81,12 +81,12 @@ var menus = {
 		$MenuBar.DIVIDER,
 		{
 			item: "Set As &Wallpaper (Tiled)",
-			action: set_as_wallpaper_tiled,
+			action: ()=> { set_as_wallpaper_tiled(); },
 			description: "Tiles this bitmap as the desktop background.",
 		},
 		{
 			item: "Set As Wallpaper (&Centered)", // in mspaint it's Wa&llpaper
-			action: set_as_wallpaper_centered,
+			action: ()=> { set_as_wallpaper_centered(); },
 			description: "Centers this bitmap as the desktop background.",
 		},
 		$MenuBar.DIVIDER,
@@ -99,7 +99,7 @@ var menus = {
 		{
 			item: "E&xit",
 			shortcut: "Alt+F4",
-			action: function(){
+			action: ()=> {
 				close();
 			},
 			description: "Quits Paint.",
@@ -109,30 +109,30 @@ var menus = {
 		{
 			item: "&Undo",
 			shortcut: "Ctrl+Z",
-			enabled: function(){
+			enabled: ()=> {
 				return undos.length >= 1;
 			},
-			action: undo,
+			action: ()=> { undo(); },
 			description: "Undoes the last action.",
 		},
 		{
 			item: "&Repeat",
 			shortcut: "F4",
-			enabled: function(){
+			enabled: ()=> {
 				return redos.length >= 1;
 			},
-			action: redo,
+			action: ()=> { redo(); },
 			description: "Redoes the previously undone action.",
 		},
 		$MenuBar.DIVIDER,
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
-			enabled: function(){
+			enabled: ()=> {
 				// support cutting selected text with this menu item as well (e.g. in the text tool text box)
 				return !!selection;
 			},
-			action: function(){
+			action: ()=> {
 				edit_cut(true);
 			},
 			description: "Cuts the selection and puts it on the Clipboard.",
@@ -140,11 +140,11 @@ var menus = {
 		{
 			item: "&Copy",
 			shortcut: "Ctrl+C",
-			enabled: function(){
+			enabled: ()=> {
 				// support copying selected text with this menu item as well (e.g. in the text tool text box)
 				return !!selection;
 			},
-			action: function(){
+			action: ()=> {
 				edit_copy(true);
 			},
 			description: "Copies the selection and puts it on the Clipboard.",
@@ -152,11 +152,11 @@ var menus = {
 		{
 			item: "&Paste",
 			shortcut: "Ctrl+V",
-			enabled: function(){
+			enabled: ()=> {
 				// TODO: disable if nothing in clipboard or wrong type (if we can access that)
 				return true;
 			},
-			action: function(){
+			action: ()=> {
 				edit_paste(true);
 			},
 			description: "Inserts the contents of the Clipboard.",
@@ -164,26 +164,26 @@ var menus = {
 		{
 			item: "C&lear Selection",
 			shortcut: "Del",
-			enabled: function(){ return !!selection; },
-			action: delete_selection,
+			enabled: ()=> { return !!selection; },
+			action: ()=> { delete_selection(); },
 			description: "Deletes the selection.",
 		},
 		{
 			item: "Select &All",
 			shortcut: "Ctrl+A",
-			action: select_all,
+			action: ()=> { select_all(); },
 			description: "Selects everything.",
 		},
 		$MenuBar.DIVIDER,
 		{
 			item: "C&opy To...",
-			enabled: function(){ return !!selection; },
-			action: save_selection_to_file,
+			enabled: ()=> { return !!selection; },
+			action: ()=> { save_selection_to_file(); },
 			description: "Copies the selection to a file.",
 		},
 		{
 			item: "Paste &From...",
-			action: paste_from_file_select_dialog,
+			action: ()=> { paste_from_file_select_dialog(); },
 			description: "Pastes a file into the selection.",
 		}
 	],
@@ -192,10 +192,10 @@ var menus = {
 			item: "&Tool Box",
 			shortcut: "Ctrl+T",
 			checkbox: {
-				toggle: function(){
+				toggle: ()=> {
 					$toolbox.toggle();
 				},
-				check: function(){
+				check: ()=> {
 					return $toolbox.is(":visible");
 				},
 			},
@@ -205,10 +205,10 @@ var menus = {
 			item: "&Color Box",
 			shortcut: "Ctrl+L",
 			checkbox: {
-				toggle: function(){
+				toggle: ()=> {
 					$colorbox.toggle();
 				},
-				check: function(){
+				check: ()=> {
 					return $colorbox.is(":visible");
 				},
 			},
@@ -217,10 +217,10 @@ var menus = {
 		{
 			item: "&Status Bar",
 			checkbox: {
-				toggle: function(){
+				toggle: ()=> {
 					$status_area.toggle();
 				},
-				check: function(){
+				check: ()=> {
 					return $status_area.is(":visible");
 				},
 			},
@@ -236,7 +236,7 @@ var menus = {
 		{
 			item: "E&xtras Menu",
 			checkbox: {
-				toggle: function(){
+				toggle: function() {
 					$extras_menu_button.toggle();
 					var checked = this.check();
 					try{
@@ -244,7 +244,7 @@ var menus = {
 					// eslint-disable-next-line no-empty
 					}catch(e){}
 				},
-				check: function(){
+				check: ()=> {
 					return $extras_menu_button.is(":visible");
 				}
 			},
@@ -258,10 +258,10 @@ var menus = {
 					item: "&Normal Size",
 					shorcut: "Ctrl+PgUp",
 					description: "Zooms the picture to 100%.",
-					enabled: function(){
+					enabled: ()=> {
 						return magnification !== 1;
 					},
-					action: function(){
+					action: ()=> {
 						set_magnification(1);
 					},
 				},
@@ -269,28 +269,28 @@ var menus = {
 					item: "&Large Size",
 					shorcut: "Ctrl+PgDn",
 					description: "Zooms the picture to 400%.",
-					enabled: function(){
+					enabled: ()=> {
 						return magnification !== 4;
 					},
-					action: function(){
+					action: ()=> {
 						set_magnification(4);
 					},
 				},
 				{
 					item: "C&ustom...",
 					description: "Zooms the picture.",
-					action: show_custom_zoom_window,
+					action: ()=> { show_custom_zoom_window(); },
 				},
 				$MenuBar.DIVIDER,
 				{
 					item: "Show &Grid",
 					shorcut: "Ctrl+G",
-					enabled: function() {
+					enabled: ()=> {
 						return magnification >= 4;
 					},
 					checkbox: {
 						toggle: toggle_grid,
-						check: function(){
+						check: ()=> {
 							return show_grid;
 						},
 					},
@@ -307,7 +307,7 @@ var menus = {
 		{
 			item: "&View Bitmap",
 			shortcut: "Ctrl+F",
-			action: view_bitmap,
+			action: ()=> { view_bitmap(); },
 			description: "Displays the entire picture.",
 		}
 	],
@@ -315,42 +315,42 @@ var menus = {
 		{
 			item: "&Flip/Rotate",
 			shortcut: "Ctrl+R",
-			action: image_flip_and_rotate,
+			action: ()=> { image_flip_and_rotate(); },
 			description: "Flips or rotates the picture or a selection.",
 		},
 		{
 			item: "&Stretch/Skew",
 			// shortcut: "Ctrl+W", // closes browser tab
-			action: image_stretch_and_skew,
+			action: ()=> { image_stretch_and_skew(); },
 			description: "Stretches or skews the picture or a selection.",
 		},
 		{
 			item: "&Invert Colors",
 			shortcut: "Ctrl+I",
-			action: image_invert,
+			action: ()=> { image_invert(); },
 			description: "Inverts the colors of the picture or a selection.",
 		},
 		{
 			item: "&Attributes...",
 			shortcut: "Ctrl+E",
-			action: image_attributes,
+			action: ()=> { image_attributes(); },
 			description: "Changes the attributes of the picture.",
 		},
 		{
 			item: "&Clear Image",
 			shortcut: "Ctrl+Shift+N",
 			//shortcut: "Ctrl+Shft+N", [sic]
-			action: clear,
+			action: ()=> { clear(); },
 			description: "Clears the picture or selection.",
 		},
 		{
 			item: "&Draw Opaque",
 			checkbox: {
-				toggle: function(){
+				toggle: ()=> {
 					tool_transparent_mode = !tool_transparent_mode;
 					$G.trigger("option-changed");
 				},
-				check: function(){
+				check: ()=> {
 					return !tool_transparent_mode;
 				},
 			},
@@ -360,17 +360,17 @@ var menus = {
 	"&Colors": [
 		{
 			item: "&Edit Colors...",
-			action: function(){
+			action: ()=> {
 				$colorbox.edit_last_color();
 			},
 			description: "Creates a new color.",
 		},
 		{
 			item: "&Get Colors",
-			action: function(){
-				get_FileList_from_file_select_dialog(function(files){
+			action: ()=> {
+				get_FileList_from_file_select_dialog((files)=> {
 					var file = files[0];
-					Palette.load(file, function(err, new_palette){
+					Palette.load(file, (err, new_palette)=> {
 						if(err){
 							show_error_message("This file is not in a format that paint recognizes, or no colors were found.");
 						}else{
@@ -384,9 +384,9 @@ var menus = {
 		},
 		{
 			item: "&Save Colors",
-			action: function(){
+			action: ()=> {
 				var blob = new Blob([JSON.stringify(palette)], {type: "application/json"});
-				sanity_check_blob(blob, function(){
+				sanity_check_blob(blob, ()=> {
 					saveAs(blob, "colors.json");
 				});
 			},
@@ -396,13 +396,13 @@ var menus = {
 	"&Help": [
 		{
 			item: "&Help Topics",
-			action: show_help,
+			action: ()=> { show_help(); },
 			description: "Displays Help for the current task or command.",
 		},
 		$MenuBar.DIVIDER,
 		{
 			item: "&About Paint",
-			action: show_about_paint,
+			action: ()=> { show_about_paint(); },
 			description: "Displays information about this application.",
 			//description: "Displays program information, version number, and copyright.",
 		}
@@ -411,24 +411,24 @@ var menus = {
 		{
 			item: "&Render History As GIF",
 			// shortcut: "Ctrl+Shift+G",
-			action: render_history_as_gif,
+			action: ()=> { render_history_as_gif(); },
 			description: "Creates an animation from the document history.",
 		},
 		// {
 		// 	item: "Render History as &APNG",
 		// 	// shortcut: "Ctrl+Shift+A",
-		// 	action: render_history_as_apng,
+		// 	action: ()=> { render_history_as_apng(); },
 		// 	description: "Creates an animation from the document history.",
 		// },
 		// {
 		// 	item: "Extra T&ool Box",
 		// 	checkbox: {
-		// 		toggle: function(){
+		// 		toggle: ()=> {
 		// 			// this doesn't really work well at all to have two toolboxes
 		// 			// (this was not the original plan either)
 		// 			$toolbox2.toggle();
 		// 		},
-		// 		check: function(){
+		// 		check: ()=> {
 		// 			return $toolbox2.is(":visible");
 		// 		},
 		// 	},
@@ -436,7 +436,7 @@ var menus = {
 		// },
 		// {
 		// 	item: "&Preferences",
-		// 	action: function(){
+		// 	action: ()=> {
 		// 		// :)
 		// 	},
 		// 	description: "Configures JS Paint.",
@@ -444,14 +444,14 @@ var menus = {
 		/*{
 			item: "&Draw Randomly",
 			checkbox: {
-				toggle: function(){
+				toggle: ()=> {
 					if (window.simulatingGestures) {
 						stopSimulatingGestures();
 					} else {
 						simulateRandomGesturesPeriodically();
 					}
 				},
-				check: function(){
+				check: ()=> {
 					return window.simulatingGestures;
 				},
 			},
@@ -462,7 +462,7 @@ var menus = {
 			submenu: [
 				{
 					item: "&New Session From Document",
-					action: function(){
+					action: ()=> {
 						var name = prompt("Enter the session name that will be used in the URL for sharing.");
 						if(typeof name == "string"){
 							name = name.trim();
@@ -479,7 +479,7 @@ var menus = {
 				},
 				{
 					item: "New &Blank Session",
-					action: function(){
+					action: ()=> {
 						show_error_message("Not supported yet");
 					},
 					enabled: false,
@@ -492,20 +492,20 @@ var menus = {
 			submenu: [
 				{
 					item: "&Classic",
-					action: function(){
+					action: ()=> {
 						set_theme("classic.css");
 					},
-					enabled: function(){
+					enabled: ()=> {
 						return get_theme() != "classic.css"
 					},
 					description: "Makes JS Paint look like MS Paint from Windows 98.",
 				},
 				{
 					item: "&Modern (WIP)",
-					action: function(){
+					action: ()=> {
 						set_theme("modern.css");
 					},
-					enabled: function(){
+					enabled: ()=> {
 						return get_theme() != "modern.css"
 					},
 					description: "Makes JS Paint look a bit more modern.",
@@ -514,41 +514,3 @@ var menus = {
 		},
 	],
 };
-
-var go_outside_frame = false;
-if(frameElement){
-	try{
-		if(parent.$MenuBar){
-			$MenuBar = parent.$MenuBar;
-			go_outside_frame = true;
-		}
-	// eslint-disable-next-line no-empty
-	}catch(e){}
-}
-var $menu_bar = $MenuBar(menus);
-if(go_outside_frame){
-	$menu_bar.insertBefore(frameElement);
-}else{
-	$menu_bar.prependTo($V);
-}
-
-$menu_bar.on("info", function(e, info){
-	$status_text.text(info);
-});
-$menu_bar.on("default-info", function(e){
-	$status_text.default();
-});
-
-var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
-// TODO: DRY with $MenuBar
-// if localStorage is not available, the default setting is visible
-var extras_menu_should_start_visible = true;
-try{
-	// if localStorage is available, the default setting is invisible (for now)
-	// TODO: refactor shared key string
-	extras_menu_should_start_visible = localStorage["jspaint extras menu visible"] == "true"
-// eslint-disable-next-line no-empty
-}catch(e){}
-if(!extras_menu_should_start_visible){
-	$extras_menu_button.hide();
-}

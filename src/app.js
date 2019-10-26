@@ -97,6 +97,46 @@ $status_text.default = function(){
 };
 $status_text.default();
 
+// menu bar
+var menu_bar_outside_frame = false;
+if(frameElement){
+	try{
+		if(parent.$MenuBar){
+			$MenuBar = parent.$MenuBar;
+			menu_bar_outside_frame = true;
+		}
+	// eslint-disable-next-line no-empty
+	}catch(e){}
+}
+var $menu_bar = $MenuBar(menus);
+if(menu_bar_outside_frame){
+	$menu_bar.insertBefore(frameElement);
+}else{
+	$menu_bar.prependTo($V);
+}
+
+$menu_bar.on("info", function(e, info){
+	$status_text.text(info);
+});
+$menu_bar.on("default-info", function(e){
+	$status_text.default();
+});
+
+var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
+// TODO: DRY with $MenuBar
+// if localStorage is not available, the default setting is visible
+var extras_menu_should_start_visible = true;
+try{
+	// if localStorage is available, the default setting is invisible (for now)
+	// TODO: refactor shared key string
+	extras_menu_should_start_visible = localStorage["jspaint extras menu visible"] == "true"
+// eslint-disable-next-line no-empty
+}catch(e){}
+if(!extras_menu_should_start_visible){
+	$extras_menu_button.hide();
+}
+// </menu bar>
+
 var $toolbox = $ToolBox(tools);
 // var $toolbox2 = $ToolBox(extra_tools, true);//.hide();
 // Note: a second $ToolBox doesn't work because they use the same tool options (which could be remedied)
