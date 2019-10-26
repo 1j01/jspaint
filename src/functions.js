@@ -88,16 +88,24 @@ function update_disable_aa() {
 }
 
 function set_magnification(scale){
+	var prev_magnification = magnification;
+	var scroll_left = $canvas_area.scrollLeft();
+	var scroll_top = $canvas_area.scrollTop();
+
 	magnification = scale;
 	if(scale !== 1){
 		return_to_magnification = scale;
 	}
 	update_magnified_canvas_size();
-	$G.triggerHandler("resize"); // updates handles & grid
-}
 
-function reset_magnification(){
-	set_magnification(1);
+	// rescale viewport with top left as anchor
+	scroll_left *= magnification / prev_magnification;
+	scroll_top *= magnification / prev_magnification;
+
+	$canvas_area.scrollLeft(scroll_left);
+	$canvas_area.scrollTop(scroll_top);
+
+	$G.triggerHandler("resize"); // updates handles & grid
 }
 
 var $custom_zoom_window;
@@ -240,7 +248,7 @@ function open_from_Image(img, callback, canceled){
 		reset_file();
 		reset_colors();
 		reset_canvas(); // (with newly reset colors)
-		reset_magnification();
+		set_magnification(1);
 
 		ctx.copy(img);
 		detect_transparency();
@@ -341,7 +349,7 @@ function file_new(){
 		reset_file();
 		reset_colors();
 		reset_canvas(); // (with newly reset colors)
-		reset_magnification();
+		set_magnification(1);
 	});
 }
 

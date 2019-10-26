@@ -347,6 +347,7 @@ tools = [{
 		var rect_x2 = ~~(x + w/2);
 		var rect_y2 = ~~(y + h/2);
 
+		// TODO: clamp rect while maintaining width & height before clamping to squish it
 		rect_x1 = Math.max(0, rect_x1);
 		rect_y1 = Math.max(0, rect_y1);
 		rect_x2 = Math.min(canvas.width, rect_x2);
@@ -357,6 +358,7 @@ tools = [{
 		
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = hairline_width;
+		// TODO: inverty rectangle
 		if (grid_visible) {
 			ctx.strokeRect(rect_x1+ctx.lineWidth/2, rect_y1+ctx.lineWidth/2, rect_w, rect_h);
 		} else {
@@ -383,7 +385,6 @@ tools = [{
 			$canvas_area.scrollTop(scroll_top);
 			update_helper_layer();
 		}
-		// TODO: else rescale viewport
 	},
 	$options: $choose_magnification
 }, {
