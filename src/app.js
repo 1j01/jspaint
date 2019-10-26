@@ -174,22 +174,14 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 });
 
 $G.on("resize", function(){ // for browser zoom, and in-app zoom of the canvas
-	canvas_bounding_client_rect = canvas.getBoundingClientRect();
-
-	update_helper_layer();
+	update_canvas_rect();
 	update_disable_aa();
 });
 $canvas_area.on("scroll", function() {
-	canvas_bounding_client_rect = canvas.getBoundingClientRect();
-
-	update_helper_layer();
+	update_canvas_rect();
 });
 $canvas_area.on("resize", function() {
 	update_magnified_canvas_size();
-	
-	canvas_bounding_client_rect = canvas.getBoundingClientRect();
-
-	update_helper_layer();
 });
 
 $("body").on("dragover dragenter", function(e){
@@ -626,7 +618,7 @@ var pointer_active = false;
 var pointer_over_canvas = false;
 var update_helper_layer_on_pointermove_active = false;
 $canvas.on("pointerdown", function(e){
-	canvas_bounding_client_rect = canvas.getBoundingClientRect();
+	update_canvas_rect();
 
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types

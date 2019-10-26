@@ -2,9 +2,33 @@
 function update_magnified_canvas_size(){
 	$canvas.css("width", canvas.width * magnification);
 	$canvas.css("height", canvas.height * magnification);
+
+	update_canvas_rect();
+}
+
+function update_canvas_rect() {
+	canvas_bounding_client_rect = canvas.getBoundingClientRect();
+
+	update_helper_layer();
+}
+
+var helper_layer_update_queued;
+function update_helper_layer(){
+	if (helper_layer_update_queued) {
+		// console.log("update_helper_layer - nah, already queued");
+		return;
+	} else {
+		// console.log("update_helper_layer");
+	}
+	helper_layer_update_queued = true;
+	requestAnimationFrame(()=> {
+		helper_layer_update_queued = false;
+		update_helper_layer_immediately();
+	});
 }
 var info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
-function update_helper_layer(e) {
+function update_helper_layer_immediately(e) {
+	// console.log("update helper layer NOW");
 	if (e) {
 		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
 	}

@@ -416,7 +416,6 @@ tools = [{
 		var prev_magnification = magnification;
 		var prospective_magnification = this.getProspectiveMagnification();
 		
-		// TODO: dedupe update_helper_layer
 		set_magnification(prospective_magnification);
 
 		if (magnification > prev_magnification) {
@@ -430,7 +429,7 @@ tools = [{
 			
 			$canvas_area.scrollLeft(scroll_left);
 			$canvas_area.scrollTop(scroll_top);
-			update_helper_layer();
+			$canvas_area.trigger("scroll");
 		}
 	},
 	$options: $choose_magnification
