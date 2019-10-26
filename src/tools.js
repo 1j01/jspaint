@@ -325,10 +325,16 @@ tools = [{
 	deselect: true,
 	passive: true,
 	
+	getProspectiveMagnification: ()=> (
+		magnification === 1 ? return_to_magnification : 1
+	),
+
 	drawPreviewAboveGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
 		if(!pointer_active && !pointer_over_canvas){return;}
-		if(pointer_active) { return; } // TODO: fix flash / whatever
-		// TODO: hide if would be zooming out
+		if(pointer_active) { return; }
+		var prospective_magnification = this.getProspectiveMagnification();
+
+		if(prospective_magnification < magnification) { return; } // hide if would be zooming out
 
 		var hairline_width = 1/scaled_by_amount;
 
@@ -357,12 +363,13 @@ tools = [{
 		}
 	},
 	pointerdown: function(ctx, x, y){
-		if(magnification !== 1){
-			reset_magnification();
-		}else{
-			var prev_magnification = magnification;
-			// TODO: dedupe update_helper_layer
-			set_magnification(return_to_magnification);
+		var prev_magnification = magnification;
+		var prospective_magnification = this.getProspectiveMagnification();
+		
+		// TODO: dedupe update_helper_layer
+		set_magnification(prospective_magnification);
+
+		if (prospective_magnification > prev_magnification) {
 			var scroll_left = $canvas_area.scrollLeft();
 			var scroll_top = $canvas_area.scrollTop();
 			// TODO: size rectangle based on viewport, and get position actually right

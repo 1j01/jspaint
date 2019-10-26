@@ -442,7 +442,7 @@ $G.on("cut copy paste", function(e){
 reset_file();
 reset_colors();
 reset_canvas(); // (with newly reset colors)
-reset_magnification();
+set_magnification(1);
 
 storage.get({
 	width: default_canvas_width,
