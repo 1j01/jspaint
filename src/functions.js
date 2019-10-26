@@ -689,7 +689,9 @@ function paste(img){
 		// Note: relying on select_tool to call deselect();
 		select_tool(get_tool_by_name("Select"));
 
-		selection = new OnCanvasSelection(0, 0, img.width, img.height);
+		var x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
+		var y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
+		selection = new OnCanvasSelection(x, y, img.width, img.height);
 		selection.instantiate(img);
 	}
 }
