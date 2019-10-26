@@ -499,8 +499,11 @@ var $latest_news = $this_version_news;
 
 // not included directly in the HTML as a simple way of not showing it if it's loaded with fetch
 // (...not sure how to phrase this clearly and concisely...)
-// $this_version_news.prepend("<p>Showing the news as of this version of JS Paint. For the latest, see <a href='https://jspaint.app'>jspaint.app</a></p>");
-$this_version_news.prepend("<p>For the latest news, visit <a href='https://jspaint.app'>jspaint.app</a></p>");
+// "Showing the news as of this version of JS Paint. For the latest, see <a href='https://jspaint.app'>jspaint.app</a>"
+$this_version_news.prepend(
+	$("<p>For the latest news, visit <a href='https://jspaint.app'>jspaint.app</a></p>")
+	.css({padding: "8px 15px"})
+);
 
 function show_about_paint(){
 	if($about_paint_window){
@@ -548,8 +551,8 @@ function show_about_paint(){
 			throw new Error(`No news found at fetched site (${url})`);
 		}
 
-		function this_version_has_update(id) {
-			return $this_version_entries.get().some((el_from_this_version)=> 
+		function entries_contains_update($entries, id) {
+			return $entries.get().some((el_from_this_version)=> 
 				id === el_from_this_version.id
 			);
 		}
@@ -557,11 +560,18 @@ function show_about_paint(){
 		// TODO: visibly mark entries that overlap
 		entries_newer_than_this_version =
 			$latest_entries.get().filter((el_from_latest)=>
-				!this_version_has_update(el_from_latest.id)
+				!entries_contains_update($this_version_entries, el_from_latest.id)
+			);
+		
+		entries_new_in_this_version = // i.e. in development, when updating the news
+			$this_version_entries.get().filter((el_from_latest)=>
+				!entries_contains_update($latest_entries, el_from_latest.id)
 			);
 
 		if (entries_newer_than_this_version.length > 0) {
 			$("#outdated").removeAttr("hidden");
+		} else if(entries_new_in_this_version.length > 0) {
+			$latest_news = $this_version_news; // show this version's news for development
 		}
 
 		$("#checking-for-updates").attr("hidden", "hidden");
