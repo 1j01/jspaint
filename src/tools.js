@@ -344,10 +344,17 @@ tools = [{
 
 		var rect_x1 = ~~(x - w/2);
 		var rect_y1 = ~~(y - h/2);
-		var rect_x2 = ~~(x + w/2);
-		var rect_y2 = ~~(y + h/2);
 
-		// TODO: clamp rect while maintaining width & height before clamping to squish it
+		// try to move rect into bounds without squishing
+		rect_x1 = Math.max(0, rect_x1);
+		rect_y1 = Math.max(0, rect_y1);
+		rect_x1 = Math.min(canvas.width - w, rect_x1);
+		rect_y1 = Math.min(canvas.height - h, rect_y1);
+
+		var rect_x2 = rect_x1 + w;
+		var rect_y2 = rect_y1 + h;
+		
+		// clamp rect to bounds (with squishing)
 		rect_x1 = Math.max(0, rect_x1);
 		rect_y1 = Math.max(0, rect_y1);
 		rect_x2 = Math.min(canvas.width, rect_x2);
