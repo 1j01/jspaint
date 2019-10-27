@@ -36,10 +36,9 @@
 * The window close button uses text; font rendering is not consistent
 * The progress bar (Rendering GIF) is left native
 * Menu separator spacing
-* Minor color differences (0x808080 != 0x7b7b7b)
+* Minor color differences (0x808080 != 0x7b7b7b) - use a palette for consistency?
 * I want to give most things a revisit later on for Pixel Perfection
-* Dynamic cursors
-	* Inverty fill bucket and airbrush cursors
+* Fill bucket and airbrush cursors are supposed to have inverty parts
 * Custom cursors in Edge; apparently they require `.cur` files? ugh
 * The canvas-area's border is different in Firefox and Edge from Chrome
 
@@ -65,10 +64,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Use the ghost when dragging on a component window's title bar
 * Make the component ghost account for the window's title bar
-
-
-* Handle windows going off the screen
-
 
 ### Extended editing
 
@@ -130,6 +125,9 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
 	* Ctrl+Select: Crop tool or "Crop to selection" option
 
+
+* Don't drag toolbars out into windows with touch
+	* Unless with two fingers perhaps
 
 ### Tools
 
