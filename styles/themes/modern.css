@@ -169,13 +169,15 @@ body {
 
 .color-selection {
 	/*border-radius: 50%; */
-	border: 1px solid rgba(0, 0, 0, 0.5);
+	border: 1px solid rgba(0, 0, 0, 0.4);
+	border-radius: 2px;
 	/* border: 1px outset; */
 	width: 18px;
 	height: 18px;
 }
 .color-button {
-	border: 1px solid rgba(0, 0, 0, 0.5);
+	border: 1px solid rgba(0, 0, 0, 0.4);
+	border-radius: 2px;
 }
 /*
 .swatch:hover:after {
@@ -221,6 +223,7 @@ body,
 }
 .canvas-area {
 	padding: 8px;
+	border: 1px solid gray;
 }
 
 /* NOTE: copy/pasted from classic.css */

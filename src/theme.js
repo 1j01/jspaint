@@ -46,6 +46,11 @@
 		// eslint-disable-next-line no-empty
 		} catch(error) {}
 
+		$(window).on("theme-load", ()=> {
+			$(window).trigger("option-changed"); // not really, but get the tool options area for transparency to update
+			$(window).trigger("resize"); // not exactly, but get dynamic cursor to update its offset
+		});
+
 		wait_for_theme_loaded(theme, function(){
 			$(window).triggerHandler("theme-load");
 		});

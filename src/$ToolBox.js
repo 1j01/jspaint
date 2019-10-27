@@ -19,18 +19,22 @@ function $ToolBox(tools, is_extras){
 		
 		var $icon = $(E("span"));
 		$icon.appendTo($b);
-		var bx = (i%2)*24;
-		var by = (~~(i/2))*25;
-		$icon.css({
-			display: "block",
-			position: "absolute",
-			left: 0,
-			top: 0,
-			width: 24,
-			height: 24,
-			backgroundImage: "url(images/toolbar-icons.png)",
-			backgroundPosition: bx + "px " + -by + "px",
-		});
+		var bx = -i*16;
+		var update_css = ()=> {
+			var theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
+			$icon.css({
+				display: "block",
+				position: "absolute",
+				left: 4,
+				top: 4,
+				width: 16,
+				height: 16,
+				backgroundImage: `url(${theme_folder}/tools.png)`,
+				backgroundPosition: bx + "px 0px",
+			});
+		};
+		update_css();
+		$G.on("theme-load", update_css);
 		
 		$b.on("click", function(e){
 			if (e.shiftKey || e.ctrlKey) {

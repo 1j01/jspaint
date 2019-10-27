@@ -501,7 +501,7 @@ var menus = {
 					description: "Makes JS Paint look like MS Paint from Windows 98.",
 				},
 				{
-					item: "&Modern (WIP)",
+					item: "&Modern",
 					action: ()=> {
 						set_theme("modern.css");
 					},

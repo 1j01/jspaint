@@ -59,8 +59,9 @@ var $Choose = function(things, display, choose, is_chosen){
 					$G.trigger("option-changed");
 				}
 				var update = function(){
+					var selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // TODO: get from a CSS variable
 					$option_container.css({
-						backgroundColor: is_chosen(thing) ? "rgb(0, 0, 123)" : ""
+						backgroundColor: is_chosen(thing) ? selected_color : ""
 					});
 					$option_container.empty();
 					$option = $(display(thing, is_chosen(thing)));
@@ -277,8 +278,9 @@ var $choose_transparent_mode = $Choose(
 	function(_tool_transparent_mode, is_chosen){
 		var sw = 35, sh = 23; // width, height from source image
 		var b = 2; // margin by which the source image is inset on the destination
+		var theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
 		return ChooserCanvas(
-			"images/options-transparency.png",
+			`${theme_folder}/options-transparency.png`,
 			false, // never invert it
 			b+sw+b, b+sh+b, // width, height of created destination canvas
 			0, _tool_transparent_mode ? 22 : 0, sw, sh, // x, y, width, height from source image
