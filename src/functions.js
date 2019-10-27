@@ -126,6 +126,7 @@ function set_magnification(scale){
 	$canvas_area.scrollTop(scroll_top);
 
 	$G.triggerHandler("resize"); // updates handles & grid
+	$G.trigger("option-changed"); // updates options area
 }
 
 var $custom_zoom_window;
