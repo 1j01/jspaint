@@ -5,8 +5,11 @@
 .jspaint {
 	background: #c0c0c0;
 }
+body,
 .canvas-area {
 	background: #7b7b7b;
+}
+.canvas-area {
 	border: 1px inset;
 }
 .canvas-area > canvas {

@@ -208,13 +208,18 @@ body {
 	border: 1px solid rgba(0, 0, 0, 0.24);
 }
 
+.menus,
 .component-area,
 .status-area {
-	background: #f1f1f1;
+	background: #fff;
 }
+
+body,
 .canvas-area {
 	background: #7b7b7b;
 	/*background: #e9e9e9;*/
+}
+.canvas-area {
 	padding: 8px;
 }
 
