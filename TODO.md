@@ -8,17 +8,6 @@
 * Link-esque things
 	* Popups (I'd probably make the text within the popups selectable)
 	* Related topics (I'd probably make this a heading with links instead of the weird context menu thing)
-* Update topics
-	* "To use black and white instead of color" ("If you change back to color, only new work will be in color." only applies if converting to black and white when switching to black and white mode)
-	* "To use a picture as the desktop background":
-	add a third step? It's not quite that easy (at least in the browser)
-	* "To create custom colors": way too OS-specific
-	(unless I'm gonna emulate the color selection dialog)
-	* "To enlarge the size of the viewing area" (`paint_enlarge_area.htm`):
-	jspaint currently allows you to draw while "Viewing the Bitmap"
-	* "To zoom in or out of a picture", "To type and format text":
-	"You can enter text into a picture only in Normal view."
-	— jspaint handles this case (well, as well as it handles the Normal case)
 * Add topics
 	* In "Tips and Tricks" (which is just a lame section)
 	* Transparency
@@ -80,9 +69,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	* Animated GIFs
 		* Transparency ([jnordberg/gif.js issue #5](https://github.com/jnordberg/gif.js/issues/5))
 	* Animated Transparent APNGs
-		* APNG Library ([this kickstarter wanted $15,000 to make this](https://www.kickstarter.com/projects/374397522/apngasm-foss-animated-png-tools-and-apng-standardi);
-		I was able to compile their [C++ implementation](https://github.com/apngasm/apngasm) to JS with [emscripten](https://github.com/kripken/emscripten) though;
-		I'll publish that at some point)
+		* APNG Library: [UPNG.js](https://github.com/photopea/UPNG.js/)
 	* Multi-size Icons
 		* Windows ICO ([jBinary can read](https://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
 		* Mac ICNS
@@ -120,7 +107,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * Access to functionality that would normally require a keyboard (with a numpad!)
-	* Numpad +/-: Increase/Decrease brush size, Double/Half selection size, ...
+	* Numpad +/-: Increase/Decrease brush size, Double/Halve selection size, ...
 	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
 	* Ctrl+Select: Crop tool or "Crop to selection" option
 
