@@ -13,7 +13,11 @@ function update_canvas_rect() {
 }
 
 var helper_layer_update_queued;
-function update_helper_layer(){
+var info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
+function update_helper_layer(e){
+	if (e) {
+		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
+	}
 	if (helper_layer_update_queued) {
 		// console.log("update_helper_layer - nah, already queued");
 		return;
@@ -26,12 +30,8 @@ function update_helper_layer(){
 		update_helper_layer_immediately();
 	});
 }
-var info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
 function update_helper_layer_immediately(e) {
 	// console.log("update helper layer NOW");
-	if (e) {
-		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
-	}
 	if (info_for_updating_pointer) {
 		var rescale = info_for_updating_pointer.devicePixelRatio / devicePixelRatio;
 		info_for_updating_pointer.clientX *= rescale;
