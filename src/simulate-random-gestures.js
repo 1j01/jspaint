@@ -128,6 +128,8 @@ window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, second
 		point.y += startPointY;
 		return point;
 	};
+	
+	triggerMouseEvent("pointerenter", pointForTime(t)); // so dynamic cursors follow the simulation cursor
 	triggerMouseEvent("pointerdown", pointForTime(t));
 	let move = () => {
 		t += 1 / stepsInGesture;
@@ -150,6 +152,7 @@ window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, second
 			gestureTimeoutID = setTimeout(move, 10);
 		}
 	};
+	triggerMouseEvent("pointerleave", pointForTime(t));
 	move();
 };
 
