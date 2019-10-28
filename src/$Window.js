@@ -36,7 +36,7 @@ function $Window($component){
 	});
 	
 	$w.on("keydown", function(e){
-		if(e.ctrlKey || e.altKey || e.shiftKey){
+		if(e.ctrlKey || e.altKey || e.shiftKey || e.metaKey){
 			return;
 		}
 		var $buttons = $w.$content.find("button");

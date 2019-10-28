@@ -103,6 +103,7 @@ function $ColorBox(){
 			
 			var button, ctrl;
 			$b.on("pointerdown", function(e){
+				// TODO: how should the ternary color, and selection cropping, work on macOS?
 				ctrl = e.ctrlKey;
 				button = e.button;
 				if(button === 0){

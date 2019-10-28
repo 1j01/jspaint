@@ -150,7 +150,7 @@ function $MenuBar(menus){
 				});
 				
 				$item.on("keydown", function(e){
-					if(e.ctrlKey || e.shiftKey || e.altKey){
+					if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey){
 						return;
 					}
 					if(e.keyCode === 13){ // Enter
@@ -160,7 +160,7 @@ function $MenuBar(menus){
 				});
 				
 				$menu_popup.on("keydown", function(e){
-					if(e.ctrlKey || e.shiftKey || e.altKey){
+					if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey){
 						return;
 					}
 					if(String.fromCharCode(e.keyCode) === _hotkey(item.item)){
@@ -241,8 +241,8 @@ function $MenuBar(menus){
 			}
 		});
 		$G.on("keydown", function(e){
-			if(e.ctrlKey){ // Ctrl+...
-				if(e.keyCode !== 17){ // anything but Ctrl
+			if(e.ctrlKey || e.metaKey){ // Ctrl or Command held
+				if(e.keyCode !== 17 && e.keyCode !== 91 && e.keyCode !== 93 && e.keyCode !== 224){ // anything but Ctrl or Command pressed
 					close_menus();
 				}
 				return;

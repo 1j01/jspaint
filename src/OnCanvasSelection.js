@@ -119,6 +119,7 @@ OnCanvasSelection.prototype.instantiate = function(_img, _passive){
 			if(e.shiftKey){
 				sel.draw();
 			}
+			// TODO: how should this work for macOS? where ctrl+click = secondary click?
 			else if(e.ctrlKey){
 				sel.draw();
 			}   

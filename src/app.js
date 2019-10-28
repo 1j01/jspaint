@@ -303,7 +303,7 @@ $G.on("keydown", function(e){
 		}
 		e.preventDefault();
 		return;
-	}else if(e.ctrlKey){
+	}else if(e.ctrlKey || e.metaKey){
 		var key = String.fromCharCode(e.keyCode).toUpperCase();
 		if(textbox){
 			switch(key){
