@@ -156,13 +156,13 @@ I want to make JS Paint to be able to edit...
   there's a third color you can access by holding <kbd>Ctrl</kbd> while you draw.
   It starts out with no color so you'll need to hold <kbd>Ctrl</kbd> and select a color first.
   The fancy thing about this color slot is you can
-  press and release <kbd>Ctrl</kbd> to switch colors while drawing.
+  press and release <kbd>Ctrl</kbd> to switch colors *while drawing*.
 
 * You can apply image transformations like Flip/Rotate, Stretch/Skew or Invert (in the Image menu) either to the whole image or to a selection.
-  Try scribbling with the Free-Form Select tool and the doing **Image > Invert**
+  Try scribbling with the Free-Form Select tool and then doing **Image > Invert**
 
 * These Tips and Tricks from [a tutorial for MS Paint](https://www.albinoblacksheep.com/tutorial/mspaint)
-  also work in JS Paint if they have a checkmark:
+  also work in JS Paint:
 
 	* [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to adjust brush size)
 	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
