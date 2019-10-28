@@ -44,7 +44,7 @@ function update_helper_layer_immediately(e) {
 	
 	var grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;
 
-	var scale = Math.floor(magnification * window.devicePixelRatio);
+	var scale = Math.max(1, Math.floor(magnification * window.devicePixelRatio));
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
