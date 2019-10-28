@@ -60,6 +60,12 @@ function Canvas(width, height){
 		new_ctx.msImageSmoothingEnabled = false;
 		new_ctx.imageSmoothingEnabled = false;
 	};
+	new_ctx.enable_image_smoothing = function(image){
+		new_ctx.mozImageSmoothingEnabled = true;
+		new_ctx.webkitImageSmoothingEnabled = true;
+		new_ctx.msImageSmoothingEnabled = true;
+		new_ctx.imageSmoothingEnabled = true;
+	};
 	
 	// TODO: simplify the abstraction by defining setters for width/height
 	// that reset the image smoothing to disabled
