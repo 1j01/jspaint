@@ -228,11 +228,6 @@ $G.on("keydown", function(e){
 	// also, ideally check that modifiers *aren't* pressed
 	// probably best to use a library at this point!
 	
-	if(e.altKey){
-		//find key codes
-		window.console && console.log(e.keyCode);
-	}
-	
 	if(selection){
 		var nudge_selection = function(delta_x, delta_y){
 			selection.x += delta_x;
