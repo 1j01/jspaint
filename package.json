@@ -71,7 +71,8 @@
     "http-server": "^0.11.1",
     "live-server": "^1.2.1",
     "parallelshell": "^3.0.2",
-    "phantomcss": "^1.6.0"
+    "phantomcss": "^1.6.0",
+    "workbox-cli": "^4.3.1"
   },
   "scripts": {
     "start": "electron-forge start",
@@ -82,7 +83,8 @@
     "lint": "eslint src/",
     "dev": "live-server",
     "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
-    "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
+    "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\"",
+    "generate-sw": "workbox generateSW"
   },
   "repository": {
     "type": "git",
