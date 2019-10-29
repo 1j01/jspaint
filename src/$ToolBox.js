@@ -76,7 +76,7 @@ function $ToolBox(tools, is_extras){
 		$tool_options.append(selected_tool.$options);
 		$tool_options.children().trigger("update");
 		$canvas.css({
-			cursor: Cursor(selected_tool.cursor),
+			cursor: make_css_cursor(...selected_tool.cursor),
 		});
 	};
 	$c.update_selected_tool();

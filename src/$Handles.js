@@ -47,14 +47,14 @@ function $Handles($container, element, options){
 				cursor_fname = "ns-resize";
 			}
 			
-			let cursor = "";
-			if(y_axis === "top"){ cursor += "n"; }
-			if(y_axis === "bottom"){ cursor += "s"; }
-			if(x_axis === "left"){ cursor += "w"; }
-			if(x_axis === "right"){ cursor += "e"; }
+			let fallback_cursor = "";
+			if(y_axis === "top"){ fallback_cursor += "n"; }
+			if(y_axis === "bottom"){ fallback_cursor += "s"; }
+			if(x_axis === "left"){ fallback_cursor += "w"; }
+			if(x_axis === "right"){ fallback_cursor += "e"; }
 			
-			cursor += "-resize";
-			cursor = Cursor([cursor_fname, [16, 16], cursor]);
+			fallback_cursor += "-resize";
+			const cursor = make_css_cursor(cursor_fname, [16, 16], fallback_cursor);
 			$h.css({cursor: cursor});
 			
 			const drag = e => {

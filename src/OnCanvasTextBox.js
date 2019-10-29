@@ -31,7 +31,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 	}
 	instantiate() {
 		this.$el.addClass("instantiated").css({
-			cursor: Cursor(["move", [8, 8], "move"])
+			cursor: make_css_cursor("move", [8, 8], "move")
 		});
 		this.$el.attr("touch-action", "none");
 		this.position();
