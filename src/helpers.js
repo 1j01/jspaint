@@ -32,7 +32,7 @@ function E(t){
 }
 
 function get_rgba_from_color(color){
-	const single_pixel_canvas = new Canvas(1, 1);
+	const single_pixel_canvas = make_canvas(1, 1);
 	
 	single_pixel_canvas.ctx.fillStyle = color;
 	single_pixel_canvas.ctx.fillRect(0, 0, 1, 1);
@@ -44,7 +44,7 @@ function get_rgba_from_color(color){
 	return Array.from(image_data.data);
 }
 
-function Canvas(width, height){
+function make_canvas(width, height){
 	const image = width;
 	
 	const new_canvas = E("canvas");
@@ -67,7 +67,7 @@ function Canvas(width, height){
 	
 	// TODO: simplify the abstraction by defining setters for width/height
 	// that reset the image smoothing to disabled
-	// and remove all external calls to disable_image_smoothing
+	// and make image smoothing a parameter to make_canvas
 	
 	new_ctx.copy = image => {
 		new_canvas.width = image.naturalWidth || image.width;
@@ -84,13 +84,13 @@ function Canvas(width, height){
 	};
 	
 	if(width && height){
-		// new Canvas(width, height)
+		// make_canvas(width, height)
 		new_canvas.width = width;
 		new_canvas.height = height;
 		// setting width/height resets image smoothing (along with everything)
 		new_ctx.disable_image_smoothing();
 	}else if(image){
-		// new Canvas(image)
+		// make_canvas(image)
 		new_ctx.copy(image);
 	}
 	

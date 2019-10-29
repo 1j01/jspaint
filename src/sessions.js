@@ -278,7 +278,7 @@
 				// @TODO: display other cursor types?
 				// @TODO: display pointer button state?
 				// @TODO: display selections
-				const cursor_canvas = new Canvas(32, 32);
+				const cursor_canvas = make_canvas(32, 32);
 				// Make the cursor element
 				const $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
 				$cursor.css({

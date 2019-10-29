@@ -7,7 +7,7 @@ class OnCanvasHelperLayer extends OnCanvasObject {
 			pointerEvents: "none",
 		});
 		this.position();
-		this.canvas = new Canvas(this.width * pixelRatio, this.height * pixelRatio);
+		this.canvas = make_canvas(this.width * pixelRatio, this.height * pixelRatio);
 		this.$el.append(this.canvas);
 	}
 }

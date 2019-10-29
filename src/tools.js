@@ -24,7 +24,7 @@ tools = [{
 		this.y_min = pointer.y;
 		this.y_max = pointer.y+1;
 		this.points = [];
-		this.preview_canvas = new Canvas(canvas.width, canvas.height);
+		this.preview_canvas = make_canvas(canvas.width, canvas.height);
 
 		// End prior selection, drawing it to the canvas
 		deselect();
@@ -437,7 +437,7 @@ tools = [{
 	cursor: ["pencil", [13, 23], "crosshair"],
 	continuous: "space",
 	stroke_only: true,
-	pencil_canvas: Canvas(),
+	pencil_canvas: make_canvas(),
 	paint(ctx, x, y) {
 		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
 		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)

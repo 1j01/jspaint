@@ -40,7 +40,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
 				// (width vs naturalWidth?)
 				// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
-				this.source_canvas = new Canvas(_img);
+				this.source_canvas = make_canvas(_img);
 				// TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
 				// but maybe we should assert in some way that the widths are the same, or resize the selection?
 				if (this.source_canvas.width !== this.width) {
@@ -49,12 +49,12 @@ class OnCanvasSelection extends OnCanvasObject {
 				if (this.source_canvas.height !== this.height) {
 					this.source_canvas.height = this.height;
 				}
-				this.canvas = new Canvas(this.source_canvas);
+				this.canvas = make_canvas(this.source_canvas);
 			}
 			else {
-				this.source_canvas = new Canvas(this.width, this.height);
+				this.source_canvas = make_canvas(this.width, this.height);
 				this.source_canvas.ctx.drawImage(canvas, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
-				this.canvas = new Canvas(this.source_canvas);
+				this.canvas = make_canvas(this.source_canvas);
 				if (!_passive) {
 					this.cut_out_background();
 				}
@@ -125,7 +125,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		// if(!transparency){ // now if !transparency or if tool_transparent_mode
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
-		const colored_cutout = new Canvas(cutout);
+		const colored_cutout = make_canvas(cutout);
 		replace_colors_with_swatch(colored_cutout.ctx, colors.background, this.x, this.y);
 		// var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// }
@@ -203,7 +203,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	// TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
 	replace_source_canvas(new_source_canvas) {
 		this.source_canvas = new_source_canvas;
-		const new_canvas = new Canvas(new_source_canvas);
+		const new_canvas = make_canvas(new_source_canvas);
 		$(this.canvas).replaceWith(new_canvas);
 		this.canvas = new_canvas;
 		const center_x = this.x + this.width / 2;
@@ -228,12 +228,12 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.update_tool_transparent_mode();
 	}
 	resize() {
-		const new_source_canvas = new Canvas(this.width, this.height);
+		const new_source_canvas = make_canvas(this.width, this.height);
 		new_source_canvas.ctx.drawImage(this.source_canvas, 0, 0, this.width, this.height);
 		this.replace_source_canvas(new_source_canvas);
 	}
 	scale(factor) {
-		const new_source_canvas = new Canvas(this.width * factor, this.height * factor);
+		const new_source_canvas = make_canvas(this.width * factor, this.height * factor);
 		new_source_canvas.ctx.drawImage(this.source_canvas, 0, 0, new_source_canvas.width, new_source_canvas.height);
 		this.replace_source_canvas(new_source_canvas);
 	}

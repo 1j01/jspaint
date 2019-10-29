@@ -147,7 +147,7 @@ window.systemSetAsWallpaperCentered = c => {
 	if(process.platform === "darwin"){
 		wallpaperCanvas = c;
 	}else{
-		wallpaperCanvas = new Canvas(screen.width, screen.height);
+		wallpaperCanvas = make_canvas(screen.width, screen.height);
 		const x = (screen.width - c.width) / 2;
 		const y = (screen.height - c.height) / 2;
 		wallpaperCanvas.ctx.drawImage(c, ~~x, ~~y);

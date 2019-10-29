@@ -11,7 +11,7 @@ const default_canvas_height = 384;
 let my_canvas_width = default_canvas_width;
 let my_canvas_height = default_canvas_height;
 
-const canvas = new Canvas();
+const canvas = make_canvas();
 canvas.classList.add("main-canvas");
 const ctx = canvas.ctx;
 
@@ -158,7 +158,7 @@ $canvas.on("user-resized", (e, _x, _y, width, height) => {
 
 		const previous_imagedata = undos[undos.length-1];
 		if(previous_imagedata){
-			const temp_canvas = new Canvas(previous_imagedata);
+			const temp_canvas = make_canvas(previous_imagedata);
 			ctx.drawImage(temp_canvas, 0, 0);
 		}
 

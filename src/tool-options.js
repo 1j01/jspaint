@@ -1,5 +1,5 @@
 
-const brush_canvas = new Canvas();
+const brush_canvas = make_canvas();
 const brush_ctx = brush_canvas.ctx;
 let brush_shape = "circle";
 let brush_size = 4;
@@ -23,7 +23,7 @@ const ChooserCanvas = (
     destWidth,
     destHeight
 ) => {
-	const c = new Canvas(width, height);
+	const c = make_canvas(width, height);
 	let img = ChooserCanvas.cache[url];
 	if(!img){
 		img = ChooserCanvas.cache[url] = E("img");
@@ -100,7 +100,7 @@ const $ChooseShapeStyle = () => {
 			{stroke: false, fill: true}
 		],
 		(a, is_chosen) => {
-			const sscanvas = new Canvas(39, 21);
+			const sscanvas = make_canvas(39, 21);
 			const ssctx = sscanvas.ctx;
 			
 			// border px inwards amount
@@ -154,7 +154,7 @@ const $choose_brush = $Choose((() => {
     });
     return things;
 })(), (o, is_chosen) => {
-    const cbcanvas = new Canvas(10, 10);
+    const cbcanvas = make_canvas(10, 10);
     
     const shape = o.shape;
     const size = o.size;
@@ -174,7 +174,7 @@ const $choose_brush = $Choose((() => {
 const $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
 	(size, is_chosen) => {
-		const cecanvas = new Canvas(39, 16);
+		const cecanvas = make_canvas(39, 16);
 		
 		cecanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		render_brush(cecanvas.ctx, "square", size);
@@ -191,7 +191,7 @@ const $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
 	(size, is_chosen) => {
 		const w = 39, h = 12, b = 5;
-		const cscanvas = new Canvas(w, h);
+		const cscanvas = make_canvas(w, h);
 		const center_y = (h - size) / 2;
 		cscanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		cscanvas.ctx.fillRect(b, ~~center_y, w - b*2, size);

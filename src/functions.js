@@ -791,7 +791,7 @@ function render_history_as_gif(){
 			$win.center();
 		});
 
-		const gif_canvas = new Canvas(width, height);
+		const gif_canvas = make_canvas(width, height);
 		const frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
 		for(let i=0; i<frames.length; i++){
 			gif_canvas.ctx.clearRect(0, 0, gif_canvas.width, gif_canvas.height);
@@ -1536,7 +1536,7 @@ function set_as_wallpaper_tiled(c){
 		return window.systemSetAsWallpaperTiled(c);
 	}
 
-	const wallpaperCanvas = new Canvas(screen.width, screen.height);
+	const wallpaperCanvas = make_canvas(screen.width, screen.height);
 	const pattern = wallpaperCanvas.ctx.createPattern(c, "repeat");
 	wallpaperCanvas.ctx.fillStyle = pattern;
 	wallpaperCanvas.ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);

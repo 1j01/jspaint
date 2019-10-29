@@ -131,7 +131,7 @@ function update_brush_for_drawing_lines(stroke_size){
 		){
 			// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
 			const csz = get_brush_canvas_size(stroke_size, "circle");
-			line_brush_canvas = new Canvas(csz, csz);
+			line_brush_canvas = make_canvas(csz, csz);
 			line_brush_canvas.width = csz;
 			line_brush_canvas.height = csz;
 			line_brush_canvas.ctx.fillStyle = line_brush_canvas.ctx.strokeStyle = stroke_color;
@@ -363,7 +363,7 @@ function apply_image_transformation(fn){
 	// Apply an image transformation function to either the selection or the entire canvas
 	const original_canvas = selection ? selection.source_canvas: canvas;
 	
-	const new_canvas = new Canvas(original_canvas.width, original_canvas.height);
+	const new_canvas = make_canvas(original_canvas.width, original_canvas.height);
 
 	const original_ctx = original_canvas.getContext("2d");
 	const new_ctx = new_canvas.getContext("2d");
@@ -594,7 +594,7 @@ let grid_pattern;
 function draw_grid(ctx, scale) {
 	const pattern_size = Math.floor(scale); // TODO: try ceil too
 	if (!grid_pattern || grid_pattern.width !== pattern_size || grid_pattern.height !== pattern_size) {
-		const grid_pattern_canvas = new Canvas(pattern_size, pattern_size);
+		const grid_pattern_canvas = make_canvas(pattern_size, pattern_size);
 		const dark_gray = "#808080";
 		const light_gray = "#c0c0c0";
 		grid_pattern_canvas.ctx.fillStyle = dark_gray;
@@ -912,15 +912,15 @@ function draw_grid(ctx, scale) {
 		const height = y_max - y_min;
 		
 		// TODO: maybe have the cutout only the width/height of the bounds
-		// var cutout = new Canvas(width, height);
-		const cutout = new Canvas(canvas);
+		// var cutout = make_canvas(width, height);
+		const cutout = make_canvas(canvas);
 
 		cutout.ctx.save();
 		cutout.ctx.globalCompositeOperation = "destination-in";
 		draw_polygon(cutout.ctx, points, false, true);
 		cutout.ctx.restore();
 		
-		const cutout_crop = new Canvas(width, height);
+		const cutout_crop = make_canvas(width, height);
 		cutout_crop.ctx.drawImage(cutout, x_min, y_min, width, height, 0, 0, width, height);
 
 		return cutout_crop;

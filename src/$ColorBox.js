@@ -2,7 +2,7 @@
 
 function $Swatch(color){
 	const $b = $(E("div")).addClass("swatch");
-	const swatch_canvas = new Canvas();
+	const swatch_canvas = make_canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
 	
 	$b.update = _color => {
