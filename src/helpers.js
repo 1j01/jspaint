@@ -23,8 +23,8 @@ const TAU =     //////|//////
 
 const $G = $(window);
 
-function Cursor(cursor_def){
-	return `url(images/cursors/${cursor_def[0]}.png) ${cursor_def[1].join(" ")}, ${cursor_def[2]}`;
+function Cursor([name, coords, fallback]){
+	return `url(images/cursors/${name}.png) ${coords.join(" ")}, ${fallback}`;
 }
 
 function E(t){
