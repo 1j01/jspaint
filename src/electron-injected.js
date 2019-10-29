@@ -63,14 +63,14 @@ window.save_to_file_path = (filePath, formatName, savedCallback) => {
 		// "24-bit Bitmap": "image/bitmap",
 	}[formatName];
 	if(!mimeType){
-		return show_error_message("Can't save as " + formatName + ". Format is not supported.");
+		return show_error_message(`Can't save as ${formatName}. Format is not supported.`);
 	}
 	// if(mimeType === "image/gif"){
 	// 	new GIF();
 	// }
 	canvas.toBlob(blob => {
 		if(blob.type !== mimeType){
-			return show_error_message("Failed to save as " + formatName + " (your browser doesn't support exporting a canvas as \"" + mimeType + "\")");
+			return show_error_message(`Failed to save as ${formatName} (your browser doesn't support exporting a canvas as "${mimeType}")`);
 		}
 		sanity_check_blob(blob, () => {
 			blob_to_buffer(blob, (err, buffer) => {
@@ -127,7 +127,7 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 		}
 		const formatNameMatched = ((filters.find(filter => filter.extensions.includes(extension))) || {}).name;
 		if(!formatNameMatched){
-			return show_error_message("Can't save as *." +extension + " - try adding .png to the file name");
+			return show_error_message(`Can't save as *.${extension} - try adding .png to the file name`);
 		}
 
 		save_to_file_path(filePath, formatNameMatched, savedCallback);

@@ -13,7 +13,7 @@ function $MenuBar(menus){
 	$menus.attr("touch-action", "none");
 	let selecting_menus = false;
 	
-	const _html = menus_key => menus_key.replace(/&(.)/, m => "<span class='menu-hotkey'>" + m[1] + "</span>");
+	const _html = menus_key => menus_key.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
 	const _hotkey = menus_key => menus_key[menus_key.indexOf("&")+1].toUpperCase();
 	
 	const close_menus = () => {
@@ -175,7 +175,7 @@ function $MenuBar(menus){
 		const $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
 		
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
-		$menu_button.addClass("" + menu_id + "-menu-button");
+		$menu_button.addClass(`${menu_id}-menu-button`);
 		if(menu_id == "extras"){
 			// TODO: refactor shared key string, move to function
 			// if localStorage is not available, the default setting is visible

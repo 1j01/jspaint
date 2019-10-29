@@ -11,14 +11,14 @@ class OnCanvasTextBox extends OnCanvasObject {
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
 			this.$editor.css({
 				fontFamily: font.family,
-				fontSize: font.size * magnification + "px",
+				fontSize: `${font.size * magnification}px`,
 				fontWeight: font.bold ? "bold" : "normal",
 				fontStyle: font.italic ? "italic" : "normal",
 				textDecoration: font.underline ? "underline" : "none",
 				writingMode: font.vertical ? "vertical-lr" : "",
 				MsWritingMode: font.vertical ? "vertical-lr" : "",
 				WebkitWritingMode: font.vertical ? "vertical-lr" : "",
-				lineHeight: font.size * font.line_scale * magnification + "px",
+				lineHeight: `${font.size * font.line_scale * magnification}px`,
 				color: font.color,
 				background: font.background,
 			});
@@ -106,7 +106,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				ctx.fillRect(this.x, this.y, this.width, this.height);
 				ctx.fillStyle = font.color;
 				const style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
-				ctx.font = style_ + font.size + "px " + font.family;
+				ctx.font = `${style_ + font.size}px ${font.family}`;
 				ctx.textBaseline = "top";
 				const max_width = Math.max(this.width, font.size);
 				draw_text_wrapped(ctx, text, this.x + 1, this.y + 1, max_width, font.size * font.line_scale);
@@ -145,12 +145,12 @@ function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
 				words[i] = test;
 			}
 			
-			test = line + words[i] + ' ';
+			test = `${line + words[i]} `;
 			metrics = ctx.measureText(test);
 			
 			if (metrics.width > maxWidth && i > 0) {
 				ctx.fillText(line, x, y);
-				line = words[i] + ' ';
+				line = `${words[i]} `;
 				y += lineHeight;
 			} else {
 				line = test;

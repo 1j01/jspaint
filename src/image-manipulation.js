@@ -633,12 +633,12 @@ function draw_grid(ctx, scale) {
 		}
 		function begincallback(type) {
 			if (type !== libtess.primitiveType.GL_TRIANGLES) {
-				console.log('expected TRIANGLES but got type: ' + type);
+				console.log(`expected TRIANGLES but got type: ${type}`);
 			}
 		}
 		function errorcallback(errno) {
 			console.log('error callback');
-			console.log('error number: ' + errno);
+			console.log(`error number: ${errno}`);
 		}
 		// callback for when segments intersect and must be split
 		function combinecallback(coords, data, weight) {
@@ -726,8 +726,7 @@ function draw_grid(ctx, scale) {
 
 		if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
 			console.log(
-				'Vertex shader failed to compile. Log: ' +
-				gl.getShaderInfoLog(vertexShader)
+				`Vertex shader failed to compile. Log: ${gl.getShaderInfoLog(vertexShader)}`
 			);
 		}
 
@@ -744,8 +743,7 @@ function draw_grid(ctx, scale) {
 
 		if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
 			console.log(
-				'Fragment shader failed to compile. Log: ' +
-				gl.getShaderInfoLog(fragmentShader)
+				`Fragment shader failed to compile. Log: ${gl.getShaderInfoLog(fragmentShader)}`
 			);
 		}
 

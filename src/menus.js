@@ -446,7 +446,7 @@ const menus = {
 							}else if(name.match(/[./[\]#$]/)){
 								show_error_message("The session name cannot contain any of ./[]#$");
 							}else{
-								location.hash = "session:" + name;
+								location.hash = `session:${name}`;
 							}
 						}
 					},

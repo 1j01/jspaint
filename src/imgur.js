@@ -89,7 +89,7 @@ function show_imgur_uploader(blob){
 			req.upload.addEventListener('progress', event => {
 				if(event.lengthComputable){
 					const progress_value = event.loaded / event.total;
-					const percentage_text = Math.floor(progress_value * 100) + "%";
+					const percentage_text = `${Math.floor(progress_value * 100)}%`;
 					$progress.val(progress_value);
 					$progress_percent.text(percentage_text);
 				}
@@ -142,7 +142,7 @@ function show_imgur_uploader(blob){
 						}
 					});
 
-					req.open("DELETE", "https://api.imgur.com/3/image/" + response.data.deletehash, true);
+					req.open("DELETE", `https://api.imgur.com/3/image/${response.data.deletehash}`, true);
 					
 					req.setRequestHeader("Authorization", "Client-ID 203da2f300125a1");
 					req.setRequestHeader("Accept", "application/json");

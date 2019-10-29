@@ -145,9 +145,9 @@ function $ColorBox(){
 				}
 				const rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
 				function hex(x){
-					return ("0" + parseInt(x).toString(16)).slice(-2);
+					return (`0${parseInt(x).toString(16)}`).slice(-2);
 				}
-				return rgb ? ("#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])) : col;
+				return rgb ? (`#${hex(rgb[1])}${hex(rgb[2])}${hex(rgb[3])}`) : col;
 			}
 		});
 		$palette.width(Math.ceil(palette.length/2) * width_per_button);

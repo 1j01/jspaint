@@ -22,8 +22,8 @@ class OnCanvasObject {
 			height: magnification * this.height,
 		});
 		if (updateStatus) {
-			$status_position.text(this.x + "," + this.y);
-			$status_size.text(this.width + "," + this.height);
+			$status_position.text(`${this.x},${this.y}`);
+			$status_size.text(`${this.width},${this.height}`);
 		}
 	}
 	destroy() {

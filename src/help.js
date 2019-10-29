@@ -70,7 +70,7 @@ function show_help(){
 				const object = parse_object_params($(li).children("object"));
 				const $item_li = $(E("li")).addClass("page");
 				$item_li.append($Item(object.Name).on("click", e => {
-					$iframe.attr({src: "help/" + object.Local});
+					$iframe.attr({src: `help/${object.Local}`});
 				}));
 				$folder_items_ul.append($item_li);
 			});

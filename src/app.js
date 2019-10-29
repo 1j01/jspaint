@@ -447,7 +447,7 @@ storage.get({
 if(window.document_file_path_to_open){
 	open_from_file_path(document_file_path_to_open, err => {
 		if(err){
-			return show_error_message("Failed to open file " + document_file_path_to_open, err);
+			return show_error_message(`Failed to open file ${document_file_path_to_open}`, err);
 		}
 	});
 }
@@ -582,7 +582,7 @@ function canvas_pointer_move(e){
 }
 $canvas.on("pointermove", e => {
 	pointer = e2c(e);
-	$status_position.text(pointer.x + "," + pointer.y);
+	$status_position.text(`${pointer.x},${pointer.y}`);
 });
 $canvas.on("pointerenter", e => {
 	pointer_over_canvas = true;

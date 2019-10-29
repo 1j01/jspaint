@@ -97,8 +97,8 @@
 	
 	class LocalSession {
 		constructor(session_id) {
-			const lsid = "image#" + session_id;
-			log("local storage id: " + lsid);
+			const lsid = `image#${session_id}`;
+			log(`local storage id: ${lsid}`);
 			// save image to storage
 			const save_image_to_storage = () => {
 				const save_paused = handle_data_loss();
@@ -178,11 +178,11 @@
 	};
 
 	// The main cursor color
-	user.color = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 1)";
+	user.color = `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`;
 	// Unused
-	user.color_transparent = "hsla(" + user.hue + ", " + user.saturation + "%, " + user.lightness + "%, 0.5)";
+	user.color_transparent = `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 0.5)`;
 	// (@TODO) The color used in the toolbar indicating to other users it is selected by this user
-	user.color_desaturated = "hsla(" + user.hue + ", " + ~~(user.saturation*0.4) + "%, " + user.lightness + "%, 0.8)";
+	user.color_desaturated = `hsla(${user.hue}, ${~~(user.saturation*0.4)}%, ${user.lightness}%, 0.8)`;
 
 
 	// The image used for other people's cursors
@@ -193,10 +193,10 @@
 	class FireSession {
 		constructor(session_id) {
 			this.id = session_id;
-			file_name = "[Loading " + this.id + "]";
+			file_name = `[Loading ${this.id}]`;
 			update_title();
 			const on_firebase_loaded = () => {
-				file_name = "[" + this.id + "]";
+				file_name = `[${this.id}]`;
 				update_title();
 				this.start();
 			};
@@ -217,7 +217,7 @@
 					})
 					.fail(() => {
 						show_error_message("Failed to load Firebase; the document will not load, and changes will not be saved.");
-						file_name = "[Failed to load " + this.id + "]";
+						file_name = `[Failed to load ${this.id}]`;
 						update_title();
 					});
 			}
@@ -389,7 +389,7 @@
 				}
 			}, error => {
 				show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
-				file_name = "[Failed to load " + this.id + "]";
+				file_name = `[Failed to load ${this.id}]`;
 				update_title();
 			});
 			// Update the cursor status
@@ -417,7 +417,7 @@
 			$G.off(".session-hook");
 			// Remove collected Firebase event listeners
 			this._fb_listeners.forEach(({ fb, event_type, callback, error_callback }) => {
-				log("remove listener for " + fb.path.toString() + " .on " + event_type);
+				log(`remove listener for ${fb.path.toString()} .on ${event_type}`);
 				fb.off(event_type, callback);
 			});
 			this._fb_listeners.length = 0;
@@ -470,10 +470,10 @@
 				// @TODO: Ask if you want to save before starting a new session
 				end_current_session();
 				if(local){
-					log("starting a new local session, id: "+session_id);
+					log(`starting a new local session, id: ${session_id}`);
 					current_session = new LocalSession(session_id);
 				}else{
-					log("starting a new Firebase session, id: "+session_id);
+					log(`starting a new Firebase session, id: ${session_id}`);
 					current_session = new FireSession(session_id);
 				}
 			}
@@ -505,7 +505,7 @@
 							log("switching to new session from #load: URL because of user interaction");
 							end_current_session();
 							const new_session_id = generate_session_id();
-							location.hash = "local:" + new_session_id;
+							location.hash = `local:${new_session_id}`;
 						}
 					});
 				}, 100);
@@ -515,7 +515,7 @@
 			log("no session id in hash");
 			end_current_session();
 			const new_session_id = generate_session_id();
-			history.replaceState(null, document.title, "#local:" + new_session_id);
+			history.replaceState(null, document.title, `#local:${new_session_id}`);
 			log("after replaceState", location.hash);
 			update_session_from_location_hash();
 		}

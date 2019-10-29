@@ -63,7 +63,7 @@ function $FontBox(){
 			width: 16,
 			height: 16,
 			backgroundImage: "url(images/text-tools.png)",
-			backgroundPosition: xi*-16 + "px 0px"
+			backgroundPosition: `${xi*-16}px 0px`
 		});
 		$button.on("click", () => {
 			$button.toggleClass("selected");

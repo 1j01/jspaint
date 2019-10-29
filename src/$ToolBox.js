@@ -30,7 +30,7 @@ function $ToolBox(tools, is_extras){
 				width: 16,
 				height: 16,
 				backgroundImage: `url(${theme_folder}/tools.png)`,
-				backgroundPosition: bx + "px 0px",
+				backgroundPosition: `${bx}px 0px`,
 			});
 		};
 		update_css();

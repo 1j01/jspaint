@@ -237,7 +237,7 @@ function reset_canvas_and_history(){
 }
 
 function update_title(){
-	document.title = file_name + " - Paint";
+	document.title = `${file_name} - Paint`;
 }
 
 function create_and_trigger_input(attrs, callback){
@@ -305,7 +305,7 @@ function load_image_from_URI(uri, callback){
 		img.crossOrigin = "Anonymous";
 		img.onload = function(){
 			if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth === 0) {
-				return callback && callback(new Error("Image failed to load; naturalWidth == " + this.naturalWidth));
+				return callback && callback(new Error(`Image failed to load; naturalWidth == ${this.naturalWidth}`));
 			}
 			callback(null, img);
 		};
@@ -347,9 +347,9 @@ function get_image_file_from_FileList_or_show_error(files, user_input_method_ver
 	}
 
 	if(files.length > 1){
-		show_error_message("None of the files " + user_input_method_verb_past_tense + " appear to be images.");
+		show_error_message(`None of the files ${user_input_method_verb_past_tense} appear to be images.`);
 	}else{
-		show_error_message("File " + user_input_method_verb_past_tense + " does not appear to be an image.");
+		show_error_message(`File ${user_input_method_verb_past_tense} does not appear to be an image.`);
 	}
 }
 function open_from_FileList(files, user_input_method_verb_past_tense){
@@ -401,7 +401,7 @@ function file_load_from_url(){
 			// (but still load from the hash when necessary)
 			// make sure it doesn't overwrite the old session before switching
 			$w.close();
-			location.hash = "load:" + encodeURIComponent(uris[0]);
+			location.hash = `load:${encodeURIComponent(uris[0])}`;
 		} else {
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}
@@ -417,7 +417,7 @@ function file_save(){
 	deselect();
 	if(file_name.match(/\.svg$/)){
 		//TODO: only affect suggested name in save dialog, don't change file_name
-		file_name = file_name.replace(/\.svg$/, "") + ".png";
+		file_name = `${file_name.replace(/\.svg$/, "")}.png`;
 		return file_save_as();
 	}
 	if(document_file_path){
@@ -434,7 +434,7 @@ function file_save(){
 
 function file_save_as(){
 	deselect();
-	save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", (saved_file_path, saved_file_name) => {
+	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")}.png`, (saved_file_path, saved_file_name) => {
 		saved = true;
 		document_file_path = saved_file_path;
 		file_name = saved_file_name;
@@ -449,7 +449,7 @@ function are_you_sure(action, canceled){
 	}else{
 		const $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
-		$w.$main.text("Save changes to "+file_name+"?");
+		$w.$main.text(`Save changes to ${file_name}?`);
 		$w.$Button("Save", () => {
 			$w.close();
 			file_save();
@@ -762,7 +762,7 @@ function render_history_as_gif(){
 
 		gif.on("progress", p => {
 			$progress.val(p);
-			$progress_percent.text(~~(p*100)+"%");
+			$progress_percent.text(`${~~(p*100)}%`);
 		});
 
 		gif.on("finished", blob => {
@@ -784,7 +784,7 @@ function render_history_as_gif(){
 			$win.$Button("Save", () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
-					saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + " history.gif");
+					saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")} history.gif`);
 				});
 			});
 			$cancel.appendTo($win.$buttons);
@@ -869,7 +869,7 @@ function undoable(callback, action){
 	if(redos.length > 5){
 		const $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
-		$w.$main.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
+		$w.$main.html(`Discard ${redos.length} possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>`);
 		$w.$Button(action ? "Discard and Apply" : "Discard", () => {
 			$w.close();
 			redos.length = 0;
@@ -995,7 +995,7 @@ async function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+				throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
 		navigator.clipboard.writeText(text);
@@ -1004,7 +1004,7 @@ async function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+				throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
 		selection.canvas.toBlob(blob => {
@@ -1028,7 +1028,7 @@ function edit_cut(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("cut");
 		} else {
-			throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+			throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 		}
 	}
 	edit_copy();
@@ -1043,7 +1043,7 @@ async function edit_paste(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("paste");
 			} else {
-				throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+				throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
 		const clipboardText = await navigator.clipboard.readText();
@@ -1054,7 +1054,7 @@ async function edit_paste(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("paste");
 		} else {
-			throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
+			throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 		}
 	}
 	try {
@@ -1277,7 +1277,7 @@ function image_attributes(){
 	const $table = $(E("table")).appendTo($main);
 	for(const k in table){
 		const $tr = $(E("tr")).appendTo($table);
-		const $key = $(E("td")).appendTo($tr).text(k + ":");
+		const $key = $(E("td")).appendTo($tr).text(`${k}:`);
 		const $value = $(E("td")).appendTo($tr).text(table[k]);
 	}
 
@@ -1310,7 +1310,7 @@ function image_attributes(){
 	$units.append('<label><input type="radio" name="units" value="in">Inches</label>');
 	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
 	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
-	$units.find("[value=" + current_unit + "]").attr({checked: true});
+	$units.find(`[value=${current_unit}]`).attr({checked: true});
 	$units.on("change", () => {
 		const new_unit = $units.find(":checked").val();
 		$width.val(width_in_px / unit_sizes_in_px[new_unit]);
@@ -1321,12 +1321,12 @@ function image_attributes(){
 	const $colors = $(E("fieldset")).appendTo($main).append('<legend>Colors</legend>');
 	$colors.append('<label><input type="radio" name="colors" value="monochrome">Black and White</label>');
 	$colors.append('<label><input type="radio" name="colors" value="polychrome">Color</label>');
-	$colors.find("[value=" + (monochrome ? "monochrome" : "polychrome") + "]").attr({checked: true});
+	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({checked: true});
 
 	const $transparency = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
 	$transparency.append('<label><input type="radio" name="transparency" value="transparent">Transparent</label>');
 	$transparency.append('<label><input type="radio" name="transparency" value="opaque">Opaque</label>');
-	$transparency.find("[value=" + (transparency ? "transparent" : "opaque") + "]").attr({checked: true});
+	$transparency.find(`[value=${transparency ? "transparent" : "opaque"}]`).attr({checked: true});
 
 	// Buttons on the right
 
@@ -1470,7 +1470,7 @@ function image_stretch_and_skew(){
 	const $RowInput = ($table, img_src, label_text, default_value, label_unit) => {
 		const $tr = $(E("tr")).appendTo($table);
 		const $img = $(E("img")).attr({
-			src: "images/transforms/" + img_src + ".png"
+			src: `images/transforms/${img_src}.png`
 		}).css({
 			marginRight: "20px"
 		});
@@ -1519,7 +1519,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	// TODO: file name + type dialog
 	canvas.toBlob(blob => {
 		sanity_check_blob(blob, () => {
-			const file_saver = saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png");
+			const file_saver = saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")}.png`);
 			file_saver.onwriteend = () => {
 				// this won't fire in chrome
 				savedCallbackUnreliable();
@@ -1554,7 +1554,7 @@ function set_as_wallpaper_centered(c){
 
 	c.toBlob(blob => {
 		sanity_check_blob(blob, () => {
-			saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + " wallpaper.png");
+			saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")} wallpaper.png`);
 		});
 	});
 }

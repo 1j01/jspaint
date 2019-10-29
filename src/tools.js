@@ -312,7 +312,7 @@ tools = [{
 			const g = id.data[1];
 			const b = id.data[2];
 			const a = id.data[3];
-			this.current_color = "rgba("+r+","+g+","+b+","+a/255+")";
+			this.current_color = `rgba(${r},${g},${b},${a/255})`;
 		}else{
 			this.current_color = "white";
 		}

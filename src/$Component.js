@@ -2,7 +2,7 @@
 function $Component(name, orientation, $el){
 	// A draggable widget that can be undocked into a window
 	const $c = $(E("div")).addClass("component");
-	$c.addClass(""+name+"-component");
+	$c.addClass(`${name}-component`);
 	$c.append($el);
 	$c.attr("touch-action", "none");
 	

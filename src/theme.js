@@ -1,7 +1,7 @@
 (() => {
 	const default_theme = "classic.css";
 	const theme_storage_key = "jspaint theme";
-	const href_for = theme => "styles/themes/" + theme;
+	const href_for = theme => `styles/themes/${theme}`;
 	
 	let current_theme;
 	try {
