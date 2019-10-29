@@ -124,8 +124,9 @@ var menus = {
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
-			enabled: () => // support cutting selected text with this menu item as well (e.g. in the text tool text box)
-            !!selection,
+			enabled: () =>
+				// TODO: support cutting text with this menu item as well (e.g. for the text tool)
+				!!selection,
 			action: ()=> {
 				edit_cut(true);
 			},
@@ -134,8 +135,9 @@ var menus = {
 		{
 			item: "&Copy",
 			shortcut: "Ctrl+C",
-			enabled: () => // support copying selected text with this menu item as well (e.g. in the text tool text box)
-            !!selection,
+			enabled: () =>
+				// TODO: support copying text with this menu item as well (e.g. for the text tool)
+				!!selection,
 			action: ()=> {
 				edit_copy(true);
 			},
@@ -144,8 +146,9 @@ var menus = {
 		{
 			item: "&Paste",
 			shortcut: "Ctrl+V",
-			enabled: () => // TODO: disable if nothing in clipboard or wrong type (if we can access that)
-            true,
+			enabled: () =>
+				// TODO: disable if nothing in clipboard or wrong type (if we can access that)
+				true,
 			action: ()=> {
 				edit_paste(true);
 			},

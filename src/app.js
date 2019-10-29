@@ -77,9 +77,9 @@ var canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for 
 
 var $canvas_handles = $Handles($canvas_area, canvas, {
 	outset: 4,
-	get_offset_left() { return parseFloat($canvas_area.css("padding-left")) + 1; },
-	get_offset_top() { return parseFloat($canvas_area.css("padding-top")) + 1; },
-	size_only: true
+	get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
+	get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
+	size_only: true,
 });
 
 var $top = $(E("div")).addClass("component-area").prependTo($V);
