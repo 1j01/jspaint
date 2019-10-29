@@ -192,14 +192,13 @@
 
 	class FireSession {
 		constructor(session_id) {
-			var session = this;
-			session.id = session_id;
-			file_name = "[Loading " + session.id + "]";
+			this.id = session_id;
+			file_name = "[Loading " + this.id + "]";
 			update_title();
 			var on_firebase_loaded = () => {
-				file_name = "[" + session.id + "]";
+				file_name = "[" + this.id + "]";
 				update_title();
-				session.start();
+				this.start();
 			};
 			if (!FireSession.fb_root) {
 				$.getScript("lib/firebase.js")
@@ -218,7 +217,7 @@
 					})
 					.fail(() => {
 						show_error_message("Failed to load Firebase; the document will not load, and changes will not be saved.");
-						file_name = "[Failed to load " + session.id + "]";
+						file_name = "[Failed to load " + this.id + "]";
 						update_title();
 					});
 			}
@@ -227,7 +226,6 @@
 			}
 		}
 		start() {
-			var session = this;
 			// TODO: how do you actually detect if it's failing???
 			var $w = $FormWindow().title("Warning").addClass("dialogue-window");
 			$w.$main.html("<p>The document may not load. Changes may not save.</p>" +
@@ -245,29 +243,29 @@
 			$w.center();
 			// Wrap the Firebase API because they don't
 			// provide a great way to clean up event listeners
-			session._fb_listeners = [];
+			this._fb_listeners = [];
 			var _fb_on = (fb, event_type, callback, error_callback) => {
-				session._fb_listeners.push({ fb, event_type, callback, error_callback });
+				this._fb_listeners.push({ fb, event_type, callback, error_callback });
 				fb.on(event_type, callback, error_callback);
 			};
 			// Get Firebase references
-			session.fb = FireSession.fb_root.child(session.id);
-			session.fb_data = session.fb.child("data");
-			session.fb_users = session.fb.child("users");
+			this.fb = FireSession.fb_root.child(this.id);
+			this.fb_data = this.fb.child("data");
+			this.fb_users = this.fb.child("users");
 			if (user_id) {
-				session.fb_user = session.fb_users.child(user_id);
+				this.fb_user = this.fb_users.child(user_id);
 			}
 			else {
-				session.fb_user = session.fb_users.push();
-				user_id = session.fb_user.key;
+				this.fb_user = this.fb_users.push();
+				user_id = this.fb_user.key;
 			}
 			// Remove the user from the session when they disconnect
-			session.fb_user.onDisconnect().remove();
+			this.fb_user.onDisconnect().remove();
 			// Make the user present in the session
-			session.fb_user.set(user);
+			this.fb_user.set(user);
 			// @TODO: Execute the above two lines when .info/connected
 			// For each existing and new user
-			_fb_on(session.fb_users, "child_added", snap => {
+			_fb_on(this.fb_users, "child_added", snap => {
 				// Is this you?
 				if (snap.key === user_id) {
 					// You already have a cursor.
@@ -345,7 +343,7 @@
 					log("clear pointer operations to set data", pointer_operations);
 					pointer_operations = [];
 					log("set data");
-					session.fb_data.set(uri);
+					this.fb_data.set(uri);
 					previous_uri = uri;
 				}
 				else {
@@ -354,7 +352,7 @@
 			};
 			$canvas.on("change.session-hook", sync);
 			// Any time we change or recieve the image data
-			_fb_on(session.fb_data, "value", snap => {
+			_fb_on(this.fb_data, "value", snap => {
 				log("data update");
 				var uri = snap.val();
 				if (uri == null) {
@@ -391,20 +389,20 @@
 				}
 			}, error => {
 				show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
-				file_name = "[Failed to load " + session.id + "]";
+				file_name = "[Failed to load " + this.id + "]";
 				update_title();
 			});
 			// Update the cursor status
 			$G.on("pointermove.session-hook", e => {
 				var m = e2c(e);
-				session.fb_user.child("cursor").update({
+				this.fb_user.child("cursor").update({
 					x: m.x,
 					y: m.y,
 					away: false,
 				});
 			});
 			$G.on("blur.session-hook", e => {
-				session.fb_user.child("cursor").update({
+				this.fb_user.child("cursor").update({
 					away: true,
 				});
 			});
@@ -414,18 +412,17 @@
 			// clients can decide whether a given cursor should be visible
 		}
 		end() {
-			var session = this;
 			// Remove session-related hooks
 			$app.find("*").off(".session-hook");
 			$G.off(".session-hook");
 			// Remove collected Firebase event listeners
-			session._fb_listeners.forEach(({ fb, event_type, callback, error_callback }) => {
+			this._fb_listeners.forEach(({ fb, event_type, callback, error_callback }) => {
 				log("remove listener for " + fb.path.toString() + " .on " + event_type);
 				fb.off(event_type, callback);
 			});
-			session._fb_listeners.length = 0;
+			this._fb_listeners.length = 0;
 			// Remove the user from the session
-			session.fb_user.remove();
+			this.fb_user.remove();
 			// Remove any cursor elements
 			$app.find(".user-cursor").remove();
 			// Reset to "untitled"

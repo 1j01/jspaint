@@ -19,13 +19,12 @@ tools = [{
 	y_max: -Infinity,
 	
 	pointerdown: function(){
-		var tool = this;
-		tool.x_min = pointer.x;
-		tool.x_max = pointer.x+1;
-		tool.y_min = pointer.y;
-		tool.y_max = pointer.y+1;
-		tool.points = [];
-		tool.preview_canvas = new Canvas(canvas.width, canvas.height);
+		this.x_min = pointer.x;
+		this.x_max = pointer.x+1;
+		this.y_min = pointer.y;
+		this.y_max = pointer.y+1;
+		this.points = [];
+		this.preview_canvas = new Canvas(canvas.width, canvas.height);
 
 		// End prior selection, drawing it to the canvas
 		deselect();
@@ -41,12 +40,12 @@ tools = [{
 			pointer.y = Math.min(canvas.height, pointer.y);
 			pointer.y = Math.max(0, pointer.y);
 			// Add the point
-			tool.points.push(pointer);
+			this.points.push(pointer);
 			// Update the boundaries of the polygon
-			tool.x_min = Math.min(pointer.x, tool.x_min);
-			tool.x_max = Math.max(pointer.x, tool.x_max);
-			tool.y_min = Math.min(pointer.y, tool.y_min);
-			tool.y_max = Math.max(pointer.y, tool.y_max);
+			this.x_min = Math.min(pointer.x, this.x_min);
+			this.x_max = Math.max(pointer.x, this.x_max);
+			this.y_min = Math.min(pointer.y, this.y_min);
+			this.y_max = Math.max(pointer.y, this.y_max);
 		};
 		$G.on("pointermove", onpointermove);
 		$G.one("pointerup", () => {
@@ -300,9 +299,8 @@ tools = [{
 		});
 	},
 	pointerdown: function(){
-		var _this = this;
 		$G.one("pointerup", () => {
-			_this.$options.css({
+			this.$options.css({
 				background: ""
 			});
 		});
@@ -586,7 +584,7 @@ tools = [{
 	stroke_only: true,
 	points: [],
 	passive: function(){
-		// Actions are passive if you've already started using the tool,
+		// Actions are passive if you've already started using the this,
 		// but the first action should be undoable / cancelable
 		return this.points.length > 0;
 	},
@@ -689,7 +687,7 @@ tools = [{
 	points: [],
 	
 	passive: function(){
-		// actions are passive if you've already started using the tool
+		// actions are passive if you've already started using the this
 		// but the first action should be undoable
 		return this.points.length > 0;
 		// In other words, it's supposed to be one undoable action
@@ -710,40 +708,38 @@ tools = [{
 		this.last_click_pointerup = {x: x, y: y, time: +(new Date)};
 	},
 	pointerdown: function(ctx, x, y){
-		var tool = this;
-		
-		if(tool.points.length < 1){
+		if(this.points.length < 1){
 			// @TODO: stop needing this:
-			tool.canvas_base = canvas;
+			this.canvas_base = canvas;
 			
 			undoable(() => {
 				// @TODO: stop needing this:
-				tool.canvas_base = undos[undos.length-1];
+				this.canvas_base = undos[undos.length-1];
 				
 				// Add the first point of the polygon
-				tool.points.push({x: x, y: y});
+				this.points.push({x: x, y: y});
 				// Add a second point so first action draws a line
-				tool.points.push({x: x, y: y});
+				this.points.push({x: x, y: y});
 			});
 		}else{
-			var lx = tool.last_click_pointerdown.x;
-			var ly = tool.last_click_pointerdown.y;
-			var lt = tool.last_click_pointerdown.time;
+			var lx = this.last_click_pointerdown.x;
+			var ly = this.last_click_pointerdown.y;
+			var lt = this.last_click_pointerdown.time;
 			var dx = x - lx;
 			var dy = y - ly;
 			var dt = +(new Date) - lt;
 			var d = Math.sqrt(dx*dx + dy*dy);
 			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (TODO: find correct value (or formula))
-				tool.complete(ctx, x, y);
-				// Release the pointer to prevent tool.paint()
+				this.complete(ctx, x, y);
+				// Release the pointer to prevent this.paint()
 				// being called and clearing the canvas
 				$canvas.trigger("pointerup");
 			}else{
 				// Add the point
-				tool.points.push({x: x, y: y});
+				this.points.push({x: x, y: y});
 			}
 		}
-		tool.last_click_pointerdown = {x: x, y: y, time: +new Date};
+		this.last_click_pointerdown = {x: x, y: y, time: +new Date};
 	},
 	paint: function(ctx, x, y){
 		if(this.points.length < 1){ return; }

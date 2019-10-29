@@ -3,19 +3,18 @@ class OnCanvasSelection extends OnCanvasObject {
 	constructor(x, y, width, height) {
 		super(x, y, width, height, true);
 
-		var sel = this;
-		sel.$el.addClass("selection");
+		this.$el.addClass("selection");
 		var last_tool_transparent_mode = tool_transparent_mode;
 		var last_background_color = colors.background;
 		this._on_option_changed = () => {
-			if (!sel.source_canvas) {
+			if (!this.source_canvas) {
 				return;
 			}
 			if (last_tool_transparent_mode !== tool_transparent_mode ||
 				last_background_color !== colors.background) {
 				last_tool_transparent_mode = tool_transparent_mode;
 				last_background_color = colors.background;
-				sel.update_tool_transparent_mode();
+				this.update_tool_transparent_mode();
 			}
 		};
 		$G.on("option-changed", this._on_option_changed);
@@ -24,99 +23,99 @@ class OnCanvasSelection extends OnCanvasObject {
 		super.position(true);
 	}
 	instantiate(_img, _passive) {
-		var sel = this;
-		if (sel.$el.hasClass("instantiated")) {
+		if (this.$el.hasClass("instantiated")) {
 			// for silly multitools feature
 			// TODO: select a rectangle minus the polygon, or xor the polygon
 			return;
 		}
-		sel.$el.addClass("instantiated").css({
+		this.$el.addClass("instantiated").css({
 			cursor: Cursor(["move", [8, 8], "move"])
 		});
-		sel.$el.attr("touch-action", "none");
-		sel.position();
-		if (_passive) {
-			instantiate();
-		}
-		else if (!undoable(instantiate)) {
-			sel.destroy();
-		}
-		function instantiate() {
+		this.$el.attr("touch-action", "none");
+		this.position();
+
+		var instantiate = ()=> {
 			if (_img) {
 				// (this applies when pasting a selection)
 				// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
 				// (width vs naturalWidth?)
 				// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
-				sel.source_canvas = new Canvas(_img);
+				this.source_canvas = new Canvas(_img);
 				// TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
 				// but maybe we should assert in some way that the widths are the same, or resize the selection?
-				if (sel.source_canvas.width !== sel.width) {
-					sel.source_canvas.width = sel.width;
+				if (this.source_canvas.width !== this.width) {
+					this.source_canvas.width = this.width;
 				}
-				if (sel.source_canvas.height !== sel.height) {
-					sel.source_canvas.height = sel.height;
+				if (this.source_canvas.height !== this.height) {
+					this.source_canvas.height = this.height;
 				}
-				sel.canvas = new Canvas(sel.source_canvas);
+				this.canvas = new Canvas(this.source_canvas);
 			}
 			else {
-				sel.source_canvas = new Canvas(sel.width, sel.height);
-				sel.source_canvas.ctx.drawImage(canvas, sel.x, sel.y, sel.width, sel.height, 0, 0, sel.width, sel.height);
-				sel.canvas = new Canvas(sel.source_canvas);
+				this.source_canvas = new Canvas(this.width, this.height);
+				this.source_canvas.ctx.drawImage(canvas, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+				this.canvas = new Canvas(this.source_canvas);
 				if (!_passive) {
-					sel.cut_out_background();
+					this.cut_out_background();
 				}
 			}
-			sel.$el.append(sel.canvas);
-			sel.$handles = $Handles(sel.$el, sel.canvas, { outset: 2 });
-			sel.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
-				sel.x += delta_x;
-				sel.y += delta_y;
-				sel.width = width;
-				sel.height = height;
-				sel.position();
-				sel.resize();
+			this.$el.append(this.canvas);
+			this.$handles = $Handles(this.$el, this.canvas, { outset: 2 });
+			this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
+				this.x += delta_x;
+				this.y += delta_y;
+				this.width = width;
+				this.height = height;
+				this.position();
+				this.resize();
 			});
 			var mox, moy;
 			var pointermove = e => {
 				var m = e2c(e);
-				sel.x = Math.max(Math.min(m.x - mox, canvas.width), -sel.width);
-				sel.y = Math.max(Math.min(m.y - moy, canvas.height), -sel.height);
-				sel.position();
+				this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
+				this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
+				this.position();
 				if (e.shiftKey) {
-					sel.draw();
+					this.draw();
 				}
 			};
-			sel.canvas_pointerdown = e => {
+			this.canvas_pointerdown = e => {
 				e.preventDefault();
-				var rect = sel.canvas.getBoundingClientRect();
+				var rect = this.canvas.getBoundingClientRect();
 				var cx = e.clientX - rect.left;
 				var cy = e.clientY - rect.top;
-				mox = ~~(cx / rect.width * sel.canvas.width);
-				moy = ~~(cy / rect.height * sel.canvas.height);
+				mox = ~~(cx / rect.width * this.canvas.width);
+				moy = ~~(cy / rect.height * this.canvas.height);
 				$G.on("pointermove", pointermove);
 				$G.one("pointerup", () => {
 					$G.off("pointermove", pointermove);
 				});
 				if (e.shiftKey) {
-					sel.draw();
+					this.draw();
 				}
 				// TODO: how should this work for macOS? where ctrl+click = secondary click?
 				else if (e.ctrlKey) {
-					sel.draw();
+					this.draw();
 				}
 			};
-			$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
+			$(this.canvas).on("pointerdown", this.canvas_pointerdown);
 			$canvas_area.trigger("resize");
 			$status_position.text("");
 			$status_size.text("");
 		}
+		
+		if (_passive) {
+			instantiate();
+		}
+		else if (!undoable(instantiate)) {
+			this.destroy();
+		}
 	}
 	cut_out_background() {
-		var sel = this;
-		var cutout = sel.canvas;
-		// doc/sel or canvas/cutout, either of those pairs would result in variable names of equal length which is nice :)
-		var canvasImageData = ctx.getImageData(sel.x, sel.y, sel.width, sel.height);
-		var cutoutImageData = cutout.ctx.getImageData(0, 0, sel.width, sel.height);
+		var cutout = this.canvas;
+		// doc/this or canvas/cutout, either of those pairs would result in variable names of equal length which is nice :)
+		var canvasImageData = ctx.getImageData(this.x, this.y, this.width, this.height);
+		var cutoutImageData = cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// cutoutImageData is initialzed with the shape to be cut out (whether rectangular or polygonal)
 		// and should end up as the cut out image data for the selection
 		// canvasImageData is initially the portion of image data on the canvas,
@@ -127,8 +126,8 @@ class OnCanvasSelection extends OnCanvasObject {
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
 		var colored_cutout = new Canvas(cutout);
-		replace_colors_with_swatch(colored_cutout.ctx, colors.background, sel.x, sel.y);
-		// var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, sel.width, sel.height);
+		replace_colors_with_swatch(colored_cutout.ctx, colors.background, this.x, this.y);
+		// var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// }
 		for (var i = 0; i < cutoutImageData.data.length; i += 4) {
 			var in_cutout = cutoutImageData.data[i + 3] > 0;
@@ -149,9 +148,9 @@ class OnCanvasSelection extends OnCanvasObject {
 				cutoutImageData.data[i + 3] = 0;
 			}
 		}
-		ctx.putImageData(canvasImageData, sel.x, sel.y);
+		ctx.putImageData(canvasImageData, this.x, this.y);
 		cutout.ctx.putImageData(cutoutImageData, 0, 0);
-		sel.update_tool_transparent_mode();
+		this.update_tool_transparent_mode();
 		// NOTE: in case you want to use the tool_transparent_mode
 		// in a document with transparency (for an operation in an area where there's a local background color)
 		// (and since currently switching to the opaque document mode makes the image opaque)
@@ -163,13 +162,12 @@ class OnCanvasSelection extends OnCanvasObject {
 		// and even if you do, if you do it after creating a selection, it still won't work,
 		// because you will have already *not cut out* the selection from the canvas
 		if (!transparency || tool_transparent_mode) {
-			ctx.drawImage(colored_cutout, sel.x, sel.y);
+			ctx.drawImage(colored_cutout, this.x, this.y);
 		}
 	}
 	update_tool_transparent_mode() {
-		var sel = this;
-		var sourceImageData = sel.source_canvas.ctx.getImageData(0, 0, sel.width, sel.height);
-		var cutoutImageData = sel.canvas.ctx.createImageData(sel.width, sel.height);
+		var sourceImageData = this.source_canvas.ctx.getImageData(0, 0, this.width, this.height);
+		var cutoutImageData = this.canvas.ctx.createImageData(this.width, this.height);
 		var background_color_rgba = get_rgba_from_color(colors.background);
 		// NOTE: In b&w mode, mspaint treats the transparency color as white,
 		// regardless of the pattern selected, even if the selected background color is pure black.
@@ -200,17 +198,16 @@ class OnCanvasSelection extends OnCanvasObject {
 				// cutoutImageData.data[i+3] = 0;
 			}
 		}
-		sel.canvas.ctx.putImageData(cutoutImageData, 0, 0);
+		this.canvas.ctx.putImageData(cutoutImageData, 0, 0);
 	}
-	// TODO: should Image > Invert apply to sel.source_canvas or to sel.canvas (replacing sel.source_canvas with the result)?
+	// TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
 	replace_source_canvas(new_source_canvas) {
-		var sel = this;
-		sel.source_canvas = new_source_canvas;
+		this.source_canvas = new_source_canvas;
 		var new_canvas = new Canvas(new_source_canvas);
-		$(sel.canvas).replaceWith(new_canvas);
-		sel.canvas = new_canvas;
-		var center_x = sel.x + sel.width / 2;
-		var center_y = sel.y + sel.height / 2;
+		$(this.canvas).replaceWith(new_canvas);
+		this.canvas = new_canvas;
+		var center_x = this.x + this.width / 2;
+		var center_y = this.y + this.height / 2;
 		var new_width = new_canvas.width;
 		var new_height = new_canvas.height;
 		// NOTE: flooring the coordinates to integers avoids blurring
@@ -220,27 +217,25 @@ class OnCanvasSelection extends OnCanvasObject {
 		// Math.round() might make it do it on fewer occasions(?),
 		// but then it goes down *and* to the right, 2 directions vs One Direction
 		// and Math.ceil() is the worst of both worlds
-		sel.x = ~~(center_x - new_width / 2);
-		sel.y = ~~(center_y - new_height / 2);
-		sel.width = new_width;
-		sel.height = new_height;
-		sel.position();
-		$(sel.canvas).on("pointerdown", sel.canvas_pointerdown);
-		sel.$el.triggerHandler("new-element", [sel.canvas]);
-		sel.$el.triggerHandler("resize"); //?
-		sel.update_tool_transparent_mode();
+		this.x = ~~(center_x - new_width / 2);
+		this.y = ~~(center_y - new_height / 2);
+		this.width = new_width;
+		this.height = new_height;
+		this.position();
+		$(this.canvas).on("pointerdown", this.canvas_pointerdown);
+		this.$el.triggerHandler("new-element", [this.canvas]);
+		this.$el.triggerHandler("resize"); //?
+		this.update_tool_transparent_mode();
 	}
 	resize() {
-		var sel = this;
-		var new_source_canvas = new Canvas(sel.width, sel.height);
-		new_source_canvas.ctx.drawImage(sel.source_canvas, 0, 0, sel.width, sel.height);
-		sel.replace_source_canvas(new_source_canvas);
+		var new_source_canvas = new Canvas(this.width, this.height);
+		new_source_canvas.ctx.drawImage(this.source_canvas, 0, 0, this.width, this.height);
+		this.replace_source_canvas(new_source_canvas);
 	}
 	scale(factor) {
-		var sel = this;
-		var new_source_canvas = new Canvas(sel.width * factor, sel.height * factor);
-		new_source_canvas.ctx.drawImage(sel.source_canvas, 0, 0, new_source_canvas.width, new_source_canvas.height);
-		sel.replace_source_canvas(new_source_canvas);
+		var new_source_canvas = new Canvas(this.width * factor, this.height * factor);
+		new_source_canvas.ctx.drawImage(this.source_canvas, 0, 0, new_source_canvas.width, new_source_canvas.height);
+		this.replace_source_canvas(new_source_canvas);
 	}
 	draw() {
 		try {
@@ -255,11 +250,10 @@ class OnCanvasSelection extends OnCanvasObject {
 		$G.off("option-changed", this._on_option_changed);
 	}
 	crop() {
-		var sel = this;
-		sel.instantiate(null, "passive");
-		if (sel.canvas) {
+		this.instantiate(null, "passive");
+		if (this.canvas) {
 			undoable(0, () => {
-				ctx.copy(sel.canvas);
+				ctx.copy(this.canvas);
 				$canvas_area.trigger("resize");
 			});
 		}

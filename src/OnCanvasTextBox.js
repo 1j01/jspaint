@@ -3,14 +3,13 @@ class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x, y, width, height) {
 		super(x, y, width, height, true);
 
-		var tb = this;
-		tb.$el.addClass("textbox");
-		tb.$editor = $(E("textarea")).addClass("textbox-editor");
+		this.$el.addClass("textbox");
+		this.$editor = $(E("textarea")).addClass("textbox-editor");
 		var update = () => {
 			var font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
-			tb.$editor.css({
+			this.$editor.css({
 				fontFamily: font.family,
 				fontSize: font.size * magnification + "px",
 				fontWeight: font.bold ? "bold" : "normal",
@@ -31,21 +30,60 @@ class OnCanvasTextBox extends OnCanvasObject {
 		super.position(true);
 	}
 	instantiate() {
-		var tb = this;
-		tb.$el.addClass("instantiated").css({
+		this.$el.addClass("instantiated").css({
 			cursor: Cursor(["move", [8, 8], "move"])
 		});
-		tb.$el.attr("touch-action", "none");
-		tb.position();
-		instantiate();
+		this.$el.attr("touch-action", "none");
+		this.position();
+		
+		this.$el.append(this.$editor);
+		this.$editor[0].focus();
+		this.$handles = $Handles(this.$el, this.$editor[0], { outset: 2 });
+		this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
+			this.x += delta_x;
+			this.y += delta_y;
+			this.width = width;
+			this.height = height;
+			this.position();
+		});
+		var mox, moy;
+		var pointermove = e => {
+			var m = e2c(e);
+			this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
+			this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
+			this.position();
+			if (e.shiftKey) {
+				this.draw();
+			}
+		};
+		this.$el.on("pointerdown", e => {
+			if (e.target instanceof HTMLInputElement ||
+				e.target instanceof HTMLTextAreaElement ||
+				e.target.classList.contains("handle")) {
+				return;
+			}
+			e.preventDefault();
+			var rect = this.$el[0].getBoundingClientRect();
+			var cx = e.clientX - rect.left;
+			var cy = e.clientY - rect.top;
+			mox = ~~(cx);
+			moy = ~~(cy);
+			$G.on("pointermove", pointermove);
+			$G.one("pointerup", () => {
+				$G.off("pointermove", pointermove);
+			});
+		});
+		$status_position.text("");
+		$status_size.text("");
+		$canvas_area.trigger("resize"); // to update handles, get them to hide?
+
 		if (OnCanvasTextBox.$fontbox && OnCanvasTextBox.$fontbox.closed) {
 			OnCanvasTextBox.$fontbox = null;
 		}
 		var $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || new $FontBox();
 		// move the font box out of the way if it's overlapping the OnCanvasTextBox
-		var $tb = tb.$el;
 		var fb_rect = $fb[0].getBoundingClientRect();
-		var tb_rect = $tb[0].getBoundingClientRect();
+		var tb_rect = this.$el[0].getBoundingClientRect();
 		if (
 			// the fontbox overlaps textbox
 			fb_rect.left <= tb_rect.right &&
@@ -54,68 +92,24 @@ class OnCanvasTextBox extends OnCanvasObject {
 			tb_rect.top <= fb_rect.bottom) {
 			// move the font box out of the way
 			$fb.css({
-				top: $tb.position().top - $fb.height()
+				top: this.$el.position().top - $fb.height()
 			});
 		}
 		$fb.applyBounds();
-		function instantiate() {
-			// this doesn't need to be a seperate function
-			tb.$el.append(tb.$editor);
-			tb.$editor[0].focus();
-			tb.$handles = $Handles(tb.$el, tb.$editor[0], { outset: 2 });
-			tb.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
-				tb.x += delta_x;
-				tb.y += delta_y;
-				tb.width = width;
-				tb.height = height;
-				tb.position();
-			});
-			var mox, moy;
-			var pointermove = e => {
-				var m = e2c(e);
-				tb.x = Math.max(Math.min(m.x - mox, canvas.width), -tb.width);
-				tb.y = Math.max(Math.min(m.y - moy, canvas.height), -tb.height);
-				tb.position();
-				if (e.shiftKey) {
-					tb.draw();
-				}
-			};
-			tb.$el.on("pointerdown", e => {
-				if (e.target instanceof HTMLInputElement ||
-					e.target instanceof HTMLTextAreaElement ||
-					e.target.classList.contains("handle")) {
-					return;
-				}
-				e.preventDefault();
-				var rect = tb.$el[0].getBoundingClientRect();
-				var cx = e.clientX - rect.left;
-				var cy = e.clientY - rect.top;
-				mox = ~~(cx);
-				moy = ~~(cy);
-				$G.on("pointermove", pointermove);
-				$G.one("pointerup", () => {
-					$G.off("pointermove", pointermove);
-				});
-			});
-			$status_position.text("");
-			$status_size.text("");
-			$canvas_area.trigger("resize"); // to update handles, get them to hide?
-		}
 	}
 	draw() {
-		var tb = this;
-		var text = tb.$editor.val();
+		var text = this.$editor.val();
 		if (text) {
 			undoable(0, () => {
 				var font = text_tool_font;
 				ctx.fillStyle = font.background;
-				ctx.fillRect(tb.x, tb.y, tb.width, tb.height);
+				ctx.fillRect(this.x, this.y, this.width, this.height);
 				ctx.fillStyle = font.color;
 				var style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
 				ctx.font = style_ + font.size + "px " + font.family;
 				ctx.textBaseline = "top";
-				var max_width = Math.max(tb.width, font.size);
-				draw_text_wrapped(ctx, text, tb.x + 1, tb.y + 1, max_width, font.size * font.line_scale);
+				var max_width = Math.max(this.width, font.size);
+				draw_text_wrapped(ctx, text, this.x + 1, this.y + 1, max_width, font.size * font.line_scale);
 			});
 		}
 	}
