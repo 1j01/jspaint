@@ -223,9 +223,9 @@ function reset_file(){
 	saved = true;
 }
 
-function reset_canvas(){
-	undos = [];
-	redos = [];
+function reset_canvas_and_history(){
+	undos.length = 0;
+	redos.length = 0;
 
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
@@ -268,7 +268,7 @@ function open_from_Image(img, callback, canceled){
 
 		reset_file();
 		reset_colors();
-		reset_canvas(); // (with newly reset colors)
+		reset_canvas_and_history(); // (with newly reset colors)
 		set_magnification(1);
 
 		ctx.copy(img);
@@ -367,7 +367,7 @@ function file_new(){
 
 		reset_file();
 		reset_colors();
-		reset_canvas(); // (with newly reset colors)
+		reset_canvas_and_history(); // (with newly reset colors)
 		set_magnification(1);
 	});
 }
@@ -872,7 +872,7 @@ function undoable(callback, action){
 		$w.$main.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
 		$w.$Button(action ? "Discard and Apply" : "Discard", () => {
 			$w.close();
-			redos = [];
+			redos.length = 0;
 			action && action();
 		})[0].focus();
 		$w.$Button("Keep", () => {
@@ -881,7 +881,7 @@ function undoable(callback, action){
 		$w.center();
 		return false;
 	}else{
-		redos = [];
+		redos.length = 0;
 	}
 
 	undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));

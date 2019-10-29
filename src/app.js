@@ -1,10 +1,10 @@
 
-const aliasing = true;
-const transparency = false;
-const monochrome = false;
+let aliasing = true;
+let transparency = false;
+let monochrome = false;
 
-const magnification = 1;
-const return_to_magnification = 4;
+let magnification = 1;
+let return_to_magnification = 4;
 
 const default_canvas_width = 683;
 const default_canvas_height = 384;
@@ -15,12 +15,12 @@ const canvas = new Canvas();
 canvas.classList.add("main-canvas");
 const ctx = canvas.ctx;
 
-const palette = [
+let palette = [
 	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
 	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
 ];
-const polychrome_palette = palette;
-const monochrome_palette = make_monochrome_palette();
+let polychrome_palette = palette;
+let monochrome_palette = make_monochrome_palette();
 
 
 let stroke_color;
@@ -28,10 +28,10 @@ let fill_color;
 let stroke_color_k = "foreground"; // enum of "foreground", "background", "ternary"
 let fill_color_k = "background"; // enum of "foreground", "background", "ternary"
 
-const selected_tool = tools[6];
-const selected_tools = [selected_tool];
-const return_to_tools = [selected_tool];
-const colors = {
+let selected_tool = tools[6];
+let selected_tools = [selected_tool];
+let return_to_tools = [selected_tool];
+let colors = {
 	foreground: "",
 	background: "",
 	ternary: "",
@@ -40,8 +40,8 @@ const colors = {
 let selection; //the one and only OnCanvasSelection
 let textbox; //the one and only OnCanvasTextBox
 let helper_layer; //the OnCanvasHelperLayer for the grid and tool previews
-const show_grid = false;
-const text_tool_font = {
+let show_grid = false;
+let text_tool_font = {
 	family: '"Arial"', // should be an exact value detected by Font Detective
 	size: 12,
 	line_scale: 20 / 12,
@@ -59,7 +59,7 @@ const redos = []; //array of ImageData
 
 let file_name;
 let document_file_path;
-const saved = true;
+let saved = true;
 
 
 
@@ -73,7 +73,7 @@ $canvas_area.attr("touch-action", "pan-x pan-y");
 
 const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
-const canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
+let canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
 
 const $canvas_handles = $Handles($canvas_area, canvas, {
 	outset: 4,
@@ -204,10 +204,6 @@ $("body").on("dragover dragenter", e => {
 	}
 });
 
-const keys = {};
-$G.on("keyup", e => {
-	delete keys[e.keyCode];
-});
 $G.on("keydown", e => {
 	if(e.isDefaultPrevented()){
 		return;
@@ -428,7 +424,7 @@ $G.on("cut copy paste", e => {
 
 reset_file();
 reset_colors();
-reset_canvas(); // (with newly reset colors)
+reset_canvas_and_history(); // (with newly reset colors)
 set_magnification(1);
 
 storage.get({
