@@ -271,7 +271,7 @@ $G.on("keydown", e => {
 		const delta = plus - minus; // var delta = +plus++ -minus--; // Δ = ±±±±
 
 		if(selection){
-			selection.scale(Math.pow(2, delta));
+			selection.scale(2 ** delta);
 		}else{
 			if(selected_tool.name === "Brush"){
 				brush_size = Math.max(1, Math.min(brush_size + delta, 500));
