@@ -18,7 +18,7 @@ tools = [{
 	y_min: +Infinity,
 	y_max: -Infinity,
 	
-	pointerdown: function(){
+	pointerdown() {
 		this.x_min = pointer.x;
 		this.x_max = pointer.x+1;
 		this.y_min = pointer.y;
@@ -53,7 +53,7 @@ tools = [{
 		});
 	},
 	continuous: "space",
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		
 		// Constrain the inverty paint brush position to the canvas
 		x = Math.min(canvas.width, x);
@@ -82,7 +82,7 @@ tools = [{
 		
 		ctx_dest.putImageData(id_dest, rect_x, rect_y);
 	},
-	pointerup: function(){
+	pointerup() {
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 
@@ -111,12 +111,12 @@ tools = [{
 		selection.instantiate(contents_within_polygon);
 		selection.cut_out_background();
 	},
-	cancel: function(){
+	cancel() {
 		if(!this.preview_canvas){return;}
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 	},
-	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(!this.preview_canvas){return;}
 
@@ -134,7 +134,7 @@ tools = [{
 	passive: true,
 	drag_start_x: 0,
 	drag_start_y: 0,
-	pointerdown: function(){
+	pointerdown() {
 		this.drag_start_x = pointer.x;
 		this.drag_start_y = pointer.y;
 		if(selection){
@@ -155,7 +155,7 @@ tools = [{
 		});
 		selection = new OnCanvasSelection(pointer.x, pointer.y, 1, 1);
 	},
-	paint: function(){
+	paint() {
 		if(!selection){ return; }
 		var x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
 		var y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
@@ -167,7 +167,7 @@ tools = [{
 		selection.height = Math.max(1, y2 - y1);
 		selection.position();
 	},
-	pointerup: function(){
+	pointerup() {
 		if(!selection){ return; }
 		
 		if(ctrl){
@@ -178,7 +178,7 @@ tools = [{
 			selection.instantiate();
 		}
 	},
-	cancel: function(){
+	cancel() {
 		if(!selection){return;}
 		selection.destroy();
 		selection = null;
@@ -190,7 +190,7 @@ tools = [{
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	continuous: "space",
-	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		var rect_x = ~~(x - eraser_size/2);
 		var rect_y = ~~(y - eraser_size/2);
@@ -203,7 +203,7 @@ tools = [{
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 	},
-	drawPreviewAboveGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		
 		var rect_x = ~~(x - eraser_size/2);
@@ -223,7 +223,7 @@ tools = [{
 			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
 		}
 	},
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		
 		var rect_x = ~~(x - eraser_size/2);
 		var rect_y = ~~(y - eraser_size/2);
@@ -271,7 +271,7 @@ tools = [{
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
-	pointerdown: function(ctx, x, y){
+	pointerdown(ctx, x, y) {
 		
 		// Get the rgba values of the selected fill color
 		var rgba = get_rgba_from_color(fill_color);
@@ -293,19 +293,19 @@ tools = [{
 	passive: true,
 	
 	current_color: "",
-	display_current_color: function(){
+	display_current_color() {
 		this.$options.css({
 			background: this.current_color
 		});
 	},
-	pointerdown: function(){
+	pointerdown() {
 		$G.one("pointerup", () => {
 			this.$options.css({
 				background: ""
 			});
 		});
 	},
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		if(x >= 0 && y >= 0 && x < canvas.width && y < canvas.height){
 			var id = ctx.getImageData(~~x, ~~y, 1, 1);
 			var r = id.data[0];
@@ -318,7 +318,7 @@ tools = [{
 		}
 		this.display_current_color();
 	},
-	pointerup: function(){
+	pointerup() {
 		colors[fill_color_k] = this.current_color;
 		$G.trigger("option-changed");
 	},
@@ -337,7 +337,7 @@ tools = [{
 		magnification === 1 ? return_to_magnification : 1
 	),
 
-	drawPreviewAboveGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(pointer_active) { return; }
 		var prospective_magnification = this.getProspectiveMagnification();
@@ -410,7 +410,7 @@ tools = [{
 		// ctx.strokeStyle = "#f0f";
 		// ctx.strokeRect(rect_x1, rect_y1, rect_w, rect_h);
 	},
-	pointerdown: function(ctx, x, y){
+	pointerdown(ctx, x, y) {
 		var prev_magnification = magnification;
 		var prospective_magnification = this.getProspectiveMagnification();
 		
@@ -438,7 +438,7 @@ tools = [{
 	continuous: "space",
 	stroke_only: true,
 	pencil_canvas: Canvas(),
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
 		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)
 		var csz = get_brush_canvas_size(pencil_size, "circle");
@@ -468,7 +468,7 @@ tools = [{
 	rendered_color: "",
 	rendered_size: 0,
 	rendered_shape: "",
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		var csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
@@ -488,7 +488,7 @@ tools = [{
 		}
 		ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 	},
-	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		
 		ctx.scale(scale, scale);
@@ -503,7 +503,7 @@ tools = [{
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		var r = airbrush_size / 2;
 		for(var i = 0; i < 6 + r/5; i++){
 			var rx = (Math.random()*2-1) * r;
@@ -520,12 +520,12 @@ tools = [{
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
-	preload: function(){
+	preload() {
 		setTimeout(FontDetective.preload, 10);
 	},
 	drag_start_x: 0,
 	drag_start_y: 0,
-	pointerdown: function(){
+	pointerdown() {
 		this.drag_start_x = pointer.x;
 		this.drag_start_y = pointer.y;
 		if(textbox){
@@ -545,7 +545,7 @@ tools = [{
 		});
 		textbox = new OnCanvasTextBox(pointer.x, pointer.y, 1, 1);
 	},
-	paint: function(){
+	paint() {
 		if(!textbox){ return; }
 		var x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
 		var y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
@@ -557,11 +557,11 @@ tools = [{
 		textbox.height = Math.max(1, y2 - y1);
 		textbox.position();
 	},
-	pointerup: function(){
+	pointerup() {
 		if(!textbox){ return; }
 		textbox.instantiate();
 	},
-	cancel: function(){
+	cancel() {
 		if(!textbox){ return; }
 		textbox.destroy();
 		textbox = null;
@@ -572,7 +572,7 @@ tools = [{
 	description: "Draws a straight line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
-	shape: function(ctx, x, y, w, h){
+	shape(ctx, x, y, w, h) {
 		update_brush_for_drawing_lines(stroke_size);
 		draw_line(ctx, x, y, x+w, y+h, stroke_size);
 	},
@@ -583,17 +583,17 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	points: [],
-	passive: function(){
+	passive() {
 		// Actions are passive if you've already started using the this,
 		// but the first action should be undoable / cancelable
 		return this.points.length > 0;
 	},
-	pointerup: function(ctx, x, y){
+	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
 			this.points = [];
 		}
 	},
-	pointerdown: function(ctx, x, y){
+	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
 			undoable(()=> {
 				this.points.push({x: x, y: y});
@@ -604,7 +604,7 @@ tools = [{
 			this.points.push({x: x, y: y});
 		}
 	},
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
 		var i = this.points.length - 1;
@@ -639,20 +639,20 @@ tools = [{
 			);
 		}
 	},
-	cancel: function(){
+	cancel() {
 		this.points = [];
 	},
-	end: function(){
+	end() {
 		this.points = [];
 	},
-	shape: function(){true},
+	shape() {true},
 	$options: $choose_stroke_size
 }, {
 	// @#: square
 	name: "Rectangle",
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	shape: function(ctx, x, y, w, h){
+	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
 		
@@ -686,13 +686,13 @@ tools = [{
 	// The vertices of the polygon
 	points: [],
 	
-	passive: function(){
+	passive() {
 		// actions are passive if you've already started using the this
 		// but the first action should be undoable
 		return this.points.length > 0;
 		// In other words, it's supposed to be one undoable action
 	},
-	pointerup: function(ctx, x, y){
+	pointerup(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
 		var i = this.points.length - 1;
@@ -707,7 +707,7 @@ tools = [{
 		
 		this.last_click_pointerup = {x: x, y: y, time: +(new Date)};
 	},
-	pointerdown: function(ctx, x, y){
+	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
 			// @TODO: stop needing this:
 			this.canvas_base = canvas;
@@ -741,7 +741,7 @@ tools = [{
 		}
 		this.last_click_pointerdown = {x: x, y: y, time: +new Date};
 	},
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
 		// Clear the canvas to the previous image to get
@@ -759,7 +759,7 @@ tools = [{
 			this.points
 		);
 	},
-	complete: function(ctx, x, y){
+	complete(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
 		// Clear the canvas to the previous image to get
@@ -779,13 +779,13 @@ tools = [{
 		
 		this.reset();
 	},
-	cancel: function(){
+	cancel() {
 		this.reset();
 	},
-	end: function(){
+	end() {
 		this.reset();
 	},
-	reset: function(){
+	reset() {
 		this.points = [];
 		this.last_click_pointerdown = {x: -Infinity, y: -Infinity, time: -Infinity};
 		this.last_click_pointerup = {x: -Infinity, y: -Infinity, time: -Infinity};
@@ -797,7 +797,7 @@ tools = [{
 	name: "Ellipse",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	shape: function(ctx, x, y, w, h){
+	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
 
@@ -822,7 +822,7 @@ tools = [{
 	name: "Rounded Rectangle",
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	shape: function(ctx, x, y, w, h){
+	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
 

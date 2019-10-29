@@ -7,7 +7,7 @@ extra_tools = [{
 	rendered_color: "",
 	rendered_size: 0,
 	rendered_shape: "",
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		// XXX: copy pasted all this brush caching/rendering code!
 		// TODO: DRY!
 		var csz = get_brush_canvas_size(brush_size, brush_shape);
@@ -57,13 +57,13 @@ extra_tools = [{
 		x: 0,
 		y: 0,
 	},
-	pointerdown: function(ctx, x, y){
+	pointerdown(ctx, x, y) {
 		this.position.x = x;
 		this.position.y = y;
 		this.velocity.x = 0;
 		this.velocity.y = 0;
 	},
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		// XXX: copy pasted all this brush caching/rendering code!
 		// TODO: DRY!
 		var csz = get_brush_canvas_size(brush_size, brush_shape);
@@ -106,7 +106,7 @@ extra_tools = [{
 	description: "Lets you configure the Airbrushbrush. It uses this type of tool option as well.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
-	paint: function(ctx, x, y){
+	paint(ctx, x, y) {
 		
 	},
 	$options: $choose_airbrush_size

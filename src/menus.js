@@ -220,7 +220,7 @@ var menus = {
 		{
 			item: "E&xtras Menu",
 			checkbox: {
-				toggle: function() {
+				toggle() {
 					$extras_menu_button.toggle();
 					var checked = this.check();
 					try{

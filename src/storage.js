@@ -7,7 +7,7 @@
 	isArray = Array.isArray || (a => ("" + a) !== a && {}.toString.call(a) === "[object Array]");
 
 	localStore = {
-		get: function(key, callback) {
+		get(key, callback) {
 			var defaultValue, err, i, item, len, obj, keys, keys_obj;
 			try {
 				if (typeof key === "string") {
@@ -46,7 +46,7 @@
 			}
 			callback(null, obj);
 		},
-		set: function(key, value, callback) {
+		set(key, value, callback) {
 			var err, to_set;
 			to_set = {};
 			if (typeof key === "string") {
