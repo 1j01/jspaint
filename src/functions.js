@@ -156,7 +156,7 @@ function show_custom_zoom_window() {
 	var $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
 	var $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
-	$really_custom_input.closest("label").on("click", function(e){
+	$really_custom_input.closest("label").on("click", e => {
 		$really_custom_radio_option.prop("checked", true);
 		$really_custom_input[0].focus();
 	});
@@ -168,7 +168,7 @@ function show_custom_zoom_window() {
 
 	$fieldset.find("label").css({display: "block"});
 
-	$w.$Button("Okay", function(){
+	$w.$Button("Okay", () => {
 		var option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
 		var mag;
 		if(option_val === "really-custom"){
@@ -181,7 +181,7 @@ function show_custom_zoom_window() {
 			if(isNaN(mag)){
 				var $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
 				$msgw.$main.text("The value specified for custom zoom was invalid.");
-				$msgw.$Button("Okay", function(){
+				$msgw.$Button("Okay", () => {
 					$msgw.close();
 				});
 				return;
@@ -194,7 +194,7 @@ function show_custom_zoom_window() {
 
 		$w.close();
 	})[0].focus();
-	$w.$Button("Cancel", function(){
+	$w.$Button("Cancel", () => {
 		$w.close();
 	});
 
@@ -255,13 +255,13 @@ function create_and_trigger_input(attrs, callback){
 // TODO: rename these functions to lowercase (and maybe say "files" in this case)
 function get_FileList_from_file_select_dialog(callback){
 	// TODO: specify mime types?
-	create_and_trigger_input({type: "file"}, function(input){
+	create_and_trigger_input({type: "file"}, input => {
 		callback(input.files);
 	});
 }
 
 function open_from_Image(img, callback, canceled){
-	are_you_sure(function(){
+	are_you_sure(() => {
 		// TODO: shouldn't open_from_* start a new session?
 
 		this_ones_a_frame_changer();
@@ -281,7 +281,7 @@ function open_from_Image(img, callback, canceled){
 function get_URIs(text) {
 	// parse text/uri-list
 	// get lines, discarding comments
-	var lines = text.split(/[\n\r]+/).filter(function(line){return line[0] !== "#" && line});
+	var lines = text.split(/[\n\r]+/).filter(line => {return line[0] !== "#" && line});
 	// discard text with too many lines (likely pasted HTML or something) - may want to revisit this
 	if (lines.length > 15) {
 		return [];
@@ -300,9 +300,9 @@ function get_URIs(text) {
 function load_image_from_URI(uri, callback){
 	// TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
 	fetch(uri)
-	.then(function(response) {
+	.then(response => {
 		return response.blob();
-	}).then(function(blob) {
+	}).then(blob => {
 		var img = new Image();
 		img.crossOrigin = "Anonymous";
 		img.onload = function(){
@@ -311,28 +311,28 @@ function load_image_from_URI(uri, callback){
 			}
 			callback(null, img);
 		};
-		img.onerror = function(e) {
+		img.onerror = e => {
 			callback && callback(new Error("Image failed to load"));
 		};
 		img.src = window.URL.createObjectURL(blob);
-	}).catch(function(exception) {
+	}).catch(exception => {
 		callback && callback(new Error("Image failed to load"));
 	});
 }
 function open_from_URI(uri, callback, canceled){
-	load_image_from_URI(uri, function(err, img){
+	load_image_from_URI(uri, (err, img) => {
 		if(err){ return callback(err); }
 		open_from_Image(img, callback, canceled);
 	});
 }
 function open_from_File(file, callback, canceled){
 	var blob_url = URL.createObjectURL(file);
-	load_image_from_URI(blob_url, function(err, img){
+	load_image_from_URI(blob_url, (err, img) => {
 		// revoke object URL regardless of error
 		URL.revokeObjectURL(file);
 		if(err){ return callback(err); }
 
-		open_from_Image(img, function(){
+		open_from_Image(img, () => {
 			file_name = file.name;
 			document_file_path = file.path; // available in Electron
 			update_title();
@@ -357,14 +357,14 @@ function get_image_file_from_FileList_or_show_error(files, user_input_method_ver
 function open_from_FileList(files, user_input_method_verb_past_tense){
 	var file = get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense);
 	if(file){
-		open_from_File(file, function(err){
+		open_from_File(file, err => {
 			if(err){ return show_error_message("Failed to open file:", err); }
 		});
 	}
 }
 
 function file_new(){
-	are_you_sure(function(){
+	are_you_sure(() => {
 		this_ones_a_frame_changer();
 
 		reset_file();
@@ -379,7 +379,7 @@ function file_new(){
 // there's this little thing called Inversion of Control...
 // also paste_from_file_select_dialog
 function file_open(){
-	get_FileList_from_file_select_dialog(function(files){
+	get_FileList_from_file_select_dialog(files => {
 		open_from_FileList(files, "selected");
 	});
 }
@@ -395,7 +395,7 @@ function file_load_from_url(){
 	// TODO: URL validation (input has to be in a form (and we don't want the form to submit))
 	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input'/></label>");
 	var $input = $w.$main.find(".url-input");
-	$w.$Button("Load", function(){
+	$w.$Button("Load", () => {
 		var uris = get_URIs($input.val());
 		if (uris.length > 0) {
 			// TODO: retry loading if same URL entered
@@ -408,7 +408,7 @@ function file_load_from_url(){
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}
 	});
-	$w.$Button("Cancel", function(){
+	$w.$Button("Cancel", () => {
 		$w.close();
 	});
 	$w.center();
@@ -424,7 +424,7 @@ function file_save(){
 	}
 	if(document_file_path){
 		// TODO: save as JPEG by default if the previously opened/saved file was a JPEG?
-		return save_to_file_path(document_file_path, "PNG", function(saved_file_path, saved_file_name){
+		return save_to_file_path(document_file_path, "PNG", (saved_file_path, saved_file_name) => {
 			saved = true;
 			document_file_path = saved_file_path;
 			file_name = saved_file_name;
@@ -436,7 +436,7 @@ function file_save(){
 
 function file_save_as(){
 	deselect();
-	save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", function(saved_file_path, saved_file_name){
+	save_canvas_as(canvas, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png", (saved_file_path, saved_file_name) => {
 		saved = true;
 		document_file_path = saved_file_path;
 		file_name = saved_file_name;
@@ -452,20 +452,20 @@ function are_you_sure(action, canceled){
 		var $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.text("Save changes to "+file_name+"?");
-		$w.$Button("Save", function(){
+		$w.$Button("Save", () => {
 			$w.close();
 			file_save();
 			action();
 		})[0].focus();
-		$w.$Button("Discard", function(){
+		$w.$Button("Discard", () => {
 			$w.close();
 			action();
 		});
-		$w.$Button("Cancel", function(){
+		$w.$Button("Cancel", () => {
 			$w.close();
 			canceled && canceled();
 		});
-		$w.$x.on("click", function(){
+		$w.$x.on("click", () => {
 			canceled && canceled();
 		});
 		$w.center();
@@ -490,7 +490,7 @@ function show_error_message(message, error){
 			overflow: "auto",
 		});
 	}
-	$w.$Button("OK", function(){
+	$w.$Button("OK", () => {
 		$w.close();
 	});
 	$w.center();
@@ -510,7 +510,7 @@ function show_resource_load_error_message(){
 		", such as <a href='https://imgur.com/'>Imgur</a>."
 	);
 	$w.$main.css({maxWidth: "500px"});
-	$w.$Button("OK", function(){
+	$w.$Button("OK", () => {
 		$w.close();
 	});
 	$w.center();
@@ -664,7 +664,7 @@ function paste_image_from_file(file){
 	// TODO: revoke object URL
 	var blob_url = URL.createObjectURL(file);
 	// paste_image_from_URI(blob_url);
-	load_image_from_URI(blob_url, function(err, img){
+	load_image_from_URI(blob_url, (err, img) => {
 		// TODO: this shouldn't really have the CORS error message, if it's from a blob URI
 		if(err){ return show_resource_load_error_message(); }
 		paste(img);
@@ -674,7 +674,7 @@ function paste_image_from_file(file){
 }
 
 function paste_from_file_select_dialog(){
-	get_FileList_from_file_select_dialog(function(files){
+	get_FileList_from_file_select_dialog(files => {
 		var file = get_image_file_from_FileList_or_show_error(files, "selected");
 		if(file){
 			paste_image_from_file(file);
@@ -691,10 +691,10 @@ function paste(img){
 			"The image is bigger than the canvas.<br>" +
 			"Would you like the canvas to be enlarged?<br>"
 		);
-		$w.$Button("Enlarge", function(){
+		$w.$Button("Enlarge", () => {
 			$w.close();
 			// Additional undoable
-			undoable(function(){
+			undoable(() => {
 				var original = undos[undos.length-1];
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
@@ -708,11 +708,11 @@ function paste(img){
 				$canvas_area.trigger("resize");
 			});
 		})[0].focus();
-		$w.$Button("Crop", function(){
+		$w.$Button("Crop", () => {
 			$w.close();
 			do_the_paste();
 		});
-		$w.$Button("Cancel", function(){
+		$w.$Button("Cancel", () => {
 			$w.close();
 		});
 		$w.center();
@@ -744,11 +744,11 @@ function render_history_as_gif(){
 	});
 	$win.$main.css({padding: 5});
 
-	var $cancel = $win.$Button('Cancel', function(){
+	var $cancel = $win.$Button('Cancel', () => {
 		$win.close();
 	});
 
-	$win.on('close', function(){
+	$win.on('close', () => {
 		gif.abort();
 	});
 
@@ -762,12 +762,12 @@ function render_history_as_gif(){
 			height: height,
 		});
 
-		gif.on("progress", function(p){
+		gif.on("progress", p => {
 			$progress.val(p);
 			$progress_percent.text(~~(p*100)+"%");
 		});
 
-		gif.on("finished", function(blob){
+		gif.on("finished", blob => {
 			$win.title("Rendered GIF");
 			var url = URL.createObjectURL(blob);
 			$output.empty().append(
@@ -777,15 +777,15 @@ function render_history_as_gif(){
 					height: height,
 				})
 			);
-			$win.$Button("Upload to Imgur", function(){
+			$win.$Button("Upload to Imgur", () => {
 				$win.close();
-				sanity_check_blob(blob, function(){
+				sanity_check_blob(blob, () => {
 					show_imgur_uploader(blob);
 				});
 			});
-			$win.$Button("Save", function(){
+			$win.$Button("Save", () => {
 				$win.close();
-				sanity_check_blob(blob, function(){
+				sanity_check_blob(blob, () => {
 					saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + " history.gif");
 				});
 			});
@@ -872,12 +872,12 @@ function undoable(callback, action){
 		var $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
-		$w.$Button(action ? "Discard and Apply" : "Discard", function(){
+		$w.$Button(action ? "Discard and Apply" : "Discard", () => {
 			$w.close();
 			redos = [];
 			action && action();
 		})[0].focus();
-		$w.$Button("Keep", function(){
+		$w.$Button("Keep", () => {
 			$w.close();
 		});
 		$w.center();
@@ -1009,16 +1009,16 @@ async function edit_copy(execCommandFallback){
 				throw new Error("The Async Clipboard API is not supported by this browser. " + browserRecommendationForClipboardAccess);
 			}
 		}
-		selection.canvas.toBlob(function(blob) {
-			sanity_check_blob(blob, function(){
+		selection.canvas.toBlob(blob => {
+			sanity_check_blob(blob, () => {
 				navigator.clipboard.write([
 					new ClipboardItem(Object.defineProperty({}, blob.type, {
 						value: blob,
 						enumerable: true,
 					}))
-				]).then(function(){
+				]).then(() => {
 					console.log("Copied image to the clipboard");
-				}, function(error){
+				}, error => {
 					show_error_message("Failed to copy to the Clipboard.", error);
 				});
 			});
@@ -1072,7 +1072,7 @@ async function edit_paste(execCommandFallback){
 				if(clipboardText) {
 					var uris = get_URIs(clipboardText);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], function(err, img){
+						load_image_from_URI(uris[0], (err, img) => {
 							if(err){ return show_resource_load_error_message(); }
 							paste(img);
 						});
@@ -1092,7 +1092,7 @@ async function edit_paste(execCommandFallback){
 }
 
 function image_invert(){
-	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
 		var id = original_ctx.getImageData(0, 0, original_canvas.width, original_canvas.height);
 		for(var i=0; i<id.data.length; i+=4){
 			id.data[i+0] = 255 - id.data[i+0];
@@ -1104,7 +1104,7 @@ function image_invert(){
 }
 
 function clear(){
-	undoable(0, function(){
+	undoable(0, () => {
 		this_ones_a_frame_changer();
 
 		if(transparency){
@@ -1203,7 +1203,7 @@ function detect_transparency(){
 
 function make_monochrome_pattern(lightness){
 
-	var dither_threshold_table = Array.from({length: 64}, function(undef, p){
+	var dither_threshold_table = Array.from({length: 64}, (undef, p) => {
 		var q = p ^ (p >> 3);
 		return (
 			((p & 4) >> 2) | ((q & 4) >> 1) |
@@ -1313,7 +1313,7 @@ function image_attributes(){
 	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
 	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
 	$units.find("[value=" + current_unit + "]").attr({checked: true});
-	$units.on("change", function(){
+	$units.on("change", () => {
 		var new_unit = $units.find(":checked").val();
 		$width.val(width_in_px / unit_sizes_in_px[new_unit]);
 		$height.val(height_in_px / unit_sizes_in_px[new_unit]);
@@ -1332,7 +1332,7 @@ function image_attributes(){
 
 	// Buttons on the right
 
-	$w.$Button("Okay", function(){
+	$w.$Button("Okay", () => {
 		var transparency_option = $transparency.find(":checked").val();
 		var colors_option = $colors.find(":checked").val();
 		var unit = $units.find(":checked").val();
@@ -1363,11 +1363,11 @@ function image_attributes(){
 		image_attributes.$window.close();
 	})[0].focus();
 
-	$w.$Button("Cancel", function(){
+	$w.$Button("Cancel", () => {
 		image_attributes.$window.close();
 	});
 
-	$w.$Button("Default", function(){
+	$w.$Button("Default", () => {
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
@@ -1396,7 +1396,7 @@ function image_flip_and_rotate(){
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='arbitrary'/><input type='number' min='-360' max='360' name='rotate-by-arbitrary-angle' value=''/> Degrees</label>");
 	$rotate_by_angle.find("input").attr({disabled: true});
 
-	$fieldset.find("input").on("change", function(){
+	$fieldset.find("input").on("change", () => {
 		var action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		$rotate_by_angle.find("input").attr({
 			disabled: action !== "rotate-by-angle"
@@ -1420,7 +1420,7 @@ function image_flip_and_rotate(){
 
 	$fieldset.find("label").css({display: "block"});
 
-	$w.$Button("Okay", function(){
+	$w.$Button("Okay", () => {
 		var action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		var angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
 		if(angle_val === "arbitrary"){
@@ -1432,7 +1432,7 @@ function image_flip_and_rotate(){
 		if(isNaN(angle)){
 			var $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
 			$msgw.$main.text("The value specified for Degrees was invalid.");
-			$msgw.$Button("Okay", function(){
+			$msgw.$Button("Okay", () => {
 				$msgw.close();
 			});
 			return;
@@ -1454,7 +1454,7 @@ function image_flip_and_rotate(){
 
 		$w.close();
 	})[0].focus();
-	$w.$Button("Cancel", function(){
+	$w.$Button("Cancel", () => {
 		$w.close();
 	});
 
@@ -1469,7 +1469,7 @@ function image_stretch_and_skew(){
 	var $fieldset_skew = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_skew.append("<legend>Skew</legend><table></table>");
 
-	var $RowInput = function($table, img_src, label_text, default_value, label_unit){
+	var $RowInput = ($table, img_src, label_text, default_value, label_unit) => {
 		var $tr = $(E("tr")).appendTo($table);
 		var $img = $(E("img")).attr({
 			src: "images/transforms/" + img_src + ".png"
@@ -1494,7 +1494,7 @@ function image_stretch_and_skew(){
 	var skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees");
 	var skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees");
 
-	$w.$Button("Okay", function(){
+	$w.$Button("Okay", () => {
 		var xscale = parseFloat(stretch_x.val())/100;
 		var yscale = parseFloat(stretch_y.val())/100;
 		var hskew = parseFloat(skew_x.val())/360*TAU;
@@ -1504,7 +1504,7 @@ function image_stretch_and_skew(){
 		$w.close();
 	})[0].focus();
 
-	$w.$Button("Cancel", function(){
+	$w.$Button("Cancel", () => {
 		$w.close();
 	});
 
@@ -1519,10 +1519,10 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	}
 
 	// TODO: file name + type dialog
-	canvas.toBlob(function(blob){
-		sanity_check_blob(blob, function(){
+	canvas.toBlob(blob => {
+		sanity_check_blob(blob, () => {
 			var file_saver = saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png");
-			file_saver.onwriteend = function(){
+			file_saver.onwriteend = () => {
 				// this won't fire in chrome
 				savedCallbackUnreliable();
 			};
@@ -1554,8 +1554,8 @@ function set_as_wallpaper_centered(c){
 		return window.systemSetAsWallpaperCentered(c);
 	}
 
-	c.toBlob(function(blob){
-		sanity_check_blob(blob, function(){
+	c.toBlob(blob => {
+		sanity_check_blob(blob, () => {
 			saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + " wallpaper.png");
 		});
 	});
@@ -1566,19 +1566,19 @@ function set_as_wallpaper_centered(c){
  * @return {Promise}
  */
 function get_array_buffer_from_canvas(canvas) {
-	return new Promise(function(resolve, reject) {
+	return new Promise((resolve, reject) => {
 		var file_reader = new FileReader();
 
-		file_reader.onloadend = function() {
+		file_reader.onloadend = () => {
 			resolve(file_reader.result);
 		};
 
-		file_reader.onerror = function() {
+		file_reader.onerror = () => {
 			reject(new Error("Failed to read canvas image to array buffer"));
 		};
 
-		canvas.toBlob(function(blob) {
-			sanity_check_blob(blob, function(){
+		canvas.toBlob(blob => {
+			sanity_check_blob(blob, () => {
 				file_reader.readAsArrayBuffer(blob);
 			});
 		});
@@ -1587,8 +1587,8 @@ function get_array_buffer_from_canvas(canvas) {
 
 function save_selection_to_file(){
 	if(selection && selection.canvas){
-		selection.canvas.toBlob(function(blob){
-			sanity_check_blob(blob, function(){
+		selection.canvas.toBlob(blob => {
+			sanity_check_blob(blob, () => {
 				saveAs(blob, "selection.png");
 			});
 		});
@@ -1606,7 +1606,7 @@ function sanity_check_blob(blob, okay_callback){
 			"<a href='https://github.com/1j01/jspaint/issues/118'>Issue #118</a>"
 		);
 		$w.$main.css({maxWidth: "500px"});
-		$w.$Button("OK", function(){
+		$w.$Button("OK", () => {
 			$w.close();
 		});
 		$w.center();

@@ -1,7 +1,7 @@
-(function() {
+(() => {
 	var default_theme = "classic.css";
 	var theme_storage_key = "jspaint theme";
-	var href_for = function(theme) {
+	var href_for = theme => {
 		return "styles/themes/" + theme;
 	};
 	
@@ -15,7 +15,7 @@
 	var iid;
 	function wait_for_theme_loaded(theme, callback) {
 		clearInterval(iid);
-		iid = setInterval(function() {
+		iid = setInterval(() => {
 			var theme_loaded =
 				getComputedStyle(document.documentElement)
 					.getPropertyValue("--theme-loaded")
@@ -34,11 +34,11 @@
 	theme_link.id = "theme-link";
 	document.head.appendChild(theme_link);
 
-	window.get_theme = function() {
+	window.get_theme = () => {
 		return current_theme;
 	};
 
-	window.set_theme = function(theme) {
+	window.set_theme = theme => {
 		current_theme = theme;
 
 		try {
@@ -51,7 +51,7 @@
 			$(window).trigger("resize"); // not exactly, but get dynamic cursor to update its offset
 		});
 
-		wait_for_theme_loaded(theme, function(){
+		wait_for_theme_loaded(theme, () => {
 			$(window).triggerHandler("theme-load");
 		});
 		theme_link.href = href_for(theme);

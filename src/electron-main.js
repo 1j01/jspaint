@@ -50,7 +50,7 @@ const createWindow = () => {
     mainWindow = null;
   });
 
-  const handleRedirect = function(e, url) {
+  const handleRedirect = (e, url) => {
     // check that the URL is not part of the app
     if(url.indexOf("file://") === -1){
       e.preventDefault();

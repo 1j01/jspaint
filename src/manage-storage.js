@@ -20,12 +20,12 @@ function storage_quota_exceeded(){
 		"<p>You can still save the current image with <b>File > Save</b>. " +
 		"You should save frequently, or free up enough space to keep the image safe.</p>"
 	);
-	$w.$Button("View and manage storage", function(){
+	$w.$Button("View and manage storage", () => {
 		$w.close();
 		ignoring_quota_exceeded = false;
 		manage_storage();
 	});
-	$w.$Button("Ignore", function(){
+	$w.$Button("Ignore", () => {
 		$w.close();
 		ignoring_quota_exceeded = true;
 	});
@@ -44,11 +44,11 @@ function manage_storage(){
 	var $message = $(E("p")).appendTo($storage_manager.$main).html(
 		"Any images you've saved to your computer with <b>File > Save</b> will not be affected."
 	);
-	$storage_manager.$Button("Close", function(){
+	$storage_manager.$Button("Close", () => {
 		$storage_manager.close();
 	});
 	
-	var addRow = function(k, imgSrc){
+	var addRow = (k, imgSrc) => {
 		var $tr = $(E("tr")).appendTo($table);
 		
 		var $img = $(E("img")).attr({src: imgSrc});
@@ -61,7 +61,7 @@ function manage_storage(){
 		$(E("td")).append($open_link).appendTo($tr);
 		$(E("td")).append($remove).appendTo($tr);
 		
-		$remove.on("click", function(){
+		$remove.on("click", () => {
 			localStorage.removeItem(k);
 			$tr.remove();
 			if($table.find("tr").length == 0){

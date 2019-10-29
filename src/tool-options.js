@@ -9,19 +9,27 @@ var pencil_size = 1;
 var stroke_size = 1; // lines, curves, shape outlines
 var tool_transparent_mode = false;
 
-var ChooserCanvas = function(
-	url, invert,
-	width, height,
-	sourceX, sourceY, sourceWidth, sourceHeight,
-	destX, destY, destWidth, destHeight
-){
+var ChooserCanvas = (
+    url,
+    invert,
+    width,
+    height,
+    sourceX,
+    sourceY,
+    sourceWidth,
+    sourceHeight,
+    destX,
+    destY,
+    destWidth,
+    destHeight
+) => {
 	var c = new Canvas(width, height);
 	var img = ChooserCanvas.cache[url];
 	if(!img){
 		img = ChooserCanvas.cache[url] = E("img");
 		img.src = url;
 	}
-	var render = function(){
+	var render = () => {
 		c.ctx.drawImage(
 			img,
 			sourceX, sourceY, sourceWidth, sourceHeight,
@@ -43,22 +51,22 @@ var ChooserCanvas = function(
 };
 ChooserCanvas.cache = {};
 
-var $Choose = function(things, display, choose, is_chosen){
+var $Choose = (things, display, choose, is_chosen) => {
 	var $chooser = $(E("div")).addClass("chooser");
-	$chooser.on("update", function(){
+	$chooser.on("update", () => {
 		$chooser.empty();
 		for(var i=0; i<things.length; i++){
-			(function(thing){
+			(thing => {
 				var $option_container = $(E("div")).appendTo($chooser);
 				var $option = $();
-				var choose_thing = function(){
+				var choose_thing = () => {
 					if(is_chosen(thing)){
 						return; // unnecessary optimization
 					}
 					choose(thing);
 					$G.trigger("option-changed");
 				}
-				var update = function(){
+				var update = () => {
 					var selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // TODO: get from a CSS variable
 					$option_container.css({
 						backgroundColor: is_chosen(thing) ? selected_color : ""
@@ -72,10 +80,10 @@ var $Choose = function(things, display, choose, is_chosen){
 				$G.on("option-changed", update);
 				
 				$option_container.on("pointerdown click", choose_thing);
-				$chooser.on("pointerdown", function(){
+				$chooser.on("pointerdown", () => {
 					$option_container.on("pointerenter", choose_thing);
 				});
-				$G.on("pointerup", function(){
+				$G.on("pointerup", () => {
 					$option_container.off("pointerenter", choose_thing);
 				});
 				
@@ -84,14 +92,14 @@ var $Choose = function(things, display, choose, is_chosen){
 	});
 	return $chooser;
 };
-var $ChooseShapeStyle = function(){
+var $ChooseShapeStyle = () => {
 	var $chooser = $Choose(
 		[
 			{stroke: true, fill: false},
 			{stroke: true, fill: true},
 			{stroke: false, fill: true}
 		],
-		function(a, is_chosen){
+		(a, is_chosen) => {
 			var sscanvas = new Canvas(39, 21);
 			var ssctx = sscanvas.ctx;
 			
@@ -117,11 +125,11 @@ var $ChooseShapeStyle = function(){
 			
 			return sscanvas;
 		},
-		function(a){
+		a => {
 			$chooser.stroke = a.stroke;
 			$chooser.fill = a.fill;
 		},
-		function(a){
+		a => {
 			return $chooser.stroke === a.stroke && $chooser.fill === a.fill;
 		}
 	).addClass("choose-shape-style");
@@ -132,49 +140,44 @@ var $ChooseShapeStyle = function(){
 	return $chooser;
 };
 
-var $choose_brush = $Choose(
-	(function(){
-		var brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
-		var circular_brush_sizes = [7, 4, 1];
-		var brush_sizes = [8, 5, 2];
-		var things = [];
-		brush_shapes.forEach((brush_shape)=> {
-			var sizes = brush_shape === "circle" ? circular_brush_sizes : brush_sizes;
-			sizes.forEach((brush_size)=> {
-				things.push({
-					shape: brush_shape,
-					size: brush_size,
-				});
-			});
-		});
-		return things;
-	})(),
-	function(o, is_chosen){
-		var cbcanvas = new Canvas(10, 10);
-		
-		var shape = o.shape;
-		var size = o.size;
-		
-		cbcanvas.ctx.fillStyle =
-		cbcanvas.ctx.strokeStyle =
-			is_chosen ? "#fff" : "#000";
-		
-		render_brush(cbcanvas.ctx, shape, size);
-		
-		return cbcanvas;
-	},
-	function(o){
-		brush_shape = o.shape;
-		brush_size = o.size;
-	},
-	function(o){
-		return brush_shape === o.shape && brush_size === o.size;
-	}
-).addClass("choose-brush");
+var $choose_brush = $Choose((() => {
+    var brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
+    var circular_brush_sizes = [7, 4, 1];
+    var brush_sizes = [8, 5, 2];
+    var things = [];
+    brush_shapes.forEach((brush_shape)=> {
+        var sizes = brush_shape === "circle" ? circular_brush_sizes : brush_sizes;
+        sizes.forEach((brush_size)=> {
+            things.push({
+                shape: brush_shape,
+                size: brush_size,
+            });
+        });
+    });
+    return things;
+})(), (o, is_chosen) => {
+    var cbcanvas = new Canvas(10, 10);
+    
+    var shape = o.shape;
+    var size = o.size;
+    
+    cbcanvas.ctx.fillStyle =
+    cbcanvas.ctx.strokeStyle =
+        is_chosen ? "#fff" : "#000";
+    
+    render_brush(cbcanvas.ctx, shape, size);
+    
+    return cbcanvas;
+}, o => {
+    brush_shape = o.shape;
+    brush_size = o.size;
+}, o => {
+    return brush_shape === o.shape && brush_size === o.size;
+}).addClass("choose-brush");
 
 var $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
-	function(size, is_chosen){
+	(size, is_chosen) => {
 		var cecanvas = new Canvas(39, 16);
 		
 		cecanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
@@ -182,17 +185,17 @@ var $choose_eraser_size = $Choose(
 		
 		return cecanvas;
 	},
-	function(size){
+	size => {
 		eraser_size = size;
 	},
-	function(size){
+	size => {
 		return eraser_size === size;
 	}
 ).addClass("choose-eraser");
 
 var $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
-	function(size, is_chosen){
+	(size, is_chosen) => {
 		var w = 39, h = 12, b = 5;
 		var cscanvas = new Canvas(w, h);
 		var center_y = (h - size) / 2;
@@ -200,10 +203,10 @@ var $choose_stroke_size = $Choose(
 		cscanvas.ctx.fillRect(b, ~~center_y, w - b*2, size);
 		return cscanvas;
 	},
-	function(size){
+	size => {
 		stroke_size = size;
 	},
-	function(size){
+	size => {
 		return stroke_size === size;
 	}
 ).addClass("choose-stroke-size");
@@ -211,7 +214,7 @@ var $choose_stroke_size = $Choose(
 var magnifications = [1, 2, 6, 8, 10];
 var $choose_magnification = $Choose(
 	magnifications,
-	function(scale, is_chosen){
+	(scale, is_chosen) => {
 		var i = magnifications.indexOf(scale);
 		var secret = scale === 10; // 10x is secret
 		var chooser_canvas = ChooserCanvas(
@@ -226,16 +229,16 @@ var $choose_magnification = $Choose(
 		}
 		return chooser_canvas;
 	},
-	function(scale){
+	scale => {
 		set_magnification(scale);
 	},
-	function(scale){
+	scale => {
 		return scale === magnification;
 	}
 ).addClass("choose-magnification")
 .css({position: "relative"}); // positioning context for above `position: "absolute"` canvas
 
-$choose_magnification.on("update", function(){
+$choose_magnification.on("update", () => {
 	$choose_magnification
 		.find(".secret-option")
 		.parent()
@@ -245,7 +248,7 @@ $choose_magnification.on("update", function(){
 var airbrush_sizes = [9, 16, 24];
 var $choose_airbrush_size = $Choose(
 	airbrush_sizes,
-	function(size, is_chosen){
+	(size, is_chosen) => {
 		
 		var image_width = 72; // width of source image
 		var i = airbrush_sizes.indexOf(size); // 0 or 1 or 2
@@ -265,17 +268,17 @@ var $choose_airbrush_size = $Choose(
 			0, 0, w, h // x, y, width, height on created destination canvas
 		);
 	},
-	function(size){
+	size => {
 		airbrush_size = size;
 	},
-	function(size){
+	size => {
 		return size === airbrush_size;
 	}
 ).addClass("choose-airbrush-size");
 
 var $choose_transparent_mode = $Choose(
 	[false, true],
-	function(_tool_transparent_mode, is_chosen){
+	(_tool_transparent_mode, is_chosen) => {
 		var sw = 35, sh = 23; // width, height from source image
 		var b = 2; // margin by which the source image is inset on the destination
 		var theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
@@ -287,10 +290,10 @@ var $choose_transparent_mode = $Choose(
 			b, b, sw, sh // x, y, width, height on created destination canvas
 		);
 	},
-	function(_tool_transparent_mode){
+	_tool_transparent_mode => {
 		tool_transparent_mode = _tool_transparent_mode;
 	},
-	function(_tool_transparent_mode){
+	_tool_transparent_mode => {
 		return _tool_transparent_mode === tool_transparent_mode;
 	}
 ).addClass("choose-transparent-mode");

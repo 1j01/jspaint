@@ -1,4 +1,4 @@
-(function () {
+(() => {
 	var rAF_ID, rotologo, $window, space_phase_key_handler, player, player_placeholder;
 	var vaporwave_active = false;
 
@@ -8,7 +8,7 @@
 		$window = $();
 	}
 
-	var wait_for_youtube_api = function (callback) {
+	var wait_for_youtube_api = callback => {
 		if (typeof YT !== "undefined") {
 			callback();
 		} else {
@@ -18,13 +18,13 @@
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 			// The YouTube API will call this global function when loaded and ready.
-			window.onYouTubeIframeAPIReady = function () {
+			window.onYouTubeIframeAPIReady = () => {
 				callback();
 			};
 		}
 	};
 
-	var stop_vaporwave = function () {
+	var stop_vaporwave = () => {
 		vaporwave_active = false;
 
 		cancelAnimationFrame(rAF_ID);
@@ -43,7 +43,7 @@
 		// bepis pepsi isded pepsi isded
 	};
 
-	var start_vaporwave = function () {
+	var start_vaporwave = () => {
 		vaporwave_active = true;
 
 		rotologo = document.createElement("img");
@@ -66,7 +66,7 @@
 			opacity: "0",
 		});
 
-		var animate = function () {
+		var animate = () => {
 			rAF_ID = requestAnimationFrame(animate);
 
 			$(rotologo).css({
@@ -123,7 +123,7 @@
 		// NOTE: placeholder not a container; the YT API replaces the element passed in the DOM
 		// but keeps inline styles apparently, and maybe other things, I don't know; it's weird
 
-		wait_for_youtube_api(function () {
+		wait_for_youtube_api(() => {
 			player = new YT.Player(player_placeholder, {
 				height: "390",
 				width: "640",
@@ -155,7 +155,7 @@
 		function onPlayerStateChange(event) {
 			if (event.data == YT.PlayerState.PLAYING) {
 				// TODO: pause and resume this timer with the video
-				setTimeout(function(){
+				setTimeout(() => {
 					$(rotologo).css({opacity: 1});
 				}, 14150);
 			}
@@ -174,7 +174,7 @@
 		}
 
 		var is_theoretically_playing = true;
-		space_phase_key_handler = function (e) {
+		space_phase_key_handler = e => {
 			// press space to phase in and out of space phase スペース相 - windows 98 マイクロソフト 『ＷＩＮＴＲＡＰ』 X 将来のオペレーティングシステムサウンド 1998 VAPORWAVE
 			if (e.which === 32) {
 				// TODO: record player SFX
@@ -198,7 +198,7 @@
 		addEventListener("keydown", space_phase_key_handler);
 	};
 
-	var toggle_vaporwave = function () {
+	var toggle_vaporwave = () => {
 		if (vaporwave_active) {
 			stop_vaporwave();
 		} else {
@@ -208,4 +208,4 @@
 
 	addEventListener("keydown", Konami.code(toggle_vaporwave));
 
-}());
+})();

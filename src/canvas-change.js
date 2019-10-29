@@ -1,12 +1,12 @@
 
-(function(){
+(() => {
 	
-	var may_be_changed = function(){
+	var may_be_changed = () => {
 		window.console && console.log("change may have occured");
 		$canvas.triggerHandler("change");
 	};
 	
-	var debug_event = function(e, synthetic){
+	var debug_event = (e, synthetic) => {
 		// var label = synthetic ? "(synthetic)" : "(normal)";
 		// window.console && console.debug && console.debug(e.type, label);
 	};
@@ -15,7 +15,7 @@
 	
 	$canvas.on("user-resized.ugly-hook", may_be_changed);
 	
-	$canvas_area.on("pointerdown.ugly-hook", "*", function(e, synthetic){
+	$canvas_area.on("pointerdown.ugly-hook", "*", (e, synthetic) => {
 		debug_event(e, synthetic);
 		if(synthetic){ return; }
 		
@@ -29,14 +29,14 @@
 		}else{
 			// Changes may occur when you release
 			pointer_operations = [e];
-			var pointermove = function(e, synthetic){
+			var pointermove = (e, synthetic) => {
 				debug_event(e, synthetic);
 				if(synthetic){ return; }
 				
 				pointer_operations.push(e);
 			};
 			$G.on("pointermove.ugly-hook", pointermove);
-			$G.one("pointerup.ugly-hook", function(e, synthetic){
+			$G.one("pointerup.ugly-hook", (e, synthetic) => {
 				debug_event(e, synthetic);
 				if(synthetic){ return; }
 				
@@ -47,8 +47,8 @@
 		}
 	});
 
-	$G.on("session-update.ugly-hook", function(){
+	$G.on("session-update.ugly-hook", () => {
 		setTimeout(may_be_changed);
 	});
 
-}());
+})();

@@ -6,7 +6,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		var tb = this;
 		tb.$el.addClass("textbox");
 		tb.$editor = $(E("textarea")).addClass("textbox-editor");
-		var update = function () {
+		var update = () => {
 			var font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
@@ -63,7 +63,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			tb.$el.append(tb.$editor);
 			tb.$editor[0].focus();
 			tb.$handles = $Handles(tb.$el, tb.$editor[0], { outset: 2 });
-			tb.$el.on("user-resized", function (e, delta_x, delta_y, width, height) {
+			tb.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 				tb.x += delta_x;
 				tb.y += delta_y;
 				tb.width = width;
@@ -71,7 +71,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				tb.position();
 			});
 			var mox, moy;
-			var pointermove = function (e) {
+			var pointermove = e => {
 				var m = e2c(e);
 				tb.x = Math.max(Math.min(m.x - mox, canvas.width), -tb.width);
 				tb.y = Math.max(Math.min(m.y - moy, canvas.height), -tb.height);
@@ -80,7 +80,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 					tb.draw();
 				}
 			};
-			tb.$el.on("pointerdown", function (e) {
+			tb.$el.on("pointerdown", e => {
 				if (e.target instanceof HTMLInputElement ||
 					e.target instanceof HTMLTextAreaElement ||
 					e.target.classList.contains("handle")) {
@@ -93,7 +93,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				mox = ~~(cx);
 				moy = ~~(cy);
 				$G.on("pointermove", pointermove);
-				$G.one("pointerup", function () {
+				$G.one("pointerup", () => {
 					$G.off("pointermove", pointermove);
 				});
 			});
@@ -106,7 +106,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		var tb = this;
 		var text = tb.$editor.val();
 		if (text) {
-			undoable(0, function () {
+			undoable(0, () => {
 				var font = text_tool_font;
 				ctx.fillStyle = font.background;
 				ctx.fillRect(tb.x, tb.y, tb.width, tb.height);

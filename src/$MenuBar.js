@@ -13,22 +13,22 @@ function $MenuBar(menus){
 	$menus.attr("touch-action", "none");
 	var selecting_menus = false;
 	
-	var _html = function(menus_key){
-		return menus_key.replace(/&(.)/, function(m){
+	var _html = menus_key => {
+		return menus_key.replace(/&(.)/, m => {
 			return "<span class='menu-hotkey'>" + m[1] + "</span>";
 		});
 	};
-	var _hotkey = function(menus_key){
+	var _hotkey = menus_key => {
 		return menus_key[menus_key.indexOf("&")+1].toUpperCase();
 	};
 	
-	var close_menus = function(){
+	var close_menus = () => {
 		$menus.find(".menu-button").trigger("release");
 		// Close any rogue floating submenus
 		$(".menu-popup").hide();
 	};
 	
-	var is_disabled = function(item){
+	var is_disabled = item => {
 		if(typeof item.enabled === "function"){
 			return !item.enabled();
 		}else if(typeof item.enabled === "boolean"){
@@ -43,7 +43,7 @@ function $MenuBar(menus){
 		var $menu_popup = $(E("div")).addClass("menu-popup");
 		var $menu_popup_table = $(E("table")).addClass("menu-popup-table").appendTo($menu_popup);
 		
-		$.map(menu_items, function(item){
+		$.map(menu_items, item => {
 			var $row = $(E("tr")).addClass("menu-row").appendTo($menu_popup_table)
 			if(item === $MenuBar.DIVIDER){
 				var $td = $(E("td")).attr({colspan: 4}).appendTo($row);
@@ -62,13 +62,13 @@ function $MenuBar(menus){
 				$label.html(_html(item.item));
 				$shortcut.text(item.shortcut);
 				
-				$menu_popup.on("update", function(){
+				$menu_popup.on("update", () => {
 					$item.attr("disabled", is_disabled(item));
 					if(item.checkbox && item.checkbox.check){
 						$checkbox_area.text(item.checkbox.check() ? "✓" : "");
 					}
 				});
-				$item.on("pointerover", function(){
+				$item.on("pointerover", () => {
 					$menu_popup.triggerHandler("update");
 					$item[0].focus();
 				});
@@ -83,7 +83,7 @@ function $MenuBar(menus){
 					var $submenu_popup = $MenuPopup(item.submenu).appendTo("body");
 					$submenu_popup.hide();
 					
-					var open_submenu = function(){
+					var open_submenu = () => {
 						$submenu_popup.show();
 						$submenu_popup.triggerHandler("update");
 						var rect = $submenu_area[0].getBoundingClientRect();
@@ -94,27 +94,27 @@ function $MenuBar(menus){
 						});
 					};
 					var open_tid, close_tid;
-					$item.add($submenu_popup).on("pointerover", function(e){
+					$item.add($submenu_popup).on("pointerover", e => {
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 					});
-					$item.on("pointerover", function(e){
+					$item.on("pointerover", e => {
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 						open_tid = setTimeout(open_submenu, 200);
 					});
-					$item.add($submenu_popup).on("pointerout", function(){
+					$item.add($submenu_popup).on("pointerout", () => {
 						$menu_popup.closest(".menu-container").find(".menu-button")[0].focus();
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
-						close_tid = setTimeout(function(){
+						close_tid = setTimeout(() => {
 							$submenu_popup.hide();
 						}, 200);
 					});
 					$item.on("click pointerdown", open_submenu);
 				}
 				
-				var item_action = function(){
+				var item_action = () => {
 					if(item.checkbox){
 						if(item.checkbox.toggle){
 							item.checkbox.toggle();
@@ -125,20 +125,20 @@ function $MenuBar(menus){
 						item.action();
 					}
 				};
-				$item.on("pointerup", function(e){
+				$item.on("pointerup", e => {
 					if(e.pointerType === "mouse" && e.button !== 0){
 						return;
 					}
 					item_action();
 				});
-				$item.on("pointerover", function(){
+				$item.on("pointerover", () => {
 					if(item.submenu){
 						$menus.triggerHandler("info", "");
 					}else{
 						$menus.triggerHandler("info", item.description || "");
 					}
 				});
-				$item.on("pointerout", function(){
+				$item.on("pointerout", () => {
 					if($item.is(":visible")){
 						$menus.triggerHandler("info", "");
 						// may not exist for submenu popups
@@ -149,7 +149,7 @@ function $MenuBar(menus){
 					}
 				});
 				
-				$item.on("keydown", function(e){
+				$item.on("keydown", e => {
 					if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey){
 						return;
 					}
@@ -159,7 +159,7 @@ function $MenuBar(menus){
 					}
 				});
 				
-				$menu_popup.on("keydown", function(e){
+				$menu_popup.on("keydown", e => {
 					if(e.ctrlKey || e.shiftKey || e.altKey || e.metaKey){
 						return;
 					}
@@ -175,7 +175,7 @@ function $MenuBar(menus){
 	}
 	
 	var this_click_opened_the_menu = false;
-	$.each(menus, function(menus_key, menu_items){
+	$.each(menus, (menus_key, menu_items) => {
 		var $menu_container = $(E("div")).addClass("menu-container").appendTo($menus);
 		var $menu_button = $(E("div")).addClass("menu-button").appendTo($menu_container);
 		var $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
@@ -199,7 +199,7 @@ function $MenuBar(menus){
 		$menu_popup.hide();
 		$menu_button.html(_html(menus_key));
 		$menu_button.attr("tabIndex", -1)
-		$menu_container.on("keydown", function(e){
+		$menu_container.on("keydown", e => {
 			var $focused_item = $menu_popup.find(".menu-item:focus");
 			switch(e.keyCode){
 				case 37: // Left
@@ -240,7 +240,7 @@ function $MenuBar(menus){
 					break;
 			}
 		});
-		$G.on("keydown", function(e){
+		$G.on("keydown", e => {
 			if(e.ctrlKey || e.metaKey){ // Ctrl or Command held
 				if(e.keyCode !== 17 && e.keyCode !== 91 && e.keyCode !== 93 && e.keyCode !== 224){ // anything but Ctrl or Command pressed
 					close_menus();
@@ -254,7 +254,7 @@ function $MenuBar(menus){
 				}
 			}
 		});
-		$menu_button.on("pointerdown pointerover", function(e){
+		$menu_button.on("pointerdown pointerover", e => {
 			if(e.type === "pointerover" && !selecting_menus){
 				return;
 			}
@@ -275,7 +275,7 @@ function $MenuBar(menus){
 			
 			$menus.triggerHandler("info", "");
 		});
-		$menu_button.on("pointerup", function(e){
+		$menu_button.on("pointerup", e => {
 			if(this_click_opened_the_menu){
 				this_click_opened_the_menu = false;
 				return;
@@ -284,7 +284,7 @@ function $MenuBar(menus){
 				close_menus();
 			}
 		});
-		$menu_button.on("release", function(e){
+		$menu_button.on("release", e => {
 			selecting_menus = false;
 			
 			$menu_button.removeClass("active");
@@ -293,16 +293,16 @@ function $MenuBar(menus){
 			$menus.triggerHandler("default-info");
 		});
 	});
-	$G.on("keypress", function(e){
+	$G.on("keypress", e => {
 		if(e.keyCode === 27){ // Esc
 			close_menus();
 		}
 	});
-	$G.on("blur", function(e){
+	$G.on("blur", e => {
 		// console.log("blur", e.target, document.activeElement);
 		close_menus();
 	});
-	$G.on("pointerdown pointerup", function(e){
+	$G.on("pointerdown pointerup", e => {
 		if($(e.target).closest(".menus, .menu-popup").length === 0){
 			// console.log(e.type, "occurred outside of menus (on ", e.target, ") so...");
 			close_menus();

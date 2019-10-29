@@ -22,13 +22,13 @@ function $FontBox(){
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);
 	
-	var update_font = function(){
+	var update_font = () => {
 		text_tool_font.size = Number($size.val());
 		text_tool_font.family = $family.val();
 		$G.trigger("option-changed");
 	};
 	
-	FontDetective.each(function(font){
+	FontDetective.each(font => {
 		var $option = $(E("option"));
 		$option.val(font).text(font.name);
 		$family.append($option);
@@ -65,7 +65,7 @@ function $FontBox(){
 			backgroundImage: "url(images/text-tools.png)",
 			backgroundPosition: xi*-16 + "px 0px"
 		});
-		$button.on("click", function(){
+		$button.on("click", () => {
 			$button.toggleClass("selected");
 			text_tool_font[thing] = $button.hasClass("selected");
 			update_font();

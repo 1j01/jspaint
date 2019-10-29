@@ -18,10 +18,10 @@ function show_help(){
 	$iframe.css({backgroundColor: "white"});
 	$help_window.center();
 	
-	var parse_object_params = function($object){
+	var parse_object_params = $object => {
 		// parse an $(<object>) to a plain object of key value pairs
 		var object = {};
-		$object.children("param").each(function(i, param){
+		$object.children("param").each((i, param) => {
 			object[param.name] = param.value;
 		});
 		return object;
@@ -29,13 +29,13 @@ function show_help(){
 	
 	var $last_expanded;
 	
-	var $Item = function(text){
+	var $Item = text => {
 		var $item = $(E("div")).addClass("item").text(text);
-		$item.on("mousedown", function(){
+		$item.on("mousedown", () => {
 			$contents.find(".item").removeClass("selected");
 			$item.addClass("selected");
 		});
-		$item.on("click", function(){
+		$item.on("click", () => {
 			var $li = $item.parent();
 			if($li.is(".folder")){
 				if($last_expanded){
@@ -49,13 +49,13 @@ function show_help(){
 	};
 	
 	var $default_item_li = $(E("li")).addClass("page");
-	$default_item_li.append($Item("Welcome to Help").on("click", function(e){
+	$default_item_li.append($Item("Welcome to Help").on("click", e => {
 		$iframe.attr({src: "help/default.html"});
 	}));
 	$contents.append($default_item_li);
 	
-	$.get("help/mspaint.hhc", function(hhc){
-		$($.parseHTML(hhc)).filter("ul").children().each(function(i, li){
+	$.get("help/mspaint.hhc", hhc => {
+		$($.parseHTML(hhc)).filter("ul").children().each((i, li) => {
 			
 			var object = parse_object_params($(li).children("object"));
 			
@@ -66,10 +66,10 @@ function show_help(){
 			var $folder_items_ul = $(E("ul"));
 			$folder_li.append($folder_items_ul);
 			
-			$(li).children("ul").children().each(function(i, li){
+			$(li).children("ul").children().each((i, li) => {
 				var object = parse_object_params($(li).children("object"));
 				var $item_li = $(E("li")).addClass("page");
-				$item_li.append($Item(object.Name).on("click", function(e){
+				$item_li.append($Item(object.Name).on("click", e => {
 					$iframe.attr({src: "help/" + object.Local});
 				}));
 				$folder_items_ul.append($item_li);

@@ -27,7 +27,7 @@ extra_tools = [{
 			this.rendered_size = brush_size;
 			this.rendered_shape = brush_shape;
 		}
-		var draw_brush = function(x, y){
+		var draw_brush = (x, y) => {
 			ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 		};
 		var r = airbrush_size * 2;
@@ -83,7 +83,7 @@ extra_tools = [{
 			this.rendered_size = brush_size;
 			this.rendered_shape = brush_shape;
 		}
-		var draw_brush = function(x, y){
+		var draw_brush = (x, y) => {
 			ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
 		};
 		for(var i = 0; i < 60; i++){

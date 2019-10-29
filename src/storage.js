@@ -1,10 +1,10 @@
 // TODO: remove "ref" cruft from being compiled from CoffeeScript
 // or maybe replace this module with localforage actually
 
-(function() {
+((() => {
   var isArray, localStore, ref, ref1;
 
-  isArray = (ref = Array.isArray) != null ? ref : function(a) {
+  isArray = (ref = Array.isArray) != null ? ref : a => {
     return ("" + a) !== a && {}.toString.call(a) === "[object Array]";
   };
 
@@ -79,4 +79,4 @@
 
   window.storage = localStore;
 
-}).call(this);
+})).call(this);

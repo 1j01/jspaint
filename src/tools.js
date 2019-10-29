@@ -33,7 +33,7 @@ tools = [{
 		// The inverty brush is continuous in space which means
 		// paint(ctx, x, y) will be called for each pixel the pointer moves
 		// and we only need to record individual pointer events to make the polygon
-		var onpointermove = function(e){
+		var onpointermove = e => {
 			var pointer = e2c(e);
 			// Constrain the pointer to the canvas
 			pointer.x = Math.min(canvas.width, pointer.x);
@@ -49,7 +49,7 @@ tools = [{
 			tool.y_max = Math.max(pointer.y, tool.y_max);
 		};
 		$G.on("pointermove", onpointermove);
-		$G.one("pointerup", function(){
+		$G.one("pointerup", () => {
 			$G.off("pointermove", onpointermove);
 		});
 	},
@@ -144,10 +144,10 @@ tools = [{
 			selection = null;
 		}
 		var pointer_has_moved = false;
-		$G.one("pointermove", function(){
+		$G.one("pointermove", () => {
 			pointer_has_moved = true;
 		});
-		$G.one("pointerup", function(){
+		$G.one("pointerup", () => {
 			if(!pointer_has_moved && selection){
 				selection.draw();//?
 				selection.destroy();
@@ -301,7 +301,7 @@ tools = [{
 	},
 	pointerdown: function(){
 		var _this = this;
-		$G.one("pointerup", function(){
+		$G.one("pointerup", () => {
 			_this.$options.css({
 				background: ""
 			});
@@ -535,10 +535,10 @@ tools = [{
 			textbox.destroy();
 		}
 		var pointer_has_moved = false;
-		$G.one("pointermove", function(){
+		$G.one("pointermove", () => {
 			pointer_has_moved = true;
 		});
-		$G.one("pointerup", function(){
+		$G.one("pointerup", () => {
 			if(!pointer_has_moved && textbox){
 				textbox.draw();
 				textbox.destroy();
@@ -716,7 +716,7 @@ tools = [{
 			// @TODO: stop needing this:
 			tool.canvas_base = canvas;
 			
-			undoable(function(){
+			undoable(() => {
 				// @TODO: stop needing this:
 				tool.canvas_base = undos[undos.length-1];
 				

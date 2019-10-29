@@ -1,11 +1,11 @@
 
 function $Handles($container, element, options){
 	var outset = options.outset || 0;
-	var get_offset_left = options.get_offset_left || function(){ return 0; };
-	var get_offset_top = options.get_offset_top || function(){ return 0; };
+	var get_offset_left = options.get_offset_left || (() => { return 0; });
+	var get_offset_top = options.get_offset_top || (() => { return 0; });
 	var size_only = options.size_only || false;
 	var el = element;
-	$container.on("new-element", function(e, element){
+	$container.on("new-element", (e, element) => {
 		el = element;
 	});
 	
@@ -19,7 +19,7 @@ function $Handles($container, element, options){
 		["bottom", "middle"], // ↓
 		["bottom", "right"], // ↘
 		["middle", "right"], // →
-	], function(pos){
+	], pos => {
 		var y_axis = pos[0];
 		var x_axis = pos[1];
 		
@@ -57,7 +57,7 @@ function $Handles($container, element, options){
 			cursor = Cursor([cursor_fname, [16, 16], cursor]);
 			$h.css({cursor: cursor});
 			
-			var drag = function(e){
+			var drag = e => {
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
@@ -91,13 +91,13 @@ function $Handles($container, element, options){
 					height: magnification * height,
 				});
 			};
-			$h.on("pointerdown", function(e){
+			$h.on("pointerdown", e => {
 				dragged = false;
 				if(e.button === 0){
 					$G.on("pointermove", drag);
 					$("body").css({cursor: cursor}).addClass("cursor-bully");
 				}
-				$G.one("pointerup", function(e){
+				$G.one("pointerup", e => {
 					$G.off("pointermove", drag);
 					$("body").css({cursor: ""}).removeClass("cursor-bully");
 					
@@ -108,12 +108,12 @@ function $Handles($container, element, options){
 					$container.trigger("update");
 				});
 			});
-			$h.on("mousedown selectstart", function(e){
+			$h.on("mousedown selectstart", e => {
 				e.preventDefault();
 			});
 		}
 		
-		var update_handle = function(){
+		var update_handle = () => {
 			var rect = el.getBoundingClientRect();
 			var hs = $h.width();
 			if(x_axis === "middle"){

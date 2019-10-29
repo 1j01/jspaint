@@ -7,7 +7,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		sel.$el.addClass("selection");
 		var last_tool_transparent_mode = tool_transparent_mode;
 		var last_background_color = colors.background;
-		this._on_option_changed = function () {
+		this._on_option_changed = () => {
 			if (!sel.source_canvas) {
 				return;
 			}
@@ -68,7 +68,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			}
 			sel.$el.append(sel.canvas);
 			sel.$handles = $Handles(sel.$el, sel.canvas, { outset: 2 });
-			sel.$el.on("user-resized", function (e, delta_x, delta_y, width, height) {
+			sel.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 				sel.x += delta_x;
 				sel.y += delta_y;
 				sel.width = width;
@@ -77,7 +77,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				sel.resize();
 			});
 			var mox, moy;
-			var pointermove = function (e) {
+			var pointermove = e => {
 				var m = e2c(e);
 				sel.x = Math.max(Math.min(m.x - mox, canvas.width), -sel.width);
 				sel.y = Math.max(Math.min(m.y - moy, canvas.height), -sel.height);
@@ -86,7 +86,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					sel.draw();
 				}
 			};
-			sel.canvas_pointerdown = function (e) {
+			sel.canvas_pointerdown = e => {
 				e.preventDefault();
 				var rect = sel.canvas.getBoundingClientRect();
 				var cx = e.clientX - rect.left;
@@ -94,7 +94,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				mox = ~~(cx / rect.width * sel.canvas.width);
 				moy = ~~(cy / rect.height * sel.canvas.height);
 				$G.on("pointermove", pointermove);
-				$G.one("pointerup", function () {
+				$G.one("pointerup", () => {
 					$G.off("pointermove", pointermove);
 				});
 				if (e.shiftKey) {
@@ -258,7 +258,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		var sel = this;
 		sel.instantiate(null, "passive");
 		if (sel.canvas) {
-			undoable(0, function () {
+			undoable(0, () => {
 				ctx.copy(sel.canvas);
 				$canvas_area.trigger("resize");
 			});

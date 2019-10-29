@@ -5,12 +5,12 @@ function $ToolBox(tools, is_extras){
 	var $tool_options = $(E("div")).addClass("tool-options");
 	
 	var showing_tooltips = false;
-	$tools.on("pointerleave", function(){
+	$tools.on("pointerleave", () => {
 		showing_tooltips = false;
 		$status_text.default();
 	});
 	
-	var $buttons = $($.map(tools, function(tool, i){
+	var $buttons = $($.map(tools, (tool, i) => {
 		var $b = $(E("div")).addClass("tool");
 		$b.appendTo($tools);
 		tool.$button = $b;
@@ -36,7 +36,7 @@ function $ToolBox(tools, is_extras){
 		update_css();
 		$G.on("theme-load", update_css);
 		
-		$b.on("click", function(e){
+		$b.on("click", e => {
 			if (e.shiftKey || e.ctrlKey) {
 				select_tool(tool, true);
 				return;
@@ -48,8 +48,8 @@ function $ToolBox(tools, is_extras){
 			}
 		});
 		
-		$b.on("pointerenter", function(){
-			var show_tooltip = function(){
+		$b.on("pointerenter", () => {
+			var show_tooltip = () => {
 				showing_tooltips = true;
 				$status_text.text(tool.description);
 			};
@@ -57,7 +57,7 @@ function $ToolBox(tools, is_extras){
 				show_tooltip();
 			}else{
 				var tid = setTimeout(show_tooltip, 300);
-				$b.on("pointerleave", function(){
+				$b.on("pointerleave", () => {
 					clearTimeout(tid);
 				});
 			}
@@ -67,7 +67,7 @@ function $ToolBox(tools, is_extras){
 	}));
 	
 	var $c = $Component(is_extras ? "Extra Tools" : "Tools", "tall", $tools.add($tool_options));
-	$c.update_selected_tool = function(){
+	$c.update_selected_tool = () => {
 		$buttons.removeClass("selected");
 		selected_tools.forEach((selected_tool)=> {
 			selected_tool.$button.addClass("selected");

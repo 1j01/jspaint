@@ -14,10 +14,10 @@ function $Window($component){
 	
 	$w.attr("touch-action", "none");
 	
-	$w.$x.on("click", function(){
+	$w.$x.on("click", () => {
 		$w.close();
 	});
-	$w.$x.on("mousedown selectstart", function(e){
+	$w.$x.on("mousedown selectstart", e => {
 		e.preventDefault();
 	});
 	
@@ -29,13 +29,13 @@ function $Window($component){
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++
 	});
-	$w.on("pointerdown", function(){
+	$w.on("pointerdown", () => {
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
 	});
 	
-	$w.on("keydown", function(e){
+	$w.on("keydown", e => {
 		if(e.ctrlKey || e.altKey || e.shiftKey || e.metaKey){
 			return;
 		}
@@ -66,12 +66,12 @@ function $Window($component){
 			case 13: // Enter (doesn't actually work in chrome because the button gets clicked immediately)
 				if($focused.is("button")){
 					$focused.addClass("pressed");
-					var release = function(){
+					var release = () => {
 						$focused.removeClass("pressed");
 						$focused.off("focusout", release);
 						$(window).off("keyup", keyup);
 					};
-					var keyup = function(e){
+					var keyup = e => {
 						if(e.keyCode === 32 || e.keyCode === 13){
 							release();
 						}
@@ -97,14 +97,14 @@ function $Window($component){
 		}
 	});
 	
-	$w.applyBounds = function(){
+	$w.applyBounds = () => {
 		$w.css({
 			left: Math.max(0, Math.min(innerWidth - $w.width(), $w[0].getBoundingClientRect().left)),
 			top: Math.max(0, Math.min(innerHeight - $w.height(), $w[0].getBoundingClientRect().top)),
 		});
 	};
 	
-	$w.center = function(){
+	$w.center = () => {
 		$w.css({
 			left: (innerWidth - $w.width()) / 2,
 			top: (innerHeight - $w.height()) / 2,
@@ -116,17 +116,17 @@ function $Window($component){
 	$G.on("resize", $w.applyBounds);
 	
 	var drag_offset_x, drag_offset_y;
-	var drag = function(e){
+	var drag = e => {
 		$w.css({
 			left: e.clientX - drag_offset_x,
 			top: e.clientY - drag_offset_y,
 		});
 	};
 	$w.$titlebar.attr("touch-action", "none");
-	$w.$titlebar.on("mousedown selectstart", function(e){
+	$w.$titlebar.on("mousedown selectstart", e => {
 		e.preventDefault();
 	});
-	$w.$titlebar.on("pointerdown", function(e){
+	$w.$titlebar.on("pointerdown", e => {
 		if($(e.target).is("button")){
 			return;
 		}
@@ -135,22 +135,22 @@ function $Window($component){
 		$G.on("pointermove", drag);
 		$("body").addClass("dragging");
 	});
-	$G.on("pointerup", function(e){
+	$G.on("pointerup", e => {
 		$w.applyBounds();
 		$G.off("pointermove", drag);
 		$("body").removeClass("dragging");
 	});
-	$w.$titlebar.on("dblclick", function(e){
+	$w.$titlebar.on("dblclick", e => {
 		if($component){
 			$component.dock();
 		}
 	});
 	
-	$w.$Button = function(text, handler){
+	$w.$Button = (text, handler) => {
 		var $b = $(E("button"))
 			.appendTo($w.$content)
 			.text(text)
-			.on("click", function(){
+			.on("click", () => {
 				if(handler){
 					handler();
 				}
@@ -158,7 +158,7 @@ function $Window($component){
 			});
 		return $b;
 	};
-	$w.title = function(title){
+	$w.title = title => {
 		if(title){
 			$w.$title.text(title);
 			return $w;
@@ -166,7 +166,7 @@ function $Window($component){
 			return $w.$title.text();
 		}
 	};
-	$w.close = function(){
+	$w.close = () => {
 		var e = $.Event("close");
 		$w.trigger(e);
 		if(e.isDefaultPrevented()){
@@ -195,9 +195,9 @@ function $FormWindow(title){
 	$w.$main = $(E("div")).appendTo($w.$form);
 	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 	
-	$w.$Button = function(label, action){
+	$w.$Button = (label, action) => {
 		var $b = $(E("button")).appendTo($w.$buttons).text(label);
-		$b.on("click", function(e){
+		$b.on("click", e => {
 			// prevent the form from submitting
 			// @TODO: instead, prevent the form's submit event
 			e.preventDefault();
@@ -205,7 +205,7 @@ function $FormWindow(title){
 			action();
 		});
 		
-		$b.on("pointerdown", function(){
+		$b.on("pointerdown", () => {
 			$b[0].focus();
 		});
 		

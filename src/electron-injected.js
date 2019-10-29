@@ -21,7 +21,7 @@ var reg_contents = `Windows Registry Editor Version 5.00
 `; // oof \\\\
 var reg_file_path = path.join(is_dev ? "." : path.dirname(argv[0]), `set-jspaint${is_dev ? "-DEV-MODE" : ""}-as-default-image-editor.reg`);
 if(process.platform == "win32" && !is_dev){
-	fs.writeFile(reg_file_path, reg_contents, function(err){
+	fs.writeFile(reg_file_path, reg_contents, err => {
 		if(err){
 			return console.error(err);
 		}
@@ -36,8 +36,8 @@ if (process.platform == "win32" && argv.length >= 2) {
 	}
 }
 
-window.open_from_file_path = function(file_path, callback, canceled){
-	fs.readFile(file_path, function(err, buffer) {
+window.open_from_file_path = (file_path, callback, canceled) => {
+	fs.readFile(file_path, (err, buffer) => {
 		if(err){
 			return callback(err);
 		}
@@ -51,7 +51,7 @@ window.open_from_file_path = function(file_path, callback, canceled){
 	});
 };
 
-window.save_to_file_path = function(filePath, formatName, savedCallback){
+window.save_to_file_path = (filePath, formatName, savedCallback) => {
 	var mimeType = {
 		"JPEG": "image/jpeg",
 		"PNG": "image/png",
@@ -68,16 +68,16 @@ window.save_to_file_path = function(filePath, formatName, savedCallback){
 	// if(mimeType === "image/gif"){
 	// 	new GIF();
 	// }
-	canvas.toBlob(function(blob){
+	canvas.toBlob(blob => {
 		if(blob.type !== mimeType){
 			return show_error_message("Failed to save as " + formatName + " (your browser doesn't support exporting a canvas as \"" + mimeType + "\")");
 		}
-		sanity_check_blob(blob, function(){
-			blob_to_buffer(blob, function(err, buffer){
+		sanity_check_blob(blob, () => {
+			blob_to_buffer(blob, (err, buffer) => {
 				if(err){
 					return show_error_message("Failed to save! (Technically, failed to convert a Blob to a Buffer.)", err);
 				}
-				fs.writeFile(filePath, buffer, function(err){
+				fs.writeFile(filePath, buffer, err => {
 					if(err){
 						return show_error_message("Failed to save file!", err);
 					}
@@ -90,8 +90,8 @@ window.save_to_file_path = function(filePath, formatName, savedCallback){
 };
 
 // TODO: window.platform.saveCanvasAs etc. or platformIntegration or system or something
-window.systemSaveCanvasAs = function(canvas, suggestedFileName, savedCallback){
-	var getExtension = function(filePathOrName){
+window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
+	var getExtension = filePathOrName => {
 		var splitByDots = filePathOrName.split(/\./g);
 		return splitByDots[splitByDots.length - 1].toLowerCase();
 	};
@@ -116,7 +116,7 @@ window.systemSaveCanvasAs = function(canvas, suggestedFileName, savedCallback){
 	dialog.showSaveDialog({
 		defaultPath: suggestedFileName,
 		filters: filters,
-	}, function(filePath) {
+	}, filePath => {
 		if(!filePath){
 			return; // user canceled
 		}
@@ -125,7 +125,7 @@ window.systemSaveCanvasAs = function(canvas, suggestedFileName, savedCallback){
 			// TODO: Linux/Unix?? you're not supposed to need file extensions
 			return show_error_message("Missing file extension - try adding .png to the file name");
 		}
-		var formatNameMatched = ((filters.find(function(filter){return filter.extensions.indexOf(extension) > -1})) || {}).name;
+		var formatNameMatched = ((filters.find(filter => {return filter.extensions.indexOf(extension) > -1})) || {}).name;
 		if(!formatNameMatched){
 			return show_error_message("Can't save as *." +extension + " - try adding .png to the file name");
 		}
@@ -134,7 +134,7 @@ window.systemSaveCanvasAs = function(canvas, suggestedFileName, savedCallback){
 	});
 };
 
-window.systemSetAsWallpaperCentered = function(c){
+window.systemSetAsWallpaperCentered = c => {
 	var dataPath = require('electron').remote.app.getPath("userData");
 
 	var imgPath = require("path").join(dataPath, "bg.png");
@@ -153,14 +153,14 @@ window.systemSetAsWallpaperCentered = function(c){
 		wallpaperCanvas.ctx.drawImage(c, ~~x, ~~y);
 	}
 
-	get_array_buffer_from_canvas(wallpaperCanvas).then(function(array_buffer){
+	get_array_buffer_from_canvas(wallpaperCanvas).then(array_buffer => {
 		var buffer = new Buffer(array_buffer);
-		fs.writeFile(imgPath, buffer, function(err){
+		fs.writeFile(imgPath, buffer, err => {
 			if(err){
 				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
 			}
 			// {scale: "center"} only supported on macOS; see above workaround
-			wallpaper.set(imgPath, {scale: "center"}, function(err){
+			wallpaper.set(imgPath, {scale: "center"}, err => {
 				if(err){
 					show_error_message("Failed to set as desktop background!", err);
 				}

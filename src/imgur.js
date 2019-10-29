@@ -22,12 +22,12 @@ function show_imgur_uploader(blob){
 		overflow: "auto",
 		marginBottom: "0.5em",
 	});
-	$preview_image.on("load", function(){
+	$preview_image.on("load", () => {
 		$imgur_window.css({width: "auto"});
 		$imgur_window.center();
 	});
 
-	var $upload_button = $imgur_window.$Button("Upload", function(){
+	var $upload_button = $imgur_window.$Button("Upload", () => {
 
 		$preview_image_area.remove();
 		$upload_button.remove();
@@ -43,7 +43,7 @@ function show_imgur_uploader(blob){
 			textAlign: "center",
 		});
 
-		var parseImgurResponseJSON = function(responseJSON){
+		var parseImgurResponseJSON = responseJSON => {
 			try {
 				var response = JSON.parse(responseJSON);
 			} catch(error) {
@@ -86,7 +86,7 @@ function show_imgur_uploader(blob){
 		var req = new XMLHttpRequest();
 
 		if(req.upload){
-			req.upload.addEventListener('progress', function(event){
+			req.upload.addEventListener('progress', event => {
 				if(event.lengthComputable){
 					var progress_value = event.loaded / event.total;
 					var percentage_text = Math.floor(progress_value * 100) + "%";
@@ -96,7 +96,7 @@ function show_imgur_uploader(blob){
 			}, false);
 		}
 
-		req.addEventListener("readystatechange", function() { 
+		req.addEventListener("readystatechange", () => { 
 			if(req.readyState == 4 && req.status == 200){
 				$progress.add($progress_percent).remove();
 
@@ -121,10 +121,10 @@ function show_imgur_uploader(blob){
 				// TODO: a button to copy the URL to the clipboard
 				// (also maybe put the URL in a readonly input)
 				
-				var $delete_button = $imgur_window.$Button("Delete", function(){
+				var $delete_button = $imgur_window.$Button("Delete", () => {
 					var req = new XMLHttpRequest();
 
-					req.addEventListener("readystatechange", function() { 
+					req.addEventListener("readystatechange", () => { 
 						if(req.readyState == 4 && req.status == 200){
 							$delete_button.remove();
 
@@ -150,7 +150,7 @@ function show_imgur_uploader(blob){
 
 					$imgur_status.text("Deleting...");
 				});
-				var $okay_button = $imgur_window.$Button("OK", function(){
+				var $okay_button = $imgur_window.$Button("OK", () => {
 					$imgur_window.close();
 				});
 			}else if(req.readyState == 4){
@@ -170,7 +170,7 @@ function show_imgur_uploader(blob){
 
 		$imgur_status.text("Uploading...");
 	});
-	var $cancel_button = $imgur_window.$Button("Cancel", function(){
+	var $cancel_button = $imgur_window.$Button("Cancel", () => {
 		$imgur_window.close();
 	});
 	$imgur_window.width(300);

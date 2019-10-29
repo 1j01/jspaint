@@ -148,11 +148,11 @@ function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size){
 	stroke_size = stroke_size || 1;
 	if(aliasing){
 		if(stroke_size > 1){
-			bresenham_line(x1, y1, x2, y2, function(x, y){
+			bresenham_line(x1, y1, x2, y2, (x, y) => {
 				ctx.drawImage(line_brush_canvas, ~~(x - line_brush_canvas.width/2), ~~(y - line_brush_canvas.height/2));
 			});
 		}else{
-			bresenham_line(x1, y1, x2, y2, function(x, y){
+			bresenham_line(x1, y1, x2, y2, (x, y) => {
 				ctx.fillRect(x, y, 1, 1);
 			});
 		}
@@ -368,7 +368,7 @@ function apply_image_transformation(fn){
 	if(selection){
 		selection.replace_source_canvas(new_canvas);
 	}else{
-		undoable(0, function(){
+		undoable(0, () => {
 			this_ones_a_frame_changer();
 			
 			ctx.copy(new_canvas);
@@ -379,7 +379,7 @@ function apply_image_transformation(fn){
 }
 
 function flip_horizontal(){
-	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(new_canvas.width, 0);
 		new_ctx.scale(-1, 1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -387,7 +387,7 @@ function flip_horizontal(){
 }
 
 function flip_vertical(){
-	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(0, new_canvas.height);
 		new_ctx.scale(1, -1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -395,7 +395,7 @@ function flip_vertical(){
 }
 
 function rotate(angle){
-	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.save();
 		switch(angle){
 			case TAU / 4:
@@ -427,7 +427,7 @@ function rotate(angle){
 				var bb_max_x = -Infinity;
 				var bb_min_y = +Infinity;
 				var bb_max_y = -Infinity;
-				var corner = function(x01, y01){
+				var corner = (x01, y01) => {
 					var x = Math.sin(-angle)*h*x01 + Math.cos(+angle)*w*y01;
 					var y = Math.sin(+angle)*w*y01 + Math.cos(-angle)*h*x01;
 					bb_min_x = Math.min(bb_min_x, x);
@@ -466,7 +466,7 @@ function rotate(angle){
 }
 
 function stretch_and_skew(xscale, yscale, hsa, vsa){
-	apply_image_transformation(function(original_canvas, original_ctx, new_canvas, new_ctx){
+	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
 		var w = original_canvas.width * xscale;
 		var h = original_canvas.height * yscale;
 		
@@ -474,7 +474,7 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 		var bb_max_x = -Infinity;
 		var bb_min_y = +Infinity;
 		var bb_max_y = -Infinity;
-		var corner = function(x01, y01){
+		var corner = (x01, y01) => {
 			var x = Math.tan(hsa)*h*x01 + w*y01;
 			var y = Math.tan(vsa)*w*y01 + h*x01;
 			bb_min_x = Math.min(bb_min_x, x);
@@ -568,7 +568,7 @@ function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, cont
 	var min_y = Math.min(start_y, control_1_y, control_2_y, end_y);
 	var max_x = Math.max(start_x, control_1_x, control_2_x, end_x);
 	var max_y = Math.max(start_y, control_1_y, control_2_y, end_y);
-	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, function(op_ctx_2d){
+	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, op_ctx_2d => {
 		draw_bezier_curve_without_pattern_support(op_ctx_2d, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size);
 	});
 }
@@ -577,7 +577,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 	var min_y = Math.min(y1, y2);
 	var max_x = Math.max(x1, x2);
 	var max_y = Math.max(y1, y2);
-	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, function(op_ctx_2d){
+	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, op_ctx_2d => {
 		draw_line_without_pattern_support(op_ctx_2d, x1, y1, x2, y2, stroke_size);
 	});
 	// also works:
@@ -616,7 +616,7 @@ function draw_grid(ctx, scale) {
 	ctx.restore();
 }
 
-(function(){
+(() => {
 
 	var tessy = (function initTesselator() {
 		// function called for each vertex of tesselator output
@@ -792,10 +792,10 @@ function draw_grid(ctx, scale) {
 		}
 	}
 
-	window.draw_line_strip = function(ctx, points){
+	window.draw_line_strip = (ctx, points) => {
 		draw_polygon_or_line_strip(ctx, points, true, false, false);
 	};
-	window.draw_polygon = function(ctx, points, stroke, fill){
+	window.draw_polygon = (ctx, points, stroke, fill) => {
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
 	};
 
@@ -900,7 +900,7 @@ function draw_grid(ctx, scale) {
 		}
 	}
 
-	window.copy_contents_within_polygon = function(canvas, points, x_min, y_min, x_max, y_max){
+	window.copy_contents_within_polygon = (canvas, points, x_min, y_min, x_max, y_max) => {
 		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
 		x_max = Math.max(x_max, x_min + 1);
 		y_max = Math.max(y_max, y_min + 1);
@@ -923,7 +923,7 @@ function draw_grid(ctx, scale) {
 	}
 
 	// TODO: maybe shouldn't be external...
-	window.draw_with_swatch = function(ctx, x_min, y_min, x_max, y_max, swatch, callback) {
+	window.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
 		var stroke_margin = ~~(stroke_size * 1.1);
 		
 		x_max = Math.max(x_max, x_min + 1);

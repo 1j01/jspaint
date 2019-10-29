@@ -36,7 +36,7 @@ function $Component(name, orientation, $el){
 		pos_axis = "left";
 	}
 	
-	var dock_to = function($dock_to){
+	var dock_to = $dock_to => {
 		$w.hide();
 		
 		$dock_to.append($c);
@@ -60,13 +60,13 @@ function $Component(name, orientation, $el){
 	var $last_docked_to;
 	var $dock_to;
 	var $ghost;
-	$c.on("pointerdown", function(e){
+	$c.on("pointerdown", e => {
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
 		if(!$c.is(e.target)){ return; }
 		
 		$G.on("pointermove", drag_onpointermove);
-		$G.one("pointerup", function(e){
+		$G.one("pointerup", e => {
 			$G.off("pointermove", drag_onpointermove);
 			drag_onpointerup(e);
 		});
@@ -94,7 +94,7 @@ function $Component(name, orientation, $el){
 		// Prevent text selection anywhere within the component
 		e.preventDefault();
 	});
-	var drag_onpointermove = function(e){
+	var drag_onpointermove = e => {
 		
 		$ghost.css({
 			left: e.clientX + ox,
@@ -135,7 +135,7 @@ function $Component(name, orientation, $el){
 		e.preventDefault();
 	};
 	
-	var drag_onpointerup = function(e){
+	var drag_onpointerup = e => {
 		
 		$w.hide();
 		
@@ -175,23 +175,23 @@ function $Component(name, orientation, $el){
 		$G.trigger("resize");
 	};
 	
-	$c.dock = function(){
+	$c.dock = () => {
 		pos = last_docked_to_pos;
 		dock_to($last_docked_to);
 	};
 	
-	$c.show = function(){
+	$c.show = () => {
 		$($c[0]).show(); // avoid recursion
 		if($.contains($w[0], $c[0])){
 			$w.show();
 		}
 		return $c;
 	};
-	$c.hide = function(){
+	$c.hide = () => {
 		$c.add($w).hide();
 		return $c;
 	};
-	$c.toggle = function(){
+	$c.toggle = () => {
 		if($c.is(":visible")){
 			$c.hide();
 		}else{
@@ -200,7 +200,7 @@ function $Component(name, orientation, $el){
 		return $c;
 	};
 	
-	$w.on("close", function(e){
+	$w.on("close", e => {
 		e.preventDefault();
 		$w.hide();
 	});

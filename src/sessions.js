@@ -1,5 +1,5 @@
 
-(function(){
+(() => {
 
 	var log = function(){
 		if(typeof console !== "undefined"){
@@ -100,12 +100,12 @@
 			var lsid = "image#" + session_id;
 			log("local storage id: " + lsid);
 			// save image to storage
-			var save_image_to_storage = function () {
+			var save_image_to_storage = () => {
 				var save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
 				}
-				storage.set(lsid, canvas.toDataURL("image/png"), function (err) {
+				storage.set(lsid, canvas.toDataURL("image/png"), err => {
 					if (err) {
 						if (err.quotaExceeded) {
 							storage_quota_exceeded();
@@ -118,7 +118,7 @@
 					}
 				});
 			};
-			storage.get(lsid, function (err, uri) {
+			storage.get(lsid, (err, uri) => {
 				if (err) {
 					if (localStorageAvailable) {
 						show_error_message("Failed to retrieve image from local storage:", err);
@@ -129,7 +129,7 @@
 					}
 				}
 				else if (uri) {
-					open_from_URI(uri, function (err) {
+					open_from_URI(uri, err => {
 						if (err) {
 							return show_error_message("Failed to open image from local storage:", err);
 						}
@@ -196,14 +196,14 @@
 			session.id = session_id;
 			file_name = "[Loading " + session.id + "]";
 			update_title();
-			var on_firebase_loaded = function () {
+			var on_firebase_loaded = () => {
 				file_name = "[" + session.id + "]";
 				update_title();
 				session.start();
 			};
 			if (!FireSession.fb_root) {
 				$.getScript("lib/firebase.js")
-					.done(function () {
+					.done(() => {
 						var config = {
 							apiKey: "AIzaSyBgau8Vu9ZE8u_j0rp-Lc044gYTX5O3X9k",
 							authDomain: "jspaint.firebaseapp.com",
@@ -216,7 +216,7 @@
 						FireSession.fb_root = firebase.database().ref("/");
 						on_firebase_loaded();
 					})
-					.fail(function () {
+					.fail(() => {
 						show_error_message("Failed to load Firebase; the document will not load, and changes will not be saved.");
 						file_name = "[Failed to load " + session.id + "]";
 						update_title();
@@ -239,14 +239,14 @@
 				// "<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a> to show interest, and/or subscribe for updates.</p>"
 			);
 			$w.$main.css({ maxWidth: "500px" });
-			$w.$Button("OK", function () {
+			$w.$Button("OK", () => {
 				$w.close();
 			});
 			$w.center();
 			// Wrap the Firebase API because they don't
 			// provide a great way to clean up event listeners
 			session._fb_listeners = [];
-			var _fb_on = function (fb, event_type, callback, error_callback) {
+			var _fb_on = (fb, event_type, callback, error_callback) => {
 				session._fb_listeners.push({ fb, event_type, callback, error_callback });
 				fb.on(event_type, callback, error_callback);
 			};
@@ -267,7 +267,7 @@
 			session.fb_user.set(user);
 			// @TODO: Execute the above two lines when .info/connected
 			// For each existing and new user
-			_fb_on(session.fb_users, "child_added", function (snap) {
+			_fb_on(session.fb_users, "child_added", snap => {
 				// Is this you?
 				if (snap.key === user_id) {
 					// You already have a cursor.
@@ -294,7 +294,7 @@
 					transition: "opacity 0.5s",
 				});
 				// When the cursor data changes
-				_fb_on(fb_other_user, "value", function (snap) {
+				_fb_on(fb_other_user, "value", snap => {
 					other_user = snap.val();
 					// If the user has left
 					if (other_user == null) {
@@ -303,7 +303,7 @@
 					}
 					else {
 						// Draw the cursor
-						var draw_cursor = function () {
+						var draw_cursor = () => {
 							cursor_canvas.width = cursor_image.width;
 							cursor_canvas.height = cursor_image.height;
 							var cctx = cursor_canvas.ctx;
@@ -334,7 +334,7 @@
 			});
 			var previous_uri;
 			var pointer_operations = [];
-			var sync = function () {
+			var sync = () => {
 				var save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
@@ -354,7 +354,7 @@
 			};
 			$canvas.on("change.session-hook", sync);
 			// Any time we change or recieve the image data
-			_fb_on(session.fb_data, "value", function (snap) {
+			_fb_on(session.fb_data, "value", snap => {
 				log("data update");
 				var uri = snap.val();
 				if (uri == null) {
@@ -367,7 +367,7 @@
 					saved = true; // hopefully
 					// Load the new image data
 					var img = new Image();
-					img.onload = function () {
+					img.onload = () => {
 						// Cancel any in-progress pointer operations
 						if (pointer_operations.length) {
 							$G.triggerHandler("pointerup", "cancel");
@@ -389,13 +389,13 @@
 					};
 					img.src = uri;
 				}
-			}, function (error) {
+			}, error => {
 				show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
 				file_name = "[Failed to load " + session.id + "]";
 				update_title();
 			});
 			// Update the cursor status
-			$G.on("pointermove.session-hook", function (e) {
+			$G.on("pointermove.session-hook", e => {
 				var m = e2c(e);
 				session.fb_user.child("cursor").update({
 					x: m.x,
@@ -403,7 +403,7 @@
 					away: false,
 				});
 			});
-			$G.on("blur.session-hook", function (e) {
+			$G.on("blur.session-hook", e => {
 				session.fb_user.child("cursor").update({
 					away: true,
 				});
@@ -438,17 +438,17 @@
 	// Handle the starting, switching, and ending of sessions from the location.hash
 
 	var current_session;
-	var end_current_session = function(){
+	var end_current_session = () => {
 		if(current_session){
 			log("ending current session");
 			current_session.end();
 			current_session = null;
 		}
 	};
-	var generate_session_id = function(){
+	var generate_session_id = () => {
 		return (Math.random()*Math.pow(2, 32)).toString(16).replace(".", "");
 	};
-	var update_session_from_location_hash = function(e){
+	var update_session_from_location_hash = e => {
 		// TODO: should #load: be separate from #session:/#local:,
 		// and be able to load *into* a session, rather than just start one?
 		// well I guess loading into a session wouldn't be that helpful if it makes a new image anyways
@@ -494,18 +494,18 @@
 			end_current_session();
 
 			// TODO: fix loading duplicately, from popstate and hashchange
-			open_from_URI(url, function(err){
+			open_from_URI(url, err => {
 				if(err){
 					show_resource_load_error_message();
 				}
 				// TODO: saved = false;?
 				// NOTE: the following is intended to run regardless of error (as opposed to returning if there's an error)
 				// FIXME: race condition (make the timeout long and try to fix it with a flag or something )
-				setTimeout(function(){
+				setTimeout(() => {
 					// NOTE: this "change" event doesn't *guarantee* there was a change :/
 					// let alone that there was a user interaction with the currently loaded document
 					// that is, it also triggers for session changes, which I'm trying to avoid here
-					$canvas.one("change", function(){
+					$canvas.one("change", () => {
 						if(location.hash === hash_loading_url_from){
 							log("switching to new session from #load: URL because of user interaction");
 							end_current_session();
@@ -526,7 +526,7 @@
 		}
 	};
 
-	$G.on("hashchange popstate", function(e){
+	$G.on("hashchange popstate", e => {
 		log(e.type, location.hash);
 		update_session_from_location_hash();
 	});

@@ -92,7 +92,7 @@ var $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
 var $status_position = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 var $status_size = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 
-$status_text.default = function(){
+$status_text.default = () => {
 	$status_text.text("For Help, click Help Topics on the Help Menu.");
 };
 $status_text.default();
@@ -115,10 +115,10 @@ if(menu_bar_outside_frame){
 	$menu_bar.prependTo($V);
 }
 
-$menu_bar.on("info", function(e, info){
+$menu_bar.on("info", (e, info) => {
 	$status_text.text(info);
 });
-$menu_bar.on("default-info", function(e){
+$menu_bar.on("default-info", e => {
 	$status_text.default();
 });
 
@@ -145,8 +145,8 @@ var $toolbox = $ToolBox(tools);
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 var $colorbox = $ColorBox();
 
-$canvas.on("user-resized", function(e, _x, _y, width, height){
-	undoable(0, function(){
+$canvas.on("user-resized", (e, _x, _y, width, height) => {
+	undoable(0, () => {
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
 		ctx.disable_image_smoothing();
@@ -167,30 +167,30 @@ $canvas.on("user-resized", function(e, _x, _y, width, height){
 		storage.set({
 			width: canvas.width,
 			height: canvas.height,
-		}, function(err){
+		}, err => {
 			// oh well
 		})
 	});
 });
 
-$G.on("resize", function(){ // for browser zoom, and in-app zoom of the canvas
+$G.on("resize", () => { // for browser zoom, and in-app zoom of the canvas
 	update_canvas_rect();
 	update_disable_aa();
 });
-$canvas_area.on("scroll", function() {
+$canvas_area.on("scroll", () => {
 	update_canvas_rect();
 });
-$canvas_area.on("resize", function() {
+$canvas_area.on("resize", () => {
 	update_magnified_canvas_size();
 });
 
-$("body").on("dragover dragenter", function(e){
+$("body").on("dragover dragenter", e => {
 	var dt = e.originalEvent.dataTransfer;
 	var has_files = Array.from(dt.types).indexOf("Files") !== -1;
 	if(has_files){
 		e.preventDefault();
 	}
-}).on("drop", function(e){
+}).on("drop", e => {
 	if(e.isDefaultPrevented()){
 		return;
 	}
@@ -205,10 +205,10 @@ $("body").on("dragover dragenter", function(e){
 });
 
 var keys = {};
-$G.on("keyup", function(e){
+$G.on("keyup", e => {
 	delete keys[e.keyCode];
 });
-$G.on("keydown", function(e){
+$G.on("keydown", e => {
 	if(e.isDefaultPrevented()){
 		return;
 	}
@@ -229,7 +229,7 @@ $G.on("keydown", function(e){
 	// probably best to use a library at this point!
 	
 	if(selection){
-		var nudge_selection = function(delta_x, delta_y){
+		var nudge_selection = (delta_x, delta_y) => {
 			selection.x += delta_x;
 			selection.y += delta_y;
 			selection.position();
@@ -361,7 +361,7 @@ $G.on("keydown", function(e){
 		e.preventDefault();
 	}
 });
-$G.on("cut copy paste", function(e){
+$G.on("cut copy paste", e => {
 	if(e.isDefaultPrevented()){
 		return;
 	}
@@ -380,7 +380,7 @@ $G.on("cut copy paste", function(e){
 
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
-			var do_sync_clipboard_copy_or_cut = function() {
+			var do_sync_clipboard_copy_or_cut = () => {
 				// works only for pasting within a jspaint instance
 				var data_url = selection.canvas.toDataURL();
 				cd.setData("text/x-data-uri; type=image/png", data_url);
@@ -404,12 +404,12 @@ $G.on("cut copy paste", function(e){
 			}
 		}
 	}else if(e.type === "paste"){
-		$.each(cd.items, function(i, item){
+		$.each(cd.items, (i, item) => {
 			if(item.type.match(/^text\/(?:x-data-uri|uri-list|plain)|URL$/)){
-				item.getAsString(function(text){
+				item.getAsString(text => {
 					var uris = get_URIs(text);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], function(err, img){
+						load_image_from_URI(uris[0], (err, img) => {
 							if(err){ return show_resource_load_error_message(); }
 							paste(img);
 						});
@@ -434,7 +434,7 @@ set_magnification(1);
 storage.get({
 	width: default_canvas_width,
 	height: default_canvas_height,
-}, function(err, values){
+}, (err, values) => {
 	if(err){return;}
 	my_canvas_width = values.width;
 	my_canvas_height = values.height;
@@ -449,7 +449,7 @@ storage.get({
 });
 
 if(window.document_file_path_to_open){
-	open_from_file_path(document_file_path_to_open, function(err){
+	open_from_file_path(document_file_path_to_open, err => {
 		if(err){
 			return show_error_message("Failed to open file " + document_file_path_to_open, err);
 		}
@@ -520,7 +520,7 @@ function tool_go(selected_tool, event_name){
 	if(selected_tool.paint){
 		if(selected_tool.continuous === "space"){
 			var ham = brush_shape.match(/diagonal/) ? brosandham_line : bresenham_line;
-			ham(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, function(x, y){
+			ham(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 				selected_tool.paint(ctx, x, y);
 			});
 		}else{
@@ -582,11 +582,11 @@ function canvas_pointer_move(e){
 	});
 	pointer_previous = pointer;
 }
-$canvas.on("pointermove", function(e){
+$canvas.on("pointermove", e => {
 	pointer = e2c(e);
 	$status_position.text(pointer.x + "," + pointer.y);
 });
-$canvas.on("pointerenter", function(e){
+$canvas.on("pointerenter", e => {
 	pointer_over_canvas = true;
 
 	update_helper_layer();
@@ -596,7 +596,7 @@ $canvas.on("pointerenter", function(e){
 		update_helper_layer_on_pointermove_active = true;
 	}
 });
-$canvas.on("pointerleave", function(e){
+$canvas.on("pointerleave", e => {
 	pointer_over_canvas = false;
 
 	$status_position.text("");
@@ -612,7 +612,7 @@ $canvas.on("pointerleave", function(e){
 var pointer_active = false;
 var pointer_over_canvas = false;
 var update_helper_layer_on_pointermove_active = false;
-$canvas.on("pointerdown", function(e){
+$canvas.on("pointerdown", e => {
 	update_canvas_rect();
 
 	// Quick Undo when there are multiple pointers (i.e. for touch)
@@ -626,7 +626,7 @@ $canvas.on("pointerdown", function(e){
 	pointer_active = true;
 	pointer_type = e.pointerType;
 	pointer_buttons = e.buttons;
-	$G.one("pointerup", function(e){
+	$G.one("pointerup", e => {
 		pointer_active = false;
 		update_helper_layer();
 		
@@ -649,7 +649,7 @@ $canvas.on("pointerdown", function(e){
 	shift = e.shiftKey;
 	pointer_start = pointer_previous = pointer = e2c(e);
 
-	var pointerdown_action = function(){
+	var pointerdown_action = () => {
 	// TODO for multitools: don't register event listeners for each tool
 	selected_tools.forEach((selected_tool)=> {
 
@@ -661,7 +661,7 @@ $canvas.on("pointerdown", function(e){
 		if(selected_tool.continuous === "time"){
 			var iid = setInterval(()=> { tool_go(selected_tool); }, 5);
 		}
-		$G.one("pointerup", function(e, canceling){
+		$G.one("pointerup", (e, canceling) => {
 			button = undefined;
 			reverse = false;
 			if(canceling){
@@ -692,7 +692,7 @@ $canvas.on("pointerdown", function(e){
 	update_helper_layer();
 });
 
-$canvas_area.on("pointerdown", function(e){
+$canvas_area.on("pointerdown", e => {
 	if(e.button === 0){
 		if($canvas_area.is(e.target)){
 			if(selection){
@@ -706,7 +706,7 @@ $app
 .add($toolbox)
 // .add($toolbox2)
 .add($colorbox)
-.on("mousedown selectstart contextmenu", function(e){
+.on("mousedown selectstart contextmenu", e => {
 	if(e.isDefaultPrevented()){
 		return;
 	}
@@ -729,6 +729,6 @@ $app
 });
 
 // Stop drawing (or dragging or whatver) if you Alt+Tab or whatever
-$G.on("blur", function(e){
+$G.on("blur", e => {
 	$G.triggerHandler("pointerup");
 });

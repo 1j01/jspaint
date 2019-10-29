@@ -5,7 +5,7 @@ function $Swatch(color){
 	var swatch_canvas = new Canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
 	
-	$b.update = function(_color){
+	$b.update = _color => {
 		color = _color;
 		if(color instanceof CanvasPattern){
 			$b.addClass("pattern");
@@ -13,7 +13,7 @@ function $Swatch(color){
 			$b.removeClass("pattern");
 		}
 		
-		requestAnimationFrame(function(){
+		requestAnimationFrame(() => {
 			swatch_canvas.width = $b.innerWidth();
 			swatch_canvas.height = $b.innerHeight();
 			// I don't think disable_image_smoothing() is needed here
@@ -24,7 +24,7 @@ function $Swatch(color){
 			}
 		});
 	};
-	$G.on("theme-load", function(){
+	$G.on("theme-load", () => {
 		$b.update(color);
 	});
 	$b.update(color);
@@ -58,13 +58,13 @@ function $ColorBox(){
 		bottom: 3,
 	});
 	
-	$G.on("option-changed", function(){
+	$G.on("option-changed", () => {
 		$foreground_color.update(colors.foreground);
 		$background_color.update(colors.background);
 		$current_colors.update(colors.ternary);
 	});
 	
-	$current_colors.on("pointerdown", function(){
+	$current_colors.on("pointerdown", () => {
 		var new_bg = colors.foreground;
 		colors.foreground = colors.background;
 		colors.background = new_bg;
@@ -77,9 +77,9 @@ function $ColorBox(){
 	// TODO: base this on the element sizes
 	var width_per_button = 16;
 	
-	var build_palette = function(){
+	var build_palette = () => {
 		$palette.empty();
-		$.each(palette, function(i, color){
+		$.each(palette, (i, color) => {
 			var $b = $Swatch(color).addClass("color-button");
 			$b.appendTo($palette);
 			
@@ -90,7 +90,7 @@ function $ColorBox(){
 			
 			var $i = $(E("input")).attr({type: "color"});
 			$i.appendTo($b);
-			$i.on("change", function(){
+			$i.on("change", () => {
 				color = $i.val();
 				$b.update(color);
 				set_color(color);
@@ -102,7 +102,7 @@ function $ColorBox(){
 			$i.val(rgb2hex(color));
 			
 			var button, ctrl;
-			$b.on("pointerdown", function(e){
+			$b.on("pointerdown", e => {
 				// TODO: how should the ternary color, and selection cropping, work on macOS?
 				ctrl = e.ctrlKey;
 				button = e.button;
@@ -119,11 +119,11 @@ function $ColorBox(){
 				}
 				
 				$i.prop("enabled", true);
-				setTimeout(function(){
+				setTimeout(() => {
 					$i.prop("enabled", false);
 				}, 400);
 			});
-			$i.on("click", function(e, synthetic){
+			$i.on("click", (e, synthetic) => {
 				if(!synthetic){
 					e.preventDefault();
 				}
@@ -156,9 +156,9 @@ function $ColorBox(){
 	
 	var $c = $Component("Colors", "wide", $cb);
 	
-	$c.edit_last_color = function(){
+	$c.edit_last_color = () => {
 		// Edit the last color cell that's been selected as the foreground color.
-		create_and_trigger_input({type: "color"}, function(input){
+		create_and_trigger_input({type: "color"}, input => {
 			// console.log(input, input.value);
 			$last_fg_color_button.trigger({type: "pointerdown", ctrlKey: false, button: 0});
 			$last_fg_color_button.find("input").val(input.value).triggerHandler("change");
