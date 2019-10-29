@@ -1,10 +1,7 @@
 (()=>{
 
-// the initial seed
-let seed = 6;
+let seed = 4; // chosen later
 
-// in order to work 'seed' must NOT be undefined,
-// so in any case, you HAVE to provide a seed
 const seededRandom = (max = 1, min = 0) => {
 	seed = (seed * 9301 + 49297) % 233280;
 	const rnd = seed / 233280;
