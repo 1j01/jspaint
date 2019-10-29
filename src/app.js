@@ -25,8 +25,8 @@ var monochrome_palette = make_monochrome_palette();
 
 var stroke_color;
 var fill_color;
-var stroke_color_k = 0;
-var fill_color_k = 0;
+var stroke_color_k = "foreground"; // enum of "foreground", "background", "ternary"
+var fill_color_k = "background"; // enum of "foreground", "background", "ternary"
 
 var selected_tool = tools[6];
 var selected_tools = [selected_tool];
