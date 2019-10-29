@@ -1528,9 +1528,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	});
 }
 
-function set_as_wallpaper_tiled(c){
-	c = c || canvas;
-
+function set_as_wallpaper_tiled(c = canvas) {
 	// Note: we can't just poke in a different set_as_wallpaper_tiled function, because it's stored by reference in menus.js
 	if(window.systemSetAsWallpaperTiled){
 		return window.systemSetAsWallpaperTiled(c);
@@ -1544,9 +1542,7 @@ function set_as_wallpaper_tiled(c){
 	set_as_wallpaper_centered(wallpaperCanvas);
 }
 
-function set_as_wallpaper_centered(c){
-	c = c || canvas;
-	
+function set_as_wallpaper_centered(c = canvas) {
 	// Note: we can't just poke in a different set_as_wallpaper_centered function, because it's stored by reference in menus.js
 	if(window.systemSetAsWallpaperCentered){
 		return window.systemSetAsWallpaperCentered(c);

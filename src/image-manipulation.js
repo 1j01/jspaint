@@ -144,8 +144,7 @@ function update_brush_for_drawing_lines(stroke_size){
 	}
 }
 
-function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size){
-	stroke_size = stroke_size || 1;
+function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1) {
 	if(aliasing){
 		if(stroke_size > 1){
 			bresenham_line(x1, y1, x2, y2, (x, y) => {
