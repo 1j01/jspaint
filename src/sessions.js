@@ -442,9 +442,7 @@
 			current_session = null;
 		}
 	};
-	var generate_session_id = () => {
-		return (Math.random()*Math.pow(2, 32)).toString(16).replace(".", "");
-	};
+	var generate_session_id = () => (Math.random()*Math.pow(2, 32)).toString(16).replace(".", "");
 	var update_session_from_location_hash = e => {
 		// TODO: should #load: be separate from #session:/#local:,
 		// and be able to load *into* a session, rather than just start one?

@@ -4,9 +4,7 @@
 ((() => {
 	var isArray, localStore;
 
-	isArray = Array.isArray || (a => {
-		return ("" + a) !== a && {}.toString.call(a) === "[object Array]";
-	});
+	isArray = Array.isArray || (a => ("" + a) !== a && {}.toString.call(a) === "[object Array]");
 
 	localStore = {
 		get: function(key, callback) {

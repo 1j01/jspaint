@@ -1,9 +1,7 @@
 (() => {
 	var default_theme = "classic.css";
 	var theme_storage_key = "jspaint theme";
-	var href_for = theme => {
-		return "styles/themes/" + theme;
-	};
+	var href_for = theme => "styles/themes/" + theme;
 	
 	var current_theme;
 	try {
@@ -34,9 +32,7 @@
 	theme_link.id = "theme-link";
 	document.head.appendChild(theme_link);
 
-	window.get_theme = () => {
-		return current_theme;
-	};
+	window.get_theme = () => current_theme;
 
 	window.set_theme = theme => {
 		current_theme = theme;

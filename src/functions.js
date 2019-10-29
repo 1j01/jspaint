@@ -281,7 +281,7 @@ function open_from_Image(img, callback, canceled){
 function get_URIs(text) {
 	// parse text/uri-list
 	// get lines, discarding comments
-	var lines = text.split(/[\n\r]+/).filter(line => {return line[0] !== "#" && line});
+	var lines = text.split(/[\n\r]+/).filter(line => line[0] !== "#" && line);
 	// discard text with too many lines (likely pasted HTML or something) - may want to revisit this
 	if (lines.length > 15) {
 		return [];
@@ -300,9 +300,7 @@ function get_URIs(text) {
 function load_image_from_URI(uri, callback){
 	// TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
 	fetch(uri)
-	.then(response => {
-		return response.blob();
-	}).then(blob => {
+	.then(response => response.blob()).then(blob => {
 		var img = new Image();
 		img.crossOrigin = "Anonymous";
 		img.onload = function(){

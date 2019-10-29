@@ -13,14 +13,8 @@ function $MenuBar(menus){
 	$menus.attr("touch-action", "none");
 	var selecting_menus = false;
 	
-	var _html = menus_key => {
-		return menus_key.replace(/&(.)/, m => {
-			return "<span class='menu-hotkey'>" + m[1] + "</span>";
-		});
-	};
-	var _hotkey = menus_key => {
-		return menus_key[menus_key.indexOf("&")+1].toUpperCase();
-	};
+	var _html = menus_key => menus_key.replace(/&(.)/, m => "<span class='menu-hotkey'>" + m[1] + "</span>");
+	var _hotkey = menus_key => menus_key[menus_key.indexOf("&")+1].toUpperCase();
 	
 	var close_menus = () => {
 		$menus.find(".menu-button").trigger("release");

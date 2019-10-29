@@ -109,18 +109,14 @@ var menus = {
 		{
 			item: "&Undo",
 			shortcut: "Ctrl+Z",
-			enabled: ()=> {
-				return undos.length >= 1;
-			},
+			enabled: () => undos.length >= 1,
 			action: ()=> { undo(); },
 			description: "Undoes the last action.",
 		},
 		{
 			item: "&Repeat",
 			shortcut: "F4",
-			enabled: ()=> {
-				return redos.length >= 1;
-			},
+			enabled: () => redos.length >= 1,
 			action: ()=> { redo(); },
 			description: "Redoes the previously undone action.",
 		},
@@ -128,10 +124,8 @@ var menus = {
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
-			enabled: ()=> {
-				// support cutting selected text with this menu item as well (e.g. in the text tool text box)
-				return !!selection;
-			},
+			enabled: () => // support cutting selected text with this menu item as well (e.g. in the text tool text box)
+            !!selection,
 			action: ()=> {
 				edit_cut(true);
 			},
@@ -140,10 +134,8 @@ var menus = {
 		{
 			item: "&Copy",
 			shortcut: "Ctrl+C",
-			enabled: ()=> {
-				// support copying selected text with this menu item as well (e.g. in the text tool text box)
-				return !!selection;
-			},
+			enabled: () => // support copying selected text with this menu item as well (e.g. in the text tool text box)
+            !!selection,
 			action: ()=> {
 				edit_copy(true);
 			},
@@ -152,10 +144,8 @@ var menus = {
 		{
 			item: "&Paste",
 			shortcut: "Ctrl+V",
-			enabled: ()=> {
-				// TODO: disable if nothing in clipboard or wrong type (if we can access that)
-				return true;
-			},
+			enabled: () => // TODO: disable if nothing in clipboard or wrong type (if we can access that)
+            true,
 			action: ()=> {
 				edit_paste(true);
 			},
@@ -164,7 +154,7 @@ var menus = {
 		{
 			item: "C&lear Selection",
 			shortcut: "Del",
-			enabled: ()=> { return !!selection; },
+			enabled: () => !!selection,
 			action: ()=> { delete_selection(); },
 			description: "Deletes the selection.",
 		},
@@ -177,7 +167,7 @@ var menus = {
 		$MenuBar.DIVIDER,
 		{
 			item: "C&opy To...",
-			enabled: ()=> { return !!selection; },
+			enabled: () => !!selection,
 			action: ()=> { save_selection_to_file(); },
 			description: "Copies the selection to a file.",
 		},
@@ -195,9 +185,7 @@ var menus = {
 				toggle: ()=> {
 					$toolbox.toggle();
 				},
-				check: ()=> {
-					return $toolbox.is(":visible");
-				},
+				check: () => $toolbox.is(":visible"),
 			},
 			description: "Shows or hides the tool box.",
 		},
@@ -208,9 +196,7 @@ var menus = {
 				toggle: ()=> {
 					$colorbox.toggle();
 				},
-				check: ()=> {
-					return $colorbox.is(":visible");
-				},
+				check: () => $colorbox.is(":visible"),
 			},
 			description: "Shows or hides the color box.",
 		},
@@ -220,9 +206,7 @@ var menus = {
 				toggle: ()=> {
 					$status_area.toggle();
 				},
-				check: ()=> {
-					return $status_area.is(":visible");
-				},
+				check: () => $status_area.is(":visible"),
 			},
 			description: "Shows or hides the status bar.",
 		},
@@ -244,9 +228,7 @@ var menus = {
 					// eslint-disable-next-line no-empty
 					}catch(e){}
 				},
-				check: ()=> {
-					return $extras_menu_button.is(":visible");
-				}
+				check: () => $extras_menu_button.is(":visible")
 			},
 			description: "Shows or hides the Extras menu.",
 		},
@@ -258,9 +240,7 @@ var menus = {
 					item: "&Normal Size",
 					shorcut: "Ctrl+PgUp",
 					description: "Zooms the picture to 100%.",
-					enabled: ()=> {
-						return magnification !== 1;
-					},
+					enabled: () => magnification !== 1,
 					action: ()=> {
 						set_magnification(1);
 					},
@@ -269,9 +249,7 @@ var menus = {
 					item: "&Large Size",
 					shorcut: "Ctrl+PgDn",
 					description: "Zooms the picture to 400%.",
-					enabled: ()=> {
-						return magnification !== 4;
-					},
+					enabled: () => magnification !== 4,
 					action: ()=> {
 						set_magnification(4);
 					},
@@ -285,14 +263,10 @@ var menus = {
 				{
 					item: "Show &Grid",
 					shorcut: "Ctrl+G",
-					enabled: ()=> {
-						return magnification >= 4;
-					},
+					enabled: () => magnification >= 4,
 					checkbox: {
 						toggle: toggle_grid,
-						check: ()=> {
-							return show_grid;
-						},
+						check: () => show_grid,
 					},
 					description: "Shows or hides the grid.",
 				},
@@ -350,9 +324,7 @@ var menus = {
 					tool_transparent_mode = !tool_transparent_mode;
 					$G.trigger("option-changed");
 				},
-				check: ()=> {
-					return !tool_transparent_mode;
-				},
+				check: () => !tool_transparent_mode,
 			},
 			description: "Makes the current selection either opaque or transparent.",
 		}
@@ -495,9 +467,7 @@ var menus = {
 					action: ()=> {
 						set_theme("classic.css");
 					},
-					enabled: ()=> {
-						return get_theme() != "classic.css"
-					},
+					enabled: () => get_theme() != "classic.css",
 					description: "Makes JS Paint look like MS Paint from Windows 98.",
 				},
 				{
@@ -505,9 +475,7 @@ var menus = {
 					action: ()=> {
 						set_theme("modern.css");
 					},
-					enabled: ()=> {
-						return get_theme() != "modern.css"
-					},
+					enabled: () => get_theme() != "modern.css",
 					description: "Makes JS Paint look a bit more modern.",
 				},
 			]

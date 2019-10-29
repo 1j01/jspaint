@@ -1,8 +1,8 @@
 
 function $Handles($container, element, options){
 	var outset = options.outset || 0;
-	var get_offset_left = options.get_offset_left || (() => { return 0; });
-	var get_offset_top = options.get_offset_top || (() => { return 0; });
+	var get_offset_left = options.get_offset_left || (() => 0);
+	var get_offset_top = options.get_offset_top || (() => 0);
 	var size_only = options.size_only || false;
 	var el = element;
 	$container.on("new-element", (e, element) => {

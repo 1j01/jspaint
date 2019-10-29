@@ -129,9 +129,7 @@ var $ChooseShapeStyle = () => {
 			$chooser.stroke = a.stroke;
 			$chooser.fill = a.fill;
 		},
-		a => {
-			return $chooser.stroke === a.stroke && $chooser.fill === a.fill;
-		}
+		a => $chooser.stroke === a.stroke && $chooser.fill === a.fill
 	).addClass("choose-shape-style");
 	
 	$chooser.fill = false;
@@ -171,9 +169,7 @@ var $choose_brush = $Choose((() => {
 }, o => {
     brush_shape = o.shape;
     brush_size = o.size;
-}, o => {
-    return brush_shape === o.shape && brush_size === o.size;
-}).addClass("choose-brush");
+}, o => brush_shape === o.shape && brush_size === o.size).addClass("choose-brush");
 
 var $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
@@ -188,9 +184,7 @@ var $choose_eraser_size = $Choose(
 	size => {
 		eraser_size = size;
 	},
-	size => {
-		return eraser_size === size;
-	}
+	size => eraser_size === size
 ).addClass("choose-eraser");
 
 var $choose_stroke_size = $Choose(
@@ -206,9 +200,7 @@ var $choose_stroke_size = $Choose(
 	size => {
 		stroke_size = size;
 	},
-	size => {
-		return stroke_size === size;
-	}
+	size => stroke_size === size
 ).addClass("choose-stroke-size");
 
 var magnifications = [1, 2, 6, 8, 10];
@@ -232,9 +224,7 @@ var $choose_magnification = $Choose(
 	scale => {
 		set_magnification(scale);
 	},
-	scale => {
-		return scale === magnification;
-	}
+	scale => scale === magnification
 ).addClass("choose-magnification")
 .css({position: "relative"}); // positioning context for above `position: "absolute"` canvas
 
@@ -271,9 +261,7 @@ var $choose_airbrush_size = $Choose(
 	size => {
 		airbrush_size = size;
 	},
-	size => {
-		return size === airbrush_size;
-	}
+	size => size === airbrush_size
 ).addClass("choose-airbrush-size");
 
 var $choose_transparent_mode = $Choose(
@@ -293,8 +281,6 @@ var $choose_transparent_mode = $Choose(
 	_tool_transparent_mode => {
 		tool_transparent_mode = _tool_transparent_mode;
 	},
-	_tool_transparent_mode => {
-		return _tool_transparent_mode === tool_transparent_mode;
-	}
+	_tool_transparent_mode => _tool_transparent_mode === tool_transparent_mode
 ).addClass("choose-transparent-mode");
 
