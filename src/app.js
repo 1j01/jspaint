@@ -456,10 +456,10 @@ let pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
 let reverse;
 let ctrl;
 var button;
-function e2c(e){
+function e2c({clientX, clientY}) {
 	const rect = canvas_bounding_client_rect;
-	const cx = e.clientX - rect.left;
-	const cy = e.clientY - rect.top;
+	const cx = clientX - rect.left;
+	const cy = clientY - rect.top;
 	return {
 		x: ~~(cx / rect.width * canvas.width),
 		y: ~~(cy / rect.height * canvas.height),
