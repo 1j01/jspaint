@@ -141,7 +141,7 @@ function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
 				metrics = ctx.measureText(test);
 			}
 			if (words[i] != test) {
-				words.splice(i + 1, 0,  words[i].substr(test.length));
+				words.splice(i + 1, 0, words[i].substr(test.length));
 				words[i] = test;
 			}
 			

@@ -6,13 +6,13 @@ let seed = 6;
 // in order to work 'seed' must NOT be undefined,
 // so in any case, you HAVE to provide a seed
 const seededRandom = (max, min)=> {
-    max = max || 1;
-    min = min || 0;
+	max = max || 1;
+	min = min || 0;
 
-    seed = (seed * 9301 + 49297) % 233280;
-    const rnd = seed / 233280;
+	seed = (seed * 9301 + 49297) % 233280;
+	const rnd = seed / 233280;
 
-    return min + rnd * (max - min);
+	return min + rnd * (max - min);
 };
 
 window.stopSimulatingGestures && window.stopSimulatingGestures();

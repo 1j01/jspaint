@@ -10,18 +10,18 @@ let stroke_size = 1; // lines, curves, shape outlines
 let tool_transparent_mode = false;
 
 const ChooserCanvas = (
-    url,
-    invert,
-    width,
-    height,
-    sourceX,
-    sourceY,
-    sourceWidth,
-    sourceHeight,
-    destX,
-    destY,
-    destWidth,
-    destHeight
+	url,
+	invert,
+	width,
+	height,
+	sourceX,
+	sourceY,
+	sourceWidth,
+	sourceHeight,
+	destX,
+	destY,
+	destWidth,
+	destHeight
 ) => {
 	const c = make_canvas(width, height);
 	let img = ChooserCanvas.cache[url];
@@ -138,38 +138,41 @@ const $ChooseShapeStyle = () => {
 	return $chooser;
 };
 
-const $choose_brush = $Choose((() => {
-    const brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
-    const circular_brush_sizes = [7, 4, 1];
-    const brush_sizes = [8, 5, 2];
-    const things = [];
-    brush_shapes.forEach((brush_shape)=> {
-        const sizes = brush_shape === "circle" ? circular_brush_sizes : brush_sizes;
-        sizes.forEach((brush_size)=> {
-            things.push({
-                shape: brush_shape,
-                size: brush_size,
-            });
-        });
-    });
-    return things;
-})(), (o, is_chosen) => {
-    const cbcanvas = make_canvas(10, 10);
-    
-    const shape = o.shape;
-    const size = o.size;
-    
-    cbcanvas.ctx.fillStyle =
-    cbcanvas.ctx.strokeStyle =
-        is_chosen ? "#fff" : "#000";
-    
-    render_brush(cbcanvas.ctx, shape, size);
-    
-    return cbcanvas;
-}, o => {
-    brush_shape = o.shape;
-    brush_size = o.size;
-}, o => brush_shape === o.shape && brush_size === o.size).addClass("choose-brush");
+const $choose_brush = $Choose(
+	(() => {
+		const brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
+		const circular_brush_sizes = [7, 4, 1];
+		const brush_sizes = [8, 5, 2];
+		const things = [];
+		brush_shapes.forEach((brush_shape)=> {
+			const sizes = brush_shape === "circle" ? circular_brush_sizes : brush_sizes;
+			sizes.forEach((brush_size)=> {
+				things.push({
+					shape: brush_shape,
+					size: brush_size,
+				});
+			});
+		});
+		return things;
+	})(),
+	(o, is_chosen) => {
+		const cbcanvas = make_canvas(10, 10);
+		
+		const shape = o.shape;
+		const size = o.size;
+		
+		cbcanvas.ctx.fillStyle =
+		cbcanvas.ctx.strokeStyle =
+			is_chosen ? "#fff" : "#000";
+		
+		render_brush(cbcanvas.ctx, shape, size);
+		
+		return cbcanvas;
+	}, o => {
+		brush_shape = o.shape;
+		brush_size = o.size;
+	}, o => brush_shape === o.shape && brush_size === o.size
+).addClass("choose-brush");
 
 const $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
