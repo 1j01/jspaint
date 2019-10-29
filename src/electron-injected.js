@@ -125,7 +125,7 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 			// TODO: Linux/Unix?? you're not supposed to need file extensions
 			return show_error_message("Missing file extension - try adding .png to the file name");
 		}
-		var formatNameMatched = ((filters.find(filter => filter.extensions.indexOf(extension) > -1)) || {}).name;
+		var formatNameMatched = ((filters.find(filter => filter.extensions.includes(extension))) || {}).name;
 		if(!formatNameMatched){
 			return show_error_message("Can't save as *." +extension + " - try adding .png to the file name");
 		}

@@ -52,7 +52,7 @@ const createWindow = () => {
 
   const handleRedirect = (e, url) => {
     // check that the URL is not part of the app
-    if(url.indexOf("file://") === -1){
+    if(!url.includes("file://")){
       e.preventDefault();
       require('electron').shell.openExternal(url);
     }

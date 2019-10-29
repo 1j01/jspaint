@@ -963,7 +963,7 @@ const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
 function try_exec_command(commandId) {
 	if (document.queryCommandEnabled(commandId)) { // not a reliable source for whether it'll work, if I recall
 		document.execCommand(commandId);
-		if (navigator.userAgent.indexOf("Firefox") === -1 || commandId === "paste") {
+		if (!navigator.userAgent.includes("Firefox") || commandId === "paste") {
 			return show_error_message(`That ${commandId} probably didn't work. ${browserRecommendationForClipboardAccess}`);
 		}
 	} else {

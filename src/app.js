@@ -186,7 +186,7 @@ $canvas_area.on("resize", () => {
 
 $("body").on("dragover dragenter", e => {
 	var dt = e.originalEvent.dataTransfer;
-	var has_files = Array.from(dt.types).indexOf("Files") !== -1;
+	var has_files = Array.from(dt.types).includes("Files");
 	if(has_files){
 		e.preventDefault();
 	}
@@ -195,7 +195,7 @@ $("body").on("dragover dragenter", e => {
 		return;
 	}
 	var dt = e.originalEvent.dataTransfer;
-	var has_files = Array.from(dt.types).indexOf("Files") !== -1;
+	var has_files = Array.from(dt.types).includes("Files");
 	if(has_files){
 		e.preventDefault();
 		if(dt && dt.files && dt.files.length){
