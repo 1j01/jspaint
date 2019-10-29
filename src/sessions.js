@@ -1,9 +1,9 @@
 
 (() => {
 
-	var log = function(){
-		if(typeof console !== "undefined"){
-			console.log.apply(console, arguments);
+	var log = (...args)=> {
+		if(window.console){
+			console.log(...args);
 		}
 	};
 

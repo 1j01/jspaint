@@ -1,16 +1,16 @@
-// TODO: remove "ref" cruft from being compiled from CoffeeScript
+// TODO: remove cruft from being compiled from CoffeeScript
 // or maybe replace this module with localforage actually
 
 ((() => {
-  var isArray, localStore, ref, ref1;
+  var isArray, localStore;
 
-  isArray = (ref = Array.isArray) != null ? ref : a => {
+  isArray = Array.isArray || (a => {
     return ("" + a) !== a && {}.toString.call(a) === "[object Array]";
-  };
+  });
 
   localStore = {
     get: function(key, callback) {
-      var defaultValue, err, i, item, len, obj, ref1, ref2;
+      var defaultValue, err, i, item, len, obj, keys, keys_obj;
       try {
         if (typeof key === "string") {
           item = localStorage.getItem(key);
@@ -19,19 +19,19 @@
           }
         } else {
           obj = {};
-          if (isArray(arguments[0])) {
-            ref1 = arguments[0];
-            for (i = 0, len = ref1.length; i < len; i++) {
-              key = ref1[i];
+          if (isArray(key)) {
+            keys = key;
+            for (i = 0, len = keys.length; i < len; i++) {
+              key = keys[i];
               item = localStorage.getItem(key);
               if (item) {
                 obj[key] = JSON.parse(item);
               }
             }
           } else {
-            ref2 = arguments[0];
-            for (key in ref2) {
-              defaultValue = ref2[key];
+            keys_obj = key;
+            for (key in keys_obj) {
+              defaultValue = keys_obj[key];
               item = localStorage.getItem(key);
               if (item) {
                 obj[key] = JSON.parse(item);
@@ -49,18 +49,16 @@
       callback(null, obj);
     },
     set: function(key, value, callback) {
-      var err, obj1, to_set;
+      var err, to_set;
       to_set = {};
-      if (typeof arguments[0] === "string") {
-        to_set = (
-          obj1 = {},
-          obj1["" + key] = value,
-          obj1
-        );
-      } else if (isArray(arguments[0])) {
+      if (typeof key === "string") {
+        to_set = {
+          [key]: value
+        };
+      } else if (isArray(key)) {
         throw new TypeError("Cannot set an array of keys (to what?)");
       } else {
-        to_set = arguments[0], callback = arguments[1];
+        to_set = key, callback = value;
       }
       for (key in to_set) {
         value = to_set[key];
