@@ -424,7 +424,7 @@ function rotate(angle){
 				new_ctx.translate(0, new_canvas.height);
 				new_ctx.rotate(TAU / -4);
 				break;
-			default:
+			default: {
 				const w = original_canvas.width;
 				const h = original_canvas.height;
 				
@@ -464,6 +464,7 @@ function rotate(angle){
 				new_ctx.rotate(angle);
 				new_ctx.drawImage(original_canvas, 0, 0, w, h);
 				break;
+			}
 		}
 		new_ctx.drawImage(original_canvas, 0, 0);
 		new_ctx.restore();

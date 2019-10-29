@@ -80,7 +80,8 @@ function $Window($component){
 					$(window).on("keyup", keyup);
 				}
 				break;
-			case 9: // Tab
+			case 9: { // Tab
+				
 				// TODO: handle shift+tab as well (note: early return at top of function)
 				// wrap around when tabbing through controls in a window
 				// TODO: other element types? also [tabIndex]
@@ -91,6 +92,7 @@ function $Window($component){
 					$controls[0].focus();
 				}
 				break;
+			}
 			case 27: // Esc
 				$w.close();
 				break;
