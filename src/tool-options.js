@@ -99,7 +99,7 @@ const $ChooseShapeStyle = () => {
 			{stroke: true, fill: true},
 			{stroke: false, fill: true}
 		],
-		(a, is_chosen) => {
+		({stroke, fill}, is_chosen) => {
 			const sscanvas = make_canvas(39, 21);
 			const ssctx = sscanvas.ctx;
 			
@@ -107,7 +107,7 @@ const $ChooseShapeStyle = () => {
 			let b = 5;
 			ssctx.fillStyle = is_chosen ? "#fff" : "#000";
 			
-			if(a.stroke){
+			if(stroke){
 				// just using a solid rectangle for the stroke
 				// so as not to have to deal with the pixel grid with strokes
 				ssctx.fillRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
@@ -117,7 +117,7 @@ const $ChooseShapeStyle = () => {
 			b += 1;
 			ssctx.fillStyle = "#777";
 			
-			if(a.fill){
+			if(fill){
 				ssctx.fillRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
 			}else{
 				ssctx.clearRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
@@ -125,11 +125,11 @@ const $ChooseShapeStyle = () => {
 			
 			return sscanvas;
 		},
-		a => {
-			$chooser.stroke = a.stroke;
-			$chooser.fill = a.fill;
+		({stroke, fill}) => {
+			$chooser.stroke = stroke;
+			$chooser.fill = fill;
 		},
-		a => $chooser.stroke === a.stroke && $chooser.fill === a.fill
+		({stroke, fill}) => $chooser.stroke === stroke && $chooser.fill === fill
 	).addClass("choose-shape-style");
 	
 	$chooser.fill = false;
@@ -168,10 +168,10 @@ const $choose_brush = $Choose(
 		render_brush(cbcanvas.ctx, shape, size);
 		
 		return cbcanvas;
-	}, o => {
-		brush_shape = o.shape;
-		brush_size = o.size;
-	}, o => brush_shape === o.shape && brush_size === o.size
+	}, ({shape, size}) => {
+		brush_shape = shape;
+		brush_size = size;
+	}, ({shape, size}) => brush_shape === shape && brush_size === size
 ).addClass("choose-brush");
 
 const $choose_eraser_size = $Choose(
