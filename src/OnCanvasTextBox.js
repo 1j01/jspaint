@@ -124,14 +124,14 @@ class OnCanvasTextBox extends OnCanvasObject {
 }
 
 function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
-    const original_lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
+	const original_lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
 
-    for (const original_line of original_lines) {
-        const words = original_line.split(' ');
-        let line = '';
-        let test;
-        let metrics;
-        for (let i = 0; i < words.length; i++) {
+	for (const original_line of original_lines) {
+		const words = original_line.split(' ');
+		let line = '';
+		let test;
+		let metrics;
+		for (let i = 0; i < words.length; i++) {
 			test = words[i];
 			metrics = ctx.measureText(test);
 			// TODO: break words on hyphens and perhaps other characters
@@ -156,7 +156,7 @@ function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
 				line = test;
 			}
 		}
-        ctx.fillText(line, x, y);
-        y += lineHeight;
-    }
+		ctx.fillText(line, x, y);
+		y += lineHeight;
+	}
 }

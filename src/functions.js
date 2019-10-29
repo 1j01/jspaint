@@ -340,13 +340,13 @@ function open_from_File(file, callback, canceled){
 	});
 }
 function get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense){
-    for (const file of files) {
-        if(file.type.match(/^image/)){
+	for (const file of files) {
+		if(file.type.match(/^image/)){
 			return file;
 		}
-    }
+	}
 
-    if(files.length > 1){
+	if(files.length > 1){
 		show_error_message("None of the files " + user_input_method_verb_past_tense + " appear to be images.");
 	}else{
 		show_error_message("File " + user_input_method_verb_past_tense + " does not appear to be an image.");

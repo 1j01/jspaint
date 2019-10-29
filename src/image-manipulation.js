@@ -242,25 +242,25 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	}
 	
 	while(stack.length){
-        let new_pos;
-        let x;
-        let y;
-        var pixel_pos;
-        let reach_left;
-        let reach_right;
-        new_pos = stack.pop();
-        x = new_pos[0];
-        y = new_pos[1];
+		let new_pos;
+		let x;
+		let y;
+		var pixel_pos;
+		let reach_left;
+		let reach_right;
+		new_pos = stack.pop();
+		x = new_pos[0];
+		y = new_pos[1];
 
-        pixel_pos = (y*c_width + x) * 4;
-        while(matches_start_color(pixel_pos)){
+		pixel_pos = (y*c_width + x) * 4;
+		while(matches_start_color(pixel_pos)){
 			y--;
 			pixel_pos = (y*c_width + x) * 4;
 		}
-        reach_left = false;
-        reach_right = false;
-        // eslint-disable-next-line no-constant-condition
-        while(true){
+		reach_left = false;
+		reach_right = false;
+		// eslint-disable-next-line no-constant-condition
+		while(true){
 			y++;
 			pixel_pos = (y*c_width + x) * 4;
 			
@@ -294,7 +294,7 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 
 			pixel_pos += c_width * 4;
 		}
-    }
+	}
 	ctx.putImageData(id, 0, 0);
 
 	function matches_start_color(pixel_pos){
@@ -715,8 +715,8 @@ function draw_grid(ctx, scale) {
 		const vertexSrc = [
 			'attribute vec4 position;',
 			'void main() {',
-			'    /* already in normalized coordinates, so just pass through */',
-			'    gl_Position = position;',
+			'	/* already in normalized coordinates, so just pass through */',
+			'	gl_Position = position;',
 			'}'
 		].join('');
 		const vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -734,7 +734,7 @@ function draw_grid(ctx, scale) {
 		const fragmentSrc = [
 			'precision mediump float;',
 			'void main() {',
-			'    gl_FragColor = vec4(0, 0, 0, 1);',
+			'	gl_FragColor = vec4(0, 0, 0, 1);',
 			'}'
 		].join('');
 		const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
