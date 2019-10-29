@@ -366,25 +366,25 @@
 					// Load the new image data
 					const img = new Image();
 					img.onload = () => {
-						// Cancel any in-progress pointer operations
-						if (pointer_operations.length) {
+                        // Cancel any in-progress pointer operations
+                        if (pointer_operations.length) {
 							$G.triggerHandler("pointerup", "cancel");
 						}
-						// Write the image data to the canvas
-						ctx.copy(img);
-						$canvas_area.trigger("resize");
-						// (detect_transparency() here would not be ideal
-						// Perhaps a better way of syncing transparency
-						// and other options will be established)
-						// Playback recorded in-progress pointer operations
-						window.console && console.log("playback", pointer_operations);
-						for (let i = 0; i < pointer_operations.length; i++) {
-							const e = pointer_operations[i];
-							// Trigger the event at each place it is listened for
-							$canvas.triggerHandler(e, ["synthetic"]);
-							$G.triggerHandler(e, ["synthetic"]);
-						}
-					};
+                        // Write the image data to the canvas
+                        ctx.copy(img);
+                        $canvas_area.trigger("resize");
+                        // (detect_transparency() here would not be ideal
+                        // Perhaps a better way of syncing transparency
+                        // and other options will be established)
+                        // Playback recorded in-progress pointer operations
+                        window.console && console.log("playback", pointer_operations);
+
+                        for (const e of pointer_operations) {
+                            // Trigger the event at each place it is listened for
+                            $canvas.triggerHandler(e, ["synthetic"]);
+                            $G.triggerHandler(e, ["synthetic"]);
+                        }
+                    };
 					img.src = uri;
 				}
 			}, error => {
