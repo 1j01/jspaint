@@ -196,7 +196,7 @@ tools = [{
 
 		const len = 4 / magnification;
 		const w = 1;
-		// const hairline_width = 1/scaled_by_amount;
+		// const hairline_width = 1/scale;
 
 		ctx.save();
 		ctx.translate(x, y);
@@ -223,9 +223,12 @@ tools = [{
 		ctx.restore();
 	},
 	// TODO: might be above? but would need to do things differently wrt drawImage and inverting and the grid
-	drawPreviewUnderGrid: function(ctx, x, y, scaled_by_amount, grid_visible) {
+	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(typeof this.x1 === "undefined"){return;}
+
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
 
 		// draw selection border
 
@@ -239,7 +242,7 @@ tools = [{
 		var rect_w = ~~(this.x2 - this.x1);
 		var rect_h = ~~(this.y2 - this.y1);
 		// ctx.save();
-		// ctx.translate(1/scaled_by_amount/2, 1/scaled_by_amount/2);
+		// ctx.translate(1/scale/2, 1/scale/2);
 		// this.drawDots(ctx, rect_x, rect_y, rect_w - 1, 0); // top
 		// this.drawDots(ctx, rect_x, rect_y + 1, 0, rect_h - 2); // left
 		// this.drawDots(ctx, rect_x + rect_w, rect_y, 0, rect_h); // right
