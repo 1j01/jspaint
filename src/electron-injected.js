@@ -4,22 +4,22 @@
 // so libraries don't get confused and export to `module` instead of the `window`
 global.module = undefined;
 
-var is_dev = require("electron-is-dev");
-var dialog = require("electron").remote.dialog;
-var fs = require("fs");
-var path = require("path");
-var argv = require("electron").remote.process.argv;
+const is_dev = require("electron-is-dev");
+const dialog = require("electron").remote.dialog;
+const fs = require("fs");
+const path = require("path");
+const argv = require("electron").remote.process.argv;
 
 // TODO: let user apply this setting somewhere in the UI
 // (and ideally revert it)
 // (Note: it would be better to use REG.EXE to apply the change, rather than a .reg file)
 // This registry modification changes the right click > Edit option for images in Windows Explorer
-var reg_contents = `Windows Registry Editor Version 5.00
+const reg_contents = `Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\\SystemFileAssociations\\image\\shell\\edit\\command]
 @="\\"${argv[0].replace(/\\/g, "\\\\")}\\" ${is_dev ? "\\\".\\\" " : ""}\\"%1\\""
 `; // oof \\\\
-var reg_file_path = path.join(is_dev ? "." : path.dirname(argv[0]), `set-jspaint${is_dev ? "-DEV-MODE" : ""}-as-default-image-editor.reg`);
+const reg_file_path = path.join(is_dev ? "." : path.dirname(argv[0]), `set-jspaint${is_dev ? "-DEV-MODE" : ""}-as-default-image-editor.reg`);
 if(process.platform == "win32" && !is_dev){
 	fs.writeFile(reg_file_path, reg_contents, err => {
 		if(err){
@@ -41,7 +41,7 @@ window.open_from_file_path = (file_path, callback, canceled) => {
 		if(err){
 			return callback(err);
 		}
-		var file = new File([new Uint8Array(buffer)], path.basename(file_path));
+		const file = new File([new Uint8Array(buffer)], path.basename(file_path));
 		// can't set file.path directly, but we can do this:
 		Object.defineProperty(file, 'path', {
 			value: file_path,
@@ -52,7 +52,7 @@ window.open_from_file_path = (file_path, callback, canceled) => {
 };
 
 window.save_to_file_path = (filePath, formatName, savedCallback) => {
-	var mimeType = {
+	const mimeType = {
 		"JPEG": "image/jpeg",
 		"PNG": "image/png",
 		"GIF": "image/gif",
@@ -81,7 +81,7 @@ window.save_to_file_path = (filePath, formatName, savedCallback) => {
 					if(err){
 						return show_error_message("Failed to save file!", err);
 					}
-					var fileName = path.basename(filePath);
+					const fileName = path.basename(filePath);
 					savedCallback(filePath, fileName);
 				});
 			});
@@ -91,13 +91,13 @@ window.save_to_file_path = (filePath, formatName, savedCallback) => {
 
 // TODO: window.platform.saveCanvasAs etc. or platformIntegration or system or something
 window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
-	var getExtension = filePathOrName => {
-		var splitByDots = filePathOrName.split(/\./g);
+	const getExtension = filePathOrName => {
+		const splitByDots = filePathOrName.split(/\./g);
 		return splitByDots[splitByDots.length - 1].toLowerCase();
 	};
 	// TODO: default to existing extension, except it would be awkward to rearrange the list...
 	// var suggestedExtension = getExtension(suggestedFileName);
-	var filters = [
+	const filters = [
 		// top one is considered default by electron
 		{name: "PNG", extensions: ["png"]},
 		// TODO: enable more formats
@@ -120,12 +120,12 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 		if(!filePath){
 			return; // user canceled
 		}
-		var extension = getExtension(filePath);
+		const extension = getExtension(filePath);
 		if(!extension){
 			// TODO: Linux/Unix?? you're not supposed to need file extensions
 			return show_error_message("Missing file extension - try adding .png to the file name");
 		}
-		var formatNameMatched = ((filters.find(filter => filter.extensions.includes(extension))) || {}).name;
+		const formatNameMatched = ((filters.find(filter => filter.extensions.includes(extension))) || {}).name;
 		if(!formatNameMatched){
 			return show_error_message("Can't save as *." +extension + " - try adding .png to the file name");
 		}
@@ -135,26 +135,26 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 };
 
 window.systemSetAsWallpaperCentered = c => {
-	var dataPath = require('electron').remote.app.getPath("userData");
+	const dataPath = require('electron').remote.app.getPath("userData");
 
-	var imgPath = require("path").join(dataPath, "bg.png");
-	var fs = require("fs");
-	var wallpaper = require("wallpaper");
+	const imgPath = require("path").join(dataPath, "bg.png");
+	const fs = require("fs");
+	const wallpaper = require("wallpaper");
 
 	// TODO: implement centered option for Windows and Linux in https://www.npmjs.com/package/wallpaper
 	// currently it's only supported on macOS
-	var wallpaperCanvas;
+	let wallpaperCanvas;
 	if(process.platform === "darwin"){
 		wallpaperCanvas = c;
 	}else{
 		wallpaperCanvas = new Canvas(screen.width, screen.height);
-		var x = (screen.width - c.width) / 2;
-		var y = (screen.height - c.height) / 2;
+		const x = (screen.width - c.width) / 2;
+		const y = (screen.height - c.height) / 2;
 		wallpaperCanvas.ctx.drawImage(c, ~~x, ~~y);
 	}
 
 	get_array_buffer_from_canvas(wallpaperCanvas).then(array_buffer => {
-		var buffer = new Buffer(array_buffer);
+		const buffer = new Buffer(array_buffer);
 		fs.writeFile(imgPath, buffer, err => {
 			if(err){
 				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);

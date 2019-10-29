@@ -1,16 +1,16 @@
 
 function $Handles($container, element, options){
-	var outset = options.outset || 0;
-	var get_offset_left = options.get_offset_left || (() => 0);
-	var get_offset_top = options.get_offset_top || (() => 0);
-	var size_only = options.size_only || false;
-	var el = element;
+	const outset = options.outset || 0;
+	const get_offset_left = options.get_offset_left || (() => 0);
+	const get_offset_top = options.get_offset_top || (() => 0);
+	const size_only = options.size_only || false;
+	let el = element;
 	$container.on("new-element", (e, element) => {
 		el = element;
 	});
 	
-	var $resize_ghost = $(E("div")).addClass("resize-ghost");
-	var handles = $.map([
+	const $resize_ghost = $(E("div")).addClass("resize-ghost");
+	const handles = $.map([
 		["top", "right"], // ↗
 		["top", "middle"], // ↑
 		["top", "left"], // ↖
@@ -20,23 +20,23 @@ function $Handles($container, element, options){
 		["bottom", "right"], // ↘
 		["middle", "right"], // →
 	], pos => {
-		var y_axis = pos[0];
-		var x_axis = pos[1];
+		const y_axis = pos[0];
+		const x_axis = pos[1];
 		
-		var $h = $(E("div")).addClass("handle");
+		const $h = $(E("div")).addClass("handle");
 		$h.appendTo($container);
 		
 		$h.attr("touch-action", "none");
 		
-		var delta_x = 0, delta_y = 0, width, height;
-		var dragged = false;
-		var resizes_height = y_axis !== "middle";
-		var resizes_width = x_axis !== "middle";
+		let delta_x = 0, delta_y = 0, width, height;
+		let dragged = false;
+		const resizes_height = y_axis !== "middle";
+		const resizes_width = x_axis !== "middle";
 		if(size_only && (y_axis === "top" || x_axis === "left")){
 			$h.addClass("useless-handle");
 		}else{
 			
-			var cursor_fname;
+			let cursor_fname;
 			if((x_axis === "left" && y_axis === "top") || (x_axis === "right" && y_axis === "bottom")){
 				cursor_fname = "nwse-resize";
 			}else if((x_axis === "right" && y_axis === "top") || (x_axis === "left" && y_axis === "bottom")){
@@ -47,7 +47,7 @@ function $Handles($container, element, options){
 				cursor_fname = "ns-resize";
 			}
 			
-			var cursor = "";
+			let cursor = "";
 			if(y_axis === "top"){ cursor += "n"; }
 			if(y_axis === "bottom"){ cursor += "s"; }
 			if(x_axis === "left"){ cursor += "w"; }
@@ -57,13 +57,13 @@ function $Handles($container, element, options){
 			cursor = Cursor([cursor_fname, [16, 16], cursor]);
 			$h.css({cursor: cursor});
 			
-			var drag = e => {
+			const drag = e => {
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
-				var rect = el.getBoundingClientRect();
-				var mx = e.clientX / magnification;
-				var my = e.clientY / magnification;
+				const rect = el.getBoundingClientRect();
+				const mx = e.clientX / magnification;
+				const my = e.clientY / magnification;
 				// TODO: decide between Math.floor/Math.ceil/Math.round for these values
 				if(x_axis === "right"){
 					delta_x = 0;
@@ -113,9 +113,9 @@ function $Handles($container, element, options){
 			});
 		}
 		
-		var update_handle = () => {
-			var rect = el.getBoundingClientRect();
-			var hs = $h.width();
+		const update_handle = () => {
+			const rect = el.getBoundingClientRect();
+			const hs = $h.width();
 			if(x_axis === "middle"){
 				$h.css({ left: get_offset_left() + (rect.width - hs) / 2 });
 			}else if(x_axis === "left"){

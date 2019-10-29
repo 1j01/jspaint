@@ -1,15 +1,15 @@
 
-var brush_canvas = new Canvas();
-var brush_ctx = brush_canvas.ctx;
-var brush_shape = "circle";
-var brush_size = 4;
-var eraser_size = 8;
-var airbrush_size = 9;
-var pencil_size = 1;
-var stroke_size = 1; // lines, curves, shape outlines
-var tool_transparent_mode = false;
+const brush_canvas = new Canvas();
+const brush_ctx = brush_canvas.ctx;
+let brush_shape = "circle";
+let brush_size = 4;
+let eraser_size = 8;
+let airbrush_size = 9;
+const pencil_size = 1;
+let stroke_size = 1; // lines, curves, shape outlines
+let tool_transparent_mode = false;
 
-var ChooserCanvas = (
+const ChooserCanvas = (
     url,
     invert,
     width,
@@ -23,21 +23,21 @@ var ChooserCanvas = (
     destWidth,
     destHeight
 ) => {
-	var c = new Canvas(width, height);
-	var img = ChooserCanvas.cache[url];
+	const c = new Canvas(width, height);
+	let img = ChooserCanvas.cache[url];
 	if(!img){
 		img = ChooserCanvas.cache[url] = E("img");
 		img.src = url;
 	}
-	var render = () => {
+	const render = () => {
 		c.ctx.drawImage(
 			img,
 			sourceX, sourceY, sourceWidth, sourceHeight,
 			destX, destY, destWidth, destHeight
 		);
 		if(invert){
-			var id = c.ctx.getImageData(0, 0, c.width, c.height);
-			for(var i=0; i<id.data.length; i+=4){
+			const id = c.ctx.getImageData(0, 0, c.width, c.height);
+			for(let i=0; i<id.data.length; i+=4){
 				id.data[i+0] = 255 - id.data[i+0];
 				id.data[i+1] = 255 - id.data[i+1];
 				id.data[i+2] = 255 - id.data[i+2];
@@ -51,23 +51,23 @@ var ChooserCanvas = (
 };
 ChooserCanvas.cache = {};
 
-var $Choose = (things, display, choose, is_chosen) => {
-	var $chooser = $(E("div")).addClass("chooser");
+const $Choose = (things, display, choose, is_chosen) => {
+	const $chooser = $(E("div")).addClass("chooser");
 	$chooser.on("update", () => {
 		$chooser.empty();
-		for(var i=0; i<things.length; i++){
+		for(let i=0; i<things.length; i++){
 			(thing => {
-				var $option_container = $(E("div")).appendTo($chooser);
-				var $option = $();
-				var choose_thing = () => {
+				const $option_container = $(E("div")).appendTo($chooser);
+				let $option = $();
+				const choose_thing = () => {
 					if(is_chosen(thing)){
 						return; // unnecessary optimization
 					}
 					choose(thing);
 					$G.trigger("option-changed");
-				}
-				var update = () => {
-					var selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // TODO: get from a CSS variable
+				};
+				const update = () => {
+					const selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // TODO: get from a CSS variable
 					$option_container.css({
 						backgroundColor: is_chosen(thing) ? selected_color : ""
 					});
@@ -92,19 +92,19 @@ var $Choose = (things, display, choose, is_chosen) => {
 	});
 	return $chooser;
 };
-var $ChooseShapeStyle = () => {
-	var $chooser = $Choose(
+const $ChooseShapeStyle = () => {
+	const $chooser = $Choose(
 		[
 			{stroke: true, fill: false},
 			{stroke: true, fill: true},
 			{stroke: false, fill: true}
 		],
 		(a, is_chosen) => {
-			var sscanvas = new Canvas(39, 21);
-			var ssctx = sscanvas.ctx;
+			const sscanvas = new Canvas(39, 21);
+			const ssctx = sscanvas.ctx;
 			
 			// border px inwards amount
-			var b = 5;
+			let b = 5;
 			ssctx.fillStyle = is_chosen ? "#fff" : "#000";
 			
 			if(a.stroke){
@@ -138,13 +138,13 @@ var $ChooseShapeStyle = () => {
 	return $chooser;
 };
 
-var $choose_brush = $Choose((() => {
-    var brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
-    var circular_brush_sizes = [7, 4, 1];
-    var brush_sizes = [8, 5, 2];
-    var things = [];
+const $choose_brush = $Choose((() => {
+    const brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
+    const circular_brush_sizes = [7, 4, 1];
+    const brush_sizes = [8, 5, 2];
+    const things = [];
     brush_shapes.forEach((brush_shape)=> {
-        var sizes = brush_shape === "circle" ? circular_brush_sizes : brush_sizes;
+        const sizes = brush_shape === "circle" ? circular_brush_sizes : brush_sizes;
         sizes.forEach((brush_size)=> {
             things.push({
                 shape: brush_shape,
@@ -154,10 +154,10 @@ var $choose_brush = $Choose((() => {
     });
     return things;
 })(), (o, is_chosen) => {
-    var cbcanvas = new Canvas(10, 10);
+    const cbcanvas = new Canvas(10, 10);
     
-    var shape = o.shape;
-    var size = o.size;
+    const shape = o.shape;
+    const size = o.size;
     
     cbcanvas.ctx.fillStyle =
     cbcanvas.ctx.strokeStyle =
@@ -171,10 +171,10 @@ var $choose_brush = $Choose((() => {
     brush_size = o.size;
 }, o => brush_shape === o.shape && brush_size === o.size).addClass("choose-brush");
 
-var $choose_eraser_size = $Choose(
+const $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
 	(size, is_chosen) => {
-		var cecanvas = new Canvas(39, 16);
+		const cecanvas = new Canvas(39, 16);
 		
 		cecanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		render_brush(cecanvas.ctx, "square", size);
@@ -187,12 +187,12 @@ var $choose_eraser_size = $Choose(
 	size => eraser_size === size
 ).addClass("choose-eraser");
 
-var $choose_stroke_size = $Choose(
+const $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
 	(size, is_chosen) => {
-		var w = 39, h = 12, b = 5;
-		var cscanvas = new Canvas(w, h);
-		var center_y = (h - size) / 2;
+		const w = 39, h = 12, b = 5;
+		const cscanvas = new Canvas(w, h);
+		const center_y = (h - size) / 2;
 		cscanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		cscanvas.ctx.fillRect(b, ~~center_y, w - b*2, size);
 		return cscanvas;
@@ -203,13 +203,13 @@ var $choose_stroke_size = $Choose(
 	size => stroke_size === size
 ).addClass("choose-stroke-size");
 
-var magnifications = [1, 2, 6, 8, 10];
-var $choose_magnification = $Choose(
+const magnifications = [1, 2, 6, 8, 10];
+const $choose_magnification = $Choose(
 	magnifications,
 	(scale, is_chosen) => {
-		var i = magnifications.indexOf(scale);
-		var secret = scale === 10; // 10x is secret
-		var chooser_canvas = ChooserCanvas(
+		const i = magnifications.indexOf(scale);
+		const secret = scale === 10; // 10x is secret
+		const chooser_canvas = ChooserCanvas(
 			"images/options-magnification.png",
 			is_chosen, // invert if chosen
 			39, (secret ? 2 : 13), // width, height of destination canvas
@@ -235,20 +235,20 @@ $choose_magnification.on("update", () => {
 		.css({position: "absolute", bottom: "-2px", left: 0, opacity: 0});
 });
 
-var airbrush_sizes = [9, 16, 24];
-var $choose_airbrush_size = $Choose(
+const airbrush_sizes = [9, 16, 24];
+const $choose_airbrush_size = $Choose(
 	airbrush_sizes,
 	(size, is_chosen) => {
 		
-		var image_width = 72; // width of source image
-		var i = airbrush_sizes.indexOf(size); // 0 or 1 or 2
-		var l = airbrush_sizes.length; // 3
-		var is_bottom = (i === 2);
+		const image_width = 72; // width of source image
+		const i = airbrush_sizes.indexOf(size); // 0 or 1 or 2
+		const l = airbrush_sizes.length; // 3
+		const is_bottom = (i === 2);
 		
-		var shrink = 4 * !is_bottom;
-		var w = image_width / l - shrink * 2;
-		var h = 23;
-		var source_x = image_width / l * i + shrink;
+		const shrink = 4 * !is_bottom;
+		const w = image_width / l - shrink * 2;
+		const h = 23;
+		const source_x = image_width / l * i + shrink;
 		
 		return ChooserCanvas(
 			"images/options-airbrush-size.png",
@@ -264,12 +264,12 @@ var $choose_airbrush_size = $Choose(
 	size => size === airbrush_size
 ).addClass("choose-airbrush-size");
 
-var $choose_transparent_mode = $Choose(
+const $choose_transparent_mode = $Choose(
 	[false, true],
 	(_tool_transparent_mode, is_chosen) => {
-		var sw = 35, sh = 23; // width, height from source image
-		var b = 2; // margin by which the source image is inset on the destination
-		var theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
+		const sw = 35, sh = 23; // width, height from source image
+		const b = 2; // margin by which the source image is inset on the destination
+		const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
 		return ChooserCanvas(
 			`${theme_folder}/options-transparency.png`,
 			false, // never invert it

@@ -1,16 +1,16 @@
 (()=>{
 
 // the initial seed
-var seed = 6;
+let seed = 6;
 
 // in order to work 'seed' must NOT be undefined,
 // so in any case, you HAVE to provide a seed
-var seededRandom = (max, min)=> {
+const seededRandom = (max, min)=> {
     max = max || 1;
     min = min || 0;
 
     seed = (seed * 9301 + 49297) % 233280;
-    var rnd = seed / 233280;
+    const rnd = seed / 233280;
 
     return min + rnd * (max - min);
 };
@@ -27,7 +27,7 @@ let isAnyMenuOpen = ()=> $(".menu-button.active").length > 0;
 let cursor_image = new Image();
 cursor_image.src = "images/cursors/default.png";
 
-var $cursor = $(cursor_image).addClass("user-cursor");
+const $cursor = $(cursor_image).addClass("user-cursor");
 $cursor.css({
 	position: "absolute",
 	left: 0,
@@ -56,10 +56,10 @@ window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, second
 			return;
 		}
 
-		var clientX = point.x;
-		var clientY = point.y;
-		var el_over = document.elementFromPoint(clientX, clientY);
-		var do_nothing = !type.match(/move/) && (!el_over || !el_over.closest(".canvas-area"));
+		const clientX = point.x;
+		const clientY = point.y;
+		const el_over = document.elementFromPoint(clientX, clientY);
+		const do_nothing = !type.match(/move/) && (!el_over || !el_over.closest(".canvas-area"));
 		$cursor.css({
 			display: "block",
 			position: "absolute",
@@ -226,7 +226,7 @@ window.simulateRandomGesturesPeriodically = () => {
 		if (seededRandom() < pickColorChance) {
 			// TODO: maybe these should respond to a normal click?
 			let secondary = seededRandom() < 0.5;
-			var colorButton = choose($(".swatch, .color-button"));
+			const colorButton = choose($(".swatch, .color-button"));
 			$(colorButton)
 				.trigger($.Event("pointerdown", {button: secondary ? 2 : 0}))
 				.trigger($.Event("click", {button: secondary ? 2 : 0}))

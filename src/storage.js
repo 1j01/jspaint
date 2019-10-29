@@ -2,13 +2,13 @@
 // or maybe replace this module with localforage actually
 
 ((() => {
-	var isArray, localStore;
+	let isArray, localStore;
 
 	isArray = Array.isArray || (a => ("" + a) !== a && {}.toString.call(a) === "[object Array]");
 
 	localStore = {
 		get(key, callback) {
-			var defaultValue, err, i, item, len, obj, keys, keys_obj;
+			let defaultValue, err, i, item, len, obj, keys, keys_obj;
 			try {
 				if (typeof key === "string") {
 					item = localStorage.getItem(key);
@@ -47,7 +47,7 @@
 			callback(null, obj);
 		},
 		set(key, value, callback) {
-			var err, to_set;
+			let err, to_set;
 			to_set = {};
 			if (typeof key === "string") {
 				to_set = {

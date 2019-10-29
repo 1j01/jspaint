@@ -1,5 +1,5 @@
 
-var TAU =     //////|//////
+const TAU =     //////|//////
           /////     |     /////
        ///         tau         ///
      ///     ...--> | <--...     ///
@@ -9,7 +9,7 @@ var TAU =     //////|//////
 //     |            | <-..       |     //
 //    |          .->|     \       |    //
 //    |         /   |      |      |    //
-- - - - - - Math.PI + Math.PI - - - - - 0
+- - - - - - Math.PI + Math.PI - - - - - 0;
 //    |         \   |      |      |    //
 //    |          '->|     /       |    //
 //     |            | <-''       |     //
@@ -21,7 +21,7 @@ var TAU =     //////|//////
          //////     |     /////
               //////|//////          C/r;
 
-var $G = $(window);
+const $G = $(window);
 
 function Cursor(cursor_def){
 	return "url(images/cursors/" + cursor_def[0] + ".png) " +
@@ -34,12 +34,12 @@ function E(t){
 }
 
 function get_rgba_from_color(color){
-	var single_pixel_canvas = new Canvas(1, 1);
+	const single_pixel_canvas = new Canvas(1, 1);
 	
 	single_pixel_canvas.ctx.fillStyle = color;
 	single_pixel_canvas.ctx.fillRect(0, 0, 1, 1);
 	
-	var image_data = single_pixel_canvas.ctx.getImageData(0, 0, 1, 1);
+	const image_data = single_pixel_canvas.ctx.getImageData(0, 0, 1, 1);
 	
 	// We could just return image_data.data, but let's return an Array instead
 	// I'm not totally sure image_data.data wouldn't keep image_data around in memory
@@ -47,10 +47,10 @@ function get_rgba_from_color(color){
 }
 
 function Canvas(width, height){
-	var image = width;
+	const image = width;
 	
-	var new_canvas = E("canvas");
-	var new_ctx = new_canvas.getContext("2d");
+	const new_canvas = E("canvas");
+	const new_ctx = new_canvas.getContext("2d");
 	
 	new_canvas.ctx = new_ctx;
 	

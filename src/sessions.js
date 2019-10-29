@@ -1,13 +1,13 @@
 
 (() => {
 
-	var log = (...args)=> {
+	const log = (...args)=> {
 		if(window.console){
 			console.log(...args);
 		}
 	};
 
-	var localStorageAvailable = false;
+	let localStorageAvailable = false;
 	try {
 		localStorage._available = true;
 		localStorageAvailable = localStorage._available;
@@ -21,18 +21,18 @@
 	// I could have the image in one storage slot and the state in another
 
 
-	var canvas_has_any_apparent_image_data = ()=>
+	const canvas_has_any_apparent_image_data = ()=>
 		canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v)=> v > 0);
 
-	var $recovery_window;
+	let $recovery_window;
 	function show_recovery_window(no_longer_blank) {
 		$recovery_window && $recovery_window.close();
-		var $w = $recovery_window = $FormWindow();
+		const $w = $recovery_window = $FormWindow();
 		$w.on("close", ()=> {
 			$recovery_window = null;
 		});
 		$w.title("Recover Document");
-		var backup_impossible = false;
+		let backup_impossible = false;
 		try{window.localStorage}catch(e){backup_impossible = true;}
 		$w.$main.append($(`
 			<h1>Woah!</h1>
@@ -57,16 +57,16 @@
 			}
 		`));
 		
-		var $undo = $w.$Button("Undo", ()=> {
+		const $undo = $w.$Button("Undo", ()=> {
 			undo();
 		});
-		var $redo = $w.$Button("Redo", ()=> {
+		const $redo = $w.$Button("Redo", ()=> {
 			redo();
 		});
-		var update_buttons_disabled = ()=> {
+		const update_buttons_disabled = ()=> {
 			$undo.attr("disabled", undos.length < 1);
 			$redo.attr("disabled", redos.length < 1);
-		}
+		};
 		$canvas.on("change.session-hook", update_buttons_disabled);
 		update_buttons_disabled();
 
@@ -76,10 +76,10 @@
 		$w.center();
 	}
 
-	var last_undos_length = undos.length;
+	let last_undos_length = undos.length;
 	function handle_data_loss() {
-		var window_is_open = $recovery_window && !$recovery_window.closed;
-		var save_paused = false;
+		const window_is_open = $recovery_window && !$recovery_window.closed;
+		let save_paused = false;
 		if (!canvas_has_any_apparent_image_data()) {
 			if (!window_is_open) {
 				show_recovery_window();
@@ -97,11 +97,11 @@
 	
 	class LocalSession {
 		constructor(session_id) {
-			var lsid = "image#" + session_id;
+			const lsid = "image#" + session_id;
 			log("local storage id: " + lsid);
 			// save image to storage
-			var save_image_to_storage = () => {
-				var save_paused = handle_data_loss();
+			const save_image_to_storage = () => {
+				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
 				}
@@ -154,14 +154,14 @@
 	// The user id is not persistent
 	// A person can enter a session multiple times,
 	// and is always given a new user id
-	var user_id;
+	let user_id;
 	// @TODO: I could make the color persistent, though.
 	// You could still have multiple cursors and they would just be the same color.
 	// There could also be an option to change your color
 
 	// The data in this object is stored in the server when you enter a session
 	// It is (supposed to be) removed when you leave
-	var user = {
+	const user = {
 		// Cursor status
 		cursor: {
 			// cursor position in canvas coordinates
@@ -186,7 +186,7 @@
 
 
 	// The image used for other people's cursors
-	var cursor_image = new Image();
+	const cursor_image = new Image();
 	cursor_image.src = "images/cursors/default.png";
 
 
@@ -195,7 +195,7 @@
 			this.id = session_id;
 			file_name = "[Loading " + this.id + "]";
 			update_title();
-			var on_firebase_loaded = () => {
+			const on_firebase_loaded = () => {
 				file_name = "[" + this.id + "]";
 				update_title();
 				this.start();
@@ -203,7 +203,7 @@
 			if (!FireSession.fb_root) {
 				$.getScript("lib/firebase.js")
 					.done(() => {
-						var config = {
+						const config = {
 							apiKey: "AIzaSyBgau8Vu9ZE8u_j0rp-Lc044gYTX5O3X9k",
 							authDomain: "jspaint.firebaseapp.com",
 							databaseURL: "https://jspaint.firebaseio.com",
@@ -227,7 +227,7 @@
 		}
 		start() {
 			// TODO: how do you actually detect if it's failing???
-			var $w = $FormWindow().title("Warning").addClass("dialogue-window");
+			const $w = $FormWindow().title("Warning").addClass("dialogue-window");
 			$w.$main.html("<p>The document may not load. Changes may not save.</p>" +
 				"<p>Multiuser sessions are public. There is no security.</p>"
 				// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +
@@ -244,7 +244,7 @@
 			// Wrap the Firebase API because they don't
 			// provide a great way to clean up event listeners
 			this._fb_listeners = [];
-			var _fb_on = (fb, event_type, callback, error_callback) => {
+			const _fb_on = (fb, event_type, callback, error_callback) => {
 				this._fb_listeners.push({ fb, event_type, callback, error_callback });
 				fb.on(event_type, callback, error_callback);
 			};
@@ -272,15 +272,15 @@
 					return;
 				}
 				// Get the Firebase reference for this user
-				var fb_other_user = snap.ref;
+				const fb_other_user = snap.ref;
 				// Get the user object stored on the server
-				var other_user = snap.val();
+				let other_user = snap.val();
 				// @TODO: display other cursor types?
 				// @TODO: display pointer button state?
 				// @TODO: display selections
-				var cursor_canvas = new Canvas(32, 32);
+				const cursor_canvas = new Canvas(32, 32);
 				// Make the cursor element
-				var $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
+				const $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
 				$cursor.css({
 					display: "none",
 					position: "absolute",
@@ -301,10 +301,10 @@
 					}
 					else {
 						// Draw the cursor
-						var draw_cursor = () => {
+						const draw_cursor = () => {
 							cursor_canvas.width = cursor_image.width;
 							cursor_canvas.height = cursor_image.height;
-							var cctx = cursor_canvas.ctx;
+							const cctx = cursor_canvas.ctx;
 							cctx.fillStyle = other_user.color;
 							cctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
 							cctx.globalCompositeOperation = "darker";
@@ -319,7 +319,7 @@
 							$(cursor_image).one("load", draw_cursor);
 						}
 						// Update the cursor element
-						var canvas_rect = canvas_bounding_client_rect;
+						const canvas_rect = canvas_bounding_client_rect;
 						$cursor.css({
 							display: "block",
 							position: "absolute",
@@ -330,15 +330,15 @@
 					}
 				});
 			});
-			var previous_uri;
-			var pointer_operations = [];
-			var sync = () => {
-				var save_paused = handle_data_loss();
+			let previous_uri;
+			let pointer_operations = [];
+			const sync = () => {
+				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
 				}
 				// Sync the data from this client to the server (one-way)
-				var uri = canvas.toDataURL();
+				const uri = canvas.toDataURL();
 				if (previous_uri !== uri) {
 					log("clear pointer operations to set data", pointer_operations);
 					pointer_operations = [];
@@ -354,7 +354,7 @@
 			// Any time we change or recieve the image data
 			_fb_on(this.fb_data, "value", snap => {
 				log("data update");
-				var uri = snap.val();
+				const uri = snap.val();
 				if (uri == null) {
 					// If there's no value at the data location, this is a new session
 					// Sync the current data to it
@@ -364,7 +364,7 @@
 					previous_uri = uri;
 					saved = true; // hopefully
 					// Load the new image data
-					var img = new Image();
+					const img = new Image();
 					img.onload = () => {
 						// Cancel any in-progress pointer operations
 						if (pointer_operations.length) {
@@ -378,8 +378,8 @@
 						// and other options will be established)
 						// Playback recorded in-progress pointer operations
 						window.console && console.log("playback", pointer_operations);
-						for (var i = 0; i < pointer_operations.length; i++) {
-							var e = pointer_operations[i];
+						for (let i = 0; i < pointer_operations.length; i++) {
+							const e = pointer_operations[i];
 							// Trigger the event at each place it is listened for
 							$canvas.triggerHandler(e, ["synthetic"]);
 							$G.triggerHandler(e, ["synthetic"]);
@@ -394,7 +394,7 @@
 			});
 			// Update the cursor status
 			$G.on("pointermove.session-hook", e => {
-				var m = e2c(e);
+				const m = e2c(e);
 				this.fb_user.child("cursor").update({
 					x: m.x,
 					y: m.y,
@@ -434,26 +434,26 @@
 
 	// Handle the starting, switching, and ending of sessions from the location.hash
 
-	var current_session;
-	var end_current_session = () => {
+	let current_session;
+	const end_current_session = () => {
 		if(current_session){
 			log("ending current session");
 			current_session.end();
 			current_session = null;
 		}
 	};
-	var generate_session_id = () => (Math.random()*Math.pow(2, 32)).toString(16).replace(".", "");
-	var update_session_from_location_hash = e => {
+	const generate_session_id = () => (Math.random()*Math.pow(2, 32)).toString(16).replace(".", "");
+	const update_session_from_location_hash = e => {
 		// TODO: should #load: be separate from #session:/#local:,
 		// and be able to load *into* a session, rather than just start one?
 		// well I guess loading into a session wouldn't be that helpful if it makes a new image anyways
 		// but it would be useful for collaborative sessions if collaborative sessions actually worked well enough to be useful
 		// well, but you can paste images too, so you could just do that
-		var session_match = location.hash.match(/^#?(session|local):(.*)$/i);
-		var load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);
+		const session_match = location.hash.match(/^#?(session|local):(.*)$/i);
+		const load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);
 		if(session_match){
-			var local = session_match[1] === "local";
-			var session_id = session_match[2];
+			const local = session_match[1] === "local";
+			const session_id = session_match[2];
 			if(session_id === ""){
 				log("invalid session id; session id cannot be empty");
 				end_current_session();
@@ -478,10 +478,10 @@
 				}
 			}
 		}else if(load_from_url_match){
-			var url = decodeURIComponent(load_from_url_match[2]);
-			var hash_loading_url_from = location.hash;
+			const url = decodeURIComponent(load_from_url_match[2]);
+			const hash_loading_url_from = location.hash;
 
-			var uris = get_URIs(url);
+			const uris = get_URIs(url);
 			if (uris.length === 0) {
 				show_error_message("Invalid URL to load (after #load: in the address bar). It must include a protocol (https:// or http://)");
 				return;
@@ -504,7 +504,7 @@
 						if(location.hash === hash_loading_url_from){
 							log("switching to new session from #load: URL because of user interaction");
 							end_current_session();
-							var new_session_id = generate_session_id();
+							const new_session_id = generate_session_id();
 							location.hash = "local:" + new_session_id;
 						}
 					});
@@ -514,7 +514,7 @@
 		}else{
 			log("no session id in hash");
 			end_current_session();
-			var new_session_id = generate_session_id();
+			const new_session_id = generate_session_id();
 			history.replaceState(null, document.title, "#local:" + new_session_id);
 			log("after replaceState", location.hash);
 			update_session_from_location_hash();

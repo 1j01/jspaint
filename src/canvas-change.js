@@ -1,12 +1,12 @@
 
 (() => {
 	
-	var may_be_changed = () => {
+	const may_be_changed = () => {
 		window.console && console.log("change may have occured");
 		$canvas.triggerHandler("change");
 	};
 	
-	var debug_event = (e, synthetic) => {
+	const debug_event = (e, synthetic) => {
 		// var label = synthetic ? "(synthetic)" : "(normal)";
 		// window.console && console.debug && console.debug(e.type, label);
 	};
@@ -20,16 +20,16 @@
 		if(synthetic){ return; }
 		
 		// If you're using the fill tool, basically
-		var immediate_action = selected_tools.some((tool)=>
+		const immediate_action = selected_tools.some((tool)=>
 			tool.pointerdown && !tool.pointermove && !tool.paint && !tool.cancel && !tool.passive
-		)
+		);
 		if(immediate_action){
 			// A change might occur immediately
 			may_be_changed();
 		}else{
 			// Changes may occur when you release
 			pointer_operations = [e];
-			var pointermove = (e, synthetic) => {
+			const pointermove = (e, synthetic) => {
 				debug_event(e, synthetic);
 				if(synthetic){ return; }
 				

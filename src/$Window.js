@@ -2,7 +2,7 @@
 $Window.Z_INDEX = 5;
 
 function $Window($component){
-	var $w = $(E("div")).addClass("window").appendTo("body");
+	const $w = $(E("div")).addClass("window").appendTo("body");
 	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
 	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$titlebar);
 	$w.$x = $(E("button")).addClass("window-close-button").appendTo($w.$titlebar);
@@ -39,9 +39,9 @@ function $Window($component){
 		if(e.ctrlKey || e.altKey || e.shiftKey || e.metaKey){
 			return;
 		}
-		var $buttons = $w.$content.find("button");
-		var $focused = $(document.activeElement);
-		var focused_index = $buttons.index($focused);
+		const $buttons = $w.$content.find("button");
+		const $focused = $(document.activeElement);
+		const focused_index = $buttons.index($focused);
 		// console.log(e.keyCode);
 		switch(e.keyCode){
 			case 40: // Down
@@ -66,7 +66,7 @@ function $Window($component){
 			case 13: // Enter (doesn't actually work in chrome because the button gets clicked immediately)
 				if($focused.is("button")){
 					$focused.addClass("pressed");
-					var release = () => {
+					const release = () => {
 						$focused.removeClass("pressed");
 						$focused.off("focusout", release);
 						$(window).off("keyup", keyup);
@@ -84,8 +84,8 @@ function $Window($component){
 				// TODO: handle shift+tab as well (note: early return at top of function)
 				// wrap around when tabbing through controls in a window
 				// TODO: other element types? also [tabIndex]
-				var $controls = $w.$content.find("input, textarea, select, button, a");
-				var focused_control_index = $controls.index($focused);
+				const $controls = $w.$content.find("input, textarea, select, button, a");
+				const focused_control_index = $controls.index($focused);
 				if(focused_control_index === $controls.length - 1){
 					e.preventDefault();
 					$controls[0].focus();
@@ -115,8 +115,8 @@ function $Window($component){
 	
 	$G.on("resize", $w.applyBounds);
 	
-	var drag_offset_x, drag_offset_y;
-	var drag = e => {
+	let drag_offset_x, drag_offset_y;
+	const drag = e => {
 		$w.css({
 			left: e.clientX - drag_offset_x,
 			top: e.clientY - drag_offset_y,
@@ -147,7 +147,7 @@ function $Window($component){
 	});
 	
 	$w.$Button = (text, handler) => {
-		var $b = $(E("button"))
+		const $b = $(E("button"))
 			.appendTo($w.$content)
 			.text(text)
 			.on("click", () => {
@@ -167,7 +167,7 @@ function $Window($component){
 		}
 	};
 	$w.close = () => {
-		var e = $.Event("close");
+		const e = $.Event("close");
 		$w.trigger(e);
 		if(e.isDefaultPrevented()){
 			return;
@@ -188,7 +188,7 @@ function $Window($component){
 }
 
 function $FormWindow(title){
-	var $w = new $Window();
+	const $w = new $Window();
 	
 	$w.title(title);
 	$w.$form = $(E("form")).appendTo($w.$content);
@@ -196,7 +196,7 @@ function $FormWindow(title){
 	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 	
 	$w.$Button = (label, action) => {
-		var $b = $(E("button")).appendTo($w.$buttons).text(label);
+		const $b = $(E("button")).appendTo($w.$buttons).text(label);
 		$b.on("click", e => {
 			// prevent the form from submitting
 			// @TODO: instead, prevent the form's submit event

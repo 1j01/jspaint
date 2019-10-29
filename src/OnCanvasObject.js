@@ -12,8 +12,8 @@ class OnCanvasObject {
 		}
 	}
 	position(updateStatus) {
-		var offset_left = parseFloat($canvas_area.css("padding-left"));
-		var offset_top = parseFloat($canvas_area.css("padding-top"));
+		const offset_left = parseFloat($canvas_area.css("padding-left"));
+		const offset_top = parseFloat($canvas_area.css("padding-top"));
 		this.$el.css({
 			position: "absolute",
 			left: magnification * this.x + offset_left,

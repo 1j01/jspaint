@@ -5,8 +5,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		this.$el.addClass("textbox");
 		this.$editor = $(E("textarea")).addClass("textbox-editor");
-		var update = () => {
-			var font = text_tool_font;
+		const update = () => {
+			const font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
 			this.$editor.css({
@@ -46,9 +46,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 			this.height = height;
 			this.position();
 		});
-		var mox, moy;
-		var pointermove = e => {
-			var m = e2c(e);
+		let mox, moy;
+		const pointermove = e => {
+			const m = e2c(e);
 			this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
 			this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
 			this.position();
@@ -63,9 +63,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 				return;
 			}
 			e.preventDefault();
-			var rect = this.$el[0].getBoundingClientRect();
-			var cx = e.clientX - rect.left;
-			var cy = e.clientY - rect.top;
+			const rect = this.$el[0].getBoundingClientRect();
+			const cx = e.clientX - rect.left;
+			const cy = e.clientY - rect.top;
 			mox = ~~(cx);
 			moy = ~~(cy);
 			$G.on("pointermove", pointermove);
@@ -80,10 +80,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 		if (OnCanvasTextBox.$fontbox && OnCanvasTextBox.$fontbox.closed) {
 			OnCanvasTextBox.$fontbox = null;
 		}
-		var $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || new $FontBox();
+		const $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || new $FontBox();
 		// move the font box out of the way if it's overlapping the OnCanvasTextBox
-		var fb_rect = $fb[0].getBoundingClientRect();
-		var tb_rect = this.$el[0].getBoundingClientRect();
+		const fb_rect = $fb[0].getBoundingClientRect();
+		const tb_rect = this.$el[0].getBoundingClientRect();
 		if (
 			// the fontbox overlaps textbox
 			fb_rect.left <= tb_rect.right &&
@@ -98,17 +98,17 @@ class OnCanvasTextBox extends OnCanvasObject {
 		$fb.applyBounds();
 	}
 	draw() {
-		var text = this.$editor.val();
+		const text = this.$editor.val();
 		if (text) {
 			undoable(0, () => {
-				var font = text_tool_font;
+				const font = text_tool_font;
 				ctx.fillStyle = font.background;
 				ctx.fillRect(this.x, this.y, this.width, this.height);
 				ctx.fillStyle = font.color;
-				var style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
+				const style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
 				ctx.font = style_ + font.size + "px " + font.family;
 				ctx.textBaseline = "top";
-				var max_width = Math.max(this.width, font.size);
+				const max_width = Math.max(this.width, font.size);
 				draw_text_wrapped(ctx, text, this.x + 1, this.y + 1, max_width, font.size * font.line_scale);
 			});
 		}
@@ -124,14 +124,14 @@ class OnCanvasTextBox extends OnCanvasObject {
 }
 
 function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
-	var original_lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
-	for(var j = 0; j < original_lines.length; j++){
-		var original_line = original_lines[j];
-		var words = original_line.split(' ');
-		var line = '';
-		var test;
-		var metrics;
-		for (var i = 0; i < words.length; i++) {
+	const original_lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
+	for(let j = 0; j < original_lines.length; j++){
+		const original_line = original_lines[j];
+		const words = original_line.split(' ');
+		let line = '';
+		let test;
+		let metrics;
+		for (let i = 0; i < words.length; i++) {
 			test = words[i];
 			metrics = ctx.measureText(test);
 			// TODO: break words on hyphens and perhaps other characters

@@ -1,5 +1,5 @@
 
-var $help_window;
+let $help_window;
 
 function show_help(){
 	if($help_window){
@@ -18,25 +18,25 @@ function show_help(){
 	$iframe.css({backgroundColor: "white"});
 	$help_window.center();
 	
-	var parse_object_params = $object => {
+	const parse_object_params = $object => {
 		// parse an $(<object>) to a plain object of key value pairs
-		var object = {};
+		const object = {};
 		$object.children("param").each((i, param) => {
 			object[param.name] = param.value;
 		});
 		return object;
 	};
 	
-	var $last_expanded;
+	let $last_expanded;
 	
-	var $Item = text => {
-		var $item = $(E("div")).addClass("item").text(text);
+	const $Item = text => {
+		const $item = $(E("div")).addClass("item").text(text);
 		$item.on("mousedown", () => {
 			$contents.find(".item").removeClass("selected");
 			$item.addClass("selected");
 		});
 		$item.on("click", () => {
-			var $li = $item.parent();
+			const $li = $item.parent();
 			if($li.is(".folder")){
 				if($last_expanded){
 					$last_expanded.not($li).removeClass("expanded");
@@ -48,7 +48,7 @@ function show_help(){
 		return $item;
 	};
 	
-	var $default_item_li = $(E("li")).addClass("page");
+	const $default_item_li = $(E("li")).addClass("page");
 	$default_item_li.append($Item("Welcome to Help").on("click", e => {
 		$iframe.attr({src: "help/default.html"});
 	}));
@@ -57,18 +57,18 @@ function show_help(){
 	$.get("help/mspaint.hhc", hhc => {
 		$($.parseHTML(hhc)).filter("ul").children().each((i, li) => {
 			
-			var object = parse_object_params($(li).children("object"));
+			const object = parse_object_params($(li).children("object"));
 			
-			var $folder_li = $(E("li")).addClass("folder");
+			const $folder_li = $(E("li")).addClass("folder");
 			$folder_li.append($Item(object.Name));
 			$contents.append($folder_li);
 			
-			var $folder_items_ul = $(E("ul"));
+			const $folder_items_ul = $(E("ul"));
 			$folder_li.append($folder_items_ul);
 			
 			$(li).children("ul").children().each((i, li) => {
-				var object = parse_object_params($(li).children("object"));
-				var $item_li = $(E("li")).addClass("page");
+				const object = parse_object_params($(li).children("object"));
+				const $item_li = $(E("li")).addClass("page");
 				$item_li.append($Item(object.Name).on("click", e => {
 					$iframe.attr({src: "help/" + object.Local});
 				}));

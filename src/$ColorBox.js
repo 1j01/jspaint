@@ -1,8 +1,8 @@
 
 
 function $Swatch(color){
-	var $b = $(E("div")).addClass("swatch");
-	var swatch_canvas = new Canvas();
+	const $b = $(E("div")).addClass("swatch");
+	const swatch_canvas = new Canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
 	
 	$b.update = _color => {
@@ -33,15 +33,15 @@ function $Swatch(color){
 }
 
 function $ColorBox(){
-	var $cb = $(E("div")).addClass("color-box");
+	const $cb = $(E("div")).addClass("color-box");
 	
-	var $current_colors = $Swatch().addClass("current-colors");
-	var $palette = $(E("div")).addClass("palette");
+	const $current_colors = $Swatch().addClass("current-colors");
+	const $palette = $(E("div")).addClass("palette");
 	
 	$cb.append($current_colors, $palette);
 	
-	var $foreground_color = $Swatch().addClass("color-selection");
-	var $background_color = $Swatch().addClass("color-selection");
+	const $foreground_color = $Swatch().addClass("color-selection");
+	const $background_color = $Swatch().addClass("color-selection");
 	$current_colors.append($background_color, $foreground_color);
 	
 	$current_colors.css({
@@ -65,22 +65,22 @@ function $ColorBox(){
 	});
 	
 	$current_colors.on("pointerdown", () => {
-		var new_bg = colors.foreground;
+		const new_bg = colors.foreground;
 		colors.foreground = colors.background;
 		colors.background = new_bg;
 		$G.triggerHandler("option-changed");
 	});
 	
 	// the one color editted by "Edit Colors..."
-	var $last_fg_color_button;
+	let $last_fg_color_button;
 	
 	// TODO: base this on the element sizes
-	var width_per_button = 16;
+	const width_per_button = 16;
 	
-	var build_palette = () => {
+	const build_palette = () => {
 		$palette.empty();
 		$.each(palette, (i, color) => {
-			var $b = $Swatch(color).addClass("color-button");
+			const $b = $Swatch(color).addClass("color-button");
 			$b.appendTo($palette);
 			
 			// the "last foreground color button" starts out as the first in the palette
@@ -88,7 +88,7 @@ function $ColorBox(){
 				$last_fg_color_button = $b;
 			}
 			
-			var $i = $(E("input")).attr({type: "color"});
+			const $i = $(E("input")).attr({type: "color"});
 			$i.appendTo($b);
 			$i.on("change", () => {
 				color = $i.val();
@@ -101,7 +101,7 @@ function $ColorBox(){
 			
 			$i.val(rgb2hex(color));
 			
-			var button, ctrl;
+			let button, ctrl;
 			$b.on("pointerdown", e => {
 				// TODO: how should the ternary color, and selection cropping, work on macOS?
 				ctrl = e.ctrlKey;
@@ -143,7 +143,7 @@ function $ColorBox(){
 				if(!col.match){ // i.e. CanvasPattern
 					return "#000000";
 				}
-				var rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+				const rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
 				function hex(x){
 					return ("0" + parseInt(x).toString(16)).slice(-2);
 				}
@@ -154,7 +154,7 @@ function $ColorBox(){
 	};
 	build_palette();
 	
-	var $c = $Component("Colors", "wide", $cb);
+	const $c = $Component("Colors", "wide", $cb);
 	
 	$c.edit_last_color = () => {
 		// Edit the last color cell that's been selected as the foreground color.

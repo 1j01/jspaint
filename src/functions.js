@@ -12,8 +12,8 @@ function update_canvas_rect() {
 	update_helper_layer();
 }
 
-var helper_layer_update_queued;
-var info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
+let helper_layer_update_queued;
+let info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
 function update_helper_layer(e){
 	if (e) {
 		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
@@ -33,7 +33,7 @@ function update_helper_layer(e){
 function update_helper_layer_immediately(e) {
 	// console.log("update helper layer NOW");
 	if (info_for_updating_pointer) {
-		var rescale = info_for_updating_pointer.devicePixelRatio / devicePixelRatio;
+		const rescale = info_for_updating_pointer.devicePixelRatio / devicePixelRatio;
 		info_for_updating_pointer.clientX *= rescale;
 		info_for_updating_pointer.clientY *= rescale;
 		info_for_updating_pointer.devicePixelRatio = devicePixelRatio;
@@ -42,29 +42,29 @@ function update_helper_layer_immediately(e) {
 
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
 	
-	var grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;
+	const grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;
 
-	var scale = magnification * window.devicePixelRatio;
+	const scale = magnification * window.devicePixelRatio;
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
 	}
 
-	var hcanvas = helper_layer.canvas;
-	var hctx = hcanvas.ctx;
+	const hcanvas = helper_layer.canvas;
+	const hctx = hcanvas.ctx;
 
-	var margin = 15;
+	const margin = 15;
 	// var viewport_width = Math.floor(Math.min($canvas_area.width() / magnification + margin*2, canvas.width));
 	// var viewport_height = Math.floor(Math.min($canvas_area.height() / magnification + margin*2, canvas.height));
-	var viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
-	var viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification - margin, 0));
-	var viewport_x2 = Math.floor(Math.min(viewport_x + $canvas_area.width() / magnification + margin*2, canvas.width));
-	var viewport_y2 = Math.floor(Math.min(viewport_y + $canvas_area.height() / magnification + margin*2, canvas.height));
-	var viewport_width = viewport_x2 - viewport_x;
-	var viewport_height = viewport_y2 - viewport_y;
+	const viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
+	const viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification - margin, 0));
+	const viewport_x2 = Math.floor(Math.min(viewport_x + $canvas_area.width() / magnification + margin*2, canvas.width));
+	const viewport_y2 = Math.floor(Math.min(viewport_y + $canvas_area.height() / magnification + margin*2, canvas.height));
+	const viewport_width = viewport_x2 - viewport_x;
+	const viewport_height = viewport_y2 - viewport_y;
 	// console.log($canvas_area.width(), $canvas_area.height(), viewport_width, viewport_height, canvas.width, canvas.height);
-	var resolution_width = viewport_width * scale;
-	var resolution_height = viewport_height * scale;
+	const resolution_width = viewport_width * scale;
+	const resolution_height = viewport_height * scale;
 	if (
 		hcanvas.width !== resolution_width ||
 		hcanvas.height !== resolution_height
@@ -102,15 +102,15 @@ function update_helper_layer_immediately(e) {
 	hctx.restore();
 }
 function update_disable_aa() {
-	var dots_per_canvas_px = window.devicePixelRatio * magnification;
-	var round = Math.floor(dots_per_canvas_px) === dots_per_canvas_px;
+	const dots_per_canvas_px = window.devicePixelRatio * magnification;
+	const round = Math.floor(dots_per_canvas_px) === dots_per_canvas_px;
 	$canvas_area.toggleClass("disable-aa-for-things-at-main-canvas-scale", dots_per_canvas_px >= 3 || round);
 }
 
 function set_magnification(scale){
-	var prev_magnification = magnification;
-	var scroll_left = $canvas_area.scrollLeft();
-	var scroll_top = $canvas_area.scrollTop();
+	const prev_magnification = magnification;
+	let scroll_left = $canvas_area.scrollLeft();
+	let scroll_top = $canvas_area.scrollTop();
 
 	magnification = scale;
 	if(scale !== 1){
@@ -129,16 +129,16 @@ function set_magnification(scale){
 	$G.trigger("option-changed"); // updates options area
 }
 
-var $custom_zoom_window;
+let $custom_zoom_window;
 function show_custom_zoom_window() {
 	if ($custom_zoom_window) {
 		$custom_zoom_window.close();
 	}
-	var $w = new $FormWindow("Custom Zoom");
+	const $w = new $FormWindow("Custom Zoom");
 	$custom_zoom_window = $w;
 
 	// TODO: show Current zoom: blah% ?
-	var $fieldset = $(E("fieldset")).appendTo($w.$main);
+	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append("<legend>Zoom to</legend>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='1'/>100%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='2'/>200%</label>");
@@ -146,15 +146,15 @@ function show_custom_zoom_window() {
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='6'/>600%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='8'/>800%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='really-custom'/><input type='number' min='10' max='1000' name='really-custom-zoom-input' value=''/>%</label>");
-	var is_custom = true;
+	let is_custom = true;
 	$fieldset.find("input[type=radio]").get().forEach((el)=> {
 		if (parseFloat(el.value) === magnification) {
 			el.checked = true;
 			is_custom = false;
 		}
 	});
-	var $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
-	var $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
+	const $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
+	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
 	$really_custom_input.closest("label").on("click", e => {
 		$really_custom_radio_option.prop("checked", true);
@@ -169,8 +169,8 @@ function show_custom_zoom_window() {
 	$fieldset.find("label").css({display: "block"});
 
 	$w.$Button("Okay", () => {
-		var option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
-		var mag;
+		let option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
+		let mag;
 		if(option_val === "really-custom"){
 			option_val = $really_custom_input.val();
 			if(`${option_val}`.match(/\dx$/)) { // ...you can't actually type an x; oh well...
@@ -179,7 +179,7 @@ function show_custom_zoom_window() {
 				mag = parseFloat(option_val) / 100;
 			}
 			if(isNaN(mag)){
-				var $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
+				const $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
 				$msgw.$main.text("The value specified for custom zoom was invalid.");
 				$msgw.$Button("Okay", () => {
 					$msgw.close();
@@ -241,7 +241,7 @@ function update_title(){
 }
 
 function create_and_trigger_input(attrs, callback){
-	var $input = $(E("input")).attr(attrs)
+	const $input = $(E("input")).attr(attrs)
 		.on("change", function(){
 			callback(this);
 			$input.remove();
@@ -281,16 +281,16 @@ function open_from_Image(img, callback, canceled){
 function get_URIs(text) {
 	// parse text/uri-list
 	// get lines, discarding comments
-	var lines = text.split(/[\n\r]+/).filter(line => line[0] !== "#" && line);
+	const lines = text.split(/[\n\r]+/).filter(line => line[0] !== "#" && line);
 	// discard text with too many lines (likely pasted HTML or something) - may want to revisit this
 	if (lines.length > 15) {
 		return [];
 	}
 	// parse URLs, discarding anything that parses as a relative URL
-	var uris = [];
-	for (var i=0; i<lines.length; i++) {
+	const uris = [];
+	for (let i=0; i<lines.length; i++) {
 		try {
-			var url = new URL(lines[i]);
+			const url = new URL(lines[i]);
 			uris.push(url.href);
 		// eslint-disable-next-line no-empty
 		} catch(e) {}
@@ -301,7 +301,7 @@ function load_image_from_URI(uri, callback){
 	// TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
 	fetch(uri)
 	.then(response => response.blob()).then(blob => {
-		var img = new Image();
+		const img = new Image();
 		img.crossOrigin = "Anonymous";
 		img.onload = function(){
 			if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth === 0) {
@@ -324,7 +324,7 @@ function open_from_URI(uri, callback, canceled){
 	});
 }
 function open_from_File(file, callback, canceled){
-	var blob_url = URL.createObjectURL(file);
+	const blob_url = URL.createObjectURL(file);
 	load_image_from_URI(blob_url, (err, img) => {
 		// revoke object URL regardless of error
 		URL.revokeObjectURL(file);
@@ -340,8 +340,8 @@ function open_from_File(file, callback, canceled){
 	});
 }
 function get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense){
-	for(var i=0; i<files.length; i++){
-		var file = files[i];
+	for(let i=0; i<files.length; i++){
+		const file = files[i];
 		if(file.type.match(/^image/)){
 			return file;
 		}
@@ -353,7 +353,7 @@ function get_image_file_from_FileList_or_show_error(files, user_input_method_ver
 	}
 }
 function open_from_FileList(files, user_input_method_verb_past_tense){
-	var file = get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense);
+	const file = get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense);
 	if(file){
 		open_from_File(file, err => {
 			if(err){ return show_error_message("Failed to open file:", err); }
@@ -382,19 +382,19 @@ function file_open(){
 	});
 }
 
-var $file_load_from_url_window;
+let $file_load_from_url_window;
 function file_load_from_url(){
 	if($file_load_from_url_window){
 		$file_load_from_url_window.close();
 	}
-	var $w = new $FormWindow().addClass("dialogue-window");
+	const $w = new $FormWindow().addClass("dialogue-window");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// TODO: URL validation (input has to be in a form (and we don't want the form to submit))
 	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input'/></label>");
-	var $input = $w.$main.find(".url-input");
+	const $input = $w.$main.find(".url-input");
 	$w.$Button("Load", () => {
-		var uris = get_URIs($input.val());
+		const uris = get_URIs($input.val());
 		if (uris.length > 0) {
 			// TODO: retry loading if same URL entered
 			// actually, make it change the hash only after loading successfully
@@ -447,7 +447,7 @@ function are_you_sure(action, canceled){
 	if(saved){
 		action();
 	}else{
-		var $w = new $FormWindow().addClass("dialogue-window");
+		const $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.text("Save changes to "+file_name+"?");
 		$w.$Button("Save", () => {
@@ -471,7 +471,7 @@ function are_you_sure(action, canceled){
 }
 
 function show_error_message(message, error){
-	var $w = $FormWindow().title("Error").addClass("dialogue-window");
+	const $w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.text(message);
 	$w.$main.css("max-width", "600px");
 	if(error){
@@ -499,7 +499,7 @@ function show_error_message(message, error){
 // because it can get pretty confusing
 function show_resource_load_error_message(){
 	// NOTE: apparently distinguishing cross-origin errors is disallowed
-	var $w = $FormWindow().title("Error").addClass("dialogue-window");
+	const $w = $FormWindow().title("Error").addClass("dialogue-window");
 	$w.$main.html(
 		"<p>Failed to load image from URL.</p>" +
 		"<p>Check your browser's devtools for details.</p>" +
@@ -514,11 +514,11 @@ function show_resource_load_error_message(){
 	$w.center();
 }
 
-var $about_paint_window;
-var $about_paint_content = $("#about-paint");
-var $news_window;
-var $this_version_news = $("#news");
-var $latest_news = $this_version_news;
+let $about_paint_window;
+const $about_paint_content = $("#about-paint");
+let $news_window;
+const $this_version_news = $("#news");
+let $latest_news = $this_version_news;
 
 // not included directly in the HTML as a simple way of not showing it if it's loaded with fetch
 // (...not sure how to phrase this clearly and concisely...)
@@ -555,19 +555,19 @@ function show_about_paint(){
 	
 	$("#checking-for-updates").removeAttr("hidden");
 
-	var url =
+	const url =
 		// ".";
 		// "test-news-newer.html";
 		"https://jspaint.app";
 	fetch(url)
 	.then((response)=> response.text())
 	.then((text)=> {
-		var parser = new DOMParser();
-		var htmlDoc = parser.parseFromString(text, "text/html");
+		const parser = new DOMParser();
+		const htmlDoc = parser.parseFromString(text, "text/html");
 		$latest_news = $(htmlDoc).find("#news");
 
-		var $latest_entries = $latest_news.find(".news-entry");
-		var $this_version_entries = $this_version_news.find(".news-entry");
+		const $latest_entries = $latest_news.find(".news-entry");
+		const $this_version_entries = $this_version_news.find(".news-entry");
 
 		if (!$latest_entries.length) {
 			$latest_news = $this_version_news;
@@ -660,7 +660,7 @@ function show_news(){
 
 function paste_image_from_file(file){
 	// TODO: revoke object URL
-	var blob_url = URL.createObjectURL(file);
+	const blob_url = URL.createObjectURL(file);
 	// paste_image_from_URI(blob_url);
 	load_image_from_URI(blob_url, (err, img) => {
 		// TODO: this shouldn't really have the CORS error message, if it's from a blob URI
@@ -673,7 +673,7 @@ function paste_image_from_file(file){
 
 function paste_from_file_select_dialog(){
 	get_FileList_from_file_select_dialog(files => {
-		var file = get_image_file_from_FileList_or_show_error(files, "selected");
+		const file = get_image_file_from_FileList_or_show_error(files, "selected");
 		if(file){
 			paste_image_from_file(file);
 		}
@@ -683,7 +683,7 @@ function paste_from_file_select_dialog(){
 function paste(img){
 
 	if(img.width > canvas.width || img.height > canvas.height){
-		var $w = new $FormWindow().addClass("dialogue-window");
+		const $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.html(
 			"The image is bigger than the canvas.<br>" +
@@ -693,7 +693,7 @@ function paste(img){
 			$w.close();
 			// Additional undoable
 			undoable(() => {
-				var original = undos[undos.length-1];
+				const original = undos[undos.length-1];
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
 				ctx.disable_image_smoothing();
@@ -722,27 +722,27 @@ function paste(img){
 		// Note: relying on select_tool to call deselect();
 		select_tool(get_tool_by_name("Select"));
 
-		var x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
-		var y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
+		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
+		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
 		selection = new OnCanvasSelection(x, y, img.width, img.height);
 		selection.instantiate(img);
 	}
 }
 
 function render_history_as_gif(){
-	var $win = $FormWindow();
+	const $win = $FormWindow();
 	$win.title("Rendering GIF");
 	$win.center();
-	var $output = $win.$main;
-	var $progress = $(E("progress")).appendTo($output);
-	var $progress_percent = $(E("span")).appendTo($output).css({
+	const $output = $win.$main;
+	const $progress = $(E("progress")).appendTo($output);
+	const $progress_percent = $(E("span")).appendTo($output).css({
 		width: "2.3em",
 		display: "inline-block",
 		textAlign: "center",
 	});
 	$win.$main.css({padding: 5});
 
-	var $cancel = $win.$Button('Cancel', () => {
+	const $cancel = $win.$Button('Cancel', () => {
 		$win.close();
 	});
 
@@ -751,8 +751,8 @@ function render_history_as_gif(){
 	});
 
 	try{
-		var width = canvas.width;
-		var height = canvas.height;
+		const width = canvas.width;
+		const height = canvas.height;
 		var gif = new GIF({
 			//workers: Math.min(5, Math.floor(undos.length/50)+1),
 			workerScript: "lib/gif.js/gif.worker.js",
@@ -767,7 +767,7 @@ function render_history_as_gif(){
 
 		gif.on("finished", blob => {
 			$win.title("Rendered GIF");
-			var url = URL.createObjectURL(blob);
+			const url = URL.createObjectURL(blob);
 			$output.empty().append(
 				$(E("img")).attr({
 					src: url,
@@ -791,9 +791,9 @@ function render_history_as_gif(){
 			$win.center();
 		});
 
-		var gif_canvas = new Canvas(width, height);
-		var frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
-		for(var i=0; i<frames.length; i++){
+		const gif_canvas = new Canvas(width, height);
+		const frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
+		for(let i=0; i<frames.length; i++){
 			gif_canvas.ctx.clearRect(0, 0, gif_canvas.width, gif_canvas.height);
 			gif_canvas.ctx.putImageData(frames[i], 0, 0);
 			gif.addFrame(gif_canvas, {delay: 200, copy: true});
@@ -867,7 +867,7 @@ function undoable(callback, action){
 	saved = false;
 	// TODO: this is annoying and arbitrary. nonlinear undo would be much better.
 	if(redos.length > 5){
-		var $w = new $FormWindow().addClass("dialogue-window");
+		const $w = new $FormWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.html("Discard "+redos.length+" possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>");
 		$w.$Button(action ? "Discard and Apply" : "Discard", () => {
@@ -972,9 +972,9 @@ function try_exec_command(commandId) {
 }
 
 function getSelectionText() {
-	var text = "";
-	var activeEl = document.activeElement;
-	var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
+	let text = "";
+	const activeEl = document.activeElement;
+	const activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
 	if (
 		(activeElTagName == "textarea") || (activeElTagName == "input" &&
 		/^(?:text|search|password|tel|url)$/i.test(activeEl.type)) &&
@@ -988,7 +988,7 @@ function getSelectionText() {
 }
 
 async function edit_copy(execCommandFallback){
-	var text = getSelectionText();
+	const text = getSelectionText();
 
 	if (text.length > 0) {
 		if (!navigator.clipboard || !navigator.clipboard.writeText) {
@@ -1068,7 +1068,7 @@ async function edit_paste(execCommandFallback){
 			try {
 				const clipboardText = await navigator.clipboard.readText();
 				if(clipboardText) {
-					var uris = get_URIs(clipboardText);
+					const uris = get_URIs(clipboardText);
 					if (uris.length > 0) {
 						load_image_from_URI(uris[0], (err, img) => {
 							if(err){ return show_resource_load_error_message(); }
@@ -1091,8 +1091,8 @@ async function edit_paste(execCommandFallback){
 
 function image_invert(){
 	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
-		var id = original_ctx.getImageData(0, 0, original_canvas.width, original_canvas.height);
-		for(var i=0; i<id.data.length; i+=4){
+		const id = original_ctx.getImageData(0, 0, original_canvas.width, original_canvas.height);
+		for(let i=0; i<id.data.length; i+=4){
 			id.data[i+0] = 255 - id.data[i+0];
 			id.data[i+1] = 255 - id.data[i+1];
 			id.data[i+2] = 255 - id.data[i+2];
@@ -1135,7 +1135,7 @@ function get_tool_by_name(name){
 // hacky but whatever
 // this whole "multiple tools" thing is hacky for now
 function select_tools(tools) {
-	for (var i=0; i<tools.length; i++) {
+	for (let i=0; i<tools.length; i++) {
 		select_tool(tools[i], i > 0);
 	}
 	update_helper_layer();
@@ -1146,7 +1146,7 @@ function select_tool(tool, toggle){
 		return_to_tools = [...selected_tools];
 	}
 	if (toggle) {
-		var index = selected_tools.indexOf(tool);
+		const index = selected_tools.indexOf(tool);
 		if (index === -1) {
 			selected_tools.push(tool);
 			selected_tools.sort((a, b)=> {
@@ -1186,8 +1186,8 @@ function has_any_transparency(ctx) {
 	// @TODO Optimization: Assume JPEGs and some other file types are opaque.
 	// Raster file formats that SUPPORT transparency include GIF, PNG, BMP and TIFF
 	// (Yes, even BMPs support transparency!)
-	var id = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	for(var i=0, l=id.data.length; i<l; i+=4){
+	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	for(let i=0, l=id.data.length; i<l; i+=4){
 		if(id.data[i+3] < 255){
 			return true;
 		}
@@ -1201,8 +1201,8 @@ function detect_transparency(){
 
 function make_monochrome_pattern(lightness){
 
-	var dither_threshold_table = Array.from({length: 64}, (undef, p) => {
-		var q = p ^ (p >> 3);
+	const dither_threshold_table = Array.from({length: 64}, (undef, p) => {
+		const q = p ^ (p >> 3);
 		return (
 			((p & 4) >> 2) | ((q & 4) >> 1) |
 			((p & 2) << 1) | ((q & 2) << 2) |
@@ -1210,19 +1210,19 @@ function make_monochrome_pattern(lightness){
 		) / 64;
 	});
 
-	var pattern_canvas = document.createElement("canvas");
-	var pattern_ctx = pattern_canvas.getContext("2d");
+	const pattern_canvas = document.createElement("canvas");
+	const pattern_ctx = pattern_canvas.getContext("2d");
 
 	pattern_canvas.width = 8;
 	pattern_canvas.height = 8;
 
-	var pattern_image_data = ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
+	const pattern_image_data = ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
 
-	for(var x = 0; x < pattern_canvas.width; x += 1){
-		for(var y = 0; y < pattern_canvas.width; y += 1){
-			var map_value = dither_threshold_table[(x & 7) + ((y & 7) << 3)];
-			var px_white = lightness > map_value;
-			var index = ((y * pattern_image_data.height) + x) * 4;
+	for(let x = 0; x < pattern_canvas.width; x += 1){
+		for(let y = 0; y < pattern_canvas.width; y += 1){
+			const map_value = dither_threshold_table[(x & 7) + ((y & 7) << 3)];
+			const px_white = lightness > map_value;
+			const index = ((y * pattern_image_data.height) + x) * 4;
 			pattern_image_data.data[index + 0] = px_white * 255;
 			pattern_image_data.data[index + 1] = px_white * 255;
 			pattern_image_data.data[index + 2] = px_white * 255;
@@ -1239,9 +1239,9 @@ function make_monochrome_palette(){
 	// TODO: maybe *offer* to convert the existing image to monochrome
 	// (offer as opposed to forcing it)
 
-	var palette = [];
-	var n_colors_per_row = 14;
-	var n_colors = n_colors_per_row * 2;
+	const palette = [];
+	const n_colors_per_row = 14;
+	const n_colors = n_colors_per_row * 2;
 	for(let i=0; i<n_colors_per_row; i++){
 		let lightness = i / n_colors;
 		palette.push(make_monochrome_pattern(lightness));
@@ -1262,36 +1262,36 @@ function image_attributes(){
 	if(image_attributes.$window){
 		image_attributes.$window.close();
 	}
-	var $w = image_attributes.$window = new $FormWindow("Attributes");
+	const $w = image_attributes.$window = new $FormWindow("Attributes");
 
-	var $main = $w.$main;
-	var $buttons = $w.$buttons;
+	const $main = $w.$main;
+	const $buttons = $w.$buttons;
 
 	// Information
 
-	var table = {
+	const table = {
 		"File last saved": "Not available", // @TODO
 		"Size on disk": "Not available", // @TODO
 		"Resolution": "72 x 72 dots per inch",
 	};
-	var $table = $(E("table")).appendTo($main);
-	for(var k in table){
-		var $tr = $(E("tr")).appendTo($table);
-		var $key = $(E("td")).appendTo($tr).text(k + ":");
-		var $value = $(E("td")).appendTo($tr).text(table[k]);
+	const $table = $(E("table")).appendTo($main);
+	for(const k in table){
+		const $tr = $(E("tr")).appendTo($table);
+		const $key = $(E("td")).appendTo($tr).text(k + ":");
+		const $value = $(E("td")).appendTo($tr).text(table[k]);
 	}
 
 	// Dimensions
 
-	var unit_sizes_in_px = {px: 1, in: 72, cm: 28.3465};
-	var current_unit = image_attributes.unit = image_attributes.unit || "px";
-	var width_in_px = canvas.width;
-	var height_in_px = canvas.height;
+	const unit_sizes_in_px = {px: 1, in: 72, cm: 28.3465};
+	let current_unit = image_attributes.unit = image_attributes.unit || "px";
+	let width_in_px = canvas.width;
+	let height_in_px = canvas.height;
 
-	var $width_label = $(E("label")).appendTo($main).text("Width:");
-	var $height_label = $(E("label")).appendTo($main).text("Height:");
-	var $width = $(E("input")).appendTo($width_label);
-	var $height = $(E("input")).appendTo($height_label);
+	const $width_label = $(E("label")).appendTo($main).text("Width:");
+	const $height_label = $(E("label")).appendTo($main).text("Height:");
+	const $width = $(E("input")).appendTo($width_label);
+	const $height = $(E("input")).appendTo($height_label);
 
 	$main.find("input")
 		.css({width: "40px"})
@@ -1306,24 +1306,24 @@ function image_attributes(){
 
 	// Fieldsets
 
-	var $units = $(E("fieldset")).appendTo($main).append('<legend>Units</legend>');
+	const $units = $(E("fieldset")).appendTo($main).append('<legend>Units</legend>');
 	$units.append('<label><input type="radio" name="units" value="in">Inches</label>');
 	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
 	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
 	$units.find("[value=" + current_unit + "]").attr({checked: true});
 	$units.on("change", () => {
-		var new_unit = $units.find(":checked").val();
+		const new_unit = $units.find(":checked").val();
 		$width.val(width_in_px / unit_sizes_in_px[new_unit]);
 		$height.val(height_in_px / unit_sizes_in_px[new_unit]);
 		current_unit = new_unit;
 	}).triggerHandler("change");
 
-	var $colors = $(E("fieldset")).appendTo($main).append('<legend>Colors</legend>');
+	const $colors = $(E("fieldset")).appendTo($main).append('<legend>Colors</legend>');
 	$colors.append('<label><input type="radio" name="colors" value="monochrome">Black and White</label>');
 	$colors.append('<label><input type="radio" name="colors" value="polychrome">Color</label>');
 	$colors.find("[value=" + (monochrome ? "monochrome" : "polychrome") + "]").attr({checked: true});
 
-	var $transparency = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
+	const $transparency = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
 	$transparency.append('<label><input type="radio" name="transparency" value="transparent">Transparent</label>');
 	$transparency.append('<label><input type="radio" name="transparency" value="opaque">Opaque</label>');
 	$transparency.find("[value=" + (transparency ? "transparent" : "opaque") + "]").attr({checked: true});
@@ -1331,11 +1331,11 @@ function image_attributes(){
 	// Buttons on the right
 
 	$w.$Button("Okay", () => {
-		var transparency_option = $transparency.find(":checked").val();
-		var colors_option = $colors.find(":checked").val();
-		var unit = $units.find(":checked").val();
+		const transparency_option = $transparency.find(":checked").val();
+		const colors_option = $colors.find(":checked").val();
+		const unit = $units.find(":checked").val();
 
-		var was_monochrome = monochrome;
+		const was_monochrome = monochrome;
 
 		image_attributes.unit = unit;
 		transparency = (transparency_option == "transparent");
@@ -1353,9 +1353,9 @@ function image_attributes(){
 			reset_colors();
 		}
 
-		var unit_to_px = unit_sizes_in_px[unit];
-		var width = $width.val() * unit_to_px;
-		var height = $height.val() * unit_to_px;
+		const unit_to_px = unit_sizes_in_px[unit];
+		const width = $width.val() * unit_to_px;
+		const height = $height.val() * unit_to_px;
 		$canvas.trigger("user-resized", [0, 0, ~~width, ~~height]);
 
 		image_attributes.$window.close();
@@ -1378,15 +1378,15 @@ function image_attributes(){
 }
 
 function image_flip_and_rotate(){
-	var $w = new $FormWindow("Flip and Rotate");
+	const $w = new $FormWindow("Flip and Rotate");
 
-	var $fieldset = $(E("fieldset")).appendTo($w.$main);
+	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append("<legend>Flip or rotate</legend>");
 	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-horizontal' checked/>Flip horizontal</label>");
 	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-vertical'/>Flip vertical</label>");
 	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='rotate-by-angle'/>Rotate by angle<div></div></label>");
 
-	var $rotate_by_angle = $fieldset.find("div")
+	const $rotate_by_angle = $fieldset.find("div");
 	$rotate_by_angle.css({paddingLeft: "30px"});
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='90' checked/>90°</label>");
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='180'/>180°</label>");
@@ -1395,7 +1395,7 @@ function image_flip_and_rotate(){
 	$rotate_by_angle.find("input").attr({disabled: true});
 
 	$fieldset.find("input").on("change", () => {
-		var action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		$rotate_by_angle.find("input").attr({
 			disabled: action !== "rotate-by-angle"
 		});
@@ -1405,9 +1405,9 @@ function image_flip_and_rotate(){
 		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
 		$fieldset.find("input").triggerHandler("change");
 
-		var $label = $(this).closest("label");
+		const $label = $(this).closest("label");
 		// Focus the numerical input if this field has one
-		var num_input = $label.find("input[type='number']")[0];
+		const num_input = $label.find("input[type='number']")[0];
 		if (num_input) {
 			num_input.focus();
 		}
@@ -1419,16 +1419,16 @@ function image_flip_and_rotate(){
 	$fieldset.find("label").css({display: "block"});
 
 	$w.$Button("Okay", () => {
-		var action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
-		var angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
+		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+		let angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
 		if(angle_val === "arbitrary"){
 			angle_val = $fieldset.find("input[name='rotate-by-arbitrary-angle']").val();
 		}
-		var angle_deg = parseFloat(angle_val);
-		var angle = angle_deg / 360 * TAU;
+		const angle_deg = parseFloat(angle_val);
+		const angle = angle_deg / 360 * TAU;
 
 		if(isNaN(angle)){
-			var $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
+			const $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
 			$msgw.$main.text("The value specified for Degrees was invalid.");
 			$msgw.$Button("Okay", () => {
 				$msgw.close();
@@ -1460,21 +1460,21 @@ function image_flip_and_rotate(){
 }
 
 function image_stretch_and_skew(){
-	var $w = new $FormWindow("Stretch and Skew");
+	const $w = new $FormWindow("Stretch and Skew");
 
-	var $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
+	const $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_stretch.append("<legend>Stretch</legend><table></table>");
-	var $fieldset_skew = $(E("fieldset")).appendTo($w.$main);
+	const $fieldset_skew = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_skew.append("<legend>Skew</legend><table></table>");
 
-	var $RowInput = ($table, img_src, label_text, default_value, label_unit) => {
-		var $tr = $(E("tr")).appendTo($table);
-		var $img = $(E("img")).attr({
+	const $RowInput = ($table, img_src, label_text, default_value, label_unit) => {
+		const $tr = $(E("tr")).appendTo($table);
+		const $img = $(E("img")).attr({
 			src: "images/transforms/" + img_src + ".png"
 		}).css({
 			marginRight: "20px"
 		});
-		var $input = $(E("input")).attr({
+		const $input = $(E("input")).attr({
 			value: default_value
 		}).css({
 			width: "40px"
@@ -1487,16 +1487,16 @@ function image_stretch_and_skew(){
 		return $input;
 	};
 
-	var stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%");
-	var stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%");
-	var skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees");
-	var skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees");
+	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%");
+	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%");
+	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees");
+	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees");
 
 	$w.$Button("Okay", () => {
-		var xscale = parseFloat(stretch_x.val())/100;
-		var yscale = parseFloat(stretch_y.val())/100;
-		var hskew = parseFloat(skew_x.val())/360*TAU;
-		var vskew = parseFloat(skew_y.val())/360*TAU;
+		const xscale = parseFloat(stretch_x.val())/100;
+		const yscale = parseFloat(stretch_y.val())/100;
+		const hskew = parseFloat(skew_x.val())/360*TAU;
+		const vskew = parseFloat(skew_y.val())/360*TAU;
 		stretch_and_skew(xscale, yscale, hskew, vskew);
 		$canvas_area.trigger("resize");
 		$w.close();
@@ -1519,7 +1519,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	// TODO: file name + type dialog
 	canvas.toBlob(blob => {
 		sanity_check_blob(blob, () => {
-			var file_saver = saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png");
+			const file_saver = saveAs(blob, file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "") + ".png");
 			file_saver.onwriteend = () => {
 				// this won't fire in chrome
 				savedCallbackUnreliable();
@@ -1536,8 +1536,8 @@ function set_as_wallpaper_tiled(c){
 		return window.systemSetAsWallpaperTiled(c);
 	}
 
-	var wallpaperCanvas = new Canvas(screen.width, screen.height);
-	var pattern = wallpaperCanvas.ctx.createPattern(c, "repeat");
+	const wallpaperCanvas = new Canvas(screen.width, screen.height);
+	const pattern = wallpaperCanvas.ctx.createPattern(c, "repeat");
 	wallpaperCanvas.ctx.fillStyle = pattern;
 	wallpaperCanvas.ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
 
@@ -1565,7 +1565,7 @@ function set_as_wallpaper_centered(c){
  */
 function get_array_buffer_from_canvas(canvas) {
 	return new Promise((resolve, reject) => {
-		var file_reader = new FileReader();
+		const file_reader = new FileReader();
 
 		file_reader.onloadend = () => {
 			resolve(file_reader.result);
@@ -1597,7 +1597,7 @@ function sanity_check_blob(blob, okay_callback){
 	if(blob.size > 0){
 		okay_callback();
 	}else{
-		var $w = $FormWindow().title("Warning").addClass("dialogue-window");
+		const $w = $FormWindow().title("Warning").addClass("dialogue-window");
 		$w.$main.html(
 			"<p>Tried to save file, but file was empty.</p>" +
 			"<p>Try again, or if the problem persists, report here: " +

@@ -4,8 +4,8 @@ class OnCanvasSelection extends OnCanvasObject {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("selection");
-		var last_tool_transparent_mode = tool_transparent_mode;
-		var last_background_color = colors.background;
+		let last_tool_transparent_mode = tool_transparent_mode;
+		let last_background_color = colors.background;
 		this._on_option_changed = () => {
 			if (!this.source_canvas) {
 				return;
@@ -34,7 +34,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.$el.attr("touch-action", "none");
 		this.position();
 
-		var instantiate = ()=> {
+		const instantiate = ()=> {
 			if (_img) {
 				// (this applies when pasting a selection)
 				// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
@@ -69,9 +69,9 @@ class OnCanvasSelection extends OnCanvasObject {
 				this.position();
 				this.resize();
 			});
-			var mox, moy;
-			var pointermove = e => {
-				var m = e2c(e);
+			let mox, moy;
+			const pointermove = e => {
+				const m = e2c(e);
 				this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
 				this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
 				this.position();
@@ -81,9 +81,9 @@ class OnCanvasSelection extends OnCanvasObject {
 			};
 			this.canvas_pointerdown = e => {
 				e.preventDefault();
-				var rect = this.canvas.getBoundingClientRect();
-				var cx = e.clientX - rect.left;
-				var cy = e.clientY - rect.top;
+				const rect = this.canvas.getBoundingClientRect();
+				const cx = e.clientX - rect.left;
+				const cy = e.clientY - rect.top;
 				mox = ~~(cx / rect.width * this.canvas.width);
 				moy = ~~(cy / rect.height * this.canvas.height);
 				$G.on("pointermove", pointermove);
@@ -102,7 +102,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			$canvas_area.trigger("resize");
 			$status_position.text("");
 			$status_size.text("");
-		}
+		};
 		
 		if (_passive) {
 			instantiate();
@@ -112,10 +112,10 @@ class OnCanvasSelection extends OnCanvasObject {
 		}
 	}
 	cut_out_background() {
-		var cutout = this.canvas;
+		const cutout = this.canvas;
 		// doc/this or canvas/cutout, either of those pairs would result in variable names of equal length which is nice :)
-		var canvasImageData = ctx.getImageData(this.x, this.y, this.width, this.height);
-		var cutoutImageData = cutout.ctx.getImageData(0, 0, this.width, this.height);
+		const canvasImageData = ctx.getImageData(this.x, this.y, this.width, this.height);
+		const cutoutImageData = cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// cutoutImageData is initialzed with the shape to be cut out (whether rectangular or polygonal)
 		// and should end up as the cut out image data for the selection
 		// canvasImageData is initially the portion of image data on the canvas,
@@ -125,12 +125,12 @@ class OnCanvasSelection extends OnCanvasObject {
 		// if(!transparency){ // now if !transparency or if tool_transparent_mode
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
-		var colored_cutout = new Canvas(cutout);
+		const colored_cutout = new Canvas(cutout);
 		replace_colors_with_swatch(colored_cutout.ctx, colors.background, this.x, this.y);
 		// var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// }
-		for (var i = 0; i < cutoutImageData.data.length; i += 4) {
-			var in_cutout = cutoutImageData.data[i + 3] > 0;
+		for (let i = 0; i < cutoutImageData.data.length; i += 4) {
+			const in_cutout = cutoutImageData.data[i + 3] > 0;
 			if (in_cutout) {
 				cutoutImageData.data[i + 0] = canvasImageData.data[i + 0];
 				cutoutImageData.data[i + 1] = canvasImageData.data[i + 1];
@@ -166,15 +166,15 @@ class OnCanvasSelection extends OnCanvasObject {
 		}
 	}
 	update_tool_transparent_mode() {
-		var sourceImageData = this.source_canvas.ctx.getImageData(0, 0, this.width, this.height);
-		var cutoutImageData = this.canvas.ctx.createImageData(this.width, this.height);
-		var background_color_rgba = get_rgba_from_color(colors.background);
+		const sourceImageData = this.source_canvas.ctx.getImageData(0, 0, this.width, this.height);
+		const cutoutImageData = this.canvas.ctx.createImageData(this.width, this.height);
+		const background_color_rgba = get_rgba_from_color(colors.background);
 		// NOTE: In b&w mode, mspaint treats the transparency color as white,
 		// regardless of the pattern selected, even if the selected background color is pure black.
 		// We allow any kind of image data while in our "b&w mode".
 		// Our b&w mode is essentially 'patterns in the palette'.
-		for (var i = 0; i < cutoutImageData.data.length; i += 4) {
-			var in_cutout = sourceImageData.data[i + 3] > 0;
+		for (let i = 0; i < cutoutImageData.data.length; i += 4) {
+			let in_cutout = sourceImageData.data[i + 3] > 0;
 			if (tool_transparent_mode) {
 				// FIXME: work with transparent selected background color
 				// (support treating partially transparent background colors as transparency)
@@ -203,13 +203,13 @@ class OnCanvasSelection extends OnCanvasObject {
 	// TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
 	replace_source_canvas(new_source_canvas) {
 		this.source_canvas = new_source_canvas;
-		var new_canvas = new Canvas(new_source_canvas);
+		const new_canvas = new Canvas(new_source_canvas);
 		$(this.canvas).replaceWith(new_canvas);
 		this.canvas = new_canvas;
-		var center_x = this.x + this.width / 2;
-		var center_y = this.y + this.height / 2;
-		var new_width = new_canvas.width;
-		var new_height = new_canvas.height;
+		const center_x = this.x + this.width / 2;
+		const center_y = this.y + this.height / 2;
+		const new_width = new_canvas.width;
+		const new_height = new_canvas.height;
 		// NOTE: flooring the coordinates to integers avoids blurring
 		// but it introduces "inching", where the selection can move along by pixels if you rotate it repeatedly
 		// could introduce an "error offset" just to avoid this but that seems overkill
@@ -228,12 +228,12 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.update_tool_transparent_mode();
 	}
 	resize() {
-		var new_source_canvas = new Canvas(this.width, this.height);
+		const new_source_canvas = new Canvas(this.width, this.height);
 		new_source_canvas.ctx.drawImage(this.source_canvas, 0, 0, this.width, this.height);
 		this.replace_source_canvas(new_source_canvas);
 	}
 	scale(factor) {
-		var new_source_canvas = new Canvas(this.width * factor, this.height * factor);
+		const new_source_canvas = new Canvas(this.width * factor, this.height * factor);
 		new_source_canvas.ctx.drawImage(this.source_canvas, 0, 0, new_source_canvas.width, new_source_canvas.height);
 		this.replace_source_canvas(new_source_canvas);
 	}

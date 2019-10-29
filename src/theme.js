@@ -1,20 +1,20 @@
 (() => {
-	var default_theme = "classic.css";
-	var theme_storage_key = "jspaint theme";
-	var href_for = theme => "styles/themes/" + theme;
+	const default_theme = "classic.css";
+	const theme_storage_key = "jspaint theme";
+	const href_for = theme => "styles/themes/" + theme;
 	
-	var current_theme;
+	let current_theme;
 	try {
 		current_theme = localStorage[theme_storage_key] || default_theme;
 	} catch (error) {
 		current_theme = default_theme;
 	}
 
-	var iid;
+	let iid;
 	function wait_for_theme_loaded(theme, callback) {
 		clearInterval(iid);
 		iid = setInterval(() => {
-			var theme_loaded =
+			const theme_loaded =
 				getComputedStyle(document.documentElement)
 					.getPropertyValue("--theme-loaded")
 					.replace(/['"]+/g, "").trim();
@@ -25,7 +25,7 @@
 		}, 15);
 	}
 
-	var theme_link = document.createElement("link");
+	const theme_link = document.createElement("link");
 	theme_link.rel = "stylesheet";
 	theme_link.type = "text/css";
 	theme_link.href = href_for(current_theme);

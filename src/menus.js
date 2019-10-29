@@ -1,5 +1,5 @@
 
-var menus = {
+const menus = {
 	"&File": [
 		{
 			item: "&New",
@@ -225,7 +225,7 @@ var menus = {
 			checkbox: {
 				toggle() {
 					$extras_menu_button.toggle();
-					var checked = this.check();
+					const checked = this.check();
 					try{
 						localStorage["jspaint extras menu visible"] = checked;
 					// eslint-disable-next-line no-empty
@@ -344,7 +344,7 @@ var menus = {
 			item: "&Get Colors",
 			action: ()=> {
 				get_FileList_from_file_select_dialog((files)=> {
-					var file = files[0];
+					const file = files[0];
 					Palette.load(file, (err, new_palette)=> {
 						if(err){
 							show_error_message("This file is not in a format that paint recognizes, or no colors were found.");
@@ -360,7 +360,7 @@ var menus = {
 		{
 			item: "&Save Colors",
 			action: ()=> {
-				var blob = new Blob([JSON.stringify(palette)], {type: "application/json"});
+				const blob = new Blob([JSON.stringify(palette)], {type: "application/json"});
 				sanity_check_blob(blob, ()=> {
 					saveAs(blob, "colors.json");
 				});
@@ -438,7 +438,7 @@ var menus = {
 				{
 					item: "&New Session From Document",
 					action: ()=> {
-						var name = prompt("Enter the session name that will be used in the URL for sharing.");
+						let name = prompt("Enter the session name that will be used in the URL for sharing.");
 						if(typeof name == "string"){
 							name = name.trim();
 							if(name == ""){

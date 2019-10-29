@@ -32,8 +32,8 @@ tools = [{
 		// The inverty brush is continuous in space which means
 		// paint(ctx, x, y) will be called for each pixel the pointer moves
 		// and we only need to record individual pointer events to make the polygon
-		var onpointermove = e => {
-			var pointer = e2c(e);
+		const onpointermove = e => {
+			const pointer = e2c(e);
 			// Constrain the pointer to the canvas
 			pointer.x = Math.min(canvas.width, pointer.x);
 			pointer.x = Math.max(0, pointer.x);
@@ -62,17 +62,17 @@ tools = [{
 		y = Math.max(0, y);
 		
 		// Find the dimensions on the canvas of the tiny square to invert
-		var inverty_size = 2;
-		var rect_x = ~~(x - inverty_size/2);
-		var rect_y = ~~(y - inverty_size/2);
-		var rect_w = inverty_size;
-		var rect_h = inverty_size;
+		const inverty_size = 2;
+		const rect_x = ~~(x - inverty_size/2);
+		const rect_y = ~~(y - inverty_size/2);
+		const rect_w = inverty_size;
+		const rect_h = inverty_size;
 		
-		var ctx_dest = this.preview_canvas.ctx;
-		var id_src = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
-		var id_dest = ctx_dest.getImageData(rect_x, rect_y, rect_w, rect_h);
+		const ctx_dest = this.preview_canvas.ctx;
+		const id_src = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+		const id_dest = ctx_dest.getImageData(rect_x, rect_y, rect_w, rect_h);
 		
-		for(var i=0, l=id_dest.data.length; i<l; i+=4){
+		for(let i=0, l=id_dest.data.length; i<l; i+=4){
 			id_dest.data[i+0] = 255 - id_src.data[i+0];
 			id_dest.data[i+1] = 255 - id_src.data[i+1];
 			id_dest.data[i+2] = 255 - id_src.data[i+2];
@@ -86,7 +86,7 @@ tools = [{
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 
-		var contents_within_polygon = copy_contents_within_polygon(
+		const contents_within_polygon = copy_contents_within_polygon(
 			canvas,
 			this.points,
 			this.x_min,
@@ -142,7 +142,7 @@ tools = [{
 			selection.destroy();
 			selection = null;
 		}
-		var pointer_has_moved = false;
+		let pointer_has_moved = false;
 		$G.one("pointermove", () => {
 			pointer_has_moved = true;
 		});
@@ -157,10 +157,10 @@ tools = [{
 	},
 	paint() {
 		if(!selection){ return; }
-		var x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
-		var y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
-		var x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
-		var y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
+		const x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
+		const y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
+		const x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
+		const y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
 		selection.x = x1;
 		selection.y = y1;
 		selection.width = Math.max(1, x2 - x1);
@@ -192,10 +192,10 @@ tools = [{
 	continuous: "space",
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
-		var rect_x = ~~(x - eraser_size/2);
-		var rect_y = ~~(y - eraser_size/2);
-		var rect_w = eraser_size;
-		var rect_h = eraser_size;
+		const rect_x = ~~(x - eraser_size/2);
+		const rect_y = ~~(y - eraser_size/2);
+		const rect_w = eraser_size;
+		const rect_h = eraser_size;
 		
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
@@ -206,14 +206,14 @@ tools = [{
 	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		
-		var rect_x = ~~(x - eraser_size/2);
-		var rect_y = ~~(y - eraser_size/2);
-		var rect_w = eraser_size;
-		var rect_h = eraser_size;
+		const rect_x = ~~(x - eraser_size/2);
+		const rect_y = ~~(y - eraser_size/2);
+		const rect_w = eraser_size;
+		const rect_h = eraser_size;
 		
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
-		var hairline_width = 1/scale;
+		const hairline_width = 1/scale;
 
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = hairline_width;
@@ -225,10 +225,10 @@ tools = [{
 	},
 	paint(ctx, x, y) {
 		
-		var rect_x = ~~(x - eraser_size/2);
-		var rect_y = ~~(y - eraser_size/2);
-		var rect_w = eraser_size;
-		var rect_h = eraser_size;
+		const rect_x = ~~(x - eraser_size/2);
+		const rect_y = ~~(y - eraser_size/2);
+		const rect_w = eraser_size;
+		const rect_h = eraser_size;
 		
 		if(button === 0){
 			// Eraser
@@ -243,12 +243,12 @@ tools = [{
 			// Right click with the eraser to selectively replace
 			// the selected foreground color with the selected background color
 			
-			var fg_rgba = get_rgba_from_color(colors.foreground);
-			var bg_rgba = get_rgba_from_color(colors.background);
+			const fg_rgba = get_rgba_from_color(colors.foreground);
+			const bg_rgba = get_rgba_from_color(colors.background);
 			
-			var id = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+			const id = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			
-			for(var i=0, l=id.data.length; i<l; i+=4){
+			for(let i=0, l=id.data.length; i<l; i+=4){
 				if(
 					id.data[i+0] === fg_rgba[0] &&
 					id.data[i+1] === fg_rgba[1] &&
@@ -274,7 +274,7 @@ tools = [{
 	pointerdown(ctx, x, y) {
 		
 		// Get the rgba values of the selected fill color
-		var rgba = get_rgba_from_color(fill_color);
+		const rgba = get_rgba_from_color(fill_color);
 		
 		if(shift){
 			// Perform a global (non-contiguous) fill operation, AKA color replacement
@@ -307,11 +307,11 @@ tools = [{
 	},
 	paint(ctx, x, y) {
 		if(x >= 0 && y >= 0 && x < canvas.width && y < canvas.height){
-			var id = ctx.getImageData(~~x, ~~y, 1, 1);
-			var r = id.data[0];
-			var g = id.data[1];
-			var b = id.data[2];
-			var a = id.data[3];
+			const id = ctx.getImageData(~~x, ~~y, 1, 1);
+			const r = id.data[0];
+			const g = id.data[1];
+			const b = id.data[2];
+			const a = id.data[3];
 			this.current_color = "rgba("+r+","+g+","+b+","+a/255+")";
 		}else{
 			this.current_color = "white";
@@ -340,16 +340,16 @@ tools = [{
 	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(pointer_active) { return; }
-		var prospective_magnification = this.getProspectiveMagnification();
+		const prospective_magnification = this.getProspectiveMagnification();
 
 		if(prospective_magnification < magnification) { return; } // hide if would be zooming out
 
 		// prospective viewport size in document coords
-		var w = $canvas_area.width() / prospective_magnification;
-		var h = $canvas_area.height() / prospective_magnification;
+		const w = $canvas_area.width() / prospective_magnification;
+		const h = $canvas_area.height() / prospective_magnification;
 
-		var rect_x1 = ~~(x - w/2);
-		var rect_y1 = ~~(y - h/2);
+		let rect_x1 = ~~(x - w/2);
+		let rect_y1 = ~~(y - h/2);
 
 		// try to move rect into bounds without squishing
 		rect_x1 = Math.max(0, rect_x1);
@@ -357,8 +357,8 @@ tools = [{
 		rect_x1 = Math.min(canvas.width - w, rect_x1);
 		rect_y1 = Math.min(canvas.height - h, rect_y1);
 
-		var rect_x2 = rect_x1 + w;
-		var rect_y2 = rect_y1 + h;
+		let rect_x2 = rect_x1 + w;
+		let rect_y2 = rect_y1 + h;
 		
 		// clamp rect to bounds (with squishing)
 		rect_x1 = Math.max(0, rect_x1);
@@ -366,19 +366,19 @@ tools = [{
 		rect_x2 = Math.min(canvas.width, rect_x2);
 		rect_y2 = Math.min(canvas.height, rect_y2);
 		
-		var rect_w = rect_x2 - rect_x1;
-		var rect_h = rect_y2 - rect_y1;
-		var rect_x = rect_x1;
-		var rect_y = rect_y1;
+		const rect_w = rect_x2 - rect_x1;
+		const rect_h = rect_y2 - rect_y1;
+		const rect_x = rect_x1;
+		const rect_y = rect_y1;
 
-		var id_src = canvas.ctx.getImageData(rect_x, rect_y, rect_w+1, rect_h+1);
-		var id_dest = ctx.getImageData((rect_x+translate_x)*scale, (rect_y+translate_y)*scale, rect_w*scale+1, rect_h*scale+1);
+		const id_src = canvas.ctx.getImageData(rect_x, rect_y, rect_w+1, rect_h+1);
+		const id_dest = ctx.getImageData((rect_x+translate_x)*scale, (rect_y+translate_y)*scale, rect_w*scale+1, rect_h*scale+1);
 		
 		function copyPixelInverted(x_dest, y_dest) {
-			var x_src = ~~(x_dest / scale);
-			var y_src = ~~(y_dest / scale);
-			var index_src = (x_src + y_src * id_src.width) * 4;
-			var index_dest = (x_dest + y_dest * id_dest.width) * 4;
+			const x_src = ~~(x_dest / scale);
+			const y_src = ~~(y_dest / scale);
+			const index_src = (x_src + y_src * id_src.width) * 4;
+			const index_dest = (x_dest + y_dest * id_dest.width) * 4;
 			id_dest.data[index_dest+0] = 255 - id_src.data[index_src+0];
 			id_dest.data[index_dest+1] = 255 - id_src.data[index_src+1];
 			id_dest.data[index_dest+2] = 255 - id_src.data[index_src+2];
@@ -411,19 +411,19 @@ tools = [{
 		// ctx.strokeRect(rect_x1, rect_y1, rect_w, rect_h);
 	},
 	pointerdown(ctx, x, y) {
-		var prev_magnification = magnification;
-		var prospective_magnification = this.getProspectiveMagnification();
+		const prev_magnification = magnification;
+		const prospective_magnification = this.getProspectiveMagnification();
 		
 		set_magnification(prospective_magnification);
 
 		if (magnification > prev_magnification) {
 
 			// (new) viewport size in document coords
-			var w = $canvas_area.width() / magnification;
-			var h = $canvas_area.height() / magnification;
+			const w = $canvas_area.width() / magnification;
+			const h = $canvas_area.height() / magnification;
 
-			var scroll_left = (x - w/2) * magnification / prev_magnification;
-			var scroll_top = (y - h/2) * magnification / prev_magnification;
+			const scroll_left = (x - w/2) * magnification / prev_magnification;
+			const scroll_top = (y - h/2) * magnification / prev_magnification;
 			
 			$canvas_area.scrollLeft(scroll_left);
 			$canvas_area.scrollTop(scroll_top);
@@ -441,7 +441,7 @@ tools = [{
 	paint(ctx, x, y) {
 		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
 		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)
-		var csz = get_brush_canvas_size(pencil_size, "circle");
+		const csz = get_brush_canvas_size(pencil_size, "circle");
 		if(
 			this.rendered_shape !== "circle" ||
 			this.rendered_color !== stroke_color ||
@@ -469,7 +469,7 @@ tools = [{
 	rendered_size: 0,
 	rendered_shape: "",
 	paint(ctx, x, y) {
-		var csz = get_brush_canvas_size(brush_size, brush_shape);
+		const csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
 			this.rendered_color !== stroke_color ||
@@ -504,11 +504,11 @@ tools = [{
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
 	paint(ctx, x, y) {
-		var r = airbrush_size / 2;
-		for(var i = 0; i < 6 + r/5; i++){
-			var rx = (Math.random()*2-1) * r;
-			var ry = (Math.random()*2-1) * r;
-			var d = rx*rx + ry*ry;
+		const r = airbrush_size / 2;
+		for(let i = 0; i < 6 + r/5; i++){
+			const rx = (Math.random()*2-1) * r;
+			const ry = (Math.random()*2-1) * r;
+			const d = rx*rx + ry*ry;
 			if(d <= r * r){
 				ctx.fillRect(x + ~~rx, y + ~~ry, 1, 1);
 			}
@@ -532,7 +532,7 @@ tools = [{
 			textbox.draw();
 			textbox.destroy();
 		}
-		var pointer_has_moved = false;
+		let pointer_has_moved = false;
 		$G.one("pointermove", () => {
 			pointer_has_moved = true;
 		});
@@ -547,10 +547,10 @@ tools = [{
 	},
 	paint() {
 		if(!textbox){ return; }
-		var x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
-		var y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
-		var x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
-		var y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
+		const x1 = Math.max(0, Math.min(this.drag_start_x, pointer.x));
+		const y1 = Math.max(0, Math.min(this.drag_start_y, pointer.y));
+		const x2 = Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x));
+		const y2 = Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y));
 		textbox.x = x1;
 		textbox.y = y1;
 		textbox.width = Math.max(1, x2 - x1);
@@ -607,7 +607,7 @@ tools = [{
 	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
-		var i = this.points.length - 1;
+		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
 		
@@ -695,12 +695,12 @@ tools = [{
 	pointerup(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
-		var i = this.points.length - 1;
+		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
-		var dx = this.points[i].x - this.points[0].x;
-		var dy = this.points[i].y - this.points[0].y;
-		var d = Math.sqrt(dx*dx + dy*dy);
+		const dx = this.points[i].x - this.points[0].x;
+		const dy = this.points[i].y - this.points[0].y;
+		const d = Math.sqrt(dx*dx + dy*dy);
 		if(d < stroke_size * 5.1010101){ // arbitrary 101 (TODO: find correct value (or formula))
 			this.complete(ctx, x, y);
 		}
@@ -722,13 +722,13 @@ tools = [{
 				this.points.push({x: x, y: y});
 			});
 		}else{
-			var lx = this.last_click_pointerdown.x;
-			var ly = this.last_click_pointerdown.y;
-			var lt = this.last_click_pointerdown.time;
-			var dx = x - lx;
-			var dy = y - ly;
-			var dt = +(new Date) - lt;
-			var d = Math.sqrt(dx*dx + dy*dy);
+			const lx = this.last_click_pointerdown.x;
+			const ly = this.last_click_pointerdown.y;
+			const lt = this.last_click_pointerdown.time;
+			const dx = x - lx;
+			const dy = y - ly;
+			const dt = +(new Date) - lt;
+			const d = Math.sqrt(dx*dx + dy*dy);
 			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (TODO: find correct value (or formula))
 				this.complete(ctx, x, y);
 				// Release the pointer to prevent this.paint()
@@ -749,7 +749,7 @@ tools = [{
 		// @TODO: stop needing this
 		ctx.copy(this.canvas_base);
 		
-		var i = this.points.length - 1;
+		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
 		
@@ -826,7 +826,7 @@ tools = [{
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
 
-		var radius;
+		let radius;
 		if(w < stroke_size || h < stroke_size){
 			ctx.fillStyle = ctx.strokeStyle;
 			radius = Math.min(8, w/2, h/2);

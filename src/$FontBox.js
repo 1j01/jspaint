@@ -1,19 +1,19 @@
 
 function $FontBox(){
-	var $fb = $(E("div")).addClass("font-box");
+	const $fb = $(E("div")).addClass("font-box");
 	
-	var $family = $(E("select"));
-	var $size = $(E("input")).attr({
+	const $family = $(E("select"));
+	const $size = $(E("input")).attr({
 		type: "number",
 		min: 8,
 		max: 72,
 		value: text_tool_font.size,
 	});
-	var $button_group = $(E("span")).addClass("text-toolbar-button-group");
-	var $bold = $Toggle(0, "bold");
-	var $italic = $Toggle(1, "italic");
-	var $underline = $Toggle(2, "underline");
-	var $vertical = $Toggle(3, "vertical");
+	const $button_group = $(E("span")).addClass("text-toolbar-button-group");
+	const $bold = $Toggle(0, "bold");
+	const $italic = $Toggle(1, "italic");
+	const $underline = $Toggle(2, "underline");
+	const $vertical = $Toggle(3, "vertical");
 	$vertical.attr("disabled", true);
 	$vertical.find("span").css({
 		filter: "grayscale(1) contrast(0.3) brightness(1.3) drop-shadow(1px 1px 0px white)" // approximate
@@ -22,14 +22,14 @@ function $FontBox(){
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);
 	
-	var update_font = () => {
+	const update_font = () => {
 		text_tool_font.size = Number($size.val());
 		text_tool_font.family = $family.val();
 		$G.trigger("option-changed");
 	};
 	
 	FontDetective.each(font => {
-		var $option = $(E("option"));
+		const $option = $(E("option"));
 		$option.val(font).text(font.name);
 		$family.append($option);
 		if (!text_tool_font.family) {
@@ -44,7 +44,7 @@ function $FontBox(){
 	$family.on("change", update_font);
 	$size.on("change", update_font);
 	
-	var $w = $Window();
+	const $w = $Window();
 	$w.title("Fonts");
 	$w.$content.append($fb);
 	$w.center();
@@ -52,8 +52,8 @@ function $FontBox(){
 	
 	
 	function $Toggle(xi, thing){
-		var $button = $(E("button"));
-		var $image = $(E("span")).appendTo($button);
+		const $button = $(E("button"));
+		const $image = $(E("span")).appendTo($button);
 		$button.css({
 			width: 23,
 			height: 22

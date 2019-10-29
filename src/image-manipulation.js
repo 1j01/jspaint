@@ -12,12 +12,12 @@ function render_brush(ctx, shape, size){
 		size -= 0.4;
 	}
 	
-	var mid_x = Math.round(ctx.canvas.width / 2);
-	var left = Math.round(mid_x - size/2);
-	var right = Math.round(mid_x + size/2);
-	var mid_y = Math.round(ctx.canvas.height / 2);
-	var top = Math.round(mid_y - size/2);
-	var bottom = Math.round(mid_y + size/2);
+	const mid_x = Math.round(ctx.canvas.width / 2);
+	const left = Math.round(mid_x - size/2);
+	const right = Math.round(mid_x + size/2);
+	const mid_y = Math.round(ctx.canvas.height / 2);
+	const top = Math.round(mid_y - size/2);
+	const bottom = Math.round(mid_y + size/2);
 	
 	if(shape === "circle"){
 		// TODO: ideally _without_pattern_support
@@ -39,13 +39,13 @@ function render_brush(ctx, shape, size){
 }
 
 function draw_ellipse(ctx, x, y, w, h, stroke, fill){
-	var center_x = x + w/2;
-	var center_y = y + h/2;
+	const center_x = x + w/2;
+	const center_y = y + h/2;
 	
 	if(aliasing){
-		var points = [];
-		var step = 0.05;
-		for(var theta = 0; theta < TAU; theta += step){
+		const points = [];
+		const step = 0.05;
+		for(let theta = 0; theta < TAU; theta += step){
 			points.push({
 				x: center_x + Math.cos(theta) * w/2,
 				y: center_y + Math.sin(theta) * h/2,
@@ -65,13 +65,13 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, stroke, fill){
 	
 	if(aliasing){
-		var points = [];
-		var lineTo = (x, y)=> {
+		const points = [];
+		const lineTo = (x, y)=> {
 			points.push({x, y});
 		};
-		var arc = (x, y, radius_x, radius_y, startAngle, endAngle)=> {
-			var step = 0.05;
-			for(var theta = startAngle; theta < endAngle; theta += step){
+		const arc = (x, y, radius_x, radius_y, startAngle, endAngle)=> {
+			const step = 0.05;
+			for(let theta = startAngle; theta < endAngle; theta += step){
 				points.push({
 					x: x + Math.cos(theta) * radius_x,
 					y: y + Math.sin(theta) * radius_y,
@@ -84,8 +84,8 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 			});
 		};
 
-		var x2 = x + width;
-		var y2 = y + height;
+		const x2 = x + width;
+		const y2 = y + height;
 		arc(x2 - radius_x, y + radius_y, radius_x, radius_y, TAU*3/4, TAU, false);
 		lineTo(x2, y2 - radius_y);
 		arc(x2 - radius_x, y2 - radius_y, radius_x, radius_y, 0, TAU*1/4, false);
@@ -116,10 +116,10 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 	}
 }
 
-var line_brush_canvas;
-var line_brush_canvas_rendered_shape;
-var line_brush_canvas_rendered_color;
-var line_brush_canvas_rendered_size;
+let line_brush_canvas;
+let line_brush_canvas_rendered_shape;
+let line_brush_canvas_rendered_color;
+let line_brush_canvas_rendered_size;
 function update_brush_for_drawing_lines(stroke_size){
 	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 	if(aliasing && stroke_size > 1){
@@ -130,7 +130,7 @@ function update_brush_for_drawing_lines(stroke_size){
 			line_brush_canvas_rendered_size !== stroke_size
 		){
 			// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
-			var csz = get_brush_canvas_size(stroke_size, "circle");
+			const csz = get_brush_canvas_size(stroke_size, "circle");
 			line_brush_canvas = new Canvas(csz, csz);
 			line_brush_canvas.width = csz;
 			line_brush_canvas.height = csz;
@@ -172,18 +172,18 @@ function bresenham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	
-	var dx = Math.abs(x2 - x1);
-	var dy = Math.abs(y2 - y1);
-	var sx = (x1 < x2) ? 1 : -1;
-	var sy = (y1 < y2) ? 1 : -1;
-	var err = dx - dy;
+	const dx = Math.abs(x2 - x1);
+	const dy = Math.abs(y2 - y1);
+	const sx = (x1 < x2) ? 1 : -1;
+	const sy = (y1 < y2) ? 1 : -1;
+	let err = dx - dy;
 	
 	// eslint-disable-next-line no-constant-condition
 	while(true){
 		callback(x1, y1);
 		
 		if(x1===x2 && y1===y2) break;
-		var e2 = err*2;
+		const e2 = err*2;
 		if(e2 >-dy){ err -= dy; x1 += sx; }
 		if(e2 < dx){ err += dx; y1 += sy; }
 	}
@@ -193,18 +193,18 @@ function brosandham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line argorithm with a callback between going horizontal and vertical
 	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
 	
-	var dx = Math.abs(x2 - x1);
-	var dy = Math.abs(y2 - y1);
-	var sx = (x1 < x2) ? 1 : -1;
-	var sy = (y1 < y2) ? 1 : -1;
-	var err = dx - dy;
+	const dx = Math.abs(x2 - x1);
+	const dy = Math.abs(y2 - y1);
+	const sx = (x1 < x2) ? 1 : -1;
+	const sy = (y1 < y2) ? 1 : -1;
+	let err = dx - dy;
 	
 	// eslint-disable-next-line no-constant-condition
 	while(true){
 		callback(x1, y1);
 		
 		if(x1===x2 && y1===y2) break;
-		var e2 = err*2;
+		const e2 = err*2;
 		if(e2 >-dy){ err -= dy; x1 += sx; }
 		callback(x1, y1);
 		if(e2 < dx){ err += dx; y1 += sy; }
@@ -222,15 +222,15 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	// maybe do something fancier like special-casing large chunks of single-color image
 	// (octree? or just have a higher level stack of chunks to fill and check at if a chunk is homogeneous)
 
-	var stack = [[start_x, start_y]];
-	var c_width = canvas.width;
-	var c_height = canvas.height;
-	var id = ctx.getImageData(0, 0, c_width, c_height);
+	const stack = [[start_x, start_y]];
+	const c_width = canvas.width;
+	const c_height = canvas.height;
+	const id = ctx.getImageData(0, 0, c_width, c_height);
 	pixel_pos = (start_y*c_width + start_x) * 4;
-	var start_r = id.data[pixel_pos+0];
-	var start_g = id.data[pixel_pos+1];
-	var start_b = id.data[pixel_pos+2];
-	var start_a = id.data[pixel_pos+3];
+	const start_r = id.data[pixel_pos+0];
+	const start_g = id.data[pixel_pos+1];
+	const start_b = id.data[pixel_pos+2];
+	const start_a = id.data[pixel_pos+3];
 	
 	if(
 		fill_r === start_r &&
@@ -242,20 +242,25 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	}
 	
 	while(stack.length){
-		var new_pos, x, y, pixel_pos, reach_left, reach_right;
-		new_pos = stack.pop();
-		x = new_pos[0];
-		y = new_pos[1];
+        let new_pos;
+        let x;
+        let y;
+        var pixel_pos;
+        let reach_left;
+        let reach_right;
+        new_pos = stack.pop();
+        x = new_pos[0];
+        y = new_pos[1];
 
-		pixel_pos = (y*c_width + x) * 4;
-		while(matches_start_color(pixel_pos)){
+        pixel_pos = (y*c_width + x) * 4;
+        while(matches_start_color(pixel_pos)){
 			y--;
 			pixel_pos = (y*c_width + x) * 4;
 		}
-		reach_left = false;
-		reach_right = false;
-		// eslint-disable-next-line no-constant-condition
-		while(true){
+        reach_left = false;
+        reach_right = false;
+        // eslint-disable-next-line no-constant-condition
+        while(true){
 			y++;
 			pixel_pos = (y*c_width + x) * 4;
 			
@@ -289,7 +294,7 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 
 			pixel_pos += c_width * 4;
 		}
-	}
+    }
 	ctx.putImageData(id, 0, 0);
 
 	function matches_start_color(pixel_pos){
@@ -311,14 +316,14 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 
 function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	
-	var c_width = canvas.width;
-	var c_height = canvas.height;
-	var id = ctx.getImageData(0, 0, c_width, c_height);
+	const c_width = canvas.width;
+	const c_height = canvas.height;
+	const id = ctx.getImageData(0, 0, c_width, c_height);
 	pixel_pos = (y*c_width + x) * 4;
-	var start_r = id.data[pixel_pos+0];
-	var start_g = id.data[pixel_pos+1];
-	var start_b = id.data[pixel_pos+2];
-	var start_a = id.data[pixel_pos+3];
+	const start_r = id.data[pixel_pos+0];
+	const start_g = id.data[pixel_pos+1];
+	const start_b = id.data[pixel_pos+2];
+	const start_a = id.data[pixel_pos+3];
 	
 	if(
 		fill_r === start_r &&
@@ -329,7 +334,7 @@ function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 		return;
 	}
 	
-	for(var i=0; i<id.data.length; i+=4){
+	for(let i=0; i<id.data.length; i+=4){
 		if(matches_start_color(i)){
 			color_pixel(i);
 		}
@@ -356,12 +361,12 @@ function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 
 function apply_image_transformation(fn){
 	// Apply an image transformation function to either the selection or the entire canvas
-	var original_canvas = selection ? selection.source_canvas: canvas;
+	const original_canvas = selection ? selection.source_canvas: canvas;
 	
-	var new_canvas = new Canvas(original_canvas.width, original_canvas.height);
+	const new_canvas = new Canvas(original_canvas.width, original_canvas.height);
 
-	var original_ctx = original_canvas.getContext("2d");
-	var new_ctx = new_canvas.getContext("2d");
+	const original_ctx = original_canvas.getContext("2d");
+	const new_ctx = new_canvas.getContext("2d");
 
 	fn(original_canvas, original_ctx, new_canvas, new_ctx);
 	
@@ -420,16 +425,16 @@ function rotate(angle){
 				new_ctx.rotate(TAU / -4);
 				break;
 			default:
-				var w = original_canvas.width;
-				var h = original_canvas.height;
+				const w = original_canvas.width;
+				const h = original_canvas.height;
 				
-				var bb_min_x = +Infinity;
-				var bb_max_x = -Infinity;
-				var bb_min_y = +Infinity;
-				var bb_max_y = -Infinity;
-				var corner = (x01, y01) => {
-					var x = Math.sin(-angle)*h*x01 + Math.cos(+angle)*w*y01;
-					var y = Math.sin(+angle)*w*y01 + Math.cos(-angle)*h*x01;
+				let bb_min_x = +Infinity;
+				let bb_max_x = -Infinity;
+				let bb_min_y = +Infinity;
+				let bb_max_y = -Infinity;
+				const corner = (x01, y01) => {
+					const x = Math.sin(-angle)*h*x01 + Math.cos(+angle)*w*y01;
+					const y = Math.sin(+angle)*w*y01 + Math.cos(-angle)*h*x01;
 					bb_min_x = Math.min(bb_min_x, x);
 					bb_max_x = Math.max(bb_max_x, x);
 					bb_min_y = Math.min(bb_min_y, y);
@@ -441,10 +446,10 @@ function rotate(angle){
 				corner(1, 0);
 				corner(1, 1);
 				
-				var bb_x = bb_min_x;
-				var bb_y = bb_min_y;
-				var bb_w = bb_max_x - bb_min_x;
-				var bb_h = bb_max_y - bb_min_y;
+				const bb_x = bb_min_x;
+				const bb_y = bb_min_y;
+				const bb_w = bb_max_x - bb_min_x;
+				const bb_h = bb_max_y - bb_min_y;
 				
 				new_canvas.width = bb_w;
 				new_canvas.height = bb_h;
@@ -467,16 +472,16 @@ function rotate(angle){
 
 function stretch_and_skew(xscale, yscale, hsa, vsa){
 	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
-		var w = original_canvas.width * xscale;
-		var h = original_canvas.height * yscale;
+		const w = original_canvas.width * xscale;
+		const h = original_canvas.height * yscale;
 		
-		var bb_min_x = +Infinity;
-		var bb_max_x = -Infinity;
-		var bb_min_y = +Infinity;
-		var bb_max_y = -Infinity;
-		var corner = (x01, y01) => {
-			var x = Math.tan(hsa)*h*x01 + w*y01;
-			var y = Math.tan(vsa)*w*y01 + h*x01;
+		let bb_min_x = +Infinity;
+		let bb_max_x = -Infinity;
+		let bb_min_y = +Infinity;
+		let bb_max_y = -Infinity;
+		const corner = (x01, y01) => {
+			const x = Math.tan(hsa)*h*x01 + w*y01;
+			const y = Math.tan(vsa)*w*y01 + h*x01;
 			bb_min_x = Math.min(bb_min_x, x);
 			bb_max_x = Math.max(bb_max_x, x);
 			bb_min_y = Math.min(bb_min_y, y);
@@ -488,10 +493,10 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 		corner(1, 0);
 		corner(1, 1);
 		
-		var bb_x = bb_min_x;
-		var bb_y = bb_min_y;
-		var bb_w = bb_max_x - bb_min_x;
-		var bb_h = bb_max_y - bb_min_y;
+		const bb_x = bb_min_x;
+		const bb_y = bb_min_y;
+		const bb_w = bb_max_x - bb_min_x;
+		const bb_h = bb_max_y - bb_min_y;
 		
 		new_canvas.width = bb_w;
 		new_canvas.height = bb_h;
@@ -531,10 +536,10 @@ function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_
 
 // adapted from https://github.com/Pomax/bezierjs
 function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y){
-	var mt = 1-t;
-	var mt2 = mt*mt;
-	var t2 = t*t;
-	var a, b, c, d = 0;
+	const mt = 1-t;
+	const mt2 = mt*mt;
+	const t2 = t*t;
+	let a, b, c, d = 0;
 
 	a = mt2*mt;
 	b = mt2*t*3;
@@ -548,10 +553,10 @@ function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2
 }
 
 function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
-	var steps = 100;
-	var point_a = {x: start_x, y: start_y};
-	for(var t=0; t<1; t+=1/steps){
-		var point_b = compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y);
+	const steps = 100;
+	let point_a = {x: start_x, y: start_y};
+	for(let t=0; t<1; t+=1/steps){
+		const point_b = compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y);
 		// TODO: carry "error" from Bresenham line algorithm between iterations? and/or get a proper Bezier drawing algorithm
 		draw_line_without_pattern_support(ctx, point_a.x, point_a.y, point_b.x, point_b.y, stroke_size);
 		point_a = point_b;
@@ -564,19 +569,19 @@ function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x
 function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
 	// could calculate bounds of Bezier curve with something like bezier-js
 	// but just using the control points should be fine
-	var min_x = Math.min(start_x, control_1_x, control_2_x, end_x);
-	var min_y = Math.min(start_y, control_1_y, control_2_y, end_y);
-	var max_x = Math.max(start_x, control_1_x, control_2_x, end_x);
-	var max_y = Math.max(start_y, control_1_y, control_2_y, end_y);
+	const min_x = Math.min(start_x, control_1_x, control_2_x, end_x);
+	const min_y = Math.min(start_y, control_1_y, control_2_y, end_y);
+	const max_x = Math.max(start_x, control_1_x, control_2_x, end_x);
+	const max_y = Math.max(start_y, control_1_y, control_2_y, end_y);
 	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, op_ctx_2d => {
 		draw_bezier_curve_without_pattern_support(op_ctx_2d, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size);
 	});
 }
 function draw_line(ctx, x1, y1, x2, y2, stroke_size){
-	var min_x = Math.min(x1, x2);
-	var min_y = Math.min(y1, y2);
-	var max_x = Math.max(x1, x2);
-	var max_y = Math.max(y1, y2);
+	const min_x = Math.min(x1, x2);
+	const min_y = Math.min(y1, y2);
+	const max_x = Math.max(x1, x2);
+	const max_y = Math.max(y1, y2);
 	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, op_ctx_2d => {
 		draw_line_without_pattern_support(op_ctx_2d, x1, y1, x2, y2, stroke_size);
 	});
@@ -584,13 +589,13 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 	// draw_line_strip(ctx, [{x: x1, y: y1}, {x: x2, y: y2}]);
 }
 
-var grid_pattern;
+let grid_pattern;
 function draw_grid(ctx, scale) {
-	var pattern_size = Math.floor(scale); // TODO: try ceil too
+	const pattern_size = Math.floor(scale); // TODO: try ceil too
 	if (!grid_pattern || grid_pattern.width !== pattern_size || grid_pattern.height !== pattern_size) {
-		var grid_pattern_canvas = new Canvas(pattern_size, pattern_size);
-		var dark_gray = "#808080";
-		var light_gray = "#c0c0c0";
+		const grid_pattern_canvas = new Canvas(pattern_size, pattern_size);
+		const dark_gray = "#808080";
+		const light_gray = "#c0c0c0";
 		grid_pattern_canvas.ctx.fillStyle = dark_gray;
 		grid_pattern_canvas.ctx.fillRect(0, 0, 1, pattern_size);
 		grid_pattern_canvas.ctx.fillStyle = dark_gray;
@@ -618,7 +623,7 @@ function draw_grid(ctx, scale) {
 
 (() => {
 
-	var tessy = (function initTesselator() {
+	const tessy = (function initTesselator() {
 		// function called for each vertex of tesselator output
 		function vertexCallback(data, polyVertArray) {
 			// console.log(data[0], data[1]);
@@ -644,7 +649,7 @@ function draw_grid(ctx, scale) {
 			// console.log('edge flag: ' + flag);
 		}
 
-		var tessy = new libtess.GluTesselator();
+		const tessy = new libtess.GluTesselator();
 		// tessy.gluTessProperty(libtess.gluEnum.GLU_TESS_WINDING_RULE, libtess.windingRule.GLU_TESS_WINDING_POSITIVE);
 		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_VERTEX_DATA, vertexCallback);
 		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_BEGIN, begincallback);
@@ -661,14 +666,14 @@ function draw_grid(ctx, scale) {
 		// iterating over verts only to get the same answer.
 		tessy.gluTessNormal(0, 0, 1);
 
-		var triangleVerts = [];
+		const triangleVerts = [];
 		tessy.gluTessBeginPolygon(triangleVerts);
 
-		for (var i = 0; i < contours.length; i++) {
+		for (let i = 0; i < contours.length; i++) {
 			tessy.gluTessBeginContour();
-			var contour = contours[i];
-			for (var j = 0; j < contour.length; j += 2) {
-				var coords = [contour[j], contour[j + 1], 0];
+			const contour = contours[i];
+			for (let j = 0; j < contour.length; j += 2) {
+				const coords = [contour[j], contour[j + 1], 0];
 				tessy.gluTessVertex(coords, coords);
 			}
 			tessy.gluTessEndContour();
@@ -680,15 +685,15 @@ function draw_grid(ctx, scale) {
 	}
 
 
-	var gl;
-	var positionLoc;
+	let gl;
+	let positionLoc;
 
 	function initWebGL(canvas) {
 		gl = canvas.getContext('webgl', { antialias: false });
 
 		window.WEBGL_lose_context = gl.getExtension("WEBGL_lose_context");
 		
-		var program = createShaderProgram();
+		const program = createShaderProgram();
 		positionLoc = gl.getAttribLocation(program, 'position');
 		gl.enableVertexAttribArray(positionLoc);
 	}
@@ -696,8 +701,8 @@ function draw_grid(ctx, scale) {
 	function initArrayBuffer(triangleVertexCoords) {
 		// put triangle coordinates into a WebGL ArrayBuffer and bind to
 		// shader's 'position' attribute variable
-		var rawData = new Float32Array(triangleVertexCoords);
-		var polygonArrayBuffer = gl.createBuffer();
+		const rawData = new Float32Array(triangleVertexCoords);
+		const polygonArrayBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, polygonArrayBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, rawData, gl.STATIC_DRAW);
 		gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
@@ -707,14 +712,14 @@ function draw_grid(ctx, scale) {
 
 	function createShaderProgram() {
 		// create vertex shader
-		var vertexSrc = [
+		const vertexSrc = [
 			'attribute vec4 position;',
 			'void main() {',
 			'    /* already in normalized coordinates, so just pass through */',
 			'    gl_Position = position;',
 			'}'
 		].join('');
-		var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+		const vertexShader = gl.createShader(gl.VERTEX_SHADER);
 		gl.shaderSource(vertexShader, vertexSrc);
 		gl.compileShader(vertexShader);
 
@@ -726,13 +731,13 @@ function draw_grid(ctx, scale) {
 		}
 
 		// create fragment shader
-		var fragmentSrc = [
+		const fragmentSrc = [
 			'precision mediump float;',
 			'void main() {',
 			'    gl_FragColor = vec4(0, 0, 0, 1);',
 			'}'
 		].join('');
-		var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+		const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 		gl.shaderSource(fragmentShader, fragmentSrc);
 		gl.compileShader(fragmentShader);
 
@@ -744,7 +749,7 @@ function draw_grid(ctx, scale) {
 		}
 
 		// link shaders to create our program
-		var program = gl.createProgram();
+		const program = gl.createProgram();
 		gl.attachShader(program, vertexShader);
 		gl.attachShader(program, fragmentShader);
 		gl.linkProgram(program);
@@ -755,9 +760,9 @@ function draw_grid(ctx, scale) {
 	}
 
 
-	var op_canvas_webgl = document.createElement('canvas');
-	var op_canvas_2d = document.createElement('canvas');
-	var op_ctx_2d = op_canvas_2d.getContext("2d");
+	const op_canvas_webgl = document.createElement('canvas');
+	const op_canvas_2d = document.createElement('canvas');
+	const op_ctx_2d = op_canvas_2d.getContext("2d");
 
 	initWebGL(op_canvas_webgl);
 	op_canvas_webgl.addEventListener("webglcontextlost", (e)=> {
@@ -777,7 +782,7 @@ function draw_grid(ctx, scale) {
 	}, false);
 
 	function clamp_brush_sizes() {
-		var max_size = 100;
+		const max_size = 100;
 		if (brush_size > max_size) {
 			brush_size = max_size;
 			show_error_message(`Brush size clamped to ${max_size}`);
@@ -809,22 +814,22 @@ function draw_grid(ctx, scale) {
 			update_brush_for_drawing_lines(stroke_size);
 		}
 
-		var stroke_color = ctx.strokeStyle;
-		var fill_color = ctx.fillStyle;
+		const stroke_color = ctx.strokeStyle;
+		const fill_color = ctx.fillStyle;
 
-		var numPoints = points.length;
-		var numCoords = numPoints * 2
+		const numPoints = points.length;
+		const numCoords = numPoints * 2;
 
 		if(numPoints === 0){
 			return;
 		}
 
-		var x_min = +Infinity;
-		var x_max = -Infinity;
-		var y_min = +Infinity;
-		var y_max = -Infinity;
+		let x_min = +Infinity;
+		let x_max = -Infinity;
+		let y_min = +Infinity;
+		let y_max = -Infinity;
 		for (var i = 0; i < numPoints; i++) {
-			var {x, y} = points[i];
+			const {x, y} = points[i];
 			x_min = Math.min(x, x_min);
 			x_max = Math.max(x, x_max);
 			y_min = Math.min(y, y_min);
@@ -839,7 +844,7 @@ function draw_grid(ctx, scale) {
 		op_canvas_webgl.height = y_max - y_min;
 		gl.viewport(0, 0, op_canvas_webgl.width, op_canvas_webgl.height);
 
-		var coords = new Float32Array(numCoords);
+		const coords = new Float32Array(numCoords);
 		for (let i = 0; i < numPoints; i++) {
 			coords[i*2+0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
 			coords[i*2+1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
@@ -847,8 +852,8 @@ function draw_grid(ctx, scale) {
 		}
 
 		if(fill){
-			var contours = [coords];
-			var polyTriangles = triangulate(contours);
+			const contours = [coords];
+			const polyTriangles = triangulate(contours);
 			let numVertices = initArrayBuffer(polyTriangles);
 			gl.clear(gl.COLOR_BUFFER_BIT);
 			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
@@ -862,16 +867,16 @@ function draw_grid(ctx, scale) {
 		}
 		if(stroke){
 			if(stroke_size > 1){
-				var stroke_margin = ~~(stroke_size * 1.1);
+				const stroke_margin = ~~(stroke_size * 1.1);
 
-				var op_canvas_x = x_min - stroke_margin;
-				var op_canvas_y = y_min - stroke_margin;
+				const op_canvas_x = x_min - stroke_margin;
+				const op_canvas_y = y_min - stroke_margin;
 
 				op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
 				op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
 				for (let i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
-					var point_a = points[i];
-					var point_b = points[(i + 1) % numPoints];
+					const point_a = points[i];
+					const point_b = points[(i + 1) % numPoints];
 					// Note: update_brush_for_drawing_lines way above
 					draw_line_without_pattern_support(
 						op_ctx_2d,
@@ -904,19 +909,19 @@ function draw_grid(ctx, scale) {
 		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
 		x_max = Math.max(x_max, x_min + 1);
 		y_max = Math.max(y_max, y_min + 1);
-		var width = x_max - x_min;
-		var height = y_max - y_min;
+		const width = x_max - x_min;
+		const height = y_max - y_min;
 		
 		// TODO: maybe have the cutout only the width/height of the bounds
 		// var cutout = new Canvas(width, height);
-		var cutout = new Canvas(canvas);
+		const cutout = new Canvas(canvas);
 
 		cutout.ctx.save();
 		cutout.ctx.globalCompositeOperation = "destination-in";
 		draw_polygon(cutout.ctx, points, false, true);
 		cutout.ctx.restore();
 		
-		var cutout_crop = new Canvas(width, height);
+		const cutout_crop = new Canvas(width, height);
 		cutout_crop.ctx.drawImage(cutout, x_min, y_min, width, height, 0, 0, width, height);
 
 		return cutout_crop;
@@ -924,15 +929,15 @@ function draw_grid(ctx, scale) {
 
 	// TODO: maybe shouldn't be external...
 	window.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
-		var stroke_margin = ~~(stroke_size * 1.1);
+		const stroke_margin = ~~(stroke_size * 1.1);
 		
 		x_max = Math.max(x_max, x_min + 1);
 		y_max = Math.max(y_max, y_min + 1);
 		op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
 		op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
 
-		var x = x_min - stroke_margin;
-		var y = y_min - stroke_margin;
+		const x = x_min - stroke_margin;
+		const y = y_min - stroke_margin;
 
 		op_ctx_2d.save();
 		op_ctx_2d.translate(-x, -y);

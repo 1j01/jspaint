@@ -1,7 +1,7 @@
 
 function $Component(name, orientation, $el){
 	// A draggable widget that can be undocked into a window
-	var $c = $(E("div")).addClass("component");
+	const $c = $(E("div")).addClass("component");
 	$c.addClass(""+name+"-component");
 	$c.append($el);
 	$c.attr("touch-action", "none");
@@ -11,7 +11,7 @@ function $Component(name, orientation, $el){
 		wide: $bottom,
 	}[orientation]);
 	
-	var $w = new $Window($c);
+	const $w = new $Window($c);
 	$w.title(name);
 	$w.hide();
 	$w.$content.addClass({
@@ -25,10 +25,10 @@ function $Component(name, orientation, $el){
 		$c.css("left", "3px");
 	}
 	
-	var ox, oy;
-	var w, h;
-	var pos = 0;
-	var pos_axis;
+	let ox, oy;
+	let w, h;
+	let pos = 0;
+	let pos_axis;
 	
 	if(orientation === "tall"){
 		pos_axis = "top";
@@ -36,7 +36,7 @@ function $Component(name, orientation, $el){
 		pos_axis = "left";
 	}
 	
-	var dock_to = $dock_to => {
+	const dock_to = $dock_to => {
 		$w.hide();
 		
 		$dock_to.append($c);
@@ -58,8 +58,8 @@ function $Component(name, orientation, $el){
 	
 	var last_docked_to_pos;
 	var $last_docked_to;
-	var $dock_to;
-	var $ghost;
+	let $dock_to;
+	let $ghost;
 	$c.on("pointerdown", e => {
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
@@ -71,7 +71,7 @@ function $Component(name, orientation, $el){
 			drag_onpointerup(e);
 		});
 		
-		var rect = $c[0].getBoundingClientRect();
+		const rect = $c[0].getBoundingClientRect();
 		// Make sure these dimensions are odd numbers
 		w = (~~(rect.width/2))*2 + 1;
 		h = (~~(rect.height/2))*2 + 1;
@@ -103,8 +103,8 @@ function $Component(name, orientation, $el){
 		
 		$dock_to = null;
 		
-		var ghost_rect = $ghost[0].getBoundingClientRect();
-		var q = 5;
+		const ghost_rect = $ghost[0].getBoundingClientRect();
+		const q = 5;
 		if(orientation === "tall"){
 			pos_axis = "top";
 			if(ghost_rect.left-q < $left[0].getBoundingClientRect().right){
@@ -125,7 +125,7 @@ function $Component(name, orientation, $el){
 		pos = ghost_rect[pos_axis];
 		
 		if($dock_to){
-			var dock_to_rect = $dock_to[0].getBoundingClientRect();
+			const dock_to_rect = $dock_to[0].getBoundingClientRect();
 			pos -= dock_to_rect[pos_axis];
 			$ghost.addClass("dock");
 		}else{
@@ -159,10 +159,10 @@ function $Component(name, orientation, $el){
 			$w.$content.append($c);
 			// Show and position the window
 			$w.show();
-			var window_rect = $w[0].getBoundingClientRect();
-			var window_content_rect = $w.$content[0].getBoundingClientRect();
-			var dx = window_content_rect.left - window_rect.left;
-			var dy = window_content_rect.top - window_rect.top;
+			const window_rect = $w[0].getBoundingClientRect();
+			const window_content_rect = $w.$content[0].getBoundingClientRect();
+			const dx = window_content_rect.left - window_rect.left;
+			const dy = window_content_rect.top - window_rect.top;
 			$w.css({
 				left: e.clientX + ox - dx,
 				top: e.clientY + oy - dy,

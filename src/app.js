@@ -1,47 +1,47 @@
 
-var aliasing = true;
-var transparency = false;
-var monochrome = false;
+const aliasing = true;
+const transparency = false;
+const monochrome = false;
 
-var magnification = 1;
-var return_to_magnification = 4;
+const magnification = 1;
+const return_to_magnification = 4;
 
-var default_canvas_width = 683;
-var default_canvas_height = 384;
-var my_canvas_width = default_canvas_width;
-var my_canvas_height = default_canvas_height;
+const default_canvas_width = 683;
+const default_canvas_height = 384;
+let my_canvas_width = default_canvas_width;
+let my_canvas_height = default_canvas_height;
 
-var canvas = new Canvas();
+const canvas = new Canvas();
 canvas.classList.add("main-canvas");
-var ctx = canvas.ctx;
+const ctx = canvas.ctx;
 
-var palette = [
+const palette = [
 	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
 	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
 ];
-var polychrome_palette = palette;
-var monochrome_palette = make_monochrome_palette();
+const polychrome_palette = palette;
+const monochrome_palette = make_monochrome_palette();
 
 
-var stroke_color;
-var fill_color;
-var stroke_color_k = "foreground"; // enum of "foreground", "background", "ternary"
-var fill_color_k = "background"; // enum of "foreground", "background", "ternary"
+let stroke_color;
+let fill_color;
+let stroke_color_k = "foreground"; // enum of "foreground", "background", "ternary"
+let fill_color_k = "background"; // enum of "foreground", "background", "ternary"
 
-var selected_tool = tools[6];
-var selected_tools = [selected_tool];
-var return_to_tools = [selected_tool];
-var colors = {
+const selected_tool = tools[6];
+const selected_tools = [selected_tool];
+const return_to_tools = [selected_tool];
+const colors = {
 	foreground: "",
 	background: "",
 	ternary: "",
 };
 
-var selection; //the one and only OnCanvasSelection
-var textbox; //the one and only OnCanvasTextBox
-var helper_layer; //the OnCanvasHelperLayer for the grid and tool previews
-var show_grid = false;
-var text_tool_font = {
+let selection; //the one and only OnCanvasSelection
+let textbox; //the one and only OnCanvasTextBox
+let helper_layer; //the OnCanvasHelperLayer for the grid and tool previews
+const show_grid = false;
+const text_tool_font = {
 	family: '"Arial"', // should be an exact value detected by Font Detective
 	size: 12,
 	line_scale: 20 / 12,
@@ -53,44 +53,44 @@ var text_tool_font = {
 	background: "",
 };
 
-var undos = []; //array of ImageData
-var redos = []; //array of ImageData
+const undos = []; //array of ImageData
+const redos = []; //array of ImageData
 //var frames = []; //array of {delay: N, undos: [ImageData], redos: [ImageData], image: ImageData}? array of Frames?
 
-var file_name;
-var document_file_path;
-var saved = true;
+let file_name;
+let document_file_path;
+const saved = true;
 
 
 
-var $app = $(E("div")).addClass("jspaint").appendTo("body");
+const $app = $(E("div")).addClass("jspaint").appendTo("body");
 
-var $V = $(E("div")).addClass("vertical").appendTo($app);
-var $H = $(E("div")).addClass("horizontal").appendTo($V);
+const $V = $(E("div")).addClass("vertical").appendTo($app);
+const $H = $(E("div")).addClass("horizontal").appendTo($V);
 
-var $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
+const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
 $canvas_area.attr("touch-action", "pan-x pan-y");
 
-var $canvas = $(canvas).appendTo($canvas_area);
+const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
-var canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
+const canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
 
-var $canvas_handles = $Handles($canvas_area, canvas, {
+const $canvas_handles = $Handles($canvas_area, canvas, {
 	outset: 4,
 	get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
 	get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
 	size_only: true,
 });
 
-var $top = $(E("div")).addClass("component-area").prependTo($V);
-var $bottom = $(E("div")).addClass("component-area").appendTo($V);
-var $left = $(E("div")).addClass("component-area").prependTo($H);
-var $right = $(E("div")).addClass("component-area").appendTo($H);
+const $top = $(E("div")).addClass("component-area").prependTo($V);
+const $bottom = $(E("div")).addClass("component-area").appendTo($V);
+const $left = $(E("div")).addClass("component-area").prependTo($H);
+const $right = $(E("div")).addClass("component-area").appendTo($H);
 
-var $status_area = $(E("div")).addClass("status-area").appendTo($V);
-var $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
-var $status_position = $(E("div")).addClass("status-coordinates").appendTo($status_area);
-var $status_size = $(E("div")).addClass("status-coordinates").appendTo($status_area);
+const $status_area = $(E("div")).addClass("status-area").appendTo($V);
+const $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
+const $status_position = $(E("div")).addClass("status-coordinates").appendTo($status_area);
+const $status_size = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 
 $status_text.default = () => {
 	$status_text.text("For Help, click Help Topics on the Help Menu.");
@@ -98,7 +98,7 @@ $status_text.default = () => {
 $status_text.default();
 
 // menu bar
-var menu_bar_outside_frame = false;
+let menu_bar_outside_frame = false;
 if(frameElement){
 	try{
 		if(parent.$MenuBar){
@@ -108,7 +108,7 @@ if(frameElement){
 	// eslint-disable-next-line no-empty
 	}catch(e){}
 }
-var $menu_bar = $MenuBar(menus);
+const $menu_bar = $MenuBar(menus);
 if(menu_bar_outside_frame){
 	$menu_bar.insertBefore(frameElement);
 }else{
@@ -122,10 +122,10 @@ $menu_bar.on("default-info", e => {
 	$status_text.default();
 });
 
-var $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
+const $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
 // TODO: DRY with $MenuBar
 // if localStorage is not available, the default setting is visible
-var extras_menu_should_start_visible = true;
+let extras_menu_should_start_visible = true;
 try{
 	// if localStorage is available, the default setting is invisible (for now)
 	// TODO: refactor shared key string
@@ -137,13 +137,13 @@ if(!extras_menu_should_start_visible){
 }
 // </menu bar>
 
-var $toolbox = $ToolBox(tools);
+const $toolbox = $ToolBox(tools);
 // var $toolbox2 = $ToolBox(extra_tools, true);//.hide();
 // Note: a second $ToolBox doesn't work because they use the same tool options (which could be remedied)
 // and also the UI isn't designed for multiple vertical components (or horizontal ones)
 // If there's to be extra tools, they should probably get a window, with different UI
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
-var $colorbox = $ColorBox();
+const $colorbox = $ColorBox();
 
 $canvas.on("user-resized", (e, _x, _y, width, height) => {
 	undoable(0, () => {
@@ -156,9 +156,9 @@ $canvas.on("user-resized", (e, _x, _y, width, height) => {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		var previous_imagedata = undos[undos.length-1];
+		const previous_imagedata = undos[undos.length-1];
 		if(previous_imagedata){
-			var temp_canvas = new Canvas(previous_imagedata);
+			const temp_canvas = new Canvas(previous_imagedata);
 			ctx.drawImage(temp_canvas, 0, 0);
 		}
 
@@ -185,8 +185,8 @@ $canvas_area.on("resize", () => {
 });
 
 $("body").on("dragover dragenter", e => {
-	var dt = e.originalEvent.dataTransfer;
-	var has_files = Array.from(dt.types).includes("Files");
+	const dt = e.originalEvent.dataTransfer;
+	const has_files = Array.from(dt.types).includes("Files");
 	if(has_files){
 		e.preventDefault();
 	}
@@ -194,8 +194,8 @@ $("body").on("dragover dragenter", e => {
 	if(e.isDefaultPrevented()){
 		return;
 	}
-	var dt = e.originalEvent.dataTransfer;
-	var has_files = Array.from(dt.types).includes("Files");
+	const dt = e.originalEvent.dataTransfer;
+	const has_files = Array.from(dt.types).includes("Files");
 	if(has_files){
 		e.preventDefault();
 		if(dt && dt.files && dt.files.length){
@@ -204,7 +204,7 @@ $("body").on("dragover dragenter", e => {
 	}
 });
 
-var keys = {};
+const keys = {};
 $G.on("keyup", e => {
 	delete keys[e.keyCode];
 });
@@ -229,7 +229,7 @@ $G.on("keydown", e => {
 	// probably best to use a library at this point!
 	
 	if(selection){
-		var nudge_selection = (delta_x, delta_y) => {
+		const nudge_selection = (delta_x, delta_y) => {
 			selection.x += delta_x;
 			selection.y += delta_y;
 			selection.position();
@@ -270,9 +270,9 @@ $G.on("keydown", e => {
 	}else if(e.keyCode === 46){ //Delete
 		delete_selection();
 	}else if(e.keyCode === 107 || e.keyCode === 109){ // Numpad Plus and Minus
-		var plus = e.keyCode === 107;
-		var minus = e.keyCode === 109;
-		var delta = plus - minus; // var delta = +plus++ -minus--; // Δ = ±±±±
+		const plus = e.keyCode === 107;
+		const minus = e.keyCode === 109;
+		const delta = plus - minus; // var delta = +plus++ -minus--; // Δ = ±±±±
 
 		if(selection){
 			selection.scale(Math.pow(2, delta));
@@ -299,7 +299,7 @@ $G.on("keydown", e => {
 		e.preventDefault();
 		return;
 	}else if(e.ctrlKey || e.metaKey){
-		var key = String.fromCharCode(e.keyCode).toUpperCase();
+		const key = String.fromCharCode(e.keyCode).toUpperCase();
 		if(textbox){
 			switch(key){
 				case "A":
@@ -375,14 +375,14 @@ $G.on("cut copy paste", e => {
 	}
 
 	e.preventDefault();
-	var cd = e.originalEvent.clipboardData || window.clipboardData;
+	const cd = e.originalEvent.clipboardData || window.clipboardData;
 	if(!cd){ return; }
 
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
-			var do_sync_clipboard_copy_or_cut = () => {
+			const do_sync_clipboard_copy_or_cut = () => {
 				// works only for pasting within a jspaint instance
-				var data_url = selection.canvas.toDataURL();
+				const data_url = selection.canvas.toDataURL();
 				cd.setData("text/x-data-uri; type=image/png", data_url);
 				cd.setData("text/uri-list", data_url);
 				cd.setData("URL", data_url);
@@ -407,7 +407,7 @@ $G.on("cut copy paste", e => {
 		$.each(cd.items, (i, item) => {
 			if(item.type.match(/^text\/(?:x-data-uri|uri-list|plain)|URL$/)){
 				item.getAsString(text => {
-					var uris = get_URIs(text);
+					const uris = get_URIs(text);
 					if (uris.length > 0) {
 						load_image_from_URI(uris[0], (err, img) => {
 							if(err){ return show_resource_load_error_message(); }
@@ -456,12 +456,14 @@ if(window.document_file_path_to_open){
 	});
 }
 
-var pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
-var reverse, ctrl, button;
+let pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
+let reverse;
+let ctrl;
+var button;
 function e2c(e){
-	var rect = canvas_bounding_client_rect;
-	var cx = e.clientX - rect.left;
-	var cy = e.clientY - rect.top;
+	const rect = canvas_bounding_client_rect;
+	const cx = e.clientX - rect.left;
+	const cy = e.clientY - rect.top;
 	return {
 		x: ~~(cx / rect.width * canvas.width),
 		y: ~~(cy / rect.height * canvas.height),
@@ -471,7 +473,7 @@ function e2c(e){
 function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	ctx.lineWidth = stroke_size;
 
-	var reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
+	const reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
 	ctx.fillStyle = fill_color =
 	ctx.strokeStyle = stroke_color =
 		colors[
@@ -503,7 +505,7 @@ function tool_go(selected_tool, event_name){
 
 	if(selected_tools.length <= 1){
 		if(selected_tool.shape){
-			var previous_imagedata = undos[undos.length-1];
+			const previous_imagedata = undos[undos.length-1];
 			if(previous_imagedata){
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
 				ctx.putImageData(previous_imagedata, 0, 0);
@@ -519,7 +521,7 @@ function tool_go(selected_tool, event_name){
 	}
 	if(selected_tool.paint){
 		if(selected_tool.continuous === "space"){
-			var ham = brush_shape.match(/diagonal/) ? brosandham_line : bresenham_line;
+			const ham = brush_shape.match(/diagonal/) ? brosandham_line : bresenham_line;
 			ham(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 				selected_tool.paint(ctx, x, y);
 			});
@@ -549,19 +551,19 @@ function canvas_pointer_move(e){
 	if(e.shiftKey){
 		if(selected_tool.name.match(/Line|Curve/)){
 			// snap to eight directions
-			var dist = Math.sqrt(
+			const dist = Math.sqrt(
 				(pointer.y - pointer_start.y) * (pointer.y - pointer_start.y) +
 				(pointer.x - pointer_start.x) * (pointer.x - pointer_start.x)
 			);
-			var eighth_turn = TAU / 8;
-			var angle_0_to_8 = Math.atan2(pointer.y - pointer_start.y, pointer.x - pointer_start.x) / eighth_turn;
-			var angle = Math.round(angle_0_to_8) * eighth_turn;
+			const eighth_turn = TAU / 8;
+			const angle_0_to_8 = Math.atan2(pointer.y - pointer_start.y, pointer.x - pointer_start.x) / eighth_turn;
+			const angle = Math.round(angle_0_to_8) * eighth_turn;
 			pointer.x = Math.round(pointer_start.x + Math.cos(angle) * dist);
 			pointer.y = Math.round(pointer_start.y + Math.sin(angle) * dist);
 		}else if(selected_tool.shape){
 			// snap to four diagonals
-			var w = Math.abs(pointer.x - pointer_start.x);
-			var h = Math.abs(pointer.y - pointer_start.y);
+			const w = Math.abs(pointer.x - pointer_start.x);
+			const h = Math.abs(pointer.y - pointer_start.y);
 			if(w < h){
 				if(pointer.y > pointer_start.y){
 					pointer.y = pointer_start.y + w;
@@ -649,7 +651,7 @@ $canvas.on("pointerdown", e => {
 	shift = e.shiftKey;
 	pointer_start = pointer_previous = pointer = e2c(e);
 
-	var pointerdown_action = () => {
+	const pointerdown_action = () => {
 	// TODO for multitools: don't register event listeners for each tool
 	selected_tools.forEach((selected_tool)=> {
 
