@@ -115,7 +115,7 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 	// TODO: should suggestedFileName be sanitized in some way?
 	dialog.showSaveDialog({
 		defaultPath: suggestedFileName,
-		filters: filters,
+		filters,
 	}, filePath => {
 		if(!filePath){
 			return; // user canceled

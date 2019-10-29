@@ -596,12 +596,12 @@ tools = [{
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
 			undoable(()=> {
-				this.points.push({x: x, y: y});
+				this.points.push({x, y});
 				// second point so first action draws a line
-				this.points.push({x: x, y: y});
+				this.points.push({x, y});
 			});
 		}else{
-			this.points.push({x: x, y: y});
+			this.points.push({x, y});
 		}
 	},
 	paint(ctx, x, y) {
@@ -705,7 +705,7 @@ tools = [{
 			this.complete(ctx, x, y);
 		}
 		
-		this.last_click_pointerup = {x: x, y: y, time: +(new Date)};
+		this.last_click_pointerup = {x, y, time: +(new Date)};
 	},
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
@@ -717,9 +717,9 @@ tools = [{
 				this.canvas_base = undos[undos.length-1];
 				
 				// Add the first point of the polygon
-				this.points.push({x: x, y: y});
+				this.points.push({x, y});
 				// Add a second point so first action draws a line
-				this.points.push({x: x, y: y});
+				this.points.push({x, y});
 			});
 		}else{
 			const lx = this.last_click_pointerdown.x;
@@ -736,10 +736,10 @@ tools = [{
 				$canvas.trigger("pointerup");
 			}else{
 				// Add the point
-				this.points.push({x: x, y: y});
+				this.points.push({x, y});
 			}
 		}
-		this.last_click_pointerdown = {x: x, y: y, time: +new Date};
+		this.last_click_pointerdown = {x, y, time: +new Date};
 	},
 	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }

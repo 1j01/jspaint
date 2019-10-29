@@ -55,7 +55,7 @@ function $Handles($container, element, options){
 			
 			fallback_cursor += "-resize";
 			const cursor = make_css_cursor(cursor_fname, [16, 16], fallback_cursor);
-			$h.css({cursor: cursor});
+			$h.css({cursor});
 			
 			const drag = e => {
 				$resize_ghost.appendTo($container);
@@ -95,7 +95,7 @@ function $Handles($container, element, options){
 				dragged = false;
 				if(e.button === 0){
 					$G.on("pointermove", drag);
-					$("body").css({cursor: cursor}).addClass("cursor-bully");
+					$("body").css({cursor}).addClass("cursor-bully");
 				}
 				$G.one("pointerup", e => {
 					$G.off("pointermove", drag);

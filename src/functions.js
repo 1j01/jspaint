@@ -756,8 +756,8 @@ function render_history_as_gif(){
 		var gif = new GIF({
 			//workers: Math.min(5, Math.floor(undos.length/50)+1),
 			workerScript: "lib/gif.js/gif.worker.js",
-			width: width,
-			height: height,
+			width,
+			height,
 		});
 
 		gif.on("progress", p => {
@@ -771,8 +771,8 @@ function render_history_as_gif(){
 			$output.empty().append(
 				$(E("img")).attr({
 					src: url,
-					width: width,
-					height: height,
+					width,
+					height,
 				})
 			);
 			$win.$Button("Upload to Imgur", () => {
