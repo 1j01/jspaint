@@ -1,15 +1,15 @@
 
-var clouds_img = document.createElement("img");
+const clouds_img = document.createElement("img");
 clouds_img.src = "clouds.jpg";
-var mask_img = document.createElement("img");
+const mask_img = document.createElement("img");
 mask_img.src = "cloud-mask.png";
-var something_img = document.createElement("img");
+const something_img = document.createElement("img");
 something_img.src = "../images/icons/32x32.png";
 
-var canvas = document.createElement("canvas");
+const canvas = document.createElement("canvas");
 document.getElementById("background-animation").append(canvas);
-var ctx = canvas.getContext("2d");
-var animate = function () {
+const ctx = canvas.getContext("2d");
+const animate = () => {
 	rAF_ID = requestAnimationFrame(animate);
 
 	if(
@@ -20,14 +20,14 @@ var animate = function () {
 		canvas.height = canvas.parentElement.offsetHeight;
 	}
 
-	var clouds_scale = 1;
-	var clouds_width = clouds_img.width * clouds_scale;
-	var clouds_height = clouds_img.width * clouds_scale;
-	var x_extent = (clouds_width - canvas.width) / 2;
-	var y_extent = (clouds_height - canvas.height) / 2;
-	var x_interval_ms = 19000;
-	var y_interval_ms = 7000;
-	var now = performance.now();
+	const clouds_scale = 1;
+	const clouds_width = clouds_img.width * clouds_scale;
+	const clouds_height = clouds_img.width * clouds_scale;
+	const x_extent = (clouds_width - canvas.width) / 2;
+	const y_extent = (clouds_height - canvas.height) / 2;
+	const x_interval_ms = 19000;
+	const y_interval_ms = 7000;
+	const now = performance.now();
 	if(!(
 		mask_img.complete && mask_img.naturalWidth > 1 &&
 		clouds_img.complete && clouds_img.naturalWidth > 1
