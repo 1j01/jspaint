@@ -1,4 +1,7 @@
 
+const default_magnification = 1;
+const default_tool = get_tool_by_name("Pencil");
+
 const default_canvas_width = 683;
 const default_canvas_height = 384;
 let my_canvas_width = default_canvas_width;
@@ -8,7 +11,7 @@ let aliasing = true;
 let transparency = false;
 let monochrome = false;
 
-let magnification = 1;
+let magnification = default_magnification;
 let return_to_magnification = 4;
 
 const canvas = make_canvas();
@@ -28,7 +31,7 @@ let fill_color;
 let stroke_color_k = "foreground"; // enum of "foreground", "background", "ternary"
 let fill_color_k = "background"; // enum of "foreground", "background", "ternary"
 
-let selected_tool = tools[6];
+let selected_tool = default_tool;
 let selected_tools = [selected_tool];
 let return_to_tools = [selected_tool];
 let colors = {
@@ -429,7 +432,7 @@ $G.on("cut copy paste", e => {
 reset_file();
 reset_colors();
 reset_canvas_and_history(); // (with newly reset colors)
-set_magnification(1);
+set_magnification(default_magnification);
 
 storage.get({
 	width: default_canvas_width,

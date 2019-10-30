@@ -269,7 +269,7 @@ function open_from_Image(img, callback, canceled){
 		reset_file();
 		reset_colors();
 		reset_canvas_and_history(); // (with newly reset colors)
-		set_magnification(1);
+		set_magnification(default_magnification);
 
 		ctx.copy(img);
 		detect_transparency();
@@ -368,7 +368,7 @@ function file_new(){
 		reset_file();
 		reset_colors();
 		reset_canvas_and_history(); // (with newly reset colors)
-		set_magnification(1);
+		set_magnification(default_magnification);
 	});
 }
 
@@ -1164,7 +1164,7 @@ function select_tool(tool, toggle){
 		if (selected_tools.length > 0) {
 			selected_tool = selected_tools[selected_tools.length - 1];
 		} else {
-			selected_tool = tools[6];
+			selected_tool = default_tool;
 			selected_tools = [selected_tool];
 		}
 	} else {
