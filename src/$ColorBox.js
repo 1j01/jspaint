@@ -101,7 +101,6 @@ function $ColorBox(){
 			
 			$i.val(rgb2hex(color));
 			
-			let button, ctrl;
 			$b.on("pointerdown", e => {
 				// TODO: how should the ternary color, and selection cropping, work on macOS?
 				ctrl = e.ctrlKey;
