@@ -33,7 +33,7 @@ tools = [{
 		// paint(ctx, x, y) will be called for each pixel the pointer moves
 		// and we only need to record individual pointer events to make the polygon
 		const onpointermove = e => {
-			const pointer = e2c(e);
+			const pointer = to_canvas_coords(e);
 			// Constrain the pointer to the canvas
 			pointer.x = Math.min(canvas.width, pointer.x);
 			pointer.x = Math.max(0, pointer.x);

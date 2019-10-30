@@ -71,7 +71,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			});
 			let mox, moy;
 			const pointermove = e => {
-				const m = e2c(e);
+				const m = to_canvas_coords(e);
 				this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
 				this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
 				this.position();

@@ -1,15 +1,15 @@
 
+const default_canvas_width = 683;
+const default_canvas_height = 384;
+let my_canvas_width = default_canvas_width;
+let my_canvas_height = default_canvas_height;
+
 let aliasing = true;
 let transparency = false;
 let monochrome = false;
 
 let magnification = 1;
 let return_to_magnification = 4;
-
-const default_canvas_width = 683;
-const default_canvas_height = 384;
-let my_canvas_width = default_canvas_width;
-let my_canvas_height = default_canvas_height;
 
 const canvas = make_canvas();
 canvas.classList.add("main-canvas");
@@ -61,6 +61,10 @@ let file_name;
 let document_file_path;
 let saved = true;
 
+let pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
+let reverse;
+let ctrl;
+let button;
 
 
 const $app = $(E("div")).addClass("jspaint").appendTo("body");
@@ -452,11 +456,7 @@ if(window.document_file_path_to_open){
 	});
 }
 
-let pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
-let reverse;
-let ctrl;
-var button;
-function e2c({clientX, clientY}) {
+function to_canvas_coords({clientX, clientY}) {
 	const rect = canvas_bounding_client_rect;
 	const cx = clientX - rect.left;
 	const cy = clientY - rect.top;
@@ -529,7 +529,7 @@ function tool_go(selected_tool, event_name){
 function canvas_pointer_move(e){
 	ctrl = e.ctrlKey;
 	shift = e.shiftKey;
-	pointer = e2c(e);
+	pointer = to_canvas_coords(e);
 	
 	// Quick Undo
 	// (Note: pointermove also occurs when the set of buttons pressed changes,
@@ -581,7 +581,7 @@ function canvas_pointer_move(e){
 	pointer_previous = pointer;
 }
 $canvas.on("pointermove", e => {
-	pointer = e2c(e);
+	pointer = to_canvas_coords(e);
 	$status_position.text(`${pointer.x},${pointer.y}`);
 });
 $canvas.on("pointerenter", e => {
@@ -645,7 +645,7 @@ $canvas.on("pointerdown", e => {
 	button = e.button;
 	ctrl = e.ctrlKey;
 	shift = e.shiftKey;
-	pointer_start = pointer_previous = pointer = e2c(e);
+	pointer_start = pointer_previous = pointer = to_canvas_coords(e);
 
 	const pointerdown_action = () => {
 	// TODO for multitools: don't register event listeners for each tool
@@ -665,7 +665,7 @@ $canvas.on("pointerdown", e => {
 			if(canceling){
 				selected_tool.cancel && selected_tool.cancel();
 			}else{
-				pointer = e2c(e);
+				pointer = to_canvas_coords(e);
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
 			}
 			if (selected_tools.length === 1) {

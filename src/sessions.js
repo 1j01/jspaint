@@ -331,7 +331,7 @@
 				});
 			});
 			let previous_uri;
-			let pointer_operations = [];
+			let pointer_operations = []; // this was supposed to be shared as a global, but the multiplayer syncing stuff is a can of worms
 			const sync = () => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
@@ -394,7 +394,7 @@
 			});
 			// Update the cursor status
 			$G.on("pointermove.session-hook", e => {
-				const m = e2c(e);
+				const m = to_canvas_coords(e);
 				this.fb_user.child("cursor").update({
 					x: m.x,
 					y: m.y,
