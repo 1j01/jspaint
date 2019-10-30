@@ -4,7 +4,7 @@ clouds_img.src = "clouds.jpg";
 var mask_img = document.createElement("img");
 mask_img.src = "cloud-mask.png";
 var something_img = document.createElement("img");
-something_img.src = "../images/icons/32.png";
+something_img.src = "../images/icons/32x32.png";
 
 var canvas = document.createElement("canvas");
 document.getElementById("background-animation").append(canvas);
