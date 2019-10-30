@@ -623,6 +623,72 @@ function draw_grid(ctx, scale) {
 
 (() => {
 
+	// the dashes of the border are sized such that at 4x zoom,
+	// they're squares equal to one canvas pixel
+	// they're offset by a screen pixel tho from the canvas pixel cells
+
+	const svg_for_creating_matrices = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+	const horizontal_pattern_canvas = make_canvas(8, 4);
+	const vertical_pattern_canvas = make_canvas(4, 8);
+	let horizontal_pattern;
+	let vertical_pattern;
+
+	function draw_dashes(ctx, x, y, go_x, go_y, scale, translate_x, translate_y) {
+		if (!vertical_pattern) {
+			horizontal_pattern_canvas.ctx.fillStyle = "white";
+			horizontal_pattern_canvas.ctx.fillRect(4, 0, 4, 4);
+			vertical_pattern_canvas.ctx.fillStyle = "white";
+			vertical_pattern_canvas.ctx.fillRect(0, 4, 4, 4);
+			horizontal_pattern = ctx.createPattern(horizontal_pattern_canvas, "repeat");
+			vertical_pattern = ctx.createPattern(vertical_pattern_canvas, "repeat");
+		}
+
+		const dash_length = 4 / magnification;
+		const dash_width = 1;
+		const hairline_width = 1/scale; // size of a screen pixel
+
+		ctx.save();
+
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
+
+		ctx.translate(x, y);
+		ctx.globalCompositeOperation = "difference";
+		
+		
+		if (go_x > 0) {
+			const matrix = svg_for_creating_matrices.createSVGMatrix();
+			horizontal_pattern.setTransform(matrix.translate(-x, -y).translate(hairline_width, 0).scale(1/scale));
+
+			ctx.fillStyle = horizontal_pattern;
+			ctx.fillRect(0, 0, go_x, dash_width);
+		} else if(go_y > 0) {
+			const matrix = svg_for_creating_matrices.createSVGMatrix();
+			vertical_pattern.setTransform(matrix.translate(-x, -y).translate(0, hairline_width).scale(1/scale));
+			
+			ctx.fillStyle = vertical_pattern;
+			ctx.fillRect(0, 0, dash_width, go_y);
+		}
+		ctx.restore();
+	}
+
+	window.draw_selection_box = (ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y)=> {
+		draw_dashes(ctx, rect_x             , rect_y            , rect_w - 1, 0         , scale, translate_x, translate_y); // top
+		if (rect_h === 1) {
+		draw_dashes(ctx, rect_x             , rect_y            , 0         , 1         , scale, translate_x, translate_y); // left
+		} else {
+		draw_dashes(ctx, rect_x             , rect_y + 1        , 0         , rect_h - 2, scale, translate_x, translate_y); // left
+		}
+		draw_dashes(ctx, rect_x + rect_w - 1, rect_y            , 0         , rect_h    , scale, translate_x, translate_y); // right
+		draw_dashes(ctx, rect_x             , rect_y + rect_h -1, rect_w - 1, 0         , scale, translate_x, translate_y); // bottom
+		draw_dashes(ctx, rect_x             , rect_y + 1        , 0         , 1         , scale, translate_x, translate_y); // top left dangling bit???
+	};
+
+})();
+
+(() => {
+
 	const tessy = (function initTesselator() {
 		// function called for each vertex of tesselator output
 		function vertexCallback(data, polyVertArray) {
