@@ -21,9 +21,9 @@ function show_help(){
 	const parse_object_params = $object => {
 		// parse an $(<object>) to a plain object of key value pairs
 		const object = {};
-		$object.children("param").each((i, param) => {
+		for (const param of $object.children("param").get()) {
 			object[param.name] = param.value;
-		});
+		}
 		return object;
 	};
 	
@@ -55,7 +55,7 @@ function show_help(){
 	$contents.append($default_item_li);
 	
 	$.get("help/mspaint.hhc", hhc => {
-		$($.parseHTML(hhc)).filter("ul").children().each((i, li) => {
+		$($.parseHTML(hhc)).filter("ul").children().get().forEach((li) => {
 			
 			const object = parse_object_params($(li).children("object"));
 			
@@ -66,7 +66,7 @@ function show_help(){
 			const $folder_items_ul = $(E("ul"));
 			$folder_li.append($folder_items_ul);
 			
-			$(li).children("ul").children().each((i, li) => {
+			$(li).children("ul").children().get().forEach((li) => {
 				const object = parse_object_params($(li).children("object"));
 				const $item_li = $(E("li")).addClass("page");
 				$item_li.append($Item(object.Name).on("click", e => {

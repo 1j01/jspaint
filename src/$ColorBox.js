@@ -77,79 +77,82 @@ function $ColorBox(){
 	// TODO: base this on the element sizes
 	const width_per_button = 16;
 	
-	const build_palette = () => {
-		$palette.empty();
-		$.each(palette, (i, color) => {
-			const $b = $Swatch(color).addClass("color-button");
-			$b.appendTo($palette);
-			
-			// the "last foreground color button" starts out as the first in the palette
-			if(i === 0){
+	function set_color(col){
+		if(ctrl){
+			colors.ternary = col;
+		}else if(button === 0){
+			colors.foreground = col;
+		}else if(button === 2){
+			colors.background = col;
+		}
+		$G.trigger("option-changed");
+	}
+	function rgb2hex(col){
+		if(!col.match){ // i.e. CanvasPattern
+			return "#000000";
+		}
+		const rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		function hex(x){
+			return (`0${parseInt(x).toString(16)}`).slice(-2);
+		}
+		return rgb ? (`#${hex(rgb[1])}${hex(rgb[2])}${hex(rgb[3])}`) : col;
+	}
+	
+	const make_color_button = (color) => {
+
+		const $b = $Swatch(color).addClass("color-button");
+		$b.appendTo($palette);
+		
+		const $i = $(E("input")).attr({type: "color"});
+		$i.appendTo($b);
+		$i.on("change", () => {
+			color = $i.val();
+			$b.update(color);
+			set_color(color);
+		});
+		
+		$i.css("opacity", 0);
+		$i.prop("enabled", false);
+		
+		$i.val(rgb2hex(color));
+		
+		$b.on("pointerdown", e => {
+			// TODO: how should the ternary color, and selection cropping, work on macOS?
+			ctrl = e.ctrlKey;
+			button = e.button;
+			if(button === 0){
 				$last_fg_color_button = $b;
 			}
 			
-			const $i = $(E("input")).attr({type: "color"});
-			$i.appendTo($b);
-			$i.on("change", () => {
-				color = $i.val();
-				$b.update(color);
-				set_color(color);
-			});
-			
-			$i.css("opacity", 0);
-			$i.prop("enabled", false);
+			set_color(color);
 			
 			$i.val(rgb2hex(color));
 			
-			$b.on("pointerdown", e => {
-				// TODO: how should the ternary color, and selection cropping, work on macOS?
-				ctrl = e.ctrlKey;
-				button = e.button;
-				if(button === 0){
-					$last_fg_color_button = $b;
-				}
-				
-				set_color(color);
-				
-				$i.val(rgb2hex(color));
-				
-				if(e.button === button && $i.prop("enabled")){
-					$i.trigger("click", "synthetic");
-				}
-				
-				$i.prop("enabled", true);
-				setTimeout(() => {
-					$i.prop("enabled", false);
-				}, 400);
-			});
-			$i.on("click", (e, synthetic) => {
-				if(!synthetic){
-					e.preventDefault();
-				}
-			});
-			
-			function set_color(col){
-				if(ctrl){
-					colors.ternary = col;
-				}else if(button === 0){
-					colors.foreground = col;
-				}else if(button === 2){
-					colors.background = col;
-				}
-				$G.trigger("option-changed");
+			if(e.button === button && $i.prop("enabled")){
+				$i.trigger("click", "synthetic");
 			}
-			function rgb2hex(col){
-				if(!col.match){ // i.e. CanvasPattern
-					return "#000000";
-				}
-				const rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-				function hex(x){
-					return (`0${parseInt(x).toString(16)}`).slice(-2);
-				}
-				return rgb ? (`#${hex(rgb[1])}${hex(rgb[2])}${hex(rgb[3])}`) : col;
+			
+			$i.prop("enabled", true);
+			setTimeout(() => {
+				$i.prop("enabled", false);
+			}, 400);
+		});
+		$i.on("click", (e, synthetic) => {
+			if(!synthetic){
+				e.preventDefault();
 			}
 		});
+	};
+
+	const build_palette = () => {
+		$palette.empty();
+
+		palette.forEach(make_color_button);
+
 		$palette.width(Math.ceil(palette.length/2) * width_per_button);
+
+		// the "last foreground color button" starts out as the first in the palette
+		$last_fg_color_button = $palette.find(".color-button");
 	};
 	build_palette();
 	
@@ -159,6 +162,7 @@ function $ColorBox(){
 		// Edit the last color cell that's been selected as the foreground color.
 		create_and_trigger_input({type: "color"}, input => {
 			// console.log(input, input.value);
+			// FIXME
 			$last_fg_color_button.trigger({type: "pointerdown", ctrlKey: false, button: 0});
 			$last_fg_color_button.find("input").val(input.value).triggerHandler("change");
 		})

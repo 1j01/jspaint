@@ -169,7 +169,7 @@ function $MenuBar(menus){
 	}
 	
 	let this_click_opened_the_menu = false;
-	$.each(menus, (menus_key, menu_items) => {
+	const make_menu = (menus_key, menu_items) => {
 		const $menu_container = $(E("div")).addClass("menu-container").appendTo($menus);
 		const $menu_button = $(E("div")).addClass("menu-button").appendTo($menu_container);
 		const $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
@@ -286,7 +286,11 @@ function $MenuBar(menus){
 			
 			$menus.triggerHandler("default-info");
 		});
-	});
+	};
+	for (const menu_key in menus) {
+		make_menu(menu_key, menus[menu_key]);
+	}
+
 	$G.on("keypress", e => {
 		if(e.keyCode === 27){ // Esc
 			close_menus();

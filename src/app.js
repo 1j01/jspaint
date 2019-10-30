@@ -404,7 +404,7 @@ $G.on("cut copy paste", e => {
 			}
 		}
 	}else if(e.type === "paste"){
-		$.each(cd.items, (i, item) => {
+		for (const item of cd.items) {
 			if(item.type.match(/^text\/(?:x-data-uri|uri-list|plain)|URL$/)){
 				item.getAsString(text => {
 					const uris = get_URIs(text);
@@ -417,12 +417,12 @@ $G.on("cut copy paste", e => {
 						show_error_message("The information on the Clipboard can't be inserted into Paint.");
 					}
 				});
-				return false; // break out of $.each loop
+				break;
 			}else if(item.type.match(/^image\//)){
 				paste_image_from_file(item.getAsFile());
-				return false; // break out of $.each loop
+				break;
 			}
-		});
+		}
 	}
 });
 
