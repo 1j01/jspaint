@@ -25,12 +25,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 		};
 		update();
 		$G.on("option-changed", this._on_option_changed = update);
-	}
-	position() {
-		super.position(true);
-	}
-	instantiate() {
-		this.$el.addClass("instantiated").css({
+		
+		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move")
 		});
 		this.$el.attr("touch-action", "none");
@@ -96,6 +92,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 			});
 		}
 		$fb.applyBounds();
+	}
+	position() {
+		super.position(true);
 	}
 	draw() {
 		const text = this.$editor.val();

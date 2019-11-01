@@ -580,7 +580,6 @@ tools = [{
 	pointerup: function(){
 		if (this.rect_width > 1 && this.rect_height > 1) {
 			textbox = new OnCanvasTextBox(this.rect_x, this.rect_y, this.rect_width, this.rect_height);
-			textbox.instantiate();
 		}
 
 		delete this.rect_x;
