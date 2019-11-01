@@ -1,5 +1,6 @@
+(()=> {
 
-tools = [{
+window.tools = [{
 	// @#: polygonal selection, polygon selection, shape selection, freeform selection
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
@@ -133,38 +134,9 @@ tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
 	
-	// TODO: DRY with Text tool
-	drag_start_x: 0,
-	drag_start_y: 0,
-	pointer_has_moved: false,
-	rect_x: 0,
-	rect_y: 0,
-	rect_width: 0,
-	rect_height: 0,
-	
-	pointerdown: function(){
-		this.drag_start_x = pointer.x;
-		this.drag_start_y = pointer.y;
-		this.pointer_has_moved = false;
-		$G.one("pointermove", ()=> {
-			this.pointer_has_moved = true;
-		});
-		if(selection){
-			selection.draw();
-			selection.destroy();
-			selection = null;
-		}
-		$canvas_handles.hide();
-	},
-	paint: function(){
-		this.rect_x = ~~Math.max(0, Math.min(this.drag_start_x, pointer.x));
-		this.rect_y = ~~Math.max(0, Math.min(this.drag_start_y, pointer.y));
-		this.rect_width = (~~Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x))) - this.rect_x + 1;
-		this.rect_height = (~~Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y))) - this.rect_y + 1;
-	},
-	pointerup: function(){
-		if (this.rect_width > 1 && this.rect_height > 1) {
-			selection = new OnCanvasSelection(this.rect_x, this.rect_y, this.rect_width, this.rect_height);
+	selectBox(rect_x, rect_y, rect_width, rect_height) {
+		if (rect_width > 1 && rect_height > 1) {
+			selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
 
 			if(ctrl){
 				selection.crop();
@@ -174,38 +146,6 @@ tools = [{
 				selection.instantiate();
 			}
 		}
-
-		delete this.rect_x;
-		delete this.rect_y;
-		delete this.rect_width;
-		delete this.rect_height;
-	},
-	cancel: function(){
-		delete this.rect_x;
-		delete this.rect_y;
-		delete this.rect_width;
-		delete this.rect_height;
-		
-		$canvas_handles.show();
-	},
-	
-	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active){ return; }
-		if(!this.pointer_has_moved) { return; }
-		if(typeof this.rect_x === "undefined"){ return; }
-
-		ctx.scale(scale, scale);
-		ctx.translate(translate_x, translate_y);
-
-		// make the document canvas part of the helper canvas so that inversion can apply to it
-		ctx.drawImage(canvas, 0, 0);
-	},
-	drawPreviewAboveGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active){ return; }
-		if(!this.pointer_has_moved) { return; }
-		if(typeof this.rect_x === "undefined"){ return; }
-
-		draw_selection_box(ctx, this.rect_x, this.rect_y, this.rect_width, this.rect_height, scale, translate_x, translate_y);
 	},
 	$options: $choose_transparent_mode
 }, {
@@ -548,71 +488,10 @@ tools = [{
 		setTimeout(FontDetective.preload, 10);
 	},
 
-	// TODO: DRY with Select tool
-	drag_start_x: 0,
-	drag_start_y: 0,
-	pointer_has_moved: false,
-	rect_x: 0,
-	rect_y: 0,
-	rect_width: 0,
-	rect_height: 0,
-	
-	pointerdown: function(){
-		this.drag_start_x = pointer.x;
-		this.drag_start_y = pointer.y;
-		this.pointer_has_moved = false;
-		$G.one("pointermove", ()=> {
-			this.pointer_has_moved = true;
-		});
-		if(textbox){
-			textbox.draw();
-			textbox.destroy();
-			textbox = null;
+	selectBox(rect_x, rect_y, rect_width, rect_height) {
+		if (rect_width > 1 && rect_height > 1) {
+			textbox = new OnCanvasTextBox(rect_x, rect_y, rect_width, rect_height);
 		}
-		$canvas_handles.hide();
-	},
-	paint: function(){
-		this.rect_x = ~~Math.max(0, Math.min(this.drag_start_x, pointer.x));
-		this.rect_y = ~~Math.max(0, Math.min(this.drag_start_y, pointer.y));
-		this.rect_width = (~~Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x))) - this.rect_x + 1;
-		this.rect_height = (~~Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y))) - this.rect_y + 1;
-	},
-	pointerup: function(){
-		if (this.rect_width > 1 && this.rect_height > 1) {
-			textbox = new OnCanvasTextBox(this.rect_x, this.rect_y, this.rect_width, this.rect_height);
-		}
-
-		delete this.rect_x;
-		delete this.rect_y;
-		delete this.rect_width;
-		delete this.rect_height;
-	},
-	cancel: function(){
-		delete this.rect_x;
-		delete this.rect_y;
-		delete this.rect_width;
-		delete this.rect_height;
-		
-		$canvas_handles.show();
-	},
-	
-	drawPreviewUnderGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active){ return; }
-		if(!this.pointer_has_moved) { return; }
-		if(typeof this.rect_x === "undefined"){ return; }
-
-		ctx.scale(scale, scale);
-		ctx.translate(translate_x, translate_y);
-
-		// make the document canvas part of the helper canvas so that inversion can apply to it
-		ctx.drawImage(canvas, 0, 0);
-	},
-	drawPreviewAboveGrid: function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active){ return; }
-		if(!this.pointer_has_moved) { return; }
-		if(typeof this.rect_x === "undefined"){ return; }
-
-		draw_selection_box(ctx, this.rect_x, this.rect_y, this.rect_width, this.rect_height, scale, translate_x, translate_y);
 	},
 	$options: $choose_transparent_mode
 }, {
@@ -907,3 +786,78 @@ tools = [{
 	},
 	$options: $ChooseShapeStyle()
 }];
+
+tools.forEach((tool)=> {
+	if (tool.selectBox) {
+		tool.drag_start_x = 0;
+		tool.drag_start_y = 0;
+		tool.pointer_has_moved = false;
+		tool.rect_x = 0;
+		tool.rect_y = 0;
+		tool.rect_width = 0;
+		tool.rect_height = 0;
+		
+		tool.pointerdown = function(){
+			this.drag_start_x = pointer.x;
+			this.drag_start_y = pointer.y;
+			this.pointer_has_moved = false;
+			$G.one("pointermove", ()=> {
+				this.pointer_has_moved = true;
+			});
+			if(selection){
+				selection.draw();
+				selection.destroy();
+				selection = null;
+			}
+			if(textbox){
+				textbox.draw();
+				textbox.destroy();
+				textbox = null;
+			}
+			$canvas_handles.hide();
+		};
+		tool.paint = function(){
+			this.rect_x = ~~Math.max(0, Math.min(this.drag_start_x, pointer.x));
+			this.rect_y = ~~Math.max(0, Math.min(this.drag_start_y, pointer.y));
+			this.rect_width = (~~Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x))) - this.rect_x + 1;
+			this.rect_height = (~~Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y))) - this.rect_y + 1;
+		};
+		tool.pointerup = function(){
+			tool.selectBox(this.rect_x, this.rect_y, this.rect_width, this.rect_height);
+
+			delete this.rect_x;
+			delete this.rect_y;
+			delete this.rect_width;
+			delete this.rect_height;
+		};
+		tool.cancel = function(){
+			delete this.rect_x;
+			delete this.rect_y;
+			delete this.rect_width;
+			delete this.rect_height;
+			
+			$canvas_handles.show();
+		};
+		
+		tool.drawPreviewUnderGrid = function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+			if(!pointer_active){ return; }
+			if(!this.pointer_has_moved) { return; }
+			if(typeof this.rect_x === "undefined"){ return; }
+
+			ctx.scale(scale, scale);
+			ctx.translate(translate_x, translate_y);
+
+			// make the document canvas part of the helper canvas so that inversion can apply to it
+			ctx.drawImage(canvas, 0, 0);
+		};
+		tool.drawPreviewAboveGrid = function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+			if(!pointer_active){ return; }
+			if(!this.pointer_has_moved) { return; }
+			if(typeof this.rect_x === "undefined"){ return; }
+
+			draw_selection_box(ctx, this.rect_x, this.rect_y, this.rect_width, this.rect_height, scale, translate_x, translate_y);
+		};
+	}
+});
+
+})();
