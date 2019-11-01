@@ -133,7 +133,6 @@ window.tools = [{
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	passive: true,
-	
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
 			selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
@@ -487,7 +486,6 @@ window.tools = [{
 	preload() {
 		setTimeout(FontDetective.preload, 10);
 	},
-
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
 			textbox = new OnCanvasTextBox(rect_x, rect_y, rect_width, rect_height);
@@ -789,20 +787,20 @@ window.tools = [{
 
 tools.forEach((tool)=> {
 	if (tool.selectBox) {
-		tool.drag_start_x = 0;
-		tool.drag_start_y = 0;
-		tool.pointer_has_moved = false;
-		tool.rect_x = 0;
-		tool.rect_y = 0;
-		tool.rect_width = 0;
-		tool.rect_height = 0;
+		let drag_start_x = 0;
+		let drag_start_y = 0;
+		let pointer_has_moved = false;
+		let rect_x = 0;
+		let rect_y = 0;
+		let rect_width = 0;
+		let rect_height = 0;
 		
-		tool.pointerdown = function(){
-			this.drag_start_x = pointer.x;
-			this.drag_start_y = pointer.y;
-			this.pointer_has_moved = false;
+		tool.pointerdown = ()=> {
+			drag_start_x = pointer.x;
+			drag_start_y = pointer.y;
+			pointer_has_moved = false;
 			$G.one("pointermove", ()=> {
-				this.pointer_has_moved = true;
+				pointer_has_moved = true;
 			});
 			if(selection){
 				selection.draw();
@@ -816,33 +814,21 @@ tools.forEach((tool)=> {
 			}
 			$canvas_handles.hide();
 		};
-		tool.paint = function(){
-			this.rect_x = ~~Math.max(0, Math.min(this.drag_start_x, pointer.x));
-			this.rect_y = ~~Math.max(0, Math.min(this.drag_start_y, pointer.y));
-			this.rect_width = (~~Math.min(canvas.width, Math.max(this.drag_start_x, pointer.x))) - this.rect_x + 1;
-			this.rect_height = (~~Math.min(canvas.height, Math.max(this.drag_start_y, pointer.y))) - this.rect_y + 1;
+		tool.paint = ()=> {
+			rect_x = ~~Math.max(0, Math.min(drag_start_x, pointer.x));
+			rect_y = ~~Math.max(0, Math.min(drag_start_y, pointer.y));
+			rect_width = (~~Math.min(canvas.width, Math.max(drag_start_x, pointer.x))) - rect_x + 1;
+			rect_height = (~~Math.min(canvas.height, Math.max(drag_start_y, pointer.y))) - rect_y + 1;
 		};
-		tool.pointerup = function(){
-			tool.selectBox(this.rect_x, this.rect_y, this.rect_width, this.rect_height);
-
-			delete this.rect_x;
-			delete this.rect_y;
-			delete this.rect_width;
-			delete this.rect_height;
+		tool.pointerup = ()=> {
+			tool.selectBox(rect_x, rect_y, rect_width, rect_height);
 		};
-		tool.cancel = function(){
-			delete this.rect_x;
-			delete this.rect_y;
-			delete this.rect_width;
-			delete this.rect_height;
-			
+		tool.cancel = ()=> {
 			$canvas_handles.show();
 		};
-		
-		tool.drawPreviewUnderGrid = function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
 			if(!pointer_active){ return; }
-			if(!this.pointer_has_moved) { return; }
-			if(typeof this.rect_x === "undefined"){ return; }
+			if(!pointer_has_moved) { return; }
 
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);
@@ -850,12 +836,11 @@ tools.forEach((tool)=> {
 			// make the document canvas part of the helper canvas so that inversion can apply to it
 			ctx.drawImage(canvas, 0, 0);
 		};
-		tool.drawPreviewAboveGrid = function(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+		tool.drawPreviewAboveGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
 			if(!pointer_active){ return; }
-			if(!this.pointer_has_moved) { return; }
-			if(typeof this.rect_x === "undefined"){ return; }
+			if(!pointer_has_moved) { return; }
 
-			draw_selection_box(ctx, this.rect_x, this.rect_y, this.rect_width, this.rect_height, scale, translate_x, translate_y);
+			draw_selection_box(ctx, rect_x, rect_y, rect_width, rect_height, scale, translate_x, translate_y);
 		};
 	}
 });
