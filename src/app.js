@@ -439,10 +439,10 @@ set_magnification(default_magnification);
 storage.get({
 	width: default_canvas_width,
 	height: default_canvas_height,
-}, (err, {width, height}) => {
+}, (err, stored_values) => {
 	if(err){return;}
-	my_canvas_width = width;
-	my_canvas_height = height;
+	my_canvas_width = stored_values.width;
+	my_canvas_height = stored_values.height;
 	canvas.width = Math.max(1, my_canvas_width);
 	canvas.height = Math.max(1, my_canvas_height);
 	ctx.disable_image_smoothing();
