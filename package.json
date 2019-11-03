@@ -68,10 +68,10 @@
     "electron": "6.0.10",
     "electron-debug": "^3.0.1",
     "eslint": "6.4.0",
-    "http-server": "^0.11.1",
     "live-server": "^1.2.1",
-    "parallelshell": "^3.0.2",
-    "phantomcss": "^1.6.0"
+    "npm-run-all": "4.1.5",
+    "phantomcss": "^1.6.0",
+    "serve": "11.2.0"
   },
   "scripts": {
     "start": "electron-forge start",
@@ -81,8 +81,13 @@
     "publish": "electron-forge publish",
     "lint": "eslint src/",
     "dev": "live-server",
-    "test": "parallelshell \"http-server -p 11822 --silent\" \"casperjs test test.js --engine=slimerjs\"",
-    "test-verbose": "parallelshell \"http-server -p 11822\" \"casperjs test test.js --engine=slimerjs --verbose --log-level=debug\""
+    "test": "run-p test:server test:runner",
+    "test-verbose": "run-p test:server test:runner:verbose",
+    "test:server": "serve --listen 11822 --no-clipboard",
+    "test:runner": "casperjs test test.js --verbose --log-level=debug",
+    "test:runner:verbose": "casperjs test test.js --verbose --log-level=debug",
+    "test:runner:firefox": "casperjs test test.js --engine=slimerjs --verbose --log-level=debug",
+    "test:runner:firefox:verbose": "casperjs test test.js --engine=slimerjs --verbose --log-level=debug"
   },
   "repository": {
     "type": "git",
