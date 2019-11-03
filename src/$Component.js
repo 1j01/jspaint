@@ -29,6 +29,10 @@ function $Component(name, orientation, $el){
 	let w, h;
 	let pos = 0;
 	let pos_axis;
+	let last_docked_to_pos;
+	let $last_docked_to;
+	let $dock_to;
+	let $ghost;
 	
 	if(orientation === "tall"){
 		pos_axis = "top";
@@ -56,10 +60,6 @@ function $Component(name, orientation, $el){
 		last_docked_to_pos = pos;
 	};
 	
-	var last_docked_to_pos;
-	var $last_docked_to;
-	let $dock_to;
-	let $ghost;
 	$c.on("pointerdown", e => {
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
@@ -94,7 +94,7 @@ function $Component(name, orientation, $el){
 		// Prevent text selection anywhere within the component
 		e.preventDefault();
 	});
-	var drag_onpointermove = e => {
+	const drag_onpointermove = e => {
 		
 		$ghost.css({
 			left: e.clientX + ox,
@@ -135,7 +135,7 @@ function $Component(name, orientation, $el){
 		e.preventDefault();
 	};
 	
-	var drag_onpointerup = e => {
+	const drag_onpointerup = e => {
 		
 		$w.hide();
 		

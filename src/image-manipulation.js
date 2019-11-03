@@ -225,7 +225,7 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	const c_width = canvas.width;
 	const c_height = canvas.height;
 	const id = ctx.getImageData(0, 0, c_width, c_height);
-	pixel_pos = (start_y*c_width + start_x) * 4;
+	let pixel_pos = (start_y*c_width + start_x) * 4;
 	const start_r = id.data[pixel_pos+0];
 	const start_g = id.data[pixel_pos+1];
 	const start_b = id.data[pixel_pos+2];
@@ -244,7 +244,6 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 		let new_pos;
 		let x;
 		let y;
-		var pixel_pos;
 		let reach_left;
 		let reach_right;
 		new_pos = stack.pop();
@@ -892,8 +891,7 @@ function draw_grid(ctx, scale) {
 		let x_max = -Infinity;
 		let y_min = +Infinity;
 		let y_max = -Infinity;
-		for (var i = 0; i < numPoints; i++) {
-			const {x, y} = points[i];
+		for (const {x, y} of points) {
 			x_min = Math.min(x, x_min);
 			x_max = Math.max(x, x_max);
 			y_min = Math.min(y, y_min);
@@ -977,7 +975,7 @@ function draw_grid(ctx, scale) {
 		const height = y_max - y_min;
 		
 		// TODO: maybe have the cutout only the width/height of the bounds
-		// var cutout = make_canvas(width, height);
+		// const cutout = make_canvas(width, height);
 		const cutout = make_canvas(canvas);
 
 		cutout.ctx.save();

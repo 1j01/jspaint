@@ -45,7 +45,7 @@ function show_imgur_uploader(blob){
 
 		const parseImgurResponseJSON = responseJSON => {
 			try {
-				var response = JSON.parse(responseJSON);
+				return JSON.parse(responseJSON);
 			} catch(error) {
 				$imgur_status.text("Received an invalid JSON response from Imgur: ");
 				// .append($(E("pre")).text(responseJSON));
@@ -78,7 +78,6 @@ function show_imgur_uploader(blob){
 				$imgur_window.css({width: "auto"});
 				$imgur_window.center();
 			}
-			return response;
 		};
 
 		// make an HTTP request to the Imgur image upload API
@@ -150,7 +149,7 @@ function show_imgur_uploader(blob){
 
 					$imgur_status.text("Deleting...");
 				});
-				const $okay_button = $imgur_window.$Button("OK", () => {
+				$imgur_window.$Button("OK", () => {
 					$imgur_window.close();
 				});
 			}else if(req.readyState == 4){
@@ -170,7 +169,7 @@ function show_imgur_uploader(blob){
 
 		$imgur_status.text("Uploading...");
 	});
-	var $cancel_button = $imgur_window.$Button("Cancel", () => {
+	const $cancel_button = $imgur_window.$Button("Cancel", () => {
 		$imgur_window.close();
 	});
 	$imgur_window.width(300);

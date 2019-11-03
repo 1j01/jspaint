@@ -54,15 +54,12 @@ function update_helper_layer_immediately(e) {
 	const hctx = hcanvas.ctx;
 
 	const margin = 15;
-	// var viewport_width = Math.floor(Math.min($canvas_area.width() / magnification + margin*2, canvas.width));
-	// var viewport_height = Math.floor(Math.min($canvas_area.height() / magnification + margin*2, canvas.height));
 	const viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
 	const viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification - margin, 0));
 	const viewport_x2 = Math.floor(Math.min(viewport_x + $canvas_area.width() / magnification + margin*2, canvas.width));
 	const viewport_y2 = Math.floor(Math.min(viewport_y + $canvas_area.height() / magnification + margin*2, canvas.height));
 	const viewport_width = viewport_x2 - viewport_x;
 	const viewport_height = viewport_y2 - viewport_y;
-	// console.log($canvas_area.width(), $canvas_area.height(), viewport_width, viewport_height, canvas.width, canvas.height);
 	const resolution_width = viewport_width * scale;
 	const resolution_height = viewport_height * scale;
 	if (
@@ -633,8 +630,8 @@ function show_news(){
 	}
 	$news_window = $Window().title("Project News");
 
-	// var $latest_entries = $latest_news.find(".news-entry");
-	// var latest_entry = $latest_entries[$latest_entries.length - 1];
+	// const $latest_entries = $latest_news.find(".news-entry");
+	// const latest_entry = $latest_entries[$latest_entries.length - 1];
 	// console.log("LATEST MEWS:", $latest_news);
 	// console.log("LATEST ENTRY:", latest_entry);
 
@@ -746,20 +743,20 @@ function render_history_as_gif(){
 		$win.close();
 	});
 
-	$win.on('close', () => {
-		gif.abort();
-	});
-
 	try{
 		const width = canvas.width;
 		const height = canvas.height;
-		var gif = new GIF({
+		const gif = new GIF({
 			//workers: Math.min(5, Math.floor(undos.length/50)+1),
 			workerScript: "lib/gif.js/gif.worker.js",
 			width,
 			height,
 		});
 
+		$win.on('close', () => {
+			gif.abort();
+		});
+	
 		gif.on("progress", p => {
 			$progress.val(p);
 			$progress_percent.text(`${~~(p*100)}%`);
@@ -808,19 +805,19 @@ function render_history_as_gif(){
 
 /*
 function render_history_as_apng(){
-	var $win = $FormWindow();
+	const $win = $FormWindow();
 	$win.title("Rendering APNG");
 	$win.center();
-	var $output = $win.$main;
-	var $progress = $(E("progress")).appendTo($output);
-	var $progress_percent = $(E("span")).appendTo($output).css({
+	const $output = $win.$main;
+	const $progress = $(E("progress")).appendTo($output);
+	const $progress_percent = $(E("span")).appendTo($output).css({
 		width: "2.3em",
 		display: "inline-block",
 		textAlign: "center",
 	});
 	$win.$main.css({padding: 5});
 
-	var $cancel = $win.$Button('Cancel', ()=> {
+	const $cancel = $win.$Button('Cancel', ()=> {
 		$win.close();
 	});
 
@@ -829,17 +826,17 @@ function render_history_as_apng(){
 	});
 
 	try{
-		var width = canvas.width;
-		var height = canvas.height;
-		var frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
-		// var apng = new APNG(frames, {loops: Infinity}, (blob)=> {
-		var apng = new APNG({loops: Infinity})
-		for(var i=0; i<frames.length; i++){
-			apng.addFrame(frames[i], {delay: 200});
+		const width = canvas.width;
+		const height = canvas.height;
+		const frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
+		// const apng = new APNG(frames, {loops: Infinity}, (blob)=> {
+		const apng = new APNG({loops: Infinity})
+		for(const frame of frames){
+			apng.addFrame(frame, {delay: 200});
 		}
 		apng.render((blob)=> {
 			$win.title("Rendered APNG");
-			var url = URL.createObjectURL(blob);
+			const url = URL.createObjectURL(blob);
 			$output.empty().append(
 				$(E("img")).attr({
 					src: url,

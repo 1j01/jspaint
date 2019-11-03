@@ -127,7 +127,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		// NOTE: must come before cutout canvas is modified
 		const colored_cutout = make_canvas(cutout);
 		replace_colors_with_swatch(colored_cutout.ctx, colors.background, this.x, this.y);
-		// var colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, this.width, this.height);
+		// const colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// }
 		for (let i = 0; i < cutoutImageData.data.length; i += 4) {
 			const in_cutout = cutoutImageData.data[i + 3] > 0;

@@ -71,7 +71,7 @@ function $Window($component){
 						$focused.off("focusout", release);
 						$(window).off("keyup", keyup);
 					};
-					var keyup = e => {
+					const keyup = e => {
 						if(e.keyCode === 32 || e.keyCode === 13){
 							release();
 						}

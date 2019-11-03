@@ -7,7 +7,7 @@
 	};
 	
 	const debug_event = (e, synthetic) => {
-		// var label = synthetic ? "(synthetic)" : "(normal)";
+		// const label = synthetic ? "(synthetic)" : "(normal)";
 		// window.console && console.debug && console.debug(e.type, label);
 	};
 	

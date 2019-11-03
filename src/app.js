@@ -58,7 +58,7 @@ let text_tool_font = {
 
 const undos = []; //array of ImageData
 const redos = []; //array of ImageData
-//var frames = []; //array of {delay: N, undos: [ImageData], redos: [ImageData], image: ImageData}? array of Frames?
+//const frames = []; //array of {delay: N, undos: [ImageData], redos: [ImageData], image: ImageData}? array of Frames?
 
 let file_name;
 let document_file_path;
@@ -68,7 +68,9 @@ let pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
 let reverse;
 let ctrl;
 let button;
-
+let pointer_active = false;
+let pointer_over_canvas = false;
+let update_helper_layer_on_pointermove_active = false;
 
 const $app = $(E("div")).addClass("jspaint").appendTo("body");
 
@@ -145,7 +147,7 @@ if(!extras_menu_should_start_visible){
 // </menu bar>
 
 const $toolbox = $ToolBox(tools);
-// var $toolbox2 = $ToolBox(extra_tools, true);//.hide();
+// const $toolbox2 = $ToolBox(extra_tools, true);//.hide();
 // Note: a second $ToolBox doesn't work because they use the same tool options (which could be remedied)
 // and also the UI isn't designed for multiple vertical components (or horizontal ones)
 // If there's to be extra tools, they should probably get a window, with different UI
@@ -275,7 +277,7 @@ $G.on("keydown", e => {
 	}else if(e.keyCode === 107 || e.keyCode === 109){ // Numpad Plus and Minus
 		const plus = e.keyCode === 107;
 		const minus = e.keyCode === 109;
-		const delta = plus - minus; // var delta = +plus++ -minus--; // Δ = ±±±±
+		const delta = plus - minus; // const delta = +plus++ -minus--; // Δ = ±±±±
 
 		if(selection){
 			selection.scale(2 ** delta);
@@ -610,9 +612,6 @@ $canvas.on("pointerleave", e => {
 	}
 });
 
-var pointer_active = false;
-var pointer_over_canvas = false;
-var update_helper_layer_on_pointermove_active = false;
 $canvas.on("pointerdown", e => {
 	update_canvas_rect();
 
@@ -659,8 +658,9 @@ $canvas.on("pointerdown", e => {
 		}
 
 		$G.on("pointermove", canvas_pointer_move);
+		let iid;
 		if(selected_tool.continuous === "time"){
-			var iid = setInterval(()=> { tool_go(selected_tool); }, 5);
+			iid = setInterval(()=> { tool_go(selected_tool); }, 5);
 		}
 		$G.one("pointerup", (e, canceling) => {
 			button = undefined;

@@ -96,7 +96,7 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 		return splitByDots[splitByDots.length - 1].toLowerCase();
 	};
 	// TODO: default to existing extension, except it would be awkward to rearrange the list...
-	// var suggestedExtension = getExtension(suggestedFileName);
+	// const suggestedExtension = getExtension(suggestedFileName);
 	const filters = [
 		// top one is considered default by electron
 		{name: "PNG", extensions: ["png"]},

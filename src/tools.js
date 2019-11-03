@@ -751,12 +751,11 @@ window.tools = [{
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
 
-		let radius;
 		if(w < stroke_size || h < stroke_size){
 			ctx.fillStyle = ctx.strokeStyle;
-			radius = Math.min(8, w/2, h/2);
-			// var radius_x = Math.min(8, w/2);
-			// var radius_y = Math.min(8, h/2);
+			const radius = Math.min(8, w/2, h/2);
+			// const radius_x = Math.min(8, w/2);
+			// const radius_y = Math.min(8, h/2);
 			draw_rounded_rectangle(
 				ctx,
 				x, y, w, h,
@@ -766,9 +765,9 @@ window.tools = [{
 				true
 			);
 		}else{
-			radius = Math.min(8, (w - stroke_size)/2, (h - stroke_size)/2);
-			// var radius_x = Math.min(8, (w - stroke_size)/2);
-			// var radius_y = Math.min(8, (h - stroke_size)/2);
+			const radius = Math.min(8, (w - stroke_size)/2, (h - stroke_size)/2);
+			// const radius_x = Math.min(8, (w - stroke_size)/2);
+			// const radius_y = Math.min(8, (h - stroke_size)/2);
 			draw_rounded_rectangle(
 				ctx,
 				x + ~~(stroke_size / 2),
