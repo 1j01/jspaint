@@ -78,7 +78,7 @@ function show_help(){
 	});
 	
 	// @TODO: keyboard accessability
-	// $help_window.on("keydown", function(e){
+	// $help_window.on("keydown", (e)=> {
 	// 	switch(e.keyCode){
 	// 		case 37:
 	// 			show_error_message("MOVE IT");

@@ -242,8 +242,8 @@ function update_title(){
 
 function create_and_trigger_input(attrs, callback){
 	const $input = $(E("input")).attr(attrs)
-		.on("change", function(){
-			callback(this);
+		.on("change", ()=> {
+			callback($input[0]);
 			$input.remove();
 		})
 		.appendTo($app)
@@ -303,9 +303,9 @@ function load_image_from_URI(uri, callback){
 	.then(response => response.blob()).then(blob => {
 		const img = new Image();
 		img.crossOrigin = "Anonymous";
-		img.onload = function(){
-			if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth === 0) {
-				return callback && callback(new Error(`Image failed to load; naturalWidth == ${this.naturalWidth}`));
+		img.onload = ()=> {
+			if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
+				return callback && callback(new Error(`Image failed to load; naturalWidth == ${img.naturalWidth}`));
 			}
 			callback(null, img);
 		};
@@ -652,7 +652,7 @@ function show_news(){
 // TODO: DRY between these functions and open_from_* functions further?
 
 // function paste_image_from_URI(uri, callback){
-// 	load_image_from_URI(uri, function(err, img){
+// 	load_image_from_URI(uri, (err, img)=> {
 // 		if(err){ return callback(err); }
 // 		paste(img);
 // 	});
@@ -820,11 +820,11 @@ function render_history_as_apng(){
 	});
 	$win.$main.css({padding: 5});
 
-	var $cancel = $win.$Button('Cancel', function(){
+	var $cancel = $win.$Button('Cancel', ()=> {
 		$win.close();
 	});
 
-	$win.on('close', function(){
+	$win.on('close', ()=> {
 		// abort any workers
 	});
 
@@ -832,12 +832,12 @@ function render_history_as_apng(){
 		var width = canvas.width;
 		var height = canvas.height;
 		var frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
-		// var apng = new APNG(frames, {loops: Infinity}, function(blob){
+		// var apng = new APNG(frames, {loops: Infinity}, (blob)=> {
 		var apng = new APNG({loops: Infinity})
 		for(var i=0; i<frames.length; i++){
 			apng.addFrame(frames[i], {delay: 200});
 		}
-		apng.render(function(blob){
+		apng.render((blob)=> {
 			$win.title("Rendered APNG");
 			var url = URL.createObjectURL(blob);
 			$output.empty().append(
@@ -847,9 +847,9 @@ function render_history_as_apng(){
 					height: height,
 				})
 			);
-			$win.$Button("Save", function(){
+			$win.$Button("Save", ()=> {
 				$win.close();
-				sanity_check_blob(blob, function(){
+				sanity_check_blob(blob, ()=> {
 					saveAs(blob, file_name + " history.png");
 				});
 			});
@@ -1295,11 +1295,11 @@ function image_attributes(){
 
 	$main.find("input")
 		.css({width: "40px"})
-		.on("change keyup keydown keypress pointerdown pointermove paste drop", function(){
-			if($(this).is($width)){
+		.on("change keyup keydown keypress pointerdown pointermove paste drop", (event)=> {
+			if($(event.currentTarget).is($width)){
 				width_in_px = $width.val() * unit_sizes_in_px[current_unit];
 			}
-			if($(this).is($height)){
+			if($(event.currentTarget).is($height)){
 				height_in_px = $height.val() * unit_sizes_in_px[current_unit];
 			}
 		});
@@ -1400,12 +1400,12 @@ function image_flip_and_rotate(){
 			disabled: action !== "rotate-by-angle"
 		});
 	});
-	$rotate_by_angle.find("label, input").on("click", function(e){
+	$rotate_by_angle.find("label, input").on("click", (e)=> {
 		// Select "Rotate by angle" and enable subfields
 		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
 		$fieldset.find("input").triggerHandler("change");
 
-		const $label = $(this).closest("label");
+		const $label = $(e.target).closest("label");
 		// Focus the numerical input if this field has one
 		const num_input = $label.find("input[type='number']")[0];
 		if (num_input) {
