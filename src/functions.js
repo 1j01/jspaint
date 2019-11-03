@@ -1295,13 +1295,9 @@ function image_attributes(){
 
 	$main.find("input")
 		.css({width: "40px"})
-		.on("change keyup keydown keypress pointerdown pointermove paste drop", (event)=> {
-			if($(event.currentTarget).is($width)){
-				width_in_px = $width.val() * unit_sizes_in_px[current_unit];
-			}
-			if($(event.currentTarget).is($height)){
-				height_in_px = $height.val() * unit_sizes_in_px[current_unit];
-			}
+		.on("change keyup keydown keypress pointerdown pointermove paste drop", ()=> {
+			width_in_px = $width.val() * unit_sizes_in_px[current_unit];
+			height_in_px = $height.val() * unit_sizes_in_px[current_unit];
 		});
 
 	// Fieldsets
