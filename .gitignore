@@ -1,4 +1,10 @@
 
+# cypress-image-snapshot visual diffs
+__diff_output__
+
+# cypress-image-snapshot images of the whole cypress UI
+*(failed).snap.png
+
 # electron forge output
 out/
 
