@@ -1,9 +1,14 @@
+(()=> {
 
-const menus = {
+const looksLikeChrome = !!(window.chrome && (chrome.loadTimes || chrome.csi));
+// NOTE: Microsoft Edge includes window.chrome.app
+// (also this browser detection logic could likely use some more nuance)
+
+window.menus = {
 	"&File": [
 		{
 			item: "&New",
-			shortcut: "Ctrl+N",
+			shortcut: "Ctrl+Alt+N", // Ctrl+N opens a new browser window
 			action: ()=> { file_new(); },
 			description: "Creates a new document.",
 		},
@@ -22,7 +27,8 @@ const menus = {
 		{
 			item: "Save &As",
 			shortcut: "Ctrl+Shift+S",
-			// in mspaint, no shortcut is listed, but it supports F12; it doesn't support Ctrl+Shift+S
+			// in mspaint, no shortcut is listed; it supports F12 (but in a browser that opens the dev tools)
+			// it doesn't support Ctrl+Shift+S but that's a good & common modern shortcut
 			action: ()=> { file_save_as(); },
 			description: "Saves the active document with a new name.",
 		},
@@ -98,7 +104,7 @@ const menus = {
 		$MenuBar.DIVIDER,
 		{
 			item: "E&xit",
-			shortcut: "Alt+F4",
+			// shortcut: "Alt+F4", // closes browser window
 			action: ()=> {
 				close();
 			},
@@ -183,7 +189,7 @@ const menus = {
 	"&View": [
 		{
 			item: "&Tool Box",
-			shortcut: "Ctrl+T",
+			// shortcut: "Ctrl+T", // opens a new browser tab
 			checkbox: {
 				toggle: ()=> {
 					$toolbox.toggle();
@@ -194,7 +200,7 @@ const menus = {
 		},
 		{
 			item: "&Color Box",
-			shortcut: "Ctrl+L",
+			// shortcut: "Ctrl+L", // focuses browser address bar
 			checkbox: {
 				toggle: ()=> {
 					$colorbox.toggle();
@@ -241,7 +247,7 @@ const menus = {
 			submenu: [
 				{
 					item: "&Normal Size",
-					shorcut: "Ctrl+PgUp",
+					// shortcut: "Ctrl+PgUp", // cycles thru browser tabs
 					description: "Zooms the picture to 100%.",
 					enabled: () => magnification !== 1,
 					action: ()=> {
@@ -250,7 +256,7 @@ const menus = {
 				},
 				{
 					item: "&Large Size",
-					shorcut: "Ctrl+PgDn",
+					// shortcut: "Ctrl+PgDn", // cycles thru browser tabs
 					description: "Zooms the picture to 400%.",
 					enabled: () => magnification !== 4,
 					action: ()=> {
@@ -265,7 +271,7 @@ const menus = {
 				$MenuBar.DIVIDER,
 				{
 					item: "Show &Grid",
-					shorcut: "Ctrl+G",
+					shortcut: "Ctrl+G",
 					enabled: () => magnification >= 4,
 					checkbox: {
 						toggle: toggle_grid,
@@ -291,7 +297,7 @@ const menus = {
 	"&Image": [
 		{
 			item: "&Flip/Rotate",
-			shortcut: "Ctrl+R",
+			// shortcut: "Ctrl+R", // reloads browser tab
 			action: ()=> { image_flip_and_rotate(); },
 			description: "Flips or rotates the picture or a selection.",
 		},
@@ -315,10 +321,12 @@ const menus = {
 		},
 		{
 			item: "&Clear Image",
-			shortcut: "Ctrl+Shift+N",
+			shortcut: looksLikeChrome ? undefined : "Ctrl+Shift+N", // opens incognito window in chrome
 			//shortcut: "Ctrl+Shft+N", [sic]
 			action: ()=> { clear(); },
-			description: "Clears the picture or selection.",
+			description: "Clears the picture.",
+			// TODO: do as mspaint does here!
+			// description: "Clears the picture or selection.",
 		},
 		{
 			item: "&Draw Opaque",
@@ -485,3 +493,5 @@ const menus = {
 		},
 	],
 };
+
+})();
