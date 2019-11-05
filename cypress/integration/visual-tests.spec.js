@@ -35,11 +35,16 @@ context('visual tests', () => {
 		cy.get('.Tools-component').matchImageSnapshot();
 	});
 
+	beforeEach(()=> {
+		if (Cypress.$('.window:visible')[0]) {
+			cy.get('.window:visible .window-close-button').click();
+			cy.get('.window').should('not.be.visible');
+		}
+	});
+
 	it('image attributes window', () => {
 		cy.get('body').type('{ctrl}e');
 		cy.get('.window:visible').matchImageSnapshot();
-		cy.get('.window:visible .window-close-button').click();
-		cy.get('.window').should('not.be.visible');
 	});
 
 	it('flip and rotate window', () => {
@@ -47,8 +52,6 @@ context('visual tests', () => {
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(1)').click();
 		cy.get('.window:visible').matchImageSnapshot();
-		cy.get('.window:visible .window-close-button').click();
-		cy.get('.window').should('not.be.visible');
 	});
 
 	it('stretch and skew window', () => {
@@ -57,8 +60,6 @@ context('visual tests', () => {
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(2)').click();
 		// TODO: wait for images to load and include images?
 		cy.get('.window:visible').matchImageSnapshot({ blackout: ["img"] });
-		cy.get('.window:visible .window-close-button').click();
-		cy.get('.window').should('not.be.visible');
 	});
 
 	it('help window', () => {
@@ -68,8 +69,6 @@ context('visual tests', () => {
 		cy.get('.window:visible .folder', {timeout: 10000}); // wait for sidebar contents to load
 		// TODO: wait for iframe to load
 		cy.get('.window:visible').matchImageSnapshot({ blackout: ["iframe"] });
-		cy.get('.window:visible .window-close-button').click();
-		cy.get('.window').should('not.be.visible');
 	});
 
 	it('about window', () => {
@@ -77,7 +76,5 @@ context('visual tests', () => {
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(3)').click();
 		cy.get('.window:visible').matchImageSnapshot({ blackout: ["img"] });
-		cy.get('.window:visible .window-close-button').click();
-		cy.get('.window').should('not.be.visible');
 	});
 });
