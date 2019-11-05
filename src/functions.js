@@ -1463,7 +1463,9 @@ function image_stretch_and_skew(){
 	const $RowInput = ($table, img_src, label_text, default_value, label_unit) => {
 		const $tr = $(E("tr")).appendTo($table);
 		const $img = $(E("img")).attr({
-			src: `images/transforms/${img_src}.png`
+			src: `images/transforms/${img_src}.png`,
+			width: 32,
+			height: 32,
 		}).css({
 			marginRight: "20px"
 		});
