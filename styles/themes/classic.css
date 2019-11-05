@@ -21,16 +21,16 @@ body,
 
 @media (resolution: 1x), (resolution: 2x), (min-resolution: 3x) {
 	* {
+		image-rendering: -moz-crisp-edges;
 		image-rendering: crisp-edges;
 		image-rendering: pixelated;
-		image-rendering: -moz-crisp-edges;
 	}
 }
 .disable-aa-for-things-at-main-canvas-scale .main-canvas,
 .disable-aa-for-things-at-main-canvas-scale .selection canvas {
+	image-rendering: -moz-crisp-edges;
 	image-rendering: crisp-edges;
 	image-rendering: pixelated;
-	image-rendering: -moz-crisp-edges;
 }
 
 .selection:after,
