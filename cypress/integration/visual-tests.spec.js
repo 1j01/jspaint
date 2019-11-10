@@ -3,6 +3,7 @@
 context('visual tests', () => {
 	it('main screenshot', () => {
 		cy.visit('/');
+		cy.setResolution([760, 490]);
 		cy.matchImageSnapshot();
 	});
 
