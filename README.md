@@ -15,7 +15,7 @@ So far, it does this pretty well.
 
 Ah yes, good old paint. Not the one with the [ribbons][]
 or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
-And sorry, not the even newer [Paint 3D][].
+(And not the even newer [Paint 3D][].)
 
 [ribbons]: https://www.google.com/search?tbm=isch&q=MS+Paint+Windows+7+ribbons "Google Search: MS Paint Windows 7 ribbons"
 [Fresh Paint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
@@ -40,7 +40,7 @@ I want to bring good old paint into the modern era.
 * Cross-platform
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
   or a measly 50 in Windows 7)
-* Autosaves a backup of your image. Only one backup tho, which is apparently not enough, because the browser may clear the canvas to free up memory, and you're likely to lose the backup when this happens because it gets overwritten. If this happens (canvas becomes a checkerboard), try to undo (a few times), and if that doesn't work, try to refresh the page. Remember to save with File > Save!
+* Autosaves a backup of your image. Only one backup per document tho, which doesn't give you a lot of safety. The browser may clear the canvas to free up memory, and I've implemented a check for this that prompts you to undo so hopefully you won't lose work. Still remember to save with **File > Save** or <kbd>Ctrl+S</kbd>!
 * Edit transparent images! To create a transparent image,
   go to **Image > Attributes...** and select Transparent,
   then Okay, and then **Image > Clear Image** or use the Eraser tool.
@@ -103,8 +103,7 @@ In other browsers you can still can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>C
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
 External images can be pasted in.
 
-There's also a [desktop app](#desktop-app) version you can install that has full clipboard support,  
-which also lets you set the wallpaper.
+(There's also a partially-built [desktop app](#desktop-app) version you can install that has full clipboard support, and also lets you set the wallpaper.)
 
 
 ## Extended Editing
@@ -129,7 +128,6 @@ I want to make JS Paint to be able to edit...
   Actually, it could always open SVG files in browsers that can handle SVGs,
   and I've made it try not to save over the original SVG.
   That's pretty decent SVG support for a 100% raster image editor.
-* [Text files][TXT] (definitely just kidding maybe)
 * Tessellating patterns, and textures on 3D models;
   that might be a pipe dream, but [then again...](https://github.com/1j01/pipes) [hm...](https://github.com/1j01/mopaint)
 
@@ -179,9 +177,12 @@ I want to make JS Paint to be able to edit...
 
 I've started work on a desktop app, built with [Electron][] and [Electron Forge][].
 
-There are no releases yet, but the groundwork has been laid, and several features implemented. 
+There are no releases yet, but much of the groundwork has been laid, and several features implemented.
 
-If you want to help out, see Development Setup below, and comment on [this issue](https://github.com/1j01/jspaint/issues/2) to show your interest.
+Why did I do this.
+I hate electron apps. They're so slow and bulky...
+
+If you're interested, comment on [this issue](https://github.com/1j01/jspaint/issues/2).
 
 [Electron]: https://electronjs.org/
 [Electron Forge]: https://electronforge.io/
@@ -193,23 +194,33 @@ If you want to help out, see Development Setup below, and comment on [this issue
 
 Install [Node.js][] if you don't have it, then open up a command prompt / terminal in the project directory.
 
+### Testing
+
+Run `npm run lint` to check for code problems.
+
+Run `npm test` to run browser-based tests with Cypress. (It's slow to start up and run tests, unfortunately.)
+
+Run `npm run accept` to accept any visual changes.
+This unfortunately re-runs all the tests, rather than accepting results of the previous test, so you could end up with different results than the previous test.
+If you use [GitHub Desktop](https://desktop.github.com/), you can view diffs of images, in four different modes.
+
+To open the Cypress UI, first run `npm run test:start-server`, then concurrently `npm run cy:open`
+
+Tests are also run in continuous integration [with Travis CI](https://travis-ci.org/1j01/jspaint).
+
 ### Web App (https://jspaint.app)
 
-You just need an HTTP server.
+You just need an HTTP server, but [Live Server][] is recommended. It auto reloads when you save changes.
 
-[Live Server][] is great; it auto reloads when you save changes.
-
-You can install it globally with `npm i -g live-server`
-and run it with `live-server`
-
-It's also included in `package.json` so if you've already installed dependencies (`npm i`) you can use `npm run dev` to run it.
+It's included in `package.json` so if you've installed dependencies (`npm i`) you can use `npm run dev` to run it.
+(It's configured to ignore some files/directories for reloading.)
 
 ### Desktop App (Electron)
 
 - Install dependencies with `npm i`
 - Start the electron app with `npm start`
 
-[electron-debug][] and [devtron][] are included, so you can use <kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools, and there's a Devtron tab with tools specific to Electron like an IPC message inspector.
+[electron-debug][] and [devtron][] are included, so you can use <kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools, and there's a Devtron tab with tools specific to Electron.
 
 You can build for production with `npm run make`
 
