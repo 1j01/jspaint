@@ -234,7 +234,11 @@ function reset_canvas_and_history(){
 }
 
 function update_title(){
-	document.title = `${file_name} - Paint`;
+	document.title = `${file_name} - ${is_pride_month ? "Gay es " : ""}Paint`;
+
+	if (is_pride_month) {
+		$("link[rel~='icon']").attr("href", "./images/icons/gay-es-paint-16x16-light-outline.png");
+	}
 }
 
 function create_and_trigger_input(attrs, callback){
@@ -530,6 +534,9 @@ function show_about_paint(){
 		$about_paint_window.close();
 	}
 	$about_paint_window = $Window().title("About Paint");
+	if (is_pride_month) {
+		$("#paint-32x32").attr("src", "./images/icons/gay-es-paint-32x32-light-outline.png");
+	}
 
 	$about_paint_window.$content.append($about_paint_content.show()).css({padding: "15px"});
 
