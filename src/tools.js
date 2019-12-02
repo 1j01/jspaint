@@ -135,13 +135,15 @@ window.tools = [{
 	passive: true,
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
-			// TODO: fix regression: extra undoable for crop
-			selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
-
-			if(ctrl){
-				selection.crop();
-				selection.destroy();
-				selection = null;
+			if (ctrl) {
+				undoable(0, () => {
+					var cropped_canvas = make_canvas(rect_width, rect_height);
+					cropped_canvas.ctx.drawImage(canvas, -rect_x, -rect_y);
+					ctx.copy(cropped_canvas);
+					$canvas_area.trigger("resize");
+				});
+			} else {
+				selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
 			}
 		}
 	},

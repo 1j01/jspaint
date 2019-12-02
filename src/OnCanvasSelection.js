@@ -246,12 +246,4 @@ class OnCanvasSelection extends OnCanvasObject {
 		$G.triggerHandler("session-update"); // what does this mean, and why is it needed?
 		$G.off("option-changed", this._on_option_changed);
 	}
-	crop() {
-		if (this.canvas) {
-			undoable(0, () => {
-				ctx.copy(this.canvas);
-				$canvas_area.trigger("resize");
-			});
-		}
-	}
 }
