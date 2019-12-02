@@ -230,7 +230,7 @@ window.tools = [{
 	},
 	$options: $choose_eraser_size
 }, {
-	// @#: fill bucket, flood fill
+	// @#: fill bucket, flood fill area, paint bucket, paint can
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
@@ -461,7 +461,7 @@ window.tools = [{
 	},
 	$options: $choose_brush
 }, {
-	// @#: spray paint
+	// @#: spray paint can, air brush, aerograph, graffiti, scatter
 	name: "Airbrush",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
