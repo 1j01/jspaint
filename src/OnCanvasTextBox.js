@@ -174,7 +174,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 	draw() {
 		const text = this.$editor.val();
 		if (text) {
-			undoable(0, () => {
+			undoable(() => {
 				ctx.drawImage(this.canvas, this.x, this.y);
 			});
 		}

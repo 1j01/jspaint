@@ -159,7 +159,7 @@ const $toolbox = $ToolBox(tools);
 const $colorbox = $ColorBox();
 
 $canvas_area.on("user-resized", (e, _x, _y, width, height) => {
-	undoable(0, () => {
+	undoable(() => {
 		const image_data = ctx.getImageData(0, 0, width, height);
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);

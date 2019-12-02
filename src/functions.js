@@ -920,32 +920,15 @@ function render_history_as_apng(){
 }
 */
 
-function undoable(callback, action){
+function undoable(callback){
 	saved = false;
-	// TODO: this is annoying and arbitrary. nonlinear undo would be much better.
-	if(redos.length > 5){
-		const $w = new $FormWindow().addClass("dialogue-window");
-		$w.title("Paint");
-		$w.$main.html(`Discard ${redos.length} possible redo-able actions?<br>(Ctrl+Y or Ctrl+Shift+Z to redo)<br>`);
-		$w.$Button(action ? "Discard and Apply" : "Discard", () => {
-			$w.close();
-			redos.length = 0;
-			action && action();
-		})[0].focus();
-		$w.$Button("Keep", () => {
-			$w.close();
-		});
-		$w.center();
-		return false;
-	}else{
-		redos.length = 0;
-	}
+	// TODO: nonlinear undo
+	redos.length = 0;
 
 	undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
-	action && action();
+	// TODO: clean up: remove callback?
 	callback && callback();
-	return true;
 }
 function undo(canceling){
 	if(undos.length<1){ return false; }
@@ -1167,7 +1150,7 @@ function image_invert(){
 }
 
 function clear(){
-	undoable(0, () => {
+	undoable(() => {
 		deselect();
 		cancel();
 		saved = false;

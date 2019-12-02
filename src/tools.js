@@ -141,7 +141,7 @@ window.tools = [{
 				selection = null;
 			}
 			if (ctrl) {
-				undoable(0, () => {
+				undoable(() => {
 					var cropped_canvas = make_canvas(rect_width, rect_height);
 					cropped_canvas.ctx.drawImage(canvas, -rect_x, -rect_y);
 					ctx.copy(cropped_canvas);
