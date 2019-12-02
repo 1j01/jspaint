@@ -23,12 +23,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		super.position(true);
 	}
 	instantiate(_img, _passive) {
-		if (this.$el.hasClass("instantiated")) {
-			// for silly multitools feature
-			// TODO: select a rectangle minus the polygon, or xor the polygon
-			return;
-		}
-		this.$el.addClass("instantiated").css({
+		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move")
 		});
 		this.$el.attr("touch-action", "none");
