@@ -107,9 +107,9 @@ window.tools = [{
 			this.x_min,
 			this.y_min,
 			this.x_max - this.x_min,
-			this.y_max - this.y_min
+			this.y_max - this.y_min,
+			contents_within_polygon
 		);
-		selection.instantiate(contents_within_polygon);
 		selection.cut_out_background();
 	},
 	cancel() {
@@ -135,14 +135,13 @@ window.tools = [{
 	passive: true,
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
+			// TODO: fix regression: extra undoable for crop
 			selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
 
 			if(ctrl){
 				selection.crop();
 				selection.destroy();
 				selection = null;
-			}else{
-				selection.instantiate();
 			}
 		}
 	},

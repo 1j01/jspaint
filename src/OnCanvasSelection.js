@@ -1,6 +1,6 @@
 
 class OnCanvasSelection extends OnCanvasObject {
-	constructor(x, y, width, height) {
+	constructor(x, y, width, height, _img) {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("selection");
@@ -18,6 +18,8 @@ class OnCanvasSelection extends OnCanvasObject {
 			}
 		};
 		$G.on("option-changed", this._on_option_changed);
+
+		this.instantiate(_img);
 	}
 	position() {
 		super.position(true);
@@ -245,7 +247,6 @@ class OnCanvasSelection extends OnCanvasObject {
 		$G.off("option-changed", this._on_option_changed);
 	}
 	crop() {
-		this.instantiate(null, "passive");
 		if (this.canvas) {
 			undoable(0, () => {
 				ctx.copy(this.canvas);
