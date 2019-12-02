@@ -78,10 +78,30 @@ function update_helper_layer_immediately(e) {
 
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
 	
-	selected_tools.forEach((selected_tool)=> {
-		if(selected_tool.drawPreviewUnderGrid && pointer){
+	var tools_to_preview = [...selected_tools];
+	// the select box previews draw the document canvas onto the preview canvas
+	// so they have something to invert within the preview canvas
+	// but this means they block out anything earlier
+	tools_to_preview.sort((a, b)=> {
+		if (a.selectBox && !b.selectBox) {
+			return -1;
+		}
+		if (!a.selectBox && b.selectBox) {
+			return 1;
+		}
+		return 0;
+	});
+	// two select box previews would just invert and cancel each other out
+	// so only render one if there's one or more
+	var select_box_index = tools_to_preview.findIndex((tool)=> tool.selectBox);
+	if (select_box_index >= 0) {
+		tools_to_preview = tools_to_preview.filter((tool, index)=> !tool.selectBox || index == select_box_index);
+	}
+
+	tools_to_preview.forEach((tool)=> {
+		if(tool.drawPreviewUnderGrid && pointer){
 			hctx.save();
-			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
+			tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
 			hctx.restore();
 		}
 	});
@@ -90,10 +110,10 @@ function update_helper_layer_immediately(e) {
 		draw_grid(hctx, scale);
 	}
 
-	selected_tools.forEach((selected_tool)=> {
-		if(selected_tool.drawPreviewAboveGrid && pointer){
+	tools_to_preview.forEach((tool)=> {
+		if(tool.drawPreviewAboveGrid && pointer){
 			hctx.save();
-			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
+			tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
 			hctx.restore();
 		}
 	});
