@@ -121,10 +121,14 @@ window.tools = [{
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(!this.preview_canvas){return;}
 
+		ctx.save();
+
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
 		ctx.drawImage(this.preview_canvas, 0, 0);
+
+		ctx.restore();
 	},
 	$options: $choose_transparent_mode
 }, {
@@ -135,6 +139,13 @@ window.tools = [{
 	passive: true,
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
+			if(selection){
+				// for silly multitools feature
+				// TODO: select a rectangle minus the polygon, or xor the polygon
+				selection.draw();
+				selection.destroy();
+				selection = null;
+			}
 			if (ctrl) {
 				undoable(0, () => {
 					var cropped_canvas = make_canvas(rect_width, rect_height);
@@ -161,11 +172,15 @@ window.tools = [{
 		const rect_w = eraser_size;
 		const rect_h = eraser_size;
 		
+		ctx.save();
+
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
+
+		ctx.restore();
 	},
 	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
@@ -175,6 +190,8 @@ window.tools = [{
 		const rect_w = eraser_size;
 		const rect_h = eraser_size;
 		
+		ctx.save();
+
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 		const hairline_width = 1/scale;
@@ -186,6 +203,8 @@ window.tools = [{
 		} else {
 			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
 		}
+
+		ctx.restore();
 	},
 	paint(ctx, x, y) {
 		
@@ -455,10 +474,14 @@ window.tools = [{
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		
+		ctx.save();
+
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
 		this.paint(ctx, x, y);
+
+		ctx.restore();
 	},
 	$options: $choose_brush
 }, {
@@ -830,11 +853,15 @@ tools.forEach((tool)=> {
 			if(!pointer_active){ return; }
 			if(!pointer_has_moved) { return; }
 
+			ctx.save();
+
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);
 
 			// make the document canvas part of the helper canvas so that inversion can apply to it
 			ctx.drawImage(canvas, 0, 0);
+
+			ctx.restore();
 		};
 		tool.drawPreviewAboveGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
 			if(!pointer_active){ return; }
