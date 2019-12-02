@@ -147,11 +147,14 @@ window.tools = [{
 					var cropped_canvas = make_canvas(rect_width, rect_height);
 					cropped_canvas.ctx.drawImage(canvas, -rect_x, -rect_y);
 					ctx.copy(cropped_canvas);
+					$canvas_handles.show();
 					$canvas_area.trigger("resize");
 				});
 			} else {
 				selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
 			}
+		} else {
+			$canvas_handles.show();
 		}
 	},
 	$options: $choose_transparent_mode
@@ -497,6 +500,8 @@ window.tools = [{
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
 			textbox = new OnCanvasTextBox(rect_x, rect_y, rect_width, rect_height);
+		} else {
+			$canvas_handles.show();
 		}
 	},
 	$options: $choose_transparent_mode
