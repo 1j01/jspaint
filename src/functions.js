@@ -78,25 +78,25 @@ function update_helper_layer_immediately(e) {
 
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
 	
-	hctx.save();
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewUnderGrid && pointer){
+			hctx.save();
 			selected_tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
+			hctx.restore();
 		}
 	});
-	hctx.restore();
 
 	if (grid_visible) {
 		draw_grid(hctx, scale);
 	}
 
-	hctx.save();
 	selected_tools.forEach((selected_tool)=> {
 		if(selected_tool.drawPreviewAboveGrid && pointer){
+			hctx.save();
 			selected_tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
+			hctx.restore();
 		}
 	});
-	hctx.restore();
 }
 function update_disable_aa() {
 	const dots_per_canvas_px = window.devicePixelRatio * magnification;
