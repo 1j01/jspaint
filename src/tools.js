@@ -824,8 +824,8 @@ tools.forEach((tool)=> {
 		tool.paint = ()=> {
 			rect_x = ~~Math.max(0, Math.min(drag_start_x, pointer.x));
 			rect_y = ~~Math.max(0, Math.min(drag_start_y, pointer.y));
-			rect_width = (~~Math.min(canvas.width, Math.max(drag_start_x, pointer.x))) - rect_x + 1;
-			rect_height = (~~Math.min(canvas.height, Math.max(drag_start_y, pointer.y))) - rect_y + 1;
+			rect_width = (~~Math.min(canvas.width, Math.max(drag_start_x, pointer.x) + 1)) - rect_x;
+			rect_height = (~~Math.min(canvas.height, Math.max(drag_start_y, pointer.y + 1))) - rect_y;
 		};
 		tool.pointerup = ()=> {
 			tool.selectBox(rect_x, rect_y, rect_width, rect_height);
