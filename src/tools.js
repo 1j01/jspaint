@@ -779,28 +779,28 @@ window.tools = [{
 		ctx.drawImage(this.preview_canvas, 0, 0);
 	},
 	complete(ctx) {
-		if(this.points.length < 1){ return; }
-		
-		undoable(()=> {
-			ctx.fillStyle = fill_color;
-			ctx.strokeStyle = stroke_color;
+		if (this.points.length >= 3) {
+			undoable(()=> {
+				ctx.fillStyle = fill_color;
+				ctx.strokeStyle = stroke_color;
 
-			var orig_stroke_size = stroke_size;
-			if (this.$options.fill && !this.$options.stroke) {
-				stroke_size = 2;
-				ctx.strokeStyle = fill_color;
-			}
+				var orig_stroke_size = stroke_size;
+				if (this.$options.fill && !this.$options.stroke) {
+					stroke_size = 2;
+					ctx.strokeStyle = fill_color;
+				}
 
-			draw_polygon(
-				ctx,
-				this.points,
-				this.$options.stroke || (this.$options.fill && !this.$options.stroke),
-				this.$options.fill
-			);
+				draw_polygon(
+					ctx,
+					this.points,
+					this.$options.stroke || (this.$options.fill && !this.$options.stroke),
+					this.$options.fill
+				);
 
-			stroke_size = orig_stroke_size;
-		});
-		
+				stroke_size = orig_stroke_size;
+			});
+		}
+
 		this.reset();
 	},
 	cancel() {

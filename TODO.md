@@ -139,11 +139,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	SVG (or HTML?) with invisible selectable transformed text elements?
 
 
-* Polygon
-	* Don't start making the polygon until you click and drag more than the auto-finalization distance
-	* Cancel the polygon if you end up within the auto-finalization distance on the first gesture
-
-
 * **Options**
 	* In MS Paint, visual area =/= selection highlight area =/= clickable area
 
