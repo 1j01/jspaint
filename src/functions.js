@@ -949,12 +949,18 @@ function isPassive(tools) {
 function cancel(){
 	if(!isPassive(selected_tools)){ undo(); }
 	$G.triggerHandler("pointerup", "cancel");
+	for (const selected_tool of selected_tools) {
+		selected_tool.cancel && selected_tool.cancel();
+	}
 	update_helper_layer();
 }
 function this_ones_a_frame_changer(){
 	deselect();
 	saved = false;
 	$G.triggerHandler("pointerup", "cancel");
+	for (const selected_tool of selected_tools) {
+		selected_tool.cancel && selected_tool.cancel();
+	}
 	$G.triggerHandler("session-update");
 }
 function deselect(){

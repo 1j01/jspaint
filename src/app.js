@@ -666,7 +666,7 @@ $canvas.on("pointerdown", e => {
 			button = undefined;
 			reverse = false;
 			if(canceling){
-				selected_tool.cancel && selected_tool.cancel();
+				// calling selected_tool.cancel() handled elsewhere
 			}else{
 				pointer = to_canvas_coords(e);
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
