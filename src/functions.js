@@ -515,7 +515,11 @@ function show_error_message(message, error){
 		$w.close();
 	});
 	$w.center();
-	console.error(message, error);
+	if (error) {
+		console.error(message, error);
+	} else {
+		console.error(message);
+	}
 }
 
 // TODO: close are_you_sure windows and these Error windows when switching sessions
