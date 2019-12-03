@@ -27,6 +27,9 @@ const ChooserCanvas = (
 	let img = ChooserCanvas.cache[url];
 	if(!img){
 		img = ChooserCanvas.cache[url] = E("img");
+		img.onerror = ()=> {
+			delete ChooserCanvas.cache[url];
+		};
 		img.src = url;
 	}
 	const render = () => {
