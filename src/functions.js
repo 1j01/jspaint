@@ -82,8 +82,9 @@ function update_helper_layer_immediately(e) {
 	// the select box previews draw the document canvas onto the preview canvas
 	// so they have something to invert within the preview canvas
 	// but this means they block out anything earlier
+	// NOTE: sort Select after Free-Form Select,
+	// Brush after Eraser, as they are from the toolbar ordering
 	tools_to_preview.sort((a, b)=> {
-		// NOTE/TODO: sort Free-Form Select (after, before) Select
 		if (a.selectBox && !b.selectBox) {
 			return -1;
 		}

@@ -187,13 +187,6 @@ window.tools = [{
 					free_form_selection.y - y_min,
 				);
 				contents_canvas.ctx.globalCompositeOperation = "xor";
-				// contents_canvas.ctx.fillStyle = "white";
-				// contents_canvas.ctx.fillRect(
-				// 	rect_x - x_min,
-				// 	rect_y - y_min,
-				// 	rect_width,
-				// 	rect_height,
-				// );
 				contents_canvas.ctx.drawImage(rect_canvas, 0, 0);
 
 				selection = new OnCanvasSelection(
