@@ -693,6 +693,9 @@ window.tools = [{
 	// The vertices of the polygon
 	points: [],
 	
+	// A canvas for rendering a preview of the shape
+	preview_canvas: null,
+
 	passive: true, // don't create an undo state automatically on pointerdown
 	// undoable created manually at end instead
 
@@ -713,6 +716,8 @@ window.tools = [{
 	},
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
+			this.preview_canvas = make_canvas(canvas.width, canvas.height);
+		
 			// Add the first point of the polygon
 			this.points.push({x, y});
 			// Add a second point so first action draws a line
@@ -743,20 +748,28 @@ window.tools = [{
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
-		
+
+		this.preview_canvas.ctx.clearRect(0, 0, this.preview_canvas.width, this.preview_canvas.height);
+		this.preview_canvas.ctx.fillStyle = ctx.fillStyle;
+		this.preview_canvas.ctx.strokeStyle = ctx.strokeStyle;
+		draw_line_strip(
+			this.preview_canvas.ctx,
+			this.points
+		);
 	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		// if(!pointer_active && !pointer_over_canvas){return;}
-		// if(!this.preview_canvas){return;}
+		if(!this.preview_canvas){return;}
 
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
 		ctx.strokeStyle = stroke_color;
-		draw_line_strip(
-			ctx,
-			this.points
-		);
+		// draw_line_strip(
+		// 	ctx,
+		// 	this.points
+		// );
+		ctx.drawImage(this.preview_canvas, 0, 0);
 	},
 	complete(ctx) {
 		if(this.points.length < 1){ return; }
@@ -785,6 +798,10 @@ window.tools = [{
 		this.points = [];
 		this.last_click_pointerdown = {x: -Infinity, y: -Infinity, time: -Infinity};
 		this.last_click_pointerup = {x: -Infinity, y: -Infinity, time: -Infinity};
+		
+		if(!this.preview_canvas){return;}
+		this.preview_canvas.width = 1;
+		this.preview_canvas.height = 1;
 	},
 	shape_colors: true,
 	$options: $ChooseShapeStyle()
