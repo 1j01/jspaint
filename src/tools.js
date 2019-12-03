@@ -750,12 +750,24 @@ window.tools = [{
 		this.points[i].y = y;
 
 		this.preview_canvas.ctx.clearRect(0, 0, this.preview_canvas.width, this.preview_canvas.height);
-		this.preview_canvas.ctx.fillStyle = ctx.fillStyle;
-		this.preview_canvas.ctx.strokeStyle = ctx.strokeStyle;
-		draw_line_strip(
-			this.preview_canvas.ctx,
-			this.points
-		);
+		if (this.$options.fill && !this.$options.stroke) {
+			this.preview_canvas.ctx.drawImage(canvas, 0, 0);
+			this.preview_canvas.ctx.strokeStyle = "white";
+			this.preview_canvas.ctx.globalCompositeOperation = "difference";
+			var orig_stroke_size = stroke_size;
+			stroke_size = 2;
+			draw_line_strip(
+				this.preview_canvas.ctx,
+				this.points
+			);
+			stroke_size = orig_stroke_size;
+		} else {
+			this.preview_canvas.ctx.strokeStyle = stroke_color;
+			draw_line_strip(
+				this.preview_canvas.ctx,
+				this.points
+			);
+		}
 	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		// if(!pointer_active && !pointer_over_canvas){return;}
@@ -764,11 +776,6 @@ window.tools = [{
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
-		ctx.strokeStyle = stroke_color;
-		// draw_line_strip(
-		// 	ctx,
-		// 	this.points
-		// );
 		ctx.drawImage(this.preview_canvas, 0, 0);
 	},
 	complete(ctx) {
@@ -778,12 +785,20 @@ window.tools = [{
 			ctx.fillStyle = fill_color;
 			ctx.strokeStyle = stroke_color;
 
+			var orig_stroke_size = stroke_size;
+			if (this.$options.fill && !this.$options.stroke) {
+				stroke_size = 2;
+				ctx.strokeStyle = fill_color;
+			}
+
 			draw_polygon(
 				ctx,
 				this.points,
-				this.$options.stroke,
+				this.$options.stroke || (this.$options.fill && !this.$options.stroke),
 				this.$options.fill
 			);
+
+			stroke_size = orig_stroke_size;
 		});
 		
 		this.reset();
