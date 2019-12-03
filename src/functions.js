@@ -749,9 +749,8 @@ function paste(img){
 	}
 
 	function do_the_paste(){
-		// Note: relying on select_tool to call deselect();
+		deselect();
 		select_tool(get_tool_by_name("Select"));
-
 		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
 		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
 		selection = new OnCanvasSelection(x, y, img.width, img.height, img);
@@ -974,8 +973,8 @@ function deselect(){
 		textbox.destroy();
 		textbox = null;
 	}
-	if(selected_tool.end){
-		selected_tool.end();
+	for (const selected_tool of selected_tools) {
+		selected_tool.end && selected_tool.end(ctx);
 	}
 }
 function delete_selection(){
@@ -985,7 +984,7 @@ function delete_selection(){
 	}
 }
 function select_all(){
-	// Note: relying on select_tool to call deselect();
+	deselect();
 	select_tool(get_tool_by_name("Select"));
 
 	selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
@@ -1174,6 +1173,8 @@ function select_tools(tools) {
 }
 
 function select_tool(tool, toggle){
+	deselect();
+
 	if(!(selected_tools.length === 1 && selected_tool.deselect)){
 		return_to_tools = [...selected_tools];
 	}
@@ -1204,8 +1205,6 @@ function select_tool(tool, toggle){
 		selected_tools = [tool];
 	}
 	
-	deselect();
-
 	if(tool.preload){
 		tool.preload();
 	}

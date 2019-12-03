@@ -651,6 +651,7 @@ window.tools = [{
 	},
 	end() {
 		this.points = [];
+		update_helper_layer();
 	},
 	$options: $choose_stroke_size
 }, {
@@ -705,7 +706,7 @@ window.tools = [{
 		const dy = this.points[i].y - this.points[0].y;
 		const d = Math.sqrt(dx*dx + dy*dy);
 		if(d < stroke_size * 5.1010101){ // arbitrary 101 (TODO: find correct value (or formula))
-			this.complete(ctx, x, y);
+			this.complete(ctx);
 		}
 		
 		this.last_click_pointerup = {x, y, time: +(new Date)};
@@ -725,7 +726,7 @@ window.tools = [{
 			const dt = +(new Date) - lt;
 			const d = Math.sqrt(dx*dx + dy*dy);
 			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (TODO: find correct value (or formula))
-				this.complete(ctx, x, y);
+				this.complete(ctx);
 				// Release the pointer to prevent this.paint()
 				// being called and clearing the canvas
 				$canvas.trigger("pointerup");
@@ -757,7 +758,7 @@ window.tools = [{
 			this.points
 		);
 	},
-	complete(ctx, x, y) {
+	complete(ctx) {
 		if(this.points.length < 1){ return; }
 		
 		undoable(()=> {
@@ -777,8 +778,8 @@ window.tools = [{
 	cancel() {
 		this.reset();
 	},
-	end() {
-		this.reset();
+	end(ctx) {
+		this.complete(ctx);
 	},
 	reset() {
 		this.points = [];

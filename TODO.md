@@ -140,7 +140,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * Polygon
-	* Close and finalize the polygon when switching to a different tool
 	* Don't start making the polygon until you click and drag more than the auto-finalization distance
 	* Cancel the polygon if you end up within the auto-finalization distance on the first gesture
 	* Preview invertily (like Free-Form Select) when fill-only is selected for the shape style option
