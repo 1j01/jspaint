@@ -10,6 +10,9 @@ class OnCanvasObject {
 		if (this.hideMainCanvasHandles) {
 			$canvas_handles.hide();
 		}
+		$G.on("resize theme-load", this._global_resize_handler = ()=> {
+			this.position();
+		});
 	}
 	position(updateStatus) {
 		const offset_left = parseFloat($canvas_area.css("padding-left"));
@@ -31,5 +34,6 @@ class OnCanvasObject {
 		if (this.hideMainCanvasHandles) {
 			$canvas_handles.show();
 		}
+		$G.off("resize theme-load", this._global_resize_handler);
 	}
 }
