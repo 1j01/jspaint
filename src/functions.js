@@ -944,9 +944,7 @@ function redo(){
 	return true;
 }
 function isPassive(tools) {
-	return tools.every((tool)=>
-		(typeof tool.passive === "function") ? tool.passive() : tool.passive
-	);
+	return tools.every((tool)=> tool.passive);
 }
 function cancel(){
 	if(!isPassive(selected_tools)){ undo(); }

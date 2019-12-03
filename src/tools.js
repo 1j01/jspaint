@@ -580,23 +580,21 @@ window.tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	points: [],
-	passive() {
-		// Actions are passive if you've already started using the this,
-		// but the first action should be undoable / cancelable
-		return this.points.length > 0;
-	},
+	passive: true, // don't create an undo state automatically on pointerdown
+	// undoable created manually at end instead
 	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
+			undoable(()=> {
+				this.draw_curve(ctx);
+			});
 			this.points = [];
 		}
 	},
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
-			undoable(()=> {
-				this.points.push({x, y});
-				// second point so first action draws a line
-				this.points.push({x, y});
-			});
+			this.points.push({x, y});
+			// second point so first action draws a line
+			this.points.push({x, y});
 		}else{
 			this.points.push({x, y});
 		}
@@ -607,6 +605,9 @@ window.tools = [{
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
+	},
+	draw_curve(ctx, x, y) {
+		if(this.points.length < 1){ return; }
 		
 		update_brush_for_drawing_lines(stroke_size);
 		
@@ -636,13 +637,21 @@ window.tools = [{
 			);
 		}
 	},
+	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+		// if(!pointer_active && !pointer_over_canvas){return;}
+		// if(!this.preview_canvas){return;}
+
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
+
+		this.draw_curve(ctx);
+	},
 	cancel() {
 		this.points = [];
 	},
 	end() {
 		this.points = [];
 	},
-	shape() {true},
 	$options: $choose_stroke_size
 }, {
 	// @#: square
