@@ -30,11 +30,14 @@ const ChooserCanvas = (
 		img.src = url;
 	}
 	const render = () => {
-		c.ctx.drawImage(
-			img,
-			sourceX, sourceY, sourceWidth, sourceHeight,
-			destX, destY, destWidth, destHeight
-		);
+		try {
+			c.ctx.drawImage(
+				img,
+				sourceX, sourceY, sourceWidth, sourceHeight,
+				destX, destY, destWidth, destHeight
+			);
+		// eslint-disable-next-line no-empty
+		} catch(error) {}
 		if(invert){
 			const id = c.ctx.getImageData(0, 0, c.width, c.height);
 			for(let i=0; i<id.data.length; i+=4){
