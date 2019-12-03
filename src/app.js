@@ -217,6 +217,11 @@ $G.on("keydown", e => {
 	if(e.isDefaultPrevented()){
 		return;
 	}
+	if (e.keyCode === 27) { // Esc
+		if (textbox && textbox.$editor.is(e.target)) {
+			deselect();
+		}
+	}
 	// TODO: return if menus/menubar focused or focus in dialog window
 	// or maybe there's a better way to do this that works more generally
 	// maybe it should only handle the event if document.activeElement is the body or html element?
