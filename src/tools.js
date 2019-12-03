@@ -683,12 +683,9 @@ window.tools = [{
 	// The vertices of the polygon
 	points: [],
 	
-	passive() {
-		// actions are passive if you've already started using the this
-		// but the first action should be undoable
-		return this.points.length > 0;
-		// In other words, it's supposed to be one undoable action
-	},
+	passive: true, // don't create an undo state automatically on pointerdown
+	// undoable created manually at end instead
+
 	pointerup(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
@@ -706,18 +703,10 @@ window.tools = [{
 	},
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
-			// @TODO: stop needing this:
-			this.canvas_base = canvas;
-			
-			undoable(() => {
-				// @TODO: stop needing this:
-				this.canvas_base = undos[undos.length-1];
-				
-				// Add the first point of the polygon
-				this.points.push({x, y});
-				// Add a second point so first action draws a line
-				this.points.push({x, y});
-			});
+			// Add the first point of the polygon
+			this.points.push({x, y});
+			// Add a second point so first action draws a line
+			this.points.push({x, y});
 		}else{
 			const lx = this.last_click_pointerdown.x;
 			const ly = this.last_click_pointerdown.y;
@@ -741,15 +730,18 @@ window.tools = [{
 	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
-		// Clear the canvas to the previous image to get
-		// rid of lines drawn while constructing the shape
-		// @TODO: stop needing this
-		ctx.copy(this.canvas_base);
-		
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
 		
+	},
+	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+		// if(!pointer_active && !pointer_over_canvas){return;}
+		// if(!this.preview_canvas){return;}
+
+		ctx.scale(scale, scale);
+		ctx.translate(translate_x, translate_y);
+
 		ctx.strokeStyle = stroke_color;
 		draw_line_strip(
 			ctx,
@@ -759,20 +751,17 @@ window.tools = [{
 	complete(ctx, x, y) {
 		if(this.points.length < 1){ return; }
 		
-		// Clear the canvas to the previous image to get
-		// rid of lines drawn while constructing the shape
-		// @TODO: stop needing this
-		ctx.copy(this.canvas_base);
-		
-		ctx.fillStyle = fill_color;
-		ctx.strokeStyle = stroke_color;
+		undoable(()=> {
+			ctx.fillStyle = fill_color;
+			ctx.strokeStyle = stroke_color;
 
-		draw_polygon(
-			ctx,
-			this.points,
-			this.$options.stroke,
-			this.$options.fill
-		);
+			draw_polygon(
+				ctx,
+				this.points,
+				this.$options.stroke,
+				this.$options.fill
+			);
+		});
 		
 		this.reset();
 	},

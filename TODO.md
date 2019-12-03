@@ -140,13 +140,10 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 
 * Polygon
-	* Issue with extra undoables
 	* Close and finalize the polygon when switching to a different tool
 	* Don't start making the polygon until you click and drag more than the auto-finalization distance
 	* Cancel the polygon if you end up within the auto-finalization distance on the first gesture
 	* Preview invertily (like Free-Form Select) when fill-only is selected for the shape style option
-	* Investigate bug: jumping to 0, 0 (only saw it happen once so far; could it have had to do with the dialog box?)
-	* Investigate bug: unclosed polygon (last segment of stroke) (only saw it happen once so far)
 
 
 * **Options**
