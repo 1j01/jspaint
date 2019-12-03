@@ -348,9 +348,7 @@ window.tools = [{
 	// @#: magnifying glass, zoom
 	name: "Magnifier",
 	description: "Changes the magnification.",
-	cursor: ["magnifier", [16, 16], "zoom-in"],
-	// @TODO: use zoom-in/zoom-out as default,
-	// even though the custom cursor image is less descriptive
+	cursor: ["magnifier", [16, 16], "zoom-in"], // overridden below
 	deselect: true,
 	passive: true,
 	
@@ -362,6 +360,20 @@ window.tools = [{
 		if(!pointer_active && !pointer_over_canvas){return;}
 		if(pointer_active) { return; }
 		const prospective_magnification = this.getProspectiveMagnification();
+
+		// hacky place to put this but whatever
+		// use specific zoom-in/zoom-out as fallback,
+		// even though the custom cursor image is less descriptive
+		// because there's no generic "zoom" css cursor
+		if(prospective_magnification < magnification) {
+			$canvas.css({
+				cursor: make_css_cursor("magnifier", [16, 16], "zoom-out"),
+			});
+		} else {
+			$canvas.css({
+				cursor: make_css_cursor("magnifier", [16, 16], "zoom-in"),
+			});
+		}
 
 		if(prospective_magnification < magnification) { return; } // hide if would be zooming out
 
