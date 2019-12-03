@@ -83,6 +83,7 @@ function update_helper_layer_immediately(e) {
 	// so they have something to invert within the preview canvas
 	// but this means they block out anything earlier
 	tools_to_preview.sort((a, b)=> {
+		// NOTE/TODO: sort Free-Form Select (after, before) Select
 		if (a.selectBox && !b.selectBox) {
 			return -1;
 		}

@@ -98,7 +98,7 @@ window.tools = [{
 		
 		if(selection){
 			// for silly multitools feature
-			// TODO: select a rectangle minus the polygon, or xor the polygon
+			alert("This isn't supposed to happen: Free-Form Select after Select in the tool chain?");
 			selection.draw();
 			selection.destroy();
 			selection = null;
@@ -135,9 +135,9 @@ window.tools = [{
 	passive: true,
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
+			var free_form_selection = selection;
 			if(selection){
 				// for silly multitools feature
-				// TODO: select a rectangle minus the polygon, or xor the polygon
 				selection.draw();
 				selection.destroy();
 				selection = null;
@@ -150,6 +150,41 @@ window.tools = [{
 					$canvas_handles.show();
 					$canvas_area.trigger("resize");
 				});
+			} else if (free_form_selection) {
+				// for silly multitools feature,
+				// create a selection that's the Free-Form selection XOR the normal selection
+
+				var x_min = Math.min(free_form_selection.x, rect_x);
+				var y_min = Math.min(free_form_selection.y, rect_y);
+				var x_max = Math.max(free_form_selection.x + free_form_selection.width, rect_x + rect_width);
+				var y_max = Math.max(free_form_selection.y + free_form_selection.height, rect_y + rect_height);
+
+				var contents_canvas = make_canvas(
+					x_max - x_min,
+					y_max - y_min,
+				);
+				contents_canvas.ctx.drawImage(
+					free_form_selection.canvas,
+					free_form_selection.x - x_min,
+					free_form_selection.y - y_min,
+				);
+				contents_canvas.ctx.globalCompositeOperation = "xor";
+				contents_canvas.ctx.fillStyle = "white";
+				contents_canvas.ctx.fillRect(
+					rect_x - x_min,
+					rect_y - y_min,
+					rect_width,
+					rect_height,
+				);
+
+				selection = new OnCanvasSelection(
+					x_min,
+					y_min,
+					x_max - x_min,
+					y_max - y_min,
+					contents_canvas,
+				);
+				selection.cut_out_background();
 			} else {
 				selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
 			}
