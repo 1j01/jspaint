@@ -163,19 +163,38 @@ window.tools = [{
 					x_max - x_min,
 					y_max - y_min,
 				);
+				var rect_canvas = make_canvas(
+					x_max - x_min,
+					y_max - y_min,
+				);
+				rect_canvas.ctx.drawImage(
+					canvas,
+					// source:
+					rect_x,
+					rect_y,
+					rect_width,
+					rect_height,
+					// dest:
+					rect_x - x_min,
+					rect_y - y_min,
+					rect_width,
+					rect_height,
+				);
+
 				contents_canvas.ctx.drawImage(
 					free_form_selection.canvas,
 					free_form_selection.x - x_min,
 					free_form_selection.y - y_min,
 				);
 				contents_canvas.ctx.globalCompositeOperation = "xor";
-				contents_canvas.ctx.fillStyle = "white";
-				contents_canvas.ctx.fillRect(
-					rect_x - x_min,
-					rect_y - y_min,
-					rect_width,
-					rect_height,
-				);
+				// contents_canvas.ctx.fillStyle = "white";
+				// contents_canvas.ctx.fillRect(
+				// 	rect_x - x_min,
+				// 	rect_y - y_min,
+				// 	rect_width,
+				// 	rect_height,
+				// );
+				contents_canvas.ctx.drawImage(rect_canvas, 0, 0);
 
 				selection = new OnCanvasSelection(
 					x_min,
