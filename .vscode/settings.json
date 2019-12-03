@@ -1,0 +1,11 @@
+{
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/out": true
+	},
+	"search.exclude": {
+		"**/images": true,
+		"**/lib": true,
+		"**/out": true
+	}
+}
