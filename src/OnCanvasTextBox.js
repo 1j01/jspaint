@@ -5,6 +5,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		this.$el.addClass("textbox");
 		this.$editor = $(E("textarea")).addClass("textbox-editor");
+		this.$dummy_el = $(E("div")); // TODO: remove me when improving how handles work
 
 		var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svg.setAttribute("version", 1.1);
@@ -13,7 +14,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		foreignObject.setAttribute("y", 0);
 		svg.append(foreignObject);
 		
-		this.$editor.css({
+		this.$editor.add(this.$dummy_el).css({
 			"position": "absolute",
 			"left": "0",
 			"top": "0",
@@ -48,6 +49,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 			const font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
+			// this.$dummy_el.css({
+			// 	width: this.width * magnification,
+			// 	height: this.height * magnification,
+			// });
 			this.$editor.add(this.canvas).css({
 				transform: `scale(${magnification})`,
 				transformOrigin: "left top",
@@ -111,9 +116,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$el.attr("touch-action", "none");
 		this.position();
 		
+		this.$el.append(this.$dummy_el);
 		this.$el.append(this.$editor);
 		this.$editor[0].focus();
-		this.$handles = $Handles(this.$el, this.$editor[0], { outset: 2 });
+		this.$handles = $Handles(this.$el, this.$dummy_el[0], { outset: 2 });
 		this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 			this.x += delta_x;
 			this.y += delta_y;
