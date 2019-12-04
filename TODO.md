@@ -34,7 +34,6 @@
 
 ### Issues
 
-* [Resizing the canvas or selection is broken when magnified](https://github.com/1j01/jspaint/issues/13)
 * If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
 * Can't glide thru tool options in Firefox, mobile Chrome;
 might be a pointer events spec interpretation issue, and it could easily be that the more technically correct browsers are where it's not working

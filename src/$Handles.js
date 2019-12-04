@@ -1,5 +1,5 @@
 
-function $Handles($container, getBoundingClientRect, options){
+function $Handles($container, getRect, options){
 	const outset = options.outset || 0;
 	const get_offset_left = options.get_offset_left || (() => 0);
 	const get_offset_top = options.get_offset_top || (() => 0);
@@ -57,9 +57,14 @@ function $Handles($container, getBoundingClientRect, options){
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
-				const rect = getBoundingClientRect();
-				const mx = e.clientX / magnification;
-				const my = e.clientY / magnification;
+				const rect = getRect();
+				// const mx = e.clientX / magnification;
+				// const my = e.clientY / magnification;
+				// const mx = pointer.x;
+				// const my = pointer.y;
+				const m = to_canvas_coords(e);
+				const mx = m.x;
+				const my = m.y;
 				// TODO: decide between Math.floor/Math.ceil/Math.round for these values
 				if(x_axis === "right"){
 					delta_x = 0;
@@ -111,21 +116,21 @@ function $Handles($container, getBoundingClientRect, options){
 		}
 		
 		const update_handle = () => {
-			const rect = getBoundingClientRect();
+			const rect = getRect();
 			const hs = $h.width();
 			if(x_axis === "middle"){
-				$h.css({ left: get_offset_left() + (rect.width - hs) / 2 });
+				$h.css({ left: get_offset_left() + (rect.width * magnification - hs) / 2 });
 			}else if(x_axis === "left"){
 				$h.css({ left: get_offset_left() - outset });
 			}else if(x_axis === "right"){
-				$h.css({ left: get_offset_left() + (rect.width - hs/2) });
+				$h.css({ left: get_offset_left() + (rect.width * magnification - hs/2) });
 			}
 			if(y_axis === "middle"){
-				$h.css({ top: get_offset_top() + (rect.height - hs) / 2 });
+				$h.css({ top: get_offset_top() + (rect.height * magnification - hs) / 2 });
 			}else if(y_axis === "top"){
 				$h.css({ top: get_offset_top() - outset });
 			}else if(y_axis === "bottom"){
-				$h.css({ top: get_offset_top() + (rect.height - hs/2) });
+				$h.css({ top: get_offset_top() + (rect.height * magnification - hs/2) });
 			}
 		};
 		

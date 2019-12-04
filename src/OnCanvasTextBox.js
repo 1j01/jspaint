@@ -119,8 +119,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$el.append(this.$dummy_el);
 		this.$el.append(this.$editor);
 		this.$editor[0].focus();
-		const getBoundingClientRect = ()=> this.$dummy_el[0].getBoundingClientRect();
-		this.$handles = $Handles(this.$el, getBoundingClientRect, { outset: 2 });
+		const getRect = ()=> ({left: this.x, top: this.y, width: this.width, height: this.height, right: this.x + this.width, bottom: this.y + this.height})
+		this.$handles = $Handles(this.$el, getRect, { outset: 2 });
 		this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 			this.x += delta_x;
 			this.y += delta_y;

@@ -83,8 +83,8 @@ $canvas_area.attr("touch-action", "pan-x pan-y");
 const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
 let canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
-const getBoundingClientRect = ()=> canvas.getBoundingClientRect(); // TODO: should this use cached value?
-const $canvas_handles = $Handles($canvas_area, getBoundingClientRect, {
+const getRect = ()=> ({left: 0, top: 0, width: canvas.width, height: canvas.height, right: canvas.width, bottom: canvas.height})
+const $canvas_handles = $Handles($canvas_area, getRect, {
 	outset: 4,
 	get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
 	get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
