@@ -106,12 +106,9 @@ html, body, .jspaint {
 	z-index: 500;
 }
 .textbox-editor {
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
-	border: 0;
-	resize: none;
+	color: transparent !important;
+	background: transparent !important;
+	caret-color: black;
 }
 
 .menu-container {

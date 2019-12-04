@@ -5,11 +5,52 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		this.$el.addClass("textbox");
 		this.$editor = $(E("textarea")).addClass("textbox-editor");
-		const update = () => {
+
+		// TODO: handle resizing
+		var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.setAttribute("version", 1.1);
+		svg.setAttribute("width", width);
+		svg.setAttribute("height", height);
+		var foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+		foreignObject.setAttribute("x", 0);
+		foreignObject.setAttribute("y", 0);
+		foreignObject.setAttribute("width", width);
+		foreignObject.setAttribute("height", height);
+		svg.append(foreignObject);
+		
+		this.$editor.css({
+			"position": "absolute",
+			"left": "0",
+			"top": "0",
+			"right": "0",
+			"bottom": "0",
+			"padding": "0",
+			"margin": "0",
+			"border": "0",
+			"resize": "none",
+			"overflow": "hidden",
+		});
+		var edit_textarea = this.$editor[0];
+		var render_textarea = edit_textarea.cloneNode(false);
+		foreignObject.append(render_textarea);
+
+		this.canvas = make_canvas(width, height);
+		this.canvas.style.pointerEvents = "none";
+		this.$el.append(this.canvas);
+
+		// this.canvas.style.outline = "5px solid lightgray";
+
+		const update = ()=> {
+			requestAnimationFrame(()=> {
+				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
+			});
+
 			const font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
-			this.$editor.css({
+			this.$editor.add(render_textarea).css({
+				width: width,
+				height: height,
 				fontFamily: font.family,
 				fontSize: `${font.size * magnification}px`,
 				fontWeight: font.bold ? "bold" : "normal",
@@ -22,9 +63,41 @@ class OnCanvasTextBox extends OnCanvasObject {
 				color: font.color,
 				background: font.background,
 			});
+
+			while (render_textarea.firstChild) {
+				render_textarea.removeChild(render_textarea.firstChild);
+			}
+			render_textarea.appendChild(document.createTextNode(edit_textarea.value));
+			
+			var svg_source = new XMLSerializer().serializeToString(svg);
+			// var blob = new Blob([svg_source], {type: "image/svg+xml;charset=utf-8"});
+			// var blob_url = URL.createObjectURL(blob);
+			var data_url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg_source);
+			
+			var img = new Image();
+			img.onload = ()=> {
+				// URL.revokeObjectURL(blob_url);
+				this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				this.canvas.ctx.drawImage(img, 0, 0);
+				// this.canvas.style.outlineColor = "lime";
+			};
+			img.onerror = (e)=> {
+				// URL.revokeObjectURL(blob_url);
+				// this.canvas.style.outlineColor = "red";
+				console.log("failed to load image", e);
+			};
+			img.src = data_url; //blob_url;
 		};
+
 		update();
 		$G.on("option-changed", this._on_option_changed = update);
+		this.$editor.on("input", this._on_input = update);
+		this.$editor.on("scroll", this._on_scroll = ()=> {
+			requestAnimationFrame(()=> {
+				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
+			});
+		});
+
 		
 		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move")
@@ -100,15 +173,16 @@ class OnCanvasTextBox extends OnCanvasObject {
 		const text = this.$editor.val();
 		if (text) {
 			undoable(0, () => {
-				const font = text_tool_font;
-				ctx.fillStyle = font.background;
-				ctx.fillRect(this.x, this.y, this.width, this.height);
-				ctx.fillStyle = font.color;
-				const style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
-				ctx.font = `${style_ + font.size}px ${font.family}`;
-				ctx.textBaseline = "top";
-				const max_width = Math.max(this.width, font.size);
-				draw_text_wrapped(ctx, text, this.x + 1, this.y + 1, max_width, font.size * font.line_scale);
+				// const font = text_tool_font;
+				// ctx.fillStyle = font.background;
+				// ctx.fillRect(this.x, this.y, this.width, this.height);
+				// ctx.fillStyle = font.color;
+				// const style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
+				// ctx.font = `${style_ + font.size}px ${font.family}`;
+				// ctx.textBaseline = "top";
+				// const max_width = Math.max(this.width, font.size);
+				// const line_height = font.size * font.line_scale;
+				ctx.drawImage(this.canvas, this.x, this.y);
 			});
 		}
 	}
@@ -119,43 +193,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		}
 		OnCanvasTextBox.$fontbox = null;
 		$G.off("option-changed", this._on_option_changed);
-	}
-}
-
-function draw_text_wrapped(ctx, text, x, y, maxWidth, lineHeight) {
-	const original_lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
-
-	for (const original_line of original_lines) {
-		const words = original_line.split(' ');
-		let line = '';
-		let test;
-		let metrics;
-		for (let i = 0; i < words.length; i++) {
-			test = words[i];
-			metrics = ctx.measureText(test);
-			// TODO: break words on hyphens and perhaps other characters
-			while (metrics.width > maxWidth) {
-				// Determine how much of the word will fit
-				test = test.substring(0, test.length - 1);
-				metrics = ctx.measureText(test);
-			}
-			if (words[i] != test) {
-				words.splice(i + 1, 0, words[i].substr(test.length));
-				words[i] = test;
-			}
-			
-			test = `${line + words[i]} `;
-			metrics = ctx.measureText(test);
-			
-			if (metrics.width > maxWidth && i > 0) {
-				ctx.fillText(line, x, y);
-				line = `${words[i]} `;
-				y += lineHeight;
-			} else {
-				line = test;
-			}
-		}
-		ctx.fillText(line, x, y);
-		y += lineHeight;
+		this.$editor.off("input", this._on_input);
+		this.$editor.off("scroll", this._on_scroll);
 	}
 }
