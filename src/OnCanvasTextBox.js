@@ -148,8 +148,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 			const rect = this.$el[0].getBoundingClientRect();
 			const cx = e.clientX - rect.left;
 			const cy = e.clientY - rect.top;
-			mox = ~~(cx);
-			moy = ~~(cy);
+			mox = ~~(cx / rect.width * this.canvas.width);
+			moy = ~~(cy / rect.height * this.canvas.height);
 			$G.on("pointermove", pointermove);
 			$G.one("pointerup", () => {
 				$G.off("pointermove", pointermove);
