@@ -6,16 +6,11 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$el.addClass("textbox");
 		this.$editor = $(E("textarea")).addClass("textbox-editor");
 
-		// TODO: handle resizing
 		var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svg.setAttribute("version", 1.1);
-		svg.setAttribute("width", width);
-		svg.setAttribute("height", height);
 		var foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
 		foreignObject.setAttribute("x", 0);
 		foreignObject.setAttribute("y", 0);
-		foreignObject.setAttribute("width", width);
-		foreignObject.setAttribute("height", height);
 		svg.append(foreignObject);
 		
 		this.$editor.css({
@@ -45,6 +40,11 @@ class OnCanvasTextBox extends OnCanvasObject {
 				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
 			});
 
+			svg.setAttribute("width", this.width);
+			svg.setAttribute("height", this.height);
+			foreignObject.setAttribute("width", this.width);
+			foreignObject.setAttribute("height", this.height);
+
 			const font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
@@ -53,8 +53,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 				transformOrigin: "left top",
 			});
 			this.$editor.add(render_textarea).css({
-				width: width,
-				height: height,
+				width: this.width,
+				height: this.height,
 				fontFamily: font.family,
 				fontSize: `${font.size}px`,
 				fontWeight: font.bold ? "bold" : "normal",
@@ -81,7 +81,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 			var img = new Image();
 			img.onload = ()=> {
 				// URL.revokeObjectURL(blob_url);
-				this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				this.canvas.width = this.width;
+				this.canvas.height = this.height;
+				// this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.canvas.ctx.drawImage(img, 0, 0);
 				// this.canvas.style.outlineColor = "lime";
 			};
@@ -118,6 +120,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			this.width = width;
 			this.height = height;
 			this.position();
+			update();
 		});
 		let mox, moy;
 		const pointermove = e => {
