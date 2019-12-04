@@ -111,6 +111,7 @@ html, body, .jspaint {
 	background: transparent !important;
 	caret-color: black;
 	z-index: 2; /* go above handles */
+	outline: none;
 }
 /* debug */
 /*.textbox-editor:hover {
