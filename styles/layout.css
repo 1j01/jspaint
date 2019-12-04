@@ -110,6 +110,7 @@ html, body, .jspaint {
 	color: transparent !important;
 	background: transparent !important;
 	caret-color: black;
+	z-index: 2; /* go above handles */
 }
 /* debug */
 /*.textbox-editor:hover {
