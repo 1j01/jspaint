@@ -58,29 +58,23 @@ function $Handles($container, getRect, options){
 				dragged = true;
 				
 				const rect = getRect();
-				// const mx = e.clientX / magnification;
-				// const my = e.clientY / magnification;
-				// const mx = pointer.x;
-				// const my = pointer.y;
 				const m = to_canvas_coords(e);
-				const mx = m.x;
-				const my = m.y;
 				// TODO: decide between Math.floor/Math.ceil/Math.round for these values
 				if(x_axis === "right"){
 					delta_x = 0;
-					width = ~~(mx - rect.left);
+					width = ~~(m.x - rect.left);
 				}else if(x_axis === "left"){
-					delta_x = ~~(mx - rect.left);
-					width = ~~(rect.right - mx);
+					delta_x = ~~(m.x - rect.left);
+					width = ~~(rect.right - m.x);
 				}else{
 					width = ~~(rect.width);
 				}
 				if(y_axis === "bottom"){
 					delta_y = 0;
-					height = ~~(my - rect.top);
+					height = ~~(m.y - rect.top);
 				}else if(y_axis === "top"){
-					delta_y = ~~(my - rect.top);
-					height = ~~(rect.bottom - my);
+					delta_y = ~~(m.y - rect.top);
+					height = ~~(rect.bottom - m.y);
 				}else{
 					height = ~~(rect.height);
 				}
