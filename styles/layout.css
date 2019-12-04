@@ -89,6 +89,7 @@ html, body, .jspaint {
 }
 .selection,
 .textbox {
+	display: block !important; /* TODO: reduce overzealous display: flex; */
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
@@ -110,6 +111,10 @@ html, body, .jspaint {
 	background: transparent !important;
 	caret-color: black;
 }
+/* debug */
+/*.textbox-editor:hover {
+	color: rgba(255, 0, 255, 0.5) !important;
+}*/
 
 .menu-container {
 	position: relative;

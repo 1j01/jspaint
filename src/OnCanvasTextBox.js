@@ -48,18 +48,22 @@ class OnCanvasTextBox extends OnCanvasObject {
 			const font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
+			this.$editor.add(this.canvas).css({
+				transform: `scale(${magnification})`,
+				transformOrigin: "left top",
+			});
 			this.$editor.add(render_textarea).css({
 				width: width,
 				height: height,
 				fontFamily: font.family,
-				fontSize: `${font.size * magnification}px`,
+				fontSize: `${font.size}px`,
 				fontWeight: font.bold ? "bold" : "normal",
 				fontStyle: font.italic ? "italic" : "normal",
 				textDecoration: font.underline ? "underline" : "none",
 				writingMode: font.vertical ? "vertical-lr" : "",
 				MsWritingMode: font.vertical ? "vertical-lr" : "",
 				WebkitWritingMode: font.vertical ? "vertical-lr" : "",
-				lineHeight: `${font.size * font.line_scale * magnification}px`,
+				lineHeight: `${font.size * font.line_scale}px`,
 				color: font.color,
 				background: font.background,
 			});
