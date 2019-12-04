@@ -98,7 +98,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Enlarge GUI elements on touch devices
 	* Menus
-	* Resize handles (at least functionally; in Win7 Paint, the hitbox size is much larger than the visible size, like maybe 32px)
 
 
 * You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button

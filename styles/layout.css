@@ -257,6 +257,18 @@ html, body, .jspaint {
 	height: 3px;
 	z-index: 1;
 }
+.handle::after {
+	content: "";
+	pointer-events: all; /* TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 32px;
+	height: 32px;
+	/*background: yellow;*/ /* debug */
+}
 
 
 .window-title {
