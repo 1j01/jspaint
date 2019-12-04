@@ -1383,7 +1383,7 @@ function image_attributes(){
 		const unit_to_px = unit_sizes_in_px[unit];
 		const width = $width.val() * unit_to_px;
 		const height = $height.val() * unit_to_px;
-		$canvas.trigger("user-resized", [0, 0, ~~width, ~~height]);
+		$canvas_area.triggerHandler("user-resized", [0, 0, ~~width, ~~height]);
 
 		image_attributes.$window.close();
 	})[0].focus();

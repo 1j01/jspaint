@@ -83,8 +83,8 @@ $canvas_area.attr("touch-action", "pan-x pan-y");
 const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
 let canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
-
-const $canvas_handles = $Handles($canvas_area, canvas, {
+const getBoundingClientRect = ()=> canvas.getBoundingClientRect(); // TODO: should this use cached value?
+const $canvas_handles = $Handles($canvas_area, getBoundingClientRect, {
 	outset: 4,
 	get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
 	get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
@@ -154,7 +154,7 @@ const $toolbox = $ToolBox(tools);
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 const $colorbox = $ColorBox();
 
-$canvas.on("user-resized", (e, _x, _y, width, height) => {
+$canvas_area.on("user-resized", (e, _x, _y, width, height) => {
 	undoable(0, () => {
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);

@@ -57,7 +57,8 @@ class OnCanvasSelection extends OnCanvasObject {
 				}
 			}
 			this.$el.append(this.canvas);
-			this.$handles = $Handles(this.$el, this.canvas, { outset: 2 });
+			const getBoundingClientRect = ()=> this.canvas.getBoundingClientRect();
+			this.$handles = $Handles(this.$el, getBoundingClientRect, { outset: 2 });
 			this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 				this.x += delta_x;
 				this.y += delta_y;
@@ -220,7 +221,6 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.height = new_height;
 		this.position();
 		$(this.canvas).on("pointerdown", this.canvas_pointerdown);
-		this.$el.triggerHandler("new-element", [this.canvas]);
 		this.$el.triggerHandler("resize"); //?
 		this.update_tool_transparent_mode();
 	}

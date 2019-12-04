@@ -1,13 +1,9 @@
 
-function $Handles($container, element, options){
+function $Handles($container, getBoundingClientRect, options){
 	const outset = options.outset || 0;
 	const get_offset_left = options.get_offset_left || (() => 0);
 	const get_offset_top = options.get_offset_top || (() => 0);
 	const size_only = options.size_only || false;
-	let el = element;
-	$container.on("new-element", (e, element) => {
-		el = element;
-	});
 	
 	const $resize_ghost = $(E("div")).addClass("resize-ghost");
 	const handles = $.map([
@@ -61,7 +57,7 @@ function $Handles($container, element, options){
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
-				const rect = el.getBoundingClientRect();
+				const rect = getBoundingClientRect();
 				const mx = e.clientX / magnification;
 				const my = e.clientY / magnification;
 				// TODO: decide between Math.floor/Math.ceil/Math.round for these values
@@ -103,7 +99,8 @@ function $Handles($container, element, options){
 					
 					$resize_ghost.remove();
 					if(dragged){
-						$(el).trigger("user-resized", [delta_x, delta_y, width, height]);
+						// triggerHandler so it doesn't bubble
+						$container.triggerHandler("user-resized", [delta_x, delta_y, width, height]);
 					}
 					$container.trigger("update");
 				});
@@ -114,7 +111,7 @@ function $Handles($container, element, options){
 		}
 		
 		const update_handle = () => {
-			const rect = el.getBoundingClientRect();
+			const rect = getBoundingClientRect();
 			const hs = $h.width();
 			if(x_axis === "middle"){
 				$h.css({ left: get_offset_left() + (rect.width - hs) / 2 });
