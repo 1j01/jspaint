@@ -658,14 +658,16 @@ function draw_grid(ctx, scale) {
 		
 		if (go_x > 0) {
 			const matrix = svg_for_creating_matrices.createSVGMatrix();
-			horizontal_pattern.setTransform(matrix.translate(-x, -y).translate(hairline_width, 0).scale(1/scale));
-
+			if (horizontal_pattern.setTransform) { // not supported by Edge as of 2019-12-04
+				horizontal_pattern.setTransform(matrix.translate(-x, -y).translate(hairline_width, 0).scale(1/scale));
+			}
 			ctx.fillStyle = horizontal_pattern;
 			ctx.fillRect(0, 0, go_x, dash_width);
 		} else if(go_y > 0) {
 			const matrix = svg_for_creating_matrices.createSVGMatrix();
-			vertical_pattern.setTransform(matrix.translate(-x, -y).translate(0, hairline_width).scale(1/scale));
-			
+			if (vertical_pattern.setTransform) { // not supported by Edge as of 2019-12-04
+				vertical_pattern.setTransform(matrix.translate(-x, -y).translate(0, hairline_width).scale(1/scale));
+			}
 			ctx.fillStyle = vertical_pattern;
 			ctx.fillRect(0, 0, dash_width, go_y);
 		}
