@@ -81,6 +81,35 @@
 			</p>
 		</div>
 		<div id="news" hidden>
+			<article class="news-entry" id="news-2019-polygon-text-and-select">
+				<h1>Polygon, Text, and Select</h1>
+				<time datetime="2019-12-04">2019-12-04</time>
+				<p>
+					Handles are now way easier to drag, with extended click targets, similar to Paint from Windows 7.
+					It's like not unreasonable to use with a touch screen now!
+					This applies to selections, textboxes, and the main canvas handles.
+				</p>
+				<p>
+					Resizing selections and textboxes when zoomed in is <a href="https://github.com/1j01/jspaint/issues/13#issuecomment-562247085">finally fixed</a>!
+				</p>
+				<p>
+					The Text tool now perfectly previews the pixels that will be placed on the canvas.
+					What you see is what you get.
+					Also it retains all browser editing behavior, like spellcheck,
+					using a Convoluted Yet Elegant™ overlaying strategy,
+					which I prototyped <a href="https://jsfiddle.net/1j01/wnac09u3/">here</a>
+					and <a href="https://jsfiddle.net/1j01/qkvfjn1r/">here</a>.
+					(Text is still antialised, which doesn't work well with the Fill tool.)
+				</p>
+				<p>
+					The Polygon tool in fill-only mode now previews with inverted lines,
+					and when you finish the polygon, the boundary matches the preview strokes
+					by having a stroke the same color as the fill, as it works in mspaint.
+				</p>
+				<p>
+					All tool previews are implemented at this point: Free-Form Select, Select, Text, Magnifier, Eraser, Brush, and shape tools.
+				</p>
+			</article>
 			<article class="news-entry" id="news-2019-zoom-viewport">
 				<h1>Zoom To Mouse</h1>
 				<time datetime="2019-10-26">2019-10-26</time>
