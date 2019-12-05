@@ -90,6 +90,10 @@ const $canvas_handles = $Handles($canvas_area, getRect, {
 	get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
 	size_only: true,
 });
+// hack: fix canvas handles causing document to scroll when selecting/deselecting
+// by overriding these methods
+$canvas_handles.hide = ()=> { $canvas_handles.css({opacity: 0, pointerEvents: "none"}); };
+$canvas_handles.show = ()=> { $canvas_handles.css({opacity: "", pointerEvents: ""}); };
 
 const $top = $(E("div")).addClass("component-area").prependTo($V);
 const $bottom = $(E("div")).addClass("component-area").appendTo($V);
