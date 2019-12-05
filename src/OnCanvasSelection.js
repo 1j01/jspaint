@@ -23,6 +23,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	}
 	position() {
 		super.position(true);
+		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}
 	instantiate(_img, _passive) {
 		this.$el.css({

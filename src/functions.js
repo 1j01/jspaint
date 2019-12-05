@@ -108,6 +108,28 @@ function update_helper_layer_immediately(e) {
 		}
 	});
 
+	if (selection) {
+		hctx.save();
+		
+		hctx.scale(scale, scale);
+		hctx.translate(-viewport_x, -viewport_y);
+
+		hctx.drawImage(selection.canvas, selection.x, selection.y);
+		
+		hctx.restore();
+	}
+
+	if (textbox) {
+		hctx.save();
+		
+		hctx.scale(scale, scale);
+		hctx.translate(-viewport_x, -viewport_y);
+
+		hctx.drawImage(textbox.canvas, textbox.x, textbox.y);
+		
+		hctx.restore();
+	}
+
 	if (grid_visible) {
 		draw_grid(hctx, scale);
 	}

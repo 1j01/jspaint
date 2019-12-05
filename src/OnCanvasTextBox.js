@@ -91,6 +91,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				// this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.canvas.ctx.drawImage(img, 0, 0);
 				// this.canvas.style.outlineColor = "lime";
+				update_helper_layer(); // TODO: under-grid specific helper layer?
 			};
 			img.onerror = (e)=> {
 				// URL.revokeObjectURL(blob_url);
@@ -182,6 +183,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 	}
 	position() {
 		super.position(true);
+		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}
 	draw() {
 		const text = this.$editor.val();
