@@ -5,7 +5,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		this.$el.addClass("textbox");
 		this.$editor = $(E("textarea")).addClass("textbox-editor");
-		this.$dummy_el = $(E("div")); // TODO: remove me when improving how handles work
 
 		var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svg.setAttribute("version", 1.1);
@@ -14,7 +13,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 		foreignObject.setAttribute("y", 0);
 		svg.append(foreignObject);
 		
-		this.$editor.add(this.$dummy_el).css({
+		// inline styles so that they'll be serialized for the SVG
+		this.$editor.css({
 			"position": "absolute",
 			"left": "0",
 			"top": "0",
@@ -34,8 +34,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.canvas.style.pointerEvents = "none";
 		this.$el.append(this.canvas);
 
-		// this.canvas.style.outline = "5px solid lightgray";
-
 		const update = ()=> {
 			requestAnimationFrame(()=> {
 				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
@@ -49,10 +47,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 			const font = text_tool_font;
 			font.color = colors.foreground;
 			font.background = tool_transparent_mode ? "transparent" : colors.background;
-			// this.$dummy_el.css({
-			// 	width: this.width * magnification,
-			// 	height: this.height * magnification,
-			// });
 			this.$editor.add(this.canvas).css({
 				transform: `scale(${magnification})`,
 				transformOrigin: "left top",
@@ -79,26 +73,19 @@ class OnCanvasTextBox extends OnCanvasObject {
 			render_textarea.appendChild(document.createTextNode(edit_textarea.value));
 			
 			var svg_source = new XMLSerializer().serializeToString(svg);
-			// var blob = new Blob([svg_source], {type: "image/svg+xml;charset=utf-8"});
-			// var blob_url = URL.createObjectURL(blob);
-			var data_url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg_source);
+			var data_url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg_source)}`;
 			
 			var img = new Image();
 			img.onload = ()=> {
-				// URL.revokeObjectURL(blob_url);
 				this.canvas.width = this.width;
 				this.canvas.height = this.height;
-				// this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.canvas.ctx.drawImage(img, 0, 0);
-				// this.canvas.style.outlineColor = "lime";
 				update_helper_layer(); // TODO: under-grid specific helper layer?
 			};
 			img.onerror = (e)=> {
-				// URL.revokeObjectURL(blob_url);
-				// this.canvas.style.outlineColor = "red";
 				console.log("failed to load image", e);
 			};
-			img.src = data_url; //blob_url;
+			img.src = data_url;
 		};
 
 		update();
@@ -117,7 +104,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$el.attr("touch-action", "none");
 		this.position();
 		
-		this.$el.append(this.$dummy_el);
 		this.$el.append(this.$editor);
 		this.$editor[0].focus();
 		const getRect = ()=> ({left: this.x, top: this.y, width: this.width, height: this.height, right: this.x + this.width, bottom: this.y + this.height})
@@ -130,7 +116,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			this.position();
 			update();
 		});
-		let mox, moy;
+		let mox, moy; // mouse offset
 		const pointermove = e => {
 			const m = to_canvas_coords(e);
 			this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
@@ -189,15 +175,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 		const text = this.$editor.val();
 		if (text) {
 			undoable(0, () => {
-				// const font = text_tool_font;
-				// ctx.fillStyle = font.background;
-				// ctx.fillRect(this.x, this.y, this.width, this.height);
-				// ctx.fillStyle = font.color;
-				// const style_ = (font.bold ? (font.italic ? "italic bold " : "bold ") : (font.italic ? "italic " : ""));
-				// ctx.font = `${style_ + font.size}px ${font.family}`;
-				// ctx.textBaseline = "top";
-				// const max_width = Math.max(this.width, font.size);
-				// const line_height = font.size * font.line_scale;
 				ctx.drawImage(this.canvas, this.x, this.y);
 			});
 		}
