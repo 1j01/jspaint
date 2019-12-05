@@ -87,6 +87,12 @@ html, body, .jspaint {
 .menus {
 	flex: 0 0 auto;
 }
+
+.selection,
+.textbox,
+.helper-layer {
+	z-index: 3;
+}
 .selection,
 .textbox {
 	display: block !important; /* TODO: reduce overzealous display: flex; */
@@ -110,7 +116,7 @@ html, body, .jspaint {
 	color: transparent !important;
 	background: transparent !important;
 	caret-color: black;
-	z-index: 2; /* go above handles */
+	z-index: 4; /* go above handles and .main-canvas */
 	outline: none;
 }
 /* debug */
@@ -125,12 +131,7 @@ html, body, .jspaint {
 	position: absolute;
 	top: 100%;
 	left: 0;
-	z-index: 5000; /*
-		really high so the menu popups go over subwindows (which dynamically increase z-index)
-		and also over other-user cursors in multi-user mode
-		also at least 2 so popups go over the canvas handles,
-		and at least 1 so that the modern theme's menubar can have a shadow
-	*/
+	z-index: 5000; /* really high so the menu popups go over subwindows (which dynamically increase z-index) */
 	box-sizing: border-box;
 }
 .menu-popup-table {
@@ -252,6 +253,10 @@ html, body, .jspaint {
 	position: relative;
 	overflow: auto;
 	padding: 3px;
+}
+.main-canvas {
+	position: absolute;
+	z-index: 2;
 }
 .handle {
 	position: absolute;
