@@ -126,6 +126,10 @@ function $Handles($container, getRect, options){
 			}else if(y_axis === "bottom"){
 				$h.css({ top: get_offset_top() + (rect.height * magnification - hs/2) });
 			}
+			$h.css({
+				"max-width": rect.width * magnification / 2,
+				"max-height": rect.height * magnification / 2,
+			});
 		};
 		
 		$container.on("update resize scroll", update_handle);

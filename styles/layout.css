@@ -270,7 +270,9 @@ html, body, .jspaint {
 	transform: translate(-50%, -50%);
 	width: 32px;
 	height: 32px;
-	/*background: yellow;*/ /* debug */
+	max-width: inherit;
+	max-height: inherit;
+	/*background: rgba(255, 255, 0, 0.5);*/ /* debug */
 }
 .textbox::before {
 	/* allow dragging textbox */
