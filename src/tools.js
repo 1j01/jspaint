@@ -805,6 +805,7 @@ window.tools = [{
 	},
 	end(ctx) {
 		this.complete(ctx);
+		update_helper_layer();
 	},
 	reset() {
 		this.points = [];
