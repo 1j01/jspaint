@@ -732,9 +732,6 @@ window.tools = [{
 			const d = Math.sqrt(dx*dx + dy*dy);
 			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (TODO: find correct value (or formula))
 				this.complete(ctx);
-				// Release the pointer to prevent this.paint()
-				// being called and clearing the canvas
-				$canvas.trigger("pointerup");
 			}else{
 				// Add the point
 				this.points.push({x, y});
@@ -943,6 +940,32 @@ tools.forEach((tool)=> {
 			if(!pointer_has_moved) { return; }
 
 			draw_selection_box(ctx, rect_x, rect_y, rect_width, rect_height, scale, translate_x, translate_y);
+		};
+	}
+	if (tool.shape) {
+		tool.shape_canvas = null;
+		tool.pointerdown = ()=> {
+			tool.shape_canvas = make_canvas(canvas.width, canvas.height);
+		};
+		tool.paint = ()=> {
+			tool.shape_canvas.ctx.clearRect(0, 0, tool.shape_canvas.width, tool.shape_canvas.height);
+			tool.shape_canvas.ctx.fillStyle = ctx.fillStyle;
+			tool.shape_canvas.ctx.strokeStyle = ctx.strokeStyle;
+			tool.shape(tool.shape_canvas.ctx, pointer_start.x, pointer_start.y, pointer.x-pointer_start.x, pointer.y-pointer_start.y);
+		};
+		tool.pointerup = ()=> {
+			if(!tool.shape_canvas){ return; }
+			ctx.drawImage(tool.shape_canvas, 0, 0);
+			tool.shape_canvas = null;
+		};
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
+			if(!pointer_active){ return; }
+			if(!tool.shape_canvas){ return; }
+
+			ctx.scale(scale, scale);
+			ctx.translate(translate_x, translate_y);
+
+			ctx.drawImage(tool.shape_canvas, 0, 0);
 		};
 	}
 });
