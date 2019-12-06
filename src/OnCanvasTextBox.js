@@ -188,5 +188,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 		$G.off("option-changed", this._on_option_changed);
 		this.$editor.off("input", this._on_input);
 		this.$editor.off("scroll", this._on_scroll);
+		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}
 }
