@@ -619,7 +619,7 @@ $canvas.on("pointerdown", e => {
 		return;
 	}
 	
-	pointer_active = true;
+	pointer_active = !!(e.buttons & (1 | 2));
 	pointer_type = e.pointerType;
 	pointer_buttons = e.buttons;
 	$G.one("pointerup", e => {
