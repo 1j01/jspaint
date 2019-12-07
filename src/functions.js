@@ -968,7 +968,7 @@ function shouldMakeUndoableOnPointerDown(tools) {
 	return tools.some((tool)=> tool.undoableOnPointerDown);
 }
 function cancel(){
-	if(shouldMakeUndoableOnPointerDown(selected_tools)){ undo(); }
+	if(shouldMakeUndoableOnPointerDown(selected_tools) && pointer_active){ undo(); }
 	$G.triggerHandler("pointerup", "cancel");
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();

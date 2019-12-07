@@ -539,8 +539,8 @@ function canvas_pointer_move(e){
 		// compare buttons other than middle mouse button by using bitwise OR to make that bit of the number the same
 		const MMB = 4;
 		if(e.pointerType != pointer_type || (e.buttons | MMB) != (pointer_buttons | MMB)){
-			pointer_active = false;
 			cancel();
+			pointer_active = false; // NOTE: pointer_active used in cancel()
 			return;
 		}
 	}
@@ -614,8 +614,8 @@ $canvas.on("pointerdown", e => {
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
 	if(pointer_active && (reverse ? (button === 2) : (button === 0))){
-		pointer_active = false;
 		cancel();
+		pointer_active = false; // NOTE: pointer_active used in cancel()
 		return;
 	}
 	
