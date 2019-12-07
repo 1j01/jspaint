@@ -200,7 +200,7 @@ window.simulateRandomGesturesPeriodically = () => {
 		// TODO: a button to stop it as well (maybe make "stop drawing randomly" a link button?)
 		$status_text.text("Press Esc to stop drawing randomly.");
 		if (isAnyMenuOpen()) {
-			setTimeout(waitThenGo, 50);
+			periodicGesturesTimeoutID = setTimeout(waitThenGo, 50);
 			return;
 		}
 
