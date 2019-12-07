@@ -260,6 +260,7 @@ window.stopSimulatingGestures = () => {
 		window.simulatingGestures = false;
 		$status_text.default();
 		$cursor.remove();
+		cancel();
 	}
 	document.body.style.width = "";
 	document.body.style.height = "";
