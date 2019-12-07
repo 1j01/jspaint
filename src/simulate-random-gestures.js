@@ -259,6 +259,7 @@ window.stopSimulatingGestures = () => {
 		clearTimeout(periodicGesturesTimeoutID);
 		window.simulatingGestures = false;
 		$status_text.default();
+		$cursor.remove();
 	}
 	document.body.style.width = "";
 	document.body.style.height = "";
