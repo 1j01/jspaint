@@ -210,6 +210,7 @@ window.tools = [{
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
+	passive: false,
 	continuous: "space",
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
@@ -292,6 +293,7 @@ window.tools = [{
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
+	passive: false,
 	pointerdown(ctx, x, y) {
 		
 		// Get the rgba values of the selected fill color
@@ -468,6 +470,7 @@ window.tools = [{
 	name: "Pencil",
 	description: "Draws a free-form line one pixel wide.",
 	cursor: ["pencil", [13, 23], "crosshair"],
+	passive: false,
 	continuous: "space",
 	stroke_only: true,
 	pencil_canvas: make_canvas(),
@@ -497,6 +500,7 @@ window.tools = [{
 	name: "Brush",
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
+	passive: false,
 	continuous: "space",
 	rendered_color: "",
 	rendered_size: 0,
@@ -535,6 +539,7 @@ window.tools = [{
 	name: "Airbrush",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
+	passive: false,
 	continuous: "time",
 	paint(ctx, x, y) {
 		const r = airbrush_size / 2;
@@ -568,6 +573,7 @@ window.tools = [{
 	name: "Line",
 	description: "Draws a straight line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
+	passive: false,
 	stroke_only: true,
 	shape(ctx, x, y, w, h) {
 		update_brush_for_drawing_lines(stroke_size);
@@ -659,6 +665,7 @@ window.tools = [{
 	name: "Rectangle",
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
+	passive: false,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
@@ -683,6 +690,7 @@ window.tools = [{
 	name: "Polygon",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
+	passive: false,
 	
 	// Record the last click for double-clicking
 	// A double click happens on pointerdown of a second click
@@ -823,6 +831,7 @@ window.tools = [{
 	name: "Ellipse",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
+	passive: false,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
@@ -848,6 +857,7 @@ window.tools = [{
 	name: "Rounded Rectangle",
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
+	passive: false,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
