@@ -19,10 +19,7 @@
 		debug_event(e, synthetic);
 		if(synthetic){ return; }
 		
-		// If you're using the fill tool, basically
-		const immediate_action = selected_tools.some((tool)=>
-			tool.pointerdown && !tool.pointermove && !tool.paint && !tool.cancel && !tool.passive
-		);
+		const immediate_action = selected_tools.some((tool)=> tool.name === "Fill");
 		if(immediate_action){
 			// A change might occur immediately
 			may_be_changed();

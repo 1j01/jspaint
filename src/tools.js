@@ -5,7 +5,6 @@ window.tools = [{
 	name: "Free-Form Select",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: true,
 
 	// A canvas for rendering a preview of the shape
 	preview_canvas: null,
@@ -132,7 +131,6 @@ window.tools = [{
 	name: "Select",
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: true,
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
 			var free_form_selection = selection;
@@ -210,7 +208,7 @@ window.tools = [{
 	name: "Eraser/Color Eraser",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	continuous: "space",
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
@@ -293,7 +291,7 @@ window.tools = [{
 	name: "Fill With Color",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	pointerdown(ctx, x, y) {
 		
 		// Get the rgba values of the selected fill color
@@ -313,7 +311,6 @@ window.tools = [{
 	description: "Picks up a color from the picture for drawing.",
 	cursor: ["eye-dropper", [9, 22], "crosshair"],
 	deselect: true,
-	passive: true,
 	
 	current_color: "",
 	display_current_color() {
@@ -352,7 +349,6 @@ window.tools = [{
 	description: "Changes the magnification.",
 	cursor: ["magnifier", [16, 16], "zoom-in"], // overridden below
 	deselect: true,
-	passive: true,
 	
 	getProspectiveMagnification: ()=> (
 		magnification === 1 ? return_to_magnification : 1
@@ -470,7 +466,7 @@ window.tools = [{
 	name: "Pencil",
 	description: "Draws a free-form line one pixel wide.",
 	cursor: ["pencil", [13, 23], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	continuous: "space",
 	stroke_only: true,
 	pencil_canvas: make_canvas(),
@@ -500,7 +496,7 @@ window.tools = [{
 	name: "Brush",
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	continuous: "space",
 	rendered_color: "",
 	rendered_size: 0,
@@ -539,7 +535,7 @@ window.tools = [{
 	name: "Airbrush",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	continuous: "time",
 	paint(ctx, x, y) {
 		const r = airbrush_size / 2;
@@ -557,7 +553,6 @@ window.tools = [{
 	name: "Text",
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: true,
 	preload() {
 		setTimeout(FontDetective.preload, 10);
 	},
@@ -573,7 +568,7 @@ window.tools = [{
 	name: "Line",
 	description: "Draws a straight line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	stroke_only: true,
 	shape(ctx, x, y, w, h) {
 		update_brush_for_drawing_lines(stroke_size);
@@ -586,8 +581,6 @@ window.tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	points: [],
-	passive: true, // don't create an undo state automatically on pointerdown
-	// undoable created manually at end instead
 	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
 			undoable(()=> {
@@ -665,7 +658,7 @@ window.tools = [{
 	name: "Rectangle",
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
@@ -690,7 +683,7 @@ window.tools = [{
 	name: "Polygon",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	
 	// Record the last click for double-clicking
 	// A double click happens on pointerdown of a second click
@@ -703,9 +696,6 @@ window.tools = [{
 	
 	// A canvas for rendering a preview of the shape
 	preview_canvas: null,
-
-	passive: true, // don't create an undo state automatically on pointerdown
-	// undoable created manually at end instead
 
 	pointerup(ctx, x, y) {
 		if(this.points.length < 1){ return; }
@@ -831,7 +821,7 @@ window.tools = [{
 	name: "Ellipse",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
@@ -857,7 +847,7 @@ window.tools = [{
 	name: "Rounded Rectangle",
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	passive: false,
+	undoableOnPointerDown: true,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }

@@ -680,10 +680,10 @@ $canvas.on("pointerdown", e => {
 	});
 	};
 
-	if(isPassive(selected_tools)){
-		pointerdown_action();
-	}else{
+	if(shouldMakeUndoableOnPointerDown(selected_tools)){
 		undoable(pointerdown_action);
+	}else{
+		pointerdown_action();
 	}
 	
 	update_helper_layer();

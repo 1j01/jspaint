@@ -964,11 +964,11 @@ function redo(){
 
 	return true;
 }
-function isPassive(tools) {
-	return tools.every((tool)=> tool.passive);
+function shouldMakeUndoableOnPointerDown(tools) {
+	return tools.some((tool)=> tool.undoableOnPointerDown);
 }
 function cancel(){
-	if(!isPassive(selected_tools)){ undo(); }
+	if(shouldMakeUndoableOnPointerDown(selected_tools)){ undo(); }
 	$G.triggerHandler("pointerup", "cancel");
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();
