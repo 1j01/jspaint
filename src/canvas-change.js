@@ -13,7 +13,7 @@
 	
 	// Hook into some events that imply a change might have occured
 	
-	$canvas.on("user-resized.ugly-hook", may_be_changed);
+	$canvas_area.on("user-resized.ugly-hook", may_be_changed);
 	
 	$canvas_area.on("pointerdown.ugly-hook", "*", (e, synthetic) => {
 		debug_event(e, synthetic);
