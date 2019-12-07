@@ -117,8 +117,11 @@ html, body, .jspaint {
 .component-ghost {
 	pointer-events: none;
 }
+.resize-ghost {
+	z-index: 4;
+}
 .component-ghost {
-	z-index: 500;
+	z-index: 5001; /* 50-5000 reserved for subwindows, which dynamically increase z-index */
 }
 .textbox-editor {
 	color: transparent !important;
@@ -139,7 +142,7 @@ html, body, .jspaint {
 	position: absolute;
 	top: 100%;
 	left: 0;
-	z-index: 5000; /* really high so the menu popups go over subwindows (which dynamically increase z-index) */
+	z-index: 5002; /* 50-5000 reserved for subwindows, which dynamically increase z-index */
 	box-sizing: border-box;
 }
 .menu-popup-table {

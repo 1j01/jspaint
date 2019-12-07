@@ -1,5 +1,5 @@
 
-$Window.Z_INDEX = 5;
+$Window.Z_INDEX = 50; // dynamically incrementing z-index
 
 function $Window($component){
 	const $w = $(E("div")).addClass("window").appendTo("body");

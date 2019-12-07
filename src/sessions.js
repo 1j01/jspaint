@@ -287,7 +287,7 @@
 					left: 0,
 					top: 0,
 					opacity: 0,
-					zIndex: 500,
+					zIndex: 5, // @#: z-index
 					pointerEvents: "none",
 					transition: "opacity 0.5s",
 				});
