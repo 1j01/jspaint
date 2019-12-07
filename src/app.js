@@ -646,18 +646,18 @@ $canvas.on("pointerdown", e => {
 	pointer_start = pointer_previous = pointer = to_canvas_coords(e);
 
 	const pointerdown_action = () => {
-	// TODO for multitools: don't register event listeners for each tool
-	selected_tools.forEach((selected_tool)=> {
-
-		if(selected_tool.paint || selected_tool.pointerdown){
-			tool_go(selected_tool, "pointerdown");
-		}
+		let interval_ids = [];
+		selected_tools.forEach((selected_tool)=> {
+			if(selected_tool.paint || selected_tool.pointerdown){
+				tool_go(selected_tool, "pointerdown");
+			}
+			if(selected_tool.continuous === "time"){
+				interval_ids.push(setInterval(()=> { tool_go(selected_tool); }, 5));
+			}
+		});
 
 		$G.on("pointermove", canvas_pointer_move);
-		let iid;
-		if(selected_tool.continuous === "time"){
-			iid = setInterval(()=> { tool_go(selected_tool); }, 5);
-		}
+
 		$G.one("pointerup", (e, canceling) => {
 			button = undefined;
 			reverse = false;
@@ -665,7 +665,9 @@ $canvas.on("pointerdown", e => {
 				// calling selected_tool.cancel() handled elsewhere
 			}else{
 				pointer = to_canvas_coords(e);
-				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
+				selected_tools.forEach((selected_tool)=> {
+					selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
+				});
 			}
 			if (selected_tools.length === 1) {
 				if (selected_tool.deselect) {
@@ -673,11 +675,10 @@ $canvas.on("pointerdown", e => {
 				}
 			}
 			$G.off("pointermove", canvas_pointer_move);
-			if(iid){
-				clearInterval(iid);
+			for (const interval_id of interval_ids) {
+				clearInterval(interval_id);
 			}
 		});
-	});
 	};
 
 	if(shouldMakeUndoableOnPointerDown(selected_tools)){
