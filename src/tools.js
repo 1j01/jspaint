@@ -198,8 +198,6 @@ window.tools = [{
 			} else {
 				selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
 			}
-		} else {
-			$canvas_handles.show();
 		}
 	},
 	$options: $choose_transparent_mode
@@ -559,8 +557,6 @@ window.tools = [{
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
 			textbox = new OnCanvasTextBox(rect_x, rect_y, rect_width, rect_height);
-		} else {
-			$canvas_handles.show();
 		}
 	},
 	$options: $choose_transparent_mode
@@ -921,6 +917,7 @@ tools.forEach((tool)=> {
 			rect_height = (~~Math.min(canvas.height, Math.max(drag_start_y, pointer.y + 1))) - rect_y;
 		};
 		tool.pointerup = ()=> {
+			$canvas_handles.show();
 			tool.selectBox(rect_x, rect_y, rect_width, rect_height);
 		};
 		tool.cancel = ()=> {
