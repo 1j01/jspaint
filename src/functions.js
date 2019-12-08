@@ -939,6 +939,7 @@ function go_to_history_node(target_history_node) {
 
 	const history_ancestors = get_history_ancestors(target_history_node);
 
+	/*
 	const old_undos = [...undos];
 	const old_redos = [...redos];
 	redos.length = 0;
@@ -962,6 +963,31 @@ function go_to_history_node(target_history_node) {
 		}
 	}
 	console.log({target_history_node, history_ancestors, old_undos, old_redos, undos, redos});
+	*/
+
+	undos = history_ancestors;
+
+	const old_history_path = redos.length > 0 ? [redos[0], ...get_history_ancestors(redos[0])] : [];
+
+	
+	let latest_node = target_history_node;
+	while (latest_node.futures.length > 0) {
+		// TODO: simplify as sort
+		let found_node_on_old_path = false;
+		for (const future_node of latest_node.futures) {
+			if (old_history_path.indexOf(future_node) > -1) {
+				latest_node = future_node;
+				found_node_on_old_path = true;
+				break;
+			}
+		}
+		if (!found_node_on_old_path) {
+			for (const future_node of latest_node.futures) {
+				latest_node = future_node;
+			}
+		}
+		redos.push(latest_node);
+	}
 
 	$canvas_area.trigger("resize");
 	$G.triggerHandler("session-update"); // autosave
