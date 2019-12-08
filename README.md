@@ -67,6 +67,8 @@ I want to bring good old paint into the modern era.
 * In **Image > Stretch/Skew**, you can stretch more than 500% at once
 * Zoom to an arbitrary scale in **View > Zoom > Custom...**
 * Non-contiguous fill: Replace a color in the entire image by holding <kbd>Shift</kbd> when using the fill tool
+* You can use the Text tool at any zoom level, and it previews the exact pixels that will end up on the canvas.
+* Spellcheck is available in the textbox if your browser supports it.
 * Rudimentary **multi-user** support.
   Start up a session at
   [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
