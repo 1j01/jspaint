@@ -357,7 +357,7 @@ function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	}
 }
 
-function apply_image_transformation(fn){
+function apply_image_transformation(action_name, fn){
 	// Apply an image transformation function to either the selection or the entire canvas
 	const original_canvas = selection ? selection.source_canvas: canvas;
 	
@@ -370,8 +370,11 @@ function apply_image_transformation(fn){
 	
 	if(selection){
 		selection.replace_source_canvas(new_canvas);
+
+		document_history_current.details.push(action_name);
+		$G.triggerHandler("history-update");
 	}else{
-		undoable("Image Transformation... " + fn.name, () => {
+		undoable(action_name, () => {
 			deselect();
 			cancel();
 			saved = false;
@@ -385,7 +388,7 @@ function apply_image_transformation(fn){
 }
 
 function flip_horizontal(){
-	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation("Flip Horizontal", (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(new_canvas.width, 0);
 		new_ctx.scale(-1, 1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -393,7 +396,7 @@ function flip_horizontal(){
 }
 
 function flip_vertical(){
-	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation("Flip Vertical", (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(0, new_canvas.height);
 		new_ctx.scale(1, -1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -401,7 +404,7 @@ function flip_vertical(){
 }
 
 function rotate(angle){
-	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation(`Rotate ${angle / TAU * 360} degrees`, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.save();
 		switch(angle){
 			case TAU / 4:
@@ -473,7 +476,7 @@ function rotate(angle){
 }
 
 function stretch_and_skew(xscale, yscale, hsa, vsa){
-	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation("Stretch/Skew", (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		const w = original_canvas.width * xscale;
 		const h = original_canvas.height * yscale;
 		

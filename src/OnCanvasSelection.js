@@ -1,6 +1,6 @@
 
 class OnCanvasSelection extends OnCanvasObject {
-	constructor(x, y, width, height, _img) {
+	constructor(x, y, width, height, img, action_name) {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("selection");
@@ -19,13 +19,13 @@ class OnCanvasSelection extends OnCanvasObject {
 		};
 		$G.on("option-changed", this._on_option_changed);
 
-		this.instantiate(_img);
+		this.instantiate(img, action_name);
 	}
 	position() {
 		super.position(true);
 		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}
-	instantiate(_img, _passive) {
+	instantiate(img, action_name) {
 		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move")
 		});
@@ -33,12 +33,12 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.position();
 
 		const instantiate = ()=> {
-			if (_img) {
+			if (img) {
 				// (this applies when pasting a selection)
 				// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
 				// (width vs naturalWidth?)
 				// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
-				this.source_canvas = make_canvas(_img);
+				this.source_canvas = make_canvas(img);
 				// TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
 				// but maybe we should assert in some way that the widths are the same, or resize the selection?
 				if (this.source_canvas.width !== this.width) {
@@ -53,9 +53,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				this.source_canvas = make_canvas(this.width, this.height);
 				this.source_canvas.ctx.drawImage(canvas, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
 				this.canvas = make_canvas(this.source_canvas);
-				if (!_passive) {
-					this.cut_out_background();
-				}
+				this.cut_out_background();
 			}
 			this.$el.append(this.canvas);
 			const getRect = ()=> ({left: this.x, top: this.y, width: this.width, height: this.height, right: this.x + this.width, bottom: this.y + this.height})
@@ -103,11 +101,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			$status_size.text("");
 		};
 		
-		if (_passive) {
-			instantiate();
-		} else {
-			undoable("Select", instantiate);
-		}
+		undoable(action_name || "Select", instantiate);
 	}
 	cut_out_background() {
 		const cutout = this.canvas;

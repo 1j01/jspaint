@@ -782,7 +782,7 @@ function paste(img){
 		select_tool(get_tool_by_name("Select"));
 		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
 		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
-		selection = new OnCanvasSelection(x, y, img.width, img.height, img);
+		selection = new OnCanvasSelection(x, y, img.width, img.height, img, "Paste");
 	}
 }
 
@@ -925,7 +925,7 @@ function undoable(action_name, callback){
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-	const new_history_node = {image_data, futures: [], name: action_name};
+	const new_history_node = {image_data, futures: [], name: action_name, details: []};
 	document_history_current.futures.push(new_history_node);
 	document_history_current = new_history_node;
 
@@ -1003,7 +1003,7 @@ function show_document_history() {
 
 	function show_history_from_node(node) {
 		const $entry = $("<div class='history-entry'>");
-		$entry.text(node.name || "Unknown");
+		$entry.text((node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : ""));
 		if (node === document_history_current) {
 			$entry.addClass("current");
 		}
@@ -1064,7 +1064,7 @@ function select_all(){
 	deselect();
 	select_tool(get_tool_by_name("Select"));
 
-	selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
+	selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height, null, "Select All");
 }
 
 const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
@@ -1198,7 +1198,7 @@ async function edit_paste(execCommandFallback){
 }
 
 function image_invert(){
-	apply_image_transformation((original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation("Invert", (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		const id = original_ctx.getImageData(0, 0, original_canvas.width, original_canvas.height);
 		for(let i=0; i<id.data.length; i+=4){
 			id.data[i+0] = 255 - id.data[i+0];

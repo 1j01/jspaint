@@ -56,7 +56,7 @@ let text_tool_font = {
 	background: "",
 };
 
-let document_history_root = {image_data: null, futures: [], name: "New Document"};
+let document_history_root = {image_data: null, futures: [], name: "New Document", details: []};
 let document_history_current = document_history_root;
 /** array of ImageData */
 const undos = [];
@@ -162,6 +162,8 @@ const $toolbox = $ToolBox(tools);
 const $colorbox = $ColorBox();
 
 $canvas_area.on("user-resized", (e, _x, _y, width, height) => {
+	// TODO: don't create undoable if same size
+	// also move this to a function and don't trigger this event other than from the handles
 	undoable("Resize Canvas", () => {
 		const image_data = ctx.getImageData(0, 0, width, height);
 		canvas.width = Math.max(1, width);
@@ -683,7 +685,8 @@ $canvas.on("pointerdown", e => {
 	};
 
 	if(shouldMakeUndoableOnPointerDown(selected_tools)){
-		undoable(selected_tools.map((tool)=> tool.name).join(" + "), pointerdown_action);
+		// TODO: non-breaking space within tool names
+		undoable(selected_tools.map((tool)=> tool.name).join("+"), pointerdown_action);
 	}else{
 		pointerdown_action();
 	}

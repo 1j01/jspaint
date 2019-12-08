@@ -107,7 +107,8 @@ window.tools = [{
 			this.y_min,
 			this.x_max - this.x_min,
 			this.y_max - this.y_min,
-			contents_within_polygon
+			contents_within_polygon,
+			"Free-Form Select",
 		);
 		selection.cut_out_background();
 	},
@@ -296,6 +297,7 @@ window.tools = [{
 		const rgba = get_rgba_from_color(fill_color);
 		
 		if(shift){
+			// TODO: rename undoable Replace Color
 			// Perform a global (non-contiguous) fill operation, AKA color replacement
 			draw_noncontiguous_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
 		} else {
