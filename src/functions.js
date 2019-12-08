@@ -965,28 +965,27 @@ function go_to_history_node(target_history_node) {
 	console.log({target_history_node, history_ancestors, old_undos, old_redos, undos, redos});
 	*/
 
-	undos = history_ancestors;
+	undos = [...history_ancestors];
+	undos.reverse();
 
 	const old_history_path = redos.length > 0 ? [redos[0], ...get_history_ancestors(redos[0])] : [];
 
-	
+	redos.length = 0;
+
 	let latest_node = target_history_node;
 	while (latest_node.futures.length > 0) {
-		// TODO: simplify as sort
-		let found_node_on_old_path = false;
-		for (const future_node of latest_node.futures) {
-			if (old_history_path.indexOf(future_node) > -1) {
-				latest_node = future_node;
-				found_node_on_old_path = true;
-				break;
+		const futures = [...latest_node.futures];
+		futures.sort((a, b)=> {
+			if(old_history_path.indexOf(a) > -1) {
+				return -1;
 			}
-		}
-		if (!found_node_on_old_path) {
-			for (const future_node of latest_node.futures) {
-				latest_node = future_node;
+			if(old_history_path.indexOf(b) > -1) {
+				return +1;
 			}
-		}
-		redos.push(latest_node);
+			return 0;
+		});
+		latest_node = futures[0];
+		redos.unshift(latest_node);
 	}
 
 	$canvas_area.trigger("resize");
