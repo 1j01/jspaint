@@ -3,6 +3,7 @@
 window.tools = [{
 	// @#: polygonal selection, polygon selection, shape selection, freeform selection
 	name: "Free-Form Select",
+	help_icon: "p_free.gif",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 
@@ -130,6 +131,7 @@ window.tools = [{
 }, {
 	// @#: rectangle selection, rectangular selection
 	name: "Select",
+	help_icon: "p_sel.gif",
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
@@ -205,6 +207,7 @@ window.tools = [{
 }, {
 	// @#: eraser but also color replacer
 	name: "Eraser/Color Eraser",
+	help_icon: "p_erase.gif",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	undoableOnPointerDown: true,
@@ -288,6 +291,7 @@ window.tools = [{
 }, {
 	// @#: fill bucket, flood fill area, paint bucket, paint can
 	name: "Fill With Color",
+	help_icon: "p_paint.gif",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
 	undoableOnPointerDown: true,
@@ -308,6 +312,7 @@ window.tools = [{
 }, {
 	// @#: eyedropper, eye dropper, Pasteur pipette, select colors, pick colors
 	name: "Pick Color",
+	help_icon: "p_eye.gif",
 	description: "Picks up a color from the picture for drawing.",
 	cursor: ["eye-dropper", [9, 22], "crosshair"],
 	deselect: true,
@@ -346,6 +351,7 @@ window.tools = [{
 }, {
 	// @#: magnifying glass, zoom
 	name: "Magnifier",
+	help_icon: "p_zoom.gif",
 	description: "Changes the magnification.",
 	cursor: ["magnifier", [16, 16], "zoom-in"], // overridden below
 	deselect: true,
@@ -464,6 +470,7 @@ window.tools = [{
 	$options: $choose_magnification
 }, {
 	name: "Pencil",
+	help_icon: "p_pencil.gif",
 	description: "Draws a free-form line one pixel wide.",
 	cursor: ["pencil", [13, 23], "crosshair"],
 	undoableOnPointerDown: true,
@@ -494,6 +501,7 @@ window.tools = [{
 	}
 }, {
 	name: "Brush",
+	help_icon: "p_brush.gif",
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
 	undoableOnPointerDown: true,
@@ -533,6 +541,7 @@ window.tools = [{
 }, {
 	// @#: spray paint can, air brush, aerograph, graffiti, scatter
 	name: "Airbrush",
+	help_icon: "p_airb.gif",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	undoableOnPointerDown: true,
@@ -551,6 +560,7 @@ window.tools = [{
 	$options: $choose_airbrush_size
 }, {
 	name: "Text",
+	help_icon: "p_txt.gif",
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	preload() {
@@ -564,6 +574,7 @@ window.tools = [{
 	$options: $choose_transparent_mode
 }, {
 	name: "Line",
+	help_icon: "p_line.gif",
 	description: "Draws a straight line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	undoableOnPointerDown: true,
@@ -575,6 +586,7 @@ window.tools = [{
 	$options: $choose_stroke_size
 }, {
 	name: "Curve",
+	help_icon: "p_curve.gif",
 	description: "Draws a curved line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
@@ -583,7 +595,7 @@ window.tools = [{
 		if(this.points.length >= 4){
 			undoable("Curve", ()=> {
 				this.draw_curve(ctx);
-			});
+			}, get_icon_for_tool(this));
 			this.points = [];
 		}
 	},
@@ -654,6 +666,7 @@ window.tools = [{
 }, {
 	// @#: square
 	name: "Rectangle",
+	help_icon: "p_rect.gif",
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	undoableOnPointerDown: true,
@@ -679,6 +692,7 @@ window.tools = [{
 	$options: $ChooseShapeStyle()
 }, {
 	name: "Polygon",
+	help_icon: "p_poly.gif",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	
@@ -790,7 +804,7 @@ window.tools = [{
 				);
 
 				stroke_size = orig_stroke_size;
-			});
+			}, get_icon_for_tool(this));
 		}
 
 		this.reset();
@@ -816,6 +830,7 @@ window.tools = [{
 }, {
 	// @#: circle
 	name: "Ellipse",
+	help_icon: "p_oval.gif",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	undoableOnPointerDown: true,
@@ -842,6 +857,7 @@ window.tools = [{
 }, {
 	// @#: rounded square
 	name: "Rounded Rectangle",
+	help_icon: "p_rrect.gif",
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
 	undoableOnPointerDown: true,

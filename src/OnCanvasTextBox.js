@@ -176,7 +176,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		if (text) {
 			undoable("Text", () => {
 				ctx.drawImage(this.canvas, this.x, this.y);
-			});
+			}, get_icon_for_tool(get_tool_by_name("Text")));
 		}
 	}
 	destroy() {

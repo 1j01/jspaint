@@ -98,3 +98,28 @@ function make_canvas(width, height){
 	
 	return new_canvas;
 }
+
+// var icons_for_tools = {};
+function get_icon_for_tool(tool) {
+	// if (icons_for_tools[tool.name]) {
+	// 	return icons_for_tools[tool.name];
+	// }
+	const icon_img = new Image();
+	icon_img.src = `help/${tool.help_icon}`;
+	// icons_for_tools[tool.name] = icon_img;
+	return icon_img;
+}
+
+function get_icon_for_tools(tools) {
+	if (tools.length === 1) {
+		return get_icon_for_tool(tools[0]);
+	}
+	// const key = tools.map((tool)=> tool.name).join("+");
+	// if (icons_for_tools[key]) {
+	// 	return icons_for_tools[key];
+	// }
+	const icon_canvas = make_canvas(16, 16);
+	// TODO: wait for images to load and mash them up?
+	// icons_for_tools[key] = icon_canvas;
+	return icon_canvas;
+}

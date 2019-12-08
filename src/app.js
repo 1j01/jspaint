@@ -163,7 +163,8 @@ const $colorbox = $ColorBox();
 
 $canvas_area.on("user-resized", (e, _x, _y, width, height) => {
 	// TODO: don't create undoable if same size
-	// also move this to a function and don't trigger this event other than from the handles
+	// TODO: move this to a function and don't trigger this event other than from the handles
+	// TODO: resize icon for history view
 	undoable("Resize Canvas", () => {
 		const image_data = ctx.getImageData(0, 0, width, height);
 		canvas.width = Math.max(1, width);
@@ -685,8 +686,9 @@ $canvas.on("pointerdown", e => {
 	};
 
 	if(shouldMakeUndoableOnPointerDown(selected_tools)){
-		// TODO: non-breaking space within tool names
-		undoable(selected_tools.map((tool)=> tool.name).join("+"), pointerdown_action);
+		// TODO: non-breaking space within tool names?
+		const icon = get_icon_for_tools(selected_tools);
+		undoable(selected_tools.map((tool)=> tool.name).join("+"), pointerdown_action, icon);
 	}else{
 		pointerdown_action();
 	}

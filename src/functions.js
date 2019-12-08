@@ -753,6 +753,7 @@ function paste(img){
 		$w.$Button("Enlarge", () => {
 			$w.close();
 			// Extra undoable just for the resize; the paste gets its own
+			// TODO: enlarge icon
 			undoable("Paste: Enlarge", () => {
 				const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				canvas.width = Math.max(original.width, img.width);
@@ -966,7 +967,7 @@ function go_to_history_node(target_history_node) {
 	$G.triggerHandler("session-update"); // autosave
 	$G.triggerHandler("history-update"); // update history view
 }
-function undoable(action_name, callback){
+function undoable(action_name, callback, icon){
 	saved = false;
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -975,7 +976,14 @@ function undoable(action_name, callback){
 	redos.length = 0;
 	undos.push(current_history_node);
 
-	const new_history_node = {image_data, futures: [], name: action_name, details: [], parent: current_history_node};
+	const new_history_node = {
+		image_data,
+		futures: [],
+		parent: current_history_node,
+		name: action_name,
+		details: [],
+		icon,
+	};
 	current_history_node.futures.push(new_history_node);
 	current_history_node = new_history_node;
 
@@ -1037,10 +1045,20 @@ function show_document_history() {
 	$history_view = $w.$content.find(".history-view");
 
 	function show_history_from_node(node) {
-		const $node = $("<div class='history-node'>");
-		const $entry = $("<div class='history-entry'>");
+		const $node = $(`
+			<div class="history-node">
+				<div class="history-entry">
+					<div class="history-entry-icon-area"></div>
+					<div class="history-entry-name"></div>
+				</div>
+			</div>
+		`);
+		const $entry = $node.find(".history-entry");
 		$node.append($entry);
-		$entry.text((node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : ""));
+		$entry.find(".history-entry-name").text(
+			(node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : "")
+		);
+		$entry.find(".history-entry-icon-area").append(node.icon);
 		if (node === current_history_node) {
 			$entry.addClass("current");
 		} else {

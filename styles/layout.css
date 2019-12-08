@@ -434,8 +434,12 @@ html, body, .jspaint {
 .history-entry {
 	cursor: pointer;
 	padding: 5px;
-	display: list-item;
-	list-style-position: inside;
+	display: flex;
+}
+.history-entry-icon-area {
+	width: 16px;
+	height: 16px;
+	margin-right: 6px;
 }
 .history-entry.current {
 	font-weight: bold;

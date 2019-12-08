@@ -126,7 +126,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			$status_size.text("");
 		};
 		
-		undoable(action_name || "Select", instantiate);
+		undoable(action_name || "Select", instantiate, get_icon_for_tool(get_tool_by_name(action_name === "Free-Form Select" ? "Free-Form Select" : "Select")));
 	}
 	cut_out_background() {
 		const cutout = this.canvas;
