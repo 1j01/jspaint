@@ -264,9 +264,10 @@ function reset_file(){
 	saved = true;
 }
 
-function reset_canvas_and_history(){
+function reset_canvas_and_history(action_name){
 	undos.length = 0;
 	redos.length = 0;
+	document_history_current = document_history_root = {image_data: null, parent: null, futures: [], name: action_name || "New Document", details: []};
 
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
@@ -275,6 +276,7 @@ function reset_canvas_and_history(){
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	$canvas_area.trigger("resize");
+	$canvas_area.trigger("history-update");
 }
 
 function update_title(){
@@ -315,7 +317,7 @@ function open_from_Image(img, callback, canceled){
 
 		reset_file();
 		reset_colors();
-		reset_canvas_and_history(); // (with newly reset colors)
+		reset_canvas_and_history("Load Document"); // (with newly reset colors)
 		set_magnification(default_magnification);
 
 		ctx.copy(img);
@@ -949,7 +951,7 @@ function undoable(action_name, callback){
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	document_history_current.image_data = image_data;
 
-	const new_history_node = {image_data, futures: [], name: action_name, details: []};
+	const new_history_node = {image_data, futures: [], name: action_name, details: [], parent: document_history_current};
 	document_history_current.futures.push(new_history_node);
 	document_history_current = new_history_node;
 
@@ -964,19 +966,26 @@ function undoable(action_name, callback){
 function undo(canceling){
 	if(undos.length<1){ return false; }
 
-	deselect();
-	if (!canceling) {
-		cancel();
+	// deselect();
+	// if (!canceling) {
+	// 	cancel();
+	// }
+	// saved = false;
+
+	// redos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+
+	// ctx.copy(undos.pop());
+
+	// $canvas_area.trigger("resize");
+	// $G.triggerHandler("session-update"); // autosave
+	// $G.triggerHandler("history-update"); // update history view
+
+	if (!document_history_current.parent) {
+		console.log("no document_history_current.parent");
+		return false;
 	}
-	saved = false;
 
-	redos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-
-	ctx.copy(undos.pop());
-
-	$canvas_area.trigger("resize");
-	$G.triggerHandler("session-update"); // autosave
-	$G.triggerHandler("history-update"); // update history view
+	go_to_history_node(document_history_current.parent);
 
 	return true;
 }
@@ -995,17 +1004,24 @@ function redo(){
 		return false;
 	}
 
-	deselect();
-	cancel();
-	saved = false;
+	if(document_history_current.futures.length<1){
+		alert("There is no future.");
+		return false;
+	}
+	// TODO: which way to go thru the tree?
+	go_to_history_node(document_history_current.futures[0]);
 
-	undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+	// deselect();
+	// cancel();
+	// saved = false;
 
-	ctx.copy(redos.pop());
+	// undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
-	$canvas_area.trigger("resize");
-	$G.triggerHandler("session-update"); // autosave
-	$G.triggerHandler("history-update"); // update history view
+	// ctx.copy(redos.pop());
+
+	// $canvas_area.trigger("resize");
+	// $G.triggerHandler("session-update"); // autosave
+	// $G.triggerHandler("history-update"); // update history view
 
 	return true;
 }
