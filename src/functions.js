@@ -267,7 +267,7 @@ function reset_file(){
 function reset_canvas_and_history(action_name){
 	undos.length = 0;
 	redos.length = 0;
-	document_history_current = document_history_root = {image_data: null, parent: null, futures: [], name: action_name || "New Document", details: []};
+	current_history_node = root_history_node = {image_data: null, parent: null, futures: [], name: action_name || "New Document", details: []};
 
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
@@ -922,14 +922,14 @@ function render_history_as_apng(){
 }
 */
 function go_to_history_node(target_history_node) {
-	document_history_current.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 	if (!target_history_node.image_data) {
 		show_error_message("History entry has no image data.");
 		console.log(target_history_node);
 		return;
 	}
-	document_history_current = target_history_node;
+	current_history_node = target_history_node;
 	
 	deselect();
 	cancel();
@@ -938,32 +938,6 @@ function go_to_history_node(target_history_node) {
 	ctx.copy(target_history_node.image_data);
 
 	const history_ancestors = get_history_ancestors(target_history_node);
-
-	/*
-	const old_undos = [...undos];
-	const old_redos = [...redos];
-	redos.length = 0;
-	undos.length = 0;
-	for (const node of old_undos) {
-		if (node === target_history_node) {
-			// skip: neither undo or redo
-		} else if (history_ancestors.indexOf(node) > -1) {
-			undos.push(node);
-		} else {
-			redos.unshift(node);
-		}
-	}
-	for (const node of old_redos) {
-		if (node === target_history_node) {
-			// skip: neither undo or redo
-		} else if (history_ancestors.indexOf(node) > -1) {
-			undos.unshift(node);
-		} else {
-			redos.push(node);
-		}
-	}
-	console.log({target_history_node, history_ancestors, old_undos, old_redos, undos, redos});
-	*/
 
 	undos = [...history_ancestors];
 	undos.reverse();
@@ -996,14 +970,14 @@ function undoable(action_name, callback){
 	saved = false;
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	document_history_current.image_data = image_data;
+	current_history_node.image_data = image_data;
 
 	redos.length = 0;
-	undos.push(document_history_current);
+	undos.push(current_history_node);
 
-	const new_history_node = {image_data, futures: [], name: action_name, details: [], parent: document_history_current};
-	document_history_current.futures.push(new_history_node);
-	document_history_current = new_history_node;
+	const new_history_node = {image_data, futures: [], name: action_name, details: [], parent: current_history_node};
+	current_history_node.futures.push(new_history_node);
+	current_history_node = new_history_node;
 
 	$G.triggerHandler("history-update"); // update history view
 
@@ -1013,12 +987,7 @@ function undoable(action_name, callback){
 function undo(canceling){
 	if(undos.length<1){ return false; }
 
-	// if (!document_history_current.parent) {
-	// 	console.error("There is no past.");
-	// 	return false;
-	// }
-
-	redos.push(document_history_current);
+	redos.push(current_history_node);
 	go_to_history_node(undos.pop());
 
 	return true;
@@ -1038,12 +1007,7 @@ function redo(){
 		return false;
 	}
 
-	// if(document_history_current.futures.length<1){
-	// 	console.error("There is no future.");
-	// 	return false;
-	// }
-
-	undos.push(document_history_current);
+	undos.push(current_history_node);
 	go_to_history_node(redos.pop());
 
 	return true;
@@ -1077,10 +1041,10 @@ function show_document_history() {
 		const $entry = $("<div class='history-entry'>");
 		$node.append($entry);
 		$entry.text((node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : ""));
-		if (node === document_history_current) {
+		if (node === current_history_node) {
 			$entry.addClass("current");
 		} else {
-			const history_ancestors = get_history_ancestors(document_history_current);
+			const history_ancestors = get_history_ancestors(current_history_node);
 			if (history_ancestors.indexOf(node) > -1) {
 				$entry.addClass("ancestor-of-current");
 			}
@@ -1095,7 +1059,7 @@ function show_document_history() {
 	}
 	const render_tree = ()=> {
 		$history_view.empty();
-		$history_view.append(show_history_from_node(document_history_root));
+		$history_view.append(show_history_from_node(root_history_node));
 	};
 	render_tree();
 
@@ -1107,14 +1071,14 @@ function show_document_history() {
 	$w.center();
 }
 function add_action_detail(action_name) {
-	document_history_current.details.push(action_name);
+	current_history_node.details.push(action_name);
 	$G.triggerHandler("history-update");
 }
 function get_last_action_detail() {
-	return document_history_current.details[document_history_current.details.length - 1];
+	return current_history_node.details[current_history_node.details.length - 1];
 }
 function replace_last_action_detail(detail) {
-	document_history_current.details[document_history_current.details.length - 1] = detail;
+	current_history_node.details[current_history_node.details.length - 1] = detail;
 	$G.triggerHandler("history-update");
 }
 

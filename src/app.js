@@ -56,8 +56,8 @@ let text_tool_font = {
 	background: "",
 };
 
-let document_history_root = {image_data: null, parent: null, futures: [], name: "New Document", details: []};
-let document_history_current = document_history_root;
+let root_history_node = {image_data: null, parent: null, futures: [], name: "New Document", details: []};
+let current_history_node = root_history_node;
 /** array of history nodes */
 let undos = [];
 /** array of history nodes */
