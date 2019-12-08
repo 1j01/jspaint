@@ -65,6 +65,11 @@ class OnCanvasSelection extends OnCanvasObject {
 				this.height = height;
 				this.position();
 				this.resize();
+				if (`${get_last_action_detail()}`.match(/Move/i)) {
+					replace_last_action_detail("Move & Resize");
+				} else if (!(`${get_last_action_detail()}`.match(/Resize/i))) {
+					add_action_detail("Resize");
+				}
 			});
 			let mox, moy;
 			const pointermove = e => {
@@ -73,7 +78,19 @@ class OnCanvasSelection extends OnCanvasObject {
 				this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
 				this.position();
 				if (e.shiftKey) {
+					// Smear selection
 					this.draw();
+					if (`${get_last_action_detail()}`.match(/Stamp/i)) {
+						replace_last_action_detail("Smear");
+					} else if (!(`${get_last_action_detail()}`.match(/Smear/i))) {
+						add_action_detail("Smear");
+					}
+				} else {
+					if (`${get_last_action_detail()}`.match(/Resize/i)) {
+						replace_last_action_detail("Move & Resize");
+					} else if (!(`${get_last_action_detail()}`.match(/Move/i))) {
+						add_action_detail("Move");
+					}
 				}
 			};
 			this.canvas_pointerdown = e => {
@@ -88,11 +105,19 @@ class OnCanvasSelection extends OnCanvasObject {
 					$G.off("pointermove", pointermove);
 				});
 				if (e.shiftKey) {
+					// Stamp or start to smear selection
 					this.draw();
+					if (!(`${get_last_action_detail()}`.match(/Stamp/i))) {
+						add_action_detail("Stamp");
+					}
 				}
 				// TODO: how should this work for macOS? where ctrl+click = secondary click?
 				else if (e.ctrlKey) {
+					// Stamp selection
 					this.draw();
+					if (!(`${get_last_action_detail()}`.match(/Stamp/i))) {
+						add_action_detail("Stamp");
+					}
 				}
 			};
 			$(this.canvas).on("pointerdown", this.canvas_pointerdown);

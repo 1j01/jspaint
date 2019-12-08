@@ -1023,6 +1023,17 @@ function show_document_history() {
 		$G.off("history-update", render_tree);
 	});
 }
+function add_action_detail(action_name) {
+	document_history_current.details.push(action_name);
+	$G.triggerHandler("history-update");
+}
+function get_last_action_detail() {
+	return document_history_current.details[document_history_current.details.length - 1];
+}
+function replace_last_action_detail(detail) {
+	document_history_current.details[document_history_current.details.length - 1] = detail;
+	$G.triggerHandler("history-update");
+}
 
 function shouldMakeUndoableOnPointerDown(tools) {
 	return tools.some((tool)=> tool.undoableOnPointerDown);
@@ -1054,10 +1065,12 @@ function deselect(){
 		selected_tool.end && selected_tool.end(ctx);
 	}
 }
-function delete_selection(){
+function delete_selection(action_name){
 	if(selection){
 		selection.destroy();
 		selection = null;
+
+		add_action_detail(action_name || "Delete");
 	}
 }
 function select_all(){
@@ -1140,7 +1153,7 @@ function edit_cut(execCommandFallback){
 		}
 	}
 	edit_copy();
-	delete_selection();
+	delete_selection("Cut");
 }
 async function edit_paste(execCommandFallback){
 	if(

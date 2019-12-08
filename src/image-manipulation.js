@@ -371,8 +371,7 @@ function apply_image_transformation(action_name, fn){
 	if(selection){
 		selection.replace_source_canvas(new_canvas);
 
-		document_history_current.details.push(action_name);
-		$G.triggerHandler("history-update");
+		add_action_detail(action_name);
 	}else{
 		undoable(action_name, () => {
 			deselect();
