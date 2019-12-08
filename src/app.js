@@ -56,9 +56,12 @@ let text_tool_font = {
 	background: "",
 };
 
-const undos = []; //array of ImageData
-const redos = []; //array of ImageData
-//const frames = []; //array of {delay: N, undos: [ImageData], redos: [ImageData], image: ImageData}? array of Frames?
+let document_history_root = {image_data: null, futures: [], name: "New Document"};
+let document_history_current = document_history_root;
+/** array of ImageData */
+const undos = [];
+/** array of ImageData */
+const redos = [];
 
 let file_name;
 let document_file_path;
@@ -341,7 +344,7 @@ $G.on("keydown", e => {
 				e.shiftKey ? redo() : undo();
 			break;
 			case "Y":
-				redo();
+				e.shiftKey ? show_document_history() : redo();
 			break;
 			case "G":
 				e.shiftKey ? render_history_as_gif() : toggle_grid();

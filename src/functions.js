@@ -922,10 +922,17 @@ function render_history_as_apng(){
 
 function undoable(callback){
 	saved = false;
-	// TODO: nonlinear undo
-	redos.length = 0;
 
-	undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+	const new_history_node = {image_data, futures: []};
+	document_history_current.futures.push(new_history_node);
+	document_history_current = new_history_node;
+
+	redos.length = 0;
+	undos.push(image_data);
+
+	$G.triggerHandler("history-update"); // update history view
 
 	// TODO: clean up: remove callback?
 	callback && callback();
@@ -945,12 +952,25 @@ function undo(canceling){
 
 	$canvas_area.trigger("resize");
 	$G.triggerHandler("session-update"); // autosave
+	$G.triggerHandler("history-update"); // update history view
 
 	return true;
 }
+
+let $document_history_prompt_window;
 function redo(){
-	if(redos.length<1){ return false; }
-	
+	if(redos.length<1){
+		if ($document_history_prompt_window) {
+			$document_history_prompt_window.close();
+		}
+		const $w = $document_history_prompt_window = new $Window();
+		$w.title("Redo");
+		$w.$content.html("Press <b>Ctrl+Shift+Y</b> at any time to open Document History.");
+		// at any time* except in textarea, right?
+		$w.$Button("Document History", show_document_history);
+		return false;
+	}
+
 	deselect();
 	cancel();
 	saved = false;
@@ -961,9 +981,49 @@ function redo(){
 
 	$canvas_area.trigger("resize");
 	$G.triggerHandler("session-update"); // autosave
+	$G.triggerHandler("history-update"); // update history view
 
 	return true;
 }
+
+let $document_history_window;
+function show_document_history() {
+	if ($document_history_window) {
+		$document_history_window.close();
+	}
+	const $w = $document_history_window = new $Window();
+	$w.title("Document History");
+	$w.$content.html(`
+		<div class="history-view"></div>
+		<p>Press <b>Ctrl+Shift+Y</b> at any time to open this window.</p>
+	`);
+	// at any time* except in textarea, right?
+
+	$history_view = $w.$content.find(".history-view");
+
+	function show_history_from_node(node) {
+		const $entry = $("<div class='history-entry'>");
+		$entry.text(node.name || "Unknown");
+		if (node === document_history_current) {
+			$entry.addClass("current");
+		}
+		for (const sub_node of node.futures) {
+			$entry.append(show_history_from_node(sub_node));
+		}
+		return $entry;
+	}
+	const render_tree = ()=> {
+		$history_view.empty();
+		$history_view.append(show_history_from_node(document_history_root));
+	};
+	render_tree();
+
+	$G.on("history-update", render_tree);
+	$w.on("close", ()=> {
+		$G.off("history-update", render_tree);
+	});
+}
+
 function shouldMakeUndoableOnPointerDown(tools) {
 	return tools.some((tool)=> tool.undoableOnPointerDown);
 }
