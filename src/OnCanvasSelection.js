@@ -241,10 +241,10 @@ class OnCanvasSelection extends OnCanvasObject {
 		}
 		// eslint-disable-next-line no-empty
 		catch (e) { }
+		$G.triggerHandler("session-update"); // autosave
 	}
 	destroy() {
 		super.destroy();
-		$G.triggerHandler("session-update"); // what does this mean, and why is it needed?
 		$G.off("option-changed", this._on_option_changed);
 		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}

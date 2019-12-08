@@ -372,11 +372,14 @@ function apply_image_transformation(fn){
 		selection.replace_source_canvas(new_canvas);
 	}else{
 		undoable(0, () => {
-			this_ones_a_frame_changer();
+			deselect();
+			cancel();
+			saved = false;
 			
 			ctx.copy(new_canvas);
 			
 			$canvas.trigger("update"); // update handles
+			$G.triggerHandler("session-update"); // autosave
 		});
 	}
 }

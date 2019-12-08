@@ -309,7 +309,9 @@ function open_from_Image(img, callback, canceled){
 	are_you_sure(() => {
 		// TODO: shouldn't open_from_* start a new session?
 
-		this_ones_a_frame_changer();
+		deselect();
+		cancel();
+		saved = false;
 
 		reset_file();
 		reset_colors();
@@ -319,6 +321,7 @@ function open_from_Image(img, callback, canceled){
 		ctx.copy(img);
 		detect_transparency();
 		$canvas_area.trigger("resize");
+		$G.triggerHandler("session-update"); // autosave
 
 		callback && callback();
 	}, canceled);
@@ -408,12 +411,16 @@ function open_from_FileList(files, user_input_method_verb_past_tense){
 
 function file_new(){
 	are_you_sure(() => {
-		this_ones_a_frame_changer();
+		deselect();
+		cancel();
+		saved = false;
 
 		reset_file();
 		reset_colors();
 		reset_canvas_and_history(); // (with newly reset colors)
 		set_magnification(default_magnification);
+
+		$G.triggerHandler("session-update"); // autosave
 	});
 }
 
@@ -942,25 +949,33 @@ function undoable(callback, action){
 }
 function undo(){
 	if(undos.length<1){ return false; }
-	this_ones_a_frame_changer();
+
+	deselect();
+	cancel();
+	saved = false;
 
 	redos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
 	ctx.copy(undos.pop());
 
 	$canvas_area.trigger("resize");
+	$G.triggerHandler("session-update"); // autosave
 
 	return true;
 }
 function redo(){
 	if(redos.length<1){ return false; }
-	this_ones_a_frame_changer();
+	
+	deselect();
+	cancel();
+	saved = false;
 
 	undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
 	ctx.copy(redos.pop());
 
 	$canvas_area.trigger("resize");
+	$G.triggerHandler("session-update"); // autosave
 
 	return true;
 }
@@ -977,12 +992,6 @@ function cancel(){
 		selected_tool.cancel && selected_tool.cancel();
 	}
 	update_helper_layer();
-}
-function this_ones_a_frame_changer(){
-	deselect();
-	saved = false;
-	cancel();
-	$G.triggerHandler("session-update");
 }
 function deselect(){
 	if(selection){
@@ -1156,7 +1165,9 @@ function image_invert(){
 
 function clear(){
 	undoable(0, () => {
-		this_ones_a_frame_changer();
+		deselect();
+		cancel();
+		saved = false;
 
 		if(transparency){
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1164,6 +1175,8 @@ function clear(){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
+
+		$G.triggerHandler("session-update"); // autosave
 	});
 }
 

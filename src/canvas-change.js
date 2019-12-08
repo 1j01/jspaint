@@ -44,8 +44,6 @@
 		}
 	});
 
-	$G.on("session-update.ugly-hook", () => {
-		setTimeout(may_be_changed);
-	});
+	$G.on("session-update.ugly-hook", may_be_changed);
 
 })();
