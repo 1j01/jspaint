@@ -947,11 +947,13 @@ function undoable(callback, action){
 	callback && callback();
 	return true;
 }
-function undo(){
+function undo(canceling){
 	if(undos.length<1){ return false; }
 
 	deselect();
-	cancel();
+	if (!canceling) {
+		cancel();
+	}
 	saved = false;
 
 	redos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
@@ -983,9 +985,10 @@ function shouldMakeUndoableOnPointerDown(tools) {
 	return tools.some((tool)=> tool.undoableOnPointerDown);
 }
 function cancel(){
+	// Note: this function should be idempotent.
+	// `cancel(); cancel();` should do the same thing as `cancel();`
 	if(shouldMakeUndoableOnPointerDown(selected_tools) && pointer_active){
-		pointer_active = false; // prevent infinite recursion
-		undo();
+		undo(true);
 	}
 	$G.triggerHandler("pointerup", "cancel");
 	for (const selected_tool of selected_tools) {
