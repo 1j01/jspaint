@@ -141,7 +141,7 @@ window.tools = [{
 				selection = null;
 			}
 			if (ctrl) {
-				undoable(() => {
+				undoable("Crop", () => {
 					var cropped_canvas = make_canvas(rect_width, rect_height);
 					cropped_canvas.ctx.drawImage(canvas, -rect_x, -rect_y);
 					ctx.copy(cropped_canvas);
@@ -579,7 +579,7 @@ window.tools = [{
 	points: [],
 	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
-			undoable(()=> {
+			undoable("Curve", ()=> {
 				this.draw_curve(ctx);
 			});
 			this.points = [];
@@ -771,7 +771,7 @@ window.tools = [{
 	},
 	complete(ctx) {
 		if (this.points.length >= 3) {
-			undoable(()=> {
+			undoable("Polygon", ()=> {
 				ctx.fillStyle = fill_color;
 				ctx.strokeStyle = stroke_color;
 

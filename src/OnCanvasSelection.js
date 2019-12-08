@@ -106,7 +106,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		if (_passive) {
 			instantiate();
 		} else {
-			undoable(instantiate);
+			undoable("Select", instantiate);
 		}
 	}
 	cut_out_background() {

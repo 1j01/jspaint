@@ -751,7 +751,7 @@ function paste(img){
 		$w.$Button("Enlarge", () => {
 			$w.close();
 			// Extra undoable just for the resize; the paste gets its own
-			undoable(() => {
+			undoable("Paste: Enlarge", () => {
 				const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
@@ -920,12 +920,12 @@ function render_history_as_apng(){
 }
 */
 
-function undoable(callback){
+function undoable(action_name, callback){
 	saved = false;
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-	const new_history_node = {image_data, futures: []};
+	const new_history_node = {image_data, futures: [], name: action_name};
 	document_history_current.futures.push(new_history_node);
 	document_history_current = new_history_node;
 
@@ -1210,7 +1210,7 @@ function image_invert(){
 }
 
 function clear(){
-	undoable(() => {
+	undoable("Clear", () => {
 		deselect();
 		cancel();
 		saved = false;

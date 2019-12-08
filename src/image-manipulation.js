@@ -371,7 +371,7 @@ function apply_image_transformation(fn){
 	if(selection){
 		selection.replace_source_canvas(new_canvas);
 	}else{
-		undoable(() => {
+		undoable("Image Transformation... " + fn.name, () => {
 			deselect();
 			cancel();
 			saved = false;

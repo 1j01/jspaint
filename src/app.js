@@ -162,7 +162,7 @@ const $toolbox = $ToolBox(tools);
 const $colorbox = $ColorBox();
 
 $canvas_area.on("user-resized", (e, _x, _y, width, height) => {
-	undoable(() => {
+	undoable("Resize Canvas", () => {
 		const image_data = ctx.getImageData(0, 0, width, height);
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
@@ -683,7 +683,7 @@ $canvas.on("pointerdown", e => {
 	};
 
 	if(shouldMakeUndoableOnPointerDown(selected_tools)){
-		undoable(pointerdown_action);
+		undoable(selected_tools.map((tool)=> tool.name).join(" + "), pointerdown_action);
 	}else{
 		pointerdown_action();
 	}
