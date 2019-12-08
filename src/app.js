@@ -160,6 +160,7 @@ const $colorbox = $ColorBox();
 
 $canvas_area.on("user-resized", (e, _x, _y, width, height) => {
 	undoable(0, () => {
+		const image_data = ctx.getImageData(0, 0, width, height);
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);
 		ctx.disable_image_smoothing();
@@ -169,11 +170,8 @@ $canvas_area.on("user-resized", (e, _x, _y, width, height) => {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		const previous_imagedata = undos[undos.length-1];
-		if(previous_imagedata){
-			const temp_canvas = make_canvas(previous_imagedata);
-			ctx.drawImage(temp_canvas, 0, 0);
-		}
+		const temp_canvas = make_canvas(image_data);
+		ctx.drawImage(temp_canvas, 0, 0);
 
 		$canvas_area.trigger("resize");
 

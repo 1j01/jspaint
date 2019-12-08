@@ -743,9 +743,9 @@ function paste(img){
 		);
 		$w.$Button("Enlarge", () => {
 			$w.close();
-			// Additional undoable
+			// Extra undoable just for the resize; the paste gets its own
 			undoable(() => {
-				const original = undos[undos.length-1];
+				const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
 				ctx.disable_image_smoothing();
