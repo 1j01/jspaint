@@ -440,7 +440,10 @@ html, body, .jspaint {
 .history-entry.current {
 	font-weight: bold;
 }
-.history-entry:hover {
+.history-entry:not(.current):not(.ancestor-of-current) {
+	color: gray;
+}
+.history-entry:hover:hover:hover { /* specificity hack vs :not()s */
 	color: #0000ff;
 	text-decoration: underline;
 }

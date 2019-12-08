@@ -58,10 +58,10 @@ let text_tool_font = {
 
 let document_history_root = {image_data: null, parent: null, futures: [], name: "New Document", details: []};
 let document_history_current = document_history_root;
-/** array of ImageData */
-const undos = [];
-/** array of ImageData */
-const redos = [];
+/** array of history nodes */
+let undos = [];
+/** array of history nodes */
+let redos = [];
 
 let file_name;
 let document_file_path;

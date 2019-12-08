@@ -851,7 +851,7 @@ function render_history_as_gif(){
 		});
 
 		const gif_canvas = make_canvas(width, height);
-		const frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
+		const frames = [...undos.map((node)=> node.image_data), ctx.getImageData(0, 0, canvas.width, canvas.height)];
 		for(let i=0; i<frames.length; i++){
 			gif_canvas.ctx.clearRect(0, 0, gif_canvas.width, gif_canvas.height);
 			gif_canvas.ctx.putImageData(frames[i], 0, 0);
@@ -890,7 +890,7 @@ function render_history_as_apng(){
 	try{
 		const width = canvas.width;
 		const height = canvas.height;
-		const frames = [...undos, ctx.getImageData(0, 0, canvas.width, canvas.height)];
+		const frames = [...undos.map((node)=> node.image_data), ctx.getImageData(0, 0, canvas.width, canvas.height)];
 		// const apng = new APNG(frames, {loops: Infinity}, (blob)=> {
 		const apng = new APNG({loops: Infinity})
 		for(const frame of frames){
@@ -921,25 +921,47 @@ function render_history_as_apng(){
 	}
 }
 */
-function go_to_history_node(history_node) {
+function go_to_history_node(target_history_node) {
 	document_history_current.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-	if (!history_node.image_data) {
+	if (!target_history_node.image_data) {
 		show_error_message("History entry has no image data.");
+		console.log(target_history_node);
 		return;
 	}
-	document_history_current = history_node;
+	document_history_current = target_history_node;
 	
 	deselect();
 	cancel();
 	saved = false;
 
-	ctx.copy(history_node.image_data);
+	ctx.copy(target_history_node.image_data);
 
-	// redos.length = 0;
-	// undos.length = 0;
+	const history_ancestors = get_history_ancestors(target_history_node);
 
-	// undos.push(image_data);
+	const old_undos = [...undos];
+	const old_redos = [...redos];
+	redos.length = 0;
+	undos.length = 0;
+	for (const node of old_undos) {
+		if (node === target_history_node) {
+			// skip: neither undo or redo
+		} else if (history_ancestors.indexOf(node) > -1) {
+			undos.push(node);
+		} else {
+			redos.unshift(node);
+		}
+	}
+	for (const node of old_redos) {
+		if (node === target_history_node) {
+			// skip: neither undo or redo
+		} else if (history_ancestors.indexOf(node) > -1) {
+			undos.unshift(node);
+		} else {
+			redos.push(node);
+		}
+	}
+	console.log({target_history_node, history_ancestors, old_undos, old_redos, undos, redos});
 
 	$canvas_area.trigger("resize");
 	$G.triggerHandler("session-update"); // autosave
@@ -951,12 +973,12 @@ function undoable(action_name, callback){
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	document_history_current.image_data = image_data;
 
+	redos.length = 0;
+	undos.push(document_history_current);
+
 	const new_history_node = {image_data, futures: [], name: action_name, details: [], parent: document_history_current};
 	document_history_current.futures.push(new_history_node);
 	document_history_current = new_history_node;
-
-	redos.length = 0;
-	undos.push(image_data);
 
 	$G.triggerHandler("history-update"); // update history view
 
@@ -966,26 +988,13 @@ function undoable(action_name, callback){
 function undo(canceling){
 	if(undos.length<1){ return false; }
 
-	// deselect();
-	// if (!canceling) {
-	// 	cancel();
+	// if (!document_history_current.parent) {
+	// 	console.error("There is no past.");
+	// 	return false;
 	// }
-	// saved = false;
 
-	// redos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-
-	// ctx.copy(undos.pop());
-
-	// $canvas_area.trigger("resize");
-	// $G.triggerHandler("session-update"); // autosave
-	// $G.triggerHandler("history-update"); // update history view
-
-	if (!document_history_current.parent) {
-		console.log("no document_history_current.parent");
-		return false;
-	}
-
-	go_to_history_node(document_history_current.parent);
+	redos.push(document_history_current);
+	go_to_history_node(undos.pop());
 
 	return true;
 }
@@ -1004,26 +1013,23 @@ function redo(){
 		return false;
 	}
 
-	if(document_history_current.futures.length<1){
-		alert("There is no future.");
-		return false;
-	}
-	// TODO: which way to go thru the tree?
-	go_to_history_node(document_history_current.futures[0]);
+	// if(document_history_current.futures.length<1){
+	// 	console.error("There is no future.");
+	// 	return false;
+	// }
 
-	// deselect();
-	// cancel();
-	// saved = false;
-
-	// undos.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-
-	// ctx.copy(redos.pop());
-
-	// $canvas_area.trigger("resize");
-	// $G.triggerHandler("session-update"); // autosave
-	// $G.triggerHandler("history-update"); // update history view
+	undos.push(document_history_current);
+	go_to_history_node(redos.pop());
 
 	return true;
+}
+
+function get_history_ancestors(node) {
+	const ancestors = [];
+	for (node = node.parent; node; node = node.parent) {
+		ancestors.push(node);
+	}
+	return ancestors;
 }
 
 let $document_history_window;
@@ -1048,6 +1054,11 @@ function show_document_history() {
 		$entry.text((node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : ""));
 		if (node === document_history_current) {
 			$entry.addClass("current");
+		} else {
+			const history_ancestors = get_history_ancestors(document_history_current);
+			if (history_ancestors.indexOf(node) > -1) {
+				$entry.addClass("ancestor-of-current");
+			}
 		}
 		for (const sub_node of node.futures) {
 			$node.append(show_history_from_node(sub_node));
@@ -1067,6 +1078,8 @@ function show_document_history() {
 	$w.on("close", ()=> {
 		$G.off("history-update", render_tree);
 	});
+
+	$w.center();
 }
 function add_action_detail(action_name) {
 	document_history_current.details.push(action_name);
