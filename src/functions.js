@@ -968,7 +968,10 @@ function shouldMakeUndoableOnPointerDown(tools) {
 	return tools.some((tool)=> tool.undoableOnPointerDown);
 }
 function cancel(){
-	if(shouldMakeUndoableOnPointerDown(selected_tools) && pointer_active){ undo(); }
+	if(shouldMakeUndoableOnPointerDown(selected_tools) && pointer_active){
+		pointer_active = false; // prevent infinite recursion
+		undo();
+	}
 	$G.triggerHandler("pointerup", "cancel");
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();
@@ -978,10 +981,7 @@ function cancel(){
 function this_ones_a_frame_changer(){
 	deselect();
 	saved = false;
-	$G.triggerHandler("pointerup", "cancel");
-	for (const selected_tool of selected_tools) {
-		selected_tool.cancel && selected_tool.cancel();
-	}
+	cancel();
 	$G.triggerHandler("session-update");
 }
 function deselect(){
