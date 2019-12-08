@@ -681,7 +681,6 @@ window.tools = [{
 	name: "Polygon",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	undoableOnPointerDown: true,
 	
 	// Record the last click for double-clicking
 	// A double click happens on pointerdown of a second click
