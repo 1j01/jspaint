@@ -919,11 +919,35 @@ function render_history_as_apng(){
 	}
 }
 */
+function go_to_history_node(history_node) {
+	document_history_current.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
+	if (!history_node.image_data) {
+		show_error_message("History entry has no image data.");
+		return;
+	}
+	document_history_current = history_node;
+	
+	deselect();
+	cancel();
+	saved = false;
+
+	ctx.copy(history_node.image_data);
+
+	// redos.length = 0;
+	// undos.length = 0;
+
+	// undos.push(image_data);
+
+	$canvas_area.trigger("resize");
+	$G.triggerHandler("session-update"); // autosave
+	$G.triggerHandler("history-update"); // update history view
+}
 function undoable(action_name, callback){
 	saved = false;
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	document_history_current.image_data = image_data;
 
 	const new_history_node = {image_data, futures: [], name: action_name, details: []};
 	document_history_current.futures.push(new_history_node);
@@ -1002,15 +1026,20 @@ function show_document_history() {
 	$history_view = $w.$content.find(".history-view");
 
 	function show_history_from_node(node) {
+		const $node = $("<div class='history-node'>");
 		const $entry = $("<div class='history-entry'>");
+		$node.append($entry);
 		$entry.text((node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : ""));
 		if (node === document_history_current) {
 			$entry.addClass("current");
 		}
 		for (const sub_node of node.futures) {
-			$entry.append(show_history_from_node(sub_node));
+			$node.append(show_history_from_node(sub_node));
 		}
-		return $entry;
+		$entry.on("click", ()=> {
+			go_to_history_node(node);
+		});
+		return $node;
 	}
 	const render_tree = ()=> {
 		$history_view.empty();

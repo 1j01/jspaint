@@ -424,6 +424,27 @@ html, body, .jspaint {
 	margin-left: 15px;
 }
 
+.history-view {
+	width: 500px;
+	height: 500px;
+	overflow: auto;
+	background: white;
+	color: black;
+}
+.history-entry {
+	cursor: pointer;
+	padding: 5px;
+	display: list-item;
+	list-style-position: inside;
+}
+.history-entry.current {
+	font-weight: bold;
+}
+.history-entry:hover {
+	color: #0000ff;
+	text-decoration: underline;
+}
+
 ::before, ::after {
 	pointer-events: none;
 }
