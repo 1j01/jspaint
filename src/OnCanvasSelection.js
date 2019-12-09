@@ -107,7 +107,8 @@ class OnCanvasSelection extends OnCanvasObject {
 				if (e.shiftKey) {
 					// Stamp or start to smear selection
 					this.draw();
-					if (!(`${get_last_action_detail()}`.match(/Stamp/i))) {
+					// a Smear after a Stamp without a Move in between doesn't do much!
+					if (!(`${get_last_action_detail()}`.match(/Stamp|Smear/i))) {
 						add_action_detail("Stamp");
 					}
 				}
@@ -115,7 +116,8 @@ class OnCanvasSelection extends OnCanvasObject {
 				else if (e.ctrlKey) {
 					// Stamp selection
 					this.draw();
-					if (!(`${get_last_action_detail()}`.match(/Stamp/i))) {
+					// a Smear after a Stamp without a Move in between doesn't do much!
+					if (!(`${get_last_action_detail()}`.match(/Stamp|Smear/i))) {
 						add_action_detail("Stamp");
 					}
 				}
