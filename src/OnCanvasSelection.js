@@ -194,6 +194,9 @@ class OnCanvasSelection extends OnCanvasObject {
 		if (!transparency || tool_transparent_mode) {
 			ctx.drawImage(colored_cutout, this.x, this.y);
 		}
+
+		$G.triggerHandler("session-update"); // autosave
+		update_helper_layer();
 	}
 	update_tool_transparent_mode() {
 		const sourceImageData = this.source_canvas.ctx.getImageData(0, 0, this.width, this.height);
