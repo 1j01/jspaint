@@ -196,7 +196,7 @@ window.tools = [{
 					x_max - x_min,
 					y_max - y_min,
 					contents_canvas,
-					"Free-Form Select XOR Select"
+					"Free-Form Select⊕Select"
 				);
 				selection.cut_out_background();
 			} else {
