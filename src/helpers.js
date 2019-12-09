@@ -110,6 +110,17 @@ function get_icon_for_tool(tool) {
 	return icon_img;
 }
 
+function load_image(path) {
+	return new Promise((resolve, reject)=> {
+		const img = new Image();
+
+		img.onload = ()=> { resolve(img); };
+		img.onerror = ()=> { reject(); };
+
+		img.src = path;
+	});
+}
+
 function get_icon_for_tools(tools) {
 	if (tools.length === 1) {
 		return get_icon_for_tool(tools[0]);
@@ -119,7 +130,17 @@ function get_icon_for_tools(tools) {
 	// 	return icons_for_tools[key];
 	// }
 	const icon_canvas = make_canvas(16, 16);
-	// TODO: wait for images to load and mash them up?
+
+	Promise.all(tools.map((tool)=> load_image(`help/${tool.help_icon}`)))
+	.then((icons)=> {
+		icons.forEach((icon, i)=> {
+			const w = icon_canvas.width / icons.length;
+			const x = i * w;
+			const h = icon_canvas.height;
+			const y = 0;
+			icon_canvas.ctx.drawImage(icon, x, y, w, h, x, y, w, h);
+		});
+	})
 	// icons_for_tools[key] = icon_canvas;
 	return icon_canvas;
 }
