@@ -78,9 +78,6 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Online (multi-user) and local (single-user) sessions
 	* See [sessions.js](src/sessions.js)
-	* Deal with undo/redo for sessions
-		* Particularly it might be helpful to undo *to* your last change, not just to right before it (by undoing it);
-		this could automatically be the behavior of undo if there have been changes since your last change
 	* Issues
 		* You get interrupted if you try to make a selection when there's a selection
 		* You get interrupted if you try to draw at the same time as another person (you basically have to take turns - lame!)

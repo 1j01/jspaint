@@ -370,9 +370,19 @@
 						if (pointer_operations.length) {
 							$G.triggerHandler("pointerup", "cancel");
 						}
-						// Write the image data to the canvas
-						ctx.copy(img);
-						$canvas_area.trigger("resize");
+
+						const test_canvas = make_canvas(img);
+						const image_data_remote = test_canvas.ctx.getImageData(0, 0, test_canvas.width, test_canvas.height);
+						const image_data_local = ctx.getImageData(0, 0, canvas.width, canvas.height);
+						
+						if (!image_data_are_equal(image_data_remote, image_data_local)) {
+							// Write the image data to the canvas
+							undoable("Sync Session", ()=> {
+								ctx.copy(img);
+								$canvas_area.trigger("resize");
+							});
+						}
+
 						// (detect_transparency() here would not be ideal
 						// Perhaps a better way of syncing transparency
 						// and other options will be established)
@@ -527,6 +537,20 @@
 	});
 	log("init with location hash", location.hash);
 	update_session_from_location_hash();
+
+	function image_data_are_equal(a, b) {
+		const a_data = a.data;
+		const b_data = b.data;
+		if (a_data.length !== b_data.length) {
+			return false;
+		}
+		for (let len = a_data.length, i = 0; i < len; i++) {
+			if (a_data[i] !== b_data[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	// @TODO: Session GUI
 	// @TODO: Indicate when the session id is invalid
