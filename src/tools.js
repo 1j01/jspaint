@@ -481,6 +481,7 @@ window.tools = [{
 	paint(ctx, x, y) {
 		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
 		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)
+		// NOTE: this.rendered_* used by webglcontextrestored to invalidate the cache
 		const csz = get_brush_canvas_size(pencil_size, "circle");
 		if(
 			this.rendered_shape !== "circle" ||

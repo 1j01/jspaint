@@ -116,6 +116,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 	}
 }
 
+// NOTE: line_brush_canvas_* used by webglcontextrestored invalidate the cache
 let line_brush_canvas;
 let line_brush_canvas_rendered_shape;
 let line_brush_canvas_rendered_color;
@@ -835,20 +836,40 @@ function draw_grid(ctx, scale) {
 	const op_ctx_2d = op_canvas_2d.getContext("2d");
 
 	initWebGL(op_canvas_webgl);
+	let warning_tid;
 	op_canvas_webgl.addEventListener("webglcontextlost", (e)=> {
 		e.preventDefault();
+		window.console && console.warn("WebGL context lost");
 		clamp_brush_sizes();
+		
+		warning_tid = setTimeout(()=> {
+			show_error_message("The WebGL context was lost. You may need to refresh the web page, or restart your computer.");
+		}, 3000);
 	}, false);
 	op_canvas_webgl.addEventListener("webglcontextrestored", ()=> {
 		initWebGL(op_canvas_webgl);
 
+		window.console && console.warn("WebGL context restored");
+		clearTimeout(warning_tid);
+
 		clamp_brush_sizes();
 
-		// this is a very narrow fix, for only the brush tool
+		// rerender the brush
 		brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
 		render_brush(brush_ctx, brush_shape, brush_size);
-		$G.triggerHandler("option-changed"); // redraw tool options
-		// TODO: update "brush canvases" for Pencil and shape tools w/ line width
+		
+		// cachebust
+		get_tool_by_name("Pencil").rendered_shape = "WebGL context lost";
+		get_tool_by_name("Pencil").rendered_color = "transparent";
+		get_tool_by_name("Pencil").rendered_size = 0;
+
+		// cachebust
+		line_brush_canvas_rendered_shape = "WebGL context lost";
+		line_brush_canvas_rendered_color = "transparent";
+		line_brush_canvas_rendered_size = 0;
+
+		// redraw tool options
+		$G.triggerHandler("option-changed");
 	}, false);
 
 	function clamp_brush_sizes() {
