@@ -232,6 +232,8 @@ class OnCanvasSelection extends OnCanvasObject {
 			}
 		}
 		this.canvas.ctx.putImageData(cutoutImageData, 0, 0);
+
+		update_helper_layer();
 	}
 	// TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
 	replace_source_canvas(new_source_canvas) {
