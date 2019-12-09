@@ -1031,6 +1031,9 @@ function get_history_ancestors(node) {
 
 let $document_history_window;
 function show_document_history() {
+	if ($document_history_prompt_window) {
+		$document_history_prompt_window.close();
+	}
 	if ($document_history_window) {
 		$document_history_window.close();
 	}
