@@ -427,6 +427,8 @@ html, body, .jspaint {
 .history-view {
 	width: 500px;
 	height: 500px;
+	max-width: calc(100vw - 10px);
+	max-height: calc(100vh - 100px);
 	overflow: auto;
 	background: white;
 	color: black;
