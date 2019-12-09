@@ -126,6 +126,12 @@ window.menus = {
 			action: ()=> { redo(); },
 			description: "Redoes the previously undone action.",
 		},
+		{
+			item: "&Document History",
+			shortcut: "Ctrl+Shift+Y",
+			action: ()=> { show_document_history(); },
+			description: "Shows the document history.",
+		},
 		$MenuBar.DIVIDER,
 		{
 			item: "Cu&t",
