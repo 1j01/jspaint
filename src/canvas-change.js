@@ -19,7 +19,7 @@
 		debug_event(e, synthetic);
 		if(synthetic){ return; }
 		
-		const immediate_action = selected_tools.some((tool)=> tool.name === "Fill");
+		const immediate_action = selected_tools.some((tool)=> tool.name === "Fill With Color");
 		if(immediate_action){
 			// A change might occur immediately
 			may_be_changed();
