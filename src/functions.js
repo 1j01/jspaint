@@ -1044,6 +1044,8 @@ function show_document_history() {
 
 	$history_view = $w.$content.find(".history-view");
 
+	let previous_scroll_position = 0;
+
 	function show_history_from_node(node) {
 		const $node = $(`
 			<div class="history-node">
@@ -1061,6 +1063,10 @@ function show_document_history() {
 		$entry.find(".history-entry-icon-area").append(node.icon);
 		if (node === current_history_node) {
 			$entry.addClass("current");
+			requestAnimationFrame(()=> {
+				$history_view.scrollTop(previous_scroll_position);
+				$entry[0].scrollIntoView({block: "nearest"});
+			});
 		} else {
 			const history_ancestors = get_history_ancestors(current_history_node);
 			if (history_ancestors.indexOf(node) > -1) {
@@ -1076,6 +1082,7 @@ function show_document_history() {
 		return $node;
 	}
 	const render_tree = ()=> {
+		previous_scroll_position = $history_view.scrollTop();
 		$history_view.empty();
 		$history_view.append(show_history_from_node(root_history_node));
 	};
