@@ -922,7 +922,7 @@ function render_history_as_apng(){
 	}
 }
 */
-function go_to_history_node(target_history_node) {
+function go_to_history_node(target_history_node, canceling) {
 	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 	if (!target_history_node.image_data) {
@@ -933,7 +933,9 @@ function go_to_history_node(target_history_node) {
 	current_history_node = target_history_node;
 	
 	deselect();
-	cancel();
+	if (!canceling) {
+		cancel();
+	}
 	saved = false;
 
 	ctx.copy(target_history_node.image_data);
@@ -996,7 +998,7 @@ function undo(canceling){
 	if(undos.length<1){ return false; }
 
 	redos.push(current_history_node);
-	go_to_history_node(undos.pop());
+	go_to_history_node(undos.pop(), canceling);
 
 	return true;
 }
