@@ -617,37 +617,33 @@ $canvas.on("pointerleave", e => {
 	}
 });
 
-function pan_view(event) {
-	// TODO: handle multiple pointers by averaging positions
-	// or something similar
-	// TODO: don't allow drawing (crazily) while panning
-	// TODO: pan view if one or more/both fingers start outside the canvas (but within the canvas-area)
-	const start_pos = {x: event.clientX, y: event.clientY};
-	const start_scroll_top = $canvas_area.scrollTop();
-	const start_scroll_left = $canvas_area.scrollLeft();
-	const handle_pointermove = (event)=> {
-		const current_pos = {x: event.clientX, y: event.clientY};
-		const difference_in_x = current_pos.x - start_pos.x;
-		const difference_in_y = current_pos.y - start_pos.y;
-		$canvas_area.scrollLeft(start_scroll_left - difference_in_x);
-		$canvas_area.scrollTop(start_scroll_top - difference_in_y);
-	};
-	const end_pan = ()=> {
-		$G.off("pointermove", handle_pointermove);
-		$G.off("pointerup pointercancel", end_pan);
-	};
-	$G.on("pointermove", handle_pointermove);
-	$G.on("pointerup pointercancel", end_pan); // TODO: cancel pan for pointercancel?
-}
+// function pan_view(event) {
+// 	// TODO: handle multiple pointers by averaging positions
+// 	// or something similar
+// 	// TODO: don't allow drawing (crazily) while panning
+// 	// TODO: pan view if one or more/both fingers start outside the canvas (but within the canvas-area)
+// 	const handle_pointermove = (event)=> {
+// 	};
+// 	const end_pan = ()=> {
+// 		$G.off("pointermove", handle_pointermove);
+// 		$G.off("pointerup pointercancel", end_pan);
+// 	};
+// 	$G.on("pointermove", handle_pointermove);
+// 	$G.on("pointerup pointercancel", end_pan); // TODO: cancel pan for pointercancel?
+// }
 
-let panning = false;
+let pan_start_pos;
+let pan_start_scroll_top;
+let pan_start_scroll_left;
 $canvas_area.on("pointerdown", (event)=> {
-	if (pointers.length && !panning) {
-		pan_view(event);
+	if (pointers.length === 0) {
+		pan_start_pos = {x: event.clientX, y: event.clientY};
+		pan_start_scroll_top = $canvas_area.scrollTop();
+		pan_start_scroll_left = $canvas_area.scrollLeft();
 	}
 	pointers.push({pointerId: event.pointerId, x: event.clientX, y: event.clientY});
 });
-$G.on("pointerup", (event)=> {
+$G.on("pointerup pointercancel", (event)=> {
 	pointers = pointers.filter((pointer)=> {
 		if (event.pointerId === pointer.pointerId) {
 			return false;
@@ -655,6 +651,23 @@ $G.on("pointerup", (event)=> {
 		return true;
 	});
 });
+$G.on("pointermove", (event)=> {
+	for (const pointer of pointers) {
+		if (pointer.pointerId === event.pointerId) {
+			pointer.x = event.clientX;
+			pointer.y = event.clientY;
+		}
+	}
+	if (pointers.length >= 2) {
+		const current_pos = {x: event.clientX, y: event.clientY};
+		const difference_in_x = current_pos.x - pan_start_pos.x;
+		const difference_in_y = current_pos.y - pan_start_pos.y;
+		$canvas_area.scrollLeft(pan_start_scroll_left - difference_in_x);
+		$canvas_area.scrollTop(pan_start_scroll_top - difference_in_y);
+	}
+});
+
+// window.onerror = show_error_message;
 
 $canvas.on("pointerdown", e => {
 	update_canvas_rect();
