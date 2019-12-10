@@ -579,7 +579,6 @@ window.tools = [{
 	help_icon: "p_line.gif",
 	description: "Draws a straight line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	undoableOnPointerDown: true,
 	stroke_only: true,
 	shape(ctx, x, y, w, h) {
 		update_brush_for_drawing_lines(stroke_size);
@@ -671,7 +670,6 @@ window.tools = [{
 	help_icon: "p_rect.gif",
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	undoableOnPointerDown: true,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
@@ -835,7 +833,6 @@ window.tools = [{
 	help_icon: "p_oval.gif",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	undoableOnPointerDown: true,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
@@ -862,7 +859,6 @@ window.tools = [{
 	help_icon: "p_rrect.gif",
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	undoableOnPointerDown: true,
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
@@ -972,8 +968,10 @@ tools.forEach((tool)=> {
 		};
 		tool.pointerup = ()=> {
 			if(!tool.shape_canvas){ return; }
-			ctx.drawImage(tool.shape_canvas, 0, 0);
-			tool.shape_canvas = null;
+			undoable(tool.name, ()=> {
+				ctx.drawImage(tool.shape_canvas, 0, 0);
+				tool.shape_canvas = null;
+			}, get_icon_for_tool(tool));
 		};
 		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
 			if(!pointer_active){ return; }
