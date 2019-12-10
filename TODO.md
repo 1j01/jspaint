@@ -86,10 +86,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 ### Device support
 
-* Multi-touch devices
-	* Two-finger drag to pan (the second touch cancels the default action just like normal)
-* Single-touch devices
-	* Pan tool
+* Pan tool for touchscreens without multitouch?
 
 
 * Enlarge GUI elements on touch devices
@@ -108,6 +105,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 
 * Don't drag toolbars out into windows with touch
 	* Unless with two fingers perhaps
+		* I might want to use multitouch on the tool buttons for MultiTools tho...
 
 ### Tools
 

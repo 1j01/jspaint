@@ -502,6 +502,3 @@ html, body, .jspaint {
 [touch-action="none"] {
 	touch-action: none;
 }
-/* [touch-action="manipulation"] {
-	touch-action: manipulation;
-} */

@@ -81,7 +81,6 @@ const $V = $(E("div")).addClass("vertical").appendTo($app);
 const $H = $(E("div")).addClass("horizontal").appendTo($V);
 
 const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
-// $canvas_area.attr("touch-action", "manipulation");
 
 const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
@@ -612,6 +611,29 @@ $canvas.on("pointerleave", e => {
 	}
 });
 
+function pan_view(event) {
+	// TODO: handle multiple pointers by averaging positions
+	// or something similar
+	// TODO: don't allow drawing (crazily) while panning
+	// TODO: pan view if one or more/both fingers start outside the canvas (but within the canvas-area)
+	const start_pos = {x: event.clientX, y: event.clientY};
+	const start_scroll_top = $canvas_area.scrollTop();
+	const start_scroll_left = $canvas_area.scrollLeft();
+	const handle_pointermove = (event)=> {
+		const current_pos = {x: event.clientX, y: event.clientY};
+		const difference_in_x = current_pos.x - start_pos.x;
+		const difference_in_y = current_pos.y - start_pos.y;
+		$canvas_area.scrollLeft(start_scroll_left - difference_in_x);
+		$canvas_area.scrollTop(start_scroll_top - difference_in_y);
+	};
+	const end_pan = ()=> {
+		$G.off("pointermove", handle_pointermove);
+		$G.off("pointerup pointercancel", end_pan);
+	};
+	$G.on("pointermove", handle_pointermove);
+	$G.on("pointerup pointercancel", end_pan); // TODO: cancel pan for pointercancel?
+}
+
 $canvas.on("pointerdown", e => {
 	update_canvas_rect();
 
@@ -620,6 +642,7 @@ $canvas.on("pointerdown", e => {
 	if(pointer_active && (reverse ? (button === 2) : (button === 0))){
 		cancel();
 		pointer_active = false; // NOTE: pointer_active used in cancel()
+		pan_view(e);
 		return;
 	}
 	
