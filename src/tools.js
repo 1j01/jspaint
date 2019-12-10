@@ -227,8 +227,12 @@ window.tools = [{
 		ctx.translate(translate_x, translate_y);
 
 		if (this.mask_canvas) {
-			// TODO: support transparent document mode for the preview
-			this.render_from_mask(ctx);
+			this.render_from_mask(ctx, true);
+			if (transparency) {
+				// animate for gradient
+				// FIXME: dynamic cursor preview shows in top left corner
+				requestAnimationFrame(update_helper_layer);
+			}
 		}
 
 		ctx.fillStyle = colors.background;
@@ -257,15 +261,32 @@ window.tools = [{
 	pointerdown() {
 		this.mask_canvas = make_canvas(canvas.width, canvas.height);
 	},
-	render_from_mask(ctx) {
+	render_from_mask(ctx, previewing) {
 		ctx.save();
 		ctx.globalCompositeOperation = "destination-out";
 		ctx.drawImage(this.mask_canvas, 0, 0);
 		ctx.restore();
 
-		if(!transparency){
+		if (previewing || !transparency) {
+			let color = colors.background;
+			if (transparency) {
+				const t = performance.now() / 2000;
+				const n_stops = 6;
+				const h = ctx.canvas.height;
+				const y = (-(t % 1)) * h * (n_stops - 1);
+				const gradient = ctx.createLinearGradient(0, y, 0, y + h * n_stops);
+				gradient.addColorStop(0/n_stops, "red");
+				gradient.addColorStop(1/n_stops, "gold");
+				gradient.addColorStop(2/n_stops, "#00d90b");
+				gradient.addColorStop(3/n_stops, "#2e64d9");
+				gradient.addColorStop(4/n_stops, "#8f2ed9");
+				// last two same as the first two so it can seamlessly wrap
+				gradient.addColorStop(5/n_stops, "red");
+				gradient.addColorStop(6/n_stops, "gold");
+				color = gradient;
+			}
 			const mask_fill_canvas = make_canvas(this.mask_canvas);
-			replace_colors_with_swatch(mask_fill_canvas.ctx, colors.background, 0, 0);
+			replace_colors_with_swatch(mask_fill_canvas.ctx, color, 0, 0);
 			ctx.drawImage(mask_fill_canvas, 0, 0);
 		}
 	},
