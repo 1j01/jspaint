@@ -617,22 +617,30 @@ $canvas.on("pointerleave", e => {
 	}
 });
 
-// TODO: average positions of pointers
 let pan_start_pos;
 let pan_start_scroll_top;
 let pan_start_scroll_left;
+function average_points(points) {
+	const average = {x: 0, y: 0};
+	for (const pointer of points) {
+		average.x += pointer.x;
+		average.y += pointer.y;
+	}
+	average.x /= points.length;
+	average.y /= points.length;
+	return average;
+}
 $canvas_area.on("pointerdown", (event)=> {
-	if (pointers.length === 0) {
-		pan_start_pos = {x: event.clientX, y: event.clientY};
+	pointers.push({pointerId: event.pointerId, x: event.clientX, y: event.clientY});
+
+	if (pointers.length == 2) {
+		pan_start_pos = average_points(pointers);
 		pan_start_scroll_top = $canvas_area.scrollTop();
 		pan_start_scroll_left = $canvas_area.scrollLeft();
 	}
-	
-	pointers.push({pointerId: event.pointerId, x: event.clientX, y: event.clientY});
-
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
-	if(pointers.length >= 2){
+	if (pointers.length >= 2) {
 		cancel();
 		pointer_active = false; // NOTE: pointer_active used in cancel()
 		return;
@@ -654,7 +662,7 @@ $G.on("pointermove", (event)=> {
 		}
 	}
 	if (pointers.length >= 2) {
-		const current_pos = {x: event.clientX, y: event.clientY};
+		const current_pos = average_points(pointers);
 		const difference_in_x = current_pos.x - pan_start_pos.x;
 		const difference_in_y = current_pos.y - pan_start_pos.y;
 		$canvas_area.scrollLeft(pan_start_scroll_left - difference_in_x);
