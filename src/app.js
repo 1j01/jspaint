@@ -617,21 +617,7 @@ $canvas.on("pointerleave", e => {
 	}
 });
 
-// function pan_view(event) {
-// 	// TODO: handle multiple pointers by averaging positions
-// 	// or something similar
-// 	// TODO: don't allow drawing (crazily) while panning
-// 	// TODO: pan view if one or more/both fingers start outside the canvas (but within the canvas-area)
-// 	const handle_pointermove = (event)=> {
-// 	};
-// 	const end_pan = ()=> {
-// 		$G.off("pointermove", handle_pointermove);
-// 		$G.off("pointerup pointercancel", end_pan);
-// 	};
-// 	$G.on("pointermove", handle_pointermove);
-// 	$G.on("pointerup pointercancel", end_pan); // TODO: cancel pan for pointercancel?
-// }
-
+// TODO: average positions of pointers
 let pan_start_pos;
 let pan_start_scroll_top;
 let pan_start_scroll_left;
@@ -641,7 +627,16 @@ $canvas_area.on("pointerdown", (event)=> {
 		pan_start_scroll_top = $canvas_area.scrollTop();
 		pan_start_scroll_left = $canvas_area.scrollLeft();
 	}
+	
 	pointers.push({pointerId: event.pointerId, x: event.clientX, y: event.clientY});
+
+	// Quick Undo when there are multiple pointers (i.e. for touch)
+	// see pointermove for other pointer types
+	if(pointers.length >= 2){
+		cancel();
+		pointer_active = false; // NOTE: pointer_active used in cancel()
+		return;
+	}
 });
 $G.on("pointerup pointercancel", (event)=> {
 	pointers = pointers.filter((pointer)=> {
@@ -674,7 +669,9 @@ $canvas.on("pointerdown", e => {
 
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
-	if(pointers.length && (reverse ? (button === 2) : (button === 0))){
+	// NOTE: this relies on event handler order for pointerdown
+	// pointer is not added to pointers yet
+	if(pointers.length >= 1){
 		cancel();
 		pointer_active = false; // NOTE: pointer_active used in cancel()
 		return;
