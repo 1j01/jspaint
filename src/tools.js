@@ -211,8 +211,11 @@ window.tools = [{
 	help_icon: "p_erase.gif",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	undoableOnPointerDown: true,
 	continuous: "space",
+
+	// binary mask of the drawn area, either opaque white or transparent
+	mask_canvas: null,
+
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
 		const rect_x = ~~(x - eraser_size/2);
@@ -222,6 +225,11 @@ window.tools = [{
 		
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
+
+		if (this.mask_canvas) {
+			// TODO: support transparent document mode for the preview
+			this.render_from_mask(ctx);
+		}
 
 		ctx.fillStyle = colors.background;
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
@@ -246,6 +254,31 @@ window.tools = [{
 			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
 		}
 	},
+	pointerdown() {
+		this.mask_canvas = make_canvas(canvas.width, canvas.height);
+	},
+	render_from_mask(ctx) {
+		ctx.save();
+		ctx.globalCompositeOperation = "destination-out";
+		ctx.drawImage(this.mask_canvas, 0, 0);
+		ctx.restore();
+
+		if(!transparency){
+			const mask_fill_canvas = make_canvas(this.mask_canvas);
+			replace_colors_with_swatch(mask_fill_canvas.ctx, colors.background, 0, 0);
+			ctx.drawImage(mask_fill_canvas, 0, 0);
+		}
+	},
+	pointerup() {
+		undoable(button === 0 ? "Eraser" : "Color Eraser", ()=> {
+			this.render_from_mask(ctx);
+
+			this.mask_canvas = null;
+		}, get_icon_for_tool(this));
+	},
+	cancel() {
+		this.mask_canvas = null;
+	},
 	paint(ctx, x, y) {
 		
 		const rect_x = ~~(x - eraser_size/2);
@@ -255,12 +288,8 @@ window.tools = [{
 		
 		if(button === 0){
 			// Eraser
-			if(transparency){
-				ctx.clearRect(rect_x, rect_y, rect_w, rect_h);
-			}else{
-				ctx.fillStyle = colors.background;
-				ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
-			}
+			this.mask_canvas.ctx.fillStyle = "white";
+			this.mask_canvas.ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 		}else{
 			// Color Eraser
 			// Right click with the eraser to selectively replace
@@ -269,23 +298,24 @@ window.tools = [{
 			const fg_rgba = get_rgba_from_color(colors.foreground);
 			const bg_rgba = get_rgba_from_color(colors.background);
 			
-			const id = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+			const test_image_data = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+			const result_image_data = this.mask_canvas.ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			
-			for(let i=0, l=id.data.length; i<l; i+=4){
+			for(let i=0, l=test_image_data.data.length; i<l; i+=4){
 				if(
-					id.data[i+0] === fg_rgba[0] &&
-					id.data[i+1] === fg_rgba[1] &&
-					id.data[i+2] === fg_rgba[2] &&
-					id.data[i+3] === fg_rgba[3]
+					test_image_data.data[i+0] === fg_rgba[0] &&
+					test_image_data.data[i+1] === fg_rgba[1] &&
+					test_image_data.data[i+2] === fg_rgba[2] &&
+					test_image_data.data[i+3] === fg_rgba[3]
 				){
-					id.data[i+0] = bg_rgba[0];
-					id.data[i+1] = bg_rgba[1];
-					id.data[i+2] = bg_rgba[2];
-					id.data[i+3] = bg_rgba[3];
+					result_image_data.data[i+0] = 255;
+					result_image_data.data[i+1] = 255;
+					result_image_data.data[i+2] = 255;
+					result_image_data.data[i+3] = 255;
 				}
 			}
 			
-			ctx.putImageData(id, rect_x, rect_y);
+			this.mask_canvas.ctx.putImageData(result_image_data, rect_x, rect_y);
 		}
 	},
 	$options: $choose_eraser_size
