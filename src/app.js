@@ -67,13 +67,19 @@ let file_name;
 let document_file_path;
 let saved = true;
 
-let pointer, pointer_start, pointer_previous, pointer_type, pointer_buttons;
+/** canvas coords */
+let pointer, pointer_start, pointer_previous;
+
+let pointer_active = false;
+let pointer_type, pointer_buttons;
 let reverse;
 let ctrl;
 let button;
-let pointer_active = false;
 let pointer_over_canvas = false;
 let update_helper_layer_on_pointermove_active = false;
+
+/** client coords */
+let pointers = [];
 
 const $app = $(E("div")).addClass("jspaint").appendTo("body");
 
@@ -538,7 +544,7 @@ function canvas_pointer_move(e){
 	// Quick Undo
 	// (Note: pointermove also occurs when the set of buttons pressed changes,
 	// except when another event would fire like pointerdown)
-	if(pointer_active && e.button != -1){
+	if(pointers.length && e.button != -1){
 		// compare buttons other than middle mouse button by using bitwise OR to make that bit of the number the same
 		const MMB = 4;
 		if(e.pointerType != pointer_type || (e.buttons | MMB) != (pointer_buttons | MMB)){
@@ -634,19 +640,34 @@ function pan_view(event) {
 	$G.on("pointerup pointercancel", end_pan); // TODO: cancel pan for pointercancel?
 }
 
+let panning = false;
+$canvas_area.on("pointerdown", (event)=> {
+	if (pointers.length && !panning) {
+		pan_view(event);
+	}
+	pointers.push({pointerId: event.pointerId, x: event.clientX, y: event.clientY});
+});
+$G.on("pointerup", (event)=> {
+	pointers = pointers.filter((pointer)=> {
+		if (event.pointerId === pointer.pointerId) {
+			return false;
+		}
+		return true;
+	});
+});
+
 $canvas.on("pointerdown", e => {
 	update_canvas_rect();
 
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
-	if(pointer_active && (reverse ? (button === 2) : (button === 0))){
+	if(pointers.length && (reverse ? (button === 2) : (button === 0))){
 		cancel();
 		pointer_active = false; // NOTE: pointer_active used in cancel()
-		pan_view(e);
 		return;
 	}
 	
-	pointer_active = !!(e.buttons & (1 | 2));
+	pointer_active = !!(e.buttons & (1 | 2)); // as far as tools are concerned
 	pointer_type = e.pointerType;
 	pointer_buttons = e.buttons;
 	$G.one("pointerup", e => {
