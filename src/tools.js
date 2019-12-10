@@ -292,7 +292,7 @@ window.tools = [{
 		}
 	},
 	pointerup() {
-		undoable(button === 0 ? "Eraser" : "Color Eraser", ()=> {
+		undoable(this.color_eraser_mode ? "Color Eraser" : "Eraser", ()=> {
 			this.render_from_mask(ctx);
 
 			this.mask_canvas = null;
@@ -308,7 +308,9 @@ window.tools = [{
 		const rect_w = eraser_size;
 		const rect_h = eraser_size;
 		
-		if(button === 0){
+		this.color_eraser_mode = button !== 0;
+		
+		if(!this.color_eraser_mode){
 			// Eraser
 			this.mask_canvas.ctx.fillStyle = "white";
 			this.mask_canvas.ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
