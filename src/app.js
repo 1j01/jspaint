@@ -81,7 +81,7 @@ const $V = $(E("div")).addClass("vertical").appendTo($app);
 const $H = $(E("div")).addClass("horizontal").appendTo($V);
 
 const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
-$canvas_area.attr("touch-action", "pan-x pan-y");
+// $canvas_area.attr("touch-action", "manipulation");
 
 const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");

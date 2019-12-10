@@ -498,3 +498,10 @@ html, body, .jspaint {
 		max-height: calc(100vh - 50px);
 	}
 }
+
+[touch-action="none"] {
+	touch-action: none;
+}
+/* [touch-action="manipulation"] {
+	touch-action: manipulation;
+} */
