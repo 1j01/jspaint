@@ -295,19 +295,21 @@ window.tools = [{
 	help_icon: "p_paint.gif",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
-	undoableOnPointerDown: true,
 	pointerdown(ctx, x, y) {
 		
 		// Get the rgba values of the selected fill color
 		const rgba = get_rgba_from_color(fill_color);
 		
 		if(shift){
-			// TODO: rename undoable Replace Color
-			// Perform a global (non-contiguous) fill operation, AKA color replacement
-			draw_noncontiguous_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+			undoable("Replace Color", ()=> {
+				// Perform global color replacement
+				draw_noncontiguous_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+			}, get_icon_for_tool(this));
 		} else {
-			// Perform a normal fill operation
-			draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+			undoable("Fill With Color", ()=> {
+				// Perform a normal fill operation
+				draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+			}, get_icon_for_tool(this));
 		}
 	}
 }, {

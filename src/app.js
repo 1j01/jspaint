@@ -751,8 +751,7 @@ $canvas.on("pointerdown", e => {
 		// TODO: non-breaking space within tool names?
 		const icon = get_icon_for_tools(selected_tools);
 		const action_name = selected_tools.map((tool)=>
-			tool.name === "Eraser/Color Eraser" ? (reverse ? "Color Eraser" : "Eraser") : 
-			tool.name === "Fill With Color" & shift ? "Replace Color" : tool.name
+			tool.name === "Eraser/Color Eraser" ? (reverse ? "Color Eraser" : "Eraser") : tool.name
 		).join("+");
 		undoable(action_name, pointerdown_action, icon);
 	}else{
