@@ -101,7 +101,7 @@ function update_helper_layer_immediately(e) {
 	}
 
 	tools_to_preview.forEach((tool)=> {
-		if(tool.drawPreviewUnderGrid && pointer){
+		if(tool.drawPreviewUnderGrid && pointer && pointers.length < 2){
 			hctx.save();
 			tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
 			hctx.restore();
@@ -135,7 +135,7 @@ function update_helper_layer_immediately(e) {
 	}
 
 	tools_to_preview.forEach((tool)=> {
-		if(tool.drawPreviewAboveGrid && pointer){
+		if(tool.drawPreviewAboveGrid && pointer && pointers.length < 2){
 			hctx.save();
 			tool.drawPreviewAboveGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
 			hctx.restore();
