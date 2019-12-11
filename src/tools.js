@@ -534,7 +534,6 @@ window.tools = [{
 	help_icon: "p_pencil.gif",
 	description: "Draws a free-form line one pixel wide.",
 	cursor: ["pencil", [13, 23], "crosshair"],
-	continuous: "space",
 	stroke_only: true,
 	get_brush() {
 		return {size: pencil_size, shape: "circle"};
@@ -544,7 +543,6 @@ window.tools = [{
 	help_icon: "p_brush.gif",
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
-	continuous: "space",
 	get_brush() {
 		return {size: brush_size, shape: brush_shape};
 	},
@@ -1105,9 +1103,12 @@ tools.forEach((tool)=> {
 			const brush = tool.get_brush();
 			const circumference_points = get_circumference_points_for_brush(brush.shape, brush.size);
 			tool.mask_canvas.ctx.fillStyle = stroke_color;
-			for (const point of circumference_points) {
-				tool.mask_canvas.ctx.fillRect(x + point.x, y + point.y, 1, 1);
-			}
+			const iterate_line = brush.shape.match(/diagonal/) ? brosandham_line : bresenham_line;
+			iterate_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
+				for (const point of circumference_points) {
+					tool.mask_canvas.ctx.fillRect(x + point.x, y + point.y, 1, 1);
+				}
+			});
 		};
 		
 		tool.cancel = ()=> {

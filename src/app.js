@@ -526,9 +526,10 @@ function tool_go(selected_tool, event_name){
 		selected_tool[event_name](ctx, pointer.x, pointer.y);
 	}
 	if(selected_tool.paint){
+		// TODO: get rid of "continous" from the interface
 		if(selected_tool.continuous === "space"){
-			const ham = brush_shape.match(/diagonal/) ? brosandham_line : bresenham_line;
-			ham(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
+			const iterate_line = brush_shape.match(/diagonal/) ? brosandham_line : bresenham_line;
+			iterate_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 				selected_tool.paint(ctx, x, y);
 			});
 		}else{
