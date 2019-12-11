@@ -607,9 +607,8 @@ window.tools = [{
 	help_icon: "p_airb.gif",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
-	undoableOnPointerDown: true,
 	continuous: "time",
-	paint(ctx, x, y) {
+	paint_mask(ctx, x, y) {
 		const r = airbrush_size / 2;
 		for(let i = 0; i < 6 + r/5; i++){
 			const rx = (Math.random()*2-1) * r;
