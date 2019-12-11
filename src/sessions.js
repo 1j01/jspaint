@@ -67,7 +67,7 @@
 			$undo.attr("disabled", undos.length < 1);
 			$redo.attr("disabled", redos.length < 1);
 		};
-		$canvas.on("change.session-hook", update_buttons_disabled);
+		$G.on("session-update.session-hook", update_buttons_disabled);
 		update_buttons_disabled();
 
 		$w.$Button("Close", ()=> {
@@ -141,11 +141,10 @@
 					save_image_to_storage();
 				}
 			});
-			$canvas.on("change.session-hook", save_image_to_storage);
+			$G.on("session-update.session-hook", save_image_to_storage);
 		}
 		end() {
 			// Remove session-related hooks
-			$app.find("*").off(".session-hook");
 			$G.off(".session-hook");
 		}
 	}
@@ -331,7 +330,7 @@
 				});
 			});
 			let previous_uri;
-			let pointer_operations = []; // this was supposed to be shared as a global, but the multiplayer syncing stuff is a can of worms
+			// let pointer_operations = []; // the multiplayer syncing stuff is a can of worms, so this is disabled
 			const sync = () => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
@@ -340,8 +339,8 @@
 				// Sync the data from this client to the server (one-way)
 				const uri = canvas.toDataURL();
 				if (previous_uri !== uri) {
-					log("clear pointer operations to set data", pointer_operations);
-					pointer_operations = [];
+					// log("clear pointer operations to set data", pointer_operations);
+					// pointer_operations = [];
 					log("set data");
 					this.fb_data.set(uri);
 					previous_uri = uri;
@@ -350,7 +349,7 @@
 					log("don't set data; it hasn't changed");
 				}
 			};
-			$canvas.on("change.session-hook", sync);
+			$G.on("session-update.session-hook", sync);
 			// Any time we change or recieve the image data
 			_fb_on(this.fb_data, "value", snap => {
 				log("data update");
@@ -367,9 +366,9 @@
 					const img = new Image();
 					img.onload = () => {
 						// Cancel any in-progress pointer operations
-						if (pointer_operations.length) {
-							$G.triggerHandler("pointerup", "cancel");
-						}
+						// if (pointer_operations.length) {
+						// 	$G.triggerHandler("pointerup", "cancel");
+						// }
 
 						const test_canvas = make_canvas(img);
 						const image_data_remote = test_canvas.ctx.getImageData(0, 0, test_canvas.width, test_canvas.height);
@@ -386,6 +385,7 @@
 						// (detect_transparency() here would not be ideal
 						// Perhaps a better way of syncing transparency
 						// and other options will be established)
+						/*
 						// Playback recorded in-progress pointer operations
 						window.console && console.log("playback", pointer_operations);
 
@@ -394,6 +394,7 @@
 							$canvas.triggerHandler(e, ["synthetic"]);
 							$G.triggerHandler(e, ["synthetic"]);
 						}
+						*/
 					};
 					img.src = uri;
 				}
@@ -420,11 +421,39 @@
 			// while the window is blurred and stay there when the user goes away
 			// maybe replace "away" with a timestamp of activity and then
 			// clients can decide whether a given cursor should be visible
+
+			/*
+			const debug_event = (e, synthetic) => {
+				// const label = synthetic ? "(synthetic)" : "(normal)";
+				// window.console && console.debug && console.debug(e.type, label);
+			};
+			
+			$canvas_area.on("pointerdown.session-hook", "*", (e, synthetic) => {
+				debug_event(e, synthetic);
+				if(synthetic){ return; }
+
+					pointer_operations = [e];
+					const pointermove = (e, synthetic) => {
+						debug_event(e, synthetic);
+						if(synthetic){ return; }
+						
+						pointer_operations.push(e);
+					};
+					$G.on("pointermove.session-hook", pointermove);
+					$G.one("pointerup.session-hook", (e, synthetic) => {
+						debug_event(e, synthetic);
+						if(synthetic){ return; }
+						
+						$G.off("pointermove.session-hook", pointermove);
+					});
+				}
+			});
+			*/
 		}
 		end() {
 			// Remove session-related hooks
-			$app.find("*").off(".session-hook");
 			$G.off(".session-hook");
+			// $canvas_area.off("pointerdown.session-hook");
 			// Remove collected Firebase event listeners
 			this._fb_listeners.forEach(({ fb, event_type, callback, error_callback }) => {
 				log(`remove listener for ${fb.path.toString()} .on ${event_type}`);

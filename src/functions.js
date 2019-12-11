@@ -923,6 +923,7 @@ function render_history_as_apng(){
 }
 */
 function go_to_history_node(target_history_node, canceling) {
+	// TODO: maybe only modify undoables explicitly elsewhere
 	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 	if (!target_history_node.image_data) {
@@ -991,8 +992,9 @@ function undoable(action_name, callback, icon){
 
 	$G.triggerHandler("history-update"); // update history view
 
-	// TODO: clean up: remove callback?
 	callback && callback();
+
+	$G.triggerHandler("session-update"); // autosave
 }
 function undo(canceling){
 	if(undos.length<1){ return false; }
@@ -1307,8 +1309,6 @@ function clear(){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
-
-		$G.triggerHandler("session-update"); // autosave
 	});
 }
 

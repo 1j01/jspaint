@@ -382,7 +382,6 @@ function apply_image_transformation(action_name, fn){
 			ctx.copy(new_canvas);
 			
 			$canvas.trigger("update"); // update handles
-			$G.triggerHandler("session-update"); // autosave
 		});
 	}
 }
