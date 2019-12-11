@@ -1076,12 +1076,90 @@ tools.forEach((tool)=> {
 	}
 	if (tool.get_brush) {
 		// TODO: dynamic cursor for brush tool
+
+		// binary mask of the drawn area, either opaque white or transparent
+		tool.mask_canvas = null;
+
+		tool.pointerdown = (ctx, x, y)=> {
+			if (!tool.mask_canvas) {
+				tool.mask_canvas = make_canvas(canvas.width, canvas.height);
+			}
+			if (tool.mask_canvas.width !== canvas.width) {
+				tool.mask_canvas.width = canvas.width;
+			}
+			if (tool.mask_canvas.height !== canvas.height) {
+				tool.mask_canvas.height = canvas.height;
+			}
+			tool.mask_canvas.ctx.disable_image_smoothing();
+		};
+		tool.pointerup = ()=> {
+			undoable(tool.name, ()=> {
+				tool.render_from_mask(ctx);
+
+				tool.mask_canvas.width = 1;
+				tool.mask_canvas.height = 1;
+			}, get_icon_for_tool(tool));
+		};
+
 		tool.paint = (ctx, x, y)=> {
 			const brush = tool.get_brush();
 			const circumference_points = get_circumference_points_for_brush(brush.shape, brush.size);
-			ctx.fillStyle = stroke_color;
+			tool.mask_canvas.ctx.fillStyle = stroke_color;
 			for (const point of circumference_points) {
-				ctx.fillRect(x + point.x, y + point.y, 1, 1);
+				tool.mask_canvas.ctx.fillRect(x + point.x, y + point.y, 1, 1);
+			}
+		};
+		
+		tool.cancel = ()=> {
+			if (tool.mask_canvas) {
+				tool.mask_canvas.width = 1;
+				tool.mask_canvas.height = 1;
+			}
+		};
+		tool.render_from_mask = (ctx, previewing)=> { // could be private
+			ctx.save();
+			ctx.globalCompositeOperation = "destination-out";
+			ctx.drawImage(tool.mask_canvas, 0, 0);
+			ctx.restore();
+
+			let color = stroke_color;
+			const translucent = get_rgba_from_color(color)[3] < 255;
+			if (translucent && previewing) {
+				const t = performance.now() / 2000;
+				// 5 distinct colors, 5 distinct gradients, 7 color stops, 6 gradients
+				const n = 6;
+				const h = ctx.canvas.height;
+				const y = (t % 1) * -h * (n - 1);
+				const gradient = ctx.createLinearGradient(0, y, 0, y + h * n);
+				gradient.addColorStop(0/n, "red");
+				gradient.addColorStop(1/n, "gold");
+				gradient.addColorStop(2/n, "#00d90b");
+				gradient.addColorStop(3/n, "#2e64d9");
+				gradient.addColorStop(4/n, "#8f2ed9");
+				// last two same as the first two so it can seamlessly wrap
+				gradient.addColorStop(5/n, "red");
+				gradient.addColorStop(6/n, "gold");
+				color = gradient;
+			}
+			// TODO: perf: keep this canvas around too
+			const mask_fill_canvas = make_canvas(tool.mask_canvas);
+			replace_colors_with_swatch(mask_fill_canvas.ctx, color, 0, 0);
+			ctx.drawImage(mask_fill_canvas, 0, 0);
+			return translucent;
+		};
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
+			if(!pointer_active && !pointer_over_canvas){return;}
+
+			ctx.scale(scale, scale);
+			ctx.translate(translate_x, translate_y);
+
+			if (tool.mask_canvas) {
+				const should_animate = tool.render_from_mask(ctx, true);
+				if (should_animate) {
+					// animate for gradient
+					// FIXME: dynamic cursor preview shows in top left corner maybe
+					requestAnimationFrame(update_helper_layer);
+				}
 			}
 		};
 	}
