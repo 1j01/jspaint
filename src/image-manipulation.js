@@ -117,21 +117,39 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 }
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-const get_circumference_points_for_brush = memoize_synchronous_function((brush_shape, brush_size)=> {
-	const csz = get_brush_canvas_size(brush_size, brush_shape);
+// TODO: protect against browser clearing canvases, invalidate cache
+const get_brush_canvas = memoize_synchronous_function_with_limit((brush_shape, brush_size)=> {
+	const canvas_size = get_brush_canvas_size(brush_size, brush_shape);
 
-	const brush_canvas = make_canvas(csz, csz);
-	brush_canvas.width = csz;
-	brush_canvas.height = csz;
-	brush_canvas.ctx.fillStyle = brush_canvas.ctx.strokeStyle = "black";
+	const brush_canvas = make_canvas(canvas_size, canvas_size);
+
+	// brush_canvas.ctx.fillStyle = brush_canvas.ctx.strokeStyle = "black";
 	render_brush(brush_canvas.ctx, brush_shape, brush_size);
+
+	return brush_canvas;
+}, 10);
+
+// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size)=> {
+	const brush_canvas = get_brush_canvas(brush_shape, brush_size);
+
+	const offset_x = -Math.ceil(brush_canvas.width / 2);
+	const offset_y = -Math.ceil(brush_canvas.height / 2);
+
+	ctx.drawImage(brush_canvas, x + offset_x, y + offset_y);
+};
+
+// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+const get_circumference_points_for_brush = memoize_synchronous_function((brush_shape, brush_size)=> {
+
+	const brush_canvas = get_brush_canvas(brush_shape, brush_size);
 
 	const image_data = brush_canvas.ctx.getImageData(0, 0, brush_canvas.width, brush_canvas.height);
 
 	const at = (x, y)=> image_data.data[(y * image_data.width + x) * 4 + 3] > 0;
 
-	const offset_x = -Math.ceil(image_data.width / 2);
-	const offset_y = -Math.ceil(image_data.height / 2);
+	const offset_x = -Math.ceil(brush_canvas.width / 2);
+	const offset_y = -Math.ceil(brush_canvas.height / 2);
 
 	const points = [];
 

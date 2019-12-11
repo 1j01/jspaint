@@ -1100,7 +1100,7 @@ tools.forEach((tool)=> {
 			}, get_icon_for_tool(tool));
 		};
 
-		tool.paint = (ctx, x, y)=> {
+		tool.paint = ()=> {
 			const brush = tool.get_brush();
 			const circumference_points = get_circumference_points_for_brush(brush.shape, brush.size);
 			tool.mask_canvas.ctx.fillStyle = stroke_color;
@@ -1110,6 +1110,8 @@ tools.forEach((tool)=> {
 					tool.mask_canvas.ctx.fillRect(x + point.x, y + point.y, 1, 1);
 				}
 			});
+			stamp_brush_canvas(tool.mask_canvas.ctx, pointer_previous.x, pointer_previous.y, brush.shape, brush.size);
+			stamp_brush_canvas(tool.mask_canvas.ctx, pointer.x, pointer.y, brush.shape, brush.size);
 		};
 		
 		tool.cancel = ()=> {

@@ -47,6 +47,26 @@ function memoize_synchronous_function(func) {
 	}
 }
 
+function memoize_synchronous_function_with_limit(func, max_entries) {
+	const cache = {};
+	const keys = [];
+	return (...args)=> {
+		const key = JSON.stringify(args);
+		if (cache[key]){
+			return cache[key];
+		} else{
+			val = func.apply(null, args);
+			cache[key] = val;
+			keys.push(key);
+			if (keys.length > max_entries) {
+				const oldest_key = keys.shift();
+				delete cache[oldest_key];
+			}
+			return val; 
+		}
+	}
+}
+
 window.get_rgba_from_color = memoize_synchronous_function((color)=> {
 	const single_pixel_canvas = make_canvas(1, 1);
 	
