@@ -536,31 +536,8 @@ window.tools = [{
 	cursor: ["pencil", [13, 23], "crosshair"],
 	continuous: "space",
 	stroke_only: true,
-	pencil_canvas: make_canvas(), // brush
-
-	paint_mask(ctx, x, y) {
-		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
-		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)
-		// NOTE: this.rendered_* used by webglcontextrestored to invalidate the cache
-		const csz = get_brush_canvas_size(pencil_size, "circle");
-		// TODO: remove color from the equation since this is a binary mask now
-		if(
-			this.rendered_shape !== "circle" ||
-			this.rendered_color !== stroke_color ||
-			this.rendered_size !== pencil_size
-		){
-			this.pencil_canvas.width = csz;
-			this.pencil_canvas.height = csz;
-			// don't need to do this.pencil_canvas.ctx.disable_image_smoothing() currently because images aren't drawn to the brush
-
-			this.pencil_canvas.ctx.fillStyle = this.pencil_canvas.ctx.strokeStyle = stroke_color;
-			render_brush(this.pencil_canvas.ctx, "circle", pencil_size);
-			
-			this.rendered_color = stroke_color;
-			this.rendered_size = pencil_size;
-			this.rendered_shape = "circle";
-		}
-		ctx.drawImage(this.pencil_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
+	get_brush() {
+		return {size: pencil_size, shape: "circle"};
 	}
 }, {
 	name: "Brush",
@@ -568,37 +545,8 @@ window.tools = [{
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
 	continuous: "space",
-	rendered_color: "",
-	rendered_size: 0,
-	rendered_shape: "",
-	paint_mask(ctx, x, y) {
-		// TODO: take color out of the equation since this is a mask now
-		const csz = get_brush_canvas_size(brush_size, brush_shape);
-		if(
-			this.rendered_shape !== brush_shape ||
-			this.rendered_color !== stroke_color ||
-			this.rendered_size !== brush_size
-		){
-			brush_canvas.width = csz;
-			brush_canvas.height = csz;
-			// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
-
-			brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
-			render_brush(brush_ctx, brush_shape, brush_size);
-			
-			this.rendered_color = stroke_color;
-			this.rendered_size = brush_size;
-			this.rendered_shape = brush_shape;
-		}
-		ctx.drawImage(brush_canvas, Math.ceil(x-csz/2), Math.ceil(y-csz/2));
-	},
-	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active && !pointer_over_canvas){return;}
-		
-		ctx.scale(scale, scale);
-		ctx.translate(translate_x, translate_y);
-
-		this.paint(ctx, x, y);
+	get_brush() {
+		return {size: brush_size, shape: brush_shape};
 	},
 	$options: $choose_brush
 }, {
@@ -1124,8 +1072,17 @@ tools.forEach((tool)=> {
 					requestAnimationFrame(update_helper_layer);
 				}
 			}
-
-			// TODO: dynamic cursor
+		};
+	}
+	if (tool.get_brush) {
+		// TODO: dynamic cursor for brush tool
+		tool.paint = (ctx, x, y)=> {
+			const brush = tool.get_brush();
+			const circumference_points = get_circumference_points_for_brush(brush.shape, brush.size);
+			ctx.fillStyle = stroke_color;
+			for (const point of circumference_points) {
+				ctx.fillRect(x + point.x, y + point.y, 1, 1);
+			}
 		};
 	}
 });

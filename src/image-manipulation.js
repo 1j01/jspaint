@@ -116,33 +116,72 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 	}
 }
 
+// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+const get_circumference_points_for_brush = memoize_synchronous_function((brush_shape, brush_size)=> {
+	const csz = get_brush_canvas_size(brush_size, brush_shape);
+
+	const brush_canvas = make_canvas(csz, csz);
+	brush_canvas.width = csz;
+	brush_canvas.height = csz;
+	brush_canvas.ctx.fillStyle = brush_canvas.ctx.strokeStyle = "black";
+	render_brush(brush_canvas.ctx, brush_shape, brush_size);
+
+	const image_data = brush_canvas.ctx.getImageData(0, 0, brush_canvas.width, brush_canvas.height);
+
+	const at = (x, y)=> image_data.data[(y * image_data.width + x) * 4 + 3] > 0;
+
+	const offset_x = -Math.ceil(image_data.width / 2);
+	const offset_y = -Math.ceil(image_data.height / 2);
+
+	const points = [];
+
+	for (let x = 0; x < image_data.width; x += 1) {
+		for (let y = 0; y < image_data.height; y += 1) {
+			if (at(x, y) && (
+				!at(x, y - 1) ||
+				!at(x, y + 1) ||
+				!at(x - 1, y) ||
+				!at(x + 1, y)
+			)) {
+				points.push({
+					x: x + offset_x,
+					y: y + offset_y,
+				});
+			}
+		}
+	}
+
+	return points;
+});
+
 // NOTE: line_brush_canvas_* used by webglcontextrestored invalidate the cache
 let line_brush_canvas;
 let line_brush_canvas_rendered_shape;
 let line_brush_canvas_rendered_color;
 let line_brush_canvas_rendered_size;
 function update_brush_for_drawing_lines(stroke_size){
-	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-	if(aliasing && stroke_size > 1){
-		// TODO: DRY brush caching code
-		if(
-			line_brush_canvas_rendered_shape !== "circle" ||
-			line_brush_canvas_rendered_color !== stroke_color ||
-			line_brush_canvas_rendered_size !== stroke_size
-		){
-			// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
-			const csz = get_brush_canvas_size(stroke_size, "circle");
-			line_brush_canvas = make_canvas(csz, csz);
-			line_brush_canvas.width = csz;
-			line_brush_canvas.height = csz;
-			line_brush_canvas.ctx.fillStyle = line_brush_canvas.ctx.strokeStyle = stroke_color;
-			render_brush(line_brush_canvas.ctx, "circle", stroke_size);
+	console.log("update_brush_for_drawing_lines disabled");
+	// // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+	// if(aliasing && stroke_size > 1){
+	// 	// TODO: DRY brush caching code
+	// 	if(
+	// 		line_brush_canvas_rendered_shape !== "circle" ||
+	// 		line_brush_canvas_rendered_color !== stroke_color ||
+	// 		line_brush_canvas_rendered_size !== stroke_size
+	// 	){
+	// 		// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
+	// 		const csz = get_brush_canvas_size(stroke_size, "circle");
+	// 		line_brush_canvas = make_canvas(csz, csz);
+	// 		line_brush_canvas.width = csz;
+	// 		line_brush_canvas.height = csz;
+	// 		line_brush_canvas.ctx.fillStyle = line_brush_canvas.ctx.strokeStyle = stroke_color;
+	// 		render_brush(line_brush_canvas.ctx, "circle", stroke_size);
 
-			line_brush_canvas_rendered_shape = "circle";
-			line_brush_canvas_rendered_color = stroke_color;
-			line_brush_canvas_rendered_size = stroke_size;
-		}
-	}
+	// 		line_brush_canvas_rendered_shape = "circle";
+	// 		line_brush_canvas_rendered_color = stroke_color;
+	// 		line_brush_canvas_rendered_size = stroke_size;
+	// 	}
+	// }
 }
 
 function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1) {
