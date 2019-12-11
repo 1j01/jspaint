@@ -567,12 +567,12 @@ window.tools = [{
 	help_icon: "p_brush.gif",
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
-	undoableOnPointerDown: true,
 	continuous: "space",
 	rendered_color: "",
 	rendered_size: 0,
 	rendered_shape: "",
-	paint(ctx, x, y) {
+	paint_mask(ctx, x, y) {
+		// TODO: take color out of the equation since this is a mask now
 		const csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
