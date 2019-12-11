@@ -1114,15 +1114,9 @@ function replace_last_action_detail(detail) {
 	$G.triggerHandler("history-update");
 }
 
-function shouldMakeUndoableOnPointerDown(tools) {
-	return tools.some((tool)=> tool.undoableOnPointerDown);
-}
 function cancel(){
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
-	if(shouldMakeUndoableOnPointerDown(selected_tools) && pointer_active){
-		undo(true);
-	}
 	$G.triggerHandler("pointerup", "cancel");
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();

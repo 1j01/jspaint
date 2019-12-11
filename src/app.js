@@ -747,14 +747,7 @@ $canvas.on("pointerdown", e => {
 		});
 	};
 
-	if(shouldMakeUndoableOnPointerDown(selected_tools)){
-		// TODO: non-breaking space within tool names?
-		const icon = get_icon_for_tools(selected_tools);
-		const action_name = selected_tools.map((tool)=> tool.name).join("+");
-		undoable(action_name, pointerdown_action, icon);
-	}else{
-		pointerdown_action();
-	}
+	pointerdown_action();
 	
 	update_helper_layer();
 });
