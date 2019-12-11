@@ -33,7 +33,21 @@ function E(t){
 	return document.createElement(t);
 }
 
-function get_rgba_from_color(color){
+function memoize_synchronous_function(func) {
+	const cache = {};
+	return (...args)=> {
+		const key = JSON.stringify(args);
+		if (cache[key]){
+			return cache[key];
+		} else{
+			val = func.apply(null, args);
+			cache[key] = val;
+			return val; 
+		}
+	}
+}
+
+window.get_rgba_from_color = memoize_synchronous_function((color)=> {
 	const single_pixel_canvas = make_canvas(1, 1);
 	
 	single_pixel_canvas.ctx.fillStyle = color;
@@ -42,9 +56,9 @@ function get_rgba_from_color(color){
 	const image_data = single_pixel_canvas.ctx.getImageData(0, 0, 1, 1);
 	
 	// We could just return image_data.data, but let's return an Array instead
-	// I'm not totally sure image_data.data wouldn't keep image_data around in memory
+	// I'm not totally sure image_data.data wouldn't keep the ImageData object around in memory
 	return Array.from(image_data.data);
-}
+});
 
 function make_canvas(width, height){
 	const image = width;
