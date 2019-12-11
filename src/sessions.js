@@ -331,7 +331,7 @@
 			});
 			let previous_uri;
 			// let pointer_operations = []; // the multiplayer syncing stuff is a can of worms, so this is disabled
-			const sync = () => {
+			const write_canvas_to_database = () => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
@@ -341,23 +341,30 @@
 				if (previous_uri !== uri) {
 					// log("clear pointer operations to set data", pointer_operations);
 					// pointer_operations = [];
-					log("set data");
+					log("write canvas data to Firebase");
 					this.fb_data.set(uri);
 					previous_uri = uri;
 				}
 				else {
-					log("don't set data; it hasn't changed");
+					log("(don't write canvas data to Firebase; it hasn't changed)");
 				}
 			};
-			$G.on("session-update.session-hook", sync);
+			let ignore_session_update = false;
+			$G.on("session-update.session-hook", ()=> {
+				if (ignore_session_update) {
+					log("(ignore session-update from Sync Session undoable)");
+					return;
+				}
+				write_canvas_to_database();
+			});
 			// Any time we change or recieve the image data
 			_fb_on(this.fb_data, "value", snap => {
-				log("data update");
+				log("Firebase data update");
 				const uri = snap.val();
 				if (uri == null) {
 					// If there's no value at the data location, this is a new session
 					// Sync the current data to it
-					sync();
+					write_canvas_to_database();
 				}
 				else {
 					previous_uri = uri;
@@ -375,11 +382,13 @@
 						const image_data_local = ctx.getImageData(0, 0, canvas.width, canvas.height);
 						
 						if (!image_data_are_equal(image_data_remote, image_data_local)) {
-							// Write the image data to the canvas
+							ignore_session_update = true;
 							undoable("Sync Session", ()=> {
+								// Write the image data to the canvas
 								ctx.copy(img);
 								$canvas_area.trigger("resize");
 							});
+							ignore_session_update = false;
 						}
 
 						// (detect_transparency() here would not be ideal
