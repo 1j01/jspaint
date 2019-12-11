@@ -1,5 +1,9 @@
 (()=> {
 
+// This is for linting stuff at the bottom.
+/* eslint no-restricted-syntax: ["error", "ThisExpression"] */
+/* eslint-disable no-restricted-syntax */
+
 window.tools = [{
 	// @#: polygonal selection, polygon selection, shape selection, freeform selection
 	name: "Free-Form Select",
@@ -530,15 +534,16 @@ window.tools = [{
 	help_icon: "p_pencil.gif",
 	description: "Draws a free-form line one pixel wide.",
 	cursor: ["pencil", [13, 23], "crosshair"],
-	undoableOnPointerDown: true,
 	continuous: "space",
 	stroke_only: true,
-	pencil_canvas: make_canvas(),
-	paint(ctx, x, y) {
+	pencil_canvas: make_canvas(), // brush
+
+	paint_mask(ctx, x, y) {
 		// XXX: WET (Write Everything Twice) / DAMP (Duplicate Anything Moderately Pastable) (I'm coining that)
 		// TODO: DRY (Don't Repeat Yourself) / DEHYDRATE (Delete Everything Hindering Yourself Drastically Reducing Aqueous Text Evil) (I'm coining that too)
 		// NOTE: this.rendered_* used by webglcontextrestored to invalidate the cache
 		const csz = get_brush_canvas_size(pencil_size, "circle");
+		// TODO: remove color from the equation since this is a binary mask now
 		if(
 			this.rendered_shape !== "circle" ||
 			this.rendered_color !== stroke_color ||
@@ -952,6 +957,8 @@ window.tools = [{
 	$options: $ChooseShapeStyle()
 }];
 
+/* eslint-enable no-restricted-syntax */
+
 tools.forEach((tool)=> {
 	if (tool.selectBox) {
 		let drag_start_x = 0;
@@ -1037,6 +1044,89 @@ tools.forEach((tool)=> {
 			ctx.translate(translate_x, translate_y);
 
 			ctx.drawImage(tool.shape_canvas, 0, 0);
+		};
+	}
+	if (tool.paint_mask) {
+
+		// binary mask of the drawn area, either opaque white or transparent
+		tool.mask_canvas = null;
+
+		tool.pointerdown = (ctx, x, y)=> {
+			if (!tool.mask_canvas) {
+				tool.mask_canvas = make_canvas(canvas.width, canvas.height);
+			}
+			if (tool.mask_canvas.width !== canvas.width) {
+				tool.mask_canvas.width = canvas.width;
+			}
+			if (tool.mask_canvas.height !== canvas.height) {
+				tool.mask_canvas.height = canvas.height;
+			}
+			tool.mask_canvas.ctx.disable_image_smoothing();
+		};
+		tool.pointerup = ()=> {
+			undoable(tool.name, ()=> {
+				tool.render_from_mask(ctx);
+
+				tool.mask_canvas.width = 1;
+				tool.mask_canvas.height = 1;
+			}, get_icon_for_tool(tool));
+		};
+		tool.paint = (ctx, x, y)=> {
+			tool.paint_mask(tool.mask_canvas.ctx, x, y);
+		};
+		tool.cancel = ()=> {
+			if (tool.mask_canvas) {
+				tool.mask_canvas.width = 1;
+				tool.mask_canvas.height = 1;
+			}
+		};
+		tool.render_from_mask = (ctx, previewing)=> { // could be private
+			ctx.save();
+			ctx.globalCompositeOperation = "destination-out";
+			ctx.drawImage(tool.mask_canvas, 0, 0);
+			ctx.restore();
+
+			let color = stroke_color;
+			const translucent = get_rgba_from_color(color)[3] < 255;
+			if (translucent && previewing) {
+				const t = performance.now() / 2000;
+				// 5 distinct colors, 5 distinct gradients, 7 color stops, 6 gradients
+				const n = 6;
+				const h = ctx.canvas.height;
+				const y = (t % 1) * -h * (n - 1);
+				const gradient = ctx.createLinearGradient(0, y, 0, y + h * n);
+				gradient.addColorStop(0/n, "red");
+				gradient.addColorStop(1/n, "gold");
+				gradient.addColorStop(2/n, "#00d90b");
+				gradient.addColorStop(3/n, "#2e64d9");
+				gradient.addColorStop(4/n, "#8f2ed9");
+				// last two same as the first two so it can seamlessly wrap
+				gradient.addColorStop(5/n, "red");
+				gradient.addColorStop(6/n, "gold");
+				color = gradient;
+			}
+			// TODO: perf: keep this canvas around too
+			const mask_fill_canvas = make_canvas(tool.mask_canvas);
+			replace_colors_with_swatch(mask_fill_canvas.ctx, color, 0, 0);
+			ctx.drawImage(mask_fill_canvas, 0, 0);
+			return translucent;
+		};
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
+			if(!pointer_active && !pointer_over_canvas){return;}
+
+			ctx.scale(scale, scale);
+			ctx.translate(translate_x, translate_y);
+
+			if (tool.mask_canvas) {
+				const should_animate = tool.render_from_mask(ctx, true);
+				if (should_animate) {
+					// animate for gradient
+					// FIXME: dynamic cursor preview shows in top left corner maybe
+					requestAnimationFrame(update_helper_layer);
+				}
+			}
+
+			// TODO: dynamic cursor
 		};
 	}
 });
