@@ -136,11 +136,13 @@ function $Window($component){
 		drag_offset_y = e.clientY - $w[0].getBoundingClientRect().top;
 		$G.on("pointermove", drag);
 		$("body").addClass("dragging");
-	});
-	$G.on("pointerup", e => {
-		$w.applyBounds();
-		$G.off("pointermove", drag);
-		$("body").removeClass("dragging");
+		const stop_drag = ()=> {
+			$w.applyBounds();
+			$G.off("pointermove", drag);
+			$G.off("pointerup pointercancel", stop_drag);
+			$("body").removeClass("dragging");
+		};
+		$G.on("pointerup pointercancel", stop_drag);
 	});
 	$w.$titlebar.on("dblclick", e => {
 		if($component){
