@@ -564,6 +564,7 @@ window.tools = [{
 				ctx.fillRect(x + ~~rx, y + ~~ry, 1, 1);
 			}
 		}
+		update_helper_layer();
 	},
 	$options: $choose_airbrush_size
 }, {
