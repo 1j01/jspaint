@@ -100,7 +100,7 @@
 			const lsid = `image#${session_id}`;
 			log(`local storage id: ${lsid}`);
 			// save image to storage
-			const save_image_to_storage = () => {
+			const save_image_to_storage = debounce(() => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
@@ -117,7 +117,7 @@
 						}
 					}
 				});
-			};
+			}, 100);
 			storage.get(lsid, (err, uri) => {
 				if (err) {
 					if (localStorageAvailable) {
@@ -331,7 +331,7 @@
 			});
 			let previous_uri;
 			// let pointer_operations = []; // the multiplayer syncing stuff is a can of worms, so this is disabled
-			const write_canvas_to_database = () => {
+			const write_canvas_to_database = debounce(() => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
@@ -348,7 +348,7 @@
 				else {
 					log("(don't write canvas data to Firebase; it hasn't changed)");
 				}
-			};
+			}, 100);
 			let ignore_session_update = false;
 			$G.on("session-update.session-hook", ()=> {
 				if (ignore_session_update) {
