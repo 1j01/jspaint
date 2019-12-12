@@ -936,11 +936,19 @@ function go_to_history_node(target_history_node, canceling) {
 		}
 		return;
 	}
+	// TODO: only modify undoables explicitly elsewhere (or create soft undoables)
+	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
+		// console.log("modifying undoable", current_history_node, "previous image_data:", current_history_node.image_data);
+		// current_history_node.image_data = current_image_data;
+		console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
+		undoable("Unknown [GTHN]", ()=> {}, null, true);
+	}
 	current_history_node = target_history_node;
 	
 	deselect();
 	if (!canceling) {
-		cancel();
+		cancel(true);
 	}
 	saved = false;
 
@@ -975,12 +983,16 @@ function go_to_history_node(target_history_node, canceling) {
 	$G.triggerHandler("session-update"); // autosave
 	$G.triggerHandler("history-update"); // update history view
 }
-function undoable(action_name, callback, icon){
-	// TODO: maybe only modify undoables explicitly elsewhere
-	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
-		console.log("modifying undoable", current_history_node, "previous image_data:", current_history_node.image_data);
-		current_history_node.image_data = current_image_data;
+function undoable(action_name, callback, icon, is_extra_undoable_for_unknown){
+	// TODO: only modify undoables explicitly elsewhere (or create soft undoables)
+	if (!is_extra_undoable_for_unknown) {
+		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
+			// console.log("modifying undoable", current_history_node, "previous image_data:", current_history_node.image_data);
+			// current_history_node.image_data = current_image_data;
+			undoable("Unknown [undoable]", ()=> {}, null, true);
+			console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
+		}
 	}
 
 	saved = false;
@@ -1127,7 +1139,7 @@ function replace_last_action_detail(detail) {
 	$G.triggerHandler("history-update");
 }
 
-function cancel(){
+function cancel(going_to_history_node){
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
 	const original_history_node = current_history_node;
@@ -1135,7 +1147,9 @@ function cancel(){
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();
 	}
-	go_to_history_node(original_history_node, true);
+	if (!going_to_history_node) {
+		go_to_history_node(original_history_node, true);
+	}
 	update_helper_layer();
 }
 function deselect(){
