@@ -539,6 +539,7 @@ window.tools = [{
 	help_icon: "p_brush.gif",
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
+	dynamic_preview_cursor: true,
 	get_brush() {
 		return {size: brush_size, shape: brush_shape};
 	},
@@ -1070,12 +1071,10 @@ tools.forEach((tool)=> {
 		};
 	}
 	if (tool.get_brush) {
-		// TODO: dynamic cursor for brush tool
-
 		// binary mask of the drawn area, either opaque white or transparent
 		tool.mask_canvas = null;
 
-		tool.pointerdown = (ctx, x, y)=> {
+		tool.init_mask_canvas = (ctx, x, y)=> {
 			if (!tool.mask_canvas) {
 				tool.mask_canvas = make_canvas(canvas.width, canvas.height);
 			}
@@ -1086,6 +1085,9 @@ tools.forEach((tool)=> {
 				tool.mask_canvas.height = canvas.height;
 			}
 			tool.mask_canvas.ctx.disable_image_smoothing();
+		};
+		tool.pointerdown = (ctx, x, y)=> {
+			tool.init_mask_canvas();
 		};
 		tool.pointerup = ()=> {
 			undoable(tool.name, ()=> {
@@ -1143,6 +1145,12 @@ tools.forEach((tool)=> {
 			}
 			// TODO: perf: keep this canvas around too
 			const mask_fill_canvas = make_canvas(tool.mask_canvas);
+			if (previewing && tool.dynamic_preview_cursor) {
+				const brush = tool.get_brush();
+				// dynamic cursor preview:
+				// stamp just onto this temporary canvas so it's temporary
+				stamp_brush_canvas(mask_fill_canvas.ctx, pointer.x, pointer.y, brush.shape, brush.size);
+			}
 			replace_colors_with_swatch(mask_fill_canvas.ctx, color, 0, 0);
 			ctx.drawImage(mask_fill_canvas, 0, 0);
 			return translucent;
@@ -1153,13 +1161,14 @@ tools.forEach((tool)=> {
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);
 
-			if (tool.mask_canvas) {
-				const should_animate = tool.render_from_mask(ctx, true);
-				if (should_animate) {
-					// animate for gradient
-					// FIXME: dynamic cursor preview shows in top left corner maybe
-					requestAnimationFrame(update_helper_layer);
-				}
+			tool.init_mask_canvas();
+
+			const should_animate = tool.render_from_mask(ctx, true);
+
+			if (should_animate) {
+				// animate for gradient
+				// FIXME: dynamic cursor preview shows in top left corner maybe
+				requestAnimationFrame(update_helper_layer);
 			}
 		};
 	}

@@ -318,6 +318,7 @@ $G.on("keydown", e => {
 					tool_go(selected_tool);
 				});
 			}
+			update_helper_layer();
 		}
 		e.preventDefault();
 		return;
