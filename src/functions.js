@@ -971,7 +971,11 @@ function go_to_history_node(target_history_node, canceling) {
 }
 function undoable(action_name, callback, icon){
 	// TODO: maybe only modify undoables explicitly elsewhere
-	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
+		console.log("modifying undoable", current_history_node, "previous image_data:", current_history_node.image_data);
+		current_history_node.image_data = current_image_data;
+	}
 
 	saved = false;
 
