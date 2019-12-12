@@ -264,16 +264,18 @@ function reset_file(){
 	saved = true;
 }
 
-function reset_canvas_and_history(action_name){
+function reset_canvas_and_history(){
 	undos.length = 0;
 	redos.length = 0;
-	current_history_node = root_history_node = {image_data: null, parent: null, futures: [], name: action_name || "New Document", details: []};
+	current_history_node = root_history_node = {image_data: null, parent: null, futures: [], name: "New Document", details: []};
 
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
 	ctx.disable_image_smoothing();
 	ctx.fillStyle = colors.background;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 	$canvas_area.trigger("resize");
 	$canvas_area.trigger("history-update");
@@ -317,12 +319,16 @@ function open_from_Image(img, callback, canceled){
 
 		reset_file();
 		reset_colors();
-		reset_canvas_and_history("Load Document"); // (with newly reset colors)
+		reset_canvas_and_history(); // (with newly reset colors)
 		set_magnification(default_magnification);
 
 		ctx.copy(img);
 		detect_transparency();
 		$canvas_area.trigger("resize");
+
+		current_history_node.name = "Load Document";
+		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
 		$G.triggerHandler("session-update"); // autosave
 
 		callback && callback();
