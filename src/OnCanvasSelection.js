@@ -277,7 +277,19 @@ class OnCanvasSelection extends OnCanvasObject {
 		}
 		// eslint-disable-next-line no-empty
 		catch (e) { }
-		$G.triggerHandler("session-update"); // autosave
+	}
+	meld_into_canvas() {
+		this.draw();
+		// TODO: create soft undoable, never modify undoables
+		if (current_history_node.name.match(/Select/i)) {
+			current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			$G.triggerHandler("session-update"); // autosave
+		} else {
+			undoable("Deselect", ()=> {
+				this.draw();
+			}, get_icon_for_tool(get_tool_by_name("Select")), false, true);
+		}
+		this.destroy();
 	}
 	destroy() {
 		super.destroy();

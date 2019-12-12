@@ -983,9 +983,9 @@ function go_to_history_node(target_history_node, canceling) {
 	$G.triggerHandler("session-update"); // autosave
 	$G.triggerHandler("history-update"); // update history view
 }
-function undoable(action_name, callback, icon, is_extra_undoable_for_unknown){
+function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, prevent_extra_undoable_for_unknown){
 	// TODO: only modify undoables explicitly elsewhere (or create soft undoables)
-	if (!is_extra_undoable_for_unknown) {
+	if (!is_extra_undoable_for_unknown && !prevent_extra_undoable_for_unknown) {
 		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
 			// console.log("modifying undoable", current_history_node, "previous image_data:", current_history_node.image_data);
@@ -1154,13 +1154,11 @@ function cancel(going_to_history_node){
 }
 function deselect(){
 	if(selection){
-		selection.draw();
-		selection.destroy();
+		selection.meld_into_canvas();
 		selection = null;
 	}
 	if(textbox){
-		textbox.draw();
-		textbox.destroy();
+		textbox.meld_into_canvas();
 		textbox = null;
 	}
 	for (const selected_tool of selected_tools) {

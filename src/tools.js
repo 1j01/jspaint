@@ -95,8 +95,7 @@ window.tools = [{
 		if(selection){
 			// for silly multitools feature
 			alert("This isn't supposed to happen: Free-Form Select after Select in the tool chain?");
-			selection.draw();
-			selection.destroy();
+			selection.meld_into_canvas();
 			selection = null;
 		}
 		selection = new OnCanvasSelection(
@@ -135,8 +134,7 @@ window.tools = [{
 			var free_form_selection = selection;
 			if(selection){
 				// for silly multitools feature
-				selection.draw();
-				selection.destroy();
+				selection.meld_into_canvas();
 				selection = null;
 			}
 			if (ctrl) {
@@ -920,13 +918,11 @@ tools.forEach((tool)=> {
 				pointer_has_moved = true;
 			});
 			if(selection){
-				selection.draw();
-				selection.destroy();
+				selection.meld_into_canvas();
 				selection = null;
 			}
 			if(textbox){
-				textbox.draw();
-				textbox.destroy();
+				textbox.meld_into_canvas();
 				textbox = null;
 			}
 			$canvas_handles.hide();

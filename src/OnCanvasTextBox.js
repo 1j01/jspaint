@@ -123,7 +123,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 			this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
 			this.position();
 			if (e.shiftKey) {
-				this.draw();
+				// TODO: maybe re-enable but handle undoables well
+				// this.draw();
 			}
 		};
 		this.$el.on("pointerdown", e => {
@@ -171,13 +172,14 @@ class OnCanvasTextBox extends OnCanvasObject {
 		super.position(true);
 		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}
-	draw() {
+	meld_into_canvas() {
 		const text = this.$editor.val();
 		if (text) {
 			undoable("Text", () => {
 				ctx.drawImage(this.canvas, this.x, this.y);
 			}, get_icon_for_tool(get_tool_by_name("Text")));
 		}
+		this.destroy();
 	}
 	destroy() {
 		super.destroy();
