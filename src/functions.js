@@ -267,7 +267,7 @@ function reset_file(){
 function reset_canvas_and_history(){
 	undos.length = 0;
 	redos.length = 0;
-	current_history_node = root_history_node = {image_data: null, parent: null, futures: [], name: "New Document", details: []};
+	current_history_node = root_history_node = {image_data: null, parent: null, futures: [], name: "New Document", details: [], timestamp: Date.now()};
 
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
@@ -1011,6 +1011,7 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 		name: action_name,
 		details: [],
 		icon,
+		timestamp: Date.now(),
 	};
 	current_history_node.futures.push(new_history_node);
 	current_history_node = new_history_node;
@@ -1078,17 +1079,15 @@ function show_document_history() {
 
 	let previous_scroll_position = 0;
 
-	function show_history_from_node(node) {
-		const $node = $(`
-			<div class="history-node">
-				<div class="history-entry">
-					<div class="history-entry-icon-area"></div>
-					<div class="history-entry-name"></div>
-				</div>
+	let rendered_$entries = [];
+
+	function render_tree_from_node(node) {
+		const $entry = $(`
+			<div class="history-entry">
+				<div class="history-entry-icon-area"></div>
+				<div class="history-entry-name"></div>
 			</div>
 		`);
-		const $entry = $node.find(".history-entry");
-		$node.append($entry);
 		$entry.find(".history-entry-name").text(
 			(node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : "")
 		);
@@ -1106,17 +1105,31 @@ function show_document_history() {
 			}
 		}
 		for (const sub_node of node.futures) {
-			$node.append(show_history_from_node(sub_node));
+			render_tree_from_node(sub_node);
 		}
 		$entry.on("click", ()=> {
 			go_to_history_node(node);
 		});
-		return $node;
+		$entry.history_node = node;
+		rendered_$entries.push($entry);
 	}
 	const render_tree = ()=> {
 		previous_scroll_position = $history_view.scrollTop();
 		$history_view.empty();
-		$history_view.append(show_history_from_node(root_history_node));
+		rendered_$entries = [];
+		render_tree_from_node(root_history_node);
+		rendered_$entries.sort(($a, $b)=> {
+			if ($a.history_node.timestamp < $b.history_node.timestamp) {
+				return -1;
+			}
+			if ($b.history_node.timestamp < $a.history_node.timestamp) {
+				return +1;
+			}
+			return 0;
+		});
+		rendered_$entries.forEach(($entry)=> {
+			$history_view.append($entry);
+		});
 	};
 	render_tree();
 
