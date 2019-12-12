@@ -172,34 +172,12 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 	return points;
 });
 
-// NOTE: line_brush_canvas_* used by webglcontextrestored invalidate the cache
 let line_brush_canvas;
-let line_brush_canvas_rendered_shape;
-let line_brush_canvas_rendered_color;
-let line_brush_canvas_rendered_size;
+// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 function update_brush_for_drawing_lines(stroke_size){
-	console.log("update_brush_for_drawing_lines disabled");
-	// // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-	// if(aliasing && stroke_size > 1){
-	// 	// TODO: DRY brush caching code
-	// 	if(
-	// 		line_brush_canvas_rendered_shape !== "circle" ||
-	// 		line_brush_canvas_rendered_color !== stroke_color ||
-	// 		line_brush_canvas_rendered_size !== stroke_size
-	// 	){
-	// 		// don't need to do brush_ctx.disable_image_smoothing() currently because images aren't drawn to the brush
-	// 		const csz = get_brush_canvas_size(stroke_size, "circle");
-	// 		line_brush_canvas = make_canvas(csz, csz);
-	// 		line_brush_canvas.width = csz;
-	// 		line_brush_canvas.height = csz;
-	// 		line_brush_canvas.ctx.fillStyle = line_brush_canvas.ctx.strokeStyle = stroke_color;
-	// 		render_brush(line_brush_canvas.ctx, "circle", stroke_size);
-
-	// 		line_brush_canvas_rendered_shape = "circle";
-	// 		line_brush_canvas_rendered_color = stroke_color;
-	// 		line_brush_canvas_rendered_size = stroke_size;
-	// 	}
-	// }
+	if(aliasing && stroke_size > 1){
+		line_brush_canvas = get_brush_canvas("circle", stroke_size);
+	}
 }
 
 function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1) {
@@ -910,19 +888,7 @@ function draw_grid(ctx, scale) {
 
 		clamp_brush_sizes();
 
-		// rerender the brush
-		brush_ctx.fillStyle = brush_ctx.strokeStyle = stroke_color;
-		render_brush(brush_ctx, brush_shape, brush_size);
-		
-		// cachebust
-		get_tool_by_name("Pencil").rendered_shape = "WebGL context lost";
-		get_tool_by_name("Pencil").rendered_color = "transparent";
-		get_tool_by_name("Pencil").rendered_size = 0;
-
-		// cachebust
-		line_brush_canvas_rendered_shape = "WebGL context lost";
-		line_brush_canvas_rendered_color = "transparent";
-		line_brush_canvas_rendered_size = 0;
+		// TODO: cachebust memoized brushes
 
 		// redraw tool options
 		$G.triggerHandler("option-changed");
