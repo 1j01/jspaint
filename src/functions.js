@@ -267,7 +267,7 @@ function reset_file(){
 function reset_canvas_and_history(){
 	undos.length = 0;
 	redos.length = 0;
-	current_history_node = root_history_node = {image_data: null, parent: null, futures: [], name: "New Document", details: [], timestamp: Date.now()};
+	current_history_node = root_history_node = make_history_node({name: "New Document"});
 
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
@@ -279,6 +279,19 @@ function reset_canvas_and_history(){
 
 	$canvas_area.trigger("resize");
 	$canvas_area.trigger("history-update");
+}
+
+function make_history_node({
+	parent = null,
+	futures = [],
+	timestamp = Date.now(),
+	image_data = null,
+	// selection_image_data = null, // TODO: soft undos
+	name,
+	details = [],
+	icon = null,
+}) {
+	return {parent, futures, timestamp, image_data, /*selection_image_data,*/ name, details, icon};
 }
 
 function update_title(){
@@ -1004,15 +1017,12 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 	redos.length = 0;
 	undos.push(current_history_node);
 
-	const new_history_node = {
+	const new_history_node = make_history_node({
 		image_data,
-		futures: [],
 		parent: current_history_node,
 		name: action_name,
-		details: [],
 		icon,
-		timestamp: Date.now(),
-	};
+	});
 	current_history_node.futures.push(new_history_node);
 	current_history_node = new_history_node;
 
