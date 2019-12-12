@@ -1104,8 +1104,7 @@ tools.forEach((tool)=> {
 			const brush = tool.get_brush();
 			const circumference_points = get_circumference_points_for_brush(brush.shape, brush.size);
 			tool.mask_canvas.ctx.fillStyle = stroke_color;
-			const iterate_line = brush.shape.match(/diagonal/) ? brosandham_line : bresenham_line;
-			iterate_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
+			brosandham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
 				for (const point of circumference_points) {
 					tool.mask_canvas.ctx.fillRect(x + point.x, y + point.y, 1, 1);
 				}
