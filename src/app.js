@@ -720,17 +720,15 @@ $canvas.on("pointerdown", e => {
 
 		$G.on("pointermove", canvas_pointer_move);
 
-		$G.one("pointerup", (e, canceling) => {
+		$G.one("pointerup", (e) => {
 			button = undefined;
 			reverse = false;
-			if(canceling){
-				// calling selected_tool.cancel() handled elsewhere
-			}else{
-				pointer = to_canvas_coords(e);
-				selected_tools.forEach((selected_tool)=> {
-					selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
-				});
-			}
+
+			pointer = to_canvas_coords(e);
+			selected_tools.forEach((selected_tool)=> {
+				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
+			});
+
 			if (selected_tools.length === 1) {
 				if (selected_tool.deselect) {
 					select_tools(return_to_tools);

@@ -923,12 +923,11 @@ function render_history_as_apng(){
 }
 */
 function go_to_history_node(target_history_node, canceling) {
-	// TODO: maybe only modify undoables explicitly elsewhere
-	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
 	if (!target_history_node.image_data) {
-		show_error_message("History entry has no image data.");
-		console.log(target_history_node);
+		if (!canceling) {
+			show_error_message("History entry has no image data.");
+			console.log(target_history_node);
+		}
 		return;
 	}
 	current_history_node = target_history_node;
@@ -971,10 +970,14 @@ function go_to_history_node(target_history_node, canceling) {
 	$G.triggerHandler("history-update"); // update history view
 }
 function undoable(action_name, callback, icon){
+	// TODO: maybe only modify undoables explicitly elsewhere
+	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
 	saved = false;
 
+	callback && callback();
+
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	current_history_node.image_data = image_data;
 
 	redos.length = 0;
 	undos.push(current_history_node);
@@ -991,8 +994,6 @@ function undoable(action_name, callback, icon){
 	current_history_node = new_history_node;
 
 	$G.triggerHandler("history-update"); // update history view
-
-	callback && callback();
 
 	$G.triggerHandler("session-update"); // autosave
 }
@@ -1119,10 +1120,12 @@ function replace_last_action_detail(detail) {
 function cancel(){
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
-	$G.triggerHandler("pointerup", "cancel");
+	const original_history_node = current_history_node;
+	$G.triggerHandler("pointerup");
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();
 	}
+	go_to_history_node(original_history_node, true);
 	update_helper_layer();
 }
 function deselect(){
