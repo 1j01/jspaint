@@ -526,15 +526,7 @@ function tool_go(selected_tool, event_name){
 		selected_tool[event_name](ctx, pointer.x, pointer.y);
 	}
 	if(selected_tool.paint){
-		// TODO: get rid of "continous" from the interface
-		if(selected_tool.continuous === "space"){
-			const iterate_line = brush_shape.match(/diagonal/) ? brosandham_line : bresenham_line;
-			iterate_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
-				selected_tool.paint(ctx, x, y);
-			});
-		}else{
-			selected_tool.paint(ctx, pointer.x, pointer.y);
-		}
+		selected_tool.paint(ctx, pointer.x, pointer.y);
 	}
 }
 function canvas_pointer_move(e){
@@ -718,8 +710,10 @@ $canvas.on("pointerdown", e => {
 			if(selected_tool.paint || selected_tool.pointerdown){
 				tool_go(selected_tool, "pointerdown");
 			}
-			if(selected_tool.continuous === "time"){
-				interval_ids.push(setInterval(()=> { tool_go(selected_tool); }, 5));
+			if(selected_tool.paint_on_time_interval != null){
+				interval_ids.push(setInterval(()=> {
+					tool_go(selected_tool);
+				}, selected_tool.paint_on_time_interval));
 			}
 		});
 

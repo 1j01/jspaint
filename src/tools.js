@@ -33,33 +33,25 @@ window.tools = [{
 
 		// End prior selection, drawing it to the canvas
 		deselect();
-
-		// The inverty brush is continuous in space which means
-		// paint(ctx, x, y) will be called for each pixel the pointer moves
-		// and we only need to record individual pointer events to make the polygon
-		const onpointermove = e => {
-			const pointer = to_canvas_coords(e);
-			// Constrain the pointer to the canvas
-			pointer.x = Math.min(canvas.width, pointer.x);
-			pointer.x = Math.max(0, pointer.x);
-			pointer.y = Math.min(canvas.height, pointer.y);
-			pointer.y = Math.max(0, pointer.y);
-			// Add the point
-			this.points.push(pointer);
-			// Update the boundaries of the polygon
-			this.x_min = Math.min(pointer.x, this.x_min);
-			this.x_max = Math.max(pointer.x, this.x_max);
-			this.y_min = Math.min(pointer.y, this.y_min);
-			this.y_max = Math.max(pointer.y, this.y_max);
-		};
-		$G.on("pointermove", onpointermove);
-		$G.one("pointerup", () => {
-			$G.off("pointermove", onpointermove);
-		});
 	},
-	continuous: "space",
 	paint(ctx, x, y) {
-		
+		const pointer = to_canvas_coords(e);
+		// Constrain the pointer to the canvas
+		pointer.x = Math.min(canvas.width, pointer.x);
+		pointer.x = Math.max(0, pointer.x);
+		pointer.y = Math.min(canvas.height, pointer.y);
+		pointer.y = Math.max(0, pointer.y);
+		// Add the point
+		this.points.push(pointer);
+		// Update the boundaries of the polygon
+		this.x_min = Math.min(pointer.x, this.x_min);
+		this.x_max = Math.max(pointer.x, this.x_max);
+		this.y_min = Math.min(pointer.y, this.y_min);
+		this.y_max = Math.max(pointer.y, this.y_max);
+
+		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, this.paint_iteration);
+	},
+	paint_iteration(x, y) {
 		// Constrain the inverty paint brush position to the canvas
 		x = Math.min(canvas.width, x);
 		x = Math.max(0, x);
@@ -215,7 +207,6 @@ window.tools = [{
 	help_icon: "p_erase.gif",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
-	continuous: "space",
 
 	// binary mask of the drawn area, either opaque white or transparent
 	mask_canvas: null,
@@ -306,6 +297,11 @@ window.tools = [{
 		this.mask_canvas = null;
 	},
 	paint(ctx, x, y) {
+		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
+			this.paint_iteration(ctx, x, y);
+		});
+	},
+	paint_iteration(ctx, x, y) {
 		
 		const rect_x = ~~(x - eraser_size/2);
 		const rect_y = ~~(y - eraser_size/2);
@@ -553,7 +549,7 @@ window.tools = [{
 	help_icon: "p_airb.gif",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
-	continuous: "time",
+	paint_on_time_interval: 5,
 	paint_mask(ctx, x, y) {
 		const r = airbrush_size / 2;
 		for(let i = 0; i < 6 + r/5; i++){
