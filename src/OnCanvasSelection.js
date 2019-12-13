@@ -1,6 +1,6 @@
 
 class OnCanvasSelection extends OnCanvasObject {
-	constructor(x, y, width, height, img, action_name) {
+	constructor(x, y, width, height, img) {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("selection");
@@ -19,13 +19,13 @@ class OnCanvasSelection extends OnCanvasObject {
 		};
 		$G.on("option-changed", this._on_option_changed);
 
-		this.instantiate(img, action_name);
+		this.instantiate(img);
 	}
 	position() {
 		super.position(true);
 		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}
-	instantiate(img, action_name) {
+	instantiate(img) {
 		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move")
 		});
@@ -129,29 +129,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			$status_size.text("");
 		};
 		
-		if (action_name === "go_to_history_node") {
-			instantiate();
-		} else {
-			const icon =
-			(action_name && action_name.match(/Free-Form Select.*Select/)) ?
-				get_icon_for_tools([
-					get_tool_by_name("Free-Form Select"),
-					get_tool_by_name("Select"),
-				])
-				:
-				get_icon_for_tool(get_tool_by_name(
-					action_name === "Free-Form Select" ? "Free-Form Select" : "Select"
-				));
-		
-			// HACK: make selection available inside undoable
-			selection = this;
-
-			undoable({
-				name: action_name || "Select",
-				icon,
-				soft: true,
-			}, instantiate);
-		}
+		instantiate();
 	}
 	cut_out_background() {
 		const cutout = this.canvas;

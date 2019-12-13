@@ -99,15 +99,21 @@ window.tools = [{
 			selection.meld_into_canvas();
 			selection = null;
 		}
-		selection = new OnCanvasSelection(
-			this.x_min,
-			this.y_min,
-			this.x_max - this.x_min,
-			this.y_max - this.y_min,
-			contents_within_polygon,
-			"Free-Form Select",
-		);
-		selection.cut_out_background();
+
+		undoable({
+			name: "Free-Form Select",
+			icon: get_icon_for_tool(get_tool_by_name("Free-Form Select")),
+			soft: true,
+		}, ()=> {
+			selection = new OnCanvasSelection(
+				this.x_min,
+				this.y_min,
+				this.x_max - this.x_min,
+				this.y_max - this.y_min,
+				contents_within_polygon,
+			);
+			selection.cut_out_background();
+		});
 	},
 	cancel() {
 		if(!this.preview_canvas){return;}
@@ -185,17 +191,31 @@ window.tools = [{
 				contents_canvas.ctx.globalCompositeOperation = "xor";
 				contents_canvas.ctx.drawImage(rect_canvas, 0, 0);
 
-				selection = new OnCanvasSelection(
-					x_min,
-					y_min,
-					x_max - x_min,
-					y_max - y_min,
-					contents_canvas,
-					"Free-Form Select⊕Select"
-				);
-				selection.cut_out_background();
+				undoable({
+					name: "Free-Form Select⊕Select",
+					icon: get_icon_for_tools([
+						get_tool_by_name("Free-Form Select"),
+						get_tool_by_name("Select"),
+					]),
+					soft: true,
+				}, ()=> {
+					selection = new OnCanvasSelection(
+						x_min,
+						y_min,
+						x_max - x_min,
+						y_max - y_min,
+						contents_canvas,
+					);
+					selection.cut_out_background();
+				});
 			} else {
-				selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
+				undoable({
+					name: "Select",
+					icon: get_icon_for_tool(get_tool_by_name("Select")),
+					soft: true,
+				}, ()=> {
+					selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
+				});
 			}
 		}
 	},

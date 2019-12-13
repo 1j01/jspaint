@@ -829,7 +829,14 @@ function paste(img){
 		select_tool(get_tool_by_name("Select"));
 		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
 		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
-		selection = new OnCanvasSelection(x, y, img.width, img.height, img, "Paste");
+
+		undoable({
+			name: "Paste",
+			icon: get_icon_for_tool(get_tool_by_name("Select")),
+			soft: true,
+		}, ()=> {
+			selection = new OnCanvasSelection(x, y, img.width, img.height, img);
+		});
 	}
 }
 
@@ -998,7 +1005,6 @@ function go_to_history_node(target_history_node, canceling) {
 			target_history_node.selection_image_data.width,
 			target_history_node.selection_image_data.height,
 			target_history_node.selection_image_data,
-			"go_to_history_node"
 		);
 	}
 	if (target_history_node.textbox_font) {
@@ -1282,7 +1288,13 @@ function select_all(){
 	deselect();
 	select_tool(get_tool_by_name("Select"));
 
-	selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height, null, "Select All");
+	undoable({
+		name: "Select All",
+		icon: get_icon_for_tool(get_tool_by_name("Select")),
+		soft: true,
+	}, ()=> {
+		selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
+	});
 }
 
 const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
