@@ -285,6 +285,7 @@ function make_history_node({
 	parent = null,
 	futures = [],
 	timestamp = Date.now(),
+	soft = false,
 	image_data = null,
 	selection_image_data = null,
 	selection_x,
@@ -302,6 +303,7 @@ function make_history_node({
 		parent,
 		futures,
 		timestamp,
+		soft,
 		image_data,
 		selection_image_data,
 		selection_x,
@@ -1044,7 +1046,7 @@ function go_to_history_node(target_history_node, canceling) {
 	$G.triggerHandler("session-update"); // autosave
 	$G.triggerHandler("history-update"); // update history view
 }
-function undoable({name, icon, is_extra_undoable_for_unknown, prevent_extra_undoable_for_unknown}, callback){
+function undoable({name, icon, is_extra_undoable_for_unknown, prevent_extra_undoable_for_unknown, soft}, callback){
 	if (!is_extra_undoable_for_unknown && !prevent_extra_undoable_for_unknown) {
 		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
@@ -1076,6 +1078,7 @@ function undoable({name, icon, is_extra_undoable_for_unknown, prevent_extra_undo
 		parent: current_history_node,
 		name,
 		icon,
+		soft,
 	});
 	current_history_node.futures.push(new_history_node);
 	current_history_node = new_history_node;
@@ -1098,8 +1101,18 @@ function make_or_update_undoable(undoable_meta, undoable_action) {
 function undo(canceling){
 	if(undos.length<1){ return false; }
 
+	console.log("undo start", current_history_node, undos.length);
+
 	redos.push(current_history_node);
-	go_to_history_node(undos.pop(), canceling);
+	let target_history_node = undos.pop();
+
+	while (target_history_node.soft && undos.length) {
+		console.log("undo soft step", target_history_node, undos.length);
+		redos.push(target_history_node);
+		target_history_node = undos.pop();
+	}
+
+	go_to_history_node(target_history_node, canceling);
 
 	return true;
 }
@@ -1120,8 +1133,18 @@ function redo(){
 		return false;
 	}
 
+	console.log("redo start", current_history_node, undos.length);
+
 	undos.push(current_history_node);
-	go_to_history_node(redos.pop());
+	let target_history_node = redos.pop();
+
+	while (target_history_node.soft && redos.length) {
+		console.log("redo soft step", target_history_node, redos.length);
+		undos.push(target_history_node);
+		target_history_node = redos.pop();
+	}
+
+	go_to_history_node(target_history_node);
 
 	return true;
 }
@@ -1163,7 +1186,8 @@ function show_document_history() {
 				<div class="history-entry-name"></div>
 			</div>
 		`);
-		$entry.find(".history-entry-name").text((node.name || "Unknown"));
+		// $entry.find(".history-entry-name").text((node.name || "Unknown") + (node.soft ? " (soft)" : ""));
+		$entry.find(".history-entry-name").text(node.name || "Unknown");
 		$entry.find(".history-entry-icon-area").append(node.icon);
 		if (node === current_history_node) {
 			$entry.addClass("current");
@@ -1242,12 +1266,12 @@ function deselect(going_to_history_node){
 }
 function delete_selection(action_name){
 	if(selection){
-		// TODO: mark as soft undoable
 		// TODO: should action names be "Delete Selection", "Cut Selection"?
 		// .."Paste Selection" wouldn't make sense
 		undoable({
 			name: action_name || "Delete",
 			icon: get_icon_for_tool(get_tool_by_name("Select")),
+			soft: true,
 		}, ()=> {
 			selection.destroy();
 			selection = null;

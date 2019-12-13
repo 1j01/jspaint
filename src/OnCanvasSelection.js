@@ -59,10 +59,10 @@ class OnCanvasSelection extends OnCanvasObject {
 			const getRect = ()=> ({left: this.x, top: this.y, width: this.width, height: this.height, right: this.x + this.width, bottom: this.y + this.height})
 			this.$handles = $Handles(this.$el, getRect, { outset: 2 });
 			this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
-				// TODO: mark as soft undoable
 				undoable({
 					name: "Resize Selection",
 					icon: get_icon_for_tool(get_tool_by_name("Select")),
+					soft: true,
 				}, ()=> {
 					this.x += delta_x;
 					this.y += delta_y;
@@ -74,11 +74,11 @@ class OnCanvasSelection extends OnCanvasObject {
 			});
 			let mox, moy;
 			const pointermove = e => {
-				// TODO: mark as soft undoable
 				make_or_update_undoable({
 					match: (history_node)=> history_node.name.match(/^(Smear|Stamp|Move) Selection$/),
 					name: e.shiftKey ? "Smear Selection" : "Move Selection",
 					icon: get_icon_for_tool(get_tool_by_name("Select")),
+					soft: true,
 				}, ()=> {
 					const m = to_canvas_coords(e);
 					this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
@@ -106,6 +106,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					undoable({
 						name: "Stamp Selection",
 						icon: get_icon_for_tool(get_tool_by_name("Select")),
+						soft: true,
 					}, ()=> {
 						this.draw();
 					});
@@ -116,6 +117,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					undoable({
 						name: "Stamp Selection",
 						icon: get_icon_for_tool(get_tool_by_name("Select")),
+						soft: true,
 					}, ()=> {
 						this.draw();
 					});
@@ -144,7 +146,11 @@ class OnCanvasSelection extends OnCanvasObject {
 			// HACK: make selection available inside undoable
 			selection = this;
 
-			undoable({name: action_name || "Select", icon}, instantiate);
+			undoable({
+				name: action_name || "Select",
+				icon,
+				soft: true,
+			}, instantiate);
 		}
 	}
 	cut_out_background() {
@@ -288,7 +294,6 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.draw();
 
 		if (!going_to_history_node) {
-			// TODO: mark as soft undoable
 			undoable({
 				name: "Deselect",
 				icon: get_icon_for_tool(get_tool_by_name("Select")),
