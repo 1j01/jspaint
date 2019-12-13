@@ -296,10 +296,25 @@ function make_history_node({
 	textbox_width,
 	textbox_height,
 	name,
-	details = [],
 	icon = null,
 }) {
-	return {parent, futures, timestamp, image_data, selection_image_data, selection_x, selection_y, textbox_text, textbox_font, textbox_x, textbox_y, textbox_width, textbox_height, name, details, icon};
+	return {
+		parent,
+		futures,
+		timestamp,
+		image_data,
+		selection_image_data,
+		selection_x,
+		selection_y,
+		textbox_text,
+		textbox_font,
+		textbox_x,
+		textbox_y,
+		textbox_width,
+		textbox_height,
+		name,
+		icon,
+	};
 }
 
 function update_title(){
@@ -957,11 +972,8 @@ function go_to_history_node(target_history_node, canceling) {
 		}
 		return;
 	}
-	// TODO: only modify undoables explicitly elsewhere (or create soft undoables)
 	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
-		// console.log("modifying undoable", current_history_node, "previous image_data:", current_history_node.image_data);
-		// current_history_node.image_data = current_image_data;
 		console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		undoable("Unknown [GTHN]", ()=> {}, null, true);
 	}
@@ -1037,8 +1049,6 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 	if (!is_extra_undoable_for_unknown && !prevent_extra_undoable_for_unknown) {
 		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
-			// console.log("modifying undoable", current_history_node, "previous image_data:", current_history_node.image_data);
-			// current_history_node.image_data = current_image_data;
 			undoable("Unknown [undoable]", ()=> {}, null, true);
 			console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		}
@@ -1046,9 +1056,7 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 
 	saved = false;
 
-	// console.log("undoable", action_name, selection);
 	callback && callback();
-	// console.log("after action", action_name, selection);
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -1078,7 +1086,6 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 	$G.triggerHandler("session-update"); // autosave
 }
 function make_or_update_undoable(action_name, callback, icon) {
-	// console.log("make_or_update_undoable", action_name, selection);
 	if (current_history_node.name === action_name) {
 		callback();
 		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -1157,9 +1164,7 @@ function show_document_history() {
 				<div class="history-entry-name"></div>
 			</div>
 		`);
-		$entry.find(".history-entry-name").text(
-			(node.name || "Unknown") + (node.details.length ? ` (${node.details.join(", ")})` : "")
-		);
+		$entry.find(".history-entry-name").text((node.name || "Unknown"));
 		$entry.find(".history-entry-icon-area").append(node.icon);
 		if (node === current_history_node) {
 			$entry.addClass("current");
@@ -1209,17 +1214,6 @@ function show_document_history() {
 
 	$w.center();
 }
-// function add_action_detail(action_name) {
-// 	current_history_node.details.push(action_name);
-// 	$G.triggerHandler("history-update");
-// }
-// function get_last_action_detail() {
-// 	return current_history_node.details[current_history_node.details.length - 1];
-// }
-// function replace_last_action_detail(detail) {
-// 	current_history_node.details[current_history_node.details.length - 1] = detail;
-// 	$G.triggerHandler("history-update");
-// }
 
 function cancel(going_to_history_node){
 	// Note: this function should be idempotent.
