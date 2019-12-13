@@ -75,8 +75,8 @@ class OnCanvasSelection extends OnCanvasObject {
 			let mox, moy;
 			const pointermove = e => {
 				// TODO: mark as soft undoable
-				// TODO: merge "Stamp Selection" into "Smear Selection"
 				make_or_update_undoable({
+					match: (history_node)=> history_node.name.match(/^(Smear|Stamp|Move) Selection$/),
 					name: e.shiftKey ? "Smear Selection" : "Move Selection",
 					icon: get_icon_for_tool(get_tool_by_name("Select")),
 				}, ()=> {
@@ -103,7 +103,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				});
 				if (e.shiftKey) {
 					// Stamp or start to smear selection
-					make_or_update_undoable({
+					undoable({
 						name: "Stamp Selection",
 						icon: get_icon_for_tool(get_tool_by_name("Select")),
 					}, ()=> {
@@ -113,7 +113,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				// TODO: how should this work for macOS? where ctrl+click = secondary click?
 				else if (e.ctrlKey) {
 					// Stamp selection
-					make_or_update_undoable({
+					undoable({
 						name: "Stamp Selection",
 						icon: get_icon_for_tool(get_tool_by_name("Select")),
 					}, ()=> {
