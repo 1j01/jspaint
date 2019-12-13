@@ -268,22 +268,6 @@ class OnCanvasSelection extends OnCanvasObject {
 		// eslint-disable-next-line no-empty
 		catch (e) { }
 	}
-	meld_into_canvas(going_to_history_node) {
-		this.draw();
-
-		if (!going_to_history_node) {
-			undoable({
-				name: "Deselect",
-				icon: get_icon_for_tool(get_tool_by_name("Select")),
-				prevent_extra_undoable_for_unknown: true,
-			}, ()=> {
-				this.draw();
-				// HACK: make selection not exist for undoable
-				selection = null;
-			});
-		}
-		this.destroy();
-	}
 	destroy() {
 		super.destroy();
 		$G.off("option-changed", this._on_option_changed);

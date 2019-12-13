@@ -174,25 +174,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 		super.position(true);
 		update_helper_layer(); // TODO: under-grid specific helper layer?
 	}
-	meld_into_canvas(going_to_history_node) {
-		const text = this.$editor.val();
-		if (text && !going_to_history_node) {
-			undoable({
-				name: "Text",
-				icon: get_icon_for_tool(get_tool_by_name("Text")),
-				soft: true,
-			}, ()=> { });
-			undoable({
-				name: "Finish Text",
-				icon: get_icon_for_tool(get_tool_by_name("Text")),
-			}, () => {
-				ctx.drawImage(this.canvas, this.x, this.y);
-				// HACK: make textbox not exist for undoable
-				textbox = null;
-			});
-		}
-		this.destroy();
-	}
 	destroy() {
 		super.destroy();
 		if (OnCanvasTextBox.$fontbox && !OnCanvasTextBox.$fontbox.closed) {

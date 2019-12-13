@@ -984,7 +984,7 @@ function go_to_history_node(target_history_node, canceling) {
 	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
 		console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
-		undoable({name: "Unknown [GTHN]", is_extra_undoable_for_unknown: true}, ()=> {});
+		undoable({name: "Unknown [GTHN]", use_loose_canvas_changes: true}, ()=> {});
 	}
 	current_history_node = target_history_node;
 	
@@ -1052,11 +1052,11 @@ function go_to_history_node(target_history_node, canceling) {
 	$G.triggerHandler("session-update"); // autosave
 	$G.triggerHandler("history-update"); // update history view
 }
-function undoable({name, icon, is_extra_undoable_for_unknown, prevent_extra_undoable_for_unknown, soft}, callback){
-	if (!is_extra_undoable_for_unknown && !prevent_extra_undoable_for_unknown) {
+function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
+	if (!use_loose_canvas_changes) {
 		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
-			undoable({name: "Unknown [undoable]", is_extra_undoable_for_unknown: true}, ()=> {});
+			undoable({name: "Unknown [undoable]", use_loose_canvas_changes: true}, ()=> {});
 			console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		}
 	}
@@ -1257,14 +1257,45 @@ function cancel(going_to_history_node){
 	}
 	update_helper_layer();
 }
+function meld_selection_into_canvas(going_to_history_node) {
+	selection.draw();
+	selection.destroy();
+	selection = null;
+	if (!going_to_history_node) {
+		undoable({
+			name: "Deselect",
+			icon: get_icon_for_tool(get_tool_by_name("Select")),
+			use_loose_canvas_changes: true, // HACK; TODO: make OnCanvasSelection not directly change the canvas, same rules as tools
+		}, ()=> { });
+	}
+}
+function meld_textbox_into_canvas(going_to_history_node) {
+	const text = textbox.$editor.val();
+	if (text && !going_to_history_node) {
+		undoable({
+			name: "Text",
+			icon: get_icon_for_tool(get_tool_by_name("Text")),
+			soft: true,
+		}, ()=> { });
+		undoable({
+			name: "Finish Text",
+			icon: get_icon_for_tool(get_tool_by_name("Text")),
+		}, () => {
+			ctx.drawImage(textbox.canvas, textbox.x, textbox.y);
+			textbox.destroy();
+			textbox = null;
+		});
+	} else {
+		textbox.destroy();
+		textbox = null;
+	}
+}
 function deselect(going_to_history_node){
 	if(selection){
-		selection.meld_into_canvas(going_to_history_node);
-		selection = null;
+		meld_selection_into_canvas(going_to_history_node);
 	}
 	if(textbox){
-		textbox.meld_into_canvas(going_to_history_node);
-		textbox = null;
+		meld_textbox_into_canvas(going_to_history_node);
 	}
 	for (const selected_tool of selected_tools) {
 		selected_tool.end && selected_tool.end(ctx);

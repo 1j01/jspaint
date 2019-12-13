@@ -96,8 +96,7 @@ window.tools = [{
 		if(selection){
 			// for silly multitools feature
 			alert("This isn't supposed to happen: Free-Form Select after Select in the tool chain?");
-			selection.meld_into_canvas();
-			selection = null;
+			meld_selection_into_canvas();
 		}
 
 		undoable({
@@ -141,8 +140,7 @@ window.tools = [{
 			var free_form_selection = selection;
 			if(selection){
 				// for silly multitools feature
-				selection.meld_into_canvas();
-				selection = null;
+				meld_selection_into_canvas();
 			}
 			if (ctrl) {
 				undoable({name: "Crop"}, () => {
@@ -954,12 +952,10 @@ tools.forEach((tool)=> {
 				pointer_has_moved = true;
 			});
 			if(selection){
-				selection.meld_into_canvas();
-				selection = null;
+				meld_selection_into_canvas();
 			}
 			if(textbox){
-				textbox.meld_into_canvas();
-				textbox = null;
+				meld_textbox_into_canvas();
 			}
 			$canvas_handles.hide();
 		};
