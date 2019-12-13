@@ -286,12 +286,14 @@ function make_history_node({
 	futures = [],
 	timestamp = Date.now(),
 	image_data = null,
-	// selection_image_data = null, // TODO: soft undos
+	selection_image_data = null,
+	selection_x = undefined,
+	selection_y = undefined,
 	name,
 	details = [],
 	icon = null,
 }) {
-	return {parent, futures, timestamp, image_data, /*selection_image_data,*/ name, details, icon};
+	return {parent, futures, timestamp, image_data, selection_image_data, selection_x, selection_y, name, details, icon};
 }
 
 function update_title(){
@@ -966,6 +968,19 @@ function go_to_history_node(target_history_node, canceling) {
 	saved = false;
 
 	ctx.copy(target_history_node.image_data);
+	if (target_history_node.selection_image_data) {
+		if (selection) {
+			selection.destroy();
+		}
+		selection = new OnCanvasSelection(
+			target_history_node.selection_x,
+			target_history_node.selection_y,
+			target_history_node.selection_image_data.width,
+			target_history_node.selection_image_data.height,
+			target_history_node.selection_image_data,
+			"go_to_history_node"
+		);
+	}
 
 	const history_ancestors = get_history_ancestors(target_history_node);
 
@@ -1019,6 +1034,9 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 
 	const new_history_node = make_history_node({
 		image_data,
+		selection_image_data: selection && selection.canvas.ctx.getImageData(0, 0, selection.canvas.width, selection.canvas.height),
+		selection_x: selection && selection.x,
+		selection_y: selection && selection.y,
 		parent: current_history_node,
 		name: action_name,
 		icon,

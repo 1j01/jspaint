@@ -128,7 +128,10 @@ class OnCanvasSelection extends OnCanvasObject {
 			$status_size.text("");
 		};
 		
-		const icon =
+		if (action_name === "go_to_history_node") {
+			instantiate();
+		} else {
+			const icon =
 			(action_name && action_name.match(/Free-Form Select.*Select/)) ?
 				get_icon_for_tools([
 					get_tool_by_name("Free-Form Select"),
@@ -139,7 +142,11 @@ class OnCanvasSelection extends OnCanvasObject {
 					action_name === "Free-Form Select" ? "Free-Form Select" : "Select"
 				));
 		
-		undoable(action_name || "Select", instantiate, icon);
+			// HACK: make selection available inside undoable
+			window.selection = this;
+
+			undoable(action_name || "Select", instantiate, icon);
+		}
 	}
 	cut_out_background() {
 		const cutout = this.canvas;
@@ -280,15 +287,13 @@ class OnCanvasSelection extends OnCanvasObject {
 	}
 	meld_into_canvas() {
 		this.draw();
-		// TODO: create soft undoable, never modify undoables
-		if (current_history_node.name.match(/Select/i)) {
-			current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			$G.triggerHandler("session-update"); // autosave
-		} else {
-			undoable("Deselect", ()=> {
-				this.draw();
-			}, get_icon_for_tool(get_tool_by_name("Select")), false, true);
-		}
+
+		// HACK: make selection not exist in undoable
+		window.selection = null;
+
+		undoable("Deselect", ()=> {
+			this.draw();
+		}, get_icon_for_tool(get_tool_by_name("Select")), false, true);
 		this.destroy();
 	}
 	destroy() {
