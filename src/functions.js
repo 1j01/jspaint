@@ -1098,7 +1098,7 @@ function make_or_update_undoable(undoable_meta, undoable_action) {
 		undoable(undoable_meta, undoable_action);
 	}
 }
-function undo(canceling){
+function undo(){
 	if(undos.length<1){ return false; }
 
 	console.log("undo start", current_history_node, undos.length);
@@ -1112,7 +1112,7 @@ function undo(canceling){
 		target_history_node = undos.pop();
 	}
 
-	go_to_history_node(target_history_node, canceling);
+	go_to_history_node(target_history_node);
 
 	return true;
 }
