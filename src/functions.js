@@ -1094,13 +1094,7 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 	$G.triggerHandler("session-update"); // autosave
 }
 function make_or_update_undoable(undoable_meta, undoable_action) {
-	if (current_history_node.futures.length === 0 &&
-		(
-			undoable_meta.match ?
-				undoable_meta.match(current_history_node) :
-				(current_history_node.name === undoable_meta.name)
-		)
-	) {
+	if (current_history_node.futures.length === 0 && undoable_meta.match(current_history_node)) {
 		undoable_action();
 		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		current_history_node.selection_image_data = selection && selection.canvas.ctx.getImageData(0, 0, selection.canvas.width, selection.canvas.height);
