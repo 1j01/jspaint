@@ -35,7 +35,6 @@ window.tools = [{
 		deselect();
 	},
 	paint(ctx, x, y) {
-		const pointer = to_canvas_coords(e);
 		// Constrain the pointer to the canvas
 		pointer.x = Math.min(canvas.width, pointer.x);
 		pointer.x = Math.max(0, pointer.x);
@@ -49,7 +48,9 @@ window.tools = [{
 		this.y_min = Math.min(pointer.y, this.y_min);
 		this.y_max = Math.max(pointer.y, this.y_max);
 
-		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, this.paint_iteration);
+		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
+			this.paint_iteration(x, y);
+		});
 	},
 	paint_iteration(x, y) {
 		// Constrain the inverty paint brush position to the canvas
