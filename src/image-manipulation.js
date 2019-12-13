@@ -405,9 +405,9 @@ function apply_image_transformation(action_name, fn){
 	fn(original_canvas, original_ctx, new_canvas, new_ctx);
 	
 	if(selection){
-		selection.replace_source_canvas(new_canvas);
-
-		add_action_detail(action_name);
+		undoable(`${action_name} Selection`, () => {
+			selection.replace_source_canvas(new_canvas);
+		});
 	}else{
 		undoable(action_name, () => {
 			deselect();

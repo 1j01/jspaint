@@ -961,7 +961,7 @@ function go_to_history_node(target_history_node, canceling) {
 	}
 	current_history_node = target_history_node;
 	
-	deselect();
+	deselect(true);
 	if (!canceling) {
 		cancel(true);
 	}
@@ -1025,7 +1025,9 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 
 	saved = false;
 
+	// console.log("undoable", action_name, selection);
 	callback && callback();
+	// console.log("after action", action_name, selection);
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -1047,6 +1049,18 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 	$G.triggerHandler("history-update"); // update history view
 
 	$G.triggerHandler("session-update"); // autosave
+}
+function make_or_update_undoable(action_name, callback, icon) {
+	// console.log("make_or_update_undoable", action_name, selection);
+	if (current_history_node.name === action_name) {
+		callback();
+		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		current_history_node.selection_image_data = selection && selection.canvas.ctx.getImageData(0, 0, selection.canvas.width, selection.canvas.height);
+		current_history_node.selection_x = selection && selection.x;
+		current_history_node.selection_y = selection && selection.y;
+	} else {
+		undoable(action_name, callback, icon);
+	}
 }
 function undo(canceling){
 	if(undos.length<1){ return false; }
@@ -1168,17 +1182,17 @@ function show_document_history() {
 
 	$w.center();
 }
-function add_action_detail(action_name) {
-	current_history_node.details.push(action_name);
-	$G.triggerHandler("history-update");
-}
-function get_last_action_detail() {
-	return current_history_node.details[current_history_node.details.length - 1];
-}
-function replace_last_action_detail(detail) {
-	current_history_node.details[current_history_node.details.length - 1] = detail;
-	$G.triggerHandler("history-update");
-}
+// function add_action_detail(action_name) {
+// 	current_history_node.details.push(action_name);
+// 	$G.triggerHandler("history-update");
+// }
+// function get_last_action_detail() {
+// 	return current_history_node.details[current_history_node.details.length - 1];
+// }
+// function replace_last_action_detail(detail) {
+// 	current_history_node.details[current_history_node.details.length - 1] = detail;
+// 	$G.triggerHandler("history-update");
+// }
 
 function cancel(going_to_history_node){
 	// Note: this function should be idempotent.
@@ -1193,13 +1207,13 @@ function cancel(going_to_history_node){
 	}
 	update_helper_layer();
 }
-function deselect(){
+function deselect(going_to_history_node){
 	if(selection){
-		selection.meld_into_canvas();
+		selection.meld_into_canvas(going_to_history_node);
 		selection = null;
 	}
 	if(textbox){
-		textbox.meld_into_canvas();
+		textbox.meld_into_canvas(going_to_history_node);
 		textbox = null;
 	}
 	for (const selected_tool of selected_tools) {
@@ -1208,10 +1222,13 @@ function deselect(){
 }
 function delete_selection(action_name){
 	if(selection){
-		selection.destroy();
-		selection = null;
-
-		add_action_detail(action_name || "Delete");
+		// TODO: mark as soft undoable
+		// TODO: should action names be "Delete Selection", "Cut Selection"?
+		// .."Paste Selection" wouldn't make sense
+		undoable(action_name || "Delete", ()=> {
+			selection.destroy();
+			selection = null;
+		}, get_icon_for_tool(get_tool_by_name("Select")));
 	}
 }
 function select_all(){
