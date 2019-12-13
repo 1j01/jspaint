@@ -178,12 +178,18 @@ class OnCanvasTextBox extends OnCanvasObject {
 		const text = this.$editor.val();
 		if (text && !going_to_history_node) {
 			// TODO: mark as soft undoable... one of these...
-			undoable("Text", ()=> { }, get_icon_for_tool(get_tool_by_name("Text")));
-			undoable("Finish Text", () => {
+			undoable({
+				name: "Text",
+				icon: get_icon_for_tool(get_tool_by_name("Text"))
+			}, ()=> { });
+			undoable({
+				name: "Finish Text",
+				icon: get_icon_for_tool(get_tool_by_name("Text"))
+			}, () => {
 				ctx.drawImage(this.canvas, this.x, this.y);
 				// HACK: make textbox not exist for undoable
 				textbox = null;
-			}, get_icon_for_tool(get_tool_by_name("Text")));
+			});
 		}
 		this.destroy();
 	}

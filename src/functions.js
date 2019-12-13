@@ -796,7 +796,7 @@ function paste(img){
 			$w.close();
 			// Extra undoable just for the resize; the paste gets its own
 			// TODO: enlarge icon
-			undoable("Paste: Enlarge", () => {
+			undoable({name: "Paste: Enlarge"}, () => {
 				const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
@@ -975,7 +975,7 @@ function go_to_history_node(target_history_node, canceling) {
 	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
 		console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
-		undoable("Unknown [GTHN]", ()=> {}, null, true);
+		undoable({name: "Unknown [GTHN]", is_extra_undoable_for_unknown: true}, ()=> {});
 	}
 	current_history_node = target_history_node;
 	
@@ -1044,12 +1044,11 @@ function go_to_history_node(target_history_node, canceling) {
 	$G.triggerHandler("session-update"); // autosave
 	$G.triggerHandler("history-update"); // update history view
 }
-function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, prevent_extra_undoable_for_unknown){
-	// TODO: only modify undoables explicitly elsewhere (or create soft undoables)
+function undoable({name, icon, is_extra_undoable_for_unknown, prevent_extra_undoable_for_unknown}, callback){
 	if (!is_extra_undoable_for_unknown && !prevent_extra_undoable_for_unknown) {
 		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
-			undoable("Unknown [undoable]", ()=> {}, null, true);
+			undoable({name: "Unknown [undoable]", is_extra_undoable_for_unknown: true}, ()=> {});
 			console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		}
 	}
@@ -1075,7 +1074,7 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 		textbox_width: textbox && textbox.width,
 		textbox_height: textbox && textbox.height,
 		parent: current_history_node,
-		name: action_name,
+		name,
 		icon,
 	});
 	current_history_node.futures.push(new_history_node);
@@ -1085,15 +1084,15 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 
 	$G.triggerHandler("session-update"); // autosave
 }
-function make_or_update_undoable(action_name, callback, icon) {
-	if (current_history_node.name === action_name) {
-		callback();
+function make_or_update_undoable(undoable_meta, undoable_action) {
+	if (current_history_node.name === undoable_meta.name) {
+		undoable_action();
 		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		current_history_node.selection_image_data = selection && selection.canvas.ctx.getImageData(0, 0, selection.canvas.width, selection.canvas.height);
 		current_history_node.selection_x = selection && selection.x;
 		current_history_node.selection_y = selection && selection.y;
 	} else {
-		undoable(action_name, callback, icon);
+		undoable(undoable_meta, undoable_action);
 	}
 }
 function undo(canceling){
@@ -1246,10 +1245,13 @@ function delete_selection(action_name){
 		// TODO: mark as soft undoable
 		// TODO: should action names be "Delete Selection", "Cut Selection"?
 		// .."Paste Selection" wouldn't make sense
-		undoable(action_name || "Delete", ()=> {
+		undoable({
+			name: action_name || "Delete",
+			icon: get_icon_for_tool(get_tool_by_name("Select")),
+		}, ()=> {
 			selection.destroy();
 			selection = null;
-		}, get_icon_for_tool(get_tool_by_name("Select")));
+		});
 	}
 }
 function select_all(){
@@ -1402,7 +1404,7 @@ function image_invert(){
 }
 
 function clear(){
-	undoable("Clear", () => {
+	undoable({name: "Clear"}, () => {
 		deselect();
 		cancel();
 		saved = false;

@@ -170,7 +170,7 @@ $canvas_area.on("user-resized", (e, _x, _y, width, height) => {
 	// TODO: don't create undoable if same size
 	// TODO: move this to a function and don't trigger this event other than from the handles
 	// TODO: resize icon for history view
-	undoable("Resize Canvas", () => {
+	undoable({name: "Resize Canvas"}, () => {
 		const image_data = ctx.getImageData(0, 0, width, height);
 		canvas.width = Math.max(1, width);
 		canvas.height = Math.max(1, height);

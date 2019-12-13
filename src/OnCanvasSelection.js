@@ -60,20 +60,26 @@ class OnCanvasSelection extends OnCanvasObject {
 			this.$handles = $Handles(this.$el, getRect, { outset: 2 });
 			this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 				// TODO: mark as soft undoable
-				undoable("Resize Selection", ()=> {
+				undoable({
+					name: "Resize Selection",
+					icon: get_icon_for_tool(get_tool_by_name("Select")),
+				}, ()=> {
 					this.x += delta_x;
 					this.y += delta_y;
 					this.width = width;
 					this.height = height;
 					this.position();
 					this.resize();
-				}, get_icon_for_tool(get_tool_by_name("Select")));
+				});
 			});
 			let mox, moy;
 			const pointermove = e => {
 				// TODO: mark as soft undoable
 				// TODO: merge "Stamp Selection" into "Smear Selection"
-				make_or_update_undoable(e.shiftKey ? "Smear Selection" : "Move Selection", ()=> {
+				make_or_update_undoable({
+					name: e.shiftKey ? "Smear Selection" : "Move Selection",
+					icon: get_icon_for_tool(get_tool_by_name("Select")),
+				}, ()=> {
 					const m = to_canvas_coords(e);
 					this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
 					this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
@@ -82,7 +88,7 @@ class OnCanvasSelection extends OnCanvasObject {
 						// Smear selection
 						this.draw();
 					}
-				}, get_icon_for_tool(get_tool_by_name("Select")));
+				});
 			};
 			this.canvas_pointerdown = e => {
 				e.preventDefault();
@@ -97,16 +103,22 @@ class OnCanvasSelection extends OnCanvasObject {
 				});
 				if (e.shiftKey) {
 					// Stamp or start to smear selection
-					make_or_update_undoable("Stamp Selection", ()=> {
+					make_or_update_undoable({
+						name: "Stamp Selection",
+						icon: get_icon_for_tool(get_tool_by_name("Select")),
+					}, ()=> {
 						this.draw();
-					}, get_icon_for_tool(get_tool_by_name("Select")));
+					});
 				}
 				// TODO: how should this work for macOS? where ctrl+click = secondary click?
 				else if (e.ctrlKey) {
 					// Stamp selection
-					make_or_update_undoable("Stamp Selection", ()=> {
+					make_or_update_undoable({
+						name: "Stamp Selection",
+						icon: get_icon_for_tool(get_tool_by_name("Select")),
+					}, ()=> {
 						this.draw();
-					}, get_icon_for_tool(get_tool_by_name("Select")));
+					});
 				}
 			};
 			$(this.canvas).on("pointerdown", this.canvas_pointerdown);
@@ -132,7 +144,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			// HACK: make selection available inside undoable
 			selection = this;
 
-			undoable(action_name || "Select", instantiate, icon);
+			undoable({name: action_name || "Select", icon}, instantiate);
 		}
 	}
 	cut_out_background() {
@@ -277,11 +289,15 @@ class OnCanvasSelection extends OnCanvasObject {
 
 		if (!going_to_history_node) {
 			// TODO: mark as soft undoable
-			undoable("Deselect", ()=> {
+			undoable({
+				name: "Deselect",
+				icon: get_icon_for_tool(get_tool_by_name("Select")),
+				prevent_extra_undoable_for_unknown: true,
+			}, ()=> {
 				this.draw();
 				// HACK: make selection not exist for undoable
 				selection = null;
-			}, get_icon_for_tool(get_tool_by_name("Select")), false, true);
+			});
 		}
 		this.destroy();
 	}

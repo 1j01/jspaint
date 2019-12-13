@@ -139,7 +139,7 @@ window.tools = [{
 				selection = null;
 			}
 			if (ctrl) {
-				undoable("Crop", () => {
+				undoable({name: "Crop"}, () => {
 					var cropped_canvas = make_canvas(rect_width, rect_height);
 					cropped_canvas.ctx.drawImage(canvas, -rect_x, -rect_y);
 					ctx.copy(cropped_canvas);
@@ -286,11 +286,14 @@ window.tools = [{
 		}
 	},
 	pointerup() {
-		undoable(this.color_eraser_mode ? "Color Eraser" : "Eraser", ()=> {
+		undoable({
+			name: this.color_eraser_mode ? "Color Eraser" : "Eraser",
+			icon: get_icon_for_tool(this),
+		}, ()=> {
 			this.render_from_mask(ctx);
 
 			this.mask_canvas = null;
-		}, get_icon_for_tool(this));
+		});
 	},
 	cancel() {
 		this.mask_canvas = null;
@@ -354,15 +357,21 @@ window.tools = [{
 		const rgba = get_rgba_from_color(fill_color);
 		
 		if(shift){
-			undoable("Replace Color", ()=> {
+			undoable({
+				name: "Replace Color",
+				icon: get_icon_for_tool(this),
+			}, ()=> {
 				// Perform global color replacement
 				draw_noncontiguous_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
-			}, get_icon_for_tool(this));
+			});
 		} else {
-			undoable("Fill With Color", ()=> {
+			undoable({
+				name: "Fill With Color",
+				icon: get_icon_for_tool(this),
+			}, ()=> {
 				// Perform a normal fill operation
 				draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
-			}, get_icon_for_tool(this));
+			});
 		}
 	}
 }, {
@@ -597,9 +606,12 @@ window.tools = [{
 	points: [],
 	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
-			undoable("Curve", ()=> {
+			undoable({
+				name: "Curve",
+				icon: get_icon_for_tool(this),
+			}, ()=> {
 				this.draw_curve(ctx);
-			}, get_icon_for_tool(this));
+			});
 			this.points = [];
 		}
 	},
@@ -789,7 +801,10 @@ window.tools = [{
 	},
 	complete(ctx) {
 		if (this.points.length >= 3) {
-			undoable("Polygon", ()=> {
+			undoable({
+				name: "Polygon",
+				icon: get_icon_for_tool(this),
+			}, ()=> {
 				ctx.fillStyle = fill_color;
 				ctx.strokeStyle = stroke_color;
 
@@ -807,7 +822,7 @@ window.tools = [{
 				);
 
 				stroke_size = orig_stroke_size;
-			}, get_icon_for_tool(this));
+			});
 		}
 
 		this.reset();
@@ -971,10 +986,13 @@ tools.forEach((tool)=> {
 		};
 		tool.pointerup = ()=> {
 			if(!tool.shape_canvas){ return; }
-			undoable(tool.name, ()=> {
+			undoable({
+				name: tool.name,
+				icon: get_icon_for_tool(tool),
+			}, ()=> {
 				ctx.drawImage(tool.shape_canvas, 0, 0);
 				tool.shape_canvas = null;
-			}, get_icon_for_tool(tool));
+			});
 		};
 		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
 			if(!pointer_active){ return; }
@@ -1004,12 +1022,15 @@ tools.forEach((tool)=> {
 			tool.mask_canvas.ctx.disable_image_smoothing();
 		};
 		tool.pointerup = ()=> {
-			undoable(tool.name, ()=> {
+			undoable({
+				name: tool.name,
+				icon: get_icon_for_tool(tool),
+			}, ()=> {
 				tool.render_from_mask(ctx);
 
 				tool.mask_canvas.width = 1;
 				tool.mask_canvas.height = 1;
-			}, get_icon_for_tool(tool));
+			});
 		};
 		tool.paint = (ctx, x, y)=> {
 			tool.paint_mask(tool.mask_canvas.ctx, x, y);
@@ -1087,12 +1108,15 @@ tools.forEach((tool)=> {
 			tool.init_mask_canvas();
 		};
 		tool.pointerup = ()=> {
-			undoable(tool.name, ()=> {
+			undoable({
+				name: tool.name,
+				icon: get_icon_for_tool(tool),
+			}, ()=> {
 				tool.render_from_mask(ctx);
 
 				tool.mask_canvas.width = 1;
 				tool.mask_canvas.height = 1;
-			}, get_icon_for_tool(tool));
+			});
 		};
 
 		tool.paint = ()=> {

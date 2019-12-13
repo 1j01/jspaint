@@ -383,7 +383,7 @@
 						
 						if (!image_data_are_equal(image_data_remote, image_data_local)) {
 							ignore_session_update = true;
-							undoable("Sync Session", ()=> {
+							undoable({name: "Sync Session"}, ()=> {
 								// Write the image data to the canvas
 								ctx.copy(img);
 								$canvas_area.trigger("resize");
