@@ -1,6 +1,6 @@
 
 class OnCanvasTextBox extends OnCanvasObject {
-	constructor(x, y, width, height) {
+	constructor(x, y, width, height, starting_text) {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("textbox");
@@ -29,6 +29,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 		var edit_textarea = this.$editor[0];
 		var render_textarea = edit_textarea.cloneNode(false);
 		foreignObject.append(render_textarea);
+
+		edit_textarea.value = starting_text || "";
 
 		this.canvas = make_canvas(width, height);
 		this.canvas.style.pointerEvents = "none";
@@ -175,8 +177,12 @@ class OnCanvasTextBox extends OnCanvasObject {
 	meld_into_canvas(going_to_history_node) {
 		const text = this.$editor.val();
 		if (text && !going_to_history_node) {
-			undoable("Text", () => {
+			// TODO: mark as soft undoable... one of these...
+			undoable("Text", ()=> { }, get_icon_for_tool(get_tool_by_name("Text")));
+			undoable("Finish Text", () => {
 				ctx.drawImage(this.canvas, this.x, this.y);
+				// HACK: make textbox not exist for undoable
+				textbox = null;
 			}, get_icon_for_tool(get_tool_by_name("Text")));
 		}
 		this.destroy();

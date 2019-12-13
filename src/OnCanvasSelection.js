@@ -276,11 +276,11 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.draw();
 
 		if (!going_to_history_node) {
-			// HACK: make selection not exist in undoable
-			selection = null;
-
+			// TODO: mark as soft undoable
 			undoable("Deselect", ()=> {
 				this.draw();
+				// HACK: make selection not exist for undoable
+				selection = null;
 			}, get_icon_for_tool(get_tool_by_name("Select")), false, true);
 		}
 		this.destroy();

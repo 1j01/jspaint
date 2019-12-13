@@ -287,13 +287,19 @@ function make_history_node({
 	timestamp = Date.now(),
 	image_data = null,
 	selection_image_data = null,
-	selection_x = undefined,
-	selection_y = undefined,
+	selection_x,
+	selection_y,
+	textbox_text,
+	textbox_font = null,
+	textbox_x,
+	textbox_y,
+	textbox_width,
+	textbox_height,
 	name,
 	details = [],
 	icon = null,
 }) {
-	return {parent, futures, timestamp, image_data, selection_image_data, selection_x, selection_y, name, details, icon};
+	return {parent, futures, timestamp, image_data, selection_image_data, selection_x, selection_y, textbox_text, textbox_font, textbox_x, textbox_y, textbox_width, textbox_height, name, details, icon};
 }
 
 function update_title(){
@@ -981,6 +987,21 @@ function go_to_history_node(target_history_node, canceling) {
 			"go_to_history_node"
 		);
 	}
+	if (target_history_node.textbox_font) {
+		if (textbox) {
+			textbox.destroy();
+		}
+		for (const [k, v] of Object.entries(target_history_node.textbox_font)) {
+			text_tool_font[k] = v;
+		}
+		textbox = new OnCanvasTextBox(
+			target_history_node.textbox_x,
+			target_history_node.textbox_y,
+			target_history_node.textbox_width,
+			target_history_node.textbox_height,
+			target_history_node.textbox_text,
+		);
+	}
 
 	const history_ancestors = get_history_ancestors(target_history_node);
 
@@ -1039,6 +1060,12 @@ function undoable(action_name, callback, icon, is_extra_undoable_for_unknown, pr
 		selection_image_data: selection && selection.canvas.ctx.getImageData(0, 0, selection.canvas.width, selection.canvas.height),
 		selection_x: selection && selection.x,
 		selection_y: selection && selection.y,
+		textbox_text: textbox && textbox.$editor.val(),
+		textbox_font: textbox && JSON.parse(JSON.stringify(text_tool_font)),
+		textbox_x: textbox && textbox.x,
+		textbox_y: textbox && textbox.y,
+		textbox_width: textbox && textbox.width,
+		textbox_height: textbox && textbox.height,
 		parent: current_history_node,
 		name: action_name,
 		icon,
