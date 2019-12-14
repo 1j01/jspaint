@@ -1307,12 +1307,10 @@ function deselect(going_to_history_node){
 }
 function delete_selection(action_name){
 	if(selection){
-		// TODO: should action names be "Delete Selection", "Cut Selection"?
-		// .."Paste Selection" wouldn't make sense
 		undoable({
 			name: action_name || "Delete",
 			icon: get_icon_for_tool(get_tool_by_name("Select")),
-			soft: true,
+			// soft: TODO: conditionally soft?,
 		}, ()=> {
 			selection.destroy();
 			selection = null;
