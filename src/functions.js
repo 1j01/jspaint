@@ -278,7 +278,7 @@ function reset_canvas_and_history(){
 	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 	$canvas_area.trigger("resize");
-	$canvas_area.trigger("history-update");
+	$G.triggerHandler("history-update"); // update history view
 }
 
 function make_history_node({
