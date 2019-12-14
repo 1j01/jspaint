@@ -95,6 +95,7 @@
 	
 	class LocalSession {
 		constructor(session_id) {
+			this.id = session_id;
 			const lsid = `image#${session_id}`;
 			log(`Local storage ID: ${lsid}`);
 			// save image to storage
@@ -498,7 +499,7 @@
 		const session_match = location.hash.match(/^#?(session|local):(.*)$/i);
 		const load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);
 		if(session_match){
-			const local = session_match[1] === "local";
+			const local = session_match[1].toLowerCase() === "local";
 			const session_id = session_match[2];
 			if(session_id === ""){
 				log("Invalid session ID; session ID cannot be empty");
@@ -513,7 +514,7 @@
 				current_session && current_session.id === session_id && 
 				local === (current_session instanceof LocalSession)
 			){
-				log("Hash changed but the session ID is the same");
+				log("Hash changed but the session ID and session type are the same");
 			}else{
 				// @TODO: Ask if you want to save before starting a new session
 				end_current_session();
