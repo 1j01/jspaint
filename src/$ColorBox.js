@@ -161,7 +161,7 @@ function $ColorBox(){
 	$c.edit_last_color = () => {
 		// Edit the last color cell that's been selected as the foreground color.
 		create_and_trigger_input({type: "color"}, input => {
-			// console.log(input, input.value);
+			// window.console && console.log(input, input.value);
 			// FIXME
 			$last_fg_color_button.trigger({type: "pointerdown", ctrlKey: false, button: 0});
 			$last_fg_color_button.find("input").val(input.value).triggerHandler("change");

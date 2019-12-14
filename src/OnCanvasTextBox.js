@@ -85,7 +85,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				update_helper_layer(); // TODO: under-grid specific helper layer?
 			};
 			img.onerror = (e)=> {
-				console.log("failed to load image", e);
+				window.console && console.log("Failed to load image", e);
 			};
 			img.src = data_url;
 		};

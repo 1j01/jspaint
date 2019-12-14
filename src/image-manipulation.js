@@ -733,27 +733,27 @@ function draw_grid(ctx, scale) {
 	const tessy = (function initTesselator() {
 		// function called for each vertex of tesselator output
 		function vertexCallback(data, polyVertArray) {
-			// console.log(data[0], data[1]);
+			// window.console && console.log(data[0], data[1]);
 			polyVertArray[polyVertArray.length] = data[0];
 			polyVertArray[polyVertArray.length] = data[1];
 		}
 		function begincallback(type) {
 			if (type !== libtess.primitiveType.GL_TRIANGLES) {
-				console.log(`expected TRIANGLES but got type: ${type}`);
+				window.console && console.log(`Expected TRIANGLES but got type: ${type}`);
 			}
 		}
 		function errorcallback(errno) {
-			console.log('error callback');
-			console.log(`error number: ${errno}`);
+			window.console && console.log('error callback');
+			window.console && console.log(`error number: ${errno}`);
 		}
 		// callback for when segments intersect and must be split
 		function combinecallback(coords, data, weight) {
-			// console.log('combine callback');
+			// window.console && console.log('combine callback');
 			return [coords[0], coords[1], coords[2]];
 		}
 		function edgeCallback(flag) {
 			// don't really care about the flag, but need no-strip/no-fan behavior
-			// console.log('edge flag: ' + flag);
+			// window.console && console.log('edge flag: ' + flag);
 		}
 
 		const tessy = new libtess.GluTesselator();
@@ -831,7 +831,7 @@ function draw_grid(ctx, scale) {
 		gl.compileShader(vertexShader);
 
 		if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-			console.log(
+			window.console && console.log(
 				`Vertex shader failed to compile. Log: ${gl.getShaderInfoLog(vertexShader)}`
 			);
 		}
@@ -848,7 +848,7 @@ function draw_grid(ctx, scale) {
 		gl.compileShader(fragmentShader);
 
 		if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-			console.log(
+			window.console && console.log(
 				`Fragment shader failed to compile. Log: ${gl.getShaderInfoLog(fragmentShader)}`
 			);
 		}

@@ -297,12 +297,12 @@ function $MenuBar(menus){
 		}
 	});
 	$G.on("blur", e => {
-		// console.log("blur", e.target, document.activeElement);
+		// window.console && console.log("blur", e.target, document.activeElement);
 		close_menus();
 	});
 	$G.on("pointerdown pointerup", e => {
 		if($(e.target).closest(".menus, .menu-popup").length === 0){
-			// console.log(e.type, "occurred outside of menus (on ", e.target, ") so...");
+			// window.console && console.log(e.type, "occurred outside of menus (on ", e.target, ") so...");
 			close_menus();
 		}
 	});

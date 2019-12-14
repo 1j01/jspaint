@@ -2,9 +2,7 @@
 (() => {
 
 	const log = (...args)=> {
-		if(window.console){
-			console.log(...args);
-		}
+		window.console && console.log(...args);
 	};
 
 	let localStorageAvailable = false;
@@ -98,7 +96,7 @@
 	class LocalSession {
 		constructor(session_id) {
 			const lsid = `image#${session_id}`;
-			log(`local storage id: ${lsid}`);
+			log(`Local storage ID: ${lsid}`);
 			// save image to storage
 			const save_image_to_storage = debounce(() => {
 				const save_paused = handle_data_loss();
@@ -150,9 +148,9 @@
 	}
 
 
-	// The user id is not persistent
+	// The user ID is not persistent
 	// A person can enter a session multiple times,
-	// and is always given a new user id
+	// and is always given a new user ID
 	let user_id;
 	// @TODO: I could make the color persistent, though.
 	// You could still have multiple cursors and they would just be the same color.
@@ -341,18 +339,18 @@
 				if (previous_uri !== uri) {
 					// log("clear pointer operations to set data", pointer_operations);
 					// pointer_operations = [];
-					log("write canvas data to Firebase");
+					log("Write canvas data to Firebase");
 					this.fb_data.set(uri);
 					previous_uri = uri;
 				}
 				else {
-					log("(don't write canvas data to Firebase; it hasn't changed)");
+					log("(Don't write canvas data to Firebase; it hasn't changed)");
 				}
 			}, 100);
 			let ignore_session_update = false;
 			$G.on("session-update.session-hook", ()=> {
 				if (ignore_session_update) {
-					log("(ignore session-update from Sync Session undoable)");
+					log("(Ignore session-update from Sync Session undoable)");
 					return;
 				}
 				write_canvas_to_database();
@@ -396,7 +394,7 @@
 						// and other options will be established)
 						/*
 						// Playback recorded in-progress pointer operations
-						window.console && console.log("playback", pointer_operations);
+						log("Playback", pointer_operations);
 
 						for (const e of pointer_operations) {
 							// Trigger the event at each place it is listened for
@@ -465,7 +463,7 @@
 			// $canvas_area.off("pointerdown.session-hook");
 			// Remove collected Firebase event listeners
 			this._fb_listeners.forEach(({ fb, event_type, callback, error_callback }) => {
-				log(`remove listener for ${fb.path.toString()} .on ${event_type}`);
+				log(`Remove listener for ${fb.path.toString()} .on ${event_type}`);
 				fb.off(event_type, callback);
 			});
 			this._fb_listeners.length = 0;
@@ -485,7 +483,7 @@
 	let current_session;
 	const end_current_session = () => {
 		if(current_session){
-			log("ending current session");
+			log("Ending current session");
 			current_session.end();
 			current_session = null;
 		}
@@ -503,25 +501,25 @@
 			const local = session_match[1] === "local";
 			const session_id = session_match[2];
 			if(session_id === ""){
-				log("invalid session id; session id cannot be empty");
+				log("Invalid session ID; session ID cannot be empty");
 				end_current_session();
 			}else if(!local && session_id.match(/[./[\]#$]/)){
-				log("session id is not a valid Firebase location; it cannot contain any of ./[]#$");
+				log("Session ID is not a valid Firebase location; it cannot contain any of ./[]#$");
 				end_current_session();
 			}else if(!session_id.match(/[-0-9A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]+/)){
-				log("invalid session id; it must consist of 'alphanumeric-esque' character");
+				log("Invalid session ID; it must consist of 'alphanumeric-esque' characters");
 				end_current_session();
 			}else if(current_session && current_session.id === session_id){
-				// @TODO: Handle switching between local and collaborative sessions of the same id
-				log("hash changed but the session id is the same");
+				// @TODO: Handle switching between local and collaborative sessions of the same ID
+				log("Hash changed but the session ID is the same");
 			}else{
 				// @TODO: Ask if you want to save before starting a new session
 				end_current_session();
 				if(local){
-					log(`starting a new local session, id: ${session_id}`);
+					log(`Starting a new local session, ID: ${session_id}`);
 					current_session = new LocalSession(session_id);
 				}else{
-					log(`starting a new Firebase session, id: ${session_id}`);
+					log(`Starting a new Firebase session, ID: ${session_id}`);
 					current_session = new FireSession(session_id);
 				}
 			}
@@ -550,7 +548,7 @@
 					// that is, it also triggers for session changes, which I'm trying to avoid here
 					$canvas.one("change", () => {
 						if(location.hash === hash_loading_url_from){
-							log("switching to new session from #load: URL because of user interaction");
+							log("Switching to new session from #load: URL (to #local: URL with session ID) because of user interaction");
 							end_current_session();
 							const new_session_id = generate_session_id();
 							location.hash = `local:${new_session_id}`;
@@ -560,11 +558,11 @@
 			});
 
 		}else{
-			log("no session id in hash");
+			log("No session ID in hash");
 			end_current_session();
 			const new_session_id = generate_session_id();
 			history.replaceState(null, document.title, `#local:${new_session_id}`);
-			log("after replaceState", location.hash);
+			log("After replaceState:", location.hash);
 			update_session_from_location_hash();
 		}
 	};
@@ -573,11 +571,11 @@
 		log(e.type, location.hash);
 		update_session_from_location_hash();
 	});
-	log("init with location hash", location.hash);
+	log("Init with location hash:", location.hash);
 	update_session_from_location_hash();
 
 	// @TODO: Session GUI
-	// @TODO: Indicate when the session id is invalid
+	// @TODO: Indicate when the session ID is invalid
 	// @TODO: Indicate when the session switches
 
 	// @TODO: Indicate when there is no session!

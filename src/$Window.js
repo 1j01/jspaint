@@ -42,7 +42,6 @@ function $Window($component){
 		const $buttons = $w.$content.find("button");
 		const $focused = $(document.activeElement);
 		const focused_index = $buttons.index($focused);
-		// console.log(e.keyCode);
 		switch(e.keyCode){
 			case 40: // Down
 			case 39: // Right

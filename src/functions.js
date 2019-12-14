@@ -19,10 +19,10 @@ function update_helper_layer(e){
 		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
 	}
 	if (helper_layer_update_queued) {
-		// console.log("update_helper_layer - nah, already queued");
+		// window.console && console.log("update_helper_layer - nah, already queued");
 		return;
 	} else {
-		// console.log("update_helper_layer");
+		// window.console && console.log("update_helper_layer");
 	}
 	helper_layer_update_queued = true;
 	requestAnimationFrame(()=> {
@@ -31,7 +31,7 @@ function update_helper_layer(e){
 	});
 }
 function update_helper_layer_immediately(e) {
-	// console.log("update helper layer NOW");
+	// window.console && console.log("Update helper layer NOW");
 	if (info_for_updating_pointer) {
 		const rescale = info_for_updating_pointer.devicePixelRatio / devicePixelRatio;
 		info_for_updating_pointer.clientX *= rescale;
@@ -591,9 +591,9 @@ function show_error_message(message, error){
 	});
 	$w.center();
 	if (error) {
-		console.error(message, error);
+		window.console && console.error(message, error);
 	} else {
-		console.error(message);
+		window.console && console.error(message);
 	}
 }
 
@@ -708,7 +708,7 @@ function show_about_paint(){
 		$("#failed-to-check-if-outdated").removeAttr("hidden");
 		$("#checking-for-updates").attr("hidden", "hidden");
 		update_css_classes_for_conditional_messages();
-		console.log("Couldn't check for updates.", exception);
+		window.console && console.log("Couldn't check for updates.", exception);
 	});
 }
 // show_about_paint(); // for testing
@@ -740,8 +740,8 @@ function show_news(){
 
 	// const $latest_entries = $latest_news.find(".news-entry");
 	// const latest_entry = $latest_entries[$latest_entries.length - 1];
-	// console.log("LATEST MEWS:", $latest_news);
-	// console.log("LATEST ENTRY:", latest_entry);
+	// window.console && console.log("LATEST MEWS:", $latest_news);
+	// window.console && console.log("LATEST ENTRY:", latest_entry);
 
 	$latest_news_style = $latest_news.find("style");
 	$this_version_news.find("style").remove();
@@ -771,7 +771,6 @@ function paste_image_from_file(file){
 		// TODO: this shouldn't really have the CORS error message, if it's from a blob URI
 		if(err){ return show_resource_load_error_message(); }
 		paste(img);
-		console.log("revokeObjectURL", blob_url);
 		URL.revokeObjectURL(blob_url);
 	});
 }
@@ -977,13 +976,13 @@ function go_to_history_node(target_history_node, canceling) {
 	if (!target_history_node.image_data) {
 		if (!canceling) {
 			show_error_message("History entry has no image data.");
-			console.log(target_history_node);
+			window.console && console.log("Target history entry has no image data:", target_history_node);
 		}
 		return;
 	}
 	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
-		console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
+		window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		undoable({name: "Unknown [GTHN]", use_loose_canvas_changes: true}, ()=> {});
 	}
 	current_history_node = target_history_node;
@@ -1056,8 +1055,8 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 	if (!use_loose_canvas_changes) {
 		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
+			window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 			undoable({name: "Unknown [undoable]", use_loose_canvas_changes: true}, ()=> {});
-			console.log("image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		}
 	}
 
@@ -1111,13 +1110,10 @@ function make_or_update_undoable(undoable_meta, undoable_action) {
 function undo(){
 	if(undos.length<1){ return false; }
 
-	console.log("undo start", current_history_node, undos.length);
-
 	redos.push(current_history_node);
 	let target_history_node = undos.pop();
 
 	while (target_history_node.soft && undos.length) {
-		console.log("undo soft step", target_history_node, undos.length);
 		redos.push(target_history_node);
 		target_history_node = undos.pop();
 	}
@@ -1143,13 +1139,10 @@ function redo(){
 		return false;
 	}
 
-	console.log("redo start", current_history_node, undos.length);
-
 	undos.push(current_history_node);
 	let target_history_node = redos.pop();
 
 	while (target_history_node.soft && redos.length) {
-		console.log("redo soft step", target_history_node, redos.length);
 		undos.push(target_history_node);
 		target_history_node = redos.pop();
 	}
@@ -1386,7 +1379,7 @@ async function edit_copy(execCommandFallback){
 						enumerable: true,
 					}))
 				]).then(() => {
-					console.log("Copied image to the clipboard");
+					window.console && console.log("Copied image to the clipboard.");
 				}, error => {
 					show_error_message("Failed to copy to the Clipboard.", error);
 				});
@@ -1430,10 +1423,8 @@ async function edit_paste(execCommandFallback){
 	}
 	try {
 		const clipboardItems = await navigator.clipboard.read();
-		console.log(clipboardItems);
 		const blob = await clipboardItems[0].getType("image/png");
 		paste_image_from_file(blob);
-		console.log("Image pasted.");
 	} catch(error) {
 		if (error.name === "NotFoundError") {
 			try {
