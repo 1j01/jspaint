@@ -56,7 +56,7 @@ let text_tool_font = {
 	background: "",
 };
 
-let root_history_node = make_history_node({name: "New Document"});
+let root_history_node = make_history_node({name: "App Not Loaded Properly - Please send a bug report."}); // will be replaced
 let current_history_node = root_history_node;
 /** array of history nodes */
 let undos = [];
@@ -455,6 +455,8 @@ reset_colors();
 reset_canvas_and_history(); // (with newly reset colors)
 set_magnification(default_magnification);
 
+// this is synchronous for now, but TODO: handle possibility of loading a document before callback
+// when switching to asynchronous storage, e.g. with localforage
 storage.get({
 	width: default_canvas_width,
 	height: default_canvas_height,
@@ -462,14 +464,21 @@ storage.get({
 	if(err){return;}
 	my_canvas_width = stored_values.width;
 	my_canvas_height = stored_values.height;
-	canvas.width = Math.max(1, my_canvas_width);
-	canvas.height = Math.max(1, my_canvas_height);
-	ctx.disable_image_smoothing();
-	if(!transparency){
-		ctx.fillStyle = colors.background;
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-	}
-	$canvas_area.trigger("resize");
+	
+	make_or_update_undoable({
+		match: (history_node)=> history_node.name === "New Document",
+		name: "Resize New Document Canvas",
+		icon: get_icon_for_tool(get_tool_by_name("Select")),
+	}, ()=> {
+		canvas.width = Math.max(1, my_canvas_width);
+		canvas.height = Math.max(1, my_canvas_height);
+		ctx.disable_image_smoothing();
+		if(!transparency){
+			ctx.fillStyle = colors.background;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+		$canvas_area.trigger("resize");
+	});
 });
 
 if(window.document_file_path_to_open){

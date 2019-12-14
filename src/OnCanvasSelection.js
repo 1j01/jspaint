@@ -77,6 +77,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				make_or_update_undoable({
 					match: (history_node)=> history_node.name.match(/^(Smear|Stamp|Move) Selection$/),
 					name: e.shiftKey ? "Smear Selection" : "Move Selection",
+					// TODO: update_name: true?
 					icon: get_icon_for_tool(get_tool_by_name("Select")),
 					soft: true,
 				}, ()=> {
