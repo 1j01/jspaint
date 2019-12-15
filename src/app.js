@@ -58,6 +58,7 @@ let text_tool_font = {
 
 let root_history_node = make_history_node({name: "App Not Loaded Properly - Please send a bug report."}); // will be replaced
 let current_history_node = root_history_node;
+let history_node_to_cancel_to = current_history_node;
 /** array of history nodes */
 let undos = [];
 /** array of history nodes */
@@ -687,6 +688,8 @@ $canvas.on("pointerdown", e => {
 		pointer_active = false; // NOTE: pointer_active used in cancel()
 		return;
 	}
+
+	history_node_to_cancel_to = current_history_node;
 	
 	pointer_active = !!(e.buttons & (1 | 2)); // as far as tools are concerned
 	pointer_type = e.pointerType;

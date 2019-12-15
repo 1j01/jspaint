@@ -267,7 +267,7 @@ function reset_file(){
 function reset_canvas_and_history(){
 	undos.length = 0;
 	redos.length = 0;
-	current_history_node = root_history_node = make_history_node({name: "New Document"});
+	history_node_to_cancel_to = current_history_node = root_history_node = make_history_node({name: "New Document"});
 
 	canvas.width = my_canvas_width;
 	canvas.height = my_canvas_height;
@@ -1244,13 +1244,14 @@ function show_document_history() {
 function cancel(going_to_history_node){
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
-	const original_history_node = current_history_node;
 	$G.triggerHandler("pointerup");
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();
 	}
 	if (!going_to_history_node) {
-		go_to_history_node(original_history_node, true);
+		// Note: this will revert any changes from other users in multi-user sessions
+		// which isn't good, but there's no real conflict resolution in multi-user mode anyways
+		go_to_history_node(history_node_to_cancel_to, true);
 	}
 	update_helper_layer();
 }
