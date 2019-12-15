@@ -75,7 +75,9 @@ class OnCanvasSelection extends OnCanvasObject {
 			let mox, moy;
 			const pointermove = e => {
 				make_or_update_undoable({
-					match: (history_node)=> history_node.name.match(/^(Smear|Stamp|Move) Selection$/),
+					match: (history_node)=>
+						(e.shiftKey && history_node.name.match(/^(Smear|Stamp|Move) Selection$/)) ||
+						(!e.shiftKey && history_node.name.match(/^Move Selection$/)),
 					name: e.shiftKey ? "Smear Selection" : "Move Selection",
 					update_name: true,
 					icon: get_icon_for_tool(get_tool_by_name("Select")),
