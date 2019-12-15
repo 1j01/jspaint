@@ -188,7 +188,7 @@
 	cursor_image.src = "images/cursors/default.png";
 
 
-	class FireSession {
+	class MultiUserSession {
 		constructor(session_id) {
 			this.id = session_id;
 			file_name = `[Loading ${this.id}]`;
@@ -198,7 +198,7 @@
 				update_title();
 				this.start();
 			};
-			if (!FireSession.fb_root) {
+			if (!MultiUserSession.fb_root) {
 				$.getScript("lib/firebase.js")
 					.done(() => {
 						const config = {
@@ -210,7 +210,7 @@
 							messagingSenderId: "63395010995"
 						};
 						firebase.initializeApp(config);
-						FireSession.fb_root = firebase.database().ref("/");
+						MultiUserSession.fb_root = firebase.database().ref("/");
 						on_firebase_loaded();
 					})
 					.fail(() => {
@@ -247,7 +247,7 @@
 				fb.on(event_type, callback, error_callback);
 			};
 			// Get Firebase references
-			this.fb = FireSession.fb_root.child(this.id);
+			this.fb = MultiUserSession.fb_root.child(this.id);
 			this.fb_data = this.fb.child("data");
 			this.fb_users = this.fb.child("users");
 			if (user_id) {
@@ -519,11 +519,11 @@
 				// @TODO: Ask if you want to save before starting a new session
 				end_current_session();
 				if(local){
-					log(`Starting a new local session, ID: ${session_id}`);
+					log(`Starting a new LocalSession, ID: ${session_id}`);
 					current_session = new LocalSession(session_id);
 				}else{
-					log(`Starting a new Firebase session, ID: ${session_id}`);
-					current_session = new FireSession(session_id);
+					log(`Starting a new MultiUserSession, ID: ${session_id}`);
+					current_session = new MultiUserSession(session_id);
 				}
 			}
 		}else if(load_from_url_match){
@@ -574,7 +574,7 @@
 		log(e.type, location.hash);
 		update_session_from_location_hash();
 	});
-	log("Init with location hash:", location.hash);
+	log("Initializing with location hash:", location.hash);
 	update_session_from_location_hash();
 
 	// @TODO: Session GUI

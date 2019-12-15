@@ -61,7 +61,7 @@ might be a pointer events spec interpretation issue, and it could easily be that
 	but if you're creating colors from the combination of a color picker and an opacity slider,
 	you might naturally introduce differing zero-opacity color values a lot.
 
-* Images with multiple sub-images
+* Documents with multiple sub-images
 	* Component to switch between sub-images
 	* Deal with undo/redo for sub-images
 	* Animated GIFs
