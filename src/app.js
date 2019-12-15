@@ -167,14 +167,16 @@ const $toolbox = $ToolBox(tools);
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 const $colorbox = $ColorBox();
 
-$canvas_area.on("user-resized", (e, _x, _y, width, height) => {
+$canvas_area.on("user-resized", (_event, _x, _y, unclamped_width, unclamped_height) => {
 	// TODO: don't create undoable if same size
 	// TODO: move this to a function and don't trigger this event other than from the handles
 	// TODO: resize icon for history view
 	undoable({name: "Resize Canvas"}, () => {
-		const image_data = ctx.getImageData(0, 0, width, height);
-		canvas.width = Math.max(1, width);
-		canvas.height = Math.max(1, height);
+		const new_width = Math.max(1, unclamped_width);
+		const new_height = Math.max(1, unclamped_height);
+		const image_data = ctx.getImageData(0, 0, new_width, new_height);
+		canvas.width = new_width;
+		canvas.height = new_height;
 		ctx.disable_image_smoothing();
 		
 		if(!transparency){

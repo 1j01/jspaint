@@ -269,8 +269,8 @@ function reset_canvas_and_history(){
 	redos.length = 0;
 	history_node_to_cancel_to = current_history_node = root_history_node = make_history_node({name: "New Document"});
 
-	canvas.width = my_canvas_width;
-	canvas.height = my_canvas_height;
+	canvas.width = Math.max(1, my_canvas_width);
+	canvas.height = Math.max(1, my_canvas_height);
 	ctx.disable_image_smoothing();
 	ctx.fillStyle = colors.background;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
