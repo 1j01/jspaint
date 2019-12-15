@@ -208,7 +208,6 @@ Functionality:
 * JS
 	* Everything is in random files! "`functions.js`", REALLY?
 	* `$Window` has a `$Button` facility; `$FormWindow` overrides it with essentially a better one
-	* Image inversion code is duplicated in `ChooserCanvas` from tool-options.js but should go in image-manipulation.js
 	* Make code clearer / improve code quality: https://codeclimate.com/github/1j01/jspaint
 
 

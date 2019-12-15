@@ -42,13 +42,7 @@ const ChooserCanvas = (
 		// eslint-disable-next-line no-empty
 		} catch(error) {}
 		if(invert){
-			const id = c.ctx.getImageData(0, 0, c.width, c.height);
-			for(let i=0; i<id.data.length; i+=4){
-				id.data[i+0] = 255 - id.data[i+0];
-				id.data[i+1] = 255 - id.data[i+1];
-				id.data[i+2] = 255 - id.data[i+2];
-			}
-			c.ctx.putImageData(id, 0, 0);
+			invert_rgb(c.ctx);
 		}
 	};
 	$(img).on("load", render);
