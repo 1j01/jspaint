@@ -177,10 +177,14 @@ function make_canvas(width, height){
 	return new_canvas;
 }
 
-function get_icon_for_tool(tool) {
+function get_help_folder_icon(file_name) {
 	const icon_img = new Image();
-	icon_img.src = `help/${tool.help_icon}`;
+	icon_img.src = `help/${file_name}`;
 	return icon_img;
+}
+
+function get_icon_for_tool(tool) {
+	return get_help_folder_icon(tool.help_icon);
 }
 
 function load_image(path) {
