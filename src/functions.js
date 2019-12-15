@@ -973,6 +973,8 @@ function render_history_as_apng(){
 }
 */
 function go_to_history_node(target_history_node, canceling) {
+	const from_history_node = current_history_node;
+
 	if (!target_history_node.image_data) {
 		if (!canceling) {
 			show_error_message("History entry has no image data.");
@@ -1022,13 +1024,19 @@ function go_to_history_node(target_history_node, canceling) {
 		);
 	}
 
-	const history_ancestors = get_history_ancestors(target_history_node);
+	const ancestors_of_target = get_history_ancestors(target_history_node);
 
-	undos = [...history_ancestors];
+	undos = [...ancestors_of_target];
 	undos.reverse();
 
-	const old_history_path = redos.length > 0 ? [redos[0], ...get_history_ancestors(redos[0])] : [];
+	const old_history_path =
+		redos.length > 0 ?
+			[redos[0], ...get_history_ancestors(redos[0])] :
+			[from_history_node, ...get_history_ancestors(from_history_node)];
 
+	// window.console && console.log("target_history_node:", target_history_node);
+	// window.console && console.log("ancestors_of_target:", ancestors_of_target);
+	// window.console && console.log("old_history_path:", old_history_path);
 	redos.length = 0;
 
 	let latest_node = target_history_node;
@@ -1046,6 +1054,8 @@ function go_to_history_node(target_history_node, canceling) {
 		latest_node = futures[0];
 		redos.unshift(latest_node);
 	}
+	// window.console && console.log("new undos:", undos);
+	// window.console && console.log("new redos:", redos);
 
 	$canvas_area.trigger("resize");
 	$G.triggerHandler("session-update"); // autosave
