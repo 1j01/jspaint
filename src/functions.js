@@ -956,6 +956,14 @@ function go_to_history_node(target_history_node, canceling) {
 		if (selection) {
 			selection.destroy();
 		}
+		// TODO maybe: could store whether a selection is from Free-Form Select
+		// so it selects Free-Form Select when you jump to e.g. Move Selection
+		// (or could traverse history to figure it out)
+		if (target_history_node.name === "Free-Form Select") {
+			select_tool(get_tool_by_name("Free-Form Select"));
+		} else {
+			select_tool(get_tool_by_name("Select"));
+		}
 		selection = new OnCanvasSelection(
 			target_history_node.selection_x,
 			target_history_node.selection_y,
@@ -978,6 +986,7 @@ function go_to_history_node(target_history_node, canceling) {
 		tool_transparent_mode = target_history_node.tool_transparent_mode;
 		$G.trigger("option-changed");
 
+		select_tool(get_tool_by_name("Text"));
 		textbox = new OnCanvasTextBox(
 			target_history_node.textbox_x,
 			target_history_node.textbox_y,
