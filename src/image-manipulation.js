@@ -565,8 +565,8 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 		const bb_w = bb_max_x - bb_min_x;
 		const bb_h = bb_max_y - bb_min_y;
 		
-		new_canvas.width = bb_w;
-		new_canvas.height = bb_h;
+		new_canvas.width = Math.max(1, bb_w);
+		new_canvas.height = Math.max(1, bb_h);
 		new_ctx.disable_image_smoothing();
 		
 		if(!transparency){
