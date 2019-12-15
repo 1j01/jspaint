@@ -429,7 +429,10 @@ function apply_image_transformation(meta, fn){
 }
 
 function flip_horizontal(){
-	apply_image_transformation({name: "Flip Horizontal"}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation({
+		name: "Flip Horizontal",
+		icon: get_help_folder_icon("p_fliph.png"),
+	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(new_canvas.width, 0);
 		new_ctx.scale(-1, 1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -437,7 +440,10 @@ function flip_horizontal(){
 }
 
 function flip_vertical(){
-	apply_image_transformation({name: "Flip Vertical"}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation({
+		name: "Flip Vertical",
+		icon: get_help_folder_icon("p_flipv.png"),
+	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(0, new_canvas.height);
 		new_ctx.scale(1, -1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -445,7 +451,10 @@ function flip_vertical(){
 }
 
 function rotate(angle){
-	apply_image_transformation({name: `Rotate ${angle / TAU * 360} degrees`}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation({
+		name: `Rotate ${angle / TAU * 360} degrees`,
+		icon: get_help_folder_icon(`p_rotate_${angle >= 0 ? "cw" : "ccw"}.png`),
+	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.save();
 		switch(angle){
 			case TAU / 4:
