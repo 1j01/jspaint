@@ -527,17 +527,16 @@ function rotate(angle){
 
 function stretch_and_skew(xscale, yscale, hsa, vsa){
 	apply_image_transformation({
-		name: (
+		name:
 			(hsa !== 0 || vsa !== 0) ? (
 				(xscale !== 1 || yscale !== 1) ? "Stretch/Skew" : "Skew"
-			) : "Stretch"
-		),
+			) : "Stretch",
 		icon: get_help_folder_icon(
 			(hsa !== 0) ? "p_skew_h.png" :
 			(vsa !== 0) ? "p_skew_v.png" :
-			(xscale !== 1 && yscale !== 1) ? "p_stretch_both.png" :
-			(yscale !== 1) ? "p_stretch_v.png" :
-			"p_stretch_h.png"
+			(yscale !== 1) ? (
+				(xscale !== 1) ? "p_stretch_both.png" : "p_stretch_v.png"
+			) : "p_stretch_h.png"
 		),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		const w = original_canvas.width * xscale;
