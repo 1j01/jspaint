@@ -405,7 +405,10 @@ function apply_image_transformation(action_name, fn){
 	fn(original_canvas, original_ctx, new_canvas, new_ctx);
 	
 	if(selection){
-		undoable({name: `${action_name} Selection`}, () => {
+		undoable({
+			name: `${action_name} Selection`,
+			soft: true,
+		}, () => {
 			selection.replace_source_canvas(new_canvas);
 		});
 	}else{
