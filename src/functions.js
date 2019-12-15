@@ -902,10 +902,14 @@ function render_history_as_gif(){
 		});
 
 		const gif_canvas = make_canvas(width, height);
-		const frames = [...undos.map((node)=> node.image_data), ctx.getImageData(0, 0, canvas.width, canvas.height)];
-		for(let i=0; i<frames.length; i++){
+		const frame_history_nodes = [...undos, current_history_node];
+		for(const frame_history_node of frame_history_nodes){
 			gif_canvas.ctx.clearRect(0, 0, gif_canvas.width, gif_canvas.height);
-			gif_canvas.ctx.putImageData(frames[i], 0, 0);
+			gif_canvas.ctx.putImageData(frame_history_node.image_data, 0, 0);
+			if (frame_history_node.selection_image_data) {
+				const selection_canvas = make_canvas(frame_history_node.selection_image_data);
+				gif_canvas.ctx.drawImage(selection_canvas, frame_history_node.selection_x, frame_history_node.selection_y);
+			}
 			gif.addFrame(gif_canvas, {delay: 200, copy: true});
 		}
 		gif.render();
@@ -916,62 +920,6 @@ function render_history_as_gif(){
 	}
 }
 
-/*
-function render_history_as_apng(){
-	const $win = $FormWindow();
-	$win.title("Rendering APNG");
-	$win.center();
-	const $output = $win.$main;
-	const $progress = $(E("progress")).appendTo($output);
-	const $progress_percent = $(E("span")).appendTo($output).css({
-		width: "2.3em",
-		display: "inline-block",
-		textAlign: "center",
-	});
-	$win.$main.css({padding: 5});
-
-	const $cancel = $win.$Button('Cancel', ()=> {
-		$win.close();
-	});
-
-	$win.on('close', ()=> {
-		// abort any workers
-	});
-
-	try{
-		const width = canvas.width;
-		const height = canvas.height;
-		const frames = [...undos.map((node)=> node.image_data), ctx.getImageData(0, 0, canvas.width, canvas.height)];
-		// const apng = new APNG(frames, {loops: Infinity}, (blob)=> {
-		const apng = new APNG({loops: Infinity})
-		for(const frame of frames){
-			apng.addFrame(frame, {delay: 200});
-		}
-		apng.render((blob)=> {
-			$win.title("Rendered APNG");
-			const url = URL.createObjectURL(blob);
-			$output.empty().append(
-				$(E("img")).attr({
-					src: url,
-					width: width,
-					height: height,
-				})
-			);
-			$win.$Button("Save", ()=> {
-				$win.close();
-				sanity_check_blob(blob, ()=> {
-					saveAs(blob, file_name + " history.png");
-				});
-			});
-			$cancel.appendTo($win.$buttons);
-			$win.center();
-		});
-	}catch(err){
-		$win.close();
-		show_error_message("Failed to render APNG:", err);
-	}
-}
-*/
 function go_to_history_node(target_history_node, canceling) {
 	const from_history_node = current_history_node;
 
