@@ -1439,7 +1439,10 @@ async function edit_paste(execCommandFallback){
 }
 
 function image_invert(){
-	apply_image_transformation("Invert", (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	apply_image_transformation({
+		name: "Invert",
+		icon: get_icon_for_tool({help_icon: "p_invert.png"}), // HACK
+	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		invert_rgb(original_ctx, new_ctx);
 	});
 }
