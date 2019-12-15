@@ -291,11 +291,15 @@ function make_history_node({
 	selection_x,
 	selection_y,
 	textbox_text,
-	textbox_font = null,
 	textbox_x,
 	textbox_y,
 	textbox_width,
 	textbox_height,
+	text_tool_font = null,
+	tool_transparent_mode,
+	foreground_color,
+	background_color,
+	ternary_color,
 	name,
 	icon = null,
 }) {
@@ -309,11 +313,15 @@ function make_history_node({
 		selection_x,
 		selection_y,
 		textbox_text,
-		textbox_font,
 		textbox_x,
 		textbox_y,
 		textbox_width,
 		textbox_height,
+		text_tool_font,
+		tool_transparent_mode,
+		foreground_color,
+		background_color,
+		ternary_color,
 		name,
 		icon,
 	};
@@ -956,13 +964,20 @@ function go_to_history_node(target_history_node, canceling) {
 			target_history_node.selection_image_data,
 		);
 	}
-	if (target_history_node.textbox_font) {
+	if (target_history_node.textbox_text != null) {
 		if (textbox) {
 			textbox.destroy();
 		}
-		for (const [k, v] of Object.entries(target_history_node.textbox_font)) {
+		// @# text_tool_font =
+		for (const [k, v] of Object.entries(target_history_node.text_tool_font)) {
 			text_tool_font[k] = v;
 		}
+		
+		colors.foreground = target_history_node.foreground_color;
+		colors.background = target_history_node.background_color;
+		tool_transparent_mode = target_history_node.tool_transparent_mode;
+		$G.trigger("option-changed");
+
 		textbox = new OnCanvasTextBox(
 			target_history_node.textbox_x,
 			target_history_node.textbox_y,
@@ -1033,11 +1048,15 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 		selection_x: selection && selection.x,
 		selection_y: selection && selection.y,
 		textbox_text: textbox && textbox.$editor.val(),
-		textbox_font: textbox && JSON.parse(JSON.stringify(text_tool_font)),
 		textbox_x: textbox && textbox.x,
 		textbox_y: textbox && textbox.y,
 		textbox_width: textbox && textbox.width,
 		textbox_height: textbox && textbox.height,
+		text_tool_font: JSON.parse(JSON.stringify(text_tool_font)),
+		tool_transparent_mode,
+		foreground_color: colors.foreground,
+		background_color: colors.background,
+		ternary_color: colors.ternary,
 		parent: current_history_node,
 		name,
 		icon,
