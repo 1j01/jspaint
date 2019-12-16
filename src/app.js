@@ -168,34 +168,7 @@ const $toolbox = $ToolBox(tools);
 const $colorbox = $ColorBox();
 
 $canvas_area.on("user-resized", (_event, _x, _y, unclamped_width, unclamped_height) => {
-	// TODO: don't create undoable if same size
-	// TODO: move this to a function and don't trigger this event other than from the handles
-	// TODO: resize icon for history view
-	undoable({name: "Resize Canvas"}, () => {
-		const new_width = Math.max(1, unclamped_width);
-		const new_height = Math.max(1, unclamped_height);
-		const image_data = ctx.getImageData(0, 0, new_width, new_height);
-		canvas.width = new_width;
-		canvas.height = new_height;
-		ctx.disable_image_smoothing();
-		
-		if(!transparency){
-			ctx.fillStyle = colors.background;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-		}
-
-		const temp_canvas = make_canvas(image_data);
-		ctx.drawImage(temp_canvas, 0, 0);
-
-		$canvas_area.trigger("resize");
-
-		storage.set({
-			width: canvas.width,
-			height: canvas.height,
-		}, err => {
-			// oh well
-		})
-	});
+	resize_canvas_and_save_dimensions(unclamped_width, unclamped_height);
 });
 
 $G.on("resize", () => { // for browser zoom, and in-app zoom of the canvas

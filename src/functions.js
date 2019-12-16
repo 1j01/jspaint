@@ -1625,6 +1625,36 @@ function switch_to_polychrome_palette(){
 
 }
 
+function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height) {
+	// TODO: don't create undoable if same size
+	// TODO: resize icon for history view
+	undoable({name: "Resize Canvas"}, () => {
+		const new_width = Math.max(1, unclamped_width);
+		const new_height = Math.max(1, unclamped_height);
+		const image_data = ctx.getImageData(0, 0, new_width, new_height);
+		canvas.width = new_width;
+		canvas.height = new_height;
+		ctx.disable_image_smoothing();
+		
+		if(!transparency){
+			ctx.fillStyle = colors.background;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+
+		const temp_canvas = make_canvas(image_data);
+		ctx.drawImage(temp_canvas, 0, 0);
+
+		$canvas_area.trigger("resize");
+
+		storage.set({
+			width: canvas.width,
+			height: canvas.height,
+		}, err => {
+			// oh well
+		})
+	});
+}
+
 function image_attributes(){
 	if(image_attributes.$window){
 		image_attributes.$window.close();
@@ -1719,7 +1749,7 @@ function image_attributes(){
 		const unit_to_px = unit_sizes_in_px[unit];
 		const width = $width.val() * unit_to_px;
 		const height = $height.val() * unit_to_px;
-		$canvas_area.triggerHandler("user-resized", [0, 0, ~~width, ~~height]);
+		resize_canvas_and_save_dimensions(~~width, ~~height);
 
 		image_attributes.$window.close();
 	})[0].focus();
