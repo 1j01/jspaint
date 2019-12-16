@@ -809,8 +809,10 @@ function paste(img){
 		$w.$Button("Enlarge", () => {
 			$w.close();
 			// Extra undoable just for the resize; the paste gets its own
-			// TODO: enlarge icon
-			undoable({name: "Enlarge Canvas For Paste"}, () => {
+			undoable({
+				name: "Enlarge Canvas For Paste",
+				icon: get_help_folder_icon("p_stretch_both.png"),
+			}, () => {
 				const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
@@ -1629,8 +1631,10 @@ function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height) {
 	const new_width = Math.max(1, unclamped_width);
 	const new_height = Math.max(1, unclamped_height);
 	if (canvas.width !== new_width || canvas.height !== new_height) {
-		// TODO: resize icon for history view
-		undoable({name: "Resize Canvas"}, () => {
+		undoable({
+			name: "Resize Canvas",
+			icon: get_help_folder_icon("p_stretch_both.png"),
+		}, () => {
 			const image_data = ctx.getImageData(0, 0, new_width, new_height);
 			canvas.width = new_width;
 			canvas.height = new_height;

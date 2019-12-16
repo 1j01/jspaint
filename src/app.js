@@ -447,7 +447,7 @@ storage.get({
 	make_or_update_undoable({
 		match: (history_node)=> history_node.name === "New Document",
 		name: "Resize New Document Canvas",
-		icon: get_icon_for_tool(get_tool_by_name("Select")),
+		icon: get_help_folder_icon("p_stretch_both.png"),
 	}, ()=> {
 		canvas.width = Math.max(1, my_canvas_width);
 		canvas.height = Math.max(1, my_canvas_height);
