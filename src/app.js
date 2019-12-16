@@ -58,7 +58,7 @@ let text_tool_font = {
 
 let root_history_node = make_history_node({name: "App Not Loaded Properly - Please send a bug report."}); // will be replaced
 let current_history_node = root_history_node;
-let history_node_to_cancel_to = current_history_node;
+let history_node_to_cancel_to = null;
 /** array of history nodes */
 let undos = [];
 /** array of history nodes */
@@ -734,7 +734,7 @@ $canvas.on("pointerdown", e => {
 
 		$G.on("pointermove", canvas_pointer_move);
 
-		$G.one("pointerup", (e) => {
+		$G.one("pointerup", (e, canceling) => {
 			button = undefined;
 			reverse = false;
 
@@ -751,6 +751,10 @@ $canvas.on("pointerdown", e => {
 			$G.off("pointermove", canvas_pointer_move);
 			for (const interval_id of interval_ids) {
 				clearInterval(interval_id);
+			}
+
+			if (!canceling) {
+				history_node_to_cancel_to = null;
 			}
 		});
 	};

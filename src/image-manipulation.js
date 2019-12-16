@@ -413,12 +413,12 @@ function apply_image_transformation(meta, fn){
 			selection.replace_source_canvas(new_canvas);
 		});
 	}else{
+		deselect();
+		cancel();
 		undoable({
 			name: meta.name,
 			icon: meta.icon,
 		}, () => {
-			deselect();
-			cancel();
 			saved = false;
 			
 			ctx.copy(new_canvas);

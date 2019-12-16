@@ -267,7 +267,8 @@ function reset_file(){
 function reset_canvas_and_history(){
 	undos.length = 0;
 	redos.length = 0;
-	history_node_to_cancel_to = current_history_node = root_history_node = make_history_node({name: "New Document"});
+	current_history_node = root_history_node = make_history_node({name: "New Document"});
+	history_node_to_cancel_to = null;
 
 	canvas.width = Math.max(1, my_canvas_width);
 	canvas.height = Math.max(1, my_canvas_height);
@@ -1044,7 +1045,12 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 
 	saved = false;
 
+	const before_callback_history_node = current_history_node;
 	callback && callback();
+	if (current_history_node !== before_callback_history_node) {
+		show_error_message(`History node switched during undoable callback for ${name}. This shouldn't happen.`);
+		window.console && console.log(`History node switched during undoable callback for ${name}, from`, before_callback_history_node, "to", current_history_node);
+	}
 
 	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -1230,7 +1236,8 @@ function show_document_history() {
 function cancel(going_to_history_node){
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
-	$G.triggerHandler("pointerup");
+	history_node_to_cancel_to = history_node_to_cancel_to || current_history_node;
+	$G.triggerHandler("pointerup", ["canceling"]);
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();
 	}
@@ -1239,6 +1246,7 @@ function cancel(going_to_history_node){
 		// which isn't good, but there's no real conflict resolution in multi-user mode anyways
 		go_to_history_node(history_node_to_cancel_to, true);
 	}
+	history_node_to_cancel_to = null;
 	update_helper_layer();
 }
 function meld_selection_into_canvas(going_to_history_node) {
@@ -1448,9 +1456,9 @@ function image_invert(){
 }
 
 function clear(){
+	deselect();
+	cancel();
 	undoable({name: "Clear"}, () => {
-		deselect();
-		cancel();
 		saved = false;
 
 		if(transparency){
