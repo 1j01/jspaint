@@ -414,7 +414,10 @@ $G.on("cut copy paste", e => {
 				cd.setData("text/uri-list", data_url);
 				cd.setData("URL", data_url);
 				if(e.type === "cut"){
-					delete_selection("Cut");
+					delete_selection({
+						name: "Cut",
+						icon: get_help_folder_icon("p_cut.png"),
+					});
 				}
 			};
 			if (!navigator.clipboard || !navigator.clipboard.write) {

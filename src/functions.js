@@ -844,7 +844,7 @@ function paste(img){
 
 		undoable({
 			name: "Paste",
-			icon: get_icon_for_tool(get_tool_by_name("Select")),
+			icon: get_help_folder_icon("p_paste.png"),
 			soft: true,
 		}, ()=> {
 			selection = new OnCanvasSelection(x, y, img.width, img.height, img);
@@ -1297,11 +1297,11 @@ function deselect(going_to_history_node){
 		selected_tool.end && selected_tool.end(ctx);
 	}
 }
-function delete_selection(action_name){
+function delete_selection(meta={}){
 	if(selection){
 		undoable({
-			name: action_name || "Delete",
-			icon: get_icon_for_tool(get_tool_by_name("Select")),
+			name: meta.name || "Delete",
+			icon: meta.icon || get_icon_for_tool(get_tool_by_name("Select")),
 			// soft: TODO: conditionally soft?,
 		}, ()=> {
 			selection.destroy();
@@ -1395,7 +1395,10 @@ function edit_cut(execCommandFallback){
 		}
 	}
 	edit_copy();
-	delete_selection("Cut");
+	delete_selection({
+		name: "Cut",
+		icon: get_help_folder_icon("p_cut.png"),
+	});
 }
 async function edit_paste(execCommandFallback){
 	if(
