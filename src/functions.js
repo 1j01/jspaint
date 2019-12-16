@@ -820,9 +820,10 @@ function paste(img){
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
 				}
 				ctx.putImageData(original, 0, 0);
-				do_the_paste();
-				$canvas_area.trigger("resize");
 			});
+			// (undoable callback is synchronous, so this runs after it)
+			do_the_paste();
+			$canvas_area.trigger("resize");
 		})[0].focus();
 		$w.$Button("Crop", () => {
 			$w.close();
