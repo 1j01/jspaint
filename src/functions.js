@@ -267,7 +267,10 @@ function reset_file(){
 function reset_canvas_and_history(){
 	undos.length = 0;
 	redos.length = 0;
-	current_history_node = root_history_node = make_history_node({name: "New Document"});
+	current_history_node = root_history_node = make_history_node({
+		name: "New Document",
+		icon: get_help_folder_icon("p_blank.png"),
+	});
 	history_node_to_cancel_to = null;
 
 	canvas.width = Math.max(1, my_canvas_width);
@@ -375,6 +378,7 @@ function open_from_Image(img, callback, canceled){
 
 		current_history_node.name = "Load Document";
 		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		current_history_node.icon = null; // TODO
 
 		$G.triggerHandler("session-update"); // autosave
 
@@ -1458,7 +1462,10 @@ function image_invert(){
 function clear(){
 	deselect();
 	cancel();
-	undoable({name: "Clear"}, () => {
+	undoable({
+		name: "Clear",
+		icon: get_help_folder_icon("p_blank.png"),
+	}, () => {
 		saved = false;
 
 		if(transparency){
