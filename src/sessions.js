@@ -305,7 +305,7 @@
 							const cctx = cursor_canvas.ctx;
 							cctx.fillStyle = other_user.color;
 							cctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
-							cctx.globalCompositeOperation = "darker";
+							cctx.globalCompositeOperation = "multiply";
 							cctx.drawImage(cursor_image, 0, 0);
 							cctx.globalCompositeOperation = "destination-atop";
 							cctx.drawImage(cursor_image, 0, 0);
