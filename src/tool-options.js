@@ -21,9 +21,10 @@ const ChooserCanvas = (
 	destX,
 	destY,
 	destWidth,
-	destHeight
+	destHeight,
+	reuse_canvas,
 ) => {
-	const c = make_canvas(width, height);
+	const c = reuse_canvas(width, height);
 	let img = ChooserCanvas.cache[url];
 	if(!img){
 		img = ChooserCanvas.cache[url] = E("img");
@@ -52,28 +53,45 @@ const ChooserCanvas = (
 ChooserCanvas.cache = {};
 
 const $Choose = (things, display, choose, is_chosen) => {
-	const $chooser = $(E("div")).addClass("chooser");
+	const $chooser = $(E("div")).addClass("chooser").attr("touch-action", "none");
 	const choose_thing = (thing) => {
 		if(is_chosen(thing)){
-			return; // unnecessary optimization
+			console.log("ALREADY SELECTED:", thing);
+			return;
 		}
+		console.log("SELECTING:", thing);
 		choose(thing);
 		$G.trigger("option-changed");
+		// $G.trigger("redraw-tool-options");
 	};
 	$chooser.on("update", () => {
+		if (!$chooser.is(":visible")) {
+			// TODO: make sure rerenders when switching tools
+			console.log("NOT UPDATING CHOOSER BECAUSE HIDDEN");
+			return;
+		}
 		$chooser.empty();
 		for(let i=0; i<things.length; i++){
 			(thing => {
 				const $option_container = $(E("div")).addClass("chooser-option").appendTo($chooser);
 				$option_container.data("thing", thing);
+				const reuse_canvas = (width, height)=> {
+					let option_canvas = $option_container.find("canvas")[0];
+					if (option_canvas) {
+						if (option_canvas.width !== width) { option_canvas.width = width; }
+						if (option_canvas.height !== height) { option_canvas.height = height; }
+					} else {
+						option_canvas = make_canvas(width, height);
+						$option_container.append(option_canvas);
+					}
+					return option_canvas;
+				};
 				const update = () => {
 					const selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // TODO: get from a CSS variable
 					$option_container.css({
 						backgroundColor: is_chosen(thing) ? selected_color : ""
 					});
-					$option_container.empty();
-					$option_canvas = $(display(thing, is_chosen(thing)));
-					$option_canvas.appendTo($option_container);
+					display(thing, is_chosen(thing), reuse_canvas);
 				};
 				update();
 				$G.on("redraw-tool-options", update);
@@ -82,24 +100,55 @@ const $Choose = (things, display, choose, is_chosen) => {
 		}
 
 		const onpointerover_while_pointer_down = (event)=> {
-			const $option_container = $(event.target).closest(".chooser-option");
-			if ($option_container.length > 0) {
-				choose_thing($option_container.data("thing"));
+			const option_container = event.target.closest(".chooser-option");
+			if (option_container) {
+				choose_thing($(option_container).data("thing"));
 			}
 		};
+		const ontouchmove_while_pointer_down = (event)=> {
+			const touch = event.originalEvent.changedTouches[0];
+			const target = document.elementFromPoint(touch.clientX, touch.clientY);
+			const option_container = target.closest(".chooser-option");
+			console.log(touch, target, option_container);
+			if (option_container) {
+				choose_thing($(option_container).data("thing"));
+			}
+			event.preventDefault();
+		};
+		// const onpointermove_while_pointer_down = (event)=> {
+		// 		const target = document.elementFromPoint(event.clientX, event.clientY);
+		// 		const option_container = target.closest(".chooser-option");
+		// 		// console.log(event, event.target, target, option_container);
+		// 		if (event.target !== target) {
+		// 			console.log("event:", event);
+		// 			console.log("event.target:", event.target);
+		// 			console.log("elementFromPoint target:", target);
+		// 		}
+		// 		console.log("option_container:", option_container);
+		// 		if (option_container) {
+		// 			choose_thing($(option_container).data("thing"));
+		// 		}
+		// };
 
 		$chooser.on("pointerdown click", (event)=> {
-			const $option_container = $(event.target).closest(".chooser-option");
-			if ($option_container.length > 0) {
-				choose_thing($option_container.data("thing"));
-
+			const option_container = event.target.closest(".chooser-option");
+			console.log(event.type, option_container);
+			if (option_container) {
+				choose_thing($(option_container).data("thing"));
 				if (event.type === "pointerdown") {
 					$chooser.on("pointerover", onpointerover_while_pointer_down);
+					$chooser.on("touchmove", ontouchmove_while_pointer_down);
+					// $chooser.on("pointermove", onpointermove_while_pointer_down);
+					// $chooser[0].setPointerCapture(event.pointerId);
 				}
 			}
 		});
-		$G.on("pointerup pointercancel", ()=> {
+		$G.on("pointerup pointercancel", (event)=> {
+			console.trace(event.type, event);
 			$chooser.off("pointerover", onpointerover_while_pointer_down);
+			$chooser.off("touchmove", ontouchmove_while_pointer_down);
+			// $chooser.off("pointermove", onpointermove_while_pointer_down);
+			// $chooser[0].releasePointerCapture(event.pointerId);
 		});
 	});
 	return $chooser;
@@ -111,8 +160,8 @@ const $ChooseShapeStyle = () => {
 			{stroke: true, fill: true},
 			{stroke: false, fill: true}
 		],
-		({stroke, fill}, is_chosen) => {
-			const sscanvas = make_canvas(39, 21);
+		({stroke, fill}, is_chosen, reuse_canvas) => {
+			const sscanvas = reuse_canvas(39, 21);
 			const ssctx = sscanvas.ctx;
 			
 			// border px inwards amount
@@ -167,8 +216,8 @@ const $choose_brush = $Choose(
 		});
 		return things;
 	})(),
-	(o, is_chosen) => {
-		const cbcanvas = make_canvas(10, 10);
+	(o, is_chosen, reuse_canvas) => {
+		const cbcanvas = reuse_canvas(10, 10);
 		
 		const shape = o.shape;
 		const size = o.size;
@@ -188,8 +237,8 @@ const $choose_brush = $Choose(
 
 const $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
-	(size, is_chosen) => {
-		const cecanvas = make_canvas(39, 16);
+	(size, is_chosen, reuse_canvas) => {
+		const cecanvas = reuse_canvas(39, 16);
 		
 		cecanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		render_brush(cecanvas.ctx, "square", size);
@@ -204,9 +253,9 @@ const $choose_eraser_size = $Choose(
 
 const $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
-	(size, is_chosen) => {
+	(size, is_chosen, reuse_canvas) => {
 		const w = 39, h = 12, b = 5;
-		const cscanvas = make_canvas(w, h);
+		const cscanvas = reuse_canvas(w, h);
 		const center_y = (h - size) / 2;
 		cscanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
 		cscanvas.ctx.fillRect(b, ~~center_y, w - b*2, size);
@@ -221,7 +270,7 @@ const $choose_stroke_size = $Choose(
 const magnifications = [1, 2, 6, 8, 10];
 const $choose_magnification = $Choose(
 	magnifications,
-	(scale, is_chosen) => {
+	(scale, is_chosen, reuse_canvas) => {
 		const i = magnifications.indexOf(scale);
 		const secret = scale === 10; // 10x is secret
 		const chooser_canvas = ChooserCanvas(
@@ -229,7 +278,8 @@ const $choose_magnification = $Choose(
 			is_chosen, // invert if chosen
 			39, (secret ? 2 : 13), // width, height of destination canvas
 			i*23, 0, 23, 9, // x, y, width, height from source image
-			8, 2, 23, 9 // x, y, width, height on destination
+			8, 2, 23, 9, // x, y, width, height on destination
+			reuse_canvas,
 		);
 		if(secret){
 			$(chooser_canvas).addClass("secret-option");
@@ -253,7 +303,7 @@ $choose_magnification.on("update", () => {
 const airbrush_sizes = [9, 16, 24];
 const $choose_airbrush_size = $Choose(
 	airbrush_sizes,
-	(size, is_chosen) => {
+	(size, is_chosen, reuse_canvas) => {
 		
 		const image_width = 72; // width of source image
 		const i = airbrush_sizes.indexOf(size); // 0 or 1 or 2
@@ -270,7 +320,8 @@ const $choose_airbrush_size = $Choose(
 			is_chosen, // invert if chosen
 			w, h, // width, height of created destination canvas
 			source_x, 0, w, h, // x, y, width, height from source image
-			0, 0, w, h // x, y, width, height on created destination canvas
+			0, 0, w, h, // x, y, width, height on created destination canvas
+			reuse_canvas,
 		);
 	},
 	size => {
@@ -281,7 +332,7 @@ const $choose_airbrush_size = $Choose(
 
 const $choose_transparent_mode = $Choose(
 	[false, true],
-	(_tool_transparent_mode, is_chosen) => {
+	(_tool_transparent_mode, is_chosen, reuse_canvas) => {
 		const sw = 35, sh = 23; // width, height from source image
 		const b = 2; // margin by which the source image is inset on the destination
 		const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
