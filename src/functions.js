@@ -1301,7 +1301,7 @@ function delete_selection(meta={}){
 	if(selection){
 		undoable({
 			name: meta.name || "Delete",
-			icon: meta.icon || get_icon_for_tool(get_tool_by_name("Select")),
+			icon: meta.icon || get_help_folder_icon("p_delete.png"),
 			// soft: TODO: conditionally soft?,
 		}, ()=> {
 			selection.destroy();
