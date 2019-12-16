@@ -16,6 +16,10 @@
 * Search
 * Keyboard support
 
+* Interactive tutorials?
+	* Possibly hosted by Clippy, with [ClippyJS](https://www.smore.com/clippy-js)
+	* Highlight elements on the page
+	* Be sure to cover undo/redo, and file saving
 
 ### Visual
 
@@ -32,16 +36,9 @@
 * The canvas-area's border is different in Firefox and Edge from Chrome
 
 
-### Issues
-
-* If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
-* Can't glide thru tool options in Firefox, mobile Chrome;
-might be a pointer events spec interpretation issue, and it could easily be that the more technically correct browsers are where it's not working
-(Note: not a thing allowed by MS Paint)
-
-
 ### Menus
 
+* Bug on mobile: If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
 * Keyboard navigation of submenus
 * <kbd>Alt</kbd> (by itself)?
 
@@ -52,6 +49,8 @@ might be a pointer events spec interpretation issue, and it could easily be that
 * Make the component ghost account for the window's title bar
 
 ### Extended editing
+
+* Optional fill tolerance (slider that you enable from a settings menu?)
 
 * Transparency
 	* Color opacity slider
@@ -75,50 +74,50 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* Photoshop PSD ([via psd.js](https://github.com/trevorlinton/psd.js))
 		* OpenRaster ORA ([via ora.js](https://github.com/zsgalusz/ora.js/tree/master))
 
-
 * Online (multi-user) and local (single-user) sessions
 	* See [sessions.js](src/sessions.js)
 	* Issues
-		* You get interrupted if you try to make a selection when there's a selection
-		* You get interrupted if you try to draw at the same time as another person (you basically have to take turns - lame!)
+		* There's no conflict resolution; user edits revert other user edits
+		* It's not eventually consistent
 		* Cursors from other users that go outside the parent can cause the page to be scrollable
+
+* Painting textures on 3D models
+	* And onto tesselating patterns which I imagine can be a special case of 3D models
+
+* Save text and record transformations so the image can be saved as
+SVG (or HTML?) with invisible selectable transformed text elements?
+	* Every time you move a selection, duplicate the text and create a clip-path for both parts?
+		* This wouldn't really be nice for screen-readers, only selection
+			* Well, maybe make only one of them audible for screen-readers
 
 
 ### Device support
 
-* Pan tool for touchscreens without multitouch?
-
-
-* Enlarge GUI elements on touch devices
-	* Menus
-
-
-* You can't use the Eraser/Color Eraser tool as a "Color Eraser" without a secondary mouse button
-* Make sure anything that uses hovering is paralleled on mobile (tooltips, `:hover` effects)
-
-
-* Access to functionality that would normally require a keyboard (with a numpad!)
+* Prevent text selection in buttons and history entries
+* Enlarge menus on touch devices
+* Enlarge window titlebar close buttons on touch devices
+* Magnifier: on touchscreens, wait until pointerup to zoom
+	* To detect touchscreen usage, could keep track of whether the last pointermove had any buttons pressed
+* Alternative way to access "Color Eraser" feature without a secondary mouse button?
+* Alternative access to functionality that would normally require a keyboard (with a numpad!)
 	* Numpad +/-: Increase/Decrease brush size, Double/Halve selection size, ...
-	* Shift (toggle): Proportional, Smear / Trail Selection, "Snap to 8 directions" / "Octosnap"?
+	* Shift (toggle):
+		* Proportional, Smear / Trail Selection
+		* "Snap to 8 directions" / "Octosnap"?
+			* An isometric mode would also be good
 	* Ctrl+Select: Crop tool or "Crop to selection" option
-
-
 * Don't drag toolbars out into windows with touch
 	* Unless with two fingers perhaps
 		* I might want to use multitouch on the tool buttons for MultiTools tho...
 
 ### Tools
 
-* Free-Form Select
-	* Passive: create no undoables until you do something
+* Select and Free-Form Select
+	* Passive: create no undoables until you do something like move or invert the selection
 		* You should be able to make a selection, then change the secondary color, then drag the selection cutting it out with the color you selected
-	* See [On-Canvas Objects](#on-canvas-objects) for Selection
-
-
-* Select
-	* Passive: create no undoables until you do something
-		* You should be able to make a selection, then change the secondary color, then drag the selection cutting it out with the color you selected
-	* See [On-Canvas Objects](#on-canvas-objects) for Selection
+		* Select and deselect with no actions in between should create no undoables
+	* Proportionally resize selection while holding Shift
+		* (or maybe by default? I feel like it should be the default, tbh.)
 
 
 * Text
@@ -126,36 +125,27 @@ might be a pointer events spec interpretation issue, and it could easily be that
 		* If it would go over the edge of the canvas, reject the input (at least, that's what mspaint does)
 	* Minimum size of 3em x 1em
 		* Initially and while resizing
-	* Add padding left to text area when font has glyphs that extend left, like italic f in Times New Roman
+	* Add padding left to text area when font has glyphs that extend left, like italic 'f' in Times New Roman
+		* mspaint has access to font metrics
+		* jspaint could render text to see when it would overflow
+			* To do it efficiently,
+				* Take all glyphs in the text
+					* (And maybe a set of common letters like the alphabet)
+					* Split with a library to handle Unicode (emojis etc.)
+				* Uniquify
+				* Place them *all on top of each other*, positioned absolutely, leaving room to the left of them to detect pixels
+				* Scan the pixels at the left to find the maximum extent left
+				* Could store, per font, what glyphs have been tested and what's the maximum extent detected, in order to not have to rerender these
+					* "What glyphs have been tested" should be specific to font size and attributes, since an italic 'f' may extend more than a normal 'f' for instance
 	* Store position of FontBox
-	* Save text and record transformations so the image can be saved as
-	SVG (or HTML?) with invisible selectable transformed text elements?
 
 
-* **Options**
-	* In MS Paint, visual area =/= selection highlight area =/= clickable area
-
-
-* **Shape Styles and Strokes**
+* Shape Styles
 	* Shapes: respond to Ctrl (It's complicated)
 	* Handle patterns (black and white mode)
-		* Still needed for brush and fill and right click with the eraser tool (i.e. replace color)
+		* Still needed for fill tool
 		* Check to make sure patterns are aligned properly for all the tools
 		* There's supposed to be a mapping between color values and pattern fills, used by the text tool and for the palette when switching between modes (colors should be kept between going to black and white mode and back)
-
-
-### On-Canvas Objects
-
-* `OnCanvasSelection`
-	* Proportionally resize selection while holding Shift
-	(or maybe by default? I feel like it should be the default, tbh.)
-	* Don't cut until you drag or do something else
-	(In MS Paint, you can make a selection, change the background color
-	and drag it, leaving the new background color behind.)
-
-
-* `OnCanvasTextBox`
-	* See Text tool
 
 
 ### Desktop App (Electron)
@@ -191,24 +181,20 @@ Functionality:
 * See [Issues on GitHub](https://github.com/1j01/jspaint/issues)
 
 
-* Improve README
-	* More images! Animated GIFs perhaps? :)
-
-
 * CSS
 	* DRY, especially button styles - SVG `border-image`?
-	* Comment stuff?
 	* Use a CSS preprocessor
 		* DRY
 		* Clearer `z-index` handling?
 		* Color-swap themes (maybe even load Windows theme files)
-	* Stuff should go in an OS GUI library with themes for Windows 98 and other OSes
+	* Stuff should go in an [OS GUI library](https://github.com/1j01/os-gui) with themes for Windows 98 and other OSes
 
 
 * JS
-	* Everything is in random files! "`functions.js`", REALLY?
+	* Organize things into files better; "functions.js" is like ONE step above saying "code.js"
 	* `$Window` has a `$Button` facility; `$FormWindow` overrides it with essentially a better one
-	* Make code clearer / improve code quality: https://codeclimate.com/github/1j01/jspaint
+	* Make code clearer / improve code quality
+		* https://codeclimate.com/github/1j01/jspaint
 
 
 * Images

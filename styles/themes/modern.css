@@ -43,10 +43,6 @@ body {
 }
 .handle {
 	background: #000080;
-	/* TODO: enlarge handles for usability (need to update code to handle it though) */
-	/* or at least increase functional size */
-	/* width: 5px;
-	height: 5px; */
 }
 .useless-handle {
 	background: #fff;
@@ -54,8 +50,7 @@ body {
 }
 .resize-ghost {
 	outline: 1px dotted black;
-	/*outline: 1px dotted invert;*/
-	/* I want this to be inverty, but in chrome this makes it invisible */
+	/*outline: 1px dotted invert; I want this to be inverty, but in chrome this value makes it invisible */
 }
 
 .window,

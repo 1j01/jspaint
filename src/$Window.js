@@ -202,7 +202,7 @@ function $FormWindow(title){
 		const $b = $(E("button")).appendTo($w.$buttons).text(label);
 		$b.on("click", e => {
 			// prevent the form from submitting
-			// @TODO: instead, prevent the form's submit event
+			// @TODO: instead prevent submit event
 			e.preventDefault();
 			
 			action();

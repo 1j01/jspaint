@@ -494,11 +494,6 @@
 	};
 	const generate_session_id = () => (Math.random()*(2 ** 32)).toString(16).replace(".", "");
 	const update_session_from_location_hash = e => {
-		// TODO: should #load: be separate from #session:/#local:,
-		// and be able to load *into* a session, rather than just start one?
-		// well I guess loading into a session wouldn't be that helpful if it makes a new image anyways
-		// but it would be useful for collaborative sessions if collaborative sessions actually worked well enough to be useful
-		// well, but you can paste images too, so you could just do that
 		const session_match = location.hash.match(/^#?(session|local):(.*)$/i);
 		const load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);
 		if(session_match){

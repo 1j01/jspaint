@@ -8,7 +8,7 @@ A nice web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
 
 The goal is to remake MS Paint
 (including its [little-known features](#did-you-know)),
-improve on it, and to [extend](#extended-editing) the types of images it can edit.
+improve on it, and to extend the types of images it can edit.
 So far, it does this pretty well.
 
 ![Screenshot](images/meta/main-screenshot.png)
@@ -58,9 +58,8 @@ I want to bring good old paint into the modern era.
   smear it across the canvas *while it animates*!~~
   Update: This was [due to not-to-spec behavior in Chrome.](https://christianheilmann.com/2014/04/16/browser-inconsistencies-animated-gif-and-drawimage/)
   I may reimplement this in the future as I really liked this feature.
-* You can open SVG files (because browsers support SVG).
-  It's still a completely raster image editor though.
-  (And you can't choose a size to render the SVG at. It may open super large, or tiny.)
+* You can open SVG files, though only as a bitmap.
+  (And you can't choose a size for the bitmap when opening an SVG. It may open super large, or tiny.)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd> and <kbd>></kbd>)
 * Rotate by any arbitrary angle in **Image > Flip/Rotate**
@@ -84,20 +83,10 @@ I want to bring good old paint into the modern era.
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
 
-#### Possible future improvements:
-
-* [Extended Editing](#extended-editing)
-* Proportionally resize the selection or canvas by holding <kbd>Shift</kbd>
-  (or maybe that should be the default, really!)
-* <kbd>Alt</kbd> as a shortcut for the eyedropper, as long as it doesn't conflict with keyboard navigation of menus
-* Optional fill tolerance (slider that you enable from a settings menu?)
-* Interactive tutorial(s)?
-
-
 #### Limitations:
 
-A lot of stuff isn't done yet.
-See: [the big long todo list.](TODO.md)
+A few things with the tools aren't done yet.
+See [TODO.md](TODO.md#Tools)
 
 Full clipboard support in the web app requires a browser supporting the [Async Clipboard API w/ Images](https://developers.google.com/web/updates/2019/07/image-support-for-async-clipboard), namely Chrome 76+ at the time of writing.
 
@@ -106,41 +95,6 @@ but data copied from JS Paint can only be pasted into other instances of JS Pain
 External images can be pasted in.
 
 (There's also a partially-built [desktop app](#desktop-app) version you can install that has full clipboard support, and also lets you set the wallpaper.)
-
-
-## Extended Editing
-
-I want to make JS Paint to be able to edit...
-
-* Transparent [PNG][]s - Done!
-  Images that are partially transparent will automatically open in Transparent mode.
-  To enable transparency for an image, go to **Image > Attributes...** or press <kbd>Ctrl+E</kbd>,
-  select Transparent, and hit Okay.
-  Then you'll want to remove some of the background.
-  You can use the Eraser tool a bit, then use the Color Picker to
-  pick up where you erased and then use the Fill tool to remove bigger areas.
-* Animated [GIF][]s
-  (yes, that entails a fully featured (but simple) animation editor). -
-  Currently you can only make GIFs of the document *history*,
-  with <kbd>Ctrl+Shift+G</kbd> or from the Extras menu.
-* Animated Transparent [APNG][]s
-  (better than GIFs, but with less support)
-* Multi-size Icons ([ICO][] for windows and [ICNS][] for mac)
-* [Scalable Vector Graphics][SVG] (kidding) -
-  Actually, it could always open SVG files in browsers that can handle SVGs,
-  and I've made it try not to save over the original SVG.
-  That's pretty decent SVG support for a 100% raster image editor.
-* Tessellating patterns, and textures on 3D models;
-  that might be a pipe dream, but [then again...](https://github.com/1j01/pipes) [hm...](https://github.com/1j01/mopaint)
-
-
-[PNG]: https://en.wikipedia.org/wiki/Portable_Network_Graphics "Portable Network Graphics"
-[GIF]: https://en.wikipedia.org/wiki/Graphics_Interchange_Format "Graphics Interchange Format"
-[APNG]: https://en.wikipedia.org/wiki/APNG "Animated Portable Network Graphics"
-[ICO]: https://en.wikipedia.org/wiki/ICO_(file_format) "Microsoft Icon Image format"
-[ICNS]: https://en.wikipedia.org/wiki/Apple_Icon_Image_format "Apple Icon Image format"
-[SVG]: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics "Scalable Vector Graphics"
-[TXT]: https://en.wikipedia.org/wiki/Text_file "Text file"
 
 
 ## Did you know?

@@ -777,7 +777,6 @@ function show_news(){
 // };
 
 function paste_image_from_file(file){
-	// TODO: revoke object URL
 	const blob_url = URL.createObjectURL(file);
 	// paste_image_from_URI(blob_url);
 	load_image_from_URI(blob_url, (err, img) => {
@@ -1264,7 +1263,7 @@ function meld_selection_into_canvas(going_to_history_node) {
 		undoable({
 			name: "Deselect",
 			icon: get_icon_for_tool(get_tool_by_name("Select")),
-			use_loose_canvas_changes: true, // HACK; TODO: make OnCanvasSelection not directly change the canvas, same rules as tools
+			use_loose_canvas_changes: true, // HACK; TODO: make OnCanvasSelection not change the canvas outside undoable, same rules as tools
 		}, ()=> { });
 	}
 }
