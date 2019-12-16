@@ -382,7 +382,10 @@
 						
 						if (!image_data_are_equal(image_data_remote, image_data_local)) {
 							ignore_session_update = true;
-							undoable({name: "Sync Session"}, ()=> {
+							undoable({
+								name: "Sync Session",
+								icon: get_help_folder_icon("p_database.png"),
+							}, ()=> {
 								// Write the image data to the canvas
 								ctx.copy(img);
 								$canvas_area.trigger("resize");
