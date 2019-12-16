@@ -810,7 +810,7 @@ function paste(img){
 			$w.close();
 			// Extra undoable just for the resize; the paste gets its own
 			// TODO: enlarge icon
-			undoable({name: "Paste: Enlarge"}, () => {
+			undoable({name: "Enlarge Canvas For Paste"}, () => {
 				const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				canvas.width = Math.max(original.width, img.width);
 				canvas.height = Math.max(original.height, img.height);
