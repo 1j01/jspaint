@@ -928,8 +928,7 @@ function draw_grid(ctx, scale) {
 
 		// TODO: cachebust memoized brushes
 
-		// redraw tool options
-		$G.triggerHandler("option-changed");
+		$G.triggerHandler("redraw-tool-options");
 	}, false);
 
 	function clamp_brush_sizes() {

@@ -53,42 +53,54 @@ ChooserCanvas.cache = {};
 
 const $Choose = (things, display, choose, is_chosen) => {
 	const $chooser = $(E("div")).addClass("chooser");
+	const choose_thing = (thing) => {
+		if(is_chosen(thing)){
+			return; // unnecessary optimization
+		}
+		choose(thing);
+		$G.trigger("option-changed");
+	};
 	$chooser.on("update", () => {
 		$chooser.empty();
 		for(let i=0; i<things.length; i++){
 			(thing => {
-				const $option_container = $(E("div")).appendTo($chooser);
-				let $option = $();
-				const choose_thing = () => {
-					if(is_chosen(thing)){
-						return; // unnecessary optimization
-					}
-					choose(thing);
-					$G.trigger("option-changed");
-				};
+				const $option_container = $(E("div")).addClass("chooser-option").appendTo($chooser);
+				$option_container.data("thing", thing);
 				const update = () => {
 					const selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // TODO: get from a CSS variable
 					$option_container.css({
 						backgroundColor: is_chosen(thing) ? selected_color : ""
 					});
 					$option_container.empty();
-					$option = $(display(thing, is_chosen(thing)));
-					$option.appendTo($option_container);
+					$option_canvas = $(display(thing, is_chosen(thing)));
+					$option_canvas.appendTo($option_container);
 				};
 				update();
-				$chooser.on("redraw", update);
+				$G.on("redraw-tool-options", update);
 				$G.on("option-changed", update);
-				
-				$option_container.on("pointerdown click", choose_thing);
-				$chooser.on("pointerdown", () => {
-					$option_container.on("pointerenter", choose_thing);
-				});
-				$G.on("pointerup", () => {
-					$option_container.off("pointerenter", choose_thing);
-				});
-				
 			})(things[i]);
 		}
+
+		const onpointerover_while_pointer_down = (event)=> {
+			const $option_container = $(event.target).closest(".chooser-option");
+			if ($option_container.length > 0) {
+				choose_thing($option_container.data("thing"));
+			}
+		};
+
+		$chooser.on("pointerdown click", (event)=> {
+			const $option_container = $(event.target).closest(".chooser-option");
+			if ($option_container.length > 0) {
+				choose_thing($option_container.data("thing"));
+
+				if (event.type === "pointerdown") {
+					$chooser.on("pointerover", onpointerover_while_pointer_down);
+				}
+			}
+		});
+		$G.on("pointerup pointercancel", ()=> {
+			$chooser.off("pointerover", onpointerover_while_pointer_down);
+		});
 	});
 	return $chooser;
 };
