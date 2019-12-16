@@ -191,6 +191,8 @@
 	class MultiUserSession {
 		constructor(session_id) {
 			this.id = session_id;
+			this._fb_listeners = [];
+
 			file_name = `[Loading ${this.id}]`;
 			update_title();
 			const on_firebase_loaded = () => {
@@ -239,9 +241,9 @@
 				$w.close();
 			});
 			$w.center();
+			
 			// Wrap the Firebase API because they don't
 			// provide a great way to clean up event listeners
-			this._fb_listeners = [];
 			const _fb_on = (fb, event_type, callback, error_callback) => {
 				this._fb_listeners.push({ fb, event_type, callback, error_callback });
 				fb.on(event_type, callback, error_callback);
