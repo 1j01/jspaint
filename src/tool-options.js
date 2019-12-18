@@ -295,7 +295,7 @@ const $choose_airbrush_size = $Choose(
 
 const $choose_transparent_mode = $Choose(
 	[false, true],
-	(_tool_transparent_mode/*, is_chosen, reuse_canvas*/) => {
+	(option, _is_chosen, reuse_canvas) => {
 		const sw = 35, sh = 23; // width, height from source image
 		const b = 2; // margin by which the source image is inset on the destination
 		const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
@@ -303,13 +303,14 @@ const $choose_transparent_mode = $Choose(
 			`${theme_folder}/options-transparency.png`,
 			false, // never invert it
 			b+sw+b, b+sh+b, // width, height of created destination canvas
-			0, _tool_transparent_mode ? 22 : 0, sw, sh, // x, y, width, height from source image
-			b, b, sw, sh // x, y, width, height on created destination canvas
+			0, option ? 22 : 0, sw, sh, // x, y, width, height from source image
+			b, b, sw, sh, // x, y, width, height on created destination canvas
+			reuse_canvas,
 		);
 	},
-	_tool_transparent_mode => {
-		tool_transparent_mode = _tool_transparent_mode;
+	option => {
+		tool_transparent_mode = option;
 	},
-	_tool_transparent_mode => _tool_transparent_mode === tool_transparent_mode
+	option => option === tool_transparent_mode
 ).addClass("choose-transparent-mode");
 
