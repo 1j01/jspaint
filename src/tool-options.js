@@ -1,6 +1,4 @@
 
-const brush_canvas = make_canvas();
-const brush_ctx = brush_canvas.ctx;
 let brush_shape = "circle";
 let brush_size = 4;
 let eraser_size = 8;
