@@ -1775,6 +1775,7 @@ function image_attributes(){
 
 function image_flip_and_rotate(){
 	const $w = new $FormWindow("Flip and Rotate");
+	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append("<legend>Flip or rotate</legend>");

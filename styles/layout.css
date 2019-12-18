@@ -348,6 +348,10 @@ html, body, .jspaint {
 	padding: 5px;
 }
 
+.flip-and-rotate fieldset {
+	width: 200px;
+}
+
 .help-window .window-content {
 	display: flex;
 	flex-flow: row;
