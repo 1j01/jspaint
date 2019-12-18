@@ -25,6 +25,13 @@ let palette = [
 let polychrome_palette = palette;
 let monochrome_palette = make_monochrome_palette();
 
+let brush_shape = "circle";
+let brush_size = 4;
+let eraser_size = 8;
+let airbrush_size = 9;
+let pencil_size = 1;
+let stroke_size = 1; // lines, curves, shape outlines
+let tool_transparent_mode = false;
 
 let stroke_color;
 let fill_color;
