@@ -70,7 +70,7 @@ function memoize_synchronous_function(func) {
 		if (cache[key]){
 			return cache[key];
 		} else{
-			val = func.apply(null, args);
+			const val = func.apply(null, args);
 			cache[key] = val;
 			return val; 
 		}
@@ -85,7 +85,7 @@ function memoize_synchronous_function_with_limit(func, max_entries) {
 		if (cache[key]){
 			return cache[key];
 		} else{
-			val = func.apply(null, args);
+			const val = func.apply(null, args);
 			cache[key] = val;
 			keys.push(key);
 			if (keys.length > max_entries) {
