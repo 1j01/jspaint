@@ -340,7 +340,6 @@ window.tools = [{
 			// the selected foreground color with the selected background color
 			
 			const fg_rgba = get_rgba_from_color(colors.foreground);
-			const bg_rgba = get_rgba_from_color(colors.background);
 			
 			const test_image_data = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			const result_image_data = this.mask_canvas.ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
