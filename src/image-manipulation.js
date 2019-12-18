@@ -127,7 +127,7 @@ const get_brush_canvas = memoize_synchronous_function_with_limit((brush_shape, b
 	render_brush(brush_canvas.ctx, brush_shape, brush_size);
 
 	return brush_canvas;
-}, 10);
+}, 20); // 12 brush tool options + current brush + current pencil + current eraser + current shape stroke + a few
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size)=> {

@@ -195,12 +195,12 @@ const $choose_brush = $Choose(
 		const shape = o.shape;
 		const size = o.size;
 		
-		cbcanvas.ctx.fillStyle =
-		cbcanvas.ctx.strokeStyle =
-			is_chosen ? "#fff" : "#000";
+		stamp_brush_canvas(cbcanvas.ctx, 5, 5, shape, size);
 		
-		render_brush(cbcanvas.ctx, shape, size);
-		
+		if (is_chosen) {
+			invert_rgb(cbcanvas.ctx);
+		}
+
 		return cbcanvas;
 	}, ({shape, size}) => {
 		brush_shape = shape;
