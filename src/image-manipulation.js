@@ -353,11 +353,11 @@ function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	const c_width = canvas.width;
 	const c_height = canvas.height;
 	const id = ctx.getImageData(0, 0, c_width, c_height);
-	pixel_pos = (y*c_width + x) * 4;
-	const start_r = id.data[pixel_pos+0];
-	const start_g = id.data[pixel_pos+1];
-	const start_b = id.data[pixel_pos+2];
-	const start_a = id.data[pixel_pos+3];
+	const start_pixel_pos = (y*c_width + x) * 4;
+	const start_r = id.data[start_pixel_pos+0];
+	const start_g = id.data[start_pixel_pos+1];
+	const start_b = id.data[start_pixel_pos+2];
+	const start_a = id.data[start_pixel_pos+3];
 	
 	if(
 		fill_r === start_r &&
