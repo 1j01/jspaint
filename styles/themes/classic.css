@@ -358,6 +358,7 @@ button.selected,
 	color: white;
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
+	height: 15px;
 }
 .window-title {
 	padding-left: 2px;
