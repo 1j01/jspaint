@@ -1174,7 +1174,7 @@ function show_document_history() {
 	`);
 	// at any time* except in textarea, right?
 
-	$history_view = $w.$content.find(".history-view");
+	const $history_view = $w.$content.find(".history-view");
 
 	let previous_scroll_position = 0;
 
