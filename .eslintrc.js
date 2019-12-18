@@ -16,6 +16,10 @@ module.exports = {
         "firebase": "readonly",
         "GIF": "readonly",
         "saveAs": "readonly",
+        "Konami": "readonly",
+        "YT": "readonly",
+        "FontDetective": "readonly",
+        "Palette": "readonly",
 
         /*
         // const
@@ -119,10 +123,5 @@ module.exports = {
     "rules": {
         "no-undef": 0, // FOR NOW OKAY? there are just tons of globals at the moment
         "no-unused-vars": 0, // ditto
-        /*
-        "no-undef": 0,
-        // "no-unused-vars": 0,
-        "no-redeclare": 0,
-        */
     }
 };
