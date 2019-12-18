@@ -102,10 +102,11 @@ const $Choose = (things, display, choose, is_chosen) => {
 			const option_container = event.target.closest(".chooser-option");
 			if (option_container) {
 				choose_thing($(option_container).data("thing"));
-				if (event.type === "pointerdown") {
-					$chooser.on("pointerover", onpointerover_while_pointer_down);
-					$chooser.on("touchmove", ontouchmove_while_pointer_down);
-				}
+			}
+			if (event.type === "pointerdown") {
+				// glide thru tool options
+				$chooser.on("pointerover", onpointerover_while_pointer_down);
+				$chooser.on("touchmove", ontouchmove_while_pointer_down);
 			}
 		});
 		$G.on("pointerup pointercancel", (event)=> {
