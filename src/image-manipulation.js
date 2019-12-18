@@ -721,7 +721,6 @@ function draw_grid(ctx, scale) {
 			vertical_pattern = ctx.createPattern(vertical_pattern_canvas, "repeat");
 		}
 
-		const dash_length = 4 / magnification;
 		const dash_width = 1;
 		const hairline_width = 1/scale; // size of a screen pixel
 
@@ -785,11 +784,11 @@ function draw_grid(ctx, scale) {
 			window.console && console.log(`error number: ${errno}`);
 		}
 		// callback for when segments intersect and must be split
-		function combinecallback(coords, data, weight) {
+		function combinecallback(coords/*, data, weight*/) {
 			// window.console && console.log('combine callback');
 			return [coords[0], coords[1], coords[2]];
 		}
-		function edgeCallback(flag) {
+		function edgeCallback(/*flag*/) {
 			// don't really care about the flag, but need no-strip/no-fan behavior
 			// window.console && console.log('edge flag: ' + flag);
 		}

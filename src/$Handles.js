@@ -53,12 +53,12 @@ function $Handles($container, getRect, options){
 			const cursor = make_css_cursor(cursor_fname, [16, 16], fallback_cursor);
 			$h.css({cursor});
 			
-			const drag = e => {
+			const drag = (event) => {
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
 				const rect = getRect();
-				const m = to_canvas_coords(e);
+				const m = to_canvas_coords(event);
 				// TODO: decide between Math.floor/Math.ceil/Math.round for these values
 				if(x_axis === "right"){
 					delta_x = 0;
@@ -86,13 +86,13 @@ function $Handles($container, getRect, options){
 					height: magnification * height,
 				});
 			};
-			$h.on("pointerdown", e => {
+			$h.on("pointerdown", event => {
 				dragged = false;
-				if(e.button === 0){
+				if(event.button === 0){
 					$G.on("pointermove", drag);
 					$("body").css({cursor}).addClass("cursor-bully");
 				}
-				$G.one("pointerup", e => {
+				$G.one("pointerup", ()=> {
 					$G.off("pointermove", drag);
 					$("body").css({cursor: ""}).removeClass("cursor-bully");
 					
@@ -104,8 +104,8 @@ function $Handles($container, getRect, options){
 					$container.trigger("update");
 				});
 			});
-			$h.on("mousedown selectstart", e => {
-				e.preventDefault();
+			$h.on("mousedown selectstart", event => {
+				event.preventDefault();
 			});
 		}
 		

@@ -49,7 +49,7 @@ function show_help(){
 	};
 	
 	const $default_item_li = $(E("li")).addClass("page");
-	$default_item_li.append($Item("Welcome to Help").on("click", e => {
+	$default_item_li.append($Item("Welcome to Help").on("click", ()=> {
 		$iframe.attr({src: "help/default.html"});
 	}));
 	$contents.append($default_item_li);
@@ -69,7 +69,7 @@ function show_help(){
 			$(li).children("ul").children().get().forEach((li) => {
 				const object = parse_object_params($(li).children("object"));
 				const $item_li = $(E("li")).addClass("page");
-				$item_li.append($Item(object.Name).on("click", e => {
+				$item_li.append($Item(object.Name).on("click", ()=> {
 					$iframe.attr({src: `help/${object.Local}`});
 				}));
 				$folder_items_ul.append($item_li);

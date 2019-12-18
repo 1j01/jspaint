@@ -109,7 +109,7 @@ const $Choose = (things, display, choose, is_chosen) => {
 				$chooser.on("touchmove", ontouchmove_while_pointer_down);
 			}
 		});
-		$G.on("pointerup pointercancel", (event)=> {
+		$G.on("pointerup pointercancel", ()=> {
 			$chooser.off("pointerover", onpointerover_while_pointer_down);
 			$chooser.off("touchmove", ontouchmove_while_pointer_down);
 		});
@@ -295,7 +295,7 @@ const $choose_airbrush_size = $Choose(
 
 const $choose_transparent_mode = $Choose(
 	[false, true],
-	(_tool_transparent_mode, is_chosen, reuse_canvas) => {
+	(_tool_transparent_mode/*, is_chosen, reuse_canvas*/) => {
 		const sw = 35, sh = 23; // width, height from source image
 		const b = 2; // margin by which the source image is inset on the destination
 		const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;

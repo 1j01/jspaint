@@ -144,10 +144,10 @@ if(menu_bar_outside_frame){
 	$menu_bar.prependTo($V);
 }
 
-$menu_bar.on("info", (e, info) => {
+$menu_bar.on("info", (_event, info) => {
 	$status_text.text(info);
 });
-$menu_bar.on("default-info", e => {
+$menu_bar.on("default-info", ()=> {
 	$status_text.default();
 });
 
@@ -583,7 +583,7 @@ $canvas.on("pointermove", e => {
 	pointer = to_canvas_coords(e);
 	$status_position.text(`${pointer.x},${pointer.y}`);
 });
-$canvas.on("pointerenter", e => {
+$canvas.on("pointerenter", ()=> {
 	pointer_over_canvas = true;
 
 	update_helper_layer();
@@ -593,7 +593,7 @@ $canvas.on("pointerenter", e => {
 		update_helper_layer_on_pointermove_active = true;
 	}
 });
-$canvas.on("pointerleave", e => {
+$canvas.on("pointerleave", ()=> {
 	pointer_over_canvas = false;
 
 	$status_position.text("");
@@ -679,7 +679,7 @@ $canvas.on("pointerdown", e => {
 	pointer_active = !!(e.buttons & (1 | 2)); // as far as tools are concerned
 	pointer_type = e.pointerType;
 	pointer_buttons = e.buttons;
-	$G.one("pointerup", e => {
+	$G.one("pointerup", ()=> {
 		pointer_active = false;
 		update_helper_layer();
 		
@@ -784,6 +784,6 @@ $app
 });
 
 // Stop drawing (or dragging or whatver) if you Alt+Tab or whatever
-$G.on("blur", e => {
+$G.on("blur", () => {
 	$G.triggerHandler("pointerup");
 });

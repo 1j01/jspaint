@@ -88,11 +88,11 @@ function $MenuBar(menus){
 						});
 					};
 					let open_tid, close_tid;
-					$item.add($submenu_popup).on("pointerover", e => {
+					$item.add($submenu_popup).on("pointerover", ()=> {
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 					});
-					$item.on("pointerover", e => {
+					$item.on("pointerover", ()=> {
 						if(open_tid){clearTimeout(open_tid);}
 						if(close_tid){clearTimeout(close_tid);}
 						open_tid = setTimeout(open_submenu, 200);
@@ -269,7 +269,7 @@ function $MenuBar(menus){
 			
 			$menus.triggerHandler("info", "");
 		});
-		$menu_button.on("pointerup", e => {
+		$menu_button.on("pointerup", ()=> {
 			if(this_click_opened_the_menu){
 				this_click_opened_the_menu = false;
 				return;
@@ -278,7 +278,7 @@ function $MenuBar(menus){
 				close_menus();
 			}
 		});
-		$menu_button.on("release", e => {
+		$menu_button.on("release", ()=> {
 			selecting_menus = false;
 			
 			$menu_button.removeClass("active");
@@ -296,7 +296,7 @@ function $MenuBar(menus){
 			close_menus();
 		}
 	});
-	$G.on("blur", e => {
+	$G.on("blur", ()=> {
 		// window.console && console.log("blur", e.target, document.activeElement);
 		close_menus();
 	});

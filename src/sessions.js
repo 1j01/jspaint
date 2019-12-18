@@ -425,7 +425,7 @@
 					away: false,
 				});
 			});
-			$G.on("blur.session-hook", e => {
+			$G.on("blur.session-hook", ()=> {
 				this.fb_user.child("cursor").update({
 					away: true,
 				});
@@ -468,7 +468,7 @@
 			$G.off(".session-hook");
 			// $canvas_area.off("pointerdown.session-hook");
 			// Remove collected Firebase event listeners
-			this._fb_listeners.forEach(({ fb, event_type, callback, error_callback }) => {
+			this._fb_listeners.forEach(({ fb, event_type, callback/*, error_callback*/ }) => {
 				log(`Remove listener for ${fb.path.toString()} .on ${event_type}`);
 				fb.off(event_type, callback);
 			});
@@ -495,7 +495,7 @@
 		}
 	};
 	const generate_session_id = () => (Math.random()*(2 ** 32)).toString(16).replace(".", "");
-	const update_session_from_location_hash = e => {
+	const update_session_from_location_hash = () => {
 		const session_match = location.hash.match(/^#?(session|local):(.*)$/i);
 		const load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);
 		if(session_match){

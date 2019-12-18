@@ -30,7 +30,7 @@ function update_helper_layer(e){
 		update_helper_layer_immediately();
 	});
 }
-function update_helper_layer_immediately(e) {
+function update_helper_layer_immediately() {
 	// window.console && console.log("Update helper layer NOW");
 	if (info_for_updating_pointer) {
 		const rescale = info_for_updating_pointer.devicePixelRatio / devicePixelRatio;
@@ -197,7 +197,7 @@ function show_custom_zoom_window() {
 	const $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
 	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
-	$really_custom_input.closest("label").on("click", e => {
+	$really_custom_input.closest("label").on("click", ()=> {
 		$really_custom_radio_option.prop("checked", true);
 		$really_custom_input[0].focus();
 	});
@@ -416,11 +416,11 @@ function load_image_from_URI(uri, callback){
 			}
 			callback(null, img);
 		};
-		img.onerror = e => {
+		img.onerror = ()=> {
 			callback && callback(new Error("Image failed to load"));
 		};
 		img.src = window.URL.createObjectURL(blob);
-	}).catch(exception => {
+	}).catch((/*error*/) => {
 		callback && callback(new Error("Image failed to load"));
 	});
 }
@@ -662,12 +662,12 @@ function show_about_paint(){
 	$about_paint_window.center();
 	$about_paint_window.center(); // XXX - but it helps tho
 
-	$("#refresh-to-update").on("click", (e)=> {
-		e.preventDefault();
+	$("#refresh-to-update").on("click", (event)=> {
+		event.preventDefault();
 		location.reload();
 	});
 	
-	$("#view-project-news").on("click", (e)=> {
+	$("#view-project-news").on("click", ()=> {
 		show_news();
 	});
 	
@@ -1654,7 +1654,7 @@ function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height) {
 	storage.set({
 		width: canvas.width,
 		height: canvas.height,
-	}, err => {
+	}, (/*error*/) => {
 		// oh well
 	})
 }
@@ -1666,7 +1666,6 @@ function image_attributes(){
 	const $w = image_attributes.$window = new $FormWindow("Attributes");
 
 	const $main = $w.$main;
-	const $buttons = $w.$buttons;
 
 	// Information
 
@@ -2009,7 +2008,7 @@ function sanity_check_blob(blob, okay_callback){
 function blob_to_buffer(blob, callback) {
 	const file_reader = new FileReader()
 
-	file_reader.addEventListener("loadend", event => {
+	file_reader.addEventListener("loadend", () => {
 		if (file_reader.error) {
 			callback(file_reader.error)
 		} else {

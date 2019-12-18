@@ -143,7 +143,7 @@ function $Window($component){
 		};
 		$G.on("pointerup pointercancel", stop_drag);
 	});
-	$w.$titlebar.on("dblclick", e => {
+	$w.$titlebar.on("dblclick", ()=> {
 		if($component){
 			$component.dock();
 		}
