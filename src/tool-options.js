@@ -56,18 +56,13 @@ const $Choose = (things, display, choose, is_chosen) => {
 	const $chooser = $(E("div")).addClass("chooser").attr("touch-action", "none");
 	const choose_thing = (thing) => {
 		if(is_chosen(thing)){
-			console.log("ALREADY SELECTED:", thing);
 			return;
 		}
-		console.log("SELECTING:", thing);
 		choose(thing);
 		$G.trigger("option-changed");
-		// $G.trigger("redraw-tool-options");
 	};
 	$chooser.on("update", () => {
 		if (!$chooser.is(":visible")) {
-			// TODO: make sure rerenders when switching tools
-			console.log("NOT UPDATING CHOOSER BECAUSE HIDDEN");
 			return;
 		}
 		$chooser.empty();
@@ -109,46 +104,24 @@ const $Choose = (things, display, choose, is_chosen) => {
 			const touch = event.originalEvent.changedTouches[0];
 			const target = document.elementFromPoint(touch.clientX, touch.clientY);
 			const option_container = target.closest(".chooser-option");
-			console.log(touch, target, option_container);
 			if (option_container) {
 				choose_thing($(option_container).data("thing"));
 			}
 			event.preventDefault();
 		};
-		// const onpointermove_while_pointer_down = (event)=> {
-		// 		const target = document.elementFromPoint(event.clientX, event.clientY);
-		// 		const option_container = target.closest(".chooser-option");
-		// 		// console.log(event, event.target, target, option_container);
-		// 		if (event.target !== target) {
-		// 			console.log("event:", event);
-		// 			console.log("event.target:", event.target);
-		// 			console.log("elementFromPoint target:", target);
-		// 		}
-		// 		console.log("option_container:", option_container);
-		// 		if (option_container) {
-		// 			choose_thing($(option_container).data("thing"));
-		// 		}
-		// };
-
 		$chooser.on("pointerdown click", (event)=> {
 			const option_container = event.target.closest(".chooser-option");
-			console.log(event.type, option_container);
 			if (option_container) {
 				choose_thing($(option_container).data("thing"));
 				if (event.type === "pointerdown") {
 					$chooser.on("pointerover", onpointerover_while_pointer_down);
 					$chooser.on("touchmove", ontouchmove_while_pointer_down);
-					// $chooser.on("pointermove", onpointermove_while_pointer_down);
-					// $chooser[0].setPointerCapture(event.pointerId);
 				}
 			}
 		});
 		$G.on("pointerup pointercancel", (event)=> {
-			console.trace(event.type, event);
 			$chooser.off("pointerover", onpointerover_while_pointer_down);
 			$chooser.off("touchmove", ontouchmove_while_pointer_down);
-			// $chooser.off("pointermove", onpointermove_while_pointer_down);
-			// $chooser[0].releasePointerCapture(event.pointerId);
 		});
 	});
 	return $chooser;
