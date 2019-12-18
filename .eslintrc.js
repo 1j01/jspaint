@@ -99,7 +99,6 @@ module.exports = {
         "make_canvas": "writable",
         "debounce": "writable",
         "memoize_synchronous_function": "writable",
-        "memoize_synchronous_function_with_limit": "writable",
         "invert_rgb": "off",
         "get_theme": "writable",
         "get_tool_by_name": "writable",

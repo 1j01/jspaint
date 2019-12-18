@@ -118,7 +118,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 // TODO: protect against browser clearing canvases, invalidate cache
-const get_brush_canvas = memoize_synchronous_function_with_limit((brush_shape, brush_size)=> {
+const get_brush_canvas = memoize_synchronous_function((brush_shape, brush_size)=> {
 	const canvas_size = get_brush_canvas_size(brush_size, brush_shape);
 
 	const brush_canvas = make_canvas(canvas_size, canvas_size);
@@ -128,6 +128,11 @@ const get_brush_canvas = memoize_synchronous_function_with_limit((brush_shape, b
 
 	return brush_canvas;
 }, 20); // 12 brush tool options + current brush + current pencil + current eraser + current shape stroke + a few
+
+$G.on("invalidate-brush-canvases", ()=> {
+	get_brush_canvas.clear_memo_cache();
+});
+
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size)=> {
@@ -171,6 +176,11 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 
 	return points;
 });
+
+$G.on("invalidate-brush-canvases", ()=> {
+	get_circumference_points_for_brush.clear_memo_cache();
+});
+
 
 let line_brush_canvas;
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
@@ -925,7 +935,9 @@ function draw_grid(ctx, scale) {
 
 		clamp_brush_sizes();
 
-		// TODO: cachebust memoized brushes
+		// brushes rendered using WebGL may be invalid (i.e. invisible) since the context was lost
+		// invalidate the cache(s) so that brushes will be re-rendered now that WebGL is restored
+		$G.triggerHandler("invalidate-brush-canvases");
 
 		$G.triggerHandler("redraw-tool-options");
 	}, false);

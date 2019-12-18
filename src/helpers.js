@@ -62,25 +62,11 @@ function debounce(func, wait_ms, immediate) {
 		}
 	};
 }
-  
-function memoize_synchronous_function(func) {
-	const cache = {};
-	return (...args)=> {
-		const key = JSON.stringify(args);
-		if (cache[key]){
-			return cache[key];
-		} else{
-			const val = func.apply(null, args);
-			cache[key] = val;
-			return val; 
-		}
-	}
-}
 
-function memoize_synchronous_function_with_limit(func, max_entries) {
+function memoize_synchronous_function(func, max_entries=50000) {
 	const cache = {};
 	const keys = [];
-	return (...args)=> {
+	const memoized_func = (...args)=> {
 		const key = JSON.stringify(args);
 		if (cache[key]){
 			return cache[key];
@@ -95,6 +81,13 @@ function memoize_synchronous_function_with_limit(func, max_entries) {
 			return val; 
 		}
 	}
+	memoized_func.clear_memo_cache = ()=> {
+		for (const key of keys) {
+			delete cache[key];
+		}
+		keys.length = 0;
+	};
+	return memoized_func;
 }
 
 window.get_rgba_from_color = memoize_synchronous_function((color)=> {
