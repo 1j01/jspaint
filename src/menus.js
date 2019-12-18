@@ -495,6 +495,14 @@ window.menus = {
 					enabled: () => get_theme() != "modern.css",
 					description: "Makes JS Paint look a bit more modern.",
 				},
+				{
+					item: "&Winter",
+					action: ()=> {
+						set_theme("winter.css");
+					},
+					enabled: () => get_theme() != "winter.css",
+					description: "Makes JS Paint look wintery.",
+				},
 			]
 		},
 	],
