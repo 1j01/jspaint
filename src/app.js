@@ -18,10 +18,11 @@ const canvas = make_canvas();
 canvas.classList.add("main-canvas");
 const ctx = canvas.ctx;
 
-let palette = [
+const default_palette = [
 	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
 	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
 ];
+let palette = default_palette;
 let polychrome_palette = palette;
 let monochrome_palette = make_monochrome_palette();
 
@@ -474,6 +475,121 @@ if(window.document_file_path_to_open){
 		}
 	});
 }
+
+const lerp = (a, b, b_ness)=> a + (b - a) * b_ness;
+
+const color_ramp = (num_colors, start_hsla, end_hsla)=>
+	Array(num_colors).fill().map((_undefined, index, array)=>
+		`hsla(${
+			lerp(start_hsla[0], end_hsla[0], index/array.length)
+		}deg, ${
+			lerp(start_hsla[1], end_hsla[1], index/array.length)
+		}%, ${
+			lerp(start_hsla[2], end_hsla[2], index/array.length)
+		}%, ${
+			lerp(start_hsla[3], end_hsla[3], index/array.length)
+		}%)`
+	);
+
+const update_palette_from_theme = ()=> {
+	if (get_theme() === "winter.css") {
+		palette = [
+			"black",
+			// green
+			"hsl(91, 55%, 81%)",
+			"hsl(142, 57%, 64%)",
+			"hsl(166, 93%, 38%)",
+			// "hsl(166, 84%, 29%)",
+			"hsl(159, 93%, 16%)",
+			// red
+			"hsl(2, 77%, 27%)",
+			"hsl(355, 78%, 46%)",
+			"hsl(356, 97%, 64%)",
+			"#fcbaf8", // pink
+			// "hsl(56, 61%, 41%)", // green gold barf
+			// silver
+			"hsl(0, 0%, 90%)",
+			"hsl(22, 5%, 71%)",
+			// gold
+			"yellow",
+			"hsl(48, 82%, 54%)",
+			"hsl(49, 82%, 72%)",
+			// "hsl(70, 46%, 95%)",
+			// red
+			// ...color_ramp(
+			// 	4,
+			// 	[360, 100, 20, 100],
+			// 	[340, 100, 70, 100],
+			// ),
+			// red
+			// ...color_ramp(
+			// 	4,
+			// 	[360, 100, 100, 100],
+			// 	[340, 100, 20, 100],
+			// ),
+			// "red", "green", "lime", "yellow",
+			// white to blue
+			...color_ramp(
+				6,
+				[200, 100, 100, 100],
+				[200, 100, 10, 100],
+			),
+			//
+			"#ad4632", // brown
+			"#5b3b1d", // brown
+			//
+			make_stripe_pattern([
+				"hsl(166, 93%, 38%)",
+				"hsl(355, 78%, 46%)",
+			]),
+			make_stripe_pattern([
+				"hsl(166, 93%, 38%)",
+				"white",
+			]),
+			make_stripe_pattern([
+				"white",
+				"hsl(355, 78%, 46%)",
+			]),
+			make_stripe_pattern([
+				"hsl(355, 78%, 46%)",
+				"white",
+				"white",
+				"hsl(355, 78%, 46%)",
+				"hsl(355, 78%, 46%)",
+				"hsl(355, 78%, 46%)",
+				"white",
+				"white",
+				"hsl(355, 78%, 46%)",
+				"white",
+			], 2),
+			make_stripe_pattern([
+				"hsl(166, 93%, 38%)",
+				"white",
+				"white",
+				"hsl(166, 93%, 38%)",
+				"hsl(166, 93%, 38%)",
+				"hsl(166, 93%, 38%)",
+				"white",
+				"white",
+				"hsl(166, 93%, 38%)",
+				"white",
+			], 2),
+			make_stripe_pattern([
+				"hsl(166, 93%, 38%)",
+				"white",
+				"hsl(355, 78%, 46%)",
+				"white",
+			], 2),
+		];
+		$colorbox.rebuild_palette();
+	} else {
+		palette = default_palette;
+		$colorbox.rebuild_palette();
+	}
+};
+
+$G.on("theme-load", update_palette_from_theme);
+update_palette_from_theme();
 
 function to_canvas_coords({clientX, clientY}) {
 	const rect = canvas_bounding_client_rect;
