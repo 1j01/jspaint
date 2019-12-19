@@ -381,6 +381,7 @@ function open_from_Image(img, callback, canceled){
 		current_history_node.icon = null; // TODO
 
 		$G.triggerHandler("session-update"); // autosave
+		$G.triggerHandler("history-update"); // update history view
 
 		callback && callback();
 	}, canceled);
