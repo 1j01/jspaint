@@ -501,7 +501,7 @@ window.menus = {
 						set_theme("winter.css");
 					},
 					enabled: () => get_theme() != "winter.css",
-					description: "Makes JS Paint look wintery.",
+					description: "Makes JS Paint look festive for the holidays.",
 				},
 			]
 		},

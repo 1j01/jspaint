@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Charm|Princess+Sofia&display=swap');
+
 :root {
 	--theme-loaded: "winter.css";
 }
@@ -57,16 +59,19 @@ body,
 	/* I want this to be inverty, but in chrome this makes it invisible */
 }
 
-.menus *,
+.menus * {
+	font-family: 'Princess Sofia', cursive;
+	font-size: 20px;
+}
 .menu-popup * {
-	font-family: 'Segoe UI', sans-serif;
-	font-size: 12px;
+	font-family: 'Charm', cursive;
+	font-size: 18px;
 }
 .menu-container {
 	margin-bottom: 1px;
 }
 .menu-button {
-	padding: 2px 5px;
+	padding: 2px 10px;
 	position: relative;
 	outline: 0;
 }
@@ -113,7 +118,7 @@ body,
 	margin: 0px 2px;
 }
 .menu-hotkey {
-	text-decoration: underline;
+	/* text-decoration: underline; */
 }
 
 .status-area {
