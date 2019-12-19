@@ -807,22 +807,11 @@ function paste(img){
 		);
 		$w.$Button("Enlarge", () => {
 			$w.close();
-			// Extra undoable just for the resize; the paste gets its own
-			undoable({
+			// The resize gets its own undoable, as in mspaint
+			resize_canvas_and_save_dimensions(img.width, img.height, {
 				name: "Enlarge Canvas For Paste",
 				icon: get_help_folder_icon("p_stretch_both.png"),
-			}, () => {
-				const original = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				canvas.width = Math.max(original.width, img.width);
-				canvas.height = Math.max(original.height, img.height);
-				ctx.disable_image_smoothing();
-				if(!transparency){
-					ctx.fillStyle = colors.background;
-					ctx.fillRect(0, 0, canvas.width, canvas.height);
-				}
-				ctx.putImageData(original, 0, 0);
 			});
-			// (undoable callback is synchronous, so this runs after it)
 			do_the_paste();
 			$canvas_area.trigger("resize");
 		})[0].focus();
