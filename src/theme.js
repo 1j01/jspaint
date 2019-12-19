@@ -42,15 +42,14 @@
 		// eslint-disable-next-line no-empty
 		} catch(error) {}
 
-		$(window).on("theme-load", ()=> {
-			$(window).trigger("option-changed"); // not really, but get the tool options area for transparency to update
-			$(window).trigger("resize"); // not exactly, but get dynamic cursor to update its offset
-		});
-
-		wait_for_theme_loaded(theme, () => {
+		const signal_theme_load = ()=> {
 			$(window).triggerHandler("theme-load");
-		});
+			$(window).trigger("redraw-tool-options");
+			$(window).trigger("resize"); // not exactly, but get dynamic cursor to update its offset
+		};
+
+		wait_for_theme_loaded(theme, signal_theme_load);
 		theme_link.href = href_for(theme);
-		$(window).triggerHandler("theme-load");
+		signal_theme_load();
 	};
 })();
