@@ -1626,13 +1626,30 @@ function switch_to_polychrome_palette(){
 
 }
 
-function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height) {
+function make_opaque() {
+	undoable({
+		name: "Make Opaque",
+		icon: get_help_folder_icon("p_make_opaque.png"),
+	}, ()=> {
+		// TODO: try using a blend mode instead of a temporary canvas
+		const temp_canvas = make_canvas(canvas);
+
+		if(!transparency){
+			ctx.fillStyle = colors.background;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+
+		ctx.drawImage(temp_canvas, 0, 0);
+	});
+}
+
+function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_height, undoable_meta={}) {
 	const new_width = Math.max(1, unclamped_width);
 	const new_height = Math.max(1, unclamped_height);
 	if (canvas.width !== new_width || canvas.height !== new_height) {
 		undoable({
-			name: "Resize Canvas",
-			icon: get_help_folder_icon("p_stretch_both.png"),
+			name: undoable_meta.name || "Resize Canvas",
+			icon: undoable_meta.icon || get_help_folder_icon("p_stretch_both.png"),
 		}, () => {
 			const image_data = ctx.getImageData(0, 0, new_width, new_height);
 			canvas.width = new_width;
@@ -1648,9 +1665,12 @@ function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height) {
 			ctx.drawImage(temp_canvas, 0, 0);
 
 			$canvas_area.trigger("resize");
-
 		});
 	}
+}
+
+function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height, undoable_meta={}) {
+	resize_canvas_without_saving_dimensions(unclamped_width, unclamped_height, undoable_meta);
 	storage.set({
 		width: canvas.width,
 		height: canvas.height,
@@ -1753,6 +1773,10 @@ function image_attributes(){
 		const width = $width.val() * unit_to_px;
 		const height = $height.val() * unit_to_px;
 		resize_canvas_and_save_dimensions(~~width, ~~height);
+
+		if (!transparency && has_any_transparency(ctx)) {
+			make_opaque();
+		}
 
 		image_attributes.$window.close();
 	})[0].focus();
