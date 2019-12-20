@@ -40,7 +40,8 @@ I want to bring good old paint into the modern era.
 * Cross-platform
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
   or a measly 50 in Windows 7)
-* Autosaves a backup of your image. Only one backup per document tho, which doesn't give you a lot of safety. The browser may clear the canvas to free up memory, and I've implemented a check for this that prompts you to undo so hopefully you won't lose work. Still remember to save with **File > Save** or <kbd>Ctrl+S</kbd>!
+* Undo history is *nonlinear*, which means if you undo and do something other than redo, the redos aren't destroyed. Instead, a new branch in the history tree is created. Jump to any point in history with <kbd>Ctrl+Shift+Y</kbd>
+* Automatically keeps a backup of your image. Only one backup per image tho, which doesn't give you a lot of safety. Remember to save with **File > Save** or <kbd>Ctrl+S</kbd>! Manage backups with **File > Manage Storage**.
 * Edit transparent images! To create a transparent image,
   go to **Image > Attributes...** and select Transparent,
   then Okay, and then **Image > Clear Image** or use the Eraser tool.
@@ -76,7 +77,7 @@ I want to bring good old paint into the modern era.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
 * Load many different palette formats with **Colors > Get Colors**.
   (I made a [library](https://github.com/1j01/palette.js/) for this.)
-* Mobile support (altho fairly lacking in some areas. it'd be nice if you could pan and zoom with two fingers)
+* Mobile support (altho fairly lacking in some areas). Use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
