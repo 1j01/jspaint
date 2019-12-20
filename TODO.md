@@ -18,6 +18,7 @@
 
 * Interactive tutorials?
 	* Possibly hosted by Clippy, with [ClippyJS](https://www.smore.com/clippy-js)
+	* Links the cat has a good "GetArtsy" animation, which would be good to use especially if talking about stamping and smearing selections
 	* Highlight elements on the page
 	* Be sure to cover undo/redo, and file saving
 
