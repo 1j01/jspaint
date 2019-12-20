@@ -45,7 +45,6 @@ I want to bring good old paint into the modern era.
   go to **Image > Attributes...** and select Transparent,
   then Okay, and then **Image > Clear Image** or use the Eraser tool.
   Images with *any* translucent pixels will open in Transparent mode.
-* Go to **View > Extras Menu** to enable access to additional features not available in MS Paint
 * Switch themes from the Extras menu
 * Create an animated GIF from the current document history.
   Accessible from the Extras menu or with <kbd>Ctrl+Shift+G</kbd>.

@@ -151,20 +151,6 @@ $menu_bar.on("info", (_event, info) => {
 $menu_bar.on("default-info", ()=> {
 	$status_text.default();
 });
-
-const $extras_menu_button = $menu_bar.get(0).ownerDocument.defaultView.$(".extras-menu-button");
-// TODO: DRY with $MenuBar
-// if localStorage is not available, the default setting is visible
-let extras_menu_should_start_visible = true;
-try{
-	// if localStorage is available, the default setting is invisible (for now)
-	// TODO: refactor shared key string
-	extras_menu_should_start_visible = localStorage["jspaint extras menu visible"] == "true"
-// eslint-disable-next-line no-empty
-}catch(e){}
-if(!extras_menu_should_start_visible){
-	$extras_menu_button.hide();
-}
 // </menu bar>
 
 const $toolbox = $ToolBox(tools);

@@ -233,22 +233,6 @@ window.menus = {
 		},
 		$MenuBar.DIVIDER,
 		{
-			item: "E&xtras Menu",
-			checkbox: {
-				toggle() {
-					$extras_menu_button.toggle();
-					const checked = this.check();
-					try{
-						localStorage["jspaint extras menu visible"] = checked;
-					// eslint-disable-next-line no-empty
-					}catch(e){}
-				},
-				check: () => $extras_menu_button.is(":visible")
-			},
-			description: "Shows or hides the Extras menu.",
-		},
-		$MenuBar.DIVIDER,
-		{
 			item: "&Zoom",
 			submenu: [
 				{

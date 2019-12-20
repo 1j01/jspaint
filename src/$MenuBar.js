@@ -176,19 +176,6 @@ function $MenuBar(menus){
 		
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
 		$menu_button.addClass(`${menu_id}-menu-button`);
-		if(menu_id == "extras"){
-			// TODO: refactor shared key string, move to function
-			// if localStorage is not available, the default setting is visible
-			let extras_menu_should_be_visible = true;
-			try {
-				// if localStorage is available, the default setting is invisible (for now)
-				extras_menu_should_be_visible = localStorage["jspaint extras menu visible"] == "true";
-			// eslint-disable-next-line no-empty
-			} catch(e) {}
-			if(!extras_menu_should_be_visible){
-				$menu_button.hide();
-			}
-		}
 		
 		$menu_popup.hide();
 		$menu_button.html(_html(menus_key));
