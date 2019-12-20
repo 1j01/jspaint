@@ -1612,7 +1612,7 @@ function make_monochrome_palette(){
 	return palette;
 }
 
-function make_stripe_pattern(colors, stripe_size=4){
+function make_stripe_pattern(reverse, colors, stripe_size=4){
 	const rgba_colors = colors.map(get_rgba_from_color);
 
 	const pattern_canvas = document.createElement("canvas");
@@ -1627,7 +1627,8 @@ function make_stripe_pattern(colors, stripe_size=4){
 		for(let y = 0; y < pattern_canvas.height; y += 1){
 			const pixel_index = ((y * pattern_image_data.width) + x) * 4;
 			// +1000 to avoid remainder on negative numbers
-			const color_index = Math.floor((x - y + 1000) / stripe_size) % colors.length;
+			const pos = reverse ? (x - y) : (x + y);
+			const color_index = Math.floor((pos + 1000) / stripe_size) % colors.length;
 			const rgba = rgba_colors[color_index];
 			pattern_image_data.data[pixel_index + 0] = rgba[0];
 			pattern_image_data.data[pixel_index + 1] = rgba[1];
