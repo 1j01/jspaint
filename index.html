@@ -81,6 +81,57 @@
 			</p>
 		</div>
 		<div id="news" hidden>
+			<article class="news-entry" id="news-2019-winter-update">
+				<h1>Winter Update</h1>
+				<time datetime="2019-12-20">2019-12-20</time>
+				<img width="563" height="334" style="max-width: 100%; height: auto;" src="https://i.postimg.cc/63Wc6vpG/2019-winter-update-candy-cane.gif"/>
+				<h2>Winter Theme</h2>
+				<p>
+					A new UI skin is available, under <b>Extras > Themes > Winter</b>, sporting winter and holiday icons, festive fonts, and a palette with seasonal colors and peppermint / present packaging patterns.
+				</p>
+				<img width="256" height="16" src="images/winter/tools.png"/>
+				<p>
+					Merry Christmas and happy Hanukkah!
+				</p>
+				<h2>Nondestructive History</h2>
+				<ul>
+					<li>
+						With the new history window, you can get back to any point in the document's history.
+						<ul>
+							<li>
+								Get to it with <b>Edit > History Tree</b> or <kbd>Ctrl+Shift+Y</kbd>.
+							</li>
+							<li>
+								Traditionally, programs delete redos willy-nilly, but JS Paint now has <b>non-destructive, non-linear history</b>.
+								<!-- If you make a brush stroke, undo it, and make a different one, instead of simply deleting redos, a branch is created... -->
+								After doing something earlier in history, you can get back to where you started..
+							</li>
+						</ul>
+					</li>
+					<li>
+						You can even jump to points in time where there was a textbox or selection, in order to:
+						<ul>
+							<li>
+								Go back and edit text or change formatting after finalizing Text, rather than having to type it out all over again.
+							</li>
+							<li>
+								Go back and copy the exact image data of a previous selection, including transparent areas from using the Free-Form Select tool, for instance, rather than trying to re-lasso an object.
+							</li>
+						</ul>
+					</li>
+					<li>
+						<strong>Warning</strong>: History is not saved with the autosave. Document history will be lost if you refresh the page, or close the tab, or if the tab crashes, or if you close or restart your browser, or likely if you're just on a phone and the mobile browser loses focus.
+					</li>
+				</ul>
+				<h2>Improved Mobile Support</h2>
+				<p>
+					Use two fingers to pan the view.
+				</p>
+				<p>
+					With multitouch panning, combined with recently improved resize handle grabbability,
+					it's pretty useable now on a phone (except that it's sluggish).
+				</p>
+			</article>
 			<article class="news-entry" id="news-2019-polygon-text-and-select">
 				<h1>Polygon, Text, and Select</h1>
 				<time datetime="2019-12-04">2019-12-04</time>
@@ -161,7 +212,7 @@
 				}
 				.news-entry {
 					padding: 20px;
-					max-width: 30em;
+					max-width: 563px;
 				}
 				.news-entry > h1 {
 					font-size: 1.3em;
@@ -171,6 +222,13 @@
 				.news-entry > time {
 					font-size: 1.2em;
 					color: gray;
+				}
+				.news-entry > h2 {
+					font-size: 1.9em;
+					font-weight: normal;
+					margin: 0;
+					margin-bottom: 0.3em;
+					margin-top: 0.3em;
 				}
 				.news-entry .new {
 					color: green;
