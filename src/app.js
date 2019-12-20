@@ -493,6 +493,46 @@ const color_ramp = (num_colors, start_hsla, end_hsla)=>
 
 const update_palette_from_theme = ()=> {
 	if (get_theme() === "winter.css") {
+		const make_stripe_patterns = (reverse)=> [
+			make_stripe_pattern(reverse, [
+				"hsl(166, 93%, 38%)",
+				"white",
+			]),
+			make_stripe_pattern(reverse, [
+				"white",
+				"hsl(355, 78%, 46%)",
+			]),
+			make_stripe_pattern(reverse, [
+				"hsl(355, 78%, 46%)",
+				"white",
+				"white",
+				"hsl(355, 78%, 46%)",
+				"hsl(355, 78%, 46%)",
+				"hsl(355, 78%, 46%)",
+				"white",
+				"white",
+				"hsl(355, 78%, 46%)",
+				"white",
+			], 2),
+			make_stripe_pattern(reverse, [
+				"hsl(166, 93%, 38%)",
+				"white",
+				"white",
+				"hsl(166, 93%, 38%)",
+				"hsl(166, 93%, 38%)",
+				"hsl(166, 93%, 38%)",
+				"white",
+				"white",
+				"hsl(166, 93%, 38%)",
+				"white",
+			], 2),
+			make_stripe_pattern(reverse, [
+				"hsl(166, 93%, 38%)",
+				"white",
+				"hsl(355, 78%, 46%)",
+				"white",
+			], 2),
+		];
 		palette = [
 			"black",
 			// green
@@ -509,6 +549,14 @@ const update_palette_from_theme = ()=> {
 			// brown
 			"#ad4632",
 			"#5b3b1d",
+			//
+			...make_stripe_patterns(false),
+			// white to blue
+			...color_ramp(
+				6,
+				[200, 100, 100, 100],
+				[200, 100, 10, 100],
+			),
 			// silver
 			"hsl(0, 0%, 90%)",
 			"hsl(22, 5%, 71%)",
@@ -516,52 +564,8 @@ const update_palette_from_theme = ()=> {
 			"hsl(56, 61%, 41%)", // greenish gold
 			"hsl(48, 82%, 54%)",
 			"hsl(49, 82%, 72%)",
-			// white to blue
-			...color_ramp(
-				6,
-				[200, 100, 100, 100],
-				[200, 100, 10, 100],
-			),
-			...([false, true].flatMap((reverse)=> [
-				make_stripe_pattern(reverse, [
-					"hsl(166, 93%, 38%)",
-					"white",
-				]),
-				make_stripe_pattern(reverse, [
-					"white",
-					"hsl(355, 78%, 46%)",
-				]),
-				make_stripe_pattern(reverse, [
-					"hsl(355, 78%, 46%)",
-					"white",
-					"white",
-					"hsl(355, 78%, 46%)",
-					"hsl(355, 78%, 46%)",
-					"hsl(355, 78%, 46%)",
-					"white",
-					"white",
-					"hsl(355, 78%, 46%)",
-					"white",
-				], 2),
-				make_stripe_pattern(reverse, [
-					"hsl(166, 93%, 38%)",
-					"white",
-					"white",
-					"hsl(166, 93%, 38%)",
-					"hsl(166, 93%, 38%)",
-					"hsl(166, 93%, 38%)",
-					"white",
-					"white",
-					"hsl(166, 93%, 38%)",
-					"white",
-				], 2),
-				make_stripe_pattern(reverse, [
-					"hsl(166, 93%, 38%)",
-					"white",
-					"hsl(355, 78%, 46%)",
-					"white",
-				], 2),
-			])),
+			//
+			...make_stripe_patterns(true),
 		];
 		$colorbox.rebuild_palette();
 	} else {
