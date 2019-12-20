@@ -525,17 +525,16 @@ const update_palette_from_theme = ()=> {
 			"hsl(91, 55%, 81%)",
 			"hsl(142, 57%, 64%)",
 			"hsl(166, 93%, 38%)",
-			// "hsl(166, 84%, 29%)",
+			"#04ce1f", // elf green
 			"hsl(159, 93%, 16%)",
 			// red
 			"hsl(2, 77%, 27%)",
 			"hsl(355, 78%, 46%)",
 			"hsl(356, 97%, 64%)",
-			"#fcbaf8", // pink
 			// brown
 			"#ad4632",
 			"#5b3b1d",
-			//
+			// stripes
 			...make_stripe_patterns(false),
 			// white to blue
 			...color_ramp(
@@ -543,14 +542,15 @@ const update_palette_from_theme = ()=> {
 				[200, 100, 100, 100],
 				[200, 100, 10, 100],
 			),
+			// pink
+			"#fcbaf8",
 			// silver
 			"hsl(0, 0%, 90%)",
 			"hsl(22, 5%, 71%)",
 			// gold
-			"hsl(56, 61%, 41%)", // greenish gold
 			"hsl(48, 82%, 54%)",
 			"hsl(49, 82%, 72%)",
-			//
+			// stripes
 			...make_stripe_patterns(true),
 		];
 		$colorbox.rebuild_palette();
