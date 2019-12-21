@@ -205,6 +205,15 @@ $G.on("keydown", e => {
 			deselect();
 		}
 	}
+	if (
+		// Ctrl+Shift+Y
+		(e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey &&
+		String.fromCharCode(e.keyCode).toUpperCase() === "Y"
+	) {
+		show_document_history();
+		e.preventDefault();
+		return;
+	}
 	// TODO: return if menus/menubar focused or focus in dialog window
 	// or maybe there's a better way to do this that works more generally
 	// maybe it should only handle the event if document.activeElement is the body or html element?
@@ -323,7 +332,8 @@ $G.on("keydown", e => {
 				e.shiftKey ? redo() : undo();
 			break;
 			case "Y":
-				e.shiftKey ? show_document_history() : redo();
+				// Ctrl+Shift+Y handled above
+				redo();
 			break;
 			case "G":
 				e.shiftKey ? render_history_as_gif() : toggle_grid();

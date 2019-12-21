@@ -1121,7 +1121,6 @@ function redo(){
 			const $w = $document_history_prompt_window = new $Window();
 			$w.title("Redo");
 			$w.$content.html("Press <b>Ctrl+Shift+Y</b> at any time to open the History Tree.");
-			// at any time* except in textarea, right?
 			$w.$Button("History Tree", show_document_history);
 		}
 		return false;
@@ -1162,7 +1161,6 @@ function show_document_history() {
 		<div class="history-view"></div>
 		<p>Press <b>Ctrl+Shift+Y</b> at any time to open this window.</p>
 	`);
-	// at any time* except in textarea, right?
 
 	const $history_view = $w.$content.find(".history-view");
 
