@@ -1654,10 +1654,8 @@ function make_opaque() {
 		ctx.save();
 		ctx.globalCompositeOperation = "destination-atop";
 
-		if(!transparency){
-			ctx.fillStyle = colors.background;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-		}
+		ctx.fillStyle = colors.background;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		
 		// in case the selected background color is transparent/translucent
 		ctx.fillStyle = "white";
