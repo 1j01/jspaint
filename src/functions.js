@@ -936,7 +936,7 @@ function go_to_history_node(target_history_node, canceling) {
 		return;
 	}
 	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
+	if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
 		window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		undoable({name: "Unknown [GTHN]", use_loose_canvas_changes: true}, ()=> {});
 	}
@@ -1033,7 +1033,7 @@ function go_to_history_node(target_history_node, canceling) {
 function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 	if (!use_loose_canvas_changes) {
 		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-		if (!current_history_node.image_data || !image_data_are_equal(current_history_node.image_data, current_image_data)) {
+		if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
 			window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 			undoable({name: "Unknown [undoable]", use_loose_canvas_changes: true}, ()=> {});
 		}

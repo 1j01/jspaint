@@ -382,7 +382,7 @@
 						const image_data_remote = test_canvas.ctx.getImageData(0, 0, test_canvas.width, test_canvas.height);
 						const image_data_local = ctx.getImageData(0, 0, canvas.width, canvas.height);
 						
-						if (!image_data_are_equal(image_data_remote, image_data_local)) {
+						if (!image_data_match(image_data_remote, image_data_local, 5)) {
 							ignore_session_update = true;
 							undoable({
 								name: "Sync Session",
