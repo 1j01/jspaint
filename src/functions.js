@@ -1654,6 +1654,10 @@ function make_opaque() {
 		// TODO: try using a blend mode instead of a temporary canvas
 		const temp_canvas = make_canvas(canvas);
 
+		// in case the selected background color is transparent
+		ctx.fillStyle = "white";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 		if(!transparency){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
