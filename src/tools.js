@@ -228,12 +228,17 @@ window.tools = [{
 	// binary mask of the drawn area, either opaque white or transparent
 	mask_canvas: null,
 
-	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active && !pointer_over_canvas){return;}
-		const rect_x = ~~(x - eraser_size/2);
-		const rect_y = ~~(y - eraser_size/2);
+	get_rect(x, y) {
+		const rect_x = Math.ceil(x - eraser_size/2);
+		const rect_y = Math.ceil(y - eraser_size/2);
 		const rect_w = eraser_size;
 		const rect_h = eraser_size;
+		return {rect_x, rect_y, rect_w, rect_h};
+	},
+
+	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+		if(!pointer_active && !pointer_over_canvas){return;}
+		const {rect_x, rect_y, rect_w, rect_h} = this.get_rect(x, y);
 		
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
@@ -252,12 +257,9 @@ window.tools = [{
 	},
 	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		if(!pointer_active && !pointer_over_canvas){return;}
-		
-		const rect_x = ~~(x - eraser_size/2);
-		const rect_y = ~~(y - eraser_size/2);
-		const rect_w = eraser_size;
-		const rect_h = eraser_size;
-		
+
+		const {rect_x, rect_y, rect_w, rect_h} = this.get_rect(x, y);
+
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 		const hairline_width = 1/scale;
@@ -322,12 +324,8 @@ window.tools = [{
 		});
 	},
 	paint_iteration(ctx, x, y) {
-		
-		const rect_x = ~~(x - eraser_size/2);
-		const rect_y = ~~(y - eraser_size/2);
-		const rect_w = eraser_size;
-		const rect_h = eraser_size;
-		
+		const {rect_x, rect_y, rect_w, rect_h} = this.get_rect(x, y);
+
 		this.color_eraser_mode = button !== 0;
 		
 		if(!this.color_eraser_mode){
