@@ -1651,19 +1651,19 @@ function make_opaque() {
 		name: "Make Opaque",
 		icon: get_help_folder_icon("p_make_opaque.png"),
 	}, ()=> {
-		// TODO: try using a blend mode instead of a temporary canvas
-		const temp_canvas = make_canvas(canvas);
-
-		// in case the selected background color is transparent
-		ctx.fillStyle = "white";
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.save();
+		ctx.globalCompositeOperation = "destination-atop";
 
 		if(!transparency){
 			ctx.fillStyle = colors.background;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
+		
+		// in case the selected background color is transparent/translucent
+		ctx.fillStyle = "white";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-		ctx.drawImage(temp_canvas, 0, 0);
+		ctx.restore();
 	});
 }
 
