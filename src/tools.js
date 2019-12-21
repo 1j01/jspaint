@@ -247,7 +247,6 @@ window.tools = [{
 			this.render_from_mask(ctx, true);
 			if (transparency) {
 				// animate for gradient
-				// FIXME: dynamic cursor preview shows in top left corner
 				requestAnimationFrame(update_helper_layer);
 			}
 		}
@@ -1095,7 +1094,6 @@ tools.forEach((tool)=> {
 				const should_animate = tool.render_from_mask(ctx, true);
 				if (should_animate) {
 					// animate for gradient
-					// FIXME: dynamic cursor preview shows in top left corner maybe
 					requestAnimationFrame(update_helper_layer);
 				}
 			}
@@ -1201,7 +1199,6 @@ tools.forEach((tool)=> {
 
 			if (should_animate) {
 				// animate for gradient
-				// FIXME: dynamic cursor preview shows in top left corner maybe
 				requestAnimationFrame(update_helper_layer);
 			}
 		};

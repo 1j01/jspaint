@@ -15,7 +15,8 @@ function update_canvas_rect() {
 let helper_layer_update_queued;
 let info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
 function update_helper_layer(e){
-	if (e) {
+	// e may be a number from requestAnimationFrame callback; ignore that
+	if (e && isFinite(e.clientX)) {
 		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
 	}
 	if (helper_layer_update_queued) {
