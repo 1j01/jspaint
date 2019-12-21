@@ -453,9 +453,19 @@ window.menus = {
 				{
 					item: "New &Blank Session",
 					action: ()=> {
-						show_error_message("Not supported yet");
+						// TODO: load new empty session in the same browser tab
+						let name = prompt("Enter the session name that will be used in the URL for sharing.");
+						if(typeof name == "string"){
+							name = name.trim();
+							if(name == ""){
+								show_error_message("The session name cannot be empty.");
+							}else if(name.match(/[./[\]#$]/)){
+								show_error_message("The session name cannot contain any of ./[]#$");
+							}else{
+								window.open(`${location.origin}${location.pathname}#session:${name}`);
+							}
+						}
 					},
-					enabled: false,
 					description: "Starts a new multi-user session from an empty document.",
 				},
 			]
