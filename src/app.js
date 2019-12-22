@@ -126,7 +126,7 @@ const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
 		<img src='images/winter/present.png' width='24' height='22' alt=''/>
 		<span class='not-the-icon'>
-			<strong>New!</strong>&nbsp;Holiday theme, and better history and mobile support
+			<strong>New!</strong>&nbsp;Holiday theme, multitouch panning, and revamped history
 		</span>
 	</a>
 `);
