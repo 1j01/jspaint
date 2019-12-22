@@ -125,7 +125,9 @@ const $status_size = $(E("div")).addClass("status-coordinates").appendTo($status
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
 		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<strong>New!</strong>&nbsp;Holiday theme, and better history and mobile support
+		<span class='not-the-icon'>
+			<strong>New!</strong>&nbsp;Holiday theme, and better history and mobile support
+		</span>
 	</a>
 `);
 $news_indicator.on("click auxclick", (event)=> {

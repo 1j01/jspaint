@@ -509,6 +509,16 @@ html, body, .jspaint {
 .news-indicator > img {
 	margin-right: 5px;
 }
+@media (max-width: 500px) {
+	.news-indicator > img {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+	}
+	.news-indicator .not-the-icon {
+		display: none;
+	}
+}
 
 [touch-action="none"] {
 	touch-action: none;
