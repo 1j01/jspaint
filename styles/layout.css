@@ -503,6 +503,13 @@ html, body, .jspaint {
 	}
 }
 
+.news-indicator {
+	font-family: sans-serif;
+}
+.news-indicator > img {
+	margin-right: 5px;
+}
+
 [touch-action="none"] {
 	touch-action: none;
 }

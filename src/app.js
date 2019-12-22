@@ -122,6 +122,22 @@ const $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
 const $status_position = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 const $status_size = $(E("div")).addClass("status-coordinates").appendTo($status_area);
 
+const $news_indicator = $(`
+	<a class='news-indicator' href='#project-news'>
+		<img src='images/winter/present.png' width='24' height='22' alt=''/>
+		<strong>New!</strong>&nbsp;Holiday theme, and better history and mobile support
+	</a>
+`);
+$news_indicator.on("click auxclick", (event)=> {
+	event.preventDefault();
+	show_news();
+});
+// TODO: use localstorage to show until clicked, if available
+// and show for a longer period of time after the update, if available
+if (Date.now() < Date.parse("Jan 5 2020 23:42:42 GMT-0500")) {
+	$status_area.append($news_indicator);
+}
+
 $status_text.default = () => {
 	$status_text.text("For Help, click Help Topics on the Help Menu.");
 };
