@@ -758,7 +758,7 @@ function show_news(){
 	// window.console && console.log("LATEST MEWS:", $latest_news);
 	// window.console && console.log("LATEST ENTRY:", latest_entry);
 
-	$latest_news_style = $latest_news.find("style");
+	const $latest_news_style = $latest_news.find("style");
 	$this_version_news.find("style").remove();
 	$latest_news.append($latest_news_style); // in case $this_version_news is $latest_news
 
