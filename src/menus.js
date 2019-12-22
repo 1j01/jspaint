@@ -127,7 +127,7 @@ window.menus = {
 			description: "Redoes the previously undone action.",
 		},
 		{
-			item: "&History Tree",
+			item: "&History",
 			shortcut: "Ctrl+Shift+Y",
 			action: ()=> { show_document_history(); },
 			description: "Shows the document history and lets you navigate to states not accessible with Undo or Repeat.",

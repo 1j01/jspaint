@@ -93,58 +93,33 @@
 				<p>
 					Merry Christmas and happy Hanukkah!
 				</p>
-				<h2>Nondestructive History</h2>
+				<h2>Better History</h2>
+				<b class="new">New:</b> Jump to any point in the document's history, forwards or backwards, with <b>Edit > History</b> or <kbd>Ctrl+Shift+Y</kbd>.
 				<ul>
 					<li>
-						<b class="new">New:</b> Show the document's history with <b>Edit > History Tree</b> or <kbd>Ctrl+Shift+Y</kbd>.
-						<ul>
-							<li>
-								Jump to any point in history.
-							</li>
-							<li>
-								If you for instance use the Brush, undo, and do something else,
-								traditionally programs delete the redoable state,
-								and you can't get back to what you originally did with the Brush.
-								JS Paint now instead creates a <b>branch in history</b>.
-								<ul>
-									<li>
-										The Undo and Redo commands still use linear slices of history, operating on a single branch, but all branches are accessible in the new history window.
-									</li>
-									<li>
-										You can now go back and copy something from earlier in the history and paste it later.
-										Previously this would also destroy history, and you wouldn't be able to redo.
-									</li>
-								</ul>
-							</li>
-							<li>
-								Jump to points in time where there was a textbox or selection, in order to:
-								<ul>
-									<li>
-										Go back and edit text (or change formatting) after finalizing Text, rather than having to re-type it.
-									</li>
-									<li>
-										Go back and copy the exact image data of a previous selection, including transparent areas from using the Free-Form Select tool, for instance, rather than trying to re-lasso an object.
-									</li>
-									<li>
-										Note: these states are skipped over with normal Undo and Redo, so you need to use <b>Edit > History Tree</b> or <kbd>Ctrl+Shift+Y</kbd>.
-									</li>
-								</ul>
-							</li>
-							<li>
-						</ul>
+						Click on Text in the history view to go back to text editing.
 					</li>
 					<li>
-						<b class="bad">Warning:</b> History is not saved with the autosave. Document history will be lost if you refresh the page, or close the tab, or if the tab crashes, or if you close or restart your browser, or likely if you're just on a phone and the mobile browser loses focus.
+						Go back to when there was a selection.
+					</li>
+					<li>
+						Note: these states are skipped over with normal Undo and Redo, so you need to use the History window.
+					</li>
+					<li>
+						Branching history: if you undo, and then make changes, you can get back to everything.
+						Future states are preserved.
 					</li>
 				</ul>
+				<b class="bad">Warning:</b> History is not saved with the autosave. Document history will be lost if you refresh the page, or close the tab, or if the tab crashes, or if you close or restart your browser, or likely if you're just on a phone and the mobile browser loses focus.
 				<h2>Improved Mobile Support</h2>
 				<p>
 					<b class="new">New:</b> Use two fingers to pan the view.
 				</p>
 				<p>
-					With multitouch panning, combined with recently improvements to resize handle grabbability,
-					it's pretty useable now on a phone (except that it's sluggish).
+					With multitouch panning, combined with recent improvements to resize handle grabbability,
+					it's pretty useable on a phone.
 				</p>
+				<p><b class="bad">Caveat:</b> It's slow on some devices and some things are still too small for touch.</p>
 			</article>
 			<article class="news-entry" id="news-2019-polygon-text-and-select">
 				<h1>Polygon, Text, and Select</h1>
