@@ -555,7 +555,7 @@ const update_palette_from_theme = ()=> {
 			"hsl(159, 93%, 16%)",
 			// red
 			"hsl(2, 77%, 27%)",
-			"hsl(355, 78%, 46%)",
+			"hsl(350, 100%, 50%)",
 			"hsl(356, 97%, 64%)",
 			// brown
 			"#ad4632",
