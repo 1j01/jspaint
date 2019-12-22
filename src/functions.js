@@ -640,10 +640,12 @@ let $latest_news = $this_version_news;
 // not included directly in the HTML as a simple way of not showing it if it's loaded with fetch
 // (...not sure how to phrase this clearly and concisely...)
 // "Showing the news as of this version of JS Paint. For the latest, see <a href='https://jspaint.app'>jspaint.app</a>"
-$this_version_news.prepend(
-	$("<p>For the latest news, visit <a href='https://jspaint.app'>jspaint.app</a></p>")
-	.css({padding: "8px 15px"})
-);
+if (location.origin !== "https://jspaint.app") {
+	$this_version_news.prepend(
+		$("<p>For the latest news, visit <a href='https://jspaint.app'>jspaint.app</a></p>")
+		.css({padding: "8px 15px"})
+	);
+}
 
 function show_about_paint(){
 	if($about_paint_window){
