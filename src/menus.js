@@ -32,7 +32,7 @@ window.menus = {
 			action: ()=> { file_save_as(); },
 			description: "Saves the active document with a new name.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "&Load From URL",
 			// shortcut: "Ctrl+L",
@@ -53,13 +53,13 @@ window.menus = {
 			},
 			description: "Uploads the active document to Imgur",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "Manage Storage",
 			action: ()=> { manage_storage(); },
 			description: "Manages storage of previously created or opened pictures.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "Print Pre&view",
 			action: ()=> {
@@ -84,7 +84,7 @@ window.menus = {
 			},
 			description: "Prints the active document and sets printing options.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "Set As &Wallpaper (Tiled)",
 			action: ()=> { set_as_wallpaper_tiled(); },
@@ -95,13 +95,13 @@ window.menus = {
 			action: ()=> { set_as_wallpaper_centered(); },
 			description: "Centers this bitmap as the desktop background.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "Recent File",
 			enabled: false, // @TODO for desktop app
 			description: "",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "E&xit",
 			// shortcut: "Alt+F4", // closes browser window
@@ -132,7 +132,7 @@ window.menus = {
 			action: ()=> { show_document_history(); },
 			description: "Shows the document history and lets you navigate to states not accessible with Undo or Repeat.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
@@ -179,7 +179,7 @@ window.menus = {
 			action: ()=> { select_all(); },
 			description: "Selects everything.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "C&opy To...",
 			enabled: () => !!selection,
@@ -231,7 +231,7 @@ window.menus = {
 			checkbox: {},
 			description: "Shows or hides the text toolbar.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "&Zoom",
 			submenu: [
@@ -258,7 +258,7 @@ window.menus = {
 					description: "Zooms the picture.",
 					action: ()=> { show_custom_zoom_window(); },
 				},
-				$MenuBar.DIVIDER,
+				MENU_DIVIDER,
 				{
 					item: "Show &Grid",
 					shortcut: "Ctrl+G",
@@ -372,7 +372,7 @@ window.menus = {
 			action: ()=> { show_help(); },
 			description: "Displays Help for the current task or command.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "&About Paint",
 			action: ()=> { show_about_paint(); },
@@ -399,7 +399,7 @@ window.menus = {
 		// 	action: ()=> { render_history_as_apng(); },
 		// 	description: "Creates an animation from the document history.",
 		// },
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		// {
 		// 	item: "Extra T&ool Box",
 		// 	checkbox: {
@@ -506,13 +506,13 @@ window.menus = {
 				},
 			]
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "Manage Storage",
 			action: ()=> { manage_storage(); },
 			description: "Manages storage of previously created or opened pictures.",
 		},
-		$MenuBar.DIVIDER,
+		MENU_DIVIDER,
 		{
 			item: "Project News",
 			action: ()=> { show_news(); },

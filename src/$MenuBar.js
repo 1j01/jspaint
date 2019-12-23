@@ -1,7 +1,7 @@
 
 // TODO: make menus not take focus so we can support copy/pasting text in the text tool textarea from the menus
 
-$MenuBar.DIVIDER = "DIVIDER";
+const MENU_DIVIDER = "MENU_DIVIDER";
 
 function $MenuBar(menus){
 	
@@ -39,7 +39,7 @@ function $MenuBar(menus){
 		
 		$.map(menu_items, item => {
 			const $row = $(E("tr")).addClass("menu-row").appendTo($menu_popup_table);
-			if(item === $MenuBar.DIVIDER){
+			if(item === MENU_DIVIDER){
 				const $td = $(E("td")).attr({colspan: 4}).appendTo($row);
 				const $hr = $(E("hr")).addClass("menu-hr").appendTo($td);
 			}else{
