@@ -80,12 +80,18 @@ function $MenuBar(menus){
 					const open_submenu = () => {
 						$submenu_popup.show();
 						$submenu_popup.triggerHandler("update");
-						const rect = $submenu_area[0].getBoundingClientRect();
+						const rect = $item[0].getBoundingClientRect();
 						$submenu_popup.css({
 							position: "absolute",
 							left: rect.right,
 							top: rect.top,
 						});
+						const popup_rect = $submenu_popup[0].getBoundingClientRect();
+						if (popup_rect.right > innerWidth) {
+							$submenu_popup.css({
+								left: rect.left - popup_rect.width,
+							});
+						}
 					};
 					let open_tid, close_tid;
 					$item.add($submenu_popup).on("pointerover", ()=> {
