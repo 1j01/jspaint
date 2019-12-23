@@ -97,11 +97,17 @@ function $MenuBar(menus){
 							left: rect.right,
 							top: rect.top,
 						});
-						const popup_rect = $submenu_popup[0].getBoundingClientRect();
-						if (popup_rect.right > innerWidth) {
+						let submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
+						if (submenu_popup_rect.right > innerWidth) {
 							$submenu_popup.css({
-								left: rect.left - popup_rect.width,
+								left: rect.left - submenu_popup_rect.width,
 							});
+							submenu_popup_rect = $submenu_popup[0].getBoundingClientRect();
+							if (submenu_popup_rect.left < 0) {
+								$submenu_popup.css({
+									left: 0,
+								});
+							}
 						}
 					};
 					let open_tid, close_tid;
