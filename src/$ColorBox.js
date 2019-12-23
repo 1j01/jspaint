@@ -87,15 +87,16 @@ function $ColorBox(){
 		}
 		$G.trigger("option-changed");
 	}
-	function rgb2hex(col){
+	function color_to_hex(col){
 		if(!col.match){ // i.e. CanvasPattern
 			return "#000000";
 		}
-		const rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		const rgb_match = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		const rgb = rgb_match ? rgb_match.slice(1) : get_rgba_from_color(col).slice(0, 3);
 		function hex(x){
 			return (`0${parseInt(x).toString(16)}`).slice(-2);
 		}
-		return rgb ? (`#${hex(rgb[1])}${hex(rgb[2])}${hex(rgb[3])}`) : col;
+		return rgb ? (`#${hex(rgb[0])}${hex(rgb[1])}${hex(rgb[2])}`) : col;
 	}
 	
 	const make_color_button = (color) => {
@@ -114,7 +115,7 @@ function $ColorBox(){
 		$i.css("opacity", 0);
 		$i.prop("enabled", false);
 		
-		$i.val(rgb2hex(color));
+		$i.val(color_to_hex(color));
 		
 		$b.on("pointerdown", e => {
 			// TODO: how should the ternary color, and selection cropping, work on macOS?
@@ -126,7 +127,7 @@ function $ColorBox(){
 			
 			set_color(color);
 			
-			$i.val(rgb2hex(color));
+			$i.val(color_to_hex(color));
 			
 			if(e.button === button && $i.prop("enabled")){
 				$i.trigger("click", "synthetic");
