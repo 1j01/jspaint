@@ -382,8 +382,14 @@ window.menus = {
 	],
 	"E&xtras": [
 		{
+			item: "&History",
+			shortcut: "Ctrl+Shift+Y",
+			action: ()=> { show_document_history(); },
+			description: "Shows the document history and lets you navigate to states not accessible with Undo or Repeat.",
+		},
+		{
 			item: "&Render History As GIF",
-			// shortcut: "Ctrl+Shift+G",
+			shortcut: "Ctrl+Shift+G",
 			action: ()=> { render_history_as_gif(); },
 			description: "Creates an animation from the document history.",
 		},
@@ -393,6 +399,7 @@ window.menus = {
 		// 	action: ()=> { render_history_as_apng(); },
 		// 	description: "Creates an animation from the document history.",
 		// },
+		$MenuBar.DIVIDER,
 		// {
 		// 	item: "Extra T&ool Box",
 		// 	checkbox: {
@@ -498,6 +505,28 @@ window.menus = {
 					description: "Makes JS Paint look festive for the holidays.",
 				},
 			]
+		},
+		$MenuBar.DIVIDER,
+		{
+			item: "Manage Storage",
+			action: ()=> { manage_storage(); },
+			description: "Manages storage of previously created or opened pictures.",
+		},
+		$MenuBar.DIVIDER,
+		{
+			item: "Project News",
+			action: ()=> { show_news(); },
+			description: "Shows news about JS Paint.",
+		},
+		{
+			item: "GitHub",
+			action: ()=> { window.open("https://github.com/1j01/jspaint"); },
+			description: "Shows the project on GitHub.",
+		},
+		{
+			item: "Donate",
+			action: ()=> { window.open("https://www.paypal.me/IsaiahOdhner"); },
+			description: "Supports the project.",
 		},
 	],
 };

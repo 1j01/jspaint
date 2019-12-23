@@ -106,6 +106,9 @@ body,
 .menu-item[disabled] {
 	color: #808080;
 }
+.menu-item .menu-item-shortcut {
+	padding-left: 10px;
+}
 .menu-hr {
 	border: 0;
 	border-top: 1px solid #808080;
