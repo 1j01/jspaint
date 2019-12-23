@@ -37,17 +37,6 @@ function $MenuBar(menus){
 		const $menu_popup = $(E("div")).addClass("menu-popup");
 		const $menu_popup_table = $(E("table")).addClass("menu-popup-table").appendTo($menu_popup);
 		
-		const update_position_from_containing_bounds = ()=> {
-			$menu_popup.css("left", "");
-			const uncorrected_rect = $menu_popup[0].getBoundingClientRect();
-			if(uncorrected_rect.right > innerWidth) {
-				$menu_popup.css("left", innerWidth - uncorrected_rect.width - uncorrected_rect.left);
-			}
-		};
-		$G.on("resize", update_position_from_containing_bounds);
-		$menu_popup.on("update", update_position_from_containing_bounds);
-		update_position_from_containing_bounds();
-
 		$.map(menu_items, item => {
 			const $row = $(E("tr")).addClass("menu-row").appendTo($menu_popup_table);
 			if(item === MENU_DIVIDER){
@@ -197,6 +186,17 @@ function $MenuBar(menus){
 		const $menu_button = $(E("div")).addClass("menu-button").appendTo($menu_container);
 		const $menu_popup = $MenuPopup(menu_items).appendTo($menu_container);
 		
+		const update_position_from_containing_bounds = ()=> {
+			$menu_popup.css("left", "");
+			const uncorrected_rect = $menu_popup[0].getBoundingClientRect();
+			if(uncorrected_rect.right > innerWidth) {
+				$menu_popup.css("left", innerWidth - uncorrected_rect.width - uncorrected_rect.left);
+			}
+		};
+		$G.on("resize", update_position_from_containing_bounds);
+		$menu_popup.on("update", update_position_from_containing_bounds);
+		update_position_from_containing_bounds();
+
 		const menu_id = menus_key.replace("&", "").replace(/ /g, "-").toLowerCase();
 		$menu_button.addClass(`${menu_id}-menu-button`);
 		
