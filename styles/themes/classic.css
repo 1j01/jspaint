@@ -94,6 +94,7 @@ body,
 	margin: 2px;
 }
 .menu-item[disabled] {
+	color: #808080;
 	text-shadow: 0.8px 0.8px 0px #fff;
 }
 .menu-item:focus,
@@ -102,9 +103,6 @@ body,
 	color: #fff;
 	text-shadow: none;
 	outline: 0;
-}
-.menu-item[disabled] {
-	color: #808080;
 }
 .menu-item .menu-item-shortcut {
 	padding-left: 10px;
