@@ -256,7 +256,7 @@ function brosandham_line(x1, y1, x2, y2, callback){
 	}
 }
 
-function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
+function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	
 	// TODO: split up processing in case it takes too long?
 	// progress bar and abort button (outside of image-manipulation.js)
@@ -358,12 +358,17 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	}
 }
 
-function draw_fill_supporting_patterns(ctx, start_x, start_y, swatch) {
-	const source_canvas = ctx.canvas;
-	const fill_canvas = make_canvas(source_canvas.width, source_canvas.height);
-	draw_fill_separately(source_canvas.ctx, fill_canvas.ctx, start_x, start_y, 255, 255, 255, 255);
-	replace_colors_with_swatch(fill_canvas.ctx, swatch, 0, 0);
-	ctx.drawImage(fill_canvas, 0, 0);
+function draw_fill(ctx, start_x, start_y, swatch) {
+	if (typeof swatch === "string") {
+		const fill_rgba = get_rgba_from_color(swatch);
+		draw_fill_without_pattern_support(ctx, start_x, start_y, fill_rgba[0], fill_rgba[1], fill_rgba[2], fill_rgba[3]);
+	} else {
+		const source_canvas = ctx.canvas;
+		const fill_canvas = make_canvas(source_canvas.width, source_canvas.height);
+		draw_fill_separately(source_canvas.ctx, fill_canvas.ctx, start_x, start_y, 255, 255, 255, 255);
+		replace_colors_with_swatch(fill_canvas.ctx, swatch, 0, 0);
+		ctx.drawImage(fill_canvas, 0, 0);
+	}
 }
 
 function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
@@ -377,15 +382,6 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 	const start_g = source_id.data[pixel_pos+1];
 	const start_b = source_id.data[pixel_pos+2];
 	const start_a = source_id.data[pixel_pos+3];
-	
-	// if(
-	// 	fill_r === start_r &&
-	// 	fill_g === start_g &&
-	// 	fill_b === start_b &&
-	// 	fill_a === start_a
-	// ){
-	// 	return;
-	// }
 	
 	while(stack.length){
 		let new_pos;
@@ -465,49 +461,87 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 	}
 }
 
-function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
-	
-	const c_width = canvas.width;
-	const c_height = canvas.height;
-	const id = ctx.getImageData(0, 0, c_width, c_height);
-	const start_pixel_pos = (y*c_width + x) * 4;
-	const start_r = id.data[start_pixel_pos+0];
-	const start_g = id.data[start_pixel_pos+1];
-	const start_b = id.data[start_pixel_pos+2];
-	const start_a = id.data[start_pixel_pos+3];
-	
+function replace_color_globally(image_data, from_r, from_g, from_b, from_a, to_r, to_g, to_b, to_a) {
 	if(
-		fill_r === start_r &&
-		fill_g === start_g &&
-		fill_b === start_b &&
-		fill_a === start_a
+		from_r === to_r &&
+		from_g === to_g &&
+		from_b === to_b &&
+		from_a === to_a
 	){
 		return;
 	}
-	
-	for(let i=0; i<id.data.length; i+=4){
-		if(matches_start_color(i)){
-			color_pixel(i);
+	const {data} = image_data;
+	for(let i = 0; i < data.length; i += 4){
+		if(
+			data[i+0] === from_r &&
+			data[i+1] === from_g &&
+			data[i+2] === from_b &&
+			data[i+3] === from_a
+		){
+			data[i+0] = to_r;
+			data[i+1] = to_g;
+			data[i+2] = to_b;
+			data[i+3] = to_a;
 		}
 	}
+}
+
+function find_color_globally(source_image_data, dest_image_data, find_r, find_g, find_b, find_a) {
+	const source_data = source_image_data.data;
+	const dest_data = dest_image_data.data;
+	for(let i = 0; i < source_data.length; i += 4){
+		if(
+			source_data[i+0] === find_r &&
+			source_data[i+1] === find_g &&
+			source_data[i+2] === find_b &&
+			source_data[i+3] === find_a
+		){
+			dest_data[i+0] = 255;
+			dest_data[i+1] = 255;
+			dest_data[i+2] = 255;
+			dest_data[i+3] = 255;
+		}
+	}
+}
+
+function draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
+	const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+	const start_index = (y*image_data.width + x) * 4;
+	const start_r = image_data.data[start_index+0];
+	const start_g = image_data.data[start_index+1];
+	const start_b = image_data.data[start_index+2];
+	const start_a = image_data.data[start_index+3];
 	
-	ctx.putImageData(id, 0, 0);
+	replace_color_globally(image_data, start_r, start_g, start_b, start_a, fill_r, fill_g, fill_b, fill_a);
+	
+	ctx.putImageData(image_data, 0, 0);
+}
 
-	function matches_start_color(pixel_pos){
-		return (
-			id.data[pixel_pos+0] === start_r &&
-			id.data[pixel_pos+1] === start_g &&
-			id.data[pixel_pos+2] === start_b &&
-			id.data[pixel_pos+3] === start_a
-		);
+function draw_noncontiguous_fill(ctx, x, y, swatch){
+	if (typeof swatch === "string") {
+		const fill_rgba = get_rgba_from_color(swatch);
+		draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_rgba[0], fill_rgba[1], fill_rgba[2], fill_rgba[3]);
+	} else {
+		const source_canvas = ctx.canvas;
+		const fill_canvas = make_canvas(source_canvas.width, source_canvas.height);
+		draw_noncontiguous_fill_separately(source_canvas.ctx, fill_canvas.ctx, x, y, 255, 255, 255, 255);
+		replace_colors_with_swatch(fill_canvas.ctx, swatch, 0, 0);
+		ctx.drawImage(fill_canvas, 0, 0);
 	}
+}
 
-	function color_pixel(pixel_pos){
-		id.data[pixel_pos+0] = fill_r;
-		id.data[pixel_pos+1] = fill_g;
-		id.data[pixel_pos+2] = fill_b;
-		id.data[pixel_pos+3] = fill_a;
-	}
+function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y, fill_r, fill_g, fill_b, fill_a){
+	const source_image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
+	const dest_image_data = dest_ctx.getImageData(0, 0, dest_ctx.canvas.width, dest_ctx.canvas.height);
+	const start_index = (y*source_image_data.width + x) * 4;
+	const start_r = source_image_data.data[start_index+0];
+	const start_g = source_image_data.data[start_index+1];
+	const start_b = source_image_data.data[start_index+2];
+	const start_a = source_image_data.data[start_index+3];
+	
+	find_color_globally(source_image_data, dest_image_data, start_r, start_g, start_b, start_a);
+	
+	dest_ctx.putImageData(dest_image_data, 0, 0);
 }
 
 function apply_image_transformation(meta, fn){
