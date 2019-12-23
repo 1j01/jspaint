@@ -366,25 +366,28 @@ window.tools = [{
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
 	pointerdown(ctx, x, y) {
-		
-		// Get the rgba values of the selected fill color
-		const rgba = get_rgba_from_color(fill_color);
-		
 		if(shift){
 			undoable({
 				name: "Replace Color",
 				icon: get_icon_for_tool(this),
 			}, ()=> {
 				// Perform global color replacement
-				draw_noncontiguous_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+				// TODO: support patterns
+				const fill_rgba = get_rgba_from_color(fill_color);
+				draw_noncontiguous_fill(ctx, x, y, fill_rgba[0], fill_rgba[1], fill_rgba[2], fill_rgba[3]);
 			});
 		} else {
 			undoable({
 				name: "Fill With Color",
 				icon: get_icon_for_tool(this),
 			}, ()=> {
-				// Perform a normal fill operation
-				draw_fill(ctx, x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+				if (fill_color instanceof CanvasPattern || fill_color instanceof CanvasGradient) { 
+					draw_fill_supporting_patterns(ctx, x, y, fill_color);
+				} else {
+					// Perform a normal fill operation
+					const fill_rgba = get_rgba_from_color(fill_color);
+					draw_fill(ctx, x, y, fill_rgba[0], fill_rgba[1], fill_rgba[2], fill_rgba[3]);
+				}
 			});
 		}
 	}

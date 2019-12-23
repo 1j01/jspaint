@@ -358,6 +358,113 @@ function draw_fill(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	}
 }
 
+function draw_fill_supporting_patterns(ctx, start_x, start_y, swatch) {
+	const source_canvas = ctx.canvas;
+	const fill_canvas = make_canvas(source_canvas.width, source_canvas.height);
+	draw_fill_separately(source_canvas.ctx, fill_canvas.ctx, start_x, start_y, 255, 255, 255, 255);
+	replace_colors_with_swatch(fill_canvas.ctx, swatch, 0, 0);
+	ctx.drawImage(fill_canvas, 0, 0);
+}
+
+function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
+	const stack = [[start_x, start_y]];
+	const c_width = source_ctx.canvas.width;
+	const c_height = source_ctx.canvas.height;
+	const source_id = source_ctx.getImageData(0, 0, c_width, c_height);
+	const dest_id = dest_ctx.getImageData(0, 0, c_width, c_height);
+	let pixel_pos = (start_y*c_width + start_x) * 4;
+	const start_r = source_id.data[pixel_pos+0];
+	const start_g = source_id.data[pixel_pos+1];
+	const start_b = source_id.data[pixel_pos+2];
+	const start_a = source_id.data[pixel_pos+3];
+	
+	// if(
+	// 	fill_r === start_r &&
+	// 	fill_g === start_g &&
+	// 	fill_b === start_b &&
+	// 	fill_a === start_a
+	// ){
+	// 	return;
+	// }
+	
+	while(stack.length){
+		let new_pos;
+		let x;
+		let y;
+		let reach_left;
+		let reach_right;
+		new_pos = stack.pop();
+		x = new_pos[0];
+		y = new_pos[1];
+
+		pixel_pos = (y*c_width + x) * 4;
+		while(matches_start_color(pixel_pos)){
+			y--;
+			pixel_pos = (y*c_width + x) * 4;
+		}
+		reach_left = false;
+		reach_right = false;
+		// eslint-disable-next-line no-constant-condition
+		while(true){
+			y++;
+			pixel_pos = (y*c_width + x) * 4;
+			
+			if(!(y < c_height && matches_start_color(pixel_pos))){
+				break;
+			}
+			
+			color_pixel(pixel_pos);
+
+			if(x > 0){
+				if(matches_start_color(pixel_pos - 4)){
+					if(!reach_left){
+						stack.push([x - 1, y]);
+						reach_left = true;
+					}
+				}else if(reach_left){
+					reach_left = false;
+				}
+			}
+
+			if(x < c_width-1){
+				if(matches_start_color(pixel_pos + 4)){
+					if(!reach_right){
+						stack.push([x + 1, y]);
+						reach_right = true;
+					}
+				}else if(reach_right){
+					reach_right = false;
+				}
+			}
+
+			pixel_pos += c_width * 4;
+		}
+	}
+	dest_ctx.putImageData(dest_id, 0, 0);
+
+	// TODO: rename function
+	function matches_start_color(pixel_pos){
+		return (
+			// NOT REACHED YET
+			dest_id.data[pixel_pos+3] === 0 &&
+			// and matches start color (i.e. area to fill)
+			(
+				source_id.data[pixel_pos+0] === start_r &&
+				source_id.data[pixel_pos+1] === start_g &&
+				source_id.data[pixel_pos+2] === start_b &&
+				source_id.data[pixel_pos+3] === start_a
+			)
+		);
+	}
+
+	function color_pixel(pixel_pos){
+		dest_id.data[pixel_pos+0] = fill_r;
+		dest_id.data[pixel_pos+1] = fill_g;
+		dest_id.data[pixel_pos+2] = fill_b;
+		dest_id.data[pixel_pos+3] = fill_a;
+	}
+}
+
 function draw_noncontiguous_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	
 	const c_width = canvas.width;

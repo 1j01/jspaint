@@ -143,8 +143,7 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 
 * Shape Styles
 	* Shapes: respond to Ctrl (It's complicated)
-	* Handle patterns (black and white mode)
-		* Still needed for fill tool
+	* Patterns (black and white mode, winter theme)
 		* Check to make sure patterns are aligned properly for all the tools
 		* There's supposed to be a mapping between color values and pattern fills, used by the text tool and for the palette when switching between modes (colors should be kept between going to black and white mode and back)
 
