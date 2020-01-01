@@ -87,6 +87,14 @@ function $Handles($container, getRect, options){
 				});
 			};
 			$h.on("pointerdown", event => {
+				if ($h[0].setPointerCapture) {
+					// helps when jspaint is loaded in an iframe
+					// (also prevents text selection)
+					$h[0].setPointerCapture(event.pointerId);
+				} else {
+					// prevent text selection
+					event.preventDefault();
+				}
 				dragged = false;
 				if(event.button === 0){
 					$G.on("pointermove", drag);
@@ -105,7 +113,9 @@ function $Handles($container, getRect, options){
 				});
 			});
 			$h.on("mousedown selectstart", event => {
-				event.preventDefault();
+				if (!$h[0].setPointerCapture) {
+					event.preventDefault();
+				}
 			});
 		}
 		

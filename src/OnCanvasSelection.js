@@ -94,7 +94,15 @@ class OnCanvasSelection extends OnCanvasObject {
 				});
 			};
 			this.canvas_pointerdown = e => {
-				e.preventDefault();
+				if (this.$el[0].setPointerCapture) {
+					// helps when jspaint is loaded in an iframe
+					// (also prevents text selection)
+					this.$el[0].setPointerCapture(e.pointerId);
+				} else {
+					// prevent text selection
+					e.preventDefault();
+				}
+
 				const rect = this.canvas.getBoundingClientRect();
 				const cx = e.clientX - rect.left;
 				const cy = e.clientY - rect.top;

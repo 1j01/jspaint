@@ -130,6 +130,15 @@ class OnCanvasTextBox extends OnCanvasObject {
 			}
 		};
 		this.$el.on("pointerdown", e => {
+			if (this.$el[0].setPointerCapture) {
+				// helps when jspaint is loaded in an iframe
+				// (also prevents text selection)
+				this.$el[0].setPointerCapture(e.pointerId);
+			} else {
+				// prevent text selection
+				e.preventDefault();
+			}
+
 			if (e.target instanceof HTMLInputElement ||
 				e.target instanceof HTMLTextAreaElement ||
 				e.target.classList.contains("handle")) {
