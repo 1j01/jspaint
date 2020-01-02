@@ -562,11 +562,17 @@
 
 		}else{
 			log("No session ID in hash");
+			const old_hash = location.hash;
 			end_current_session();
 			const new_session_id = generate_session_id();
 			history.replaceState(null, document.title, `#local:${new_session_id}`);
 			log("After replaceState:", location.hash);
-			update_session_from_location_hash();
+			if (old_hash === location.hash) {
+				// e.g. on Wayback Machine
+				show_error_message("Autosave is disabled. Failed to update URL to start session.");
+			} else {
+				update_session_from_location_hash();
+			}
 		}
 	};
 
