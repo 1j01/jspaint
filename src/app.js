@@ -780,11 +780,6 @@ $G.on("pointermove", (event)=> {
 $canvas.on("pointerdown", e => {
 	update_canvas_rect();
 
-	// helps when jspaint is loaded in an iframe
-	if (canvas.setPointerCapture) {
-		canvas.setPointerCapture(e.pointerId);
-	}
-
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
 	// NOTE: this relies on event handler order for pointerdown
@@ -896,17 +891,6 @@ $app
 	}
 	if(e.button === 1){
 		return; // allow middle-click scrolling
-	}
-	if ("setPointerCapture" in HTMLElement.prototype) {
-		if(
-			// things that do setPointerCapture
-			e.target.closest(".main-canvas") ||
-			e.target.closest(".selection") ||
-			e.target.closest(".textbox") ||
-			e.target.closest(".handle")
-		){
-			return;
-		}
 	}
 	e.preventDefault();
 	// we're just trying to prevent selection
