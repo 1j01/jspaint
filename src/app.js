@@ -372,7 +372,7 @@ $G.on("keydown", e => {
 				select_all();
 			break;
 			case "I":
-				image_invert();
+				image_invert_colors();
 			break;
 			case "E":
 				image_attributes();

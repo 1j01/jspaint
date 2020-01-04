@@ -1446,9 +1446,9 @@ async function edit_paste(execCommandFallback){
 	}
 }
 
-function image_invert(){
+function image_invert_colors(){
 	apply_image_transformation({
-		name: "Invert",
+		name: "Invert Colors",
 		icon: get_help_folder_icon("p_invert.png"),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		invert_rgb(original_ctx, new_ctx);

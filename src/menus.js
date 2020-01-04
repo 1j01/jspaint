@@ -300,7 +300,7 @@ window.menus = {
 		{
 			item: "&Invert Colors",
 			shortcut: "Ctrl+I",
-			action: ()=> { image_invert(); },
+			action: ()=> { image_invert_colors(); },
 			description: "Inverts the colors of the picture or a selection.",
 		},
 		{
