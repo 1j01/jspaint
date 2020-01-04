@@ -1558,6 +1558,22 @@ function detect_transparency(){
 	transparency = has_any_transparency(ctx);
 }
 
+function is_all_black_and_white(ctx) { 
+	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	for(let i=0, l=id.data.length; i<l; i+=4){
+		if(id.data[i+3] < 255){
+			return false;
+		}
+		if(!(
+			(id.data[i] === 255 && id.data[i+1] === 255 && id.data[i+2] === 255) ||
+			(id.data[i] === 0 && id.data[i+1] === 0 && id.data[i+2] === 0)
+		)){
+			return false;
+		}
+	}
+	return true;
+}
+
 function make_monochrome_pattern(lightness){
 
 	const dither_threshold_table = Array.from({length: 64}, (_undefined, p) => {
@@ -1595,9 +1611,6 @@ function make_monochrome_pattern(lightness){
 }
 
 function make_monochrome_palette(){
-	// TODO: maybe *offer* to convert the existing image to monochrome
-	// (offer as opposed to forcing it)
-
 	const palette = [];
 	const n_colors_per_row = 14;
 	const n_colors = n_colors_per_row * 2;
@@ -1783,13 +1796,15 @@ function image_attributes(){
 		if(monochrome != was_monochrome){
 			if(monochrome){
 				palette = monochrome_palette;
-				// TODO: offer to convert to monochrome (with some threshold) (but don't require it)
 			}else{
 				palette = polychrome_palette;
 			}
 
 			$colorbox.rebuild_palette();
 			reset_colors();
+		}
+		if (monochrome && !is_all_black_and_white(ctx)) {
+			show_convert_to_black_and_white();
 		}
 
 		const unit_to_px = unit_sizes_in_px[unit];
@@ -1818,6 +1833,46 @@ function image_attributes(){
 	// Reposition the window
 
 	image_attributes.$window.center();
+}
+
+function show_convert_to_black_and_white() {
+	const $w = new $FormWindow("Convert to Black and White");
+	$w.addClass("convert-to-black-and-white");
+	$w.$main.append("<fieldset><legend>Threshold</legend><input type='range' min='0' max='1' step='0.01' value='0.5'></fieldset>");
+	const $slider = $w.$main.find("input[type='range']");
+	const original_canvas = make_canvas(canvas);
+	let threshold;
+	const update_threshold = ()=> {
+		make_or_update_undoable({
+			name: "Make Monochrome",
+			match: (history_node)=> history_node.name === "Make Monochrome",
+			icon: get_help_folder_icon("p_monochrome.png"),
+		}, ()=> {
+			threshold = $slider.val();
+			ctx.copy(original_canvas);
+			threshold_black_and_white(ctx, threshold);
+		});
+	};
+	update_threshold();
+	$slider.on("input", update_threshold);
+
+	$w.$Button("Okay", ()=> {
+		$w.close();
+	});
+	$w.$Button("Cancel", ()=> {
+		if (current_history_node.name === "Make Monochrome") {
+			undo();
+		} else {
+			undoable({
+				name: "Cancel Make Monochrome",
+				icon: get_help_folder_icon("p_monochrome_undo.png"),
+			}, ()=> {
+				ctx.copy(original_canvas);
+			});
+		}
+		$w.close();
+	});
+	$w.center();
 }
 
 function image_flip_and_rotate(){
