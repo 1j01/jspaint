@@ -39,7 +39,7 @@ function manage_storage(){
 		$storage_manager.close();
 	}
 	$storage_manager = $FormWindow().title("Manage Storage").addClass("storage-manager dialogue-window");
-	// @TODO: remove all button (with confirmation)
+	// @TODO: way to remove all (with confirmation)
 	const $table = $(E("table")).appendTo($storage_manager.$main);
 	const $message = $(E("p")).appendTo($storage_manager.$main).html(
 		"Any images you've saved to your computer with <b>File > Save</b> will not be affected."

@@ -227,7 +227,7 @@ window.menus = {
 		},
 		{
 			item: "T&ext Toolbar",
-			enabled: false, // @TODO
+			enabled: false, // @TODO: toggle fonts box
 			checkbox: {},
 			description: "Shows or hides the text toolbar.",
 		},
@@ -271,7 +271,7 @@ window.menus = {
 				},
 				{
 					item: "Show T&humbnail",
-					enabled: false, // @TODO
+					enabled: false, // @TODO: implement Show Thumbnail
 					checkbox: {},
 					description: "Shows or hides the thumbnail view of the picture.",
 				}
@@ -312,11 +312,18 @@ window.menus = {
 		{
 			item: "&Clear Image",
 			shortcut: looksLikeChrome ? undefined : "Ctrl+Shift+N", // opens incognito window in chrome
-			//shortcut: "Ctrl+Shft+N", [sic]
-			action: ()=> { clear(); },
+			// (mspaint says "Ctrl+Shft+N")
+			action: ()=> { !selection && clear(); },
+			enabled: ()=> !selection,
 			description: "Clears the picture.",
-			// TODO: do as mspaint does here!
-			// description: "Clears the picture or selection.",
+			// action: ()=> {
+			// 	if (selection) {
+			// 		delete_selection();
+			// 	} else {
+			// 		clear();
+			// 	}
+			// },
+			// mspaint says "Clears the picture or selection.", but grays out the option when there's a selection
 		},
 		{
 			item: "&Draw Opaque",

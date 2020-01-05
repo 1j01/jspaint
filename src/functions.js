@@ -1459,7 +1459,7 @@ function clear(){
 	deselect();
 	cancel();
 	undoable({
-		name: "Clear",
+		name: "Clear Image",
 		icon: get_help_folder_icon("p_blank.png"),
 	}, () => {
 		saved = false;
