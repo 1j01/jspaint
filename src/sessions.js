@@ -495,6 +495,8 @@
 		}
 	};
 	const generate_session_id = () => (Math.random()*(2 ** 32)).toString(16).replace(".", "");
+	window.generate_session_id = generate_session_id;
+	
 	const update_session_from_location_hash = () => {
 		const session_match = location.hash.match(/^#?(session|local):(.*)$/i);
 		const load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);

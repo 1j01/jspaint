@@ -362,7 +362,8 @@ function get_FileList_from_file_select_dialog(callback){
 
 function open_from_Image(img, callback, canceled){
 	are_you_sure(() => {
-		// TODO: shouldn't open_from_* start a new session?
+		const new_session_id = generate_session_id();
+		location.hash = `local:${new_session_id}`;
 
 		deselect();
 		cancel();
@@ -472,6 +473,9 @@ function open_from_FileList(files, user_input_method_verb_past_tense){
 
 function file_new(){
 	are_you_sure(() => {
+		const new_session_id = generate_session_id();
+		location.hash = `local:${new_session_id}`;
+
 		deselect();
 		cancel();
 		saved = false;
