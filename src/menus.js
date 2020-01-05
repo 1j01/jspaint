@@ -137,7 +137,7 @@ window.menus = {
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
 			enabled: () =>
-				// TODO: support cutting text with this menu item as well (e.g. for the text tool)
+				// @TODO: support cutting text with this menu item as well (e.g. for the text tool)
 				!!selection,
 			action: ()=> {
 				edit_cut(true);
@@ -148,7 +148,7 @@ window.menus = {
 			item: "&Copy",
 			shortcut: "Ctrl+C",
 			enabled: () =>
-				// TODO: support copying text with this menu item as well (e.g. for the text tool)
+				// @TODO: support copying text with this menu item as well (e.g. for the text tool)
 				!!selection,
 			action: ()=> {
 				edit_copy(true);
@@ -159,7 +159,7 @@ window.menus = {
 			item: "&Paste",
 			shortcut: "Ctrl+V",
 			enabled: () =>
-				// TODO: disable if nothing in clipboard or wrong type (if we can access that)
+				// @TODO: disable if nothing in clipboard or wrong type (if we can access that)
 				true,
 			action: ()=> {
 				edit_paste(true);
@@ -467,7 +467,7 @@ window.menus = {
 				{
 					item: "New &Blank Session",
 					action: ()=> {
-						// TODO: load new empty session in the same browser tab
+						// @TODO: load new empty session in the same browser tab
 						let name = prompt("Enter the session name that will be used in the URL for sharing.");
 						if(typeof name == "string"){
 							name = name.trim();
@@ -518,7 +518,7 @@ window.menus = {
 			checkbox: {
 				toggle: ()=> {
 					if (location.hash.match(/eye-gaze-mode/i)) {
-						// TODO: confirmation dialog that you could cancel with dwell clicking!
+						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
 						location.hash = location.hash.replace(/eye-gaze-mode,|,eye-gaze-mode/i, "");
 						// }
@@ -537,7 +537,7 @@ window.menus = {
 			checkbox: {
 				toggle: ()=> {
 					if (location.hash.match(/eye-gaze-mode/i)) {
-						// TODO: confirmation dialog that you could cancel with dwell clicking!
+						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
 						// location.hash = location.hash.replace(/eye-gaze-mode,|,eye-gaze-mode/i, "");
 						// location.hash = location.hash.replace(/vertical-color-box-mode,|,vertical-color-box-mode/i, "");

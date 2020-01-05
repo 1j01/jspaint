@@ -36,7 +36,7 @@ const createWindow = () => {
 		},
 	});
 
-	// TODO: maybe use the native menu for the "Modern" theme
+	// @TODO: maybe use the native menu for the "Modern" theme
 	mainWindow.setMenu(null);
 
 	// and load the index.html of the app.

@@ -179,7 +179,7 @@ function show_custom_zoom_window() {
 	const $w = new $FormToolWindow("Custom Zoom");
 	$custom_zoom_window = $w;
 
-	// TODO: show Current zoom: blah% ?
+	// @TODO: show Current zoom: blah% ?
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append("<legend>Zoom to</legend>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='1'/>100%</label>");
@@ -352,9 +352,9 @@ function create_and_trigger_input(attrs, callback){
 	return $input;
 }
 
-// TODO: rename these functions to lowercase (and maybe say "files" in this case)
+// @TODO: rename these functions to lowercase (and maybe say "files" in this case)
 function get_FileList_from_file_select_dialog(callback){
-	// TODO: specify mime types?
+	// @TODO: specify mime types?
 	create_and_trigger_input({type: "file"}, input => {
 		callback(input.files);
 	});
@@ -362,7 +362,7 @@ function get_FileList_from_file_select_dialog(callback){
 
 function open_from_Image(img, callback, canceled){
 	are_you_sure(() => {
-		// TODO: shouldn't open_from_* start a new session?
+		// @TODO: shouldn't open_from_* start a new session?
 
 		deselect();
 		cancel();
@@ -379,7 +379,7 @@ function open_from_Image(img, callback, canceled){
 
 		current_history_node.name = "Load Document";
 		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-		current_history_node.icon = null; // TODO
+		current_history_node.icon = null; // @TODO
 
 		$G.triggerHandler("session-update"); // autosave
 		$G.triggerHandler("history-update"); // update history view
@@ -407,7 +407,7 @@ function get_URIs(text) {
 	return uris;
 }
 function load_image_from_URI(uri, callback){
-	// TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
+	// @TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
 	fetch(uri)
 	.then(response => response.blob()).then(blob => {
 		const img = new Image();
@@ -503,7 +503,7 @@ function file_new(){
 	});
 }
 
-// TODO: factor out open_select/choose_file_dialog or get_file_from_file_select_dialog or whatever
+// @TODO: factor out open_select/choose_file_dialog or get_file_from_file_select_dialog or whatever
 // all these open_from_* things are done backwards, basically
 // there's this little thing called Inversion of Control...
 // also paste_from_file_select_dialog
@@ -521,13 +521,13 @@ function file_load_from_url(){
 	const $w = new $FormToolWindow().addClass("dialogue-window");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
-	// TODO: URL validation (input has to be in a form (and we don't want the form to submit))
+	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
 	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input'/></label>");
 	const $input = $w.$main.find(".url-input");
 	$w.$Button("Load", () => {
 		const uris = get_URIs($input.val());
 		if (uris.length > 0) {
-			// TODO: retry loading if same URL entered
+			// @TODO: retry loading if same URL entered
 			// actually, make it change the hash only after loading successfully
 			// (but still load from the hash when necessary)
 			// make sure it doesn't overwrite the old session before switching
@@ -547,12 +547,12 @@ function file_load_from_url(){
 function file_save(){
 	deselect();
 	if(file_name.match(/\.svg$/)){
-		//TODO: only affect suggested name in save dialog, don't change file_name
+		// @TODO: only affect suggested name in save dialog, don't change file_name
 		file_name = `${file_name.replace(/\.svg$/, "")}.png`;
 		return file_save_as();
 	}
 	if(document_file_path){
-		// TODO: save as JPEG by default if the previously opened/saved file was a JPEG?
+		// @TODO: save as JPEG by default if the previously opened/saved file was a JPEG?
 		return save_to_file_path(document_file_path, "PNG", (saved_file_path, saved_file_name) => {
 			saved = true;
 			document_file_path = saved_file_path;
@@ -630,7 +630,7 @@ function show_error_message(message, error){
 	}
 }
 
-// TODO: close are_you_sure windows and these Error windows when switching sessions
+// @TODO: close are_you_sure windows and these Error windows when switching sessions
 // because it can get pretty confusing
 function show_resource_load_error_message(){
 	// NOTE: apparently distinguishing cross-origin errors is disallowed
@@ -682,7 +682,7 @@ function show_about_paint(){
 	$("#outdated").attr("hidden", "hidden");
 
 	$about_paint_window.center();
-	$about_paint_window.center(); // XXX - but it helps tho
+	$about_paint_window.center(); // @XXX - but it helps tho
 
 	$("#refresh-to-update").on("click", (event)=> {
 		event.preventDefault();
@@ -720,7 +720,7 @@ function show_about_paint(){
 			);
 		}
 
-		// TODO: visibly mark entries that overlap
+		// @TODO: visibly mark entries that overlap
 		entries_newer_than_this_version =
 			$latest_entries.get().filter((el_from_latest)=>
 				!entries_contains_update($this_version_entries, el_from_latest.id)
@@ -785,11 +785,11 @@ function show_news(){
 	$news_window.$content.append($latest_news.removeAttr("hidden"));
 
 	$news_window.center();
-	$news_window.center(); // XXX - but it helps tho
+	$news_window.center(); // @XXX - but it helps tho
 }
 
 
-// TODO: DRY between these functions and open_from_* functions further?
+// @TODO: DRY between these functions and open_from_* functions further?
 
 // function paste_image_from_URI(uri, callback){
 // 	load_image_from_URI(uri, (err, img)=> {
@@ -802,7 +802,7 @@ function paste_image_from_file(file){
 	const blob_url = URL.createObjectURL(file);
 	// paste_image_from_URI(blob_url);
 	load_image_from_URI(blob_url, (err, img) => {
-		// TODO: this shouldn't really have the CORS error message, if it's from a blob URI
+		// @TODO: this shouldn't really have the CORS error message, if it's from a blob URI
 		if(err){ return show_resource_load_error_message(); }
 		paste(img);
 		URL.revokeObjectURL(blob_url);
@@ -981,7 +981,7 @@ function go_to_history_node(target_history_node, canceling) {
 		if (selection) {
 			selection.destroy();
 		}
-		// TODO maybe: could store whether a selection is from Free-Form Select
+		// @TODO maybe: could store whether a selection is from Free-Form Select
 		// so it selects Free-Form Select when you jump to e.g. Move Selection
 		// (or could traverse history to figure it out)
 		if (target_history_node.name === "Free-Form Select") {
@@ -1279,7 +1279,7 @@ function meld_selection_into_canvas(going_to_history_node) {
 		undoable({
 			name: "Deselect",
 			icon: get_icon_for_tool(get_tool_by_name("Select")),
-			use_loose_canvas_changes: true, // HACK; TODO: make OnCanvasSelection not change the canvas outside undoable, same rules as tools
+			use_loose_canvas_changes: true, // HACK; @TODO: make OnCanvasSelection not change the canvas outside undoable, same rules as tools
 		}, ()=> { });
 	}
 }
@@ -1320,7 +1320,7 @@ function delete_selection(meta={}){
 		undoable({
 			name: meta.name || "Delete",
 			icon: meta.icon || get_help_folder_icon("p_delete.png"),
-			// soft: TODO: conditionally soft?,
+			// soft: @TODO: conditionally soft?,
 		}, ()=> {
 			selection.destroy();
 			selection = null;
@@ -2037,14 +2037,14 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
-// TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
+// @TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
 // Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
 function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	if(window.systemSaveCanvasAs){
 		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
 	}
 
-	// TODO: file name + type dialog
+	// @TODO: file name + type dialog
 	canvas.toBlob(blob => {
 		sanity_check_blob(blob, () => {
 			const file_saver = saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")}.png`);

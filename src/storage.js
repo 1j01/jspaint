@@ -1,4 +1,4 @@
-// TODO: remove remaining cruft from being compiled from CoffeeScript
+// @TODO: remove remaining cruft from being compiled from CoffeeScript
 // or maybe replace this module with localforage actually
 // (but need to address asynchronous concerns if doing that)
 

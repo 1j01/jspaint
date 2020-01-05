@@ -23,7 +23,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	}
 	position() {
 		super.position(true);
-		update_helper_layer(); // TODO: under-grid specific helper layer?
+		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
 	instantiate(img) {
 		this.$el.css({
@@ -39,7 +39,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				// (width vs naturalWidth?)
 				// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
 				this.source_canvas = make_canvas(img);
-				// TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
+				// @TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
 				// but maybe we should assert in some way that the widths are the same, or resize the selection?
 				if (this.source_canvas.width !== this.width) {
 					this.source_canvas.width = this.width;
@@ -114,7 +114,7 @@ class OnCanvasSelection extends OnCanvasObject {
 						this.draw();
 					});
 				}
-				// TODO: how should this work for macOS? where ctrl+click = secondary click?
+				// @TODO: how should this work for macOS? where ctrl+click = secondary click?
 				else if (e.ctrlKey) {
 					// Stamp selection
 					undoable({
@@ -143,7 +143,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		// and should end up as the cut out image data for the selection
 		// canvasImageData is initially the portion of image data on the canvas,
 		// and should end up as... the portion of image data on the canvas that it should end up as.
-		// TODO: could simplify by making the later (shared) condition just if(colored_cutout){}
+		// @TODO: could simplify by making the later (shared) condition just if(colored_cutout){}
 		// but might change how it works anyways so whatever
 		// if(!transparency){ // now if !transparency or if tool_transparent_mode
 		// this is mainly in order to support patterns as the background color
@@ -180,7 +180,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		// (and it would be complicated to make it update the canvas when switching tool options (as opposed to just the selection))
 		// I'm having it use the tool_transparent_mode option here, so you could at least choose beforehand
 		// (and this might actually give you more options, although it could be confusingly inconsistent)
-		// FIXME: yeah, this is confusing; if you have both transparency modes on and you try to clear an area to transparency, it doesn't work
+		// @FIXME: yeah, this is confusing; if you have both transparency modes on and you try to clear an area to transparency, it doesn't work
 		// and there's no indication that you should try the other selection transparency mode,
 		// and even if you do, if you do it after creating a selection, it still won't work,
 		// because you will have already *not cut out* the selection from the canvas
@@ -202,7 +202,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		for (let i = 0; i < cutoutImageData.data.length; i += 4) {
 			let in_cutout = sourceImageData.data[i + 3] > 0;
 			if (tool_transparent_mode) {
-				// FIXME: work with transparent selected background color
+				// @FIXME: work with transparent selected background color
 				// (support treating partially transparent background colors as transparency)
 				if (sourceImageData.data[i + 0] === background_color_rgba[0] &&
 					sourceImageData.data[i + 1] === background_color_rgba[1] &&
@@ -228,7 +228,7 @@ class OnCanvasSelection extends OnCanvasObject {
 
 		update_helper_layer();
 	}
-	// TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
+	// @TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
 	replace_source_canvas(new_source_canvas) {
 		this.source_canvas = new_source_canvas;
 		const new_canvas = make_canvas(new_source_canvas);
@@ -274,6 +274,6 @@ class OnCanvasSelection extends OnCanvasObject {
 	destroy() {
 		super.destroy();
 		$G.off("option-changed", this._on_option_changed);
-		update_helper_layer(); // TODO: under-grid specific helper layer?
+		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
 }

@@ -79,7 +79,7 @@
 				filter:
 					`hue-rotate(${
 						Math.sin(Date.now() / 4000)
-						// TODO: slow down and stop when you pause
+						// @TODO: slow down and stop when you pause
 					}turn)`,
 			});
 			
@@ -102,7 +102,7 @@
 						}turn)`,
 					transformOrigin: "50% 50%",
 					transformStyle: "preserve-3d",
-					// FIXME: interactivity problems (with order elements are considered to have), I think related to preserve-3d
+					// @FIXME: interactivity problems (with order elements are considered to have), I think related to preserve-3d
 				});
 			}
 		};
@@ -112,7 +112,7 @@
 		document.querySelector(".canvas-area").appendChild(player_placeholder);
 		$(player_placeholder).css({
 			position: "absolute",
-			top: "3px", // TODO: dynamic
+			top: "3px", // @TODO: dynamic
 			left: "3px",
 			mixBlendMode: "multiply",
 			pointerEvents: "none",
@@ -137,7 +137,7 @@
 					onStateChange: onPlayerStateChange,
 				},
 			});
-			// TODO: attribution for this video!
+			// @TODO: attribution for this video!
 			// I mean, you can see the title if you hit spacebar, but
 			// I could make it wave across the screen behind Paint on the desktop
 			// I could add a "Song Name?" button that responds "Darude Sandstorm"
@@ -154,7 +154,7 @@
 		// The API calls this function when the player's state changes.
 		function onPlayerStateChange(event) {
 			if (event.data == YT.PlayerState.PLAYING) {
-				// TODO: pause and resume this timer with the video
+				// @TODO: pause and resume this timer with the video
 				setTimeout(() => {
 					$(rotologo).css({opacity: 1});
 				}, 14150);
@@ -162,7 +162,7 @@
 			if (event.data == YT.PlayerState.ENDED) {
 				player.destroy();
 				player = null;
-				// TODO: fade to white instead of black, to work with the multiply effect
+				// @TODO: fade to white instead of black, to work with the multiply effect
 				// or fade out opacity alternatively
 				// setTimeout/setInterval and check player.getCurrentTime() for when near the end?
 				// or we might switch to using soundcloud for the audio and so trigger it with that, with a separate video of just clouds
@@ -177,7 +177,7 @@
 		space_phase_key_handler = e => {
 			// press space to phase in and out of space phase スペース相 - windows 98 マイクロソフト 『ＷＩＮＴＲＡＰ』 X 将来のオペレーティングシステムサウンド 1998 VAPORWAVE
 			if (e.which === 32) {
-				// TODO: record player SFX
+				// @TODO: record player SFX
 				if (is_theoretically_playing) {
 					player.pauseVideo();
 					is_theoretically_playing = false;

@@ -205,7 +205,7 @@ body {
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
 }
 
-/* TODO: padding/margin on the top at least when in the sidebar */
+/* @TODO: padding/margin on the top at least when in the sidebar */
 .tools {
 	width: 50px;
 }
@@ -241,8 +241,8 @@ body,
 }
 
 /* NOTE: copy/pasted from classic.css */
-/* TODO: actually show a preview of the component itself when dragging for the modern theme */
-/* TODO: cursor maybe? just when already dragging? */
+/* @TODO: actually show a preview of the component itself when dragging for the modern theme */
+/* @TODO: cursor maybe? just when already dragging? */
 .component-ghost.dock {
 	outline: 1px solid black;
 	/*outline: 1px solid invert;*/
@@ -270,7 +270,7 @@ body,
 }
 .help-window iframe {
 	border: 0;
-	/* TODO ideally, apply a padding: 16px on the body in the iframe, except for on the landing page (which has a background) */
+	/* @TODO ideally, apply a padding: 16px on the body in the iframe, except for on the landing page (which has a background) */
 }
 .help-window ul.contents {
 	padding: 16px;
@@ -287,7 +287,7 @@ body,
 	cursor: pointer;
 }
 .help-window li:before {
-	/* TODO: more modern icons */
+	/* @TODO: more modern icons */
 	background-image: url("../../images/help-icons.png");
 }
 .help-window .item.selected {

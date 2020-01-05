@@ -1,7 +1,7 @@
 
 function get_brush_canvas_size(brush_size, brush_shape){
 	// brush_shape optional, only matters if it's circle
-	// TODO: does it actually still matter? the ellipse drawing code has changed
+	// @TODO: does it actually still matter? the ellipse drawing code has changed
 	
 	// round to nearest even number in order for the canvas to be drawn centered at a point reasonably
 	return Math.ceil(brush_size * (brush_shape === "circle" ? 2.1 : 1) / 2) * 2;
@@ -20,7 +20,7 @@ function render_brush(ctx, shape, size){
 	const bottom = Math.round(mid_y + size/2);
 	
 	if(shape === "circle"){
-		// TODO: ideally _without_pattern_support
+		// @TODO: ideally _without_pattern_support
 		draw_ellipse(ctx, left, top, size, size, false, true);
 		// was useful for testing:
 		// ctx.fillStyle = "red";
@@ -117,7 +117,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 }
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-// TODO: protect against browser clearing canvases, invalidate cache
+// @TODO: protect against browser clearing canvases, invalidate cache
 const get_brush_canvas = memoize_synchronous_function((brush_shape, brush_size)=> {
 	const canvas_size = get_brush_canvas_size(brush_size, brush_shape);
 
@@ -258,10 +258,10 @@ function brosandham_line(x1, y1, x2, y2, callback){
 
 function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
 	
-	// TODO: split up processing in case it takes too long?
+	// @TODO: split up processing in case it takes too long?
 	// progress bar and abort button (outside of image-manipulation.js)
 	// or at least just free up the main thread every once in a while
-	// TODO: speed up with typed arrays? https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
+	// @TODO: speed up with typed arrays? https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
 	// could avoid endianness issues if only copying colors
 	// the jsperf only shows ~15% improvement
 	// maybe do something fancier like special-casing large chunks of single-color image
@@ -797,7 +797,7 @@ function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, contro
 	let point_a = {x: start_x, y: start_y};
 	for(let t=0; t<1; t+=1/steps){
 		const point_b = compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y);
-		// TODO: carry "error" from Bresenham line algorithm between iterations? and/or get a proper Bezier drawing algorithm
+		// @TODO: carry "error" from Bresenham line algorithm between iterations? and/or get a proper Bezier drawing algorithm
 		draw_line_without_pattern_support(ctx, point_a.x, point_a.y, point_b.x, point_b.y, stroke_size);
 		point_a = point_b;
 	}
@@ -831,7 +831,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size){
 
 let grid_pattern;
 function draw_grid(ctx, scale) {
-	const pattern_size = Math.floor(scale); // TODO: try ceil too
+	const pattern_size = Math.floor(scale); // @TODO: try ceil too
 	if (!grid_pattern || grid_pattern.width !== pattern_size || grid_pattern.height !== pattern_size) {
 		const grid_pattern_canvas = make_canvas(pattern_size, pattern_size);
 		const dark_gray = "#808080";
@@ -852,7 +852,7 @@ function draw_grid(ctx, scale) {
 	if (scale !== pattern_size) {
 		ctx.translate(-0.5, -0.75); // hand picked to look "good" at 110% in chrome
 		// might be better to just hide the grid in some more cases tho
-		// ...TODO: if I can get helper layer to be pixel aligned, I can probably remove this
+		// ...@TODO: if I can get helper layer to be pixel aligned, I can probably remove this
 	}
 	ctx.scale(scale / pattern_size, scale / pattern_size);
 	ctx.enable_image_smoothing();
@@ -1161,7 +1161,7 @@ function draw_grid(ctx, scale) {
 		for (let i = 0; i < numPoints; i++) {
 			coords[i*2+0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
 			coords[i*2+1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
-			// TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
+			// @TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
 		}
 
 		if(fill){
@@ -1225,7 +1225,7 @@ function draw_grid(ctx, scale) {
 		const width = x_max - x_min;
 		const height = y_max - y_min;
 		
-		// TODO: maybe have the cutout only the width/height of the bounds
+		// @TODO: maybe have the cutout only the width/height of the bounds
 		// const cutout = make_canvas(width, height);
 		const cutout = make_canvas(canvas);
 
@@ -1240,7 +1240,7 @@ function draw_grid(ctx, scale) {
 		return cutout_crop;
 	}
 
-	// TODO: maybe shouldn't be external...
+	// @TODO: maybe shouldn't be external...
 	window.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
 		const stroke_margin = ~~(stroke_size * 1.1);
 		

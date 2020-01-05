@@ -718,7 +718,7 @@ window.tools = [{
 				ctx.fillRect(x, y, w, h);
 				ctx.restore();
 			}else{
-				// TODO: shouldn't that be ~~(stroke_size / 2)?
+				// @TODO: shouldn't that be ~~(stroke_size / 2)?
 				ctx.strokeRect(x + stroke_size / 2, y + stroke_size / 2, w - stroke_size, h - stroke_size);
 			}
 		}
@@ -758,7 +758,7 @@ window.tools = [{
 				}
 			}
 		}else{
-			if(d < stroke_size * 5.1010101){ // arbitrary 101 (TODO: find correct value (or formula))
+			if(d < stroke_size * 5.1010101){ // arbitrary number (@TODO: find correct value (or formula))
 				this.complete(ctx);
 			}
 		}
@@ -784,7 +784,7 @@ window.tools = [{
 			const dy = y - ly;
 			const dt = +(new Date) - lt;
 			const d = Math.sqrt(dx*dx + dy*dy);
-			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (TODO: find correct value (or formula))
+			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (@TODO: find correct value (or formula))
 				this.complete(ctx);
 			}else{
 				// Add the point
@@ -1102,7 +1102,7 @@ tools.forEach((tool)=> {
 				gradient.addColorStop(6/n, "gold");
 				color = gradient;
 			}
-			// TODO: perf: keep this canvas around too
+			// @TODO: perf: keep this canvas around too
 			const mask_fill_canvas = make_canvas(tool.mask_canvas);
 			replace_colors_with_swatch(mask_fill_canvas.ctx, color, 0, 0);
 			ctx.drawImage(mask_fill_canvas, 0, 0);
@@ -1199,7 +1199,7 @@ tools.forEach((tool)=> {
 				gradient.addColorStop(6/n, "gold");
 				color = gradient;
 			}
-			// TODO: perf: keep this canvas around too
+			// @TODO: perf: keep this canvas around too
 			const mask_fill_canvas = make_canvas(tool.mask_canvas);
 			if (previewing && tool.dynamic_preview_cursor) {
 				const brush = tool.get_brush();

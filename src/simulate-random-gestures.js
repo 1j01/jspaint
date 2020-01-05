@@ -197,7 +197,7 @@ window.simulateRandomGesturesPeriodically = () => {
 		});
 	};
 	let waitThenGo = () => {
-		// TODO: a button to stop it as well (maybe make "stop drawing randomly" a link button?)
+		// @TODO: a button to stop it as well (maybe make "stop drawing randomly" a link button?)
 		$status_text.text("Press Esc to stop drawing randomly.");
 		if (isAnyMenuOpen()) {
 			periodicGesturesTimeoutID = setTimeout(waitThenGo, 50);
@@ -218,7 +218,7 @@ window.simulateRandomGesturesPeriodically = () => {
 			$(choose($(".tool-options *"))).trigger("click");
 		}
 		if (seededRandom() < pickColorChance) {
-			// TODO: maybe these should respond to a normal click?
+			// @TODO: maybe these should respond to a normal click?
 			let secondary = seededRandom() < 0.5;
 			const colorButton = choose($(".swatch, .color-button"));
 			$(colorButton)

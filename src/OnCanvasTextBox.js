@@ -82,7 +82,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				this.canvas.width = this.width;
 				this.canvas.height = this.height;
 				this.canvas.ctx.drawImage(img, 0, 0);
-				update_helper_layer(); // TODO: under-grid specific helper layer?
+				update_helper_layer(); // @TODO: under-grid specific helper layer?
 			};
 			img.onerror = (e)=> {
 				window.console && console.log("Failed to load image", e);
@@ -125,7 +125,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
 			this.position();
 			if (e.shiftKey) {
-				// TODO: maybe re-enable but handle undoables well
+				// @TODO: maybe re-enable but handle undoables well
 				// this.draw();
 			}
 		};
@@ -185,7 +185,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 	}
 	position() {
 		super.position(true);
-		update_helper_layer(); // TODO: under-grid specific helper layer?
+		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
 	destroy() {
 		super.destroy();
@@ -197,6 +197,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$editor.off("input", this._on_input);
 		this.$editor.off("scroll", this._on_scroll);
 		$(window).off("resize", this._on_window_resize);
-		update_helper_layer(); // TODO: under-grid specific helper layer?
+		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
 }

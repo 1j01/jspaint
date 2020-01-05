@@ -21,9 +21,9 @@ function $ToolWindow($component){
 		e.preventDefault();
 	});
 	
-	// TODO: prevent selection *outside* of the window *via* the window
+	// @TODO: prevent selection *outside* of the window *via* the window
 
-	// TODO: keep track of last focused control in the window, and focus it when clicking on / focusing the window
+	// @TODO: keep track of last focused control in the window, and focus it when clicking on / focusing the window
 
 	$w.css({
 		position: "absolute",
@@ -81,9 +81,9 @@ function $ToolWindow($component){
 				break;
 			case 9: { // Tab
 				
-				// TODO: handle shift+tab as well (note: early return at top of function)
+				// @TODO: handle shift+tab as well (note: early return at top of function)
 				// wrap around when tabbing through controls in a window
-				// TODO: other element types? also [tabIndex]
+				// @TODO: other element types? also [tabIndex]
 				const $controls = $w.$content.find("input, textarea, select, button, a");
 				const focused_control_index = $controls.index($focused);
 				if(focused_control_index === $controls.length - 1){

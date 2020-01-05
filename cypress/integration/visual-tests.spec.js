@@ -49,31 +49,31 @@ context('visual tests', () => {
 	});
 
 	it('flip and rotate window', () => {
-		// TODO: make menus more testable, with IDs
+		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(1)').click();
 		cy.get('.window:visible').matchImageSnapshot();
 	});
 
 	it('stretch and skew window', () => {
-		// TODO: make menus more testable, with IDs
+		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(2)').click();
-		// TODO: wait for images to load and include images?
+		// @TODO: wait for images to load and include images?
 		cy.get('.window:visible').matchImageSnapshot({ blackout: ["img"] });
 	});
 
 	it('help window', () => {
-		// TODO: make menus more testable, with IDs
+		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(1)').click();
 		cy.get('.window:visible .folder', {timeout: 10000}); // wait for sidebar contents to load
-		// TODO: wait for iframe to load
+		// @TODO: wait for iframe to load
 		cy.get('.window:visible').matchImageSnapshot({ blackout: ["iframe"] });
 	});
 
 	it('about window', () => {
-		// TODO: make menus more testable, with IDs
+		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(3)').click();
 		cy.get('.window:visible').matchImageSnapshot({ blackout: ["img"] });

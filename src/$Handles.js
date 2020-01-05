@@ -59,7 +59,7 @@ function $Handles($container, getRect, options){
 				
 				const rect = getRect();
 				const m = to_canvas_coords(event);
-				// TODO: decide between Math.floor/Math.ceil/Math.round for these values
+				// @TODO: decide between Math.floor/Math.ceil/Math.round for these values
 				if(x_axis === "right"){
 					delta_x = 0;
 					width = ~~(m.x - rect.left);

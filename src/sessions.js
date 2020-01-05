@@ -112,7 +112,7 @@
 						else {
 							// e.g. localStorage is disabled
 							// (or there's some other error?)
-							// TODO: show warning with "Don't tell me again" type option
+							// @TODO: show warning with "Don't tell me again" type option
 						}
 					}
 				});
@@ -123,7 +123,7 @@
 						show_error_message("Failed to retrieve image from local storage:", err);
 					}
 					else {
-						// TODO: DRY with storage manager message
+						// @TODO: DRY with storage manager message
 						show_error_message("Please enable local storage in your browser's settings for local backup. It may be called Cookies, Storage, or Site Data.");
 					}
 				}
@@ -179,7 +179,7 @@
 	user.color = `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`;
 	// Unused
 	user.color_transparent = `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 0.5)`;
-	// (@TODO) The color used in the toolbar indicating to other users it is selected by this user
+	// (@TODO) The color (that may be) used in the toolbar indicating to other users it is selected by this user
 	user.color_desaturated = `hsla(${user.hue}, ${~~(user.saturation*0.4)}%, ${user.lightness}%, 0.8)`;
 
 
@@ -226,7 +226,7 @@
 			}
 		}
 		start() {
-			// TODO: how do you actually detect if it's failing???
+			// @TODO: how do you actually detect if it's failing???
 			const $w = $FormToolWindow().title("Warning").addClass("dialogue-window");
 			$w.$main.html("<p>The document may not load. Changes may not save.</p>" +
 				"<p>Multiuser sessions are public. There is no security.</p>"
@@ -537,14 +537,14 @@
 			}
 			end_current_session();
 
-			// TODO: fix loading duplicately, from popstate and hashchange
+			// @TODO: fix loading duplicately, from popstate and hashchange
 			open_from_URI(url, err => {
 				if(err){
 					show_resource_load_error_message();
 				}
-				// TODO: saved = false;?
+				// @TODO: saved = false;?
 				// NOTE: the following is intended to run regardless of error (as opposed to returning if there's an error)
-				// FIXME: race condition (make the timeout long and try to fix it with a flag or something )
+				// @FIXME: race condition (make the timeout long and try to fix it with a flag or something )
 				setTimeout(() => {
 					// NOTE: this "change" event doesn't *guarantee* there was a change :/
 					// let alone that there was a user interaction with the currently loaded document

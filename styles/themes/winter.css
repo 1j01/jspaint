@@ -18,6 +18,6 @@
 }
 
 .menu-hotkey {
-	/* TODO: when actually supporting menu navigation hotkeys, enable if accessing the menus with the keyboard */
+	/* @TODO: when actually supporting menu navigation hotkeys, enable if accessing the menus with the keyboard */
 	text-decoration: none;
 }

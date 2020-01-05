@@ -90,7 +90,7 @@ html, body, .jspaint {
 }
 .selection,
 .textbox {
-	display: block !important; /* TODO: reduce overzealous display: flex; */
+	display: block !important; /* @TODO: reduce overzealous display: flex; */
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
@@ -99,7 +99,7 @@ html, body, .jspaint {
 .textbox > canvas,
 .selection > img,
 .selection > canvas {
-	/* TODO: maybe don't include the canvas in the DOM (is it helpful to inspect it tho? it's not critical...) */
+	/* @TODO: maybe don't include the canvas in the DOM (is it helpful to inspect it tho? it's not critical...) */
 	opacity: 0;
 }
 .selection > img,
@@ -390,7 +390,7 @@ html, body, .jspaint {
 .handle::after {
 	/* make handles way easier to grab */
 	content: "";
-	pointer-events: all; /* TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
+	pointer-events: all; /* @TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
 	display: block;
 	position: absolute;
 	left: 50%;
@@ -409,7 +409,7 @@ html, body, .jspaint {
 	which makes it more reasonable to have the border be a draggable thing.
 	I'm making the draggable area outside the border for now. */
 	content: "";
-	pointer-events: all; /* TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
+	pointer-events: all; /* @TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
 	display: block;
 	position: absolute;
 	left: -10px;
@@ -460,12 +460,12 @@ html, body, .jspaint {
 	width: 200px;
 }
 
-/* TODO: part of os-gui */
+/* @TODO: part of os-gui */
 .os-window {
 	display: flex;
 	flex-direction: column;
 }
-/* TODO: part of os-gui */
+/* @TODO: part of os-gui */
 .os-window .window-content {
 	flex: 1; 
 }
@@ -631,7 +631,7 @@ html, body, .jspaint {
 	margin-right: 8px;
 }
 #jspaint-version {
-	/* TODO: separate into a shared.css? (not really layout!) */
+	/* @TODO: separate into a shared.css? (not really layout!) */
 	font-size: 0.6em;
 	color: #7b7b7b;
 }

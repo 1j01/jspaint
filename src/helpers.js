@@ -145,7 +145,7 @@ function make_canvas(width, height){
 		new_ctx.imageSmoothingEnabled = true;
 	};
 	
-	// TODO: simplify the abstraction by defining setters for width/height
+	// @TODO: simplify the abstraction by defining setters for width/height
 	// that reset the image smoothing to disabled
 	// and make image smoothing a parameter to make_canvas
 	

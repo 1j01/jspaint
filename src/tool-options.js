@@ -71,7 +71,7 @@ const $Choose = (things, display, choose, is_chosen) => {
 					return option_canvas;
 				};
 				const update = () => {
-					const selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // TODO: get from a CSS variable
+					const selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // @TODO: get from a CSS variable
 					$option_container.css({
 						backgroundColor: is_chosen(thing) ? selected_color : ""
 					});

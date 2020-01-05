@@ -10,7 +10,7 @@ function show_imgur_uploader(blob){
 	const $imgur_url_area = $(E("div")).appendTo($imgur_window.$main);
 	const $imgur_status = $(E("div")).appendTo($imgur_window.$main);
 	
-	// TODO: maybe make this preview small but zoomable to full size?
+	// @TODO: maybe make this preview small but zoomable to full size?
 	// (starting small (max-width: 100%) and toggling to either scrollable or fullscreen)
 	// it should be clear that it's not going to upload a downsized version of your image
 	const $preview_image = $(E("img")).appendTo($preview_image_area);
@@ -31,7 +31,7 @@ function show_imgur_uploader(blob){
 
 		$preview_image_area.remove();
 		$upload_button.remove();
-		$cancel_button.remove(); // TODO: allow canceling upload request
+		$cancel_button.remove(); // @TODO: allow canceling upload request
 
 		$imgur_window.width(300);
 		$imgur_window.center();
@@ -54,7 +54,7 @@ function show_imgur_uploader(blob){
 				// show_error_message("Received an invalid JSON response from Imgur: ", responseJSON, but also error);
 				// $imgur_window.close();
 
-				// TODO: DRY, including with show_error_message
+				// @TODO: DRY, including with show_error_message
 				$(E("pre"))
 				.appendTo($imgur_status)
 				.text(responseJSON)
@@ -117,7 +117,7 @@ function show_imgur_uploader(blob){
 				$imgur_url_area.append(
 					"<label>URL: </label>"
 				).append($imgur_url);
-				// TODO: a button to copy the URL to the clipboard
+				// @TODO: a button to copy the URL to the clipboard
 				// (also maybe put the URL in a readonly input)
 				
 				const $delete_button = $imgur_window.$Button("Delete", () => {

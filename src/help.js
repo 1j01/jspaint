@@ -100,7 +100,7 @@ function open_help_viewer(options){
 		forward_length -= 1;
 		back_length += 1;
 	}, ()=> forward_length > 0);
-	add_toolbar_button("Options", 3, ()=> {}, ()=> false); // TODO: hotkey and underline on O
+	add_toolbar_button("Options", 3, ()=> {}, ()=> false); // @TODO: hotkey and underline on O
 	add_toolbar_button("Web Help", 4, ()=> {
 		iframe.src = "help/online_support.htm";
 	});
@@ -111,7 +111,7 @@ function open_help_viewer(options){
 	const $resizer = $(E("div")).addClass("resizer");
 	const $contents = $(E("ul")).addClass("contents inset-deep");
 
-	// TODO: fix race conditions
+	// @TODO: fix race conditions
 	$iframe.on("load", ()=> {
 		if (!ignore_one_load) {
 			back_length += 1;
@@ -369,7 +369,7 @@ function $Iframe(options){
 		iframe.contentWindow.close = function(){
 			iframe.$window && iframe.$window.close();
 		};
-		// TODO: hook into saveAs (a la FileSaver.js) and another function for opening files
+		// @TODO: hook into saveAs (a la FileSaver.js) and another function for opening files
 		// iframe.contentWindow.saveAs = function(){
 		// 	saveAsDialog();
 		// };
@@ -395,7 +395,7 @@ function $Iframe(options){
 // 	var $iframe = $win.$iframe = $Iframe({src: options.src});
 // 	$win.$content.append($iframe);
 // 	var iframe = $win.iframe = $iframe[0];
-// 	// TODO: should I instead of having iframe.$window, have a get$Window type of dealio?
+// 	// @TODO: should I instead of having iframe.$window, have a get$Window type of dealio?
 // 	// where all is $window needed?
 // 	// I know it's used from within the iframe contents as frameElement.$window
 // 	iframe.$window = $win;
@@ -428,7 +428,7 @@ function $Iframe(options){
 // 		flexDirection: "column",
 // 	});
 	
-// 	// TODO: cascade windows
+// 	// @TODO: cascade windows
 // 	$win.center();
 // 	$win.hide();
 	

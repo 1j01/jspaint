@@ -8,8 +8,8 @@ extra_tools = [{
 	rendered_size: 0,
 	rendered_shape: "",
 	paint(ctx, x, y) {
-		// XXX: copy pasted all this brush caching/rendering code!
-		// TODO: DRY!
+		// @XXX: copy pasted all this brush caching/rendering code!
+		// @TODO: DRY!
 		const csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
@@ -64,8 +64,8 @@ extra_tools = [{
 		this.velocity.y = 0;
 	},
 	paint(ctx, x, y) {
-		// XXX: copy pasted all this brush caching/rendering code!
-		// TODO: DRY!
+		// @XXX: copy pasted all this brush caching/rendering code!
+		// @TODO: DRY!
 		const csz = get_brush_canvas_size(brush_size, brush_shape);
 		if(
 			this.rendered_shape !== brush_shape ||
