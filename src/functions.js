@@ -1854,7 +1854,7 @@ function show_convert_to_black_and_white() {
 		});
 	};
 	update_threshold();
-	$slider.on("input", update_threshold);
+	$slider.on("input", debounce(update_threshold, 100));
 
 	$w.$Button("Okay", ()=> {
 		$w.close();
