@@ -376,7 +376,7 @@ $G.on("keydown", e => {
 			}
 
 			$G.trigger("option-changed");
-			if(button !== undefined){
+			if(button !== undefined && pointer){ // pointer may only be needed for tests
 				selected_tools.forEach((selected_tool)=> {
 					tool_go(selected_tool);
 				});
