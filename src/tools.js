@@ -614,6 +614,8 @@ window.tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	points: [],
+	preview_canvas: null,
+
 	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
 			undoable({
@@ -624,9 +626,11 @@ window.tools = [{
 			});
 			this.points = [];
 		}
+
 	},
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
+			this.preview_canvas = make_canvas(canvas.width, canvas.height);
 			this.points.push({x, y});
 			// second point so first action draws a line
 			this.points.push({x, y});
@@ -636,46 +640,59 @@ window.tools = [{
 	},
 	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
-		
+
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
-	},
-	draw_curve(ctx, x, y) {
-		if(this.points.length < 1){ return; }
 		
-		update_brush_for_drawing_lines(stroke_size);
-		
-		if(this.points.length === 4){
+		this.preview_canvas.ctx.clearRect(0, 0, this.preview_canvas.width, this.preview_canvas.height);
+		this.preview_canvas.ctx.strokeStyle = stroke_color;
+
+		// Draw curves on preview canvas
+		if (this.points.length === 4) {
 			draw_bezier_curve(
-				ctx,
+				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[2].x, this.points[2].y,
 				this.points[3].x, this.points[3].y,
 				this.points[1].x, this.points[1].y,
 				stroke_size
 			);
-		}else if(this.points.length === 3){
+		}
+		else if (this.points.length === 3) {
 			draw_quadratic_curve(
-				ctx,
+				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[2].x, this.points[2].y,
 				this.points[1].x, this.points[1].y,
 				stroke_size
 			);
-		}else{
-			draw_line(
-				ctx,
-				this.points[0].x, this.points[0].y,
-				this.points[1].x, this.points[1].y,
-				stroke_size
+		}
+		else {
+			draw_line_strip(
+				this.preview_canvas.ctx,
+				this.points
 			);
+		}
+		
+	},
+	draw_curve(ctx, x, y) {
+		if(this.points.length < 1){ return; }
+		
+		update_brush_for_drawing_lines(stroke_size);
+		
+		// Draw preview canvas unto actual canvas
+		if(this.points.length === 4){
+			ctx.drawImage(this.preview_canvas, 0, 0);
+		}else if(this.points.length === 3){
+			ctx.drawImage(this.preview_canvas, 0, 0);
+		}else{
+			ctx.drawImage(this.preview_canvas, 0, 0);
 		}
 	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		// if(!pointer_active && !pointer_over_canvas){return;}
-		// if(!this.preview_canvas){return;}
-
+		if(!this.preview_canvas){return;}
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
@@ -775,13 +792,14 @@ window.tools = [{
 	},
 	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
-		
+
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
 
 		this.preview_canvas.ctx.clearRect(0, 0, this.preview_canvas.width, this.preview_canvas.height);
 		if (this.$options.fill && !this.$options.stroke) {
+
 			this.preview_canvas.ctx.drawImage(canvas, 0, 0);
 			this.preview_canvas.ctx.strokeStyle = "white";
 			this.preview_canvas.ctx.globalCompositeOperation = "difference";
@@ -793,6 +811,7 @@ window.tools = [{
 			);
 			stroke_size = orig_stroke_size;
 		} else {
+
 			this.preview_canvas.ctx.strokeStyle = stroke_color;
 			draw_line_strip(
 				this.preview_canvas.ctx,
