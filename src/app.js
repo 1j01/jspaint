@@ -804,7 +804,6 @@ $canvas.on("pointerdown", e => {
 			update_helper_layer_on_pointermove_active = false;
 		}
 	});
-	
 	if(e.button === 0){
 		reverse = false;
 	}else if(e.button === 2){
@@ -834,10 +833,10 @@ $canvas.on("pointerdown", e => {
 		$G.on("pointermove", canvas_pointer_move);
 
 		$G.one("pointerup", (e, canceling) => {
-			button = undefined;
-			reverse = false;
-
+			button = undefined;	
+			reverse = false;		
 			pointer = to_canvas_coords(e);
+
 			selected_tools.forEach((selected_tool)=> {
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
 			});
