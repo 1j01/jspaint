@@ -716,19 +716,21 @@ window.tools = [{
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	points: [],
+	preview_canvas: null,
 	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
 			undoable({
 				name: localize("Curve"),
 				icon: get_icon_for_tool(this),
 			}, ()=> {
-				this.draw_curve(ctx);
+				ctx.drawImage(this.preview_canvas, 0, 0);
 			});
 			this.points = [];
 		}
 	},
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
+			this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			this.points.push({x, y});
 			if (!$("body").hasClass("eye-gaze-mode")) {
 				// second point so first action draws a line
@@ -740,19 +742,20 @@ window.tools = [{
 	},
 	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
-		
+
+		update_brush_for_drawing_lines(stroke_size);
+
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
-	},
-	draw_curve(ctx, x, y) {
-		if(this.points.length < 1){ return; }
 		
-		update_brush_for_drawing_lines(stroke_size);
-		
+		this.preview_canvas.ctx.clearRect(0, 0, this.preview_canvas.width, this.preview_canvas.height);
+		this.preview_canvas.ctx.strokeStyle = stroke_color;
+
+		// Draw curves on preview canvas
 		if(this.points.length === 4){
 			draw_bezier_curve(
-				ctx,
+				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[2].x, this.points[2].y,
 				this.points[3].x, this.points[3].y,
@@ -761,7 +764,7 @@ window.tools = [{
 			);
 		}else if(this.points.length === 3){
 			draw_quadratic_curve(
-				ctx,
+				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[2].x, this.points[2].y,
 				this.points[1].x, this.points[1].y,
@@ -769,14 +772,14 @@ window.tools = [{
 			);
 		}else if(this.points.length === 2){
 			draw_line(
-				ctx,
+				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[1].x, this.points[1].y,
 				stroke_size
 			);
 		}else{
 			draw_line(
-				ctx,
+				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[0].x, this.points[0].y,
 				stroke_size
@@ -785,12 +788,13 @@ window.tools = [{
 	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		// if(!pointer_active && !pointer_over_canvas){return;}
-		// if(!this.preview_canvas){return;}
-
+		if(!this.preview_canvas){return;}
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
-		this.draw_curve(ctx);
+		if (this.points.length >= 1) {
+			ctx.drawImage(this.preview_canvas, 0, 0);
+		}
 	},
 	cancel() {
 		this.points = [];
