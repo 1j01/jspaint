@@ -622,7 +622,9 @@ window.tools = [{
 				name: "Curve",
 				icon: get_icon_for_tool(this),
 			}, ()=> {
-				this.draw_curve(ctx);
+				if (this.points.length >= 1) {
+					ctx.drawImage(this.preview_canvas, 0, 0);
+				}
 			});
 			this.points = [];
 		}
@@ -640,6 +642,8 @@ window.tools = [{
 	},
 	paint(ctx, x, y) {
 		if(this.points.length < 1){ return; }
+
+		update_brush_for_drawing_lines(stroke_size);
 
 		const i = this.points.length - 1;
 		this.points[i].x = x;
@@ -676,27 +680,15 @@ window.tools = [{
 		}
 		
 	},
-	draw_curve(ctx, x, y) {
-		if(this.points.length < 1){ return; }
-		
-		update_brush_for_drawing_lines(stroke_size);
-		
-		// Draw preview canvas unto actual canvas
-		if(this.points.length === 4){
-			ctx.drawImage(this.preview_canvas, 0, 0);
-		}else if(this.points.length === 3){
-			ctx.drawImage(this.preview_canvas, 0, 0);
-		}else{
-			ctx.drawImage(this.preview_canvas, 0, 0);
-		}
-	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		// if(!pointer_active && !pointer_over_canvas){return;}
 		if(!this.preview_canvas){return;}
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
-		this.draw_curve(ctx);
+		if (this.points.length >= 1) {
+			ctx.drawImage(this.preview_canvas, 0, 0);
+		}
 	},
 	cancel() {
 		this.points = [];
