@@ -806,7 +806,8 @@ $canvas.on("pointerdown", e => {
 	});
 	if(e.button === 0){
 		reverse = false;
-	}else if(e.button === 2){
+	}
+	else if(e.button === 2){
 		reverse = true;
 	}else{
 		return;
