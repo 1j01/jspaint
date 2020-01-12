@@ -684,7 +684,7 @@ window.tools = [{
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
-		if (this.points.length >= 1) {
+		if (this.points.length >=1) {
 			ctx.drawImage(this.preview_canvas, 0, 0);
 		}
 	},
