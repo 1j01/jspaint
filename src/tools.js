@@ -622,9 +622,7 @@ window.tools = [{
 				name: "Curve",
 				icon: get_icon_for_tool(this),
 			}, ()=> {
-				if (this.points.length >= 1) {
-					ctx.drawImage(this.preview_canvas, 0, 0);
-				}
+				ctx.drawImage(this.preview_canvas, 0, 0);
 			});
 			this.points = [];
 		}
