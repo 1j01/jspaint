@@ -698,6 +698,8 @@ window.tools = [{
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
 		if(h < 0){ y += h; h = -h; }
+
+		ctx.lineWidth = stroke_size;
 		
 		if(this.$options.fill){
 			ctx.fillRect(x, y, w, h);
