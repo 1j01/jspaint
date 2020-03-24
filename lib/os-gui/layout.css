@@ -10,6 +10,17 @@
 	        user-select: none;
 }
 
+.os-window .window-titlebar,
+body > .window-titlebar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.os-window .window-title-area {
+	position: relative;
+	flex: 1;
+}
+
 .window-titlebar .icon {
 	vertical-align: bottom;
 }

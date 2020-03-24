@@ -243,10 +243,6 @@ button:not(.lightweight).toggle.selected {
 
 .os-window .window-titlebar,
 body > .window-titlebar {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
 	background: rgb(0, 0, 128);
 
 	background: var(--ActiveTitle);
@@ -315,8 +311,6 @@ body > .window-titlebar {
 	margin-right: 2px;
 }
 .os-window .window-title-area {
-	position: relative;
-	flex: 1;
 	height: 16px; /* 100% doesn't work */
 }
 .os-window .window-title {
