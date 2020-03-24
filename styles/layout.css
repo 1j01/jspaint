@@ -312,10 +312,6 @@ html, body, .jspaint {
 	display: block !important;
 	float: right;
 }
-.tool-window .window-close-button:before {
-	content: '×';
-	position: relative;
-}
 
 .window-content .button-group {
 	display: flex;

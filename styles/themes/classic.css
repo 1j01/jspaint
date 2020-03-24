@@ -280,6 +280,10 @@ body,
 .tool-window .window-close-button {
 	width: 13px;
 	height: 11px;
+	background-position: 8px 0;
+}
+.tool-window .window-close-button:hover:active {
+	background-position: 9px 1px;
 }
 .tool-window .window-titlebar button {
 	margin: 2px;
