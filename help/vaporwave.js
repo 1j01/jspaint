@@ -13,11 +13,11 @@ const animate = () => {
 	rAF_ID = requestAnimationFrame(animate);
 
 	if(
-		canvas.width !== canvas.parentElement.offsetWidth || 
-		canvas.height !== canvas.parentElement.offsetHeight
+		canvas.width !== mask_img.width || 
+		canvas.height !== mask_img.height
 	){
-		canvas.width = canvas.parentElement.offsetWidth;
-		canvas.height = canvas.parentElement.offsetHeight;
+		canvas.width = mask_img.width;
+		canvas.height = mask_img.height;
 	}
 
 	const clouds_scale = 1;

@@ -13,7 +13,7 @@ function show_help(){
 	$iframe = $(E("iframe"));
 	$contents = $(E("ul")).addClass("contents");
 	$help_window.$content.append($contents, $iframe);
-	$help_window.$content.css({width: 800, height: 600});
+	$help_window.css({width: 800, height: 600});
 	$iframe.attr({name: "help-frame", src: "help/default.html"});
 	$iframe.css({backgroundColor: "white"});
 	$help_window.center();

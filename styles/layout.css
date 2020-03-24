@@ -68,7 +68,7 @@ html, body, .jspaint {
 }
 .window,
 .window-content {
-	max-width: calc(100vw - 4px);
+	max-width: 100vw;
 }
 .component-area,
 .tool-window .window-titlebar {
@@ -344,6 +344,16 @@ html, body, .jspaint {
 
 .flip-and-rotate fieldset {
 	width: 200px;
+}
+
+/* TODO: part of os-gui */
+.os-window {
+	display: flex;
+	flex-direction: column;
+}
+/* TODO: part of os-gui */
+.os-window .window-content {
+	flex: 1; 
 }
 
 .help-window .window-content {
