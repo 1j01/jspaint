@@ -70,6 +70,12 @@ body {
 	color: white;
 	/*padding: 16px;*/
 	/*height: 32px;*/
+	padding-right: 8px;
+}
+.tool-window .window-titlebar {
+	padding: 5px;
+}
+.window-title-area {
 	padding: 8px;
 }
 .window-content {
