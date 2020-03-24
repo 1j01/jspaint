@@ -379,6 +379,7 @@ html, body, .jspaint {
 }
 .help-window iframe {
 	flex: 1;
+	width: 0;
 }
 .help-window li ul {
 	padding-left: 16px;
