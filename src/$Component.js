@@ -11,7 +11,7 @@ function $Component(name, orientation, $el){
 		wide: $bottom,
 	}[orientation]);
 	
-	const $w = new $Window($c);
+	const $w = new $ToolWindow($c);
 	$w.title(name);
 	$w.hide();
 	$w.$content.addClass({

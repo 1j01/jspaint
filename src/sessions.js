@@ -25,7 +25,7 @@
 	let $recovery_window;
 	function show_recovery_window(no_longer_blank) {
 		$recovery_window && $recovery_window.close();
-		const $w = $recovery_window = $FormWindow();
+		const $w = $recovery_window = $FormToolWindow();
 		$w.on("close", ()=> {
 			$recovery_window = null;
 		});
@@ -227,7 +227,7 @@
 		}
 		start() {
 			// TODO: how do you actually detect if it's failing???
-			const $w = $FormWindow().title("Warning").addClass("dialogue-window");
+			const $w = $FormToolWindow().title("Warning").addClass("dialogue-window");
 			$w.$main.html("<p>The document may not load. Changes may not save.</p>" +
 				"<p>Multiuser sessions are public. There is no security.</p>"
 				// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +

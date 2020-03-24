@@ -71,20 +71,14 @@ html, body, .jspaint {
 	max-width: calc(100vw - 4px);
 }
 .component-area,
-.menus *,
-.window-titlebar {
+.tool-window .window-titlebar {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
 }
-.menus *,
-.menu-popup * {
-	cursor: default;
-}
 .status-area,
-.component-area,
-.menus {
+.component-area {
 	flex: 0 0 auto;
 }
 
@@ -308,17 +302,17 @@ html, body, .jspaint {
 }
 
 
-.window-title {
+.tool-window .window-title {
 	display: inline-block !important;
 	margin: 0;
 	padding: 0;
 	cursor: default;
 }
-.window-close-button {
+.tool-window .window-close-button {
 	display: block !important;
 	float: right;
 }
-.window-close-button:before {
+.tool-window .window-close-button:before {
 	content: '×';
 	position: relative;
 }

@@ -23,7 +23,7 @@ const TAU =     //////|//////
 
 const is_pride_month = new Date().getMonth() === 5; // June (0-based, 0 is January)
 
-const $G = $(window);
+// const $G = $(window);
 
 function make_css_cursor(name, coords, fallback){
 	return `url(images/cursors/${name}.png) ${coords.join(" ")}, ${fallback}`;

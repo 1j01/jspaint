@@ -176,7 +176,7 @@ function show_custom_zoom_window() {
 	if ($custom_zoom_window) {
 		$custom_zoom_window.close();
 	}
-	const $w = new $FormWindow("Custom Zoom");
+	const $w = new $FormToolWindow("Custom Zoom");
 	$custom_zoom_window = $w;
 
 	// TODO: show Current zoom: blah% ?
@@ -221,7 +221,7 @@ function show_custom_zoom_window() {
 				mag = parseFloat(option_val) / 100;
 			}
 			if(isNaN(mag)){
-				const $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
+				const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
 				$msgw.$main.text("The value specified for custom zoom was invalid.");
 				$msgw.$Button("Okay", () => {
 					$msgw.close();
@@ -500,7 +500,7 @@ function file_load_from_url(){
 	if($file_load_from_url_window){
 		$file_load_from_url_window.close();
 	}
-	const $w = new $FormWindow().addClass("dialogue-window");
+	const $w = new $FormToolWindow().addClass("dialogue-window");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// TODO: URL validation (input has to be in a form (and we don't want the form to submit))
@@ -560,7 +560,7 @@ function are_you_sure(action, canceled){
 	if(saved){
 		action();
 	}else{
-		const $w = new $FormWindow().addClass("dialogue-window");
+		const $w = new $FormToolWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.text(`Save changes to ${file_name}?`);
 		$w.$Button("Save", () => {
@@ -584,7 +584,7 @@ function are_you_sure(action, canceled){
 }
 
 function show_error_message(message, error){
-	const $w = $FormWindow().title("Error").addClass("dialogue-window");
+	const $w = $FormToolWindow().title("Error").addClass("dialogue-window");
 	$w.$main.text(message);
 	$w.$main.css("max-width", "600px");
 	if(error){
@@ -616,7 +616,7 @@ function show_error_message(message, error){
 // because it can get pretty confusing
 function show_resource_load_error_message(){
 	// NOTE: apparently distinguishing cross-origin errors is disallowed
-	const $w = $FormWindow().title("Error").addClass("dialogue-window");
+	const $w = $FormToolWindow().title("Error").addClass("dialogue-window");
 	$w.$main.html(
 		"<p>Failed to load image from URL.</p>" +
 		"<p>Check your browser's devtools for details.</p>" +
@@ -651,7 +651,7 @@ function show_about_paint(){
 	if($about_paint_window){
 		$about_paint_window.close();
 	}
-	$about_paint_window = $Window().title("About Paint");
+	$about_paint_window = $ToolWindow().title("About Paint");
 	if (is_pride_month) {
 		$("#paint-32x32").attr("src", "./images/icons/gay-es-paint-32x32-light-outline.png");
 	}
@@ -753,7 +753,7 @@ function show_news(){
 	if($news_window){
 		$news_window.close();
 	}
-	$news_window = $Window().title("Project News");
+	$news_window = $ToolWindow().title("Project News");
 
 	// const $latest_entries = $latest_news.find(".news-entry");
 	// const latest_entry = $latest_entries[$latest_entries.length - 1];
@@ -803,7 +803,7 @@ function paste_from_file_select_dialog(){
 function paste(img){
 
 	if(img.width > canvas.width || img.height > canvas.height){
-		const $w = new $FormWindow().addClass("dialogue-window");
+		const $w = new $FormToolWindow().addClass("dialogue-window");
 		$w.title("Paint");
 		$w.$main.html(
 			"The image is bigger than the canvas.<br>" +
@@ -848,7 +848,7 @@ function paste(img){
 }
 
 function render_history_as_gif(){
-	const $win = $FormWindow();
+	const $win = $FormToolWindow();
 	$win.title("Rendering GIF");
 	$win.center();
 	const $output = $win.$main;
@@ -1121,7 +1121,7 @@ function redo(){
 			$document_history_prompt_window.close();
 		}
 		if (!$document_history_window || $document_history_window.closed) {
-			const $w = $document_history_prompt_window = new $Window();
+			const $w = $document_history_prompt_window = new $ToolWindow();
 			$w.title("Redo");
 			$w.$content.html("Press <b>Ctrl+Shift+Y</b> at any time to open the History window.");
 			$w.$Button("Show History", show_document_history);
@@ -1158,7 +1158,7 @@ function show_document_history() {
 	if ($document_history_window) {
 		$document_history_window.close();
 	}
-	const $w = $document_history_window = new $Window();
+	const $w = $document_history_window = new $ToolWindow();
 	$w.title("Document History");
 	$w.$content.html(`
 		<div class="history-view"></div>
@@ -1719,7 +1719,7 @@ function image_attributes(){
 	if(image_attributes.$window){
 		image_attributes.$window.close();
 	}
-	const $w = image_attributes.$window = new $FormWindow("Attributes");
+	const $w = image_attributes.$window = new $FormToolWindow("Attributes");
 
 	const $main = $w.$main;
 
@@ -1836,7 +1836,7 @@ function image_attributes(){
 }
 
 function show_convert_to_black_and_white() {
-	const $w = new $FormWindow("Convert to Black and White");
+	const $w = new $FormToolWindow("Convert to Black and White");
 	$w.addClass("convert-to-black-and-white");
 	$w.$main.append("<fieldset><legend>Threshold</legend><input type='range' min='0' max='1' step='0.01' value='0.5'></fieldset>");
 	const $slider = $w.$main.find("input[type='range']");
@@ -1876,7 +1876,7 @@ function show_convert_to_black_and_white() {
 }
 
 function image_flip_and_rotate(){
-	const $w = new $FormWindow("Flip and Rotate");
+	const $w = new $FormToolWindow("Flip and Rotate");
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
@@ -1927,7 +1927,7 @@ function image_flip_and_rotate(){
 		const angle = angle_deg / 360 * TAU;
 
 		if(isNaN(angle)){
-			const $msgw = new $FormWindow("Invalid Value").addClass("dialogue-window");
+			const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
 			$msgw.$main.text("The value specified for Degrees was invalid.");
 			$msgw.$Button("Okay", () => {
 				$msgw.close();
@@ -1959,7 +1959,7 @@ function image_flip_and_rotate(){
 }
 
 function image_stretch_and_skew(){
-	const $w = new $FormWindow("Stretch and Skew");
+	const $w = new $FormToolWindow("Stretch and Skew");
 
 	const $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_stretch.append("<legend>Stretch</legend><table></table>");
@@ -2094,7 +2094,7 @@ function sanity_check_blob(blob, okay_callback){
 	if(blob.size > 0){
 		okay_callback();
 	}else{
-		const $w = $FormWindow().title("Warning").addClass("dialogue-window");
+		const $w = $FormToolWindow().title("Warning").addClass("dialogue-window");
 		$w.$main.html(
 			"<p>Tried to save file, but file was empty.</p>" +
 			"<p>Try again, or if the problem persists, report here: " +

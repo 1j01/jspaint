@@ -192,7 +192,7 @@ Functionality:
 
 * JS
 	* Organize things into files better; "functions.js" is like ONE step above saying "code.js"
-	* `$Window` has a `$Button` facility; `$FormWindow` overrides it with essentially a better one
+	* `$ToolWindow` has a `$Button` facility; `$FormToolWindow` overrides it with essentially a better one
 	* Make code clearer / improve code quality
 		* https://codeclimate.com/github/1j01/jspaint
 
