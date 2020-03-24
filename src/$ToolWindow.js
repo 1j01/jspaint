@@ -5,7 +5,7 @@ function $ToolWindow($component){
 	const $w = $(E("div")).addClass("window tool-window").appendTo("body");
 	$w.$titlebar = $(E("div")).addClass("window-titlebar").appendTo($w);
 	$w.$title = $(E("span")).addClass("window-title").appendTo($w.$titlebar);
-	$w.$x = $(E("button")).addClass("window-close-button").appendTo($w.$titlebar);
+	$w.$x = $(E("button")).addClass("window-close-button window-button").appendTo($w.$titlebar);
 	$w.$content = $(E("div")).addClass("window-content").appendTo($w);
 	
 	if($component){
