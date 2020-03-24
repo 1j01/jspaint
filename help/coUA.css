@@ -2,12 +2,16 @@
 
 body {
 	background: #FFFFFF;
+	/* background: var(--Info); */
+	/* color: var(--InfoText); */
+	color: var(--WindowText);
 	font-size: 70%;
 	font-family: Verdana, Arial, Helvetica, "MS Sans Serif";
 }
 
 a:link {
 	color: #0000CC;
+	color: var(--HotTrackingColor);
 }
 
 a:active {

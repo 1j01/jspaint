@@ -358,6 +358,8 @@ html, body, .jspaint {
 }
 .help-window .contents {
 	background: white;
+	background: var(--Window);
+	color: var(--WindowText);
 	flex-basis: 300px; /* normally the default is 200px, but that leaves a scrollbar and we don't have rollover viewing of longer titles (@TODO) */
 	flex-grow: 0;
 	flex-shrink: 0;

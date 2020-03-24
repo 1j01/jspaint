@@ -297,24 +297,38 @@ body,
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 	padding: 0 2px;
+	position: relative; /* for ::after */
 }
 .help-window .item:hover {
 	text-decoration: underline;
-	color: var(--HotTrackingColor);
+	color: #0000FF;
 	cursor: pointer;
 }
 .help-window li:before {
 	background-image: url("../../images/help-icons.png");
 }
-.help-window .item.selected {
-	/* @TODO: separate into :focus */
-	/* TODO: --Hilight */
-	background-color: #0000aa;
+.help-window:not(.focused) .item.selected {
+	background-color: var(--ButtonFace);
+	color: var(--ButtonText); /* ?? */
+}
+.help-window.focused .item.selected {
+	background-color: var(--Hilight);
 	color: var(--HilightText);
-	/* TODO: --inverse-Hilight or use a pseudo element with mix-blend-mode */
-	outline: 1px dotted #ffffaa;
+	/* @TODO: separate focus state of the item */
+	outline: 1px dotted black;
 	outline-offset: -1px;
 }
+/* @TODO: separate focus state of the item; while mouse down, the main highlight does not move with the arrow keys but this does, among other differences */
+/* .help-window.focused .item.selected::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	border: 1px dotted white;
+	mix-blend-mode: difference;
+} */
 
 input[type=text],
 input[type=url] {
