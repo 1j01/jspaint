@@ -241,7 +241,8 @@ button:not(.lightweight).toggle.selected {
 	    image-rendering: pixelated;
 }
 
-.window-titlebar {
+.os-window .window-titlebar,
+body > .window-titlebar {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -306,19 +307,19 @@ button:not(.lightweight).toggle.selected {
 .os-window > * {
 	/* margin: 1px; */
 }
-.window-button {
+.os-window .window-button {
 	margin: 2px 0;
 }
-.window-close-button {
+.os-window .window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
 }
-.window-title-area {
+.os-window .window-title-area {
 	position: relative;
 	flex: 1;
 	height: 16px; /* 100% doesn't work */
 }
-.window-title {
+.os-window .window-title {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -842,5 +843,3 @@ button:not(.lightweight).toggle.selected {
 ::-webkit-scrollbar-button:end:decrement {
 	display: none;
 }
-
-/*# sourceMappingURL=windows-98.css.map */
