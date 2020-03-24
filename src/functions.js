@@ -448,26 +448,44 @@ function open_from_File(file, callback, canceled){
 		}, canceled);
 	});
 }
-function get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense){
+function open_from_FileList(files, user_input_method_verb_past_tense){
 	for (const file of files) {
-		if(file.type.match(/^image/)){
-			return file;
+		if (file.type.match(/^image/)) {
+			open_from_File(file, err => {
+				if(err){ return show_error_message("Failed to open file:", err); }
+			});
+			return;
+		} else if (file.name.match(/\.theme(pack)?$/i)) {
+			loadThemeFile(file);
+			return;
 		}
 	}
-
 	if(files.length > 1){
 		show_error_message(`None of the files ${user_input_method_verb_past_tense} appear to be images.`);
 	}else{
 		show_error_message(`File ${user_input_method_verb_past_tense} does not appear to be an image.`);
 	}
 }
-function open_from_FileList(files, user_input_method_verb_past_tense){
-	const file = get_image_file_from_FileList_or_show_error(files, user_input_method_verb_past_tense);
-	if(file){
-		open_from_File(file, err => {
-			if(err){ return show_error_message("Failed to open file:", err); }
-		});
-	}
+
+function loadThemeFile(file) {
+	var reader = new FileReader();
+	reader.onload = ()=> {
+		loadThemeFromText(reader.result);
+	};
+	reader.readAsText(file);
+}
+function loadThemeFromText(fileText) {
+	var cssProperties = parseThemeFileString(fileText);
+	applyCSSProperties(cssProperties);
+
+	window.themeCSSProperties = cssProperties;
+	$("iframe").each((i, iframe)=> {
+		try {
+			applyCSSProperties(cssProperties, iframe.contentDocument.documentElement);
+		} catch(error) {
+			console.log("error applying theme to iframe", iframe, error);
+		}
+	})
 }
 
 function file_new(){
@@ -793,9 +811,16 @@ function paste_image_from_file(file){
 
 function paste_from_file_select_dialog(){
 	get_FileList_from_file_select_dialog(files => {
-		const file = get_image_file_from_FileList_or_show_error(files, "selected");
-		if(file){
-			paste_image_from_file(file);
+		for (const file of files) {
+			if(file.type.match(/^image/)){
+				paste_image_from_file(file);
+				return;
+			}
+		}
+		if(files.length > 1){
+			show_error_message(`None of the files selected appear to be images.`);
+		}else{
+			show_error_message(`File selected does not appear to be an image.`);
 		}
 	});
 }
