@@ -190,7 +190,8 @@ button.lightweight:not([disabled]):hover:active {
 button[disabled] {
 	color: rgb(128, 128, 128);
 	color: var(--GrayText);
-	text-shadow: 1px 1px 0px white; /* TODO: what var for color? */
+	text-shadow: 1px 1px 0px rgb(255, 255, 255);
+	text-shadow: 1px 1px 0px var(--ButtonHilight);
 }
 /* TODO: [checked]? .pressed? .depressed? .down? .held? what should it be called? */
 button:not(.lightweight).toggle:hover:active {
@@ -244,7 +245,6 @@ button:not(.lightweight).toggle.selected {
 .os-window .window-titlebar,
 body > .window-titlebar {
 	background: rgb(0, 0, 128);
-
 	background: var(--ActiveTitle);
 	background: linear-gradient(to right, rgb(0, 0, 128) 0%, rgb(16, 132, 208) 100%);
 	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
@@ -252,11 +252,15 @@ body > .window-titlebar {
 	color: rgb(255, 255, 255);
 	
 	color: var(--TitleText);
-	
+}
+
+.os-window .window-titlebar, body > .window-titlebar {
 	font-family: 'Segoe UI', sans-serif;
-	
 	font-size: 12px;
-	
+}
+
+.os-window .window-titlebar,
+body > .window-titlebar {
 	font-weight: bold;
 }
 .os-window:not(.focused) .window-titlebar {
@@ -303,10 +307,10 @@ body > .window-titlebar {
 .os-window > * {
 	/* margin: 1px; */
 }
-.os-window .window-button {
+.window-button {
 	margin: 2px 0;
 }
-.os-window .window-close-button {
+.window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
 }
@@ -376,6 +380,12 @@ body > .window-titlebar {
 .menus {
 	background: rgb(192, 192, 192);
 	background: var(--Menu);
+	color: rgb(0, 0, 0);
+	color: var(--MenuText);
+}
+.os-window:not(.focused) .menus {
+	color: rgb(128, 128, 128);
+	color: var(--GrayText);
 }
 .menus *, .menu-popup * {
 	font-family: 'Segoe UI', sans-serif;
@@ -398,8 +408,8 @@ body > .window-titlebar {
 }
 .menu-button:active,
 .menu-button.active {
-	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 white inset;
-	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 white inset;
+	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 rgb(255, 255, 255) inset;
+	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 var(--ButtonHilight) inset;
 	top: 1px;
 	left: 1px;
 }
@@ -430,7 +440,8 @@ body > .window-titlebar {
 .menu-item[disabled] {
 	color: rgb(128, 128, 128);
 	color: var(--GrayText);
-	text-shadow: 0.8px 0.8px 0px #fff;
+	text-shadow: 0.8px 0.8px 0px rgb(255, 255, 255);
+	text-shadow: 0.8px 0.8px 0px var(--ButtonHilight);
 }
 .menu-item:focus,
 .menu-item.active {
@@ -446,8 +457,10 @@ body > .window-titlebar {
 }
 .menu-hr {
 	border: 0;
-	border-top: 1px solid #808080;
-	border-bottom: 1px solid #ffffff;
+	border-top: 1px solid rgb(128, 128, 128);
+	border-top: 1px solid var(--ButtonShadow);
+	border-bottom: 1px solid rgb(255, 255, 255);
+	border-bottom: 1px solid var(--ButtonHilight);
 	margin: 0px 2px;
 }
 .menu-hotkey {
@@ -837,3 +850,5 @@ body > .window-titlebar {
 ::-webkit-scrollbar-button:end:decrement {
 	display: none;
 }
+
+/*# sourceMappingURL=windows-98.css.map */
