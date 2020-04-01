@@ -69,6 +69,7 @@ html, body, .jspaint {
 .window,
 .window-content {
 	max-width: 100vw;
+	max-height: 100vh;
 }
 .component-area,
 .tool-window .window-titlebar {

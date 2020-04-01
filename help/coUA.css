@@ -1,5 +1,8 @@
 /* Originally: Cascading Style Sheet for IE4.01 last updated 1-28-98 */
 
+/* for scrollbars and selection color */
+@import "../lib/os-gui/windows-98.css";
+
 body {
 	background: #FFFFFF;
 	/* background: var(--Info); */
