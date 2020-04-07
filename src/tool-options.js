@@ -165,8 +165,8 @@ const $ChooseShapeStyle = () => {
 const $choose_brush = $Choose(
 	(() => {
 		const brush_shapes = ["circle", "square", "reverse_diagonal", "diagonal"];
-		const circular_brush_sizes = [7, 4, 1];
-		const brush_sizes = [8, 5, 2];
+		const circular_brush_sizes = [8, 5, 1];
+		const brush_sizes = [9, 7, 2];
 		const things = [];
 		brush_shapes.forEach((brush_shape)=> {
 			const sizes = brush_shape === "circle" ? circular_brush_sizes : brush_sizes;
