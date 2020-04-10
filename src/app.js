@@ -726,6 +726,104 @@ $canvas.on("pointerleave", ()=> {
 	}
 });
 
+if (location.search.match(/eye-gaze-mode/)) {
+	const circle_radius_max_percent = 5;
+	const hover_timespan = 500;
+	const averaging_window_timespan = 500;
+	const startup_timespan = averaging_window_timespan;
+	const inactive_after_release_timespan = 1000;
+	let recent_points = [];
+	let inactive_until_time = Date.now() + startup_timespan;
+	let hover_candidate;
+	const $indicator_layer = $("<div>").css({
+		position: "fixed",
+		left: 0,
+		top: 0,
+		right: 0,
+		bottom: 0,
+		pointerEvents: "none",
+		zIndex: 1000,
+	}).appendTo("body");
+	$("body").on("pointermove", (e)=> {
+		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
+	});
+	$("body").on("pointerup pointercancel", (e)=> {
+		inactive_until_time = Date.now() + inactive_after_release_timespan;
+	});
+	setInterval(()=> {
+		const time = Date.now();
+		recent_points = recent_points.filter((point_record)=> time < point_record.time + averaging_window_timespan);
+		if (recent_points.length) {
+			const latest_point = recent_points[recent_points.length - 1];
+			recent_points.push({x: latest_point.x, y: latest_point.y, time});
+			const average_point = average_points(recent_points);
+			// debug
+			// const canvas_point = to_canvas_coords({clientX: average_point.x, clientY: average_point.y});
+			// ctx.fillStyle = "red";
+			// ctx.fillRect(canvas_point.x, canvas_point.y, 10, 10);
+			const recent_movement_amount = Math.hypot(latest_point.x - average_point.x, latest_point.y - average_point.y);
+
+			let circle_position = latest_point;
+			let circle_alpha = 0;
+			let circle_radius_percent = 0;
+			if (hover_candidate) {
+				circle_position = hover_candidate;
+				circle_alpha = 1;
+				circle_radius_percent =
+					(hover_candidate.time - time + hover_timespan) / hover_timespan
+					* circle_radius_max_percent;
+				if (pointer_active) {
+					hover_candidate = null;
+				} else if (time > hover_candidate.time + hover_timespan) {
+					$canvas.triggerHandler($.Event("pointerdown", {
+						clientX: average_point.x,
+						clientY: average_point.y,
+						pointerId: 1234567890,
+						pointerType: "mouse",
+						button: 0,
+						buttons: 1,
+						isPrimary: true,
+					}));
+					hover_candidate = null;
+				}
+			}
+
+			// const circle_radius_percent = recent_movement_amount / document.body.clientWidth * 100;
+			// const circle_position = average_points([average_point, latest_point]);
+			// const circle_alpha = Math.min(1, 1000 / recent_movement_amount - 10);
+			const gradient = `
+				radial-gradient(
+					circle at
+						${circle_position.x}px
+						${circle_position.y}px,
+					rgba(255, 0, 0, ${0.4 * circle_alpha}) 0%,
+					rgba(255, 0, 0, ${0.4 * circle_alpha}) ${circle_radius_percent}%,
+					transparent ${circle_radius_percent+0.1}%,
+					transparent 100%
+				)
+			`;
+			$indicator_layer.css("background", gradient);
+
+			if (time < inactive_until_time) {
+				return;
+			}
+			if (recent_movement_amount < 5) {
+				// console.log(recent_movement_amount, pointer_active);
+				if (!pointer_active && !hover_candidate) {
+					hover_candidate = {
+						x: average_point.x,
+						y: average_point.y,
+						time: Date.now(),
+					};
+				}
+			}
+			if (recent_movement_amount > 20) {
+				hover_candidate = null;
+			}
+		}
+	}, 20);
+}
+
 let pan_start_pos;
 let pan_start_scroll_top;
 let pan_start_scroll_left;
