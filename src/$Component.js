@@ -3,13 +3,9 @@ function $Component(name, orientation, $el){
 	// A draggable widget that can be undocked into a window
 	const $c = $(E("div")).addClass("component");
 	$c.addClass(`${name}-component`);
+	$c.addClass(orientation);
 	$c.append($el);
 	$c.attr("touch-action", "none");
-	
-	$c.appendTo({
-		tall: $left,
-		wide: $bottom,
-	}[orientation]);
 	
 	const $w = new $ToolWindow($c);
 	$w.title(name);
@@ -20,7 +16,7 @@ function $Component(name, orientation, $el){
 	}[orientation]);
 	
 	// Nudge the Colors component over a tiny bit
-	if(name === "Colors"){
+	if(name === "Colors" && orientation === "wide"){
 		$c.css("position", "relative");
 		$c.css("left", "3px");
 	}
@@ -64,6 +60,8 @@ function $Component(name, orientation, $el){
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
 		if(!$c.is(e.target)){ return; }
+
+		if(location.search.match(/eye-gaze-mode/)){ return; }
 		
 		$G.on("pointermove", drag_onpointermove);
 		$G.one("pointerup", e => {

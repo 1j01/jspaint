@@ -145,19 +145,32 @@ function $ColorBox(){
 		});
 	};
 
+	const vertical = location.search.match(/eye-gaze-mode|vertical-colors-box/);
+
 	const build_palette = () => {
 		$palette.empty();
 
 		palette.forEach(make_color_button);
 
-		$palette.width(Math.ceil(palette.length/2) * width_per_button);
+		if (vertical) {
+			$palette.height(Math.ceil(palette.length/2) * width_per_button);
+		} else {
+			$palette.width(Math.ceil(palette.length/2) * width_per_button);
+		}
 
 		// the "last foreground color button" starts out as the first in the palette
 		$last_fg_color_button = $palette.find(".color-button");
 	};
 	build_palette();
 	
-	const $c = $Component("Colors", "wide", $cb);
+	let $c;
+	if (vertical) {
+		$c = $Component("Colors", "tall", $cb);
+		$c.appendTo($right);
+	}else{
+		$c = $Component("Colors", "wide", $cb);
+		$c.appendTo($bottom);
+	}
 	
 	$c.edit_last_color = () => {
 		// Edit the last color cell that's been selected as the foreground color.

@@ -179,6 +179,10 @@ const $toolbox = $ToolBox(tools);
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 const $colorbox = $ColorBox();
 
+if (location.search.match(/eye-gaze-mode/)) {
+	$("body").addClass("eye-gaze-mode");
+}
+
 $canvas_area.on("user-resized", (_event, _x, _y, unclamped_width, unclamped_height) => {
 	resize_canvas_and_save_dimensions(unclamped_width, unclamped_height);
 });

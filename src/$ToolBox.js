@@ -67,6 +67,7 @@ function $ToolBox(tools, is_extras){
 	}));
 	
 	const $c = $Component(is_extras ? "Extra Tools" : "Tools", "tall", $tools.add($tool_options));
+	$c.appendTo($left);
 	$c.update_selected_tool = () => {
 		$buttons.removeClass("selected");
 		selected_tools.forEach((selected_tool)=> {

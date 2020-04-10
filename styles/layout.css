@@ -183,6 +183,10 @@ html, body, .jspaint {
 	border-left: 1px solid #7b7b7b;
 }
 
+.eye-gaze-mode .component {
+	zoom: 3;
+}
+
 .Tools-component {
 	height: 273px;
 	align-items: center;
@@ -211,22 +215,46 @@ html, body, .jspaint {
 	position: relative;
 }
 
-
+.horizontal .component-area {
+	flex-direction: column;
+}
 .Colors-component {
-	height: 47px;
 	align-items: center;
+	justify-content: center;
+}
+.Colors-component.wide {
+	height: 47px;
+}
+.Colors-component.tall {
+	width: 47px;
 }
 .palette {
 	display: flex;
+}
+.Colors-component.wide .palette {
 	flex-flow: row wrap;
 }
-.color-box,
-.palette {
+.Colors-component.tall .palette {
+	flex-flow: column wrap;
+}
+.Colors-component.wide .color-box,
+.Colors-component.wide .palette {
+	flex-direction: row;
 	height: 32px;
 }
-.current-colors {
+.Colors-component.tall .color-box,
+.Colors-component.tall .palette {
+	flex-direction: column;
+	width: 32px;
+}
+.Colors-component.wide .current-colors {
 	width: 30px;
 	height: 31px;
+}
+.Colors-component.tall .current-colors {
+	width: 32px;
+	height: 32px;
+	margin-bottom: 1px;
 }
 .current-colors,
 .color-button {
