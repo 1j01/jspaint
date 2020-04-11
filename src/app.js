@@ -732,6 +732,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 	const averaging_window_timespan = 500;
 	const startup_timespan = averaging_window_timespan;
 	const inactive_after_release_timespan = 1000;
+	const inactive_after_hovered_timespan = 1000;
 	let recent_points = [];
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
@@ -742,7 +743,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 		right: 0,
 		bottom: 0,
 		pointerEvents: "none",
-		zIndex: 1000,
+		zIndex: 1000000,
 	}).appendTo("body");
 	$("body").on("pointermove", (e)=> {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
@@ -775,7 +776,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 				if (pointer_active) {
 					hover_candidate = null;
 				} else if (time > hover_candidate.time + hover_timespan) {
-					$canvas.triggerHandler($.Event("pointerdown", {
+					$(hover_candidate.target).trigger($.Event("pointerdown", {
 						clientX: average_point.x,
 						clientY: average_point.y,
 						pointerId: 1234567890,
@@ -784,7 +785,20 @@ if (location.search.match(/eye-gaze-mode/)) {
 						buttons: 1,
 						isPrimary: true,
 					}));
+					if (hover_candidate.target !== canvas) {
+						$(hover_candidate.target).trigger($.Event("pointerup", {
+							clientX: average_point.x,
+							clientY: average_point.y,
+							pointerId: 1234567890,
+							pointerType: "mouse",
+							button: 0,
+							buttons: 0,
+							isPrimary: true,
+						}));
+						hover_candidate.target.click();
+					}
 					hover_candidate = null;
+					inactive_until_time = Date.now() + inactive_after_hovered_timespan;
 				}
 			}
 
@@ -815,9 +829,29 @@ if (location.search.match(/eye-gaze-mode/)) {
 						y: average_point.y,
 						time: Date.now(),
 					};
+					const target = document.elementFromPoint(hover_candidate.x, hover_candidate.y);
+					hover_candidate.target = target;
+					if (target.disabled || target.closest(".selected, .menu-button.active")) {
+						hover_candidate = null;
+					}
+					if (target === $canvas_area[0]) {
+						hover_candidate = null;
+					}
 				}
 			}
-			if (recent_movement_amount > 20) {
+			// console.log(recent_movement_amount);
+			if (recent_movement_amount > 100) {
+				if (pointer_active) {
+					$canvas.trigger($.Event("pointerup", {
+						clientX: average_point.x,
+						clientY: average_point.y,
+						pointerId: 1234567890,
+						pointerType: "mouse",
+						button: 0,
+						buttons: 0,
+						isPrimary: true,
+					}));
+				}
 				hover_candidate = null;
 			}
 		}
