@@ -811,6 +811,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 					}));
 					const is_drag =
 						hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
+						hover_candidate.target.matches(".selection, .selection *, .handle") ||
 						(
 							hover_candidate.target === canvas &&
 							selected_tool.name !== "Fill With Color" &&
