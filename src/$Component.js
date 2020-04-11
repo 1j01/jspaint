@@ -20,6 +20,19 @@ function $Component(name, orientation, $el){
 		$c.css("position", "relative");
 		$c.css("left", "3px");
 	}
+
+	if(location.search.match(/eye-gaze-mode/)){
+		// TODO: don't use an interval for this!
+		setInterval(()=> {
+			const scale = 3;
+			$c.css({
+				transform: `scale(${scale})`,
+				transformOrigin: "0 0",
+				marginRight: $c[0].scrollWidth * (scale - 1),
+				marginBottom: $c[0].scrollHeight * (scale - 1),
+			});
+		}, 200);
+	}
 	
 	let ox, oy;
 	let w, h;

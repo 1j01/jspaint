@@ -849,6 +849,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 					}else if (target.disabled || target.closest(".selected, .menu-button.active")) {
 						hover_candidate = null;
 					}else if (target === $canvas_area[0]) {
+						// Nudge hovers near the edges of the canvas onto the canvas
 						const margin = 50;
 						if (
 							hover_candidate.x > canvas_bounding_client_rect.left - margin &&
@@ -872,6 +873,15 @@ if (location.search.match(/eye-gaze-mode/)) {
 								),
 							);
 						}
+					}else if(hover_candidate.target.closest("input, button, .tool, .current-colors, .menu-button")){
+						// Nudge hover previews to the center of buttons and swatches
+						hover_candidate.target =
+							hover_candidate.target.closest(".current-colors") || // seperate because contains two swatches
+							hover_candidate.target.closest(".swatch, .tool, .menu-button") ||
+							hover_candidate.target;
+						const rect = hover_candidate.target.getBoundingClientRect();
+						hover_candidate.x = rect.left + rect.width / 2;
+						hover_candidate.y = rect.top + rect.height / 2;
 					}
 				}
 			}

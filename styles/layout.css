@@ -189,9 +189,6 @@ html, body, .jspaint {
 .eye-gaze-mode .menu-item * {
 	font-size: 2rem;
 }
-.eye-gaze-mode .component {
-	zoom: 3;
-}
 
 .Tools-component {
 	height: 273px;
