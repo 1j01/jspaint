@@ -936,12 +936,9 @@ $canvas_area.on("pointerdown", (event)=> {
 	}
 });
 $G.on("pointerup pointercancel", (event)=> {
-	pointers = pointers.filter((pointer)=> {
-		if (event.pointerId === pointer.pointerId) {
-			return false;
-		}
-		return true;
-	});
+	pointers = pointers.filter((pointer)=>
+		pointer.pointerId !== event.pointerId
+	);
 });
 $G.on("pointermove", (event)=> {
 	for (const pointer of pointers) {
