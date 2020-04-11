@@ -898,6 +898,8 @@ if (location.search.match(/eye-gaze-mode/)) {
 						isPrimary: true,
 					}));
 				}
+			}
+			if (recent_movement_amount > 60) {
 				hover_candidate = null;
 			}
 		}
