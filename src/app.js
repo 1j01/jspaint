@@ -733,6 +733,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 	const startup_timespan = averaging_window_timespan;
 	const inactive_after_release_timespan = 1000;
 	const inactive_after_hovered_timespan = 1000;
+	const inactive_after_invalid_timespan = 1000;
 	let recent_points = [];
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
@@ -753,6 +754,12 @@ if (location.search.match(/eye-gaze-mode/)) {
 		inactive_until_time = Date.now() + inactive_after_release_timespan;
 		gaze_drag_active = false;
 	});
+
+	const retarget = (target)=>
+		// (using .color-button not .swatch because .current-colors contains two swatches)
+		target.closest(".current-colors, .color-button, .tool, .menu-button, button") ||
+		target;
+
 	setInterval(()=> {
 		const time = Date.now();
 		recent_points = recent_points.filter((point_record)=> time < point_record.time + averaging_window_timespan);
@@ -766,6 +773,20 @@ if (location.search.match(/eye-gaze-mode/)) {
 			// ctx.fillRect(canvas_point.x, canvas_point.y, 10, 10);
 			const recent_movement_amount = Math.hypot(latest_point.x - average_point.x, latest_point.y - average_point.y);
 
+			// Invalidate in case an element pops up in front of the element you're hovering over, e.g. a submenu
+			if (hover_candidate) {
+				const apparent_target = document.elementFromPoint(hover_candidate.x, hover_candidate.y);
+				if (apparent_target) {
+					if (retarget(apparent_target) !== hover_candidate.target) {
+						hover_candidate = null;
+						inactive_until_time = Date.now() + inactive_after_invalid_timespan;
+					}
+				} else {
+					hover_candidate = null;
+					inactive_until_time = Date.now() + inactive_after_invalid_timespan;
+				}
+			}
+			
 			let circle_position = latest_point;
 			let circle_alpha = 0;
 			let circle_radius_percent = 0;
@@ -778,6 +799,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 				if (pointer_active) {
 					hover_candidate = null;
 				} else if (time > hover_candidate.time + hover_timespan) {
+					
 					$(hover_candidate.target).trigger($.Event("pointerdown", {
 						clientX: hover_candidate.x,
 						clientY: hover_candidate.y,
@@ -859,14 +881,14 @@ if (location.search.match(/eye-gaze-mode/)) {
 						) {
 							hover_candidate.target = canvas;
 							hover_candidate.x = Math.min(
-								canvas_bounding_client_rect.right,
+								canvas_bounding_client_rect.right - 1,
 								Math.max(
 									canvas_bounding_client_rect.left,
 									hover_candidate.x,
 								),
 							);
 							hover_candidate.y = Math.min(
-								canvas_bounding_client_rect.bottom,
+								canvas_bounding_client_rect.bottom - 1,
 								Math.max(
 									canvas_bounding_client_rect.top,
 									hover_candidate.y,
@@ -875,10 +897,8 @@ if (location.search.match(/eye-gaze-mode/)) {
 						}
 					}else if(hover_candidate.target.closest("input, button, .tool, .current-colors, .menu-button")){
 						// Nudge hover previews to the center of buttons and swatches
-						hover_candidate.target =
-							hover_candidate.target.closest(".current-colors") || // seperate because contains two swatches
-							hover_candidate.target.closest(".swatch, .tool, .menu-button") ||
-							hover_candidate.target;
+						// and retarget also for invalidation
+						hover_candidate.target = retarget(hover_candidate.target);
 						const rect = hover_candidate.target.getBoundingClientRect();
 						hover_candidate.x = rect.left + rect.width / 2;
 						hover_candidate.y = rect.top + rect.height / 2;
