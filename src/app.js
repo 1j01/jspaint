@@ -837,10 +837,11 @@ if (location.search.match(/eye-gaze-mode/)) {
 					};
 					const target = document.elementFromPoint(hover_candidate.x, hover_candidate.y);
 					hover_candidate.target = target;
-					if (target.disabled || target.closest(".selected, .menu-button.active")) {
+					if (!target) {
 						hover_candidate = null;
-					}
-					if (target === $canvas_area[0]) {
+					}else if (target.disabled || target.closest(".selected, .menu-button.active")) {
+						hover_candidate = null;
+					}else if (target === $canvas_area[0]) {
 						const margin = 50;
 						if (
 							hover_candidate.x > canvas_bounding_client_rect.left - margin &&
