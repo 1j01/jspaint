@@ -835,7 +835,29 @@ if (location.search.match(/eye-gaze-mode/)) {
 						hover_candidate = null;
 					}
 					if (target === $canvas_area[0]) {
-						hover_candidate = null;
+						const margin = 50;
+						if (
+							hover_candidate.x > canvas_bounding_client_rect.left - margin &&
+							hover_candidate.y > canvas_bounding_client_rect.top - margin &&
+							hover_candidate.x < canvas_bounding_client_rect.right + margin &&
+							hover_candidate.y < canvas_bounding_client_rect.bottom + margin
+						) {
+							hover_candidate.target = canvas;
+							hover_candidate.x = Math.min(
+								canvas_bounding_client_rect.right,
+								Math.max(
+									canvas_bounding_client_rect.left,
+									hover_candidate.x,
+								),
+							);
+							hover_candidate.y = Math.min(
+								canvas_bounding_client_rect.bottom,
+								Math.max(
+									canvas_bounding_client_rect.top,
+									hover_candidate.y,
+								),
+							);
+						}
 					}
 				}
 			}
