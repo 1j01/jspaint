@@ -628,8 +628,10 @@ window.tools = [{
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
 			this.points.push({x, y});
-			// second point so first action draws a line
-			this.points.push({x, y});
+			if (!location.search.match(/eye-gaze-mode/)) {
+				// second point so first action draws a line
+				this.points.push({x, y});
+			}
 		}else{
 			this.points.push({x, y});
 		}
@@ -663,11 +665,18 @@ window.tools = [{
 				this.points[1].x, this.points[1].y,
 				stroke_size
 			);
-		}else{
+		}else if(this.points.length === 2){
 			draw_line(
 				ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[1].x, this.points[1].y,
+				stroke_size
+			);
+		}else{
+			draw_line(
+				ctx,
+				this.points[0].x, this.points[0].y,
+				this.points[0].x, this.points[0].y,
 				stroke_size
 			);
 		}
@@ -742,8 +751,16 @@ window.tools = [{
 		const dx = this.points[i].x - this.points[0].x;
 		const dy = this.points[i].y - this.points[0].y;
 		const d = Math.sqrt(dx*dx + dy*dy);
-		if(d < stroke_size * 5.1010101){ // arbitrary 101 (TODO: find correct value (or formula))
-			this.complete(ctx);
+		if(location.search.match(/eye-gaze-mode/)){
+			if(this.points.length >= 3){
+				if(d < stroke_size * 10 + 20){
+					this.complete(ctx);
+				}
+			}
+		}else{
+			if(d < stroke_size * 5.1010101){ // arbitrary 101 (TODO: find correct value (or formula))
+				this.complete(ctx);
+			}
 		}
 		
 		this.last_click_pointerup = {x, y, time: +(new Date)};
@@ -754,8 +771,11 @@ window.tools = [{
 		
 			// Add the first point of the polygon
 			this.points.push({x, y});
-			// Add a second point so first action draws a line
-			this.points.push({x, y});
+			
+			if (!location.search.match(/eye-gaze-mode/)) {
+				// Add a second point so first action draws a line
+				this.points.push({x, y});
+			}
 		}else{
 			const lx = this.last_click_pointerdown.x;
 			const ly = this.last_click_pointerdown.y;
@@ -792,11 +812,18 @@ window.tools = [{
 				this.points
 			);
 			stroke_size = orig_stroke_size;
-		} else {
+		} else if(this.points.length > 1) {
 			this.preview_canvas.ctx.strokeStyle = stroke_color;
 			draw_line_strip(
 				this.preview_canvas.ctx,
 				this.points
+			);
+		} else {
+			draw_line(
+				this.preview_canvas.ctx,
+				this.points[0].x, this.points[0].y,
+				this.points[0].x, this.points[0].y,
+				stroke_size
 			);
 		}
 	},

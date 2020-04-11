@@ -785,7 +785,13 @@ if (location.search.match(/eye-gaze-mode/)) {
 						buttons: 1,
 						isPrimary: true,
 					}));
-					if (hover_candidate.target !== canvas) {
+					if (
+						hover_candidate.target !== canvas ||
+						selected_tool.name === "Fill With Color" ||
+						selected_tool.name === "Magnifier" ||
+						selected_tool.name === "Polygon" ||
+						selected_tool.name === "Curve"
+					) {
 						$(hover_candidate.target).trigger($.Event("pointerup", {
 							clientX: average_point.x,
 							clientY: average_point.y,
