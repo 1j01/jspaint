@@ -183,6 +183,12 @@ html, body, .jspaint {
 	border-left: 1px solid #7b7b7b;
 }
 
+.eye-gaze-mode .window-titlebar {
+	zoom: 3;
+}
+.eye-gaze-mode .menu-item * {
+	font-size: 2rem;
+}
 .eye-gaze-mode .component {
 	zoom: 3;
 }
