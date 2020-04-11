@@ -779,8 +779,8 @@ if (location.search.match(/eye-gaze-mode/)) {
 					hover_candidate = null;
 				} else if (time > hover_candidate.time + hover_timespan) {
 					$(hover_candidate.target).trigger($.Event("pointerdown", {
-						clientX: average_point.x,
-						clientY: average_point.y,
+						clientX: hover_candidate.x,
+						clientY: hover_candidate.y,
 						pointerId: 1234567890,
 						pointerType: "mouse",
 						button: 0,
@@ -800,8 +800,8 @@ if (location.search.match(/eye-gaze-mode/)) {
 						gaze_drag_active = true;
 					} else {
 						$(hover_candidate.target).trigger($.Event("pointerup", {
-							clientX: average_point.x,
-							clientY: average_point.y,
+							clientX: hover_candidate.x,
+							clientY: hover_candidate.y,
 							pointerId: 1234567890,
 							pointerType: "mouse",
 							button: 0,
