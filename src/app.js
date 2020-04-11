@@ -799,7 +799,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 				if (pointer_active) {
 					hover_candidate = null;
 				} else if (time > hover_candidate.time + hover_timespan) {
-					
+					pointers = []; // prevent multi-touch panning
 					$(hover_candidate.target).trigger($.Event("pointerdown", {
 						clientX: hover_candidate.x,
 						clientY: hover_candidate.y,
@@ -898,7 +898,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 						}
 					}else if(hover_candidate.target.closest("input, button, .tool, .current-colors, .menu-button")){
 						// Nudge hover previews to the center of buttons and swatches
-						// and retarget also for invalidation
+						// and retarget also for invalidation comparison
 						hover_candidate.target = retarget(hover_candidate.target);
 						const rect = hover_candidate.target.getBoundingClientRect();
 						hover_candidate.x = rect.left + rect.width / 2;
@@ -918,6 +918,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 						buttons: 0,
 						isPrimary: true,
 					}));
+					pointers = []; // prevent multi-touch panning
 				}
 			}
 			if (recent_movement_amount > 60) {
@@ -941,7 +942,23 @@ function average_points(points) {
 	return average;
 }
 $canvas_area.on("pointerdown", (event)=> {
-	pointers.push({pointerId: event.pointerId, x: event.clientX, y: event.clientY});
+	if (pointers.every((pointer)=>
+		// prevent multitouch panning in case of synthetic events from eye gaze mode
+		pointer.pointerId !== 1234567890 &&
+		// prevent multitouch panning in case of dragging across iframe boundary with a mouse/pen
+		// Note: there can be multiple active primary pointers, one per pointer type
+		!(pointer.isPrimary && (pointer.pointerType === "mouse" || pointer.pointerType === "pen"))
+		// TODO: handle case of dragging across iframe boundary with touch
+	)) {
+		pointers.push({
+			pointerId: event.pointerId,
+			pointerType: event.pointerType,
+			// isPrimary not available on jQuery.Event, and originalEvent not available in synthetic case
+			isPrimary: event.originalEvent && event.originalEvent.isPrimary || event.isPrimary,
+			x: event.clientX,
+			y: event.clientY,
+		});
+	}
 
 	if (pointers.length == 2) {
 		pan_start_pos = average_points(pointers);
@@ -989,6 +1006,10 @@ $canvas.on("pointerdown", e => {
 	if(pointers.length >= 1){
 		cancel();
 		pointer_active = false; // NOTE: pointer_active used in cancel()
+		// in eye gaze mode, allow drawing with mouse after canceling gaze gesture with mouse
+		pointers = pointers.filter((pointer)=>
+			pointer.pointerId !== 1234567890
+		);
 		return;
 	}
 
