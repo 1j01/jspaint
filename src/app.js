@@ -736,6 +736,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 	let recent_points = [];
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
+	let gaze_drag_active = false;
 	const $indicator_layer = $("<div>").css({
 		position: "fixed",
 		left: 0,
@@ -750,6 +751,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 	});
 	$("body").on("pointerup pointercancel", (e)=> {
 		inactive_until_time = Date.now() + inactive_after_release_timespan;
+		gaze_drag_active = false;
 	});
 	setInterval(()=> {
 		const time = Date.now();
@@ -785,13 +787,18 @@ if (location.search.match(/eye-gaze-mode/)) {
 						buttons: 1,
 						isPrimary: true,
 					}));
-					if (
-						hover_candidate.target !== canvas ||
-						selected_tool.name === "Fill With Color" ||
-						selected_tool.name === "Magnifier" ||
-						selected_tool.name === "Polygon" ||
-						selected_tool.name === "Curve"
-					) {
+					const is_drag =
+						hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
+						(
+							hover_candidate.target === canvas &&
+							selected_tool.name !== "Fill With Color" &&
+							selected_tool.name !== "Magnifier" &&
+							selected_tool.name !== "Polygon" &&
+							selected_tool.name !== "Curve"
+						)
+					if (is_drag) {
+						gaze_drag_active = true;
+					} else {
 						$(hover_candidate.target).trigger($.Event("pointerup", {
 							clientX: average_point.x,
 							clientY: average_point.y,
@@ -870,8 +877,8 @@ if (location.search.match(/eye-gaze-mode/)) {
 			}
 			// console.log(recent_movement_amount);
 			if (recent_movement_amount > 100) {
-				if (pointer_active) {
-					$canvas.trigger($.Event("pointerup", {
+				if (gaze_drag_active) {
+					$G.trigger($.Event("pointerup", {
 						clientX: average_point.x,
 						clientY: average_point.y,
 						pointerId: 1234567890,
