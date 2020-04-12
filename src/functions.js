@@ -103,6 +103,7 @@ function update_helper_layer_immediately() {
 
 	tools_to_preview.forEach((tool)=> {
 		if(tool.drawPreviewUnderGrid && pointer && pointers.length < 2){
+
 			hctx.save();
 			tool.drawPreviewUnderGrid(hctx, pointer.x, pointer.y, grid_visible, scale, -viewport_x, -viewport_y);
 			hctx.restore();
