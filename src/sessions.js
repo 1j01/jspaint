@@ -1,38 +1,49 @@
-
+'use strict';
 (() => {
 
-	const log = (...args)=> {
-		window.console && console.log(...args);
-	};
+        const log = (...args) => {
+            window.console && console.log(...args);
+        };
 
-	let localStorageAvailable = false;
-	try {
-		localStorage._available = true;
-		localStorageAvailable = localStorage._available;
-		delete localStorage._available;
-	// eslint-disable-next-line no-empty
-	} catch (e) {}
+        const configuration = {
+            iceServers: [{
+                urls: [
+                    'stun:stun1.l.google.com:19302',
+                    'stun:stun2.l.google.com:19302',
+                ],
+            }, ],
+            iceCandidatePoolSize: 10,
+        };
 
-	// @TODO: keep other data in addition to the image data
-	// such as the file_name and other state
-	// (maybe even whether it's considered saved? idk about that)
-	// I could have the image in one storage slot and the state in another
+        let localStorageAvailable = false;
+        try {
+            localStorage._available = true;
+            localStorageAvailable = localStorage._available;
+            delete localStorage._available;
+            // eslint-disable-next-line no-empty
+        } catch (e) {}
+
+        // @TODO: keep other data in addition to the image data
+        // such as the file_name and other state
+        // (maybe even whether it's considered saved? idk about that)
+        // I could have the image in one storage slot and the state in another
 
 
-	const canvas_has_any_apparent_image_data = ()=>
-		canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v)=> v > 0);
+        const canvas_has_any_apparent_image_data = () =>
+            canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v) => v > 0);
 
-	let $recovery_window;
-	function show_recovery_window(no_longer_blank) {
-		$recovery_window && $recovery_window.close();
-		const $w = $recovery_window = $FormToolWindow();
-		$w.on("close", ()=> {
-			$recovery_window = null;
-		});
-		$w.title("Recover Document");
-		let backup_impossible = false;
-		try{window.localStorage}catch(e){backup_impossible = true;}
-		$w.$main.append($(`
+        let $recovery_window;
+
+        function show_recovery_window(no_longer_blank) {
+            $recovery_window && $recovery_window.close();
+            const $w = $recovery_window = $FormToolWindow();
+            $w.on("close", () => {
+                $recovery_window = null;
+            });
+            $w.title("Recover Document");
+            let backup_impossible = false;
+            try { window.localStorage } catch (e) { backup_impossible = true; }
+            $w.$main.append($(`
 			<h1>Woah!</h1>
 			<p>Your browser may have cleared the canvas due to memory usage.</p>
 			<p>Undo to recover the document, and remember to save with <b>File > Save</b>!</p>
@@ -250,7 +261,7 @@
 			};
 			// Get Firebase references
 			this.fb = MultiUserSession.fb_root.child(this.id);
-			this.fb_data = this.fb.child("data");
+			this.fb_data = this.fb.child("data"); // TODO: gtfo to peer to peer
 			this.fb_users = this.fb.child("users");
 			if (user_id) {
 				this.fb_user = this.fb_users.child(user_id);
@@ -332,6 +343,7 @@
 			});
 			let previous_uri;
 			// let pointer_operations = []; // the multiplayer syncing stuff is a can of worms, so this is disabled
+			// TODO: this should be peer to peer
 			const write_canvas_to_database = debounce(() => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
