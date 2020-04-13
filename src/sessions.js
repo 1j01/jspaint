@@ -106,7 +106,7 @@
 	
 	class LocalSession {
 		constructor(session_id) {
-			this.id = session_id;
+			this.session_id = session_id;
 			const lsid = `image#${session_id}`;
 			log(`Local storage ID: ${lsid}`);
 			// save image to storage
@@ -186,6 +186,7 @@
 		lightness: ~~(Math.random() * 40) + 50,
 	};
 
+	// TODO: make this a method or something
 	// The main cursor color
 	user.color = `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`;
 	// Unused
@@ -201,18 +202,18 @@
 
 	class MultiUserSession {
 		constructor(session_id) {
-			this.id = session_id;
+			this.session_id = session_id;
 			this._fb_listeners = [];
 
-			file_name = `[Loading ${this.id}]`;
+			file_name = `[Loading ${this.session_id}]`;
 			update_title();
 			const on_firebase_loaded = () => {
-				file_name = `[${this.id}]`;
+				file_name = `[${this.session_id}]`;
 				update_title();
 				this.start();
 			};
 			if (!MultiUserSession.fb_root) {
-				$.getScript("lib/firebase.js")
+				$.getScript("lib/firebase.js")  // is this lazy loading? this makes init complicated
 					.done(() => {
 						const config = {
 							apiKey: "AIzaSyBgau8Vu9ZE8u_j0rp-Lc044gYTX5O3X9k",
@@ -223,12 +224,14 @@
 							messagingSenderId: "63395010995"
 						};
 						firebase.initializeApp(config);
+						// why MultiUserSession and not this?
 						MultiUserSession.fb_root = firebase.database().ref("/");
+						this.db = firebase.database();  // lets rewrite fb_root and others to use this one
 						on_firebase_loaded();
 					})
 					.fail(() => {
 						show_error_message("Failed to load Firebase; the document will not load, and changes will not be saved.");
-						file_name = `[Failed to load ${this.id}]`;
+						file_name = `[Failed to load ${this.session_id}]`;
 						update_title();
 					});
 			}
@@ -260,9 +263,9 @@
 				fb.on(event_type, callback, error_callback);
 			};
 			// Get Firebase references
-			this.fb = MultiUserSession.fb_root.child(this.id);
+			this.fb = MultiUserSession.fb_root.child(this.session_id);
 			this.fb_data = this.fb.child("data"); // TODO: gtfo to peer to peer
-			this.fb_users = this.fb.child("users");
+			this.fb_users = this.fb.child("users"); // this contins cursors of other players?
 			if (user_id) {
 				this.fb_user = this.fb_users.child(user_id);
 			}
@@ -425,7 +428,7 @@
 				}
 			}, error => {
 				show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
-				file_name = `[Failed to load ${this.id}]`;
+				file_name = `[Failed to load ${this.session_id}]`;
 				update_title();
 			});
 			// Update the cursor status
@@ -491,6 +494,165 @@
 			$app.find(".user-cursor").remove();
 			// Reset to "untitled"
 			reset_file();
+		}
+
+		async createRoom() {
+			// document.querySelector('#createBtn').disabled = true;
+			// document.querySelector('#joinBtn').disabled = true;
+			const db = this.db;
+			const roomRef = await db.collection('rooms').doc();
+		
+			console.log('Create PeerConnection with configuration: ', configuration);
+			peerConnection = new RTCPeerConnection(configuration);
+		
+			registerPeerConnectionListeners();
+		
+			localStream.getTracks().forEach(track => {
+				peerConnection.addTrack(track, localStream);
+			});
+		
+			// Code for collecting ICE candidates below
+			const callerCandidatesCollection = roomRef.collection('callerCandidates');
+		
+			peerConnection.addEventListener('icecandidate', event => {
+				if (!event.candidate) {
+					console.log('Got final candidate!');
+					return;
+				}
+				console.log('Got candidate: ', event.candidate);
+				callerCandidatesCollection.add(event.candidate.toJSON());
+			});
+			// Code for collecting ICE candidates above
+		
+			// Code for creating a room below
+			const offer = await peerConnection.createOffer();
+			await peerConnection.setLocalDescription(offer);
+			console.log('Created offer:', offer);
+		
+			const roomWithOffer = {
+				'offer': {
+					type: offer.type,
+					sdp: offer.sdp,
+				},
+			};
+			await roomRef.set(roomWithOffer);
+			roomId = roomRef.id;
+			console.log(`New room created with SDP offer. Room ID: ${roomRef.id}`);
+			// document.querySelector(
+			// 	'#currentRoom').innerText = `Current room is ${roomRef.id} - You are the caller!`;
+			// Code for creating a room above
+		
+			peerConnection.addEventListener('track', event => {
+				console.log('Got remote track:', event.streams[0]);
+				event.streams[0].getTracks().forEach(track => {
+					console.log('Add a track to the remoteStream:', track);
+					remoteStream.addTrack(track);
+				});
+			});
+		
+			// Listening for remote session description below
+			roomRef.onSnapshot(async snapshot => {
+				const data = snapshot.data();
+				if (!peerConnection.currentRemoteDescription && data && data.answer) {
+					console.log('Got remote description: ', data.answer);
+					const rtcSessionDescription = new RTCSessionDescription(data.answer);
+					await peerConnection.setRemoteDescription(rtcSessionDescription);
+				}
+			});
+			// Listening for remote session description above
+		
+			// Listen for remote ICE candidates below
+			roomRef.collection('calleeCandidates').onSnapshot(snapshot => {
+				snapshot.docChanges().forEach(async change => {
+					if (change.type === 'added') {
+						let data = change.doc.data();
+						console.log(`Got new remote ICE candidate: ${JSON.stringify(data)}`);
+						await peerConnection.addIceCandidate(new RTCIceCandidate(data));
+					}
+				});
+			});
+			// Listen for remote ICE candidates above
+		}
+
+
+ 		joinRoom() {
+			document.querySelector('#createBtn').disabled = true;
+			document.querySelector('#joinBtn').disabled = true;
+
+			document.querySelector('#confirmJoinBtn').
+			addEventListener('click', async() => {
+				roomId = document.querySelector('#room-id').value;
+				console.log('Join room: ', roomId);
+				document.querySelector(
+					'#currentRoom').innerText = `Current room is ${roomId} - You are the callee!`;
+				await joinRoomById(roomId);
+			}, { once: true });
+			roomDialog.open();
+		}
+
+		async joinRoomById(roomId) {
+			const db = firebase.firestore();
+			const roomRef = db.collection('rooms').doc(`${roomId}`);
+			const roomSnapshot = await roomRef.get();
+			console.log('Got room:', roomSnapshot.exists);
+
+			if (roomSnapshot.exists) {
+				console.log('Create PeerConnection with configuration: ', configuration);
+				peerConnection = new RTCPeerConnection(configuration);
+				registerPeerConnectionListeners();
+				localStream.getTracks().forEach(track => {
+					peerConnection.addTrack(track, localStream);
+				});
+
+				// Code for collecting ICE candidates below
+				const calleeCandidatesCollection = roomRef.collection('calleeCandidates');
+				peerConnection.addEventListener('icecandidate', event => {
+					if (!event.candidate) {
+						console.log('Got final candidate!');
+						return;
+					}
+					console.log('Got candidate: ', event.candidate);
+					calleeCandidatesCollection.add(event.candidate.toJSON());
+				});
+				// Code for collecting ICE candidates above
+
+				peerConnection.addEventListener('track', event => {
+					console.log('Got remote track:', event.streams[0]);
+					event.streams[0].getTracks().forEach(track => {
+						console.log('Add a track to the remoteStream:', track);
+						remoteStream.addTrack(track);
+					});
+				});
+
+				// Code for creating SDP answer below
+				const offer = roomSnapshot.data().offer;
+				console.log('Got offer:', offer);
+				await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+				const answer = await peerConnection.createAnswer();
+				console.log('Created answer:', answer);
+				await peerConnection.setLocalDescription(answer);
+
+				const roomWithAnswer = {
+					answer: {
+						type: answer.type,
+						sdp: answer.sdp,
+					},
+				};
+				await roomRef.update(roomWithAnswer);
+				// Code for creating SDP answer above
+
+				// Listening for remote ICE candidates below
+				roomRef.collection('callerCandidates').onSnapshot(snapshot => {
+					snapshot.docChanges().forEach(async change => {
+						if (change.type === 'added') {
+							let data = change.doc.data();
+							console.log(`Got new remote ICE candidate: ${JSON.stringify(data)}`);
+							await peerConnection.addIceCandidate(new RTCIceCandidate(data));
+						}
+					});
+				});
+				// Listening for remote ICE candidates above
+			}
 		}
 	}
 
@@ -601,4 +763,24 @@
 
 	// @TODO: Indicate when there is no session!
 	// Probably in app.js so as to handle the possibility of sessions.js failing to load.
+
+	function registerPeerConnectionListeners() {
+		peerConnection.addEventListener('icegatheringstatechange', () => {
+			console.log(
+				`ICE gathering state changed: ${peerConnection.iceGatheringState}`);
+		});
+	
+		peerConnection.addEventListener('connectionstatechange', () => {
+			console.log(`Connection state change: ${peerConnection.connectionState}`);
+		});
+	
+		peerConnection.addEventListener('signalingstatechange', () => {
+			console.log(`Signaling state change: ${peerConnection.signalingState}`);
+		});
+	
+		peerConnection.addEventListener('iceconnectionstatechange ', () => {
+			console.log(
+				`ICE connection state change: ${peerConnection.iceConnectionState}`);
+		});
+	}
 })();
