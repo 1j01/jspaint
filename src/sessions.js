@@ -200,6 +200,7 @@
 		saturation: ~~(Math.random() * 50) + 50,
 		lightness: ~~(Math.random() * 40) + 50,
 	};
+	window.user = user;
 
 	// TODO: make this a method or something
 	// The main cursor color
@@ -214,6 +215,57 @@
 	const cursor_image = new Image();
 	cursor_image.src = "images/cursors/default.png";
 
+	function build_cursor() {
+		// @TODO: display other cursor types?
+		// @TODO: display pointer button state?
+		// @TODO: display selections
+		const cursor_canvas = make_canvas(32, 32);
+		// Make the cursor element
+		const cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
+		cursor.css({
+			display: "none",
+			position: "absolute",
+			left: 0,
+			top: 0,
+			opacity: 0,
+			zIndex: 5, // @#: z-index
+			pointerEvents: "none",
+			transition: "opacity 0.5s",
+		});
+		log("Cur", cursor);
+		log("Can", cursor_canvas);
+		return {"cursor": cursor, "canvas": cursor_canvas};
+	}
+
+	// function create_cursor() {
+	// 	c = build_cursor();
+	// 	const cursor = c.cursor;
+	// 	const canvas = c.canvas;
+	// 	return cursor;
+	// }
+
+	function update_cursor(cursor, other_user_cursor) {
+		const canvas_rect = canvas_bounding_client_rect;
+		cursor.css({
+			display: "block",
+			position: "absolute",
+			left: canvas_rect.left + magnification * other_user_cursor.x,
+			top: canvas_rect.top + magnification * other_user_cursor.y,
+			opacity: other_user_cursor.away ? 0.1 : 1,
+		});
+	}
+
+	function update_cursor_canvas(cursor_canvas, other_user) {
+		cursor_canvas.width = cursor_image.width;
+		cursor_canvas.height = cursor_image.height;
+		const cctx = cursor_canvas.ctx;
+		cctx.fillStyle = other_user.color;
+		cctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
+		cctx.globalCompositeOperation = "multiply";
+		cctx.drawImage(cursor_image, 0, 0);
+		cctx.globalCompositeOperation = "destination-atop";
+		cctx.drawImage(cursor_image, 0, 0);
+	}
 
 	class MultiUserSession {
 		// this is hell
@@ -221,6 +273,8 @@
 			this.session_id = session_id;
 			this._fb_listeners = [];
 			this.cursorChannel = null;
+
+			this.other_user = null;
 
 			file_name = `[Loading ${this.session_id}]`;
 			update_title();
@@ -231,7 +285,7 @@
 				this.start();
 
 			};
-			if (!MultiUserSession.fb_root) {
+			if (!MultiUserSession.db) {
 				
 				// TODO: Move outide ;-;
 				// const config = {
@@ -530,12 +584,27 @@
 					console.log(`onRemoteDataChannel: ${JSON.stringify(event)}`);
 					this._peerConnection = event.channel;
 					this._peerConnection.binaryType = 'arraybuffer';
+
+					const c = build_cursor()
+
 					this._peerConnection.addEventListener('message', m => {
-						log(JSON.parse(m.data));
+						const other_user_cursor = JSON.parse(m.data)
+						log(other_user_cursor);
+						if (cursor_image.complete) {
+							update_cursor_canvas(c.canvas, {"color": `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`});
+						}
+						else {
+							$(cursor_image).one("load", () => {
+								update_cursor_canvas(c.canvas, {"color": `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`});
+							});
+						}
+						// Update the cursor element
+						update_cursor(c.cursor, other_user_cursor);
 					});
 					this._peerConnection.addEventListener('close', () => {
-					console.log('Remote channel closed!');
-					this.connected = false;
+						console.log('Remote channel closed!');
+						this.connected = false;
+						c.cursor.remove();
 					});
 				});
 
