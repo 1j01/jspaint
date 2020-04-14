@@ -272,7 +272,13 @@
 		constructor(session_id) {
 			this.session_id = session_id;
 			this._fb_listeners = [];
-			this.cursorChannel = null;
+			
+			this.peer = {
+				"connected": false,
+				"channel": null
+			};
+
+			window.peer = this.peer;
 
 			this.other_user = null;
 
@@ -335,6 +341,9 @@
 			} else {
 				this.joinRoom();
 			}
+
+
+
 			let previous_uri;
 			// let pointer_operations = []; // the multiplayer syncing stuff is a can of worms, so this is disabled
 			// TODO: this should be peer to peer
@@ -432,35 +441,8 @@
 			registerPeerConnectionListeners(this._peerConnection);
 
 			const dataChannelParams = {ordered: true};
-			// create datachannel to share position
-			this.cursorChannel = this._peerConnection
-				.createDataChannel('cursor-channel', dataChannelParams);
-			this.cursorChannel.binaryType = 'arraybuffer';
-			this.cursorChannel.addEventListener('open', () => {
-				console.log('Local channel open!');
-				this.connected = true;
-			});
-			this.cursorChannel.addEventListener('close', () => {
-				console.log('Local channel closed!');
-				this.connected = false;
-			});
-			this.cursorChannel.addEventListener('message', e => {console.log(`Remote message received by local: ${e.data}`);});
-
-			$G.on("pointermove.session-hook", e => {
-				const m = to_canvas_coords(e);
-				const c = {
-					x: m.x,
-					y: m.y,
-					away: false,
-				}
-				log(c);
-				if (this.connected) {
-					sendMessage(this.cursorChannel, JSON.stringify(c));
-				} else {
-					log("Not connected, won't send boi")
-				}
-				// this.local_user.child("cursor").update(c);
-			});
+			this.peer.channel = this._peerConnection.createDataChannel('cursor-channel', dataChannelParams);
+			this._setupCursorChannel(this.peer);
 		
 			// Code for collecting ICE candidates below
 			const callerCandidatesCollection = roomRef.collection('callerCandidates');
@@ -526,7 +508,7 @@
 
 			file_name = `[${this.session_id}]`;
 			location.hash = `room:${this.session_id}`;
-			log("filename eee", file_name);
+			log("filename eee", file_name, this);
 			update_title();
 		}
 
@@ -582,30 +564,8 @@
 
 				this._peerConnection.addEventListener('datachannel', event => {
 					console.log(`onRemoteDataChannel: ${JSON.stringify(event)}`);
-					this._peerConnection = event.channel;
-					this._peerConnection.binaryType = 'arraybuffer';
-
-					const c = build_cursor()
-
-					this._peerConnection.addEventListener('message', m => {
-						const other_user_cursor = JSON.parse(m.data)
-						log(other_user_cursor);
-						if (cursor_image.complete) {
-							update_cursor_canvas(c.canvas, {"color": `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`});
-						}
-						else {
-							$(cursor_image).one("load", () => {
-								update_cursor_canvas(c.canvas, {"color": `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`});
-							});
-						}
-						// Update the cursor element
-						update_cursor(c.cursor, other_user_cursor);
-					});
-					this._peerConnection.addEventListener('close', () => {
-						console.log('Remote channel closed!');
-						this.connected = false;
-						c.cursor.remove();
-					});
+					this.peer.channel = event.channel;
+					this._setupCursorChannel(this.peer);
 				});
 
 				// Code for creating SDP answer below
@@ -637,6 +597,51 @@
 				});
 				// Listening for remote ICE candidates above
 			}
+		}
+
+		_setupCursorChannel(peer) {
+			log(this)
+			const _peer = peer;
+			_peer.channel.binaryType = 'arraybuffer';
+			const c = build_cursor()
+			_peer.channel.addEventListener('message', m => {
+				const other_user_cursor = JSON.parse(m.data)
+				log(other_user_cursor);
+				if (cursor_image.complete) {
+					update_cursor_canvas(c.canvas, {"color": `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`});
+				}
+				else {
+					$(cursor_image).one("load", () => {
+						update_cursor_canvas(c.canvas, {"color": `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 1)`});
+					});
+				}
+				// Update the cursor element
+				update_cursor(c.cursor, other_user_cursor);
+			});
+
+			_peer.channel.addEventListener('open', () => {
+				_peer.connected = true;
+				console.log('cursor channel open!', _peer.connected);
+
+				$G.on("pointermove.session-hook", e => {
+					const m = to_canvas_coords(e);
+					const c = {
+						x: m.x,
+						y: m.y,
+						away: false,
+					}
+					log(_peer.connected, c);
+					if (_peer.connected) {
+						// TODO: for every connected channel send data
+						sendMessage(_peer.channel, JSON.stringify(c));
+					}
+				});
+			});
+			_peer.channel.addEventListener('close', () => {
+				_peer.connected = false;
+				console.log('cursor channel closed!', _peer.connected);
+				c.cursor.remove();
+			});
 		}
 
 	};
