@@ -737,7 +737,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 	let recent_points = [];
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
-	let gaze_drag_active = false;
+	let gaze_dragging = null;
 	const $halo = $("<div>").css({
 		pointerEvents: "none",
 		zIndex: 1000000,
@@ -752,12 +752,12 @@ if (location.search.match(/eye-gaze-mode/)) {
 		pointerEvents: "none",
 		zIndex: 1000000,
 	}).appendTo("body");
-	$("body").on("pointermove", (e)=> {
+	$G.on("pointermove", (e)=> {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
 	});
-	$("body").on("pointerup pointercancel", (e)=> {
+	$G.on("pointerup pointercancel", (e)=> {
 		inactive_until_time = Date.now() + inactive_after_release_timespan;
-		gaze_drag_active = false;
+		gaze_dragging = null;
 	});
 
 	const get_hover_candidate = (clientX, clientY)=> {
@@ -884,7 +884,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 							selected_tool.name !== "Curve"
 						)
 					if (is_drag) {
-						gaze_drag_active = true;
+						gaze_dragging = hover_candidate.target;
 					} else {
 						$(hover_candidate.target).trigger($.Event("pointerup", {
 							clientX: hover_candidate.x,
@@ -918,7 +918,9 @@ if (location.search.match(/eye-gaze-mode/)) {
 			`;
 			$indicator_layer.css("background", gradient);
 
-			const halo_target = (hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
+			let halo_target =
+				gaze_dragging ||
+				(hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
 			if (halo_target) {
 				const rect = halo_target.getBoundingClientRect();
 				$halo.css({
@@ -937,8 +939,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 				return;
 			}
 			if (recent_movement_amount < 5) {
-				// console.log(recent_movement_amount, pointer_active);
-				if (!pointer_active && !hover_candidate) {
+				if (!pointer_active && !gaze_dragging && !hover_candidate) {
 					hover_candidate = {
 						x: average_point.x,
 						y: average_point.y,
@@ -947,9 +948,8 @@ if (location.search.match(/eye-gaze-mode/)) {
 					hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 				}
 			}
-			// console.log(recent_movement_amount);
 			if (recent_movement_amount > 100) {
-				if (gaze_drag_active) {
+				if (gaze_dragging) {
 					$G.trigger($.Event("pointerup", {
 						clientX: average_point.x,
 						clientY: average_point.y,
