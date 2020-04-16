@@ -738,6 +738,11 @@ if (location.search.match(/eye-gaze-mode/)) {
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
 	let gaze_drag_active = false;
+	const $halo = $("<div>").css({
+		pointerEvents: "none",
+		zIndex: 1000000,
+		boxShadow: "0 0 10px yellow, 0 0 3px yellow",
+	}).appendTo("body").hide();
 	const $indicator_layer = $("<div>").css({
 		position: "fixed",
 		left: 0,
@@ -913,9 +918,18 @@ if (location.search.match(/eye-gaze-mode/)) {
 			$indicator_layer.css("background", gradient);
 
 			const halo_target = (hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
-			$(".eye-gaze-target").not(halo_target).removeClass("eye-gaze-target")
 			if (halo_target) {
-				halo_target.classList.add("eye-gaze-target");
+				const rect = halo_target.getBoundingClientRect();
+				$halo.css({
+					display: "block",
+					position: "fixed",
+					left: rect.left,
+					top: rect.top,
+					width: rect.width,
+					height: rect.height,
+				});
+			} else {
+				$halo.hide();
 			}
 
 			if (time < inactive_until_time) {

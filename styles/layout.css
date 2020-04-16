@@ -206,11 +206,6 @@ html, body, .jspaint {
 	font-size: 2rem;
 }
 
-.eye-gaze-target {
-	z-index: 100;
-	box-shadow: 0 0 10px yellow, 0 0 3px yellow; /* not really layout */
-}
-
 .Tools-component {
 	height: 273px;
 	align-items: center;
