@@ -877,6 +877,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 						hover_candidate.target.matches(".selection, .selection *, .handle") ||
 						(
 							hover_candidate.target === canvas &&
+							selected_tool.name !== "Pick Color" &&
 							selected_tool.name !== "Fill With Color" &&
 							selected_tool.name !== "Magnifier" &&
 							selected_tool.name !== "Polygon" &&
