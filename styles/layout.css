@@ -206,6 +206,10 @@ html, body, .jspaint {
 	font-size: 2rem;
 }
 
+.eye-gaze-mode .help-window iframe {
+	pointer-events: none;
+}
+
 .Tools-component {
 	height: 273px;
 	align-items: center;

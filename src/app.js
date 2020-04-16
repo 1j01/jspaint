@@ -761,7 +761,17 @@ if (location.search.match(/eye-gaze-mode/)) {
 	});
 
 	const get_hover_candidate = (clientX, clientY)=> {
-		const target = document.elementFromPoint(clientX, clientY);
+		$("iframe").css("pointer-events", "all");
+		let target = document.elementFromPoint(clientX, clientY);
+		let offsetLeft = 0;
+		let offsetTop = 0;
+		while (target instanceof HTMLIFrameElement) {
+			const rect = target.getBoundingClientRect();
+			offsetLeft += rect.left;
+			offsetTop += rect.top;
+			target = target.contentDocument.elementFromPoint(clientX - offsetLeft, clientY - offsetTop);
+		}
+		$("iframe").css("pointer-events", "");
 		let hover_candidate = {
 			x: clientX,
 			y: clientY,
@@ -788,9 +798,9 @@ if (location.search.match(/eye-gaze-mode/)) {
 			hover_candidate.target.closest(".current-colors, .color-button, .tool, .menu-button, button, .menu-item, .window-titlebar, .history-entry") ||
 			hover_candidate.target;
 
-		// if (hover_candidate.target.matches(".help-window li")) {
-		// 	hover_candidate.target = hover_candidate.target.querySelector(".item");
-		// }
+		if (hover_candidate.target.matches(".help-window li")) {
+			hover_candidate.target = hover_candidate.target.querySelector(".item");
+		}
 
 		if (hover_candidate.target === $canvas_area[0]) {
 			// Nudge hovers near the edges of the canvas onto the canvas
@@ -933,7 +943,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 					top: rect.top,
 					width: rect.width,
 					height: rect.height,
-				});
+				}).appendTo(halo_target.ownerDocument.body);
 			} else {
 				$halo.hide();
 			}
