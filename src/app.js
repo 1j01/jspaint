@@ -755,10 +755,68 @@ if (location.search.match(/eye-gaze-mode/)) {
 		gaze_drag_active = false;
 	});
 
-	const retarget = (target)=>
-		// (using .color-button not .swatch because .current-colors contains two swatches)
-		target.closest(".current-colors, .color-button, .tool, .menu-button, button") ||
-		target;
+	const get_hover_candidate = (clientX, clientY)=> {
+		const target = document.elementFromPoint(clientX, clientY);
+		let hover_candidate = {
+			x: clientX,
+			y: clientY,
+			time: Date.now(),
+			target,
+		};
+		
+		if (
+			!target ||
+			target.disabled ||
+			target.matches(".component, .menus") ||
+			target.closest(".selected, .active, .status-area") ||
+			// top level menus are just immediately switched between for now
+			// prevent awkward hover clicks on top level menu buttons while menus are open
+			(
+				(target.closest(".menu-button") || target.matches(".menu-container")) &&
+				$(".menu-button.active").length
+			)
+		) {
+			return null;
+		}
+
+		hover_candidate.target = 
+			// (using .color-button not .swatch because .current-colors contains two swatches)
+			target.closest(".current-colors, .color-button, .tool, .menu-button, button, .menu-item, .window-titlebar") ||
+			target;
+
+		if (target === $canvas_area[0]) {
+			// Nudge hovers near the edges of the canvas onto the canvas
+			const margin = 50;
+			if (
+				hover_candidate.x > canvas_bounding_client_rect.left - margin &&
+				hover_candidate.y > canvas_bounding_client_rect.top - margin &&
+				hover_candidate.x < canvas_bounding_client_rect.right + margin &&
+				hover_candidate.y < canvas_bounding_client_rect.bottom + margin
+			) {
+				hover_candidate.target = canvas;
+				hover_candidate.x = Math.min(
+					canvas_bounding_client_rect.right - 1,
+					Math.max(
+						canvas_bounding_client_rect.left,
+						hover_candidate.x,
+					),
+				);
+				hover_candidate.y = Math.min(
+					canvas_bounding_client_rect.bottom - 1,
+					Math.max(
+						canvas_bounding_client_rect.top,
+						hover_candidate.y,
+					),
+				);
+			}
+		}else if(hover_candidate.target.closest("input, button, .tool, .current-colors, .menu-button")){
+			// Nudge hover previews to the center of buttons and swatches
+			const rect = hover_candidate.target.getBoundingClientRect();
+			hover_candidate.x = rect.left + rect.width / 2;
+			hover_candidate.y = rect.top + rect.height / 2;
+		}
+		return hover_candidate;
+	};
 
 	setInterval(()=> {
 		const time = Date.now();
@@ -775,9 +833,9 @@ if (location.search.match(/eye-gaze-mode/)) {
 
 			// Invalidate in case an element pops up in front of the element you're hovering over, e.g. a submenu
 			if (hover_candidate) {
-				const apparent_target = document.elementFromPoint(hover_candidate.x, hover_candidate.y);
-				if (apparent_target) {
-					if (retarget(apparent_target) !== hover_candidate.target) {
+				const apparent_hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
+				if (apparent_hover_candidate) {
+					if (apparent_hover_candidate.target !== hover_candidate.target) {
 						hover_candidate = null;
 						inactive_until_time = Date.now() + inactive_after_invalid_timespan;
 					}
@@ -854,6 +912,12 @@ if (location.search.match(/eye-gaze-mode/)) {
 			`;
 			$indicator_layer.css("background", gradient);
 
+			const halo_target = (hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
+			$(".eye-gaze-target").not(halo_target).removeClass("eye-gaze-target")
+			if (halo_target) {
+				halo_target.classList.add("eye-gaze-target");
+			}
+
 			if (time < inactive_until_time) {
 				return;
 			}
@@ -865,45 +929,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 						y: average_point.y,
 						time: Date.now(),
 					};
-					const target = document.elementFromPoint(hover_candidate.x, hover_candidate.y);
-					hover_candidate.target = target;
-					if (!target) {
-						hover_candidate = null;
-					}else if (target.disabled || target.closest(".selected, .menu-button.active")) {
-						hover_candidate = null;
-					}else if (target === $canvas_area[0]) {
-						// Nudge hovers near the edges of the canvas onto the canvas
-						const margin = 50;
-						if (
-							hover_candidate.x > canvas_bounding_client_rect.left - margin &&
-							hover_candidate.y > canvas_bounding_client_rect.top - margin &&
-							hover_candidate.x < canvas_bounding_client_rect.right + margin &&
-							hover_candidate.y < canvas_bounding_client_rect.bottom + margin
-						) {
-							hover_candidate.target = canvas;
-							hover_candidate.x = Math.min(
-								canvas_bounding_client_rect.right - 1,
-								Math.max(
-									canvas_bounding_client_rect.left,
-									hover_candidate.x,
-								),
-							);
-							hover_candidate.y = Math.min(
-								canvas_bounding_client_rect.bottom - 1,
-								Math.max(
-									canvas_bounding_client_rect.top,
-									hover_candidate.y,
-								),
-							);
-						}
-					}else if(hover_candidate.target.closest("input, button, .tool, .current-colors, .menu-button")){
-						// Nudge hover previews to the center of buttons and swatches
-						// and retarget also for invalidation comparison
-						hover_candidate.target = retarget(hover_candidate.target);
-						const rect = hover_candidate.target.getBoundingClientRect();
-						hover_candidate.x = rect.left + rect.width / 2;
-						hover_candidate.y = rect.top + rect.height / 2;
-					}
+					hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 				}
 			}
 			// console.log(recent_movement_amount);
