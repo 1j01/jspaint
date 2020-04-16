@@ -772,7 +772,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 		if (
 			!target ||
 			target.disabled ||
-			target.matches(".component, .menus") ||
+			target.matches(".component, .menus, .history-view, .window-content") ||
 			target.closest(".selected, .active, .status-area") ||
 			// top level menus are just immediately switched between for now
 			// prevent awkward hover clicks on top level menu buttons while menus are open
@@ -785,11 +785,14 @@ if (location.search.match(/eye-gaze-mode/)) {
 		}
 
 		hover_candidate.target = 
-			// (using .color-button not .swatch because .current-colors contains two swatches)
-			target.closest(".current-colors, .color-button, .tool, .menu-button, button, .menu-item, .window-titlebar") ||
-			target;
+			hover_candidate.target.closest(".current-colors, .color-button, .tool, .menu-button, button, .menu-item, .window-titlebar, .history-entry") ||
+			hover_candidate.target;
 
-		if (target === $canvas_area[0]) {
+		// if (hover_candidate.target.matches(".help-window li")) {
+		// 	hover_candidate.target = hover_candidate.target.querySelector(".item");
+		// }
+
+		if (hover_candidate.target === $canvas_area[0]) {
 			// Nudge hovers near the edges of the canvas onto the canvas
 			const margin = 50;
 			if (
@@ -814,7 +817,7 @@ if (location.search.match(/eye-gaze-mode/)) {
 					),
 				);
 			}
-		}else if(hover_candidate.target.closest("input, button, .tool, .current-colors, .menu-button")){
+		}else if(hover_candidate.target.closest("input, button, .tool, .color-button, .current-colors, .menu-button")){
 			// Nudge hover previews to the center of buttons and swatches
 			const rect = hover_candidate.target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
