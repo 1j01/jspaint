@@ -21,7 +21,11 @@ function $ToolBox(tools, is_extras){
 		$icon.appendTo($b);
 		const update_css = ()=> {
 			const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
-			const use_svg = !!location.search.match(/eye-gaze-mode/);
+			const use_svg =
+				(get_theme() === "classic.css" &&
+					(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
+				) ||
+				!!location.search.match(/eye-gaze-mode/);
 			$icon.css({
 				display: "block",
 				position: "absolute",
@@ -34,7 +38,7 @@ function $ToolBox(tools, is_extras){
 			});
 		};
 		update_css();
-		$G.on("theme-load", update_css);
+		$G.on("theme-load resize", update_css);
 		
 		$b.on("click", e => {
 			if (e.shiftKey || e.ctrlKey) {
