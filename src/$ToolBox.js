@@ -19,9 +19,9 @@ function $ToolBox(tools, is_extras){
 		
 		const $icon = $(E("span"));
 		$icon.appendTo($b);
-		const bx = -i*16;
 		const update_css = ()=> {
 			const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
+			const use_svg = !!location.search.match(/eye-gaze-mode/);
 			$icon.css({
 				display: "block",
 				position: "absolute",
@@ -29,8 +29,8 @@ function $ToolBox(tools, is_extras){
 				top: 4,
 				width: 16,
 				height: 16,
-				backgroundImage: `url(${theme_folder}/tools.png)`,
-				backgroundPosition: `${bx}px 0px`,
+				backgroundImage: use_svg ? `url(images/classic/tools.svg)` : `url(${theme_folder}/tools.png)`,
+				backgroundPosition: `${(use_svg ? -(i*2+1) : -i)*16}px ${use_svg * -16}px`,
 			});
 		};
 		update_css();
