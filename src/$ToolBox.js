@@ -1,6 +1,5 @@
 
 function $ToolBox(tools, is_extras){
-	const $tb = $(E("div")).addClass("tool-box");
 	const $tools = $(E("div")).addClass("tools");
 	const $tool_options = $(E("div")).addClass("tool-options");
 	

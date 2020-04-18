@@ -524,13 +524,13 @@ function draw_noncontiguous_fill(ctx, x, y, swatch){
 	} else {
 		const source_canvas = ctx.canvas;
 		const fill_canvas = make_canvas(source_canvas.width, source_canvas.height);
-		draw_noncontiguous_fill_separately(source_canvas.ctx, fill_canvas.ctx, x, y, 255, 255, 255, 255);
+		draw_noncontiguous_fill_separately(source_canvas.ctx, fill_canvas.ctx, x, y);
 		replace_colors_with_swatch(fill_canvas.ctx, swatch, 0, 0);
 		ctx.drawImage(fill_canvas, 0, 0);
 	}
 }
 
-function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y, fill_r, fill_g, fill_b, fill_a){
+function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y){
 	const source_image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	const dest_image_data = dest_ctx.getImageData(0, 0, dest_ctx.canvas.width, dest_ctx.canvas.height);
 	const start_index = (y*source_image_data.width + x) * 4;
