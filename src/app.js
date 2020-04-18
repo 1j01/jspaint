@@ -862,33 +862,8 @@ if ($("body").hasClass("eye-gaze-mode")) {
 				circle_radius_percent =
 					(hover_candidate.time - time + hover_timespan) / hover_timespan
 					* circle_radius_max_percent;
-				if (pointer_active) {
-					hover_candidate = null;
-				} else if (time > hover_candidate.time + hover_timespan) {
-					pointers = []; // prevent multi-touch panning
-					$(hover_candidate.target).trigger($.Event("pointerdown", {
-						clientX: hover_candidate.x,
-						clientY: hover_candidate.y,
-						pointerId: 1234567890,
-						pointerType: "mouse",
-						button: 0,
-						buttons: 1,
-						isPrimary: true,
-					}));
-					const is_drag =
-						hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
-						hover_candidate.target.matches(".selection, .selection *, .handle") ||
-						(
-							hover_candidate.target === canvas &&
-							selected_tool.name !== "Pick Color" &&
-							selected_tool.name !== "Fill With Color" &&
-							selected_tool.name !== "Magnifier" &&
-							selected_tool.name !== "Polygon" &&
-							selected_tool.name !== "Curve"
-						)
-					if (is_drag) {
-						gaze_dragging = hover_candidate.target;
-					} else {
+				if (time > hover_candidate.time + hover_timespan) {
+					if (pointer_active || gaze_dragging) {
 						$(hover_candidate.target).trigger($.Event("pointerup", {
 							clientX: hover_candidate.x,
 							clientY: hover_candidate.y,
@@ -898,7 +873,42 @@ if ($("body").hasClass("eye-gaze-mode")) {
 							buttons: 0,
 							isPrimary: true,
 						}));
-						hover_candidate.target.click();
+					} else {
+						pointers = []; // prevent multi-touch panning
+						$(hover_candidate.target).trigger($.Event("pointerdown", {
+							clientX: hover_candidate.x,
+							clientY: hover_candidate.y,
+							pointerId: 1234567890,
+							pointerType: "mouse",
+							button: 0,
+							buttons: 1,
+							isPrimary: true,
+						}));
+						const is_drag =
+							hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
+							hover_candidate.target.matches(".selection, .selection *, .handle") ||
+							(
+								hover_candidate.target === canvas &&
+								selected_tool.name !== "Pick Color" &&
+								selected_tool.name !== "Fill With Color" &&
+								selected_tool.name !== "Magnifier" &&
+								selected_tool.name !== "Polygon" &&
+								selected_tool.name !== "Curve"
+							);
+						if (is_drag) {
+							gaze_dragging = hover_candidate.target;
+						} else {
+							$(hover_candidate.target).trigger($.Event("pointerup", {
+								clientX: hover_candidate.x,
+								clientY: hover_candidate.y,
+								pointerId: 1234567890,
+								pointerType: "mouse",
+								button: 0,
+								buttons: 0,
+								isPrimary: true,
+							}));
+							hover_candidate.target.click();
+						}
 					}
 					hover_candidate = null;
 					inactive_until_time = Date.now() + inactive_after_hovered_timespan;
@@ -942,7 +952,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 				return;
 			}
 			if (recent_movement_amount < 5) {
-				if (!pointer_active && !gaze_dragging && !hover_candidate) {
+				if (!hover_candidate) {
 					hover_candidate = {
 						x: average_point.x,
 						y: average_point.y,
