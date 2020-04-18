@@ -760,7 +760,17 @@ if ($("body").hasClass("eye-gaze-mode")) {
 		gaze_dragging = null;
 	});
 
+	let page_focused = document.visibilityState === "visible";
+	let mouse_inside = true;
+	$G.on("focus", ()=> { page_focused = true; });
+	$G.on("blur", ()=> { page_focused = false; });
+	$(document).on("mouseleave", ()=> { mouse_inside = false; });
+	$(document).on("mouseenter", ()=> { mouse_inside = true; });
+
 	const get_hover_candidate = (clientX, clientY)=> {
+
+		if (!page_focused || !mouse_inside) return null;
+
 		const target = document.elementFromPoint(clientX, clientY);
 		let hover_candidate = {
 			x: clientX,
