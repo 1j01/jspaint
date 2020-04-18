@@ -21,7 +21,7 @@ function $Component(name, orientation, $el){
 		$c.css("left", "3px");
 	}
 
-	if(location.search.match(/eye-gaze-mode/)){
+	if($("body").hasClass("eye-gaze-mode")){
 		// TODO: don't use an interval for this!
 		setInterval(()=> {
 			const scale = 3;
@@ -73,8 +73,8 @@ function $Component(name, orientation, $el){
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
 		if(!$c.is(e.target)){ return; }
-
-		if(location.search.match(/eye-gaze-mode/)){ return; }
+		// Don't allow dragging in eye gaze mode
+		if($("body").hasClass("eye-gaze-mode")){ return; }
 		
 		$G.on("pointermove", drag_onpointermove);
 		$G.one("pointerup", e => {

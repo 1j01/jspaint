@@ -90,6 +90,10 @@ let update_helper_layer_on_pointermove_active = false;
 /** client coords */
 let pointers = [];
 
+if (location.search.match(/eye-gaze-mode/)) {
+	$("body").addClass("eye-gaze-mode");
+}
+
 const $app = $(E("div")).addClass("jspaint").appendTo("body");
 
 const $V = $(E("div")).addClass("vertical").appendTo($app);
@@ -178,10 +182,6 @@ const $toolbox = $ToolBox(tools);
 // If there's to be extra tools, they should probably get a window, with different UI
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 const $colorbox = $ColorBox();
-
-if (location.search.match(/eye-gaze-mode/)) {
-	$("body").addClass("eye-gaze-mode");
-}
 
 $canvas_area.on("user-resized", (_event, _x, _y, unclamped_width, unclamped_height) => {
 	resize_canvas_and_save_dimensions(unclamped_width, unclamped_height);
@@ -726,7 +726,7 @@ $canvas.on("pointerleave", ()=> {
 	}
 });
 
-if (location.search.match(/eye-gaze-mode/)) {
+if ($("body").hasClass("eye-gaze-mode")) {
 	const circle_radius_max_percent = 5;
 	const hover_timespan = 500;
 	const averaging_window_timespan = 500;

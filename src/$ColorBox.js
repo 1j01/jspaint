@@ -145,7 +145,9 @@ function $ColorBox(){
 		});
 	};
 
-	const vertical = location.search.match(/eye-gaze-mode|vertical-colors-box/);
+	const vertical =
+		$("body").hasClass("eye-gaze-mode") ||
+		location.search.match(/vertical-colors-box/);
 
 	const build_palette = () => {
 		$palette.empty();

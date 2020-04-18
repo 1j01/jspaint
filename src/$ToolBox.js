@@ -25,7 +25,7 @@ function $ToolBox(tools, is_extras){
 				(get_theme() === "classic.css" &&
 					(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
 				) ||
-				!!location.search.match(/eye-gaze-mode/);
+				$("body").hasClass("eye-gaze-mode")
 			$icon.css({
 				display: "block",
 				position: "absolute",
