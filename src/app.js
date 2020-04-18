@@ -970,6 +970,20 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			}
 		}
 	}, 20);
+
+	$("<button title='Undo'/>")
+	.appendTo("body")
+	.css({
+		position: "fixed",
+		left: 0,
+		bottom: 0,
+		transform: "scale(3)",
+		transformOrigin: "bottom left",
+		width: 28,
+		height: 28,
+		backgroundImage: "url(images/classic/undo.png)",
+	})
+	.on("click", undo);
 }
 
 let pan_start_pos;
