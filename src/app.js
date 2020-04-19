@@ -1024,18 +1024,28 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	}, 20);
 
 	$("<button title='Undo'/>")
+	.on("click", undo)
 	.appendTo("body")
 	.css({
 		position: "fixed",
-		left: 0,
 		bottom: 0,
-		transform: "scale(3)",
+		left: 0,
 		transformOrigin: "bottom left",
+		transform: "scale(3)",
 		width: 28,
 		height: 28,
-		backgroundImage: "url(images/classic/undo.svg)",
 	})
-	.on("click", undo);
+	.append(
+		$("<div>")
+		.css({
+			position: "absolute",
+			left: 0,
+			top: 0,
+			width: 26,
+			height: 26,
+			backgroundImage: "url(images/classic/undo.svg)",
+		})
+	);
 }
 
 let pan_start_pos;
