@@ -917,7 +917,19 @@ if ($("body").hasClass("eye-gaze-mode")) {
 								buttons: 0,
 								isPrimary: true,
 							}));
-							hover_candidate.target.click();
+							if (hover_candidate.target.matches("button:not(.toggle)")) {
+								((button)=> {
+									button.style.borderImage = "var(--inset-deep-border-image)";
+									setTimeout(()=> {
+										button.style.borderImage = "";
+										// delay the button click to here so the pressed state is
+										// visible even when the button closes a dialog
+										button.click();
+									}, 100);
+								})(hover_candidate.target);
+							} else {
+								hover_candidate.target.click();
+							}
 						}
 					}
 					hover_candidate = null;
