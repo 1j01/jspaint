@@ -840,7 +840,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 		return hover_candidate;
 	};
 
-	setInterval(()=> {
+	const update = ()=> {
 		const time = Date.now();
 		recent_points = recent_points.filter((point_record)=> time < point_record.time + averaging_window_timespan);
 		if (recent_points.length) {
@@ -1021,7 +1021,12 @@ if ($("body").hasClass("eye-gaze-mode")) {
 				hover_candidate = null;
 			}
 		}
-	}, 20);
+	};
+	const animate = ()=> {
+		requestAnimationFrame(animate);
+		update();
+	};
+	requestAnimationFrame(animate);
 
 	$("<button title='Undo'/>")
 	.on("click", undo)
