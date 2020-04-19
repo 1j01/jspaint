@@ -854,7 +854,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			const recent_movement_amount = Math.hypot(latest_point.x - average_point.x, latest_point.y - average_point.y);
 
 			// Invalidate in case an element pops up in front of the element you're hovering over, e.g. a submenu
-			if (hover_candidate) {
+			if (hover_candidate && !gaze_dragging) {
 				const apparent_hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 				if (apparent_hover_candidate) {
 					if (apparent_hover_candidate.target !== hover_candidate.target) {
@@ -983,8 +983,11 @@ if ($("body").hasClass("eye-gaze-mode")) {
 						x: average_point.x,
 						y: average_point.y,
 						time: Date.now(),
+						target: gaze_dragging || null,
 					};
-					hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
+					if (!gaze_dragging) {
+						hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
+					}
 				}
 			}
 			if (recent_movement_amount > 100) {
