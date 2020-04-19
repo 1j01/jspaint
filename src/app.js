@@ -1017,7 +1017,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 		transformOrigin: "bottom left",
 		width: 28,
 		height: 28,
-		backgroundImage: "url(images/classic/undo.png)",
+		backgroundImage: "url(images/classic/undo.svg)",
 	})
 	.on("click", undo);
 }
