@@ -3,9 +3,6 @@
 
 A nice web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
 
-<!-- TODO: You can also run it as a [desktop app...](#desktop-app) -->
-
-
 The goal is to remake MS Paint
 (including its [little-known features](#did-you-know)),
 improve on it, and to extend the types of images it can edit.
@@ -40,7 +37,7 @@ I want to bring good old paint into the modern era.
 * Cross-platform
 * Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
   or a measly 50 in Windows 7)
-* Undo history is *nonlinear*, which means if you undo and do something other than redo, the redos aren't destroyed. Instead, a new branch in the history tree is created. Jump to any point in history with <kbd>Ctrl+Shift+Y</kbd>
+* Undo history is *nonlinear*, which means if you undo and do something other than redo, the redos aren't discarded. Instead, a new branch is created in the *history tree*. Jump to any point in history with **Edit > History** or <kbd>Ctrl+Shift+Y</kbd>
 * Automatically keeps a backup of your image. Only one backup per image tho, which doesn't give you a lot of safety. Remember to save with **File > Save** or <kbd>Ctrl+S</kbd>! Manage backups with **File > Manage Storage**.
 * Edit transparent images! To create a transparent image,
   go to **Image > Attributes...** and select Transparent,
@@ -59,7 +56,7 @@ I want to bring good old paint into the modern era.
   Update: This was [due to not-to-spec behavior in Chrome.](https://christianheilmann.com/2014/04/16/browser-inconsistencies-animated-gif-and-drawimage/)
   I may reimplement this in the future as I really liked this feature.
 * You can open SVG files, though only as a bitmap.
-  (And you can't choose a size for the bitmap when opening an SVG. It may open super large, or tiny.)
+  (Note: it may open super large, or tiny. There's no option to choose a size when opening.)
 * You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
 * Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd> and <kbd>></kbd>)
 * Rotate by any arbitrary angle in **Image > Flip/Rotate**
@@ -77,8 +74,10 @@ I want to bring good old paint into the modern era.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
 * Load many different palette formats with **Colors > Get Colors**.
   (I made a [library](https://github.com/1j01/palette.js/) for this.)
-* Mobile support (altho fairly lacking in some areas). Use two fingers to pan the view.
+* Touch support: use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
+* Vertical colors box mode, accessible from URL https://jspaint.app/?vertical-colors-box
+* An experimental eye gaze friendly mode, for use with an eye tracker, head tracker, or other coarse input device, accessible from URL https://jspaint.app/?eye-gaze-mode (you can try it out with [Camera Mouse](http://cameramouse.org/) or [GazePointer](https://sourceforge.net/projects/gazepointer/))
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
@@ -93,8 +92,6 @@ Full clipboard support in the web app requires a browser supporting the [Async C
 In other browsers you can still can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
 External images can be pasted in.
-
-(There's also a partially-built [desktop app](#desktop-app) version you can install that has full clipboard support, and also lets you set the wallpaper.)
 
 
 ## Did you know?
@@ -131,14 +128,9 @@ External images can be pasted in.
 
 ## Desktop App
 
-I've started work on a desktop app, built with [Electron][] and [Electron Forge][].
+JS Paint can be installed as a PWA, altho it doesn't work offline.
 
-There are no releases yet, but much of the groundwork has been laid, and several features implemented.
-
-Why did I do this.
-I hate electron apps. They're so slow and bulky...
-
-If you're interested, comment on [this issue](https://github.com/1j01/jspaint/issues/2).
+(Also I made some effort to build it into a desktop app with [Electron][] and [Electron Forge][], but this will use unnecessary system resources and is not recommended. See [this issue](https://github.com/1j01/jspaint/issues/2).)
 
 [Electron]: https://electronjs.org/
 [Electron Forge]: https://electronforge.io/
@@ -172,6 +164,8 @@ It's included in `package.json` so if you've installed dependencies (`npm i`) yo
 (It's configured to ignore some files/directories for reloading.)
 
 ### Desktop App (Electron)
+
+This is unreleased and not in development.
 
 - Install dependencies with `npm i`
 - Start the electron app with `npm start`
