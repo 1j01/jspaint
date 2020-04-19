@@ -183,6 +183,20 @@ html, body, .jspaint {
 	border-left: 1px solid #7b7b7b;
 }
 
+.eye-gaze-mode .color-button {
+	width: 24px;
+	height: 24px;
+}
+.eye-gaze-mode .Colors-component.tall {
+	width: 50px;
+}
+.eye-gaze-mode .Colors-component.tall .color-box {
+	width: 100%;
+}
+/* .eye-gaze-mode .Colors-component.tall .current-colors {
+	width: 100%;
+} */
+
 .eye-gaze-mode .os-window .window-titlebar,
 .eye-gaze-mode .tool-window .window-titlebar {
 	font-size: 2rem;
