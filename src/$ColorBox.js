@@ -74,9 +74,6 @@ function $ColorBox(){
 	// the one color editted by "Edit Colors..."
 	let $last_fg_color_button;
 	
-	// TODO: base this on the element sizes
-	const width_per_button = 16;
-	
 	function set_color(col){
 		if(ctrl){
 			colors.ternary = col;
@@ -153,6 +150,9 @@ function $ColorBox(){
 		$palette.empty();
 
 		palette.forEach(make_color_button);
+
+		// Note: this doesn't work until the colors box is in the DOM
+		const width_per_button = $palette.find(".color-button").outerWidth() + 1;
 
 		if (vertical) {
 			$palette.height(Math.ceil(palette.length/2) * width_per_button);
