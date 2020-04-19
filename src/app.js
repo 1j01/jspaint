@@ -752,6 +752,8 @@ if ($("body").hasClass("eye-gaze-mode")) {
 		height: circle_radius_max,
 		borderRadius: "50%",
 		backgroundColor: "rgba(255, 0, 0, 0.4)",
+		border: "2px solid yellow",
+		boxSizing: "border-box",
 	}).appendTo("body").hide();
 	$G.on("pointermove", (e)=> {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
