@@ -183,6 +183,34 @@ html, body, .jspaint {
 	border-left: 1px solid #7b7b7b;
 }
 
+.dwell-indicator {
+	position: fixed;
+	pointer-events: none;
+	z-index: 1000000;
+	background-color: red;
+	border: 2px solid yellow;
+	box-sizing: border-box;
+}
+.dwell-indicator:not(.for-release) {
+	border-radius: 50%;
+}
+.dwell-indicator.for-release {
+	clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+	background: white;
+	border: none;
+}
+.dwell-indicator.for-release::after {
+	content: "";
+	display: block;
+	position: absolute;
+	background: red;
+	left: 2px;
+	top: 2px;
+	right: 2px;
+	bottom: 2px;
+	clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+	border: none;
+}
 .eye-gaze-mode .color-button {
 	width: 24px;
 	height: 24px;

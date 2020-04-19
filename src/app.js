@@ -739,21 +739,14 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
 	let gaze_dragging = null;
-	const $halo = $("<div>").css({
+	const $halo = $("<div class='hover-halo'>").css({
 		pointerEvents: "none",
 		zIndex: 1000000,
 		boxShadow: "0 0 10px yellow, 0 0 3px yellow",
 	}).appendTo("body").hide();
-	const $dwell_indicator = $("<div>").css({
-		position: "fixed",
-		pointerEvents: "none",
-		zIndex: 1000000,
+	const $dwell_indicator = $("<div class='dwell-indicator'>").css({
 		width: circle_radius_max,
 		height: circle_radius_max,
-		borderRadius: "50%",
-		backgroundColor: "rgba(255, 0, 0, 0.4)",
-		border: "2px solid yellow",
-		boxSizing: "border-box",
 	}).appendTo("body").hide();
 	$G.on("pointermove", (e)=> {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
@@ -874,7 +867,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			let circle_radius = 0;
 			if (hover_candidate) {
 				circle_position = hover_candidate;
-				circle_opacity = 1;
+				circle_opacity = 0.4;
 				circle_radius =
 					(hover_candidate.time - time + hover_timespan) / hover_timespan
 					* circle_radius_max;
@@ -943,6 +936,11 @@ if ($("body").hasClass("eye-gaze-mode")) {
 				}
 			}
 
+			if (gaze_dragging) {
+				$dwell_indicator.addClass("for-release");
+			} else {
+				$dwell_indicator.removeClass("for-release");
+			}
 			$dwell_indicator.show().css({
 				opacity: circle_opacity,
 				transform: `scale(${circle_radius / circle_radius_max})`,
