@@ -734,6 +734,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	const inactive_after_release_timespan = 1000;
 	const inactive_after_hovered_timespan = 1000;
 	const inactive_after_invalid_timespan = 1000;
+	const inactive_after_focused_timespan = 1000;
 	let recent_points = [];
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
@@ -762,7 +763,10 @@ if ($("body").hasClass("eye-gaze-mode")) {
 
 	let page_focused = document.visibilityState === "visible";
 	let mouse_inside = true;
-	$G.on("focus", ()=> { page_focused = true; });
+	$G.on("focus", ()=> {
+		page_focused = true;
+		inactive_until_time = Date.now() + inactive_after_focused_timespan;
+	});
 	$G.on("blur", ()=> { page_focused = false; });
 	$(document).on("mouseleave", ()=> { mouse_inside = false; });
 	$(document).on("mouseenter", ()=> { mouse_inside = true; });
