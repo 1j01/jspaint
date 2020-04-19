@@ -727,7 +727,7 @@ $canvas.on("pointerleave", ()=> {
 });
 
 if ($("body").hasClass("eye-gaze-mode")) {
-	const circle_radius_max_percent = 5;
+	const circle_radius_max = 50;
 	const hover_timespan = 500;
 	const averaging_window_timespan = 500;
 	const startup_timespan = averaging_window_timespan;
@@ -744,15 +744,15 @@ if ($("body").hasClass("eye-gaze-mode")) {
 		zIndex: 1000000,
 		boxShadow: "0 0 10px yellow, 0 0 3px yellow",
 	}).appendTo("body").hide();
-	const $indicator_layer = $("<div>").css({
+	const $dwell_indicator = $("<div>").css({
 		position: "fixed",
-		left: 0,
-		top: 0,
-		right: 0,
-		bottom: 0,
 		pointerEvents: "none",
 		zIndex: 1000000,
-	}).appendTo("body");
+		width: circle_radius_max,
+		height: circle_radius_max,
+		borderRadius: "50%",
+		backgroundColor: "rgba(255, 0, 0, 0.4)",
+	}).appendTo("body").hide();
 	$G.on("pointermove", (e)=> {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
 	});
@@ -868,14 +868,14 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			}
 			
 			let circle_position = latest_point;
-			let circle_alpha = 0;
-			let circle_radius_percent = 0;
+			let circle_opacity = 0;
+			let circle_radius = 0;
 			if (hover_candidate) {
 				circle_position = hover_candidate;
-				circle_alpha = 1;
-				circle_radius_percent =
+				circle_opacity = 1;
+				circle_radius =
 					(hover_candidate.time - time + hover_timespan) / hover_timespan
-					* circle_radius_max_percent;
+					* circle_radius_max;
 				if (time > hover_candidate.time + hover_timespan) {
 					if (pointer_active || gaze_dragging) {
 						$(hover_candidate.target).trigger($.Event("pointerup", {
@@ -941,21 +941,12 @@ if ($("body").hasClass("eye-gaze-mode")) {
 				}
 			}
 
-			// const circle_radius_percent = recent_movement_amount / document.body.clientWidth * 100;
-			// const circle_position = average_points([average_point, latest_point]);
-			// const circle_alpha = Math.min(1, 1000 / recent_movement_amount - 10);
-			const gradient = `
-				radial-gradient(
-					circle at
-						${circle_position.x}px
-						${circle_position.y}px,
-					rgba(255, 0, 0, ${0.4 * circle_alpha}) 0%,
-					rgba(255, 0, 0, ${0.4 * circle_alpha}) ${circle_radius_percent}%,
-					transparent ${circle_radius_percent+0.1}%,
-					transparent 100%
-				)
-			`;
-			$indicator_layer.css("background", gradient);
+			$dwell_indicator.show().css({
+				opacity: circle_opacity,
+				transform: `scale(${circle_radius / circle_radius_max})`,
+				left: circle_position.x - circle_radius_max/2,
+				top: circle_position.y - circle_radius_max/2,
+			});
 
 			let halo_target =
 				gaze_dragging ||
