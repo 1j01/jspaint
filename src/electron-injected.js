@@ -89,6 +89,23 @@ window.save_to_file_path = (filePath, formatName, savedCallback) => {
 	}, mimeType);
 };
 
+function blob_to_buffer(blob, callback) {
+	const file_reader = new FileReader();
+
+	file_reader.addEventListener("loadend", () => {
+		if (file_reader.error) {
+			callback(file_reader.error);
+		} else {
+			callback(null, Buffer.from(file_reader.result));
+		}
+	}, false);
+
+	// Read the blob as a typed array.
+	file_reader.readAsArrayBuffer(blob);
+
+	return file_reader;
+}
+
 // TODO: window.platform.saveCanvasAs etc. or platformIntegration or system or something
 window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 	const getExtension = filePathOrName => {
