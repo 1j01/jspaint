@@ -40,23 +40,9 @@ function $ColorBox(){
 	
 	$cb.append($current_colors, $palette);
 	
-	const $foreground_color = $Swatch().addClass("color-selection");
-	const $background_color = $Swatch().addClass("color-selection");
+	const $foreground_color = $Swatch().addClass("color-selection foreground-color");
+	const $background_color = $Swatch().addClass("color-selection background-color");
 	$current_colors.append($background_color, $foreground_color);
-	
-	$current_colors.css({
-		position: "relative",
-	});
-	$foreground_color.css({
-		position: "absolute",
-		left: 2,
-		top: 4,
-	});
-	$background_color.css({
-		position: "absolute",
-		right: 3,
-		bottom: 3,
-	});
 	
 	$G.on("option-changed", () => {
 		$foreground_color.update(colors.foreground);

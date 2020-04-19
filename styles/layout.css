@@ -193,9 +193,15 @@ html, body, .jspaint {
 .eye-gaze-mode .Colors-component.tall .color-box {
 	width: 100%;
 }
-/* .eye-gaze-mode .Colors-component.tall .current-colors {
+.eye-gaze-mode .Colors-component.tall .current-colors {
 	width: 100%;
-} */
+}
+.eye-gaze-mode .foreground-color {
+	left: 12px;
+}
+.eye-gaze-mode .background-color {
+	right: 12px;
+}
 
 .eye-gaze-mode .os-window .window-titlebar,
 .eye-gaze-mode .tool-window .window-titlebar {
@@ -292,6 +298,16 @@ html, body, .jspaint {
 .current-colors,
 .color-button {
 	position: relative;
+}
+.foreground-color {
+	position: absolute;
+	left: 2px;
+	top: 4px;
+}
+.background-color {
+	position: absolute;
+	right: 3px;
+	bottom: 3px;
 }
 .color-button,
 .color-selection {
