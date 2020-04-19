@@ -739,11 +739,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	let inactive_until_time = Date.now() + startup_timespan;
 	let hover_candidate;
 	let gaze_dragging = null;
-	const $halo = $("<div class='hover-halo'>").css({
-		pointerEvents: "none",
-		zIndex: 1000000,
-		boxShadow: "0 0 10px yellow, 0 0 3px yellow",
-	}).appendTo("body").hide();
+	const $halo = $("<div class='hover-halo'>").appendTo("body").hide();
 	const $dwell_indicator = $("<div class='dwell-indicator'>").css({
 		width: circle_radius_max,
 		height: circle_radius_max,

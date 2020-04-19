@@ -183,23 +183,17 @@ html, body, .jspaint {
 	border-left: 1px solid #7b7b7b;
 }
 
+.hover-halo {
+	pointer-events: none;
+	z-index: 1000000;
+	box-shadow: 0 0 10px yellow, 0 0 3px yellow;
+}
 .dwell-indicator {
 	position: fixed;
 	pointer-events: none;
 	z-index: 1000000;
-	background-color: red;
-	border: 2px solid yellow;
-	box-sizing: border-box;
 }
-.dwell-indicator:not(.for-release) {
-	border-radius: 50%;
-}
-.dwell-indicator.for-release {
-	clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-	background: white;
-	border: none;
-}
-.dwell-indicator.for-release::after {
+.dwell-indicator::after {
 	content: "";
 	display: block;
 	position: absolute;
@@ -208,8 +202,20 @@ html, body, .jspaint {
 	top: 2px;
 	right: 2px;
 	bottom: 2px;
+}
+.dwell-indicator:not(.for-release) {
+	background: yellow;
+}
+.dwell-indicator.for-release {
+	background: white;
+}
+.dwell-indicator:not(.for-release),
+.dwell-indicator:not(.for-release)::after {
+	border-radius: 50%;
+}
+.dwell-indicator.for-release,
+.dwell-indicator.for-release::after {
 	clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-	border: none;
 }
 .eye-gaze-mode .color-button {
 	width: 24px;
