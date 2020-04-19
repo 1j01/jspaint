@@ -961,7 +961,20 @@ if ($("body").hasClass("eye-gaze-mode")) {
 				gaze_dragging ||
 				(hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
 			if (halo_target) {
-				const rect = halo_target.getBoundingClientRect();
+				let rect = halo_target.getBoundingClientRect();
+				// Clamp to visible region if in scrollable area
+				// (could generalize to look for overflow: auto parents in the future)
+				if (halo_target.closest(".canvas-area")) {
+					const scroll_area_rect = $canvas_area[0].getBoundingClientRect();
+					rect = {
+						left: Math.max(rect.left, scroll_area_rect.left),
+						top: Math.max(rect.top, scroll_area_rect.top),
+						right: Math.min(rect.right, scroll_area_rect.right),
+						bottom: Math.min(rect.bottom, scroll_area_rect.bottom),
+					};
+					rect.width = rect.right - rect.left;
+					rect.height = rect.bottom - rect.top;
+				}
 				$halo.css({
 					display: "block",
 					position: "fixed",
