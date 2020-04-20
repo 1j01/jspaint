@@ -1017,6 +1017,7 @@ tools.forEach((tool)=> {
 			tool.shape_canvas.ctx.clearRect(0, 0, tool.shape_canvas.width, tool.shape_canvas.height);
 			tool.shape_canvas.ctx.fillStyle = ctx.fillStyle;
 			tool.shape_canvas.ctx.strokeStyle = ctx.strokeStyle;
+			tool.shape_canvas.ctx.lineWidth = ctx.lineWidth;
 			tool.shape(tool.shape_canvas.ctx, pointer_start.x, pointer_start.y, pointer.x-pointer_start.x, pointer.y-pointer_start.y);
 		};
 		tool.pointerup = ()=> {
