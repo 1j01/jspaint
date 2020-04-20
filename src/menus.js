@@ -423,6 +423,40 @@ window.menus = {
 					},
 				},
 				{
+					item: "Zoom To &Window",
+					speech_recognition: [
+						"zoom to window", "zoom to view",
+						"zoom to fit",
+						"zoom to fit within window", "zoom to fit within view",
+						"zoom to fit within the window", "zoom to fit within the view",
+						"zoom to fit in window", "zoom to fit in view",
+						"zoom to fit in the window", "zoom to fit in the view",
+						"auto zoom", "fit zoom",
+						"zoom to max", "zoom to maximum", "zoom to max size", "zoom to maximum size",
+						"zoom so canvas fits", "zoom so picture fits", "zoom so image fits", "zoom so document fits",
+						"zoom so whole canvas is visible", "zoom so whole picture is visible", "zoom so whole image is visible", "zoom so whole document is visible",
+						"zoom so the whole canvas is visible", "zoom so the whole picture is visible", "zoom so the whole image is visible", "zoom so the whole document is visible",
+						
+						"fit to window", "fit to view", "fit in window", "fit in view", "fit within window", "fit within view",
+						"fit picture to window", "fit picture to view", "fit picture in window", "fit picture in view", "fit picture within window", "fit picture within view",
+						"fit image to window", "fit image to view", "fit image in window", "fit image in view", "fit image within window", "fit image within view",
+						"fit canvas to window", "fit canvas to view", "fit canvas in window", "fit canvas in view", "fit canvas within window", "fit canvas within view",
+						"fit document to window", "fit document to view", "fit document in window", "fit document in view", "fit document within window", "fit document within view",
+					],
+					description: "Zooms the picture to fit within the view.",
+					action: ()=> {
+						const rect = $canvas_area[0].getBoundingClientRect();
+						const margin = 30; // leave a margin so scrollbars won't appear
+						let mag = Math.min(
+							(rect.width - margin) / canvas.width,
+							(rect.height - margin) / canvas.height,
+						);
+						// round to an integer percent for the View > Zoom > Custom... dialog, which shows non-integers as invalid
+						mag = Math.floor(100 * mag) / 100;
+						set_magnification(mag);
+					},
+				},
+				{
 					item: "C&ustom...",
 					description: "Zooms the picture.",
 					speech_recognition: [
