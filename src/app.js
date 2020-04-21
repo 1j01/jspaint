@@ -806,8 +806,10 @@ if ($("body").hasClass("eye-gaze-mode")) {
 function init_eye_gaze_mode() {
 	const circle_radius_max = 50; // dwell indicator size in pixels
 	const hover_timespan = 500; // how long between the dwell indicator appearing and triggering a click
-	const averaging_window_timespan = 500;
-	const inactive_at_startup_timespan = 1500; // (should be at least averaging_window_timespan, but more importantly enough to make it not awkward when enabling eye gaze mode)
+	const smoothing_timespan_for_dwell_position = 500;
+	const smoothing_timespan_for_pointer_position = 500;
+	const keep_recent_points_timespan = Math.max(smoothing_timespan_for_dwell_position, smoothing_timespan_for_pointer_position);
+	const inactive_at_startup_timespan = 1500; // (should be at least keep_recent_points_timespan, but more importantly enough to make it not awkward when enabling eye gaze mode)
 	const inactive_after_release_timespan = 1000; // after click or drag release (from dwell or otherwise)
 	const inactive_after_hovered_timespan = 1000; // after dwell click indicator appears; does not control the time to finish that dwell click, only to click on something else after this is canceled (but it doesn't control that directly)
 	const inactive_after_invalid_timespan = 1000; // after a dwell click is canceled due to an element popping up in front, or existing in front at the center of the other element
@@ -960,18 +962,29 @@ function init_eye_gaze_mode() {
 
 	const update = ()=> {
 		const time = Date.now();
-		recent_points = recent_points.filter((point_record)=> time < point_record.time + averaging_window_timespan);
+		recent_points = recent_points.filter((point_record)=>
+			time < point_record.time + keep_recent_points_timespan
+		);
 		if (recent_points.length) {
 			const latest_point = recent_points[recent_points.length - 1];
 			recent_points.push({x: latest_point.x, y: latest_point.y, time});
-			const average_point = average_points(recent_points);
-			pointer = to_canvas_coords({clientX: average_point.x, clientY: average_point.y});
+			const average_point_for_pointer_position = average_points(
+				recent_points.filter((point_record)=>
+					time < point_record.time + smoothing_timespan_for_pointer_position
+				)
+			);
+			const average_point_for_dwell_position = average_points(
+				recent_points.filter((point_record)=>
+					time < point_record.time + smoothing_timespan_for_dwell_position
+				)
+			);
+			pointer = to_canvas_coords({clientX: average_point_for_pointer_position.x, clientY: average_point_for_pointer_position.y});
 			update_helper_layer();
 			// debug
 			// const canvas_point = to_canvas_coords({clientX: average_point.x, clientY: average_point.y});
 			// ctx.fillStyle = "red";
 			// ctx.fillRect(canvas_point.x, canvas_point.y, 10, 10);
-			const recent_movement_amount = Math.hypot(latest_point.x - average_point.x, latest_point.y - average_point.y);
+			const recent_movement_amount = Math.hypot(latest_point.x - average_point_for_dwell_position.x, latest_point.y - average_point_for_dwell_position.y);
 
 			// Invalidate in case an element pops up in front of the element you're hovering over, e.g. a submenu
 			if (hover_candidate && !gaze_dragging) {
@@ -1129,8 +1142,8 @@ function init_eye_gaze_mode() {
 			if (recent_movement_amount < 5) {
 				if (!hover_candidate) {
 					hover_candidate = {
-						x: average_point.x,
-						y: average_point.y,
+						x: average_point_for_dwell_position.x,
+						y: average_point_for_dwell_position.y,
 						time: Date.now(),
 						target: gaze_dragging || null,
 					};
@@ -1145,8 +1158,8 @@ function init_eye_gaze_mode() {
 			if (recent_movement_amount > 200) {
 				if (gaze_dragging) {
 					$G.trigger($.Event("pointerup", {
-						clientX: average_point.x,
-						clientY: average_point.y,
+						clientX: latest_point.x,
+						clientY: latest_point.y,
 						pointerId: 1234567890,
 						pointerType: "mouse",
 						button: 0,
