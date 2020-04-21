@@ -77,7 +77,7 @@ let document_file_path;
 let saved = true;
 
 /** canvas coords */
-let pointer, pointer_start, pointer_previous;
+let pointer = {x: 0, y: 0}, pointer_start, pointer_previous;
 
 let pointer_active = false;
 let pointer_type, pointer_buttons;
@@ -713,7 +713,7 @@ function tool_go(selected_tool, event_name){
 function canvas_pointer_move(e){
 	ctrl = e.ctrlKey;
 	shift = e.shiftKey;
-	pointer = to_canvas_coords(e);
+	// pointer = to_canvas_coords(e);
 	
 	// Quick Undo
 	// (Note: pointermove also occurs when the set of buttons pressed changes,
@@ -765,7 +765,7 @@ function canvas_pointer_move(e){
 	pointer_previous = pointer;
 }
 $canvas.on("pointermove", e => {
-	pointer = to_canvas_coords(e);
+	// pointer = to_canvas_coords(e);
 	$status_position.text(`${pointer.x},${pointer.y}`);
 });
 $canvas.on("pointerenter", ()=> {
@@ -965,6 +965,8 @@ function init_eye_gaze_mode() {
 			const latest_point = recent_points[recent_points.length - 1];
 			recent_points.push({x: latest_point.x, y: latest_point.y, time});
 			const average_point = average_points(recent_points);
+			pointer = to_canvas_coords({clientX: average_point.x, clientY: average_point.y});
+			update_helper_layer();
 			// debug
 			// const canvas_point = to_canvas_coords({clientX: average_point.x, clientY: average_point.y});
 			// ctx.fillStyle = "red";
@@ -1140,7 +1142,7 @@ function init_eye_gaze_mode() {
 					}
 				}
 			}
-			if (recent_movement_amount > 100) {
+			if (recent_movement_amount > 200) {
 				if (gaze_dragging) {
 					$G.trigger($.Event("pointerup", {
 						clientX: average_point.x,
@@ -1381,7 +1383,7 @@ $canvas.on("pointerdown", e => {
 			button = undefined;
 			reverse = false;
 
-			pointer = to_canvas_coords(e);
+			// pointer = to_canvas_coords(e);
 			selected_tools.forEach((selected_tool)=> {
 				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
 			});

@@ -127,7 +127,7 @@ function update_helper_layer_immediately() {
 		info_for_updating_pointer.clientX *= rescale;
 		info_for_updating_pointer.clientY *= rescale;
 		info_for_updating_pointer.devicePixelRatio = devicePixelRatio;
-		pointer = to_canvas_coords(info_for_updating_pointer);
+		// pointer = to_canvas_coords(info_for_updating_pointer);
 	}
 
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
