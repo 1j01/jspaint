@@ -737,6 +737,8 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	const inactive_after_focused_timespan = 1000;
 	let recent_points = [];
 	let inactive_until_time = Date.now() + startup_timespan;
+	let paused = false;
+	let $pause_button;
 	let hover_candidate;
 	let gaze_dragging = null;
 	const $halo = $("<div class='hover-halo'>").appendTo("body").hide();
@@ -947,7 +949,8 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			let halo_target =
 				gaze_dragging ||
 				(hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
-			if (halo_target) {
+			
+			if (halo_target && (!paused || $pause_button.is(halo_target))) {
 				let rect = halo_target.getBoundingClientRect();
 				// Clamp to visible region if in scrollable area
 				// (could generalize to look for overflow: auto parents in the future)
@@ -988,6 +991,9 @@ if ($("body").hasClass("eye-gaze-mode")) {
 					if (!gaze_dragging) {
 						hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 					}
+					if (hover_candidate && (paused && !$pause_button.is(hover_candidate.target))) {
+						hover_candidate = null;
+					}
 				}
 			}
 			if (recent_movement_amount > 100) {
@@ -1015,17 +1021,24 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	};
 	requestAnimationFrame(animate);
 
+	const $floating_buttons =
+		$("<div/>")
+		.appendTo("body")
+		.css({
+			position: "fixed",
+			bottom: 0,
+			left: 0,
+			transformOrigin: "bottom left",
+			transform: "scale(3)",
+		});
+	
 	$("<button title='Undo'/>")
 	.on("click", undo)
-	.appendTo("body")
+	.appendTo($floating_buttons)
 	.css({
-		position: "fixed",
-		bottom: 0,
-		left: 0,
-		transformOrigin: "bottom left",
-		transform: "scale(3)",
 		width: 28,
 		height: 28,
+		verticalAlign: "bottom",
 	})
 	.append(
 		$("<div>")
@@ -1033,9 +1046,42 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			position: "absolute",
 			left: 0,
 			top: 0,
-			width: 26,
-			height: 26,
+			width: 24,
+			height: 24,
 			backgroundImage: "url(images/classic/undo.svg)",
+		})
+	);
+
+	$pause_button = $("<button title='Pause Dwell Clicking'/>")
+	.on("click", ()=> {
+		paused = !paused;
+		$pause_button.find("div").css({
+			backgroundImage:
+				paused ?
+				"url(images/classic/eye-gaze-unpause.svg)" :
+				"url(images/classic/eye-gaze-pause.svg)",
+		})
+		.attr("title",
+			paused ?
+			"Resume Dwell Clicking" :
+			"Pause Dwell Clicking",
+		);
+	})
+	.appendTo($floating_buttons)
+	.css({
+		width: 28,
+		height: 28,
+		verticalAlign: "bottom",
+	})
+	.append(
+		$("<div>")
+		.css({
+			position: "absolute",
+			left: 0,
+			top: 0,
+			width: 24,
+			height: 24,
+			backgroundImage: "url(images/classic/eye-gaze-pause.svg)",
 		})
 	);
 }
