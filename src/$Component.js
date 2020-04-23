@@ -1,4 +1,70 @@
 
+// Segments here represent UI components as far as a layout algorithm is concerned,
+// line segments in one dimension (regardless of whether that dimension is vertical or horizontal),
+// with a reference to the UI component DOM element so it can be updated.
+
+function get_segments(component_area_el, pos_axis, exclude_component_el) {
+	const $other_components = $(component_area_el).find(".component").not(exclude_component_el);
+	return $other_components.toArray().map((component_el)=> {
+		return {
+			element: component_el,
+			pos: component_el[pos_axis === "top" ? "offsetTop" : "offsetLeft"],
+			length: component_el[pos_axis === "top" ? "clientHeight" : "clientWidth"],
+		};
+	});
+}
+
+function adjust_segments(segments, total_available_length) {
+	segments.sort((a, b)=> a.pos - b.pos);
+
+	// Clamp
+	for (const segment of segments) {
+		segment.pos = Math.max(segment.pos, 0);
+		segment.pos = Math.min(segment.pos, total_available_length - segment.length);
+	}
+
+	// Shove things downwards to prevent overlap
+	for (let i = 1; i < segments.length; i++) {
+		const segment = segments[i];
+		const prev_segment = segments[i - 1];
+		const overlap = prev_segment.pos + prev_segment.length - segment.pos;
+		if (overlap > 0) {
+			segment.pos += overlap;
+		}
+	}
+
+	// Clamp
+	for (const segment of segments) {
+		segment.pos = Math.max(segment.pos, 0);
+		segment.pos = Math.min(segment.pos, total_available_length - segment.length);
+	}
+
+	// Shove things upwards to get things back on screen
+	for (let i = segments.length - 2; i >= 0; i--) {
+		const segment = segments[i];
+		const prev_segment = segments[i + 1];
+		const overlap = segment.pos + segment.length - prev_segment.pos;
+		if (overlap > 0) {
+			segment.pos -= overlap;
+		}
+	}
+}
+
+function apply_segments(component_area_el, pos_axis, segments) {
+	// Since things aren't positioned absolutely, calculate space between
+	let length_before = 0;
+	for (const segment of segments) {
+		segment.margin_before = segment.pos - length_before;
+		length_before = segment.length + segment.pos;
+	}
+
+	// Apply to the DOM
+	for (const segment of segments) {
+		component_area_el.appendChild(segment.element);
+		$(segment.element).css(`margin-${pos_axis}`, segment.margin_before);
+	}
+}
+
 function $Component(name, orientation, $el){
 	// A draggable widget that can be undocked into a window
 	const $c = $(E("div")).addClass("component");
@@ -52,19 +118,26 @@ function $Component(name, orientation, $el){
 	
 	const dock_to = $dock_to => {
 		$w.hide();
-		
+
+		// must get layout state *before* changing it
+		const segments = get_segments($dock_to[0], pos_axis, $c[0]);
+
+		// so we can measure clientWidth/clientHeight
 		$dock_to.append($c);
+
+		segments.push({
+			element: $c[0],
+			pos: pos,
+			length: $c[0][pos_axis === "top" ? "clientHeight" : "clientWidth"],
+		});
+
+		const total_available_length = pos_axis === "top" ? $dock_to.height() : $dock_to.width();
+		// console.log("before adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
+		adjust_segments(segments, total_available_length);
+		// console.log("after adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
 		
-		pos = Math.max(pos, 0);
-		if(pos_axis === "top"){
-			pos = Math.min(pos, $dock_to.height() - $c.height());
-		}else{
-			pos = Math.min(pos, $dock_to.width() - $c.width());
-		}
-		
-		$c.css("position", "relative");
-		$c.css(pos_axis, pos);
-		
+		apply_segments($dock_to[0], pos_axis, segments);
+
 		// Save where it's now docked to
 		$last_docked_to = $dock_to;
 		last_docked_to_pos = pos;
@@ -77,14 +150,15 @@ function $Component(name, orientation, $el){
 		// Don't allow dragging in eye gaze mode
 		if($("body").hasClass("eye-gaze-mode")){ return; }
 		
-		$G.on("pointermove", drag_onpointermove);
+		$G.on("pointermove", drag_update_position);
 		$G.one("pointerup", e => {
-			$G.off("pointermove", drag_onpointermove);
+			$G.off("pointermove", drag_update_position);
 			drag_onpointerup(e);
 		});
 		
 		const rect = $c[0].getBoundingClientRect();
 		// Make sure these dimensions are odd numbers
+		// so the alternating pattern of the border is unbroken
 		w = (~~(rect.width/2))*2 + 1;
 		h = (~~(rect.height/2))*2 + 1;
 		ox = rect.left - e.clientX;
@@ -102,11 +176,13 @@ function $Component(name, orientation, $el){
 			});
 			$ghost.appendTo("body");
 		}
+
+		drag_update_position(e);
 		
 		// Prevent text selection anywhere within the component
 		e.preventDefault();
 	});
-	const drag_onpointermove = e => {
+	const drag_update_position = e => {
 		
 		$ghost.css({
 			left: e.clientX + ox,
@@ -134,11 +210,10 @@ function $Component(name, orientation, $el){
 				$dock_to = $bottom;
 			}
 		}
-		pos = ghost_rect[pos_axis];
 		
 		if($dock_to){
 			const dock_to_rect = $dock_to[0].getBoundingClientRect();
-			pos -= dock_to_rect[pos_axis];
+			pos = ghost_rect[pos_axis] - dock_to_rect[pos_axis];
 			$ghost.addClass("dock");
 		}else{
 			$ghost.removeClass("dock");
@@ -164,9 +239,13 @@ function $Component(name, orientation, $el){
 			// Dock component to $dock_to
 			dock_to($dock_to);
 		}else{
-			$c.css("position", "relative");
-			$c.css(pos_axis, "");
+			const component_area_el = $c.closest(".component-area")[0];
+			// must get layout state *before* changing it
+			const segments = get_segments(component_area_el, pos_axis, $c[0]);
 			
+			$c.css("position", "relative");
+			$c.css(`margin-${pos_axis}`, "");
+
 			// Put the component in the window
 			$w.$content.append($c);
 			// Show and position the window
@@ -179,6 +258,12 @@ function $Component(name, orientation, $el){
 				left: e.clientX + ox - dx,
 				top: e.clientY + oy - dy,
 			});
+
+			const total_available_length = pos_axis === "top" ? $(component_area_el).height() : $(component_area_el).width();
+			// console.log("before adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
+			adjust_segments(segments, total_available_length);
+			// console.log("after adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
+			apply_segments(component_area_el, pos_axis, segments);
 		}
 		
 		$ghost && $ghost.remove();

@@ -218,9 +218,8 @@ $menu_bar.on("default-info", ()=> {
 // </menu bar>
 
 let $toolbox = $ToolBox(tools);
-// const $toolbox2 = $ToolBox(extra_tools, true);//.hide();
+// let $toolbox2 = $ToolBox(extra_tools, true);//.hide();
 // Note: a second $ToolBox doesn't work because they use the same tool options (which could be remedied)
-// and also the UI isn't designed for multiple vertical components (or horizontal ones)
 // If there's to be extra tools, they should probably get a window, with different UI
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 
@@ -239,6 +238,10 @@ $G.on("eye-gaze-mode-toggled", ()=> {
 	$toolbox.destroy();
 	$toolbox = $ToolBox(tools);
 	prevent_selection($toolbox);
+
+	// $toolbox2.destroy();
+	// $toolbox2 = $ToolBox(extra_tools, true);
+	// prevent_selection($toolbox2);
 });
 
 

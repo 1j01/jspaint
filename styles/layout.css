@@ -260,6 +260,12 @@ html, body, .jspaint {
 	font-size: 2rem;
 }
 
+.component-area {
+	/* for measuring offsetTop/offsetLeft of component elements */
+	/* (makes it relative to this element) */
+	position: relative;
+}
+
 .Tools-component {
 	height: 273px;
 	align-items: center;

@@ -84,5 +84,10 @@ function $ToolBox(tools, is_extras){
 		});
 	};
 	$c.update_selected_tool();
+
+	if (is_extras) {
+		$c.height(80);
+	}
+
 	return $c;
 }
