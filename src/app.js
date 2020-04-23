@@ -768,7 +768,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 
 		if (!page_focused || !mouse_inside) return null;
 
-		const target = document.elementFromPoint(clientX, clientY);
+		let target = document.elementFromPoint(clientX, clientY);
 		if (!target) {
 			return null;
 		}
@@ -777,7 +777,6 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			x: clientX,
 			y: clientY,
 			time: Date.now(),
-			target,
 		};
 		
 		// top level menus are just immediately switched between for now
@@ -812,26 +811,17 @@ if ($("body").hasClass("eye-gaze-mode")) {
 		// .canvas-area is handled specially below
 		// (it's not itself a desired target)
 
-		hover_candidate.target = 
-			hover_candidate.target.closest(target_selector) ||
-			hover_candidate.target;
+		target = target.closest(target_selector);
 
-		if (!hover_candidate.target.matches(target_selector)) {
+		if (!target) {
 			return null;
 		}
 
-		// const ancestor_to_target = hover_candidate.target.closest(target_selector);
-		// if (ancestor_to_target) {
-		// 	hover_candidate.target = ancestor_to_target;
-		// } else if (!hover_candidate.target.matches()) {
-
-		// }
-		
-		// if (hover_candidate.target.matches(".help-window li")) {
-		// 	hover_candidate.target = hover_candidate.target.querySelector(".item");
+		// if (target.matches(".help-window li")) {
+		// 	target = target.querySelector(".item");
 		// }
 
-		if (hover_candidate.target === $canvas_area[0]) {
+		if (target === $canvas_area[0]) {
 			// Nudge hovers near the edges of the canvas onto the canvas
 			const margin = 50;
 			if (
@@ -840,7 +830,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 				hover_candidate.x < canvas_bounding_client_rect.right + margin &&
 				hover_candidate.y < canvas_bounding_client_rect.bottom + margin
 			) {
-				hover_candidate.target = canvas;
+				target = canvas;
 				hover_candidate.x = Math.min(
 					canvas_bounding_client_rect.right - 1,
 					Math.max(
@@ -858,12 +848,13 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			} else {
 				return null;
 			}
-		}else if(!hover_candidate.target.matches(".main-canvas, .selection canvas")){
+		}else if(!target.matches(".main-canvas, .selection canvas")){
 			// Nudge hover previews to the center of buttons and things
-			const rect = hover_candidate.target.getBoundingClientRect();
+			const rect = target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
 			hover_candidate.y = rect.top + rect.height / 2;
 		}
+		hover_candidate.target = target;
 		return hover_candidate;
 	};
 
