@@ -1908,9 +1908,9 @@ function image_flip_and_rotate(){
 	$fieldset.append("<legend>Flip or rotate</legend>");
 	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-horizontal' checked/>Flip horizontal</label>");
 	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-vertical'/>Flip vertical</label>");
-	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='rotate-by-angle'/>Rotate by angle<div></div></label>");
+	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='rotate-by-angle'/>Rotate by angle</label>");
 
-	const $rotate_by_angle = $fieldset.find("div");
+	const $rotate_by_angle = $(E("div")).appendTo($fieldset);
 	$rotate_by_angle.css({paddingLeft: "30px"});
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='90' checked/>90°</label>");
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='180'/>180°</label>");

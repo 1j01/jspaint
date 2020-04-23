@@ -795,6 +795,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			button:not([disabled]),
 			input,
 			textarea,
+			label,
 			a,
 			.current-colors,
 			.color-button,
@@ -883,7 +884,10 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			if (hover_candidate && !gaze_dragging) {
 				const apparent_hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 				if (apparent_hover_candidate) {
-					if (apparent_hover_candidate.target !== hover_candidate.target) {
+					if (
+						apparent_hover_candidate.target !== hover_candidate.target &&
+						apparent_hover_candidate.target.closest("label") !== hover_candidate.target
+					) {
 						hover_candidate = null;
 						inactive_until_time = Date.now() + inactive_after_invalid_timespan;
 					}
