@@ -769,6 +769,10 @@ if ($("body").hasClass("eye-gaze-mode")) {
 		if (!page_focused || !mouse_inside) return null;
 
 		const target = document.elementFromPoint(clientX, clientY);
+		if (!target) {
+			return null;
+		}
+		
 		let hover_candidate = {
 			x: clientX,
 			y: clientY,
@@ -776,25 +780,52 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			target,
 		};
 		
-		if (
-			!target ||
-			target.disabled ||
-			target.matches(".component, .menus, .history-view, .window-content") ||
-			target.closest(".selected, .active, .status-area") ||
-			// top level menus are just immediately switched between for now
-			// prevent awkward hover clicks on top level menu buttons while menus are open
-			(
-				(target.closest(".menu-button") || target.matches(".menu-container")) &&
-				$(".menu-button.active").length
-			)
+		// top level menus are just immediately switched between for now
+		// prevent awkward hover clicks on top level menu buttons while menus are open
+		if(
+			(target.closest(".menu-button") || target.matches(".menu-container")) &&
+			$(".menu-button.active").length
 		) {
 			return null;
 		}
 
+		// order matters here; things that come first are matched first
+		// so for nested targets, inner targets need to come first
+		const target_selector = `
+			button:not([disabled]),
+			input,
+			textarea,
+			a,
+			.current-colors,
+			.color-button,
+			.tool:not(.selected),
+			.menu-button:not(.active),
+			.menu-item,
+			.main-canvas,
+			.selection canvas,
+			.handle,
+			.window-titlebar,
+			.history-entry,
+			.canvas-area
+		`;
+		// .canvas-area is handled specially below
+		// (it's not itself a desired target)
+
 		hover_candidate.target = 
-			hover_candidate.target.closest(".current-colors, .color-button, .tool, .menu-button, button, .menu-item, .window-titlebar, .history-entry") ||
+			hover_candidate.target.closest(target_selector) ||
 			hover_candidate.target;
 
+		if (!hover_candidate.target.matches(target_selector)) {
+			return null;
+		}
+
+		// const ancestor_to_target = hover_candidate.target.closest(target_selector);
+		// if (ancestor_to_target) {
+		// 	hover_candidate.target = ancestor_to_target;
+		// } else if (!hover_candidate.target.matches()) {
+
+		// }
+		
 		// if (hover_candidate.target.matches(".help-window li")) {
 		// 	hover_candidate.target = hover_candidate.target.querySelector(".item");
 		// }
@@ -824,8 +855,8 @@ if ($("body").hasClass("eye-gaze-mode")) {
 					),
 				);
 			}
-		}else if(hover_candidate.target.closest("input, button, .tool, .color-button, .current-colors, .menu-button")){
-			// Nudge hover previews to the center of buttons and swatches
+		}else if(!hover_candidate.target.matches(".main-canvas, .selection canvas")){
+			// Nudge hover previews to the center of buttons and things
 			const rect = hover_candidate.target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
 			hover_candidate.y = rect.top + rect.height / 2;
