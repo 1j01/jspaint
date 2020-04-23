@@ -77,6 +77,7 @@ function open_help_viewer(options){
 		$show_button.hide();
 		$hide_button.show();
 		const toggling_width = measure_sidebar_width();
+		$help_window.css("max-width", "unset");
 		$help_window.width($help_window.width() + toggling_width);
 		$help_window.css("left", $help_window.offset().left - toggling_width);
 		// $help_window.applyBounds() would push the window to fit (before trimming it only if needed)
@@ -85,6 +86,7 @@ function open_help_viewer(options){
 			$help_window.width($help_window.width() + $help_window.offset().left);
 			$help_window.css("left", 0);
 		}
+		$help_window.css("max-width", "");
 	}).hide();
 	add_toolbar_button("Back", 1, ()=> {
 		$iframe[0].contentWindow.history.back();
