@@ -959,6 +959,9 @@ if ($("body").hasClass("eye-gaze-mode")) {
 								})(hover_candidate.target);
 							} else {
 								hover_candidate.target.click();
+								if (hover_candidate.target.matches("input, textarea")) {
+									hover_candidate.target.focus();
+								}
 							}
 						}
 					}
