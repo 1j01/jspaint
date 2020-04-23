@@ -798,20 +798,25 @@ if ($("body").hasClass("eye-gaze-mode")) {
 }
 
 function init_eye_gaze_mode() {
-	const circle_radius_max = 50;
-	const hover_timespan = 500;
+	const circle_radius_max = 50; // dwell indicator size in pixels
+	const hover_timespan = 500; // how long between the dwell indicator appearing and triggering a click
 	const averaging_window_timespan = 500;
-	const startup_timespan = averaging_window_timespan;
-	const inactive_after_release_timespan = 1000;
-	const inactive_after_hovered_timespan = 1000;
-	const inactive_after_invalid_timespan = 1000;
-	const inactive_after_focused_timespan = 1000;
+	const inactive_at_startup_timespan = 1500; // (should be at least averaging_window_timespan, but more importantly enough to make it not awkward when enabling eye gaze mode)
+	const inactive_after_release_timespan = 1000; // after click or drag release (from dwell or otherwise)
+	const inactive_after_hovered_timespan = 1000; // after dwell click indicator appears; does not control the time to finish that dwell click, only to click on something else after this is canceled (but it doesn't control that directly)
+	const inactive_after_invalid_timespan = 1000; // after a dwell click is canceled due to an element popping up in front, or existing in front at the center of the other element
+	const inactive_after_focused_timespan = 1000; // after page becomes focused after being unfocused
 	let recent_points = [];
-	let inactive_until_time = Date.now() + startup_timespan;
+	let inactive_until_time = Date.now();
 	let paused = false;
 	let $pause_button;
 	let hover_candidate;
 	let gaze_dragging = null;
+
+	const deactivate_for_at_least = (timespan)=> {
+		inactive_until_time = Math.max(inactive_until_time, Date.now() + timespan);
+	};
+	deactivate_for_at_least(inactive_at_startup_timespan);
 
 	const $halo = $("<div class='hover-halo'>").appendTo("body").hide();
 	const $dwell_indicator = $("<div class='dwell-indicator'>").css({
@@ -823,7 +828,7 @@ function init_eye_gaze_mode() {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
 	};
 	const on_pointer_up_or_cancel = (e)=> {
-		inactive_until_time = Date.now() + inactive_after_release_timespan;
+		deactivate_for_at_least(inactive_after_release_timespan);
 		gaze_dragging = null;
 	};
 
@@ -831,7 +836,7 @@ function init_eye_gaze_mode() {
 	let mouse_inside = true;
 	const on_focus = ()=> {
 		page_focused = true;
-		inactive_until_time = Date.now() + inactive_after_focused_timespan;
+		deactivate_for_at_least(inactive_after_focused_timespan);
 	};
 	const on_blur = ()=> {
 		page_focused = false;
@@ -966,11 +971,11 @@ function init_eye_gaze_mode() {
 						apparent_hover_candidate.target.closest("label") !== hover_candidate.target
 					) {
 						hover_candidate = null;
-						inactive_until_time = Date.now() + inactive_after_invalid_timespan;
+						deactivate_for_at_least(inactive_after_invalid_timespan);
 					}
 				} else {
 					hover_candidate = null;
-					inactive_until_time = Date.now() + inactive_after_invalid_timespan;
+					deactivate_for_at_least(inactive_after_invalid_timespan);
 				}
 			}
 			
@@ -1047,7 +1052,7 @@ function init_eye_gaze_mode() {
 						}
 					}
 					hover_candidate = null;
-					inactive_until_time = Date.now() + inactive_after_hovered_timespan;
+					deactivate_for_at_least(inactive_after_hovered_timespan);
 				}
 			}
 
