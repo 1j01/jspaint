@@ -854,6 +854,8 @@ if ($("body").hasClass("eye-gaze-mode")) {
 						hover_candidate.y,
 					),
 				);
+			} else {
+				return null;
 			}
 		}else if(!hover_candidate.target.matches(".main-canvas, .selection canvas")){
 			// Nudge hover previews to the center of buttons and things
