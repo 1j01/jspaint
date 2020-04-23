@@ -458,7 +458,7 @@ window.menus = {
 							}else if(name.match(/[./[\]#$]/)){
 								show_error_message("The session name cannot contain any of ./[]#$");
 							}else{
-								location.hash = `session:${name}`;
+								location.hash = `${location.hash.length > 1 ? `${location.hash},` : ""}session:${name}`;
 							}
 						}
 					},
@@ -512,6 +512,50 @@ window.menus = {
 					description: "Makes JS Paint look festive for the holidays.",
 				},
 			]
+		},
+		{
+			item: "&Eye Gaze Mode",
+			checkbox: {
+				toggle: ()=> {
+					if (location.hash.match(/eye-gaze-mode/i)) {
+						// TODO: confirmation dialog that you could cancel with dwell clicking!
+						// if (confirm("This will disable eye gaze mode.")) {
+						location.hash = location.hash.replace(/eye-gaze-mode,|,eye-gaze-mode/i, "");
+						// }
+					} else {
+						location.hash = `eye-gaze-mode${location.hash.length > 1 ? "," : ""}${location.hash.replace(/^#/, "")}`;
+					}
+				},
+				check: ()=> {
+					return location.hash.match(/eye-gaze-mode/i);
+				},
+			},
+			description: "Enlarges buttons and provides dwell clicking.",
+		},
+		{
+			item: "&Vertical Color Box",
+			checkbox: {
+				toggle: ()=> {
+					if (location.hash.match(/eye-gaze-mode/i)) {
+						// TODO: confirmation dialog that you could cancel with dwell clicking!
+						// if (confirm("This will disable eye gaze mode.")) {
+						// location.hash = location.hash.replace(/eye-gaze-mode,|,eye-gaze-mode/i, "");
+						// location.hash = location.hash.replace(/vertical-color-box-mode,|,vertical-color-box-mode/i, "");
+						// }
+					} else if (location.hash.match(/vertical-color-box-mode/i)) {
+						location.hash = location.hash.replace(/vertical-color-box-mode,|,vertical-color-box-mode/i, "");
+					} else {
+						location.hash = `vertical-color-box-mode${location.hash.length > 1 ? "," : ""}${location.hash.replace(/^#/, "")}`;
+					}
+				},
+				check: ()=> {
+					return location.hash.match(/vertical-color-box-mode|eye-gaze-mode/i);
+				},
+			},
+			enabled: ()=> {
+				return !location.hash.match(/eye-gaze-mode/i);
+			},
+			description: "Enlarges buttons and provides dwell clicking.",
 		},
 		MENU_DIVIDER,
 		{

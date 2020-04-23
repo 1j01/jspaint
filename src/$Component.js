@@ -21,9 +21,10 @@ function $Component(name, orientation, $el){
 		$c.css("left", "3px");
 	}
 
+	let iid;
 	if($("body").hasClass("eye-gaze-mode")){
 		// TODO: don't use an interval for this!
-		setInterval(()=> {
+		iid = setInterval(()=> {
 			const scale = 3;
 			$c.css({
 				transform: `scale(${scale})`,
@@ -209,6 +210,11 @@ function $Component(name, orientation, $el){
 			$c.show();
 		}
 		return $c;
+	};
+	$c.destroy = ()=> {
+		$w.close();
+		$c.remove();
+		clearInterval(iid);
 	};
 	
 	$w.on("close", e => {

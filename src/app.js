@@ -90,8 +90,50 @@ let update_helper_layer_on_pointermove_active = false;
 /** client coords */
 let pointers = [];
 
+const update_eye_gaze_mode = ()=> {
+	if (location.hash.match(/eye-gaze-mode/i)) {
+		if (!$("body").hasClass("eye-gaze-mode")) {
+			$("body").addClass("eye-gaze-mode");
+			$G.triggerHandler("eye-gaze-mode-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change
+		}
+	} else {
+		if ($("body").hasClass("eye-gaze-mode")) {
+			$("body").removeClass("eye-gaze-mode");
+			$G.triggerHandler("eye-gaze-mode-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change
+		}
+	}
+
+	if (location.hash.match(/vertical-color-box-mode|eye-gaze-mode/i)) {
+		if (!$("body").hasClass("vertical-color-box-mode")) {
+			$("body").addClass("vertical-color-box-mode");
+			$G.triggerHandler("vertical-color-box-mode-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change
+		}
+	} else {
+		if ($("body").hasClass("vertical-color-box-mode")) {
+			$("body").removeClass("vertical-color-box-mode");
+			$G.triggerHandler("vertical-color-box-mode-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change
+		}
+	}
+};
+update_eye_gaze_mode();
+$G.on("hashchange", update_eye_gaze_mode);
+
+// handle backwards compatibility URLs
 if (location.search.match(/eye-gaze-mode/)) {
-	$("body").addClass("eye-gaze-mode");
+	history.replaceState(null, document.title,
+		`${location.origin}${location.pathname}#eye-gaze-mode${location.hash.length > 1 ? `,${location.hash.replace(/^#/, "")}` : ""}`
+	);
+	update_eye_gaze_mode();
+}
+if (location.search.match(/vertical-colors?-box/)) {
+	history.replaceState(null, document.title,
+		`${location.origin}${location.pathname}#vertical-color-box-mode${location.hash.length > 1 ? `,${location.hash.replace(/^#/, "")}` : ""}`
+	);
+	update_eye_gaze_mode();
 }
 
 const $app = $(E("div")).addClass("jspaint").appendTo("body");
@@ -175,13 +217,30 @@ $menu_bar.on("default-info", ()=> {
 });
 // </menu bar>
 
-const $toolbox = $ToolBox(tools);
+let $toolbox = $ToolBox(tools);
 // const $toolbox2 = $ToolBox(extra_tools, true);//.hide();
 // Note: a second $ToolBox doesn't work because they use the same tool options (which could be remedied)
 // and also the UI isn't designed for multiple vertical components (or horizontal ones)
 // If there's to be extra tools, they should probably get a window, with different UI
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
-const $colorbox = $ColorBox();
+
+let $colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
+
+$G.on("vertical-color-box-mode-toggled", ()=> {
+	$colorbox.destroy();
+	$colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
+	prevent_selection($colorbox);
+});
+$G.on("eye-gaze-mode-toggled", ()=> {
+	$colorbox.destroy();
+	$colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
+	prevent_selection($colorbox);
+	
+	$toolbox.destroy();
+	$toolbox = $ToolBox(tools);
+	prevent_selection($toolbox);
+});
+
 
 $canvas_area.on("user-resized", (_event, _x, _y, unclamped_width, unclamped_height) => {
 	resize_canvas_and_save_dimensions(unclamped_width, unclamped_height);
@@ -726,7 +785,19 @@ $canvas.on("pointerleave", ()=> {
 	}
 });
 
+let clean_up_eye_gaze_mode = ()=> {};
+$G.on("eye-gaze-mode-toggled", ()=> {
+	if ($("body").hasClass("eye-gaze-mode")) {
+		init_eye_gaze_mode();
+	} else {
+		clean_up_eye_gaze_mode();
+	}
+});
 if ($("body").hasClass("eye-gaze-mode")) {
+	init_eye_gaze_mode();
+}
+
+function init_eye_gaze_mode() {
 	const circle_radius_max = 50;
 	const hover_timespan = 500;
 	const averaging_window_timespan = 500;
@@ -741,28 +812,43 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	let $pause_button;
 	let hover_candidate;
 	let gaze_dragging = null;
+
 	const $halo = $("<div class='hover-halo'>").appendTo("body").hide();
 	const $dwell_indicator = $("<div class='dwell-indicator'>").css({
 		width: circle_radius_max,
 		height: circle_radius_max,
 	}).appendTo("body").hide();
-	$G.on("pointermove", (e)=> {
+
+	const on_pointer_move = (e)=> {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
-	});
-	$G.on("pointerup pointercancel", (e)=> {
+	};
+	const on_pointer_up_or_cancel = (e)=> {
 		inactive_until_time = Date.now() + inactive_after_release_timespan;
 		gaze_dragging = null;
-	});
+	};
 
 	let page_focused = document.visibilityState === "visible";
 	let mouse_inside = true;
-	$G.on("focus", ()=> {
+	const on_focus = ()=> {
 		page_focused = true;
 		inactive_until_time = Date.now() + inactive_after_focused_timespan;
-	});
-	$G.on("blur", ()=> { page_focused = false; });
-	$(document).on("mouseleave", ()=> { mouse_inside = false; });
-	$(document).on("mouseenter", ()=> { mouse_inside = true; });
+	};
+	const on_blur = ()=> {
+		page_focused = false;
+	};
+	const on_mouse_leave_page = ()=> {
+		mouse_inside = false;
+	};
+	const on_mouse_enter_page = ()=> {
+		mouse_inside = true;
+	};
+
+	$G.on("pointermove", on_pointer_move);
+	$G.on("pointerup pointercancel", on_pointer_up_or_cancel);
+	$G.on("focus", on_focus);
+	$G.on("blur", on_blur);
+	$(document).on("mouseleave", on_mouse_leave_page);
+	$(document).on("mouseenter", on_mouse_enter_page);
 
 	const get_hover_candidate = (clientX, clientY)=> {
 
@@ -1046,11 +1132,12 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			}
 		}
 	};
+	let raf_id;
 	const animate = ()=> {
-		requestAnimationFrame(animate);
+		raf_id = requestAnimationFrame(animate);
 		update();
 	};
-	requestAnimationFrame(animate);
+	raf_id = requestAnimationFrame(animate);
 
 	const $floating_buttons =
 		$("<div/>")
@@ -1115,6 +1202,21 @@ if ($("body").hasClass("eye-gaze-mode")) {
 			backgroundImage: "url(images/classic/eye-gaze-pause.svg)",
 		})
 	);
+
+	clean_up_eye_gaze_mode = ()=> {
+		console.log("Cleaning up / disabling eye gaze mode");
+		cancelAnimationFrame(raf_id);
+		$halo.remove();
+		$dwell_indicator.remove();
+		$floating_buttons.remove();
+		$G.off("pointermove", on_pointer_move);
+		$G.off("pointerup pointercancel", on_pointer_up_or_cancel);
+		$G.off("focus", on_focus);
+		$G.off("blur", on_blur);
+		$(document).off("mouseleave", on_mouse_leave_page);
+		$(document).off("mouseenter", on_mouse_enter_page);
+		clean_up_eye_gaze_mode = ()=> {};
+	};
 }
 
 let pan_start_pos;
@@ -1285,31 +1387,34 @@ $canvas_area.on("pointerdown", e => {
 	}
 });
 
-$app
-.add($toolbox)
-// .add($toolbox2)
-.add($colorbox)
-.on("mousedown selectstart contextmenu", e => {
-	if(e.isDefaultPrevented()){
-		return;
-	}
-	if(
-		e.target instanceof HTMLSelectElement ||
-		e.target instanceof HTMLTextAreaElement ||
-		(e.target instanceof HTMLLabelElement && e.type !== "contextmenu") ||
-		(e.target instanceof HTMLInputElement && e.target.type !== "color")
-	){
-		return;
-	}
-	if(e.button === 1){
-		return; // allow middle-click scrolling
-	}
-	e.preventDefault();
-	// we're just trying to prevent selection
-	// but part of the default for mousedown is *deselection*
-	// so we have to do that ourselves explicitly
-	window.getSelection().removeAllRanges();
-});
+function prevent_selection($el) {
+	$el.on("mousedown selectstart contextmenu", (e) => {
+		if(e.isDefaultPrevented()){
+			return;
+		}
+		if(
+			e.target instanceof HTMLSelectElement ||
+			e.target instanceof HTMLTextAreaElement ||
+			(e.target instanceof HTMLLabelElement && e.type !== "contextmenu") ||
+			(e.target instanceof HTMLInputElement && e.target.type !== "color")
+		){
+			return;
+		}
+		if(e.button === 1){
+			return; // allow middle-click scrolling
+		}
+		e.preventDefault();
+		// we're just trying to prevent selection
+		// but part of the default for mousedown is *deselection*
+		// so we have to do that ourselves explicitly
+		window.getSelection().removeAllRanges();
+	});
+}
+
+prevent_selection($app);
+prevent_selection($toolbox);
+// prevent_selection($toolbox2);
+prevent_selection($colorbox);
 
 // Stop drawing (or dragging or whatver) if you Alt+Tab or whatever
 $G.on("blur", () => {

@@ -496,8 +496,8 @@
 	};
 	const generate_session_id = () => (Math.random()*(2 ** 32)).toString(16).replace(".", "");
 	const update_session_from_location_hash = () => {
-		const session_match = location.hash.match(/^#?(session|local):(.*)$/i);
-		const load_from_url_match = location.hash.match(/^#?(load):(.*)$/i);
+		const session_match = location.hash.match(/^#?(?:.*,)?(session|local):(.*)$/i);
+		const load_from_url_match = location.hash.match(/^#?(?:.*,)?(load):(.*)$/i);
 		if(session_match){
 			const local = session_match[1].toLowerCase() === "local";
 			const session_id = session_match[2];
@@ -554,7 +554,7 @@
 							log("Switching to new session from #load: URL (to #local: URL with session ID) because of user interaction");
 							end_current_session();
 							const new_session_id = generate_session_id();
-							location.hash = `local:${new_session_id}`;
+							location.hash = `${location.hash.length > 1 ? `${location.hash},` : ""}local:${new_session_id}`;
 						}
 					});
 				}, 100);
@@ -565,7 +565,9 @@
 			const old_hash = location.hash;
 			end_current_session();
 			const new_session_id = generate_session_id();
-			history.replaceState(null, document.title, `#local:${new_session_id}`);
+			history.replaceState(null, document.title,
+				`#${location.hash.length > 1 ? `${location.hash.replace(/^#/, "")},` : ""}local:${new_session_id}`
+			);
 			log("After replaceState:", location.hash);
 			if (old_hash === location.hash) {
 				// e.g. on Wayback Machine

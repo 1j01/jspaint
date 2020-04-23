@@ -32,16 +32,16 @@ function $Swatch(color){
 	return $b;
 }
 
-function $ColorBox(){
+function $ColorBox(vertical){
 	const $cb = $(E("div")).addClass("color-box");
 	
-	const $current_colors = $Swatch().addClass("current-colors");
+	const $current_colors = $Swatch(colors.ternary).addClass("current-colors");
 	const $palette = $(E("div")).addClass("palette");
 	
 	$cb.append($current_colors, $palette);
 	
-	const $foreground_color = $Swatch().addClass("color-selection foreground-color");
-	const $background_color = $Swatch().addClass("color-selection background-color");
+	const $foreground_color = $Swatch(colors.foreground).addClass("color-selection foreground-color");
+	const $background_color = $Swatch(colors.background).addClass("color-selection background-color");
 	$current_colors.append($background_color, $foreground_color);
 	
 	$G.on("option-changed", () => {
@@ -127,10 +127,6 @@ function $ColorBox(){
 			}
 		});
 	};
-
-	const vertical =
-		$("body").hasClass("eye-gaze-mode") ||
-		location.search.match(/vertical-colors-box/);
 
 	const build_palette = () => {
 		$palette.empty();

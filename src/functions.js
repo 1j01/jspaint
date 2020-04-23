@@ -532,7 +532,7 @@ function file_load_from_url(){
 			// (but still load from the hash when necessary)
 			// make sure it doesn't overwrite the old session before switching
 			$w.close();
-			location.hash = `load:${encodeURIComponent(uris[0])}`;
+			location.hash = `${location.hash.length > 1 ? `${location.hash},` : ""}load:${encodeURIComponent(uris[0])}`;
 		} else {
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}

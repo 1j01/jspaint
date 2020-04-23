@@ -76,8 +76,8 @@ I want to bring good old paint into the modern era.
   (I made a [library](https://github.com/1j01/palette.js/) for this.)
 * Touch support: use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
-* Vertical colors box mode, accessible from URL https://jspaint.app/?vertical-colors-box
-* An experimental eye gaze friendly mode, for use with an eye tracker, head tracker, or other coarse input device, accessible from URL https://jspaint.app/?eye-gaze-mode (you can try it out with [Camera Mouse](http://cameramouse.org/) or [GazePointer](https://sourceforge.net/projects/gazepointer/))
+* Vertical Color Box mode, accessible from URL https://jspaint.app/#vertical-color-box-mode or from **Extras > Vertical Color Box**
+* Eye Gaze Mode, for use with an eye tracker, head tracker, or other coarse input device, accessible from URL https://jspaint.app/#eye-gaze-mode or from **Extras > Eye Gaze Mode**. (With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).)
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
