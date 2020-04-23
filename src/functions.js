@@ -2000,13 +2000,15 @@ function image_stretch_and_skew(){
 		}).css({
 			marginRight: "20px"
 		});
+		const input_id = ("input" + Math.random() + Math.random()).replace(/\./, "");
 		const $input = $(E("input")).attr({
-			value: default_value
+			value: default_value,
+			id: input_id,
 		}).css({
 			width: "40px"
 		});
 		$(E("td")).appendTo($tr).append($img);
-		$(E("td")).appendTo($tr).text(label_text);
+		$(E("td")).appendTo($tr).append($(E("label")).text(label_text).attr("for", input_id));
 		$(E("td")).appendTo($tr).append($input);
 		$(E("td")).appendTo($tr).text(label_unit);
 
