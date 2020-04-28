@@ -1,6 +1,6 @@
 import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
 addMatchImageSnapshotCommand({
-	failureThreshold: 0.0,
+	failureThreshold: 13,
 	failureThresholdType: 'pixel',
 	customDiffConfig: { threshold: 0.2 },
 	capture: 'viewport',
