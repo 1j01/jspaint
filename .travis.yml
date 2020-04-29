@@ -15,5 +15,8 @@ cache:
     - ~/.cache
 install:
   - npm ci
+before_script:
+  - npm run test:start-server &
+  - sleep 3 # hopefully the server will be listening by then
 script:
-  - npm run lint && npm run test
+  - npm run lint && npm run cy:run
