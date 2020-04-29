@@ -154,9 +154,6 @@ html, body, .jspaint {
 .menu-hotkey {
 	display: inline !important;
 }
-.menu-item-checkbox-area {
-	line-height: 1;
-}
 .menu-item-checkbox-area,
 .menu-item-submenu-area {
 	min-width: 16px;
@@ -269,6 +266,7 @@ html, body, .jspaint {
 }
 .eye-gaze-mode .menu-item * {
 	font-size: 2rem;
+	line-height: 1.5;
 }
 
 .component-area {
@@ -525,6 +523,7 @@ html, body, .jspaint {
 	flex-grow: 0;
 	flex-shrink: 0;
 	overflow: auto;
+	box-sizing: border-box;
 }
 .help-window ul {
 	margin: 0;

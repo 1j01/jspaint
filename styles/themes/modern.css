@@ -60,16 +60,13 @@ body {
 }
 .window,
 .window-titlebar {
-	/*border-top-left-radius: 2px;*/
-	/*border-top-right-radius: 2px;*/
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
 }
 .window-titlebar {
 	background: #3f51b5;
 	color: white;
-	/*padding: 16px;*/
-	/*height: 32px;*/
+	padding-left: 8px;
 	padding-right: 8px;
 }
 .tool-window .window-titlebar {
@@ -96,6 +93,17 @@ body {
 	color: transparent;
 	transform: scale(1.5);
 	font-size: 1px;
+	border-radius: 50%;
+	width: 17px;
+	height: 17px;
+	margin-left: 10px;
+	position: relative;
+}
+.window-button:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+.window-button:hover:active {
+	background: rgba(255, 255, 255, 0.5);
 }
 .os-window .window-button {
 	transform: scale(1.8);
@@ -103,6 +111,12 @@ body {
 .window-button::after {
 	color: white;
 	font-size: 15px;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	text-align: center;
 }
 .window-close-button::after {
 	content: "×";
@@ -229,6 +243,9 @@ body {
 .status-area {
 	background: #fff;
 }
+.status-text {
+	padding-left: 8px;
+}
 
 body,
 .canvas-area {
@@ -265,6 +282,24 @@ body,
 	outline-offset: 2px;
 }
 
+:root {
+	/* for disabled button icon effect */
+	--ButtonHilight: #fff;
+	--ButtonShadow: #aaa;
+}
+.help-window .resizer {
+	background-color: #aaa !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+.help-window .toolbar button {
+	width: 60px;
+	height: 42px;
+	margin-left: 2px;
+	margin-right: 0;
+	margin-top: 2px;
+	margin-bottom: 1px;
+}
 .help-window .window-content {
 	padding: 0;
 }
