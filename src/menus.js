@@ -555,7 +555,8 @@ window.menus = {
 			enabled: ()=> {
 				return !location.hash.match(/eye-gaze-mode/i);
 			},
-			description: "Enlarges buttons and provides dwell clicking.",
+			// description: "Positions the color box on the side.",
+			description: "Arranges the color box vertically.",
 		},
 		MENU_DIVIDER,
 		{
