@@ -202,6 +202,7 @@ body {
 	width: 18px;
 	height: 18px;
 }
+.color-button, /* this outer one is only for detection for the hover halo in eye gaze mode */
 .color-button canvas,
 .color-selection canvas,
 .color-button:after,

@@ -1092,6 +1092,13 @@ function init_eye_gaze_mode() {
 					rect.width = rect.right - rect.left;
 					rect.height = rect.bottom - rect.top;
 				}
+				// this is so overkill just for border radius mimicry
+				const computed_style = getComputedStyle(halo_target);
+				const border_radius_scale = parseInt(
+					(
+						$(halo_target).closest(".component").css("transform") || ""
+					).match(/\d+/) || 1
+				);
 				$halo.css({
 					display: "block",
 					position: "fixed",
@@ -1099,7 +1106,12 @@ function init_eye_gaze_mode() {
 					top: rect.top,
 					width: rect.width,
 					height: rect.height,
-					borderRadius: getComputedStyle(halo_target).borderRadius,
+					// shorthand properties might not work in all browsers (not tested)
+					// this is so overkill...
+					borderTopRightRadius: parseFloat(computed_style.borderTopRightRadius) * border_radius_scale,
+					borderTopLeftRadius: parseFloat(computed_style.borderTopLeftRadius) * border_radius_scale,
+					borderBottomRightRadius: parseFloat(computed_style.borderBottomRightRadius) * border_radius_scale,
+					borderBottomLeftRadius: parseFloat(computed_style.borderBottomLeftRadius) * border_radius_scale,
 				});
 			} else {
 				$halo.hide();
