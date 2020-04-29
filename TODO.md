@@ -3,7 +3,6 @@
 
 ### Help
 
-* Resizable panes
 * Resizable window
 * Link-esque things
 	* Popups (I'd probably make the text within the popups selectable)
@@ -26,11 +25,10 @@
 
 * Warning sign for "Save changes to X?" dialog
 * Error symbol for error message dialogs
-* 3D inset border for inputs - SVG `image-border`?
+* 3D inset border for inputs with SVG `image-border` (in [os-gui](https://github.com/1j01/os-gui))
 * The window close button uses text; font rendering is not consistent
 * The progress bar (Rendering GIF) is left native
 * Menu separator spacing
-* Minor color differences (0x808080 != 0x7b7b7b) - use a palette for consistency?
 * I want to give most things a revisit later on for Pixel Perfection
 * Fill bucket and airbrush cursors are supposed to have inverty parts
 * Custom cursors in Edge; apparently they require `.cur` files? ugh
@@ -98,7 +96,7 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 * Enlarge menus on touch devices
 * Enlarge window titlebar close buttons on touch devices
 * Magnifier: on touchscreens, wait until pointerup to zoom
-	* To detect touchscreen usage, could keep track of whether the last pointermove had any buttons pressed
+	* To detect touchscreen usage, could keep track of whether the last pointermove had any buttons pressed... or use `pointerType`, right?
 * Alternative way to access "Color Eraser" feature without a secondary mouse button?
 * Alternative access to functionality that would normally require a keyboard (with a numpad!)
 	* Numpad +/-: Increase/Decrease brush size, Double/Halve selection size, ...
@@ -182,12 +180,8 @@ Functionality:
 
 
 * CSS
-	* DRY, especially button styles - SVG `border-image`?
-	* Use a CSS preprocessor
-		* DRY
-		* Clearer `z-index` handling?
-		* Color-swap themes (maybe even load Windows theme files)
-	* Stuff should go in an [OS GUI library](https://github.com/1j01/os-gui) with themes for Windows 98 and other OSes
+	* DRY, especially button styles, with [os-gui](https://github.com/1j01/os-gui)
+	* Clearer `z-index` handling, maybe with CSS variables?
 
 
 * JS
