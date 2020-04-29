@@ -1165,6 +1165,7 @@ function init_eye_gaze_mode() {
 		width: 28,
 		height: 28,
 		verticalAlign: "bottom",
+		position: "relative", // to make the icon's "absolute" relative to here
 	})
 	.append(
 		$("<div>")
@@ -1198,6 +1199,7 @@ function init_eye_gaze_mode() {
 		width: 28,
 		height: 28,
 		verticalAlign: "bottom",
+		position: "relative", // to make the icon's "absolute" relative to here
 	})
 	.append(
 		$("<div>")
