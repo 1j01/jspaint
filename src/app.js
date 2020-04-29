@@ -898,7 +898,7 @@ function init_eye_gaze_mode() {
 			.main-canvas,
 			.selection canvas,
 			.handle,
-			.window-titlebar,
+			.window:not(.maximized) .window-titlebar,
 			.history-entry,
 			.canvas-area
 		`;
@@ -942,7 +942,7 @@ function init_eye_gaze_mode() {
 			} else {
 				return null;
 			}
-		}else if(!target.matches(".main-canvas, .selection canvas")){
+		}else if(!target.matches(".main-canvas, .selection canvas, .window-titlebar")){
 			// Nudge hover previews to the center of buttons and things
 			const rect = target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
