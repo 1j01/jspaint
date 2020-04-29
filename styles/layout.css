@@ -218,8 +218,8 @@ html, body, .jspaint {
 	clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 .eye-gaze-mode .color-button {
-	width: 24px;
-	height: 24px;
+	width: 25px;
+	height: 25px;
 }
 .eye-gaze-mode .Colors-component.tall {
 	width: 50px;
@@ -230,10 +230,10 @@ html, body, .jspaint {
 .eye-gaze-mode .Colors-component.tall .current-colors {
 	width: 100%;
 }
-.eye-gaze-mode .foreground-color {
+.eye-gaze-mode .Colors-component.tall .foreground-color {
 	left: 12px;
 }
-.eye-gaze-mode .background-color {
+.eye-gaze-mode .Colors-component.tall .background-color {
 	right: 12px;
 }
 
@@ -340,9 +340,8 @@ html, body, .jspaint {
 	height: 31px;
 }
 .Colors-component.tall .current-colors {
-	width: 32px;
+	width: 31px;
 	height: 32px;
-	margin-bottom: 1px;
 }
 .current-colors,
 .color-button {
@@ -358,12 +357,27 @@ html, body, .jspaint {
 	right: 3px;
 	bottom: 3px;
 }
+.Colors-component.tall .foreground-color {
+	left: 4px;
+	top: 3px;
+}
+.Colors-component.tall .background-color {
+	right: 3px;
+	bottom: 3px;
+}
+
+.Colors-component.wide .color-button,
+.Colors-component.wide .color-selection {
+	margin-left: 1px;
+}
+.Colors-component.tall .color-button,
+.Colors-component.tall .color-selection {
+	margin-top: 1px;
+}
 .color-button,
 .color-selection {
-	margin-left: 1px;
 	padding: 0;
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	width: 15px;
 	height: 15px;
 	border: 0;

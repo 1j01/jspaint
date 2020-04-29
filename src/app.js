@@ -882,8 +882,6 @@ function init_eye_gaze_mode() {
 			return null;
 		}
 
-		// order matters here; things that come first are matched first
-		// so for nested targets, inner targets need to come first
 		const target_selector = `
 			button:not([disabled]),
 			input,
@@ -909,6 +907,10 @@ function init_eye_gaze_mode() {
 
 		if (!target) {
 			return null;
+		}
+
+		if (target.matches(".color-button input")) {
+			target = target.closest(".color-button");
 		}
 
 		// if (target.matches(".help-window li")) {

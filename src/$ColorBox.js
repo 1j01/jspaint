@@ -134,11 +134,18 @@ function $ColorBox(vertical){
 		palette.forEach(make_color_button);
 
 		// Note: this doesn't work until the colors box is in the DOM
-		const width_per_button = $palette.find(".color-button").outerWidth() + 1;
-
+		const $some_button = $palette.find(".color-button");
 		if (vertical) {
-			$palette.height(Math.ceil(palette.length/2) * width_per_button);
+			const height_per_button =
+				$some_button.outerHeight() +
+				parseFloat(getComputedStyle($some_button[0]).getPropertyValue("margin-top")) +
+				parseFloat(getComputedStyle($some_button[0]).getPropertyValue("margin-bottom"));
+			$palette.height(Math.ceil(palette.length/2) * height_per_button);
 		} else {
+			const width_per_button =
+				$some_button.outerWidth() +
+				parseFloat(getComputedStyle($some_button[0]).getPropertyValue("margin-left")) +
+				parseFloat(getComputedStyle($some_button[0]).getPropertyValue("margin-right"));
 			$palette.width(Math.ceil(palette.length/2) * width_per_button);
 		}
 
@@ -146,6 +153,7 @@ function $ColorBox(vertical){
 		$last_fg_color_button = $palette.find(".color-button");
 	};
 	build_palette();
+	$(window).on("theme-change", build_palette);
 	
 	let $c;
 	if (vertical) {
