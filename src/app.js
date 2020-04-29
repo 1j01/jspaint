@@ -1099,6 +1099,7 @@ function init_eye_gaze_mode() {
 					top: rect.top,
 					width: rect.width,
 					height: rect.height,
+					borderRadius: getComputedStyle(halo_target).borderRadius,
 				});
 			} else {
 				$halo.hide();
