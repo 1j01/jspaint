@@ -154,6 +154,9 @@ html, body, .jspaint {
 .menu-hotkey {
 	display: inline !important;
 }
+.menu-item-checkbox-area {
+	line-height: 1;
+}
 .menu-item-checkbox-area,
 .menu-item-submenu-area {
 	min-width: 16px;
