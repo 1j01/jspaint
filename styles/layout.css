@@ -256,6 +256,14 @@ html, body, .jspaint {
 	transform-origin: 0 0;
 }
 
+.eye-gaze-mode .menu-button {
+	padding-right: 10px;
+	padding-left: 10px;
+}
+.eye-gaze-mode .menu-button,
+.eye-gaze-mode .menu-button * {
+	font-size: 2rem;
+}
 .eye-gaze-mode .menu-item * {
 	font-size: 2rem;
 }
