@@ -9,18 +9,25 @@ html, body, .jspaint {
 }
 
 .canvas-area,
-.canvas-area canvas {
+.main-canvas {
 	position: fixed;
 	left: 0;
 	top: 0;
 	max-width: 100%;
+	width: auto !important;
+	height: auto !important;
 }
 
 .window,
 .handle,
 .status-area,
 .menus,
-.component-area {
+.component-area,
+.selection,
+.textbox,
+button,
+.hover-halo,
+.dwell-indicator {
 	display: none !important;
 }
 
