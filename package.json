@@ -89,7 +89,7 @@
     "test:start-server": "live-server --port=11822 --no-browser --ignorePattern=\"(node_modules|cypress|out)[/\\\\\\\\]|package\\.json|cypress\\.json\"",
     "test:start-server:NOTE": "@XXX: the octuple backlash ends up meaning a single backslash on Linux, two backslashes on Windows. In this case it's fine because it's in a regexp character class so the extra is redundant and doesn't cause an error.",
     "cy:open": "cypress open",
-    "cy:run": "cypress run",
+    "cy:run": "cypress run --record",
     "cy:accept": "cypress run --env updateSnapshots=true",
     "test": "start-server-and-test test:start-server http://localhost:11822 cy:run",
     "accept": "start-server-and-test test:start-server http://localhost:11822 cy:accept"
