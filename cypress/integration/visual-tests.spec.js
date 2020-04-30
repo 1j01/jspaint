@@ -3,7 +3,7 @@
 context('visual tests', () => {
 
 	const withTextCompareOptions = {
-		failureThreshold: 0.05, // (1% is much too high)
+		failureThreshold: 0, // (1% is much too high)
 		failureThresholdType: 'percent'
 	};
 	const noTextCompareOptions = {
