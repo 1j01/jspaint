@@ -89,4 +89,40 @@ context('visual tests', () => {
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(3)').click();
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
 	});
+
+	it('eye gaze mode', () => {
+		cy.get('.tool[title="Select"]').click();
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Eye Gaze Mode").click();
+		cy.wait(100);
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.get(".canvas-area").click();
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('modern theme eye gaze mode', () => {
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Theme").click();
+		cy.contains(".menu-item", "Modern").click();
+		cy.wait(100);
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.get(".canvas-area").click();
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('modern theme', () => {
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Eye Gaze Mode").click();
+		cy.wait(100);
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.get(".canvas-area").click();
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
 });
