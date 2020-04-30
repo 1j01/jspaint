@@ -269,6 +269,10 @@ html, body, .jspaint {
 	line-height: 1.5;
 }
 
+.eye-gaze-mode .status-area {
+	padding-left: 170px;
+}
+
 .component-area {
 	/* for measuring offsetTop/offsetLeft of component elements */
 	/* (makes it relative to this element) */
