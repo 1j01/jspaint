@@ -260,6 +260,10 @@ html, body, .jspaint {
 	padding-right: 10px;
 	padding-left: 10px;
 }
+.eye-gaze-mode .menu-button {
+	height: 3rem;
+	line-height: 2.5rem;
+}
 .eye-gaze-mode .menu-button,
 .eye-gaze-mode .menu-button * {
 	font-size: 2rem;

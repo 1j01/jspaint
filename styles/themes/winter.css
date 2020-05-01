@@ -10,7 +10,8 @@
 	font-size: 20px;
 }
 .menu-button {
-	padding: 2px 10px;
+	padding: 5px 10px;
+	height: 30px;
 }
 .menu-popup * {
 	font-family: 'Charm', cursive;
