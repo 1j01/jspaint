@@ -395,6 +395,11 @@ body > .window-titlebar {
 	margin-bottom: 1px;
 }
 .menu-button {
+	box-sizing: border-box;
+	height: 18px;
+	line-height: 1;
+	margin-top: 1px;
+	margin-bottom: 1px;
 	padding: 2px 5px;
 	position: relative;
 	outline: 0;
