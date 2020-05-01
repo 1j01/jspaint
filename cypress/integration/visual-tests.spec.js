@@ -11,6 +11,14 @@ context('visual tests', () => {
 		failureThresholdType: 'percent'
 	};
 
+	const selectTheme = (themeName) => {
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Theme").click();
+		cy.contains(".menu-item", themeName).click();
+		cy.get(".status-text").click(); // close menu (@TODO: menus should probably always be closed when you select a menu item)
+		cy.wait(1000); // give a bit of time for theme to load
+	};
+
 	it('main screenshot', () => {
 		cy.visit('/');
 		cy.setResolution([760, 490]);
@@ -97,19 +105,15 @@ context('visual tests', () => {
 		cy.wait(100);
 		// cy.contains(".menu-button", "View").click();
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		cy.get(".canvas-area").click();
+		cy.get(".status-text").click();
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
 	it('modern theme eye gaze mode', () => {
-		cy.contains(".menu-button", "Extras").click();
-		cy.contains(".menu-item", "Theme").click();
-		cy.contains(".menu-item", "Modern").click();
-		cy.wait(100);
+		selectTheme("Modern");
 		// cy.contains(".menu-button", "View").click();
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		cy.get(".canvas-area").click();
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
@@ -120,8 +124,36 @@ context('visual tests', () => {
 		cy.wait(100);
 		// cy.contains(".menu-button", "View").click();
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		cy.get(".canvas-area").click();
+		cy.get(".status-text").click();
 		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('winter theme', () => {
+		selectTheme("Winter");
+		// cy.contains(".menu-button", "View").click();
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('winter theme vertical color box', () => {
+		cy.wait(500);
+		cy.contains(".menu-button", "Extras").click();
+		cy.contains(".menu-item", "Vertical Color Box").click();
+		cy.wait(500);
+		cy.get(".status-text").click();
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('classic theme vertical color box', () => {
+		selectTheme("Classic");
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('modern theme vertical color box', () => {
+		selectTheme("Modern");
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
