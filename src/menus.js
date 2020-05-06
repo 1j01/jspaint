@@ -533,6 +533,18 @@ window.menus = {
 			description: "Enlarges buttons and provides dwell clicking.",
 		},
 		{
+			item: "&Speech Recognition",
+			checkbox: {
+				toggle: ()=> {
+					toggle_speech_recognition();
+				},
+				check: ()=> {
+					return window.speech_recognition_active;
+				},
+			},
+			description: "Selects colors with voice.",
+		},
+		{
 			item: "&Vertical Color Box",
 			checkbox: {
 				toggle: ()=> {

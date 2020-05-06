@@ -1,9 +1,11 @@
-var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
-var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+(function() {
+
+var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+var SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+// var SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
 
 var colorNames = [ 'aqua' , 'azure' , 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
-var grammar = '#JSGF V1.0; grammar colors; public <color> = ' + colorNames.join(' | ') + ' ;'
+var grammar = `#JSGF V1.0; grammar jspaintCommands; public <color> = ${colorNames.join(' | ')} ;`;
 
 var recognition = new SpeechRecognition();
 var speechRecognitionList = new SpeechGrammarList();
@@ -14,10 +16,17 @@ recognition.lang = 'en-US';
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
-document.body.onclick = function() {
-	recognition.start();
-	console.log('Ready to receive a color command.');
-}
+window.speech_recognition_active = false;
+
+window.toggle_speech_recognition = function() {
+	if (window.speech_recognition_active) {
+		// window.speech_recognition_active = false;
+		recognition.stop();
+	} else {
+		// window.speech_recognition_active = true;
+		recognition.start();
+	}
+};
 
 recognition.onresult = function(event) {
 	// The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
@@ -33,17 +42,27 @@ recognition.onresult = function(event) {
 	console.log('Confidence: ' + event.results[0][0].confidence);
 	colors.foreground = color;
 	$G.trigger("option-changed");
-}
+};
 
 recognition.onspeechend = function() {
 	recognition.stop();
-}
+};
 
 recognition.onnomatch = function(event) {
 	$status_text.text("I didn't recognise that color.");
-}
+};
+
+recognition.onstart = function(event) {
+	window.speech_recognition_active = true;
+};
+recognition.onstart = function(event) {
+	window.speech_recognition_active = false;
+};
 
 recognition.onerror = function(event) {
 	$status_text.text('Error occurred in speech recognition: ' + event.error);
 	console.log('Error occurred in speech recognition:', event.error);
-}
+	// window.speech_recognition_active = false;
+};
+
+})();
