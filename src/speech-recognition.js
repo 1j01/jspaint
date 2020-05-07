@@ -4,6 +4,12 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
 // const SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
 
+window.speech_recognition_available = !!(SpeechRecognition && SpeechGrammarList);
+
+if (!window.speech_recognition_available) {
+	return;
+}
+
 const recognitionFixes = {
 	// colors
 	"Rhett": "red",

@@ -542,6 +542,7 @@ window.menus = {
 					return window.speech_recognition_active;
 				},
 			},
+			enabled: ()=> window.speech_recognition_available,
 			description: "Selects tools and colors with voice.",
 		},
 		{
