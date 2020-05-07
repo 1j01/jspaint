@@ -133,16 +133,21 @@ function make_canvas(width, height){
 	new_canvas.ctx = new_ctx;
 	
 	new_ctx.disable_image_smoothing = ()=> {
-		new_ctx.mozImageSmoothingEnabled = false;
-		new_ctx.webkitImageSmoothingEnabled = false;
-		new_ctx.msImageSmoothingEnabled = false;
 		new_ctx.imageSmoothingEnabled = false;
+		// condition is to avoid a deprecation warning in Firefox
+		if (new_ctx.imageSmoothingEnabled !== false) {
+			new_ctx.mozImageSmoothingEnabled = false;
+			new_ctx.webkitImageSmoothingEnabled = false;
+			new_ctx.msImageSmoothingEnabled = false;
+		}
 	};
 	new_ctx.enable_image_smoothing = ()=> {
-		new_ctx.mozImageSmoothingEnabled = true;
-		new_ctx.webkitImageSmoothingEnabled = true;
-		new_ctx.msImageSmoothingEnabled = true;
 		new_ctx.imageSmoothingEnabled = true;
+		if (new_ctx.imageSmoothingEnabled !== true) {
+			new_ctx.mozImageSmoothingEnabled = true;
+			new_ctx.webkitImageSmoothingEnabled = true;
+			new_ctx.msImageSmoothingEnabled = true;
+		}
 	};
 	
 	// @TODO: simplify the abstraction by defining setters for width/height
