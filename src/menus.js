@@ -542,7 +542,7 @@ window.menus = {
 					return window.speech_recognition_active;
 				},
 			},
-			description: "Selects colors with voice.",
+			description: "Selects tools and colors with voice.",
 		},
 		{
 			item: "&Vertical Color Box",

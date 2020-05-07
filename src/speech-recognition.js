@@ -1,14 +1,76 @@
 (function() {
 
-var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-var SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
-// var SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+// const SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
 
-var colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
-var grammar = `#JSGF V1.0; grammar jspaintCommands; public <color> = ${colorNames.join(' | ')} ;`;
+const recognitionFixes = {
+	// colors
+	"Rhett": "red",
+	"Brett": "red",
+	"friend": "red",
+	"hello": "yellow",
+	"grave": "green",
+	"the ruse": "maroon",
+	"the wren": "maroon",
+	"Ren": "maroon",
+	"Arun": "maroon",
+	"cream": "green",
+	"LiteBlue": "light blue",
+	"crown": "brown",
+	
+	// tools
+	"loop": "loupe",
+	"slick to the": "select the",
+	"like the": "select the",
+	"tail with color": "fill with color",
+	"pillbox hat": "fill bucket",
+	"creve coeur": "curve tool",
+	"tell tool": "fill tool",
+	"till tool": "fill tool",
+	"delta": "fill tool",
+	"tilt": "fill tool",
+	"mandy tatinkin": "rounded rectangle",
+	"lips": "ellipse",
+	"clips": "ellipse",
+	"eclipse": "ellipse",
+	"flip store": "ellipse tool",
+	"random rectangles": "rounded rectangle",
+	"random rectangle": "rounded rectangle",
+	"x2": "text tool",
+	"text talk": "text tool",
+	"tracer": "eraser",
+	"pickpocket": "paint bucket",
+	"pink bucket": "paint bucket",
+	"flekstore": "select tool",
+	"tour": "tool",
+	"grace": "erase",
+	"blind": "line tool",
+	"toefl": "oval",
+	"offal": "oval",
+	"google": "oval",
+	"hopeful": "oval",
+	"oporto": "oval tool",
+	"careful": "curve tool",
+	"capital": "curve tool",
+	"curveball": "curve tool",
+	"curved wall": "curve tool",
+};
+const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
+const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
+// @TODO: "click [on] X"?
+// @TODO: select foreground/background/ternary color specifically
+const grammar = `#JSGF V1.0;
+grammar jspaintCommands;
+<color> = ${colorNames.join(' | ')};
+<tool_name> = ${toolNames.join(' | ')};
+<tool> = (the | <VOID>) <tool_name> (tool | <VOID>);
+<pick-verb> = select | pick | choose | use | activate | "pick up";
+public <command> = (<pick-verb> | <VOID>) (<color> | <tool>);
+`;
 
-var recognition = new SpeechRecognition();
-var speechRecognitionList = new SpeechGrammarList();
+const recognition = new SpeechRecognition();
+const speechRecognitionList = new SpeechGrammarList();
 speechRecognitionList.addFromString(grammar, 1);
 recognition.grammars = speechRecognitionList;
 recognition.continuous = false;
@@ -37,11 +99,30 @@ recognition.onresult = function(event) {
 	// These also have getters so they can be accessed like arrays.
 	// The second [0] returns the SpeechRecognitionAlternative at position 0.
 	// We then return the transcript property of the SpeechRecognitionAlternative object
-	var color = event.results[0][0].transcript;
-	$status_text.text(`Result received: ${color}.`);
-	console.log(`Result received: ${color}.`);
+	console.log(event.results);
+	console.log(event.results[0]);
+	console.log(event.results[0][0]);
+	let command = event.results[0][0].transcript;
+	console.log(`Result received: "${command}"`);
 	console.log('Confidence: ' + event.results[0][0].confidence);
-	colors.foreground = color;
+	command = command.toLowerCase();
+	for (const [bad, good] of Object.entries(recognitionFixes)) {
+		command = command.replace(new RegExp(`\\b${bad}\\b`, "ig"), good);
+	}
+	console.log(`After any fixes: "${command}"`);
+	$status_text.text(`Speech: "${command}"`);
+	for (const color of colorNames) {
+		if (` ${command} `.toLowerCase().indexOf(` ${color} `) !== -1) {
+			colors.foreground = color;
+		}
+	}
+	for (const tool of tools) {
+		for (const tool_phrase of tool.speech_recognition) {
+			if (` ${command} `.toLowerCase().indexOf(` ${tool_phrase} `) !== -1) {
+				select_tool(tool);
+			}
+		}
+	}
 	$G.trigger("option-changed");
 };
 
