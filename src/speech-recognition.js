@@ -70,9 +70,9 @@ const grammar = `#JSGF V1.0;
 grammar jspaintCommands;
 <color> = ${colorNames.join(' | ')};
 <tool_name> = ${toolNames.join(' | ')};
-<tool> = (the | <VOID>) <tool_name> (tool | <VOID>);
+<tool> = [the] <tool_name> [tool];
 <pick-verb> = select | pick | choose | use | activate | "pick up";
-public <command> = (<pick-verb> | <VOID>) (<color> | <tool>);
+public <command> = [<pick-verb>] (<color> | <tool>);
 `;
 
 const recognition = new SpeechRecognition();
