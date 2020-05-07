@@ -5,8 +5,12 @@
 /* eslint-disable no-restricted-syntax */
 
 window.tools = [{
-	// @#: polygonal selection, polygon selection, shape selection, freeform selection
 	name: "Free-Form Select",
+	speech_recognition: [
+		"lasso", "select with lasso", "select by lassoing",
+		"lasso select", "freeform select", "free-form select", "free form select", "polygonal select", "polygon select", "shape select", "outline select", "select by outline", "select by outlining",
+		"lasso selection", "freeform selection", "free-form selection", "free form selection", "polygonal selection", "polygon selection", "shape selection", "outline selection", "selection by outline", "selection by outlining",
+	],
 	help_icon: "p_free.gif",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -130,8 +134,11 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
-	// @#: rectangle selection, rectangular selection
 	name: "Select",
+	speech_recognition: [
+		"select", "rectangle select", "rectangular select", "box select", "square select",
+		"selection", "rectangle selection", "rectangular selection", "box selection", "square selection",
+	],
 	help_icon: "p_sel.gif",
 	description: "Selects a rectangular part of the picture to move, copy, or edit.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -219,8 +226,11 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
-	// @#: eraser but also color replacer
 	name: "Eraser/Color Eraser",
+	speech_recognition: [
+		"erase", "eraser", "rubber", "wiper", "clearer", "mark remover", "obliterator", "expunger",
+		"color eraser", "color replacer", "replace color",
+	],
 	help_icon: "p_erase.gif",
 	description: "Erases a portion of the picture, using the selected eraser shape.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -360,8 +370,13 @@ window.tools = [{
 	},
 	$options: $choose_eraser_size
 }, {
-	// @#: fill bucket, flood fill area, paint bucket, paint can
 	name: "Fill With Color",
+	speech_recognition: [
+		"fill with color", "flood fill", "fill",
+		"fill area with color", "flood fill area", "fill area", "color area", "area fill",
+		"fill region with color", "flood fill region", "fill region", "color region", "region fill",
+		"fill bucket", "paint bucket", "paint can", "dump", "paintbucket", "bucket",
+	],
 	help_icon: "p_paint.gif",
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
@@ -385,8 +400,15 @@ window.tools = [{
 		}
 	}
 }, {
-	// @#: eyedropper, eye dropper, Pasteur pipette, select colors, pick colors
 	name: "Pick Color",
+	speech_recognition: [
+		"pick color", "select color",
+		"eyedropper", "eye dropper", "eye-dropper", "pipette", "Pasteur pipette",
+		"pick color from canvas", "pick color from document", "pick color from page", "pick color from image", "pick color from picture",
+		"pick color from the canvas", "pick color from the document", "pick color from the page", "pick color from the image", "pick color from the picture",
+		"pick a color from canvas", "pick a color from document", "pick a color from page", "pick a color from image", "pick a color from picture",
+		"pick a color from the canvas", "pick a color from the document", "pick a color from the page", "pick a color from the image", "pick a color from the picture",
+	],
 	help_icon: "p_eye.gif",
 	description: "Picks up a color from the picture for drawing.",
 	cursor: ["eye-dropper", [9, 22], "crosshair"],
@@ -424,8 +446,11 @@ window.tools = [{
 	},
 	$options: $(E("div"))
 }, {
-	// @#: magnifying glass, zoom
 	name: "Magnifier",
+	speech_recognition: [
+		"magnifier", "magnification", "magnifying glass", "loupe", "hand lens", "hand glass", "eyeglass", "lens", "simple microscope", "microscope",
+		"zoom", "zoom in", "zoom out", "zoom level",
+	],
 	help_icon: "p_zoom.gif",
 	description: "Changes the magnification.",
 	cursor: ["magnifier", [16, 16], "zoom-in"], // overridden below
@@ -545,6 +570,9 @@ window.tools = [{
 	$options: $choose_magnification
 }, {
 	name: "Pencil",
+	speech_recognition: [
+		"pencil", "lead", "graphite", "pen", "pixel", "pixel art",
+	],
 	help_icon: "p_pencil.gif",
 	description: "Draws a free-form line one pixel wide.",
 	cursor: ["pencil", [13, 23], "crosshair"],
@@ -554,6 +582,11 @@ window.tools = [{
 	}
 }, {
 	name: "Brush",
+	speech_recognition: [
+		"brush", "paint brush", "paintbrush",
+		// @TODO: specific brush shapes:
+		// "calligraphy", "slanted brush", "square brush", "circle brush", "circular brush",
+	],
 	help_icon: "p_brush.gif",
 	description: "Draws using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
@@ -563,8 +596,14 @@ window.tools = [{
 	},
 	$options: $choose_brush
 }, {
-	// @#: spray paint can, air brush, aerograph, graffiti, scatter
 	name: "Airbrush",
+	speech_recognition: [
+		"air brush", "airbrush", "aerograph",
+		"spray paint", "spraypaint",
+		"spray paint can", "spraypaint can",
+		"spraycan", "spray-can", "spray can",
+		"graffiti", "scatter", "splatter",
+	],
 	help_icon: "p_airb.gif",
 	description: "Draws using an airbrush of the selected size.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
@@ -584,6 +623,9 @@ window.tools = [{
 	$options: $choose_airbrush_size
 }, {
 	name: "Text",
+	speech_recognition: [
+		"text", "type", "typography", "write", "writing", "words", "text box", "text-box", "textbox",
+	],
 	help_icon: "p_txt.gif",
 	description: "Inserts text into the picture.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -598,6 +640,9 @@ window.tools = [{
 	$options: $choose_transparent_mode
 }, {
 	name: "Line",
+	speech_recognition: [
+		"line", "line segment", "straight line",
+	],
 	help_icon: "p_line.gif",
 	description: "Draws a straight line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -609,6 +654,9 @@ window.tools = [{
 	$options: $choose_stroke_size
 }, {
 	name: "Curve",
+	speech_recognition: [
+		"curve", "curved line", "Bezier", "Bezier curve", "spline",
+	],
 	help_icon: "p_curve.gif",
 	description: "Draws a curved line with the selected line width.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -699,8 +747,14 @@ window.tools = [{
 	},
 	$options: $choose_stroke_size
 }, {
-	// @#: square
 	name: "Rectangle",
+	speech_recognition: [
+		"rectangle", "square", "box",
+		"sharp rectangle", "sharp square", "sharp box",
+		"sharp corners rectangle", "sharp corners square", "sharp corners box",
+		"sharp cornered rectangle", "sharp cornered square", "sharp cornered box",
+		"rectangle with sharp corners", "square with sharp corners", "box with sharp corners",
+	],
 	help_icon: "p_rect.gif",
 	description: "Draws a rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -726,6 +780,9 @@ window.tools = [{
 	$options: $ChooseShapeStyle()
 }, {
 	name: "Polygon",
+	speech_recognition: [
+		"polygon", "poly", "shape", "n-gon", "free-form polygon", "freeform polygon", "free form polygon",
+	],
 	help_icon: "p_poly.gif",
 	description: "Draws a polygon with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -883,8 +940,10 @@ window.tools = [{
 	shape_colors: true,
 	$options: $ChooseShapeStyle()
 }, {
-	// @#: circle
 	name: "Ellipse",
+	speech_recognition: [
+		"ellipse", "circle", "oval", "ovoid", "ovaloid", "oviform", "elliptical", "oblong circle", "stretched circle",
+	],
 	help_icon: "p_oval.gif",
 	description: "Draws an ellipse with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
@@ -909,8 +968,18 @@ window.tools = [{
 	},
 	$options: $ChooseShapeStyle()
 }, {
-	// @#: rounded square
 	name: "Rounded Rectangle",
+	speech_recognition: [
+		"rounded rectangle", "rounded square", "rounded box",
+		"round rectangle", "round square", "round box",
+		"rounded corners rectangle", "rounded corners square", "rounded corners box",
+		"round cornered rectangle", "round cornered square", "round cornered box",
+		"rounded cornered rectangle", "rounded cornered square", "rounded cornered box",
+		"rounded corner rectangle", "rounded corner square", "rounded corner box",
+		"rectangle with round corners", "square with round corners", "box with round corners",
+		"rectangle with rounded corners", "square with rounded corners", "box with rounded corners",
+		"soft rectangle", "soft square", "soft box", // ...
+	],
 	help_icon: "p_rrect.gif",
 	description: "Draws a rounded rectangle with the selected fill style.",
 	cursor: ["precise", [16, 16], "crosshair"],
