@@ -7,9 +7,9 @@
 window.tools = [{
 	name: "Free-Form Select",
 	speech_recognition: [
-		"lasso", "select with lasso", "select by lassoing",
-		"lasso select", "freeform select", "free-form select", "free form select", "polygonal select", "polygon select", "shape select", "outline select", "select by outline", "select by outlining",
-		"lasso selection", "freeform selection", "free-form selection", "free form selection", "polygonal selection", "polygon selection", "shape selection", "outline selection", "selection by outline", "selection by outlining",
+		"lasso", "select with lasso", "select by lassoing", "lassoing",
+		"lasso select", "freeform select", "free-form select", "free form select", "polygonal select", "polygon select", "shape select", "outline select", "select by outline", "select by outlining", "star select", "shape select", "select by shape",
+		"lasso selection", "freeform selection", "free-form selection", "free form selection", "polygonal selection", "polygon selection", "shape selection", "outline selection", "selection by outline", "selection by outlining", "star selection", "shape selection", "selection by shape",
 	],
 	help_icon: "p_free.gif",
 	description: "Selects a free-form part of the picture to move, copy, or edit.",
@@ -136,7 +136,7 @@ window.tools = [{
 }, {
 	name: "Select",
 	speech_recognition: [
-		"select", "rectangle select", "rectangular select", "box select", "square select",
+		"select", "rectangle select", "rectangular select", "box select", "square select", "drag select",
 		"selection", "rectangle selection", "rectangular selection", "box selection", "square selection",
 	],
 	help_icon: "p_sel.gif",
@@ -375,7 +375,7 @@ window.tools = [{
 		"fill with color", "flood fill", "fill",
 		"fill area with color", "flood fill area", "fill area", "color area", "area fill",
 		"fill region with color", "flood fill region", "fill region", "color region", "region fill",
-		"fill bucket", "paint bucket", "paint can", "dump", "paintbucket", "bucket",
+		"fill bucket", "paint bucket", "paint can", "dump", "splash", "paintbucket", "bucket",
 	],
 	help_icon: "p_paint.gif",
 	description: "Fills an area with the selected drawing color.",
@@ -402,8 +402,8 @@ window.tools = [{
 }, {
 	name: "Pick Color",
 	speech_recognition: [
-		"pick color", "select color",
-		"eyedropper", "eye dropper", "eye-dropper", "pipette", "Pasteur pipette",
+		"pick color", "select color", "color select", "color selector", "color picker",
+		"eyedropper", "eye dropper", "eye-dropper", "pipette", "Pasteur pipette", "dropper",
 		"pick color from canvas", "pick color from document", "pick color from page", "pick color from image", "pick color from picture",
 		"pick color from the canvas", "pick color from the document", "pick color from the page", "pick color from the image", "pick color from the picture",
 		"pick a color from canvas", "pick a color from document", "pick a color from page", "pick a color from image", "pick a color from picture",
@@ -448,8 +448,8 @@ window.tools = [{
 }, {
 	name: "Magnifier",
 	speech_recognition: [
-		"magnifier", "magnification", "magnifying glass", "loupe", "hand lens", "hand glass", "eyeglass", "lens", "simple microscope", "microscope",
-		"zoom", "zoom in", "zoom out", "zoom level",
+		"magnifier", "magnification", "magnifying glass", "loupe", "hand lens", "hand glass", "eyeglass", "lens", "simple microscope", "microscope", "glass",
+		"zoom", "zoom in", "zoom out", "zoom level", "magnifying",
 	],
 	help_icon: "p_zoom.gif",
 	description: "Changes the magnification.",
@@ -584,8 +584,10 @@ window.tools = [{
 	name: "Brush",
 	speech_recognition: [
 		"brush", "paint brush", "paintbrush",
+		// "paint", // could also be the paint bucket tool; might be too general, matching saying "MS Paint" / "JS Paint"
+		"paint tool", // could also be the paint bucket tool
 		// @TODO: specific brush shapes:
-		// "calligraphy", "slanted brush", "square brush", "circle brush", "circular brush",
+		// "calligraphy", "nib", "slanted brush", "square brush", "circle brush", "circular brush",
 	],
 	help_icon: "p_brush.gif",
 	description: "Draws using a brush with the selected shape and size.",
@@ -602,7 +604,7 @@ window.tools = [{
 		"spray paint", "spraypaint",
 		"spray paint can", "spraypaint can",
 		"spraycan", "spray-can", "spray can",
-		"graffiti", "scatter", "splatter",
+		"graffiti", "scatter", "splatter", "aerosol", "throwie", "flamethrower",
 	],
 	help_icon: "p_airb.gif",
 	description: "Draws using an airbrush of the selected size.",
@@ -624,7 +626,7 @@ window.tools = [{
 }, {
 	name: "Text",
 	speech_recognition: [
-		"text", "type", "typography", "write", "writing", "words", "text box", "text-box", "textbox",
+		"text", "type", "typography", "write", "writing", "words", "text box", "text-box", "textbox", "word", "lettering", "font",
 	],
 	help_icon: "p_txt.gif",
 	description: "Inserts text into the picture.",
@@ -655,7 +657,8 @@ window.tools = [{
 }, {
 	name: "Curve",
 	speech_recognition: [
-		"curve", "curved line", "Bezier", "Bezier curve", "spline",
+		"curve", "curved line", "curvy", "curvy line", "Bezier", "Bezier curve", "spline", "curves", "splines",
+		"wave", "wavy line", "rounded line", "round line", "oscilloscope", "sine wave", "cosine", "cosine wave",
 	],
 	help_icon: "p_curve.gif",
 	description: "Draws a curved line with the selected line width.",
@@ -782,6 +785,7 @@ window.tools = [{
 	name: "Polygon",
 	speech_recognition: [
 		"polygon", "poly", "shape", "n-gon", "free-form polygon", "freeform polygon", "free form polygon",
+		"triangle", "quadrangle", "pentagon", "hexagon", "heptagon", "octagon", "nonagon", "decagon", "undecagon", "dodecagon",
 	],
 	help_icon: "p_poly.gif",
 	description: "Draws a polygon with the selected fill style.",
@@ -942,7 +946,7 @@ window.tools = [{
 }, {
 	name: "Ellipse",
 	speech_recognition: [
-		"ellipse", "circle", "oval", "ovoid", "ovaloid", "oviform", "elliptical", "oblong circle", "stretched circle",
+		"ellipse", "circle", "oval", "ovoid", "ovaloid", "oviform", "elliptical", "oblong circle", "stretched circle", "ball", "sphere", "round tool", "rounded tool",
 	],
 	help_icon: "p_oval.gif",
 	description: "Draws an ellipse with the selected fill style.",

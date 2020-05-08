@@ -24,43 +24,82 @@ const recognitionFixes = {
 	"cream": "green",
 	"LiteBlue": "light blue",
 	"crown": "brown",
+	"ombre": "umbre",
+	"tan-tan": "tan tan",
+	"pan": "tan",
 	
-	// tools
-	"loop": "loupe",
+	// commands/misc
 	"slick to the": "select the",
 	"like the": "select the",
+	"to all": "tool",
+	"stool": "tool",
+	"tour": "tool",
+
+	// Free-Form Select
+	// Select
+	"flekstore": "select tool",
+	"select one": "select tool",
+	"selectel": "select tool",
+	// Eraser/Color Eraser
+	"tracer": "eraser",
+	"grace": "erase",
+	"rapper": "rubber",
+	"robber": "rubber",
+	// Fill With Color
 	"tail with color": "fill with color",
+	"pickpocket": "paint bucket",
+	"pink bucket": "paint bucket",
 	"pillbox hat": "fill bucket",
-	"creve coeur": "curve tool",
+	"bobcat": "bucket",
 	"tell tool": "fill tool",
 	"till tool": "fill tool",
 	"delta": "fill tool",
 	"tilt": "fill tool",
-	"mandy tatinkin": "rounded rectangle",
-	"lips": "ellipse",
-	"clips": "ellipse",
-	"eclipse": "ellipse",
-	"flip store": "ellipse tool",
-	"random rectangles": "rounded rectangle",
-	"random rectangle": "rounded rectangle",
+	// Pick Color
+	// Magnifier
+	"loop": "loupe",
+	// Pencil
+	"penn": "pen",
+	// Brush
+	// Airbrush
+	"hair brush": "airbrush",
+	// Text
 	"x2": "text tool",
 	"text talk": "text tool",
-	"tracer": "eraser",
-	"pickpocket": "paint bucket",
-	"pink bucket": "paint bucket",
-	"flekstore": "select tool",
-	"tour": "tool",
-	"grace": "erase",
+	"hacks": "text",
+	"pex tool": "text tool",
+	// Line
 	"blind": "line tool",
-	"toefl": "oval",
-	"offal": "oval",
-	"google": "oval",
-	"hopeful": "oval",
-	"oporto": "oval tool",
+	"mine": "line",
+	// Curve
 	"careful": "curve tool",
 	"capital": "curve tool",
 	"curveball": "curve tool",
 	"curved wall": "curve tool",
+	"creve coeur": "curve tool",
+	"busy acre": "bezier curve",
+	"sheriff": "curve",
+	"leaving bye": "wavy line",
+	"weave": "wave",
+	"cosign": "cosine",
+	"co-sign": "cosine",
+	// Rectangle
+	// Polygon
+	// Ellipse
+	"lips": "ellipse",
+	"clips": "ellipse",
+	"eclipse": "ellipse",
+	"flip store": "ellipse tool",
+	"toefl": "oval",
+	"offal": "oval",
+	"google": "oval",
+	"hopeful": "oval",
+	"duval": "oval",
+	"oporto": "oval tool",
+	// Rounded Rectangle
+	"mandy tatinkin": "rounded rectangle",
+	"random rectangles": "rounded rectangle",
+	"random rectangle": "rounded rectangle",
 };
 const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
 const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
@@ -116,18 +155,37 @@ recognition.onresult = function(event) {
 		command = command.replace(new RegExp(`\\b${bad}\\b`, "ig"), good);
 	}
 	console.log(`After any fixes: "${command}"`);
-	$status_text.text(`Speech: "${command}"`);
+	let best_match_fn;
+	let best_match_text = "";
 	for (const color of colorNames) {
 		if (` ${command} `.toLowerCase().indexOf(` ${color} `) !== -1) {
-			colors.foreground = color;
+			if (color.length > best_match_text.length) {
+				best_match_text = color;
+				best_match_fn = ((color)=> ()=> {
+					colors.foreground = color;
+				})(color);
+			}
 		}
 	}
 	for (const tool of tools) {
-		for (const tool_phrase of tool.speech_recognition) {
-			if (` ${command} `.toLowerCase().indexOf(` ${tool_phrase} `) !== -1) {
-				select_tool(tool);
+		for (const base_tool_phrase of tool.speech_recognition) {
+			for (const tool_phrase of [base_tool_phrase, `the ${base_tool_phrase}`, `the ${base_tool_phrase} tool`, `${base_tool_phrase} tool`]) {
+				if (` ${command} `.toLowerCase().indexOf(` ${tool_phrase} `) !== -1) {
+					if (tool_phrase.length > best_match_text.length) {
+						best_match_text = tool_phrase;
+						best_match_fn = ((tool)=> ()=> {
+							select_tool(tool);
+						})(tool);
+					}
+				}
 			}
 		}
+	}
+	if (best_match_text) {
+		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${command.replace(best_match_text, (important_text)=> `<b>${important_text}</b>`)}</span>`);
+		best_match_fn();
+	} else {
+		$status_text.text(`Speech: ${command}`);
 	}
 	$G.trigger("option-changed");
 };
