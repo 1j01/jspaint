@@ -34,8 +34,13 @@ const recognitionFixes = {
 	"to all": "tool",
 	"stool": "tool",
 	"tour": "tool",
+	"draught": "draw a",
+	"try": "draw", // seems too general - (unless you previously told it to draw something...) - but it keeps coming up!
+	// "drag": "draw a", // too general
+	"try picture": "draw a picture",
 
 	// Free-Form Select
+	"state farm": "freeform",
 	// Select
 	"flekstore": "select tool",
 	"select one": "select tool",
@@ -45,11 +50,17 @@ const recognitionFixes = {
 	"grace": "erase",
 	"rapper": "rubber",
 	"robber": "rubber",
+	"racing": "eraser",
 	// Fill With Color
 	"tail with color": "fill with color",
 	"pickpocket": "paint bucket",
 	"pink bucket": "paint bucket",
 	"pillbox hat": "fill bucket",
+	"pill lookup": "fill bucket",
+	"tell bucket": "fill bucket",
+	"phil luckett": "fill bucket",
+	"fel bucket": "fill bucket",
+	"phil bucket": "fill bucket",
 	"bobcat": "bucket",
 	"tell tool": "fill tool",
 	"till tool": "fill tool",
@@ -110,7 +121,7 @@ grammar jspaintCommands;
 <color> = ${colorNames.join(' | ')};
 <tool_name> = ${toolNames.join(' | ')};
 <tool> = [the] <tool_name> [tool];
-<pick-verb> = select | pick | choose | use | activate | "pick up";
+<pick-verb> = select | pick | choose | use | activate | "pick up" | grab;
 public <command> = [<pick-verb>] (<color> | <tool>);
 `;
 
@@ -145,8 +156,6 @@ recognition.onresult = function(event) {
 	// The second [0] returns the SpeechRecognitionAlternative at position 0.
 	// We then return the transcript property of the SpeechRecognitionAlternative object
 	console.log(event.results);
-	console.log(event.results[0]);
-	console.log(event.results[0][0]);
 	let command = event.results[0][0].transcript;
 	console.log(`Result received: "${command}"`);
 	console.log('Confidence: ' + event.results[0][0].confidence);
@@ -155,39 +164,7 @@ recognition.onresult = function(event) {
 		command = command.replace(new RegExp(`\\b${bad}\\b`, "ig"), good);
 	}
 	console.log(`After any fixes: "${command}"`);
-	let best_match_fn;
-	let best_match_text = "";
-	for (const color of colorNames) {
-		if (` ${command} `.toLowerCase().indexOf(` ${color} `) !== -1) {
-			if (color.length > best_match_text.length) {
-				best_match_text = color;
-				best_match_fn = ((color)=> ()=> {
-					colors.foreground = color;
-				})(color);
-			}
-		}
-	}
-	for (const tool of tools) {
-		for (const base_tool_phrase of tool.speech_recognition) {
-			for (const tool_phrase of [base_tool_phrase, `the ${base_tool_phrase}`, `the ${base_tool_phrase} tool`, `${base_tool_phrase} tool`]) {
-				if (` ${command} `.toLowerCase().indexOf(` ${tool_phrase} `) !== -1) {
-					if (tool_phrase.length > best_match_text.length) {
-						best_match_text = tool_phrase;
-						best_match_fn = ((tool)=> ()=> {
-							select_tool(tool);
-						})(tool);
-					}
-				}
-			}
-		}
-	}
-	if (best_match_text) {
-		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${command.replace(best_match_text, (important_text)=> `<b>${important_text}</b>`)}</span>`);
-		best_match_fn();
-	} else {
-		$status_text.text(`Speech: ${command}`);
-	}
-	$G.trigger("option-changed");
+	interpret_command(command);
 };
 
 recognition.onspeechend = function() {
@@ -223,5 +200,212 @@ recognition.onerror = function(event) {
 		// window.speech_recognition_active = false;
 	}
 };
+
+window.interpret_command = (command)=> {
+	let best_match_fn;
+	let best_match_text = "";
+	for (const color of colorNames) {
+		if (` ${command} `.toLowerCase().indexOf(` ${color} `) !== -1) {
+			if (color.length > best_match_text.length) {
+				best_match_text = color;
+				best_match_fn = ((color)=> ()=> {
+					colors.foreground = color;
+					$G.trigger("option-changed");
+				})(color);
+			}
+		}
+	}
+	for (const tool of tools) {
+		for (const base_tool_phrase of tool.speech_recognition) {
+			// Note: if "select" wasn't matched here, the phrase "select text" would select the Select tool instead of the Text tool (because "select" is longer than "text")
+			const select_tool_match = command.match(new RegExp(`\\b(?:(?:select|pick|choose|use|activate|pick up|grab) )?(?:the )?${base_tool_phrase}(?: tool)?\\b`, "i"));
+			if (select_tool_match) {
+				if (select_tool_match[0].length > best_match_text.length) {
+					best_match_text = select_tool_match[0];
+					best_match_fn = ((tool)=> ()=> {
+						select_tool(tool);
+					})(tool);
+				}
+			}
+		}
+	}
+	if (!best_match_text) {
+		// @TODO: clipboard as a source.. but you might want to just draw the clipboard directly to the canvas,
+		// so maybe it should be limited to saying "sketch"/"doodle"/"do a rendition of"
+		// /(?:sketch|doodle|do a (?:rendition|sketch|doodle) of) (?:the (?:contents of |(?:image|picture|data) on the )|(?:what's|what is) on the )?clipboard/i
+		const draw_match = command.match(/(?:draw|sketch|doodle|render|(?:paint|draw|do|render|sketch) (?:a picture|an image|a drawing|a painting|a rendition|a sketch|a doodle) of) (?:an? )?(.+)/i);
+		if (draw_match) {
+			best_match_text = draw_match[0];
+			best_match_fn = async ()=> {
+				const subject_matter = draw_match[1];
+				const results = await find_clipart(subject_matter);
+				// @TODO: select less complex images (less file size to width, say?) maybe, and/or better semantic matches by looking for the search terms in the title?
+				// detect gradients / spread out histogram at least, and reject based on that
+				let image_url = results[~~(Math.random() * results.length)].image_url;
+				console.log("Using source image:", image_url);
+				if (!image_url.match(/^data:/)) {
+					image_url = `https://jspaint-cors-proxy.herokuapp.com/${image_url}`;
+				}
+				const img = new Image();
+				img.crossOrigin = "Anonymous";
+				img.onload = ()=> {
+					// @TODO: find an empty spot on the canvas for the sketch, smaller if need be
+					const max_sketch_width = 500;
+					const max_sketch_height = 500;
+					let aspect_ratio = img.width / img.height;
+					let width = Math.min(img.width, max_sketch_width);
+					let height = Math.min(img.height, max_sketch_height);
+					if (width / height < aspect_ratio) {
+						height = width / aspect_ratio;
+					}
+					if (width / height > aspect_ratio) {
+						width = height * aspect_ratio;
+					}
+					const img_canvas = make_canvas(width, height);
+					img_canvas.ctx.drawImage(img, 0, 0, width, height);
+					const image_data = img_canvas.ctx.getImageData(0, 0, img_canvas.width, img_canvas.height);
+					resize_canvas_without_saving_dimensions(Math.max(canvas.width, image_data.width), Math.max(canvas.height, image_data.height));
+					trace_and_sketch(image_data);
+					// @TODO: visible cancel button, and Escape key handling, in addition to the "stop" voice command
+				};
+				img.src = image_url;
+			};
+		}
+	}
+	// after the above to allow for "draw a stop sign"
+	if (!best_match_text) {
+		const stop_match = command.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)\b/i);
+		if (stop_match) {
+			best_match_text = stop_match[0];
+			best_match_fn = ()=> {
+				window.stopSimulatingGestures && window.stopSimulatingGestures();
+				window.trace_and_sketch_stop && window.trace_and_sketch_stop();
+			};
+		}
+	}
+	if (best_match_text) {
+		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${command.replace(best_match_text, (important_text)=> `<b>${important_text}</b>`)}</span>`);
+		console.log(`Interpreting command "${command}" as "${best_match_text}"`);
+		best_match_fn();
+	} else {
+		$status_text.text(`Speech: ${command}`);
+		console.log(`No interpretation for command "${command}"`);
+	}
+};
+
+window.trace_and_sketch = (subject_imagedata)=> {
+	window.trace_and_sketch_stop && window.trace_and_sketch_stop();
+
+	// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
+	const tracedata = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres:1, qtres:0.01, scale:10, /*pal,*/ numberofcolors: 6, });
+	const {layers} = tracedata;
+	const brush = get_tool_by_name("Brush");
+	select_tool(brush);
+
+	let layer_index = 0;
+	let path_index = 0;
+	let segment_index = 0;
+	let active_path;
+	window.sketching_iid = setInterval(()=> {
+		const layer = layers[layer_index];
+		if (!layer) {
+			clearInterval(window.sketching_iid);
+			return;
+		}
+		const path = layer[path_index];
+		if (!path) {
+			path_index = 0;
+			segment_index = 0;
+			layer_index += 1;
+			return;
+		}
+		const segment = path.segments[segment_index];
+		if (!segment) {
+			segment_index = 0;
+			path_index += 1;
+			brush.pointerup(ctx, pointer.x, pointer.y);
+			return;
+		}
+		let {x1, y1, x2, y2} = segment;
+		if (path !== active_path) {
+			pointer_previous = {x: x1, y: y1};
+			pointer = {x: x1, y: y1};
+			brush.pointerdown(ctx, x1, y1);
+			active_path = path;
+		}
+		pointer_previous = {x: x1, y: y1};
+		pointer = {x: x2, y: y2};
+		brush.paint();
+		pointer_active = true;
+		pointer_over_canvas = true;
+		update_helper_layer();
+		segment_index += 1;
+	}, 20);
+};
+window.trace_and_sketch_stop = ()=> {
+	clearInterval(window.sketching_iid);
+	pointer_active = false;
+	pointer_over_canvas = false;
+};
+
+function find_clipart(query) {
+	const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart+filterui:license-L1&FORM=IRFLTR`)
+	return fetch(`https://jspaint-cors-proxy.herokuapp.com/${bing_url}`)
+		.then(response=> response.text())
+		.then((html)=> {
+			// handle relative data-src
+			html = html.replace(
+				/((?:data-src)=["'])(?!(?:https?:|data:))(\/?)/gi,
+				($0, $1, $2)=> `${$1}${bing_url.origin}${$2 ? bing_url.pathname : ""}`
+			);
+			// handle relative src and href in a less error-prone way, with a <base> tag
+			const doc = new DOMParser().parseFromString(html, "text/html");
+			const $html = $(doc.documentElement);
+			const base = doc.createElement("base");
+			base.href = bing_url.origin + bing_url.pathname;
+			doc.head.appendChild(base);
+
+			window.search_page_html = html;
+			window.search_page_$html = $html;
+			console.log("window.search_page_html and window.search_page_$html are a available for debugging");
+
+			const validate_item = (item)=> item.image_url && (item.image_url.match(/^data:/) ? item.image_url.length > 1000 : true);
+
+			let items = $html.find("[m]").toArray()
+				.map((el)=> el.getAttribute("m"))
+				.map((json)=> {
+					try {
+						return JSON.parse(json);
+					} catch(error) {
+						return null;
+					}
+				})
+				.filter((maybe_parsed)=> maybe_parsed && maybe_parsed.murl)
+				.map(({murl, t})=> ({image_url: murl, title: t || ""}))
+				.filter(validate_item);
+			
+			// fallback to thumbnails in case they get rid of the "m" attribute (thumbnails are not as good, more likely to be jpeg)
+			if (items.length === 0) {
+				console.log("Fallback to thumbnails");
+				items = $html.find("img.mimg").toArray()
+					.map((el)=> ({image_url: el.src || el.dataset.src, title: ""}))
+					.filter(validate_item);
+			}
+			// fallback in case they also change the class for images (this may match totally irrelevant things)
+			if (items.length === 0) {
+				console.log("Fallback to most imgs");
+				items = $html.find("img").toArray()
+					.filter((el)=> !el.closest("[role='navigation'], nav")) // ignore "Related searches", "Refine your search" etc.
+					.map((el)=> ({image_url: el.src || el.dataset.src, title: ""}))
+					.filter(validate_item);
+			}
+			console.log(`Search results for '${query}':`, items);
+			if (items.length === 0) {
+				throw new Error(`failed to get clipart: no results returned for query '${query}'`);
+			}
+			return items;
+		})
+}
 
 })();
