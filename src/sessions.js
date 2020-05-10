@@ -528,44 +528,28 @@
 			}
 		}else if(load_from_url_match){
 			const url = decodeURIComponent(load_from_url_match[2]);
-			const hash_loading_url_from = location.hash;
 
 			const uris = get_URIs(url);
 			if (uris.length === 0) {
 				show_error_message("Invalid URL to load (after #load: in the address bar). It must include a protocol (https:// or http://)");
 				return;
 			}
-			end_current_session();
 
-			// @TODO: fix loading duplicately, from popstate/hashchange/change-url-params
-			open_from_URI(url, err => {
-				if(err){
+			log("Switching to new session from #load: URL (to #local: URL with session ID)");
+			end_current_session();
+			change_url_param("local", generate_session_id());
+
+			open_from_URI(url, error => {
+				if (error) {
 					show_resource_load_error_message();
 				}
-				// @TODO: saved = false;?
-				// NOTE: the following is intended to run regardless of error (as opposed to returning if there's an error)
-				// @FIXME: race condition (make the timeout long and try to fix it with a flag or something )
-				setTimeout(() => {
-					// NOTE: this "change" event doesn't *guarantee* there was a change :/
-					// let alone that there was a user interaction with the currently loaded document
-					// that is, it also triggers for session changes, which I'm trying to avoid here
-					$canvas.one("change", () => {
-						if(location.hash === hash_loading_url_from){
-							log("Switching to new session from #load: URL (to #local: URL with session ID) because of user interaction");
-							end_current_session();
-							const new_session_id = generate_session_id();
-							change_url_param("local", new_session_id);
-						}
-					});
-				}, 100);
 			});
 
 		}else{
 			log("No session ID in hash");
 			const old_hash = location.hash;
 			end_current_session();
-			const new_session_id = generate_session_id();
-			change_url_param("local", new_session_id, {replace_history_state: true});
+			change_url_param("local", generate_session_id(), {replace_history_state: true});
 			log("After replaceState:", location.hash);
 			if (old_hash === location.hash) {
 				// e.g. on Wayback Machine
