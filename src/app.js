@@ -90,7 +90,7 @@ let update_helper_layer_on_pointermove_active = false;
 /** client coords */
 let pointers = [];
 
-const update_eye_gaze_mode = ()=> {
+const update_from_url_params = ()=> {
 	if (location.hash.match(/eye-gaze-mode/i)) {
 		if (!$("body").hasClass("eye-gaze-mode")) {
 			$("body").addClass("eye-gaze-mode");
@@ -118,18 +118,24 @@ const update_eye_gaze_mode = ()=> {
 			$G.triggerHandler("theme-load"); // signal layout change
 		}
 	}
+
+	if (location.hash.match(/speech-recognition-mode/i)) {
+		window.enable_speech_recognition && enable_speech_recognition();
+	} else {
+		window.disable_speech_recognition && disable_speech_recognition();
+	}
 };
-update_eye_gaze_mode();
-$G.on("hashchange popstate change-url-params", update_eye_gaze_mode);
+update_from_url_params();
+$G.on("hashchange popstate change-url-params", update_from_url_params);
 
 // handle backwards compatibility URLs
 if (location.search.match(/eye-gaze-mode/)) {
 	change_url_param("eye-gaze-mode", true, {replace_history_state: true});
-	update_eye_gaze_mode();
+	update_from_url_params();
 }
 if (location.search.match(/vertical-colors?-box/)) {
 	change_url_param("vertical-color-box", true, {replace_history_state: true});
-	update_eye_gaze_mode();
+	update_from_url_params();
 }
 
 const $app = $(E("div")).addClass("jspaint").appendTo("body");

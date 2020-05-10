@@ -537,7 +537,11 @@ window.menus = {
 			item: "&Speech Recognition",
 			checkbox: {
 				toggle: ()=> {
-					toggle_speech_recognition();
+					if (location.hash.match(/speech-recognition-mode/i)) {
+						change_url_param("speech-recognition-mode", false);
+					} else {
+						change_url_param("speech-recognition-mode", true);
+					}
 				},
 				check: ()=> {
 					return window.speech_recognition_active;

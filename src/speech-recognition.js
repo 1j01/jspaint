@@ -140,13 +140,16 @@ recognition.maxAlternatives = 1;
 
 window.speech_recognition_active = false;
 
-window.toggle_speech_recognition = function() {
+window.enable_speech_recognition = function() {
+	if (!window.speech_recognition_active) {
+		window.speech_recognition_active = true;
+		recognition.start();
+	}
+};
+window.disable_speech_recognition = function() {
 	if (window.speech_recognition_active) {
 		window.speech_recognition_active = false;
 		recognition.stop();
-	} else {
-		window.speech_recognition_active = true;
-		recognition.start();
 	}
 };
 
