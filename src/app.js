@@ -837,8 +837,8 @@ function init_eye_gaze_mode() {
 		gaze_dragging = null;
 	};
 
-	let page_focused = document.visibilityState === "visible";
-	let mouse_inside = true;
+	let page_focused = document.visibilityState === "visible"; // guess/assumption
+	let mouse_inside_page = true; // assumption
 	const on_focus = ()=> {
 		page_focused = true;
 		deactivate_for_at_least(inactive_after_focused_timespan);
@@ -847,10 +847,10 @@ function init_eye_gaze_mode() {
 		page_focused = false;
 	};
 	const on_mouse_leave_page = ()=> {
-		mouse_inside = false;
+		mouse_inside_page = false;
 	};
 	const on_mouse_enter_page = ()=> {
-		mouse_inside = true;
+		mouse_inside_page = true;
 	};
 
 	$G.on("pointermove", on_pointer_move);
@@ -862,7 +862,7 @@ function init_eye_gaze_mode() {
 
 	const get_hover_candidate = (clientX, clientY)=> {
 
-		if (!page_focused || !mouse_inside) return null;
+		if (!page_focused || !mouse_inside_page) return null;
 
 		let target = document.elementFromPoint(clientX, clientY);
 		if (!target) {

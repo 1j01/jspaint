@@ -154,6 +154,9 @@ window.disable_speech_recognition = function() {
 };
 
 recognition.onresult = function(event) {
+	if (document.visibilityState !== "visible") {
+		return;
+	}
 	// The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
 	// The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
 	// It has a getter so it can be accessed like an array
@@ -186,6 +189,9 @@ recognition.onspeechend = function() {
 };
 
 recognition.onnomatch = function(event) {
+	if (document.visibilityState !== "visible") {
+		return;
+	}
 	$status_text.text("Speech not recognized.");
 };
 
