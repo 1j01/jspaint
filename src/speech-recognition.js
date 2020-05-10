@@ -28,6 +28,10 @@ const recognitionFixes = {
 	"tan-tan": "tan tan",
 	"pan": "tan",
 	
+	// interpreted as symbols
+	":-)": "smiley face", // so that it can be searched for on Bing for images
+	":-(": "sad face", // may also be from "frowny face"
+
 	// commands/misc
 	"slick to the": "select the",
 	"like the": "select the",
@@ -161,7 +165,11 @@ recognition.onresult = function(event) {
 	console.log('Confidence: ' + event.results[0][0].confidence);
 	command = command.toLowerCase();
 	for (const [bad, good] of Object.entries(recognitionFixes)) {
-		command = command.replace(new RegExp(`\\b${bad}\\b`, "ig"), good);
+		if (bad.match(/^\W|\W$/)) {
+			command = command.replace(new RegExp(escapeRegExp(bad), "ig"), good);
+		} else {
+			command = command.replace(new RegExp(`\\b${escapeRegExp(bad)}\\b`, "ig"), good);
+		}
 	}
 	console.log(`After any fixes: "${command}"`);
 	interpret_command(command);
@@ -218,7 +226,7 @@ window.interpret_command = (command)=> {
 	for (const tool of tools) {
 		for (const base_tool_phrase of tool.speech_recognition) {
 			// Note: if "select" wasn't matched here, the phrase "select text" would select the Select tool instead of the Text tool (because "select" is longer than "text")
-			const select_tool_match = command.match(new RegExp(`\\b(?:(?:select|pick|choose|use|activate|pick up|grab) )?(?:the )?${base_tool_phrase}(?: tool)?\\b`, "i"));
+			const select_tool_match = command.match(new RegExp(`\\b(?:(?:select|pick|choose|use|activate|pick up|grab) )?(?:the )?${escapeRegExp(base_tool_phrase)}(?: tool)?\\b`, "i"));
 			if (select_tool_match) {
 				if (select_tool_match[0].length > best_match_text.length) {
 					best_match_text = select_tool_match[0];
@@ -408,4 +416,8 @@ function find_clipart(query) {
 		})
 }
 
+function escapeRegExp(string) {
+	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+  
 })();
