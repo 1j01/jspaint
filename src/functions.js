@@ -497,23 +497,32 @@ function get_URIs(text) {
 }
 function load_image_from_URI(uri, callback){
 	// @TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
-	fetch(uri)
-	.then(response => response.blob()).then(blob => {
-		const img = new Image();
-		img.crossOrigin = "Anonymous";
-		img.onload = ()=> {
-			if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
-				return callback && callback(new Error(`Image failed to load; naturalWidth == ${img.naturalWidth}`));
-			}
-			callback(null, img);
-		};
-		img.onerror = ()=> {
+	// fetch(uri)
+	// .then(response => response.blob()).then(blob => {
+	const img = new Image();
+	let trying_cors_proxy = false;
+	img.crossOrigin = "Anonymous";
+	const handle_load_fail = ()=> {
+		if (trying_cors_proxy) {
 			callback && callback(new Error("Image failed to load"));
-		};
-		img.src = window.URL.createObjectURL(blob);
-	}).catch((/*error*/) => {
-		callback && callback(new Error("Image failed to load"));
-	});
+		} else {
+			trying_cors_proxy = true;
+			img.src = `https://jspaint-cors-proxy.herokuapp.com/${img.src}`;
+		}
+	};
+	img.onload = ()=> {
+		if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
+			handle_load_fail();
+			return;
+		}
+		callback(null, img);
+	};
+	img.onerror = handle_load_fail;
+	img.src = uri;
+	//img.src = window.URL.createObjectURL(blob);
+	// }).catch((/*error*/) => {
+	// 	callback && callback(new Error("Image failed to load"));
+	// });
 }
 function open_from_URI(uri, callback, canceled){
 	load_image_from_URI(uri, (err, img) => {
@@ -722,14 +731,10 @@ function show_error_message(message, error){
 // @TODO: close are_you_sure windows and these Error windows when switching sessions
 // because it can get pretty confusing
 function show_resource_load_error_message(){
-	// NOTE: apparently distinguishing cross-origin errors is disallowed
 	const $w = $FormToolWindow().title("Error").addClass("dialogue-window");
 	$w.$main.html(
 		"<p>Failed to load image from URL.</p>" +
-		"<p>Check your browser's devtools for details.</p>" +
-		"<p>Make sure to use an image host that supports " +
-		"<a href='https://en.wikipedia.org/wiki/Cross-origin_resource_sharing'>Cross-Origin Resource Sharing</a>" +
-		", such as <a href='https://imgur.com/'>Imgur</a>."
+		"<p>Check your browser's devtools for details.</p>"
 	);
 	$w.$main.css({maxWidth: "500px"});
 	$w.$Button("OK", () => {
