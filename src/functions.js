@@ -1,4 +1,68 @@
 
+// expresses order in the URL as well as type
+const param_types = {
+	// settings
+	"eye-gaze-mode": "bool",
+	"vertical-color-box-mode": "bool",
+	// sessions
+	"local": "string",
+	"session": "string",
+	"load": "string",
+};
+
+function get_all_url_params() {
+	const params = {};
+	location.hash.replace(/^#/, "").split(/,/).forEach((param_decl)=> {
+		const [param_name, param_value] = param_decl.split(":");
+		params[param_name] = param_value === undefined ? true : decodeURIComponent(param_value);
+	});
+	for (const [param_name, param_type] of Object.entries(param_types)) {
+		if (param_type === "bool" && !params[param_name]) {
+			params[param_name] = false;
+		}
+	}
+	return params;
+}
+
+function get_url_param(param_name) {
+	return get_all_url_params()[param_name];
+}
+
+function change_url_param(param_name, value, {replace_history_state=false}={}) {
+	change_some_url_params({[param_name]: value}, {replace_history_state});
+}
+
+function change_some_url_params(params, {replace_history_state=false}={}) {
+	set_all_url_params(Object.assign({}, get_all_url_params(), params), {replace_history_state});
+}
+
+function set_all_url_params(params, {replace_history_state=false}={}) {
+
+	let new_hash = "";
+	for (const [param_name, param_type] of Object.entries(param_types)) {
+		if (params[param_name]) {
+			if (new_hash.length) {
+				new_hash += ",";
+			}
+			new_hash += encodeURIComponent(param_name);
+			if (param_type !== "bool") {
+				new_hash += ":" + encodeURIComponent(params[param_name]);
+			}
+		}
+	}
+	// Note: gets rid of query string (?) portion of the URL
+	// This is desired for upgrading backwards compatibility URLs;
+	// may not be desired for future cases.
+	const new_url = `${location.origin}${location.pathname}#${new_hash}`;
+	if (replace_history_state) {
+		history.replaceState(null, document.title, new_url);
+	} else {
+		history.pushState(null, document.title, new_url);
+	}
+
+	$G.triggerHandler("change-url-params");
+}
+
 function update_magnified_canvas_size(){
 	$canvas.css("width", canvas.width * magnification);
 	$canvas.css("height", canvas.height * magnification);
@@ -532,7 +596,7 @@ function file_load_from_url(){
 			// (but still load from the hash when necessary)
 			// make sure it doesn't overwrite the old session before switching
 			$w.close();
-			location.hash = `${location.hash.length > 1 ? `${location.hash},` : ""}load:${encodeURIComponent(uris[0])}`;
+			change_url_param("load", uris[0]);
 		} else {
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}

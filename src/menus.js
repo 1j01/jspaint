@@ -458,7 +458,7 @@ window.menus = {
 							}else if(name.match(/[./[\]#$]/)){
 								show_error_message("The session name cannot contain any of ./[]#$");
 							}else{
-								location.hash = `${location.hash.length > 1 ? `${location.hash},` : ""}session:${name}`;
+								change_url_param("session", name);
 							}
 						}
 					},
@@ -476,6 +476,7 @@ window.menus = {
 							}else if(name.match(/[./[\]#$]/)){
 								show_error_message("The session name cannot contain any of ./[]#$");
 							}else{
+								// @TODO: keep settings like vertical-color-box-mode
 								window.open(`${location.origin}${location.pathname}#session:${name}`);
 							}
 						}
@@ -520,10 +521,10 @@ window.menus = {
 					if (location.hash.match(/eye-gaze-mode/i)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
-						location.hash = location.hash.replace(/eye-gaze-mode,|,eye-gaze-mode/i, "");
+						change_url_param("eye-gaze-mode", false);
 						// }
 					} else {
-						location.hash = `eye-gaze-mode${location.hash.length > 1 ? "," : ""}${location.hash.replace(/^#/, "")}`;
+						change_url_param("eye-gaze-mode", true);
 					}
 				},
 				check: ()=> {
@@ -552,13 +553,15 @@ window.menus = {
 					if (location.hash.match(/eye-gaze-mode/i)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
-						// location.hash = location.hash.replace(/eye-gaze-mode,|,eye-gaze-mode/i, "");
-						// location.hash = location.hash.replace(/vertical-color-box-mode,|,vertical-color-box-mode/i, "");
+						// change_some_url_params({
+						// 	"eye-gaze-mode": false,
+						// 	"vertical-color-box-mode": false,
+						// });
 						// }
 					} else if (location.hash.match(/vertical-color-box-mode/i)) {
-						location.hash = location.hash.replace(/vertical-color-box-mode,|,vertical-color-box-mode/i, "");
+						change_url_param("vertical-color-box-mode", false);
 					} else {
-						location.hash = `vertical-color-box-mode${location.hash.length > 1 ? "," : ""}${location.hash.replace(/^#/, "")}`;
+						change_url_param("vertical-color-box-mode", true);
 					}
 				},
 				check: ()=> {

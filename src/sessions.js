@@ -537,7 +537,7 @@
 			}
 			end_current_session();
 
-			// @TODO: fix loading duplicately, from popstate and hashchange
+			// @TODO: fix loading duplicately, from popstate/hashchange/change-url-params
 			open_from_URI(url, err => {
 				if(err){
 					show_resource_load_error_message();
@@ -554,7 +554,7 @@
 							log("Switching to new session from #load: URL (to #local: URL with session ID) because of user interaction");
 							end_current_session();
 							const new_session_id = generate_session_id();
-							location.hash = `${location.hash.length > 1 ? `${location.hash},` : ""}local:${new_session_id}`;
+							change_url_param("local", new_session_id);
 						}
 					});
 				}, 100);
@@ -565,9 +565,7 @@
 			const old_hash = location.hash;
 			end_current_session();
 			const new_session_id = generate_session_id();
-			history.replaceState(null, document.title,
-				`#${location.hash.length > 1 ? `${location.hash.replace(/^#/, "")},` : ""}local:${new_session_id}`
-			);
+			change_url_param("local", new_session_id, {replace_history_state: true});
 			log("After replaceState:", location.hash);
 			if (old_hash === location.hash) {
 				// e.g. on Wayback Machine
@@ -578,7 +576,7 @@
 		}
 	};
 
-	$G.on("hashchange popstate", e => {
+	$G.on("hashchange popstate change-url-params", e => {
 		log(e.type, location.hash);
 		update_session_from_location_hash();
 	});

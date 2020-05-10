@@ -120,19 +120,15 @@ const update_eye_gaze_mode = ()=> {
 	}
 };
 update_eye_gaze_mode();
-$G.on("hashchange", update_eye_gaze_mode);
+$G.on("hashchange popstate change-url-params", update_eye_gaze_mode);
 
 // handle backwards compatibility URLs
 if (location.search.match(/eye-gaze-mode/)) {
-	history.replaceState(null, document.title,
-		`${location.origin}${location.pathname}#eye-gaze-mode${location.hash.length > 1 ? `,${location.hash.replace(/^#/, "")}` : ""}`
-	);
+	change_url_param("eye-gaze-mode", true, {replace_history_state: true});
 	update_eye_gaze_mode();
 }
 if (location.search.match(/vertical-colors?-box/)) {
-	history.replaceState(null, document.title,
-		`${location.origin}${location.pathname}#vertical-color-box-mode${location.hash.length > 1 ? `,${location.hash.replace(/^#/, "")}` : ""}`
-	);
+	change_url_param("vertical-color-box", true, {replace_history_state: true});
 	update_eye_gaze_mode();
 }
 
