@@ -548,7 +548,7 @@ window.menus = {
 				},
 			},
 			enabled: ()=> window.speech_recognition_available,
-			description: "Selects tools and colors with voice.",
+			description: "Controls the application with voice commands.",
 		},
 		{
 			item: "&Vertical Color Box",

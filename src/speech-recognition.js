@@ -186,7 +186,7 @@ recognition.onspeechend = function() {
 };
 
 recognition.onnomatch = function(event) {
-	$status_text.text("I didn't recognise that color.");
+	$status_text.text("Speech not recognized.");
 };
 
 recognition.onstart = function(event) {
