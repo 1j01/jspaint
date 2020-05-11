@@ -593,9 +593,23 @@ function load_image_from_URI(uri, callback){
 			const img = new Image();
 			img.crossOrigin = "Anonymous";
 			const handle_decode_fail = ()=> {
-				const error = new Error("failed to decode blob as an image");
-				error.code = "decode-fail";
-				callback(error);
+				// @TODO: use headers to detect HTML instead, since a doctype is not guaranteed
+				// @TODO: fall back to WayBack Machine still for decode errors,
+				// since a website might start redirecting swathes of URLs regardless of what they originally pointed to,
+				// at which point they would likely point to a web page instead of an image.
+				// (But still show an error about it not being an image, if WayBack also fails.)
+				var fr = new FileReader();
+				fr.onerror = ()=> {
+					const error = new Error("failed to decode blob as image or text");
+					error.code = "decode-fail";
+					callback(error);
+				};
+				fr.onload = (e)=> {
+					const error = new Error("failed to decode blob as an image");
+					error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decode-fail";
+					callback(error);
+				};
+				fr.readAsText(blob);
 			};
 			img.onload = ()=> {
 				if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
@@ -829,9 +843,14 @@ function show_resource_load_error_message(error){
 					`<p>Try "Copy image" instead of "Copy image address".</p>`
 			}
 		`);
+	} else if (error.code === "html-not-image") {
+		$w.$main.html(`
+			<p>Address points to a web page, not an image file.</p>
+			<p>Try copying and pasting an image instead of a URL.</p>
+		`);
 	} else if (error.code === "decode-fail") {
 		$w.$main.html(`
-			<p>Address doesn't point to an image file.</p>
+			<p>Address doesn't point to an image file of a supported format.</p>
 			<p>Try copying and pasting an image instead of a URL.</p>
 		`);
 	} else {
