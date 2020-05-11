@@ -76,8 +76,11 @@ I want to bring good old paint into the modern era.
   (I made a [library](https://github.com/1j01/palette.js/) for this.)
 * Touch support: use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
-* Vertical Color Box mode, accessible from URL https://jspaint.app/#vertical-color-box-mode or from **Extras > Vertical Color Box**
-* Eye Gaze Mode, for use with an eye tracker, head tracker, or other coarse input device, accessible from URL https://jspaint.app/#eye-gaze-mode or from **Extras > Eye Gaze Mode**. (With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).)
+* [Vertical Color Box mode](https://jspaint.app/#vertical-color-box-mode), accessible from **Extras > Vertical Color Box**
+* [Eye Gaze Mode](https://jspaint.app/#eye-gaze-mode), for use with an eye tracker, head tracker, or other coarse input device, accessible from **Extras > Eye Gaze Mode**. (With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).)
+* [Speech Recognition Mode](https://jspaint.app/#speech-recognition-mode).
+  Using your voice you can switch tools, colors, dictate text with the Text tool, and do one other thing... you can tell it to sketch things.
+  For instance, "draw a dog".
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
