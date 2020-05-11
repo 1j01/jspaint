@@ -178,7 +178,7 @@ recognition.onresult = function(event) {
 		}
 	}
 	console.log(`After any fixes: "${command}"`);
-	interpret_command(command);
+	interpret_command(command, true);
 };
 
 recognition.onspeechend = function() {
@@ -218,7 +218,7 @@ recognition.onerror = function(event) {
 	}
 };
 
-window.interpret_command = (command)=> {
+window.interpret_command = (command, default_to_entering_text)=> {
 	let best_match_fn;
 	let best_match_text = "";
 	for (const color of colorNames) {
@@ -300,6 +300,45 @@ window.interpret_command = (command)=> {
 			};
 		}
 	}
+	if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
+		const new_line_match = command.match(/^(?:new line|newline|line break|return|enter|carriage return|)$|\b(?:(?:insert|add|put|put in|input)(?: an?)? (?:new line|newline|line break|return|enter|carriage return))\b/i);
+		if (new_line_match) {
+			if (new_line_match[0].length > best_match_text.length) {
+				best_match_text = new_line_match[0];
+				best_match_fn = ()=> {
+					document.execCommand("insertText", false, "\n");
+				};
+			}
+		}
+	}
+	if (window.textbox) {
+		const stop_match = command.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? (text|text input|textbox|text box|writing))\b/i);
+		if (stop_match) {
+			best_match_text = stop_match[0];
+			best_match_fn = deselect;
+		}
+	}
+	if (window.selection) {
+		const stop_match = command.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? selection|deselect|unselect)\b/i);
+		if (stop_match) {
+			best_match_text = stop_match[0];
+			best_match_fn = deselect;
+		}
+	}
+	if (!best_match_text && default_to_entering_text) {
+		if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
+			best_match_text = command;
+			const text_to_insert = command.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
+			best_match_fn = ()=> {
+				document.execCommand("insertText", false, text_to_insert);
+			};
+		}
+	}
+
+	// @TODO: more nuanced command matching, probably multiplying confidence levels together
+	// and giving lower confidence for things that start in the middle of the phrase
+	// and like higher confidence in "stop" if it's actively drawing
+
 	if (best_match_text) {
 		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${command.replace(best_match_text, (important_text)=> `<b>${important_text}</b>`)}</span>`);
 		console.log(`Interpreting command "${command}" as "${best_match_text}"`);
