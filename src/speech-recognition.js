@@ -126,7 +126,12 @@ grammar jspaintCommands;
 <tool_name> = ${toolNames.join(' | ')};
 <tool> = [the] <tool_name> [tool];
 <pick-verb> = select | pick | choose | use | activate | "pick up" | grab;
-public <command> = [<pick-verb>] (<color> | <tool>);
+<stop> = stop | end | cease | (that's | that is) enough | enough of that | terminate | halt | put an end to [this] | break off;
+// @TODO: is there an escape hatch for "any text here"?
+<something> = [a|an] (something | thing | anything | dog | cat | house | mouse | bird | snake | tree | turtle | mountain | [smiley | smiling | happy | frowny | frowning | sad] face);
+<draw> = draw | sketch | doodle | render | ((draw | sketch | doodle | render | do | paint) [a picture | an image | a drawing | a painting | a rendition | a sketch | a doodle) of]);
+<draw-something> = <draw> <something>;
+public <command> = [<pick-verb>] (<color> | <tool>) | <stop> | <draw-something>;
 `;
 
 const recognition = new SpeechRecognition();
