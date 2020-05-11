@@ -538,13 +538,18 @@ function load_image_from_URI(uri, callback){
 			}
 		};
 
+		if (is_download) {
+			console.log(`Try loading image from URI (${index + 1}/${uris_to_try.length}): "${uri_to_try}"`);
+		}
 		fetch(uri_to_try)
 		.then(response => {
 			if (!response.ok) {
 				throw Error(`${response.status} ${response.statusText}`);
 			}
 			if (!response.body) {
-				console.log("ReadableStream not yet supported in this browser. Progress won't be shown for image requests.");
+				if (is_download) {
+					console.log("ReadableStream not yet supported in this browser. Progress won't be shown for image requests.");
+				}
 				return response;
 			}
 	
@@ -553,7 +558,9 @@ function load_image_from_URI(uri, callback){
 			const contentEncoding = response.headers.get("content-encoding");
 			const contentLength = response.headers.get(contentEncoding ? "x-file-size" : "content-length");
 			if (contentLength === null) {
-				console.log("Response size header unavailable. Progress won't be shown for this image request.");
+				if (is_download) {
+					console.log("Response size header unavailable. Progress won't be shown for this image request.");
+				}
 				return response;
 			}
 	
@@ -588,6 +595,7 @@ function load_image_from_URI(uri, callback){
 		.then(response => response.blob())
 		.then(blob => {
 			if (is_download) {
+				console.log("Download complete.");
 				$status_text.text("Download complete.");
 			}
 			const img = new Image();
