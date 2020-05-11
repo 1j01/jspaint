@@ -351,7 +351,11 @@ window.interpret_command = (command, default_to_entering_text)=> {
 			best_match_text = command;
 			const text_to_insert = command.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
 			best_match_fn = ()=> {
-				document.execCommand("insertText", false, text_to_insert);
+				if (document.activeElement && document.activeElement.matches("input[type='number']")) {
+					document.activeElement.value = command;
+				} else {
+					document.execCommand("insertText", false, text_to_insert);
+				}
 			};
 		}
 	}
