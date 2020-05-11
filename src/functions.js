@@ -1995,8 +1995,8 @@ function image_attributes(){
 
 	const $width_label = $(E("label")).appendTo($main).text("Width:");
 	const $height_label = $(E("label")).appendTo($main).text("Height:");
-	const $width = $(E("input")).appendTo($width_label);
-	const $height = $(E("input")).appendTo($height_label);
+	const $width = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($width_label);
+	const $height = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($height_label);
 
 	$main.find("input")
 		.css({width: "40px"})
@@ -2139,7 +2139,7 @@ function image_flip_and_rotate(){
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='90' checked/>90°</label>");
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='180'/>180°</label>");
 	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='270'/>270°</label>");
-	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='arbitrary'/><input type='number' min='-360' max='360' name='rotate-by-arbitrary-angle' value=''/> Degrees</label>");
+	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='arbitrary'/><input type='number' min='-360' max='360' name='rotate-by-arbitrary-angle' value='' class='no-spinner'/> Degrees</label>");
 	$rotate_by_angle.find("input").attr({disabled: true});
 
 	$fieldset.find("input").on("change", () => {
@@ -2215,7 +2215,7 @@ function image_stretch_and_skew(){
 	const $fieldset_skew = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_skew.append("<legend>Skew</legend><table></table>");
 
-	const $RowInput = ($table, img_src, label_text, default_value, label_unit) => {
+	const $RowInput = ($table, img_src, label_text, default_value, label_unit, min, max) => {
 		const $tr = $(E("tr")).appendTo($table);
 		const $img = $(E("img")).attr({
 			src: `images/transforms/${img_src}.png`,
@@ -2226,11 +2226,14 @@ function image_stretch_and_skew(){
 		});
 		const input_id = ("input" + Math.random() + Math.random()).replace(/\./, "");
 		const $input = $(E("input")).attr({
+			type: "number",
+			min,
+			max,
 			value: default_value,
 			id: input_id,
 		}).css({
 			width: "40px"
-		});
+		}).addClass("no-spinner");
 		$(E("td")).appendTo($tr).append($img);
 		$(E("td")).appendTo($tr).append($(E("label")).text(label_text).attr("for", input_id));
 		$(E("td")).appendTo($tr).append($input);
@@ -2239,10 +2242,10 @@ function image_stretch_and_skew(){
 		return $input;
 	};
 
-	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%");
-	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%");
-	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees");
-	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees");
+	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%", 1, 5000);
+	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%", 1, 5000);
+	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees", -90, 90);
+	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees", -90, 90);
 
 	$w.$Button("Okay", () => {
 		const xscale = parseFloat(stretch_x.val())/100;
