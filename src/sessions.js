@@ -541,7 +541,7 @@
 
 			open_from_URI(url, error => {
 				if (error) {
-					show_resource_load_error_message();
+					show_resource_load_error_message(error);
 				}
 			});
 

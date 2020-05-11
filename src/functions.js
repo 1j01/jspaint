@@ -496,46 +496,129 @@ function get_URIs(text) {
 	return uris;
 }
 function load_image_from_URI(uri, callback){
-	// @TODO: if URI is not blob: or data:, show dialog with progress bar and this string from mspaint.exe: "Downloading picture"
-	// fetch(uri)
-	// .then(response => response.blob()).then(blob => {
-	const img = new Image();
-	let trying_cors_proxy = false;
-	img.crossOrigin = "Anonymous";
-	const handle_load_fail = ()=> {
-		if (trying_cors_proxy) {
-			callback && callback(new Error("Image failed to load"));
-		} else {
-			trying_cors_proxy = true;
-			img.src = `https://jspaint-cors-proxy.herokuapp.com/${img.src}`;
+	const is_blob_uri = uri.match(/^blob:/);
+	const is_download = !uri.match(/^(blob|data):/);
+
+	if (is_blob_uri && uri.indexOf(`blob:${location.origin}`) === -1) {
+		const error = new Error("can't load blob: URI from another domain");
+		error.code = "cors-blob-uri";
+		callback(error);
+		return;
+	}
+
+	const uris_to_try = is_download ? [
+		uri,
+		// work around CORS headers not sent by whatever server
+		`https://jspaint-cors-proxy.herokuapp.com/${uri}`,
+		// if the image isn't available on the live web, see if it's archived
+		`https://web.archive.org/${uri}`,
+	] : [uri];
+
+	let index = 0;
+	const try_next_uri = ()=> {
+		const uri_to_try = uris_to_try[index];
+		if (is_download) {
+			$status_text.text("Downloading picture...");
 		}
+
+		const handle_load_fail = ()=> {
+			index += 1;
+			if (index >= uris_to_try.length) {
+				if (is_download) {
+					$status_text.text("Failed to download picture.");
+				}
+				callback && callback(new Error(`failed to download image from any of three URIs (${JSON.stringify(uris_to_try)}).`));
+			} else {
+				try_next_uri();
+			}
+		};
+		const show_progress = ({loaded, total})=> {
+			if (is_download) {
+				$status_text.text(`Downloading picture... (${Math.round(loaded/total*100)}%)`);
+			}
+		};
+
+		fetch(uri_to_try)
+		.then(response => {
+			if (!response.ok) {
+				throw Error(`${response.status} ${response.statusText}`);
+			}
+			if (!response.body) {
+				console.log("ReadableStream not yet supported in this browser. Progress won't be shown for image requests.");
+				return response;
+			}
+	
+			// to access headers, server must send CORS header "Access-Control-Expose-Headers: content-encoding, content-length x-file-size"
+			// server must send custom x-file-size header if gzip or other content-encoding is used
+			const contentEncoding = response.headers.get("content-encoding");
+			const contentLength = response.headers.get(contentEncoding ? "x-file-size" : "content-length");
+			if (contentLength === null) {
+				console.log("Response size header unavailable. Progress won't be shown for this image request.");
+				return response;
+			}
+	
+			const total = parseInt(contentLength, 10);
+			let loaded = 0;
+	
+			return new Response(
+				new ReadableStream({
+					start(controller) {
+						const reader = response.body.getReader();
+	
+						read();
+						function read() {
+							reader.read().then(({done, value}) => {
+								if (done) {
+									controller.close();
+									return; 
+								}
+								loaded += value.byteLength;
+								show_progress({loaded, total})
+								controller.enqueue(value);
+								read();
+							}).catch(error => {
+								console.error(error);
+								controller.error(error)									
+							})
+						}
+					}
+				})
+			);
+		})
+		.then(response => response.blob())
+		.then(blob => {
+			if (is_download) {
+				$status_text.text("Download complete.");
+			}
+			const img = new Image();
+			img.crossOrigin = "Anonymous";
+			img.onload = ()=> {
+				if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
+					handle_load_fail();
+					return;
+				}
+				callback(null, img);
+			};
+			img.onerror = handle_load_fail;
+			img.src = window.URL.createObjectURL(blob);
+		})
+		.catch(handle_load_fail)
+	
 	};
-	img.onload = ()=> {
-		if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
-			handle_load_fail();
-			return;
-		}
-		callback(null, img);
-	};
-	img.onerror = handle_load_fail;
-	img.src = uri;
-	//img.src = window.URL.createObjectURL(blob);
-	// }).catch((/*error*/) => {
-	// 	callback && callback(new Error("Image failed to load"));
-	// });
+	try_next_uri();
 }
 function open_from_URI(uri, callback, canceled){
-	load_image_from_URI(uri, (err, img) => {
-		if(err){ return callback(err); }
+	load_image_from_URI(uri, (error, img) => {
+		if(error){ return callback(error); }
 		open_from_Image(img, callback, canceled);
 	});
 }
 function open_from_File(file, callback, canceled){
 	const blob_url = URL.createObjectURL(file);
-	load_image_from_URI(blob_url, (err, img) => {
+	load_image_from_URI(blob_url, (error, img) => {
 		// revoke object URL regardless of error
 		URL.revokeObjectURL(file);
-		if(err){ return callback(err); }
+		if(error){ return callback(error); }
 
 		open_from_Image(img, () => {
 			file_name = file.name;
@@ -730,12 +813,24 @@ function show_error_message(message, error){
 
 // @TODO: close are_you_sure windows and these Error windows when switching sessions
 // because it can get pretty confusing
-function show_resource_load_error_message(){
+function show_resource_load_error_message(error){
 	const $w = $FormToolWindow().title("Error").addClass("dialogue-window");
-	$w.$main.html(
-		"<p>Failed to load image from URL.</p>" +
-		"<p>Check your browser's devtools for details.</p>"
-	);
+	const firefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
+	if (error.code === "cors-blob-uri") {
+		$w.$main.html(`
+			<p>Can't load image from address starting with "blob:".</p>
+			${
+				firefox ?
+					`<p>Try "Copy Image" instead of "Copy Image Location".</p>` :
+					`<p>Try "Copy image" instead of "Copy image address".</p>`
+			}
+		`);
+	} else {
+		$w.$main.html(`
+			<p>Failed to load image from URL.</p>
+			<p>Check your browser's devtools for details.</p>
+		`);
+	}
 	$w.$main.css({maxWidth: "500px"});
 	$w.$Button("OK", () => {
 		$w.close();
@@ -895,9 +990,8 @@ function show_news(){
 function paste_image_from_file(file){
 	const blob_url = URL.createObjectURL(file);
 	// paste_image_from_URI(blob_url);
-	load_image_from_URI(blob_url, (err, img) => {
-		// @TODO: this shouldn't really have the CORS error message, if it's from a blob URI
-		if(err){ return show_resource_load_error_message(); }
+	load_image_from_URI(blob_url, (error, img) => {
+		if(error){ return show_resource_load_error_message(error); }
 		paste(img);
 		URL.revokeObjectURL(blob_url);
 	});
@@ -1546,8 +1640,8 @@ async function edit_paste(execCommandFallback){
 				if(clipboardText) {
 					const uris = get_URIs(clipboardText);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], (err, img) => {
-							if(err){ return show_resource_load_error_message(); }
+						load_image_from_URI(uris[0], (error, img) => {
+							if(error){ return show_resource_load_error_message(error); }
 							paste(img);
 						});
 					} else {

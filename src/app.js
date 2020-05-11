@@ -502,8 +502,8 @@ $G.on("cut copy paste", e => {
 				item.getAsString(text => {
 					const uris = get_URIs(text);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], (err, img) => {
-							if(err){ return show_resource_load_error_message(); }
+						load_image_from_URI(uris[0], (error, img) => {
+							if(error){ return show_resource_load_error_message(error); }
 							paste(img);
 						});
 					} else {
