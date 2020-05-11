@@ -170,11 +170,13 @@ recognition.onresult = function(event) {
 	console.log(`Result received: "${command}"`);
 	console.log('Confidence: ' + event.results[0][0].confidence);
 	command = command.toLowerCase();
-	for (const [bad, good] of Object.entries(recognitionFixes)) {
-		if (bad.match(/^\W|\W$/)) {
-			command = command.replace(new RegExp(escapeRegExp(bad), "ig"), good);
-		} else {
-			command = command.replace(new RegExp(`\\b${escapeRegExp(bad)}\\b`, "ig"), good);
+	if (!command.match(/^draw /i) && !(document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]"))) {
+		for (const [bad, good] of Object.entries(recognitionFixes)) {
+			if (bad.match(/^\W|\W$/)) {
+				command = command.replace(new RegExp(escapeRegExp(bad), "ig"), good);
+			} else {
+				command = command.replace(new RegExp(`\\b${escapeRegExp(bad)}\\b`, "ig"), good);
+			}
 		}
 	}
 	console.log(`After any fixes: "${command}"`);
