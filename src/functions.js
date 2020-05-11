@@ -521,7 +521,7 @@ function load_image_from_URI(uri, callback){
 			$status_text.text("Downloading picture...");
 		}
 
-		const handle_load_fail = ()=> {
+		const handle_fetch_fail = ()=> {
 			index += 1;
 			if (index >= uris_to_try.length) {
 				if (is_download) {
@@ -592,18 +592,22 @@ function load_image_from_URI(uri, callback){
 			}
 			const img = new Image();
 			img.crossOrigin = "Anonymous";
+			const handle_decode_fail = ()=> {
+				const error = new Error("failed to decode blob as an image");
+				error.code = "decode-fail";
+				callback(error);
+			};
 			img.onload = ()=> {
 				if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
-					handle_load_fail();
+					handle_decode_fail();
 					return;
 				}
 				callback(null, img);
 			};
-			img.onerror = handle_load_fail;
+			img.onerror = handle_decode_fail;
 			img.src = window.URL.createObjectURL(blob);
 		})
-		.catch(handle_load_fail)
-	
+		.catch(handle_fetch_fail);
 	};
 	try_next_uri();
 }
@@ -824,6 +828,11 @@ function show_resource_load_error_message(error){
 					`<p>Try "Copy Image" instead of "Copy Image Location".</p>` :
 					`<p>Try "Copy image" instead of "Copy image address".</p>`
 			}
+		`);
+	} else if (error.code === "decode-fail") {
+		$w.$main.html(`
+			<p>Address doesn't point to an image file.</p>
+			<p>Try copying and pasting an image instead of a URL.</p>
 		`);
 	} else {
 		$w.$main.html(`
