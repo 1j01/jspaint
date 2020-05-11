@@ -120,7 +120,11 @@ const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown
 const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
 // @TODO: "click [on] X"?
 // @TODO: select foreground/background/ternary color specifically
-const grammar = `#JSGF V1.0;
+
+// @TODO: Is there a way to enable the grammar only as a hint, non-restrictively?
+// Construct a grammar that just contains an English dictionary, and set it as lower weight?
+// That might mess with / not work with things like "MC" in "MC Hammer", numbers, emoji, etc.
+/*const grammar = `#JSGF V1.0;
 grammar jspaintCommands;
 <color> = ${colorNames.join(' | ')};
 <tool_name> = ${toolNames.join(' | ')};
@@ -132,12 +136,12 @@ grammar jspaintCommands;
 <draw> = draw | sketch | doodle | render | ((draw | sketch | doodle | render | do | paint) [a picture | an image | a drawing | a painting | a rendition | a sketch | a doodle) of]);
 <draw-something> = <draw> <something>;
 public <command> = [<pick-verb>] (<color> | <tool>) | <stop> | <draw-something>;
-`;
+`;*/
 
 const recognition = new SpeechRecognition();
-const speechRecognitionList = new SpeechGrammarList();
-speechRecognitionList.addFromString(grammar, 1);
-recognition.grammars = speechRecognitionList;
+// const speechRecognitionList = new SpeechGrammarList();
+// speechRecognitionList.addFromString(grammar, 1);
+// recognition.grammars = speechRecognitionList;
 recognition.continuous = false;
 recognition.lang = 'en-US';
 recognition.interimResults = false;
