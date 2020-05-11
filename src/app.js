@@ -894,6 +894,7 @@ function init_eye_gaze_mode() {
 			.current-colors,
 			.color-button,
 			.tool:not(.selected),
+			.chooser-option,
 			.menu-button:not(.active),
 			.menu-item,
 			.main-canvas,
