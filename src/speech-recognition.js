@@ -298,7 +298,6 @@ window.interpret_command = (command, default_to_entering_text)=> {
 						const image_data = img_canvas.ctx.getImageData(0, 0, img_canvas.width, img_canvas.height);
 						resize_canvas_without_saving_dimensions(Math.max(canvas.width, image_data.width), Math.max(canvas.height, image_data.height));
 						trace_and_sketch(image_data);
-						// @TODO: visible cancel button, and Escape key handling, in addition to the "stop" voice command
 					};
 					img.src = image_url;
 				}, (error)=> {
@@ -373,6 +372,9 @@ window.interpret_command = (command, default_to_entering_text)=> {
 
 window.trace_and_sketch = (subject_imagedata)=> {
 	window.trace_and_sketch_stop && window.trace_and_sketch_stop();
+
+	// @TODO: clickable cancel button? (in addition to Escape key handling and the "stop" voice command)
+	$status_text.text(`To stop drawing, ${window.speech_recognition_active ? `say "stop", or ` : ""}press Esc.`);
 
 	// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));

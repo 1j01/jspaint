@@ -348,7 +348,8 @@ $G.on("keydown", e => {
 		}else{
 			cancel();
 		}
-		stopSimulatingGestures();
+		window.stopSimulatingGestures && window.stopSimulatingGestures();
+		window.trace_and_sketch_stop && window.trace_and_sketch_stop();
 	}else if(e.keyCode === 13){ //Enter
 		if(selection){
 			deselect();
