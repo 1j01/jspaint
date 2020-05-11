@@ -277,6 +277,9 @@ window.interpret_command = (command, default_to_entering_text)=> {
 					}
 					const img = new Image();
 					img.crossOrigin = "Anonymous";
+					img.onerror = ()=> {
+						$status_text.text("Failed to load clipart.");
+					};
 					img.onload = ()=> {
 						// @TODO: find an empty spot on the canvas for the sketch, smaller if need be
 						const max_sketch_width = 500;
