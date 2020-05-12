@@ -118,7 +118,6 @@ const recognitionFixes = {
 };
 const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
 const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
-// @TODO: "click [on] X"?
 // @TODO: select foreground/background/ternary color specifically
 
 // @TODO: Is there a way to enable the grammar only as a hint, non-restrictively?
@@ -352,6 +351,24 @@ window.interpret_command = (command, default_to_entering_text)=> {
 			};
 		}
 	}
+	const buttons = $("button, label").toArray();
+	
+	for (const button of buttons) {
+		// @TODO: button.dataset.speechRecognition (data-speech-recognition)
+		// @TODO: synonymize okay/OK
+		const button_text = button.textContent || button.getAttribute("aria-label") || button.title;
+		const match_phrases = [button_text, `click ${button_text}`, `click on ${button_text}`];
+		for (const match_phrase of match_phrases) {
+			if (` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
+				if (match_phrase.length > best_match_text.length) {
+					best_match_text = match_phrase;
+					best_match_fn = ((button)=> ()=> {
+						clickButtonVisibly(button);
+					})(button);
+				}
+			}
+		}
+	}
 	if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
 		const new_line_match = command.match(/^(?:new line|newline|line break|return|enter|carriage return|)$|\b(?:(?:insert|add|put|put in|input)(?: an?)? (?:new line|newline|line break|return|enter|carriage return))\b/i);
 		if (new_line_match) {
@@ -523,6 +540,20 @@ function find_clipart(query) {
 			}
 			return items;
 		})
+}
+
+function clickButtonVisibly(button) {
+	if (button.matches("button:not(.toggle)")) {
+		button.style.borderImage = "var(--inset-deep-border-image)";
+		setTimeout(()=> {
+			button.style.borderImage = "";
+			// delay the button click to here so the pressed state is
+			// visible even if the button action closes a dialog
+			button.click();
+		}, 100);
+	} else {
+		button.click();
+	}
 }
 
 function escapeRegExp(string) {
