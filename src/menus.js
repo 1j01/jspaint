@@ -423,7 +423,7 @@ window.menus = {
 					item: "C&ustom...",
 					description: "Zooms the picture.",
 					speech_recognition: [
-						"zoom custom", "custom zoom", "set custom zoom", "set custom zoom level", "zoom to custom level", "zoom to custom",
+						"zoom custom", "custom zoom", "set custom zoom", "set custom zoom level", "zoom to custom level", "zoom to custom", "zoom level", "set zoom level",
 					],
 					action: ()=> { show_custom_zoom_window(); },
 				},
@@ -756,8 +756,8 @@ window.menus = {
 				{
 					item: "&Classic",
 					speech_recognition: [
-						"classic theme", "switch to classic theme", "use classic theme",
-						"retro theme", "switch to retro theme", "use retro theme",
+						"classic theme", "switch to classic theme", "use classic theme", "set theme to classic", "switch to classic theme",
+						"retro theme", "switch to retro theme", "use retro theme", "set theme to retro", "switch to retro theme",
 					],
 					action: ()=> {
 						set_theme("classic.css");
@@ -768,7 +768,7 @@ window.menus = {
 				{
 					item: "&Modern",
 					speech_recognition: [
-						"modern theme", "switch to modern theme", "use modern theme",
+						"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "switch to modern theme",
 					],
 					action: ()=> {
 						set_theme("modern.css");
@@ -779,10 +779,10 @@ window.menus = {
 				{
 					item: "&Winter",
 					speech_recognition: [
-						"winter theme", "switch to winter theme", "use winter theme",
-						"holiday theme", "switch to holiday theme", "use holiday theme",
-						"christmas theme", "switch to christmas theme", "use christmas theme",
-						"hanukkah theme", "switch to hanukkah theme", "use hanukkah theme",
+						"winter theme", "switch to winter theme", "use winter theme", "set theme to winter", "switch to winter theme",
+						"holiday theme", "switch to holiday theme", "use holiday theme", "set theme to holiday", "switch to holiday theme",
+						"christmas theme", "switch to christmas theme", "use christmas theme", "set theme to christmas", "switch to christmas theme",
+						"hanukkah theme", "switch to hanukkah theme", "use hanukkah theme", "set theme to hanukkah", "switch to hanukkah theme",
 					],
 					action: ()=> {
 						set_theme("winter.css");

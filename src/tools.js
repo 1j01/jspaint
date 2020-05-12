@@ -449,7 +449,7 @@ window.tools = [{
 	name: "Magnifier",
 	speech_recognition: [
 		"magnifier", "magnification", "magnifying glass", "loupe", "hand lens", "hand glass", "eyeglass", "lens", "simple microscope", "microscope", "glass",
-		"zoom", "zoom in", "zoom out", "zoom level", "magnifying",
+		"zoom", "zoom in", "zoom out", "magnifying",
 	],
 	help_icon: "p_zoom.gif",
 	description: "Changes the magnification.",

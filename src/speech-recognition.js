@@ -42,6 +42,31 @@ const recognitionFixes = {
 	"try": "draw", // seems too general - (unless you previously told it to draw something...) - but it keeps coming up!
 	// "drag": "draw a", // too general
 	"try picture": "draw a picture",
+	"tuggle": "toggle",
+
+	// zooming
+	"normal-size": "normal size",
+	"large-size": "large size",
+	"name two large size": "zoom to large size",
+	"dim to large size": "zoom to large size",
+	"name two normal size": "zoom to normal size",
+	"dim to normal size": "zoom to normal size",
+	"seem to 1x": "zoom to 1x",
+	"seem 2 1x": "zoom to 1x",
+	"zoom g1x": "zoom to 1x",
+	"jim to 1x": "zoom to 1x",
+	"zoom 2 2x": "zoom to 2x",
+	"zoom tattoo x": "zoom to 2x",
+
+	// switching themes
+	"set game to": "set theme to",
+	"set themed to": "set theme to",
+	"set themed": "set theme",
+	"second winter": "set theme to winter",
+	"set theme to mother": "set theme to modern",
+	"modern team": "modern theme",
+	"my 19": "modern theme",
+	"modern thing": "modern theme",
 
 	// render gif animation from document history
 	"render gift": "render gif",
@@ -384,10 +409,12 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	const all_menu_items = [];
 	const collect_menu_items = (menu)=> {
 		for (const menu_item of menu) {
-			all_menu_items.push(menu_item);
-		}
-		if (menu.submenu) {
-			collect_menu_items(menu.submenu);
+			if (menu_item !== MENU_DIVIDER) {
+				all_menu_items.push(menu_item);
+			}
+			if (menu_item.submenu) {
+				collect_menu_items(menu_item.submenu);
+			}
 		}
 	};
 	Object.values(menus).forEach(collect_menu_items);
