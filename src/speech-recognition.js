@@ -43,6 +43,14 @@ const recognitionFixes = {
 	// "drag": "draw a", // too general
 	"try picture": "draw a picture",
 
+	// render gif animation from document history
+	"render gift": "render gif",
+	"create gift": "create gif",
+	"make gift": "make gif",
+	"render a gift": "render a gif",
+	"create a gift": "create a gif",
+	"make a gift": "make a gif",
+
 	// help window
 	"webhelp": "web help",
 	"four words": "forwards",

@@ -647,7 +647,11 @@ window.menus = {
 			item: "&Render History As GIF",
 			shortcut: "Ctrl+Shift+G",
 			speech_recognition: [
+				// @TODO: animated gif, blah
 				"render history as gif", "render history as a gif", "render history animation", "make history animation", "make animation of history", "make animation of document history", "make animation from document history",
+				"render a gif from the history", "render a gif animation from the history", "render an animation from the history",
+				"make a gif from the history", "make a gif animation from the history", "make an animation from the history",
+				"create a gif from the history", "create a gif animation from the history", "create an animation from the history",
 				// aaaaaaaaaaaaaaaaaaaaaaaaaa *exponentially explodes*
 				"make a gif", "make a gif of the history", "make a gif of the document history", "make a gif from the document history",
 				"create a gif", "create a gif of the history", "create a gif of the document history", "create a gif from the document history",
