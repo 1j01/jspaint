@@ -195,7 +195,7 @@ function open_help_viewer(options){
 	let $last_expanded;
 	
 	const $Item = text => {
-		const $item = $(E("div")).addClass("item").text(text);
+		const $item = $(E("div")).addClass("item").text(text.trim());
 		$item.on("mousedown", () => {
 			$contents.find(".item").removeClass("selected");
 			$item.addClass("selected");

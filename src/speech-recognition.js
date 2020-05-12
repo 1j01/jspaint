@@ -43,6 +43,11 @@ const recognitionFixes = {
 	// "drag": "draw a", // too general
 	"try picture": "draw a picture",
 
+	// help window
+	"webhelp": "web help",
+	"four words": "forwards",
+	"forbearance": "forwards",
+
 	// Eye Gaze Mode
 	"i gaze": "eye gaze",
 	"auggies": "eye gaze",
@@ -452,7 +457,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		}
 	}
 
-	const buttons = $("button, label").toArray();
+	const buttons = $("button, label, .help-window .item").filter(":visible").toArray();
 	
 	for (const button of buttons) {
 		// @TODO: button.dataset.speechRecognition (data-speech-recognition)
@@ -488,6 +493,33 @@ window.interpret_command = (command, default_to_entering_text)=> {
 				"Un-pause Dwell Clicking", "Un-pause Eye Gaze", "Un-pause Gaze Clicking", "Un-pause Dwell Clicks", "Un-pause Gaze Clicks", 
 			];
 		}
+		if (button.matches(".window-close-button")) {
+			button_text_phrases = [
+				"close", "close button", "close window", "close window button",
+				// @TODO: condition on window type
+				"close dialog", "close dialog window", "close dialog button", "close dialog window button",
+			];
+		}
+		if (button.matches(".window-maximize-button")) {
+			button_text_phrases = [
+				// @TODO: condition of maximized state
+
+				"maximize", "maximize button", "maximize window", "maximize window button",
+				"enlarge window", "make window large", "make window larger",
+
+				"unmaximize", "unmaximize button", "unmaximize window", "unmaximize window button",
+				"restore", "restore button", "restore window", "restore window button", "restore window size", "restore window size button",
+				"enlarge window", "make window small", "make window smallagain", "make window smaller", "make window smaller again",
+			];
+		}
+		if (button.matches(".window-minimize-button")) {
+			button_text_phrases = [
+				"minimize", "minimize button", "minimize window", "minimize window button",
+				"iconify", "iconify button", "iconify window", "iconify window button",
+				"minimize to tray", "minimize to tray button", "minimize to tray window", "minimize to tray window button",
+				"hide window", "hide window button",
+			];
+		}
 		// console.log(button, button_text, button_text_phrases);
 		for (const button_text_phrase of button_text_phrases) {
 			const match_phrases = [button_text_phrase, `click ${button_text_phrase}`, `click on ${button_text_phrase}`];
@@ -498,6 +530,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 						best_match_text = match_phrase;
 						best_match_fn = ((button)=> ()=> {
 							clickButtonVisibly(button);
+							console.log("click", button);
 						})(button);
 					}
 				}
