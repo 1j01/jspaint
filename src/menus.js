@@ -9,24 +9,46 @@ window.menus = {
 		{
 			item: "&New",
 			shortcut: "Ctrl+Alt+N", // Ctrl+N opens a new browser window
+			speech_recognition: [
+				"new document", "create new document", "create a new document", "start new document", "start a new document",
+			],
 			action: ()=> { file_new(); },
 			description: "Creates a new document.",
 		},
 		{
 			item: "&Open",
 			shortcut: "Ctrl+O",
+			speech_recognition: [
+				"open document", "open file", "open a document", "open a file",
+			],
 			action: ()=> { file_open(); },
 			description: "Opens an existing document.",
 		},
 		{
 			item: "&Save",
 			shortcut: "Ctrl+S",
+			speech_recognition: [
+				"save", "save document", "save file", "save image", "save picture", "save image file",
+				// "save a document", "save a file", "save an image", "save an image file", // too "save as"-like
+				"save the document", "save the file", "save the image", "save the image file",
+			],
 			action: ()=> { file_save(); },
 			description: "Saves the active document.",
 		},
 		{
 			item: "Save &As",
 			shortcut: "Ctrl+Shift+S",
+			speech_recognition: [
+				// this is ridiculous
+				// this would be really simple in JSGF format
+				"save as", "save as a new file", "save as a new picture", "save as a new image", "save a new file", "save new file",
+				"save a new document", "save a new image file", "save a new image", "save a new picture",
+				"save as a copy", "save a copy", "save as copy", "save under a new name", "save with a new name",
+				"save document as a copy", "save document copy", "save document as copy", "save document under a new name", "save document with a new name",
+				"save image as a copy", "save image copy", "save image as copy", "save image under a new name", "save image with a new name",
+				"save file as a copy", "save file copy", "save file as copy", "save file under a new name", "save file with a new name",
+				"save image file as a copy", "save image file copy", "save image file as copy", "save image file under a new name", "save image file with a new name",
+			],
 			// in mspaint, no shortcut is listed; it supports F12 (but in a browser that opens the dev tools)
 			// it doesn't support Ctrl+Shift+S but that's a good & common modern shortcut
 			action: ()=> { file_save_as(); },
@@ -36,11 +58,48 @@ window.menus = {
 		{
 			item: "&Load From URL",
 			// shortcut: "Ctrl+L",
+			speech_recognition: [
+				"load from url",
+				"load from a url",
+				"load from address",
+				"load from an address",
+				"load from a web address",
+				// this is ridiculous
+				// this would be really simple in JSGF format
+				"load an image from a URL",
+				"load an image from an address",
+				"load an image from a web address",
+				"load image from a URL",
+				"load image from an address",
+				"load image from a web address",
+				"load an image from URL",
+				"load an image from address",
+				"load an image from web address",
+				"load image from URL",
+				"load image from address",
+				"load image from web address",
+
+				"load an picture from a URL",
+				"load an picture from an address",
+				"load an picture from a web address",
+				"load picture from a URL",
+				"load picture from an address",
+				"load picture from a web address",
+				"load an picture from URL",
+				"load an picture from address",
+				"load an picture from web address",
+				"load picture from URL",
+				"load picture from address",
+				"load picture from web address",
+			],
 			action: ()=> { file_load_from_url(); },
 			description: "Opens an image from the web.",
 		},
 		{
 			item: "&Upload To Imgur",
+			speech_recognition: [
+				"upload to imgur", "upload image to imgur", "upload picture to imgur",
+			],
 			action: ()=> {
 				// include the selection in the saved image
 				deselect();
@@ -56,12 +115,18 @@ window.menus = {
 		MENU_DIVIDER,
 		{
 			item: "Manage Storage",
+			speech_recognition: [
+				"manage storage", "show storage", "open storage window", "manage sessions", "show sessions", "storage manager", "show storage manager", "open storage manager",
+			],
 			action: ()=> { manage_storage(); },
 			description: "Manages storage of previously created or opened pictures.",
 		},
 		MENU_DIVIDER,
 		{
 			item: "Print Pre&view",
+			speech_recognition: [
+				"preview print", "print preview", "show print preview", "show preview of print",
+			],
 			action: ()=> {
 				print();
 			},
@@ -70,6 +135,10 @@ window.menus = {
 		},
 		{
 			item: "Page Se&tup",
+			speech_recognition: [
+				"setup page for print", "setup page for printing", "set-up page for print", "set-up page for printing", "set up page for print", "set up page for printing",
+				"page setup", "printing setup", "page set-up", "printing set-up", "page set up", "printing set up",
+			],
 			action: ()=> {
 				print();
 			},
@@ -79,6 +148,17 @@ window.menus = {
 		{
 			item: "&Print",
 			shortcut: "Ctrl+P",
+			speech_recognition: [
+				"print", "send to printer", "show print dialog",
+				"print page", "print image", "print picture", "print drawing",
+				"print out page", "print out image", "print out picture", "print out drawing", 
+				"print out the page", "print out the image", "print out the picture", "print out the drawing", 
+
+				"send page to printer", "send image to printer", "send picture to printer", "send drawing to printer", 
+				"send page to the printer", "send image to the printer", "send picture to the printer", "send drawing to the printer", 
+				"send the page to the printer", "send the image to the printer", "send the picture to the printer", "send the drawing to the printer", 
+				"send the page to printer", "send the image to printer", "send the picture to printer", "send the drawing to printer", 
+			],
 			action: ()=> {
 				print();
 			},
@@ -87,11 +167,26 @@ window.menus = {
 		MENU_DIVIDER,
 		{
 			item: "Set As &Wallpaper (Tiled)",
+			speech_recognition: [
+				"set as wallpaper",
+				"set as wallpaper tiled",
+				"set image as wallpaper tiled", "set picture as wallpaper tiled", "set drawing as wallpaper tiled", 
+				"use as wallpaper tiled",
+				"use image as wallpaper tiled", "use picture as wallpaper tiled", "use drawing as wallpaper tiled", 
+				"tile image as wallpaper", "tile picture as wallpaper", "tile drawing as wallpaper", 
+			],
 			action: ()=> { set_as_wallpaper_tiled(); },
 			description: "Tiles this bitmap as the desktop background.",
 		},
 		{
 			item: "Set As Wallpaper (&Centered)", // in mspaint it's Wa&llpaper
+			speech_recognition: [
+				"set as wallpaper centered",
+				"set image as wallpaper centered", "set picture as wallpaper centered", "set drawing as wallpaper centered", 
+				"use as wallpaper centered",
+				"use image as wallpaper centered", "use picture as wallpaper centered", "use drawing as wallpaper centered", 
+				"center image as wallpaper", "center picture as wallpaper", "center drawing as wallpaper", 
+			],
 			action: ()=> { set_as_wallpaper_centered(); },
 			description: "Centers this bitmap as the desktop background.",
 		},
@@ -105,6 +200,9 @@ window.menus = {
 		{
 			item: "E&xit",
 			// shortcut: "Alt+F4", // closes browser window
+			speech_recognition: [
+				"exit application", "exit paint", "close paint window",
+			],
 			action: ()=> {
 				close();
 			},
@@ -115,6 +213,9 @@ window.menus = {
 		{
 			item: "&Undo",
 			shortcut: "Ctrl+Z",
+			speech_recognition: [
+				"undo", "undo that",
+			],
 			enabled: () => undos.length >= 1,
 			action: ()=> { undo(); },
 			description: "Undoes the last action.",
@@ -122,6 +223,9 @@ window.menus = {
 		{
 			item: "&Repeat",
 			shortcut: "F4",
+			speech_recognition: [
+				"repeat", "redo",
+			],
 			enabled: () => redos.length >= 1,
 			action: ()=> { redo(); },
 			description: "Redoes the previously undone action.",
@@ -129,6 +233,9 @@ window.menus = {
 		{
 			item: "&History",
 			shortcut: "Ctrl+Shift+Y",
+			speech_recognition: [
+				"show history", "history",
+			],
 			action: ()=> { show_document_history(); },
 			description: "Shows the document history and lets you navigate to states not accessible with Undo or Repeat.",
 		},
@@ -136,6 +243,9 @@ window.menus = {
 		{
 			item: "Cu&t",
 			shortcut: "Ctrl+X",
+			speech_recognition: [
+				"cut", "cut selection", "cut selection to clipboard", "cut the selection", "cut the selection to clipboard", "cut the selection to the clipboard",
+			],
 			enabled: () =>
 				// @TODO: support cutting text with this menu item as well (e.g. for the text tool)
 				!!selection,
@@ -147,6 +257,9 @@ window.menus = {
 		{
 			item: "&Copy",
 			shortcut: "Ctrl+C",
+			speech_recognition: [
+				"copy", "copy selection", "copy selection to clipboard", "copy the selection", "copy the selection to clipboard", "copy the selection to the clipboard",
+			],
 			enabled: () =>
 				// @TODO: support copying text with this menu item as well (e.g. for the text tool)
 				!!selection,
@@ -158,6 +271,9 @@ window.menus = {
 		{
 			item: "&Paste",
 			shortcut: "Ctrl+V",
+			speech_recognition: [
+				"paste", "paste from clipboard", "paste from the clipboard", "insert clipboard", "insert clipboard contents", "insert the contents of the clipboard", "paste what's on the clipboard",
+			],
 			enabled: () =>
 				// @TODO: disable if nothing in clipboard or wrong type (if we can access that)
 				true,
@@ -169,6 +285,9 @@ window.menus = {
 		{
 			item: "C&lear Selection",
 			shortcut: "Del",
+			speech_recognition: [
+				"delete", "clear selection", "delete selection", "delete selected", "delete selected area", "clear selected area", "erase selected", "erase selected area",
+			],
 			enabled: () => !!selection,
 			action: ()=> { delete_selection(); },
 			description: "Deletes the selection.",
@@ -176,18 +295,33 @@ window.menus = {
 		{
 			item: "Select &All",
 			shortcut: "Ctrl+A",
+			speech_recognition: [
+				"select all", "select everything",
+				"select the whole image", "select the whole picture", "select the whole drawing", "select the whole canvas", "select the whole document",
+				"select the entire image", "select the entire picture", "select the entire drawing", "select the entire canvas", "select the entire document",
+			],
 			action: ()=> { select_all(); },
 			description: "Selects everything.",
 		},
 		MENU_DIVIDER,
 		{
 			item: "C&opy To...",
+			speech_recognition: [
+				"copy to file", "copy selection to file", "copy selection to a file", "save selection", 
+				"save selection as file", "save selection as image", "save selection as picture", "save selection as image file", "save selection as document",
+				"save selection as a file", "save selection as a image", "save selection as a picture", "save selection as a image file", "save selection as a document",
+				"save selection to file", "save selection to image", "save selection to picture", "save selection to image file", "save selection to document",
+				"save selection to a file", "save selection to a image", "save selection to a picture", "save selection to a image file", "save selection to a document",
+			],
 			enabled: () => !!selection,
 			action: ()=> { save_selection_to_file(); },
 			description: "Copies the selection to a file.",
 		},
 		{
 			item: "Paste &From...",
+			speech_recognition: [
+				"paste a file", "paste from a file", "insert a file", "insert an image file", 
+			],
 			action: ()=> { paste_from_file_select_dialog(); },
 			description: "Pastes a file into the selection.",
 		}
@@ -196,6 +330,10 @@ window.menus = {
 		{
 			item: "&Tool Box",
 			// shortcut: "Ctrl+T", // opens a new browser tab
+			speech_recognition: [
+				"toggle tool box", "toggle tools box", "toggle toolbox", "toggle tool palette", "toggle tools palette",
+				// @TODO: hide/show
+			],
 			checkbox: {
 				toggle: ()=> {
 					$toolbox.toggle();
@@ -207,6 +345,10 @@ window.menus = {
 		{
 			item: "&Color Box",
 			// shortcut: "Ctrl+L", // focuses browser address bar
+			speech_recognition: [
+				"toggle color box", "toggle colors box", "toggle palette", "toggle color palette", "toggle colors palette",
+				// @TODO: hide/show
+			],
 			checkbox: {
 				toggle: ()=> {
 					$colorbox.toggle();
@@ -217,6 +359,10 @@ window.menus = {
 		},
 		{
 			item: "&Status Bar",
+			speech_recognition: [
+				"toggle status bar", "toggle status text", "toggle status area", "toggle status indicator",
+				// @TODO: hide/show
+			],
 			checkbox: {
 				toggle: ()=> {
 					$status_area.toggle();
@@ -227,6 +373,12 @@ window.menus = {
 		},
 		{
 			item: "T&ext Toolbar",
+			speech_recognition: [
+				"toggle text toolbar", "toggle font toolbar", "toggle text tool bar", "toggle font tool bar",
+				"toggle font box", "toggle fonts box", "toggle text options box", "toggle text tool options box", "toggle font options box",
+				"toggle font window", "toggle fonts window", "toggle text options window", "toggle text tool options window", "toggle font options window",
+				// @TODO: hide/show
+			],
 			enabled: false, // @TODO: toggle fonts box
 			checkbox: {},
 			description: "Shows or hides the text toolbar.",
@@ -238,6 +390,13 @@ window.menus = {
 				{
 					item: "&Normal Size",
 					// shortcut: "Ctrl+PgUp", // cycles thru browser tabs
+					speech_recognition: [
+						"reset zoom", "zoom to normal size",
+						"zoom to 100%", "set zoom to 100%", "set zoom 100%",
+						"zoom to 1x", "set zoom to 1x", "set zoom 1x",
+						"zoom level to 100%", "set zoom level to 100%", "set zoom level 100%",
+						"zoom level to 1x", "set zoom level to 1x", "set zoom level 1x",
+					],
 					description: "Zooms the picture to 100%.",
 					enabled: () => magnification !== 1,
 					action: ()=> {
@@ -247,6 +406,13 @@ window.menus = {
 				{
 					item: "&Large Size",
 					// shortcut: "Ctrl+PgDn", // cycles thru browser tabs
+					speech_recognition: [
+						"zoom to large size",
+						"zoom to 400%", "set zoom to 400%", "set zoom 400%",
+						"zoom to 4x", "set zoom to 4x", "set zoom 4x",
+						"zoom level to 400%", "set zoom level to 400%", "set zoom level 400%",
+						"zoom level to 4x", "set zoom level to 4x", "set zoom level 4x",
+					],
 					description: "Zooms the picture to 400%.",
 					enabled: () => magnification !== 4,
 					action: ()=> {
@@ -256,12 +422,20 @@ window.menus = {
 				{
 					item: "C&ustom...",
 					description: "Zooms the picture.",
+					speech_recognition: [
+						"zoom custom", "custom zoom", "set custom zoom", "set custom zoom level", "zoom to custom level", "zoom to custom",
+					],
 					action: ()=> { show_custom_zoom_window(); },
 				},
 				MENU_DIVIDER,
 				{
 					item: "Show &Grid",
 					shortcut: "Ctrl+G",
+					speech_recognition: [
+						"toggle show grid",
+						"toggle grid", "toggle gridlines", "toggle grid lines", "toggle grid cells",
+						// @TODO: hide/show
+					],
 					enabled: () => magnification >= 4,
 					checkbox: {
 						toggle: toggle_grid,
@@ -271,6 +445,13 @@ window.menus = {
 				},
 				{
 					item: "Show T&humbnail",
+					speech_recognition: [
+						"toggle show thumbnail",
+						"toggle thumbnail", "toggle thumbnail view", "toggle thumbnail box", "toggle thumbnail window",
+						"toggle preview", "toggle image preview", "toggle picture preview",
+						"toggle picture in picture", "toggle picture in picture view", "toggle picture in picture box", "toggle picture in picture window",
+						// @TODO: hide/show
+					],
 					enabled: false, // @TODO: implement Show Thumbnail
 					checkbox: {},
 					description: "Shows or hides the thumbnail view of the picture.",
@@ -280,38 +461,74 @@ window.menus = {
 		{
 			item: "&View Bitmap",
 			shortcut: "Ctrl+F",
+			speech_recognition: [
+				"view bitmap", "show bitmap",
+				"fullscreen", "full-screen", "full screen",
+				"show picture fullscreen", "show picture full-screen", "show picture full screen",
+				"show image fullscreen", "show image full-screen", "show image full screen",
+				// @TODO: exit fullscreen
+			],
 			action: ()=> { view_bitmap(); },
 			description: "Displays the entire picture.",
 		}
 	],
 	"&Image": [
+		// @TODO: speech recognition: terms that apply to selection
 		{
 			item: "&Flip/Rotate",
 			// shortcut: "Ctrl+R", // reloads browser tab
+			speech_recognition: [
+				"flip",
+				"rotate",
+				// @TODO: parameters to command
+			],
 			action: ()=> { image_flip_and_rotate(); },
 			description: "Flips or rotates the picture or a selection.",
 		},
 		{
 			item: "&Stretch/Skew",
 			// shortcut: "Ctrl+W", // closes browser tab
+			speech_recognition: [
+				"stretch", "scale", "resize image",
+				"skew",
+				// @TODO: parameters to command
+			],
 			action: ()=> { image_stretch_and_skew(); },
 			description: "Stretches or skews the picture or a selection.",
 		},
 		{
 			item: "&Invert Colors",
 			shortcut: "Ctrl+I",
+			speech_recognition: [
+				"invert",
+				"invert colors",
+				"invert image", "invert picture", "invert drawing",
+				"invert image colors", "invert picture colors", "invert drawing colors",
+				"invert colors of image", "invert colors of picture", "invert colors of drawing",
+			],
 			action: ()=> { image_invert_colors(); },
 			description: "Inverts the colors of the picture or a selection.",
 		},
 		{
 			item: "&Attributes...",
 			shortcut: "Ctrl+E",
+			speech_recognition: [
+				"attributes", "image attributes", "picture attributes", "image options", "picture options",
+				"dimensions", "image dimensions", "picture dimensions",
+				"resize canvas", "resize document", "resize page",
+				"set image size", "set picture size", "set cavnas size", "set document size", "set page size",
+				"configure image size", "configure picture size", "configure cavnas size", "configure document size", "configure page size",
+			],
 			action: ()=> { image_attributes(); },
 			description: "Changes the attributes of the picture.",
 		},
 		{
 			item: "&Clear Image",
 			shortcut: looksLikeChrome ? undefined : "Ctrl+Shift+N", // opens incognito window in chrome
+			speech_recognition: [
+				"clear image", "clear canvas", "clear picture", "clear page", "clear drawing",
+				// @TODO: erase?
+			],
 			// (mspaint says "Ctrl+Shft+N")
 			action: ()=> { !selection && clear(); },
 			enabled: ()=> !selection,
@@ -327,6 +544,15 @@ window.menus = {
 		},
 		{
 			item: "&Draw Opaque",
+			speech_recognition: [
+				"toggle draw opaque",
+				"toggle transparent selection", "toggle transparent selections",
+				"toggle transparent selection mode", "toggle transparent selections mode",
+				"toggle opaque selection", "toggle opaque selections",
+				"toggle opaque selection mode", "toggle opaque selections mode",
+				// toggle opaque? toggle opacity?
+				// @TODO: hide/show / "draw opaque" / "draw transparent"/translucent?
+			],
 			checkbox: {
 				toggle: ()=> {
 					tool_transparent_mode = !tool_transparent_mode;
@@ -340,6 +566,11 @@ window.menus = {
 	"&Colors": [
 		{
 			item: "&Edit Colors...",
+			speech_recognition: [
+				"edit colors", "edit color", "edit custom colors", "edit custom color",
+				"pick custom color", "choose custom color", "pick a custom color", "choose a custom color",
+				"edit last color", "create new color", "choose new color", "create a new color", "pick a new color",
+			],
 			action: ()=> {
 				$colorbox.edit_last_color();
 			},
@@ -347,6 +578,9 @@ window.menus = {
 		},
 		{
 			item: "&Get Colors",
+			speech_recognition: [
+				"get colors", "load colors", "load color palette", "load palette", "load color palette file", "load palette file", "load list of colors",
+			],
 			action: ()=> {
 				get_FileList_from_file_select_dialog((files)=> {
 					const file = files[0];
@@ -364,6 +598,9 @@ window.menus = {
 		},
 		{
 			item: "&Save Colors",
+			speech_recognition: [
+				"save colors", "save list of colors", "save color palette", "save palette", "save color palette file", "save palette file",
+			],
 			action: ()=> {
 				const blob = new Blob([JSON.stringify(palette)], {type: "application/json"});
 				sanity_check_blob(blob, ()=> {
@@ -376,12 +613,21 @@ window.menus = {
 	"&Help": [
 		{
 			item: "&Help Topics",
+			speech_recognition: [
+				"help topics", "help me", "show help", "help", "show help window", "show help topics", "open help",
+			],
 			action: ()=> { show_help(); },
 			description: "Displays Help for the current task or command.",
 		},
 		MENU_DIVIDER,
 		{
 			item: "&About Paint",
+			speech_recognition: [
+				"about paint", "about js paint", "about jspaint", "show about window", "open about window", "about window",
+				"app info", "about the app", "app information", "information about the app",
+				"application info", "about the application", "application information", "information about the application",
+				"who made this", "who did this", "who did this xd",
+			],
 			action: ()=> { show_about_paint(); },
 			description: "Displays information about this application.",
 			//description: "Displays program information, version number, and copyright.",
@@ -391,12 +637,27 @@ window.menus = {
 		{
 			item: "&History",
 			shortcut: "Ctrl+Shift+Y",
+			speech_recognition: [
+				// duplicate menu item
+			],
 			action: ()=> { show_document_history(); },
 			description: "Shows the document history and lets you navigate to states not accessible with Undo or Repeat.",
 		},
 		{
 			item: "&Render History As GIF",
 			shortcut: "Ctrl+Shift+G",
+			speech_recognition: [
+				"render history as gif", "render history as a gif", "render history animation", "make history animation", "make animation of history", "make animation of document history", "make animation from document history",
+				// aaaaaaaaaaaaaaaaaaaaaaaaaa *exponentially explodes*
+				"make a gif", "make a gif of the history", "make a gif of the document history", "make a gif from the document history",
+				"create a gif", "create a gif of the history", "create a gif of the document history", "create a gif from the document history",
+				"make gif", "make gif of the history", "make gif of the document history", "make gif from the document history",
+				"create gif", "create gif of the history", "create gif of the document history", "create gif from the document history",
+				"make an animation", "make an animation of the history", "make an animation of the document history", "make an animation from the document history",
+				"create an animation", "create an animation of the history", "create an animation of the document history", "create an animation from the document history",
+				"make animation", "make animation of the history", "make animation of the document history", "make animation from the document history",
+				"create animation", "create animation of the history", "create animation of the document history", "create animation from the document history",
+			],
 			action: ()=> { render_history_as_gif(); },
 			description: "Creates an animation from the document history.",
 		},
@@ -490,6 +751,10 @@ window.menus = {
 			submenu: [
 				{
 					item: "&Classic",
+					speech_recognition: [
+						"classic theme", "switch to classic theme", "use classic theme",
+						"retro theme", "switch to retro theme", "use retro theme",
+					],
 					action: ()=> {
 						set_theme("classic.css");
 					},
@@ -498,6 +763,9 @@ window.menus = {
 				},
 				{
 					item: "&Modern",
+					speech_recognition: [
+						"modern theme", "switch to modern theme", "use modern theme",
+					],
 					action: ()=> {
 						set_theme("modern.css");
 					},
@@ -506,6 +774,12 @@ window.menus = {
 				},
 				{
 					item: "&Winter",
+					speech_recognition: [
+						"winter theme", "switch to winter theme", "use winter theme",
+						"holiday theme", "switch to holiday theme", "use holiday theme",
+						"christmas theme", "switch to christmas theme", "use christmas theme",
+						"hanukkah theme", "switch to hanukkah theme", "use hanukkah theme",
+					],
 					action: ()=> {
 						set_theme("winter.css");
 					},
@@ -516,6 +790,10 @@ window.menus = {
 		},
 		{
 			item: "&Eye Gaze Mode",
+			speech_recognition: [
+				"toggle eye gaze mode",
+				// @TODO: enable/disable / enter/leave(/exit) / turn on/off / start/stop
+			],
 			checkbox: {
 				toggle: ()=> {
 					if (location.hash.match(/eye-gaze-mode/i)) {
@@ -535,6 +813,10 @@ window.menus = {
 		},
 		{
 			item: "&Speech Recognition",
+			speech_recognition: [
+				"toggle speech recognition", "toggle speech recognition mode",
+				"disable speech recognition", "disable speech recognition mode", "turn off speech recognition", "turn off speech recognition mode", "leave speech recognition mode", "exit speech recognition mode",
+			],
 			checkbox: {
 				toggle: ()=> {
 					if (location.hash.match(/speech-recognition-mode/i)) {
@@ -552,6 +834,15 @@ window.menus = {
 		},
 		{
 			item: "&Vertical Color Box",
+			speech_recognition: [
+				"toggle vertical color box", "toggle vertical color box mode",
+				"toggle vertical colors box", "toggle vertical colors box mode",
+				"toggle vertical palette", "toggle vertical palette mode",
+				"toggle horizontal color box", "toggle horizontal color box mode",
+				"toggle horizontal colors box", "toggle horizontal colors box mode",
+				"toggle horizontal palette", "toggle horizontal palette mode",
+				// @TODO: "use a vertical/horizontal color box", "place palette on the left", "make palette tall/wide", etc.
+			],
 			checkbox: {
 				toggle: ()=> {
 					if (location.hash.match(/eye-gaze-mode/i)) {
@@ -581,22 +872,37 @@ window.menus = {
 		MENU_DIVIDER,
 		{
 			item: "Manage Storage",
+			speech_recognition: [
+				// duplicate menu item
+			],
 			action: ()=> { manage_storage(); },
 			description: "Manages storage of previously created or opened pictures.",
 		},
 		MENU_DIVIDER,
 		{
 			item: "Project News",
+			speech_recognition: [
+				"project news", "news about the project", "news about this project",
+				"app news", "news about the app", "news about this app",
+				"application news", "news about the application", "news about this application",
+				"what's new", "new features",
+			],
 			action: ()=> { show_news(); },
 			description: "Shows news about JS Paint.",
 		},
 		{
 			item: "GitHub",
+			speech_recognition: [
+				"repo on github", "project on github", "show the source code", "show source code",
+			],
 			action: ()=> { window.open("https://github.com/1j01/jspaint"); },
 			description: "Shows the project on GitHub.",
 		},
 		{
 			item: "Donate",
+			speech_recognition: [
+				"donate", "make a monetary contribution",
+			],
 			action: ()=> { window.open("https://www.paypal.me/IsaiahOdhner"); },
 			description: "Supports the project.",
 		},

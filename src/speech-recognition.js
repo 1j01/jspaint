@@ -233,7 +233,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	let best_match_fn;
 	let best_match_text = "";
 	for (const color of colorNames) {
-		if (` ${command} `.toLowerCase().indexOf(` ${color} `) !== -1) {
+		if (` ${command} `.toLowerCase().indexOf(` ${color.toLowerCase()} `) !== -1) {
 			if (color.length > best_match_text.length) {
 				best_match_text = color;
 				best_match_fn = ((color)=> ()=> {
@@ -257,6 +257,37 @@ window.interpret_command = (command, default_to_entering_text)=> {
 			}
 		}
 	}
+
+	const all_menu_items = [];
+	const collect_menu_items = (menu)=> {
+		for (const menu_item of menu) {
+			all_menu_items.push(menu_item);
+		}
+		if (menu.submenu) {
+			collect_menu_items(menu.submenu);
+		}
+	};
+	Object.values(menus).forEach(collect_menu_items);
+
+	for (const menu_item of all_menu_items) {
+		if (menu_item.speech_recognition) {
+			for (const menu_item_phrase of menu_item.speech_recognition) {
+				if (` ${command} `.toLowerCase().indexOf(` ${menu_item_phrase.toLowerCase()} `) !== -1) {
+					if (menu_item_phrase.length > best_match_text.length) {
+						best_match_text = menu_item_phrase;
+						best_match_fn = ((menu_item)=> ()=> {
+							if (menu_item.checkbox) {
+								menu_item.checkbox.toggle();
+							} else {
+								menu_item.action();
+							}
+						})(menu_item);
+					}
+				}
+			}
+		}
+	}
+	
 	if (!best_match_text) {
 		// @TODO: clipboard as a source.. but you might want to just draw the clipboard directly to the canvas,
 		// so maybe it should be limited to saying "sketch"/"doodle"/"do a rendition of"
