@@ -1198,20 +1198,21 @@ function init_eye_gaze_mode() {
 		})
 	);
 
-	$pause_button = $("<button title='Pause Dwell Clicking'/>")
+	// These are matched on exactly for speech recognition synonymization
+	const pause_button_text = "Pause Dwell Clicking";
+	const resume_button_text = "Resume Dwell Clicking";
+
+	$pause_button = $(`<button title="${pause_button_text}"/>`)
 	.on("click", ()=> {
 		paused = !paused;
-		$pause_button.find("div").css({
+		$pause_button
+		.attr("title", paused ? resume_button_text : pause_button_text)
+		.find("div").css({
 			backgroundImage:
 				paused ?
 				"url(images/classic/eye-gaze-unpause.svg)" :
 				"url(images/classic/eye-gaze-pause.svg)",
-		})
-		.attr("title",
-			paused ?
-			"Resume Dwell Clicking" :
-			"Pause Dwell Clicking",
-		);
+		});
 	})
 	.appendTo($floating_buttons)
 	.css({

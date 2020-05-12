@@ -43,6 +43,117 @@ const recognitionFixes = {
 	// "drag": "draw a", // too general
 	"try picture": "draw a picture",
 
+	// Eye Gaze Mode
+	"i gaze": "eye gaze",
+	"auggies": "eye gaze",
+	"a gizmodo": "eye gaze mode",
+	"a gizmo": "eye gaze mode",
+	"ideas mode": "eye gaze mode",
+	"agee's mode": "eye gaze mode",
+	"aggie's mode": "eye gaze mode",
+	"iggy's mode": "eye gaze mode",
+	"iggie's mode": "eye gaze mode",
+	"tyga ligase mode": "toggle eye gaze mode",
+	"puggle auggies mode": "toggle eye gaze mode",
+	"tug ligase mode": "toggle eye gaze mode",
+	"tonka ligase mode": "toggle eye gaze mode",
+	"taco eye gaze mode": "toggle eye gaze mode",
+
+	// Eye Gaze Mode: Pause/Resume Dwell Clicking
+	"tangled dwell clicking": "toggle dwell clicking",
+	"michael dwelle clicking": "toggle dwell clicking",
+	"toggled dwell clicking": "toggle dwell clicking",
+	"call goldwell clicking": "toggle dwell clicking",
+	"toggled well clicking": "toggle dwell clicking",
+	"toggled dwele clicking": "toggle dwell clicking",
+	"toggled dwelle clicking": "toggle dwell clicking",
+	"toggled while cooking": "toggle dwell clicking",
+	"toggled wildflecken": "toggle dwell clicking",
+	"puggle dwell clicking": "toggle dwell clicking",
+	"tangled while clicking": "toggle dwell clicking",
+	"taco bell cooking": "toggle dwell clicking",
+	"a goldwell clicking": "toggle dwell clicking",
+	"toggled while clicking": "toggle dwell clicking",
+	"toggle do i click in": "toggle dwell clicking",
+	"tangled while cooking": "toggle dwell clicking",
+	"tacos while cutting": "toggle dwell clicking",
+	"call coldwell clicking": "toggle dwell clicking",
+	"taco bell clicking": "toggle dwell clicking",
+	"tangled dwell clicks": "toggle dwell clicks",
+	"michael dwelle clicks": "toggle dwell clicks",
+	"toggled dwell clicks": "toggle dwell clicks",
+	"call goldwell clicks": "toggle dwell clicks",
+	"toggled well clicks": "toggle dwell clicks",
+	"toggled dwele clicks": "toggle dwell clicks",
+	"toggled dwelle clicks": "toggle dwell clicks",
+	"toggle do i clicks": "toggle dwell clicks",
+	"puggle dwell clicks": "toggle dwell clicks",
+	"tangled while clicks": "toggle dwell clicks",
+	"a goldwell clicks": "toggle dwell clicks",
+	"toggled while clicks": "toggle dwell clicks",
+	"call coldwell clicks": "toggle dwell clicks",
+	"talk about cliques": "toggle dwell clicks",
+	"target wall clocks": "toggle dwell clicks",
+	"talk about sex": "toggle dwell clicks",
+	"toggled welplex": "toggle dwell clicks",
+	"taco bell clicks": "toggle dwell clicks",
+	"12 quickening": "dwell clicking",
+	"12 clicking": "dwell clicking",
+	"12 cooking": "dwell clicking",
+	"to a clicking": "dwell clicking",
+	"12 clicks": "dwell clicks",
+	"12 clicker": "dwell clicker",
+	"to a click": "dwell click",
+	"dwele clicking": "dwell clicking",
+	"dwele click": "dwell click",
+	"dwele clicks": "dwell clicks",
+	"dwele clicker": "dwell clicker",
+	"dwelle clicking": "dwell clicking",
+	"dwelle click": "dwell click",
+	"dwelle clicks": "dwell clicks",
+	"dwelle clicker": "dwell clicker",
+	"pasta while cutting": "pause dwell clicking",
+	"pasquale cooking": "pause dwell clicking",
+	"pause while clicking": "pause dwell clicking",
+	"pause while cooking": "pause dwell clicking",
+	"unpause while clicking": "unpause dwell clicking",
+	"unpause while cooking": "unpause dwell clicking",
+	"stop while clicking": "stop dwell clicking",
+	"stop while cooking": "stop dwell clicking",
+	"stopped while clicking": "stop dwell clicking",
+	"stopped while cooking": "stop dwell clicking",
+	"stopped wall clocks": "stop dwell clicks",
+	"disabled while clicking": "disable dwell clicking",
+	"disabled while cooking": "disable dwell clicking",
+	"disabled wall clocks": "disable dwell clicks",
+	"disable while clicking": "disable dwell clicking",
+	"disable while cooking": "disable dwell clicking",
+	"disable wall clocks": "disable dwell clicks",
+	"mabel dwell clicking": "enable dwell clicking",
+	"enable to walk clicking": "enable dwell clicking",
+	"enabled while clicking": "enable dwell clicking",
+	"enabled while cooking": "enable dwell clicking",
+	"enabled wall clocks": "enable dwell clicks",
+	"enable while clicking": "enable dwell clicking",
+	"enable while cooking": "enable dwell clicking",
+	"enable wall clocks": "enable dwell clicks",
+	"stop wall clocks": "stop dwell clicks",
+	"start wall clocks": "start dwell clicks",
+	"start while cooking": "start dwell clicking",
+	"start while clicking": "start dwell clicking",
+	"resume while cooking": "resume dwell clicking",
+	"resume while clicking": "resume dwell clicking",
+	"resumed walk clicks": "resume dwell clicks",
+	"startalk looking": "start dwell clicking",
+	"dwell quickening": "dwell clicking",
+	"dual clicking": "dwell clicking",
+	"dual quickening": "dwell clicking",
+	"dual cooking": "dwell clicking",
+	"dwell cooking": "dwell clicking",
+	"well clicking": "dwell clicking",
+	"well quitting": "dwell clicking",
+	"well clicks": "dwell clicks",
+
 	// Free-Form Select
 	"state farm": "freeform",
 	// Select
@@ -340,7 +451,61 @@ window.interpret_command = (command, default_to_entering_text)=> {
 			};
 		}
 	}
-	// after the above to allow for "draw a stop sign"
+
+	const buttons = $("button, label").toArray();
+	
+	for (const button of buttons) {
+		// @TODO: button.dataset.speechRecognition (data-speech-recognition)
+		const button_text = button.textContent || button.getAttribute("aria-label") || button.title;
+		let button_text_phrases = [button_text];
+		if (!button_text) {
+			button_text_phrases = [];
+			// console.log("Button inaccessible for speech recognition:", button);
+		}
+		if (button_text.match(/^(Okay|OK)$/i)) {
+			button_text_phrases = ["Okay", "OK"];
+		}
+		if (button_text.match(/^(Pause Dwell Clicking)$/i)) {
+			button_text_phrases = [
+				"Toggle Dwell Clicking", "Toggle Dwell Clicks",
+				"Rest Eye Gaze", "Rest Eyes",
+				// disable stop pause
+				"Disable Dwell Clicking", "Disable Eye Gaze", "Disable Gaze Clicking", "Disable Dwell Clicks", "Disable Gaze Clicks",
+				"Stop Dwell Clicking", "Stop Eye Gaze", "Stop Gaze Clicking", "Stop Dwell Clicks", "Stop Gaze Clicks",
+				"Pause Dwell Clicking", "Pause Eye Gaze", "Pause Gaze Clicking", "Pause Dwell Clicks", "Pause Gaze Clicks",
+			];
+		}
+		if (button_text.match(/^(Resume Dwell Clicking)$/i)) {
+			button_text_phrases = [
+				"Toggle Dwell Clicking", "Toggle Dwell Clicks",
+				// enable reenable re-enable start resume unpause un-pause
+				"Enable Dwell Clicking", "Enable Eye Gaze", "Enable Gaze Clicking", "Enable Dwell Clicks", "Enable Gaze Clicks", 
+				"Reenable Dwell Clicking", "Reenable Eye Gaze", "Reenable Gaze Clicking", "Reenable Dwell Clicks", "Reenable Gaze Clicks", 
+				"Re-enable Dwell Clicking", "Re-enable Eye Gaze", "Re-enable Gaze Clicking", "Re-enable Dwell Clicks", "Re-enable Gaze Clicks", 
+				"Start Dwell Clicking", "Start Eye Gaze", "Start Gaze Clicking", "Start Dwell Clicks", "Start Gaze Clicks", 
+				"Resume Dwell Clicking", "Resume Eye Gaze", "Resume Gaze Clicking", "Resume Dwell Clicks", "Resume Gaze Clicks", 
+				"Unpause Dwell Clicking", "Unpause Eye Gaze", "Unpause Gaze Clicking", "Unpause Dwell Clicks", "Unpause Gaze Clicks", 
+				"Un-pause Dwell Clicking", "Un-pause Eye Gaze", "Un-pause Gaze Clicking", "Un-pause Dwell Clicks", "Un-pause Gaze Clicks", 
+			];
+		}
+		// console.log(button, button_text, button_text_phrases);
+		for (const button_text_phrase of button_text_phrases) {
+			const match_phrases = [button_text_phrase, `click ${button_text_phrase}`, `click on ${button_text_phrase}`];
+			for (const match_phrase of match_phrases) {
+				// console.log(match_phrase, ` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `));
+				if (` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
+					if (match_phrase.length > best_match_text.length) {
+						best_match_text = match_phrase;
+						best_match_fn = ((button)=> ()=> {
+							clickButtonVisibly(button);
+						})(button);
+					}
+				}
+			}
+		}
+	}
+
+	// after the above to allow for "draw a stop sign", "stop dwell clicking"
 	if (!best_match_text) {
 		const stop_match = command.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)\b/i);
 		if (stop_match) {
@@ -351,24 +516,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 			};
 		}
 	}
-	const buttons = $("button, label").toArray();
-	
-	for (const button of buttons) {
-		// @TODO: button.dataset.speechRecognition (data-speech-recognition)
-		// @TODO: synonymize okay/OK
-		const button_text = button.textContent || button.getAttribute("aria-label") || button.title;
-		const match_phrases = [button_text, `click ${button_text}`, `click on ${button_text}`];
-		for (const match_phrase of match_phrases) {
-			if (` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
-				if (match_phrase.length > best_match_text.length) {
-					best_match_text = match_phrase;
-					best_match_fn = ((button)=> ()=> {
-						clickButtonVisibly(button);
-					})(button);
-				}
-			}
-		}
-	}
+
 	if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
 		const new_line_match = command.match(/^(?:new line|newline|line break|return|enter|carriage return|)$|\b(?:(?:insert|add|put|put in|input)(?: an?)? (?:new line|newline|line break|return|enter|carriage return))\b/i);
 		if (new_line_match) {
@@ -413,7 +561,9 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	// and like higher confidence in "stop" if it's actively drawing
 
 	if (best_match_text) {
-		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${command.replace(best_match_text, (important_text)=> `<b>${important_text}</b>`)}</span>`);
+		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${
+			command.replace(new RegExp(escapeRegExp(best_match_text), "i"), (important_text)=> `<b>${important_text}</b>`)
+		}</span>`);
 		console.log(`Interpreting command "${command}" as "${best_match_text}"`);
 		best_match_fn();
 	} else {
