@@ -45,6 +45,97 @@ const recognitionFixes = {
 	"tuggle": "toggle",
 	"projects news": "project news",
 
+	// panning/scrolling the view
+	"scrollview": "scroll view",
+	"call north": "scroll north",
+	"crawl north": "scroll north",
+	"crawl northward": "scroll northward",
+	"pen view": "pan view",
+	"penn view": "pan view",
+	"pam view": "pan view",
+	"penn wright": "pan right",
+	"pen wright": "pan right",
+	"pam wright": "pan right",
+	"penn right": "pan right",
+	"pen right": "pan right",
+	"pam right": "pan right",
+	"penn left": "pan left",
+	"pen left": "pan left",
+	"pam left": "pan left",
+	"penn up": "pan up",
+	"pen up": "pan up",
+	"pam up": "pan up",
+	"penn down": "pan down",
+	"pen down": "pan down",
+	"pam down": "pan down",
+	"penn upwards": "pan upwards",
+	"pen upwards": "pan upwards",
+	"pam upwards": "pan upwards",
+	"penn downwards": "pan downwards",
+	"pen downwards": "pan downwards",
+	"pam downwards": "pan downwards",
+	"penn upward": "pan upward",
+	"pen upward": "pan upward",
+	"pam upward": "pan upward",
+	"penn downward": "pan downward",
+	"pen downward": "pan downward",
+	"pam downward": "pan downward",
+	"penn north": "pan north",
+	"pen north": "pan north",
+	"pam north": "pan north",
+	"penn south": "pan south",
+	"pen south": "pan south",
+	"pam south": "pan south",
+	"penn east": "pan east",
+	"pen east": "pan east",
+	"pam east": "pan east",
+	"penn west": "pan west",
+	"pen west": "pan west",
+	"pam west": "pan west",
+	"penn northward": "pan northward",
+	"pen northward": "pan northward",
+	"pam northward": "pan northward",
+	"penn southward": "pan southward",
+	"pen southward": "pan southward",
+	"pam southward": "pan southward",
+	"penn eastward": "pan eastward",
+	"pen eastward": "pan eastward",
+	"pam eastward": "pan eastward",
+	"penn westward": "pan westward",
+	"pen westward": "pan westward",
+	"pam westward": "pan westward",
+	"penn northwest": "pan northwest",
+	"pen northwest": "pan northwest",
+	"pam northwest": "pan northwest",
+	"penn northeast": "pan northeast",
+	"pen northeast": "pan northeast",
+	"pam northeast": "pan northeast",
+	"penn southwest": "pan southwest",
+	"pen southwest": "pan southwest",
+	"pam southwest": "pan southwest",
+	"penn southeast": "pan southeast",
+	"pen southeast": "pan southeast",
+	"pam southeast": "pan southeast",
+	"tannerite": "pan right",
+	"penray": "pan right",
+	"pain left": "pan left",
+	"pinup": "pan up",
+	"pin-up": "pan up",
+	"panna": "pan up",
+	"pinned down": "pan down",
+	"pin down": "pan down",
+	"and down words": "pan downwards",
+	"and downwards": "pan downwards",
+	"pin-up words": "pan upwards",
+	"pin-up word": "pan upward",
+	"pinup words": "pan upwards",
+	"pinup word": "pan upward",
+	"co-op": "go up", // @TODO: ^$
+	"correct": "go right", // @TODO: ^$
+	"direct": "go right", // @TODO: ^$
+	"collect": "go left", // @TODO: ^$
+	"the left": "go left", // @TODO: ^$
+
 	// zooming
 	"normal-size": "normal size",
 	"large-size": "large size",
@@ -598,6 +689,36 @@ window.interpret_command = (command, default_to_entering_text)=> {
 			best_match_fn = ()=> {
 				window.stopSimulatingGestures && window.stopSimulatingGestures();
 				window.trace_and_sketch_stop && window.trace_and_sketch_stop();
+			};
+		}
+	}
+
+	if (!best_match_text) {
+		const scroll_match = command.match(/\b(?:scroll|pan|scroll view|pan view|go|view) ((?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?|to the (?:north|south|west|east|north ?west|south ?west|north ?east|south ?east))\b/i);
+		if (scroll_match) {
+			best_match_text = scroll_match[0];
+			const direction = scroll_match[1].toLowerCase();
+			const vector = {x: 0, y: 0};
+			if (direction.match(/up|north/i)) {
+				vector.y = -1;
+			}
+			if (direction.match(/down|south/i)) {
+				vector.y = +1;
+			}
+			if (direction.match(/left|west/i)) {
+				vector.x = -1;
+			}
+			if (direction.match(/right|east/i)) {
+				vector.x = +1;
+			}
+			const scroll_pane_el = $(".window *").toArray().filter((el)=> el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)[0] || $canvas_area[0];
+			best_match_fn = ()=> {
+				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth / 2;
+				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight / 2;
+				$(scroll_pane_el).animate({
+					scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth / 2,
+					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
+				}, 500);
 			};
 		}
 	}
