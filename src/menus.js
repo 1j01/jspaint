@@ -10,7 +10,7 @@ window.menus = {
 			item: "&New",
 			shortcut: "Ctrl+Alt+N", // Ctrl+N opens a new browser window
 			speech_recognition: [
-				"new document", "create new document", "create a new document", "start new document", "start a new document",
+				"new", "new file", "new document", "create new document", "create a new document", "start new document", "start a new document",
 			],
 			action: ()=> { file_new(); },
 			description: "Creates a new document.",
@@ -19,7 +19,10 @@ window.menus = {
 			item: "&Open",
 			shortcut: "Ctrl+O",
 			speech_recognition: [
-				"open document", "open file", "open a document", "open a file",
+				"open", "open document", "open file", "open an image file", "open a document", "open a file",
+				"load document", "load a document", "load an image file", "load an image",
+				"show file picker", "show file chooser", "show file browser", "show finder",
+				"browser for file", "browse for a file", "browse for an image", "browse for an image file",
 			],
 			action: ()=> { file_open(); },
 			description: "Opens an existing document.",
@@ -480,6 +483,7 @@ window.menus = {
 			speech_recognition: [
 				"flip",
 				"rotate",
+				"flip/rotate", "flip slash rotate", "flip and rotate", "flip or rotate", "flip rotate",
 				// @TODO: parameters to command
 			],
 			action: ()=> { image_flip_and_rotate(); },
@@ -491,6 +495,7 @@ window.menus = {
 			speech_recognition: [
 				"stretch", "scale", "resize image",
 				"skew",
+				"stretch/skew", "stretch slash skew", "stretch and skew", "stretch or skew", "stretch skew",
 				// @TODO: parameters to command
 			],
 			action: ()=> { image_stretch_and_skew(); },
@@ -921,5 +926,37 @@ window.menus = {
 		},
 	],
 };
+
+for (const [top_level_menu_key, menu] of Object.entries(menus)) {
+	const top_level_menu_name = top_level_menu_key.replace(/&/, "");
+	const add_literal_navigation_speech_recognition = (menu, ancestor_names)=> {
+		for (const menu_item of menu) {
+			if (menu_item !== MENU_DIVIDER) {
+				const menu_item_name = menu_item.item.replace(/&|\.\.\.|\(|\)/g, "");
+				// console.log(menu_item_name);
+				let menu_item_matchers = [menu_item_name];
+				if (menu_item_name.match(/\//)) {
+					menu_item_matchers = [
+						menu_item_name,
+						menu_item_name.replace(/\//, " "),
+						menu_item_name.replace(/\//, " and "),
+						menu_item_name.replace(/\//, " or "),
+						menu_item_name.replace(/\//, " slash "),
+					];
+				}
+				menu_item_matchers = menu_item_matchers.map((menu_item_matcher)=> {
+					return `${ancestor_names} ${menu_item_matcher}`;
+				});
+				menu_item.speech_recognition = (menu_item.speech_recognition || []).concat(menu_item_matchers);
+				// console.log(menu_item_matchers, menu_item.speech_recognition);
+
+				if (menu_item.submenu) {
+					add_literal_navigation_speech_recognition(menu_item.submenu, `${ancestor_names} ${menu_item_name}`);
+				}
+			}
+		}
+	};
+	add_literal_navigation_speech_recognition(menu, top_level_menu_name);
+}
 
 })();

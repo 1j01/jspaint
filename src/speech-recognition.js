@@ -43,7 +43,67 @@ const recognitionFixes = {
 	// "drag": "draw a", // too general
 	"try picture": "draw a picture",
 	"tuggle": "toggle",
+	"about pink": "about paint",
 	"projects news": "project news",
+	"you project is": "view project news",
+	"6 / 48": "flip/rotate",
+	"flip / rotate": "flip/rotate",
+	"flipper rotate": "flip or rotate",
+	"flip rotate": "flip/rotate",
+	"stretch / q": "stretch/skew",
+	"stretch/q": "stretch/skew",
+	"stretch / skew": "stretch/skew",
+	"stretch scale": "stretch/skew",
+	"stretch skew": "stretch/skew",
+	"stretcher skew": "stretch or skew",
+	"stretcher q": "stretch or skew",
+	"stretcher scale": "stretch or skew",
+	"black doll": "select all",
+	"slept all": "select all",
+	"torres election": "delete selection",
+	"deweese election": "delete selection",
+	"tilly": "delete",
+	"multiuser": "multi-user",
+	"horizontal books": "horizontal color box",
+	"talk vertical color box": "toggle vertical color box",
+	"talk horizontal color box": "toggle horizontal color box",
+	"toggle rico color box": "toggle vertical color box",
+	"taco rico color box": "toggle vertical color box",
+	"title horizontal colorbox": "toggle horizontal color box",
+	"dial neal": "file new",
+	"dial now": "file new",
+	"kyle neal": "file new",
+	"bio on them": "file new",
+	"eye on them": "file new",
+	"found them": "file new",
+	"kyle new": "file new",
+	"kyle knew": "file new",
+	"kyle now": "file new",
+	"file nail": "file new",
+	"fileopen": "file open",
+	"well safe": "file save",
+	"fail-safe": "file save",
+	"i'll save": "file save",
+	"a done deal": "edit undo",
+	"how to undo": "edit undo",
+	"q menu": "view menu",
+	"resume sub menu": "show zoom submenu",
+	"king's menu": "themes menu",
+	"tim's menu": "themes menu",
+	"dean's menu": "themes menu",
+	"things menu": "themes menu",
+	"pennsylvania": "themes menu",
+	"teamz menu": "themes menu",
+	"teams menu": "themes menu",
+	"goldstein's menu": "close themes menu",
+	"christine's menu": "close themes menu",
+	"express menu": "extras menu",
+	"heather colors": "edit colors",
+	"help many mm": "help menu",
+	"help many": "help menu",
+	"kuzmania": "close menu",
+	"close minded": "close menu",
+	"pho extras menu": "show extras menu",
 
 	// panning/scrolling the view
 	"scrollview": "scroll view",
@@ -174,6 +234,9 @@ const recognitionFixes = {
 	"christmas-themed": "christmas theme",
 	"christmas game": "christmas theme",
 	"switch directory theme": "switch to retro theme",
+	"penis": "themes",
+	"things": "themes",
+	"teams": "themes",
 
 	// render gif animation from document history
 	"render gift": "render gif",
@@ -183,15 +246,18 @@ const recognitionFixes = {
 	"create a gift": "create a gif",
 	"make a gift": "make a gif",
 
+	// opening help
+	"hope topics": "help topics",
+	"health topics": "help topics",
+	"subtopics": "help topics",
+	"topix": "help topics",
+	"quickhelp": "click help",
+
 	// help window
 	"webhelp": "web help",
 	"medhelp": "web help",
 	"four words": "forwards",
 	"forbearance": "forwards",
-	"hope topics": "help topics",
-	"health topics": "help topics",
-	"subtopics": "help topics",
-	"topix": "help topics",
 	"trirectangular square": "draw a rectangle or square",
 	"draw rectangular square": "draw a rectangle or square",
 	"draw a rectangular square": "draw a rectangle or square",
@@ -616,6 +682,19 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		}
 	}
 	
+	const close_menus_match = command.match(/\b(?:(?:close|hide|dismiss) menus?|never ?mind)\b/i);
+	if (close_menus_match) {
+		if (close_menus_match[0].length > best_match_text.length) {
+			best_match_text = close_menus_match[0];
+			best_match_fn = ()=> {
+				// from close_menus in $MenuBar
+				$(".menu-button").trigger("release");
+				// Close any rogue floating submenus
+				$(".menu-popup").hide();
+			};
+		}
+	}
+
 	if (!best_match_text) {
 		// @TODO: clipboard as a source.. but you might want to just draw the clipboard directly to the canvas,
 		// so maybe it should be limited to saying "sketch"/"doodle"/"do a rendition of"
@@ -670,15 +749,13 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		}
 	}
 
-	const buttons = $("button, label, .help-window .item").filter(":visible").toArray();
+	const buttons = $("button, .menu-button, .menu-item-label, label, .help-window .item").filter(":visible").toArray();
 	
 	for (const button of buttons) {
-		// @TODO: button.dataset.speechRecognition (data-speech-recognition)
 		const button_text = button.textContent || button.getAttribute("aria-label") || button.title;
 		let button_text_phrases = [button_text];
 		if (!button_text) {
 			button_text_phrases = [];
-			// console.log("Button inaccessible for speech recognition:", button);
 		}
 		if (button_text.match(/^(Okay|OK)$/i)) {
 			button_text_phrases = ["Okay", "OK"];
@@ -741,13 +818,42 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		if (button_text.match(/:$/i)) {
 			button_text_phrases = [button_text.replace(/:$/i, "")];
 		}
+		// some menu items
+		if (button_text.match(/\.\.\.$/i)) {
+			button_text_phrases = [button_text.replace(/\.\.\.$/i, "")];
+		}
+		// top level menu buttons
+		if (button.matches(".menu-button")) {
+			button_text_phrases = [
+				button_text, `${button_text} menu`,
+				`show ${button_text} menu`,
+				`open ${button_text} menu`,
+				`access ${button_text} menu`,
+				`view ${button_text} menu`,
+			];
+		}
+		// menu items with submenus
+		// (designed to fail if class name "menu-item-submenu-area" changes)
+		if (button.closest(".menu-item") && button.closest(".menu-item").querySelector(".menu-item-submenu-area").innerHTML !== "") {
+			button_text_phrases = [
+				button_text, `${button_text} menu`,
+				`show ${button_text} menu`, `show ${button_text} submenu`, `show ${button_text} sub-menu`, `show ${button_text} sub menu`,
+				`open ${button_text} menu`, `open ${button_text} submenu`, `open ${button_text} sub-menu`, `open ${button_text} sub menu`,
+				`access ${button_text} menu`, `access ${button_text} submenu`, `access ${button_text} sub-menu`, `access ${button_text} sub menu`,
+				`view ${button_text} menu`, `view ${button_text} submenu`, `view ${button_text} sub-menu`, `view ${button_text} sub menu`,
+			];
+		}
+
+		if (button_text_phrases.length === 0) {
+			console.log("Button inaccessible for speech recognition:", button);
+		}
 		// console.log(button, button_text, button_text_phrases);
 		for (const button_text_phrase of button_text_phrases) {
 			const match_phrases = [button_text_phrase, `click ${button_text_phrase}`, `click on ${button_text_phrase}`];
 			for (const match_phrase of match_phrases) {
 				// console.log(match_phrase, ` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `));
 				if (` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
-					if (match_phrase.length > best_match_text.length) {
+					if ((match_phrase.length > best_match_text.length) || button.closest(".menu-popup")) {
 						best_match_text = match_phrase;
 						best_match_fn = ((button)=> ()=> {
 							clickButtonVisibly(button);
@@ -977,6 +1083,22 @@ function find_clipart(query) {
 }
 
 function clickButtonVisibly(button) {
+
+	$(button).trigger($.Event("pointerdown", {
+		pointerId: 12345,
+		pointerType: "mouse",
+		button: 0,
+		buttons: 1,
+		isPrimary: true,
+	}));
+	$(button).trigger($.Event("pointerup", {
+		pointerId: 12345,
+		pointerType: "mouse",
+		button: 0,
+		buttons: 0,
+		isPrimary: true,
+	}));
+
 	if (button.matches("button:not(.toggle)")) {
 		button.style.borderImage = "var(--inset-deep-border-image)";
 		setTimeout(()=> {
