@@ -27,10 +27,6 @@ const recognitionFixes = {
 	"ombre": "umbre",
 	"tan-tan": "tan tan",
 	"pan": "tan",
-	
-	// interpreted as symbols
-	":-)": "smiley face", // so that it can be searched for on Bing for images
-	":-(": "sad face", // may also be from "frowny face"
 
 	// commands/misc
 	"slick to the": "select the",
@@ -739,7 +735,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		if (draw_match) {
 			best_match_text = draw_match[0];
 			best_match_fn = ()=> {
-				const subject_matter = draw_match[1];
+				const subject_matter = draw_match[1].replace(/:-?\)/g, "smiley face").replace(/:-?\(/g, "sad face");
 				find_clipart(subject_matter).then((results)=> {
 					
 					// @TODO: select less complex images (less file size to width, say?) maybe, and/or better semantic matches by looking for the search terms in the title?
