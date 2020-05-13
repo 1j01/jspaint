@@ -733,8 +733,13 @@ window.interpret_command = (command, default_to_entering_text)=> {
 				"hide window", "hide window button",
 			];
 		}
+		// some help topics
 		if (button_text.match(/^Draw a/i)) {
 			button_text_phrases = [button_text, button_text.replace(/ an? /i, " ")];
+		}
+		// some form labels
+		if (button_text.match(/:$/i)) {
+			button_text_phrases = [button_text.replace(/:$/i, "")];
 		}
 		// console.log(button, button_text, button_text_phrases);
 		for (const button_text_phrase of button_text_phrases) {
