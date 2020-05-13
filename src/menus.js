@@ -620,6 +620,7 @@ window.menus = {
 			item: "&Help Topics",
 			speech_recognition: [
 				"help topics", "help me", "show help", "help", "show help window", "show help topics", "open help",
+				"help viewer", "show help viewer", "open help viewer",
 			],
 			action: ()=> { show_help(); },
 			description: "Displays Help for the current task or command.",

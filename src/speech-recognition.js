@@ -250,14 +250,18 @@ const recognitionFixes = {
 	"hope topics": "help topics",
 	"health topics": "help topics",
 	"subtopics": "help topics",
+	"top topics": "help topics",
 	"topix": "help topics",
 	"quickhelp": "click help",
+	"healthier": "help viewer",
 
 	// help window
 	"webhelp": "web help",
 	"medhelp": "web help",
 	"four words": "forwards",
 	"forbearance": "forwards",
+	"pack": "back",
+	
 	"trirectangular square": "draw a rectangle or square",
 	"draw rectangular square": "draw a rectangle or square",
 	"draw a rectangular square": "draw a rectangle or square",
@@ -313,6 +317,8 @@ const recognitionFixes = {
 	"stretcher skewen item": "stretch or skew an item",
 	"stretch rescue and item": "stretch or skew an item",
 	"stretcher sku and item": "stretch or skew an item",
+	"compete with other programs": "using paint with other programs",
+	"turn lights and shapes": "drawing lines and shapes",
 
 	// Eye Gaze Mode
 	"i gaze": "eye gaze",
@@ -813,6 +819,31 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		// some help topics
 		if (button_text.match(/^Draw a/i)) {
 			button_text_phrases = [button_text, button_text.replace(/ an? /i, " ")];
+		}
+		// help window buttons
+		if (button.closest(".help-window")) {
+			if (button_text.match(/^forward$/i)) {
+				button_text_phrases = [
+					"forward", "forwards",
+					"go forward", "go forwards", "navigate forward", "navigate forwards",
+					"navigate history forward", "navigate history forwards",
+					"go forward in history", "go forwards in history", "navigate forward in history", "navigate forwards in history",
+				];
+			}
+			if (button_text.match(/^back$/i)) {
+				button_text_phrases = [
+					"back", "backward", "backwards",
+					"go back", "navigate back", "go backward", "go backwards", "navigate backward", "navigate backwards",
+					"navigate history back", "navigate history backward", "navigate history backwards",
+					"go back in history", "navigate back in history", "go backward in history", "go backwards in history", "navigate backward in history", "navigate backwards in history",
+				];
+			}
+			if (button_text.match(/^hide$/i)) {
+				button_text_phrases = ["hide", "hide sidebar", "hide topics"];
+			}
+			if (button_text.match(/^show$/i)) {
+				button_text_phrases = ["show", "show sidebar", "show topics"];
+			}
 		}
 		// some form labels
 		if (button_text.match(/:$/i)) {
