@@ -44,6 +44,9 @@ const recognitionFixes = {
 	"tri-cat": "draw a cat",
 	"tricap": "draw a cat",
 	"try picture": "draw a picture",
+	"stop trying": "stop drawing",
+	"dog drawing": "stop drawing",
+	"camp drag": "stop drawing",
 	"tuggle": "toggle",
 	"halo": "toggle", // @TODO: match only at start
 	"michael": "toggle", // @TODO: match only at start
@@ -925,7 +928,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 
 	// after the above to allow for "draw a stop sign", "stop dwell clicking"
 	if (!best_match_text) {
-		const stop_match = command.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)\b/i);
+		const stop_match = command.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)(?: (?:drawing|sketching|painting|doodling|rendering))?\b/i);
 		if (stop_match) {
 			best_match_text = stop_match[0];
 			best_match_fn = ()=> {
@@ -1024,7 +1027,9 @@ window.trace_and_sketch = (subject_imagedata)=> {
 	window.trace_and_sketch_stop && window.trace_and_sketch_stop();
 
 	// @TODO: clickable cancel button? (in addition to Escape key handling and the "stop" voice command)
-	$status_text.text(`To stop drawing, ${window.speech_recognition_active ? `say "stop", or ` : ""}press Esc.`);
+	
+	// I'm suggesting saying "stop drawing" rather than "stop" because I think it's more likely to be picked up as speech at all
+	$status_text.text(`To stop drawing, ${window.speech_recognition_active ? `say "stop drawing", or ` : ""}press Esc.`);
 
 	// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
