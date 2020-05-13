@@ -756,8 +756,17 @@ window.menus = {
 				{
 					item: "&Classic",
 					speech_recognition: [
-						"classic theme", "switch to classic theme", "use classic theme", "set theme to classic", "switch to classic theme",
-						"retro theme", "switch to retro theme", "use retro theme", "set theme to retro", "switch to retro theme",
+						"reset theme", "revert theme setting",
+						"classic theme", "switch to classic theme", "use classic theme", "set theme to classic", "set theme classic", "switch to classic theme", "switch theme to classic", "switch theme classic",
+						"retro theme", "switch to retro theme", "use retro theme", "set theme to retro", "set theme retro", "switch to retro theme", "switch theme to retro", "switch theme retro",
+						"normal theme", "switch to normal theme", "use normal theme", "set theme to normal", "set theme normal", "switch to normal theme", "switch theme to normal", "switch theme normal",
+						"default theme", "switch to default theme", "use default theme", "set theme to default", "set theme default", "switch to default theme", "switch theme to default", "switch theme default",
+						"original theme", "switch to original theme", "use original theme", "set theme to original", "set theme original", "switch to original theme", "switch theme to original", "switch theme original",
+						"basic theme", "switch to basic theme", "use basic theme", "set theme to basic", "set theme basic", "switch to basic theme", "switch theme to basic", "switch theme basic",
+						"90s theme", "switch to 90s theme", "use 90s theme", "set theme to 90s", "set theme 90s", "switch to 90s theme", "switch theme to 90s", "switch theme 90s",
+						"windows 98 theme", "switch to windows 98 theme", "use windows 98 theme", "set theme to windows 98", "set theme windows 98", "switch to windows 98 theme", "switch theme to windows 98", "switch theme windows 98",
+						"windows 95 theme", "switch to windows 95 theme", "use windows 95 theme", "set theme to windows 95", "set theme windows 95", "switch to windows 95 theme", "switch theme to windows 95", "switch theme windows 95",
+						"windows 2000 theme", "switch to windows 2000 theme", "use windows 2000 theme", "set theme to windows 2000", "set theme windows 2000", "switch to windows 2000 theme", "switch theme to windows 2000", "switch theme windows 2000",
 					],
 					action: ()=> {
 						set_theme("classic.css");
@@ -768,7 +777,7 @@ window.menus = {
 				{
 					item: "&Modern",
 					speech_recognition: [
-						"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "switch to modern theme",
+						"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "set theme modern", "switch to modern theme", "switch theme to modern", "switch theme modern",
 					],
 					action: ()=> {
 						set_theme("modern.css");
@@ -779,10 +788,10 @@ window.menus = {
 				{
 					item: "&Winter",
 					speech_recognition: [
-						"winter theme", "switch to winter theme", "use winter theme", "set theme to winter", "switch to winter theme",
-						"holiday theme", "switch to holiday theme", "use holiday theme", "set theme to holiday", "switch to holiday theme",
-						"christmas theme", "switch to christmas theme", "use christmas theme", "set theme to christmas", "switch to christmas theme",
-						"hanukkah theme", "switch to hanukkah theme", "use hanukkah theme", "set theme to hanukkah", "switch to hanukkah theme",
+						"winter theme", "switch to winter theme", "use winter theme", "set theme to winter", "set theme winter", "switch to winter theme", "switch theme to winter", "switch theme winter",
+						"holiday theme", "switch to holiday theme", "use holiday theme", "set theme to holiday", "set theme holiday", "switch to holiday theme", "switch theme to holiday", "switch theme holiday",
+						"christmas theme", "switch to christmas theme", "use christmas theme", "set theme to christmas", "set theme christmas", "switch to christmas theme", "switch theme to christmas", "switch theme christmas",
+						"hanukkah theme", "switch to hanukkah theme", "use hanukkah theme", "set theme to hanukkah", "set theme hanukkah", "switch to hanukkah theme", "switch theme to hanukkah", "switch theme hanukkah",
 					],
 					action: ()=> {
 						set_theme("winter.css");

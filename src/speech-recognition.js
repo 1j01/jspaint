@@ -163,8 +163,17 @@ const recognitionFixes = {
 	"second winter": "set theme to winter",
 	"set theme to mother": "set theme to modern",
 	"modern team": "modern theme",
+	"classic team": "classic theme",
+	"retro team": "retro theme",
+	"default team": "default theme",
+	"normal team": "normal theme",
 	"my 19": "modern theme",
+	"winter thing": "winter theme",
 	"modern thing": "modern theme",
+	"classic thing": "classic theme",
+	"christmas-themed": "christmas theme",
+	"christmas game": "christmas theme",
+	"switch directory theme": "switch to retro theme",
 
 	// render gif animation from document history
 	"render gift": "render gif",
