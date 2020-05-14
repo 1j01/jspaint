@@ -178,10 +178,31 @@ const recognitionFixes = {
 	"deal": "view",
 
 	// panning/scrolling the view
+	"pin the view": "pan the view",
+	"pen the view": "pan the view",
+	"penn the view": "pan the view",
+	"interview": "pan the view",
+	"family view": "pan the view",
+	"pen masala": "pan the view to the south",
+	"penn masala": "pan the view to the south",
+	"it's called a few": "scroll the view",
+	"call the view": "scroll the view",
+	"south rim": "southward",
 	"scrollview": "scroll view",
 	"call north": "scroll north",
 	"crawl north": "scroll north",
 	"crawl northward": "scroll northward",
+	"call down": "scroll down",
+	"skull rain": "scroll right",
+	"scroll rack": "scroll right",
+	"skull right": "scroll right",
+	"you're right": "scroll right",
+	"scroll app": "scroll up",
+	"scrap": "scroll up",
+	"go out": "scroll up",
+	"scroll up in": "scroll up and",
+	"and to go": "and to the",
+	"into the": "and to the",
 	"pen view": "pan view",
 	"penn view": "pan view",
 	"pam view": "pan view",
@@ -262,11 +283,60 @@ const recognitionFixes = {
 	"pin-up word": "pan upward",
 	"pinup words": "pan upwards",
 	"pinup word": "pan upward",
+	"turn down": "go down",
+	"newtown": "go down",
 	"co-op": "go up", // @TODO: ^$
-	"correct": "go right", // @TODO: ^$
+	"come up": "go up",
+	// "correct": "go right", // can be from "go left" or "go right"; which one is correct is up in the air so I'm not down with that
 	"direct": "go right", // @TODO: ^$
 	"collect": "go left", // @TODO: ^$
 	"the left": "go left", // @TODO: ^$
+	"cooperates": "go upwards",
+	"cooperated": "go upwards",
+	"go upgrade": "go upwards",
+	// "prince": "go upwards",
+	// "electrics": "go upwards",
+	// "dog breeds": "go upwards",
+	// "heloc rates": "go upwards",
+	"free download": "go downard",
+	"to download": "go downard",
+	"go download": "go downard",
+	"go down orange": "go downard",
+	"the great": "look right",
+	"the craig": "look right",
+	"mccreight": "look right",
+	"lock right": "look right",
+	"lecrae": "look right",
+	"the cleft": "look left",
+	"the craft": "look left",
+	"shut down": "look down",
+	"what town": "look down",
+	"what's down": "look down",
+	"bucktown": "look down",
+	"lockdown": "look down",
+	"circumference": "look upwards",
+	"look up weights": "look upwards",
+	"look up words": "look upwards",
+	"if you up": "view up",
+	"you up": "view up",
+	"review town": "view down",
+	"few down": "view down",
+	"view downloads": "view downwards",
+	"view download": "view downward",
+	"music download": "view downward",
+	"music downloads": "view downwards",
+	"are you down lyrics": "view downwards",
+	"you down lyrics": "view downwards",
+	"few downwards": "view downwards",
+	"you are prince": "view upwards",
+	"do upgrades": "view upwards",
+	"and you are friends": "view upwards",
+	"do you right": "view right",
+	"you right": "view right",
+	"pure right": "view right",
+	"do you left": "view left",
+	"you left": "view left",
+	"he left": "view left",
 
 	// zooming
 	"normal-size": "normal size",
@@ -1337,34 +1407,33 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		}
 	}
 
-	if (!best_match_text) {
-		const scroll_match = command.match(/\b(?:scroll|pan|scroll view|pan view|go|view) ((?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?|to the (?:north|south|west|east|north ?west|south ?west|north ?east|south ?east))\b/i);
-		if (scroll_match) {
-			best_match_text = scroll_match[0];
-			const direction = scroll_match[1].toLowerCase();
-			const vector = {x: 0, y: 0};
-			if (direction.match(/up|north/i)) {
-				vector.y = -1;
-			}
-			if (direction.match(/down|south/i)) {
-				vector.y = +1;
-			}
-			if (direction.match(/left|west/i)) {
-				vector.x = -1;
-			}
-			if (direction.match(/right|east/i)) {
-				vector.x = +1;
-			}
-			const scroll_pane_el = $(".window *").toArray().filter((el)=> el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)[0] || $canvas_area[0];
-			best_match_fn = ()=> {
-				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth / 2;
-				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight / 2;
-				$(scroll_pane_el).animate({
-					scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth / 2,
-					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
-				}, 500);
-			};
+	const scrolling_regexp = /\b(?:(?:scroll|pan)(?:(?: the)? view)?|go|view|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?( and( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
+	const scroll_match = command.match(scrolling_regexp);
+	if (scroll_match) {
+		best_match_text = scroll_match[0];
+		const direction = best_match_text;
+		const vector = {x: 0, y: 0};
+		if (direction.match(/up|north/i)) {
+			vector.y = -1;
 		}
+		if (direction.match(/down|south/i)) {
+			vector.y = +1;
+		}
+		if (direction.match(/left|west/i)) {
+			vector.x = -1;
+		}
+		if (direction.match(/right|east/i)) {
+			vector.x = +1;
+		}
+		const scroll_pane_el = $(".window *").toArray().filter((el)=> el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)[0] || $canvas_area[0];
+		best_match_fn = ()=> {
+			// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth / 2;
+			// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight / 2;
+			$(scroll_pane_el).animate({
+				scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth / 2,
+				scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
+			}, 500);
+		};
 	}
 
 	if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
