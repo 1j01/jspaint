@@ -348,3 +348,10 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
 input[type=number].no-spinner {
 	-moz-appearance: textfield;
 }
+
+input:invalid {
+	box-shadow: 0 0 0 2px red;
+}
+.partial-url-label {
+	opacity: 0.6;
+}

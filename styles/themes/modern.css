@@ -338,3 +338,10 @@ body,
 	background-color: #2196f3;
 	color: white;
 } */
+
+input:invalid {
+	box-shadow: 0 0 0 2px red;
+}
+.partial-url-label {
+	opacity: 0.6;
+}

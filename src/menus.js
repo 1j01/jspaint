@@ -753,17 +753,7 @@ window.menus = {
 						"collaborating",
 					],
 					action: ()=> {
-						let name = prompt("Enter the session name that will be used in the URL for sharing.");
-						if(typeof name == "string"){
-							name = name.trim();
-							if(name == ""){
-								show_error_message("The session name cannot be empty.");
-							}else if(name.match(/[./[\]#$]/)){
-								show_error_message("The session name cannot contain any of ./[]#$");
-							}else{
-								change_url_param("session", name);
-							}
-						}
+						show_multi_user_setup_dialog(true);
 					},
 					description: "Starts a new multi-user session from the current document.",
 				},
@@ -813,19 +803,7 @@ window.menus = {
 						"start collaborating with empty",
 					],
 					action: ()=> {
-						// @TODO: load new empty session in the same browser tab
-						let name = prompt("Enter the session name that will be used in the URL for sharing.");
-						if(typeof name == "string"){
-							name = name.trim();
-							if(name == ""){
-								show_error_message("The session name cannot be empty.");
-							}else if(name.match(/[./[\]#$]/)){
-								show_error_message("The session name cannot contain any of ./[]#$");
-							}else{
-								// @TODO: keep settings like vertical-color-box-mode
-								window.open(`${location.origin}${location.pathname}#session:${name}`);
-							}
-						}
+						show_multi_user_setup_dialog(false);
 					},
 					description: "Starts a new multi-user session from an empty document.",
 				},
