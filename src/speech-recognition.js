@@ -125,6 +125,9 @@ const recognitionFixes = {
 	"toy box": "color box", // weirdly not for tool box; this is for color box
 	"coolbox": "tool box",
 	"scarred": "discard",
+	"hindsight bar": "hide sidebar",
+	"high tide bar": "hide sidebar",
+	"glenside bar": "hide sidebar",
 
 	// addressing actions by menu they're in
 	"dial neal": "file new",
@@ -737,6 +740,7 @@ const recognitionFixes = {
 	"use select all": "use select tool",
 	"you slept well": "use select tool",
 	"suck my dragon": "select by dragging",
+	"swift": "select",
 	// Eraser/Color Eraser
 	"tracer": "eraser",
 	"grace": "erase",
@@ -963,6 +967,7 @@ const recognitionFixes = {
 	"lips": "ellipse",
 	"clips": "ellipse",
 	"eclipse": "ellipse",
+	"let's": "ellipse",
 	"flip store": "ellipse tool",
 	"toefl": "oval",
 	"offal": "oval",
@@ -978,6 +983,7 @@ const recognitionFixes = {
 	"and it rectangle": "rounded rectangle",
 	"and a rectangle": "rounded rectangle",
 	"padded rectangle": "rounded rectangle",
+	"standard rectangle": "rounded rectangle", // (I hope you don't actually say "standard rectangle" haha)
 	"roundrect": "round rect",
 	"contract": "round rect",
 	"found wrecked": "round rect",
