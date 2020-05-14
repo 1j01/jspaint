@@ -49,8 +49,10 @@ const recognitionFixes = {
 	"draught": "draw a",
 	"try": "draw", // seems too general - (unless you previously told it to draw something...) - but it keeps coming up!
 	// "drag": "draw a", // too general
+	"giraffe": "draw",
 	"tri-cat": "draw a cat",
 	"tricap": "draw a cat",
+	"tristar": "draw a star",
 	"try picture": "draw a picture",
 	"stop trying": "stop drawing",
 	"dog drawing": "stop drawing",
@@ -105,6 +107,8 @@ const recognitionFixes = {
 	"hindu": "undo",
 	"hyundai": "undo",
 	"can do": "undo",
+	"andale": "undo",
+	"n2": "undo",
 	"radio": "redo",
 	"poppy": "repeat",
 	"heather colors": "edit colors",
@@ -378,6 +382,8 @@ const recognitionFixes = {
 	"default team": "default theme",
 	"normal team": "normal theme",
 	"my 19": "modern theme",
+	"when kissing": "winter theme",
+	"printer stand": "winter theme",
 	"winter thing": "winter theme",
 	"modern thing": "modern theme",
 	"classic thing": "classic theme",
