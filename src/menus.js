@@ -644,7 +644,7 @@ window.menus = {
 			item: "&History",
 			shortcut: "Ctrl+Shift+Y",
 			speech_recognition: [
-				// duplicate menu item
+				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 			],
 			action: ()=> { show_document_history(); },
 			description: "Shows the document history and lets you navigate to states not accessible with Undo or Repeat.",
@@ -701,6 +701,9 @@ window.menus = {
 		// }
 		/*{
 			item: "&Draw Randomly",
+			speech_recognition: [
+				"draw randomly", "draw pseudorandomly", "draw wildly", "make random art",
+			],
 			checkbox: {
 				toggle: ()=> {
 					if (window.simulatingGestures) {
@@ -720,6 +723,35 @@ window.menus = {
 			submenu: [
 				{
 					item: "&New Session From Document",
+					speech_recognition: [
+						"new session from document",
+						"session from document",
+						"online session",
+						"enable multi-user",
+						"enable multiplayer",
+						"start multi-user",
+						"start multiplayer",
+						"start collaboration",
+						"start collaborating",
+						"multi-user mode",
+						"multiplayer mode",
+						"collaboration mode",
+						"collaborative mode",
+						"collaborating mode",
+						"online mode",
+						"go online",
+						"share canvas",
+						"play with friends",
+						"draw with friends",
+						"draw together with friends",
+						"draw together",
+						"multiplayer",
+						"multi-user",
+						"collaborate",
+						"collaboration",
+						"collaborative",
+						"collaborating",
+					],
 					action: ()=> {
 						let name = prompt("Enter the session name that will be used in the URL for sharing.");
 						if(typeof name == "string"){
@@ -737,6 +769,49 @@ window.menus = {
 				},
 				{
 					item: "New &Blank Session",
+					speech_recognition: [
+						"new blank session",
+						"new empty session",
+						"new fresh session",
+						"new blank multi-user session",
+						"new empty multi-user session",
+						"new fresh multi-user session",
+						"new blank multiplayer session",
+						"new empty multiplayer session",
+						"new fresh multiplayer session",
+						"new multi-user session",
+						"new multiplayer session",
+						"new collaboration session",
+						"new collaborative session",
+						"start multi-user session",
+						"start multiplayer session",
+						"start collaboration session",
+						"start collaborative session",
+						"start multi-user with a new",
+						"start multiplayer with a new",
+						"start collaboration with a new",
+						"start collaborating with a new",
+						"start multi-user with a blank",
+						"start multiplayer with a blank",
+						"start collaboration with a blank",
+						"start collaborating with a blank",
+						"start multi-user with an empty",
+						"start multiplayer with an empty",
+						"start collaboration with an empty",
+						"start collaborating with an empty",
+						"start multi-user with new",
+						"start multiplayer with new",
+						"start collaboration with new",
+						"start collaborating with new",
+						"start multi-user with blank",
+						"start multiplayer with blank",
+						"start collaboration with blank",
+						"start collaborating with blank",
+						"start multi-user with empty",
+						"start multiplayer with empty",
+						"start collaboration with empty",
+						"start collaborating with empty",
+					],
 					action: ()=> {
 						// @TODO: load new empty session in the same browser tab
 						let name = prompt("Enter the session name that will be used in the URL for sharing.");
@@ -885,14 +960,13 @@ window.menus = {
 			enabled: ()=> {
 				return !location.hash.match(/eye-gaze-mode/i);
 			},
-			// description: "Positions the color box on the side.",
 			description: "Arranges the color box vertically.",
 		},
 		MENU_DIVIDER,
 		{
 			item: "Manage Storage",
 			speech_recognition: [
-				// duplicate menu item
+				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 			],
 			action: ()=> { manage_storage(); },
 			description: "Manages storage of previously created or opened pictures.",
