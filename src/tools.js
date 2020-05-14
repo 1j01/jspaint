@@ -101,7 +101,7 @@ window.tools = [{
 		
 		if(selection){
 			// for silly multitools feature
-			alert("This isn't supposed to happen: Free-Form Select after Select in the tool chain?");
+			show_error_message("This isn't supposed to happen: Free-Form Select after Select in the tool chain?");
 			meld_selection_into_canvas();
 		}
 

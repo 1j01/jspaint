@@ -165,7 +165,6 @@ Functionality:
 * Show link URLs when you hover over them, in the status bar (because we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, or it could be implemented with mouse events)
 * Recent files (could also be implemented for 98.js.org in the future)
 * Create a landing page / home page for the desktop app (similar to https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
-* Remove usage of `prompt` (and ideally `alert`/`confirm` too! shouldn't be using these anyways!)
 * macOS: `open-file` event, `setRepresentedFilename`, `setDocumentEdited` etc.
 * Windows: maybe handle `session-end` event and ask to save?
 * Detect if file changes on disk, ask if you want to reload it?
