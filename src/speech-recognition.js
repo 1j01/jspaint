@@ -1081,7 +1081,30 @@ recognition.onresult = function(event) {
 		}
 	}
 	console.log(`After any fixes: "${command}"`);
-	interpret_command(command, true);
+
+	const interpretations = interpret_command(command, true);
+	if (interpretations.length) {
+		let best_interpretation = interpretations[0];
+		for (const interpretation of interpretations) {
+			if (
+				interpretation.match_text.length > best_interpretation.match_text.length ||
+				interpretation.prioritize
+			) {
+				best_interpretation = interpretation;
+			}	
+		}
+		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${
+			command.replace(
+				new RegExp(escapeRegExp(best_interpretation.match_text), "i"),
+				(important_text)=> `<b>${important_text}</b>`,
+			)
+		}</span>`);
+		console.log(`Interpreting command "${command}" as`, best_interpretation);
+		best_interpretation.exec();
+	} else {
+		$status_text.text(`Speech: ${command}`);
+		console.log(`No interpretation for command "${command}"`);
+	}
 };
 
 recognition.onspeechend = function() {
@@ -1123,16 +1146,8 @@ recognition.onerror = function(event) {
 
 window.interpret_command = (input_text, default_to_entering_text)=> {
 	const interpretations = [];
-	let best_match_fn;
-	let best_match_text = "";
 	const add_interpretation = (interpretation)=> {
-		const {match_text, exec, prioritize} = interpretation;
 		interpretations.push(interpretation);
-
-		if (match_text.length > best_match_text.length || prioritize) {
-			best_match_text = match_text;
-			best_match_fn = exec;
-		}
 	};
 	
 	for (const color of colorNames) {
@@ -1206,7 +1221,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		});
 	}
 
-	if (!best_match_text) {
+	if (interpretations.length === 0) {
 		// @TODO: clipboard as a source.. but you might want to just draw the clipboard directly to the canvas,
 		// so maybe it should be limited to saying "sketch"/"doodle"/"do a rendition of"
 		// /(?:sketch|doodle|do a (?:rendition|sketch|doodle) of) (?:the (?:contents of |(?:image|picture|data) on the )|(?:what's|what is) on the )?clipboard/i
@@ -1376,7 +1391,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	}
 
 	// after the above to allow for "draw a stop sign", "stop dwell clicking"
-	if (!best_match_text) {
+	if (interpretations.length === 0) {
 		const stop_match = input_text.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)(?: (?:drawing|sketching|painting|doodling|rendering))?\b/i);
 		if (stop_match) {
 			add_interpretation({
@@ -1453,7 +1468,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			});
 		}
 	}
-	if (!best_match_text && default_to_entering_text && input_text.length) {
+	if (interpretations.length === 0 && default_to_entering_text && input_text.length) {
 		if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
 			const text_to_insert = input_text.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
 			add_interpretation({
@@ -1474,16 +1489,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	// and giving lower confidence for things that start in the middle of the phrase
 	// and like higher confidence in "stop" if it's actively drawing
 
-	if (best_match_text) {
-		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${
-			input_text.replace(new RegExp(escapeRegExp(best_match_text), "i"), (important_text)=> `<b>${important_text}</b>`)
-		}</span>`);
-		console.log(`Interpreting command "${input_text}" as "${best_match_text}"`);
-		best_match_fn();
-	} else {
-		$status_text.text(`Speech: ${input_text}`);
-		console.log(`No interpretation for command "${input_text}"`);
-	}
+	return interpretations;
 };
 
 window.trace_and_sketch = (subject_imagedata)=> {
