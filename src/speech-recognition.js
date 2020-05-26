@@ -1122,17 +1122,28 @@ recognition.onerror = function(event) {
 };
 
 window.interpret_command = (input_text, default_to_entering_text)=> {
+	const interpretations = [];
 	let best_match_fn;
 	let best_match_text = "";
+	const add_interpretation = (interpretation)=> {
+		const {match_text, exec, prioritize} = interpretation;
+		interpretations.push(interpretation);
+
+		if (match_text.length > best_match_text.length || prioritize) {
+			best_match_text = match_text;
+			best_match_fn = exec;
+		}
+	};
+	
 	for (const color of colorNames) {
 		if (` ${input_text} `.toLowerCase().indexOf(` ${color.toLowerCase()} `) !== -1) {
-			if (color.length > best_match_text.length) {
-				best_match_text = color;
-				best_match_fn = ((color)=> ()=> {
+			add_interpretation({
+				match_text: color,
+				exec: ((color)=> ()=> {
 					colors.foreground = color;
 					$G.trigger("option-changed");
-				})(color);
-			}
+				})(color),
+			});
 		}
 	}
 	for (const tool of tools) {
@@ -1140,12 +1151,12 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			// Note: if "select" wasn't matched here, the phrase "select text" would select the Select tool instead of the Text tool (because "select" is longer than "text")
 			const select_tool_match = input_text.match(new RegExp(`\\b(?:(?:select|pick|choose|use|activate|pick up|grab) )?(?:the )?${escapeRegExp(base_tool_phrase)}(?: tool)?\\b`, "i"));
 			if (select_tool_match) {
-				if (select_tool_match[0].length > best_match_text.length) {
-					best_match_text = select_tool_match[0];
-					best_match_fn = ((tool)=> ()=> {
+				add_interpretation({
+					match_text: select_tool_match[0],
+					exec: ((tool)=> ()=> {
 						select_tool(tool);
-					})(tool);
-				}
+					})(tool),
+				});
 			}
 		}
 	}
@@ -1167,16 +1178,16 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		if (menu_item.speech_recognition) {
 			for (const menu_item_phrase of menu_item.speech_recognition) {
 				if (` ${input_text} `.toLowerCase().indexOf(` ${menu_item_phrase.toLowerCase()} `) !== -1) {
-					if (menu_item_phrase.length > best_match_text.length) {
-						best_match_text = menu_item_phrase;
-						best_match_fn = ((menu_item)=> ()=> {
+					add_interpretation({
+						match_text: menu_item_phrase,
+						exec: ((menu_item)=> ()=> {
 							if (menu_item.checkbox) {
 								menu_item.checkbox.toggle();
 							} else {
 								menu_item.action();
 							}
-						})(menu_item);
-					}
+						})(menu_item),
+					});
 				}
 			}
 		}
@@ -1184,15 +1195,15 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	
 	const close_menus_match = input_text.match(/\b(?:(?:close|hide|dismiss) menus?|never ?mind)\b/i);
 	if (close_menus_match) {
-		if (close_menus_match[0].length > best_match_text.length) {
-			best_match_text = close_menus_match[0];
-			best_match_fn = ()=> {
+		add_interpretation({
+			match_text: close_menus_match[0],
+			exec: ()=> {
 				// from close_menus in $MenuBar
 				$(".menu-button").trigger("release");
 				// Close any rogue floating submenus
 				$(".menu-popup").hide();
-			};
-		}
+			},
+		});
 	}
 
 	if (!best_match_text) {
@@ -1201,51 +1212,13 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		// /(?:sketch|doodle|do a (?:rendition|sketch|doodle) of) (?:the (?:contents of |(?:image|picture|data) on the )|(?:what's|what is) on the )?clipboard/i
 		const draw_match = input_text.match(/(?:draw|sketch|doodle|render|(?:paint|draw|do|render|sketch) (?:a picture|an image|a drawing|a painting|a rendition|a sketch|a doodle) of) (?:an? )?(.+)/i);
 		if (draw_match) {
-			best_match_text = draw_match[0];
-			best_match_fn = ()=> {
-				const subject_matter = draw_match[1].replace(/:-?\)/g, "smiley face").replace(/:-?\(/g, "sad face");
-				find_clipart(subject_matter).then((results)=> {
-					
-					// @TODO: select less complex images (less file size to width, say?) maybe, and/or better semantic matches by looking for the search terms in the title?
-					// detect gradients / spread out histogram at least, and reject based on that
-					let image_url = results[~~(Math.random() * results.length)].image_url;
-					console.log("Using source image:", image_url);
-					if (!image_url.match(/^data:/)) {
-						image_url = `https://jspaint-cors-proxy.herokuapp.com/${image_url}`;
-					}
-					const img = new Image();
-					img.crossOrigin = "Anonymous";
-					img.onerror = ()=> {
-						$status_text.text("Failed to load clipart.");
-					};
-					img.onload = ()=> {
-						// @TODO: find an empty spot on the canvas for the sketch, smaller if need be
-						const max_sketch_width = 500;
-						const max_sketch_height = 500;
-						let aspect_ratio = img.width / img.height;
-						let width = Math.min(img.width, max_sketch_width);
-						let height = Math.min(img.height, max_sketch_height);
-						if (width / height < aspect_ratio) {
-							height = width / aspect_ratio;
-						}
-						if (width / height > aspect_ratio) {
-							width = height * aspect_ratio;
-						}
-						const img_canvas = make_canvas(width, height);
-						img_canvas.ctx.drawImage(img, 0, 0, width, height);
-						const image_data = img_canvas.ctx.getImageData(0, 0, img_canvas.width, img_canvas.height);
-						resize_canvas_without_saving_dimensions(Math.max(canvas.width, image_data.width), Math.max(canvas.height, image_data.height));
-						trace_and_sketch(image_data);
-					};
-					img.src = image_url;
-				}, (error)=> {
-					if (error.code === "no-results") {
-						$status_text.text(`No clipart found for '${subject_matter}'`);
-					} else {
-						show_error_message("Failed to find clipart.", error);
-					}
-				});
-			};
+			add_interpretation({
+				match_text: draw_match[0],
+				exec: ()=> {
+					const subject_matter = draw_match[1].replace(/:-?\)/g, "smiley face").replace(/:-?\(/g, "sad face");
+					find_clipart_and_sketch(subject_matter);
+				},
+			});
 		}
 	}
 
@@ -1389,13 +1362,14 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			for (const match_phrase of match_phrases) {
 				// console.log(match_phrase, ` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `));
 				if (` ${input_text} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
-					if ((match_phrase.length > best_match_text.length) || button.closest(".menu-popup")) {
-						best_match_text = match_phrase;
-						best_match_fn = ((button)=> ()=> {
+					add_interpretation({
+						match_text: match_phrase,
+						exec: ((button)=> ()=> {
 							clickButtonVisibly(button);
 							console.log("click", button);
-						})(button);
-					}
+						})(button),
+						prioritize: !!button.closest(".menu-popup"),
+					});
 				}
 			}
 		}
@@ -1405,79 +1379,94 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	if (!best_match_text) {
 		const stop_match = input_text.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)(?: (?:drawing|sketching|painting|doodling|rendering))?\b/i);
 		if (stop_match) {
-			best_match_text = stop_match[0];
-			best_match_fn = ()=> {
-				window.stopSimulatingGestures && window.stopSimulatingGestures();
-				window.trace_and_sketch_stop && window.trace_and_sketch_stop();
-			};
+			add_interpretation({
+				match_text: stop_match[0],
+				exec: ()=> {
+					window.stopSimulatingGestures && window.stopSimulatingGestures();
+					window.trace_and_sketch_stop && window.trace_and_sketch_stop();
+				},
+				prioritize: true,
+			});
 		}
 	}
 
 	const scrolling_regexp = /\b(?:(?:scroll|pan)(?:(?: the)? view)?|go|view|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?( and( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
-		best_match_text = scroll_match[0];
-		const direction = best_match_text;
+		const directions = scroll_match[0];
 		const vector = {x: 0, y: 0};
-		if (direction.match(/up|north/i)) {
+		if (directions.match(/up|north/i)) {
 			vector.y = -1;
 		}
-		if (direction.match(/down|south/i)) {
+		if (directions.match(/down|south/i)) {
 			vector.y = +1;
 		}
-		if (direction.match(/left|west/i)) {
+		if (directions.match(/left|west/i)) {
 			vector.x = -1;
 		}
-		if (direction.match(/right|east/i)) {
+		if (directions.match(/right|east/i)) {
 			vector.x = +1;
 		}
 		const scroll_pane_el = $(".window *").toArray().filter((el)=> el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)[0] || $canvas_area[0];
-		best_match_fn = ()=> {
-			// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth / 2;
-			// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight / 2;
-			$(scroll_pane_el).animate({
-				scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth / 2,
-				scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
-			}, 500);
-		};
+		add_interpretation({
+			match_text: scroll_match[0],
+			exec: ()=> {
+				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth / 2;
+				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight / 2;
+				$(scroll_pane_el).animate({
+					scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth / 2,
+					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
+				}, 500);
+			},
+			prioritize: true,
+		});
 	}
 
 	if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
 		const new_line_match = input_text.match(/^(?:new line|newline|line break|return|enter|carriage return|)$|\b(?:(?:insert|add|put|put in|input)(?: an?)? (?:new line|newline|line break|return|enter|carriage return))\b/i);
 		if (new_line_match) {
-			if (new_line_match[0].length > best_match_text.length) {
-				best_match_text = new_line_match[0];
-				best_match_fn = ()=> {
+			add_interpretation({
+				match_text: new_line_match[0],
+				exec: ()=> {
 					document.execCommand("insertText", false, "\n");
-				};
-			}
+				},
+			});
 		}
 	}
 	if (window.textbox) {
 		const stop_match = input_text.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? (text|text input|textbox|text box|writing))\b/i);
 		if (stop_match) {
-			best_match_text = stop_match[0];
-			best_match_fn = deselect;
+			add_interpretation({
+				match_text: stop_match[0],
+				exec: deselect,
+				prioritize: true,
+			});
 		}
 	}
 	if (window.selection) {
 		const stop_match = input_text.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? selection|deselect|unselect)\b/i);
 		if (stop_match) {
-			best_match_text = stop_match[0];
-			best_match_fn = deselect;
+			add_interpretation({
+				match_text: stop_match[0],
+				exec: deselect,
+				prioritize: true,
+			});
 		}
 	}
-	if (!best_match_text && default_to_entering_text) {
+	if (!best_match_text && default_to_entering_text && input_text.length) {
 		if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
-			best_match_text = input_text;
 			const text_to_insert = input_text.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
-			best_match_fn = ()=> {
-				if (document.activeElement && document.activeElement.matches("input[type='number']")) {
-					document.activeElement.value = input_text;
-				} else {
-					document.execCommand("insertText", false, text_to_insert);
-				}
-			};
+			add_interpretation({
+				match_text: input_text,
+				exec: ()=> {
+					if (document.activeElement && document.activeElement.matches("input[type='number']")) {
+						document.activeElement.value = input_text;
+					} else {
+						document.execCommand("insertText", false, text_to_insert);
+					}
+				},
+				prioritize: true,
+			});
 		}
 	}
 
@@ -1557,6 +1546,50 @@ window.trace_and_sketch_stop = ()=> {
 	pointer_active = false;
 	pointer_over_canvas = false;
 };
+
+function find_clipart_and_sketch(subject_matter) {
+	find_clipart(subject_matter).then((results)=> {
+		
+		// @TODO: select less complex images (less file size to width, say?) maybe, and/or better semantic matches by looking for the search terms in the title?
+		// detect gradients / spread out histogram at least, and reject based on that
+		let image_url = results[~~(Math.random() * results.length)].image_url;
+		console.log("Using source image:", image_url);
+		if (!image_url.match(/^data:/)) {
+			image_url = `https://jspaint-cors-proxy.herokuapp.com/${image_url}`;
+		}
+		const img = new Image();
+		img.crossOrigin = "Anonymous";
+		img.onerror = ()=> {
+			$status_text.text("Failed to load clipart.");
+		};
+		img.onload = ()=> {
+			// @TODO: find an empty spot on the canvas for the sketch, smaller if need be
+			const max_sketch_width = 500;
+			const max_sketch_height = 500;
+			let aspect_ratio = img.width / img.height;
+			let width = Math.min(img.width, max_sketch_width);
+			let height = Math.min(img.height, max_sketch_height);
+			if (width / height < aspect_ratio) {
+				height = width / aspect_ratio;
+			}
+			if (width / height > aspect_ratio) {
+				width = height * aspect_ratio;
+			}
+			const img_canvas = make_canvas(width, height);
+			img_canvas.ctx.drawImage(img, 0, 0, width, height);
+			const image_data = img_canvas.ctx.getImageData(0, 0, img_canvas.width, img_canvas.height);
+			resize_canvas_without_saving_dimensions(Math.max(canvas.width, image_data.width), Math.max(canvas.height, image_data.height));
+			trace_and_sketch(image_data);
+		};
+		img.src = image_url;
+	}, (error)=> {
+		if (error.code === "no-results") {
+			$status_text.text(`No clipart found for '${subject_matter}'`);
+		} else {
+			show_error_message("Failed to find clipart.", error);
+		}
+	});
+}
 
 function find_clipart(query) {
 	const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart+filterui:license-L1&FORM=IRFLTR`)
@@ -1652,5 +1685,5 @@ function clickButtonVisibly(button) {
 function escapeRegExp(string) {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
-  
+
 })();
