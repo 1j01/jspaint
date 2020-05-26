@@ -1103,23 +1103,15 @@ recognition.onresult = function(event) {
 
 	const interpretations = interpret_command(command, true);
 	if (interpretations.length) {
-		let best_interpretation = interpretations[0];
-		for (const interpretation of interpretations) {
-			if (
-				interpretation.match_text.length > best_interpretation.match_text.length ||
-				interpretation.prioritize
-			) {
-				best_interpretation = interpretation;
-			}	
-		}
+		const interpretation = choose_interpretation(interpretations);
 		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${
 			command.replace(
-				new RegExp(escapeRegExp(best_interpretation.match_text), "i"),
+				new RegExp(escapeRegExp(interpretation.match_text), "i"),
 				(important_text)=> `<b>${important_text}</b>`,
 			)
 		}</span>`);
-		console.log(`Interpreting command "${command}" as`, best_interpretation);
-		best_interpretation.exec();
+		console.log(`Interpreting command "${command}" as`, interpretation);
+		interpretation.exec();
 	} else {
 		$status_text.text(`Speech: ${command}`);
 		console.log(`No interpretation for command "${command}"`);
@@ -1162,6 +1154,23 @@ recognition.onerror = function(event) {
 		// window.speech_recognition_active = false;
 	}
 };
+
+// @TODO: move this logic to a sorting within interpret_command
+function choose_interpretation(interpretations) {
+	let best_interpretation = interpretations[0];
+	if (!interpretations.length) {
+		return;
+	}
+	for (const interpretation of interpretations) {
+		if (
+			interpretation.match_text.length > best_interpretation.match_text.length ||
+			interpretation.prioritize
+		) {
+			best_interpretation = interpretation;
+		}	
+	}
+	return best_interpretation;
+}
 
 window.interpret_command = (input_text, default_to_entering_text)=> {
 	const interpretations = [];
@@ -1710,5 +1719,31 @@ function clickButtonVisibly(button) {
 function escapeRegExp(string) {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
+
+function test_command(input_text, expected) {
+	const interpretations = interpret_command(input_text);
+	if (expected === null) {
+		if (interpretations.length > 0) {
+			console.error(`Failed test. Expected '${input_text}' to have no interpretations; saw`, interpretations);
+		}
+		return;
+	}
+	if (interpretations.length === 0) {
+		console.error(`Failed test. Expected '${input_text}' to be interpreted as`, expected, `but found no interpretations`);
+		return;
+	}
+	const interpretation = choose_interpretation(interpretations);
+	if (expected.match_text !== interpretation.match_text) {
+		console.error(`Failed test. Expected '${input_text}' to be interpreted as`, expected, `but it was interpreted as`, interpretation, `
+All interpretations:`, interpretations);
+		return;
+	}
+}
+
+// @TODO: actually test color/tool
+// test_command("select blue", {match_text: "select blue", color: "blue"}); // @FIXME
+test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("Fill With Color")});
+test_command("", null);
+test_command("pan view sorthweast", null);
 
 })();
