@@ -1121,11 +1121,11 @@ recognition.onerror = function(event) {
 	}
 };
 
-window.interpret_command = (command, default_to_entering_text)=> {
+window.interpret_command = (input_text, default_to_entering_text)=> {
 	let best_match_fn;
 	let best_match_text = "";
 	for (const color of colorNames) {
-		if (` ${command} `.toLowerCase().indexOf(` ${color.toLowerCase()} `) !== -1) {
+		if (` ${input_text} `.toLowerCase().indexOf(` ${color.toLowerCase()} `) !== -1) {
 			if (color.length > best_match_text.length) {
 				best_match_text = color;
 				best_match_fn = ((color)=> ()=> {
@@ -1138,7 +1138,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	for (const tool of tools) {
 		for (const base_tool_phrase of tool.speech_recognition) {
 			// Note: if "select" wasn't matched here, the phrase "select text" would select the Select tool instead of the Text tool (because "select" is longer than "text")
-			const select_tool_match = command.match(new RegExp(`\\b(?:(?:select|pick|choose|use|activate|pick up|grab) )?(?:the )?${escapeRegExp(base_tool_phrase)}(?: tool)?\\b`, "i"));
+			const select_tool_match = input_text.match(new RegExp(`\\b(?:(?:select|pick|choose|use|activate|pick up|grab) )?(?:the )?${escapeRegExp(base_tool_phrase)}(?: tool)?\\b`, "i"));
 			if (select_tool_match) {
 				if (select_tool_match[0].length > best_match_text.length) {
 					best_match_text = select_tool_match[0];
@@ -1166,7 +1166,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	for (const menu_item of all_menu_items) {
 		if (menu_item.speech_recognition) {
 			for (const menu_item_phrase of menu_item.speech_recognition) {
-				if (` ${command} `.toLowerCase().indexOf(` ${menu_item_phrase.toLowerCase()} `) !== -1) {
+				if (` ${input_text} `.toLowerCase().indexOf(` ${menu_item_phrase.toLowerCase()} `) !== -1) {
 					if (menu_item_phrase.length > best_match_text.length) {
 						best_match_text = menu_item_phrase;
 						best_match_fn = ((menu_item)=> ()=> {
@@ -1182,7 +1182,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		}
 	}
 	
-	const close_menus_match = command.match(/\b(?:(?:close|hide|dismiss) menus?|never ?mind)\b/i);
+	const close_menus_match = input_text.match(/\b(?:(?:close|hide|dismiss) menus?|never ?mind)\b/i);
 	if (close_menus_match) {
 		if (close_menus_match[0].length > best_match_text.length) {
 			best_match_text = close_menus_match[0];
@@ -1199,7 +1199,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		// @TODO: clipboard as a source.. but you might want to just draw the clipboard directly to the canvas,
 		// so maybe it should be limited to saying "sketch"/"doodle"/"do a rendition of"
 		// /(?:sketch|doodle|do a (?:rendition|sketch|doodle) of) (?:the (?:contents of |(?:image|picture|data) on the )|(?:what's|what is) on the )?clipboard/i
-		const draw_match = command.match(/(?:draw|sketch|doodle|render|(?:paint|draw|do|render|sketch) (?:a picture|an image|a drawing|a painting|a rendition|a sketch|a doodle) of) (?:an? )?(.+)/i);
+		const draw_match = input_text.match(/(?:draw|sketch|doodle|render|(?:paint|draw|do|render|sketch) (?:a picture|an image|a drawing|a painting|a rendition|a sketch|a doodle) of) (?:an? )?(.+)/i);
 		if (draw_match) {
 			best_match_text = draw_match[0];
 			best_match_fn = ()=> {
@@ -1388,7 +1388,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 			const match_phrases = [button_text_phrase, `click ${button_text_phrase}`, `click on ${button_text_phrase}`];
 			for (const match_phrase of match_phrases) {
 				// console.log(match_phrase, ` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `));
-				if (` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
+				if (` ${input_text} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
 					if ((match_phrase.length > best_match_text.length) || button.closest(".menu-popup")) {
 						best_match_text = match_phrase;
 						best_match_fn = ((button)=> ()=> {
@@ -1403,7 +1403,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 
 	// after the above to allow for "draw a stop sign", "stop dwell clicking"
 	if (!best_match_text) {
-		const stop_match = command.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)(?: (?:drawing|sketching|painting|doodling|rendering))?\b/i);
+		const stop_match = input_text.match(/\b(?:stop|end|cease|(?:that's|that is) enough|enough of that|terminate|halt|put an end to(?: this)?|break off)(?: (?:drawing|sketching|painting|doodling|rendering))?\b/i);
 		if (stop_match) {
 			best_match_text = stop_match[0];
 			best_match_fn = ()=> {
@@ -1414,7 +1414,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	}
 
 	const scrolling_regexp = /\b(?:(?:scroll|pan)(?:(?: the)? view)?|go|view|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?( and( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
-	const scroll_match = command.match(scrolling_regexp);
+	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
 		best_match_text = scroll_match[0];
 		const direction = best_match_text;
@@ -1443,7 +1443,7 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	}
 
 	if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
-		const new_line_match = command.match(/^(?:new line|newline|line break|return|enter|carriage return|)$|\b(?:(?:insert|add|put|put in|input)(?: an?)? (?:new line|newline|line break|return|enter|carriage return))\b/i);
+		const new_line_match = input_text.match(/^(?:new line|newline|line break|return|enter|carriage return|)$|\b(?:(?:insert|add|put|put in|input)(?: an?)? (?:new line|newline|line break|return|enter|carriage return))\b/i);
 		if (new_line_match) {
 			if (new_line_match[0].length > best_match_text.length) {
 				best_match_text = new_line_match[0];
@@ -1454,14 +1454,14 @@ window.interpret_command = (command, default_to_entering_text)=> {
 		}
 	}
 	if (window.textbox) {
-		const stop_match = command.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? (text|text input|textbox|text box|writing))\b/i);
+		const stop_match = input_text.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? (text|text input|textbox|text box|writing))\b/i);
 		if (stop_match) {
 			best_match_text = stop_match[0];
 			best_match_fn = deselect;
 		}
 	}
 	if (window.selection) {
-		const stop_match = command.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? selection|deselect|unselect)\b/i);
+		const stop_match = input_text.match(/\b(?:(?:finish(?:ed)?|done)(?: with)? selection|deselect|unselect)\b/i);
 		if (stop_match) {
 			best_match_text = stop_match[0];
 			best_match_fn = deselect;
@@ -1469,11 +1469,11 @@ window.interpret_command = (command, default_to_entering_text)=> {
 	}
 	if (!best_match_text && default_to_entering_text) {
 		if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
-			best_match_text = command;
-			const text_to_insert = command.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
+			best_match_text = input_text;
+			const text_to_insert = input_text.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
 			best_match_fn = ()=> {
 				if (document.activeElement && document.activeElement.matches("input[type='number']")) {
-					document.activeElement.value = command;
+					document.activeElement.value = input_text;
 				} else {
 					document.execCommand("insertText", false, text_to_insert);
 				}
@@ -1487,13 +1487,13 @@ window.interpret_command = (command, default_to_entering_text)=> {
 
 	if (best_match_text) {
 		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${
-			command.replace(new RegExp(escapeRegExp(best_match_text), "i"), (important_text)=> `<b>${important_text}</b>`)
+			input_text.replace(new RegExp(escapeRegExp(best_match_text), "i"), (important_text)=> `<b>${important_text}</b>`)
 		}</span>`);
-		console.log(`Interpreting command "${command}" as "${best_match_text}"`);
+		console.log(`Interpreting command "${input_text}" as "${best_match_text}"`);
 		best_match_fn();
 	} else {
-		$status_text.text(`Speech: ${command}`);
-		console.log(`No interpretation for command "${command}"`);
+		$status_text.text(`Speech: ${input_text}`);
+		console.log(`No interpretation for command "${input_text}"`);
 	}
 };
 
