@@ -1917,20 +1917,23 @@ function escapeRegExp(string) {
 
 function test_command(input_text, expected, from_speech_text) {
 	const interpretations = interpret_command(input_text);
+	const failed_message = `Failed test.${from_speech_text ? ` (From speech '${from_speech_text}')` : ""}`;
 	if (expected === null) {
 		if (interpretations.length > 0) {
-			console.error(`Failed test. Expected '${input_text}' to have no interpretations; saw`, interpretations);
+			console.error(`${failed_message}
+Expected '${input_text}' to have no interpretations; saw`, interpretations);
 		}
 		return;
 	}
 	if (interpretations.length === 0) {
-		console.error(`Failed test. Expected '${input_text}' to be interpreted as`, expected, `but found no interpretations`);
+		console.error(`${failed_message}
+Expected '${input_text}' to be interpreted as`, expected, `but found no interpretations`);
 		return;
 	}
 	const interpretation = choose_interpretation(interpretations);
 	// deep equality where key order matters and functions don't count
 	if (JSON.stringify(expected) !== JSON.stringify(interpretation)) {
-		console.error(`Failed test.
+		console.error(`${failed_message}
 Expected '${input_text}' to be interpreted as`, expected, `but it was interpreted as`, interpretation, `
 Note: object key order matters in this test! Functions don't count.
 All interpretations:`, interpretations);
@@ -1948,28 +1951,31 @@ All interpretations:`, interpretations);
 	}
 }
 
-function test_speech(input_text, expected_text) {
+function test_speech(input_text, expected) {
 	const fixed_up_input_text = fix_up_speech_recognition(input_text);
-	if (fixed_up_input_text !== expected_text) {
-		console.error(`Failed test. Speech recognition fixup changed the input from:
-'${input_text}' to:
-'${fixed_up_input_text}' instead of:
-'${expected_text}'`);
-		return;
+	if (typeof expected === "string") {
+		if (fixed_up_input_text !== expected) {
+			console.error(`Failed test. Speech recognition fixup changed the input from:
+	'${input_text}' to:
+	'${fixed_up_input_text}' instead of:
+	'${expected}'`);
+			return;
+		}
+	} else {
+		test_command(fixed_up_input_text, expected, input_text);
 	}
 }
 
 // test_command("select blue", {match_text: "select blue", color: "blue"}); // @FIXME
 test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("Fill With Color")});
-test_speech("lips", "ellipse");
+test_speech("lips", {match_text: "ellipse", tool: get_tool_by_name("Ellipse")});
 test_command("", null);
 test_command("pan view sorthweast", null);
 test_command("1 pixel lines", {match_text: "1 pixel lines", size: 1});
 test_command("1 pixel wide lines", {match_text: "1 pixel wide lines", size: 1});
 test_command("set line width to 5", {match_text: "set line width to 5", size: 5});
 // test_command("use medium-small stroke size", {match_text: "use medium-small stroke size", size: NaN});
-test_speech("set line lips to a hundred", "set line width to a hundred");
-test_command("set line width to a hundred", {match_text: "set line width to a hundred", size: 100});
+test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
 test_command("use stroke size 10 pixels", {match_text: "use stroke size 10 pixels", size: 10});
 // test_command("use stroke size of 10 pixels", {match_text: "use stroke size of 10 pixels", size: 10});
 $(()=> {
