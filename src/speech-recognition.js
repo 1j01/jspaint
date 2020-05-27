@@ -1199,6 +1199,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 					exec: ((tool)=> ()=> {
 						select_tool(tool);
 					})(tool),
+					tool,
 				});
 			}
 		}
@@ -1461,6 +1462,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
 				}, 500);
 			},
+			vector,
 			prioritize: true,
 		});
 	}
@@ -1733,17 +1735,21 @@ function test_command(input_text, expected) {
 		return;
 	}
 	const interpretation = choose_interpretation(interpretations);
-	if (expected.match_text !== interpretation.match_text) {
+	// deep equality where key order matters and functions don't count
+	if (JSON.stringify(expected) !== JSON.stringify(interpretation)) {
 		console.error(`Failed test. Expected '${input_text}' to be interpreted as`, expected, `but it was interpreted as`, interpretation, `
+Note: object key order matters in this test! Functions don't count.
 All interpretations:`, interpretations);
 		return;
 	}
 }
 
-// @TODO: actually test color/tool
 // test_command("select blue", {match_text: "select blue", color: "blue"}); // @FIXME
 test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("Fill With Color")});
 test_command("", null);
 test_command("pan view sorthweast", null);
+$(()=> {
+	test_command("pan view southwest", {match_text: "pan view southwest", vector: {x: -1, y: +1}, prioritize: true});
+});
 
 })();
