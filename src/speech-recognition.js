@@ -1931,10 +1931,14 @@ Expected '${input_text}' to be interpreted as`, expected, `but found no interpre
 		return;
 	}
 	const interpretation = choose_interpretation(interpretations);
-	// deep equality where key order matters and functions don't count
-	if (JSON.stringify(expected) !== JSON.stringify(interpretation)) {
+	const actual = Object.assign({}, interpretation, {prioritize: undefined, exec: undefined});
+	// expected.match_text = expected.match_text || input_text; // puts key in wrong order
+	expected = Object.assign({match_text: input_text}, expected);
+	const expected_json = JSON.stringify(expected, null, 4);
+	const actual_json = JSON.stringify(actual, null, 4);
+	if (expected_json !== actual_json) {
 		console.error(`${failed_message}
-Expected '${input_text}' to be interpreted as`, expected, `but it was interpreted as`, interpretation, `
+Expected '${input_text}' to be interpreted as ${expected_json} but it was interpreted as ${actual_json}
 Note: object key order matters in this test! Functions don't count.
 All interpretations:`, interpretations);
 		return;
@@ -1971,24 +1975,24 @@ test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("
 test_speech("lips", {match_text: "ellipse", tool: get_tool_by_name("Ellipse")});
 test_command("", null);
 test_command("pan view sorthweast", null);
-test_command("1 pixel lines", {match_text: "1 pixel lines", size: 1});
-test_command("1 pixel wide lines", {match_text: "1 pixel wide lines", size: 1});
-test_command("set line width to 5", {match_text: "set line width to 5", size: 5});
+test_command("1 pixel lines", {size: 1});
+test_command("1 pixel wide lines", {size: 1});
+test_command("set line width to 5", {size: 5});
 // test_command("use medium-small stroke size", {match_text: "use medium-small stroke size", size: NaN});
 test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
-test_command("use stroke size 10 pixels", {match_text: "use stroke size 10 pixels", size: 10});
+test_command("use stroke size 10 pixels", {size: 10});
 // test_command("use stroke size of 10 pixels", {match_text: "use stroke size of 10 pixels", size: 10});
 $(()=> {
-	test_command("pan view southwest", {match_text: "pan view southwest", vector: {x: -1, y: +1}, prioritize: true});
-	test_command("pan southeast", {match_text: "pan southeast", vector: {x: +1, y: +1}, prioritize: true});
-	test_command("move view northwest", {match_text: "move view northwest", vector: {x: -1, y: -1}, prioritize: true});
-	test_command("view northwest", {match_text: "view northwest", vector: {x: -1, y: -1}, prioritize: true});
-	test_command("move viewport northwest", {match_text: "move viewport northwest", vector: {x: -1, y: -1}, prioritize: true});
-	test_command("pan down", {match_text: "pan down", vector: {x: 0, y: +1}, prioritize: true});
-	test_command("scroll down", {match_text: "scroll down", vector: {x: 0, y: +1}, prioritize: true});
-	test_command("go downwards", {match_text: "go downwards", vector: {x: 0, y: +1}, prioritize: true});
-	test_command("go upward", {match_text: "go upward", vector: {x: 0, y: -1}, prioritize: true});
-	test_command("go downwards and to the left", {match_text: "go downwards and to the left", vector: {x: -1, y: +1}, prioritize: true});
+	test_command("pan view southwest", {vector: {x: -1, y: +1}});
+	test_command("pan southeast", {vector: {x: +1, y: +1}});
+	test_command("move view northwest", {vector: {x: -1, y: -1}});
+	test_command("view northwest", {vector: {x: -1, y: -1}});
+	test_command("move viewport northwest", {vector: {x: -1, y: -1}});
+	test_command("pan down", {vector: {x: 0, y: +1}});
+	test_command("scroll down", {vector: {x: 0, y: +1}});
+	test_command("go downwards", {vector: {x: 0, y: +1}});
+	test_command("go upward", {vector: {x: 0, y: -1}});
+	test_command("go downwards and to the left", {vector: {x: -1, y: +1}});
 });
 
 })();
