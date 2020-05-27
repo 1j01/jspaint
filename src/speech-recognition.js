@@ -26,7 +26,7 @@ const recognitionFixes = {
 	"crown": "brown",
 	"ombre": "umbre",
 	"tan-tan": "tan tan",
-	"pan": "tan",
+	// "pan": "tan", // @TODO: ^pan$
 
 	// commands/misc
 	"slick to the": "select the",
@@ -181,6 +181,7 @@ const recognitionFixes = {
 	"deal": "view",
 
 	// panning/scrolling the view
+	"scrolling": "scroll", // @TODO: ^scrolling
 	"pin the view": "pan the view",
 	"pen the view": "pan the view",
 	"penn the view": "pan the view",
@@ -205,6 +206,28 @@ const recognitionFixes = {
 	"scrap": "scroll up",
 	"go out": "scroll up",
 	"scroll up in": "scroll up and",
+	"and not words": "and upwards",
+	"in operates": "and upwards",
+	"down work": "downward",
+	"down works": "downwards",
+	"up rinse and spit": "upwards and to the right",
+	"scroll acting up": "scroll left and up",
+	"scroll left enough": "scroll left and up",
+	"scroll right enough": "scroll right and up",
+	"scroll writing up": "scroll right and up",
+	"scroll written up": "scroll right and up",
+	"scroll left pan downwards": "scroll left and downwards",
+	"scroll right pan downwards": "scroll right and downwards",
+	"scroll left pan downward": "scroll left and downward",
+	"scroll right pan downward": "scroll right and downward",
+	"scroll left pan upwards": "scroll left and upwards",
+	"scroll right pan upwards": "scroll right and upwards",
+	"scroll left pan upward": "scroll left and upward",
+	"scroll right pan upward": "scroll right and upward",
+	"scroll left pan down": "scroll left and down",
+	"scroll right pan down": "scroll right and down",
+	"scroll left pan up": "scroll left and up",
+	"scroll right pan up": "scroll right and up",
 	"and to go": "and to the",
 	"into the": "and to the",
 	"pen view": "pan view",
@@ -297,15 +320,26 @@ const recognitionFixes = {
 	"the left": "go left", // @TODO: ^$
 	"cooperates": "go upwards",
 	"cooperated": "go upwards",
+	"cooperate": "go upward",
+	"cooperating": "go upward",
+	"cooperative": "go upward",
+	"corporate": "go upward",
+	"go leopard": "go upward",
+	"leopard": "go upward",
+	"clifford": "go upward",
 	"go upgrade": "go upwards",
 	// "prince": "go upwards",
 	// "electrics": "go upwards",
 	// "dog breeds": "go upwards",
 	// "heloc rates": "go upwards",
-	"free download": "go downard",
-	"to download": "go downard",
-	"go download": "go downard",
-	"go down orange": "go downard",
+	"free download": "go downward",
+	"to download": "go downward",
+	"go download": "go downward",
+	"go down orange": "go downward",
+	"godown road": "go downward",
+	"go down road": "go downward",
+	"fordham road": "go downward",
+	"donuts": "go downwards",
 	"the great": "look right",
 	"the craig": "look right",
 	"mccreight": "look right",
@@ -1438,7 +1472,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		}
 	}
 
-	const scrolling_regexp = /\b(?:(?:scroll|pan)(?:(?: the)? view)?|go|view|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?( and( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
+	const scrolling_regexp = /\b(?:(?:scroll|pan|move)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?( and( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
 		const directions = scroll_match[0];
@@ -1761,13 +1795,12 @@ test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("
 test_command("", null);
 test_command("pan view sorthweast", null);
 $(()=> {
-	// @FIXME
-	// test_command("pan view southwest", {match_text: "pan view southwest", vector: {x: -1, y: +1}, prioritize: true});
-	// test_command("pan southeast", {match_text: "pan southeast", vector: {x: +1, y: +1}, prioritize: true});
-	// test_command("move view northwest", {match_text: "move view northwest", vector: {x: -1, y: -1}, prioritize: true});
+	test_command("pan view southwest", {match_text: "pan view southwest", vector: {x: -1, y: +1}, prioritize: true});
+	test_command("pan southeast", {match_text: "pan southeast", vector: {x: +1, y: +1}, prioritize: true});
+	test_command("move view northwest", {match_text: "move view northwest", vector: {x: -1, y: -1}, prioritize: true});
 	test_command("view northwest", {match_text: "view northwest", vector: {x: -1, y: -1}, prioritize: true});
-	// test_command("move viewport northwest", {match_text: "move viewport northwest", vector: {x: -1, y: -1}, prioritize: true});
-	// test_command("pan down", {match_text: "pan down", vector: {x: 0, y: +1}, prioritize: true});
+	test_command("move viewport northwest", {match_text: "move viewport northwest", vector: {x: -1, y: -1}, prioritize: true});
+	test_command("pan down", {match_text: "pan down", vector: {x: 0, y: +1}, prioritize: true});
 	test_command("scroll down", {match_text: "scroll down", vector: {x: 0, y: +1}, prioritize: true});
 	test_command("go downwards", {match_text: "go downwards", vector: {x: 0, y: +1}, prioritize: true});
 	test_command("go upward", {match_text: "go upward", vector: {x: 0, y: -1}, prioritize: true});
