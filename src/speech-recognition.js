@@ -146,6 +146,9 @@ const recognitionFixes = [
 	["man width", "line width"],
 	["thing width", "line width"],
 	["line lips", "line width"],
+	["single-pixel", "single pixel"],
+	["pixel with", "pixel width"],
+	["hypixel's", "5 pixels"],
 	["tawana", "to 1"],
 	["set my next", "set line width to"],
 	["set language to", "set line width to"],
@@ -1589,6 +1592,8 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			case "eighteen": n = 18; break;
 			case "nineteen": n = 19; break;
 			case "twenty": n = 20; break;
+			case "a hundred": n = 100; break;
+			case "one hundred": n = 100; break;
 		}
 		add_interpretation({
 			match_text: line_width_match[0],
@@ -1911,12 +1916,6 @@ function escapeRegExp(string) {
 }
 
 function test_command(input_text, expected, from_speech_text) {
-	if (from_speech_text && from_speech_text !== input_text) {
-		console.error(`Failed test. Speech recognition fixup changed the input from:
-'${from_speech_text}' to:
-'${input_text}'`);
-		return;
-	}
 	const interpretations = interpret_command(input_text);
 	if (expected === null) {
 		if (interpretations.length > 0) {
@@ -1931,35 +1930,48 @@ function test_command(input_text, expected, from_speech_text) {
 	const interpretation = choose_interpretation(interpretations);
 	// deep equality where key order matters and functions don't count
 	if (JSON.stringify(expected) !== JSON.stringify(interpretation)) {
-		
-		console.error(`Failed test.${
-			from_speech_text ? ` Testing that speech '${from_speech_text}' will behave the same with speech recognition fixes as without.
-` : ""
-		}
+		console.error(`Failed test.
 Expected '${input_text}' to be interpreted as`, expected, `but it was interpreted as`, interpretation, `
 Note: object key order matters in this test! Functions don't count.
 All interpretations:`, interpretations);
 		return;
 	}
-	// Also verify that if you said exactly this input, speech recognition fixes would not mess it up.
-	if (!from_speech_text) { // (prevent recursion)
-		test_speech(input_text, expected);
+	if (!from_speech_text) {
+		// Also verify that if you said exactly this input, speech recognition fixes would not mess it up.
+		const fixed_up_input_text = fix_up_speech_recognition(input_text);
+		if (fixed_up_input_text !== input_text) {
+			console.error(`Failed test. Speech recognition fixup changed the input from:
+	'${input_text}' to:
+	'${fixed_up_input_text}'`);
+			return;
+		}
 	}
 }
 
-function test_speech(input_text, expected) {
-	test_command(fix_up_speech_recognition(input_text), expected, input_text);
+function test_speech(input_text, expected_text) {
+	const fixed_up_input_text = fix_up_speech_recognition(input_text);
+	if (fixed_up_input_text !== expected_text) {
+		console.error(`Failed test. Speech recognition fixup changed the input from:
+'${input_text}' to:
+'${fixed_up_input_text}' instead of:
+'${expected_text}'`);
+		return;
+	}
 }
 
 // test_command("select blue", {match_text: "select blue", color: "blue"}); // @FIXME
 test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("Fill With Color")});
+test_speech("lips", "ellipse");
 test_command("", null);
 test_command("pan view sorthweast", null);
 test_command("1 pixel lines", {match_text: "1 pixel lines", size: 1});
 test_command("1 pixel wide lines", {match_text: "1 pixel wide lines", size: 1});
 test_command("set line width to 5", {match_text: "set line width to 5", size: 5});
 // test_command("use medium-small stroke size", {match_text: "use medium-small stroke size", size: NaN});
-// test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
+test_speech("set line lips to a hundred", "set line width to a hundred");
+test_command("set line width to a hundred", {match_text: "set line width to a hundred", size: 100});
+test_command("use stroke size 10 pixels", {match_text: "use stroke size 10 pixels", size: 10});
+// test_command("use stroke size of 10 pixels", {match_text: "use stroke size of 10 pixels", size: 10});
 $(()=> {
 	test_command("pan view southwest", {match_text: "pan view southwest", vector: {x: -1, y: +1}, prioritize: true});
 	test_command("pan southeast", {match_text: "pan southeast", vector: {x: +1, y: +1}, prioritize: true});
