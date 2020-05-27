@@ -1334,10 +1334,10 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			if (select_tool_match) {
 				add_interpretation({
 					match_text: select_tool_match[0],
+					tool_name: tool.name,
 					exec: ((tool)=> ()=> {
 						select_tool(tool);
 					})(tool),
-					tool,
 				});
 			}
 		}
@@ -1394,10 +1394,11 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		// /(?:sketch|doodle|do a (?:rendition|sketch|doodle) of) (?:the (?:contents of |(?:image|picture|data) on the )|(?:what's|what is) on the )?clipboard/i
 		const draw_match = input_text.match(/(?:draw|sketch|doodle|render|(?:paint|draw|do|render|sketch) (?:a picture|an image|a drawing|a painting|a rendition|a sketch|a doodle) of) (?:an? )?(.+)/i);
 		if (draw_match) {
+			const subject_matter = draw_match[1].replace(/:-?\)/g, "smiley face").replace(/:-?\(/g, "sad face");
 			add_interpretation({
 				match_text: draw_match[0],
+				sketch_subject: subject_matter,
 				exec: ()=> {
-					const subject_matter = draw_match[1].replace(/:-?\)/g, "smiley face").replace(/:-?\(/g, "sad face");
 					find_clipart_and_sketch(subject_matter);
 				},
 			});
@@ -1563,6 +1564,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		if (stop_match) {
 			add_interpretation({
 				match_text: stop_match[0],
+				type: "stop-drawing",
 				exec: ()=> {
 					window.stopSimulatingGestures && window.stopSimulatingGestures();
 					window.trace_and_sketch_stop && window.trace_and_sketch_stop();
@@ -1979,10 +1981,14 @@ function test_speech(input_text, expected) {
 	}
 }
 
-// test_command("select blue", {match_text: "select blue", color: "blue"}); // @FIXME
-test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("Fill With Color")});
-test_speech("lips", {match_text: "ellipse", tool: get_tool_by_name("Ellipse")});
+// test_command("select blue", {color: "blue"}); // @FIXME
+test_command("select fill", {tool_name: "Fill With Color"});
+test_command("select text", {tool_name: "Text"});
+test_command("select", {tool_name: "Select"});
+test_speech("free form select", {tool_name: "Free-Form Select"});
+test_speech("lips", {match_text: "ellipse", tool_name: "Ellipse"});
 test_command("", null);
+// test_command("I got you some new books", null);
 test_command("pan view sorthweast", null);
 test_command("1 pixel lines", {size: 1});
 test_command("1 pixel wide lines", {size: 1});
@@ -1991,6 +1997,11 @@ test_command("set line width to 5", {size: 5});
 test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
 test_command("use stroke size 10 pixels", {size: 10});
 // test_command("use stroke size of 10 pixels", {match_text: "use stroke size of 10 pixels", size: 10});
+test_command("draw a :-)", {sketch_subject: "smiley face"});
+// test_command("draw sample text", {sketch_subject: "sample text"}); // @FIXME
+test_command("end", {type: "stop-drawing"});
+test_command("stop", {type: "stop-drawing"});
+test_command("draw a stop sign", {sketch_subject: "stop sign"});
 $(()=> {
 	test_command("pan view southwest", {vector: {x: -1, y: +1}});
 	test_command("pan southeast", {vector: {x: +1, y: +1}});
@@ -2004,6 +2015,7 @@ $(()=> {
 	test_command("go downwards and to the left", {vector: {x: -1, y: +1}});
 	test_command("go up to the left", {vector: {x: -1, y: -1}});
 	test_speech("cool up", {match_text: "go up", vector: {x: 0, y: -1}});
+	test_command("scroll the view southward", {vector: {x: 0, y: +1}});
 });
 
 })();
