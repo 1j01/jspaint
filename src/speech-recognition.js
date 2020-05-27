@@ -1760,7 +1760,13 @@ function escapeRegExp(string) {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
-function test_command(input_text, expected, from_test_speech) {
+function test_command(input_text, expected, from_speech_text) {
+	if (from_speech_text && from_speech_text !== input_text) {
+		console.error(`Failed test. Speech recognition fixup changed the input from:
+'${from_speech_text}' to:
+'${input_text}'`);
+		return;
+	}
 	const interpretations = interpret_command(input_text);
 	if (expected === null) {
 		if (interpretations.length > 0) {
@@ -1775,19 +1781,24 @@ function test_command(input_text, expected, from_test_speech) {
 	const interpretation = choose_interpretation(interpretations);
 	// deep equality where key order matters and functions don't count
 	if (JSON.stringify(expected) !== JSON.stringify(interpretation)) {
-		console.error(`Failed test. Expected '${input_text}' to be interpreted as`, expected, `but it was interpreted as`, interpretation, `
+		
+		console.error(`Failed test.${
+			from_speech_text ? ` Testing that speech '${from_speech_text}' will behave the same with speech recognition fixes as without.
+` : ""
+		}
+Expected '${input_text}' to be interpreted as`, expected, `but it was interpreted as`, interpretation, `
 Note: object key order matters in this test! Functions don't count.
 All interpretations:`, interpretations);
 		return;
 	}
 	// Also verify that if you said exactly this input, speech recognition fixes would not mess it up.
-	if (!from_test_speech) { // (prevent recursion)
+	if (!from_speech_text) { // (prevent recursion)
 		test_speech(input_text, expected);
 	}
 }
 
 function test_speech(input_text, expected) {
-	test_command(fix_up_speech_recognition(input_text), expected, true);
+	test_command(fix_up_speech_recognition(input_text), expected, input_text);
 }
 
 // test_command("select blue", {match_text: "select blue", color: "blue"}); // @FIXME
@@ -1804,6 +1815,8 @@ $(()=> {
 	test_command("scroll down", {match_text: "scroll down", vector: {x: 0, y: +1}, prioritize: true});
 	test_command("go downwards", {match_text: "go downwards", vector: {x: 0, y: +1}, prioritize: true});
 	test_command("go upward", {match_text: "go upward", vector: {x: 0, y: -1}, prioritize: true});
+	// @FIXME
+	// test_command("go downwards and to the left", {match_text: "go downwards and to the left", vector: {x: -1, y: +1}, prioritize: true});
 });
 
 })();
