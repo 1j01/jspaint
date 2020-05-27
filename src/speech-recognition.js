@@ -44,6 +44,8 @@ const recognitionFixes = [
 	[/^cabinet\b/i, "grab the"],
 	[/^tammy\b/i, "grab the"],
 	[/^grandpa\b/i, "grab the"],
+	[/^is the\b/i, "use the"],
+	[/^who's the\b/i, "use the"],
 	["flex", "select"],
 	["to all", "tool"],
 	["stool", "tool"],
@@ -135,9 +137,38 @@ const recognitionFixes = [
 	["toy box", "color box"], // weirdly not for tool box; this is for color box
 	["coolbox", "tool box"],
 	["scarred", "discard"],
-	["hindsight bar", "hide sidebar"],
-	["high tide bar", "hide sidebar"],
-	["glenside bar", "hide sidebar"],
+	["the wine with", "set line width"],
+	["wine with", "line width"], // after "the wine with"
+	["line with", "line width"],
+	["mine with", "line width"],
+	["man with", "line width"],
+	["thing with", "line width"],
+	["man width", "line width"],
+	["thing width", "line width"],
+	["line lips", "line width"],
+	["tawana", "to 1"],
+	["set my next", "set line width to"],
+	["set language to", "set line width to"],
+	["sunline with", "set line width to"],
+	["pinewood's", "set line width to"],
+	["set line with two", "set line width to"],
+	["set line width two", "set line width to"],
+	["with the tattoo", "width to 2"],
+	["with tattoo", "width to 2"],
+	["width the tattoo", "width to 2"],
+	["width tattoo", "width to 2"],
+	["with tutu", "width to 2"],
+	["width tutu", "width to 2"],
+	[/width to$/i, "width 2"],
+	[/size to$/i, "size 2"],
+	[/thickness to$/i, "thickness 2"],
+	[/width to pixels$/i, "width 2 pixels"],
+	[/size to pixels$/i, "size 2 pixels"],
+	[/thickness to pixels$/i, "thickness 2 pixels"],
+	["he's fine with", "use line width"],
+	["you slime with", "use line width"],
+	["use lime with", "use line width"],
+	["line width v", "line width 5"],
 
 	// addressing actions by menu they're in
 	["dial neal", "file new"],
@@ -551,7 +582,10 @@ const recognitionFixes = [
 	["four words", "forwards"],
 	["forbearance", "forwards"],
 	["pack", "back"],
-	
+	["hindsight bar", "hide sidebar"],
+	["high tide bar", "hide sidebar"],
+	["glenside bar", "hide sidebar"],
+	// help topic names
 	["trirectangular square", "draw a rectangle or square"],
 	["draw rectangular square", "draw a rectangle or square"],
 	["draw a rectangular square", "draw a rectangle or square"],
@@ -1526,6 +1560,68 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		}
 	}
 
+	// @TODO: don't support saying simply "1 pixel" if an input is focused
+	// @TODO: "pencil size" (also select appropriate tool? altho you might say "brush size" for other tools)
+	const line_width_match = input_text.match(/\b(?:set|use|pick)? ?(?:(?:line|stroke|outline) (?:width|size|thickness))? ?(?:to)? ?(\d+|single|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|a hundred|one hundred|smallest|largest|littlest|biggest|small|large|little|big|tiny|huge|puny|massive|medium) ?(?:px|pixels?)? ?(?:(?:wide|thick|sized)? ?(?:for)? ?(?:(?:out)?lines?)?|(?:width|size|thickness)) ?(?:(?:out)?lines?)?\b/i);
+	if (line_width_match) {
+		const size_str = line_width_match[1];
+		let n = parseInt(size_str);
+		switch (size_str.toLowerCase()) {
+			case "zero": n = 0; break;
+			case "single": n = 1; break;
+			case "one": n = 1; break;
+			case "two": n = 2; break;
+			case "three": n = 3; break;
+			case "four": n = 4; break;
+			case "five": n = 5; break;
+			case "six": n = 6; break;
+			case "seven": n = 7; break;
+			case "eight": n = 8; break;
+			case "nine": n = 9; break;
+			case "ten": n = 10; break;
+			case "eleven": n = 11; break;
+			case "twelve": n = 12; break;
+			case "thirteen": n = 13; break;
+			case "fourteen": n = 14; break;
+			case "fifteen": n = 15; break;
+			case "sixteen": n = 16; break;
+			case "seventeen": n = 17; break;
+			case "eighteen": n = 18; break;
+			case "nineteen": n = 19; break;
+			case "twenty": n = 20; break;
+		}
+		add_interpretation({
+			match_text: line_width_match[0],
+			size: n,
+			exec: ()=> {
+				if (isFinite(n)) {
+					// @TODO: DRY with app.js
+					if(selected_tool.name === "Brush"){
+						brush_size = Math.max(1, Math.min(n, 500));
+					}else if(selected_tool.name === "Eraser/Color Eraser"){
+						eraser_size = Math.max(1, Math.min(n, 500));
+					}else if(selected_tool.name === "Airbrush"){
+						airbrush_size = Math.max(1, Math.min(n, 500));
+					}else if(selected_tool.name === "Pencil"){
+						pencil_size = Math.max(1, Math.min(n, 50));
+					}else if(selected_tool.name.match(/Line|Curve|Rectangle|Ellipse|Polygon/)){
+						stroke_size = Math.max(1, Math.min(n, 500));
+					}
+					
+					$G.trigger("option-changed");
+					if(button !== undefined && pointer){ // pointer may only be needed for tests
+						selected_tools.forEach((selected_tool)=> {
+							tool_go(selected_tool);
+						});
+					}
+					update_helper_layer();
+				} else {
+					show_error_message(`Keywords like '${line_width_match[1]}' are not supported yet. Try a number of pixels instead.`);
+				}
+			},
+		});
+	}
+
 	const scrolling_regexp = /\b(?:(?:scroll|pan|move)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?( and( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
@@ -1859,6 +1955,11 @@ function test_speech(input_text, expected) {
 test_command("select fill", {match_text: "select fill", tool: get_tool_by_name("Fill With Color")});
 test_command("", null);
 test_command("pan view sorthweast", null);
+test_command("1 pixel lines", {match_text: "1 pixel lines", size: 1});
+test_command("1 pixel wide lines", {match_text: "1 pixel wide lines", size: 1});
+test_command("set line width to 5", {match_text: "set line width to 5", size: 5});
+// test_command("use medium-small stroke size", {match_text: "use medium-small stroke size", size: NaN});
+// test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
 $(()=> {
 	test_command("pan view southwest", {match_text: "pan view southwest", vector: {x: -1, y: +1}, prioritize: true});
 	test_command("pan southeast", {match_text: "pan southeast", vector: {x: +1, y: +1}, prioritize: true});
