@@ -266,11 +266,18 @@ const recognitionFixes = [
 	["scrap", "scroll up"],
 	["go out", "scroll up"],
 	["scroll up in", "scroll up and"],
+	["what happened to the", "scroll up and to the"],
 	["and not words", "and upwards"],
 	["in operates", "and upwards"],
 	["down work", "downward"],
 	["down works", "downwards"],
 	["up rinse and spit", "upwards and to the right"],
+	["down at the right", "down and to the right"],
+	["down at the left", "down and to the left"],
+	["carpenter ant", "go up and to the right"],
+	["walking to the right", "go up and to the right"],
+	[/^show up/i, "go up"],
+	[/^cool up/i, "go up"],
 	["scroll acting up", "scroll left and up"],
 	["scroll left enough", "scroll left and up"],
 	["scroll right enough", "scroll right and up"],
@@ -380,7 +387,7 @@ const recognitionFixes = [
 	[/^the left\b/i, "go left"],
 	["cooperates", "go upwards"],
 	["cooperated", "go upwards"],
-	["cooperate", "go upward"],
+	["cooperate", "go upward"], // can also be from "go up right"
 	["cooperating", "go upward"],
 	["cooperative", "go upward"],
 	["corporate", "go upward"],
@@ -400,6 +407,8 @@ const recognitionFixes = [
 	["go down road", "go downward"],
 	["fordham road", "go downward"],
 	["donuts", "go downwards"],
+	[/^got left\b/i, "go up left"],
+	[/^talk left\b/i, "go up left"],
 	["the great", "look right"],
 	["the craig", "look right"],
 	["mccreight", "look right"],
@@ -1627,7 +1636,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		});
 	}
 
-	const scrolling_regexp = /\b(?:(?:scroll|pan|move)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?( and( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
+	const scrolling_regexp = /\b(?:(?:scroll|pan|move)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?(( and)?( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
 		const directions = scroll_match[0];
@@ -1993,6 +2002,8 @@ $(()=> {
 	test_command("go downwards", {vector: {x: 0, y: +1}});
 	test_command("go upward", {vector: {x: 0, y: -1}});
 	test_command("go downwards and to the left", {vector: {x: -1, y: +1}});
+	test_command("go up to the left", {vector: {x: -1, y: -1}});
+	test_speech("cool up", {match_text: "go up", vector: {x: 0, y: -1}});
 });
 
 })();
