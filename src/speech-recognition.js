@@ -10,6 +10,7 @@ if (!window.speech_recognition_available) {
 	return;
 }
 
+// @TODO: DRY recognition fixes, like taco? may be more trouble than it's worth, with the order dependencies
 const recognitionFixes = [
 	// colors
 	["Rhett", "red"],
@@ -26,7 +27,7 @@ const recognitionFixes = [
 	["crown", "brown"],
 	["ombre", "umbre"],
 	["tan-tan", "tan tan"],
-	// ["pan", "tan"], // @TODO: ^pan$
+	[/^pan$/i, "tan"],
 
 	// commands/misc
 	["slick to the", "select the"],
@@ -37,11 +38,11 @@ const recognitionFixes = [
 	["spectre", "select the"],
 	["crab the", "grab the"],
 	["cram the", "grab the"],
-	["can the", "grab the"], // @TODO: match only at start
-	["scrams", "grab the"], // @TODO: match only at start
-	["craft", "grab the"], // @TODO: match only at start
-	["cabinet", "grab the"], // @TODO: match only at start
-	["tammy", "grab the"], // @TODO: match only at start (along with most single words...)
+	[/^can the\b/i, "grab the"],
+	[/^scrams\b/i, "grab the"],
+	[/^craft\b/i, "grab the"],
+	[/^cabinet\b/i, "grab the"],
+	[/^tammy\b/i, "grab the"],
 	["flex", "select"],
 	["to all", "tool"],
 	["stool", "tool"],
@@ -58,11 +59,11 @@ const recognitionFixes = [
 	["dog drawing", "stop drawing"],
 	["camp drag", "stop drawing"],
 	["tuggle", "toggle"],
-	["travel", "toggle"], // @TODO: match only at start
-	["title", "toggle"], // @TODO: match only at start
-	["halo", "toggle"], // @TODO: match only at start
-	["michael", "toggle"], // @TODO: match only at start
-	["taco", "toggle"], // @TODO: match only at start; also, DRY recognition fixes
+	[/^travel/i, "toggle"],
+	[/^title/i, "toggle"],
+	[/^halo/i, "toggle"],
+	[/^michael/i, "toggle"],
+	[/^taco/i, "toggle"],
 	["about pink", "about paint"],
 	["projects news", "project news"],
 	["you project is", "view project news"],
@@ -181,7 +182,7 @@ const recognitionFixes = [
 	["deal", "view"],
 
 	// panning/scrolling the view
-	["scrolling", "scroll"], // @TODO: ^scrolling
+	[/scrolling/i, "scroll"],
 	["pin the view", "pan the view"],
 	["pen the view", "pan the view"],
 	["penn the view", "pan the view"],
@@ -312,12 +313,12 @@ const recognitionFixes = [
 	["pinup word", "pan upward"],
 	["turn down", "go down"],
 	["newtown", "go down"],
-	["co-op", "go up"], // @TODO: ^$
+	[/^co-op\b/i, "go up"],
 	["come up", "go up"],
 	// ["correct", "go right"], // can be from "go left" or "go right"; which one is correct is up in the air so I'm not down with that
-	["direct", "go right"], // @TODO: ^$
-	["collect", "go left"], // @TODO: ^$
-	["the left", "go left"], // @TODO: ^$
+	[/^direct\b/i, "go right"],
+	[/^collect\b/i, "go left"],
+	[/^the left\b/i, "go left"],
 	["cooperates", "go upwards"],
 	["cooperated", "go upwards"],
 	["cooperate", "go upward"],
@@ -1111,7 +1112,12 @@ function fix_up_speech_recognition(command) {
 	command = command.toLowerCase();
 	if (!command.match(/^draw /i) && !(document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]"))) {
 		for (const [bad, good] of recognitionFixes) {
-			if (bad.match(/^\W|\W$/)) {
+			if (bad instanceof RegExp) {
+				if (bad.flags.indexOf("i") === -1) {
+					console.warn("A speech recognition fix was introduced using a regexp that is not case insensitive. Add the /i flag or make this message more nuanced.");
+				}
+				command = command.replace(bad, good);
+			} else if (bad.match(/^\W|\W$/)) {
 				command = command.replace(new RegExp(escapeRegExp(bad), "ig"), good);
 			} else {
 				command = command.replace(new RegExp(`\\b${escapeRegExp(bad)}\\b`, "ig"), good);
@@ -1815,8 +1821,7 @@ $(()=> {
 	test_command("scroll down", {match_text: "scroll down", vector: {x: 0, y: +1}, prioritize: true});
 	test_command("go downwards", {match_text: "go downwards", vector: {x: 0, y: +1}, prioritize: true});
 	test_command("go upward", {match_text: "go upward", vector: {x: 0, y: -1}, prioritize: true});
-	// @FIXME
-	// test_command("go downwards and to the left", {match_text: "go downwards and to the left", vector: {x: -1, y: +1}, prioritize: true});
+	test_command("go downwards and to the left", {match_text: "go downwards and to the left", vector: {x: -1, y: +1}, prioritize: true});
 });
 
 })();
