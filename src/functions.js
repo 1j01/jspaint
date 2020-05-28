@@ -2129,17 +2129,21 @@ function image_flip_and_rotate(){
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
-	$fieldset.append("<legend>Flip or rotate</legend>");
-	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-horizontal' checked/>Flip horizontal</label>");
-	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='flip-vertical'/>Flip vertical</label>");
-	$fieldset.append("<label><input type='radio' name='flip-or-rotate' value='rotate-by-angle'/>Rotate by angle</label>");
+	$fieldset.append(`
+		<legend>Flip or rotate</legend>
+		<label><input type="radio" name="flip-or-rotate" value="flip-horizontal" checked/>Flip horizontal</label>
+		<label><input type="radio" name="flip-or-rotate" value="flip-vertical"/>Flip vertical</label>
+		<label><input type="radio" name="flip-or-rotate" value="rotate-by-angle"/>Rotate by angle</label>
+	`);
 
 	const $rotate_by_angle = $(E("div")).appendTo($fieldset);
 	$rotate_by_angle.css({paddingLeft: "30px"});
-	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='90' checked/>90°</label>");
-	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='180'/>180°</label>");
-	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='270'/>270°</label>");
-	$rotate_by_angle.append("<label><input type='radio' name='rotate-by-angle' value='arbitrary'/><input type='number' min='-360' max='360' name='rotate-by-arbitrary-angle' value='' class='no-spinner'/> Degrees</label>");
+	$rotate_by_angle.append(`
+		<label><input type="radio" name="rotate-by-angle" value="90" checked/>90°</label>
+		<label><input type="radio" name="rotate-by-angle" value="180"/>180°</label>
+		<label><input type="radio" name="rotate-by-angle" value="270"/>270°</label>
+		<label><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" value="" class="no-spinner" style="width: 50px"/> Degrees</label>
+	`);
 	$rotate_by_angle.find("input").attr({disabled: true});
 
 	$fieldset.find("input").on("change", () => {
