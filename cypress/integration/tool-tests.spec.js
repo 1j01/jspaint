@@ -1,6 +1,12 @@
 /// <reference types="Cypress" />
 
 context('tool tests', () => {
+	// @TODO: make rounded tools render consistently across platforms
+	const roundedToolsCompareOptions = {
+		failureThreshold: 13,
+		failureThresholdType: 'pixel'
+	};
+
 	beforeEach(() => {
 		cy.visit('/')
 		cy.setResolution([800, 500]);
@@ -155,7 +161,7 @@ context('tool tests', () => {
 					}
 				}
 			});
-			cy.get(".main-canvas").matchImageSnapshot();
+			cy.get(".main-canvas").matchImageSnapshot(toolName.match(/Rounded Rectangle|Ellipse/) ? roundedToolsCompareOptions : undefined);
 		});
 	});
 });

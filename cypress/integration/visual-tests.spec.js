@@ -3,12 +3,20 @@
 context('visual tests', () => {
 
 	const withTextCompareOptions = {
-		failureThreshold: 0, // (1% is much too high)
-		failureThresholdType: 'percent'
+		failureThreshold: 0.05,
+		failureThresholdType: 'percent' // not actually percent - fraction
+	};
+	const withMuchTextCompareOptions = {
+		failureThreshold: 0.08,
+		failureThresholdType: 'percent' // not actually percent - fraction
+	};
+	const toolboxCompareOptions = {
+		failureThreshold: 40,
+		failureThresholdType: 'pixel'
 	};
 	const noTextCompareOptions = {
 		failureThreshold: 0,
-		failureThresholdType: 'percent'
+		failureThresholdType: 'pixel'
 	};
 
 	const selectTheme = (themeName) => {
@@ -28,31 +36,31 @@ context('visual tests', () => {
 
 	it('brush selected', () => {
 		cy.get('.tool[title="Brush"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('select selected', () => {
 		cy.get('.tool[title="Select"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('magnifier selected', () => {
 		cy.get('.tool[title="Magnifier"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('airbrush selected', () => {
 		cy.get('.tool[title="Airbrush"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('eraser selected', () => {
 		cy.get('.tool[title="Eraser/Color Eraser"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('line selected', () => {
 		cy.get('.tool[title="Line"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('rectangle selected', () => {
 		cy.get('.tool[title="Rectangle"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(noTextCompareOptions);
+		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 
 	beforeEach(()=> {
@@ -64,14 +72,14 @@ context('visual tests', () => {
 
 	it('image attributes window', () => {
 		cy.get('body').type('{ctrl}e');
-		cy.get('.window:visible').matchImageSnapshot(withTextCompareOptions);
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
 	it('flip and rotate window', () => {
 		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(1)').click();
-		cy.get('.window:visible').matchImageSnapshot(withTextCompareOptions);
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
 	it('stretch and skew window', () => {
@@ -95,7 +103,7 @@ context('visual tests', () => {
 		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(3)').click();
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
 	});
 
 	it('eye gaze mode', () => {
