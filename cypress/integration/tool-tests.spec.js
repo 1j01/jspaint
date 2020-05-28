@@ -147,7 +147,11 @@ context('tool tests', () => {
 				for (let row=0; row<4; row++) {
 					const secondary = !!(row % 2);
 					const increaseSize = row >= 2;
-					const $options = win.$(`.chooser > *`);
+					let $options = win.$(`.chooser > *`);
+					// Pencil has no options
+					if ($options.length === 0) {
+						$options = win.$("<dummy>");
+					}
 					for (let o=0; o<$options.length; o++) {
 						$options[o].click();
 						if (increaseSize && (o === 0 || toolName==="Brush" || toolName==="Line")) {
