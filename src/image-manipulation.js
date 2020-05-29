@@ -761,7 +761,7 @@ function threshold_black_and_white(ctx, threshold) {
 	ctx.putImageData(image_data, 0, 0);
 }
 
-function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas, y_offset_from_global_canvas){
+function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas=0, y_offset_from_global_canvas=0){
 	// USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas, and presumably for the pattern alignment as well)
 	// This function is mainly for patterns support (for black & white mode) but naturally handles solid colors as well.
 	ctx.globalCompositeOperation = "source-in";
@@ -1092,7 +1092,7 @@ function draw_grid(ctx, scale) {
 		// invalidate the cache(s) so that brushes will be re-rendered now that WebGL is restored
 		$G.triggerHandler("invalidate-brush-canvases");
 
-		$G.triggerHandler("redraw-tool-options");
+		$G.triggerHandler("redraw-tool-options-because-webglcontextrestored");
 	}, false);
 
 	function clamp_brush_sizes() {

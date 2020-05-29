@@ -693,6 +693,8 @@ function loadThemeFromText(fileText) {
 			console.log("error applying theme to iframe", iframe, error);
 		}
 	})
+
+	$G.triggerHandler("theme-load");
 }
 
 function file_new(){

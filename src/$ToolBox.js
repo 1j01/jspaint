@@ -111,7 +111,7 @@ if (localStorage.dev_theme_tool_icons === "true") {
 			}
 			URL.revokeObjectURL(theme_dev_blob_url);
 			theme_dev_blob_url = URL.createObjectURL(blob);
-			$G.trigger("theme-load");
+			$G.triggerHandler("theme-load");
 		});
 	});
 }

@@ -41,7 +41,7 @@ const ChooserCanvas = (
 };
 ChooserCanvas.cache = {};
 
-const $Choose = (things, display, choose, is_chosen) => {
+const $Choose = (things, display, choose, is_chosen, gray_background_for_unselected) => {
 	const $chooser = $(E("div")).addClass("chooser").attr("touch-action", "none");
 	const choose_thing = (thing) => {
 		if(is_chosen(thing)){
@@ -71,15 +71,15 @@ const $Choose = (things, display, choose, is_chosen) => {
 					return option_canvas;
 				};
 				const update = () => {
-					const selected_color = get_theme() === "modern.css" ? "#0178d7" : "#000080"; // @TODO: get from a CSS variable
+					const selected_color = getComputedStyle($chooser[0]).getPropertyValue("--Hilight");
+					const unselected_color = gray_background_for_unselected ? "rgb(192, 192, 192)" : "";
 					$option_container.css({
-						backgroundColor: is_chosen(thing) ? selected_color : ""
+						backgroundColor: is_chosen(thing) ? selected_color : unselected_color,
 					});
 					display(thing, is_chosen(thing), reuse_canvas);
 				};
 				update();
-				$G.on("redraw-tool-options", update);
-				$G.on("option-changed", update);
+				$G.on("option-changed theme-load redraw-tool-options-because-webglcontextrestored", update);
 			})(things[i]);
 		}
 
@@ -129,7 +129,9 @@ const $ChooseShapeStyle = () => {
 			
 			// border px inwards amount
 			let b = 5;
-			ssctx.fillStyle = is_chosen ? "#fff" : "#000";
+
+			const style = getComputedStyle(sscanvas);
+			ssctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
 			
 			if(stroke){
 				// just using a solid rectangle for the stroke
@@ -139,7 +141,7 @@ const $ChooseShapeStyle = () => {
 			
 			// go inward a pixel for the fill
 			b += 1;
-			ssctx.fillStyle = "#777";
+			ssctx.fillStyle = style.getPropertyValue("--ButtonShadow");
 			
 			if(fill){
 				ssctx.fillRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
@@ -181,15 +183,14 @@ const $choose_brush = $Choose(
 	})(),
 	(o, is_chosen, reuse_canvas) => {
 		const cbcanvas = reuse_canvas(10, 10);
+		const style = getComputedStyle(cbcanvas);
 		
 		const shape = o.shape;
 		const size = o.size;
+		const color = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
 		
 		stamp_brush_canvas(cbcanvas.ctx, 5, 5, shape, size);
-		
-		if (is_chosen) {
-			invert_rgb(cbcanvas.ctx);
-		}
+		replace_colors_with_swatch(cbcanvas.ctx, color);
 
 		return cbcanvas;
 	}, ({shape, size}) => {
@@ -203,7 +204,8 @@ const $choose_eraser_size = $Choose(
 	(size, is_chosen, reuse_canvas) => {
 		const cecanvas = reuse_canvas(39, 16);
 		
-		cecanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
+		const style = getComputedStyle(cecanvas);
+		cecanvas.ctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
 		render_brush(cecanvas.ctx, "square", size);
 		
 		return cecanvas;
@@ -220,7 +222,8 @@ const $choose_stroke_size = $Choose(
 		const w = 39, h = 12, b = 5;
 		const cscanvas = reuse_canvas(w, h);
 		const center_y = (h - size) / 2;
-		cscanvas.ctx.fillStyle = is_chosen ? "#fff" : "#000";
+		const style = getComputedStyle(cscanvas);
+		cscanvas.ctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
 		cscanvas.ctx.fillRect(b, ~~center_y, w - b*2, size);
 		return cscanvas;
 	},
@@ -252,7 +255,8 @@ const $choose_magnification = $Choose(
 	scale => {
 		set_magnification(scale);
 	},
-	scale => scale === magnification
+	scale => scale === magnification,
+	true,
 ).addClass("choose-magnification")
 .css({position: "relative"}); // positioning context for above `position: "absolute"` canvas
 
@@ -290,7 +294,8 @@ const $choose_airbrush_size = $Choose(
 	size => {
 		airbrush_size = size;
 	},
-	size => size === airbrush_size
+	size => size === airbrush_size,
+	true,
 ).addClass("choose-airbrush-size");
 
 const $choose_transparent_mode = $Choose(
@@ -311,6 +316,7 @@ const $choose_transparent_mode = $Choose(
 	option => {
 		tool_transparent_mode = option;
 	},
-	option => option === tool_transparent_mode
+	option => option === tool_transparent_mode,
+	true,
 ).addClass("choose-transparent-mode");
 
