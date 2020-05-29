@@ -571,6 +571,7 @@ const recognitionFixes = [
 	["christmas-themed", "christmas theme"],
 	["christmas game", "christmas theme"],
 	["switch directory theme", "switch to retro theme"],
+	["flight mode", "light mode"],
 	["penis", "themes"],
 	["things", "themes"],
 	["teams", "themes"],
