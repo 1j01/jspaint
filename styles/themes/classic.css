@@ -64,6 +64,7 @@ body,
 .status-area {
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
+	color: var(--ButtonText);
 	padding: 3px 2px;
 	padding-top: 4px;
 	border-top: 1px solid var(--ButtonShadow);
