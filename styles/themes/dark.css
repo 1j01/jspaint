@@ -1,0 +1,6 @@
+@import "./classic.css";
+@import "./vista-esque-midnight-green.css";
+
+:root {
+	--theme-loaded: "dark.css";
+}
