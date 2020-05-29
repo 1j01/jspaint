@@ -76,8 +76,12 @@ let file_name;
 let document_file_path;
 let saved = true;
 
-/** canvas coords */
-let pointer, pointer_start, pointer_previous;
+/** works in canvas coordinates */
+let pointer;
+/** works in canvas coordinates */
+let pointer_start;
+/** works in canvas coordinates */
+let pointer_previous;
 
 let pointer_active = false;
 let pointer_type, pointer_buttons;
@@ -87,7 +91,7 @@ let button;
 let pointer_over_canvas = false;
 let update_helper_layer_on_pointermove_active = false;
 
-/** client coords */
+/** works in client coordinates */
 let pointers = [];
 
 const update_from_url_params = ()=> {
