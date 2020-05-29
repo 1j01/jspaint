@@ -22,7 +22,7 @@ function $ToolBox(tools, is_extras){
 		const update_css = ()=> {
 			const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
 			const use_svg = !theme_dev_blob_url && (
-				(get_theme() === "classic.css" &&
+				(get_theme().match(/classic.css|dark.css/) &&
 					(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
 				) ||
 				$("body").hasClass("eye-gaze-mode")
@@ -30,7 +30,7 @@ function $ToolBox(tools, is_extras){
 			const background_image = theme_dev_blob_url ? (
 				`url(${theme_dev_blob_url})`
 			) : (
-				use_svg ? `url(images/classic/tools.svg)` : `url(${theme_folder}/tools.png)`
+				use_svg ? `url(images/${get_theme() === "dark.css" ? "dark" : "classic"}/tools.svg)` : `url(${theme_folder}/tools.png)`
 			);
 			$icon.css({
 				display: "block",
