@@ -42,7 +42,7 @@ let fill_color_k = "background"; // enum of "foreground", "background", "ternary
 let selected_tool = default_tool;
 let selected_tools = [selected_tool];
 let return_to_tools = [selected_tool];
-let colors = {
+window.colors = { // declared like this for Cypress tests
 	foreground: "",
 	background: "",
 	ternary: "",

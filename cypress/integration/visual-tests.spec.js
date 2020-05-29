@@ -14,10 +14,6 @@ context('visual tests', () => {
 		failureThreshold: 40,
 		failureThresholdType: 'pixel'
 	};
-	const noTextCompareOptions = {
-		failureThreshold: 0,
-		failureThresholdType: 'pixel'
-	};
 
 	const selectTheme = (themeName) => {
 		cy.contains(".menu-button", "Extras").click();
