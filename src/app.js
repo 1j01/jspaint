@@ -26,12 +26,20 @@ let palette = default_palette;
 let polychrome_palette = palette;
 let monochrome_palette = make_monochrome_palette();
 
-let brush_shape = "circle";
-let brush_size = 4;
-let eraser_size = 8;
-let airbrush_size = 9;
-let pencil_size = 1;
-let stroke_size = 1; // lines, curves, shape outlines
+// declared like this for Cypress tests
+window.default_brush_shape = "circle";
+window.default_brush_size = 4;
+window.default_eraser_size = 8;
+window.default_airbrush_size = 9;
+window.default_pencil_size = 1;
+window.default_stroke_size = 1; // applies to lines, curves, shape outlines
+// declared like this for Cypress tests
+window.brush_shape = default_brush_shape;
+window.brush_size = default_brush_size
+window.eraser_size = default_eraser_size;
+window.airbrush_size = default_airbrush_size;
+window.pencil_size = default_pencil_size;
+window.stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
 let tool_transparent_mode = false;
 
 let stroke_color;

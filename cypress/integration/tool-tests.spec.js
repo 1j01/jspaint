@@ -7,10 +7,28 @@ context('tool tests', () => {
 		failureThresholdType: 'pixel'
 	};
 
-	beforeEach(() => {
+	// beforeAll isn't a thing, and beforeEach applies also to tests declared above it,
+	// so do this fake test + flag hack in order to execute some steps before the first test
+	let before_first_real_test = true;
+	it(`(fake test for setup)`, () => {
 		cy.visit('/')
 		cy.setResolution([800, 500]);
 		cy.window().should('have.property', 'colors'); // wait for app to be loaded
+		before_first_real_test = false;
+	});
+	beforeEach(() => {
+		if (before_first_real_test) return;
+		cy.window().then({timeout: 60000}, async (win)=> {
+			win.colors.foreground = "#000";
+			win.colors.background = "#fff";
+			win.brush_shape = win.default_brush_shape;
+			win.brush_size = win.default_brush_size
+			win.eraser_size = win.default_eraser_size;
+			win.airbrush_size = win.default_airbrush_size;
+			win.pencil_size = win.default_pencil_size;
+			win.stroke_size = win.default_stroke_size;
+			win.clear();
+		});
 	});
 
 	const simulateGesture = (win, {start, end, shift, shiftToggleChance=0.01, secondary, secondaryToggleChance, target}) => {
