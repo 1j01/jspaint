@@ -209,14 +209,19 @@ body {
 	height: 18px;
 }
 .color-button, /* this outer one is only for detection for the hover halo in eye gaze mode */
+.edit-colors-window .swatch, /* this outer one is only for detection for the hover halo in eye gaze mode */
 .color-button canvas,
 .color-selection canvas,
+.edit-colors-window .swatch canvas,
 .color-button:after,
-.color-selection:after {
+.color-selection:after,
+.edit-colors-window .swatch:after {
 	border-radius: 3px;
+	position: relative;
 }
-.color-button:after,
-.color-selection:after {
+.color-button::after,
+.color-selection::after,
+.edit-colors-window .swatch::after {
 	content: '';
 	position: absolute;
 	left: 0;
@@ -227,6 +232,14 @@ body {
 }
 .eye-gaze-mode .Colors-component.tall .color-button {
 	margin-left: 1px;
+}
+
+.edit-colors-window .swatch {
+	width: 20px;
+	height: 17px;
+}
+.edit-colors-window .swatch:focus::after {
+	outline-offset: 3px;
 }
 
 /* @TODO: padding/margin on the top at least when in the sidebar */

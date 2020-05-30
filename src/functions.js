@@ -332,6 +332,197 @@ function show_custom_zoom_window() {
 	$w.center();
 }
 
+let $edit_colors_window;
+// @TODO: add custom colors to the list
+// @TODO: initially select the first color cell that matches the swatch to edit, if any
+// @TODO: initialize custom colors list index to matched cell, if matched
+// @TODO: persist custom colors list
+// @TODO: more keyboard navigation
+// @TODO: OK with Enter, after selecting a focused color if applicable 
+// @TODO: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
+// or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
+// @TODO: question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
+// $(()=> { show_edit_colors_window(); $(".expando-button").click(); $edit_colors_window.center(); }); // for development
+
+function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) {
+	// console.log($swatch_to_edit, $colorbox.data("$last_fg_color_button"));
+	$swatch_to_edit = $swatch_to_edit || $colorbox.data("$last_fg_color_button");
+	color_selection_slot_to_edit = color_selection_slot_to_edit || "foreground";
+
+	if ($edit_colors_window) {
+		$edit_colors_window.close();
+	}
+	const $w = new $FormToolWindow("Edit Colors");
+	$w.addClass("edit-colors-window");
+	$edit_colors_window = $w;
+
+	let hue_degrees = 0;
+	let sat_percent = 50;
+	let lum_percent = 50;
+
+	const make_color_grid = (colors, name)=> {
+		const $color_grid = $(`<div class="color-grid">`).attr({name});
+		for (const color of colors) {
+			const $swatch = $Swatch(color);
+			$swatch.appendTo($color_grid).addClass("inset-deep");
+			$swatch.attr("tabindex", 0);
+		}
+		const num_colors_per_row = 8;
+		const navigate = (relative_index)=> {
+			const $focused = $color_grid.find(".swatch:focus");
+			if (!$focused.length) { return; }
+			const $swatches = $color_grid.find(".swatch");
+			const from_index = $swatches.toArray().indexOf($focused[0]);
+			if (relative_index === -1 && (from_index % num_colors_per_row) === 0) { return; }
+			if (relative_index === +1 && (from_index % num_colors_per_row) === num_colors_per_row - 1) { return; }
+			const to_index = from_index + relative_index;
+			const $to_focus = $($swatches.toArray()[to_index]);
+			// console.log({from_index, to_index, $focused, $to_focus});
+			if (!$to_focus.length) { return; }
+			$to_focus.focus();
+		};
+		const select = ($swatch)=> {
+			$color_grid.find(".swatch").removeClass("selected");
+			$swatch.addClass("selected");
+			const [r, g, b] = get_rgba_from_color($swatch[0].dataset.color);
+			const [h, s, l] = rgb_to_hsl(r, g, b);
+			hue_degrees = h * 360;
+			sat_percent = s * 100;
+			lum_percent = l * 100;
+			draw();
+		};
+		$color_grid.on("keydown", (event)=> {
+			// console.log(event.code);
+			if (event.code === "ArrowRight") { navigate(+1); }
+			if (event.code === "ArrowLeft") { navigate(-1); }
+			if (event.code === "ArrowDown") { navigate(+num_colors_per_row); }
+			if (event.code === "ArrowUp") { navigate(-num_colors_per_row); }
+			if (event.code === "Home") { $color_grid.find(".swatch:first-child").focus(); }
+			if (event.code === "End") { $color_grid.find(".swatch:last-child").focus(); }
+			if (event.code === "Space" || event.code === "Enter") {
+				select($color_grid.find(".swatch:focus"));
+			}
+		});
+		$color_grid.on("pointerdown", (event)=> {
+			const $swatch = $(event.target).closest(".swatch");
+			if ($swatch.length) {
+				select($swatch);
+			}
+		});
+		$color_grid.on("dragstart", (event)=> {
+			event.preventDefault();
+		});
+		return $color_grid;
+	};
+	const $left_right_split = $(`<div class="left-right-split">`).appendTo($w.$main);
+	const $left = $(`<div class="left-side">`).appendTo($left_right_split);
+	const $right = $(`<div class="right-side">`).appendTo($left_right_split).hide();
+	$left.append(`<label for="basic-colors">Basic colors:</label>`);
+	make_color_grid(basic_colors, "basic-colors").appendTo($left);
+	$left.append(`<label for="custom-colors">Custom colors:</label>`);
+	make_color_grid(custom_colors, "custom-colors").appendTo($left);
+
+	const $expando_button = $(`<button class="expando-button">`)
+	.text("Define Custom Colors >>")
+	.appendTo($left)
+	.on("click", ()=> {
+		$right.show();
+		$expando_button.attr("disabled", "disabled");
+	})
+
+	const rainbow_canvas = make_canvas(175, 187);
+	const luminosity_canvas = make_canvas(10, 187);
+	const result_canvas = make_canvas(58, 40);
+	const lum_arrow_canvas = make_canvas(5, 9);
+	
+	const draw = ()=> {
+		for (let y = 0; y < rainbow_canvas.height; y += 6) {
+			for (let x = -1; x < rainbow_canvas.width; x += 3) {
+				rainbow_canvas.ctx.fillStyle = `hsl(${x/rainbow_canvas.width*360}deg, ${(1-y/rainbow_canvas.height)*100}%, 50%)`;
+				rainbow_canvas.ctx.fillRect(x, y, 3, 6);
+			}
+		}
+		const x = ~~(hue_degrees/360*rainbow_canvas.width);
+		const y = ~~((1-sat_percent/100)*rainbow_canvas.height);
+		rainbow_canvas.ctx.fillStyle = "black";
+		rainbow_canvas.ctx.fillRect(x-1, y-9, 3, 5);
+		rainbow_canvas.ctx.fillRect(x-1, y+5, 3, 5);
+		rainbow_canvas.ctx.fillRect(x-9, y-1, 5, 3);
+		rainbow_canvas.ctx.fillRect(x+5, y-1, 5, 3);
+
+		for (let y = -2; y < luminosity_canvas.height; y += 6) {
+			luminosity_canvas.ctx.fillStyle = `hsl(${hue_degrees}deg, ${sat_percent}%, ${(1-y/luminosity_canvas.height)*100}%)`;
+			luminosity_canvas.ctx.fillRect(0, y, luminosity_canvas.width, 6);
+		}
+
+		lum_arrow_canvas.ctx.fillStyle = "black";
+		for (let x = 0; x < lum_arrow_canvas.width; x++) {
+			lum_arrow_canvas.ctx.fillRect(x, lum_arrow_canvas.width-x-1, 1, 1+x*2);
+		}
+		lum_arrow_canvas.style.position = "absolute";
+		lum_arrow_canvas.style.right = "7px";
+		lum_arrow_canvas.style.top = `${3 + ~~((1-lum_percent/100)*luminosity_canvas.height)}px`;
+
+		result_canvas.ctx.fillStyle = `hsl(${hue_degrees}deg, ${sat_percent}%, ${lum_percent}%)`;
+		result_canvas.ctx.fillRect(0, 0, result_canvas.width, result_canvas.height);
+	};
+	draw();
+	$(rainbow_canvas).addClass("rainbow-canvas inset-shallow");
+	$(luminosity_canvas).addClass("luminosity-canvas inset-shallow");
+	$(result_canvas).addClass("result-color-canvas inset-shallow");
+
+	const select_hue_sat = (event)=> {
+		hue_degrees = Math.min(1, Math.max(0, event.offsetX/rainbow_canvas.width))*360;
+		sat_percent = Math.min(1, Math.max(0, (1 - event.offsetY/rainbow_canvas.height)))*100;
+		draw();
+		event.preventDefault();
+	};
+	$(rainbow_canvas).on("pointerdown", (event)=> {
+		select_hue_sat(event);
+		
+		$(rainbow_canvas).on("pointermove", select_hue_sat);
+		rainbow_canvas.setPointerCapture(event.pointerId);
+	});
+	$G.on("pointerup pointercancel", (event)=> {
+		$(rainbow_canvas).off("pointermove", select_hue_sat);
+		// rainbow_canvas.releasePointerCapture(event.pointerId);
+	});
+
+	const select_lum = (event)=> {
+		lum_percent = Math.min(1, Math.max(0, (1 - event.offsetY/luminosity_canvas.height)))*100;
+		draw();
+		event.preventDefault();
+	};
+	$(luminosity_canvas).on("pointerdown", (event)=> {
+		select_lum(event);
+		
+		$(luminosity_canvas).on("pointermove", select_lum);
+		luminosity_canvas.setPointerCapture(event.pointerId);
+	});
+	$G.on("pointerup pointercancel", (event)=> {
+		$(luminosity_canvas).off("pointermove", select_lum);
+		// luminosity_canvas.releasePointerCapture(event.pointerId);
+	});
+
+	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, lum_arrow_canvas);
+
+	$w.$Button("OK", () => {
+		const color = `hsl(${hue_degrees}deg, ${sat_percent}%, ${lum_percent}%)`;
+		// console.log($swatch_to_edit, $swatch_to_edit.data("set_color"));
+		$swatch_to_edit.data("set_color")(color);
+		colors[color_selection_slot_to_edit] = color;
+		$G.triggerHandler("option-changed");
+		$w.close();
+	})[0].focus();
+	$w.$Button("Cancel", () => {
+		$w.close();
+	});
+	
+	$left.append($w.$buttons);
+
+	$w.center();
+}
+
 function toggle_grid() {
 	show_grid = !show_grid;
 	// $G.trigger("option-changed");

@@ -612,7 +612,7 @@ window.menus = {
 				"edit last color", "create new color", "choose new color", "create a new color", "pick a new color",
 			],
 			action: ()=> {
-				$colorbox.edit_last_color();
+				show_edit_colors_window();
 			},
 			description: "Creates a new color.",
 		},
