@@ -1,0 +1,6 @@
+@import "./classic.css";
+@import "./red-wine.css";
+
+:root {
+	--theme-loaded: "occult.css";
+}
