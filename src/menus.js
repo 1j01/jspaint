@@ -554,9 +554,10 @@ window.menus = {
 			speech_recognition: [
 				"attributes", "image attributes", "picture attributes", "image options", "picture options",
 				"dimensions", "image dimensions", "picture dimensions",
-				"resize canvas", "resize document", "resize page",
-				"set image size", "set picture size", "set cavnas size", "set document size", "set page size",
-				"configure image size", "configure picture size", "configure cavnas size", "configure document size", "configure page size",
+				"resize canvas", "resize document", "resize page", // not resize image/picture because that implies scaling, handled by Stretch/Skew
+				"set image size", "set picture size", "set canvas size", "set document size", "set page size",
+				"image size", "picture size", "canvas size", "document size", "page size",
+				"configure image size", "configure picture size", "configure canvas size", "configure document size", "configure page size",
 			],
 			action: ()=> { image_attributes(); },
 			description: "Changes the attributes of the picture.",
