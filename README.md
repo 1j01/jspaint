@@ -43,12 +43,16 @@ I want to bring good old paint into the modern era.
   go to **Image > Attributes...** and select Transparent,
   then Okay, and then **Image > Clear Image** or use the Eraser tool.
   Images with *any* translucent pixels will open in Transparent mode.
-* Switch themes from the Extras menu
+* Switch themes from the Extras menu. Dark mode included.
+* [Vertical Color Box mode](https://jspaint.app/#vertical-color-box-mode), accessible from **Extras > Vertical Color Box**
+* [Eye Gaze Mode](https://jspaint.app/#eye-gaze-mode), for use with an eye tracker, head tracker, or other coarse input device, accessible from **Extras > Eye Gaze Mode**. (With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).)
+* [Speech Recognition Mode](https://jspaint.app/#speech-recognition-mode).
+  Using your voice you can select tools and colors, pan the view ("scroll down and to the left", or "go southwest", etc.), explore the menus (but you can activate any menu item without opening the menus first), interact with windows (including scrolling the history view with "scroll up"/"scroll down" etc.), dictate text with the Text tool, and even tell the application to sketch things (for instance, "draw a house")
 * Create an animated GIF from the current document history.
   Accessible from the Extras menu or with <kbd>Ctrl+Shift+G</kbd>.
   It's pretty nifty, you should try it out!
   You might want to limit the size of the image though.
-* You can shoot at it [Asteroids style](https://kickassapp.com/)
+* You can shoot at the application [Asteroids style](https://kickassapp.com/)
 * When you do **Edit > Paste From...** you can select transparent images.
   ~~You can even paste a transparent animated GIF and then
   hold <kbd>Shift</kbd> while dragging the selection to
@@ -62,6 +66,7 @@ I want to bring good old paint into the modern era.
 * Rotate by any arbitrary angle in **Image > Flip/Rotate**
 * In **Image > Stretch/Skew**, you can stretch more than 500% at once
 * Zoom to an arbitrary scale in **View > Zoom > Custom...**
+* Zoom to fit the canvas within the window with **View > Zoom > Zoom To Window**
 * Non-contiguous fill: Replace a color in the entire image by holding <kbd>Shift</kbd> when using the fill tool
 * You can use the Text tool at any zoom level, and it previews the exact pixels that will end up on the canvas.
 * Spellcheck is available in the textbox if your browser supports it.
@@ -76,11 +81,6 @@ I want to bring good old paint into the modern era.
   (I made a [library](https://github.com/1j01/palette.js/) for this.)
 * Touch support: use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
-* [Vertical Color Box mode](https://jspaint.app/#vertical-color-box-mode), accessible from **Extras > Vertical Color Box**
-* [Eye Gaze Mode](https://jspaint.app/#eye-gaze-mode), for use with an eye tracker, head tracker, or other coarse input device, accessible from **Extras > Eye Gaze Mode**. (With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).)
-* [Speech Recognition Mode](https://jspaint.app/#speech-recognition-mode).
-  Using your voice you can switch tools, colors, dictate text with the Text tool, and do one other thing... you can tell it to sketch things.
-  For instance, "draw a dog".
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
