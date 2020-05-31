@@ -334,8 +334,6 @@ function show_custom_zoom_window() {
 
 let $edit_colors_window;
 // @TODO: add custom colors to the list
-// @TODO: initially select the first color cell that matches the swatch to edit, if any
-// @TODO: initialize custom colors list index to matched cell, if matched
 // @TODO: persist custom colors list
 // @TODO: more keyboard navigation
 // @TODO: OK with Enter, after selecting a focused color if applicable 
@@ -349,6 +347,8 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	$swatch_to_edit = $swatch_to_edit || $colorbox.data("$last_fg_color_button");
 	color_selection_slot_to_edit = color_selection_slot_to_edit || "foreground";
 
+	const initial_color = $swatch_to_edit[0].dataset.color;
+
 	if ($edit_colors_window) {
 		$edit_colors_window.close();
 	}
@@ -359,6 +359,22 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	let hue_degrees = 0;
 	let sat_percent = 50;
 	let lum_percent = 50;
+
+	let custom_colors_index = 0;
+
+	const set_color = (color)=> {
+		const [r, g, b] = get_rgba_from_color(color);
+		const [h, s, l] = rgb_to_hsl(r, g, b);
+		hue_degrees = h * 360;
+		sat_percent = s * 100;
+		lum_percent = l * 100;
+	};
+	const select = ($swatch)=> {
+		$w.$content.find(".swatch").removeClass("selected");
+		$swatch.addClass("selected");
+		set_color($swatch[0].dataset.color);
+	};
+	set_color(initial_color);
 
 	const make_color_grid = (colors, name)=> {
 		const $color_grid = $(`<div class="color-grid" tabindex="0">`).attr({name});
@@ -382,16 +398,6 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			if (!$to_focus.length) { return; }
 			$to_focus.focus();
 		};
-		const select = ($swatch)=> {
-			$color_grid.find(".swatch").removeClass("selected");
-			$swatch.addClass("selected");
-			const [r, g, b] = get_rgba_from_color($swatch[0].dataset.color);
-			const [h, s, l] = rgb_to_hsl(r, g, b);
-			hue_degrees = h * 360;
-			sat_percent = s * 100;
-			lum_percent = l * 100;
-			draw();
-		};
 		$color_grid.on("keydown", (event)=> {
 			// console.log(event.code);
 			if (event.code === "ArrowRight") { navigate(+1); }
@@ -402,12 +408,14 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			if (event.code === "End") { $color_grid.find(".swatch:last-child").focus(); }
 			if (event.code === "Space" || event.code === "Enter") {
 				select($color_grid.find(".swatch:focus"));
+				draw();
 			}
 		});
 		$color_grid.on("pointerdown", (event)=> {
 			const $swatch = $(event.target).closest(".swatch");
 			if ($swatch.length) {
 				select($swatch);
+				draw();
 			}
 		});
 		$color_grid.on("dragstart", (event)=> {
@@ -430,7 +438,20 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	$left.append(`<label for="basic-colors">Basic colors:</label>`);
 	make_color_grid(basic_colors, "basic-colors").appendTo($left);
 	$left.append(`<label for="custom-colors">Custom colors:</label>`);
-	make_color_grid(custom_colors, "custom-colors").appendTo($left);
+	const $custom_colors_grid = make_color_grid(custom_colors, "custom-colors").appendTo($left);
+
+	// initially select the first color cell that matches the swatch to edit, if any
+	// (first in the basic colors, then in the custom colors otherwise - implicitly)
+	for (const swatch_el of $left.find(".swatch").toArray()) {
+		if (get_rgba_from_color(swatch_el.dataset.color).join(",") === get_rgba_from_color(initial_color).join(",")) {
+			select($(swatch_el));
+			swatch_el.focus();
+			break;
+		}
+	}
+	custom_colors_index = Math.max(0, $custom_colors_grid.find(".swatch").toArray().indexOf(
+		$custom_colors_grid.find(".swatch.selected")[0]
+	));
 
 	const $expando_button = $(`<button class="expando-button">`)
 	.text("Define Custom Colors >>")
