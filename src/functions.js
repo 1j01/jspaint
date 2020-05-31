@@ -692,6 +692,11 @@ function open_from_Image(img, callback, canceled){
 		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		current_history_node.icon = null; // @TODO
 
+		// creates an undoable; must go after manual current_history_node manipulation
+		if (detect_old_inaccurate_palette()) {
+			upgrade_old_inaccurate_palette();
+		}
+		
 		$G.triggerHandler("session-update"); // autosave
 		$G.triggerHandler("history-update"); // update history view
 
@@ -2031,7 +2036,7 @@ function detect_transparency(){
 	transparency = has_any_transparency(ctx);
 }
 
-function is_all_black_and_white(ctx) { 
+function is_all_black_and_white(ctx) {
 	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	for(let i=0, l=id.data.length; i<l; i+=4){
 		if(id.data[i+3] < 255){
@@ -2045,6 +2050,60 @@ function is_all_black_and_white(ctx) {
 		}
 	}
 	return true;
+}
+
+function detect_old_inaccurate_palette() {
+	let accurate_count = 0;
+	let inaccurate_count = 0;
+	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	for(let i=0, l=id.data.length; i<l; i+=4){
+		if (id.data[i+3] === 255) { // only count opaque pixels
+			for (const accurate_rgba of accurate_palette_rgbas) {
+				if (
+					id.data[i] === accurate_rgba[0] &&
+					id.data[i+1] === accurate_rgba[1] &&
+					id.data[i+2] === accurate_rgba[2]
+				) {
+					accurate_count++;
+				}
+			}
+			for (const inaccurate_rgba of inaccurate_palette_rgbas) {
+				if (
+					id.data[i] === inaccurate_rgba[0] &&
+					id.data[i+1] === inaccurate_rgba[1] &&
+					id.data[i+2] === inaccurate_rgba[2]
+				) {
+					inaccurate_count++;
+				}
+			}
+		}
+	}
+	// console.log({accurate_count, inaccurate_count, ratio: (inaccurate_count / accurate_count)});
+	return (inaccurate_count / accurate_count) > 1.2 && inaccurate_count > 0;
+}
+function upgrade_old_inaccurate_palette() {
+	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	for(let i=0, l=id.data.length; i<l; i+=4){
+		if (id.data[i+3] === 255) { // only upgrade opaque pixels
+			for (let j = 0; j < inaccurate_palette_rgbas.length; j++) {
+				if (
+					id.data[i] === inaccurate_palette_rgbas[j][0] &&
+					id.data[i+1] === inaccurate_palette_rgbas[j][1] &&
+					id.data[i+2] === inaccurate_palette_rgbas[j][2]
+				) {
+					id.data[i] = accurate_palette_rgbas[j][0];
+					id.data[i+1] = accurate_palette_rgbas[j][1];
+					id.data[i+2] = accurate_palette_rgbas[j][2];
+				}
+			}
+		}
+	}
+	undoable({
+		name: "Upgrade Inaccurate Palette",
+		icon: get_help_folder_icon("p_monochrome_undo.png"),
+	}, ()=> {
+		ctx.putImageData(id, 0, 0);
+	});
 }
 
 function make_monochrome_pattern(lightness){

@@ -18,9 +18,74 @@ const canvas = make_canvas();
 canvas.classList.add("main-canvas");
 const ctx = canvas.ctx;
 
-const default_palette = [
+// these colors I think I got from a VM screenshot, but maybe the VM shifted the colors with a color filter
+// they're slightly off, and incompatible with mspaint as far as the fill tool goes
+const old_inaccurate_default_palette = [
 	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
 	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
+];
+
+const default_palette = [
+	"rgb(0,0,0)", // Black
+	"rgb(128,128,128)", // Dark Gray
+	"rgb(128,0,0)", // Dark Red
+	"rgb(128,128,0)", // Pea Green
+	"rgb(0,128,0)", // Dark Green
+	"rgb(0,128,128)", // Slate
+	"rgb(0,0,128)", // Dark Blue
+	"rgb(128,0,128)", // Lavender
+	"rgb(128,128,64)", //
+	"rgb(0,64,64)", //
+	"rgb(0,128,255)", //
+	"rgb(0,64,128)", //
+	"rgb(64,0,255)", //
+	"rgb(128,64,0)", //
+
+	"rgb(255,255,255)", // White
+	"rgb(192,192,192)", // Light Gray
+	"rgb(255,0,0)", // Bright Red
+	"rgb(255,255,0)", // Yellow
+	"rgb(0,255,0)", // Bright Green
+	"rgb(0,255,255)", // Cyan
+	"rgb(0,0,255)", // Bright Blue
+	"rgb(255,0,255)", // Magenta
+	"rgb(255,255,128)", //
+	"rgb(0,255,128)", //
+	"rgb(128,255,255)", //
+	"rgb(128,128,255)", //
+	"rgb(255,0,128)", //
+	"rgb(255,128,64)", //
+];
+const monochrome_palette_as_colors = [
+	"rgb(0,0,0)",
+	"rgb(9,9,9)",
+	"rgb(18,18,18)",
+	"rgb(27,27,27)",
+	"rgb(37,37,37)",
+	"rgb(46,46,46)",
+	"rgb(55,55,55)",
+	"rgb(63,63,63)",
+	"rgb(73,73,73)",
+	"rgb(82,82,82)",
+	"rgb(92,92,92)",
+	"rgb(101,101,101)",
+	"rgb(110,110,110)",
+	"rgb(119,119,119)",
+
+	"rgb(255,255,255)",
+	"rgb(250,250,250)",
+	"rgb(242,242,242)",
+	"rgb(212,212,212)",
+	"rgb(201,201,201)",
+	"rgb(191,191,191)",
+	"rgb(182,182,182)",
+	"rgb(159,159,159)",
+	"rgb(128,128,128)",
+	"rgb(173,173,173)",
+	"rgb(164,164,164)",
+	"rgb(155,155,155)",
+	"rgb(146,146,146)",
+	"rgb(137,137,137)",
 ];
 let palette = default_palette;
 let polychrome_palette = palette;
@@ -49,6 +114,25 @@ let custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
+
+let inaccurate_palette_rgbas = old_inaccurate_default_palette.map(get_rgba_from_color);
+let accurate_palette_rgbas = default_palette.map(get_rgba_from_color);
+const exclude_rgbas = (rgbas, exclude_rgbas)=>
+	rgbas.filter((rgba)=>
+		!exclude_rgbas.find((exclude_rgba)=>
+			rgba.join(",") === exclude_rgba.join(",")
+		)
+	);
+const intersect_rgbas = (rgbas1, rgbas2)=>
+	rgbas1.filter((rgba1)=>
+		rgbas2.find((rgba2)=>
+			rgba1.join(",") === rgba2.join(",")
+		)
+	);
+const neutral_rgbas = intersect_rgbas(accurate_palette_rgbas, inaccurate_palette_rgbas);
+inaccurate_palette_rgbas = exclude_rgbas(inaccurate_palette_rgbas, neutral_rgbas);
+accurate_palette_rgbas = exclude_rgbas(accurate_palette_rgbas, neutral_rgbas);
+// console.log({neutral_rgbas, inaccurate_palette_rgbas, accurate_palette_rgbas});
 
 // declared like this for Cypress tests
 window.default_brush_shape = "circle";
