@@ -361,12 +361,13 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	let lum_percent = 50;
 
 	const make_color_grid = (colors, name)=> {
-		const $color_grid = $(`<div class="color-grid">`).attr({name});
+		const $color_grid = $(`<div class="color-grid" tabindex="0">`).attr({name});
 		for (const color of colors) {
 			const $swatch = $Swatch(color);
 			$swatch.appendTo($color_grid).addClass("inset-deep");
 			$swatch.attr("tabindex", 0);
 		}
+		let $local_last_focus = $color_grid.find(".swatch:first-child");
 		const num_colors_per_row = 8;
 		const navigate = (relative_index)=> {
 			const $focused = $color_grid.find(".swatch:focus");
@@ -411,6 +412,15 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		});
 		$color_grid.on("dragstart", (event)=> {
 			event.preventDefault();
+		});
+		$color_grid.on("focusin", (event)=> {
+			if (event.target.closest(".swatch")) {
+				$local_last_focus = $(event.target.closest(".swatch"));
+			} else {
+				if (!$local_last_focus.is(":focus")) { // prevent infinite recursion
+					$local_last_focus.focus();
+				}
+			}
 		});
 		return $color_grid;
 	};
