@@ -466,20 +466,29 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	const result_canvas = make_canvas(58, 40);
 	const lum_arrow_canvas = make_canvas(5, 9);
 	
+	let mouse_down_on_rainbow_canvas = false;
+	let crosshair_shown_on_rainbow_canvas = false;
 	const draw = ()=> {
-		for (let y = 0; y < rainbow_canvas.height; y += 6) {
-			for (let x = -1; x < rainbow_canvas.width; x += 3) {
-				rainbow_canvas.ctx.fillStyle = `hsl(${x/rainbow_canvas.width*360}deg, ${(1-y/rainbow_canvas.height)*100}%, 50%)`;
-				rainbow_canvas.ctx.fillRect(x, y, 3, 6);
+		if (!mouse_down_on_rainbow_canvas || crosshair_shown_on_rainbow_canvas) {
+			// rainbow
+			for (let y = 0; y < rainbow_canvas.height; y += 6) {
+				for (let x = -1; x < rainbow_canvas.width; x += 3) {
+					rainbow_canvas.ctx.fillStyle = `hsl(${x/rainbow_canvas.width*360}deg, ${(1-y/rainbow_canvas.height)*100}%, 50%)`;
+					rainbow_canvas.ctx.fillRect(x, y, 3, 6);
+				}
 			}
+			// crosshair
+			if (!mouse_down_on_rainbow_canvas) {
+				const x = ~~(hue_degrees/360*rainbow_canvas.width);
+				const y = ~~((1-sat_percent/100)*rainbow_canvas.height);
+				rainbow_canvas.ctx.fillStyle = "black";
+				rainbow_canvas.ctx.fillRect(x-1, y-9, 3, 5);
+				rainbow_canvas.ctx.fillRect(x-1, y+5, 3, 5);
+				rainbow_canvas.ctx.fillRect(x-9, y-1, 5, 3);
+				rainbow_canvas.ctx.fillRect(x+5, y-1, 5, 3);
+			}
+			crosshair_shown_on_rainbow_canvas = !mouse_down_on_rainbow_canvas;
 		}
-		const x = ~~(hue_degrees/360*rainbow_canvas.width);
-		const y = ~~((1-sat_percent/100)*rainbow_canvas.height);
-		rainbow_canvas.ctx.fillStyle = "black";
-		rainbow_canvas.ctx.fillRect(x-1, y-9, 3, 5);
-		rainbow_canvas.ctx.fillRect(x-1, y+5, 3, 5);
-		rainbow_canvas.ctx.fillRect(x-9, y-1, 5, 3);
-		rainbow_canvas.ctx.fillRect(x+5, y-1, 5, 3);
 
 		for (let y = -2; y < luminosity_canvas.height; y += 6) {
 			luminosity_canvas.ctx.fillStyle = `hsl(${hue_degrees}deg, ${sat_percent}%, ${(1-y/luminosity_canvas.height)*100}%)`;
@@ -509,6 +518,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		event.preventDefault();
 	};
 	$(rainbow_canvas).on("pointerdown", (event)=> {
+		mouse_down_on_rainbow_canvas = true;
 		select_hue_sat(event);
 		
 		$(rainbow_canvas).on("pointermove", select_hue_sat);
@@ -517,6 +527,8 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	$G.on("pointerup pointercancel", (event)=> {
 		$(rainbow_canvas).off("pointermove", select_hue_sat);
 		// rainbow_canvas.releasePointerCapture(event.pointerId);
+		mouse_down_on_rainbow_canvas = false;
+		draw();
 	});
 
 	const select_lum = (event)=> {
