@@ -486,7 +486,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			luminosity_canvas.ctx.fillRect(0, y, luminosity_canvas.width, 6);
 		}
 
-		lum_arrow_canvas.ctx.fillStyle = "black";
+		lum_arrow_canvas.ctx.fillStyle = getComputedStyle($w.$content[0]).getPropertyValue("--ButtonText");
 		for (let x = 0; x < lum_arrow_canvas.width; x++) {
 			lum_arrow_canvas.ctx.fillRect(x, lum_arrow_canvas.width-x-1, 1, 1+x*2);
 		}

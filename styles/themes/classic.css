@@ -292,6 +292,7 @@ body,
 .window-content {
 	font-family: Arial, sans-serif;
 	font-size: 16px;
+	color: var(--WindowText);
 }
 
 .help-window .item {
@@ -330,6 +331,11 @@ body,
 	border: 1px dotted white;
 	mix-blend-mode: difference;
 } */
+
+.history-view {
+	background: var(--Window);
+	color: var(--WindowText);
+}
 
 input[type=text],
 input[type=url] {

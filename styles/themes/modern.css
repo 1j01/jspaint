@@ -1,6 +1,7 @@
 :root {
 	--theme-loaded: "modern.css";
 	--Hilight: #0178d7;
+	--ButtonText: #000000;
 }
 
 body {
@@ -79,6 +80,7 @@ body {
 .window-content {
 	padding: 16px;
 	background: white;
+	color: black;
 	border-bottom-left-radius: 2px;
 	border-bottom-right-radius: 2px;
 }
@@ -234,6 +236,11 @@ body {
 	margin-left: 1px;
 }
 
+.edit-colors-window .inset-shallow {
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+}
+
 .edit-colors-window .swatch {
 	width: 20px;
 	height: 17px;
@@ -357,6 +364,11 @@ body,
 	background-color: #2196f3;
 	color: white;
 } */
+
+.history-view {
+	background: white;
+	color: black;
+}
 
 input:invalid {
 	box-shadow: 0 0 0 2px red;

@@ -702,8 +702,6 @@ html, body, .jspaint {
 	max-width: calc(100vw - 10px);
 	max-height: calc(100vh - 100px);
 	overflow: auto;
-	background: white;
-	color: black;
 }
 .history-entry {
 	cursor: pointer;
