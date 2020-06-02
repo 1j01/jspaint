@@ -6,7 +6,7 @@ function $Swatch(color){
 	const swatch_canvas = make_canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($swatch);
 	
-	$swatch.update = (set_color_to = color) => {
+	$swatch.data("update", (set_color_to = color) => {
 		color = set_color_to;
 		if(color instanceof CanvasPattern){
 			$swatch.addClass("pattern");
@@ -25,11 +25,11 @@ function $Swatch(color){
 				swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
 			}
 		});
-	};
-	$G.on("theme-load", () => {
-		$swatch.update();
 	});
-	$swatch.update();
+	$G.on("theme-load", () => {
+		$swatch.data("update")();
+	});
+	$swatch.data("update")();
 	
 	return $swatch;
 }
@@ -47,9 +47,9 @@ function $ColorBox(vertical){
 	$current_colors.append($background_color, $foreground_color);
 	
 	$G.on("option-changed", () => {
-		$foreground_color.update(colors.foreground);
-		$background_color.update(colors.background);
-		$current_colors.update(colors.ternary);
+		$foreground_color.data("update")(colors.foreground);
+		$background_color.data("update")(colors.background);
+		$current_colors.data("update")(colors.ternary);
 	});
 	
 	$current_colors.on("pointerdown", () => {
@@ -63,10 +63,6 @@ function $ColorBox(vertical){
 
 		const $b = $Swatch(color).addClass("color-button");
 		$b.appendTo($palette);
-		
-		$b.data("set_color", (new_color)=> {
-			$b.update(new_color);
-		});
 		
 		const double_click_period_ms = 400;
 		let within_double_click_period = false;

@@ -398,6 +398,10 @@ html, body, .jspaint {
 	grid-gap: 5px 9px;
 	user-select: none;
 }
+.edit-colors-window #custom-colors {
+	grid-auto-flow: column;
+	grid-template-rows: repeat(2, 17px);
+}
 .edit-colors-window .swatch {
 	width: 16px;
 	height: 13px;
@@ -464,6 +468,12 @@ html, body, .jspaint {
 	margin-top: 13px;
 	width: 210px;
 }
+.edit-colors-window .window-content .add-to-custom-colors-button {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	width: 213px;
+}
 .edit-colors-window .left-side label {
 	display: block;
 	margin-top: 7px;
@@ -481,7 +491,7 @@ html, body, .jspaint {
 	margin-left: 16px;
 }
 .edit-colors-window .result-color-canvas {
-	margin-top: 3px;
+	margin-top: 4px;
 }
 
 .canvas-area {

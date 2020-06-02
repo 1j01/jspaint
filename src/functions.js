@@ -333,7 +333,6 @@ function show_custom_zoom_window() {
 }
 
 let $edit_colors_window;
-// @TODO: add custom colors to the list
 // @TODO: persist custom colors list
 // @TODO: more keyboard navigation
 // @TODO: OK with Enter, after selecting a focused color if applicable 
@@ -362,6 +361,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 
 	let custom_colors_index = 0;
 
+	const get_current_color = ()=> `hsl(${hue_degrees}deg, ${sat_percent}%, ${lum_percent}%)`;
 	const set_color = (color)=> {
 		const [r, g, b] = get_rgba_from_color(color);
 		const [h, s, l] = rgb_to_hsl(r, g, b);
@@ -373,11 +373,16 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		$w.$content.find(".swatch").removeClass("selected");
 		$swatch.addClass("selected");
 		set_color($swatch[0].dataset.color);
+		if ($swatch.closest("#custom-colors")) {
+			custom_colors_index = Math.max(0, $custom_colors_grid.find(".swatch").toArray().indexOf(
+				$custom_colors_grid.find(".swatch.selected")[0]
+			));
+		}
 	};
 	set_color(initial_color);
 
-	const make_color_grid = (colors, name)=> {
-		const $color_grid = $(`<div class="color-grid" tabindex="0">`).attr({name});
+	const make_color_grid = (colors, id)=> {
+		const $color_grid = $(`<div class="color-grid" tabindex="0">`).attr({id});
 		for (const color of colors) {
 			const $swatch = $Swatch(color);
 			$swatch.appendTo($color_grid).addClass("inset-deep");
@@ -459,7 +464,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	.on("click", ()=> {
 		$right.show();
 		$expando_button.attr("disabled", "disabled");
-	})
+	});
 
 	const rainbow_canvas = make_canvas(175, 187);
 	const luminosity_canvas = make_canvas(10, 187);
@@ -503,7 +508,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		lum_arrow_canvas.style.right = "7px";
 		lum_arrow_canvas.style.top = `${3 + ~~((1-lum_percent/100)*luminosity_canvas.height)}px`;
 
-		result_canvas.ctx.fillStyle = `hsl(${hue_degrees}deg, ${sat_percent}%, ${lum_percent}%)`;
+		result_canvas.ctx.fillStyle = get_current_color();
 		result_canvas.ctx.fillRect(0, 0, result_canvas.width, result_canvas.height);
 	};
 	draw();
@@ -549,10 +554,22 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 
 	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, lum_arrow_canvas);
 
+	$(`<button class="add-to-custom-colors-button">`)
+	.text("Add To Custom Colors")
+	.appendTo($right)
+	.on("click", (event)=> {
+		const color = get_current_color();
+		custom_colors[custom_colors_index] = color;
+		// console.log($custom_colors_grid.find(".swatch"), custom_colors_index, $($custom_colors_grid.find(".swatch")[custom_colors_index]));
+		$($custom_colors_grid.find(".swatch")[custom_colors_index]).data("update")(color);
+		custom_colors_index = (custom_colors_index + 1) % custom_colors.length;
+		event.preventDefault(); // prevent form submit
+	});
+
 	$w.$Button("OK", () => {
-		const color = `hsl(${hue_degrees}deg, ${sat_percent}%, ${lum_percent}%)`;
-		// console.log($swatch_to_edit, $swatch_to_edit.data("set_color"));
-		$swatch_to_edit.data("set_color")(color);
+		const color = get_current_color();
+		// console.log($swatch_to_edit, $swatch_to_edit.data("update"));
+		$swatch_to_edit.data("update")(color);
 		colors[color_selection_slot_to_edit] = color;
 		$G.triggerHandler("option-changed");
 		$w.close();
@@ -560,7 +577,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	$w.$Button("Cancel", () => {
 		$w.close();
 	});
-	
+
 	$left.append($w.$buttons);
 
 	$w.center();
