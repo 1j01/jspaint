@@ -6,15 +6,17 @@ function $Swatch(color){
 	const swatch_canvas = make_canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($swatch);
 	
-	$swatch.data("update", (set_color_to = color) => {
-		color = set_color_to;
-		if(color instanceof CanvasPattern){
+	const update = (new_color = color) => {
+		if (new_color instanceof CanvasPattern) {
 			$swatch.addClass("pattern");
 			$swatch[0].dataset.color = "";
-		}else{
+		} else if (typeof new_color === "string") {
 			$swatch.removeClass("pattern");
-			$swatch[0].dataset.color = color;
+			$swatch[0].dataset.color = new_color;
+		} else if (new_color !== undefined) {
+			throw new TypeError(`argument to update must be CanvasPattern or string (or undefined); got type ${typeof new_color}`);
 		}
+		color = new_color;
 		requestAnimationFrame(() => {
 			swatch_canvas.width = $swatch.innerWidth();
 			swatch_canvas.height = $swatch.innerHeight();
@@ -25,11 +27,10 @@ function $Swatch(color){
 				swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
 			}
 		});
-	});
-	$G.on("theme-load", () => {
-		$swatch.data("update")();
-	});
-	$swatch.data("update")();
+	};
+	$swatch.data("update", update);
+	$G.on("theme-load", ()=> { update(); });
+	update();
 	
 	return $swatch;
 }
