@@ -397,6 +397,7 @@ html, body, .jspaint {
 	grid-template-columns: repeat(8, 16px);
 	grid-gap: 5px 9px;
 	user-select: none;
+	margin-left: 8px;
 }
 .edit-colors-window #custom-colors {
 	grid-auto-flow: column;
@@ -483,9 +484,6 @@ html, body, .jspaint {
 .edit-colors-window .left-side label:nth-of-type(2) {
 	margin-top: 18px;
 	margin-bottom: 7px;
-}
-.edit-colors-window .color-grid {
-	margin-left: 8px;
 }
 .edit-colors-window .luminosity-canvas {
 	margin-left: 16px;
