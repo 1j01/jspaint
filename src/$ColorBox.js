@@ -5,8 +5,8 @@ function $Swatch(color){
 	const swatch_canvas = make_canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($b);
 	
-	$b.update = _color => {
-		color = _color;
+	$b.update = (set_color_to = color) => {
+		color = set_color_to;
 		if(color instanceof CanvasPattern){
 			$b.addClass("pattern");
 		}else{
@@ -25,9 +25,9 @@ function $Swatch(color){
 		});
 	};
 	$G.on("theme-load", () => {
-		$b.update(color);
+		$b.update();
 	});
-	$b.update(color);
+	$b.update();
 	
 	return $b;
 }
