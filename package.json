@@ -68,7 +68,7 @@
     "cypress": "4.7.0",
     "cypress-image-snapshot": "3.1.1",
     "devtron": "^1.4.0",
-    "electron": "6.0.10",
+    "electron": "7.2.4",
     "electron-debug": "^3.0.1",
     "eslint": "6.4.0",
     "live-server": "^1.2.1",
