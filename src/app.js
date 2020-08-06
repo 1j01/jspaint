@@ -1,5 +1,6 @@
 
 const default_magnification = 1;
+const valid_scrollwheel_magnification = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8];
 const default_tool = get_tool_by_name("Pencil");
 
 const default_canvas_width = 683;
@@ -1427,6 +1428,31 @@ $canvas_area.on("pointerdown", e => {
 			}
 		}
 	}
+});
+
+$(window).bind('mousewheel DOMMouseScroll', function(event) 
+{
+  if(event.ctrlKey == true)
+  {
+    event.preventDefault();
+    // Get the closest valid magnification, and change it based on that
+    closest = valid_scrollwheel_magnification.reduce((a, b) => {
+      return Math.abs(b - magnification) < Math.abs(a - magnification) ? b : a;
+    });
+    index = valid_scrollwheel_magnification.indexOf(closest)
+    if(event.originalEvent.detail > 0) {
+      index -= 1;
+    } else {
+      index += 1;
+    }
+    if (index < 0) {
+      index = 0;
+    }
+    if (index >= valid_scrollwheel_magnification.length) {
+      index = valid_scrollwheel_magnification.length - 1;
+    }
+    set_magnification(valid_scrollwheel_magnification[index]);
+  }
 });
 
 function prevent_selection($el) {
