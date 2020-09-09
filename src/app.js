@@ -400,7 +400,13 @@ $G.on("keydown", e => {
 		}
 		e.preventDefault();
 		return;
-	}else if(e.ctrlKey || e.metaKey){
+	}
+
+	else if(e.keyCode === 8){
+		clear();
+	}
+	
+	else if(e.ctrlKey || e.metaKey){
 		const key = String.fromCharCode(e.keyCode).toUpperCase();
 		if(textbox){
 			switch(key){
