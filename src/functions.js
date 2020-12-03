@@ -342,16 +342,27 @@ let $edit_colors_window;
 // - OK with Enter, after selecting a focused color if applicable 
 // - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 //   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
-// - Hue/Sat/Lum/Red/Green/Blue fields
+// - Functional Hue/Sat/Lum/Red/Green/Blue fields
 // - Keyboard shortcuts to jump to controls
-// - There isn't a low color mode so colors are always solid, but alt+o could reinitialize the HSL from the RGB
+//   - Make sure all are visible with underlines
+// - There isn't a low color mode so colors are always solid, but alt+o should reinitialize the HSL from the RGB
 // - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
+
+// In Windows, the Hue goes from 0 to 239 (240 being equivalent to 0), and Sat and Lum go from 0 to 240
+// I think people are more familiar with degrees and percentages, so I don't think I'll be implementing that.
 
 // Development workflow:
 // - In the console, set localStorage.dev_edit_colors = "true";
 // - Reload the page
 // - Load a screenshot of the Edit Colors window into the editor
 // - Position it finely using the arrow keys on a selection
+// - For measuring positions, look at the Windows source code OR:
+//   - close the window,
+//   - point on the canvas, mark down the coordinates shown in status bar,
+//   - point on the canvas at the origin
+//     - the top left of the inside of the window, or
+//     - the top left of (what corresponds to) the nearest parent position:fixed/absolute/relative
+//   - subtract the origin from the target
 let dev_edit_colors = false;
 try {
 	dev_edit_colors = localStorage.dev_edit_colors === "true";
@@ -579,6 +590,55 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		$(luminosity_canvas).off("pointermove", select_lum);
 		// luminosity_canvas.releasePointerCapture(event.pointerId);
 	});
+
+	// misnomer: using .menu-hotkey out of lazyness
+	const underline_hotkey = str => str.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
+	// const text_without_hotkey = str => str.replace(/&/, "");
+	// const get_hotkey = str => str[str.indexOf("&")+1].toUpperCase();
+
+	for (const [color_model_index, color_model] of Object.entries(["hsl", "rgb"])) {
+		for (const [component_index, component_letter] of Object.entries(color_model)) {
+			const text_with_hotkey = {
+				h: "Hu&e:",
+				s: "&Sat:",
+				l: "&Lum:",
+				r: "&Red:",
+				g: "&Green:",
+				b: "Bl&ue:",
+			}[component_letter];
+			// not doing type="number" because the inputs have no up/down buttons and special semantics
+			const input = document.createElement("input");
+			input.classList.add("inset-deep");
+			const label = document.createElement("label");
+			label.innerHTML = underline_hotkey(text_with_hotkey);
+			const input_y_spacing = 23;
+			$(label).css({
+				position: "absolute",
+				left: 63 + color_model_index * 80,
+				top: 202 + component_index * input_y_spacing,
+				textAlign: "right",
+				width: 40,
+			});
+			$(input).css({
+				position: "absolute",
+				left: 106 + color_model_index * 80,
+				top: 202 + component_index * input_y_spacing,
+				width: 20,
+				height: 14,
+			});
+			$right.append(label, input);
+
+			const rgba = get_rgba_from_color(get_current_color());
+			input.value = {
+				h: hue_degrees,
+				s: sat_percent,
+				l: lum_percent,
+				r: rgba[0],
+				g: rgba[1],
+				b: rgba[2],
+			}[component_letter];
+		}
+	}
 
 	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, lum_arrow_canvas);
 
