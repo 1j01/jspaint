@@ -333,13 +333,41 @@ function show_custom_zoom_window() {
 }
 
 let $edit_colors_window;
-// @TODO: persist custom colors list
-// @TODO: more keyboard navigation
-// @TODO: OK with Enter, after selecting a focused color if applicable 
-// @TODO: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
-// or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
-// @TODO: question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
-// $(()=> { show_edit_colors_window(); $(".expando-button").click(); $edit_colors_window.center(); }); // for development
+// @TODO:
+// - Persist custom colors list? it's not very persistent in real Windows...
+// - Keyboard navigation of the color cells
+//   - consistent behavior of arrow keys (should probably store the colors in the same way for each grid)
+//   - tab should go to next control, not next cell
+// - Any time a button is disabled, make sure it focuses the right element
+// - OK with Enter, after selecting a focused color if applicable 
+// - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
+//   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
+// - Hue/Sat/Lum/Red/Green/Blue fields
+// - Keyboard shortcuts to jump to controls
+// - There isn't a low color mode so colors are always solid, but alt+o could reinitialize the HSL from the RGB
+// - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
+
+// Development workflow:
+// - In the console, set localStorage.dev_edit_colors = "true";
+// - Reload the page
+// - Load a screenshot of the Edit Colors window into the editor
+// - Position it finely using the arrow keys on a selection
+let dev_edit_colors = false;
+try {
+	dev_edit_colors = localStorage.dev_edit_colors === "true";
+	// eslint-disable-next-line no-empty
+} catch (error) { }
+if (dev_edit_colors) {
+	$(()=> {
+		show_edit_colors_window();
+		$(".expando-button").click();
+		$edit_colors_window.css({
+			left: 80,
+			top: 50,
+			opacity: 0.5,
+		});
+	});
+}	
 
 function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) {
 	// console.log($swatch_to_edit, $colorbox.data("$last_fg_color_button"));
