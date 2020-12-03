@@ -264,8 +264,8 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	// const text_without_hotkey = str => str.replace(/&/, "");
 	// const get_hotkey = str => str[str.indexOf("&")+1].toUpperCase();
 
-	for (const [color_model_index, color_model] of Object.entries(["hsl", "rgb"])) {
-		for (const [component_index, component_letter] of Object.entries(color_model)) {
+	["hsl", "rgb"].forEach((color_model, color_model_index)=> {
+		[...color_model].forEach((component_letter, component_index)=> {
 			const text_with_hotkey = {
 				h: "Hu&e:",
 				s: "&Sat:",
@@ -305,8 +305,8 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 				g: rgba[1],
 				b: rgba[2],
 			}[component_letter];
-		}
-	}
+		});
+	});
 
 	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, lum_arrow_canvas);
 
