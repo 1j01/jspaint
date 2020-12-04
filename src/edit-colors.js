@@ -1,7 +1,5 @@
 // @TODO:
 // - Persist custom colors list? it's not very persistent in real Windows...
-// - Keyboard navigation of the color cells
-//   - consistent behavior of arrow keys (should probably store the colors in the same way for each grid)
 // - OK with Enter, after selecting a focused color if applicable 
 // - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 //   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
@@ -78,7 +76,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		$swatch.addClass("selected");
 		set_color($swatch[0].dataset.color);
 		if ($swatch.closest("#custom-colors")) {
-			custom_colors_index = Math.max(0, $custom_colors_grid.find(".swatch").toArray().indexOf(
+			custom_colors_index = Math.max(0, custom_colors_swatches_list_order.indexOf(
 				$custom_colors_grid.find(".swatch.selected")[0]
 			));
 		}
@@ -159,7 +157,23 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	$left.append(`<label for="basic-colors">${underline_hotkey("&Basic colors:")}</label>`);
 	const $basic_colors_grid = make_color_grid(basic_colors, "basic-colors").appendTo($left);
 	$left.append(`<label for="custom-colors">${underline_hotkey("&Custom colors:")}</label>`);
-	const $custom_colors_grid = make_color_grid(custom_colors, "custom-colors").appendTo($left);
+	const custom_colors_dom_order = []; // (wanting) horizontal top to bottom
+	for (let list_index = 0; list_index < custom_colors.length; list_index++) {
+		const row = list_index % 2;
+		const column = Math.floor(list_index / 2);
+		const dom_index = row * 8 + column;
+		custom_colors_dom_order[dom_index] = custom_colors[list_index];
+	}
+	const $custom_colors_grid = make_color_grid(custom_colors_dom_order, "custom-colors").appendTo($left);
+	const custom_colors_swatches_dom_order = $custom_colors_grid.find(".swatch").toArray(); // horizontal top to bottom
+	const custom_colors_swatches_list_order = []; // (wanting) vertical left to right
+	for (let dom_index = 0; dom_index < custom_colors_swatches_dom_order.length; dom_index++) {
+		const row = Math.floor(dom_index / 8);
+		const column = dom_index % 8;
+		const list_index = column * 2 + row;
+		custom_colors_swatches_list_order[list_index] = custom_colors_swatches_dom_order[dom_index];
+		// custom_colors_swatches_list_order[list_index].textContent = list_index; // visualization
+	}
 
 	const $expando_button = $(`<button class="expando-button">`)
 	.html(underline_hotkey("&Define Custom Colors >>"))
@@ -451,8 +465,8 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	.on("click", (event)=> {
 		const color = get_current_color();
 		custom_colors[custom_colors_index] = color;
-		// console.log($custom_colors_grid.find(".swatch"), custom_colors_index, $($custom_colors_grid.find(".swatch")[custom_colors_index]));
-		$($custom_colors_grid.find(".swatch")[custom_colors_index]).data("update")(color);
+		// console.log(custom_colors_swatches_reordered, custom_colors_index, custom_colors_swatches_reordered[custom_colors_index]));
+		$(custom_colors_swatches_list_order[custom_colors_index]).data("update")(color);
 		custom_colors_index = (custom_colors_index + 1) % custom_colors.length;
 		event.preventDefault(); // prevent form submit
 	});
@@ -480,7 +494,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			break;
 		}
 	}
-	custom_colors_index = Math.max(0, $custom_colors_grid.find(".swatch").toArray().indexOf(
+	custom_colors_index = Math.max(0, custom_colors_swatches_list_order.indexOf(
 		$custom_colors_grid.find(".swatch.selected")[0]
 	));
 	

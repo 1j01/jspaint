@@ -399,10 +399,6 @@ html, body, .jspaint {
 	user-select: none;
 	margin-left: 8px;
 }
-.edit-colors-window #custom-colors {
-	grid-auto-flow: column;
-	grid-template-rows: repeat(2, 17px);
-}
 .edit-colors-window .swatch {
 	width: 16px;
 	height: 13px;
