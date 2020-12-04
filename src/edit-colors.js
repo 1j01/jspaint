@@ -164,7 +164,11 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	const $expando_button = $(`<button class="expando-button">`)
 	.html(underline_hotkey("&Define Custom Colors >>"))
 	.appendTo($left)
-	.on("click", ()=> {
+	.on("click", (e)=> {
+		// prevent the form from submitting
+		// @TODO: instead, prevent the form's submit event in $Window.js in os-gui (or don't have a form? idk)
+		e.preventDefault();
+
 		$right.show();
 		$expando_button.attr("disabled", "disabled");
 		inputs_by_component_letter.h.focus();
