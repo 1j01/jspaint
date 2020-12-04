@@ -352,6 +352,17 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			}
 		}
 	});
+	$right.on("focusout", "input", (event)=> {
+		const input = event.target;
+		const component_letter = input.dataset.componentLetter;
+		if (component_letter) {
+			// Handle empty input when focus moves away
+			if (!input.value.match(/^\d+$/)) {
+				update_inputs(component_letter);
+				input.select();
+			}
+		}
+	});
 
 	const update_inputs = (components)=> {
 		for (const component_letter of components) {
