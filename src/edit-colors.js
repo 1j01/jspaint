@@ -7,9 +7,6 @@
 // - OK with Enter, after selecting a focused color if applicable 
 // - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 //   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
-// - Keyboard shortcuts to jump to controls
-//   - Make sure all are visible with underlines
-// - There isn't a low color mode so colors are always solid, but alt+o should reinitialize the HSL from the RGB
 // - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
 
 // In Windows, the Hue goes from 0 to 239 (240 being equivalent to 0), and Sat and Lum go from 0 to 240
@@ -90,6 +87,11 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		update_inputs("hslrgb");
 	};
 
+	// misnomer: using .menu-hotkey out of lazyness
+	const underline_hotkey = str => str.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
+	// const text_without_hotkey = str => str.replace(/&/, "");
+	// const get_hotkey = str => str[str.indexOf("&")+1].toUpperCase();
+
 	const make_color_grid = (colors, id)=> {
 		const $color_grid = $(`<div class="color-grid" tabindex="0">`).attr({id});
 		for (const color of colors) {
@@ -149,17 +151,24 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	const $left_right_split = $(`<div class="left-right-split">`).appendTo($w.$main);
 	const $left = $(`<div class="left-side">`).appendTo($left_right_split);
 	const $right = $(`<div class="right-side">`).appendTo($left_right_split).hide();
-	$left.append(`<label for="basic-colors">Basic colors:</label>`);
-	make_color_grid(basic_colors, "basic-colors").appendTo($left);
-	$left.append(`<label for="custom-colors">Custom colors:</label>`);
+	$left.append(`<label for="basic-colors">${underline_hotkey("&Basic colors:")}</label>`);
+	const $basic_colors_grid = make_color_grid(basic_colors, "basic-colors").appendTo($left);
+	$left.append(`<label for="custom-colors">${underline_hotkey("&Custom colors:")}</label>`);
 	const $custom_colors_grid = make_color_grid(custom_colors, "custom-colors").appendTo($left);
 
 	const $expando_button = $(`<button class="expando-button">`)
-	.text("Define Custom Colors >>")
+	.html(underline_hotkey("&Define Custom Colors >>"))
 	.appendTo($left)
 	.on("click", ()=> {
 		$right.show();
 		$expando_button.attr("disabled", "disabled");
+	});
+
+	const $color_solid_label = $(`<label for="color-solid-canvas">${underline_hotkey("Color|S&olid")}</label>`);
+	$color_solid_label.css({
+		position: "absolute",
+		left: 10,
+		top: 244,
 	});
 
 	const rainbow_canvas = make_canvas(175, 187);
@@ -210,7 +219,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	draw();
 	$(rainbow_canvas).addClass("rainbow-canvas inset-shallow");
 	$(luminosity_canvas).addClass("luminosity-canvas inset-shallow");
-	$(result_canvas).addClass("result-color-canvas inset-shallow");
+	$(result_canvas).addClass("result-color-canvas inset-shallow").attr("id", "color-solid-canvas");
 
 	const select_hue_sat = (event)=> {
 		hue_degrees = Math.min(1, Math.max(0, event.offsetX/rainbow_canvas.width))*360;
@@ -249,11 +258,6 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		$(luminosity_canvas).off("pointermove", select_lum);
 		// luminosity_canvas.releasePointerCapture(event.pointerId);
 	});
-
-	// misnomer: using .menu-hotkey out of lazyness
-	const underline_hotkey = str => str.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
-	// const text_without_hotkey = str => str.replace(/&/, "");
-	// const get_hotkey = str => str[str.indexOf("&")+1].toUpperCase();
 
 	const inputs_by_component_letter = {};
 
@@ -364,6 +368,56 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		}
 	});
 
+	$w.on("keydown", (event)=> {
+		if (event.altKey) {
+			switch (event.key) {
+				case "o":
+					set_color(get_current_color());
+					update_inputs("hslrgb");
+					draw();
+					break;
+				case "b":
+					$basic_colors_grid.find(".swatch.selected, .swatch").focus();
+					break;
+				case "c":
+					$basic_colors_grid.find(".swatch.selected, .swatch").focus();
+					break;
+				case "e":
+					inputs_by_component_letter.h.focus();
+					break;
+				case "s":
+					inputs_by_component_letter.s.focus();
+					break;
+				case "l":
+					inputs_by_component_letter.l.focus();
+					break;
+				case "r":
+					inputs_by_component_letter.r.focus();
+					break;
+				case "g":
+					inputs_by_component_letter.g.focus();
+					break;
+				case "u":
+					inputs_by_component_letter.b.focus();
+					break;
+				case "a":
+					if ($add_to_custom_colors_button.is(":visible")) { 
+						$add_to_custom_colors_button.click();
+					}
+					break;
+				case "d":
+					$expando_button.click();
+					break;
+				default:
+					return; // don't prevent default by default
+			}
+		} else {
+			return; // don't prevent default by default
+		}
+		event.preventDefault();
+		event.stopPropagation();
+	});
+
 	const update_inputs = (components)=> {
 		for (const component_letter of components) {
 			const input = inputs_by_component_letter[component_letter];
@@ -379,10 +433,10 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		}
 	};
 
-	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, lum_arrow_canvas);
+	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, $color_solid_label, lum_arrow_canvas);
 
-	$(`<button class="add-to-custom-colors-button">`)
-	.text("Add To Custom Colors")
+	const $add_to_custom_colors_button = $(`<button class="add-to-custom-colors-button">`)
+	.html(underline_hotkey("&Add To Custom Colors"))
 	.appendTo($right)
 	.on("click", (event)=> {
 		const color = get_current_color();
