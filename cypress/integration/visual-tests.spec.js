@@ -133,6 +133,17 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
+	const test_edit_colors_dialog = (expand=true) => {
+		cy.contains(".menu-button", "Colors").click();
+		cy.contains(".menu-item", "Edit Colors").click();
+		cy.wait(100);
+		if (expand) {
+			cy.contains("button", "Define Custom Colors >>").click();
+		}
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions));
+	};
+	it('modern theme edit colors dialog (expanded)', test_edit_colors_dialog);
+
 	it('winter theme', () => {
 		selectTheme("Winter");
 		// cy.contains(".menu-button", "View").click();
@@ -140,6 +151,8 @@ context('visual tests', () => {
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
+
+	it('winter theme edit colors dialog (expanded)', test_edit_colors_dialog);
 
 	it('winter theme vertical color box', () => {
 		cy.wait(500);
@@ -154,6 +167,10 @@ context('visual tests', () => {
 	it('classic theme vertical color box', () => {
 		selectTheme("Classic");
 		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('classic theme edit colors dialog', ()=> {
+		test_edit_colors_dialog(false);
 	});
 
 	it('modern theme vertical color box', () => {
