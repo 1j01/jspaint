@@ -7,7 +7,6 @@
 // - OK with Enter, after selecting a focused color if applicable 
 // - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 //   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
-// - Functional Hue/Sat/Lum/Red/Green/Blue fields
 // - Keyboard shortcuts to jump to controls
 //   - Make sure all are visible with underlines
 // - There isn't a low color mode so colors are always solid, but alt+o should reinitialize the HSL from the RGB
@@ -69,12 +68,15 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	let custom_colors_index = 0;
 
 	const get_current_color = ()=> `hsl(${hue_degrees}deg, ${sat_percent}%, ${lum_percent}%)`;
-	const set_color = (color)=> {
-		const [r, g, b] = get_rgba_from_color(color);
+	const set_color_from_rgb = (r, g, b)=> {
 		const [h, s, l] = rgb_to_hsl(r, g, b);
 		hue_degrees = h * 360;
 		sat_percent = s * 100;
 		lum_percent = l * 100;
+	};
+	const set_color = (color)=> {
+		const [r, g, b] = get_rgba_from_color(color);
+		set_color_from_rgb(r, g, b);
 	};
 	const select = ($swatch)=> {
 		$w.$content.find(".swatch").removeClass("selected");
@@ -85,8 +87,8 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 				$custom_colors_grid.find(".swatch.selected")[0]
 			));
 		}
+		update_inputs("hslrgb");
 	};
-	set_color(initial_color);
 
 	const make_color_grid = (colors, id)=> {
 		const $color_grid = $(`<div class="color-grid" tabindex="0">`).attr({id});
@@ -152,19 +154,6 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	$left.append(`<label for="custom-colors">Custom colors:</label>`);
 	const $custom_colors_grid = make_color_grid(custom_colors, "custom-colors").appendTo($left);
 
-	// initially select the first color cell that matches the swatch to edit, if any
-	// (first in the basic colors, then in the custom colors otherwise - implicitly)
-	for (const swatch_el of $left.find(".swatch").toArray()) {
-		if (get_rgba_from_color(swatch_el.dataset.color).join(",") === get_rgba_from_color(initial_color).join(",")) {
-			select($(swatch_el));
-			swatch_el.focus();
-			break;
-		}
-	}
-	custom_colors_index = Math.max(0, $custom_colors_grid.find(".swatch").toArray().indexOf(
-		$custom_colors_grid.find(".swatch.selected")[0]
-	));
-
 	const $expando_button = $(`<button class="expando-button">`)
 	.text("Define Custom Colors >>")
 	.appendTo($left)
@@ -226,6 +215,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	const select_hue_sat = (event)=> {
 		hue_degrees = Math.min(1, Math.max(0, event.offsetX/rainbow_canvas.width))*360;
 		sat_percent = Math.min(1, Math.max(0, (1 - event.offsetY/rainbow_canvas.height)))*100;
+		update_inputs("hsrgb");
 		draw();
 		event.preventDefault();
 	};
@@ -245,6 +235,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 
 	const select_lum = (event)=> {
 		lum_percent = Math.min(1, Math.max(0, (1 - event.offsetY/luminosity_canvas.height)))*100;
+		update_inputs("lrgb");
 		draw();
 		event.preventDefault();
 	};
@@ -264,6 +255,8 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	// const text_without_hotkey = str => str.replace(/&/, "");
 	// const get_hotkey = str => str[str.indexOf("&")+1].toUpperCase();
 
+	const inputs_by_component_letter = {};
+
 	["hsl", "rgb"].forEach((color_model, color_model_index)=> {
 		[...color_model].forEach((component_letter, component_index)=> {
 			const text_with_hotkey = {
@@ -278,6 +271,16 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			// not doing type="number" because the inputs have no up/down buttons and they have special behavior with validation
 			input.type = "text";
 			input.classList.add("inset-deep");
+			input.dataset.componentLetter = component_letter;
+			input.dataset.min = 0;
+			input.dataset.max = {
+				h: 360,
+				s: 100,
+				l: 100,
+				r: 255,
+				g: 255,
+				b: 255,
+			}[component_letter];
 			const label = document.createElement("label");
 			label.innerHTML = underline_hotkey(text_with_hotkey);
 			const input_y_spacing = 22;
@@ -299,17 +302,71 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			});
 			$right.append(label, input);
 
-			const rgba = get_rgba_from_color(get_current_color());
-			input.value = {
+			inputs_by_component_letter[component_letter] = input;
+		});
+	});
+
+	// listening for input events on input elements using event delegation (looks a little weird)
+	$right.on("input", "input", (event)=> {
+		const input = event.target;
+		const component_letter = input.dataset.componentLetter;
+		if (component_letter) {
+			// In Windows, it actually only updates if the numerical value changes, not just the text.
+			// That is, you can add leading zeros, and they'll stay, then add them in the other color model
+			// and it won't remove the ones in the fields of the first color model.
+			// This is not important, so I don't know if I'll do that.
+
+			if (input.value.match(/^\d+$/)) {
+				let n = Number(input.value);
+				if (n < input.dataset.min) {
+					n = input.dataset.min;
+					input.value = n;
+				} else if (n > input.dataset.max) {
+					n = input.dataset.max;
+					input.value = n;
+				}
+				if ("hsl".indexOf(component_letter) > -1) {
+					switch (component_letter) {
+						case "h":
+							hue_degrees = n;
+							break;
+						case "s":
+							sat_percent = n;
+							break;
+						case "l":
+							lum_percent = n;
+							break;
+					}
+					update_inputs("rgb");
+				} else {
+					let [r, g, b] = get_rgba_from_color(get_current_color());
+					const rgb = {r, g, b};
+					rgb[component_letter] = n;
+					set_color_from_rgb(rgb.r, rgb.g, rgb.b);
+					update_inputs("hsl");
+				}
+				draw();
+			} else if (input.value.length) {
+				update_inputs(component_letter);
+				input.select();
+			}
+		}
+	});
+
+	const update_inputs = (components)=> {
+		for (const component_letter of components) {
+			const input = inputs_by_component_letter[component_letter];
+			const [r, g, b] = get_rgba_from_color(get_current_color());
+			input.value = Math.floor({
 				h: hue_degrees,
 				s: sat_percent,
 				l: lum_percent,
-				r: rgba[0],
-				g: rgba[1],
-				b: rgba[2],
-			}[component_letter];
-		});
-	});
+				r,
+				g,
+				b,
+			}[component_letter]);
+		}
+	};
 
 	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, lum_arrow_canvas);
 
@@ -338,6 +395,22 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	});
 
 	$left.append($w.$buttons);
+
+	// initially select the first color cell that matches the swatch to edit, if any
+	// (first in the basic colors, then in the custom colors otherwise - implicitly)
+	for (const swatch_el of $left.find(".swatch").toArray()) {
+		if (get_rgba_from_color(swatch_el.dataset.color).join(",") === get_rgba_from_color(initial_color).join(",")) {
+			select($(swatch_el));
+			swatch_el.focus();
+			break;
+		}
+	}
+	custom_colors_index = Math.max(0, $custom_colors_grid.find(".swatch").toArray().indexOf(
+		$custom_colors_grid.find(".swatch.selected")[0]
+	));
+	
+	set_color(initial_color);
+	update_inputs("hslrgb");
 
 	$w.center();
 }
