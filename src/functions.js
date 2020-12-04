@@ -1069,10 +1069,14 @@ function paste(img){
 		$w.$Button("Enlarge", () => {
 			$w.close();
 			// The resize gets its own undoable, as in mspaint
-			resize_canvas_and_save_dimensions(img.width, img.height, {
-				name: "Enlarge Canvas For Paste",
-				icon: get_help_folder_icon("p_stretch_both.png"),
-			});
+			resize_canvas_and_save_dimensions(
+				Math.max(canvas.width, img.width),
+				Math.max(canvas.height, img.height),
+				{
+					name: "Enlarge Canvas For Paste",
+					icon: get_help_folder_icon("p_stretch_both.png"),
+				}
+			);
 			do_the_paste();
 			$canvas_area.trigger("resize");
 		})[0].focus();
