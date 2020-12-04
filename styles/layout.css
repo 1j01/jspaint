@@ -451,7 +451,7 @@ html, body, .jspaint {
 	min-width: 66px;
 	margin: 3px;
 }
-.edit-colors-window .window-content .expando-button,
+.edit-colors-window .window-content .define-custom-colors-button,
 .edit-colors-window .window-content .button-group button:first-of-type {
 	margin-left: 5px;
 }
@@ -461,7 +461,7 @@ html, body, .jspaint {
 	padding: 0;
 	margin-left: 3px;
 }
-.edit-colors-window .window-content .expando-button {
+.edit-colors-window .window-content .define-custom-colors-button {
 	margin-top: 13px;
 	width: 210px;
 }
@@ -486,6 +486,20 @@ html, body, .jspaint {
 }
 .edit-colors-window .result-color-canvas {
 	margin-top: 4px;
+}
+@media (max-width: 450px) {
+	.edit-colors-window {
+		overflow: hidden;
+	}
+	.edit-colors-window.defining-custom-colors .left-side {
+		/* display: none !important; */
+		/* this element is determining the height */
+		width: 0;
+		visibility: hidden;
+	}
+	.edit-colors-window:not(.defining-custom-colors) .right-side {
+		display: none !important;
+	}
 }
 
 .canvas-area {

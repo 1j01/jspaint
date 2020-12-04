@@ -3,6 +3,16 @@
 // - OK with Enter, after selecting a focused color if applicable
 // - maybe use https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 // - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
+// - For mobile layout, maybe add a way to get back (<<) without adding (potentially overwriting) a custom color
+// - Eye gaze support
+//   - Click on swatches
+//   - Click on rainbow/slider
+//   - Enlarge UI (maybe just scale the entire dialog to fit maximally on screen)
+// - Speech recognition
+//   - Lum as Luminosity, Luminance, Lightness, maybe even Brightness
+//   - Sat as Saturation
+//   - Add / Add Color / Add Custom Color for Add To Custom Colors or if not available then Define Custom Colors >>
+//   - Set green to 50 etc.
 
 // In Windows, the Hue goes from 0 to 239 (240 being equivalent to 0), and Sat and Lum go from 0 to 240
 // I think people are more familiar with degrees and percentages, so I don't think I'll be implementing that.
@@ -30,7 +40,7 @@ try {
 if (dev_edit_colors) {
 	$(()=> {
 		show_edit_colors_window();
-		$(".expando-button").click();
+		$(".define-custom-colors-button").click();
 		$edit_colors_window.css({
 			left: 80,
 			top: 50,
@@ -184,7 +194,7 @@ function choose_color(initial_color, callback) {
 		// custom_colors_swatches_list_order[list_index].textContent = list_index; // visualization
 	}
 
-	const $expando_button = $(`<button class="expando-button">`)
+	const $define_custom_colors_button = $(`<button class="define-custom-colors-button">`)
 	.html(underline_hotkey("&Define Custom Colors >>"))
 	.appendTo($left)
 	.on("click", (e)=> {
@@ -193,9 +203,24 @@ function choose_color(initial_color, callback) {
 		e.preventDefault();
 
 		$right.show();
-		$expando_button.attr("disabled", "disabled");
-		inputs_by_component_letter.h.focus();
+		$w.addClass("defining-custom-colors"); // for mobile layout
+		$define_custom_colors_button.attr("disabled", "disabled");
+		// assuming small viewport implies mobile implies an onscreen keyboard,
+		// and that you probably don't want to use the keyboard to choose colors
+		if ($w.width() >= 300) {
+			inputs_by_component_letter.h.focus();
+		}
+		maybe_reenable_button_for_mobile_navigation();
 	});
+
+	// for mobile layout, re-enable button because it's a navigation button in that case, rather than a one-off expando
+	const maybe_reenable_button_for_mobile_navigation = ()=> {
+		// if ($right.is(":hidden")) {
+		if ($w.width() < 300) {
+			$define_custom_colors_button.removeAttr("disabled");
+		}
+	};
+	$(window).on("resize", maybe_reenable_button_for_mobile_navigation);
 
 	const $color_solid_label = $(`<label for="color-solid-canvas">${underline_hotkey("Color|S&olid")}</label>`);
 	$color_solid_label.css({
@@ -439,7 +464,7 @@ function choose_color(initial_color, callback) {
 					}
 					break;
 				case "d":
-					$expando_button.click();
+					$define_custom_colors_button.click();
 					break;
 				default:
 					return; // don't prevent default by default
@@ -472,12 +497,17 @@ function choose_color(initial_color, callback) {
 	.html(underline_hotkey("&Add To Custom Colors"))
 	.appendTo($right)
 	.on("click", (event)=> {
+		// prevent the form from submitting
+		// @TODO: instead, prevent the form's submit event in $Window.js in os-gui (or don't have a form? idk)
+		event.preventDefault();
+
 		const color = get_current_color();
 		custom_colors[custom_colors_index] = color;
 		// console.log(custom_colors_swatches_reordered, custom_colors_index, custom_colors_swatches_reordered[custom_colors_index]));
 		$(custom_colors_swatches_list_order[custom_colors_index]).data("update")(color);
 		custom_colors_index = (custom_colors_index + 1) % custom_colors.length;
-		event.preventDefault(); // prevent form submit
+
+		$w.removeClass("defining-custom-colors"); // for mobile layout
 	});
 
 	$w.$Button("OK", () => {
