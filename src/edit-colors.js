@@ -274,8 +274,9 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 				g: "&Green:",
 				b: "Bl&ue:",
 			}[component_letter];
-			// not doing type="number" because the inputs have no up/down buttons and they have special behavior with validation
 			const input = document.createElement("input");
+			// not doing type="number" because the inputs have no up/down buttons and they have special behavior with validation
+			input.type = "text";
 			input.classList.add("inset-deep");
 			const label = document.createElement("label");
 			label.innerHTML = underline_hotkey(text_with_hotkey);

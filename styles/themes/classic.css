@@ -337,12 +337,15 @@ body,
 	color: var(--WindowText);
 }
 
+input[type=text]:not(.inset-deep),
+input[type=url]:not(.inset-deep) {
+	border: 1px solid gray;
+}
 input[type=text],
 input[type=url] {
 	/* @TODO: fancy 3d inset border (might need a surrounding element because pseudo elements won't work with input) */
 	/* I guess an image border could work; maybe I should be using (svg) image borders for stuff */
 	/* (css inset border style doesn't look good and isn't consistent between browsers) */
-	border: 1px solid gray;
 	background: var(--Window);
 	color: var(--WindowText);
 }
