@@ -1,8 +1,7 @@
 // @TODO:
-// - Persist custom colors list? it's not very persistent in real Windows...
-// - OK with Enter, after selecting a focused color if applicable 
-// - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
-//   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
+// - Persist custom colors list across reloads? It's not very persistent in real Windows...
+// - OK with Enter, after selecting a focused color if applicable
+// - maybe use https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 // - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
 
 // In Windows, the Hue goes from 0 to 239 (240 being equivalent to 0), and Sat and Lum go from 0 to 240
@@ -40,13 +39,23 @@ if (dev_edit_colors) {
 	});
 }
 
+// jspaint integration
 function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) {
 	// console.log($swatch_to_edit, $colorbox.data("$last_fg_color_button"));
 	$swatch_to_edit = $swatch_to_edit || $colorbox.data("$last_fg_color_button");
 	color_selection_slot_to_edit = color_selection_slot_to_edit || "foreground";
 
 	const initial_color = $swatch_to_edit[0].dataset.color;
+	choose_color(initial_color, (color)=> {
+		// console.log($swatch_to_edit, $swatch_to_edit.data("update"));
+		$swatch_to_edit.data("update")(color);
+		colors[color_selection_slot_to_edit] = color;
+		$G.triggerHandler("option-changed");	
+	});
+}
 
+// repurposable color picker
+function choose_color(initial_color, callback) {
 	if ($edit_colors_window) {
 		$edit_colors_window.close();
 	}
@@ -472,11 +481,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	});
 
 	$w.$Button("OK", () => {
-		const color = get_current_color();
-		// console.log($swatch_to_edit, $swatch_to_edit.data("update"));
-		$swatch_to_edit.data("update")(color);
-		colors[color_selection_slot_to_edit] = color;
-		$G.triggerHandler("option-changed");
+		callback(get_current_color());
 		$w.close();
 	})[0].focus();
 	$w.$Button("Cancel", () => {
