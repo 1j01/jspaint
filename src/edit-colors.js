@@ -3,7 +3,6 @@
 // - Keyboard navigation of the color cells
 //   - consistent behavior of arrow keys (should probably store the colors in the same way for each grid)
 //   - tab should go to next control, not next cell
-// - Any time a button is disabled, make sure it focuses the right element
 // - OK with Enter, after selecting a focused color if applicable 
 // - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 //   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
@@ -162,6 +161,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	.on("click", ()=> {
 		$right.show();
 		$expando_button.attr("disabled", "disabled");
+		inputs_by_component_letter.h.focus();
 	});
 
 	const $color_solid_label = $(`<label for="color-solid-canvas">${underline_hotkey("Color|S&olid")}</label>`);
