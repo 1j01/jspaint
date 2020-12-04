@@ -2,7 +2,6 @@
 // - Persist custom colors list? it's not very persistent in real Windows...
 // - Keyboard navigation of the color cells
 //   - consistent behavior of arrow keys (should probably store the colors in the same way for each grid)
-//   - tab should go to next control, not next cell
 // - OK with Enter, after selecting a focused color if applicable 
 // - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 //   or https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
@@ -96,7 +95,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		for (const color of colors) {
 			const $swatch = $Swatch(color);
 			$swatch.appendTo($color_grid).addClass("inset-deep");
-			$swatch.attr("tabindex", 0);
+			$swatch.attr("tabindex", -1); // can be focused by clicking or calling focus() but not by tabbing
 		}
 		let $local_last_focus = $color_grid.find(".swatch:first-child");
 		const num_colors_per_row = 8;
@@ -144,6 +143,13 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 					$local_last_focus.focus();
 				}
 			}
+			// allow shift+tabbing out of the control
+			// otherwise it keeps setting focus back to the color cell,
+			// since the parent grid is previous in the tab order
+			$color_grid.attr("tabindex", -1);
+		});
+		$color_grid.on("focusout", (event)=> {
+			$color_grid.attr("tabindex", 0);
 		});
 		return $color_grid;
 	};
