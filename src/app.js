@@ -18,13 +18,6 @@ const canvas = make_canvas();
 canvas.classList.add("main-canvas");
 const ctx = canvas.ctx;
 
-// these colors I think I got from a VM screenshot, but maybe the VM shifted the colors with a color filter
-// they're slightly off, and incompatible with mspaint as far as the fill tool goes
-const old_inaccurate_default_palette = [
-	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
-	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
-];
-
 const default_palette = [
 	"rgb(0,0,0)", // Black
 	"rgb(128,128,128)", // Dark Gray
@@ -114,25 +107,6 @@ let custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
-
-let inaccurate_palette_rgbas = old_inaccurate_default_palette.map(get_rgba_from_color);
-let accurate_palette_rgbas = default_palette.map(get_rgba_from_color);
-const exclude_rgbas = (rgbas, exclude_rgbas)=>
-	rgbas.filter((rgba)=>
-		!exclude_rgbas.find((exclude_rgba)=>
-			rgba.join(",") === exclude_rgba.join(",")
-		)
-	);
-const intersect_rgbas = (rgbas1, rgbas2)=>
-	rgbas1.filter((rgba1)=>
-		rgbas2.find((rgba2)=>
-			rgba1.join(",") === rgba2.join(",")
-		)
-	);
-const neutral_rgbas = intersect_rgbas(accurate_palette_rgbas, inaccurate_palette_rgbas);
-inaccurate_palette_rgbas = exclude_rgbas(inaccurate_palette_rgbas, neutral_rgbas);
-accurate_palette_rgbas = exclude_rgbas(accurate_palette_rgbas, neutral_rgbas);
-// console.log({neutral_rgbas, inaccurate_palette_rgbas, accurate_palette_rgbas});
 
 // declared like this for Cypress tests
 window.default_brush_shape = "circle";
