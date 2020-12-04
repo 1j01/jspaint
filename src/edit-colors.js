@@ -274,24 +274,26 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 				g: "&Green:",
 				b: "Bl&ue:",
 			}[component_letter];
-			// not doing type="number" because the inputs have no up/down buttons and special semantics
+			// not doing type="number" because the inputs have no up/down buttons and they have special behavior with validation
 			const input = document.createElement("input");
 			input.classList.add("inset-deep");
 			const label = document.createElement("label");
 			label.innerHTML = underline_hotkey(text_with_hotkey);
-			const input_y_spacing = 23;
+			const input_y_spacing = 22;
 			$(label).css({
 				position: "absolute",
 				left: 63 + color_model_index * 80,
 				top: 202 + component_index * input_y_spacing,
 				textAlign: "right",
 				width: 40,
+				height: 20,
+				lineHeight: "20px",
 			});
 			$(input).css({
 				position: "absolute",
 				left: 106 + color_model_index * 80,
-				top: 202 + component_index * input_y_spacing,
-				width: 20,
+				top: 202 + component_index * input_y_spacing + (component_index > 1), // spacing of rows is uneven by a pixel
+				width: 21,
 				height: 14,
 			});
 			$right.append(label, input);
