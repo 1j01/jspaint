@@ -299,7 +299,7 @@ function show_custom_zoom_window() {
 
 	$fieldset.find("label").css({display: "block"});
 
-	$w.$Button("Okay", () => {
+	$w.$Button("OK", () => {
 		let option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
 		let mag;
 		if(option_val === "really-custom"){
@@ -312,7 +312,7 @@ function show_custom_zoom_window() {
 			if(isNaN(mag)){
 				const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
 				$msgw.$main.text("The value specified for custom zoom was invalid.");
-				$msgw.$Button("Okay", () => {
+				$msgw.$Button("OK", () => {
 					$msgw.close();
 				});
 				return;
@@ -2038,7 +2038,7 @@ function image_attributes(){
 
 	// Buttons on the right
 
-	$w.$Button("Okay", () => {
+	$w.$Button("OK", () => {
 		const transparency_option = $transparency.find(":checked").val();
 		const colors_option = $colors.find(":checked").val();
 		const unit = $units.find(":checked").val();
@@ -2112,7 +2112,7 @@ function show_convert_to_black_and_white() {
 	update_threshold();
 	$slider.on("input", debounce(update_threshold, 100));
 
-	$w.$Button("Okay", ()=> {
+	$w.$Button("OK", ()=> {
 		$w.close();
 	});
 	$w.$Button("Cancel", ()=> {
@@ -2177,7 +2177,7 @@ function image_flip_and_rotate(){
 
 	$fieldset.find("label").css({display: "block"});
 
-	$w.$Button("Okay", () => {
+	$w.$Button("OK", () => {
 		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		let angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
 		if(angle_val === "arbitrary"){
@@ -2189,7 +2189,7 @@ function image_flip_and_rotate(){
 		if(isNaN(angle)){
 			const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
 			$msgw.$main.text("The value specified for Degrees was invalid.");
-			$msgw.$Button("Okay", () => {
+			$msgw.$Button("OK", () => {
 				$msgw.close();
 			});
 			return;
@@ -2258,7 +2258,7 @@ function image_stretch_and_skew(){
 	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees", -90, 90);
 	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees", -90, 90);
 
-	$w.$Button("Okay", () => {
+	$w.$Button("OK", () => {
 		const xscale = parseFloat(stretch_x.val())/100;
 		const yscale = parseFloat(stretch_y.val())/100;
 		const hskew = parseFloat(skew_x.val())/360*TAU;

@@ -41,7 +41,7 @@ I want to bring good old paint into the modern era.
 * Automatically keeps a backup of your image. Only one backup per image tho, which doesn't give you a lot of safety. Remember to save with **File > Save** or <kbd>Ctrl+S</kbd>! Manage backups with **File > Manage Storage**.
 * Edit transparent images! To create a transparent image,
   go to **Image > Attributes...** and select Transparent,
-  then Okay, and then **Image > Clear Image** or use the Eraser tool.
+  then OK, and then **Image > Clear Image** or use the Eraser tool.
   Images with *any* translucent pixels will open in Transparent mode.
 * Switch themes from the Extras menu. Dark mode included.
 * [Vertical Color Box mode](https://jspaint.app/#vertical-color-box-mode), accessible from **Extras > Vertical Color Box**
