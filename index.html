@@ -245,24 +245,31 @@
 		
 		<script>
 			// let localizations = {};
-			window.localize = (english_text)=> {
+			window.localize = (english_text, ...interpolations)=> {
 				const amp_index = english_text.indexOf("&");
 				if (amp_index > -1) {
 					const without_hotkey = english_text.replace(/&/, "");
 					if (localizations[without_hotkey]) {
 						const hotkey_def = english_text.slice(amp_index, amp_index + 2);
 						if (localizations[without_hotkey].indexOf(hotkey_def) > -1) {
-							return localizations[without_hotkey];
+							return interpolate(localizations[without_hotkey], interpolations);
 						} else {
-							return `${localizations[without_hotkey]} (${hotkey_def})`;
+							return interpolate(`${localizations[without_hotkey]} (${hotkey_def})`, interpolations);
 						}
 					}
 				} else {
 					if (localizations[english_text]) {
-						return localizations[english_text];
+						return interpolate(localizations[english_text], interpolations);
 					}
 				}
-				return english_text;
+				return interpolate(english_text, interpolations);
+
+				function interpolate(text, interpolations) {
+					for (let i = 0; i < interpolations.length; i++) {
+						text = text.replace(`%${i+1}`, interpolations[i]);
+					}
+					return text;
+				}
 			}
 			// This is used to generate the JSON data, but can't be used directly because it's async (the UI is rendered before it loads the text files.)
 			// @TODO: handle multiline strings (currently I'm assuming each line corresponds, rather than each numbered string; I should use parse and use the string IDs instead of just deleting them with regexp)

@@ -790,7 +790,7 @@ function are_you_sure(action, canceled){
 	}else{
 		const $w = new $FormToolWindow().addClass("dialogue-window");
 		$w.title(localize("Paint"));
-		$w.$main.text(`Save changes to ${file_name}?`);
+		$w.$main.text(localize("Save changes to %1?", file_name));
 		$w.$Button("Save", () => {
 			$w.close();
 			file_save();
