@@ -221,19 +221,19 @@ html, body, .jspaint {
 	width: 25px;
 	height: 25px;
 }
-.eye-gaze-mode .Colors-component.tall {
+.eye-gaze-mode .colors-component.tall {
 	width: 50px;
 }
-.eye-gaze-mode .Colors-component.tall .color-box {
+.eye-gaze-mode .colors-component.tall .color-box {
 	width: 100%;
 }
-.eye-gaze-mode .Colors-component.tall .current-colors {
+.eye-gaze-mode .colors-component.tall .current-colors {
 	width: 100%;
 }
-.eye-gaze-mode .Colors-component.tall .foreground-color {
+.eye-gaze-mode .colors-component.tall .foreground-color {
 	left: 12px;
 }
-.eye-gaze-mode .Colors-component.tall .background-color {
+.eye-gaze-mode .colors-component.tall .background-color {
 	right: 12px;
 }
 
@@ -283,7 +283,7 @@ html, body, .jspaint {
 	position: relative;
 }
 
-.Tools-component {
+.tools-component {
 	height: 273px;
 	align-items: center;
 	padding-left: 4px;
@@ -314,40 +314,40 @@ html, body, .jspaint {
 .horizontal .component-area {
 	flex-direction: column;
 }
-.Colors-component {
+.colors-component {
 	align-items: center;
 	justify-content: center;
 }
-.Colors-component.wide {
+.colors-component.wide {
 	height: 47px;
 }
-.Colors-component.tall {
+.colors-component.tall {
 	width: 47px;
 }
 .palette {
 	display: flex;
 }
-.Colors-component.wide .palette {
+.colors-component.wide .palette {
 	flex-flow: row wrap;
 }
-.Colors-component.tall .palette {
+.colors-component.tall .palette {
 	flex-flow: column wrap;
 }
-.Colors-component.wide .color-box,
-.Colors-component.wide .palette {
+.colors-component.wide .color-box,
+.colors-component.wide .palette {
 	flex-direction: row;
 	height: 32px;
 }
-.Colors-component.tall .color-box,
-.Colors-component.tall .palette {
+.colors-component.tall .color-box,
+.colors-component.tall .palette {
 	flex-direction: column;
 	width: 32px;
 }
-.Colors-component.wide .current-colors {
+.colors-component.wide .current-colors {
 	width: 30px;
 	height: 31px;
 }
-.Colors-component.tall .current-colors {
+.colors-component.tall .current-colors {
 	width: 31px;
 	height: 32px;
 }
@@ -365,21 +365,21 @@ html, body, .jspaint {
 	right: 3px;
 	bottom: 3px;
 }
-.Colors-component.tall .foreground-color {
+.colors-component.tall .foreground-color {
 	left: 4px;
 	top: 3px;
 }
-.Colors-component.tall .background-color {
+.colors-component.tall .background-color {
 	right: 3px;
 	bottom: 3px;
 }
 
-.Colors-component.wide .color-button,
-.Colors-component.wide .color-selection {
+.colors-component.wide .color-button,
+.colors-component.wide .color-selection {
 	margin-left: 1px;
 }
-.Colors-component.tall .color-button,
-.Colors-component.tall .color-selection {
+.colors-component.tall .color-button,
+.colors-component.tall .color-selection {
 	margin-top: 1px;
 }
 .color-button,

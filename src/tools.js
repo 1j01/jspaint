@@ -5,7 +5,7 @@
 /* eslint-disable no-restricted-syntax */
 
 window.tools = [{
-	name: "Free-Form Select",
+	name: localize("Free-Form Select"),
 	speech_recognition: [
 		"lasso", "select with lasso", "select by lassoing", "lassoing",
 		"lasso select", "freeform select", "free-form select", "free form select", "polygonal select", "polygon select", "shape select", "outline select", "select by outline", "select by outlining", "star select", "shape select", "select by shape", "select by drawing a shape", "select by drawing shape",
@@ -14,7 +14,7 @@ window.tools = [{
 		"lasso selector", "freeform selector", "free-form selector", "free form selector", "polygonal selector", "polygon selector", "shape selector", "outline selector", "by outline selector", "outlining selector", "star selector", "shape selector", "by shape selector", "by drawing a shape selector", "by drawing shape selector",
 	],
 	help_icon: "p_free.gif",
-	description: "Selects a free-form part of the picture to move, copy, or edit.",
+	description: localize("Selects a free-form part of the picture to move, copy, or edit."),
 	cursor: ["precise", [16, 16], "crosshair"],
 
 	// A canvas for rendering a preview of the shape
@@ -106,8 +106,8 @@ window.tools = [{
 		}
 
 		undoable({
-			name: "Free-Form Select",
-			icon: get_icon_for_tool(get_tool_by_name("Free-Form Select")),
+			name: localize("Free-Form Select"),
+			icon: get_icon_for_tool(get_tool_by_name(localize("Free-Form Select"))),
 			soft: true,
 		}, ()=> {
 			selection = new OnCanvasSelection(
@@ -136,14 +136,14 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
-	name: "Select",
+	name: localize("Select"),
 	speech_recognition: [
 		"select", "rectangle select", "rectangular select", "box select", "square select", "drag select", "select rectangle", "select by rectangle", "select rectangular region", "select rectangular area", "rectangular region select", "rectangular area select",
 		"selection", "rectangle selection", "rectangular selection", "box selection", "square selection", "rectangular region selection", "rectangular area selection",
 		"selector", "rectangle selector", "rectangular selector", "box selector", "square selector", "drag selector", "rectangular region selector", "rectangular area selector",
 	],
 	help_icon: "p_sel.gif",
-	description: "Selects a rectangular part of the picture to move, copy, or edit.",
+	description: localize("Selects a rectangular part of the picture to move, copy, or edit."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
@@ -202,8 +202,8 @@ window.tools = [{
 				undoable({
 					name: "Free-Form Select⊕Select",
 					icon: get_icon_for_tools([
-						get_tool_by_name("Free-Form Select"),
-						get_tool_by_name("Select"),
+						get_tool_by_name(localize("Free-Form Select")),
+						get_tool_by_name(localize("Select")),
 					]),
 					soft: true,
 				}, ()=> {
@@ -218,8 +218,8 @@ window.tools = [{
 				});
 			} else {
 				undoable({
-					name: "Select",
-					icon: get_icon_for_tool(get_tool_by_name("Select")),
+					name: localize("Select"),
+					icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
 					soft: true,
 				}, ()=> {
 					selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
@@ -229,14 +229,14 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
-	name: "Eraser/Color Eraser",
+	name: localize("Eraser/Color Eraser"),
 	speech_recognition: [
 		"erase", "eraser", "rubber", "wiper", "clearer", "mark remover", "obliterator", "expunger",
 		"color eraser", "color replacer", "replace color", "replace colors",
 		"erasing", "erasing tool", "color erasing", "color replacing", "replacing color", "replacing colors", "wiping tool", "rubbing tool", "clearing tool", "mark removing tool", "removal tool", "obliterating tool", "obliteration tool", "expunging tool",
 	],
 	help_icon: "p_erase.gif",
-	description: "Erases a portion of the picture, using the selected eraser shape.",
+	description: localize("Erases a portion of the picture, using the selected eraser shape."),
 	cursor: ["precise", [16, 16], "crosshair"],
 
 	// binary mask of the drawn area, either opaque white or transparent
@@ -374,7 +374,7 @@ window.tools = [{
 	},
 	$options: $choose_eraser_size
 }, {
-	name: "Fill With Color",
+	name: localize("Fill With Color"),
 	speech_recognition: [
 		"fill with color", "flood fill", "fill", "flood filling", "flood-filling", "floodfilling", "floodfill",
 		"fill area with color", "flood fill area", "fill area", "color area", "area fill", "area filling", "filling area",
@@ -395,7 +395,7 @@ window.tools = [{
 			});
 		} else {
 			undoable({
-				name: "Fill With Color",
+				name: localize("Fill With Color"),
 				icon: get_icon_for_tool(this),
 			}, ()=> {
 				// Perform a normal fill operation
@@ -404,7 +404,7 @@ window.tools = [{
 		}
 	}
 }, {
-	name: "Pick Color",
+	name: localize("Pick Color"),
 	speech_recognition: [
 		"pick color", "select color", "color select", "color selector", "color picker", "pick a color", "color picking", "color choosing", "color selecting", "color chooser", "color lift", "color lifter", "color lifting", "lift color",
 		"eyedropper", "eye dropper", "eye-dropper", "pipette", "Pasteur pipette", "dropper", "eye drop", "eye-drop", "eyedrop", "suck up color", "absorb color",
@@ -422,7 +422,7 @@ window.tools = [{
 		"pick a color from the canvas", "pick a color from the document", "pick a color from the page", "pick a color from the image", "pick a color from the picture",
 	],
 	help_icon: "p_eye.gif",
-	description: "Picks up a color from the picture for drawing.",
+	description: localize("Picks up a color from the picture for drawing."),
 	cursor: ["eye-dropper", [9, 22], "crosshair"],
 	deselect: true,
 	
@@ -458,13 +458,13 @@ window.tools = [{
 	},
 	$options: $(E("div"))
 }, {
-	name: "Magnifier",
+	name: localize("Magnifier"),
 	speech_recognition: [
 		"magnifier", "magnifying glass", "loupe", "hand lens", "hand glass", "eyeglass", "eye glass", "lens", "simple microscope", "microscope", "glass", "spyglass", "telescope",
 		"magnification", "zoom", "zoom in", "zoom out", "zoomer", "magnifying", "zooming", "enlarging tool",
 	],
 	help_icon: "p_zoom.gif",
-	description: "Changes the magnification.",
+	description: localize("Changes the magnification."),
 	cursor: ["magnifier", [16, 16], "zoom-in"], // overridden below
 	deselect: true,
 	
@@ -581,19 +581,19 @@ window.tools = [{
 	},
 	$options: $choose_magnification
 }, {
-	name: "Pencil",
+	name: localize("Pencil"),
 	speech_recognition: [
 		"pencil", "lead", "graphite", "pen", "pixel", "pixel art", "penciling", "penning", "pixeling",
 	],
 	help_icon: "p_pencil.gif",
-	description: "Draws a free-form line one pixel wide.",
+	description: localize("Draws a free-form line one pixel wide."),
 	cursor: ["pencil", [13, 23], "crosshair"],
 	stroke_only: true,
 	get_brush() {
 		return {size: pencil_size, shape: "circle"};
 	}
 }, {
-	name: "Brush",
+	name: localize("Brush"),
 	speech_recognition: [
 		"brush", "paint brush", "paintbrush",
 		// "paint", // could also be the paint bucket tool; might be too general, matching saying "MS Paint" / "JS Paint"
@@ -603,7 +603,7 @@ window.tools = [{
 		// "calligraphy", "nib", "slanted brush", "square brush", "circle brush", "circular brush",
 	],
 	help_icon: "p_brush.gif",
-	description: "Draws using a brush with the selected shape and size.",
+	description: localize("Draws using a brush with the selected shape and size."),
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
 	dynamic_preview_cursor: true,
 	get_brush() {
@@ -611,7 +611,7 @@ window.tools = [{
 	},
 	$options: $choose_brush
 }, {
-	name: "Airbrush",
+	name: localize("Airbrush"),
 	speech_recognition: [
 		"air brush", "airbrush", "aerograph", "airbrushing", "air brushing",
 		"spray paint", "spraypaint", "paint spray", "spray painting", "spraypainting",
@@ -619,7 +619,7 @@ window.tools = [{
 		"graffiti", "scatter", "splatter", "scattering", "splattering", "aerosol", "aerosol can", "throwie", "flamethrower",
 	],
 	help_icon: "p_airb.gif",
-	description: "Draws using an airbrush of the selected size.",
+	description: localize("Draws using an airbrush of the selected size."),
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	paint_on_time_interval: 5,
 	paint_mask(ctx, x, y) {
@@ -636,12 +636,12 @@ window.tools = [{
 	},
 	$options: $choose_airbrush_size
 }, {
-	name: "Text",
+	name: localize("Text"),
 	speech_recognition: [
 		"text", "type", "typography", "write", "writing", "words", "text box", "text-box", "textbox", "word", "lettering", "font", "fonts", "texts",
 	],
 	help_icon: "p_txt.gif",
-	description: "Inserts text into the picture.",
+	description: localize("Inserts text into the picture."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	preload() {
 		setTimeout(FontDetective.preload, 10);
@@ -653,13 +653,13 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
-	name: "Line",
+	name: localize("Line"),
 	speech_recognition: [
 		"line", "line segment", "straight line",
 		"lines", "line segments", "straight lines",
 	],
 	help_icon: "p_line.gif",
-	description: "Draws a straight line with the selected line width.",
+	description: localize("Draws a straight line with the selected line width."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	shape(ctx, x, y, w, h) {
@@ -668,20 +668,20 @@ window.tools = [{
 	},
 	$options: $choose_stroke_size
 }, {
-	name: "Curve",
+	name: localize("Curve"),
 	speech_recognition: [
 		"curve", "curved line", "curvy", "curvy line", "Bezier", "Bezier curve", "spline", "curves", "splines", "curved", "curving",
 		"wave", "wavy line", "rounded line", "round line", "oscilloscope", "sine wave", "cosine", "cosine wave",
 	],
 	help_icon: "p_curve.gif",
-	description: "Draws a curved line with the selected line width.",
+	description: localize("Draws a curved line with the selected line width."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	stroke_only: true,
 	points: [],
 	pointerup(ctx, x, y) {
 		if(this.points.length >= 4){
 			undoable({
-				name: "Curve",
+				name: localize("Curve"),
 				icon: get_icon_for_tool(this),
 			}, ()=> {
 				this.draw_curve(ctx);
@@ -763,7 +763,7 @@ window.tools = [{
 	},
 	$options: $choose_stroke_size
 }, {
-	name: "Rectangle",
+	name: localize("Rectangle"),
 	speech_recognition: [
 		"rectangle", "square", "box", "rect",
 		"sharp rectangle", "sharp square", "sharp box", "sharp rect",
@@ -778,7 +778,7 @@ window.tools = [{
 		"rectangles with sharp corners", "squares with sharp corners", "boxes with sharp corners", "rects with sharp corners",
 	],
 	help_icon: "p_rect.gif",
-	description: "Draws a rectangle with the selected fill style.",
+	description: localize("Draws a rectangle with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
@@ -801,7 +801,7 @@ window.tools = [{
 	},
 	$options: $ChooseShapeStyle()
 }, {
-	name: "Polygon",
+	name: localize("Polygon"),
 	speech_recognition: [
 		"polygon", "poly", "shape", "n-gon", "free-form polygon", "freeform polygon", "free form polygon",
 		"triangle", "quadrangle", "pentagon", "hexagon", "heptagon", "octagon", "nonagon", "decagon", "undecagon", "dodecagon",
@@ -810,7 +810,7 @@ window.tools = [{
 		"triangles", "quadrangles", "pentagons", "hexagons", "heptagons", "octagons", "nonagons", "decagons", "undecagons", "dodecagons",
 	],
 	help_icon: "p_poly.gif",
-	description: "Draws a polygon with the selected fill style.",
+	description: localize("Draws a polygon with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	
 	// Record the last click for double-clicking
@@ -922,7 +922,7 @@ window.tools = [{
 	complete(ctx) {
 		if (this.points.length >= 3) {
 			undoable({
-				name: "Polygon",
+				name: localize("Polygon"),
 				icon: get_icon_for_tool(this),
 			}, ()=> {
 				ctx.fillStyle = fill_color;
@@ -966,13 +966,13 @@ window.tools = [{
 	shape_colors: true,
 	$options: $ChooseShapeStyle()
 }, {
-	name: "Ellipse",
+	name: localize("Ellipse"),
 	speech_recognition: [
 		"ellipse", "circle", "oval", "ovoid", "ovaloid", "oviform", "elliptical", "oblong circle", "stretched circle", "ball", "sphere", "round tool", "rounded tool",
 		"ellipses", "circles", "ovals", "ovoids", "ovaloids", "oviforms", "ellipticals", "oblong circles", "stretched circles", "balls", "spheres",
 	],
 	help_icon: "p_oval.gif",
-	description: "Draws an ellipse with the selected fill style.",
+	description: localize("Draws an ellipse with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }
@@ -995,7 +995,7 @@ window.tools = [{
 	},
 	$options: $ChooseShapeStyle()
 }, {
-	name: "Rounded Rectangle",
+	name: localize("Rounded Rectangle"),
 	speech_recognition: [
 		"rounded rectangle", "rounded square", "rounded box",
 		"round rectangle", "round square", "round box",
@@ -1028,7 +1028,7 @@ window.tools = [{
 		"round rects", "roundrects",
 	],
 	help_icon: "p_rrect.gif",
-	description: "Draws a rounded rectangle with the selected fill style.",
+	description: localize("Draws a rounded rectangle with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape(ctx, x, y, w, h) {
 		if(w < 0){ x += w; w = -w; }

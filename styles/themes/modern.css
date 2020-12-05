@@ -232,10 +232,10 @@ body {
 	bottom: 0;
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
 }
-.eye-gaze-mode .Colors-component.tall {
+.eye-gaze-mode .colors-component.tall {
 	width: 53px;
 }
-.eye-gaze-mode .Colors-component.tall .color-button {
+.eye-gaze-mode .colors-component.tall .color-button {
 	margin-left: 1px;
 }
 

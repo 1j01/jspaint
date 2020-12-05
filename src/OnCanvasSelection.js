@@ -61,7 +61,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 				undoable({
 					name: "Resize Selection",
-					icon: get_icon_for_tool(get_tool_by_name("Select")),
+					icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
 					soft: true,
 				}, ()=> {
 					this.x += delta_x;
@@ -80,7 +80,7 @@ class OnCanvasSelection extends OnCanvasObject {
 						(!e.shiftKey && history_node.name.match(/^Move Selection$/)),
 					name: e.shiftKey ? "Smear Selection" : "Move Selection",
 					update_name: true,
-					icon: get_icon_for_tool(get_tool_by_name("Select")),
+					icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
 					soft: true,
 				}, ()=> {
 					const m = to_canvas_coords(e);
@@ -108,7 +108,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					// Stamp or start to smear selection
 					undoable({
 						name: "Stamp Selection",
-						icon: get_icon_for_tool(get_tool_by_name("Select")),
+						icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
 						soft: true,
 					}, ()=> {
 						this.draw();
@@ -119,7 +119,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					// Stamp selection
 					undoable({
 						name: "Stamp Selection",
-						icon: get_icon_for_tool(get_tool_by_name("Select")),
+						icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
 						soft: true,
 					}, ()=> {
 						this.draw();

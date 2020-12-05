@@ -168,7 +168,7 @@
 			away: true,
 		},
 		// Currently selected tool (@TODO)
-		tool: "Pencil",
+		tool: localize("Pencil"),
 		// Color components
 		hue: ~~(Math.random() * 360),
 		saturation: ~~(Math.random() * 50) + 50,
@@ -237,7 +237,7 @@
 				// "<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a> to show interest, and/or subscribe for updates.</p>"
 			);
 			$w.$main.css({ maxWidth: "500px" });
-			$w.$Button("OK", () => {
+			$w.$Button(localize("OK"), () => {
 				$w.close();
 			});
 			$w.center();

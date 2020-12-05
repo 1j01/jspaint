@@ -1461,7 +1461,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			button_text_phrases = [];
 		}
 		if (button_text.match(/^(Okay|OK)$/i)) {
-			button_text_phrases = ["Okay", "OK"];
+			button_text_phrases = ["Okay", localize("OK")];
 		}
 		if (button_text.match(/^(Pause Dwell Clicking)$/i)) {
 			button_text_phrases = [
@@ -1659,13 +1659,13 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			exec: ()=> {
 				if (isFinite(n)) {
 					// @TODO: DRY with app.js
-					if(selected_tool.name === "Brush"){
+					if(selected_tool.name === localize("Brush")){
 						brush_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.name === "Eraser/Color Eraser"){
+					}else if(selected_tool.name === localize("Eraser/Color Eraser")){
 						eraser_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.name === "Airbrush"){
+					}else if(selected_tool.name === localize("Airbrush")){
 						airbrush_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.name === "Pencil"){
+					}else if(selected_tool.name === localize("Pencil")){
 						pencil_size = Math.max(1, Math.min(n, 50));
 					}else if(selected_tool.name.match(/Line|Curve|Rectangle|Ellipse|Polygon/)){
 						stroke_size = Math.max(1, Math.min(n, 500));
@@ -1785,7 +1785,7 @@ window.trace_and_sketch = (subject_imagedata)=> {
 	// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
 	const tracedata = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres:1, qtres:0.01, scale:10, /*pal,*/ numberofcolors: 6, });
 	const {layers} = tracedata;
-	const brush = get_tool_by_name("Brush");
+	const brush = get_tool_by_name(localize("Brush"));
 	select_tool(brush);
 
 	let layer_index = 0;
@@ -2030,11 +2030,11 @@ function test_speech(input_text, expected) {
 
 function test_speech_recognition() {
 	// test_command("select blue", {color: "blue"}); // @FIXME
-	test_command("select fill", {tool_name: "Fill With Color"});
-	test_command("select text", {tool_name: "Text"});
-	test_command("select", {tool_name: "Select"});
-	test_speech("free form select", {tool_name: "Free-Form Select"});
-	test_speech("lips", {match_text: "ellipse", tool_name: "Ellipse"});
+	test_command("select fill", {tool_name: localize("Fill With Color")});
+	test_command("select text", {tool_name: localize("Text")});
+	test_command("select", {tool_name: localize("Select")});
+	test_speech("free form select", {tool_name: localize("Free-Form Select")});
+	test_speech("lips", {match_text: "ellipse", tool_name: localize("Ellipse")});
 	test_command("", null);
 	// test_command("I got you some new books", null);
 	// test_command("pan view sorthweast", null); // currently opens View menu

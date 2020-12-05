@@ -45,7 +45,7 @@ function $FontBox(){
 	$size.on("change", update_font);
 	
 	const $w = $ToolWindow();
-	$w.title("Fonts");
+	$w.title(localize("Fonts"));
 	$w.$content.append($fb);
 	$w.center();
 	return $w;

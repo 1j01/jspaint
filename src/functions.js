@@ -299,7 +299,7 @@ function show_custom_zoom_window() {
 
 	$fieldset.find("label").css({display: "block"});
 
-	$w.$Button("OK", () => {
+	$w.$Button(localize("OK"), () => {
 		let option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
 		let mag;
 		if(option_val === "really-custom"){
@@ -312,7 +312,7 @@ function show_custom_zoom_window() {
 			if(isNaN(mag)){
 				const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
 				$msgw.$main.text("The value specified for custom zoom was invalid.");
-				$msgw.$Button("OK", () => {
+				$msgw.$Button(localize("OK"), () => {
 					$msgw.close();
 				});
 				return;
@@ -325,7 +325,7 @@ function show_custom_zoom_window() {
 
 		$w.close();
 	})[0].focus();
-	$w.$Button("Cancel", () => {
+	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 
@@ -350,7 +350,7 @@ function reset_colors(){
 
 function reset_file(){
 	document_file_path = null;
-	file_name = "untitled";
+	file_name = localize("untitled");
 	update_title();
 	saved = true;
 }
@@ -423,7 +423,7 @@ function make_history_node({
 }
 
 function update_title(){
-	document.title = `${file_name} - ${is_pride_month ? "Gay es " : ""}Paint`;
+	document.title = `${file_name} - ${is_pride_month ? "Gay es " : ""}${localize("Paint")}`;
 
 	if (is_pride_month) {
 		$("link[rel~='icon']").attr("href", "./images/icons/gay-es-paint-16x16-light-outline.png");
@@ -747,7 +747,7 @@ function file_load_from_url(){
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}
 	});
-	$w.$Button("Cancel", () => {
+	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 	$w.center();
@@ -789,7 +789,7 @@ function are_you_sure(action, canceled){
 		action();
 	}else{
 		const $w = new $FormToolWindow().addClass("dialogue-window");
-		$w.title("Paint");
+		$w.title(localize("Paint"));
 		$w.$main.text(`Save changes to ${file_name}?`);
 		$w.$Button("Save", () => {
 			$w.close();
@@ -800,7 +800,7 @@ function are_you_sure(action, canceled){
 			$w.close();
 			action();
 		});
-		$w.$Button("Cancel", () => {
+		$w.$Button(localize("Cancel"), () => {
 			$w.close();
 			canceled && canceled();
 		});
@@ -829,7 +829,7 @@ function show_error_message(message, error){
 			overflow: "auto",
 		});
 	}
-	$w.$Button("OK", () => {
+	$w.$Button(localize("OK"), () => {
 		$w.close();
 	});
 	$w.center();
@@ -871,7 +871,7 @@ function show_resource_load_error_message(error){
 		`);
 	}
 	$w.$main.css({maxWidth: "500px"});
-	$w.$Button("OK", () => {
+	$w.$Button(localize("OK"), () => {
 		$w.close();
 	});
 	$w.center();
@@ -1056,7 +1056,7 @@ function paste(img){
 
 	if(img.width > canvas.width || img.height > canvas.height){
 		const $w = new $FormToolWindow().addClass("dialogue-window");
-		$w.title("Paint");
+		$w.title(localize("Paint"));
 		$w.$main.html(
 			"The image is bigger than the canvas.<br>" +
 			"Would you like the canvas to be enlarged?<br>"
@@ -1079,7 +1079,7 @@ function paste(img){
 			$w.close();
 			do_the_paste();
 		});
-		$w.$Button("Cancel", () => {
+		$w.$Button(localize("Cancel"), () => {
 			$w.close();
 		});
 		$w.center();
@@ -1089,7 +1089,7 @@ function paste(img){
 
 	function do_the_paste(){
 		deselect();
-		select_tool(get_tool_by_name("Select"));
+		select_tool(get_tool_by_name(localize("Select")));
 		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
 		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
 
@@ -1215,10 +1215,10 @@ function go_to_history_node(target_history_node, canceling) {
 		// @TODO maybe: could store whether a selection is from Free-Form Select
 		// so it selects Free-Form Select when you jump to e.g. Move Selection
 		// (or could traverse history to figure it out)
-		if (target_history_node.name === "Free-Form Select") {
-			select_tool(get_tool_by_name("Free-Form Select"));
+		if (target_history_node.name === localize("Free-Form Select")) {
+			select_tool(get_tool_by_name(localize("Free-Form Select")));
 		} else {
-			select_tool(get_tool_by_name("Select"));
+			select_tool(get_tool_by_name(localize("Select")));
 		}
 		selection = new OnCanvasSelection(
 			target_history_node.selection_x,
@@ -1242,7 +1242,7 @@ function go_to_history_node(target_history_node, canceling) {
 		tool_transparent_mode = target_history_node.tool_transparent_mode;
 		$G.trigger("option-changed");
 
-		select_tool(get_tool_by_name("Text"));
+		select_tool(get_tool_by_name(localize("Text")));
 		textbox = new OnCanvasTextBox(
 			target_history_node.textbox_x,
 			target_history_node.textbox_y,
@@ -1509,7 +1509,7 @@ function meld_selection_into_canvas(going_to_history_node) {
 	if (!going_to_history_node) {
 		undoable({
 			name: "Deselect",
-			icon: get_icon_for_tool(get_tool_by_name("Select")),
+			icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
 			use_loose_canvas_changes: true, // HACK; @TODO: make OnCanvasSelection not change the canvas outside undoable, same rules as tools
 		}, ()=> { });
 	}
@@ -1518,13 +1518,13 @@ function meld_textbox_into_canvas(going_to_history_node) {
 	const text = textbox.$editor.val();
 	if (text && !going_to_history_node) {
 		undoable({
-			name: "Text",
-			icon: get_icon_for_tool(get_tool_by_name("Text")),
+			name: localize("Text"),
+			icon: get_icon_for_tool(get_tool_by_name(localize("Text"))),
 			soft: true,
 		}, ()=> { });
 		undoable({
 			name: "Finish Text",
-			icon: get_icon_for_tool(get_tool_by_name("Text")),
+			icon: get_icon_for_tool(get_tool_by_name(localize("Text"))),
 		}, () => {
 			ctx.drawImage(textbox.canvas, textbox.x, textbox.y);
 			textbox.destroy();
@@ -1560,11 +1560,11 @@ function delete_selection(meta={}){
 }
 function select_all(){
 	deselect();
-	select_tool(get_tool_by_name("Select"));
+	select_tool(get_tool_by_name(localize("Select")));
 
 	undoable({
 		name: "Select All",
-		icon: get_icon_for_tool(get_tool_by_name("Select")),
+		icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
 		soft: true,
 	}, ()=> {
 		selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
@@ -2038,7 +2038,7 @@ function image_attributes(){
 
 	// Buttons on the right
 
-	$w.$Button("OK", () => {
+	$w.$Button(localize("OK"), () => {
 		const transparency_option = $transparency.find(":checked").val();
 		const colors_option = $colors.find(":checked").val();
 		const unit = $units.find(":checked").val();
@@ -2075,7 +2075,7 @@ function image_attributes(){
 		image_attributes.$window.close();
 	})[0].focus();
 
-	$w.$Button("Cancel", () => {
+	$w.$Button(localize("Cancel"), () => {
 		image_attributes.$window.close();
 	});
 
@@ -2112,10 +2112,10 @@ function show_convert_to_black_and_white() {
 	update_threshold();
 	$slider.on("input", debounce(update_threshold, 100));
 
-	$w.$Button("OK", ()=> {
+	$w.$Button(localize("OK"), ()=> {
 		$w.close();
 	});
-	$w.$Button("Cancel", ()=> {
+	$w.$Button(localize("Cancel"), ()=> {
 		if (current_history_node.name === "Make Monochrome") {
 			undo();
 		} else {
@@ -2177,7 +2177,7 @@ function image_flip_and_rotate(){
 
 	$fieldset.find("label").css({display: "block"});
 
-	$w.$Button("OK", () => {
+	$w.$Button(localize("OK"), () => {
 		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		let angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
 		if(angle_val === "arbitrary"){
@@ -2189,7 +2189,7 @@ function image_flip_and_rotate(){
 		if(isNaN(angle)){
 			const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
 			$msgw.$main.text("The value specified for Degrees was invalid.");
-			$msgw.$Button("OK", () => {
+			$msgw.$Button(localize("OK"), () => {
 				$msgw.close();
 			});
 			return;
@@ -2211,7 +2211,7 @@ function image_flip_and_rotate(){
 
 		$w.close();
 	})[0].focus();
-	$w.$Button("Cancel", () => {
+	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 
@@ -2258,7 +2258,7 @@ function image_stretch_and_skew(){
 	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees", -90, 90);
 	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees", -90, 90);
 
-	$w.$Button("OK", () => {
+	$w.$Button(localize("OK"), () => {
 		const xscale = parseFloat(stretch_x.val())/100;
 		const yscale = parseFloat(stretch_y.val())/100;
 		const hskew = parseFloat(skew_x.val())/360*TAU;
@@ -2268,7 +2268,7 @@ function image_stretch_and_skew(){
 		$w.close();
 	})[0].focus();
 
-	$w.$Button("Cancel", () => {
+	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 
@@ -2366,7 +2366,7 @@ function sanity_check_blob(blob, okay_callback){
 			<a href='https://github.com/1j01/jspaint/issues/118'>Issue #118</a>
 		`);
 		$w.$main.css({maxWidth: "500px"});
-		$w.$Button("OK", () => {
+		$w.$Button(localize("OK"), () => {
 			$w.close();
 		});
 		$w.center();
@@ -2418,7 +2418,7 @@ function show_multi_user_setup_dialog(from_current_document){
 			$w.close();
 		}
 	});
-	$w.$Button("Cancel", () => {
+	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 	$w.center();

@@ -1,0 +1,334 @@
+2 Paint
+untitled
+Bitmap Image
+Bitmap Files (*.bmp)
+.bmp
+Paint.Picture
+Bitmap Image
+6 .bmp
+7 .gif
+8 .jpg
+9 .ico
+10 .pcx
+11 PCX Files
+12 Icon Files
+13 Monochrome Bitmap (*.bmp;*.dib)
+14 16 Color Bitmap (*.bmp;*.dib)
+15 256 Color Bitmap (*.bmp;*.dib)
+16 24-bit Bitmap (*.bmp;*.dib)
+17 .pcd
+18 .pic
+19 All Files
+20 Palette|*.pal|
+21 .png
+22 .tga
+23 .tif
+24 .pal
+25 untitled.pal
+28 .dib
+29 .rle
+30 OLE 2.0 was unable to start.
+Make sure that you are using the correct version of the OLE libraries.
+33 All Picture Files
+110 Places the text.
+620 Selects a rectangular part of the picture to move, copy, or edit.
+Select
+621 Selects a free-form part of the picture to move, copy, or edit.
+Free-Form Select
+622 Inserts text into the picture.
+Text
+623 Fills an area with the current drawing color.
+Fill With Color
+624 Draws a straight line with the selected line width.
+Line
+627 Draws using an airbrush of the selected size.
+Airbrush
+628 Draws a curved line with the selected line width.
+Curve
+632 Draws a polygon with the selected fill style.
+Polygon
+634 Draws a rounded rectangle with the selected fill style.
+Rounded Rectangle
+636 Draws a free-form line one pixel wide.
+Pencil
+637 Erases a portion of the picture, using the selected eraser shape.
+Eraser/Color Eraser
+638 Changes the magnification.
+Magnifier
+639 Picks up a color from the picture for drawing.
+Pick Color
+640 Draws using a brush with the selected shape and size.
+Brush
+641 Draws a rectangle with the selected fill style.
+Rectangle
+642 Draws a filled rectangle.
+643 Draws an ellipse with the selected fill style.
+Ellipse
+644 Draws a filled ellipse.
+1000 Not enough room to paste text.
+Enlarge the text area and try again.
+2051 Paint cannot open this file.
+2052 Paint cannot read this file.
+2054 This file is read-only.
+To save your changes, use a different filename.
+2056 This file is already open.
+2064 This is not a valid .PCS file.
+2067 This file is open for editing and cannot be overwritten.
+Use a different filename to save your changes.
+2083 This is not a valid bitmap file, or its format is not currently supported.
+2084 This is not a valid icon.
+2085 This is not a valid cursor.
+2090 Save was interrupted, so your file has not been saved.
+2092 You cannot save to a read-only file.
+Use a different file name.
+2096 This file is already in use.
+Close the program, and then try again.
+2110 Paint cannot save this file.
+2152 Paint cannot save to the same filename with a different file type.
+Use a different filename to save your changes.
+2210 The grid spacing must be an integer between %d and %d.
+2240 There is not enough memory or resources to complete operation.
+Close some programs, and then try again.
+2241 Low on memory or resources.
+Close some programs, and then try again.
+2247 Group error.
+2248 Paint was unable to print your document. Please make sure you have sufficient disk space and that your printer is working correctly.
+2297 Saving into this format may cause some loss of color information.
+Do you want to continue?
+2298 Converting to black and white cannot be undone.  This action affects the current file and may cause some loss of color information.
+Do you want to continue?
+2299 Bitmaps must be greater than one pixel on a side.
+2300 CFileException
+2301 Generic error.
+2302 File not found.
+2303 Bad path.
+2304 Too many open files.
+2305 Access denied.
+2306 Invalid file.
+2307 Remove current folder.
+2308 Folder full.
+2309 Bad seek.
+2310 Hard IO error.
+2311 Sharing violation.
+2312 Lock violation.
+2313 Disk full.
+2314 End of file.
+2445 Error getting the Clipboard Data!
+2446 No Printer Found @ page setup
+3550             
+3551             
+6868 Makes the current selection either opaque or transparent.
+6869 Creates a new color.
+6870 Uses a previously saved palette of colors.
+6871 Saves the current palette of colors to a file.
+7057 You must save the file before choosing it as Wallpaper.
+9233 The selection is now larger than the bitmap.
+Would you like the bitmap enlarged?
+9234 The image in the clipboard is larger than the bitmap.
+Would you like the bitmap enlarged?
+10015 The file is not in the correct format.
+32776 Resets the text be without any attributes.
+32777 Sets or clears the text bold attribute.
+32778 Sets or clears the text italic attribute.
+32780 Selects the font used by the text.
+32781 Selects the point size of the text.
+32789 Sets or clears the text underline attribute.
+32791 Shows or hides the tooltips.
+32792 Show Paint Help.
+37662 Sends a picture by using mail or fax.
+37663 Copies the selection to a file.
+37664 Pastes a file into the selection.
+37670 Zooms the picture to 100%.
+37671 Zooms the picture to 400%.
+37672 Zooms the picture.
+37673 Displays the entire picture.
+37676 Shows or hides the thumbnail view of the picture.
+37677 Shows or hides the grid.
+37678 Shows or hides the text toolbar.
+37680 Flips or rotates the picture or a selection.
+37681 Stretches or skews the picture or a selection.
+37682 Inverts the colors of the picture or a selection.
+37683 Changes the attributes of the picture.
+37684 Clears the picture or selection.
+37685 The font size must be a numeric value.
+37686 Contains commands for working with the selected item(s).
+37687 Contains commands for selecting and transferring items.
+37688 Contains commands for customizing this window.
+37689 Contains commands for manipulating pictures and setting attributes.
+37690 Contains commands for using custom colors and drawing options.
+37691 Contains commands for displaying Help for and information about Paint.
+41747 Cannot save file.
+41748 Error removing temporary file.
+41749 Get Colors
+41750 Save Colors
+41751 Edit Colors
+41752 Copy To
+41753 Paste From
+41754 Select Color
+41755 File last saved:	Not Available
+41756 Size on disk:	Not Available
+41757 File last saved:	%s
+41758 Size on disk:	%s bytes
+42047 Painting
+44036 Bitmap
+44108 Colors
+44109 Fonts
+44111 Thumbnail
+44112 Tools
+44227  
+44700 x
+44701 ,
+57344 Paint
+57345 For Help, click Help Topics on the Help Menu.
+57346 Select an area on which to get Help.
+57347 %1 in %2
+57349 %1 - %2
+57600 Creates a new document.
+57601 Opens an existing document.
+57602 Closes the active document.
+57603 Saves the active document.
+57604 Saves the active document with a new name.
+57605 Changes the page layout.
+57606 Specifies the default printer setup.
+57607 Prints the active document and sets printing options.
+57609 Displays full pages.
+57616 Opens this document.
+57617 Opens this document.
+57618 Opens this document.
+57619 Opens this document.
+57632 Deletes the selection.
+57633 Erases everything.
+57634 Copies the selection and puts it on the Clipboard.
+57635 Cuts the selection and puts it on the Clipboard.
+57636 Finds the specified text.
+57637 Inserts the contents of the Clipboard.
+57640 Repeats the last action.
+57641 Replaces specific text with different text.
+57642 Selects everything.
+57643 Undoes the last action.
+57644 Redoes the previously undone action.
+57664 Displays program information, version number, and copyright.
+57665 Quits Paint.
+57666 Opens Paint Help.
+57668 Displays instructions about how to use Help.
+57669 Displays Help for areas you click on.
+57670 Displays Help for the current task or command.
+57675 Centers this bitmap as the desktop wallpaper.
+57677 Tiles this bitmap as the desktop wallpaper.
+57683 Sends the selection using mail or fax.
+57684 Prints the selection.
+57689 Shows or hides the thumbnail.
+57690 Shows Paint Help.
+57691 Microsoft\Windows\CurrentVersion\Applets
+59393 Shows or hides the status bar.
+59415 Shows or hides the tool box.
+59416 Shows or hides the color box.
+59417 Only a Far East font can be used for vertical editing.
+61184 Changes the window size.
+61185 Changes the window position.
+61186 Reduces the window to an icon.
+61187 Enlarges the window to full size.
+61188 Switches to the next document window.
+61189 Switches to the previous document window.
+61190 Closes the active window and asks if you want to save changes.
+61202 Restores the window to normal size.
+61203 Activates the task list.
+61440 Open
+61441 Save As
+61442 All Files (*.*)
+61443 Untitled
+61444 Save Copy As
+61446 an unnamed file
+61457 &Hide
+61472 No error message is available.
+61473 An unsupported operation was attempted.
+61474 A required resource was unavailable.
+61475 Out of memory.
+61476 An unknown error has occurred.
+61504 on %1
+61505 &One Page
+61506 &Two Page
+61507 Page %u
+61508 Page %u
+Pages %u-%u
+
+61509 prn
+61510 Output.prn
+61511 Printer Files (*.prn)|*.prn|All Files (*.*)|*.*||
+61512 Print to File
+61513 to %1
+61577 &Update %1
+61580 E&xit && Return to %1
+61588 Linked %s
+61589 Unknown Type
+61696 Invalid filename.
+61697 Failed to open document.
+61698 Failed to save document.
+61699 Save changes to %1?
+61700 Failed to create empty document.
+61701 The file is too large to open.
+61702 Could not start print job.
+61703 Failed to launch help.
+61704 Internal application error.
+61705 Command failed.
+61706 Insufficient memory to perform operation.
+61707 System registry entries have been removed and the INI file (if any) was deleted.
+61708 Not all of the system registry entries (or INI file) were removed.
+61709 This program requires the file %s, which was not found on this system.
+61710 This program is linked to the missing export %s in the file %s. This machine may have an incompatible version of %s.
+61712 Please enter an integer.
+61713 Please enter a number.
+61714 Please enter an integer between %1 and %2.
+61715 Please enter a number between %1 and %2.
+61716 Please enter no more than %1 characters.
+61717 Please select a button.
+61718 Please enter an integer between 0 and 255.
+61719 Please enter a positive integer.
+61720 Please enter a date and/or time.
+61721 Please enter a currency.
+61728 Unexpected file format.
+61729 %1
+Cannot find this file.
+Please verify that the correct path and file name are given.
+61730 Destination disk drive is full.
+61731 Unable to read from %1, it is opened by someone else.
+61732 Unable to write to %1, it is read-only or opened by someone else.
+61733 An unexpected error occurred while reading %1.
+61734 An unexpected error occurred while writing %1.
+61829 %1
+Unable to register document.
+The document may already be open.
+61831 Update %1 before proceeding?
+61832 Could not update client.
+61833 Failed to register. ActiveX features may not work properly.
+61834 Failed to update the system registry.
+Please try using REGEDIT.
+61836 Unable to read write-only property.
+61837 Unable to write read-only property.
+61840 Unable to load mail system support.
+61841 Mail system DLL is invalid.
+61842 Send Mail failed to send message.
+61856 No error occurred.
+61857 An unknown error occurred while accessing %1.
+61858 %1 was not found.
+61859 %1 contains an invalid path.
+61860 %1 could not be opened because there are too many open files.
+61861 Access to %1 was denied.
+61862 An invalid file handle was associated with %1.
+61863 %1 could not be removed because it is the current directory.
+61864 %1 could not be created because the directory is full.
+61865 Seek failed on %1
+61866 A hardware I/O error was reported while accessing %1.
+61867 A sharing violation occurred while accessing %1.
+61868 A locking violation occurred while accessing %1.
+61869 Disk full while accessing %1.
+61870 An attempt was made to access %1 past its end.
+61872 No error occurred.
+61873 An unknown error occurred while accessing %1.
+61874 An attempt was made to write to the reading %1.
+61875 An attempt was made to access %1 past its end.
+61876 An attempt was made to read from the writing %1.
+61877 %1 has a bad format.
+61878 %1 contained an unexpected object.
+61879 %1 contains an incorrect schema.
+61888 pixels

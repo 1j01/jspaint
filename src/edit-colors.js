@@ -69,7 +69,7 @@ function choose_color(initial_color, callback) {
 	if ($edit_colors_window) {
 		$edit_colors_window.close();
 	}
-	const $w = new $FormToolWindow("Edit Colors");
+	const $w = new $FormToolWindow(localize("Edit Colors"));
 	$w.addClass("edit-colors-window");
 	$edit_colors_window = $w;
 
@@ -510,11 +510,11 @@ function choose_color(initial_color, callback) {
 		$w.removeClass("defining-custom-colors"); // for mobile layout
 	});
 
-	$w.$Button("OK", () => {
+	$w.$Button(localize("OK"), () => {
 		callback(get_current_color());
 		$w.close();
 	})[0].focus();
-	$w.$Button("Cancel", () => {
+	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 

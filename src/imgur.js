@@ -149,7 +149,7 @@ function show_imgur_uploader(blob){
 
 					$imgur_status.text("Deleting...");
 				});
-				$imgur_window.$Button("OK", () => {
+				$imgur_window.$Button(localize("OK"), () => {
 					$imgur_window.close();
 				});
 			}else if(req.readyState == 4){
@@ -169,7 +169,7 @@ function show_imgur_uploader(blob){
 
 		$imgur_status.text("Uploading...");
 	});
-	const $cancel_button = $imgur_window.$Button("Cancel", () => {
+	const $cancel_button = $imgur_window.$Button(localize("Cancel"), () => {
 		$imgur_window.close();
 	});
 	$imgur_window.width(300);

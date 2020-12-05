@@ -1,6 +1,6 @@
 
 const default_magnification = 1;
-const default_tool = get_tool_by_name("Pencil");
+const default_tool = get_tool_by_name(localize("Pencil"));
 
 const default_canvas_width = 683;
 const default_canvas_height = 384;
@@ -283,7 +283,7 @@ if (Date.now() < Date.parse("Jan 5 2020 23:42:42 GMT-0500")) {
 }
 
 $status_text.default = () => {
-	$status_text.text("For Help, click Help Topics on the Help Menu.");
+	$status_text.text(localize("For Help, click Help Topics on the Help Menu."));
 };
 $status_text.default();
 
@@ -460,13 +460,13 @@ $G.on("keydown", e => {
 		if(selection){
 			selection.scale(2 ** delta);
 		}else{
-			if(selected_tool.name === "Brush"){
+			if(selected_tool.name === localize("Brush")){
 				brush_size = Math.max(1, Math.min(brush_size + delta, 500));
-			}else if(selected_tool.name === "Eraser/Color Eraser"){
+			}else if(selected_tool.name === localize("Eraser/Color Eraser")){
 				eraser_size = Math.max(1, Math.min(eraser_size + delta, 500));
-			}else if(selected_tool.name === "Airbrush"){
+			}else if(selected_tool.name === localize("Airbrush")){
 				airbrush_size = Math.max(1, Math.min(airbrush_size + delta, 500));
-			}else if(selected_tool.name === "Pencil"){
+			}else if(selected_tool.name === localize("Pencil")){
 				pencil_size = Math.max(1, Math.min(pencil_size + delta, 50));
 			}else if(selected_tool.name.match(/Line|Curve|Rectangle|Ellipse|Polygon/)){
 				stroke_size = Math.max(1, Math.min(stroke_size + delta, 500));
@@ -1118,11 +1118,11 @@ function init_eye_gaze_mode() {
 							hover_candidate.target.matches(".selection, .selection *, .handle") ||
 							(
 								hover_candidate.target === canvas &&
-								selected_tool.name !== "Pick Color" &&
-								selected_tool.name !== "Fill With Color" &&
-								selected_tool.name !== "Magnifier" &&
-								selected_tool.name !== "Polygon" &&
-								selected_tool.name !== "Curve"
+								selected_tool.name !== localize("Pick Color") &&
+								selected_tool.name !== localize("Fill With Color") &&
+								selected_tool.name !== localize("Magnifier") &&
+								selected_tool.name !== localize("Polygon") &&
+								selected_tool.name !== localize("Curve")
 							);
 						if (is_drag) {
 							gaze_dragging = hover_candidate.target;

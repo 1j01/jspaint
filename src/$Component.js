@@ -65,16 +65,16 @@ function apply_segments(component_area_el, pos_axis, segments) {
 	}
 }
 
-function $Component(name, orientation, $el){
+function $Component(title, className, orientation, $el){
 	// A draggable widget that can be undocked into a window
 	const $c = $(E("div")).addClass("component");
-	$c.addClass(`${name}-component`);
+	$c.addClass(className);
 	$c.addClass(orientation);
 	$c.append($el);
 	$c.attr("touch-action", "none");
 	
 	const $w = new $ToolWindow($c);
-	$w.title(name);
+	$w.title(title);
 	$w.hide();
 	$w.$content.addClass({
 		tall: "vertical",
@@ -82,7 +82,7 @@ function $Component(name, orientation, $el){
 	}[orientation]);
 	
 	// Nudge the Colors component over a tiny bit
-	if(name === "Colors" && orientation === "wide"){
+	if(className === "colors-component" && orientation === "wide"){
 		$c.css("position", "relative");
 		$c.css("left", "3px");
 	}

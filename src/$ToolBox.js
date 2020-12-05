@@ -77,7 +77,12 @@ function $ToolBox(tools, is_extras){
 		return $b[0];
 	}));
 	
-	const $c = $Component(is_extras ? "Extra Tools" : "Tools", "tall", $tools.add($tool_options));
+	const $c = $Component(
+		is_extras ? "Extra Tools" : localize("Tools"),
+		is_extras ? "tools-component extra-tools-component" : "tools-component",
+		"tall",
+		$tools.add($tool_options)
+	);
 	$c.appendTo($left);
 	$c.update_selected_tool = () => {
 		$buttons.removeClass("selected");

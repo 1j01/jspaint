@@ -32,31 +32,31 @@ context('visual tests', () => {
 
 	it('brush selected', () => {
 		cy.get('.tool[title="Brush"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('select selected', () => {
 		cy.get('.tool[title="Select"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('magnifier selected', () => {
 		cy.get('.tool[title="Magnifier"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('airbrush selected', () => {
 		cy.get('.tool[title="Airbrush"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('eraser selected', () => {
 		cy.get('.tool[title="Eraser/Color Eraser"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('line selected', () => {
 		cy.get('.tool[title="Line"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 	it('rectangle selected', () => {
 		cy.get('.tool[title="Rectangle"]').click();
-		cy.get('.Tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 
 	beforeEach(()=> {
