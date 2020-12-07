@@ -27,38 +27,29 @@ const base_strings = get_strings(base_lang);
 for (const target_lang of ["ko"]) {
 	const target_strings = get_strings(target_lang);
 	const localizations = {};
-	for (let i = 0; i < target_strings.length; i++) {
-		const base_string = base_strings[i];
-		const target_string = target_strings[i];
-		if (base_string !== target_string) {
-			// Split strings like "&Attributes...\tCtrl+E"
-			if (base_string.match(/\t/)) {
-				const base_split = base_string.split(/\t/);
-				const target_split = target_string.split(/\t/);
-				// TODO: DRY (could use recursion)
-				for (let j = 0; j < target_split.length; j++) {
-					const base_part = base_split[j];
-					const target_part = target_split[j];
-					if (base_part !== target_part && base_part && target_part) {
-						if (localizations[base_part] && localizations[base_part] !== target_part) {
-							console.warn(`Collision for '${base_part}' : '${localizations[base_part]}' vs '${target_part}'`);
-						}
-						localizations[base_part] = target_part;
-						// this causes more collisions @TODO
-						localizations[remove_hotkey(base_part)] = remove_hotkey(target_part);
-						localizations[remove_ellipsis(base_part)] = remove_ellipsis(target_part);
+	const add_localizations = (base_strings, target_strings)=> {
+		for (let i = 0; i < target_strings.length; i++) {
+			const base_string = base_strings[i];
+			const target_string = target_strings[i];
+			if (base_string !== target_string && base_string && target_string) {
+				// Split strings like "&Attributes...\tCtrl+E"
+				if (base_string.match(/\t/)) {
+					add_localizations(
+						base_string.split(/\t/),
+						target_string.split(/\t/)
+					);
+				} else {
+					if (localizations[base_string] && localizations[base_string] !== target_string) {
+						console.warn(`Collision for '${base_string}' : '${localizations[base_string]}' vs '${target_string}'`);
 					}
+					localizations[base_string] = target_string;
+					// this can cause more collisions @TODO detect
+					localizations[remove_hotkey(base_string)] = remove_hotkey(target_string);
+					localizations[remove_ellipsis(base_string)] = remove_ellipsis(target_string);
 				}
-			} else {
-				if (localizations[base_string] && localizations[base_string] !== target_string) {
-					console.warn(`Collision for '${base_string}' : '${localizations[base_string]}' vs '${target_string}'`);
-				}
-				localizations[base_string] = target_string;
-				// this causes more collisions @TODO
-				localizations[remove_hotkey(base_string)] = remove_hotkey(target_string);
-				localizations[remove_ellipsis(base_string)] = remove_ellipsis(target_string);
 			}
 		}
-	}
+	};
+	add_localizations(base_strings, target_strings);
 	fs.writeFileSync(`${target_lang}/localizations.json`, JSON.stringify(localizations));
 }
