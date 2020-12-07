@@ -256,7 +256,10 @@
 							return interpolate(localizations[without_hotkey], interpolations);
 						} else {
 							if (localizations[without_hotkey].match(/&\w/)) {
-								window.console && console.warn(`Localization has differing accelerator (hotkey) hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
+								// window.console && console.warn(`Localization has differing accelerator (hotkey) hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
+								// TODO: detect differing accelerator more generally
+								// (and DRY interpolate() while you're at it)
+								return localizations[without_hotkey].replace(/&\w/, hotkey_def);
 							}
 							return interpolate(`${localizations[without_hotkey]} (${hotkey_def})`, interpolations);
 						}
