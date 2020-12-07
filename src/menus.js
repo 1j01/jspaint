@@ -5,7 +5,7 @@ const looksLikeChrome = !!(window.chrome && (chrome.loadTimes || chrome.csi));
 // (also this browser detection logic could likely use some more nuance)
 
 window.menus = {
-	"&File": [
+	[localize("&File")]: [
 		{
 			item: localize("&New"),
 			shortcut: "Ctrl+Alt+N", // Ctrl+N opens a new browser window
@@ -212,7 +212,7 @@ window.menus = {
 			description: localize("Quits Paint."),
 		}
 	],
-	"&Edit": [
+	[localize("&Edit")]: [
 		{
 			item: localize("&Undo"),
 			shortcut: "Ctrl+Z",
@@ -329,7 +329,7 @@ window.menus = {
 			description: localize("Pastes a file into the selection."),
 		}
 	],
-	"&View": [
+	[localize("&View")]: [
 		{
 			item: localize("&Tool Box"),
 			// shortcut: "Ctrl+T", // opens a new browser tab
@@ -509,7 +509,7 @@ window.menus = {
 			description: localize("Displays the entire picture."),
 		}
 	],
-	"&Image": [
+	[localize("&Image")]: [
 		// @TODO: speech recognition: terms that apply to selection
 		{
 			item: localize("&Flip/Rotate"),
@@ -603,7 +603,7 @@ window.menus = {
 			description: localize("Makes the current selection either opaque or transparent."),
 		}
 	],
-	"&Colors": [
+	[localize("&Colors")]: [
 		{
 			item: `${localize("&Edit Colors")}...`,
 			speech_recognition: [
@@ -650,7 +650,7 @@ window.menus = {
 			description: localize("Saves the current palette of colors to a file."),
 		}
 	],
-	"&Help": [
+	[localize("&Help")]: [
 		{
 			item: localize("&Help Topics"),
 			speech_recognition: [
@@ -674,7 +674,7 @@ window.menus = {
 			//description: localize("Displays program information, version number, and copyright."),
 		}
 	],
-	"E&xtras": [
+	[localize("E&xtras")]: [
 		{
 			item: localize("&History"),
 			shortcut: "Ctrl+Shift+Y",
