@@ -2182,23 +2182,6 @@ function image_flip_and_rotate(){
 
 	$w.$Button(localize("OK"), () => {
 		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
-		let angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
-		if(angle_val === "arbitrary"){
-			angle_val = $fieldset.find("input[name='rotate-by-arbitrary-angle']").val();
-		}
-		const angle_deg = parseFloat(angle_val);
-		const angle = angle_deg / 360 * TAU;
-
-		if(isNaN(angle)){
-			const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
-			// $msgw.$main.text("The value specified for Degrees was invalid.");
-			$msgw.$main.text(localize("Please enter a number."));
-			$msgw.$Button(localize("OK"), () => {
-				$msgw.close();
-			});
-			return;
-		}
-
 		switch(action){
 			case "flip-horizontal":
 				flip_horizontal();
@@ -2206,9 +2189,26 @@ function image_flip_and_rotate(){
 			case "flip-vertical":
 				flip_vertical();
 				break;
-			case "rotate-by-angle":
+			case "rotate-by-angle": {
+				let angle_val = $fieldset.find("input[name='rotate-by-angle']:checked").val();
+				if(angle_val === "arbitrary"){
+					angle_val = $fieldset.find("input[name='rotate-by-arbitrary-angle']").val();
+				}
+				const angle_deg = parseFloat(angle_val);
+				const angle = angle_deg / 360 * TAU;
+		
+				if(isNaN(angle)){
+					const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
+					// $msgw.$main.text("The value specified for Degrees was invalid.");
+					$msgw.$main.text(localize("Please enter a number."));
+					$msgw.$Button(localize("OK"), () => {
+						$msgw.close();
+					});
+					return;
+				}
 				rotate(angle);
 				break;
+			}
 		}
 
 		$canvas_area.trigger("resize");
