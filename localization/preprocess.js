@@ -51,7 +51,7 @@ for (const target_lang of ["ko"]) {
 						localizations[base_part] = target_part;
 						// this causes more collisions @TODO
 						localizations[base_part.replace(/&/g, "")] = target_part;
-						localizations[base_part.replace(/\.\.\./g, "")] = target_part;
+						localizations[base_part.replace(/\.\.\./g, "")] = target_part.replace(/\.\.\./g, "");
 					}
 				}
 			} else {
@@ -61,7 +61,7 @@ for (const target_lang of ["ko"]) {
 				localizations[base_string] = target_string;
 				// this causes more collisions @TODO
 				localizations[base_string.replace(/&/g, "")] = target_string;
-				localizations[base_string.replace(/\.\.\./g, "")] = target_string;
+				localizations[base_string.replace(/\.\.\./g, "")] = target_string.replace(/\.\.\./g, "");
 			}
 		}
 	}
