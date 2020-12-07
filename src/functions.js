@@ -1983,8 +1983,8 @@ function image_attributes(){
 	// Information
 
 	const table = {
-		[localize("File last saved:")]: localize("Not available"), // @TODO
-		[localize("Size on disk:")]: localize("Not available"), // @TODO
+		[localize("File last saved:")]: localize("Not Available"), // @TODO: make available?
+		[localize("Size on disk:")]: localize("Not Available"), // @TODO: make available?
 		[localize("Resolution:")]: "72 x 72 dots per inch",
 	};
 	const $table = $(E("table")).appendTo($main);
@@ -2028,8 +2028,8 @@ function image_attributes(){
 	}).triggerHandler("change");
 
 	const $colors = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Colors")}</legend>`);
-	$colors.append(`<label><input type="radio" name="colors" value="monochrome">${localize("Black and White")}</label>`);
-	$colors.append(`<label><input type="radio" name="colors" value="polychrome">${localize("Color")}</label>`);
+	$colors.append(`<label><input type="radio" name="colors" value="monochrome">${localize("Black and white")}</label>`);
+	$colors.append(`<label><input type="radio" name="colors" value="polychrome">${localize("Colors")}</label>`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({checked: true});
 
 	const $transparency = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Transparency")}</legend>`);
