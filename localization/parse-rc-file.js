@@ -7,7 +7,8 @@ function parse_rc_file(rc_file_text, callback, lang) {
 	// 	throw new TypeError('callback not specified');
 	// }
 
-	rc_file_text = rc_file_text.replace(/\0/g, "");
+	// fetch().text() assumes utf8; hack to make it more readable (not needed in Node.js)
+	// rc_file_text = rc_file_text.replace(/\0/g, "");
 
 	let strings = [];
 	// let translated_text = "";
@@ -23,9 +24,9 @@ function parse_rc_file(rc_file_text, callback, lang) {
 
 	for (let line of rc_file_text.split(/\r?\n/g)) {
 
-		let hint;
+		// let hint;
 		let orig_str;
-		let translated_str;
+		// let translated_str;
 
 		// normalize line
 

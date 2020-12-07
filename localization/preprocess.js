@@ -21,14 +21,7 @@ const remove_hotkey = str => str.replace(/&(\w)/, "$1").replace(/\s?\(.\)/, "");
 const remove_ellipsis = str => str.replace("...", "");
 const get_strings = (lang)=> {
 	const rc_file_text = fs.readFileSync(`${lang}/combined.rc`, "utf16le");
-	const orig_strings = parse_rc_file(rc_file_text);
-	return orig_strings;
-	// this will break correlation because things can have different numbers of tabs
-	// const new_strings = [];
-	// for (const orig_string of orig_strings) {
-	// 	new_strings.push(...orig_string.split(/\t/g));
-	// }
-	// return new_strings;
+	return parse_rc_file(rc_file_text);
 };
 const base_strings = get_strings(base_lang);
 for (const target_lang of ["ko"]) {

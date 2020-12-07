@@ -278,28 +278,7 @@
 				}
 			}
 
-			const base_lang = "en";
-			// This is used to generate the JSON data, but can't be used directly because it's async (the UI is rendered before it loads the text files.)
-			// Data was obtained with Resource Tuner.
-			// const get_strings = async (lang)=> {
-			// 	const rc_file_text = await (await fetch(`localization/${lang}/combined.rc`)).text();
-			// 	return parse_rc_file(rc_file_text);
-			// };
-			// const preprocess_localizations = async ()=> {
-			// 	const base_strings = await get_strings(base_lang);
-			// 	for (const target_lang of ["ko"]) {
-			// 		const target_strings = await get_strings(target_lang);
-			// 		const localizations = {};
-			// 		for (let i = 0; i < target_strings.length; i++) {
-			// 			localizations[base_strings[i]] = target_strings[i];
-			// 		}
-			// 		console.log(target_lang, localizations);
-			// 		localStorage[`localizations-${target_lang}`] = JSON.stringify(localizations);
-			// 	}
-			// };
-			// preprocess_localizations();
-
-			let language = base_lang;
+			let language = "en";
 			try {
 				language = localStorage.language;
 			} catch (error) {}
