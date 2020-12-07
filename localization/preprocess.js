@@ -17,6 +17,8 @@ could do this in Node.js but whatever
 const fs = require("fs");
 const parse_rc_file = require("./parse-rc-file");
 const base_lang = "en";
+const remove_hotkey = str => str.replace(/&(\w)/, "$1").replace(/\s?\(.\)/, "");
+const remove_ellipsis = str => str.replace("...", "");
 const get_strings = (lang)=> {
 	const rc_file_text = fs.readFileSync(`${lang}/combined.rc`, "utf16le");
 	const orig_strings = parse_rc_file(rc_file_text);
@@ -50,8 +52,8 @@ for (const target_lang of ["ko"]) {
 						}
 						localizations[base_part] = target_part;
 						// this causes more collisions @TODO
-						localizations[base_part.replace(/&/g, "")] = target_part;
-						localizations[base_part.replace(/\.\.\./g, "")] = target_part.replace(/\.\.\./g, "");
+						localizations[remove_hotkey(base_part)] = remove_hotkey(target_part);
+						localizations[remove_ellipsis(base_part)] = remove_ellipsis(target_part);
 					}
 				}
 			} else {
@@ -60,8 +62,8 @@ for (const target_lang of ["ko"]) {
 				}
 				localizations[base_string] = target_string;
 				// this causes more collisions @TODO
-				localizations[base_string.replace(/&/g, "")] = target_string;
-				localizations[base_string.replace(/\.\.\./g, "")] = target_string.replace(/\.\.\./g, "");
+				localizations[remove_hotkey(base_string)] = remove_hotkey(target_string);
+				localizations[remove_ellipsis(base_string)] = remove_ellipsis(target_string);
 			}
 		}
 	}

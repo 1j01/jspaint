@@ -898,7 +898,7 @@ function show_about_paint(){
 	if($about_paint_window){
 		$about_paint_window.close();
 	}
-	$about_paint_window = $ToolWindow().title(hide_hotkey(localize("About Paint")));
+	$about_paint_window = $ToolWindow().title(localize("About Paint"));
 	if (is_pride_month) {
 		$("#paint-32x32").attr("src", "./images/icons/gay-es-paint-32x32-light-outline.png");
 	}
@@ -2001,8 +2001,8 @@ function image_attributes(){
 	let width_in_px = canvas.width;
 	let height_in_px = canvas.height;
 
-	const $width_label = $(E("label")).appendTo($main).text(hide_hotkey(localize("Width:")));
-	const $height_label = $(E("label")).appendTo($main).text(hide_hotkey(localize("Height:")));
+	const $width_label = $(E("label")).appendTo($main).text(localize("Width:"));
+	const $height_label = $(E("label")).appendTo($main).text(localize("Height:"));
 	const $width = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($width_label);
 	const $height = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($height_label);
 
@@ -2016,9 +2016,9 @@ function image_attributes(){
 	// Fieldsets
 
 	const $units = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Units")}</legend>`);
-	$units.append(`<label><input type="radio" name="units" value="in">${hide_hotkey(localize("Inches"))}</label>`);
-	$units.append(`<label><input type="radio" name="units" value="cm">${hide_hotkey(localize("Cm"))}</label>`);
-	$units.append(`<label><input type="radio" name="units" value="px">${hide_hotkey(localize("Pixels"))}</label>`);
+	$units.append(`<label><input type="radio" name="units" value="in">${localize("Inches")}</label>`);
+	$units.append(`<label><input type="radio" name="units" value="cm">${localize("Cm")}</label>`);
+	$units.append(`<label><input type="radio" name="units" value="px">${localize("Pixels")}</label>`);
 	$units.find(`[value=${current_unit}]`).attr({checked: true});
 	$units.on("change", () => {
 		const new_unit = $units.find(":checked").val();
@@ -2027,7 +2027,7 @@ function image_attributes(){
 		current_unit = new_unit;
 	}).triggerHandler("change");
 
-	const $colors = $(E("fieldset")).appendTo($main).append(`<legend>${hide_hotkey(localize("Colors"))}</legend>`);
+	const $colors = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Colors")}</legend>`);
 	$colors.append(`<label><input type="radio" name="colors" value="monochrome">${localize("Black and White")}</label>`);
 	$colors.append(`<label><input type="radio" name="colors" value="polychrome">${localize("Color")}</label>`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({checked: true});
@@ -2080,7 +2080,7 @@ function image_attributes(){
 		image_attributes.$window.close();
 	});
 
-	$w.$Button(hide_hotkey(localize("Default")), () => {
+	$w.$Button(localize("Default"), () => {
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
@@ -2140,10 +2140,10 @@ function image_flip_and_rotate(){
 	// TODO: accelerators
 	// const underline_hotkey = str => str.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
 	$fieldset.append(`
-		<legend>${hide_hotkey(localize("Flip or rotate"))}</legend>
-		<label><input type="radio" name="flip-or-rotate" value="flip-horizontal" checked/>${hide_hotkey(localize("Flip horizontal"))}</label>
-		<label><input type="radio" name="flip-or-rotate" value="flip-vertical"/>${hide_hotkey(localize("Flip vertical"))}</label>
-		<label><input type="radio" name="flip-or-rotate" value="rotate-by-angle"/>${hide_hotkey(localize("Rotate by angle"))}</label>
+		<legend>${localize("Flip or rotate")}</legend>
+		<label><input type="radio" name="flip-or-rotate" value="flip-horizontal" checked/>${localize("Flip horizontal")}</label>
+		<label><input type="radio" name="flip-or-rotate" value="flip-vertical"/>${localize("Flip vertical")}</label>
+		<label><input type="radio" name="flip-or-rotate" value="rotate-by-angle"/>${localize("Rotate by angle")}</label>
 	`);
 
 	const $rotate_by_angle = $(E("div")).appendTo($fieldset);
@@ -2257,10 +2257,10 @@ function image_stretch_and_skew(){
 		return $input;
 	};
 
-	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", hide_hotkey(localize("Horizontal:")), 100, "%", 1, 5000);
-	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", hide_hotkey(localize("Vertical:")), 100, "%", 1, 5000);
-	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", hide_hotkey(localize("Horizontal:")), 0, localize("Degrees"), -90, 90);
-	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", hide_hotkey(localize("Vertical:")), 0, localize("Degrees"), -90, 90);
+	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", localize("Horizontal:"), 100, "%", 1, 5000);
+	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", localize("Vertical:"), 100, "%", 1, 5000);
+	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", localize("Horizontal:"), 0, localize("Degrees"), -90, 90);
+	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", localize("Vertical:"), 0, localize("Degrees"), -90, 90);
 
 	$w.$Button(localize("OK"), () => {
 		const xscale = parseFloat(stretch_x.val())/100;
