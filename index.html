@@ -252,9 +252,12 @@
 					const without_hotkey = english_text.replace(/&/, "");
 					if (localizations[without_hotkey]) {
 						const hotkey_def = english_text.slice(amp_index, amp_index + 2);
-						if (localizations[without_hotkey].indexOf(hotkey_def) > -1) {
+						if (localizations[without_hotkey].toUpperCase().indexOf(hotkey_def.toUpperCase()) > -1) {
 							return interpolate(localizations[without_hotkey], interpolations);
 						} else {
+							if (localizations[without_hotkey].match(/&\w/)) {
+								window.console && console.warn(`Localization has differing accelerator (hotkey) hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
+							}
 							return interpolate(`${localizations[without_hotkey]} (${hotkey_def})`, interpolations);
 						}
 					}
