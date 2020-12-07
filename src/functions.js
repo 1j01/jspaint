@@ -265,7 +265,7 @@ function show_custom_zoom_window() {
 	if ($custom_zoom_window) {
 		$custom_zoom_window.close();
 	}
-	const $w = new $FormToolWindow("Custom Zoom");
+	const $w = new $FormToolWindow(localize("Custom Zoom"));
 	$custom_zoom_window = $w;
 
 	// @TODO: show Current zoom: blah% ?
@@ -311,7 +311,8 @@ function show_custom_zoom_window() {
 			}
 			if(isNaN(mag)){
 				const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
-				$msgw.$main.text("The value specified for custom zoom was invalid.");
+				// $msgw.$main.text("The value specified for custom zoom was invalid.");
+				$msgw.$main.text(localize("Please enter a number."));
 				$msgw.$Button(localize("OK"), () => {
 					$msgw.close();
 				});
@@ -897,7 +898,7 @@ function show_about_paint(){
 	if($about_paint_window){
 		$about_paint_window.close();
 	}
-	$about_paint_window = $ToolWindow().title("About Paint");
+	$about_paint_window = $ToolWindow().title(hide_hotkey(localize("About Paint")));
 	if (is_pride_month) {
 		$("#paint-32x32").attr("src", "./images/icons/gay-es-paint-32x32-light-outline.png");
 	}
@@ -1975,21 +1976,21 @@ function image_attributes(){
 	if(image_attributes.$window){
 		image_attributes.$window.close();
 	}
-	const $w = image_attributes.$window = new $FormToolWindow("Attributes");
+	const $w = image_attributes.$window = new $FormToolWindow(localize("Attributes"));
 
 	const $main = $w.$main;
 
 	// Information
 
 	const table = {
-		"File last saved": "Not available", // @TODO
-		"Size on disk": "Not available", // @TODO
-		"Resolution": "72 x 72 dots per inch",
+		[localize("File last saved:")]: localize("Not available"), // @TODO
+		[localize("Size on disk:")]: localize("Not available"), // @TODO
+		[localize("Resolution:")]: "72 x 72 dots per inch",
 	};
 	const $table = $(E("table")).appendTo($main);
 	for(const k in table){
 		const $tr = $(E("tr")).appendTo($table);
-		const $key = $(E("td")).appendTo($tr).text(`${k}:`);
+		const $key = $(E("td")).appendTo($tr).text(k);
 		const $value = $(E("td")).appendTo($tr).text(table[k]);
 	}
 
@@ -2000,8 +2001,8 @@ function image_attributes(){
 	let width_in_px = canvas.width;
 	let height_in_px = canvas.height;
 
-	const $width_label = $(E("label")).appendTo($main).text("Width:");
-	const $height_label = $(E("label")).appendTo($main).text("Height:");
+	const $width_label = $(E("label")).appendTo($main).text(hide_hotkey(localize("Width:")));
+	const $height_label = $(E("label")).appendTo($main).text(hide_hotkey(localize("Height:")));
 	const $width = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($width_label);
 	const $height = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($height_label);
 
@@ -2014,10 +2015,10 @@ function image_attributes(){
 
 	// Fieldsets
 
-	const $units = $(E("fieldset")).appendTo($main).append('<legend>Units</legend>');
-	$units.append('<label><input type="radio" name="units" value="in">Inches</label>');
-	$units.append('<label><input type="radio" name="units" value="cm">Cm</label>');
-	$units.append('<label><input type="radio" name="units" value="px">Pixels</label>');
+	const $units = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Units")}</legend>`);
+	$units.append(`<label><input type="radio" name="units" value="in">${hide_hotkey(localize("Inches"))}</label>`);
+	$units.append(`<label><input type="radio" name="units" value="cm">${hide_hotkey(localize("Cm"))}</label>`);
+	$units.append(`<label><input type="radio" name="units" value="px">${hide_hotkey(localize("Pixels"))}</label>`);
 	$units.find(`[value=${current_unit}]`).attr({checked: true});
 	$units.on("change", () => {
 		const new_unit = $units.find(":checked").val();
@@ -2026,14 +2027,14 @@ function image_attributes(){
 		current_unit = new_unit;
 	}).triggerHandler("change");
 
-	const $colors = $(E("fieldset")).appendTo($main).append('<legend>Colors</legend>');
-	$colors.append('<label><input type="radio" name="colors" value="monochrome">Black and White</label>');
-	$colors.append('<label><input type="radio" name="colors" value="polychrome">Color</label>');
+	const $colors = $(E("fieldset")).appendTo($main).append(`<legend>${hide_hotkey(localize("Colors"))}</legend>`);
+	$colors.append(`<label><input type="radio" name="colors" value="monochrome">${localize("Black and White")}</label>`);
+	$colors.append(`<label><input type="radio" name="colors" value="polychrome">${localize("Color")}</label>`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({checked: true});
 
-	const $transparency = $(E("fieldset")).appendTo($main).append('<legend>Transparency</legend>');
-	$transparency.append('<label><input type="radio" name="transparency" value="transparent">Transparent</label>');
-	$transparency.append('<label><input type="radio" name="transparency" value="opaque">Opaque</label>');
+	const $transparency = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Transparency")}</legend>`);
+	$transparency.append(`<label><input type="radio" name="transparency" value="transparent">${localize("Transparent")}</label>`);
+	$transparency.append(`<label><input type="radio" name="transparency" value="opaque">${localize("Opaque")}</label>`);
 	$transparency.find(`[value=${transparency ? "transparent" : "opaque"}]`).attr({checked: true});
 
 	// Buttons on the right
@@ -2079,7 +2080,7 @@ function image_attributes(){
 		image_attributes.$window.close();
 	});
 
-	$w.$Button("Default", () => {
+	$w.$Button(hide_hotkey(localize("Default")), () => {
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
@@ -2132,13 +2133,12 @@ function show_convert_to_black_and_white() {
 }
 
 function image_flip_and_rotate(){
-	const $w = new $FormToolWindow("Flip and Rotate");
+	const $w = new $FormToolWindow(localize("Flip and Rotate"));
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	// TODO: accelerators
 	// const underline_hotkey = str => str.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
-	const hide_hotkey = str => str.replace(/&(\w)/, "$1").replace(/\s?\(.\)/, "");
 	$fieldset.append(`
 		<legend>${hide_hotkey(localize("Flip or rotate"))}</legend>
 		<label><input type="radio" name="flip-or-rotate" value="flip-horizontal" checked/>${hide_hotkey(localize("Flip horizontal"))}</label>
@@ -2191,7 +2191,8 @@ function image_flip_and_rotate(){
 
 		if(isNaN(angle)){
 			const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
-			$msgw.$main.text("The value specified for Degrees was invalid.");
+			// $msgw.$main.text("The value specified for Degrees was invalid.");
+			$msgw.$main.text(localize("Please enter a number."));
 			$msgw.$Button(localize("OK"), () => {
 				$msgw.close();
 			});
@@ -2222,12 +2223,12 @@ function image_flip_and_rotate(){
 }
 
 function image_stretch_and_skew(){
-	const $w = new $FormToolWindow("Stretch and Skew");
+	const $w = new $FormToolWindow(localize("Stretch and Skew"));
 
 	const $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
-	$fieldset_stretch.append("<legend>Stretch</legend><table></table>");
+	$fieldset_stretch.append(`<legend>${localize("Stretch")}</legend><table></table>`);
 	const $fieldset_skew = $(E("fieldset")).appendTo($w.$main);
-	$fieldset_skew.append("<legend>Skew</legend><table></table>");
+	$fieldset_skew.append(`<legend>${localize("Skew")}</legend><table></table>`);
 
 	const $RowInput = ($table, img_src, label_text, default_value, label_unit, min, max) => {
 		const $tr = $(E("tr")).appendTo($table);
@@ -2256,10 +2257,10 @@ function image_stretch_and_skew(){
 		return $input;
 	};
 
-	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", "Horizontal:", 100, "%", 1, 5000);
-	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", "Vertical:", 100, "%", 1, 5000);
-	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", "Horizontal:", 0, "Degrees", -90, 90);
-	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", "Vertical:", 0, "Degrees", -90, 90);
+	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", hide_hotkey(localize("Horizontal:")), 100, "%", 1, 5000);
+	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", hide_hotkey(localize("Vertical:")), 100, "%", 1, 5000);
+	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", hide_hotkey(localize("Horizontal:")), 0, localize("Degrees"), -90, 90);
+	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", hide_hotkey(localize("Vertical:")), 0, localize("Degrees"), -90, 90);
 
 	$w.$Button(localize("OK"), () => {
 		const xscale = parseFloat(stretch_x.val())/100;

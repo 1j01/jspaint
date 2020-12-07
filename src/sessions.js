@@ -68,7 +68,7 @@
 		$G.on("session-update.session-hook", update_buttons_disabled);
 		update_buttons_disabled();
 
-		$w.$Button("Close", ()=> {
+		$w.$Button(hide_hotkey(localize("Close")), ()=> {
 			$w.close();
 		});
 		$w.center();

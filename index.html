@@ -245,6 +245,7 @@
 		
 		<!-- <script src="localization/parse-rc-file.js"></script> -->
 		<script>
+			window.hide_hotkey = str => str.replace(/&(\w)/, "$1").replace(/\s?\(.\)/, "");
 			let localizations = {};
 			window.localize = (english_text, ...interpolations)=> {
 				const amp_index = english_text.indexOf("&");

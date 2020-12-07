@@ -125,10 +125,10 @@ function $ColorBox(vertical){
 	};
 	let $c;
 	if (vertical) {
-		$c = $Component(localize("Colors"), "colors-component", "tall", $cb);
+		$c = $Component(hide_hotkey(localize("Colors")), "colors-component", "tall", $cb);
 		$c.appendTo($right);
 	}else{
-		$c = $Component(localize("Colors"), "colors-component", "wide", $cb);
+		$c = $Component(hide_hotkey(localize("Colors")), "colors-component", "wide", $cb);
 		$c.appendTo($bottom);
 	}
 	

@@ -6,7 +6,7 @@ function show_help() {
 		return;
 	}
 	$help_window = open_help_viewer({
-		title: "Paint Help",
+		title: localize("Paint Help"),
 		root: "help",
 		contentsFile: "help/mspaint.hhc",
 	}).$help_window;
