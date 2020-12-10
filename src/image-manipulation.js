@@ -1044,7 +1044,12 @@ function draw_grid(ctx, scale) {
 	let positionLoc;
 
 	function initWebGL(canvas) {
-		gl = canvas.getContext('webgl', { antialias: false });
+		try {
+			gl = canvas.getContext('webgl', { antialias: false });
+		} catch (error) {
+			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.", error);
+			return;
+		}
 
 		if (!gl) {
 			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
