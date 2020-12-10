@@ -41,10 +41,12 @@ for (const target_lang of ["ko"]) {
 			const target_string = target_strings[i];
 			if (base_string !== target_string && base_string && target_string) {
 				// Split strings like "&Attributes...\tCtrl+E"
-				if (base_string.match(/\t/)) {
+				// and "Fills an area with the current drawing color.\nFill With Color"
+				const splitter = /\t|\r?\n/;
+				if (base_string.match(splitter)) {
 					add_localizations(
-						base_string.split(/\t/),
-						target_string.split(/\t/)
+						base_string.split(splitter),
+						target_string.split(splitter)
 					);
 				} else {
 					add_localization(base_string, target_string);
