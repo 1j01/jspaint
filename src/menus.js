@@ -970,6 +970,19 @@ window.menus = {
 			]
 		},
 		{
+			item: localize("&Language"),
+			submenu: available_languages.map((available_language)=> (
+				{
+					item: language_names[available_language],
+					action: ()=> {
+						set_language(available_language);
+					},
+					enabled: () => get_language() != available_language,
+					description: localize("Changes the language to %1.", language_names[available_language]),
+				}
+			)),
+		},
+		{
 			item: localize("&Eye Gaze Mode"),
 			speech_recognition: [
 				"toggle eye gaze mode",
