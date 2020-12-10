@@ -247,35 +247,36 @@
 		<script>
 			let localizations = {};
 			window.localize = (english_text, ...interpolations)=> {
-				const amp_index = english_text.indexOf("&");
-				if (amp_index > -1) {
-					const without_hotkey = english_text.replace(/&/, "");
-					if (localizations[without_hotkey]) {
-						const hotkey_def = english_text.slice(amp_index, amp_index + 2);
-						if (localizations[without_hotkey].toUpperCase().indexOf(hotkey_def.toUpperCase()) > -1) {
-							return interpolate(localizations[without_hotkey], interpolations);
-						} else {
-							if (localizations[without_hotkey].match(/&\w/)) {
-								// window.console && console.warn(`Localization has differing accelerator (hotkey) hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
-								// TODO: detect differing accelerator more generally
-								// (and DRY interpolate() while you're at it)
-								return localizations[without_hotkey].replace(/&\w/, hotkey_def);
+				function find_localization(english_text) {
+					const amp_index = english_text.indexOf("&");
+					if (amp_index > -1) {
+						const without_hotkey = english_text.replace(/&/, "");
+						if (localizations[without_hotkey]) {
+							const hotkey_def = english_text.slice(amp_index, amp_index + 2);
+							if (localizations[without_hotkey].toUpperCase().indexOf(hotkey_def.toUpperCase()) > -1) {
+								return localizations[without_hotkey];
+							} else {
+								if (localizations[without_hotkey].match(/&\w/)) {
+									// window.console && console.warn(`Localization has differing accelerator (hotkey) hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
+									// TODO: detect differing accelerator more generally
+									return localizations[without_hotkey].replace(/&\w/, hotkey_def);
+								}
+								return `${localizations[without_hotkey]} (${hotkey_def})`;
 							}
-							return interpolate(`${localizations[without_hotkey]} (${hotkey_def})`, interpolations);
 						}
 					}
+					if (localizations[english_text]) {
+						return localizations[english_text];
+					}
+					return english_text;
 				}
-				if (localizations[english_text]) {
-					return interpolate(localizations[english_text], interpolations);
-				}
-				return interpolate(english_text, interpolations);
-
 				function interpolate(text, interpolations) {
 					for (let i = 0; i < interpolations.length; i++) {
 						text = text.replace(`%${i+1}`, interpolations[i]);
 					}
 					return text;
 				}
+				return interpolate(find_localization(english_text), interpolations);
 			}
 
 			let language = "en";
