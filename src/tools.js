@@ -4,7 +4,25 @@
 /* eslint no-restricted-syntax: ["error", "ThisExpression"] */
 /* eslint-disable no-restricted-syntax */
 
+window.TOOL_FREE_FORM_SELECT = "TOOL_FREE_FORM_SELECT";
+window.TOOL_SELECT = "TOOL_SELECT";
+window.TOOL_ERASER = "TOOL_ERASER";
+window.TOOL_FILL = "TOOL_FILL";
+window.TOOL_PICK_COLOR = "TOOL_PICK_COLOR";
+window.TOOL_MAGNIFIER = "TOOL_MAGNIFIER";
+window.TOOL_PENCIL = "TOOL_PENCIL";
+window.TOOL_BRUSH = "TOOL_BRUSH";
+window.TOOL_AIRBRUSH = "TOOL_AIRBRUSH";
+window.TOOL_TEXT = "TOOL_TEXT";
+window.TOOL_LINE = "TOOL_LINE";
+window.TOOL_CURVE = "TOOL_CURVE";
+window.TOOL_RECTANGLE = "TOOL_RECTANGLE";
+window.TOOL_POLYGON = "TOOL_POLYGON";
+window.TOOL_ELLIPSE = "TOOL_ELLIPSE";
+window.TOOL_ROUNDED_RECTANGLE = "TOOL_ROUNDED_RECTANGLE";
+
 window.tools = [{
+	id: TOOL_FREE_FORM_SELECT,
 	name: localize("Free-Form Select"),
 	speech_recognition: [
 		"lasso", "select with lasso", "select by lassoing", "lassoing",
@@ -107,7 +125,7 @@ window.tools = [{
 
 		undoable({
 			name: localize("Free-Form Select"),
-			icon: get_icon_for_tool(get_tool_by_name(localize("Free-Form Select"))),
+			icon: get_icon_for_tool(get_tool_by_id(TOOL_FREE_FORM_SELECT)),
 			soft: true,
 		}, ()=> {
 			selection = new OnCanvasSelection(
@@ -136,6 +154,7 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
+	id: TOOL_SELECT,
 	name: localize("Select"),
 	speech_recognition: [
 		"select", "rectangle select", "rectangular select", "box select", "square select", "drag select", "select rectangle", "select by rectangle", "select rectangular region", "select rectangular area", "rectangular region select", "rectangular area select",
@@ -202,8 +221,8 @@ window.tools = [{
 				undoable({
 					name: "Free-Form Select⊕Select",
 					icon: get_icon_for_tools([
-						get_tool_by_name(localize("Free-Form Select")),
-						get_tool_by_name(localize("Select")),
+						get_tool_by_id(TOOL_FREE_FORM_SELECT),
+						get_tool_by_id(TOOL_SELECT),
 					]),
 					soft: true,
 				}, ()=> {
@@ -219,7 +238,7 @@ window.tools = [{
 			} else {
 				undoable({
 					name: localize("Select"),
-					icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
+					icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 					soft: true,
 				}, ()=> {
 					selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
@@ -229,6 +248,7 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
+	id: TOOL_ERASER,
 	name: localize("Eraser/Color Eraser"),
 	speech_recognition: [
 		"erase", "eraser", "rubber", "wiper", "clearer", "mark remover", "obliterator", "expunger",
@@ -374,6 +394,7 @@ window.tools = [{
 	},
 	$options: $choose_eraser_size
 }, {
+	id: TOOL_FILL,
 	name: localize("Fill With Color"),
 	speech_recognition: [
 		"fill with color", "flood fill", "fill", "flood filling", "flood-filling", "floodfilling", "floodfill",
@@ -404,6 +425,7 @@ window.tools = [{
 		}
 	}
 }, {
+	id: TOOL_PICK_COLOR,
 	name: localize("Pick Color"),
 	speech_recognition: [
 		"pick color", "select color", "color select", "color selector", "color picker", "pick a color", "color picking", "color choosing", "color selecting", "color chooser", "color lift", "color lifter", "color lifting", "lift color",
@@ -458,6 +480,7 @@ window.tools = [{
 	},
 	$options: $(E("div"))
 }, {
+	id: TOOL_MAGNIFIER,
 	name: localize("Magnifier"),
 	speech_recognition: [
 		"magnifier", "magnifying glass", "loupe", "hand lens", "hand glass", "eyeglass", "eye glass", "lens", "simple microscope", "microscope", "glass", "spyglass", "telescope",
@@ -581,6 +604,7 @@ window.tools = [{
 	},
 	$options: $choose_magnification
 }, {
+	id: TOOL_PENCIL,
 	name: localize("Pencil"),
 	speech_recognition: [
 		"pencil", "lead", "graphite", "pen", "pixel", "pixel art", "penciling", "penning", "pixeling",
@@ -593,6 +617,7 @@ window.tools = [{
 		return {size: pencil_size, shape: "circle"};
 	}
 }, {
+	id: TOOL_BRUSH,
 	name: localize("Brush"),
 	speech_recognition: [
 		"brush", "paint brush", "paintbrush",
@@ -611,6 +636,7 @@ window.tools = [{
 	},
 	$options: $choose_brush
 }, {
+	id: TOOL_AIRBRUSH,
 	name: localize("Airbrush"),
 	speech_recognition: [
 		"air brush", "airbrush", "aerograph", "airbrushing", "air brushing",
@@ -636,6 +662,7 @@ window.tools = [{
 	},
 	$options: $choose_airbrush_size
 }, {
+	id: TOOL_TEXT,
 	name: localize("Text"),
 	speech_recognition: [
 		"text", "type", "typography", "write", "writing", "words", "text box", "text-box", "textbox", "word", "lettering", "font", "fonts", "texts",
@@ -653,6 +680,7 @@ window.tools = [{
 	},
 	$options: $choose_transparent_mode
 }, {
+	id: TOOL_LINE,
 	name: localize("Line"),
 	speech_recognition: [
 		"line", "line segment", "straight line",
@@ -668,6 +696,7 @@ window.tools = [{
 	},
 	$options: $choose_stroke_size
 }, {
+	id: TOOL_CURVE,
 	name: localize("Curve"),
 	speech_recognition: [
 		"curve", "curved line", "curvy", "curvy line", "Bezier", "Bezier curve", "spline", "curves", "splines", "curved", "curving",
@@ -763,6 +792,7 @@ window.tools = [{
 	},
 	$options: $choose_stroke_size
 }, {
+	id: TOOL_RECTANGLE,
 	name: localize("Rectangle"),
 	speech_recognition: [
 		"rectangle", "square", "box", "rect",
@@ -801,6 +831,7 @@ window.tools = [{
 	},
 	$options: $ChooseShapeStyle()
 }, {
+	id: TOOL_POLYGON,
 	name: localize("Polygon"),
 	speech_recognition: [
 		"polygon", "poly", "shape", "n-gon", "free-form polygon", "freeform polygon", "free form polygon",
@@ -966,6 +997,7 @@ window.tools = [{
 	shape_colors: true,
 	$options: $ChooseShapeStyle()
 }, {
+	id: TOOL_ELLIPSE,
 	name: localize("Ellipse"),
 	speech_recognition: [
 		"ellipse", "circle", "oval", "ovoid", "ovaloid", "oviform", "elliptical", "oblong circle", "stretched circle", "ball", "sphere", "round tool", "rounded tool",
@@ -995,6 +1027,7 @@ window.tools = [{
 	},
 	$options: $ChooseShapeStyle()
 }, {
+	id: TOOL_ROUNDED_RECTANGLE,
 	name: localize("Rounded Rectangle"),
 	speech_recognition: [
 		"rounded rectangle", "rounded square", "rounded box",

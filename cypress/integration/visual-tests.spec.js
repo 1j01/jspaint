@@ -26,7 +26,7 @@ context('visual tests', () => {
 	it('main screenshot', () => {
 		cy.visit('/');
 		cy.setResolution([760, 490]);
-		cy.window().should('have.property', 'get_tool_by_name'); // wait for app to be loaded
+		cy.window().should('have.property', 'get_tool_by_id'); // wait for app to be loaded
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 

@@ -1090,7 +1090,7 @@ function paste(img){
 
 	function do_the_paste(){
 		deselect();
-		select_tool(get_tool_by_name(localize("Select")));
+		select_tool(get_tool_by_id(TOOL_SELECT));
 		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
 		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
 
@@ -1217,9 +1217,9 @@ function go_to_history_node(target_history_node, canceling) {
 		// so it selects Free-Form Select when you jump to e.g. Move Selection
 		// (or could traverse history to figure it out)
 		if (target_history_node.name === localize("Free-Form Select")) {
-			select_tool(get_tool_by_name(localize("Free-Form Select")));
+			select_tool(get_tool_by_id(TOOL_FREE_FORM_SELECT));
 		} else {
-			select_tool(get_tool_by_name(localize("Select")));
+			select_tool(get_tool_by_id(TOOL_SELECT));
 		}
 		selection = new OnCanvasSelection(
 			target_history_node.selection_x,
@@ -1243,7 +1243,7 @@ function go_to_history_node(target_history_node, canceling) {
 		tool_transparent_mode = target_history_node.tool_transparent_mode;
 		$G.trigger("option-changed");
 
-		select_tool(get_tool_by_name(localize("Text")));
+		select_tool(get_tool_by_id(TOOL_TEXT));
 		textbox = new OnCanvasTextBox(
 			target_history_node.textbox_x,
 			target_history_node.textbox_y,
@@ -1510,7 +1510,7 @@ function meld_selection_into_canvas(going_to_history_node) {
 	if (!going_to_history_node) {
 		undoable({
 			name: "Deselect",
-			icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
+			icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 			use_loose_canvas_changes: true, // HACK; @TODO: make OnCanvasSelection not change the canvas outside undoable, same rules as tools
 		}, ()=> { });
 	}
@@ -1520,12 +1520,12 @@ function meld_textbox_into_canvas(going_to_history_node) {
 	if (text && !going_to_history_node) {
 		undoable({
 			name: localize("Text"),
-			icon: get_icon_for_tool(get_tool_by_name(localize("Text"))),
+			icon: get_icon_for_tool(get_tool_by_id(TOOL_TEXT)),
 			soft: true,
 		}, ()=> { });
 		undoable({
 			name: "Finish Text",
-			icon: get_icon_for_tool(get_tool_by_name(localize("Text"))),
+			icon: get_icon_for_tool(get_tool_by_id(TOOL_TEXT)),
 		}, () => {
 			ctx.drawImage(textbox.canvas, textbox.x, textbox.y);
 			textbox.destroy();
@@ -1561,11 +1561,11 @@ function delete_selection(meta={}){
 }
 function select_all(){
 	deselect();
-	select_tool(get_tool_by_name(localize("Select")));
+	select_tool(get_tool_by_id(TOOL_SELECT));
 
 	undoable({
 		name: "Select All",
-		icon: get_icon_for_tool(get_tool_by_name(localize("Select"))),
+		icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 		soft: true,
 	}, ()=> {
 		selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
@@ -1735,14 +1735,14 @@ function view_bitmap(){
 	if(canvas.webkitRequestFullscreen){ canvas.webkitRequestFullscreen(); }
 }
 
-function get_tool_by_name(name){
+function get_tool_by_id(id){
 	for(let i=0; i<tools.length; i++){
-		if(tools[i].name == name){
+		if(tools[i].id == id){
 			return tools[i];
 		}
 	}
 	for(let i=0; i<extra_tools.length; i++){
-		if(extra_tools[i].name == name){
+		if(extra_tools[i].id == id){
 			return extra_tools[i];
 		}
 	}
