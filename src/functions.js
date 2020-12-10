@@ -792,7 +792,7 @@ function are_you_sure(action, canceled){
 		const $w = new $FormToolWindow().addClass("dialogue-window");
 		$w.title(localize("Paint"));
 		$w.$main.text(localize("Save changes to %1?", file_name));
-		$w.$Button("Save", () => {
+		$w.$Button(localize("Save"), () => {
 			$w.close();
 			file_save();
 			action();
@@ -1156,7 +1156,7 @@ function render_history_as_gif(){
 					show_imgur_uploader(blob);
 				});
 			});
-			$win.$Button("Save", () => {
+			$win.$Button(localize("Save"), () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
 					saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")} history.gif`);
