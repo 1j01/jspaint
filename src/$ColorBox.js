@@ -6,33 +6,35 @@ function $Swatch(color){
 	const swatch_canvas = make_canvas();
 	$(swatch_canvas).css({pointerEvents: "none"}).appendTo($swatch);
 	
-	const update = (new_color = color) => {
-		if (new_color instanceof CanvasPattern) {
-			$swatch.addClass("pattern");
-			$swatch[0].dataset.color = "";
-		} else if (typeof new_color === "string") {
-			$swatch.removeClass("pattern");
-			$swatch[0].dataset.color = new_color;
-		} else if (new_color !== undefined) {
-			throw new TypeError(`argument to update must be CanvasPattern or string (or undefined); got type ${typeof new_color}`);
-		}
-		color = new_color;
-		requestAnimationFrame(() => {
-			swatch_canvas.width = $swatch.innerWidth();
-			swatch_canvas.height = $swatch.innerHeight();
-			// I don't think disable_image_smoothing() is needed here
-			
-			if(color){
-				swatch_canvas.ctx.fillStyle = color;
-				swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
-			}
-		});
-	};
-	$swatch.data("update", update);
-	$G.on("theme-load", ()=> { update(); });
-	update();
+	// TODO: clean up event listener
+	$G.on("theme-load", ()=> { update_$swatch($swatch); });
+	$swatch.data("swatch", color);
+	update_$swatch($swatch, color);
 	
 	return $swatch;
+}
+
+function update_$swatch($swatch, new_color) {
+	if (new_color instanceof CanvasPattern) {
+		$swatch.addClass("pattern");
+		$swatch[0].dataset.color = "";
+	} else if (typeof new_color === "string") {
+		$swatch.removeClass("pattern");
+		$swatch[0].dataset.color = new_color;
+	} else if (new_color !== undefined) {
+		throw new TypeError(`argument to update must be CanvasPattern or string (or undefined); got type ${typeof new_color}`);
+	}
+	new_color = new_color || $swatch.data("swatch");
+	$swatch.data("swatch", new_color);
+	const swatch_canvas = $swatch.find("canvas")[0];
+	requestAnimationFrame(() => {
+		swatch_canvas.width = $swatch.innerWidth();
+		swatch_canvas.height = $swatch.innerHeight();
+		if (new_color) {
+			swatch_canvas.ctx.fillStyle = new_color;
+			swatch_canvas.ctx.fillRect(0, 0, swatch_canvas.width, swatch_canvas.height);
+		}
+	});
 }
 
 function $ColorBox(vertical){
@@ -48,9 +50,9 @@ function $ColorBox(vertical){
 	$current_colors.append($background_color, $foreground_color);
 	
 	$G.on("option-changed", () => {
-		$foreground_color.data("update")(colors.foreground);
-		$background_color.data("update")(colors.background);
-		$current_colors.data("update")(colors.ternary);
+		update_$swatch($foreground_color, colors.foreground);
+		update_$swatch($background_color, colors.background);
+		update_$swatch($current_colors, colors.ternary);
 	});
 	
 	$current_colors.on("pointerdown", () => {
@@ -84,7 +86,7 @@ function $ColorBox(vertical){
 				if (within_double_click_period && button === double_click_button) {
 					show_edit_colors_window($b, color_selection_slot);
 				} else {
-					colors[color_selection_slot] = color;
+					colors[color_selection_slot] = $b.data("swatch");
 					$G.trigger("option-changed");
 				}
 				

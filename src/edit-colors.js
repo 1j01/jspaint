@@ -55,10 +55,19 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	$swatch_to_edit = $swatch_to_edit || $colorbox.data("$last_fg_color_button");
 	color_selection_slot_to_edit = color_selection_slot_to_edit || "foreground";
 
+	const $palette = $swatch_to_edit.closest(".palette, .color-box");
+	const swatch_index = $palette.find(".swatch").toArray().indexOf($swatch_to_edit[0]);
 	const initial_color = $swatch_to_edit[0].dataset.color;
 	choose_color(initial_color, (color)=> {
-		// console.log($swatch_to_edit, $swatch_to_edit.data("update"));
-		$swatch_to_edit.data("update")(color);
+		// The palette may have changed or rerendered due to switching themes,
+		// toggling vertical color box mode, or monochrome document mode.
+		$swatch_to_edit = $($palette.find(".swatch")[swatch_index]);
+		if (!$swatch_to_edit.length) {
+			show_error_message("Swatch no longer exists.");
+			return;
+		}
+
+		update_$swatch($swatch_to_edit, color);
 		colors[color_selection_slot_to_edit] = color;
 		$G.triggerHandler("option-changed");	
 	});
@@ -504,7 +513,7 @@ function choose_color(initial_color, callback) {
 		const color = get_current_color();
 		custom_colors[custom_colors_index] = color;
 		// console.log(custom_colors_swatches_reordered, custom_colors_index, custom_colors_swatches_reordered[custom_colors_index]));
-		$(custom_colors_swatches_list_order[custom_colors_index]).data("update")(color);
+		update_$swatch($(custom_colors_swatches_list_order[custom_colors_index]), color);
 		custom_colors_index = (custom_colors_index + 1) % custom_colors.length;
 
 		$w.removeClass("defining-custom-colors"); // for mobile layout
