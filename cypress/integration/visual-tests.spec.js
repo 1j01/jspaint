@@ -19,7 +19,7 @@ context('visual tests', () => {
 		cy.contains(".menu-button", "Extras").click();
 		cy.contains(".menu-item", "Theme").click();
 		cy.contains(".menu-item", themeName).click();
-		cy.get(".status-text").click(); // close menu (@TODO: menus should probably always be closed when you select a menu item)
+		cy.get(".status-area").click(); // close menu (@TODO: menus should probably always be closed when you select a menu item)
 		cy.wait(1000); // give a bit of time for theme to load
 	};
 
@@ -109,7 +109,7 @@ context('visual tests', () => {
 		cy.wait(100);
 		// cy.contains(".menu-button", "View").click();
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		cy.get(".status-text").click();
+		cy.get(".status-area").click();
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
@@ -128,7 +128,7 @@ context('visual tests', () => {
 		cy.wait(100);
 		// cy.contains(".menu-button", "View").click();
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		cy.get(".status-text").click();
+		cy.get(".status-area").click();
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
@@ -159,7 +159,7 @@ context('visual tests', () => {
 		cy.contains(".menu-button", "Extras").click();
 		cy.contains(".menu-item", "Vertical Color Box").click();
 		cy.wait(500);
-		cy.get(".status-text").click();
+		cy.get(".status-area").click();
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
