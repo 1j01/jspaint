@@ -59,5 +59,6 @@ for (const target_lang of ["ko"]) {
 		}
 	};
 	add_localizations(base_strings, target_strings);
-	fs.writeFileSync(`${target_lang}/localizations.json`, JSON.stringify(localizations));
+	const js = `loaded_localizations("${target_lang}", ${JSON.stringify(localizations, null, "\t")});\n`;
+	fs.writeFileSync(`${target_lang}/localizations.js`, js);
 }
