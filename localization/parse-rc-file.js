@@ -113,6 +113,7 @@ function parse_rc_file(rc_file_text, callback, lang) {
 
 			let wide = str.match(/^L/);
 			str = str.replace(/^L?"(.*)"$/g, "$1");
+			str = str.replace(/\\r/g, "\r");
 			str = str.replace(/\\n/g, "\n");
 			str = str.replace(/\\t/g, "\t");
 			if (wide) {
