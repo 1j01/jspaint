@@ -564,7 +564,8 @@ window.menus = {
 		},
 		{
 			item: "&Clear Image",
-			shortcut: looksLikeChrome ? undefined : "Ctrl+Shift+N", // opens incognito window in chrome
+			// shortcut: looksLikeChrome ? undefined : "Ctrl+Shift+N", // opens incognito window in chrome
+			shortcut: 'delete',
 			speech_recognition: [
 				"clear image", "clear canvas", "clear picture", "clear page", "clear drawing",
 				// @TODO: erase?
