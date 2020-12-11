@@ -125,7 +125,7 @@ window.tools = [{
 
 		undoable({
 			name: localize("Free-Form Select"),
-			icon: get_icon_for_tool(get_tool_by_id(TOOL_FREE_FORM_SELECT)),
+			icon: get_icon_for_tool(TOOL_FREE_FORM_SELECT),
 			soft: true,
 		}, ()=> {
 			selection = new OnCanvasSelection(
@@ -221,8 +221,8 @@ window.tools = [{
 				undoable({
 					name: "Free-Form Select⊕Select",
 					icon: get_icon_for_tools([
-						get_tool_by_id(TOOL_FREE_FORM_SELECT),
-						get_tool_by_id(TOOL_SELECT),
+						TOOL_FREE_FORM_SELECT,
+						TOOL_SELECT,
 					]),
 					soft: true,
 				}, ()=> {
@@ -238,7 +238,7 @@ window.tools = [{
 			} else {
 				undoable({
 					name: localize("Select"),
-					icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
+					icon: get_icon_for_tool(TOOL_SELECT),
 					soft: true,
 				}, ()=> {
 					selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);

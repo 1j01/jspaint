@@ -1090,7 +1090,7 @@ function paste(img){
 
 	function do_the_paste(){
 		deselect();
-		select_tool(get_tool_by_id(TOOL_SELECT));
+		select_tool(TOOL_SELECT);
 		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
 		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
 
@@ -1217,9 +1217,9 @@ function go_to_history_node(target_history_node, canceling) {
 		// so it selects Free-Form Select when you jump to e.g. Move Selection
 		// (or could traverse history to figure it out)
 		if (target_history_node.name === localize("Free-Form Select")) {
-			select_tool(get_tool_by_id(TOOL_FREE_FORM_SELECT));
+			select_tool(TOOL_FREE_FORM_SELECT);
 		} else {
-			select_tool(get_tool_by_id(TOOL_SELECT));
+			select_tool(TOOL_SELECT);
 		}
 		selection = new OnCanvasSelection(
 			target_history_node.selection_x,
@@ -1243,7 +1243,7 @@ function go_to_history_node(target_history_node, canceling) {
 		tool_transparent_mode = target_history_node.tool_transparent_mode;
 		$G.trigger("option-changed");
 
-		select_tool(get_tool_by_id(TOOL_TEXT));
+		select_tool(TOOL_TEXT);
 		textbox = new OnCanvasTextBox(
 			target_history_node.textbox_x,
 			target_history_node.textbox_y,
@@ -1510,7 +1510,7 @@ function meld_selection_into_canvas(going_to_history_node) {
 	if (!going_to_history_node) {
 		undoable({
 			name: "Deselect",
-			icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
+			icon: get_icon_for_tool(TOOL_SELECT),
 			use_loose_canvas_changes: true, // HACK; @TODO: make OnCanvasSelection not change the canvas outside undoable, same rules as tools
 		}, ()=> { });
 	}
@@ -1520,12 +1520,12 @@ function meld_textbox_into_canvas(going_to_history_node) {
 	if (text && !going_to_history_node) {
 		undoable({
 			name: localize("Text"),
-			icon: get_icon_for_tool(get_tool_by_id(TOOL_TEXT)),
+			icon: get_icon_for_tool(TOOL_TEXT),
 			soft: true,
 		}, ()=> { });
 		undoable({
 			name: "Finish Text",
-			icon: get_icon_for_tool(get_tool_by_id(TOOL_TEXT)),
+			icon: get_icon_for_tool(TOOL_TEXT),
 		}, () => {
 			ctx.drawImage(textbox.canvas, textbox.x, textbox.y);
 			textbox.destroy();
@@ -1561,11 +1561,11 @@ function delete_selection(meta={}){
 }
 function select_all(){
 	deselect();
-	select_tool(get_tool_by_id(TOOL_SELECT));
+	select_tool(TOOL_SELECT);
 
 	undoable({
 		name: "Select All",
-		icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
+		icon: get_icon_for_tool(TOOL_SELECT),
 		soft: true,
 	}, ()=> {
 		selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
@@ -1763,6 +1763,10 @@ function select_tools(tools) {
 }
 
 function select_tool(tool, toggle){
+	if (typeof tool === "string") {
+		tool = get_tool_by_id(tool);
+	}
+
 	deselect();
 
 	if(!(selected_tools.length === 1 && selected_tool.deselect)){

@@ -189,6 +189,9 @@ function get_help_folder_icon(file_name) {
 }
 
 function get_icon_for_tool(tool) {
+	if (typeof tool === "string") {
+		tool = get_tool_by_id(tool);
+	}
 	return get_help_folder_icon(tool.help_icon);
 }
 
@@ -204,6 +207,12 @@ function load_image(path) {
 }
 
 function get_icon_for_tools(tools) {
+	tools = tools.map((tool)=> {
+		if (typeof tool === "string") {
+			tool = get_tool_by_id(tool);
+		}
+		return tool;
+	});
 	if (tools.length === 1) {
 		return get_icon_for_tool(tools[0]);
 	}
