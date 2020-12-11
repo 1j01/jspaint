@@ -60,8 +60,13 @@ function $FontBox(){
 			width: 23,
 			height: 22,
 			padding: 0,
+			display: "inline-flex",
+			alignContent: "center",
+			alignItems: "center",
+			justifyContent: "center",
 		});
 		$image.css({
+			flex: "0 0 auto",
 			display: "block",
 			width: 16,
 			height: 16,

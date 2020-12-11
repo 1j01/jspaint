@@ -265,6 +265,9 @@ body {
 .tool.selected {
 	background: rgba(0, 0, 0, 0.24);
 }
+.toggle.selected {
+	box-shadow: 0px -2px 1px 0px blue;
+}
 
 .tool-options {
 	/* the layout currently depends on the exact pixel width (specifically the brush tool options) */
