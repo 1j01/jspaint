@@ -1608,7 +1608,8 @@ async function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+				throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
 		navigator.clipboard.writeText(text);
@@ -1617,7 +1618,8 @@ async function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+				throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
 		selection.canvas.toBlob(blob => {
@@ -1641,7 +1643,8 @@ function edit_cut(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("cut");
 		} else {
-			throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+			throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+			// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 		}
 	}
 	edit_copy();
@@ -1659,7 +1662,8 @@ async function edit_paste(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("paste");
 			} else {
-				throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+				throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
 		const clipboardText = await navigator.clipboard.readText();
@@ -1670,7 +1674,8 @@ async function edit_paste(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("paste");
 		} else {
-			throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+			throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+			// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 		}
 	}
 	try {
