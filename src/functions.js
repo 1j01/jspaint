@@ -1058,10 +1058,10 @@ function paste(img){
 	if(img.width > canvas.width || img.height > canvas.height){
 		const $w = new $FormToolWindow().addClass("dialogue-window");
 		$w.title(localize("Paint"));
-		$w.$main.html(
-			"The image is bigger than the canvas.<br>" +
-			"Would you like the canvas to be enlarged?<br>"
-		);
+		$w.$main.html(`
+			${localize("The image in the clipboard is larger than the bitmap.")}<br>
+			${localize("Would you like the bitmap enlarged?")}<br>
+		`);
 		$w.$Button("Enlarge", () => {
 			$w.close();
 			// The resize gets its own undoable, as in mspaint
