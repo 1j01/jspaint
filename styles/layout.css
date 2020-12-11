@@ -7,28 +7,31 @@ html, body, .jspaint {
 	border: 0;
 	overflow: hidden;
 }
+.chooser-option {
+	display: flex;
+}
 .choose-shape-style {
+	display: flex;
 	flex-flow: column;
 }
 .choose-eraser,
 .choose-magnification,
 .choose-stroke-size,
 .choose-transparent-mode {
+	display: flex;
 	flex-flow: column;
 	align-items: center;
 	justify-content: space-around;
 }
 .choose-brush,
 .choose-airbrush-size {
+	display: flex;
 	flex-flow: row wrap;
 	justify-content: space-around;
 	align-content: space-around;
 }
 .tool-options canvas {
 	flex: 0 0 auto;
-}
-.jspaint :not(table):not(tbody):not(tr):not(td) {
-	display: flex;
 }
 .component-window .window-content,
 .component-window .window-content :not(table):not(tbody):not(tr):not(td) {
@@ -40,11 +43,13 @@ html, body, .jspaint {
 	flex: 1;
 }
 .horizontal {
+	display: flex;
 	flex-flow: row;
 	flex: 1 1 0;
 	overflow: hidden;
 }
 .vertical {
+	display: flex;
 	flex-flow: column;
 	flex: 1;
 }
@@ -288,9 +293,11 @@ html, body, .jspaint {
 	align-items: center;
 	padding-left: 4px;
 	padding-right: 2px;
+	display: flex;
 	flex-flow: column;
 }
 .tool-options {
+	display: flex;
 	margin-top: 3px;
 	width: 41px;
 	height: 66px;
@@ -311,8 +318,14 @@ html, body, .jspaint {
 	position: relative;
 }
 
+.component-area {
+	display: flex;
+}
 .horizontal .component-area {
 	flex-direction: column;
+}
+.component {
+	display: flex;
 }
 .colors-component {
 	align-items: center;
@@ -335,11 +348,13 @@ html, body, .jspaint {
 }
 .colors-component.wide .color-box,
 .colors-component.wide .palette {
+	display: flex;
 	flex-direction: row;
 	height: 32px;
 }
 .colors-component.tall .color-box,
 .colors-component.tall .palette {
+	display: flex;
 	flex-direction: column;
 	width: 32px;
 }
@@ -384,6 +399,7 @@ html, body, .jspaint {
 }
 .color-button,
 .color-selection {
+	display: flex;
 	padding: 0;
 	box-sizing: border-box;
 	width: 15px;
@@ -431,13 +447,12 @@ html, body, .jspaint {
 	flex-flow: row;
 }
 .edit-colors-window .window-content .left-side {
-	display: flex;
-	flex-flow: column;
+	/* display: flex;
+	flex-flow: column; */
 	width: 217px;
 	height: 298px;
 }
 .edit-colors-window .window-content .right-side {
-	flex-flow: column;
 	width: 218px;
 	position: relative;
 	padding-top: 7px;
@@ -581,6 +596,7 @@ html, body, .jspaint {
 	flex-flow: column;
 }
 .dialogue-window .window-content > form > .button-group {
+	display: flex;
 	flex-flow: row;
 	justify-content: flex-end;
 }
