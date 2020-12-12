@@ -6,6 +6,8 @@ const base_lang = "en";
 const available_langs = fs.readdirSync(__dirname).filter((dir)=> dir.match(/^\w+(-\w+)?$/));
 const target_langs = available_langs.filter((lang)=> lang !== base_lang);
 
+console.log("Target languages:", target_langs);
+
 const has_hotkey = str => str.match(/&(\w)/);
 const remove_hotkey = str => str.replace(/&(\w)/, "$1").replace(/\s?\(.\)/, "");
 const remove_ellipsis = str => str.replace("...", "");
