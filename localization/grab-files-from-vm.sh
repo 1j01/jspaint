@@ -32,9 +32,40 @@ elif [ -f "$2" ]; then
 		fi
 		echo "Created \"$img_file\""
 	fi
-	echo "Showing .img file in folder; you have to mount it yourself, then replace the .vdi argument with the mounted folder."
+	echo "Time to do some desktop automation!"
+	sleep 3
+	echo "Show .img file in folder"
 	nautilus --browser "$img_file"
-	exit 0
+	echo "Waiting for window \"vdi-to-img\""
+	xdotool search --sync --name "vdi-to-img" windowactivate --sync
+	echo "Found window \"vdi-to-img\""
+	sleep 1
+	xdotool key --clearmodifiers Return
+	sleep 5
+	echo "Click on notification to go to mounted folder"
+	echo "If the wrong notification is selected, quick, use the arrow keys!"
+	xdotool key --clearmodifiers Super_L+v
+	sleep 5
+	xdotool key --clearmodifiers Return
+	sleep 0.5
+	xdotool key --clearmodifiers Escape
+	sleep 8
+	# It's just called e.g. 341 MB Volume
+	# echo "Waiting for window \"Win98-$lang.vdi\""
+	# xdotool search --sync --name "Win98-$lang.vdi" windowactivate --sync
+	# echo "Found window \"Win98-$lang.vdi\""
+	# sleep 1
+	xdotool key --clearmodifiers ctrl+l
+	sleep 1
+	old_clipboard=`xclip -selection clipboard -o`
+	xdotool key --clearmodifiers ctrl+c
+	sleep 1
+	mount_dir=`xclip -selection clipboard -o`
+	printf "$old_clipboard" | xclip -selection clipboard
+	if [ ! -d "$mount_dir" ]; then
+		echo "Failed to get path of mounted directory, or failed to mount. \"$mount_dir\" is not a directory."
+		exit 1
+	fi
 else
 	echo "No file or directory at \"$2\"!"
 	exit 1
