@@ -57,10 +57,10 @@ for (const target_lang of target_langs) {
 						target_string.split(splitter)
 					);
 				} else {
-					add_localization(base_string, target_string, 0);
+					// add_localization(base_string, target_string, 0);
 					add_localization(remove_ellipsis(base_string), remove_ellipsis(target_string), 1);
 					if (has_hotkey(base_string)) {
-						add_localization(remove_hotkey(base_string), remove_hotkey(target_string), 2);
+						// add_localization(remove_hotkey(base_string), remove_hotkey(target_string), 2);
 						add_localization(remove_ellipsis(remove_hotkey(base_string)), remove_ellipsis(remove_hotkey(target_string)), 3);
 					}
 				}
