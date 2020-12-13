@@ -16,11 +16,16 @@ elif [ -f "$2" ]; then
 	fi
 	if [ ! -f "$img_file" ]; then
 		echo "File \"$img_file\" does not exist yet..."
-		# If it says "VBoxManage: error: Cannot register the hard disk ... because a hard disk ... already exists",
-		# you can randomize the UUID, but this will make the VM inoperable:
-		# VBoxManage internalcommands sethduuid "$vdi_file"
-		# You can do it on a copy of the .vdi file to keep the VM operable.
-		VBoxManage clonemedium disk "$vdi_file" "$img_file" --format RAW
+		# To avoid "VBoxManage: error: Cannot register the hard disk ... because a hard disk ... already exists",
+		# copy the .vdi file and randomize the UUID.
+		vdi_copy="$vdi_file-copy.vdi"
+		echo "Copy .vdi file"
+		cp "$vdi_file" "$vdi_copy"
+		echo "Regenerate copied .vdi file's UUID"
+		VBoxManage internalcommands sethduuid "$vdi_copy"
+		echo "Convert .vdi to RAW .img"
+		VBoxManage clonemedium disk "$vdi_copy" "$img_file" --format RAW
+		rm "$vdi_copy"
 		if [ ! -f "$img_file" ]; then
 			echo "Failed to create \"$img_file\"!"
 			exit 1
