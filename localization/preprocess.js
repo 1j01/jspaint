@@ -81,3 +81,10 @@ for (const target_lang of target_langs) {
 	const js = `loaded_localizations("${target_lang}", ${JSON.stringify(localizations, null, "\t")});\n`;
 	fs.writeFileSync(`${__dirname}/${target_lang}/localizations.js`, js);
 }
+
+// Update available_languages list automatically!
+const file = require("path").resolve(__dirname + "/../index.html");
+let code = fs.readFileSync(file, "utf8");
+code = code.replace(/(available_languages\s*=\s*)\[[^\]]*\]/, `$1${JSON.stringify(available_langs).replace(/","/g, `", "`)}`);
+fs.writeFileSync(file, code, "utf8");
+console.log(`Updated available_languages list in "${file}"`);

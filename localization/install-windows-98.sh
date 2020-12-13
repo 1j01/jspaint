@@ -5,11 +5,11 @@
 # I knew there would be sysadmin type ways of doing this, but I went this route I guess because I thought it was cool.
 # It's a lot of work tho, and way less reliable.
 
-target_lang=$1
+lang=$1
 target_os_iso=$2
-vm_name="Win98-${target_lang}"
+vm_name="Win98-${lang}"
 already_got_image=false
-if [ ! "$target_lang" ] || [ ! "$target_os_iso" ]; then
+if [ ! "$lang" ] || [ ! "$target_os_iso" ]; then
 	echo "Two arguments required: a target language code (e.g. en), and a path to an iso file."
 	exit 1
 fi
@@ -80,8 +80,13 @@ boot_into_setup(){
 	sleep 0.5
 	xdotool key --clearmodifiers --delay 20 Return
 	sleep 2
-	echo "Select 1. Start Windows 98 Setup from CD ROM"
-	xdotool key --clearmodifiers --delay 20 1
+	if [ "$lang" = "he" ]; then
+		echo "Select 2. Start Localized Windows 98 Setup from CD ROM"
+		xdotool key --clearmodifiers --delay 20 2
+	else
+		echo "Select 1. Start Windows 98 Setup from CD ROM"
+		xdotool key --clearmodifiers --delay 20 1
+	fi
 	sleep 0.5
 	xdotool key --clearmodifiers --delay 20 Return
 }
@@ -304,6 +309,7 @@ xdotool type --delay 20 "B8MFRCFTGQC9PBWVHG3J3R3YW"
 
 # One liner to enter a key in case you need to try several keys:
 # xdotool search --sync --name "Win98-ja \[Running\] - Oracle VM VirtualBox" windowactivate --sync type --delay 20 "K4HVDQ9TJ96CRX9C9G68RQ2D3"
+# xdotool search --sync --name "Win98-he \[Running\] - Oracle VM VirtualBox" windowactivate --sync type --delay 20 "B8MFRCFTGQC9PBWVHG3J3R3YW"
 
 sleep 0.5
 xdotool key --clearmodifiers --delay 20 Return
