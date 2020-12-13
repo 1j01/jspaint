@@ -27,6 +27,8 @@ function remove_hotkey(text) {
 }
 const remove_ellipsis = str => str.replace("...", "");
 
+const only_unique = (value, index, self)=> self.indexOf(value) === index;
+
 const get_strings = (lang)=> {
 	return glob.sync(`${__dirname}/${lang}/**/*.rc`).map(
 		(rc_file)=> parse_rc_file(fs.readFileSync(rc_file, "utf16le").replace(/\ufeff/g, ""))
@@ -37,12 +39,9 @@ const base_strings = get_strings(base_lang);
 for (const target_lang of target_langs) {
 	const target_strings = get_strings(target_lang);
 	const localizations = {};
-	const add_localization = (base_string, target_string)=> {
-		if (localizations[base_string] && localizations[base_string] !== target_string) {
-			console.warn(`Collision for '${base_string}' : '${localizations[base_string]}' vs '${target_string}'`);
-		} else {
-			localizations[base_string] = target_string;
-		}
+	const add_localization = (base_string, target_string, fudgedness)=> {
+		localizations[base_string] = localizations[base_string] || [];
+		localizations[base_string].push({target_string, fudgedness});
 	};
 	const add_localizations = (base_strings, target_strings)=> {
 		for (let i = 0; i < target_strings.length; i++) {
@@ -58,16 +57,27 @@ for (const target_lang of target_langs) {
 						target_string.split(splitter)
 					);
 				} else {
-					add_localization(base_string, target_string);
-					add_localization(remove_ellipsis(base_string), remove_ellipsis(target_string));
+					add_localization(base_string, target_string, 0);
+					add_localization(remove_ellipsis(base_string), remove_ellipsis(target_string), 1);
 					if (has_hotkey(base_string)) {
-						add_localization(remove_hotkey(base_string), remove_hotkey(target_string));
+						add_localization(remove_hotkey(base_string), remove_hotkey(target_string), 2);
+						add_localization(remove_ellipsis(remove_hotkey(base_string)), remove_ellipsis(remove_hotkey(target_string)), 3);
 					}
 				}
 			}
 		}
 	};
 	add_localizations(base_strings, target_strings);
+
+	for (const base_string in localizations) {
+		const options = localizations[base_string];
+		options.sort((a, b)=> a.fudgedness - b.fudgedness);
+		const unique_strings = options.map(({target_string})=> target_string).filter(only_unique);
+		if (unique_strings.length > 1) {
+			console.warn(`Collision for "${base_string}": ${JSON.stringify(unique_strings, null, "\t")}`);
+		}
+		localizations[base_string] = unique_strings[0];
+	}
 	const js = `loaded_localizations("${target_lang}", ${JSON.stringify(localizations, null, "\t")});\n`;
 	fs.writeFileSync(`${__dirname}/${target_lang}/localizations.js`, js);
 }
