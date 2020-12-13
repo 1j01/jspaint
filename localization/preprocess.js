@@ -13,12 +13,9 @@ const remove_hotkey = str => str.replace(/&(\w)/, "$1").replace(/\s?\(.\)/, "");
 const remove_ellipsis = str => str.replace("...", "");
 
 const get_strings = (lang)=> {
-	// TODO: Parse separately in case that matters. (Don't want syntax errors spilling over between files, do we?)
-	const rc_files_text = glob.sync(`${__dirname}/${lang}/**/*.rc`).map(
-		(rc_file)=> fs.readFileSync(rc_file, "utf16le")
-	).join("\n").replace(/\ufeff/g, "");
-	// console.log("\\ufeff index", rc_files_text.indexOf("\ufeff"));
-	return parse_rc_file(rc_files_text);
+	return glob.sync(`${__dirname}/${lang}/**/*.rc`).map(
+		(rc_file)=> parse_rc_file(fs.readFileSync(rc_file, "utf16le").replace(/\ufeff/g, ""))
+	).flat();
 };
 
 const base_strings = get_strings(base_lang);
