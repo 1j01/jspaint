@@ -111,11 +111,6 @@ function choose_color(initial_color, callback) {
 		update_inputs("hslrgb");
 	};
 
-	// misnomer: using .menu-hotkey out of lazyness
-	const underline_hotkey = str => str.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
-	// const text_without_hotkey = str => str.replace(/&/, "");
-	// const get_hotkey = str => str[str.indexOf("&")+1].toUpperCase();
-
 	const make_color_grid = (colors, id)=> {
 		const $color_grid = $(`<div class="color-grid" tabindex="0">`).attr({id});
 		for (const color of colors) {
@@ -182,9 +177,9 @@ function choose_color(initial_color, callback) {
 	const $left_right_split = $(`<div class="left-right-split">`).appendTo($w.$main);
 	const $left = $(`<div class="left-side">`).appendTo($left_right_split);
 	const $right = $(`<div class="right-side">`).appendTo($left_right_split).hide();
-	$left.append(`<label for="basic-colors">${underline_hotkey("&Basic colors:")}</label>`);
+	$left.append(`<label for="basic-colors">${display_hotkey("&Basic colors:")}</label>`);
 	const $basic_colors_grid = make_color_grid(basic_colors, "basic-colors").appendTo($left);
-	$left.append(`<label for="custom-colors">${underline_hotkey("&Custom colors:")}</label>`);
+	$left.append(`<label for="custom-colors">${display_hotkey("&Custom colors:")}</label>`);
 	const custom_colors_dom_order = []; // (wanting) horizontal top to bottom
 	for (let list_index = 0; list_index < custom_colors.length; list_index++) {
 		const row = list_index % 2;
@@ -204,7 +199,7 @@ function choose_color(initial_color, callback) {
 	}
 
 	const $define_custom_colors_button = $(`<button class="define-custom-colors-button">`)
-	.html(underline_hotkey("&Define Custom Colors >>"))
+	.html(display_hotkey("&Define Custom Colors >>"))
 	.appendTo($left)
 	.on("click", (e)=> {
 		// prevent the form from submitting
@@ -231,7 +226,7 @@ function choose_color(initial_color, callback) {
 	};
 	$(window).on("resize", maybe_reenable_button_for_mobile_navigation);
 
-	const $color_solid_label = $(`<label for="color-solid-canvas">${underline_hotkey("Color|S&olid")}</label>`);
+	const $color_solid_label = $(`<label for="color-solid-canvas">${display_hotkey("Color|S&olid")}</label>`);
 	$color_solid_label.css({
 		position: "absolute",
 		left: 10,
@@ -353,7 +348,7 @@ function choose_color(initial_color, callback) {
 				b: 255,
 			}[component_letter];
 			const label = document.createElement("label");
-			label.innerHTML = underline_hotkey(text_with_hotkey);
+			label.innerHTML = display_hotkey(text_with_hotkey);
 			const input_y_spacing = 22;
 			$(label).css({
 				position: "absolute",
@@ -503,7 +498,7 @@ function choose_color(initial_color, callback) {
 	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, $color_solid_label, lum_arrow_canvas);
 
 	const $add_to_custom_colors_button = $(`<button class="add-to-custom-colors-button">`)
-	.html(underline_hotkey("&Add To Custom Colors"))
+	.html(display_hotkey("&Add To Custom Colors"))
 	.appendTo($right)
 	.on("click", (event)=> {
 		// prevent the form from submitting

@@ -379,7 +379,7 @@ loaded_localizations("ko", {
 	"&Update %1": "%1 업데이트(&U)",
 	"Update %1": "%1 업데이트",
 	"E&xit && Return to %1": "끝내고  %1(으)로 복귀(&X)",
-	"Exit && Return to %1": "끝내고  %1로 복귀(X)",
+	"Exit && Return to %1": "끝내고  %1(으)로 복귀",
 	"Linked %s": "연결된 %s",
 	"Unknown Type": "알 수 없는 종류",
 	"Invalid filename.": "잘못된 파일 이름",

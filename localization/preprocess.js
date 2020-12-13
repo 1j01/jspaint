@@ -8,8 +8,23 @@ const target_langs = available_langs.filter((lang)=> lang !== base_lang);
 
 console.log("Target languages:", target_langs);
 
-const has_hotkey = str => str.match(/&(\w)/);
-const remove_hotkey = str => str.replace(/&(\w)/, "$1").replace(/\s?\(.\)/, "");
+// @TODO: DRY hotkey helpers
+// & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
+// & can be escaped by doubling it, e.g. "&Taskbar && Start Menu"
+function index_of_hotkey(text) {
+	// Returns the index of the ampersand that defines a hotkey, or -1 if not present.
+
+	// return english_text.search(/(?<!&)&(?!&|\s)/); // not enough browser support for negative lookbehind assertions
+
+	// The space here handles beginning-of-string matching and counteracts the offset for the [^&] so it acts like a negative lookbehind
+	return ` ${text}`.search(/[^&]&[^&\s]/);
+}
+function has_hotkey(text) {
+	return index_of_hotkey(text) !== -1;
+}
+function remove_hotkey(text) {
+	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
+}
 const remove_ellipsis = str => str.replace("...", "");
 
 const get_strings = (lang)=> {

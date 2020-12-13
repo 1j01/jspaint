@@ -2142,8 +2142,7 @@ function image_flip_and_rotate(){
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
-	// TODO: accelerators
-	// const underline_hotkey = str => str.replace(/&(.)/, m => `<span class='menu-hotkey'>${m[1]}</span>`);
+	// TODO: accelerators (hotkeys)
 	$fieldset.append(`
 		<legend>${localize("Flip or rotate")}</legend>
 		<label><input type="radio" name="flip-or-rotate" value="flip-horizontal" checked/>${localize("Flip horizontal")}</label>
