@@ -55,6 +55,7 @@
   "dependencies": {
     "electron-is-dev": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
+    "glob": "^7.1.6",
     "wallpaper": "4.4.1"
   },
   "devDependencies": {
@@ -84,6 +85,7 @@
     "lint": "eslint src/",
     "lint-cat": "concat-glob-cli --files \"src/**/!(electron*).js\" --output concatenated-source.js && eslint --rule \"no-undef: error\" --rule \"no-unused-vars: error\" concatenated-source.js",
     "lint-cat:NOTE": "Disable the eslint comment that disables ThisExpression to use this.",
+    "update-localization": "node ./localization/preprocess.js",
     "dev": "live-server --ignorePattern=\"(node_modules|cypress|out)[/\\\\\\\\]|package\\.json|cypress\\.json\"",
     "dev:NOTE": "@XXX: the octuple backlash ends up meaning a single backslash on Linux, two backslashes on Windows. In this case it's fine because it's in a regexp character class so the extra is redundant and doesn't cause an error.",
     "test:start-server": "live-server --port=11822 --no-browser --ignorePattern=\"(node_modules|cypress|out)[/\\\\\\\\]|package\\.json|cypress\\.json\"",
