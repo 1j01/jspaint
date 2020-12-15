@@ -176,7 +176,8 @@ wait_for_window "$vm_name \[Running\] - Oracle VM VirtualBox"
 sleep 2
 
 echo "Username"
-xdotool key --clearmodifiers --delay 20 alt+shift # switch language input
+# computer has restarted at this point, so switch the language input again
+xdotool key --clearmodifiers --delay 20 alt+shift
 sleep 0.5
 xdotool type --delay 20 "User"
 sleep 0.5
@@ -302,14 +303,16 @@ echo "Product key"
 
 # Attempt 4.
 # Switch language inputs before typing normally.
+# Actually, applied this (alt+shift) to the earlier input.
+# The computer has not restarted since typing the User name,
+# so don't switch language inputs again.
 echo "Enter product key (B8MFR - CFTGQ - C9PBW - VHG3J - 3R3YW)"
-xdotool key --clearmodifiers --delay 20 alt+shift
 sleep 0.5
 xdotool type --delay 20 "B8MFRCFTGQC9PBWVHG3J3R3YW"
 
-# One liner to enter a key in case you need to try several keys:
+# One liner to enter a key in case you need to try several keys or retype the key:
 # xdotool search --sync --name "Win98-ja \[Running\] - Oracle VM VirtualBox" windowactivate --sync type --delay 20 "K4HVDQ9TJ96CRX9C9G68RQ2D3"
-# xdotool search --sync --name "Win98-he \[Running\] - Oracle VM VirtualBox" windowactivate --sync type --delay 20 "B8MFRCFTGQC9PBWVHG3J3R3YW"
+# xdotool search --sync --name " \[Running\] - Oracle VM VirtualBox" windowactivate --sync type --delay 20 "B8MFRCFTGQC9PBWVHG3J3R3YW"
 
 sleep 0.5
 xdotool key --clearmodifiers --delay 20 Return
