@@ -15,7 +15,7 @@ class OnCanvasObject {
 		});
 	}
 	position(updateStatus) {
-		const direction = $canvas_area.css("direction");
+		const direction = get_direction();
 		const left_for_ltr = direction === "rtl" ? "right" : "left";
 		const offset_left = parseFloat($canvas_area.css(`padding-${left_for_ltr}`));
 		const offset_top = parseFloat($canvas_area.css("padding-top"));
