@@ -619,6 +619,13 @@ html, body, .jspaint {
 	width: 200px;
 }
 
+/* fix checkboxes in RTL layout; with display inline labels can get super out of order with the checkboxes - very confusing! */
+fieldset > label {
+    display: inline-flex;
+	flex-direction: row;
+	direction: rtl;
+}
+
 /* @TODO: part of os-gui */
 .os-window {
 	display: flex;
