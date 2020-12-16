@@ -15,11 +15,13 @@ class OnCanvasObject {
 		});
 	}
 	position(updateStatus) {
-		const offset_left = parseFloat($canvas_area.css("padding-left"));
+		const direction = $canvas_area.css("direction");
+		const left_for_ltr = direction === "rtl" ? "right" : "left";
+		const offset_left = parseFloat($canvas_area.css(`padding-${left_for_ltr}`));
 		const offset_top = parseFloat($canvas_area.css("padding-top"));
 		this.$el.css({
 			position: "absolute",
-			left: magnification * this.x + offset_left,
+			[left_for_ltr]: magnification * (direction === "rtl" ? canvas.width - this.width - this.x : this.x) + offset_left,
 			top: magnification * this.y + offset_top,
 			width: magnification * this.width,
 			height: magnification * this.height,
