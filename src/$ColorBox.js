@@ -128,7 +128,7 @@ function $ColorBox(vertical){
 	let $c;
 	if (vertical) {
 		$c = $Component(localize("Colors"), "colors-component", "tall", $cb);
-		$c.appendTo($right);
+		$c.appendTo(get_direction() === "rtl" ? $left : $right); // opposite ToolBox by default
 	}else{
 		$c = $Component(localize("Colors"), "colors-component", "wide", $cb);
 		$c.appendTo($bottom);

@@ -258,6 +258,11 @@ const $top = $(E("div")).addClass("component-area").prependTo($V);
 const $bottom = $(E("div")).addClass("component-area").appendTo($V);
 const $left = $(E("div")).addClass("component-area").prependTo($H);
 const $right = $(E("div")).addClass("component-area").appendTo($H);
+// there's also probably a CSS solution alternative to this
+if (get_direction() === "rtl") {
+	$left.appendTo($H);
+	$right.prependTo($H);
+}
 
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
 const $status_text = $(E("div")).addClass("status-text").appendTo($status_area);

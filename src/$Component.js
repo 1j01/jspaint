@@ -6,11 +6,18 @@
 function get_segments(component_area_el, pos_axis, exclude_component_el) {
 	const $other_components = $(component_area_el).find(".component").not(exclude_component_el);
 	return $other_components.toArray().map((component_el)=> {
-		return {
-			element: component_el,
-			pos: component_el[pos_axis === "top" ? "offsetTop" : "offsetLeft"],
-			length: component_el[pos_axis === "top" ? "clientHeight" : "clientWidth"],
-		};
+		const segment = {element: component_el};
+		if (pos_axis === "top") {
+			segment.pos = component_el.offsetTop;
+			segment.length = component_el.clientHeight;
+		} else if (pos_axis === "left") {
+			segment.pos = component_el.offsetLeft;
+			segment.length = component_el.clientWidth;
+		} else if (pos_axis === "right") {
+			segment.pos = component_area_el.scrollWidth - component_el.offsetLeft;
+			segment.length = component_el.clientWidth;
+		}
+		return segment;
 	});
 }
 
@@ -84,7 +91,7 @@ function $Component(title, className, orientation, $el){
 	// Nudge the Colors component over a tiny bit
 	if(className === "colors-component" && orientation === "wide"){
 		$c.css("position", "relative");
-		$c.css("left", "3px");
+		$c.css(get_direction() === "rtl" ? "right" : "left", "3px");
 	}
 
 	let iid;
@@ -112,6 +119,8 @@ function $Component(title, className, orientation, $el){
 	
 	if(orientation === "tall"){
 		pos_axis = "top";
+	}else if(get_direction() === "rtl"){
+		pos_axis = "right";
 	}else{
 		pos_axis = "left";
 	}
@@ -202,7 +211,7 @@ function $Component(title, className, orientation, $el){
 				$dock_to = $right;
 			}
 		}else{
-			pos_axis = "left";
+			pos_axis = get_direction() === "rtl" ? "right" : "left";
 			if(ghost_rect.top-q < $top[0].getBoundingClientRect().bottom){
 				$dock_to = $top;
 			}
@@ -214,6 +223,9 @@ function $Component(title, className, orientation, $el){
 		if($dock_to){
 			const dock_to_rect = $dock_to[0].getBoundingClientRect();
 			pos = ghost_rect[pos_axis] - dock_to_rect[pos_axis];
+			if (pos_axis === "right") {
+				pos *= -1;
+			}
 			$ghost.addClass("dock");
 		}else{
 			$ghost.removeClass("dock");

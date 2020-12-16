@@ -83,7 +83,7 @@ function $ToolBox(tools, is_extras){
 		"tall",
 		$tools.add($tool_options)
 	);
-	$c.appendTo($left);
+	$c.appendTo(get_direction() === "rtl" ? $right : $left); // opposite ColorBox by default
 	$c.update_selected_tool = () => {
 		$buttons.removeClass("selected");
 		selected_tools.forEach((selected_tool)=> {
