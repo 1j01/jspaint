@@ -5,9 +5,9 @@
 		<title>JS Paint</title>
 		
 		<link href="styles/normalize.css" rel="stylesheet" type="text/css">
-		<link href="styles/layout.css" rel="stylesheet" type="text/css">
+		<link href="styles/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
 		<link href="styles/print.css" rel="stylesheet" type="text/css" media="print">
-		<link href="lib/os-gui/layout.css" rel="stylesheet" type="text/css">
+		<link href="lib/os-gui/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
 		<!-- <link href="lib/os-gui/windows-98.css" rel="stylesheet" type="text/css"> -->
 		<!-- <link href="lib/os-gui/windows-default.css" rel="stylesheet" type="text/css" title="Windows Default"> -->
 		<!-- <link href="lib/os-gui/peggys-pastels.css" rel="alternate stylesheet" type="text/css" title="Peggy's Pastels"> -->
@@ -525,6 +525,30 @@
 			}
 			function load_language(language) {
 				const prev_language = current_language;
+
+				const stylesheets = [...document.querySelectorAll(".flippable-layout-stylesheet")];
+				for (const stylesheet of stylesheets) {
+					let href = stylesheet.getAttribute("href");
+					if (language.match(/^(ar|dv|fa|ha|he|ks|ku|ms|pa|ps|sd|ug|yi)\b/i)) {
+						if (href.indexOf(".rtl.css") === -1) {
+							href = href.replace(/\.css/, ".rtl.css");
+						}
+					} else {
+						if (href.indexOf(".rtl.css") > -1) {
+							href = href.replace(/\.rtl\.css/, ".css");
+						}
+					}
+					stylesheet.setAttribute("href", href);
+					// hack to wait for stylesheet to load
+					const img = document.createElement("img");
+					img.onerror = ()=> {
+						$(()=> {
+							$G.triggerHandler("theme-load"); // signal layout change
+						});
+					};
+					img.src = href;
+				}
+
 				if (language === base_language) {
 					localizations = {};
 					current_language = base_language;

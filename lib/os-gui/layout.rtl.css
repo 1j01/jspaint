@@ -41,7 +41,7 @@ body > .window-titlebar {
 .menu-popup {
 	position: absolute;
 	top: 100%;
-	left: 0;
+	right: 0;
 	z-index: 400000; /* so sub-menu-popups can be visible over the window */
 	box-sizing: border-box;
 }
@@ -80,5 +80,3 @@ body > .window-titlebar {
 ::after {
 	pointer-events: none;
 }
-
-/*# sourceMappingURL=layout.css.map */

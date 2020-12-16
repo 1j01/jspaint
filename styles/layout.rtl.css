@@ -1,6 +1,6 @@
 :root {
-	--layout-stylesheet-loaded: "layout.css"/*rtl:"layout.rtl.css"*/;
-	--layout-loaded: "ltr"/*rtl:"rtl"*/;
+	--layout-stylesheet-loaded: "layout.rtl.css";
+	--layout-loaded: "rtl";
 }
 
 html, body, .jspaint {
@@ -12,7 +12,7 @@ html, body, .jspaint {
 	overflow: hidden;
 }
 .jspaint {
-	direction: ltr;
+	direction: rtl;
 }
 .chooser-option {
 	display: flex;
@@ -91,7 +91,7 @@ html, body, .jspaint {
 	user-select: none;
 }
 .tool-window .window-titlebar {
-	direction: ltr;
+	direction: rtl;
 	text-align: start;
 }
 .status-area,
@@ -152,7 +152,7 @@ html, body, .jspaint {
 .menu-popup {
 	position: absolute;
 	top: 100%;
-	left: 0;
+	right: 0;
 	z-index: 5002; /* 50-5000 reserved for subwindows, which dynamically increase z-index */
 	box-sizing: border-box;
 }
@@ -189,14 +189,14 @@ html, body, .jspaint {
 	flex-basis: auto;
 	flex-grow: 1;
 	flex-shrink: 0;
-	padding-right: 2px;
+	padding-left: 2px;
 	overflow: hidden;
 }
 .status-coordinates {
 	flex: 0 0 114px;
 	min-width: 0px;
-	padding-left: 3px;
-	border-left: 1px solid #7b7b7b;
+	padding-right: 3px;
+	border-right: 1px solid #7b7b7b;
 }
 
 .hover-halo {
@@ -214,9 +214,9 @@ html, body, .jspaint {
 	display: block;
 	position: absolute;
 	background: red;
-	left: 2px;
-	top: 2px;
 	right: 2px;
+	top: 2px;
+	left: 2px;
 	bottom: 2px;
 }
 .dwell-indicator:not(.for-release) {
@@ -247,10 +247,10 @@ html, body, .jspaint {
 	width: 100%;
 }
 .eye-gaze-mode .colors-component.tall .foreground-color {
-	left: 12px;
+	right: 12px;
 }
 .eye-gaze-mode .colors-component.tall .background-color {
-	right: 12px;
+	left: 12px;
 }
 
 .eye-gaze-mode .os-window .window-titlebar,
@@ -266,15 +266,15 @@ html, body, .jspaint {
 .eye-gaze-mode .os-window .window-titlebar button,
 .eye-gaze-mode .tool-window .window-titlebar button {
 	transform: scale(3);
-	margin-right: 32px;
+	margin-left: 32px;
 }
 .eye-gaze-mode .tool-window .window-titlebar button {
-	transform-origin: 0 0;
+	transform-origin: 100% 0;
 }
 
 .eye-gaze-mode .menu-button {
-	padding-right: 10px;
 	padding-left: 10px;
+	padding-right: 10px;
 }
 .eye-gaze-mode .menu-button {
 	height: 3rem;
@@ -290,7 +290,7 @@ html, body, .jspaint {
 }
 
 .eye-gaze-mode .status-area {
-	padding-left: 170px;
+	padding-right: 170px;
 }
 
 .component-area {
@@ -302,8 +302,8 @@ html, body, .jspaint {
 .tools-component {
 	height: 273px;
 	align-items: center;
-	padding-left: 4px;
-	padding-right: 2px;
+	padding-right: 4px;
+	padding-left: 2px;
 	display: flex;
 	flex-flow: column;
 }
@@ -383,26 +383,26 @@ html, body, .jspaint {
 }
 .foreground-color {
 	position: absolute;
-	left: 2px;
+	right: 2px;
 	top: 4px;
 }
 .background-color {
 	position: absolute;
-	right: 3px;
+	left: 3px;
 	bottom: 3px;
 }
 .colors-component.tall .foreground-color {
-	left: 4px;
+	right: 4px;
 	top: 3px;
 }
 .colors-component.tall .background-color {
-	right: 3px;
+	left: 3px;
 	bottom: 3px;
 }
 
 .colors-component.wide .color-button,
 .colors-component.wide .color-selection {
-	margin-left: 1px;
+	margin-right: 1px;
 }
 .colors-component.tall .color-button,
 .colors-component.tall .color-selection {
@@ -424,7 +424,7 @@ html, body, .jspaint {
 	grid-template-columns: repeat(8, 16px);
 	grid-gap: 5px 9px;
 	user-select: none;
-	margin-left: 8px/*rtl:ignore*/;
+	margin-left: 8px;
 }
 .edit-colors-window .swatch {
 	width: 16px;
@@ -446,9 +446,9 @@ html, body, .jspaint {
 	content: "";
 	display: block;
 	position: absolute;
-	left: 0;
-	top: 0;
 	right: 0;
+	top: 0;
+	left: 0;
 	bottom: 0;
 	outline: 1px dotted black;
 	outline-offset: 5px;
@@ -467,7 +467,7 @@ html, body, .jspaint {
 	width: 218px;
 	position: relative;
 	padding-top: 7px;
-	padding-left: 10px/*rtl:ignore*/;
+	padding-left: 10px;
 }
 .edit-colors-window .window-content .button-group {
 	display: flex;
@@ -479,13 +479,13 @@ html, body, .jspaint {
 }
 .edit-colors-window .window-content .define-custom-colors-button,
 .edit-colors-window .window-content .button-group button:first-of-type {
-	margin-left: 5px/*rtl:ignore*/;
+	margin-left: 5px;
 }
 .edit-colors-window .window-content button {
 	height: 23px;
 	box-sizing: border-box;
 	padding: 0;
-	margin-left: 3px/*rtl:ignore*/;
+	margin-left: 3px;
 }
 .edit-colors-window .window-content .define-custom-colors-button {
 	margin-top: 13px;
@@ -494,21 +494,21 @@ html, body, .jspaint {
 .edit-colors-window .window-content .add-to-custom-colors-button {
 	position: absolute;
 	bottom: 5px;
-	right: 5px/*rtl:ignore*/;
+	right: 5px;
 	width: 213px;
 }
 .edit-colors-window .left-side label {
 	display: block;
 	margin-top: 7px;
 	margin-bottom: 5px;
-	margin-left: 5px/*rtl:ignore*/;
+	margin-left: 5px;
 }
 .edit-colors-window .left-side label:nth-of-type(2) {
 	margin-top: 18px;
 	margin-bottom: 7px;
 }
 .edit-colors-window .luminosity-canvas {
-	margin-left: 16px/*rtl:ignore*/;
+	margin-left: 16px;
 }
 .edit-colors-window .result-color-canvas {
 	margin-top: 4px;
@@ -551,9 +551,9 @@ html, body, .jspaint {
 	pointer-events: all; /* @TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
 	display: block;
 	position: absolute;
-	left: 50%;
+	right: 50%;
 	top: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(50%, -50%);
 	width: 32px;
 	height: 32px;
 	max-width: inherit;
@@ -570,8 +570,8 @@ html, body, .jspaint {
 	pointer-events: all; /* @TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
 	display: block;
 	position: absolute;
-	left: -10px;
 	right: -10px;
+	left: -10px;
 	top: -10px;
 	bottom: -10px;
 	/*background: orange;*/ /* debug */
@@ -586,7 +586,7 @@ html, body, .jspaint {
 }
 .tool-window .window-close-button {
 	display: block !important;
-	float: right;
+	float: left;
 }
 
 .window-content .button-group {
@@ -653,7 +653,7 @@ html, body, .jspaint {
 	height: 100%;
 	position: absolute;
 	top: 0;
-	left: 0;
+	right: 0;
 }
 .help-window .toolbar button .icon {
 	background-image: url("../images/help-viewer-toolbar-icons-grayscale.png");
@@ -694,7 +694,7 @@ html, body, .jspaint {
 	width: 0;
 }
 .help-window li ul {
-	padding-left: 16px;
+	padding-right: 16px;
 }
 .help-window li:before {
 	content: "";
@@ -702,8 +702,8 @@ html, body, .jspaint {
 	vertical-align: middle;
 	width: 16px;
 	height: 16px;
-	background-position: 0 0;
-	margin-right: 2px;
+	background-position: 100% 0;
+	margin-left: 2px;
 }
 .help-window .folder.expanded:before {
 	background-position: -16px 0;
@@ -738,7 +738,7 @@ html, body, .jspaint {
 	margin: 5px;
 }
 .storage-manager .remove-button {
-	margin-left: 15px;
+	margin-right: 15px;
 }
 
 .history-view {
@@ -756,7 +756,7 @@ html, body, .jspaint {
 .history-entry-icon-area {
 	width: 16px;
 	height: 16px;
-	margin-right: 6px;
+	margin-left: 6px;
 }
 .history-entry.current {
 	font-weight: bold;
@@ -785,8 +785,8 @@ html, body, .jspaint {
 	margin-bottom: 10px;
 }
 #jspaint-project-name {
-	margin-left: 10px;
-	margin-right: 8px;
+	margin-right: 10px;
+	margin-left: 8px;
 }
 #jspaint-version {
 	/* @TODO: separate into a shared.css? (not really layout!) */
@@ -799,7 +799,7 @@ html, body, .jspaint {
 }
 #view-project-news {
 	margin: auto;
-	margin-right: 40px;
+	margin-left: 40px;
 	width: 150px;
 	height: 2.2em;
 }
@@ -818,12 +818,12 @@ html, body, .jspaint {
 	font-family: sans-serif;
 }
 .news-indicator > img {
-	margin-right: 5px;
+	margin-left: 5px;
 }
 @media (max-width: 500px) {
 	.news-indicator > img {
 		position: absolute;
-		right: 0;
+		left: 0;
 		bottom: 0;
 	}
 	.news-indicator .not-the-icon {
