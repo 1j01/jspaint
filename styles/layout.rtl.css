@@ -1,7 +1,3 @@
-:root {
-	--layout-stylesheet-loaded: "layout.rtl.css";
-	--layout-loaded: "rtl";
-}
 
 html, body, .jspaint {
 	width: 100%;
