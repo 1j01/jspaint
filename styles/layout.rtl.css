@@ -614,11 +614,19 @@ html, body, .jspaint {
 	width: 200px;
 }
 
-/* fix checkboxes in RTL layout; with display inline labels can get super out of order with the checkboxes - very confusing! */
-fieldset > label {
+/* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */
+.attributes-window label {
     display: inline-flex;
 	flex-direction: row;
 	direction: rtl;
+}
+
+.attributes-window .window-content {
+	direction: rtl;
+}
+.attributes-window fieldset {
+	display: flex;
+	justify-content: space-around; /* this isn't really what the layout is like in mspaint, but it spaces things out at least */
 }
 
 /* @TODO: part of os-gui */

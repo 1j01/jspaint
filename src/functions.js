@@ -1999,6 +1999,7 @@ function image_attributes(){
 		image_attributes.$window.close();
 	}
 	const $w = image_attributes.$window = new $FormToolWindow(localize("Attributes"));
+	$w.addClass("attributes-window");
 
 	const $main = $w.$main;
 
@@ -2007,13 +2008,16 @@ function image_attributes(){
 	const table = {
 		[localize("File last saved:")]: localize("Not Available"), // @TODO: make available?
 		[localize("Size on disk:")]: localize("Not Available"), // @TODO: make available?
-		[localize("Resolution:")]: "72 x 72 dots per inch",
+		[localize("Resolution:")]: "72 x 72 dots per inch", // if localizing this, remove "direction" setting below
 	};
 	const $table = $(E("table")).appendTo($main);
 	for(const k in table){
 		const $tr = $(E("tr")).appendTo($table);
 		const $key = $(E("td")).appendTo($tr).text(k);
 		const $value = $(E("td")).appendTo($tr).text(table[k]);
+		if (table[k].indexOf("72") !== -1) {
+			$value.css("direction", "ltr");
+		}
 	}
 
 	// Dimensions
