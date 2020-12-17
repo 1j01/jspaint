@@ -96,6 +96,7 @@ html, body, .jspaint {
 }
 .status-area,
 .component-area {
+	display: flex;
 	flex: 0 0 auto;
 }
 
@@ -329,9 +330,6 @@ html, body, .jspaint {
 	position: relative;
 }
 
-.component-area {
-	display: flex;
-}
 .horizontal .component-area {
 	flex-direction: column;
 }
