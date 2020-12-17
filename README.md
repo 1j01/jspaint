@@ -166,6 +166,12 @@ You just need an HTTP server, but [Live Server][] is recommended. It auto reload
 It's included in `package.json` so if you've installed dependencies (`npm i`) you can use `npm run dev` to run it.
 (It's configured to ignore some files/directories for reloading.)
 
+When updating layout CSS you need to run `npm run build-css` to generate RTL layout versions of the CSS.  
+You should test the RTL layout by changing the language to Arabic or Hebrew.
+Go to **Extras > Language > العربية** or **עברית**.  
+The RTL CSS generation is handled by [RTLCSS](https://rtlcss.com/).
+See [Control Directives](https://rtlcss.com/learn/usage-guide/control-directives/) for how to control the RTL layout.
+
 ### Desktop App (Electron)
 
 This is unreleased and not in development.
