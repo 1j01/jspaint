@@ -78,7 +78,13 @@ for (const target_lang of target_langs) {
 		}
 		localizations[base_string] = unique_strings[0];
 	}
-	const js = `loaded_localizations("${target_lang}", ${JSON.stringify(localizations, null, "\t")});\n`;
+	const js = `//
+// NOTE: This is a generated file! Don't edit it directly.
+// Eventually community translation will be set up on some translation platform.
+// 
+// Generated with: npm run update-localization
+//
+loaded_localizations("${target_lang}", ${JSON.stringify(localizations, null, "\t")});\n`;
 	fs.writeFileSync(`${__dirname}/${target_lang}/localizations.js`, js);
 }
 

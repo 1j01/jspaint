@@ -1,3 +1,9 @@
+//
+// NOTE: This is a generated file! Don't edit it directly.
+// Eventually community translation will be set up on some translation platform.
+// 
+// Generated with: npm run update-localization
+//
 loaded_localizations("zh", {
 	"Attributes": "屬性",
 	"MS Shell Dlg": "新細明體",

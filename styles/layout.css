@@ -1,3 +1,10 @@
+/*\
+|*| Note: layout.rtl.css is a generated file. Only edit layout.css, then `npm run build-css`
+|*|
+|*| Right-to-left layout is handled with a processor called RTLCSS, using comment directives.
+|*| Note in particular that "direction: ltr;" by default gets flipped to "direction: rtl;",
+|*| so the way to make a piece of UI left-to-right-only is with an ignore directive.
+\*/
 
 html, body, .jspaint {
 	width: 100%;
