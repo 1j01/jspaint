@@ -2121,7 +2121,7 @@ function image_attributes(){
 function show_convert_to_black_and_white() {
 	const $w = new $FormToolWindow("Convert to Black and White");
 	$w.addClass("convert-to-black-and-white");
-	$w.$main.append("<fieldset><legend>Threshold</legend><input type='range' min='0' max='1' step='0.01' value='0.5'></fieldset>");
+	$w.$main.append("<fieldset><legend>Threshold:</legend><input type='range' min='0' max='1' step='0.01' value='0.5'></fieldset>");
 	const $slider = $w.$main.find("input[type='range']");
 	const original_canvas = make_canvas(canvas);
 	let threshold;
@@ -2172,7 +2172,7 @@ function image_flip_and_rotate(){
 	`);
 
 	const $rotate_by_angle = $(E("div")).appendTo($fieldset);
-	$rotate_by_angle.css({paddingLeft: "30px"});
+	$rotate_by_angle.addClass("sub-options");
 	$rotate_by_angle.append(`
 		<label><input type="radio" name="rotate-by-angle" value="90" checked/>90°</label>
 		<label><input type="radio" name="rotate-by-angle" value="180"/>180°</label>
@@ -2249,6 +2249,7 @@ function image_flip_and_rotate(){
 
 function image_stretch_and_skew(){
 	const $w = new $FormToolWindow(localize("Stretch and Skew"));
+	$w.addClass("stretch-and-skew");
 
 	const $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_stretch.append(`<legend>${localize("Stretch")}</legend><table></table>`);

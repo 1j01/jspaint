@@ -610,12 +610,20 @@ html, body, .jspaint {
 	padding: 5px;
 }
 
+.stretch-and-skew .window-content,
+.flip-and-rotate .window-content,
+.convert-to-black-and-white .window-content {
+	direction: rtl;
+}
 .flip-and-rotate fieldset {
 	width: 200px;
 }
+.flip-and-rotate .sub-options {
+	padding-right: 30px;
+}
 
 /* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */
-.attributes-window label {
+.window-content label {
     display: inline-flex;
 	flex-direction: row;
 	direction: rtl;
