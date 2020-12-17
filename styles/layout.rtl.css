@@ -532,6 +532,7 @@ html, body, .jspaint {
 	position: relative;
 	overflow: auto;
 	padding: 3px;
+	direction: ltr;
 }
 .main-canvas {
 	position: absolute;

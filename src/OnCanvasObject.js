@@ -15,13 +15,16 @@ class OnCanvasObject {
 		});
 	}
 	position(updateStatus) {
-		const direction = get_direction();
-		const left_for_ltr = direction === "rtl" ? "right" : "left";
-		const offset_left = parseFloat($canvas_area.css(`padding-${left_for_ltr}`));
+		// Nevermind, canvas, isn't aligned to the right in RTL layout!
+		// const direction = get_direction();
+		// const left_for_ltr = direction === "rtl" ? "right" : "left";
+		// const offset_left = parseFloat($canvas_area.css(`padding-${left_for_ltr}`));
+		const offset_left = parseFloat($canvas_area.css(`padding-left`));
 		const offset_top = parseFloat($canvas_area.css("padding-top"));
 		this.$el.css({
 			position: "absolute",
-			[left_for_ltr]: magnification * (direction === "rtl" ? canvas.width - this.width - this.x : this.x) + offset_left,
+			// [left_for_ltr]: magnification * (direction === "rtl" ? canvas.width - this.width - this.x : this.x) + offset_left,
+			left: magnification * this.x + offset_left,
 			top: magnification * this.y + offset_top,
 			width: magnification * this.width,
 			height: magnification * this.height,

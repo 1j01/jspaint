@@ -145,6 +145,12 @@ function update_helper_layer_immediately() {
 
 	const margin = 15;
 	const viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
+	// Nevermind, canvas, isn't aligned to the right in RTL layout!
+	// const viewport_x =
+	// 	get_direction() === "rtl" ?
+	// 		// Note: $canvas_area.scrollLeft() can return negative numbers for RTL layout
+	// 		Math.floor(Math.max(($canvas_area.scrollLeft() - $canvas_area.innerWidth()) / magnification + canvas.width - margin, 0)) :
+	// 		Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
 	const viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification - margin, 0));
 	const viewport_x2 = Math.floor(Math.min(viewport_x + $canvas_area.width() / magnification + margin*2, canvas.width));
 	const viewport_y2 = Math.floor(Math.min(viewport_y + $canvas_area.height() / magnification + margin*2, canvas.height));
@@ -1091,8 +1097,19 @@ function paste(img){
 	function do_the_paste(){
 		deselect();
 		select_tool(get_tool_by_id(TOOL_SELECT));
+		
 		const x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
-		const y = Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification));
+		const y = Math.max(0, Math.ceil(($canvas_area.scrollTop()) / magnification));
+		// Nevermind, canvas, isn't aligned to the right in RTL layout!
+		// let x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
+		// if (get_direction() === "rtl") {
+		// 	// magic number 8 is a guess, I guess based on the scrollbar width which shows on the left in RTL layout
+		// 	// TODO: detect scrollbar width
+		// 	// x = Math.max(0, Math.ceil(($canvas_area.innerWidth() - canvas.width + $canvas_area.scrollLeft() + 8) / magnification));
+		// 	const scrollbar_width = $canvas_area[0].offsetWidth - $canvas_area[0].clientWidth;
+		// 	console.log("scrollbar_width", scrollbar_width);
+		// 	x = Math.max(0, Math.ceil((-$canvas_area.innerWidth() + $canvas_area.scrollLeft() + scrollbar_width) / magnification + canvas.width));
+		// }
 
 		undoable({
 			name: "Paste",

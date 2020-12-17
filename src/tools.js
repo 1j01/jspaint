@@ -594,11 +594,15 @@ window.tools = [{
 			const w = $canvas_area.width() / magnification;
 			const h = $canvas_area.height() / magnification;
 
-			const scroll_left = (x - w/2) * magnification / prev_magnification;
-			const scroll_top = (y - h/2) * magnification / prev_magnification;
-			
-			$canvas_area.scrollLeft(scroll_left);
-			$canvas_area.scrollTop(scroll_top);
+			$canvas_area.scrollLeft((x - w/2) * magnification / prev_magnification);
+			// Nevermind, canvas, isn't aligned to the right in RTL layout!
+			// if (get_direction() === "rtl") {
+			// 	// scrollLeft coordinates can be negative for RTL
+			// 	$canvas_area.scrollLeft((x - w/2 - canvas.width) * magnification / prev_magnification + $canvas_area.innerWidth());
+			// } else {
+			// 	$canvas_area.scrollLeft((x - w/2) * magnification / prev_magnification);
+			// }
+			$canvas_area.scrollTop((y - h/2) * magnification / prev_magnification);
 			$canvas_area.trigger("scroll");
 		}
 	},
