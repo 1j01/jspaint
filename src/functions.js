@@ -761,12 +761,12 @@ function file_load_from_url(){
 	$input[0].focus();
 }
 
-function file_save(){
+function file_save(maybe_saved_callback=()=>{}){
 	deselect();
 	if(file_name.match(/\.svg$/i)){
 		// @TODO: only affect suggested name in save dialog, don't change file_name
 		file_name = `${file_name.replace(/\.svg$/i, "")}.png`;
-		return file_save_as();
+		return file_save_as(maybe_saved_callback);
 	}
 	if(document_file_path){
 		// @TODO: save as JPEG by default if the previously opened/saved file was a JPEG?
@@ -775,18 +775,20 @@ function file_save(){
 			document_file_path = saved_file_path;
 			file_name = saved_file_name;
 			update_title();
+			maybe_saved_callback();
 		});
 	}
-	file_save_as();
+	file_save_as(maybe_saved_callback);
 }
 
-function file_save_as(){
+function file_save_as(maybe_saved_callback=()=>{}){
 	deselect();
 	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name) => {
 		saved = true;
 		document_file_path = saved_file_path;
 		file_name = saved_file_name;
 		update_title();
+		maybe_saved_callback();
 	});
 }
 
@@ -800,8 +802,9 @@ function are_you_sure(action, canceled){
 		$w.$main.text(localize("Save changes to %1?", file_name));
 		$w.$Button(localize("Save"), () => {
 			$w.close();
-			file_save();
-			action();
+			file_save(()=> {
+				action();
+			});
 		})[0].focus();
 		$w.$Button("Discard", () => {
 			$w.close();
@@ -2315,11 +2318,14 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	// @TODO: file name + type dialog
 	canvas.toBlob(blob => {
 		sanity_check_blob(blob, () => {
-			const file_saver = saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`);
-			file_saver.onwriteend = () => {
-				// this won't fire in chrome
-				savedCallbackUnreliable();
-			};
+			const new_file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`;
+			const file_saver = saveAs(blob, new_file_name);
+			// file_saver.onwriteend = () => {
+			// 	// this won't fire in chrome
+			// 	savedCallbackUnreliable(undefined, new_file_name);
+			// };
+			// hopefully if the page reloads/closes the save dialog will persist and succeed?
+			savedCallbackUnreliable(undefined, new_file_name);
 		});
 	});
 }

@@ -580,16 +580,14 @@
 				$w.$main.css("max-width", "600px");
 				$w.$Button(localize("OK"), () => {
 					$w.close();
-					// Save changes to X dialog doesn't work, doesn't let you save, so it's worse than useless,
-					// without an async callback in file_save
-					// are_you_sure(() => {
-					try {
-						localStorage[language_storage_key] = language;
-						location.reload();
-					} catch(error) {
-						show_error_message("Failed to store language preference. Make sure cookies / local storage is enabled in your browser settings.", error);
-					}
-					// });
+					are_you_sure(() => {
+						try {
+							localStorage[language_storage_key] = language;
+							location.reload();
+						} catch(error) {
+							show_error_message("Failed to store language preference. Make sure cookies / local storage is enabled in your browser settings.", error);
+						}
+					});
 				});
 				$w.$Button(localize("Cancel"), () => {
 					$w.close();
