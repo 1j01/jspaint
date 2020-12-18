@@ -20,7 +20,7 @@ function $ToolBox(tools, is_extras){
 		const $icon = $(E("span"));
 		$icon.appendTo($b);
 		const update_css = ()=> {
-			const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
+			const theme_folder = `images/${get_theme().replace(/\.css/i, "")}`;
 			const theme_has_svg = get_theme().match(/classic.css|dark.css/);
 			const use_svg = !theme_dev_blob_url && (
 				(theme_has_svg &&

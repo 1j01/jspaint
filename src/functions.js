@@ -763,9 +763,9 @@ function file_load_from_url(){
 
 function file_save(){
 	deselect();
-	if(file_name.match(/\.svg$/)){
+	if(file_name.match(/\.svg$/i)){
 		// @TODO: only affect suggested name in save dialog, don't change file_name
-		file_name = `${file_name.replace(/\.svg$/, "")}.png`;
+		file_name = `${file_name.replace(/\.svg$/i, "")}.png`;
 		return file_save_as();
 	}
 	if(document_file_path){
@@ -782,7 +782,7 @@ function file_save(){
 
 function file_save_as(){
 	deselect();
-	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")}.png`, (saved_file_path, saved_file_name) => {
+	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name) => {
 		saved = true;
 		document_file_path = saved_file_path;
 		file_name = saved_file_name;
@@ -1176,7 +1176,7 @@ function render_history_as_gif(){
 			$win.$Button(localize("Save"), () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
-					saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")} history.gif`);
+					saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`);
 				});
 			});
 			$cancel.appendTo($win.$buttons);
@@ -2315,7 +2315,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	// @TODO: file name + type dialog
 	canvas.toBlob(blob => {
 		sanity_check_blob(blob, () => {
-			const file_saver = saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")}.png`);
+			const file_saver = saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`);
 			file_saver.onwriteend = () => {
 				// this won't fire in chrome
 				savedCallbackUnreliable();
@@ -2346,7 +2346,7 @@ function set_as_wallpaper_centered(c = canvas) {
 
 	c.toBlob(blob => {
 		sanity_check_blob(blob, () => {
-			saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/, "")} wallpaper.png`);
+			saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`);
 		});
 	});
 }
