@@ -575,19 +575,23 @@
 				current_language = language;
 			}
 			function set_language(language) {
-				try {
-					localStorage[language_storage_key] = language;
-				// eslint-disable-next-line no-empty
-				} catch(error) {}
-
-				const $w = $FormToolWindow().title("Error").addClass("dialogue-window");
-				$w.$main.text("The application needs to be reloaded for the language change to take effect.");
+				const $w = $FormToolWindow().title("Reload Required").addClass("dialogue-window");
+				$w.$main.text("The application needs to reload to change the language.");
 				$w.$main.css("max-width", "600px");
-				$w.$Button(localize("Reload"), () => {
+				$w.$Button(localize("OK"), () => {
 					$w.close();
-					location.reload();
+					// Save changes to X dialog doesn't work, doesn't let you save, so it's worse than useless,
+					// without an async callback in file_save
+					// are_you_sure(() => {
+					try {
+						localStorage[language_storage_key] = language;
+						location.reload();
+					} catch(error) {
+						show_error_message("Failed to store language preference. Make sure cookies / local storage is enabled in your browser settings.", error);
+					}
+					// });
 				});
-				$w.$Button(localize("Later"), () => {
+				$w.$Button(localize("Cancel"), () => {
 					$w.close();
 				});
 				$w.center();
