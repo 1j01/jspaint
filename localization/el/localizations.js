@@ -274,7 +274,7 @@ loaded_localizations("el", {
 	"Fonts": "Γραμματοσειρές",
 	"Tools": "Εργαλεία",
 	"All Picture Files": "Όλα τα αρχεία εικόνας",
-	"For Help, click Help Topics on the Help Menu.": "Για βοήθεια, επιλέξτε τα \\",
+	"For Help, click Help Topics on the Help Menu.": "Για βοήθεια, επιλέξτε τα \"Θέματα στη Βοήθεια\" από το μενού \"Βοήθεια\".",
 	"Select an area on which to get Help.": "Επιλέξτε μία περιοχή για την οποία θέλετε Βοήθεια.",
 	"%1 in %2": "%1 σε %2",
 	"Creates a new document.": "Δημιουργεί ένα νέο έγγραφο.",

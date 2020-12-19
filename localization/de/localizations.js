@@ -287,7 +287,7 @@ loaded_localizations("de", {
 	"Fonts": "Schriftarten",
 	"Tools": "Extras",
 	"All Picture Files": "Alle Bilddateien",
-	"For Help, click Help Topics on the Help Menu.": "Klicken Sie im Menü \\",
+	"For Help, click Help Topics on the Help Menu.": "Klicken Sie im Menü \"Hilfe\" auf \"Hilfethemen\".",
 	"Select an area on which to get Help.": "Wählen Sie einen Bereich aus, über den Sie sich informieren möchten.",
 	"Creates a new document.": "Erstellt ein neues Dokument.",
 	"Opens an existing document.": "Öffnet ein vorhandenes Dokument.",

@@ -85,7 +85,7 @@ function parse_rc_file(rc_file_text, callback, lang) {
 			// actually just do any time, find any strings
 		}{
 			// let match = line.match(/^[\t ]*(\w+)[\t ]+(L?"([^"]*?("")*)*?")/);
-			let match = line.match(/(L?"([^"]*?("")*)*?")/);
+			let match = line.match(/(L?"(.*)")/);
 			if (match) { // test for one-line string definitions
 				// id_str = match[1];
 				// hint = match[1];
@@ -97,7 +97,7 @@ function parse_rc_file(rc_file_text, callback, lang) {
 				if (match) {
 					id_str = match[1];
 				} else {
-					match = line.match(/^[\t ]*(L?"([^"]*?("")*)*?")/);
+					match = line.match(/^[\t ]*(L?"(.*)")/);
 					if (id_str && match) { // test for the second line (string) of the two-line string definitions
 						hint = id_str;
 						orig_str = match[1];
@@ -116,11 +116,10 @@ function parse_rc_file(rc_file_text, callback, lang) {
 			str = str.replace(/\\r/g, "\r");
 			str = str.replace(/\\n/g, "\n");
 			str = str.replace(/\\t/g, "\t");
+			str = str.replace(/\\"/g, '"');
 			if (wide) {
 				str = str.replace(/\\x([0-9a-fA-F]{4})/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)));
 			}
-
-			str = str.replace(/""/g, '"');
 
 			strings.push(str);
 

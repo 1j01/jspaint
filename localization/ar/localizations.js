@@ -274,7 +274,7 @@ loaded_localizations("ar", {
 	"Fonts": "‏‏خطوط",
 	"Tools": "‏‏أدوات",
 	"All Picture Files": "‏‏كافة ملفات الصور",
-	"For Help, click Help Topics on the Help Menu.": "‏‏للحصول على التعليمات؛ انقر \\",
+	"For Help, click Help Topics on the Help Menu.": "‏‏للحصول على التعليمات؛ انقر \"مواضيع التعليمات\" في لائحة \"تعليمات\".",
 	"Select an area on which to get Help.": "‏‏حدد المنطقة التي تريد تعليمات حولها.",
 	"%1 in %2": "‏‏%1 في %2",
 	"%1 - %2": "‏‏%1 - %2",
