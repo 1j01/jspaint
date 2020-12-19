@@ -915,6 +915,27 @@ if ($("body").hasClass("eye-gaze-mode")) {
 }
 
 function init_eye_gaze_mode() {
+	const $w = $FormToolWindow().title("Eye Gaze Mode").addClass("dialogue-window");
+	$w.$main.html(`
+		<p>Eye gaze mode lets you control JS Paint hands-free.</p>
+		<p>You don't need an expensive eye tracker device, just a webcam and free software such as 
+			<a href="https://eviacam.crea-si.com/" target="_blank">Enable Viacam</a> (a head tracker) or
+			<a href="https://sourceforge.net/projects/gazepointer/" target="_blank">GazePointer</a> (an gaze tracker).
+		</p>
+		<p>In bottom corner of the screen there is a button to toggle dwell clicking.</p>
+	`);
+	// TODO: "Don't show this again" checkbox
+	$w.$main.css("max-width", "600px");
+	$w.$Button(localize("OK"), () => {
+		$w.close();
+		// should dwell clicking be disabled initially? probably; should it be enabled after clicking OK? probably not?
+	});
+	$w.$Button(localize("Cancel"), () => {
+		$w.close();
+		// TODO: exit Eye Gaze Mode
+	});
+	$w.center();
+
 	const circle_radius_max = 50; // dwell indicator size in pixels
 	const hover_timespan = 500; // how long between the dwell indicator appearing and triggering a click
 	const averaging_window_timespan = 500;
