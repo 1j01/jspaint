@@ -631,7 +631,7 @@ html, body, .jspaint {
 
 /* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */
 .window-content label {
-    display: inline-flex;
+	display: inline-flex;
 	flex-direction: row;
 	direction: rtl;
 }
@@ -651,7 +651,7 @@ html, body, .jspaint {
 }
 /* @TODO: part of os-gui */
 .os-window .window-content {
-	flex: 1; 
+	flex: 1;
 }
 
 .help-window .window-content {
@@ -840,19 +840,62 @@ html, body, .jspaint {
 }
 
 .news-indicator {
+	display: flex;
 	font-family: sans-serif;
 }
 .news-indicator > img {
 	margin-left: 5px;
 }
-@media (max-width: 500px) {
+@media (max-width: 550px) {
 	.news-indicator > img {
 		position: absolute;
 		left: 0;
 		bottom: 0;
 	}
-	.news-indicator .not-the-icon {
+	.news-indicator .marquee {
 		display: none;
+	}
+}
+
+.marquee {
+	overflow: hidden;
+	text-decoration: inherit;
+}
+
+.marquee span {
+	display: inline-block;
+	white-space: nowrap;
+	width: var(--text-width);
+	text-shadow:
+		var(--text-width) 0 currentColor,
+		calc(-1*(var(--text-width) * 2)) 0 currentColor,
+		calc(-1*(var(--text-width) * 3)) 0 currentColor,
+		calc(-1*(var(--text-width) * 4)) 0 currentColor;
+	will-change: transform;
+	animation: marquee var(--animation-duration) linear infinite;
+	animation-play-state: paused;
+	text-decoration: inherit;
+}
+
+.marquee:hover span {
+	animation-play-state: running;
+}
+
+@keyframes marquee {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(100%); }
+}
+
+/* On MacOs: System Preferences > Accessibility > Display > Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+	.marquee span {
+		animation: none;
+		text-shadow: none;
+		width: auto;
+		display: block;
+		line-height: 1.5;
+		text-align: center;
+		white-space: normal;
 	}
 }
 

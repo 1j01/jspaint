@@ -272,8 +272,10 @@ const $status_size = $(E("div")).addClass("status-coordinates").appendTo($status
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
 		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<span class='not-the-icon'>
-			<strong>New!</strong>&nbsp;Holiday theme, multitouch panning, and revamped history
+		<span class='marquee' dir='ltr' style='--text-width: 52ch; --animation-duration: 5s;'>
+			<span>
+				<strong>New!</strong>&nbsp;Localization, Eye Gaze Mode, and Speech Recognition!
+			</span>
 		</span>
 	</a>
 `);
@@ -283,7 +285,7 @@ $news_indicator.on("click auxclick", (event)=> {
 });
 // @TODO: use localstorage to show until clicked, if available
 // and show for a longer period of time after the update, if available
-if (Date.now() < Date.parse("Jan 5 2020 23:42:42 GMT-0500")) {
+if (Date.now() < Date.parse("Jan 5 2021 23:42:42 GMT-0500")) {
 	$status_area.append($news_indicator);
 }
 
