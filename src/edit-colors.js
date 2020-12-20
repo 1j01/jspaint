@@ -355,6 +355,7 @@ function choose_color(initial_color, callback) {
 				left: 63 + color_model_index * 80,
 				top: 202 + component_index * input_y_spacing,
 				textAlign: "right",
+				display: "inline-block",
 				width: 40,
 				height: 20,
 				lineHeight: "20px",
