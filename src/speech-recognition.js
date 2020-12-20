@@ -10,12 +10,13 @@ if (!window.speech_recognition_available) {
 	return;
 }
 
-// @TODO: DRY recognition fixes, like taco? may be more trouble than it's worth, with the order dependencies
 const recognitionFixes = [
 	// colors
-	["Rhett", "red"],
-	["Brett", "red"],
-	["friend", "red"],
+	[/^rat$/i, "red"],
+	[/^Fred$/i, "red"],
+	[/^Rhett$/i, "red"],
+	[/^Brett$/i, "red"],
+	[/^friend$/i, "red"],
 	["hello", "yellow"],
 	["grave", "green"],
 	["the ruse", "maroon"],
@@ -28,6 +29,7 @@ const recognitionFixes = [
 	["ombre", "umbre"],
 	["tan-tan", "tan tan"],
 	[/^pan$/i, "tan"],
+	[/^cleo$/i, "blue"],
 
 	// commands/misc
 	["slick to the", "select the"],
@@ -71,6 +73,7 @@ const recognitionFixes = [
 	["projects news", "project news"],
 	["you project is", "view project news"],
 	["the project news", "view project news"],
+	["super news", "show news"],
 	["husbando", "close window"],
 	["put vertical", "flip vertical"],
 	["6 / 48", "flip/rotate"],
@@ -392,6 +395,7 @@ const recognitionFixes = [
 	["pinup words", "pan upwards"],
 	["pinup word", "pan upward"],
 	["pager", "page up"],
+	["page app", "page up"],
 	["go up fat page", "go up by a page"],
 	["backpage", "by a page"],
 	["by a pitch", "by a page"],
@@ -472,6 +476,7 @@ const recognitionFixes = [
 	["dim to large size", "zoom to large size"],
 	["name two normal size", "zoom to normal size"],
 	["dim to normal size", "zoom to normal size"],
+	["zoomin", "zoom in"],
 	["resume to", "zoom to"],
 	["zoom too", "zoom to"],
 	["zoom two", "zoom to"],
@@ -1207,10 +1212,29 @@ const recognitionFixes = [
 	["round rock", "round rect"],
 	["grand racked", "round rect"],
 	["and racked", "round rect"],
+
+	// Tool options
+	["hope hicks election", "opaque selection"],
+	["oaks collection", "opaque selection"],
+	["okay selection", "opaque selection"],
+	["hoecakes election", "opaque selection"],
+	["selection of pic", "selection opaque"],
+	["next selection of pig", "make selection opaque"],
+	["next selection of pic", "make selection opaque"],
+	["next selection opaque", "make selection opaque"],
+	["explosion transparent", "make selection transparent"],
+	["increase breast size", "increase brush size"],
 ];
 const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
 const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
 // @TODO: select foreground/background/ternary color specifically
+// @TODO: switch colors / swap colors / swap foreground and background colors
+// @TODO: zoom in/out / increase/decrease magnification, zoom to 20x / 5% etc., zoom out all the way (actual size or best fit if it's too big), actual size
+// @TODO: "convert image to black-and-white" / "convert image to monochrome" / "make image monochrome", "increase/decrease threshold" / "more white" / "more black"
+// @TODO: in Image Attributes, "Color"/"Colors"/"Not black and white" for Colors
+// @TODO: select tool options like selection opacity and brush sizes
+	// opaque/transparent/translucent/see-through selection / make selection opaque/transparent/translucent/see-through
+	// "increase size"(too vague) / "increase brush size" / "increase eraser size" / "larger eraser" / "enlarge eraser"
 
 // @TODO: Is there a way to enable the grammar only as a hint, non-restrictively?
 // Construct a grammar that just contains an English dictionary, and set it as lower weight?

@@ -1079,6 +1079,7 @@ window.menus = {
 				"app news", "news about the app", "news about this app",
 				"application news", "news about the application", "news about this application",
 				"what's new", "new features",
+				"show news", "show news update", "news update",
 			],
 			action: ()=> { show_news(); },
 			description: localize("Shows news about JS Paint."),
