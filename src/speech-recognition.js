@@ -1915,7 +1915,7 @@ function find_clipart_and_sketch(subject_matter) {
 }
 
 function find_clipart(query) {
-	const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart+filterui:license-L1&FORM=IRFLTR`)
+	const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart&FORM=IRFLTR`)
 	return fetch(`https://jspaint-cors-proxy.herokuapp.com/${bing_url}`)
 		.then(response=> response.text())
 		.then((html)=> {
