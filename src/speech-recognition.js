@@ -391,6 +391,10 @@ const recognitionFixes = [
 	["pin-up word", "pan upward"],
 	["pinup words", "pan upwards"],
 	["pinup word", "pan upward"],
+	["pager", "page up"],
+	["go up fat page", "go up by a page"],
+	["backpage", "by a page"],
+	["by a pitch", "by a page"],
 	["turn down", "go down"],
 	["newtown", "go down"],
 	[/^co-op\b/i, "go up"],
@@ -1691,7 +1695,8 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		});
 	}
 
-	const scrolling_regexp = /\b(?:(?:scroll|pan|move)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?(( and)?( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
+	// TODO: "scroll to bottom", "scroll by three pages" etc.
+	const scrolling_regexp = /\b(?:(?:scroll|pan|move|page)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?(( and)?( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b(( by)?( a| one)? page)?/i;
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
 		const directions = scroll_match[0];
@@ -1712,11 +1717,12 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		add_interpretation({
 			match_text: scroll_match[0],
 			exec: ()=> {
-				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth / 2;
-				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight / 2;
+				const factor = directions.match(/page/) ? 1 : 1/2;
+				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth * factor;
+				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight * factor;
 				$(scroll_pane_el).animate({
-					scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth / 2,
-					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
+					scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth * factor,
+					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight * factor,
 				}, 500);
 			},
 			vector,
