@@ -4,7 +4,7 @@
 // 
 // Generated with: npm run update-localization
 //
-loaded_localizations("pt", {
+loaded_localizations("pt-pt", {
 	"Attributes": "Atributos",
 	"MS Shell Dlg": "MS Sans Serif",
 	"&Width:": "&Largura:",

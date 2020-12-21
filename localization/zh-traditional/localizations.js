@@ -4,7 +4,7 @@
 // 
 // Generated with: npm run update-localization
 //
-loaded_localizations("zh", {
+loaded_localizations("zh-traditional", {
 	"Attributes": "屬性",
 	"MS Shell Dlg": "新細明體",
 	"&Width:": "寬度(&W):",

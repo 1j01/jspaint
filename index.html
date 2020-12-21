@@ -417,9 +417,13 @@
 			} catch (error) {}
 
 			const base_language = "en";
-			const available_languages = ["ar", "cs", "da", "de", "el", "en", "es", "fi", "fr", "he", "hu", "it", "ja", "ko", "nl", "no", "pl", "pt", "pt-br", "ru", "sk", "sl", "sv", "tr", "zh", "zh-simplified"];
+			const available_languages = ["ar", "cs", "da", "de", "el", "en", "es", "fi", "fr", "he", "hu", "it", "ja", "ko", "nl", "no", "pl", "pt-pt", "pt-br", "ru", "sk", "sl", "sv", "tr", "zh-traditional", "zh-simplified"];
+			const defaults = {
+				zh: "zh-traditional", // @TODO: should some locales default to simplified and some to traditional?
+				pt: "pt-pt",
+			};
 			const language_names = {
-				// "639-1": [["ISO language name"], ["Native name (endonym)"]],
+				// "ISO 639-1 based ID": [["ISO language name"], ["Native name (endonym)"]],
 				ab: [["Abkhazian"], ["Аҧсуа Бызшәа", "Аҧсшәа"]],
 				aa: [["Afar"], ["Afaraf"]],
 				af: [["Afrikaans"], ["Afrikaans"]],
@@ -449,12 +453,7 @@
 				ch: [["Chamorro"], ["Chamoru"]],
 				ce: [["Chechen"], ["Нохчийн Мотт"]],
 				ny: [["Chichewa", "Chewa", "Nyanja"], ["ChiCheŵa", "Chinyanja"]],
-				// zh: [["Chinese"], ["中文", "Zhōngwén", "汉语", "漢語"]],
-				// The ISO 639-1 code "zh" doesn't refer to Traditional Chinese specifically,
-				// but we want to show the distinction between Chinese varieties in the Language menu,
-				// so this is overly specific for now.
-				// @TODO: do this cleaner by establishing a mapping between ISO codes (such as "zh") and default language IDs (such as "zh-traditional")
-				zh: [["Traditional Chinese"], ["繁體中文", "傳統中文", "正體中文", "繁体中文"]],
+				zh: [["Chinese"], ["中文", "Zhōngwén", "汉语", "漢語"]],
 				"zh-traditional": [["Traditional Chinese"], ["繁體中文", "傳統中文", "正體中文", "繁体中文"]], // made-up ID, not real ISO 639-1
 				"zh-simplified": [["Simple Chinese"], ["简体中文"]], // made-up ID, not real ISO 639-1
 				cv: [["Chuvash"], ["Чӑваш Чӗлхи"]],
@@ -625,8 +624,11 @@
 			let current_language = base_language;
 			for (const accepted_language of accepted_languages) {
 				if (available_languages.indexOf(accepted_language) !== -1) {
-					current_language = accepted_language;
+					current_language = defaults[accepted_language] || accepted_language;
 					break;
+				}
+				for (const [iso_id, default_id] of Object.entries(defaults)) {
+
 				}
 			}
 
