@@ -295,7 +295,9 @@ function choose_color(initial_color, callback) {
 		select_hue_sat(event);
 		
 		$(rainbow_canvas).on("pointermove", select_hue_sat);
-		rainbow_canvas.setPointerCapture(event.pointerId);
+		if (event.pointerId !== 1234567890) { // for Eye Gaze Mode simulated clicks
+			rainbow_canvas.setPointerCapture(event.pointerId);
+		}
 	});
 	$G.on("pointerup pointercancel", (event)=> {
 		$(rainbow_canvas).off("pointermove", select_hue_sat);
@@ -314,7 +316,9 @@ function choose_color(initial_color, callback) {
 		select_lum(event);
 		
 		$(luminosity_canvas).on("pointermove", select_lum);
-		luminosity_canvas.setPointerCapture(event.pointerId);
+		if (event.pointerId !== 1234567890) { // for Eye Gaze Mode simulated clicks
+			luminosity_canvas.setPointerCapture(event.pointerId);
+		}
 	});
 	$G.on("pointerup pointercancel", (event)=> {
 		$(luminosity_canvas).off("pointermove", select_lum);

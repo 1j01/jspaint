@@ -1003,6 +1003,9 @@ function init_eye_gaze_mode() {
 			a,
 			.current-colors,
 			.color-button,
+			.edit-colors-window .swatch,
+			.edit-colors-window .rainbow-canvas,
+			.edit-colors-window .luminosity-canvas,
 			.tool:not(.selected),
 			.chooser-option,
 			.menu-button:not(.active),
@@ -1054,7 +1057,7 @@ function init_eye_gaze_mode() {
 			} else {
 				return null;
 			}
-		}else if(!target.matches(".main-canvas, .selection canvas, .window-titlebar")){
+		}else if(!target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")){
 			// Nudge hover previews to the center of buttons and things
 			const rect = target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
@@ -1062,6 +1065,21 @@ function init_eye_gaze_mode() {
 		}
 		hover_candidate.target = target;
 		return hover_candidate;
+	};
+
+	const get_event_options = ({x, y, target=document.body})=> {
+		const rect = target.getBoundingClientRect();
+		return {
+			pageX: x,
+			pageY: y,
+			clientX: x,
+			clientY: y,
+			offsetX: x - rect.left,
+			offsetY: y - rect.top,
+			pointerId: 1234567890,
+			pointerType: "mouse",
+			isPrimary: true,
+		};
 	};
 
 	const update = ()=> {
@@ -1105,26 +1123,16 @@ function init_eye_gaze_mode() {
 					* circle_radius_max;
 				if (time > hover_candidate.time + hover_timespan) {
 					if (pointer_active || gaze_dragging) {
-						$(hover_candidate.target).trigger($.Event("pointerup", {
-							clientX: hover_candidate.x,
-							clientY: hover_candidate.y,
-							pointerId: 1234567890,
-							pointerType: "mouse",
+						$(hover_candidate.target).trigger($.Event("pointerup", Object.assign(get_event_options(hover_candidate), {
 							button: 0,
 							buttons: 0,
-							isPrimary: true,
-						}));
+						})));
 					} else {
 						pointers = []; // prevent multi-touch panning
-						$(hover_candidate.target).trigger($.Event("pointerdown", {
-							clientX: hover_candidate.x,
-							clientY: hover_candidate.y,
-							pointerId: 1234567890,
-							pointerType: "mouse",
+						$(hover_candidate.target).trigger($.Event("pointerdown", Object.assign(get_event_options(hover_candidate), {
 							button: 0,
 							buttons: 1,
-							isPrimary: true,
-						}));
+						})));
 						const is_drag =
 							hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
 							hover_candidate.target.matches(".selection, .selection *, .handle") ||
@@ -1139,15 +1147,10 @@ function init_eye_gaze_mode() {
 						if (is_drag) {
 							gaze_dragging = hover_candidate.target;
 						} else {
-							$(hover_candidate.target).trigger($.Event("pointerup", {
-								clientX: hover_candidate.x,
-								clientY: hover_candidate.y,
-								pointerId: 1234567890,
-								pointerType: "mouse",
+							$(hover_candidate.target).trigger($.Event("pointerup", Object.assign(get_event_options(hover_candidate), {
 								button: 0,
 								buttons: 0,
-								isPrimary: true,
-							}));
+							})));
 							if (hover_candidate.target.matches("button:not(.toggle)")) {
 								((button)=> {
 									button.style.borderImage = "var(--inset-deep-border-image)";
@@ -1248,15 +1251,10 @@ function init_eye_gaze_mode() {
 			}
 			if (recent_movement_amount > 100) {
 				if (gaze_dragging) {
-					$G.trigger($.Event("pointerup", {
-						clientX: average_point.x,
-						clientY: average_point.y,
-						pointerId: 1234567890,
-						pointerType: "mouse",
+					$G.trigger($.Event("pointerup", Object.assign(get_event_options(average_point), {
 						button: 0,
 						buttons: 0,
-						isPrimary: true,
-					}));
+					})));
 					pointers = []; // prevent multi-touch panning
 				}
 			}
