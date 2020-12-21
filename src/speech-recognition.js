@@ -32,6 +32,7 @@ const recognitionFixes = [
 	["tan-tan", "tan tan"],
 	[/^pan$/i, "tan"],
 	[/^cleo$/i, "blue"],
+	["plaque", "black"],
 
 	// commands/misc
 	["slick to the", "select the"],
@@ -90,6 +91,12 @@ const recognitionFixes = [
 	["secretariat", "flip/rotate"],
 	["iprotec", "flip/rotate"],
 	["flippin rotate", "flip/rotate"],
+	["pretty by angle", "rotate by angle"],
+	["birthday by angle", "rotate by angle"],
+	["30 triangle", "rotate by angle"],
+	["35 angle", "rotate by angle"],
+	["rotate triangle", "rotate by angle"],
+	["agreeance", "degrees"],
 	["stretch / q", "stretch/skew"],
 	["stretch/q", "stretch/skew"],
 	["stretch / skew", "stretch/skew"],
@@ -165,6 +172,7 @@ const recognitionFixes = [
 	["man width", "line width"],
 	["thing width", "line width"],
 	["line lips", "line width"],
+	["pics alignment", "pixel line width"],
 	["single-pixel", "single pixel"],
 	["pixel with", "pixel width"],
 	["hypixel's", "5 pixels"],
@@ -191,6 +199,8 @@ const recognitionFixes = [
 	["you slime with", "use line width"],
 	["use lime with", "use line width"],
 	["line width v", "line width 5"],
+	["quick save", "click save"],
+	[/^safe$/, "save"],
 
 	// addressing actions by menu they're in
 	["dial neal", "file new"],
@@ -319,6 +329,7 @@ const recognitionFixes = [
 	["pen view", "pan view"],
 	["penn view", "pan view"],
 	["pam view", "pan view"],
+	[/^turn right$/i, "pan right"],
 	["penn wright", "pan right"],
 	["pen wright", "pan right"],
 	["pam wright", "pan right"],
@@ -479,6 +490,7 @@ const recognitionFixes = [
 	["name two normal size", "zoom to normal size"],
 	["dim to normal size", "zoom to normal size"],
 	["zoomin", "zoom in"],
+	[/^newman$/i, "zoom in"],
 	["resume to", "zoom to"],
 	["zoom too", "zoom to"],
 	["zoom two", "zoom to"],
@@ -498,6 +510,7 @@ const recognitionFixes = [
 	["seem to 1x", "zoom to 1x"],
 	["zoom g1x", "zoom to 1x"],
 	["jim to 1x", "zoom to 1x"],
+	["nims 1x", "zoom to 1x"],
 	["zoom 2 2x", "zoom to 2x"],
 	["sims 2 x", "zoom to 2x"],
 	["cmt 2x", "zoom to 2x"],
@@ -511,6 +524,7 @@ const recognitionFixes = [
 	["seemed forex", "zoom to 4x"],
 	["jim to forex", "zoom to 4x"],
 	["jim to 4x", "zoom to 4x"],
+	["sims 4 x", "zoom to 4x"],
 	["m25 x", "zoom to 5x"],
 	["zoom to headaches", "zoom to 8x"],
 	["museum t-rex", "zoom to 8x"],
@@ -937,6 +951,8 @@ const recognitionFixes = [
 	["endless love", "grab the select tool"],
 	["prince elector", "grab the select tool"],
 	["grandma's flector", "grab the select tool"],
+	["fortune", "selection"],
+	["flexion", "selection"],
 	// Eraser/Color Eraser
 	["tracer", "eraser"],
 	["grace", "erase"],
@@ -962,6 +978,7 @@ const recognitionFixes = [
 	["don't like it", "fill bucket"],
 	["sell back at", "fill bucket"],
 	["celtic cat", "fill bucket"],
+	["delphi cat", "fill bucket"],
 	["sobriquet", "fill bucket"],
 	["tell beckett", "fill bucket"],
 	["sound like a cat", "fill bucket"],
@@ -993,6 +1010,7 @@ const recognitionFixes = [
 	["tell", "fill"],
 	["cell", "fill"],
 	["phil", "fill"],
+	[/^shell$/i, "fill"],
 	["delaware", "filler"],
 	["heller", "filler"],
 	["tiller", "filler"],
@@ -1078,6 +1096,7 @@ const recognitionFixes = [
 	["zoom in tool", "zooming tool"],
 	["covid-19 fire", "grab the magnifier"],
 	["turn the magnifier", "grab the magnifier"],
+	["hang fire", "magnifier"],
 	// Pencil
 	["penn", "pen"],
 	["penndot", "pen tool"],
@@ -1090,6 +1109,8 @@ const recognitionFixes = [
 	["festival", "brush tool"],
 	["press tool", "brush tool"],
 	["restaurant", "brush tool"],
+	["vegetable", "brush tool"],
+	["brushed wool", "brush tool"],
 	["fresh", "brush"],
 	["rush", "brush"],
 	["crash", "brush"],
@@ -1145,6 +1166,7 @@ const recognitionFixes = [
 	["terp talk", "curve tool"],
 	["character", "curve tool"],
 	["turtle", "curve tool"],
+	["kirksville", "curve tool"],
 	["busy acre", "bezier curve"],
 	["sheriff", "curve"],
 	["turf", "curve"],
@@ -1620,7 +1642,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		}
 		// console.log(button, button_text, button_text_phrases);
 		for (const button_text_phrase of button_text_phrases) {
-			const match_phrases = [button_text_phrase, `click ${button_text_phrase}`, `click on ${button_text_phrase}`];
+			const match_phrases = [button_text_phrase, `hit ${button_text_phrase}`, `press ${button_text_phrase}`, `click ${button_text_phrase}`, `click on ${button_text_phrase}`];
 			for (const match_phrase of match_phrases) {
 				// console.log(match_phrase, ` ${command} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `));
 				if (` ${input_text} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {

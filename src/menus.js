@@ -34,6 +34,9 @@ window.menus = {
 				"save", "save document", "save file", "save image", "save picture", "save image file",
 				// "save a document", "save a file", "save an image", "save an image file", // too "save as"-like
 				"save the document", "save the file", "save the image", "save the image file",
+
+				"download", "download document", "download file", "download image", "download picture", "download image file",
+				"download the document", "download the file", "download the image", "download the image file",
 			],
 			action: ()=> { file_save(); },
 			description: localize("Saves the active document."),
@@ -119,7 +122,9 @@ window.menus = {
 		{
 			item: localize("Manage Storage"),
 			speech_recognition: [
-				"manage storage", "show storage", "open storage window", "manage sessions", "show sessions", "storage manager", "show storage manager", "open storage manager",
+				"manage storage", "show storage", "open storage window", "manage sessions", "show sessions", "show local sessions", "local sessions", "storage manager", "show storage manager", "open storage manager",
+				"show autosaves", "show saves", "show saved documents", "show saved files", "show saved pictures", "show saved images", "show local storage",
+				"autosaves", "autosave", "saved documents", "saved files", "saved pictures", "saved images", "local storage",
 			],
 			action: ()=> { manage_storage(); },
 			description: localize("Manages storage of previously created or opened pictures."),
