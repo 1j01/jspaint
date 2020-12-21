@@ -449,8 +449,13 @@
 				ch: [["Chamorro"], ["Chamoru"]],
 				ce: [["Chechen"], ["Нохчийн Мотт"]],
 				ny: [["Chichewa", "Chewa", "Nyanja"], ["ChiCheŵa", "Chinyanja"]],
-				zh: [["Chinese"], ["中文", "Zhōngwén", "汉语", "漢語"]],
-				"zh-traditional": [["Traditional Chinese"], ["繁体中文"]], // made-up ID, not real ISO 639-1
+				// zh: [["Chinese"], ["中文", "Zhōngwén", "汉语", "漢語"]],
+				// The ISO 639-1 code "zh" doesn't refer to Traditional Chinese specifically,
+				// but we want to show the distinction between Chinese varieties in the Language menu,
+				// so this is overly specific for now.
+				// @TODO: do this cleaner by establishing a mapping between ISO codes (such as "zh") and default language IDs (such as "zh-traditional")
+				zh: [["Traditional Chinese"], ["繁體中文", "傳統中文", "正體中文", "繁体中文"]],
+				"zh-traditional": [["Traditional Chinese"], ["繁體中文", "傳統中文", "正體中文", "繁体中文"]], // made-up ID, not real ISO 639-1
 				"zh-simplified": [["Simple Chinese"], ["简体中文"]], // made-up ID, not real ISO 639-1
 				cv: [["Chuvash"], ["Чӑваш Чӗлхи"]],
 				kw: [["Cornish"], ["Kernewek"]],
