@@ -1023,10 +1023,6 @@ function init_eye_gaze_mode() {
 			return null;
 		}
 
-		if (target.matches(".color-button input")) {
-			target = target.closest(".color-button");
-		}
-
 		// if (target.matches(".help-window li")) {
 		// 	target = target.querySelector(".item");
 		// }
