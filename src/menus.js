@@ -626,10 +626,12 @@ window.menus = {
 					const file = files[0];
 					AnyPalette.loadPalette(file, (err, new_palette)=> {
 						if(err){
-							show_error_message("This file is not in a format that paint recognizes, or no colors were found.");
+							// localize("Unexpected file format.");
+							show_error_message("This file is not in a format that Paint recognizes, or no colors were found.");
 						}else{
 							palette = new_palette.map((color)=> color.toString());
 							$colorbox.rebuild_palette();
+							window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
 						}
 					});
 				});
@@ -642,9 +644,18 @@ window.menus = {
 				"save colors", "save list of colors", "save color palette", "save palette", "save color palette file", "save palette file",
 			],
 			action: ()=> {
-				const blob = new Blob([JSON.stringify(palette)], {type: "application/json"});
+				const gimp_palette_text = `GIMP Palette
+Name: JS Paint Saved Colors
+Columns: 16
+#
+${palette.map((color)=> {
+	const [r, g, b] = get_rgba_from_color(color);
+	return `${[r, g, b].map((component)=> `${component}`.padEnd(3, " ")).join(" ")}   ${color}`;
+}).join("\n")}
+`
+				const blob = new Blob([gimp_palette_text], {type: "text/plain"});
 				sanity_check_blob(blob, ()=> {
-					saveAs(blob, "colors.json");
+					saveAs(blob, "Colors.gpl");
 				});
 			},
 			description: localize("Saves the current palette of colors to a file."),
