@@ -624,11 +624,11 @@ window.menus = {
 			action: ()=> {
 				get_FileList_from_file_select_dialog((files)=> {
 					const file = files[0];
-					Palette.load(file, (err, new_palette)=> {
+					AnyPalette.loadPalette(file, (err, new_palette)=> {
 						if(err){
 							show_error_message("This file is not in a format that paint recognizes, or no colors were found.");
 						}else{
-							palette = new_palette;
+							palette = new_palette.map((color)=> color.toString());
 							$colorbox.rebuild_palette();
 						}
 					});
