@@ -47,7 +47,11 @@ if (dev_edit_colors) {
 	});
 }
 
-// jspaint integration
+// Paint-specific handling of color picking
+// Note: It always updates a cell in the palette and one of the color selections.
+// When the dialog is opened, it always starts* with one of the color selections,
+// which lets you use the color picker and then add a custom color based on that.
+// *It may not show the color in the grid, but it will in the custom colors area.
 function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) {
 	// console.log($swatch_to_edit, $colorbox.data("$last_fg_color_button"));
 	$swatch_to_edit = $swatch_to_edit || $colorbox.data("$last_fg_color_button");
@@ -55,7 +59,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 
 	const $palette = $swatch_to_edit.closest(".palette, .color-box");
 	const swatch_index = $palette.find(".swatch").toArray().indexOf($swatch_to_edit[0]);
-	const initial_color = $swatch_to_edit[0].dataset.color;
+	const initial_color = colors[color_selection_slot_to_edit];
 	choose_color(initial_color, (color)=> {
 		// The palette may have changed or rerendered due to switching themes,
 		// toggling vertical color box mode, or monochrome document mode.
@@ -73,7 +77,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	});
 }
 
-// repurposable color picker
+// Repurposable color picker modeled after the Windows system color picker
 function choose_color(initial_color, callback) {
 	if ($edit_colors_window) {
 		$edit_colors_window.close();
