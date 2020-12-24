@@ -29,7 +29,7 @@ function storage_quota_exceeded(){
 		$w.close();
 		ignoring_quota_exceeded = true;
 	});
-	$w.width(500);
+	$w.$content.width(500);
 	$w.center();
 	$quota_exceeded_window = $w;
 }
@@ -101,6 +101,6 @@ function manage_storage(){
 		$message.html("<p>All clear!</p>");
 	}
 
-	$storage_manager.width(450);
+	$storage_manager.$content.width(450);
 	$storage_manager.center();
 }

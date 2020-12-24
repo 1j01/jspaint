@@ -514,6 +514,8 @@ html, body, .jspaint {
 .edit-colors-window .result-color-canvas {
 	margin-top: 4px;
 }
+/* WET layout code for small viewports and eye gaze mode */
+/* could do it cleaner with JavaScript or CSS preprocessor */
 @media (max-width: 450px) {
 	.edit-colors-window {
 		overflow: hidden;
@@ -527,6 +529,19 @@ html, body, .jspaint {
 	.edit-colors-window:not(.defining-custom-colors) .right-side {
 		display: none !important;
 	}
+}
+/* WET layout code for small viewports and eye gaze mode */
+.eye-gaze-mode .edit-colors-window {
+	overflow: hidden;
+}
+.eye-gaze-mode .edit-colors-window.defining-custom-colors .left-side {
+	/* display: none !important; */
+	/* this element is determining the height */
+	width: 0;
+	visibility: hidden;
+}
+.eye-gaze-mode .edit-colors-window:not(.defining-custom-colors) .right-side {
+	display: none !important;
 }
 
 .canvas-area {

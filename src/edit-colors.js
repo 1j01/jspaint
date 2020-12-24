@@ -4,8 +4,6 @@
 // - maybe use https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 // - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
 // - For mobile layout, maybe add a way to get back (<<) without adding (potentially overwriting) a custom color
-// - Eye gaze support
-//   - Enlarge UI (maybe just scale the entire dialog to fit maximally on screen)
 // - Speech recognition
 //   - Lum as Luminosity, Luminance, Lightness, maybe even Brightness
 //   - Sat as Saturation
@@ -224,7 +222,7 @@ function choose_color(initial_color, callback) {
 	// for mobile layout, re-enable button because it's a navigation button in that case, rather than a one-off expando
 	const maybe_reenable_button_for_mobile_navigation = ()=> {
 		// if ($right.is(":hidden")) {
-		if ($w.width() < 300) {
+		if ($w.width() < 300 || document.body.classList.contains("eye-gaze-mode")) {
 			$define_custom_colors_button.removeAttr("disabled");
 		}
 	};

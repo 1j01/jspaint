@@ -1074,8 +1074,9 @@ function init_eye_gaze_mode() {
 			pageY: y,
 			clientX: x,
 			clientY: y,
-			offsetX: x - rect.left,
-			offsetY: y - rect.top,
+			// handling CSS transform scaling but not rotation
+			offsetX: (x - rect.left) * target.offsetWidth / rect.width,
+			offsetY: (y - rect.top) * target.offsetHeight / rect.height,
 			pointerId: 1234567890,
 			pointerType: "mouse",
 			isPrimary: true,

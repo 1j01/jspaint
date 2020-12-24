@@ -33,7 +33,7 @@ function show_imgur_uploader(blob){
 		$upload_button.remove();
 		$cancel_button.remove(); // @TODO: allow canceling upload request
 
-		$imgur_window.width(300);
+		$imgur_window.$content.width(300);
 		$imgur_window.center();
 
 		const $progress = $(E("progress")).appendTo($imgur_window.$main);
@@ -172,6 +172,6 @@ function show_imgur_uploader(blob){
 	const $cancel_button = $imgur_window.$Button(localize("Cancel"), () => {
 		$imgur_window.close();
 	});
-	$imgur_window.width(300);
+	$imgur_window.$content.width(300);
 	$imgur_window.center();
 }
