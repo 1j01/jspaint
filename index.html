@@ -88,7 +88,7 @@
 			<article class="news-entry" id="news-2020-accessibility-update">
 				<h1>The Accessibility Update</h1>
 				<time datetime="2020-12-20">2020-12-20</time>
-				<img width="965" height="399" style="max-width: 100%; height: auto; image-rendering: auto;" src="https://i.postimg.cc/j29yrZbm/untitled-23.png"/>
+				<img width="965" height="399" style="max-width: 100%; height: auto; image-rendering: auto;" alt="Hello in several languages, eye gaze guiding a cursor, and a sea lion barking into a microphone." src="https://i.postimg.cc/j29yrZbm/untitled-23.png"/>
 				<h2>Multi-Lingual Support</h2>
 				<p>JS Paint is now largely localized into 26 languages.</p>
 				<p>
@@ -98,17 +98,16 @@
 				<p>
 					I downloaded and installed <a target="_blank" href="https://postimg.cc/4Y1V24wN">26 versions of Windows 98 in virtual machines</a>,
 					and extracted text from mspaint.exe in each one of them,
-					using a set of complex scripts that I wrote to to help me automate the process.
-					It took about two weeks of work.
+					using a set of scripts that I wrote to to help me automate the process.
 				</p>
 				<p>
 					To change the language, go to <b>Extras > Language</b>.
 					Your prefered language may already be detected, if specified in system or browser settings.
 				</p>
-				<img width="1280" height="720" style="max-width: 100%; height: auto; image-rendering: auto;" src="https://i.postimg.cc/G2bH92fp/language-menu.png"/>
+				<img width="1280" height="720" style="max-width: 100%; height: auto; image-rendering: auto;" alt="26 languages, right off the bat!" src="https://i.postimg.cc/G2bH92fp/language-menu.png"/>
 				<p>For Arabic and Hebrew, right-to-left layout is supported!</p>
 				<p>I tried my hand at some Arabic calligraphy...</p>
-				<img width="1141" height="800" style="max-width: 100%; height: auto; image-rendering: auto;" src="https://i.postimg.cc/NFX2TTp1/untitled-45.png"/>
+				<img width="1141" height="800" style="max-width: 100%; height: auto; image-rendering: auto;" alt="Calligraphy where the shapes of the tools in Paint make up Arabic words for them." src="https://i.postimg.cc/NFX2TTp1/untitled-45.png"/>
 				<p>
 					If you want to contribute translations, <a target="_blank" href="https://github.com/1j01/jspaint/issues/80">get in touch!</a>
 					I need to do some technical work to set up for community translations on a public platform,
@@ -116,7 +115,7 @@
 					(I also want to simplify the language in various parts of the UI before asking people to translate them.)
 				</p>
 				<h2>Eye Gaze Mode</h2>
-				<img width="511" height="360" style="max-width: 100%; height: auto; image-rendering: auto;" src="https://i.postimg.cc/2yC137gc/20.png"/>
+				<img width="511" height="360" style="max-width: 100%; height: auto; image-rendering: auto;" alt="You can use eye gaze or head movements to control the cursor." src="https://i.postimg.cc/2yC137gc/20.png"/>
 				<p>Eye Gaze Mode lets you control JS Paint without using your hands.</p>
 				<p>It's intended for use with an eye tracker, head tracker, or other coarse input scenario.</p>
 				<p>You don't need a thousand-dollar eye tracker device to play around with this, just a webcam and some free software.</p>
@@ -141,15 +140,31 @@
 					It can also be frustrating, and takes some practice to master.
 				</p>
 				<p>
-					Access with <b>Extras > Eye Gaze Mode</b> and note that it will start clicking where you hover.
-					You can disable this dwell clicking with the eye icon in the bottom of the screen.
+					A good place to start is coloring lineart using just the Fill tool (<img src="help/p_paint.gif" width="15" height="11" alt="">):
 				</p>
+				<ul>
+					<li>
+						<a target="_blank" href="https://duckduckgo.com/?t=canonical&q=coloring+pages&atb=v232-1&iax=images&ia=images">Find coloring pages online</a>,
+						and copy and paste them into JS Paint.
+					</li>
+					<li>
+						You can convert them to black and white in <b>Image > Attributes</b>, and then switch back to Colors.
+						(This makes it work better with the Fill tool.)
+					</li>
+					<li>
+						Enable Eye Gaze Mode with <b>Extras > Eye Gaze Mode</b> and note that it will start clicking where you hover.
+						You can disable this dwell clicking with the eye icon in the bottom of the screen.
+					</li>
+					<li>
+						Make the image fill the screen with <b>View > Zoom > Zoom To Window</b>.
+					</li>
+				</ul>
 				<p>
 					<span class="new">Bonus:</span> Since I implemented a vertical color box for Eye Gaze Mode,
 					I decided to make this available as a separate option. Access with <b>Extras > Vertical Color Box</b>.
 				</p>
 				<h2>Speech Recognition</h2>
-				<img width="549" height="275" style="max-width: 100%; height: auto; image-rendering: auto;" src="https://i.postimg.cc/BnQ8cpY2/Art-Art-Art.png"/>
+				<img width="549" height="275" style="max-width: 100%; height: auto; image-rendering: auto;" alt="The sea lion says &quot;Art! Art! Art!&quot; into a microphone." src="https://i.postimg.cc/BnQ8cpY2/Art-Art-Art.png"/>
 				<p>
 					Using only your voice, you can switch tools and colors, pan the view, click on buttons on the screen by name, and use most menu items.
 					You can even say "draw a cat in a party hat" to have JS Paint try to sketch a cat in a party hat.
@@ -158,7 +173,6 @@
 				<p>
 					The feature is only available on Chrome, and only understands English.
 					Note that Chrome sends your voice to Google servers.
-					(Developers, please work on speech recognition support in Firefox!)
 				</p>
 				<p>Access with <b>Extras > Speech Recognition</b>. If this option is grayed out, your browser is not supported.</p>
 				<p>JS Paint will show what it thinks you said in the status bar at the bottom of the screen.</p>
@@ -183,7 +197,7 @@
 					Of course there's always more that could be done.
 					Eye Gaze Mode could use brush stroke smoothing, and Speech Recognition could use general artificial intelligence.
 				</p>
-				</p>
+				<p>
 					I'd love to see people using JS Paint, especially the Eye Gaze Mode and Speech Recognition,
 					so please, if you don't mind, record yourself on video and
 					<a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdGgS6TS4wBV89v8NoYHenh1eI8jYBfgwYBdPx-OaCEG5EW7g/viewform?usp=sf_link">send me the video through this form.</a>
@@ -195,12 +209,12 @@
 			<article class="news-entry" id="news-2019-winter-update">
 				<h1>Winter Update</h1>
 				<time datetime="2019-12-20">2019-12-20</time>
-				<img width="563" height="334" style="max-width: 100%; height: auto; image-rendering: auto;" src="https://i.postimg.cc/63Wc6vpG/2019-winter-update-candy-cane.gif"/>
+				<img width="563" height="334" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src="https://i.postimg.cc/63Wc6vpG/2019-winter-update-candy-cane.gif"/>
 				<h2>Winter Theme</h2>
 				<p>
 					A new UI skin is available, under <b>Extras &gt; Themes &gt; Winter</b>, featuring winter and holiday icons, festive fonts, and a palette with seasonal colors and peppermint patterns.
 				</p>
-				<img width="256" height="16" src="images/winter/tools.png"/>
+				<img width="256" height="16" alt="" src="images/winter/tools.png"/>
 				<p>
 					Merry Christmas and happy Hanukkah!
 				</p>
@@ -242,15 +256,15 @@
 					This applies to selections, textboxes, and the main canvas handles.
 				</p>
 				<p>
-					Resizing things while zoomed in is <a href="https://github.com/1j01/jspaint/issues/13#issuecomment-562247085">finally fixed</a>!
+					Resizing things while zoomed in is <a target="_blank" href="https://github.com/1j01/jspaint/issues/13#issuecomment-562247085">finally fixed</a>!
 				</p>
 				<p>
 					The Text tool now perfectly previews the pixels that will be placed on the canvas.
 					What you see is what you get!
 					Also it retains all browser editing behavior, like spellcheck,
 					using a convoluted, yet elegant overlaying strategy.
-					(I prototyped this <a href="https://jsfiddle.net/1j01/wnac09u3/">here</a>
-					and <a href="https://jsfiddle.net/1j01/qkvfjn1r/">here</a> if you're interested.)
+					(I prototyped this <a target="_blank" href="https://jsfiddle.net/1j01/wnac09u3/">here</a>
+					and <a target="_blank" href="https://jsfiddle.net/1j01/qkvfjn1r/">here</a> if you're interested.)
 				</p>
 				<p>
 					With the fill-only option selected, the Polygon tool now previews with inverted lines, like MS Paint does.
