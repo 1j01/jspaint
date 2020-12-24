@@ -5,8 +5,6 @@
 // - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
 // - For mobile layout, maybe add a way to get back (<<) without adding (potentially overwriting) a custom color
 // - Eye gaze support
-//   - Click on swatches
-//   - Click on rainbow/slider
 //   - Enlarge UI (maybe just scale the entire dialog to fit maximally on screen)
 // - Speech recognition
 //   - Lum as Luminosity, Luminance, Lightness, maybe even Brightness
