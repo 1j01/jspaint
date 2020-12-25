@@ -1699,6 +1699,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 						selected_tool.id === TOOL_LINE ||
 						selected_tool.id === TOOL_CURVE ||
 						selected_tool.id === TOOL_RECTANGLE ||
+						selected_tool.id === TOOL_ROUNDED_RECTANGLE ||
 						selected_tool.id === TOOL_ELLIPSE ||
 						selected_tool.id === TOOL_POLYGON
 					) {

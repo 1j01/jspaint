@@ -479,6 +479,7 @@ $G.on("keydown", e => {
 				selected_tool.id === TOOL_LINE ||
 				selected_tool.id === TOOL_CURVE ||
 				selected_tool.id === TOOL_RECTANGLE ||
+				selected_tool.id === TOOL_ROUNDED_RECTANGLE ||
 				selected_tool.id === TOOL_ELLIPSE ||
 				selected_tool.id === TOOL_POLYGON
 			) {
