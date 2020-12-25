@@ -931,7 +931,9 @@ function init_eye_gaze_mode() {
 	$w.$main.css("max-width", "600px");
 	$w.$Button(localize("OK"), () => {
 		$w.close();
-		// should dwell clicking be disabled initially? probably; should it be enabled after clicking OK? probably not?
+		// should dwell clicking be disabled initially?
+		// should it be enabled after clicking OK?
+		// what about after you say "Don't show this again" and load Eye Gaze Mode?
 	});
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
