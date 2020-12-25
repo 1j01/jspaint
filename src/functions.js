@@ -1593,6 +1593,10 @@ function select_all(){
 }
 
 const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
+// possible localization strings:
+// Error getting the Clipboard Data
+// Command failed.
+// Access denied.
 function try_exec_command(commandId) {
 	if (document.queryCommandEnabled(commandId)) { // not a reliable source for whether it'll work, if I recall
 		document.execCommand(commandId);

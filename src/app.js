@@ -660,6 +660,9 @@ storage.get({
 });
 
 if(window.document_file_path_to_open){
+	// @TODO: ideally, use these localized strings where appropriate:
+	// Paint cannot open this file.
+	// Paint cannot read this file.
 	open_from_file_path(document_file_path_to_open, err => {
 		if(err){
 			return show_error_message(`Failed to open file ${document_file_path_to_open}`, err);

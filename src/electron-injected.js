@@ -43,7 +43,7 @@ window.open_from_file_path = (file_path, callback, canceled) => {
 		}
 		const file = new File([new Uint8Array(buffer)], path.basename(file_path));
 		// can't set file.path directly, but we can do this:
-		Object.defineProperty(file, 'path', {
+		Object.defineProperty(file, "path", {
 			value: file_path,
 		});
 
@@ -75,11 +75,35 @@ window.save_to_file_path = (filePath, formatName, savedCallback) => {
 		sanity_check_blob(blob, () => {
 			blob_to_buffer(blob, (err, buffer) => {
 				if(err){
-					return show_error_message("Failed to save! (Technically, failed to convert a Blob to a Buffer.)", err);
+					return show_error_message(`${localize("Failed to save document.")} (Failed to convert a Blob to a Buffer.)`, err);
 				}
 				fs.writeFile(filePath, buffer, err => {
 					if(err){
-						return show_error_message("Failed to save file!", err);
+						// @TODO: ideally, these localizable messages where appropriate (some of these are multi-line messages):
+						// This file is read-only.
+						// To save your changes, use a different filename.
+						// This file is already open.
+						// This file is open for editing and cannot be overwritten.
+						// Use a different filename to save your changes.
+						// Save was interrupted, so your file has not been saved.
+						// You cannot save to a read-only file.
+						// Use a different file name.
+						// This file is already in use.
+						// Close the program, and then try again.
+						// Paint cannot save this file.
+						// Paint cannot save to the same filename with a different file type.
+						// There is not enough memory or resources to complete operation.
+						// Close some programs, and then try again.
+						// Low on memory or resources.
+						// Too many open files.
+						// Access denied.
+						// Hard IO error.
+						// Destination disk drive is full.
+						// Unable to write to %1, it is read-only or opened by someone else.
+						// An unexpected error occurred while writing %1.
+						// Cannot save file.
+						// See https://nodejs.org/api/errors.html#nodejs-error-codes
+						return show_error_message(localize("Failed to save document."), err);
 					}
 					const fileName = path.basename(filePath);
 					savedCallback(filePath, fileName);
@@ -133,9 +157,9 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 	dialog.showSaveDialog({
 		defaultPath: suggestedFileName,
 		filters,
-	}, filePath => {
-		if(!filePath){
-			return; // user canceled
+	}).then(({canceled, filePath}) => {
+		if(canceled){
+			return;
 		}
 		const extension = getExtension(filePath);
 		if(!extension){
@@ -148,6 +172,8 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 		}
 
 		save_to_file_path(filePath, formatNameMatched, savedCallback);
+	}, (error)=> {
+		show_error_message(localize("Failed to save document."), error);
 	});
 };
 
