@@ -920,9 +920,12 @@ function init_eye_gaze_mode() {
 		<p>Eye gaze mode lets you control JS Paint hands-free.</p>
 		<p>You don't need an expensive eye tracker device, just a webcam and free software such as 
 			<a href="https://eviacam.crea-si.com/" target="_blank">Enable Viacam</a> (a head tracker) or
-			<a href="https://sourceforge.net/projects/gazepointer/" target="_blank">GazePointer</a> (an gaze tracker).
+			<a href="https://sourceforge.net/projects/gazepointer/" target="_blank">GazePointer</a> (a gaze tracker).
 		</p>
-		<p>In bottom corner of the screen there is a button to toggle dwell clicking.</p>
+		<p>
+			Hover over the eye button at the bottom of the screen to toggle dwell clicking.
+			Dwell clicking is always enabled for this button.
+		</p>
 	`);
 	// TODO: "Don't show this again" checkbox
 	$w.$main.css("max-width", "600px");
@@ -946,7 +949,7 @@ function init_eye_gaze_mode() {
 	const inactive_after_focused_timespan = 1000; // after page becomes focused after being unfocused
 	let recent_points = [];
 	let inactive_until_time = Date.now();
-	let paused = false;
+	let paused = true;
 	let $pause_button;
 	let hover_candidate;
 	let gaze_dragging = null;
@@ -1329,9 +1332,8 @@ function init_eye_gaze_mode() {
 	const pause_button_text = "Pause Dwell Clicking";
 	const resume_button_text = "Resume Dwell Clicking";
 
-	$pause_button = $(`<button title="${pause_button_text}"/>`)
-	.on("click", ()=> {
-		paused = !paused;
+	$pause_button = $(`<button title="${pause_button_text}"/>`);
+	const update_pause_button = ()=> {
 		$pause_button
 		.attr("title", paused ? resume_button_text : pause_button_text)
 		.find("div").css({
@@ -1340,8 +1342,12 @@ function init_eye_gaze_mode() {
 				"url(images/classic/eye-gaze-unpause.svg)" :
 				"url(images/classic/eye-gaze-pause.svg)",
 		});
-	})
-	.appendTo($floating_buttons)
+	};
+	$pause_button.on("click", ()=> {
+		paused = !paused;
+		update_pause_button();
+	});
+	$pause_button.appendTo($floating_buttons)
 	.css({
 		width: 28,
 		height: 28,
@@ -1359,6 +1365,7 @@ function init_eye_gaze_mode() {
 			backgroundImage: "url(images/classic/eye-gaze-pause.svg)",
 		})
 	);
+	update_pause_button();
 
 	clean_up_eye_gaze_mode = ()=> {
 		console.log("Cleaning up / disabling eye gaze mode");
