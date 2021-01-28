@@ -644,16 +644,19 @@ window.menus = {
 				"save colors", "save list of colors", "save color palette", "save palette", "save color palette file", "save palette file",
 			],
 			action: ()=> {
-				const gimp_palette_text = `GIMP Palette
-Name: JS Paint Saved Colors
-Columns: 16
-#
-${palette.map((color)=> {
-	const [r, g, b] = get_rgba_from_color(color);
-	return `${[r, g, b].map((component)=> `${component}`.padEnd(3, " ")).join(" ")}   ${color}`;
-}).join("\n")}
-`
-				const blob = new Blob([gimp_palette_text], {type: "text/plain"});
+				const ap = new AnyPalette.Palette();
+				ap.name = "JS Paint Saved Colors";
+				ap.numberOfColumns = 16; // 14?
+				for (const color of palette) {
+					const [r, g, b] = get_rgba_from_color(color);
+					ap.push(new AnyPalette.Color({
+						red: r / 255,
+						green: g / 255,
+						blue: b / 255,
+					}));
+				}
+				const file_content = AnyPalette.writePalette(ap, AnyPalette.formats.GIMP_PALETTE);
+				const blob = new Blob([file_content], {type: "text/plain"});
 				sanity_check_blob(blob, ()=> {
 					saveAs(blob, "Colors.gpl");
 				});
