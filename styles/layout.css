@@ -544,6 +544,27 @@ html, body, .jspaint {
 	display: none !important;
 }
 
+.save-as .window-content > form > div {
+	display: flex;
+	flex-direction: column;
+}
+.save-as .window-content > form > div > label {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin-left: 10px;
+}
+.save-as .window-content > form > div > label > input,
+.save-as .window-content > form > div > label > select {
+	width: 200px;
+	float: right;
+	margin: 5px;
+}
+.save-as .button-group button {
+	margin: 5px;
+}
+
 .canvas-area {
 	flex: 1;
 	display: block !important;

@@ -2319,6 +2319,92 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
+function choose_file_name_and_type(file_name, types, callback) {
+	// file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`;
+
+	const $w = new $FormToolWindow(localize("Save As"));
+	$w.addClass("save-as");
+
+	// TODO: hotkeys (accelerators)
+	$w.$main.append(`
+		<label>
+			File name:
+			<input class="file-name" type="text"/>
+		</label>
+		<label>
+			Save as type:
+			<select class="file-type-select"></select>
+		</label>
+	`);
+	const $file_type = $w.$main.find(".file-type-select");
+	const $file_name = $w.$main.find(".file-name");
+
+	const ext_to_mime = {};
+	const mime_to_exts = {};
+	for (const [mime_type, type_name] of Object.entries(types)) {
+		$file_type.append($("<option>").val(mime_type).text(type_name));
+
+		const regexp = /\*\.([^);,]+)/g;
+		let match;
+		// eslint-disable-next-line no-cond-assign
+		while (match = regexp.exec(type_name)) {
+			ext_to_mime[match[1]] = mime_type;
+			mime_to_exts[mime_type] = mime_to_exts[mime_type] || [];
+			mime_to_exts[mime_type].push(match[1]);
+		}
+	}
+
+	$file_name.val(file_name);
+
+	// Select file type when typing file name
+	const select_file_type_from_file_name = ()=> {
+		const extension_match = $file_name.val().match(/\.([\w\d]+)$/);
+		if (extension_match) {
+			for (const [extension, mime_type] of Object.entries(ext_to_mime)) {
+				if (extension_match[1].toLowerCase() === extension.toLowerCase()) {
+					$file_type.val(mime_type);
+				}
+			}
+		}
+	};
+	$file_name.on("input", select_file_type_from_file_name);
+	// and initially
+	select_file_type_from_file_name();
+
+	// Change file extension when selecting file type
+	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
+	const update_extension_from_file_type = ()=> {
+		file_name = $file_name.val();
+		const extensions_for_type = mime_to_exts[$file_type.val()];
+		const primary_extension_for_type = extensions_for_type[0];
+		const without_extension = file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "");
+		if (!extensions_for_type.some((extension)=>
+			(without_extension + extension).toLowerCase() === file_name.toLowerCase()
+		)) {
+			file_name = `${without_extension}.${primary_extension_for_type}`;
+			$file_name.val(file_name);
+		}
+	};
+	$file_type.on("change", update_extension_from_file_type);
+	// and initially
+	// TODO: should it actually include the extension by default? maybe not
+	update_extension_from_file_type();
+
+	$w.$Button(localize("Save"), () => {
+		$w.close();
+		file_name = $file_name.val();
+		update_extension_from_file_type();
+		callback(file_name, $file_type.val());
+	});
+	$w.$Button(localize("Cancel"), () => {
+		$w.close();
+	});
+
+	$file_name.focus().select();
+
+	$w.center();
+}
+
 // @TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
 // Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
 function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
@@ -2326,18 +2412,30 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
 	}
 
-	// @TODO: file name + type dialog
-	canvas.toBlob(blob => {
-		sanity_check_blob(blob, () => {
-			const new_file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`;
-			const file_saver = saveAs(blob, new_file_name);
-			// file_saver.onwriteend = () => {
-			// 	// this won't fire in chrome
-			// 	savedCallbackUnreliable(undefined, new_file_name);
-			// };
-			// hopefully if the page reloads/closes the save dialog will persist and succeed?
-			savedCallbackUnreliable(undefined, new_file_name);
-		});
+	const image_types = {
+		"image/png": "PNG (*.png)",
+		"image/jpeg": "JPEG (*.jpg;*.jpeg)",
+		"image/webp": "WebP (*.webp)",
+		"image/bitmap": "24-bit Bitmap (*.bmp;*.dib)",
+		// would need to restructure this to handle:
+		// "Monochrome Bitmap (*.bmp;*.dib)": "image/bitmap",
+		// "16 Color Bitmap (*.bmp;*.dib)": "image/bitmap",
+		// "256 Color Bitmap (*.bmp;*.dib)": "image/bitmap",
+		// "24-bit Bitmap (*.bmp;*.dib)": "image/bitmap",
+	};
+	choose_file_name_and_type(file_name, image_types, (new_file_name, file_type)=> {
+		// TODO: make sure toBlob gives the actual asked-for file type (IIRC it'll return a PNG for anything it doesn't handle!)
+		canvas.toBlob(blob => {
+			sanity_check_blob(blob, () => {
+				const file_saver = saveAs(blob, new_file_name);
+				// file_saver.onwriteend = () => {
+				// 	// this won't fire in chrome
+				// 	savedCallbackUnreliable(undefined, new_file_name);
+				// };
+				// hopefully if the page reloads/closes the save dialog will persist and succeed?
+				savedCallbackUnreliable(undefined, new_file_name);
+			});
+		}, file_type);
 	});
 }
 
