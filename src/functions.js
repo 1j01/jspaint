@@ -663,7 +663,9 @@ function open_from_File(file, callback, canceled){
 		}, canceled);
 	});
 }
-function open_from_FileList(files, user_input_method_verb_past_tense){
+async function open_from_FileList(files, user_input_method_verb_past_tense){
+	let loaded = false;
+	const fails = [];
 	for (const file of files) {
 		if (file.type.match(/^image/)) {
 			open_from_File(file, err => {
@@ -673,12 +675,21 @@ function open_from_FileList(files, user_input_method_verb_past_tense){
 		} else if (file.name.match(/\.theme(pack)?$/i)) {
 			loadThemeFile(file);
 			return;
+		} else {
+			AnyPalette.loadPalette(file, (error, new_palette)=> {
+				if (loaded) {
+					return;
+				}
+				if (error) {
+					fails.push({file, error});
+					return;
+				}
+				loaded = true;
+				palette = new_palette.map((color)=> color.toString());
+				$colorbox.rebuild_palette();
+				window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+			});
 		}
-	}
-	if(files.length > 1){
-		show_error_message(`None of the files ${user_input_method_verb_past_tense} appear to be images.`);
-	}else{
-		show_error_message(`File ${user_input_method_verb_past_tense} does not appear to be an image.`);
 	}
 }
 
