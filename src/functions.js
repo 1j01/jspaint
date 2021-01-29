@@ -2338,7 +2338,7 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	const $file_type = $w.$main.find(".file-type-select");
 	const $file_name = $w.$main.find(".file-name");
 
-	const ext_to_type_id = {};
+	const ext_to_type_ids = {};
 	const type_id_to_exts = {};
 	for (const [type_id, type_name] of Object.entries(types)) {
 		$file_type.append($("<option>").val(type_id).text(type_name));
@@ -2347,7 +2347,8 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 		let match;
 		// eslint-disable-next-line no-cond-assign
 		while (match = regexp.exec(type_name)) {
-			ext_to_type_id[match[1]] = type_id;
+			ext_to_type_ids[match[1]] = ext_to_type_ids[match[1]] || [];
+			ext_to_type_ids[match[1]].push(type_id);
 			type_id_to_exts[type_id] = type_id_to_exts[type_id] || [];
 			type_id_to_exts[type_id].push(match[1]);
 		}
@@ -2359,9 +2360,18 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	const select_file_type_from_file_name = ()=> {
 		const extension_match = $file_name.val().match(/\.([\w\d]+)$/);
 		if (extension_match) {
-			for (const [extension, type_id] of Object.entries(ext_to_type_id)) {
+			for (const [extension, type_ids] of Object.entries(ext_to_type_ids)) {
 				if (extension_match[1].toLowerCase() === extension.toLowerCase()) {
-					$file_type.val(type_id);
+					if (type_ids.indexOf($file_type.val()) > -1) {
+						// File extension already matches selected file type,
+						// don't select a different file type with the same extension.
+						return;
+					}
+				}
+			}
+			for (const [extension, type_ids] of Object.entries(ext_to_type_ids)) {
+				if (extension_match[1].toLowerCase() === extension.toLowerCase()) {
+					$file_type.val(type_ids[0]);
 				}
 			}
 		}
