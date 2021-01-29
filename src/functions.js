@@ -463,7 +463,7 @@ function open_from_Image(img, callback, canceled){
 
 		deselect();
 		cancel();
-		saved = false;
+		saved = false; // ??
 
 		reset_file();
 		reset_colors();
@@ -720,7 +720,7 @@ function file_new(){
 	are_you_sure(() => {
 		deselect();
 		cancel();
-		saved = false;
+		saved = false; // ??
 
 		reset_file();
 		reset_colors();
@@ -774,14 +774,14 @@ function file_load_from_url(){
 
 function file_save(maybe_saved_callback=()=>{}){
 	deselect();
-	if(file_name.match(/\.svg$/i)){
-		// @TODO: only affect suggested name in save dialog, don't change file_name
-		file_name = `${file_name.replace(/\.svg$/i, "")}.png`;
-		return file_save_as(maybe_saved_callback);
-	}
 	if(document_file_path){
-		// @TODO: save as JPEG by default if the previously opened/saved file was a JPEG?
-		return save_to_file_path(document_file_path, "PNG", (saved_file_path, saved_file_name) => {
+		if(file_name.match(/\.svg$/i)){
+			return file_save_as(maybe_saved_callback);
+		}
+		const ext_match = document_file_path.match(/\.([^.]+)$/);
+		const ext = ext_match[1].toLowerCase(); // excluding dot
+		const type = (ext === "jpeg" || ext === "jpg") ? "JPEG" : ext === "webp" ? "WebP" : ext.toUpperCase();
+		return save_to_file_path(document_file_path, type, (saved_file_path, saved_file_name) => {
 			saved = true;
 			document_file_path = saved_file_path;
 			file_name = saved_file_name;
@@ -2435,6 +2435,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	};
 	choose_file_name_and_type(localize("Save As"), file_name, image_types, (new_file_name, file_type)=> {
 		canvas.toBlob(blob => {
+			// TODO: unify/DRY with blob.type (mime type) checking in save_to_file_path
 			const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
 			sanity_check_blob(blob, () => {
 				const file_saver = saveAs(blob, new_file_name);

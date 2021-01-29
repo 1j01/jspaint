@@ -40,6 +40,8 @@ window.menus = {
 		},
 		{
 			item: localize("Save &As"),
+			// in mspaint, no shortcut is listed; it supports F12 (but in a browser that opens the dev tools)
+			// it doesn't support Ctrl+Shift+S but that's a good & common modern shortcut
 			shortcut: "Ctrl+Shift+S",
 			speech_recognition: [
 				// this is ridiculous
@@ -52,8 +54,6 @@ window.menus = {
 				"save file as a copy", "save file copy", "save file as copy", "save file under a new name", "save file with a new name",
 				"save image file as a copy", "save image file copy", "save image file as copy", "save image file under a new name", "save image file with a new name",
 			],
-			// in mspaint, no shortcut is listed; it supports F12 (but in a browser that opens the dev tools)
-			// it doesn't support Ctrl+Shift+S but that's a good & common modern shortcut
 			action: ()=> { file_save_as(); },
 			description: localize("Saves the active document with a new name."),
 		},
