@@ -2378,6 +2378,9 @@ function choose_file_name_and_type(file_name, types, callback) {
 		const extensions_for_type = mime_to_exts[$file_type.val()];
 		const primary_extension_for_type = extensions_for_type[0];
 		const without_extension = file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "");
+		// console.log({extensions_for_type, primary_extension_for_type, without_extension, file_name}, !extensions_for_type.some((extension)=>
+		// (without_extension + extension).toLowerCase() === file_name.toLowerCase()
+		// ));
 		if (
 			(add_extension_if_absent || (without_extension !== file_name)) &&
 			!extensions_for_type.some((extension)=>
@@ -2428,9 +2431,9 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 		// "24-bit Bitmap (*.bmp;*.dib)": "image/bitmap",
 	};
 	choose_file_name_and_type(file_name, image_types, (new_file_name, file_type)=> {
-		// TODO: make sure toBlob gives the actual asked-for file type (IIRC it'll return a PNG for anything it doesn't handle!)
 		canvas.toBlob(blob => {
 			sanity_check_blob(blob, () => {
+
 				const file_saver = saveAs(blob, new_file_name);
 				// file_saver.onwriteend = () => {
 				// 	// this won't fire in chrome
@@ -2438,7 +2441,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 				// };
 				// hopefully if the page reloads/closes the save dialog will persist and succeed?
 				savedCallbackUnreliable(undefined, new_file_name);
-			});
+			}, "\u0089PNG", file_type === "image/png");
 		}, file_type);
 	});
 }
@@ -2504,9 +2507,36 @@ function save_selection_to_file(){
 	}
 }
 
-function sanity_check_blob(blob, okay_callback){
+function sanity_check_blob(blob, okay_callback, magic, magic_wanted=true){
 	if(blob.size > 0){
-		okay_callback();
+		if (magic) {
+			const reader = new FileReader();
+			reader.onerror = ()=> {
+				show_error_message(localize("An unknown error has occurred."), reader.error);
+			};
+			reader.onload = ()=> {
+				// console.log(reader.result, reader.result.startsWith(magic), magic_wanted);
+				if (reader.result.startsWith(magic) === magic_wanted) {
+					okay_callback();
+				} else {
+					const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
+					// hackily combining messages that are already localized
+					// you have to do some deduction to understand this message
+					$w.$main.html(`
+						<p>${localize("Unexpected file format.")}</p>
+						<p>${localize("An unsupported operation was attempted.")}</p>
+					`);
+					$w.$main.css({maxWidth: "500px"});
+					$w.$Button(localize("OK"), () => {
+						$w.close();
+					});
+					$w.center();
+				}
+			};
+			reader.readAsBinaryString(blob);
+		} else {
+			okay_callback();
+		}
 	}else{
 		const $w = $FormToolWindow().title("Warning").addClass("dialogue-window");
 		$w.$main.html(`
