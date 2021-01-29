@@ -2387,7 +2387,7 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 		if (
 			(add_extension_if_absent || (without_extension !== file_name)) &&
 			!extensions_for_type.some((extension)=>
-				(without_extension + extension).toLowerCase() === file_name.toLowerCase()
+				(`${without_extension}.${extension}`).toLowerCase() === file_name.toLowerCase()
 			)
 		) {
 			file_name = `${without_extension}.${primary_extension_for_type}`;
