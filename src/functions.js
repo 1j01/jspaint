@@ -1450,7 +1450,6 @@ function show_document_history() {
 	$w.title("Document History");
 	$w.$content.html(`
 		<div class="history-view"></div>
-		<p>Press <b>Ctrl+Shift+Y</b> at any time to open this window.</p>
 	`);
 
 	const $history_view = $w.$content.find(".history-view");
