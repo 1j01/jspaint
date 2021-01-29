@@ -2373,27 +2373,31 @@ function choose_file_name_and_type(file_name, types, callback) {
 
 	// Change file extension when selecting file type
 	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
-	const update_extension_from_file_type = ()=> {
+	const update_extension_from_file_type = (add_extension_if_absent)=> {
 		file_name = $file_name.val();
 		const extensions_for_type = mime_to_exts[$file_type.val()];
 		const primary_extension_for_type = extensions_for_type[0];
 		const without_extension = file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "");
-		if (!extensions_for_type.some((extension)=>
-			(without_extension + extension).toLowerCase() === file_name.toLowerCase()
-		)) {
+		if (
+			(add_extension_if_absent || (without_extension !== file_name)) &&
+			!extensions_for_type.some((extension)=>
+				(without_extension + extension).toLowerCase() === file_name.toLowerCase()
+			)
+		) {
 			file_name = `${without_extension}.${primary_extension_for_type}`;
 			$file_name.val(file_name);
 		}
 	};
-	$file_type.on("change", update_extension_from_file_type);
+	$file_type.on("change", ()=> {
+		update_extension_from_file_type(false);
+	});
 	// and initially
-	// TODO: should it actually include the extension by default? maybe not
-	update_extension_from_file_type();
+	update_extension_from_file_type(false);
 
 	$w.$Button(localize("Save"), () => {
 		$w.close();
 		file_name = $file_name.val();
-		update_extension_from_file_type();
+		update_extension_from_file_type(true);
 		callback(file_name, $file_type.val());
 	});
 	$w.$Button(localize("Cancel"), () => {
