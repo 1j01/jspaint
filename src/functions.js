@@ -2360,14 +2360,10 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	const select_file_type_from_file_name = ()=> {
 		const extension_match = $file_name.val().match(/\.([\w\d]+)$/);
 		if (extension_match) {
-			for (const [extension, type_ids] of Object.entries(ext_to_type_ids)) {
-				if (extension_match[1].toLowerCase() === extension.toLowerCase()) {
-					if (type_ids.indexOf($file_type.val()) > -1) {
-						// File extension already matches selected file type,
-						// don't select a different file type with the same extension.
-						return;
-					}
-				}
+			if (type_id_to_exts[$file_type.val()].indexOf(extension_match[1].toLowerCase()) > -1) {
+				// File extension already matches selected file type.
+				// Don't select a different file type with the same extension.
+				return;
 			}
 			for (const [extension, type_ids] of Object.entries(ext_to_type_ids)) {
 				if (extension_match[1].toLowerCase() === extension.toLowerCase()) {
