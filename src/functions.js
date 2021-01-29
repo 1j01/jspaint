@@ -282,7 +282,7 @@ function show_custom_zoom_window() {
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='4'/>400%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='6'/>600%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='8'/>800%</label>");
-	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='really-custom'/><input type='number' min='10' max='1000' name='really-custom-zoom-input' value=''/>%</label>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='really-custom'/><input type='number' min='10' max='1000' name='really-custom-zoom-input' class='inset-deep' value=''/>%</label>");
 	let is_custom = true;
 	$fieldset.find("input[type=radio]").get().forEach((el)=> {
 		if (parseFloat(el.value) === magnification) {
@@ -750,7 +750,7 @@ function file_load_from_url(){
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
-	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input'/></label>");
+	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input inset-deep'/></label>");
 	const $input = $w.$main.find(".url-input");
 	$w.$Button("Load", () => {
 		const uris = get_URIs($input.val());
@@ -2042,8 +2042,8 @@ function image_attributes(){
 
 	const $width_label = $(E("label")).appendTo($main).text(localize("Width:"));
 	const $height_label = $(E("label")).appendTo($main).text(localize("Height:"));
-	const $width = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($width_label);
-	const $height = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner").appendTo($height_label);
+	const $width = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner inset-deep").appendTo($width_label);
+	const $height = $(E("input")).attr({type: "number", min: 1}).addClass("no-spinner inset-deep").appendTo($height_label);
 
 	$main.find("input")
 		.css({width: "40px"})
@@ -2190,7 +2190,7 @@ function image_flip_and_rotate(){
 		<label><input type="radio" name="rotate-by-angle" value="90" checked/>90°</label>
 		<label><input type="radio" name="rotate-by-angle" value="180"/>180°</label>
 		<label><input type="radio" name="rotate-by-angle" value="270"/>270°</label>
-		<label><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" value="" class="no-spinner" style="width: 50px"/> ${localize("Degrees")}</label>
+		<label><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" value="" class="no-spinner inset-deep" style="width: 50px"/> ${localize("Degrees")}</label>
 	`);
 	$rotate_by_angle.find("input").attr({disabled: true});
 
@@ -2287,7 +2287,7 @@ function image_stretch_and_skew(){
 			id: input_id,
 		}).css({
 			width: "40px"
-		}).addClass("no-spinner");
+		}).addClass("no-spinner inset-deep");
 		$(E("td")).appendTo($tr).append($img);
 		$(E("td")).appendTo($tr).append($(E("label")).text(label_text).attr("for", input_id));
 		$(E("td")).appendTo($tr).append($input);
@@ -2328,11 +2328,11 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	$w.$main.append(`
 		<label>
 			File name:
-			<input class="file-name" type="text"/>
+			<input type="text" class="file-name inset-deep"/>
 		</label>
 		<label>
 			Save as type:
-			<select class="file-type-select"></select>
+			<select class="file-type-select inset-deep"></select>
 		</label>
 	`);
 	const $file_type = $w.$main.find(".file-type-select");
@@ -2574,6 +2574,7 @@ function show_multi_user_setup_dialog(from_current_document){
 					aria-label="session name"
 					pattern="[-0-9A-Za-z\\u00c0-\\u00d6\\u00d8-\\u00f6\\u00f8-\\u02af\\u1d00-\\u1d25\\u1d62-\\u1d65\\u1d6b-\\u1d77\\u1d79-\\u1d9a\\u1e00-\\u1eff\\u2090-\\u2094\\u2184-\\u2184\\u2488-\\u2490\\u271d-\\u271d\\u2c60-\\u2c7c\\u2c7e-\\u2c7f\\ua722-\\ua76f\\ua771-\\ua787\\ua78b-\\ua78c\\ua7fb-\\ua7ff\\ufb00-\\ufb06]+"
 					title="Numbers, letters, and hyphens are allowed."
+					class="inset-deep"
 				>
 			</label>
 		</p>

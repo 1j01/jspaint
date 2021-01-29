@@ -338,16 +338,33 @@ body,
 }
 
 input[type=text]:not(.inset-deep),
-input[type=url]:not(.inset-deep) {
+input[type=url]:not(.inset-deep),
+input[type=number]:not(.inset-deep) {
 	border: 1px solid gray;
 }
 input[type=text],
-input[type=url] {
-	/* @TODO: fancy 3d inset border (might need a surrounding element because pseudo elements won't work with input) */
-	/* I guess an image border could work; maybe I should be using (svg) image borders for stuff */
-	/* (css inset border style doesn't look good and isn't consistent between browsers) */
+input[type=url],
+input[type=search],
+input[type=number],
+select,
+input[type=text].inset-deep, /* overriding background */
+input[type=url].inset-deep,
+input[type=search].inset-deep,
+input[type=number].inset-deep,
+select.inset-deep {
 	background: var(--Window);
 	color: var(--WindowText);
+	/* TODO: should controls be styled by default, or need .inset-deep or similar? */
+	/* border-image: var(--inset-deep-border-image); */
+}
+
+/* XXX: using inset-deep to mean "thematic" */
+input[type=text].inset-deep,
+input[type=url].inset-deep,
+input[type=search].inset-deep,
+input[type=number].inset-deep,
+select.inset-deep {
+	outline: none;
 }
 
 input[type=number].no-spinner::-webkit-inner-spin-button,
@@ -357,6 +374,35 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
 }
 input[type=number].no-spinner {
 	-moz-appearance: textfield;
+}
+
+/*
+Will need a wrapper element or ideally an accessible stylable replacement for the select element for further styling.
+Can't use option:hover, or option::after, or select::after, among other things.
+*/
+/* XXX: using inset-deep to mean "thematic" */
+select.inset-deep {
+	/* taken from 98.css: https://jdan.github.io/98.css/ */
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	/* position: relative; */
+	padding-right: 16px;
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%23DFDFDF'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%23fff'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='gray'/%3E%3Cpath fill='silver' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%23000'/%3E%3C/svg%3E");
+	background-position: top 0px right 0px;
+	background-repeat: no-repeat;
+	border-radius: 0;
+	box-sizing: border-box;
+	height: 21px;
+	outline: none;
+}
+select.inset-deep:focus:not(:active) {
+	color: var(--HilightText);
+	background-color: var(--Hilight);
+}
+select.inset-deep option {
+	background: var(--Window);
+	color: var(--WindowText);
 }
 
 input:invalid {
