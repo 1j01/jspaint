@@ -2385,11 +2385,10 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 		// This way of removing the file extension doesn't scale very well! But I don't want to delete text the user wanted like in case of a version number...
 		const without_extension = file_name.replace(/\.(\w{1,3}|apng|jpeg|jfif|tiff|webp|psppalette|sketchpalette|gimp|colors|scss|sass|less|styl|html|theme|themepack)$/i, "");
 		const extension_present = without_extension !== file_name;
+		const extension = file_name.slice(without_extension.length + 1).toLowerCase(); // without dot
 		if (
 			(add_extension_if_absent || extension_present) &&
-			!extensions_for_type.some((extension)=>
-				(`${without_extension}.${extension}`).toLowerCase() === file_name.toLowerCase()
-			)
+			extensions_for_type.indexOf(extension) === -1
 		) {
 			file_name = `${without_extension}.${primary_extension_for_type}`;
 			$file_name.val(file_name);
