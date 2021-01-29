@@ -664,8 +664,9 @@ window.menus = {
 					}
 				}
 				const palette_types_ordered = Object.keys(palette_types_unordered).sort((a, b)=>
-					(b === "GIMP_PALETTE") - (a === "GIMP_PALETTE") || // default
-					(b === "RIFF_PALETTE") - (a === "RIFF_PALETTE") || // second option
+					// first option is default
+					(b === "RIFF_PALETTE") - (a === "RIFF_PALETTE") ||
+					(b === "GIMP_PALETTE") - (a === "GIMP_PALETTE") ||
 					0
 				).reduce(
 					(obj, key) => {
@@ -674,7 +675,7 @@ window.menus = {
 					},
 					{}
 				);
-				choose_file_name_and_type(localize("Save Colors"), "Colors", palette_types_ordered, (palette_file_name, format_id)=> {
+				choose_file_name_and_type(localize("Save Colors"), localize("untitled.pal"), palette_types_ordered, (palette_file_name, format_id)=> {
 					const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
 					const blob = new Blob([file_content], {type: "text/plain"});
 					sanity_check_blob(blob, ()=> {
