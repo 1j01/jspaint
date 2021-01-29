@@ -655,10 +655,20 @@ window.menus = {
 						blue: b / 255,
 					}));
 				}
-				const file_content = AnyPalette.writePalette(ap, AnyPalette.formats.GIMP_PALETTE);
-				const blob = new Blob([file_content], {type: "text/plain"});
-				sanity_check_blob(blob, ()=> {
-					saveAs(blob, "Colors.gpl");
+				const palette_types = {};
+				for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
+					if (format.write) {
+						palette_types[format_id] = `${format.name} (${
+							format.fileExtensions.map((extension)=> `*.${extension}`).join(";")
+						})`;
+					}
+				}
+				choose_file_name_and_type(localize("Save Colors"), "Colors", palette_types, (palette_file_name, format_id)=> {
+					const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
+					const blob = new Blob([file_content], {type: "text/plain"});
+					sanity_check_blob(blob, ()=> {
+						saveAs(blob, palette_file_name);
+					});
 				});
 			},
 			description: localize("Saves the current palette of colors to a file."),

@@ -2319,10 +2319,10 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
-function choose_file_name_and_type(file_name, types, callback) {
+function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	// file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`;
 
-	const $w = new $FormToolWindow(localize("Save As"));
+	const $w = new $FormToolWindow(dialog_name);
 	$w.addClass("save-as");
 
 	// TODO: hotkeys (N, T, S, Enter, Esc)
@@ -2427,7 +2427,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 		// "256 Color Bitmap (*.bmp;*.dib)": "image/bitmap",
 		// "24-bit Bitmap (*.bmp;*.dib)": "image/bitmap",
 	};
-	choose_file_name_and_type(file_name, image_types, (new_file_name, file_type)=> {
+	choose_file_name_and_type(localize("Save As"), file_name, image_types, (new_file_name, file_type)=> {
 		canvas.toBlob(blob => {
 			const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
 			sanity_check_blob(blob, () => {
