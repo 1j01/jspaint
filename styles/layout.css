@@ -561,6 +561,14 @@ html, body, .jspaint {
 	max-width: 230px;
 	float: right;
 	margin: 5px;
+    box-sizing: border-box;
+}
+.save-as .window-content > form > div > label:last-of-type {
+	margin-top: 8px;
+}
+.save-as .window-content {
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 .save-as .button-group button {
 	margin: 5px;
