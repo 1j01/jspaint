@@ -165,6 +165,7 @@ let redos = [];
 let file_name;
 let document_file_path;
 let saved = true;
+let file_name_chosen = false;
 
 /** works in canvas coordinates */
 let pointer;

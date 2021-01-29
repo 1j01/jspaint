@@ -358,6 +358,7 @@ function reset_colors(){
 function reset_file(){
 	document_file_path = null;
 	file_name = localize("untitled");
+	file_name_chosen = false;
 	update_title();
 	saved = true;
 }
@@ -656,6 +657,7 @@ function open_from_File(file, callback, canceled){
 
 		open_from_Image(img, () => {
 			file_name = file.name;
+			file_name_chosen = false; // ?
 			document_file_path = file.path; // available in Electron
 			update_title();
 			saved = true;
@@ -778,6 +780,7 @@ function file_save(maybe_saved_callback=()=>{}){
 		if(file_name.match(/\.svg$/i)){
 			return file_save_as(maybe_saved_callback);
 		}
+		// TODO: DRY file extension / mime type / format ID / format name handling
 		const ext_match = document_file_path.match(/\.([^.]+)$/);
 		const ext = ext_match[1].toLowerCase(); // excluding dot
 		const type = (ext === "jpeg" || ext === "jpg") ? "JPEG" : ext === "webp" ? "WebP" : ext.toUpperCase();
@@ -785,11 +788,31 @@ function file_save(maybe_saved_callback=()=>{}){
 			saved = true;
 			document_file_path = saved_file_path;
 			file_name = saved_file_name;
+			file_name_chosen = true; // I guess.. should already be true
 			update_title();
 			maybe_saved_callback();
 		});
 	}
-	file_save_as(maybe_saved_callback);
+	if (!file_name_chosen) {
+		return file_save_as(maybe_saved_callback);
+	}
+	// TODO: DRY file extension / mime type / format ID / format name handling
+	const ext_match = file_name.match(/\.([^.]+)$/);
+	const ext = ext_match[1].toLowerCase(); // excluding dot
+	const file_type = (ext === "jpeg" || ext === "jpg") ? "image/jpeg" : `image/${ext}`;
+	canvas.toBlob(blob => {
+		// TODO: unify/DRY with blob.type (mime type) checking in save_to_file_path
+		const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+		sanity_check_blob(blob, () => {
+			const file_saver = saveAs(blob, file_name);
+			// file_saver.onwriteend = () => {
+			// 	// this won't fire in chrome
+			// 	maybe_saved_callback(undefined, file_name);
+			// };
+			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
+			maybe_saved_callback(undefined, file_name);
+		}, png_magic_bytes, file_type === "image/png");
+	}, file_type);
 }
 
 function file_save_as(maybe_saved_callback=()=>{}){
@@ -798,6 +821,7 @@ function file_save_as(maybe_saved_callback=()=>{}){
 		saved = true;
 		document_file_path = saved_file_path;
 		file_name = saved_file_name;
+		file_name_chosen = true;
 		update_title();
 		maybe_saved_callback();
 	});
@@ -2443,7 +2467,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 				// 	// this won't fire in chrome
 				// 	savedCallbackUnreliable(undefined, new_file_name);
 				// };
-				// hopefully if the page reloads/closes the save dialog will persist and succeed?
+				// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
 				savedCallbackUnreliable(undefined, new_file_name);
 			}, png_magic_bytes, file_type === "image/png");
 		}, file_type);

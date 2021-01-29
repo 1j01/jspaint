@@ -194,9 +194,11 @@
 			this._fb_listeners = [];
 
 			file_name = `[Loading ${this.id}]`;
+			file_name_chosen = false;
 			update_title();
 			const on_firebase_loaded = () => {
 				file_name = `[${this.id}]`;
+				file_name_chosen = false;
 				update_title();
 				this.start();
 			};
@@ -218,6 +220,7 @@
 					.fail(() => {
 						show_error_message("Failed to load Firebase; the document will not load, and changes will not be saved.");
 						file_name = `[Failed to load ${this.id}]`;
+						file_name_chosen = false;
 						update_title();
 					});
 			}
@@ -414,6 +417,7 @@
 			}, error => {
 				show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
 				file_name = `[Failed to load ${this.id}]`;
+				file_name_chosen = false;
 				update_title();
 			});
 			// Update the cursor status
