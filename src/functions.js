@@ -2378,9 +2378,6 @@ function choose_file_name_and_type(file_name, types, callback) {
 		const extensions_for_type = mime_to_exts[$file_type.val()];
 		const primary_extension_for_type = extensions_for_type[0];
 		const without_extension = file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "");
-		// console.log({extensions_for_type, primary_extension_for_type, without_extension, file_name}, !extensions_for_type.some((extension)=>
-		// (without_extension + extension).toLowerCase() === file_name.toLowerCase()
-		// ));
 		if (
 			(add_extension_if_absent || (without_extension !== file_name)) &&
 			!extensions_for_type.some((extension)=>
@@ -2432,8 +2429,8 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	};
 	choose_file_name_and_type(file_name, image_types, (new_file_name, file_type)=> {
 		canvas.toBlob(blob => {
+			const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
 			sanity_check_blob(blob, () => {
-
 				const file_saver = saveAs(blob, new_file_name);
 				// file_saver.onwriteend = () => {
 				// 	// this won't fire in chrome
@@ -2441,7 +2438,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 				// };
 				// hopefully if the page reloads/closes the save dialog will persist and succeed?
 				savedCallbackUnreliable(undefined, new_file_name);
-			}, "\u0089PNG", file_type === "image/png");
+			}, png_magic_bytes, file_type === "image/png");
 		}, file_type);
 	});
 }
@@ -2507,16 +2504,18 @@ function save_selection_to_file(){
 	}
 }
 
-function sanity_check_blob(blob, okay_callback, magic, magic_wanted=true){
+function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted=true){
 	if(blob.size > 0){
-		if (magic) {
+		if (magic_number_bytes) {
 			const reader = new FileReader();
 			reader.onerror = ()=> {
 				show_error_message(localize("An unknown error has occurred."), reader.error);
 			};
 			reader.onload = ()=> {
-				// console.log(reader.result, reader.result.startsWith(magic), magic_wanted);
-				if (reader.result.startsWith(magic) === magic_wanted) {
+				const file_bytes = new Uint8Array(reader.result);
+				const magic_found = magic_number_bytes.every((byte, index)=> byte === file_bytes[index]);
+				// console.log(file_bytes, magic_number_bytes, magic_found, magic_wanted);
+				if (magic_found === magic_wanted) {
 					okay_callback();
 				} else {
 					const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
@@ -2533,7 +2532,7 @@ function sanity_check_blob(blob, okay_callback, magic, magic_wanted=true){
 					$w.center();
 				}
 			};
-			reader.readAsBinaryString(blob);
+			reader.readAsArrayBuffer(blob);
 		} else {
 			okay_callback();
 		}
