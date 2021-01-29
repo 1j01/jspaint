@@ -2325,7 +2325,7 @@ function choose_file_name_and_type(file_name, types, callback) {
 	const $w = new $FormToolWindow(localize("Save As"));
 	$w.addClass("save-as");
 
-	// TODO: hotkeys (accelerators)
+	// TODO: hotkeys (N, T, S, Enter, Esc)
 	$w.$main.append(`
 		<label>
 			File name:

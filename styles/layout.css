@@ -557,9 +557,17 @@ html, body, .jspaint {
 }
 .save-as .window-content > form > div > label > input,
 .save-as .window-content > form > div > label > select {
-	width: 200px;
+	flex: 1 1 0;
+	min-width: 0px;
 	float: right;
 	margin: 5px;
+}
+@media (min-width: 500px) {
+	.save-as .window-content > form > div > label > input,
+	.save-as .window-content > form > div > label > select {
+		width: 230px;
+		flex: 0 0 auto;
+	}
 }
 .save-as .button-group button {
 	margin: 5px;
