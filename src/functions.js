@@ -2338,18 +2338,18 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	const $file_type = $w.$main.find(".file-type-select");
 	const $file_name = $w.$main.find(".file-name");
 
-	const ext_to_mime = {};
-	const mime_to_exts = {};
-	for (const [mime_type, type_name] of Object.entries(types)) {
-		$file_type.append($("<option>").val(mime_type).text(type_name));
+	const ext_to_type_id = {};
+	const type_id_to_exts = {};
+	for (const [type_id, type_name] of Object.entries(types)) {
+		$file_type.append($("<option>").val(type_id).text(type_name));
 
 		const regexp = /\*\.([^);,]+)/g;
 		let match;
 		// eslint-disable-next-line no-cond-assign
 		while (match = regexp.exec(type_name)) {
-			ext_to_mime[match[1]] = mime_type;
-			mime_to_exts[mime_type] = mime_to_exts[mime_type] || [];
-			mime_to_exts[mime_type].push(match[1]);
+			ext_to_type_id[match[1]] = type_id;
+			type_id_to_exts[type_id] = type_id_to_exts[type_id] || [];
+			type_id_to_exts[type_id].push(match[1]);
 		}
 	}
 
@@ -2359,9 +2359,9 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	const select_file_type_from_file_name = ()=> {
 		const extension_match = $file_name.val().match(/\.([\w\d]+)$/);
 		if (extension_match) {
-			for (const [extension, mime_type] of Object.entries(ext_to_mime)) {
+			for (const [extension, type_id] of Object.entries(ext_to_type_id)) {
 				if (extension_match[1].toLowerCase() === extension.toLowerCase()) {
-					$file_type.val(mime_type);
+					$file_type.val(type_id);
 				}
 			}
 		}
@@ -2374,7 +2374,7 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
 	const update_extension_from_file_type = (add_extension_if_absent)=> {
 		file_name = $file_name.val();
-		const extensions_for_type = mime_to_exts[$file_type.val()];
+		const extensions_for_type = type_id_to_exts[$file_type.val()];
 		const primary_extension_for_type = extensions_for_type[0];
 		const without_extension = file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "");
 		if (
