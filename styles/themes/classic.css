@@ -352,7 +352,7 @@ input[type=url].inset-deep,
 input[type=search].inset-deep,
 input[type=number].inset-deep,
 select.inset-deep {
-	background: var(--Window);
+	background-color: var(--Window);
 	color: var(--WindowText);
 	/* TODO: should controls be styled by default, or need .inset-deep or similar? */
 	/* border-image: var(--inset-deep-border-image); */
@@ -399,7 +399,7 @@ select.inset-deep:focus:not(:active) {
 	background-color: var(--Hilight);
 }
 select.inset-deep option {
-	background: var(--Window);
+	background-color: var(--Window);
 	color: var(--WindowText);
 }
 
