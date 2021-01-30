@@ -2370,9 +2370,17 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	const ext_to_type_ids = {};
 	const type_id_to_exts = {};
 	for (const [type_id, type_name] of Object.entries(types)) {
-		$file_type.append($("<option>").val(type_id).text(type_name));
-
 		const regexp = /\*\.([^);,]+)/g;
+		let option_html = type_name;
+		if (get_direction() === "rtl") {
+			// option_html = type_name.replace(regexp, "<bdi>$&</bdi>"); // not allowed
+			// option_html = type_name.replace(regexp, "<span dir='ltr'>$&</span>"); // not allowed
+			// option_html = type_name.replace(regexp, "<bdo dir='ltr'>$&</bdo>"); // not allowed
+			// option_html = type_name.replace(regexp, "&lrm;$&&rlm;"); // not what we really want
+			option_html = type_name.replace(regexp, "&rlm;*.&lrm;$1&rlm;");
+		}
+		$file_type.append($("<option>").val(type_id).html(option_html));
+
 		let match;
 		// eslint-disable-next-line no-cond-assign
 		while (match = regexp.exec(type_name)) {
@@ -2452,10 +2460,10 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	}
 
 	const image_types = {
-		"image/png": "PNG (*.png)",
-		"image/jpeg": "JPEG (*.jpg;*.jpeg)",
-		"image/webp": "WebP (*.webp)",
-		"image/bitmap": "24-bit Bitmap (*.bmp;*.dib)",
+		"image/png": localize("PNG (*.png)"),
+		"image/jpeg": localize("JPEG (*.jpg;*.jpeg)"),
+		"image/webp": localize("WebP (*.webp)"),
+		"image/bitmap": localize("24-bit Bitmap (*.bmp;*.dib)"),
 		// would need to restructure this to handle:
 		// "Monochrome Bitmap (*.bmp;*.dib)": "image/bitmap",
 		// "16 Color Bitmap (*.bmp;*.dib)": "image/bitmap",

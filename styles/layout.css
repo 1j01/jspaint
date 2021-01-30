@@ -764,7 +764,8 @@ html, body, .jspaint {
 	width: 0;
 }
 .help-window li ul {
-	padding-left: 16px;
+	/* Help content is not currently translated, so it's all in English */
+	padding-left: 16px/*rtl:ignore*/;
 }
 .help-window li:before {
 	content: "";
@@ -942,6 +943,11 @@ html, body, .jspaint {
 		text-align: center;
 		white-space: normal;
 	}
+}
+
+select.inset-deep {
+	background-position: top 0px right 0px;
+	padding-right: 16px;
 }
 
 [touch-action="none"] {
