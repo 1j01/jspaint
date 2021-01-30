@@ -1370,6 +1370,11 @@ function average_points(points) {
 	return average;
 }
 $canvas_area.on("pointerdown", (event)=> {
+	if (document.activeElement && document.activeElement !== document.body && document.activeElement !== document.documentElement) {
+		// Allow unfocusing dialogs etc. in order to use keyboard shortcuts
+		document.activeElement.blur();
+	}
+
 	if (pointers.every((pointer)=>
 		// prevent multitouch panning in case of synthetic events from eye gaze mode
 		pointer.pointerId !== 1234567890 &&
