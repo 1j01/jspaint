@@ -105,6 +105,24 @@ function $ToolWindow($component){
 		});
 	};
 	
+	$w.bringTitleBarOnScreen = () => {
+		// Try to make the titlebar always accessible
+		const min_horizontal_pixels_on_screen = 40; // enough for space past a close button
+		$w.css({
+			left: Math.max(
+				min_horizontal_pixels_on_screen - $w.outerWidth(),
+				Math.min(
+					innerWidth - min_horizontal_pixels_on_screen,
+					$w[0].getBoundingClientRect().left
+				)
+			),
+			top: Math.max(0, Math.min(
+				innerHeight - $w.$titlebar.outerHeight() - 5,
+				$w[0].getBoundingClientRect().top
+			)),
+		});
+	};
+	
 	$w.center = () => {
 		$w.css({
 			left: (innerWidth - $w.outerWidth()) / 2,
@@ -114,7 +132,7 @@ function $ToolWindow($component){
 	};
 	
 	
-	$G.on("resize", $w.applyBounds);
+	$G.on("resize", $w.bringTitleBarOnScreen);
 	
 	let drag_offset_x, drag_offset_y;
 	const drag = e => {
@@ -136,7 +154,10 @@ function $ToolWindow($component){
 		$G.on("pointermove", drag);
 		$("body").addClass("dragging");
 		const stop_drag = ()=> {
-			$w.applyBounds();
+			// $w.applyBounds(); // Windows doesn't really try to keep windows on screen
+			// but you also can't really drag off of the desktop, whereas here you can drag to way outside the web page.
+			$w.bringTitleBarOnScreen();
+
 			$G.off("pointermove", drag);
 			$G.off("pointerup pointercancel", stop_drag);
 			$("body").removeClass("dragging");
