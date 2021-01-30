@@ -1495,7 +1495,7 @@ function show_document_history() {
 			</div>
 		`);
 		// $entry.find(".history-entry-name").text((node.name || "Unknown") + (node.soft ? " (soft)" : ""));
-		$entry.find(".history-entry-name").text(node.name || "Unknown");
+		$entry.find(".history-entry-name").text((node.name || "Unknown") + (node === root_history_node ? " (Start of History)" : ""));
 		$entry.find(".history-entry-icon-area").append(node.icon);
 		if (node === current_history_node) {
 			$entry.addClass("current");
