@@ -862,7 +862,7 @@ function are_you_sure(action, canceled){
 }
 
 function show_error_message(message, error){
-	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
+	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window squish");
 	$w.$main.text(message);
 	$w.$main.css("max-width", "600px");
 	if(error){
@@ -948,6 +948,7 @@ function show_about_paint(){
 		$about_paint_window.close();
 	}
 	$about_paint_window = $ToolWindow().title(localize("About Paint"));
+	$about_paint_window.addClass("about-paint squish");
 	if (is_pride_month) {
 		$("#paint-32x32").attr("src", "./images/icons/gay-es-paint-32x32-light-outline.png");
 	}
@@ -1050,6 +1051,8 @@ function show_news(){
 		$news_window.close();
 	}
 	$news_window = $ToolWindow().title("Project News");
+	$news_window.addClass("news-window squish");
+
 
 	// const $latest_entries = $latest_news.find(".news-entry");
 	// const latest_entry = $latest_entries[$latest_entries.length - 1];
@@ -1477,6 +1480,7 @@ function show_document_history() {
 	}
 	const $w = $document_history_window = new $ToolWindow();
 	$w.title("Document History");
+	$w.addClass("history-window squish");
 	$w.$content.html(`
 		<div class="history-view"></div>
 	`);

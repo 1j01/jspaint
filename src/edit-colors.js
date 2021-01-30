@@ -211,6 +211,10 @@ function choose_color(initial_color, callback) {
 		$right.show();
 		$w.addClass("defining-custom-colors"); // for mobile layout
 		$define_custom_colors_button.attr("disabled", "disabled");
+		// Windows 98 doesn't really apply bounds here (or when dragging windows off-screen),
+		// but in this case it can cause the whole page to scroll in a way it's not supposed to,
+		// because of the focused input element.
+		$w.applyBounds();
 		// assuming small viewport implies mobile implies an onscreen keyboard,
 		// and that you probably don't want to use the keyboard to choose colors
 		if ($w.width() >= 300) {
@@ -239,6 +243,12 @@ function choose_color(initial_color, callback) {
 	const luminosity_canvas = make_canvas(10, 187);
 	const result_canvas = make_canvas(58, 40);
 	const lum_arrow_canvas = make_canvas(5, 9);
+
+	$(result_canvas).css({
+		position: "absolute",
+		left: 10,
+		top: 198,
+	});
 	
 	let mouse_down_on_rainbow_canvas = false;
 	let crosshair_shown_on_rainbow_canvas = false;
@@ -274,7 +284,7 @@ function choose_color(initial_color, callback) {
 			lum_arrow_canvas.ctx.fillRect(x, lum_arrow_canvas.width-x-1, 1, 1+x*2);
 		}
 		lum_arrow_canvas.style.position = "absolute";
-		lum_arrow_canvas.style.right = "7px";
+		lum_arrow_canvas.style.left = "215px";
 		lum_arrow_canvas.style.top = `${3 + ~~((1-lum_percent/100)*luminosity_canvas.height)}px`;
 
 		result_canvas.ctx.fillStyle = get_current_color();

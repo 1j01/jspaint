@@ -100,15 +100,15 @@ function $ToolWindow($component){
 	
 	$w.applyBounds = () => {
 		$w.css({
-			left: Math.max(0, Math.min(innerWidth - $w.width(), $w[0].getBoundingClientRect().left)),
-			top: Math.max(0, Math.min(innerHeight - $w.height(), $w[0].getBoundingClientRect().top)),
+			left: Math.max(0, Math.min(innerWidth - $w.outerWidth(), $w[0].getBoundingClientRect().left)),
+			top: Math.max(0, Math.min(innerHeight - $w.outerHeight(), $w[0].getBoundingClientRect().top)),
 		});
 	};
 	
 	$w.center = () => {
 		$w.css({
-			left: (innerWidth - $w.width()) / 2,
-			top: (innerHeight - $w.height()) / 2,
+			left: (innerWidth - $w.outerWidth()) / 2,
+			top: (innerHeight - $w.outerHeight()) / 2,
 		});
 		$w.applyBounds();
 	};
