@@ -79,10 +79,15 @@ function set_all_url_params(params, {replace_history_state=false}={}) {
 	// This is desired for upgrading backwards compatibility URLs;
 	// may not be desired for future cases.
 	const new_url = `${location.origin}${location.pathname}#${new_hash}`;
-	if (replace_history_state) {
-		history.replaceState(null, document.title, new_url);
-	} else {
-		history.pushState(null, document.title, new_url);
+	try {
+		// can fail when running from file: protocol
+		if (replace_history_state) {
+			history.replaceState(null, document.title, new_url);
+		} else {
+			history.pushState(null, document.title, new_url);
+		}
+	} catch(error) {
+		location.hash = new_hash;
 	}
 
 	$G.triggerHandler("change-url-params");

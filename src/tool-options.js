@@ -31,9 +31,10 @@ const ChooserCanvas = (
 			);
 		// eslint-disable-next-line no-empty
 		} catch(error) {}
-		if(invert){
-			invert_rgb(c.ctx);
-		}
+		// if(invert){
+		// 	invert_rgb(c.ctx); // can fail due to tainted canvas if running from file: protocol
+		// }
+		c.style.filter = invert ? "invert()" : "";
 	};
 	$(img).on("load", render);
 	render();
