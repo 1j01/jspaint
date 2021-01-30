@@ -230,7 +230,7 @@
 		}
 		start() {
 			// @TODO: how do you actually detect if it's failing???
-			const $w = $FormToolWindow().title("Warning").addClass("dialogue-window");
+			const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
 			$w.$main.html("<p>The document may not load. Changes may not save.</p>" +
 				"<p>Multiuser sessions are public. There is no security.</p>"
 				// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +

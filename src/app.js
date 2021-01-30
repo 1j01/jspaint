@@ -588,7 +588,7 @@ $G.on("cut copy paste", e => {
 				cd.setData("URL", data_url);
 				if(e.type === "cut"){
 					delete_selection({
-						name: "Cut",
+						name: localize("Cut"),
 						icon: get_help_folder_icon("p_cut.png"),
 					});
 				}
@@ -645,8 +645,8 @@ storage.get({
 	my_canvas_height = stored_values.height;
 	
 	make_or_update_undoable({
-		match: (history_node)=> history_node.name === "New Document",
-		name: "Resize New Document Canvas",
+		match: (history_node)=> history_node.name === localize("New"),
+		name: "Resize Canvas For New Document",
 		icon: get_help_folder_icon("p_stretch_both.png"),
 	}, ()=> {
 		canvas.width = Math.max(1, my_canvas_width);

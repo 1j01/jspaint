@@ -372,7 +372,7 @@ function reset_canvas_and_history(){
 	undos.length = 0;
 	redos.length = 0;
 	current_history_node = root_history_node = make_history_node({
-		name: "New Document",
+		name: localize("New"),
 		icon: get_help_folder_icon("p_blank.png"),
 	});
 	history_node_to_cancel_to = null;
@@ -480,7 +480,7 @@ function open_from_Image(img, callback, canceled){
 		detect_transparency();
 		$canvas_area.trigger("resize");
 
-		current_history_node.name = "Load Document";
+		current_history_node.name = localize("Open");
 		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		current_history_node.icon = null; // @TODO
 
@@ -862,7 +862,7 @@ function are_you_sure(action, canceled){
 }
 
 function show_error_message(message, error){
-	const $w = $FormToolWindow().title("Error").addClass("dialogue-window");
+	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
 	$w.$main.text(message);
 	$w.$main.css("max-width", "600px");
 	if(error){
@@ -893,7 +893,7 @@ function show_error_message(message, error){
 // @TODO: close are_you_sure windows and these Error windows when switching sessions
 // because it can get pretty confusing
 function show_resource_load_error_message(error){
-	const $w = $FormToolWindow().title("Error").addClass("dialogue-window");
+	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
 	const firefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 	if (error.code === "cors-blob-uri") {
 		$w.$main.html(`
@@ -1155,7 +1155,7 @@ function paste(img){
 		// }
 
 		undoable({
-			name: "Paste",
+			name: localize("Paste"),
 			icon: get_help_folder_icon("p_paste.png"),
 			soft: true,
 		}, ()=> {
@@ -1609,7 +1609,7 @@ function deselect(going_to_history_node){
 function delete_selection(meta={}){
 	if(selection){
 		undoable({
-			name: meta.name || "Delete",
+			name: meta.name || localize("Clear Selection"), //"Delete", (I feel like "Clear Selection" is unclear, could mean "Deselect")
 			icon: meta.icon || get_help_folder_icon("p_delete.png"),
 			// soft: @TODO: conditionally soft?,
 		}, ()=> {
@@ -1623,7 +1623,7 @@ function select_all(){
 	select_tool(get_tool_by_id(TOOL_SELECT));
 
 	undoable({
-		name: "Select All",
+		name: localize("Select All"),
 		icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 		soft: true,
 	}, ()=> {
@@ -1708,7 +1708,7 @@ function edit_cut(execCommandFallback){
 	}
 	edit_copy();
 	delete_selection({
-		name: "Cut",
+		name: localize("Cut"),
 		icon: get_help_folder_icon("p_cut.png"),
 	});
 }
@@ -1769,7 +1769,7 @@ async function edit_paste(execCommandFallback){
 
 function image_invert_colors(){
 	apply_image_transformation({
-		name: "Invert Colors",
+		name: localize("Invert Colors"),
 		icon: get_help_folder_icon("p_invert.png"),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		invert_rgb(original_ctx, new_ctx);
@@ -1780,7 +1780,7 @@ function clear(){
 	deselect();
 	cancel();
 	undoable({
-		name: "Clear Image",
+		name: localize("Clear Image"),
 		icon: get_help_folder_icon("p_blank.png"),
 	}, () => {
 		saved = false;
@@ -2581,17 +2581,7 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 			okay_callback();
 		}
 	}else{
-		const $w = $FormToolWindow().title("Warning").addClass("dialogue-window");
-		$w.$main.html(`
-			<p>Tried to save file, but file was empty.</p>
-			<p>Try again, or if the problem persists, report here:
-			<a href='https://github.com/1j01/jspaint/issues/118'>Issue #118</a>
-		`);
-		$w.$main.css({maxWidth: "500px"});
-		$w.$Button(localize("OK"), () => {
-			$w.close();
-		});
-		$w.center();
+		show_error_message(localize("Failed to save document."));
 	}
 }
 

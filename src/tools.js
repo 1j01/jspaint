@@ -219,7 +219,7 @@ window.tools = [{
 				contents_canvas.ctx.drawImage(rect_canvas, 0, 0);
 
 				undoable({
-					name: "Free-Form Select⊕Select",
+					name: `${localize("Free-Form Select")}⊕${localize("Select")}`,
 					icon: get_icon_for_tools([
 						get_tool_by_id(TOOL_FREE_FORM_SELECT),
 						get_tool_by_id(TOOL_SELECT),
