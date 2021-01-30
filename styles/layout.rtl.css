@@ -514,6 +514,8 @@ html, body, .jspaint {
 .edit-colors-window .result-color-canvas {
 	margin-top: 4px;
 }
+/* WET layout code for small viewports and eye gaze mode */
+/* could do it cleaner with JavaScript or CSS preprocessor */
 @media (max-width: 450px) {
 	.edit-colors-window {
 		overflow: hidden;
@@ -527,6 +529,49 @@ html, body, .jspaint {
 	.edit-colors-window:not(.defining-custom-colors) .right-side {
 		display: none !important;
 	}
+}
+/* WET layout code for small viewports and eye gaze mode */
+.eye-gaze-mode .edit-colors-window {
+	overflow: hidden;
+}
+.eye-gaze-mode .edit-colors-window.defining-custom-colors .left-side {
+	/* display: none !important; */
+	/* this element is determining the height */
+	width: 0;
+	visibility: hidden;
+}
+.eye-gaze-mode .edit-colors-window:not(.defining-custom-colors) .right-side {
+	display: none !important;
+}
+
+.save-as .window-content > form > div {
+	display: flex;
+	flex-direction: column;
+}
+.save-as .window-content > form > div > label {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin-right: 10px;
+}
+.save-as .window-content > form > div > label > input,
+.save-as .window-content > form > div > label > select {
+	width: calc(100vw - 220px);
+	max-width: 230px;
+	float: left;
+	margin: 5px;
+    box-sizing: border-box;
+}
+.save-as .window-content > form > div > label:last-of-type {
+	margin-top: 8px;
+}
+.save-as .window-content {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.save-as .button-group button {
+	margin: 5px;
 }
 
 .canvas-area {
