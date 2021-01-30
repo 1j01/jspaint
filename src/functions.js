@@ -281,7 +281,7 @@ function show_custom_zoom_window() {
 
 	// @TODO: show Current zoom: blah% ?
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
-	$fieldset.append("<legend/>").text(localize("Zoom to"));
+	$fieldset.append(`<legend>${localize("Zoom to")}</legend>`);
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='1'/>100%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='2'/>200%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='4'/>400%</label>");
