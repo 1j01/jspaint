@@ -364,6 +364,17 @@ $canvas_area.on("resize", () => {
 	update_magnified_canvas_size();
 });
 
+// Despite overflow:hidden on html and body,
+// focusing elements that are partially offscreen can still scroll the page.
+// For example, with Edit Colors dialog partially offscreen, navigating the color grid.
+// We need to prevent (reset) scroll on focus, and also avoid scrollIntoView().
+// Listening for scroll here is mainly in case a case is forgotten, like scrollIntoView,
+// in which case it will flash sometimes but at least not end up with part of
+// the application scrolled off the screen with no scrollbar to get it back.
+$G.on("scroll focusin", (event) => {
+	window.scrollTo(0, 0);
+});
+
 $("body").on("dragover dragenter", e => {
 	const dt = e.originalEvent.dataTransfer;
 	const has_files = Array.from(dt.types).includes("Files");

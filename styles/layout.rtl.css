@@ -821,6 +821,7 @@ html, body, .jspaint {
 	max-width: calc(100vw - 10px);
 	max-height: calc(100vh - 100px);
 	overflow: auto;
+	position: relative; /* needed for offsetTop to work relative to the top of the list (rather than the window) */
 }
 .history-entry {
 	cursor: pointer;

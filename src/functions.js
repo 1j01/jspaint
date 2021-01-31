@@ -1471,6 +1471,7 @@ function get_history_ancestors(node) {
 }
 
 let $document_history_window;
+// setTimeout(show_document_history, 100);
 function show_document_history() {
 	if ($document_history_prompt_window) {
 		$document_history_prompt_window.close();
@@ -1479,6 +1480,7 @@ function show_document_history() {
 		$document_history_window.close();
 	}
 	const $w = $document_history_window = new $ToolWindow();
+	// $w.prependTo("body").css({position: ""});
 	$w.title("Document History");
 	$w.addClass("history-window squish");
 	$w.$content.html(`
@@ -1504,8 +1506,16 @@ function show_document_history() {
 		if (node === current_history_node) {
 			$entry.addClass("current");
 			requestAnimationFrame(()=> {
-				$history_view.scrollTop(previous_scroll_position);
-				$entry[0].scrollIntoView({block: "nearest"});
+				// scrollIntoView causes <html> to scroll when the window is partially offscreen,
+				// despite overflow: hidden on html and body, so it's not an option.
+				$history_view[0].scrollTop =
+					Math.min(
+						$entry[0].offsetTop,
+						Math.max(
+							previous_scroll_position,
+							$entry[0].offsetTop - $history_view[0].clientHeight + $entry.outerHeight()
+						)
+					);
 			});
 		} else {
 			const history_ancestors = get_history_ancestors(current_history_node);

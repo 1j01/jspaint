@@ -211,10 +211,6 @@ function choose_color(initial_color, callback) {
 		$right.show();
 		$w.addClass("defining-custom-colors"); // for mobile layout
 		$define_custom_colors_button.attr("disabled", "disabled");
-		// Windows 98 doesn't really apply bounds here (or when dragging windows off-screen),
-		// but in this case it can cause the whole page to scroll in a way it's not supposed to,
-		// because of the focused input element.
-		$w.applyBounds();
 		// assuming small viewport implies mobile implies an onscreen keyboard,
 		// and that you probably don't want to use the keyboard to choose colors
 		if ($w.width() >= 300) {
