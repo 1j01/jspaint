@@ -78,11 +78,11 @@
     "start-server-and-test": "1.10.6"
   },
   "scripts": {
-    "start": "electron-forge start",
-    "debug-start": "electron-forge start --inspect-electron",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "electron:start": "electron-forge start",
+    "electron:debug-start": "electron-forge start --inspect-electron",
+    "electron:package": "electron-forge package",
+    "electron:make": "electron-forge make",
+    "electron:publish": "electron-forge publish",
     "lint": "eslint src/",
     "lint-cat": "concat-glob-cli --files \"src/**/!(electron*).js\" --output concatenated-source.js && eslint --rule \"no-undef: error\" --rule \"no-unused-vars: error\" concatenated-source.js",
     "lint-cat:NOTE": "Disable the eslint comment that disables ThisExpression to use this.",

@@ -177,11 +177,11 @@ See [Control Directives](https://rtlcss.com/learn/usage-guide/control-directives
 This is unreleased and not in development.
 
 - Install dependencies with `npm i`
-- Start the electron app with `npm start`
+- Start the electron app with `npm run electron:start`
 
 [electron-debug][] and [devtron][] are included, so you can use <kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools, and there's a Devtron tab with tools specific to Electron.
 
-You can build for production with `npm run make`
+You can build for production with `npm run electron:make`
 
 [Live Server]: https://github.com/tapio/live-server
 [Node.js]: https://nodejs.org/
