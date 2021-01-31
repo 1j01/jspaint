@@ -70,6 +70,7 @@ function open_help_viewer(options){
 		$show_button.show();
 		$help_window.width($help_window.width() - toggling_width);
 		$help_window.css("left", $help_window.offset().left + toggling_width);
+		$help_window.bringTitleBarOnScreen();
 	});
 	const $show_button = add_toolbar_button("Show", 5, ()=> {
 		$contents.show();
