@@ -161,15 +161,13 @@ Tests are also run in continuous integration [with Travis CI](https://travis-ci.
 
 ### Web App (https://jspaint.app)
 
-You just need an HTTP server, but [Live Server][] is recommended. It auto reloads when you save changes.
+After you've installed dependencies with `npm i`,
+use `npm run dev` to start a live-reloading server.
 
-It's included in `package.json` so if you've installed dependencies (`npm i`) you can use `npm run dev` to run it.
-(It's configured to ignore some files/directories for reloading.)
-
-When updating layout CSS you need to run `npm run build-css` to generate RTL layout versions of the CSS.  
+Make sure any layout-important styles go in `layout.css`.
+When updating `layout.css`, a right-to-left version of the stylesheet is generated, using [RTLCSS](https://rtlcss.com/).  
 You should test the RTL layout by changing the language to Arabic or Hebrew.
 Go to **Extras > Language > العربية** or **עברית**.  
-The RTL CSS generation is handled by [RTLCSS](https://rtlcss.com/).
 See [Control Directives](https://rtlcss.com/learn/usage-guide/control-directives/) for how to control the RTL layout.
 
 ### Desktop App (Electron)
