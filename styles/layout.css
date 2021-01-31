@@ -1,5 +1,7 @@
 /*\
-|*| Note: layout.rtl.css is a generated file. Only edit layout.css, then `npm run build-css`
+|*| Note: layout.rtl.css is a generated file. Only edit layout.css.
+|*| layout.rtl.css is generated automatically while running the dev server (npm run dev)
+|*| (or manually with npm run build-css)
 |*|
 |*| Right-to-left layout is handled with a processor called RTLCSS, using comment directives.
 |*| Note in particular that "direction: ltr;" by default gets flipped to "direction: rtl;",

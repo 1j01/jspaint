@@ -89,7 +89,7 @@
     "lint-cat": "concat-glob-cli --files \"src/**/!(electron*).js\" --output concatenated-source.js && eslint --rule \"no-undef: error\" --rule \"no-unused-vars: error\" concatenated-source.js",
     "lint-cat:NOTE": "Disable the eslint comment that disables ThisExpression to use this.",
     "build-css": "rtlcss styles/layout.css styles/layout.rtl.css && rtlcss lib/os-gui/layout.css lib/os-gui/layout.rtl.css",
-    "watch-css": "onchange 'styles/layout.css' 'lib/os-gui/layout.css' -- npm run build-css",
+    "watch-css": "onchange --initial --poll 100 'styles/layout.css' 'lib/os-gui/layout.css' -- npm run build-css",
     "update-localization": "node ./localization/preprocess.js",
     "dev": "run-p watch-css dev:start-server",
     "dev:start-server": "live-server --ignorePattern=\"(node_modules|cypress|out)[/\\\\\\\\]|package\\.json|cypress\\.json\"",
