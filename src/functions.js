@@ -1170,7 +1170,7 @@ function paste(img){
 function render_history_as_gif(){
 	const $win = $FormToolWindow();
 	$win.title("Rendering GIF");
-	$win.center();
+	
 	const $output = $win.$main;
 	const $progress = $(E("progress")).appendTo($output).addClass("inset-deep");
 	const $progress_percent = $(E("span")).appendTo($output).css({
@@ -1183,6 +1183,8 @@ function render_history_as_gif(){
 	const $cancel = $win.$Button('Cancel', () => {
 		$win.close();
 	});
+
+	$win.center();
 
 	try{
 		const width = canvas.width;
