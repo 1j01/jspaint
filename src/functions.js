@@ -2461,9 +2461,13 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 		$w.close();
 	});
 
-	$file_name.focus().select();
-
 	$w.center();
+	// For mobile devices with on-screen keyboards, move the window to the top
+	if (window.innerWidth < 500 || window.innerHeight < 700) {
+		$w.css({ top: 20 });
+	}
+
+	$file_name.focus().select();
 }
 
 // @TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
