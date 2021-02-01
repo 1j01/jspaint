@@ -77,8 +77,9 @@ I want to bring good old paint into the modern era.
   It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
   Sessions are not private, and you may lose your work at any time.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
-* Load many different palette formats with **Colors > Get Colors**.
-  (I made a [library](https://github.com/1j01/palette.js/) for this.)
+* Load and save many different palette formats with **Colors > Get Colors** and **Colors > Save Colors**.
+  (I made a library, [AnyPalette.js](https://github.com/1j01/anypalette.js), for this.)
+* You can also drag and drop palette files (of any format) into the app to load. (Dragging and dropping image files also works, to load images.)
 * Touch support: use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
 

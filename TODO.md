@@ -25,8 +25,6 @@
 
 * Warning sign for "Save changes to X?" dialog
 * Error symbol for error message dialogs
-* 3D inset border for inputs with SVG `image-border` (in [os-gui](https://github.com/1j01/os-gui))
-* The window close button uses text; font rendering is not consistent
 * The progress bar (Rendering GIF) is left native
 * Menu separator spacing
 * I want to give most things a revisit later on for Pixel Perfection
