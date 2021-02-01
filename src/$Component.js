@@ -152,13 +152,16 @@ function $Component(title, className, orientation, $el){
 		last_docked_to_pos = pos;
 	};
 	
-	$c.on("pointerdown", e => {
+	$w.on("window-drag-start", (e)=> {
+		e.preventDefault();
+	});
+	$c.add($w.$titlebar).on("pointerdown", e => {
 		// Only start a drag via a left click directly on the component element
 		if(e.button !== 0){ return; }
-		if(!$c.is(e.target)){ return; }
+		if(!($c.is(e.target) || $w.$titlebar.is(e.target))){ return; }
 		// Don't allow dragging in eye gaze mode
 		if($("body").hasClass("eye-gaze-mode")){ return; }
-		
+
 		$G.on("pointermove", drag_update_position);
 		$G.one("pointerup", e => {
 			$G.off("pointermove", drag_update_position);

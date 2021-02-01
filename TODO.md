@@ -41,7 +41,6 @@
 
 ### Components / Windows
 
-* Use the ghost when dragging on a component window's title bar
 * Make the component ghost account for the window's title bar
 
 ### Extended editing

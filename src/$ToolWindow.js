@@ -146,9 +146,18 @@ function $ToolWindow($component){
 		e.preventDefault();
 	});
 	$w.$titlebar.on("pointerdown", e => {
-		if($(e.target).is("button")){
-			return;
+		if(!$w.$titlebar.is(e.target)){
+			return; // don't drag via buttons
 		}
+		// if (e.isDefaultPrevented()) { // doesn't work because of event listener order
+		// 	return; // allow custom drag behavior of component windows (Tools / Colors)
+		// }
+		const customEvent = $.Event("window-drag-start");
+		$w.trigger(customEvent); 
+		if(customEvent.isDefaultPrevented()){
+			return; // allow custom drag behavior of component windows (Tools / Colors)
+		}
+
 		drag_offset_x = e.clientX - $w[0].getBoundingClientRect().left;
 		drag_offset_y = e.clientY - $w[0].getBoundingClientRect().top;
 		$G.on("pointermove", drag);
