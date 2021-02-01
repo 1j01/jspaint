@@ -957,6 +957,12 @@ select.inset-deep {
 	padding-right: 16px;
 }
 
+progress {
+	width: 291px;
+	height: 20px;
+	box-sizing: border-box;
+}
+
 [touch-action="none"] {
 	touch-action: none;
 }

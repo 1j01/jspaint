@@ -25,7 +25,6 @@
 
 * Warning sign for "Save changes to X?" dialog
 * Error symbol for error message dialogs
-* The progress bar (Rendering GIF) is left native
 * Menu separator spacing
 * I want to give most things a revisit later on for Pixel Perfection
 * Fill bucket and airbrush cursors are supposed to have inverty parts

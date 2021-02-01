@@ -1172,7 +1172,7 @@ function render_history_as_gif(){
 	$win.title("Rendering GIF");
 	$win.center();
 	const $output = $win.$main;
-	const $progress = $(E("progress")).appendTo($output);
+	const $progress = $(E("progress")).appendTo($output).addClass("inset-deep");
 	const $progress_percent = $(E("span")).appendTo($output).css({
 		width: "2.3em",
 		display: "inline-block",

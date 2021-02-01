@@ -36,7 +36,7 @@ function show_imgur_uploader(blob){
 		$imgur_window.$content.width(300);
 		$imgur_window.center();
 
-		const $progress = $(E("progress")).appendTo($imgur_window.$main);
+		const $progress = $(E("progress")).appendTo($imgur_window.$main).addClass("inset-deep");
 		const $progress_percent = $(E("span")).appendTo($imgur_window.$main).css({
 			width: "2.3em",
 			display: "inline-block",

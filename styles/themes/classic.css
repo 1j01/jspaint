@@ -409,3 +409,20 @@ input:invalid {
 .partial-url-label {
 	opacity: 0.6;
 }
+
+/* XXX: using .inset-deep to mean "thematic" */
+/* TODO: show percentage on progress bar, white (HilightText) where it overlaps the Hilight */
+progress[value].inset-deep {
+	display: block;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-color: var(--ButtonFace);
+	position: relative;
+}
+progress[value].inset-deep::-webkit-progress-value { 
+	background: var(--Hilight);
+}
+progress[value].inset-deep::-moz-progress-bar { 
+	background: var(--Hilight);
+}
