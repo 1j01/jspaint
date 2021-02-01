@@ -39,10 +39,6 @@
 * <kbd>Alt</kbd> (by itself)?
 
 
-### Components / Windows
-
-* Make the component ghost account for the window's title bar
-
 ### Extended editing
 
 * Optional fill tolerance (slider that you enable from a settings menu?)

@@ -109,6 +109,7 @@ function $Component(title, className, orientation, $el){
 	}
 	
 	let ox, oy;
+	let ox2, oy2;
 	let w, h;
 	let pos = 0;
 	let pos_axis;
@@ -155,40 +156,87 @@ function $Component(title, className, orientation, $el){
 	$w.on("window-drag-start", (e)=> {
 		e.preventDefault();
 	});
+	const render_ghost = (e)=> {
+
+		const prev_window_shown = $w.is(":visible");
+		$w.show();
+		let $spacer;
+		if ($c.closest(".tool-window").length == 0) {
+			const styles = getComputedStyle($c[0]);
+			$spacer = $(E("div")).css({
+				width: styles.width,
+				height: styles.height,
+				// don't want margin, margin is actually used for positioning the components in the docking areas
+				paddingTop: styles.paddingTop,
+				paddingBottom: styles.paddingBottom,
+				paddingLeft: styles.paddingLeft,
+				paddingRight: styles.paddingRight,
+				boxSizing: styles.boxSizing,
+			});
+			$w.append($spacer);
+		}
+		const rect = ($dock_to ? $c[0] : $w[0]).getBoundingClientRect();
+		if ($spacer) {
+			$spacer.remove();
+		}
+		if (!prev_window_shown) {
+			$w.hide();
+		}
+
+		// Make sure these dimensions are odd numbers
+		// so the alternating pattern of the border is unbroken
+		w = (~~(rect.width/2))*2 + 1;
+		h = (~~(rect.height/2))*2 + 1;
+		
+		if(!$ghost){
+			$ghost = $(E("div")).addClass("component-ghost dock");
+			$ghost.appendTo("body");
+		}
+		const inset = $dock_to ? 0 : 3;
+		$ghost.css({
+			position: "absolute",
+			display: "block",
+			width: w - inset * 2,
+			height: h - inset * 2,
+			left: e.clientX + ($dock_to ? ox : ox2) + inset,
+			top: e.clientY + ($dock_to ? oy : oy2) + inset,
+		});
+
+		if($dock_to){
+			$ghost.addClass("dock");
+		}else{
+			$ghost.removeClass("dock");
+		}
+	};
 	$c.add($w.$titlebar).on("pointerdown", e => {
-		// Only start a drag via a left click directly on the component element
+		// Only start a drag via a left click directly on the component element or titlebar
 		if(e.button !== 0){ return; }
-		if(!($c.is(e.target) || $w.$titlebar.is(e.target))){ return; }
+		const validTarget = 
+			$c.is(e.target) ||
+			(
+				$(e.target).closest($w.$titlebar).length > 0 &&
+				$(e.target).closest("button").length === 0
+			);
+		if(!validTarget){ return; }
 		// Don't allow dragging in eye gaze mode
 		if($("body").hasClass("eye-gaze-mode")){ return; }
 
+		const rect = $c[0].getBoundingClientRect();
+		ox = rect.left - e.clientX;
+		oy = rect.top - e.clientY;
+		ox = -Math.min(Math.max(-ox, 0), rect.width);
+		oy = -Math.min(Math.max(-oy, 0), rect.height);
+		// XXX: magic numbers! TODO: measure window
+		ox2 = rect.left + (get_direction() === "rtl" ? -1 : -7) - e.clientX;
+		oy2 = rect.top - 20 - e.clientY;
+		
 		$G.on("pointermove", drag_update_position);
 		$G.one("pointerup", e => {
 			$G.off("pointermove", drag_update_position);
 			drag_onpointerup(e);
 		});
 		
-		const rect = $c[0].getBoundingClientRect();
-		// Make sure these dimensions are odd numbers
-		// so the alternating pattern of the border is unbroken
-		w = (~~(rect.width/2))*2 + 1;
-		h = (~~(rect.height/2))*2 + 1;
-		ox = rect.left - e.clientX;
-		oy = rect.top - e.clientY;
-		
-		if(!$ghost){
-			$ghost = $(E("div")).addClass("component-ghost dock");
-			$ghost.css({
-				position: "absolute",
-				display: "block",
-				width: w,
-				height: h,
-				left: e.clientX + ox,
-				top: e.clientY + oy
-			});
-			$ghost.appendTo("body");
-		}
-
+		render_ghost(e);
 		drag_update_position(e);
 		
 		// Prevent text selection anywhere within the component
@@ -203,37 +251,43 @@ function $Component(title, className, orientation, $el){
 		
 		$dock_to = null;
 		
-		const ghost_rect = $ghost[0].getBoundingClientRect();
+		const {width, height} = $c[0].getBoundingClientRect();
+		const dock_ghost_left = e.clientX + ox;
+		const dock_ghost_top = e.clientY + oy;
+		const dock_ghost_right = dock_ghost_left + width;
+		const dock_ghost_bottom = dock_ghost_top + height;
 		const q = 5;
 		if(orientation === "tall"){
 			pos_axis = "top";
-			if(ghost_rect.left-q < $left[0].getBoundingClientRect().right){
+			if(dock_ghost_left-q < $left[0].getBoundingClientRect().right){
 				$dock_to = $left;
 			}
-			if(ghost_rect.right+q > $right[0].getBoundingClientRect().left){
+			if(dock_ghost_right+q > $right[0].getBoundingClientRect().left){
 				$dock_to = $right;
 			}
 		}else{
 			pos_axis = get_direction() === "rtl" ? "right" : "left";
-			if(ghost_rect.top-q < $top[0].getBoundingClientRect().bottom){
+			if(dock_ghost_top-q < $top[0].getBoundingClientRect().bottom){
 				$dock_to = $top;
 			}
-			if(ghost_rect.bottom+q > $bottom[0].getBoundingClientRect().top){
+			if(dock_ghost_bottom+q > $bottom[0].getBoundingClientRect().top){
 				$dock_to = $bottom;
 			}
 		}
 		
 		if($dock_to){
 			const dock_to_rect = $dock_to[0].getBoundingClientRect();
-			pos = ghost_rect[pos_axis] - dock_to_rect[pos_axis];
+			// XXX: magic number
+			pos = (
+				pos_axis === "top" ? dock_ghost_top : pos_axis === "right" ? (dock_ghost_right + 3) : (dock_ghost_left - 3)
+			) - dock_to_rect[pos_axis];
 			if (pos_axis === "right") {
 				pos *= -1;
 			}
-			$ghost.addClass("dock");
-		}else{
-			$ghost.removeClass("dock");
 		}
-		
+
+		render_ghost(e);
+
 		e.preventDefault();
 	};
 	
@@ -265,13 +319,9 @@ function $Component(title, className, orientation, $el){
 			$w.$content.append($c);
 			// Show and position the window
 			$w.show();
-			const window_rect = $w[0].getBoundingClientRect();
-			const window_content_rect = $w.$content[0].getBoundingClientRect();
-			const dx = window_content_rect.left - window_rect.left;
-			const dy = window_content_rect.top - window_rect.top;
 			$w.css({
-				left: e.clientX + ox - dx,
-				top: e.clientY + oy - dy,
+				left: e.clientX + ox2,
+				top: e.clientY + oy2,
 			});
 
 			const total_available_length = pos_axis === "top" ? $(component_area_el).height() : $(component_area_el).width();

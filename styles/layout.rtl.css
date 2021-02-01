@@ -102,6 +102,9 @@ html, body, .jspaint {
 	direction: rtl;
 	text-align: start;
 }
+.tool-window .window-title {
+	pointer-events: none;
+}
 .status-area,
 .component-area {
 	display: flex;
