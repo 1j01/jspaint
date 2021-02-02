@@ -56,9 +56,11 @@ body,
 	box-shadow: 1px 1px 0 var(--Hilight) inset;
 }
 .resize-ghost {
-	outline: 1px dotted black;
-	/*outline: 1px dotted invert;*/
-	/* I want this to be inverty, but in chrome this makes it invisible */
+	/* this isn't quite the right inversion effect, but I think it's the best I can do;
+	white makes it invisible over the classic theme's dark gray background;
+	it's supposed to be lighter over the dark gray background, but I can only make it darker */
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
 }
 
 .status-area {
@@ -215,19 +217,21 @@ body,
 
 
 .component-ghost.dock {
-	outline: 1px solid black;
-	/*outline: 1px solid invert;*/
+	/* this isn't quite the right inversion effect, but I think it's the best I can do;
+	white makes it invisible over the classic theme's dark gray background;
+	it's supposed to be lighter over the dark gray background, but I can only make it darker */
+	outline: 1px solid #ccc;
+	mix-blend-mode: difference;
 }
 .component-ghost:not(.dock) {
-	outline: 1px dotted black;
-	/*outline: 1px dotted invert;*/
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
 }
 .component-ghost:not(.dock):after,
 .component-ghost:not(.dock):before {
 	content: '';
 	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
-	outline: 1px dotted black;
-	/*outline: 1px dotted invert;*/
+	outline: 1px dotted #ccc;
 }
 .component-ghost:not(.dock):after {
 	outline-offset: 1px;

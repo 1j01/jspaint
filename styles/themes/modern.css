@@ -51,8 +51,8 @@ body {
 	box-shadow: 1px 1px 0 #000080 inset;
 }
 .resize-ghost {
-	outline: 1px dotted black;
-	/*outline: 1px dotted invert; I want this to be inverty, but in chrome this value makes it invisible */
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
 }
 
 .window,
@@ -297,19 +297,19 @@ body,
 /* @TODO: actually show a preview of the component itself when dragging for the modern theme */
 /* @TODO: cursor maybe? just when already dragging? */
 .component-ghost.dock {
-	outline: 1px solid black;
-	/*outline: 1px solid invert;*/
+	outline: 1px solid #ccc;
+	mix-blend-mode: difference;
 }
 .component-ghost:not(.dock) {
-	outline: 1px dotted black;
-	/*outline: 1px dotted invert;*/
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
 }
 .component-ghost:not(.dock):after,
 .component-ghost:not(.dock):before {
 	content: '';
 	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
-	outline: 1px dotted black;
-	/*outline: 1px dotted invert;*/
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
 }
 .component-ghost:not(.dock):after {
 	outline-offset: 1px;
