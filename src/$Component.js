@@ -91,7 +91,7 @@ function $Component(title, className, orientation, $el){
 	// Nudge the Colors component over a tiny bit
 	if(className === "colors-component" && orientation === "wide"){
 		$c.css("position", "relative");
-		$c.css(get_direction() === "rtl" ? "right" : "left", "3px");
+		$c.css(`margin-${get_direction() === "rtl" ? "right" : "left"}`, "3px");
 	}
 
 	let iid;
@@ -302,9 +302,8 @@ function $Component(title, className, orientation, $el){
 		
 		if($dock_to){
 			const dock_to_rect = $dock_to[0].getBoundingClientRect();
-			// XXX: magic number
 			pos = (
-				pos_axis === "top" ? dock_ghost_top : pos_axis === "right" ? (dock_ghost_right + 3) : (dock_ghost_left - 3)
+				pos_axis === "top" ? dock_ghost_top : pos_axis === "right" ? dock_ghost_right : dock_ghost_left
 			) - dock_to_rect[pos_axis];
 			if (pos_axis === "right") {
 				pos *= -1;
