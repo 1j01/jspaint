@@ -156,32 +156,55 @@ function $Component(title, className, orientation, $el){
 	$w.on("window-drag-start", (e)=> {
 		e.preventDefault();
 	});
-	const render_ghost = (e)=> {
-
+	const imagine_window_dimensions = ()=> {
 		const prev_window_shown = $w.is(":visible");
 		$w.show();
 		let $spacer;
+		let {offsetLeft, offsetTop} = $c[0];
 		if ($c.closest(".tool-window").length == 0) {
 			const styles = getComputedStyle($c[0]);
-			$spacer = $(E("div")).css({
+			$spacer = $(E("div")).addClass("component").css({
 				width: styles.width,
 				height: styles.height,
-				// don't want margin, margin is actually used for positioning the components in the docking areas
-				paddingTop: styles.paddingTop,
-				paddingBottom: styles.paddingBottom,
-				paddingLeft: styles.paddingLeft,
-				paddingRight: styles.paddingRight,
-				boxSizing: styles.boxSizing,
+				// don't copy margin, margin is actually used for positioning the components in the docking areas
+				// don't copy padding, padding changes based on whether the component is in a window in modern theme
+				// let padding be influenced by CSS
 			});
 			$w.append($spacer);
+			({offsetLeft, offsetTop} = $spacer[0]);
 		}
-		const rect = ($dock_to ? $c[0] : $w[0]).getBoundingClientRect();
+		const rect = $w[0].getBoundingClientRect();
 		if ($spacer) {
 			$spacer.remove();
 		}
 		if (!prev_window_shown) {
 			$w.hide();
 		}
+		const w_styles = getComputedStyle($w[0]);
+		offsetLeft += parseFloat(w_styles.borderLeftWidth);
+		offsetTop += parseFloat(w_styles.borderTopWidth);
+		return {rect, offsetLeft, offsetTop};
+	};
+	const imagine_docked_dimensions = ($dock_to=(pos_axis === "top" ? $left : $bottom))=> {
+		if ($c.closest(".tool-window").length == 0) {
+			return {rect: $c[0].getBoundingClientRect()};
+		}
+		const styles = getComputedStyle($c[0]);
+		const $spacer = $(E("div")).addClass("component").css({
+			width: styles.width,
+			height: styles.height,
+			flex: "0 0 auto",
+		});
+		$dock_to.prepend($spacer);
+		const rect = $spacer[0].getBoundingClientRect();
+		if ($spacer) {
+			$spacer.remove();
+		}
+		return {rect};
+	};
+	const render_ghost = (e)=> {
+
+		const {rect} = $dock_to ? imagine_docked_dimensions($dock_to) : imagine_window_dimensions()
 
 		// Make sure these dimensions are odd numbers
 		// so the alternating pattern of the border is unbroken
@@ -221,14 +244,16 @@ function $Component(title, className, orientation, $el){
 		// Don't allow dragging in eye gaze mode
 		if($("body").hasClass("eye-gaze-mode")){ return; }
 
+		const docked = imagine_docked_dimensions();
 		const rect = $c[0].getBoundingClientRect();
 		ox = rect.left - e.clientX;
 		oy = rect.top - e.clientY;
-		ox = -Math.min(Math.max(-ox, 0), rect.width);
-		oy = -Math.min(Math.max(-oy, 0), rect.height);
-		// XXX: magic numbers! TODO: measure window
-		ox2 = rect.left + (get_direction() === "rtl" ? -1 : -7) - e.clientX;
-		oy2 = rect.top - 20 - e.clientY;
+		ox = -Math.min(Math.max(-ox, 0), docked.rect.width);
+		oy = -Math.min(Math.max(-oy, 0), docked.rect.height);
+		
+		const {offsetLeft, offsetTop} = imagine_window_dimensions();
+		ox2 = rect.left - offsetLeft - e.clientX;
+		oy2 = rect.top - offsetTop - e.clientY;
 		
 		$G.on("pointermove", drag_update_position);
 		$G.one("pointerup", e => {
@@ -251,7 +276,7 @@ function $Component(title, className, orientation, $el){
 		
 		$dock_to = null;
 		
-		const {width, height} = $c[0].getBoundingClientRect();
+		const {width, height} = imagine_docked_dimensions().rect;
 		const dock_ghost_left = e.clientX + ox;
 		const dock_ghost_top = e.clientY + oy;
 		const dock_ghost_right = dock_ghost_left + width;
