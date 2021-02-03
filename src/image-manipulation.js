@@ -54,10 +54,8 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill){
 		}
 		draw_polygon(ctx, points, stroke, fill);
 	}else{
-		if(w < 0){ x += w; w = -w; }
-		if(h < 0){ y += h; h = -h; }
 		ctx.beginPath();
-		ctx.ellipse(center_x, center_y, w/2, h/2, 0, TAU, false);
+		ctx.ellipse(center_x, center_y, Math.abs(w/2), Math.abs(h/2), 0, TAU, false);
 		ctx.stroke();
 		ctx.fill();
 	}
