@@ -2,7 +2,7 @@
 // or maybe replace this module with localforage actually
 // (but need to address asynchronous concerns if doing that)
 
-((() => {
+(() => {
 	let localStore = {
 		get(key, callback) {
 			let i, item, len, obj, keys, keys_obj;
@@ -69,4 +69,4 @@
 
 	window.storage = localStore;
 
-})).call(this);
+})();
