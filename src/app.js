@@ -108,6 +108,98 @@ let custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
 
+const image_formats = [];
+// const ext_to_image_formats = {}; // there can be multiple with the same extension, e.g. different bit depth BMP files
+// const mime_type_to_image_formats = {};
+const add_image_format = (mime_type, name_and_exts)=> {
+	// Note: some localizations have commas instead of semicolons to separate file extensions
+	// Assumption: file extensions are never localized
+	const format = {
+		formatID: mime_type,
+		mimeType: mime_type,
+		name: localize(name_and_exts).replace(/\s+\([^(]+$/, ""),
+		nameWithExtensions: localize(name_and_exts),
+		extensions: [],
+	};
+	const ext_regexp = /\*\.([^);,]+)/g;
+	if (get_direction() === "rtl") {
+		const rlm = "\u200F";
+		const lrm = "\u200E";
+		format.nameWithExtensions = format.nameWithExtensions.replace(ext_regexp, `${rlm}*.${lrm}$1${rlm}`);
+	}
+	let match;
+	// eslint-disable-next-line no-cond-assign
+	while (match = ext_regexp.exec(name_and_exts)) {
+		const ext = match[1];
+		// ext_to_image_formats[ext] = ext_to_image_formats[ext] || [];
+		// ext_to_image_formats[ext].push(format);
+		// mime_type_to_image_formats[mime_type] = mime_type_to_image_formats[mime_type] || [];
+		// mime_type_to_image_formats[mime_type].push(format);
+		format.extensions.push(ext);
+	}
+
+	image_formats.push(format);
+};
+// Top format here defines the default format for saving.
+// First file extension in parenthetical defines default for the format.
+// Strings are localized in add_image_format, don't need localize() here.
+add_image_format("image/png", "PNG (*.png)");
+add_image_format("image/webp", "WebP (*.webp)");
+add_image_format("image/gif", "GIF (*.gif)");
+add_image_format("image/tiff", "TIFF (*.tif;*.tiff)");
+add_image_format("image/jpeg", "JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)");
+// add_image_format("image/bmp;bpp=1", "Monochrome Bitmap (*.bmp;*.dib)");
+// add_image_format("image/bmp;bpp=4", "16 Color Bitmap (*.bmp;*.dib)");
+// add_image_format("image/bmp;bpp=8", "256 Color Bitmap (*.bmp;*.dib)");
+add_image_format("image/bmp;bpp=24", "24-bit Bitmap (*.bmp;*.dib)");
+
+const get_file_extension = filePathOrName => {
+	const splitByDots = filePathOrName.split(/\./g);
+	return splitByDots[splitByDots.length - 1].toLowerCase();
+};
+
+const get_image_format_from_extension = (file_path_or_name_or_ext)=> {
+	const ext_match = file_path_or_name_or_ext.match(/\.([^.]+)$/);
+	const ext = ext_match ? ext_match[1].toLowerCase() : file_path_or_name_or_ext; // excluding dot
+	// TODO: for BMP files with bpp other than 24, we'll need to remember the current file format,
+	// since it can't be gleaned from the file extension which is just bmp
+	// For now, assume 24-bit for BMPs
+	if (ext === "bmp") {
+		for (const image_format of image_formats) {
+			if (image_format.mimeType === "image/bmp;bpp=24") {
+				return image_format;
+			}
+		}
+	}
+	for (const image_format of image_formats) {
+		if (image_format.extensions.includes(ext)) {
+			return image_format;
+		}
+	}
+};
+
+const palette_formats = [];
+for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
+	if (format.write) {
+		palette_formats.push({
+			formatID: format_id,
+			name: format.name,
+			nameWithExtensions: `${format.name} (${
+				format.fileExtensions.map((extension)=> `*.${extension}`).join(";")
+			})`,
+			extensions: format.fileExtensions,
+		});
+	}
+}
+palette_formats.sort((a, b)=>
+	// The first option is default for Save Colors
+	// Order important formats first, starting with RIFF PAL format:
+	(b.formatID === "RIFF_PALETTE") - (a.formatID === "RIFF_PALETTE") ||
+	(b.formatID === "GIMP_PALETTE") - (a.formatID === "GIMP_PALETTE") ||
+	0
+);
+
+
 // declared like this for Cypress tests
 window.default_brush_shape = "circle";
 window.default_brush_size = 4;

@@ -51,43 +51,31 @@ window.open_from_file_path = (file_path, callback, canceled) => {
 	});
 };
 
-window.save_to_file_path = (filePath, formatName, savedCallback) => {
-	const mimeType = {
-		"JPEG": "image/jpeg",
-		"PNG": "image/png",
-		"GIF": "image/gif",
-		"WebP": "image/webp",
-		// "Monochrome Bitmap": "image/bmp",
-		// "16 Color Bitmap": "image/bmp",
-		// "256 Color Bitmap": "image/bmp",
-		// "24-bit Bitmap": "image/bmp",
-	}[formatName];
-	if(!mimeType){
-		return show_error_message(`Can't save as ${formatName}. Format is not supported.`);
+window.save_to_file_path = (canvas, filePath, savedCallback) => {
+
+	const extension = get_file_extension(filePath);
+	if (!extension) {
+		// @TODO: Linux/Unix?? you're not supposed to need file extensions
+		return show_error_message("Missing file extension - Try adding .png to the end of the file name");
 	}
-	// if(mimeType === "image/gif"){
-	// 	new GIF();
-	// }
-	canvas.toBlob(blob => {
-		// TODO: unify/DRY with magic number checking based sanity_check_blob usage in save_canvas_as
-		if(blob.type !== mimeType){
-			return show_error_message(`Failed to save as ${formatName} (your browser doesn't support exporting a canvas as "${mimeType}")`);
-		}
-		sanity_check_blob(blob, () => {
-			blob_to_buffer(blob, (err, buffer) => {
-				if(err){
-					return show_error_message("Failed to save! (Technically, failed to convert a Blob to a Buffer.)", err);
+	const format = get_image_format_from_extension(filePath);
+	if (!format) {
+		return show_error_message(`Can't save as *.${extension} - Try adding .png to the end of the file name`);
+	}
+	write_image_file(canvas, format.mimeType, (blob) => {
+		blob_to_buffer(blob, (err, buffer) => {
+			if (err) {
+				return show_error_message(localize("Failed to save document."), err);
+			}
+			fs.writeFile(filePath, buffer, err => {
+				if (err) {
+					return show_error_message(localize("Failed to save document."), err);
 				}
-				fs.writeFile(filePath, buffer, err => {
-					if(err){
-						return show_error_message("Failed to save file!", err);
-					}
-					const fileName = path.basename(filePath);
-					savedCallback(filePath, fileName);
-				});
+				const fileName = path.basename(filePath);
+				savedCallback(filePath, fileName);
 			});
 		});
-	}, mimeType);
+	});
 };
 
 function blob_to_buffer(blob, callback) {
@@ -109,26 +97,12 @@ function blob_to_buffer(blob, callback) {
 
 // @TODO: window.platform.saveCanvasAs etc. or platformIntegration or system or something
 window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
-	const getExtension = filePathOrName => {
-		const splitByDots = filePathOrName.split(/\./g);
-		return splitByDots[splitByDots.length - 1].toLowerCase();
-	};
+
+	// First filter in filters list determines default selected file type.
 	// @TODO: default to existing extension, except it would be awkward to rearrange the list...
-	// const suggestedExtension = getExtension(suggestedFileName);
-	const filters = [
-		// top one is considered default by electron
-		{name: "PNG", extensions: ["png"]},
-		// @TODO: enable more formats
-		// {name: "Monochrome Bitmap", extensions: ["bmp", "dib"]},
-		// {name: "16 Color Bitmap", extensions: ["bmp", "dib"]},
-		// {name: "256 Color Bitmap", extensions: ["bmp", "dib"]},
-		// {name: "24-bit Bitmap", extensions: ["bmp", "dib"]},
-		{name: "JPEG", extensions: ["jpg", "jpeg", "jpe", "jfif"]},
-		// {name: "GIF", extensions: ["gif"]},
-		// {name: "TIFF", extensions: ["tif", "tiff"]},
-		// {name: "PNG", extensions: ["png"]},
-		{name: "WebP", extensions: ["webp"]},
-	];
+	// const suggestedExtension = get_file_extension(suggestedFileName);
+	const filters = image_formats.map(({name, extensions})=> ({name, extensions}));
+
 	// @TODO: pass BrowserWindow to make dialog modal?
 	// @TODO: should suggestedFileName be sanitized in some way?
 	dialog.showSaveDialog({
@@ -138,17 +112,7 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 		if(!filePath){
 			return; // user canceled
 		}
-		const extension = getExtension(filePath);
-		if(!extension){
-			// @TODO: Linux/Unix?? you're not supposed to need file extensions
-			return show_error_message("Missing file extension - try adding .png to the file name");
-		}
-		const formatNameMatched = ((filters.find(({extensions}) => extensions.includes(extension))) || {}).name;
-		if(!formatNameMatched){
-			return show_error_message(`Can't save as *.${extension} - try adding .png to the file name`);
-		}
-
-		save_to_file_path(filePath, formatNameMatched, savedCallback);
+		save_to_file_path(canvas, filePath, savedCallback);
 	});
 };
 

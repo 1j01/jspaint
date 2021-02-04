@@ -785,11 +785,7 @@ function file_save(maybe_saved_callback=()=>{}){
 		if(file_name.match(/\.svg$/i)){
 			return file_save_as(maybe_saved_callback);
 		}
-		// TODO: DRY file extension / mime type / format ID / format name handling
-		const ext_match = document_file_path.match(/\.([^.]+)$/);
-		const ext = ext_match[1].toLowerCase(); // excluding dot
-		const type = (ext === "jpeg" || ext === "jpg") ? "JPEG" : ext === "webp" ? "WebP" : ext.toUpperCase();
-		return save_to_file_path(document_file_path, type, (saved_file_path, saved_file_name) => {
+		return save_to_file_path(canvas, document_file_path, (saved_file_path, saved_file_name) => {
 			saved = true;
 			document_file_path = saved_file_path;
 			file_name = saved_file_name;
@@ -801,27 +797,21 @@ function file_save(maybe_saved_callback=()=>{}){
 	if (!file_name_chosen) {
 		return file_save_as(maybe_saved_callback);
 	}
-	// TODO: DRY file extension / mime type / format ID / format name handling
-	const ext_match = file_name.match(/\.([^.]+)$/);
-	const ext = ext_match[1].toLowerCase(); // excluding dot
-	const file_type = (ext === "jpeg" || ext === "jpg") ? "image/jpeg" : `image/${ext}`;
-	canvas.toBlob(blob => {
-		// TODO: unify/DRY with blob.type (mime type) checking in save_to_file_path
-		const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-		sanity_check_blob(blob, () => {
-			const file_saver = saveAs(blob, file_name);
-			// file_saver.onwriteend = () => {
-			// 	// this won't fire in chrome
-			// 	maybe_saved_callback(undefined, file_name);
-			// };
-			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
-			maybe_saved_callback(undefined, file_name);
-		}, png_magic_bytes, file_type === "image/png");
-	}, file_type);
+	const format = get_image_format_from_extension(file_name);
+	write_image_file(canvas, format.mimeType, (blob)=> {
+		const file_saver = saveAs(blob, file_name);
+		// file_saver.onwriteend = () => {
+		// 	// this won't fire in chrome
+		// 	maybe_saved_callback(undefined, file_name);
+		// };
+		// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
+		maybe_saved_callback(undefined, file_name);
+	});
 }
 
 function file_save_as(maybe_saved_callback=()=>{}){
 	deselect();
+	// @TODO: shouldn't this just be file_name, no replacement?
 	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name) => {
 		saved = true;
 		document_file_path = saved_file_path;
@@ -2363,9 +2353,7 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
-function choose_file_name_and_type(dialog_name, file_name, types, callback) {
-	// file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`;
-
+function choose_file_name_and_type(dialog_name, file_name, formats, callback) {
 	const $w = new $FormToolWindow(dialog_name);
 	$w.addClass("save-as");
 
@@ -2383,44 +2371,35 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	const $file_type = $w.$main.find(".file-type-select");
 	const $file_name = $w.$main.find(".file-name");
 
-	const ext_to_type_ids = {};
-	const type_id_to_exts = {};
-	for (const [type_id, type_name] of Object.entries(types)) {
-		const regexp = /\*\.([^);,]+)/g;
-		let option_html = type_name;
-		if (get_direction() === "rtl") {
-			// option_html = type_name.replace(regexp, "<bdi>$&</bdi>"); // not allowed
-			// option_html = type_name.replace(regexp, "<span dir='ltr'>$&</span>"); // not allowed
-			// option_html = type_name.replace(regexp, "<bdo dir='ltr'>$&</bdo>"); // not allowed
-			// option_html = type_name.replace(regexp, "&lrm;$&&rlm;"); // not what we really want
-			option_html = type_name.replace(regexp, "&rlm;*.&lrm;$1&rlm;");
-		}
-		$file_type.append($("<option>").val(type_id).html(option_html));
-
-		let match;
-		// eslint-disable-next-line no-cond-assign
-		while (match = regexp.exec(type_name)) {
-			ext_to_type_ids[match[1]] = ext_to_type_ids[match[1]] || [];
-			ext_to_type_ids[match[1]].push(type_id);
-			type_id_to_exts[type_id] = type_id_to_exts[type_id] || [];
-			type_id_to_exts[type_id].push(match[1]);
-		}
+	for (const format of formats) {
+		$file_type.append($("<option>").val(format.formatID).text(format.nameWithExtensions));
 	}
 
 	$file_name.val(file_name);
+
+	const get_selected_format = ()=> {
+		const selected_format_id = $file_type.val();
+		for (const format of formats) {
+			if (format.formatID === selected_format_id) {
+				return format;
+			}
+		}
+	};
 
 	// Select file type when typing file name
 	const select_file_type_from_file_name = ()=> {
 		const extension_match = $file_name.val().match(/\.([\w\d]+)$/);
 		if (extension_match) {
-			if (type_id_to_exts[$file_type.val()].indexOf(extension_match[1].toLowerCase()) > -1) {
+			const selected_format = get_selected_format();
+			const matched_ext = extension_match[1].toLowerCase();
+			if (selected_format.extensions.includes(matched_ext)) {
 				// File extension already matches selected file type.
 				// Don't select a different file type with the same extension.
 				return;
 			}
-			for (const [extension, type_ids] of Object.entries(ext_to_type_ids)) {
-				if (extension_match[1].toLowerCase() === extension.toLowerCase()) {
-					$file_type.val(type_ids[0]);
+			for (const format of formats) {
+				if (format.extensions.includes(matched_ext)) {
+					$file_type.val(format.formatID);
 				}
 			}
 		}
@@ -2433,7 +2412,7 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
 	const update_extension_from_file_type = (add_extension_if_absent)=> {
 		file_name = $file_name.val();
-		const extensions_for_type = type_id_to_exts[$file_type.val()];
+		const extensions_for_type = get_selected_format().extensions;
 		const primary_extension_for_type = extensions_for_type[0];
 		// This way of removing the file extension doesn't scale very well! But I don't want to delete text the user wanted like in case of a version number...
 		const without_extension = file_name.replace(/\.(\w{1,3}|apng|jpeg|jfif|tiff|webp|psppalette|sketchpalette|gimp|colors|scss|sass|less|styl|html|theme|themepack)$/i, "");
@@ -2472,6 +2451,25 @@ function choose_file_name_and_type(dialog_name, file_name, types, callback) {
 	$file_name.focus().select();
 }
 
+function write_image_file(canvas, mime_type, blob_callback) {
+	if (mime_type === "image/bmp;bpp=24") {
+		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height));
+		const blob = new Blob([file_content]);
+		sanity_check_blob(blob, () => {
+			saveAs(blob, file_name);
+			blob_callback(blob);
+		});
+	} else {
+		canvas.toBlob(blob => {
+			// Note: could check blob.type (mime type) instead
+			const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+			sanity_check_blob(blob, () => {
+				blob_callback(blob);
+			}, png_magic_bytes, mime_type === "image/png");
+		}, mime_type);
+	}
+}
+
 // @TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
 // Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
 function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
@@ -2479,32 +2477,16 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
 	}
 
-	const image_types = {
-		"image/png": localize("PNG (*.png)"),
-		"image/jpeg": localize("JPEG (*.jpg;*.jpeg)"),
-		"image/webp": localize("WebP (*.webp)"),
-		"image/bmp": `${localize("Bitmap")} (*.bmp;*.dib)`, // using browser native BMP export, we don't really know what bits per pixel it will export with; it might be smart about it
-		// "image/bmp": localize("24-bit Bitmap (*.bmp;*.dib)"),
-		// would need to restructure this to handle:
-		// "Monochrome Bitmap (*.bmp;*.dib)": "image/bmp",
-		// "16 Color Bitmap (*.bmp;*.dib)": "image/bmp",
-		// "256 Color Bitmap (*.bmp;*.dib)": "image/bmp",
-		// "24-bit Bitmap (*.bmp;*.dib)": "image/bmp",
-	};
-	choose_file_name_and_type(localize("Save As"), file_name, image_types, (new_file_name, file_type)=> {
-		canvas.toBlob(blob => {
-			// TODO: unify/DRY with blob.type (mime type) checking in save_to_file_path
-			const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-			sanity_check_blob(blob, () => {
-				const file_saver = saveAs(blob, new_file_name);
-				// file_saver.onwriteend = () => {
-				// 	// this won't fire in chrome
-				// 	savedCallbackUnreliable(undefined, new_file_name);
-				// };
-				// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
-				savedCallbackUnreliable(undefined, new_file_name);
-			}, png_magic_bytes, file_type === "image/png");
-		}, file_type);
+	choose_file_name_and_type(localize("Save As"), file_name, image_formats, (new_file_name, file_type)=> {
+		write_image_file(canvas, file_type, (blob)=> {
+			const file_saver = saveAs(blob, new_file_name);
+			// file_saver.onwriteend = () => {
+			// 	// this won't fire in chrome
+			// 	savedCallbackUnreliable(undefined, new_file_name);
+			// };
+			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
+			savedCallbackUnreliable(undefined, new_file_name);
+		});
 	});
 }
 

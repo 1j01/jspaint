@@ -655,27 +655,7 @@ window.menus = {
 						blue: b / 255,
 					}));
 				}
-				const palette_types_unordered = {};
-				for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
-					if (format.write) {
-						palette_types_unordered[format_id] = `${format.name} (${
-							format.fileExtensions.map((extension)=> `*.${extension}`).join(";")
-						})`;
-					}
-				}
-				const palette_types_ordered = Object.keys(palette_types_unordered).sort((a, b)=>
-					// first option is default
-					(b === "RIFF_PALETTE") - (a === "RIFF_PALETTE") ||
-					(b === "GIMP_PALETTE") - (a === "GIMP_PALETTE") ||
-					0
-				).reduce(
-					(obj, key) => {
-						obj[key] = palette_types_unordered[key];
-						return obj;
-					},
-					{}
-				);
-				choose_file_name_and_type(localize("Save Colors"), localize("untitled.pal"), palette_types_ordered, (palette_file_name, format_id)=> {
+				choose_file_name_and_type(localize("Save Colors"), localize("untitled.pal"), palette_formats, (palette_file_name, format_id)=> {
 					const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
 					const blob = new Blob([file_content], {type: "text/plain"});
 					sanity_check_blob(blob, ()=> {
