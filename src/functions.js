@@ -2483,12 +2483,13 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 		"image/png": localize("PNG (*.png)"),
 		"image/jpeg": localize("JPEG (*.jpg;*.jpeg)"),
 		"image/webp": localize("WebP (*.webp)"),
-		"image/bitmap": localize("24-bit Bitmap (*.bmp;*.dib)"),
+		"image/bmp": `${localize("Bitmap")} (*.bmp;*.dib)`, // using browser native BMP export, we don't really know what bits per pixel it will export with; it might be smart about it
+		// "image/bmp": localize("24-bit Bitmap (*.bmp;*.dib)"),
 		// would need to restructure this to handle:
-		// "Monochrome Bitmap (*.bmp;*.dib)": "image/bitmap",
-		// "16 Color Bitmap (*.bmp;*.dib)": "image/bitmap",
-		// "256 Color Bitmap (*.bmp;*.dib)": "image/bitmap",
-		// "24-bit Bitmap (*.bmp;*.dib)": "image/bitmap",
+		// "Monochrome Bitmap (*.bmp;*.dib)": "image/bmp",
+		// "16 Color Bitmap (*.bmp;*.dib)": "image/bmp",
+		// "256 Color Bitmap (*.bmp;*.dib)": "image/bmp",
+		// "24-bit Bitmap (*.bmp;*.dib)": "image/bmp",
 	};
 	choose_file_name_and_type(localize("Save As"), file_name, image_types, (new_file_name, file_type)=> {
 		canvas.toBlob(blob => {

@@ -57,10 +57,10 @@ window.save_to_file_path = (filePath, formatName, savedCallback) => {
 		"PNG": "image/png",
 		"GIF": "image/gif",
 		"WebP": "image/webp",
-		// "Monochrome Bitmap": "image/bitmap",
-		// "16 Color Bitmap": "image/bitmap",
-		// "256 Color Bitmap": "image/bitmap",
-		// "24-bit Bitmap": "image/bitmap",
+		// "Monochrome Bitmap": "image/bmp",
+		// "16 Color Bitmap": "image/bmp",
+		// "256 Color Bitmap": "image/bmp",
+		// "24-bit Bitmap": "image/bmp",
 	}[formatName];
 	if(!mimeType){
 		return show_error_message(`Can't save as ${formatName}. Format is not supported.`);
