@@ -2457,7 +2457,6 @@ function write_image_file(canvas, mime_type, blob_callback) {
 		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1]), palette);
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
-			saveAs(blob, file_name);
 			blob_callback(blob);
 		});
 	} else {
