@@ -2452,8 +2452,9 @@ function choose_file_name_and_type(dialog_name, file_name, formats, callback) {
 }
 
 function write_image_file(canvas, mime_type, blob_callback) {
-	if (mime_type === "image/bmp;bpp=24") {
-		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height));
+	const bmp_match = mime_type.match(/^image\/bmp\s*;(?:\s*bpp=(\d+))?/);
+	if (bmp_match) {
+		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1]), palette);
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
 			saveAs(blob, file_name);

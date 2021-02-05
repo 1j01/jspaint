@@ -148,10 +148,11 @@ add_image_format("image/webp", "WebP (*.webp)");
 add_image_format("image/gif", "GIF (*.gif)");
 add_image_format("image/tiff", "TIFF (*.tif;*.tiff)");
 add_image_format("image/jpeg", "JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)");
-// add_image_format("image/bmp;bpp=1", "Monochrome Bitmap (*.bmp;*.dib)");
-// add_image_format("image/bmp;bpp=4", "16 Color Bitmap (*.bmp;*.dib)");
-// add_image_format("image/bmp;bpp=8", "256 Color Bitmap (*.bmp;*.dib)");
+add_image_format("image/bmp;bpp=1", "Monochrome Bitmap (*.bmp;*.dib)");
+add_image_format("image/bmp;bpp=4", "16 Color Bitmap (*.bmp;*.dib)");
+add_image_format("image/bmp;bpp=8", "256 Color Bitmap (*.bmp;*.dib)");
 add_image_format("image/bmp;bpp=24", "24-bit Bitmap (*.bmp;*.dib)");
+// add_image_format("image/bmp;bpp=32", "32-bit Bitmap (*.bmp;*.dib)");
 
 const get_file_extension = filePathOrName => {
 	const splitByDots = filePathOrName.split(/\./g);
