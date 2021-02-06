@@ -159,26 +159,6 @@ const get_file_extension = filePathOrName => {
 	return splitByDots[splitByDots.length - 1].toLowerCase();
 };
 
-const get_image_format_from_extension = (file_path_or_name_or_ext)=> {
-	const ext_match = file_path_or_name_or_ext.match(/\.([^.]+)$/);
-	const ext = ext_match ? ext_match[1].toLowerCase() : file_path_or_name_or_ext; // excluding dot
-	// TODO: for BMP files with bpp other than 24, we'll need to remember the current file format,
-	// since it can't be gleaned from the file extension which is just bmp
-	// For now, assume 24-bit for BMPs
-	if (ext === "bmp") {
-		for (const image_format of image_formats) {
-			if (image_format.mimeType === "image/bmp;bpp=24") {
-				return image_format;
-			}
-		}
-	}
-	for (const image_format of image_formats) {
-		if (image_format.extensions.includes(ext)) {
-			return image_format;
-		}
-	}
-};
-
 const palette_formats = [];
 for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
 	if (format.write) {

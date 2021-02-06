@@ -51,6 +51,22 @@ window.open_from_file_path = (file_path, callback, canceled) => {
 	});
 };
 
+// Only support 24bpp BMP files because the electron save dialog doesn't allow you to access the selected file type,
+// you can only guess it from the file extension the user types.
+const get_electron_app_supported_image_formats = ()=> image_formats.filter((format)=>
+	format.extensions.includes("bmp") ? format.mimeType.indexOf("bpp=24") > -1 : true
+);
+
+const get_image_format_from_extension = (file_path_or_name_or_ext)=> {
+	const ext_match = file_path_or_name_or_ext.match(/\.([^.]+)$/);
+	const ext = ext_match ? ext_match[1].toLowerCase() : file_path_or_name_or_ext; // excluding dot
+	for (const image_format of get_electron_app_supported_image_formats()) {
+		if (image_format.extensions.includes(ext)) {
+			return image_format;
+		}
+	}
+};
+
 window.save_to_file_path = (canvas, filePath, savedCallback) => {
 
 	const extension = get_file_extension(filePath);
@@ -101,7 +117,7 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback) => {
 	// First filter in filters list determines default selected file type.
 	// @TODO: default to existing extension, except it would be awkward to rearrange the list...
 	// const suggestedExtension = get_file_extension(suggestedFileName);
-	const filters = image_formats.map(({name, extensions})=> ({name, extensions}));
+	const filters = get_electron_app_supported_image_formats().map(({name, extensions})=> ({name, extensions}));
 
 	// @TODO: pass BrowserWindow to make dialog modal?
 	// @TODO: should suggestedFileName be sanitized in some way?
