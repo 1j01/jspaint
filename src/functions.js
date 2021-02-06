@@ -2552,30 +2552,6 @@ function set_as_wallpaper_centered(c = canvas) {
 	});
 }
 
-/**
- * @param {HTMLElement} canvas
- * @return {Promise}
- */
-function get_array_buffer_from_canvas(canvas) {
-	return new Promise((resolve, reject) => {
-		const file_reader = new FileReader();
-
-		file_reader.onloadend = () => {
-			resolve(file_reader.result);
-		};
-
-		file_reader.onerror = () => {
-			reject(new Error("Failed to read canvas image to array buffer"));
-		};
-
-		canvas.toBlob(blob => {
-			sanity_check_blob(blob, () => {
-				file_reader.readAsArrayBuffer(blob);
-			});
-		});
-	});
-}
-
 function save_selection_to_file(){
 	if(selection && selection.canvas){
 		selection.canvas.toBlob(blob => {

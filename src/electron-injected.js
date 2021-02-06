@@ -135,8 +135,9 @@ window.systemSetAsWallpaperCentered = c => {
 		wallpaperCanvas.ctx.drawImage(c, ~~x, ~~y);
 	}
 
-	get_array_buffer_from_canvas(wallpaperCanvas).then(array_buffer => {
-		const buffer = new Buffer(array_buffer);
+	const file_reader = new FileReader();
+	file_reader.onloadend = () => {
+		const buffer = new Buffer(file_reader.result);
 		fs.writeFile(imgPath, buffer, err => {
 			if(err){
 				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
@@ -147,6 +148,14 @@ window.systemSetAsWallpaperCentered = c => {
 					show_error_message("Failed to set as desktop background!", err);
 				}
 			});
+		});
+	};
+	file_reader.onerror = () => {
+		throw new Error("Failed to read canvas image to array buffer");
+	};
+	wallpaperCanvas.toBlob(blob => {
+		sanity_check_blob(blob, () => {
+			file_reader.readAsArrayBuffer(blob);
 		});
 	});
 };
