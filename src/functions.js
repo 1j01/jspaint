@@ -712,7 +712,11 @@ function load_palette_from_indexed_image_file(file) {
 	};
 	reader.onload = function (e) {
 		const arrayBuffer = reader.result;
-		try {
+		// const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+		const bmp_magic_bytes = ["B".charCodeAt(0), "M".charCodeAt(0)];
+		const file_bytes = new Uint8Array(arrayBuffer);
+		const bmp_magic_found = bmp_magic_bytes.every((byte, index)=> byte === file_bytes[index]);
+		if (bmp_magic_found) {
 			const {colorTable} = decodeBMP(arrayBuffer);
 			if (colorTable.length >= 2) {
 				// @TODO: monochrome patterns
@@ -725,10 +729,6 @@ function load_palette_from_indexed_image_file(file) {
 				colors.background = palette[1];
 				$G.trigger("option-changed");
 				window.console && console.log(`Loaded palette from BMP file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
-			}
-		} catch (error) { 
-			if (error.message !== "not a BMP file") {
-				throw error;
 			}
 		}
 	}
