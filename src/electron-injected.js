@@ -72,7 +72,7 @@ window.save_to_file_path = (canvas, filePath, savedCallback) => {
 					return show_error_message(localize("Failed to save document."), err);
 				}
 				const fileName = path.basename(filePath);
-				savedCallback(filePath, fileName);
+				savedCallback(filePath, fileName, format.mimeType);
 			});
 		});
 	});

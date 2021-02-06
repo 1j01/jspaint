@@ -655,7 +655,7 @@ window.menus = {
 						blue: b / 255,
 					}));
 				}
-				choose_file_name_and_type(localize("Save Colors"), localize("untitled.pal"), palette_formats, (palette_file_name, format_id)=> {
+				choose_file_name_and_type(localize("Save Colors"), localize("untitled.pal"), null, palette_formats, (palette_file_name, format_id)=> {
 					const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
 					const blob = new Blob([file_content], {type: "text/plain"});
 					sanity_check_blob(blob, ()=> {

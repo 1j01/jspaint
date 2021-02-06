@@ -364,6 +364,7 @@ function reset_file(){
 	document_file_path = null;
 	file_name = localize("untitled");
 	file_name_chosen = false;
+	file_format = "image/png";
 	update_title();
 	saved = true;
 }
@@ -463,7 +464,7 @@ function get_FileList_from_file_select_dialog(callback){
 	});
 }
 
-function open_from_Image(img, callback, canceled){
+function open_from_image_and_blob(img, blob, callback, canceled){
 	are_you_sure(() => {
 		// @TODO: shouldn't open_from_* start a new session?
 
@@ -488,6 +489,8 @@ function open_from_Image(img, callback, canceled){
 		$G.triggerHandler("history-update"); // update history view
 
 		callback && callback();
+
+		load_format_and_palette_from_image_file(blob);
 	}, canceled);
 }
 function get_URIs(text) {
@@ -650,10 +653,7 @@ function load_image_from_URI(uri, callback){
 function open_from_URI(uri, callback, canceled){
 	load_image_from_URI(uri, (error, img, blob) => {
 		if(error){ return callback(error); }
-		open_from_Image(img, ()=> {
-			callback();
-			load_palette_from_indexed_image_file(blob); // must be after reset_colors (in open_from_Image)
-		}, canceled);
+		open_from_image_and_blob(img, blob, callback, canceled);
 	});
 }
 function open_from_File(file, callback, canceled){
@@ -663,14 +663,14 @@ function open_from_File(file, callback, canceled){
 		URL.revokeObjectURL(file);
 		if(error){ return callback(error); }
 
-		open_from_Image(img, () => {
+		open_from_image_and_blob(img, file, () => {
 			file_name = file.name;
 			file_name_chosen = false; // ?
+			// file_format is determined by open_from_image_and_blob
 			document_file_path = file.path; // available in Electron
 			update_title();
 			saved = true;
 			callback();
-			load_palette_from_indexed_image_file(file); // must be after reset_colors (in open_from_Image)
 		}, canceled);
 	});
 }
@@ -704,7 +704,7 @@ async function open_from_FileList(files, user_input_method_verb_past_tense){
 	}
 }
 
-function load_palette_from_indexed_image_file(file) {
+function load_format_and_palette_from_image_file(file) {
 	// @TODO: load palette from PNG, GIF
 	const reader = new FileReader();
 	reader.onerror = () => {
@@ -712,12 +712,33 @@ function load_palette_from_indexed_image_file(file) {
 	};
 	reader.onload = function (e) {
 		const arrayBuffer = reader.result;
-		// const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-		const bmp_magic_bytes = ["B".charCodeAt(0), "M".charCodeAt(0)];
+		// Helpers:
+		// "GIF".split("").map(c=>"0x"+c.charCodeAt(0).toString("16")).join(", ")
+		// [0x47, 0x49, 0x46].map(c=>String.fromCharCode(c)).join("")
+		const magics = {
+			png: [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+			bmp: [0x42, 0x4D], // "BM" in ASCII
+			jpeg: [0xFF, 0xD8, 0xFF],
+			gif: [0x47, 0x49, 0x46, 0x38], // "GIF8" in ASCII, fully either "GIF87a" or "GIF89a"
+			webp: [0x57, 0x45, 0x42, 0x50], // "WEBP" in ASCII
+			tiff_be: [0x4D, 0x4D, 0x0, 0x2A],
+			tiff_le: [0x49, 0x49, 0x2A, 0x0],
+			ico: [0x00, 0x00, 0x01, 0x00],
+			cur: [0x00, 0x00, 0x02, 0x00],
+			icns: [0x69, 0x63, 0x6e, 0x73], // "icns" in ASCII
+		};
 		const file_bytes = new Uint8Array(arrayBuffer);
-		const bmp_magic_found = bmp_magic_bytes.every((byte, index)=> byte === file_bytes[index]);
-		if (bmp_magic_found) {
-			const {colorTable} = decodeBMP(arrayBuffer);
+		let detected_type_id;
+		for (const [type_id, magic_bytes] of Object.entries(magics)) {
+			const magic_found = magic_bytes.every((byte, index)=> byte === file_bytes[index]);
+			if (magic_found) {
+				detected_type_id = type_id;
+			}
+		}
+		if (detected_type_id === "bmp") {
+			const {colorTable, dibHeader} = decodeBMP(arrayBuffer);
+			const bpp = dibHeader.bitsPerPixel;
+			file_format = `image/bmp;bpp=${bpp}`;
 			if (colorTable.length >= 2) {
 				// @TODO: monochrome patterns
 				// if (colorTable.length === 2) {
@@ -730,6 +751,19 @@ function load_palette_from_indexed_image_file(file) {
 				$G.trigger("option-changed");
 				window.console && console.log(`Loaded palette from BMP file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
 			}
+		} else {
+			file_format = {
+				// bmp: "image/bmp",
+				png: "image/png",
+				webp: "image/webp",
+				jpeg: "image/jpeg",
+				gif: "image/gif",
+				tiff_be: "image/tiff",
+				tiff_le: "image/tiff", // can also be image/x-canon-cr2 etc.
+				ico: "image/x-icon",
+				cur: "image/x-win-bitmap",
+				icns: "image/icns",
+			}[detected_type_id];
 		}
 	}
 	reader.readAsArrayBuffer(file);
@@ -820,11 +854,12 @@ function file_save(maybe_saved_callback=()=>{}){
 		if(file_name.match(/\.svg$/i)){
 			return file_save_as(maybe_saved_callback);
 		}
-		return save_to_file_path(canvas, document_file_path, (saved_file_path, saved_file_name) => {
+		return save_to_file_path(canvas, document_file_path, (saved_file_path, saved_file_name, saved_file_type) => {
 			saved = true;
 			document_file_path = saved_file_path;
 			file_name = saved_file_name;
 			file_name_chosen = true; // I guess.. should already be true
+			file_format = saved_file_type;
 			update_title();
 			maybe_saved_callback();
 		});
@@ -832,8 +867,7 @@ function file_save(maybe_saved_callback=()=>{}){
 	if (!file_name_chosen) {
 		return file_save_as(maybe_saved_callback);
 	}
-	const format = get_image_format_from_extension(file_name);
-	write_image_file(canvas, format.mimeType, (blob)=> {
+	write_image_file(canvas, file_format, (blob)=> {
 		const file_saver = saveAs(blob, file_name);
 		// file_saver.onwriteend = () => {
 		// 	// this won't fire in chrome
@@ -847,11 +881,12 @@ function file_save(maybe_saved_callback=()=>{}){
 function file_save_as(maybe_saved_callback=()=>{}){
 	deselect();
 	// @TODO: shouldn't this just be file_name, no replacement?
-	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name) => {
+	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name, saved_file_type) => {
 		saved = true;
 		document_file_path = saved_file_path;
 		file_name = saved_file_name;
 		file_name_chosen = true;
+		file_format = saved_file_type;
 		update_title();
 		maybe_saved_callback();
 	});
@@ -2388,7 +2423,7 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
-function choose_file_name_and_type(dialog_name, file_name, formats, callback) {
+function choose_file_name_and_type(dialog_name, default_file_name, default_format_id, formats, callback) {
 	const $w = new $FormToolWindow(dialog_name);
 	$w.addClass("save-as");
 
@@ -2410,7 +2445,7 @@ function choose_file_name_and_type(dialog_name, file_name, formats, callback) {
 		$file_type.append($("<option>").val(format.formatID).text(format.nameWithExtensions));
 	}
 
-	$file_name.val(file_name);
+	$file_name.val(default_file_name);
 
 	const get_selected_format = ()=> {
 		const selected_format_id = $file_type.val();
@@ -2440,13 +2475,17 @@ function choose_file_name_and_type(dialog_name, file_name, formats, callback) {
 		}
 	};
 	$file_name.on("input", select_file_type_from_file_name);
-	// and initially
-	select_file_type_from_file_name();
+	if (default_format_id) {
+		// formats.find((format)=> format.formatID === default_format_id)
+		$file_type.val(default_format_id);
+	} else {
+		select_file_type_from_file_name();
+	}
 
 	// Change file extension when selecting file type
 	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
 	const update_extension_from_file_type = (add_extension_if_absent)=> {
-		file_name = $file_name.val();
+		let file_name = $file_name.val();
 		const extensions_for_type = get_selected_format().extensions;
 		const primary_extension_for_type = extensions_for_type[0];
 		// This way of removing the file extension doesn't scale very well! But I don't want to delete text the user wanted like in case of a version number...
@@ -2469,9 +2508,8 @@ function choose_file_name_and_type(dialog_name, file_name, formats, callback) {
 
 	$w.$Button(localize("Save"), () => {
 		$w.close();
-		file_name = $file_name.val();
 		update_extension_from_file_type(true);
-		callback(file_name, $file_type.val());
+		callback($file_name.val(), $file_type.val());
 	});
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
@@ -2512,15 +2550,15 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
 	}
 
-	choose_file_name_and_type(localize("Save As"), file_name, image_formats, (new_file_name, file_type)=> {
-		write_image_file(canvas, file_type, (blob)=> {
+	choose_file_name_and_type(localize("Save As"), file_name, file_format, image_formats, (new_file_name, new_file_type)=> {
+		write_image_file(canvas, new_file_type, (blob)=> {
 			const file_saver = saveAs(blob, new_file_name);
 			// file_saver.onwriteend = () => {
 			// 	// this won't fire in chrome
 			// 	savedCallbackUnreliable(undefined, new_file_name);
 			// };
 			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
-			savedCallbackUnreliable(undefined, new_file_name);
+			savedCallbackUnreliable(undefined, new_file_name, new_file_type);
 		});
 	});
 }
