@@ -11,7 +11,7 @@ function storage_quota_exceeded(){
 	if(ignoring_quota_exceeded){
 		return;
 	}
-	const $w = $FormToolWindow().title("Storage Error").addClass("dialogue-window");
+	const $w = $FormToolWindow().title("Storage Error").addClass("dialogue-window squish");
 	$w.$main.html(
 		"<p>JS Paint stores images as you work on them so that if you " +
 		"close your browser or tab or reload the page " +
