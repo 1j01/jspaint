@@ -638,7 +638,7 @@ function load_image_from_URI(uri, callback){
 					handle_decode_fail();
 					return;
 				}
-				callback(null, img);
+				callback(null, img, blob);
 			};
 			img.onerror = handle_decode_fail;
 			img.src = window.URL.createObjectURL(blob);
@@ -648,9 +648,12 @@ function load_image_from_URI(uri, callback){
 	try_next_uri();
 }
 function open_from_URI(uri, callback, canceled){
-	load_image_from_URI(uri, (error, img) => {
+	load_image_from_URI(uri, (error, img, blob) => {
 		if(error){ return callback(error); }
-		open_from_Image(img, callback, canceled);
+		open_from_Image(img, ()=> {
+			callback();
+			load_palette_from_indexed_image_file(blob); // must be after reset_colors (in open_from_Image)
+		}, canceled);
 	});
 }
 function open_from_File(file, callback, canceled){
@@ -667,6 +670,7 @@ function open_from_File(file, callback, canceled){
 			update_title();
 			saved = true;
 			callback();
+			load_palette_from_indexed_image_file(file); // must be after reset_colors (in open_from_Image)
 		}, canceled);
 	});
 }
@@ -698,6 +702,37 @@ async function open_from_FileList(files, user_input_method_verb_past_tense){
 			});
 		}
 	}
+}
+
+function load_palette_from_indexed_image_file(file) {
+	// @TODO: load palette from PNG, GIF
+	const reader = new FileReader();
+	reader.onerror = () => {
+		console.log("Failed to read as ArrayBuffer.");
+	};
+	reader.onload = function (e) {
+		const arrayBuffer = reader.result;
+		try {
+			const {colorTable} = decodeBMP(arrayBuffer);
+			if (colorTable.length >= 2) {
+				// @TODO: monochrome patterns
+				// if (colorTable.length === 2) {
+				// 	make_monochrome_palette();
+				// } else
+				palette = colorTable.map((color)=> `rgb(${color.r}, ${color.g}, ${color.b})`);
+				$colorbox.rebuild_palette();
+				colors.foreground = palette[0];
+				colors.background = palette[1];
+				$G.trigger("option-changed");
+				window.console && console.log(`Loaded palette from BMP file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+			}
+		} catch (error) { 
+			if (error.message !== "not a BMP file") {
+				throw error;
+			}
+		}
+	}
+	reader.readAsArrayBuffer(file);
 }
 
 function loadThemeFile(file) {
