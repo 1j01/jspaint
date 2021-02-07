@@ -1964,20 +1964,25 @@ function detect_transparency(){
 	transparency = has_any_transparency(ctx);
 }
 
-function is_picture_monochrome(ctx) {
+function detect_monochrome(ctx) {
 	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	const pixelArray = new Uint32Array(id.data.buffer); // to access as whole pixels (for greater efficiency & simplicity)
+	// Note: values in pixelArray may be different on big endian vs little endian machines.
+	// Use id.data, which is guaranteed to be in RGBA order, for getting color information.
+	// Only use the Uint32Array for comparing pixel equality (faster than comparing each color component).
 	const colorValues = [];
+	const colorRGBAs = [];
 	for(let i=0, len=pixelArray.length; i<len; i+=1){
 		if (!colorValues.includes(pixelArray[i])) {
 			if (colorValues.length < 2) {
 				colorValues.push(pixelArray[i]);
+				colorRGBAs.push(id.data.slice(i*4, (i+1)*4));
 			} else {
 				return false;
 			}
 		}
 	}
-	return true;
+	return colorRGBAs;
 }
 
 function make_monochrome_pattern(lightness, rgba1=[0, 0, 0, 255], rgba2=[255, 255, 255, 255]){
@@ -2198,6 +2203,7 @@ function image_attributes(){
 		const unit = $units.find(":checked").val();
 
 		const was_monochrome = monochrome;
+		const image_was_actually_monochrome = detect_monochrome(ctx);
 
 		image_attributes.unit = unit;
 		transparency = (transparency_option == "transparent");
@@ -2205,15 +2211,21 @@ function image_attributes(){
 
 		if(monochrome != was_monochrome){
 			if(monochrome){
-				palette = monochrome_palette;
+				if(image_was_actually_monochrome && image_was_actually_monochrome.length === 2) {
+					palette = make_monochrome_palette(image_was_actually_monochrome[0], image_was_actually_monochrome[1]);
+				}else{
+					palette = monochrome_palette;
+				}
 			}else{
 				palette = polychrome_palette;
 			}
-
+			colors.foreground = palette[0];
+			colors.background = palette[14]; // first in second row
+			colors.ternary = "";
 			$colorbox.rebuild_palette();
-			reset_colors();
+			$G.trigger("option-changed");
 		}
-		if (monochrome && !is_picture_monochrome(ctx)) {
+		if (monochrome && !image_was_actually_monochrome) {
 			show_convert_to_black_and_white();
 		}
 
