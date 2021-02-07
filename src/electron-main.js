@@ -33,6 +33,7 @@ const createWindow = () => {
 		title: "JS Paint",
 		webPreferences: {
 			preload: require("path").join(__dirname, "/electron-injected.js"),
+			enableRemoteModule: true,
 		},
 	});
 
