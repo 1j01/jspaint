@@ -1514,8 +1514,9 @@ function redo(){
 		if (!$document_history_window || $document_history_window.closed) {
 			const $w = $document_history_prompt_window = new $ToolWindow();
 			$w.title("Redo");
-			$w.$content.html("Press <b>Ctrl+Shift+Y</b> at any time to open the History window.");
-			$w.$Button("Show History", show_document_history);
+			$w.$content.html("Use Edit > History to view all branches of the history tree.").css({padding: 10});
+			$w.$Button("Show History", show_document_history).css({margin: 10});
+			$w.center();
 		}
 		return false;
 	}
