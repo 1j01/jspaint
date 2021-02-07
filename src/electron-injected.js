@@ -68,8 +68,7 @@ const get_image_format_from_extension = (file_path_or_name_or_ext)=> {
 };
 
 window.save_to_file_path = (canvas, filePath, savedCallback) => {
-
-	const extension = get_file_extension(filePath);
+	const extension = (filePath.indexOf(/\./) > -1) && filePath.split(/\./g).pop().toLowerCase();
 	if (!extension) {
 		// @TODO: Linux/Unix?? you're not supposed to need file extensions
 		return show_error_message("Missing file extension - Try adding .png to the end of the file name");

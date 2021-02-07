@@ -154,11 +154,6 @@ add_image_format("image/bmp;bpp=8", "256 Color Bitmap (*.bmp;*.dib)");
 add_image_format("image/bmp;bpp=24", "24-bit Bitmap (*.bmp;*.dib)");
 // add_image_format("image/bmp;bpp=32", "32-bit Bitmap (*.bmp;*.dib)");
 
-const get_file_extension = filePathOrName => {
-	const splitByDots = filePathOrName.split(/\./g);
-	return splitByDots[splitByDots.length - 1].toLowerCase();
-};
-
 const palette_formats = [];
 for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
 	if (format.write) {
