@@ -1964,17 +1964,17 @@ function detect_transparency(){
 	transparency = has_any_transparency(ctx);
 }
 
-function is_all_black_and_white(ctx) {
+function is_picture_monochrome(ctx) {
 	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	for(let i=0, l=id.data.length; i<l; i+=4){
-		if(id.data[i+3] < 255){
-			return false;
-		}
-		if(!(
-			(id.data[i] === 255 && id.data[i+1] === 255 && id.data[i+2] === 255) ||
-			(id.data[i] === 0 && id.data[i+1] === 0 && id.data[i+2] === 0)
-		)){
-			return false;
+	const pixelArray = new Uint32Array(id.data.buffer); // to access as whole pixels (for greater efficiency & simplicity)
+	const colorValues = [];
+	for(let i=0, len=pixelArray.length; i<len; i+=1){
+		if (!colorValues.includes(pixelArray[i])) {
+			if (colorValues.length < 2) {
+				colorValues.push(pixelArray[i]);
+			} else {
+				return false;
+			}
 		}
 	}
 	return true;
@@ -2213,7 +2213,7 @@ function image_attributes(){
 			$colorbox.rebuild_palette();
 			reset_colors();
 		}
-		if (monochrome && !is_all_black_and_white(ctx)) {
+		if (monochrome && !is_picture_monochrome(ctx)) {
 			show_convert_to_black_and_white();
 		}
 
