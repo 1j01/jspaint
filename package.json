@@ -57,7 +57,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "glob": "^7.1.6",
     "rtlcss": "^3.1.2",
-    "wallpaper": "4.4.1"
+    "wallpaper": "^4.4.2"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
