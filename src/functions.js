@@ -871,10 +871,10 @@ function file_save(maybe_saved_callback=()=>{}){
 		const file_saver = saveAs(blob, file_name);
 		// file_saver.onwriteend = () => {
 		// 	// this won't fire in chrome
-		// 	maybe_saved_callback(undefined, file_name);
+		// 	maybe_saved_callback();
 		// };
 		// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
-		maybe_saved_callback(undefined, file_name);
+		maybe_saved_callback();
 	});
 }
 
@@ -2527,7 +2527,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 function write_image_file(canvas, mime_type, blob_callback) {
 	const bmp_match = mime_type.match(/^image\/bmp\s*;(?:\s*bpp=(\d+))?/);
 	if (bmp_match) {
-		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1]), palette);
+		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1]));
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);

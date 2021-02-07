@@ -140,8 +140,7 @@ const add_image_format = (mime_type, name_and_exts)=> {
 
 	image_formats.push(format);
 };
-// Top format here defines the default format for saving.
-// First file extension in parenthetical defines default for the format.
+// First file extension in a parenthetical defines default for the format.
 // Strings are localized in add_image_format, don't need localize() here.
 add_image_format("image/png", "PNG (*.png)");
 add_image_format("image/webp", "WebP (*.webp)");
@@ -168,7 +167,6 @@ for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
 	}
 }
 palette_formats.sort((a, b)=>
-	// The first option is default for Save Colors
 	// Order important formats first, starting with RIFF PAL format:
 	(b.formatID === "RIFF_PALETTE") - (a.formatID === "RIFF_PALETTE") ||
 	(b.formatID === "GIMP_PALETTE") - (a.formatID === "GIMP_PALETTE") ||
