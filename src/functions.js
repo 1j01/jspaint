@@ -740,16 +740,25 @@ function load_format_and_palette_from_image_file(file) {
 			const bpp = dibHeader.bitsPerPixel;
 			file_format = `image/bmp;bpp=${bpp}`;
 			if (colorTable.length >= 2) {
-				// @TODO: monochrome patterns
-				// if (colorTable.length === 2) {
-				// 	make_monochrome_palette();
-				// } else
-				palette = colorTable.map((color)=> `rgb(${color.r}, ${color.g}, ${color.b})`);
+				if (colorTable.length === 2) {
+					palette = make_monochrome_palette(...colorTable.map((color)=> [color.r, color.g, color.b, 255]));
+					colors.foreground = palette[0];
+					colors.background = palette[14]; // first in second row
+					monochrome = true;
+				} else {
+					palette = colorTable.map((color)=> `rgb(${color.r}, ${color.g}, ${color.b})`);
+					// who knows what colors we should select
+					colors.foreground = palette[0];
+					colors.background = palette[1];
+					monochrome = false;
+				}
 				$colorbox.rebuild_palette();
-				colors.foreground = palette[0];
-				colors.background = palette[1];
 				$G.trigger("option-changed");
-				window.console && console.log(`Loaded palette from BMP file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+				if (monochrome) {
+					window.console && console.log(`Loaded palette from 1bpp BMP file: ${colorTable.map(()=> `%c█`).join("")}`, ...colorTable.map((color)=> `color: rgb(${color.r}, ${color.g}, ${color.b});`));
+				} else {
+					window.console && console.log(`Loaded palette from BMP file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+				}
 			}
 		} else {
 			file_format = {
@@ -1971,7 +1980,7 @@ function is_all_black_and_white(ctx) {
 	return true;
 }
 
-function make_monochrome_pattern(lightness){
+function make_monochrome_pattern(lightness, rgba1=[0, 0, 0, 255], rgba2=[255, 255, 255, 255]){
 
 	const dither_threshold_table = Array.from({length: 64}, (_undefined, p) => {
 		const q = p ^ (p >> 3);
@@ -1995,10 +2004,10 @@ function make_monochrome_pattern(lightness){
 			const map_value = dither_threshold_table[(x & 7) + ((y & 7) << 3)];
 			const px_white = lightness > map_value;
 			const index = ((y * pattern_image_data.width) + x) * 4;
-			pattern_image_data.data[index + 0] = px_white * 255;
-			pattern_image_data.data[index + 1] = px_white * 255;
-			pattern_image_data.data[index + 2] = px_white * 255;
-			pattern_image_data.data[index + 3] = 255;
+			pattern_image_data.data[index + 0] = px_white ? rgba2[0] : rgba1[0];
+			pattern_image_data.data[index + 1] = px_white ? rgba2[1] : rgba1[1];
+			pattern_image_data.data[index + 2] = px_white ? rgba2[2] : rgba1[2];
+			pattern_image_data.data[index + 3] = px_white ? rgba2[3] : rgba1[3];
 		}
 	}
 
@@ -2007,17 +2016,17 @@ function make_monochrome_pattern(lightness){
 	return ctx.createPattern(pattern_canvas, "repeat");
 }
 
-function make_monochrome_palette(){
+function make_monochrome_palette(rgba1=[0, 0, 0, 255], rgba2=[255, 255, 255, 255]){
 	const palette = [];
 	const n_colors_per_row = 14;
 	const n_colors = n_colors_per_row * 2;
 	for(let i=0; i<n_colors_per_row; i++){
 		let lightness = i / n_colors;
-		palette.push(make_monochrome_pattern(lightness));
+		palette.push(make_monochrome_pattern(lightness, rgba1, rgba2));
 	}
 	for(let i=0; i<n_colors_per_row; i++){
 		let lightness = 1 - i / n_colors;
-		palette.push(make_monochrome_pattern(lightness));
+		palette.push(make_monochrome_pattern(lightness, rgba1, rgba2));
 	}
 
 	return palette;
