@@ -67,6 +67,9 @@ function memoize_synchronous_function(func, max_entries=50000) {
 	const cache = {};
 	const keys = [];
 	const memoized_func = (...args)=> {
+		if (args.some((arg)=> arg instanceof CanvasPattern)) {
+			return func.apply(null, args);
+		}
 		const key = JSON.stringify(args);
 		if (cache[key]){
 			return cache[key];

@@ -67,11 +67,40 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			return;
 		}
 
-		palette[swatch_index] = color;
-		update_$swatch($swatch_to_edit, color);
-		colors[color_selection_slot_to_edit] = color;
-		$G.triggerHandler("option-changed");
-		window.console && console.log(`Updated palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+		if (monochrome && swatch_index === 0 || swatch_index === 14) {
+			// when editing first color in first or second row (the solid base colors),
+			// update whole monochrome patterns palette and image
+			const old_rgba = get_rgba_from_color(palette[swatch_index]);
+			const new_rgba = get_rgba_from_color(color);
+			const other_rgba = get_rgba_from_color(palette[14 - swatch_index]);
+			const was_monochrome = !!detect_monochrome(ctx);
+			if (was_monochrome) {
+				undoable({
+					name: "Recolor",
+					icon: get_help_folder_icon("p_monochrome_undo.png"),
+				}, ()=> {
+					const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+					replace_color_globally(image_data, old_rgba[0], old_rgba[1], old_rgba[2], old_rgba[3], new_rgba[0], new_rgba[1], new_rgba[2], new_rgba[3]);
+					ctx.putImageData(image_data, 0, 0);
+				});
+			}
+			if (swatch_index) {
+				palette = make_monochrome_palette(other_rgba, new_rgba);
+			} else {
+				palette = make_monochrome_palette(new_rgba, other_rgba);
+			}
+			$colorbox.rebuild_palette();
+			colors.foreground = palette[0];
+			colors.background = palette[14]; // first in second row
+			colors.ternary = "";
+			$G.triggerHandler("option-changed");
+		} else {
+			palette[swatch_index] = color;
+			update_$swatch($swatch_to_edit, color);
+			colors[color_selection_slot_to_edit] = color;
+			$G.triggerHandler("option-changed");
+			window.console && console.log(`Updated palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+		}
 	});
 }
 
