@@ -37,6 +37,27 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.canvas.style.pointerEvents = "none";
 		this.$el.append(this.canvas);
 
+		const update_size = ()=> {
+			this.position();
+			this.$el.triggerHandler("update"); // update handles
+			this.$editor.add(render_textarea).css({
+				width: this.width,
+				height: this.height,
+			});
+		};
+
+		const auto_size = ()=> {
+			// Auto-expand, and apply minimum size.
+			edit_textarea.style.height = "";
+			edit_textarea.style.minHeight = "0px";
+			edit_textarea.setAttribute("rows", 1);
+			this.height = Math.max(edit_textarea.scrollHeight, this.height);
+			edit_textarea.removeAttribute("rows");
+			this.width = edit_textarea.scrollWidth;
+			// always needs to update at least this.$editor, since style.height is reset above
+			update_size();
+		};
+
 		const update = ()=> {
 			requestAnimationFrame(()=> {
 				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
@@ -66,21 +87,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 				background: font.background,
 			});
 
-			// Auto-expand, and apply minimum size.
 			// Must be after font is updated, since the minimum size depends on the font size.
-			edit_textarea.style.height = "";
-			edit_textarea.style.minHeight = "0px";
-			edit_textarea.setAttribute("rows", 1);
-			this.height = Math.max(edit_textarea.scrollHeight, this.height);
-			edit_textarea.removeAttribute("rows");
-			this.width = edit_textarea.scrollWidth;
-			// always needs to update at least this.$editor, since style.height is reset above
-			this.position();
-			this.$el.triggerHandler("update"); // update handles
-			this.$editor.add(render_textarea).css({
-				width: this.width,
-				height: this.height,
-			});
+			auto_size();
 
 			while (render_textarea.firstChild) {
 				render_textarea.removeChild(render_textarea.firstChild);
@@ -125,7 +133,42 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$el.append(this.$editor);
 		this.$editor[0].focus();
 		const getRect = ()=> ({left: this.x, top: this.y, width: this.width, height: this.height, right: this.x + this.width, bottom: this.y + this.height})
-		this.$handles = $Handles(this.$el, getRect, { outset: 2, thick: true });
+		this.$handles = $Handles(this.$el, getRect, {
+			outset: 2,
+			thick: true,
+			constrain: ({x, y, width, height})=> {
+				// remember dimensions
+				const old_x = this.x;
+				const old_y = this.y;
+				const old_width = this.width;
+				const old_height = this.height;
+
+				// apply prospective new dimensions
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				update_size();
+
+				// apply constraints
+				auto_size();
+				
+				// remember constrained dimensions
+				x = this.x;
+				y = this.y;
+				width = this.width;
+				height = this.height;
+
+				// reset
+				this.x = old_x;
+				this.y = old_y;
+				this.width = old_width;
+				this.height = old_height;
+				update_size();
+
+				return {x, y, width, height};
+			},
+		});
 		this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
 			this.x += delta_x;
 			this.y += delta_y;

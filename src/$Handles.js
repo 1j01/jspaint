@@ -81,13 +81,22 @@ function $Handles($container, getRect, options){
 				}else{
 					height = ~~(rect.height);
 				}
+				let new_rect = {
+					x: delta_x + get_offset_left(),
+					y: delta_y + get_offset_top(),
+					width: width,
+					height: height,
+				};
+				if (options.constrain) {
+					new_rect = options.constrain(new_rect);
+				}
 				const inset = options.thick ? 3 : 0;
 				$resize_ghost.css({
 					position: "absolute",
-					left: magnification * delta_x + get_offset_left() + inset,
-					top: magnification * delta_y + get_offset_top() + inset,
-					width: magnification * width - inset * 2,
-					height: magnification * height - inset * 2,
+					left: magnification * new_rect.x + inset,
+					top: magnification * new_rect.y + inset,
+					width: magnification * new_rect.width - inset * 2,
+					height: magnification * new_rect.height - inset * 2,
 				});
 			};
 			$h.on("pointerdown", event => {
