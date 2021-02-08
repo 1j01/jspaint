@@ -89,6 +89,8 @@ function $Handles($container, getRect, options){
 					width: width,
 					height: height,
 				};
+				new_rect.width = Math.max(1, new_rect.width);
+				new_rect.height = Math.max(1, new_rect.height);
 				if (options.constrain) {
 					new_rect = options.constrain(new_rect);
 				}
