@@ -2194,10 +2194,14 @@ function image_attributes(){
 
 	// Fieldsets
 
-	const $units = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Units")}</legend>`);
-	$units.append(`<label><input type="radio" name="units" value="in">${localize("Inches")}</label>`);
-	$units.append(`<label><input type="radio" name="units" value="cm">${localize("Cm")}</label>`);
-	$units.append(`<label><input type="radio" name="units" value="px">${localize("Pixels")}</label>`);
+	const $units = $(E("fieldset")).appendTo($main).append(`
+		<legend>${localize("Units")}</legend>
+		<div class="fieldset-body">
+			<label><input type="radio" name="units" value="in">${localize("Inches")}</label>
+			<label><input type="radio" name="units" value="cm">${localize("Cm")}</label>
+			<label><input type="radio" name="units" value="px">${localize("Pixels")}</label>
+		</div>
+	`);
 	$units.find(`[value=${current_unit}]`).attr({checked: true});
 	$units.on("change", () => {
 		const new_unit = $units.find(":checked").val();
@@ -2206,14 +2210,22 @@ function image_attributes(){
 		current_unit = new_unit;
 	}).triggerHandler("change");
 
-	const $colors = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Colors")}</legend>`);
-	$colors.append(`<label><input type="radio" name="colors" value="monochrome">${localize("Black and white")}</label>`);
-	$colors.append(`<label><input type="radio" name="colors" value="polychrome">${localize("Colors")}</label>`);
+	const $colors = $(E("fieldset")).appendTo($main).append(`
+		<legend>${localize("Colors")}</legend>
+		<div class="fieldset-body">
+			<label><input type="radio" name="colors" value="monochrome">${localize("Black and white")}</label>
+			<label><input type="radio" name="colors" value="polychrome">${localize("Colors")}</label>
+		</div>
+	`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({checked: true});
 
-	const $transparency = $(E("fieldset")).appendTo($main).append(`<legend>${localize("Transparency")}</legend>`);
-	$transparency.append(`<label><input type="radio" name="transparency" value="transparent">${localize("Transparent")}</label>`);
-	$transparency.append(`<label><input type="radio" name="transparency" value="opaque">${localize("Opaque")}</label>`);
+	const $transparency = $(E("fieldset")).appendTo($main).append(`
+		<legend>${localize("Transparency")}</legend>
+		<div class="fieldset-body">
+			<label><input type="radio" name="transparency" value="transparent">${localize("Transparent")}</label>
+			<label><input type="radio" name="transparency" value="opaque">${localize("Opaque")}</label>
+		</div>
+	`);
 	$transparency.find(`[value=${transparency ? "transparent" : "opaque"}]`).attr({checked: true});
 
 	// Buttons on the right

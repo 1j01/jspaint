@@ -696,11 +696,11 @@ html, body, .jspaint {
 .attributes-window .window-content {
 	direction: rtl;
 }
-.attributes-window fieldset {
+.attributes-window fieldset .fieldset-body {
 	display: grid;
 	grid-template-columns: calc(80px * 2) 80px;
 }
-.attributes-window fieldset:first-of-type {
+.attributes-window fieldset:first-of-type .fieldset-body {
 	grid-template-columns: 80px 80px 80px;
 }
 
