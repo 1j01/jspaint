@@ -2363,14 +2363,17 @@ function image_flip_and_rotate(){
 		<label><input type="radio" name="rotate-by-angle" value="270"/>270°</label>
 		<label><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" value="" class="no-spinner inset-deep" style="width: 50px"/> ${localize("Degrees")}</label>
 	`);
-	$rotate_by_angle.find("input").attr({disabled: true});
-
-	$fieldset.find("input").on("change", () => {
-		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
-		$rotate_by_angle.find("input").attr({
-			disabled: action !== "rotate-by-angle"
-		});
-	});
+	// Disabling inputs makes them not even receive mouse events,
+	// and so pointer-events: none is needed to respond to events on the parent,
+	// but it doesn't seem very useful either.
+	// Probably they should just be enabled, if you're supposed to be able to interact with them!
+	// $rotate_by_angle.find("input").attr({disabled: true}).css({pointerEvents: "none"});
+	// $fieldset.find("input").on("change", () => {
+	// 	const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+	// 	$rotate_by_angle.find("input").attr({
+	// 		disabled: action !== "rotate-by-angle"
+	// 	});
+	// });
 	$rotate_by_angle.find("label, input").on("click", (e)=> {
 		// Select "Rotate by angle" and enable subfields
 		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
@@ -2385,7 +2388,6 @@ function image_flip_and_rotate(){
 		// Select the radio for this field
 		$label.find("input[type='radio']").prop("checked", true);
 	});
-	// @TODO: enable all controls that are accessable to the pointer
 
 	$fieldset.find("label").css({display: "block"});
 
