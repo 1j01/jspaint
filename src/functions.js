@@ -272,14 +272,34 @@ function set_magnification(scale){
 }
 
 let $custom_zoom_window;
+
+let dev_custom_zoom = false;
+try {
+	dev_custom_zoom = localStorage.dev_custom_zoom === "true";
+	// eslint-disable-next-line no-empty
+} catch (error) { }
+if (dev_custom_zoom) {
+	$(()=> {
+		show_custom_zoom_window();
+		$custom_zoom_window.css({
+			left: 80,
+			top: 50,
+			opacity: 0.5,
+		});
+	});
+}
+
 function show_custom_zoom_window() {
 	if ($custom_zoom_window) {
 		$custom_zoom_window.close();
 	}
 	const $w = new $FormToolWindow(localize("Custom Zoom"));
 	$custom_zoom_window = $w;
+	$w.addClass("custom-zoom-window");
 
-	// @TODO: show Current zoom: blah% ?
+	// @TODO: update when zoom changes
+	$w.$main.append(`<div class='current-zoom'>${localize("Current zoom:")} <bdi>${magnification * 100}%</bdi></div>`);
+
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append(`<legend>${localize("Zoom to")}</legend>`);
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='1'/>100%</label>");
@@ -287,7 +307,7 @@ function show_custom_zoom_window() {
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='4'/>400%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='6'/>600%</label>");
 	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='8'/>800%</label>");
-	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='really-custom'/><input type='number' min='10' max='1000' name='really-custom-zoom-input' class='inset-deep' value=''/>%</label>");
+	$fieldset.append("<label><input type='radio' name='custom-zoom-radio' value='really-custom'/><input type='number' min='10' max='1000' name='really-custom-zoom-input' class='inset-deep no-spinner' value=''/>%</label>");
 	let is_custom = true;
 	$fieldset.find("input[type=radio]").get().forEach((el)=> {
 		if (parseFloat(el.value) === magnification) {

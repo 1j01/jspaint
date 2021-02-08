@@ -657,6 +657,7 @@ html, body, .jspaint {
 .window-content > form {
 	display: flex;
 	flex-flow: row;
+	direction: ltr;
 }
 .dialogue-window .window-content > form {
 	flex-flow: column;
@@ -695,6 +696,25 @@ html, body, .jspaint {
 .attributes-window fieldset {
 	display: flex;
 	justify-content: space-around; /* this isn't really what the layout is like in mspaint, but it spaces things out at least */
+}
+
+.custom-zoom-window .current-zoom {
+	margin: 10px 15px;
+}
+.custom-zoom-window fieldset {
+	display: flex;
+    flex-flow: column wrap;
+    width: 240px;
+	height: 80px;
+    padding: 12px 5px;
+    row-gap: 10px;
+	margin: 8px;
+}
+.custom-zoom-window bdi {
+	margin: 0 10px;
+}
+.custom-zoom-window input[name='really-custom-zoom-input'] {
+	width: 50px;
 }
 
 /* @TODO: part of os-gui */
