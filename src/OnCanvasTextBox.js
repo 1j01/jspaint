@@ -182,6 +182,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 			this.height = height;
 			this.position();
 			update();
+			// clear canvas to avoid an occasional flash of the old canvas (with old size) in the new position
+			// (trade it off for a flash of the background behind the textbox)
+			this.canvas.width = width;
+			this.canvas.height = height;
 		});
 		let mox, moy; // mouse offset
 		const pointermove = e => {
