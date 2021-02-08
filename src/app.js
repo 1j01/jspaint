@@ -309,8 +309,9 @@ const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
 const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
 let canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
-const getRect = ()=> ({x: 0, y: 0, width: canvas.width, height: canvas.height});
-const $canvas_handles = $Handles($canvas_area, getRect, {
+const $canvas_handles = $Handles($canvas_area, {
+	get_rect: ()=> ({x: 0, y: 0, width: canvas.width, height: canvas.height}),
+	set_rect: ({width, height})=> resize_canvas_and_save_dimensions(width, height),
 	outset: 4,
 	get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
 	get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
@@ -414,10 +415,6 @@ $G.on("eye-gaze-mode-toggled", ()=> {
 	// prevent_selection($toolbox2);
 });
 
-
-$canvas_area.on("user-resized", (_event, _x, _y, unclamped_width, unclamped_height) => {
-	resize_canvas_and_save_dimensions(unclamped_width, unclamped_height);
-});
 
 $G.on("resize", () => { // for browser zoom, and in-app zoom of the canvas
 	update_canvas_rect();

@@ -132,11 +132,23 @@ class OnCanvasTextBox extends OnCanvasObject {
 		
 		this.$el.append(this.$editor);
 		this.$editor[0].focus();
-		const getRect = ()=> ({x: this.x, y: this.y, width: this.width, height: this.height});
-		this.$handles = $Handles(this.$el, getRect, {
+		this.$handles = $Handles(this.$el, {
 			outset: 2,
 			thick: true,
-			constrain: ({x, y, width, height}, x_axis, y_axis)=> {
+			get_rect: ()=> ({x: this.x, y: this.y, width: this.width, height: this.height}),
+			set_rect: ({x, y, width, height}) => {
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.position();
+				update();
+				// clear canvas to avoid an occasional flash of the old canvas (with old size) in the new position
+				// (trade it off for a flash of the background behind the textbox)
+				this.canvas.width = width;
+				this.canvas.height = height;
+			},
+			constrain_rect: ({x, y, width, height}, x_axis, y_axis)=> {
 				// remember dimensions
 				const old_x = this.x;
 				const old_y = this.y;
@@ -174,18 +186,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 				return {x, y, width, height};
 			},
-		});
-		this.$el.on("user-resized", (_event, x, y, width, height) => {
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-			this.position();
-			update();
-			// clear canvas to avoid an occasional flash of the old canvas (with old size) in the new position
-			// (trade it off for a flash of the background behind the textbox)
-			this.canvas.width = width;
-			this.canvas.height = height;
 		});
 		let mox, moy; // mouse offset
 		const pointermove = e => {

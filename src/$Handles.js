@@ -1,5 +1,5 @@
 
-function $Handles($container, getRect, options){
+function $Handles($container, options){
 	const outset = options.outset || 0;
 	const get_offset_left = options.get_offset_left || (() => 0);
 	const get_offset_top = options.get_offset_top || (() => 0);
@@ -60,7 +60,7 @@ function $Handles($container, getRect, options){
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
-				rect = getRect();
+				rect = options.get_rect();
 				const m = to_canvas_coords(event);
 				let delta_x = 0;
 				let delta_y = 0;
@@ -93,8 +93,8 @@ function $Handles($container, getRect, options){
 				new_rect.width = Math.max(1, new_rect.width);
 				new_rect.height = Math.max(1, new_rect.height);
 
-				if (options.constrain) {
-					new_rect = options.constrain(new_rect, x_axis, y_axis);
+				if (options.constrain_rect) {
+					new_rect = options.constrain_rect(new_rect, x_axis, y_axis);
 				} else {
 					new_rect.x = Math.min(new_rect.x, rect.x + rect.width);
 					new_rect.y = Math.min(new_rect.y, rect.y + rect.height);
@@ -122,8 +122,7 @@ function $Handles($container, getRect, options){
 					
 					$resize_ghost.remove();
 					if(dragged){
-						// triggerHandler so it doesn't bubble
-						$container.triggerHandler("user-resized", [rect.x, rect.y, rect.width, rect.height]);
+						options.set_rect(rect);
 					}
 					$container.trigger("update");
 				});
@@ -134,7 +133,7 @@ function $Handles($container, getRect, options){
 		}
 		
 		const update_handle = () => {
-			const rect = getRect();
+			const rect = options.get_rect();
 			const hs = $h.width();
 			if(x_axis === "middle"){
 				$h.css({ left: get_offset_left() + (rect.width * magnification - hs) / 2 });
