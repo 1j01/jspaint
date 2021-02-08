@@ -340,7 +340,7 @@ window.tools = [{
 	},
 	pointerup() {
 		undoable({
-			name: this.color_eraser_mode ? "Color Eraser" : "Eraser",
+			name: get_language().match(/^en\b/) ? (this.color_eraser_mode ? "Color Eraser" : "Eraser") : localize("Eraser/Color Eraser"),
 			icon: get_icon_for_tool(this),
 		}, ()=> {
 			this.render_from_mask(ctx);
