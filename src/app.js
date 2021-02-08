@@ -309,7 +309,7 @@ const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
 const $canvas = $(canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
 let canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
-const getRect = ()=> ({left: 0, top: 0, width: canvas.width, height: canvas.height, right: canvas.width, bottom: canvas.height})
+const getRect = ()=> ({x: 0, y: 0, width: canvas.width, height: canvas.height});
 const $canvas_handles = $Handles($canvas_area, getRect, {
 	outset: 4,
 	get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,

@@ -56,16 +56,16 @@ class OnCanvasSelection extends OnCanvasObject {
 				this.cut_out_background();
 			}
 			this.$el.append(this.canvas);
-			const getRect = ()=> ({left: this.x, top: this.y, width: this.width, height: this.height, right: this.x + this.width, bottom: this.y + this.height})
+			const getRect = ()=> ({x: this.x, y: this.y, width: this.width, height: this.height});
 			this.$handles = $Handles(this.$el, getRect, { outset: 2 });
-			this.$el.on("user-resized", (e, delta_x, delta_y, width, height) => {
+			this.$el.on("user-resized", (_event, x, y, width, height) => {
 				undoable({
 					name: "Resize Selection",
 					icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 					soft: true,
 				}, ()=> {
-					this.x += delta_x;
-					this.y += delta_y;
+					this.x = x;
+					this.y = y;
 					this.width = width;
 					this.height = height;
 					this.position();

@@ -27,7 +27,7 @@ function $Handles($container, getRect, options){
 		
 		$h.attr("touch-action", "none");
 		
-		let delta_x = 0, delta_y = 0, width, height;
+		let rect;
 		let dragged = false;
 		const resizes_height = y_axis !== "middle";
 		const resizes_width = x_axis !== "middle";
@@ -60,30 +60,32 @@ function $Handles($container, getRect, options){
 				$resize_ghost.appendTo($container);
 				dragged = true;
 				
-				const rect = getRect();
+				rect = getRect();
 				const m = to_canvas_coords(event);
+				let delta_x = 0;
+				let delta_y = 0;
 				// @TODO: decide between Math.floor/Math.ceil/Math.round for these values
 				if(x_axis === "right"){
 					delta_x = 0;
-					width = ~~(m.x - rect.left);
+					width = ~~(m.x - rect.x);
 				}else if(x_axis === "left"){
-					delta_x = ~~(m.x - rect.left);
-					width = ~~(rect.right - m.x);
+					delta_x = ~~(m.x - rect.x);
+					width = ~~(rect.x + rect.width - m.x);
 				}else{
 					width = ~~(rect.width);
 				}
 				if(y_axis === "bottom"){
 					delta_y = 0;
-					height = ~~(m.y - rect.top);
+					height = ~~(m.y - rect.y);
 				}else if(y_axis === "top"){
-					delta_y = ~~(m.y - rect.top);
-					height = ~~(rect.bottom - m.y);
+					delta_y = ~~(m.y - rect.y);
+					height = ~~(rect.y + rect.height - m.y);
 				}else{
 					height = ~~(rect.height);
 				}
 				let new_rect = {
-					x: delta_x + get_offset_left(),
-					y: delta_y + get_offset_top(),
+					x: rect.x + delta_x + get_offset_left(),
+					y: rect.y + delta_y + get_offset_top(),
 					width: width,
 					height: height,
 				};
@@ -93,11 +95,12 @@ function $Handles($container, getRect, options){
 				const inset = options.thick ? 3 : 0;
 				$resize_ghost.css({
 					position: "absolute",
-					left: magnification * new_rect.x + inset,
-					top: magnification * new_rect.y + inset,
+					left: magnification * (new_rect.x - rect.x) + inset,
+					top: magnification * (new_rect.y - rect.y) + inset,
 					width: magnification * new_rect.width - inset * 2,
 					height: magnification * new_rect.height - inset * 2,
 				});
+				rect = new_rect;
 			};
 			$h.on("pointerdown", event => {
 				dragged = false;
@@ -112,7 +115,7 @@ function $Handles($container, getRect, options){
 					$resize_ghost.remove();
 					if(dragged){
 						// triggerHandler so it doesn't bubble
-						$container.triggerHandler("user-resized", [delta_x, delta_y, width, height]);
+						$container.triggerHandler("user-resized", [rect.x, rect.y, rect.width, rect.height]);
 					}
 					$container.trigger("update");
 				});
