@@ -748,6 +748,45 @@ function invert_rgb(source_ctx, dest_ctx=source_ctx) {
 	dest_ctx.putImageData(image_data, 0, 0);
 }
 
+function invert_monochrome(source_ctx, dest_ctx=source_ctx) {
+	const image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
+	// Note: values in pixel_array may be different on big endian vs little endian machines.
+	// Only rely on equality of values within the array.
+	const pixel_array = new Uint32Array(image_data.data.buffer);
+	const value_1 = pixel_array[0];
+	let value_2;
+	for(let i=1, len=pixel_array.length; i<len; i+=1){
+		if (pixel_array[i] !== value_1) {
+			value_2 = pixel_array[i];
+			break;
+		}
+	}
+	if (typeof value_2 !== "number") {
+		// Only one color present in the image.
+		// We could've done this in a unified way, but whatever!
+		// Personally, I think this is a CHARMINGLY poor solution.
+		// Or, actually, it's a performance optimization. So yeah.
+		const color_1 = palette[0];
+		const color_2 = palette[14] || palette[1];
+		const rgba_1 = get_rgba_from_color(color_1);
+		if (image_data.data[0] === rgba_1[0] && image_data.data[1] === rgba_1[1] && image_data.data[2] === rgba_1[2] && image_data.data[3] === rgba_1[3]) {
+			dest_ctx.fillStyle = color_2;
+		} else {
+			dest_ctx.fillStyle = color_1;
+		}
+		dest_ctx.fillRect(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
+		return;
+	}
+	for(let i=0, len=pixel_array.length; i<len; i+=1){
+		if (pixel_array[i] === value_1) {
+			pixel_array[i] = value_2;
+		} else {
+			pixel_array[i] = value_1;
+		}
+	}
+	dest_ctx.putImageData(image_data, 0, 0);
+}
+
 function threshold_black_and_white(ctx, threshold) {
 	const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	for(let i=0; i<image_data.data.length; i+=4){

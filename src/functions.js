@@ -1878,7 +1878,11 @@ function image_invert_colors(){
 		name: localize("Invert Colors"),
 		icon: get_help_folder_icon("p_invert.png"),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
-		invert_rgb(original_ctx, new_ctx);
+		if (monochrome && detect_monochrome(original_ctx)) {
+			invert_monochrome(original_ctx, new_ctx);
+		} else {
+			invert_rgb(original_ctx, new_ctx);
+		}
 	});
 }
 
