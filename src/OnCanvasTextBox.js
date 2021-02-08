@@ -47,8 +47,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 			foreignObject.setAttribute("height", this.height);
 
 			const font = text_tool_font;
-			font.color = colors.foreground;
-			font.background = tool_transparent_mode ? "transparent" : colors.background;
+			const get_solid_color = (swatch)=> `rgba(${get_rgba_from_color(swatch).join(", ")}`;
+			font.color = get_solid_color(colors.foreground);
+			font.background = tool_transparent_mode ? "transparent" : get_solid_color(colors.background);
 			this.$editor.add(this.canvas).css({
 				transform: `scale(${magnification})`,
 				transformOrigin: "left top",
