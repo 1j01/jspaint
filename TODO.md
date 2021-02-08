@@ -112,10 +112,8 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 
 
 * Text
-	* Expand box to make room for new lines
-		* If it would go over the edge of the canvas, reject the input (at least, that's what mspaint does)
-	* Minimum size of 3em x 1em
-		* Initially and while resizing
+	* If it would go over the edge of the canvas, reject the input (at least, that's what mspaint does)
+	* Preview minimum size constraint with ghost
 	* Add padding left to text area when font has glyphs that extend left, like italic 'f' in Times New Roman
 		* mspaint has access to font metrics
 		* jspaint could render text to see when it would overflow

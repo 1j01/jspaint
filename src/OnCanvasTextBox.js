@@ -15,16 +15,17 @@ class OnCanvasTextBox extends OnCanvasObject {
 		
 		// inline styles so that they'll be serialized for the SVG
 		this.$editor.css({
-			"position": "absolute",
-			"left": "0",
-			"top": "0",
-			"right": "0",
-			"bottom": "0",
-			"padding": "0",
-			"margin": "0",
-			"border": "0",
-			"resize": "none",
-			"overflow": "hidden",
+			position: "absolute",
+			left: "0",
+			top: "0",
+			right: "0",
+			bottom: "0",
+			padding: "0",
+			margin: "0",
+			border: "0",
+			resize: "none",
+			overflow: "hidden",
+			minWidth: "3em",
 		});
 		var edit_textarea = this.$editor[0];
 		var render_textarea = edit_textarea.cloneNode(false);
@@ -40,11 +41,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 			requestAnimationFrame(()=> {
 				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
 			});
-
-			svg.setAttribute("width", this.width);
-			svg.setAttribute("height", this.height);
-			foreignObject.setAttribute("width", this.width);
-			foreignObject.setAttribute("height", this.height);
 
 			const font = text_tool_font;
 			const get_solid_color = (swatch)=> `rgba(${get_rgba_from_color(swatch).join(", ")}`;
@@ -70,11 +66,32 @@ class OnCanvasTextBox extends OnCanvasObject {
 				background: font.background,
 			});
 
+			// Auto-expand, and apply minimum size.
+			// Must be after font is updated, since the minimum size depends on the font size.
+			edit_textarea.style.height = "";
+			edit_textarea.style.minHeight = "0px";
+			edit_textarea.setAttribute("rows", 1);
+			this.height = Math.max(edit_textarea.scrollHeight, this.height);
+			edit_textarea.removeAttribute("rows");
+			this.width = edit_textarea.scrollWidth;
+			// always needs to update at least this.$editor, since style.height is reset above
+			this.position();
+			this.$el.triggerHandler("update"); // update handles
+			this.$editor.add(render_textarea).css({
+				width: this.width,
+				height: this.height,
+			});
+
 			while (render_textarea.firstChild) {
 				render_textarea.removeChild(render_textarea.firstChild);
 			}
 			render_textarea.appendChild(document.createTextNode(edit_textarea.value));
 			
+			svg.setAttribute("width", this.width);
+			svg.setAttribute("height", this.height);
+			foreignObject.setAttribute("width", this.width);
+			foreignObject.setAttribute("height", this.height);
+
 			var svg_source = new XMLSerializer().serializeToString(svg);
 			var data_url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg_source)}`;
 			
@@ -91,7 +108,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 			img.src = data_url;
 		};
 
-		update();
 		$G.on("option-changed", this._on_option_changed = update);
 		this.$editor.on("input", this._on_input = update);
 		this.$editor.on("scroll", this._on_scroll = ()=> {
@@ -100,7 +116,6 @@ class OnCanvasTextBox extends OnCanvasObject {
 			});
 		});
 
-		
 		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move")
 		});
@@ -173,6 +188,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 			}
 			$fb.applyBounds();
 		};
+
+		// must be after textbox is in the DOM
+		update();
+
 		displace_font_box();
 		
 		// In case a software keyboard opens, like Optikey for eye gaze / head tracking users,
