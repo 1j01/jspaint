@@ -657,6 +657,8 @@ html, body, .jspaint {
 .window-content > form {
 	display: flex;
 	flex-flow: row;
+}
+.window:not(.edit-colors-window) .window-content > form {
 	direction: ltr;
 }
 .dialogue-window .window-content > form {
@@ -684,7 +686,7 @@ html, body, .jspaint {
 }
 
 /* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */
-.window-content label {
+.window:not(.edit-colors-window) .window-content label {
 	display: inline-flex;
 	flex-direction: row;
 	direction: ltr;
