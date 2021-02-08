@@ -675,7 +675,8 @@ html, body, .jspaint {
 
 .stretch-and-skew .window-content,
 .flip-and-rotate .window-content,
-.convert-to-black-and-white .window-content {
+.convert-to-black-and-white .window-content,
+.component-window .window-content {
 	direction: ltr;
 }
 .flip-and-rotate fieldset {
