@@ -2268,9 +2268,15 @@ function image_attributes(){
 			make_opaque();
 		}
 
-		// Must be after resize to avoid weird undoable interaction and such
-		if (monochrome && !image_was_actually_monochrome) {
-			show_convert_to_black_and_white();
+		// 1. Must be after canvas resize to avoid weird undoable interaction and such.
+		// 2. Check that monchrome option changed, same as above.
+		//    Consider the case where color is introduced to the canvas while in monochrome mode.
+		//    We only want to show this dialog if it would also change the palette (above), never leave you on an outdated palette.
+		//    (And it's nice to be able to change other options without worrying about it trying to convert the document to monochrome.)
+		if(monochrome != was_monochrome){
+			if (monochrome && !image_was_actually_monochrome) {
+				show_convert_to_black_and_white();
+			}
 		}
 
 		image_attributes.$window.close();
