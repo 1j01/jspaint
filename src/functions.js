@@ -2258,9 +2258,6 @@ function image_attributes(){
 			$colorbox.rebuild_palette();
 			$G.trigger("option-changed");
 		}
-		if (monochrome && !image_was_actually_monochrome) {
-			show_convert_to_black_and_white();
-		}
 
 		const unit_to_px = unit_sizes_in_px[unit];
 		const width = $width.val() * unit_to_px;
@@ -2269,6 +2266,11 @@ function image_attributes(){
 
 		if (!transparency && has_any_transparency(ctx)) {
 			make_opaque();
+		}
+
+		// Must be after resize to avoid weird undoable interaction and such
+		if (monochrome && !image_was_actually_monochrome) {
+			show_convert_to_black_and_white();
 		}
 
 		image_attributes.$window.close();
