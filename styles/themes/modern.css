@@ -305,16 +305,20 @@ body,
 	mix-blend-mode: difference;
 }
 .component-ghost:not(.dock):after,
-.component-ghost:not(.dock):before {
+.component-ghost:not(.dock):before,
+/* TODO: thiccer resize ghost (4px instead of 3px) */
+.resize-ghost.thick:after,
+.resize-ghost.thick:before {
 	content: '';
 	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
 	outline: 1px dotted #ccc;
-	mix-blend-mode: difference;
 }
-.component-ghost:not(.dock):after {
+.component-ghost:not(.dock):after,
+.resize-ghost.thick:after {
 	outline-offset: 1px;
 }
-.component-ghost:not(.dock):before {
+.component-ghost:not(.dock):before,
+.resize-ghost.thick:before {
 	outline-offset: 2px;
 }
 

@@ -6,6 +6,9 @@ function $Handles($container, getRect, options){
 	const size_only = options.size_only || false;
 	
 	const $resize_ghost = $(E("div")).addClass("resize-ghost");
+	if (options.thick) {
+		$resize_ghost.addClass("thick");
+	}
 	const handles = $.map([
 		["top", "right"], // ↗
 		["top", "middle"], // ↑
@@ -78,12 +81,13 @@ function $Handles($container, getRect, options){
 				}else{
 					height = ~~(rect.height);
 				}
+				const inset = options.thick ? 3 : 0;
 				$resize_ghost.css({
 					position: "absolute",
-					left: magnification * delta_x + get_offset_left(),
-					top: magnification * delta_y + get_offset_top(),
-					width: magnification * width,
-					height: magnification * height,
+					left: magnification * delta_x + get_offset_left() + inset,
+					top: magnification * delta_y + get_offset_top() + inset,
+					width: magnification * width - inset * 2,
+					height: magnification * height - inset * 2,
 				});
 			};
 			$h.on("pointerdown", event => {
