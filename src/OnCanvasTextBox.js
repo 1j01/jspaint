@@ -136,7 +136,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$handles = $Handles(this.$el, getRect, {
 			outset: 2,
 			thick: true,
-			constrain: ({x, y, width, height})=> {
+			constrain: ({x, y, width, height}, x_axis, y_axis)=> {
 				// remember dimensions
 				const old_x = this.x;
 				const old_y = this.y;
@@ -152,10 +152,16 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 				// apply constraints
 				auto_size();
+
+				// prevent free movement via resize
+				if (x_axis === "left") {
+					x = Math.min(this.x, old_x + old_width - this.width);
+				}
+				if (y_axis === "top") {
+					y = Math.min(this.y, old_y + old_height - this.height);
+				}
 				
 				// remember constrained dimensions
-				x = this.x;
-				y = this.y;
 				width = this.width;
 				height = this.height;
 

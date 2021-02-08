@@ -89,11 +89,17 @@ function $Handles($container, getRect, options){
 					width: width,
 					height: height,
 				};
+
 				new_rect.width = Math.max(1, new_rect.width);
 				new_rect.height = Math.max(1, new_rect.height);
+
 				if (options.constrain) {
-					new_rect = options.constrain(new_rect);
+					new_rect = options.constrain(new_rect, x_axis, y_axis);
+				} else {
+					new_rect.x = Math.min(new_rect.x, rect.x + rect.width);
+					new_rect.y = Math.min(new_rect.y, rect.y + rect.height);
 				}
+
 				const inset = options.thick ? 3 : 0;
 				$resize_ghost.css({
 					position: "absolute",
