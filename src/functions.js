@@ -791,15 +791,25 @@ function load_format_and_palette_from_image_file(file) {
 					colors.background = palette[1];
 					monochrome = false;
 				}
-				$colorbox.rebuild_palette();
-				$G.trigger("option-changed");
 				if (monochrome) {
 					window.console && console.log(`Loaded palette from 1bpp BMP file: ${colorTable.map(()=> `%c█`).join("")}`, ...colorTable.map((color)=> `color: rgb(${color.r}, ${color.g}, ${color.b});`));
 				} else {
 					window.console && console.log(`Loaded palette from BMP file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
 				}
+			} else if (monochrome) {
+				palette = default_palette;
+				monochrome = false;
 			}
+			$colorbox.rebuild_palette();
+			$G.trigger("option-changed");
 		} else {
+			// @TODO: read palette from PNG, GIF files
+			if (monochrome) {
+				palette = default_palette;
+				monochrome = false;
+			}
+			$colorbox.rebuild_palette();
+			$G.trigger("option-changed");
 			file_format = {
 				// bmp: "image/bmp",
 				png: "image/png",
