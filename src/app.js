@@ -651,12 +651,14 @@ const $status_text = $(E("div")).addClass("status-text status-field inset-shallo
 const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 const $status_size = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 
+const news_seen_key = "jspaint latest news seen";
+const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
-		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<span class='marquee' dir='ltr' style='--text-width: 52ch; --animation-duration: 5s;'>
+		<img src='images/new.gif' width='31' height='16' alt=''/>
+		<span class='marquee' dir='ltr' style='--text-width: 45ch; --animation-duration: 2s;'>
 			<span>
-				<strong>New!</strong>&nbsp;Localization, Eye Gaze Mode, and Speech Recognition!
+				Saving, Palette Features, Docking Improvements, and Many Fixes
 			</span>
 		</span>
 	</a>
@@ -664,10 +666,23 @@ const $news_indicator = $(`
 $news_indicator.on("click auxclick", (event)=> {
 	event.preventDefault();
 	show_news();
+	$news_indicator.remove();
+	try {
+		localStorage[news_seen_key] = latest_news_datetime;
+	// eslint-disable-next-line no-empty
+	} catch (error) {}
 });
-// @TODO: use localStorage to show until clicked, if available
-// and show for a longer period of time after the update, if available
-if (Date.now() < Date.parse("Jan 5 2021 23:42:42 GMT-0500")) {
+let news_seen;
+let local_storage_unavailable;
+try {
+	news_seen = localStorage[news_seen_key];
+} catch (error) {
+	local_storage_unavailable = true;
+}
+const news_period_if_can_dismiss = 15;
+const news_period_if_cannot_dismiss = 5;
+const news_period = local_storage_unavailable ? news_period_if_cannot_dismiss : news_period_if_can_dismiss;
+if (Date.now() < Date.parse(latest_news_datetime) + news_period * 24*60*60*1000 && news_seen !== latest_news_datetime) {
 	$status_area.append($news_indicator);
 }
 

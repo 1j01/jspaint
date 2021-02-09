@@ -101,6 +101,109 @@
 			<p>Support the project at <a href="https://www.paypal.me/IsaiahOdhner" target="_blank">paypal.me/IsaiahOdhner</a>.</p>
 		</div>
 		<div id="news" hidden>
+			<article class="news-entry" id="news-2021-saving">
+				<h1>Saving Features, Palette Features, Docking Improvements, and Many Fixes</h1>
+				<time datetime="2021-02-24">2021-02-24</time>
+				<!-- <img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src=""/> -->
+				<h2>New Features</h2>
+				<p>
+					The <b>Text tool</b> now automatically expands the textbox as you type.
+					When resizing, there's now a minimum size based on the text in the textbox.
+					It previews exactly what size it will end up with when resizing.
+				</p>
+				<p>
+					<b>Save</b> (<kbd>Ctrl+S</kbd>) can now save over the open file, in Chrome, Edge, and Opera browsers.
+					This works using new <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a>.
+					Always use <b>Save As</b> (<kbd>Ctrl+Shift+S</kbd>) if you want to save a new file.
+				</p>
+				<p>
+					<b>Save As</b> now asks for a file name and format.
+					PNG, GIF, and BMP are supported, including indexed color BMPs.
+				</p>
+				<p>
+					Tip: Use PNG if you don't have a specific reason to use another format,
+					as it has the best quality when saving.
+				</p>
+				<p>
+					If you open a BMP file with a palette, the palette is loaded into the Colors box.
+					If you load a monochrome BMP file, it loads a gradient of dither patterns into the Colors box.
+				</p>
+				<p>
+					<b>Black and White</b> mode in <b>Image > Attributes</b> is generalized to a monochrome mode
+					(although it's still called "Black and White" in the Attributes window.)
+					If an image has only two colors, when switching to "Black and White" mode,
+					it automatically adapts to these colors and gives you a gradient of dither patterns in the Colors box.
+				</p>
+				<p>
+					If you use <b>Image > Invert</b>, in monochrome mode, it flips the two colors in the image,
+					instead of changing colors to their RGB opposites.
+					(If the image is pure black and white, these two operations are equivalent.)
+				</p>
+				<p>
+					<b>Colors > Save Colors</b> also now asks for a file name and format.
+					An absurd number of file formats are supported.
+					You can even export CSS variables for use in a web design project.
+					RIFF Palette (*.pal) is compatible with MS Paint, and GIMP Palette (*.gpl) is compatible with many open source graphics programs such as Inkscape and Krita.
+				</p>
+				<p>
+					You can find lots of palettes to use on <a target="_blank" href="https://lospec.com/palette-list">Lospec</a>.
+					Download a palette as GIMP GPL (or several other formats) and use <b>Colors > Get Colors</b> and select the file,
+					or simply drag and drop the file onto JS Paint to load the palette.
+				</p>
+				<p>
+					<b>Docking:</b> If you drag the Colors box or Tools box out into a window,
+					you can now dock it back while dragging it by the titlebar.
+					Previously to dock it you had to drag it by the space around the tool buttons or color wells,
+					or double click the titlebar.
+				</p>
+				<p>
+					Improved layout of <b>View > Zoom > Custom Zoom</b> window, matching the design in MS Paint.
+				</p>
+				<p>
+					<b>Error details</b> are now hidden by default in error dialogs.
+					The details may be more overwhelming than useful in a lot of cases,
+					but if you need them, you can expand the Details.
+				</p>
+				<p>
+					The progress bar when rendering a GIF animation (<b>Extras > Render History As GIF</b>) is now thematically styled.
+				</p>
+				<h2>Fixes</h2>
+				<p>
+					The selection and textboxes no longer "blow up" if you resize them to a minimal size.
+					And they can no longer be freely moved when you drag past the minimal size when resizing.
+					(You can of course still freely move a selection by dragging from the center.) 
+				</p>
+				<p>
+					I fixed a bug where vertically thin selections were difficult or impossible to drag (despite showing a drag cursor).
+					(The draggable region was offset outside of the selection box.)
+					I fixed a similar bug where tool previews would get offset if the canvas's height was very small.
+				</p>
+				<p>
+					Resize handles no longer get smaller when the object to resize is very small.
+					The draggable region for handles no longer gets smaller either, except in dimensions where it must.
+					It's now considerably smarter than Windows 10 about where it lets you drag handles from.
+				</p>
+				<p>
+					In <b>Image > Flip/Rotate</b>, you can now click the custom degrees input field to select "Rotate by angle",
+					as it's no longer disabled until you select "Rotate by angle".
+					You can also tab through the controls with the keyboard to select the options more easily.
+				</p>
+				<p>
+					The magnifier preview and other tool previews are now hidden while dragging the Colors box or Tools box.
+					It was very confusing looking with the magnifier preview,
+					since it looks similar to the preview outline when dragging the Colors box or Tools box.
+				</p>
+				<p>
+					For languages that read <b>right-to-left</b>, the History view (<b>Edit > History</b>) now uses a right-to-left layout,
+					and the color box and tool box no longer flip their layout when dragging them into a window or docking them back to a side of the application.
+				</p>
+				<p>
+					The history view and error messages use <b>more localized text</b>.
+				</p>
+				<p>
+					Fixed <b>cut off icons</b> in buttons in the help window toolbar in the Modern theme.
+				</p>
+			</article>
 			<article class="news-entry" id="news-2020-accessibility-update">
 				<h1>The Accessibility Update</h1>
 				<time datetime="2020-12-20">2020-12-20</time>
