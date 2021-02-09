@@ -711,13 +711,16 @@ html, body, .jspaint {
 	margin: 10px 15px;
 }
 .custom-zoom-window fieldset {
+	margin: 8px;
+	padding: 0;
+}
+.custom-zoom-window .fieldset-body {
 	display: flex;
     flex-flow: column wrap;
     width: 240px;
-	height: 80px;
+	height: 70px;
     padding: 12px 5px;
     row-gap: 10px;
-	margin: 8px;
 }
 .custom-zoom-window bdi {
 	margin: 0 10px;
