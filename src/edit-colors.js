@@ -67,7 +67,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			return;
 		}
 
-		if (monochrome && swatch_index === 0 || swatch_index === 14) {
+		if (monochrome && (swatch_index === 0 || swatch_index === 14)) {
 			// when editing first color in first or second row (the solid base colors),
 			// update whole monochrome patterns palette and image
 			const old_rgba = get_rgba_from_color(palette[swatch_index]);
