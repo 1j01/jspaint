@@ -578,8 +578,8 @@ html, body, .jspaint {
 	margin-top: 8px;
 }
 .save-as .window-content {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 .save-as .button-group button {
 	margin: 5px;
