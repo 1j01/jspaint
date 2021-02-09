@@ -129,6 +129,9 @@ html, body, .jspaint {
 .selection > canvas {
 	/* @TODO: maybe don't include the canvas in the DOM (is it helpful to inspect it tho? it's not critical...) */
 	opacity: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
 }
 .selection > img,
 .selection > canvas,
