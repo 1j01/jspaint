@@ -293,31 +293,62 @@ body,
 	border: 1px solid gray;
 }
 
+.component-ghost {
+	border-radius: 2px;
+	transition: border-radius .2s ease, border-width .2s ease, opacity .2s ease;
+	outline: 0;
+}
 /* NOTE: copy/pasted from classic.css */
 /* @TODO: actually show a preview of the component itself when dragging for the modern theme */
 /* @TODO: cursor maybe? just when already dragging? */
 .component-ghost.dock {
-	outline: 1px solid #ccc;
-	mix-blend-mode: difference;
+	border: 1px solid #2196f3;
+	animation: squish 0.7s ease infinite;
+}
+@keyframes squish {
+	0% {
+		transform: scale(90%, 110%);
+	}
+	50% {
+		transform: scale(110%, 90%);
+	}
+	100% {
+		transform: scale(90%, 110%);
+	}
 }
 .component-ghost:not(.dock) {
-	outline: 1px dotted #ccc;
-	mix-blend-mode: difference;
+	border: 4px solid #2196f3;
+	opacity: 0.3;
+	animation: bobble 1s ease-in-out infinite;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
 }
-.component-ghost:not(.dock):after,
-.component-ghost:not(.dock):before,
-/* TODO: thiccer resize ghost (4px instead of 3px) */
+@keyframes bobble {
+	0% {
+		transform: scale(95%);
+	}
+	50% {
+		transform: scale(105%);
+	}
+	100% {
+		transform: scale(95%);
+	}
+}
+@media (prefers-reduced-motion) {
+	.component-ghost {
+		animation: none !important;
+	}
+}
+
 .resize-ghost.thick:after,
 .resize-ghost.thick:before {
 	content: '';
 	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
 	outline: 1px dotted #ccc;
 }
-.component-ghost:not(.dock):after,
 .resize-ghost.thick:after {
 	outline-offset: 1px;
 }
-.component-ghost:not(.dock):before,
 .resize-ghost.thick:before {
 	outline-offset: 2px;
 }
