@@ -1,5 +1,5 @@
 
-function $Handles($container, options){
+function $Handles($handles_container, $ghost_container, options){
 	const outset = options.outset || 0;
 	const get_offset_left = options.get_offset_left || (() => 0);
 	const get_offset_top = options.get_offset_top || (() => 0);
@@ -23,7 +23,7 @@ function $Handles($container, options){
 		const x_axis = pos[1];
 		
 		const $h = $(E("div")).addClass("handle");
-		$h.appendTo($container);
+		$h.appendTo($handles_container);
 		
 		$h.attr("touch-action", "none");
 		
@@ -57,7 +57,7 @@ function $Handles($container, options){
 			$h.css({cursor});
 			
 			const drag = (event) => {
-				$resize_ghost.appendTo($container);
+				$resize_ghost.appendTo($ghost_container);
 				dragged = true;
 				
 				rect = options.get_rect();
@@ -103,8 +103,8 @@ function $Handles($container, options){
 				const inset = options.thick ? 3 : 0;
 				$resize_ghost.css({
 					position: "absolute",
-					left: magnification * (new_rect.x - rect.x) + inset,
-					top: magnification * (new_rect.y - rect.y) + inset,
+					left: magnification * new_rect.x + inset,
+					top: magnification * new_rect.y + inset,
 					width: magnification * new_rect.width - inset * 2,
 					height: magnification * new_rect.height - inset * 2,
 				});
@@ -124,7 +124,7 @@ function $Handles($container, options){
 					if(dragged){
 						options.set_rect(rect);
 					}
-					$container.trigger("update");
+					$handles_container.trigger("update");
 				});
 			});
 			$h.on("mousedown selectstart", event => {
@@ -155,7 +155,7 @@ function $Handles($container, options){
 			});
 		};
 		
-		$container.on("update resize scroll", update_handle);
+		$handles_container.on("update resize scroll", update_handle);
 		$G.on("resize theme-load", update_handle);
 		setTimeout(update_handle, 50);
 		

@@ -56,7 +56,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				this.cut_out_background();
 			}
 			this.$el.append(this.canvas);
-			this.$handles = $Handles(this.$el, {
+			this.$handles = $Handles(this.$el, $canvas_area, {
 				outset: 2,
 				get_rect: ()=> ({x: this.x, y: this.y, width: this.width, height: this.height}),
 				set_rect: ({x, y, width, height}) => {

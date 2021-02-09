@@ -132,7 +132,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		
 		this.$el.append(this.$editor);
 		this.$editor[0].focus();
-		this.$handles = $Handles(this.$el, {
+		this.$handles = $Handles(this.$el, $canvas_area, {
 			outset: 2,
 			thick: true,
 			get_rect: ()=> ({x: this.x, y: this.y, width: this.width, height: this.height}),
