@@ -70,11 +70,29 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 		if (monochrome && (swatch_index === 0 || swatch_index === 14)) {
 			// when editing first color in first or second row (the solid base colors),
 			// update whole monochrome patterns palette and image
-			const old_rgba = get_rgba_from_color(palette[swatch_index]);
+			let old_rgba = get_rgba_from_color(palette[swatch_index]);
 			const new_rgba = get_rgba_from_color(color);
 			const other_rgba = get_rgba_from_color(palette[14 - swatch_index]);
-			const was_monochrome = !!detect_monochrome(ctx);
+			const was_monochrome = detect_monochrome(ctx);
 			if (was_monochrome) {
+				// HTML5 Canvas API is unreliable for exact colors.
+				if (
+					old_rgba.toString() !== was_monochrome[0].toString() &&
+					old_rgba.toString() !== was_monochrome[1].toString()
+				) {
+					// Find the nearer color in the image data to replace.
+					const dists = was_monochrome.map((rgba)=>
+						Math.abs(rgba[0] - old_rgba[0]) +
+						Math.abs(rgba[1] - old_rgba[1]) +
+						Math.abs(rgba[2] - old_rgba[2]) +
+						Math.abs(rgba[3] - old_rgba[3])
+					);
+					if (dists[0] < dists[1]) {
+						old_rgba = was_monochrome[0];
+					} else {
+						old_rgba = was_monochrome[1];
+					}
+				}
 				undoable({
 					name: "Recolor",
 					icon: get_help_folder_icon("p_monochrome_undo.png"),
