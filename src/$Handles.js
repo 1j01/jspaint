@@ -1,8 +1,10 @@
 
-function $Handles($handles_container, $ghost_container, options){
+function $Handles($handles_container, $object_container, options){
 	const outset = options.outset || 0;
 	const get_offset_left = options.get_offset_left || (() => 0);
 	const get_offset_top = options.get_offset_top || (() => 0);
+	// const get_offset_left = ($el)=> parseFloat($el.css("padding-left")) + ($el === $canvas_area)
+	// const get_offset_top = ($el)=> parseFloat($el.css("padding-top")) + ($el === $canvas_area)
 	const size_only = options.size_only || false;
 	
 	const $resize_ghost = $(E("div")).addClass("resize-ghost");
@@ -57,7 +59,7 @@ function $Handles($handles_container, $ghost_container, options){
 			$h.css({cursor});
 			
 			const drag = (event) => {
-				$resize_ghost.appendTo($ghost_container);
+				$resize_ghost.appendTo($object_container);
 				dragged = true;
 				
 				rect = options.get_rect();
@@ -84,8 +86,8 @@ function $Handles($handles_container, $ghost_container, options){
 					height = ~~(rect.height);
 				}
 				let new_rect = {
-					x: rect.x + delta_x + get_offset_left(),
-					y: rect.y + delta_y + get_offset_top(),
+					x: rect.x + delta_x,// + get_offset_left($object_container),
+					y: rect.y + delta_y,// + get_offset_top($object_container),
 					width: width,
 					height: height,
 				};
@@ -100,13 +102,12 @@ function $Handles($handles_container, $ghost_container, options){
 					new_rect.y = Math.min(new_rect.y, rect.y + rect.height);
 				}
 
-				const inset = options.thick ? 3 : 0;
 				$resize_ghost.css({
 					position: "absolute",
-					left: magnification * new_rect.x + inset,
-					top: magnification * new_rect.y + inset,
-					width: magnification * new_rect.width - inset * 2,
-					height: magnification * new_rect.height - inset * 2,
+					left: magnification * new_rect.x + get_offset_left(),
+					top: magnification * new_rect.y + get_offset_left(),
+					width: magnification * new_rect.width - 2,
+					height: magnification * new_rect.height - 2,
 				});
 				rect = new_rect;
 			};
@@ -135,19 +136,23 @@ function $Handles($handles_container, $ghost_container, options){
 		const update_handle = () => {
 			const rect = options.get_rect();
 			const hs = $h.width();
+			// const x = rect.x + get_offset_left();
+			// const y = rect.y + get_offset_top();
+			const x = 0;//get_offset_left($handles_container);
+			const y = 0;//get_offset_top($handles_container);
 			if(x_axis === "middle"){
-				$h.css({ left: get_offset_left() + (rect.width * magnification - hs) / 2 });
+				$h.css({ left: x + (rect.width * magnification - hs) / 2 });
 			}else if(x_axis === "left"){
-				$h.css({ left: get_offset_left() - outset });
+				$h.css({ left: x - outset });
 			}else if(x_axis === "right"){
-				$h.css({ left: get_offset_left() + (rect.width * magnification - hs/2) });
+				$h.css({ left: x + (rect.width * magnification - hs/2) });
 			}
 			if(y_axis === "middle"){
-				$h.css({ top: get_offset_top() + (rect.height * magnification - hs) / 2 });
+				$h.css({ top: y + (rect.height * magnification - hs) / 2 });
 			}else if(y_axis === "top"){
-				$h.css({ top: get_offset_top() - outset });
+				$h.css({ top: y - outset });
 			}else if(y_axis === "bottom"){
-				$h.css({ top: get_offset_top() + (rect.height * magnification - hs/2) });
+				$h.css({ top: y + (rect.height * magnification - hs/2) });
 			}
 			$h.css({
 				"max-width": rect.width * magnification / 2,

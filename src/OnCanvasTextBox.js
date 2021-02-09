@@ -186,6 +186,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 				return {x, y, width, height};
 			},
+			get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
+			get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
 		});
 		let mox, moy; // mouse offset
 		const pointermove = e => {
