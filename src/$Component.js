@@ -243,7 +243,7 @@ function $Component(title, className, orientation, $el){
 		if(!validTarget){ return; }
 		// Don't allow dragging in eye gaze mode
 		if($("body").hasClass("eye-gaze-mode")){ return; }
-
+		
 		const docked = imagine_docked_dimensions();
 		const rect = $c[0].getBoundingClientRect();
 		ox = rect.left - e.clientX;
@@ -255,10 +255,16 @@ function $Component(title, className, orientation, $el){
 		ox2 = rect.left - offsetLeft - e.clientX;
 		oy2 = rect.top - offsetTop - e.clientY;
 		
+		$("body").addClass("dragging");
+		$("body").css({cursor: "default"}).addClass("cursor-bully");
+
 		$G.on("pointermove", drag_update_position);
 		$G.one("pointerup", e => {
 			$G.off("pointermove", drag_update_position);
 			drag_onpointerup(e);
+			$("body").removeClass("dragging");
+			$("body").css({cursor: ""}).removeClass("cursor-bully");
+			$canvas.trigger("pointerleave"); // prevent magnifier preview showing until you move the mouse
 		});
 		
 		render_ghost(e);

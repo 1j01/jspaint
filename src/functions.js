@@ -180,6 +180,21 @@ function update_helper_layer_immediately() {
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
 	
 	var tools_to_preview = [...selected_tools];
+
+	// Don't preview tools while dragging components/component windows
+	// (The magnifier preview is especially confusing looking together with the component preview!)
+	if ($("body").hasClass("dragging") && !pointer_active) {
+		// tools_to_preview.length = 0;
+		// Curve and Polygon tools have a persistant state over multiple gestures,
+		// which is, as of writing, part of the "tool preview"; it's ugly,
+		// but at least they don't have ALSO a brush like preview, right?
+		// so we can just allow those thru
+		tools_to_preview = tools_to_preview.filter((tool)=>
+			tool.id === TOOL_CURVE ||
+			tool.id === TOOL_POLYGON
+		);
+	}
+
 	// the select box previews draw the document canvas onto the preview canvas
 	// so they have something to invert within the preview canvas
 	// but this means they block out anything earlier
