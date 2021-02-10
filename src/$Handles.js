@@ -105,7 +105,7 @@ function $Handles($handles_container, $object_container, options){
 				$resize_ghost.css({
 					position: "absolute",
 					left: magnification * new_rect.x + get_offset_left(),
-					top: magnification * new_rect.y + get_offset_left(),
+					top: magnification * new_rect.y + get_offset_top(),
 					width: magnification * new_rect.width - 2,
 					height: magnification * new_rect.height - 2,
 				});
