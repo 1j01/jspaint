@@ -2280,13 +2280,20 @@ function image_attributes(){
 		const unit = $units.find(":checked").val();
 
 		const was_monochrome = monochrome;
-		const monochrome_info = detect_monochrome(ctx);
+		let monochrome_info;
 
 		image_attributes.unit = unit;
 		transparency = (transparency_option == "transparent");
 		monochrome = (colors_option == "monochrome");
 
 		if(monochrome != was_monochrome){
+			if (selection) {
+				// want to detect monochrome based on selection + canvas
+				// simplest way to do that is to meld them together
+				meld_selection_into_canvas();
+			}
+			monochrome_info = detect_monochrome(ctx);
+
 			if(monochrome){
 				if(monochrome_info.isMonochrome && monochrome_info.presentNonTransparentRGBAs.length === 2) {
 					palette = make_monochrome_palette(...monochrome_info.presentNonTransparentRGBAs);
@@ -2314,9 +2321,10 @@ function image_attributes(){
 
 		// 1. Must be after canvas resize to avoid weird undoable interaction and such.
 		// 2. Check that monchrome option changed, same as above.
-		//    Consider the case where color is introduced to the canvas while in monochrome mode.
-		//    We only want to show this dialog if it would also change the palette (above), never leave you on an outdated palette.
-		//    (And it's nice to be able to change other options without worrying about it trying to convert the document to monochrome.)
+		//   a) for monochrome_info variable to be available
+		//   b) Consider the case where color is introduced to the canvas while in monochrome mode.
+		//      We only want to show this dialog if it would also change the palette (above), never leave you on an outdated palette.
+		//   c) And it's nice to be able to change other options without worrying about it trying to convert the document to monochrome.
 		if(monochrome != was_monochrome){
 			if (monochrome && !monochrome_info.isMonochrome) {
 				show_convert_to_black_and_white();
