@@ -2027,7 +2027,7 @@ function detect_monochrome(ctx) {
 	const colorValues = [];
 	const colorRGBAs = [];
 	for(let i=0, len=pixelArray.length; i<len; i+=1){
-		if (!colorValues.includes(pixelArray[i])) {
+		if (!colorValues.includes(pixelArray[i]) && id.data[i*4+3] !== 0) {
 			if (colorValues.length < 2) {
 				colorValues.push(pixelArray[i]);
 				colorRGBAs.push(id.data.slice(i*4, (i+1)*4));

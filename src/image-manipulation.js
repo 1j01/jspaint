@@ -752,36 +752,62 @@ function invert_monochrome(source_ctx, dest_ctx=source_ctx) {
 	const image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	// Note: values in pixel_array may be different on big endian vs little endian machines.
 	// Only rely on equality of values within the array.
+	// pixel_array is a performance optimization, to access whole pixels at a time instead of individual color channels.
+	// Note: code copied from detect_monochrome; @TODO: make detect_monochrome return an object with various info
 	const pixel_array = new Uint32Array(image_data.data.buffer);
-	const value_1 = pixel_array[0];
-	let value_2;
-	for(let i=1, len=pixel_array.length; i<len; i+=1){
-		if (pixel_array[i] !== value_1) {
-			value_2 = pixel_array[i];
-			break;
+	const color_values = [];
+	const color_rgbas = [];
+	for(let i=0, len=pixel_array.length; i<len; i+=1){
+		if (!color_values.includes(pixel_array[i]) && image_data.data[i*4+3] !== 0) {
+			if (color_values.length < 2) {
+				color_values.push(pixel_array[i]);
+				color_rgbas.push(image_data.data.slice(i*4, (i+1)*4));
+			} else {
+				console.error("Not monochrome!");
+				dest_ctx.putImageData(image_data, 0, 0);
+				return;
+			}
 		}
 	}
-	if (typeof value_2 !== "number") {
+	if (color_values.length < 2) {
 		// Only one color present in the image.
 		// We could've done this in a unified way, but whatever!
 		// Personally, I think this is a CHARMINGLY poor solution.
-		// Or, actually, it's a performance optimization. So yeah.
+		// ...Okay, less so now that I added handling for transparency (Free-Form Select).
 		const color_1 = palette[0];
 		const color_2 = palette[14] || palette[1];
 		const rgba_1 = get_rgba_from_color(color_1);
-		if (image_data.data[0] === rgba_1[0] && image_data.data[1] === rgba_1[1] && image_data.data[2] === rgba_1[2] && image_data.data[3] === rgba_1[3]) {
+		let color_1_present = false;
+		for(let i=0, len=pixel_array.length; i<len; i+=1){
+			if (image_data.data[i*4+3]) {
+				if (
+					image_data.data[i*4+0] === rgba_1[0] &&
+					image_data.data[i*4+1] === rgba_1[1] &&
+					image_data.data[i*4+2] === rgba_1[2] &&
+					image_data.data[i*4+3] === rgba_1[3]
+				) {
+					color_1_present = true;
+					break;
+				}
+			}
+		}
+		if (color_1_present) {
 			dest_ctx.fillStyle = color_2;
 		} else {
 			dest_ctx.fillStyle = color_1;
 		}
+		// for transparency
+		dest_ctx.putImageData(image_data, 0, 0);
+		dest_ctx.globalCompositeOperation = "source-in";
+
 		dest_ctx.fillRect(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 		return;
 	}
 	for(let i=0, len=pixel_array.length; i<len; i+=1){
-		if (pixel_array[i] === value_1) {
-			pixel_array[i] = value_2;
-		} else {
-			pixel_array[i] = value_1;
+		if (pixel_array[i] === color_values[0]) {
+			pixel_array[i] = color_values[1];
+		} else if (pixel_array[i] === color_values[1]) {
+			pixel_array[i] = color_values[0];
 		}
 	}
 	dest_ctx.putImageData(image_data, 0, 0);
