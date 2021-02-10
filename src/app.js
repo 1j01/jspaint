@@ -313,8 +313,10 @@ const $canvas_handles = $Handles($canvas_area, $canvas_area, {
 	get_rect: ()=> ({x: 0, y: 0, width: canvas.width, height: canvas.height}),
 	set_rect: ({width, height})=> resize_canvas_and_save_dimensions(width, height),
 	outset: 4,
-	get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
-	get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
+	get_handles_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
+	get_handles_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
+	get_ghost_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
+	get_ghost_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
 	size_only: true,
 });
 // hack: fix canvas handles causing document to scroll when selecting/deselecting

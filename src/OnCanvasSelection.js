@@ -73,8 +73,8 @@ class OnCanvasSelection extends OnCanvasObject {
 						this.resize();
 					});
 				},
-				get_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
-				get_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
+				get_ghost_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
+				get_ghost_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
 			});
 			let mox, moy;
 			const pointermove = e => {

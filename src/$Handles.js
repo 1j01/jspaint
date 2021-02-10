@@ -1,10 +1,10 @@
 
 function $Handles($handles_container, $object_container, options){
 	const outset = options.outset || 0;
-	const get_offset_left = options.get_offset_left || (() => 0);
-	const get_offset_top = options.get_offset_top || (() => 0);
-	// const get_offset_left = ($el)=> parseFloat($el.css("padding-left")) + ($el === $canvas_area)
-	// const get_offset_top = ($el)=> parseFloat($el.css("padding-top")) + ($el === $canvas_area)
+	const get_handles_offset_left = options.get_handles_offset_left || (() => 0);
+	const get_handles_offset_top = options.get_handles_offset_top || (() => 0);
+	const get_ghost_offset_left = options.get_ghost_offset_left || (() => 0);
+	const get_ghost_offset_top = options.get_ghost_offset_top || (() => 0);
 	const size_only = options.size_only || false;
 	
 	const $resize_ghost = $(E("div")).addClass("resize-ghost");
@@ -86,8 +86,8 @@ function $Handles($handles_container, $object_container, options){
 					height = ~~(rect.height);
 				}
 				let new_rect = {
-					x: rect.x + delta_x,// + get_offset_left($object_container),
-					y: rect.y + delta_y,// + get_offset_top($object_container),
+					x: rect.x + delta_x,
+					y: rect.y + delta_y,
 					width: width,
 					height: height,
 				};
@@ -104,8 +104,8 @@ function $Handles($handles_container, $object_container, options){
 
 				$resize_ghost.css({
 					position: "absolute",
-					left: magnification * new_rect.x + get_offset_left(),
-					top: magnification * new_rect.y + get_offset_top(),
+					left: magnification * new_rect.x + get_ghost_offset_left(),
+					top: magnification * new_rect.y + get_ghost_offset_top(),
 					width: magnification * new_rect.width - 2,
 					height: magnification * new_rect.height - 2,
 				});
@@ -136,10 +136,10 @@ function $Handles($handles_container, $object_container, options){
 		const update_handle = () => {
 			const rect = options.get_rect();
 			const hs = $h.width();
-			// const x = rect.x + get_offset_left();
-			// const y = rect.y + get_offset_top();
-			const x = 0;//get_offset_left($handles_container);
-			const y = 0;//get_offset_top($handles_container);
+			// const x = rect.x + get_handles_offset_left();
+			// const y = rect.y + get_handles_offset_top();
+			const x = get_handles_offset_left();
+			const y = get_handles_offset_top();
 			if(x_axis === "middle"){
 				$h.css({ left: x + (rect.width * magnification - hs) / 2 });
 			}else if(x_axis === "left"){
