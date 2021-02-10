@@ -2019,7 +2019,7 @@ function detect_transparency(){
 }
 
 function detect_monochrome(ctx) {
-	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	const id = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	const pixelArray = new Uint32Array(id.data.buffer); // to access as whole pixels (for greater efficiency & simplicity)
 	// Note: values in pixelArray may be different on big endian vs little endian machines.
 	// Use id.data, which is guaranteed to be in RGBA order, for getting color information.
