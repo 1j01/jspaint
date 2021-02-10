@@ -757,49 +757,51 @@ function invert_monochrome(source_ctx, dest_ctx=source_ctx) {
 	const pixel_array = new Uint32Array(image_data.data.buffer);
 	const color_values = [];
 	const color_rgbas = [];
+	let any_transparency = false;
 	for(let i=0, len=pixel_array.length; i<len; i+=1){
-		if (!color_values.includes(pixel_array[i]) && image_data.data[i*4+3] !== 0) {
-			if (color_values.length < 2) {
-				color_values.push(pixel_array[i]);
-				color_rgbas.push(image_data.data.slice(i*4, (i+1)*4));
-			} else {
-				console.error("Not monochrome!");
-				dest_ctx.putImageData(image_data, 0, 0);
-				return;
-			}
-		}
-	}
-	if (color_values.length < 2) {
-		// Only one color present in the image.
-		// We could've done this in a unified way, but whatever!
-		// Personally, I think this is a CHARMINGLY poor solution.
-		// ...Okay, less so now that I added handling for transparency (Free-Form Select).
-		const color_1 = palette[0];
-		const color_2 = palette[14] || palette[1];
-		const rgba_1 = get_rgba_from_color(color_1);
-		let color_1_present = false;
-		for(let i=0, len=pixel_array.length; i<len; i+=1){
-			if (image_data.data[i*4+3]) {
-				if (
-					image_data.data[i*4+0] === rgba_1[0] &&
-					image_data.data[i*4+1] === rgba_1[1] &&
-					image_data.data[i*4+2] === rgba_1[2] &&
-					image_data.data[i*4+3] === rgba_1[3]
-				) {
-					color_1_present = true;
-					break;
+		if (image_data.data[i*4+3]) {
+			if (!color_values.includes(pixel_array[i])) {
+				if (color_values.length < 2) {
+					color_values.push(pixel_array[i]);
+					color_rgbas.push(image_data.data.slice(i*4, (i+1)*4));
+				} else {
+					console.error("Not monochrome!");
+					dest_ctx.putImageData(image_data, 0, 0);
+					return;
 				}
 			}
+		} else {
+			any_transparency = true;
 		}
-		if (color_1_present) {
+	}
+	if (color_values.length === 0) {
+		// Fully transparent.
+		// No change, and no need to copy the image to dest canvas to represent that lack of a change.
+		return;
+	}
+	if (color_values.length === 1) {
+		// Only one non-transparent color present in the image.
+		// Can't use just the information of what colors are in the canvas to invert, need to look at the palette.
+		// We could've done this in a unified way, but whatever!
+		// Personally, I think this is a CHARMINGLY poor solution.
+		// Maybe a little less so now that I added handling for transparency (i.e. Free-Form Select).
+		const color_1 = palette[0];
+		const color_2 = palette[14] || palette[1];
+		const color_1_rgba = get_rgba_from_color(color_1);
+		if (
+			color_rgbas[0][0] === color_1_rgba[0] &&
+			color_rgbas[0][1] === color_1_rgba[1] &&
+			color_rgbas[0][2] === color_1_rgba[2] &&
+			color_rgbas[0][3] === color_1_rgba[3]
+		) {
 			dest_ctx.fillStyle = color_2;
 		} else {
 			dest_ctx.fillStyle = color_1;
 		}
-		// for transparency
-		dest_ctx.putImageData(image_data, 0, 0);
-		dest_ctx.globalCompositeOperation = "source-in";
-
+		if (any_transparency) {
+			dest_ctx.putImageData(image_data, 0, 0);
+			dest_ctx.globalCompositeOperation = "source-in";
+		}
 		dest_ctx.fillRect(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 		return;
 	}
