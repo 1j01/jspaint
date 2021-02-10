@@ -74,32 +74,49 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			const new_rgba = get_rgba_from_color(color);
 			const other_rgba = get_rgba_from_color(palette[14 - swatch_index]);
 			const was_monochrome = detect_monochrome(ctx);
-			if (was_monochrome) {
-				// HTML5 Canvas API is unreliable for exact colors.
-				if (
-					old_rgba.toString() !== was_monochrome[0].toString() &&
-					old_rgba.toString() !== was_monochrome[1].toString()
-				) {
-					// Find the nearer color in the image data to replace.
-					const dists = was_monochrome.map((rgba)=>
-						Math.abs(rgba[0] - old_rgba[0]) +
-						Math.abs(rgba[1] - old_rgba[1]) +
-						Math.abs(rgba[2] - old_rgba[2]) +
-						Math.abs(rgba[3] - old_rgba[3])
-					);
-					if (dists[0] < dists[1]) {
-						old_rgba = was_monochrome[0];
-					} else {
-						old_rgba = was_monochrome[1];
+			const was_monochrome_selection = (selection && selection.canvas) ? detect_monochrome(selection.canvas.ctx) : was_monochrome;
+			const selection_matches_main_canvas_colors =
+				was_monochrome_selection.every((rgba)=>
+					was_monochrome.map(rgba=> rgba.toString()).includes(rgba.toString())
+				);
+			if (
+				was_monochrome &&
+				was_monochrome_selection &&
+				selection_matches_main_canvas_colors
+			) {
+				const recolor = (ctx, present_rgbas)=> {
+					// HTML5 Canvas API is unreliable for exact colors.
+					if (
+						old_rgba.toString() !== present_rgbas[0].toString() &&
+						old_rgba.toString() !== present_rgbas[1].toString()
+					) {
+						// Find the nearer color in the image data to replace.
+						const dists = present_rgbas.map((rgba)=>
+							Math.abs(rgba[0] - old_rgba[0]) +
+							Math.abs(rgba[1] - old_rgba[1]) +
+							Math.abs(rgba[2] - old_rgba[2]) +
+							Math.abs(rgba[3] - old_rgba[3])
+						);
+						if (dists[0] < dists[1]) {
+							old_rgba = present_rgbas[0];
+						} else {
+							old_rgba = present_rgbas[1];
+						}
 					}
-				}
+					const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+					replace_color_globally(image_data, old_rgba[0], old_rgba[1], old_rgba[2], old_rgba[3], new_rgba[0], new_rgba[1], new_rgba[2], new_rgba[3]);
+					ctx.putImageData(image_data, 0, 0);
+				};
 				undoable({
 					name: "Recolor",
 					icon: get_help_folder_icon("p_monochrome_undo.png"),
 				}, ()=> {
-					const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-					replace_color_globally(image_data, old_rgba[0], old_rgba[1], old_rgba[2], old_rgba[3], new_rgba[0], new_rgba[1], new_rgba[2], new_rgba[3]);
-					ctx.putImageData(image_data, 0, 0);
+					recolor(ctx, was_monochrome);
+					if (selection && selection.canvas) {
+						recolor(selection.canvas.ctx, was_monochrome_selection);
+						// I feel like this shouldn't be necessary, if I'm not changing the size, but it makes it work:
+						selection.replace_source_canvas(selection.canvas);
+					}
 				});
 			}
 			if (swatch_index) {
