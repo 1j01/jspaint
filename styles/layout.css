@@ -129,6 +129,7 @@ html, body, .jspaint {
 .selection > canvas {
 	/* @TODO: maybe don't include the canvas in the DOM (is it helpful to inspect it tho? it's not critical...) */
 	opacity: 0;
+	/* Fix draggable part of selection going outside the selection selection is vertically thin */
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -138,6 +139,12 @@ html, body, .jspaint {
 .helper-layer > canvas {
 	width: 100%;
 	height: 100%;
+}
+.helper-layer > canvas {
+	/* Fix helper layer canvas going off the main canvas when main canvas is vertically thin */
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 .resize-ghost,
 .component-ghost {
