@@ -76,6 +76,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			const was_monochrome = detect_monochrome(ctx);
 			const was_monochrome_selection = (selection && selection.canvas) ? detect_monochrome(selection.canvas.ctx) : was_monochrome;
 			const selection_matches_main_canvas_colors =
+				was_monochrome_selection &&
 				was_monochrome_selection.every((rgba)=>
 					was_monochrome.map(rgba=> rgba.toString()).includes(rgba.toString())
 				);
