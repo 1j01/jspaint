@@ -88,6 +88,7 @@ window.save_to_file_path = (canvas, filePath, savedCallback) => {
 				}
 				const fileName = path.basename(filePath);
 				savedCallback(filePath, fileName, format.mimeType);
+				update_from_saved_file(blob);
 			});
 		});
 	});

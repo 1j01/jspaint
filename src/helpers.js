@@ -195,14 +195,14 @@ function get_icon_for_tool(tool) {
 	return get_help_folder_icon(tool.help_icon);
 }
 
-function load_image(path) {
+function load_image(src) {
 	return new Promise((resolve, reject)=> {
 		const img = new Image();
 
 		img.onload = ()=> { resolve(img); };
 		img.onerror = ()=> { reject(); };
 
-		img.src = path;
+		img.src = src;
 	});
 }
 

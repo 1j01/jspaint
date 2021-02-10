@@ -743,7 +743,7 @@ async function open_from_FileList(files, user_input_method_verb_past_tense){
 	}
 }
 
-function load_format_and_palette_from_image_file(file) {
+function load_format_and_palette_from_image_file(file, callback) {
 	// @TODO: load palette from PNG, GIF
 	const reader = new FileReader();
 	reader.onerror = () => {
@@ -823,6 +823,7 @@ function load_format_and_palette_from_image_file(file) {
 				icns: "image/icns",
 			}[detected_type_id];
 		}
+		callback && callback();
 	}
 	reader.readAsArrayBuffer(file);
 }
@@ -933,6 +934,7 @@ function file_save(maybe_saved_callback=()=>{}){
 		// };
 		// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
 		maybe_saved_callback();
+		update_from_saved_file(blob);
 	});
 }
 
@@ -2666,6 +2668,30 @@ function write_image_file(canvas, mime_type, blob_callback) {
 	}
 }
 
+function update_from_saved_file(blob) {
+	// @TODO: read image data from files manually,
+	// at least formats where we're reading the palette (BMP),
+	// in order to have consistency with the image data.
+	// Or a better chance at it. Canvas API isn't really reliable.
+	// And separate out a read_image_file to mirror write_image_file.
+	// Note: need to load format first, for undoable name
+	load_format_and_palette_from_image_file(blob, ()=> {
+		const blob_uri = URL.createObjectURL(blob);
+		load_image(blob_uri).then((image)=> {
+			const format = image_formats.find(({mimeType})=> mimeType === file_format);
+			undoable({
+				name: `${localize("Save As")} ${format ? format.name : file_format}`,
+				icon: get_help_folder_icon("p_monochrome_undo.png"),
+			}, ()=> {
+				ctx.copy(image);
+				URL.revokeObjectURL(blob_uri);
+			});
+		}, (error)=> {
+			show_error_message("The file has been saved, however... " + localize("Paint cannot read this file."), error);
+		});
+	});
+}
+
 // @TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
 // Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
 function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
@@ -2682,6 +2708,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 			// };
 			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
 			savedCallbackUnreliable(undefined, new_file_name, new_file_type);
+			update_from_saved_file(blob);
 		});
 	});
 }
