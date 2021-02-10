@@ -73,16 +73,16 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			let old_rgba = get_rgba_from_color(palette[swatch_index]);
 			const new_rgba = get_rgba_from_color(color);
 			const other_rgba = get_rgba_from_color(palette[14 - swatch_index]);
-			const was_monochrome = detect_monochrome(ctx);
-			const was_monochrome_selection = (selection && selection.canvas) ? detect_monochrome(selection.canvas.ctx) : was_monochrome;
+			const main_monochrome_info = detect_monochrome(ctx);
+			const selection_monochrome_info = (selection && selection.canvas) ? detect_monochrome(selection.canvas.ctx) : main_monochrome_info;
 			const selection_matches_main_canvas_colors =
-				was_monochrome_selection &&
-				was_monochrome_selection.every((rgba)=>
-					was_monochrome.map(rgba=> rgba.toString()).includes(rgba.toString())
+				selection_monochrome_info.isMonochrome &&
+				selection_monochrome_info.presentNonTransparentRGBAs.every((rgba)=>
+					main_monochrome_info.presentNonTransparentRGBAs.map(rgba=> rgba.toString()).includes(rgba.toString())
 				);
 			if (
-				was_monochrome &&
-				was_monochrome_selection &&
+				main_monochrome_info.isMonochrome &&
+				selection_monochrome_info.isMonochrome &&
 				selection_matches_main_canvas_colors
 			) {
 				const recolor = (ctx, present_rgbas)=> {
@@ -112,9 +112,9 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 					name: "Recolor",
 					icon: get_help_folder_icon("p_monochrome_undo.png"),
 				}, ()=> {
-					recolor(ctx, was_monochrome);
+					recolor(ctx, main_monochrome_info.presentNonTransparentRGBAs);
 					if (selection && selection.canvas) {
-						recolor(selection.canvas.ctx, was_monochrome_selection);
+						recolor(selection.canvas.ctx, selection_monochrome_info.presentNonTransparentRGBAs);
 						// I feel like this shouldn't be necessary, if I'm not changing the size, but it makes it work:
 						selection.replace_source_canvas(selection.canvas);
 					}

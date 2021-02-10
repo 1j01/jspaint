@@ -1907,8 +1907,9 @@ function image_invert_colors(){
 		name: localize("Invert Colors"),
 		icon: get_help_folder_icon("p_invert.png"),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
-		if (monochrome && detect_monochrome(original_ctx)) {
-			invert_monochrome(original_ctx, new_ctx);
+		const monochrome_info = monochrome && detect_monochrome(original_ctx);
+		if (monochrome && monochrome_info.isMonochrome) {
+			invert_monochrome(original_ctx, new_ctx, monochrome_info);
 		} else {
 			invert_rgb(original_ctx, new_ctx);
 		}
@@ -2024,19 +2025,29 @@ function detect_monochrome(ctx) {
 	// Note: values in pixelArray may be different on big endian vs little endian machines.
 	// Use id.data, which is guaranteed to be in RGBA order, for getting color information.
 	// Only use the Uint32Array for comparing pixel equality (faster than comparing each color component).
-	const colorValues = [];
+	const colorUint32s = [];
 	const colorRGBAs = [];
+	let anyTransparency = false;
 	for(let i=0, len=pixelArray.length; i<len; i+=1){
-		if (!colorValues.includes(pixelArray[i]) && id.data[i*4+3] !== 0) {
-			if (colorValues.length < 2) {
-				colorValues.push(pixelArray[i]);
-				colorRGBAs.push(id.data.slice(i*4, (i+1)*4));
-			} else {
-				return false;
+		if (id.data[i*4+3]) {
+			if (!colorUint32s.includes(pixelArray[i])) {
+				if (colorUint32s.length < 2) {
+					colorUint32s.push(pixelArray[i]);
+					colorRGBAs.push(id.data.slice(i*4, (i+1)*4));
+				} else {
+					return {isMonochrome: false};
+				}
 			}
+		} else {
+			anyTransparency = true;
 		}
 	}
-	return colorRGBAs;
+	return {
+		isMonochrome: true,
+		presentNonTransparentRGBAs: colorRGBAs,
+		presentNonTransparentUint32s: colorUint32s,
+		monochromeWithTransparency: anyTransparency,
+	};
 }
 
 function make_monochrome_pattern(lightness, rgba1=[0, 0, 0, 255], rgba2=[255, 255, 255, 255]){
@@ -2269,7 +2280,7 @@ function image_attributes(){
 		const unit = $units.find(":checked").val();
 
 		const was_monochrome = monochrome;
-		const image_was_actually_monochrome = detect_monochrome(ctx);
+		const monochrome_info = detect_monochrome(ctx);
 
 		image_attributes.unit = unit;
 		transparency = (transparency_option == "transparent");
@@ -2277,8 +2288,8 @@ function image_attributes(){
 
 		if(monochrome != was_monochrome){
 			if(monochrome){
-				if(image_was_actually_monochrome && image_was_actually_monochrome.length === 2) {
-					palette = make_monochrome_palette(image_was_actually_monochrome[0], image_was_actually_monochrome[1]);
+				if(monochrome_info.isMonochrome && monochrome_info.presentNonTransparentRGBAs.length === 2) {
+					palette = make_monochrome_palette(...monochrome_info.presentNonTransparentRGBAs);
 				}else{
 					palette = monochrome_palette;
 				}
@@ -2307,7 +2318,7 @@ function image_attributes(){
 		//    We only want to show this dialog if it would also change the palette (above), never leave you on an outdated palette.
 		//    (And it's nice to be able to change other options without worrying about it trying to convert the document to monochrome.)
 		if(monochrome != was_monochrome){
-			if (monochrome && !image_was_actually_monochrome) {
+			if (monochrome && !monochrome_info.isMonochrome) {
 				show_convert_to_black_and_white();
 			}
 		}

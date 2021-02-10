@@ -748,38 +748,18 @@ function invert_rgb(source_ctx, dest_ctx=source_ctx) {
 	dest_ctx.putImageData(image_data, 0, 0);
 }
 
-function invert_monochrome(source_ctx, dest_ctx=source_ctx) {
+function invert_monochrome(source_ctx, dest_ctx=source_ctx, monochrome_info=detect_monochrome(source_ctx)) {
 	const image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	// Note: values in pixel_array may be different on big endian vs little endian machines.
 	// Only rely on equality of values within the array.
 	// pixel_array is a performance optimization, to access whole pixels at a time instead of individual color channels.
-	// Note: code copied from detect_monochrome; @TODO: make detect_monochrome return an object with various info
 	const pixel_array = new Uint32Array(image_data.data.buffer);
-	const color_values = [];
-	const color_rgbas = [];
-	let any_transparency = false;
-	for(let i=0, len=pixel_array.length; i<len; i+=1){
-		if (image_data.data[i*4+3]) {
-			if (!color_values.includes(pixel_array[i])) {
-				if (color_values.length < 2) {
-					color_values.push(pixel_array[i]);
-					color_rgbas.push(image_data.data.slice(i*4, (i+1)*4));
-				} else {
-					console.error("Not monochrome!");
-					dest_ctx.putImageData(image_data, 0, 0);
-					return;
-				}
-			}
-		} else {
-			any_transparency = true;
-		}
-	}
-	if (color_values.length === 0) {
+	if (monochrome_info.presentNonTransparentUint32s.length === 0) {
 		// Fully transparent.
 		// No change, and no need to copy the image to dest canvas to represent that lack of a change.
 		return;
 	}
-	if (color_values.length === 1) {
+	if (monochrome_info.presentNonTransparentUint32s.length === 1) {
 		// Only one non-transparent color present in the image.
 		// Can't use just the information of what colors are in the canvas to invert, need to look at the palette.
 		// We could've done this in a unified way, but whatever!
@@ -788,28 +768,30 @@ function invert_monochrome(source_ctx, dest_ctx=source_ctx) {
 		const color_1 = palette[0];
 		const color_2 = palette[14] || palette[1];
 		const color_1_rgba = get_rgba_from_color(color_1);
+		const present_rgba = monochrome_info.presentNonTransparentRGBAs[0];
 		if (
-			color_rgbas[0][0] === color_1_rgba[0] &&
-			color_rgbas[0][1] === color_1_rgba[1] &&
-			color_rgbas[0][2] === color_1_rgba[2] &&
-			color_rgbas[0][3] === color_1_rgba[3]
+			present_rgba[0] === color_1_rgba[0] &&
+			present_rgba[1] === color_1_rgba[1] &&
+			present_rgba[2] === color_1_rgba[2] &&
+			present_rgba[3] === color_1_rgba[3]
 		) {
 			dest_ctx.fillStyle = color_2;
 		} else {
 			dest_ctx.fillStyle = color_1;
 		}
-		if (any_transparency) {
+		if (monochrome_info.any_transparency) {
 			dest_ctx.putImageData(image_data, 0, 0);
 			dest_ctx.globalCompositeOperation = "source-in";
 		}
 		dest_ctx.fillRect(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 		return;
 	}
+	const [uint32_a, uint32_b] = monochrome_info.presentNonTransparentUint32s;
 	for(let i=0, len=pixel_array.length; i<len; i+=1){
-		if (pixel_array[i] === color_values[0]) {
-			pixel_array[i] = color_values[1];
-		} else if (pixel_array[i] === color_values[1]) {
-			pixel_array[i] = color_values[0];
+		if (pixel_array[i] === uint32_a) {
+			pixel_array[i] = uint32_b;
+		} else if (pixel_array[i] === uint32_b) {
+			pixel_array[i] = uint32_a;
 		}
 	}
 	dest_ctx.putImageData(image_data, 0, 0);
