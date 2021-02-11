@@ -2602,8 +2602,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 		}
 	};
 	$file_name.on("input", select_file_type_from_file_name);
-	if (default_format_id) {
-		// formats.find((format)=> format.formatID === default_format_id)
+	if (default_format_id && formats.some((format)=> format.formatID === default_format_id)) {
 		$file_type.val(default_format_id);
 	} else {
 		select_file_type_from_file_name();
