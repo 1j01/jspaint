@@ -715,15 +715,17 @@ function open_from_File(file, callback, canceled){
 }
 function open_from_FileList(files, user_input_method_verb_past_tense){
 	let loaded = false;
-	const fails = [];
+	// const fails = [];
 	for (const file of files) {
 		if (file.type.match(/^image/)) {
 			open_from_File(file, err => {
 				if(err){ return show_error_message(localize("Paint cannot open this file."), err); }
+				loaded = true;
 			});
 			return;
 		} else if (file.name.match(/\.theme(pack)?$/i)) {
 			loadThemeFile(file);
+			loaded = true;
 			return;
 		} else {
 			AnyPalette.loadPalette(file, (error, new_palette)=> {
@@ -731,7 +733,8 @@ function open_from_FileList(files, user_input_method_verb_past_tense){
 					return;
 				}
 				if (error) {
-					fails.push({file, error});
+					// fails.push({file, error});
+					show_error_message(localize("Paint cannot open this file."), error);
 					return;
 				}
 				loaded = true;
