@@ -1,6 +1,6 @@
 (()=> {
 
-const looksLikeChrome = !!(window.chrome && (chrome.loadTimes || chrome.csi));
+const looksLikeChrome = !!(window.chrome && (window.chrome.loadTimes || window.chrome.csi));
 // NOTE: Microsoft Edge includes window.chrome.app
 // (also this browser detection logic could likely use some more nuance)
 

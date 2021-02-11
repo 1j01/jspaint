@@ -19,15 +19,34 @@ module.exports = {
 		"Konami": "readonly",
 		"YT": "readonly",
 		"FontDetective": "readonly",
-		"Palette": "readonly",
+		"AnyPalette": "readonly",
+		"ImageTracer": "readonly",
 
 		/*
 		// const
+		"MENU_DIVIDER": "readonly",
 		"TAU": "writable",
 		"is_pride_month": "writable",
 		"default_tool": "writable",
 		"default_canvas_width": "writable",
 		"default_canvas_height": "writable",
+		"default_magnification": "writable",
+		"TOOL_FREE_FORM_SELECT": "writable",
+		"TOOL_SELECT": "writable",
+		"TOOL_ERASER": "writable",
+		"TOOL_FILL": "writable",
+		"TOOL_PICK_COLOR": "writable",
+		"TOOL_MAGNIFIER": "writable",
+		"TOOL_PENCIL": "writable",
+		"TOOL_BRUSH": "writable",
+		"TOOL_AIRBRUSH": "writable",
+		"TOOL_TEXT": "writable",
+		"TOOL_LINE": "writable",
+		"TOOL_CURVE": "writable",
+		"TOOL_RECTANGLE": "writable",
+		"TOOL_POLYGON": "writable",
+		"TOOL_ELLIPSE": "writable",
+		"TOOL_ROUNDED_RECTANGLE": "writable",
 
 		// global state: options
 		"brush_shape": "writable",
@@ -36,6 +55,10 @@ module.exports = {
 		"eraser_size": "writable",
 		"airbrush_size": "writable",
 		"stroke_size": "writable",
+		"stroke_color": "writable",
+		"fill_color": "writable",
+		"fill_color_k": "writable",
+		"stroke_color_k": "writable",
 		"tool_transparent_mode": "writable",
 		"magnification": "writable",
 		"transparency": "writable",
@@ -60,6 +83,8 @@ module.exports = {
 		"pointers": "writable",
 		"saved": "writable",
 		"file_name": "writable",
+		"file_name_chosen": "writable",
+		"file_format": "writable",
 		"document_file_path": "writable",
 		"selected_tool": "writable",
 		"selected_tools": "writable",
@@ -92,11 +117,13 @@ module.exports = {
 		"$ToolWindow": "writable",
 		"$FormToolWindow": "writable",
 		"$Handles": "writable",
+		"$ChooseShapeStyle": "writable",
 		"OnCanvasSelection": "writable",
 		"OnCanvasTextBox": "writable",
 		
 		// functions
 		"E": "writable",
+		"get_rgba_from_color": "writable",
 		"make_canvas": "writable",
 		"debounce": "writable",
 		"memoize_synchronous_function": "writable",
@@ -115,6 +142,23 @@ module.exports = {
 		"get_help_folder_icon": "writable",
 		"get_icon_for_tool": "writable",
 		"draw_polygon": "writable",
+		"draw_line": "writable",
+		"draw_line_strip": "writable",
+		"draw_bezier_curve": "writable",
+		"draw_quadratic_curve": "writable",
+		"draw_ellipse": "writable",
+		"draw_rounded_rectangle": "writable",
+		"draw_fill": "writable",
+		"draw_noncontiguous_fill": "writable",
+		"localize": "writable",
+		"set_language": "writable",
+		"get_language": "writable",
+		"get_iso_language_name": "writable",
+		"set_magnification": "writable",
+		"make_css_cursor": "writable",
+		"select_tool": "writable",
+		"change_url_param": "writable",
+		"set_theme": "writable",
 		*/
 	},
 	"parserOptions": {
@@ -124,7 +168,7 @@ module.exports = {
 		"no-undef": 0, // FOR NOW OKAY? there are just tons of globals at the moment
 		"no-unused-vars": 0, // ditto
 
-		// To target specific variables to rename or otherwise adress:
-		"no-restricted-globals": ["error", "event", "canvas", "ctx", "colors"]
+		// To target specific variables to rename or otherwise address:
+		"no-restricted-globals": ["error", "event", "canvas", "ctx", "colors", "i", "j", "k", "x", "y", "z", "width", "height", "w", "h"]
 	}
 };
