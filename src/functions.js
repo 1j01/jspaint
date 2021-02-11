@@ -996,6 +996,7 @@ function show_error_message(message, error){
 			// color: "white",
 			fontFamily: "monospace",
 			width: "500px",
+			maxWidth: "100%",
 			overflow: "auto",
 		});
 	}
