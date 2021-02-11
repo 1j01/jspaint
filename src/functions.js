@@ -719,7 +719,7 @@ function open_from_FileList(files, user_input_method_verb_past_tense){
 	for (const file of files) {
 		if (file.type.match(/^image/)) {
 			open_from_File(file, err => {
-				if(err){ return show_error_message("Failed to open file:", err); }
+				if(err){ return show_error_message(localize("Paint cannot open this file."), err); }
 			});
 			return;
 		} else if (file.name.match(/\.theme(pack)?$/i)) {
@@ -1217,11 +1217,12 @@ function paste_from_file_select_dialog(){
 				return;
 			}
 		}
-		if(files.length > 1){
-			show_error_message(`None of the files selected appear to be images.`);
-		}else{
-			show_error_message(`File selected does not appear to be an image.`);
-		}
+		show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."));
+		// if(files.length > 1){
+		// 	show_error_message(`${localize("Unexpected file format.")} None of the files selected appear to be images.`);
+		// }else{
+		// 	show_error_message(`${localize("Unexpected file format.")} File selected does not appear to be an image.`);
+		// }
 	});
 }
 
@@ -1890,16 +1891,17 @@ async function edit_paste(execCommandFallback){
 							paste(img);
 						});
 					} else {
+						// @TODO: should I just make a textbox instead?
 						show_error_message("The information on the Clipboard can't be inserted into Paint.");
 					}
 				} else {
 					show_error_message("The information on the Clipboard can't be inserted into Paint.");
 				}
 			} catch(error) {
-				show_error_message("Failed to read from the Clipboard.", error);
+				show_error_message(localize("Error getting the Clipboard Data!"), error);
 			}
 		} else {
-			show_error_message("Failed to read from the Clipboard.", error);
+			show_error_message(localize("Error getting the Clipboard Data!"), error);
 		}
 	}
 }
