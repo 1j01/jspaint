@@ -435,3 +435,24 @@ progress[value].inset-deep::-webkit-progress-value {
 progress[value].inset-deep::-moz-progress-bar { 
 	background: var(--Hilight);
 }
+
+summary {
+	padding: 0;
+}
+summary:focus {
+	outline: 1px dotted var(--ButtonText);
+}
+summary:hover > span {
+	text-decoration: underline;
+	color: #0000FF;
+}
+summary::marker {
+	color: var(--ButtonText);
+	content: "►";
+	text-decoration: none;
+}
+details[open] > summary::marker {
+	color: var(--ButtonText);
+	content: "▼";
+	text-decoration: none;
+}

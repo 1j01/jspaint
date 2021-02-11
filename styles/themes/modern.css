@@ -417,3 +417,26 @@ input:invalid {
 .partial-url-label {
 	opacity: 0.6;
 }
+
+details {
+	border: 1px solid gray;
+}
+summary {
+	background-color: #dfdfdf;
+	color: black;
+	padding: 3px;
+	padding-left: 7px;
+}
+details[open] > summary {
+	border-bottom: 1px solid gray;
+}
+details,
+summary {
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+details:not([open]),
+details:not([open]) > summary {
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}

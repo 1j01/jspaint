@@ -1006,6 +1006,19 @@ progress {
 	box-sizing: border-box;
 }
 
+details pre {
+	margin: 0;
+	margin-top: 5px;
+}
+
+details {
+	margin-top: 8px;
+}
+summary {
+	user-select: none;
+	cursor: pointer;
+}
+
 [touch-action="none"] {
 	touch-action: none;
 }

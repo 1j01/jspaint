@@ -986,6 +986,9 @@ function show_error_message(message, error){
 	$w.$main.text(message);
 	$w.$main.css("max-width", "600px");
 	if(error){
+		const $details = $("<details><summary><span>Details</span></summary></details>")
+		.appendTo($w.$main);
+
 		let error_string = error.stack;
 		if (!error_string) {
 			error_string = error.toString();
@@ -993,8 +996,8 @@ function show_error_message(message, error){
 			error_string = `${error.toString()}\n\n${error_string}`;
 		}
 		$(E("pre"))
-		.appendTo($w.$main)
 		.text(error_string)
+		.appendTo($details)
 		.css({
 			background: "white",
 			color: "#333",
@@ -1374,7 +1377,7 @@ function render_history_as_gif(){
 
 	}catch(err){
 		$win.close();
-		show_error_message("Failed to render GIF:", err);
+		show_error_message("Failed to render GIF.", err);
 	}
 }
 

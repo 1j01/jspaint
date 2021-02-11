@@ -120,7 +120,7 @@
 			storage.get(lsid, (err, uri) => {
 				if (err) {
 					if (localStorageAvailable) {
-						show_error_message("Failed to retrieve image from local storage:", err);
+						show_error_message("Failed to retrieve image from local storage.", err);
 					}
 					else {
 						// @TODO: DRY with storage manager message
@@ -130,7 +130,7 @@
 				else if (uri) {
 					open_from_URI(uri, err => {
 						if (err) {
-							return show_error_message("Failed to open image from local storage:", err);
+							return show_error_message("Failed to open image from local storage.", err);
 						}
 						saved = false; // it may be safe, sure, but you haven't "Saved" it
 					});
