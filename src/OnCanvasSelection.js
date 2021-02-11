@@ -1,6 +1,6 @@
 
 class OnCanvasSelection extends OnCanvasObject {
-	constructor(x, y, width, height, img) {
+	constructor(x, y, width, height, img_or_canvas) {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("selection");
@@ -19,13 +19,13 @@ class OnCanvasSelection extends OnCanvasObject {
 		};
 		$G.on("option-changed", this._on_option_changed);
 
-		this.instantiate(img);
+		this.instantiate(img_or_canvas);
 	}
 	position() {
 		super.position(true);
 		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
-	instantiate(img) {
+	instantiate(img_or_canvas) {
 		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move")
 		});
@@ -33,12 +33,12 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.position();
 
 		const instantiate = ()=> {
-			if (img) {
+			if (img_or_canvas) {
 				// (this applies when pasting a selection)
 				// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
 				// (width vs naturalWidth?)
 				// and at least apply_image_transformation needs it to be a canvas now (and the property name says canvas anyways)
-				this.source_canvas = make_canvas(img);
+				this.source_canvas = make_canvas(img_or_canvas);
 				// @TODO: is this width/height code needed? probably not! wouldn't it clear the canvas anyways?
 				// but maybe we should assert in some way that the widths are the same, or resize the selection?
 				if (this.source_canvas.width !== this.width) {

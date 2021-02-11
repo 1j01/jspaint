@@ -151,7 +151,7 @@ add_image_format("image/bmp;bpp=1", "Monochrome Bitmap (*.bmp;*.dib)");
 add_image_format("image/bmp;bpp=4", "16 Color Bitmap (*.bmp;*.dib)");
 add_image_format("image/bmp;bpp=8", "256 Color Bitmap (*.bmp;*.dib)");
 add_image_format("image/bmp;bpp=24", "24-bit Bitmap (*.bmp;*.dib)");
-// add_image_format("image/bmp;bpp=32", "32-bit Bitmap (*.bmp;*.dib)");
+// add_image_format("image/bmp;bpp=32", "32-bit Transparent Bitmap (*.bmp;*.dib)");
 
 const palette_formats = [];
 for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
@@ -690,7 +690,7 @@ $G.on("cut copy paste", e => {
 					if (uris.length > 0) {
 						load_image_from_uri(uris[0], (error, info) => {
 							if(error){ return show_resource_load_error_message(error); }
-							paste(info.image);
+							paste(info.image || make_canvas(info.image_data));
 						});
 					} else {
 						show_error_message("The information on the Clipboard can't be inserted into Paint.");
