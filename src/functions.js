@@ -1120,12 +1120,12 @@ function show_about_paint(){
 		}
 
 		// @TODO: visibly mark entries that overlap
-		entries_newer_than_this_version =
+		const entries_newer_than_this_version =
 			$latest_entries.get().filter((el_from_latest)=>
 				!entries_contains_update($this_version_entries, el_from_latest.id)
 			);
 		
-		entries_new_in_this_version = // i.e. in development, when updating the news
+		const entries_new_in_this_version = // i.e. in development, when updating the news
 			$this_version_entries.get().filter((el_from_latest)=>
 				!entries_contains_update($latest_entries, el_from_latest.id)
 			);

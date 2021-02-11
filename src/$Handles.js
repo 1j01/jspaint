@@ -66,6 +66,7 @@ function $Handles($handles_container, $object_container, options){
 				const m = to_canvas_coords(event);
 				let delta_x = 0;
 				let delta_y = 0;
+				let width, height;
 				// @TODO: decide between Math.floor/Math.ceil/Math.round for these values
 				if(x_axis === "right"){
 					delta_x = 0;
