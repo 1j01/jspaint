@@ -1654,7 +1654,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	const line_width_match = input_text.match(/\b(?:set|use|pick)? ?(?:(?:line|stroke|outline) (?:width|size|thickness))? ?(?:to)? ?(\d+|single|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|a hundred|one hundred|smallest|largest|littlest|biggest|small|large|little|big|tiny|huge|puny|massive|medium) ?(?:px|pixels?)? ?(?:(?:wide|thick|sized)? ?(?:for)? ?(?:(?:out)?lines?)?|(?:width|size|thickness)) ?(?:(?:out)?lines?)?\b/i);
 	if (line_width_match) {
 		const size_str = line_width_match[1];
-		let n = parseInt(size_str);
+		let n = parseInt(size_str, 10);
 		switch (size_str.toLowerCase()) {
 			case "zero": n = 0; break;
 			case "single": n = 1; break;
@@ -2113,4 +2113,4 @@ if (should_test_speech_recognition) {
 	$(test_speech_recognition);
 }
 
-})();
+}());

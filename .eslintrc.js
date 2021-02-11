@@ -168,7 +168,41 @@ module.exports = {
 		"no-undef": 0, // FOR NOW OKAY? there are just tons of globals at the moment
 		"no-unused-vars": 0, // ditto
 
+		// "eqeqeq": "error",
+		// "class-methods-use-this": "error",
+		"no-alert": "error",
+		"no-extend-native": "error",
+		"no-extra-bind": "error",
+		"no-invalid-this": "error",
+		"no-new-func": "error",
+		"no-eval": "error",
+		"no-new-wrappers": "error",
+		"no-proto": "error",
+		"no-return-assign": "error",
+		"no-return-await": "error",
+		"no-script-url": "error",
+		"no-self-compare": "error",
+		"no-sequences": "error",
+		"no-throw-literal": "error",
+		"no-unmodified-loop-condition": "error",
+		// "no-unused-expressions": "error", // a && a() used a lot, could switch to a?.() etc. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
+		"no-useless-concat": "error",
+		"prefer-promise-reject-errors": "error",
+		"radix": "error",
+		"require-await": "error",
+		// "vars-on-top": "error",
+		"wrap-iife": "error",
+		"no-label-var": "error",
+		// "no-shadow": "error",
+		// "no-use-before-define": "error",
+		
 		// To target specific variables to rename or otherwise address:
-		"no-restricted-globals": ["error", "event", "canvas", "ctx", "colors", "i", "j", "k", "x", "y", "z", "width", "height", "w", "h"]
+		"no-restricted-globals": ["error", "event", "canvas", "ctx", "colors", "i", "j", "k", "x", "y", "z", "width", "height", "w", "h"],
+
+		// Stylistic:
+		// @TODO: https://eslint.org/docs/rules/#stylistic-issues
+		// I want to see if I can merge some branches, maybe PRs first.
+		// "array-bracket-spacing": "error",
+		// "block-spacing": "error",
 	}
 };

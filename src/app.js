@@ -1289,7 +1289,8 @@ function init_eye_gaze_mode() {
 				const border_radius_scale = parseInt(
 					(
 						$(halo_target).closest(".component").css("transform") || ""
-					).match(/\d+/) || 1
+					).match(/\d+/) || 1,
+					10
 				);
 				$halo.css({
 					display: "block",

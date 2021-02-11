@@ -713,7 +713,7 @@ function open_from_File(file, callback, canceled){
 		}, canceled);
 	});
 }
-async function open_from_FileList(files, user_input_method_verb_past_tense){
+function open_from_FileList(files, user_input_method_verb_past_tense){
 	let loaded = false;
 	const fails = [];
 	for (const file of files) {
@@ -1796,7 +1796,7 @@ function getSelectionText() {
 	return text;
 }
 
-async function edit_copy(execCommandFallback){
+function edit_copy(execCommandFallback){
 	const text = getSelectionText();
 
 	if (text.length > 0) {
@@ -2652,7 +2652,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 function write_image_file(canvas, mime_type, blob_callback) {
 	const bmp_match = mime_type.match(/^image\/bmp\s*;(?:\s*bpp=(\d+))?/);
 	if (bmp_match) {
-		const file_content = encodeBMP(main_ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1]));
+		const file_content = encodeBMP(main_ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1], 10));
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);

@@ -51,7 +51,8 @@
 			} else if (Array.isArray(key)) {
 				throw new TypeError("Cannot set an array of keys (to what?)");
 			} else {
-				to_set = key, callback = value;
+				to_set = key;
+				callback = value;
 			}
 			for (key in to_set) {
 				value = to_set[key];

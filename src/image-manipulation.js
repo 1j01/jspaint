@@ -214,7 +214,7 @@ function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1)
 
 function bresenham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line algorithm
-	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
+	x1=~~x1; x2=~~x2; y1=~~y1; y2=~~y2;
 	
 	const dx = Math.abs(x2 - x1);
 	const dy = Math.abs(y2 - y1);
@@ -235,7 +235,7 @@ function bresenham_line(x1, y1, x2, y2, callback){
 
 function brosandham_line(x1, y1, x2, y2, callback){
 	// Bresenham's line argorithm with a callback between going horizontal and vertical
-	x1=~~x1, x2=~~x2, y1=~~y1, y2=~~y2;
+	x1=~~x1; x2=~~x2; y1=~~y1; y2=~~y2;
 	
 	const dx = Math.abs(x2 - x1);
 	const dy = Math.abs(y2 - y1);
@@ -1013,7 +1013,7 @@ function draw_grid(ctx, scale) {
 		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_EDGE_FLAG, edgeCallback);
 
 		return tessy;
-	})();
+	}());
 
 	function triangulate(contours) {
 		// libtess will take 3d verts and flatten to a plane for tesselation

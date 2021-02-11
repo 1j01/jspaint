@@ -200,7 +200,7 @@ function load_image(src) {
 		const img = new Image();
 
 		img.onload = ()=> { resolve(img); };
-		img.onerror = ()=> { reject(); };
+		img.onerror = ()=> { reject(new Error(`failed to load image from ${src}`)); };
 
 		img.src = src;
 	});
@@ -237,7 +237,7 @@ function get_icon_for_tools(tools) {
  * @return  Array           The HSL representation
  */
 function rgb_to_hsl(r, g, b) {
-	r /= 255, g /= 255, b /= 255;
+	r /= 255; g /= 255; b /= 255;
 
 	var max = Math.max(r, g, b), min = Math.min(r, g, b);
 	var h, s, l = (max + min) / 2;
