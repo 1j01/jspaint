@@ -986,9 +986,15 @@ function show_error_message(message, error){
 	$w.$main.text(message);
 	$w.$main.css("max-width", "600px");
 	if(error){
+		let error_string = error.stack;
+		if (!error_string) {
+			error_string = error.toString();
+		} else if (error_string.indexOf(error.message) === -1) {
+			error_string = `${error.toString()}\n\n${error_string}`;
+		}
 		$(E("pre"))
 		.appendTo($w.$main)
-		.text(error.stack || error.toString())
+		.text(error_string)
 		.css({
 			background: "white",
 			color: "#333",
