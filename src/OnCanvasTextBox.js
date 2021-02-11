@@ -192,8 +192,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 		let mox, moy; // mouse offset
 		const pointermove = e => {
 			const m = to_canvas_coords(e);
-			this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
-			this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
+			this.x = Math.max(Math.min(m.x - mox, main_canvas.width), -this.width);
+			this.y = Math.max(Math.min(m.y - moy, main_canvas.height), -this.height);
 			this.position();
 			if (e.shiftKey) {
 				// @TODO: maybe re-enable but handle undoables well

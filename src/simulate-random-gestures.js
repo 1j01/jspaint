@@ -32,7 +32,7 @@ $cursor.css({
 	transition: "opacity 0.5s",
 });
 
-window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, secondary, secondaryToggleChance, target=canvas}) => {
+window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, secondary, secondaryToggleChance, target=main_canvas}) => {
 	let startWithinRect = target.getBoundingClientRect();
 	let canvasAreaRect = $canvas_area[0].getBoundingClientRect();
 

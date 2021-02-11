@@ -1846,14 +1846,14 @@ window.trace_and_sketch = (subject_imagedata)=> {
 		if (!segment) {
 			segment_index = 0;
 			path_index += 1;
-			brush.pointerup(ctx, pointer.x, pointer.y);
+			brush.pointerup(main_ctx, pointer.x, pointer.y);
 			return;
 		}
 		let {x1, y1, x2, y2} = segment;
 		if (path !== active_path) {
 			pointer_previous = {x: x1, y: y1};
 			pointer = {x: x1, y: y1};
-			brush.pointerdown(ctx, x1, y1);
+			brush.pointerdown(main_ctx, x1, y1);
 			active_path = path;
 		}
 		pointer_previous = {x: x1, y: y1};
@@ -1902,7 +1902,7 @@ function find_clipart_and_sketch(subject_matter) {
 			const img_canvas = make_canvas(width, height);
 			img_canvas.ctx.drawImage(img, 0, 0, width, height);
 			const image_data = img_canvas.ctx.getImageData(0, 0, img_canvas.width, img_canvas.height);
-			resize_canvas_without_saving_dimensions(Math.max(canvas.width, image_data.width), Math.max(canvas.height, image_data.height));
+			resize_canvas_without_saving_dimensions(Math.max(main_canvas.width, image_data.width), Math.max(main_canvas.height, image_data.height));
 			trace_and_sketch(image_data);
 		};
 		img.src = image_url;

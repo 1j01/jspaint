@@ -14,9 +14,9 @@ let monochrome = false;
 let magnification = default_magnification;
 let return_to_magnification = 4;
 
-const canvas = make_canvas();
-canvas.classList.add("main-canvas");
-const ctx = canvas.ctx;
+const main_canvas = make_canvas();
+main_canvas.classList.add("main-canvas");
+const main_ctx = main_canvas.ctx;
 
 const default_palette = [
 	"rgb(0,0,0)", // Black
@@ -306,11 +306,11 @@ const $H = $(E("div")).addClass("horizontal").appendTo($V);
 
 const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
 
-const $canvas = $(canvas).appendTo($canvas_area);
+const $canvas = $(main_canvas).appendTo($canvas_area);
 $canvas.attr("touch-action", "none");
-let canvas_bounding_client_rect = canvas.getBoundingClientRect(); // cached for performance, updated later
+let canvas_bounding_client_rect = main_canvas.getBoundingClientRect(); // cached for performance, updated later
 const $canvas_handles = $Handles($canvas_area, $canvas_area, {
-	get_rect: ()=> ({x: 0, y: 0, width: canvas.width, height: canvas.height}),
+	get_rect: ()=> ({x: 0, y: 0, width: main_canvas.width, height: main_canvas.height}),
 	set_rect: ({width, height})=> resize_canvas_and_save_dimensions(width, height),
 	outset: 4,
 	get_handles_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
@@ -725,12 +725,12 @@ storage.get({
 		name: "Resize Canvas For New Document",
 		icon: get_help_folder_icon("p_stretch_both.png"),
 	}, ()=> {
-		canvas.width = Math.max(1, my_canvas_width);
-		canvas.height = Math.max(1, my_canvas_height);
-		ctx.disable_image_smoothing();
+		main_canvas.width = Math.max(1, my_canvas_width);
+		main_canvas.height = Math.max(1, my_canvas_height);
+		main_ctx.disable_image_smoothing();
 		if(!transparency){
-			ctx.fillStyle = colors.background;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			main_ctx.fillStyle = colors.background;
+			main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 		}
 		$canvas_area.trigger("resize");
 	});
@@ -850,17 +850,17 @@ function to_canvas_coords({clientX, clientY}) {
 	const cx = clientX - rect.left;
 	const cy = clientY - rect.top;
 	return {
-		x: ~~(cx / rect.width * canvas.width),
-		y: ~~(cy / rect.height * canvas.height),
+		x: ~~(cx / rect.width * main_canvas.width),
+		y: ~~(cy / rect.height * main_canvas.height),
 	};
 }
 
 function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
-	ctx.lineWidth = stroke_size;
+	main_ctx.lineWidth = stroke_size;
 
 	const reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
-	ctx.fillStyle = fill_color =
-	ctx.strokeStyle = stroke_color =
+	main_ctx.fillStyle = fill_color =
+	main_ctx.strokeStyle = stroke_color =
 		colors[
 			(ctrl && colors.ternary && pointer_active) ? "ternary" :
 			((reverse ^ reverse_because_fill_only) ? "background" : "foreground")
@@ -880,8 +880,8 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 				stroke_color_k = "foreground";
 			}
 		}
-		ctx.fillStyle = fill_color = colors[fill_color_k];
-		ctx.strokeStyle = stroke_color = colors[stroke_color_k];
+		main_ctx.fillStyle = fill_color = colors[fill_color_k];
+		main_ctx.strokeStyle = stroke_color = colors[stroke_color_k];
 	}
 }
 
@@ -889,10 +889,10 @@ function tool_go(selected_tool, event_name){
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
 
 	if(selected_tool[event_name]){
-		selected_tool[event_name](ctx, pointer.x, pointer.y);
+		selected_tool[event_name](main_ctx, pointer.x, pointer.y);
 	}
 	if(selected_tool.paint){
-		selected_tool.paint(ctx, pointer.x, pointer.y);
+		selected_tool.paint(main_ctx, pointer.x, pointer.y);
 	}
 }
 function canvas_pointer_move(e){
@@ -1117,7 +1117,7 @@ function init_eye_gaze_mode() {
 				hover_candidate.x < canvas_bounding_client_rect.right + margin &&
 				hover_candidate.y < canvas_bounding_client_rect.bottom + margin
 			) {
-				target = canvas;
+				target = main_canvas;
 				hover_candidate.x = Math.min(
 					canvas_bounding_client_rect.right - 1,
 					Math.max(
@@ -1216,7 +1216,7 @@ function init_eye_gaze_mode() {
 							hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
 							hover_candidate.target.matches(".selection, .selection *, .handle") ||
 							(
-								hover_candidate.target === canvas &&
+								hover_candidate.target === main_canvas &&
 								selected_tool.id !== TOOL_PICK_COLOR &&
 								selected_tool.id !== TOOL_FILL &&
 								selected_tool.id !== TOOL_MAGNIFIER &&
@@ -1571,7 +1571,7 @@ $canvas.on("pointerdown", e => {
 
 			pointer = to_canvas_coords(e);
 			selected_tools.forEach((selected_tool)=> {
-				selected_tool.pointerup && selected_tool.pointerup(ctx, pointer.x, pointer.y);
+				selected_tool.pointerup && selected_tool.pointerup(main_ctx, pointer.x, pointer.y);
 			});
 
 			if (selected_tools.length === 1) {

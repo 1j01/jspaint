@@ -110,7 +110,7 @@ if (localStorage.dev_theme_tool_icons === "true") {
 	$G.on("session-update", ()=> {
 		last_update_id += 1;
 		const this_update_id = last_update_id;
-		canvas.toBlob((blob)=> {
+		main_canvas.toBlob((blob)=> {
 			// avoid a race condition particularly when loading the document initially when the default canvas size is large, giving a larger PNG
 			if (this_update_id !== last_update_id) {
 				return;

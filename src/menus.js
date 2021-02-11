@@ -107,7 +107,7 @@ window.menus = {
 				// include the selection in the saved image
 				deselect();
 
-				canvas.toBlob((blob)=> {
+				main_canvas.toBlob((blob)=> {
 					sanity_check_blob(blob, ()=> {
 						show_imgur_uploader(blob);
 					});
@@ -448,8 +448,8 @@ window.menus = {
 						const rect = $canvas_area[0].getBoundingClientRect();
 						const margin = 30; // leave a margin so scrollbars won't appear
 						let mag = Math.min(
-							(rect.width - margin) / canvas.width,
-							(rect.height - margin) / canvas.height,
+							(rect.width - margin) / main_canvas.width,
+							(rect.height - margin) / main_canvas.height,
 						);
 						// round to an integer percent for the View > Zoom > Custom... dialog, which shows non-integers as invalid
 						mag = Math.floor(100 * mag) / 100;

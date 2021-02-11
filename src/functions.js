@@ -94,14 +94,14 @@ function set_all_url_params(params, {replace_history_state=false}={}) {
 }
 
 function update_magnified_canvas_size(){
-	$canvas.css("width", canvas.width * magnification);
-	$canvas.css("height", canvas.height * magnification);
+	$canvas.css("width", main_canvas.width * magnification);
+	$canvas.css("height", main_canvas.height * magnification);
 
 	update_canvas_rect();
 }
 
 function update_canvas_rect() {
-	canvas_bounding_client_rect = canvas.getBoundingClientRect();
+	canvas_bounding_client_rect = main_canvas.getBoundingClientRect();
 
 	update_helper_layer();
 }
@@ -142,7 +142,7 @@ function update_helper_layer_immediately() {
 	const scale = magnification * window.devicePixelRatio;
 
 	if (!helper_layer) {
-		helper_layer = new OnCanvasHelperLayer(0, 0, canvas.width, canvas.height, false, scale);
+		helper_layer = new OnCanvasHelperLayer(0, 0, main_canvas.width, main_canvas.height, false, scale);
 	}
 
 	const hcanvas = helper_layer.canvas;
@@ -157,8 +157,8 @@ function update_helper_layer_immediately() {
 	// 		Math.floor(Math.max(($canvas_area.scrollLeft() - $canvas_area.innerWidth()) / magnification + canvas.width - margin, 0)) :
 	// 		Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
 	const viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification - margin, 0));
-	const viewport_x2 = Math.floor(Math.min(viewport_x + $canvas_area.width() / magnification + margin*2, canvas.width));
-	const viewport_y2 = Math.floor(Math.min(viewport_y + $canvas_area.height() / magnification + margin*2, canvas.height));
+	const viewport_x2 = Math.floor(Math.min(viewport_x + $canvas_area.width() / magnification + margin*2, main_canvas.width));
+	const viewport_y2 = Math.floor(Math.min(viewport_y + $canvas_area.height() / magnification + margin*2, main_canvas.height));
 	const viewport_width = viewport_x2 - viewport_x;
 	const viewport_height = viewport_y2 - viewport_y;
 	const resolution_width = viewport_width * scale;
@@ -417,13 +417,13 @@ function reset_canvas_and_history(){
 	});
 	history_node_to_cancel_to = null;
 
-	canvas.width = Math.max(1, my_canvas_width);
-	canvas.height = Math.max(1, my_canvas_height);
-	ctx.disable_image_smoothing();
-	ctx.fillStyle = colors.background;
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	main_canvas.width = Math.max(1, my_canvas_width);
+	main_canvas.height = Math.max(1, my_canvas_height);
+	main_ctx.disable_image_smoothing();
+	main_ctx.fillStyle = colors.background;
+	main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 
-	current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 
 	$canvas_area.trigger("resize");
 	$G.triggerHandler("history-update"); // update history view
@@ -516,12 +516,12 @@ function open_from_image_and_blob(img, blob, callback, canceled){
 		reset_canvas_and_history(); // (with newly reset colors)
 		set_magnification(default_magnification);
 
-		ctx.copy(img);
+		main_ctx.copy(img);
 		detect_transparency();
 		$canvas_area.trigger("resize");
 
 		current_history_node.name = localize("Open");
-		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 		current_history_node.icon = null; // @TODO
 
 		$G.triggerHandler("session-update"); // autosave
@@ -913,7 +913,7 @@ function file_save(maybe_saved_callback=()=>{}){
 		if(file_name.match(/\.svg$/i)){
 			return file_save_as(maybe_saved_callback);
 		}
-		return save_to_file_path(canvas, document_file_path, (saved_file_path, saved_file_name, saved_file_type) => {
+		return save_to_file_path(main_canvas, document_file_path, (saved_file_path, saved_file_name, saved_file_type) => {
 			saved = true;
 			document_file_path = saved_file_path;
 			file_name = saved_file_name;
@@ -926,7 +926,7 @@ function file_save(maybe_saved_callback=()=>{}){
 	if (!file_name_chosen) {
 		return file_save_as(maybe_saved_callback);
 	}
-	write_image_file(canvas, file_format, (blob)=> {
+	write_image_file(main_canvas, file_format, (blob)=> {
 		const file_saver = saveAs(blob, file_name);
 		// file_saver.onwriteend = () => {
 		// 	// this won't fire in chrome
@@ -941,7 +941,7 @@ function file_save(maybe_saved_callback=()=>{}){
 function file_save_as(maybe_saved_callback=()=>{}){
 	deselect();
 	// @TODO: shouldn't this just be file_name, no replacement?
-	save_canvas_as(canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name, saved_file_type) => {
+	save_canvas_as(main_canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name, saved_file_type) => {
 		saved = true;
 		document_file_path = saved_file_path;
 		file_name = saved_file_name;
@@ -1227,7 +1227,7 @@ function paste_from_file_select_dialog(){
 
 function paste(img){
 
-	if(img.width > canvas.width || img.height > canvas.height){
+	if(img.width > main_canvas.width || img.height > main_canvas.height){
 		const $w = new $FormToolWindow().addClass("dialogue-window");
 		$w.title(localize("Paint"));
 		$w.$main.html(`
@@ -1238,8 +1238,8 @@ function paste(img){
 			$w.close();
 			// The resize gets its own undoable, as in mspaint
 			resize_canvas_and_save_dimensions(
-				Math.max(canvas.width, img.width),
-				Math.max(canvas.height, img.height),
+				Math.max(main_canvas.width, img.width),
+				Math.max(main_canvas.height, img.height),
 				{
 					name: "Enlarge Canvas For Paste",
 					icon: get_help_folder_icon("p_stretch_both.png"),
@@ -1307,8 +1307,8 @@ function render_history_as_gif(){
 	$win.center();
 
 	try{
-		const width = canvas.width;
-		const height = canvas.height;
+		const width = main_canvas.width;
+		const height = main_canvas.height;
 		const gif = new GIF({
 			//workers: Math.min(5, Math.floor(undos.length/50)+1),
 			workerScript: "lib/gif.js/gif.worker.js",
@@ -1380,7 +1380,7 @@ function go_to_history_node(target_history_node, canceling) {
 		}
 		return;
 	}
-	const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 	if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
 		window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		undoable({name: "Unknown [GTHN]", use_loose_canvas_changes: true}, ()=> {});
@@ -1393,7 +1393,7 @@ function go_to_history_node(target_history_node, canceling) {
 	}
 	saved = false;
 
-	ctx.copy(target_history_node.image_data);
+	main_ctx.copy(target_history_node.image_data);
 	if (target_history_node.selection_image_data) {
 		if (selection) {
 			selection.destroy();
@@ -1477,7 +1477,7 @@ function go_to_history_node(target_history_node, canceling) {
 }
 function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 	if (!use_loose_canvas_changes) {
-		const current_image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 		if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
 			window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 			undoable({name: "Unknown [undoable]", use_loose_canvas_changes: true}, ()=> {});
@@ -1493,7 +1493,7 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 		window.console && console.log(`History node switched during undoable callback for ${name}, from`, before_callback_history_node, "to", current_history_node);
 	}
 
-	const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	const image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 
 	redos.length = 0;
 	undos.push(current_history_node);
@@ -1528,7 +1528,7 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 function make_or_update_undoable(undoable_meta, undoable_action) {
 	if (current_history_node.futures.length === 0 && undoable_meta.match(current_history_node)) {
 		undoable_action();
-		current_history_node.image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 		current_history_node.selection_image_data = selection && selection.canvas.ctx.getImageData(0, 0, selection.canvas.width, selection.canvas.height);
 		current_history_node.selection_x = selection && selection.x;
 		current_history_node.selection_y = selection && selection.y;
@@ -1723,7 +1723,7 @@ function meld_textbox_into_canvas(going_to_history_node) {
 			name: "Finish Text",
 			icon: get_icon_for_tool(get_tool_by_id(TOOL_TEXT)),
 		}, () => {
-			ctx.drawImage(textbox.canvas, textbox.x, textbox.y);
+			main_ctx.drawImage(textbox.canvas, textbox.x, textbox.y);
 			textbox.destroy();
 			textbox = null;
 		});
@@ -1740,7 +1740,7 @@ function deselect(going_to_history_node){
 		meld_textbox_into_canvas(going_to_history_node);
 	}
 	for (const selected_tool of selected_tools) {
-		selected_tool.end && selected_tool.end(ctx);
+		selected_tool.end && selected_tool.end(main_ctx);
 	}
 }
 function delete_selection(meta={}){
@@ -1764,7 +1764,7 @@ function select_all(){
 		icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 		soft: true,
 	}, ()=> {
-		selection = new OnCanvasSelection(0, 0, canvas.width, canvas.height);
+		selection = new OnCanvasSelection(0, 0, main_canvas.width, main_canvas.height);
 	});
 }
 
@@ -1928,17 +1928,17 @@ function clear(){
 		saved = false;
 
 		if(transparency){
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			main_ctx.clearRect(0, 0, main_canvas.width, main_canvas.height);
 		}else{
-			ctx.fillStyle = colors.background;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			main_ctx.fillStyle = colors.background;
+			main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 		}
 	});
 }
 
 function view_bitmap(){
-	if(canvas.requestFullscreen){ canvas.requestFullscreen(); }
-	if(canvas.webkitRequestFullscreen){ canvas.webkitRequestFullscreen(); }
+	if(main_canvas.requestFullscreen){ main_canvas.requestFullscreen(); }
+	if(main_canvas.webkitRequestFullscreen){ main_canvas.webkitRequestFullscreen(); }
 }
 
 function get_tool_by_id(id){
@@ -2008,7 +2008,7 @@ function has_any_transparency(ctx) {
 	// @TODO Optimization: Assume JPEGs and some other file types are opaque.
 	// Raster file formats that SUPPORT transparency include GIF, PNG, BMP and TIFF
 	// (Yes, even BMPs support transparency!)
-	const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	const id = ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 	for(let i=0, l=id.data.length; i<l; i+=4){
 		if(id.data[i+3] < 255){
 			return true;
@@ -2018,7 +2018,7 @@ function has_any_transparency(ctx) {
 }
 
 function detect_transparency(){
-	transparency = has_any_transparency(ctx);
+	transparency = has_any_transparency(main_ctx);
 }
 
 function detect_monochrome(ctx) {
@@ -2069,7 +2069,7 @@ function make_monochrome_pattern(lightness, rgba1=[0, 0, 0, 255], rgba2=[255, 25
 	pattern_canvas.width = 8;
 	pattern_canvas.height = 8;
 
-	const pattern_image_data = ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
+	const pattern_image_data = main_ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
 
 	for(let x = 0; x < pattern_canvas.width; x += 1){
 		for(let y = 0; y < pattern_canvas.height; y += 1){
@@ -2085,7 +2085,7 @@ function make_monochrome_pattern(lightness, rgba1=[0, 0, 0, 255], rgba2=[255, 25
 
 	pattern_ctx.putImageData(pattern_image_data, 0, 0);
 
-	return ctx.createPattern(pattern_canvas, "repeat");
+	return main_ctx.createPattern(pattern_canvas, "repeat");
 }
 
 function make_monochrome_palette(rgba1=[0, 0, 0, 255], rgba2=[255, 255, 255, 255]){
@@ -2113,7 +2113,7 @@ function make_stripe_pattern(reverse, colors, stripe_size=4){
 	pattern_canvas.width = colors.length * stripe_size;
 	pattern_canvas.height = colors.length * stripe_size;
 
-	const pattern_image_data = ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
+	const pattern_image_data = main_ctx.createImageData(pattern_canvas.width, pattern_canvas.height);
 
 	for(let x = 0; x < pattern_canvas.width; x += 1){
 		for(let y = 0; y < pattern_canvas.height; y += 1){
@@ -2131,7 +2131,7 @@ function make_stripe_pattern(reverse, colors, stripe_size=4){
 
 	pattern_ctx.putImageData(pattern_image_data, 0, 0);
 
-	return ctx.createPattern(pattern_canvas, "repeat");
+	return main_ctx.createPattern(pattern_canvas, "repeat");
 }
 
 function switch_to_polychrome_palette(){
@@ -2143,40 +2143,40 @@ function make_opaque() {
 		name: "Make Opaque",
 		icon: get_help_folder_icon("p_make_opaque.png"),
 	}, ()=> {
-		ctx.save();
-		ctx.globalCompositeOperation = "destination-atop";
+		main_ctx.save();
+		main_ctx.globalCompositeOperation = "destination-atop";
 
-		ctx.fillStyle = colors.background;
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		main_ctx.fillStyle = colors.background;
+		main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 		
 		// in case the selected background color is transparent/translucent
-		ctx.fillStyle = "white";
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		main_ctx.fillStyle = "white";
+		main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 
-		ctx.restore();
+		main_ctx.restore();
 	});
 }
 
 function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_height, undoable_meta={}) {
 	const new_width = Math.max(1, unclamped_width);
 	const new_height = Math.max(1, unclamped_height);
-	if (canvas.width !== new_width || canvas.height !== new_height) {
+	if (main_canvas.width !== new_width || main_canvas.height !== new_height) {
 		undoable({
 			name: undoable_meta.name || "Resize Canvas",
 			icon: undoable_meta.icon || get_help_folder_icon("p_stretch_both.png"),
 		}, () => {
-			const image_data = ctx.getImageData(0, 0, new_width, new_height);
-			canvas.width = new_width;
-			canvas.height = new_height;
-			ctx.disable_image_smoothing();
+			const image_data = main_ctx.getImageData(0, 0, new_width, new_height);
+			main_canvas.width = new_width;
+			main_canvas.height = new_height;
+			main_ctx.disable_image_smoothing();
 			
 			if(!transparency){
-				ctx.fillStyle = colors.background;
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				main_ctx.fillStyle = colors.background;
+				main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 			}
 
 			const temp_canvas = make_canvas(image_data);
-			ctx.drawImage(temp_canvas, 0, 0);
+			main_ctx.drawImage(temp_canvas, 0, 0);
 
 			$canvas_area.trigger("resize");
 		});
@@ -2186,8 +2186,8 @@ function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_heig
 function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height, undoable_meta={}) {
 	resize_canvas_without_saving_dimensions(unclamped_width, unclamped_height, undoable_meta);
 	storage.set({
-		width: canvas.width,
-		height: canvas.height,
+		width: main_canvas.width,
+		height: main_canvas.height,
 	}, (/*error*/) => {
 		// oh well
 	})
@@ -2223,8 +2223,8 @@ function image_attributes(){
 
 	const unit_sizes_in_px = {px: 1, in: 72, cm: 28.3465};
 	let current_unit = image_attributes.unit = image_attributes.unit || "px";
-	let width_in_px = canvas.width;
-	let height_in_px = canvas.height;
+	let width_in_px = main_canvas.width;
+	let height_in_px = main_canvas.height;
 
 	const $width_label = $(E("label")).appendTo($main).text(localize("Width:"));
 	const $height_label = $(E("label")).appendTo($main).text(localize("Height:"));
@@ -2294,7 +2294,7 @@ function image_attributes(){
 				// simplest way to do that is to meld them together
 				meld_selection_into_canvas();
 			}
-			monochrome_info = detect_monochrome(ctx);
+			monochrome_info = detect_monochrome(main_ctx);
 
 			if(monochrome){
 				if(monochrome_info.isMonochrome && monochrome_info.presentNonTransparentRGBAs.length === 2) {
@@ -2317,7 +2317,7 @@ function image_attributes(){
 		const height = $height.val() * unit_to_px;
 		resize_canvas_and_save_dimensions(~~width, ~~height);
 
-		if (!transparency && has_any_transparency(ctx)) {
+		if (!transparency && has_any_transparency(main_ctx)) {
 			make_opaque();
 		}
 
@@ -2357,7 +2357,7 @@ function show_convert_to_black_and_white() {
 	$w.addClass("convert-to-black-and-white");
 	$w.$main.append("<fieldset><legend>Threshold:</legend><input type='range' min='0' max='1' step='0.01' value='0.5'></fieldset>");
 	const $slider = $w.$main.find("input[type='range']");
-	const original_canvas = make_canvas(canvas);
+	const original_canvas = make_canvas(main_canvas);
 	let threshold;
 	const update_threshold = ()=> {
 		make_or_update_undoable({
@@ -2366,8 +2366,8 @@ function show_convert_to_black_and_white() {
 			icon: get_help_folder_icon("p_monochrome.png"),
 		}, ()=> {
 			threshold = $slider.val();
-			ctx.copy(original_canvas);
-			threshold_black_and_white(ctx, threshold);
+			main_ctx.copy(original_canvas);
+			threshold_black_and_white(main_ctx, threshold);
 		});
 	};
 	update_threshold();
@@ -2384,7 +2384,7 @@ function show_convert_to_black_and_white() {
 				name: "Cancel Make Monochrome",
 				icon: get_help_folder_icon("p_monochrome_undo.png"),
 			}, ()=> {
-				ctx.copy(original_canvas);
+				main_ctx.copy(original_canvas);
 			});
 		}
 		$w.close();
@@ -2652,7 +2652,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 function write_image_file(canvas, mime_type, blob_callback) {
 	const bmp_match = mime_type.match(/^image\/bmp\s*;(?:\s*bpp=(\d+))?/);
 	if (bmp_match) {
-		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1]));
+		const file_content = encodeBMP(main_ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1]));
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);
@@ -2683,7 +2683,7 @@ function update_from_saved_file(blob) {
 				name: `${localize("Save As")} ${format ? format.name : file_format}`,
 				icon: get_help_folder_icon("p_monochrome_undo.png"),
 			}, ()=> {
-				ctx.copy(image);
+				main_ctx.copy(image);
 				URL.revokeObjectURL(blob_uri);
 			});
 		}, (error)=> {
@@ -2713,7 +2713,7 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 	});
 }
 
-function set_as_wallpaper_tiled(c = canvas) {
+function set_as_wallpaper_tiled(c = main_canvas) {
 	// Note: we can't just poke in a different set_as_wallpaper_tiled function, because it's stored by reference in menus.js
 	if(window.systemSetAsWallpaperTiled){
 		return window.systemSetAsWallpaperTiled(c);
@@ -2727,7 +2727,7 @@ function set_as_wallpaper_tiled(c = canvas) {
 	set_as_wallpaper_centered(wallpaperCanvas);
 }
 
-function set_as_wallpaper_centered(c = canvas) {
+function set_as_wallpaper_centered(c = main_canvas) {
 	// Note: we can't just poke in a different set_as_wallpaper_centered function, because it's stored by reference in menus.js
 	if(window.systemSetAsWallpaperCentered){
 		return window.systemSetAsWallpaperCentered(c);

@@ -51,7 +51,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			}
 			else {
 				this.source_canvas = make_canvas(this.width, this.height);
-				this.source_canvas.ctx.drawImage(canvas, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+				this.source_canvas.ctx.drawImage(main_canvas, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
 				this.canvas = make_canvas(this.source_canvas);
 				this.cut_out_background();
 			}
@@ -88,8 +88,8 @@ class OnCanvasSelection extends OnCanvasObject {
 					soft: true,
 				}, ()=> {
 					const m = to_canvas_coords(e);
-					this.x = Math.max(Math.min(m.x - mox, canvas.width), -this.width);
-					this.y = Math.max(Math.min(m.y - moy, canvas.height), -this.height);
+					this.x = Math.max(Math.min(m.x - mox, main_canvas.width), -this.width);
+					this.y = Math.max(Math.min(m.y - moy, main_canvas.height), -this.height);
 					this.position();
 					if (e.shiftKey) {
 						// Smear selection
@@ -141,7 +141,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	cut_out_background() {
 		const cutout = this.canvas;
 		// doc/this or canvas/cutout, either of those pairs would result in variable names of equal length which is nice :)
-		const canvasImageData = ctx.getImageData(this.x, this.y, this.width, this.height);
+		const canvasImageData = main_ctx.getImageData(this.x, this.y, this.width, this.height);
 		const cutoutImageData = cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// cutoutImageData is initialzed with the shape to be cut out (whether rectangular or polygonal)
 		// and should end up as the cut out image data for the selection
@@ -175,7 +175,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				cutoutImageData.data[i + 3] = 0;
 			}
 		}
-		ctx.putImageData(canvasImageData, this.x, this.y);
+		main_ctx.putImageData(canvasImageData, this.x, this.y);
 		cutout.ctx.putImageData(cutoutImageData, 0, 0);
 		this.update_tool_transparent_mode();
 		// NOTE: in case you want to use the tool_transparent_mode
@@ -189,7 +189,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		// and even if you do, if you do it after creating a selection, it still won't work,
 		// because you will have already *not cut out* the selection from the canvas
 		if (!transparency || tool_transparent_mode) {
-			ctx.drawImage(colored_cutout, this.x, this.y);
+			main_ctx.drawImage(colored_cutout, this.x, this.y);
 		}
 
 		$G.triggerHandler("session-update"); // autosave
@@ -270,7 +270,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	}
 	draw() {
 		try {
-			ctx.drawImage(this.canvas, this.x, this.y);
+			main_ctx.drawImage(this.canvas, this.x, this.y);
 		}
 		// eslint-disable-next-line no-empty
 		catch (e) { }

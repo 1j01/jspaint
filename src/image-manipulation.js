@@ -267,8 +267,8 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	// (octree? or just have a higher level stack of chunks to fill and check at if a chunk is homogeneous)
 
 	const stack = [[start_x, start_y]];
-	const c_width = canvas.width;
-	const c_height = canvas.height;
+	const c_width = main_canvas.width;
+	const c_height = main_canvas.height;
 	const id = ctx.getImageData(0, 0, c_width, c_height);
 	let pixel_pos = (start_y*c_width + start_x) * 4;
 	const start_r = id.data[pixel_pos+0];
@@ -545,7 +545,7 @@ function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y){
 
 function apply_image_transformation(meta, fn){
 	// Apply an image transformation function to either the selection or the entire canvas
-	const original_canvas = selection ? selection.source_canvas: canvas;
+	const original_canvas = selection ? selection.source_canvas: main_canvas;
 	
 	const new_canvas = make_canvas(original_canvas.width, original_canvas.height);
 
@@ -571,7 +571,7 @@ function apply_image_transformation(meta, fn){
 		}, () => {
 			saved = false;
 			
-			ctx.copy(new_canvas);
+			main_ctx.copy(new_canvas);
 			
 			$canvas.trigger("update"); // update handles
 		});

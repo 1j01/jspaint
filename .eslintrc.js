@@ -70,8 +70,8 @@ module.exports = {
 		"my_canvas_height": "writable",
 		"pointer": "writable",
 		// references that may contain state in some ways
-		"canvas": "writable", // really bad
-		"ctx": "writable", // really bad
+		"main_canvas": "writable",
+		"main_ctx": "writable",
 		"helper_layer": "writable",
 		"menus": "writable",
 		"tools": "writable",
@@ -123,5 +123,8 @@ module.exports = {
 	"rules": {
 		"no-undef": 0, // FOR NOW OKAY? there are just tons of globals at the moment
 		"no-unused-vars": 0, // ditto
+
+		// To target specific variables to rename or otherwise adress:
+		// "no-restricted-globals": ["error", "event", "canvas", "ctx"]
 	}
 };

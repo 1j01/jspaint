@@ -53,16 +53,16 @@ window.tools = [{
 		this.y_min = pointer.y;
 		this.y_max = pointer.y+1;
 		this.points = [];
-		this.preview_canvas = make_canvas(canvas.width, canvas.height);
+		this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
 
 		// End prior selection, drawing it to the canvas
 		deselect();
 	},
 	paint(ctx, x, y) {
 		// Constrain the pointer to the canvas
-		pointer.x = Math.min(canvas.width, pointer.x);
+		pointer.x = Math.min(main_canvas.width, pointer.x);
 		pointer.x = Math.max(0, pointer.x);
-		pointer.y = Math.min(canvas.height, pointer.y);
+		pointer.y = Math.min(main_canvas.height, pointer.y);
 		pointer.y = Math.max(0, pointer.y);
 		// Add the point
 		this.points.push(pointer);
@@ -78,9 +78,9 @@ window.tools = [{
 	},
 	paint_iteration(x, y) {
 		// Constrain the inverty paint brush position to the canvas
-		x = Math.min(canvas.width, x);
+		x = Math.min(main_canvas.width, x);
 		x = Math.max(0, x);
-		y = Math.min(canvas.height, y);
+		y = Math.min(main_canvas.height, y);
 		y = Math.max(0, y);
 		
 		// Find the dimensions on the canvas of the tiny square to invert
@@ -91,7 +91,7 @@ window.tools = [{
 		const rect_h = inverty_size;
 		
 		const ctx_dest = this.preview_canvas.ctx;
-		const id_src = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
+		const id_src = main_ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 		const id_dest = ctx_dest.getImageData(rect_x, rect_y, rect_w, rect_h);
 		
 		for(let i=0, l=id_dest.data.length; i<l; i+=4){
@@ -109,7 +109,7 @@ window.tools = [{
 		this.preview_canvas.height = 1;
 
 		const contents_within_polygon = copy_contents_within_polygon(
-			canvas,
+			main_canvas,
 			this.points,
 			this.x_min,
 			this.y_min,
@@ -174,8 +174,8 @@ window.tools = [{
 			if (ctrl) {
 				undoable({name: "Crop"}, () => {
 					var cropped_canvas = make_canvas(rect_width, rect_height);
-					cropped_canvas.ctx.drawImage(canvas, -rect_x, -rect_y);
-					ctx.copy(cropped_canvas);
+					cropped_canvas.ctx.drawImage(main_canvas, -rect_x, -rect_y);
+					main_ctx.copy(cropped_canvas);
 					$canvas_handles.show();
 					$canvas_area.trigger("resize");
 				});
@@ -197,7 +197,7 @@ window.tools = [{
 					y_max - y_min,
 				);
 				rect_canvas.ctx.drawImage(
-					canvas,
+					main_canvas,
 					// source:
 					rect_x,
 					rect_y,
@@ -306,7 +306,7 @@ window.tools = [{
 		}
 	},
 	pointerdown() {
-		this.mask_canvas = make_canvas(canvas.width, canvas.height);
+		this.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 	},
 	render_from_mask(ctx, previewing) {
 		ctx.save();
@@ -343,7 +343,7 @@ window.tools = [{
 			name: get_language().match(/^en\b/) ? (this.color_eraser_mode ? "Color Eraser" : "Eraser") : localize("Eraser/Color Eraser"),
 			icon: get_icon_for_tool(this),
 		}, ()=> {
-			this.render_from_mask(ctx);
+			this.render_from_mask(main_ctx);
 
 			this.mask_canvas = null;
 		});
@@ -462,7 +462,7 @@ window.tools = [{
 		});
 	},
 	paint(ctx, x, y) {
-		if(x >= 0 && y >= 0 && x < canvas.width && y < canvas.height){
+		if(x >= 0 && y >= 0 && x < main_canvas.width && y < main_canvas.height){
 			const id = ctx.getImageData(~~x, ~~y, 1, 1);
 			const r = id.data[0];
 			const g = id.data[1];
@@ -526,8 +526,8 @@ window.tools = [{
 		// try to move rect into bounds without squishing
 		rect_x1 = Math.max(0, rect_x1);
 		rect_y1 = Math.max(0, rect_y1);
-		rect_x1 = Math.min(canvas.width - w, rect_x1);
-		rect_y1 = Math.min(canvas.height - h, rect_y1);
+		rect_x1 = Math.min(main_canvas.width - w, rect_x1);
+		rect_y1 = Math.min(main_canvas.height - h, rect_y1);
 
 		let rect_x2 = rect_x1 + w;
 		let rect_y2 = rect_y1 + h;
@@ -535,15 +535,15 @@ window.tools = [{
 		// clamp rect to bounds (with squishing)
 		rect_x1 = Math.max(0, rect_x1);
 		rect_y1 = Math.max(0, rect_y1);
-		rect_x2 = Math.min(canvas.width, rect_x2);
-		rect_y2 = Math.min(canvas.height, rect_y2);
+		rect_x2 = Math.min(main_canvas.width, rect_x2);
+		rect_y2 = Math.min(main_canvas.height, rect_y2);
 		
 		const rect_w = rect_x2 - rect_x1;
 		const rect_h = rect_y2 - rect_y1;
 		const rect_x = rect_x1;
 		const rect_y = rect_y1;
 
-		const id_src = canvas.ctx.getImageData(rect_x, rect_y, rect_w+1, rect_h+1);
+		const id_src = main_canvas.ctx.getImageData(rect_x, rect_y, rect_w+1, rect_h+1);
 		const id_dest = ctx.getImageData((rect_x+translate_x)*scale, (rect_y+translate_y)*scale, rect_w*scale+1, rect_h*scale+1);
 		
 		function copyPixelInverted(x_dest, y_dest) {
@@ -885,7 +885,7 @@ window.tools = [{
 	},
 	pointerdown(ctx, x, y) {
 		if(this.points.length < 1){
-			this.preview_canvas = make_canvas(canvas.width, canvas.height);
+			this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
 		
 			// Add the first point of the polygon
 			this.points.push({x, y});
@@ -920,7 +920,7 @@ window.tools = [{
 
 		this.preview_canvas.ctx.clearRect(0, 0, this.preview_canvas.width, this.preview_canvas.height);
 		if (this.$options.fill && !this.$options.stroke) {
-			this.preview_canvas.ctx.drawImage(canvas, 0, 0);
+			this.preview_canvas.ctx.drawImage(main_canvas, 0, 0);
 			this.preview_canvas.ctx.strokeStyle = "white";
 			this.preview_canvas.ctx.globalCompositeOperation = "difference";
 			var orig_stroke_size = stroke_size;
@@ -1134,8 +1134,8 @@ tools.forEach((tool)=> {
 		tool.paint = ()=> {
 			rect_x = ~~Math.max(0, Math.min(drag_start_x, pointer.x));
 			rect_y = ~~Math.max(0, Math.min(drag_start_y, pointer.y));
-			rect_width = (~~Math.min(canvas.width, Math.max(drag_start_x, pointer.x) + 1)) - rect_x;
-			rect_height = (~~Math.min(canvas.height, Math.max(drag_start_y, pointer.y + 1))) - rect_y;
+			rect_width = (~~Math.min(main_canvas.width, Math.max(drag_start_x, pointer.x) + 1)) - rect_x;
+			rect_height = (~~Math.min(main_canvas.height, Math.max(drag_start_y, pointer.y + 1))) - rect_y;
 		};
 		tool.pointerup = ()=> {
 			$canvas_handles.show();
@@ -1152,7 +1152,7 @@ tools.forEach((tool)=> {
 			ctx.translate(translate_x, translate_y);
 
 			// make the document canvas part of the helper canvas so that inversion can apply to it
-			ctx.drawImage(canvas, 0, 0);
+			ctx.drawImage(main_canvas, 0, 0);
 		};
 		tool.drawPreviewAboveGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
 			if(!pointer_active){ return; }
@@ -1164,13 +1164,13 @@ tools.forEach((tool)=> {
 	if (tool.shape) {
 		tool.shape_canvas = null;
 		tool.pointerdown = ()=> {
-			tool.shape_canvas = make_canvas(canvas.width, canvas.height);
+			tool.shape_canvas = make_canvas(main_canvas.width, main_canvas.height);
 		};
 		tool.paint = ()=> {
 			tool.shape_canvas.ctx.clearRect(0, 0, tool.shape_canvas.width, tool.shape_canvas.height);
-			tool.shape_canvas.ctx.fillStyle = ctx.fillStyle;
-			tool.shape_canvas.ctx.strokeStyle = ctx.strokeStyle;
-			tool.shape_canvas.ctx.lineWidth = ctx.lineWidth;
+			tool.shape_canvas.ctx.fillStyle = main_ctx.fillStyle;
+			tool.shape_canvas.ctx.strokeStyle = main_ctx.strokeStyle;
+			tool.shape_canvas.ctx.lineWidth = main_ctx.lineWidth;
 			tool.shape(tool.shape_canvas.ctx, pointer_start.x, pointer_start.y, pointer.x-pointer_start.x, pointer.y-pointer_start.y);
 		};
 		tool.pointerup = ()=> {
@@ -1179,7 +1179,7 @@ tools.forEach((tool)=> {
 				name: tool.name,
 				icon: get_icon_for_tool(tool),
 			}, ()=> {
-				ctx.drawImage(tool.shape_canvas, 0, 0);
+				main_ctx.drawImage(tool.shape_canvas, 0, 0);
 				tool.shape_canvas = null;
 			});
 		};
@@ -1200,13 +1200,13 @@ tools.forEach((tool)=> {
 
 		tool.pointerdown = (ctx, x, y)=> {
 			if (!tool.mask_canvas) {
-				tool.mask_canvas = make_canvas(canvas.width, canvas.height);
+				tool.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			}
-			if (tool.mask_canvas.width !== canvas.width) {
-				tool.mask_canvas.width = canvas.width;
+			if (tool.mask_canvas.width !== main_canvas.width) {
+				tool.mask_canvas.width = main_canvas.width;
 			}
-			if (tool.mask_canvas.height !== canvas.height) {
-				tool.mask_canvas.height = canvas.height;
+			if (tool.mask_canvas.height !== main_canvas.height) {
+				tool.mask_canvas.height = main_canvas.height;
 			}
 			tool.mask_canvas.ctx.disable_image_smoothing();
 		};
@@ -1215,7 +1215,7 @@ tools.forEach((tool)=> {
 				name: tool.name,
 				icon: get_icon_for_tool(tool),
 			}, ()=> {
-				tool.render_from_mask(ctx);
+				tool.render_from_mask(main_ctx);
 
 				tool.mask_canvas.width = 1;
 				tool.mask_canvas.height = 1;
@@ -1282,13 +1282,13 @@ tools.forEach((tool)=> {
 
 		tool.init_mask_canvas = (ctx, x, y)=> {
 			if (!tool.mask_canvas) {
-				tool.mask_canvas = make_canvas(canvas.width, canvas.height);
+				tool.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			}
-			if (tool.mask_canvas.width !== canvas.width) {
-				tool.mask_canvas.width = canvas.width;
+			if (tool.mask_canvas.width !== main_canvas.width) {
+				tool.mask_canvas.width = main_canvas.width;
 			}
-			if (tool.mask_canvas.height !== canvas.height) {
-				tool.mask_canvas.height = canvas.height;
+			if (tool.mask_canvas.height !== main_canvas.height) {
+				tool.mask_canvas.height = main_canvas.height;
 			}
 			tool.mask_canvas.ctx.disable_image_smoothing();
 		};
@@ -1300,7 +1300,7 @@ tools.forEach((tool)=> {
 				name: tool.name,
 				icon: get_icon_for_tool(tool),
 			}, ()=> {
-				tool.render_from_mask(ctx);
+				tool.render_from_mask(main_ctx);
 
 				tool.mask_canvas.width = 1;
 				tool.mask_canvas.height = 1;

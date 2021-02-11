@@ -20,7 +20,7 @@
 
 
 	const canvas_has_any_apparent_image_data = ()=>
-		canvas.ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((v)=> v > 0);
+		main_canvas.ctx.getImageData(0, 0, main_canvas.width, main_canvas.height).data.some((v)=> v > 0);
 
 	let $recovery_window;
 	function show_recovery_window(no_longer_blank) {
@@ -104,7 +104,7 @@
 				if (save_paused) {
 					return;
 				}
-				storage.set(lsid, canvas.toDataURL("image/png"), err => {
+				storage.set(lsid, main_canvas.toDataURL("image/png"), err => {
 					if (err) {
 						if (err.quotaExceeded) {
 							storage_quota_exceeded();
@@ -341,7 +341,7 @@
 					return;
 				}
 				// Sync the data from this client to the server (one-way)
-				const uri = canvas.toDataURL();
+				const uri = main_canvas.toDataURL();
 				if (previous_uri !== uri) {
 					// log("clear pointer operations to set data", pointer_operations);
 					// pointer_operations = [];
@@ -383,7 +383,7 @@
 
 						const test_canvas = make_canvas(img);
 						const image_data_remote = test_canvas.ctx.getImageData(0, 0, test_canvas.width, test_canvas.height);
-						const image_data_local = ctx.getImageData(0, 0, canvas.width, canvas.height);
+						const image_data_local = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 						
 						if (!image_data_match(image_data_remote, image_data_local, 5)) {
 							ignore_session_update = true;
@@ -392,7 +392,7 @@
 								icon: get_help_folder_icon("p_database.png"),
 							}, ()=> {
 								// Write the image data to the canvas
-								ctx.copy(img);
+								main_ctx.copy(img);
 								$canvas_area.trigger("resize");
 							});
 							ignore_session_update = false;
