@@ -40,25 +40,25 @@ function update_$swatch($swatch, new_color) {
 function $ColorBox(vertical){
 	const $cb = $(E("div")).addClass("color-box");
 	
-	const $current_colors = $Swatch(colors.ternary).addClass("current-colors");
+	const $current_colors = $Swatch(selected_colors.ternary).addClass("current-colors");
 	const $palette = $(E("div")).addClass("palette");
 	
 	$cb.append($current_colors, $palette);
 	
-	const $foreground_color = $Swatch(colors.foreground).addClass("color-selection foreground-color");
-	const $background_color = $Swatch(colors.background).addClass("color-selection background-color");
+	const $foreground_color = $Swatch(selected_colors.foreground).addClass("color-selection foreground-color");
+	const $background_color = $Swatch(selected_colors.background).addClass("color-selection background-color");
 	$current_colors.append($background_color, $foreground_color);
 	
 	$G.on("option-changed", () => {
-		update_$swatch($foreground_color, colors.foreground);
-		update_$swatch($background_color, colors.background);
-		update_$swatch($current_colors, colors.ternary);
+		update_$swatch($foreground_color, selected_colors.foreground);
+		update_$swatch($background_color, selected_colors.background);
+		update_$swatch($current_colors, selected_colors.ternary);
 	});
 	
 	$current_colors.on("pointerdown", () => {
-		const new_bg = colors.foreground;
-		colors.foreground = colors.background;
-		colors.background = new_bg;
+		const new_bg = selected_colors.foreground;
+		selected_colors.foreground = selected_colors.background;
+		selected_colors.background = new_bg;
 		$G.triggerHandler("option-changed");
 	});
 	
@@ -86,7 +86,7 @@ function $ColorBox(vertical){
 				if (within_double_click_period && button === double_click_button) {
 					show_edit_colors_window($b, color_selection_slot);
 				} else {
-					colors[color_selection_slot] = $b.data("swatch");
+					selected_colors[color_selection_slot] = $b.data("swatch");
 					$G.trigger("option-changed");
 				}
 				

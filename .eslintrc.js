@@ -41,7 +41,7 @@ module.exports = {
 		"transparency": "writable",
 		"aliasing": "writable",
 		"monochrome": "writable",
-		"colors": "writable",
+		"selected_colors": "writable",
 		"palette": "writable",
 		"polychrome_palette": "writable",
 		"monochrome_palette": "writable",
@@ -125,6 +125,6 @@ module.exports = {
 		"no-unused-vars": 0, // ditto
 
 		// To target specific variables to rename or otherwise adress:
-		// "no-restricted-globals": ["error", "event", "canvas", "ctx"]
+		"no-restricted-globals": ["error", "event", "canvas", "ctx", "colors"]
 	}
 };

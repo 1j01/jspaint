@@ -57,7 +57,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 
 	const $palette = $swatch_to_edit.closest(".palette, .color-box");
 	const swatch_index = $palette.find(".swatch").toArray().indexOf($swatch_to_edit[0]);
-	const initial_color = colors[color_selection_slot_to_edit];
+	const initial_color = selected_colors[color_selection_slot_to_edit];
 	choose_color(initial_color, (color)=> {
 		// The palette may have changed or rerendered due to switching themes,
 		// toggling vertical color box mode, or monochrome document mode.
@@ -126,14 +126,14 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 				palette = make_monochrome_palette(new_rgba, other_rgba);
 			}
 			$colorbox.rebuild_palette();
-			colors.foreground = palette[0];
-			colors.background = palette[14]; // first in second row
-			colors.ternary = "";
+			selected_colors.foreground = palette[0];
+			selected_colors.background = palette[14]; // first in second row
+			selected_colors.ternary = "";
 			$G.triggerHandler("option-changed");
 		} else {
 			palette[swatch_index] = color;
 			update_$swatch($swatch_to_edit, color);
-			colors[color_selection_slot_to_edit] = color;
+			selected_colors[color_selection_slot_to_edit] = color;
 			$G.triggerHandler("option-changed");
 			window.console && console.log(`Updated palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
 		}

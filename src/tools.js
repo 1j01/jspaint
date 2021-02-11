@@ -285,7 +285,7 @@ window.tools = [{
 			}
 		}
 
-		ctx.fillStyle = colors.background;
+		ctx.fillStyle = selected_colors.background;
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 	},
 	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
@@ -315,7 +315,7 @@ window.tools = [{
 		ctx.restore();
 
 		if (previewing || !transparency) {
-			let color = colors.background;
+			let color = selected_colors.background;
 			if (transparency) {
 				const t = performance.now() / 2000;
 				// 5 distinct colors, 5 distinct gradients, 7 color stops, 6 gradients
@@ -370,7 +370,7 @@ window.tools = [{
 			// Right click with the eraser to selectively replace
 			// the selected foreground color with the selected background color
 			
-			const fg_rgba = get_rgba_from_color(colors.foreground);
+			const fg_rgba = get_rgba_from_color(selected_colors.foreground);
 			
 			const test_image_data = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			const result_image_data = this.mask_canvas.ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
@@ -475,7 +475,7 @@ window.tools = [{
 		this.display_current_color();
 	},
 	pointerup() {
-		colors[fill_color_k] = this.current_color;
+		selected_colors[fill_color_k] = this.current_color;
 		$G.trigger("option-changed");
 	},
 	$options: $(E("div"))

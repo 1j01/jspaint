@@ -13,14 +13,14 @@ context('tool tests', () => {
 	it(`(fake test for setup)`, () => {
 		cy.visit('/')
 		cy.setResolution([800, 500]);
-		cy.window().should('have.property', 'colors'); // wait for app to be loaded
+		cy.window().should('have.property', 'selected_colors'); // wait for app to be loaded
 		before_first_real_test = false;
 	});
 	beforeEach(() => {
 		if (before_first_real_test) return;
 		cy.window().then({timeout: 60000}, async (win)=> {
-			win.colors.foreground = "#000";
-			win.colors.background = "#fff";
+			win.selected_colors.foreground = "#000";
+			win.selected_colors.background = "#fff";
 			win.brush_shape = win.default_brush_shape;
 			win.brush_size = win.default_brush_size
 			win.eraser_size = win.default_eraser_size;
@@ -172,15 +172,15 @@ context('tool tests', () => {
 							win.$('body').trigger(new win.$.Event("keydown", {key: "NumpadPlus", keyCode: 107, which: 107}));
 						}
 					}
-					win.colors.background = "#f0f";
+					win.selected_colors.background = "#f0f";
 					const start = {x: 0.05 + o*0.05, y: 0.1 + 0.1*row};
 					const end = {x: start.x + 0.04, y: start.y + 0.04};
 					await simulateGesture(win, {shift: false, secondary: false, start, end});
 					if (secondary) {
 						// eslint-disable-next-line require-atomic-updates
-						win.colors.background = "#ff0";
+						win.selected_colors.background = "#ff0";
 						// eslint-disable-next-line require-atomic-updates
-						win.colors.foreground = "#f0f";
+						win.selected_colors.foreground = "#f0f";
 						const start = {x: 0.04 + o*0.05, y: 0.11 + 0.1*row};
 						const end = {x: start.x + 0.03, y: start.y + 0.02};
 						await simulateGesture(win, {shift: false, secondary: true, start, end});

@@ -5,15 +5,15 @@ class OnCanvasSelection extends OnCanvasObject {
 
 		this.$el.addClass("selection");
 		let last_tool_transparent_mode = tool_transparent_mode;
-		let last_background_color = colors.background;
+		let last_background_color = selected_colors.background;
 		this._on_option_changed = () => {
 			if (!this.source_canvas) {
 				return;
 			}
 			if (last_tool_transparent_mode !== tool_transparent_mode ||
-				last_background_color !== colors.background) {
+				last_background_color !== selected_colors.background) {
 				last_tool_transparent_mode = tool_transparent_mode;
-				last_background_color = colors.background;
+				last_background_color = selected_colors.background;
 				this.update_tool_transparent_mode();
 			}
 		};
@@ -153,7 +153,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
 		const colored_cutout = make_canvas(cutout);
-		replace_colors_with_swatch(colored_cutout.ctx, colors.background, this.x, this.y);
+		replace_colors_with_swatch(colored_cutout.ctx, selected_colors.background, this.x, this.y);
 		// const colored_cutout_image_data = colored_cutout.ctx.getImageData(0, 0, this.width, this.height);
 		// }
 		for (let i = 0; i < cutoutImageData.data.length; i += 4) {
@@ -198,7 +198,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	update_tool_transparent_mode() {
 		const sourceImageData = this.source_canvas.ctx.getImageData(0, 0, this.width, this.height);
 		const cutoutImageData = this.canvas.ctx.createImageData(this.width, this.height);
-		const background_color_rgba = get_rgba_from_color(colors.background);
+		const background_color_rgba = get_rgba_from_color(selected_colors.background);
 		// NOTE: In b&w mode, mspaint treats the transparency color as white,
 		// regardless of the pattern selected, even if the selected background color is pure black.
 		// We allow any kind of image data while in our "b&w mode".

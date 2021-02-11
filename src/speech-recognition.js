@@ -1396,7 +1396,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			add_interpretation({
 				match_text: color,
 				exec: ((color)=> ()=> {
-					colors.foreground = color;
+					selected_colors.foreground = color;
 					$G.trigger("option-changed");
 				})(color),
 			});

@@ -198,7 +198,7 @@ let fill_color_k = "background"; // enum of "foreground", "background", "ternary
 let selected_tool = default_tool;
 let selected_tools = [selected_tool];
 let return_to_tools = [selected_tool];
-window.colors = { // declared like this for Cypress tests
+window.selected_colors = { // declared like this for Cypress tests
 	foreground: "",
 	background: "",
 	ternary: "",
@@ -729,7 +729,7 @@ storage.get({
 		main_canvas.height = Math.max(1, my_canvas_height);
 		main_ctx.disable_image_smoothing();
 		if(!transparency){
-			main_ctx.fillStyle = colors.background;
+			main_ctx.fillStyle = selected_colors.background;
 			main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 		}
 		$canvas_area.trigger("resize");
@@ -861,8 +861,8 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	const reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
 	main_ctx.fillStyle = fill_color =
 	main_ctx.strokeStyle = stroke_color =
-		colors[
-			(ctrl && colors.ternary && pointer_active) ? "ternary" :
+		selected_colors[
+			(ctrl && selected_colors.ternary && pointer_active) ? "ternary" :
 			((reverse ^ reverse_because_fill_only) ? "background" : "foreground")
 		];
 		
@@ -880,8 +880,8 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 				stroke_color_k = "foreground";
 			}
 		}
-		main_ctx.fillStyle = fill_color = colors[fill_color_k];
-		main_ctx.strokeStyle = stroke_color = colors[stroke_color_k];
+		main_ctx.fillStyle = fill_color = selected_colors[fill_color_k];
+		main_ctx.strokeStyle = stroke_color = selected_colors[stroke_color_k];
 	}
 }
 

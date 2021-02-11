@@ -65,8 +65,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 			const font = text_tool_font;
 			const get_solid_color = (swatch)=> `rgba(${get_rgba_from_color(swatch).join(", ")}`;
-			font.color = get_solid_color(colors.foreground);
-			font.background = tool_transparent_mode ? "transparent" : get_solid_color(colors.background);
+			font.color = get_solid_color(selected_colors.foreground);
+			font.background = tool_transparent_mode ? "transparent" : get_solid_color(selected_colors.background);
 			this.$editor.add(this.canvas).css({
 				transform: `scale(${magnification})`,
 				transformOrigin: "left top",

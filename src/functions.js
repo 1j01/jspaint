@@ -391,7 +391,7 @@ function toggle_grid() {
 }
 
 function reset_colors(){
-	colors = {
+	selected_colors = {
 		foreground: "#000000",
 		background: "#ffffff",
 		ternary: "",
@@ -420,7 +420,7 @@ function reset_canvas_and_history(){
 	main_canvas.width = Math.max(1, my_canvas_width);
 	main_canvas.height = Math.max(1, my_canvas_height);
 	main_ctx.disable_image_smoothing();
-	main_ctx.fillStyle = colors.background;
+	main_ctx.fillStyle = selected_colors.background;
 	main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 
 	current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
@@ -781,14 +781,14 @@ function load_format_and_palette_from_image_file(file, callback) {
 			if (colorTable.length >= 2) {
 				if (colorTable.length === 2) {
 					palette = make_monochrome_palette(...colorTable.map((color)=> [color.r, color.g, color.b, 255]));
-					colors.foreground = palette[0];
-					colors.background = palette[14]; // first in second row
+					selected_colors.foreground = palette[0];
+					selected_colors.background = palette[14]; // first in second row
 					monochrome = true;
 				} else {
 					palette = colorTable.map((color)=> `rgb(${color.r}, ${color.g}, ${color.b})`);
 					// who knows what colors we should select
-					colors.foreground = palette[0];
-					colors.background = palette[1];
+					selected_colors.foreground = palette[0];
+					selected_colors.background = palette[1];
 					monochrome = false;
 				}
 				if (monochrome) {
@@ -1423,8 +1423,8 @@ function go_to_history_node(target_history_node, canceling) {
 			text_tool_font[k] = v;
 		}
 		
-		colors.foreground = target_history_node.foreground_color;
-		colors.background = target_history_node.background_color;
+		selected_colors.foreground = target_history_node.foreground_color;
+		selected_colors.background = target_history_node.background_color;
 		tool_transparent_mode = target_history_node.tool_transparent_mode;
 		$G.trigger("option-changed");
 
@@ -1510,9 +1510,9 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 		textbox_height: textbox && textbox.height,
 		text_tool_font: JSON.parse(JSON.stringify(text_tool_font)),
 		tool_transparent_mode,
-		foreground_color: colors.foreground,
-		background_color: colors.background,
-		ternary_color: colors.ternary,
+		foreground_color: selected_colors.foreground,
+		background_color: selected_colors.background,
+		ternary_color: selected_colors.ternary,
 		parent: current_history_node,
 		name,
 		icon,
@@ -1930,7 +1930,7 @@ function clear(){
 		if(transparency){
 			main_ctx.clearRect(0, 0, main_canvas.width, main_canvas.height);
 		}else{
-			main_ctx.fillStyle = colors.background;
+			main_ctx.fillStyle = selected_colors.background;
 			main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 		}
 	});
@@ -2146,7 +2146,7 @@ function make_opaque() {
 		main_ctx.save();
 		main_ctx.globalCompositeOperation = "destination-atop";
 
-		main_ctx.fillStyle = colors.background;
+		main_ctx.fillStyle = selected_colors.background;
 		main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 		
 		// in case the selected background color is transparent/translucent
@@ -2171,7 +2171,7 @@ function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_heig
 			main_ctx.disable_image_smoothing();
 			
 			if(!transparency){
-				main_ctx.fillStyle = colors.background;
+				main_ctx.fillStyle = selected_colors.background;
 				main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
 			}
 
@@ -2305,9 +2305,9 @@ function image_attributes(){
 			}else{
 				palette = polychrome_palette;
 			}
-			colors.foreground = palette[0];
-			colors.background = palette[14]; // first in second row
-			colors.ternary = "";
+			selected_colors.foreground = palette[0];
+			selected_colors.background = palette[14]; // first in second row
+			selected_colors.ternary = "";
 			$colorbox.rebuild_palette();
 			$G.trigger("option-changed");
 		}

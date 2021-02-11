@@ -660,7 +660,7 @@ function rotate(angle){
 				new_ctx.disable_image_smoothing();
 				
 				if(!transparency){
-					new_ctx.fillStyle = colors.background;
+					new_ctx.fillStyle = selected_colors.background;
 					new_ctx.fillRect(0, 0, new_canvas.width, new_canvas.height);
 				}
 				
@@ -720,7 +720,7 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 		new_ctx.disable_image_smoothing();
 		
 		if(!transparency){
-			new_ctx.fillStyle = colors.background;
+			new_ctx.fillStyle = selected_colors.background;
 			new_ctx.fillRect(0, 0, new_canvas.width, new_canvas.height);
 		}
 		
