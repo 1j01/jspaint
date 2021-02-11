@@ -2589,7 +2589,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 		if (extension_match) {
 			const selected_format = get_selected_format();
 			const matched_ext = extension_match[1].toLowerCase();
-			if (selected_format.extensions.includes(matched_ext)) {
+			if (selected_format && selected_format.extensions.includes(matched_ext)) {
 				// File extension already matches selected file type.
 				// Don't select a different file type with the same extension.
 				return;
@@ -2613,7 +2613,11 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
 	const update_extension_from_file_type = (add_extension_if_absent)=> {
 		let file_name = $file_name.val();
-		const extensions_for_type = get_selected_format().extensions;
+		const selected_format = get_selected_format();
+		if (!selected_format) {
+			return;
+		}
+		const extensions_for_type = selected_format.extensions;
 		const primary_extension_for_type = extensions_for_type[0];
 		// This way of removing the file extension doesn't scale very well! But I don't want to delete text the user wanted like in case of a version number...
 		const without_extension = file_name.replace(/\.(\w{1,3}|apng|jpeg|jfif|tiff|webp|psppalette|sketchpalette|gimp|colors|scss|sass|less|styl|html|theme|themepack)$/i, "");
