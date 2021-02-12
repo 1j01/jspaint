@@ -195,7 +195,8 @@ function get_icon_for_tool(tool) {
 	return get_help_folder_icon(tool.help_icon);
 }
 
-function load_image(src) {
+// not to be confused with load_image_from_uri
+function load_image_simple(src) {
 	return new Promise((resolve, reject)=> {
 		const img = new Image();
 
@@ -212,7 +213,7 @@ function get_icon_for_tools(tools) {
 	}
 	const icon_canvas = make_canvas(16, 16);
 
-	Promise.all(tools.map((tool)=> load_image(`help/${tool.help_icon}`)))
+	Promise.all(tools.map((tool)=> load_image_simple(`help/${tool.help_icon}`)))
 	.then((icons)=> {
 		icons.forEach((icon, i)=> {
 			const w = icon_canvas.width / icons.length;

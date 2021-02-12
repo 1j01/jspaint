@@ -495,15 +495,16 @@ function create_and_trigger_input(attrs, callback){
 	return $input;
 }
 
-// @TODO: rename these functions to lowercase (and maybe say "files" in this case)
-function get_FileList_from_file_select_dialog(callback){
+function choose_files(callback){
+	// @TODO: if not allowing multiple files, could simplify to just choose_file,
+	// and maybe structure things better
 	// @TODO: specify mime types?
 	create_and_trigger_input({type: "file"}, input => {
 		callback(input.files);
 	});
 }
 
-function get_URIs(text) {
+function get_uris(text) {
 	// parse text/uri-list
 	// get lines, discarding comments
 	const lines = text.split(/[\n\r]+/).filter(line => line[0] !== "#" && line);
@@ -522,7 +523,7 @@ function get_URIs(text) {
 	}
 	return uris;
 }
-function load_image_from_URI(uri, callback){
+function load_image_from_uri(uri, callback){
 	const is_blob_uri = uri.match(/^blob:/);
 	const is_download = !uri.match(/^(blob|data):/);
 
@@ -643,8 +644,8 @@ function load_image_from_URI(uri, callback){
 	};
 	try_next_uri();
 }
-function open_from_URI(uri, callback, canceled){
-	load_image_from_URI(uri, (error, info) => {
+function open_from_uri(uri, callback, canceled){
+	load_image_from_uri(uri, (error, info) => {
 		if(error){ return callback(error); }
 		open_from_image_info(info, callback, canceled);
 	});
@@ -685,7 +686,7 @@ function open_from_image_info(info, callback, canceled){
 	}, canceled);
 }
 
-function open_from_File(file, callback, canceled){
+function open_from_file(file, callback, canceled){
 	read_image_file(file, (error, info)=> {
 		if (error) {
 			show_read_image_file_error(error);
@@ -695,18 +696,18 @@ function open_from_File(file, callback, canceled){
 	});
 }
 
-function open_from_FileList(files, user_input_method_verb_past_tense){
+function open_from_files(files, user_input_method_verb_past_tense){
 	let loaded = false;
 	// const fails = [];
 	for (const file of files) {
 		if (file.type.match(/^image/)) {
-			open_from_File(file, err => {
+			open_from_file(file, err => {
 				if(err){ return show_error_message(localize("Paint cannot open this file."), err); }
 				loaded = true;
 			});
 			return;
 		} else if (file.name.match(/\.theme(pack)?$/i)) {
-			loadThemeFile(file);
+			load_theme_from_file(file);
 			loaded = true;
 			return;
 		} else {
@@ -813,14 +814,15 @@ function load_file_format_and_palette_from_image_file(file, callback) {
 	reader.readAsArrayBuffer(file);
 }
 
-function loadThemeFile(file) {
+function load_theme_from_file(file) {
+	// Note: newer method available: https://developer.mozilla.org/en-US/docs/Web/API/Blob/text
 	var reader = new FileReader();
 	reader.onload = ()=> {
-		loadThemeFromText(reader.result);
+		load_theme_from_text(reader.result);
 	};
 	reader.readAsText(file);
 }
-function loadThemeFromText(fileText) {
+function load_theme_from_text(fileText) {
 	var cssProperties = parseThemeFileString(fileText);
 	applyCSSProperties(cssProperties);
 
@@ -851,13 +853,9 @@ function file_new(){
 	});
 }
 
-// @TODO: factor out open_select/choose_file_dialog or get_file_from_file_select_dialog or whatever
-// all these open_from_* things are done backwards, basically
-// there's this little thing called Inversion of Control...
-// also paste_from_file_select_dialog
 function file_open(){
-	get_FileList_from_file_select_dialog(files => {
-		open_from_FileList(files, "selected");
+	choose_files(files => {
+		open_from_files(files, "selected");
 	});
 }
 
@@ -873,7 +871,7 @@ function file_load_from_url(){
 	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input inset-deep'/></label>");
 	const $input = $w.$main.find(".url-input");
 	$w.$Button("Load", () => {
-		const uris = get_URIs($input.val());
+		const uris = get_uris($input.val());
 		if (uris.length > 0) {
 			// @TODO: retry loading if same URL entered
 			// actually, make it change the hash only after loading successfully
@@ -1204,7 +1202,7 @@ function paste_image_from_file(blob){
 
 // Edit > Paste From
 function paste_from_file_select_dialog(){
-	get_FileList_from_file_select_dialog(files => {
+	choose_files(files => {
 		for (const file of files) {
 			if(file.type.match(/^image/)){
 				paste_image_from_file(file);
@@ -1878,9 +1876,9 @@ async function edit_paste(execCommandFallback){
 			try {
 				const clipboardText = await navigator.clipboard.readText();
 				if(clipboardText) {
-					const uris = get_URIs(clipboardText);
+					const uris = get_uris(clipboardText);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], (error, info) => {
+						load_image_from_uri(uris[0], (error, info) => {
 							if(error){ return show_resource_load_error_message(error); }
 							paste(info.image);
 						});

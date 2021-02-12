@@ -47,7 +47,7 @@ window.open_from_file_path = (file_path, callback, canceled) => {
 			value: file_path,
 		});
 
-		open_from_File(file, callback, canceled);
+		open_from_file(file, callback, canceled);
 	});
 };
 
