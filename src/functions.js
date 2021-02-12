@@ -753,74 +753,6 @@ function apply_file_format_and_palette_info(info) {
 	monochrome = info.monochrome;
 	file_format = info.file_format;
 }
-function load_file_format_and_palette_from_image_file(file, callback) {
-	// @TODO: read palette from PNG, GIF files
-
-	let file_format;
-	let palette;
-	let monochrome = false;
-
-	// Note: newer API available: blob.arrayBuffer() https://developer.mozilla.org/en-US/docs/Web/API/Blob/arrayBuffer
-	const reader = new FileReader();
-	reader.onerror = () => {
-		callback(reader.error);
-	};
-	reader.onload = function (e) {
-		const arrayBuffer = reader.result;
-		// Helpers:
-		// "GIF".split("").map(c=>"0x"+c.charCodeAt(0).toString("16")).join(", ")
-		// [0x47, 0x49, 0x46].map(c=>String.fromCharCode(c)).join("")
-		const magics = {
-			png: [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
-			bmp: [0x42, 0x4D], // "BM" in ASCII
-			jpeg: [0xFF, 0xD8, 0xFF],
-			gif: [0x47, 0x49, 0x46, 0x38], // "GIF8" in ASCII, fully either "GIF87a" or "GIF89a"
-			webp: [0x57, 0x45, 0x42, 0x50], // "WEBP" in ASCII
-			tiff_be: [0x4D, 0x4D, 0x0, 0x2A],
-			tiff_le: [0x49, 0x49, 0x2A, 0x0],
-			ico: [0x00, 0x00, 0x01, 0x00],
-			cur: [0x00, 0x00, 0x02, 0x00],
-			icns: [0x69, 0x63, 0x6e, 0x73], // "icns" in ASCII
-		};
-		const file_bytes = new Uint8Array(arrayBuffer);
-		let detected_type_id;
-		for (const [type_id, magic_bytes] of Object.entries(magics)) {
-			const magic_found = magic_bytes.every((byte, index)=> byte === file_bytes[index]);
-			if (magic_found) {
-				detected_type_id = type_id;
-			}
-		}
-		if (detected_type_id === "bmp") {
-			const {colorTable, bitsPerPixel} = decodeBMP(arrayBuffer);
-			file_format = `image/bmp;bpp=${bitsPerPixel}`;
-			if (colorTable.length >= 2) {
-				if (colorTable.length === 2) {
-					palette = make_monochrome_palette(...colorTable.map((color)=> [color.r, color.g, color.b, 255]));
-					monochrome = true;
-				} else {
-					palette = colorTable.map((color)=> `rgb(${color.r}, ${color.g}, ${color.b})`);
-					monochrome = false;
-				}
-			}
-		} else {
-			monochrome = false;
-			file_format = {
-				// bmp: "image/bmp",
-				png: "image/png",
-				webp: "image/webp",
-				jpeg: "image/jpeg",
-				gif: "image/gif",
-				tiff_be: "image/tiff",
-				tiff_le: "image/tiff", // can also be image/x-canon-cr2 etc.
-				ico: "image/x-icon",
-				cur: "image/x-win-bitmap",
-				icns: "image/icns",
-			}[detected_type_id] || file.type;
-		}
-		callback(null, {file_format, monochrome, palette});
-	}
-	reader.readAsArrayBuffer(file);
-}
 
 function load_theme_from_file(file) {
 	// Note: newer method available: https://developer.mozilla.org/en-US/docs/Web/API/Blob/text
@@ -2693,44 +2625,105 @@ function write_image_file(canvas, mime_type, blob_callback) {
 }
 
 function read_image_file(blob, callback) {
-	// @TODO: read image data from files manually,
-	// at least formats where we're reading the palette (BMP),
-	// in order to have consistency with the image data.
-	// Or a better chance at it.
 	// @TODO: handle SVG (might need to keep track of source URL, for relative resources)
-	load_file_format_and_palette_from_image_file(blob, (error, info)=> {
-		if (error) {
-			return callback(error);
-		}
-		const blob_uri = URL.createObjectURL(blob);
-		const img = new Image();
-		// img.crossOrigin = "Anonymous";
-		const handle_decode_fail = ()=> {
-			URL.revokeObjectURL(blob_uri);
-			var fr = new FileReader();
-			fr.onerror = ()=> {
-				const error = new Error("failed to decode blob as image or text");
-				error.code = "decoding-failure";
-				callback(error);
-			};
-			fr.onload = (e)=> {
-				const error = new Error("failed to decode blob as an image");
-				error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decoding-failure";
-				callback(error);
-			};
-			fr.readAsText(blob);
+	// @TODO: read palette from PNG, GIF files
+
+	let file_format;
+	let palette;
+	let monochrome = false;
+
+	// Note: newer API available: blob.arrayBuffer() https://developer.mozilla.org/en-US/docs/Web/API/Blob/arrayBuffer
+	const reader = new FileReader();
+	reader.onerror = () => {
+		callback(reader.error);
+	};
+	reader.onload = function (e) {
+		const arrayBuffer = reader.result;
+		// Helpers:
+		// "GIF".split("").map(c=>"0x"+c.charCodeAt(0).toString("16")).join(", ")
+		// [0x47, 0x49, 0x46].map(c=>String.fromCharCode(c)).join("")
+		const magics = {
+			png: [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+			bmp: [0x42, 0x4D], // "BM" in ASCII
+			jpeg: [0xFF, 0xD8, 0xFF],
+			gif: [0x47, 0x49, 0x46, 0x38], // "GIF8" in ASCII, fully either "GIF87a" or "GIF89a"
+			webp: [0x57, 0x45, 0x42, 0x50], // "WEBP" in ASCII
+			tiff_be: [0x4D, 0x4D, 0x0, 0x2A],
+			tiff_le: [0x49, 0x49, 0x2A, 0x0],
+			ico: [0x00, 0x00, 0x01, 0x00],
+			cur: [0x00, 0x00, 0x02, 0x00],
+			icns: [0x69, 0x63, 0x6e, 0x73], // "icns" in ASCII
 		};
-		img.onload = ()=> {
-			URL.revokeObjectURL(blob_uri);
-			if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
-				handle_decode_fail();
-				return;
+		const file_bytes = new Uint8Array(arrayBuffer);
+		let detected_type_id;
+		for (const [type_id, magic_bytes] of Object.entries(magics)) {
+			const magic_found = magic_bytes.every((byte, index)=> byte === file_bytes[index]);
+			if (magic_found) {
+				detected_type_id = type_id;
 			}
-			callback(null, {image: img, source_blob: blob, ...info});
-		};
-		img.onerror = handle_decode_fail;
-		img.src = blob_uri;
-	});
+		}
+		if (detected_type_id === "bmp") {
+			const {colorTable, bitsPerPixel, imageData} = decodeBMP(arrayBuffer);
+			file_format = `image/bmp;bpp=${bitsPerPixel}`;
+			if (colorTable.length >= 2) {
+				if (colorTable.length === 2) {
+					palette = make_monochrome_palette(...colorTable.map((color)=> [color.r, color.g, color.b, 255]));
+					monochrome = true;
+				} else {
+					palette = colorTable.map((color)=> `rgb(${color.r}, ${color.g}, ${color.b})`);
+					monochrome = false;
+				}
+			}
+			callback(null, {file_format, monochrome, palette, image_data: imageData});
+		} else {
+			monochrome = false;
+			file_format = {
+				// bmp: "image/bmp",
+				png: "image/png",
+				webp: "image/webp",
+				jpeg: "image/jpeg",
+				gif: "image/gif",
+				tiff_be: "image/tiff",
+				tiff_le: "image/tiff", // can also be image/x-canon-cr2 etc.
+				ico: "image/x-icon",
+				cur: "image/x-win-bitmap",
+				icns: "image/icns",
+			}[detected_type_id] || file.type;
+
+			const blob_uri = URL.createObjectURL(blob);
+			const img = new Image();
+			// img.crossOrigin = "Anonymous";
+			const handle_decode_fail = ()=> {
+				URL.revokeObjectURL(blob_uri);
+				var fr = new FileReader();
+				fr.onerror = ()=> {
+					const error = new Error("failed to decode blob as image or text");
+					error.code = "decoding-failure";
+					callback(error);
+				};
+				fr.onload = (e)=> {
+					const error = new Error("failed to decode blob as an image");
+					error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decoding-failure";
+					callback(error);
+				};
+				fr.readAsText(blob);
+			};
+			img.onload = ()=> {
+				URL.revokeObjectURL(blob_uri);
+				if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
+					handle_decode_fail();
+					return;
+				}
+				callback(null, {image: img, source_blob: blob, ...info});
+			};
+			img.onerror = handle_decode_fail;
+			img.src = blob_uri;
+
+			callback(null, {file_format, monochrome, palette, image: img});
+		}
+
+	}
+	reader.readAsArrayBuffer(file);
 }
 
 function update_from_saved_file(blob) {
