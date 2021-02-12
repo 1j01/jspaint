@@ -545,21 +545,20 @@ function load_image_from_uri(uri, callback){
 	let index = 0;
 	const try_next_uri = ()=> {
 		const uri_to_try = uris_to_try[index];
+
+		if (!uri_to_try) {
+			if (is_download) {
+				$status_text.text("Failed to download picture.");
+			}
+			callback && callback(new Error(`failed to download image from any of three URIs (${JSON.stringify(uris_to_try)}).`));
+			return;
+		}
+
+		index += 1;
 		if (is_download) {
 			$status_text.text("Downloading picture...");
 		}
 
-		const handle_fetch_fail = ()=> {
-			index += 1;
-			if (index >= uris_to_try.length) {
-				if (is_download) {
-					$status_text.text("Failed to download picture.");
-				}
-				callback && callback(new Error(`failed to download image from any of three URIs (${JSON.stringify(uris_to_try)}).`));
-			} else {
-				try_next_uri();
-			}
-		};
 		const show_progress = ({loaded, total})=> {
 			if (is_download) {
 				$status_text.text(`Downloading picture... (${Math.round(loaded/total*100)}%)`);
@@ -567,7 +566,7 @@ function load_image_from_uri(uri, callback){
 		};
 
 		if (is_download) {
-			console.log(`Try loading image from URI (${index + 1}/${uris_to_try.length}): "${uri_to_try}"`);
+			console.log(`Try loading image from URI (${index}/${uris_to_try.length}): "${uri_to_try}"`);
 		}
 		fetch(uri_to_try)
 		.then(response => {
@@ -633,14 +632,13 @@ function load_image_from_uri(uri, callback){
 			// (But still show an error about it not being an image, if WayBack also fails.)
 			read_image_file(blob, (error, info)=> {
 				// if (error) {
-				// 	index += 1;
 				// 	try_next_uri();
 				// 	return;
 				// }
 				callback(error, info);
 			});
 		})
-		.catch(handle_fetch_fail);
+		.catch(try_next_uri);
 	};
 	try_next_uri();
 }
