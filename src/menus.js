@@ -622,7 +622,7 @@ window.menus = {
 				"get colors", "load colors", "load color palette", "load palette", "load color palette file", "load palette file", "load list of colors",
 			],
 			action: ()=> {
-				get_FileList_from_file_select_dialog((files)=> {
+				choose_files((files)=> {
 					const file = files[0];
 					AnyPalette.loadPalette(file, (err, new_palette)=> {
 						if(err){

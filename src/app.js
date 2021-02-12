@@ -455,7 +455,7 @@ $("body").on("dragover dragenter", e => {
 	if(has_files){
 		e.preventDefault();
 		if(dt && dt.files && dt.files.length){
-			open_from_FileList(dt.files, "dropped");
+			open_from_files(dt.files, "dropped");
 		}
 	}
 });
@@ -686,9 +686,9 @@ $G.on("cut copy paste", e => {
 		for (const item of cd.items) {
 			if(item.type.match(/^text\/(?:x-data-uri|uri-list|plain)|URL$/)){
 				item.getAsString(text => {
-					const uris = get_URIs(text);
+					const uris = get_uris(text);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], (error, info) => {
+						load_image_from_uri(uris[0], (error, info) => {
 							if(error){ return show_resource_load_error_message(error); }
 							paste(info.image);
 						});

@@ -128,7 +128,7 @@
 					}
 				}
 				else if (uri) {
-					open_from_URI(uri, err => {
+					open_from_uri(uri, err => {
 						if (err) {
 							return show_error_message("Failed to open image from local storage.", err);
 						}
@@ -533,7 +533,7 @@
 		}else if(load_from_url_match){
 			const url = decodeURIComponent(load_from_url_match[2]);
 
-			const uris = get_URIs(url);
+			const uris = get_uris(url);
 			if (uris.length === 0) {
 				show_error_message("Invalid URL to load (after #load: in the address bar). It must include a protocol (https:// or http://)");
 				return;
@@ -543,7 +543,7 @@
 			end_current_session();
 			change_url_param("local", generate_session_id());
 
-			open_from_URI(url, error => {
+			open_from_uri(url, error => {
 				if (error) {
 					show_resource_load_error_message(error);
 				}
