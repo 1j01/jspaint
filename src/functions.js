@@ -390,7 +390,7 @@ function toggle_grid() {
 	update_helper_layer();
 }
 
-function reset_colors(){
+function reset_selected_colors(){
 	selected_colors = {
 		foreground: "#000000",
 		background: "#ffffff",
@@ -503,35 +503,6 @@ function get_FileList_from_file_select_dialog(callback){
 	});
 }
 
-function open_from_image_and_blob(img, blob, callback, canceled){
-	are_you_sure(() => {
-		// @TODO: shouldn't open_from_* start a new session?
-
-		deselect();
-		cancel();
-		saved = false; // ??
-
-		reset_file();
-		reset_colors();
-		reset_canvas_and_history(); // (with newly reset colors)
-		set_magnification(default_magnification);
-
-		main_ctx.copy(img);
-		detect_transparency();
-		$canvas_area.trigger("resize");
-
-		current_history_node.name = localize("Open");
-		current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
-		current_history_node.icon = null; // @TODO
-
-		$G.triggerHandler("session-update"); // autosave
-		$G.triggerHandler("history-update"); // update history view
-
-		callback && callback();
-
-		load_format_and_palette_from_image_file(blob);
-	}, canceled);
-}
 function get_URIs(text) {
 	// parse text/uri-list
 	// get lines, discarding comments
@@ -654,65 +625,76 @@ function load_image_from_URI(uri, callback){
 				console.log("Download complete.");
 				$status_text.text("Download complete.");
 			}
-			const img = new Image();
-			img.crossOrigin = "Anonymous";
-			const handle_decode_fail = ()=> {
-				// @TODO: use headers to detect HTML instead, since a doctype is not guaranteed
-				// @TODO: fall back to WayBack Machine still for decode errors,
-				// since a website might start redirecting swathes of URLs regardless of what they originally pointed to,
-				// at which point they would likely point to a web page instead of an image.
-				// (But still show an error about it not being an image, if WayBack also fails.)
-				var fr = new FileReader();
-				fr.onerror = ()=> {
-					const error = new Error("failed to decode blob as image or text");
-					error.code = "decode-fail";
-					callback(error);
-				};
-				fr.onload = (e)=> {
-					const error = new Error("failed to decode blob as an image");
-					error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decode-fail";
-					callback(error);
-				};
-				fr.readAsText(blob);
-			};
-			img.onload = ()=> {
-				if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
-					handle_decode_fail();
-					return;
-				}
-				callback(null, img, blob);
-			};
-			img.onerror = handle_decode_fail;
-			img.src = window.URL.createObjectURL(blob);
+			// @TODO: use headers to detect HTML, since a doctype is not guaranteed
+			// @TODO: fall back to WayBack Machine still for decode errors,
+			// since a website might start redirecting swathes of URLs regardless of what they originally pointed to,
+			// at which point they would likely point to a web page instead of an image.
+			// (But still show an error about it not being an image, if WayBack also fails.)
+			read_image_file(blob, (error, info)=> {
+				// if (error) {
+				// 	index += 1;
+				// 	try_next_uri();
+				// 	return;
+				// }
+				callback(error, info);
+			});
 		})
 		.catch(handle_fetch_fail);
 	};
 	try_next_uri();
 }
 function open_from_URI(uri, callback, canceled){
-	load_image_from_URI(uri, (error, img, blob) => {
+	load_image_from_URI(uri, (error, info) => {
 		if(error){ return callback(error); }
-		open_from_image_and_blob(img, blob, callback, canceled);
+		open_from_image_info(info, callback, canceled);
 	});
 }
-function open_from_File(file, callback, canceled){
-	const blob_url = URL.createObjectURL(file);
-	load_image_from_URI(blob_url, (error, img) => {
-		// revoke object URL regardless of error
-		URL.revokeObjectURL(file);
-		if(error){ return callback(error); }
 
-		open_from_image_and_blob(img, file, () => {
-			file_name = file.name;
-			file_name_chosen = false; // ?
-			// file_format is determined by open_from_image_and_blob
-			document_file_path = file.path; // available in Electron
-			update_title();
-			saved = true;
-			callback();
-		}, canceled);
+// @TODO: shouldn't open_from_* start a new session!? and File > New too
+function open_from_image_info(info, callback, canceled){
+	are_you_sure(() => {
+		deselect();
+		cancel();
+
+		reset_file();
+		reset_selected_colors();
+		reset_canvas_and_history(); // (with newly reset colors)
+		set_magnification(default_magnification);
+
+		main_ctx.copy(info.image);
+		apply_file_format_and_palette_info(info);
+		detect_transparency();
+		$canvas_area.trigger("resize");
+
+		current_history_node.name = localize("Open");
+		current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
+		current_history_node.icon = null; // @TODO
+
+		$G.triggerHandler("session-update"); // autosave
+		$G.triggerHandler("history-update"); // update history view
+
+		if (info.source_blob instanceof File) {
+			file_name = info.source_blob.name;
+			// file_name_chosen = true; // if false (default via reset_file), it will prompt initially for name/type when saving opened file
+			document_file_path = info.source_blob.path; // available in Electron
+		}
+		update_title();
+		saved = true;
+
+		callback && callback();
+	}, canceled);
+}
+
+function open_from_File(file, callback, canceled){
+	read_image_file(file, (error, info)=> {
+		if (error) {
+			show_read_image_file_error(error);
+			return;
+		}
+		open_from_image_info(info);
 	});
 }
+
 function open_from_FileList(files, user_input_method_verb_past_tense){
 	let loaded = false;
 	// const fails = [];
@@ -746,11 +728,33 @@ function open_from_FileList(files, user_input_method_verb_past_tense){
 	}
 }
 
-function load_format_and_palette_from_image_file(file, callback) {
-	// @TODO: load palette from PNG, GIF
+function apply_file_format_and_palette_info(info) {
+	if (info.palette) {
+		window.console && console.log(`Loaded palette from image file: ${info.palette.map(()=> `%c█`).join("")}`, ...info.palette.map((color)=> `color: ${color};`));
+		palette = info.palette;
+		selected_colors.foreground = palette[0];
+		selected_colors.background = palette.length === 14 * 2 ? palette[14] : palette[1]; // first in second row for default sized palette, else second color (debatable behavior; should it find a dark and a light color?)
+		$G.trigger("option-changed");
+	} else if (monochrome && !info.monochrome) {
+		palette = default_palette;
+		reset_selected_colors();
+	}
+	$colorbox.rebuild_palette();
+
+	monochrome = info.monochrome;
+	file_format = info.file_format;
+}
+function load_file_format_and_palette_from_image_file(file, callback) {
+	// @TODO: read palette from PNG, GIF files
+
+	let file_format;
+	let palette;
+	let monochrome = false;
+
+	// Note: newer API available: blob.arrayBuffer() https://developer.mozilla.org/en-US/docs/Web/API/Blob/arrayBuffer
 	const reader = new FileReader();
 	reader.onerror = () => {
-		console.log("Failed to read as ArrayBuffer.");
+		callback(reader.error);
 	};
 	reader.onload = function (e) {
 		const arrayBuffer = reader.result;
@@ -778,41 +782,19 @@ function load_format_and_palette_from_image_file(file, callback) {
 			}
 		}
 		if (detected_type_id === "bmp") {
-			const {colorTable, dibHeader} = decodeBMP(arrayBuffer);
-			const bpp = dibHeader.bitsPerPixel;
-			file_format = `image/bmp;bpp=${bpp}`;
+			const {colorTable, bitsPerPixel} = decodeBMP(arrayBuffer);
+			file_format = `image/bmp;bpp=${bitsPerPixel}`;
 			if (colorTable.length >= 2) {
 				if (colorTable.length === 2) {
 					palette = make_monochrome_palette(...colorTable.map((color)=> [color.r, color.g, color.b, 255]));
-					selected_colors.foreground = palette[0];
-					selected_colors.background = palette[14]; // first in second row
 					monochrome = true;
 				} else {
 					palette = colorTable.map((color)=> `rgb(${color.r}, ${color.g}, ${color.b})`);
-					// who knows what colors we should select
-					selected_colors.foreground = palette[0];
-					selected_colors.background = palette[1];
 					monochrome = false;
 				}
-				if (monochrome) {
-					window.console && console.log(`Loaded palette from 1bpp BMP file: ${colorTable.map(()=> `%c█`).join("")}`, ...colorTable.map((color)=> `color: rgb(${color.r}, ${color.g}, ${color.b});`));
-				} else {
-					window.console && console.log(`Loaded palette from BMP file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
-				}
-			} else if (monochrome) {
-				palette = default_palette;
-				monochrome = false;
 			}
-			$colorbox.rebuild_palette();
-			$G.trigger("option-changed");
 		} else {
-			// @TODO: read palette from PNG, GIF files
-			if (monochrome) {
-				palette = default_palette;
-				monochrome = false;
-			}
-			$colorbox.rebuild_palette();
-			$G.trigger("option-changed");
+			monochrome = false;
 			file_format = {
 				// bmp: "image/bmp",
 				png: "image/png",
@@ -824,9 +806,9 @@ function load_format_and_palette_from_image_file(file, callback) {
 				ico: "image/x-icon",
 				cur: "image/x-win-bitmap",
 				icns: "image/icns",
-			}[detected_type_id];
+			}[detected_type_id] || file.type;
 		}
-		callback && callback();
+		callback(null, {file_format, monochrome, palette});
 	}
 	reader.readAsArrayBuffer(file);
 }
@@ -861,7 +843,7 @@ function file_new(){
 		saved = false; // ??
 
 		reset_file();
-		reset_colors();
+		reset_selected_colors();
 		reset_canvas_and_history(); // (with newly reset colors)
 		set_magnification(default_magnification);
 
@@ -1059,6 +1041,11 @@ function show_resource_load_error_message(error){
 	});
 	$w.center();
 }
+function show_read_image_file_error(error) {
+	// @TODO: similar friendly messages to show_resource_load_error_message,
+	// but not specific to the case of loading from a web address.
+	show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."), error);
+}
 
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
@@ -1205,23 +1192,17 @@ function show_news(){
 
 // @TODO: DRY between these functions and open_from_* functions further?
 
-// function paste_image_from_URI(uri, callback){
-// 	load_image_from_URI(uri, (err, img)=> {
-// 		if(err){ return callback(err); }
-// 		paste(img);
-// 	});
-// };
-
-function paste_image_from_file(file){
-	const blob_url = URL.createObjectURL(file);
-	// paste_image_from_URI(blob_url);
-	load_image_from_URI(blob_url, (error, img) => {
-		if(error){ return show_resource_load_error_message(error); }
-		paste(img);
-		URL.revokeObjectURL(blob_url);
+function paste_image_from_file(blob){
+	read_image_file(blob, (error, info) => {
+		if (error) {
+			show_read_image_file_error(error);
+			return;
+		}
+		paste(info.image);
 	});
 }
 
+// Edit > Paste From
 function paste_from_file_select_dialog(){
 	get_FileList_from_file_select_dialog(files => {
 		for (const file of files) {
@@ -1899,9 +1880,9 @@ async function edit_paste(execCommandFallback){
 				if(clipboardText) {
 					const uris = get_URIs(clipboardText);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], (error, img) => {
+						load_image_from_URI(uris[0], (error, info) => {
 							if(error){ return show_resource_load_error_message(error); }
-							paste(img);
+							paste(info.image);
 						});
 					} else {
 						// @TODO: should I just make a textbox instead?
@@ -2686,26 +2667,60 @@ function write_image_file(canvas, mime_type, blob_callback) {
 	}
 }
 
-function update_from_saved_file(blob) {
+function read_image_file(blob, callback) {
 	// @TODO: read image data from files manually,
 	// at least formats where we're reading the palette (BMP),
 	// in order to have consistency with the image data.
-	// Or a better chance at it. Canvas API isn't really reliable.
-	// And separate out a read_image_file to mirror write_image_file.
-	// Note: need to load format first, for undoable name
-	load_format_and_palette_from_image_file(blob, ()=> {
+	// Or a better chance at it.
+	// @TODO: handle SVG (might need to keep track of source URL, for relative resources)
+	load_file_format_and_palette_from_image_file(blob, (error, info)=> {
+		if (error) {
+			return callback(error);
+		}
 		const blob_uri = URL.createObjectURL(blob);
-		load_image(blob_uri).then((image)=> {
-			const format = image_formats.find(({mimeType})=> mimeType === file_format);
-			undoable({
-				name: `${localize("Save As")} ${format ? format.name : file_format}`,
-				icon: get_help_folder_icon("p_monochrome_undo.png"),
-			}, ()=> {
-				main_ctx.copy(image);
-				URL.revokeObjectURL(blob_uri);
-			});
-		}, (error)=> {
+		const img = new Image();
+		// img.crossOrigin = "Anonymous";
+		const handle_decode_fail = ()=> {
+			URL.revokeObjectURL(blob_uri);
+			var fr = new FileReader();
+			fr.onerror = ()=> {
+				const error = new Error("failed to decode blob as image or text");
+				error.code = "decode-fail";
+				callback(error);
+			};
+			fr.onload = (e)=> {
+				const error = new Error("failed to decode blob as an image");
+				error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decode-fail";
+				callback(error);
+			};
+			fr.readAsText(blob);
+		};
+		img.onload = ()=> {
+			URL.revokeObjectURL(blob_uri);
+			if (!img.complete || typeof img.naturalWidth == "undefined" || img.naturalWidth === 0) {
+				handle_decode_fail();
+				return;
+			}
+			callback(null, {image: img, source_blob: blob, ...info});
+		};
+		img.onerror = handle_decode_fail;
+		img.src = blob_uri;
+	});
+}
+
+function update_from_saved_file(blob) {
+	read_image_file(blob, (error, info)=> {
+		if (error) {
 			show_error_message("The file has been saved, however... " + localize("Paint cannot read this file."), error);
+			return;
+		}
+		apply_file_format_and_palette_info(info);
+		const format = image_formats.find(({mimeType})=> mimeType === info.file_format);
+		undoable({
+			name: `${localize("Save As")} ${format ? format.name : info.file_format}`,
+			icon: get_help_folder_icon("p_monochrome_undo.png"),
+		}, ()=> {
+			main_ctx.copy(info.image);
 		});
 	});
 }
