@@ -549,7 +549,8 @@ function load_image_from_uri(uri, callback){
 			fails.push({url: uris_to_try[index-1]});
 		}
 
-		const uri_to_try = uris_to_try[index];
+		const index_to_try = index;
+		const uri_to_try = uris_to_try[index_to_try];
 
 		if (!uri_to_try) {
 			if (is_download) {
@@ -574,7 +575,7 @@ function load_image_from_uri(uri, callback){
 		};
 
 		if (is_download) {
-			console.log(`Try loading image from URI (${index}/${uris_to_try.length}): "${uri_to_try}"`);
+			console.log(`Try loading image from URI (${index_to_try+1}/${uris_to_try.length}): "${uri_to_try}"`);
 		}
 		fetch(uri_to_try)
 		.then(response => {
