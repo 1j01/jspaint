@@ -39,6 +39,7 @@ I want to bring good old paint into the modern era.
   or a measly 50 in Windows 7)
 * Undo history is *nonlinear*, which means if you undo and do something other than redo, the redos aren't discarded. Instead, a new branch is created in the *history tree*. Jump to any point in history with **Edit > History** or <kbd>Ctrl+Shift+Y</kbd>
 * Automatically keeps a backup of your image. Only one backup per image tho, which doesn't give you a lot of safety. Remember to save with **File > Save** or <kbd>Ctrl+S</kbd>! Manage backups with **File > Manage Storage**.
+* You can paste URLs directly, and JS Paint will load them.
 * Edit transparent images! To create a transparent image,
   go to **Image > Attributes...** and select Transparent,
   then OK, and then **Image > Clear Image** or use the Eraser tool.
