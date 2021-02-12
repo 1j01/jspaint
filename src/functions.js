@@ -541,16 +541,24 @@ function load_image_from_uri(uri, callback){
 		// if the image isn't available on the live web, see if it's archived
 		`https://web.archive.org/${uri}`,
 	] : [uri];
+	const fails = [];
 
 	let index = 0;
-	const try_next_uri = ()=> {
+	const try_next_uri = (last_uri_error)=> {
+		if (last_uri_error && fails.length < index) {
+			fails.push({url: uris_to_try[index-1]});
+		}
+
 		const uri_to_try = uris_to_try[index];
 
 		if (!uri_to_try) {
 			if (is_download) {
 				$status_text.text("Failed to download picture.");
 			}
-			callback && callback(new Error(`failed to download image from any of three URIs (${JSON.stringify(uris_to_try)}).`));
+			const error = new Error(`failed to download image from any of three URIs (${JSON.stringify(uris_to_try)}).`);
+			error.code = "access-failure";
+			error.fails = fails;
+			callback && callback(error);
 			return;
 		}
 
@@ -571,6 +579,7 @@ function load_image_from_uri(uri, callback){
 		fetch(uri_to_try)
 		.then(response => {
 			if (!response.ok) {
+				fails.push({status: response.status, statusText: response.statusText, url: uri_to_try});
 				throw Error(`${response.status} ${response.statusText}`);
 			}
 			if (!response.body) {
@@ -1006,6 +1015,7 @@ function show_error_message(message, error){
 function show_resource_load_error_message(error){
 	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
 	const firefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
+	// @TODO: copy & paste vs download & open, more specific guidance
 	if (error.code === "cors-blob-uri") {
 		$w.$main.html(`
 			<p>Can't load image from address starting with "blob:".</p>
@@ -1020,11 +1030,29 @@ function show_resource_load_error_message(error){
 			<p>Address points to a web page, not an image file.</p>
 			<p>Try copying and pasting an image instead of a URL.</p>
 		`);
-	} else if (error.code === "decode-fail") {
+	} else if (error.code === "decoding-failure") {
 		$w.$main.html(`
 			<p>Address doesn't point to an image file of a supported format.</p>
 			<p>Try copying and pasting an image instead of a URL.</p>
 		`);
+	} else if (error.code === "access-failure") {
+		if (navigator.onLine) {
+			$w.$main.html(`
+				<p>Failed to download image.</p>
+				<p>Try copying and pasting an image instead of a URL.</p>
+			`);
+			if (error.fails) {
+				$("<ul>").append(error.fails.map(({status, statusText, url})=>
+					$("<li>").text(url).prepend($("<b>").text(`${status || ""} ${statusText || "Failed"} `))
+				)).appendTo($w.$main);
+			}
+		} else {
+			$w.$main.html(`
+				<p>Failed to download image.</p>
+				<p>You're offline. Connect to the internet and try again.</p>
+				<p>Or copy and paste an image instead of a URL, if possible.</p>
+			`);
+		}
 	} else {
 		$w.$main.html(`
 			<p>Failed to load image from URL.</p>
@@ -2681,12 +2709,12 @@ function read_image_file(blob, callback) {
 			var fr = new FileReader();
 			fr.onerror = ()=> {
 				const error = new Error("failed to decode blob as image or text");
-				error.code = "decode-fail";
+				error.code = "decoding-failure";
 				callback(error);
 			};
 			fr.onload = (e)=> {
 				const error = new Error("failed to decode blob as an image");
-				error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decode-fail";
+				error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decoding-failure";
 				callback(error);
 			};
 			fr.readAsText(blob);
