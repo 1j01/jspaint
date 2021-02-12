@@ -370,6 +370,7 @@ body,
 	margin-right: 0;
 	margin-top: 2px;
 	margin-bottom: 1px;
+	border-width: 1px; /* or else it's like 17px in Firefox?? and totally screws up the icons */
 }
 .help-window .window-content {
 	padding: 0;
