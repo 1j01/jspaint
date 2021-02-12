@@ -739,7 +739,7 @@ function open_from_files(files, user_input_method_verb_past_tense){
 
 function apply_file_format_and_palette_info(info) {
 	if (info.palette) {
-		window.console && console.log(`Loaded palette from image file: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+		window.console && console.log(`Loaded palette from image file: ${info.palette.map(()=> `%c█`).join("")}`, ...info.palette.map((color)=> `color: ${color};`));
 		palette = info.palette;
 		selected_colors.foreground = palette[0];
 		selected_colors.background = palette.length === 14 * 2 ? palette[14] : palette[1]; // first in second row for default sized palette, else second color (debatable behavior; should it find a dark and a light color?)
