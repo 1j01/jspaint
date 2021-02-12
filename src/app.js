@@ -688,9 +688,9 @@ $G.on("cut copy paste", e => {
 				item.getAsString(text => {
 					const uris = get_URIs(text);
 					if (uris.length > 0) {
-						load_image_from_URI(uris[0], (error, img) => {
+						load_image_from_URI(uris[0], (error, info) => {
 							if(error){ return show_resource_load_error_message(error); }
-							paste(img);
+							paste(info.image);
 						});
 					} else {
 						show_error_message("The information on the Clipboard can't be inserted into Paint.");
@@ -706,7 +706,7 @@ $G.on("cut copy paste", e => {
 });
 
 reset_file();
-reset_colors();
+reset_selected_colors();
 reset_canvas_and_history(); // (with newly reset colors)
 set_magnification(default_magnification);
 
