@@ -682,7 +682,7 @@ function open_from_image_info(info, callback, canceled){
 
 		current_history_node.name = localize("Open");
 		current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
-		current_history_node.icon = null; // @TODO
+		current_history_node.icon = get_help_folder_icon("p_open.png");
 
 		$G.triggerHandler("session-update"); // autosave
 		$G.triggerHandler("history-update"); // update history view
@@ -2743,7 +2743,7 @@ function update_from_saved_file(blob) {
 		const format = image_formats.find(({mimeType})=> mimeType === info.file_format);
 		undoable({
 			name: `${localize("Save As")} ${format ? format.name : info.file_format}`,
-			icon: get_help_folder_icon("p_monochrome_undo.png"),
+			icon: get_help_folder_icon("p_save.png"),
 		}, ()=> {
 			main_ctx.copy(info.image || info.image_data);
 		});
