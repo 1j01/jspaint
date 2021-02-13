@@ -545,8 +545,13 @@ function load_image_from_uri(uri, callback){
 
 	let index = 0;
 	const try_next_uri = (last_uri_error)=> {
-		if (last_uri_error && fails.length < index) {
-			fails.push({url: uris_to_try[index-1]});
+		if (last_uri_error) {
+			if (!fails[0] || !fails[index-1].url) {
+				throw last_uri_error;
+			}
+			if (fails.length < index) {
+				fails.push({url: uris_to_try[index-1]});
+			}
 		}
 
 		const index_to_try = index;
