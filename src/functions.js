@@ -720,7 +720,9 @@ function open_from_files(files, user_input_method_verb_past_tense){
 			});
 			return;
 		} else if (file.name.match(/\.theme(pack)?$/i)) {
-			load_theme_from_file(file);
+			file.text().then(load_theme_from_text, (error)=> {
+				show_error_message(localize("Paint cannot open this file."), error);
+			});
 			loaded = true;
 			return;
 		} else {
@@ -759,14 +761,6 @@ function apply_file_format_and_palette_info(info) {
 	file_format = info.file_format;
 }
 
-function load_theme_from_file(file) {
-	// Note: newer method available: https://developer.mozilla.org/en-US/docs/Web/API/Blob/text
-	var reader = new FileReader();
-	reader.onload = ()=> {
-		load_theme_from_text(reader.result);
-	};
-	reader.readAsText(file);
-}
 function load_theme_from_text(fileText) {
 	var cssProperties = parseThemeFileString(fileText);
 	applyCSSProperties(cssProperties);
@@ -2639,13 +2633,7 @@ function read_image_file(blob, callback) {
 	let palette;
 	let monochrome = false;
 
-	// Note: newer API available: blob.arrayBuffer() https://developer.mozilla.org/en-US/docs/Web/API/Blob/arrayBuffer
-	const reader = new FileReader();
-	reader.onerror = () => {
-		callback(reader.error);
-	};
-	reader.onload = function (e) {
-		const arrayBuffer = reader.result;
+	blob.arrayBuffer().then((arrayBuffer)=> {
 		// Helpers:
 		// "GIF".split("").map(c=>"0x"+c.charCodeAt(0).toString("16")).join(", ")
 		// [0x47, 0x49, 0x46].map(c=>String.fromCharCode(c)).join("")
@@ -2707,18 +2695,15 @@ function read_image_file(blob, callback) {
 			// img.crossOrigin = "Anonymous";
 			const handle_decode_fail = ()=> {
 				URL.revokeObjectURL(blob_uri);
-				var fr = new FileReader();
-				fr.onerror = ()=> {
+				blob.text().then((file_text)=> {
+					const error = new Error("failed to decode blob as an image");
+					error.code = file_text.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decoding-failure";
+					callback(error);
+				}, (err)=> {
 					const error = new Error("failed to decode blob as image or text");
 					error.code = "decoding-failure";
 					callback(error);
-				};
-				fr.onload = (e)=> {
-					const error = new Error("failed to decode blob as an image");
-					error.code = e.target.result.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decoding-failure";
-					callback(error);
-				};
-				fr.readAsText(blob);
+				});
 			};
 			img.onload = ()=> {
 				URL.revokeObjectURL(blob_uri);
@@ -2731,8 +2716,9 @@ function read_image_file(blob, callback) {
 			img.onerror = handle_decode_fail;
 			img.src = blob_uri;
 		}
-	}
-	reader.readAsArrayBuffer(blob);
+	}, (error)=> {
+		callback(error);
+	});
 }
 
 function update_from_saved_file(blob) {
@@ -2815,12 +2801,8 @@ function save_selection_to_file(){
 function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted=true){
 	if(blob.size > 0){
 		if (magic_number_bytes) {
-			const reader = new FileReader();
-			reader.onerror = ()=> {
-				show_error_message(localize("An unknown error has occurred."), reader.error);
-			};
-			reader.onload = ()=> {
-				const file_bytes = new Uint8Array(reader.result);
+			blob.arrayBuffer().then((arrayBuffer)=> {
+				const file_bytes = new Uint8Array(arrayBuffer);
 				const magic_found = magic_number_bytes.every((byte, index)=> byte === file_bytes[index]);
 				// console.log(file_bytes, magic_number_bytes, magic_found, magic_wanted);
 				if (magic_found === magic_wanted) {
@@ -2839,8 +2821,9 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 					});
 					$w.center();
 				}
-			};
-			reader.readAsArrayBuffer(blob);
+			}, (error)=> {
+				show_error_message(localize("An unknown error has occurred."), error);
+			});
 		} else {
 			okay_callback();
 		}

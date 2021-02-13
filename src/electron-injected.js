@@ -78,11 +78,8 @@ window.save_to_file_path = (canvas, filePath, savedCallback, updateFromSaved=tru
 		return show_error_message(`Can't save as *.${extension} - Try adding .png to the end of the file name`);
 	}
 	write_image_file(canvas, format.mimeType, (blob) => {
-		blob_to_buffer(blob, (err, buffer) => {
-			if (err) {
-				return show_error_message(localize("Failed to save document."), err);
-			}
-			fs.writeFile(filePath, buffer, err => {
+		blob.arrayBuffer().then((arrayBuffer) => {
+			fs.writeFile(filePath, Buffer.from(arrayBuffer), err => {
 				if (err) {
 					return show_error_message(localize("Failed to save document."), err);
 				}
@@ -92,26 +89,11 @@ window.save_to_file_path = (canvas, filePath, savedCallback, updateFromSaved=tru
 					update_from_saved_file(blob);
 				}
 			});
+		}, (error)=> {
+			show_error_message(localize("Failed to save document."), error);
 		});
 	});
 };
-
-function blob_to_buffer(blob, callback) {
-	const file_reader = new FileReader();
-
-	file_reader.addEventListener("loadend", () => {
-		if (file_reader.error) {
-			callback(file_reader.error);
-		} else {
-			callback(null, Buffer.from(file_reader.result));
-		}
-	}, false);
-
-	// Read the blob as a typed array.
-	file_reader.readAsArrayBuffer(blob);
-
-	return file_reader;
-}
 
 // @TODO: window.platform.saveCanvasAs etc. or platformIntegration or system or something
 window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback, updateFromSaved=true) => {
@@ -155,27 +137,24 @@ window.systemSetAsWallpaperCentered = c => {
 		wallpaperCanvas.ctx.drawImage(c, ~~x, ~~y);
 	}
 
-	const file_reader = new FileReader();
-	file_reader.onloadend = () => {
-		const buffer = Buffer.from(file_reader.result);
-		fs.writeFile(imgPath, buffer, err => {
-			if(err){
-				return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", err);
-			}
-			// {scale: "center"} only supported on macOS; see above workaround
-			wallpaper.set(imgPath, {scale: "center"}, err => {
-				if(err){
-					show_error_message("Failed to set as desktop background!", err);
-				}
-			});
-		});
-	};
-	file_reader.onerror = () => {
-		throw new Error("Failed to read canvas image to array buffer");
-	};
 	wallpaperCanvas.toBlob(blob => {
 		sanity_check_blob(blob, () => {
-			file_reader.readAsArrayBuffer(blob);
+			blob.arrayBuffer().then((arrayBuffer) => {
+				const buffer = Buffer.from(arrayBuffer);
+				fs.writeFile(imgPath, Buffer.from(arrayBuffer), error => {
+					if (error) {
+						return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", error);
+					}
+					// {scale: "center"} only supported on macOS; see above workaround
+					wallpaper.set(imgPath, { scale: "center" }, error => {
+						if (error) {
+							show_error_message("Failed to set as desktop background!", error);
+						}
+					});
+				});
+			}, (error) => {
+				show_error_message(localize("Failed to save document."), error);
+			});
 		});
 	});
 };
