@@ -2340,7 +2340,7 @@ function show_convert_to_black_and_white() {
 		} else {
 			undoable({
 				name: "Cancel Make Monochrome",
-				icon: get_help_folder_icon("p_monochrome_undo.png"),
+				icon: get_help_folder_icon("p_color.png"),
 			}, ()=> {
 				main_ctx.copy(original_canvas);
 			});

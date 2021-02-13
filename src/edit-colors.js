@@ -110,7 +110,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 				};
 				undoable({
 					name: "Recolor",
-					icon: get_help_folder_icon("p_monochrome_undo.png"),
+					icon: get_help_folder_icon("p_color.png"),
 				}, ()=> {
 					recolor(main_ctx, main_monochrome_info.presentNonTransparentRGBAs);
 					if (selection && selection.canvas) {
