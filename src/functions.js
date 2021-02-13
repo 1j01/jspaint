@@ -2679,11 +2679,11 @@ function read_image_file(blob, callback) {
 					monochrome = false;
 				}
 			}
-			if (bitsPerPixel !== 32 && bitsPerPixel !== 16) {
-				for (let i = 3; i < imageData.data.length; i += 4) {
-					imageData.data[i] = 255;
-				}
-			}
+			// if (bitsPerPixel !== 32 && bitsPerPixel !== 16) {
+			// 	for (let i = 3; i < imageData.data.length; i += 4) {
+			// 		imageData.data[i] = 255;
+			// 	}
+			// }
 			callback(null, {file_format, monochrome, palette, image_data: imageData, source_blob: blob});
 		} else {
 			monochrome = false;
