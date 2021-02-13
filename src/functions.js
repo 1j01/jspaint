@@ -2679,7 +2679,7 @@ function read_image_file(blob, callback) {
 					monochrome = false;
 				}
 			}
-			callback(null, {file_format, monochrome, palette, image_data: imageData});
+			callback(null, {file_format, monochrome, palette, image_data: imageData, source_blob: blob});
 		} else {
 			monochrome = false;
 			file_format = {
@@ -2693,7 +2693,7 @@ function read_image_file(blob, callback) {
 				ico: "image/x-icon",
 				cur: "image/x-win-bitmap",
 				icns: "image/icns",
-			}[detected_type_id] || file.type;
+			}[detected_type_id] || blob.type;
 
 			const blob_uri = URL.createObjectURL(blob);
 			const img = new Image();
@@ -2719,16 +2719,13 @@ function read_image_file(blob, callback) {
 					handle_decode_fail();
 					return;
 				}
-				callback(null, {image: img, source_blob: blob, ...info});
+				callback(null, {file_format, monochrome, palette, image: img, source_blob: blob});
 			};
 			img.onerror = handle_decode_fail;
 			img.src = blob_uri;
-
-			callback(null, {file_format, monochrome, palette, image: img});
 		}
-
 	}
-	reader.readAsArrayBuffer(file);
+	reader.readAsArrayBuffer(blob);
 }
 
 function update_from_saved_file(blob) {
