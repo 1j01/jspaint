@@ -475,7 +475,7 @@ window.menus = {
 					],
 					enabled: () => magnification >= 4,
 					checkbox: {
-						toggle: toggle_grid,
+						toggle: () => { toggle_grid(); },
 						check: () => show_grid,
 					},
 					description: localize("Shows or hides the grid."),
