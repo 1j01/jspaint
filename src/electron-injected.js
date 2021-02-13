@@ -68,7 +68,7 @@ const get_image_format_from_extension = (file_path_or_name_or_ext)=> {
 };
 
 window.save_to_file_path = (canvas, filePath, savedCallback, updateFromSaved=true) => {
-	const extension = (filePath.indexOf(/\./) > -1) && filePath.split(/\./g).pop().toLowerCase();
+	const extension = (filePath.indexOf(".") > -1) && filePath.split(/\./g).pop().toLowerCase();
 	if (!extension) {
 		// @TODO: Linux/Unix?? you're not supposed to need file extensions
 		return show_error_message("Missing file extension - Try adding .png to the end of the file name");
@@ -126,11 +126,13 @@ window.systemSaveCanvasAs = (canvas, suggestedFileName, savedCallback, updateFro
 	dialog.showSaveDialog({
 		defaultPath: suggestedFileName,
 		filters,
-	}, filePath => {
-		if(!filePath){
-			return; // user canceled
+	}).then(({filePath, canceled}) => {
+		if(canceled){
+			return;
 		}
 		save_to_file_path(canvas, filePath, savedCallback, updateFromSaved);
+	}, (error)=> {
+		show_error_message(localize("Failed to save document."), error);
 	});
 };
 
