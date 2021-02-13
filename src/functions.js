@@ -675,7 +675,7 @@ function open_from_image_info(info, callback, canceled){
 		reset_canvas_and_history(); // (with newly reset colors)
 		set_magnification(default_magnification);
 
-		main_ctx.copy(info.image);
+		main_ctx.copy(info.image || info.image_data);
 		apply_file_format_and_palette_info(info);
 		detect_transparency();
 		$canvas_area.trigger("resize");
@@ -1160,7 +1160,7 @@ function paste_image_from_file(blob){
 			show_read_image_file_error(error);
 			return;
 		}
-		paste(info.image);
+		paste(info.image || make_canvas(info.image_data));
 	});
 }
 
@@ -1844,7 +1844,7 @@ async function edit_paste(execCommandFallback){
 					if (uris.length > 0) {
 						load_image_from_uri(uris[0], (error, info) => {
 							if(error){ return show_resource_load_error_message(error); }
-							paste(info.image);
+							paste(info.image || make_canvas(info.image_data));
 						});
 					} else {
 						// @TODO: should I just make a textbox instead?
@@ -2740,7 +2740,7 @@ function update_from_saved_file(blob) {
 			name: `${localize("Save As")} ${format ? format.name : info.file_format}`,
 			icon: get_help_folder_icon("p_monochrome_undo.png"),
 		}, ()=> {
-			main_ctx.copy(info.image);
+			main_ctx.copy(info.image || info.image_data);
 		});
 	});
 }
