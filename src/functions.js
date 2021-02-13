@@ -556,7 +556,7 @@ function load_image_from_uri(uri, callback){
 			if (is_download) {
 				$status_text.text("Failed to download picture.");
 			}
-			const error = new Error(`failed to download image from any of three URIs (${JSON.stringify(uris_to_try)}).`);
+			const error = new Error(`failed to fetch image from any of ${uris_to_try.length} URI(s): ${JSON.stringify(fails)}`);
 			error.code = "access-failure";
 			error.fails = fails;
 			callback && callback(error);
