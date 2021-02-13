@@ -835,11 +835,11 @@ function file_load_from_url(){
 	$input[0].focus();
 }
 
-function file_save(maybe_saved_callback=()=>{}){
+function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
 	if(document_file_path){
 		if(file_name.match(/\.svg$/i)){
-			return file_save_as(maybe_saved_callback);
+			return file_save_as(maybe_saved_callback, update_from_saved);
 		}
 		return save_to_file_path(main_canvas, document_file_path, (saved_file_path, saved_file_name, saved_file_type) => {
 			saved = true;
@@ -849,10 +849,10 @@ function file_save(maybe_saved_callback=()=>{}){
 			file_format = saved_file_type;
 			update_title();
 			maybe_saved_callback();
-		});
+		}, update_from_saved);
 	}
 	if (!file_name_chosen) {
-		return file_save_as(maybe_saved_callback);
+		return file_save_as(maybe_saved_callback, update_from_saved);
 	}
 	write_image_file(main_canvas, file_format, (blob)=> {
 		const file_saver = saveAs(blob, file_name);
@@ -862,11 +862,13 @@ function file_save(maybe_saved_callback=()=>{}){
 		// };
 		// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
 		maybe_saved_callback();
-		update_from_saved_file(blob);
+		if (update_from_saved) {
+			update_from_saved_file(blob);
+		}
 	});
 }
 
-function file_save_as(maybe_saved_callback=()=>{}){
+function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
 	// @TODO: shouldn't this just be file_name, no replacement?
 	save_canvas_as(main_canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name, saved_file_type) => {
@@ -877,7 +879,7 @@ function file_save_as(maybe_saved_callback=()=>{}){
 		file_format = saved_file_type;
 		update_title();
 		maybe_saved_callback();
-	});
+	}, update_from_saved);
 }
 
 
@@ -892,7 +894,7 @@ function are_you_sure(action, canceled){
 			$w.close();
 			file_save(()=> {
 				action();
-			});
+			}, false);
 		})[0].focus();
 		$w.$Button("Discard", () => {
 			$w.close();
@@ -2752,9 +2754,9 @@ function update_from_saved_file(blob) {
 
 // @TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
 // Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
-function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
+function save_canvas_as(canvas, fileName, savedCallbackUnreliable, updateFromSaved=true){
 	if(window.systemSaveCanvasAs){
-		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable);
+		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable, updateFromSaved);
 	}
 
 	choose_file_name_and_type(localize("Save As"), file_name, file_format, image_formats, (new_file_name, new_file_type)=> {
@@ -2766,7 +2768,9 @@ function save_canvas_as(canvas, fileName, savedCallbackUnreliable){
 			// };
 			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
 			savedCallbackUnreliable(undefined, new_file_name, new_file_type);
-			update_from_saved_file(blob);
+			if (updateFromSaved) {
+				update_from_saved_file(blob);
+			}
 		});
 	});
 }
