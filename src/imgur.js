@@ -14,7 +14,8 @@ function show_imgur_uploader(blob){
 	// (starting small (max-width: 100%) and toggling to either scrollable or fullscreen)
 	// it should be clear that it's not going to upload a downsized version of your image
 	const $preview_image = $(E("img")).appendTo($preview_image_area);
-	$preview_image.attr({src: URL.createObjectURL(blob)});
+	const blob_url = URL.createObjectURL(blob);
+	$preview_image.attr({src: blob_url});
 	// $preview_image.css({maxWidth: "100%", maxHeight: "400px"});
 	$preview_image_area.css({
 		maxWidth: "90vw",
@@ -26,9 +27,13 @@ function show_imgur_uploader(blob){
 		$imgur_window.css({width: "auto"});
 		$imgur_window.center();
 	});
+	$imgur_window.on("close", () => {
+		URL.revokeObjectURL(blob_url);
+	});
 
 	const $upload_button = $imgur_window.$Button("Upload", () => {
 
+		URL.revokeObjectURL(blob_url);
 		$preview_image_area.remove();
 		$upload_button.remove();
 		$cancel_button.remove(); // @TODO: allow canceling upload request

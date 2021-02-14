@@ -1280,14 +1280,18 @@ function render_history_as_gif(){
 
 		gif.on("finished", blob => {
 			$win.title("Rendered GIF");
-			const url = URL.createObjectURL(blob);
+			const blob_url = URL.createObjectURL(blob);
 			$output.empty().append(
 				$(E("img")).attr({
-					src: url,
+					src: blob_url,
 					width,
 					height,
 				})
 			);
+			$win.on("close", ()=> {
+				// revoking on image load(+error) breaks right click > "Save image as" and "Open image in new tab"
+				URL.revokeObjectURL(blob_url);
+			});
 			$win.$Button("Upload to Imgur", () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
