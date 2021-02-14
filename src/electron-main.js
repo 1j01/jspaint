@@ -34,6 +34,7 @@ const createWindow = () => {
 		webPreferences: {
 			preload: require("path").join(__dirname, "/electron-injected.js"),
 			enableRemoteModule: true,
+			contextIsolation: false,
 		},
 	});
 
