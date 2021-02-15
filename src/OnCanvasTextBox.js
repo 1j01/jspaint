@@ -203,7 +203,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.$el.on("pointerdown", e => {
 			if (e.target instanceof HTMLInputElement ||
 				e.target instanceof HTMLTextAreaElement ||
-				e.target.classList.contains("handle")) {
+				e.target.classList.contains("handle") ||
+				e.target.classList.contains("grab-region")) {
 				return;
 			}
 			e.preventDefault();

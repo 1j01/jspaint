@@ -11,7 +11,8 @@ function $Handles($handles_container, $object_container, options){
 	if (options.thick) {
 		$resize_ghost.addClass("thick");
 	}
-	const handles = $.map([
+	const handles = [];
+	[
 		["top", "right"], // ↗
 		["top", "middle"], // ↑
 		["top", "left"], // ↖
@@ -20,13 +21,14 @@ function $Handles($handles_container, $object_container, options){
 		["bottom", "middle"], // ↓
 		["bottom", "right"], // ↘
 		["middle", "right"], // →
-	], pos => {
-		const y_axis = pos[0];
-		const x_axis = pos[1];
-		
+	].forEach(([y_axis, x_axis]) => {
 		const $h = $(E("div")).addClass("handle");
 		$h.appendTo($handles_container);
-		
+		const $grab_region = $(E("div")).addClass("grab-region").appendTo($handles_container);
+		if (y_axis === "middle" || x_axis === "middle") {
+			$grab_region.addClass("is-middle");
+		}
+
 		$h.attr("touch-action", "none");
 		
 		let rect;
@@ -35,6 +37,7 @@ function $Handles($handles_container, $object_container, options){
 		const resizes_width = x_axis !== "middle";
 		if(size_only && (y_axis === "top" || x_axis === "left")){
 			$h.addClass("useless-handle");
+			$grab_region.remove();
 		}else{
 			
 			let cursor_fname;
@@ -56,7 +59,7 @@ function $Handles($handles_container, $object_container, options){
 			
 			fallback_cursor += "-resize";
 			const cursor = make_css_cursor(cursor_fname, [16, 16], fallback_cursor);
-			$h.css({cursor});
+			$h.add($grab_region).css({cursor});
 			
 			const drag = (event) => {
 				$resize_ghost.appendTo($object_container);
@@ -112,7 +115,7 @@ function $Handles($handles_container, $object_container, options){
 				});
 				rect = new_rect;
 			};
-			$h.on("pointerdown", event => {
+			$h.add($grab_region).on("pointerdown", event => {
 				dragged = false;
 				if(event.button === 0){
 					$G.on("pointermove", drag);
@@ -141,31 +144,65 @@ function $Handles($handles_container, $object_container, options){
 			// const y = rect.y + get_handles_offset_top();
 			const x = get_handles_offset_left();
 			const y = get_handles_offset_top();
-			if(x_axis === "middle"){
-				$h.css({ left: x + (rect.width * magnification - hs) / 2 });
-			}else if(x_axis === "left"){
-				$h.css({ left: x - outset });
-			}else if(x_axis === "right"){
-				$h.css({ left: x + (rect.width * magnification - hs/2) });
+			const grab_size = 32;
+			// @TODO: simplify by starting with numbers above, to get names like left/middle or perhaps use an enum
+			for ({len_key, pos_key, region_i, offset} of [
+				{len_key: "width", pos_key: "left", region_i: ["left", "middle", "right"].indexOf(x_axis), offset: x},
+				{len_key: "height", pos_key: "top", region_i: ["top", "middle", "bottom"].indexOf(y_axis), offset: y},
+			]) {
+				let middle_start = Math.max(
+					rect[len_key] * magnification / 2 - grab_size/2,
+					Math.min(
+						grab_size/2,
+						rect[len_key] * magnification / 3
+					)
+				);
+				let middle_end = rect[len_key] * magnification - middle_start;
+				if (middle_end - middle_start < magnification) {
+					// give middle region min size of one (1) canvas pixel
+					middle_start = 0;
+					middle_end = magnification;
+				}
+				const start_start = -grab_size/2;
+				const start_end = Math.min(
+					grab_size/2,
+					middle_start
+				);
+				const end_start = rect[len_key] * magnification - start_end;
+				const end_end = rect[len_key] * magnification - start_start;
+				if (size_only) {
+					// For main canvas handles, where only the right/bottom handles are interactive,
+					// extend the middle regions left/up into the unused space of the useless handles.
+					// (This must be after middle_start is used above.)
+					middle_start = Math.max(-offset, Math.min(middle_start, middle_end - grab_size));
+				}
+				if (region_i === 0) {
+					$h.css({ [pos_key]: offset - outset });
+					$grab_region.css({
+						[pos_key]: offset + start_start,
+						[len_key]: start_end - start_start,
+					});
+				} else if (region_i === 1) {
+					$h.css({ [pos_key]: offset + (rect[len_key] * magnification - hs) / 2 });
+					$grab_region.css({
+						[pos_key]: offset + middle_start,
+						[len_key]: middle_end - middle_start,
+					});
+				} else if (region_i === 2) {
+					$h.css({ [pos_key]: offset + (rect[len_key] * magnification - hs/2) });
+					$grab_region.css({
+						[pos_key]: offset + end_start,
+						[len_key]: end_end - end_start,
+					});
+				}
 			}
-			if(y_axis === "middle"){
-				$h.css({ top: y + (rect.height * magnification - hs) / 2 });
-			}else if(y_axis === "top"){
-				$h.css({ top: y - outset });
-			}else if(y_axis === "bottom"){
-				$h.css({ top: y + (rect.height * magnification - hs/2) });
-			}
-			$h.css({
-				"max-width": rect.width * magnification / 2,
-				"max-height": rect.height * magnification / 2,
-			});
 		};
 		
 		$handles_container.on("update resize scroll", update_handle);
 		$G.on("resize theme-load", update_handle);
 		setTimeout(update_handle, 50);
 		
-		return $h[0];
+		handles.push($h[0], $grab_region[0]);
 	});
 	return $(handles);
 }

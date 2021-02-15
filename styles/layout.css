@@ -610,19 +610,12 @@ html, body, .jspaint {
 	height: 3px;
 	z-index: 1;
 }
-.handle::after {
-	/* make handles way easier to grab */
-	content: "";
-	pointer-events: all; /* @TODO: maybe don't have a blanket pointer-events: none; on pseudo elements */
-	display: block;
+.grab-region {
+	/* the grab-region make handles way easier to grab by extending outside the visual representation of the handle */
 	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
-	width: 32px;
-	height: 32px;
-	max-width: inherit;
-	max-height: inherit;
+	/*background: rgba(255, 0, 0, 0.5);*/ /* debug */
+}
+.grab-region.is-middle {
 	/*background: rgba(255, 255, 0, 0.5);*/ /* debug */
 }
 .textbox::before {
