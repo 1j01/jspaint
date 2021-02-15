@@ -229,7 +229,7 @@ body,
 }
 .component-ghost:not(.dock):after,
 .component-ghost:not(.dock):before,
-/* TODO: thiccer resize ghost (4px instead of 3px) */
+/* @TODO: thiccer resize ghost (4px instead of 3px) */
 .resize-ghost.thick:after,
 .resize-ghost.thick:before {
 	content: '';
@@ -363,11 +363,11 @@ input[type=number].inset-deep,
 select.inset-deep {
 	background-color: var(--Window);
 	color: var(--WindowText);
-	/* TODO: should controls be styled by default, or need .inset-deep or similar? */
+	/* @TODO: should controls be styled by default, or need .inset-deep or similar? */
 	/* border-image: var(--inset-deep-border-image); */
 }
 
-/* XXX: using inset-deep to mean "thematic" */
+/* @XXX: using inset-deep to mean "thematic" */
 input[type=text].inset-deep,
 input[type=url].inset-deep,
 input[type=search].inset-deep,
@@ -389,7 +389,7 @@ input[type=number].no-spinner {
 Will need a wrapper element or ideally an accessible stylable replacement for the select element for further styling.
 Can't use option:hover, or option::after, or select::after, among other things.
 */
-/* XXX: using inset-deep to mean "thematic" */
+/* @XXX: using inset-deep to mean "thematic" */
 select.inset-deep {
 	/* taken from 98.css: https://jdan.github.io/98.css/ */
 	/* padding-right and background-position are in layout.css for RTL support (@TODO: RTL theme CSS too) */
@@ -419,8 +419,8 @@ input:invalid {
 	opacity: 0.6;
 }
 
-/* XXX: using .inset-deep to mean "thematic" */
-/* TODO: show percentage on progress bar, white (HilightText) where it overlaps the Hilight */
+/* @XXX: using .inset-deep to mean "thematic" */
+/* @TODO: show percentage on progress bar, white (HilightText) where it overlaps the Hilight */
 progress[value].inset-deep {
 	display: block;
 	appearance: none;

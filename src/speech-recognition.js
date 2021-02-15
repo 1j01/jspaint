@@ -1720,7 +1720,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		});
 	}
 
-	// TODO: "scroll to bottom", "scroll by three pages" etc.
+	// @TODO: "scroll to bottom", "scroll by three pages" etc.
 	const scrolling_regexp = /\b(?:(?:scroll|pan|move|page)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?(( and)?( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b(( by)?( a| one)? page)?/i;
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {

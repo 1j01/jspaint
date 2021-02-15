@@ -78,8 +78,7 @@
 * Save text and record transformations so the image can be saved as
 SVG (or HTML?) with invisible selectable transformed text elements?
 	* Every time you move a selection, duplicate the text and create a clip-path for both parts?
-		* This wouldn't really be nice for screen-readers, only selection
-			* Well, maybe make only one of them audible for screen-readers
+		* Make only one of them audible for screen-readers
 
 
 ### Device support

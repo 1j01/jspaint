@@ -1223,9 +1223,8 @@ function paste(img_or_canvas){
 		// let x = Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification));
 		// if (get_direction() === "rtl") {
 		// 	// magic number 8 is a guess, I guess based on the scrollbar width which shows on the left in RTL layout
-		// 	// TODO: detect scrollbar width
 		// 	// x = Math.max(0, Math.ceil(($canvas_area.innerWidth() - canvas.width + $canvas_area.scrollLeft() + 8) / magnification));
-		// 	const scrollbar_width = $canvas_area[0].offsetWidth - $canvas_area[0].clientWidth;
+		// 	const scrollbar_width = $canvas_area[0].offsetWidth - $canvas_area[0].clientWidth; // maybe??
 		// 	console.log("scrollbar_width", scrollbar_width);
 		// 	x = Math.max(0, Math.ceil((-$canvas_area.innerWidth() + $canvas_area.scrollLeft() + scrollbar_width) / magnification + canvas.width));
 		// }
@@ -2355,7 +2354,7 @@ function image_flip_and_rotate(){
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
-	// TODO: accelerators (hotkeys)
+	// @TODO: accelerators (hotkeys)
 	$fieldset.append(`
 		<legend>${localize("Flip or rotate")}</legend>
 		<label><input type="radio" name="flip-or-rotate" value="flip-horizontal" checked/>${localize("Flip horizontal")}</label>
@@ -2510,7 +2509,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 	const $w = new $FormToolWindow(dialog_name);
 	$w.addClass("save-as");
 
-	// TODO: hotkeys (N, T, S, Enter, Esc)
+	// @TODO: hotkeys (N, T, S, Enter, Esc)
 	$w.$main.append(`
 		<label>
 			File name:

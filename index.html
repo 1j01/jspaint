@@ -402,7 +402,7 @@
 							} else {
 								if (has_hotkey(localizations[without_hotkey])) {
 									// window.console && console.warn(`Localization has differing accelerator (hotkey) hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
-									// TODO: detect differing accelerator more generally
+									// @TODO: detect differing accelerator more generally
 									return `${remove_hotkey(localizations[without_hotkey])} (${hotkey_def})`;
 								}
 								return `${localizations[without_hotkey]} (${hotkey_def})`;
