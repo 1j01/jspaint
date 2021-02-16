@@ -7,25 +7,33 @@ function $Handles($handles_container, $object_container, options){
 	const get_ghost_offset_top = options.get_ghost_offset_top || (() => 0);
 	const size_only = options.size_only || false;
 	
+	const HANDLE_MIDDLE = 0;
+	const HANDLE_START = -1;
+	const HANDLE_END = 1;
+	const HANDLE_LEFT = HANDLE_START;
+	const HANDLE_RIGHT = HANDLE_END;
+	const HANDLE_TOP = HANDLE_START;
+	const HANDLE_BOTTOM = HANDLE_END;
+
 	const $resize_ghost = $(E("div")).addClass("resize-ghost");
 	if (options.thick) {
 		$resize_ghost.addClass("thick");
 	}
 	const handles = [];
 	[
-		["top", "right"], // ↗
-		["top", "middle"], // ↑
-		["top", "left"], // ↖
-		["middle", "left"], // ←
-		["bottom", "left"], // ↙
-		["bottom", "middle"], // ↓
-		["bottom", "right"], // ↘
-		["middle", "right"], // →
+		[HANDLE_TOP, HANDLE_RIGHT], // ↗
+		[HANDLE_TOP, HANDLE_MIDDLE], // ↑
+		[HANDLE_TOP, HANDLE_LEFT], // ↖
+		[HANDLE_MIDDLE, HANDLE_LEFT], // ←
+		[HANDLE_BOTTOM, HANDLE_LEFT], // ↙
+		[HANDLE_BOTTOM, HANDLE_MIDDLE], // ↓
+		[HANDLE_BOTTOM, HANDLE_RIGHT], // ↘
+		[HANDLE_MIDDLE, HANDLE_RIGHT], // →
 	].forEach(([y_axis, x_axis]) => {
 		const $h = $(E("div")).addClass("handle");
 		$h.appendTo($handles_container);
 		const $grab_region = $(E("div")).addClass("grab-region").appendTo($handles_container);
-		if (y_axis === "middle" || x_axis === "middle") {
+		if (y_axis === HANDLE_MIDDLE || x_axis === HANDLE_MIDDLE) {
 			$grab_region.addClass("is-middle");
 		}
 
@@ -33,17 +41,17 @@ function $Handles($handles_container, $object_container, options){
 		
 		let rect;
 		let dragged = false;
-		const resizes_height = y_axis !== "middle";
-		const resizes_width = x_axis !== "middle";
-		if(size_only && (y_axis === "top" || x_axis === "left")){
+		const resizes_height = y_axis !== HANDLE_MIDDLE;
+		const resizes_width = x_axis !== HANDLE_MIDDLE;
+		if(size_only && (y_axis === HANDLE_TOP || x_axis === HANDLE_LEFT)){
 			$h.addClass("useless-handle");
 			$grab_region.remove();
 		}else{
 			
 			let cursor_fname;
-			if((x_axis === "left" && y_axis === "top") || (x_axis === "right" && y_axis === "bottom")){
+			if((x_axis === HANDLE_LEFT && y_axis === HANDLE_TOP) || (x_axis === HANDLE_RIGHT && y_axis === HANDLE_BOTTOM)){
 				cursor_fname = "nwse-resize";
-			}else if((x_axis === "right" && y_axis === "top") || (x_axis === "left" && y_axis === "bottom")){
+			}else if((x_axis === HANDLE_RIGHT && y_axis === HANDLE_TOP) || (x_axis === HANDLE_LEFT && y_axis === HANDLE_BOTTOM)){
 				cursor_fname = "nesw-resize";
 			}else if(resizes_width){
 				cursor_fname = "ew-resize";
@@ -52,10 +60,10 @@ function $Handles($handles_container, $object_container, options){
 			}
 			
 			let fallback_cursor = "";
-			if(y_axis === "top"){ fallback_cursor += "n"; }
-			if(y_axis === "bottom"){ fallback_cursor += "s"; }
-			if(x_axis === "left"){ fallback_cursor += "w"; }
-			if(x_axis === "right"){ fallback_cursor += "e"; }
+			if(y_axis === HANDLE_TOP){ fallback_cursor += "n"; }
+			if(y_axis === HANDLE_BOTTOM){ fallback_cursor += "s"; }
+			if(x_axis === HANDLE_LEFT){ fallback_cursor += "w"; }
+			if(x_axis === HANDLE_RIGHT){ fallback_cursor += "e"; }
 			
 			fallback_cursor += "-resize";
 			const cursor = make_css_cursor(cursor_fname, [16, 16], fallback_cursor);
@@ -71,19 +79,19 @@ function $Handles($handles_container, $object_container, options){
 				let delta_y = 0;
 				let width, height;
 				// @TODO: decide between Math.floor/Math.ceil/Math.round for these values
-				if(x_axis === "right"){
+				if(x_axis === HANDLE_RIGHT){
 					delta_x = 0;
 					width = ~~(m.x - rect.x);
-				}else if(x_axis === "left"){
+				}else if(x_axis === HANDLE_LEFT){
 					delta_x = ~~(m.x - rect.x);
 					width = ~~(rect.x + rect.width - m.x);
 				}else{
 					width = ~~(rect.width);
 				}
-				if(y_axis === "bottom"){
+				if(y_axis === HANDLE_BOTTOM){
 					delta_y = 0;
 					height = ~~(m.y - rect.y);
-				}else if(y_axis === "top"){
+				}else if(y_axis === HANDLE_TOP){
 					delta_y = ~~(m.y - rect.y);
 					height = ~~(rect.y + rect.height - m.y);
 				}else{
@@ -145,10 +153,9 @@ function $Handles($handles_container, $object_container, options){
 			const x = get_handles_offset_left();
 			const y = get_handles_offset_top();
 			const grab_size = 32;
-			// @TODO: simplify by starting with numbers above, to get names like left/middle or perhaps use an enum
-			for ({len_key, pos_key, region_i, offset} of [
-				{len_key: "width", pos_key: "left", region_i: ["left", "middle", "right"].indexOf(x_axis), offset: x},
-				{len_key: "height", pos_key: "top", region_i: ["top", "middle", "bottom"].indexOf(y_axis), offset: y},
+			for ({len_key, pos_key, region, offset} of [
+				{len_key: "width", pos_key: "left", region: x_axis, offset: x},
+				{len_key: "height", pos_key: "top", region: y_axis, offset: y},
 			]) {
 				let middle_start = Math.max(
 					rect[len_key] * magnification / 2 - grab_size/2,
@@ -176,19 +183,19 @@ function $Handles($handles_container, $object_container, options){
 					// (This must be after middle_start is used above.)
 					middle_start = Math.max(-offset, Math.min(middle_start, middle_end - grab_size));
 				}
-				if (region_i === 0) {
+				if (region === HANDLE_START) {
 					$h.css({ [pos_key]: offset - outset });
 					$grab_region.css({
 						[pos_key]: offset + start_start,
 						[len_key]: start_end - start_start,
 					});
-				} else if (region_i === 1) {
+				} else if (region === HANDLE_MIDDLE) {
 					$h.css({ [pos_key]: offset + (rect[len_key] * magnification - hs) / 2 });
 					$grab_region.css({
 						[pos_key]: offset + middle_start,
 						[len_key]: middle_end - middle_start,
 					});
-				} else if (region_i === 2) {
+				} else if (region === HANDLE_END) {
 					$h.css({ [pos_key]: offset + (rect[len_key] * magnification - hs/2) });
 					$grab_region.css({
 						[pos_key]: offset + end_start,

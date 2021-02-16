@@ -166,10 +166,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 				auto_size();
 
 				// prevent free movement via resize
-				if (x_axis === "left") {
+				if (x_axis === -1) {
 					x = Math.min(this.x, old_x + old_width - this.width);
 				}
-				if (y_axis === "top") {
+				if (y_axis === -1) {
 					y = Math.min(this.y, old_y + old_height - this.height);
 				}
 				
