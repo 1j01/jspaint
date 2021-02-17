@@ -688,9 +688,10 @@ $G.on("cut copy paste", e => {
 				item.getAsString(text => {
 					const uris = get_uris(text);
 					if (uris.length > 0) {
-						load_image_from_uri(uris[0], (error, info) => {
-							if(error){ return show_resource_load_error_message(error); }
+						load_image_from_uri(uris[0]).then((info) => {
 							paste(info.image || make_canvas(info.image_data));
+						}, (error) => {
+							show_resource_load_error_message(error);
 						});
 					} else {
 						show_error_message("The information on the Clipboard can't be inserted into Paint.");

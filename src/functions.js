@@ -523,15 +523,14 @@ function get_uris(text) {
 	}
 	return uris;
 }
-function load_image_from_uri(uri, callback){
+async function load_image_from_uri(uri){
 	const is_blob_uri = uri.match(/^blob:/);
 	const is_download = !uri.match(/^(blob|data):/);
 
 	if (is_blob_uri && uri.indexOf(`blob:${location.origin}`) === -1) {
 		const error = new Error("can't load blob: URI from another domain");
 		error.code = "cors-blob-uri";
-		callback(error);
-		return;
+		throw error;
 	}
 
 	const uris_to_try = is_download ? [
@@ -543,99 +542,73 @@ function load_image_from_uri(uri, callback){
 	] : [uri];
 	const fails = [];
 
-	let index = 0;
-	const try_next_uri = (last_uri_error)=> {
-		if (last_uri_error) {
-			if (!fails[0] || !fails[index-1].url) {
-				throw last_uri_error;
-			}
-			if (fails.length < index) {
-				fails.push({url: uris_to_try[index-1]});
-			}
-		}
-
-		const index_to_try = index;
+	for (let index_to_try = 0; index_to_try < uris_to_try.length; index_to_try += 1) {
 		const uri_to_try = uris_to_try[index_to_try];
-
-		if (!uri_to_try) {
+		try {
 			if (is_download) {
-				$status_text.text("Failed to download picture.");
+				$status_text.text("Downloading picture...");
 			}
-			const error = new Error(`failed to fetch image from any of ${uris_to_try.length} URI(s): ${JSON.stringify(fails)}`);
-			error.code = "access-failure";
-			error.fails = fails;
-			callback && callback(error);
-			return;
-		}
 
-		index += 1;
-		if (is_download) {
-			$status_text.text("Downloading picture...");
-		}
+			const show_progress = ({loaded, total})=> {
+				if (is_download) {
+					$status_text.text(`Downloading picture... (${Math.round(loaded/total*100)}%)`);
+				}
+			};
 
-		const show_progress = ({loaded, total})=> {
 			if (is_download) {
-				$status_text.text(`Downloading picture... (${Math.round(loaded/total*100)}%)`);
+				console.log(`Try loading image from URI (${index_to_try+1}/${uris_to_try.length}): "${uri_to_try}"`);
 			}
-		};
 
-		if (is_download) {
-			console.log(`Try loading image from URI (${index_to_try+1}/${uris_to_try.length}): "${uri_to_try}"`);
-		}
-		fetch(uri_to_try)
-		.then(response => {
-			if (!response.ok) {
-				fails.push({status: response.status, statusText: response.statusText, url: uri_to_try});
-				throw Error(`${response.status} ${response.statusText}`);
+			const original_response = await fetch(uri_to_try);
+			let response_to_read = original_response;
+			if (!original_response.ok) {
+				fails.push({status: original_response.status, statusText: original_response.statusText, url: uri_to_try});
+				continue;
 			}
-			if (!response.body) {
+			if (!original_response.body) {
 				if (is_download) {
 					console.log("ReadableStream not yet supported in this browser. Progress won't be shown for image requests.");
 				}
-				return response;
-			}
-	
-			// to access headers, server must send CORS header "Access-Control-Expose-Headers: content-encoding, content-length x-file-size"
-			// server must send custom x-file-size header if gzip or other content-encoding is used
-			const contentEncoding = response.headers.get("content-encoding");
-			const contentLength = response.headers.get(contentEncoding ? "x-file-size" : "content-length");
-			if (contentLength === null) {
-				if (is_download) {
-					console.log("Response size header unavailable. Progress won't be shown for this image request.");
-				}
-				return response;
-			}
-	
-			const total = parseInt(contentLength, 10);
-			let loaded = 0;
-	
-			return new Response(
-				new ReadableStream({
-					start(controller) {
-						const reader = response.body.getReader();
-	
-						read();
-						function read() {
-							reader.read().then(({done, value}) => {
-								if (done) {
-									controller.close();
-									return; 
-								}
-								loaded += value.byteLength;
-								show_progress({loaded, total})
-								controller.enqueue(value);
-								read();
-							}).catch(error => {
-								console.error(error);
-								controller.error(error)									
-							})
-						}
+			} else {
+				// to access headers, server must send CORS header "Access-Control-Expose-Headers: content-encoding, content-length x-file-size"
+				// server must send custom x-file-size header if gzip or other content-encoding is used
+				const contentEncoding = original_response.headers.get("content-encoding");
+				const contentLength = original_response.headers.get(contentEncoding ? "x-file-size" : "content-length");
+				if (contentLength === null) {
+					if (is_download) {
+						console.log("Response size header unavailable. Progress won't be shown for this image request.");
 					}
-				})
-			);
-		})
-		.then(response => response.blob())
-		.then(blob => {
+				} else {
+					const total = parseInt(contentLength, 10);
+					let loaded = 0;
+					response_to_read = new Response(
+						new ReadableStream({
+							start(controller) {
+								const reader = original_response.body.getReader();
+			
+								read();
+								function read() {
+									reader.read().then(({done, value}) => {
+										if (done) {
+											controller.close();
+											return; 
+										}
+										loaded += value.byteLength;
+										show_progress({loaded, total})
+										controller.enqueue(value);
+										read();
+									}).catch(error => {
+										console.error(error);
+										controller.error(error)									
+									})
+								}
+							}
+						})
+					);
+				}
+			}
+	
+			const blob = await response_to_read.blob();
 			if (is_download) {
 				console.log("Download complete.");
 				$status_text.text("Download complete.");
@@ -645,22 +618,35 @@ function load_image_from_uri(uri, callback){
 			// since a website might start redirecting swathes of URLs regardless of what they originally pointed to,
 			// at which point they would likely point to a web page instead of an image.
 			// (But still show an error about it not being an image, if WayBack also fails.)
-			read_image_file(blob, (error, info)=> {
-				// if (error) {
-				// 	try_next_uri();
-				// 	return;
-				// }
-				callback(error, info);
+			const info = await new Promise((resolve, reject)=> {
+				read_image_file(blob, (error, info)=> {
+					if (error) {
+						reject(error);
+					} else {
+						resolve(info);
+					}
+				});
 			});
-		})
-		.catch(try_next_uri);
-	};
-	try_next_uri();
+			return info;
+		} catch (error) {
+			fails.push({url: uri_to_try, error});
+		}
+	}
+	if (is_download) {
+		$status_text.text("Failed to download picture.");
+	}
+	const error = new Error(`failed to fetch image from any of ${uris_to_try.length} URI(s):\n  ${fails.map((fail)=>
+		(fail.statusText ? `${fail.status} ${fail.statusText} ` : "") + fail.url + (fail.error ? `\n    ${fail.error}` : "")
+	).join("\n  ")}`);
+	error.code = "access-failure";
+	error.fails = fails;
+	throw error;
 }
 function open_from_uri(uri, callback, canceled){
-	load_image_from_uri(uri, (error, info) => {
-		if(error){ return callback(error); }
+	load_image_from_uri(uri).then((info) => {
 		open_from_image_info(info, callback, canceled);
+	}, (error) => {
+		callback(error);
 	});
 }
 
@@ -1842,9 +1828,10 @@ async function edit_paste(execCommandFallback){
 				if(clipboardText) {
 					const uris = get_uris(clipboardText);
 					if (uris.length > 0) {
-						load_image_from_uri(uris[0], (error, info) => {
-							if(error){ return show_resource_load_error_message(error); }
+						load_image_from_uri(uris[0]).then((info) => {
 							paste(info.image || make_canvas(info.image_data));
+						}, (error) => {
+							show_resource_load_error_message(error);
 						});
 					} else {
 						// @TODO: should I just make a textbox instead?
