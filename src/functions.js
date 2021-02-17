@@ -529,7 +529,7 @@ async function load_image_from_uri(uri){
 
 	if (is_blob_uri && uri.indexOf(`blob:${location.origin}`) === -1) {
 		const error = new Error("can't load blob: URI from another domain");
-		error.code = "cors-blob-uri";
+		error.code = "cross-origin-blob-uri";
 		throw error;
 	}
 
@@ -936,7 +936,7 @@ function show_resource_load_error_message(error){
 	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
 	const firefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 	// @TODO: copy & paste vs download & open, more specific guidance
-	if (error.code === "cors-blob-uri") {
+	if (error.code === "cross-origin-blob-uri") {
 		$w.$main.html(`
 			<p>Can't load image from address starting with "blob:".</p>
 			${
