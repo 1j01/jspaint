@@ -1724,15 +1724,16 @@ function select_all(){
 	});
 }
 
-const browserRecommendationForClipboardAccess = "Try using Chrome 76+";
+const ctrlOrCmd = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform) ? "⌘" : "Ctrl";
+const recommendationForClipboardAccess = `Please use the keyboard: ${ctrlOrCmd}+C to copy, ${ctrlOrCmd}+X to cut, ${ctrlOrCmd}+V to paste. If keyboard is not an option, try using Chrome version 76 or higher.`;
 function try_exec_command(commandId) {
 	if (document.queryCommandEnabled(commandId)) { // not a reliable source for whether it'll work, if I recall
 		document.execCommand(commandId);
 		if (!navigator.userAgent.includes("Firefox") || commandId === "paste") {
-			return show_error_message(`That ${commandId} probably didn't work. ${browserRecommendationForClipboardAccess}`);
+			return show_error_message(`That ${commandId} probably didn't work. ${recommendationForClipboardAccess}`);
 		}
 	} else {
-		return show_error_message(`Cannot perform ${commandId}. ${browserRecommendationForClipboardAccess}`);
+		return show_error_message(`Cannot perform ${commandId}. ${recommendationForClipboardAccess}`);
 	}
 }
 
@@ -1760,7 +1761,7 @@ function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+				throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
 				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
@@ -1770,7 +1771,7 @@ function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+				throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
 				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
@@ -1795,7 +1796,7 @@ function edit_cut(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("cut");
 		} else {
-			throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+			throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
 			// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 		}
 	}
@@ -1814,7 +1815,7 @@ async function edit_paste(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("paste");
 			} else {
-				throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+				throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
 				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 			}
 		}
@@ -1826,7 +1827,7 @@ async function edit_paste(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("paste");
 		} else {
-			throw new Error(`${localize("Error getting the Clipboard Data!")} ${browserRecommendationForClipboardAccess}`);
+			throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
 			// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
 		}
 	}
