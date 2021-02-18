@@ -556,7 +556,7 @@ function apply_image_transformation(meta, fn){
 	
 	if(selection){
 		undoable({
-			name: `${meta.name} (Selection)`,
+			name: `${meta.name} (${localize("Selection")})`,
 			icon: meta.icon,
 			soft: true,
 		}, () => {
