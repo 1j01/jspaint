@@ -20,7 +20,7 @@ function $ToolBox(tools, is_extras){
 		const $icon = $(E("span"));
 		$icon.appendTo($b);
 		const update_css = ()=> {
-			const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
+			const theme_folder = `images/${get_theme().replace(/\.css/i, "")}`;
 			const theme_has_svg = get_theme().match(/classic.css|dark.css/);
 			const use_svg = !theme_dev_blob_url && (
 				(theme_has_svg &&
@@ -77,8 +77,13 @@ function $ToolBox(tools, is_extras){
 		return $b[0];
 	}));
 	
-	const $c = $Component(is_extras ? "Extra Tools" : "Tools", "tall", $tools.add($tool_options));
-	$c.appendTo($left);
+	const $c = $Component(
+		is_extras ? "Extra Tools" : localize("Tools"),
+		is_extras ? "tools-component extra-tools-component" : "tools-component",
+		"tall",
+		$tools.add($tool_options)
+	);
+	$c.appendTo(get_direction() === "rtl" ? $right : $left); // opposite ColorBox by default
 	$c.update_selected_tool = () => {
 		$buttons.removeClass("selected");
 		selected_tools.forEach((selected_tool)=> {

@@ -1,3 +1,12 @@
+/*\
+|*| Note: layout.rtl.css is a generated file. Only edit layout.css.
+|*| layout.rtl.css is generated automatically while running the dev server (npm run dev)
+|*| (or manually with npm run build-css)
+|*|
+|*| Right-to-left layout is handled with a processor called RTLCSS, using comment directives.
+|*| Note in particular that "direction: ltr;" by default gets flipped to "direction: rtl;",
+|*| so the way to make a piece of UI left-to-right-only is with an ignore directive.
+\*/
 
 html, body, .jspaint {
 	width: 100%;
@@ -7,28 +16,34 @@ html, body, .jspaint {
 	border: 0;
 	overflow: hidden;
 }
+.jspaint {
+	direction: ltr;
+}
+.chooser-option {
+	display: flex;
+}
 .choose-shape-style {
+	display: flex;
 	flex-flow: column;
 }
 .choose-eraser,
 .choose-magnification,
 .choose-stroke-size,
 .choose-transparent-mode {
+	display: flex;
 	flex-flow: column;
 	align-items: center;
 	justify-content: space-around;
 }
 .choose-brush,
 .choose-airbrush-size {
+	display: flex;
 	flex-flow: row wrap;
 	justify-content: space-around;
 	align-content: space-around;
 }
 .tool-options canvas {
 	flex: 0 0 auto;
-}
-.jspaint :not(table):not(tbody):not(tr):not(td) {
-	display: flex;
 }
 .component-window .window-content,
 .component-window .window-content :not(table):not(tbody):not(tr):not(td) {
@@ -40,11 +55,13 @@ html, body, .jspaint {
 	flex: 1;
 }
 .horizontal {
+	display: flex;
 	flex-flow: row;
 	flex: 1 1 0;
 	overflow: hidden;
 }
 .vertical {
+	display: flex;
 	flex-flow: column;
 	flex: 1;
 }
@@ -66,10 +83,13 @@ html, body, .jspaint {
 		display: none !important;
 	}
 }
-.window,
-.window-content {
+.window.squish,
+.window.squish .window-content {
 	max-width: 100vw;
 	max-height: 100vh;
+}
+.window:not(.squish) {
+	white-space: nowrap;
 }
 .component-area,
 .tool-window .window-titlebar {
@@ -78,8 +98,13 @@ html, body, .jspaint {
 	-ms-user-select: none;
 	user-select: none;
 }
+.tool-window .window-titlebar {
+	direction: ltr;
+	text-align: start;
+}
 .status-area,
 .component-area {
+	display: flex;
 	flex: 0 0 auto;
 }
 
@@ -221,19 +246,19 @@ html, body, .jspaint {
 	width: 25px;
 	height: 25px;
 }
-.eye-gaze-mode .Colors-component.tall {
+.eye-gaze-mode .colors-component.tall {
 	width: 50px;
 }
-.eye-gaze-mode .Colors-component.tall .color-box {
+.eye-gaze-mode .colors-component.tall .color-box {
 	width: 100%;
 }
-.eye-gaze-mode .Colors-component.tall .current-colors {
+.eye-gaze-mode .colors-component.tall .current-colors {
 	width: 100%;
 }
-.eye-gaze-mode .Colors-component.tall .foreground-color {
+.eye-gaze-mode .colors-component.tall .foreground-color {
 	left: 12px;
 }
-.eye-gaze-mode .Colors-component.tall .background-color {
+.eye-gaze-mode .colors-component.tall .background-color {
 	right: 12px;
 }
 
@@ -283,14 +308,16 @@ html, body, .jspaint {
 	position: relative;
 }
 
-.Tools-component {
+.tools-component {
 	height: 273px;
 	align-items: center;
 	padding-left: 4px;
 	padding-right: 2px;
+	display: flex;
 	flex-flow: column;
 }
 .tool-options {
+	display: flex;
 	margin-top: 3px;
 	width: 41px;
 	height: 66px;
@@ -314,40 +341,45 @@ html, body, .jspaint {
 .horizontal .component-area {
 	flex-direction: column;
 }
-.Colors-component {
+.component {
+	display: flex;
+}
+.colors-component {
 	align-items: center;
 	justify-content: center;
 }
-.Colors-component.wide {
+.colors-component.wide {
 	height: 47px;
 }
-.Colors-component.tall {
+.colors-component.tall {
 	width: 47px;
 }
 .palette {
 	display: flex;
 }
-.Colors-component.wide .palette {
+.colors-component.wide .palette {
 	flex-flow: row wrap;
 }
-.Colors-component.tall .palette {
+.colors-component.tall .palette {
 	flex-flow: column wrap;
 }
-.Colors-component.wide .color-box,
-.Colors-component.wide .palette {
+.colors-component.wide .color-box,
+.colors-component.wide .palette {
+	display: flex;
 	flex-direction: row;
 	height: 32px;
 }
-.Colors-component.tall .color-box,
-.Colors-component.tall .palette {
+.colors-component.tall .color-box,
+.colors-component.tall .palette {
+	display: flex;
 	flex-direction: column;
 	width: 32px;
 }
-.Colors-component.wide .current-colors {
+.colors-component.wide .current-colors {
 	width: 30px;
 	height: 31px;
 }
-.Colors-component.tall .current-colors {
+.colors-component.tall .current-colors {
 	width: 31px;
 	height: 32px;
 }
@@ -365,41 +397,187 @@ html, body, .jspaint {
 	right: 3px;
 	bottom: 3px;
 }
-.Colors-component.tall .foreground-color {
+.colors-component.tall .foreground-color {
 	left: 4px;
 	top: 3px;
 }
-.Colors-component.tall .background-color {
+.colors-component.tall .background-color {
 	right: 3px;
 	bottom: 3px;
 }
 
-.Colors-component.wide .color-button,
-.Colors-component.wide .color-selection {
+.colors-component.wide .color-button,
+.colors-component.wide .color-selection {
 	margin-left: 1px;
 }
-.Colors-component.tall .color-button,
-.Colors-component.tall .color-selection {
+.colors-component.tall .color-button,
+.colors-component.tall .color-selection {
 	margin-top: 1px;
 }
 .color-button,
 .color-selection {
+	display: flex;
 	padding: 0;
 	box-sizing: border-box;
 	width: 15px;
 	height: 15px;
 	border: 0;
 }
-.color-button input {
-	margin: 0;
-	padding: 0;
+
+.edit-colors-window .color-grid {
+	width: 222px;
+	display: grid;
+	grid-template-columns: repeat(8, 16px);
+	grid-gap: 5px 9px;
+	user-select: none;
+	margin-left: 8px/*rtl:ignore*/;
+}
+.edit-colors-window .swatch {
+	width: 16px;
+	height: 13px;
+	display: flex;
+}
+.edit-colors-window .window-content {
+	font-family: Tahoma, sans-serif;
+	font-size: 12px;
+}
+.edit-colors-window .swatch {
+	outline: none; /* we'll provide a new focus indicator below */
+}
+.edit-colors-window .swatch.selected {
+	outline: 1px solid black;
+	outline-offset: 0px;
+}
+.edit-colors-window .swatch:focus::after {
+	content: "";
+	display: block;
 	position: absolute;
 	left: 0;
 	top: 0;
-	width: 100%;
-	height: 100%;
+	right: 0;
+	bottom: 0;
+	outline: 1px dotted black;
+	outline-offset: 5px;
+}
+.edit-colors-window .window-content .left-right-split {
+	display: flex;
+	flex-flow: row;
+}
+.edit-colors-window .window-content .left-side {
+	/* display: flex;
+	flex-flow: column; */
+	width: 217px;
+	height: 298px;
+}
+.edit-colors-window .window-content .right-side {
+	width: 218px;
+	position: relative;
+	padding-top: 7px;
+	padding-left: 10px/*rtl:ignore*/;
+}
+.edit-colors-window .window-content .button-group {
+	display: flex;
+	flex-flow: row;
+}
+.edit-colors-window .window-content .button-group button {
+	min-width: 66px;
+	margin: 3px;
+}
+.edit-colors-window .window-content .define-custom-colors-button,
+.edit-colors-window .window-content .button-group button:first-of-type {
+	margin-left: 5px/*rtl:ignore*/;
+}
+.edit-colors-window .window-content button {
+	height: 23px;
+	box-sizing: border-box;
+	padding: 0;
+	margin-left: 3px/*rtl:ignore*/;
+}
+.edit-colors-window .window-content .define-custom-colors-button {
+	margin-top: 13px;
+	width: 210px;
+}
+.edit-colors-window .window-content .add-to-custom-colors-button {
+	position: absolute;
+	bottom: 5px;
+	right: 5px/*rtl:ignore*/;
+	width: 213px;
+}
+.edit-colors-window .left-side label {
+	display: block;
+	margin-top: 7px;
+	margin-bottom: 5px;
+	margin-left: 5px/*rtl:ignore*/;
+}
+.edit-colors-window .left-side label:nth-of-type(2) {
+	margin-top: 18px;
+	margin-bottom: 7px;
+}
+.edit-colors-window .luminosity-canvas {
+	margin-left: 15px/*rtl:ignore*/;
+}
+.edit-colors-window .result-color-canvas {
+	margin-top: 4px;
+}
+/* WET layout code for small viewports and eye gaze mode */
+/* could do it cleaner with JavaScript or CSS preprocessor */
+@media (max-width: 450px) {
+	.edit-colors-window {
+		overflow: hidden;
+	}
+	.edit-colors-window.defining-custom-colors .left-side {
+		/* display: none !important; */
+		/* this element is determining the height */
+		width: 0;
+		visibility: hidden;
+	}
+	.edit-colors-window:not(.defining-custom-colors) .right-side {
+		display: none !important;
+	}
+}
+/* WET layout code for small viewports and eye gaze mode */
+.eye-gaze-mode .edit-colors-window {
+	overflow: hidden;
+}
+.eye-gaze-mode .edit-colors-window.defining-custom-colors .left-side {
+	/* display: none !important; */
+	/* this element is determining the height */
+	width: 0;
+	visibility: hidden;
+}
+.eye-gaze-mode .edit-colors-window:not(.defining-custom-colors) .right-side {
+	display: none !important;
 }
 
+.save-as .window-content > form > div {
+	display: flex;
+	flex-direction: column;
+}
+.save-as .window-content > form > div > label {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin-left: 10px;
+}
+.save-as .window-content > form > div > label > input,
+.save-as .window-content > form > div > label > select {
+	width: calc(100vw - 220px);
+	max-width: 230px;
+	float: right;
+	margin: 5px;
+    box-sizing: border-box;
+}
+.save-as .window-content > form > div > label:last-of-type {
+	margin-top: 8px;
+}
+.save-as .window-content {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.save-as .button-group button {
+	margin: 5px;
+}
 
 .canvas-area {
 	flex: 1;
@@ -407,6 +585,7 @@ html, body, .jspaint {
 	position: relative;
 	overflow: auto;
 	padding: 3px;
+	direction: ltr/*rtl:ignore*/;
 }
 .main-canvas {
 	position: absolute;
@@ -480,6 +659,7 @@ html, body, .jspaint {
 	flex-flow: column;
 }
 .dialogue-window .window-content > form > .button-group {
+	display: flex;
 	flex-flow: row;
 	justify-content: flex-end;
 }
@@ -487,8 +667,31 @@ html, body, .jspaint {
 	padding: 5px;
 }
 
+.stretch-and-skew .window-content,
+.flip-and-rotate .window-content,
+.convert-to-black-and-white .window-content {
+	direction: ltr;
+}
 .flip-and-rotate fieldset {
 	width: 200px;
+}
+.flip-and-rotate .sub-options {
+	padding-left: 30px;
+}
+
+/* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */
+.window-content label {
+	display: inline-flex;
+	flex-direction: row;
+	direction: ltr;
+}
+
+.attributes-window .window-content {
+	direction: ltr;
+}
+.attributes-window fieldset {
+	display: flex;
+	justify-content: space-around; /* this isn't really what the layout is like in mspaint, but it spaces things out at least */
 }
 
 /* @TODO: part of os-gui */
@@ -498,7 +701,7 @@ html, body, .jspaint {
 }
 /* @TODO: part of os-gui */
 .os-window .window-content {
-	flex: 1; 
+	flex: 1;
 }
 
 .help-window .window-content {
@@ -566,7 +769,8 @@ html, body, .jspaint {
 	width: 0;
 }
 .help-window li ul {
-	padding-left: 16px;
+	/* Help content is not currently translated, so it's all in English */
+	padding-left: 16px/*rtl:ignore*/;
 }
 .help-window li:before {
 	content: "";
@@ -619,8 +823,7 @@ html, body, .jspaint {
 	max-width: calc(100vw - 10px);
 	max-height: calc(100vh - 100px);
 	overflow: auto;
-	background: white;
-	color: black;
+	position: relative; /* needed for offsetTop to work relative to the top of the list (rather than the window) */
 }
 .history-entry {
 	cursor: pointer;
@@ -661,6 +864,7 @@ html, body, .jspaint {
 #jspaint-project-name {
 	margin-left: 10px;
 	margin-right: 8px;
+	white-space: nowrap;
 }
 #jspaint-version {
 	/* @TODO: separate into a shared.css? (not really layout!) */
@@ -675,7 +879,7 @@ html, body, .jspaint {
 	margin: auto;
 	margin-right: 40px;
 	width: 150px;
-	height: 2.2em;
+	min-height: 2.2em;
 }
 
 #news {
@@ -689,20 +893,68 @@ html, body, .jspaint {
 }
 
 .news-indicator {
+	display: flex;
 	font-family: sans-serif;
 }
 .news-indicator > img {
 	margin-right: 5px;
 }
-@media (max-width: 500px) {
+@media (max-width: 550px) {
 	.news-indicator > img {
 		position: absolute;
 		right: 0;
 		bottom: 0;
 	}
-	.news-indicator .not-the-icon {
+	.news-indicator .marquee {
 		display: none;
 	}
+}
+
+.marquee {
+	overflow: hidden;
+	text-decoration: inherit;
+}
+
+.marquee span {
+	display: inline-block;
+	white-space: nowrap;
+	width: var(--text-width);
+	text-shadow:
+		var(--text-width) 0 currentColor,
+		calc(var(--text-width) * 2) 0 currentColor,
+		calc(var(--text-width) * 3) 0 currentColor,
+		calc(var(--text-width) * 4) 0 currentColor;
+	will-change: transform;
+	animation: marquee var(--animation-duration) linear infinite;
+	animation-play-state: paused;
+	text-decoration: inherit;
+}
+
+.marquee:hover span {
+	animation-play-state: running;
+}
+
+@keyframes marquee {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-100%)/*rtl:ignore*/; }
+}
+
+/* On MacOs: System Preferences > Accessibility > Display > Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+	.marquee span {
+		animation: none;
+		text-shadow: none;
+		width: auto;
+		display: block;
+		line-height: 1.5;
+		text-align: center;
+		white-space: normal;
+	}
+}
+
+select.inset-deep {
+	background-position: top 0px right 0px;
+	padding-right: 16px;
 }
 
 [touch-action="none"] {

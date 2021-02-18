@@ -8,6 +8,8 @@ function $FontBox(){
 		min: 8,
 		max: 72,
 		value: text_tool_font.size,
+	}).css({
+		maxWidth: 50,
 	});
 	const $button_group = $(E("span")).addClass("text-toolbar-button-group");
 	const $bold = $Toggle(0, "bold");
@@ -45,20 +47,26 @@ function $FontBox(){
 	$size.on("change", update_font);
 	
 	const $w = $ToolWindow();
-	$w.title("Fonts");
+	$w.title(localize("Fonts"));
 	$w.$content.append($fb);
 	$w.center();
 	return $w;
 	
 	
 	function $Toggle(xi, thing){
-		const $button = $(E("button"));
+		const $button = $(E("button")).addClass("toggle");
 		const $image = $(E("span")).appendTo($button);
 		$button.css({
 			width: 23,
-			height: 22
+			height: 22,
+			padding: 0,
+			display: "inline-flex",
+			alignContent: "center",
+			alignItems: "center",
+			justifyContent: "center",
 		});
 		$image.css({
+			flex: "0 0 auto",
 			display: "block",
 			width: 16,
 			height: 16,

@@ -102,7 +102,7 @@ module.exports = {
 		"memoize_synchronous_function": "writable",
 		"invert_rgb": "off",
 		"get_theme": "writable",
-		"get_tool_by_name": "writable",
+		"get_tool_by_id": "writable",
 		"redo": "writable",
 		"undo": "writable",
 		"undoable": "writable",

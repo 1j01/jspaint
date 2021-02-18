@@ -10,12 +10,13 @@ if (!window.speech_recognition_available) {
 	return;
 }
 
-// @TODO: DRY recognition fixes, like taco? may be more trouble than it's worth, with the order dependencies
 const recognitionFixes = [
 	// colors
-	["Rhett", "red"],
-	["Brett", "red"],
-	["friend", "red"],
+	[/^rat$/i, "red"],
+	[/^Fred$/i, "red"],
+	[/^Rhett$/i, "red"],
+	[/^Brett$/i, "red"],
+	[/^friend$/i, "red"],
 	["hello", "yellow"],
 	["grave", "green"],
 	["the ruse", "maroon"],
@@ -28,6 +29,7 @@ const recognitionFixes = [
 	["ombre", "umbre"],
 	["tan-tan", "tan tan"],
 	[/^pan$/i, "tan"],
+	[/^cleo$/i, "blue"],
 
 	// commands/misc
 	["slick to the", "select the"],
@@ -71,6 +73,7 @@ const recognitionFixes = [
 	["projects news", "project news"],
 	["you project is", "view project news"],
 	["the project news", "view project news"],
+	["super news", "show news"],
 	["husbando", "close window"],
 	["put vertical", "flip vertical"],
 	["6 / 48", "flip/rotate"],
@@ -391,6 +394,11 @@ const recognitionFixes = [
 	["pin-up word", "pan upward"],
 	["pinup words", "pan upwards"],
 	["pinup word", "pan upward"],
+	["pager", "page up"],
+	["page app", "page up"],
+	["go up fat page", "go up by a page"],
+	["backpage", "by a page"],
+	["by a pitch", "by a page"],
 	["turn down", "go down"],
 	["newtown", "go down"],
 	[/^co-op\b/i, "go up"],
@@ -468,6 +476,7 @@ const recognitionFixes = [
 	["dim to large size", "zoom to large size"],
 	["name two normal size", "zoom to normal size"],
 	["dim to normal size", "zoom to normal size"],
+	["zoomin", "zoom in"],
 	["resume to", "zoom to"],
 	["zoom too", "zoom to"],
 	["zoom two", "zoom to"],
@@ -1203,10 +1212,29 @@ const recognitionFixes = [
 	["round rock", "round rect"],
 	["grand racked", "round rect"],
 	["and racked", "round rect"],
+
+	// Tool options
+	["hope hicks election", "opaque selection"],
+	["oaks collection", "opaque selection"],
+	["okay selection", "opaque selection"],
+	["hoecakes election", "opaque selection"],
+	["selection of pic", "selection opaque"],
+	["next selection of pig", "make selection opaque"],
+	["next selection of pic", "make selection opaque"],
+	["next selection opaque", "make selection opaque"],
+	["explosion transparent", "make selection transparent"],
+	["increase breast size", "increase brush size"],
 ];
 const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
 const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
 // @TODO: select foreground/background/ternary color specifically
+// @TODO: switch colors / swap colors / swap foreground and background colors
+// @TODO: zoom in/out / increase/decrease magnification, zoom to 20x / 5% etc., zoom out all the way (actual size or best fit if it's too big), actual size
+// @TODO: "convert image to black-and-white" / "convert image to monochrome" / "make image monochrome", "increase/decrease threshold" / "more white" / "more black"
+// @TODO: in Image Attributes, "Color"/"Colors"/"Not black and white" for Colors
+// @TODO: select tool options like selection opacity and brush sizes
+	// opaque/transparent/translucent/see-through selection / make selection opaque/transparent/translucent/see-through
+	// "increase size"(too vague) / "increase brush size" / "increase eraser size" / "larger eraser" / "enlarge eraser"
 
 // @TODO: Is there a way to enable the grammar only as a hint, non-restrictively?
 // Construct a grammar that just contains an English dictionary, and set it as lower weight?
@@ -1381,7 +1409,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			if (select_tool_match) {
 				add_interpretation({
 					match_text: select_tool_match[0],
-					tool_name: tool.name,
+					tool_id: tool.id,
 					exec: ((tool)=> ()=> {
 						select_tool(tool);
 					})(tool),
@@ -1461,7 +1489,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			button_text_phrases = [];
 		}
 		if (button_text.match(/^(Okay|OK)$/i)) {
-			button_text_phrases = ["Okay", "OK"];
+			button_text_phrases = ["Okay", localize("OK")];
 		}
 		if (button_text.match(/^(Pause Dwell Clicking)$/i)) {
 			button_text_phrases = [
@@ -1659,15 +1687,22 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			exec: ()=> {
 				if (isFinite(n)) {
 					// @TODO: DRY with app.js
-					if(selected_tool.name === "Brush"){
+					if(selected_tool.id === TOOL_BRUSH){
 						brush_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.name === "Eraser/Color Eraser"){
+					}else if(selected_tool.id === TOOL_ERASER){
 						eraser_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.name === "Airbrush"){
+					}else if(selected_tool.id === TOOL_AIRBRUSH){
 						airbrush_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.name === "Pencil"){
+					}else if(selected_tool.id === TOOL_PENCIL){
 						pencil_size = Math.max(1, Math.min(n, 50));
-					}else if(selected_tool.name.match(/Line|Curve|Rectangle|Ellipse|Polygon/)){
+					}else if(
+						selected_tool.id === TOOL_LINE ||
+						selected_tool.id === TOOL_CURVE ||
+						selected_tool.id === TOOL_RECTANGLE ||
+						selected_tool.id === TOOL_ROUNDED_RECTANGLE ||
+						selected_tool.id === TOOL_ELLIPSE ||
+						selected_tool.id === TOOL_POLYGON
+					) {
 						stroke_size = Math.max(1, Math.min(n, 500));
 					}
 					
@@ -1685,7 +1720,8 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		});
 	}
 
-	const scrolling_regexp = /\b(?:(?:scroll|pan|move)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?(( and)?( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b/i;
+	// TODO: "scroll to bottom", "scroll by three pages" etc.
+	const scrolling_regexp = /\b(?:(?:scroll|pan|move|page)(?:(?: the)? view(?:port)?)?|go|view(?:port)?|look)( to( the)?)? (?:up|down|left|right|north|south|west|east|north ?west|south ?west|north ?east|south ?east)(?:wards?)?(( and)?( to( the)?)? (?:up|down|left|right|north|south|west|east)(wards?)?)?\b(( by)?( a| one)? page)?/i;
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
 		const directions = scroll_match[0];
@@ -1706,11 +1742,12 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		add_interpretation({
 			match_text: scroll_match[0],
 			exec: ()=> {
-				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth / 2;
-				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight / 2;
+				const factor = directions.match(/page/) ? 1 : 1/2;
+				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth * factor;
+				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight * factor;
 				$(scroll_pane_el).animate({
-					scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth / 2,
-					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight / 2,
+					scrollLeft: scroll_pane_el.scrollLeft + vector.x * scroll_pane_el.clientWidth * factor,
+					scrollTop: scroll_pane_el.scrollTop + vector.y * scroll_pane_el.clientHeight * factor,
 				}, 500);
 			},
 			vector,
@@ -1785,7 +1822,7 @@ window.trace_and_sketch = (subject_imagedata)=> {
 	// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
 	const tracedata = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres:1, qtres:0.01, scale:10, /*pal,*/ numberofcolors: 6, });
 	const {layers} = tracedata;
-	const brush = get_tool_by_name("Brush");
+	const brush = get_tool_by_id(TOOL_BRUSH);
 	select_tool(brush);
 
 	let layer_index = 0;
@@ -1879,7 +1916,7 @@ function find_clipart_and_sketch(subject_matter) {
 }
 
 function find_clipart(query) {
-	const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart+filterui:license-L1&FORM=IRFLTR`)
+	const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart&FORM=IRFLTR`)
 	return fetch(`https://jspaint-cors-proxy.herokuapp.com/${bing_url}`)
 		.then(response=> response.text())
 		.then((html)=> {
@@ -2028,28 +2065,29 @@ function test_speech(input_text, expected) {
 	}
 }
 
-// test_command("select blue", {color: "blue"}); // @FIXME
-test_command("select fill", {tool_name: "Fill With Color"});
-test_command("select text", {tool_name: "Text"});
-test_command("select", {tool_name: "Select"});
-test_speech("free form select", {tool_name: "Free-Form Select"});
-test_speech("lips", {match_text: "ellipse", tool_name: "Ellipse"});
-test_command("", null);
-// test_command("I got you some new books", null);
-test_command("pan view sorthweast", null);
-test_command("1 pixel lines", {size: 1});
-test_command("1 pixel wide lines", {size: 1});
-test_command("set line width to 5", {size: 5});
-// test_command("use medium-small stroke size", {match_text: "use medium-small stroke size", size: NaN});
-test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
-test_command("use stroke size 10 pixels", {size: 10});
-// test_command("use stroke size of 10 pixels", {match_text: "use stroke size of 10 pixels", size: 10});
-test_command("draw a :-)", {sketch_subject: "smiley face"});
-// test_command("draw sample text", {sketch_subject: "sample text"}); // @FIXME
-test_command("end", {type: "stop-drawing"});
-test_command("stop", {type: "stop-drawing"});
-test_command("draw a stop sign", {sketch_subject: "stop sign"});
-$(()=> {
+function test_speech_recognition() {
+	// test_command("select blue", {color: "blue"}); // @FIXME
+	test_command("select fill", {tool_id: TOOL_FILL});
+	test_command("select text", {tool_id: TOOL_TEXT});
+	test_command("select", {tool_id: TOOL_SELECT});
+	test_speech("free form select", {tool_id: TOOL_FREE_FORM_SELECT});
+	test_speech("lips", {match_text: "ellipse", tool_id: TOOL_ELLIPSE});
+	test_command("", null);
+	// test_command("I got you some new books", null);
+	// test_command("pan view sorthweast", null); // currently opens View menu
+	test_command("1 pixel lines", {size: 1});
+	test_command("1 pixel wide lines", {size: 1});
+	test_command("set line width to 5", {size: 5});
+	// test_command("use medium-small stroke size", {match_text: "use medium-small stroke size", size: NaN});
+	test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
+	test_command("use stroke size 10 pixels", {size: 10});
+	// test_command("use stroke size of 10 pixels", {match_text: "use stroke size of 10 pixels", size: 10});
+	test_command("draw a :-)", {sketch_subject: "smiley face"});
+	// test_command("draw sample text", {sketch_subject: "sample text"}); // @FIXME
+	test_command("end", {type: "stop-drawing"});
+	test_command("stop", {type: "stop-drawing"});
+	test_command("draw a stop sign", {sketch_subject: "stop sign"});
+
 	test_command("pan view southwest", {vector: {x: -1, y: +1}});
 	test_command("pan southeast", {vector: {x: +1, y: +1}});
 	test_command("move view northwest", {vector: {x: -1, y: -1}});
@@ -2063,6 +2101,16 @@ $(()=> {
 	test_command("go up to the left", {vector: {x: -1, y: -1}});
 	test_speech("cool up", {match_text: "go up", vector: {x: 0, y: -1}});
 	test_command("scroll the view southward", {vector: {x: 0, y: +1}});
-});
+
+}
+
+var should_test_speech_recognition = false;
+try {
+	should_test_speech_recognition = localStorage.test_speech_recognition === "true";
+	// eslint-disable-next-line no-empty
+} catch (error) { }
+if (should_test_speech_recognition) {
+	$(test_speech_recognition);
+}
 
 })();

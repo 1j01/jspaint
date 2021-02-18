@@ -31,9 +31,10 @@ const ChooserCanvas = (
 			);
 		// eslint-disable-next-line no-empty
 		} catch(error) {}
-		if(invert){
-			invert_rgb(c.ctx);
-		}
+		// if(invert){
+		// 	invert_rgb(c.ctx); // can fail due to tainted canvas if running from file: protocol
+		// }
+		c.style.filter = invert ? "invert()" : "";
 	};
 	$(img).on("load", render);
 	render();
@@ -303,7 +304,7 @@ const $choose_transparent_mode = $Choose(
 	(option, _is_chosen, reuse_canvas) => {
 		const sw = 35, sh = 23; // width, height from source image
 		const b = 2; // margin by which the source image is inset on the destination
-		const theme_folder = `images/${get_theme().replace(/\.css/, "")}`;
+		const theme_folder = `images/${get_theme().replace(/\.css/i, "")}`;
 		return ChooserCanvas(
 			`${theme_folder}/options-transparency.png`,
 			false, // never invert it

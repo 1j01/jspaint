@@ -68,7 +68,7 @@
 		$G.on("session-update.session-hook", update_buttons_disabled);
 		update_buttons_disabled();
 
-		$w.$Button("Close", ()=> {
+		$w.$Button(localize("Close"), ()=> {
 			$w.close();
 		});
 		$w.center();
@@ -168,7 +168,7 @@
 			away: true,
 		},
 		// Currently selected tool (@TODO)
-		tool: "Pencil",
+		tool: localize("Pencil"),
 		// Color components
 		hue: ~~(Math.random() * 360),
 		saturation: ~~(Math.random() * 50) + 50,
@@ -194,9 +194,11 @@
 			this._fb_listeners = [];
 
 			file_name = `[Loading ${this.id}]`;
+			file_name_chosen = false;
 			update_title();
 			const on_firebase_loaded = () => {
 				file_name = `[${this.id}]`;
+				file_name_chosen = false;
 				update_title();
 				this.start();
 			};
@@ -218,6 +220,7 @@
 					.fail(() => {
 						show_error_message("Failed to load Firebase; the document will not load, and changes will not be saved.");
 						file_name = `[Failed to load ${this.id}]`;
+						file_name_chosen = false;
 						update_title();
 					});
 			}
@@ -227,7 +230,7 @@
 		}
 		start() {
 			// @TODO: how do you actually detect if it's failing???
-			const $w = $FormToolWindow().title("Warning").addClass("dialogue-window");
+			const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
 			$w.$main.html("<p>The document may not load. Changes may not save.</p>" +
 				"<p>Multiuser sessions are public. There is no security.</p>"
 				// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +
@@ -237,7 +240,7 @@
 				// "<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a> to show interest, and/or subscribe for updates.</p>"
 			);
 			$w.$main.css({ maxWidth: "500px" });
-			$w.$Button("OK", () => {
+			$w.$Button(localize("OK"), () => {
 				$w.close();
 			});
 			$w.center();
@@ -369,7 +372,7 @@
 				}
 				else {
 					previous_uri = uri;
-					saved = true; // hopefully
+					// saved = true; // hopefully // what is the idea here??
 					// Load the new image data
 					const img = new Image();
 					img.onload = () => {
@@ -414,6 +417,7 @@
 			}, error => {
 				show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
 				file_name = `[Failed to load ${this.id}]`;
+				file_name_chosen = false;
 				update_title();
 			});
 			// Update the cursor status

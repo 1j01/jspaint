@@ -1,3 +1,4 @@
+const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 
 function get_brush_canvas_size(brush_size, brush_shape){
 	// brush_shape optional, only matters if it's circle
@@ -344,10 +345,10 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	function should_fill_at(pixel_pos){
 		return (
 			// matches start color (i.e. region to fill)
-			id.data[pixel_pos+0] === start_r &&
-			id.data[pixel_pos+1] === start_g &&
-			id.data[pixel_pos+2] === start_b &&
-			id.data[pixel_pos+3] === start_a
+			Math.abs(id.data[pixel_pos+0] - start_r) <= fill_threshold &&
+			Math.abs(id.data[pixel_pos+1] - start_g) <= fill_threshold &&
+			Math.abs(id.data[pixel_pos+2] - start_b) <= fill_threshold &&
+			Math.abs(id.data[pixel_pos+3] - start_a) <= fill_threshold
 		);
 	}
 
@@ -445,10 +446,10 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 			dest_id.data[pixel_pos+3] === 0 &&
 			// and matches start color (i.e. region to fill)
 			(
-				source_id.data[pixel_pos+0] === start_r &&
-				source_id.data[pixel_pos+1] === start_g &&
-				source_id.data[pixel_pos+2] === start_b &&
-				source_id.data[pixel_pos+3] === start_a
+				Math.abs(source_id.data[pixel_pos+0] - start_r) <= fill_threshold &&
+				Math.abs(source_id.data[pixel_pos+1] - start_g) <= fill_threshold &&
+				Math.abs(source_id.data[pixel_pos+2] - start_b) <= fill_threshold &&
+				Math.abs(source_id.data[pixel_pos+3] - start_a) <= fill_threshold
 			)
 		);
 	}
@@ -473,10 +474,10 @@ function replace_color_globally(image_data, from_r, from_g, from_b, from_a, to_r
 	const {data} = image_data;
 	for(let i = 0; i < data.length; i += 4){
 		if(
-			data[i+0] === from_r &&
-			data[i+1] === from_g &&
-			data[i+2] === from_b &&
-			data[i+3] === from_a
+			Math.abs(data[i+0] - from_r) <= fill_threshold &&
+			Math.abs(data[i+1] - from_g) <= fill_threshold &&
+			Math.abs(data[i+2] - from_b) <= fill_threshold &&
+			Math.abs(data[i+3] - from_a) <= fill_threshold
 		){
 			data[i+0] = to_r;
 			data[i+1] = to_g;
@@ -491,10 +492,10 @@ function find_color_globally(source_image_data, dest_image_data, find_r, find_g,
 	const dest_data = dest_image_data.data;
 	for(let i = 0; i < source_data.length; i += 4){
 		if(
-			source_data[i+0] === find_r &&
-			source_data[i+1] === find_g &&
-			source_data[i+2] === find_b &&
-			source_data[i+3] === find_a
+			Math.abs(source_data[i+0] - find_r) <= fill_threshold &&
+			Math.abs(source_data[i+1] - find_g) <= fill_threshold &&
+			Math.abs(source_data[i+2] - find_b) <= fill_threshold &&
+			Math.abs(source_data[i+3] - find_a) <= fill_threshold
 		){
 			dest_data[i+0] = 255;
 			dest_data[i+1] = 255;
@@ -581,7 +582,7 @@ function apply_image_transformation(meta, fn){
 
 function flip_horizontal(){
 	apply_image_transformation({
-		name: "Flip Horizontal",
+		name: localize("Flip horizontal"),
 		icon: get_help_folder_icon("p_fliph.png"),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(new_canvas.width, 0);
@@ -592,7 +593,7 @@ function flip_horizontal(){
 
 function flip_vertical(){
 	apply_image_transformation({
-		name: "Flip Vertical",
+		name: localize("Flip vertical"),
 		icon: get_help_folder_icon("p_flipv.png"),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(0, new_canvas.height);
@@ -603,7 +604,7 @@ function flip_vertical(){
 
 function rotate(angle){
 	apply_image_transformation({
-		name: `Rotate ${angle / TAU * 360} degrees`,
+		name: `${localize("Rotate by angle")} ${angle / TAU * 360} ${localize("Degrees")}`,
 		icon: get_help_folder_icon(`p_rotate_${angle >= 0 ? "cw" : "ccw"}.png`),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.save();
@@ -680,8 +681,8 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 	apply_image_transformation({
 		name:
 			(hsa !== 0 || vsa !== 0) ? (
-				(xscale !== 1 || yscale !== 1) ? "Stretch/Skew" : "Skew"
-			) : "Stretch",
+				(xscale !== 1 || yscale !== 1) ? localize("Stretch and Skew") : localize("Skew")
+			) : localize("Stretch"),
 		icon: get_help_folder_icon(
 			(hsa !== 0) ? "p_skew_h.png" :
 			(vsa !== 0) ? "p_skew_v.png" :
@@ -997,6 +998,11 @@ function draw_grid(ctx, scale) {
 
 	function initWebGL(canvas) {
 		gl = canvas.getContext('webgl', { antialias: false });
+
+		if (!gl) {
+			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
+			return;
+		}
 
 		window.WEBGL_lose_context = gl.getExtension("WEBGL_lose_context");
 		

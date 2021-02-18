@@ -69,6 +69,7 @@ window.save_to_file_path = (filePath, formatName, savedCallback) => {
 	// 	new GIF();
 	// }
 	canvas.toBlob(blob => {
+		// TODO: unify/DRY with magic number checking based sanity_check_blob usage in save_canvas_as
 		if(blob.type !== mimeType){
 			return show_error_message(`Failed to save as ${formatName} (your browser doesn't support exporting a canvas as "${mimeType}")`);
 		}

@@ -142,7 +142,7 @@ context('tool tests', () => {
 	// it('brush tool', () => {
 	// 	cy.get(".tool[title='Brush']").click();
 	// 	// gesture([{x: 50, y: 50}, {x: 100, y: 100}]);
-	// 	cy.get(":nth-child(21) > input").rightclick();
+	// 	cy.get(".swatch:nth-child(21)").rightclick();
 	// 	cy.window().then({timeout: 8000}, async (win)=> {
 	// 		for (let secondary=0; secondary<=1; secondary++) {
 	// 			for (let b=0; b<12; b++) {
@@ -195,7 +195,7 @@ context('tool tests', () => {
 		it(`${toolName.toLowerCase()} tool`, () => {
 			cy.get(`.tool[title='${toolName}']`).click();
 			// gesture([{x: 50, y: 50}, {x: 100, y: 100}]);
-			cy.get(":nth-child(22) > input").rightclick();
+			cy.get(".swatch:nth-child(22)").rightclick();
 			cy.window().then({timeout: 60000}, async (win)=> {
 				for (let row=0; row<4; row++) {
 					const secondary = !!(row % 2);

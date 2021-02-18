@@ -29,7 +29,7 @@ function storage_quota_exceeded(){
 		$w.close();
 		ignoring_quota_exceeded = true;
 	});
-	$w.width(500);
+	$w.$content.width(500);
 	$w.center();
 	$quota_exceeded_window = $w;
 }
@@ -38,7 +38,7 @@ function manage_storage(){
 	if($storage_manager){
 		$storage_manager.close();
 	}
-	$storage_manager = $FormToolWindow().title("Manage Storage").addClass("storage-manager dialogue-window");
+	$storage_manager = $FormToolWindow().title("Manage Storage").addClass("storage-manager dialogue-window squish");
 	// @TODO: way to remove all (with confirmation)
 	const $table = $(E("table")).appendTo($storage_manager.$main);
 	const $message = $(E("p")).appendTo($storage_manager.$main).html(
@@ -54,7 +54,7 @@ function manage_storage(){
 		const $img = $(E("img")).attr({src: imgSrc});
 		const $remove = $(E("button")).text("Remove").addClass("remove-button");
 		const href = `#${k.replace("image#", "local:")}`;
-		const $open_link = $(E("a")).attr({href, target: "_blank"}).text("Open");
+		const $open_link = $(E("a")).attr({href, target: "_blank"}).text(localize("Open"));
 		const $thumbnail_open_link = $(E("a")).attr({href, target: "_blank"}).addClass("thumbnail-container");
 		$thumbnail_open_link.append($img);
 		$(E("td")).append($thumbnail_open_link).appendTo($tr);
@@ -101,6 +101,6 @@ function manage_storage(){
 		$message.html("<p>All clear!</p>");
 	}
 
-	$storage_manager.width(450);
+	$storage_manager.$content.width(450);
 	$storage_manager.center();
 }

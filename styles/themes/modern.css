@@ -1,6 +1,7 @@
 :root {
 	--theme-loaded: "modern.css";
 	--Hilight: #0178d7;
+	--ButtonText: #000000;
 }
 
 body {
@@ -79,6 +80,7 @@ body {
 .window-content {
 	padding: 16px;
 	background: white;
+	color: black;
 	border-bottom-left-radius: 2px;
 	border-bottom-right-radius: 2px;
 }
@@ -209,14 +211,19 @@ body {
 	height: 18px;
 }
 .color-button, /* this outer one is only for detection for the hover halo in eye gaze mode */
+.edit-colors-window .swatch, /* this outer one is only for detection for the hover halo in eye gaze mode */
 .color-button canvas,
 .color-selection canvas,
+.edit-colors-window .swatch canvas,
 .color-button:after,
-.color-selection:after {
+.color-selection:after,
+.edit-colors-window .swatch:after {
 	border-radius: 3px;
+	position: relative;
 }
-.color-button:after,
-.color-selection:after {
+.color-button::after,
+.color-selection::after,
+.edit-colors-window .swatch::after {
 	content: '';
 	position: absolute;
 	left: 0;
@@ -225,8 +232,24 @@ body {
 	bottom: 0;
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
 }
-.eye-gaze-mode .Colors-component.tall .color-button {
+.eye-gaze-mode .colors-component.tall {
+	width: 53px;
+}
+.eye-gaze-mode .colors-component.tall .color-button {
 	margin-left: 1px;
+}
+
+.edit-colors-window .inset-shallow {
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+}
+
+.edit-colors-window .swatch {
+	width: 20px;
+	height: 17px;
+}
+.edit-colors-window .swatch:focus::after {
+	outline-offset: 3px;
 }
 
 /* @TODO: padding/margin on the top at least when in the sidebar */
@@ -241,6 +264,9 @@ body {
 }
 .tool.selected {
 	background: rgba(0, 0, 0, 0.24);
+}
+.toggle.selected {
+	box-shadow: 0px -2px 1px 0px blue;
 }
 
 .tool-options {
@@ -344,6 +370,11 @@ body,
 	background-color: #2196f3;
 	color: white;
 } */
+
+.history-view {
+	background: white;
+	color: black;
+}
 
 input:invalid {
 	box-shadow: 0 0 0 2px red;

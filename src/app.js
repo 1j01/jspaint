@@ -1,7 +1,7 @@
 
 const default_magnification = 1;
 const valid_scrollwheel_magnification = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8];
-const default_tool = get_tool_by_name("Pencil");
+const default_tool = get_tool_by_id(TOOL_PENCIL);
 
 const default_canvas_width = 683;
 const default_canvas_height = 384;
@@ -20,12 +20,94 @@ canvas.classList.add("main-canvas");
 const ctx = canvas.ctx;
 
 const default_palette = [
-	"#000000","#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
-	"#FFFFFF","#BBBBBB","#FF0E00","#FAFF08","#00FF0B","#00FEFF","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
+	"rgb(0,0,0)", // Black
+	"rgb(128,128,128)", // Dark Gray
+	"rgb(128,0,0)", // Dark Red
+	"rgb(128,128,0)", // Pea Green
+	"rgb(0,128,0)", // Dark Green
+	"rgb(0,128,128)", // Slate
+	"rgb(0,0,128)", // Dark Blue
+	"rgb(128,0,128)", // Lavender
+	"rgb(128,128,64)", //
+	"rgb(0,64,64)", //
+	"rgb(0,128,255)", //
+	"rgb(0,64,128)", //
+	"rgb(64,0,255)", //
+	"rgb(128,64,0)", //
+
+	"rgb(255,255,255)", // White
+	"rgb(192,192,192)", // Light Gray
+	"rgb(255,0,0)", // Bright Red
+	"rgb(255,255,0)", // Yellow
+	"rgb(0,255,0)", // Bright Green
+	"rgb(0,255,255)", // Cyan
+	"rgb(0,0,255)", // Bright Blue
+	"rgb(255,0,255)", // Magenta
+	"rgb(255,255,128)", //
+	"rgb(0,255,128)", //
+	"rgb(128,255,255)", //
+	"rgb(128,128,255)", //
+	"rgb(255,0,128)", //
+	"rgb(255,128,64)", //
+];
+const monochrome_palette_as_colors = [
+	"rgb(0,0,0)",
+	"rgb(9,9,9)",
+	"rgb(18,18,18)",
+	"rgb(27,27,27)",
+	"rgb(37,37,37)",
+	"rgb(46,46,46)",
+	"rgb(55,55,55)",
+	"rgb(63,63,63)",
+	"rgb(73,73,73)",
+	"rgb(82,82,82)",
+	"rgb(92,92,92)",
+	"rgb(101,101,101)",
+	"rgb(110,110,110)",
+	"rgb(119,119,119)",
+
+	"rgb(255,255,255)",
+	"rgb(250,250,250)",
+	"rgb(242,242,242)",
+	"rgb(212,212,212)",
+	"rgb(201,201,201)",
+	"rgb(191,191,191)",
+	"rgb(182,182,182)",
+	"rgb(159,159,159)",
+	"rgb(128,128,128)",
+	"rgb(173,173,173)",
+	"rgb(164,164,164)",
+	"rgb(155,155,155)",
+	"rgb(146,146,146)",
+	"rgb(137,137,137)",
 ];
 let palette = default_palette;
 let polychrome_palette = palette;
 let monochrome_palette = make_monochrome_palette();
+
+// https://github.com/kouzhudong/win2k/blob/ce6323f76d5cd7d136b74427dad8f94ee4c389d2/trunk/private/shell/win16/comdlg/color.c#L38-L43
+// These are a fallback in case colors are not recieved from some driver.
+// const default_basic_colors = [
+// 	"#8080FF", "#80FFFF", "#80FF80", "#80FF00", "#FFFF80", "#FF8000", "#C080FF", "#FF80FF",
+// 	"#0000FF", "#00FFFF", "#00FF80", "#40FF00", "#FFFF00", "#C08000", "#C08080", "#FF00FF",
+// 	"#404080", "#4080FF", "#00FF00", "#808000", "#804000", "#FF8080", "#400080", "#8000FF",
+// 	"#000080", "#0080FF", "#008000", "#408000", "#FF0000", "#A00000", "#800080", "#FF0080",
+// 	"#000040", "#004080", "#004000", "#404000", "#800000", "#400000", "#400040", "#800040",
+// 	"#000000", "#008080", "#408080", "#808080", "#808040", "#C0C0C0", "#400040", "#FFFFFF",
+// ];
+// Grabbed with Color Cop from the screen with Windows 98 SE running in VMWare
+const basic_colors = [
+	"#FF8080", "#FFFF80", "#80FF80", "#00FF80", "#80FFFF", "#0080FF", "#FF80C0", "#FF80FF",
+	"#FF0000", "#FFFF00", "#80FF00", "#00FF40", "#00FFFF", "#0080C0", "#8080C0", "#FF00FF",
+	"#804040", "#FF8040", "#00FF00", "#008080", "#004080", "#8080FF", "#800040", "#FF0080",
+	"#800000", "#FF8000", "#008000", "#008040", "#0000FF", "#0000A0", "#800080", "#8000FF",
+	"#400000", "#804000", "#004000", "#004040", "#000080", "#000040", "#400040", "#400080",
+	"#000000", "#808000", "#808040", "#808080", "#408080", "#C0C0C0", "#400040", "#FFFFFF",
+];
+let custom_colors = [
+	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
+	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
+];
 
 // declared like this for Cypress tests
 window.default_brush_shape = "circle";
@@ -84,6 +166,7 @@ let redos = [];
 let file_name;
 let document_file_path;
 let saved = true;
+let file_name_chosen = false;
 
 /** works in canvas coordinates */
 let pointer;
@@ -177,6 +260,11 @@ const $top = $(E("div")).addClass("component-area").prependTo($V);
 const $bottom = $(E("div")).addClass("component-area").appendTo($V);
 const $left = $(E("div")).addClass("component-area").prependTo($H);
 const $right = $(E("div")).addClass("component-area").appendTo($H);
+// there's also probably a CSS solution alternative to this
+if (get_direction() === "rtl") {
+	$left.appendTo($H);
+	$right.prependTo($H);
+}
 
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
 const $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
@@ -186,8 +274,10 @@ const $status_size = $(E("div")).addClass("status-coordinates").appendTo($status
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
 		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<span class='not-the-icon'>
-			<strong>New!</strong>&nbsp;Holiday theme, multitouch panning, and revamped history
+		<span class='marquee' dir='ltr' style='--text-width: 52ch; --animation-duration: 5s;'>
+			<span>
+				<strong>New!</strong>&nbsp;Localization, Eye Gaze Mode, and Speech Recognition!
+			</span>
 		</span>
 	</a>
 `);
@@ -197,12 +287,12 @@ $news_indicator.on("click auxclick", (event)=> {
 });
 // @TODO: use localstorage to show until clicked, if available
 // and show for a longer period of time after the update, if available
-if (Date.now() < Date.parse("Jan 5 2020 23:42:42 GMT-0500")) {
+if (Date.now() < Date.parse("Jan 5 2021 23:42:42 GMT-0500")) {
 	$status_area.append($news_indicator);
 }
 
 $status_text.default = () => {
-	$status_text.text("For Help, click Help Topics on the Help Menu.");
+	$status_text.text(localize("For Help, click Help Topics on the Help Menu."));
 };
 $status_text.default();
 
@@ -273,6 +363,17 @@ $canvas_area.on("scroll", () => {
 });
 $canvas_area.on("resize", () => {
 	update_magnified_canvas_size();
+});
+
+// Despite overflow:hidden on html and body,
+// focusing elements that are partially offscreen can still scroll the page.
+// For example, with Edit Colors dialog partially offscreen, navigating the color grid.
+// We need to prevent (reset) scroll on focus, and also avoid scrollIntoView().
+// Listening for scroll here is mainly in case a case is forgotten, like scrollIntoView,
+// in which case it will flash sometimes but at least not end up with part of
+// the application scrolled off the screen with no scrollbar to get it back.
+$G.on("scroll focusin", (event) => {
+	window.scrollTo(0, 0);
 });
 
 $("body").on("dragover dragenter", e => {
@@ -379,15 +480,22 @@ $G.on("keydown", e => {
 		if(selection){
 			selection.scale(2 ** delta);
 		}else{
-			if(selected_tool.name === "Brush"){
+			if(selected_tool.id === TOOL_BRUSH){
 				brush_size = Math.max(1, Math.min(brush_size + delta, 500));
-			}else if(selected_tool.name === "Eraser/Color Eraser"){
+			}else if(selected_tool.id === TOOL_ERASER){
 				eraser_size = Math.max(1, Math.min(eraser_size + delta, 500));
-			}else if(selected_tool.name === "Airbrush"){
+			}else if(selected_tool.id === TOOL_AIRBRUSH){
 				airbrush_size = Math.max(1, Math.min(airbrush_size + delta, 500));
-			}else if(selected_tool.name === "Pencil"){
+			}else if(selected_tool.id === TOOL_PENCIL){
 				pencil_size = Math.max(1, Math.min(pencil_size + delta, 50));
-			}else if(selected_tool.name.match(/Line|Curve|Rectangle|Ellipse|Polygon/)){
+			}else if(
+				selected_tool.id === TOOL_LINE ||
+				selected_tool.id === TOOL_CURVE ||
+				selected_tool.id === TOOL_RECTANGLE ||
+				selected_tool.id === TOOL_ROUNDED_RECTANGLE ||
+				selected_tool.id === TOOL_ELLIPSE ||
+				selected_tool.id === TOOL_POLYGON
+			) {
 				stroke_size = Math.max(1, Math.min(stroke_size + delta, 500));
 			}
 
@@ -492,7 +600,7 @@ $G.on("cut copy paste", e => {
 				cd.setData("URL", data_url);
 				if(e.type === "cut"){
 					delete_selection({
-						name: "Cut",
+						name: localize("Cut"),
 						icon: get_help_folder_icon("p_cut.png"),
 					});
 				}
@@ -549,8 +657,8 @@ storage.get({
 	my_canvas_height = stored_values.height;
 	
 	make_or_update_undoable({
-		match: (history_node)=> history_node.name === "New Document",
-		name: "Resize New Document Canvas",
+		match: (history_node)=> history_node.name === localize("New"),
+		name: "Resize Canvas For New Document",
 		icon: get_help_folder_icon("p_stretch_both.png"),
 	}, ()=> {
 		canvas.width = Math.max(1, my_canvas_width);
@@ -742,7 +850,10 @@ function canvas_pointer_move(e){
 	}
 
 	if(e.shiftKey){
-		if(selected_tool.name.match(/Line|Curve/)){
+		if(
+			selected_tool.id === TOOL_LINE ||
+			selected_tool.id === TOOL_CURVE
+		) {
 			// snap to eight directions
 			const dist = Math.sqrt(
 				(pointer.y - pointer_start.y) * (pointer.y - pointer_start.y) +
@@ -906,6 +1017,9 @@ function init_eye_gaze_mode() {
 			a,
 			.current-colors,
 			.color-button,
+			.edit-colors-window .swatch,
+			.edit-colors-window .rainbow-canvas,
+			.edit-colors-window .luminosity-canvas,
 			.tool:not(.selected),
 			.chooser-option,
 			.menu-button:not(.active),
@@ -924,10 +1038,6 @@ function init_eye_gaze_mode() {
 
 		if (!target) {
 			return null;
-		}
-
-		if (target.matches(".color-button input")) {
-			target = target.closest(".color-button");
 		}
 
 		// if (target.matches(".help-window li")) {
@@ -961,7 +1071,7 @@ function init_eye_gaze_mode() {
 			} else {
 				return null;
 			}
-		}else if(!target.matches(".main-canvas, .selection canvas, .window-titlebar")){
+		}else if(!target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")){
 			// Nudge hover previews to the center of buttons and things
 			const rect = target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
@@ -969,6 +1079,22 @@ function init_eye_gaze_mode() {
 		}
 		hover_candidate.target = target;
 		return hover_candidate;
+	};
+
+	const get_event_options = ({x, y, target=document.body})=> {
+		const rect = target.getBoundingClientRect();
+		return {
+			pageX: x,
+			pageY: y,
+			clientX: x,
+			clientY: y,
+			// handling CSS transform scaling but not rotation
+			offsetX: (x - rect.left) * target.offsetWidth / rect.width,
+			offsetY: (y - rect.top) * target.offsetHeight / rect.height,
+			pointerId: 1234567890,
+			pointerType: "mouse",
+			isPrimary: true,
+		};
 	};
 
 	const update = ()=> {
@@ -1012,49 +1138,34 @@ function init_eye_gaze_mode() {
 					* circle_radius_max;
 				if (time > hover_candidate.time + hover_timespan) {
 					if (pointer_active || gaze_dragging) {
-						$(hover_candidate.target).trigger($.Event("pointerup", {
-							clientX: hover_candidate.x,
-							clientY: hover_candidate.y,
-							pointerId: 1234567890,
-							pointerType: "mouse",
+						$(hover_candidate.target).trigger($.Event("pointerup", Object.assign(get_event_options(hover_candidate), {
 							button: 0,
 							buttons: 0,
-							isPrimary: true,
-						}));
+						})));
 					} else {
 						pointers = []; // prevent multi-touch panning
-						$(hover_candidate.target).trigger($.Event("pointerdown", {
-							clientX: hover_candidate.x,
-							clientY: hover_candidate.y,
-							pointerId: 1234567890,
-							pointerType: "mouse",
+						$(hover_candidate.target).trigger($.Event("pointerdown", Object.assign(get_event_options(hover_candidate), {
 							button: 0,
 							buttons: 1,
-							isPrimary: true,
-						}));
+						})));
 						const is_drag =
 							hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
 							hover_candidate.target.matches(".selection, .selection *, .handle") ||
 							(
 								hover_candidate.target === canvas &&
-								selected_tool.name !== "Pick Color" &&
-								selected_tool.name !== "Fill With Color" &&
-								selected_tool.name !== "Magnifier" &&
-								selected_tool.name !== "Polygon" &&
-								selected_tool.name !== "Curve"
+								selected_tool.id !== TOOL_PICK_COLOR &&
+								selected_tool.id !== TOOL_FILL &&
+								selected_tool.id !== TOOL_MAGNIFIER &&
+								selected_tool.id !== TOOL_POLYGON &&
+								selected_tool.id !== TOOL_CURVE
 							);
 						if (is_drag) {
 							gaze_dragging = hover_candidate.target;
 						} else {
-							$(hover_candidate.target).trigger($.Event("pointerup", {
-								clientX: hover_candidate.x,
-								clientY: hover_candidate.y,
-								pointerId: 1234567890,
-								pointerType: "mouse",
+							$(hover_candidate.target).trigger($.Event("pointerup", Object.assign(get_event_options(hover_candidate), {
 								button: 0,
 								buttons: 0,
-								isPrimary: true,
-							}));
+							})));
 							if (hover_candidate.target.matches("button:not(.toggle)")) {
 								((button)=> {
 									button.style.borderImage = "var(--inset-deep-border-image)";
@@ -1155,15 +1266,10 @@ function init_eye_gaze_mode() {
 			}
 			if (recent_movement_amount > 100) {
 				if (gaze_dragging) {
-					$G.trigger($.Event("pointerup", {
-						clientX: average_point.x,
-						clientY: average_point.y,
-						pointerId: 1234567890,
-						pointerType: "mouse",
+					$G.trigger($.Event("pointerup", Object.assign(get_event_options(average_point), {
 						button: 0,
 						buttons: 0,
-						isPrimary: true,
-					}));
+					})));
 					pointers = []; // prevent multi-touch panning
 				}
 			}
@@ -1276,6 +1382,11 @@ function average_points(points) {
 	return average;
 }
 $canvas_area.on("pointerdown", (event)=> {
+	if (document.activeElement && document.activeElement !== document.body && document.activeElement !== document.documentElement) {
+		// Allow unfocusing dialogs etc. in order to use keyboard shortcuts
+		document.activeElement.blur();
+	}
+
 	if (pointers.every((pointer)=>
 		// prevent multitouch panning in case of synthetic events from eye gaze mode
 		pointer.pointerId !== 1234567890 &&
