@@ -398,7 +398,7 @@
 							ignore_session_update = false;
 						}
 
-						// (detect_transparency() here would not be ideal
+						// (transparency = has_any_transparency(main_ctx); here would not be ideal
 						// Perhaps a better way of syncing transparency
 						// and other options will be established)
 						/*

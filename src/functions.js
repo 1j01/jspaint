@@ -663,7 +663,7 @@ function open_from_image_info(info, callback, canceled){
 
 		main_ctx.copy(info.image || info.image_data);
 		apply_file_format_and_palette_info(info);
-		detect_transparency();
+		transparency = has_any_transparency(main_ctx);
 		$canvas_area.trigger("resize");
 
 		current_history_node.name = localize("Open");
@@ -1975,10 +1975,6 @@ function has_any_transparency(ctx) {
 		}
 	}
 	return false;
-}
-
-function detect_transparency(){
-	transparency = has_any_transparency(main_ctx);
 }
 
 function detect_monochrome(ctx) {
