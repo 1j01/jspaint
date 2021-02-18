@@ -77,8 +77,8 @@ I want to bring good old paint into the modern era.
   It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
   Sessions are not private, and you may lose your work at any time.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
-* Load and save many different palette formats with **Colors > Get Colors** and **Colors > Save Colors**.
-  (I made a library, [AnyPalette.js](https://github.com/1j01/anypalette.js), for this.)
+* Load and save [many different palette formats](#color-palette-formats) with **Colors > Get Colors** and **Colors > Save Colors**.
+  (I made a library for this: <img src="images/anypalette-logo-128x128.png" height="16"> [AnyPalette.js](https://github.com/1j01/anypalette.js).)
 * You can also drag and drop palette files (of any format) into the app to load. (Dragging and dropping image files also works, to load images.)
 * Touch support: use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
@@ -97,6 +97,68 @@ In other browsers you can still can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>C
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
 External images can be pasted in.
 
+
+## Supported File Formats
+
+### Image Formats
+
+⚠️ Saving as JPEG will introduce artifacts that cause problems when using the Fill tool or transparent selections.
+
+⚠️ Saving in some formats will reduce the number of colors in the image.
+
+💡 Unlike in MS Paint, you can use **Edit > Undo** to revert color or quality reduction from saving.
+This doesn't undo saving the file, but allows you to then save in a different format with higher quality, using **File > Save As**.
+
+💡 Saving as PNG is recommended as it gives small file sizes while retaining full quality.
+
+| File Extension | Name                                                               | Read | Write | Read Palette | Write Palette |
+|----------------|--------------------------------------------------------------------|:----:|:-----:|:------------:|:-------------:|
+| .png           | [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)     |  ✅  |  ✅   |              |               |
+| .bmp, .dib     | [Monochrome Bitmap](https://en.wikipedia.org/wiki/BMP_file_format) |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib     | [16 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)   |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib     | [256 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)  |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib     | [24-bit Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)     |  ✅  |  ✅   |      N/A     |      N/A      |
+| .webp          | [WebP](https://en.wikipedia.org/wiki/WebP)                         |  🌐  |  🌐   |              |               |
+| .gif           | [GIF](https://en.wikipedia.org/wiki/GIF)                           |  🌐  |  🌐   |              |               |
+| .tiff, .tif    | [TIFF](https://en.wikipedia.org/wiki/TIFF)                         |  🌐  |  🌐   |              |               |
+| .jpeg, .jpg    | [JPEG](https://en.wikipedia.org/wiki/JPEG)                         |  🌐  |  🌐   |      N/A     |      N/A      |
+
+Formats marked with 🌐 are currently left up to the browser to support or not.
+They appear in the file type dropdown but may or may not work.
+
+"Read Palette" refers to loading the colors into the Colors box automatically (from an [indexed color](https://en.wikipedia.org/wiki/Indexed_color) image),
+and "Write Palette" refers to writing an [indexed color](https://en.wikipedia.org/wiki/Indexed_color) image.
+
+### Color Palette Formats
+
+With **Colors > Save Colors** and **Colors > Get Colors** you can save and load colors
+in many different formats, for compatibility with a wide range of programs.
+
+If you want to add extensive palette support to another application, I've made this functionality available as a library:
+<img src="images/anypalette-logo-128x128.png" height="16"> [AnyPalette.js](https://github.com/1j01/anypalette.js)
+
+| File Extension    | Name                              | Programs                                                                          |   Read  |  Write  |
+|-------------------|-----------------------------------|-----------------------------------------------------------------------------------|:-------:|:-------:|
+| .pal              | [RIFF] Palette                    | [MS Paint] for Windows 95 and Windows NT 4.0                                      |   ✅   |   ✅    |
+| .gpl              | [GIMP][Gimp] Palette              | [Gimp], [Inkscape], [Krita], [KolourPaint], [Scribus], [CinePaint], [MyPaint]     |   ✅   |   ✅    |
+| .aco              | Adobe Color Swatch                | Adobe [Photoshop]                                                                 |   ✅   |   ✅    |
+| .ase              | Adobe Swatch Exchange             | Adobe [Photoshop], [InDesign], and [Illustrator]                                  |   ✅   |   ✅    |
+| .txt              | [Paint.NET] Palette               | [Paint.NET]                                                                       |   ✅   |   ✅    |
+| .act              | Adobe Color Table                 | Adobe [Photoshop] and [Illustrator]                                               |   ✅   |   ✅    |
+| .pal, .psppalette | [Paint Shop Pro] Palette          | [Paint Shop Pro] (Jasc Software / Corel)                                          |   ✅   |   ✅    |
+| .hpl              | [Homesite] Palette                | Allaire [Homesite] / Macromedia [ColdFusion]                                      |   ✅   |   ✅    |
+| .cs               | ColorSchemer                      | ColorSchemer Studio                                                               |   ✅   |         |
+| .pal              | [Starcraft] Palette               | [Starcraft]                                                                       |   ✅   |   ✅    |
+| .wpe              | [Starcraft] Terrain Palette       | [Starcraft]                                                                       |   ✅   |   ✅    |
+| .sketchpalette    | [Sketch] Palette                  | [Sketch]                                                                          |   ✅   |   ✅    |
+| .spl              | [Skencil] Palette                 | [Skencil] (formerly called Sketch)                                                |   ✅   |   ✅    |
+| .soc              | StarOffice Colors                 | [StarOffice], [OpenOffice], [LibreOffice]                                         |   ✅   |   ✅    |
+| .colors           | KolourPaint Color Collection      | [KolourPaint]                                                                     |   ✅   |   ✅    |
+| .colors           | Plasma Desktop Color Scheme       | [KDE] Plasma Desktop                                                              |   ✅   |         |
+| .theme            | Windows Theme                     | [Windows] Desktop                                                                 |   ✅   |         |
+| .themepack        | Windows Theme                     | [Windows] Desktop                                                                 |   ✅   |         |
+| .css, .scss, .styl| Cascading StyleSheets             | Web browsers / web pages                                                          |   ✅   |   ✅    |
+| .html, .svg, .js  | any text files with CSS colors    | Web browsers / web pages                                                          |   ✅   |         |
 
 ## Did you know?
 
