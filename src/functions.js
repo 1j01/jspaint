@@ -1286,7 +1286,22 @@ function render_history_as_gif(){
 			$win.$Button(localize("Save"), () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
-					saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`);
+					choose_file_name_and_type(
+						localize("Save As"),
+						// localize("Save Animation As"),
+						`${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`,
+						"image/gif",
+						[{
+							formatID: "image/gif",
+							mimeType: "image/gif",
+							name: localize("Animated GIF (*.gif)").replace(/\s+\([^(]+$/, ""),
+							nameWithExtensions: localize("Animated GIF (*.gif)"),
+							extensions: ["gif"],
+						}],
+						(new_file_name, new_file_type)=> {
+							saveAs(blob, new_file_name);
+						}
+					);
 				});
 			});
 			$cancel.appendTo($win.$buttons);
@@ -2600,7 +2615,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 function write_image_file(canvas, mime_type, blob_callback) {
 	const bmp_match = mime_type.match(/^image\/bmp\s*;(?:\s*bpp=(\d+))?/);
 	if (bmp_match) {
-		const file_content = encodeBMP(main_ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1], 10));
+		const file_content = encodeBMP(canvas.ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1], 10));
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);
@@ -2772,18 +2787,24 @@ function set_as_wallpaper_centered(c = main_canvas) {
 		return window.systemSetAsWallpaperCentered(c);
 	}
 
-	c.toBlob(blob => {
-		sanity_check_blob(blob, () => {
-			saveAs(blob, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`);
-		});
-	});
+	choose_file_name_and_type(
+		localize("Save As"),
+		`${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`,
+		null,
+		image_formats,
+		(new_file_name, new_file_type)=> {
+			write_image_file(main_canvas, new_file_type, (blob)=> {
+				saveAs(blob, new_file_name);
+			});
+		}
+	);
 }
 
 function save_selection_to_file(){
 	if(selection && selection.canvas){
-		selection.canvas.toBlob(blob => {
-			sanity_check_blob(blob, () => {
-				saveAs(blob, "selection.png");
+		choose_file_name_and_type(localize("Save As"), "selection.png", null, image_formats, (new_file_name, new_file_type)=> {
+			write_image_file(selection.canvas, new_file_type, (blob)=> {
+				saveAs(blob, new_file_name);
 			});
 		});
 	}
