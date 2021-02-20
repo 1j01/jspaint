@@ -692,7 +692,7 @@ window.menus = {
 	],
 	[localize("E&xtras")]: [
 		{
-			item: localize("&History"),
+			item: "⌚ " + localize("&History"),
 			shortcut: "Ctrl+Shift+Y",
 			speech_recognition: [
 				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
@@ -701,7 +701,7 @@ window.menus = {
 			description: localize("Shows the document history and lets you navigate to states not accessible with Undo or Repeat."),
 		},
 		{
-			item: localize("&Render History As GIF"),
+			item: "🎞️ " + localize("&Render History As GIF"),
 			shortcut: "Ctrl+Shift+G",
 			speech_recognition: [
 				// @TODO: animated gif, blah
@@ -770,7 +770,7 @@ window.menus = {
 			description: localize("Draws randomly with different tools."),
 		},*/
 		{
-			item: localize("&Multi-User"),
+			item: "👥 " + localize("&Multi-User"),
 			submenu: [
 				{
 					item: localize("&New Session From Document"),
@@ -861,10 +861,10 @@ window.menus = {
 			]
 		},
 		{
-			item: localize("&Themes"),
+			item: "💄 " + localize("&Themes"),
 			submenu: [
 				{
-					item: localize("&Classic"),
+					item: "🔙 " + localize("&Classic"),
 					speech_recognition: [
 						"reset theme", "revert theme setting",
 						"classic theme", "switch to classic theme", "use classic theme", "set theme to classic", "set theme classic", "switch to classic theme", "switch theme to classic", "switch theme classic",
@@ -893,7 +893,7 @@ window.menus = {
 					description: localize("Makes JS Paint look like MS Paint from Windows 98."),
 				},
 				{
-					item: localize("&Dark"),
+					item: "⬛ " + localize("&Dark"),
 					speech_recognition: [
 						"dark theme", "switch to dark theme", "use dark theme", "set theme to dark", "set theme dark", "switch to dark theme", "switch theme to dark", "switch theme dark",
 						"dark mode", "switch to dark mode", "use dark mode", "set mode to dark", "set mode dark", "switch to dark mode", "switch mode to dark", "switch mode dark",
@@ -910,7 +910,7 @@ window.menus = {
 					description: localize("Makes JS Paint darker."),
 				},
 				{
-					item: localize("&Modern"),
+					item: "⚪ " + localize("&Modern"),
 					speech_recognition: [
 						"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "set theme modern", "switch to modern theme", "switch theme to modern", "switch theme modern",
 					],
@@ -921,7 +921,7 @@ window.menus = {
 					description: localize("Makes JS Paint look a bit more modern."),
 				},
 				{
-					item: localize("&Winter"),
+					item: "❄️ " + localize("&Winter"),
 					speech_recognition: [
 						"winter theme", "switch to winter theme", "use winter theme", "set theme to winter", "set theme winter", "switch to winter theme", "switch theme to winter", "switch theme winter",
 						"holiday theme", "switch to holiday theme", "use holiday theme", "set theme to holiday", "set theme holiday", "switch to holiday theme", "switch theme to holiday", "switch theme holiday",
@@ -935,7 +935,7 @@ window.menus = {
 					description: localize("Makes JS Paint look festive for the holidays."),
 				},
 				{
-					item: localize("&Occult"),
+					item: "🤘 " + localize("&Occult"),
 					speech_recognition: [
 						"occult theme", "switch to occult theme", "use occult theme", "set theme to occult", "set theme occult", "switch to occult theme", "switch theme to occult", "switch theme occult",
 						"occultist theme", "switch to occultist theme", "use occultist theme", "set theme to occultist", "set theme occultist", "switch to occultist theme", "switch theme to occultist", "switch theme occultist",
@@ -986,10 +986,10 @@ window.menus = {
 			]
 		},
 		{
-			item: localize("&Language"),
+			item: "🌍 " + localize("&Language"),
 			submenu: available_languages.map((available_language)=> (
 				{
-					item: get_endonym(available_language),
+					item: get_language_emoji(available_language) + " " + get_language_endonym(available_language),
 					action: ()=> {
 						set_language(available_language);
 					},
@@ -999,7 +999,7 @@ window.menus = {
 			)),
 		},
 		{
-			item: localize("&Eye Gaze Mode"),
+			item: "👁️ " + localize("&Eye Gaze Mode"),
 			speech_recognition: [
 				"toggle eye gaze mode",
 				"enable eye gaze mode",
@@ -1058,7 +1058,7 @@ window.menus = {
 			description: localize("Enlarges buttons and provides dwell clicking."),
 		},
 		{
-			item: localize("&Speech Recognition"),
+			item: "🎙️ " + localize("&Speech Recognition"),
 			speech_recognition: [
 				"toggle speech recognition", "toggle speech recognition mode",
 				"disable speech recognition", "disable speech recognition mode", "turn off speech recognition", "turn off speech recognition mode", "leave speech recognition mode", "exit speech recognition mode",
@@ -1079,7 +1079,7 @@ window.menus = {
 			description: localize("Controls the application with voice commands."),
 		},
 		{
-			item: localize("&Vertical Color Box"),
+			item: "↕️ " + localize("&Vertical Color Box"),
 			speech_recognition: [
 				"toggle vertical color box", "toggle vertical color box mode",
 				"toggle vertical colors box", "toggle vertical colors box mode",
@@ -1116,7 +1116,7 @@ window.menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("Manage Storage"),
+			item: "🗃️ " + localize("Manage Storage"),
 			speech_recognition: [
 				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 			],
@@ -1125,7 +1125,7 @@ window.menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("Project News"),
+			item: "📢 " + localize("Project News"),
 			speech_recognition: [
 				"project news", "news about the project", "news about this project",
 				"app news", "news about the app", "news about this app",
@@ -1137,7 +1137,7 @@ window.menus = {
 			description: localize("Shows news about JS Paint."),
 		},
 		{
-			item: localize("GitHub"),
+			item: "ℹ️ " + localize("GitHub"),
 			speech_recognition: [
 				"repo on github", "project on github", "show the source code", "show source code",
 			],
@@ -1145,7 +1145,7 @@ window.menus = {
 			description: localize("Shows the project on GitHub."),
 		},
 		{
-			item: localize("Donate"),
+			item: "💵 " + localize("Donate"),
 			speech_recognition: [
 				"donate", "make a monetary contribution",
 			],
