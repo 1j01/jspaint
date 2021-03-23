@@ -108,6 +108,126 @@ let custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
 
+// The methods in systemHooks can be overridden by a containing page like 98.js.org which hosts jspaint in a same-origin iframe.
+// This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
+// This API may be removed at any time (and perhaps replaced by something based around postMessage)
+window.systemHooks = window.systemHooks || {};
+window.systemHookDefaults = {
+	saveFile: async ({formats, defaultFileName, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle})=> {
+		// Note: showSaveFilePicker currently doesn't support suggesting a filename,
+		// or retrieving which file type was selected in the dialog (you have to get it (guess it) from the file name)
+		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.
+		// So, it's a tradeoff with the benefit of overwriting on Save.
+		// Also some users might be surprised that it can save over a file, so I may want to add a warning.
+		// Or does the browser give enough warning by asking for permissions?
+		// https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
+		if (window.showSaveFilePicker) {
+			// We can't get the selected file type, not even from newHandle.getFile()
+			// so limit formats shown to a set that can all be used by their unique file extensions
+			formats = formats_unique_per_file_extension(formats);
+			const newHandle = await showSaveFilePicker({
+				types: formats.map((format)=> {
+					return {
+						description: format.name,
+						accept: {
+							[format.mimeType]: format.extensions.map((extension)=> "." + extension)
+						}
+					}
+				})
+			});
+			const new_format =
+				get_format_from_extension(formats, newHandle.name) ||
+				formats.find((format)=> format.formatID === defaultFileFormatID);
+			const blob = await getBlob(new_format && new_format.formatID);
+			const writableStream = await newHandle.createWritable();
+			await writableStream.write(blob);
+			await writableStream.close();
+			savedCallbackUnreliable && savedCallbackUnreliable({
+				newFileName: newHandle.name,
+				newFileType: new_format && new_format.formatID,
+				newFileHandle: newHandle,
+				newBlob: blob,
+			});
+		} else {
+			choose_file_name_and_type(dialogTitle || localize("Save As"), defaultFileName, defaultFileFormatID, formats, async (new_file_name, new_file_type)=> {
+				const blob = await getBlob(new_file_type);
+				saveAs(blob, new_file_name);
+				savedCallbackUnreliable && savedCallbackUnreliable({
+					newFileName: new_file_name,
+					newFileType: new_file_type,
+					newFileHandle: null,
+					newBlob: blob,
+				});
+			});
+		}
+	},
+	openFile: async ({formats})=> {
+		if (window.showOpenFilePicker) {
+			const [fileHandle] = await window.showOpenFilePicker({
+				types: formats.map((format)=> {
+					return {
+						description: format.name,
+						accept: {
+							[format.mimeType]: format.extensions.map((extension)=> "." + extension)
+						}
+					}
+				})
+			});
+			const file = await fileHandle.getFile();
+			return {file, fileHandle};
+		} else {
+			// @TODO: specify mime types?
+			return new Promise((resolve)=> {
+				const $input = $("<input type='file'>")
+				.on("change", ()=> {
+					resolve({file: $input[0].files[0]});
+					$input.remove();
+				})
+				.appendTo($app)
+				.hide()
+				.trigger("click");
+			});
+		}
+	},
+	setWallpaperTiled: (canvas)=> {
+		const wallpaperCanvas = make_canvas(screen.width, screen.height);
+		const pattern = wallpaperCanvas.ctx.createPattern(canvas, "repeat");
+		wallpaperCanvas.ctx.fillStyle = pattern;
+		wallpaperCanvas.ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
+
+		systemHooks.setWallpaperCentered(wallpaperCanvas);
+	},
+	setWallpaperCentered: (canvas)=> {
+		systemHooks.saveFile({
+			dialogTitle: localize("Save As"),
+			defaultName: `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`,
+			defaultFileFormatID: "image/png",
+			formats: image_formats,
+			getBlob: (new_file_type)=> {
+				return new Promise((resolve)=> {
+					write_image_file(canvas, new_file_type, (blob)=> {
+						resolve(blob);
+					});
+				});
+			},
+		});
+	},
+};
+
+for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
+	window.systemHooks[key] = window.systemHooks[key] || defaultValue;
+}
+
+function get_format_from_extension(formats, file_path_or_name_or_ext) {
+	const ext_match = file_path_or_name_or_ext.match(/\.([^.]+)$/);
+	const ext = ext_match ? ext_match[1].toLowerCase() : file_path_or_name_or_ext; // excluding dot
+	for (const format of formats) {
+		if (format.extensions.includes(ext)) {
+			return format;
+		}
+	}
+}
+
 const image_formats = [];
 // const ext_to_image_formats = {}; // there can be multiple with the same extension, e.g. different bit depth BMP files
 // const mime_type_to_image_formats = {};
@@ -147,11 +267,33 @@ add_image_format("image/webp", "WebP (*.webp)");
 add_image_format("image/gif", "GIF (*.gif)");
 add_image_format("image/tiff", "TIFF (*.tif;*.tiff)");
 add_image_format("image/jpeg", "JPEG (*.jpg;*.jpeg;*.jpe;*.jfif)");
-add_image_format("image/bmp;bpp=1", "Monochrome Bitmap (*.bmp;*.dib)");
-add_image_format("image/bmp;bpp=4", "16 Color Bitmap (*.bmp;*.dib)");
-add_image_format("image/bmp;bpp=8", "256 Color Bitmap (*.bmp;*.dib)");
-add_image_format("image/bmp;bpp=24", "24-bit Bitmap (*.bmp;*.dib)");
-// add_image_format("image/bmp;bpp=32", "32-bit Transparent Bitmap (*.bmp;*.dib)");
+add_image_format("image/x-bmp-1bpp", "Monochrome Bitmap (*.bmp;*.dib)");
+add_image_format("image/x-bmp-4bpp", "16 Color Bitmap (*.bmp;*.dib)");
+add_image_format("image/x-bmp-8bpp", "256 Color Bitmap (*.bmp;*.dib)");
+add_image_format("image/bmp", "24-bit Bitmap (*.bmp;*.dib)");
+// add_image_format("image/x-bmp-32bpp", "32-bit Transparent Bitmap (*.bmp;*.dib)");
+
+// Only support 24bpp BMP files for File System Access API and Electron save dialog,
+// as these APIs don't allow you to access the selected file type.
+// You can only guess it from the file extension the user types.
+const formats_unique_per_file_extension = (formats)=> {
+	// first handle BMP format specifically to make sure the 24-bpp is the selected BMP format
+	formats = formats.filter((format)=>
+		format.extensions.includes("bmp") ? format.mimeType === "image/bmp" : true
+	)
+	// then generally uniquify on extensions
+	// (this could be overzealous in case of partial overlap in extensions of different formats,
+	// but in general it needs special care anyways, to decide which format should win)
+	// This can't be simply chained with the above because it needs to use the intermediate, partially filtered formats array.
+	return formats.filter((format, format_index)=>
+		!format.extensions.some((extension)=>
+			formats.some((other_format, other_format_index)=>
+				other_format_index < format_index &&
+				other_format.extensions.includes(extension)
+			)
+		)
+	);
+};
 
 const palette_formats = [];
 for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
@@ -229,7 +371,8 @@ let undos = [];
 let redos = [];
 
 let file_name;
-let document_file_path;
+let file_handle; // for File System Access API, for saving over opened file on Save
+let document_file_path; // for Electron app, for saving over opened file on Save
 let saved = true;
 let file_name_chosen = false;
 
@@ -436,26 +579,44 @@ $canvas_area.on("resize", () => {
 // Listening for scroll here is mainly in case a case is forgotten, like scrollIntoView,
 // in which case it will flash sometimes but at least not end up with part of
 // the application scrolled off the screen with no scrollbar to get it back.
-$G.on("scroll focusin", (event) => {
+$G.on("scroll focusin", () => {
 	window.scrollTo(0, 0);
 });
 
-$("body").on("dragover dragenter", e => {
-	const dt = e.originalEvent.dataTransfer;
-	const has_files = Array.from(dt.types).includes("Files");
-	if(has_files){
-		e.preventDefault();
+$("body").on("dragover dragenter", (event) => {
+	const dt = event.originalEvent.dataTransfer;
+	const has_files = dt && Array.from(dt.types).includes("Files");
+	if (has_files) {
+		event.preventDefault();
 	}
-}).on("drop", e => {
-	if(e.isDefaultPrevented()){
+}).on("drop", async (event) => {
+	if (event.isDefaultPrevented()) {
 		return;
 	}
-	const dt = e.originalEvent.dataTransfer;
-	const has_files = Array.from(dt.types).includes("Files");
-	if(has_files){
-		e.preventDefault();
-		if(dt && dt.files && dt.files.length){
-			open_from_files(dt.files, "dropped");
+	const dt = event.originalEvent.dataTransfer;
+	const has_files = dt && Array.from(dt.types).includes("Files");
+	if (has_files) {
+		event.preventDefault();
+		// @TODO: sort files/items in priority of image, theme, palette
+		// and then try loading them in series, with async await to avoid race conditions?
+		// or maybe support opening multiple documents in tabs
+		// Note: don't use FS Access API in Electron app because:
+		// 1. it's faulty (permissions problems, 0 byte files maybe due to the perms problems)
+		// 2. we want to save the file.path, which the dt.files code path takes care of
+		if (window.FileSystemHandle && !window.is_electron_app) {
+			for (const item of dt.items) {
+				// kind will be 'file' for file/directory entries.
+				if (item.kind === 'file') {
+					const handle = await item.getAsFileSystemHandle();
+					if (handle.kind === 'file') {
+						await open_from_file_handle(handle);
+						return;
+					}
+					// else if (handle.kind === 'directory') {}
+				}
+			}
+		} else if (dt.files && dt.files.length) {
+			open_from_file(dt.files[0]);
 		}
 	}
 });

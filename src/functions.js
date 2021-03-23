@@ -400,6 +400,7 @@ function reset_selected_colors(){
 }
 
 function reset_file(){
+	file_handle = null;
 	document_file_path = null;
 	file_name = localize("untitled");
 	file_name_chosen = false;
@@ -481,27 +482,6 @@ function update_title(){
 	if (is_pride_month) {
 		$("link[rel~='icon']").attr("href", "./images/icons/gay-es-paint-16x16-light-outline.png");
 	}
-}
-
-function create_and_trigger_input(attrs, callback){
-	const $input = $(E("input")).attr(attrs)
-		.on("change", ()=> {
-			callback($input[0]);
-			$input.remove();
-		})
-		.appendTo($app)
-		.hide()
-		.trigger("click");
-	return $input;
-}
-
-function choose_files(callback){
-	// @TODO: if not allowing multiple files, could simplify to just choose_file,
-	// and maybe structure things better
-	// @TODO: specify mime types?
-	create_and_trigger_input({type: "file"}, input => {
-		callback(input.files);
-	});
 }
 
 function get_uris(text) {
@@ -675,8 +655,16 @@ function open_from_image_info(info, callback, canceled){
 
 		if (info.source_blob instanceof File) {
 			file_name = info.source_blob.name;
+			// @TODO: probably always set file_name_chosen = true for consistency (you can always do Save As if you want a new file name)
 			// file_name_chosen = true; // if false (default via reset_file), it will prompt initially for name/type when saving opened file
-			document_file_path = info.source_blob.path; // available in Electron
+			document_file_path = info.source_blob.path; // available in Electron (see https://www.electronjs.org/docs/api/file-object#file-object)
+			if (document_file_path) {
+				file_name_chosen = true;
+			}
+		}
+		if (info.source_file_handle) {
+			file_name_chosen = true;
+			file_handle = info.source_file_handle;
 		}
 		update_title();
 		saved = true;
@@ -685,49 +673,37 @@ function open_from_image_info(info, callback, canceled){
 	}, canceled);
 }
 
-function open_from_file(file, callback, canceled){
-	read_image_file(file, (error, info)=> {
-		if (error) {
-			show_read_image_file_error(error);
-			return;
-		}
-		open_from_image_info(info);
-	});
+function open_from_file(file, file_handle) {
+	if (file.type.match(/^image/)) {
+		read_image_file(file, (error, info)=> {
+			if (error) {
+				show_read_image_file_error(error);
+				return;
+			}
+			info.source_file_handle = file_handle
+			open_from_image_info(info);
+		});
+	} else if (file.name.match(/\.theme(pack)?$/i)) {
+		file.text().then(load_theme_from_text, (error)=> {
+			show_error_message(localize("Paint cannot open this file."), error);
+		});
+	} else {
+		AnyPalette.loadPalette(file, (error, new_palette)=> {
+			if (error) {
+				// fails.push({file, error});
+				show_error_message(localize("Paint cannot open this file."), error);
+				return;
+			}
+			palette = new_palette.map((color)=> color.toString());
+			$colorbox.rebuild_palette();
+			window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+		});
+	}
 }
 
-function open_from_files(files, user_input_method_verb_past_tense){
-	let loaded = false;
-	// const fails = [];
-	for (const file of files) {
-		if (file.type.match(/^image/)) {
-			open_from_file(file, err => {
-				if(err){ return show_error_message(localize("Paint cannot open this file."), err); }
-				loaded = true;
-			});
-			return;
-		} else if (file.name.match(/\.theme(pack)?$/i)) {
-			file.text().then(load_theme_from_text, (error)=> {
-				show_error_message(localize("Paint cannot open this file."), error);
-			});
-			loaded = true;
-			return;
-		} else {
-			AnyPalette.loadPalette(file, (error, new_palette)=> {
-				if (loaded) {
-					return;
-				}
-				if (error) {
-					// fails.push({file, error});
-					show_error_message(localize("Paint cannot open this file."), error);
-					return;
-				}
-				loaded = true;
-				palette = new_palette.map((color)=> color.toString());
-				$colorbox.rebuild_palette();
-				window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
-			});
-		}
-	}
+async function open_from_file_handle(file_handle) {
+	const file = await file_handle.getFile();
+	open_from_file(file, file_handle);
 }
 
 function apply_file_format_and_palette_info(info) {
@@ -778,10 +754,10 @@ function file_new(){
 	});
 }
 
-function file_open(){
-	choose_files(files => {
-		open_from_files(files, "selected");
-	});
+async function file_open(){
+	const {file, fileHandle} = await systemHooks.openFile({formats: image_formats})
+	// @TODO: store file handle
+	open_from_file(file);
 }
 
 let $file_load_from_url_window;
@@ -817,33 +793,42 @@ function file_load_from_url(){
 
 function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
-	if(document_file_path){
+	// @TODO: systemHook for saving over a file
+	const save_file_handle = file_handle;
+	const save_file_path = document_file_path;
+	if (save_file_handle || save_file_path) {
 		if(file_name.match(/\.svg$/i)){
 			return file_save_as(maybe_saved_callback, update_from_saved);
 		}
-		return save_to_file_path(main_canvas, document_file_path, (saved_file_path, saved_file_name, saved_file_type) => {
-			saved = true;
-			document_file_path = saved_file_path;
-			file_name = saved_file_name;
-			file_name_chosen = true; // I guess.. should already be true
-			file_format = saved_file_type;
-			update_title();
-			maybe_saved_callback();
-		}, update_from_saved);
 	}
 	if (!file_name_chosen) {
 		return file_save_as(maybe_saved_callback, update_from_saved);
 	}
-	write_image_file(main_canvas, file_format, (blob)=> {
-		const file_saver = saveAs(blob, file_name);
-		// file_saver.onwriteend = () => {
-		// 	// this won't fire in chrome
-		// 	maybe_saved_callback();
-		// };
-		// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
-		maybe_saved_callback();
-		if (update_from_saved) {
-			update_from_saved_file(blob);
+	write_image_file(main_canvas, file_format, async (blob)=> {
+		if (save_file_handle) {
+			const writableStream = await save_file_handle.createWritable();
+			await writableStream.write(blob);
+			await writableStream.close();
+		} else if (save_file_path) {
+			return save_to_file_path(save_file_path, blob, () => {
+				saved = true;
+				update_title();
+				maybe_saved_callback();
+				if (update_from_saved) {
+					update_from_saved_file(blob);
+				}
+			});
+		} else {
+			const file_saver = saveAs(blob, file_name);
+			// file_saver.onwriteend = () => {
+			// 	// this won't fire in chrome
+			// 	maybe_saved_callback();
+			// };
+			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
+			maybe_saved_callback();
+			if (update_from_saved) {
+				update_from_saved_file(blob);
+			}
 		}
 	});
 }
@@ -851,15 +836,33 @@ function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
 	// @TODO: shouldn't this just be file_name, no replacement?
-	save_canvas_as(main_canvas, `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`, (saved_file_path, saved_file_name, saved_file_type) => {
-		saved = true;
-		document_file_path = saved_file_path;
-		file_name = saved_file_name;
-		file_name_chosen = true;
-		file_format = saved_file_type;
-		update_title();
-		maybe_saved_callback();
-	}, update_from_saved);
+	const suggested_file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`
+	systemHooks.saveFile({
+		dialogTitle: localize("Save As"),
+		formats: image_formats,
+		defaultFileName: suggested_file_name,
+		defaultFileFormatID: file_format,
+		getBlob: (new_file_type)=> {
+			return new Promise((resolve)=> {
+				write_image_file(main_canvas, new_file_type, (blob)=> {
+					resolve(blob);
+				});
+			});
+		},
+		savedCallbackUnreliable: ({newFileName, newFileType, newFileHandle, newFilePath, newBlob})=> {
+			saved = true;
+			file_handle = newFileHandle;
+			document_file_path = newFilePath;
+			file_name = newFileName;
+			file_name_chosen = true;
+			file_format = newFileType;
+			update_title();
+			maybe_saved_callback();
+			if (update_from_saved) {
+				update_from_saved_file(newBlob);
+			}
+		}
+	});
 }
 
 
@@ -1147,21 +1150,13 @@ function paste_image_from_file(blob){
 }
 
 // Edit > Paste From
-function paste_from_file_select_dialog(){
-	choose_files(files => {
-		for (const file of files) {
-			if(file.type.match(/^image/)){
-				paste_image_from_file(file);
-				return;
-			}
-		}
-		show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."));
-		// if(files.length > 1){
-		// 	show_error_message(`${localize("Unexpected file format.")} None of the files selected appear to be images.`);
-		// }else{
-		// 	show_error_message(`${localize("Unexpected file format.")} File selected does not appear to be an image.`);
-		// }
-	});
+async function choose_file_to_paste() {
+	const {file} = await systemHooks.openFile({formats: image_formats});
+	if (file.type.match(/^image/)) {
+		paste_image_from_file(file);
+		return;
+	}
+	show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."));
 }
 
 function paste(img_or_canvas){
@@ -1286,22 +1281,19 @@ function render_history_as_gif(){
 			$win.$Button(localize("Save"), () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
-					choose_file_name_and_type(
-						localize("Save As"),
-						// localize("Save Animation As"),
-						`${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`,
-						"image/gif",
-						[{
+					systemHooks.saveFile({
+						dialogTitle: localize("Save As"), // localize("Save Animation As"),
+						getBlob: ()=> blob,
+						defaultFileName: `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`,
+						defaultFileFormatID: "image/gif",
+						formats: [{
 							formatID: "image/gif",
 							mimeType: "image/gif",
 							name: localize("Animated GIF (*.gif)").replace(/\s+\([^(]+$/, ""),
 							nameWithExtensions: localize("Animated GIF (*.gif)"),
 							extensions: ["gif"],
 						}],
-						(new_file_name, new_file_type)=> {
-							saveAs(blob, new_file_name);
-						}
-					);
+					});
 				});
 			});
 			$cancel.appendTo($win.$buttons);
@@ -2609,9 +2601,9 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 }
 
 function write_image_file(canvas, mime_type, blob_callback) {
-	const bmp_match = mime_type.match(/^image\/bmp\s*;(?:\s*bpp=(\d+))?/);
+	const bmp_match = mime_type.match(/^image\/(?:x-)?bmp\s*(?:-(\d+)bpp)?/);
 	if (bmp_match) {
-		const file_content = encodeBMP(canvas.ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1], 10));
+		const file_content = encodeBMP(canvas.ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1] || "24", 10));
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);
@@ -2661,7 +2653,7 @@ function read_image_file(blob, callback) {
 		}
 		if (detected_type_id === "bmp") {
 			const {colorTable, bitsPerPixel, imageData} = decodeBMP(arrayBuffer);
-			file_format = `image/bmp;bpp=${bitsPerPixel}`;
+			file_format = bitsPerPixel === 24 ? "image/bmp" : `image/bmp;bpp=${bitsPerPixel}`;
 			if (colorTable.length >= 2) {
 				if (colorTable.length === 2) {
 					palette = make_monochrome_palette(...colorTable.map((color)=> [color.r, color.g, color.b, 255]));
@@ -2740,68 +2732,20 @@ function update_from_saved_file(blob) {
 	});
 }
 
-// @TODO: establish a better pattern for this (platform-specific functions, with browser-generic fallbacks)
-// Note: we can't just poke in a different save_canvas_as function in electron-injected.js because electron-injected.js is loaded first
-function save_canvas_as(canvas, fileName, savedCallbackUnreliable, updateFromSaved=true){
-	if(window.systemSaveCanvasAs){
-		return systemSaveCanvasAs(canvas, fileName, savedCallbackUnreliable, updateFromSaved);
-	}
-
-	choose_file_name_and_type(localize("Save As"), file_name, file_format, image_formats, (new_file_name, new_file_type)=> {
-		write_image_file(canvas, new_file_type, (blob)=> {
-			const file_saver = saveAs(blob, new_file_name);
-			// file_saver.onwriteend = () => {
-			// 	// this won't fire in chrome
-			// 	savedCallbackUnreliable(undefined, new_file_name);
-			// };
-			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
-			savedCallbackUnreliable(undefined, new_file_name, new_file_type);
-			if (updateFromSaved) {
-				update_from_saved_file(blob);
-			}
-		});
-	});
-}
-
-function set_as_wallpaper_tiled(c = main_canvas) {
-	// Note: we can't just poke in a different set_as_wallpaper_tiled function, because it's stored by reference in menus.js
-	if(window.systemSetAsWallpaperTiled){
-		return window.systemSetAsWallpaperTiled(c);
-	}
-
-	const wallpaperCanvas = make_canvas(screen.width, screen.height);
-	const pattern = wallpaperCanvas.ctx.createPattern(c, "repeat");
-	wallpaperCanvas.ctx.fillStyle = pattern;
-	wallpaperCanvas.ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
-
-	set_as_wallpaper_centered(wallpaperCanvas);
-}
-
-function set_as_wallpaper_centered(c = main_canvas) {
-	// Note: we can't just poke in a different set_as_wallpaper_centered function, because it's stored by reference in menus.js
-	if(window.systemSetAsWallpaperCentered){
-		return window.systemSetAsWallpaperCentered(c);
-	}
-
-	choose_file_name_and_type(
-		localize("Save As"),
-		`${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`,
-		null,
-		image_formats,
-		(new_file_name, new_file_type)=> {
-			write_image_file(main_canvas, new_file_type, (blob)=> {
-				saveAs(blob, new_file_name);
-			});
-		}
-	);
-}
-
 function save_selection_to_file(){
 	if(selection && selection.canvas){
-		choose_file_name_and_type(localize("Save As"), "selection.png", null, image_formats, (new_file_name, new_file_type)=> {
-			write_image_file(selection.canvas, new_file_type, (blob)=> {
-				saveAs(blob, new_file_name);
-			});
+		systemHooks.saveFile({
+			dialogTitle: localize("Save As"),
+			defaultName: "selection.png",
+			defaultFileFormatID: "image/png",
+			formats: image_formats,
+			getBlob: (new_file_type)=> {
+				return new Promise((resolve)=> {
+					write_image_file(selection.canvas, new_file_type, (blob)=> {
+						resolve(blob);
+					});
+				});
+			},
 		});
 	}
 }

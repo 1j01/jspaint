@@ -178,7 +178,7 @@ window.menus = {
 				"use image as wallpaper tiled", "use picture as wallpaper tiled", "use drawing as wallpaper tiled", 
 				"tile image as wallpaper", "tile picture as wallpaper", "tile drawing as wallpaper", 
 			],
-			action: ()=> { set_as_wallpaper_tiled(); },
+			action: ()=> { systemHooks.setWallpaperTiled(main_canvas); },
 			description: localize("Tiles this bitmap as the desktop background."),
 		},
 		{
@@ -190,7 +190,7 @@ window.menus = {
 				"use image as wallpaper centered", "use picture as wallpaper centered", "use drawing as wallpaper centered", 
 				"center image as wallpaper", "center picture as wallpaper", "center drawing as wallpaper", 
 			],
-			action: ()=> { set_as_wallpaper_centered(); },
+			action: ()=> { systemHooks.setWallpaperCentered(main_canvas); },
 			description: localize("Centers this bitmap as the desktop background."),
 		},
 		MENU_DIVIDER,
@@ -325,7 +325,7 @@ window.menus = {
 			speech_recognition: [
 				"paste a file", "paste from a file", "insert a file", "insert an image file", 
 			],
-			action: ()=> { paste_from_file_select_dialog(); },
+			action: ()=> { choose_file_to_paste(); },
 			description: localize("Pastes a file into the selection."),
 		}
 	],
@@ -621,19 +621,17 @@ window.menus = {
 			speech_recognition: [
 				"get colors", "load colors", "load color palette", "load palette", "load color palette file", "load palette file", "load list of colors",
 			],
-			action: ()=> {
-				choose_files((files)=> {
-					const file = files[0];
-					AnyPalette.loadPalette(file, (err, new_palette)=> {
-						if(err){
-							// localize("Unexpected file format.");
-							show_error_message("This file is not in a format that Paint recognizes, or no colors were found.");
-						}else{
-							palette = new_palette.map((color)=> color.toString());
-							$colorbox.rebuild_palette();
-							window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
-						}
-					});
+			action: async ()=> {
+				const {file} = await systemHooks.openFile({formats: palette_formats});
+				AnyPalette.loadPalette(file, (err, new_palette)=> {
+					if(err){
+						// localize("Unexpected file format.");
+						show_error_message("This file is not in a format that Paint recognizes, or no colors were found.");
+					}else{
+						palette = new_palette.map((color)=> color.toString());
+						$colorbox.rebuild_palette();
+						window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+					}
 				});
 			},
 			description: localize("Uses a previously saved palette of colors."),
@@ -655,12 +653,19 @@ window.menus = {
 						blue: b / 255,
 					}));
 				}
-				choose_file_name_and_type(localize("Save Colors"), localize("untitled.pal"), null, palette_formats, (palette_file_name, format_id)=> {
-					const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
-					const blob = new Blob([file_content], {type: "text/plain"});
-					sanity_check_blob(blob, ()=> {
-						saveAs(blob, palette_file_name);
-					});
+				systemHooks.saveFile({
+					dialogTitle: localize("Save Colors"),
+					defaultFileName: localize("untitled.pal"),
+					formats: palette_formats,
+					getBlob: ()=> {
+						const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
+						const blob = new Blob([file_content], {type: "text/plain"});
+						return new Promise((resolve)=> {
+							sanity_check_blob(blob, ()=> {
+								resolve(blob);
+							});
+						});
+					},
 				});
 			},
 			description: localize("Saves the current palette of colors to a file."),
