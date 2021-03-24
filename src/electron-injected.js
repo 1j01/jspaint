@@ -4,9 +4,7 @@
 // so libraries don't get confused and export to `module` instead of the `window`
 global.module = undefined;
 
-// @TODO: use app.isPackaged instead of electron-is-dev? https://www.electronjs.org/docs/api/app#appispackaged-readonly
-// https://github.com/sindresorhus/electron-is-dev#how-is-this-different-than-appispackaged
-const is_dev = require("electron-is-dev");
+const isPackaged = require("electron").remote.app.isPackaged;
 const dialog = require("electron").remote.dialog;
 const fs = require("fs");
 const path = require("path");
@@ -18,10 +16,10 @@ const argv = require("electron").remote.process.argv;
 const reg_contents = `Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\\SystemFileAssociations\\image\\shell\\edit\\command]
-@="\\"${argv[0].replace(/\\/g, "\\\\")}\\" ${is_dev ? "\\\".\\\" " : ""}\\"%1\\""
+@="\\"${argv[0].replace(/\\/g, "\\\\")}\\" ${isPackaged ? "" : '\\".\\" '}\\"%1\\""
 `; // oof that's a lot of escaping \\
-const reg_file_path = path.join(is_dev ? "." : path.dirname(argv[0]), `set-jspaint${is_dev ? "-DEV-MODE" : ""}-as-default-image-editor.reg`);
-if(process.platform == "win32" && !is_dev){
+const reg_file_path = path.join(isPackaged ? path.dirname(argv[0]) : ".", `set-jspaint${isPackaged ? "" : "-DEV-MODE"}-as-default-image-editor.reg`);
+if(process.platform == "win32" && isPackaged){
 	fs.writeFile(reg_file_path, reg_contents, (err) => {
 		if(err){
 			return console.error(err);
@@ -37,10 +35,10 @@ window.is_electron_app = true;
 // the idea being, don't give the page free reign over the filesystem, in case of XSS holes
 
 if (process.platform == "win32" && argv.length >= 2) {
-	if (is_dev) { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
-		window.document_file_path_to_open = argv[2];
-	} else { // in production, "path/to/JS Paint.exe" "maybe/a/file.png"
+	if (isPackaged) { // in production, "path/to/JS Paint.exe" "maybe/a/file.png"
 		window.document_file_path_to_open = argv[1];
+	} else { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
+		window.document_file_path_to_open = argv[2];
 	}
 }
 

@@ -5,7 +5,7 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 	app.quit();
 }
 
-if (require('electron-is-dev')){
+if (process.env.ELECTRON_DEBUG === "1" || !app.isPackaged){
 	require('electron-debug')({ showDevTools: false });
 }
 
