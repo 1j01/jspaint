@@ -835,12 +835,10 @@ function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 
 function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
-	// @TODO: shouldn't this just be file_name, no replacement?
-	const suggested_file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")}.png`
 	systemHooks.saveFile({
 		dialogTitle: localize("Save As"),
 		formats: image_formats,
-		defaultFileName: suggested_file_name,
+		defaultFileName: file_name,
 		defaultFileFormatID: file_format,
 		getBlob: (new_file_type)=> {
 			return new Promise((resolve)=> {
