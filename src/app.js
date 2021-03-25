@@ -113,7 +113,7 @@ let custom_colors = [
 // This API may be removed at any time (and perhaps replaced by something based around postMessage)
 window.systemHooks = window.systemHooks || {};
 window.systemHookDefaults = {
-	saveFile: async ({formats, defaultFileName, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle})=> {
+	saveFile: async ({formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle})=> {
 		// Note: showSaveFilePicker currently doesn't support suggesting a filename,
 		// or retrieving which file type was selected in the dialog (you have to get it (guess it) from the file name)
 		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.

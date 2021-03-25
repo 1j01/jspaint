@@ -71,8 +71,8 @@ window.save_to_file_path = (filePath, blob, savedCallback) => {
 };
 
 window.systemHooks = window.systemHooks || {};
-window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultFileFormatID, getBlob, savedCallbackUnreliable }) => {
-
+window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable }) => {
+	
 	// First filter in filters list determines default selected file type.
 	// @TODO: default to existing extension, except it would be awkward to rearrange the list...
 	// const suggestedExtension = get_file_extension(defaultFileName);
@@ -84,12 +84,11 @@ window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultFileForm
 	const filters = formats.map(({ name, extensions }) => ({ name, extensions }));
 
 	// @TODO: pass BrowserWindow to make dialog modal?
-	// @TODO: should defaultFileName be sanitized in some way?
-	// @TODO: defaultPath full, not just file name
+	// @TODO: should defaultFileName/defaultPath be sanitized in some way?
 	let filePath, canceled;
 	try {
 		({filePath, canceled} = await dialog.showSaveDialog({
-			defaultPath: path.basename(defaultFileName),
+			defaultPath: defaultPath || path.basename(defaultFileName),
 			filters,
 		}));
 	} catch (error) {

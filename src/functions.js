@@ -839,6 +839,7 @@ function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 		dialogTitle: localize("Save As"),
 		formats: image_formats,
 		defaultFileName: file_name,
+		defaultPath: document_file_path,
 		defaultFileFormatID: file_format,
 		getBlob: (new_file_type)=> {
 			return new Promise((resolve)=> {
@@ -1279,10 +1280,12 @@ function render_history_as_gif(){
 			$win.$Button(localize("Save"), () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
+					const suggested_file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`;
 					systemHooks.saveFile({
 						dialogTitle: localize("Save As"), // localize("Save Animation As"),
 						getBlob: ()=> blob,
-						defaultFileName: `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`,
+						defaultFileName: suggested_file_name,
+						defaultPath: document_file_path && `${document_file_path.replace(/[/\\][^/\\]*/)}/${suggested_file_name}`,
 						defaultFileFormatID: "image/gif",
 						formats: [{
 							formatID: "image/gif",
