@@ -779,7 +779,7 @@ function invert_monochrome(source_ctx, dest_ctx=source_ctx, monochrome_info=dete
 		} else {
 			dest_ctx.fillStyle = color_1;
 		}
-		if (monochrome_info.any_transparency) {
+		if (monochrome_info.monochromeWithTransparency) {
 			dest_ctx.putImageData(image_data, 0, 0);
 			dest_ctx.globalCompositeOperation = "source-in";
 		}
