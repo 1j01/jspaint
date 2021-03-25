@@ -464,10 +464,7 @@ window.tools = [{
 	paint(ctx, x, y) {
 		if(x >= 0 && y >= 0 && x < main_canvas.width && y < main_canvas.height){
 			const id = ctx.getImageData(~~x, ~~y, 1, 1);
-			const r = id.data[0];
-			const g = id.data[1];
-			const b = id.data[2];
-			const a = id.data[3];
+			const [r, g, b, a] = id.data;
 			this.current_color = `rgba(${r},${g},${b},${a/255})`;
 		}else{
 			this.current_color = "white";
