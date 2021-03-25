@@ -89,7 +89,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 					// HTML5 Canvas API is unreliable for exact colors.
 					if (
 						present_rgbas.length === 2 &&
-						!present_rgbas.map((rgba)=> rgba.toString).includes(old_rgba.toString())
+						present_rgbas.every((present_rgba)=> `${present_rgba}` !== `${old_rgba}`)
 					) {
 						// Find the nearer color in the image data to replace.
 						const dists = present_rgbas.map((rgba)=>
