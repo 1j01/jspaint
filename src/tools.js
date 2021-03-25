@@ -318,6 +318,9 @@ window.tools = [{
 			let color = selected_colors.background;
 			if (transparency) {
 				const t = performance.now() / 2000;
+				// @TODO: DRY
+				// animated rainbow effect representing transparency,
+				// in lieu of any good way to draw temporary transparency in the current setup
 				// 5 distinct colors, 5 distinct gradients, 7 color stops, 6 gradients
 				const n = 6;
 				const h = ctx.canvas.height;
@@ -375,13 +378,15 @@ window.tools = [{
 			const test_image_data = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			const result_image_data = this.mask_canvas.ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			
+			const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
+
 			for(let i=0, l=test_image_data.data.length; i<l; i+=4){
 				if(
-					test_image_data.data[i+0] === fg_rgba[0] &&
-					test_image_data.data[i+1] === fg_rgba[1] &&
-					test_image_data.data[i+2] === fg_rgba[2] &&
-					test_image_data.data[i+3] === fg_rgba[3]
-				){
+					Math.abs(test_image_data.data[i+0] - fg_rgba[0]) <= fill_threshold &&
+					Math.abs(test_image_data.data[i+1] - fg_rgba[1]) <= fill_threshold &&
+					Math.abs(test_image_data.data[i+2] - fg_rgba[2]) <= fill_threshold &&
+					Math.abs(test_image_data.data[i+3] - fg_rgba[3]) <= fill_threshold
+				) {
 					result_image_data.data[i+0] = 255;
 					result_image_data.data[i+1] = 255;
 					result_image_data.data[i+2] = 255;
@@ -1234,9 +1239,16 @@ tools.forEach((tool)=> {
 			ctx.restore();
 
 			let color = stroke_color;
-			const translucent = get_rgba_from_color(color)[3] < 255;
+			// I've seen firefox give [ 254, 254, 254, 254 ] for get_rgba_from_color("#fff")
+			// or other values
+			// even with privacy.resistFingerprinting set to false
+			// the canvas API is just genuinely not reliable for exact color values
+			const translucent = get_rgba_from_color(color)[3] < 253;
 			if (translucent && previewing) {
 				const t = performance.now() / 2000;
+				// @TODO: DRY
+				// animated rainbow effect representing transparency,
+				// in lieu of any good way to draw temporary transparency in the current setup
 				// 5 distinct colors, 5 distinct gradients, 7 color stops, 6 gradients
 				const n = 6;
 				const h = ctx.canvas.height;
@@ -1331,9 +1343,16 @@ tools.forEach((tool)=> {
 			ctx.restore();
 
 			let color = stroke_color;
-			const translucent = get_rgba_from_color(color)[3] < 255;
+			// I've seen firefox give [ 254, 254, 254, 254 ] for get_rgba_from_color("#fff")
+			// or other values
+			// even with privacy.resistFingerprinting set to false
+			// the canvas API is just genuinely not reliable for exact color values
+			const translucent = get_rgba_from_color(color)[3] < 253;
 			if (translucent && previewing) {
 				const t = performance.now() / 2000;
+				// @TODO: DRY
+				// animated rainbow effect representing transparency,
+				// in lieu of any good way to draw temporary transparency in the current setup
 				// 5 distinct colors, 5 distinct gradients, 7 color stops, 6 gradients
 				const n = 6;
 				const h = ctx.canvas.height;

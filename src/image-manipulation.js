@@ -150,7 +150,7 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 
 	const image_data = brush_canvas.ctx.getImageData(0, 0, brush_canvas.width, brush_canvas.height);
 
-	const at = (x, y)=> image_data.data[(y * image_data.width + x) * 4 + 3] > 0;
+	const at = (x, y)=> image_data.data[(y * image_data.width + x) * 4 + 3] > 127;
 
 	const offset_x = -Math.ceil(brush_canvas.width / 2);
 	const offset_y = -Math.ceil(brush_canvas.height / 2);
@@ -276,6 +276,8 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	const start_b = id.data[pixel_pos+2];
 	const start_a = id.data[pixel_pos+3];
 	
+	// @TODO: should this have a threshold? I feel like I had a reason it should not,
+	// but if there's is, I should document it.
 	if(
 		fill_r === start_r &&
 		fill_g === start_g &&

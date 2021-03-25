@@ -1963,7 +1963,9 @@ function has_any_transparency(ctx) {
 	// (Yes, even BMPs support transparency!)
 	const id = ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 	for(let i=0, l=id.data.length; i<l; i+=4){
-		if(id.data[i+3] < 255){
+		// I've seen firefox give [ 254, 254, 254, 254 ] for get_rgba_from_color("#fff")
+		// or other values
+		if(id.data[i+3] < 253){
 			return true;
 		}
 	}
@@ -1980,7 +1982,11 @@ function detect_monochrome(ctx) {
 	const colorRGBAs = [];
 	let anyTransparency = false;
 	for(let i=0, len=pixelArray.length; i<len; i+=1){
-		if (id.data[i*4+3]) {
+		// @TODO: should this threshold not mirror has_any_transparency?
+		// seems to have different notions of "any transparency"
+		// has_any_transparency is "has any pixels not fully opaque"
+		// detect_monochrome's anyTransparency means "has any pixels fully transparent"
+		if (id.data[i*4+3] > 1) {
 			if (!colorUint32s.includes(pixelArray[i])) {
 				if (colorUint32s.length < 2) {
 					colorUint32s.push(pixelArray[i]);

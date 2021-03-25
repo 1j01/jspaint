@@ -87,6 +87,11 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			) {
 				const recolor = (ctx, present_rgbas)=> {
 					// HTML5 Canvas API is unreliable for exact colors.
+					// 1. The specifications specify unpremultiplied alpha, but in practice browsers use premultiplied alpha for performance.
+					// 2. Some browsers implement protections against fingerprinting that return slightly random data
+					// 3. There may be color profiles that affect returned pixel values vs color table values when loading images.
+					//    (BMPs are supposed to be able to embed ICC profiles although I doubt it's prevalent.
+					//    Some global system color profile might apply however, I don't know how all that works.)
 					if (
 						present_rgbas.length === 2 &&
 						present_rgbas.every((present_rgba)=> `${present_rgba}` !== `${old_rgba}`)

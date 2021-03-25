@@ -203,15 +203,18 @@ class OnCanvasSelection extends OnCanvasObject {
 		// regardless of the pattern selected, even if the selected background color is pure black.
 		// We allow any kind of image data while in our "b&w mode".
 		// Our b&w mode is essentially 'patterns in the palette'.
+		const match_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 		for (let i = 0; i < cutoutImageData.data.length; i += 4) {
-			let in_cutout = sourceImageData.data[i + 3] > 0;
+			let in_cutout = sourceImageData.data[i + 3] > 1;
 			if (tool_transparent_mode) {
 				// @FIXME: work with transparent selected background color
 				// (support treating partially transparent background colors as transparency)
-				if (sourceImageData.data[i + 0] === background_color_rgba[0] &&
-					sourceImageData.data[i + 1] === background_color_rgba[1] &&
-					sourceImageData.data[i + 2] === background_color_rgba[2] &&
-					sourceImageData.data[i + 3] === background_color_rgba[3]) {
+				if (
+					Math.abs(sourceImageData.data[i+0] - background_color_rgba[0]) <= match_threshold &&
+					Math.abs(sourceImageData.data[i+1] - background_color_rgba[1]) <= match_threshold &&
+					Math.abs(sourceImageData.data[i+2] - background_color_rgba[2]) <= match_threshold &&
+					Math.abs(sourceImageData.data[i+3] - background_color_rgba[3]) <= match_threshold
+				) {
 					in_cutout = false;
 				}
 			}

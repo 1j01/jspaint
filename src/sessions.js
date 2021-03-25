@@ -18,9 +18,9 @@
 	// (maybe even whether it's considered saved? idk about that)
 	// I could have the image in one storage slot and the state in another
 
-
+	const match_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 	const canvas_has_any_apparent_image_data = ()=>
-		main_canvas.ctx.getImageData(0, 0, main_canvas.width, main_canvas.height).data.some((v)=> v > 0);
+		main_canvas.ctx.getImageData(0, 0, main_canvas.width, main_canvas.height).data.some((v)=> v > match_threshold);
 
 	let $recovery_window;
 	function show_recovery_window(no_longer_blank) {
