@@ -78,7 +78,7 @@ window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultFileForm
 	// const suggestedExtension = get_file_extension(defaultFileName);
 
 	// We can't get the selected file type, so show only a set of formats
-	// that can be accessed by their unique file extensions
+	// that can be accessed uniquely by their file extensions
 	formats = formats_unique_per_file_extension(formats);
 
 	const filters = formats.map(({ name, extensions }) => ({ name, extensions }));
@@ -111,21 +111,13 @@ window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultFileForm
 	}
 	const blob = await getBlob(format.mimeType);
 	
-	// @TODO: DRY
-	blob.arrayBuffer().then((arrayBuffer) => {
-		fs.writeFile(filePath, Buffer.from(arrayBuffer), (error) => {
-			if (error) {
-				return show_error_message(localize("Failed to save document."), error);
-			}
-			savedCallbackUnreliable && savedCallbackUnreliable({
-				newFileName: path.basename(filePath),
-				newFileType: format.mimeType,
-				newFilePath: filePath,
-				newBlob: blob,
-			});
+	save_to_file_path(filePath, blob, ()=> {
+		savedCallbackUnreliable && savedCallbackUnreliable({
+			newFileName: path.basename(filePath),
+			newFileType: format.mimeType,
+			newFilePath: filePath,
+			newBlob: blob,
 		});
-	}, (error) => {
-		show_error_message(localize("Failed to save document."), error);
 	});
 };
 
