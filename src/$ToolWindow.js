@@ -36,7 +36,7 @@ function $ToolWindow($component){
 	});
 	
 	$w.on("keydown", e => {
-		if(e.ctrlKey || e.altKey || e.shiftKey || e.metaKey){
+		if(e.ctrlKey || e.altKey || e.metaKey){
 			return;
 		}
 		const $buttons = $w.$content.find("button");
@@ -45,7 +45,7 @@ function $ToolWindow($component){
 		switch(e.keyCode){
 			case 40: // Down
 			case 39: // Right
-				if($focused.is("button")){
+				if($focused.is("button") && !e.shiftKey){
 					if(focused_index < $buttons.length - 1){
 						$buttons[focused_index + 1].focus();
 						e.preventDefault();
@@ -54,7 +54,7 @@ function $ToolWindow($component){
 				break;
 			case 38: // Up
 			case 37: // Left
-				if($focused.is("button")){
+				if($focused.is("button") && !e.shiftKey){
 					if(focused_index > 0){
 						$buttons[focused_index - 1].focus();
 						e.preventDefault();
@@ -63,7 +63,7 @@ function $ToolWindow($component){
 				break;
 			case 32: // Space
 			case 13: // Enter (doesn't actually work in chrome because the button gets clicked immediately)
-				if($focused.is("button")){
+				if($focused.is("button") && !e.shiftKey){
 					$focused.addClass("pressed");
 					const release = () => {
 						$focused.removeClass("pressed");
@@ -80,15 +80,45 @@ function $ToolWindow($component){
 				}
 				break;
 			case 9: { // Tab
-				
-				// @TODO: handle shift+tab as well (note: early return at top of function)
 				// wrap around when tabbing through controls in a window
-				// @TODO: other element types? also [tabIndex]
-				const $controls = $w.$content.find("input, textarea, select, button, a");
-				const focused_control_index = $controls.index($focused);
-				if(focused_control_index === $controls.length - 1){
-					e.preventDefault();
-					$controls[0].focus();
+				let $controls = $w.$content.find("input, textarea, select, button, object, a[href], [tabIndex='0']").filter(":enabled");
+				// const $controls = $w.$content.find(":tabbable"); // https://api.jqueryui.com/tabbable-selector/
+				// Radio buttons should be treated as a group with one tabstop.
+				// If there's no selected ("checked") radio, it should still visit the group,
+				// but it should skip all unselected radios in that group if there is a selected radio in that group.
+				const radios = {}; // best radio found so far, per group
+				const toSkip = [];
+				for (const el of $controls) {
+					if (el.nodeName.toLowerCase() === "input" && el.type === "radio") {
+						if (radios[el.name]) {
+							if (el.checked) {
+								toSkip.push(radios[el.name]);
+								radios[el.name] = el;
+							} else {
+								toSkip.push(el);
+							}
+						} else {
+							radios[el.name] = el;
+						}
+					}
+				}
+				$controls = $controls.not(toSkip);
+				// debug viz:
+				// $controls.css({boxShadow: "0 0 2px 2px green"});
+				// $(toSkip).css({boxShadow: "0 0 2px 2px gray"})
+				if ($controls.length > 0) {
+					const focused_control_index = $controls.index($focused);
+					if (e.shiftKey) {
+						if(focused_control_index === 0){
+							e.preventDefault();
+							$controls[$controls.length - 1].focus();
+						}
+					} else {
+						if(focused_control_index === $controls.length - 1){
+							e.preventDefault();
+							$controls[0].focus();
+						}
+					}
 				}
 				break;
 			}
