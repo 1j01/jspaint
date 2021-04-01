@@ -23,15 +23,52 @@ function $ToolWindow($component){
 	
 	// @TODO: prevent selection *outside* of the window *via* the window
 
-	// @TODO: keep track of last focused control in the window, and focus it when clicking on / focusing the window
-
 	$w.css({
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++
 	});
-	$w.on("pointerdown", () => {
+	var focused = false;
+	var last_focused_control;
+	$w.on("pointerdown", (event) => {
 		$w.css({
 			zIndex: $Window.Z_INDEX++
+		});
+		if (!focused) {
+			focused = true;
+			event.preventDefault();
+			if (last_focused_control) {
+				last_focused_control.focus();
+			}
+		} else {
+			// Wait for other pointerdown handlers and default behavior
+			// If nothing new is focused by the end of that, we should keep focus on the last focused control
+			requestAnimationFrame(()=> {
+				if (
+					!document.activeElement ||
+					document.activeElement === document.body ||
+					document.activeElement === document.documentElement
+				) {
+					focused = true;
+					if (last_focused_control) {
+						last_focused_control.focus();
+					}
+				}
+			});
+		}
+	});
+	// Assumption: no control will exist in the window yet,
+	// so any element.focus() will be after this "focusin" handler is set up.
+	$w.on("focusin", ()=> {
+		focused = true;
+		if (document.activeElement && $.contains($w[0], document.activeElement)) {
+			last_focused_control = document.activeElement;
+		}
+	});
+	$w.on("focusout", ()=> {
+		requestAnimationFrame(()=> {
+			if (!document.activeElement || !$.contains($w[0], document.activeElement)) {
+				focused = false;
+			}
 		});
 	});
 	
