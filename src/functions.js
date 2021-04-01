@@ -2607,7 +2607,7 @@ function save_as_prompt({
 		// and initially
 		update_extension_from_file_type(false);
 
-		$w.$Button(localize("Save"), () => {
+		const $save = $w.$Button(localize("Save"), () => {
 			$w.close();
 			update_extension_from_file_type(true);
 			resolve({
@@ -2627,6 +2627,9 @@ function save_as_prompt({
 
 		if (promptForName) {
 			$file_name.focus().select();
+		} else {
+			// $file_type.focus(); // most of the time you don't want to change the type from PNG
+			$save.focus();
 		}
 	});
 }
