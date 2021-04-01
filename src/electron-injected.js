@@ -113,7 +113,7 @@ window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultPath, de
 	save_to_file_path(filePath, blob, ()=> {
 		savedCallbackUnreliable && savedCallbackUnreliable({
 			newFileName: path.basename(filePath),
-			newFileType: format.mimeType,
+			newFileFormatID: format.mimeType,
 			newFilePath: filePath,
 			newBlob: blob,
 		});

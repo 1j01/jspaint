@@ -144,20 +144,19 @@ window.systemHookDefaults = {
 			await writableStream.close();
 			savedCallbackUnreliable && savedCallbackUnreliable({
 				newFileName: newHandle.name,
-				newFileType: new_format && new_format.formatID,
+				newFileFormatID: new_format && new_format.formatID,
 				newFileHandle: newHandle,
 				newBlob: blob,
 			});
 		} else {
-			choose_file_name_and_type(dialogTitle || localize("Save As"), defaultFileName, defaultFileFormatID, formats, async (new_file_name, new_file_type)=> {
-				const blob = await getBlob(new_file_type);
-				saveAs(blob, new_file_name);
-				savedCallbackUnreliable && savedCallbackUnreliable({
-					newFileName: new_file_name,
-					newFileType: new_file_type,
-					newFileHandle: null,
-					newBlob: blob,
-				});
+			const {newFileName, newFileFormatID} = await choose_file_name_and_type({dialogTitle, defaultFileName, defaultFileFormatID, formats});
+			const blob = await getBlob(newFileFormatID);
+			saveAs(blob, newFileName);
+			savedCallbackUnreliable && savedCallbackUnreliable({
+				newFileName,
+				newFileFormatID,
+				newFileHandle: null,
+				newBlob: blob,
 			});
 		}
 	},

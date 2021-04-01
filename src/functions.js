@@ -848,13 +848,13 @@ function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 				});
 			});
 		},
-		savedCallbackUnreliable: ({newFileName, newFileType, newFileHandle, newFilePath, newBlob})=> {
+		savedCallbackUnreliable: ({newFileName, newFileFormatID, newFileHandle, newFilePath, newBlob})=> {
 			saved = true;
 			file_handle = newFileHandle;
 			document_file_path = newFilePath;
 			file_name = newFileName;
 			file_name_chosen = true;
-			file_format = newFileType;
+			file_format = newFileFormatID;
 			update_title();
 			maybe_saved_callback();
 			if (update_from_saved) {
@@ -2503,8 +2503,8 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
-function choose_file_name_and_type(dialog_name, default_file_name, default_format_id, formats, callback) {
-	const $w = new $FormToolWindow(dialog_name);
+function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFileName="", defaultFileFormatID, formats}) {
+	const $w = new $FormToolWindow(dialogTitle);
 	$w.addClass("save-as");
 
 	// @TODO: hotkeys (N, T, S, Enter, Esc)
@@ -2525,7 +2525,7 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 		$file_type.append($("<option>").val(format.formatID).text(format.nameWithExtensions));
 	}
 
-	$file_name.val(default_file_name);
+	$file_name.val(defaultFileName);
 
 	const get_selected_format = ()=> {
 		const selected_format_id = $file_type.val();
@@ -2555,8 +2555,8 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 		}
 	};
 	$file_name.on("input", select_file_type_from_file_name);
-	if (default_format_id && formats.some((format)=> format.formatID === default_format_id)) {
-		$file_type.val(default_format_id);
+	if (defaultFileFormatID && formats.some((format)=> format.formatID === defaultFileFormatID)) {
+		$file_type.val(defaultFileFormatID);
 	} else {
 		select_file_type_from_file_name();
 	}
@@ -2589,22 +2589,24 @@ function choose_file_name_and_type(dialog_name, default_file_name, default_forma
 	// and initially
 	update_extension_from_file_type(false);
 
-	$w.$Button(localize("Save"), () => {
-		$w.close();
-		update_extension_from_file_type(true);
-		callback($file_name.val(), $file_type.val());
-	});
-	$w.$Button(localize("Cancel"), () => {
-		$w.close();
-	});
+	return new Promise((resolve)=> {
+		$w.$Button(localize("Save"), () => {
+			$w.close();
+			update_extension_from_file_type(true);
+			resolve({newFileName: $file_name.val(), newFileFormatID: $file_type.val()});
+		});
+		$w.$Button(localize("Cancel"), () => {
+			$w.close();
+		});
 
-	$w.center();
-	// For mobile devices with on-screen keyboards, move the window to the top
-	if (window.innerWidth < 500 || window.innerHeight < 700) {
-		$w.css({ top: 20 });
-	}
+		$w.center();
+		// For mobile devices with on-screen keyboards, move the window to the top
+		if (window.innerWidth < 500 || window.innerHeight < 700) {
+			$w.css({ top: 20 });
+		}
 
-	$file_name.focus().select();
+		$file_name.focus().select();
+	});
 }
 
 function write_image_file(canvas, mime_type, blob_callback) {
