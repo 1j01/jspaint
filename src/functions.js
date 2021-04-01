@@ -2510,103 +2510,103 @@ function save_as_prompt({
 	formats,
 	promptForName=true,
 }) {
-	const $w = new $FormToolWindow(dialogTitle);
-	$w.addClass("save-as");
+	return new Promise((resolve)=> {
+		const $w = new $FormToolWindow(dialogTitle);
+		$w.addClass("save-as");
 
-	// @TODO: hotkeys (N, T, S, Enter, Esc)
-	if (promptForName) {
+		// @TODO: hotkeys (N, T, S, Enter, Esc)
+		if (promptForName) {
+			$w.$main.append(`
+				<label>
+					File name:
+					<input type="text" class="file-name inset-deep"/>
+				</label>
+			`);
+		}
 		$w.$main.append(`
 			<label>
-				File name:
-				<input type="text" class="file-name inset-deep"/>
+				Save as type:
+				<select class="file-type-select inset-deep"></select>
 			</label>
 		`);
-	}
-	$w.$main.append(`
-		<label>
-			Save as type:
-			<select class="file-type-select inset-deep"></select>
-		</label>
-	`);
-	const $file_type = $w.$main.find(".file-type-select");
-	const $file_name = $w.$main.find(".file-name");
+		const $file_type = $w.$main.find(".file-type-select");
+		const $file_name = $w.$main.find(".file-name");
 
-	for (const format of formats) {
-		$file_type.append($("<option>").val(format.formatID).text(format.nameWithExtensions));
-	}
-
-	if (promptForName) {
-		$file_name.val(defaultFileName);
-	}
-
-	const get_selected_format = ()=> {
-		const selected_format_id = $file_type.val();
 		for (const format of formats) {
-			if (format.formatID === selected_format_id) {
-				return format;
-			}
+			$file_type.append($("<option>").val(format.formatID).text(format.nameWithExtensions));
 		}
-	};
 
-	// Select file type when typing file name
-	const select_file_type_from_file_name = ()=> {
-		const extension_match = (promptForName ? $file_name.val() : defaultFileName).match(/\.([\w\d]+)$/);
-		if (extension_match) {
-			const selected_format = get_selected_format();
-			const matched_ext = extension_match[1].toLowerCase();
-			if (selected_format && selected_format.extensions.includes(matched_ext)) {
-				// File extension already matches selected file type.
-				// Don't select a different file type with the same extension.
-				return;
-			}
+		if (promptForName) {
+			$file_name.val(defaultFileName);
+		}
+
+		const get_selected_format = ()=> {
+			const selected_format_id = $file_type.val();
 			for (const format of formats) {
-				if (format.extensions.includes(matched_ext)) {
-					$file_type.val(format.formatID);
+				if (format.formatID === selected_format_id) {
+					return format;
 				}
 			}
-		}
-	};
-	if (promptForName) {
-		$file_name.on("input", select_file_type_from_file_name);
-	}
-	if (defaultFileFormatID && formats.some((format)=> format.formatID === defaultFileFormatID)) {
-		$file_type.val(defaultFileFormatID);
-	} else {
-		select_file_type_from_file_name();
-	}
+		};
 
-	// Change file extension when selecting file type
-	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
-	const update_extension_from_file_type = (add_extension_if_absent)=> {
-		if (!promptForName) {
-			return;
+		// Select file type when typing file name
+		const select_file_type_from_file_name = ()=> {
+			const extension_match = (promptForName ? $file_name.val() : defaultFileName).match(/\.([\w\d]+)$/);
+			if (extension_match) {
+				const selected_format = get_selected_format();
+				const matched_ext = extension_match[1].toLowerCase();
+				if (selected_format && selected_format.extensions.includes(matched_ext)) {
+					// File extension already matches selected file type.
+					// Don't select a different file type with the same extension.
+					return;
+				}
+				for (const format of formats) {
+					if (format.extensions.includes(matched_ext)) {
+						$file_type.val(format.formatID);
+					}
+				}
+			}
+		};
+		if (promptForName) {
+			$file_name.on("input", select_file_type_from_file_name);
 		}
-		let file_name = $file_name.val();
-		const selected_format = get_selected_format();
-		if (!selected_format) {
-			return;
+		if (defaultFileFormatID && formats.some((format)=> format.formatID === defaultFileFormatID)) {
+			$file_type.val(defaultFileFormatID);
+		} else {
+			select_file_type_from_file_name();
 		}
-		const extensions_for_type = selected_format.extensions;
-		const primary_extension_for_type = extensions_for_type[0];
-		// This way of removing the file extension doesn't scale very well! But I don't want to delete text the user wanted like in case of a version number...
-		const without_extension = file_name.replace(/\.(\w{1,3}|apng|jpeg|jfif|tiff|webp|psppalette|sketchpalette|gimp|colors|scss|sass|less|styl|html|theme|themepack)$/i, "");
-		const extension_present = without_extension !== file_name;
-		const extension = file_name.slice(without_extension.length + 1).toLowerCase(); // without dot
-		if (
-			(add_extension_if_absent || extension_present) &&
-			extensions_for_type.indexOf(extension) === -1
-		) {
-			file_name = `${without_extension}.${primary_extension_for_type}`;
-			$file_name.val(file_name);
-		}
-	};
-	$file_type.on("change", ()=> {
+
+		// Change file extension when selecting file type
+		// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
+		const update_extension_from_file_type = (add_extension_if_absent)=> {
+			if (!promptForName) {
+				return;
+			}
+			let file_name = $file_name.val();
+			const selected_format = get_selected_format();
+			if (!selected_format) {
+				return;
+			}
+			const extensions_for_type = selected_format.extensions;
+			const primary_extension_for_type = extensions_for_type[0];
+			// This way of removing the file extension doesn't scale very well! But I don't want to delete text the user wanted like in case of a version number...
+			const without_extension = file_name.replace(/\.(\w{1,3}|apng|jpeg|jfif|tiff|webp|psppalette|sketchpalette|gimp|colors|scss|sass|less|styl|html|theme|themepack)$/i, "");
+			const extension_present = without_extension !== file_name;
+			const extension = file_name.slice(without_extension.length + 1).toLowerCase(); // without dot
+			if (
+				(add_extension_if_absent || extension_present) &&
+				extensions_for_type.indexOf(extension) === -1
+			) {
+				file_name = `${without_extension}.${primary_extension_for_type}`;
+				$file_name.val(file_name);
+			}
+		};
+		$file_type.on("change", ()=> {
+			update_extension_from_file_type(false);
+		});
+		// and initially
 		update_extension_from_file_type(false);
-	});
-	// and initially
-	update_extension_from_file_type(false);
 
-	return new Promise((resolve)=> {
 		$w.$Button(localize("Save"), () => {
 			$w.close();
 			update_extension_from_file_type(true);
