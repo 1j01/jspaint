@@ -904,11 +904,18 @@ function show_error_message(message, error){
 		const $details = $("<details><summary><span>Details</span></summary></details>")
 		.appendTo($w.$main);
 
+		// Chrome includes the error message in the error.stack string, whereas Firefox doesn't.
+		// Also note that there can be Exception objects that don't have a message (empty string) but a name,
+		// for instance Exception { message: "", name: "NS_ERROR_FAILURE", ... } for out of memory when resizing the canvas too large in Firefox.
+		// Chrome just lets you bring the system to a grating hault by trying to grab too much memory.
+		// Firefox does too sometimes.
 		let error_string = error.stack;
 		if (!error_string) {
 			error_string = error.toString();
-		} else if (error_string.indexOf(error.message) === -1) {
+		} else if (error.message && error_string.indexOf(error.message) === -1) {
 			error_string = `${error.toString()}\n\n${error_string}`;
+		} else if (error.name && error_string.indexOf(error.name) === -1) {
+			error_string = `${error.name}\n\n${error_string}`;
 		}
 		$(E("pre"))
 		.text(error_string)
@@ -2130,18 +2137,30 @@ function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_heig
 			name: undoable_meta.name || "Resize Canvas",
 			icon: undoable_meta.icon || get_help_folder_icon("p_stretch_both.png"),
 		}, () => {
-			const image_data = main_ctx.getImageData(0, 0, new_width, new_height);
-			main_canvas.width = new_width;
-			main_canvas.height = new_height;
-			main_ctx.disable_image_smoothing();
-			
-			if(!transparency){
-				main_ctx.fillStyle = selected_colors.background;
-				main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
-			}
+			try {
+				const image_data = main_ctx.getImageData(0, 0, new_width, new_height);
+				main_canvas.width = new_width;
+				main_canvas.height = new_height;
+				main_ctx.disable_image_smoothing();
+				
+				if(!transparency){
+					main_ctx.fillStyle = selected_colors.background;
+					main_ctx.fillRect(0, 0, main_canvas.width, main_canvas.height);
+				}
 
-			const temp_canvas = make_canvas(image_data);
-			main_ctx.drawImage(temp_canvas, 0, 0);
+				const temp_canvas = make_canvas(image_data);
+				main_ctx.drawImage(temp_canvas, 0, 0);
+			} catch (exception) {
+				if (exception.name === "NS_ERROR_FAILURE") {
+					// or localize("There is not enough memory or resources to complete operation.")
+					show_error_message(localize("Insufficient memory to perform operation."), exception);
+				} else {
+					show_error_message(localize("An unknown error has occurred."), exception);
+				}
+				// @TODO: undo and clean up undoable
+				// maybe even keep Attributes dialog open if that's what's triggering the resize
+				return;
+			}
 
 			$canvas_area.trigger("resize");
 		});
@@ -2500,7 +2519,18 @@ function image_stretch_and_skew(){
 			please_enter_a_number();
 			return;
 		}
-		stretch_and_skew(xscale, yscale, hskew, vskew);
+		try {
+			stretch_and_skew(xscale, yscale, hskew, vskew);
+		} catch (exception) {
+			if (exception.name === "NS_ERROR_FAILURE") {
+				// or localize("There is not enough memory or resources to complete operation.")
+				show_error_message(localize("Insufficient memory to perform operation."), exception);
+			} else {
+				show_error_message(localize("An unknown error has occurred."), exception);
+			}
+			// @TODO: undo and clean up undoable 
+			return;
+		}
 		$canvas_area.trigger("resize");
 		$w.close();
 	})[0].focus();
