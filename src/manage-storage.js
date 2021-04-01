@@ -20,7 +20,7 @@ function storage_quota_exceeded(){
 		"<p>You can still save the current image with <b>File > Save</b>. " +
 		"You should save frequently, or free up enough space to keep the image safe.</p>"
 	);
-	$w.$Button("View and manage storage", () => {
+	$w.$Button("Manage Storage", () => {
 		$w.close();
 		ignoring_quota_exceeded = false;
 		manage_storage();
