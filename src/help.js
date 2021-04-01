@@ -267,7 +267,7 @@ function open_help_viewer(options){
 			$w.$main.css({maxWidth: "500px"});
 			$w.$Button(localize("OK"), () => {
 				$w.close();
-			});
+			}).focus();
 			$w.center();
 		} else {
 			show_error_message(`${localize("Failed to launch help.")} ${localize("Access to %1 was denied.", options.contentsFile)}`);

@@ -918,7 +918,7 @@ function show_error_message(message, error){
 	}
 	$w.$Button(localize("OK"), () => {
 		$w.close();
-	});
+	}).focus();
 	$w.center();
 	if (error) {
 		window.console && console.error(message, error);
@@ -979,7 +979,7 @@ function show_resource_load_error_message(error){
 	$w.$main.css({maxWidth: "500px"});
 	$w.$Button(localize("OK"), () => {
 		$w.close();
-	});
+	}).focus();
 	$w.center();
 }
 function show_read_image_file_error(error) {
@@ -1031,7 +1031,7 @@ function show_about_paint(){
 	
 	$("#view-project-news").on("click", ()=> {
 		show_news();
-	});
+	}).focus();
 	
 	$("#checking-for-updates").removeAttr("hidden");
 
@@ -1128,6 +1128,8 @@ function show_news(){
 
 	$news_window.center();
 	$news_window.center(); // @XXX - but it helps tho
+
+	$latest_news.attr("tabIndex", "-1").focus();
 }
 
 
@@ -1229,7 +1231,7 @@ function render_history_as_gif(){
 
 	const $cancel = $win.$Button('Cancel', () => {
 		$win.close();
-	});
+	}).focus();
 
 	$win.center();
 
@@ -1271,7 +1273,7 @@ function render_history_as_gif(){
 				sanity_check_blob(blob, () => {
 					show_imgur_uploader(blob);
 				});
-			});
+			}).focus();
 			$win.$Button(localize("Save"), () => {
 				$win.close();
 				sanity_check_blob(blob, () => {
@@ -1511,7 +1513,8 @@ function redo(){
 			const $w = $document_history_prompt_window = new $ToolWindow();
 			$w.title("Redo");
 			$w.$content.html("Use Edit > History to view all branches of the history tree.").css({padding: 10});
-			$w.$Button("Show History", show_document_history).css({margin: 10});
+			$w.$Button("Show History", show_document_history).css({margin: 10}).focus();
+			$w.$Button(localize("Cancel"), ()=> { $w.close(); }).css({margin: 10});
 			$w.center();
 		}
 		return false;
@@ -1563,7 +1566,7 @@ function show_document_history() {
 
 	function render_tree_from_node(node) {
 		const $entry = $(`
-			<div class="history-entry">
+			<div class="history-entry" tabIndex="-1">
 				<div class="history-entry-icon-area"></div>
 				<div class="history-entry-name"></div>
 			</div>
@@ -1619,6 +1622,10 @@ function show_document_history() {
 		});
 	};
 	render_tree();
+
+	requestAnimationFrame(()=> {
+		$w.find(".history-entry.current").focus();
+	});
 
 	$G.on("history-update", render_tree);
 	$w.on("close", ()=> {
@@ -2325,7 +2332,7 @@ function show_convert_to_black_and_white() {
 
 	$w.$Button(localize("OK"), ()=> {
 		$w.close();
-	});
+	}).focus();
 	$w.$Button(localize("Cancel"), ()=> {
 		if (current_history_node.name === "Make Monochrome") {
 			undo();
@@ -2347,7 +2354,7 @@ function please_enter_a_number() {
 	$msgw.$main.text(localize("Please enter a number."));
 	$msgw.$Button(localize("OK"), () => {
 		$msgw.close();
-	});
+	}).focus();
 }
 
 function image_flip_and_rotate(){
@@ -2806,7 +2813,7 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 					$w.$main.css({maxWidth: "500px"});
 					$w.$Button(localize("OK"), () => {
 						$w.close();
-					});
+					}).focus();
 					$w.center();
 				}
 			}, (error)=> {

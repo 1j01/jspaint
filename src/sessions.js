@@ -72,6 +72,8 @@
 			$w.close();
 		});
 		$w.center();
+
+		$w.find("button:enabled").focus();
 	}
 
 	let last_undos_length = undos.length;
@@ -242,7 +244,7 @@
 			$w.$main.css({ maxWidth: "500px" });
 			$w.$Button(localize("OK"), () => {
 				$w.close();
-			});
+			}).focus();
 			$w.center();
 			
 			// Wrap the Firebase API because they don't

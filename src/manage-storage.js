@@ -24,7 +24,7 @@ function storage_quota_exceeded(){
 		$w.close();
 		ignoring_quota_exceeded = false;
 		manage_storage();
-	});
+	}).focus();
 	$w.$Button("Ignore", () => {
 		$w.close();
 		ignoring_quota_exceeded = true;
@@ -103,4 +103,6 @@ function manage_storage(){
 
 	$storage_manager.$content.width(450);
 	$storage_manager.center();
+
+	$storage_manager.find(".remove-button").focus();
 }

@@ -125,12 +125,14 @@ function show_imgur_uploader(blob){
 				// @TODO: a button to copy the URL to the clipboard
 				// (also maybe put the URL in a readonly input)
 				
+				let $ok_button;
 				const $delete_button = $imgur_window.$Button("Delete", () => {
 					const req = new XMLHttpRequest();
-
+					$delete_button[0].disabled = true;
 					req.addEventListener("readystatechange", () => { 
 						if(req.readyState == 4 && req.status == 200){
 							$delete_button.remove();
+							$ok_button.focus();
 
 							const response = parseImgurResponseJSON(req.responseText);
 							if(!response) return;
@@ -141,8 +143,11 @@ function show_imgur_uploader(blob){
 							}else{
 								$imgur_status.text("Failed to delete image :(");
 							}
+
 						}else if(req.readyState == 4){
 							$imgur_status.text("Error deleting image :(");
+							$delete_button[0].disabled = false;
+							$delete_button.focus();
 						}
 					});
 
@@ -154,9 +159,9 @@ function show_imgur_uploader(blob){
 
 					$imgur_status.text("Deleting...");
 				});
-				$imgur_window.$Button(localize("OK"), () => {
+				$ok_button = $imgur_window.$Button(localize("OK"), () => {
 					$imgur_window.close();
-				});
+				}).focus();
 			}else if(req.readyState == 4){
 				$progress.add($progress_percent).remove();
 				$imgur_status.text("Error uploading image :(");
@@ -173,7 +178,7 @@ function show_imgur_uploader(blob){
 		req.send(form_data);
 
 		$imgur_status.text("Uploading...");
-	});
+	}).focus();
 	const $cancel_button = $imgur_window.$Button(localize("Cancel"), () => {
 		$imgur_window.close();
 	});
