@@ -124,7 +124,12 @@ window.systemHookDefaults = {
 		if (window.showSaveFilePicker) {
 			// We can't get the selected file type, not even from newHandle.getFile()
 			// so limit formats shown to a set that can all be used by their unique file extensions
-			formats = formats_unique_per_file_extension(formats);
+			// formats = formats_unique_per_file_extension(formats);
+			// OR, show two dialogs, one for the format and then one for the save location.
+			const {newFileFormatID} = await save_as_prompt({dialogTitle, defaultFileName, defaultFileFormatID, formats, promptForName: false});
+			const new_format = formats.find((format)=> format.formatID === newFileFormatID);
+			const blob = await getBlob(new_format && new_format.formatID);
+			formats = [new_format];
 			const newHandle = await showSaveFilePicker({
 				types: formats.map((format)=> {
 					return {
@@ -135,10 +140,10 @@ window.systemHookDefaults = {
 					}
 				})
 			});
-			const new_format =
-				get_format_from_extension(formats, newHandle.name) ||
-				formats.find((format)=> format.formatID === defaultFileFormatID);
-			const blob = await getBlob(new_format && new_format.formatID);
+			// const new_format =
+			// 	get_format_from_extension(formats, newHandle.name) ||
+			// 	formats.find((format)=> format.formatID === defaultFileFormatID);
+			// const blob = await getBlob(new_format && new_format.formatID);
 			const writableStream = await newHandle.createWritable();
 			await writableStream.write(blob);
 			await writableStream.close();
@@ -149,7 +154,7 @@ window.systemHookDefaults = {
 				newBlob: blob,
 			});
 		} else {
-			const {newFileName, newFileFormatID} = await choose_file_name_and_type({dialogTitle, defaultFileName, defaultFileFormatID, formats});
+			const {newFileName, newFileFormatID} = await save_as_prompt({dialogTitle, defaultFileName, defaultFileFormatID, formats});
 			const blob = await getBlob(newFileFormatID);
 			saveAs(blob, newFileName);
 			savedCallbackUnreliable && savedCallbackUnreliable({

@@ -581,7 +581,7 @@ html, body, .jspaint {
 	margin: 5px;
     box-sizing: border-box;
 }
-.save-as .window-content > form > div > label:last-of-type {
+.save-as .window-content > form > div > label:not(:first-of-type) {
 	margin-top: 8px;
 }
 .save-as .window-content {

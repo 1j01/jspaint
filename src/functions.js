@@ -2503,16 +2503,26 @@ function image_stretch_and_skew(){
 	$w.center();
 }
 
-function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFileName="", defaultFileFormatID, formats}) {
+function save_as_prompt({
+	dialogTitle=localize("Save As"),
+	defaultFileName="",
+	defaultFileFormatID,
+	formats,
+	promptForName=true,
+}) {
 	const $w = new $FormToolWindow(dialogTitle);
 	$w.addClass("save-as");
 
 	// @TODO: hotkeys (N, T, S, Enter, Esc)
+	if (promptForName) {
+		$w.$main.append(`
+			<label>
+				File name:
+				<input type="text" class="file-name inset-deep"/>
+			</label>
+		`);
+	}
 	$w.$main.append(`
-		<label>
-			File name:
-			<input type="text" class="file-name inset-deep"/>
-		</label>
 		<label>
 			Save as type:
 			<select class="file-type-select inset-deep"></select>
@@ -2525,7 +2535,9 @@ function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFile
 		$file_type.append($("<option>").val(format.formatID).text(format.nameWithExtensions));
 	}
 
-	$file_name.val(defaultFileName);
+	if (promptForName) {
+		$file_name.val(defaultFileName);
+	}
 
 	const get_selected_format = ()=> {
 		const selected_format_id = $file_type.val();
@@ -2538,7 +2550,7 @@ function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFile
 
 	// Select file type when typing file name
 	const select_file_type_from_file_name = ()=> {
-		const extension_match = $file_name.val().match(/\.([\w\d]+)$/);
+		const extension_match = (promptForName ? $file_name.val() : defaultFileName).match(/\.([\w\d]+)$/);
 		if (extension_match) {
 			const selected_format = get_selected_format();
 			const matched_ext = extension_match[1].toLowerCase();
@@ -2554,7 +2566,9 @@ function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFile
 			}
 		}
 	};
-	$file_name.on("input", select_file_type_from_file_name);
+	if (promptForName) {
+		$file_name.on("input", select_file_type_from_file_name);
+	}
 	if (defaultFileFormatID && formats.some((format)=> format.formatID === defaultFileFormatID)) {
 		$file_type.val(defaultFileFormatID);
 	} else {
@@ -2564,6 +2578,9 @@ function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFile
 	// Change file extension when selecting file type
 	// allowing non-default extension like .dib vs .bmp, .jpg vs .jpeg to stay
 	const update_extension_from_file_type = (add_extension_if_absent)=> {
+		if (!promptForName) {
+			return;
+		}
 		let file_name = $file_name.val();
 		const selected_format = get_selected_format();
 		if (!selected_format) {
@@ -2593,7 +2610,10 @@ function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFile
 		$w.$Button(localize("Save"), () => {
 			$w.close();
 			update_extension_from_file_type(true);
-			resolve({newFileName: $file_name.val(), newFileFormatID: $file_type.val()});
+			resolve({
+				newFileName: promptForName ? $file_name.val() : defaultFileName,
+				newFileFormatID: $file_type.val(),
+			});
 		});
 		$w.$Button(localize("Cancel"), () => {
 			$w.close();
@@ -2605,7 +2625,9 @@ function choose_file_name_and_type({dialogTitle=localize("Save As"), defaultFile
 			$w.css({ top: 20 });
 		}
 
-		$file_name.focus().select();
+		if (promptForName) {
+			$file_name.focus().select();
+		}
 	});
 }
 
