@@ -360,12 +360,7 @@ function show_custom_zoom_window() {
 				mag = parseFloat(option_val) / 100;
 			}
 			if(isNaN(mag)){
-				const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
-				// $msgw.$main.text("The value specified for custom zoom was invalid.");
-				$msgw.$main.text(localize("Please enter a number."));
-				$msgw.$Button(localize("OK"), () => {
-					$msgw.close();
-				});
+				please_enter_a_number();
 				return;
 			}
 		}else{
@@ -2347,6 +2342,14 @@ function show_convert_to_black_and_white() {
 	$w.center();
 }
 
+function please_enter_a_number() {
+	const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
+	$msgw.$main.text(localize("Please enter a number."));
+	$msgw.$Button(localize("OK"), () => {
+		$msgw.close();
+	});
+}
+
 function image_flip_and_rotate(){
 	const $w = new $FormToolWindow(localize("Flip and Rotate"));
 	$w.addClass("flip-and-rotate");
@@ -2421,12 +2424,7 @@ function image_flip_and_rotate(){
 				const angle = angle_deg / 360 * TAU;
 		
 				if(isNaN(angle)){
-					const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
-					// $msgw.$main.text("The value specified for Degrees was invalid.");
-					$msgw.$main.text(localize("Please enter a number."));
-					$msgw.$Button(localize("OK"), () => {
-						$msgw.close();
-					});
+					please_enter_a_number();
 					return;
 				}
 				rotate(angle);
@@ -2491,6 +2489,10 @@ function image_stretch_and_skew(){
 		const yscale = parseFloat(stretch_y.val())/100;
 		const hskew = parseFloat(skew_x.val())/360*TAU;
 		const vskew = parseFloat(skew_y.val())/360*TAU;
+		if (isNaN(xscale) || isNaN(yscale) || isNaN(hskew) || isNaN(vskew)) {
+			please_enter_a_number();
+			return;
+		}
 		stretch_and_skew(xscale, yscale, hskew, vskew);
 		$canvas_area.trigger("resize");
 		$w.close();
