@@ -888,6 +888,14 @@ function are_you_sure(action, canceled){
 	}
 }
 
+function please_enter_a_number() {
+	const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
+	$msgw.$main.text(localize("Please enter a number."));
+	$msgw.$Button(localize("OK"), () => {
+		$msgw.close();
+	}).focus();
+}
+
 function show_error_message(message, error){
 	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window squish");
 	$w.$main.text(message);
@@ -2347,14 +2355,6 @@ function show_convert_to_black_and_white() {
 		$w.close();
 	});
 	$w.center();
-}
-
-function please_enter_a_number() {
-	const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
-	$msgw.$main.text(localize("Please enter a number."));
-	$msgw.$Button(localize("OK"), () => {
-		$msgw.close();
-	}).focus();
 }
 
 function image_flip_and_rotate(){
