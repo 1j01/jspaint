@@ -2403,19 +2403,78 @@ function image_flip_and_rotate(){
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append(`
 		<legend>${localize("Flip or rotate")}</legend>
-		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-horizontal" value="flip-horizontal" checked/><label for="flip-horizontal">${display_hotkey(localize("&Flip horizontal"))}</label></div>
-		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-vertical" value="flip-vertical"/><label for="flip-vertical">${display_hotkey(localize("Flip &vertical"))}</label></div>
-		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="rotate-by-angle" value="rotate-by-angle"/><label for="rotate-by-angle">${display_hotkey(localize("&Rotate by angle"))}</label></div>
+		<div class="radio-wrapper">
+			<input
+				type="radio"
+				name="flip-or-rotate"
+				id="flip-horizontal"
+				value="flip-horizontal"
+				aria-keyshortcuts="Alt+F"
+				checked
+			/><label for="flip-horizontal">${display_hotkey(localize("&Flip horizontal"))}</label>
+		</div>
+		<div class="radio-wrapper">
+			<input
+				type="radio"
+				name="flip-or-rotate"
+				id="flip-vertical"
+				value="flip-vertical"
+				aria-keyshortcuts="Alt+V"
+			/><label for="flip-vertical">${display_hotkey(localize("Flip &vertical"))}</label>
+		</div>
+		<div class="radio-wrapper">
+			<input
+				type="radio"
+				name="flip-or-rotate"
+				id="rotate-by-angle"
+				value="rotate-by-angle"
+				aria-keyshortcuts="Alt+R"
+			/><label for="rotate-by-angle">${display_hotkey(localize("&Rotate by angle"))}</label>
+		</div>
 	`);
 
 	const $rotate_by_angle = $(E("div")).appendTo($fieldset);
 	$rotate_by_angle.addClass("sub-options");
+	for (const label_with_hotkey of [
+		"&90°",
+		"&180°",
+		"&270°",
+	]) {
+		const degrees = parseInt(remove_hotkey(label_with_hotkey), 10);
+		$rotate_by_angle.append(`
+			<div class="radio-wrapper">
+				<input
+					type="radio"
+					name="rotate-by-angle"
+					value="${degrees}"
+					id="rotate-${degrees}"
+					aria-keyshortcuts="Alt+${get_hotkey(label_with_hotkey).toUpperCase()}"
+				/><label
+					for="rotate-${degrees}"
+				>${display_hotkey(label_with_hotkey)}</label>
+			</div>
+		`);
+	}
 	$rotate_by_angle.append(`
-		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="90" id="rotate-90" checked/><label for="rotate-90">${display_hotkey("&90°")}</label></div>
-		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="180" id="rotate-180"/><label for="rotate-180">${display_hotkey("&180°")}</label></div>
-		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="270" id="rotate-270"/><label for="rotate-270">${display_hotkey("&270°")}</label></div>
-		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" id="custom-degrees" value="" class="no-spinner inset-deep" style="width: 50px"/> <label for="custom-degrees">${localize("Degrees")}</label></div>
+		<div class="radio-wrapper">
+			<input
+				type="radio"
+				name="rotate-by-angle"
+				value="arbitrary"
+			/><input
+				type="number"
+				min="-360"
+				max="360"
+				name="rotate-by-arbitrary-angle"
+				id="custom-degrees"
+				value=""
+				class="no-spinner inset-deep"
+				style="width: 50px"
+			/>
+			<label for="custom-degrees">${localize("Degrees")}</label>
+		</div>
 	`);
+	$rotate_by_angle.find("#rotate-90").attr({checked: true});
 	// Disabling inputs makes them not even receive mouse events,
 	// and so pointer-events: none is needed to respond to events on the parent.
 	$rotate_by_angle.find("input").attr({disabled: true});
@@ -2481,23 +2540,7 @@ function image_flip_and_rotate(){
 
 	$w.center();
 
-	$w.on("keydown", (event)=> {
-		if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-			const idToClick = {
-				"f": "flip-horizontal",
-				"v": "flip-vertical",
-				"r": "rotate-by-angle",
-				"9": "rotate-90",
-				"1": "rotate-180",
-				"2": "rotate-270",
-			}[event.key];
-			if (idToClick) {
-				event.preventDefault();
-				event.stopPropagation();
-				$w.$main.find(`#${idToClick}`).click().focus();
-			}
-		}
-	});
+	handle_keyshortcuts_alt_only($w);
 }
 
 function image_stretch_and_skew(){
@@ -2573,14 +2616,22 @@ function image_stretch_and_skew(){
 
 	$w.center();
 
-	$w.on("keydown", (event)=> {
+	handle_keyshortcuts_alt_only($w);
+}
+
+// could be expanded to handle all different modifiers, but for now I'm naming it so the limitation is clear
+function handle_keyshortcuts_alt_only($container) {
+	$container.on("keydown", (event)=> {
 		if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-			const to_click = $w.find(`[aria-keyshortcuts="Alt+${event.key.toUpperCase()}"]`)[0];
-			if (to_click) {
+			let shortcut_target = $container.find(`[aria-keyshortcuts="Alt+${event.key.toUpperCase()}"]`)[0];
+			if (shortcut_target) {
 				event.preventDefault();
 				event.stopPropagation();
-				to_click.click();
-				to_click.focus();
+				if (shortcut_target.disabled) {
+					shortcut_target = shortcut_target.closest(".radio-wrapper");
+				}
+				shortcut_target.click();
+				shortcut_target.focus();
 			}
 		}
 	});
