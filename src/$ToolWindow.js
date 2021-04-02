@@ -33,30 +33,22 @@ function $ToolWindow($component){
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
-		if (!focused) {
-			focused = true;
-			if (last_focused_control) {
-				last_focused_control.focus();
-			}
-			if (event.type === "pointerdown") {
-				event.preventDefault();
-			}
-		} else {
-			// Wait for other pointerdown handlers and default behavior
-			// If nothing new is focused by the end of that, we should keep focus on the last focused control
-			requestAnimationFrame(()=> {
-				if (
-					!document.activeElement ||
-					document.activeElement === document.body ||
-					document.activeElement === document.documentElement
-				) {
-					focused = true;
-					if (last_focused_control) {
-						last_focused_control.focus();
-					}
+		// Wait for other pointerdown handlers and default behavior
+		// If nothing is focused within the window by the end of that,
+		// we should set focus to the last focused control.
+		// This also handles keeping the control focused when clicking in the blank space of the window.
+		requestAnimationFrame(()=> {
+			if (
+				!document.activeElement ||
+				document.activeElement === document.body ||
+				document.activeElement === document.documentElement
+			) {
+				focused = true;
+				if (last_focused_control) {
+					last_focused_control.focus();
 				}
-			});
-		}
+			}
+		});
 	});
 	// Assumption: no control will exist in the window yet,
 	// so any element.focus() will be after this "focusin" handler is set up.
