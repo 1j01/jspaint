@@ -2441,6 +2441,11 @@ function image_flip_and_rotate(){
 		$wrapper.find("input[type='radio']").prop("checked", true);
 	});
 
+	$fieldset.find("input[name='rotate-by-arbitrary-angle']").on("input", ()=> {
+		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
+		$fieldset.find("input[value='arbitrary']").prop("checked", true);
+	});
+
 	$w.$Button(localize("OK"), () => {
 		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		switch(action){
