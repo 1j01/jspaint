@@ -29,15 +29,17 @@ function $ToolWindow($component){
 	});
 	var focused = false;
 	var last_focused_control;
-	$w.on("pointerdown", (event) => {
+	$w.on("pointerdown refocus-window", (event) => {
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
 		if (!focused) {
 			focused = true;
-			event.preventDefault();
 			if (last_focused_control) {
 				last_focused_control.focus();
+			}
+			if (event.type === "pointerdown") {
+				event.preventDefault();
 			}
 		} else {
 			// Wait for other pointerdown handlers and default behavior
@@ -277,6 +279,10 @@ function $ToolWindow($component){
 		}
 		$w.remove();
 		$w.closed = true;
+		// Focus next-topmost window
+		$(
+			$(".window:visible").toArray().sort((a, b)=> b.style.zIndex - a.style.zIndex)[0]
+		).triggerHandler("refocus-window");
 	};
 	$w.closed = false;
 	
