@@ -2401,20 +2401,19 @@ function image_flip_and_rotate(){
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
-	// @TODO: accelerators (hotkeys)
 	$fieldset.append(`
 		<legend>${localize("Flip or rotate")}</legend>
-		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-horizontal" value="flip-horizontal" checked/><label for="flip-horizontal">${localize("Flip horizontal")}</label></div>
-		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-vertical" value="flip-vertical"/><label for="flip-vertical">${localize("Flip vertical")}</label></div>
-		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="rotate-by-angle" value="rotate-by-angle"/><label for="rotate-by-angle">${localize("Rotate by angle")}</label></div>
+		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-horizontal" value="flip-horizontal" checked/><label for="flip-horizontal">${display_hotkey(localize("&Flip horizontal"))}</label></div>
+		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-vertical" value="flip-vertical"/><label for="flip-vertical">${display_hotkey(localize("Flip &vertical"))}</label></div>
+		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="rotate-by-angle" value="rotate-by-angle"/><label for="rotate-by-angle">${display_hotkey(localize("&Rotate by angle"))}</label></div>
 	`);
 
 	const $rotate_by_angle = $(E("div")).appendTo($fieldset);
 	$rotate_by_angle.addClass("sub-options");
 	$rotate_by_angle.append(`
-		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="90" id="rotate-90" checked/><label for="rotate-90">90°</label></div>
-		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="180" id="rotate-180"/><label for="rotate-180">180°</label></div>
-		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="270" id="rotate-270"/><label for="rotate-270">270°</label></div>
+		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="90" id="rotate-90" checked/><label for="rotate-90">${display_hotkey("&90°")}</label></div>
+		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="180" id="rotate-180"/><label for="rotate-180">${display_hotkey("&180°")}</label></div>
+		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="270" id="rotate-270"/><label for="rotate-270">${display_hotkey("&270°")}</label></div>
 		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" id="custom-degrees" value="" class="no-spinner inset-deep" style="width: 50px"/> <label for="custom-degrees">${localize("Degrees")}</label></div>
 	`);
 	// Disabling inputs makes them not even receive mouse events,
@@ -2481,6 +2480,24 @@ function image_flip_and_rotate(){
 	});
 
 	$w.center();
+
+	$w.on("keydown", (event)=> {
+		if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+			const idToClick = {
+				"f": "flip-horizontal",
+				"v": "flip-vertical",
+				"r": "rotate-by-angle",
+				"9": "rotate-90",
+				"1": "rotate-180",
+				"2": "rotate-270",
+			}[event.key];
+			if (idToClick) {
+				event.preventDefault();
+				event.stopPropagation();
+				$w.$main.find(`#${idToClick}`).click().focus();
+			}
+		}
+	});
 }
 
 function image_stretch_and_skew(){

@@ -383,7 +383,7 @@
 			}
 			function display_hotkey(text) {
 				// misnomer: using .menu-hotkey out of lazyness, instead of a more general term like .hotkey or .accelerator
-				return text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&");
+				return `<span style="white-space: pre">${text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&")}</span>`;
 			}
 			// function get_hotkey(text) {
 			// 	return text[index_of_hotkey(text) + 1].toUpperCase();
