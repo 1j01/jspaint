@@ -1570,18 +1570,20 @@ function show_document_history() {
 	$w.title("Document History");
 	$w.addClass("history-window squish");
 	$w.$content.html(`
-		<div class="history-view"></div>
+		<div class="history-view" tabIndex="0"></div>
 	`);
 
 	const $history_view = $w.$content.find(".history-view");
+	$history_view.focus();
 
 	let previous_scroll_position = 0;
 
 	let rendered_$entries = [];
+	let current_$entry;
 
 	function render_tree_from_node(node) {
 		const $entry = $(`
-			<div class="history-entry" tabIndex="-1">
+			<div class="history-entry">
 				<div class="history-entry-icon-area"></div>
 				<div class="history-entry-name"></div>
 			</div>
@@ -1591,6 +1593,7 @@ function show_document_history() {
 		$entry.find(".history-entry-icon-area").append(node.icon);
 		if (node === current_history_node) {
 			$entry.addClass("current");
+			current_$entry = $entry;
 			requestAnimationFrame(()=> {
 				// scrollIntoView causes <html> to scroll when the window is partially offscreen,
 				// despite overflow: hidden on html and body, so it's not an option.
@@ -1638,8 +1641,25 @@ function show_document_history() {
 	};
 	render_tree();
 
-	requestAnimationFrame(()=> {
-		$w.find(".history-entry.current").focus();
+	// This is different from Ctrl+Z/Ctrl+Shift+Z because it goes over all branches of the history tree, chronologically,
+	// not just one branch.
+	const go_by = (index_delta)=> {
+		const from_index = rendered_$entries.indexOf(current_$entry);
+		const to_index = from_index + index_delta;
+		if (rendered_$entries[to_index]) {
+			rendered_$entries[to_index].click();
+		}
+	};
+	$history_view.on("keydown", (event)=> {
+		if (!event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey) {
+			if (event.key === "ArrowDown" || event.key === "Down") {
+				go_by(1);
+				event.preventDefault();
+			} else if (event.key === "ArrowUp" || event.key === "Up") {
+				go_by(-1);
+				event.preventDefault();
+			}
+		}
 	});
 
 	$G.on("history-update", render_tree);
