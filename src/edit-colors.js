@@ -514,7 +514,7 @@ function choose_color(initial_color, callback) {
 	});
 
 	$w.on("keydown", (event)=> {
-		if (event.altKey) {
+		if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
 			switch (event.key) {
 				case "o":
 					set_color(get_current_color());
