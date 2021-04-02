@@ -2509,7 +2509,7 @@ function image_stretch_and_skew(){
 	const $fieldset_skew = $(E("fieldset")).appendTo($w.$main);
 	$fieldset_skew.append(`<legend>${localize("Skew")}</legend><table></table>`);
 
-	const $RowInput = ($table, img_src, label_text, default_value, label_unit, min, max) => {
+	const $RowInput = ($table, img_src, label_with_hotkey, default_value, label_unit, min, max) => {
 		const $tr = $(E("tr")).appendTo($table);
 		const $img = $(E("img")).attr({
 			src: `images/transforms/${img_src}.png`,
@@ -2525,21 +2525,22 @@ function image_stretch_and_skew(){
 			max,
 			value: default_value,
 			id: input_id,
+			"aria-keyshortcuts": `Alt+${get_hotkey(label_with_hotkey).toUpperCase()}`,
 		}).css({
 			width: "40px"
 		}).addClass("no-spinner inset-deep");
 		$(E("td")).appendTo($tr).append($img);
-		$(E("td")).appendTo($tr).append($(E("label")).text(label_text).attr("for", input_id));
+		$(E("td")).appendTo($tr).append($(E("label")).html(display_hotkey(label_with_hotkey)).attr("for", input_id));
 		$(E("td")).appendTo($tr).append($input);
 		$(E("td")).appendTo($tr).text(label_unit);
 
 		return $input;
 	};
 
-	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", localize("Horizontal:"), 100, "%", 1, 5000);
-	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", localize("Vertical:"), 100, "%", 1, 5000);
-	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", localize("Horizontal:"), 0, localize("Degrees"), -90, 90);
-	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", localize("Vertical:"), 0, localize("Degrees"), -90, 90);
+	const stretch_x = $RowInput($fieldset_stretch.find("table"), "stretch-x", localize("&Horizontal:"), 100, "%", 1, 5000);
+	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", localize("&Vertical:"), 100, "%", 1, 5000);
+	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", localize("H&orizontal:"), 0, localize("Degrees"), -90, 90);
+	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", localize("V&ertical:"), 0, localize("Degrees"), -90, 90);
 
 	$w.$Button(localize("OK"), () => {
 		const xscale = parseFloat(stretch_x.val())/100;
@@ -2571,6 +2572,18 @@ function image_stretch_and_skew(){
 	});
 
 	$w.center();
+
+	$w.on("keydown", (event)=> {
+		if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+			const to_click = $w.find(`[aria-keyshortcuts="Alt+${event.key.toUpperCase()}"]`)[0];
+			if (to_click) {
+				event.preventDefault();
+				event.stopPropagation();
+				to_click.click();
+				to_click.focus();
+			}
+		}
+	});
 }
 
 function save_as_prompt({
