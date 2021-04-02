@@ -376,6 +376,14 @@ select.inset-deep {
 	outline: none;
 }
 
+input[type=text]:disabled,
+input[type=url]:disabled,
+input[type=search]:disabled,
+input[type=number]:disabled {
+	background: var(--ButtonFace);
+	color: var(--GrayText);
+}
+
 input[type=number].no-spinner::-webkit-inner-spin-button,
 input[type=number].no-spinner::-webkit-outer-spin-button {
 	-webkit-appearance: none;
@@ -383,6 +391,10 @@ input[type=number].no-spinner::-webkit-outer-spin-button {
 }
 input[type=number].no-spinner {
 	-moz-appearance: textfield;
+}
+
+input:disabled + label {
+	color: var(--GrayText);
 }
 
 /*

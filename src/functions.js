@@ -2404,46 +2404,42 @@ function image_flip_and_rotate(){
 	// @TODO: accelerators (hotkeys)
 	$fieldset.append(`
 		<legend>${localize("Flip or rotate")}</legend>
-		<label><input type="radio" name="flip-or-rotate" value="flip-horizontal" checked/>${localize("Flip horizontal")}</label>
-		<label><input type="radio" name="flip-or-rotate" value="flip-vertical"/>${localize("Flip vertical")}</label>
-		<label><input type="radio" name="flip-or-rotate" value="rotate-by-angle"/>${localize("Rotate by angle")}</label>
+		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-horizontal" value="flip-horizontal" checked/><label for="flip-horizontal">${localize("Flip horizontal")}</label></div>
+		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="flip-vertical" value="flip-vertical"/><label for="flip-vertical">${localize("Flip vertical")}</label></div>
+		<div class="radio-wrapper"><input type="radio" name="flip-or-rotate" id="rotate-by-angle" value="rotate-by-angle"/><label for="rotate-by-angle">${localize("Rotate by angle")}</label></div>
 	`);
 
 	const $rotate_by_angle = $(E("div")).appendTo($fieldset);
 	$rotate_by_angle.addClass("sub-options");
 	$rotate_by_angle.append(`
-		<label><input type="radio" name="rotate-by-angle" value="90" checked/>90°</label>
-		<label><input type="radio" name="rotate-by-angle" value="180"/>180°</label>
-		<label><input type="radio" name="rotate-by-angle" value="270"/>270°</label>
-		<label><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" value="" class="no-spinner inset-deep" style="width: 50px"/> ${localize("Degrees")}</label>
+		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="90" id="rotate-90" checked/><label for="rotate-90">90°</label></div>
+		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="180" id="rotate-180"/><label for="rotate-180">180°</label></div>
+		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="270" id="rotate-270"/><label for="rotate-270">270°</label></div>
+		<div class="radio-wrapper"><input type="radio" name="rotate-by-angle" value="arbitrary"/><input type="number" min="-360" max="360" name="rotate-by-arbitrary-angle" id="custom-degrees" value="" class="no-spinner inset-deep" style="width: 50px"/> <label for="custom-degrees">${localize("Degrees")}</label></div>
 	`);
 	// Disabling inputs makes them not even receive mouse events,
-	// and so pointer-events: none is needed to respond to events on the parent,
-	// but it doesn't seem very useful either.
-	// Probably they should just be enabled, if you're supposed to be able to interact with them!
-	// $rotate_by_angle.find("input").attr({disabled: true}).css({pointerEvents: "none"});
-	// $fieldset.find("input").on("change", () => {
-	// 	const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
-	// 	$rotate_by_angle.find("input").attr({
-	// 		disabled: action !== "rotate-by-angle"
-	// 	});
-	// });
-	$rotate_by_angle.find("label, input").on("click", (e)=> {
+	// and so pointer-events: none is needed to respond to events on the parent.
+	$rotate_by_angle.find("input").attr({disabled: true});
+	$fieldset.find("input").on("change", () => {
+		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
+		$rotate_by_angle.find("input").attr({
+			disabled: action !== "rotate-by-angle"
+		});
+	});
+	$rotate_by_angle.find(".radio-wrapper").on("click", (e)=> {
 		// Select "Rotate by angle" and enable subfields
 		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
 		$fieldset.find("input").triggerHandler("change");
 
-		const $label = $(e.target).closest("label");
+		const $wrapper = $(e.target).closest(".radio-wrapper");
 		// Focus the numerical input if this field has one
-		const num_input = $label.find("input[type='number']")[0];
+		const num_input = $wrapper.find("input[type='number']")[0];
 		if (num_input) {
 			num_input.focus();
 		}
 		// Select the radio for this field
-		$label.find("input[type='radio']").prop("checked", true);
+		$wrapper.find("input[type='radio']").prop("checked", true);
 	});
-
-	$fieldset.find("label").css({display: "block"});
 
 	$w.$Button(localize("OK"), () => {
 		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();

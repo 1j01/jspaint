@@ -685,8 +685,20 @@ html, body, .jspaint {
 .flip-and-rotate fieldset {
 	width: 200px;
 }
+.flip-and-rotate fieldset > label {
+	display: flex !important; /* overriding `.window:not(.edit-colors-window) .window-content label` */
+}
+.flip-and-rotate input:disabled {
+	/* pointer events already can't get recieved on disabled input elements,
+	but this lets them be recieved on a parent,
+	in order to enable the element */
+	pointer-events: none;
+}
 .flip-and-rotate .sub-options {
 	padding-right: 30px;
+}
+.flip-and-rotate .radio-wrapper {
+	width: fit-content;
 }
 
 /* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */

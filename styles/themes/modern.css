@@ -419,6 +419,10 @@ input:invalid {
 	opacity: 0.6;
 }
 
+input:disabled + label {
+	color: gray;
+}
+
 details {
 	border: 1px solid gray;
 }

@@ -1245,6 +1245,7 @@ function init_eye_gaze_mode() {
 			textarea,
 			label,
 			a,
+			.flip-and-rotate .sub-options .radio-wrapper,
 			.current-colors,
 			.color-button,
 			.edit-colors-window .swatch,
@@ -1346,7 +1347,8 @@ function init_eye_gaze_mode() {
 				if (apparent_hover_candidate) {
 					if (
 						apparent_hover_candidate.target !== hover_candidate.target &&
-						apparent_hover_candidate.target.closest("label") !== hover_candidate.target
+						apparent_hover_candidate.target.closest("label") !== hover_candidate.target &&
+						apparent_hover_candidate.target.closest(".radio-wrapper") !== hover_candidate.target
 					) {
 						hover_candidate = null;
 						deactivate_for_at_least(inactive_after_invalid_timespan);
