@@ -2428,13 +2428,6 @@ function image_flip_and_rotate(){
 	// 		disabled: action !== "rotate-by-angle"
 	// 	});
 	// });
-	$rotate_by_angle.find("input[name='rotate-by-arbitrary-angle']").on("focus", ()=> {
-		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
-		$fieldset.find("input[value='arbitrary']").prop("checked", true);
-	});
-	$rotate_by_angle.find("input[name='rotate-by-angle']").on("focus", ()=> {
-		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
-	});
 	$rotate_by_angle.find("label, input").on("click", (e)=> {
 		// Select "Rotate by angle" and enable subfields
 		$fieldset.find("input[value='rotate-by-angle']").prop("checked", true);
