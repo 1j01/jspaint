@@ -130,25 +130,50 @@ window.systemHookDefaults = {
 			const new_format = formats.find((format)=> format.formatID === newFileFormatID);
 			const blob = await getBlob(new_format && new_format.formatID);
 			formats = [new_format];
-			const newHandle = await showSaveFilePicker({
-				types: formats.map((format)=> {
-					return {
-						description: format.name,
-						accept: {
-							[format.mimeType]: format.extensions.map((extension)=> "." + extension)
+			let newHandle;
+			let newFileName;
+			try {
+				newHandle = await showSaveFilePicker({
+					types: formats.map((format) => {
+						return {
+							description: format.name,
+							accept: {
+								[format.mimeType]: format.extensions.map((extension) => "." + extension)
+							}
 						}
-					}
-				})
-			});
-			// const new_format =
-			// 	get_format_from_extension(formats, newHandle.name) ||
-			// 	formats.find((format)=> format.formatID === defaultFileFormatID);
-			// const blob = await getBlob(new_format && new_format.formatID);
-			const writableStream = await newHandle.createWritable();
-			await writableStream.write(blob);
-			await writableStream.close();
+					})
+				});
+				newFileName = newHandle.name;
+				// const new_format =
+				// 	get_format_from_extension(formats, newHandle.name) ||
+				// 	formats.find((format)=> format.formatID === defaultFileFormatID);
+				// const blob = await getBlob(new_format && new_format.formatID);
+				const writableStream = await newHandle.createWritable();
+				await writableStream.write(blob);
+				await writableStream.close();
+			} catch (error) {
+				if (error.name === "AbortError") {
+					// user canceled save
+					return;
+				}
+				// console.warn("Error during saveFile (for showSaveFilePicker; now falling back to saveAs)", error);
+				// If you're using accessibility options Speech Recognition or Eye Gaze Mode,
+				// it fails based on a notion of it not being a "user gesture".
+				// saveAs will likely also fail on the same basis,
+				// but at least in chrome, there's a "Downloads Blocked" icon with a popup where you can say Always Allow.
+				// However, we can't detect if it's allowed or not, and the setting probably won't apply to showSaveFilePicker.
+				// newFileName = (newFileName || file_name || localize("untitled"))
+				// 	.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "") +
+				// 	"." + new_format.extensions[0];
+				// saveAs(blob, newFileName);
+				// if (error.message.match(/gesture/)) {
+				// 	show_error_message("Your browser blocked the file from being saved, because you didn't use the mouse or keyboard directly to save. Try looking for a Downloads Blocked icon and say Always Allow, or save again with the keyboard or mouse.", error);
+				// }
+				show_error_message("Sorry, you must use the keyboard or mouse directly to save. To save a file, press Ctrl+Shift+S.");
+				return;
+			}
 			savedCallbackUnreliable && savedCallbackUnreliable({
-				newFileName: newHandle.name,
+				newFileName: newFileName,
 				newFileFormatID: new_format && new_format.formatID,
 				newFileHandle: newHandle,
 				newBlob: blob,
