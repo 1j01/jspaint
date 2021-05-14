@@ -266,9 +266,11 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	// maybe do something fancier like special-casing large chunks of single-color image
 	// (octree? or just have a higher level stack of chunks to fill and check at if a chunk is homogeneous)
 
-	const stack = [[start_x, start_y]];
 	const c_width = main_canvas.width;
 	const c_height = main_canvas.height;
+	start_x = Math.max(0, Math.min(Math.floor(start_x), c_width));
+	start_y = Math.max(0, Math.min(Math.floor(start_y), c_height));
+	const stack = [[start_x, start_y]];
 	const id = ctx.getImageData(0, 0, c_width, c_height);
 	let pixel_pos = (start_y*c_width + start_x) * 4;
 	const start_r = id.data[pixel_pos+0];
@@ -374,9 +376,11 @@ function draw_fill(ctx, start_x, start_y, swatch) {
 }
 
 function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
+	const c_width = main_canvas.width;
+	const c_height = main_canvas.height;
+	start_x = Math.max(0, Math.min(Math.floor(start_x), c_width));
+	start_y = Math.max(0, Math.min(Math.floor(start_y), c_height));
 	const stack = [[start_x, start_y]];
-	const c_width = source_ctx.canvas.width;
-	const c_height = source_ctx.canvas.height;
 	const source_id = source_ctx.getImageData(0, 0, c_width, c_height);
 	const dest_id = dest_ctx.getImageData(0, 0, c_width, c_height);
 	let pixel_pos = (start_y*c_width + start_x) * 4;
@@ -505,7 +509,9 @@ function find_color_globally(source_image_data, dest_image_data, find_r, find_g,
 	}
 }
 
-function draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
+function draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_r, fill_g, fill_b, fill_a) {
+	x = Math.max(0, Math.min(Math.floor(x), ctx.canvas.width));
+	y = Math.max(0, Math.min(Math.floor(y), ctx.canvas.height));
 	const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	const start_index = (y*image_data.width + x) * 4;
 	const start_r = image_data.data[start_index+0];
@@ -531,7 +537,9 @@ function draw_noncontiguous_fill(ctx, x, y, swatch){
 	}
 }
 
-function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y){
+function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y) {
+	x = Math.max(0, Math.min(Math.floor(x), source_ctx.canvas.width));
+	y = Math.max(0, Math.min(Math.floor(y), source_ctx.canvas.height));
 	const source_image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	const dest_image_data = dest_ctx.getImageData(0, 0, dest_ctx.canvas.width, dest_ctx.canvas.height);
 	const start_index = (y*source_image_data.width + x) * 4;
