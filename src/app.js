@@ -1283,6 +1283,7 @@ function init_eye_gaze_mode() {
 			.main-canvas,
 			.selection canvas,
 			.handle,
+			.grab-region,
 			.window:not(.maximized) .window-titlebar,
 			.history-entry,
 			.canvas-area
@@ -1407,7 +1408,7 @@ function init_eye_gaze_mode() {
 						})));
 						const is_drag =
 							hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
-							hover_candidate.target.matches(".selection, .selection *, .handle") ||
+							hover_candidate.target.matches(".selection, .selection *, .handle, .grab-region") ||
 							(
 								hover_candidate.target === main_canvas &&
 								selected_tool.id !== TOOL_PICK_COLOR &&

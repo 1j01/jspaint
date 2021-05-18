@@ -609,6 +609,7 @@ html, body, .jspaint {
 	width: 3px;
 	height: 3px;
 	z-index: 1;
+	pointer-events: none; /* important for eye gaze mode */
 }
 .grab-region {
 	/* the grab-region make handles way easier to grab by extending outside the visual representation of the handle */
