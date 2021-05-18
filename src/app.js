@@ -1358,6 +1358,7 @@ function init_eye_gaze_mode() {
 			pointerType: "mouse",
 			isPrimary: true,
 			bubbles: true,
+			cancelable: true,
 		};
 	};
 
