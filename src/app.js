@@ -1231,6 +1231,22 @@ const eye_gaze_mode_config = {
 			selected_tool.id !== TOOL_CURVE
 		)
 	),
+	click: (target) => {
+		if (target.matches("button:not(.toggle)")) {
+			target.style.borderImage = "var(--inset-deep-border-image)";
+			setTimeout(()=> {
+				target.style.borderImage = "";
+				// delay the button click as well so the pressed state is
+				// visible even if the button closes a dialog
+				target.click();
+			}, 100);
+		} else {
+			target.click();
+			if (target.matches("input, textarea")) {
+				target.focus();
+			}
+		}
+	},
 };
 
 function init_eye_gaze_mode() {
@@ -1311,8 +1327,8 @@ function init_eye_gaze_mode() {
 			time: Date.now(),
 		};
 		
-		// top level menus are just immediately switched between for now
-		// prevent awkward hover clicks on top level menu buttons while menus are open
+		// Top level menus are just immediately switched between for now.
+		// Prevent awkward hover clicks on top level menu buttons while menus are open.
 		if(
 			(target.closest(".menu-button") || target.matches(".menu-container")) &&
 			document.querySelector(".menu-button.active") != null
@@ -1446,22 +1462,7 @@ function init_eye_gaze_mode() {
 									buttons: 0,
 								})
 							));
-							if (hover_candidate.target.matches("button:not(.toggle)")) {
-								((button)=> {
-									button.style.borderImage = "var(--inset-deep-border-image)";
-									setTimeout(()=> {
-										button.style.borderImage = "";
-										// delay the button click to here so the pressed state is
-										// visible even when the button closes a dialog
-										button.click();
-									}, 100);
-								})(hover_candidate.target);
-							} else {
-								hover_candidate.target.click();
-								if (hover_candidate.target.matches("input, textarea")) {
-									hover_candidate.target.focus();
-								}
-							}
+							eye_gaze_mode_config.click(hover_candidate.target);
 						}
 					}
 					hover_candidate = null;
