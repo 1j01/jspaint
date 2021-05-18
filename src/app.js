@@ -1183,7 +1183,6 @@ if ($("body").hasClass("eye-gaze-mode")) {
 }
 
 const eye_gaze_mode_config = {
-	// .canvas-area is handled specially (it's not itself a desired target)
 	targets: `
 		button:not([disabled]),
 		input,
@@ -1205,14 +1204,13 @@ const eye_gaze_mode_config = {
 		.handle,
 		.grab-region,
 		.window:not(.maximized) .window-titlebar,
-		.history-entry,
-		.canvas-area
+		.history-entry
 	`,
 	noCenter: (target) => (
 		target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")
 	),
 	retarget: [
-		{from: $canvas_area[0], to: main_canvas, within: 50},
+		{from: ".canvas-area", to: ".main-canvas", withinMargin: 50},
 	],
 	isEquivalentTarget: (apparent_hover_target, hover_target) => (
 		apparent_hover_target.closest("label") !== hover_target &&
@@ -1338,27 +1336,21 @@ function init_eye_gaze_mode() {
 			return null;
 		}
 
-		target = target.closest(eye_gaze_mode_config.targets);
-
-		if (!target) {
-			return null;
-		}
-
-		// if (target.matches(".help-window li")) {
-		// 	target = target.querySelector(".item");
-		// }
-
-		// Nudge hovers near the edges of the canvas onto the canvas
-		for (const {from, to, margin=Infinity} of eye_gaze_mode_config.retarget) {
-			if (target === from) {
-				const to_rect = to.getBoundingClientRect();
+		let retargeted = false;
+		for (const {from, to, withinMargin=Infinity} of eye_gaze_mode_config.retarget) {
+			if (target.matches(from)) {
+				const to_element =
+					to instanceof Element ? to :
+					typeof to === "function" ? to(target) :
+					(target.closest(to) || target.querySelector(to));
+				const to_rect = to_element.getBoundingClientRect();
 				if (
-					hover_candidate.x > to_rect.left - margin &&
-					hover_candidate.y > to_rect.top - margin &&
-					hover_candidate.x < to_rect.right + margin &&
-					hover_candidate.y < to_rect.bottom + margin
+					hover_candidate.x > to_rect.left - withinMargin &&
+					hover_candidate.y > to_rect.top - withinMargin &&
+					hover_candidate.x < to_rect.right + withinMargin &&
+					hover_candidate.y < to_rect.bottom + withinMargin
 				) {
-					target = to;
+					target = to_element;
 					hover_candidate.x = Math.min(
 						to_rect.right - 1,
 						Math.max(
@@ -1373,11 +1365,23 @@ function init_eye_gaze_mode() {
 							hover_candidate.y,
 						),
 					);
-				} else {
-					return null;
+					retargeted = true;
 				}
 			}
 		}
+
+		if (!retargeted) {
+			target = target.closest(eye_gaze_mode_config.targets);
+
+			if (!target) {
+				return null;
+			}
+		}
+
+		// if (target.matches(".help-window li")) {
+		// 	target = target.querySelector(".item");
+		// }
+
 		if (!eye_gaze_mode_config.noCenter(target)) {
 			// Nudge hover previews to the center of buttons and things
 			const rect = target.getBoundingClientRect();
