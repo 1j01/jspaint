@@ -1210,7 +1210,17 @@ const eye_gaze_mode_config = {
 		target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")
 	),
 	retarget: [
-		{from: ".canvas-area", to: ".main-canvas", withinMargin: 50},
+		// Nudge hovers near the edges of the canvas onto the canvas
+		{ from: ".canvas-area", to: ".main-canvas", withinMargin: 50 },
+		// Top level menus are just immediately switched between for now.
+		// Prevent awkward hover clicks on top level menu buttons while menus are open.
+		{
+			from: (target) => (
+				(target.closest(".menu-button") || target.matches(".menu-container")) &&
+				document.querySelector(".menu-button.active") != null
+			),
+			to: null,
+		}
 	],
 	isEquivalentTarget: (apparent_hover_target, hover_target) => (
 		apparent_hover_target.closest("label") !== hover_target &&
@@ -1327,45 +1337,44 @@ function init_eye_gaze_mode() {
 			time: Date.now(),
 		};
 		
-		// Top level menus are just immediately switched between for now.
-		// Prevent awkward hover clicks on top level menu buttons while menus are open.
-		if(
-			(target.closest(".menu-button") || target.matches(".menu-container")) &&
-			document.querySelector(".menu-button.active") != null
-		) {
-			return null;
-		}
-
 		let retargeted = false;
 		for (const {from, to, withinMargin=Infinity} of eye_gaze_mode_config.retarget) {
-			if (target.matches(from)) {
+			if (
+				from instanceof Element ? from === target :
+				typeof from === "function" ? from(target) :
+				target.matches(from)
+			) {
 				const to_element =
-					to instanceof Element ? to :
+					(to instanceof Element || to === null) ? to :
 					typeof to === "function" ? to(target) :
 					(target.closest(to) || target.querySelector(to));
-				const to_rect = to_element.getBoundingClientRect();
-				if (
-					hover_candidate.x > to_rect.left - withinMargin &&
-					hover_candidate.y > to_rect.top - withinMargin &&
-					hover_candidate.x < to_rect.right + withinMargin &&
-					hover_candidate.y < to_rect.bottom + withinMargin
-				) {
-					target = to_element;
-					hover_candidate.x = Math.min(
-						to_rect.right - 1,
-						Math.max(
-							to_rect.left,
-							hover_candidate.x,
-						),
-					);
-					hover_candidate.y = Math.min(
-						to_rect.bottom - 1,
-						Math.max(
-							to_rect.top,
-							hover_candidate.y,
-						),
-					);
-					retargeted = true;
+				if (to_element === null) {
+					return null;
+				} else if (to_element) {
+					const to_rect = to_element.getBoundingClientRect();
+					if (
+						hover_candidate.x > to_rect.left - withinMargin &&
+						hover_candidate.y > to_rect.top - withinMargin &&
+						hover_candidate.x < to_rect.right + withinMargin &&
+						hover_candidate.y < to_rect.bottom + withinMargin
+					) {
+						target = to_element;
+						hover_candidate.x = Math.min(
+							to_rect.right - 1,
+							Math.max(
+								to_rect.left,
+								hover_candidate.x,
+							),
+						);
+						hover_candidate.y = Math.min(
+							to_rect.bottom - 1,
+							Math.max(
+								to_rect.top,
+								hover_candidate.y,
+							),
+						);
+						retargeted = true;
+					}
 				}
 			}
 		}
