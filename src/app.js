@@ -1212,9 +1212,12 @@ const eye_gaze_mode_config = {
 	noCenter: (target) => (
 		target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")
 	),
-	isEquivalentTarget: (apparent_hover_target, hover_target)=> (
+	isEquivalentTarget: (apparent_hover_target, hover_target) => (
 		apparent_hover_target.closest("label") !== hover_target &&
 		apparent_hover_target.closest(".radio-wrapper") !== hover_target
+	),
+	dwellClickEvenIfPaused: (target) => (
+		target.matches(".toggle-dwell-clicking")
 	),
 	shouldDrag: (target)=> (
 		target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
@@ -1242,7 +1245,6 @@ function init_eye_gaze_mode() {
 	let recent_points = [];
 	let inactive_until_time = Date.now();
 	let paused = false;
-	let $pause_button;
 	let hover_candidate;
 	let gaze_dragging = null;
 
@@ -1482,7 +1484,7 @@ function init_eye_gaze_mode() {
 				gaze_dragging ||
 				(hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
 			
-			if (halo_target && (!paused || $pause_button[0] === halo_target)) {
+			if (halo_target && (!paused || eye_gaze_mode_config.dwellClickEvenIfPaused(halo_target))) {
 				let rect = halo_target.getBoundingClientRect();
 				const computed_style = getComputedStyle(halo_target);
 				let ancestor = halo_target;
@@ -1541,7 +1543,7 @@ function init_eye_gaze_mode() {
 					if (!gaze_dragging) {
 						hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 					}
-					if (hover_candidate && (paused && $pause_button[0] !== hover_candidate.target)) {
+					if (hover_candidate && (paused && !eye_gaze_mode_config.dwellClickEvenIfPaused(hover_candidate.target))) {
 						hover_candidate = null;
 					}
 				}
@@ -1605,7 +1607,7 @@ function init_eye_gaze_mode() {
 	const pause_button_text = "Pause Dwell Clicking";
 	const resume_button_text = "Resume Dwell Clicking";
 
-	$pause_button = $(`<button title="${pause_button_text}"/>`)
+	const $pause_button = $(`<button title="${pause_button_text}" class="toggle-dwell-clicking"/>`)
 	.on("click", ()=> {
 		paused = !paused;
 		$pause_button
