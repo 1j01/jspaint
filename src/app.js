@@ -1220,7 +1220,9 @@ const eye_gaze_mode_config = {
 				document.querySelector(".menu-button.active") != null
 			),
 			to: null,
-		}
+		},
+		// Can we make it easier to click on help topics with short names?
+		// { from: ".help-window li", to: (target) => target.querySelector(".item")},
 	],
 	isEquivalentTarget: (apparent_hover_target, hover_target) => (
 		apparent_hover_target.closest("label") !== hover_target &&
@@ -1387,10 +1389,6 @@ function init_eye_gaze_mode() {
 			}
 		}
 
-		// if (target.matches(".help-window li")) {
-		// 	target = target.querySelector(".item");
-		// }
-
 		if (!eye_gaze_mode_config.noCenter(target)) {
 			// Nudge hover previews to the center of buttons and things
 			const rect = target.getBoundingClientRect();
@@ -1428,17 +1426,37 @@ function init_eye_gaze_mode() {
 			const recent_movement_amount = Math.hypot(latest_point.x - average_point.x, latest_point.y - average_point.y);
 
 			// Invalidate in case an element pops up in front of the element you're hovering over, e.g. a submenu
+			// (that use case doesn't actually work because the menu pops up before the hover_candidate exists)
+			// (TODO: disable hovering to open submenus in eye gaze mode)
+			// or an element occludes the center of an element you're hovering over, in which case it
+			// could be confusing if it showed a dwell click indicator over a different element than it would click
+			// (but TODO: just move the indicator off center in that case)
 			if (hover_candidate && !gaze_dragging) {
 				const apparent_hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 				if (apparent_hover_candidate) {
 					if (
 						apparent_hover_candidate.target !== hover_candidate.target &&
+						// !retargeted &&
 						!eye_gaze_mode_config.isEquivalentTarget(
 							apparent_hover_candidate.target, hover_candidate.target
 						)
 					) {
 						hover_candidate = null;
 						deactivate_for_at_least(inactive_after_invalid_timespan);
+						const occluder_indicator = document.createElement("div");
+						const occluder_rect = apparent_hover_candidate.target.getBoundingClientRect();
+						occluder_indicator.style.display = "block";
+						occluder_indicator.style.position = "fixed";
+						occluder_indicator.style.left = `${occluder_rect.left}px`;
+						occluder_indicator.style.top = `${occluder_rect.top}px`;
+						occluder_indicator.style.width = `${occluder_rect.width}px`;
+						occluder_indicator.style.height = `${occluder_rect.height}px`;
+						occluder_indicator.style.outline = `4px dashed red`;
+						occluder_indicator.style.boxShadow = `0 0 5px 2px maroon`;
+						document.body.appendChild(occluder_indicator);
+						setTimeout(() => {
+							occluder_indicator.remove();
+						}, inactive_after_invalid_timespan * 0.5);
 					}
 				} else {
 					hover_candidate = null;
