@@ -1473,30 +1473,30 @@ function init_eye_gaze_mode() {
 			
 			if (halo_target && (!paused || $pause_button[0] === halo_target)) {
 				let rect = halo_target.getBoundingClientRect();
-				// Clamp to visible region if in scrollable area
-				// (could generalize to look for overflow: auto parents in the future)
-				if (halo_target.closest(".canvas-area")) {
-					const scroll_area_rect = $canvas_area[0].getBoundingClientRect();
-					rect = {
-						left: Math.max(rect.left, scroll_area_rect.left),
-						top: Math.max(rect.top, scroll_area_rect.top),
-						right: Math.min(rect.right, scroll_area_rect.right),
-						bottom: Math.min(rect.bottom, scroll_area_rect.bottom),
-					};
-					rect.width = rect.right - rect.left;
-					rect.height = rect.bottom - rect.top;
-				}
-				// this is so overkill just for border radius mimicry
 				const computed_style = getComputedStyle(halo_target);
 				let ancestor = halo_target;
-				let border_radius_scale = 1;
+				let border_radius_scale = 1; // for border radius mimicry, given parents with transform: scale()
 				while (ancestor instanceof HTMLElement) {
 					const ancestor_computed_style = getComputedStyle(ancestor);
 					if (ancestor_computed_style.transform) {
+						// Collect scale transforms
 						const match = ancestor_computed_style.transform.match(/(?:scale|matrix)\((\d+(?:\.\d+)?)/);
 						if (match) {
 							border_radius_scale *= Number(match[1]);
 						}
+					}
+					if (ancestor_computed_style.overflow !== "visible") {
+						// Clamp to visible region if in scrollable area
+						// This lets you see the hover halo when scrolled to the middle of a large canvas
+						const scroll_area_rect = ancestor.getBoundingClientRect();
+						rect = {
+							left: Math.max(rect.left, scroll_area_rect.left),
+							top: Math.max(rect.top, scroll_area_rect.top),
+							right: Math.min(rect.right, scroll_area_rect.right),
+							bottom: Math.min(rect.bottom, scroll_area_rect.bottom),
+						};
+						rect.width = rect.right - rect.left;
+						rect.height = rect.bottom - rect.top;
 					}
 					ancestor = ancestor.parentNode;
 				}
