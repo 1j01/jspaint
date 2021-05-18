@@ -1488,13 +1488,18 @@ function init_eye_gaze_mode() {
 				}
 				// this is so overkill just for border radius mimicry
 				const computed_style = getComputedStyle(halo_target);
-				const component = halo_target.closest(".component");
-				const border_radius_scale = parseInt(
-					(
-						(component && getComputedStyle(component).transform) || ""
-					).match(/\d+/) || 1,
-					10
-				);
+				let ancestor = halo_target;
+				let border_radius_scale = 1;
+				while (ancestor instanceof HTMLElement) {
+					const ancestor_computed_style = getComputedStyle(ancestor);
+					if (ancestor_computed_style.transform) {
+						const match = ancestor_computed_style.transform.match(/(?:scale|matrix)\((\d+(?:\.\d+)?)/);
+						if (match) {
+							border_radius_scale *= Number(match[1]);
+						}
+					}
+					ancestor = ancestor.parentNode;
+				}
 				halo.style.display = "block";
 				halo.style.position = "fixed";
 				halo.style.left = `${rect.left}px`;
