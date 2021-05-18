@@ -1225,8 +1225,8 @@ const eye_gaze_mode_config = {
 		// { from: ".help-window li", to: (target) => target.querySelector(".item")},
 	],
 	isEquivalentTarget: (apparent_hover_target, hover_target) => (
-		apparent_hover_target.closest("label") !== hover_target &&
-		apparent_hover_target.closest(".radio-wrapper") !== hover_target
+		apparent_hover_target.closest("label") === hover_target ||
+		apparent_hover_target.closest(".radio-wrapper") === hover_target
 	),
 	dwellClickEvenIfPaused: (target) => (
 		target.matches(".toggle-dwell-clicking")
