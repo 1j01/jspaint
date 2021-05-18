@@ -1183,8 +1183,7 @@ if ($("body").hasClass("eye-gaze-mode")) {
 }
 
 const eye_gaze_mode_config = {
-	// .canvas-area is handled specially
-	// (it's not itself a desired target)
+	// .canvas-area is handled specially (it's not itself a desired target)
 	targets: `
 		button:not([disabled]),
 		input,
@@ -1212,6 +1211,9 @@ const eye_gaze_mode_config = {
 	noCenter: (target) => (
 		target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")
 	),
+	retarget: [
+		{from: $canvas_area[0], to: main_canvas, within: 50},
+	],
 	isEquivalentTarget: (apparent_hover_target, hover_target) => (
 		apparent_hover_target.closest("label") !== hover_target &&
 		apparent_hover_target.closest(".radio-wrapper") !== hover_target
@@ -1346,34 +1348,37 @@ function init_eye_gaze_mode() {
 		// 	target = target.querySelector(".item");
 		// }
 
-		if (target === $canvas_area[0]) {
-			// Nudge hovers near the edges of the canvas onto the canvas
-			const margin = 50;
-			if (
-				hover_candidate.x > canvas_bounding_client_rect.left - margin &&
-				hover_candidate.y > canvas_bounding_client_rect.top - margin &&
-				hover_candidate.x < canvas_bounding_client_rect.right + margin &&
-				hover_candidate.y < canvas_bounding_client_rect.bottom + margin
-			) {
-				target = main_canvas;
-				hover_candidate.x = Math.min(
-					canvas_bounding_client_rect.right - 1,
-					Math.max(
-						canvas_bounding_client_rect.left,
-						hover_candidate.x,
-					),
-				);
-				hover_candidate.y = Math.min(
-					canvas_bounding_client_rect.bottom - 1,
-					Math.max(
-						canvas_bounding_client_rect.top,
-						hover_candidate.y,
-					),
-				);
-			} else {
-				return null;
+		// Nudge hovers near the edges of the canvas onto the canvas
+		for (const {from, to, margin=Infinity} of eye_gaze_mode_config.retarget) {
+			if (target === from) {
+				const to_rect = to.getBoundingClientRect();
+				if (
+					hover_candidate.x > to_rect.left - margin &&
+					hover_candidate.y > to_rect.top - margin &&
+					hover_candidate.x < to_rect.right + margin &&
+					hover_candidate.y < to_rect.bottom + margin
+				) {
+					target = to;
+					hover_candidate.x = Math.min(
+						to_rect.right - 1,
+						Math.max(
+							to_rect.left,
+							hover_candidate.x,
+						),
+					);
+					hover_candidate.y = Math.min(
+						to_rect.bottom - 1,
+						Math.max(
+							to_rect.top,
+							hover_candidate.y,
+						),
+					);
+				} else {
+					return null;
+				}
 			}
-		}else if(!eye_gaze_mode_config.noCenter(target)){
+		}
+		if (!eye_gaze_mode_config.noCenter(target)) {
 			// Nudge hover previews to the center of buttons and things
 			const rect = target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
