@@ -1182,6 +1182,54 @@ if ($("body").hasClass("eye-gaze-mode")) {
 	init_eye_gaze_mode();
 }
 
+const eye_gaze_mode_config = {
+	// .canvas-area is handled specially
+	// (it's not itself a desired target)
+	targets: `
+		button:not([disabled]),
+		input,
+		textarea,
+		label,
+		a,
+		.flip-and-rotate .sub-options .radio-wrapper,
+		.current-colors,
+		.color-button,
+		.edit-colors-window .swatch,
+		.edit-colors-window .rainbow-canvas,
+		.edit-colors-window .luminosity-canvas,
+		.tool:not(.selected),
+		.chooser-option,
+		.menu-button:not(.active),
+		.menu-item,
+		.main-canvas,
+		.selection canvas,
+		.handle,
+		.grab-region,
+		.window:not(.maximized) .window-titlebar,
+		.history-entry,
+		.canvas-area
+	`,
+	noCenter: (target) => (
+		target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")
+	),
+	isEquivalentTarget: (apparent_hover_target, hover_target)=> (
+		apparent_hover_target.closest("label") !== hover_target &&
+		apparent_hover_target.closest(".radio-wrapper") !== hover_target
+	),
+	shouldDrag: (target)=> (
+		target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
+		target.matches(".selection, .selection *, .handle, .grab-region") ||
+		(
+			target === main_canvas &&
+			selected_tool.id !== TOOL_PICK_COLOR &&
+			selected_tool.id !== TOOL_FILL &&
+			selected_tool.id !== TOOL_MAGNIFIER &&
+			selected_tool.id !== TOOL_POLYGON &&
+			selected_tool.id !== TOOL_CURVE
+		)
+	),
+};
+
 function init_eye_gaze_mode() {
 	const circle_radius_max = 50; // dwell indicator size in pixels
 	const hover_timespan = 500; // how long between the dwell indicator appearing and triggering a click
@@ -1270,34 +1318,7 @@ function init_eye_gaze_mode() {
 			return null;
 		}
 
-		const target_selector = `
-			button:not([disabled]),
-			input,
-			textarea,
-			label,
-			a,
-			.flip-and-rotate .sub-options .radio-wrapper,
-			.current-colors,
-			.color-button,
-			.edit-colors-window .swatch,
-			.edit-colors-window .rainbow-canvas,
-			.edit-colors-window .luminosity-canvas,
-			.tool:not(.selected),
-			.chooser-option,
-			.menu-button:not(.active),
-			.menu-item,
-			.main-canvas,
-			.selection canvas,
-			.handle,
-			.grab-region,
-			.window:not(.maximized) .window-titlebar,
-			.history-entry,
-			.canvas-area
-		`;
-		// .canvas-area is handled specially below
-		// (it's not itself a desired target)
-
-		target = target.closest(target_selector);
+		target = target.closest(eye_gaze_mode_config.targets);
 
 		if (!target) {
 			return null;
@@ -1334,7 +1355,7 @@ function init_eye_gaze_mode() {
 			} else {
 				return null;
 			}
-		}else if(!target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")){
+		}else if(!eye_gaze_mode_config.noCenter(target)){
 			// Nudge hover previews to the center of buttons and things
 			const rect = target.getBoundingClientRect();
 			hover_candidate.x = rect.left + rect.width / 2;
@@ -1376,8 +1397,9 @@ function init_eye_gaze_mode() {
 				if (apparent_hover_candidate) {
 					if (
 						apparent_hover_candidate.target !== hover_candidate.target &&
-						apparent_hover_candidate.target.closest("label") !== hover_candidate.target &&
-						apparent_hover_candidate.target.closest(".radio-wrapper") !== hover_candidate.target
+						!eye_gaze_mode_config.isEquivalentTarget(
+							apparent_hover_candidate.target, hover_candidate.target
+						)
 					) {
 						hover_candidate = null;
 						deactivate_for_at_least(inactive_after_invalid_timespan);
@@ -1413,18 +1435,7 @@ function init_eye_gaze_mode() {
 								buttons: 1,
 							})
 						));
-						const is_drag =
-							hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
-							hover_candidate.target.matches(".selection, .selection *, .handle, .grab-region") ||
-							(
-								hover_candidate.target === main_canvas &&
-								selected_tool.id !== TOOL_PICK_COLOR &&
-								selected_tool.id !== TOOL_FILL &&
-								selected_tool.id !== TOOL_MAGNIFIER &&
-								selected_tool.id !== TOOL_POLYGON &&
-								selected_tool.id !== TOOL_CURVE
-							);
-						if (is_drag) {
+						if (eye_gaze_mode_config.shouldDrag(hover_candidate.target)) {
 							gaze_dragging = hover_candidate.target;
 						} else {
 							hover_candidate.target.dispatchEvent(new PointerEvent("pointerup",
