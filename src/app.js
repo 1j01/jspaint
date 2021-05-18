@@ -1344,16 +1344,11 @@ function init_eye_gaze_mode() {
 		return hover_candidate;
 	};
 
-	const get_event_options = ({x, y, target=document.body})=> {
-		const rect = target.getBoundingClientRect();
+	const get_event_options = ({x, y})=> {
 		return {
-			pageX: x,
-			pageY: y,
+			view: window, // needed for offsetX/Y calculation
 			clientX: x,
 			clientY: y,
-			// handling CSS transform scaling but not rotation
-			offsetX: (x - rect.left) * target.offsetWidth / rect.width,
-			offsetY: (y - rect.top) * target.offsetHeight / rect.height,
 			pointerId: 1234567890,
 			pointerType: "mouse",
 			isPrimary: true,
