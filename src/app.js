@@ -1203,11 +1203,16 @@ function init_eye_gaze_mode() {
 	};
 	deactivate_for_at_least(inactive_at_startup_timespan);
 
-	const $halo = $("<div class='hover-halo'>").appendTo("body").hide();
-	const $dwell_indicator = $("<div class='dwell-indicator'>").css({
-		width: circle_radius_max,
-		height: circle_radius_max,
-	}).appendTo("body").hide();
+	const halo = document.createElement("div");
+	halo.className = "hover-halo";
+	halo.style.display = "none";
+	document.body.appendChild(halo);
+	const dwell_indicator = document.createElement("div");
+	dwell_indicator.className = "dwell-indicator";
+	dwell_indicator.style.width = `${circle_radius_max}px`;
+	dwell_indicator.style.height = `${circle_radius_max}px`;
+	dwell_indicator.style.display = "none";
+	document.body.appendChild(dwell_indicator);
 
 	const on_pointer_move = (e)=> {
 		recent_points.push({x: e.clientX, y: e.clientY, time: Date.now()});
@@ -1233,12 +1238,13 @@ function init_eye_gaze_mode() {
 		mouse_inside_page = true;
 	};
 
-	$G.on("pointermove", on_pointer_move);
-	$G.on("pointerup pointercancel", on_pointer_up_or_cancel);
-	$G.on("focus", on_focus);
-	$G.on("blur", on_blur);
-	$(document).on("mouseleave", on_mouse_leave_page);
-	$(document).on("mouseenter", on_mouse_enter_page);
+	window.addEventListener("pointermove", on_pointer_move);
+	window.addEventListener("pointerup", on_pointer_up_or_cancel);
+	window.addEventListener("pointercancel", on_pointer_up_or_cancel);
+	window.addEventListener("focus", on_focus);
+	window.addEventListener("blur", on_blur);
+	document.addEventListener("mouseleave", on_mouse_leave_page);
+	document.addEventListener("mouseenter", on_mouse_enter_page);
 
 	const get_hover_candidate = (clientX, clientY)=> {
 
@@ -1259,7 +1265,7 @@ function init_eye_gaze_mode() {
 		// prevent awkward hover clicks on top level menu buttons while menus are open
 		if(
 			(target.closest(".menu-button") || target.matches(".menu-container")) &&
-			$(".menu-button.active").length
+			document.querySelector(".menu-button.active") != null
 		) {
 			return null;
 		}
@@ -1351,6 +1357,7 @@ function init_eye_gaze_mode() {
 			pointerId: 1234567890,
 			pointerType: "mouse",
 			isPrimary: true,
+			bubbles: true,
 		};
 	};
 
@@ -1396,16 +1403,20 @@ function init_eye_gaze_mode() {
 					* circle_radius_max;
 				if (time > hover_candidate.time + hover_timespan) {
 					if (pointer_active || gaze_dragging) {
-						$(hover_candidate.target).trigger($.Event("pointerup", Object.assign(get_event_options(hover_candidate), {
-							button: 0,
-							buttons: 0,
-						})));
+						hover_candidate.target.dispatchEvent(new PointerEvent("pointerup",
+							Object.assign(get_event_options(hover_candidate), {
+								button: 0,
+								buttons: 0,
+							})
+						));
 					} else {
 						pointers = []; // prevent multi-touch panning
-						$(hover_candidate.target).trigger($.Event("pointerdown", Object.assign(get_event_options(hover_candidate), {
-							button: 0,
-							buttons: 1,
-						})));
+						hover_candidate.target.dispatchEvent(new PointerEvent("pointerdown",
+							Object.assign(get_event_options(hover_candidate), {
+								button: 0,
+								buttons: 1,
+							})
+						));
 						const is_drag =
 							hover_candidate.target.matches(".window-titlebar, .window-titlebar *:not(button)") ||
 							hover_candidate.target.matches(".selection, .selection *, .handle, .grab-region") ||
@@ -1420,10 +1431,12 @@ function init_eye_gaze_mode() {
 						if (is_drag) {
 							gaze_dragging = hover_candidate.target;
 						} else {
-							$(hover_candidate.target).trigger($.Event("pointerup", Object.assign(get_event_options(hover_candidate), {
-								button: 0,
-								buttons: 0,
-							})));
+							hover_candidate.target.dispatchEvent(new PointerEvent("pointerup",
+								Object.assign(get_event_options(hover_candidate), {
+									button: 0,
+									buttons: 0,
+								})
+							));
 							if (hover_candidate.target.matches("button:not(.toggle)")) {
 								((button)=> {
 									button.style.borderImage = "var(--inset-deep-border-image)";
@@ -1448,22 +1461,21 @@ function init_eye_gaze_mode() {
 			}
 
 			if (gaze_dragging) {
-				$dwell_indicator.addClass("for-release");
+				dwell_indicator.classList.add("for-release");
 			} else {
-				$dwell_indicator.removeClass("for-release");
+				dwell_indicator.classList.remove("for-release");
 			}
-			$dwell_indicator.show().css({
-				opacity: circle_opacity,
-				transform: `scale(${circle_radius / circle_radius_max})`,
-				left: circle_position.x - circle_radius_max/2,
-				top: circle_position.y - circle_radius_max/2,
-			});
+			dwell_indicator.style.display = "";
+			dwell_indicator.style.opacity = circle_opacity;
+			dwell_indicator.style.transform = `scale(${circle_radius / circle_radius_max})`;
+			dwell_indicator.style.left = `${circle_position.x - circle_radius_max/2}px`;
+			dwell_indicator.style.top = `${circle_position.y - circle_radius_max/2}px`;
 
 			let halo_target =
 				gaze_dragging ||
 				(hover_candidate || get_hover_candidate(latest_point.x, latest_point.y) || {}).target;
 			
-			if (halo_target && (!paused || $pause_button.is(halo_target))) {
+			if (halo_target && (!paused || $pause_button[0] === halo_target)) {
 				let rect = halo_target.getBoundingClientRect();
 				// Clamp to visible region if in scrollable area
 				// (could generalize to look for overflow: auto parents in the future)
@@ -1480,28 +1492,27 @@ function init_eye_gaze_mode() {
 				}
 				// this is so overkill just for border radius mimicry
 				const computed_style = getComputedStyle(halo_target);
+				const component = halo_target.closest(".component");
 				const border_radius_scale = parseInt(
 					(
-						$(halo_target).closest(".component").css("transform") || ""
+						(component && getComputedStyle(component).transform) || ""
 					).match(/\d+/) || 1,
 					10
 				);
-				$halo.css({
-					display: "block",
-					position: "fixed",
-					left: rect.left,
-					top: rect.top,
-					width: rect.width,
-					height: rect.height,
-					// shorthand properties might not work in all browsers (not tested)
-					// this is so overkill...
-					borderTopRightRadius: parseFloat(computed_style.borderTopRightRadius) * border_radius_scale,
-					borderTopLeftRadius: parseFloat(computed_style.borderTopLeftRadius) * border_radius_scale,
-					borderBottomRightRadius: parseFloat(computed_style.borderBottomRightRadius) * border_radius_scale,
-					borderBottomLeftRadius: parseFloat(computed_style.borderBottomLeftRadius) * border_radius_scale,
-				});
+				halo.style.display = "block";
+				halo.style.position = "fixed";
+				halo.style.left = `${rect.left}px`;
+				halo.style.top = `${rect.top}px`;
+				halo.style.width = `${rect.width}px`;
+				halo.style.height = `${rect.height}px`;
+				// shorthand properties might not work in all browsers (not tested)
+				// this is so overkill...
+				halo.style.borderTopRightRadius = `${parseFloat(computed_style.borderTopRightRadius) * border_radius_scale}px`;
+				halo.style.borderTopLeftRadius = `${parseFloat(computed_style.borderTopLeftRadius) * border_radius_scale}px`;
+				halo.style.borderBottomRightRadius = `${parseFloat(computed_style.borderBottomRightRadius) * border_radius_scale}px`;
+				halo.style.borderBottomLeftRadius = `${parseFloat(computed_style.borderBottomLeftRadius) * border_radius_scale}px`;
 			} else {
-				$halo.hide();
+				halo.style.display = "none";
 			}
 
 			if (time < inactive_until_time) {
@@ -1518,17 +1529,19 @@ function init_eye_gaze_mode() {
 					if (!gaze_dragging) {
 						hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
 					}
-					if (hover_candidate && (paused && !$pause_button.is(hover_candidate.target))) {
+					if (hover_candidate && (paused && $pause_button[0] !== hover_candidate.target)) {
 						hover_candidate = null;
 					}
 				}
 			}
 			if (recent_movement_amount > 100) {
 				if (gaze_dragging) {
-					$G.trigger($.Event("pointerup", Object.assign(get_event_options(average_point), {
-						button: 0,
-						buttons: 0,
-					})));
+					window.dispatchEvent(new PointerEvent("pointerup",
+						Object.assign(get_event_options(average_point), {
+							button: 0,
+							buttons: 0,
+						})
+					));
 					pointers = []; // prevent multi-touch panning
 				}
 			}
@@ -1614,15 +1627,16 @@ function init_eye_gaze_mode() {
 	clean_up_eye_gaze_mode = ()=> {
 		console.log("Cleaning up / disabling eye gaze mode");
 		cancelAnimationFrame(raf_id);
-		$halo.remove();
-		$dwell_indicator.remove();
+		halo.remove();
+		dwell_indicator.remove();
 		$floating_buttons.remove();
-		$G.off("pointermove", on_pointer_move);
-		$G.off("pointerup pointercancel", on_pointer_up_or_cancel);
-		$G.off("focus", on_focus);
-		$G.off("blur", on_blur);
-		$(document).off("mouseleave", on_mouse_leave_page);
-		$(document).off("mouseenter", on_mouse_enter_page);
+		window.removeEventListener("pointermove", on_pointer_move);
+		window.removeEventListener("pointerup", on_pointer_up_or_cancel);
+		window.removeEventListener("pointercancel", on_pointer_up_or_cancel);
+		window.removeEventListener("focus", on_focus);
+		window.removeEventListener("blur", on_blur);
+		document.removeEventListener("mouseleave", on_mouse_leave_page);
+		document.removeEventListener("mouseenter", on_mouse_enter_page);
 		clean_up_eye_gaze_mode = ()=> {};
 	};
 }
