@@ -703,7 +703,7 @@ html, body, .jspaint {
 }
 
 /* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */
-.window:not(.edit-colors-window) .window-content label {
+.window:not(.edit-colors-window):not(.tracky-mouse-window) .window-content label {
 	display: inline-flex;
 	flex-direction: row;
 	direction: rtl;

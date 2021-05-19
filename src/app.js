@@ -1261,7 +1261,61 @@ const eye_gaze_mode_config = {
 	},
 };
 
-function init_eye_gaze_mode() {
+var tracky_mouse_deps_promise;
+
+async function init_eye_gaze_mode() {
+	if (!tracky_mouse_deps_promise) {
+		TrackyMouse.dependenciesRoot = "lib/tracky-mouse";
+		tracky_mouse_deps_promise = TrackyMouse.loadDependencies();
+	}
+	await tracky_mouse_deps_promise;
+
+	const $tracky_mouse_window = $Window({
+		title: "Tracky Mouse",
+		icon: "tracky-mouse",
+	});
+	$tracky_mouse_window.addClass("tracky-mouse-window");
+	const tracky_mouse_container = $tracky_mouse_window.$content[0];
+
+	TrackyMouse.init(tracky_mouse_container);
+	TrackyMouse.useCamera();
+
+	$tracky_mouse_window.center();
+
+	let last_el_over;
+	TrackyMouse.onPointerMove = (x, y) => {
+		const target = document.elementFromPoint(x, y) || document.body;
+		if (target !== last_el_over) {
+			if (last_el_over) {
+				const event = new /*PointerEvent*/$.Event("pointerleave", Object.assign(get_event_options({ x, y }), {
+					button: 0,
+					buttons: 1,
+					bubbles: false,
+					cancelable: false,
+				}));
+				// last_el_over.dispatchEvent(event);
+				$(last_el_over).trigger(event);
+			}
+			const event = new /*PointerEvent*/$.Event("pointerenter", Object.assign(get_event_options({ x, y }), {
+				button: 0,
+				buttons: 1,
+				bubbles: false,
+				cancelable: false,
+			}));
+			// target.dispatchEvent(event);
+			$(target).trigger(event);
+			last_el_over = target;
+		}
+		const event = new PointerEvent/*$.Event*/("pointermove", Object.assign(get_event_options({ x, y }), {
+			button: 0,
+			buttons: 1,
+		}));
+		target.dispatchEvent(event);
+		// $(target).trigger(event);
+	};
+
+	// tracky_mouse_container.querySelector(".tracky-mouse-canvas").classList.add("inset-deep");
+
 	const circle_radius_max = 50; // dwell indicator size in pixels
 	const hover_timespan = 500; // how long between the dwell indicator appearing and triggering a click
 	const averaging_window_timespan = 500;
