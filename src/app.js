@@ -1433,6 +1433,25 @@ function init_eye_gaze_mode() {
 			// (but TODO: just move the indicator off center in that case)
 			if (hover_candidate && !gaze_dragging) {
 				const apparent_hover_candidate = get_hover_candidate(hover_candidate.x, hover_candidate.y);
+				const show_occluder_indicator = (occluder)=> {
+					const occluder_indicator = document.createElement("div");
+					const occluder_rect = occluder.getBoundingClientRect();
+					const outline_width = 4;
+					occluder_indicator.style.pointerEvents = "none";
+					occluder_indicator.style.zIndex = 1000001;
+					occluder_indicator.style.display = "block";
+					occluder_indicator.style.position = "fixed";
+					occluder_indicator.style.left = `${occluder_rect.left + outline_width}px`;
+					occluder_indicator.style.top = `${occluder_rect.top + outline_width}px`;
+					occluder_indicator.style.width = `${occluder_rect.width - outline_width * 2}px`;
+					occluder_indicator.style.height = `${occluder_rect.height - outline_width * 2}px`;
+					occluder_indicator.style.outline = `${outline_width}px dashed red`;
+					occluder_indicator.style.boxShadow = `0 0 ${outline_width}px ${outline_width}px maroon`;
+					document.body.appendChild(occluder_indicator);
+					setTimeout(() => {
+						occluder_indicator.remove();
+					}, inactive_after_invalid_timespan * 0.5);
+				};
 				if (apparent_hover_candidate) {
 					if (
 						apparent_hover_candidate.target !== hover_candidate.target &&
@@ -1443,24 +1462,13 @@ function init_eye_gaze_mode() {
 					) {
 						hover_candidate = null;
 						deactivate_for_at_least(inactive_after_invalid_timespan);
-						const occluder_indicator = document.createElement("div");
-						const occluder_rect = apparent_hover_candidate.target.getBoundingClientRect();
-						occluder_indicator.style.display = "block";
-						occluder_indicator.style.position = "fixed";
-						occluder_indicator.style.left = `${occluder_rect.left}px`;
-						occluder_indicator.style.top = `${occluder_rect.top}px`;
-						occluder_indicator.style.width = `${occluder_rect.width}px`;
-						occluder_indicator.style.height = `${occluder_rect.height}px`;
-						occluder_indicator.style.outline = `4px dashed red`;
-						occluder_indicator.style.boxShadow = `0 0 5px 2px maroon`;
-						document.body.appendChild(occluder_indicator);
-						setTimeout(() => {
-							occluder_indicator.remove();
-						}, inactive_after_invalid_timespan * 0.5);
+						show_occluder_indicator(apparent_hover_candidate.target);
 					}
 				} else {
+					let occluder = document.elementFromPoint(hover_candidate.x, hover_candidate.y);
 					hover_candidate = null;
 					deactivate_for_at_least(inactive_after_invalid_timespan);
+					show_occluder_indicator(occluder || document.body);
 				}
 			}
 			
