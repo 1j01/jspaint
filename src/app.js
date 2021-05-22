@@ -1207,7 +1207,14 @@ const eye_gaze_mode_config = {
 		.history-entry
 	`,
 	noCenter: (target) => (
-		target.matches(".main-canvas, .selection canvas, .window-titlebar, .rainbow-canvas, .luminosity-canvas")
+		target.matches(`
+			.main-canvas,
+			.selection canvas,
+			.window-titlebar,
+			.rainbow-canvas,
+			.luminosity-canvas,
+			input[type="range"]
+		`)
 	),
 	retarget: [
 		// Nudge hovers near the edges of the canvas onto the canvas
@@ -1243,20 +1250,51 @@ const eye_gaze_mode_config = {
 			selected_tool.id !== TOOL_CURVE
 		)
 	),
-	click: (target) => {
+	click: ({ target, x, y }) => {
 		if (target.matches("button:not(.toggle)")) {
 			target.style.borderImage = "var(--inset-deep-border-image)";
-			setTimeout(()=> {
+			setTimeout(() => {
 				target.style.borderImage = "";
 				// delay the button click as well so the pressed state is
 				// visible even if the button closes a dialog
 				target.click();
 			}, 100);
+		} else if (target.matches("input[type='range']")) {
+			const rect = target.getBoundingClientRect();
+			const vertical =
+				target.getAttribute("orient") === "vertical" ||
+				(getCurrentRotation(target) !== 0) ||
+				rect.height > rect.width;
+			const min = Number(target.min);
+			const max = Number(target.max);
+			const v = (
+				vertical ?
+					(y - rect.top) / rect.height :
+					(x - rect.left) / rect.width
+			) * (max - min) + min;
+			target.value = v;
+			target.dispatchEvent(new Event("input", { bubbles: true }));
+			target.dispatchEvent(new Event("change", { bubbles: true }));
 		} else {
 			target.click();
 			if (target.matches("input, textarea")) {
 				target.focus();
 			}
+		}
+		// Source: https://stackoverflow.com/a/54492696/2624876
+		function getCurrentRotation(el) {
+			const st = window.getComputedStyle(el, null);
+			const tm = st.getPropertyValue("-webkit-transform") ||
+				st.getPropertyValue("-moz-transform") ||
+				st.getPropertyValue("-ms-transform") ||
+				st.getPropertyValue("-o-transform") ||
+				st.getPropertyValue("transform") ||
+				"none";
+			if (tm !== "none") {
+				const [a, b] = tm.split('(')[1].split(')')[0].split(',');
+				return Math.round(Math.atan2(a, b) * (180 / Math.PI));
+			}
+			return 0;
 		}
 	},
 };
@@ -1560,7 +1598,7 @@ async function init_eye_gaze_mode() {
 									buttons: 0,
 								})
 							));
-							eye_gaze_mode_config.click(hover_candidate.target);
+							eye_gaze_mode_config.click(hover_candidate);
 						}
 					}
 					hover_candidate = null;
