@@ -309,13 +309,13 @@
 						const draw_cursor = () => {
 							cursor_canvas.width = cursor_image.width;
 							cursor_canvas.height = cursor_image.height;
-							const cctx = cursor_canvas.ctx;
-							cctx.fillStyle = other_user.color;
-							cctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
-							cctx.globalCompositeOperation = "multiply";
-							cctx.drawImage(cursor_image, 0, 0);
-							cctx.globalCompositeOperation = "destination-atop";
-							cctx.drawImage(cursor_image, 0, 0);
+							const cursor_ctx = cursor_canvas.ctx;
+							cursor_ctx.fillStyle = other_user.color;
+							cursor_ctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
+							cursor_ctx.globalCompositeOperation = "multiply";
+							cursor_ctx.drawImage(cursor_image, 0, 0);
+							cursor_ctx.globalCompositeOperation = "destination-atop";
+							cursor_ctx.drawImage(cursor_image, 0, 0);
 						};
 						if (cursor_image.complete) {
 							draw_cursor();
@@ -363,7 +363,7 @@
 				}
 				write_canvas_to_database();
 			});
-			// Any time we change or recieve the image data
+			// Any time we change or receive the image data
 			_fb_on(this.fb_data, "value", snap => {
 				log("Firebase data update");
 				const uri = snap.val();

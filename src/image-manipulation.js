@@ -233,8 +233,8 @@ function bresenham_line(x1, y1, x2, y2, callback){
 	}
 }
 
-function brosandham_line(x1, y1, x2, y2, callback){
-	// Bresenham's line argorithm with a callback between going horizontal and vertical
+function bresenham_dense_line(x1, y1, x2, y2, callback){
+	// Bresenham's line algorithm with a callback between going horizontal and vertical
 	x1=~~x1; x2=~~x2; y1=~~y1; y2=~~y2;
 	
 	const dx = Math.abs(x2 - x1);
@@ -685,30 +685,30 @@ function rotate(angle){
 	});
 }
 
-function stretch_and_skew(xscale, yscale, hsa, vsa){
+function stretch_and_skew(x_scale, y_scale, h_skew, v_skew){
 	apply_image_transformation({
 		name:
-			(hsa !== 0 || vsa !== 0) ? (
-				(xscale !== 1 || yscale !== 1) ? localize("Stretch and Skew") : localize("Skew")
+			(h_skew !== 0 || v_skew !== 0) ? (
+				(x_scale !== 1 || y_scale !== 1) ? localize("Stretch and Skew") : localize("Skew")
 			) : localize("Stretch"),
 		icon: get_help_folder_icon(
-			(hsa !== 0) ? "p_skew_h.png" :
-			(vsa !== 0) ? "p_skew_v.png" :
-			(yscale !== 1) ? (
-				(xscale !== 1) ? "p_stretch_both.png" : "p_stretch_v.png"
+			(h_skew !== 0) ? "p_skew_h.png" :
+			(v_skew !== 0) ? "p_skew_v.png" :
+			(y_scale !== 1) ? (
+				(x_scale !== 1) ? "p_stretch_both.png" : "p_stretch_v.png"
 			) : "p_stretch_h.png"
 		),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
-		const w = original_canvas.width * xscale;
-		const h = original_canvas.height * yscale;
+		const w = original_canvas.width * x_scale;
+		const h = original_canvas.height * y_scale;
 		
 		let bb_min_x = +Infinity;
 		let bb_max_x = -Infinity;
 		let bb_min_y = +Infinity;
 		let bb_max_y = -Infinity;
 		const corner = (x01, y01) => {
-			const x = Math.tan(hsa)*h*x01 + w*y01;
-			const y = Math.tan(vsa)*w*y01 + h*x01;
+			const x = Math.tan(h_skew)*h*x01 + w*y01;
+			const y = Math.tan(v_skew)*w*y01 + h*x01;
 			bb_min_x = Math.min(bb_min_x, x);
 			bb_max_x = Math.max(bb_max_x, x);
 			bb_min_y = Math.min(bb_min_y, y);
@@ -737,8 +737,8 @@ function stretch_and_skew(xscale, yscale, hsa, vsa){
 		new_ctx.save();
 		new_ctx.transform(
 			1, // x scale
-			Math.tan(vsa), // vertical skew (skewY)
-			Math.tan(hsa), // horizontal skew (skewX)
+			Math.tan(v_skew), // vertical skew (skewY)
+			Math.tan(h_skew), // horizontal skew (skewX)
 			1, // y scale
 			-bb_x, // x translation
 			-bb_y // y translation
@@ -990,37 +990,37 @@ function draw_grid(ctx, scale) {
 
 	const tessy = (function initTesselator() {
 		// function called for each vertex of tesselator output
-		function vertexCallback(data, polyVertArray) {
+		function vertex_callback(data, poly_vert_array) {
 			// window.console && console.log(data[0], data[1]);
-			polyVertArray[polyVertArray.length] = data[0];
-			polyVertArray[polyVertArray.length] = data[1];
+			poly_vert_array[poly_vert_array.length] = data[0];
+			poly_vert_array[poly_vert_array.length] = data[1];
 		}
-		function begincallback(type) {
+		function begin_callback(type) {
 			if (type !== libtess.primitiveType.GL_TRIANGLES) {
 				window.console && console.log(`Expected TRIANGLES but got type: ${type}`);
 			}
 		}
-		function errorcallback(errno) {
+		function error_callback(errno) {
 			window.console && console.log('error callback');
 			window.console && console.log(`error number: ${errno}`);
 		}
 		// callback for when segments intersect and must be split
-		function combinecallback(coords/*, data, weight*/) {
+		function combine_callback(coords/*, data, weight*/) {
 			// window.console && console.log('combine callback');
 			return [coords[0], coords[1], coords[2]];
 		}
-		function edgeCallback(/*flag*/) {
+		function edge_callback(/*flag*/) {
 			// don't really care about the flag, but need no-strip/no-fan behavior
 			// window.console && console.log('edge flag: ' + flag);
 		}
 
 		const tessy = new libtess.GluTesselator();
 		// tessy.gluTessProperty(libtess.gluEnum.GLU_TESS_WINDING_RULE, libtess.windingRule.GLU_TESS_WINDING_POSITIVE);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_VERTEX_DATA, vertexCallback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_BEGIN, begincallback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_ERROR, errorcallback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_COMBINE, combinecallback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_EDGE_FLAG, edgeCallback);
+		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_VERTEX_DATA, vertex_callback);
+		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_BEGIN, begin_callback);
+		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_ERROR, error_callback);
+		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_COMBINE, combine_callback);
+		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_EDGE_FLAG, edge_callback);
 
 		return tessy;
 	}());

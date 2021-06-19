@@ -97,13 +97,13 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 						present_rgbas.every((present_rgba)=> `${present_rgba}` !== `${old_rgba}`)
 					) {
 						// Find the nearer color in the image data to replace.
-						const dists = present_rgbas.map((rgba)=>
+						const distances = present_rgbas.map((rgba)=>
 							Math.abs(rgba[0] - old_rgba[0]) +
 							Math.abs(rgba[1] - old_rgba[1]) +
 							Math.abs(rgba[2] - old_rgba[2]) +
 							Math.abs(rgba[3] - old_rgba[3])
 						);
-						if (dists[0] < dists[1]) {
+						if (distances[0] < distances[1]) {
 							old_rgba = present_rgbas[0];
 						} else {
 							old_rgba = present_rgbas[1];
@@ -289,7 +289,7 @@ function choose_color(initial_color, callback) {
 		maybe_reenable_button_for_mobile_navigation();
 	});
 
-	// for mobile layout, re-enable button because it's a navigation button in that case, rather than a one-off expando
+	// for mobile layout, re-enable button because it's a navigation button in that case, rather than one-time expand action
 	const maybe_reenable_button_for_mobile_navigation = ()=> {
 		// if ($right.is(":hidden")) {
 		if ($w.width() < 300 || document.body.classList.contains("eye-gaze-mode")) {

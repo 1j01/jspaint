@@ -103,7 +103,7 @@
 				</p>
 				<p>
 					To change the language, go to <b>Extras > Language</b>.
-					Your prefered language may already be detected, if specified in system or browser settings.
+					Your preferred language may already be detected, if specified in system or browser settings.
 				</p>
 				<img width="1280" height="720" style="max-width: 100%; height: auto; image-rendering: auto;" alt="26 languages, right off the bat!" src="https://i.postimg.cc/G2bH92fp/language-menu.png"/>
 				<p>For Arabic and Hebrew, right-to-left layout is supported!</p>
@@ -129,7 +129,7 @@
 					Try <a target="_blank" href="https://sourceforge.net/projects/gazepointer/">GazePointer</a>.
 				</p>
 				<p>
-					Eye gaze tracking requires significant calibration, and if the callibration is off,
+					Eye gaze tracking requires significant calibration, and if the calibration is off,
 					it's hard to use because you can't look where you want to look to interact with things.
 					This is why I recommend head tracking (if that's an option for you),
 					because then you can freely look around, and control the cursor <em>independently</em>,
@@ -141,7 +141,7 @@
 					It can also be frustrating, and takes some practice to master.
 				</p>
 				<p>
-					A good place to start is coloring lineart using just the Fill tool (<img src="help/p_paint.gif" width="15" height="11" alt="">):
+					A good place to start is coloring line art using just the Fill tool (<img src="help/p_paint.gif" width="15" height="11" alt="">):
 				</p>
 				<ul>
 					<li>
@@ -383,7 +383,7 @@
 				return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
 			}
 			function display_hotkey(text) {
-				// misnomer: using .menu-hotkey out of lazyness, instead of a more general term like .hotkey or .accelerator
+				// misnomer: using .menu-hotkey out of laziness, instead of a more general term like .hotkey or .accelerator
 				return `<span style="white-space: pre">${text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&")}</span>`;
 			}
 			function get_hotkey(text) {

@@ -976,8 +976,8 @@ window.menus = {
 						"summon devil", "summon the devil", "summon devil theme", "summon the devil theme",
 						"welcome devil", "welcome the devil", "welcome devil theme", "welcome the devil theme",
 
-						"I beseach thee", "I entreat thee", "I summon thee", "I call upon thy name", "I call upon thine name", "Lord Satan", "hail Satan", "hail Lord Satan", "O Mighty Satan", "Oh Mighty Satan",
-						"In nomine Dei nostri Satanas Luciferi Excelsi", "Rege Satanas", "Ave Satanas",
+						"I beseech thee", "I entreat thee", "I summon thee", "I call upon thy name", "I call upon thine name", "Lord Satan", "hail Satan", "hail Lord Satan", "O Mighty Satan", "Oh Mighty Satan",
+						"In nomine Dei nostri Satanas Luciferi Excelsi", "Rege Satanas", "Ave Satanas","Rege Satana", "Ave Satana",
 						"go demonic", "go daemonic", "go occult", "666",
 						"begin ritual", "begin the ritual", "begin a ritual",
 						"start ritual", "start the ritual", "start a ritual",

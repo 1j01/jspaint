@@ -427,8 +427,8 @@ function $Iframe(options){
 // 	var $iframe = $win.$iframe = $Iframe({src: options.src});
 // 	$win.$content.append($iframe);
 // 	var iframe = $win.iframe = $iframe[0];
-// 	// @TODO: should I instead of having iframe.$window, have a get$Window type of dealio?
-// 	// where all is $window needed?
+// 	// @TODO: should I instead of having iframe.$window, have something like get$Window?
+// 	// Where all is $window needed?
 // 	// I know it's used from within the iframe contents as frameElement.$window
 // 	iframe.$window = $win;
 

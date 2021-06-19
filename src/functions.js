@@ -53,7 +53,7 @@ function change_some_url_params(updates, {replace_history_state=false}={}) {
 		if (updates[exclusive_param]) {
 			exclusive_params.forEach((param)=> {
 				if (param !== exclusive_param) {
-					updates[param] = null; // must be enumerated (for Object.assign) but falsey, to get removed from the URL
+					updates[param] = null; // must be enumerated (for Object.assign) but falsy, to get removed from the URL
 				}
 			});
 		}
@@ -185,7 +185,7 @@ function update_helper_layer_immediately() {
 	// (The magnifier preview is especially confusing looking together with the component preview!)
 	if ($("body").hasClass("dragging") && !pointer_active) {
 		// tools_to_preview.length = 0;
-		// Curve and Polygon tools have a persistant state over multiple gestures,
+		// Curve and Polygon tools have a persistent state over multiple gestures,
 		// which is, as of writing, part of the "tool preview"; it's ugly,
 		// but at least they don't have ALSO a brush like preview, right?
 		// so we can just allow those thru
@@ -889,10 +889,10 @@ function are_you_sure(action, canceled){
 }
 
 function please_enter_a_number() {
-	const $msgw = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
-	$msgw.$main.text(localize("Please enter a number."));
-	$msgw.$Button(localize("OK"), () => {
-		$msgw.close();
+	const $w = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
+	$w.$main.text(localize("Please enter a number."));
+	$w.$Button(localize("OK"), () => {
+		$w.close();
 	}).focus();
 }
 
@@ -907,7 +907,7 @@ function show_error_message(message, error){
 		// Chrome includes the error message in the error.stack string, whereas Firefox doesn't.
 		// Also note that there can be Exception objects that don't have a message (empty string) but a name,
 		// for instance Exception { message: "", name: "NS_ERROR_FAILURE", ... } for out of memory when resizing the canvas too large in Firefox.
-		// Chrome just lets you bring the system to a grating hault by trying to grab too much memory.
+		// Chrome just lets you bring the system to a grating halt by trying to grab too much memory.
 		// Firefox does too sometimes.
 		let error_string = error.stack;
 		if (!error_string) {
@@ -1345,7 +1345,7 @@ function go_to_history_node(target_history_node, canceling) {
 	const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 	if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
 		window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
-		undoable({name: "Unknown [GTHN]", use_loose_canvas_changes: true}, ()=> {});
+		undoable({name: "Unknown [go_to_history_node]", use_loose_canvas_changes: true}, ()=> {});
 	}
 	current_history_node = target_history_node;
 	
@@ -2326,7 +2326,7 @@ function image_attributes(){
 		}
 
 		// 1. Must be after canvas resize to avoid weird undoable interaction and such.
-		// 2. Check that monchrome option changed, same as above.
+		// 2. Check that monochrome option changed, same as above.
 		//   a) for monochrome_info variable to be available
 		//   b) Consider the case where color is introduced to the canvas while in monochrome mode.
 		//      We only want to show this dialog if it would also change the palette (above), never leave you on an outdated palette.
@@ -2586,16 +2586,16 @@ function image_stretch_and_skew(){
 	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", localize("V&ertical:"), 0, localize("Degrees"), -90, 90);
 
 	$w.$Button(localize("OK"), () => {
-		const xscale = parseFloat(stretch_x.val())/100;
-		const yscale = parseFloat(stretch_y.val())/100;
-		const hskew = parseFloat(skew_x.val())/360*TAU;
-		const vskew = parseFloat(skew_y.val())/360*TAU;
-		if (isNaN(xscale) || isNaN(yscale) || isNaN(hskew) || isNaN(vskew)) {
+		const x_scale = parseFloat(stretch_x.val())/100;
+		const y_scale = parseFloat(stretch_y.val())/100;
+		const h_skew = parseFloat(skew_x.val())/360*TAU;
+		const v_skew = parseFloat(skew_y.val())/360*TAU;
+		if (isNaN(x_scale) || isNaN(y_scale) || isNaN(h_skew) || isNaN(v_skew)) {
 			please_enter_a_number();
 			return;
 		}
 		try {
-			stretch_and_skew(xscale, yscale, hskew, vskew);
+			stretch_and_skew(x_scale, y_scale, h_skew, v_skew);
 		} catch (exception) {
 			if (exception.name === "NS_ERROR_FAILURE") {
 				// or localize("There is not enough memory or resources to complete operation.")

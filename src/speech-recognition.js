@@ -1530,7 +1530,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 
 				"unmaximize", "unmaximize button", "unmaximize window", "unmaximize window button",
 				"restore", "restore button", "restore window", "restore window button", "restore window size", "restore window size button",
-				"enlarge window", "make window small", "make window smallagain", "make window smaller", "make window smaller again",
+				"enlarge window", "make window small", "make window small again", "make window smaller", "make window smaller again",
 			];
 		}
 		if (button.matches(".window-minimize-button")) {
@@ -1820,8 +1820,8 @@ window.trace_and_sketch = (subject_imagedata)=> {
 
 	// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
-	const tracedata = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres:1, qtres:0.01, scale:10, /*pal,*/ numberofcolors: 6, });
-	const {layers} = tracedata;
+	const trace_data = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres:1, qtres:0.01, scale:10, /*pal,*/ numberofcolors: 6, });
+	const {layers} = trace_data;
 	const brush = get_tool_by_id(TOOL_BRUSH);
 	select_tool(brush);
 

@@ -148,8 +148,8 @@ If you want to add extensive palette support to another application, I've made t
 | .pal, .psppalette | [Paint Shop Pro] Palette          | [Paint Shop Pro] (Jasc Software / Corel)                                          |   ✅   |   ✅    |
 | .hpl              | [Homesite] Palette                | Allaire [Homesite] / Macromedia [ColdFusion]                                      |   ✅   |   ✅    |
 | .cs               | ColorSchemer                      | ColorSchemer Studio                                                               |   ✅   |         |
-| .pal              | [Starcraft] Palette               | [Starcraft]                                                                       |   ✅   |   ✅    |
-| .wpe              | [Starcraft] Terrain Palette       | [Starcraft]                                                                       |   ✅   |   ✅    |
+| .pal              | [StarCraft] Palette               | [StarCraft]                                                                       |   ✅   |   ✅    |
+| .wpe              | [StarCraft] Terrain Palette       | [StarCraft]                                                                       |   ✅   |   ✅    |
 | .sketchpalette    | [Sketch] Palette                  | [Sketch]                                                                          |   ✅   |   ✅    |
 | .spl              | [Skencil] Palette                 | [Skencil] (formerly called Sketch)                                                |   ✅   |   ✅    |
 | .soc              | StarOffice Colors                 | [StarOffice], [OpenOffice], [LibreOffice]                                         |   ✅   |   ✅    |
@@ -181,10 +181,10 @@ If you want to add extensive palette support to another application, I've made t
 * These Tips and Tricks from [a tutorial for MS Paint](https://www.albinoblacksheep.com/tutorial/mspaint)
   also work in JS Paint:
 
-	* [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to adjust brush size)
+	* [x] Brush Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the number pad to adjust brush size)
 	* [x] "Custom Brushes" (hold <kbd>Shift</kbd> and drag the selection to smear it)
 	* [x] The 'Stamp' "Tool" (hold <kbd>Shift</kbd> and click the selection to stamp it)
-	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the Numpad to scale the selection by factors of 2)
+	* [x] Image Scaling (<kbd>+</kbd> & <kbd>-</kbd> on the number pad to scale the selection by factors of 2)
 	* [x] Color Replacement (right mouse button with Eraser to selectively replace the foreground color with the background color)
 	* [x] The Grid (<kbd>Ctrl+G</kbd> & Zoom to 4x+)
 	* [x] Quick Undo (Pressing a second mouse button cancels the action you were performing.

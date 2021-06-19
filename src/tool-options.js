@@ -125,32 +125,32 @@ const $ChooseShapeStyle = () => {
 			{stroke: false, fill: true}
 		],
 		({stroke, fill}, is_chosen, reuse_canvas) => {
-			const sscanvas = reuse_canvas(39, 21);
-			const ssctx = sscanvas.ctx;
+			const ss_canvas = reuse_canvas(39, 21);
+			const ss_ctx = ss_canvas.ctx;
 			
 			// border px inwards amount
 			let b = 5;
 
-			const style = getComputedStyle(sscanvas);
-			ssctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
+			const style = getComputedStyle(ss_canvas);
+			ss_ctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
 			
 			if(stroke){
 				// just using a solid rectangle for the stroke
 				// so as not to have to deal with the pixel grid with strokes
-				ssctx.fillRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
+				ss_ctx.fillRect(b, b, ss_canvas.width-b*2, ss_canvas.height-b*2);
 			}
 			
 			// go inward a pixel for the fill
 			b += 1;
-			ssctx.fillStyle = style.getPropertyValue("--ButtonShadow");
+			ss_ctx.fillStyle = style.getPropertyValue("--ButtonShadow");
 			
 			if(fill){
-				ssctx.fillRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
+				ss_ctx.fillRect(b, b, ss_canvas.width-b*2, ss_canvas.height-b*2);
 			}else{
-				ssctx.clearRect(b, b, sscanvas.width-b*2, sscanvas.height-b*2);
+				ss_ctx.clearRect(b, b, ss_canvas.width-b*2, ss_canvas.height-b*2);
 			}
 			
-			return sscanvas;
+			return ss_canvas;
 		},
 		({stroke, fill}) => {
 			$chooser.stroke = stroke;
@@ -183,17 +183,17 @@ const $choose_brush = $Choose(
 		return things;
 	})(),
 	(o, is_chosen, reuse_canvas) => {
-		const cbcanvas = reuse_canvas(10, 10);
-		const style = getComputedStyle(cbcanvas);
+		const cb_canvas = reuse_canvas(10, 10);
+		const style = getComputedStyle(cb_canvas);
 		
 		const shape = o.shape;
 		const size = o.size;
 		const color = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
 		
-		stamp_brush_canvas(cbcanvas.ctx, 5, 5, shape, size);
-		replace_colors_with_swatch(cbcanvas.ctx, color);
+		stamp_brush_canvas(cb_canvas.ctx, 5, 5, shape, size);
+		replace_colors_with_swatch(cb_canvas.ctx, color);
 
-		return cbcanvas;
+		return cb_canvas;
 	}, ({shape, size}) => {
 		brush_shape = shape;
 		brush_size = size;
@@ -203,13 +203,13 @@ const $choose_brush = $Choose(
 const $choose_eraser_size = $Choose(
 	[4, 6, 8, 10],
 	(size, is_chosen, reuse_canvas) => {
-		const cecanvas = reuse_canvas(39, 16);
+		const ce_canvas = reuse_canvas(39, 16);
 		
-		const style = getComputedStyle(cecanvas);
-		cecanvas.ctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
-		render_brush(cecanvas.ctx, "square", size);
+		const style = getComputedStyle(ce_canvas);
+		ce_canvas.ctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
+		render_brush(ce_canvas.ctx, "square", size);
 		
-		return cecanvas;
+		return ce_canvas;
 	},
 	size => {
 		eraser_size = size;
@@ -221,12 +221,12 @@ const $choose_stroke_size = $Choose(
 	[1, 2, 3, 4, 5],
 	(size, is_chosen, reuse_canvas) => {
 		const w = 39, h = 12, b = 5;
-		const cscanvas = reuse_canvas(w, h);
+		const cs_canvas = reuse_canvas(w, h);
 		const center_y = (h - size) / 2;
-		const style = getComputedStyle(cscanvas);
-		cscanvas.ctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
-		cscanvas.ctx.fillRect(b, ~~center_y, w - b*2, size);
-		return cscanvas;
+		const style = getComputedStyle(cs_canvas);
+		cs_canvas.ctx.fillStyle = is_chosen ? style.getPropertyValue("--HilightText") : style.getPropertyValue("--WindowText");
+		cs_canvas.ctx.fillRect(b, ~~center_y, w - b*2, size);
+		return cs_canvas;
 	},
 	size => {
 		stroke_size = size;

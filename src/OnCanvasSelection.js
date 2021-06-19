@@ -143,7 +143,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		// doc/this or canvas/cutout, either of those pairs would result in variable names of equal length which is nice :)
 		const canvasImageData = main_ctx.getImageData(this.x, this.y, this.width, this.height);
 		const cutoutImageData = cutout.ctx.getImageData(0, 0, this.width, this.height);
-		// cutoutImageData is initialzed with the shape to be cut out (whether rectangular or polygonal)
+		// cutoutImageData is initialized with the shape to be cut out (whether rectangular or polygonal)
 		// and should end up as the cut out image data for the selection
 		// canvasImageData is initially the portion of image data on the canvas,
 		// and should end up as... the portion of image data on the canvas that it should end up as.

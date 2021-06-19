@@ -77,18 +77,18 @@ window.tools = [{
 		});
 	},
 	paint_iteration(x, y) {
-		// Constrain the inverty paint brush position to the canvas
+		// Constrain the inversion paint brush position to the canvas
 		x = Math.min(main_canvas.width, x);
 		x = Math.max(0, x);
 		y = Math.min(main_canvas.height, y);
 		y = Math.max(0, y);
 		
 		// Find the dimensions on the canvas of the tiny square to invert
-		const inverty_size = 2;
-		const rect_x = ~~(x - inverty_size/2);
-		const rect_y = ~~(y - inverty_size/2);
-		const rect_w = inverty_size;
-		const rect_h = inverty_size;
+		const inversion_size = 2;
+		const rect_x = ~~(x - inversion_size/2);
+		const rect_y = ~~(y - inversion_size/2);
+		const rect_w = inversion_size;
+		const rect_h = inversion_size;
 		
 		const ctx_dest = this.preview_canvas.ctx;
 		const id_src = main_ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
@@ -1320,7 +1320,7 @@ tools.forEach((tool)=> {
 			const brush = tool.get_brush();
 			const circumference_points = get_circumference_points_for_brush(brush.shape, brush.size);
 			tool.mask_canvas.ctx.fillStyle = stroke_color;
-			const iterate_line = brush.size > 1 ? brosandham_line : bresenham_line;
+			const iterate_line = brush.size > 1 ? bresenham_dense_line : bresenham_line;
 			iterate_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
 				for (const point of circumference_points) {
 					tool.mask_canvas.ctx.fillRect(x + point.x, y + point.y, 1, 1);

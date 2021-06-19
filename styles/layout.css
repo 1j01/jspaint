@@ -616,9 +616,9 @@ html, body, .jspaint {
 	position: absolute;
 	/*background: rgba(255, 0, 0, 0.5);*/ /* debug */
 }
-.grab-region.is-middle {
+/* .grab-region.is-middle { */
 	/*background: rgba(255, 255, 0, 0.5);*/ /* debug */
-}
+/* } */
 .textbox::before {
 	/* allow dragging textbox */
 	/* In mspaint the border drawn around selections and textboxes extends out from them,
@@ -690,8 +690,8 @@ html, body, .jspaint {
 	display: flex !important; /* overriding `.window:not(.edit-colors-window) .window-content label` */
 }
 .flip-and-rotate input:disabled {
-	/* pointer events already can't get recieved on disabled input elements,
-	but this lets them be recieved on a parent,
+	/* pointer events already can't get received on disabled input elements,
+	but this lets them be received on a parent,
 	in order to enable the element */
 	pointer-events: none;
 }

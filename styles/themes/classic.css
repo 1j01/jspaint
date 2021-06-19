@@ -229,7 +229,7 @@ body,
 }
 .component-ghost:not(.dock):after,
 .component-ghost:not(.dock):before,
-/* @TODO: thiccer resize ghost (4px instead of 3px) */
+/* @TODO: thicker resize ghost (4px instead of 3px) */
 .resize-ghost.thick:after,
 .resize-ghost.thick:before {
 	content: '';

@@ -85,7 +85,7 @@ let polychrome_palette = palette;
 let monochrome_palette = make_monochrome_palette();
 
 // https://github.com/kouzhudong/win2k/blob/ce6323f76d5cd7d136b74427dad8f94ee4c389d2/trunk/private/shell/win16/comdlg/color.c#L38-L43
-// These are a fallback in case colors are not recieved from some driver.
+// These are a fallback in case colors are not received from some driver.
 // const default_basic_colors = [
 // 	"#8080FF", "#80FFFF", "#80FF80", "#80FF00", "#FFFF80", "#FF8000", "#C080FF", "#FF80FF",
 // 	"#0000FF", "#00FFFF", "#00FF80", "#40FF00", "#FFFF00", "#C08000", "#C08080", "#FF00FF",
@@ -525,7 +525,7 @@ $news_indicator.on("click auxclick", (event)=> {
 	event.preventDefault();
 	show_news();
 });
-// @TODO: use localstorage to show until clicked, if available
+// @TODO: use localStorage to show until clicked, if available
 // and show for a longer period of time after the update, if available
 if (Date.now() < Date.parse("Jan 5 2021 23:42:42 GMT-0500")) {
 	$status_area.append($news_indicator);
@@ -1744,7 +1744,7 @@ async function init_eye_gaze_mode() {
 		})
 	);
 
-	// These are matched on exactly for speech recognition synonymization
+	// These are matched on exactly, for code that provides speech command synonyms
 	const pause_button_text = "Pause Dwell Clicking";
 	const resume_button_text = "Resume Dwell Clicking";
 
@@ -1998,7 +1998,7 @@ prevent_selection($toolbox);
 // prevent_selection($toolbox2);
 prevent_selection($colorbox);
 
-// Stop drawing (or dragging or whatver) if you Alt+Tab or whatever
+// Stop drawing (or dragging or whatever) if you Alt+Tab or whatever
 $G.on("blur", () => {
 	$G.triggerHandler("pointerup");
 });

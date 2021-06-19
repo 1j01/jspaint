@@ -27,7 +27,7 @@
 * Error symbol for error message dialogs
 * Menu separator spacing
 * I want to give most things a revisit later on for Pixel Perfection
-* Fill bucket and airbrush cursors are supposed to have inverty parts
+* Fill bucket and airbrush cursors are supposed to invert the background in parts
 * Custom cursors in Edge; apparently they require `.cur` files? ugh
 * The canvas-area's border is different in Firefox and Edge from Chrome
 
@@ -73,7 +73,7 @@
 		* Cursors from other users that go outside the parent can cause the page to be scrollable
 
 * Painting textures on 3D models
-	* And onto tesselating patterns which I imagine can be a special case of 3D models
+	* And onto tessellating patterns which I imagine can be a special case of 3D models
 
 * Save text and record transformations so the image can be saved as
 SVG (or HTML?) with invisible selectable transformed text elements?
@@ -91,9 +91,10 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 * Alternative way to access "Color Eraser" feature without a secondary mouse button?
 * Alternative access to functionality that would normally require a keyboard (with a numpad!)
 	* Numpad +/-: Increase/Decrease brush size, Double/Halve selection size, ...
-	* Shift (toggle):
-		* Proportional, Smear / Trail Selection
-		* "Snap to 8 directions" / "Octosnap"?
+	* Shift (toggles; rename contextually?):
+		* Proportional Resize
+		* Smear / Trail Selection
+		* Snap to 8 directions
 			* An isometric mode would also be good
 	* Ctrl+Select: Crop tool or "Crop to selection" option
 * Don't drag toolbars out into windows with touch

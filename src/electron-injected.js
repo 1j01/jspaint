@@ -10,7 +10,7 @@ const fs = require("fs");
 const path = require("path");
 const argv = require("electron").remote.process.argv;
 
-// @TODO: let user apply this setting somewhere in the UI (toggleable)
+// @TODO: let user apply this setting somewhere in the UI (togglable)
 // (Note: it would be better to use REG.EXE to apply the change, rather than a .reg file)
 // This registry modification changes the right click > Edit option for images in Windows Explorer
 const reg_contents = `Windows Registry Editor Version 5.00
