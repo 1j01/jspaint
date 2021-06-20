@@ -161,12 +161,7 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 
 	for (let x = 0; x < image_data.width; x += 1) {
 		for (let y = 0; y < image_data.height; y += 1) {
-			if (at(x, y) && (
-				!at(x, y - 1) ||
-				!at(x, y + 1) ||
-				!at(x - 1, y) ||
-				!at(x + 1, y)
-			)) {
+            if (at(x, y)) {
 				points.push({
 					x: x + offset_x,
 					y: y + offset_y,
