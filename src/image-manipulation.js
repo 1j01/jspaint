@@ -1,11 +1,13 @@
 const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 
 function get_brush_canvas_size(brush_size, brush_shape){
-	// brush_shape optional, only matters if it's circle
-	// @TODO: does it actually still matter? the ellipse drawing code has changed
-	
-	// round to nearest even number in order for the canvas to be drawn centered at a point reasonably
-	return Math.ceil(brush_size * (brush_shape === "circle" ? 2.1 : 1) / 2) * 2;
+	switch(brush_shape) {
+		case 'square': // solid shapes need bigger canvas to allow circumference_points() to find all brush edges
+		case 'circle': // bigger canvas also solves odd size circle centering issue
+			return brush_size +1;
+		default:
+			return brush_size;
+	}
 }
 function render_brush(ctx, shape, size){
 	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of draw_ellipse)
