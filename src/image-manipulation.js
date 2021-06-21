@@ -150,7 +150,7 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 
 	const brush_canvas = get_brush_canvas(brush_shape, brush_size);
 
-	const image_data = brush_canvas.ctx.getImageData(0, 0, brush_canvas.width, brush_canvas.height);
+	const image_data = brush_canvas.ctx.getImageData(0, 0, brush_canvas.width + 1, brush_canvas.height);
 
 	const at = (x, y)=> image_data.data[(y * image_data.width + x) * 4 + 3] > 0;
 
@@ -161,7 +161,12 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 
 	for (let x = 0; x < image_data.width; x += 1) {
 		for (let y = 0; y < image_data.height; y += 1) {
-            if (at(x, y)) {
+			if (at(x, y) && (
+				!at(x, y - 1) ||
+				!at(x, y + 1) ||
+				!at(x - 1, y) ||
+				!at(x + 1, y)
+			)) {
 				points.push({
 					x: x + offset_x,
 					y: y + offset_y,
