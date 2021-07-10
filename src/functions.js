@@ -2782,6 +2782,15 @@ function write_image_file(canvas, mime_type, blob_callback) {
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);
 		});
+	} else if (mime_type === "image/png") {
+		// UPNG.js gives better compressed PNGs than the built-in browser PNG encoder
+		// In fact you can use it as a minifier! http://upng.photopea.com/
+		const image_data = canvas.ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const array_buffer = UPNG.encode([image_data.data.buffer], image_data.width, image_data.height);
+		const blob = new Blob([array_buffer]);
+		sanity_check_blob(blob, () => {
+			blob_callback(blob);
+		});
 	} else {
 		canvas.toBlob(blob => {
 			// Note: could check blob.type (mime type) instead
