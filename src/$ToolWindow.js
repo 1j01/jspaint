@@ -27,7 +27,7 @@ function $ToolWindow($component){
 		position: "absolute",
 		zIndex: $Window.Z_INDEX++
 	});
-	var focused = false;
+	// var focused = false;
 	var last_focused_control;
 	$w.on("pointerdown refocus-window", (event) => {
 		$w.css({
@@ -43,27 +43,27 @@ function $ToolWindow($component){
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		// Set focus to the last focused control, which should be updated if a click just occurred.
 		requestAnimationFrame(()=> {
-			focused = true;
+			// focused = true;
 			if (last_focused_control) {
 				last_focused_control.focus();
 			}
 		});
 	});
-	// Assumption: no control will exist in the window yet,
-	// so any element.focus() will be after this "focusin" handler is set up.
+	// Assumption: no control exists in the window before, this "focusin" handler is set up,
+	// so any element.focus() will be after and trigger this handler.
 	$w.on("focusin", ()=> {
-		focused = true;
+		// focused = true;
 		if (document.activeElement && $.contains($w[0], document.activeElement)) {
 			last_focused_control = document.activeElement;
 		}
 	});
-	$w.on("focusout", ()=> {
-		requestAnimationFrame(()=> {
-			if (!document.activeElement || !$.contains($w[0], document.activeElement)) {
-				focused = false;
-			}
-		});
-	});
+	// $w.on("focusout", ()=> {
+	// 	requestAnimationFrame(()=> {
+	// 		if (!document.activeElement || !$.contains($w[0], document.activeElement)) {
+	// 			focused = false;
+	// 		}
+	// 	});
+	// });
 	
 	$w.on("keydown", e => {
 		if(e.ctrlKey || e.altKey || e.metaKey){
