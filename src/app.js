@@ -639,13 +639,33 @@ $("body").on("dragover dragenter", (event) => {
 					const handle = await item.getAsFileSystemHandle();
 					if (handle.kind === 'file') {
 						await open_from_file_handle(handle);
-						return;
+						if (window._open_images_serially) {
+							// For testing a suite of files:
+							await new Promise(resolve => setTimeout(resolve, 500));
+						} else {
+							// Normal behavior: only open one file.
+							return;
+						}
 					}
 					// else if (handle.kind === 'directory') {}
 				}
 			}
 		} else if (dt.files && dt.files.length) {
-			open_from_file(dt.files[0]);
+			if (window._open_images_serially) {
+				// For testing a suite of files, such as http://www.schaik.com/pngsuite/
+				let i = 0;
+				const iid = setInterval(() => {
+					console.log("opening", dt.files[i].name);
+					open_from_file(dt.files[i]);
+					i++;
+					if (i >= dt.files.length) {
+						clearInterval(iid);
+					}
+				}, 1500);
+			} else {
+				// Normal behavior: only open one file.
+				open_from_file(dt.files[0]);
+			}
 		}
 	}
 });
