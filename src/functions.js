@@ -2865,8 +2865,8 @@ function read_image_file(blob, callback) {
 			if (tabs.PLTE && tabs.PLTE.length >= 3 * 2 && ctype === 3 /* palettized */) {
 				if (tabs.PLTE.length === 3 * 2) {
 					palette = make_monochrome_palette(
-						[...tabs.PLTE.slice(0, 3), (tabs.tRNS && tabs.tRNS.length >= 1) ? tabs.tRNS[0] : 255],
-						[...tabs.PLTE.slice(3, 6), (tabs.tRNS && tabs.tRNS.length >= 2) ? tabs.tRNS[1] : 255]
+						[...tabs.PLTE.slice(0, 3), tabs.tRNS?.[0] ?? 255],
+						[...tabs.PLTE.slice(3, 6), tabs.tRNS?.[1] ?? 255]
 					);
 					monochrome = true;
 				} else {
