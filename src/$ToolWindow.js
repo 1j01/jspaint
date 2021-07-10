@@ -33,20 +33,19 @@ function $ToolWindow($component){
 		$w.css({
 			zIndex: $Window.Z_INDEX++
 		});
-		// Wait for other pointerdown handlers and default behavior
-		// If nothing is focused within the window by the end of that,
-		// we should set focus to the last focused control.
-		// This also handles keeping the control focused when clicking in the blank space of the window.
+		// Test cases where it should refocus the last focused control in the window:
+		// - Click in the blank space of the window
+		// - Click on the window title bar
+		// - Close a second window, focusing the first window
+		// - Clicking on a control in the window should focus it, by way of updating last_focused_control
+		// - Eye gaze mode dwell click (simulated click)
+
+		// Wait for other pointerdown handlers and default behavior, and focusin events.
+		// Set focus to the last focused control, which should be updated if a click just occurred.
 		requestAnimationFrame(()=> {
-			if (
-				!document.activeElement ||
-				document.activeElement === document.body ||
-				document.activeElement === document.documentElement
-			) {
-				focused = true;
-				if (last_focused_control) {
-					last_focused_control.focus();
-				}
+			focused = true;
+			if (last_focused_control) {
+				last_focused_control.focus();
 			}
 		});
 	});
