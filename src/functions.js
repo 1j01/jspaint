@@ -2077,7 +2077,7 @@ function make_monochrome_pattern(lightness, rgba1=[0, 0, 0, 255], rgba2=[255, 25
 			pattern_image_data.data[index + 0] = px_white ? rgba2[0] : rgba1[0];
 			pattern_image_data.data[index + 1] = px_white ? rgba2[1] : rgba1[1];
 			pattern_image_data.data[index + 2] = px_white ? rgba2[2] : rgba1[2];
-			pattern_image_data.data[index + 3] = px_white ? rgba2[3] : rgba1[3];
+			pattern_image_data.data[index + 3] = (px_white ? rgba2[3] : rgba1[3]) ?? 255; // handling also 3-length arrays (RGB)
 		}
 	}
 
@@ -2804,7 +2804,7 @@ function write_image_file(canvas, mime_type, blob_callback) {
 
 function read_image_file(blob, callback) {
 	// @TODO: handle SVG (might need to keep track of source URL, for relative resources)
-	// @TODO: read palette from PNG, GIF files
+	// @TODO: read palette from GIF files
 
 	let file_format;
 	let palette;
@@ -2852,6 +2852,38 @@ function read_image_file(blob, callback) {
 			// 	}
 			// }
 			callback(null, {file_format, monochrome, palette, image_data: imageData, source_blob: blob});
+		} else if (detected_type_id === "png") {
+			const decoded  = UPNG.decode(arrayBuffer);
+			const rgba = UPNG.toRGBA8(decoded)[0];
+			const { width, height, tabs, ctype } = decoded;
+			// If it's a palettized PNG, load the palette for the Colors box.
+			// Note: PLTE (palette) chunk must be present for palettized PNGs,
+			// but can also be present as a recommended set of colors in true-color mode.
+			// tRNs (transparency) chunk can provide alpha data associated with each color in the PLTE chunk.
+			// It may contain as many transparency entries as there are palette entries, or as few as one.
+			// tRNS chunk can also be used to specify a single color to be considered fully transparent in true-color mode.
+			if (tabs.PLTE && tabs.PLTE.length >= 3 * 2 && ctype === 3 /* palettized */) {
+				if (tabs.PLTE.length === 3 * 2) {
+					palette = make_monochrome_palette(
+						[...tabs.PLTE.slice(0, 3), (tabs.tRNS && tabs.tRNS.length >= 1) ? tabs.tRNS[0] : 255],
+						[...tabs.PLTE.slice(3, 6), (tabs.tRNS && tabs.tRNS.length >= 2) ? tabs.tRNS[1] : 255]
+					);
+					monochrome = true;
+				} else {
+					palette = new Array(tabs.PLTE.length / 3);
+					for (let i = 0; i < palette.length; i++) {
+						if (tabs.tRNS && tabs.tRNS.length >= i + 1) {
+							palette[i] = `rgba(${tabs.PLTE[i * 3 + 0]}, ${tabs.PLTE[i * 3 + 1]}, ${tabs.PLTE[i * 3 + 2]}, ${tabs.tRNS[i] / 255})`;
+						} else {
+							palette[i] = `rgb(${tabs.PLTE[i * 3 + 0]}, ${tabs.PLTE[i * 3 + 1]}, ${tabs.PLTE[i * 3 + 2]})`;
+						}
+					}
+					monochrome = false;
+				}
+			}
+			file_format = "image/png";
+			const image_data = new ImageData(new Uint8ClampedArray(rgba), width, height);
+			callback(null, {file_format, monochrome, palette, image_data, source_blob: blob});
 		} else {
 			monochrome = false;
 			file_format = {

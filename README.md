@@ -113,7 +113,7 @@ This doesn't undo saving the file, but allows you to then save in a different fo
 
 | File Extension | Name                                                               | Read | Write | Read Palette | Write Palette |
 |----------------|--------------------------------------------------------------------|:----:|:-----:|:------------:|:-------------:|
-| .png           | [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)     |  ✅  |  ✅   |              |               |
+| .png           | [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)     |  ✅  |  ✅   |      ✅      |               |
 | .bmp, .dib     | [Monochrome Bitmap](https://en.wikipedia.org/wiki/BMP_file_format) |  ✅  |  ✅   |      ✅      |      ✅       |
 | .bmp, .dib     | [16 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)   |  ✅  |  ✅   |      ✅      |      ✅       |
 | .bmp, .dib     | [256 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)  |  ✅  |  ✅   |      ✅      |      ✅       |
