@@ -498,9 +498,30 @@ function get_uris(text) {
 	}
 	return uris;
 }
-async function load_image_from_uri(uri){
-	const is_blob_uri = uri.match(/^blob:/);
-	const is_download = !uri.match(/^(blob|data):/);
+async function load_image_from_uri(uri) {
+
+	// Cases to consider:
+	// - data URIs
+	// - blob URIs
+	//   - blob URI from another domain
+	// - file URIs
+	// - http(s) URIs
+	// - unsupported protocol, e.g. "ftp://example.com/image.png"
+	// - no protocol specified, e.g. "example.com/image.png"
+	// - (otherwise) invalid URI
+	//   - may be just trying to paste text, not an image
+	// - non-CORS-enabled URI
+	// - invalid image / unsupported image format
+	// - pasting vs drag & drop vs File > Open
+	// - file already downloaded (maybe should cache downloads)
+	// - localhost URI, e.g. "http://127.0.0.1/" or "http://localhost/"
+	//   - Some domain extensions are reserved, e.g. .localdomain (how official is this?)
+	//   - There can also be arbitrary hostnames mapped to local servers, which we can't test for
+	// - already a proxy URI, e.g. "https://cors.bridged.cc/https://example.com/image.png"
+
+	const is_blob_uri = uri.match(/^blob:/i);
+	const is_download = !uri.match(/^(blob|data|file):/i);
+	const is_localhost = uri.match(/^(http|https):\/\/((127\.0\.0\.1|localhost)|.*(\.(local|localdomain|domain|lan|home|host|corp|invalid)))\b/i);
 
 	if (is_blob_uri && uri.indexOf(`blob:${location.origin}`) === -1) {
 		const error = new Error("can't load blob: URI from another domain");
@@ -508,7 +529,7 @@ async function load_image_from_uri(uri){
 		throw error;
 	}
 
-	const uris_to_try = is_download ? [
+	const uris_to_try = (is_download && !is_localhost) ? [
 		uri,
 		// work around CORS headers not sent by whatever server
 		`https://cors.bridged.cc/${uri}`,
