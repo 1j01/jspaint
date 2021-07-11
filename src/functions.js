@@ -490,6 +490,7 @@ function get_uris(text) {
 	// parse URLs, discarding anything that parses as a relative URL
 	const uris = [];
 	for (let i=0; i<lines.length; i++) {
+		// Relative URLs will throw when no base URL is passed to the URL constructor.
 		try {
 			const url = new URL(lines[i]);
 			uris.push(url.href);
@@ -501,23 +502,33 @@ function get_uris(text) {
 async function load_image_from_uri(uri) {
 
 	// Cases to consider:
-	// - data URIs
-	// - blob URIs
+	// - data URI
+	// - blob URI
 	//   - blob URI from another domain
-	// - file URIs
-	// - http(s) URIs
+	// - file URI
+	// - http URI
+	// - https URI
 	// - unsupported protocol, e.g. "ftp://example.com/image.png"
-	// - no protocol specified, e.g. "example.com/image.png"
-	// - (otherwise) invalid URI
-	//   - may be just trying to paste text, not an image
+	// - invalid URI
+	//   - no protocol specified, e.g. "example.com/image.png"
+	//     --> We can fix these up!
+	//   - The user may be just trying to paste text, not an image.
 	// - non-CORS-enabled URI
+	//   --> Use a CORS proxy! :)
 	// - invalid image / unsupported image format
-	// - pasting vs drag & drop vs File > Open
-	// - file already downloaded (maybe should cache downloads)
+	// - image is no longer available on the live web
+	//   --> try loading from WayBack Machine :)
+	//   - often swathes of URLs are redirected to a new site, and do not give a 404.
+	//     --> make sure the flow of fallbacks accounts for this, and doesn't just see it as an unsupported file format.
 	// - localhost URI, e.g. "http://127.0.0.1/" or "http://localhost/"
+	//   --> Don't try to proxy these, as it will just fail.
 	//   - Some domain extensions are reserved, e.g. .localdomain (how official is this?)
 	//   - There can also be arbitrary hostnames mapped to local servers, which we can't test for
 	// - already a proxy URI, e.g. "https://cors.bridged.cc/https://example.com/image.png"
+	// - file already downloaded
+	//   --> maybe should cache downloads? maybe HTTP caching is good enough? maybe uncommon enough that it doesn't matter.
+	// - Pasting (Edit > Paste or Ctrl+V) vs Opening (drag & drop, File > Open, Ctrl+O, or File > Load From URL)
+	//   --> make wording generic or specific to the context
 
 	const is_blob_uri = uri.match(/^blob:/i);
 	const is_download = !uri.match(/^(blob|data|file):/i);
