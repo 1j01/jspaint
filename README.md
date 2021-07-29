@@ -119,9 +119,9 @@ This doesn't undo saving the file, but allows you to then save in a different fo
 | .bmp, .dib     | [256 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)  |  ✅  |  ✅   |      ✅      |      ✅       |
 | .bmp, .dib     | [24-bit Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)     |  ✅  |  ✅   |      N/A     |      N/A      |
 | .pdf           | [PDF](https://en.wikipedia.org/wiki/PDF) (loads first page)        |  ✅  |       |              |               |
+| .tiff, .tif    | [TIFF](https://en.wikipedia.org/wiki/TIFF) (loads first page)      |  ✅  |       |              |               |
 | .webp          | [WebP](https://en.wikipedia.org/wiki/WebP)                         |  🌐  |  🌐   |              |               |
 | .gif           | [GIF](https://en.wikipedia.org/wiki/GIF)                           |  🌐  |  🌐   |              |               |
-| .tiff, .tif    | [TIFF](https://en.wikipedia.org/wiki/TIFF)                         |  🌐  |  🌐   |              |               |
 | .jpeg, .jpg    | [JPEG](https://en.wikipedia.org/wiki/JPEG)                         |  🌐  |  🌐   |      N/A     |      N/A      |
 
 Formats marked with 🌐 are currently left up to the browser to support or not.

@@ -2921,6 +2921,29 @@ function read_image_file(blob, callback) {
 			}
 			file_format = "image/png";
 			const image_data = new ImageData(new Uint8ClampedArray(rgba), width, height);
+			callback(null, { file_format, monochrome, palette, image_data, source_blob: blob });
+		} else if (detected_type_id === "tiff_be" || detected_type_id === "tiff_le") {
+			// IFDs = image file directories
+			// VSNs = ???
+			// This code is based on UTIF.bufferToURI	
+			var ifds = UTIF.decode(arrayBuffer);
+			//console.log(ifds);
+			var vsns = ifds, ma = 0, page = vsns[0];
+			if (ifds[0].subIFD) {
+				vsns = vsns.concat(ifds[0].subIFD);
+			}
+			for (var i = 0; i < vsns.length; i++) {
+				var img = vsns[i];
+				if (img["t258"] == null || img["t258"].length < 3) continue;
+				var ar = img["t256"] * img["t257"];
+				if (ar > ma) { ma = ar; page = img; }
+			}
+			UTIF.decodeImage(arrayBuffer, page, ifds);
+			var rgba = UTIF.toRGBA8(page);
+
+			var image_data = new ImageData(new Uint8ClampedArray(rgba.buffer), page.width, page.height);
+
+			file_format = "image/tiff";
 			callback(null, {file_format, monochrome, palette, image_data, source_blob: blob});
 		} else if (detected_type_id === "pdf") {
 			file_format = "application/pdf";
