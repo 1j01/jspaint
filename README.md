@@ -111,18 +111,18 @@ This doesn't undo saving the file, but allows you to then save in a different fo
 
 💡 Saving as PNG is recommended as it gives small file sizes while retaining full quality.
 
-| File Extension | Name                                                               | Read | Write | Read Palette | Write Palette |
-|----------------|--------------------------------------------------------------------|:----:|:-----:|:------------:|:-------------:|
-| .png           | [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)     |  ✅  |  ✅   |      ✅      |               |
-| .bmp, .dib     | [Monochrome Bitmap](https://en.wikipedia.org/wiki/BMP_file_format) |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib     | [16 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)   |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib     | [256 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)  |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib     | [24-bit Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)     |  ✅  |  ✅   |      N/A     |      N/A      |
-| .pdf           | [PDF](https://en.wikipedia.org/wiki/PDF) (loads first page)        |  ✅  |       |              |               |
-| .tiff, .tif    | [TIFF](https://en.wikipedia.org/wiki/TIFF) (loads first page)      |  ✅  |  ✅   |              |               |
-| .webp          | [WebP](https://en.wikipedia.org/wiki/WebP)                         |  🌐  |  🌐   |              |               |
-| .gif           | [GIF](https://en.wikipedia.org/wiki/GIF)                           |  🌐  |  🌐   |              |               |
-| .jpeg, .jpg    | [JPEG](https://en.wikipedia.org/wiki/JPEG)                         |  🌐  |  🌐   |      N/A     |      N/A      |
+| File Extension                | Name                                                               | Read | Write | Read Palette | Write Palette |
+|-------------------------------|--------------------------------------------------------------------|:----:|:-----:|:------------:|:-------------:|
+| .png                          | [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)     |  ✅  |  ✅   |      ✅      |               |
+| .bmp, .dib                    | [Monochrome Bitmap](https://en.wikipedia.org/wiki/BMP_file_format) |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib                    | [16 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)   |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib                    | [256 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)  |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib                    | [24-bit Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)     |  ✅  |  ✅   |      N/A     |      N/A      |
+| .tif, .tiff, .dng, .cr2, .nef | [TIFF](https://en.wikipedia.org/wiki/TIFF) (loads first page)      |  ✅  |  ✅   |              |               |
+| .pdf                          | [PDF](https://en.wikipedia.org/wiki/PDF) (loads first page)        |  ✅  |       |              |               |
+| .webp                         | [WebP](https://en.wikipedia.org/wiki/WebP)                         |  🌐  |  🌐   |              |               |
+| .gif                          | [GIF](https://en.wikipedia.org/wiki/GIF)                           |  🌐  |  🌐   |              |               |
+| .jpeg, .jpg                   | [JPEG](https://en.wikipedia.org/wiki/JPEG)                         |  🌐  |  🌐   |      N/A     |      N/A      |
 
 Formats marked with 🌐 are currently left up to the browser to support or not.
 They appear in the file type dropdown but may or may not work.
