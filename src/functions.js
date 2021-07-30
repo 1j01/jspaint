@@ -2824,6 +2824,16 @@ function write_image_file(canvas, mime_type, blob_callback) {
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);
 		});
+	} else if (mime_type === "image/tiff") {
+		const image_data = canvas.ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const metadata = {
+			t305: ["jspaint (UTIF.js)"],
+		};
+		const array_buffer = UTIF.encodeImage(image_data.data.buffer, image_data.width, image_data.height, metadata);
+		const blob = new Blob([array_buffer]);
+		sanity_check_blob(blob, () => {
+			blob_callback(blob);
+		});
 	} else {
 		canvas.toBlob(blob => {
 			// Note: could check blob.type (mime type) instead
