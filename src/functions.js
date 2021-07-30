@@ -650,19 +650,16 @@ async function load_image_from_uri(uri) {
 	error.fails = fails;
 	throw error;
 }
-function open_from_uri(uri, callback, canceled){
-	load_image_from_uri(uri).then((info) => {
-		open_from_image_info(info, callback, canceled);
-	}, (error) => {
-		callback(error);
-	});
-}
 
-// @TODO: shouldn't open_from_* start a new session!? and File > New too
-function open_from_image_info(info, callback, canceled){
+function open_from_image_info(info, callback, canceled, into_existing_session, from_session_load){
 	are_you_sure(() => {
 		deselect();
 		cancel();
+
+		if (!into_existing_session) {
+			$G.triggerHandler("session-update"); // autosave old session
+			new_local_session();
+		}
 
 		reset_file();
 		reset_selected_colors();
@@ -678,7 +675,9 @@ function open_from_image_info(info, callback, canceled){
 		current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 		current_history_node.icon = get_help_folder_icon("p_open.png");
 
-		$G.triggerHandler("session-update"); // autosave
+		if (!from_session_load) {
+			$G.triggerHandler("session-update"); // autosave
+		}
 		$G.triggerHandler("history-update"); // update history view
 
 		if (info.source_blob instanceof File) {
@@ -772,6 +771,9 @@ function file_new(){
 		deselect();
 		cancel();
 		saved = false; // ??
+
+		$G.triggerHandler("session-update"); // autosave old session
+		new_local_session();
 
 		reset_file();
 		reset_selected_colors();
@@ -1706,7 +1708,10 @@ function show_document_history() {
 function cancel(going_to_history_node){
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
-	history_node_to_cancel_to = history_node_to_cancel_to || current_history_node;
+	if (!history_node_to_cancel_to) {
+		return;
+	}
+	// history_node_to_cancel_to = history_node_to_cancel_to || current_history_node;
 	$G.triggerHandler("pointerup", ["canceling"]);
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();

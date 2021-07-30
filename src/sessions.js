@@ -101,11 +101,12 @@
 			const lsid = `image#${session_id}`;
 			log(`Local storage ID: ${lsid}`);
 			// save image to storage
-			const save_image_to_storage = debounce(() => {
+			this.save_image_to_storage_immediately = () => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
 				}
+				log(`Saving image to storage: ${lsid}`);
 				storage.set(lsid, main_canvas.toDataURL("image/png"), err => {
 					if (err) {
 						if (err.quotaExceeded) {
@@ -118,7 +119,8 @@
 						}
 					}
 				});
-			}, 100);
+			};
+			this.save_image_to_storage_soon = debounce(this.save_image_to_storage_immediately, 100);
 			storage.get(lsid, (err, uri) => {
 				if (err) {
 					if (localStorageAvailable) {
@@ -130,21 +132,23 @@
 					}
 				}
 				else if (uri) {
-					open_from_uri(uri, err => {
-						if (err) {
-							return show_error_message("Failed to open image from local storage.", err);
-						}
-						saved = false; // it may be safe, sure, but you haven't "Saved" it
+					load_image_from_uri(uri).then((info) => {
+						open_from_image_info(info, null, null, true, true);
+					}, (error) => {
+						show_error_message("Failed to open image from local storage.", error);
 					});
 				}
 				else {
 					// no uri so lets save the blank canvas
-					save_image_to_storage();
+					this.save_image_to_storage_soon();
 				}
 			});
-			$G.on("session-update.session-hook", save_image_to_storage);
+			$G.on("session-update.session-hook", this.save_image_to_storage_soon);
 		}
 		end() {
+			// Skip debounce and save immediately
+			this.save_image_to_storage_soon.cancel();
+			this.save_image_to_storage_immediately();
 			// Remove session-related hooks
 			$G.off(".session-hook");
 		}
@@ -337,7 +341,7 @@
 			});
 			let previous_uri;
 			// let pointer_operations = []; // the multiplayer syncing stuff is a can of worms, so this is disabled
-			const write_canvas_to_database = debounce(() => {
+			this.write_canvas_to_database_immediately = () => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
@@ -354,14 +358,15 @@
 				else {
 					log("(Don't write canvas data to Firebase; it hasn't changed)");
 				}
-			}, 100);
+			};
+			this.write_canvas_to_database_soon = debounce(this.write_canvas_to_database_immediately, 100);
 			let ignore_session_update = false;
 			$G.on("session-update.session-hook", ()=> {
 				if (ignore_session_update) {
 					log("(Ignore session-update from Sync Session undoable)");
 					return;
 				}
-				write_canvas_to_database();
+				this.write_canvas_to_database_soon();
 			});
 			// Any time we change or receive the image data
 			_fb_on(this.fb_data, "value", snap => {
@@ -370,7 +375,7 @@
 				if (uri == null) {
 					// If there's no value at the data location, this is a new session
 					// Sync the current data to it
-					write_canvas_to_database();
+					this.write_canvas_to_database_soon();
 				}
 				else {
 					previous_uri = uri;
@@ -470,6 +475,9 @@
 			*/
 		}
 		end() {
+			// Skip debounce and save immediately
+			this.write_canvas_to_database_soon.cancel();
+			this.write_canvas_to_database_immediately();
 			// Remove session-related hooks
 			$G.off(".session-hook");
 			// $canvas_area.off("pointerdown.session-hook");
@@ -542,14 +550,13 @@
 			}
 
 			log("Switching to new session from #load: URL (to #local: URL with session ID)");
+			// Note: could use into_existing_session=false on open_from_image_info instead of creating the new session beforehand
 			end_current_session();
 			change_url_param("local", generate_session_id());
 
-			open_from_uri(url, error => {
-				if (error) {
-					show_resource_load_error_message(error);
-				}
-			});
+			load_image_from_uri(uri).then((info) => {
+				open_from_image_info(info, null, null, true, true);
+			}, show_resource_load_error_message);
 
 		}else{
 			log("No session ID in hash");
@@ -572,6 +579,12 @@
 	});
 	log("Initializing with location hash:", location.hash);
 	update_session_from_location_hash();
+
+	window.new_local_session = () => {
+		end_current_session();
+		log("Changing URL to start new session...");
+		change_url_param("local", generate_session_id());
+	};
 
 	// @TODO: Session GUI
 	// @TODO: Indicate when the session ID is invalid

@@ -39,8 +39,7 @@ N milliseconds. If `immediate` is passed, trigger the function on the
 leading edge, instead of the trailing. */
 function debounce(func, wait_ms, immediate) {
 	let timeout;
-
-	return function() {
+	const debounced_func = function() {
 		const context = this;
 		const args = arguments;
 
@@ -61,6 +60,10 @@ function debounce(func, wait_ms, immediate) {
 			func.apply(context, args);
 		}
 	};
+	debounced_func.cancel = () => {
+		clearTimeout(timeout);
+	};
+	return debounced_func;
 }
 
 function memoize_synchronous_function(func, max_entries=50000) {
