@@ -1027,7 +1027,3 @@ summary {
 	user-select: none;
 	cursor: pointer;
 }
-
-[touch-action="none"] {
-	touch-action: none;
-}

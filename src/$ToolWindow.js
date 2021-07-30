@@ -12,7 +12,7 @@ function $ToolWindow($component){
 		$w.addClass("component-window");
 	}
 	
-	$w.attr("touch-action", "none");
+	$w.css("touch-action", "none");
 	
 	$w.$x.on("click", () => {
 		$w.close();
@@ -201,7 +201,7 @@ function $ToolWindow($component){
 			top: e.clientY - drag_offset_y,
 		});
 	};
-	$w.$titlebar.attr("touch-action", "none");
+	$w.$titlebar.css("touch-action", "none");
 	$w.$titlebar.on("mousedown selectstart", e => {
 		e.preventDefault();
 	});

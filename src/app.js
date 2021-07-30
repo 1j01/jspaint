@@ -479,7 +479,7 @@ const $H = $(E("div")).addClass("horizontal").appendTo($V);
 const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
 
 const $canvas = $(main_canvas).appendTo($canvas_area);
-$canvas.attr("touch-action", "none");
+$canvas.css("touch-action", "none");
 let canvas_bounding_client_rect = main_canvas.getBoundingClientRect(); // cached for performance, updated later
 const $canvas_handles = $Handles($canvas_area, $canvas_area, {
 	get_rect: ()=> ({x: 0, y: 0, width: main_canvas.width, height: main_canvas.height}),

@@ -125,9 +125,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 		});
 
 		this.$el.css({
-			cursor: make_css_cursor("move", [8, 8], "move")
+			cursor: make_css_cursor("move", [8, 8], "move"),
+			touchAction: "none",
 		});
-		this.$el.attr("touch-action", "none");
 		this.position();
 		
 		this.$el.append(this.$editor);

@@ -37,7 +37,7 @@ function $Handles($handles_container, $object_container, options){
 			$grab_region.addClass("is-middle");
 		}
 
-		$h.attr("touch-action", "none");
+		$h.css("touch-action", "none");
 		
 		let rect;
 		let dragged = false;

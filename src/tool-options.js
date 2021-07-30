@@ -43,7 +43,7 @@ const ChooserCanvas = (
 ChooserCanvas.cache = {};
 
 const $Choose = (things, display, choose, is_chosen, gray_background_for_unselected) => {
-	const $chooser = $(E("div")).addClass("chooser").attr("touch-action", "none");
+	const $chooser = $(E("div")).addClass("chooser").css("touch-action", "none");
 	const choose_thing = (thing) => {
 		if(is_chosen(thing)){
 			return;
