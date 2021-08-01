@@ -1040,6 +1040,7 @@ function show_read_image_file_error(error) {
 
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
+
 let $news_window;
 const $this_version_news = $("#news");
 let $latest_news = $this_version_news;
@@ -1074,14 +1075,24 @@ function show_about_paint(){
 	$about_paint_window.center();
 	$about_paint_window.center(); // @XXX - but it helps tho
 
+	$about_paint_window.$Button(localize("OK"), () => {
+		$about_paint_window.close();
+	})
+		.focus()
+		.css({
+			padding: "8px 25px",
+			float: "right",
+			marginBottom: "10px",
+		});
+
 	$("#refresh-to-update").on("click", (event)=> {
 		event.preventDefault();
 		location.reload();
 	});
 	
-	$("#view-project-news").on("click", ()=> {
+	$("#view-project-news").on("click", () => {
 		show_news();
-	}).focus();
+	});//.focus();
 	
 	$("#checking-for-updates").removeAttr("hidden");
 
