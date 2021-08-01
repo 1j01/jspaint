@@ -64,6 +64,10 @@
 	* Layered images?
 		* Photoshop PSD ([via psd.js](https://github.com/trevorlinton/psd.js))
 		* OpenRaster ORA ([via ora.js](https://github.com/zsgalusz/ora.js/tree/master))
+	* Paged Images?
+		* PDF (via [pdf.js](https://github.com/mozilla/pdf.js)) (single page already supported)
+		* DjVu (via [djvu.js](https://djvu.js.org/))
+		* TIFF (via [utif.js](https://github.com/photopea/UTIF.js/)) (single page/frame already supported)
 
 * Online (multi-user) and local (single-user) sessions
 	* See [sessions.js](src/sessions.js)
@@ -72,8 +76,20 @@
 		* It's not eventually consistent
 		* Cursors from other users that go outside the parent can cause the page to be scrollable
 
-* Painting textures on 3D models
-	* And onto tessellating patterns which I imagine can be a special case of 3D models
+* Symmetry, tesselation, painting texture on 3D models, and even an infinite canvas, all could be done with a shared system 
+	* For symmetry and tesselation, [geometry can be generated](), and then it can work the same as painting on a 3D model
+	* An infinite canvas engine would generate simple square geometry, but would require support for multiple editable textures (also useful for 3D models)
+		* And of course layers and animations and multi-size icons need a similar system (multiple sub-images)
+	* For 3D model painting, it's important to note there's a few different possible approaches.
+		1. UV-dynamic, like [Chameleon](https://www-ui.is.s.u-tokyo.ac.jp/~takeo/chameleon/chameleon.htm) & [Chameleon.js](https://tomtung.github.io/chameleon.js/) (can adapt texture resolution as you paint)
+		2. UV-static
+			1. Ray tracing the pointer to find texture coordinates (gives texture coordinate space scaled result by default)
+			2. Screen-space drawing (gives screen space scaled result by default); I saw a good medium post or two about this
+	* Also, some approaches might not extend to tesselation and symmetry. ["Very important, this means that we assume our uv has no overlapping triangles. So no \[tileable\] textures."](https://shahriyarshahrabi.medium.com/mesh-texture-painting-in-unity-using-shaders-8eb7fc31221c)
+	* Existing 3D texturing systems:
+		* Closed source project: https://discourse.threejs.org/t/a-fully-fledged-texture-painter-for-the-web/15678/16
+		* Open source project with adaptive UVs: https://tomtung.github.io/chameleon.js/
+		* Open source project with adaptive and static UV modes, for both painting and sculpting: https://github.com/stephomi/sculptgl (check Dynamic Topology > Activated)
 
 * Save text and record transformations so the image can be saved as
 SVG (or HTML?) with invisible selectable transformed text elements?
