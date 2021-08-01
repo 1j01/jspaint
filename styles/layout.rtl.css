@@ -927,11 +927,16 @@ html, body, .jspaint {
 	font-style: italic;
 	height: 2em;
 }
-#view-project-news {
-	margin: auto;
-	margin-left: 40px;
-	width: 150px;
+#view-project-news,
+#close-about-paint {
+	margin: auto; /* for right-alignment AND avoiding stretching to height of the container */
+	margin-left: 0;
+	width: 100px;
 	min-height: 2.2em;
+}
+#close-about-paint {
+	float: left;
+	margin-bottom: 10px;
 }
 
 #news {

@@ -1078,9 +1078,9 @@ function show_about_paint(){
 	$about_paint_window.$Button(localize("OK"), () => {
 		$about_paint_window.close();
 	})
+		.attr("id", "close-about-paint")
 		.focus()
 		.css({
-			padding: "8px 25px",
 			float: "right",
 			marginBottom: "10px",
 		});
@@ -1573,9 +1573,10 @@ function redo(){
 		if (!$document_history_window || $document_history_window.closed) {
 			const $w = $document_history_prompt_window = new $ToolWindow();
 			$w.title("Redo");
-			$w.$content.html("Use Edit > History to view all branches of the history tree.").css({padding: 10});
-			$w.$Button("Show History", show_document_history).css({margin: 10}).focus();
-			$w.$Button(localize("Cancel"), ()=> { $w.close(); }).css({margin: 10});
+			$w.$content.html("To view all branches of the history tree, click Edit > History.").css({padding: 10});
+			// $w.$Button("Show History", show_document_history).css({margin: 10}).focus();
+			// $w.$Button(localize("Cancel"), ()=> { $w.close(); }).css({margin: 10});
+			$w.$Button(localize("OK"), ()=> { $w.close(); }).css({margin: 10});
 			$w.center();
 		}
 		return false;
