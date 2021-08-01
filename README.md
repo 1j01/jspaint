@@ -111,24 +111,43 @@ This doesn't undo saving the file, but allows you to then save in a different fo
 
 💡 Saving as PNG is recommended as it gives small file sizes while retaining full quality.
 
-| File Extension                | Name                                                               | Read | Write | Read Palette | Write Palette |
-|-------------------------------|--------------------------------------------------------------------|:----:|:-----:|:------------:|:-------------:|
-| .png                          | [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)     |  ✅  |  ✅   |      ✅      |               |
-| .bmp, .dib                    | [Monochrome Bitmap](https://en.wikipedia.org/wiki/BMP_file_format) |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib                    | [16 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)   |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib                    | [256 Color Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)  |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib                    | [24-bit Bitmap](https://en.wikipedia.org/wiki/BMP_file_format)     |  ✅  |  ✅   |      N/A     |      N/A      |
-| .tif, .tiff, .dng, .cr2, .nef | [TIFF](https://en.wikipedia.org/wiki/TIFF) (loads first page)      |  ✅  |  ✅   |              |               |
-| .pdf                          | [PDF](https://en.wikipedia.org/wiki/PDF) (loads first page)        |  ✅  |       |              |               |
-| .webp                         | [WebP](https://en.wikipedia.org/wiki/WebP)                         |  🌐  |  🌐   |              |               |
-| .gif                          | [GIF](https://en.wikipedia.org/wiki/GIF)                           |  🌐  |  🌐   |              |               |
-| .jpeg, .jpg                   | [JPEG](https://en.wikipedia.org/wiki/JPEG)                         |  🌐  |  🌐   |      N/A     |      N/A      |
+| File Extension                | Name                          | Read | Write | Read Palette | Write Palette |
+|-------------------------------|-------------------------------|:----:|:-----:|:------------:|:-------------:|
+| .png                          | [PNG][]                       |  ✅  |  ✅   |      ✅      |               |
+| .bmp, .dib                    | [Monochrome Bitmap][BMP]      |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib                    | [16 Color Bitmap][BMP]        |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib                    | [256 Color Bitmap][BMP]       |  ✅  |  ✅   |      ✅      |      ✅       |
+| .bmp, .dib                    | [24-bit Bitmap][BMP]          |  ✅  |  ✅   |      N/A     |      N/A      |
+| .tif, .tiff, .dng, .cr2, .nef | [TIFF][] (loads first page)   |  ✅  |  ✅   |              |               |
+| .pdf                          | [PDF][] (loads first page)    |  ✅  |       |              |               |
+| .webp                         | [WebP][]                      |  🌐  |  🌐   |              |               |
+| .gif                          | [GIF][]                       |  🌐  |  🌐   |              |               |
+| .jpeg, .jpg                   | [JPEG][]                      |  🌐  |  🌐   |      N/A     |      N/A      |
+| .svg                          | [SVG][] (only default size)   |  🌐  |       |              |               |
+| .ico                          | [ICO][] (only default size)   |  🌐  |       |              |               |
 
-Formats marked with 🌐 are currently left up to the browser to support or not.
-They appear in the file type dropdown but may or may not work.
+Capabilities marked with 🌐 are currently left up to the browser to support or not.
+If "Write" is marked with 🌐, the format will appear in the file type dropdown but may not work when you try to save.
+For opening files, see Wikipedia's [browser image format support table][] for more information.
 
-"Read Palette" refers to loading the colors into the Colors box automatically (from an [indexed color](https://en.wikipedia.org/wiki/Indexed_color) image),
-and "Write Palette" refers to writing an [indexed color](https://en.wikipedia.org/wiki/Indexed_color) image.
+"Read Palette" refers to loading the colors into the Colors box automatically (from an [indexed color][] image),
+and "Write Palette" refers to writing an [indexed color][] image.
+
+[PNG]: https://en.wikipedia.org/wiki/Portable_Network_Graphics
+[Monochrome Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
+[16 Color Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
+[256 Color Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
+[24-bit Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
+[TIFF]: https://en.wikipedia.org/wiki/TIFF
+[PDF]: https://en.wikipedia.org/wiki/PDF
+[WebP]: https://en.wikipedia.org/wiki/WebP
+[GIF]: https://en.wikipedia.org/wiki/GIF
+[JPEG]: https://en.wikipedia.org/wiki/JPEG
+[SVG]: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+[ICO]: https://en.wikipedia.org/wiki/ICO_(file_format)
+[indexed color]: https://en.wikipedia.org/wiki/Indexed_color
+[browser image format support table]: https://en.wikipedia.org/wiki/Comparison_of_web_browsers#Image_format_support
+
 
 ### Color Palette Formats
 
