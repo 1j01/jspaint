@@ -39,7 +39,7 @@ function open_help_viewer(options){
 	const $toolbar = $(E("div")).addClass("toolbar");
 	const add_toolbar_button = (name, sprite_n, action_fn, enabled_fn)=> {
 		const $button = $("<button class='lightweight'>")
-		.text(name)
+		.append($("<span>").text(name))
 		.appendTo($toolbar)
 		.on("click", ()=> {
 			action_fn();

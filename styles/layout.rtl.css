@@ -765,11 +765,17 @@ html, body, .jspaint {
 	width: 55px;
 	height: 40px;
 	padding: 0;
-	font-size: 12px;
-	line-height: 16px;
+}
+.help-window .toolbar button span {
 	display: inline-flex;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	/* flex centering + preventing overflow wrap means the font can be too big and it'll still stay centered */
+	font-size: 12px;
+	white-space: pre;
 	justify-content: center;
-	align-items: end;
 }
 .help-window .toolbar button {
 	position: relative;
