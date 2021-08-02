@@ -394,11 +394,9 @@ function reset_selected_colors(){
 	$G.trigger("option-changed");
 }
 
-function reset_file(){
-	file_handle = null;
-	document_file_path = null;
+function reset_file() {
+	system_file_handle = null;
 	file_name = localize("untitled");
-	file_name_chosen = false;
 	file_format = "image/png";
 	update_title();
 	saved = true;
@@ -682,16 +680,11 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 
 		if (info.source_blob instanceof File) {
 			file_name = info.source_blob.name;
-			// @TODO: probably always set file_name_chosen = true for consistency (you can always do Save As if you want a new file name)
-			// file_name_chosen = true; // if false (default via reset_file), it will prompt initially for name/type when saving opened file
-			document_file_path = info.source_blob.path; // available in Electron (see https://www.electronjs.org/docs/api/file-object#file-object)
-			if (document_file_path) {
-				file_name_chosen = true;
-			}
+			// file.path is available in Electron (see https://www.electronjs.org/docs/api/file-object#file-object)
+			system_file_handle = info.source_blob.path;
 		}
 		if (info.source_file_handle) {
-			file_name_chosen = true;
-			file_handle = info.source_file_handle;
+			system_file_handle = info.source_file_handle;
 		}
 		update_title();
 		saved = true;
@@ -700,7 +693,7 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 	}, canceled);
 }
 
-function open_from_file(file, file_handle) {
+function open_from_file(file, source_file_handle) {
 	// The browser isn't very smart about MIME types.
 	// It seems to look at the file extension, but not the actual file contents.
 	// This is particularly problematic for files with no extension, where file.type gives an empty string.
@@ -729,14 +722,9 @@ function open_from_file(file, file_handle) {
 			});
 			return;
 		}
-		image_info.source_file_handle = file_handle
+		image_info.source_file_handle = source_file_handle
 		open_from_image_info(image_info);
 	});
-}
-
-async function open_from_file_handle(file_handle) {
-	const file = await file_handle.getFile();
-	open_from_file(file, file_handle);
 }
 
 function apply_file_format_and_palette_info(info) {
@@ -792,8 +780,7 @@ function file_new(){
 
 async function file_open(){
 	const {file, fileHandle} = await systemHooks.openFile({formats: image_formats})
-	// @TODO: store file handle
-	open_from_file(file);
+	open_from_file(file, fileHandle);
 }
 
 let $file_load_from_url_window;
@@ -873,44 +860,18 @@ function confirm_overwrite() {
 
 function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
-	// @TODO: systemHook for saving over a file
-	const save_file_handle = file_handle;
-	const save_file_path = document_file_path;
-	if (save_file_handle || save_file_path) {
-		if(file_name.match(/\.svg$/i)){
-			return file_save_as(maybe_saved_callback, update_from_saved);
-		}
-	}
-	if (!file_name_chosen) {
+	// store and use file handle at this point in time, to avoid race conditions
+	const save_file_handle = system_file_handle;
+	if (!save_file_handle || file_name.match(/\.(svg|pdf)$/i)){
 		return file_save_as(maybe_saved_callback, update_from_saved);
 	}
-	write_image_file(main_canvas, file_format, async (blob)=> {
-		if (save_file_handle) {
-			await confirm_overwrite();
-			const writableStream = await save_file_handle.createWritable();
-			await writableStream.write(blob);
-			await writableStream.close();
-		} else if (save_file_path) {
-			return save_to_file_path(save_file_path, blob, () => {
-				saved = true;
-				update_title();
-				maybe_saved_callback();
-				if (update_from_saved) {
-					update_from_saved_file(blob);
-				}
-			});
-		} else {
-			const file_saver = saveAs(blob, file_name);
-			// file_saver.onwriteend = () => {
-			// 	// this won't fire in chrome
-			// 	maybe_saved_callback();
-			// };
-			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
-			maybe_saved_callback();
-			if (update_from_saved) {
-				update_from_saved_file(blob);
-			}
+	write_image_file(main_canvas, file_format, async (blob) => {
+		await systemHooks.writeBlobToHandle(save_file_handle, blob);
+
+		if (update_from_saved) {
+			update_from_saved_file(blob);
 		}
+		maybe_saved_callback();
 	});
 }
 
@@ -920,7 +881,7 @@ function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 		dialogTitle: localize("Save As"),
 		formats: image_formats,
 		defaultFileName: file_name,
-		defaultPath: document_file_path,
+		defaultPath: typeof system_file_handle === "string" ? system_file_handle : null,
 		defaultFileFormatID: file_format,
 		getBlob: (new_file_type)=> {
 			return new Promise((resolve)=> {
@@ -929,12 +890,10 @@ function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 				});
 			});
 		},
-		savedCallbackUnreliable: ({newFileName, newFileFormatID, newFileHandle, newFilePath, newBlob})=> {
+		savedCallbackUnreliable: ({newFileName, newFileFormatID, newFileHandle, newBlob})=> {
 			saved = true;
-			file_handle = newFileHandle;
-			document_file_path = newFilePath;
+			system_file_handle = newFileHandle;
 			file_name = newFileName;
-			file_name_chosen = true;
 			file_format = newFileFormatID;
 			update_title();
 			maybe_saved_callback();
@@ -1449,7 +1408,7 @@ function render_history_as_gif(){
 						dialogTitle: localize("Save As"), // localize("Save Animation As"),
 						getBlob: ()=> blob,
 						defaultFileName: suggested_file_name,
-						defaultPath: document_file_path && `${document_file_path.replace(/[/\\][^/\\]*/, "")}/${suggested_file_name}`,
+						defaultPath: typeof system_file_handle === "string" ? `${system_file_handle.replace(/[/\\][^/\\]*/, "")}/${suggested_file_name}` : null,
 						defaultFileFormatID: "image/gif",
 						formats: [{
 							formatID: "image/gif",

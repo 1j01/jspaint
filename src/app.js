@@ -188,6 +188,41 @@ window.systemHookDefaults = {
 			});
 		}
 	},
+	writeBlobToHandle: async (save_file_handle, blob) => {
+		if (save_file_handle && save_file_handle.createWritable) {
+			await confirm_overwrite();
+			try {
+				const writableStream = await save_file_handle.createWritable();
+				await writableStream.write(blob);
+				await writableStream.close();
+			} catch (error) {
+				if (error.name === "AbortError") {
+					// user canceled save
+					return;
+				}
+				if (error.name === "NotAllowedError") {
+					// use didn't give permission to save
+					// is this too much of a warning?
+					show_error_message(localize("Save was interrupted, so your file has not been saved."), error);
+					return;
+				}
+				show_error_message(localize("Failed to save document."), error);
+				return;
+			}
+		} else {
+			saveAs(blob, file_name);
+			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
+		}
+	},
+	readBlobFromHandle: async (file_handle) => {
+		if (file_handle && file_handle.getFile) {
+			const file = await file_handle.getFile();
+			return file;
+		} else {
+			throw new Error(`Unknown file handle (${file_handle})`);
+			// show_error_message(`${localize("Failed to open document.")}\n${localize("An unsupported operation was attempted.")}`, error);
+		}
+	},
 	openFile: async ({formats})=> {
 		if (window.showOpenFilePicker) {
 			const [fileHandle] = await window.showOpenFilePicker({
@@ -398,10 +433,8 @@ let undos = [];
 let redos = [];
 
 let file_name;
-let file_handle; // for File System Access API, for saving over opened file on Save
-let document_file_path; // for Electron app, for saving over opened file on Save
+let system_file_handle; // For saving over opened file on Save. Can be different type for File System Access API vs Electron.
 let saved = true;
-let file_name_chosen = false;
 
 /** works in canvas coordinates */
 let pointer;
@@ -636,7 +669,8 @@ $("body").on("dragover dragenter", (event) => {
 				if (item.kind === 'file') {
 					const handle = await item.getAsFileSystemHandle();
 					if (handle.kind === 'file') {
-						await open_from_file_handle(handle);
+						const file = await handle.getFile();
+						open_from_file(file, handle);
 						if (window._open_images_serially) {
 							// For testing a suite of files:
 							await new Promise(resolve => setTimeout(resolve, 500));
@@ -945,10 +979,10 @@ storage.get({
 	});
 });
 
-if(window.document_file_path_to_open){
-	open_from_file_path(document_file_path_to_open, err => {
+if(window.initial_system_file_handle){
+	open_from_file_handle(window.initial_system_file_handle, err => {
 		if(err){
-			return show_error_message(`Failed to open file ${document_file_path_to_open}`, err);
+			return show_error_message(`Failed to open file ${initial_system_file_handle}`, err);
 		}
 	});
 }

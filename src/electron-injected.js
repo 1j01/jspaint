@@ -42,22 +42,7 @@ if (process.platform == "win32" && argv.length >= 2) {
 	}
 }
 
-window.open_from_file_path = (file_path, callback, canceled) => {
-	fs.readFile(file_path, (err, buffer) => {
-		if (err) {
-			return callback(err);
-		}
-		const file = new File([new Uint8Array(buffer)], path.basename(file_path));
-		// can't set file.path directly, but we can do this:
-		Object.defineProperty(file, 'path', {
-			value: file_path,
-		});
-
-		open_from_file(file, callback, canceled);
-	});
-};
-
-window.save_to_file_path = (filePath, blob, savedCallback) => {
+function write_blob_to_file_path(filePath, blob, savedCallback) {
 	blob.arrayBuffer().then((arrayBuffer) => {
 		fs.writeFile(filePath, Buffer.from(arrayBuffer), (err) => {
 			if (err) {
@@ -68,7 +53,7 @@ window.save_to_file_path = (filePath, blob, savedCallback) => {
 	}, (error) => {
 		show_error_message(localize("Failed to save document."), error);
 	});
-};
+}
 
 window.systemHooks = window.systemHooks || {};
 window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable }) => {
@@ -110,13 +95,43 @@ window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultPath, de
 	}
 	const blob = await getBlob(format.mimeType);
 	
-	save_to_file_path(filePath, blob, ()=> {
+	write_blob_to_file_path(filePath, blob, ()=> {
 		savedCallbackUnreliable && savedCallbackUnreliable({
 			newFileName: path.basename(filePath),
 			newFileFormatID: format.mimeType,
-			newFilePath: filePath,
+			newFileHandle: filePath,
 			newBlob: blob,
 		});
+	});
+};
+
+window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
+	if (typeof filePath !== "string") {
+		return show_error_message("writeBlobToHandle in Electron expects a file path");
+		// should it fall back to default writeBlobToHandle?
+	}
+	await new Promise(resolve => {
+		write_blob_to_file_path(filePath, blob, resolve);
+	});
+};
+window.systemHooks.readBlobFromHandle = async (filePath) => {
+	if (typeof filePath !== "string") {
+		return show_error_message("readBlobFromHandle in Electron expects a file path");
+		// should it fall back to default readBlobFromHandle?
+	}
+	await new Promise((resolve, reject) => {
+		fs.readFile(filePath, (err, buffer) => {
+			if (err) {
+				return reject(err);
+			}
+			const file = new File([new Uint8Array(buffer)], path.basename(filePath));
+			// can't set file.path directly, but we can do this:
+			Object.defineProperty(file, 'path', {
+				value: filePath,
+			});
+	
+			resolve(file);
+		});	
 	});
 };
 
