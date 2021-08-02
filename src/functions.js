@@ -1112,7 +1112,7 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 
 	if (as_palette_error) {
 		let details = "";
-		if (as_palette_error) {
+		if (as_palette_error.errors) {
 			details = `<ul dir="ltr">${as_palette_error.errors.map((error) => {
 				const format = error.__PATCHED_LIB_TO_ADD_THIS__format;
 				if (format && error.error) {
@@ -1122,6 +1122,7 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 				return `<li>${escape_html(error.message || error)}</li>`;
 			}).join("\n")}</ul>`;
 		} else {
+			// Fallback for unknown errors
 			details = `<p>${escape_html(as_palette_error.message || as_palette_error)}</p>`;
 		}
 		html += `
