@@ -1449,7 +1449,7 @@ function render_history_as_gif(){
 						dialogTitle: localize("Save As"), // localize("Save Animation As"),
 						getBlob: ()=> blob,
 						defaultFileName: suggested_file_name,
-						defaultPath: document_file_path && `${document_file_path.replace(/[/\\][^/\\]*/)}/${suggested_file_name}`,
+						defaultPath: document_file_path && `${document_file_path.replace(/[/\\][^/\\]*/, "")}/${suggested_file_name}`,
 						defaultFileFormatID: "image/gif",
 						formats: [{
 							formatID: "image/gif",
