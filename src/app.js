@@ -667,9 +667,25 @@ $("body").on("dragover dragenter", (event) => {
 			for (const item of dt.items) {
 				// kind will be 'file' for file/directory entries.
 				if (item.kind === 'file') {
-					const handle = await item.getAsFileSystemHandle();
+					let handle;
+					try {
+						handle = await item.getAsFileSystemHandle();
+					} catch (error) {
+						// I'm not sure when this happens.
+						// should this use "An invalid file handle was associated with %1." message?
+						show_error_message(localize("File not found."), error);
+						return;
+					}
 					if (handle.kind === 'file') {
-						const file = await handle.getFile();
+						let file;
+						try {
+							file = await handle.getFile();
+						} catch (error) {
+							// NotFoundError can happen when the file was moved or deleted,
+							// then dragged and dropped via the browser's downloads bar, or some other outdated file listing.
+							show_error_message(localize("File not found."), error);
+							return;
+						}
 						open_from_file(file, handle);
 						if (window._open_images_serially) {
 							// For testing a suite of files:
