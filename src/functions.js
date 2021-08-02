@@ -1108,13 +1108,19 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 		'=': '&#x3D;',
 	};
 	const escape_html = (string) => String(string).replace(/[&<>"'`=\/]/g, (s) => entity_map[s]);
+	const uppercase_first = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
 	if (as_palette_error) {
 		let details = "";
 		if (as_palette_error) {
-			details = `<ul>${as_palette_error.errors.map((error) =>
-				`<li>${escape_html(error.message || error)}</li>`
-			).join("\n")}</ul>`;
+			details = `<ul dir="ltr">${as_palette_error.errors.map((error) => {
+				const format = error.__PATCHED_LIB_TO_ADD_THIS__format;
+				if (format && error.error) {
+					return `<li>as <b>${escape_html(`${format.name}`)}</b>: ${escape_html(uppercase_first(error.error.message))}</li>`;
+				}
+				// Fallback for unknown errors
+				return `<li>${escape_html(error.message || error)}</li>`;
+			}).join("\n")}</ul>`;
 		} else {
 			details = `<p>${escape_html(as_palette_error.message || as_palette_error)}</p>`;
 		}
