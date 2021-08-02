@@ -118,8 +118,6 @@ window.systemHookDefaults = {
 		// or retrieving which file type was selected in the dialog (you have to get it (guess it) from the file name)
 		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.
 		// So, it's a tradeoff with the benefit of overwriting on Save.
-		// Also some users might be surprised that it can save over a file, so I may want to add a warning.
-		// Or does the browser give enough warning by asking for permissions?
 		// https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
 		if (window.showSaveFilePicker) {
 			// We can't get the selected file type, not even from newHandle.getFile()

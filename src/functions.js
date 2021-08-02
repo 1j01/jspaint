@@ -821,6 +821,50 @@ function file_load_from_url(){
 	$input[0].focus();
 }
 
+// Native FS API / File Access API allows you to overwrite files, but people are not used to it.
+// So we ask them to confirm it the first time.
+let confirmed_overwrite = false;
+const confirmed_overwrite_key = "jspaint confirmed overwrite capable";
+try {
+	confirmed_overwrite = localStorage[confirmed_overwrite_key] === "true";
+} catch (error) {
+	// no localStorage
+	// In the year 2033, people will be more used to it, right?
+	// This will be known as the "Y2T bug"
+	confirmed_overwrite = Date.now() >= 2000000000000;
+}
+function confirm_overwrite() {
+	return new Promise((resolve) => {
+		if (confirmed_overwrite) {
+			resolve();
+			return;
+		}
+		const $w = new $FormToolWindow().addClass("dialogue-window");
+		$w.title(localize("Paint"));
+		$w.$main.html(`
+			<p>JS Paint can now save over existing files.</p>
+			<p>Do you want to overwrite the file?</p>
+			<p>
+				<label><input type='checkbox'/> Don't ask me again</label>
+			</p>
+		`);
+		$w.$Button(localize("OK"), () => {
+			$w.close();
+			confirmed_overwrite = $w.$main.find("input[type='checkbox']").prop("checked");
+			try {
+				localStorage[confirmed_overwrite_key] = confirmed_overwrite;
+			} catch (error) {
+				// no localStorage
+			}
+		}).focus();
+		$w.$Button(localize("Cancel"), () => {
+			$w.close();
+		});
+		$w.center();
+	});
+}
+
+
 function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
 	// @TODO: systemHook for saving over a file
@@ -836,6 +880,7 @@ function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 	}
 	write_image_file(main_canvas, file_format, async (blob)=> {
 		if (save_file_handle) {
+			await confirm_overwrite();
 			const writableStream = await save_file_handle.createWritable();
 			await writableStream.write(blob);
 			await writableStream.close();
