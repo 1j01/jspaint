@@ -701,31 +701,37 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 }
 
 function open_from_file(file, file_handle) {
-	if (file.type.match(/^image|application\/pdf/)) {
-		read_image_file(file, (error, info)=> {
-			if (error) {
-				show_read_image_file_error(error);
-				return;
-			}
-			info.source_file_handle = file_handle
-			open_from_image_info(info);
-		});
-	} else if (file.name.match(/\.theme(pack)?$/i)) {
+	// The browser isn't very smart about MIME types.
+	// It seems to look at the file extension, but not the actual file contents.
+	// This is particularly problematic for files with no extension, where file.type gives an empty string.
+	// And the File Access API currently doesn't let us automatically append a file extension,
+	// so the user is likely to end up with files with no extension.
+	// It's better to look at the file content to determine file type.
+	// We do this for image files in read_image_file, and palette files in AnyPalette.js.
+
+	if (file.name.match(/\.theme(pack)?$/i)) {
 		file.text().then(load_theme_from_text, (error)=> {
 			show_error_message(localize("Paint cannot open this file."), error);
 		});
-	} else {
-		AnyPalette.loadPalette(file, (error, new_palette)=> {
-			if (error) {
-				// fails.push({file, error});
-				show_error_message(localize("Paint cannot open this file."), error);
-				return;
-			}
-			palette = new_palette.map((color)=> color.toString());
-			$colorbox.rebuild_palette();
-			window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
-		});
+		return
 	}
+	// Try loading as an image file first, then as a palette file, but show a combined error message if both fail.
+	read_image_file(file, (as_image_error, image_info)=> {
+		if (as_image_error) {
+			AnyPalette.loadPalette(file, (as_palette_error, new_palette)=> {
+				if (as_palette_error) {
+					show_file_format_errors({as_image_error, as_palette_error});
+					return;
+				}
+				palette = new_palette.map((color)=> color.toString());
+				$colorbox.rebuild_palette();
+				window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+			});
+			return;
+		}
+		image_info.source_file_handle = file_handle
+		open_from_image_info(image_info);
+	});
 }
 
 async function open_from_file_handle(file_handle) {
@@ -1077,6 +1083,54 @@ function show_resource_load_error_message(error){
 	}).focus();
 	$w.center();
 }
+function show_file_format_errors({ as_image_error, as_palette_error }) {
+	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
+	let html = `
+		<p>${localize("Paint cannot open this file.")}</p>
+	`;
+	if (as_image_error) {
+		// TODO: handle weird errors, only show invalid format error if that's what happened
+		html += `
+			<details>
+				<summary>${localize("Bitmap Image")}</summary>
+				<p>${localize("This is not a valid bitmap file, or its format is not currently supported.")}</p>
+			</details>
+		`;
+	}
+	var entity_map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;',
+		'/': '&#x2F;',
+		'`': '&#x60;',
+		'=': '&#x3D;',
+	};
+	const escape_html = (string) => String(string).replace(/[&<>"'`=\/]/g, (s) => entity_map[s]);
+
+	if (as_palette_error) {
+		let details = "";
+		if (as_palette_error) {
+			details = `<ul>${as_palette_error.errors.map((error) =>
+				`<li>${escape_html(error.message || error)}</li>`
+			).join("\n")}</ul>`;
+		} else {
+			details = `<p>${escape_html(as_palette_error.message || as_palette_error)}</p>`;
+		}
+		html += `
+			<details>
+				<summary>${localize("Palette|*.pal|").split("|")[0]}</summary>
+				<p>${localize("Unexpected file format.")}</p>
+				${details}
+			</details>
+		`;
+	}
+	$w.$main.html(html);
+	$w.$Button(localize("OK"), () => {
+		$w.close();
+	}).focus();
+}
 function show_read_image_file_error(error) {
 	// @TODO: similar friendly messages to show_resource_load_error_message,
 	// but not specific to the case of loading from a web address.
@@ -1244,7 +1298,7 @@ function show_news(){
 function paste_image_from_file(blob){
 	read_image_file(blob, (error, info) => {
 		if (error) {
-			show_read_image_file_error(error);
+			show_file_format_errors({as_image_error: error});
 			return;
 		}
 		paste(info.image || make_canvas(info.image_data));
