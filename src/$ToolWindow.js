@@ -39,6 +39,9 @@ function $ToolWindow($component){
 		// - Close a second window, focusing the first window
 		// - Clicking on a control in the window should focus it, by way of updating last_focused_control
 		// - Eye gaze mode dwell click (simulated click)
+		// It should NOT refocus when:
+		// - (Clicking on a control in a different window)
+		// - Trying to select text! @FIXME
 
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		// Set focus to the last focused control, which should be updated if a click just occurred.
