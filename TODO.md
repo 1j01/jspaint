@@ -157,7 +157,6 @@ Electron boilerplate stuff:
 
 * [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
-* Add icon to built executable
 * Set up autoupdating
 * Keep window hidden until loaded (`show: false`, [`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))
 * Ideally name the executable `jspaint.exe` instead of `JS Paint.exe`

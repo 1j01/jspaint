@@ -27,7 +27,9 @@
   "main": "src/electron-main.js",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./images/icons/jspaint"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
