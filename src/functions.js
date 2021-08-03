@@ -1069,13 +1069,14 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 	const escape_html = (string) => String(string).replace(/[&<>"'`=\/]/g, (s) => entity_map[s]);
 	const uppercase_first = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
+	const only_palette_error = as_palette_error && !as_image_error; // update me if there are more error types
 	if (as_palette_error) {
 		let details = "";
 		if (as_palette_error.errors) {
 			details = `<ul dir="ltr">${as_palette_error.errors.map((error) => {
 				const format = error.__PATCHED_LIB_TO_ADD_THIS__format;
 				if (format && error.error) {
-					return `<li>as <b>${escape_html(`${format.name}`)}</b>: ${escape_html(uppercase_first(error.error.message))}</li>`;
+					return `<li><b>${escape_html(`${format.name}`)}</b>: ${escape_html(uppercase_first(error.error.message))}</li>`;
 				}
 				// Fallback for unknown errors
 				return `<li>${escape_html(error.message || error)}</li>`;
@@ -1086,7 +1087,7 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 		}
 		html += `
 			<details>
-				<summary>${localize("Palette|*.pal|").split("|")[0]}</summary>
+				<summary>${only_palette_error ? "Details" : localize("Palette|*.pal|").split("|")[0]}</summary>
 				<p>${localize("Unexpected file format.")}</p>
 				${details}
 			</details>

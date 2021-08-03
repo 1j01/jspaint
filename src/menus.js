@@ -623,11 +623,10 @@ window.menus = {
 			],
 			action: async ()=> {
 				const {file} = await systemHooks.openFile({formats: palette_formats});
-				AnyPalette.loadPalette(file, (err, new_palette)=> {
-					if(err){
-						// localize("Unexpected file format.");
-						show_error_message("This file is not in a format that Paint recognizes, or no colors were found.");
-					}else{
+				AnyPalette.loadPalette(file, (error, new_palette)=> {
+					if (error) {
+						show_file_format_errors({ as_palette_error: error });
+					} else {
 						palette = new_palette.map((color)=> color.toString());
 						$colorbox.rebuild_palette();
 						window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
