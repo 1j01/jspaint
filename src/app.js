@@ -313,7 +313,7 @@ function get_format_from_extension(formats, file_path_or_name_or_ext) {
 const image_formats = [];
 // const ext_to_image_formats = {}; // there can be multiple with the same extension, e.g. different bit depth BMP files
 // const mime_type_to_image_formats = {};
-const add_image_format = (mime_type, name_and_exts)=> {
+const add_image_format = (mime_type, name_and_exts, target_array=image_formats)=> {
 	// Note: some localizations have commas instead of semicolons to separate file extensions
 	// Assumption: file extensions are never localized
 	const format = {
@@ -340,7 +340,7 @@ const add_image_format = (mime_type, name_and_exts)=> {
 		format.extensions.push(ext);
 	}
 
-	image_formats.push(format);
+	target_array.push(format);
 };
 // First file extension in a parenthetical defines default for the format.
 // Strings are localized in add_image_format, don't need localize() here.
@@ -375,6 +375,33 @@ const formats_unique_per_file_extension = (formats)=> {
 			)
 		)
 	);
+};
+
+// For the Open dialog, show more general format categories, like "Bitmap Files", maybe "Icon Files", etc.
+const image_format_categories = (image_formats) => {
+	image_formats = image_formats.filter((format) =>
+		!format.extensions.includes("bmp")
+	);
+	add_image_format("image/bmp", localize("Bitmap Files (*.bmp)").replace(/(\*\.bmp)/, "(*.bmp;*.dib)"), image_formats);
+	// add_image_format("", "Icon Files (*.ico;*.cur;*.ani;*.icns)", image_formats);
+	// add_image_format("", "All Picture Files", image_formats);
+	// add_image_format("", "All Files", image_formats);
+	image_formats.push({
+		// TODO: we don't treat formatID and mimeType interchangeably, do we?
+		formatID: "IMAGE_FILES",
+		mimeType: "image/*", // but also application/pdf, not included here, but hopefully the mime type isn't what we go off of (I don't remember)
+		name: localize("All Picture Files"),
+		nameWithExtensions: localize("All Picture Files"),
+		extensions: image_formats.map((format) => format.extensions).flat(),
+	});
+	image_formats.push({
+		formatID: "ALL_FILES",
+		mimeType: "*/*",
+		name: localize("All Files"),
+		nameWithExtensions: localize("All Files"),
+		extensions: ["*"], // Note: no other wildcard is allowed in the extension list
+	});
+	return image_formats;
 };
 
 const palette_formats = [];
