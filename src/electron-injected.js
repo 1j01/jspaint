@@ -110,8 +110,8 @@ window.systemHooks.openFile = async ({ formats, defaultPath }) => {
 		filters,
 		defaultPath,
 	});
-	if (canceled || filePaths.length == 0) {
-		return;
+	if (canceled) {
+		throw new Error("user canceled");
 	}
 	const filePath = filePaths[0];
 	const file = await window.systemHooks.readBlobFromHandle(filePath);
