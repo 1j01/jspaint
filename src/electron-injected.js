@@ -31,7 +31,7 @@ window.is_electron_app = true;
 // or just keep track of allowed file paths, only allowing things from dialogs / recent files
 // the idea being, don't give the page free reign over the filesystem, in case of XSS holes
 
-if (process.platform == "win32" && argv.length >= 2) {
+if (argv.length >= 2) {
 	if (isPackaged) { // in production, "path/to/JS Paint.exe" "maybe/a/file.png"
 		window.initial_system_file_handle = argv[1];
 	} else { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
