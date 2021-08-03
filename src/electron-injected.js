@@ -1,9 +1,6 @@
 // Electron-specific code injected into the renderer process
 // to provide integrations, for the desktop app
 
-// so libraries don't get confused and export to `module` instead of the `window`
-global.module = undefined;
-
 const isPackaged = require("electron").remote.app.isPackaged;
 const dialog = require("electron").remote.dialog;
 const fs = require("fs");
