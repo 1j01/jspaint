@@ -11,6 +11,8 @@ if (!window.speech_recognition_available) {
 }
 
 const recognitionFixes = [
+	// spell-checker:disable
+
 	// colors
 	[/^rat$/i, "red"],
 	[/^Fred$/i, "red"],
@@ -1224,6 +1226,8 @@ const recognitionFixes = [
 	["next selection opaque", "make selection opaque"],
 	["explosion transparent", "make selection transparent"],
 	["increase breast size", "increase brush size"],
+
+	// spell-checker:enable
 ];
 const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
 const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
