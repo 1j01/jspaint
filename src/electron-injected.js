@@ -82,11 +82,12 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 
 	const filters = formats.map(({ name, extensions }) => ({ name, extensions }));
 
-	// @TODO: pass BrowserWindow to make dialog modal?
 	// @TODO: should defaultFileName/defaultPath be sanitized in some way?
 	let filePath, canceled;
 	try {
-		({filePath, canceled} = await dialog.showSaveDialog({
+		const browserWindow = require("@electron/remote").getCurrentWindow();
+		({filePath, canceled} = await dialog.showSaveDialog(browserWindow, {
+			title: localize("Save As"),
 			defaultPath: defaultPath || path.basename(defaultFileName),
 			filters,
 		}));
@@ -121,8 +122,13 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 	});
 };
 window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
-	const filters = image_format_categories(formats).map(({ name, extensions }) => ({ name, extensions }));
-	const { canceled, filePaths } = await dialog.showOpenDialog({
+	// @TODO: use categories for filters
+	// ideally this function should be generic to formats, so shouldn't do it here:
+	// const filters = image_format_categories(formats).map(({ name, extensions }) => ({ name, extensions }));
+	const filters = formats.map(({ name, extensions }) => ({ name, extensions }));
+	const browserWindow = require("@electron/remote").getCurrentWindow();
+	const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
+		title: localize("Open"),
 		filters,
 		defaultPath,
 	});
