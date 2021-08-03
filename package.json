@@ -28,7 +28,9 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./images/icons/jspaint"
+        "icon": "./images/icons/jspaint",
+        "name": "jspaint",
+        "executableName": "jspaint"
       },
       "makers": [
         {

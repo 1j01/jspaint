@@ -159,7 +159,6 @@ Electron boilerplate stuff:
 * Remember window position/state
 * Set up autoupdating
 * Keep window hidden until loaded (`show: false`, [`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))
-* Ideally name the executable `jspaint.exe` instead of `JS Paint.exe`
 
 Functionality:
 

@@ -32,7 +32,7 @@ window.is_electron_app = true;
 // the idea being, don't give the page free reign over the filesystem, in case of XSS holes
 
 if (argv.length >= 2) {
-	if (isPackaged) { // in production, "path/to/JS Paint.exe" "maybe/a/file.png"
+	if (isPackaged) { // in production, "path/to/jspaint.exe" "maybe/a/file.png"
 		window.initial_system_file_handle = argv[1];
 	} else { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
 		window.initial_system_file_handle = argv[2];
