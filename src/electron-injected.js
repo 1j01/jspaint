@@ -104,6 +104,19 @@ window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultPath, de
 		});
 	});
 };
+window.systemHooks.openFile = async ({ formats, defaultPath }) => {
+	const filters = image_format_categories(formats).map(({ name, extensions }) => ({ name, extensions }));
+	const { canceled, filePaths } = await dialog.showOpenDialog({
+		filters,
+		defaultPath,
+	});
+	if (canceled || filePaths.length == 0) {
+		return;
+	}
+	const filePath = filePaths[0];
+	const file = await window.systemHooks.readBlobFromHandle(filePath);
+	return { file, fileHandle: filePath };
+};
 
 window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
 	if (typeof filePath !== "string") {
