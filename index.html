@@ -41,7 +41,24 @@
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:site" content="@isaiahodhner">
 		<meta name="twitter:creator" content="@isaiahodhner">
-
+		<script>
+			// use only ES5 syntax for this script
+			// set up basic global error handling, which we can override later
+			window.onerror = function (msg, url, lineNo, columnNo, error) {
+				var string = msg.toLowerCase();
+				var substring = "script error";
+				if (string.indexOf(substring) > -1) {
+					alert('Script Error: See Browser Console for Detail');
+				} else {
+					try {
+						// try-catch in case of circular references or old browsers without JSON.stringify
+						error = JSON.stringify(error);
+					} catch (e) {}
+					alert('Internal application error: ' + msg + '\n\n' + 'URL: ' + url + '\n' + 'Line: ' + lineNo + '\n' + 'Column: ' + columnNo);
+				}
+				return false;
+			};
+		</script>
 		<script src="src/theme.js"></script>
 	</head>
 	<body>
@@ -384,6 +401,18 @@
 		<script src="src/storage.js"></script>
 		<script src="src/$Component.js"></script>
 		<script src="src/$ToolWindow.js"></script>
+		<script>
+			// after show_error_message, $FormToolWindow, and localize are defined,
+			// set up better global error handling
+			const old_onerror = window.onerror;
+			window.onerror = (message, source, lineno, colno, error)=> {
+				try {
+					show_error_message(localize("Internal application error."), error);
+				} catch (e) {
+					old_onerror(message, source, lineno, colno, error);
+				}
+			};
+		</script>
 		<script src="src/$ToolBox.js"></script>
 		<script src="src/$ColorBox.js"></script>
 		<script src="src/$FontBox.js"></script>
