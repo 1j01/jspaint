@@ -64,7 +64,10 @@ try {
 	if (localStorage[language_storage_key]) {
 		accepted_languages.unshift(localStorage[language_storage_key]);
 	}
-} catch (error) {}
+} catch (error) {
+	// if there's no localStorage access, you can still configure the language via system settings, theoretically
+	// TODO: also via URL?
+}
 
 var language_to_default_region = {
 	aa: 'ET',
@@ -1077,7 +1080,7 @@ function load_language(language) {
 	// 	current_language = prev_language;
 	// });
 	const src = `localization/${language}/localizations.js`;
-	document.write(`<script src="${src}"><\/script>`);
+	document.write(`<script src="${src}"></${""/*(avoiding ending script tag if inlined in HTML)*/}script>`);
 }
 // JSONP callback
 function loaded_localizations(language, mapping) {

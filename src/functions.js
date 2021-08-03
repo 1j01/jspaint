@@ -1066,7 +1066,7 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 		'`': '&#x60;',
 		'=': '&#x3D;',
 	};
-	const escape_html = (string) => String(string).replace(/[&<>"'`=\/]/g, (s) => entity_map[s]);
+	const escape_html = (string) => String(string).replace(/[&<>"'`=/]/g, (s) => entity_map[s]);
 	const uppercase_first = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
 	const only_palette_error = as_palette_error && !as_image_error; // update me if there are more error types

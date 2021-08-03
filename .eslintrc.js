@@ -1,7 +1,7 @@
 module.exports = {
 	"env": {
 		"browser": true,
-		"es6": true
+		"es2020": true,
 	},
 	"extends": "eslint:recommended",
 	"globals": {
@@ -159,9 +159,6 @@ module.exports = {
 		"change_url_param": "writable",
 		"set_theme": "writable",
 		*/
-	},
-	"parserOptions": {
-		"ecmaVersion": 2018
 	},
 	"rules": {
 		"no-undef": 0, // FOR NOW OKAY? there are just tons of globals at the moment
