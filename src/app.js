@@ -190,6 +190,34 @@ window.systemHookDefaults = {
 			});
 		}
 	},
+	showOpenFileDialog: async ({formats})=> {
+		if (window.showOpenFilePicker) {
+			const [fileHandle] = await window.showOpenFilePicker({
+				types: formats.map((format)=> {
+					return {
+						description: format.name,
+						accept: {
+							[format.mimeType]: format.extensions.map((extension)=> "." + extension)
+						}
+					}
+				})
+			});
+			const file = await fileHandle.getFile();
+			return {file, fileHandle};
+		} else {
+			// @TODO: specify mime types?
+			return new Promise((resolve)=> {
+				const $input = $("<input type='file'>")
+				.on("change", ()=> {
+					resolve({file: $input[0].files[0]});
+					$input.remove();
+				})
+				.appendTo($app)
+				.hide()
+				.trigger("click");
+			});
+		}
+	},
 	writeBlobToHandle: async (save_file_handle, blob) => {
 		if (save_file_handle && save_file_handle.createWritable) {
 			await confirm_overwrite();
@@ -223,34 +251,6 @@ window.systemHookDefaults = {
 		} else {
 			throw new Error(`Unknown file handle (${file_handle})`);
 			// show_error_message(`${localize("Failed to open document.")}\n${localize("An unsupported operation was attempted.")}`, error);
-		}
-	},
-	showOpenFileDialog: async ({formats})=> {
-		if (window.showOpenFilePicker) {
-			const [fileHandle] = await window.showOpenFilePicker({
-				types: formats.map((format)=> {
-					return {
-						description: format.name,
-						accept: {
-							[format.mimeType]: format.extensions.map((extension)=> "." + extension)
-						}
-					}
-				})
-			});
-			const file = await fileHandle.getFile();
-			return {file, fileHandle};
-		} else {
-			// @TODO: specify mime types?
-			return new Promise((resolve)=> {
-				const $input = $("<input type='file'>")
-				.on("change", ()=> {
-					resolve({file: $input[0].files[0]});
-					$input.remove();
-				})
-				.appendTo($app)
-				.hide()
-				.trigger("click");
-			});
 		}
 	},
 	setWallpaperTiled: (canvas)=> {
