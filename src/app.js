@@ -197,7 +197,7 @@ window.systemHookDefaults = {
 				await writableStream.close();
 			} catch (error) {
 				if (error.name === "AbortError") {
-					// user canceled save
+					// user canceled save (this might not be an actual error code case here)
 					return;
 				}
 				if (error.name === "NotAllowedError") {
