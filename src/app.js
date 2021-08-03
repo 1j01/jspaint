@@ -224,7 +224,7 @@ window.systemHookDefaults = {
 		}
 	},
 	openFile: async ({formats})=> {
-		if (window.showOpenFilePicker) {
+		if (window.showOpenFilePicker && !is_electron_app) {
 			const [fileHandle] = await window.showOpenFilePicker({
 				types: formats.map((format)=> {
 					return {
