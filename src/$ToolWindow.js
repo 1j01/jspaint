@@ -114,7 +114,8 @@ function $ToolWindow($component){
 				break;
 			case 9: { // Tab
 				// wrap around when tabbing through controls in a window
-				let $controls = $w.$content.find("input, textarea, select, button, object, a[href], [tabIndex='0']").filter(":enabled");
+				// @#: focusables
+				let $controls = $w.$content.find("input, textarea, select, button, object, a[href], [tabIndex='0'], details summary").filter(":enabled, summary, a").filter(":visible");
 				// const $controls = $w.$content.find(":tabbable"); // https://api.jqueryui.com/tabbable-selector/
 				// Radio buttons should be treated as a group with one tabstop.
 				// If there's no selected ("checked") radio, it should still visit the group,
