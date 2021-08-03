@@ -779,7 +779,7 @@ function file_new(){
 }
 
 async function file_open(){
-	const {file, fileHandle} = await systemHooks.openFile({formats: image_formats})
+	const {file, fileHandle} = await systemHooks.showOpenFileDialog({formats: image_formats})
 	open_from_file(file, fileHandle);
 }
 
@@ -877,7 +877,7 @@ function file_save(maybe_saved_callback=()=>{}, update_from_saved=true){
 
 function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 	deselect();
-	systemHooks.saveFile({
+	systemHooks.showSaveFileDialog({
 		dialogTitle: localize("Save As"),
 		formats: image_formats,
 		defaultFileName: file_name,
@@ -1274,7 +1274,7 @@ function paste_image_from_file(blob){
 
 // Edit > Paste From
 async function choose_file_to_paste() {
-	const {file} = await systemHooks.openFile({formats: image_formats});
+	const {file} = await systemHooks.showOpenFileDialog({formats: image_formats});
 	if (file.type.match(/^image|application\/pdf/)) {
 		paste_image_from_file(file);
 		return;
@@ -1405,7 +1405,7 @@ function render_history_as_gif(){
 				$win.close();
 				sanity_check_blob(blob, () => {
 					const suggested_file_name = `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} history.gif`;
-					systemHooks.saveFile({
+					systemHooks.showSaveFileDialog({
 						dialogTitle: localize("Save As"), // localize("Save Animation As"),
 						getBlob: ()=> blob,
 						defaultFileName: suggested_file_name,
@@ -3148,7 +3148,7 @@ function update_from_saved_file(blob) {
 
 function save_selection_to_file(){
 	if(selection && selection.canvas){
-		systemHooks.saveFile({
+		systemHooks.showSaveFileDialog({
 			dialogTitle: localize("Save As"),
 			defaultName: "selection.png",
 			defaultFileFormatID: "image/png",

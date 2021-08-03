@@ -113,7 +113,9 @@ let custom_colors = [
 // This API may be removed at any time (and perhaps replaced by something based around postMessage)
 window.systemHooks = window.systemHooks || {};
 window.systemHookDefaults = {
-	saveFile: async ({formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle})=> {
+	// named to be distinct from various platform APIs (showSaveFilePicker, saveAs, electron's showSaveDialog; and saveFile is too ambiguous)
+	// could call it saveFileAs maybe but then it'd be weird that you don't pass in the file directly
+	showSaveFileDialog: async ({formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle})=> {
 		// Note: showSaveFilePicker currently doesn't support suggesting a filename,
 		// or retrieving which file type was selected in the dialog (you have to get it (guess it) from the file name)
 		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.
@@ -154,7 +156,7 @@ window.systemHookDefaults = {
 					// user canceled save
 					return;
 				}
-				// console.warn("Error during saveFile (for showSaveFilePicker; now falling back to saveAs)", error);
+				// console.warn("Error during showSaveFileDialog (for showSaveFilePicker; now falling back to saveAs)", error);
 				// If you're using accessibility options Speech Recognition or Eye Gaze Mode,
 				// it fails based on a notion of it not being a "user gesture".
 				// saveAs will likely also fail on the same basis,
@@ -223,7 +225,7 @@ window.systemHookDefaults = {
 			// show_error_message(`${localize("Failed to open document.")}\n${localize("An unsupported operation was attempted.")}`, error);
 		}
 	},
-	openFile: async ({formats})=> {
+	showOpenFileDialog: async ({formats})=> {
 		if (window.showOpenFilePicker) {
 			const [fileHandle] = await window.showOpenFilePicker({
 				types: formats.map((format)=> {
@@ -260,7 +262,7 @@ window.systemHookDefaults = {
 		systemHooks.setWallpaperCentered(wallpaperCanvas);
 	},
 	setWallpaperCentered: (canvas)=> {
-		systemHooks.saveFile({
+		systemHooks.showSaveFileDialog({
 			dialogTitle: localize("Save As"),
 			defaultName: `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`,
 			defaultFileFormatID: "image/png",
