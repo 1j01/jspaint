@@ -136,20 +136,14 @@ window.systemHooks.readBlobFromHandle = async (filePath) => {
 		return show_error_message("readBlobFromHandle in Electron expects a file path");
 		// should it fall back to default readBlobFromHandle?
 	}
-	await new Promise((resolve, reject) => {
-		fs.readFile(filePath, (err, buffer) => {
-			if (err) {
-				return reject(err);
-			}
-			const file = new File([new Uint8Array(buffer)], path.basename(filePath));
-			// can't set file.path directly, but we can do this:
-			Object.defineProperty(file, 'path', {
-				value: filePath,
-			});
-	
-			resolve(file);
-		});	
+	const buffer = await fs.promises.readFile(filePath);
+	const file = new File([new Uint8Array(buffer)], path.basename(filePath));
+	// can't set file.path directly, but we can do this:
+	Object.defineProperty(file, 'path', {
+		value: filePath,
 	});
+
+	return file;
 };
 
 window.systemHooks.setWallpaperCentered = (canvas) => {
