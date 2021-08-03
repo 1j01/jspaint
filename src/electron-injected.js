@@ -56,7 +56,7 @@ function write_blob_to_file_path(filePath, blob, savedCallback) {
 }
 
 window.systemHooks = window.systemHooks || {};
-window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable }) => {
+window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable }) => {
 	
 	// First filter in filters list determines default selected file type.
 	// @TODO: default to existing extension, except it would be awkward to rearrange the list...
@@ -104,7 +104,7 @@ window.systemHooks.saveFile = async ({ formats, defaultFileName, defaultPath, de
 		});
 	});
 };
-window.systemHooks.openFile = async ({ formats, defaultPath }) => {
+window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 	const filters = image_format_categories(formats).map(({ name, extensions }) => ({ name, extensions }));
 	const { canceled, filePaths } = await dialog.showOpenDialog({
 		filters,

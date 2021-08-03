@@ -622,7 +622,7 @@ window.menus = {
 				"get colors", "load colors", "load color palette", "load palette", "load color palette file", "load palette file", "load list of colors",
 			],
 			action: async ()=> {
-				const {file} = await systemHooks.openFile({formats: palette_formats});
+				const {file} = await systemHooks.showOpenFileDialog({formats: palette_formats});
 				AnyPalette.loadPalette(file, (error, new_palette)=> {
 					if (error) {
 						show_file_format_errors({ as_palette_error: error });
@@ -652,7 +652,7 @@ window.menus = {
 						blue: b / 255,
 					}));
 				}
-				systemHooks.saveFile({
+				systemHooks.showSaveFileDialog({
 					dialogTitle: localize("Save Colors"),
 					defaultFileName: localize("untitled.pal"),
 					formats: palette_formats,
