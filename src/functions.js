@@ -398,8 +398,8 @@ function reset_file() {
 	system_file_handle = null;
 	file_name = localize("untitled");
 	file_format = "image/png";
-	update_title();
 	saved = true;
+	update_title();
 }
 
 function reset_canvas_and_history(){
@@ -474,6 +474,13 @@ function update_title(){
 
 	if (is_pride_month) {
 		$("link[rel~='icon']").attr("href", "./images/icons/gay-es-paint-16x16-light-outline.png");
+	}
+
+	if (window.setRepresentedFilename) {
+		window.setRepresentedFilename(system_file_handle ?? "");
+	}
+	if (window.setDocumentEdited) {
+		window.setDocumentEdited(!saved);
 	}
 }
 
@@ -686,8 +693,8 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 		if (info.source_file_handle) {
 			system_file_handle = info.source_file_handle;
 		}
-		update_title();
 		saved = true;
+		update_title();
 
 		callback && callback();
 	}, canceled);
@@ -1465,6 +1472,7 @@ function go_to_history_node(target_history_node, canceling) {
 		cancel(true);
 	}
 	saved = false;
+	update_title();
 
 	main_ctx.copy(target_history_node.image_data);
 	if (target_history_node.selection_image_data) {
@@ -1558,6 +1566,7 @@ function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 	}
 
 	saved = false;
+	update_title();
 
 	const before_callback_history_node = current_history_node;
 	callback && callback();
@@ -2031,6 +2040,7 @@ function clear(){
 		icon: get_help_folder_icon("p_blank.png"),
 	}, () => {
 		saved = false;
+		update_title();
 
 		if(transparency){
 			main_ctx.clearRect(0, 0, main_canvas.width, main_canvas.height);
