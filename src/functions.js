@@ -764,7 +764,6 @@ function file_new(){
 	are_you_sure(() => {
 		deselect();
 		cancel();
-		saved = false; // ??
 
 		$G.triggerHandler("session-update"); // autosave old session
 		new_local_session();
