@@ -376,7 +376,6 @@
 				}
 				else {
 					previous_uri = uri;
-					// saved = true; // hopefully // what is the idea here??
 					// Load the new image data
 					const img = new Image();
 					img.onload = () => {
