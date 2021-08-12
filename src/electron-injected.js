@@ -26,6 +26,13 @@ if(process.platform == "win32" && isPackaged){
 
 window.is_electron_app = true;
 
+window.setRepresentedFilename = (filePath) => {
+	require("electron").remote.getCurrentWindow().setRepresentedFilename(filePath);
+};
+window.setDocumentEdited = (documentEdited) => {
+	require("electron").remote.getCurrentWindow().setDocumentEdited(documentEdited);
+};
+
 // @TODO: ideally electron should use FS Access API when it's at parity,
 // but I could model a similar thing for security, with opaque file handles
 // or just keep track of allowed file paths, only allowing things from dialogs / recent files

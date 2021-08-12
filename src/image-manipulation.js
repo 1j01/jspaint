@@ -580,6 +580,7 @@ function apply_image_transformation(meta, fn){
 			icon: meta.icon,
 		}, () => {
 			saved = false;
+			update_title();
 			
 			main_ctx.copy(new_canvas);
 			
