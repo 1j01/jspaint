@@ -33,10 +33,9 @@ window.setDocumentEdited = (documentEdited) => {
 	require("electron").remote.getCurrentWindow().setDocumentEdited(documentEdited);
 };
 
-// @TODO: ideally electron should use FS Access API when it's at parity,
-// but I could model a similar thing for security, with opaque file handles
-// or just keep track of allowed file paths, only allowing things from dialogs / recent files
-// the idea being, don't give the page free reign over the filesystem, in case of XSS holes
+// In case of XSS holes, don't give the page free reign over the filesystem!
+// Only allow allow access to files explicitly opened by the user.
+const allowed_file_paths = [];
 
 if (argv.length >= 2) {
 	if (isPackaged) { // in production, "path/to/jspaint.exe" "maybe/a/file.png"
@@ -44,9 +43,14 @@ if (argv.length >= 2) {
 	} else { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
 		window.initial_system_file_handle = argv[2];
 	}
+	allowed_file_paths.push(window.initial_system_file_handle);
 }
 
 function write_blob_to_file_path(filePath, blob, savedCallback) {
+	if (!allowed_file_paths.includes(filePath)) {
+		// throw new SecurityError(`File path ${filePath} is not allowed`);
+		return show_error_message(localize("Access denied."));
+	}
 	blob.arrayBuffer().then((arrayBuffer) => {
 		fs.writeFile(filePath, Buffer.from(arrayBuffer), (err) => {
 			if (err) {
@@ -98,6 +102,8 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 		return show_error_message(`Can't save as *.${extension} - Try adding .png to the end of the file name`);
 	}
 	const blob = await getBlob(format.mimeType);
+
+	allowed_file_paths.push(filePath);
 	
 	write_blob_to_file_path(filePath, blob, ()=> {
 		savedCallbackUnreliable && savedCallbackUnreliable({
@@ -118,6 +124,7 @@ window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 		throw new Error("user canceled");
 	}
 	const filePath = filePaths[0];
+	allowed_file_paths.push(filePath);
 	const file = await window.systemHooks.readBlobFromHandle(filePath);
 	return { file, fileHandle: filePath };
 };
@@ -135,6 +142,10 @@ window.systemHooks.readBlobFromHandle = async (filePath) => {
 	if (typeof filePath !== "string") {
 		return show_error_message("readBlobFromHandle in Electron expects a file path");
 		// should it fall back to default readBlobFromHandle?
+	}
+	if (!allowed_file_paths.includes(filePath)) {
+		// throw new SecurityError(`File path ${filePath} is not allowed`);
+		return show_error_message(localize("Access denied."));
 	}
 	const buffer = await fs.promises.readFile(filePath);
 	const file = new File([new Uint8Array(buffer)], path.basename(filePath));
