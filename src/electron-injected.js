@@ -15,6 +15,11 @@ const reg_contents = `Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\\SystemFileAssociations\\image\\shell\\edit\\command]
 @="\\"${argv[0].replace(/\\/g, "\\\\")}\\" ${isPackaged ? "" : '\\".\\" '}\\"%1\\""
 `; // oof that's a lot of escaping \\
+////                                \\\\
+//  /\   /\   /\   /\   /\   /\   /\  \\
+// //\\ //\\ //\\ //\\ //\\ //\\ //\\ \\
+//  ||   ||   ||   ||   ||   ||   ||  \\
+//\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\
 const reg_file_path = path.join(isPackaged ? path.dirname(argv[0]) : ".", `set-jspaint${isPackaged ? "" : "-DEV-MODE"}-as-default-image-editor.reg`);
 if(process.platform == "win32" && isPackaged){
 	fs.writeFile(reg_file_path, reg_contents, (err) => {
