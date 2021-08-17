@@ -36,9 +36,9 @@ window.is_electron_app = true;
 
 if (process.platform == "win32" && argv.length >= 2) {
 	if (isPackaged) { // in production, "path/to/JS Paint.exe" "maybe/a/file.png"
-		window.document_file_path_to_open = argv[1];
+		window.initial_system_file_handle = argv[1];
 	} else { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
-		window.document_file_path_to_open = argv[2];
+		window.initial_system_file_handle = argv[2];
 	}
 }
 

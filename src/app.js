@@ -997,11 +997,14 @@ storage.get({
 	});
 });
 
-if(window.initial_system_file_handle){
-	open_from_file_handle(window.initial_system_file_handle, err => {
-		if(err){
-			return show_error_message(`Failed to open file ${initial_system_file_handle}`, err);
+if (window.initial_system_file_handle) {
+	systemHooks.readBlobFromHandle(window.initial_system_file_handle).then(file => {
+		if (file) {
+			open_from_file(file, window.initial_system_file_handle);
 		}
+	}, (error) => {
+		// this handler is not always called, sometimes error message is shown from readBlobFromHandle
+		show_error_message(`Failed to open file ${window.initial_system_file_handle}`, error);
 	});
 }
 
