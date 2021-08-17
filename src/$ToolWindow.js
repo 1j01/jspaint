@@ -41,12 +41,25 @@ function $ToolWindow($component){
 		// - Eye gaze mode dwell click (simulated click)
 		// It should NOT refocus when:
 		// - (Clicking on a control in a different window)
-		// - Trying to select text! @FIXME
+		// - Trying to select text!
 
 		// Wait for other pointerdown handlers and default behavior, and focusin events.
 		// Set focus to the last focused control, which should be updated if a click just occurred.
 		requestAnimationFrame(()=> {
 			// focused = true;
+			// But if the element is selectable, wait until the click is done and see if anything was selected first.
+			// This is a bit of a weird compromise, for now.
+			const target_style = getComputedStyle(event.target);
+			if (target_style.userSelect !== "none") {
+				$w.one("pointerup", () => {
+					requestAnimationFrame(()=> { // this seems to make it more reliable in regards to double clicking
+						if (last_focused_control && !getSelection().toString().trim()) {
+							last_focused_control.focus();
+						}
+					});
+				});
+				return;
+			}
 			if (last_focused_control) {
 				last_focused_control.focus();
 			}
