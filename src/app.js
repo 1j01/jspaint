@@ -144,6 +144,16 @@ window.systemHookDefaults = {
 					})
 				});
 				newFileName = newHandle.name;
+				const newFileExtension = get_file_extension(newFileName);
+				if (!newFileExtension) {
+					show_error_message(`Missing file extension - try adding .${new_format.extensions[0]} to the name.`);
+					return;
+				}
+				if (!new_format.extensions.includes(newFileExtension)) {
+					// Closest translation: "Paint cannot save to the same filename with a different file type."
+					show_error_message(`Wrong file extension for selected file type - try adding .${new_format.extensions[0]} to the name.`);
+					return;
+				}
 				// const new_format =
 				// 	get_format_from_extension(formats, newHandle.name) ||
 				// 	formats.find((format)=> format.formatID === defaultFileFormatID);
@@ -162,14 +172,17 @@ window.systemHookDefaults = {
 				// saveAs will likely also fail on the same basis,
 				// but at least in chrome, there's a "Downloads Blocked" icon with a popup where you can say Always Allow.
 				// However, we can't detect if it's allowed or not, and the setting probably won't apply to showSaveFilePicker.
+				// TODO: in Speech Recognition and Eye Gaze Mode, set a global flag temporarily to disable File System Access API? 
 				// newFileName = (newFileName || file_name || localize("untitled"))
 				// 	.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "") +
 				// 	"." + new_format.extensions[0];
 				// saveAs(blob, newFileName);
-				// if (error.message.match(/gesture/)) {
-				// 	show_error_message("Your browser blocked the file from being saved, because you didn't use the mouse or keyboard directly to save. Try looking for a Downloads Blocked icon and say Always Allow, or save again with the keyboard or mouse.", error);
-				// }
-				show_error_message("Sorry, you must use the keyboard or mouse directly to save. To save a file, press Ctrl+Shift+S.");
+				if (error.message.match(/gesture/)) {
+					// show_error_message("Your browser blocked the file from being saved, because you didn't use the mouse or keyboard directly to save. Try looking for a Downloads Blocked icon and say Always Allow, or save again with the keyboard or mouse.", error);
+					show_error_message("Sorry, due to browser security measures, you must use the keyboard or mouse directly to save.");
+					return;
+				}
+				show_error_message(localize("Failed to save document."), error);
 				return;
 			}
 			savedCallbackUnreliable && savedCallbackUnreliable({
@@ -282,7 +295,12 @@ for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
 	window.systemHooks[key] = window.systemHooks[key] || defaultValue;
 }
 
+function get_file_extension(file_path_or_name) {
+	// does NOT accept a file extension itself as input - if input does not have a dot, returns empty string
+	return file_path_or_name.match(/\.([^./]+)$/)?.[1] || "";
+}
 function get_format_from_extension(formats, file_path_or_name_or_ext) {
+	// accepts a file extension as input, or a file name, or path
 	const ext_match = file_path_or_name_or_ext.match(/\.([^.]+)$/);
 	const ext = ext_match ? ext_match[1].toLowerCase() : file_path_or_name_or_ext; // excluding dot
 	for (const format of formats) {
