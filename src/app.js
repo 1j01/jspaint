@@ -121,7 +121,13 @@ window.systemHookDefaults = {
 		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.
 		// So, it's a tradeoff with the benefit of overwriting on Save.
 		// https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
-		if (window.showSaveFilePicker) {
+		// Also, if you're using accessibility options Speech Recognition or Eye Gaze Mode,
+		// `showSaveFilePicker` fails based on a notion of it not being a "user gesture".
+		// `saveAs` will likely also fail on the same basis,
+		// but at least in chrome, there's a "Downloads Blocked" icon with a popup where you can say Always Allow.
+		// I can't detect when it's allowed or blocked, but `saveAs` has a better chance of working,
+		// so in Speech Recognition and Eye Gaze Mode, I set a global flag temporarily to disable File System Access API (window.untrusted_gesture).
+		if (window.showSaveFilePicker && !window.untrusted_gesture) {
 			// We can't get the selected file type, not even from newHandle.getFile()
 			// so limit formats shown to a set that can all be used by their unique file extensions
 			// formats = formats_unique_per_file_extension(formats);
@@ -167,17 +173,11 @@ window.systemHookDefaults = {
 					return;
 				}
 				// console.warn("Error during showSaveFileDialog (for showSaveFilePicker; now falling back to saveAs)", error);
-				// If you're using accessibility options Speech Recognition or Eye Gaze Mode,
-				// it fails based on a notion of it not being a "user gesture".
-				// saveAs will likely also fail on the same basis,
-				// but at least in chrome, there's a "Downloads Blocked" icon with a popup where you can say Always Allow.
-				// However, we can't detect if it's allowed or not, and the setting probably won't apply to showSaveFilePicker.
-				// TODO: in Speech Recognition and Eye Gaze Mode, set a global flag temporarily to disable File System Access API? 
 				// newFileName = (newFileName || file_name || localize("untitled"))
 				// 	.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "") +
 				// 	"." + new_format.extensions[0];
 				// saveAs(blob, newFileName);
-				if (error.message.match(/gesture/)) {
+				if (error.message.match(/gesture|activation/)) {
 					// show_error_message("Your browser blocked the file from being saved, because you didn't use the mouse or keyboard directly to save. Try looking for a Downloads Blocked icon and say Always Allow, or save again with the keyboard or mouse.", error);
 					show_error_message("Sorry, due to browser security measures, you must use the keyboard or mouse directly to save.");
 					return;
@@ -203,7 +203,12 @@ window.systemHookDefaults = {
 			});
 		}
 	},
-	showOpenFileDialog: async ({formats})=> {
+	showOpenFileDialog: async ({ formats }) => {
+		if (window.untrusted_gesture) {
+			// We can't show a file picker RELIABLY.
+			show_error_message("Sorry, a file picker cannot be shown when using Speech Recognition or Eye Gaze Mode. You must click File > Open directly with the mouse, or press Ctrl+O on the keyboard.");
+			throw new Error("can't show file picker reliably");
+		}
 		if (window.showOpenFilePicker) {
 			const [fileHandle] = await window.showOpenFilePicker({
 				types: formats.map((format)=> {
@@ -240,7 +245,7 @@ window.systemHookDefaults = {
 				await writableStream.close();
 			} catch (error) {
 				if (error.name === "AbortError") {
-					// user canceled save (this might not be an actual error code case here)
+					// user canceled save (this might not be a real error code that can occur here)
 					return;
 				}
 				if (error.name === "NotAllowedError") {
@@ -249,8 +254,11 @@ window.systemHookDefaults = {
 					show_error_message(localize("Save was interrupted, so your file has not been saved."), error);
 					return;
 				}
-				show_error_message(localize("Failed to save document."), error);
-				return;
+				if (error.name === "SecurityError") {
+					// not in a user gesture ("User activation is required to request permissions.")
+					saveAs(blob, file_name);
+					return;
+				}
 			}
 		} else {
 			saveAs(blob, file_name);
@@ -1346,9 +1354,11 @@ const eye_gaze_mode_config = {
 			target.style.borderImage = "var(--inset-deep-border-image)";
 			setTimeout(() => {
 				target.style.borderImage = "";
-				// delay the button click as well so the pressed state is
+				// delay the button.click() as well, so the pressed state is
 				// visible even if the button closes a dialog
+				window.untrusted_gesture = true;
 				target.click();
+				window.untrusted_gesture = false;
 			}, 100);
 		} else if (target.matches("input[type='range']")) {
 			const rect = target.getBoundingClientRect();
@@ -1364,13 +1374,17 @@ const eye_gaze_mode_config = {
 					(x - rect.left) / rect.width
 			) * (max - min) + min;
 			target.value = v;
+			window.untrusted_gesture = true;
 			target.dispatchEvent(new Event("input", { bubbles: true }));
 			target.dispatchEvent(new Event("change", { bubbles: true }));
+			window.untrusted_gesture = false;
 		} else {
+			window.untrusted_gesture = true;
 			target.click();
 			if (target.matches("input, textarea")) {
 				target.focus();
 			}
+			window.untrusted_gesture = false;
 		}
 		// Source: https://stackoverflow.com/a/54492696/2624876
 		function getCurrentRotation(el) {
@@ -1418,6 +1432,7 @@ async function init_eye_gaze_mode() {
 			const target = document.elementFromPoint(x, y) || document.body;
 			if (target !== last_el_over) {
 				if (last_el_over) {
+					window.untrusted_gesture = true;
 					const event = new /*PointerEvent*/$.Event("pointerleave", Object.assign(get_event_options({ x, y }), {
 						button: 0,
 						buttons: 1,
@@ -1426,7 +1441,9 @@ async function init_eye_gaze_mode() {
 					}));
 					// last_el_over.dispatchEvent(event);
 					$(last_el_over).trigger(event);
+					window.untrusted_gesture = false;
 				}
+				window.untrusted_gesture = true;
 				const event = new /*PointerEvent*/$.Event("pointerenter", Object.assign(get_event_options({ x, y }), {
 					button: 0,
 					buttons: 1,
@@ -1435,14 +1452,17 @@ async function init_eye_gaze_mode() {
 				}));
 				// target.dispatchEvent(event);
 				$(target).trigger(event);
+				window.untrusted_gesture = false;
 				last_el_over = target;
 			}
+			window.untrusted_gesture = true;
 			const event = new PointerEvent/*$.Event*/("pointermove", Object.assign(get_event_options({ x, y }), {
 				button: 0,
 				buttons: 1,
 			}));
 			target.dispatchEvent(event);
 			// $(target).trigger(event);
+			window.untrusted_gesture = false;
 		};
 
 		// tracky_mouse_container.querySelector(".tracky-mouse-canvas").classList.add("inset-deep");
@@ -1670,23 +1690,28 @@ async function init_eye_gaze_mode() {
 					* circle_radius_max;
 				if (time > hover_candidate.time + hover_timespan) {
 					if (pointer_active || gaze_dragging) {
+						window.untrusted_gesture = true;
 						hover_candidate.target.dispatchEvent(new PointerEvent("pointerup",
 							Object.assign(get_event_options(hover_candidate), {
 								button: 0,
 								buttons: 0,
 							})
 						));
+						window.untrusted_gesture = false;
 					} else {
 						pointers = []; // prevent multi-touch panning
+						window.untrusted_gesture = true;
 						hover_candidate.target.dispatchEvent(new PointerEvent("pointerdown",
 							Object.assign(get_event_options(hover_candidate), {
 								button: 0,
 								buttons: 1,
 							})
 						));
+						window.untrusted_gesture = false;
 						if (eye_gaze_mode_config.shouldDrag(hover_candidate.target)) {
 							gaze_dragging = hover_candidate.target;
 						} else {
+							window.untrusted_gesture = true;
 							hover_candidate.target.dispatchEvent(new PointerEvent("pointerup",
 								Object.assign(get_event_options(hover_candidate), {
 									button: 0,
@@ -1694,6 +1719,7 @@ async function init_eye_gaze_mode() {
 								})
 							));
 							eye_gaze_mode_config.click(hover_candidate);
+							window.untrusted_gesture = false;
 						}
 					}
 					hover_candidate = null;
@@ -1782,12 +1808,14 @@ async function init_eye_gaze_mode() {
 			}
 			if (recent_movement_amount > 100) {
 				if (gaze_dragging) {
+					window.untrusted_gesture = true;
 					window.dispatchEvent(new PointerEvent("pointerup",
 						Object.assign(get_event_options(average_point), {
 							button: 0,
 							buttons: 0,
 						})
 					));
+					window.untrusted_gesture = false;
 					pointers = []; // prevent multi-touch panning
 				}
 			}

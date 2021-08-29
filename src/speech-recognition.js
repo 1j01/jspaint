@@ -2001,12 +2001,16 @@ function clickButtonVisibly(button) {
 		button.style.borderImage = "var(--inset-deep-border-image)";
 		setTimeout(()=> {
 			button.style.borderImage = "";
-			// delay the button click to here so the pressed state is
+			// delay the button.click() as well, so the pressed state is
 			// visible even if the button action closes a dialog
+			window.untrusted_gesture = true;
 			button.click();
+			window.untrusted_gesture = false;
 		}, 100);
 	} else {
+		window.untrusted_gesture = true;
 		button.click();
+		window.untrusted_gesture = false;
 	}
 }
 
