@@ -377,7 +377,10 @@ function draw_fill(ctx, start_x, start_y, swatch) {
 	}
 }
 
-function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
+function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a) {
+	if (fill_a === 0) {
+		throw new Error("Filling with alpha of zero is not supported. Zero alpha is used for detecting whether a pixel has been visited.");
+	}
 	const c_width = main_canvas.width;
 	const c_height = main_canvas.height;
 	start_x = Math.max(0, Math.min(Math.floor(start_x), c_width));
