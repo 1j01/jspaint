@@ -278,14 +278,16 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	const start_b = id.data[pixel_pos+2];
 	const start_a = id.data[pixel_pos+3];
 	
-	// @TODO: should this have a threshold? I feel like I had a reason it should not,
-	// but if there's is, I should document it.
-	if(
-		fill_r === start_r &&
-		fill_g === start_g &&
-		fill_b === start_b &&
-		fill_a === start_a
-	){
+	// @TODO: Allow flood-filling colors similar within fill threshold.
+	// Right now it will cause an infinite loop if we don't stop early in this case.
+	// As of writing, the fill threshold is very low, so this problem is unlikely to be noticed,
+	// but it would be nice as a user-configurable option.
+	if (
+		Math.abs(fill_r - start_r) <= fill_threshold &&
+		Math.abs(fill_g - start_g) <= fill_threshold &&
+		Math.abs(fill_b - start_b) <= fill_threshold &&
+		Math.abs(fill_a - start_a) <= fill_threshold
+	) {
 		return;
 	}
 	
