@@ -7,8 +7,24 @@
 	-webkit-user-select: none;
 	   -moz-user-select: none;
 	    -ms-user-select: none;
-			user-select: none;
-	text-align: start;
+	        user-select: none;
+}
+
+.os-window {
+	contain: layout; /* contain: paint; seems to clip children to the padding-box, including for interaction, not just painting; it breaks being able to grab resize handles over the border */
+	/* overflow: hidden; is also not usable for the same reason */
+	/* I might be able to do either with overflow-clip-margin however (@TODO) */
+	display: flex;
+	flex-direction: column;
+	/* will-change: width height left top; */
+}
+.window-content {
+	flex: 1;
+	min-height: 0px;
+	/* We want to allow scrollbars to be enabled easily, but not enable them,
+	and we want to clip to the border of the window, without overlapping it at all.
+	It's already clipped to the outside of .os-window's border, but we want to clip to the inside. */
+    contain: layout paint;
 }
 
 .os-window .window-titlebar,

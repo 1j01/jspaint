@@ -258,9 +258,7 @@ body > .window-titlebar {
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 }
-
-.os-window .window-titlebar,
-body > .window-titlebar {
+.os-window:not(.tool-window) .window-titlebar {
 	font-weight: bold;
 }
 .os-window:not(.focused) .window-titlebar {
@@ -281,7 +279,7 @@ body > .window-titlebar {
 	/*color: var(--WindowText);*/
 	/*border: 1px solid var(--WindowFrame);*/
 	/* TODO: use window-specific theme colors; also different types of windows */
-	/* padding: 2px; */
+	padding: 2px;
 }
 .os-window:not(.maximized) {
 	border-style: solid;
@@ -313,6 +311,14 @@ body > .window-titlebar {
 .window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
+}
+.tool-window .window-close-button {
+	width: 13px;
+	height: 11px;
+	background-position: 8px 0;
+}
+.tool-window .window-close-button:hover:active {
+	background-position: 9px 1px;
 }
 .os-window .window-title-area {
 	height: 16px; /* 100% doesn't work */

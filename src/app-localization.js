@@ -1088,7 +1088,7 @@ function loaded_localizations(language, mapping) {
 	current_language = language;
 }
 function set_language(language) {
-	const $w = $FormToolWindow().title("Reload Required").addClass("dialogue-window");
+	const $w = $DialogWindow().title("Reload Required").addClass("dialogue-window");
 	$w.$main.text("The application needs to reload to change the language.");
 	$w.$main.css("max-width", "600px");
 	$w.$Button(localize("OK"), () => {

@@ -114,7 +114,7 @@ module.exports = {
 		"$ColorBox": "writable",
 		"$Window": "writable",
 		"$ToolWindow": "writable",
-		"$FormToolWindow": "writable",
+		"$DialogWindow": "writable",
 		"$Handles": "writable",
 		"$ChooseShapeStyle": "writable",
 		"OnCanvasSelection": "writable",

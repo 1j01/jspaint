@@ -308,7 +308,7 @@ function show_custom_zoom_window() {
 	if ($custom_zoom_window) {
 		$custom_zoom_window.close();
 	}
-	const $w = new $FormToolWindow(localize("Custom Zoom"));
+	const $w = new $DialogWindow(localize("Custom Zoom"));
 	$custom_zoom_window = $w;
 	$w.addClass("custom-zoom-window");
 
@@ -794,7 +794,7 @@ function file_load_from_url(){
 	if($file_load_from_url_window){
 		$file_load_from_url_window.close();
 	}
-	const $w = new $FormToolWindow().addClass("dialogue-window");
+	const $w = new $DialogWindow().addClass("dialogue-window");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
@@ -838,7 +838,7 @@ function confirm_overwrite() {
 			resolve();
 			return;
 		}
-		const $w = new $FormToolWindow().addClass("dialogue-window");
+		const $w = new $DialogWindow().addClass("dialogue-window");
 		$w.title(localize("Paint"));
 		$w.$main.html(`
 			<p>JS Paint can now save over existing files.</p>
@@ -915,7 +915,7 @@ function are_you_sure(action, canceled){
 	if(saved){
 		action();
 	}else{
-		const $w = new $FormToolWindow().addClass("dialogue-window");
+		const $w = new $DialogWindow().addClass("dialogue-window");
 		$w.title(localize("Paint"));
 		$w.$main.text(localize("Save changes to %1?", file_name));
 		$w.$Button(localize("Save"), () => {
@@ -940,7 +940,7 @@ function are_you_sure(action, canceled){
 }
 
 function please_enter_a_number() {
-	const $w = new $FormToolWindow("Invalid Value").addClass("dialogue-window");
+	const $w = new $DialogWindow("Invalid Value").addClass("dialogue-window");
 	$w.$main.text(localize("Please enter a number."));
 	$w.$Button(localize("OK"), () => {
 		$w.close();
@@ -948,7 +948,7 @@ function please_enter_a_number() {
 }
 
 function show_error_message(message, error){
-	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window squish");
+	const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window squish");
 	$w.$main.text(message);
 	$w.$main.css("max-width", "600px");
 	if(error){
@@ -996,7 +996,7 @@ function show_error_message(message, error){
 // @TODO: close are_you_sure windows and these Error windows when switching sessions
 // because it can get pretty confusing
 function show_resource_load_error_message(error){
-	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
+	const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
 	const firefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 	// @TODO: copy & paste vs download & open, more specific guidance
 	if (error.code === "cross-origin-blob-uri") {
@@ -1049,7 +1049,7 @@ function show_resource_load_error_message(error){
 	$w.center();
 }
 function show_file_format_errors({ as_image_error, as_palette_error }) {
-	const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
+	const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
 	let html = `
 		<p>${localize("Paint cannot open this file.")}</p>
 	`;
@@ -1131,7 +1131,12 @@ function show_about_paint(){
 	if($about_paint_window){
 		$about_paint_window.close();
 	}
-	$about_paint_window = $ToolWindow().title(localize("About Paint"));
+	$about_paint_window = $Window({
+		title: localize("About Paint"),
+		resizable: false,
+		maximizeButton: false,
+		minimizeButton: false,
+	});
 	$about_paint_window.addClass("about-paint squish");
 	if (is_pride_month) {
 		$("#paint-32x32").attr("src", "./images/icons/gay-es-paint-32x32-light-outline.png");
@@ -1244,7 +1249,12 @@ function show_news(){
 	if($news_window){
 		$news_window.close();
 	}
-	$news_window = $ToolWindow().title("Project News");
+	$news_window = $Window({
+		title: "Project News",
+		maximizeButton: false,
+		minimizeButton: false,
+		resizable: false,
+	});
 	$news_window.addClass("news-window squish");
 
 
@@ -1291,7 +1301,7 @@ async function choose_file_to_paste() {
 function paste(img_or_canvas){
 
 	if(img_or_canvas.width > main_canvas.width || img_or_canvas.height > main_canvas.height){
-		const $w = new $FormToolWindow().addClass("dialogue-window");
+		const $w = new $DialogWindow().addClass("dialogue-window");
 		$w.title(localize("Paint"));
 		$w.$main.html(`
 			${localize("The image in the clipboard is larger than the bitmap.")}<br>
@@ -1350,7 +1360,7 @@ function paste(img_or_canvas){
 }
 
 function render_history_as_gif(){
-	const $win = $FormToolWindow();
+	const $win = $DialogWindow();
 	$win.title("Rendering GIF");
 	
 	const $output = $win.$main;
@@ -1645,9 +1655,9 @@ function redo(){
 			$document_history_prompt_window.close();
 		}
 		if (!$document_history_window || $document_history_window.closed) {
-			const $w = $document_history_prompt_window = new $ToolWindow();
+			const $w = $document_history_prompt_window = new $DialogWindow();
 			$w.title("Redo");
-			$w.$content.html("To view all branches of the history tree, click Edit > History.").css({padding: 10});
+			$w.$main.html("To view all branches of the history tree, click Edit > History.").css({padding: 10});
 			// $w.$Button("Show History", show_document_history).css({margin: 10}).focus();
 			// $w.$Button(localize("Cancel"), ()=> { $w.close(); }).css({margin: 10});
 			$w.$Button(localize("OK"), ()=> { $w.close(); }).css({margin: 10});
@@ -1686,9 +1696,13 @@ function show_document_history() {
 	if ($document_history_window) {
 		$document_history_window.close();
 	}
-	const $w = $document_history_window = new $ToolWindow();
+	const $w = $document_history_window = new $Window({
+		title: "Document History",
+		resizable: false,
+		maximizeButton: false,
+		minimizeButton: false,
+	});
 	// $w.prependTo("body").css({position: ""});
-	$w.title("Document History");
 	$w.addClass("history-window squish");
 	$w.$content.html(`
 		<div class="history-view" tabIndex="0"></div>
@@ -2332,7 +2346,7 @@ function image_attributes(){
 	if(image_attributes.$window){
 		image_attributes.$window.close();
 	}
-	const $w = image_attributes.$window = new $FormToolWindow(localize("Attributes"));
+	const $w = image_attributes.$window = new $DialogWindow(localize("Attributes"));
 	$w.addClass("attributes-window");
 
 	const $main = $w.$main;
@@ -2488,7 +2502,7 @@ function image_attributes(){
 }
 
 function show_convert_to_black_and_white() {
-	const $w = new $FormToolWindow("Convert to Black and White");
+	const $w = new $DialogWindow("Convert to Black and White");
 	$w.addClass("convert-to-black-and-white");
 	$w.$main.append("<fieldset><legend>Threshold:</legend><input type='range' min='0' max='1' step='0.01' value='0.5'></fieldset>");
 	const $slider = $w.$main.find("input[type='range']");
@@ -2528,7 +2542,7 @@ function show_convert_to_black_and_white() {
 }
 
 function image_flip_and_rotate(){
-	const $w = new $FormToolWindow(localize("Flip and Rotate"));
+	const $w = new $DialogWindow(localize("Flip and Rotate"));
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
@@ -2675,7 +2689,7 @@ function image_flip_and_rotate(){
 }
 
 function image_stretch_and_skew(){
-	const $w = new $FormToolWindow(localize("Stretch and Skew"));
+	const $w = new $DialogWindow(localize("Stretch and Skew"));
 	$w.addClass("stretch-and-skew");
 
 	const $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
@@ -2776,7 +2790,7 @@ function save_as_prompt({
 	promptForName=true,
 }) {
 	return new Promise((resolve)=> {
-		const $w = new $FormToolWindow(dialogTitle);
+		const $w = new $DialogWindow(dialogTitle);
 		$w.addClass("save-as");
 
 		// @TODO: hotkeys (N, T, S, Enter, Esc)
@@ -3183,7 +3197,7 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 				if (magic_found === magic_wanted) {
 					okay_callback();
 				} else {
-					const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
+					const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
 					// hackily combining messages that are already localized
 					// you have to do some deduction to understand this message
 					$w.$main.html(`
@@ -3208,7 +3222,7 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 }
 
 function show_multi_user_setup_dialog(from_current_document){
-	const $w = $FormToolWindow().title("Multi-User Setup").addClass("dialogue-window");
+	const $w = $DialogWindow().title("Multi-User Setup").addClass("dialogue-window");
 	$w.$main.html(`
 		${from_current_document ? "<p>This will make the current document public.</p>" : ""}
 		<p>

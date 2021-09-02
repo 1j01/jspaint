@@ -19,7 +19,7 @@ html, body, .jspaint {
 }
 
 .window,
-.handle,
+.canvas-area .handle,
 .status-area,
 .menus,
 .component-area,

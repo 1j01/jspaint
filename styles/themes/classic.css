@@ -48,7 +48,7 @@ body,
 	outline: 1px dashed black;
 	box-shadow: 0 0 0 1px white;
 }
-.handle {
+.canvas-area .handle {
 	background: var(--Hilight);
 }
 .useless-handle {

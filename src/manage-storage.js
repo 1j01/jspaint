@@ -11,7 +11,7 @@ function storage_quota_exceeded(){
 	if(ignoring_quota_exceeded){
 		return;
 	}
-	const $w = $FormToolWindow().title("Storage Error").addClass("dialogue-window squish");
+	const $w = $DialogWindow().title("Storage Error").addClass("dialogue-window squish");
 	$w.$main.html(
 		"<p>JS Paint stores images as you work on them so that if you " +
 		"close your browser or tab or reload the page " +
@@ -38,7 +38,7 @@ function manage_storage(){
 	if($storage_manager){
 		$storage_manager.close();
 	}
-	$storage_manager = $FormToolWindow().title("Manage Storage").addClass("storage-manager dialogue-window squish");
+	$storage_manager = $DialogWindow().title("Manage Storage").addClass("storage-manager dialogue-window squish");
 	// @TODO: way to remove all (with confirmation)
 	const $table = $(E("table")).appendTo($storage_manager.$main);
 	const $message = $(E("p")).appendTo($storage_manager.$main).html(

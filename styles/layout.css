@@ -604,7 +604,7 @@ html, body, .jspaint {
 	position: absolute;
 	z-index: 2;
 }
-.handle {
+.canvas-area .handle {
 	position: absolute;
 	width: 3px;
 	height: 3px;

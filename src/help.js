@@ -28,6 +28,7 @@ function open_help_viewer(options){
 	const $help_window = $Window({
 		title: options.title || "Help Topics",
 		icon: "chm",
+		resizable: true,
 	})
 	$help_window.addClass("help-window");
 
@@ -70,7 +71,7 @@ function open_help_viewer(options){
 		$show_button.show();
 		$help_window.width($help_window.width() - toggling_width);
 		$help_window.css("left", $help_window.offset().left + toggling_width);
-		$help_window.bringTitleBarOnScreen();
+		$help_window.bringTitleBarInBounds();
 	});
 	const $show_button = add_toolbar_button("Show", 5, ()=> {
 		$contents.show();
@@ -258,7 +259,7 @@ function open_help_viewer(options){
 	}, (/* error */)=> {
 		// access to error message is not allowed either, basically
 		if (location.protocol === "file:") {
-			const $w = $FormToolWindow().title(localize("Paint")).addClass("dialogue-window");
+			const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
 			$w.$main.html(`
 				<p>${localize("Failed to launch help.")}</p>
 				<p>This feature is not available when running from the <code>file:</code> protocol.</p>
