@@ -10,7 +10,7 @@ So far, it does this pretty well.
 
 ![Screenshot](images/meta/main-screenshot.png)
 
-Ah yes, good old paint. Not the one with the [ribbons][]
+Ah yes, good old MS Paint. Not the one with the [ribbons][]
 or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
 (And not the even newer [Paint 3D][].)
 
