@@ -246,41 +246,7 @@ body,
 }
 
 
-.tool-window {
-	background: var(--ButtonFace);
-	border-top: 1px solid var(--ButtonLight);
-	border-left: 1px solid var(--ButtonLight);
-	border-right: 1px solid var(--WindowFrame);
-	border-bottom: 1px solid var(--WindowFrame);
-	padding: 2px;
-}
-.tool-window:after {
-	content: '';
-	pointer-events: none;
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	border-top: 1px solid var(--ButtonHilight);
-	border-left: 1px solid var(--ButtonHilight);
-	border-right: 1px solid var(--ButtonShadow);
-	border-bottom: 1px solid var(--ButtonShadow);
-}
-.window > * {
-	margin: 1px;
-}
 .tool-window .window-titlebar {
-	background: var(--ActiveTitle); /* fallback to standard color */
-	background: -moz-linear-gradient(left, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%, var(--ActiveTitle)), color-stop(100%, var(--GradientActiveTitle))); /* Chrome, Safari4+ */
-	background: -webkit-linear-gradient(left, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%); /* Chrome10+, Safari5.1+ */
-	background: -o-linear-gradient(left, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%); /* IE10+ */
-	background: linear-gradient(to right, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%); /* W3C */
-
-	color: var(--TitleText);
-	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 	height: 15px;
 }

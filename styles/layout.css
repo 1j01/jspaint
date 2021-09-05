@@ -91,8 +91,7 @@ html, body, .jspaint {
 .window:not(.squish) {
 	white-space: nowrap;
 }
-.component-area,
-.tool-window .window-titlebar {
+.component-area {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -101,9 +100,6 @@ html, body, .jspaint {
 .tool-window .window-titlebar {
 	direction: ltr;
 	text-align: start;
-}
-.tool-window .window-title {
-	pointer-events: none;
 }
 .status-area,
 .component-area {
@@ -275,18 +271,15 @@ html, body, .jspaint {
 	right: 12px;
 }
 
-.eye-gaze-mode .os-window .window-titlebar,
-.eye-gaze-mode .tool-window .window-titlebar {
+.eye-gaze-mode .os-window .window-titlebar {
 	font-size: 2rem;
 	line-height: 1.2;
 	height: 2.8rem;
 }
-.eye-gaze-mode .os-window .window-title-area,
-.eye-gaze-mode .tool-window .window-title-area {
+.eye-gaze-mode .os-window .window-title-area {
 	height: 100%;
 }
-.eye-gaze-mode .os-window .window-titlebar button,
-.eye-gaze-mode .tool-window .window-titlebar button {
+.eye-gaze-mode .os-window .window-titlebar button {
 	transform: scale(3);
 	margin-right: 32px;
 }
@@ -634,18 +627,6 @@ html, body, .jspaint {
 	top: -10px;
 	bottom: -10px;
 	/*background: orange;*/ /* debug */
-}
-
-
-.tool-window .window-title {
-	display: inline-block !important;
-	margin: 0;
-	padding: 0;
-	cursor: default;
-}
-.tool-window .window-close-button {
-	display: block !important;
-	float: right;
 }
 
 .window-content .button-group {
