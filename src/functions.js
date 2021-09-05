@@ -1657,10 +1657,10 @@ function redo(){
 		if (!$document_history_window || $document_history_window.closed) {
 			const $w = $document_history_prompt_window = new $DialogWindow();
 			$w.title("Redo");
-			$w.$main.html("To view all branches of the history tree, click Edit > History.").css({padding: 10});
+			$w.$main.html("To view all branches of the history tree, click <b>Edit > History</b>.").css({padding: 10});
 			// $w.$Button("Show History", show_document_history).css({margin: 10}).focus();
 			// $w.$Button(localize("Cancel"), ()=> { $w.close(); }).css({margin: 10});
-			$w.$Button(localize("OK"), ()=> { $w.close(); }).css({margin: 10});
+			$w.$Button(localize("OK"), ()=> { $w.close(); }).css({margin: 10}).focus();
 			$w.center();
 		}
 		return false;
