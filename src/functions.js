@@ -757,17 +757,10 @@ function load_theme_from_text(fileText) {
 		show_error_message(localize("Paint cannot open this file."));
 		return;
 	}
-	applyCSSProperties(cssProperties);
+	applyCSSProperties(cssProperties, { recurseIntoIframes: true });
 
 	window.themeCSSProperties = cssProperties;
-	$("iframe").each((i, iframe)=> {
-		try {
-			applyCSSProperties(cssProperties, iframe.contentDocument.documentElement);
-		} catch(error) {
-			console.log("error applying theme to iframe", iframe, error);
-		}
-	})
-
+	
 	$G.triggerHandler("theme-load");
 }
 
