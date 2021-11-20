@@ -21,9 +21,11 @@
 .window-content {
 	flex: 1;
 	min-height: 0px;
-	/* We want to allow scrollbars to be enabled easily, but not enable them,
-	and we want to clip to the border of the window, without overlapping it at all.
-	It's already clipped to the outside of .os-window's border, but we want to clip to the inside. */
+	/* Text overflowing the window frame is really ugly!
+	overflow: hidden; would make it harder to enable scrollbars (overflow: auto !important)
+	We want to allow scrollbars to be enabled easily (but not enable them),
+	and we want to clip to the border of the window, without contents overlapping the border at all. */
+	/* @FIXME: this breaks menu bar popup menus! (they get cut off, except for second level ones which are not descendents of the window; another reason to reimplement the menus!) */
     contain: layout paint;
 }
 
@@ -51,14 +53,8 @@ body > .window-titlebar {
 	display: flex;
 	flex: 0 0 auto;
 }
-.menu-container {
-	position: relative;
-}
 .menu-popup {
 	position: absolute;
-	top: 100%;
-	right: 0;
-	z-index: 400000; /* so sub-menu-popups can be visible over the window */
 	box-sizing: border-box;
 }
 .menu-popup-table {

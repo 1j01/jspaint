@@ -123,13 +123,13 @@ button:not(.lightweight).default {
 	-o-border-image: var(--button-default-border-image);
 	   border-image: var(--button-default-border-image);
 }
-button:not(.lightweight):hover:active {
+button:not(.lightweight):enabled:hover:active {
 	-o-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h192v192h-192v-192z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
 	   border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h192v192h-192v-192z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
 	-o-border-image: var(--button-active-border-image);
 	   border-image: var(--button-active-border-image);
 }
-button:not(.lightweight).default:hover:active {
+button:not(.lightweight).default:enabled:hover:active {
 	-o-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h192v192h-192v-192z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%09%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22256%22%20stroke-width%3D%2264%22%20stroke%3D%22%20rgb(0%2C%200%2C%200)%22%20fill%3D%22none%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
 	   border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h192v192h-192v-192z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%09%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22256%22%20stroke-width%3D%2264%22%20stroke%3D%22%20rgb(0%2C%200%2C%200)%22%20fill%3D%22none%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
 	-o-border-image: var(--button-default-active-border-image);
@@ -167,7 +167,7 @@ button.lightweight {
 	border-color: transparent;
 }
 /* TODO: recommend preventing focus on click for lightweight buttons */
-button.lightweight:not([disabled]):hover {
+button.lightweight:enabled:hover {
 	border-style: solid;
 	border-width: 1px;
 	border-color: rgb(255, 255, 255) rgb(128, 128, 128) rgb(128, 128, 128) rgb(255, 255, 255);
@@ -177,7 +177,7 @@ button.lightweight:not([disabled]):hover {
 	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
-button.lightweight:not([disabled]):hover:active {
+button.lightweight:enabled:hover:active {
 	border-style: solid;
 	border-width: 1px;
 	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
@@ -187,14 +187,14 @@ button.lightweight:not([disabled]):hover:active {
 	color: rgb(0, 0, 0);
 	color: var(--ButtonText);
 }
-button[disabled] {
+button:disabled {
 	color: rgb(128, 128, 128);
 	color: var(--GrayText);
 	text-shadow: 1px 1px 0px rgb(255, 255, 255);
 	text-shadow: 1px 1px 0px var(--ButtonHilight);
 }
-/* TODO: [checked]? .pressed? .depressed? .down? .held? what should it be called? */
-button:not(.lightweight).toggle:hover:active {
+/* TODO: [checked]? .pressed? .depressed? .down? .held? .active? what should it be called? */
+button:not(.lightweight).toggle:enabled:hover:active {
 	border-style: solid;
 	border-width: 1px;
 	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
@@ -258,7 +258,12 @@ body > .window-titlebar {
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 }
-.os-window:not(.tool-window) .window-titlebar {
+.os-window.rtl .window-titlebar {
+	background: linear-gradient(to left, rgb(0, 0, 128) 0%, rgb(16, 132, 208) 100%);
+	background: linear-gradient(to left, var(--ActiveTitle) 0%, var(--GradientActiveTitle) 100%);
+}
+.os-window:not(.tool-window) .window-titlebar,
+body > .window-titlebar {
 	font-weight: bold;
 }
 .os-window:not(.focused) .window-titlebar {
@@ -269,6 +274,10 @@ body > .window-titlebar {
 	color: rgb(192, 192, 192);
 
 	color: var(--InactiveTitleText);
+}
+.os-window.rtl:not(.focused) .window-titlebar {
+	background: linear-gradient(to left, rgb(128, 128, 128) 0%, rgb(181, 181, 181) 100%);
+	background: linear-gradient(to left, var(--InactiveTitle) 0%, var(--GradientInactiveTitle) 100%);
 }
 .os-window {
 	/* Needed for when maximized, otherwise would be provided by %outset-deep */
@@ -302,26 +311,53 @@ body > .window-titlebar {
 	border-style: solid;
 	border-width: 2px 2px;
 }
-.os-window > * {
-	/* margin: 1px; */
-}
 .window-button {
 	margin: 2px 0;
+}
+.os-window .window-button:enabled:hover:active {
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
+	border-color: var(--ButtonShadow) var(--ButtonHilight) var(--ButtonHilight) var(--ButtonShadow);
+	background-color: rgb(192, 192, 192);
+	background-color: var(--ButtonFace);
+	color: rgb(0, 0, 0);
+	color: var(--ButtonText);
+	/* as fallback */
+	position: relative;
+	/* for pseudo element(s) */
+	-o-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22%20rgb(255%2C%20255%2C%20255)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22%20rgb(223%2C%20223%2C%20223)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	   border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22%20rgb(255%2C%20255%2C%20255)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22%20rgb(223%2C%20223%2C%20223)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+	-o-border-image: var(--inset-deep-border-image);
+	   border-image: var(--inset-deep-border-image);
+	border-color: rgb(128, 128, 128);
+	border-color: var(--ButtonShadow);
+	border-style: solid;
+	border-width: 2px 2px;
 }
 .window-close-button {
 	margin-left: 2px;
 	margin-right: 2px;
 }
-.tool-window .window-close-button {
-	width: 13px;
+.os-window.tool-window .window-close-button {
+	width: 11px;
 	height: 11px;
-	background-position: 8px 0;
+	background-position: 7px 0;
 }
-.tool-window .window-close-button:hover:active {
-	background-position: 9px 1px;
+.os-window.tool-window .window-close-button:enabled:hover:active {
+	background-position: 8px 1px;
 }
 .os-window .window-title-area {
-	height: 16px; /* 100% doesn't work */
+	height: 16px;
+}
+.os-window.tool-window .window-title-area {
+	height: 14px;
+}
+.os-window .window-titlebar {
+	height: 18px;
+}
+.os-window.tool-window .window-titlebar {
+	height: 15px;
 }
 .os-window .window-title {
 	position: absolute;
@@ -362,23 +398,25 @@ body > .window-titlebar {
 .window-maximize-button {
 	background-position: calc(-1 * 13px - 1px) 0px;
 }
-.maximized .window-maximize-button {
+.maximized .window-maximize-button,
+.minimized-without-taskbar .window-maximize-button {
 	background-position: calc(-2 * 13px - 1px) 0px;
 }
 .window-minimize-button {
 	background-position: calc(-0 * 13px - 1px) 0px;
 }
 
-.window-close-button:hover:active {
+.window-close-button:enabled:hover:active {
 	background-position: calc(-3 * 13px - 0px) 1px;
 }
-.window-maximize-button:hover:active {
+.window-maximize-button:enabled:hover:active {
 	background-position: calc(-1 * 13px - 0px) 1px;
 }
-.maximized .window-maximize-button:hover:active {
+.maximized .window-maximize-button:enabled:hover:active,
+.minimized-without-taskbar .window-maximize-button:enabled:hover:active {
 	background-position: calc(-2 * 13px - 0px) 1px;
 }
-.window-minimize-button:hover:active {
+.window-minimize-button:enabled:hover:active {
 	background-position: calc(-0 * 13px - 0px) 1px;
 }
 
@@ -397,9 +435,6 @@ body > .window-titlebar {
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 }
-.menu-container {
-	margin-bottom: 1px;
-}
 .menu-button {
 	box-sizing: border-box;
 	height: 18px;
@@ -413,7 +448,8 @@ body > .window-titlebar {
 	background: rgb(192, 192, 192);
 	background: var(--Menu);
 }
-.menu-button:hover {
+.menu-button:hover,
+.menu-button:focus {
 	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
@@ -454,12 +490,15 @@ body > .window-titlebar {
 	text-shadow: 0.8px 0.8px 0px rgb(255, 255, 255);
 	text-shadow: 0.8px 0.8px 0px var(--ButtonHilight);
 }
+.menu-item:focus:not([disabled]),
+.menu-item.active:not([disabled]) {
+	color: rgb(255, 255, 255);
+	color: var(--HilightText);
+}
 .menu-item:focus,
 .menu-item.active {
 	background: rgb(0, 0, 128);
 	background: var(--Hilight);
-	color: rgb(255, 255, 255);
-	color: var(--HilightText);
 	text-shadow: none;
 	outline: 0;
 }
