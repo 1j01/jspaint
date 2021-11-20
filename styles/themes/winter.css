@@ -45,18 +45,22 @@
 	}
 	[disabled] .menu-hotkey::after {
 		opacity: 0.7;
+		--is-disabled: 1;
 	}
 	/* This might obscure the purpose of the snowflake indicators, but it's fun. */
+	.menu-button:focus .menu-hotkey::after,
+	.menu-button:hover .menu-hotkey::after,
 	.menu-item:focus .menu-hotkey::after,
 	.menu-item:hover .menu-hotkey::after {
-		animation: rotate 4s linear infinite;
+		animation: rotate-big calc(4s + 6s * var(--is-disabled, 0)) linear infinite;
+		opacity: calc(0.5 - 0.3 * var(--is-disabled, 0));
 	}
-	@keyframes rotate {
+	@keyframes rotate-big {
 		from {
-			transform: rotate(0deg);
+			transform: rotate(0deg) scale(2);
 		}
 		to {
-			transform: rotate(360deg);
+			transform: rotate(360deg) scale(2);
 		}
 	}
 }
