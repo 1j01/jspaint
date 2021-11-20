@@ -15,19 +15,15 @@ function show_help() {
 	});
 }
 
-// awkward shim to interface with my own stupid code
-window.TITLEBAR_ICON_SIZE = 16;
-window.$Icon = (name)=> {
-	return $(`<img src='images/${name}-16x16.png'>`);
-};
-
 // shared code with 98.js.org
-// (copy-pasted for now)
+// (copy-pasted / manually synced for now)
 
 function open_help_viewer(options){
 	const $help_window = $Window({
 		title: options.title || "Help Topics",
-		icon: "chm",
+		icons: {
+			16: "images/chm-16x16.png",
+		},
 		resizable: true,
 	})
 	$help_window.addClass("help-window");
