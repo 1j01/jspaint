@@ -275,6 +275,15 @@ html, body, .jspaint {
 	padding-left: 170px;
 }
 
+.menu-button {
+	/* @TODO: make this part of os-gui */
+	white-space: nowrap;
+}
+.menus {
+	/* @TODO: make this part of os-gui; note that Explorer does overflow differently though */
+	flex-wrap: wrap;
+}
+
 .component-area {
 	/* for measuring offsetTop/offsetLeft of component elements */
 	/* (makes it relative to this element) */
