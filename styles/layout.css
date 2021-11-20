@@ -164,39 +164,6 @@ html, body, .jspaint {
 	color: rgba(255, 0, 255, 0.5) !important;
 }*/
 
-.menu-container {
-	position: relative;
-}
-.menu-popup {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	z-index: 5002; /* 50-5000 reserved for subwindows, which dynamically increase z-index */
-	box-sizing: border-box;
-}
-.menu-popup-table {
-	border-collapse: collapse;
-}
-.menu-item {
-	white-space: nowrap;
-}
-.menu-hr {
-	display: block !important;
-	height: 0;
-	width: auto;
-}
-.menu-hotkey {
-	display: inline !important;
-}
-.menu-item-checkbox-area,
-.menu-item-submenu-area {
-	min-width: 16px;
-}
-.menu-item-checkbox-area,
-.menu-item-submenu-area {
-	text-align: center;
-}
-
 .status-area {
 	overflow: hidden;
 	white-space: nowrap;
