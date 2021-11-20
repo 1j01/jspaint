@@ -717,6 +717,7 @@ html, body, .jspaint {
 	flex: 1;
 	display: flex;
 	flex-flow: row;
+	height: 0; /* fixes an overflow issue with small window height, where the iframe and contents tree would be sized based on the intrinsic height of the contents tree */
 }
 .help-window .toolbar button {
 	width: 55px;
