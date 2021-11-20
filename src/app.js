@@ -599,24 +599,24 @@ $status_text.default();
 let menu_bar_outside_frame = false;
 if(frameElement){
 	try{
-		if(parent.$MenuBar){
-			$MenuBar = parent.$MenuBar;
+		if(parent.MenuBar){
+			MenuBar = parent.MenuBar;
 			menu_bar_outside_frame = true;
 		}
 	// eslint-disable-next-line no-empty
 	}catch(e){}
 }
-const $menu_bar = $MenuBar(menus);
+const menu_bar = MenuBar(menus);
 if(menu_bar_outside_frame){
-	$menu_bar.insertBefore(frameElement);
+	$(menu_bar.element).insertBefore(frameElement);
 }else{
-	$menu_bar.prependTo($V);
+	$(menu_bar.element).prependTo($V);
 }
 
-$menu_bar.on("info", (_event, info) => {
-	$status_text.text(info);
+$(menu_bar.element).on("info", (event) => {
+	$status_text.text(event.detail?.description ?? "");
 });
-$menu_bar.on("default-info", ()=> {
+$(menu_bar.element).on("default-info", ()=> {
 	$status_text.default();
 });
 // </menu bar>

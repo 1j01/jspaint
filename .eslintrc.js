@@ -109,7 +109,7 @@ module.exports = {
 		"$right": "writable",
 		"$toolbox": "writable",
 		"$colorbox": "writable",
-		"$MenuBar": "writable",
+		"MenuBar": "writable",
 		"$ToolBox": "writable",
 		"$ColorBox": "writable",
 		"$Window": "writable",
