@@ -19,9 +19,6 @@
 	font-size: 18px;
 }
 
-.menu-hotkey {
-	/* color: red; */
-}
 @supports (mix-blend-mode: overlay) {
 	.menu-hotkey {
 		text-decoration: none;
@@ -68,5 +65,10 @@
 		to {
 			transform: var(--base-transform) rotate(360deg);
 		}
+	}
+	/* This might clarify the purpose of the indicators, by asserting that "yes, this letter specifically is special" */
+	.menu-button:not([aria-disabled=true]).highlight .menu-hotkey,
+	.menu-item:not([aria-disabled=true]).highlight .menu-hotkey {
+		color: red;
 	}
 }
