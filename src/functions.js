@@ -753,6 +753,10 @@ function apply_file_format_and_palette_info(info) {
 
 function load_theme_from_text(fileText) {
 	var cssProperties = parseThemeFileString(fileText);
+	if (!cssProperties) {
+		show_error_message(localize("Paint cannot open this file."));
+		return;
+	}
 	applyCSSProperties(cssProperties);
 
 	window.themeCSSProperties = cssProperties;
