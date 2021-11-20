@@ -40,8 +40,11 @@
 		overflow: hidden;
 		position: absolute;
 		mix-blend-mode: overlay;
-		left: -0.25em;
+		left: 50%;
 		bottom: 0.1em;
+		transform: translateX(-50%);
+		--base-transform: translateX(-50%);
+		transform-origin: center;
 	}
 	[aria-disabled=true] .menu-hotkey::after {
 		opacity: 0.7;
@@ -55,10 +58,10 @@
 	}
 	@keyframes rotate-big {
 		from {
-			transform: rotate(0deg) scale(2);
+			transform: var(--base-transform) rotate(0deg) scale(2);
 		}
 		to {
-			transform: rotate(360deg) scale(2);
+			transform: var(--base-transform) rotate(360deg) scale(2);
 		}
 	}
 }
