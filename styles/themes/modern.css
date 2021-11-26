@@ -288,6 +288,10 @@ body {
 .status-area {
 	background: #fff;
 }
+.status-field {
+	height: 1.5rem;
+	line-height: 1.5rem;
+}
 .status-text {
 	padding-left: 8px;
 }

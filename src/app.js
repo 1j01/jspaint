@@ -568,9 +568,9 @@ if (get_direction() === "rtl") {
 }
 
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
-const $status_text = $(E("div")).addClass("status-text").appendTo($status_area);
-const $status_position = $(E("div")).addClass("status-coordinates").appendTo($status_area);
-const $status_size = $(E("div")).addClass("status-coordinates").appendTo($status_area);
+const $status_text = $(E("div")).addClass("status-text status-field inset-shallow").appendTo($status_area);
+const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
+const $status_size = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>

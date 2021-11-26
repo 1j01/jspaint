@@ -165,10 +165,10 @@ html, body, .jspaint {
 }*/
 
 .status-area {
+	display: flex;
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: default;
-	height: 1.25em;
 }
 .status-text {
 	flex-basis: auto;
@@ -181,7 +181,6 @@ html, body, .jspaint {
 	flex: 0 0 114px;
 	min-width: 0px;
 	padding-right: 3px;
-	border-right: 1px solid #7b7b7b;
 }
 
 .hover-halo {

@@ -85,14 +85,20 @@ body,
 }
 
 .status-area {
+	gap: 2px;
 	font-family: 'Segoe UI', sans-serif;
 	font-size: 12px;
 	color: var(--ButtonText);
-	padding: 3px 2px;
-	padding-top: 4px;
-	border-top: 1px solid var(--ButtonShadow);
+	padding-top: 2px;
+	border-top: 1px solid var(--ButtonHilight);
 	outline: 1px solid var(--ButtonShadow);
-	outline-offset: 1px;
+	/* outline-offset: 1px; */
+}
+.status-field {
+	height: 21px;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
 }
 
 .text-toolbar-button-group button:not(:first-child) {
