@@ -13,17 +13,24 @@
 	top: -23px;
 	left: -4px;
 	z-index: 10000;
-	opacity: 1;
+	opacity: 0.5;
+	/* opacity: attr(data-reference-opacity); not supported */
 	transition: opacity 0.5s;
 }
+.compare-reference[data-reference-opacity="0"]::after { opacity: 0; }
+.compare-reference[data-reference-opacity="0.1"]::after { opacity: 0.1; }
+.compare-reference[data-reference-opacity="0.2"]::after { opacity: 0.2; }
+.compare-reference[data-reference-opacity="0.3"]::after { opacity: 0.3; }
+.compare-reference[data-reference-opacity="0.4"]::after { opacity: 0.4; }
+.compare-reference[data-reference-opacity="0.5"]::after { opacity: 0.5; }
+.compare-reference[data-reference-opacity="0.6"]::after { opacity: 0.6; }
+.compare-reference[data-reference-opacity="0.7"]::after { opacity: 0.7; }
+.compare-reference[data-reference-opacity="0.8"]::after { opacity: 0.8; }
+.compare-reference[data-reference-opacity="0.9"]::after { opacity: 0.9; }
+.compare-reference[data-reference-opacity="1"]::after { opacity: 1; }
+
 .compare-reference-tool-windows::after {
 	content: url("../../images/mspaint-win98-reference-tool-windows.png");
-}
-.compare-reference:hover::after {
-	opacity: 0.5;
-}
-.compare-reference:active::after {
-	opacity: 0;
 }
 .compare-reference {
 	width: calc(567px - 4px - 4px);

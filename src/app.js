@@ -959,6 +959,28 @@ $G.on("keydown", e => {
 		e.preventDefault();
 	}
 });
+// $G.on("wheel", (e) => {
+addEventListener("wheel", (e) => {
+	if (e.ctrlKey || e.metaKey) {
+		return;
+	}
+	// for reference screenshot mode (development helper):
+	if (location.hash.match(/compare-reference/i)) { // including compare-reference-tool-windows
+		// const delta_opacity = Math.sign(e.originalEvent.deltaY) * -0.1; // since attr() is not supported other than for content, this increment must match CSS
+		const delta_opacity = Math.sign(e.deltaY) * -0.2; // since attr() is not supported other than for content, this increment must match CSS
+		let old_opacity = parseFloat($("body").attr("data-reference-opacity"));
+		if (!isFinite(old_opacity)) {
+			old_opacity = 0.5;
+		}
+		const new_opacity = Math.max(0, Math.min(1, old_opacity + delta_opacity));
+		$("body").attr("data-reference-opacity", new_opacity);
+		// prevent scrolling, keeping the screenshot lined up
+		// e.preventDefault(); // doesn't work
+		// $canvas_area.scrollTop(0); // doesn't work with smooth scrolling
+		// $canvas_area.scrollLeft(0);
+	}
+});
+
 $G.on("cut copy paste", e => {
 	if(e.isDefaultPrevented()){
 		return;
