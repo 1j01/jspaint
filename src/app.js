@@ -785,7 +785,7 @@ $G.on("keydown", e => {
 	if(e.isDefaultPrevented()){
 		return;
 	}
-	if (e.keyCode === 27) { // Esc
+	if (e.key === "Escape") { // Note: Escape handled below too! (after input/textarea return condition)
 		if (textbox && textbox.$editor.is(e.target)) {
 			deselect();
 		}
@@ -793,7 +793,7 @@ $G.on("keydown", e => {
 	if (
 		// Ctrl+Shift+Y
 		(e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey &&
-		String.fromCharCode(e.keyCode).toUpperCase() === "Y"
+		e.key.toUpperCase() === "Y"
 	) {
 		show_document_history();
 		e.preventDefault();
@@ -821,45 +821,45 @@ $G.on("keydown", e => {
 			selection.y += delta_y;
 			selection.position();
 		};
-		switch(e.keyCode){
-			case 37: // Left
+		switch(e.key){
+			case "ArrowLeft":
 				nudge_selection(-1, 0);
 				e.preventDefault();
 				break;
-			case 39: // Right
+			case "ArrowRight":
 				nudge_selection(+1, 0);
 				e.preventDefault();
 				break;
-			case 40: // Down
+			case "ArrowDown":
 				nudge_selection(0, +1);
 				e.preventDefault();
 				break;
-			case 38: // Up
+			case "ArrowUp":
 				nudge_selection(0, -1);
 				e.preventDefault();
 				break;
 		}
 	}
 
-	if(e.keyCode === 27){ //Escape
-		if(selection){
+	if (e.key === "Escape") { // Note: Escape handled above too!
+		if (selection) {
 			deselect();
-		}else{
+		} else {
 			cancel();
 		}
 		window.stopSimulatingGestures && window.stopSimulatingGestures();
 		window.trace_and_sketch_stop && window.trace_and_sketch_stop();
-	}else if(e.keyCode === 13){ //Enter
+	} else if (e.key === "Enter") {
 		if(selection){
 			deselect();
 		}
-	}else if(e.keyCode === 115){ //F4
+	} else if (e.key === "F4") {
 		redo();
-	}else if(e.keyCode === 46){ //Delete
+	} else if (e.key === "Delete") {
 		delete_selection();
-	}else if(e.keyCode === 107 || e.keyCode === 109){ // Numpad Plus and Minus
-		const plus = e.keyCode === 107;
-		const minus = e.keyCode === 109;
+	} else if (e.code === "NumpadAdd" || e.code === "NumpadSubtract") {
+		const plus = e.code === "NumpadAdd";
+		const minus = e.code === "NumpadSubtract";
 		const delta = plus - minus; // const delta = +plus++ -minus--; // Δ = ±±±±
 
 		if(selection){
@@ -895,9 +895,8 @@ $G.on("keydown", e => {
 		e.preventDefault();
 		return;
 	}else if(e.ctrlKey || e.metaKey){
-		const key = String.fromCharCode(e.keyCode).toUpperCase();
 		if(textbox){
-			switch(key){
+			switch(e.key.toUpperCase()){
 				case "A":
 				case "Z":
 				case "Y":
@@ -908,19 +907,21 @@ $G.on("keydown", e => {
 					return;
 			}
 		}
-		switch(e.keyCode){
-			case 188: // , <
-			case 219: // [ {
+		switch (e.key.toUpperCase()) {
+			case ",": // '<' without Shift
+			case "<":
+			case "[":
+			case "{":
 				rotate(-TAU/4);
 				$canvas_area.trigger("resize");
 			break;
-			case 190: // . >
-			case 221: // ] }
+			case ".": // '>' without Shift
+			case ">":
+			case "]":
+			case "}":
 				rotate(+TAU/4);
 				$canvas_area.trigger("resize");
 			break;
-		}
-		switch(key){
 			case "Z":
 				e.shiftKey ? redo() : undo();
 			break;

@@ -208,7 +208,7 @@
 
 	addEventListener("keydown", Konami.code(toggle_vaporwave));
 	addEventListener("keydown", (event)=> {
-		if (event.keyCode === 27) { // Esc
+		if (event.key === "Escape") {
 			stop_vaporwave();
 		}
 	});
