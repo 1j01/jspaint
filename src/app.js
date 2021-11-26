@@ -518,6 +518,39 @@ const update_from_url_params = ()=> {
 	}
 
 	$("body").toggleClass("compare-reference", !!location.hash.match(/compare-reference/i));
+	$("body").toggleClass("compare-reference-tool-windows", !!location.hash.match(/compare-reference-tool-windows/i));
+	setTimeout(() => {
+		if (location.hash.match(/compare-reference/i)) { // including compare-reference-tool-windows
+			select_tool(get_tool_by_id(TOOL_SELECT));
+			const test_canvas_width = 576;
+			const test_canvas_height = 432;
+			if (main_canvas.width !== test_canvas_width || main_canvas.height !== test_canvas_height) {
+				// Unfortunately, right now this can cause a reverse "Save changes?" dialog,
+				// where Discard will restore your drawing, Cancel will discard it, and Save will save a blank canvas,
+				// because the load from storage happens after this resize.
+				// But this is just a helper for development, so it's not a big deal.
+				// are_you_sure here doesn't help, either.
+				// are_you_sure(() => {
+				resize_canvas_without_saving_dimensions(test_canvas_width, test_canvas_height);
+				// });
+			}
+			if (!location.hash.match(/compare-reference-tool-windows/i)) {
+				$toolbox.dock($left);
+				$colorbox.dock($bottom);
+				window.debugKeepMenusOpen = false;
+			}
+		}
+		if (location.hash.match(/compare-reference-tool-windows/i)) {
+			$toolbox.undock_to(84, 35);
+			$colorbox.undock_to(239, 195);
+			window.debugKeepMenusOpen = true;
+			// $(".help-menu-button").click(); // have to trigger pointerdown/up, it doesn't respond to click
+			// $(".help-menu-button").trigger("pointerdown").trigger("pointerup"); // and it doesn't use jQuery
+			$(".help-menu-button")[0].dispatchEvent(new Event("pointerdown"));
+			$(".help-menu-button")[0].dispatchEvent(new Event("pointerup"));
+			$('[aria-label="About Paint"]')[0].dispatchEvent(new Event("pointerenter"));
+		}
+	}, 500);
 };
 update_from_url_params();
 $G.on("hashchange popstate change-url-params", update_from_url_params);

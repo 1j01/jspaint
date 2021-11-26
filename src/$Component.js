@@ -152,6 +152,29 @@ function $Component(title, className, orientation, $el){
 		$last_docked_to = $dock_to;
 		last_docked_to_pos = pos;
 	};
+	const undock_to = (x, y) => {
+		const component_area_el = $c.closest(".component-area")[0];
+		// must get layout state *before* changing it
+		const segments = get_segments(component_area_el, pos_axis, $c[0]);
+		
+		$c.css("position", "relative");
+		$c.css(`margin-${pos_axis}`, "");
+
+		// Put the component in the window
+		$w.$content.append($c);
+		// Show and position the window
+		$w.show();
+		$w.css({
+			left: x,
+			top: y,
+		});
+
+		const total_available_length = pos_axis === "top" ? $(component_area_el).height() : $(component_area_el).width();
+		// console.log("before adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
+		adjust_segments(segments, total_available_length);
+		// console.log("after adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
+		apply_segments(component_area_el, pos_axis, segments);
+	};
 	
 	$w.on("window-drag-start", (e)=> {
 		e.preventDefault();
@@ -337,28 +360,8 @@ function $Component(title, className, orientation, $el){
 		if($dock_to){
 			// Dock component to $dock_to
 			dock_to($dock_to);
-		}else{
-			const component_area_el = $c.closest(".component-area")[0];
-			// must get layout state *before* changing it
-			const segments = get_segments(component_area_el, pos_axis, $c[0]);
-			
-			$c.css("position", "relative");
-			$c.css(`margin-${pos_axis}`, "");
-
-			// Put the component in the window
-			$w.$content.append($c);
-			// Show and position the window
-			$w.show();
-			$w.css({
-				left: e.clientX + ox2,
-				top: e.clientY + oy2,
-			});
-
-			const total_available_length = pos_axis === "top" ? $(component_area_el).height() : $(component_area_el).width();
-			// console.log("before adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
-			adjust_segments(segments, total_available_length);
-			// console.log("after adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
-			apply_segments(component_area_el, pos_axis, segments);
+		} else {
+			undock_to(e.clientX + ox2, e.clientY + oy2);
 		}
 		
 		$ghost && $ghost.remove();
@@ -367,10 +370,11 @@ function $Component(title, className, orientation, $el){
 		$G.trigger("resize");
 	};
 	
-	$c.dock = () => {
-		pos = last_docked_to_pos;
-		dock_to($last_docked_to);
+	$c.dock = ($dock_to) => {
+		pos = last_docked_to_pos ?? 0;
+		dock_to($dock_to ?? $last_docked_to);
 	};
+	$c.undock_to = undock_to;
 	
 	$c.show = () => {
 		$($c[0]).show(); // avoid recursion
