@@ -80,7 +80,7 @@ body,
 .canvas-area .handle {
 	background: var(--Hilight);
 }
-.useless-handle {
+.canvas-area .useless-handle {
 	background: var(--HilightText); /* @TODO: --ButtonHilight? --Window? */
 	box-shadow: 1px 1px 0 var(--Hilight) inset;
 }
