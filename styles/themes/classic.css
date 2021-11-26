@@ -6,6 +6,27 @@
 	--theme-loaded: "classic.css";
 }
 
+/* .compare-reference is added to <body> when "compare-reference" is in the URL hash. */
+.compare-reference::after {
+	content: url("../../images/mspaint-win98-reference.png");
+	position: fixed;
+	top: -23px;
+	left: -4px;
+	z-index: 10000;
+	opacity: 0.5;
+	transition: opacity 0.5s;
+}
+.compare-reference:hover::after {
+	opacity: 1;
+}
+.compare-reference:active::after {
+	opacity: 0;
+}
+.compare-reference {
+	width: calc(567px - 4px - 4px);
+	height: calc(402px - 23px - 4px);
+}
+
 .jspaint {
 	background: var(--ButtonFace);
 }

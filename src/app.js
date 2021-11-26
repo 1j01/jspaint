@@ -516,6 +516,8 @@ const update_from_url_params = ()=> {
 	} else {
 		window.disable_speech_recognition && disable_speech_recognition();
 	}
+
+	$("body").toggleClass("compare-reference", !!location.hash.match(/compare-reference/i));
 };
 update_from_url_params();
 $G.on("hashchange popstate change-url-params", update_from_url_params);
