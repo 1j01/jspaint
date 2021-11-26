@@ -233,20 +233,17 @@
 		}
 		start() {
 			// @TODO: how do you actually detect if it's failing???
-			const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
-			$w.$main.html("<p>The document may not load. Changes may not save.</p>" +
-				"<p>Multiuser sessions are public. There is no security.</p>"
-				// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +
-				// "<p>I haven't found a way to detect Firebase quota limits being exceeded, " +
-				// "so for now I'm showing this message regardless of whether it's working.</p>" +
-				// "<p>If you're interested in using multiuser mode, please thumbs-up " +
-				// "<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a> to show interest, and/or subscribe for updates.</p>"
-			);
-			$w.$main.css({ maxWidth: "500px" });
-			$w.$Button(localize("OK"), () => {
-				$w.close();
-			}).focus();
-			$w.center();
+			showMessageBox({
+				messageHTML: `
+					<p>The document may not load. Changes may not save.</p>
+					<p>Multiuser sessions are public. There is no security.</p>
+				`
+			});
+			// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +
+			// "<p>I haven't found a way to detect Firebase quota limits being exceeded, " +
+			// "so for now I'm showing this message regardless of whether it's working.</p>" +
+			// "<p>If you're interested in using multiuser mode, please thumbs-up " +
+			// "<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a> to show interest, and/or subscribe for updates.</p>"
 			
 			// Wrap the Firebase API because they don't
 			// provide a great way to clean up event listeners

@@ -152,12 +152,12 @@ window.systemHookDefaults = {
 				newFileName = newHandle.name;
 				const newFileExtension = get_file_extension(newFileName);
 				if (!newFileExtension) {
-					show_error_message(`Missing file extension - try adding .${new_format.extensions[0]} to the name.`);
+					show_error_message(`Missing file extension.\n\nTry adding .${new_format.extensions[0]} to the name.`);
 					return;
 				}
 				if (!new_format.extensions.includes(newFileExtension)) {
 					// Closest translation: "Paint cannot save to the same filename with a different file type."
-					show_error_message(`Wrong file extension for selected file type - try adding .${new_format.extensions[0]} to the name.`);
+					show_error_message(`Wrong file extension for selected file type.\n\nTry adding .${new_format.extensions[0]} to the name.`);
 					return;
 				}
 				// const new_format =

@@ -829,35 +829,32 @@ try {
 	// This will be known as the "Y2T bug"
 	confirmed_overwrite = Date.now() >= 2000000000000;
 }
-function confirm_overwrite() {
-	return new Promise((resolve) => {
-		if (confirmed_overwrite) {
-			resolve();
-			return;
-		}
-		const $w = new $DialogWindow().addClass("dialogue-window");
-		$w.title(localize("Paint"));
-		$w.$main.html(`
+async function confirm_overwrite() {
+	if (confirmed_overwrite) {
+		return;
+	}
+	const { $window, promise } = showMessageBox({
+		messageHTML: `
 			<p>JS Paint can now save over existing files.</p>
 			<p>Do you want to overwrite the file?</p>
 			<p>
 				<label><input type='checkbox'/> Don't ask me again</label>
 			</p>
-		`);
-		$w.$Button(localize("OK"), () => {
-			$w.close();
-			confirmed_overwrite = $w.$main.find("input[type='checkbox']").prop("checked");
-			try {
-				localStorage[confirmed_overwrite_key] = confirmed_overwrite;
-			} catch (error) {
-				// no localStorage
-			}
-		}).focus();
-		$w.$Button(localize("Cancel"), () => {
-			$w.close();
-		});
-		$w.center();
+		`,
+		buttons: [
+			{ label: localize("Yes"), value: "overwrite", default: true },
+			{ label: localize("Cancel"), value: "cancel" },
+		],
 	});
+	const result = await promise;
+	if (result === "overwrite") {
+		confirmed_overwrite = $window.$content.find("input[type='checkbox']").prop("checked");
+		try {
+			localStorage[confirmed_overwrite_key] = confirmed_overwrite;
+		} catch (error) {
+			// no localStorage... @TODO: don't show the checkbox in this case
+		}
+	}
 }
 
 
@@ -908,49 +905,62 @@ function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 }
 
 
-function are_you_sure(action, canceled){
-	if(saved){
+function are_you_sure(action, canceled) {
+	if (saved) {
 		action();
-	}else{
-		const $w = new $DialogWindow().addClass("dialogue-window");
-		$w.title(localize("Paint"));
-		$w.$main.text(localize("Save changes to %1?", file_name));
-		$w.$Button(localize("Save"), () => {
-			$w.close();
-			file_save(()=> {
+	} else {
+		showMessageBox({
+			message: localize("Save changes to %1?", file_name),
+			buttons: [
+				{
+					// label: localize("Save"),
+					label: localize("Yes"),
+					value: "save",
+					default: true,
+				},
+				{
+					// label: "Discard",
+					label: localize("No"),
+					value: "discard",
+				},
+				{
+					label: localize("Cancel"),
+					value: "cancel",
+				},
+			],
+		}).then((result) => {
+			if (result === "save") {
+				file_save(() => {
+					action();
+				}, false);
+			} else if (result === "discard") {
 				action();
-			}, false);
-		})[0].focus();
-		$w.$Button("Discard", () => {
-			$w.close();
-			action();
+			} else {
+				canceled?.();
+			}
 		});
-		$w.$Button(localize("Cancel"), () => {
-			$w.close();
-			canceled && canceled();
-		});
-		$w.$x.on("click", () => {
-			canceled && canceled();
-		});
-		$w.center();
 	}
 }
 
 function please_enter_a_number() {
-	const $w = new $DialogWindow("Invalid Value").addClass("dialogue-window");
-	$w.$main.text(localize("Please enter a number."));
-	$w.$Button(localize("OK"), () => {
-		$w.close();
-	}).focus();
+	showMessageBox({
+		// title: "Invalid Value",
+		message: localize("Please enter a number."),
+	});
 }
 
-function show_error_message(message, error){
-	const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window squish");
-	$w.$main.text(message);
-	$w.$main.css("max-width", "600px");
+function show_error_message(message, error) {
+	const { $message } = showMessageBox({
+		iconID: "error",
+		message,
+		// windowOptions: {
+		// 	innerWidth: 600,
+		// },
+	});
+	// $message.css("max-width", "600px");
 	if(error){
 		const $details = $("<details><summary><span>Details</span></summary></details>")
-		.appendTo($w.$main);
+		.appendTo($message);
 
 		// Chrome includes the error message in the error.stack string, whereas Firefox doesn't.
 		// Also note that there can be Exception objects that don't have a message (empty string) but a name,
@@ -979,25 +989,21 @@ function show_error_message(message, error){
 			overflow: "auto",
 		});
 	}
-	$w.$Button(localize("OK"), () => {
-		$w.close();
-	}).focus();
-	$w.center();
 	if (error) {
-		window.console && console.error(message, error);
+		window.console?.error?.(message, error);
 	} else {
-		window.console && console.error(message);
+		window.console?.error?.(message);
 	}
 }
 
 // @TODO: close are_you_sure windows and these Error windows when switching sessions
 // because it can get pretty confusing
 function show_resource_load_error_message(error){
-	const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
+	const { $window, $message } = showMessageBox({});
 	const firefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 	// @TODO: copy & paste vs download & open, more specific guidance
 	if (error.code === "cross-origin-blob-uri") {
-		$w.$main.html(`
+		$message.html(`
 			<p>Can't load image from address starting with "blob:".</p>
 			${
 				firefox ?
@@ -1006,47 +1012,43 @@ function show_resource_load_error_message(error){
 			}
 		`);
 	} else if (error.code === "html-not-image") {
-		$w.$main.html(`
+		$message.html(`
 			<p>Address points to a web page, not an image file.</p>
 			<p>Try copying and pasting an image instead of a URL.</p>
 		`);
 	} else if (error.code === "decoding-failure") {
-		$w.$main.html(`
+		$message.html(`
 			<p>Address doesn't point to an image file of a supported format.</p>
 			<p>Try copying and pasting an image instead of a URL.</p>
 		`);
 	} else if (error.code === "access-failure") {
 		if (navigator.onLine) {
-			$w.$main.html(`
+			$message.html(`
 				<p>Failed to download image.</p>
 				<p>Try copying and pasting an image instead of a URL.</p>
 			`);
 			if (error.fails) {
 				$("<ul>").append(error.fails.map(({status, statusText, url})=>
 					$("<li>").text(url).prepend($("<b>").text(`${status || ""} ${statusText || "Failed"} `))
-				)).appendTo($w.$main);
+				)).appendTo($message);
 			}
 		} else {
-			$w.$main.html(`
+			$message.html(`
 				<p>Failed to download image.</p>
 				<p>You're offline. Connect to the internet and try again.</p>
 				<p>Or copy and paste an image instead of a URL, if possible.</p>
 			`);
 		}
 	} else {
-		$w.$main.html(`
+		$message.html(`
 			<p>Failed to load image from URL.</p>
 			<p>Check your browser's devtools for details.</p>
 		`);
 	}
-	$w.$main.css({maxWidth: "500px"});
-	$w.$Button(localize("OK"), () => {
-		$w.close();
-	}).focus();
-	$w.center();
+	$message.css({ maxWidth: "500px" });
+	$window.center(); // after adding content
 }
 function show_file_format_errors({ as_image_error, as_palette_error }) {
-	const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
 	let html = `
 		<p>${localize("Paint cannot open this file.")}</p>
 	`;
@@ -1096,10 +1098,9 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 			</details>
 		`;
 	}
-	$w.$main.html(html);
-	$w.$Button(localize("OK"), () => {
-		$w.close();
-	}).focus();
+	showMessageBox({
+		messageHTML: html,
+	});
 }
 function show_read_image_file_error(error) {
 	// @TODO: similar friendly messages to show_resource_load_error_message,
@@ -1300,34 +1301,50 @@ async function choose_file_to_paste() {
 function paste(img_or_canvas){
 
 	if(img_or_canvas.width > main_canvas.width || img_or_canvas.height > main_canvas.height){
-		const $w = new $DialogWindow().addClass("dialogue-window");
-		$w.title(localize("Paint"));
-		$w.$main.html(`
-			${localize("The image in the clipboard is larger than the bitmap.")}<br>
-			${localize("Would you like the bitmap enlarged?")}<br>
-		`);
-		$w.$Button("Enlarge", () => {
-			$w.close();
-			// The resize gets its own undoable, as in mspaint
-			resize_canvas_and_save_dimensions(
-				Math.max(main_canvas.width, img_or_canvas.width),
-				Math.max(main_canvas.height, img_or_canvas.height),
+		showMessageBox({
+			message: localize("The image in the clipboard is larger than the bitmap.") + "\n" +
+				localize("Would you like the bitmap enlarged?"),
+			iconID: "question",
+			windowOptions: {
+				icons: {
+					16: "images/windows-16x16.png",
+					32: "images/windows-32x32.png",
+				},
+			},
+			buttons: [
 				{
-					name: "Enlarge Canvas For Paste",
-					icon: get_help_folder_icon("p_stretch_both.png"),
-				}
-			);
-			do_the_paste();
-			$canvas_area.trigger("resize");
-		})[0].focus();
-		$w.$Button("Crop", () => {
-			$w.close();
-			do_the_paste();
+					// label: "Enlarge",
+					label: localize("Yes"),
+					value: "enlarge",
+					default: true,
+				},
+				{
+					// label: "Crop",
+					label: localize("No"),
+					value: "crop",
+				},
+				{
+					label: localize("Cancel"),
+					value: "cancel",
+				},
+			],
+		}).then((result) => {
+			if (result === "enlarge") {
+				// The resize gets its own undoable, as in mspaint
+				resize_canvas_and_save_dimensions(
+					Math.max(main_canvas.width, img_or_canvas.width),
+					Math.max(main_canvas.height, img_or_canvas.height),
+					{
+						name: "Enlarge Canvas For Paste",
+						icon: get_help_folder_icon("p_stretch_both.png"),
+					}
+				);
+				do_the_paste();
+				$canvas_area.trigger("resize");
+			} else if (result === "crop") {
+				do_the_paste();
+			}
 		});
-		$w.$Button(localize("Cancel"), () => {
-			$w.close();
-		});
-		$w.center();
 	}else{
 		do_the_paste();
 	}
@@ -1647,6 +1664,7 @@ function undo(){
 	return true;
 }
 
+// @TODO: use Clippy.js instead for potentially annoying tips
 let $document_history_prompt_window;
 function redo(){
 	if(redos.length<1){
@@ -1654,13 +1672,11 @@ function redo(){
 			$document_history_prompt_window.close();
 		}
 		if (!$document_history_window || $document_history_window.closed) {
-			const $w = $document_history_prompt_window = new $DialogWindow();
-			$w.title("Redo");
-			$w.$main.html("To view all branches of the history tree, click <b>Edit > History</b>.").css({padding: 10});
-			// $w.$Button("Show History", show_document_history).css({margin: 10}).focus();
-			// $w.$Button(localize("Cancel"), ()=> { $w.close(); }).css({margin: 10});
-			$w.$Button(localize("OK"), ()=> { $w.close(); }).css({margin: 10}).focus();
-			$w.center();
+			$document_history_prompt_window = showMessageBox({
+				title: "Redo",
+				messageHTML: `To view all branches of the history tree, click <b>Edit > History</b>.`,
+				iconID: "info",
+			}).$window;
 		}
 		return false;
 	}
@@ -3196,18 +3212,16 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 				if (magic_found === magic_wanted) {
 					okay_callback();
 				} else {
-					const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
-					// hackily combining messages that are already localized
-					// you have to do some deduction to understand this message
-					$w.$main.html(`
-						<p>${localize("Unexpected file format.")}</p>
-						<p>${localize("An unsupported operation was attempted.")}</p>
-					`);
-					$w.$main.css({maxWidth: "500px"});
-					$w.$Button(localize("OK"), () => {
-						$w.close();
-					}).focus();
-					$w.center();
+					showMessageBox({
+						// hackily combining messages that are already localized, in ways they were not meant to be used.
+						// you may have to do some deduction to understand this message.
+						// messageHTML: `
+						// 	<p>${localize("Unexpected file format.")}</p>
+						// 	<p>${localize("An unsupported operation was attempted.")}</p>
+						// `,
+						message: "Your browser does not support writing images in this file format.",
+						iconID: "error",
+					});
 				}
 			}, (error)=> {
 				show_error_message(localize("An unknown error has occurred."), error);

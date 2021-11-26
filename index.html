@@ -396,13 +396,14 @@
 		<script src="lib/imagetracer_v1.2.5.js"></script>
 
 		<script src="src/app-localization.js"></script> <!-- must not be async/deferred, as it uses document.write(); and must come before other app code which uses localization functions -->
+		<script src="src/msgbox.js"></script>
 		<script src="src/functions.js"></script>
 		<script src="src/helpers.js"></script>
 		<script src="src/storage.js"></script>
 		<script src="src/$Component.js"></script>
 		<script src="src/$ToolWindow.js"></script>
 		<script>
-			// after show_error_message, $DialogWindow, and localize are defined,
+			// after show_error_message, showMessageBox, and localize are defined,
 			// set up better global error handling
 			const old_onerror = window.onerror;
 			window.onerror = (message, source, lineno, colno, error)=> {

@@ -188,7 +188,7 @@ Functionality:
 
 * JS
 	* Organize things into files better; "functions.js" is like ONE step above saying "code.js"
-	* `$ToolWindow` has a `$Button` facility; `$DialogWindow` overrides it with essentially a better one
+	* `$ToolWindow` has a `$Button` facility; `$DialogWindow` overrides it with essentially a better one; now there's `showMessageBox` too! and `$ToolWindow` is a wrapper for OS-GUI's `$Window`, and should be removed at some point; btw, should `show_error_message` functionality be folded into `showMessageBox`?
 	* Make code clearer / improve code quality
 		* https://codeclimate.com/github/1j01/jspaint
 

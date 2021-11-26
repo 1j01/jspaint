@@ -255,17 +255,19 @@ function open_help_viewer(options){
 	}, (/* error */)=> {
 		// access to error message is not allowed either, basically
 		if (location.protocol === "file:") {
-			const $w = $DialogWindow().title(localize("Paint")).addClass("dialogue-window");
-			$w.$main.html(`
-				<p>${localize("Failed to launch help.")}</p>
-				<p>This feature is not available when running from the <code>file:</code> protocol.</p>
-				<p>To use this feature, start a web server. If you have Python, you can use <code>python -m SimpleHTTPServer</code></p>
-			`);
-			$w.$main.css({maxWidth: "500px"});
-			$w.$Button(localize("OK"), () => {
-				$w.close();
-			}).focus();
-			$w.center();
+			showMessageBox({
+				// <p>${localize("Failed to launch help.")}</p>
+				// but it's already launched at this point
+
+				// what's a good tutorial for starting a web server?
+				// https://gist.github.com/willurd/5720255 - impressive list, but not a tutorial
+				// https://attacomsian.com/blog/local-web-server - OK, good enough
+				messageHTML: `
+					<p>Help is not available when running from the <code>file:</code> protocol.</p>
+					<p>To use this feature, <a href="https://attacomsian.com/blog/local-web-server">start a web server</a>.</p>
+				`,
+				iconID: "error",
+			});
 		} else {
 			show_error_message(`${localize("Failed to launch help.")} ${localize("Access to %1 was denied.", options.contentsFile)}`);
 		}

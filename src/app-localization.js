@@ -1088,24 +1088,27 @@ function loaded_localizations(language, mapping) {
 	current_language = language;
 }
 function set_language(language) {
-	const $w = $DialogWindow().title("Reload Required").addClass("dialogue-window");
-	$w.$main.text("The application needs to reload to change the language.");
-	$w.$main.css("max-width", "600px");
-	$w.$Button(localize("OK"), () => {
-		$w.close();
-		are_you_sure(() => {
-			try {
-				localStorage[language_storage_key] = language;
-				location.reload();
-			} catch(error) {
-				show_error_message("Failed to store language preference. Make sure cookies / local storage is enabled in your browser settings.", error);
-			}
-		});
-	}).focus();
-	$w.$Button(localize("Cancel"), () => {
-		$w.close();
+	showMessageBox({
+		title: "Reload Required",
+		message: "The application needs to reload to change the language.",
+		buttons: [
+			{ label: localize("OK"), value: "reload", default: true },
+			{ label: localize("Cancel"), value: "cancel" },
+		],
+		windowOptions: {
+			innerWidth: 450,
+		},
+	}).then((result) => {
+		if (result === "reload") {
+			are_you_sure(() => {
+				try {
+					localStorage[language_storage_key] = language;
+					location.reload();
+				} catch (error) {
+					show_error_message("Failed to store language preference. Make sure cookies / local storage is enabled in your browser settings.", error);
+				}
+			});
+		}
 	});
-	$w.center();
-	// load_language(language);
 }
 load_language(current_language);
