@@ -34,9 +34,6 @@ body,
 .canvas-area {
 	background: var(--AppWorkspace);
 }
-.canvas-area {
-	border: 1px inset;
-}
 .canvas-area > canvas {
 	background: var(--checker);
 	/* 16px is a common grid size, but that gives 8px grid cells, and our max zoom is 8x */
@@ -90,9 +87,6 @@ body,
 	font-size: 12px;
 	color: var(--ButtonText);
 	padding-top: 2px;
-	border-top: 1px solid var(--ButtonHilight);
-	outline: 1px solid var(--ButtonShadow);
-	/* outline-offset: 1px; */
 }
 .status-field {
 	height: 21px;
@@ -242,6 +236,29 @@ body,
 	border-bottom: 1px solid var(--ButtonHilight);
 }
 
+.vertical > .component-area::before,
+.vertical > .component-area::after {
+	position: absolute;
+	left: 0;
+	right: 0;
+	border-top: 1px solid var(--ButtonShadow);
+	border-bottom: 1px solid var(--ButtonHilight);
+	z-index: 0;
+}
+.vertical > .component-area::before {
+	content: '';
+	top: -2px;
+}
+.vertical > .component-area:not(:empty)::after {
+	content: '';
+	bottom: 0;
+}
+.vertical > .top.component-area::before {
+	top: -1px; /* hm, this is a one pixel change, and the tool buttons are supposed to be tucked in by 1px... may be related? */
+}
+.canvas-area {
+	z-index: 1;
+}
 
 .component-ghost.dock {
 	/* this isn't quite the right inversion effect, but I think it's the best I can do;

@@ -537,7 +537,7 @@ const $app = $(E("div")).addClass("jspaint").appendTo("body");
 const $V = $(E("div")).addClass("vertical").appendTo($app);
 const $H = $(E("div")).addClass("horizontal").appendTo($V);
 
-const $canvas_area = $(E("div")).addClass("canvas-area").appendTo($H);
+const $canvas_area = $(E("div")).addClass("canvas-area inset-deep").appendTo($H);
 
 const $canvas = $(main_canvas).appendTo($canvas_area);
 $canvas.css("touch-action", "none");
@@ -557,10 +557,10 @@ const $canvas_handles = $Handles($canvas_area, $canvas_area, {
 $canvas_handles.hide = ()=> { $canvas_handles.css({opacity: 0, pointerEvents: "none"}); };
 $canvas_handles.show = ()=> { $canvas_handles.css({opacity: "", pointerEvents: ""}); };
 
-const $top = $(E("div")).addClass("component-area").prependTo($V);
-const $bottom = $(E("div")).addClass("component-area").appendTo($V);
-const $left = $(E("div")).addClass("component-area").prependTo($H);
-const $right = $(E("div")).addClass("component-area").appendTo($H);
+const $top = $(E("div")).addClass("component-area top").prependTo($V);
+const $bottom = $(E("div")).addClass("component-area bottom").appendTo($V);
+const $left = $(E("div")).addClass("component-area left").prependTo($H);
+const $right = $(E("div")).addClass("component-area right").appendTo($H);
 // there's also probably a CSS solution alternative to this
 if (get_direction() === "rtl") {
 	$left.appendTo($H);
