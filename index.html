@@ -403,8 +403,12 @@
 		<script src="src/$Component.js"></script>
 		<script src="src/$ToolWindow.js"></script>
 		<script>
-			// after show_error_message, showMessageBox, and localize are defined,
-			// set up better global error handling
+			// After show_error_message, showMessageBox, make_window_supporting_scale, and localize are defined,
+			// set up better global error handling.
+			// Note that this can't simply be merged with the other onerror handler with a try/catch,
+			// because showMessageBox is async, and could throw an error before dependencies are met (or if there was an error in the error handling),
+			// and try doesn't catch errors in async code. It would need to be awaited.
+			// And making show_error_message return a promise might cause subtle problems due to the pattern of `return show_error_message()`.
 			const old_onerror = window.onerror;
 			window.onerror = (message, source, lineno, colno, error)=> {
 				try {

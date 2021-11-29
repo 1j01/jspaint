@@ -100,6 +100,10 @@ window.showMessageBox = window.showMessageBox || (({
 	return promise;
 });
 
-window.alert = (message) => {
-	showMessageBox({ message });
-};
+// Don't override alert, because I only use it as a fallback for global error handling.
+// If make_window_supporting_scale is not defined, then alert is used instead,
+// so it must not also end up calling make_window_supporting_scale.
+// More generally, if there's an error in showMessageBox, it must fall back to something that does not use showMessageBox.
+// window.alert = (message) => {
+// 	showMessageBox({ message });
+// };
