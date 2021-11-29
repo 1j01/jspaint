@@ -1102,11 +1102,6 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 		messageHTML: html,
 	});
 }
-function show_read_image_file_error(error) {
-	// @TODO: similar friendly messages to show_resource_load_error_message,
-	// but not specific to the case of loading from a web address.
-	show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."), error);
-}
 
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
