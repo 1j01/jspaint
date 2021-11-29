@@ -72,9 +72,16 @@ function manage_storage(){
 	
 	let localStorageAvailable = false;
 	try {
-		localStorage._available = true;
-		localStorageAvailable = localStorage._available;
-		delete localStorage._available;
+		if (localStorage.length > 0) {
+			// This is needed in case it's COMPLETELY full.
+			// Test with https://stackoverflow.com/questions/45760110/how-to-fill-javascript-localstorage-to-its-max-capacity-quickly
+			// Of course, this dialog only manages images, not other data (for now anyway).
+			localStorageAvailable = true;
+		} else {
+			localStorage._available = true;
+			localStorageAvailable = localStorage._available;
+			delete localStorage._available;
+		}
 	// eslint-disable-next-line no-empty
 	} catch (e) {}
 
