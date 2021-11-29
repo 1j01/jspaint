@@ -1161,7 +1161,9 @@ function show_about_paint(){
 
 	$("#refresh-to-update").on("click", (event)=> {
 		event.preventDefault();
-		location.reload();
+		are_you_sure(() => {
+			location.reload();
+		});
 	});
 	
 	$("#view-project-news").on("click", () => {
