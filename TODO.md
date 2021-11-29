@@ -3,7 +3,6 @@
 
 ### Help
 
-* Resizable window
 * Link-esque things
 	* Popups (I'd probably make the text within the popups selectable)
 	* Related topics (I'd probably make this a heading with links instead of the weird context menu thing)
@@ -23,21 +22,8 @@
 
 ### Visual
 
-* Warning sign for "Save changes to X?" dialog
-* Error symbol for error message dialogs
-* Menu separator spacing
-* I want to give most things a revisit later on for Pixel Perfection
 * Fill bucket and airbrush cursors are supposed to invert the background in parts
 * Custom cursors in Edge; apparently they require `.cur` files? ugh
-* The canvas-area's border is different in Firefox and Edge from Chrome
-
-
-### Menus
-
-* Bug on mobile: If you click on a menu item (up/down) and then move over to a menu item and click (up/down) it does nothing (and you can repeat this)
-* Keyboard navigation of submenus
-* <kbd>Alt</kbd> (by itself)?
-
 
 ### Extended editing
 
