@@ -7,6 +7,18 @@
 }
 
 /* Advent calendar-style tool buttons that flip to reveal thematic pixel art for each tool */
+/* .tool-icon::before is a flap, and .tool-icon::after is an icon visible on the front of the flap, showing the classic theme's icons for usability */
+/* The .tool-icon is used to show the revealed thematic icon. */
+.tool-icon,
+.tool-icon.use-svg { /* specificity needed for overriding classic theme; SVG is not supported yet for this theme */
+	background-image: url("../../images/winter/tools.png");
+	background-repeat: no-repeat;
+	background-position: calc(-16px * var(--icon-index)) 0;
+}
+/* .tool-icon.use-svg {
+	background-image: url("../../images/winter/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+} */
 .tool-icon::before,
 .tool-icon::after {
 	content: " ";
@@ -22,7 +34,7 @@
 	border-right: var(--border-width) solid var(--ButtonShadow);
 	border-bottom: var(--border-width) solid var(--ButtonShadow);
 	--transition-duration: 0.2s;
-	transition: transform var(--transition-duration) ease-in-out, background-position var(--transition-duration) ease-in-out;
+	transition: transform var(--transition-duration) ease-in-out;
 	transform-origin: left;
 	--side: -1;
 }
@@ -30,16 +42,21 @@
 	z-index: 3;
 	background-image: url("../../images/classic/tools.png");
 	background-repeat: no-repeat;
-	background-size: inherit;
-	background-position: inherit;
+	background-position: calc(-16px * var(--icon-index)) 0;
 	backface-visibility: hidden;
 }
+.tool-icon.use-svg::after {
+	background-image: url("../../images/classic/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+}
+
 .tool .tool-icon::before {
 	border-width: 1px;
 	background: linear-gradient(var(--gradient-direction), var(--ButtonFace), var(--ButtonShadow) 190%);
 	background-position: 20px 0; /* starting gradient not visible */
 	background-repeat: no-repeat; /* mustn't wrap to be invisible */
 	background-color: var(--ButtonFace);
+	transition: transform var(--transition-duration) ease-in-out, background-position var(--transition-duration) ease-in-out;
 	z-index: 2;
 	--gradient-direction: to left;
 }
@@ -61,6 +78,7 @@
 	background-position: -20px 0; /* opposite for transition to work right */
 }
 
+/* Fancy cursive menus */
 .menus * {
 	font-family: 'Princess Sofia', cursive;
 	font-size: 20px;
@@ -74,6 +92,7 @@
 	font-size: 18px;
 }
 
+/* Fanciful snow flakes for hotkey highlighting */
 @supports (mix-blend-mode: overlay) {
 	.menu-hotkey {
 		text-decoration: none;

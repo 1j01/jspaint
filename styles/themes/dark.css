@@ -4,3 +4,13 @@
 :root {
 	--theme-loaded: "dark.css";
 }
+
+.tool-icon {
+	background-image: url("../../images/dark/tools.png");
+	background-repeat: no-repeat;
+	background-position: calc(-16px * var(--icon-index)) 0; /* same as classic theme, but couldn't hurt */
+}
+.tool-icon.use-svg {
+	background-image: url("../../images/dark/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px; /* same as classic theme, but couldn't hurt */
+}

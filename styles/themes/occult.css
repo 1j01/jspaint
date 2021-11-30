@@ -4,3 +4,18 @@
 :root {
 	--theme-loaded: "occult.css";
 }
+
+.tool-icon,
+.tool-icon.use-svg { /* specificity needed for overriding classic theme; SVG is not supported yet for this theme */
+	background-image: url("../../images/occult/tools.png");
+	background-repeat: no-repeat;
+	background-position: calc(-16px * var(--icon-index)) 0;
+}
+/* .tool-icon.use-svg {
+	background-image: url("../../images/occult/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+} */
+.eye-gaze-mode .tool-icon.use-svg {
+	background-image: url("../../images/dark/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+}

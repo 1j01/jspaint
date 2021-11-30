@@ -173,6 +173,15 @@ body,
 .current-colors {
 	background: var(--checker);
 }
+.tool-icon {
+	background-image: url("../../images/classic/tools.png");
+	background-repeat: no-repeat;
+	background-position: calc(-16px * var(--icon-index)) 0;
+}
+.tool-icon.use-svg {
+	background-image: url("../../images/classic/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+}
 
 .tools {
 	height: 200px;
