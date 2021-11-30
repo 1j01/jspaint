@@ -38,7 +38,7 @@
 	border-left: 1px solid var(--ButtonHilight);
 	border-right: 1px solid var(--ButtonShadow);
 	border-bottom: 1px solid var(--ButtonShadow);
-	background: linear-gradient(var(--gradient-direction), var(--ButtonFace), var(--ButtonShadow) 130%);
+	background: linear-gradient(var(--gradient-direction), var(--ButtonFace), var(--ButtonShadow) 190%);
 	background-position: 20px 0; /* starting gradient not visible */
 	background-repeat: no-repeat; /* mustn't wrap to be invisible */
 	background-color: var(--ButtonFace);
@@ -47,7 +47,7 @@
 }
 .tool.selected .tool-icon::before,
 .tool.selected .tool-icon::after {
-	transform: rotateY(calc(130deg * var(--side))) skewY(calc(20deg * var(--side)));
+	transform: rotateY(calc(120deg * var(--side))) skewY(calc(-20deg * var(--side)));
 }
 .tool.selected .tool-icon::before {
 	background-position: 0% 0% !important; /* !important to override .tool:nth-child(2n+1) .tool-icon::before */
