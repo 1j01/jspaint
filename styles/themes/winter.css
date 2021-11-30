@@ -21,7 +21,7 @@
 	border-right: var(--border-width) solid var(--ButtonShadow);
 	border-bottom: var(--border-width) solid var(--ButtonShadow);
 	--transition-duration: 0.2s;
-	transition: transform var(--transition-duration) ease-in-out;
+	transition: transform var(--transition-duration) ease-in-out, background-position var(--transition-duration) ease-in-out;
 	transform-origin: left;
 	--side: -1;
 }
@@ -38,17 +38,26 @@
 	border-left: 1px solid var(--ButtonHilight);
 	border-right: 1px solid var(--ButtonShadow);
 	border-bottom: 1px solid var(--ButtonShadow);
+	background: linear-gradient(var(--gradient-direction), var(--ButtonFace), 40%, var(--ButtonShadow));
+	background-position: 20px 0; /* starting gradient not visible */
+	background-repeat: no-repeat; /* mustn't wrap to be invisible */
 	background-color: var(--ButtonFace);
 	z-index: 2;
+	--gradient-direction: to left;
 }
 .tool.selected .tool-icon::before,
 .tool.selected .tool-icon::after {
 	transform: rotateY(calc(130deg * var(--side))) skewY(calc(20deg * var(--side)));
 }
+.tool.selected .tool-icon::before {
+	background-position: 0% 0%;
+}
+
 .tool:nth-child(2n) .tool-icon::before,
 .tool:nth-child(2n) .tool-icon::after {
 	--side: 1;
 	transform-origin: right;
+	--gradient-direction: to right;
 }
 
 
