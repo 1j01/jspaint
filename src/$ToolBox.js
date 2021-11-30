@@ -17,7 +17,7 @@ function $ToolBox(tools, is_extras){
 		
 		$b.attr("title", tool.name);
 		
-		const $icon = $(E("span"));
+		const $icon = $(E("span")).addClass("tool-icon");
 		$icon.appendTo($b);
 		const update_css = ()=> {
 			const theme_folder = `images/${get_theme().replace(/\.css/i, "")}`;
