@@ -7,21 +7,15 @@
 }
 
 /* Advent calendar-style tool buttons that flip to reveal thematic pixel art for each tool */
+.tool-icon::before,
 .tool-icon::after {
 	content: " ";
 	position: absolute;
-	z-index: 3;
 	--border-width: 3px;
 	top: calc(-1 * var(--border-width));
 	left: calc(-1 * var(--border-width));
 	right: calc(-1 * var(--border-width));
 	bottom: calc(-1 * var(--border-width));
-	/* --bg-image: url("../../images/classic/tools.png"); not using a CSS var because it makes it re-request the image every time (with a dev server) and flicker */
-	background-image: url("../../images/classic/tools.png");
-	background-repeat: no-repeat;
-	background-size: inherit;
-	background-position: inherit;
-	background-color: var(--ButtonFace);
 	border-top: var(--border-width) solid var(--ButtonHilight);
 	border-left: var(--border-width) solid var(--ButtonHilight);
 	border-right: var(--border-width) solid var(--ButtonShadow);
@@ -30,40 +24,31 @@
 	transition: transform var(--transition-duration) ease-in-out;
 	transform-origin: left;
 	--side: -1;
-	/* backface-visibility: hidden; nah, I want just the background image to disappear */
-	animation: to-front-side var(--transition-duration) steps(1);
-	animation-fill-mode: forwards;
 }
+.tool-icon::after {
+	z-index: 3;
+	background-image: url("../../images/classic/tools.png");
+	background-repeat: no-repeat;
+	background-size: inherit;
+	background-position: inherit;
+	backface-visibility: hidden;
+}
+.tool .tool-icon::before {
+	border-top: 1px solid var(--ButtonHilight);
+	border-left: 1px solid var(--ButtonHilight);
+	border-right: 1px solid var(--ButtonShadow);
+	border-bottom: 1px solid var(--ButtonShadow);
+	background-color: var(--ButtonFace);
+	z-index: 2;
+}
+.tool.selected .tool-icon::before,
 .tool.selected .tool-icon::after {
 	transform: rotateY(calc(130deg * var(--side))) skewY(calc(20deg * var(--side)));
-	animation: to-back-side var(--transition-duration) steps(1);
-	animation-fill-mode: forwards;
 }
+.tool:nth-child(2n) .tool-icon::before,
 .tool:nth-child(2n) .tool-icon::after {
 	--side: 1;
 	transform-origin: right;
-}
-@keyframes to-back-side {
-	from {
-		background-image: url("../../images/classic/tools.png");
-	}
-	60% {
-		background-image: none;
-	}
-	to {
-		background-image: none;
-	}
-}
-@keyframes to-front-side {
-	from {
-		background-image: none;
-	}
-	40% {
-		background-image: url("../../images/classic/tools.png");
-	}
-	to {
-		background-image: url("../../images/classic/tools.png");
-	}
 }
 
 
