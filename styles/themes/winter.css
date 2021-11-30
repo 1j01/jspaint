@@ -38,7 +38,7 @@
 	border-left: 1px solid var(--ButtonHilight);
 	border-right: 1px solid var(--ButtonShadow);
 	border-bottom: 1px solid var(--ButtonShadow);
-	background: linear-gradient(var(--gradient-direction), var(--ButtonFace), 40%, var(--ButtonShadow));
+	background: linear-gradient(var(--gradient-direction), var(--ButtonFace), var(--ButtonShadow) 130%);
 	background-position: 20px 0; /* starting gradient not visible */
 	background-repeat: no-repeat; /* mustn't wrap to be invisible */
 	background-color: var(--ButtonFace);
