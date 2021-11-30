@@ -1890,7 +1890,7 @@ async function init_eye_gaze_mode() {
 	raf_id = requestAnimationFrame(animate);
 
 	const $floating_buttons =
-		$("<div/>")
+		$("<div class='eye-gaze-mode-floating-buttons'/>")
 		.appendTo("body")
 		.css({
 			position: "fixed",
@@ -1900,7 +1900,7 @@ async function init_eye_gaze_mode() {
 			transform: "scale(3)",
 		});
 	
-	$("<button title='Undo'/>")
+	$("<button title='Undo' class='eye-gaze-mode-undo-button'/>")
 	.on("click", undo)
 	.appendTo($floating_buttons)
 	.css({
@@ -1910,14 +1910,13 @@ async function init_eye_gaze_mode() {
 		position: "relative", // to make the icon's "absolute" relative to here
 	})
 	.append(
-		$("<div>")
+		$("<div class='button-icon'>")
 		.css({
 			position: "absolute",
 			left: 0,
 			top: 0,
 			width: 24,
 			height: 24,
-			backgroundImage: "url(images/classic/undo.svg)",
 		})
 	);
 
@@ -1928,14 +1927,8 @@ async function init_eye_gaze_mode() {
 	const $pause_button = $(`<button title="${pause_button_text}" class="toggle-dwell-clicking"/>`)
 	.on("click", ()=> {
 		paused = !paused;
-		$pause_button
-		.attr("title", paused ? resume_button_text : pause_button_text)
-		.find("div").css({
-			backgroundImage:
-				paused ?
-				"url(images/classic/eye-gaze-unpause.svg)" :
-				"url(images/classic/eye-gaze-pause.svg)",
-		});
+		$("body").toggleClass("eye-gaze-mode-paused", paused);
+		$pause_button.attr("title", paused ? resume_button_text : pause_button_text);
 	})
 	.appendTo($floating_buttons)
 	.css({
@@ -1945,14 +1938,13 @@ async function init_eye_gaze_mode() {
 		position: "relative", // to make the icon's "absolute" relative to here
 	})
 	.append(
-		$("<div>")
+		$("<div class='button-icon'>")
 		.css({
 			position: "absolute",
 			left: 0,
 			top: 0,
 			width: 24,
 			height: 24,
-			backgroundImage: "url(images/classic/eye-gaze-pause.svg)",
 		})
 	);
 

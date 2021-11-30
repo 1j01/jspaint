@@ -297,6 +297,16 @@ body {
 	border: 1px solid rgba(0, 0, 0, 0.24);
 }
 
+.eye-gaze-mode .eye-gaze-mode-undo-button .button-icon {
+	background: url(../../images/classic/undo.svg);
+}
+.eye-gaze-mode .toggle-dwell-clicking .button-icon {
+	background: url(../../images/classic/eye-gaze-pause.svg);
+}
+.eye-gaze-mode.eye-gaze-mode-paused .toggle-dwell-clicking .button-icon {
+	background: url(../../images/classic/eye-gaze-unpause.svg);
+}
+
 .menus,
 .component-area,
 .status-area {
