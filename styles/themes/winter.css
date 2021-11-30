@@ -50,7 +50,7 @@
 	transform: rotateY(calc(130deg * var(--side))) skewY(calc(20deg * var(--side)));
 }
 .tool.selected .tool-icon::before {
-	background-position: 0% 0%;
+	background-position: 0% 0% !important; /* !important to override .tool:nth-child(2n+1) .tool-icon::before */
 }
 
 .tool:nth-child(2n) .tool-icon::before,
@@ -59,7 +59,9 @@
 	transform-origin: right;
 	--gradient-direction: to right;
 }
-
+.tool:nth-child(2n+1) .tool-icon::before {
+	background-position: -20px 0; /* opposite for transition to work right */
+}
 
 .menus * {
 	font-family: 'Princess Sofia', cursive;
