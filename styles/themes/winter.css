@@ -15,7 +15,9 @@
 	left: -1px;
 	right: -1px;
 	bottom: -1px;
-	background: url("../../images/classic/tools.png") no-repeat;
+	/* --bg-image: url("../../images/classic/tools.png"); not using a CSS var because it makes it re-request the image every time (with a dev server) and flicker */
+	background-image: url("../../images/classic/tools.png");
+	background-repeat: no-repeat;
 	background-size: inherit;
 	background-position: inherit;
 	background-color: var(--ButtonFace);
@@ -23,13 +25,46 @@
 	border-left: 1px solid var(--ButtonHilight);
 	border-right: 1px solid var(--ButtonShadow);
 	border-bottom: 1px solid var(--ButtonShadow);
-	transition: transform 0.2s ease-in-out;
-	transform-origin: right;
-	backface-visibility: hidden;
+	--transition-duration: 0.2s;
+	transition: transform var(--transition-duration) ease-in-out;
+	transform-origin: left;
+	--side: -1;
+	/* backface-visibility: hidden; nah, I want just the background image to disappear */
+	animation: to-front-side var(--transition-duration) steps(1);
+	animation-fill-mode: forwards;
 }
 .tool.selected .tool-icon::after {
-	transform: rotateY(100deg);
+	transform: rotateY(calc(130deg * var(--side))) skewY(calc(20deg * var(--side)));
+	animation: to-back-side var(--transition-duration) steps(1);
+	animation-fill-mode: forwards;
 }
+.tool:nth-child(2n) .tool-icon::after {
+	--side: 1;
+	transform-origin: right;
+}
+@keyframes to-back-side {
+	from {
+		background-image: url("../../images/classic/tools.png");
+	}
+	60% {
+		background-image: none;
+	}
+	to {
+		background-image: none;
+	}
+}
+@keyframes to-front-side {
+	from {
+		background-image: none;
+	}
+	40% {
+		background-image: url("../../images/classic/tools.png");
+	}
+	to {
+		background-image: url("../../images/classic/tools.png");
+	}
+}
+
 
 .menus * {
 	font-family: 'Princess Sofia', cursive;
