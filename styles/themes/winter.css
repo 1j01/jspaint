@@ -12,6 +12,7 @@
 	content: " ";
 	position: absolute;
 	--border-width: 3px;
+	/* inset doesn't have enough browser support for me */
 	top: calc(-1 * var(--border-width));
 	left: calc(-1 * var(--border-width));
 	right: calc(-1 * var(--border-width));
@@ -34,10 +35,7 @@
 	backface-visibility: hidden;
 }
 .tool .tool-icon::before {
-	border-top: 1px solid var(--ButtonHilight);
-	border-left: 1px solid var(--ButtonHilight);
-	border-right: 1px solid var(--ButtonShadow);
-	border-bottom: 1px solid var(--ButtonShadow);
+	border-width: 1px;
 	background: linear-gradient(var(--gradient-direction), var(--ButtonFace), var(--ButtonShadow) 190%);
 	background-position: 20px 0; /* starting gradient not visible */
 	background-repeat: no-repeat; /* mustn't wrap to be invisible */
