@@ -86,12 +86,30 @@
 		button.onmouseleave = () => {
 			smile_target = clicked ? 1 : 0;
 			animate();
+			document.removeEventListener('touchmove', document_touchmove);
 		};
 		button.onmouseenter = () => {
 			smile_target = 1;
 			momentum = Math.max(momentum, 0.02); // for the immediacy of the hover effect
 			animate();
 		};
+		button.onpointerdown = (event) => {
+			if (event.pointerType === "touch") {
+				button.onmouseenter();
+				document.addEventListener('touchmove', document_touchmove);
+			}
+		};
+		// Not using pointerleave because it includes when the finger is lifted off the screen
+		// Maybe it would be easier to detect that case with event.button(s) though.
+		function document_touchmove(event) {
+			var touch = event.touches[0];
+			if (button !== document.elementFromPoint(touch.pageX, touch.pageY)) {
+				// finger left the button
+				clicked = false;
+				button.onmouseleave();
+			}
+		}
+
 		function animate() {
 			cancelAnimationFrame(anim_id);
 			smile += momentum * 0.5;
@@ -141,6 +159,7 @@
 			set_theme(new_theme);
 			button.remove();
 			window.removeEventListener("resize", on_zoom_etc);
+			document.removeEventListener('touchmove', document_touchmove);
 		}
 		document.body.appendChild(button);
 		grinch_button = button;
