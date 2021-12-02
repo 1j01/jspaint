@@ -1,6 +1,7 @@
 (() => {
 	const default_theme = "classic.css";
 	const theme_storage_key = "jspaint theme";
+	const disable_seasonal_theme_key = "jspaint disable seasonal theme";
 	const href_for = theme => `styles/themes/${theme}`;
 	
 	let iid;
@@ -21,7 +22,7 @@
 	let grinch_button;
 	let current_theme;
 	try {
-		const grinch = localStorage.grinch === "true";
+		const grinch = localStorage[disable_seasonal_theme_key] === "true";
 		const is_december = new Date().getMonth() === 11;
 		if (is_december && !grinch) {
 			current_theme = "winter.css"; // overriding theme preference until you disable the seasonal theme
@@ -50,7 +51,7 @@
 
 		try {
 			localStorage[theme_storage_key] = theme;
-			localStorage.grinch = "true"; // any theme change disables seasonal theme (unless of course you select the seasonal theme)
+			localStorage[disable_seasonal_theme_key] = "true"; // any theme change disables seasonal theme (unless of course you select the seasonal theme)
 			grinch_button?.remove();
 		// eslint-disable-next-line no-empty
 		} catch(error) {}
@@ -122,7 +123,7 @@
 		function steal_christmas() {
 			let new_theme;
 			try {
-				localStorage.grinch = "true";
+				localStorage[disable_seasonal_theme_key] = "true";
 				new_theme = localStorage[theme_storage_key] || default_theme;
 				// eslint-disable-next-line no-empty
 			} catch (error) { }
