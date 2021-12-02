@@ -94,13 +94,21 @@
 		};
 		function animate() {
 			cancelAnimationFrame(anim_id);
-			anim_id = requestAnimationFrame(animate);
 			smile += momentum * 0.5;
 			momentum *= 0.9;
 			if (button.matches(":hover")) {
 				momentum += 0.001;
 			} else {
 				momentum -= 0.001;
+			}
+			if (smile > 1) {
+				smile = 1;
+				momentum = 0;
+			} else if (smile < 0) {
+				smile = 0;
+				momentum = 0;
+			} else {
+				anim_id = requestAnimationFrame(animate);
 			}
 			smile = Math.max(0, Math.min(1, smile));
 			button.style.backgroundPosition = `${-Math.floor(smile * (num_frames - 1)) * frame_width}px 0px`;
