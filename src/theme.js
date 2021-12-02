@@ -87,8 +87,13 @@
 		let anim_id;
 		const num_frames = 38;
 		const frame_width = 100;
-		button.onmouseleave = animate;
+		let smile_target = 0;
+		button.onmouseleave = () => {
+			smile_target = 0;
+			animate();
+		};
 		button.onmouseenter = () => {
+			smile_target = 1;
 			momentum = Math.max(momentum, 0.02); // for the immediacy of the hover effect
 			animate();
 		};
@@ -96,24 +101,19 @@
 			cancelAnimationFrame(anim_id);
 			smile += momentum * 0.5;
 			momentum *= 0.9; // set to 0.99 to test smile getting stuck (should be fixed)
-			const smile_target = button.matches(":hover");
 			if (smile_target) {
 				momentum += 0.001;
 			} else {
 				momentum -= 0.001;
 			}
-			// This could probably be simplified, but be careful not to let the animation get stuck
-			let stop = false;
 			if (smile > 1) {
 				smile = 1;
 				momentum = 0;
-				stop = smile_target;
 			} else if (smile < 0) {
 				smile = 0;
 				momentum = 0;
-				stop = !smile_target;
 			}
-			if (!stop) {
+			if (smile !== smile_target) {
 				anim_id = requestAnimationFrame(animate);
 			}
 			button.style.backgroundPosition = `${-Math.floor(smile * (num_frames - 1)) * frame_width}px 0px`;
