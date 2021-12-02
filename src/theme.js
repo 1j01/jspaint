@@ -82,9 +82,6 @@
 			set_theme(new_theme);
 			button.remove();
 		};
-		button.onmouseenter = () => {
-			button.classList.add("enable-reverse-animation"); // needed for reverse animation to not play at page load
-		};
 		document.body.appendChild(button);
 		grinch_button = button;
 	}

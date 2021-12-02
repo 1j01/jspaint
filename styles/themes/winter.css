@@ -156,29 +156,11 @@ button.grinch-button {
 	height: 179px;
     z-index: 2;
 	background-image: url("../../images/winter/grinch-smile-spritesheet.png");
+	transition: background-position 2s steps(37);
 	border: 0;
 	background-color: transparent;
 	cursor: pointer;
 }
-button.grinch-button.enable-reverse-animation {
-	animation: grinch-smile-reverse 2s steps(37) forwards;
-}
 button.grinch-button:hover {
-	animation: grinch-smile 2s steps(37) forwards;
-}
-@keyframes grinch-smile {
-	from {
-		background-position: 0 0;
-	}
-	to {
-		background-position: -3700px 0;
-	}
-}
-@keyframes grinch-smile-reverse {
-	from {
-		background-position: -3700px 0;
-	}
-	to {
-		background-position: 0 0;
-	}
+	background-position: -3700px 0;
 }
