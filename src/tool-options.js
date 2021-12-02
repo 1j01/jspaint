@@ -331,7 +331,7 @@ $choose_magnification.on("update", () => {
 const airbrush_sizes = [9, 16, 24];
 const $choose_airbrush_size = $Choose(
 	airbrush_sizes,
-	(size, is_chosen, reuse_canvas) => {
+	(size, is_chosen, reuse_canvas, reuse_div) => {
 		
 		const image_width = 72; // width of source image
 		const i = airbrush_sizes.indexOf(size); // 0 or 1 or 2
@@ -343,13 +343,13 @@ const $choose_airbrush_size = $Choose(
 		const h = 23;
 		const source_x = image_width / l * i + shrink;
 		
-		return ChooserCanvas(
-			"images/options-airbrush-size.png",
+		return ChooserDiv(
+			"images/options-airbrush-size.svg",
 			is_chosen, // invert if chosen
 			w, h, // width, height of created destination canvas
 			source_x, 0, w, h, // x, y, width, height from source image
 			0, 0, w, h, // x, y, width, height on created destination canvas
-			reuse_canvas,
+			reuse_div,
 		);
 	},
 	size => {
