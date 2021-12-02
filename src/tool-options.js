@@ -42,6 +42,58 @@ const ChooserCanvas = (
 };
 ChooserCanvas.cache = {};
 
+// @TODO: convert all options to use this themeable version (or more options? some are dynamically rendered...)
+// also make this version actually properly themeable in CSS; right now it's just handling SVG vs PNG,
+// and has to concern itself with what theme is active
+const ChooserDiv = (
+	url,
+	invert,
+	width,
+	height,
+	sourceX,
+	sourceY,
+	sourceWidth,
+	sourceHeight,
+	destX,
+	destY,
+	destWidth,
+	destHeight,
+	reuse_div,
+) => {
+	const div = reuse_div(width, height);
+	div.style.width = sourceWidth + "px";
+	div.style.height = sourceHeight + "px";
+	if (url.match(/\.svg$/)) {
+		const png_url = url.replace(/\.svg$/, ".png");
+		const svg_url = url;
+		const on_zoom_etc = () => {
+			const use_svg = (window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0) &&
+				(get_theme() === "classic.css"); // || get_theme() === "dark.css"); // @TODO: also for dark theme, but don't use nonexistent SVG file (it should share the file (or, it could be a little different...))
+			div.style.backgroundImage = `url(${use_svg ? svg_url : png_url})`;
+		};
+		if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
+			$G.off("theme-load resize", div._on_zoom_etc);
+		}
+		$G.on("theme-load resize", on_zoom_etc);
+		div._on_zoom_etc = on_zoom_etc;
+		on_zoom_etc();
+	} else {
+		div.style.backgroundImage = `url(${url})`;
+	}
+	div.style.backgroundPosition = `${-sourceX}px ${-sourceY}px`;
+	div.style.borderColor = "transparent";
+	div.style.borderStyle = "solid";
+	div.style.borderLeftWidth = destX + "px";
+	div.style.borderTopWidth = destY + "px";
+	div.style.borderRightWidth = (width - destX - destWidth) + "px";
+	div.style.borderBottomWidth = (height - destY - destHeight) + "px";
+	div.style.backgroundClip = "content-box";
+	div.style.filter = invert ? "invert()" : "";
+	return div;
+};
+
+
+
 const $Choose = (things, display, choose, is_chosen, gray_background_for_unselected) => {
 	const $chooser = $(E("div")).addClass("chooser").css("touch-action", "none");
 	const choose_thing = (thing) => {
@@ -71,13 +123,26 @@ const $Choose = (things, display, choose, is_chosen, gray_background_for_unselec
 					}
 					return option_canvas;
 				};
+				const reuse_div = (width, height) => {
+					let option_div = $option_container.find("div")[0];
+					if (option_div) {
+						if (option_div.style.width !== width + "px") { option_div.style.width = width + "px"; }
+						if (option_div.style.height !== height + "px") { option_div.style.height = height + "px"; }
+					} else {
+						option_div = E("div");
+						option_div.style.width = width + "px";
+						option_div.style.height = height + "px";
+						$option_container.append(option_div);
+					}
+					return option_div;
+				};
 				const update = () => {
 					const selected_color = getComputedStyle($chooser[0]).getPropertyValue("--Hilight");
 					const unselected_color = gray_background_for_unselected ? "rgb(192, 192, 192)" : "";
 					$option_container.css({
 						backgroundColor: is_chosen(thing) ? selected_color : unselected_color,
 					});
-					display(thing, is_chosen(thing), reuse_canvas);
+					display(thing, is_chosen(thing), reuse_canvas, reuse_div);
 				};
 				update();
 				$G.on("option-changed theme-load redraw-tool-options-because-webglcontextrestored", update);
@@ -301,17 +366,17 @@ const $choose_airbrush_size = $Choose(
 
 const $choose_transparent_mode = $Choose(
 	[false, true],
-	(option, _is_chosen, reuse_canvas) => {
+	(option, _is_chosen, reuse_canvas, reuse_div) => {
 		const sw = 35, sh = 23; // width, height from source image
 		const b = 2; // margin by which the source image is inset on the destination
 		const theme_folder = `images/${get_theme().replace(/\.css/i, "")}`;
-		return ChooserCanvas(
-			`${theme_folder}/options-transparency.png`,
+		return ChooserDiv(
+			`${theme_folder}/options-transparency.svg`,
 			false, // never invert it
 			b+sw+b, b+sh+b, // width, height of created destination canvas
 			0, option ? 22 : 0, sw, sh, // x, y, width, height from source image
 			b, b, sw, sh, // x, y, width, height on created destination canvas
-			reuse_canvas,
+			reuse_div,
 		);
 	},
 	option => {
