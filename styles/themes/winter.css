@@ -151,7 +151,7 @@
 button.grinch-button {
 	position: absolute;
 	bottom: 0px;
-	right: 30px;
+	right: 0px;
 	width: 100px;
 	height: 179px;
     z-index: 2;

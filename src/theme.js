@@ -120,6 +120,14 @@
 			}
 			button.style.backgroundPosition = `${-Math.floor(smile * (num_frames - 1)) * frame_width}px 0px`;
 		}
+		function on_zoom_etc() {
+			// scale to nearest pixel-perfect size
+			button.style.transform = `scale(${Math.max(1, Math.floor(devicePixelRatio)) / devicePixelRatio})`;
+			button.style.transformOrigin = "bottom right";
+			button.style.imageRendering = "pixelated";
+		}
+		window.addEventListener("resize", on_zoom_etc);
+		on_zoom_etc();
 		function steal_christmas() {
 			let new_theme;
 			try {
@@ -132,6 +140,7 @@
 			}
 			set_theme(new_theme);
 			button.remove();
+			window.removeEventListener("resize", on_zoom_etc);
 		}
 		document.body.appendChild(button);
 		grinch_button = button;
