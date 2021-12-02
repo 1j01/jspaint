@@ -95,22 +95,27 @@
 		function animate() {
 			cancelAnimationFrame(anim_id);
 			smile += momentum * 0.5;
-			momentum *= 0.9;
-			if (button.matches(":hover")) {
+			momentum *= 0.9; // set to 0.99 to test smile getting stuck (should be fixed)
+			const smile_target = button.matches(":hover");
+			if (smile_target) {
 				momentum += 0.001;
 			} else {
 				momentum -= 0.001;
 			}
+			// This could probably be simplified, but be careful not to let the animation get stuck
+			let stop = false;
 			if (smile > 1) {
 				smile = 1;
 				momentum = 0;
+				stop = smile_target;
 			} else if (smile < 0) {
 				smile = 0;
 				momentum = 0;
-			} else {
+				stop = !smile_target;
+			}
+			if (!stop) {
 				anim_id = requestAnimationFrame(animate);
 			}
-			smile = Math.max(0, Math.min(1, smile));
 			button.style.backgroundPosition = `${-Math.floor(smile * (num_frames - 1)) * frame_width}px 0px`;
 		}
 		document.body.appendChild(button);
