@@ -68,7 +68,7 @@ const ChooserDiv = (
 		const svg_url = url;
 		const on_zoom_etc = () => {
 			const use_svg = (window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0) &&
-				(get_theme() === "classic.css"); // || get_theme() === "dark.css"); // @TODO: also for dark theme, but don't use nonexistent SVG file (it should share the file (or, it could be a little different...))
+				(get_theme() === "classic.css" || get_theme() === "dark.css");
 			div.style.backgroundImage = `url(${use_svg ? svg_url : png_url})`;
 		};
 		if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
