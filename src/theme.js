@@ -88,11 +88,14 @@
 		const num_frames = 38;
 		const frame_width = 100;
 		button.onmouseleave = animate;
-		button.onmouseenter = animate;
+		button.onmouseenter = () => {
+			momentum = Math.max(momentum, 0.02); // for the immediacy of the hover effect
+			animate();
+		};
 		function animate() {
 			cancelAnimationFrame(anim_id);
 			anim_id = requestAnimationFrame(animate);
-			smile += momentum;
+			smile += momentum * 0.5;
 			momentum *= 0.9;
 			if (button.matches(":hover")) {
 				momentum += 0.001;
