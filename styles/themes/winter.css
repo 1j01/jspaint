@@ -156,11 +156,7 @@ button.grinch-button {
 	height: 179px;
     z-index: 2;
 	background-image: url("../../images/winter/grinch-smile-spritesheet.png");
-	transition: background-position 2s steps(37);
 	border: 0;
 	background-color: transparent;
 	cursor: pointer;
-}
-button.grinch-button:hover {
-	background-position: -3700px 0;
 }

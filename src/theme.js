@@ -82,6 +82,26 @@
 			set_theme(new_theme);
 			button.remove();
 		};
+		let smile = 0;
+		let momentum = 0;
+		let anim_id;
+		const num_frames = 38;
+		const frame_width = 100;
+		button.onmouseleave = animate;
+		button.onmouseenter = animate;
+		function animate() {
+			cancelAnimationFrame(anim_id);
+			anim_id = requestAnimationFrame(animate);
+			smile += momentum;
+			momentum *= 0.9;
+			if (button.matches(":hover")) {
+				momentum += 0.001;
+			} else {
+				momentum -= 0.001;
+			}
+			smile = Math.max(0, Math.min(1, smile));
+			button.style.backgroundPosition = `${-Math.floor(smile * (num_frames - 1)) * frame_width}px 0px`;
+		}
 		document.body.appendChild(button);
 		grinch_button = button;
 	}
