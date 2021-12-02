@@ -69,27 +69,21 @@
 		const button = document.createElement("button");
 		button.ariaLabel = "Disable seasonal theme";
 		button.className = "grinch-button";
-		button.onclick = () => {
-			let new_theme;
-			try {
-				localStorage.grinch = "true";
-				new_theme = localStorage[theme_storage_key] || default_theme;
-				// eslint-disable-next-line no-empty
-			} catch (error) { }
-			if (new_theme === "winter.css") {
-				new_theme = default_theme;
-			}
-			set_theme(new_theme);
-			button.remove();
-		};
+		let clicked = false;
 		let smile = 0;
 		let momentum = 0;
+		let smile_target = 0;
 		let anim_id;
 		const num_frames = 38;
 		const frame_width = 100;
-		let smile_target = 0;
+		button.onclick = () => {
+			if (smile === smile_target) {
+				steal_christmas();
+			}
+			clicked = true;
+		};
 		button.onmouseleave = () => {
-			smile_target = 0;
+			smile_target = clicked ? 1 : 0;
 			animate();
 		};
 		button.onmouseenter = () => {
@@ -113,6 +107,9 @@
 			if (smile > 1) {
 				smile = 1;
 				momentum = 0;
+				if (clicked) {
+					steal_christmas();
+				}
 			} else if (smile < 0) {
 				smile = 0;
 				momentum = 0;
@@ -121,6 +118,19 @@
 				anim_id = requestAnimationFrame(animate);
 			}
 			button.style.backgroundPosition = `${-Math.floor(smile * (num_frames - 1)) * frame_width}px 0px`;
+		}
+		function steal_christmas() {
+			let new_theme;
+			try {
+				localStorage.grinch = "true";
+				new_theme = localStorage[theme_storage_key] || default_theme;
+				// eslint-disable-next-line no-empty
+			} catch (error) { }
+			if (new_theme === "winter.css") {
+				new_theme = default_theme;
+			}
+			set_theme(new_theme);
+			button.remove();
 		}
 		document.body.appendChild(button);
 		grinch_button = button;
