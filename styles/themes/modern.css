@@ -296,6 +296,16 @@ body {
 	/* the layout currently depends on the exact pixel width (specifically the brush tool options) */
 	border: 1px solid rgba(0, 0, 0, 0.24);
 }
+.magnification-option {
+	/* background-image: url("../../images/options-magnification.png"); */
+	background-image: url("../../images/options-magnification.svg");
+}
+/* .magnification-option.use-svg {
+	background-image: url("../../images/options-magnification.svg");
+} */
+.transparent-mode-option {
+	background-image: url("../../images/modern/options-transparency.png");
+}
 
 .eye-gaze-mode .eye-gaze-mode-undo-button .button-icon {
 	background: url(../../images/classic/undo.svg);

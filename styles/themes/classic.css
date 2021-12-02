@@ -376,6 +376,19 @@ body,
 	color: var(--WindowText);
 }
 
+.magnification-option {
+	background-image: url("../../images/options-magnification.png");
+}
+.magnification-option.use-svg {
+	background-image: url("../../images/options-magnification.svg");
+}
+.transparent-mode-option {
+	background-image: url("../../images/classic/options-transparency.png");
+}
+.transparent-mode-option.use-svg {
+	background-image: url("../../images/classic/options-transparency.svg");
+}
+
 .eye-gaze-mode .eye-gaze-mode-undo-button .button-icon {
 	background: url(../../images/classic/undo.svg);
 }

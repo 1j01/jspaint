@@ -43,10 +43,8 @@ const ChooserCanvas = (
 ChooserCanvas.cache = {};
 
 // @TODO: convert all options to use this themeable version (or more options? some are dynamically rendered...)
-// also make this version actually properly themeable in CSS; right now it's just handling SVG vs PNG,
-// and has to concern itself with what theme is active
 const ChooserDiv = (
-	url,
+	class_name,
 	invert,
 	width,
 	height,
@@ -61,25 +59,22 @@ const ChooserDiv = (
 	reuse_div,
 ) => {
 	const div = reuse_div(width, height);
+	div.classList.add(class_name);
 	div.style.width = sourceWidth + "px";
 	div.style.height = sourceHeight + "px";
-	if (url.match(/\.svg$/)) {
-		const png_url = url.replace(/\.svg$/, ".png");
-		const svg_url = url;
-		const on_zoom_etc = () => {
-			const use_svg = (window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0) &&
-				(get_theme() === "classic.css" || get_theme() === "dark.css" || (get_theme() === "winter.css" && url.match(/magnification/)));
-			div.style.backgroundImage = `url(${use_svg ? svg_url : png_url})`;
-		};
-		if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
-			$G.off("theme-load resize", div._on_zoom_etc);
-		}
-		$G.on("theme-load resize", on_zoom_etc);
-		div._on_zoom_etc = on_zoom_etc;
-		on_zoom_etc();
-	} else {
-		div.style.backgroundImage = `url(${url})`;
+	
+	// @TODO: single listener for all divs
+	const on_zoom_etc = () => {
+		const use_svg = (window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0);
+		div.classList.toggle("use-svg", use_svg);
+	};
+	if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
+		$G.off("theme-load resize", div._on_zoom_etc);
 	}
+	$G.on("theme-load resize", on_zoom_etc);
+	div._on_zoom_etc = on_zoom_etc;
+	on_zoom_etc();
+	
 	div.style.backgroundPosition = `${-sourceX}px ${-sourceY}px`;
 	div.style.borderColor = "transparent";
 	div.style.borderStyle = "solid";
@@ -306,7 +301,7 @@ const $choose_magnification = $Choose(
 		const i = magnifications.indexOf(scale);
 		const secret = scale === 10; // 10x is secret
 		const chooser_el = ChooserDiv(
-			"images/options-magnification.svg",
+			"magnification-option",
 			is_chosen, // invert if chosen
 			39, (secret ? 2 : 13), // width, height of destination canvas
 			i*23, 0, 23, 9, // x, y, width, height from source image
@@ -371,7 +366,7 @@ const $choose_transparent_mode = $Choose(
 		const b = 2; // margin by which the source image is inset on the destination
 		const theme_folder = `images/${get_theme().replace(/\.css/i, "")}`;
 		return ChooserDiv(
-			`${theme_folder}/options-transparency.svg`,
+			"transparent-mode-option",
 			false, // never invert it
 			b+sw+b, b+sh+b, // width, height of created destination canvas
 			0, option ? 22 : 0, sw, sh, // x, y, width, height from source image

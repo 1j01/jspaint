@@ -20,6 +20,14 @@
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 
+.transparent-mode-option,
+.transparent-mode-option.use-svg { /* specificity needed for overriding classic theme; SVG is not supported yet for this theme */
+	background-image: url("../../images/occult/options-transparency.png");
+}
+/* .transparent-mode-option.use-svg {
+	background-image: url("../../images/occult/options-transparency.svg");
+} */
+
 .eye-gaze-mode .toggle-dwell-clicking .button-icon {
 	background: url(../../images/dark/eye-gaze-pause.svg);
 }
