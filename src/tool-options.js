@@ -68,7 +68,7 @@ const ChooserDiv = (
 		const svg_url = url;
 		const on_zoom_etc = () => {
 			const use_svg = (window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0) &&
-				(get_theme() === "classic.css" || get_theme() === "dark.css");
+				(get_theme() === "classic.css" || get_theme() === "dark.css" || (get_theme() === "winter.css" && url.match(/magnification/)));
 			div.style.backgroundImage = `url(${use_svg ? svg_url : png_url})`;
 		};
 		if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
@@ -302,21 +302,21 @@ const $choose_stroke_size = $Choose(
 const magnifications = [1, 2, 6, 8, 10];
 const $choose_magnification = $Choose(
 	magnifications,
-	(scale, is_chosen, reuse_canvas) => {
+	(scale, is_chosen, reuse_canvas, reuse_div) => {
 		const i = magnifications.indexOf(scale);
 		const secret = scale === 10; // 10x is secret
-		const chooser_canvas = ChooserCanvas(
-			"images/options-magnification.png",
+		const chooser_el = ChooserDiv(
+			"images/options-magnification.svg",
 			is_chosen, // invert if chosen
 			39, (secret ? 2 : 13), // width, height of destination canvas
 			i*23, 0, 23, 9, // x, y, width, height from source image
 			8, 2, 23, 9, // x, y, width, height on destination
-			reuse_canvas,
+			reuse_div,
 		);
 		if(secret){
-			$(chooser_canvas).addClass("secret-option");
+			$(chooser_el).addClass("secret-option");
 		}
-		return chooser_canvas;
+		return chooser_el;
 	},
 	scale => {
 		set_magnification(scale);
@@ -330,7 +330,7 @@ $choose_magnification.on("update", () => {
 	$choose_magnification
 		.find(".secret-option")
 		.parent()
-		.css({position: "absolute", bottom: "-2px", left: 0, opacity: 0});
+		.css({position: "absolute", bottom: "-2px", left: 0, opacity: 0, height: 2, overflow: "hidden" });
 });
 
 const airbrush_sizes = [9, 16, 24];
