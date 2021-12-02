@@ -160,6 +160,9 @@ button.grinch-button {
 	background-color: transparent;
 	cursor: pointer;
 }
+button.grinch-button.enable-reverse-animation {
+	animation: grinch-smile-reverse 2s steps(37) forwards;
+}
 button.grinch-button:hover {
 	animation: grinch-smile 2s steps(37) forwards;
 }
@@ -169,5 +172,13 @@ button.grinch-button:hover {
 	}
 	to {
 		background-position: -3700px 0;
+	}
+}
+@keyframes grinch-smile-reverse {
+	from {
+		background-position: -3700px 0;
+	}
+	to {
+		background-position: 0 0;
 	}
 }
