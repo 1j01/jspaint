@@ -146,3 +146,28 @@
 		color: red;
 	}
 }
+
+/* a button to leave the Winter theme */
+button.grinch-button {
+	position: absolute;
+	bottom: 0px;
+	right: 30px;
+	width: 100px;
+	height: 179px;
+    z-index: 2;
+	background-image: url("../../images/winter/grinch-smile-spritesheet.png");
+	border: 0;
+	background-color: transparent;
+	cursor: pointer;
+}
+button.grinch-button:hover {
+	animation: grinch-smile 2s steps(37) forwards;
+}
+@keyframes grinch-smile {
+	from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: -3700px 0;
+	}
+}
