@@ -104,7 +104,11 @@
 			if (smile_target) {
 				momentum += 0.001;
 			} else {
-				momentum -= 0.001;
+				if (smile < 0.4) {
+					momentum -= 0.0005; // slowing down the last bit of un-smiling (feels more natural; I wish there were more frames though)
+				} else {
+					momentum -= 0.001;
+				}
 			}
 			if (smile > 1) {
 				smile = 1;
