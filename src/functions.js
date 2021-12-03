@@ -135,18 +135,11 @@ function update_helper_layer_immediately() {
 		pointer = to_canvas_coords(info_for_updating_pointer);
 	}
 
-	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
-	
-	const grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;
-
 	const scale = magnification * window.devicePixelRatio;
 
 	if (!helper_layer) {
 		helper_layer = new OnCanvasHelperLayer(0, 0, main_canvas.width, main_canvas.height, false, scale);
 	}
-
-	const hcanvas = helper_layer.canvas;
-	const hctx = hcanvas.ctx;
 
 	const margin = 15;
 	const viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification - margin, 0));
@@ -164,12 +157,12 @@ function update_helper_layer_immediately() {
 	const resolution_width = viewport_width * scale;
 	const resolution_height = viewport_height * scale;
 	if (
-		hcanvas.width !== resolution_width ||
-		hcanvas.height !== resolution_height
+		helper_layer.canvas.width !== resolution_width ||
+		helper_layer.canvas.height !== resolution_height
 	) {
-		hcanvas.width = resolution_width;
-		hcanvas.height = resolution_height;
-		hcanvas.ctx.disable_image_smoothing();
+		helper_layer.canvas.width = resolution_width;
+		helper_layer.canvas.height = resolution_height;
+		helper_layer.canvas.ctx.disable_image_smoothing();
 		helper_layer.width = viewport_width;
 		helper_layer.height = viewport_height;
 	}
@@ -177,7 +170,37 @@ function update_helper_layer_immediately() {
 	helper_layer.y = viewport_y;
 	helper_layer.position();
 
+	render_canvas_view(helper_layer.canvas, scale, viewport_x, viewport_y, true);
+
+	if (thumbnail_canvas && $thumbnail_window.is(":visible")) {
+		// The thumbnail can be bigger or smaller than the viewport, depending on the magnification and thumbnail window size.
+		// So can the document.
+		// I think it ought to show the very corner if scrolled all the way to the corner,
+		// so that you can get a thumbnail of any location without resizing the thumbnail window.
+		// MS Paint seems to have that as a vague intention, but some other constraint overrides it.
+		// I'm guessing it wasn't fully thought through, but I'll need to examine it more.
+
+		// render_canvas_view(thumbnail_canvas, scale, viewport_x, viewport_y, false);
+		// Thumbnail doesn't use the magnification level, and doesn't support DPR yet.
+		// render_canvas_view(thumbnail_canvas, window.devicePixelRatio, viewport_x, viewport_y, false);
+		render_canvas_view(thumbnail_canvas, 1, viewport_x, viewport_y, false);
+	}
+}
+
+function render_canvas_view(hcanvas, scale, viewport_x, viewport_y, is_helper_layer) {
+	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
+	
+	const grid_visible = show_grid && magnification >= 4 && (window.devicePixelRatio * magnification) >= 4;
+
+	const hctx = hcanvas.ctx;
+
 	hctx.clearRect(0, 0, hcanvas.width, hcanvas.height);
+
+	if (!is_helper_layer) {
+		// Draw the actual document canvas (for the thumbnail)
+		// (For the main canvas view, the helper layer is separate from (and overlaid on top of) the document canvas)
+		hctx.drawImage(main_canvas, viewport_x, viewport_y, hcanvas.width, hcanvas.height, 0, 0, hcanvas.width, hcanvas.height);
+	}
 	
 	var tools_to_preview = [...selected_tools];
 
@@ -257,24 +280,6 @@ function update_helper_layer_immediately() {
 			hctx.restore();
 		}
 	});
-
-	// Update thumbnail
-	// @TODO: show more features on the thumbnail (selections, tool previews, etc.); should probably share with the above code,
-	// but might hide some things
-	if (thumbnail_canvas) {
-		thumbnail_canvas.ctx.clearRect(0, 0, thumbnail_canvas.width, thumbnail_canvas.height);
-		// The thumbnail can be bigger or smaller than the viewport, depending on the magnification and thumbnail window size.
-		// So can the document.
-		// I think it ought to show the very corner if scrolled all the way to the corner,
-		// so that you can get a thumbnail of any location without resizing the thumbnail window.
-		// MS Paint seems to have that as a vague intention, but some other constraint overrides it.
-		// I'm guessing it wasn't fully thought through, but I'll need to examine it more.
-		thumbnail_canvas.ctx.drawImage(
-			main_canvas,
-			-viewport_x,
-			-viewport_y,
-		);
-	}
 }
 function update_disable_aa() {
 	const dots_per_canvas_px = window.devicePixelRatio * magnification;
