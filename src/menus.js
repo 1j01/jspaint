@@ -494,8 +494,10 @@ window.menus = {
 						"toggle picture in picture", "toggle picture in picture view", "toggle picture in picture box", "toggle picture in picture window",
 						// @TODO: hide/show
 					],
-					enabled: false, // @TODO: implement Show Thumbnail
-					checkbox: {},
+					checkbox: {
+						toggle: () => { toggle_thumbnail(); },
+						check: () => show_thumbnail,
+					},
 					description: localize("Shows or hides the thumbnail view of the picture."),
 				}
 			]

@@ -257,6 +257,24 @@ function update_helper_layer_immediately() {
 			hctx.restore();
 		}
 	});
+
+	// Update thumbnail
+	// @TODO: show more features on the thumbnail (selections, tool previews, etc.); should probably share with the above code,
+	// but might hide some things
+	if (thumbnail_canvas) {
+		thumbnail_canvas.ctx.clearRect(0, 0, thumbnail_canvas.width, thumbnail_canvas.height);
+		// The thumbnail can be bigger or smaller than the viewport, depending on the magnification and thumbnail window size.
+		// So can the document.
+		// I think it ought to show the very corner if scrolled all the way to the corner,
+		// so that you can get a thumbnail of any location without resizing the thumbnail window.
+		// MS Paint seems to have that as a vague intention, but some other constraint overrides it.
+		// I'm guessing it wasn't fully thought through, but I'll need to examine it more.
+		thumbnail_canvas.ctx.drawImage(
+			main_canvas,
+			-viewport_x,
+			-viewport_y,
+		);
+	}
 }
 function update_disable_aa() {
 	const dots_per_canvas_px = window.devicePixelRatio * magnification;
@@ -382,6 +400,42 @@ function show_custom_zoom_window() {
 function toggle_grid() {
 	show_grid = !show_grid;
 	// $G.trigger("option-changed");
+	update_helper_layer();
+}
+
+function toggle_thumbnail() {
+	show_thumbnail = !show_thumbnail;
+	if (!show_thumbnail) {
+		$thumbnail_window.hide();
+	} else {
+		if (!thumbnail_canvas) {
+			thumbnail_canvas = make_canvas(108, 92);
+		}
+		if (!$thumbnail_window) {
+			$thumbnail_window = new $Window({
+				title: localize("Thumbnail"),
+				toolWindow: true,
+				resizable: true,
+				innerWidth: thumbnail_canvas.width + 4, // @TODO: should the border of $content be included in the definition of innerWidth/Height?
+				innerHeight: thumbnail_canvas.height + 4,
+				minInnerWidth: 52 + 4,
+				minInnerHeight: 36 + 4,
+				minOuterWidth: 0, // @FIXME: this shouldn't be needed
+				minOuterHeight: 0, // @FIXME: this shouldn't be needed
+			});
+			$thumbnail_window.addClass("thumbnail-window");
+			$thumbnail_window.$content.append(thumbnail_canvas);
+			$thumbnail_window.$content.addClass("inset-deep");
+			$thumbnail_window.$content.css({ marginTop: "1px" }); // @TODO: should this (or equivalent on titlebar) be for all windows?
+			new ResizeObserver(() => {
+				thumbnail_canvas.width = $thumbnail_window.$content.width();
+				thumbnail_canvas.height = $thumbnail_window.$content.height();
+				update_helper_layer_immediately(); // updates thumbnail (but also unnecessarily the helper layer)
+			}).observe($thumbnail_window.$content[0]);
+		}
+		$thumbnail_window.show();
+	}
+	// Currently the thumbnail updates with the helper layer. But it's not part of the helper layer, so this is a bit of a misnomer for now.
 	update_helper_layer();
 }
 

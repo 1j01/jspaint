@@ -439,7 +439,10 @@ window.selected_colors = { // declared like this for Cypress tests
 let selection; //the one and only OnCanvasSelection
 let textbox; //the one and only OnCanvasTextBox
 let helper_layer; //the OnCanvasHelperLayer for the grid and tool previews
+let $thumbnail_window;
+let thumbnail_canvas;
 let show_grid = false;
+let show_thumbnail = false;
 let text_tool_font = {
 	family: '"Arial"', // should be an exact value detected by Font Detective
 	size: 12,
