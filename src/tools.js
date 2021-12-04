@@ -176,7 +176,7 @@ window.tools = [{
 					var cropped_canvas = make_canvas(rect_width, rect_height);
 					cropped_canvas.ctx.drawImage(main_canvas, -rect_x, -rect_y);
 					main_ctx.copy(cropped_canvas);
-					$canvas_handles.show();
+					canvas_handles.show();
 					$canvas_area.trigger("resize");
 				});
 			} else if (free_form_selection) {
@@ -1131,7 +1131,7 @@ tools.forEach((tool)=> {
 			if(textbox){
 				meld_textbox_into_canvas();
 			}
-			$canvas_handles.hide();
+			canvas_handles.hide();
 		};
 		tool.paint = ()=> {
 			rect_x = ~~Math.max(0, Math.min(drag_start_x, pointer.x));
@@ -1140,11 +1140,11 @@ tools.forEach((tool)=> {
 			rect_height = (~~Math.min(main_canvas.height, Math.max(drag_start_y, pointer.y + 1))) - rect_y;
 		};
 		tool.pointerup = ()=> {
-			$canvas_handles.show();
+			canvas_handles.show();
 			tool.selectBox(rect_x, rect_y, rect_width, rect_height);
 		};
 		tool.cancel = ()=> {
-			$canvas_handles.show();
+			canvas_handles.show();
 		};
 		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
 			if(!pointer_active){ return; }

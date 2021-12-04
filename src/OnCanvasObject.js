@@ -8,7 +8,7 @@ class OnCanvasObject {
 		this.hideMainCanvasHandles = hideMainCanvasHandles;
 		this.$el = $(E("div")).addClass("on-canvas-object").appendTo($canvas_area);
 		if (this.hideMainCanvasHandles) {
-			$canvas_handles.hide();
+			canvas_handles.hide();
 		}
 		$G.on("resize theme-load", this._global_resize_handler = ()=> {
 			this.position();
@@ -37,7 +37,7 @@ class OnCanvasObject {
 	destroy() {
 		this.$el.remove();
 		if (this.hideMainCanvasHandles) {
-			$canvas_handles.show();
+			canvas_handles.show();
 		}
 		$G.off("resize theme-load", this._global_resize_handler);
 	}

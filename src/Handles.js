@@ -1,5 +1,6 @@
 
-function $Handles($handles_container, $object_container, options){
+function Handles(options) {
+	const { $handles_container, $object_container } = options; // required
 	const outset = options.outset || 0;
 	const get_handles_offset_left = options.get_handles_offset_left || (() => 0);
 	const get_handles_offset_top = options.get_handles_offset_top || (() => 0);
@@ -211,5 +212,9 @@ function $Handles($handles_container, $object_container, options){
 		
 		handles.push($h[0], $grab_region[0]);
 	});
-	return $(handles);
+
+	this.handles = handles;
+	this.show = $(handles).show;
+	this.hide = $(handles).hide;
+	
 }

@@ -578,7 +578,9 @@ const $canvas_area = $(E("div")).addClass("canvas-area inset-deep").appendTo($H)
 const $canvas = $(main_canvas).appendTo($canvas_area);
 $canvas.css("touch-action", "none");
 let canvas_bounding_client_rect = main_canvas.getBoundingClientRect(); // cached for performance, updated later
-const $canvas_handles = $Handles($canvas_area, $canvas_area, {
+const canvas_handles = new Handles({
+	$handles_container: $canvas_area,
+	$object_container: $canvas_area,
 	get_rect: ()=> ({x: 0, y: 0, width: main_canvas.width, height: main_canvas.height}),
 	set_rect: ({width, height})=> resize_canvas_and_save_dimensions(width, height),
 	outset: 4,
@@ -590,8 +592,8 @@ const $canvas_handles = $Handles($canvas_area, $canvas_area, {
 });
 // hack: fix canvas handles causing document to scroll when selecting/deselecting
 // by overriding these methods
-$canvas_handles.hide = ()=> { $canvas_handles.css({opacity: 0, pointerEvents: "none"}); };
-$canvas_handles.show = ()=> { $canvas_handles.css({opacity: "", pointerEvents: ""}); };
+canvas_handles.hide = ()=> { $(canvas_handles.handles).css({opacity: 0, pointerEvents: "none"}); };
+canvas_handles.show = ()=> { $(canvas_handles.handles).css({opacity: "", pointerEvents: ""}); };
 
 const $top = $(E("div")).addClass("component-area top").prependTo($V);
 const $bottom = $(E("div")).addClass("component-area bottom").appendTo($V);
