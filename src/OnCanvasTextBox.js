@@ -50,10 +50,12 @@ class OnCanvasTextBox extends OnCanvasObject {
 			// Auto-expand, and apply minimum size.
 			edit_textarea.style.height = "";
 			edit_textarea.style.minHeight = "0px";
+			edit_textarea.style.bottom = ""; // needed for when magnified
 			edit_textarea.setAttribute("rows", 1);
 			this.height = Math.max(edit_textarea.scrollHeight, this.height);
 			edit_textarea.removeAttribute("rows");
 			this.width = edit_textarea.scrollWidth;
+			edit_textarea.style.bottom = "0"; // doesn't seem to be needed?
 			// always needs to update at least this.$editor, since style.height is reset above
 			update_size();
 		};
