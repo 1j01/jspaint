@@ -175,30 +175,30 @@ function update_helper_layer_immediately() {
 	if (thumbnail_canvas && $thumbnail_window.is(":visible")) {
 		// The thumbnail can be bigger or smaller than the viewport, depending on the magnification and thumbnail window size.
 		// So can the document.
-		// I think it ought to show the very corner if scrolled all the way to the corner,
-		// so that you can get a thumbnail of any location without resizing the thumbnail window.
-		// MS Paint seems to have that as a vague intention, but some other constraint overrides it.
-		// I'm guessing it wasn't fully thought through, but I'll need to examine it more.
+		// Ideally it should show the very corner if scrolled all the way to the corner,
+		// so that you can get a thumbnail of any location just by scrolling.
+		// But it's impossible if the thumbnail is smaller than the viewport. You have to resize the thumbnail window in that case.
+		// (And if the document is smaller than the viewport, there's no scrolling to indicate where you want to get a thumbnail of.)
+		// It gets clipped to the top left portion of the viewport if the thumbnail is too small.
 
-		// let viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification, 0));
-		// let viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification, 0));
-		// const scroll_x_fraction = $canvas_area.scrollLeft() / $canvas_area.width();
-		// const scroll_y_fraction = $canvas_area.scrollTop() / $canvas_area.height();
-		let scroll_x_fraction = $canvas_area[0].scrollLeft / ($canvas_area[0].scrollWidth - $canvas_area[0].clientWidth);
-		let scroll_y_fraction = $canvas_area[0].scrollTop / ($canvas_area[0].scrollHeight - $canvas_area[0].clientHeight);
+		// This works except for if there's a selection, it affects the scrollable area, and it shouldn't affect this calculation.
+		// let scroll_x_fraction = $canvas_area[0].scrollLeft / ($canvas_area[0].scrollWidth - $canvas_area[0].clientWidth);
+		// let scroll_y_fraction = $canvas_area[0].scrollTop / ($canvas_area[0].scrollHeight - $canvas_area[0].clientHeight);
+		// if (isNaN(scroll_x_fraction)) { scroll_x_fraction = 0; }
+		// if (isNaN(scroll_y_fraction)) { scroll_y_fraction = 0; }
+
+		const padding_left = parseFloat($canvas_area.css("padding-left"));
+		const padding_top = parseFloat($canvas_area.css("padding-top"));
+		// @TODO: I'm handling divide by zero, but should it ever divide by <1?
+		let scroll_x_fraction = $canvas_area[0].scrollLeft / (main_canvas.clientWidth + padding_left - $canvas_area[0].clientWidth);
+		let scroll_y_fraction = $canvas_area[0].scrollTop / (main_canvas.clientHeight + padding_top - $canvas_area[0].clientHeight);
 		if (isNaN(scroll_x_fraction)) { scroll_x_fraction = 0; }
 		if (isNaN(scroll_y_fraction)) { scroll_y_fraction = 0; }
+
 		let viewport_x = Math.floor(Math.max(scroll_x_fraction * (main_canvas.width - thumbnail_canvas.width), 0));
 		let viewport_y = Math.floor(Math.max(scroll_y_fraction * (main_canvas.height - thumbnail_canvas.height), 0));
-		// console.log("viewport_x", viewport_x, "viewport_y", viewport_y);
-		// viewport_x = Math.min(viewport_x, ...);
-		// viewport_y = Math.min(viewport_y, ...);
-		// viewport_x = Math.max(viewport_x, 0);
-		// viewport_y = Math.max(viewport_y, 0);
 
-		// render_canvas_view(thumbnail_canvas, scale, viewport_x, viewport_y, false);
-		// Thumbnail doesn't use the magnification level, and doesn't support DPR yet.
-		// render_canvas_view(thumbnail_canvas, window.devicePixelRatio, viewport_x, viewport_y, false);
+		// Thumbnail doesn't use the magnification level, and doesn't support devicePixelRatio yet, so scale is 1.
 		render_canvas_view(thumbnail_canvas, 1, viewport_x, viewport_y, false);
 	}
 }
