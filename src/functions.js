@@ -180,6 +180,22 @@ function update_helper_layer_immediately() {
 		// MS Paint seems to have that as a vague intention, but some other constraint overrides it.
 		// I'm guessing it wasn't fully thought through, but I'll need to examine it more.
 
+		// let viewport_x = Math.floor(Math.max($canvas_area.scrollLeft() / magnification, 0));
+		// let viewport_y = Math.floor(Math.max($canvas_area.scrollTop() / magnification, 0));
+		// const scroll_x_fraction = $canvas_area.scrollLeft() / $canvas_area.width();
+		// const scroll_y_fraction = $canvas_area.scrollTop() / $canvas_area.height();
+		let scroll_x_fraction = $canvas_area[0].scrollLeft / ($canvas_area[0].scrollWidth - $canvas_area[0].clientWidth);
+		let scroll_y_fraction = $canvas_area[0].scrollTop / ($canvas_area[0].scrollHeight - $canvas_area[0].clientHeight);
+		if (isNaN(scroll_x_fraction)) { scroll_x_fraction = 0; }
+		if (isNaN(scroll_y_fraction)) { scroll_y_fraction = 0; }
+		let viewport_x = Math.floor(Math.max(scroll_x_fraction * (main_canvas.width - thumbnail_canvas.width), 0));
+		let viewport_y = Math.floor(Math.max(scroll_y_fraction * (main_canvas.height - thumbnail_canvas.height), 0));
+		// console.log("viewport_x", viewport_x, "viewport_y", viewport_y);
+		// viewport_x = Math.min(viewport_x, ...);
+		// viewport_y = Math.min(viewport_y, ...);
+		// viewport_x = Math.max(viewport_x, 0);
+		// viewport_y = Math.max(viewport_y, 0);
+
 		// render_canvas_view(thumbnail_canvas, scale, viewport_x, viewport_y, false);
 		// Thumbnail doesn't use the magnification level, and doesn't support DPR yet.
 		// render_canvas_view(thumbnail_canvas, window.devicePixelRatio, viewport_x, viewport_y, false);
