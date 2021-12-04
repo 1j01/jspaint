@@ -444,31 +444,63 @@ body > .window-titlebar {
 }
 .menu-button {
 	box-sizing: border-box;
-	height: 18px;
+	/* Using a balanced border to offset the contents on press */
+	border: 0px solid transparent;
+	border-top-width: 0px;
+	border-left-width: 0px;
+	border-bottom-width: 1px;
+	border-right-width: 1px;
+	/* Unfortunately, everything else has to be balanced by 1px (very carefully) in many places. */
+	
+	height: 18px; /* (EFFECTIVELY NORMAL but...) +1px -1px: +1px due to transparent border, but needs to be metrically same as visual height for the menu popup positioning, so I used bottom: -1px on the pseudo element to get it so this can be -1px to 18px again */
 	line-height: 1;
-	margin-top: 1px;
-	margin-bottom: 1px;
-	padding: 2px 5px;
+	margin-top: 1px; /* NORMAL MARGIN */
+	/* margin-bottom: 1px; consumed margin */
+	margin-right: -1px; /* keep menu items directly abutting */
+
+	/* need the overflow visible for the psuedo element's top and left borders to be visible */
+	overflow: visible;
+	-webkit-clip-path: inset(0 1px 0 0);
+	        clip-path: inset(0 1px 0 0); /* clipping text off inside the border, without clipping the border (somewhat mysteriously) */
+
+	padding: 2px 5px; /* NORMAL PADDING; I took great lengths to make this easily changable from outside code (padding is an obvious strategy for making the press offset effect, but I think this is a common thing you might want to customize) */
 	position: relative;
 	outline: 0;
 	/* @extend button.lightweight; */
 	background: rgb(192, 192, 192);
 	background: var(--Menu);
 }
+.menu-button.highlight.active {
+	border-top-width: 1px;
+	border-left-width: 1px;
+	border-bottom-width: 0px;
+	border-right-width: 0px;
+}
 /* Note: In Windows 98, normal menu bars have an inset highlight if you use Esc and then the arrow keys,
 whereas Explorer's menu bars are outset and match the hover effect, which I feel makes more sense,
 so I think I'll immitate that. */
-/* Also, to prevent duplicate highlight, and lingering highlight with touch, I'm using a class, rather than :hover/:focus/:active */
-.menu-button.highlight {
+/* Also, to prevent duplicate highlight (via keyboard + mouse), and lingering highlight with touch, I'm using a class, rather than :hover/:focus/:active */
+.menu-button.highlight::after {
+	content: "";
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: -1px;
 	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
-.menu-button.highlight.active {
+.menu-button.highlight.active::after {
 	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 rgb(255, 255, 255) inset;
 	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 var(--ButtonHilight) inset;
-	top: 1px;
-	left: 1px;
+	/* counteract the balanced border, in order to render this border, in the proper place */
+	left: -1px;
+	top: -1px;
+	right: 1px;
+	bottom: 0;
 }
+
 .menu-popup {
 	display: block;
 	padding: 2px;
@@ -518,6 +550,36 @@ so I think I'll immitate that. */
 .menu-item .menu-item-shortcut {
 	padding-left: 10px;
 }
+/* Note: viewBox is needed for scaling the SVG, used in JS Paint's Eye Gaze Mode */
+.menu-item-checkbox-area::after {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
+	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
+}
+.menu-item-checkbox-area.radio::after {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+}
+.has-submenu .menu-item-submenu-area::after {
+	-webkit-mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
+	        mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
+}
+.has-submenu .menu-item-submenu-area.point-right::after {
+	transform: scaleX(-1);
+}
+.menu-item-checkbox-area::after,
+.menu-item-submenu-area::after {
+	content: "";
+	display: block;
+	width: 16px;
+	height: 16px;
+	/* no background means it's invisible by default here (masking transparent gives transparent, i.e. nothing) */
+}
+.menu-item[aria-checked=true] .menu-item-checkbox-area::after,
+.menu-item.has-submenu .menu-item-submenu-area::after {
+	/* makes it visible */
+	background: currentColor;
+}
+
 .menu-hr {
 	border: 0;
 	border-top: 1px solid rgb(128, 128, 128);
