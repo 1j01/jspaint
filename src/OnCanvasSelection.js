@@ -105,8 +105,11 @@ class OnCanvasSelection extends OnCanvasObject {
 				mox = ~~(cx / rect.width * this.canvas.width);
 				moy = ~~(cy / rect.height * this.canvas.height);
 				$G.on("pointermove", pointermove);
+				this.dragging = true;
 				$G.one("pointerup", () => {
 					$G.off("pointermove", pointermove);
+					this.dragging = false;
+					update_helper_layer(); // for thumbnail, which draws selection outline if it's not being dragged
 				});
 				if (e.shiftKey) {
 					// Stamp or start to smear selection

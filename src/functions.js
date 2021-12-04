@@ -272,6 +272,12 @@ function render_canvas_view(hcanvas, scale, viewport_x, viewport_y, is_helper_la
 		hctx.drawImage(selection.canvas, selection.x, selection.y);
 		
 		hctx.restore();
+
+		if (!is_helper_layer && !selection.dragging) {
+			// Draw the selection outline (for the thumbnail)
+			// (The main canvas view has the OnCanvasSelection object which has its own outline)
+			draw_selection_box(hctx, selection.x, selection.y, selection.width, selection.height, scale, -viewport_x, -viewport_y);
+		}
 	}
 
 	if (textbox) {
