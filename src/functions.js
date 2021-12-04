@@ -454,6 +454,7 @@ function toggle_thumbnail() {
 			$thumbnail_window.$content.append(thumbnail_canvas);
 			$thumbnail_window.$content.addClass("inset-deep");
 			$thumbnail_window.$content.css({ marginTop: "1px" }); // @TODO: should this (or equivalent on titlebar) be for all windows?
+			$thumbnail_window.maximize = () => { }; // @TODO: disable maximize with an option
 			new ResizeObserver((entries) => {
 				const entry = entries[0];
 				if ("devicePixelContentBoxSize" in entry) {
