@@ -435,6 +435,8 @@ function toggle_thumbnail() {
 	} else {
 		if (!thumbnail_canvas) {
 			thumbnail_canvas = make_canvas(108, 92);
+			thumbnail_canvas.style.width = "100%";
+			thumbnail_canvas.style.height = "100%";
 		}
 		if (!$thumbnail_window) {
 			$thumbnail_window = new $Window({
@@ -453,20 +455,23 @@ function toggle_thumbnail() {
 			$thumbnail_window.$content.addClass("inset-deep");
 			$thumbnail_window.$content.css({ marginTop: "1px" }); // @TODO: should this (or equivalent on titlebar) be for all windows?
 			new ResizeObserver((entries) => {
-				// thumbnail_canvas.width = $thumbnail_window.$content.width();
-				// thumbnail_canvas.height = $thumbnail_window.$content.height();
 				const entry = entries[0];
 				if ("devicePixelContentBoxSize" in entry) {
+					// console.log("devicePixelContentBoxSize", entry.devicePixelContentBoxSize);
+					// Firefox seems to support this, although I can't find any documentation that says it should
+					// I can't find an implementation bug or anything.
+					// So I had to disable this case to test the fallback case (in Firefox 94.0)
 					thumbnail_canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
 					thumbnail_canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
 				} else {
-					thumbnail_canvas.width = entry.contentBoxSize[0].inlineSize * devicePixelRatio;
-					thumbnail_canvas.height = entry.contentBoxSize[0].blockSize * devicePixelRatio;
+					// console.log("contentBoxSize", entry.contentBoxSize);
+					// round() seems to line up with what Firefox does for device pixel alignment, which is great.
+					// In Chrome it's blurry at some zoom levels with round(), ceil(), or floor(), but it (documentedly) supports devicePixelContentBoxSize.
+					thumbnail_canvas.width = Math.round(entry.contentBoxSize[0].inlineSize * devicePixelRatio);
+					thumbnail_canvas.height = Math.round(entry.contentBoxSize[0].blockSize * devicePixelRatio);
 				}
-				thumbnail_canvas.style.width = entry.contentBoxSize[0].inlineSize + "px";
-				thumbnail_canvas.style.height = entry.contentBoxSize[0].blockSize + "px";
 				update_helper_layer_immediately(); // updates thumbnail (but also unnecessarily the helper layer)
-			}).observe($thumbnail_window.$content[0], {box: ['device-pixel-content-box']}); // @TODO: does the box make it worse browser support?
+			}).observe(thumbnail_canvas, { box: ['device-pixel-content-box'] }); // @TODO: does the box make it worse browser support?
 		}
 		$thumbnail_window.show();
 	}
