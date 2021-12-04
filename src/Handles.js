@@ -214,7 +214,8 @@ function Handles(options) {
 	});
 
 	this.handles = handles;
-	this.show = $(handles).show;
-	this.hide = $(handles).hide;
-	
+
+	// It shouldn't scroll when hiding/showing handles, so don't use jQuery hide/show or CSS display.
+	this.hide = ()=> { $(handles).css({opacity: 0, pointerEvents: "none"}); };
+	this.show = ()=> { $(handles).css({opacity: "", pointerEvents: ""}); };
 }
