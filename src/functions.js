@@ -1576,11 +1576,13 @@ function go_to_history_node(target_history_node, canceling) {
 		}
 		return;
 	}
+	/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.
 	const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 	if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
 		window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		undoable({name: "Unknown [go_to_history_node]", use_loose_canvas_changes: true}, ()=> {});
 	}
+	*/
 	current_history_node = target_history_node;
 	
 	deselect(true);
@@ -1674,11 +1676,13 @@ function go_to_history_node(target_history_node, canceling) {
 }
 function undoable({name, icon, use_loose_canvas_changes, soft}, callback){
 	if (!use_loose_canvas_changes) {
+		/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.
 		const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 		if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
 			window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 			undoable({name: "Unknown [undoable]", use_loose_canvas_changes: true}, ()=> {});
 		}
+		*/
 	}
 
 	saved = false;
