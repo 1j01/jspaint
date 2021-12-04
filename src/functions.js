@@ -197,8 +197,7 @@ function update_helper_layer_immediately() {
 		let viewport_x = Math.floor(Math.max(scroll_x_fraction * (main_canvas.width - thumbnail_canvas.width), 0));
 		let viewport_y = Math.floor(Math.max(scroll_y_fraction * (main_canvas.height - thumbnail_canvas.height), 0));
 
-		// Thumbnail doesn't use the magnification level, and doesn't support devicePixelRatio yet, so scale is 1.
-		render_canvas_view(thumbnail_canvas, 1, viewport_x, viewport_y, false);
+		render_canvas_view(thumbnail_canvas, 1, viewport_x, viewport_y, false); // devicePixelRatio?
 	}
 }
 
@@ -453,11 +452,21 @@ function toggle_thumbnail() {
 			$thumbnail_window.$content.append(thumbnail_canvas);
 			$thumbnail_window.$content.addClass("inset-deep");
 			$thumbnail_window.$content.css({ marginTop: "1px" }); // @TODO: should this (or equivalent on titlebar) be for all windows?
-			new ResizeObserver(() => {
-				thumbnail_canvas.width = $thumbnail_window.$content.width();
-				thumbnail_canvas.height = $thumbnail_window.$content.height();
+			new ResizeObserver((entries) => {
+				// thumbnail_canvas.width = $thumbnail_window.$content.width();
+				// thumbnail_canvas.height = $thumbnail_window.$content.height();
+				const entry = entries[0];
+				if ("devicePixelContentBoxSize" in entry) {
+					thumbnail_canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
+					thumbnail_canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
+				} else {
+					thumbnail_canvas.width = entry.contentBoxSize[0].inlineSize * devicePixelRatio;
+					thumbnail_canvas.height = entry.contentBoxSize[0].blockSize * devicePixelRatio;
+				}
+				thumbnail_canvas.style.width = entry.contentBoxSize[0].inlineSize + "px";
+				thumbnail_canvas.style.height = entry.contentBoxSize[0].blockSize + "px";
 				update_helper_layer_immediately(); // updates thumbnail (but also unnecessarily the helper layer)
-			}).observe($thumbnail_window.$content[0]);
+			}).observe($thumbnail_window.$content[0], {box: ['device-pixel-content-box']}); // @TODO: does the box make it worse browser support?
 		}
 		$thumbnail_window.show();
 	}
