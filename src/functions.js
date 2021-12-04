@@ -287,6 +287,12 @@ function render_canvas_view(hcanvas, scale, viewport_x, viewport_y, is_helper_la
 		hctx.drawImage(textbox.canvas, textbox.x, textbox.y);
 		
 		hctx.restore();
+
+		if (!is_helper_layer && !textbox.dragging) {
+			// Draw the textbox outline (for the thumbnail)
+			// (The main canvas view has the OnCanvasTextBox object which has its own outline)
+			draw_selection_box(hctx, textbox.x, textbox.y, textbox.width, textbox.height, scale, -viewport_x, -viewport_y);
+		}
 	}
 
 	if (grid_visible) {
