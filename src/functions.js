@@ -182,18 +182,17 @@ function update_helper_layer_immediately() {
 		// It gets clipped to the top left portion of the viewport if the thumbnail is too small.
 
 		// This works except for if there's a selection, it affects the scrollable area, and it shouldn't affect this calculation.
-		// let scroll_x_fraction = $canvas_area[0].scrollLeft / ($canvas_area[0].scrollWidth - $canvas_area[0].clientWidth);
-		// let scroll_y_fraction = $canvas_area[0].scrollTop / ($canvas_area[0].scrollHeight - $canvas_area[0].clientHeight);
-		// if (isNaN(scroll_x_fraction)) { scroll_x_fraction = 0; }
-		// if (isNaN(scroll_y_fraction)) { scroll_y_fraction = 0; }
+		// const scroll_width = $canvas_area[0].scrollWidth - $canvas_area[0].clientWidth;
+		// const scroll_height = $canvas_area[0].scrollHeight - $canvas_area[0].clientHeight;
 
+		// Are these padding terms needed? I feel like they should be so I added them, but I can't see a difference.
 		const padding_left = parseFloat($canvas_area.css("padding-left"));
 		const padding_top = parseFloat($canvas_area.css("padding-top"));
-		// @TODO: I'm handling divide by zero, but should it ever divide by <1?
-		let scroll_x_fraction = $canvas_area[0].scrollLeft / (main_canvas.clientWidth + padding_left - $canvas_area[0].clientWidth);
-		let scroll_y_fraction = $canvas_area[0].scrollTop / (main_canvas.clientHeight + padding_top - $canvas_area[0].clientHeight);
-		if (isNaN(scroll_x_fraction)) { scroll_x_fraction = 0; }
-		if (isNaN(scroll_y_fraction)) { scroll_y_fraction = 0; }
+		const scroll_width = main_canvas.clientWidth + padding_left - $canvas_area[0].clientWidth;
+		const scroll_height = main_canvas.clientHeight + padding_top - $canvas_area[0].clientHeight;
+		// Don't divide by less than one, or the thumbnail with disappear off to the top/left (or completely for NaN).
+		let scroll_x_fraction = $canvas_area[0].scrollLeft / Math.max(1, scroll_width);
+		let scroll_y_fraction = $canvas_area[0].scrollTop / Math.max(1, scroll_height);
 
 		let viewport_x = Math.floor(Math.max(scroll_x_fraction * (main_canvas.width - thumbnail_canvas.width), 0));
 		let viewport_y = Math.floor(Math.max(scroll_y_fraction * (main_canvas.height - thumbnail_canvas.height), 0));
