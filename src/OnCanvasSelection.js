@@ -108,6 +108,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				moy = ~~(cy / rect.height * this.canvas.height);
 				$G.on("pointermove", pointermove);
 				this.dragging = true;
+				update_helper_layer(); // for thumbnail, which draws textbox outline if it's not being dragged
 				$G.one("pointerup", () => {
 					$G.off("pointermove", pointermove);
 					this.dragging = false;
