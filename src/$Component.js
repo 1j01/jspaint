@@ -94,10 +94,12 @@ function $Component(title, className, orientation, $el){
 		$c.css(`margin-${get_direction() === "rtl" ? "right" : "left"}`, "3px");
 	}
 
-	let iid;
+	let resizeObserver;
 	if($("body").hasClass("eye-gaze-mode")){
-		// @TODO: don't use an interval for this!
-		iid = setInterval(()=> {
+		resizeObserver = new ResizeObserver(() => {
+			// RAF to avoid "ResizeObserver loop limit exceeded" if the page is loaded in Eye Gaze Mode with the page zoomed in
+			// Actually, this breaks the effect.
+			// requestAnimationFrame(() => {
 			const scale = 3;
 			$c.css({
 				transform: `scale(${scale})`,
@@ -105,7 +107,9 @@ function $Component(title, className, orientation, $el){
 				marginRight: $c[0].scrollWidth * (scale - 1),
 				marginBottom: $c[0].scrollHeight * (scale - 1),
 			});
-		}, 200);
+			// });
+		});
+		resizeObserver.observe($c[0]);
 	}
 	
 	let ox, oy;
@@ -398,7 +402,7 @@ function $Component(title, className, orientation, $el){
 	$c.destroy = ()=> {
 		$w.close();
 		$c.remove();
-		clearInterval(iid);
+		resizeObserver?.unobserve($c[0]);
 	};
 	
 	$w.on("close", e => {
