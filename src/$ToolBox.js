@@ -99,7 +99,12 @@ function $ToolBox(tools, is_extras){
 	return $c;
 }
 
-if (localStorage.dev_theme_tool_icons === "true") {
+let dev_theme_tool_icons = false;
+try {
+	dev_theme_tool_icons = localStorage.dev_theme_tool_icons === "true";
+// eslint-disable-next-line no-empty
+} catch (e) { }
+if (dev_theme_tool_icons) {
 	let last_update_id = 0;
 	$G.on("session-update", ()=> {
 		last_update_id += 1;
