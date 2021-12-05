@@ -1582,7 +1582,7 @@ function render_history_as_gif(){
 	}
 }
 
-function go_to_history_node(target_history_node, canceling) {
+function go_to_history_node(target_history_node, canceling, discard_document_state) {
 	const from_history_node = current_history_node;
 
 	if (!target_history_node.image_data) {
@@ -1967,14 +1967,25 @@ function show_document_history() {
 	$w.center();
 }
 
-function cancel(going_to_history_node){
+function cancel(going_to_history_node, discard_document_state){
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
 	if (!history_node_to_cancel_to) {
 		return;
 	}
+
+	// For two finger panning, I want to prevent history nodes from being created,
+	// for performance and to avoid cluttering the history.
+	// Most tools create undoables on pointerup, in which case we can prevent them entirely,
+	// but Fill tool creates on pointerdown, so we need to delete a history node in that case.
+	// Assumption: No tools will create MULTIPLE history nodes before pointerup.
+	// Wait, that's not true. The selection tool creates nodes when moving/resizing.
+	// @TODO: figure this out.
+	const history_node_to_discard = discard_document_state && current_history_node !== history_node_to_cancel_to ? current_history_node : null;
+	// console.log("history_node_to_discard", history_node_to_discard, "current_history_node", current_history_node, "history_node_to_cancel_to", history_node_to_cancel_to);
+
 	// history_node_to_cancel_to = history_node_to_cancel_to || current_history_node;
-	$G.triggerHandler("pointerup", ["canceling"]);
+	$G.triggerHandler("pointerup", ["canceling", discard_document_state]);
 	for (const selected_tool of selected_tools) {
 		selected_tool.cancel && selected_tool.cancel();
 	}
@@ -1982,6 +1993,32 @@ function cancel(going_to_history_node){
 		// Note: this will revert any changes from other users in multi-user sessions
 		// which isn't good, but there's no real conflict resolution in multi-user mode anyways
 		go_to_history_node(history_node_to_cancel_to, true);
+
+		if (history_node_to_discard) {
+			if (history_node_to_discard === current_history_node) {
+				// If this isn't the root node, we've got a problem
+				if (history_node_to_discard.parent) {
+					// show_error_message("Maybe you've performed a gesture that's not supported by this app. Please report this bug.");
+					show_error_message("History node to discard is current history node?\nThis shouldn't happen. Please report this bug.");
+					console.log("history_node_to_discard === current_history_node", history_node_to_discard);
+				}
+			} else if (history_node_to_discard.parent) {
+				const index = history_node_to_discard.parent.futures.indexOf(history_node_to_discard);
+				if (index === -1) {
+					show_error_message("History node not found. Please report this bug.");
+					console.log("history_node_to_discard", history_node_to_discard);
+					console.log("current_history_node", current_history_node);
+					console.log("history_node_to_discard.parent", history_node_to_discard.parent);
+				} else {
+					history_node_to_discard.parent.futures.splice(index, 1);
+					$G.triggerHandler("history-update"); // update history view (don't want you to be able to click on the excised node)
+					// (@TODO: prevent duplicate update, here vs go_to_history_node)
+				}
+			} else {
+				show_error_message("History node to discard has no parent. Please report this bug.");
+				console.log("history_node_to_discard", history_node_to_discard);
+			}
+		}
 	}
 	history_node_to_cancel_to = null;
 	update_helper_layer();

@@ -1269,7 +1269,7 @@ function canvas_pointer_move(e){
 	shift = e.shiftKey;
 	pointer = to_canvas_coords(e);
 	
-	// Quick Undo
+	// Quick Undo (for mouse/pen)
 	// (Note: pointermove also occurs when the set of buttons pressed changes,
 	// except when another event would fire like pointerdown)
 	if(pointers.length && e.button != -1){
@@ -1989,6 +1989,8 @@ async function init_eye_gaze_mode() {
 let last_zoom_pointer_distance;
 let pan_last_pos;
 let pan_start_magnification; // for panning and zooming in the same gesture
+let first_pointer_time;
+const discard_quick_undo_period = 500; // milliseconds in which to treat gesture as just a pan/zoom if you use two fingers, rather than treating it as a brush stroke you might care about
 function average_points(points) {
 	const average = {x: 0, y: 0};
 	for (const pointer of points) {
@@ -2022,17 +2024,23 @@ $canvas_area.on("pointerdown", (event)=> {
 			y: event.clientY,
 		});
 	}
-
+	if (pointers.length === 1) {
+		first_pointer_time = performance.now();
+	}
 	if (pointers.length == 2) {
 		last_zoom_pointer_distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
 		pan_last_pos = average_points(pointers);
 		pan_start_magnification = magnification;
 	}
 	// Quick Undo when there are multiple pointers (i.e. for touch)
-	// see pointermove for other pointer types
+	// See pointermove for other pointer types
+	// SEE OTHER POINTERDOWN HANDLER ALSO
 	if (pointers.length >= 2) {
-		cancel();
-		pointer_active = false; // NOTE: pointer_active used in cancel()
+		// If you press two fingers quickly, it shouldn't make a new history entry.
+		// But if you draw something and then press a second finger to clear it, it should let you redo.
+		const discard_document_state = first_pointer_time && performance.now() - first_pointer_time < discard_quick_undo_period;
+		cancel(false, discard_document_state);
+		pointer_active = false; // NOTE: pointer_active used in cancel(); must be set after cancel()
 		return;
 	}
 });
@@ -2080,11 +2088,16 @@ $canvas.on("pointerdown", e => {
 
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
+	// SEE OTHER POINTERDOWN HANDLER ALSO
 	// NOTE: this relies on event handler order for pointerdown
 	// pointer is not added to pointers yet
 	if(pointers.length >= 1){
-		cancel();
-		pointer_active = false; // NOTE: pointer_active used in cancel()
+		// If you press two fingers quickly, it shouldn't make a new history entry.
+		// But if you draw something and then press a second finger to clear it, it should let you redo.
+		const discard_document_state = first_pointer_time && performance.now() - first_pointer_time < discard_quick_undo_period;
+		cancel(false, discard_document_state);
+		pointer_active = false; // NOTE: pointer_active used in cancel(); must be set after cancel()
+
 		// in eye gaze mode, allow drawing with mouse after canceling gaze gesture with mouse
 		pointers = pointers.filter((pointer)=>
 			pointer.pointerId !== 1234567890
@@ -2135,16 +2148,20 @@ $canvas.on("pointerdown", e => {
 
 		$G.on("pointermove", canvas_pointer_move);
 
-		$G.one("pointerup", (e, canceling) => {
+		$G.one("pointerup", (e, canceling, no_undoable) => {
 			button = undefined;
 			reverse = false;
 
 			if (e.clientX !== undefined) { // may be synthetic event without coordinates
 				pointer = to_canvas_coords(e);
 			}
-			selected_tools.forEach((selected_tool)=> {
-				selected_tool.pointerup && selected_tool.pointerup(main_ctx, pointer.x, pointer.y);
-			});
+			// don't create undoables if you're two-finger-panning
+			// @TODO: do any tools use pointerup for cleanup?
+			if (!no_undoable) {
+				selected_tools.forEach((selected_tool) => {
+					selected_tool.pointerup && selected_tool.pointerup(main_ctx, pointer.x, pointer.y);
+				});
+			}
 
 			if (selected_tools.length === 1) {
 				if (selected_tool.deselect) {
