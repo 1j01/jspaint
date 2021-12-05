@@ -1830,6 +1830,10 @@ function show_document_history() {
 	// $w.prependTo("body").css({position: ""});
 	$w.addClass("history-window squish");
 	$w.$content.html(`
+		<label>
+			<!--<input type="checkbox" id="history-show-all-branches" checked> Show all branches-->
+			<input type="checkbox" id="history-view-linear" checked> Linear timeline
+		</label>
 		<div class="history-view" tabIndex="0"></div>
 	`);
 
@@ -1841,6 +1845,13 @@ function show_document_history() {
 	let rendered_$entries = [];
 	let current_$entry;
 
+	let $linear_checkbox = $w.$content.find("#history-view-linear");
+	let linear = $linear_checkbox.is(":checked");
+	$linear_checkbox.on("change", () => {
+		linear = $linear_checkbox.is(":checked");
+		render_tree();
+	});
+
 	function render_tree_from_node(node) {
 		const $entry = $(`
 			<div class="history-entry">
@@ -1851,6 +1862,15 @@ function show_document_history() {
 		// $entry.find(".history-entry-name").text((node.name || "Unknown") + (node.soft ? " (soft)" : ""));
 		$entry.find(".history-entry-name").text((node.name || "Unknown") + (node === root_history_node ? " (Start of History)" : ""));
 		$entry.find(".history-entry-icon-area").append(node.icon);
+		if (!linear) {
+			let dist_to_root = 0;
+			for (let ancestor = node.parent; ancestor; ancestor = ancestor.parent) {
+				dist_to_root++;
+			}
+			$entry.css({
+				marginInlineStart: `${dist_to_root * 8}px`,
+			});
+		}
 		if (node === current_history_node) {
 			$entry.addClass("current");
 			current_$entry = $entry;
@@ -1886,15 +1906,19 @@ function show_document_history() {
 		$history_view.empty();
 		rendered_$entries = [];
 		render_tree_from_node(root_history_node);
-		rendered_$entries.sort(($a, $b)=> {
-			if ($a.history_node.timestamp < $b.history_node.timestamp) {
-				return -1;
-			}
-			if ($b.history_node.timestamp < $a.history_node.timestamp) {
-				return +1;
-			}
-			return 0;
-		});
+		if (linear) {
+			rendered_$entries.sort(($a, $b) => {
+				if ($a.history_node.timestamp < $b.history_node.timestamp) {
+					return -1;
+				}
+				if ($b.history_node.timestamp < $a.history_node.timestamp) {
+					return +1;
+				}
+				return 0;
+			});
+		} else {
+			rendered_$entries.reverse();
+		}
 		rendered_$entries.forEach(($entry)=> {
 			$history_view.append($entry);
 		});
