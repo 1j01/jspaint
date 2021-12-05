@@ -1832,7 +1832,11 @@ function show_document_history() {
 	$w.$content.html(`
 		<label>
 			<!--<input type="checkbox" id="history-show-all-branches" checked> Show all branches-->
-			<input type="checkbox" id="history-view-linear" checked> Linear timeline
+			<!--<input type="checkbox" id="history-view-linear" checked> Linear timeline-->
+			<select id="history-view-mode">
+				<option value="linear">Linear timeline</option>
+				<option value="tree">Tree</option>
+			</select>
 		</label>
 		<div class="history-view" tabIndex="0"></div>
 	`);
@@ -1845,10 +1849,19 @@ function show_document_history() {
 	let rendered_$entries = [];
 	let current_$entry;
 
-	let $linear_checkbox = $w.$content.find("#history-view-linear");
-	let linear = $linear_checkbox.is(":checked");
-	$linear_checkbox.on("change", () => {
-		linear = $linear_checkbox.is(":checked");
+	// let $linear_checkbox = $w.$content.find("#history-view-linear");
+	// let linear = $linear_checkbox.is(":checked");
+	// $linear_checkbox.on("change", () => {
+	// 	linear = $linear_checkbox.is(":checked");
+	// 	render_tree();
+	// });
+	let $mode_select = $w.$content.find("#history-view-mode");
+	$mode_select.css({
+		margin: "10px",
+	});
+	let mode = $mode_select.val();
+	$mode_select.on("change", () => {
+		mode = $mode_select.val();
 		render_tree();
 	});
 
@@ -1862,7 +1875,7 @@ function show_document_history() {
 		// $entry.find(".history-entry-name").text((node.name || "Unknown") + (node.soft ? " (soft)" : ""));
 		$entry.find(".history-entry-name").text((node.name || "Unknown") + (node === root_history_node ? " (Start of History)" : ""));
 		$entry.find(".history-entry-icon-area").append(node.icon);
-		if (!linear) {
+		if (mode === "tree") {
 			let dist_to_root = 0;
 			for (let ancestor = node.parent; ancestor; ancestor = ancestor.parent) {
 				dist_to_root++;
@@ -1906,7 +1919,7 @@ function show_document_history() {
 		$history_view.empty();
 		rendered_$entries = [];
 		render_tree_from_node(root_history_node);
-		if (linear) {
+		if (mode === "linear") {
 			rendered_$entries.sort(($a, $b) => {
 				if ($a.history_node.timestamp < $b.history_node.timestamp) {
 					return -1;
