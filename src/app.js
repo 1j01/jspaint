@@ -2036,7 +2036,9 @@ $G.on("pointermove", (event)=> {
 		const current_pos = average_points(pointers);
 		const distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
 		const difference_in_distance = distance - pan_start_distance;
-		let new_magnification = pan_start_magnification * (1 + difference_in_distance / 100); // @TODO: logarithmic or something
+		const zoom = (Math.exp(difference_in_distance / 100 * Math.sign(difference_in_distance)) - 1) * Math.sign(difference_in_distance);
+		$status_text.text(zoom.toFixed(2));
+		let new_magnification = pan_start_magnification * (1 + zoom);
 		new_magnification = Math.round(new_magnification * 2) / 2;
 		new_magnification = Math.max(0.5, Math.min(new_magnification, 40));
 		if (new_magnification != magnification) {
