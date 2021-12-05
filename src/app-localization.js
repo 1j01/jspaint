@@ -821,6 +821,7 @@ function get_language_emoji(locale) {
 
 const base_language = "en";
 const available_languages = ["ar", "cs", "da", "de", "el", "en", "es", "fi", "fr", "he", "hu", "it", "ja", "ko", "nl", "no", "pl", "pt", "pt-br", "ru", "sk", "sl", "sv", "tr", "zh", "zh-simplified"];
+// spell-checker:disable
 const language_names = {
 	// "639-1": [["ISO language name"], ["Native name (endonym)"]],
 	ab: [["Abkhazian"], ["Аҧсуа Бызшәа", "Аҧсшәа"]],
@@ -1017,6 +1018,7 @@ const language_names = {
 	za: [["Zhuang", "Chuang"], ["Saɯ Cueŋƅ", "Saw Cuengh"]],
 	zu: [["Zulu"], ["IsiZulu"]],
 };
+// spell-checker:enable
 
 function get_iso_language_name(language) {
 	return language_names[language][0][0];
