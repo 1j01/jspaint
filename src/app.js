@@ -1966,9 +1966,9 @@ async function init_eye_gaze_mode() {
 	};
 }
 
+let last_zoom_pointer_distance;
 let pan_start_pos;
-let pan_start_magnification; // for zoom, which some might call "zoom", but I'm gonna lump it with pan
-let pan_start_distance; // for zoom
+let pan_start_magnification; // for panning and zooming in the same gesture
 let pan_start_scroll_top;
 let pan_start_scroll_left;
 function average_points(points) {
@@ -2006,9 +2006,9 @@ $canvas_area.on("pointerdown", (event)=> {
 	}
 
 	if (pointers.length == 2) {
+		last_zoom_pointer_distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
 		pan_start_pos = average_points(pointers);
 		pan_start_magnification = magnification;
-		pan_start_distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
 		pan_start_scroll_top = $canvas_area.scrollTop();
 		pan_start_scroll_left = $canvas_area.scrollLeft();
 	}
@@ -2035,11 +2035,16 @@ $G.on("pointermove", (event)=> {
 	if (pointers.length >= 2) {
 		const current_pos = average_points(pointers);
 		const distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
-		const difference_in_distance = distance - pan_start_distance;
-		const zoom = (Math.exp(difference_in_distance / 100 * Math.sign(difference_in_distance)) - 1) * Math.sign(difference_in_distance);
-		$status_text.text(zoom.toFixed(2));
-		let new_magnification = pan_start_magnification * (1 + zoom);
-		new_magnification = Math.round(new_magnification * 2) / 2;
+		const difference_in_distance = distance - last_zoom_pointer_distance;
+		let new_magnification = magnification;
+		if (Math.abs(difference_in_distance) > 60) {
+			last_zoom_pointer_distance = distance;
+			if (difference_in_distance > 0) {
+				new_magnification *= 1.5;
+			} else {
+				new_magnification /= 1.5;
+			}
+		}
 		new_magnification = Math.max(0.5, Math.min(new_magnification, 40));
 		if (new_magnification != magnification) {
 			set_magnification(new_magnification);
