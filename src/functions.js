@@ -1967,7 +1967,7 @@ function show_document_history() {
 	$w.center();
 }
 
-function cancel(going_to_history_node, discard_document_state){
+function cancel(going_to_history_node, discard_document_state) {
 	// Note: this function should be idempotent.
 	// `cancel(); cancel();` should do the same thing as `cancel();`
 	if (!history_node_to_cancel_to) {
@@ -1975,13 +1975,36 @@ function cancel(going_to_history_node, discard_document_state){
 	}
 
 	// For two finger panning, I want to prevent history nodes from being created,
-	// for performance and to avoid cluttering the history.
+	// for performance, and to avoid cluttering the history,
+	// and also so if you undo and then pan, you can still redo (without accessing the nonlinear history window).
 	// Most tools create undoables on pointerup, in which case we can prevent them entirely,
 	// but Fill tool creates on pointerdown, so we need to delete a history node in that case.
-	// Assumption: No tools will create MULTIPLE history nodes before pointerup.
-	// Wait, that's not true. The selection tool creates nodes when moving/resizing.
-	// @TODO: figure this out.
-	const history_node_to_discard = discard_document_state && current_history_node !== history_node_to_cancel_to ? current_history_node : null;
+	// Select tool can create multiple undoables before being cancelled.
+	let history_node_to_discard;
+	if (discard_document_state && current_history_node !== history_node_to_cancel_to) {
+		// history_node_to_discard = current_history_node;
+		// The selection tool creates nodes when moving/resizing, so there may be multiple nodes to discard.
+		// We can discard one to discard them all though, as they are in a chain.
+		// (Note: it's important that when revisiting a history state with a selection,
+		// history_node_to_cancel_to is reset to the current_history_node,
+		// not the history node before the selection. Otherwise we could blow away history,
+		// including any number of things after the selection operation.)
+		// (@TODO: test that!)
+		history_node_to_discard = current_history_node;
+		// something like this... maybe
+		while (
+			// AI-generated! not thought out yet.
+			history_node_to_discard.parent &&
+			history_node_to_discard.parent !== history_node_to_cancel_to
+		) {
+			history_node_to_discard = history_node_to_discard.parent;
+			// need some protection like this:
+			if (history_node_to_discard.futures.length > 1) {
+				history_node_to_discard = null;
+				break;
+			}
+		}
+	}
 	// console.log("history_node_to_discard", history_node_to_discard, "current_history_node", current_history_node, "history_node_to_cancel_to", history_node_to_cancel_to);
 
 	// history_node_to_cancel_to = history_node_to_cancel_to || current_history_node;
