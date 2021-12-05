@@ -98,7 +98,7 @@ function $Component(title, className, orientation, $el){
 	if($("body").hasClass("eye-gaze-mode")){
 		resizeObserver = new ResizeObserver(() => {
 			// RAF to avoid "ResizeObserver loop limit exceeded" if the page is loaded in Eye Gaze Mode with the page zoomed in
-			// Actually, this breaks the effect.
+			// Actually, this breaks the effect, particularly when going from Modern theme to Classic theme.
 			// requestAnimationFrame(() => {
 			console.log(title, $c[0].scrollWidth, $c[0].scrollHeight);
 			const scale = 3;
