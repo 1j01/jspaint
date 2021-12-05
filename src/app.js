@@ -1967,10 +1967,10 @@ async function init_eye_gaze_mode() {
 }
 
 let last_zoom_pointer_distance;
-let pan_start_pos;
+let pan_last_pos;
 let pan_start_magnification; // for panning and zooming in the same gesture
-let pan_start_scroll_top;
-let pan_start_scroll_left;
+let pan_last_scroll_top;
+let pan_last_scroll_left;
 function average_points(points) {
 	const average = {x: 0, y: 0};
 	for (const pointer of points) {
@@ -2007,10 +2007,10 @@ $canvas_area.on("pointerdown", (event)=> {
 
 	if (pointers.length == 2) {
 		last_zoom_pointer_distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
-		pan_start_pos = average_points(pointers);
+		pan_last_pos = average_points(pointers);
 		pan_start_magnification = magnification;
-		pan_start_scroll_top = $canvas_area.scrollTop();
-		pan_start_scroll_left = $canvas_area.scrollLeft();
+		pan_last_scroll_top = $canvas_area.scrollTop();
+		pan_last_scroll_left = $canvas_area.scrollLeft();
 	}
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// see pointermove for other pointer types
@@ -2046,14 +2046,19 @@ $G.on("pointermove", (event)=> {
 			}
 		}
 		new_magnification = Math.max(0.5, Math.min(new_magnification, 40));
+		const old_magnification = magnification;
 		if (new_magnification != magnification) {
 			set_magnification(new_magnification);
 		}
-		const magnification_ratio = magnification / pan_start_magnification;
-		const difference_in_x = current_pos.x - pan_start_pos.x * magnification_ratio;
-		const difference_in_y = current_pos.y - pan_start_pos.y * magnification_ratio;
-		$canvas_area.scrollLeft(pan_start_scroll_left * magnification_ratio - difference_in_x);
-		$canvas_area.scrollTop(pan_start_scroll_top * magnification_ratio - difference_in_y);
+		// const magnification_ratio = magnification / pan_start_magnification;
+		const magnification_ratio = new_magnification / old_magnification;
+		const difference_in_x = current_pos.x - pan_last_pos.x * magnification_ratio;
+		const difference_in_y = current_pos.y - pan_last_pos.y * magnification_ratio;
+		$canvas_area.scrollLeft(pan_last_scroll_left * magnification_ratio - difference_in_x);
+		$canvas_area.scrollTop(pan_last_scroll_top * magnification_ratio - difference_in_y);
+		pan_last_scroll_left = $canvas_area.scrollLeft();
+		pan_last_scroll_top = $canvas_area.scrollTop();
+		pan_last_pos = current_pos;
 	}
 });
 
