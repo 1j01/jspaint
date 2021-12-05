@@ -50,10 +50,10 @@
 				if (string.indexOf(substring) > -1) {
 					alert('Script Error: See Browser Console for Detail');
 				} else {
-					try {
-						// try-catch in case of circular references or old browsers without JSON.stringify
-						error = JSON.stringify(error);
-					} catch (e) {}
+					// try {
+					// 	// try-catch in case of circular references or old browsers without JSON.stringify
+					// 	error = JSON.stringify(error);
+					// } catch (e) {}
 					alert('Internal application error: ' + msg + '\n\n' + 'URL: ' + url + '\n' + 'Line: ' + lineNo + '\n' + 'Column: ' + columnNo);
 				}
 				return false;
@@ -412,7 +412,8 @@
 			const old_onerror = window.onerror;
 			window.onerror = (message, source, lineno, colno, error)=> {
 				try {
-					show_error_message(localize("Internal application error."), error);
+					// Some errors don't give an error object, like "ResizeObserver loop limit exceeded"
+					show_error_message(localize("Internal application error."), error || message);
 				} catch (e) {
 					old_onerror(message, source, lineno, colno, error);
 				}
