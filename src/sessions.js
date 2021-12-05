@@ -128,7 +128,9 @@
 					}
 					else {
 						// @TODO: DRY with storage manager message
-						show_error_message("Please enable local storage in your browser's settings for local backup. It may be called Cookies, Storage, or Site Data.");
+						showMessageBox({
+							message: "Please enable local storage in your browser's settings for local backup. It may be called Cookies, Storage, or Site Data.",
+						});
 					}
 				}
 				else if (uri) {
