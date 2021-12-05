@@ -2034,8 +2034,6 @@ $G.on("pointermove", (event)=> {
 	}
 	if (pointers.length >= 2) {
 		const current_pos = average_points(pointers);
-		const difference_in_x = current_pos.x - pan_start_pos.x;
-		const difference_in_y = current_pos.y - pan_start_pos.y;
 		const distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
 		const difference_in_distance = distance - pan_start_distance;
 		let new_magnification = pan_start_magnification * (1 + difference_in_distance / 100); // @TODO: logarithmic or something
@@ -2044,8 +2042,11 @@ $G.on("pointermove", (event)=> {
 		if (new_magnification != magnification) {
 			set_magnification(new_magnification);
 		}
-		$canvas_area.scrollLeft(pan_start_scroll_left - difference_in_x);
-		$canvas_area.scrollTop(pan_start_scroll_top - difference_in_y);
+		const magnification_ratio = magnification / pan_start_magnification;
+		const difference_in_x = current_pos.x - pan_start_pos.x * magnification_ratio;
+		const difference_in_y = current_pos.y - pan_start_pos.y * magnification_ratio;
+		$canvas_area.scrollLeft(pan_start_scroll_left * magnification_ratio - difference_in_x);
+		$canvas_area.scrollTop(pan_start_scroll_top * magnification_ratio - difference_in_y);
 	}
 });
 
