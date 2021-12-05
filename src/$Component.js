@@ -100,6 +100,7 @@ function $Component(title, className, orientation, $el){
 			// RAF to avoid "ResizeObserver loop limit exceeded" if the page is loaded in Eye Gaze Mode with the page zoomed in
 			// Actually, this breaks the effect.
 			// requestAnimationFrame(() => {
+			console.log(title, $c[0].scrollWidth, $c[0].scrollHeight);
 			const scale = 3;
 			$c.css({
 				transform: `scale(${scale})`,
