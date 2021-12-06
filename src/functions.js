@@ -323,8 +323,8 @@ function set_magnification(new_scale, anchor_point) {
 
 	const old_scale = magnification;
 	const zoom_ratio = new_scale / old_scale;
-	let scroll_left = $canvas_area.scrollLeft();
-	let scroll_top = $canvas_area.scrollTop();
+	const old_scroll_left = $canvas_area.scrollLeft();
+	const old_scroll_top = $canvas_area.scrollTop();
 	const anchor_on_page = anchor_point ? from_canvas_coords(anchor_point) : null;
 
 	magnification = new_scale;
@@ -335,18 +335,21 @@ function set_magnification(new_scale, anchor_point) {
 	
 	if (anchor_point) {
 		const anchor_after_zoom = from_canvas_coords(anchor_point);
-		scroll_left = $canvas_area.scrollLeft();
-		scroll_top = $canvas_area.scrollTop();
-		scroll_left += anchor_after_zoom.clientX - anchor_on_page.clientX;
-		scroll_top += anchor_after_zoom.clientY - anchor_on_page.clientY;
+		// note To versus By!
+		$canvas_area[0].scrollBy({
+			left: anchor_after_zoom.clientX - anchor_on_page.clientX,
+			top: anchor_after_zoom.clientY - anchor_on_page.clientY,
+			behavior: "instant",
+		});
 	} else {
 		// rescale viewport with top left as anchor
-		scroll_left *= zoom_ratio;
-		scroll_top *= zoom_ratio;
+		// note To versus By!
+		$canvas_area[0].scrollTo({
+			left: old_scroll_left * zoom_ratio,
+			top: old_scroll_top * zoom_ratio,
+			behavior: "instant",
+		});
 	}
-
-	$canvas_area.scrollLeft(scroll_left);
-	$canvas_area.scrollTop(scroll_top);
 
 	$G.triggerHandler("resize"); // updates handles & grid
 	$G.trigger("option-changed"); // updates options area
