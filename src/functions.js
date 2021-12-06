@@ -196,6 +196,16 @@ function update_helper_layer_immediately() {
 
 		let viewport_x = Math.floor(Math.max(scroll_x_fraction * (main_canvas.width - thumbnail_canvas.width), 0));
 		let viewport_y = Math.floor(Math.max(scroll_y_fraction * (main_canvas.height - thumbnail_canvas.height), 0));
+		// if the canvas is larger than the document view, but not by much, and you scroll to the bottom or right,
+		// the margin for the canvas handles can lead to the thumbnail being cut off or even showing
+		// just blank space without this.
+		// @TODO: I could just do a linear interpolation between the scroll and the possible extents of the thumbnail instead of clamping, which could feel a little smoother (in this edge case).
+		viewport_x = Math.min(viewport_x, main_canvas.width - thumbnail_canvas.width);
+		viewport_y = Math.min(viewport_y, main_canvas.height - thumbnail_canvas.height);
+		// but I want it to go to the top/left still, if the canvas is smaller than the thumbnail viewport,
+		// so clamp it the other way afterward.
+		viewport_x = Math.max(viewport_x, 0);
+		viewport_y = Math.max(viewport_y, 0);
 
 		render_canvas_view(thumbnail_canvas, 1, viewport_x, viewport_y, false); // devicePixelRatio?
 	}
