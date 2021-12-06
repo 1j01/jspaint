@@ -1975,36 +1975,19 @@ function cancel(going_to_history_node, discard_document_state) {
 	}
 
 	// For two finger panning, I want to prevent history nodes from being created,
-	// for performance, and to avoid cluttering the history,
-	// and also so if you undo and then pan, you can still redo (without accessing the nonlinear history window).
-	// Most tools create undoables on pointerup, in which case we can prevent them entirely,
+	// for performance, and to avoid cluttering the history.
+	// (And also so if you undo and then pan, you can still redo (without accessing the nonlinear history window).)
+	// Most tools create undoables on pointerup, in which case we can prevent them from being created,
 	// but Fill tool creates on pointerdown, so we need to delete a history node in that case.
-	// Select tool can create multiple undoables before being cancelled.
-	let history_node_to_discard;
-	if (discard_document_state && current_history_node !== history_node_to_cancel_to) {
-		// history_node_to_discard = current_history_node;
-		// The selection tool creates nodes when moving/resizing, so there may be multiple nodes to discard.
-		// We can discard one to discard them all though, as they are in a chain.
-		// (Note: it's important that when revisiting a history state with a selection,
-		// history_node_to_cancel_to is reset to the current_history_node,
-		// not the history node before the selection. Otherwise we could blow away history,
-		// including any number of things after the selection operation.)
-		// (@TODO: test that!)
-		history_node_to_discard = current_history_node;
-		// something like this... maybe
-		while (
-			// AI-generated! not thought out yet.
-			history_node_to_discard.parent &&
-			history_node_to_discard.parent !== history_node_to_cancel_to
-		) {
-			history_node_to_discard = history_node_to_discard.parent;
-			// need some protection like this:
-			if (history_node_to_discard.futures.length > 1) {
-				history_node_to_discard = null;
-				break;
-			}
-		}
-	}
+	// Select tool can create multiple undoables before being cancelled (for moving/resizing/inverting/smearing),
+	// but only the last should be discarded due to panning. (All of them should be undone you hit Esc. But not deleted.)
+	const history_node_to_discard = (
+		discard_document_state &&
+		current_history_node.parent && // can't discard the root node
+		current_history_node !== history_node_to_cancel_to && // can't discard what will be the active node
+		current_history_node.futures.length === 0 // prevent discarding whole branches of history if you go back in history and then pan / hit Esc
+	) ? current_history_node : null;
+
 	// console.log("history_node_to_discard", history_node_to_discard, "current_history_node", current_history_node, "history_node_to_cancel_to", history_node_to_cancel_to);
 
 	// history_node_to_cancel_to = history_node_to_cancel_to || current_history_node;
@@ -2018,28 +2001,16 @@ function cancel(going_to_history_node, discard_document_state) {
 		go_to_history_node(history_node_to_cancel_to, true);
 
 		if (history_node_to_discard) {
-			if (history_node_to_discard === current_history_node) {
-				// If this isn't the root node, we've got a problem
-				if (history_node_to_discard.parent) {
-					// show_error_message("Maybe you've performed a gesture that's not supported by this app. Please report this bug.");
-					show_error_message("History node to discard is current history node?\nThis shouldn't happen. Please report this bug.");
-					console.log("history_node_to_discard === current_history_node", history_node_to_discard);
-				}
-			} else if (history_node_to_discard.parent) {
-				const index = history_node_to_discard.parent.futures.indexOf(history_node_to_discard);
-				if (index === -1) {
-					show_error_message("History node not found. Please report this bug.");
-					console.log("history_node_to_discard", history_node_to_discard);
-					console.log("current_history_node", current_history_node);
-					console.log("history_node_to_discard.parent", history_node_to_discard.parent);
-				} else {
-					history_node_to_discard.parent.futures.splice(index, 1);
-					$G.triggerHandler("history-update"); // update history view (don't want you to be able to click on the excised node)
-					// (@TODO: prevent duplicate update, here vs go_to_history_node)
-				}
-			} else {
-				show_error_message("History node to discard has no parent. Please report this bug.");
+			const index = history_node_to_discard.parent.futures.indexOf(history_node_to_discard);
+			if (index === -1) {
+				show_error_message("History node not found. Please report this bug.");
 				console.log("history_node_to_discard", history_node_to_discard);
+				console.log("current_history_node", current_history_node);
+				console.log("history_node_to_discard.parent", history_node_to_discard.parent);
+			} else {
+				history_node_to_discard.parent.futures.splice(index, 1);
+				$G.triggerHandler("history-update"); // update history view (don't want you to be able to click on the excised node)
+				// (@TODO: prevent duplicate update, here vs go_to_history_node)
 			}
 		}
 	}
