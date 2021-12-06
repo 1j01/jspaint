@@ -1198,6 +1198,10 @@ function draw_grid(ctx, scale) {
 	};
 
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path){
+		if (!gl) {
+			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
+			return; // @TODO: don't pollute brush cache with empty brushes (also maybe fallback to 2D canvas rendering)
+		}
 
 		// this must be before stuff is done with op_canvas
 		// otherwise update_brush_for_drawing_lines calls render_brush calls draw_ellipse calls draw_polygon calls draw_polygon_or_line_strip
