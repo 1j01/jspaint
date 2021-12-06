@@ -151,14 +151,59 @@ window.systemHookDefaults = {
 				});
 				newFileName = newHandle.name;
 				const newFileExtension = get_file_extension(newFileName);
+				const doItAgain = async (message) => {
+					const button_value = await showMessageBox({
+						message: `${message}\n\nTry adding .${new_format.extensions[0]} to the name. Sorry about this.`,
+						iconID: "error",
+						buttons: [
+							{
+								label: localize("Save As"), // or "Retry"
+								value: "show-save-as-dialog-again",
+								default: true,
+							},
+							{
+								label: localize("Save"), // or "Ignore"
+								value: "save-without-extension",
+							},
+							{
+								label: localize("Cancel"), // or "Abort"
+								value: "cancel",
+							},
+						],
+					})
+					if (button_value === "show-save-as-dialog-again") {
+						return window.systemHookDefaults.showSaveFileDialog({
+							formats,
+							defaultFileName,
+							defaultPath,
+							defaultFileFormatID,
+							getBlob,
+							savedCallbackUnreliable,
+							dialogTitle,
+						});
+					} else if (button_value === "save-without-extension") {
+						// @TODO: DRY
+						const writableStream = await newHandle.createWritable();
+						await writableStream.write(blob);
+						await writableStream.close();
+						savedCallbackUnreliable && savedCallbackUnreliable({
+							newFileName: newFileName,
+							newFileFormatID: new_format && new_format.formatID,
+							newFileHandle: newHandle,
+							newBlob: blob,
+						});
+					} else {
+						// user canceled save
+					}
+				};
 				if (!newFileExtension) {
-					show_error_message(`Missing file extension.\n\nTry adding .${new_format.extensions[0]} to the name.`);
-					return;
+					// return await doItAgain(`Missing file extension.`);
+					return await doItAgain(`'${newFileName}' doesn't have an extension.`);
 				}
 				if (!new_format.extensions.includes(newFileExtension)) {
 					// Closest translation: "Paint cannot save to the same filename with a different file type."
-					show_error_message(`Wrong file extension for selected file type.\n\nTry adding .${new_format.extensions[0]} to the name.`);
-					return;
+					// return await doItAgain(`Wrong file extension for selected file type.`);
+					return await doItAgain(`File extension '.${newFileExtension}' does not match the selected file type ${new_format.name}.`);
 				}
 				// const new_format =
 				// 	get_format_from_extension(formats, newHandle.name) ||

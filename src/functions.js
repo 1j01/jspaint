@@ -768,7 +768,7 @@ async function load_image_from_uri(uri) {
 }
 
 function open_from_image_info(info, callback, canceled, into_existing_session, from_session_load){
-	are_you_sure(() => {
+	are_you_sure(({ canvas_modified_while_loading } = {}) => {
 		deselect();
 		cancel();
 
@@ -791,7 +791,12 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 		current_history_node.image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 		current_history_node.icon = get_help_folder_icon("p_open.png");
 
-		if (!from_session_load) {
+		if (canvas_modified_while_loading || !from_session_load) {
+			// normally we don't want to autosave if we're loading a session,
+			// as this is redundant, but if the user has modified the canvas while loading a session,
+			// right now how it works is the session would be overwritten, so if you reloaded, it'd be lost,
+			// so we'd better save it.
+			// (and we want to save if this is a new session being initialized with an image)
 			$G.triggerHandler("session-update"); // autosave
 		}
 		$G.triggerHandler("history-update"); // update history view
@@ -808,7 +813,7 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 		update_title();
 
 		callback && callback();
-	}, canceled);
+	}, canceled, from_session_load);
 }
 
 function open_from_file(file, source_file_handle) {
@@ -1016,9 +1021,42 @@ function file_save_as(maybe_saved_callback=()=>{}, update_from_saved=true){
 }
 
 
-function are_you_sure(action, canceled) {
+function are_you_sure(action, canceled, from_session_load) {
 	if (saved) {
 		action();
+	} else if (from_session_load) {
+		showMessageBox({
+			message: localize("You've modified the document while an existing document was loading.\nSave the new document?", file_name),
+			buttons: [
+				{
+					// label: localize("Save"),
+					label: localize("Yes"),
+					value: "save",
+					default: true,
+				},
+				{
+					// label: "Discard",
+					label: localize("No"),
+					value: "discard",
+				},
+			],
+			// @TODO: not closable with Escape or close button
+		}).then((result) => {
+			if (result === "save") {
+				file_save(() => {
+					action();
+				}, false);
+			} else if (result === "discard") {
+				action({ canvas_modified_while_loading: true });
+			} else {
+				// should not ideally happen
+				// but prefer to preserve the previous document,
+				// as the user has only (probably) as small window to make changes while loading,
+				// whereas there could be any amount of work put into the document being loaded.
+				// @TODO: could show dialog again, but making it un-cancelable would be better.
+				action();
+			}
+		});
 	} else {
 		showMessageBox({
 			message: localize("Save changes to %1?", file_name),
