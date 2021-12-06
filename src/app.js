@@ -1196,11 +1196,16 @@ update_palette_from_theme();
 
 function to_canvas_coords({clientX, clientY}) {
 	const rect = canvas_bounding_client_rect;
-	const cx = clientX - rect.left;
-	const cy = clientY - rect.top;
 	return {
-		x: ~~(cx / rect.width * main_canvas.width),
-		y: ~~(cy / rect.height * main_canvas.height),
+		x: ~~((clientX - rect.left) / rect.width * main_canvas.width),
+		y: ~~((clientY - rect.top) / rect.height * main_canvas.height),
+	};
+}
+function from_canvas_coords({x, y}) {
+	const rect = canvas_bounding_client_rect;
+	return {
+		clientX: ~~(x / main_canvas.width * rect.width + rect.left),
+		clientY: ~~(y / main_canvas.height * rect.height + rect.top),
 	};
 }
 
@@ -2043,7 +2048,7 @@ $G.on("pointermove", (event)=> {
 		}
 		new_magnification = Math.max(0.5, Math.min(new_magnification, 40));
 		if (new_magnification != magnification) {
-			set_magnification(new_magnification);
+			set_magnification(new_magnification, to_canvas_coords({ clientX: current_pos.x, clientY: current_pos.y }));
 		}
 		const difference_in_x = current_pos.x - pan_last_pos.x;
 		const difference_in_y = current_pos.y - pan_last_pos.y;

@@ -313,20 +313,37 @@ function update_disable_aa() {
 	$canvas_area.toggleClass("disable-aa-for-things-at-main-canvas-scale", dots_per_canvas_px >= 3 || round);
 }
 
-function set_magnification(scale){
-	const prev_magnification = magnification;
+function set_magnification(new_scale, anchor_point) {
+	// anchor_point is optional, and uses canvas coordinates;
+	// the default is the top-left of the viewport (not the canvas, mind you)
+
+	// How this works is, you imagine "what if it was zoomed, where would the anchor point be?"
+	// Then to make it end up where it started, you simply shift the viewport by the difference.
+	// And actually you don't have to "imagine" zooming, you can just do the zoom.
+
+	const old_scale = magnification;
+	const zoom_ratio = new_scale / old_scale;
 	let scroll_left = $canvas_area.scrollLeft();
 	let scroll_top = $canvas_area.scrollTop();
+	const anchor_on_page = anchor_point ? from_canvas_coords(anchor_point) : null;
 
-	magnification = scale;
-	if(scale !== 1){
-		return_to_magnification = scale;
+	magnification = new_scale;
+	if (new_scale !== 1) {
+		return_to_magnification = new_scale;
 	}
-	update_magnified_canvas_size();
-
-	// rescale viewport with top left as anchor
-	scroll_left *= magnification / prev_magnification;
-	scroll_top *= magnification / prev_magnification;
+	update_magnified_canvas_size(); // also updates canvas_bounding_client_rect used by from_canvas_coords()
+	
+	if (anchor_point) {
+		const anchor_after_zoom = from_canvas_coords(anchor_point);
+		scroll_left = $canvas_area.scrollLeft();
+		scroll_top = $canvas_area.scrollTop();
+		scroll_left += anchor_after_zoom.clientX - anchor_on_page.clientX;
+		scroll_top += anchor_after_zoom.clientY - anchor_on_page.clientY;
+	} else {
+		// rescale viewport with top left as anchor
+		scroll_left *= zoom_ratio;
+		scroll_top *= zoom_ratio;
+	}
 
 	$canvas_area.scrollLeft(scroll_left);
 	$canvas_area.scrollTop(scroll_top);
