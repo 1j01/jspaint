@@ -185,7 +185,8 @@ function update_helper_layer_immediately() {
 		// const scroll_width = $canvas_area[0].scrollWidth - $canvas_area[0].clientWidth;
 		// const scroll_height = $canvas_area[0].scrollHeight - $canvas_area[0].clientHeight;
 
-		// Are these padding terms needed? I feel like they should be so I added them, but I can't see a difference.
+		// These padding terms are negligible in comparison to the margin reserved for canvas handles,
+		// which I'm not accounting for (except for clamping below).
 		const padding_left = parseFloat($canvas_area.css("padding-left"));
 		const padding_top = parseFloat($canvas_area.css("padding-top"));
 		const scroll_width = main_canvas.clientWidth + padding_left - $canvas_area[0].clientWidth;
@@ -193,19 +194,14 @@ function update_helper_layer_immediately() {
 		// Don't divide by less than one, or the thumbnail with disappear off to the top/left (or completely for NaN).
 		let scroll_x_fraction = $canvas_area[0].scrollLeft / Math.max(1, scroll_width);
 		let scroll_y_fraction = $canvas_area[0].scrollTop / Math.max(1, scroll_height);
+		// If the canvas is larger than the document view, but not by much, and you scroll to the bottom or right,
+		// the margin for the canvas handles can lead to the thumbnail being cut off or even showing
+		// just blank space without this clamping (due to the not quite accurate scrollable area calculation).
+		scroll_x_fraction = Math.min(scroll_x_fraction, 1);
+		scroll_y_fraction = Math.min(scroll_y_fraction, 1);
 
 		let viewport_x = Math.floor(Math.max(scroll_x_fraction * (main_canvas.width - thumbnail_canvas.width), 0));
 		let viewport_y = Math.floor(Math.max(scroll_y_fraction * (main_canvas.height - thumbnail_canvas.height), 0));
-		// if the canvas is larger than the document view, but not by much, and you scroll to the bottom or right,
-		// the margin for the canvas handles can lead to the thumbnail being cut off or even showing
-		// just blank space without this.
-		// @TODO: I could just do a linear interpolation between the scroll and the possible extents of the thumbnail instead of clamping, which could feel a little smoother (in this edge case).
-		viewport_x = Math.min(viewport_x, main_canvas.width - thumbnail_canvas.width);
-		viewport_y = Math.min(viewport_y, main_canvas.height - thumbnail_canvas.height);
-		// but I want it to go to the top/left still, if the canvas is smaller than the thumbnail viewport,
-		// so clamp it the other way afterward.
-		viewport_x = Math.max(viewport_x, 0);
-		viewport_y = Math.max(viewport_y, 0);
 
 		render_canvas_view(thumbnail_canvas, 1, viewport_x, viewport_y, false); // devicePixelRatio?
 	}
