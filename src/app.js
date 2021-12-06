@@ -962,6 +962,18 @@ $G.on("keydown", e => {
 });
 // $G.on("wheel", (e) => {
 addEventListener("wheel", (e) => {
+	if (e.altKey) {
+		e.preventDefault();
+		let new_magnification = magnification;
+		if (e.deltaY < 0) {
+			new_magnification *= 1.5;
+		} else {
+			new_magnification /= 1.5;
+		}
+		new_magnification = Math.max(0.5, Math.min(new_magnification, 80));
+		set_magnification(new_magnification, to_canvas_coords(e));
+		return;
+	}
 	if (e.ctrlKey || e.metaKey) {
 		return;
 	}
@@ -980,7 +992,7 @@ addEventListener("wheel", (e) => {
 		// $canvas_area.scrollTop(0); // doesn't work with smooth scrolling
 		// $canvas_area.scrollLeft(0);
 	}
-});
+}, { passive: false });
 
 $G.on("cut copy paste", e => {
 	if(e.isDefaultPrevented()){
