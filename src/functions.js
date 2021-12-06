@@ -315,17 +315,17 @@ function update_disable_aa() {
 
 function set_magnification(new_scale, anchor_point) {
 	// anchor_point is optional, and uses canvas coordinates;
-	// the default is the top-left of the viewport (not the canvas, mind you)
+	// the default is the top-left of the $canvas_area viewport
 
 	// How this works is, you imagine "what if it was zoomed, where would the anchor point be?"
 	// Then to make it end up where it started, you simply shift the viewport by the difference.
 	// And actually you don't have to "imagine" zooming, you can just do the zoom.
 
-	const old_scale = magnification;
-	const zoom_ratio = new_scale / old_scale;
-	const old_scroll_left = $canvas_area.scrollLeft();
-	const old_scroll_top = $canvas_area.scrollTop();
-	const anchor_on_page = anchor_point ? from_canvas_coords(anchor_point) : null;
+	anchor_point = anchor_point ?? {
+		x: $canvas_area.scrollLeft() / magnification,
+		y: $canvas_area.scrollTop() / magnification,
+	};
+	const anchor_on_page = from_canvas_coords(anchor_point);
 
 	magnification = new_scale;
 	if (new_scale !== 1) {
@@ -333,23 +333,13 @@ function set_magnification(new_scale, anchor_point) {
 	}
 	update_magnified_canvas_size(); // also updates canvas_bounding_client_rect used by from_canvas_coords()
 	
-	if (anchor_point) {
-		const anchor_after_zoom = from_canvas_coords(anchor_point);
-		// note To versus By!
-		$canvas_area[0].scrollBy({
-			left: anchor_after_zoom.clientX - anchor_on_page.clientX,
-			top: anchor_after_zoom.clientY - anchor_on_page.clientY,
-			behavior: "instant",
-		});
-	} else {
-		// rescale viewport with top left as anchor
-		// note To versus By!
-		$canvas_area[0].scrollTo({
-			left: old_scroll_left * zoom_ratio,
-			top: old_scroll_top * zoom_ratio,
-			behavior: "instant",
-		});
-	}
+	const anchor_after_zoom = from_canvas_coords(anchor_point);
+	// Note: scrollBy() not scrollTo()
+	$canvas_area[0].scrollBy({
+		left: anchor_after_zoom.clientX - anchor_on_page.clientX,
+		top: anchor_after_zoom.clientY - anchor_on_page.clientY,
+		behavior: "instant",
+	});
 
 	$G.triggerHandler("resize"); // updates handles & grid
 	$G.trigger("option-changed"); // updates options area
