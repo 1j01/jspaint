@@ -1195,6 +1195,9 @@ $G.on("theme-load", update_palette_from_theme);
 update_palette_from_theme();
 
 function to_canvas_coords({clientX, clientY}) {
+	if (clientX === undefined || clientY === undefined) {
+		throw new TypeError("clientX and clientY must be defined (not {x, y} or x, y or [x, y])");
+	}
 	const rect = canvas_bounding_client_rect;
 	return {
 		x: ~~((clientX - rect.left) / rect.width * main_canvas.width),
@@ -2124,7 +2127,9 @@ $canvas.on("pointerdown", e => {
 			button = undefined;
 			reverse = false;
 
-			pointer = to_canvas_coords(e);
+			if (e.clientX !== undefined) { // may be synthetic event without coordinates
+				pointer = to_canvas_coords(e);
+			}
 			selected_tools.forEach((selected_tool)=> {
 				selected_tool.pointerup && selected_tool.pointerup(main_ctx, pointer.x, pointer.y);
 			});
