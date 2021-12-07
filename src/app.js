@@ -655,10 +655,10 @@ const news_seen_key = "jspaint latest news seen";
 const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
-		<img src='images/new.gif' width='31' height='16' alt=''/>
-		<span class='marquee' dir='ltr' style='--text-width: 45ch; --animation-duration: 2s;'>
+		<img src='images/winter/present.png' width='24' height='22' alt=''/>
+		<span class='marquee' dir='ltr' style='--text-width: 60ch; --animation-duration: 3s;'>
 			<span>
-				<b>The GUIcci Update</b> — Alt/Pinch Zoom, Thumbnail, and more!
+				<b>The GUIcci Update</b> — Thumbnail View, Pinch Zoom, Pixel Perfection!
 			</span>
 		</span>
 	</a>
