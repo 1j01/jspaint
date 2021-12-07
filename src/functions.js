@@ -1877,7 +1877,7 @@ function show_document_history() {
 		<label>
 			<!--<input type="checkbox" id="history-show-all-branches" checked> Show all branches-->
 			<!--<input type="checkbox" id="history-view-linear" checked> Linear timeline-->
-			<select id="history-view-mode">
+			<select id="history-view-mode" class="inset-deep">
 				<option value="linear">Linear timeline</option>
 				<option value="tree">Tree</option>
 			</select>
@@ -3042,7 +3042,7 @@ function save_as_prompt({
 		$w.$main.append(`
 			<label>
 				Save as type:
-				<select class="file-type-select"></select>
+				<select class="file-type-select inset-deep"></select>
 			</label>
 		`);
 		const $file_type = $w.$main.find(".file-type-select");

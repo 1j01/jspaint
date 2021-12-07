@@ -408,7 +408,6 @@ input[type=text],
 input[type=url],
 input[type=search],
 input[type=number],
-select,
 input[type=text].inset-deep, /* overriding background */
 input[type=url].inset-deep,
 input[type=search].inset-deep,

@@ -431,7 +431,8 @@ input[type="checkbox"][disabled]:checked + label::after {
   background: svg-load("./icon/checkmark-disabled.svg");
 }
 
-/* input[type="text"], */
+/*
+input[type="text"],
 input[type="password"],
 input[type="email"],
 select,
@@ -448,21 +449,21 @@ textarea {
   border-radius: 0;
 }
 
-/* input[type="text"], */
+input[type="text"],
 input[type="password"],
 input[type="email"],
 select {
   height: 21px;
 }
 
-/* input[type="text"], */
+input[type="text"],
 input[type="password"],
 input[type="email"] {
-  /* For some reason descenders are getting cut off without this */
+  /* For some reason descenders are getting cut off without this *.../
   line-height: 2;
 }
 
-/* input[type="text"]:disabled, */
+input[type="text"]:disabled,
 input[type="password"]:disabled,
 input[type="email"]:disabled,
 textarea:disabled {
@@ -482,12 +483,13 @@ select {
 }
 
 select:focus,
-/* input[type="text"]:focus, */
+input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus,
 textarea:focus {
   outline: none;
 }
+*/
 
 input[type="range"] {
   -webkit-appearance: none;
@@ -600,7 +602,7 @@ input[type="range"]::-moz-range-track {
   transform: translateY(0px) scaleX(-1);
 }
 
-select:focus {
+/* select:focus {
   color: var(--HilightText);
   background-color: var(--Hilight);
 }
@@ -611,7 +613,7 @@ select:focus option {
 
 select:active {
   background-image: svg-load("./icon/button-down-active.svg");
-}
+} */
 
 /* a {
   color: var(--link-blue);

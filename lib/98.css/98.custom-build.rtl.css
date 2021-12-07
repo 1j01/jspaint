@@ -424,7 +424,8 @@ input[type="checkbox"][disabled]:checked + label::after {
   background: url("data:image/svg+xml;charset=utf-8,%3Csvg width='7' height='7' viewBox='0 0 7 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 0H6V1H5V2H4V3H3V4H2V3H1V2H0V5H1V6H2V7H3V6H4V5H5V4H6V3H7V0Z' fill='%23808080'/%3E %3C/svg%3E");
 }
 
-/* input[type="text"], */
+/*
+input[type="text"],
 input[type="password"],
 input[type="email"],
 select,
@@ -441,21 +442,21 @@ textarea {
   border-radius: 0;
 }
 
-/* input[type="text"], */
+input[type="text"],
 input[type="password"],
 input[type="email"],
 select {
   height: 21px;
 }
 
-/* input[type="text"], */
+input[type="text"],
 input[type="password"],
 input[type="email"] {
-  /* For some reason descenders are getting cut off without this */
+  /* For some reason descenders are getting cut off without this *.../
   line-height: 2;
 }
 
-/* input[type="text"]:disabled, */
+input[type="text"]:disabled,
 input[type="password"]:disabled,
 input[type="email"]:disabled,
 textarea:disabled {
@@ -467,20 +468,21 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   position: relative;
-  padding-left: 32px;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' viewBox='0 0 16 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0V1V16H1V1H15V0Z' fill='%23DFDFDF'/%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1V15H2V2H14V1H2Z' fill='white'/%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H15H0V16H15V0H16V17Z' fill='black'/%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1H14V15H1V16H14H15V1Z' fill='%23808080'/%3E %3Crect x='2' y='2' width='12' height='13' fill='%23C0C0C0'/%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4V7H5V8H6V9H7V10H8V9H9V8H10V7H11V6Z' fill='black'/%3E %3C/svg%3E");
-  background-position: top 2px left 2px;
+  padding-right: 32px;
+  background-image: svg-load("./icon/button-down.svg");
+  background-position: top 2px right 2px;
   background-repeat: no-repeat;
   border-radius: 0;
 }
 
 select:focus,
-/* input[type="text"]:focus, */
+input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus,
 textarea:focus {
   outline: none;
 }
+*/
 
 input[type="range"] {
   -webkit-appearance: none;
@@ -589,7 +591,7 @@ input[type="range"]::-moz-range-track {
   transform: translateY(0px) scaleX(-1);
 }
 
-select:focus {
+/* select:focus {
   color: var(--HilightText);
   background-color: var(--Hilight);
 }
@@ -599,8 +601,8 @@ select:focus option {
 }
 
 select:active {
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' viewBox='0 0 16 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H15H16V17H15H0V16V1V0ZM1 16H15V1H1V16Z' fill='%23808080'/%3E %3Crect x='1' y='1' width='14' height='15' fill='%23C0C0C0'/%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M12 7H5V8H6V9H7V10H8V11H9V10H10V9H11V8H12V7Z' fill='black'/%3E %3C/svg%3E");
-}
+  background-image: svg-load("./icon/button-down-active.svg");
+} */
 
 /* a {
   color: var(--link-blue);
