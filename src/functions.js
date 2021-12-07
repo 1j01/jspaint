@@ -3042,7 +3042,7 @@ function save_as_prompt({
 		$w.$main.append(`
 			<label>
 				Save as type:
-				<select class="file-type-select inset-deep"></select>
+				<select class="file-type-select"></select>
 			</label>
 		`);
 		const $file_type = $w.$main.find(".file-type-select");
