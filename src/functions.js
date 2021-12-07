@@ -917,9 +917,15 @@ function file_load_from_url(){
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
-	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input inset-deep' style='margin-left: 10px'/></label>");
-	const $input = $w.$main.find(".url-input");
-	$w.$Button("Load", () => {
+	$w.$main.html(`
+		<div style='padding: 10px;'>
+			<label style="display: block; margin-bottom: 5px;" for="url-input">Paste or type the web address of an image:</label>
+			<input type="url" required value="" id="url-input" class="inset-deep" style="width: 300px;"/></label>
+		</div>
+	`);
+	const $input = $w.$main.find("#url-input");
+	// $w.$Button("Load", () => {
+	$w.$Button(localize("Open"), () => {
 		const uris = get_uris($input.val());
 		if (uris.length > 0) {
 			// @TODO: retry loading if same URL entered
