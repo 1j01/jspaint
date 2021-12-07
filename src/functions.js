@@ -913,11 +913,11 @@ function file_load_from_url(){
 	if($file_load_from_url_window){
 		$file_load_from_url_window.close();
 	}
-	const $w = new $DialogWindow().addClass("dialog-window");
+	const $w = new $DialogWindow().addClass("horizontal-buttons");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
-	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input inset-deep'/></label>");
+	$w.$main.html("<label>URL: <input type='url' required value='' class='url-input inset-deep' style='margin-left: 10px'/></label>");
 	const $input = $w.$main.find(".url-input");
 	$w.$Button("Load", () => {
 		const uris = get_uris($input.val());
@@ -3565,7 +3565,7 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 }
 
 function show_multi_user_setup_dialog(from_current_document){
-	const $w = $DialogWindow().title("Multi-User Setup").addClass("dialog-window");
+	const $w = $DialogWindow().title("Multi-User Setup").addClass("horizontal-buttons");
 	$w.$main.html(`
 		${from_current_document ? "<p>This will make the current document public.</p>" : ""}
 		<p>

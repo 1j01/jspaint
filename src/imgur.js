@@ -4,7 +4,7 @@ function show_imgur_uploader(blob){
 	if($imgur_window){
 		$imgur_window.close();
 	}
-	$imgur_window = $DialogWindow().title("Upload To Imgur").addClass("dialog-window");
+	$imgur_window = $DialogWindow().title("Upload To Imgur").addClass("horizontal-buttons");
 	
 	const $preview_image_area = $(E("div")).appendTo($imgur_window.$main);//.html("<label style='display: block'>Preview:</label>");
 	const $imgur_url_area = $(E("div")).appendTo($imgur_window.$main);

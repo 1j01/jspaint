@@ -621,15 +621,18 @@ html, body, .jspaint {
 .window:not(.edit-colors-window) .window-content > form {
 	direction: ltr;
 }
-.dialog-window .window-content > form {
+.horizontal-buttons .window-content > form {
 	flex-flow: column;
 }
-.dialog-window .window-content > form > .button-group {
+.horizontal-buttons .window-content > form > .button-group {
 	display: flex;
 	flex-flow: row;
 	justify-content: flex-end;
+	gap: 5px;
+	margin: 5px;
+	margin-bottom: 10px;
 }
-.dialog-window .window-content > form > div:first-child {
+.horizontal-buttons .window-content > form > div:first-child {
 	padding: 5px;
 }
 
@@ -639,6 +642,17 @@ html, body, .jspaint {
 .component-window .window-content {
 	direction: ltr;
 }
+
+.dialog-window:not(.horizontal-buttons):not(.edit-colors-window) .window-content {
+	padding: 10px;
+}
+.dialog-window:not(.horizontal-buttons):not(.edit-colors-window) .window-content .button-group {
+	padding-left: 10px;
+	display: flex;
+    flex-direction: column;
+	gap: 5px;
+}
+
 .flip-and-rotate fieldset {
 	width: 200px;
 }
@@ -667,6 +681,18 @@ html, body, .jspaint {
 
 .attributes-window .window-content {
 	direction: ltr;
+}
+.attributes-window table {
+	margin-bottom: 5px;
+}
+.attributes-window input[type="number"] {
+	margin-left: 5px; /* separate label from input for Width and Height fields */
+}
+.attributes-window table ~ label ~ label {
+	margin-left: 10px; /* separate Width and Height fields */
+}
+.attributes-window fieldset {
+	margin-top: 5px;
 }
 .attributes-window fieldset .fieldset-body {
 	display: grid;

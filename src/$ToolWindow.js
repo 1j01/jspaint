@@ -76,6 +76,7 @@ function $DialogWindow(title) {
 		minimizeButton: false,
 		// helpButton: @TODO
 	});
+	$w.addClass("dialog-window");
 
 	$w.$form = $(E("form")).appendTo($w.$content);
 	$w.$main = $(E("div")).appendTo($w.$form);
