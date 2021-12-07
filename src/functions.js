@@ -2368,9 +2368,18 @@ function view_bitmap() {
 				cleanup_bitmap_view();
 			}
 		}
+		let repeating_f = false;
 		function onKeyDown(event) {
+			// console.log(event.key, event.repeat);
+			repeating_f = repeating_f || event.repeat && (event.key === "f" || event.key === "F");
+			if (event.repeat) { return; }
+			if (repeating_f && (event.key === "f" || event.key === "F")) {
+				repeating_f = false;
+				return; // Chrome sends an F keydown with repeat=false if you release Ctrl before F, while repeating.
+				// This is a slightly overkill, and slightly overzealous workaround (can ignore one normal F before handling F as exit)
+			}
 			// Note: in mspaint, Esc is the only key that DOESN'T close the bitmap view,
-			// but it also doesn't do anything else — as far as I can tell. Stupid.
+			// but it also doesn't do anything else — other than changing the cursor. Stupid.
 			cleanup_bitmap_view();
 		}
 		function onMouseDown(event) {

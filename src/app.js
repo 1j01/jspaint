@@ -994,7 +994,9 @@ $G.on("keydown", e => {
 				e.shiftKey ? render_history_as_gif() : toggle_grid();
 			break;
 			case "F":
-				view_bitmap();
+				if (!e.repeat && !e.originalEvent?.repeat) {
+					view_bitmap();
+				}
 			break;
 			case "O":
 				file_open();
