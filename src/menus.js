@@ -529,7 +529,29 @@ window.menus = {
 			],
 			action: ()=> { view_bitmap(); },
 			description: localize("Displays the entire picture."),
-		}
+		},
+		MENU_DIVIDER,
+		{
+			item: localize("&Fullscreen"),
+			shortcut: "F11",
+			speech_recognition: [
+				// won't work with speech recognition, needs a user gesture
+			],
+			checkbox: {
+				check: () => document.fullscreenElement,
+				toggle: () => {
+					if (document.fullscreenElement) {
+						document.exitFullscreen();
+					} else {
+						document.documentElement.requestFullscreen();
+					}
+					// check() would need to be async or faked with a timeout,
+					// if the menus stayed open. @TODO: make all checkboxes close menus
+					menu_bar.closeMenus();
+				},
+			},
+			description: localize("Makes the application take up the entire screen."),
+		},
 	],
 	[localize("&Image")]: [
 		// @TODO: speech recognition: terms that apply to selection

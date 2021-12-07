@@ -69,6 +69,7 @@ I want to bring good old paint into the modern era.
 * Zoom to fit the canvas within the window with **View > Zoom > Zoom To Window**
 * Use Alt+Mousewheel to zoom in and out
 * Touch support: use two fingers to pan the view, and pinch to zoom
+* **View > Fullscreen** to toggle fullscreen mode, nice for mobile devices
 * Non-contiguous fill: Replace a color in the entire image by holding <kbd>Shift</kbd> when using the fill tool
 * You can use the Text tool at any zoom level, and it previews the exact pixels that will end up on the canvas.
 * Spellcheck is available in the textbox if your browser supports it.
