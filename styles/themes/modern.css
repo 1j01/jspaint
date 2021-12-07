@@ -1,8 +1,8 @@
 :root {
 	--theme-loaded: "modern.css";
 	--Hilight: #0178d7;
-	--HilightText: rgb(255, 255, 255);
-	--WindowText: rgb(0, 0, 0);
+	--HilightText: #ffffff;
+	--WindowText: #000000;
 	--ButtonText: #000000;
 }
 
