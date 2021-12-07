@@ -67,6 +67,8 @@ I want to bring good old paint into the modern era.
 * In **Image > Stretch/Skew**, you can stretch more than 500% at once
 * Zoom to an arbitrary scale in **View > Zoom > Custom...**
 * Zoom to fit the canvas within the window with **View > Zoom > Zoom To Window**
+* Use Alt+Mousewheel to zoom in and out
+* Touch support: use two fingers to pan the view, and pinch to zoom
 * Non-contiguous fill: Replace a color in the entire image by holding <kbd>Shift</kbd> when using the fill tool
 * You can use the Text tool at any zoom level, and it previews the exact pixels that will end up on the canvas.
 * Spellcheck is available in the textbox if your browser supports it.
@@ -80,8 +82,9 @@ I want to bring good old paint into the modern era.
 * Load and save [many different palette formats](#color-palette-formats) with **Colors > Get Colors** and **Colors > Save Colors**.
   (I made a library for this: <img src="images/anypalette-logo-128x128.png" height="16"> [AnyPalette.js](https://github.com/1j01/anypalette.js).)
 * You can also drag and drop palette files (of any format) into the app to load. (Dragging and dropping image files also works, to load images.)
-* Touch support: use two fingers to pan the view.
 * Click/tap the selected colors area to swap the foreground and background colors
+* Resize handles are easier to grab than in Windows 10's Paint.
+* Omits some Thumbnail view bugs, like the selection showing in the wrong place.
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
