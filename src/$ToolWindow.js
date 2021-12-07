@@ -77,7 +77,6 @@ function $DialogWindow(title) {
 		// helpButton: @TODO
 	});
 
-	$w.title(title);
 	$w.$form = $(E("form")).appendTo($w.$content);
 	$w.$main = $(E("div")).appendTo($w.$form);
 	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
