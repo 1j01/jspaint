@@ -831,6 +831,9 @@ html, body, .jspaint {
 	margin-left: 15px;
 }
 
+.history-window .window-content {
+	direction: ltr;
+}
 .history-view {
 	width: 500px;
 	height: 500px;
