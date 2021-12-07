@@ -54,7 +54,7 @@ function $FontBox(){
 	
 	
 	function $Toggle(xi, thing){
-		const $button = $(E("button")).addClass("toggle");
+		const $button = $(E("button")).addClass("toggle").attr("aria-pressed", false);
 		const $image = $(E("span")).appendTo($button);
 		$button.css({
 			width: 23,
@@ -76,10 +76,11 @@ function $FontBox(){
 		$button.on("click", () => {
 			$button.toggleClass("selected");
 			text_tool_font[thing] = $button.hasClass("selected");
+			$button.attr("aria-pressed", $button.hasClass("selected"));
 			update_font();
 		});
 		if(text_tool_font[thing]){
-			$button.addClass("selected");
+			$button.addClass("selected").attr("aria-pressed", true);
 		}
 		return $button;
 	}
