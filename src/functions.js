@@ -384,12 +384,12 @@ function show_custom_zoom_window() {
 	$fieldset.append(`
 		<legend>${localize("Zoom to")}</legend>
 		<div class="fieldset-body">
-			<label><input type='radio' name='custom-zoom-radio' value='1'/>100%</label>
-			<label><input type='radio' name='custom-zoom-radio' value='2'/>200%</label>
-			<label><input type='radio' name='custom-zoom-radio' value='4'/>400%</label>
-			<label><input type='radio' name='custom-zoom-radio' value='6'/>600%</label>
-			<label><input type='radio' name='custom-zoom-radio' value='8'/>800%</label>
-			<label><input type='radio' name='custom-zoom-radio' value='really-custom'/><input type='number' min='10' max='1000' name='really-custom-zoom-input' class='inset-deep no-spinner' value=''/>%</label>
+			<label><input type="radio" name="custom-zoom-radio" value="1"/>100%</label>
+			<label><input type="radio" name="custom-zoom-radio" value="2"/>200%</label>
+			<label><input type="radio" name="custom-zoom-radio" value="4"/>400%</label>
+			<label><input type="radio" name="custom-zoom-radio" value="6"/>600%</label>
+			<label><input type="radio" name="custom-zoom-radio" value="8"/>800%</label>
+			<label><input type="radio" name="custom-zoom-radio" value="really-custom"/><input type="number" min="10" max="1000" name="really-custom-zoom-input" class="inset-deep no-spinner" value=""/>%</label>
 		</div>
 	`);
 	let is_custom = true;
