@@ -621,15 +621,15 @@ html, body, .jspaint {
 .window:not(.edit-colors-window) .window-content > form {
 	direction: ltr;
 }
-.dialogue-window .window-content > form {
+.dialog-window .window-content > form {
 	flex-flow: column;
 }
-.dialogue-window .window-content > form > .button-group {
+.dialog-window .window-content > form > .button-group {
 	display: flex;
 	flex-flow: row;
 	justify-content: flex-end;
 }
-.dialogue-window .window-content > form > div:first-child {
+.dialog-window .window-content > form > div:first-child {
 	padding: 5px;
 }
 

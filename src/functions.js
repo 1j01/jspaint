@@ -913,7 +913,7 @@ function file_load_from_url(){
 	if($file_load_from_url_window){
 		$file_load_from_url_window.close();
 	}
-	const $w = new $DialogWindow().addClass("dialogue-window");
+	const $w = new $DialogWindow().addClass("dialog-window");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
@@ -3457,7 +3457,7 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 }
 
 function show_multi_user_setup_dialog(from_current_document){
-	const $w = $DialogWindow().title("Multi-User Setup").addClass("dialogue-window");
+	const $w = $DialogWindow().title("Multi-User Setup").addClass("dialog-window");
 	$w.$main.html(`
 		${from_current_document ? "<p>This will make the current document public.</p>" : ""}
 		<p>

@@ -38,7 +38,7 @@ function manage_storage(){
 	if($storage_manager){
 		$storage_manager.close();
 	}
-	$storage_manager = $DialogWindow().title("Manage Storage").addClass("storage-manager dialogue-window squish");
+	$storage_manager = $DialogWindow().title("Manage Storage").addClass("storage-manager dialog-window squish");
 	// @TODO: way to remove all (with confirmation)
 	const $table = $(E("table")).appendTo($storage_manager.$main);
 	const $message = $(E("p")).appendTo($storage_manager.$main).html(

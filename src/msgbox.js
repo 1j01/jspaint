@@ -28,7 +28,7 @@ window.showMessageBox = window.showMessageBox || (({
 			maximizeButton: false,
 			minimizeButton: false,
 		}, windowOptions));
-		// $window.addClass("dialogue-window");
+		// $window.addClass("dialog-window");
 		$message =
 			$("<div>").css({
 				textAlign: "left",
