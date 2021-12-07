@@ -2333,17 +2333,18 @@ function view_bitmap() {
 		if (bitmap_view_div.requestFullscreen) { bitmap_view_div.requestFullscreen(); }
 		else if (bitmap_view_div.webkitRequestFullscreen) { bitmap_view_div.webkitRequestFullscreen(); }
 		
+		let got_fullscreen = false;
 		let iid = setInterval(() => {
 			// In Chrome, if the page is already fullscreen, and you requestFullscreen,
 			// hitting Esc will change document.fullscreenElement without triggering the fullscreenchange event!
 			// It doesn't trigger a keydown either.
-			if (document.fullscreenElement !== bitmap_view_div) {
+			if (document.fullscreenElement === bitmap_view_div) {
+				got_fullscreen = true;
+			} else if (got_fullscreen) {
 				cleanup_bitmap_view();
 			}
 		}, 100);
 		cleanup_bitmap_view = () => {
-			cleanup_bitmap_view = () => { };
-			bitmap_view_div.remove();
 			document.removeEventListener("fullscreenchange", onFullscreenChange, { once: true });
 			document.removeEventListener("webkitfullscreenchange", onFullscreenChange, { once: true });
 			document.removeEventListener("keydown", onKeyDown);
@@ -2356,6 +2357,19 @@ function view_bitmap() {
 			}, 100);
 			URL.revokeObjectURL(url);
 			clearInterval(iid);
+			if (document.fullscreenElement === bitmap_view_div) {
+				if (document.exitFullscreen) {
+					document.exitFullscreen(); // avoid warning in Firefox
+				} else if (document.msExitFullscreen) {
+					document.msExitFullscreen();
+				} else if (document.mozCancelFullScreen) {
+					document.mozCancelFullScreen();
+				} else if (document.webkitExitFullscreen) {
+					document.webkitExitFullscreen();
+				}
+			}
+			bitmap_view_div.remove();
+			cleanup_bitmap_view = () => { };
 		};
 		document.addEventListener("fullscreenchange", onFullscreenChange, { once: true });
 		document.addEventListener("webkitfullscreenchange", onFullscreenChange, { once: true });
