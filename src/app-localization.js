@@ -1049,11 +1049,11 @@ function load_language(language) {
 		let href = stylesheet.getAttribute("href");
 		if (get_direction(language) === "rtl") {
 			if (href.indexOf(".rtl.css") === -1) {
-				href = href.replace(/\.css/i, ".rtl.css");
+				href = href.replace(/\.css$/i, ".rtl.css");
 			}
 		} else {
 			if (href.indexOf(".rtl.css") > -1) {
-				href = href.replace(/\.rtl\.css/i, ".css");
+				href = href.replace(/\.rtl\.css$/i, ".css");
 			}
 		}
 		stylesheet.setAttribute("href", href);
