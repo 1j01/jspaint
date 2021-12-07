@@ -2333,6 +2333,14 @@ function view_bitmap() {
 		if (bitmap_view_div.requestFullscreen) { bitmap_view_div.requestFullscreen(); }
 		else if (bitmap_view_div.webkitRequestFullscreen) { bitmap_view_div.webkitRequestFullscreen(); }
 		
+		let iid = setInterval(() => {
+			// In Chrome, if the page is already fullscreen, and you requestFullscreen,
+			// hitting Esc will change document.fullscreenElement without triggering the fullscreenchange event!
+			// It doesn't trigger a keydown either.
+			if (document.fullscreenElement !== bitmap_view_div) {
+				cleanup_bitmap_view();
+			}
+		}, 100);
 		cleanup_bitmap_view = () => {
 			cleanup_bitmap_view = () => { };
 			bitmap_view_div.remove();
@@ -2347,6 +2355,7 @@ function view_bitmap() {
 				document.removeEventListener("contextmenu", onContextMenu);
 			}, 100);
 			URL.revokeObjectURL(url);
+			clearInterval(iid);
 		};
 		document.addEventListener("fullscreenchange", onFullscreenChange, { once: true });
 		document.addEventListener("webkitfullscreenchange", onFullscreenChange, { once: true });
@@ -2355,7 +2364,7 @@ function view_bitmap() {
 		document.addEventListener("contextmenu", onContextMenu);
 
 		function onFullscreenChange() {
-			if (!document.fullscreenElement) {
+			if (document.fullscreenElement !== bitmap_view_div) {
 				cleanup_bitmap_view();
 			}
 		}
