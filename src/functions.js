@@ -384,12 +384,12 @@ function show_custom_zoom_window() {
 	$fieldset.append(`
 		<legend>${localize("Zoom to")}</legend>
 		<div class="fieldset-body">
-			<label><input type="radio" name="custom-zoom-radio" value="1"/>100%</label>
-			<label><input type="radio" name="custom-zoom-radio" value="2"/>200%</label>
-			<label><input type="radio" name="custom-zoom-radio" value="4"/>400%</label>
-			<label><input type="radio" name="custom-zoom-radio" value="6"/>600%</label>
-			<label><input type="radio" name="custom-zoom-radio" value="8"/>800%</label>
-			<label><input type="radio" name="custom-zoom-radio" value="really-custom"/><input type="number" min="10" max="1000" name="really-custom-zoom-input" class="inset-deep no-spinner" value=""/>%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-1" value="1"/><label for="zoom-option-1">100%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-2" value="2"/><label for="zoom-option-2">200%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-4" value="4"/><label for="zoom-option-4">400%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-6" value="6"/><label for="zoom-option-6">600%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-8" value="8"/><label for="zoom-option-8">800%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-really-custom" value="really-custom"/><label for="zoom-option-really-custom"><input type="number" min="10" max="1000" name="really-custom-zoom-input" class="inset-deep no-spinner" value=""/>%</label>
 		</div>
 	`);
 	let is_custom = true;
@@ -2629,9 +2629,9 @@ function image_attributes(){
 	const $units = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Units")}</legend>
 		<div class="fieldset-body">
-			<label><input type="radio" name="units" value="in">${localize("Inches")}</label>
-			<label><input type="radio" name="units" value="cm">${localize("Cm")}</label>
-			<label><input type="radio" name="units" value="px">${localize("Pixels")}</label>
+			<input type="radio" name="units" id="unit-in" value="in"><label for="unit-in">${localize("Inches")}</label>
+			<input type="radio" name="units" id="unit-cm" value="cm"><label for="unit-cm">${localize("Cm")}</label>
+			<input type="radio" name="units" id="unit-px" value="px"><label for="unit-px">${localize("Pixels")}</label>
 		</div>
 	`);
 	$units.find(`[value=${current_unit}]`).attr({checked: true});
@@ -2645,8 +2645,8 @@ function image_attributes(){
 	const $colors = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Colors")}</legend>
 		<div class="fieldset-body">
-			<label><input type="radio" name="colors" value="monochrome">${localize("Black and white")}</label>
-			<label><input type="radio" name="colors" value="polychrome">${localize("Colors")}</label>
+			<input type="radio" name="colors" id="attribute-monochrome" value="monochrome"><label for="attribute-monochrome">${localize("Black and white")}</label>
+			<input type="radio" name="colors" id="attribute-polychrome" value="polychrome"><label for="attribute-polychrome">${localize("Colors")}</label>
 		</div>
 	`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({checked: true});
@@ -2654,8 +2654,8 @@ function image_attributes(){
 	const $transparency = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Transparency")}</legend>
 		<div class="fieldset-body">
-			<label><input type="radio" name="transparency" value="transparent">${localize("Transparent")}</label>
-			<label><input type="radio" name="transparency" value="opaque">${localize("Opaque")}</label>
+			<input type="radio" name="transparency" id="attribute-transparent" value="transparent"><label for="attribute-transparent">${localize("Transparent")}</label>
+			<input type="radio" name="transparency" id="attribute-opaque" value="opaque"><label for="attribute-opaque">${localize("Opaque")}</label>
 		</div>
 	`);
 	$transparency.find(`[value=${transparency ? "transparent" : "opaque"}]`).attr({checked: true});
