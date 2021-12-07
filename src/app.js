@@ -658,7 +658,7 @@ const $news_indicator = $(`
 		<img src='images/new.gif' width='31' height='16' alt=''/>
 		<span class='marquee' dir='ltr' style='--text-width: 45ch; --animation-duration: 2s;'>
 			<span>
-				Saving, Palette Features, Docking Improvements, and Many Fixes
+				<b>The GUIcci Update</b> — Alt/Pinch Zoom, Thumbnail, and more!
 			</span>
 		</span>
 	</a>

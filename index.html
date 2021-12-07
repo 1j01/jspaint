@@ -101,16 +101,10 @@
 			<p>Support the project at <a href="https://www.paypal.me/IsaiahOdhner" target="_blank">paypal.me/IsaiahOdhner</a>.</p>
 		</div>
 		<div id="news" hidden>
-			<article class="news-entry" id="news-2021-saving">
-				<h1>Saving Features, Palette Features, Docking Improvements, and Many Fixes</h1>
-				<time datetime="2021-02-24">2021-02-24</time>
-				<!-- <img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src=""/> -->
-				<h2>New Features</h2>
-				<p>
-					The <b>Text tool</b> now automatically expands the textbox as you type.
-					When resizing, there's now a minimum size based on the text in the textbox.
-					It previews exactly what size it will end up with when resizing.
-				</p>
+			<!-- <article class="news-entry" id="news-2021-saving">
+				<h1>The Savior Update</h1>
+				<time datetime=""></time>
+				<img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src=""/>
 				<p>
 					<b>Save</b> (<kbd>Ctrl+S</kbd>) can now save over the open file, in Chrome, Edge, and Opera browsers.
 					This works using new <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a>.
@@ -150,6 +144,29 @@
 					Download a palette as GIMP GPL (or several other formats) and use <b>Colors > Get Colors</b> and select the file,
 					or simply drag and drop the file onto JS Paint to load the palette.
 				</p>
+			</article> -->
+			<article class="news-entry" id="news-2021-saving">
+				<h1>The GUIcci Update</h1>
+				<time datetime="2021-12-06">2021-12-06</time>
+				<!-- <img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src=""/> -->
+				<h2>New Features</h2>
+				<p>
+					<b>View > Zoom > Show Thumbnail</b> to show a preview of the image at a small size, great for pixel art,
+					so you can make fine, precise edits, while keeping it in perspective.
+				</p>
+				<p>
+					<b>Pinch zooming:</b> Use two fingers to zoom in and out, and pan the view, if you have a touch screen.
+				</p>
+				<p>
+					<b>Alt+Mousewheel</b> to zoom in and out quickly on desktop. This is great for making precise selections,
+					because you can zoom to one corner than zoom back out and in to the other corner.
+					You couldn't do that with the Magnifier tool, because switching tools finalizes the selection.
+				</p>
+				<p>
+					The <b>Text tool</b> now automatically expands the textbox as you type.
+					When resizing, there's now a minimum size based on the text in the textbox.
+					It previews exactly what size it will end up with when resizing.
+				</p>
 				<p>
 					<b>Docking:</b> If you drag the Colors box or Tools box out into a window,
 					you can now dock it back while dragging it by the titlebar.
@@ -157,7 +174,20 @@
 					or double click the titlebar.
 				</p>
 				<p>
+					<b>Menus</b> are now fully keyboard (and screen reader) accessible.
+					In particular, you can press <kbd>Alt</kbd> plus the access key of a menu button to open the menu,
+					and then (without <kbd>Alt</kbd>) press the access key of a menu item to select it.
+					The access key of an item is the underlined letter or the first letter of the item's text if there's no underline.
+				</p>
+				<p>
+					<b>File > Exit</b> now exits to the official web desktop, <a target="_blank" href="https://98.js.org">98.js.org</a>,
+					a re-creation of Windows 98 full of games and applications.
+				</p>
+				<p>
 					Improved layout of <b>View > Zoom > Custom Zoom</b> window, matching the design in MS Paint.
+				</p>
+				<p>
+					Message boxes now show warning/error/information icons, and play a sound when they appear.
 				</p>
 				<p>
 					<b>Error details</b> are now hidden by default in error dialogs.
@@ -170,8 +200,7 @@
 				<h2>Fixes</h2>
 				<p>
 					The selection and textboxes no longer "blow up" if you resize them to a minimal size.
-					And they can no longer be freely moved when you drag past the minimal size when resizing.
-					(You can of course still freely move a selection by dragging from the center.) 
+					And they are limited when you drag an edge past the opposite edge.
 				</p>
 				<p>
 					I fixed a bug where vertically thin selections were difficult or impossible to drag (despite showing a drag cursor).
@@ -190,8 +219,8 @@
 				</p>
 				<p>
 					The magnifier preview and other tool previews are now hidden while dragging the Colors box or Tools box.
-					It was very confusing looking with the magnifier preview,
-					since it looks similar to the preview outline when dragging the Colors box or Tools box.
+					It looked confusing when the magnifier preview was shown at the same time as
+					the preview outline for dragging/docking a tool window.
 				</p>
 				<p>
 					For languages that read <b>right-to-left</b>, the History view (<b>Edit > History</b>) now uses a right-to-left layout,
