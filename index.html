@@ -175,6 +175,9 @@
 					You couldn't do that with the Magnifier tool, because switching tools finalizes the selection.
 				</p>
 				<p>
+					Added <b>View > Fullscreen</b> to toggle fullscreen mode. This is nice for using JS Paint on your phone.
+				</p>
+				<p>
 					The <b>Text tool</b> now automatically expands the textbox as you type.
 					When resizing, there's now a minimum size based on the text in the textbox.
 					It previews exactly what size it will end up with when resizing.
@@ -192,24 +195,45 @@
 					The access key of an item is the underlined letter or the first letter of the item's text if there's no underline.
 				</p>
 				<p>
-					<b>File > Exit</b> now exits to the official web desktop, <a target="_blank" href="https://98.js.org">98.js.org</a>,
-					a re-creation of Windows 98, full of games and applications.
-				</p>
-				<p>
-					Improved layout of <b>View > Zoom > Custom Zoom</b> window, matching the design in MS Paint.
-				</p>
-				<p>
-					Message boxes now show warning/error/information icons, and play a sound when they appear.
-				</p>
-				<p>
 					<b>Error details</b> are now hidden by default in error dialogs.
 					The details may be more overwhelming than useful in a lot of cases,
 					but if you need them, you can expand the Details.
 				</p>
 				<p>
-					Progress bars, radio buttons, and all other UI elements are thematically styled.
+					<b>File > Exit</b> now exits to the official web desktop, <a target="_blank" href="https://98.js.org">98.js.org</a>,
+					a re-creation of Windows 98, full of games and applications.
+				</p>
+				<h2>Pixel Perfect</h2>
+				<p>
+					All interface elements are now thematically styled,
+					powered by <a target="_blank" href="https://os-gui.js.org">OS-GUI.js</a> and
+					<a target="_blank" href="https://jdan.github.io/98.css/">98.css</a>.
+				</p>
+				<p>
+					The whole interface is now pixel perfect, accurate to Windows 98.
+					Okay, there's a few things that are a pixel off or so, but seriously,
+					I lined up a screenshot and got it essentially perfect.
+				</p>
+				<p>
+					I improved the layout of <b>View > Zoom > Custom Zoom</b> window, matching the design in MS Paint.
+				</p>
+				<p>
+					I added padding to all dialogs so they don't feel cramped anymore.
+					(I had put this off wanting to get everything metrically accurate, but that's pretty silly;
+					some is better than none! That said, I could use MS Paint's resource files for maximal accuracy in the future...)
+				</p>
+				<p>
+					Message boxes now include warning or error icons, and play a sound when they appear.
+				</p>
+				<p>
+					I improved <b>View > View Bitmap</b>: it now uses the theme's wallpaper background color,
+					if the image is smaller than the window, has a border, and doesn't let you edit the image,
+					instead closing on click or key press.
 				</p>
 				<h2>Fixes</h2>
+				<p>
+					Menu buttons are easier to open on a touch screen. Sometimes you had to tap twice before the menu opened.
+				</p>
 				<p>
 					The selection and textboxes no longer "blow up" if you resize them to a minimal size.
 					And they are limited when you drag an edge past the opposite edge.
