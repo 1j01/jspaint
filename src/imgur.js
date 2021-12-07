@@ -6,14 +6,16 @@ function show_imgur_uploader(blob){
 	}
 	$imgur_window = $DialogWindow().title("Upload To Imgur").addClass("horizontal-buttons");
 	
-	const $preview_image_area = $(E("div")).appendTo($imgur_window.$main);//.html("<label style='display: block'>Preview:</label>");
+	const $preview_image_area = $(E("div")).appendTo($imgur_window.$main).addClass("inset-deep");
 	const $imgur_url_area = $(E("div")).appendTo($imgur_window.$main);
 	const $imgur_status = $(E("div")).appendTo($imgur_window.$main);
 	
 	// @TODO: maybe make this preview small but zoomable to full size?
 	// (starting small (max-width: 100%) and toggling to either scrollable or fullscreen)
 	// it should be clear that it's not going to upload a downsized version of your image
-	const $preview_image = $(E("img")).appendTo($preview_image_area);
+	const $preview_image = $(E("img")).appendTo($preview_image_area).css({
+		display: "block", // prevent margin below due to inline display (vertical-align can also be used)
+	});
 	const blob_url = URL.createObjectURL(blob);
 	$preview_image.attr({src: blob_url});
 	// $preview_image.css({maxWidth: "100%", maxHeight: "400px"});
@@ -182,6 +184,8 @@ function show_imgur_uploader(blob){
 	const $cancel_button = $imgur_window.$Button(localize("Cancel"), () => {
 		$imgur_window.close();
 	});
-	$imgur_window.$content.width(300);
+	$imgur_window.$content.css({
+		width: "min(1000px, 80vw)",
+	});
 	$imgur_window.center();
 }

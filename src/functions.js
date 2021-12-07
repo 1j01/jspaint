@@ -1573,10 +1573,18 @@ function render_history_as_gif(){
 			$win.title("Rendered GIF");
 			const blob_url = URL.createObjectURL(blob);
 			$output.empty().append(
-				$(E("img")).attr({
-					src: blob_url,
-					width,
-					height,
+				$(E("div")).addClass("inset-deep").append(
+					$(E("img")).attr({
+						src: blob_url,
+						width,
+						height,
+					}).css({
+						display: "block", // prevent margin below due to inline display (vertical-align can also be used)
+					}),
+				).css({
+					overflow: "auto",
+					maxHeight: "70vh",
+					maxWidth: "70vw",
 				})
 			);
 			$win.on("close", ()=> {
