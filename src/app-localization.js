@@ -1039,10 +1039,10 @@ function get_language() {
 	return current_language;
 }
 function get_direction(language=current_language) {
-	return current_language.match(/^(ar|dv|fa|ha|he|ks|ku|ms|pa|ps|sd|ug|yi)\b/i) ? "rtl" : "ltr";
+	return language.match(/^(ar|dv|fa|ha|he|ks|ku|ms|pa|ps|sd|ug|yi)\b/i) ? "rtl" : "ltr";
 }
 function load_language(language) {
-	const prev_language = current_language;
+	// const prev_language = current_language;
 
 	const stylesheets = [...document.querySelectorAll(".flippable-layout-stylesheet")];
 	for (const stylesheet of stylesheets) {
