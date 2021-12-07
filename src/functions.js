@@ -2302,9 +2302,78 @@ function clear(){
 	});
 }
 
-function view_bitmap(){
-	if(main_canvas.requestFullscreen){ main_canvas.requestFullscreen(); }
-	if(main_canvas.webkitRequestFullscreen){ main_canvas.webkitRequestFullscreen(); }
+let cleanup_bitmap_view = () => {};
+function view_bitmap() {
+	// @TODO: include selection in the bitmap
+	// I believe mspaint uses a similar code path to the Thumbnail,
+	// considering that if you right click on the image in View Bitmap mode,
+	// it shows the silly "Thumbnail" context menu item.
+	// (It also shows the selection, in a meaningless place, similar to the Thumbnail's bugs)
+	main_canvas.toBlob(blob => {
+		cleanup_bitmap_view();
+		const url = URL.createObjectURL(blob);
+		const img = document.createElement("img");
+		img.src = url;
+		bitmap_view_div = document.createElement("div");
+		bitmap_view_div.classList.add("bitmap-view", "inset-deep");
+		bitmap_view_div.appendChild(img);
+		document.body.appendChild(bitmap_view_div);
+		$(bitmap_view_div).css({
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center",
+			position: "fixed",
+			top: "0",
+			left: "0",
+			width: "100%",
+			height: "100%",
+			zIndex: "9999",
+			background: "var(--Background)",
+		});
+		if (bitmap_view_div.requestFullscreen) { bitmap_view_div.requestFullscreen(); }
+		else if (bitmap_view_div.webkitRequestFullscreen) { bitmap_view_div.webkitRequestFullscreen(); }
+		
+		cleanup_bitmap_view = () => {
+			cleanup_bitmap_view = () => { };
+			bitmap_view_div.remove();
+			document.removeEventListener("fullscreenchange", onFullscreenChange, { once: true });
+			document.removeEventListener("webkitfullscreenchange", onFullscreenChange, { once: true });
+			document.removeEventListener("keydown", onKeyDown);
+			document.removeEventListener("mousedown", onMouseDown);
+			// If you have e.g. the Help window open,
+			// and right click to close the View Bitmap, with the mouse over the window,
+			// this needs a delay to cancel the context menu.
+			setTimeout(() => {
+				document.removeEventListener("contextmenu", onContextMenu);
+			}, 100);
+			URL.revokeObjectURL(url);
+		};
+		document.addEventListener("fullscreenchange", onFullscreenChange, { once: true });
+		document.addEventListener("webkitfullscreenchange", onFullscreenChange, { once: true });
+		document.addEventListener("keydown", onKeyDown);
+		document.addEventListener("mousedown", onMouseDown);
+		document.addEventListener("contextmenu", onContextMenu);
+
+		function onFullscreenChange() {
+			if (!document.fullscreenElement) {
+				cleanup_bitmap_view();
+			}
+		}
+		function onKeyDown(event) {
+			// Note: in mspaint, Esc is the only key that DOESN'T close the bitmap view,
+			// but it also doesn't do anything else — as far as I can tell. Stupid.
+			cleanup_bitmap_view();
+		}
+		function onMouseDown(event) {
+			// Note: in mspaint, only left click exits View Bitmap mode.
+			// Right click can show a useless context menu.
+			cleanup_bitmap_view();
+		}
+		function onContextMenu(event) {
+			event.preventDefault();
+			cleanup_bitmap_view(); // not needed
+		}
+	}, "image/png");
 }
 
 function get_tool_by_id(id){
