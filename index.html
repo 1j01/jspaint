@@ -19,8 +19,10 @@
 		excluding e.g. scrollbars, buttons, and windows (already in OS-GUI),
 		and integrating with the theme CSS vars used by OS-GUI,
 		and with some RTLCSS tweaks.
+		This is not an @import in classic.css because it needs RTLCSS and I'm not applying RTLCSS to themes yet.
+		So I added .not-for-modern logic to theme.js to exclude these styles depending on the theme.
 		-->
-		<link href="lib/98.css/98.custom-build.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
+		<link href="lib/98.css/98.custom-build.css" class="flippable-layout-stylesheet not-for-modern" rel="stylesheet" type="text/css">
 
 		<link rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png">
 		<!-- Chrome will pick the largest image for some reason, instead of the most appropriate one. -->

@@ -44,6 +44,8 @@
 	theme_link.id = "theme-link";
 	document.head.appendChild(theme_link);
 
+	update_not_for_modern_theme();
+
 	window.get_theme = () => current_theme;
 
 	window.set_theme = theme => {
@@ -63,8 +65,18 @@
 
 		wait_for_theme_loaded(theme, signal_theme_load);
 		theme_link.href = href_for(theme);
+
+		update_not_for_modern_theme();
+
 		signal_theme_load();
 	};
+
+	function update_not_for_modern_theme() {
+		const not_for_modern = document.querySelectorAll("link.not-for-modern");
+		for (const link of not_for_modern) {
+			link.disabled = current_theme === "modern.css";
+		}
+	}
 
 	function make_grinch_button() {
 		const button = document.createElement("button");
