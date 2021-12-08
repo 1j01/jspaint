@@ -1040,6 +1040,15 @@ $G.on("keydown", e => {
 		e.preventDefault();
 	}
 });
+let alt_zooming = false;
+addEventListener("keyup", (e) => {
+	if (e.key === "Alt" && alt_zooming) {
+		e.preventDefault(); // prevent menu bar from activating in Firefox from zooming
+	}
+	if (!e.altKey) {
+		alt_zooming = false;
+	}
+});
 // $G.on("wheel", (e) => {
 addEventListener("wheel", (e) => {
 	if (e.altKey) {
@@ -1052,6 +1061,7 @@ addEventListener("wheel", (e) => {
 		}
 		new_magnification = Math.max(0.5, Math.min(new_magnification, 80));
 		set_magnification(new_magnification, to_canvas_coords(e));
+		alt_zooming = true;
 		return;
 	}
 	if (e.ctrlKey || e.metaKey) {
