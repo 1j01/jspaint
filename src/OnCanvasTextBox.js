@@ -77,7 +77,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				width: this.width,
 				height: this.height,
 				fontFamily: font.family,
-				fontSize: `${font.size}px`,
+				fontSize: `${font.size}px`, // @TODO: shouldn't this be pt? "Selects the point size of the text."
 				fontWeight: font.bold ? "bold" : "normal",
 				fontStyle: font.italic ? "italic" : "normal",
 				textDecoration: font.underline ? "underline" : "none",
