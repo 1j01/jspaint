@@ -17,9 +17,6 @@ function $FontBox(){
 	const $underline = $Toggle(2, "underline");
 	const $vertical = $Toggle(3, "vertical");
 	$vertical.attr("disabled", true);
-	$vertical.find("span").css({
-		filter: "grayscale(1) contrast(0.3) brightness(1.3) drop-shadow(1px 1px 0px white)" // approximate
-	});
 
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);
@@ -54,8 +51,12 @@ function $FontBox(){
 	
 	
 	function $Toggle(xi, thing){
+		// const $button = $(E("button")).addClass("toggle").attr({
+		// 	"aria-pressed": false,
+		// 	"aria-label": localize(thing), // thing is really for programmatic use only, @TODO: label
+		// });
 		const $button = $(E("button")).addClass("toggle").attr("aria-pressed", false);
-		const $image = $(E("span")).appendTo($button);
+		const $icon = $(E("span")).addClass("icon").appendTo($button);
 		$button.css({
 			width: 23,
 			height: 22,
@@ -65,13 +66,12 @@ function $FontBox(){
 			alignItems: "center",
 			justifyContent: "center",
 		});
-		$image.css({
+		$icon.css({
 			flex: "0 0 auto",
 			display: "block",
 			width: 16,
 			height: 16,
-			backgroundImage: "url(images/text-tools.png)",
-			backgroundPosition: `${xi*-16}px 0px`
+			"--icon-index": xi,
 		});
 		$button.on("click", () => {
 			$button.toggleClass("selected");
