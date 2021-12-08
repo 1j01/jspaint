@@ -270,6 +270,12 @@ html, body, .jspaint {
 	font-size: 2rem;
 	line-height: 1.5;
 }
+.eye-gaze-mode .menu-item-checkbox-area::after,
+.eye-gaze-mode .menu-item-submenu-area::after {
+	width: 1.2em;
+	height: 1.2em;
+	mask-size: 1.2em 1.2em;
+}
 
 .eye-gaze-mode .status-area {
 	padding-right: 170px;
