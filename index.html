@@ -243,9 +243,16 @@
 					if the image is smaller than the window.
 					It now closes with a click or key press, and doesn't let you edit the image (which was weird).
 				</p>
+				<p>
+					The Help window can now be minimized to the bottom of the screen, even though there's no taskbar.
+					It works like how Windows 98 does if the process managing the taskbar crashes.
+				</p>
 				<h2>Fixes</h2>
 				<p>
 					<b>Menu buttons</b> are easier to open on a touch screen. Sometimes you had to tap twice before the menu opened.
+				</p>
+				<p>
+					Fixed <b>large square brush</b> continuity (it left gaps before, due to a half-implemented optimization).
 				</p>
 				<p>
 					The <b>selection and textboxes</b> no longer "blow up" if you resize them to a minimal size.
@@ -278,6 +285,13 @@
 				</p>
 				<p>
 					Fixed <b>cut off icons</b> in buttons in the help window toolbar in the Modern theme.
+				</p>
+				<p>
+					All windows now have a default-focused control, and the last focused control in the window is remembered for when you refocus the window.
+				</p>
+				<p>
+					<b>File > New</b> and <b>File > Open</b> now create a new autosave session,
+					instead of using the current session.
 				</p>
 				<h2>Winter Theme</h2>
 				<p>
