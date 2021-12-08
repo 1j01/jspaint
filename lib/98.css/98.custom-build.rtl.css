@@ -281,9 +281,7 @@ button:disabled,
 */
 
 fieldset {
-  border: none;
-  box-shadow: inset -1px -1px var(--button-highlight), inset -2px 1px var(--button-shadow),
-    inset 1px -2px var(--button-shadow), inset 2px 2px var(--button-highlight);
+  border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='5' height='5' viewBox='0 0 5 5' fill='grey' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H5V5H0V2H2V3H3V2H0' fill='white'/%3E %3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H4V4H0V1H1V3H3V1H0' fill='%23808080'/%3E %3C/svg%3E") 2;
   padding: calc(2 * var(--border-width) + var(--element-spacing));
   padding-block-start: var(--element-spacing);
   margin: 0;
