@@ -65,6 +65,10 @@ body,
 	image-rendering: crisp-edges;
 	image-rendering: pixelated;
 }
+.thumbnail-img {
+	/* these scale down, so nearest neighbor scaling looks bad */
+	image-rendering: auto;
+}
 
 .selection:after,
 .textbox:after {
