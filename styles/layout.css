@@ -105,6 +105,7 @@ html, body, .jspaint {
 .component-area {
 	display: flex;
 	flex: 0 0 auto;
+	user-select: none;
 }
 
 .selection,
