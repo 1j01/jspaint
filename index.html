@@ -170,9 +170,8 @@
 					<b>Pinch zooming:</b> If you have a touch screen, use two fingers to zoom in and out, and pan the view.
 				</p>
 				<p>
-					<b>Alt+Mousewheel</b> to zoom in and out quickly on desktop. This is great for making precise selections,
-					because you can zoom to one corner, then zoom back out and in to the other corner.
-					You couldn't do that with the Magnifier tool, because switching tools finalizes the selection.
+					<b>Alt+Mousewheel</b> to zoom in and out quickly on desktop.
+					Unlike the Magnifier tool, this allows you to zoom while making (or moving) a selection, for added precision.
 				</p>
 				<p>
 					Added <b>View > Fullscreen</b> to toggle fullscreen mode. This is nice for using JS Paint on your phone.
@@ -183,8 +182,9 @@
 					It previews exactly what size it will end up with when resizing.
 				</p>
 				<p>
+					<!-- niche, confusing -->
 					<b>Docking:</b> If you drag the Colors box or Tools box out into a window,
-					you can now dock it back while dragging it by the titlebar.
+					you can now dock it back when dragging the titlebar.
 					Previously to dock it you had to drag it by the space around the tool buttons or color wells,
 					or double click the titlebar.
 				</p>
@@ -195,6 +195,7 @@
 					The access key of an item is the underlined letter, or the first letter of the item's text if there's no underline.
 				</p>
 				<p>
+					<!-- niche, example? -->
 					<b>Error details</b> are now hidden by default in error dialogs.
 					The details may be more overwhelming than useful in a lot of cases,
 					but if you need them, you can expand the details.
@@ -204,9 +205,10 @@
 					<a target="_blank" href="https://98.js.org"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABKklEQVR42qWTMW7DMAxFKYC+RC/hQR065xSdOyRDr9CxV8gQDzlK5g7RkLmn6CwCCimSchIoWkrAgESTj5+kHeCfFnpORCyPPiLqxgYP9gC/ZyKYEIG+CPAbn0JCr6okizmgvmdIF8BZxUhNgVdv8k3FvCdIu/u228VBnkiUGTZBzgyb1CcASBqdlhAMUEx6aAokWc8KqGCGzB+0lmMTyI0cBUmSV28zMRXzT4bECiI/l+NUZ/J0Cz0TACx6Tiwej9jfQkvIufZ8eVM1tM+1uiTHyP5P7H9IccvtxGCVSg0W6ZDUdz6cYbe8DgAHKKf3P9j8bnhQ0rSJY0DcOm2gwCFSugKqozT51V704xoDQItFWMeTFp+ZbQEGtm4o3/hsoLa1IaC3ocf/4QotsZxI//135gAAAABJRU5ErkJggg==" width="16" height="16" alt=""> 98.js.org</a>,
 					a re-creation of Windows 98, full of games and applications.
 				</p>
-				<img src="https://i.postimg.cc/SKHrYpx3/98-js-org-screenshot.png" alt="The 98.js desktop featuring desktop icons, a taskbar, and various application windows.">
+				<img class="inset-deep" src="https://i.postimg.cc/SKHrYpx3/98-js-org-screenshot.png" alt="The 98.js desktop featuring desktop icons, a taskbar, and various application windows.">
 				<p>
-					This project spun out of JS Paint, and I have implemented by now Sound Recorder, Notepad, Calculator, and even Windows Explorer,
+					This project spun out of JS Paint, and I have implemented now
+					Sound Recorder, Notepad, Calculator, and even Windows Explorer,
 					to a high level of detail.
 				</p>
 				<p>
@@ -223,38 +225,37 @@
 					<a target="_blank" href="https://jdan.github.io/98.css/">98.css</a>.
 				</p>
 				<p>
-					The whole interface is now pixel perfect, accurate to Windows 98.
-					Okay, there's a few things that are a pixel off or so, but seriously,
-					I lined up a screenshot and got it essentially perfect.
+					The whole interface is now pixel perfect accurate to Windows 98.
+
+					(Okay, there's a few things that are a pixel off or so, but seriously,
+					I lined up a screenshot and got it essentially perfect.)
 				</p>
 				<p>
-					I improved the layout of <b>View > Zoom > Custom Zoom</b> window, matching the design in MS Paint.
+					Improved layout of <b>View > Zoom > Custom Zoom</b> window, matching the design in MS Paint.
 				</p>
 				<p>
-					I added padding to all dialogs so they don't feel cramped anymore.
-					(I had put this off wanting to get everything metrically accurate, but that's pretty silly;
-					some is better than none! That said, I could use MS Paint's resource files for maximal accuracy in the future...)
+					Added padding to all dialogs so they don't feel cramped anymore.
 				</p>
 				<p>
 					Message boxes now include warning or error icons, and play a sound when they appear.
 				</p>
 				<p>
-					I improved <b>View > View Bitmap</b>: it now uses the theme's wallpaper background color,
-					if the image is smaller than the window, has a border, and doesn't let you edit the image,
-					instead closing on click or key press.
+					Improved <b>View > View Bitmap</b>: it now uses the theme's wallpaper background color,
+					if the image is smaller than the window.
+					It now closes with a click or key press, and doesn't let you edit the image (which was weird).
 				</p>
 				<h2>Fixes</h2>
 				<p>
-					Menu buttons are easier to open on a touch screen. Sometimes you had to tap twice before the menu opened.
+					<b>Menu buttons</b> are easier to open on a touch screen. Sometimes you had to tap twice before the menu opened.
 				</p>
 				<p>
-					The selection and textboxes no longer "blow up" if you resize them to a minimal size.
-					And they are limited when you drag an edge past the opposite edge.
+					The <b>selection and textboxes</b> no longer "blow up" if you resize them to a minimal size.
+					They are now limited when you drag an edge past the opposite edge.
 				</p>
 				<p>
-					I fixed a bug where vertically thin selections were difficult or impossible to drag (despite showing a drag cursor).
+					Fixed a bug where vertically thin selections were difficult or impossible to drag (despite showing a drag cursor).
 					(The draggable region was offset outside of the selection box.)
-					I fixed a similar bug where tool previews would get offset if the canvas's height was very small.
+					Fixed a similar bug where tool previews would get offset if the canvas's height was very small.
 				</p>
 				<p>
 					Resize handles no longer get smaller when the object to resize is very small.
@@ -283,7 +284,7 @@
 				</p>
 				<h2>Winter Theme</h2>
 				<p>
-					I updated the Winter theme with advent calendar-style tool buttons,
+					Updated the Winter theme with advent calendar-style tool buttons,
 					that reveal (improved) holiday pixel art for each tool when you select them.
 				</p>
 				<p>
@@ -293,8 +294,10 @@
 				<p>
 					Also, if it doesn't feel quite enough like an advent calendar for you,
 					you can hold <kbd>Shift</kbd> to select multiple tools at once.
+				</p>
+				<p>
 					Perhaps you could make a drawing using only one tool for the 16 days leading up to Christmas,
-					with an exception for the Magnifier tool, of course.
+					with exceptions for the Pick Color and Magnifier tools, of course.
 				</p>
 				<p>
 					Snowflakes in the menus indicate what letter you can press to select that item.
