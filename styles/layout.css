@@ -561,6 +561,14 @@ html, body, .jspaint {
 	margin: 5px;
 }
 
+.font-box {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	margin: 4px 7px; /* not measured, just guessed */
+	gap: 10px;
+}
+
 .canvas-area {
 	flex: 1;
 	display: block !important;

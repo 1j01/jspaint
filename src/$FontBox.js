@@ -2,8 +2,8 @@
 function $FontBox(){
 	const $fb = $(E("div")).addClass("font-box");
 	
-	const $family = $(E("select"));
-	const $size = $(E("input")).attr({
+	const $family = $(E("select")).addClass("inset-deep");
+	const $size = $(E("input")).addClass("inset-deep").attr({
 		type: "number",
 		min: 8,
 		max: 72,
