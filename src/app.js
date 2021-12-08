@@ -108,6 +108,16 @@ let custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
 
+// The File System Access API doesn't provide a way to get the file type selected by the user,
+// or to automatically append a file extension to the file name.
+// I'm not sure it's worth it to be able to save over an existing file.
+// I also like the downloads bar UI to be honest.
+// So this might need to be optional, but right now I'm disabling it as it's not ready.
+// There are cases where 0-byte files are created, which is either a serious problem,
+// it's just from canceling saving when the file name has a problem, and it needs to be cleaned up.
+// Also, while I've implemented most of the UI, it'd be nice to release this with recent files support.
+let enable_fs_access_api = false;
+
 // The methods in systemHooks can be overridden by a containing page like 98.js.org which hosts jspaint in a same-origin iframe.
 // This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
 // This API may be removed at any time (and perhaps replaced by something based around postMessage)
@@ -127,7 +137,7 @@ window.systemHookDefaults = {
 		// but at least in chrome, there's a "Downloads Blocked" icon with a popup where you can say Always Allow.
 		// I can't detect when it's allowed or blocked, but `saveAs` has a better chance of working,
 		// so in Speech Recognition and Eye Gaze Mode, I set a global flag temporarily to disable File System Access API (window.untrusted_gesture).
-		if (window.showSaveFilePicker && !window.untrusted_gesture) {
+		if (window.showSaveFilePicker && !window.untrusted_gesture && enable_fs_access_api) {
 			// We can't get the selected file type, not even from newHandle.getFile()
 			// so limit formats shown to a set that can all be used by their unique file extensions
 			// formats = formats_unique_per_file_extension(formats);
@@ -254,7 +264,7 @@ window.systemHookDefaults = {
 			show_error_message("Sorry, a file picker cannot be shown when using Speech Recognition or Eye Gaze Mode. You must click File > Open directly with the mouse, or press Ctrl+O on the keyboard.");
 			throw new Error("can't show file picker reliably");
 		}
-		if (window.showOpenFilePicker) {
+		if (window.showOpenFilePicker && enable_fs_access_api) {
 			const [fileHandle] = await window.showOpenFilePicker({
 				types: formats.map((format)=> {
 					return {
@@ -282,7 +292,7 @@ window.systemHookDefaults = {
 		}
 	},
 	writeBlobToHandle: async (save_file_handle, blob) => {
-		if (save_file_handle && save_file_handle.createWritable) {
+		if (save_file_handle && save_file_handle.createWritable && enable_fs_access_api) {
 			await confirm_overwrite();
 			try {
 				const writableStream = await save_file_handle.createWritable();
