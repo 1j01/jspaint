@@ -3157,6 +3157,11 @@ function save_as_prompt({
 		const $w = new $DialogWindow(dialogTitle);
 		$w.addClass("save-as");
 
+		// This is needed to prevent the keyboard from closing when you tap the file name input! in FF mobile
+		// @TODO: Investigate this in os-gui.js; is it literally just the browser default behavior to focus a div with tabindex that's the parent of an input?
+		// That'd be crazy, right?
+		$w.$content.attr("tabIndex", null);
+
 		// @TODO: hotkeys (N, T, S, Enter, Esc)
 		if (promptForName) {
 			$w.$main.append(`
