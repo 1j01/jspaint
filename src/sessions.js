@@ -548,7 +548,7 @@
 			end_current_session();
 			change_url_param("local", generate_session_id());
 
-			load_image_from_uri(uri).then((info) => {
+			load_image_from_uri(url).then((info) => {
 				open_from_image_info(info, null, null, true, true);
 			}, show_resource_load_error_message);
 
