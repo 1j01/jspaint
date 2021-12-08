@@ -261,6 +261,21 @@ body {
 	outline-offset: 3px;
 }
 
+/* @TODO: modern style (this is copied straight from classic.css) */
+.font-box .toggle:enabled > .icon {
+	-webkit-mask-image: url("../../images/text-tools.png");
+	-webkit-mask-position: calc(-16px * var(--icon-index)) 0;
+	mask-image: url("../../images/text-tools.png");
+	mask-position: calc(-16px * var(--icon-index)) 0;
+	background-color: currentColor;
+}
+.font-box .toggle:disabled > .icon {
+	background-image: url("../../images/text-tools.png");
+	background-position: calc(-16px * var(--icon-index)) 0;
+	filter: saturate(0%) opacity(50%); /* fallback */
+	filter: url("#disabled-inset-filter-2");
+}
+
 /* @TODO: padding/margin on the top at least when in the sidebar */
 .tools {
 	width: 50px;
