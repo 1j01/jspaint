@@ -857,6 +857,12 @@ function open_from_file(file, source_file_handle) {
 }
 
 function apply_file_format_and_palette_info(info) {
+	file_format = info.file_format;
+
+	if (!enable_palette_loading_from_indexed_images) {
+		return;
+	}
+
 	if (info.palette) {
 		window.console && console.log(`Loaded palette from image file: ${info.palette.map(()=> `%c█`).join("")}`, ...info.palette.map((color)=> `color: ${color};`));
 		palette = info.palette;
@@ -870,7 +876,6 @@ function apply_file_format_and_palette_info(info) {
 	$colorbox.rebuild_palette();
 
 	monochrome = info.monochrome;
-	file_format = info.file_format;
 }
 
 function load_theme_from_text(fileText) {

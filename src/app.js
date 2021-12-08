@@ -108,6 +108,14 @@ let custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
 
+// This feature is not ready yet.
+// It needs to let the user decide when to switch the palette or not, when saving/opening an image.
+// (maybe there could be a palette undo button? feels weird. MS Paint would probably use a dialog.)
+// And it needs to handle canvas farbling, where pixel values are slightly different from each other,
+// and equivalize them, when saving to a file. And maybe at other times.
+// There are a lot of places in this app where I have to handle canvas farbling. It's obnoxious.
+let enable_palette_loading_from_indexed_images = false;
+
 // The File System Access API doesn't provide a way to get the file type selected by the user,
 // or to automatically append a file extension to the file name.
 // I'm not sure it's worth it to be able to save over an existing file.
