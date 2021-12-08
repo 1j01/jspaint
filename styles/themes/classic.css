@@ -328,7 +328,7 @@ body,
 	background-image: url("../../images/text-tools.png");
 	background-position: calc(-16px * var(--icon-index)) 0;
 	filter: saturate(0%) opacity(50%); /* fallback */
-	filter: url("#disabled-inset-filter");
+	filter: url("#disabled-inset-filter-2");
 }
 
 .tool-window .window-titlebar {
