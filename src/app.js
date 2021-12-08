@@ -934,7 +934,7 @@ $G.on("keydown", e => {
 		}
 	} else if (e.key === "F4") {
 		redo();
-	} else if (e.key === "Delete") {
+	} else if (e.key === "Delete" || e.key === "Backspace") {
 		delete_selection();
 	} else if (e.code === "NumpadAdd" || e.code === "NumpadSubtract") {
 		const plus = e.code === "NumpadAdd";
