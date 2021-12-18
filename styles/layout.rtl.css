@@ -18,6 +18,12 @@ html, body, .jspaint {
 }
 .jspaint {
 	direction: rtl;
+
+	/* prevent selection, especially for Safari on iOS/iPad, which likes to select random (nearest, kind of?) elements when long-pressing */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 .chooser-option {
 	display: flex;
@@ -105,6 +111,9 @@ html, body, .jspaint {
 .component-area {
 	display: flex;
 	flex: 0 0 auto;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
@@ -417,6 +426,9 @@ html, body, .jspaint {
 	display: grid;
 	grid-template-columns: repeat(8, 16px);
 	grid-gap: 5px 9px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	margin-left: 8px;
 }
@@ -949,6 +961,9 @@ html, body, .jspaint {
 #news {
 	max-height: 500px;
 	overflow: auto;
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
 	user-select: text;
 	cursor: auto;
 }
@@ -1038,6 +1053,9 @@ details {
 	margin-top: 8px;
 }
 summary {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	cursor: pointer;
 }
