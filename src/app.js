@@ -1415,22 +1415,22 @@ $canvas.on("pointermove", e => {
 	pointer = to_canvas_coords(e);
 	$status_position.text(`${pointer.x},${pointer.y}`);
 });
-$canvas.on("pointerenter", ()=> {
+$canvas.on("pointerenter", (e)=> {
 	pointer_over_canvas = true;
 
-	update_helper_layer();
+	update_helper_layer(e);
 
 	if (!update_helper_layer_on_pointermove_active) {
 		$G.on("pointermove", update_helper_layer);
 		update_helper_layer_on_pointermove_active = true;
 	}
 });
-$canvas.on("pointerleave", ()=> {
+$canvas.on("pointerleave", (e)=> {
 	pointer_over_canvas = false;
 
 	$status_position.text("");
 
-	update_helper_layer();
+	update_helper_layer(e);
 	
 	if (!pointer_active && update_helper_layer_on_pointermove_active) {
 		$G.off("pointermove", update_helper_layer);
@@ -2200,9 +2200,9 @@ $canvas.on("pointerdown", e => {
 	pointer_active = !!(e.buttons & (1 | 2)); // as far as tools are concerned
 	pointer_type = e.pointerType;
 	pointer_buttons = e.buttons;
-	$G.one("pointerup", ()=> {
+	$G.one("pointerup", (e)=> {
 		pointer_active = false;
-		update_helper_layer();
+		update_helper_layer(e);
 		
 		if (!pointer_over_canvas && update_helper_layer_on_pointermove_active) {
 			$G.off("pointermove", update_helper_layer);
@@ -2271,7 +2271,7 @@ $canvas.on("pointerdown", e => {
 
 	pointerdown_action();
 	
-	update_helper_layer();
+	update_helper_layer(e);
 });
 
 $canvas_area.on("pointerdown", e => {

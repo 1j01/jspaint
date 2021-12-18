@@ -107,9 +107,12 @@ function update_canvas_rect() {
 }
 
 let helper_layer_update_queued;
-let info_for_updating_pointer; // for updating on scroll or resize, where the mouse stays in the same place but its coordinates in the document change
-function update_helper_layer(e){
-	// e may be a number from requestAnimationFrame callback; ignore that
+let info_for_updating_pointer; // for updating the brush preview when the mouse stays in the same place,
+// but its coordinates in the document change due to scrolling or browser zooming (handled with scroll and resize events)
+function update_helper_layer(e) {
+	// e should be passed for pointer events, but not scroll or resize events
+	// e may be a synthetic event without clientX/Y, so ignore that (using isFinite)
+	// e may also be a timestamp from requestAnimationFrame callback; ignore that
 	if (e && isFinite(e.clientX)) {
 		info_for_updating_pointer = {clientX: e.clientX, clientY: e.clientY, devicePixelRatio};
 	}
