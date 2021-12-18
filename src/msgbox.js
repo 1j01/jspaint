@@ -9,7 +9,31 @@
 
 window.defaultMessageBoxTitle = localize("Paint");
 
-var chord_audio = new Audio("audio/chord.wav");
+try {
+	// <audio> element is simpler for sound effects,
+	// but in iOS/iPad it shows up in the Control Center, as if it's music you'd want to play/pause/etc.
+	// It's very silly. Also, on subsequent plays, it only plays part of the sound.
+	// And Web Audio API is better for playing SFX anyway because it can play a sound overlapping with itself.
+	window.audioContext = window.audioContext || new AudioContext();
+	const audio_buffer_promise =
+		fetch("audio/chord.wav")
+			.then(response => response.arrayBuffer())
+			.then(array_buffer => audioContext.decodeAudioData(array_buffer))
+	var play_chord = async function () {
+		audioContext.resume(); // in case it was not allowed to start until a user interaction
+		// Note that this should be before waiting for the audio buffer,
+		// so that it works the first time.
+		// (This only works if the message box is opened during a user gesture.)
+
+		const audio_buffer = await audio_buffer_promise;
+		const source = audioContext.createBufferSource();
+		source.buffer = audio_buffer;
+		source.connect(audioContext.destination);
+		source.start();
+	};
+} catch (error) {
+	console.log("AudioContext not supported", error);
+}
 
 window.showMessageBox = window.showMessageBox || (({
 	title = window.defaultMessageBoxTitle ?? "Alert",
@@ -93,7 +117,7 @@ window.showMessageBox = window.showMessageBox || (({
 	promise.$message = $message;
 	promise.promise = promise; // for easy destructuring
 	try {
-		chord_audio.play();
+		play_chord();
 	} catch (error) {
 		console.log(`Failed to play ${chord_audio.src}: `, error);
 	}
