@@ -2317,3 +2317,19 @@ prevent_selection($colorbox);
 $G.on("blur", () => {
 	$G.triggerHandler("pointerup");
 });
+
+// For Safari on iPad, Fullscreen mode overlays the system bar, completely obscuring our menu bar.
+// See CSS :fullscreen handling for more info.
+function iOS() {
+	return [
+		'iPad Simulator',
+		'iPhone Simulator',
+		'iPod Simulator',
+		'iPad',
+		'iPhone',
+		'iPod'
+	].includes(navigator.platform)
+	// iPad on iOS 13 detection
+	|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
+$("html").toggleClass("ios", iOS());

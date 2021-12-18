@@ -537,3 +537,9 @@ details[open] > summary::marker {
 	content: "▼";
 	text-decoration: none;
 }
+
+/* For Safari on iPad, Fullscreen mode overlays the system bar, completely obscuring our menu bar. */
+/* Code in layout.css adds a spacer to the top of the page, and this styles it with the title bar gradient. */
+.jspaint::before {
+	background: linear-gradient(to left, var(--ActiveTitle), var(--GradientActiveTitle));
+}

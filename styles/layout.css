@@ -18,6 +18,8 @@ html, body, .jspaint {
 }
 .jspaint {
 	direction: ltr;
+	
+	box-sizing: border-box; /* for iPad fullscreen workaround, which adds padding to .jspaint; without this it hides the status bar */
 
 	/* prevent selection, especially for Safari on iOS/iPad, which likes to select random (nearest, kind of?) elements when long-pressing */
 	-webkit-user-select: none;
@@ -1030,6 +1032,65 @@ html, body, .jspaint {
 		line-height: 1.5;
 		text-align: center;
 		white-space: normal;
+	}
+}
+
+/* For Safari on iPad, Fullscreen mode overlays the system bar, completely obscuring our menu bar. */
+/* This adds a spacer to the top of the page, styled with the title bar gradient, to prevent that. */
+/* Only show this if the device is tall enough that this won't cause any problems (fullscreen is important for fitting the color palette on the screen on some phones) */
+:root {
+	--ios-title-bar-height: 21px; /* this is what looks good to my eye, there's not a hard line in the overlay, just text/symbols, and I didn't measure the system bar in a case where it has a background */
+	/* hope it doesn't change! */
+}
+@media (min-height: 450px) {
+	/* These have to be separate selectors, or they'll be thrown out. Time to WET. */
+	.ios:fullscreen .jspaint {
+		padding-top: var(--ios-title-bar-height);
+	}
+	.ios:-webkit-full-screen .jspaint {
+		padding-top: var(--ios-title-bar-height);
+	}
+	.ios:fullscreen .jspaint::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: var(--ios-title-bar-height);
+	}
+	.ios:-webkit-full-screen .jspaint::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: var(--ios-title-bar-height);
+	}
+	/* That works, but now the exit fullscreen button (which we also can't change) obscures the menu bar. */
+	/* So center the menu bar contents, that'll look nice. */
+	/* .ios:fullscreen .menus {
+		justify-content: center;
+	}
+	.ios:-webkit-full-screen .menus {
+		justify-content: center;
+	} */
+	/* Ugh no, then the three dots button (multitasking menu) at the top of the system menu steals taps from the menu bar. */
+	/* Just shift it over by a fixed amount. */
+	/* This lets it sit in between the exit button and the three dots button,
+	at least on a 9th generation iPad with software version 15.0.2 (this is a very fragile workaround) */
+	.ios:fullscreen .menus {
+		padding-left: 100px;
+	}
+	.ios:-webkit-full-screen .menus {
+		padding-left: 100px;
+	}
+	/* Also nudge the tools downward to avoid the exit fullscreen button */
+	/* (not if it's in a window, only if it's docked) */
+	.ios:fullscreen .component-area .tools-component {
+		padding-top: 40px;
+	}
+	.ios:-webkit-full-screen .component-area .tools-component {
+		padding-top: 40px;
 	}
 }
 
