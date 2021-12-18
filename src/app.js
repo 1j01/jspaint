@@ -1120,14 +1120,10 @@ $G.on("cut copy paste", e => {
 			if (!navigator.clipboard || !navigator.clipboard.write) {
 				return do_sync_clipboard_copy_or_cut();
 			}
-			try {
-				if (e.type === "cut") {
-					edit_cut();
-				} else {
-					edit_copy();
-				}
-			} catch(e) {
-				do_sync_clipboard_copy_or_cut();
+			if (e.type === "cut") {
+				edit_cut(e);
+			} else {
+				edit_copy(e);
 			}
 		}
 	}else if(e.type === "paste"){

@@ -2235,7 +2235,12 @@ function getSelectionText() {
 	return text;
 }
 
-function edit_copy(execCommandFallback){
+// Takes optional "copy" event, for alternative fallback behavior
+// If a copy event is passed, it will set clipboard data for use within instances of JS Paint (failing Async Clipboard API)
+// If no copy event is passed, it will show a dialog asking the user to use the context menu of an image to copy
+// Note that it mustn't interfere with itself what with the global copy handler and all.
+function edit_copy(event) {
+	
 	const text = getSelectionText();
 
 	if (text.length > 0) {
@@ -2271,7 +2276,11 @@ function edit_copy(execCommandFallback){
 		});
 	}
 }
-function edit_cut(execCommandFallback){
+function edit_cut(event) {
+	
+	if (textbox) {
+		textbox.$editor.focus();
+	}
 	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
 			return try_exec_command("cut");
@@ -2285,7 +2294,7 @@ function edit_cut(execCommandFallback){
 		icon: get_help_folder_icon("p_cut.png"),
 	});
 }
-async function edit_paste(execCommandFallback){
+async function edit_paste(event){
 	if(
 		document.activeElement instanceof HTMLInputElement ||
 		document.activeElement instanceof HTMLTextAreaElement
