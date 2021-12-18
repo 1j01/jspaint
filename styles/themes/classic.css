@@ -52,6 +52,8 @@ body,
 	background-size: 8px;
 }
 
+/* Show images as pixelated if at pixel-perfect scales. */
+/* WET for vendor prefixes (for Safari) */
 @media (resolution: 1x), (resolution: 2x), (min-resolution: 3x) {
 	* {
 		image-rendering: -moz-crisp-edges;
@@ -59,6 +61,14 @@ body,
 		image-rendering: pixelated;
 	}
 }
+@media (-webkit-device-pixel-ratio: 1), (-webkit-device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3) {
+	* {
+		image-rendering: -moz-crisp-edges;
+		image-rendering: crisp-edges;
+		image-rendering: pixelated;
+	}
+}
+
 .disable-aa-for-things-at-main-canvas-scale .main-canvas,
 .disable-aa-for-things-at-main-canvas-scale .selection canvas {
 	image-rendering: -moz-crisp-edges;
