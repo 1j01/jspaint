@@ -2243,8 +2243,7 @@ function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
-				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+				return edit_copy_fallback();
 			}
 		}
 		navigator.clipboard.writeText(text);
@@ -2253,8 +2252,7 @@ function edit_copy(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("copy");
 			} else {
-				throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
-				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+				return edit_copy_fallback();
 			}
 		}
 		selection.canvas.toBlob(blob => {
@@ -2278,8 +2276,7 @@ function edit_cut(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("cut");
 		} else {
-			throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
-			// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+			return edit_copy_fallback();
 		}
 	}
 	edit_copy();
@@ -2297,8 +2294,7 @@ async function edit_paste(execCommandFallback){
 			if (execCommandFallback) {
 				return try_exec_command("paste");
 			} else {
-				throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
-				// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+				return edit_paste_image_fallback();
 			}
 		}
 		const clipboardText = await navigator.clipboard.readText();
@@ -2309,8 +2305,7 @@ async function edit_paste(execCommandFallback){
 		if (execCommandFallback) {
 			return try_exec_command("paste");
 		} else {
-			throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
-			// throw new Error(`The Async Clipboard API is not supported by this browser. ${browserRecommendationForClipboardAccess}`);
+			return edit_paste_image_fallback();
 		}
 	}
 	try {
@@ -2343,6 +2338,21 @@ async function edit_paste(execCommandFallback){
 			show_error_message(localize("Error getting the Clipboard Data!"), error);
 		}
 	}
+}
+function edit_copy_fallback() {
+	const $w = new $DialogWindow(localize("Copy"));
+	$w.addClass("copy-fallback-window");
+	$w.$Button(localize("Cancel"), () => {
+		$w.close(); // implicit actually
+	});
+	$w.$main.append("Long-press in the image below to copy.");
+	$w.$main.append(`<div class="inset-deep" style="margin: 10px"><img></div>`);
+	const $img = $w.$main.find("img");
+	$w.$main.on("copy", () => {
+		// Note: event may be handled by global copy handler
+		$w.close();
+	});
+	$img.attr("src", selection.canvas.toDataURL());
 }
 function edit_paste_image_fallback() {
 	const $w = new $DialogWindow(localize("Paste"));
