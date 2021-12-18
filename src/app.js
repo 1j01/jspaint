@@ -1084,6 +1084,7 @@ addEventListener("wheel", (e) => {
 	}
 }, { passive: false });
 
+// Note: this handler also handles bubbled paste events from the paste fallback dialog.
 $G.on("cut copy paste", e => {
 	if(e.isDefaultPrevented()){
 		return;

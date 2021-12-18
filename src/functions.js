@@ -2344,6 +2344,42 @@ async function edit_paste(execCommandFallback){
 		}
 	}
 }
+function edit_paste_image_fallback() {
+	const $w = new $DialogWindow(localize("Paste"));
+	$w.addClass("paste-fallback-window");
+	// $w.$Button(localize("Paste"), () => {
+	// 	edit_paste(); // this would just be a retry, which could help if it was
+	// });
+	$w.$Button(localize("Cancel"), () => {
+		$w.close(); // implicit actually
+	});
+	// @TODO: is it possible to get here on desktop? do I need "or right click"? what about other context menu opening interactions, like with a stylus perhaps?
+	$w.$main.append("Long-press in the box below to paste an image.");
+	$w.$main.append(`<div contenteditable class="inset-deep" style="padding: 20px; margin: 10px; outline: 2px dashed blue; outline-offset: 5px; line-height: 100px"></div>`);
+	$w.$main.on("paste", (event) => {
+		// This is handled by the global paste handler, except for closing the dialog.
+		// It might be better not to close the dialog if it fails though, to make it easier to try again. @TODO
+		$w.close();
+		// event.preventDefault();
+		// const clipboardData = event.originalEvent.clipboardData;
+		// if (clipboardData) {
+		// 	const { types, items } = clipboardData;
+		// 	for (let i = 0; i < types.length; i++) {
+		// 		const type = types[i];
+		// 		if (type === "Files" && items[i].type.startsWith("image/")) {
+		// 			const file = items[i].getAsFile();
+		// 			if (file) {
+		// 				paste_image_from_file(file);
+		// 				$w.close();
+		// 				return;
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// // show_error_message(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
+		// show_error_message("The information on the Clipboard can't be inserted into Paint.");
+	});
+}		
 
 function image_invert_colors(){
 	apply_image_transformation({
