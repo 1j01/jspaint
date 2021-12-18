@@ -537,13 +537,16 @@ window.menus = {
 			speech_recognition: [
 				// won't work with speech recognition, needs a user gesture
 			],
+			enabled: () => document.fullscreenEnabled || document.webkitFullscreenEnabled,
 			checkbox: {
-				check: () => document.fullscreenElement,
+				check: () => document.fullscreenElement || document.webkitFullscreenElement,
 				toggle: () => {
-					if (document.fullscreenElement) {
-						document.exitFullscreen();
+					if (document.fullscreenElement || document.webkitFullscreenElement) {
+						if (document.exitFullscreen) { document.exitFullscreen(); }
+						else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
 					} else {
-						document.documentElement.requestFullscreen();
+						if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
+						else if (document.documentElement.webkitRequestFullscreen) { document.documentElement.webkitRequestFullscreen(); }
 					}
 					// check() would need to be async or faked with a timeout,
 					// if the menus stayed open. @TODO: make all checkboxes close menus

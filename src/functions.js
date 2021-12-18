@@ -2352,7 +2352,7 @@ function view_bitmap() {
 		// In Chrome, if the page is already fullscreen, and you requestFullscreen,
 		// hitting Esc will change document.fullscreenElement without triggering the fullscreenchange event!
 		// It doesn't trigger a keydown either.
-		if (document.fullscreenElement === bitmap_view_div) {
+		if (document.fullscreenElement === bitmap_view_div || document.webkitFullscreenElement === bitmap_view_div) {
 			got_fullscreen = true;
 		} else if (got_fullscreen) {
 			cleanup_bitmap_view();
@@ -2371,7 +2371,7 @@ function view_bitmap() {
 		}, 100);
 		URL.revokeObjectURL(blob_url);
 		clearInterval(iid);
-		if (document.fullscreenElement === bitmap_view_div) {
+		if (document.fullscreenElement === bitmap_view_div || document.webkitFullscreenElement === bitmap_view_div) {
 			if (document.exitFullscreen) {
 				document.exitFullscreen(); // avoid warning in Firefox
 			} else if (document.msExitFullscreen) {
@@ -2392,7 +2392,7 @@ function view_bitmap() {
 	document.addEventListener("contextmenu", onContextMenu);
 
 	function onFullscreenChange() {
-		if (document.fullscreenElement !== bitmap_view_div) {
+		if (document.fullscreenElement !== bitmap_view_div && document.webkitFullscreenElement !== bitmap_view_div) {
 			cleanup_bitmap_view();
 		}
 	}
