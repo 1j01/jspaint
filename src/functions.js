@@ -2277,10 +2277,6 @@ function edit_copy(event) {
 	}
 }
 function edit_cut(event) {
-	
-	if (textbox) {
-		textbox.$editor.focus();
-	}
 	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
 			return try_exec_command("cut");
