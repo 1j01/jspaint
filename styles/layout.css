@@ -292,6 +292,27 @@ html, body, .jspaint {
 	padding-left: 170px;
 }
 
+.eye-gaze-mode-floating-buttons {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	transform-origin: bottom left;
+	transform: scale(3);
+}
+.eye-gaze-mode-floating-buttons button {
+	width: 28px;
+	height: 28px;
+	vertical-align: bottom;
+	position: relative;
+}
+.eye-gaze-mode-floating-buttons .button-icon {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 24px;
+	height: 24px;
+}
+
 .menu-button {
 	/* @TODO: make this part of os-gui */
 	white-space: nowrap;

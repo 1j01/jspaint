@@ -2002,61 +2002,29 @@ async function init_eye_gaze_mode() {
 
 	const $floating_buttons =
 		$("<div class='eye-gaze-mode-floating-buttons'/>")
-		.appendTo("body")
-		.css({
-			position: "fixed",
-			bottom: 0,
-			left: 0,
-			transformOrigin: "bottom left",
-			transform: "scale(3)",
-		});
+		.appendTo("body");
 	
 	$("<button title='Undo' class='eye-gaze-mode-undo-button'/>")
 	.on("click", undo)
 	.appendTo($floating_buttons)
-	.css({
-		width: 28,
-		height: 28,
-		verticalAlign: "bottom",
-		position: "relative", // to make the icon's "absolute" relative to here
-	})
 	.append(
 		$("<div class='button-icon'>")
-		.css({
-			position: "absolute",
-			left: 0,
-			top: 0,
-			width: 24,
-			height: 24,
-		})
 	);
 
 	// These are matched on exactly, for code that provides speech command synonyms
 	const pause_button_text = "Pause Dwell Clicking";
 	const resume_button_text = "Resume Dwell Clicking";
 
-	const $pause_button = $(`<button title="${pause_button_text}" class="toggle-dwell-clicking"/>`)
+	const $pause_button = $(`<button class="toggle-dwell-clicking"/>`)
+	.attr("title", pause_button_text)
 	.on("click", ()=> {
 		paused = !paused;
 		$("body").toggleClass("eye-gaze-mode-paused", paused);
 		$pause_button.attr("title", paused ? resume_button_text : pause_button_text);
 	})
 	.appendTo($floating_buttons)
-	.css({
-		width: 28,
-		height: 28,
-		verticalAlign: "bottom",
-		position: "relative", // to make the icon's "absolute" relative to here
-	})
 	.append(
 		$("<div class='button-icon'>")
-		.css({
-			position: "absolute",
-			left: 0,
-			top: 0,
-			width: 24,
-			height: 24,
-		})
 	);
 
 	clean_up_eye_gaze_mode = ()=> {
