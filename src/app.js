@@ -2369,7 +2369,8 @@ innerWidth: ${innerWidth}
 innerHeight: ${innerHeight}
 innerWidth * devicePixelRatio: ${innerWidth * devicePixelRatio}
 innerHeight * devicePixelRatio: ${innerHeight * devicePixelRatio}
-fullscreen: ${fullscreen}`,
+fullscreen: ${fullscreen}
+[webkit]fullscreenElement: ${document.fullscreenElement || document.webkitFullscreenElement}`,
 		iconID: "info",
 	});
 }
