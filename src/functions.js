@@ -489,12 +489,16 @@ function toggle_thumbnail() {
 					// So I had to disable this case to test the fallback case (in Firefox 94.0)
 					thumbnail_canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
 					thumbnail_canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
-				} else {
+				} else if ("contentBoxSize" in entry) {
 					// console.log("contentBoxSize", entry.contentBoxSize);
 					// round() seems to line up with what Firefox does for device pixel alignment, which is great.
 					// In Chrome it's blurry at some zoom levels with round(), ceil(), or floor(), but it (documentedly) supports devicePixelContentBoxSize.
 					thumbnail_canvas.width = Math.round(entry.contentBoxSize[0].inlineSize * devicePixelRatio);
 					thumbnail_canvas.height = Math.round(entry.contentBoxSize[0].blockSize * devicePixelRatio);
+				} else {
+					// Safari on iPad doesn't support either of the above as of iOS 15.0.2
+					thumbnail_canvas.width = Math.round(entry.contentRect.width * devicePixelRatio);
+					thumbnail_canvas.height = Math.round(entry.contentRect.height * devicePixelRatio);
 				}
 				update_helper_layer_immediately(); // updates thumbnail (but also unnecessarily the helper layer)
 			}).observe(thumbnail_canvas, { box: ['device-pixel-content-box'] }); // @TODO: does the box make it worse browser support?
