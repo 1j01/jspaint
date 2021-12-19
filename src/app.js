@@ -2314,25 +2314,21 @@ const fullscreen_size_key = "jspaint fullscreen size";
 $G.on("fullscreenchange webkitfullscreenchange", (event) => {
 	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
 	$("html").toggleClass("fullscreen", fullscreen);
-	if (fullscreen) {
-		try {
-			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth / devicePixelRatio, innerHeight / devicePixelRatio]));
-		} catch (error) {
-
-		}
-	}
 });
 $G.on("unload", () => {
-	// in case it was zoomed after fullscreen (may not be possible on iPad? it seems to reset zoom for fullscreen),
-	// store the fullscreen dimensions
-	try {
-		localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth / devicePixelRatio, innerHeight / devicePixelRatio]));
-	} catch (error) {
-		// if localStorage is disabled, we should exit fullscreen when reloading
-		if (document.exitFullscreen) {
-			document.exitFullscreen();
-		} else if (document.webkitExitFullscreen) {
-			document.webkitExitFullscreen();
+	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+	if (fullscreen) {
+		// in case it was zoomed after fullscreen (may not be possible on iPad? it seems to reset zoom for fullscreen),
+		// store the fullscreen dimensions
+		try {
+			localStorage.setItem(fullscreen_size_key, JSON.stringify([document.body.clientWidth / devicePixelRatio, document.body.clientHeight / devicePixelRatio]));
+		} catch (error) {
+			// if localStorage is disabled, we should exit fullscreen when reloading
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen();
+			}
 		}
 	}
 });
@@ -2342,7 +2338,7 @@ function update_fullscreen_from_size() {
 	if (fullscreen) {
 		// store the fullscreen dimensions
 		try {
-			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth / devicePixelRatio, innerHeight / devicePixelRatio]));
+			localStorage.setItem(fullscreen_size_key, JSON.stringify([document.body.clientWidth / devicePixelRatio, document.body.clientHeight / devicePixelRatio]));
 		} catch (error) {
 			
 		}
@@ -2356,19 +2352,17 @@ function update_fullscreen_from_size() {
 		}
 		fullscreen_size = fullscreen_size || [screen.width, screen.height];
 		fullscreen =
-			(
-				innerWidth === fullscreen_size[0] && innerHeight === fullscreen_size[1]
-			) || (
-				innerWidth * devicePixelRatio === fullscreen_size[0] && innerHeight * devicePixelRatio === fullscreen_size[1]
-			);
+			fullscreen_size[0] === document.body.clientWidth / devicePixelRatio &&
+			fullscreen_size[1] === document.body.clientHeight / devicePixelRatio;
 	}
 	$("html").toggleClass("fullscreen", fullscreen);
 	showMessageBox({
 		message: `fullscreen_size: ${fullscreen_size}
-innerWidth: ${innerWidth}
-innerHeight: ${innerHeight}
-innerWidth * devicePixelRatio: ${innerWidth * devicePixelRatio}
-innerHeight * devicePixelRatio: ${innerHeight * devicePixelRatio}
+document.body.clientWidth: ${document.body.clientWidth}
+document.body.clientHeight: ${document.body.clientHeight}
+document.body.clientWidth / devicePixelRatio: ${document.body.clientWidth / devicePixelRatio}
+document.body.clientHeight / devicePixelRatio: ${document.body.clientHeight / devicePixelRatio}
+devicePixelRatio: ${devicePixelRatio}
 fullscreen: ${fullscreen}
 [webkit]fullscreenElement: ${document.fullscreenElement || document.webkitFullscreenElement}`,
 		iconID: "info",
