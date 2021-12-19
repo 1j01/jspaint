@@ -270,8 +270,7 @@ window.menus = {
 				"cut", "cut selection", "cut selection to clipboard", "cut the selection", "cut the selection to clipboard", "cut the selection to the clipboard",
 			],
 			enabled: () =>
-				// @TODO: support cutting text with this menu item as well (e.g. for the text tool)
-				!!selection,
+				!!selection || getSelectionText().length > 0,
 			action: ()=> {
 				edit_cut();
 			},
@@ -284,8 +283,7 @@ window.menus = {
 				"copy", "copy selection", "copy selection to clipboard", "copy the selection", "copy the selection to clipboard", "copy the selection to the clipboard",
 			],
 			enabled: () =>
-				// @TODO: support copying text with this menu item as well (e.g. for the text tool)
-				!!selection,
+				!!selection || getSelectionText().length > 0,
 			action: ()=> {
 				edit_copy();
 			},
