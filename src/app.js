@@ -2311,41 +2311,57 @@ $("html").toggleClass("ios", iOS());
 // We can't detect exiting from fullscreen mode if not in page-controlled mode, except with resize event.
 // Also, I figure the styles are not so obtrusive, whereas not having them is (with overlapping system overlays).
 const fullscreen_size_key = "jspaint fullscreen size";
-$G.on("fullscreenchange webkitfullscreenchange unload", (event) => {
+$G.on("fullscreenchange webkitfullscreenchange", (event) => {
 	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
 	$("html").toggleClass("fullscreen", fullscreen);
 	if (fullscreen) {
 		try {
 			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth, innerHeight]));
 		} catch (error) {
-			// if localStorage is disabled, we should exit fullscreen while reloading
-			if (event.type === "unload") {
-				if (document.exitFullscreen) {
-					document.exitFullscreen();
-				} else if (document.webkitExitFullscreen) {
-					document.webkitExitFullscreen();
-				}
-			}
+
+		}
+	}
+});
+$G.on("unload", () => {
+	// in case it was zoomed after fullscreen (may not be possible on iPad? it seems to reset zoom for fullscreen),
+	// store the fullscreen dimensions
+	try {
+		localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth, innerHeight]));
+	} catch (error) {
+		// if localStorage is disabled, we should exit fullscreen when reloading
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen();
 		}
 	}
 });
 function update_fullscreen_from_size() {
+	let fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
 	let fullscreen_size;
-	try {
-		fullscreen_size = JSON.parse(localStorage.getItem(fullscreen_size_key));
-	} catch (error) {
-		// if localStorage is disabled, we will default to using window.screen for the fullscreen size
+	if (fullscreen) {
+		// store the fullscreen dimensions
+		try {
+			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth, innerHeight]));
+		} catch (error) {
+			
+		}
+	} else {
+		// check against stored dimensions
+		// let fullscreen_size;
+		try {
+			fullscreen_size = JSON.parse(localStorage.getItem(fullscreen_size_key));
+		} catch (error) {
+			// if localStorage is disabled, we will default to using window.screen for the fullscreen size
+		}
+		fullscreen_size = fullscreen_size || [screen.width, screen.height];
+		fullscreen =
+			(
+				innerWidth === fullscreen_size[0] && innerHeight === fullscreen_size[1]
+			) || (
+				innerWidth * devicePixelRatio === fullscreen_size[0] && innerHeight * devicePixelRatio === fullscreen_size[1]
+			);
 	}
-	// showMessageBox({
-	// 	message: `fullscreen_size from storage: ${fullscreen_size}`,
-	// 	iconID: "info",
-	// });
-	fullscreen_size = fullscreen_size || [screen.width, screen.height];
-	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || (
-		innerWidth === fullscreen_size[0] && innerHeight === fullscreen_size[1]
-	) || (
-		innerWidth * devicePixelRatio === fullscreen_size[0] && innerHeight * devicePixelRatio === fullscreen_size[1]
-	));
 	$("html").toggleClass("fullscreen", fullscreen);
 	showMessageBox({
 		message: `fullscreen_size: ${fullscreen_size}
