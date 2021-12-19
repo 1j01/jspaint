@@ -273,7 +273,7 @@ window.menus = {
 				// @TODO: support cutting text with this menu item as well (e.g. for the text tool)
 				!!selection,
 			action: ()=> {
-				edit_cut(true);
+				edit_cut();
 			},
 			description: localize("Cuts the selection and puts it on the Clipboard."),
 		},
@@ -287,7 +287,7 @@ window.menus = {
 				// @TODO: support copying text with this menu item as well (e.g. for the text tool)
 				!!selection,
 			action: ()=> {
-				edit_copy(true);
+				edit_copy();
 			},
 			description: localize("Copies the selection and puts it on the Clipboard."),
 		},
@@ -301,7 +301,7 @@ window.menus = {
 				// @TODO: disable if nothing in clipboard or wrong type (if we can access that)
 				true,
 			action: ()=> {
-				edit_paste(true);
+				edit_paste();
 			},
 			description: localize("Inserts the contents of the Clipboard."),
 		},
