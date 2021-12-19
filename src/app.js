@@ -2302,52 +2302,45 @@ function iOS() {
 }
 $("html").toggleClass("ios", iOS());
 
-$G.on("fullscreenchange webkitfullscreenchange", () => {
-	// const fullscreen = $G.is(":fullscreen") || $G.is(":-webkit-full-screen"); // gives "Script error."
-	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
-	// $status_text.text(`fullscreen: ${fullscreen}`);
-	$("html").toggleClass("fullscreen", fullscreen);
-});
 // These styles are important for the iPad in fullscreen mode,
 // but :fullscreen and document.fullscreenElement will stop working if the page is reloaded,
-// (because it's no longer in page-controlled (requestFullscreen) fullscreen mode),
-// so I'm using a class (.fullscreen), and detecting reloads using a timestamp in localStorage.
-// Note that we can't detect exiting from fullscreen mode if not in page-controlled mode,
-// but I figure the styles are not so obtrusive, whereas not having them is.
-// @TODO: detect exiting from fullscreen mode via resize event
-const timestamp_key = "jspaint unloaded while fullscreen timestamp";
-try {
-	const unload_timestamp = localStorage.getItem(timestamp_key);
-	if (unload_timestamp) {
-		const time_since_unload = Date.now() - unload_timestamp;
-		if (time_since_unload < 5000) {
-			// reloaded while in fullscreen mode
-			$("html").addClass("fullscreen");
-		}
-	}
-} catch (e) {
-	// if localStorage is disabled, we should have exited fullscreen while reloading
-}
-$G.on("unload", () => {
-	try {
-		if ($("html").hasClass("fullscreen")) {
-			localStorage.setItem(timestamp_key, Date.now());
-		} else {
-			localStorage.removeItem(timestamp_key);
-		}
-	} catch (e) {
-		// can't store to detect reload,
-		// so exit fullscreen mode on reload, to avoid broken UI
-		if ($("body").hasClass("ios")) {
-			try {
+// because it's no longer in page-controlled (requestFullscreen) fullscreen mode.
+// So I'm detecting fullscreen by looking at the window size,
+// remembering the fullscreen dimensions when we go fullscreen,
+// and on unload in case it was zoomed after fullscreen (may not be possible on iPad? it seems to reset zoom for fullscreen)
+// We can't detect exiting from fullscreen mode if not in page-controlled mode, except with resize event.
+// Also, I figure the styles are not so obtrusive, whereas not having them is (with overlapping system overlays).
+const fullscreen_dimensions_key = "jspaint fullscreen dimensions";
+$G.on("fullscreenchange webkitfullscreenchange unload", (event) => {
+	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+	$("html").toggleClass("fullscreen", fullscreen);
+	if (fullscreen) {
+		try {
+			localStorage.setItem(fullscreen_dimensions_key, JSON.stringify([innerWidth, innerHeight]));
+		} catch (error) {
+			// if localStorage is disabled, we should exit fullscreen while reloading
+			if (event.type === "unload") {
 				if (document.exitFullscreen) {
 					document.exitFullscreen();
 				} else if (document.webkitExitFullscreen) {
 					document.webkitExitFullscreen();
 				}
-			} catch (error) {
-				// oh well
 			}
 		}
 	}
 });
+function update_fullscreen_from_size() {
+	let fullscreen_dimensions;
+	try {
+		fullscreen_dimensions = JSON.parse(localStorage.getItem(fullscreen_dimensions_key));
+	} catch (error) {
+		// if localStorage is disabled, we will default to using window.screen for the fullscreen dimensions
+	}
+	fullscreen_dimensions = fullscreen_dimensions || [screen.width, screen.height];
+	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || (
+		innerWidth === fullscreen_dimensions[0] && innerHeight === fullscreen_dimensions[1]
+	));
+	$("html").toggleClass("fullscreen", fullscreen);
+}
+$G.on("resize", update_fullscreen_from_size);
+update_fullscreen_from_size();
