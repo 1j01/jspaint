@@ -1341,6 +1341,7 @@ function show_about_paint(){
 	$("#refresh-to-update").on("click", (event)=> {
 		event.preventDefault();
 		are_you_sure(() => {
+			exit_fullscreen_if_ios();
 			location.reload();
 		});
 	});
@@ -1402,6 +1403,30 @@ function show_about_paint(){
 		window.console && console.log("Couldn't check for updates.", exception);
 	});
 }
+
+function exit_fullscreen_if_ios() {
+	if ($("body").hasClass("ios")) {
+		try {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen();
+			} else if (document.mozCancelFullScreen) {
+				document.mozCancelFullScreen();
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen();
+			}
+		} catch (error) {
+			// not important, just trying to prevent broken fullscreen after refresh
+			// (:fullscreen stops working because it's not "requested by the page" anymore)
+			// alternatively, maybe I could use onbeforeunload,
+			// and alternatively to exiting fullscreen, maybe I could store the fullscreen state,
+			// with a timestamp in localStorage, and use a class instead of :fullscreen
+			// (the fullscreen styling is not generally obtrusive, but it is obtrusive when it DOESN'T work)
+		}
+	}
+}
+
 // show_about_paint(); // for testing
 
 function update_css_classes_for_conditional_messages() {
