@@ -2303,6 +2303,12 @@ function edit_cut(clipboard_data) {
 		icon: get_help_folder_icon("p_cut.png"),
 	});
 }
+function can_paste() {
+	// @TODO: is it possible to test?
+	// maybe make the menus support async for dynamic `enabled`?
+	// maybe poll the clipboard
+	return true;
+}
 async function edit_paste(){
 	if(
 		document.activeElement instanceof HTMLInputElement ||
