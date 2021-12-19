@@ -2287,7 +2287,7 @@ $G.on("blur", () => {
 });
 
 // For Safari on iPad, Fullscreen mode overlays the system bar, completely obscuring our menu bar.
-// See CSS .fullscreen handling (and exit_fullscreen_if_ios) for more info.
+// I have created styles to handle this, see .fullscreen CSS.
 function iOS() {
 	return [
 		'iPad Simulator',
@@ -2301,10 +2301,53 @@ function iOS() {
 	|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)
 }
 $("html").toggleClass("ios", iOS());
+
 $G.on("fullscreenchange webkitfullscreenchange", () => {
 	// const fullscreen = $G.is(":fullscreen") || $G.is(":-webkit-full-screen"); // gives "Script error."
 	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
 	// $status_text.text(`fullscreen: ${fullscreen}`);
 	$("html").toggleClass("fullscreen", fullscreen);
 });
-
+// These styles are important for the iPad in fullscreen mode,
+// but :fullscreen and document.fullscreenElement will stop working if the page is reloaded,
+// (because it's no longer in page-controlled (requestFullscreen) fullscreen mode),
+// so I'm using a class (.fullscreen), and detecting reloads using a timestamp in localStorage.
+// Note that we can't detect exiting from fullscreen mode if not in page-controlled mode,
+// but I figure the styles are not so obtrusive, whereas not having them is.
+// @TODO: detect exiting from fullscreen mode via resize event
+const timestamp_key = "jspaint unloaded while fullscreen timestamp";
+try {
+	const unload_timestamp = localStorage.getItem(timestamp_key);
+	if (unload_timestamp) {
+		const time_since_unload = Date.now() - unload_timestamp;
+		if (time_since_unload < 5000) {
+			// reloaded while in fullscreen mode
+			$("html").addClass("fullscreen");
+		}
+	}
+} catch (e) {
+	// if localStorage is disabled, we should have exited fullscreen while reloading
+}
+$G.on("unload", () => {
+	try {
+		if ($("html").hasClass("fullscreen")) {
+			localStorage.setItem(timestamp_key, Date.now());
+		} else {
+			localStorage.removeItem(timestamp_key);
+		}
+	} catch (e) {
+		// can't store to detect reload,
+		// so exit fullscreen mode on reload, to avoid broken UI
+		if ($("body").hasClass("ios")) {
+			try {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				} else if (document.webkitExitFullscreen) {
+					document.webkitExitFullscreen();
+				}
+			} catch (error) {
+				// oh well
+			}
+		}
+	}
+});

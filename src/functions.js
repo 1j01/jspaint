@@ -1341,7 +1341,6 @@ function show_about_paint(){
 	$("#refresh-to-update").on("click", (event)=> {
 		event.preventDefault();
 		are_you_sure(() => {
-			exit_fullscreen_if_ios();
 			location.reload();
 		});
 	});
