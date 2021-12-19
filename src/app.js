@@ -2316,7 +2316,7 @@ $G.on("fullscreenchange webkitfullscreenchange", (event) => {
 	$("html").toggleClass("fullscreen", fullscreen);
 	if (fullscreen) {
 		try {
-			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth, innerHeight]));
+			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth / devicePixelRatio, innerHeight / devicePixelRatio]));
 		} catch (error) {
 
 		}
@@ -2326,7 +2326,7 @@ $G.on("unload", () => {
 	// in case it was zoomed after fullscreen (may not be possible on iPad? it seems to reset zoom for fullscreen),
 	// store the fullscreen dimensions
 	try {
-		localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth, innerHeight]));
+		localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth / devicePixelRatio, innerHeight / devicePixelRatio]));
 	} catch (error) {
 		// if localStorage is disabled, we should exit fullscreen when reloading
 		if (document.exitFullscreen) {
@@ -2342,7 +2342,7 @@ function update_fullscreen_from_size() {
 	if (fullscreen) {
 		// store the fullscreen dimensions
 		try {
-			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth, innerHeight]));
+			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth / devicePixelRatio, innerHeight / devicePixelRatio]));
 		} catch (error) {
 			
 		}
