@@ -342,6 +342,9 @@ window.tools = [{
 		}
 	},
 	pointerup() {
+		if (!this.mask_canvas) {
+			return; // not sure why this would happen per se
+		}
 		undoable({
 			name: get_language().match(/^en\b/) ? (this.color_eraser_mode ? "Color Eraser" : "Eraser") : localize("Eraser/Color Eraser"),
 			icon: get_icon_for_tool(this),
@@ -1213,6 +1216,9 @@ tools.forEach((tool)=> {
 			tool.mask_canvas.ctx.disable_image_smoothing();
 		};
 		tool.pointerup = ()=> {
+			if (!tool.mask_canvas) {
+				return; // not sure why this would happen per se
+			}
 			undoable({
 				name: tool.name,
 				icon: get_icon_for_tool(tool),
