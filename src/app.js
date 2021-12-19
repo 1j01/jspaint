@@ -1104,26 +1104,10 @@ $G.on("cut copy paste", e => {
 
 	if(e.type === "copy" || e.type === "cut"){
 		if(selection && selection.canvas){
-			const do_sync_clipboard_copy_or_cut = () => {
-				// works only for pasting within a jspaint instance
-				const data_url = selection.canvas.toDataURL();
-				cd.setData("text/x-data-uri; type=image/png", data_url);
-				cd.setData("text/uri-list", data_url);
-				cd.setData("URL", data_url);
-				if(e.type === "cut"){
-					delete_selection({
-						name: localize("Cut"),
-						icon: get_help_folder_icon("p_cut.png"),
-					});
-				}
-			};
-			if (!navigator.clipboard || !navigator.clipboard.write) {
-				return do_sync_clipboard_copy_or_cut();
-			}
 			if (e.type === "cut") {
-				edit_cut(e);
+				edit_cut(cd);
 			} else {
-				edit_copy(e);
+				edit_copy(cd);
 			}
 		}
 	}else if(e.type === "paste"){

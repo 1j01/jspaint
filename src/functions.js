@@ -2235,17 +2235,29 @@ function getSelectionText() {
 	return text;
 }
 
-// Takes optional "copy" event, for alternative fallback behavior
-// If a copy event is passed, it will set clipboard data for use within instances of JS Paint (failing Async Clipboard API)
-// If no copy event is passed, it will show a dialog asking the user to use the context menu of an image to copy
+function set_clipboard_data_jspaint_only(clipboard_data) {
+	// Works only for pasting within a jspaint instance,
+	// because it uses a custom text-based image format.
+	// We can't get real image data on the clipboard,
+	// using the synchronous clipboard API.
+	// This is a fallback for when the Async Clipboard API is not available.
+	const data_url = selection.canvas.toDataURL();
+	cd.setData("text/x-data-uri; type=image/png", data_url);
+	cd.setData("text/uri-list", data_url);
+	cd.setData("URL", data_url);
+}
+
+// Takes optional ClipboardData object, for alternative fallback behavior
+// during cut/copy events, where we can set clipboard data.
+// The synchronous clipboard API ( essentially only be used within instances of JS Paint because it uses a non-native text-based image format.
+// If not passed, the fallback will show a dialog asking the user to use the context menu of an image to copy.
 // Note that it mustn't interfere with itself what with the global copy handler and all.
-function edit_copy(event) {
-	
+function edit_copy(clipboard_data) {
 	const text = getSelectionText();
 
 	if (text.length > 0) {
 		if (!navigator.clipboard || !navigator.clipboard.writeText) {
-			if (execCommandFallback) {
+			if (!clipboard_data) {
 				return try_exec_command("copy");
 			} else {
 				return edit_copy_fallback();
@@ -2254,8 +2266,9 @@ function edit_copy(event) {
 		navigator.clipboard.writeText(text);
 	} else if(selection && selection.canvas) {
 		if (!navigator.clipboard || !navigator.clipboard.write) {
-			if (execCommandFallback) {
-				return try_exec_command("copy");
+			if (!clipboard_data) {
+				// return try_exec_command("copy");
+				set_clipboard_data_jspaint_only(clipboard_data);
 			} else {
 				return edit_copy_fallback();
 			}
