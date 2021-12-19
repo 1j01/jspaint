@@ -2310,13 +2310,13 @@ $("html").toggleClass("ios", iOS());
 // and on unload in case it was zoomed after fullscreen (may not be possible on iPad? it seems to reset zoom for fullscreen)
 // We can't detect exiting from fullscreen mode if not in page-controlled mode, except with resize event.
 // Also, I figure the styles are not so obtrusive, whereas not having them is (with overlapping system overlays).
-const fullscreen_dimensions_key = "jspaint fullscreen dimensions";
+const fullscreen_size_key = "jspaint fullscreen size";
 $G.on("fullscreenchange webkitfullscreenchange unload", (event) => {
 	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
 	$("html").toggleClass("fullscreen", fullscreen);
 	if (fullscreen) {
 		try {
-			localStorage.setItem(fullscreen_dimensions_key, JSON.stringify([innerWidth, innerHeight]));
+			localStorage.setItem(fullscreen_size_key, JSON.stringify([innerWidth, innerHeight]));
 		} catch (error) {
 			// if localStorage is disabled, we should exit fullscreen while reloading
 			if (event.type === "unload") {
@@ -2330,17 +2330,32 @@ $G.on("fullscreenchange webkitfullscreenchange unload", (event) => {
 	}
 });
 function update_fullscreen_from_size() {
-	let fullscreen_dimensions;
+	let fullscreen_size;
 	try {
-		fullscreen_dimensions = JSON.parse(localStorage.getItem(fullscreen_dimensions_key));
+		fullscreen_size = JSON.parse(localStorage.getItem(fullscreen_size_key));
 	} catch (error) {
-		// if localStorage is disabled, we will default to using window.screen for the fullscreen dimensions
+		// if localStorage is disabled, we will default to using window.screen for the fullscreen size
 	}
-	fullscreen_dimensions = fullscreen_dimensions || [screen.width, screen.height];
+	// showMessageBox({
+	// 	message: `fullscreen_size from storage: ${fullscreen_size}`,
+	// 	iconID: "info",
+	// });
+	fullscreen_size = fullscreen_size || [screen.width, screen.height];
 	const fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || (
-		innerWidth === fullscreen_dimensions[0] && innerHeight === fullscreen_dimensions[1]
+		innerWidth === fullscreen_size[0] && innerHeight === fullscreen_size[1]
+	) || (
+		innerWidth * devicePixelRatio === fullscreen_size[0] && innerHeight * devicePixelRatio === fullscreen_size[1]
 	));
 	$("html").toggleClass("fullscreen", fullscreen);
+	showMessageBox({
+		message: `fullscreen_size: ${fullscreen_size}
+innerWidth: ${innerWidth}
+innerHeight: ${innerHeight}
+innerWidth * devicePixelRatio: ${innerWidth * devicePixelRatio}
+innerHeight * devicePixelRatio: ${innerHeight * devicePixelRatio}
+fullscreen: ${fullscreen}`,
+		iconID: "info",
+	});
 }
 $G.on("resize", update_fullscreen_from_size);
 update_fullscreen_from_size();
