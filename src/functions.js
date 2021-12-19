@@ -2289,7 +2289,7 @@ function edit_copy(clipboard_data) {
 		});
 	}
 }
-function edit_cut(event) {
+function edit_cut(clipboard_data) {
 	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
 			return try_exec_command("cut");
@@ -2303,7 +2303,7 @@ function edit_cut(event) {
 		icon: get_help_folder_icon("p_cut.png"),
 	});
 }
-async function edit_paste(event){
+async function edit_paste(){
 	if(
 		document.activeElement instanceof HTMLInputElement ||
 		document.activeElement instanceof HTMLTextAreaElement

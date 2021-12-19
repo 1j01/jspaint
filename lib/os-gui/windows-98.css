@@ -444,61 +444,32 @@ body > .window-titlebar {
 }
 .menu-button {
 	box-sizing: border-box;
-	/* Using a balanced border to offset the contents on press */
-	border: 0px solid transparent;
-	border-top-width: 0px;
-	border-left-width: 0px;
-	border-bottom-width: 1px;
-	border-right-width: 1px;
-	/* Unfortunately, everything else has to be balanced by 1px (very carefully) in many places. */
-	
-	height: 18px; /* (EFFECTIVELY NORMAL but...) +1px -1px: +1px due to transparent border, but needs to be metrically same as visual height for the menu popup positioning, so I used bottom: -1px on the pseudo element to get it so this can be -1px to 18px again */
+	height: 18px;
 	line-height: 1;
-	margin-top: 1px; /* NORMAL MARGIN */
-	/* margin-bottom: 1px; consumed margin */
-	margin-right: -1px; /* keep menu items directly abutting */
-
-	/* need the overflow visible for the psuedo element's top and left borders to be visible */
-	overflow: visible;
-	-webkit-clip-path: inset(0 1px 0 0);
-	        clip-path: inset(0 1px 0 0); /* clipping text off inside the border, without clipping the border (somewhat mysteriously) */
-
-	padding: 2px 5px; /* NORMAL PADDING; I took great lengths to make this easily changable from outside code (padding is an obvious strategy for making the press offset effect, but I think this is a common thing you might want to customize) */
-	position: relative;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	padding: 2px 5px;
 	outline: 0;
 	/* @extend button.lightweight; */
 	background: rgb(192, 192, 192);
 	background: var(--Menu);
 }
-.menu-button.highlight.active {
-	border-top-width: 1px;
-	border-left-width: 1px;
-	border-bottom-width: 0px;
-	border-right-width: 0px;
-}
 /* Note: In Windows 98, normal menu bars have an inset highlight if you use Esc and then the arrow keys,
 whereas Explorer's menu bars are outset and match the hover effect, which I feel makes more sense,
-so I think I'll immitate that. */
+so I think I'll immitate that. (I might change it later) */
 /* Also, to prevent duplicate highlight (via keyboard + mouse), and lingering highlight with touch, I'm using a class, rather than :hover/:focus/:active */
-.menu-button.highlight::after {
-	content: "";
-	display: block;
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: -1px;
+.menu-button.highlight {
 	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
-.menu-button.highlight.active::after {
+.menu-button.highlight.active {
 	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 rgb(255, 255, 255) inset;
 	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 var(--ButtonHilight) inset;
-	/* counteract the balanced border, in order to render this border, in the proper place */
-	left: -1px;
-	top: -1px;
-	right: 1px;
-	bottom: 0;
+}
+.menu-button.highlight.active > span {
+	position: relative;
+	top: 1px;
+	left: 1px;
 }
 
 .menu-popup {
@@ -590,6 +561,7 @@ so I think I'll immitate that. */
 	margin-top: 3px;
 	margin-bottom: 4px;
 }
+/* @TODO: rename .access-key (could also make it a <u> element, in which case this rule isn't needed) */
 .menu-hotkey {
 	text-decoration: underline;
 }

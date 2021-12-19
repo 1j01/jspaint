@@ -80,6 +80,8 @@ body > .window-titlebar {
 	height: 0;
 	width: auto;
 }
+/* @TODO: rename .access-key */
+/* @TODO: what are these !importants about? */
 .menu-hotkey {
 	display: inline !important;
 }

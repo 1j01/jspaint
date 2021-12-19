@@ -295,9 +295,7 @@ window.menus = {
 			speech_recognition: [
 				"paste", "paste from clipboard", "paste from the clipboard", "insert clipboard", "insert clipboard contents", "insert the contents of the clipboard", "paste what's on the clipboard",
 			],
-			enabled: () =>
-				// @TODO: disable if nothing in clipboard or wrong type (if we can access that)
-				true,
+			enabled: () => can_paste(),
 			action: ()=> {
 				edit_paste();
 			},
