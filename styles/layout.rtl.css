@@ -1112,11 +1112,22 @@ html, body, .jspaint {
 	}
 	/* Also nudge the tools downward to avoid the exit fullscreen button */
 	/* (not if it's in a window, only if it's docked) */
+	/* (I considered using `.ios:fullscreen .horizontal > .component-area:first-child`
+	so that it's not affected by the transform in Eye Gaze Mode,
+	but it wants tweaking in that case anyways due to the menu bar being bigger */
 	.ios:fullscreen .component-area .tools-component {
 		padding-top: 40px;
 	}
 	.ios:-webkit-full-screen .component-area .tools-component {
 		padding-top: 40px;
+	}
+	/* Not so much in Eye Gaze Mode, where it's scaled with transform,
+	and where the menu bar takes more of the space reserved for the exit fullscreen button */
+	.ios:fullscreen .eye-gaze-mode .component-area .tools-component {
+		padding-top: 10px;
+	}
+	.ios:-webkit-full-screen .eye-gaze-mode .component-area .tools-component {
+		padding-top: 10px;
 	}
 }
 
