@@ -1069,22 +1069,10 @@ html, body, .jspaint {
 	/* hope it doesn't change! */
 }
 @media (min-height: 450px) {
-	/* These have to be separate selectors, or they'll be thrown out. Time to WET. */
-	.ios:fullscreen .jspaint {
+	.ios.fullscreen .jspaint {
 		padding-top: var(--ios-title-bar-height);
 	}
-	.ios:-webkit-full-screen .jspaint {
-		padding-top: var(--ios-title-bar-height);
-	}
-	.ios:fullscreen .jspaint::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
-		height: var(--ios-title-bar-height);
-	}
-	.ios:-webkit-full-screen .jspaint::before {
+	.ios.fullscreen .jspaint::before {
 		content: "";
 		position: absolute;
 		top: 0;
@@ -1094,39 +1082,27 @@ html, body, .jspaint {
 	}
 	/* That works, but now the exit fullscreen button (which we also can't change) obscures the menu bar. */
 	/* So center the menu bar contents, that'll look nice. */
-	/* .ios:fullscreen .menus {
+	/* .ios.fullscreen .menus {
 		justify-content: center;
 	}
-	.ios:-webkit-full-screen .menus {
-		justify-content: center;
-	} */
 	/* Ugh no, then the three dots button (multitasking menu) at the top of the system menu steals taps from the menu bar. */
 	/* Just shift it over by a fixed amount. */
 	/* This lets it sit in between the exit button and the three dots button,
 	at least on a 9th generation iPad with software version 15.0.2 (this is a very fragile workaround) */
-	.ios:fullscreen .menus {
-		padding-right: 100px;
-	}
-	.ios:-webkit-full-screen .menus {
+	.ios.fullscreen .menus {
 		padding-right: 100px;
 	}
 	/* Also nudge the tools downward to avoid the exit fullscreen button */
 	/* (not if it's in a window, only if it's docked) */
-	/* (I considered using `.ios:fullscreen .horizontal > .component-area:first-child`
+	/* (I considered using `.ios.fullscreen .horizontal > .component-area:first-child`
 	so that it's not affected by the transform in Eye Gaze Mode,
 	but it wants tweaking in that case anyways due to the menu bar being bigger */
-	.ios:fullscreen .component-area .tools-component {
-		padding-top: 40px;
-	}
-	.ios:-webkit-full-screen .component-area .tools-component {
+	.ios.fullscreen .component-area .tools-component {
 		padding-top: 40px;
 	}
 	/* Not so much in Eye Gaze Mode, where it's scaled with transform,
 	and where the menu bar takes more of the space reserved for the exit fullscreen button */
-	.ios:fullscreen .eye-gaze-mode .component-area .tools-component {
-		padding-top: 10px;
-	}
-	.ios:-webkit-full-screen .eye-gaze-mode .component-area .tools-component {
+	.ios.fullscreen .eye-gaze-mode .component-area .tools-component {
 		padding-top: 10px;
 	}
 }

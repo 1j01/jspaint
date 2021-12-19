@@ -1421,7 +1421,7 @@ function exit_fullscreen_if_ios() {
 			// (:fullscreen stops working because it's not "requested by the page" anymore)
 			// alternatively, maybe I could use onbeforeunload,
 			// and alternatively to exiting fullscreen, maybe I could store the fullscreen state,
-			// with a timestamp in localStorage, and use a class instead of :fullscreen
+			// with a timestamp in localStorage, and use a class instead of :fullscreen (WIP...)
 			// (the fullscreen styling is not generally obtrusive, but it is obtrusive when it DOESN'T work)
 		}
 	}
