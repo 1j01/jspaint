@@ -295,7 +295,12 @@ window.menus = {
 			speech_recognition: [
 				"paste", "paste from clipboard", "paste from the clipboard", "insert clipboard", "insert clipboard contents", "insert the contents of the clipboard", "paste what's on the clipboard",
 			],
-			enabled: () => can_paste(),
+			enabled: () => true, // @TODO: is it possible to test?
+			// maybe make the menus support async for dynamic `enabled`?
+			// maybe poll the clipboard?
+			// either way it's going to show an awkward permission prompt, right?
+			// which will close the menu unless I add a special case for this menu,
+			// detecting if the prompt is interacted with (promise resolved/rejected?) within a period of the menu losing focus?
 			action: ()=> {
 				edit_paste();
 			},
