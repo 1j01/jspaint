@@ -2364,7 +2364,12 @@ document.body.clientWidth / devicePixelRatio: ${document.body.clientWidth / devi
 document.body.clientHeight / devicePixelRatio: ${document.body.clientHeight / devicePixelRatio}
 devicePixelRatio: ${devicePixelRatio}
 fullscreen: ${fullscreen}
-[webkit]fullscreenElement: ${document.fullscreenElement || document.webkitFullscreenElement}`,
+[webkit]fullscreenElement: ${document.fullscreenElement || document.webkitFullscreenElement}
+1 >= outerHeight - innerHeight: ${1 >= outerHeight - innerHeight}
+outerHeight: ${outerHeight}
+innerHeight: ${innerHeight}
+innerHeight * devicePixelRatio: ${innerHeight * devicePixelRatio}
+`,
 		iconID: "info",
 	});
 }
