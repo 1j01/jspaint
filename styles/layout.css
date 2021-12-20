@@ -1121,6 +1121,10 @@ progress {
 details pre {
 	margin: 0;
 	margin-top: 5px;
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
 }
 
 details {
