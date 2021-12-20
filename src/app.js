@@ -2365,7 +2365,7 @@ document.body.clientHeight / devicePixelRatio: ${document.body.clientHeight / de
 devicePixelRatio: ${devicePixelRatio}
 fullscreen: ${fullscreen}
 [webkit]fullscreenElement: ${document.fullscreenElement || document.webkitFullscreenElement}
-1 >= outerHeight - innerHeight: ${1 >= outerHeight - innerHeight}
+10 >= outerHeight - innerHeight: ${10 >= outerHeight - innerHeight}
 outerHeight: ${outerHeight}
 innerHeight: ${innerHeight}
 innerHeight * devicePixelRatio: ${innerHeight * devicePixelRatio}
