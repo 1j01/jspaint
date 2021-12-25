@@ -117,10 +117,10 @@ This doesn't undo saving the file, but allows you to then save in a different fo
 
 | File Extension                | Name                          | Read | Write | Read Palette | Write Palette |
 |-------------------------------|-------------------------------|:----:|:-----:|:------------:|:-------------:|
-| .png                          | [PNG][]                       |  ✅  |  ✅   |      ✅      |               |
-| .bmp, .dib                    | [Monochrome Bitmap][BMP]      |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib                    | [16 Color Bitmap][BMP]        |  ✅  |  ✅   |      ✅      |      ✅       |
-| .bmp, .dib                    | [256 Color Bitmap][BMP]       |  ✅  |  ✅   |      ✅      |      ✅       |
+| .png                          | [PNG][]                       |  ✅  |  ✅   |      🔜      |               |
+| .bmp, .dib                    | [Monochrome Bitmap][BMP]      |  ✅  |  ✅   |      🔜      |      ✅       |
+| .bmp, .dib                    | [16 Color Bitmap][BMP]        |  ✅  |  ✅   |      🔜      |      ✅       |
+| .bmp, .dib                    | [256 Color Bitmap][BMP]       |  ✅  |  ✅   |      🔜      |      ✅       |
 | .bmp, .dib                    | [24-bit Bitmap][BMP]          |  ✅  |  ✅   |      N/A     |      N/A      |
 | .tif, .tiff, .dng, .cr2, .nef | [TIFF][] (loads first page)   |  ✅  |  ✅   |              |               |
 | .pdf                          | [PDF][] (loads first page)    |  ✅  |       |              |               |
@@ -133,6 +133,8 @@ This doesn't undo saving the file, but allows you to then save in a different fo
 Capabilities marked with 🌐 are currently left up to the browser to support or not.
 If "Write" is marked with 🌐, the format will appear in the file type dropdown but may not work when you try to save.
 For opening files, see Wikipedia's [browser image format support table][] for more information.
+
+Capabilities marked with 🔜 are coming soon, and N/A of course means not applicable.
 
 "Read Palette" refers to loading the colors into the Colors box automatically (from an [indexed color][] image),
 and "Write Palette" refers to writing an [indexed color][] image.
