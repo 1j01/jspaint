@@ -347,6 +347,15 @@ window.menus = {
 			],
 			action: ()=> { choose_file_to_paste(); },
 			description: localize("Pastes a file into the selection."),
+		},
+		MENU_DIVIDER,
+		{
+			item: `${localize('Copy as Data URI')}`,
+			shortcut: "Ctrl+Shift+C",
+			enabled: () =>
+				// @TODO: support copying text with this menu item as well (e.g. for the text tool)
+				!!selection,
+			action: () => edit_copy_data_uri('png'),
 		}
 	],
 	[localize("&View")]: [

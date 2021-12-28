@@ -113,6 +113,7 @@ loaded_localizations("zh-simplified", {
 	"C&opy To": "复制到(&O)",
 	"Copy To": "复制到",
 	"Paste &From": "粘贴自(&F)",
+	"Copy as Data URI": "以数据URI格式复制图片",
 	"Paste From": "粘贴自",
 	"Flip/&Rotate": "翻转/旋转(&R)",
 	"Flip/Rotate": "翻转/旋转",

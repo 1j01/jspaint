@@ -2234,7 +2234,20 @@ function getSelectionText() {
 	}
 	return text;
 }
-
+function edit_copy_data_uri(type) {
+	if(selection && selection.canvas) {
+		if (!navigator.clipboard || !navigator.clipboard.write) {
+			throw new Error(`${localize("Error getting the Clipboard Data!")} ${recommendationForClipboardAccess}`);
+		}
+		const dataUrl = selection.canvas.toDataURL(type && `image/${type}`);
+		try {
+			navigator.clipboard.writeText(dataUrl);
+		}
+		catch (e) {
+			console.log('error copy data uri', e);
+		}
+	}
+}
 function edit_copy(execCommandFallback){
 	const text = getSelectionText();
 
