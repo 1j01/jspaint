@@ -1026,8 +1026,10 @@ $G.on("keydown", e => {
 				e.shiftKey ? file_save_as() : file_save();
 			break;
 			case 'C':
-				e.shiftKey && edit_copy_data_uri();
-				return;
+				if(!e.shiftKey)
+					return;
+				edit_copy_data_uri();
+				break;
 			case "A":
 				select_all();
 			break;
