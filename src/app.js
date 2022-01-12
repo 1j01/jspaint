@@ -936,9 +936,16 @@ $G.on("keydown", e => {
 		redo();
 	} else if (e.key === "Delete" || e.key === "Backspace") {
 		delete_selection();
-	} else if (e.code === "NumpadAdd" || e.code === "NumpadSubtract") {
-		const plus = e.code === "NumpadAdd";
-		const minus = e.code === "NumpadSubtract";
+	} else if (
+		e.code === "NumpadAdd" ||
+		e.code === "NumpadSubtract" ||
+		// normal + and - keys
+		e.key === "+" ||
+		e.key === "-" ||
+		e.key === "="
+	) {
+		const plus = e.code === "NumpadAdd" || e.key === "+" || e.key === "=";
+		const minus = e.code === "NumpadSubtract" || e.key === "-";
 		const delta = plus - minus; // const delta = +plus++ -minus--; // Δ = ±±±±
 
 		if(selection){
