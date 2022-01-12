@@ -8,7 +8,7 @@ window.menus = {
 	[localize("&File")]: [
 		{
 			item: localize("&New"),
-			shortcut: "Ctrl+Alt+N", // Ctrl+N opens a new browser window
+			shortcut: window.is_electron_app ? "Ctrl+N" : "Ctrl+Alt+N", // Ctrl+N opens a new browser window
 			speech_recognition: [
 				"new", "new file", "new document", "create new document", "create a new document", "start new document", "start a new document",
 			],
@@ -63,7 +63,7 @@ window.menus = {
 		MENU_DIVIDER,
 		{
 			item: localize("&Load From URL"),
-			// shortcut: "Ctrl+L",
+			// shortcut: "", // no shortcut: Ctrl+L is taken, and you can paste a URL with Ctrl+V, so it's not really needed
 			speech_recognition: [
 				"load from url",
 				"load from a url",
@@ -155,7 +155,7 @@ window.menus = {
 		},
 		{
 			item: localize("&Print"),
-			shortcut: "Ctrl+P",
+			shortcut: "Ctrl+P", // relies on browser's print shortcut being Ctrl+P
 			speech_recognition: [
 				"print", "send to printer", "show print dialog",
 				"print page", "print image", "print picture", "print drawing",
@@ -207,7 +207,7 @@ window.menus = {
 		MENU_DIVIDER,
 		{
 			item: localize("E&xit"),
-			// shortcut: "Alt+F4", // closes browser window
+			shortcut: window.is_electron_app ? "Alt+F4" : "", // Alt+F4 closes the browser window (in most window managers)
 			speech_recognition: [
 				"exit application", "exit paint", "close paint window",
 			],
@@ -245,7 +245,7 @@ window.menus = {
 		},
 		{
 			item: localize("&Repeat"),
-			shortcut: "F4",
+			shortcut: "F4", // also supported: Ctrl+Shift+Z, Ctrl+Y
 			speech_recognition: [
 				"repeat", "redo",
 			],
@@ -352,7 +352,7 @@ window.menus = {
 	[localize("&View")]: [
 		{
 			item: localize("&Tool Box"),
-			// shortcut: "Ctrl+T", // opens a new browser tab
+			shortcut: window.is_electron_app ? "Ctrl+T" : "", // Ctrl+T opens a new browser tab, Ctrl+Alt+T opens a Terminal in Ubuntu, and Ctrl+Shift+Alt+T feels silly.
 			speech_recognition: [
 				"toggle tool box", "toggle tools box", "toggle toolbox", "toggle tool palette", "toggle tools palette",
 				// @TODO: hide/show
@@ -367,7 +367,7 @@ window.menus = {
 		},
 		{
 			item: localize("&Color Box"),
-			// shortcut: "Ctrl+L", // focuses browser address bar
+			shortcut: "Ctrl+L", // focuses browser address bar, but Firefox and Chrome both allow overriding the default behavior
 			speech_recognition: [
 				"toggle color box", "toggle colors box", "toggle palette", "toggle color palette", "toggle colors palette",
 				// @TODO: hide/show
@@ -412,7 +412,7 @@ window.menus = {
 			submenu: [
 				{
 					item: localize("&Normal Size"),
-					// shortcut: "Ctrl+PgUp", // cycles thru browser tabs
+					shortcut: window.is_electron_app ? "Ctrl+PgUp" : "", // Ctrl+PageUp cycles thru browser tabs in Chrome & Firefox; can be overridden in Chrome in fullscreen only
 					speech_recognition: [
 						"reset zoom", "zoom to normal size",
 						"zoom to 100%", "set zoom to 100%", "set zoom 100%",
@@ -428,7 +428,7 @@ window.menus = {
 				},
 				{
 					item: localize("&Large Size"),
-					// shortcut: "Ctrl+PgDn", // cycles thru browser tabs
+					shortcut: window.is_electron_app ? "Ctrl+PgDn" : "", // Ctrl+PageDown cycles thru browser tabs in Chrome & Firefox; can be overridden in Chrome in fullscreen only
 					speech_recognition: [
 						"zoom to large size",
 						"zoom to 400%", "set zoom to 400%", "set zoom 400%",
@@ -533,7 +533,7 @@ window.menus = {
 		MENU_DIVIDER,
 		{
 			item: localize("&Fullscreen"),
-			shortcut: "F11",
+			shortcut: "F11", // relies on browser's shortcut
 			speech_recognition: [
 				// won't work with speech recognition, needs a user gesture
 			],
@@ -560,7 +560,7 @@ window.menus = {
 		// @TODO: speech recognition: terms that apply to selection
 		{
 			item: localize("&Flip/Rotate"),
-			// shortcut: "Ctrl+R", // reloads browser tab
+			shortcut: (window.is_electron_app && !window.electron_is_dev) ? "Ctrl+R" : "Ctrl+Alt+R", // Ctrl+R reloads the browser tab (or Electron window in dev mode via electron-debug)
 			speech_recognition: [
 				"flip",
 				"rotate",
@@ -572,7 +572,7 @@ window.menus = {
 		},
 		{
 			item: localize("&Stretch/Skew"),
-			// shortcut: "Ctrl+W", // closes browser tab
+			shortcut: window.is_electron_app ? "Ctrl+W" : "Ctrl+Alt+W", // Ctrl+W closes the browser tab
 			speech_recognition: [
 				"stretch", "scale", "resize image",
 				"skew",
@@ -611,7 +611,7 @@ window.menus = {
 		},
 		{
 			item: localize("&Clear Image"),
-			shortcut: looksLikeChrome ? undefined : "Ctrl+Shift+N", // opens incognito window in chrome
+			shortcut: (window.is_electron_app || !looksLikeChrome) ? "Ctrl+Shift+N" : "", // Ctrl+Shift+N opens incognito window in chrome
 			speech_recognition: [
 				"clear image", "clear canvas", "clear picture", "clear page", "clear drawing",
 				// @TODO: erase?

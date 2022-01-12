@@ -870,7 +870,9 @@ $G.on("keydown", e => {
 		}
 	}
 	if (
-		// Ctrl+Shift+Y
+		// Ctrl+Shift+Y for history window,
+		// chosen because it's related to the undo/redo shortcuts
+		// and it looks like a branching symbol.
 		(e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey &&
 		e.key.toUpperCase() === "Y"
 	) {
@@ -932,10 +934,33 @@ $G.on("keydown", e => {
 		if(selection){
 			deselect();
 		}
+	} else if (e.key === "F1") {
+		show_help();
+		e.preventDefault();
 	} else if (e.key === "F4") {
 		redo();
+	// alt+backspace: undo
+	// shift+delete: cut
+	// delete/backspace: delete selection
 	} else if (e.key === "Delete" || e.key === "Backspace") {
-		delete_selection();
+		if (e.key === "Delete" && e.shiftKey) {
+			cut();
+		} else if (e.key === "Backspace" && e.altKey) {
+			undo();
+		} else {
+			delete_selection();
+		}
+		e.preventDefault();
+	// ctrl+insert: copy
+	// shift+insert: paste
+	} else if (e.key === "Insert") {
+		if (e.ctrlKey) {
+			copy();
+			e.preventDefault();
+		} else if (e.shiftKey) {
+			paste();
+			e.preventDefault();
+		}
 	} else if (
 		e.code === "NumpadAdd" ||
 		e.code === "NumpadSubtract" ||
@@ -993,6 +1018,19 @@ $G.on("keydown", e => {
 					return;
 			}
 		}
+		// Ctrl+PageDown: zoom to 400%
+		// Ctrl+PageUp: zoom to 100%
+		// In Chrome and Firefox, these switch to the next/previous tab,
+		// but it's allowed to be overridden in fullscreen in Chrome.
+		if (e.key === "PageDown") {
+			set_magnification(4);
+			e.preventDefault();
+			return;
+		} else if (e.key === "PageUp") {
+			set_magnification(1);
+			e.preventDefault();
+			return;
+		}
 		switch (e.key.toUpperCase()) {
 			case ",": // '<' without Shift
 			case "<":
@@ -1026,9 +1064,6 @@ $G.on("keydown", e => {
 			case "O":
 				file_open();
 			break;
-			case "N":
-				e.shiftKey ? clear() : file_new();
-			break;
 			case "S":
 				e.shiftKey ? file_save_as() : file_save();
 			break;
@@ -1041,10 +1076,34 @@ $G.on("keydown", e => {
 			case "E":
 				image_attributes();
 			break;
+
+			// These shortcuts are mostly reserved by browsers,
+			// but they are allowed in Electron.
+			// The shortcuts are hidden in the menus (or changed) when not in Electron,
+			// to prevent accidental closing/refreshing.
+			// I'm supporting Alt+<shortcut> here (implicitly) as a workaround (and showing this in the menus in some cases).
+			// Also, note that Chrome allows some shortcuts to be overridden in fullscreen (but showing/hiding the shortcuts would be confusing).
+			case "N":
+				e.shiftKey ? clear() : file_new();
+			break;
+			case "T":
+				$toolbox.toggle();
+			break;
+			case "L": // allowed to override in Firefox
+				$colorbox.toggle();
+			break;
+			case "R":
+				image_flip_and_rotate();
+			break;
+			case "W":
+				image_stretch_and_skew();
+			break;
+
 			default:
 				return; // don't preventDefault
 		}
 		e.preventDefault();
+		// put nothing below! note return above
 	}
 });
 let alt_zooming = false;

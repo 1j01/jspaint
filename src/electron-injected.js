@@ -30,6 +30,7 @@ if(process.platform == "win32" && isPackaged){
 }
 
 window.is_electron_app = true;
+window.electron_is_dev = process.env.ELECTRON_DEBUG === "1" || !isPackaged;
 
 window.setRepresentedFilename = (filePath) => {
 	require("electron").remote.getCurrentWindow().setRepresentedFilename(filePath);
