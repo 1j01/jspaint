@@ -969,18 +969,18 @@ function file_load_from_url(){
 
 // Native FS API / File Access API allows you to overwrite files, but people are not used to it.
 // So we ask them to confirm it the first time.
-let confirmed_overwrite = false;
+let acknowledged_overwrite_capability = false;
 const confirmed_overwrite_key = "jspaint confirmed overwrite capable";
 try {
-	confirmed_overwrite = localStorage[confirmed_overwrite_key] === "true";
+	acknowledged_overwrite_capability = localStorage[confirmed_overwrite_key] === "true";
 } catch (error) {
 	// no localStorage
 	// In the year 2033, people will be more used to it, right?
 	// This will be known as the "Y2T bug"
-	confirmed_overwrite = Date.now() >= 2000000000000;
+	acknowledged_overwrite_capability = Date.now() >= 2000000000000;
 }
-async function confirm_overwrite() {
-	if (confirmed_overwrite) {
+async function confirm_overwrite_capability() {
+	if (acknowledged_overwrite_capability) {
 		return;
 	}
 	const { $window, promise } = showMessageBox({
@@ -998,9 +998,9 @@ async function confirm_overwrite() {
 	});
 	const result = await promise;
 	if (result === "overwrite") {
-		confirmed_overwrite = $window.$content.find("input[type='checkbox']").prop("checked");
+		acknowledged_overwrite_capability = $window.$content.find("input[type='checkbox']").prop("checked");
 		try {
-			localStorage[confirmed_overwrite_key] = confirmed_overwrite;
+			localStorage[confirmed_overwrite_key] = acknowledged_overwrite_capability;
 		} catch (error) {
 			// no localStorage... @TODO: don't show the checkbox in this case
 		}

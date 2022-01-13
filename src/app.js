@@ -301,7 +301,7 @@ window.systemHookDefaults = {
 	},
 	writeBlobToHandle: async (save_file_handle, blob) => {
 		if (save_file_handle && save_file_handle.createWritable && enable_fs_access_api) {
-			await confirm_overwrite();
+			await confirm_overwrite_capability();
 			try {
 				const writableStream = await save_file_handle.createWritable();
 				await writableStream.write(blob);
