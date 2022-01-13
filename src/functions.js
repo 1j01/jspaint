@@ -1951,8 +1951,6 @@ function show_document_history() {
 	$w.addClass("history-window squish");
 	$w.$content.html(`
 		<label>
-			<!--<input type="checkbox" id="history-show-all-branches" checked> Show all branches-->
-			<!--<input type="checkbox" id="history-view-linear" checked> Linear timeline-->
 			<select id="history-view-mode" class="inset-deep">
 				<option value="linear">Linear timeline</option>
 				<option value="tree">Tree</option>
@@ -1969,12 +1967,6 @@ function show_document_history() {
 	let rendered_$entries = [];
 	let current_$entry;
 
-	// let $linear_checkbox = $w.$content.find("#history-view-linear");
-	// let linear = $linear_checkbox.is(":checked");
-	// $linear_checkbox.on("change", () => {
-	// 	linear = $linear_checkbox.is(":checked");
-	// 	render_tree();
-	// });
 	let $mode_select = $w.$content.find("#history-view-mode");
 	$mode_select.css({
 		margin: "10px",
