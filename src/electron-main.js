@@ -54,17 +54,22 @@ const createWindow = () => {
 		mainWindow = null;
 	});
 
-	const handleRedirect = (e, url) => {
+	// Open links without target=_blank externally.
+	mainWindow.webContents.on('will-navigate', (e, url) => {
 		// check that the URL is not part of the app
 		if(!url.includes("file://")){
 			e.preventDefault();
 			require('electron').shell.openExternal(url);
 		}
-	};
-	// Open links without target=_blank externally.
-	mainWindow.webContents.on('will-navigate', handleRedirect);
+	});
 	// Open links with target=_blank externally.
-	mainWindow.webContents.on('new-window', handleRedirect);
+	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+		// check that the URL is not part of the app
+		if(!url.includes("file://")){
+			require('electron').shell.openExternal(url);
+		}
+		return { action: "deny" };
+	});
 
 	require("@electron/remote/main").enable(mainWindow.webContents);
 };
