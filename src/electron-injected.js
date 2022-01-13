@@ -192,7 +192,7 @@ window.systemHooks.setWallpaperCentered = (canvas) => {
 		sanity_check_blob(blob, () => {
 			blob.arrayBuffer().then((arrayBuffer) => {
 				const buffer = Buffer.from(arrayBuffer);
-				fs.writeFile(imgPath, Buffer.from(arrayBuffer), error => {
+				fs.writeFile(imgPath, buffer, error => {
 					if (error) {
 						return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", error);
 					}
