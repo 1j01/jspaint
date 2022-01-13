@@ -1,66 +1,41 @@
 // Electron-specific code injected into the renderer process
 // to provide integrations, for the desktop app
 
-const isPackaged = require("@electron/remote").app.isPackaged;
-const dialog = require("@electron/remote").dialog;
-const fs = require("fs");
-const path = require("path");
-const argv = require("@electron/remote").process.argv;
+// I've enabled sandboxing, so the fs module is not available.
+// Operations must be carried out in the main process.
 
-// @TODO: let user apply this setting somewhere in the UI (togglable)
-// (Note: it would be better to use REG.EXE to apply the change, rather than a .reg file)
-// This registry modification changes the right click > Edit option for images in Windows Explorer
-const reg_contents = `Windows Registry Editor Version 5.00
+const { /*contextBridge,*/ ipcRenderer } = require('electron');
 
-[HKEY_CLASSES_ROOT\\SystemFileAssociations\\image\\shell\\edit\\command]
-@="\\"${argv[0].replace(/\\/g, "\\\\")}\\" ${isPackaged ? "" : '\\".\\" '}\\"%1\\""
-`; // oof that's a lot of escaping \\
-////                                \\\\
-//  /\   /\   /\   /\   /\   /\   /\  \\
-// //\\ //\\ //\\ //\\ //\\ //\\ //\\ \\
-//  ||   ||   ||   ||   ||   ||   ||  \\
-//\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\
-const reg_file_path = path.join(isPackaged ? path.dirname(argv[0]) : ".", `set-jspaint${isPackaged ? "" : "-DEV-MODE"}-as-default-image-editor.reg`);
-if(process.platform == "win32" && isPackaged){
-	fs.writeFile(reg_file_path, reg_contents, (err) => {
-		if(err){
-			return console.error(err);
-		}
-	});
-}
+const { isDev, isMacOS, initialFilePath } = ipcRenderer.sendSync("get-env-info");
+
+// contextBridge.exposeInMainWorld("is_electron_app", true);
+// contextBridge.exposeInMainWorld("electron_is_dev", isDev);
+// contextBridge.exposeInMainWorld("initial_system_file_handle", initialFilePath);
+
+// contextBridge.exposeInMainWorld("electron_app", {
 
 window.is_electron_app = true;
-window.electron_is_dev = process.env.ELECTRON_DEBUG === "1" || !isPackaged;
+window.electron_is_dev = isDev;
+window.initial_system_file_handle = initialFilePath;
+
 
 window.setRepresentedFilename = (filePath) => {
-	require("@electron/remote").getCurrentWindow().setRepresentedFilename(filePath);
+	ipcRenderer.send("set-represented-filename", filePath);
 };
 window.setDocumentEdited = (documentEdited) => {
-	require("@electron/remote").getCurrentWindow().setDocumentEdited(documentEdited);
+	ipcRenderer.send("set-document-edited", documentEdited);
 };
 
-// In case of XSS holes, don't give the page free reign over the filesystem!
-// Only allow allow access to files explicitly opened by the user.
-const allowed_file_paths = [];
-
-if (argv.length >= 2) {
-	if (isPackaged) { // in production, "path/to/jspaint.exe" "maybe/a/file.png"
-		window.initial_system_file_handle = argv[1];
-	} else { // in development, "path/to/electron.exe" "." "maybe/a/file.png"
-		window.initial_system_file_handle = argv[2];
-	}
-	allowed_file_paths.push(window.initial_system_file_handle);
-}
-
+// @TODO: make into `async function`
 function write_blob_to_file_path(filePath, blob, savedCallback) {
-	if (!allowed_file_paths.includes(filePath)) {
-		// throw new SecurityError(`File path ${filePath} is not allowed`);
-		return show_error_message(localize("Access denied."));
-	}
 	blob.arrayBuffer().then((arrayBuffer) => {
-		fs.writeFile(filePath, Buffer.from(arrayBuffer), (err) => {
-			if (err) {
-				return show_error_message(localize("Failed to save document."), err);
+		ipcRenderer.invoke("write-file", filePath, arrayBuffer).then(({ responseCode, error }) => {
+			// @TODO: handle all error codes (for bug reports if nothing else)
+			if (responseCode === "ACCESS_DENIED") {
+				return show_error_message(localize("Access denied."));
+			}
+			if (responseCode !== "SUCCESS") {
+				return show_error_message(localize("Failed to save document."), error);
 			}
 			savedCallback();
 		});
@@ -83,12 +58,15 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 	const filters = formats.map(({ name, extensions }) => ({ name, extensions }));
 
 	// @TODO: should defaultFileName/defaultPath be sanitized in some way?
-	let filePath, canceled;
+	let filePath, fileName, canceled;
 	try {
-		const browserWindow = require("@electron/remote").getCurrentWindow();
-		({filePath, canceled} = await dialog.showSaveDialog(browserWindow, {
+		// This is not the Electron API directly, but it's similar
+		// fileName stuff is added so I don't need to do equivalent to path.basename() in the renderer
+		({ filePath, fileName, canceled } = await ipcRenderer.invoke("show-save-dialog", {
 			title: localize("Save As"),
-			defaultPath: defaultPath || path.basename(defaultFileName),
+			// defaultPath: defaultPath || path.basename(defaultFileName),
+			defaultFileName,
+			defaultPath,
 			filters,
 		}));
 	} catch (error) {
@@ -110,11 +88,10 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 	}
 	const blob = await getBlob(format.mimeType);
 
-	allowed_file_paths.push(filePath);
-	
 	write_blob_to_file_path(filePath, blob, ()=> {
 		savedCallbackUnreliable && savedCallbackUnreliable({
-			newFileName: path.basename(filePath),
+			// newFileName: path.basename(filePath),
+			newFileName: fileName,
 			newFileFormatID: format.mimeType,
 			newFileHandle: filePath,
 			newBlob: blob,
@@ -126,8 +103,7 @@ window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 	// ideally this function should be generic to formats, so shouldn't do it here:
 	// const filters = image_format_categories(formats).map(({ name, extensions }) => ({ name, extensions }));
 	const filters = formats.map(({ name, extensions }) => ({ name, extensions }));
-	const browserWindow = require("@electron/remote").getCurrentWindow();
-	const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
+	const { canceled, filePaths } = await ipcRenderer.invoke("show-open-dialog", {
 		title: localize("Open"),
 		filters,
 		defaultPath,
@@ -136,7 +112,6 @@ window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 		throw new Error("user canceled");
 	}
 	const filePath = filePaths[0];
-	allowed_file_paths.push(filePath);
 	const file = await window.systemHooks.readBlobFromHandle(filePath);
 	return { file, fileHandle: filePath };
 };
@@ -155,12 +130,14 @@ window.systemHooks.readBlobFromHandle = async (filePath) => {
 		return show_error_message("readBlobFromHandle in Electron expects a file path");
 		// should it fall back to default readBlobFromHandle?
 	}
-	if (!allowed_file_paths.includes(filePath)) {
-		// throw new SecurityError(`File path ${filePath} is not allowed`);
+	const { responseCode, error, data, fileName } = await ipcRenderer.invoke("read-file", filePath);
+	if (responseCode === "ACCESS_DENIED") {
 		return show_error_message(localize("Access denied."));
 	}
-	const buffer = await fs.promises.readFile(filePath);
-	const file = new File([new Uint8Array(buffer)], path.basename(filePath));
+	if (responseCode !== "SUCCESS") {
+		return show_error_message(localize("Paint cannot open this file."), error);
+	}
+	const file = new File([new Uint8Array(data)], fileName);
 	// can't set file.path directly, but we can do this:
 	Object.defineProperty(file, 'path', {
 		value: filePath,
@@ -170,16 +147,10 @@ window.systemHooks.readBlobFromHandle = async (filePath) => {
 };
 
 window.systemHooks.setWallpaperCentered = (canvas) => {
-	const dataPath = require('electron').remote.app.getPath("userData");
-
-	const imgPath = require("path").join(dataPath, "bg.png");
-	const fs = require("fs");
-	const wallpaper = require("wallpaper");
-
 	// @TODO: implement centered option for Windows and Linux in https://www.npmjs.com/package/wallpaper
 	// currently it's only supported on macOS
 	let wallpaperCanvas;
-	if (process.platform === "darwin") {
+	if (isMacOS) {
 		wallpaperCanvas = canvas;
 	} else {
 		wallpaperCanvas = make_canvas(screen.width, screen.height);
@@ -191,20 +162,24 @@ window.systemHooks.setWallpaperCentered = (canvas) => {
 	wallpaperCanvas.toBlob(blob => {
 		sanity_check_blob(blob, () => {
 			blob.arrayBuffer().then((arrayBuffer) => {
-				const buffer = Buffer.from(arrayBuffer);
-				fs.writeFile(imgPath, buffer, error => {
-					if (error) {
-						return show_error_message("Failed to set as desktop background: couldn't write temporary image file.", error);
+				ipcRenderer.invoke("set-wallpaper", arrayBuffer).then(({ responseCode, error }) => {
+					if (responseCode === "WRITE_TEMP_PNG_FAILED") {
+						return show_error_message("Failed to set wallpaper: Couldn't write temporary image file.", error);
 					}
-					// {scale: "center"} only supported on macOS; see above workaround
-					wallpaper.set(imgPath, { scale: "center" }, error => {
-						if (error) {
-							show_error_message("Failed to set as desktop background!", error);
-						}
-					});
+					if (responseCode === "INVALID_DATA") {
+						return show_error_message(`Failed to set wallpaper. Invalid data in IPC.`, error);
+					}
+					if (responseCode === "INVALID_PNG_DATA") {
+						return show_error_message(`Failed to set wallpaper.\n\n${localize("Unexpected file format.")}`, error);
+					}
+					if (responseCode !== "SUCCESS") {
+						return show_error_message("Failed to set wallpaper.", error);
+					}
+				}).catch(error => {
+					show_error_message("Failed to set wallpaper.", error);
 				});
 			}, (error) => {
-				show_error_message(localize("Failed to save document."), error);
+				show_error_message("Failed to set wallpaper: Couldn't read blob as array buffer.", error);
 			});
 		});
 	});

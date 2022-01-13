@@ -139,18 +139,18 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 
 ### Desktop App (Electron)
 
+* Create a landing page / home page for the desktop app (similar to https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
+
 Electron boilerplate stuff:
 
 * Remember window position/state
 * Set up autoupdating
 * Keep window hidden until loaded (`show: false`, [`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))
-* Create a landing page / home page for the desktop app (similar to https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
 
 Security:
 
-* IPC, and move file allow-list to main process
 * Remove inline scripts from HTML, update CSP
-* isolation
+* context isolation
 * disable multiplayer???????????? should be fine
 
 Functionality:
@@ -160,7 +160,10 @@ Functionality:
 * Document recovery without having to know about File > Manage Storage - pop up contextually with a dialog when you need it
 * Show link URLs when you hover over them, in the status bar (because we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, or it could be implemented with mouse events)
 * Recent files (could also be implemented for 98.js.org in the future)
-* macOS: `open-file` event, test `setRepresentedFilename`, `setDocumentEdited`
+* macOS:
+	* `open-file` event
+	* `win.setSheetOffset` with the menu bar height
+	* test `setRepresentedFilename`, `setDocumentEdited`
 * Windows: maybe handle `session-end` event and ask to save?
 * Detect if file changes on disk, ask if you want to reload it?
 

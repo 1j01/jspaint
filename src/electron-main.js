@@ -1,7 +1,10 @@
-const { app, session, BrowserWindow } = require('electron');
+const { app, session, dialog, ipcMain, BrowserWindow } = require('electron');
+const fs = require("fs");
+const path = require("path");
+const wallpaper = require("wallpaper");
+const dataPath = app.getPath("userData");
 
-// TODO: move to specialized IPC
-require('@electron/remote/main').initialize();
+app.enableSandbox();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -9,8 +12,47 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 }
 
 // Reloading and dev tools shortcuts
-if (process.env.ELECTRON_DEBUG === "1" || !app.isPackaged){
+const { isPackaged } = app;
+const isDev = process.env.ELECTRON_DEBUG === "1" || !isPackaged;
+if (isDev) {
 	require('electron-debug')({ showDevTools: false });
+}
+
+// @TODO: let user apply this setting somewhere in the UI (togglable)
+// (Note: it would be better to use REG.EXE to apply the change, rather than a .reg file)
+// This registry modification changes the right click > Edit option for images in Windows Explorer
+const reg_contents = `Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\\SystemFileAssociations\\image\\shell\\edit\\command]
+@="\\"${process.argv[0].replace(/\\/g, "\\\\")}\\" ${isPackaged ? "" : '\\".\\" '}\\"%1\\""
+`; // oof that's a lot of escaping \\
+////                                \\\\
+//  /\   /\   /\   /\   /\   /\   /\  \\
+// //\\ //\\ //\\ //\\ //\\ //\\ //\\ \\
+//  ||   ||   ||   ||   ||   ||   ||  \\
+//\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\
+const reg_file_path = path.join(
+	isPackaged ? path.dirname(process.argv[0]) : ".",
+	`set-jspaint${isPackaged ? "" : "-DEV-MODE"}-as-default-image-editor.reg`
+);
+if (process.platform == "win32" && isPackaged) {
+	fs.writeFile(reg_file_path, reg_contents, (err) => {
+		if (err) {
+			return console.error(err);
+		}
+	});
+}
+
+// In case of XSS holes, don't give the page free reign over the filesystem!
+// Only allow allow access to files explicitly opened by the user.
+const allowed_file_paths = [];
+
+let initial_file_path;
+if (process.argv.length >= 2) {
+	// in production, "path/to/jspaint.exe" "maybe/a/file.png"
+	// in development, "path/to/electron.exe" "." "maybe/a/file.png"
+	const initial_file_path = process.argv[isPackaged ? 1 : 2];
+	allowed_file_paths.push(initial_file_path);
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -73,8 +115,6 @@ const createWindow = () => {
 		return { action: "deny" };
 	});
 
-	require("@electron/remote/main").enable(mainWindow.webContents);
-
 	session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
 		callback({
 			responseHeaders: {
@@ -83,6 +123,110 @@ const createWindow = () => {
 				"Content-Security-Policy": ["script-src 'self'; script-src-elem 'self' 'unsafe-inline'"],
 			}
 		})
+	});
+
+	ipcMain.on("get-env-info", (event) => {
+		event.returnValue = {
+			isDev,
+			isMacOS: process.platform === "darwin",
+			initialFilePath: initial_file_path,
+		};
+	});
+	ipcMain.on("set-represented-filename", (event, filePath) => {
+		if (allowed_file_paths.includes(filePath)) {
+			mainWindow.setRepresentedFilename(filePath);
+		}
+	});
+	ipcMain.on("set-document-edited", (event, isEdited) => {
+		mainWindow.setDocumentEdited(isEdited);
+	});
+	ipcMain.handle("show-save-dialog", async (event, options) => {
+		const { filePath, canceled } = await dialog.showSaveDialog(mainWindow, {
+			title: options.title,
+			// defaultPath: options.defaultPath,
+			defaultPath: options.defaultPath || path.basename(options.defaultFileName),
+			filters: options.filters,
+		});
+		const fileName = path.basename(filePath);
+		allowed_file_paths.push(filePath);
+		return { filePath, fileName, canceled };
+	});
+	ipcMain.handle("show-open-dialog", async (event, options) => {
+		const { filePaths, canceled } = await dialog.showOpenDialog(mainWindow, {
+			title: options.title,
+			defaultPath: options.defaultPath,
+			filters: options.filters,
+			properties: options.properties,
+		});
+		allowed_file_paths.push(...filePaths);
+		return { filePaths, canceled };
+	});
+	ipcMain.handle("write-file", async (event, file_path, data) => {
+		if (!allowed_file_paths.includes(file_path)) {
+			return { responseCode: "ACCESS_DENIED" };
+		}
+		// make sure data is an ArrayBuffer, so you can't use an options object for (unknown) evil reasons
+		if (data instanceof ArrayBuffer) {
+			try {
+				await fs.promises.writeFile(file_path, Buffer.from(data));
+			} catch (error) {
+				return { responseCode: "WRITE_FAILED", error };
+			}
+			return { responseCode: "SUCCESS" };
+		} else {
+			return { responseCode: "INVALID_DATA" };
+		}
+	});
+	ipcMain.handle("read-file", async (event, file_path) => {
+		if (!allowed_file_paths.includes(file_path)) {
+			return { responseCode: "ACCESS_DENIED" };
+		}
+		try {
+			const buffer = await fs.promises.readFile(file_path);
+			return { responseCode: "SUCCESS", data: new Uint8Array(buffer), fileName: path.basename(file_path) };
+		} catch (error) {
+			return { responseCode: "READ_FAILED", error };
+		}
+	});
+	ipcMain.handle("set-wallpaper", async (event, data, centered) => {
+		const image_path = require("path").join(dataPath, "bg.png");
+		if (!(data instanceof ArrayBuffer)) {
+			return { responseCode: "INVALID_DATA" };
+		}
+		data = new Uint8Array(data);
+		const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+		for (let i = 0; i < png_magic_bytes.length; i++) {
+			if (data[i] !== png_magic_bytes[i]) {
+				console.log("Found bytes:", data.slice(0, png_magic_bytes.length), "but expected:", png_magic_bytes);
+				return { responseCode: "INVALID_PNG_DATA" };
+			}
+		}
+		try {
+			await fs.promises.writeFile(image_path, Buffer.from(data));
+		} catch (error) {
+			return { responseCode: "WRITE_TEMP_PNG_FAILED", error };
+		}
+
+
+		// Note: { scale: "center" } is only supported on macOS.
+		// I worked around this by providing an image with a transparent margin on other platforms,
+		// in setWallpaperCentered.
+		return new Promise((resolve, reject) => {
+			wallpaper.set(image_path, { scale: "center" }, error => {
+				if (error) {
+					resolve({ responseCode: "SET_WALLPAPER_FAILED", error });
+				} else {
+					resolve({ responseCode: "SUCCESS" });
+				}
+			});
+		});
+		// Newer promise-based wallpaper API that I can't import:
+		// try {
+		// 	await setWallpaper(image_path, { scale: "center" });
+		// } catch (error) {
+		// 	return { responseCode: "SET_WALLPAPER_FAILED", error };
+		// }
+		// return { responseCode: "SUCCESS" };
 	});
 };
 
