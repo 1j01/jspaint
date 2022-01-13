@@ -141,7 +141,6 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 
 Electron boilerplate stuff:
 
-* [Set up Content-Security-Policy](https://electronjs.org/docs/tutorial/security)
 * Remember window position/state
 * Set up autoupdating
 * Keep window hidden until loaded (`show: false`, [`ready-to-show`](https://electronjs.org/docs/api/browser-window#event-ready-to-show))

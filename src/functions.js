@@ -654,6 +654,11 @@ async function load_image_from_uri(uri) {
 	//   - The user may be just trying to paste text, not an image.
 	// - non-CORS-enabled URI
 	//   --> Use a CORS proxy! :)
+	//   - In electron, using a CORS proxy 1. is silly, 2. maybe isn't working.
+	//     --> Either proxy requests to the main process,
+	//         or configure headers in the main process to make requests work.
+	//         Probably the latter. @TODO
+	//         https://stackoverflow.com/questions/51254618/how-do-you-handle-cors-in-an-electron-app
 	// - invalid image / unsupported image format
 	// - image is no longer available on the live web
 	//   --> try loading from WayBack Machine :)

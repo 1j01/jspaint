@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, session, BrowserWindow } = require('electron');
 
 // TODO: move to specialized IPC
 require('@electron/remote/main').initialize();
@@ -8,12 +8,14 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 	app.quit();
 }
 
+// Reloading and dev tools shortcuts
 if (process.env.ELECTRON_DEBUG === "1" || !app.isPackaged){
 	require('electron-debug')({ showDevTools: false });
 }
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
+// @TODO: It's been several electron versions. I doubt this is still necessary. (It was from a boilerplate.)
 let mainWindow;
 
 const createWindow = () => {
@@ -72,6 +74,16 @@ const createWindow = () => {
 	});
 
 	require("@electron/remote/main").enable(mainWindow.webContents);
+
+	session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+		callback({
+			responseHeaders: {
+				...details.responseHeaders,
+				// @TODO: remove unsafe-inline; there's just a few scripts with inline code
+				"Content-Security-Policy": ["script-src 'self'; script-src-elem 'self' 'unsafe-inline'"],
+			}
+		})
+	});
 };
 
 // This method will be called when Electron has finished

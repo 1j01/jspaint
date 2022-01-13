@@ -595,6 +595,8 @@
 			crossorigin="anonymous"
 		></script>
 		<script>
+			// Fallback is good so the app doesn't rely on some random server,
+			// but it's also required for Electron, where the CDN is not enabled in the CSP.
 			window.jQuery || document.write('<script src="lib/jquery-3.4.1.min.js"><\/script>');
 		</script>
 
