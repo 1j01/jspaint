@@ -1,11 +1,11 @@
 // Electron-specific code injected into the renderer process
 // to provide integrations, for the desktop app
 
-const isPackaged = require("electron").remote.app.isPackaged;
-const dialog = require("electron").remote.dialog;
+const isPackaged = require("@electron/remote").app.isPackaged;
+const dialog = require("@electron/remote").dialog;
 const fs = require("fs");
 const path = require("path");
-const argv = require("electron").remote.process.argv;
+const argv = require("@electron/remote").process.argv;
 
 // @TODO: let user apply this setting somewhere in the UI (togglable)
 // (Note: it would be better to use REG.EXE to apply the change, rather than a .reg file)
@@ -33,10 +33,10 @@ window.is_electron_app = true;
 window.electron_is_dev = process.env.ELECTRON_DEBUG === "1" || !isPackaged;
 
 window.setRepresentedFilename = (filePath) => {
-	require("electron").remote.getCurrentWindow().setRepresentedFilename(filePath);
+	require("@electron/remote").getCurrentWindow().setRepresentedFilename(filePath);
 };
 window.setDocumentEdited = (documentEdited) => {
-	require("electron").remote.getCurrentWindow().setDocumentEdited(documentEdited);
+	require("@electron/remote").getCurrentWindow().setDocumentEdited(documentEdited);
 };
 
 // In case of XSS holes, don't give the page free reign over the filesystem!

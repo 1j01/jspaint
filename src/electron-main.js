@@ -1,5 +1,8 @@
 const { app, BrowserWindow } = require('electron');
 
+// TODO: move to specialized IPC
+require('@electron/remote/main').initialize();
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
 	app.quit();
@@ -33,12 +36,11 @@ const createWindow = () => {
 		title: "JS Paint",
 		webPreferences: {
 			preload: require("path").join(__dirname, "/electron-injected.js"),
-			enableRemoteModule: true,
 			contextIsolation: false,
 		},
 	});
 
-	// @TODO: maybe use the native menu for the "Modern" theme
+	// @TODO: maybe use the native menu for the "Modern" theme, or a "Native" theme
 	mainWindow.setMenu(null);
 
 	// and load the index.html of the app.
@@ -63,6 +65,8 @@ const createWindow = () => {
 	mainWindow.webContents.on('will-navigate', handleRedirect);
 	// Open links with target=_blank externally.
 	mainWindow.webContents.on('new-window', handleRedirect);
+
+	require("@electron/remote/main").enable(mainWindow.webContents);
 };
 
 // This method will be called when Electron has finished

@@ -57,6 +57,7 @@
     }
   },
   "dependencies": {
+    "@electron/remote": "^2.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "glob": "^7.1.6",
     "rtlcss": "^3.1.2",
