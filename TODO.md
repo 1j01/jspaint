@@ -155,7 +155,6 @@ Security:
 
 Functionality:
 
-* A dialog when closing
 * Subwindows as separate windows
 * Document recovery without having to know about File > Manage Storage - pop up contextually with a dialog when you need it
 * Show link URLs when you hover over them, in the status bar (because we have a status bar! haha) (there's this API: [event: update-target-url](https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-update-target-url), which gave me the idea, or it could be implemented with mouse events)

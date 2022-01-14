@@ -18,6 +18,11 @@ window.is_electron_app = true;
 window.electron_is_dev = isDev;
 window.initial_system_file_handle = initialFilePath;
 
+ipcRenderer.on("close-window-prompt", () => {
+	are_you_sure(() => {
+		window.close();
+	});
+});
 
 window.setRepresentedFilename = (filePath) => {
 	ipcRenderer.send("set-represented-filename", filePath);

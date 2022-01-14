@@ -96,6 +96,15 @@ const createWindow = () => {
 		mainWindow = null;
 	});
 
+	// Emitted before the window is closed.
+	mainWindow.on('close', (event) => {
+		// Don't need to check mainWindow.isDocumentEdited(),
+		// because the (un)edited state is handled by the renderer process, in are_you_sure().
+		// Note: if the web contents are not responding, this will make the app harder to close.
+		mainWindow.webContents.send('close-window-prompt');
+		event.preventDefault();	
+	});
+
 	// Open links without target=_blank externally.
 	mainWindow.webContents.on('will-navigate', (e, url) => {
 		// check that the URL is not part of the app
