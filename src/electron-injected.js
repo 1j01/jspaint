@@ -26,22 +26,24 @@ window.setDocumentEdited = (documentEdited) => {
 	ipcRenderer.send("set-document-edited", documentEdited);
 };
 
-// @TODO: make into `async function`
-function write_blob_to_file_path(filePath, blob, savedCallback) {
-	blob.arrayBuffer().then((arrayBuffer) => {
-		ipcRenderer.invoke("write-file", filePath, arrayBuffer).then(({ responseCode, error }) => {
-			// @TODO: handle all error codes (for bug reports if nothing else)
-			if (responseCode === "ACCESS_DENIED") {
-				return show_error_message(localize("Access denied."));
-			}
-			if (responseCode !== "SUCCESS") {
-				return show_error_message(localize("Failed to save document."), error);
-			}
-			savedCallback();
-		});
-	}, (error) => {
+// Note: this function's promise is bogus, it uses a callback,
+// similar to the systemHooks.showSaveFileDialog function.
+// @TODO: figure out better error handling strategy
+async function write_blob_to_file_path(filePath, blob, savedCallback) {
+	try {
+		const arrayBuffer = await blob.arrayBuffer();
+		const { responseCode, error } = await ipcRenderer.invoke("write-file", filePath, arrayBuffer);
+		// @TODO: handle all error codes (for bug reports if nothing else)
+		if (responseCode === "ACCESS_DENIED") {
+			return show_error_message(localize("Access denied."));
+		}
+		if (responseCode !== "SUCCESS") {
+			return show_error_message(localize("Failed to save document."), error);
+		}
+		savedCallback();
+	} catch (error) {
 		show_error_message(localize("Failed to save document."), error);
-	});
+	}
 }
 
 window.systemHooks = window.systemHooks || {};
