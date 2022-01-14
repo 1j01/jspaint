@@ -27,13 +27,16 @@ window.setDocumentEdited = (documentEdited) => {
 };
 
 function show_save_error_message(responseCode, error) {
-	// @TODO: handle all error codes (for bug reports if nothing else)
 	if (responseCode === "ACCESS_DENIED") {
 		return show_error_message(localize("Access denied."));
+	}
+	if (responseCode === "INVALID_DATA") {
+		return show_error_message("Failed to save: Invalid data. This shouldn't happen!");
 	}
 	if (responseCode !== "SUCCESS") {
 		return show_error_message(localize("Failed to save document."), error);
 	}
+	// return show_save_error_message(localize("No error occurred."));
 }
 async function write_blob_to_file_path(filePath, blob) {
 	const arrayBuffer = await blob.arrayBuffer();
