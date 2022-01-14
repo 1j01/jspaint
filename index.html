@@ -3,6 +3,15 @@
 	<head>
 		<meta charset="utf-8">
 		<title>JS Paint</title>
+
+		<!-- This should mirror CSP in electron-main.js -->
+		<meta http-equiv="Content-Security-Policy" content="
+			default-src 'self';
+			style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+			img-src 'self' data: blob: https://i.postimg.cc;
+			font-src 'self' https://fonts.gstatic.com;
+			connect-src * data: blob:;
+		">
 		
 		<link href="styles/normalize.css" rel="stylesheet" type="text/css">
 		<link href="styles/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
@@ -53,24 +62,8 @@
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:site" content="@isaiahodhner">
 		<meta name="twitter:creator" content="@isaiahodhner">
-		<script>
-			// use only ES5 syntax for this script
-			// set up basic global error handling, which we can override later
-			window.onerror = function (msg, url, lineNo, columnNo, error) {
-				var string = msg.toLowerCase();
-				var substring = "script error";
-				if (string.indexOf(substring) > -1) {
-					alert('Script Error: See Browser Console for Detail');
-				} else {
-					// try {
-					// 	// try-catch in case of circular references or old browsers without JSON.stringify
-					// 	error = JSON.stringify(error);
-					// } catch (e) {}
-					alert('Internal application error: ' + msg + '\n\n' + 'URL: ' + url + '\n' + 'Line: ' + lineNo + '\n' + 'Column: ' + columnNo);
-				}
-				return false;
-			};
-		</script>
+		
+		<script src="src/error-handling-basic.js"></script>
 		<script src="src/theme.js"></script>
 	</head>
 	<body>
@@ -589,17 +582,8 @@
 			</style>
 		</div>
 
-		<script
-			src="https://code.jquery.com/jquery-3.4.1.min.js"
-			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-			crossorigin="anonymous"
-		></script>
-		<script>
-			// Fallback is good so the app doesn't rely on some random server,
-			// but it's also required for Electron, where the CDN is not enabled in the CSP.
-			window.jQuery || document.write('<script src="lib/jquery-3.4.1.min.js"><\/script>');
-		</script>
-
+		<!-- Note: no CDNs, even with fallback, as the fallback is too complicated to handle with CSP. -->
+		<script src="lib/jquery-3.4.1.min.js"></script>
 		<script src="lib/gif.js/gif.js"></script>
 		<script src="lib/pako-2.0.3.min.js"></script> <!-- for UPNG.js and UTIF.js -->
 		<script src="lib/UPNG.js"></script>
@@ -623,23 +607,12 @@
 		<script src="src/storage.js"></script>
 		<script src="src/$Component.js"></script>
 		<script src="src/$ToolWindow.js"></script>
-		<script>
-			// After show_error_message, showMessageBox, make_window_supporting_scale, and localize are defined,
-			// set up better global error handling.
-			// Note that this can't simply be merged with the other onerror handler with a try/catch,
-			// because showMessageBox is async, and could throw an error before dependencies are met (or if there was an error in the error handling),
-			// and try doesn't catch errors in async code. It would need to be awaited.
-			// And making show_error_message return a promise might cause subtle problems due to the pattern of `return show_error_message()`.
-			const old_onerror = window.onerror;
-			window.onerror = (message, source, lineno, colno, error)=> {
-				try {
-					// Some errors don't give an error object, like "ResizeObserver loop limit exceeded"
-					show_error_message(localize("Internal application error."), error || message);
-				} catch (e) {
-					old_onerror(message, source, lineno, colno, error);
-				}
-			};
-		</script>
+
+		<!-- After show_error_message, showMessageBox, make_window_supporting_scale, and localize are defined,
+		set up better global error handling. -->
+		<!-- Note: This must be in the <body> as it also handles showing a message for Internet Explorer. -->
+		<script src="src/error-handling-enhanced.js"></script>
+
 		<script src="src/$ToolBox.js"></script>
 		<script src="src/$ColorBox.js"></script>
 		<script src="src/$FontBox.js"></script>
@@ -664,17 +637,6 @@
 		<script src="lib/konami.js"></script>
 		<script src="src/vaporwave-fun.js"></script>
 
-		<script>
-			if(/MSIE \d|Trident.*rv:/.test(navigator.userAgent)){
-				document.write(
-					'<style>body { text-align: center; }</style>' +
-					'<div className="not-supported">' +
-						'<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
-						'<p className="not-supported-details">Try Chrome, Firefox, or Edge.</p>' +
-					'</div>'
-				);
-			}
-		</script>
 		<noscript>
 			<h1><img src="images/icons/32x32.png" width="32" height="32" alt=""/> JS Paint</h1>
 

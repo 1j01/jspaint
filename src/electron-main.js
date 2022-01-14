@@ -101,6 +101,8 @@ const createWindow = () => {
 		// Don't need to check mainWindow.isDocumentEdited(),
 		// because the (un)edited state is handled by the renderer process, in are_you_sure().
 		// Note: if the web contents are not responding, this will make the app harder to close.
+		// Similarly, if there's an error, the app will be harder to close (perhaps worse as it's less likely to show a Not Responding dialog).
+		// And this also prevents it from closing with Ctrl+C in the terminal, which is arguably a feature.
 		mainWindow.webContents.send('close-window-prompt');
 		event.preventDefault();	
 	});
@@ -126,8 +128,17 @@ const createWindow = () => {
 		callback({
 			responseHeaders: {
 				...details.responseHeaders,
-				// @TODO: remove unsafe-inline; there's just a few scripts with inline code
-				"Content-Security-Policy": ["script-src 'self'; script-src-elem 'self' 'unsafe-inline'"],
+				// connect-src needs data: for loading from localStorage,
+				// and maybe blob: for loading from IndexedDB in the future.
+				// (It uses fetch().)
+				// Note: this should mirror the CSP in index.html.
+				"Content-Security-Policy": [`
+					default-src 'self';
+					style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+					img-src 'self' data: blob: https://i.postimg.cc;
+					font-src 'self' https://fonts.gstatic.com;
+					connect-src * data: blob:;
+				`],
 			}
 		})
 	});

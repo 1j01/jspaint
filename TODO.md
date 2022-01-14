@@ -149,7 +149,6 @@ Electron boilerplate stuff:
 
 Security:
 
-* Remove inline scripts from HTML, update CSP
 * context isolation
 * disable multiplayer???????????? should be fine
 
