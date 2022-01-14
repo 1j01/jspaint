@@ -26,24 +26,19 @@ window.setDocumentEdited = (documentEdited) => {
 	ipcRenderer.send("set-document-edited", documentEdited);
 };
 
-// Note: this function's promise is bogus, it uses a callback,
-// similar to the systemHooks.showSaveFileDialog function.
-// @TODO: figure out better error handling strategy
-async function write_blob_to_file_path(filePath, blob, savedCallback) {
-	try {
-		const arrayBuffer = await blob.arrayBuffer();
-		const { responseCode, error } = await ipcRenderer.invoke("write-file", filePath, arrayBuffer);
-		// @TODO: handle all error codes (for bug reports if nothing else)
-		if (responseCode === "ACCESS_DENIED") {
-			return show_error_message(localize("Access denied."));
-		}
-		if (responseCode !== "SUCCESS") {
-			return show_error_message(localize("Failed to save document."), error);
-		}
-		savedCallback();
-	} catch (error) {
-		show_error_message(localize("Failed to save document."), error);
+function show_save_error_message(responseCode, error) {
+	// @TODO: handle all error codes (for bug reports if nothing else)
+	if (responseCode === "ACCESS_DENIED") {
+		return show_error_message(localize("Access denied."));
 	}
+	if (responseCode !== "SUCCESS") {
+		return show_error_message(localize("Failed to save document."), error);
+	}
+}
+async function write_blob_to_file_path(filePath, blob) {
+	const arrayBuffer = await blob.arrayBuffer();
+	const { responseCode, error } = await ipcRenderer.invoke("write-file", filePath, arrayBuffer);
+	return { responseCode, error };
 }
 
 window.systemHooks = window.systemHooks || {};
@@ -89,15 +84,16 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 		return show_error_message(`Can't save as *.${extension} - Try adding .png to the end of the file name`);
 	}
 	const blob = await getBlob(format.mimeType);
-
-	write_blob_to_file_path(filePath, blob, ()=> {
-		savedCallbackUnreliable && savedCallbackUnreliable({
-			// newFileName: path.basename(filePath),
-			newFileName: fileName,
-			newFileFormatID: format.mimeType,
-			newFileHandle: filePath,
-			newBlob: blob,
-		});
+	const { responseCode, error } = await write_blob_to_file_path(filePath, blob);
+	if (responseCode !== "SUCCESS") {
+		return show_save_error_message(responseCode, error);
+	}
+	savedCallbackUnreliable && savedCallbackUnreliable({
+		// newFileName: path.basename(filePath),
+		newFileName: fileName,
+		newFileFormatID: format.mimeType,
+		newFileHandle: filePath,
+		newBlob: blob,
 	});
 };
 window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
@@ -123,9 +119,10 @@ window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
 		return show_error_message("writeBlobToHandle in Electron expects a file path");
 		// should it fall back to default writeBlobToHandle?
 	}
-	await new Promise(resolve => {
-		write_blob_to_file_path(filePath, blob, resolve);
-	});
+	const { responseCode, error } = await write_blob_to_file_path(filePath, blob);
+	if (responseCode !== "SUCCESS") {
+		return show_save_error_message(responseCode, error);
+	}
 };
 window.systemHooks.readBlobFromHandle = async (filePath) => {
 	if (typeof filePath !== "string") {
