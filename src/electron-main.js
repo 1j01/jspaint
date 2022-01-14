@@ -1,8 +1,7 @@
-const { app, session, dialog, ipcMain, BrowserWindow } = require('electron');
+const { app, shell, session, dialog, ipcMain, BrowserWindow } = require('electron');
 const fs = require("fs");
 const path = require("path");
 const wallpaper = require("wallpaper");
-const dataPath = app.getPath("userData");
 
 app.enableSandbox();
 
@@ -70,7 +69,7 @@ const createWindow = () => {
 		height: 600,
 		minWidth: 260,
 		minHeight: 360,
-		icon: require("path").join(__dirname, "../images/icons",
+		icon: path.join(__dirname, "../images/icons",
 			process.platform === "win32" ?
 				"jspaint.ico" :
 				process.platform === "darwin" ?
@@ -79,7 +78,7 @@ const createWindow = () => {
 		),
 		title: "JS Paint",
 		webPreferences: {
-			preload: require("path").join(__dirname, "/electron-injected.js"),
+			preload: path.join(__dirname, "/electron-injected.js"),
 			contextIsolation: false,
 		},
 	});
@@ -103,14 +102,14 @@ const createWindow = () => {
 		// check that the URL is not part of the app
 		if(!url.includes("file://")){
 			e.preventDefault();
-			require('electron').shell.openExternal(url);
+			shell.openExternal(url);
 		}
 	});
 	// Open links with target=_blank externally.
 	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
 		// check that the URL is not part of the app
 		if(!url.includes("file://")){
-			require('electron').shell.openExternal(url);
+			shell.openExternal(url);
 		}
 		return { action: "deny" };
 	});
@@ -188,8 +187,8 @@ const createWindow = () => {
 			return { responseCode: "READ_FAILED", error };
 		}
 	});
-	ipcMain.handle("set-wallpaper", async (event, data, centered) => {
-		const image_path = require("path").join(dataPath, "bg.png");
+	ipcMain.handle("set-wallpaper", async (event, data) => {
+		const image_path = path.join(app.getPath("userData"), "bg.png");
 		if (!(data instanceof ArrayBuffer)) {
 			return { responseCode: "INVALID_DATA" };
 		}
