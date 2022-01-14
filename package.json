@@ -59,6 +59,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "glob": "^7.1.6",
+    "lookpath": "^1.2.2",
     "rtlcss": "^3.1.2",
     "wallpaper": "^4.4.2"
   },

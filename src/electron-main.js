@@ -1,7 +1,6 @@
 const { app, shell, session, dialog, ipcMain, BrowserWindow } = require('electron');
 const fs = require("fs");
 const path = require("path");
-const wallpaper = require("wallpaper");
 
 app.enableSandbox();
 
@@ -188,7 +187,7 @@ const createWindow = () => {
 		}
 	});
 	ipcMain.handle("set-wallpaper", async (event, data) => {
-		const image_path = path.join(app.getPath("userData"), "bg.png");
+		const image_path = path.join(app.getPath("userData"), "bg.png"); // Note: used without escaping
 		if (!(data instanceof ArrayBuffer)) {
 			return { responseCode: "INVALID_DATA" };
 		}
@@ -206,26 +205,39 @@ const createWindow = () => {
 			return { responseCode: "WRITE_TEMP_PNG_FAILED", error };
 		}
 
-
-		// Note: { scale: "center" } is only supported on macOS.
-		// I worked around this by providing an image with a transparent margin on other platforms,
-		// in setWallpaperCentered.
-		return new Promise((resolve, reject) => {
-			wallpaper.set(image_path, { scale: "center" }, error => {
-				if (error) {
-					resolve({ responseCode: "SET_WALLPAPER_FAILED", error });
-				} else {
-					resolve({ responseCode: "SUCCESS" });
-				}
+		// The wallpaper module actually has support for Xfce, but it's not general enough.
+		const bash_for_xfce = `xfconf-query -c xfce4-desktop -l | grep last-image | while read path; do xfconf-query -c xfce4-desktop -p $path -s '${image_path}'; done`;
+		const { lookpath } = require("lookpath");
+		if (await lookpath("xfconf-query") && await lookpath("grep")) {
+			const exec = require("util").promisify(require('child_process').exec);
+			try {
+				await exec(bash_for_xfce);
+			} catch (error) {
+				console.error("Error setting wallpaper for Xfce:", error);
+				return { responseCode: "XFCONF_FAILED", error };
+			}
+			return { responseCode: "SUCCESS" };
+		} else {
+			// Note: { scale: "center" } is only supported on macOS.
+			// I worked around this by providing an image with a transparent margin on other platforms,
+			// in setWallpaperCentered.
+			return new Promise((resolve, reject) => {
+				require("wallpaper").set(image_path, { scale: "center" }, error => {
+					if (error) {
+						resolve({ responseCode: "SET_WALLPAPER_FAILED", error });
+					} else {
+						resolve({ responseCode: "SUCCESS" });
+					}
+				});
 			});
-		});
-		// Newer promise-based wallpaper API that I can't import:
-		// try {
-		// 	await setWallpaper(image_path, { scale: "center" });
-		// } catch (error) {
-		// 	return { responseCode: "SET_WALLPAPER_FAILED", error };
-		// }
-		// return { responseCode: "SUCCESS" };
+			// Newer promise-based wallpaper API that I can't import:
+			// try {
+			// 	await setWallpaper(image_path, { scale: "center" });
+			// } catch (error) {
+			// 	return { responseCode: "SET_WALLPAPER_FAILED", error };
+			// }
+			// return { responseCode: "SUCCESS" };
+		}
 	});
 };
 

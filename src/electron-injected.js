@@ -174,6 +174,9 @@ window.systemHooks.setWallpaperCentered = (canvas) => {
 					if (responseCode === "INVALID_PNG_DATA") {
 						return show_error_message(`Failed to set wallpaper.\n\n${localize("Unexpected file format.")}`, error);
 					}
+					if (responseCode === "XFCONF_FAILED") {
+						return show_error_message("Failed to set wallpaper (for Xfce).", error);
+					}
 					if (responseCode !== "SUCCESS") {
 						return show_error_message("Failed to set wallpaper.", error);
 					}
