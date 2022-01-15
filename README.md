@@ -270,6 +270,6 @@ This is unreleased and not in development.
 
 You can build for production with `npm run electron:make`
 
-[Live Server]: https://github.com/tapio/live-server
+[Live Server]: https://github.com/1j01/live-server
 [Node.js]: https://nodejs.org/
 [electron-debug]: https://github.com/sindresorhus/electron-debug
