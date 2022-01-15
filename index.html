@@ -4,13 +4,15 @@
 		<meta charset="utf-8">
 		<title>JS Paint</title>
 
-		<!-- This should mirror CSP in electron-main.js -->
+		<!-- This should mirror CSP in electron-main.js, except maybe for firebase stuff. -->
+		<!-- Firebase stuff is somewhat speculative, as the quota is exceeded as I'm adding this. -->
 		<meta http-equiv="Content-Security-Policy" content="
 			default-src 'self';
+			script-src 'self' https://jspaint.firebaseio.com;
 			style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 			img-src 'self' data: blob: https://i.postimg.cc;
 			font-src 'self' https://fonts.gstatic.com;
-			connect-src * data: blob:;
+			connect-src * data: blob: https://jspaint.firebaseio.com wss://jspaint.firebaseio.com;
 		">
 		
 		<link href="styles/normalize.css" rel="stylesheet" type="text/css">
