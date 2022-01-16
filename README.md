@@ -1,12 +1,12 @@
 
 # [![](images/icons/32x32.png) JS Paint](https://jspaint.app)
 
-A nice web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
+A pixel-perfect web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
 
 The goal is to remake MS Paint
 (including its [little-known features](#did-you-know)),
 improve on it, and to extend the types of images it can edit.
-So far, it does this pretty well.
+It does this very well.
 
 ![Screenshot](images/meta/main-screenshot.png)
 
@@ -222,7 +222,7 @@ If you want to add extensive palette support to another application, I've made t
 
 JS Paint can be installed as a PWA, altho it doesn't work offline.
 
-(Also I made some effort to build it into a desktop app with [Electron][] and [Electron Forge][], but this will use unnecessary system resources and is not recommended. See [this issue](https://github.com/1j01/jspaint/issues/2).)
+(Also I built it into a desktop app with [Electron][] and [Electron Forge][], but this will use unnecessary system resources and is not recommended. You can follow [this issue](https://github.com/1j01/jspaint/issues/2) for the first release.)
 
 [Electron]: https://electronjs.org/
 [Electron Forge]: https://electronforge.io/
@@ -261,12 +261,12 @@ See [Control Directives](https://rtlcss.com/learn/usage-guide/control-directives
 
 ### Desktop App (Electron)
 
-This is unreleased and not in development.
+This is basically ready for release, but as of yet unreleased.
 
 - Install dependencies with `npm i`
 - Start the electron app with `npm run electron:start`
 
-[electron-debug][] is included, so you can use <kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools.
+[electron-debug][] is included, so you can use <kbd>F5</kbd>/<kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools.
 
 You can build for production with `npm run electron:make`
 
