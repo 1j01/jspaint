@@ -10,7 +10,7 @@ It does this very well.
 
 ![Screenshot](images/meta/main-screenshot.png)
 
-Ah yes, good old paint. Not the one with the [ribbons][]
+Ah yes, good old Paint. Not the one with the [ribbons][]
 or the [new skeuomorphic one][Fresh Paint] with the interface that can take up nearly half the screen.
 (And not the even newer [Paint 3D][].)
 
@@ -18,7 +18,7 @@ or the [new skeuomorphic one][Fresh Paint] with the interface that can take up n
 [Fresh Paint]: https://www.google.com/search?tbm=isch&q=MS+Fresh+Paint "Google Search: MS Fresh Paint"
 [Paint 3D]: https://www.microsoft.com/en-us/store/p/paint-3d-preview/9nblggh5fv99
 
-Windows 95, 98, and XP were the golden years of paint.
+Windows 95, 98, and XP were the golden years of Paint.
 You had a tool box and a color box, a foreground color and a background color,
 and that was all you needed.
 
@@ -26,10 +26,10 @@ Things were simple.
 
 But we want to undo more than three actions.
 We want to edit transparent images.
-We can't just keep using the old paint.
+We can't just keep using the old Paint.
 
 So that's why I'm making JS Paint.
-I want to bring good old paint into the modern era.
+I want to bring good old Paint into the modern era.
 
 
 #### Current improvements include:
