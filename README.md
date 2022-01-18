@@ -157,10 +157,7 @@ Capabilities marked with 🔜 are coming soon, and N/A of course means not appli
 and "Write Palette" refers to writing an [indexed color][] image.
 
 [PNG]: https://en.wikipedia.org/wiki/Portable_Network_Graphics
-[Monochrome Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
-[16 Color Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
-[256 Color Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
-[24-bit Bitmap]: https://en.wikipedia.org/wiki/BMP_file_format
+[BMP]: https://en.wikipedia.org/wiki/BMP_file_format
 [TIFF]: https://en.wikipedia.org/wiki/TIFF
 [PDF]: https://en.wikipedia.org/wiki/PDF
 [WebP]: https://en.wikipedia.org/wiki/WebP
@@ -202,6 +199,32 @@ If you want to add extensive palette support to another application, I've made t
 | .themepack        | Windows Theme                     | [Windows] Desktop                                                                 |   ✅   |         |
 | .css, .scss, .styl| Cascading StyleSheets             | Web browsers / web pages                                                          |   ✅   |   ✅    |
 | .html, .svg, .js  | any text files with CSS colors    | Web browsers / web pages                                                          |   ✅   |         |
+
+[RIFF]: https://en.wikipedia.org/wiki/Resource_Interchange_File_Format
+[MS Paint]: https://en.wikipedia.org/wiki/Microsoft_Paint
+[Paint.NET]: https://www.getpaint.net/
+[Paint Shop Pro]: https://www.paintshoppro.com/en/
+[StarCraft]: https://en.wikipedia.org/wiki/StarCraft
+[Homesite]: https://en.wikipedia.org/wiki/Macromedia_HomeSite
+[ColdFusion]: https://en.wikipedia.org/wiki/Adobe_ColdFusion
+[StarOffice]: https://en.wikipedia.org/wiki/StarOffice
+[OpenOffice]: https://www.openoffice.org/
+[LibreOffice]: https://www.libreoffice.org/
+[Sketch]: https://www.sketchapp.com/
+[Skencil]: https://skencil.org/
+[Photoshop]: https://www.adobe.com/products/photoshop.html
+[InDesign]: https://www.adobe.com/products/indesign.html
+[Illustrator]: https://www.adobe.com/products/illustrator.html
+[Gimp]: https://www.gimp.org/
+[Inkscape]: https://inkscape.org/en/
+[Krita]: https://www.calligra.org/krita/
+[KolourPaint]: http://kolourpaint.org/
+[KDE]: https://kde.org/
+[Windows]: https://en.wikipedia.org/wiki/Microsoft_Windows
+[Scribus]: https://www.scribus.net/
+[CinePaint]: http://www.cinepaint.org/
+[MyPaint]: http://mypaint.org/
+
 
 ## Did you know?
 
