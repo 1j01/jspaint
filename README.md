@@ -80,6 +80,8 @@ I want to bring good old Paint into the modern era.
   It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
   Sessions are not private, and you may lose your work at any time.
   If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
+* Create links to open an image from the web, such as <https://jspaint.app/#load:https://i.imgur.com/zJMrWwb.png> to start with an isometric grid template.
+  You can also use the **File > Load From URL...** menu item.
 * Load and save [many different palette formats](#color-palette-formats) with **Colors > Get Colors** and **Colors > Save Colors**.
   (I made a library for this: <img src="images/anypalette-logo-128x128.png" height="16"> [AnyPalette.js](https://github.com/1j01/anypalette.js).)
 * You can also drag and drop palette files (of any format) into the app to load. (Dragging and dropping image files also works, to load images.)
