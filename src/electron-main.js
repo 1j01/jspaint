@@ -104,13 +104,13 @@ const createWindow = () => {
 		// Similarly, if there's an error, the app will be harder to close (perhaps worse as it's less likely to show a Not Responding dialog).
 		// And this also prevents it from closing with Ctrl+C in the terminal, which is arguably a feature.
 		mainWindow.webContents.send('close-window-prompt');
-		event.preventDefault();	
+		event.preventDefault();
 	});
 
 	// Open links without target=_blank externally.
 	mainWindow.webContents.on('will-navigate', (e, url) => {
 		// check that the URL is not part of the app
-		if(!url.includes("file://")){
+		if (!url.includes("file://")) {
 			e.preventDefault();
 			shell.openExternal(url);
 		}
@@ -118,7 +118,7 @@ const createWindow = () => {
 	// Open links with target=_blank externally.
 	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
 		// check that the URL is not part of the app
-		if(!url.includes("file://")){
+		if (!url.includes("file://")) {
 			shell.openExternal(url);
 		}
 		return { action: "deny" };

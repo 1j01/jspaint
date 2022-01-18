@@ -1,15 +1,15 @@
 let $imgur_window;
 
-function show_imgur_uploader(blob){
-	if($imgur_window){
+function show_imgur_uploader(blob) {
+	if ($imgur_window) {
 		$imgur_window.close();
 	}
 	$imgur_window = $DialogWindow().title("Upload To Imgur").addClass("horizontal-buttons");
-	
+
 	const $preview_image_area = $(E("div")).appendTo($imgur_window.$main).addClass("inset-deep");
 	const $imgur_url_area = $(E("div")).appendTo($imgur_window.$main);
 	const $imgur_status = $(E("div")).appendTo($imgur_window.$main);
-	
+
 	// @TODO: maybe make this preview small but zoomable to full size?
 	// (starting small (max-width: 100%) and toggling to either scrollable or fullscreen)
 	// it should be clear that it's not going to upload a downsized version of your image
@@ -17,7 +17,7 @@ function show_imgur_uploader(blob){
 		display: "block", // prevent margin below due to inline display (vertical-align can also be used)
 	});
 	const blob_url = URL.createObjectURL(blob);
-	$preview_image.attr({src: blob_url});
+	$preview_image.attr({ src: blob_url });
 	// $preview_image.css({maxWidth: "100%", maxHeight: "400px"});
 	$preview_image_area.css({
 		maxWidth: "90vw",
@@ -26,7 +26,7 @@ function show_imgur_uploader(blob){
 		marginBottom: "0.5em",
 	});
 	$preview_image.on("load", () => {
-		$imgur_window.css({width: "auto"});
+		$imgur_window.css({ width: "auto" });
 		$imgur_window.center();
 	});
 	$imgur_window.on("close", () => {
@@ -53,7 +53,7 @@ function show_imgur_uploader(blob){
 		const parseImgurResponseJSON = responseJSON => {
 			try {
 				return JSON.parse(responseJSON);
-			} catch(error) {
+			} catch (error) {
 				$imgur_status.text("Received an invalid JSON response from Imgur: ");
 				// .append($(E("pre")).text(responseJSON));
 
@@ -63,26 +63,26 @@ function show_imgur_uploader(blob){
 
 				// @TODO: DRY, including with show_error_message
 				$(E("pre"))
-				.appendTo($imgur_status)
-				.text(responseJSON)
-				.css({
-					background: "white",
-					color: "#333",
-					fontFamily: "monospace",
-					width: "500px",
-					overflow: "auto",
-				});
+					.appendTo($imgur_status)
+					.text(responseJSON)
+					.css({
+						background: "white",
+						color: "#333",
+						fontFamily: "monospace",
+						width: "500px",
+						overflow: "auto",
+					});
 				$(E("pre"))
-				.appendTo($imgur_status)
-				.text(error.toString())
-				.css({
-					background: "white",
-					color: "#333",
-					fontFamily: "monospace",
-					width: "500px",
-					overflow: "auto",
-				});
-				$imgur_window.css({width: "auto"});
+					.appendTo($imgur_status)
+					.text(error.toString())
+					.css({
+						background: "white",
+						color: "#333",
+						fontFamily: "monospace",
+						width: "500px",
+						overflow: "auto",
+					});
+				$imgur_window.css({ width: "auto" });
 				$imgur_window.center();
 			}
 		};
@@ -91,9 +91,9 @@ function show_imgur_uploader(blob){
 
 		const req = new XMLHttpRequest();
 
-		if(req.upload){
+		if (req.upload) {
 			req.upload.addEventListener('progress', event => {
-				if(event.lengthComputable){
+				if (event.lengthComputable) {
 					const progress_value = event.loaded / event.total;
 					const percentage_text = `${Math.floor(progress_value * 100)}%`;
 					$progress.val(progress_value);
@@ -102,14 +102,14 @@ function show_imgur_uploader(blob){
 			}, false);
 		}
 
-		req.addEventListener("readystatechange", () => { 
-			if(req.readyState == 4 && req.status == 200){
+		req.addEventListener("readystatechange", () => {
+			if (req.readyState == 4 && req.status == 200) {
 				$progress.add($progress_percent).remove();
 
 				const response = parseImgurResponseJSON(req.responseText);
-				if(!response) return;
+				if (!response) return;
 
-				if(!response.success){
+				if (!response.success) {
 					$imgur_status.text("Failed to upload image :(");
 					return;
 				}
@@ -117,7 +117,7 @@ function show_imgur_uploader(blob){
 
 				$imgur_status.text("");
 
-				const $imgur_url = $(E("a")).attr({id: "imgur-url", target: "_blank"});
+				const $imgur_url = $(E("a")).attr({ id: "imgur-url", target: "_blank" });
 
 				$imgur_url.text(url);
 				$imgur_url.attr('href', url);
@@ -126,27 +126,27 @@ function show_imgur_uploader(blob){
 				).append($imgur_url);
 				// @TODO: a button to copy the URL to the clipboard
 				// (also maybe put the URL in a readonly input)
-				
+
 				let $ok_button;
 				const $delete_button = $imgur_window.$Button("Delete", () => {
 					const req = new XMLHttpRequest();
 					$delete_button[0].disabled = true;
-					req.addEventListener("readystatechange", () => { 
-						if(req.readyState == 4 && req.status == 200){
+					req.addEventListener("readystatechange", () => {
+						if (req.readyState == 4 && req.status == 200) {
 							$delete_button.remove();
 							$ok_button.focus();
 
 							const response = parseImgurResponseJSON(req.responseText);
-							if(!response) return;
+							if (!response) return;
 
-							if(response.success){
+							if (response.success) {
 								$imgur_url_area.remove();
 								$imgur_status.text("Deleted successfully");
-							}else{
+							} else {
 								$imgur_status.text("Failed to delete image :(");
 							}
 
-						}else if(req.readyState == 4){
+						} else if (req.readyState == 4) {
 							$imgur_status.text("Error deleting image :(");
 							$delete_button[0].disabled = false;
 							$delete_button.focus();
@@ -154,7 +154,7 @@ function show_imgur_uploader(blob){
 					});
 
 					req.open("DELETE", `https://api.imgur.com/3/image/${response.data.deletehash}`, true);
-					
+
 					req.setRequestHeader("Authorization", "Client-ID 203da2f300125a1");
 					req.setRequestHeader("Accept", "application/json");
 					req.send(null);
@@ -164,14 +164,14 @@ function show_imgur_uploader(blob){
 				$ok_button = $imgur_window.$Button(localize("OK"), () => {
 					$imgur_window.close();
 				}).focus();
-			}else if(req.readyState == 4){
+			} else if (req.readyState == 4) {
 				$progress.add($progress_percent).remove();
 				$imgur_status.text("Error uploading image :(");
 			}
 		});
 
 		req.open("POST", "https://api.imgur.com/3/image", true);
-		
+
 		const form_data = new FormData();
 		form_data.append("image", blob);
 

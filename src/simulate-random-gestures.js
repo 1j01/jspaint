@@ -1,4 +1,4 @@
-(()=>{
+(() => {
 
 let seed = 4; // chosen later
 
@@ -15,8 +15,8 @@ window.simulatingGestures = false;
 let gestureTimeoutID;
 let periodicGesturesTimeoutID;
 
-let choose = (array)=> array[~~(seededRandom() * array.length)];
-let isAnyMenuOpen = ()=> $(".menu-button.active").length > 0;
+let choose = (array) => array[~~(seededRandom() * array.length)];
+let isAnyMenuOpen = () => $(".menu-button.active").length > 0;
 
 let cursor_image = new Image();
 cursor_image.src = "images/cursors/default.png";
@@ -32,7 +32,7 @@ $cursor.css({
 	transition: "opacity 0.5s",
 });
 
-window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, secondary, secondaryToggleChance, target=main_canvas}) => {
+window.simulateRandomGesture = (callback, { shift, shiftToggleChance = 0.01, secondary, secondaryToggleChance, target = main_canvas }) => {
 	let startWithinRect = target.getBoundingClientRect();
 	let canvasAreaRect = $canvas_area[0].getBoundingClientRect();
 
@@ -45,7 +45,7 @@ window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, second
 
 	$cursor.appendTo($app);
 	let triggerMouseEvent = (type, point) => {
-		
+
 		if (isAnyMenuOpen()) {
 			return;
 		}
@@ -122,7 +122,7 @@ window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, second
 		point.y += startPointY;
 		return point;
 	};
-	
+
 	triggerMouseEvent("pointerenter", pointForTime(t)); // so dynamic cursors follow the simulation cursor
 	triggerMouseEvent("pointerdown", pointForTime(t));
 	let move = () => {
@@ -135,7 +135,7 @@ window.simulateRandomGesture = (callback, {shift, shiftToggleChance=0.01, second
 		}
 		if (t > 1) {
 			triggerMouseEvent("pointerup", pointForTime(t));
-			
+
 			$cursor.remove();
 
 			if (callback) {
@@ -161,14 +161,14 @@ window.simulateRandomGesturesPeriodically = () => {
 	window.console && console.log("Using seed:", seed);
 	window.console && console.log("Note: Seeds are not guaranteed to work with different versions of the app, but within the same version it should produce the same results given the same starting document & other state & NO interference... except for airbrush randomness");
 	window.console && console.log(`To use this seed:
-		
-		window.drawRandomlySeed = ${seed};
-		document.body.style.width = "${getComputedStyle(document.body).width}";
-		document.body.style.height = "${getComputedStyle(document.body).height}";
-		simulateRandomGesturesPeriodically();
-		delete window.drawRandomlySeed;
-		
-	`);
+	
+	window.drawRandomlySeed = ${seed};
+	document.body.style.width = "${getComputedStyle(document.body).width}";
+	document.body.style.height = "${getComputedStyle(document.body).height}";
+	simulateRandomGesturesPeriodically();
+	delete window.drawRandomlySeed;
+	
+`);
 
 	let delayBetweenGestures = 500;
 	let shiftStart = false;
@@ -187,8 +187,8 @@ window.simulateRandomGesturesPeriodically = () => {
 	// scroll randomly absolutely initially so the starting scroll doesn't play into whether a seed reproduces
 	$canvas_area.scrollTop($canvas_area.width() * seededRandom());
 	$canvas_area.scrollLeft($canvas_area.height() * seededRandom());
-	
-	let _simulateRandomGesture = (callback)=> {
+
+	let _simulateRandomGesture = (callback) => {
 		window.simulateRandomGesture(callback, {
 			shift: shiftStart,
 			shiftToggleChance,
@@ -212,7 +212,7 @@ window.simulateRandomGesturesPeriodically = () => {
 		}
 		if (seededRandom() < switchToolsChance) {
 			let multiToolsPlz = seededRandom() < multiToolsChance;
-			$(choose($(".tool, tool-button"))).trigger($.Event("click", {shiftKey: multiToolsPlz}));
+			$(choose($(".tool, tool-button"))).trigger($.Event("click", { shiftKey: multiToolsPlz }));
 		}
 		if (seededRandom() < pickToolOptionsChance) {
 			$(choose($(".tool-options *"))).trigger("click");
@@ -222,9 +222,9 @@ window.simulateRandomGesturesPeriodically = () => {
 			let secondary = seededRandom() < 0.5;
 			const colorButton = choose($(".swatch, .color-button"));
 			$(colorButton)
-				.trigger($.Event("pointerdown", {button: secondary ? 2 : 0}))
-				.trigger($.Event("click", {button: secondary ? 2 : 0}))
-				.trigger($.Event("pointerup", {button: secondary ? 2 : 0}));
+				.trigger($.Event("pointerdown", { button: secondary ? 2 : 0 }))
+				.trigger($.Event("click", { button: secondary ? 2 : 0 }))
+				.trigger($.Event("pointerup", { button: secondary ? 2 : 0 }));
 		}
 		if (seededRandom() < scrollChance) {
 			let scrollAmount = (seededRandom() * 2 - 1) * 700;
@@ -235,7 +235,7 @@ window.simulateRandomGesturesPeriodically = () => {
 			}
 		}
 		periodicGesturesTimeoutID = setTimeout(() => {
-			_simulateRandomGesture(()=> {
+			_simulateRandomGesture(() => {
 				if (selection && seededRandom() < dragSelectionChance) {
 					window.simulateRandomGesture(waitThenGo, {
 						shift: shiftStart,

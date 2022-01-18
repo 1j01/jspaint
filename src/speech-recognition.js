@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
@@ -1251,16 +1251,16 @@ const recognitionFixes = [
 
 	// spell-checker:enable
 ];
-const colorNames = [ 'aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
-const toolNames = tools.map((tool)=> tool.speech_recognition).flat();
+const colorNames = ['aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
+const toolNames = tools.map((tool) => tool.speech_recognition).flat();
 // @TODO: select foreground/background/ternary color specifically
 // @TODO: switch colors / swap colors / swap foreground and background colors
 // @TODO: zoom in/out / increase/decrease magnification, zoom to 20x / 5% etc., zoom out all the way (actual size or best fit if it's too big), actual size
 // @TODO: "convert image to black-and-white" / "convert image to monochrome" / "make image monochrome", "increase/decrease threshold" / "more white" / "more black"
 // @TODO: in Image Attributes, "Color"/"Colors"/"Not black and white" for Colors
 // @TODO: select tool options like selection opacity and brush sizes
-	// opaque/transparent/translucent/see-through selection / make selection opaque/transparent/translucent/see-through
-	// "increase size"(too vague) / "increase brush size" / "increase eraser size" / "larger eraser" / "enlarge eraser"
+// opaque/transparent/translucent/see-through selection / make selection opaque/transparent/translucent/see-through
+// "increase size"(too vague) / "increase brush size" / "increase eraser size" / "larger eraser" / "enlarge eraser"
 
 // @TODO: Is there a way to enable the grammar only as a hint, non-restrictively?
 // Construct a grammar that just contains an English dictionary, and set it as lower weight?
@@ -1290,13 +1290,13 @@ recognition.maxAlternatives = 1;
 
 window.speech_recognition_active = false;
 
-window.enable_speech_recognition = function() {
+window.enable_speech_recognition = function () {
 	if (!window.speech_recognition_active) {
 		window.speech_recognition_active = true;
 		recognition.start();
 	}
 };
-window.disable_speech_recognition = function() {
+window.disable_speech_recognition = function () {
 	if (window.speech_recognition_active) {
 		window.speech_recognition_active = false;
 		recognition.stop();
@@ -1321,7 +1321,7 @@ function fix_up_speech_recognition(command) {
 	}
 	return command;
 }
-recognition.onresult = function(event) {
+recognition.onresult = function (event) {
 	if (document.visibilityState !== "visible") {
 		return;
 	}
@@ -1343,12 +1343,11 @@ recognition.onresult = function(event) {
 	const interpretations = interpret_command(command, true);
 	if (interpretations.length) {
 		const interpretation = choose_interpretation(interpretations);
-		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${
-			command.replace(
-				new RegExp(escapeRegExp(interpretation.match_text), "i"),
-				(important_text)=> `<b>${important_text}</b>`,
-			)
-		}</span>`);
+		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${command.replace(
+			new RegExp(escapeRegExp(interpretation.match_text), "i"),
+			(important_text) => `<b>${important_text}</b>`,
+		)
+			}</span>`);
 		console.log(`Interpreting command "${command}" as`, interpretation);
 		interpretation.exec();
 	} else {
@@ -1357,35 +1356,35 @@ recognition.onresult = function(event) {
 	}
 };
 
-recognition.onspeechend = function() {
-	recognition.addEventListener("end", ()=> {
+recognition.onspeechend = function () {
+	recognition.addEventListener("end", () => {
 		recognition.start();
-	}, {once: true});
+	}, { once: true });
 	recognition.stop();
 };
 
-recognition.onnomatch = function(event) {
+recognition.onnomatch = function (event) {
 	if (document.visibilityState !== "visible") {
 		return;
 	}
 	$status_text.text("Speech not recognized.");
 };
 
-recognition.onstart = function(event) {
+recognition.onstart = function (event) {
 	window.speech_recognition_active = true;
 };
-recognition.onend = function(event) {
+recognition.onend = function (event) {
 	window.speech_recognition_active = false;
 };
 
-recognition.onerror = function(event) {
+recognition.onerror = function (event) {
 	if (event.error.toString().match(/no-speech/)) {
 		try {
 			recognition.start();
-		} catch(error) {
-			recognition.addEventListener("end", ()=> {
+		} catch (error) {
+			recognition.addEventListener("end", () => {
 				recognition.start();
-			}, {once: true});
+			}, { once: true });
 		}
 	} else {
 		$status_text.text('Error occurred in speech recognition: ' + event.error);
@@ -1406,22 +1405,22 @@ function choose_interpretation(interpretations) {
 			interpretation.prioritize
 		) {
 			best_interpretation = interpretation;
-		}	
+		}
 	}
 	return best_interpretation;
 }
 
-window.interpret_command = (input_text, default_to_entering_text)=> {
+window.interpret_command = (input_text, default_to_entering_text) => {
 	const interpretations = [];
-	const add_interpretation = (interpretation)=> {
+	const add_interpretation = (interpretation) => {
 		interpretations.push(interpretation);
 	};
-	
+
 	for (const color of colorNames) {
 		if (` ${input_text} `.toLowerCase().indexOf(` ${color.toLowerCase()} `) !== -1) {
 			add_interpretation({
 				match_text: color,
-				exec: ((color)=> ()=> {
+				exec: ((color) => () => {
 					selected_colors.foreground = color;
 					$G.trigger("option-changed");
 				})(color),
@@ -1436,7 +1435,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 				add_interpretation({
 					match_text: select_tool_match[0],
 					tool_id: tool.id,
-					exec: ((tool)=> ()=> {
+					exec: ((tool) => () => {
 						select_tool(tool);
 					})(tool),
 				});
@@ -1445,7 +1444,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	}
 
 	const all_menu_items = [];
-	const collect_menu_items = (menu)=> {
+	const collect_menu_items = (menu) => {
 		for (const menu_item of menu) {
 			if (menu_item !== MENU_DIVIDER) {
 				all_menu_items.push(menu_item);
@@ -1463,7 +1462,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 				if (` ${input_text} `.toLowerCase().indexOf(` ${menu_item_phrase.toLowerCase()} `) !== -1) {
 					add_interpretation({
 						match_text: menu_item_phrase,
-						exec: ((menu_item)=> ()=> {
+						exec: ((menu_item) => () => {
 							if (menu_item.checkbox) {
 								menu_item.checkbox.toggle();
 							} else {
@@ -1475,12 +1474,12 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			}
 		}
 	}
-	
+
 	const close_menus_match = input_text.match(/\b(?:(?:close|hide|dismiss) menus?|never ?mind)\b/i);
 	if (close_menus_match) {
 		add_interpretation({
 			match_text: close_menus_match[0],
-			exec: ()=> {
+			exec: () => {
 				// from close_menus in $MenuBar
 				$(".menu-button").trigger("release");
 				// Close any rogue floating submenus
@@ -1499,7 +1498,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			add_interpretation({
 				match_text: draw_match[0],
 				sketch_subject: subject_matter,
-				exec: ()=> {
+				exec: () => {
 					find_clipart_and_sketch(subject_matter);
 				},
 			});
@@ -1507,7 +1506,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	}
 
 	const buttons = $("button, .menu-button, .menu-item-label, label, .help-window .item").filter(":visible").toArray();
-	
+
 	for (const button of buttons) {
 		const button_text = button.textContent || button.getAttribute("aria-label") || button.title;
 		let button_text_phrases = [button_text];
@@ -1531,13 +1530,13 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			button_text_phrases = [
 				"Toggle Dwell Clicking", "Toggle Dwell Clicks",
 				// enable reenable re-enable start resume unpause un-pause
-				"Enable Dwell Clicking", "Enable Eye Gaze", "Enable Gaze Clicking", "Enable Dwell Clicks", "Enable Gaze Clicks", 
-				"Reenable Dwell Clicking", "Reenable Eye Gaze", "Reenable Gaze Clicking", "Reenable Dwell Clicks", "Reenable Gaze Clicks", 
-				"Re-enable Dwell Clicking", "Re-enable Eye Gaze", "Re-enable Gaze Clicking", "Re-enable Dwell Clicks", "Re-enable Gaze Clicks", 
-				"Start Dwell Clicking", "Start Eye Gaze", "Start Gaze Clicking", "Start Dwell Clicks", "Start Gaze Clicks", 
-				"Resume Dwell Clicking", "Resume Eye Gaze", "Resume Gaze Clicking", "Resume Dwell Clicks", "Resume Gaze Clicks", 
-				"Unpause Dwell Clicking", "Unpause Eye Gaze", "Unpause Gaze Clicking", "Unpause Dwell Clicks", "Unpause Gaze Clicks", 
-				"Un-pause Dwell Clicking", "Un-pause Eye Gaze", "Un-pause Gaze Clicking", "Un-pause Dwell Clicks", "Un-pause Gaze Clicks", 
+				"Enable Dwell Clicking", "Enable Eye Gaze", "Enable Gaze Clicking", "Enable Dwell Clicks", "Enable Gaze Clicks",
+				"Reenable Dwell Clicking", "Reenable Eye Gaze", "Reenable Gaze Clicking", "Reenable Dwell Clicks", "Reenable Gaze Clicks",
+				"Re-enable Dwell Clicking", "Re-enable Eye Gaze", "Re-enable Gaze Clicking", "Re-enable Dwell Clicks", "Re-enable Gaze Clicks",
+				"Start Dwell Clicking", "Start Eye Gaze", "Start Gaze Clicking", "Start Dwell Clicks", "Start Gaze Clicks",
+				"Resume Dwell Clicking", "Resume Eye Gaze", "Resume Gaze Clicking", "Resume Dwell Clicks", "Resume Gaze Clicks",
+				"Unpause Dwell Clicking", "Unpause Eye Gaze", "Unpause Gaze Clicking", "Unpause Dwell Clicks", "Unpause Gaze Clicks",
+				"Un-pause Dwell Clicking", "Un-pause Eye Gaze", "Un-pause Gaze Clicking", "Un-pause Dwell Clicks", "Un-pause Gaze Clicks",
 			];
 		}
 		if (button.matches(".window-close-button")) {
@@ -1610,7 +1609,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		if (button_text === "Color Box") {
 			button_text_phrases = ["color box", "color-box", "colorbox"];
 		}
-		
+
 		// top level menu buttons
 		if (button.matches(".menu-button")) {
 			button_text_phrases = [
@@ -1648,7 +1647,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 				if (` ${input_text} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
 					add_interpretation({
 						match_text: match_phrase,
-						exec: ((button)=> ()=> {
+						exec: ((button) => () => {
 							clickButtonVisibly(button);
 							console.log("click", button);
 						})(button),
@@ -1666,7 +1665,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			add_interpretation({
 				match_text: stop_match[0],
 				type: "stop-drawing",
-				exec: ()=> {
+				exec: () => {
 					window.stopSimulatingGestures && window.stopSimulatingGestures();
 					window.trace_and_sketch_stop && window.trace_and_sketch_stop();
 				},
@@ -1710,18 +1709,18 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		add_interpretation({
 			match_text: line_width_match[0],
 			size: n,
-			exec: ()=> {
+			exec: () => {
 				if (isFinite(n)) {
 					// @TODO: DRY with app.js
-					if(selected_tool.id === TOOL_BRUSH){
+					if (selected_tool.id === TOOL_BRUSH) {
 						brush_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.id === TOOL_ERASER){
+					} else if (selected_tool.id === TOOL_ERASER) {
 						eraser_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.id === TOOL_AIRBRUSH){
+					} else if (selected_tool.id === TOOL_AIRBRUSH) {
 						airbrush_size = Math.max(1, Math.min(n, 500));
-					}else if(selected_tool.id === TOOL_PENCIL){
+					} else if (selected_tool.id === TOOL_PENCIL) {
 						pencil_size = Math.max(1, Math.min(n, 50));
-					}else if(
+					} else if (
 						selected_tool.id === TOOL_LINE ||
 						selected_tool.id === TOOL_CURVE ||
 						selected_tool.id === TOOL_RECTANGLE ||
@@ -1731,10 +1730,10 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 					) {
 						stroke_size = Math.max(1, Math.min(n, 500));
 					}
-					
+
 					$G.trigger("option-changed");
-					if(button !== undefined && pointer){ // pointer may only be needed for tests
-						selected_tools.forEach((selected_tool)=> {
+					if (button !== undefined && pointer) { // pointer may only be needed for tests
+						selected_tools.forEach((selected_tool) => {
 							tool_go(selected_tool);
 						});
 					}
@@ -1751,7 +1750,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	const scroll_match = input_text.match(scrolling_regexp);
 	if (scroll_match) {
 		const directions = scroll_match[0];
-		const vector = {x: 0, y: 0};
+		const vector = { x: 0, y: 0 };
 		if (directions.match(/up|north/i)) {
 			vector.y = -1;
 		}
@@ -1764,11 +1763,11 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		if (directions.match(/right|east/i)) {
 			vector.x = +1;
 		}
-		const scroll_pane_el = $(".window *").toArray().filter((el)=> el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)[0] || $canvas_area[0];
+		const scroll_pane_el = $(".window *").toArray().filter((el) => el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)[0] || $canvas_area[0];
 		add_interpretation({
 			match_text: scroll_match[0],
-			exec: ()=> {
-				const factor = directions.match(/page/) ? 1 : 1/2;
+			exec: () => {
+				const factor = directions.match(/page/) ? 1 : 1 / 2;
 				// scroll_pane_el.scrollLeft += vector.x * scroll_pane_el.clientWidth * factor;
 				// scroll_pane_el.scrollTop += vector.y * scroll_pane_el.clientHeight * factor;
 				$(scroll_pane_el).animate({
@@ -1786,7 +1785,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 		if (new_line_match) {
 			add_interpretation({
 				match_text: new_line_match[0],
-				exec: ()=> {
+				exec: () => {
 					document.execCommand("insertText", false, "\n");
 				},
 			});
@@ -1817,7 +1816,7 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 			const text_to_insert = input_text.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
 			add_interpretation({
 				match_text: input_text,
-				exec: ()=> {
+				exec: () => {
 					if (document.activeElement && document.activeElement.matches("input[type='number']")) {
 						document.activeElement.value = input_text;
 					} else {
@@ -1836,18 +1835,18 @@ window.interpret_command = (input_text, default_to_entering_text)=> {
 	return interpretations;
 };
 
-window.trace_and_sketch = (subject_imagedata)=> {
+window.trace_and_sketch = (subject_imagedata) => {
 	window.trace_and_sketch_stop && window.trace_and_sketch_stop();
 
 	// @TODO: clickable cancel button? (in addition to Escape key handling and the "stop" voice command)
-	
+
 	// I'm suggesting saying "stop drawing" rather than "stop" because I think it's more likely to be picked up as speech at all
 	$status_text.text(`To stop drawing, ${window.speech_recognition_active ? `say "stop drawing", or ` : ""}press Esc.`);
 
 	// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
-	const trace_data = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres:1, qtres:0.01, scale:10, /*pal,*/ numberofcolors: 6, });
-	const {layers} = trace_data;
+	const trace_data = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres: 1, qtres: 0.01, scale: 10, /*pal,*/ numberofcolors: 6, });
+	const { layers } = trace_data;
 	const brush = get_tool_by_id(TOOL_BRUSH);
 	select_tool(brush);
 
@@ -1855,7 +1854,7 @@ window.trace_and_sketch = (subject_imagedata)=> {
 	let path_index = 0;
 	let segment_index = 0;
 	let active_path;
-	window.sketching_iid = setInterval(()=> {
+	window.sketching_iid = setInterval(() => {
 		const layer = layers[layer_index];
 		if (!layer) {
 			clearInterval(window.sketching_iid);
@@ -1875,15 +1874,15 @@ window.trace_and_sketch = (subject_imagedata)=> {
 			brush.pointerup(main_ctx, pointer.x, pointer.y);
 			return;
 		}
-		let {x1, y1, x2, y2} = segment;
+		let { x1, y1, x2, y2 } = segment;
 		if (path !== active_path) {
-			pointer_previous = {x: x1, y: y1};
-			pointer = {x: x1, y: y1};
+			pointer_previous = { x: x1, y: y1 };
+			pointer = { x: x1, y: y1 };
 			brush.pointerdown(main_ctx, x1, y1);
 			active_path = path;
 		}
-		pointer_previous = {x: x1, y: y1};
-		pointer = {x: x2, y: y2};
+		pointer_previous = { x: x1, y: y1 };
+		pointer = { x: x2, y: y2 };
 		brush.paint();
 		pointer_active = true;
 		pointer_over_canvas = true;
@@ -1891,15 +1890,15 @@ window.trace_and_sketch = (subject_imagedata)=> {
 		segment_index += 1;
 	}, 20);
 };
-window.trace_and_sketch_stop = ()=> {
+window.trace_and_sketch_stop = () => {
 	clearInterval(window.sketching_iid);
 	pointer_active = false;
 	pointer_over_canvas = false;
 };
 
 function find_clipart_and_sketch(subject_matter) {
-	find_clipart(subject_matter).then((results)=> {
-		
+	find_clipart(subject_matter).then((results) => {
+
 		// @TODO: select less complex images (less file size to width, say?) maybe, and/or better semantic matches by looking for the search terms in the title?
 		// detect gradients / spread out histogram at least, and reject based on that
 		let image_url = results[~~(Math.random() * results.length)].image_url;
@@ -1909,10 +1908,10 @@ function find_clipart_and_sketch(subject_matter) {
 		}
 		const img = new Image();
 		img.crossOrigin = "Anonymous";
-		img.onerror = ()=> {
+		img.onerror = () => {
 			$status_text.text("Failed to load clipart.");
 		};
-		img.onload = ()=> {
+		img.onload = () => {
 			// @TODO: find an empty spot on the canvas for the sketch, smaller if need be
 			const max_sketch_width = 500;
 			const max_sketch_height = 500;
@@ -1932,7 +1931,7 @@ function find_clipart_and_sketch(subject_matter) {
 			trace_and_sketch(image_data);
 		};
 		img.src = image_url;
-	}, (error)=> {
+	}, (error) => {
 		if (error.code === "no-results") {
 			$status_text.text(`No clipart found for '${subject_matter}'`);
 		} else {
@@ -1944,12 +1943,12 @@ function find_clipart_and_sketch(subject_matter) {
 function find_clipart(query) {
 	const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart&FORM=IRFLTR`)
 	return fetch(`https://jspaint-cors-proxy.herokuapp.com/${bing_url}`)
-		.then(response=> response.text())
-		.then((html)=> {
+		.then(response => response.text())
+		.then((html) => {
 			// handle relative data-src
 			html = html.replace(
 				/((?:data-src)=["'])(?!(?:https?:|data:))(\/?)/gi,
-				($0, $1, $2)=> `${$1}${bing_url.origin}${$2 ? bing_url.pathname : ""}`
+				($0, $1, $2) => `${$1}${bing_url.origin}${$2 ? bing_url.pathname : ""}`
 			);
 			// handle relative src and href in a less error-prone way, with a <base> tag
 			const doc = new DOMParser().parseFromString(html, "text/html");
@@ -1962,34 +1961,34 @@ function find_clipart(query) {
 			window.search_page_$html = $html;
 			console.log("window.search_page_html and window.search_page_$html are a available for debugging");
 
-			const validate_item = (item)=> item.image_url && (item.image_url.match(/^data:/) ? item.image_url.length > 1000 : true);
+			const validate_item = (item) => item.image_url && (item.image_url.match(/^data:/) ? item.image_url.length > 1000 : true);
 
 			let items = $html.find("[m]").toArray()
-				.map((el)=> el.getAttribute("m"))
-				.map((json)=> {
+				.map((el) => el.getAttribute("m"))
+				.map((json) => {
 					try {
 						return JSON.parse(json);
-					} catch(error) {
+					} catch (error) {
 						return null;
 					}
 				})
-				.filter((maybe_parsed)=> maybe_parsed && maybe_parsed.murl)
-				.map(({murl, t})=> ({image_url: murl, title: t || ""}))
+				.filter((maybe_parsed) => maybe_parsed && maybe_parsed.murl)
+				.map(({ murl, t }) => ({ image_url: murl, title: t || "" }))
 				.filter(validate_item);
-			
+
 			// fallback to thumbnails in case they get rid of the "m" attribute (thumbnails are not as good, more likely to be jpeg)
 			if (items.length === 0) {
 				console.log("Fallback to thumbnails");
 				items = $html.find("img.mimg").toArray()
-					.map((el)=> ({image_url: el.src || el.dataset.src, title: ""}))
+					.map((el) => ({ image_url: el.src || el.dataset.src, title: "" }))
 					.filter(validate_item);
 			}
 			// fallback in case they also change the class for images (this may match totally irrelevant things)
 			if (items.length === 0) {
 				console.log("Fallback to most imgs");
 				items = $html.find("img:not(.sw_spd):not(.rms_img):not(.flagIcon)").toArray()
-					.filter((el)=> !el.closest("[role='navigation'], nav")) // ignore "Related searches", "Refine your search" etc.
-					.map((el)=> ({image_url: el.src || el.dataset.src, title: ""}))
+					.filter((el) => !el.closest("[role='navigation'], nav")) // ignore "Related searches", "Refine your search" etc.
+					.map((el) => ({ image_url: el.src || el.dataset.src, title: "" }))
 					.filter(validate_item);
 			}
 			console.log(`Search results for '${query}':`, items);
@@ -2021,7 +2020,7 @@ function clickButtonVisibly(button) {
 
 	if (button.matches("button:not(.toggle)")) {
 		button.style.borderImage = "var(--inset-deep-border-image)";
-		setTimeout(()=> {
+		setTimeout(() => {
 			button.style.borderImage = "";
 			// delay the button.click() as well, so the pressed state is
 			// visible even if the button action closes a dialog
@@ -2056,9 +2055,9 @@ Expected '${input_text}' to be interpreted as`, expected, `but found no interpre
 		return;
 	}
 	const interpretation = choose_interpretation(interpretations);
-	const actual = Object.assign({}, interpretation, {prioritize: undefined, exec: undefined});
+	const actual = Object.assign({}, interpretation, { prioritize: undefined, exec: undefined });
 	// expected.match_text = expected.match_text || input_text; // puts key in wrong order
-	expected = Object.assign({match_text: input_text}, expected);
+	expected = Object.assign({ match_text: input_text }, expected);
 	const expected_json = JSON.stringify(expected, null, 4);
 	const actual_json = JSON.stringify(actual, null, 4);
 	if (expected_json !== actual_json) {
@@ -2073,8 +2072,8 @@ All interpretations:`, interpretations);
 		const fixed_up_input_text = fix_up_speech_recognition(input_text);
 		if (fixed_up_input_text !== input_text) {
 			console.error(`Failed test. Speech recognition fixup changed the input from:
-	'${input_text}' to:
-	'${fixed_up_input_text}'`);
+'${input_text}' to:
+'${fixed_up_input_text}'`);
 			return;
 		}
 	}
@@ -2085,9 +2084,9 @@ function test_speech(input_text, expected) {
 	if (typeof expected === "string") {
 		if (fixed_up_input_text !== expected) {
 			console.error(`Failed test. Speech recognition fixup changed the input from:
-	'${input_text}' to:
-	'${fixed_up_input_text}' instead of:
-	'${expected}'`);
+'${input_text}' to:
+'${fixed_up_input_text}' instead of:
+'${expected}'`);
 			return;
 		}
 	} else {
@@ -2097,40 +2096,40 @@ function test_speech(input_text, expected) {
 
 function test_speech_recognition() {
 	// test_command("select blue", {color: "blue"}); // @FIXME
-	test_command("select fill", {tool_id: TOOL_FILL});
-	test_command("select text", {tool_id: TOOL_TEXT});
-	test_command("select", {tool_id: TOOL_SELECT});
-	test_speech("free form select", {tool_id: TOOL_FREE_FORM_SELECT});
-	test_speech("lips", {match_text: "ellipse", tool_id: TOOL_ELLIPSE});
+	test_command("select fill", { tool_id: TOOL_FILL });
+	test_command("select text", { tool_id: TOOL_TEXT });
+	test_command("select", { tool_id: TOOL_SELECT });
+	test_speech("free form select", { tool_id: TOOL_FREE_FORM_SELECT });
+	test_speech("lips", { match_text: "ellipse", tool_id: TOOL_ELLIPSE });
 	test_command("", null);
 	// test_command("I got you some new books", null);
 	// test_command("pan view sorthweast", null); // currently opens View menu
-	test_command("1 pixel lines", {size: 1});
-	test_command("1 pixel wide lines", {size: 1});
-	test_command("set line width to 5", {size: 5});
+	test_command("1 pixel lines", { size: 1 });
+	test_command("1 pixel wide lines", { size: 1 });
+	test_command("set line width to 5", { size: 5 });
 	// test_command("use medium-small stroke size", {match_text: "use medium-small stroke size", size: NaN});
-	test_speech("set line lips to a hundred", {match_text: "set line width to a hundred", size: 100});
-	test_command("use stroke size 10 pixels", {size: 10});
+	test_speech("set line lips to a hundred", { match_text: "set line width to a hundred", size: 100 });
+	test_command("use stroke size 10 pixels", { size: 10 });
 	// test_command("use stroke size of 10 pixels", {match_text: "use stroke size of 10 pixels", size: 10});
-	test_command("draw a :-)", {sketch_subject: "smiley face"});
+	test_command("draw a :-)", { sketch_subject: "smiley face" });
 	// test_command("draw sample text", {sketch_subject: "sample text"}); // @FIXME
-	test_command("end", {type: "stop-drawing"});
-	test_command("stop", {type: "stop-drawing"});
-	test_command("draw a stop sign", {sketch_subject: "stop sign"});
+	test_command("end", { type: "stop-drawing" });
+	test_command("stop", { type: "stop-drawing" });
+	test_command("draw a stop sign", { sketch_subject: "stop sign" });
 
-	test_command("pan view southwest", {vector: {x: -1, y: +1}});
-	test_command("pan southeast", {vector: {x: +1, y: +1}});
-	test_command("move view northwest", {vector: {x: -1, y: -1}});
-	test_command("view northwest", {vector: {x: -1, y: -1}});
-	test_command("move viewport northwest", {vector: {x: -1, y: -1}});
-	test_command("pan down", {vector: {x: 0, y: +1}});
-	test_command("scroll down", {vector: {x: 0, y: +1}});
-	test_command("go downwards", {vector: {x: 0, y: +1}});
-	test_command("go upward", {vector: {x: 0, y: -1}});
-	test_command("go downwards and to the left", {vector: {x: -1, y: +1}});
-	test_command("go up to the left", {vector: {x: -1, y: -1}});
-	test_speech("cool up", {match_text: "go up", vector: {x: 0, y: -1}});
-	test_command("scroll the view southward", {vector: {x: 0, y: +1}});
+	test_command("pan view southwest", { vector: { x: -1, y: +1 } });
+	test_command("pan southeast", { vector: { x: +1, y: +1 } });
+	test_command("move view northwest", { vector: { x: -1, y: -1 } });
+	test_command("view northwest", { vector: { x: -1, y: -1 } });
+	test_command("move viewport northwest", { vector: { x: -1, y: -1 } });
+	test_command("pan down", { vector: { x: 0, y: +1 } });
+	test_command("scroll down", { vector: { x: 0, y: +1 } });
+	test_command("go downwards", { vector: { x: 0, y: +1 } });
+	test_command("go upward", { vector: { x: 0, y: -1 } });
+	test_command("go downwards and to the left", { vector: { x: -1, y: +1 } });
+	test_command("go up to the left", { vector: { x: -1, y: -1 } });
+	test_speech("cool up", { match_text: "go up", vector: { x: 0, y: -1 } });
+	test_command("scroll the view southward", { vector: { x: 0, y: +1 } });
 
 }
 

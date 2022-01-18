@@ -1,7 +1,7 @@
 
 (() => {
 
-	const log = (...args)=> {
+	const log = (...args) => {
 		window.console && console.log(...args);
 	};
 
@@ -10,8 +10,8 @@
 		localStorage._available = true;
 		localStorageAvailable = localStorage._available;
 		delete localStorage._available;
-	// eslint-disable-next-line no-empty
-	} catch (e) {}
+		// eslint-disable-next-line no-empty
+	} catch (e) { }
 
 	// @TODO: keep other data in addition to the image data
 	// such as the file_name and other state
@@ -19,29 +19,28 @@
 	// I could have the image in one storage slot and the state in another
 
 	const match_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
-	const canvas_has_any_apparent_image_data = ()=>
-		main_canvas.ctx.getImageData(0, 0, main_canvas.width, main_canvas.height).data.some((v)=> v > match_threshold);
+	const canvas_has_any_apparent_image_data = () =>
+		main_canvas.ctx.getImageData(0, 0, main_canvas.width, main_canvas.height).data.some((v) => v > match_threshold);
 
 	let $recovery_window;
 	function show_recovery_window(no_longer_blank) {
 		$recovery_window && $recovery_window.close();
 		const $w = $recovery_window = $DialogWindow();
-		$w.on("close", ()=> {
+		$w.on("close", () => {
 			$recovery_window = null;
 		});
 		$w.title("Recover Document");
 		let backup_impossible = false;
-		try{window.localStorage}catch(e){backup_impossible = true;}
+		try { window.localStorage } catch (e) { backup_impossible = true; }
 		$w.$main.append($(`
 			<h1>Woah!</h1>
 			<p>Your browser may have cleared the canvas due to memory usage.</p>
 			<p>Undo to recover the document, and remember to save with <b>File > Save</b>!</p>
-			${
-				backup_impossible ?
-					"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>"
-					: (
-						no_longer_blank ?
-							`<p>
+			${backup_impossible ?
+				"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>"
+				: (
+					no_longer_blank ?
+						`<p>
 								<b>Note:</b> normally a backup is saved automatically,<br>
 								but autosave is paused while this dialog is open<br>
 								to avoid overwriting the (singular) backup.
@@ -49,26 +48,26 @@
 							<p>
 								(See <b>File &gt; Manage Storage</b> to view backups.)
 							</p>`
-							: ""
-					)
-				}
+						: ""
+				)
+			}
 			}
 		`));
-		
-		const $undo = $w.$Button("Undo", ()=> {
+
+		const $undo = $w.$Button("Undo", () => {
 			undo();
 		});
-		const $redo = $w.$Button("Redo", ()=> {
+		const $redo = $w.$Button("Redo", () => {
 			redo();
 		});
-		const update_buttons_disabled = ()=> {
+		const update_buttons_disabled = () => {
 			$undo.attr("disabled", undos.length < 1);
 			$redo.attr("disabled", redos.length < 1);
 		};
 		$G.on("session-update.session-hook", update_buttons_disabled);
 		update_buttons_disabled();
 
-		$w.$Button(localize("Close"), ()=> {
+		$w.$Button(localize("Close"), () => {
 			$w.close();
 		});
 		$w.center();
@@ -94,7 +93,7 @@
 		last_undos_length = undos.length;
 		return save_paused;
 	}
-	
+
 	class LocalSession {
 		constructor(session_id) {
 			this.id = session_id;
@@ -188,7 +187,7 @@
 	// Unused
 	user.color_transparent = `hsla(${user.hue}, ${user.saturation}%, ${user.lightness}%, 0.5)`;
 	// (@TODO) The color (that may be) used in the toolbar indicating to other users it is selected by this user
-	user.color_desaturated = `hsla(${user.hue}, ${~~(user.saturation*0.4)}%, ${user.lightness}%, 0.8)`;
+	user.color_desaturated = `hsla(${user.hue}, ${~~(user.saturation * 0.4)}%, ${user.lightness}%, 0.8)`;
 
 
 	// The image used for other people's cursors
@@ -248,7 +247,7 @@
 			// "so for now I'm showing this message regardless of whether it's working.</p>" +
 			// "<p>If you're interested in using multiuser mode, please thumbs-up " +
 			// "<a href='https://github.com/1j01/jspaint/issues/68'>this issue</a> to show interest, and/or subscribe for updates.</p>"
-			
+
 			// Wrap the Firebase API because they don't
 			// provide a great way to clean up event listeners
 			const _fb_on = (fb, event_type, callback, error_callback) => {
@@ -359,7 +358,7 @@
 			};
 			this.write_canvas_to_database_soon = debounce(this.write_canvas_to_database_immediately, 100);
 			let ignore_session_update = false;
-			$G.on("session-update.session-hook", ()=> {
+			$G.on("session-update.session-hook", () => {
 				if (ignore_session_update) {
 					log("(Ignore session-update from Sync Session undoable)");
 					return;
@@ -388,13 +387,13 @@
 						const test_canvas = make_canvas(img);
 						const image_data_remote = test_canvas.ctx.getImageData(0, 0, test_canvas.width, test_canvas.height);
 						const image_data_local = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
-						
+
 						if (!image_data_match(image_data_remote, image_data_local, 5)) {
 							ignore_session_update = true;
 							undoable({
 								name: "Sync Session",
 								icon: get_help_folder_icon("p_database.png"),
-							}, ()=> {
+							}, () => {
 								// Write the image data to the canvas
 								main_ctx.copy(img);
 								$canvas_area.trigger("resize");
@@ -432,7 +431,7 @@
 					away: false,
 				});
 			});
-			$G.on("blur.session-hook", ()=> {
+			$G.on("blur.session-hook", () => {
 				this.fb_user.child("cursor").update({
 					away: true,
 				});
@@ -498,45 +497,45 @@
 
 	let current_session;
 	const end_current_session = () => {
-		if(current_session){
+		if (current_session) {
 			log("Ending current session");
 			current_session.end();
 			current_session = null;
 		}
 	};
-	const generate_session_id = () => (Math.random()*(2 ** 32)).toString(16).replace(".", "");
+	const generate_session_id = () => (Math.random() * (2 ** 32)).toString(16).replace(".", "");
 	const update_session_from_location_hash = () => {
 		const session_match = location.hash.match(/^#?(?:.*,)?(session|local):(.*)$/i);
 		const load_from_url_match = location.hash.match(/^#?(?:.*,)?(load):(.*)$/i);
-		if(session_match){
+		if (session_match) {
 			const local = session_match[1].toLowerCase() === "local";
 			const session_id = session_match[2];
-			if(session_id === ""){
+			if (session_id === "") {
 				log("Invalid session ID; session ID cannot be empty");
 				end_current_session();
-			}else if(!local && session_id.match(/[./[\]#$]/)){
+			} else if (!local && session_id.match(/[./[\]#$]/)) {
 				log("Session ID is not a valid Firebase location; it cannot contain any of ./[]#$");
 				end_current_session();
-			}else if(!session_id.match(/[-0-9A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]+/)){
+			} else if (!session_id.match(/[-0-9A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]+/)) {
 				log("Invalid session ID; it must consist of 'alphanumeric-esque' characters");
 				end_current_session();
-			}else if(
-				current_session && current_session.id === session_id && 
+			} else if (
+				current_session && current_session.id === session_id &&
 				local === (current_session instanceof LocalSession)
-			){
+			) {
 				log("Hash changed but the session ID and session type are the same");
-			}else{
+			} else {
 				// @TODO: Ask if you want to save before starting a new session
 				end_current_session();
-				if(local){
+				if (local) {
 					log(`Starting a new LocalSession, ID: ${session_id}`);
 					current_session = new LocalSession(session_id);
-				}else{
+				} else {
 					log(`Starting a new MultiUserSession, ID: ${session_id}`);
 					current_session = new MultiUserSession(session_id);
 				}
 			}
-		}else if(load_from_url_match){
+		} else if (load_from_url_match) {
 			const url = decodeURIComponent(load_from_url_match[2]);
 
 			const uris = get_uris(url);
@@ -554,11 +553,11 @@
 				open_from_image_info(info, null, null, true, true);
 			}, show_resource_load_error_message);
 
-		}else{
+		} else {
 			log("No session ID in hash");
 			const old_hash = location.hash;
 			end_current_session();
-			change_url_param("local", generate_session_id(), {replace_history_state: true});
+			change_url_param("local", generate_session_id(), { replace_history_state: true });
 			log("After replaceState:", location.hash);
 			if (old_hash === location.hash) {
 				// e.g. on Wayback Machine

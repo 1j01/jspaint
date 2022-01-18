@@ -32,7 +32,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		});
 		this.position();
 
-		const instantiate = ()=> {
+		const instantiate = () => {
 			if (img_or_canvas) {
 				// (this applies when pasting a selection)
 				// NOTE: need to create a Canvas because something about imgs makes dragging not work with magnification
@@ -60,13 +60,13 @@ class OnCanvasSelection extends OnCanvasObject {
 				$handles_container: this.$el,
 				$object_container: $canvas_area,
 				outset: 2,
-				get_rect: ()=> ({x: this.x, y: this.y, width: this.width, height: this.height}),
-				set_rect: ({x, y, width, height}) => {
+				get_rect: () => ({ x: this.x, y: this.y, width: this.width, height: this.height }),
+				set_rect: ({ x, y, width, height }) => {
 					undoable({
 						name: "Resize Selection",
 						icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 						soft: true,
-					}, ()=> {
+					}, () => {
 						this.x = x;
 						this.y = y;
 						this.width = width;
@@ -75,20 +75,20 @@ class OnCanvasSelection extends OnCanvasObject {
 						this.resize();
 					});
 				},
-				get_ghost_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
-				get_ghost_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
+				get_ghost_offset_left: () => parseFloat($canvas_area.css("padding-left")) + 1,
+				get_ghost_offset_top: () => parseFloat($canvas_area.css("padding-top")) + 1,
 			});
 			let mox, moy;
 			const pointermove = e => {
 				make_or_update_undoable({
-					match: (history_node)=>
+					match: (history_node) =>
 						(e.shiftKey && history_node.name.match(/^(Smear|Stamp|Move) Selection$/)) ||
 						(!e.shiftKey && history_node.name.match(/^Move Selection$/)),
 					name: e.shiftKey ? "Smear Selection" : "Move Selection",
 					update_name: true,
 					icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 					soft: true,
-				}, ()=> {
+				}, () => {
 					const m = to_canvas_coords(e);
 					this.x = Math.max(Math.min(m.x - mox, main_canvas.width), -this.width);
 					this.y = Math.max(Math.min(m.y - moy, main_canvas.height), -this.height);
@@ -120,7 +120,7 @@ class OnCanvasSelection extends OnCanvasObject {
 						name: "Stamp Selection",
 						icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 						soft: true,
-					}, ()=> {
+					}, () => {
 						this.draw();
 					});
 				}
@@ -131,7 +131,7 @@ class OnCanvasSelection extends OnCanvasObject {
 						name: "Stamp Selection",
 						icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 						soft: true,
-					}, ()=> {
+					}, () => {
 						this.draw();
 					});
 				}
@@ -141,7 +141,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			$status_position.text("");
 			$status_size.text("");
 		};
-		
+
 		instantiate();
 	}
 	cut_out_background() {
@@ -216,10 +216,10 @@ class OnCanvasSelection extends OnCanvasObject {
 				// @FIXME: work with transparent selected background color
 				// (support treating partially transparent background colors as transparency)
 				if (
-					Math.abs(sourceImageData.data[i+0] - background_color_rgba[0]) <= match_threshold &&
-					Math.abs(sourceImageData.data[i+1] - background_color_rgba[1]) <= match_threshold &&
-					Math.abs(sourceImageData.data[i+2] - background_color_rgba[2]) <= match_threshold &&
-					Math.abs(sourceImageData.data[i+3] - background_color_rgba[3]) <= match_threshold
+					Math.abs(sourceImageData.data[i + 0] - background_color_rgba[0]) <= match_threshold &&
+					Math.abs(sourceImageData.data[i + 1] - background_color_rgba[1]) <= match_threshold &&
+					Math.abs(sourceImageData.data[i + 2] - background_color_rgba[2]) <= match_threshold &&
+					Math.abs(sourceImageData.data[i + 3] - background_color_rgba[3]) <= match_threshold
 				) {
 					in_cutout = false;
 				}

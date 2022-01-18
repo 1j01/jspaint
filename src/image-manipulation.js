@@ -1,76 +1,76 @@
 const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 
-function get_brush_canvas_size(brush_size, brush_shape){
+function get_brush_canvas_size(brush_size, brush_shape) {
 	// brush_shape optional, only matters if it's circle
 	// @TODO: does it actually still matter? the ellipse drawing code has changed
-	
+
 	// round to nearest even number in order for the canvas to be drawn centered at a point reasonably
 	return Math.ceil(brush_size * (brush_shape === "circle" ? 2.1 : 1) / 2) * 2;
 }
-function render_brush(ctx, shape, size){
+function render_brush(ctx, shape, size) {
 	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of draw_ellipse)
-	if(shape.match(/diagonal/)){
+	if (shape.match(/diagonal/)) {
 		size -= 0.4;
 	}
-	
+
 	const mid_x = Math.round(ctx.canvas.width / 2);
-	const left = Math.round(mid_x - size/2);
-	const right = Math.round(mid_x + size/2);
+	const left = Math.round(mid_x - size / 2);
+	const right = Math.round(mid_x + size / 2);
 	const mid_y = Math.round(ctx.canvas.height / 2);
-	const top = Math.round(mid_y - size/2);
-	const bottom = Math.round(mid_y + size/2);
-	
-	if(shape === "circle"){
+	const top = Math.round(mid_y - size / 2);
+	const bottom = Math.round(mid_y + size / 2);
+
+	if (shape === "circle") {
 		// @TODO: ideally _without_pattern_support
 		draw_ellipse(ctx, left, top, size, size, false, true);
 		// was useful for testing:
 		// ctx.fillStyle = "red";
 		// ctx.fillRect(mid_x, mid_y, 1, 1);
-	}else if(shape === "square"){
+	} else if (shape === "square") {
 		ctx.fillRect(left, top, ~~size, ~~size);
-	}else if(shape === "diagonal"){
+	} else if (shape === "diagonal") {
 		draw_line_without_pattern_support(ctx, left, top, right, bottom);
-	}else if(shape === "reverse_diagonal"){
+	} else if (shape === "reverse_diagonal") {
 		draw_line_without_pattern_support(ctx, left, bottom, right, top);
-	}else if(shape === "horizontal"){
+	} else if (shape === "horizontal") {
 		draw_line_without_pattern_support(ctx, left, mid_y, size, mid_y);
-	}else if(shape === "vertical"){
+	} else if (shape === "vertical") {
 		draw_line_without_pattern_support(ctx, mid_x, top, mid_x, size);
 	}
 }
 
-function draw_ellipse(ctx, x, y, w, h, stroke, fill){
-	const center_x = x + w/2;
-	const center_y = y + h/2;
-	
-	if(aliasing){
+function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
+	const center_x = x + w / 2;
+	const center_y = y + h / 2;
+
+	if (aliasing) {
 		const points = [];
 		const step = 0.05;
-		for(let theta = 0; theta < TAU; theta += step){
+		for (let theta = 0; theta < TAU; theta += step) {
 			points.push({
-				x: center_x + Math.cos(theta) * w/2,
-				y: center_y + Math.sin(theta) * h/2,
+				x: center_x + Math.cos(theta) * w / 2,
+				y: center_y + Math.sin(theta) * h / 2,
 			});
 		}
 		draw_polygon(ctx, points, stroke, fill);
-	}else{
+	} else {
 		ctx.beginPath();
-		ctx.ellipse(center_x, center_y, Math.abs(w/2), Math.abs(h/2), 0, TAU, false);
+		ctx.ellipse(center_x, center_y, Math.abs(w / 2), Math.abs(h / 2), 0, TAU, false);
 		ctx.stroke();
 		ctx.fill();
 	}
 }
 
-function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, stroke, fill){
-	
-	if(aliasing){
+function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, stroke, fill) {
+
+	if (aliasing) {
 		const points = [];
-		const lineTo = (x, y)=> {
-			points.push({x, y});
+		const lineTo = (x, y) => {
+			points.push({ x, y });
 		};
-		const arc = (x, y, radius_x, radius_y, startAngle, endAngle)=> {
+		const arc = (x, y, radius_x, radius_y, startAngle, endAngle) => {
 			const step = 0.05;
-			for(let theta = startAngle; theta < endAngle; theta += step){
+			for (let theta = startAngle; theta < endAngle; theta += step) {
 				points.push({
 					x: x + Math.cos(theta) * radius_x,
 					y: y + Math.sin(theta) * radius_y,
@@ -85,16 +85,16 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 
 		const x2 = x + width;
 		const y2 = y + height;
-		arc(x2 - radius_x, y + radius_y, radius_x, radius_y, TAU*3/4, TAU, false);
+		arc(x2 - radius_x, y + radius_y, radius_x, radius_y, TAU * 3 / 4, TAU, false);
 		lineTo(x2, y2 - radius_y);
-		arc(x2 - radius_x, y2 - radius_y, radius_x, radius_y, 0, TAU*1/4, false);
+		arc(x2 - radius_x, y2 - radius_y, radius_x, radius_y, 0, TAU * 1 / 4, false);
 		lineTo(x + radius_x, y2);
-		arc(x + radius_x, y2 - radius_y, radius_x, radius_y, TAU*1/4, TAU*1/2, false);
+		arc(x + radius_x, y2 - radius_y, radius_x, radius_y, TAU * 1 / 4, TAU * 1 / 2, false);
 		lineTo(x, y + radius_y);
-		arc(x + radius_x, y + radius_y, radius_x, radius_y, TAU/2, TAU*3/4, false);
+		arc(x + radius_x, y + radius_y, radius_x, radius_y, TAU / 2, TAU * 3 / 4, false);
 
 		draw_polygon(ctx, points, stroke, fill);
-	}else{
+	} else {
 		ctx.beginPath();
 		ctx.moveTo(x + radius_x, y);
 		ctx.lineTo(x + width - radius_x, y);
@@ -106,10 +106,10 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 		ctx.lineTo(x, y + radius_y);
 		ctx.quadraticCurveTo(x, y, x + radius_x, y);
 		ctx.closePath();
-		if(stroke){
+		if (stroke) {
 			ctx.stroke();
 		}
-		if(fill){
+		if (fill) {
 			ctx.fill();
 		}
 	}
@@ -117,7 +117,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 // @TODO: protect against browser clearing canvases, invalidate cache
-const get_brush_canvas = memoize_synchronous_function((brush_shape, brush_size)=> {
+const get_brush_canvas = memoize_synchronous_function((brush_shape, brush_size) => {
 	const canvas_size = get_brush_canvas_size(brush_size, brush_shape);
 
 	const brush_canvas = make_canvas(canvas_size, canvas_size);
@@ -128,13 +128,13 @@ const get_brush_canvas = memoize_synchronous_function((brush_shape, brush_size)=
 	return brush_canvas;
 }, 20); // 12 brush tool options + current brush + current pencil + current eraser + current shape stroke + a few
 
-$G.on("invalidate-brush-canvases", ()=> {
+$G.on("invalidate-brush-canvases", () => {
 	get_brush_canvas.clear_memo_cache();
 });
 
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size)=> {
+const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size) => {
 	const brush_canvas = get_brush_canvas(brush_shape, brush_size);
 
 	const offset_x = -Math.ceil(brush_canvas.width / 2);
@@ -144,7 +144,7 @@ const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size)=> {
 };
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-const get_circumference_points_for_brush = memoize_synchronous_function((brush_shape, brush_size)=> {
+const get_circumference_points_for_brush = memoize_synchronous_function((brush_shape, brush_size) => {
 
 	const brush_canvas = get_brush_canvas(brush_shape, brush_size);
 
@@ -181,35 +181,35 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 	return points;
 });
 
-$G.on("invalidate-brush-canvases", ()=> {
+$G.on("invalidate-brush-canvases", () => {
 	get_circumference_points_for_brush.clear_memo_cache();
 });
 
 
 let line_brush_canvas;
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-function update_brush_for_drawing_lines(stroke_size){
-	if(aliasing && stroke_size > 1){
+function update_brush_for_drawing_lines(stroke_size) {
+	if (aliasing && stroke_size > 1) {
 		line_brush_canvas = get_brush_canvas("circle", stroke_size);
 	}
 }
 
 function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1) {
-	if(aliasing){
-		if(stroke_size > 1){
+	if (aliasing) {
+		if (stroke_size > 1) {
 			bresenham_line(x1, y1, x2, y2, (x, y) => {
-				ctx.drawImage(line_brush_canvas, ~~(x - line_brush_canvas.width/2), ~~(y - line_brush_canvas.height/2));
+				ctx.drawImage(line_brush_canvas, ~~(x - line_brush_canvas.width / 2), ~~(y - line_brush_canvas.height / 2));
 			});
-		}else{
+		} else {
 			bresenham_line(x1, y1, x2, y2, (x, y) => {
 				ctx.fillRect(x, y, 1, 1);
 			});
 		}
-	}else{
+	} else {
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y2);
-		
+
 		ctx.lineWidth = stroke_size;
 		ctx.lineCap = "round";
 		ctx.stroke();
@@ -217,51 +217,51 @@ function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1)
 	}
 }
 
-function bresenham_line(x1, y1, x2, y2, callback){
+function bresenham_line(x1, y1, x2, y2, callback) {
 	// Bresenham's line algorithm
-	x1=~~x1; x2=~~x2; y1=~~y1; y2=~~y2;
-	
+	x1 = ~~x1; x2 = ~~x2; y1 = ~~y1; y2 = ~~y2;
+
 	const dx = Math.abs(x2 - x1);
 	const dy = Math.abs(y2 - y1);
 	const sx = (x1 < x2) ? 1 : -1;
 	const sy = (y1 < y2) ? 1 : -1;
 	let err = dx - dy;
-	
+
 	// eslint-disable-next-line no-constant-condition
-	while(true){
+	while (true) {
 		callback(x1, y1);
-		
-		if(x1===x2 && y1===y2) break;
-		const e2 = err*2;
-		if(e2 >-dy){ err -= dy; x1 += sx; }
-		if(e2 < dx){ err += dx; y1 += sy; }
+
+		if (x1 === x2 && y1 === y2) break;
+		const e2 = err * 2;
+		if (e2 > -dy) { err -= dy; x1 += sx; }
+		if (e2 < dx) { err += dx; y1 += sy; }
 	}
 }
 
-function bresenham_dense_line(x1, y1, x2, y2, callback){
+function bresenham_dense_line(x1, y1, x2, y2, callback) {
 	// Bresenham's line algorithm with a callback between going horizontal and vertical
-	x1=~~x1; x2=~~x2; y1=~~y1; y2=~~y2;
-	
+	x1 = ~~x1; x2 = ~~x2; y1 = ~~y1; y2 = ~~y2;
+
 	const dx = Math.abs(x2 - x1);
 	const dy = Math.abs(y2 - y1);
 	const sx = (x1 < x2) ? 1 : -1;
 	const sy = (y1 < y2) ? 1 : -1;
 	let err = dx - dy;
-	
+
 	// eslint-disable-next-line no-constant-condition
-	while(true){
+	while (true) {
 		callback(x1, y1);
-		
-		if(x1===x2 && y1===y2) break;
-		const e2 = err*2;
-		if(e2 >-dy){ err -= dy; x1 += sx; }
+
+		if (x1 === x2 && y1 === y2) break;
+		const e2 = err * 2;
+		if (e2 > -dy) { err -= dy; x1 += sx; }
 		callback(x1, y1);
-		if(e2 < dx){ err += dx; y1 += sy; }
+		if (e2 < dx) { err += dx; y1 += sy; }
 	}
 }
 
-function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a){
-	
+function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a) {
+
 	// @TODO: split up processing in case it takes too long?
 	// progress bar and abort button (outside of image-manipulation.js)
 	// or at least just free up the main thread every once in a while
@@ -277,12 +277,12 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	start_y = Math.max(0, Math.min(Math.floor(start_y), c_height));
 	const stack = [[start_x, start_y]];
 	const id = ctx.getImageData(0, 0, c_width, c_height);
-	let pixel_pos = (start_y*c_width + start_x) * 4;
-	const start_r = id.data[pixel_pos+0];
-	const start_g = id.data[pixel_pos+1];
-	const start_b = id.data[pixel_pos+2];
-	const start_a = id.data[pixel_pos+3];
-	
+	let pixel_pos = (start_y * c_width + start_x) * 4;
+	const start_r = id.data[pixel_pos + 0];
+	const start_g = id.data[pixel_pos + 1];
+	const start_b = id.data[pixel_pos + 2];
+	const start_a = id.data[pixel_pos + 3];
+
 	// @TODO: Allow flood-filling colors similar within fill threshold.
 	// Right now it will cause an infinite loop if we don't stop early in this case.
 	// As of writing, the fill threshold is very low, so this problem is unlikely to be noticed,
@@ -295,8 +295,8 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	) {
 		return;
 	}
-	
-	while(stack.length){
+
+	while (stack.length) {
 		let new_pos;
 		let x;
 		let y;
@@ -306,42 +306,42 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 		x = new_pos[0];
 		y = new_pos[1];
 
-		pixel_pos = (y*c_width + x) * 4;
-		while(should_fill_at(pixel_pos)){
+		pixel_pos = (y * c_width + x) * 4;
+		while (should_fill_at(pixel_pos)) {
 			y--;
-			pixel_pos = (y*c_width + x) * 4;
+			pixel_pos = (y * c_width + x) * 4;
 		}
 		reach_left = false;
 		reach_right = false;
 		// eslint-disable-next-line no-constant-condition
-		while(true){
+		while (true) {
 			y++;
-			pixel_pos = (y*c_width + x) * 4;
-			
-			if(!(y < c_height && should_fill_at(pixel_pos))){
+			pixel_pos = (y * c_width + x) * 4;
+
+			if (!(y < c_height && should_fill_at(pixel_pos))) {
 				break;
 			}
-			
+
 			do_fill_at(pixel_pos);
 
-			if(x > 0){
-				if(should_fill_at(pixel_pos - 4)){
-					if(!reach_left){
+			if (x > 0) {
+				if (should_fill_at(pixel_pos - 4)) {
+					if (!reach_left) {
 						stack.push([x - 1, y]);
 						reach_left = true;
 					}
-				}else if(reach_left){
+				} else if (reach_left) {
 					reach_left = false;
 				}
 			}
 
-			if(x < c_width-1){
-				if(should_fill_at(pixel_pos + 4)){
-					if(!reach_right){
+			if (x < c_width - 1) {
+				if (should_fill_at(pixel_pos + 4)) {
+					if (!reach_right) {
 						stack.push([x + 1, y]);
 						reach_right = true;
 					}
-				}else if(reach_right){
+				} else if (reach_right) {
 					reach_right = false;
 				}
 			}
@@ -351,21 +351,21 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	}
 	ctx.putImageData(id, 0, 0);
 
-	function should_fill_at(pixel_pos){
+	function should_fill_at(pixel_pos) {
 		return (
 			// matches start color (i.e. region to fill)
-			Math.abs(id.data[pixel_pos+0] - start_r) <= fill_threshold &&
-			Math.abs(id.data[pixel_pos+1] - start_g) <= fill_threshold &&
-			Math.abs(id.data[pixel_pos+2] - start_b) <= fill_threshold &&
-			Math.abs(id.data[pixel_pos+3] - start_a) <= fill_threshold
+			Math.abs(id.data[pixel_pos + 0] - start_r) <= fill_threshold &&
+			Math.abs(id.data[pixel_pos + 1] - start_g) <= fill_threshold &&
+			Math.abs(id.data[pixel_pos + 2] - start_b) <= fill_threshold &&
+			Math.abs(id.data[pixel_pos + 3] - start_a) <= fill_threshold
 		);
 	}
 
-	function do_fill_at(pixel_pos){
-		id.data[pixel_pos+0] = fill_r;
-		id.data[pixel_pos+1] = fill_g;
-		id.data[pixel_pos+2] = fill_b;
-		id.data[pixel_pos+3] = fill_a;
+	function do_fill_at(pixel_pos) {
+		id.data[pixel_pos + 0] = fill_r;
+		id.data[pixel_pos + 1] = fill_g;
+		id.data[pixel_pos + 2] = fill_b;
+		id.data[pixel_pos + 3] = fill_a;
 	}
 }
 
@@ -393,13 +393,13 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 	const stack = [[start_x, start_y]];
 	const source_id = source_ctx.getImageData(0, 0, c_width, c_height);
 	const dest_id = dest_ctx.getImageData(0, 0, c_width, c_height);
-	let pixel_pos = (start_y*c_width + start_x) * 4;
-	const start_r = source_id.data[pixel_pos+0];
-	const start_g = source_id.data[pixel_pos+1];
-	const start_b = source_id.data[pixel_pos+2];
-	const start_a = source_id.data[pixel_pos+3];
-	
-	while(stack.length){
+	let pixel_pos = (start_y * c_width + start_x) * 4;
+	const start_r = source_id.data[pixel_pos + 0];
+	const start_g = source_id.data[pixel_pos + 1];
+	const start_b = source_id.data[pixel_pos + 2];
+	const start_a = source_id.data[pixel_pos + 3];
+
+	while (stack.length) {
 		let new_pos;
 		let x;
 		let y;
@@ -409,42 +409,42 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 		x = new_pos[0];
 		y = new_pos[1];
 
-		pixel_pos = (y*c_width + x) * 4;
-		while(should_fill_at(pixel_pos)){
+		pixel_pos = (y * c_width + x) * 4;
+		while (should_fill_at(pixel_pos)) {
 			y--;
-			pixel_pos = (y*c_width + x) * 4;
+			pixel_pos = (y * c_width + x) * 4;
 		}
 		reach_left = false;
 		reach_right = false;
 		// eslint-disable-next-line no-constant-condition
-		while(true){
+		while (true) {
 			y++;
-			pixel_pos = (y*c_width + x) * 4;
-			
-			if(!(y < c_height && should_fill_at(pixel_pos))){
+			pixel_pos = (y * c_width + x) * 4;
+
+			if (!(y < c_height && should_fill_at(pixel_pos))) {
 				break;
 			}
-			
+
 			do_fill_at(pixel_pos);
 
-			if(x > 0){
-				if(should_fill_at(pixel_pos - 4)){
-					if(!reach_left){
+			if (x > 0) {
+				if (should_fill_at(pixel_pos - 4)) {
+					if (!reach_left) {
 						stack.push([x - 1, y]);
 						reach_left = true;
 					}
-				}else if(reach_left){
+				} else if (reach_left) {
 					reach_left = false;
 				}
 			}
 
-			if(x < c_width-1){
-				if(should_fill_at(pixel_pos + 4)){
-					if(!reach_right){
+			if (x < c_width - 1) {
+				if (should_fill_at(pixel_pos + 4)) {
+					if (!reach_right) {
 						stack.push([x + 1, y]);
 						reach_right = true;
 					}
-				}else if(reach_right){
+				} else if (reach_right) {
 					reach_right = false;
 				}
 			}
@@ -454,49 +454,49 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 	}
 	dest_ctx.putImageData(dest_id, 0, 0);
 
-	function should_fill_at(pixel_pos){
+	function should_fill_at(pixel_pos) {
 		return (
 			// not reached yet
-			dest_id.data[pixel_pos+3] === 0 &&
+			dest_id.data[pixel_pos + 3] === 0 &&
 			// and matches start color (i.e. region to fill)
 			(
-				Math.abs(source_id.data[pixel_pos+0] - start_r) <= fill_threshold &&
-				Math.abs(source_id.data[pixel_pos+1] - start_g) <= fill_threshold &&
-				Math.abs(source_id.data[pixel_pos+2] - start_b) <= fill_threshold &&
-				Math.abs(source_id.data[pixel_pos+3] - start_a) <= fill_threshold
+				Math.abs(source_id.data[pixel_pos + 0] - start_r) <= fill_threshold &&
+				Math.abs(source_id.data[pixel_pos + 1] - start_g) <= fill_threshold &&
+				Math.abs(source_id.data[pixel_pos + 2] - start_b) <= fill_threshold &&
+				Math.abs(source_id.data[pixel_pos + 3] - start_a) <= fill_threshold
 			)
 		);
 	}
 
-	function do_fill_at(pixel_pos){
-		dest_id.data[pixel_pos+0] = fill_r;
-		dest_id.data[pixel_pos+1] = fill_g;
-		dest_id.data[pixel_pos+2] = fill_b;
-		dest_id.data[pixel_pos+3] = fill_a;
+	function do_fill_at(pixel_pos) {
+		dest_id.data[pixel_pos + 0] = fill_r;
+		dest_id.data[pixel_pos + 1] = fill_g;
+		dest_id.data[pixel_pos + 2] = fill_b;
+		dest_id.data[pixel_pos + 3] = fill_a;
 	}
 }
 
 function replace_color_globally(image_data, from_r, from_g, from_b, from_a, to_r, to_g, to_b, to_a) {
-	if(
+	if (
 		from_r === to_r &&
 		from_g === to_g &&
 		from_b === to_b &&
 		from_a === to_a
-	){
+	) {
 		return;
 	}
-	const {data} = image_data;
-	for(let i = 0; i < data.length; i += 4){
-		if(
-			Math.abs(data[i+0] - from_r) <= fill_threshold &&
-			Math.abs(data[i+1] - from_g) <= fill_threshold &&
-			Math.abs(data[i+2] - from_b) <= fill_threshold &&
-			Math.abs(data[i+3] - from_a) <= fill_threshold
-		){
-			data[i+0] = to_r;
-			data[i+1] = to_g;
-			data[i+2] = to_b;
-			data[i+3] = to_a;
+	const { data } = image_data;
+	for (let i = 0; i < data.length; i += 4) {
+		if (
+			Math.abs(data[i + 0] - from_r) <= fill_threshold &&
+			Math.abs(data[i + 1] - from_g) <= fill_threshold &&
+			Math.abs(data[i + 2] - from_b) <= fill_threshold &&
+			Math.abs(data[i + 3] - from_a) <= fill_threshold
+		) {
+			data[i + 0] = to_r;
+			data[i + 1] = to_g;
+			data[i + 2] = to_b;
+			data[i + 3] = to_a;
 		}
 	}
 }
@@ -504,17 +504,17 @@ function replace_color_globally(image_data, from_r, from_g, from_b, from_a, to_r
 function find_color_globally(source_image_data, dest_image_data, find_r, find_g, find_b, find_a) {
 	const source_data = source_image_data.data;
 	const dest_data = dest_image_data.data;
-	for(let i = 0; i < source_data.length; i += 4){
-		if(
-			Math.abs(source_data[i+0] - find_r) <= fill_threshold &&
-			Math.abs(source_data[i+1] - find_g) <= fill_threshold &&
-			Math.abs(source_data[i+2] - find_b) <= fill_threshold &&
-			Math.abs(source_data[i+3] - find_a) <= fill_threshold
-		){
-			dest_data[i+0] = 255;
-			dest_data[i+1] = 255;
-			dest_data[i+2] = 255;
-			dest_data[i+3] = 255;
+	for (let i = 0; i < source_data.length; i += 4) {
+		if (
+			Math.abs(source_data[i + 0] - find_r) <= fill_threshold &&
+			Math.abs(source_data[i + 1] - find_g) <= fill_threshold &&
+			Math.abs(source_data[i + 2] - find_b) <= fill_threshold &&
+			Math.abs(source_data[i + 3] - find_a) <= fill_threshold
+		) {
+			dest_data[i + 0] = 255;
+			dest_data[i + 1] = 255;
+			dest_data[i + 2] = 255;
+			dest_data[i + 3] = 255;
 		}
 	}
 }
@@ -523,18 +523,18 @@ function draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_r, fill
 	x = Math.max(0, Math.min(Math.floor(x), ctx.canvas.width));
 	y = Math.max(0, Math.min(Math.floor(y), ctx.canvas.height));
 	const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-	const start_index = (y*image_data.width + x) * 4;
-	const start_r = image_data.data[start_index+0];
-	const start_g = image_data.data[start_index+1];
-	const start_b = image_data.data[start_index+2];
-	const start_a = image_data.data[start_index+3];
-	
+	const start_index = (y * image_data.width + x) * 4;
+	const start_r = image_data.data[start_index + 0];
+	const start_g = image_data.data[start_index + 1];
+	const start_b = image_data.data[start_index + 2];
+	const start_a = image_data.data[start_index + 3];
+
 	replace_color_globally(image_data, start_r, start_g, start_b, start_a, fill_r, fill_g, fill_b, fill_a);
-	
+
 	ctx.putImageData(image_data, 0, 0);
 }
 
-function draw_noncontiguous_fill(ctx, x, y, swatch){
+function draw_noncontiguous_fill(ctx, x, y, swatch) {
 	if (typeof swatch === "string") {
 		const fill_rgba = get_rgba_from_color(swatch);
 		draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_rgba[0], fill_rgba[1], fill_rgba[2], fill_rgba[3]);
@@ -552,29 +552,29 @@ function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y) {
 	y = Math.max(0, Math.min(Math.floor(y), source_ctx.canvas.height));
 	const source_image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	const dest_image_data = dest_ctx.getImageData(0, 0, dest_ctx.canvas.width, dest_ctx.canvas.height);
-	const start_index = (y*source_image_data.width + x) * 4;
-	const start_r = source_image_data.data[start_index+0];
-	const start_g = source_image_data.data[start_index+1];
-	const start_b = source_image_data.data[start_index+2];
-	const start_a = source_image_data.data[start_index+3];
-	
+	const start_index = (y * source_image_data.width + x) * 4;
+	const start_r = source_image_data.data[start_index + 0];
+	const start_g = source_image_data.data[start_index + 1];
+	const start_b = source_image_data.data[start_index + 2];
+	const start_a = source_image_data.data[start_index + 3];
+
 	find_color_globally(source_image_data, dest_image_data, start_r, start_g, start_b, start_a);
-	
+
 	dest_ctx.putImageData(dest_image_data, 0, 0);
 }
 
-function apply_image_transformation(meta, fn){
+function apply_image_transformation(meta, fn) {
 	// Apply an image transformation function to either the selection or the entire canvas
-	const original_canvas = selection ? selection.source_canvas: main_canvas;
-	
+	const original_canvas = selection ? selection.source_canvas : main_canvas;
+
 	const new_canvas = make_canvas(original_canvas.width, original_canvas.height);
 
 	const original_ctx = original_canvas.getContext("2d");
 	const new_ctx = new_canvas.getContext("2d");
 
 	fn(original_canvas, original_ctx, new_canvas, new_ctx);
-	
-	if(selection){
+
+	if (selection) {
 		undoable({
 			name: `${meta.name} (${localize("Selection")})`,
 			icon: meta.icon,
@@ -582,7 +582,7 @@ function apply_image_transformation(meta, fn){
 		}, () => {
 			selection.replace_source_canvas(new_canvas);
 		});
-	}else{
+	} else {
 		deselect();
 		cancel();
 		undoable({
@@ -591,15 +591,15 @@ function apply_image_transformation(meta, fn){
 		}, () => {
 			saved = false;
 			update_title();
-			
+
 			main_ctx.copy(new_canvas);
-			
+
 			$canvas.trigger("update"); // update handles
 		});
 	}
 }
 
-function flip_horizontal(){
+function flip_horizontal() {
 	apply_image_transformation({
 		name: localize("Flip horizontal"),
 		icon: get_help_folder_icon("p_fliph.png"),
@@ -610,7 +610,7 @@ function flip_horizontal(){
 	});
 }
 
-function flip_vertical(){
+function flip_vertical() {
 	apply_image_transformation({
 		name: localize("Flip vertical"),
 		icon: get_help_folder_icon("p_flipv.png"),
@@ -621,15 +621,15 @@ function flip_vertical(){
 	});
 }
 
-function rotate(angle){
+function rotate(angle) {
 	apply_image_transformation({
 		name: `${localize("Rotate by angle")} ${angle / TAU * 360} ${localize("Degrees")}`,
 		icon: get_help_folder_icon(`p_rotate_${angle >= 0 ? "cw" : "ccw"}.png`),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		new_ctx.save();
-		switch(angle){
+		switch (angle) {
 			case TAU / 4:
-			case TAU * -3/4:
+			case TAU * -3 / 4:
 				new_canvas.width = original_canvas.height;
 				new_canvas.height = original_canvas.width;
 				new_ctx.disable_image_smoothing();
@@ -641,7 +641,7 @@ function rotate(angle){
 				new_ctx.translate(new_canvas.width, new_canvas.height);
 				new_ctx.rotate(TAU / 2);
 				break;
-			case TAU * 3/4:
+			case TAU * 3 / 4:
 			case TAU / -4:
 				new_canvas.width = original_canvas.height;
 				new_canvas.height = original_canvas.width;
@@ -652,40 +652,40 @@ function rotate(angle){
 			default: {
 				const w = original_canvas.width;
 				const h = original_canvas.height;
-				
+
 				let bb_min_x = +Infinity;
 				let bb_max_x = -Infinity;
 				let bb_min_y = +Infinity;
 				let bb_max_y = -Infinity;
 				const corner = (x01, y01) => {
-					const x = Math.sin(-angle)*h*x01 + Math.cos(+angle)*w*y01;
-					const y = Math.sin(+angle)*w*y01 + Math.cos(-angle)*h*x01;
+					const x = Math.sin(-angle) * h * x01 + Math.cos(+angle) * w * y01;
+					const y = Math.sin(+angle) * w * y01 + Math.cos(-angle) * h * x01;
 					bb_min_x = Math.min(bb_min_x, x);
 					bb_max_x = Math.max(bb_max_x, x);
 					bb_min_y = Math.min(bb_min_y, y);
 					bb_max_y = Math.max(bb_max_y, y);
 				};
-				
+
 				corner(0, 0);
 				corner(0, 1);
 				corner(1, 0);
 				corner(1, 1);
-				
+
 				const bb_x = bb_min_x;
 				const bb_y = bb_min_y;
 				const bb_w = bb_max_x - bb_min_x;
 				const bb_h = bb_max_y - bb_min_y;
-				
+
 				new_canvas.width = bb_w;
 				new_canvas.height = bb_h;
 				new_ctx.disable_image_smoothing();
-				
-				if(!transparency){
+
+				if (!transparency) {
 					new_ctx.fillStyle = selected_colors.background;
 					new_ctx.fillRect(0, 0, new_canvas.width, new_canvas.height);
 				}
-				
-				new_ctx.translate(-bb_x,-bb_y);
+
+				new_ctx.translate(-bb_x, -bb_y);
 				new_ctx.rotate(angle);
 				new_ctx.drawImage(original_canvas, 0, 0, w, h);
 				break;
@@ -696,7 +696,7 @@ function rotate(angle){
 	});
 }
 
-function stretch_and_skew(x_scale, y_scale, h_skew, v_skew){
+function stretch_and_skew(x_scale, y_scale, h_skew, v_skew) {
 	apply_image_transformation({
 		name:
 			(h_skew !== 0 || v_skew !== 0) ? (
@@ -704,47 +704,47 @@ function stretch_and_skew(x_scale, y_scale, h_skew, v_skew){
 			) : localize("Stretch"),
 		icon: get_help_folder_icon(
 			(h_skew !== 0) ? "p_skew_h.png" :
-			(v_skew !== 0) ? "p_skew_v.png" :
-			(y_scale !== 1) ? (
-				(x_scale !== 1) ? "p_stretch_both.png" : "p_stretch_v.png"
-			) : "p_stretch_h.png"
+				(v_skew !== 0) ? "p_skew_v.png" :
+					(y_scale !== 1) ? (
+						(x_scale !== 1) ? "p_stretch_both.png" : "p_stretch_v.png"
+					) : "p_stretch_h.png"
 		),
 	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
 		const w = original_canvas.width * x_scale;
 		const h = original_canvas.height * y_scale;
-		
+
 		let bb_min_x = +Infinity;
 		let bb_max_x = -Infinity;
 		let bb_min_y = +Infinity;
 		let bb_max_y = -Infinity;
 		const corner = (x01, y01) => {
-			const x = Math.tan(h_skew)*h*x01 + w*y01;
-			const y = Math.tan(v_skew)*w*y01 + h*x01;
+			const x = Math.tan(h_skew) * h * x01 + w * y01;
+			const y = Math.tan(v_skew) * w * y01 + h * x01;
 			bb_min_x = Math.min(bb_min_x, x);
 			bb_max_x = Math.max(bb_max_x, x);
 			bb_min_y = Math.min(bb_min_y, y);
 			bb_max_y = Math.max(bb_max_y, y);
 		};
-		
+
 		corner(0, 0);
 		corner(0, 1);
 		corner(1, 0);
 		corner(1, 1);
-		
+
 		const bb_x = bb_min_x;
 		const bb_y = bb_min_y;
 		const bb_w = bb_max_x - bb_min_x;
 		const bb_h = bb_max_y - bb_min_y;
-		
+
 		new_canvas.width = Math.max(1, bb_w);
 		new_canvas.height = Math.max(1, bb_h);
 		new_ctx.disable_image_smoothing();
-		
-		if(!transparency){
+
+		if (!transparency) {
 			new_ctx.fillStyle = selected_colors.background;
 			new_ctx.fillRect(0, 0, new_canvas.width, new_canvas.height);
 		}
-		
+
 		new_ctx.save();
 		new_ctx.transform(
 			1, // x scale
@@ -759,17 +759,17 @@ function stretch_and_skew(x_scale, y_scale, h_skew, v_skew){
 	});
 }
 
-function invert_rgb(source_ctx, dest_ctx=source_ctx) {
+function invert_rgb(source_ctx, dest_ctx = source_ctx) {
 	const image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
-	for(let i=0; i<image_data.data.length; i+=4){
-		image_data.data[i+0] = 255 - image_data.data[i+0];
-		image_data.data[i+1] = 255 - image_data.data[i+1];
-		image_data.data[i+2] = 255 - image_data.data[i+2];
+	for (let i = 0; i < image_data.data.length; i += 4) {
+		image_data.data[i + 0] = 255 - image_data.data[i + 0];
+		image_data.data[i + 1] = 255 - image_data.data[i + 1];
+		image_data.data[i + 2] = 255 - image_data.data[i + 2];
 	}
 	dest_ctx.putImageData(image_data, 0, 0);
 }
 
-function invert_monochrome(source_ctx, dest_ctx=source_ctx, monochrome_info=detect_monochrome(source_ctx)) {
+function invert_monochrome(source_ctx, dest_ctx = source_ctx, monochrome_info = detect_monochrome(source_ctx)) {
 	const image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	// Note: values in pixel_array may be different on big endian vs little endian machines.
 	// Only rely on equality of values within the array.
@@ -808,7 +808,7 @@ function invert_monochrome(source_ctx, dest_ctx=source_ctx, monochrome_info=dete
 		return;
 	}
 	const [uint32_a, uint32_b] = monochrome_info.presentNonTransparentUint32s;
-	for(let i=0, len=pixel_array.length; i<len; i+=1){
+	for (let i = 0, len = pixel_array.length; i < len; i += 1) {
 		if (pixel_array[i] === uint32_a) {
 			pixel_array[i] = uint32_b;
 		} else if (pixel_array[i] === uint32_b) {
@@ -820,17 +820,17 @@ function invert_monochrome(source_ctx, dest_ctx=source_ctx, monochrome_info=dete
 
 function threshold_black_and_white(ctx, threshold) {
 	const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-	for(let i=0; i<image_data.data.length; i+=4){
-		const white = (image_data.data[i+0] + image_data.data[i+1] + image_data.data[i+2]) / 3 / 255 > threshold;
-		image_data.data[i+0] = 255 * white;
-		image_data.data[i+1] = 255 * white;
-		image_data.data[i+2] = 255 * white;
-		image_data.data[i+3] = 255;
+	for (let i = 0; i < image_data.data.length; i += 4) {
+		const white = (image_data.data[i + 0] + image_data.data[i + 1] + image_data.data[i + 2]) / 3 / 255 > threshold;
+		image_data.data[i + 0] = 255 * white;
+		image_data.data[i + 1] = 255 * white;
+		image_data.data[i + 2] = 255 * white;
+		image_data.data[i + 3] = 255;
 	}
 	ctx.putImageData(image_data, 0, 0);
 }
 
-function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas=0, y_offset_from_global_canvas=0){
+function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas = 0, y_offset_from_global_canvas = 0) {
 	// USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas, and presumably for the pattern alignment as well)
 	// This function is mainly for patterns support (for black & white mode) but naturally handles solid colors as well.
 	ctx.globalCompositeOperation = "source-in";
@@ -844,27 +844,27 @@ function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas=0, 
 }
 
 // adapted from https://github.com/Pomax/bezierjs
-function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y){
-	const mt = 1-t;
-	const mt2 = mt*mt;
-	const t2 = t*t;
+function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y) {
+	const mt = 1 - t;
+	const mt2 = mt * mt;
+	const t2 = t * t;
 	let a, b, c, d = 0;
 
-	a = mt2*mt;
-	b = mt2*t*3;
-	c = mt*t2*3;
-	d = t*t2;
+	a = mt2 * mt;
+	b = mt2 * t * 3;
+	c = mt * t2 * 3;
+	d = t * t2;
 
 	return {
-		x: a*start_x + b*control_1_x + c*control_2_x + d*end_x,
-		y: a*start_y + b*control_1_y + c*control_2_y + d*end_y
+		x: a * start_x + b * control_1_x + c * control_2_x + d * end_x,
+		y: a * start_y + b * control_1_y + c * control_2_y + d * end_y
 	};
 }
 
 function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
 	const steps = 100;
-	let point_a = {x: start_x, y: start_y};
-	for(let t=0; t<1; t+=1/steps){
+	let point_a = { x: start_x, y: start_y };
+	for (let t = 0; t < 1; t += 1 / steps) {
 		const point_b = compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y);
 		// @TODO: carry "error" from Bresenham line algorithm between iterations? and/or get a proper Bezier drawing algorithm
 		draw_line_without_pattern_support(ctx, point_a.x, point_a.y, point_b.x, point_b.y, stroke_size);
@@ -886,7 +886,7 @@ function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, cont
 		draw_bezier_curve_without_pattern_support(op_ctx_2d, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size);
 	});
 }
-function draw_line(ctx, x1, y1, x2, y2, stroke_size){
+function draw_line(ctx, x1, y1, x2, y2, stroke_size) {
 	const min_x = Math.min(x1, x2);
 	const min_y = Math.min(y1, y2);
 	const max_x = Math.max(x1, x2);
@@ -910,7 +910,7 @@ function draw_grid(ctx, scale) {
 		grid_pattern_canvas.ctx.fillStyle = dark_gray;
 		grid_pattern_canvas.ctx.fillRect(0, 0, pattern_size, 1);
 		grid_pattern_canvas.ctx.fillStyle = light_gray;
-		for (let i=1; i<pattern_size; i+=2) {
+		for (let i = 1; i < pattern_size; i += 2) {
 			grid_pattern_canvas.ctx.fillRect(i, 0, 1, 1);
 			grid_pattern_canvas.ctx.fillRect(0, i, 1, 1);
 		}
@@ -954,7 +954,7 @@ function draw_grid(ctx, scale) {
 		}
 
 		const dash_width = 1;
-		const hairline_width = 1/scale; // size of a screen pixel
+		const hairline_width = 1 / scale; // size of a screen pixel
 
 		ctx.save();
 
@@ -963,19 +963,19 @@ function draw_grid(ctx, scale) {
 
 		ctx.translate(x, y);
 		ctx.globalCompositeOperation = "difference";
-		
-		
+
+
 		if (go_x > 0) {
 			const matrix = svg_for_creating_matrices.createSVGMatrix();
 			if (horizontal_pattern.setTransform) { // not supported by Edge as of 2019-12-04
-				horizontal_pattern.setTransform(matrix.translate(-x, -y).translate(hairline_width, 0).scale(1/scale));
+				horizontal_pattern.setTransform(matrix.translate(-x, -y).translate(hairline_width, 0).scale(1 / scale));
 			}
 			ctx.fillStyle = horizontal_pattern;
 			ctx.fillRect(0, 0, go_x, dash_width);
-		} else if(go_y > 0) {
+		} else if (go_y > 0) {
 			const matrix = svg_for_creating_matrices.createSVGMatrix();
 			if (vertical_pattern.setTransform) { // not supported by Edge as of 2019-12-04
-				vertical_pattern.setTransform(matrix.translate(-x, -y).translate(0, hairline_width).scale(1/scale));
+				vertical_pattern.setTransform(matrix.translate(-x, -y).translate(0, hairline_width).scale(1 / scale));
 			}
 			ctx.fillStyle = vertical_pattern;
 			ctx.fillRect(0, 0, dash_width, go_y);
@@ -983,16 +983,16 @@ function draw_grid(ctx, scale) {
 		ctx.restore();
 	}
 
-	window.draw_selection_box = (ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y)=> {
-		draw_dashes(ctx, rect_x             , rect_y            , rect_w - 1, 0         , scale, translate_x, translate_y); // top
+	window.draw_selection_box = (ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y) => {
+		draw_dashes(ctx, rect_x, rect_y, rect_w - 1, 0, scale, translate_x, translate_y); // top
 		if (rect_h === 1) {
-		draw_dashes(ctx, rect_x             , rect_y            , 0         , 1         , scale, translate_x, translate_y); // left
+			draw_dashes(ctx, rect_x, rect_y, 0, 1, scale, translate_x, translate_y); // left
 		} else {
-		draw_dashes(ctx, rect_x             , rect_y + 1        , 0         , rect_h - 2, scale, translate_x, translate_y); // left
+			draw_dashes(ctx, rect_x, rect_y + 1, 0, rect_h - 2, scale, translate_x, translate_y); // left
 		}
-		draw_dashes(ctx, rect_x + rect_w - 1, rect_y            , 0         , rect_h    , scale, translate_x, translate_y); // right
-		draw_dashes(ctx, rect_x             , rect_y + rect_h -1, rect_w - 1, 0         , scale, translate_x, translate_y); // bottom
-		draw_dashes(ctx, rect_x             , rect_y + 1        , 0         , 1         , scale, translate_x, translate_y); // top left dangling bit???
+		draw_dashes(ctx, rect_x + rect_w - 1, rect_y, 0, rect_h, scale, translate_x, translate_y); // right
+		draw_dashes(ctx, rect_x, rect_y + rect_h - 1, rect_w - 1, 0, scale, translate_x, translate_y); // bottom
+		draw_dashes(ctx, rect_x, rect_y + 1, 0, 1, scale, translate_x, translate_y); // top left dangling bit???
 	};
 
 })();
@@ -1078,7 +1078,7 @@ function draw_grid(ctx, scale) {
 		}
 
 		window.WEBGL_lose_context = gl.getExtension("WEBGL_lose_context");
-		
+
 		const program = createShaderProgram();
 		positionLoc = gl.getAttribLocation(program, 'position');
 		gl.enableVertexAttribArray(positionLoc);
@@ -1150,16 +1150,16 @@ function draw_grid(ctx, scale) {
 
 	initWebGL(op_canvas_webgl);
 	let warning_tid;
-	op_canvas_webgl.addEventListener("webglcontextlost", (e)=> {
+	op_canvas_webgl.addEventListener("webglcontextlost", (e) => {
 		e.preventDefault();
 		window.console && console.warn("WebGL context lost");
 		clamp_brush_sizes();
-		
-		warning_tid = setTimeout(()=> {
+
+		warning_tid = setTimeout(() => {
 			show_error_message("The WebGL context was lost. You may need to refresh the web page, or restart your computer.");
 		}, 3000);
 	}, false);
-	op_canvas_webgl.addEventListener("webglcontextrestored", ()=> {
+	op_canvas_webgl.addEventListener("webglcontextrestored", () => {
 		initWebGL(op_canvas_webgl);
 
 		window.console && console.warn("WebGL context restored");
@@ -1197,7 +1197,7 @@ function draw_grid(ctx, scale) {
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
 	};
 
-	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path){
+	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
 		if (!gl) {
 			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
 			return; // @TODO: don't pollute brush cache with empty brushes (also maybe fallback to 2D canvas rendering)
@@ -1207,7 +1207,7 @@ function draw_grid(ctx, scale) {
 		// otherwise update_brush_for_drawing_lines calls render_brush calls draw_ellipse calls draw_polygon calls draw_polygon_or_line_strip
 		// trying to use the same op_canvas
 		// (also, avoiding infinite recursion by checking for stroke; assuming brushes will never have outlines)
-		if(stroke && stroke_size > 1){
+		if (stroke && stroke_size > 1) {
 			update_brush_for_drawing_lines(stroke_size);
 		}
 
@@ -1217,7 +1217,7 @@ function draw_grid(ctx, scale) {
 		const numPoints = points.length;
 		const numCoords = numPoints * 2;
 
-		if(numPoints === 0){
+		if (numPoints === 0) {
 			return;
 		}
 
@@ -1225,7 +1225,7 @@ function draw_grid(ctx, scale) {
 		let x_max = -Infinity;
 		let y_min = +Infinity;
 		let y_max = -Infinity;
-		for (const {x, y} of points) {
+		for (const { x, y } of points) {
 			x_min = Math.min(x, x_min);
 			x_max = Math.max(x, x_max);
 			y_min = Math.min(y, y_min);
@@ -1242,12 +1242,12 @@ function draw_grid(ctx, scale) {
 
 		const coords = new Float32Array(numCoords);
 		for (let i = 0; i < numPoints; i++) {
-			coords[i*2+0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
-			coords[i*2+1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
+			coords[i * 2 + 0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
+			coords[i * 2 + 1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
 			// @TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
 		}
 
-		if(fill){
+		if (fill) {
 			const contours = [coords];
 			const polyTriangles = triangulate(contours);
 			let numVertices = initArrayBuffer(polyTriangles);
@@ -1261,8 +1261,8 @@ function draw_grid(ctx, scale) {
 			replace_colors_with_swatch(op_ctx_2d, fill_color, x_min, y_min);
 			ctx.drawImage(op_canvas_2d, x_min, y_min);
 		}
-		if(stroke){
-			if(stroke_size > 1){
+		if (stroke) {
+			if (stroke_size > 1) {
 				const stroke_margin = ~~(stroke_size * 1.1);
 
 				const op_canvas_x = x_min - stroke_margin;
@@ -1286,7 +1286,7 @@ function draw_grid(ctx, scale) {
 
 				replace_colors_with_swatch(op_ctx_2d, stroke_color, op_canvas_x, op_canvas_y);
 				ctx.drawImage(op_canvas_2d, op_canvas_x, op_canvas_y);
-			}else{
+			} else {
 				let numVertices = initArrayBuffer(coords);
 				gl.clear(gl.COLOR_BUFFER_BIT);
 				gl.drawArrays(close_path ? gl.LINE_LOOP : gl.LINE_STRIP, 0, numVertices);
@@ -1307,7 +1307,7 @@ function draw_grid(ctx, scale) {
 		y_max = Math.max(y_max, y_min + 1);
 		const width = x_max - x_min;
 		const height = y_max - y_min;
-		
+
 		// @TODO: maybe have the cutout only the width/height of the bounds
 		// const cutout = make_canvas(width, height);
 		const cutout = make_canvas(canvas);
@@ -1316,7 +1316,7 @@ function draw_grid(ctx, scale) {
 		cutout.ctx.globalCompositeOperation = "destination-in";
 		draw_polygon(cutout.ctx, points, false, true);
 		cutout.ctx.restore();
-		
+
 		const cutout_crop = make_canvas(width, height);
 		cutout_crop.ctx.drawImage(cutout, x_min, y_min, width, height, 0, 0, width, height);
 
@@ -1326,7 +1326,7 @@ function draw_grid(ctx, scale) {
 	// @TODO: maybe shouldn't be external...
 	window.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
 		const stroke_margin = ~~(stroke_size * 1.1);
-		
+
 		x_max = Math.max(x_max, x_min + 1);
 		y_max = Math.max(y_max, y_min + 1);
 		op_canvas_2d.width = x_max - x_min + stroke_margin * 2;

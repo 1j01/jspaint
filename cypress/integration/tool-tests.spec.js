@@ -18,7 +18,7 @@ context('tool tests', () => {
 	});
 	beforeEach(() => {
 		if (before_first_real_test) return;
-		cy.window().then({timeout: 60000}, async (win)=> {
+		cy.window().then({ timeout: 60000 }, async (win) => {
 			win.selected_colors.foreground = "#000";
 			win.selected_colors.background = "#fff";
 			win.brush_shape = win.default_brush_shape;
@@ -31,11 +31,11 @@ context('tool tests', () => {
 		});
 	});
 
-	const simulateGesture = (win, {start, end, shift, shiftToggleChance=0.01, secondary, secondaryToggleChance, target}) => {
+	const simulateGesture = (win, { start, end, shift, shiftToggleChance = 0.01, secondary, secondaryToggleChance, target }) => {
 		target = target || win.$(".main-canvas")[0];
 		let startWithinRect = target.getBoundingClientRect();
 		let canvasAreaRect = win.$(".canvas-area")[0].getBoundingClientRect();
-	
+
 		let startMinX = Math.max(startWithinRect.left, canvasAreaRect.left);
 		let startMaxX = Math.min(startWithinRect.right, canvasAreaRect.right);
 		let startMinY = Math.max(startWithinRect.top, canvasAreaRect.top);
@@ -44,7 +44,7 @@ context('tool tests', () => {
 		let startPointY = startMinY + start.y * (startMaxY - startMinY);
 		let endPointX = startMinX + end.x * (startMaxX - startMinX);
 		let endPointY = startMinY + end.y * (startMaxY - startMinY);
-	
+
 		const $cursor = win.$(`<img src="images/cursors/default.png" class="user-cursor"/>`);
 		$cursor.css({
 			position: "absolute",
@@ -57,7 +57,7 @@ context('tool tests', () => {
 		});
 		$cursor.appendTo(".jspaint");
 		let triggerMouseEvent = (type, point) => {
-			
+
 			const clientX = point.x;
 			const clientY = point.y;
 			// const el_over = win.document.elementFromPoint(clientX, clientY);
@@ -72,7 +72,7 @@ context('tool tests', () => {
 			if (do_nothing) {
 				return;
 			}
-	
+
 			let event = new win.$.Event(type, {
 				view: window,
 				bubbles: true,
@@ -89,7 +89,7 @@ context('tool tests', () => {
 			});
 			win.$(target).trigger(event);
 		};
-	
+
 		let t = 0;
 		const stepsInGesture = 3;
 		let pointForTime = (t) => {
@@ -98,8 +98,8 @@ context('tool tests', () => {
 				y: startPointY + (endPointY - startPointY) * Math.pow(t, 0.3),
 			};
 		};
-		
-		return new Promise((resolve)=> {
+
+		return new Promise((resolve) => {
 			triggerMouseEvent("pointerenter", pointForTime(t)); // so dynamic cursors follow the simulation cursor
 			triggerMouseEvent("pointerdown", pointForTime(t));
 			let move = () => {
@@ -112,9 +112,9 @@ context('tool tests', () => {
 				// }
 				if (t > 1) {
 					triggerMouseEvent("pointerup", pointForTime(t));
-					
+
 					$cursor.remove();
-		
+
 					resolve();
 				} else {
 					triggerMouseEvent("pointermove", pointForTime(t));
@@ -160,30 +160,30 @@ context('tool tests', () => {
 	it(`eraser tool`, () => {
 		cy.get(`.tool[title='Eraser/Color Eraser']`).click();
 		// gesture([{x: 50, y: 50}, {x: 100, y: 100}]);
-		cy.window().then({timeout: 60000}, async (win)=> {
-			for (let row=0; row<4; row++) {
+		cy.window().then({ timeout: 60000 }, async (win) => {
+			for (let row = 0; row < 4; row++) {
 				const secondary = !!(row % 2);
 				const increaseSize = row >= 2;
 				let $options = win.$(`.chooser > *`);
-				for (let o=0; o<$options.length; o++) {
+				for (let o = 0; o < $options.length; o++) {
 					$options[o].click();
 					if (increaseSize) {
 						for (let i = 0; i < 5; i++) {
-							win.$('body').trigger(new win.$.Event("keydown", {key: "NumpadPlus", keyCode: 107, which: 107}));
+							win.$('body').trigger(new win.$.Event("keydown", { key: "NumpadPlus", keyCode: 107, which: 107 }));
 						}
 					}
 					win.selected_colors.background = "#f0f";
-					const start = {x: 0.05 + o*0.05, y: 0.1 + 0.1*row};
-					const end = {x: start.x + 0.04, y: start.y + 0.04};
-					await simulateGesture(win, {shift: false, secondary: false, start, end});
+					const start = { x: 0.05 + o * 0.05, y: 0.1 + 0.1 * row };
+					const end = { x: start.x + 0.04, y: start.y + 0.04 };
+					await simulateGesture(win, { shift: false, secondary: false, start, end });
 					if (secondary) {
 						// eslint-disable-next-line require-atomic-updates
 						win.selected_colors.background = "#ff0";
 						// eslint-disable-next-line require-atomic-updates
 						win.selected_colors.foreground = "#f0f";
-						const start = {x: 0.04 + o*0.05, y: 0.11 + 0.1*row};
-						const end = {x: start.x + 0.03, y: start.y + 0.02};
-						await simulateGesture(win, {shift: false, secondary: true, start, end});
+						const start = { x: 0.04 + o * 0.05, y: 0.11 + 0.1 * row };
+						const end = { x: start.x + 0.03, y: start.y + 0.02 };
+						await simulateGesture(win, { shift: false, secondary: true, start, end });
 					}
 				}
 			}
@@ -191,13 +191,13 @@ context('tool tests', () => {
 		cy.get(".main-canvas").matchImageSnapshot();
 	});
 
-	["Brush", "Pencil", "Rectangle", "Rounded Rectangle", "Ellipse", "Line"].forEach((toolName)=> {
+	["Brush", "Pencil", "Rectangle", "Rounded Rectangle", "Ellipse", "Line"].forEach((toolName) => {
 		it(`${toolName.toLowerCase()} tool`, () => {
 			cy.get(`.tool[title='${toolName}']`).click();
 			// gesture([{x: 50, y: 50}, {x: 100, y: 100}]);
 			cy.get(".swatch:nth-child(22)").rightclick();
-			cy.window().then({timeout: 60000}, async (win)=> {
-				for (let row=0; row<4; row++) {
+			cy.window().then({ timeout: 60000 }, async (win) => {
+				for (let row = 0; row < 4; row++) {
 					const secondary = !!(row % 2);
 					const increaseSize = row >= 2;
 					let $options = win.$(`.chooser > *`);
@@ -205,16 +205,16 @@ context('tool tests', () => {
 					if ($options.length === 0) {
 						$options = win.$("<dummy>");
 					}
-					for (let o=0; o<$options.length; o++) {
+					for (let o = 0; o < $options.length; o++) {
 						$options[o].click();
-						if (increaseSize && (o === 0 || toolName==="Brush" || toolName==="Line")) {
+						if (increaseSize && (o === 0 || toolName === "Brush" || toolName === "Line")) {
 							for (let i = 0; i < 5; i++) {
-								win.$('body').trigger(new win.$.Event("keydown", {key: "NumpadPlus", keyCode: 107, which: 107}));
+								win.$('body').trigger(new win.$.Event("keydown", { key: "NumpadPlus", keyCode: 107, which: 107 }));
 							}
 						}
-						const start = {x: 0.05 + o*0.05, y: 0.1 + 0.1*row};
-						const end = {x: start.x + 0.04, y: start.y + 0.04};
-						await simulateGesture(win, {shift: false, secondary: !!secondary, start, end});
+						const start = { x: 0.05 + o * 0.05, y: 0.1 + 0.1 * row };
+						const end = { x: start.x + 0.04, y: start.y + 0.04 };
+						await simulateGesture(win, { shift: false, secondary: !!secondary, start, end });
 					}
 				}
 			});

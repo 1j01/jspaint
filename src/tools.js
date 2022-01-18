@@ -1,4 +1,4 @@
-(()=> {
+(() => {
 
 // This is for linting stuff at the bottom.
 /* eslint no-restricted-syntax: ["error", "ThisExpression"] */
@@ -37,21 +37,21 @@ window.tools = [{
 
 	// A canvas for rendering a preview of the shape
 	preview_canvas: null,
-	
+
 	// The vertices of the polygon
 	points: [],
-	
+
 	// The boundaries of the polygon
 	x_min: +Infinity,
 	x_max: -Infinity,
 	y_min: +Infinity,
 	y_max: -Infinity,
-	
+
 	pointerdown() {
 		this.x_min = pointer.x;
-		this.x_max = pointer.x+1;
+		this.x_max = pointer.x + 1;
 		this.y_min = pointer.y;
-		this.y_max = pointer.y+1;
+		this.y_max = pointer.y + 1;
 		this.points = [];
 		this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
 
@@ -72,7 +72,7 @@ window.tools = [{
 		this.y_min = Math.min(pointer.y, this.y_min);
 		this.y_max = Math.max(pointer.y, this.y_max);
 
-		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
+		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 			this.paint_iteration(x, y);
 		});
 	},
@@ -82,26 +82,26 @@ window.tools = [{
 		x = Math.max(0, x);
 		y = Math.min(main_canvas.height, y);
 		y = Math.max(0, y);
-		
+
 		// Find the dimensions on the canvas of the tiny square to invert
 		const inversion_size = 2;
-		const rect_x = ~~(x - inversion_size/2);
-		const rect_y = ~~(y - inversion_size/2);
+		const rect_x = ~~(x - inversion_size / 2);
+		const rect_y = ~~(y - inversion_size / 2);
 		const rect_w = inversion_size;
 		const rect_h = inversion_size;
-		
+
 		const ctx_dest = this.preview_canvas.ctx;
 		const id_src = main_ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 		const id_dest = ctx_dest.getImageData(rect_x, rect_y, rect_w, rect_h);
-		
-		for(let i=0, l=id_dest.data.length; i<l; i+=4){
-			id_dest.data[i+0] = 255 - id_src.data[i+0];
-			id_dest.data[i+1] = 255 - id_src.data[i+1];
-			id_dest.data[i+2] = 255 - id_src.data[i+2];
-			id_dest.data[i+3] = 255;
+
+		for (let i = 0, l = id_dest.data.length; i < l; i += 4) {
+			id_dest.data[i + 0] = 255 - id_src.data[i + 0];
+			id_dest.data[i + 1] = 255 - id_src.data[i + 1];
+			id_dest.data[i + 2] = 255 - id_src.data[i + 2];
+			id_dest.data[i + 3] = 255;
 			// @TODO maybe: invert based on id_src.data[i+3] and the checkered background
 		}
-		
+
 		ctx_dest.putImageData(id_dest, rect_x, rect_y);
 	},
 	pointerup() {
@@ -116,8 +116,8 @@ window.tools = [{
 			this.x_max,
 			this.y_max
 		);
-		
-		if(selection){
+
+		if (selection) {
 			// for silly multitools feature
 			show_error_message("This isn't supposed to happen: Free-Form Select after Select in the tool chain?");
 			meld_selection_into_canvas();
@@ -127,7 +127,7 @@ window.tools = [{
 			name: localize("Free-Form Select"),
 			icon: get_icon_for_tool(get_tool_by_id(TOOL_FREE_FORM_SELECT)),
 			soft: true,
-		}, ()=> {
+		}, () => {
 			selection = new OnCanvasSelection(
 				this.x_min,
 				this.y_min,
@@ -139,13 +139,13 @@ window.tools = [{
 		});
 	},
 	cancel() {
-		if(!this.preview_canvas){return;}
+		if (!this.preview_canvas) { return; }
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active && !pointer_over_canvas){return;}
-		if(!this.preview_canvas){return;}
+		if (!pointer_active && !pointer_over_canvas) { return; }
+		if (!this.preview_canvas) { return; }
 
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
@@ -167,12 +167,12 @@ window.tools = [{
 	selectBox(rect_x, rect_y, rect_width, rect_height) {
 		if (rect_width > 1 && rect_height > 1) {
 			var free_form_selection = selection;
-			if(selection){
+			if (selection) {
 				// for silly multitools feature
 				meld_selection_into_canvas();
 			}
 			if (ctrl) {
-				undoable({name: "Crop"}, () => {
+				undoable({ name: "Crop" }, () => {
 					var cropped_canvas = make_canvas(rect_width, rect_height);
 					cropped_canvas.ctx.drawImage(main_canvas, -rect_x, -rect_y);
 					main_ctx.copy(cropped_canvas);
@@ -225,7 +225,7 @@ window.tools = [{
 						get_tool_by_id(TOOL_SELECT),
 					]),
 					soft: true,
-				}, ()=> {
+				}, () => {
 					selection = new OnCanvasSelection(
 						x_min,
 						y_min,
@@ -240,7 +240,7 @@ window.tools = [{
 					name: localize("Select"),
 					icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),
 					soft: true,
-				}, ()=> {
+				}, () => {
 					selection = new OnCanvasSelection(rect_x, rect_y, rect_width, rect_height);
 				});
 			}
@@ -263,17 +263,17 @@ window.tools = [{
 	mask_canvas: null,
 
 	get_rect(x, y) {
-		const rect_x = Math.ceil(x - eraser_size/2);
-		const rect_y = Math.ceil(y - eraser_size/2);
+		const rect_x = Math.ceil(x - eraser_size / 2);
+		const rect_y = Math.ceil(y - eraser_size / 2);
 		const rect_w = eraser_size;
 		const rect_h = eraser_size;
-		return {rect_x, rect_y, rect_w, rect_h};
+		return { rect_x, rect_y, rect_w, rect_h };
 	},
 
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active && !pointer_over_canvas){return;}
-		const {rect_x, rect_y, rect_w, rect_h} = this.get_rect(x, y);
-		
+		if (!pointer_active && !pointer_over_canvas) { return; }
+		const { rect_x, rect_y, rect_w, rect_h } = this.get_rect(x, y);
+
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
@@ -289,20 +289,20 @@ window.tools = [{
 		ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
 	},
 	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active && !pointer_over_canvas){return;}
+		if (!pointer_active && !pointer_over_canvas) { return; }
 
-		const {rect_x, rect_y, rect_w, rect_h} = this.get_rect(x, y);
+		const { rect_x, rect_y, rect_w, rect_h } = this.get_rect(x, y);
 
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
-		const hairline_width = 1/scale;
+		const hairline_width = 1 / scale;
 
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = hairline_width;
 		if (grid_visible) {
-			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w, rect_h);
+			ctx.strokeRect(rect_x + ctx.lineWidth / 2, rect_y + ctx.lineWidth / 2, rect_w, rect_h);
 		} else {
-			ctx.strokeRect(rect_x+ctx.lineWidth/2, rect_y+ctx.lineWidth/2, rect_w-ctx.lineWidth, rect_h-ctx.lineWidth);
+			ctx.strokeRect(rect_x + ctx.lineWidth / 2, rect_y + ctx.lineWidth / 2, rect_w - ctx.lineWidth, rect_h - ctx.lineWidth);
 		}
 	},
 	pointerdown() {
@@ -326,14 +326,14 @@ window.tools = [{
 				const h = ctx.canvas.height;
 				const y = (t % 1) * -h * (n - 1);
 				const gradient = ctx.createLinearGradient(0, y, 0, y + h * n);
-				gradient.addColorStop(0/n, "red");
-				gradient.addColorStop(1/n, "gold");
-				gradient.addColorStop(2/n, "#00d90b");
-				gradient.addColorStop(3/n, "#2e64d9");
-				gradient.addColorStop(4/n, "#8f2ed9");
+				gradient.addColorStop(0 / n, "red");
+				gradient.addColorStop(1 / n, "gold");
+				gradient.addColorStop(2 / n, "#00d90b");
+				gradient.addColorStop(3 / n, "#2e64d9");
+				gradient.addColorStop(4 / n, "#8f2ed9");
 				// last two same as the first two so it can seamlessly wrap
-				gradient.addColorStop(5/n, "red");
-				gradient.addColorStop(6/n, "gold");
+				gradient.addColorStop(5 / n, "red");
+				gradient.addColorStop(6 / n, "gold");
 				color = gradient;
 			}
 			const mask_fill_canvas = make_canvas(this.mask_canvas);
@@ -348,7 +348,7 @@ window.tools = [{
 		undoable({
 			name: get_language().match(/^en\b/) ? (this.color_eraser_mode ? "Color Eraser" : "Eraser") : localize("Eraser/Color Eraser"),
 			icon: get_icon_for_tool(this),
-		}, ()=> {
+		}, () => {
 			this.render_from_mask(main_ctx);
 
 			this.mask_canvas = null;
@@ -358,45 +358,45 @@ window.tools = [{
 		this.mask_canvas = null;
 	},
 	paint(ctx, x, y) {
-		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
+		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 			this.paint_iteration(ctx, x, y);
 		});
 	},
 	paint_iteration(ctx, x, y) {
-		const {rect_x, rect_y, rect_w, rect_h} = this.get_rect(x, y);
+		const { rect_x, rect_y, rect_w, rect_h } = this.get_rect(x, y);
 
 		this.color_eraser_mode = button !== 0;
-		
-		if(!this.color_eraser_mode){
+
+		if (!this.color_eraser_mode) {
 			// Eraser
 			this.mask_canvas.ctx.fillStyle = "white";
 			this.mask_canvas.ctx.fillRect(rect_x, rect_y, rect_w, rect_h);
-		}else{
+		} else {
 			// Color Eraser
 			// Right click with the eraser to selectively replace
 			// the selected foreground color with the selected background color
-			
+
 			const fg_rgba = get_rgba_from_color(selected_colors.foreground);
-			
+
 			const test_image_data = ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
 			const result_image_data = this.mask_canvas.ctx.getImageData(rect_x, rect_y, rect_w, rect_h);
-			
+
 			const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 
-			for(let i=0, l=test_image_data.data.length; i<l; i+=4){
-				if(
-					Math.abs(test_image_data.data[i+0] - fg_rgba[0]) <= fill_threshold &&
-					Math.abs(test_image_data.data[i+1] - fg_rgba[1]) <= fill_threshold &&
-					Math.abs(test_image_data.data[i+2] - fg_rgba[2]) <= fill_threshold &&
-					Math.abs(test_image_data.data[i+3] - fg_rgba[3]) <= fill_threshold
+			for (let i = 0, l = test_image_data.data.length; i < l; i += 4) {
+				if (
+					Math.abs(test_image_data.data[i + 0] - fg_rgba[0]) <= fill_threshold &&
+					Math.abs(test_image_data.data[i + 1] - fg_rgba[1]) <= fill_threshold &&
+					Math.abs(test_image_data.data[i + 2] - fg_rgba[2]) <= fill_threshold &&
+					Math.abs(test_image_data.data[i + 3] - fg_rgba[3]) <= fill_threshold
 				) {
-					result_image_data.data[i+0] = 255;
-					result_image_data.data[i+1] = 255;
-					result_image_data.data[i+2] = 255;
-					result_image_data.data[i+3] = 255;
+					result_image_data.data[i + 0] = 255;
+					result_image_data.data[i + 1] = 255;
+					result_image_data.data[i + 2] = 255;
+					result_image_data.data[i + 3] = 255;
 				}
 			}
-			
+
 			this.mask_canvas.ctx.putImageData(result_image_data, rect_x, rect_y);
 		}
 	},
@@ -414,11 +414,11 @@ window.tools = [{
 	description: "Fills an area with the selected drawing color.",
 	cursor: ["fill-bucket", [8, 22], "crosshair"],
 	pointerdown(ctx, x, y) {
-		if(shift){
+		if (shift) {
 			undoable({
 				name: "Replace Color",
 				icon: get_icon_for_tool(this),
-			}, ()=> {
+			}, () => {
 				// Perform global color replacement
 				draw_noncontiguous_fill(ctx, x, y, fill_color);
 			});
@@ -426,7 +426,7 @@ window.tools = [{
 			undoable({
 				name: localize("Fill With Color"),
 				icon: get_icon_for_tool(this),
-			}, ()=> {
+			}, () => {
 				// Perform a normal fill operation
 				draw_fill(ctx, x, y, fill_color);
 			});
@@ -455,7 +455,7 @@ window.tools = [{
 	description: localize("Picks up a color from the picture for drawing."),
 	cursor: ["eye-dropper", [9, 22], "crosshair"],
 	deselect: true,
-	
+
 	current_color: "",
 	display_current_color() {
 		this.$options.css({
@@ -470,11 +470,11 @@ window.tools = [{
 		});
 	},
 	paint(ctx, x, y) {
-		if(x >= 0 && y >= 0 && x < main_canvas.width && y < main_canvas.height){
+		if (x >= 0 && y >= 0 && x < main_canvas.width && y < main_canvas.height) {
 			const id = ctx.getImageData(~~x, ~~y, 1, 1);
 			const [r, g, b, a] = id.data;
-			this.current_color = `rgba(${r},${g},${b},${a/255})`;
-		}else{
+			this.current_color = `rgba(${r},${g},${b},${a / 255})`;
+		} else {
 			this.current_color = "white";
 		}
 		this.display_current_color();
@@ -495,21 +495,21 @@ window.tools = [{
 	description: localize("Changes the magnification."),
 	cursor: ["magnifier", [16, 16], "zoom-in"], // overridden below
 	deselect: true,
-	
-	getProspectiveMagnification: ()=> (
+
+	getProspectiveMagnification: () => (
 		magnification === 1 ? return_to_magnification : 1
 	),
 
 	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-		if(!pointer_active && !pointer_over_canvas){return;}
-		if(pointer_active) { return; }
+		if (!pointer_active && !pointer_over_canvas) { return; }
+		if (pointer_active) { return; }
 		const prospective_magnification = this.getProspectiveMagnification();
 
 		// hacky place to put this but whatever
 		// use specific zoom-in/zoom-out as fallback,
 		// even though the custom cursor image is less descriptive
 		// because there's no generic "zoom" css cursor
-		if(prospective_magnification < magnification) {
+		if (prospective_magnification < magnification) {
 			$canvas.css({
 				cursor: make_css_cursor("magnifier", [16, 16], "zoom-out"),
 			});
@@ -519,14 +519,14 @@ window.tools = [{
 			});
 		}
 
-		if(prospective_magnification < magnification) { return; } // hide if would be zooming out
+		if (prospective_magnification < magnification) { return; } // hide if would be zooming out
 
 		// prospective viewport size in document coords
 		const w = $canvas_area.width() / prospective_magnification;
 		const h = $canvas_area.height() / prospective_magnification;
 
-		let rect_x1 = ~~(x - w/2);
-		let rect_y1 = ~~(y - h/2);
+		let rect_x1 = ~~(x - w / 2);
+		let rect_y1 = ~~(y - h / 2);
 
 		// try to move rect into bounds without squishing
 		rect_x1 = Math.max(0, rect_x1);
@@ -536,40 +536,40 @@ window.tools = [{
 
 		let rect_x2 = rect_x1 + w;
 		let rect_y2 = rect_y1 + h;
-		
+
 		// clamp rect to bounds (with squishing)
 		rect_x1 = Math.max(0, rect_x1);
 		rect_y1 = Math.max(0, rect_y1);
 		rect_x2 = Math.min(main_canvas.width, rect_x2);
 		rect_y2 = Math.min(main_canvas.height, rect_y2);
-		
+
 		const rect_w = rect_x2 - rect_x1;
 		const rect_h = rect_y2 - rect_y1;
 		const rect_x = rect_x1;
 		const rect_y = rect_y1;
 
-		const id_src = main_canvas.ctx.getImageData(rect_x, rect_y, rect_w+1, rect_h+1);
-		const id_dest = ctx.getImageData((rect_x+translate_x)*scale, (rect_y+translate_y)*scale, rect_w*scale+1, rect_h*scale+1);
-		
+		const id_src = main_canvas.ctx.getImageData(rect_x, rect_y, rect_w + 1, rect_h + 1);
+		const id_dest = ctx.getImageData((rect_x + translate_x) * scale, (rect_y + translate_y) * scale, rect_w * scale + 1, rect_h * scale + 1);
+
 		function copyPixelInverted(x_dest, y_dest) {
 			const x_src = ~~(x_dest / scale);
 			const y_src = ~~(y_dest / scale);
 			const index_src = (x_src + y_src * id_src.width) * 4;
 			const index_dest = (x_dest + y_dest * id_dest.width) * 4;
-			id_dest.data[index_dest+0] = 255 - id_src.data[index_src+0];
-			id_dest.data[index_dest+1] = 255 - id_src.data[index_src+1];
-			id_dest.data[index_dest+2] = 255 - id_src.data[index_src+2];
-			id_dest.data[index_dest+3] = 255;
+			id_dest.data[index_dest + 0] = 255 - id_src.data[index_src + 0];
+			id_dest.data[index_dest + 1] = 255 - id_src.data[index_src + 1];
+			id_dest.data[index_dest + 2] = 255 - id_src.data[index_src + 2];
+			id_dest.data[index_dest + 3] = 255;
 			// @TODO maybe: invert based on id_src.data[index_src+3] and the checkered background
 		}
 
-		for(let x=0, limit=id_dest.width; x<limit; x+=1){
+		for (let x = 0, limit = id_dest.width; x < limit; x += 1) {
 			copyPixelInverted(x, 0);
-			copyPixelInverted(x, id_dest.height-1);
+			copyPixelInverted(x, id_dest.height - 1);
 		}
-		for(let y=1, limit=id_dest.height-1; y<limit; y+=1){
+		for (let y = 1, limit = id_dest.height - 1; y < limit; y += 1) {
 			copyPixelInverted(0, y);
-			copyPixelInverted(id_dest.width-1, y);
+			copyPixelInverted(id_dest.width - 1, y);
 		}
 
 		// for debug: fill rect
@@ -578,8 +578,8 @@ window.tools = [{
 		// 		copyPixelInverted(x, y);
 		// 	}
 		// }
-		
-		ctx.putImageData(id_dest, (rect_x+translate_x)*scale, (rect_y+translate_y)*scale);
+
+		ctx.putImageData(id_dest, (rect_x + translate_x) * scale, (rect_y + translate_y) * scale);
 
 		// debug:
 		// ctx.scale(scale, scale);
@@ -590,7 +590,7 @@ window.tools = [{
 	pointerdown(ctx, x, y) {
 		const prev_magnification = magnification;
 		const prospective_magnification = this.getProspectiveMagnification();
-		
+
 		set_magnification(prospective_magnification);
 
 		if (magnification > prev_magnification) {
@@ -599,7 +599,7 @@ window.tools = [{
 			const w = $canvas_area.width() / magnification;
 			const h = $canvas_area.height() / magnification;
 
-			$canvas_area.scrollLeft((x - w/2) * magnification / prev_magnification);
+			$canvas_area.scrollLeft((x - w / 2) * magnification / prev_magnification);
 			// Nevermind, canvas, isn't aligned to the right in RTL layout!
 			// if (get_direction() === "rtl") {
 			// 	// scrollLeft coordinates can be negative for RTL
@@ -607,7 +607,7 @@ window.tools = [{
 			// } else {
 			// 	$canvas_area.scrollLeft((x - w/2) * magnification / prev_magnification);
 			// }
-			$canvas_area.scrollTop((y - h/2) * magnification / prev_magnification);
+			$canvas_area.scrollTop((y - h / 2) * magnification / prev_magnification);
 			$canvas_area.trigger("scroll");
 		}
 	},
@@ -623,7 +623,7 @@ window.tools = [{
 	cursor: ["pencil", [13, 23], "crosshair"],
 	stroke_only: true,
 	get_brush() {
-		return {size: pencil_size, shape: "circle"};
+		return { size: pencil_size, shape: "circle" };
 	}
 }, {
 	id: TOOL_BRUSH,
@@ -641,7 +641,7 @@ window.tools = [{
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
 	dynamic_preview_cursor: true,
 	get_brush() {
-		return {size: brush_size, shape: brush_shape};
+		return { size: brush_size, shape: brush_shape };
 	},
 	$options: $choose_brush
 }, {
@@ -659,11 +659,11 @@ window.tools = [{
 	paint_on_time_interval: 5,
 	paint_mask(ctx, x, y) {
 		const r = airbrush_size / 2;
-		for(let i = 0; i < 6 + r/5; i++){
-			const rx = (Math.random()*2-1) * r;
-			const ry = (Math.random()*2-1) * r;
-			const d = rx*rx + ry*ry;
-			if(d <= r * r){
+		for (let i = 0; i < 6 + r / 5; i++) {
+			const rx = (Math.random() * 2 - 1) * r;
+			const ry = (Math.random() * 2 - 1) * r;
+			const d = rx * rx + ry * ry;
+			if (d <= r * r) {
 				ctx.fillRect(x + ~~rx, y + ~~ry, 1, 1);
 			}
 		}
@@ -701,7 +701,7 @@ window.tools = [{
 	stroke_only: true,
 	shape(ctx, x, y, w, h) {
 		update_brush_for_drawing_lines(stroke_size);
-		draw_line(ctx, x, y, x+w, y+h, stroke_size);
+		draw_line(ctx, x, y, x + w, y + h, stroke_size);
 	},
 	$options: $choose_stroke_size
 }, {
@@ -718,42 +718,42 @@ window.tools = [{
 	points: [],
 	preview_canvas: null,
 	pointerup(ctx, x, y) {
-		if(this.points.length >= 4){
+		if (this.points.length >= 4) {
 			undoable({
 				name: localize("Curve"),
 				icon: get_icon_for_tool(this),
-			}, ()=> {
+			}, () => {
 				ctx.drawImage(this.preview_canvas, 0, 0);
 			});
 			this.points = [];
 		}
 	},
 	pointerdown(ctx, x, y) {
-		if(this.points.length < 1){
+		if (this.points.length < 1) {
 			this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
-			this.points.push({x, y});
+			this.points.push({ x, y });
 			if (!$("body").hasClass("eye-gaze-mode")) {
 				// second point so first action draws a line
-				this.points.push({x, y});
+				this.points.push({ x, y });
 			}
-		}else{
-			this.points.push({x, y});
+		} else {
+			this.points.push({ x, y });
 		}
 	},
 	paint(ctx, x, y) {
-		if(this.points.length < 1){ return; }
+		if (this.points.length < 1) { return; }
 
 		update_brush_for_drawing_lines(stroke_size);
 
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
-		
+
 		this.preview_canvas.ctx.clearRect(0, 0, this.preview_canvas.width, this.preview_canvas.height);
 		this.preview_canvas.ctx.strokeStyle = stroke_color;
 
 		// Draw curves on preview canvas
-		if(this.points.length === 4){
+		if (this.points.length === 4) {
 			draw_bezier_curve(
 				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
@@ -762,7 +762,7 @@ window.tools = [{
 				this.points[1].x, this.points[1].y,
 				stroke_size
 			);
-		}else if(this.points.length === 3){
+		} else if (this.points.length === 3) {
 			draw_quadratic_curve(
 				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
@@ -770,14 +770,14 @@ window.tools = [{
 				this.points[1].x, this.points[1].y,
 				stroke_size
 			);
-		}else if(this.points.length === 2){
+		} else if (this.points.length === 2) {
 			draw_line(
 				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
 				this.points[1].x, this.points[1].y,
 				stroke_size
 			);
-		}else{
+		} else {
 			draw_line(
 				this.preview_canvas.ctx,
 				this.points[0].x, this.points[0].y,
@@ -788,7 +788,7 @@ window.tools = [{
 	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		// if(!pointer_active && !pointer_over_canvas){return;}
-		if(!this.preview_canvas){return;}
+		if (!this.preview_canvas) { return; }
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
 
@@ -824,19 +824,19 @@ window.tools = [{
 	description: localize("Draws a rectangle with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape(ctx, x, y, w, h) {
-		if(w < 0){ x += w; w = -w; }
-		if(h < 0){ y += h; h = -h; }
-		
-		if(this.$options.fill){
+		if (w < 0) { x += w; w = -w; }
+		if (h < 0) { y += h; h = -h; }
+
+		if (this.$options.fill) {
 			ctx.fillRect(x, y, w, h);
 		}
-		if(this.$options.stroke){
-			if(w < stroke_size * 2 || h < stroke_size * 2){
+		if (this.$options.stroke) {
+			if (w < stroke_size * 2 || h < stroke_size * 2) {
 				ctx.save();
 				ctx.fillStyle = ctx.strokeStyle;
 				ctx.fillRect(x, y, w, h);
 				ctx.restore();
-			}else{
+			} else {
 				// @TODO: shouldn't that be ~~(stroke_size / 2)?
 				ctx.strokeRect(x + stroke_size / 2, y + stroke_size / 2, w - stroke_size, h - stroke_size);
 			}
@@ -856,73 +856,73 @@ window.tools = [{
 	help_icon: "p_poly.gif",
 	description: localize("Draws a polygon with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
-	
+
 	// Record the last click for double-clicking
 	// A double click happens on pointerdown of a second click
 	// (within a cylindrical volume in 2d space + 1d time)
-	last_click_pointerdown: {x: -Infinity, y: -Infinity, time: -Infinity},
-	last_click_pointerup: {x: -Infinity, y: -Infinity, time: -Infinity},
-	
+	last_click_pointerdown: { x: -Infinity, y: -Infinity, time: -Infinity },
+	last_click_pointerup: { x: -Infinity, y: -Infinity, time: -Infinity },
+
 	// The vertices of the polygon
 	points: [],
-	
+
 	// A canvas for rendering a preview of the shape
 	preview_canvas: null,
 
 	pointerup(ctx, x, y) {
-		if(this.points.length < 1){ return; }
-		
+		if (this.points.length < 1) { return; }
+
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
 		const dx = this.points[i].x - this.points[0].x;
 		const dy = this.points[i].y - this.points[0].y;
-		const d = Math.sqrt(dx*dx + dy*dy);
-		if($("body").hasClass("eye-gaze-mode")){
-			if(this.points.length >= 3){
-				if(d < stroke_size * 10 + 20){
+		const d = Math.sqrt(dx * dx + dy * dy);
+		if ($("body").hasClass("eye-gaze-mode")) {
+			if (this.points.length >= 3) {
+				if (d < stroke_size * 10 + 20) {
 					this.complete(ctx);
 				}
 			}
-		}else{
-			if(d < stroke_size * 5.1010101){ // arbitrary number (@TODO: find correct value (or formula))
+		} else {
+			if (d < stroke_size * 5.1010101) { // arbitrary number (@TODO: find correct value (or formula))
 				this.complete(ctx);
 			}
 		}
-		
-		this.last_click_pointerup = {x, y, time: +(new Date)};
+
+		this.last_click_pointerup = { x, y, time: +(new Date) };
 	},
 	pointerdown(ctx, x, y) {
-		if(this.points.length < 1){
+		if (this.points.length < 1) {
 			this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
-		
+
 			// Add the first point of the polygon
-			this.points.push({x, y});
-			
+			this.points.push({ x, y });
+
 			if (!$("body").hasClass("eye-gaze-mode")) {
 				// Add a second point so first action draws a line
-				this.points.push({x, y});
+				this.points.push({ x, y });
 			}
-		}else{
+		} else {
 			const lx = this.last_click_pointerdown.x;
 			const ly = this.last_click_pointerdown.y;
 			const lt = this.last_click_pointerdown.time;
 			const dx = x - lx;
 			const dy = y - ly;
 			const dt = +(new Date) - lt;
-			const d = Math.sqrt(dx*dx + dy*dy);
-			if(d < 4.1010101 && dt < 250){ // arbitrary 101 (@TODO: find correct value (or formula))
+			const d = Math.sqrt(dx * dx + dy * dy);
+			if (d < 4.1010101 && dt < 250) { // arbitrary 101 (@TODO: find correct value (or formula))
 				this.complete(ctx);
-			}else{
+			} else {
 				// Add the point
-				this.points.push({x, y});
+				this.points.push({ x, y });
 			}
 		}
-		this.last_click_pointerdown = {x, y, time: +new Date};
+		this.last_click_pointerdown = { x, y, time: +new Date };
 	},
 	paint(ctx, x, y) {
-		if(this.points.length < 1){ return; }
-		
+		if (this.points.length < 1) { return; }
+
 		const i = this.points.length - 1;
 		this.points[i].x = x;
 		this.points[i].y = y;
@@ -939,7 +939,7 @@ window.tools = [{
 				this.points
 			);
 			stroke_size = orig_stroke_size;
-		} else if(this.points.length > 1) {
+		} else if (this.points.length > 1) {
 			this.preview_canvas.ctx.strokeStyle = stroke_color;
 			draw_line_strip(
 				this.preview_canvas.ctx,
@@ -956,7 +956,7 @@ window.tools = [{
 	},
 	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
 		// if(!pointer_active && !pointer_over_canvas){return;}
-		if(!this.preview_canvas){return;}
+		if (!this.preview_canvas) { return; }
 
 		ctx.scale(scale, scale);
 		ctx.translate(translate_x, translate_y);
@@ -968,7 +968,7 @@ window.tools = [{
 			undoable({
 				name: localize("Polygon"),
 				icon: get_icon_for_tool(this),
-			}, ()=> {
+			}, () => {
 				ctx.fillStyle = fill_color;
 				ctx.strokeStyle = stroke_color;
 
@@ -1000,10 +1000,10 @@ window.tools = [{
 	},
 	reset() {
 		this.points = [];
-		this.last_click_pointerdown = {x: -Infinity, y: -Infinity, time: -Infinity};
-		this.last_click_pointerup = {x: -Infinity, y: -Infinity, time: -Infinity};
-		
-		if(!this.preview_canvas){return;}
+		this.last_click_pointerdown = { x: -Infinity, y: -Infinity, time: -Infinity };
+		this.last_click_pointerup = { x: -Infinity, y: -Infinity, time: -Infinity };
+
+		if (!this.preview_canvas) { return; }
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 	},
@@ -1020,13 +1020,13 @@ window.tools = [{
 	description: localize("Draws an ellipse with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape(ctx, x, y, w, h) {
-		if(w < 0){ x += w; w = -w; }
-		if(h < 0){ y += h; h = -h; }
+		if (w < 0) { x += w; w = -w; }
+		if (h < 0) { y += h; h = -h; }
 
-		if(w < stroke_size || h < stroke_size){
+		if (w < stroke_size || h < stroke_size) {
 			ctx.fillStyle = ctx.strokeStyle;
 			draw_ellipse(ctx, x, y, w, h, false, true);
-		}else{
+		} else {
 			draw_ellipse(
 				ctx,
 				x + ~~(stroke_size / 2),
@@ -1077,12 +1077,12 @@ window.tools = [{
 	description: localize("Draws a rounded rectangle with the selected fill style."),
 	cursor: ["precise", [16, 16], "crosshair"],
 	shape(ctx, x, y, w, h) {
-		if(w < 0){ x += w; w = -w; }
-		if(h < 0){ y += h; h = -h; }
+		if (w < 0) { x += w; w = -w; }
+		if (h < 0) { y += h; h = -h; }
 
-		if(w < stroke_size || h < stroke_size){
+		if (w < stroke_size || h < stroke_size) {
 			ctx.fillStyle = ctx.strokeStyle;
-			const radius = Math.min(8, w/2, h/2);
+			const radius = Math.min(8, w / 2, h / 2);
 			// const radius_x = Math.min(8, w/2);
 			// const radius_y = Math.min(8, h/2);
 			draw_rounded_rectangle(
@@ -1093,8 +1093,8 @@ window.tools = [{
 				false,
 				true
 			);
-		}else{
-			const radius = Math.min(8, (w - stroke_size)/2, (h - stroke_size)/2);
+		} else {
+			const radius = Math.min(8, (w - stroke_size) / 2, (h - stroke_size) / 2);
 			// const radius_x = Math.min(8, (w - stroke_size)/2);
 			// const radius_y = Math.min(8, (h - stroke_size)/2);
 			draw_rounded_rectangle(
@@ -1115,7 +1115,7 @@ window.tools = [{
 
 /* eslint-enable no-restricted-syntax */
 
-tools.forEach((tool)=> {
+tools.forEach((tool) => {
 	if (tool.selectBox) {
 		let drag_start_x = 0;
 		let drag_start_y = 0;
@@ -1124,38 +1124,38 @@ tools.forEach((tool)=> {
 		let rect_y = 0;
 		let rect_width = 0;
 		let rect_height = 0;
-		
-		tool.pointerdown = ()=> {
+
+		tool.pointerdown = () => {
 			drag_start_x = pointer.x;
 			drag_start_y = pointer.y;
 			pointer_has_moved = false;
-			$G.one("pointermove", ()=> {
+			$G.one("pointermove", () => {
 				pointer_has_moved = true;
 			});
-			if(selection){
+			if (selection) {
 				meld_selection_into_canvas();
 			}
-			if(textbox){
+			if (textbox) {
 				meld_textbox_into_canvas();
 			}
 			canvas_handles.hide();
 		};
-		tool.paint = ()=> {
+		tool.paint = () => {
 			rect_x = ~~Math.max(0, Math.min(drag_start_x, pointer.x));
 			rect_y = ~~Math.max(0, Math.min(drag_start_y, pointer.y));
 			rect_width = (~~Math.min(main_canvas.width, Math.max(drag_start_x, pointer.x) + 1)) - rect_x;
 			rect_height = (~~Math.min(main_canvas.height, Math.max(drag_start_y, pointer.y + 1))) - rect_y;
 		};
-		tool.pointerup = ()=> {
+		tool.pointerup = () => {
 			canvas_handles.show();
 			tool.selectBox(rect_x, rect_y, rect_width, rect_height);
 		};
-		tool.cancel = ()=> {
+		tool.cancel = () => {
 			canvas_handles.show();
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
-			if(!pointer_active){ return; }
-			if(!pointer_has_moved) { return; }
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+			if (!pointer_active) { return; }
+			if (!pointer_has_moved) { return; }
 
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);
@@ -1163,38 +1163,38 @@ tools.forEach((tool)=> {
 			// make the document canvas part of the helper canvas so that inversion can apply to it
 			ctx.drawImage(main_canvas, 0, 0);
 		};
-		tool.drawPreviewAboveGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
-			if(!pointer_active){ return; }
-			if(!pointer_has_moved) { return; }
+		tool.drawPreviewAboveGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+			if (!pointer_active) { return; }
+			if (!pointer_has_moved) { return; }
 
 			draw_selection_box(ctx, rect_x, rect_y, rect_width, rect_height, scale, translate_x, translate_y);
 		};
 	}
 	if (tool.shape) {
 		tool.shape_canvas = null;
-		tool.pointerdown = ()=> {
+		tool.pointerdown = () => {
 			tool.shape_canvas = make_canvas(main_canvas.width, main_canvas.height);
 		};
-		tool.paint = ()=> {
+		tool.paint = () => {
 			tool.shape_canvas.ctx.clearRect(0, 0, tool.shape_canvas.width, tool.shape_canvas.height);
 			tool.shape_canvas.ctx.fillStyle = main_ctx.fillStyle;
 			tool.shape_canvas.ctx.strokeStyle = main_ctx.strokeStyle;
 			tool.shape_canvas.ctx.lineWidth = main_ctx.lineWidth;
-			tool.shape(tool.shape_canvas.ctx, pointer_start.x, pointer_start.y, pointer.x-pointer_start.x, pointer.y-pointer_start.y);
+			tool.shape(tool.shape_canvas.ctx, pointer_start.x, pointer_start.y, pointer.x - pointer_start.x, pointer.y - pointer_start.y);
 		};
-		tool.pointerup = ()=> {
-			if(!tool.shape_canvas){ return; }
+		tool.pointerup = () => {
+			if (!tool.shape_canvas) { return; }
 			undoable({
 				name: tool.name,
 				icon: get_icon_for_tool(tool),
-			}, ()=> {
+			}, () => {
 				main_ctx.drawImage(tool.shape_canvas, 0, 0);
 				tool.shape_canvas = null;
 			});
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
-			if(!pointer_active){ return; }
-			if(!tool.shape_canvas){ return; }
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+			if (!pointer_active) { return; }
+			if (!tool.shape_canvas) { return; }
 
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);
@@ -1207,7 +1207,7 @@ tools.forEach((tool)=> {
 		// binary mask of the drawn area, either opaque white or transparent
 		tool.mask_canvas = null;
 
-		tool.pointerdown = (ctx, x, y)=> {
+		tool.pointerdown = (ctx, x, y) => {
 			if (!tool.mask_canvas) {
 				tool.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			}
@@ -1219,30 +1219,30 @@ tools.forEach((tool)=> {
 			}
 			tool.mask_canvas.ctx.disable_image_smoothing();
 		};
-		tool.pointerup = ()=> {
+		tool.pointerup = () => {
 			if (!tool.mask_canvas) {
 				return; // not sure why this would happen per se
 			}
 			undoable({
 				name: tool.name,
 				icon: get_icon_for_tool(tool),
-			}, ()=> {
+			}, () => {
 				tool.render_from_mask(main_ctx);
 
 				tool.mask_canvas.width = 1;
 				tool.mask_canvas.height = 1;
 			});
 		};
-		tool.paint = (ctx, x, y)=> {
+		tool.paint = (ctx, x, y) => {
 			tool.paint_mask(tool.mask_canvas.ctx, x, y);
 		};
-		tool.cancel = ()=> {
+		tool.cancel = () => {
 			if (tool.mask_canvas) {
 				tool.mask_canvas.width = 1;
 				tool.mask_canvas.height = 1;
 			}
 		};
-		tool.render_from_mask = (ctx, previewing)=> { // could be private
+		tool.render_from_mask = (ctx, previewing) => { // could be private
 			ctx.save();
 			ctx.globalCompositeOperation = "destination-out";
 			ctx.drawImage(tool.mask_canvas, 0, 0);
@@ -1264,14 +1264,14 @@ tools.forEach((tool)=> {
 				const h = ctx.canvas.height;
 				const y = (t % 1) * -h * (n - 1);
 				const gradient = ctx.createLinearGradient(0, y, 0, y + h * n);
-				gradient.addColorStop(0/n, "red");
-				gradient.addColorStop(1/n, "gold");
-				gradient.addColorStop(2/n, "#00d90b");
-				gradient.addColorStop(3/n, "#2e64d9");
-				gradient.addColorStop(4/n, "#8f2ed9");
+				gradient.addColorStop(0 / n, "red");
+				gradient.addColorStop(1 / n, "gold");
+				gradient.addColorStop(2 / n, "#00d90b");
+				gradient.addColorStop(3 / n, "#2e64d9");
+				gradient.addColorStop(4 / n, "#8f2ed9");
 				// last two same as the first two so it can seamlessly wrap
-				gradient.addColorStop(5/n, "red");
-				gradient.addColorStop(6/n, "gold");
+				gradient.addColorStop(5 / n, "red");
+				gradient.addColorStop(6 / n, "gold");
 				color = gradient;
 			}
 			// @TODO: perf: keep this canvas around too
@@ -1280,8 +1280,8 @@ tools.forEach((tool)=> {
 			ctx.drawImage(mask_fill_canvas, 0, 0);
 			return translucent;
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
-			if(!pointer_active && !pointer_over_canvas){return;}
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+			if (!pointer_active && !pointer_over_canvas) { return; }
 
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);
@@ -1299,7 +1299,7 @@ tools.forEach((tool)=> {
 		// binary mask of the drawn area, either opaque white or transparent
 		tool.mask_canvas = null;
 
-		tool.init_mask_canvas = (ctx, x, y)=> {
+		tool.init_mask_canvas = (ctx, x, y) => {
 			if (!tool.mask_canvas) {
 				tool.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			}
@@ -1311,14 +1311,14 @@ tools.forEach((tool)=> {
 			}
 			tool.mask_canvas.ctx.disable_image_smoothing();
 		};
-		tool.pointerdown = (ctx, x, y)=> {
+		tool.pointerdown = (ctx, x, y) => {
 			tool.init_mask_canvas();
 		};
-		tool.pointerup = ()=> {
+		tool.pointerup = () => {
 			undoable({
 				name: tool.name,
 				icon: get_icon_for_tool(tool),
-			}, ()=> {
+			}, () => {
 				tool.render_from_mask(main_ctx);
 
 				tool.mask_canvas.width = 1;
@@ -1326,12 +1326,12 @@ tools.forEach((tool)=> {
 			});
 		};
 
-		tool.paint = ()=> {
+		tool.paint = () => {
 			const brush = tool.get_brush();
 			const circumference_points = get_circumference_points_for_brush(brush.shape, brush.size);
 			tool.mask_canvas.ctx.fillStyle = stroke_color;
 			const iterate_line = brush.size > 1 ? bresenham_dense_line : bresenham_line;
-			iterate_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y)=> {
+			iterate_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 				for (const point of circumference_points) {
 					tool.mask_canvas.ctx.fillRect(x + point.x, y + point.y, 1, 1);
 				}
@@ -1339,14 +1339,14 @@ tools.forEach((tool)=> {
 			stamp_brush_canvas(tool.mask_canvas.ctx, pointer_previous.x, pointer_previous.y, brush.shape, brush.size);
 			stamp_brush_canvas(tool.mask_canvas.ctx, pointer.x, pointer.y, brush.shape, brush.size);
 		};
-		
-		tool.cancel = ()=> {
+
+		tool.cancel = () => {
 			if (tool.mask_canvas) {
 				tool.mask_canvas.width = 1;
 				tool.mask_canvas.height = 1;
 			}
 		};
-		tool.render_from_mask = (ctx, previewing)=> { // could be private
+		tool.render_from_mask = (ctx, previewing) => { // could be private
 			ctx.save();
 			ctx.globalCompositeOperation = "destination-out";
 			ctx.drawImage(tool.mask_canvas, 0, 0);
@@ -1368,14 +1368,14 @@ tools.forEach((tool)=> {
 				const h = ctx.canvas.height;
 				const y = (t % 1) * -h * (n - 1);
 				const gradient = ctx.createLinearGradient(0, y, 0, y + h * n);
-				gradient.addColorStop(0/n, "red");
-				gradient.addColorStop(1/n, "gold");
-				gradient.addColorStop(2/n, "#00d90b");
-				gradient.addColorStop(3/n, "#2e64d9");
-				gradient.addColorStop(4/n, "#8f2ed9");
+				gradient.addColorStop(0 / n, "red");
+				gradient.addColorStop(1 / n, "gold");
+				gradient.addColorStop(2 / n, "#00d90b");
+				gradient.addColorStop(3 / n, "#2e64d9");
+				gradient.addColorStop(4 / n, "#8f2ed9");
 				// last two same as the first two so it can seamlessly wrap
-				gradient.addColorStop(5/n, "red");
-				gradient.addColorStop(6/n, "gold");
+				gradient.addColorStop(5 / n, "red");
+				gradient.addColorStop(6 / n, "gold");
 				color = gradient;
 			}
 			// @TODO: perf: keep this canvas around too
@@ -1390,8 +1390,8 @@ tools.forEach((tool)=> {
 			ctx.drawImage(mask_fill_canvas, 0, 0);
 			return translucent;
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y)=> {
-			if(!pointer_active && !pointer_over_canvas){return;}
+		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+			if (!pointer_active && !pointer_over_canvas) { return; }
 
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);

@@ -25,7 +25,7 @@ function get_hotkey(text) {
 }
 
 let localizations = {};
-window.localize = (english_text, ...interpolations)=> {
+window.localize = (english_text, ...interpolations) => {
 	function find_localization(english_text) {
 		const amp_index = index_of_hotkey(english_text);
 		if (amp_index > -1) {
@@ -51,7 +51,7 @@ window.localize = (english_text, ...interpolations)=> {
 	}
 	function interpolate(text, interpolations) {
 		for (let i = 0; i < interpolations.length; i++) {
-			text = text.replace(`%${i+1}`, interpolations[i]);
+			text = text.replace(`%${i + 1}`, interpolations[i]);
 		}
 		return text;
 	}
@@ -1038,7 +1038,7 @@ for (const accepted_language of accepted_languages) {
 function get_language() {
 	return current_language;
 }
-function get_direction(language=current_language) {
+function get_direction(language = current_language) {
 	return language.match(/^(ar|dv|fa|ha|he|ks|ku|ms|pa|ps|sd|ug|yi)\b/i) ? "rtl" : "ltr";
 }
 function load_language(language) {
@@ -1059,8 +1059,8 @@ function load_language(language) {
 		stylesheet.setAttribute("href", href);
 		// hack to wait for stylesheet to load
 		const img = document.createElement("img");
-		img.onerror = ()=> {
-			$(()=> {
+		img.onerror = () => {
+			$(() => {
 				$G.triggerHandler("theme-load"); // signal layout change
 			});
 		};

@@ -10,7 +10,7 @@ function show_help() {
 		root: "help",
 		contentsFile: "help/mspaint.hhc",
 	}).$help_window;
-	$help_window.on("close", ()=> {
+	$help_window.on("close", () => {
 		$help_window = null;
 	});
 }
@@ -18,7 +18,7 @@ function show_help() {
 // shared code with 98.js.org
 // (copy-pasted / manually synced for now)
 
-function open_help_viewer(options){
+function open_help_viewer(options) {
 	const $help_window = $Window({
 		title: options.title || "Help Topics",
 		icons: {
@@ -34,19 +34,19 @@ function open_help_viewer(options){
 
 	const $main = $(E("div")).addClass("main");
 	const $toolbar = $(E("div")).addClass("toolbar");
-	const add_toolbar_button = (name, sprite_n, action_fn, enabled_fn)=> {
+	const add_toolbar_button = (name, sprite_n, action_fn, enabled_fn) => {
 		const $button = $("<button class='lightweight'>")
-		.append($("<span>").text(name))
-		.appendTo($toolbar)
-		.on("click", ()=> {
-			action_fn();
-		});
+			.append($("<span>").text(name))
+			.appendTo($toolbar)
+			.on("click", () => {
+				action_fn();
+			});
 		$("<div class='icon'/>")
-		.appendTo($button)
-		.css({
-			backgroundPosition: `${-sprite_n * 55}px 0px`,
-		});
-		const update_enabled = ()=> {
+			.appendTo($button)
+			.css({
+				backgroundPosition: `${-sprite_n * 55}px 0px`,
+			});
+		const update_enabled = () => {
 			$button[0].disabled = enabled_fn && !enabled_fn();
 		};
 		update_enabled();
@@ -54,12 +54,12 @@ function open_help_viewer(options){
 		$help_window.on("update-buttons", update_enabled);
 		return $button;
 	};
-	const measure_sidebar_width = ()=>
+	const measure_sidebar_width = () =>
 		$contents.outerWidth() +
 		parseFloat(getComputedStyle($contents[0]).getPropertyValue("margin-left")) +
 		parseFloat(getComputedStyle($contents[0]).getPropertyValue("margin-right")) +
 		$resizer.outerWidth();
-	const $hide_button = add_toolbar_button("Hide", 0, ()=> {
+	const $hide_button = add_toolbar_button("Hide", 0, () => {
 		const toggling_width = measure_sidebar_width();
 		$contents.hide();
 		$resizer.hide();
@@ -69,7 +69,7 @@ function open_help_viewer(options){
 		$help_window.css("left", $help_window.offset().left + toggling_width);
 		$help_window.bringTitleBarInBounds();
 	});
-	const $show_button = add_toolbar_button("Show", 5, ()=> {
+	const $show_button = add_toolbar_button("Show", 5, () => {
 		$contents.show();
 		$resizer.show();
 		$show_button.hide();
@@ -86,31 +86,31 @@ function open_help_viewer(options){
 		}
 		$help_window.css("max-width", "");
 	}).hide();
-	add_toolbar_button("Back", 1, ()=> {
+	add_toolbar_button("Back", 1, () => {
 		$iframe[0].contentWindow.history.back();
 		ignore_one_load = true;
 		back_length -= 1;
 		forward_length += 1;
-	}, ()=> back_length > 0);
-	add_toolbar_button("Forward", 2, ()=> {
+	}, () => back_length > 0);
+	add_toolbar_button("Forward", 2, () => {
 		$iframe[0].contentWindow.history.forward();
 		ignore_one_load = true;
 		forward_length -= 1;
 		back_length += 1;
-	}, ()=> forward_length > 0);
-	add_toolbar_button("Options", 3, ()=> {}, ()=> false); // @TODO: hotkey and underline on O
-	add_toolbar_button("Web Help", 4, ()=> {
+	}, () => forward_length > 0);
+	add_toolbar_button("Options", 3, () => { }, () => false); // @TODO: hotkey and underline on O
+	add_toolbar_button("Web Help", 4, () => {
 		iframe.src = "help/online_support.htm";
 	});
-	
-	const $iframe = $Iframe({src: "help/default.html"}).addClass("inset-deep");
+
+	const $iframe = $Iframe({ src: "help/default.html" }).addClass("inset-deep");
 	const iframe = $iframe[0];
 	iframe.$window = $help_window; // for focus handling integration
 	const $resizer = $(E("div")).addClass("resizer");
 	const $contents = $(E("ul")).addClass("contents inset-deep");
 
 	// @TODO: fix race conditions
-	$iframe.on("load", ()=> {
+	$iframe.on("load", () => {
 		if (!ignore_one_load) {
 			back_length += 1;
 			forward_length = 0;
@@ -123,9 +123,9 @@ function open_help_viewer(options){
 	$main.append($contents, $resizer, $iframe);
 	$help_window.$content.append($toolbar, $main);
 
-	$help_window.css({width: 800, height: 600});
+	$help_window.css({ width: 800, height: 600 });
 
-	$iframe.attr({name: "help-frame"});
+	$iframe.attr({ name: "help-frame" });
 	$iframe.css({
 		backgroundColor: "white",
 		border: "",
@@ -152,13 +152,13 @@ function open_help_viewer(options){
 		bottom: 0,
 		zIndex: 1,
 	});
-	$resizer.on("pointerdown", (e)=> {
+	$resizer.on("pointerdown", (e) => {
 		let pointermove, pointerup;
-		const getPos = (e)=>
+		const getPos = (e) =>
 			Math.min($help_window.width() - 100, Math.max(20,
 				e.clientX - $help_window.$content.offset().left
 			));
-		$G.on("pointermove", pointermove = (e)=> {
+		$G.on("pointermove", pointermove = (e) => {
 			$resizer.css({
 				position: "absolute",
 				left: getPos(e)
@@ -167,7 +167,7 @@ function open_help_viewer(options){
 				marginRight: resizer_width,
 			});
 		});
-		$G.on("pointerup", pointerup = (e)=> {
+		$G.on("pointerup", pointerup = (e) => {
 			$G.off("pointermove", pointermove);
 			$G.off("pointerup", pointerup);
 			$resizer.css({
@@ -180,7 +180,7 @@ function open_help_viewer(options){
 			});
 		});
 	});
-	
+
 	const parse_object_params = $object => {
 		// parse an $(<object>) to a plain object of key value pairs
 		const object = {};
@@ -189,9 +189,9 @@ function open_help_viewer(options){
 		}
 		return object;
 	};
-	
+
 	let $last_expanded;
-	
+
 	const $Item = text => {
 		const $item = $(E("div")).addClass("item").text(text.trim());
 		$item.on("mousedown", () => {
@@ -200,8 +200,8 @@ function open_help_viewer(options){
 		});
 		$item.on("click", () => {
 			const $li = $item.parent();
-			if($li.is(".folder")){
-				if($last_expanded){
+			if ($li.is(".folder")) {
+				if ($last_expanded) {
 					$last_expanded.not($li).removeClass("expanded");
 				}
 				$li.toggleClass("expanded");
@@ -210,31 +210,31 @@ function open_help_viewer(options){
 		});
 		return $item;
 	};
-	
+
 	const $default_item_li = $(E("li")).addClass("page");
-	$default_item_li.append($Item("Welcome to Help").on("click", ()=> {
-		$iframe.attr({src: "help/default.html"});
+	$default_item_li.append($Item("Welcome to Help").on("click", () => {
+		$iframe.attr({ src: "help/default.html" });
 	}));
 	$contents.append($default_item_li);
-	
+
 	function renderItem(source_li, $folder_items_ul) {
 		const object = parse_object_params($(source_li).children("object"));
-		if ($(source_li).find("li").length > 0){
-			
+		if ($(source_li).find("li").length > 0) {
+
 			const $folder_li = $(E("li")).addClass("folder");
 			$folder_li.append($Item(object.Name));
 			$contents.append($folder_li);
-			
+
 			const $folder_items_ul = $(E("ul"));
 			$folder_li.append($folder_items_ul);
-			
-			$(source_li).children("ul").children().get().forEach((li)=> {
+
+			$(source_li).children("ul").children().get().forEach((li) => {
 				renderItem(li, $folder_items_ul);
 			});
 		} else {
 			const $item_li = $(E("li")).addClass("page");
-			$item_li.append($Item(object.Name).on("click", ()=> {
-				$iframe.attr({src: `${options.root}/${object.Local}`});
+			$item_li.append($Item(object.Name).on("click", () => {
+				$iframe.attr({ src: `${options.root}/${object.Local}` });
 			}));
 			if ($folder_items_ul) {
 				$folder_items_ul.append($item_li);
@@ -244,15 +244,15 @@ function open_help_viewer(options){
 		}
 	}
 
-	fetch(options.contentsFile).then((response)=> {
-		response.text().then((hhc)=> {
-			$($.parseHTML(hhc)).filter("ul").children().get().forEach((li)=> {
+	fetch(options.contentsFile).then((response) => {
+		response.text().then((hhc) => {
+			$($.parseHTML(hhc)).filter("ul").children().get().forEach((li) => {
 				renderItem(li, null);
 			});
-		}, (error)=> {
+		}, (error) => {
 			show_error_message(`${localize("Failed to launch help.")} Failed to read ${options.contentsFile}.`, error);
 		});
-	}, (/* error */)=> {
+	}, (/* error */) => {
 		// access to error message is not allowed either, basically
 		if (location.protocol === "file:") {
 			showMessageBox({
@@ -272,7 +272,7 @@ function open_help_viewer(options){
 			show_error_message(`${localize("Failed to launch help.")} ${localize("Access to %1 was denied.", options.contentsFile)}`);
 		}
 	});
-	
+
 	// @TODO: keyboard accessability
 	// $help_window.on("keydown", (e)=> {
 	// 	switch(e.keyCode){
@@ -290,64 +290,64 @@ function open_help_viewer(options){
 
 var programs_being_loaded = 0;
 
-function $Iframe(options){
+function $Iframe(options) {
 	var $iframe = $("<iframe allowfullscreen sandbox='allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-modals allow-popups allow-downloads'>");
 	var iframe = $iframe[0];
 
 	var disable_delegate_pointerup = false;
-	
-	$iframe.focus_contents = function(){
+
+	$iframe.focus_contents = function () {
 		if (!iframe.contentWindow) {
 			return;
 		}
 		if (iframe.contentDocument.hasFocus()) {
 			return;
 		}
-		
+
 		disable_delegate_pointerup = true;
 		iframe.contentWindow.focus();
-		setTimeout(function(){
+		setTimeout(function () {
 			iframe.contentWindow.focus();
 			disable_delegate_pointerup = false;
 		});
 	};
-	
+
 	// Let the iframe to handle mouseup events outside itself
-	var delegate_pointerup = function(){
+	var delegate_pointerup = function () {
 		if (disable_delegate_pointerup) {
 			return;
 		}
 		// This try-catch may only be needed for running Cypress tests.
 		try {
-			if(iframe.contentWindow && iframe.contentWindow.jQuery){
+			if (iframe.contentWindow && iframe.contentWindow.jQuery) {
 				iframe.contentWindow.jQuery("body").trigger("pointerup");
 			}
-			if(iframe.contentWindow){
-				const event = new iframe.contentWindow.MouseEvent("mouseup", {button: 0});
+			if (iframe.contentWindow) {
+				const event = new iframe.contentWindow.MouseEvent("mouseup", { button: 0 });
 				iframe.contentWindow.dispatchEvent(event);
-				const event2 = new iframe.contentWindow.MouseEvent("mouseup", {button: 2});
+				const event2 = new iframe.contentWindow.MouseEvent("mouseup", { button: 2 });
 				iframe.contentWindow.dispatchEvent(event2);
 			}
-		} catch(error) {
+		} catch (error) {
 			console.log("Failed to access iframe to delegate pointerup; got", error);
 		}
 	};
 	$G.on("mouseup blur", delegate_pointerup);
-	$iframe.destroy = ()=> {
+	$iframe.destroy = () => {
 		$G.off("mouseup blur", delegate_pointerup);
 	};
-	
+
 	// @TODO: delegate pointermove events too?
 
 	$("body").addClass("loading-program");
 	programs_being_loaded += 1;
-	
-	$iframe.on("load", function(){
-		
-		if(--programs_being_loaded <= 0){
+
+	$iframe.on("load", function () {
+
+		if (--programs_being_loaded <= 0) {
 			$("body").removeClass("loading-program");
 		}
-		
+
 		// This try-catch may only be needed for running Cypress tests.
 		try {
 			if (window.themeCSSProperties) {
@@ -374,40 +374,40 @@ function $Iframe(options){
 			}
 
 			var $contentWindow = $(iframe.contentWindow);
-			$contentWindow.on("pointerdown click", function(e){
+			$contentWindow.on("pointerdown click", function (e) {
 				iframe.$window && iframe.$window.focus();
-				
+
 				// from close_menus in $MenuBar
 				$(".menu-button").trigger("release");
 				// Close any rogue floating submenus
 				$(".menu-popup").hide();
 			});
 			// We want to disable pointer events for other iframes, but not this one
-			$contentWindow.on("pointerdown", function(e){
+			$contentWindow.on("pointerdown", function (e) {
 				$iframe.css("pointer-events", "all");
 				$("body").addClass("dragging");
 			});
-			$contentWindow.on("pointerup", function(e){
+			$contentWindow.on("pointerup", function (e) {
 				$("body").removeClass("dragging");
 				$iframe.css("pointer-events", "");
 			});
 			// $("iframe").css("pointer-events", ""); is called elsewhere.
 			// Otherwise iframes would get stuck in this interaction mode
-			
-			iframe.contentWindow.close = function(){
+
+			iframe.contentWindow.close = function () {
 				iframe.$window && iframe.$window.close();
 			};
 			// @TODO: hook into saveAs (a la FileSaver.js) and another function for opening files
 			// iframe.contentWindow.saveAs = function(){
 			// 	saveAsDialog();
 			// };
-			
-		} catch(error) {
+
+		} catch (error) {
 			console.log("Failed to reach into iframe; got", error);
 		}
 	});
 	if (options.src) {
-		$iframe.attr({src: options.src});
+		$iframe.attr({ src: options.src });
 	}
 	$iframe.css({
 		minWidth: 0,
@@ -420,9 +420,9 @@ function $Iframe(options){
 }
 
 // function $IframeWindow(options){
-	
+
 // 	var $win = new $Window(options);
-	
+
 // 	var $iframe = $win.$iframe = $Iframe({src: options.src});
 // 	$win.$content.append($iframe);
 // 	var iframe = $win.iframe = $iframe[0];
@@ -441,7 +441,7 @@ function $Iframe(options){
 // 		$win.focus();
 // 		// $iframe.focus_contents();
 // 	});
-	
+
 // 	$win.setInnerDimensions = ({width, height})=> {
 // 		const width_from_frame = $win.width() - $win.$content.width();
 // 		const height_from_frame = $win.height() - $win.$content.height();
@@ -458,25 +458,25 @@ function $Iframe(options){
 // 		display: "flex",
 // 		flexDirection: "column",
 // 	});
-	
+
 // 	// @TODO: cascade windows
 // 	$win.center();
 // 	$win.hide();
-	
+
 // 	return $win;
 // }
 
 // Fix dragging things (i.e. windows) over iframes (i.e. other windows)
 // (when combined with a bit of css, .dragging iframe { pointer-events: none; })
 // (and a similar thing in $IframeWindow)
-$(window).on("pointerdown", function(e){
+$(window).on("pointerdown", function (e) {
 	//console.log(e.type);
 	$("body").addClass("dragging");
 });
-$(window).on("pointerup dragend blur", function(e){
+$(window).on("pointerup dragend blur", function (e) {
 	//console.log(e.type);
-	if(e.type === "blur"){
-		if(document.activeElement.tagName.match(/iframe/i)){
+	if (e.type === "blur") {
+		if (document.activeElement.tagName.match(/iframe/i)) {
 			return;
 		}
 	}

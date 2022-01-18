@@ -18,8 +18,8 @@ if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
 	document.write(
 		'<style>body { text-align: center; }</style>' +
 		'<div className="not-supported">' +
-			'<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
-			'<p className="not-supported-details">Try Chrome, Firefox, or Edge.</p>' +
+		'<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
+		'<p className="not-supported-details">Try Chrome, Firefox, or Edge.</p>' +
 		'</div>'
 	);
 }

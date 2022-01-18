@@ -51,7 +51,7 @@ async function write_blob_to_file_path(filePath, blob) {
 
 window.systemHooks = window.systemHooks || {};
 window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable }) => {
-	
+
 	// First filter in filters list determines default selected file type.
 	// @TODO: default to existing extension, except it would be awkward to rearrange the list...
 	// const suggestedExtension = get_file_extension(defaultFileName);

@@ -9,7 +9,7 @@
 // @noframes
 // ==/UserScript==
 
-(function() {
+(function () {
 	'use strict';
 
 	let cleanUp = null;
@@ -26,10 +26,10 @@
 		img.style.left = "0";
 		img.style.pointerEvents = "all";
 		img.draggable = false;
-		img.addEventListener("mouseenter", ()=> {
+		img.addEventListener("mouseenter", () => {
 			img.style.left = `${-2 * screenshotWidth}px`;
 		});
-		img.addEventListener("mouseleave", ()=> {
+		img.addEventListener("mouseleave", () => {
 			img.style.left = "0";
 		});
 		var container = document.createElement("div");
@@ -52,25 +52,25 @@
 		container.appendChild(img);
 		document.body.appendChild(outerContainer);
 
-		cleanUp = ()=> {
+		cleanUp = () => {
 			originalImg.style.opacity = "";
 			container.style.transformOrigin = "center center";
 			container.style.transition = "opacity 0.2s ease, transform 0.2s ease";
 			container.style.opacity = 0;
 			container.style.transform = "scale(0.9)";
-			setTimeout(()=> {
+			setTimeout(() => {
 				outerContainer.remove();
 			}, 500);
 			cleanUp = null;
 		};
 	}
 
-	addEventListener("keydown", e=> {
+	addEventListener("keydown", e => {
 		if (e.key === "d") {
 			if (cleanUp) {
 				cleanUp();
 			} else {
-				var originalImg = document.elementFromPoint(innerWidth/2, innerHeight/2);
+				var originalImg = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
 				if (!originalImg || !originalImg.matches("img")) {
 					console.warn("Didn't find an image in the middle of the page. Found", originalImg);
 					return;
@@ -84,7 +84,7 @@
 
 	// mousedown is TAKEN - with stopPropagation, presumably
 	// (useCapture doesn't help)
-	addEventListener("pointerdown", (e)=> {
+	addEventListener("pointerdown", (e) => {
 		if (cleanUp) { cleanUp(); }
 	});
 

@@ -1,7 +1,7 @@
 class OnCanvasHelperLayer extends OnCanvasObject {
 	constructor(x, y, width, height, hideMainCanvasHandles, pixelRatio = 1) {
 		super(x, y, width, height, hideMainCanvasHandles);
-		
+
 		this.$el.addClass("helper-layer");
 		this.$el.css({
 			pointerEvents: "none",

@@ -12,7 +12,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		foreignObject.setAttribute("x", 0);
 		foreignObject.setAttribute("y", 0);
 		svg.append(foreignObject);
-		
+
 		// inline styles so that they'll be serialized for the SVG
 		this.$editor.css({
 			position: "absolute",
@@ -37,7 +37,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		this.canvas.style.pointerEvents = "none";
 		this.$el.append(this.canvas);
 
-		const update_size = ()=> {
+		const update_size = () => {
 			this.position();
 			this.$el.triggerHandler("update"); // update handles
 			this.$editor.add(render_textarea).css({
@@ -46,7 +46,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			});
 		};
 
-		const auto_size = ()=> {
+		const auto_size = () => {
 			// Auto-expand, and apply minimum size.
 			edit_textarea.style.height = "";
 			edit_textarea.style.minHeight = "0px";
@@ -60,13 +60,13 @@ class OnCanvasTextBox extends OnCanvasObject {
 			update_size();
 		};
 
-		const update = ()=> {
-			requestAnimationFrame(()=> {
+		const update = () => {
+			requestAnimationFrame(() => {
 				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
 			});
 
 			const font = text_tool_font;
-			const get_solid_color = (swatch)=> `rgba(${get_rgba_from_color(swatch).join(", ")}`;
+			const get_solid_color = (swatch) => `rgba(${get_rgba_from_color(swatch).join(", ")}`;
 			font.color = get_solid_color(selected_colors.foreground);
 			font.background = tool_transparent_mode ? "transparent" : get_solid_color(selected_colors.background);
 			this.$editor.add(this.canvas).css({
@@ -96,7 +96,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				render_textarea.removeChild(render_textarea.firstChild);
 			}
 			render_textarea.appendChild(document.createTextNode(edit_textarea.value));
-			
+
 			svg.setAttribute("width", this.width);
 			svg.setAttribute("height", this.height);
 			foreignObject.setAttribute("width", this.width);
@@ -104,15 +104,15 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 			var svg_source = new XMLSerializer().serializeToString(svg);
 			var data_url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg_source)}`;
-			
+
 			var img = new Image();
-			img.onload = ()=> {
+			img.onload = () => {
 				this.canvas.width = this.width;
 				this.canvas.height = this.height;
 				this.canvas.ctx.drawImage(img, 0, 0);
 				update_helper_layer(); // @TODO: under-grid specific helper layer?
 			};
-			img.onerror = (event)=> {
+			img.onerror = (event) => {
 				window.console && console.log("Failed to load image", event);
 			};
 			img.src = data_url;
@@ -120,8 +120,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		$G.on("option-changed", this._on_option_changed = update);
 		this.$editor.on("input", this._on_input = update);
-		this.$editor.on("scroll", this._on_scroll = ()=> {
-			requestAnimationFrame(()=> {
+		this.$editor.on("scroll", this._on_scroll = () => {
+			requestAnimationFrame(() => {
 				edit_textarea.scrollTop = 0; // prevent scrolling edit textarea to keep in sync
 			});
 		});
@@ -131,7 +131,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			touchAction: "none",
 		});
 		this.position();
-		
+
 		this.$el.append(this.$editor);
 		this.$editor[0].focus();
 		this.handles = new Handles({
@@ -139,8 +139,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 			$object_container: $canvas_area,
 			outset: 2,
 			thick: true,
-			get_rect: ()=> ({x: this.x, y: this.y, width: this.width, height: this.height}),
-			set_rect: ({x, y, width, height}) => {
+			get_rect: () => ({ x: this.x, y: this.y, width: this.width, height: this.height }),
+			set_rect: ({ x, y, width, height }) => {
 				this.x = x;
 				this.y = y;
 				this.width = width;
@@ -152,7 +152,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				this.canvas.width = width;
 				this.canvas.height = height;
 			},
-			constrain_rect: ({x, y, width, height}, x_axis, y_axis)=> {
+			constrain_rect: ({ x, y, width, height }, x_axis, y_axis) => {
 				// remember dimensions
 				const old_x = this.x;
 				const old_y = this.y;
@@ -176,7 +176,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				if (y_axis === -1) {
 					y = Math.min(this.y, old_y + old_height - this.height);
 				}
-				
+
 				// remember constrained dimensions
 				width = this.width;
 				height = this.height;
@@ -188,10 +188,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 				this.height = old_height;
 				update_size();
 
-				return {x, y, width, height};
+				return { x, y, width, height };
 			},
-			get_ghost_offset_left: ()=> parseFloat($canvas_area.css("padding-left")) + 1,
-			get_ghost_offset_top: ()=> parseFloat($canvas_area.css("padding-top")) + 1,
+			get_ghost_offset_left: () => parseFloat($canvas_area.css("padding-left")) + 1,
+			get_ghost_offset_top: () => parseFloat($canvas_area.css("padding-top")) + 1,
 		});
 		let mox, moy; // mouse offset
 		const pointermove = e => {
@@ -234,7 +234,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			OnCanvasTextBox.$fontbox = null;
 		}
 		const $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || new $FontBox();
-		const displace_font_box = ()=> {
+		const displace_font_box = () => {
 			// move the font box out of the way if it's overlapping the OnCanvasTextBox
 			const fb_rect = $fb[0].getBoundingClientRect();
 			const tb_rect = this.$el[0].getBoundingClientRect();
@@ -257,12 +257,12 @@ class OnCanvasTextBox extends OnCanvasObject {
 		update();
 
 		displace_font_box();
-		
+
 		// In case a software keyboard opens, like Optikey for eye gaze / head tracking users,
 		// or perhaps a handwriting input for pen tablet users, or *partially* for mobile browsers.
 		// Mobile browsers generally scroll the view for a textbox well enough, but
 		// don't include the custom behavior of moving the font box out of the way.
-		$(window).on("resize", this._on_window_resize = ()=> {
+		$(window).on("resize", this._on_window_resize = () => {
 			this.$editor[0].scrollIntoView({ block: 'nearest', inline: 'nearest' });
 			displace_font_box();
 		});

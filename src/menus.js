@@ -1,4 +1,4 @@
-(()=> {
+(() => {
 
 const looksLikeChrome = !!(window.chrome && (window.chrome.loadTimes || window.chrome.csi));
 // NOTE: Microsoft Edge includes window.chrome.app
@@ -12,7 +12,7 @@ window.menus = {
 			speech_recognition: [
 				"new", "new file", "new document", "create new document", "create a new document", "start new document", "start a new document",
 			],
-			action: ()=> { file_new(); },
+			action: () => { file_new(); },
 			description: localize("Creates a new document."),
 		},
 		{
@@ -24,7 +24,7 @@ window.menus = {
 				"show file picker", "show file chooser", "show file browser", "show finder",
 				"browser for file", "browse for a file", "browse for an image", "browse for an image file",
 			],
-			action: ()=> { file_open(); },
+			action: () => { file_open(); },
 			description: localize("Opens an existing document."),
 		},
 		{
@@ -38,7 +38,7 @@ window.menus = {
 				"download", "download document", "download file", "download image", "download picture", "download image file",
 				"download the document", "download the file", "download the image", "download the image file",
 			],
-			action: ()=> { file_save(); },
+			action: () => { file_save(); },
 			description: localize("Saves the active document."),
 		},
 		{
@@ -57,7 +57,7 @@ window.menus = {
 				"save file as a copy", "save file copy", "save file as copy", "save file under a new name", "save file with a new name",
 				"save image file as a copy", "save image file copy", "save image file as copy", "save image file under a new name", "save image file with a new name",
 			],
-			action: ()=> { file_save_as(); },
+			action: () => { file_save_as(); },
 			description: localize("Saves the active document with a new name."),
 		},
 		MENU_DIVIDER,
@@ -98,7 +98,7 @@ window.menus = {
 				"load picture from address",
 				"load picture from web address",
 			],
-			action: ()=> { file_load_from_url(); },
+			action: () => { file_load_from_url(); },
 			description: localize("Opens an image from the web."),
 		},
 		{
@@ -106,12 +106,12 @@ window.menus = {
 			speech_recognition: [
 				"upload to imgur", "upload image to imgur", "upload picture to imgur",
 			],
-			action: ()=> {
+			action: () => {
 				// include the selection in the saved image
 				deselect();
 
-				main_canvas.toBlob((blob)=> {
-					sanity_check_blob(blob, ()=> {
+				main_canvas.toBlob((blob) => {
+					sanity_check_blob(blob, () => {
 						show_imgur_uploader(blob);
 					});
 				});
@@ -126,7 +126,7 @@ window.menus = {
 				"show autosaves", "show saves", "show saved documents", "show saved files", "show saved pictures", "show saved images", "show local storage",
 				"autosaves", "autosave", "saved documents", "saved files", "saved pictures", "saved images", "local storage",
 			],
-			action: ()=> { manage_storage(); },
+			action: () => { manage_storage(); },
 			description: localize("Manages storage of previously created or opened pictures."),
 		},
 		MENU_DIVIDER,
@@ -135,7 +135,7 @@ window.menus = {
 			speech_recognition: [
 				"preview print", "print preview", "show print preview", "show preview of print",
 			],
-			action: ()=> {
+			action: () => {
 				print();
 			},
 			description: localize("Prints the active document and sets printing options."),
@@ -147,7 +147,7 @@ window.menus = {
 				"setup page for print", "setup page for printing", "set-up page for print", "set-up page for printing", "set up page for print", "set up page for printing",
 				"page setup", "printing setup", "page set-up", "printing set-up", "page set up", "printing set up",
 			],
-			action: ()=> {
+			action: () => {
 				print();
 			},
 			description: localize("Prints the active document and sets printing options."),
@@ -159,15 +159,15 @@ window.menus = {
 			speech_recognition: [
 				"print", "send to printer", "show print dialog",
 				"print page", "print image", "print picture", "print drawing",
-				"print out page", "print out image", "print out picture", "print out drawing", 
-				"print out the page", "print out the image", "print out the picture", "print out the drawing", 
+				"print out page", "print out image", "print out picture", "print out drawing",
+				"print out the page", "print out the image", "print out the picture", "print out the drawing",
 
-				"send page to printer", "send image to printer", "send picture to printer", "send drawing to printer", 
-				"send page to the printer", "send image to the printer", "send picture to the printer", "send drawing to the printer", 
-				"send the page to the printer", "send the image to the printer", "send the picture to the printer", "send the drawing to the printer", 
-				"send the page to printer", "send the image to printer", "send the picture to printer", "send the drawing to printer", 
+				"send page to printer", "send image to printer", "send picture to printer", "send drawing to printer",
+				"send page to the printer", "send image to the printer", "send picture to the printer", "send drawing to the printer",
+				"send the page to the printer", "send the image to the printer", "send the picture to the printer", "send the drawing to the printer",
+				"send the page to printer", "send the image to printer", "send the picture to printer", "send the drawing to printer",
 			],
-			action: ()=> {
+			action: () => {
 				print();
 			},
 			description: localize("Prints the active document and sets printing options."),
@@ -178,24 +178,24 @@ window.menus = {
 			speech_recognition: [
 				"set as wallpaper",
 				"set as wallpaper tiled",
-				"set image as wallpaper tiled", "set picture as wallpaper tiled", "set drawing as wallpaper tiled", 
+				"set image as wallpaper tiled", "set picture as wallpaper tiled", "set drawing as wallpaper tiled",
 				"use as wallpaper tiled",
-				"use image as wallpaper tiled", "use picture as wallpaper tiled", "use drawing as wallpaper tiled", 
-				"tile image as wallpaper", "tile picture as wallpaper", "tile drawing as wallpaper", 
+				"use image as wallpaper tiled", "use picture as wallpaper tiled", "use drawing as wallpaper tiled",
+				"tile image as wallpaper", "tile picture as wallpaper", "tile drawing as wallpaper",
 			],
-			action: ()=> { systemHooks.setWallpaperTiled(main_canvas); },
+			action: () => { systemHooks.setWallpaperTiled(main_canvas); },
 			description: localize("Tiles this bitmap as the desktop background."),
 		},
 		{
 			item: localize("Set As Wallpaper (&Centered)"), // in mspaint it's Wa&llpaper
 			speech_recognition: [
 				"set as wallpaper centered",
-				"set image as wallpaper centered", "set picture as wallpaper centered", "set drawing as wallpaper centered", 
+				"set image as wallpaper centered", "set picture as wallpaper centered", "set drawing as wallpaper centered",
 				"use as wallpaper centered",
-				"use image as wallpaper centered", "use picture as wallpaper centered", "use drawing as wallpaper centered", 
-				"center image as wallpaper", "center picture as wallpaper", "center drawing as wallpaper", 
+				"use image as wallpaper centered", "use picture as wallpaper centered", "use drawing as wallpaper centered",
+				"center image as wallpaper", "center picture as wallpaper", "center drawing as wallpaper",
 			],
-			action: ()=> { systemHooks.setWallpaperCentered(main_canvas); },
+			action: () => { systemHooks.setWallpaperCentered(main_canvas); },
 			description: localize("Centers this bitmap as the desktop background."),
 		},
 		MENU_DIVIDER,
@@ -240,7 +240,7 @@ window.menus = {
 				"undo", "undo that",
 			],
 			enabled: () => undos.length >= 1,
-			action: ()=> { undo(); },
+			action: () => { undo(); },
 			description: localize("Undoes the last action."),
 		},
 		{
@@ -250,7 +250,7 @@ window.menus = {
 				"repeat", "redo",
 			],
 			enabled: () => redos.length >= 1,
-			action: ()=> { redo(); },
+			action: () => { redo(); },
 			description: localize("Redoes the previously undone action."),
 		},
 		{
@@ -259,7 +259,7 @@ window.menus = {
 			speech_recognition: [
 				"show history", "history",
 			],
-			action: ()=> { show_document_history(); },
+			action: () => { show_document_history(); },
 			description: localize("Shows the document history and lets you navigate to states not accessible with Undo or Repeat."),
 		},
 		MENU_DIVIDER,
@@ -272,7 +272,7 @@ window.menus = {
 			enabled: () =>
 				// @TODO: support cutting text with this menu item as well (e.g. for the text tool)
 				!!selection,
-			action: ()=> {
+			action: () => {
 				edit_cut(true);
 			},
 			description: localize("Cuts the selection and puts it on the Clipboard."),
@@ -286,7 +286,7 @@ window.menus = {
 			enabled: () =>
 				// @TODO: support copying text with this menu item as well (e.g. for the text tool)
 				!!selection,
-			action: ()=> {
+			action: () => {
 				edit_copy(true);
 			},
 			description: localize("Copies the selection and puts it on the Clipboard."),
@@ -300,7 +300,7 @@ window.menus = {
 			enabled: () =>
 				// @TODO: disable if nothing in clipboard or wrong type (if we can access that)
 				true,
-			action: ()=> {
+			action: () => {
 				edit_paste(true);
 			},
 			description: localize("Inserts the contents of the Clipboard."),
@@ -312,7 +312,7 @@ window.menus = {
 				"delete", "clear selection", "delete selection", "delete selected", "delete selected area", "clear selected area", "erase selected", "erase selected area",
 			],
 			enabled: () => !!selection,
-			action: ()=> { delete_selection(); },
+			action: () => { delete_selection(); },
 			description: localize("Deletes the selection."),
 		},
 		{
@@ -323,29 +323,29 @@ window.menus = {
 				"select the whole image", "select the whole picture", "select the whole drawing", "select the whole canvas", "select the whole document",
 				"select the entire image", "select the entire picture", "select the entire drawing", "select the entire canvas", "select the entire document",
 			],
-			action: ()=> { select_all(); },
+			action: () => { select_all(); },
 			description: localize("Selects everything."),
 		},
 		MENU_DIVIDER,
 		{
 			item: `${localize("C&opy To")}...`,
 			speech_recognition: [
-				"copy to file", "copy selection to file", "copy selection to a file", "save selection", 
+				"copy to file", "copy selection to file", "copy selection to a file", "save selection",
 				"save selection as file", "save selection as image", "save selection as picture", "save selection as image file", "save selection as document",
 				"save selection as a file", "save selection as a image", "save selection as a picture", "save selection as a image file", "save selection as a document",
 				"save selection to file", "save selection to image", "save selection to picture", "save selection to image file", "save selection to document",
 				"save selection to a file", "save selection to a image", "save selection to a picture", "save selection to a image file", "save selection to a document",
 			],
 			enabled: () => !!selection,
-			action: ()=> { save_selection_to_file(); },
+			action: () => { save_selection_to_file(); },
 			description: localize("Copies the selection to a file."),
 		},
 		{
 			item: `${localize("Paste &From")}...`,
 			speech_recognition: [
-				"paste a file", "paste from a file", "insert a file", "insert an image file", 
+				"paste a file", "paste from a file", "insert a file", "insert an image file",
 			],
-			action: ()=> { choose_file_to_paste(); },
+			action: () => { choose_file_to_paste(); },
 			description: localize("Pastes a file into the selection."),
 		}
 	],
@@ -358,7 +358,7 @@ window.menus = {
 				// @TODO: hide/show
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					$toolbox.toggle();
 				},
 				check: () => $toolbox.is(":visible"),
@@ -373,7 +373,7 @@ window.menus = {
 				// @TODO: hide/show
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					$colorbox.toggle();
 				},
 				check: () => $colorbox.is(":visible"),
@@ -387,7 +387,7 @@ window.menus = {
 				// @TODO: hide/show
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					$status_area.toggle();
 				},
 				check: () => $status_area.is(":visible"),
@@ -422,7 +422,7 @@ window.menus = {
 					],
 					description: localize("Zooms the picture to 100%."),
 					enabled: () => magnification !== 1,
-					action: ()=> {
+					action: () => {
 						set_magnification(1);
 					},
 				},
@@ -438,7 +438,7 @@ window.menus = {
 					],
 					description: localize("Zooms the picture to 400%."),
 					enabled: () => magnification !== 4,
-					action: ()=> {
+					action: () => {
 						set_magnification(4);
 					},
 				},
@@ -456,7 +456,7 @@ window.menus = {
 						"zoom so canvas fits", "zoom so picture fits", "zoom so image fits", "zoom so document fits",
 						"zoom so whole canvas is visible", "zoom so whole picture is visible", "zoom so whole image is visible", "zoom so whole document is visible",
 						"zoom so the whole canvas is visible", "zoom so the whole picture is visible", "zoom so the whole image is visible", "zoom so the whole document is visible",
-						
+
 						"fit to window", "fit to view", "fit in window", "fit in view", "fit within window", "fit within view",
 						"fit picture to window", "fit picture to view", "fit picture in window", "fit picture in view", "fit picture within window", "fit picture within view",
 						"fit image to window", "fit image to view", "fit image in window", "fit image in view", "fit image within window", "fit image within view",
@@ -464,7 +464,7 @@ window.menus = {
 						"fit document to window", "fit document to view", "fit document in window", "fit document in view", "fit document within window", "fit document within view",
 					],
 					description: localize("Zooms the picture to fit within the view."),
-					action: ()=> {
+					action: () => {
 						const rect = $canvas_area[0].getBoundingClientRect();
 						const margin = 30; // leave a margin so scrollbars won't appear
 						let mag = Math.min(
@@ -482,7 +482,7 @@ window.menus = {
 					speech_recognition: [
 						"zoom custom", "custom zoom", "set custom zoom", "set custom zoom level", "zoom to custom level", "zoom to custom", "zoom level", "set zoom level",
 					],
-					action: ()=> { show_custom_zoom_window(); },
+					action: () => { show_custom_zoom_window(); },
 				},
 				MENU_DIVIDER,
 				{
@@ -527,7 +527,7 @@ window.menus = {
 				"show image fullscreen", "show image full-screen", "show image full screen",
 				// @TODO: exit fullscreen
 			],
-			action: ()=> { view_bitmap(); },
+			action: () => { view_bitmap(); },
 			description: localize("Displays the entire picture."),
 		},
 		MENU_DIVIDER,
@@ -567,7 +567,7 @@ window.menus = {
 				"flip/rotate", "flip slash rotate", "flip and rotate", "flip or rotate", "flip rotate",
 				// @TODO: parameters to command
 			],
-			action: ()=> { image_flip_and_rotate(); },
+			action: () => { image_flip_and_rotate(); },
 			description: localize("Flips or rotates the picture or a selection."),
 		},
 		{
@@ -579,7 +579,7 @@ window.menus = {
 				"stretch/skew", "stretch slash skew", "stretch and skew", "stretch or skew", "stretch skew",
 				// @TODO: parameters to command
 			],
-			action: ()=> { image_stretch_and_skew(); },
+			action: () => { image_stretch_and_skew(); },
 			description: localize("Stretches or skews the picture or a selection."),
 		},
 		{
@@ -592,7 +592,7 @@ window.menus = {
 				"invert image colors", "invert picture colors", "invert drawing colors",
 				"invert colors of image", "invert colors of picture", "invert colors of drawing",
 			],
-			action: ()=> { image_invert_colors(); },
+			action: () => { image_invert_colors(); },
 			description: localize("Inverts the colors of the picture or a selection."),
 		},
 		{
@@ -606,7 +606,7 @@ window.menus = {
 				"image size", "picture size", "canvas size", "document size", "page size",
 				"configure image size", "configure picture size", "configure canvas size", "configure document size", "configure page size",
 			],
-			action: ()=> { image_attributes(); },
+			action: () => { image_attributes(); },
 			description: localize("Changes the attributes of the picture."),
 		},
 		{
@@ -617,8 +617,8 @@ window.menus = {
 				// @TODO: erase?
 			],
 			// (mspaint says "Ctrl+Shft+N")
-			action: ()=> { !selection && clear(); },
-			enabled: ()=> !selection,
+			action: () => { !selection && clear(); },
+			enabled: () => !selection,
 			description: localize("Clears the picture."),
 			// action: ()=> {
 			// 	if (selection) {
@@ -641,7 +641,7 @@ window.menus = {
 				// @TODO: hide/show / "draw opaque" / "draw transparent"/translucent?
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					tool_transparent_mode = !tool_transparent_mode;
 					$G.trigger("option-changed");
 				},
@@ -658,7 +658,7 @@ window.menus = {
 				"pick custom color", "choose custom color", "pick a custom color", "choose a custom color",
 				"edit last color", "create new color", "choose new color", "create a new color", "pick a new color",
 			],
-			action: ()=> {
+			action: () => {
 				show_edit_colors_window();
 			},
 			description: localize("Creates a new color."),
@@ -668,15 +668,15 @@ window.menus = {
 			speech_recognition: [
 				"get colors", "load colors", "load color palette", "load palette", "load color palette file", "load palette file", "load list of colors",
 			],
-			action: async ()=> {
-				const {file} = await systemHooks.showOpenFileDialog({formats: palette_formats});
-				AnyPalette.loadPalette(file, (error, new_palette)=> {
+			action: async () => {
+				const { file } = await systemHooks.showOpenFileDialog({ formats: palette_formats });
+				AnyPalette.loadPalette(file, (error, new_palette) => {
 					if (error) {
 						show_file_format_errors({ as_palette_error: error });
 					} else {
-						palette = new_palette.map((color)=> color.toString());
+						palette = new_palette.map((color) => color.toString());
 						$colorbox.rebuild_palette();
-						window.console && console.log(`Loaded palette: ${palette.map(()=> `%c█`).join("")}`, ...palette.map((color)=> `color: ${color};`));
+						window.console && console.log(`Loaded palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
 					}
 				});
 			},
@@ -687,7 +687,7 @@ window.menus = {
 			speech_recognition: [
 				"save colors", "save list of colors", "save color palette", "save palette", "save color palette file", "save palette file",
 			],
-			action: ()=> {
+			action: () => {
 				const ap = new AnyPalette.Palette();
 				ap.name = "JS Paint Saved Colors";
 				ap.numberOfColumns = 16; // 14?
@@ -703,11 +703,11 @@ window.menus = {
 					dialogTitle: localize("Save Colors"),
 					defaultFileName: localize("untitled.pal"),
 					formats: palette_formats,
-					getBlob: ()=> {
+					getBlob: () => {
 						const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
-						const blob = new Blob([file_content], {type: "text/plain"});
-						return new Promise((resolve)=> {
-							sanity_check_blob(blob, ()=> {
+						const blob = new Blob([file_content], { type: "text/plain" });
+						return new Promise((resolve) => {
+							sanity_check_blob(blob, () => {
 								resolve(blob);
 							});
 						});
@@ -724,7 +724,7 @@ window.menus = {
 				"help topics", "help me", "show help", "help", "show help window", "show help topics", "open help",
 				"help viewer", "show help viewer", "open help viewer",
 			],
-			action: ()=> { show_help(); },
+			action: () => { show_help(); },
 			description: localize("Displays Help for the current task or command."),
 		},
 		MENU_DIVIDER,
@@ -736,7 +736,7 @@ window.menus = {
 				"application info", "about the application", "application information", "information about the application",
 				"who made this", "who did this", "who did this xd",
 			],
-			action: ()=> { show_about_paint(); },
+			action: () => { show_about_paint(); },
 			description: localize("Displays information about this application."),
 			//description: localize("Displays program information, version number, and copyright."),
 		}
@@ -748,7 +748,7 @@ window.menus = {
 			speech_recognition: [
 				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 			],
-			action: ()=> { show_document_history(); },
+			action: () => { show_document_history(); },
 			description: localize("Shows the document history and lets you navigate to states not accessible with Undo or Repeat."),
 		},
 		{
@@ -770,7 +770,7 @@ window.menus = {
 				"make animation", "make animation of the history", "make animation of the document history", "make animation from the document history",
 				"create animation", "create animation of the history", "create animation of the document history", "create animation from the document history",
 			],
-			action: ()=> { render_history_as_gif(); },
+			action: () => { render_history_as_gif(); },
 			description: localize("Creates an animation from the document history."),
 		},
 		// {
@@ -854,7 +854,7 @@ window.menus = {
 						"collaborative",
 						"collaborating",
 					],
-					action: ()=> {
+					action: () => {
 						show_multi_user_setup_dialog(true);
 					},
 					description: localize("Starts a new multi-user session from the current document."),
@@ -904,7 +904,7 @@ window.menus = {
 						"start collaboration with empty",
 						"start collaborating with empty",
 					],
-					action: ()=> {
+					action: () => {
 						show_multi_user_setup_dialog(false);
 					},
 					description: localize("Starts a new multi-user session from an empty document."),
@@ -937,7 +937,7 @@ window.menus = {
 						"day mode", "switch to day mode", "use day mode", "set mode to day", "set mode day", "switch to day mode", "switch mode to day", "switch mode day",
 						"go light", "go bright",
 					],
-					action: ()=> {
+					action: () => {
 						set_theme("classic.css");
 					},
 					enabled: () => get_theme() != "classic.css",
@@ -954,7 +954,7 @@ window.menus = {
 						"night mode", "switch to night mode", "use night mode", "set mode to night", "set mode night", "switch to night mode", "switch mode to night", "switch mode night",
 						"go dark", "go dim",
 					],
-					action: ()=> {
+					action: () => {
 						set_theme("dark.css");
 					},
 					enabled: () => get_theme() != "dark.css",
@@ -965,7 +965,7 @@ window.menus = {
 					speech_recognition: [
 						"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "set theme modern", "switch to modern theme", "switch theme to modern", "switch theme modern",
 					],
-					action: ()=> {
+					action: () => {
 						set_theme("modern.css");
 					},
 					enabled: () => get_theme() != "modern.css",
@@ -979,7 +979,7 @@ window.menus = {
 						"christmas theme", "switch to christmas theme", "use christmas theme", "set theme to christmas", "set theme christmas", "switch to christmas theme", "switch theme to christmas", "switch theme christmas",
 						"hanukkah theme", "switch to hanukkah theme", "use hanukkah theme", "set theme to hanukkah", "set theme hanukkah", "switch to hanukkah theme", "switch theme to hanukkah", "switch theme hanukkah",
 					],
-					action: ()=> {
+					action: () => {
 						set_theme("winter.css");
 					},
 					enabled: () => get_theme() != "winter.css",
@@ -1023,12 +1023,12 @@ window.menus = {
 						"welcome devil", "welcome the devil", "welcome devil theme", "welcome the devil theme",
 
 						"I beseech thee", "I entreat thee", "I summon thee", "I call upon thy name", "I call upon thine name", "Lord Satan", "hail Satan", "hail Lord Satan", "O Mighty Satan", "Oh Mighty Satan",
-						"In nomine Dei nostri Satanas Luciferi Excelsi", "Rege Satanas", "Ave Satanas","Rege Satana", "Ave Satana",
+						"In nomine Dei nostri Satanas Luciferi Excelsi", "Rege Satanas", "Ave Satanas", "Rege Satana", "Ave Satana",
 						"go demonic", "go daemonic", "go occult", "666",
 						"begin ritual", "begin the ritual", "begin a ritual",
 						"start ritual", "start the ritual", "start a ritual",
 					],
-					action: ()=> {
+					action: () => {
 						set_theme("occult.css");
 					},
 					enabled: () => get_theme() != "occult.css",
@@ -1038,10 +1038,10 @@ window.menus = {
 		},
 		{
 			item: "🌍 " + localize("&Language"),
-			submenu: available_languages.map((available_language)=> (
+			submenu: available_languages.map((available_language) => (
 				{
 					item: get_language_emoji(available_language) + " " + get_language_endonym(available_language),
-					action: ()=> {
+					action: () => {
 						set_language(available_language);
 					},
 					enabled: () => get_language() != available_language,
@@ -1077,7 +1077,7 @@ window.menus = {
 				"eye gaze off",
 				"start eye gaze",
 				"stop eye gaze",
-				
+
 				"toggle eye gazing",
 				"enable eye gazing",
 				"disable eye gazing",
@@ -1092,7 +1092,7 @@ window.menus = {
 				"stop eye gazing",
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					if (location.hash.match(/eye-gaze-mode/i)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
@@ -1102,7 +1102,7 @@ window.menus = {
 						change_url_param("eye-gaze-mode", true);
 					}
 				},
-				check: ()=> {
+				check: () => {
 					return location.hash.match(/eye-gaze-mode/i);
 				},
 			},
@@ -1115,18 +1115,18 @@ window.menus = {
 				"disable speech recognition", "disable speech recognition mode", "turn off speech recognition", "turn off speech recognition mode", "leave speech recognition mode", "exit speech recognition mode",
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					if (location.hash.match(/speech-recognition-mode/i)) {
 						change_url_param("speech-recognition-mode", false);
 					} else {
 						change_url_param("speech-recognition-mode", true);
 					}
 				},
-				check: ()=> {
+				check: () => {
 					return window.speech_recognition_active;
 				},
 			},
-			enabled: ()=> window.speech_recognition_available,
+			enabled: () => window.speech_recognition_available,
 			description: localize("Controls the application with voice commands."),
 		},
 		{
@@ -1141,7 +1141,7 @@ window.menus = {
 				// @TODO: "use a vertical/horizontal color box", "place palette on the left", "make palette tall/wide", etc.
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					if (location.hash.match(/eye-gaze-mode/i)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
@@ -1156,11 +1156,11 @@ window.menus = {
 						change_url_param("vertical-color-box-mode", true);
 					}
 				},
-				check: ()=> {
+				check: () => {
 					return location.hash.match(/vertical-color-box-mode|eye-gaze-mode/i);
 				},
 			},
-			enabled: ()=> {
+			enabled: () => {
 				return !location.hash.match(/eye-gaze-mode/i);
 			},
 			description: localize("Arranges the color box vertically."),
@@ -1171,7 +1171,7 @@ window.menus = {
 			speech_recognition: [
 				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 			],
-			action: ()=> { manage_storage(); },
+			action: () => { manage_storage(); },
 			description: localize("Manages storage of previously created or opened pictures."),
 		},
 		MENU_DIVIDER,
@@ -1184,7 +1184,7 @@ window.menus = {
 				"what's new", "new features",
 				"show news", "show news update", "news update",
 			],
-			action: ()=> { show_news(); },
+			action: () => { show_news(); },
 			description: localize("Shows news about JS Paint."),
 		},
 		{
@@ -1192,7 +1192,7 @@ window.menus = {
 			speech_recognition: [
 				"repo on github", "project on github", "show the source code", "show source code",
 			],
-			action: ()=> { window.open("https://github.com/1j01/jspaint"); },
+			action: () => { window.open("https://github.com/1j01/jspaint"); },
 			description: localize("Shows the project on GitHub."),
 		},
 		{
@@ -1200,7 +1200,7 @@ window.menus = {
 			speech_recognition: [
 				"donate", "make a monetary contribution",
 			],
-			action: ()=> { window.open("https://www.paypal.me/IsaiahOdhner"); },
+			action: () => { window.open("https://www.paypal.me/IsaiahOdhner"); },
 			description: localize("Supports the project."),
 		},
 	],
@@ -1208,7 +1208,7 @@ window.menus = {
 
 for (const [top_level_menu_key, menu] of Object.entries(menus)) {
 	const top_level_menu_name = top_level_menu_key.replace(/&/, "");
-	const add_literal_navigation_speech_recognition = (menu, ancestor_names)=> {
+	const add_literal_navigation_speech_recognition = (menu, ancestor_names) => {
 		for (const menu_item of menu) {
 			if (menu_item !== MENU_DIVIDER) {
 				const menu_item_name = menu_item.item.replace(/&|\.\.\.|\(|\)/g, "");
@@ -1223,7 +1223,7 @@ for (const [top_level_menu_key, menu] of Object.entries(menus)) {
 						menu_item_name.replace(/\//, " slash "),
 					];
 				}
-				menu_item_matchers = menu_item_matchers.map((menu_item_matcher)=> {
+				menu_item_matchers = menu_item_matchers.map((menu_item_matcher) => {
 					return `${ancestor_names} ${menu_item_matcher}`;
 				});
 				menu_item.speech_recognition = (menu_item.speech_recognition || []).concat(menu_item_matchers);

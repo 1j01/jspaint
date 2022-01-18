@@ -2,7 +2,7 @@
 function make_window_supporting_scale(options) {
 	const $w = new $Window(options);
 
-	const scale_for_eye_gaze_mode_and_center = ()=> {
+	const scale_for_eye_gaze_mode_and_center = () => {
 		if (!$w.is(".edit-colors-window, .storage-manager, .attributes-window, .flip-and-rotate, .stretch-and-skew")) {
 			return;
 		}
@@ -36,13 +36,13 @@ function make_window_supporting_scale(options) {
 		// requestAnimationFrame(scale_for_eye_gaze_mode_and_center);
 	};
 
-	if(!options.$component){
+	if (!options.$component) {
 		$w.center();
 
-		const scale_for_eye_gaze_mode_and_center_next_frame = ()=> {
+		const scale_for_eye_gaze_mode_and_center_next_frame = () => {
 			requestAnimationFrame(scale_for_eye_gaze_mode_and_center);
 		};
-		const on_close = ()=> {
+		const on_close = () => {
 			$w.off("close", on_close);
 			$G.off("eye-gaze-mode-toggled resize", scale_for_eye_gaze_mode_and_center_next_frame);
 		};
@@ -57,7 +57,7 @@ function make_window_supporting_scale(options) {
 			contain: "none",
 		});
 	}
-	
+
 	return $w;
 }
 

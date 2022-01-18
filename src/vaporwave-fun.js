@@ -30,8 +30,8 @@
 		cancelAnimationFrame(rAF_ID);
 
 		$(rotologo).remove();
-		$window.css({transform: ""});
-		
+		$window.css({ transform: "" });
+
 		removeEventListener("keydown", space_phase_key_handler);
 		if (player) {
 			player.destroy();
@@ -71,18 +71,15 @@
 
 			$(rotologo).css({
 				transform:
-					`perspective(4000px) rotateY(${
-						Math.sin(Date.now() / 5000)
-					}turn) rotateX(${
-						0
+					`perspective(4000px) rotateY(${Math.sin(Date.now() / 5000)
+					}turn) rotateX(${0
 					}turn) translate(-50%, -50%) translateZ(500px)`,
 				filter:
-					`hue-rotate(${
-						Math.sin(Date.now() / 4000)
-						// @TODO: slow down and stop when you pause
+					`hue-rotate(${Math.sin(Date.now() / 4000)
+					// @TODO: slow down and stop when you pause
 					}turn)`,
 			});
-			
+
 			if ($window.length) {
 				let el = $window[0];
 				let offsetLeft = 0;
@@ -95,10 +92,8 @@
 
 				$window.css({
 					transform:
-						`perspective(4000px) rotateY(${
-							-(offsetLeft + ($window.outerWidth() - parent.innerWidth) / 2) / parent.innerWidth / 3
-						}turn) rotateX(${
-							(offsetTop + ($window.outerHeight() - parent.innerHeight) / 2) / parent.innerHeight / 3
+						`perspective(4000px) rotateY(${-(offsetLeft + ($window.outerWidth() - parent.innerWidth) / 2) / parent.innerWidth / 3
+						}turn) rotateX(${(offsetTop + ($window.outerHeight() - parent.innerHeight) / 2) / parent.innerHeight / 3
 						}turn)`,
 					transformOrigin: "50% 50%",
 					transformStyle: "preserve-3d",
@@ -156,7 +151,7 @@
 			if (event.data == YT.PlayerState.PLAYING) {
 				// @TODO: pause and resume this timer with the video
 				setTimeout(() => {
-					$(rotologo).css({opacity: 1});
+					$(rotologo).css({ opacity: 1 });
 				}, 14150);
 			}
 			if (event.data == YT.PlayerState.ENDED) {
@@ -167,7 +162,7 @@
 				// setTimeout/setInterval and check player.getCurrentTime() for when near the end?
 				// or we might switch to using soundcloud for the audio and so trigger it with that, with a separate video of just clouds
 				// also fade out the rotologo earlier
-				$(rotologo).css({opacity: 0});
+				$(rotologo).css({ opacity: 0 });
 				// destroy rotologo once faded out
 				setTimeout(stop_vaporwave, 1200);
 			}
@@ -182,14 +177,14 @@
 					player.pauseVideo();
 					is_theoretically_playing = false;
 					$(player.getIframe())
-					.add(rotologo)
-					.css({opacity: "0"});
+						.add(rotologo)
+						.css({ opacity: "0" });
 				} else {
 					player.playVideo();
 					is_theoretically_playing = true;
 					$(player.getIframe())
-					.add(rotologo)
-					.css({opacity: ""});
+						.add(rotologo)
+						.css({ opacity: "" });
 				}
 				e.preventDefault();
 				// player.getIframe().focus();
@@ -207,7 +202,7 @@
 	};
 
 	addEventListener("keydown", Konami.code(toggle_vaporwave));
-	addEventListener("keydown", (event)=> {
+	addEventListener("keydown", (event) => {
 		if (event.key === "Escape") {
 			stop_vaporwave();
 		}

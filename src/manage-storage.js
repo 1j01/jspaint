@@ -3,12 +3,12 @@ let $storage_manager;
 let $quota_exceeded_window;
 let ignoring_quota_exceeded = false;
 
-async function storage_quota_exceeded(){
-	if($quota_exceeded_window){
+async function storage_quota_exceeded() {
+	if ($quota_exceeded_window) {
 		$quota_exceeded_window.close();
 		$quota_exceeded_window = null;
 	}
-	if(ignoring_quota_exceeded){
+	if (ignoring_quota_exceeded) {
 		return;
 	}
 	const { promise, $window } = showMessageBox({
@@ -34,8 +34,8 @@ async function storage_quota_exceeded(){
 	}
 }
 
-function manage_storage(){
-	if($storage_manager){
+function manage_storage() {
+	if ($storage_manager) {
 		$storage_manager.close();
 	}
 	$storage_manager = $DialogWindow().title("Manage Storage").addClass("storage-manager squish");
@@ -47,29 +47,29 @@ function manage_storage(){
 	$storage_manager.$Button("Close", () => {
 		$storage_manager.close();
 	});
-	
+
 	const addRow = (k, imgSrc) => {
 		const $tr = $(E("tr")).appendTo($table);
-		
+
 		const $img = $(E("img")).attr({ src: imgSrc }).addClass("thumbnail-img");
 		const $remove = $(E("button")).text("Remove").addClass("remove-button");
 		const href = `#${k.replace("image#", "local:")}`;
-		const $open_link = $(E("a")).attr({href, target: "_blank"}).text(localize("Open"));
-		const $thumbnail_open_link = $(E("a")).attr({href, target: "_blank"}).addClass("thumbnail-container");
+		const $open_link = $(E("a")).attr({ href, target: "_blank" }).text(localize("Open"));
+		const $thumbnail_open_link = $(E("a")).attr({ href, target: "_blank" }).addClass("thumbnail-container");
 		$thumbnail_open_link.append($img);
 		$(E("td")).append($thumbnail_open_link).appendTo($tr);
 		$(E("td")).append($open_link).appendTo($tr);
 		$(E("td")).append($remove).appendTo($tr);
-		
+
 		$remove.on("click", () => {
 			localStorage.removeItem(k);
 			$tr.remove();
-			if($table.find("tr").length == 0){
+			if ($table.find("tr").length == 0) {
 				$message.html("<p>All clear!</p>");
 			}
 		});
 	};
-	
+
 	let localStorageAvailable = false;
 	try {
 		if (localStorage.length > 0) {
@@ -82,19 +82,19 @@ function manage_storage(){
 			localStorageAvailable = localStorage._available;
 			delete localStorage._available;
 		}
-	// eslint-disable-next-line no-empty
-	} catch (e) {}
+		// eslint-disable-next-line no-empty
+	} catch (e) { }
 
 	if (localStorageAvailable) {
-		for(const k in localStorage){
-			if(k.match(/^image#/)){
+		for (const k in localStorage) {
+			if (k.match(/^image#/)) {
 				let v = localStorage[k];
 				try {
 					if (v[0] === '"') {
 						v = JSON.parse(v);
 					}
-				// eslint-disable-next-line no-empty
-				} catch (e) {}
+					// eslint-disable-next-line no-empty
+				} catch (e) { }
 				addRow(k, v);
 			}
 		}
@@ -104,7 +104,7 @@ function manage_storage(){
 		// @TODO: DRY with similar message
 		// @TODO: instructions for your browser; it's called Cookies in chrome/chromium at least, and "storage" gives NO results
 		$message.html("<p>Please enable local storage in your browser's settings for local backup. It may be called Cookies, Storage, or Site Data.</p>");
-	} else if($table.find("tr").length == 0) {
+	} else if ($table.find("tr").length == 0) {
 		$message.html("<p>All clear!</p>");
 	}
 

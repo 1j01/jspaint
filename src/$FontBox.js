@@ -1,7 +1,7 @@
 
-function $FontBox(){
+function $FontBox() {
 	const $fb = $(E("div")).addClass("font-box");
-	
+
 	const $family = $(E("select")).addClass("inset-deep").attr({
 		"aria-label": "Font Family",
 		"aria-description": localize("Selects the font used by the text."),
@@ -26,13 +26,13 @@ function $FontBox(){
 
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);
-	
+
 	const update_font = () => {
 		text_tool_font.size = Number($size.val());
 		text_tool_font.family = $family.val();
 		$G.trigger("option-changed");
 	};
-	
+
 	FontDetective.each(font => {
 		const $option = $(E("option"));
 		$option.val(font).text(font.name);
@@ -41,21 +41,21 @@ function $FontBox(){
 			update_font();
 		}
 	});
-	
+
 	if (text_tool_font.family) {
 		$family.val(text_tool_font.family);
 	}
 
 	$family.on("change", update_font);
 	$size.on("change", update_font);
-	
+
 	const $w = $ToolWindow();
 	$w.title(localize("Fonts"));
 	$w.$content.append($fb);
 	$w.center();
 	return $w;
-	
-	
+
+
 	function $Toggle(xi, thing, label, description) {
 		const $button = $(E("button")).addClass("toggle").attr({
 			"aria-pressed": false,
@@ -85,7 +85,7 @@ function $FontBox(){
 			$button.attr("aria-pressed", $button.hasClass("selected"));
 			update_font();
 		});
-		if(text_tool_font[thing]){
+		if (text_tool_font[thing]) {
 			$button.addClass("selected").attr("aria-pressed", true);
 		}
 		return $button;

@@ -1,25 +1,25 @@
 let theme_dev_blob_url;
 
-function $ToolBox(tools, is_extras){
+function $ToolBox(tools, is_extras) {
 	const $tools = $(E("div")).addClass("tools");
 	const $tool_options = $(E("div")).addClass("tool-options");
-	
+
 	let showing_tooltips = false;
 	$tools.on("pointerleave", () => {
 		showing_tooltips = false;
 		$status_text.default();
 	});
-	
+
 	const $buttons = $($.map(tools, (tool, i) => {
 		const $b = $(E("div")).addClass("tool");
 		$b.appendTo($tools);
 		tool.$button = $b;
-		
+
 		$b.attr("title", tool.name);
-		
+
 		const $icon = $(E("span")).addClass("tool-icon");
 		$icon.appendTo($b);
-		const update_css = ()=> {
+		const update_css = () => {
 			const use_svg = !theme_dev_blob_url && (
 				(
 					(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
@@ -40,37 +40,37 @@ function $ToolBox(tools, is_extras){
 		};
 		update_css();
 		$G.on("theme-load resize", update_css);
-		
+
 		$b.on("click", e => {
 			if (e.shiftKey || e.ctrlKey) {
 				select_tool(tool, true);
 				return;
 			}
-			if(selected_tool === tool && tool.deselect){
+			if (selected_tool === tool && tool.deselect) {
 				select_tools(return_to_tools);
-			}else{
+			} else {
 				select_tool(tool);
 			}
 		});
-		
+
 		$b.on("pointerenter", () => {
 			const show_tooltip = () => {
 				showing_tooltips = true;
 				$status_text.text(tool.description);
 			};
-			if(showing_tooltips){
+			if (showing_tooltips) {
 				show_tooltip();
-			}else{
+			} else {
 				const tid = setTimeout(show_tooltip, 300);
 				$b.on("pointerleave", () => {
 					clearTimeout(tid);
 				});
 			}
 		});
-		
+
 		return $b[0];
 	}));
-	
+
 	const $c = $Component(
 		is_extras ? "Extra Tools" : localize("Tools"),
 		is_extras ? "tools-component extra-tools-component" : "tools-component",
@@ -80,7 +80,7 @@ function $ToolBox(tools, is_extras){
 	$c.appendTo(get_direction() === "rtl" ? $right : $left); // opposite ColorBox by default
 	$c.update_selected_tool = () => {
 		$buttons.removeClass("selected");
-		selected_tools.forEach((selected_tool)=> {
+		selected_tools.forEach((selected_tool) => {
 			selected_tool.$button.addClass("selected");
 		});
 		$tool_options.children().detach();
@@ -102,14 +102,14 @@ function $ToolBox(tools, is_extras){
 let dev_theme_tool_icons = false;
 try {
 	dev_theme_tool_icons = localStorage.dev_theme_tool_icons === "true";
-// eslint-disable-next-line no-empty
+	// eslint-disable-next-line no-empty
 } catch (e) { }
 if (dev_theme_tool_icons) {
 	let last_update_id = 0;
-	$G.on("session-update", ()=> {
+	$G.on("session-update", () => {
 		last_update_id += 1;
 		const this_update_id = last_update_id;
-		main_canvas.toBlob((blob)=> {
+		main_canvas.toBlob((blob) => {
 			// avoid a race condition particularly when loading the document initially when the default canvas size is large, giving a larger PNG
 			if (this_update_id !== last_update_id) {
 				return;

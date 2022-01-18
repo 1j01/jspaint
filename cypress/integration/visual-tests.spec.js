@@ -59,7 +59,7 @@ context('visual tests', () => {
 		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
 	});
 
-	beforeEach(()=> {
+	beforeEach(() => {
 		if (Cypress.$('.window:visible')[0]) {
 			cy.get('.window:visible .window-close-button').click();
 			cy.get('.window').should('not.be.visible');
@@ -90,7 +90,7 @@ context('visual tests', () => {
 		// @TODO: make menus more testable, with IDs
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
 		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(1)').click();
-		cy.get('.window:visible .folder', {timeout: 10000}); // wait for sidebar contents to load
+		cy.get('.window:visible .folder', { timeout: 10000 }); // wait for sidebar contents to load
 		// @TODO: wait for iframe to load
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["iframe"] }));
 	});
@@ -133,7 +133,7 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	const test_edit_colors_dialog = (expand=true) => {
+	const test_edit_colors_dialog = (expand = true) => {
 		cy.contains(".menu-button", "Colors").click();
 		cy.contains(".menu-item", "Edit Colors").click();
 		cy.wait(100);
@@ -169,7 +169,7 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('classic theme edit colors dialog', ()=> {
+	it('classic theme edit colors dialog', () => {
 		test_edit_colors_dialog(false);
 	});
 

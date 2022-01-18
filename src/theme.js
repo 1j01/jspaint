@@ -3,7 +3,7 @@
 	const theme_storage_key = "jspaint theme";
 	const disable_seasonal_theme_key = "jspaint disable seasonal theme";
 	const href_for = theme => `styles/themes/${theme}`;
-	
+
 	let iid;
 	function wait_for_theme_loaded(theme, callback) {
 		clearInterval(iid);
@@ -55,10 +55,10 @@
 			localStorage[theme_storage_key] = theme;
 			localStorage[disable_seasonal_theme_key] = "true"; // any theme change disables seasonal theme (unless of course you select the seasonal theme)
 			grinch_button?.remove();
-		// eslint-disable-next-line no-empty
-		} catch(error) {}
+			// eslint-disable-next-line no-empty
+		} catch (error) { }
 
-		const signal_theme_load = ()=> {
+		const signal_theme_load = () => {
 			$(window).triggerHandler("theme-load");
 			$(window).trigger("resize"); // not exactly, but get dynamic cursor to update its offset
 		};

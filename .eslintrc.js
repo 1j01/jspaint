@@ -191,7 +191,7 @@ module.exports = {
 		"no-label-var": "error",
 		// "no-shadow": "error",
 		// "no-use-before-define": "error",
-		
+
 		// To target specific variables to rename or otherwise address:
 		"no-restricted-globals": ["error", "event", "canvas", "ctx", "colors", "i", "j", "k", "x", "y", "z", "width", "height", "w", "h"],
 
