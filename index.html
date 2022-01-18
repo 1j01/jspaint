@@ -8,13 +8,13 @@
 	<!-- This should mirror CSP in electron-main.js, except maybe for firebase stuff. -->
 	<!-- Firebase stuff is somewhat speculative, as the quota is exceeded as I'm adding this. -->
 	<meta http-equiv="Content-Security-Policy" content="
-			default-src 'self';
-			script-src 'self' https://jspaint.firebaseio.com;
-			style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-			img-src 'self' data: blob: https://i.postimg.cc;
-			font-src 'self' https://fonts.gstatic.com;
-			connect-src * data: blob: https://jspaint.firebaseio.com wss://jspaint.firebaseio.com;
-		">
+		default-src 'self';
+		script-src 'self' https://jspaint.firebaseio.com;
+		style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+		img-src 'self' data: blob: https://i.postimg.cc;
+		font-src 'self' https://fonts.gstatic.com;
+		connect-src * data: blob: https://jspaint.firebaseio.com wss://jspaint.firebaseio.com;
+	">
 
 	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
 	<link href="styles/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
@@ -34,7 +34,7 @@
 		Text inputs and dropdowns are styled in classic.css, but should also be included in OS-GUI at some point.
 		This is not an @import in classic.css because it needs RTLCSS and I'm not applying RTLCSS to themes yet.
 		So I added .not-for-modern logic to theme.js to exclude these styles depending on the theme.
-		-->
+	-->
 	<link href="lib/98.css/98.custom-build.css" class="flippable-layout-stylesheet not-for-modern" rel="stylesheet"
 		type="text/css">
 
@@ -116,49 +116,49 @@
 	</div>
 	<div id="news" hidden>
 		<!-- <article class="news-entry" id="news-2021-saving">
-				<h1>The Savior Update</h1>
-				<time datetime=""></time>
-				<img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src=""/>
-				<p>
-					<b>Save</b> (<kbd>Ctrl+S</kbd>) can now save over the open file, in Chrome, Edge, and Opera browsers.
-					This works using new <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a>.
-					Always use <b>Save As</b> (<kbd>Ctrl+Shift+S</kbd>) if you want to save a new file.
-				</p>
-				<p>
-					<b>Save As</b> now asks for a file name and format.
-					PNG, GIF, and BMP are supported, including indexed color BMPs.
-				</p>
-				<p>
-					Tip: Use PNG if you don't have a specific reason to use another format,
-					as it has the best quality when saving.
-				</p>
-				<p>
-					If you open a BMP file with a palette, the palette is loaded into the Colors box.
-					If you load a monochrome BMP file, it loads a gradient of dither patterns into the Colors box.
-				</p>
-				<p>
-					<b>Black and White</b> mode in <b>Image > Attributes</b> is generalized to a monochrome mode
-					(although it's still called "Black and White" in the Attributes window.)
-					If an image has only two colors, when switching to "Black and White" mode,
-					it automatically adapts to these colors and gives you a gradient of dither patterns in the Colors box.
-				</p>
-				<p>
-					If you use <b>Image > Invert</b>, in monochrome mode, it flips the two colors in the image,
-					instead of changing colors to their RGB opposites.
-					(If the image is pure black and white, these two operations are equivalent.)
-				</p>
-				<p>
-					<b>Colors > Save Colors</b> also now asks for a file name and format.
-					An absurd number of file formats are supported.
-					You can even export CSS variables for use in a web design project.
-					RIFF Palette (*.pal) is compatible with MS Paint, and GIMP Palette (*.gpl) is compatible with many open source graphics programs such as Inkscape and Krita.
-				</p>
-				<p>
-					You can find lots of palettes to use on <a target="_blank" href="https://lospec.com/palette-list">Lospec</a>.
-					Download a palette as GIMP GPL (or several other formats) and use <b>Colors > Get Colors</b> and select the file,
-					or simply drag and drop the file onto JS Paint to load the palette.
-				</p>
-			</article> -->
+			<h1>The Savior Update</h1>
+			<time datetime=""></time>
+			<img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src=""/>
+			<p>
+				<b>Save</b> (<kbd>Ctrl+S</kbd>) can now save over the open file, in Chrome, Edge, and Opera browsers.
+				This works using new <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a>.
+				Always use <b>Save As</b> (<kbd>Ctrl+Shift+S</kbd>) if you want to save a new file.
+			</p>
+			<p>
+				<b>Save As</b> now asks for a file name and format.
+				PNG, GIF, and BMP are supported, including indexed color BMPs.
+			</p>
+			<p>
+				Tip: Use PNG if you don't have a specific reason to use another format,
+				as it has the best quality when saving.
+			</p>
+			<p>
+				If you open a BMP file with a palette, the palette is loaded into the Colors box.
+				If you load a monochrome BMP file, it loads a gradient of dither patterns into the Colors box.
+			</p>
+			<p>
+				<b>Black and White</b> mode in <b>Image > Attributes</b> is generalized to a monochrome mode
+				(although it's still called "Black and White" in the Attributes window.)
+				If an image has only two colors, when switching to "Black and White" mode,
+				it automatically adapts to these colors and gives you a gradient of dither patterns in the Colors box.
+			</p>
+			<p>
+				If you use <b>Image > Invert</b>, in monochrome mode, it flips the two colors in the image,
+				instead of changing colors to their RGB opposites.
+				(If the image is pure black and white, these two operations are equivalent.)
+			</p>
+			<p>
+				<b>Colors > Save Colors</b> also now asks for a file name and format.
+				An absurd number of file formats are supported.
+				You can even export CSS variables for use in a web design project.
+				RIFF Palette (*.pal) is compatible with MS Paint, and GIMP Palette (*.gpl) is compatible with many open source graphics programs such as Inkscape and Krita.
+			</p>
+			<p>
+				You can find lots of palettes to use on <a target="_blank" href="https://lospec.com/palette-list">Lospec</a>.
+				Download a palette as GIMP GPL (or several other formats) and use <b>Colors > Get Colors</b> and select the file,
+				or simply drag and drop the file onto JS Paint to load the palette.
+			</p>
+		</article> -->
 		<article class="news-entry" id="news-2021-saving">
 			<h1>The GUIcci Update</h1>
 			<time datetime="2021-12-08">2021-12-08</time>
@@ -539,8 +539,10 @@
 				With that, combined with multitouch panning,
 				JS Paint is much more useable on a phone.
 			</p>
-			<p><b class="bad">Caveat:</b> It's slow on some devices, and parts of the interface are still too small for
-				touch.</p>
+			<p>
+				<b class="bad">Caveat:</b> It's slow on some devices, and parts of the interface are still too small for
+				touch.
+			</p>
 		</article>
 		<article class="news-entry" id="news-2019-polygon-text-and-select">
 			<h1>Polygon, Text, and Select</h1>
@@ -688,7 +690,7 @@
 	<script src="src/$ToolWindow.js"></script>
 
 	<!-- After show_error_message, showMessageBox, make_window_supporting_scale, and localize are defined,
-		set up better global error handling. -->
+	set up better global error handling. -->
 	<!-- Note: This must be in the <body> as it also handles showing a message for Internet Explorer. -->
 	<script src="src/error-handling-enhanced.js"></script>
 
@@ -734,11 +736,11 @@
 		<defs>
 			<filter id="disabled-inset-filter" x="0" y="0" width="1px" height="1px">
 				<feColorMatrix in="SourceGraphic" type="matrix" values="
-							1 0 0 0 0
-							0 1 0 0 0
-							0 0 1 0 0
-							-1000 -1000 -1000 1 0
-						" result="black-parts-isolated" />
+					1 0 0 0 0
+					0 1 0 0 0
+					0 0 1 0 0
+					-1000 -1000 -1000 1 0
+				" result="black-parts-isolated" />
 				<feFlood result="shadow-color" flood-color="var(--ButtonShadow)" />
 				<feFlood result="hilight-color" flood-color="var(--ButtonHilight)" />
 				<feOffset in="black-parts-isolated" dx="1" dy="1" result="offset" />
@@ -751,11 +753,11 @@
 			</filter>
 			<filter id="disabled-inset-filter-2" x="0" y="0" width="1px" height="1px">
 				<feColorMatrix in="SourceGraphic" type="matrix" values="
-							1 0 0 0 0
-							0 1 0 0 0
-							0 0 1 0 0
-							-1 -1 -0 1 0
-						" result="black-and-blue-parts-isolated" />
+					1 0 0 0 0
+					0 1 0 0 0
+					0 0 1 0 0
+					-1 -1 -0 1 0
+				" result="black-and-blue-parts-isolated" />
 				<feFlood result="shadow-color" flood-color="var(--ButtonShadow)" />
 				<feFlood result="hilight-color" flood-color="var(--ButtonHilight)" />
 				<feOffset in="black-and-blue-parts-isolated" dx="1" dy="1" result="offset" />

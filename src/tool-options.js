@@ -319,7 +319,7 @@ const $choose_magnification = $Choose(
 	scale => scale === magnification,
 	true,
 ).addClass("choose-magnification")
-	.css({ position: "relative" }); // positioning context for above `position: "absolute"` canvas
+	.css({ position: "relative" }); // positioning context for .secret-option `position: "absolute"` canvas
 
 $choose_magnification.on("update", () => {
 	$choose_magnification

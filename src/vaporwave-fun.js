@@ -69,15 +69,12 @@
 		const animate = () => {
 			rAF_ID = requestAnimationFrame(animate);
 
+			// @TODO: slow down and stop when you pause?
+			const turns = Math.sin(Date.now() / 5000);
+			const hueTurns = Math.sin(Date.now() / 4000);
 			$(rotologo).css({
-				transform:
-					`perspective(4000px) rotateY(${Math.sin(Date.now() / 5000)
-					}turn) rotateX(${0
-					}turn) translate(-50%, -50%) translateZ(500px)`,
-				filter:
-					`hue-rotate(${Math.sin(Date.now() / 4000)
-					// @TODO: slow down and stop when you pause
-					}turn)`,
+				transform: `perspective(4000px) rotateY(${turns}turn) translate(-50%, -50%) translateZ(500px)`,
+				filter: `hue-rotate(${hueTurns}turn)`,
 			});
 
 			if ($window.length) {
@@ -90,11 +87,10 @@
 					el = el.offsetParent;
 				} while (el);
 
+				const rotateY = -(offsetLeft + ($window.outerWidth() - parent.innerWidth) / 2) / parent.innerWidth / 3;
+				const rotateX = (offsetTop + ($window.outerHeight() - parent.innerHeight) / 2) / parent.innerHeight / 3;
 				$window.css({
-					transform:
-						`perspective(4000px) rotateY(${-(offsetLeft + ($window.outerWidth() - parent.innerWidth) / 2) / parent.innerWidth / 3
-						}turn) rotateX(${(offsetTop + ($window.outerHeight() - parent.innerHeight) / 2) / parent.innerHeight / 3
-						}turn)`,
+					transform: `perspective(4000px) rotateY(${rotateY}turn) rotateX(${rotateX}turn)`,
 					transformOrigin: "50% 50%",
 					transformStyle: "preserve-3d",
 					// @FIXME: interactivity problems (with order elements are considered to have), I think related to preserve-3d

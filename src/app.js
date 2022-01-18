@@ -484,11 +484,11 @@ const image_format_categories = (image_formats) => {
 const palette_formats = [];
 for (const [format_id, format] of Object.entries(AnyPalette.formats)) {
 	if (format.write) {
+		const inside_parens = format.fileExtensions.map((extension) => `*.${extension}`).join(";");
 		palette_formats.push({
 			formatID: format_id,
 			name: format.name,
-			nameWithExtensions: `${format.name} (${format.fileExtensions.map((extension) => `*.${extension}`).join(";")
-				})`,
+			nameWithExtensions: `${format.name} (${inside_parens})`,
 			extensions: format.fileExtensions,
 		});
 	}
@@ -971,10 +971,10 @@ $G.on("keydown", e => {
 		e.preventDefault();
 	} else if (e.key === "F4") {
 		redo();
+	} else if (e.key === "Delete" || e.key === "Backspace") {
 		// alt+backspace: undo
 		// shift+delete: cut
 		// delete/backspace: delete selection
-	} else if (e.key === "Delete" || e.key === "Backspace") {
 		if (e.key === "Delete" && e.shiftKey) {
 			cut();
 		} else if (e.key === "Backspace" && e.altKey) {
@@ -983,9 +983,9 @@ $G.on("keydown", e => {
 			delete_selection();
 		}
 		e.preventDefault();
+	} else if (e.key === "Insert") {
 		// ctrl+insert: copy
 		// shift+insert: paste
-	} else if (e.key === "Insert") {
 		if (e.ctrlKey) {
 			copy();
 			e.preventDefault();
@@ -1296,13 +1296,14 @@ if (window.initial_system_file_handle) {
 const lerp = (a, b, b_ness) => a + (b - a) * b_ness;
 
 const color_ramp = (num_colors, start_hsla, end_hsla) =>
-	Array(num_colors).fill().map((_undefined, index, array) =>
-		`hsla(${lerp(start_hsla[0], end_hsla[0], index / array.length)
-		}deg, ${lerp(start_hsla[1], end_hsla[1], index / array.length)
-		}%, ${lerp(start_hsla[2], end_hsla[2], index / array.length)
-		}%, ${lerp(start_hsla[3], end_hsla[3], index / array.length)
-		}%)`
-	);
+	Array(num_colors).fill().map((_undefined, ramp_index, array) => {
+		// TODO: should this use (array.length - 1)?
+		const h = lerp(start_hsla[0], end_hsla[0], ramp_index / array.length);
+		const s = lerp(start_hsla[1], end_hsla[1], ramp_index / array.length);
+		const l = lerp(start_hsla[2], end_hsla[2], ramp_index / array.length);
+		const a = lerp(start_hsla[3], end_hsla[3], ramp_index / array.length);
+		return `hsla(${h}deg, ${s}%, ${l}%, ${a})`;
+	});
 
 const update_palette_from_theme = () => {
 	if (get_theme() === "winter.css") {
@@ -2390,9 +2391,9 @@ function iOS() {
 		'iPad',
 		'iPhone',
 		'iPod'
-	].includes(navigator.platform)
+	].includes(navigator.platform) ||
 		// iPad on iOS 13 detection
-		|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+		(navigator.userAgent.includes("Mac") && "ontouchend" in document)
 }
 $("html").toggleClass("ios", iOS());
 $G.on("fullscreenchange webkitfullscreenchange", () => {

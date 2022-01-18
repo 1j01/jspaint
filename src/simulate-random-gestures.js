@@ -161,14 +161,14 @@ window.simulateRandomGesturesPeriodically = () => {
 	window.console && console.log("Using seed:", seed);
 	window.console && console.log("Note: Seeds are not guaranteed to work with different versions of the app, but within the same version it should produce the same results given the same starting document & other state & NO interference... except for airbrush randomness");
 	window.console && console.log(`To use this seed:
-	
-	window.drawRandomlySeed = ${seed};
-	document.body.style.width = "${getComputedStyle(document.body).width}";
-	document.body.style.height = "${getComputedStyle(document.body).height}";
-	simulateRandomGesturesPeriodically();
-	delete window.drawRandomlySeed;
-	
-`);
+
+		window.drawRandomlySeed = ${seed};
+		document.body.style.width = "${getComputedStyle(document.body).width}";
+		document.body.style.height = "${getComputedStyle(document.body).height}";
+		simulateRandomGesturesPeriodically();
+		delete window.drawRandomlySeed;
+
+	`);
 
 	let delayBetweenGestures = 500;
 	let shiftStart = false;

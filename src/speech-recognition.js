@@ -1259,8 +1259,8 @@ const toolNames = tools.map((tool) => tool.speech_recognition).flat();
 // @TODO: "convert image to black-and-white" / "convert image to monochrome" / "make image monochrome", "increase/decrease threshold" / "more white" / "more black"
 // @TODO: in Image Attributes, "Color"/"Colors"/"Not black and white" for Colors
 // @TODO: select tool options like selection opacity and brush sizes
-// opaque/transparent/translucent/see-through selection / make selection opaque/transparent/translucent/see-through
-// "increase size"(too vague) / "increase brush size" / "increase eraser size" / "larger eraser" / "enlarge eraser"
+//   opaque/transparent/translucent/see-through selection / make selection opaque/transparent/translucent/see-through
+//   "increase size"(too vague) / "increase brush size" / "increase eraser size" / "larger eraser" / "enlarge eraser"
 
 // @TODO: Is there a way to enable the grammar only as a hint, non-restrictively?
 // Construct a grammar that just contains an English dictionary, and set it as lower weight?
@@ -1343,11 +1343,12 @@ recognition.onresult = function (event) {
 	const interpretations = interpret_command(command, true);
 	if (interpretations.length) {
 		const interpretation = choose_interpretation(interpretations);
-		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${command.replace(
+		// @TODO: escape HTML around and inside the <b> tag
+		const speech_html = command.replace(
 			new RegExp(escapeRegExp(interpretation.match_text), "i"),
-			(important_text) => `<b>${important_text}</b>`,
-		)
-			}</span>`);
+			(important_text) => `<b>${important_text}</b>`
+		);
+		$status_text.html(`Speech:&nbsp;<span style="white-space: pre;">${speech_html}</span>`);
 		console.log(`Interpreting command "${command}" as`, interpretation);
 		interpretation.exec();
 	} else {

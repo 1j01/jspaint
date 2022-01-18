@@ -419,11 +419,11 @@ function $Iframe(options) {
 	return $iframe;
 }
 
-// function $IframeWindow(options){
+// function $IframeWindow(options) {
 
 // 	var $win = new $Window(options);
 
-// 	var $iframe = $win.$iframe = $Iframe({src: options.src});
+// 	var $iframe = $win.$iframe = $Iframe({ src: options.src });
 // 	$win.$content.append($iframe);
 // 	var iframe = $win.iframe = $iframe[0];
 // 	// @TODO: should I instead of having iframe.$window, have something like get$Window?
@@ -431,18 +431,18 @@ function $Iframe(options) {
 // 	// I know it's used from within the iframe contents as frameElement.$window
 // 	iframe.$window = $win;
 
-// 	$win.on("close", function(){
+// 	$win.on("close", function () {
 // 		$iframe.destroy();
 // 	});
 // 	$win.onFocus($iframe.focus_contents);
 
-// 	$iframe.on("load", function(){
+// 	$iframe.on("load", function () {
 // 		$win.show();
 // 		$win.focus();
 // 		// $iframe.focus_contents();
 // 	});
 
-// 	$win.setInnerDimensions = ({width, height})=> {
+// 	$win.setInnerDimensions = ({ width, height }) => {
 // 		const width_from_frame = $win.width() - $win.$content.width();
 // 		const height_from_frame = $win.height() - $win.$content.height();
 // 		$win.css({

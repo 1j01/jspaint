@@ -41,13 +41,13 @@
 				: (
 					no_longer_blank ?
 						`<p>
-								<b>Note:</b> normally a backup is saved automatically,<br>
-								but autosave is paused while this dialog is open<br>
-								to avoid overwriting the (singular) backup.
-							</p>
-							<p>
-								(See <b>File &gt; Manage Storage</b> to view backups.)
-							</p>`
+							<b>Note:</b> normally a backup is saved automatically,<br>
+							but autosave is paused while this dialog is open<br>
+							to avoid overwriting the (singular) backup.
+						</p>
+						<p>
+							(See <b>File &gt; Manage Storage</b> to view backups.)
+						</p>`
 						: ""
 				)
 			}
