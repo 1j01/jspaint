@@ -35,24 +35,65 @@ I want to bring good old Paint into the modern era.
 #### Current improvements include:
 
 * Cross-platform
-* Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
-  or a measly 50 in Windows 7)
-* Undo history is *nonlinear*, which means if you undo and do something other than redo, the redos aren't discarded. Instead, a new branch is created in the *history tree*. Jump to any point in history with **Edit > History** or <kbd>Ctrl+Shift+Y</kbd>
-* Automatically keeps a backup of your image. Only one backup per image tho, which doesn't give you a lot of safety. Remember to save with **File > Save** or <kbd>Ctrl+S</kbd>! Manage backups with **File > Manage Storage**.
-* Edit transparent images! To create a transparent image,
-  go to **Image > Attributes...** and select Transparent,
-  then OK, and then **Image > Clear Image** or use the Eraser tool.
-  Images with *any* translucent pixels will open in Transparent mode.
-* Switch themes from the Extras menu. Dark mode included.
-* [Vertical Color Box mode](https://jspaint.app/#vertical-color-box-mode), accessible from **Extras > Vertical Color Box**
-* [Eye Gaze Mode](https://jspaint.app/#eye-gaze-mode), for use with an eye tracker, head tracker, or other coarse input device, accessible from **Extras > Eye Gaze Mode**. (With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).)
+* Mobile friendly
+  * Touch support: use two fingers to pan the view, and pinch to zoom
+  * Click/tap the selected colors area to swap the foreground and background colors
+  * **View > Fullscreen** to toggle fullscreen mode, nice for small screens
+* Web features
+  * **File > Load From URL...** to open an image from the Web.
+  * **File > Upload to Imgur** to upload the current image to Imgur.
+  * **Paste** supports loading from URLs.
+  * Create links to open an image from the web, such as <https://jspaint.app/#load:https://i.imgur.com/zJMrWwb.png> to start with an isometric grid template.
+  * Rudimentary **multi-user** collaboration support.
+    Start up a session at
+    [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
+    and send the link to your friends!
+    It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
+    Sessions are not private, and you may lose your work at any time.
+    If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
+  * You can shoot at the application [Asteroids style](https://kickassapp.com/).
+* **Extras > Themes** to change the look of the app. Dark mode included.
+* [Eye Gaze Mode](https://jspaint.app/#eye-gaze-mode), for use with an eye tracker, head tracker, or other coarse input device, accessible from **Extras > Eye Gaze Mode**. With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).
 * [Speech Recognition Mode](https://jspaint.app/#speech-recognition-mode).
   Using your voice you can select tools and colors, pan the view ("scroll down and to the left", or "go southwest", etc.), explore the menus (but you can activate any menu item without opening the menus first), interact with windows (including scrolling the history view with "scroll up"/"scroll down" etc.), dictate text with the Text tool, and even tell the application to sketch things (for instance, "draw a house")
 * Create an animated GIF from the current document history.
   Accessible from the Extras menu or with <kbd>Ctrl+Shift+G</kbd>.
   It's pretty nifty, you should try it out!
   You might want to limit the size of the image though.
-* You can shoot at the application [Asteroids style](https://kickassapp.com/)
+* Load and save [many different palette formats](#color-palette-formats) with **Colors > Get Colors** and **Colors > Save Colors**.
+  (I made a library for this: <img src="images/anypalette-logo-128x128.png" height="16"> [AnyPalette.js](https://github.com/1j01/anypalette.js).)
+  * You can also drag and drop palette files into the app to load.
+
+Editing Features:
+
+* Use Alt+Mousewheel to zoom in and out
+* Edit transparent images! To create a transparent image,
+  go to **Image > Attributes...** and select Transparent,
+  then OK, and then **Image > Clear Image** or use the Eraser tool.
+  Images with *any* translucent pixels will open in Transparent mode.
+* You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
+* Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd> and <kbd>></kbd>)
+* Rotate by any arbitrary angle in **Image > Flip/Rotate**
+* In **Image > Stretch/Skew**, you can stretch more than 500% at once
+* Zoom to an arbitrary scale in **View > Zoom > Custom...**
+* Zoom to fit the canvas within the window with **View > Zoom > Zoom To Window**
+* Non-contiguous fill: Replace a color in the entire image by holding <kbd>Shift</kbd> when using the fill tool
+
+Miscellaneous Improvements:
+
+* [Vertical Color Box mode](https://jspaint.app/#vertical-color-box-mode), accessible from **Extras > Vertical Color Box**
+* You can use the Text tool at any zoom level (and it previews the exact pixels that will end up on the canvas).
+* Spellcheck is available in the textbox if your browser supports it.
+* Resize handles are easier to grab than in Windows 10's Paint.
+* Omits some Thumbnail view bugs, like the selection showing in the wrong place.
+* Unlimited undos/redos (as opposed to a measly 3 in Windows XP,
+  or a measly 50 in Windows 7)
+* Undo history is *nonlinear*, which means if you undo and do something other than redo, the redos aren't discarded. Instead, a new branch is created in the *history tree*. Jump to any point in history with **Edit > History** or <kbd>Ctrl+Shift+Y</kbd>
+* Automatically keeps a backup of your image. Only one backup per image tho, which doesn't give you a lot of safety. Remember to save with **File > Save** or <kbd>Ctrl+S</kbd>! Manage backups with **File > Manage Storage**.
+
+<!--
+Half-features:
+
 * When you do **Edit > Paste From...** you can select transparent images.
   ~~You can even paste a transparent animated GIF and then
   hold <kbd>Shift</kbd> while dragging the selection to
@@ -61,33 +102,7 @@ I want to bring good old Paint into the modern era.
   I may reimplement this in the future as I really liked this feature.
 * You can open SVG files, though only as a bitmap.
   (Note: it may open super large, or tiny. There's no option to choose a size when opening.)
-* You can crop the image by making a selection while holding <kbd>Ctrl</kbd>
-* Keyboard shortcuts for rotation: <kbd>Ctrl+.</kbd> and <kbd>Ctrl+,</kbd> (<kbd><</kbd> and <kbd>></kbd>)
-* Rotate by any arbitrary angle in **Image > Flip/Rotate**
-* In **Image > Stretch/Skew**, you can stretch more than 500% at once
-* Zoom to an arbitrary scale in **View > Zoom > Custom...**
-* Zoom to fit the canvas within the window with **View > Zoom > Zoom To Window**
-* Use Alt+Mousewheel to zoom in and out
-* Touch support: use two fingers to pan the view, and pinch to zoom
-* **View > Fullscreen** to toggle fullscreen mode, nice for mobile devices
-* Non-contiguous fill: Replace a color in the entire image by holding <kbd>Shift</kbd> when using the fill tool
-* You can use the Text tool at any zoom level, and it previews the exact pixels that will end up on the canvas.
-* Spellcheck is available in the textbox if your browser supports it.
-* Rudimentary **multi-user** support.
-  Start up a session at
-  [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
-  and send the link to your friends!
-  It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
-  Sessions are not private, and you may lose your work at any time.
-  If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
-* Create links to open an image from the web, such as <https://jspaint.app/#load:https://i.imgur.com/zJMrWwb.png> to start with an isometric grid template.
-  You can also use the **File > Load From URL...** menu item.
-* Load and save [many different palette formats](#color-palette-formats) with **Colors > Get Colors** and **Colors > Save Colors**.
-  (I made a library for this: <img src="images/anypalette-logo-128x128.png" height="16"> [AnyPalette.js](https://github.com/1j01/anypalette.js).)
-* You can also drag and drop palette files (of any format) into the app to load. (Dragging and dropping image files also works, to load images.)
-* Click/tap the selected colors area to swap the foreground and background colors
-* Resize handles are easier to grab than in Windows 10's Paint.
-* Omits some Thumbnail view bugs, like the selection showing in the wrong place.
+-->
 
 ![JS Paint drawing of JS Paint on a phone](images/meta/mobipaint.png)
 
