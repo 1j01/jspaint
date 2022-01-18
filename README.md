@@ -51,7 +51,6 @@ I want to bring good old Paint into the modern era.
     It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
     Sessions are not private, and you may lose your work at any time.
     If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
-  * You can shoot at the application [Asteroids style](https://kickassapp.com/).
 * **Extras > Themes** to change the look of the app. Dark mode included.
 * [Eye Gaze Mode](https://jspaint.app/#eye-gaze-mode), for use with an eye tracker, head tracker, or other coarse input device, accessible from **Extras > Eye Gaze Mode**. With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).
 * [Speech Recognition Mode](https://jspaint.app/#speech-recognition-mode).
