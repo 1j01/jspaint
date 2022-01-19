@@ -200,7 +200,7 @@
 		["use lime with", "use line width"],
 		["line width v", "line width 5"],
 		["quick save", "click save"],
-		[/^safe$/, "save"],
+		[/^safe$/i, "save"],
 
 		// addressing actions by menu they're in
 		["dial neal", "file new"],
@@ -1309,7 +1309,7 @@
 			for (const [bad, good] of recognitionFixes) {
 				if (bad instanceof RegExp) {
 					if (bad.flags.indexOf("i") === -1) {
-						console.warn("A speech recognition fix was introduced using a regexp that is not case insensitive. Add the /i flag or make this message more nuanced.");
+						console.warn(`A speech recognition fix was introduced using a regexp (${bad}) that is not case insensitive. Add the /i flag or make this message more nuanced.`);
 					}
 					command = command.replace(bad, good);
 				} else if (bad.match(/^\W|\W$/)) {
