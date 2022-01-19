@@ -1,12 +1,12 @@
-(function () {
+(function (exports) {
 
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 	const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
 	// const SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
 
-	window.speech_recognition_available = !!(SpeechRecognition && SpeechGrammarList);
+	exports.speech_recognition_available = !!(SpeechRecognition && SpeechGrammarList);
 
-	if (!window.speech_recognition_available) {
+	if (!exports.speech_recognition_available) {
 		return;
 	}
 
@@ -1288,17 +1288,17 @@
 	recognition.interimResults = false;
 	recognition.maxAlternatives = 1;
 
-	window.speech_recognition_active = false;
+	exports.speech_recognition_active = false;
 
-	window.enable_speech_recognition = function () {
-		if (!window.speech_recognition_active) {
-			window.speech_recognition_active = true;
+	exports.enable_speech_recognition = function () {
+		if (!exports.speech_recognition_active) {
+			exports.speech_recognition_active = true;
 			recognition.start();
 		}
 	};
-	window.disable_speech_recognition = function () {
-		if (window.speech_recognition_active) {
-			window.speech_recognition_active = false;
+	exports.disable_speech_recognition = function () {
+		if (exports.speech_recognition_active) {
+			exports.speech_recognition_active = false;
 			recognition.stop();
 		}
 	};
@@ -1372,10 +1372,10 @@
 	};
 
 	recognition.onstart = function (event) {
-		window.speech_recognition_active = true;
+		exports.speech_recognition_active = true;
 	};
 	recognition.onend = function (event) {
-		window.speech_recognition_active = false;
+		exports.speech_recognition_active = false;
 	};
 
 	recognition.onerror = function (event) {
@@ -1390,7 +1390,7 @@
 		} else {
 			$status_text.text('Error occurred in speech recognition: ' + event.error);
 			console.log('Error occurred in speech recognition:', event.error);
-			// window.speech_recognition_active = false;
+			// exports.speech_recognition_active = false;
 		}
 	};
 
@@ -1411,7 +1411,7 @@
 		return best_interpretation;
 	}
 
-	window.interpret_command = (input_text, default_to_entering_text) => {
+	exports.interpret_command = (input_text, default_to_entering_text) => {
 		const interpretations = [];
 		const add_interpretation = (interpretation) => {
 			interpretations.push(interpretation);
@@ -1668,7 +1668,7 @@
 					type: "stop-drawing",
 					exec: () => {
 						window.stopSimulatingGestures && window.stopSimulatingGestures();
-						window.trace_and_sketch_stop && window.trace_and_sketch_stop();
+						exports.trace_and_sketch_stop && exports.trace_and_sketch_stop();
 					},
 					prioritize: true,
 				});
@@ -1836,13 +1836,13 @@
 		return interpretations;
 	};
 
-	window.trace_and_sketch = (subject_imagedata) => {
-		window.trace_and_sketch_stop && window.trace_and_sketch_stop();
+	exports.trace_and_sketch = (subject_imagedata) => {
+		exports.trace_and_sketch_stop && exports.trace_and_sketch_stop();
 
 		// @TODO: clickable cancel button? (in addition to Escape key handling and the "stop" voice command)
 
 		// I'm suggesting saying "stop drawing" rather than "stop" because I think it's more likely to be picked up as speech at all
-		$status_text.text(`To stop drawing, ${window.speech_recognition_active ? `say "stop drawing", or ` : ""}press Esc.`);
+		$status_text.text(`To stop drawing, ${exports.speech_recognition_active ? `say "stop drawing", or ` : ""}press Esc.`);
 
 		// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
@@ -1891,7 +1891,7 @@
 			segment_index += 1;
 		}, 20);
 	};
-	window.trace_and_sketch_stop = () => {
+	exports.trace_and_sketch_stop = () => {
 		clearInterval(window.sketching_iid);
 		pointer_active = false;
 		pointer_over_canvas = false;
@@ -2143,4 +2143,4 @@
 		$(test_speech_recognition);
 	}
 
-}());
+}(window));

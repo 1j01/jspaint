@@ -1,4 +1,4 @@
-(() => {
+((exports) => {
 
 	let seed = 4; // chosen later
 
@@ -9,8 +9,8 @@
 		return min + rnd * (max - min);
 	};
 
-	window.stopSimulatingGestures && window.stopSimulatingGestures();
-	window.simulatingGestures = false;
+	exports.stopSimulatingGestures && exports.stopSimulatingGestures();
+	exports.simulatingGestures = false;
 
 	let gestureTimeoutID;
 	let periodicGesturesTimeoutID;
@@ -32,7 +32,7 @@
 		transition: "opacity 0.5s",
 	});
 
-	window.simulateRandomGesture = (callback, { shift, shiftToggleChance = 0.01, secondary, secondaryToggleChance, target = main_canvas }) => {
+	exports.simulateRandomGesture = (callback, { shift, shiftToggleChance = 0.01, secondary, secondaryToggleChance, target = main_canvas }) => {
 		let startWithinRect = target.getBoundingClientRect();
 		let canvasAreaRect = $canvas_area[0].getBoundingClientRect();
 
@@ -150,8 +150,8 @@
 		move();
 	};
 
-	window.simulateRandomGesturesPeriodically = () => {
-		window.simulatingGestures = true;
+	exports.simulateRandomGesturesPeriodically = () => {
+		exports.simulatingGestures = true;
 
 		if (window.drawRandomlySeed != null) {
 			seed = window.drawRandomlySeed;
@@ -189,7 +189,7 @@
 		$canvas_area.scrollLeft($canvas_area.height() * seededRandom());
 
 		let _simulateRandomGesture = (callback) => {
-			window.simulateRandomGesture(callback, {
+			exports.simulateRandomGesture(callback, {
 				shift: shiftStart,
 				shiftToggleChance,
 				secondary: secondaryStart,
@@ -237,7 +237,7 @@
 			periodicGesturesTimeoutID = setTimeout(() => {
 				_simulateRandomGesture(() => {
 					if (selection && seededRandom() < dragSelectionChance) {
-						window.simulateRandomGesture(waitThenGo, {
+						exports.simulateRandomGesture(waitThenGo, {
 							shift: shiftStart,
 							shiftToggleChance,
 							secondary: secondaryStart,
@@ -253,11 +253,11 @@
 		_simulateRandomGesture(waitThenGo);
 	};
 
-	window.stopSimulatingGestures = () => {
-		if (window.simulatingGestures) {
+	exports.stopSimulatingGestures = () => {
+		if (exports.simulatingGestures) {
 			clearTimeout(gestureTimeoutID);
 			clearTimeout(periodicGesturesTimeoutID);
-			window.simulatingGestures = false;
+			exports.simulatingGestures = false;
 			$status_text.default();
 			$cursor.remove();
 			cancel();
@@ -266,4 +266,4 @@
 		document.body.style.height = "";
 	};
 
-})();
+})(window);
