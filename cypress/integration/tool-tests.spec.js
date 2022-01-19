@@ -126,8 +126,8 @@ context('tool tests', () => {
 		});
 	};
 
-	// const gesture = (points)=> {
-	// 	const options = {secondary: false, shift: false};
+	// const gesture = (points) => {
+	// 	const options = { secondary: false, shift: false };
 	// 	// @TODO: while loop
 	// 	trigger("pointerenter", points[0].x, points[0].y, options);
 	// 	trigger("pointerdown", points[0].x, points[0].y, options);
@@ -141,15 +141,15 @@ context('tool tests', () => {
 
 	// it('brush tool', () => {
 	// 	cy.get(".tool[title='Brush']").click();
-	// 	// gesture([{x: 50, y: 50}, {x: 100, y: 100}]);
+	// 	// gesture([{ x: 50, y: 50 }, { x: 100, y: 100 }]);
 	// 	cy.get(".swatch:nth-child(21)").rightclick();
-	// 	cy.window().then({timeout: 8000}, async (win)=> {
-	// 		for (let secondary=0; secondary<=1; secondary++) {
-	// 			for (let b=0; b<12; b++) {
-	// 				win.$(`.chooser > :nth-child(${b+1})`).click();
-	// 				const start = {x: 0.05 + b*0.05, y: 0.1 + 0.1*secondary};
-	// 				const end = {x: start.x + 0.04, y: start.y + 0.04};
-	// 				await simulateGesture(win, {shift: false, secondary: !!secondary, start, end});
+	// 	cy.window().then({ timeout: 8000 }, async (win) => {
+	// 		for (let secondary = 0; secondary <= 1; secondary++) {
+	// 			for (let b = 0; b < 12; b++) {
+	// 				win.$(`.chooser > :nth-child(${b + 1})`).click();
+	// 				const start = { x: 0.05 + b * 0.05, y: 0.1 + 0.1 * secondary };
+	// 				const end = { x: start.x + 0.04, y: start.y + 0.04 };
+	// 				await simulateGesture(win, { shift: false, secondary: !!secondary, start, end });
 	// 			}
 	// 		}
 	// 	});
@@ -159,7 +159,7 @@ context('tool tests', () => {
 	// @TODO: test transparent document mode
 	it(`eraser tool`, () => {
 		cy.get(`.tool[title='Eraser/Color Eraser']`).click();
-		// gesture([{x: 50, y: 50}, {x: 100, y: 100}]);
+		// gesture([{ x: 50, y: 50 }, { x: 100, y: 100 }]);
 		cy.window().then({ timeout: 60000 }, async (win) => {
 			for (let row = 0; row < 4; row++) {
 				const secondary = !!(row % 2);
@@ -194,7 +194,7 @@ context('tool tests', () => {
 	["Brush", "Pencil", "Rectangle", "Rounded Rectangle", "Ellipse", "Line"].forEach((toolName) => {
 		it(`${toolName.toLowerCase()} tool`, () => {
 			cy.get(`.tool[title='${toolName}']`).click();
-			// gesture([{x: 50, y: 50}, {x: 100, y: 100}]);
+			// gesture([{ x: 50, y: 50 }, { x: 100, y: 100 }]);
 			cy.get(".swatch:nth-child(22)").rightclick();
 			cy.window().then({ timeout: 60000 }, async (win) => {
 				for (let row = 0; row < 4; row++) {
