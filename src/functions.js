@@ -3675,10 +3675,6 @@ function show_multi_user_setup_dialog(from_current_document) {
 
 		if (name == "") {
 			show_error_message("The session name cannot be empty.");
-			// } else if (name.match(/[./[\]#$]/)) {
-			// 	show_error_message("The session name cannot contain any of ./[]#$");
-			// } else if (name.match(/\s/)) {
-			// 	show_error_message("The session name cannot contain spaces.");
 		} else if ($session_name.is(":invalid")) {
 			show_error_message("The session name must be made from only numbers, letters, and hyphens.");
 		} else {
