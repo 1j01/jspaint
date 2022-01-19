@@ -573,8 +573,8 @@
 			}
 
 			// for debug: fill rect
-			// for(let x=0, x_limit=id_dest.width; x<x_limit; x+=1){
-			// 	for(let y=1, y_limit=id_dest.height-1; y<y_limit; y+=1){
+			// for (let x = 0, x_limit = id_dest.width; x < x_limit; x += 1) {
+			// 	for (let y = 1, y_limit = id_dest.height - 1; y < y_limit; y += 1) {
 			// 		copyPixelInverted(x, y);
 			// 	}
 			// }
@@ -787,7 +787,7 @@
 			}
 		},
 		drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-			// if(!pointer_active && !pointer_over_canvas){return;}
+			// if (!pointer_active && !pointer_over_canvas) { return; }
 			if (!this.preview_canvas) { return; }
 			ctx.scale(scale, scale);
 			ctx.translate(translate_x, translate_y);
@@ -955,7 +955,7 @@
 			}
 		},
 		drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
-			// if(!pointer_active && !pointer_over_canvas){return;}
+			// if (!pointer_active && !pointer_over_canvas) { return; }
 			if (!this.preview_canvas) { return; }
 
 			ctx.scale(scale, scale);

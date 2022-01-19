@@ -1,8 +1,7 @@
 
 // Based on: https://github.com/evernote/serge/blob/master/lib/Serge/Engine/Plugin/parse_rc.pm
 
-module.exports =
-function parse_rc_file(rc_file_text, callback, lang) {
+module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 	// if (!callback) {
 	// 	throw new TypeError('callback not specified');
 	// }
@@ -81,9 +80,9 @@ function parse_rc_file(rc_file_text, callback, lang) {
 			}
 
 			// STRINGTABLE BEGIN...END block contents
-		// } else if (stringtable && block_level) {
+			// } else if (stringtable && block_level) {
 			// actually just do any time, find any strings
-		}{
+		} {
 			// let match = line.match(/^[\t ]*(\w+)[\t ]+(L?"([^"]*?("")*)*?")/);
 			let match = line.match(/(L?"(.*)")/);
 			if (match) { // test for one-line string definitions

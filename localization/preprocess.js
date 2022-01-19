@@ -3,8 +3,8 @@ const glob = require("glob");
 const parse_rc_file = require("./parse-rc-file");
 
 const base_lang = "en";
-const available_langs = fs.readdirSync(__dirname).filter((dir)=> dir.match(/^\w+(-\w+)?$/));
-const target_langs = available_langs.filter((lang)=> lang !== base_lang);
+const available_langs = fs.readdirSync(__dirname).filter((dir) => dir.match(/^\w+(-\w+)?$/));
+const target_langs = available_langs.filter((lang) => lang !== base_lang);
 
 console.log("Target languages:", target_langs);
 
@@ -27,11 +27,11 @@ function remove_hotkey(text) {
 }
 const remove_ellipsis = str => str.replace("...", "");
 
-const only_unique = (value, index, self)=> self.indexOf(value) === index;
+const only_unique = (value, index, self) => self.indexOf(value) === index;
 
-const get_strings = (lang)=> {
+const get_strings = (lang) => {
 	return glob.sync(`${__dirname}/${lang}/**/*.rc`).map(
-		(rc_file)=> parse_rc_file(fs.readFileSync(rc_file, "utf16le").replace(/\ufeff/g, ""))
+		(rc_file) => parse_rc_file(fs.readFileSync(rc_file, "utf16le").replace(/\ufeff/g, ""))
 	).flat();
 };
 
@@ -39,11 +39,11 @@ const base_strings = get_strings(base_lang);
 for (const target_lang of target_langs) {
 	const target_strings = get_strings(target_lang);
 	const localizations = {};
-	const add_localization = (base_string, target_string, fudgedness)=> {
+	const add_localization = (base_string, target_string, fudgedness) => {
 		localizations[base_string] = localizations[base_string] || [];
-		localizations[base_string].push({target_string, fudgedness});
+		localizations[base_string].push({ target_string, fudgedness });
 	};
-	const add_localizations = (base_strings, target_strings)=> {
+	const add_localizations = (base_strings, target_strings) => {
 		for (let i = 0; i < target_strings.length; i++) {
 			const base_string = base_strings[i];
 			const target_string = target_strings[i];
@@ -71,8 +71,8 @@ for (const target_lang of target_langs) {
 
 	for (const base_string in localizations) {
 		const options = localizations[base_string];
-		options.sort((a, b)=> a.fudgedness - b.fudgedness);
-		const unique_strings = options.map(({target_string})=> target_string).filter(only_unique);
+		options.sort((a, b) => a.fudgedness - b.fudgedness);
+		const unique_strings = options.map(({ target_string }) => target_string).filter(only_unique);
 		if (unique_strings.length > 1) {
 			console.warn(`Collision for "${base_string}": ${JSON.stringify(unique_strings, null, "\t")}`);
 		}

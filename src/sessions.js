@@ -445,26 +445,25 @@
 				// const label = synthetic ? "(synthetic)" : "(normal)";
 				// window.console && console.debug && console.debug(e.type, label);
 			};
-			
+
 			$canvas_area.on("pointerdown.session-hook", "*", (e, synthetic) => {
 				debug_event(e, synthetic);
-				if(synthetic){ return; }
+				if (synthetic) { return; }
 
-					pointer_operations = [e];
-					const pointermove = (e, synthetic) => {
-						debug_event(e, synthetic);
-						if(synthetic){ return; }
-						
-						pointer_operations.push(e);
-					};
-					$G.on("pointermove.session-hook", pointermove);
-					$G.one("pointerup.session-hook", (e, synthetic) => {
-						debug_event(e, synthetic);
-						if(synthetic){ return; }
-						
-						$G.off("pointermove.session-hook", pointermove);
-					});
-				}
+				pointer_operations = [e];
+				const pointermove = (e, synthetic) => {
+					debug_event(e, synthetic);
+					if (synthetic) { return; }
+
+					pointer_operations.push(e);
+				};
+				$G.on("pointermove.session-hook", pointermove);
+				$G.one("pointerup.session-hook", (e, synthetic) => {
+					debug_event(e, synthetic);
+					if (synthetic) { return; }
+
+					$G.off("pointermove.session-hook", pointermove);
+				});
 			});
 			*/
 		}

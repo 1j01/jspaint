@@ -12,10 +12,10 @@ const ctx = canvas.getContext("2d");
 const animate = () => {
 	rAF_ID = requestAnimationFrame(animate);
 
-	if(
-		canvas.width !== mask_img.width || 
+	if (
+		canvas.width !== mask_img.width ||
 		canvas.height !== mask_img.height
-	){
+	) {
 		canvas.width = mask_img.width;
 		canvas.height = mask_img.height;
 	}
@@ -28,10 +28,10 @@ const animate = () => {
 	const x_interval_ms = 19000;
 	const y_interval_ms = 7000;
 	const now = performance.now();
-	if(!(
+	if (!(
 		mask_img.complete && mask_img.naturalWidth > 1 &&
 		clouds_img.complete && clouds_img.naturalWidth > 1
-	)){
+	)) {
 		return;
 	}
 	ctx.drawImage(
@@ -41,7 +41,7 @@ const animate = () => {
 		clouds_width,
 		clouds_height
 	);
-	if(something_img.complete && something_img.naturalWidth > 1){
+	if (something_img.complete && something_img.naturalWidth > 1) {
 		let t = now / 5000;
 		ctx.globalAlpha = 0.3 + Math.max(0, Math.sin(-t) * 1);
 		ctx.drawImage(

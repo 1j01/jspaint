@@ -895,7 +895,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size) {
 		draw_line_without_pattern_support(op_ctx_2d, x1, y1, x2, y2, stroke_size);
 	});
 	// also works:
-	// draw_line_strip(ctx, [{x: x1, y: y1}, {x: x2, y: y2}]);
+	// draw_line_strip(ctx, [{ x: x1, y: y1 }, { x: x2, y: y2 }]);
 }
 
 let grid_pattern;

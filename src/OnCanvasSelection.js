@@ -153,9 +153,9 @@ class OnCanvasSelection extends OnCanvasObject {
 		// and should end up as the cut out image data for the selection
 		// canvasImageData is initially the portion of image data on the canvas,
 		// and should end up as... the portion of image data on the canvas that it should end up as.
-		// @TODO: could simplify by making the later (shared) condition just if(colored_cutout){}
+		// @TODO: could simplify by making the later (shared) condition just if (colored_cutout)
 		// but might change how it works anyways so whatever
-		// if(!transparency){ // now if !transparency or if tool_transparent_mode
+		// if (!transparency) { // now if !transparency or if tool_transparent_mode
 		// this is mainly in order to support patterns as the background color
 		// NOTE: must come before cutout canvas is modified
 		const colored_cutout = make_canvas(cutout);
