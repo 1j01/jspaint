@@ -1,4 +1,4 @@
-(() => {
+((exports) => {
 	const default_theme = "classic.css";
 	const theme_storage_key = "jspaint theme";
 	const disable_seasonal_theme_key = "jspaint disable seasonal theme";
@@ -46,9 +46,9 @@
 
 	update_not_for_modern_theme();
 
-	window.get_theme = () => current_theme;
+	exports.get_theme = () => current_theme;
 
-	window.set_theme = theme => {
+	exports.set_theme = theme => {
 		current_theme = theme;
 
 		try {
@@ -176,4 +176,4 @@
 		document.body.appendChild(button);
 		grinch_button = button;
 	}
-})();
+})(window);

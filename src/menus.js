@@ -1,10 +1,10 @@
-(() => {
+((exports) => {
 
 	const looksLikeChrome = !!(window.chrome && (window.chrome.loadTimes || window.chrome.csi));
 	// NOTE: Microsoft Edge includes window.chrome.app
 	// (also this browser detection logic could likely use some more nuance)
 
-	window.menus = {
+	const menus = {
 		[localize("&File")]: [
 			{
 				item: localize("&New"),
@@ -1238,4 +1238,6 @@
 		add_literal_navigation_speech_recognition(menu, top_level_menu_name);
 	}
 
-})();
+	exports.menus = menus;
+
+})(window);

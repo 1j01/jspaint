@@ -88,4 +88,4 @@
 		if (cleanUp) { cleanUp(); }
 	});
 
-})();
+}());
