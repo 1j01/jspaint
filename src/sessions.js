@@ -51,7 +51,6 @@
 						: ""
 				)
 			}
-			}
 		`));
 
 		const $undo = $w.$Button("Undo", () => {
