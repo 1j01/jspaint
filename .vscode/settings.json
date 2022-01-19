@@ -8,6 +8,11 @@
 		"**/lib": true,
 		"**/out": true
 	},
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	// @TODO: is there a way to prune this spelling list? I didn't know about the comment directives for a while,
+	// and accepted a lot of strings for the language names, in languages that I don't understand,
+	// and even with partial strings when it was buggy with Unicode.
 	"cSpell.words": [
 		"Adlm",
 		"Æвзаг",
