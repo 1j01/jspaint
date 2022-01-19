@@ -135,7 +135,7 @@ const createWindow = () => {
 				"Content-Security-Policy": [`
 					default-src 'self';
 					style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-					img-src 'self' data: blob: https://i.postimg.cc;
+					img-src 'self' data: blob: http: https:;
 					font-src 'self' https://fonts.gstatic.com;
 					connect-src * data: blob:;
 				`],
