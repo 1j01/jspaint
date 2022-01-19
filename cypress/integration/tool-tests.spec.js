@@ -18,6 +18,7 @@ context('tool tests', () => {
 	});
 	beforeEach(() => {
 		if (before_first_real_test) return;
+		// eslint-disable-next-line require-await
 		cy.window().then({ timeout: 60000 }, async (win) => {
 			win.selected_colors.foreground = "#000";
 			win.selected_colors.background = "#fff";
@@ -169,7 +170,7 @@ context('tool tests', () => {
 					$options[o].click();
 					if (increaseSize) {
 						for (let i = 0; i < 5; i++) {
-							win.$('body').trigger(new win.$.Event("keydown", { key: "NumpadPlus", keyCode: 107, which: 107 }));
+							win.$('body').trigger(new win.$.Event("keydown", { code: "NumpadAdd" }));
 						}
 					}
 					win.selected_colors.background = "#f0f";
@@ -209,7 +210,7 @@ context('tool tests', () => {
 						$options[o].click();
 						if (increaseSize && (o === 0 || toolName === "Brush" || toolName === "Line")) {
 							for (let i = 0; i < 5; i++) {
-								win.$('body').trigger(new win.$.Event("keydown", { key: "NumpadPlus", keyCode: 107, which: 107 }));
+								win.$('body').trigger(new win.$.Event("keydown", { code: "NumpadAdd" }));
 							}
 						}
 						const start = { x: 0.05 + o * 0.05, y: 0.1 + 0.1 * row };

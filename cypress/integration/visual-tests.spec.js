@@ -15,11 +15,26 @@ context('visual tests', () => {
 		failureThresholdType: 'pixel'
 	};
 
+	const closeMenus = () => {
+		cy.get(".status-text").click({ force: true }); // force because a menu may be covering the status bar / part of it
+	};
+	const clickMenuButton = (label) => {
+		// cy.contains(".menu-button", label).click();
+		cy.contains(".menu-button", label)
+			.trigger('pointerdown', { which: 1 })
+			.trigger('pointerup', { force: true });
+	};
+	const clickMenuItem = (label) => {
+		// cy.contains(".menu-item", label).click();
+		cy.contains(".menu-item", label)
+			.trigger('pointerdown', { which: 1 })
+			.trigger('pointerup', { force: true });
+	};
 	const selectTheme = (themeName) => {
-		cy.contains(".menu-button", "Extras").click();
-		cy.contains(".menu-item", "Theme").click();
-		cy.contains(".menu-item", themeName).click();
-		cy.get(".status-text").click(); // close menu (@TODO: menus should probably always be closed when you select a menu item)
+		clickMenuButton("Extras");
+		clickMenuItem("Theme");
+		clickMenuItem(themeName);
+		closeMenus();
 		cy.wait(1000); // give a bit of time for theme to load
 	};
 
@@ -73,23 +88,23 @@ context('visual tests', () => {
 
 	it('flip and rotate window', () => {
 		// @TODO: make menus more testable, with IDs
-		cy.get('.menus > .menu-container:nth-child(4) > .menu-button > .menu-hotkey').click();
-		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(1)').click();
+		cy.get('.menu-button[id^="menu-button-&Image"]').click();
+		cy.get('.menu-popup[aria-labelledby^="menu-button-&Image"] tr:nth-child(1)').click();
 		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
 	it('stretch and skew window', () => {
 		// @TODO: make menus more testable, with IDs
-		cy.get('.menus > .menu-container:nth-child(4) > .menu-button > .menu-hotkey').click();
-		cy.get('.menus > .menu-container:nth-child(4) > .menu-popup > table > tr:nth-child(2)').click();
+		cy.get('.menu-button[id^="menu-button-&Image"]').click();
+		cy.get('.menu-popup[aria-labelledby^="menu-button-&Image"] tr:nth-child(2)').click();
 		// @TODO: wait for images to load and include images?
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["img"] }));
 	});
 
 	it('help window', () => {
 		// @TODO: make menus more testable, with IDs
-		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
-		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(1)').click();
+		cy.get('.menu-button[id^="menu-button-&Help"]').click();
+		cy.get('.menu-popup[aria-labelledby^="menu-button-&Help"] tr:nth-child(1)').click();
 		cy.get('.window:visible .folder', { timeout: 10000 }); // wait for sidebar contents to load
 		// @TODO: wait for iframe to load
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["iframe"] }));
@@ -97,45 +112,52 @@ context('visual tests', () => {
 
 	it('about window', () => {
 		// @TODO: make menus more testable, with IDs
-		cy.get('.menus > .menu-container:nth-child(6) > .menu-button > .menu-hotkey').click();
-		cy.get('.menus > .menu-container:nth-child(6) > .menu-popup > table > tr:nth-child(3)').click();
+		cy.get('.menu-button[id^="menu-button-&Help"]').click();
+		cy.get('.menu-popup[aria-labelledby^="menu-button-&Help"] tr:nth-child(3)').click();
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
 	});
 
 	it('eye gaze mode', () => {
 		cy.get('.tool[title="Select"]').click();
-		cy.contains(".menu-button", "Extras").click();
-		cy.contains(".menu-item", "Eye Gaze Mode").click();
+		clickMenuButton("Extras");
+		clickMenuItem("Eye Gaze Mode");
 		cy.wait(100);
-		// cy.contains(".menu-button", "View").click();
+		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		cy.get(".status-text").click();
+		closeMenus();
 		cy.wait(100);
+		cy.get(".eye-gaze-mode-undo-button").should('exist');
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
 	it('modern theme eye gaze mode', () => {
+		cy.get(".eye-gaze-mode-undo-button").should('exist');
 		selectTheme("Modern");
-		// cy.contains(".menu-button", "View").click();
+		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
+	it('exit eye gaze mode', () => {
+		// this acts as teardown for the eye gaze mode tests
+		clickMenuButton("Extras");
+		clickMenuItem("Eye Gaze Mode");
+		cy.get(".eye-gaze-mode-undo-button").should('not.exist');
+	});
+
 	it('modern theme', () => {
-		cy.contains(".menu-button", "Extras").click();
-		cy.contains(".menu-item", "Eye Gaze Mode").click();
 		cy.wait(100);
-		// cy.contains(".menu-button", "View").click();
+		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		cy.get(".status-text").click();
+		closeMenus();
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
 	const test_edit_colors_dialog = (expand = true) => {
-		cy.contains(".menu-button", "Colors").click();
-		cy.contains(".menu-item", "Edit Colors").click();
+		clickMenuButton("Colors");
+		clickMenuItem("Edit Colors");
 		cy.wait(100);
 		if (expand) {
 			cy.contains("button", "Define Custom Colors >>").click();
@@ -146,7 +168,7 @@ context('visual tests', () => {
 
 	it('winter theme', () => {
 		selectTheme("Winter");
-		// cy.contains(".menu-button", "View").click();
+		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
@@ -156,10 +178,10 @@ context('visual tests', () => {
 
 	it('winter theme vertical color box', () => {
 		cy.wait(500);
-		cy.contains(".menu-button", "Extras").click();
-		cy.contains(".menu-item", "Vertical Color Box").click();
+		clickMenuButton("Extras");
+		clickMenuItem("Vertical Color Box");
 		cy.wait(500);
-		cy.get(".status-text").click();
+		closeMenus();
 		cy.wait(100);
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
