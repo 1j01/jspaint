@@ -273,7 +273,9 @@ class OnCanvasSelection extends OnCanvasObject {
 		this.replace_source_canvas(new_source_canvas);
 	}
 	scale(factor) {
-		const new_source_canvas = make_canvas(this.width * factor, this.height * factor);
+		const new_width = Math.max(1, this.width * factor);
+		const new_height = Math.max(1, this.height * factor);
+		const new_source_canvas = make_canvas(new_width, new_height);
 		new_source_canvas.ctx.drawImage(this.source_canvas, 0, 0, new_source_canvas.width, new_source_canvas.height);
 		this.replace_source_canvas(new_source_canvas);
 	}
