@@ -703,7 +703,7 @@
 						dialogTitle: localize("Save Colors"),
 						defaultFileName: localize("untitled.pal"),
 						formats: palette_formats,
-						getBlob: () => {
+						getBlob: (format_id) => {
 							const file_content = AnyPalette.writePalette(ap, AnyPalette.formats[format_id]);
 							const blob = new Blob([file_content], { type: "text/plain" });
 							return new Promise((resolve) => {
