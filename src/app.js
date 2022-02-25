@@ -2299,7 +2299,8 @@ $canvas.on("pointerdown", e => {
 			}
 		});
 
-		$G.on("pointermove", canvas_pointer_move);
+		const pointer_update_event = "onpointerrawupdate" in window ? "pointerrawupdate" : "pointermove";
+		$G.on(pointer_update_event, canvas_pointer_move);
 
 		$G.one("pointerup", (e, canceling, no_undoable) => {
 			button = undefined;
@@ -2321,7 +2322,7 @@ $canvas.on("pointerdown", e => {
 					select_tools(return_to_tools);
 				}
 			}
-			$G.off("pointermove", canvas_pointer_move);
+			$G.off(pointer_update_event, canvas_pointer_move);
 			for (const interval_id of interval_ids) {
 				clearInterval(interval_id);
 			}
