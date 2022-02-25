@@ -1303,9 +1303,12 @@
 		}
 	};
 
+	const textual_input_selector = "input:not([type=file]):not([type=button]):not([type=submit]):not([type=reset]):not([type=radio]):not([type=checkbox]):not([type=color]):not([type=image]), textarea, [contenteditable]";
+
+	// @TODO: maybe make this a pure function? doesn't seem great to use document state here
 	function fix_up_speech_recognition(command) {
 		command = command.toLowerCase();
-		if (!command.match(/^draw /i) && !(document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]"))) {
+		if (!command.match(/^draw /i) && !(document.activeElement && document.activeElement.matches(textual_input_selector))) {
 			for (const [bad, good] of recognitionFixes) {
 				if (bad instanceof RegExp) {
 					if (bad.flags.indexOf("i") === -1) {
@@ -1781,7 +1784,7 @@
 			});
 		}
 
-		if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
+		if (document.activeElement && document.activeElement.matches(textual_input_selector)) {
 			const new_line_match = input_text.match(/^(?:new line|newline|line break|return|enter|carriage return|)$|\b(?:(?:insert|add|put|put in|input)(?: an?)? (?:new line|newline|line break|return|enter|carriage return))\b/i);
 			if (new_line_match) {
 				add_interpretation({
@@ -1813,7 +1816,7 @@
 			}
 		}
 		if (interpretations.length === 0 && default_to_entering_text && input_text.length) {
-			if (document.activeElement && document.activeElement.matches("input, textarea, [contenteditable]")) {
+			if (document.activeElement && document.activeElement.matches(textual_input_selector)) {
 				const text_to_insert = input_text.replace(/new[ -]?line|line[ -]?break|carriage return/g, "\n");
 				add_interpretation({
 					match_text: input_text,
