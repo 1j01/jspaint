@@ -157,9 +157,14 @@
 		id: TOOL_SELECT,
 		name: localize("Select"),
 		speech_recognition: [
+			// formulaic combinations
 			"select", "rectangle select", "rectangular select", "box select", "square select", "drag select", "select rectangle", "select by rectangle", "select rectangular region", "select rectangular area", "rectangular region select", "rectangular area select",
 			"selection", "rectangle selection", "rectangular selection", "box selection", "square selection", "rectangular region selection", "rectangular area selection",
 			"selector", "rectangle selector", "rectangular selector", "box selector", "square selector", "drag selector", "rectangular region selector", "rectangular area selector",
+			// misc
+			"make selection", "make a selection", "select a rectangle", "select a box", "select a rectangular region", "select a rectangular area", "selection box",
+			"part of image", "part of picture", "part of canvas", "part of the image", "part of the picture", "part of the canvas",
+			"create selection", "create a selection", "selection maker", "selection box maker",
 		],
 		help_icon: "p_sel.gif",
 		description: localize("Selects a rectangular part of the picture to move, copy, or edit."),
