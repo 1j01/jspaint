@@ -214,6 +214,7 @@
 		["line width v", "line width 5"],
 		["quick save", "click save"],
 		[/^safe$/i, "save"],
+		[/^quince$/i, "close"],
 
 		// addressing actions by menu they're in
 		["dial neal", "file new"],
@@ -280,6 +281,8 @@
 		["pho extras menu", "show extras menu"],
 		["show me access menu", "show the extras menu"],
 		["kyle", "file"],
+		["heil", "file"],
+		[/^final$/i, "file"],
 		["q", "view"],
 		["you do you", "view"],
 		["deal", "view"],
@@ -1562,7 +1565,11 @@
 		const buttons = $("button, .menu-button, .menu-item-label, label, .help-window .item").filter(":visible").toArray();
 
 		for (const button of buttons) {
-			const button_text = button.textContent || button.getAttribute("aria-label") || button.title;
+			let button_text = button.textContent || button.getAttribute("aria-label") || button.title;
+			button_text = button_text
+				.replace(/[^\p{L}|\p{N}|\p{M}|\s]/gu, " ") // currently the Extras menu has emoji in its labels, so we need to remove them
+				.replace(/\s+/g, " ")
+				.trim();
 			let button_text_phrases = [button_text];
 			if (!button_text) {
 				button_text_phrases = [];
@@ -1714,6 +1721,32 @@
 									el.checked = !el.checked;
 								} else if (el.matches("input[type=radio]")) {
 									el.checked = true;
+								} else if (el.matches(".menu-button")) {
+									// pointerdown is needed, as of writing, for activating os-gui.js's menu items
+									// if click event is supported in future, this can be simplified
+									const pointerdown = new PointerEvent("pointerdown", {
+										bubbles: true,
+										cancelable: true,
+										pointerId: 12345,
+										pointerType: "mouse",
+										isPrimary: true,
+										target: el,
+										button: 0,
+										buttons: 1,
+									});
+									// not sure if pointerup helps at all
+									const pointerup = new PointerEvent("pointerup", {
+										bubbles: true,
+										cancelable: true,
+										pointerId: 12345,
+										pointerType: "mouse",
+										isPrimary: true,
+										target: el,
+										button: 0,
+										buttons: 0,
+									});
+									el.dispatchEvent(pointerdown);
+									el.dispatchEvent(pointerup);
 								} else if (el.tagName === "BUTTON") {
 									clickButtonVisibly(el);
 								} else {
@@ -2073,6 +2106,8 @@
 
 	function clickButtonVisibly(button) {
 
+		// pointerdown/pointerup may have been just for os-gui.js's menus, which are now handled separately
+		// I should probably remove this part
 		$(button).trigger($.Event("pointerdown", {
 			pointerId: 12345,
 			pointerType: "mouse",
