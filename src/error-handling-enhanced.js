@@ -11,13 +11,36 @@ window.onerror = function (message, source, lineno, colno, error) {
 		show_error_message(localize("Internal application error."), error || message);
 	} catch (e) {
 		old_onerror(message, source, lineno, colno, error);
+		console.warn("Error in error handler:", e);
 	}
 };
 
-window.onunhandledrejection = function (event) {
-	show_error_message(localize("Internal application error.") + "\nUnhandled Rejection.", event.reason);
-};
+var old_onunhandledrejection = window.onunhandledrejection;
+var restore_new_onunhandledrejection_tid;
+var new_onunhandledrejection = function (event) {
+	// Just in case show_error_message triggers a new unhandledrejection event,
+	// we need to make sure we don't call it again.
+	// Test by adding to the top of show_error_message:
+	// Promise.reject(new Error("EMIT EMIT EMIT"))
+	// Also test:
+	// throw new Error("EMIT EMIT EMIT");
+	// I want my error handling to be RESILIENT!
+	window.onunhandledrejection = old_onunhandledrejection;
+	clearTimeout(restore_new_onunhandledrejection_tid);
+	restore_new_onunhandledrejection_tid = setTimeout(function () {
+		window.onunhandledrejection = new_onunhandledrejection;
+	}, 0);
 
+	try {
+		show_error_message(localize("Internal application error.") + "\nUnhandled Rejection.", event.reason);
+	} catch (e) {
+		old_onunhandledrejection(event);
+		console.warn("Error in unhandledrejection handler:", e);
+	}
+};
+window.onunhandledrejection = new_onunhandledrejection;
+
+// Show a message for old Internet Explorer.
 if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
 	document.write(
 		'<style>body { text-align: center; }</style>' +
