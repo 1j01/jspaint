@@ -1701,9 +1701,25 @@
 					if (` ${input_text} `.toLowerCase().indexOf(` ${match_phrase.toLowerCase()} `) !== -1) {
 						add_interpretation({
 							match_text: match_phrase,
-							exec: ((button) => () => {
-								clickButtonVisibly(button);
-								console.log("click", button);
+							exec: ((el) => () => {
+								console.log("activate", el);
+								if (el.tagName === "LABEL") {
+									if (el.hasAttribute("for")) {
+										el = document.getElementById(el.getAttribute("for"));
+									} else {
+										el = el.querySelector("input");
+									}
+								}
+								if (el.matches("input[type=checkbox]")) {
+									el.checked = !el.checked;
+								} else if (el.matches("input[type=radio]")) {
+									el.checked = true;
+								} else if (el.tagName === "BUTTON") {
+									clickButtonVisibly(el);
+								} else {
+									el.focus();
+									el.click();
+								}
 							})(button),
 							prioritize: !!button.closest(".menu-popup"),
 						});
