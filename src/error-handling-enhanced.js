@@ -14,6 +14,10 @@ window.onerror = function (message, source, lineno, colno, error) {
 	}
 };
 
+window.onunhandledrejection = function (event) {
+	show_error_message(localize("Internal application error.") + "\nUnhandled Rejection.", event.reason);
+};
+
 if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
 	document.write(
 		'<style>body { text-align: center; }</style>' +

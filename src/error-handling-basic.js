@@ -17,3 +17,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 	}
 	return false;
 };
+
+window.onunhandledrejection = function (event) {
+	alert('Unhandled Rejection: ' + event.reason);
+}
