@@ -215,6 +215,7 @@
 		["quick save", "click save"],
 		[/^safe$/i, "save"],
 		[/^quince$/i, "close"],
+		[/^text mint\b/i, "exit"],
 
 		// addressing actions by menu they're in
 		["dial neal", "file new"],
@@ -278,8 +279,10 @@
 		["helping you", "help menu"],
 		["kuzmania", "close menu"],
 		["close minded", "close menu"],
+		["connecticare", "get out of here"],
 		["pho extras menu", "show extras menu"],
 		["show me access menu", "show the extras menu"],
+		[/^express$/i, "extras"],
 		["kyle", "file"],
 		["heil", "file"],
 		[/^final$/i, "file"],
@@ -432,6 +435,8 @@
 		["pager", "page up"],
 		["page app", "page up"],
 		["paint job", "page up"],
+		["peach town", "page down"],
+		["h-town", "page down"],
 		["go up fat page", "go up by a page"],
 		["backpage", "by a page"],
 		["by a pitch", "by a page"],
@@ -508,6 +513,10 @@
 		["large-size", "large size"],
 		["barb size", "large size"],
 		["versailles", "large size"],
+		["launch sites", "large size"],
+		["large sides", "large size"],
+		["tire size", "large size"],
+		["live science", "large size"],
 		["name two large size", "zoom to large size"],
 		["dim to large size", "zoom to large size"],
 		["name two normal size", "zoom to normal size"],
@@ -1532,7 +1541,7 @@
 			}
 		}
 
-		const close_menus_match = input_text.match(/\b(?:(?:close|hide|dismiss) menus?|never ?mind)\b/i);
+		const close_menus_match = input_text.match(/\b(?:(?:close|exit|leave|hide|dismiss) menus?|never ?mind|get (?:out of|outta) (here|this menu|these menus)?|get out)\b/i);
 		if (close_menus_match) {
 			add_interpretation({
 				match_text: close_menus_match[0],
