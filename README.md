@@ -3,10 +3,9 @@
 
 A pixel-perfect web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
 
-The goal is to remake MS Paint
-(including its [little-known features](#did-you-know)),
-improve on it, and to extend the types of images it can edit.
-It does this very well.
+JS Paint recreates every tool and menu of MS Paint, and even [little-known features](#did-you-know), to a high degree of fidelity.
+
+It supports themes, additional file types, and accessibility features like Eye Gaze Mode and Speech Recognition.
 
 ![Screenshot](images/meta/main-screenshot.png)
 
