@@ -42,7 +42,7 @@ I want to bring good old Paint into the modern era.
   * **File > Load From URL...** to open an image from the Web.
   * **File > Upload to Imgur** to upload the current image to Imgur.
   * **Paste** supports loading from URLs.
-  * Create links to open an image from the web, such as <https://jspaint.app/#load:https://i.imgur.com/zJMrWwb.png> to start with an isometric grid template.
+  * You can create links that will open an image from the Web in JS Paint. For example, this link will start with an isometric grid as a template: <https://jspaint.app/#load:https://i.imgur.com/zJMrWwb.png>
   * Rudimentary **multi-user** collaboration support.
     Start up a session at
     [jspaint.app/#session:multi-user-test](https://jspaint.app/#session:multi-user-test)
