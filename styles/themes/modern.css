@@ -248,6 +248,11 @@ body {
 	background: currentColor;
 }
 
+.menu-item.highlight,
+.menu-item.active {
+	background: var(--Hilight);
+	color: var(--HilightText);
+}
 
 .color-selection {
 	width: 18px;
