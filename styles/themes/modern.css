@@ -170,14 +170,6 @@ body {
 	background: #e5e5e5;
 }
 
-.menu-item:hover {
-	background: #eeeeee;
-}
-.menu-item:active,
-.menu-item.active {
-	background: #e5e5e5;
-}
-
 .menu-popup {
 	background: white;
 	padding: 8px 0;
