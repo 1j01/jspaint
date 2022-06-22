@@ -28,6 +28,15 @@
 				description: localize("Opens an existing document."),
 			},
 			{
+				item: localize("&Open From Ipfs"),
+				shortcut: "Ctrl+O",
+				speech_recognition: [
+
+				],
+				action: () => { file_open(); },
+				description: localize("Opens an existing document."),
+			},
+			{
 				item: localize("&Save"),
 				shortcut: "Ctrl+S",
 				speech_recognition: [
@@ -37,6 +46,15 @@
 
 					"download", "download document", "download file", "download image", "download picture", "download image file",
 					"download the document", "download the file", "download the image", "download the image file",
+				],
+				action: () => { file_save(); },
+				description: localize("Saves the active document."),
+			},
+			{
+				item: localize("&Save to Ipfs"),
+				shortcut: "Ctrl+S",
+				speech_recognition: [
+
 				],
 				action: () => { file_save(); },
 				description: localize("Saves the active document."),
