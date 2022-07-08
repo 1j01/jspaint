@@ -62,7 +62,10 @@
     "glob": "^7.1.6",
     "lookpath": "^1.2.2",
     "rtlcss": "^3.1.2",
-    "wallpaper": "^4.4.2"
+    "wallpaper": "^4.4.2",
+    "ipfs-core": "^0.14.0",
+    "it-all": "^1.0.4",
+    "uint8arrays": "^3.0.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",
