@@ -706,10 +706,13 @@ const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
 		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<span class='marquee' dir='ltr' style='--text-width: 60ch; --animation-duration: 3s;'>
+		<!--<span class='marquee' dir='ltr' style='--text-width: 50ch; --animation-duration: 3s;'>
 			<span>
-				<b>The GUIcci Update</b> — Thumbnail View, Pinch Zoom, Pixel Perfection!
+				<b>Open Source</b> — MIT Licensed! Free Software! Finally!
 			</span>
+		</span>-->
+		<span>
+			<b>Open Source!</b>
 		</span>
 	</a>
 `);
