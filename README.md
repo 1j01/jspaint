@@ -33,6 +33,7 @@ I want to bring good old Paint into the modern era.
 
 #### Current improvements include:
 
+* Open source ([MIT licensed](LICENSE.txt))
 * Cross-platform
 * Mobile friendly
   * Touch support: use two fingers to pan the view, and pinch to zoom
@@ -311,3 +312,12 @@ You can build for production with `npm run electron:make`
 [Live Server]: https://github.com/1j01/live-server
 [Node.js]: https://nodejs.org/
 [electron-debug]: https://github.com/sindresorhus/electron-debug
+
+## License
+
+JS Paint is free and open source software, licensed under the permissive [MIT license](https://opensource.org/licenses/MIT).
+
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Repo stars](https://img.shields.io/github/stars/1j01/jspaint?label=GitHub%20Stars&style=social)](https://github.com/1j01/jspaint/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/1j01/jspaint?style=social)](https://github.com/1j01/jspaint/network/members)
+
