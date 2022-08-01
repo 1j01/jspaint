@@ -119,6 +119,18 @@
 		<p>Support the project at <a href="https://www.paypal.me/IsaiahOdhner"
 				target="_blank">paypal.me/IsaiahOdhner</a>.</p>
 	</div>
+	<script defer src="src/test-news.js"></script>
+	<!--
+		Before publishing a news update, make sure:
+		- The <time> element matches the date of the update.
+		- The id of the <article> will never need to be changed.
+			I'm using the format "news-YYYY-very-brief-description".
+			Avoiding putting the date in the id, in case I push the update later.
+			The id is used to check for updates, and is stored in localStorage.
+		- The console shows no errors.
+			test-news.js checks for some problems.
+		- HTML is valid.
+	-->
 	<div id="news" hidden>
 		<!-- <article class="news-entry" id="news-2021-saving">
 			<h1>The Savior Update</h1>
@@ -168,15 +180,15 @@
 		</article> -->
 		<article class="news-entry" id="news-2022-open-source">
 			<h1>Open Source</h1>
-			<time datetime="2022-07-28">July 28, 2022</time>
+			<time datetime="2022-07-28">2022-07-28</time>
 			<!-- <img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src="" /> -->
 			<p>
 				JS Paint is now finally open source, licensed under the
-				<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt">MIT License</a>.
+				<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank">MIT License</a>.
 			</p>
 			<p>
-				The project has been <a
-					href="https://en.wikipedia.org/wiki/Source-available_software">source-available</a>
+				The project has been
+				<a href="https://en.wikipedia.org/wiki/Source-available_software" target="_blank">source-available</a>
 				from the beginning, since I never felt the need to obfuscate or hide the code,
 				but it is now legally open source.
 			</p>
@@ -186,7 +198,7 @@
 			<p>
 				There is not yet a formal API for JS Paint,
 				but if you want to get in on the cutting edge,
-				you can take a look at how <a href="https://98.js.org">98.js.org</a>
+				you can take a look at how <a href="https://98.js.org" target="_blank">98.js.org</a>
 				embeds JS Paint.
 				Expect the API to change significantly in the future.
 			</p>
@@ -271,7 +283,7 @@
 				It also includes projects from other people, other recreations of old programs,
 				like <a target="_blank" href="https://webamp.org/">Webamp</a>,
 				a meticulous recreation of Winamp,
-				and <a href="https://github.com/rjanjic/js-solitaire">JS Solitaire</a>,
+				and <a target="_blank" href="https://github.com/rjanjic/js-solitaire">JS Solitaire</a>,
 				a Solitaire clone (I tweaked it for accuracy, adding the card back images, etc.)
 			</p>
 			<h2>Pixel Perfect</h2>
