@@ -469,7 +469,7 @@ You can define two functions to set the wallpaper, which will be used by **File 
 
 If you define only [`systemHooks.setWallpaperCentered`][], JS Paint will attempt to guess your screen's dimensions and tile the image, applying it by calling your [`systemHooks.setWallpaperCentered`][] function.
 
-If you don't specify [`systemHooks.setWallpaperCentered`][], JS Paint will default to saving a file (`<original file name> wallpaper.png"`) using [`systemHooks.showSaveFileDialog`][] and [`systemHooks.writeBlobToHandle`][].
+If you don't specify [`systemHooks.setWallpaperCentered`][], JS Paint will default to saving a file (`<original file name> wallpaper.png`) using [`systemHooks.showSaveFileDialog`][] and [`systemHooks.writeBlobToHandle`][].
 
 Here's a full example supporting a persistent custom wallpaper as a background on the containing page:
 
@@ -480,12 +480,12 @@ jspaint.systemHooks.setWallpaperCentered = (canvas) => {
 	canvas.toBlob((blob) => {
 		setDesktopWallpaper(blob, "no-repeat", true);
 	});
-},
+};
 jspaint.systemHooks.setWallpaperTiled = (canvas) => {
 	canvas.toBlob((blob) => {
 		setDesktopWallpaper(blob, "repeat", true);
 	});
-},
+};
 
 function setDesktopWallpaper(file, repeat, saveToLocalStorage) {
 	const blob_url = URL.createObjectURL(file);
@@ -494,17 +494,19 @@ function setDesktopWallpaper(file, repeat, saveToLocalStorage) {
 	wallpaper.style.backgroundPosition = "center";
 	wallpaper.style.backgroundSize = "auto";
 	if (saveToLocalStorage) {
-		const fr = new FileReader();
-		fr.onload = () => {
-			localStorage.setItem("wallpaper-data-url", fr.result);
+		const fileReader = new FileReader();
+		fileReader.onload = () => {
+			localStorage.setItem("wallpaper-data-url", fileReader.result);
 			localStorage.setItem("wallpaper-repeat", repeat);
 		};
-		fr.onerror = () => {
+		fileReader.onerror = () => {
 			console.error("Error reading file (for setting wallpaper)", file);
 		};
-		fr.readAsDataURL(file);
+		fileReader.readAsDataURL(file);
 	}
 }
+
+// Initialize the wallpaper from localStorage, if it exists
 try {
 	const wallpaper_data_url = localStorage.getItem("wallpaper-data-url");
 	const wallpaper_repeat = localStorage.getItem("wallpaper-repeat");
