@@ -313,6 +313,49 @@ You can build for production with `npm run electron:make`
 [Node.js]: https://nodejs.org/
 [electron-debug]: https://github.com/sindresorhus/electron-debug
 
+## Deployment
+
+JS Paint can be deployed using a regular web server.
+
+Nothing needs to be compiled.
+
+## Embed in your website
+
+### Simple
+
+Add this to your HTML:
+
+```html
+<iframe src="https://jspaint.app" width="100%" height="100%"></iframe>
+```
+
+### Advanced
+
+If you want to control JS Paint, loading/saving files, etc.,
+there is not a formal API for it yet.
+
+There is a very unstable API, which is not documented.
+If you're going to use it, make sure you clone the repository and host your own copy of JS Paint.
+(Otherwise it would surely break in the future.)
+
+```html
+<iframe src="jspaint/index.html" id="jspaint-iframe" width="100%" height="100%"></iframe>
+```
+
+The methods in `systemHooks` can be overridden by a containing page like [98.js.org](https://98.js.org/) which hosts jspaint in a [same-origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) iframe.
+This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
+This API may be removed at any time (and perhaps replaced by something based around `postMessage`).
+```js
+var jspaint = document.getElementById('jspaint-iframe').contentWindow;
+jspaint.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };
+jspaint.systemHooks.showOpenFileDialog = async ({ formats }) => { ... };
+jspaint.systemHooks.writeBlobToHandle = async (save_file_handle, blob) => { ... };
+jspaint.systemHooks.readBlobFromHandle = async (file_handle) => { ... };
+jspaint.systemHooks.setWallpaperTiled = (canvas) => { ... };
+jspaint.systemHooks.setWallpaperCentered = (canvas) => { ... };
+```
+
+
 ## License
 
 JS Paint is free and open source software, licensed under the permissive [MIT license](https://opensource.org/licenses/MIT).
