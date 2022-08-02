@@ -323,9 +323,10 @@ Nothing needs to be compiled.
 
 Optionally, you can set up a [CORS Anywhere](https://github.com/Rob--W/cors-anywhere) server, for loading images from the web, if you paste a URL into JS Paint, or use the `#load:<URL>` feature with images that are not on the same domain.
 
-By default it will use the CORS Anywhere instance set up for jspaint.app, but it would be nice if you would set up your own instance if you expect significant traffic.
+By default it will use a [CORS Anywhere instance](https://jspaint-cors-proxy.herokuapp.com) set up to work with [jspaint.app](https://jspaint.app).
 
-It is hosted for free on [Heroku](https://www.heroku.com/) and gets bogged down from time to time.
+It is hosted for free on [Heroku](https://www.heroku.com/),
+and you can set up your own instance and configure it to work with your own domain.
 
 You'll have to find and replace `https://jspaint-cors-proxy.herokuapp.com` with your own instance URL.
 
@@ -335,8 +336,11 @@ You'll have to find and replace `https://jspaint-cors-proxy.herokuapp.com` with 
 Multiplayer support currently relies on Firebase,
 which is not open source software.
 
-You could create a [Firebase Realtime Database](https://firebase.google.com/docs/database/web/start) instance and fork JS Paint to point to it if you want,
-but the multiplayer mode is very shoddy so far.
+You could create a [Firebase Realtime Database](https://firebase.google.com/docs/database/web/start) instance and edit JS Paint's `sessions.js` to point to it,
+replacing the `config` passed to `initializeApp` with the config from the Firebase Console when you set up a Web App.
+
+But the multiplayer mode is very shoddy so far.
+It should be replaced with something open source, more secure, more efficient, and more robust.
 
 ## Embed in your website
 
