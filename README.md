@@ -345,15 +345,18 @@ there is an unstable API.
 First you need to [clone the repo](https://help.github.com/articles/cloning-a-repository/),
 so you can point an `iframe` to your local copy.
 
-The local copy of JS Paint has to be hosted on the same web server as the containing page, or more specifically, the [same origin](https://en.wikipedia.org/wiki/Same-origin_policy).
+The local copy of JS Paint has to be hosted on the same web server as the containing page, or more specifically, it has to share the [same origin](https://en.wikipedia.org/wiki/Same-origin_policy).
 
-A local copy also means things won't break any time I change the API.
+Having a local copy also means things won't break any time the API changes.
 
 If JS Paint is cloned to a folder called `jspaint`, which lives in the same folder as the page you want to embed it in, you can use this:
 
 ```html
 <iframe src="jspaint/index.html" id="jspaint-iframe" width="100%" height="100%"></iframe>
 ```
+
+If it lives somewhere else, you may need to add `../` to the start of the path, to go up a level. For example, `src="../../apps/jspaint/index.html"`.
+You can also use an absolute URL, like `src="https://example.com/cool-apps/jspaint/index.html"`.
 
 #### Changing how files are saved/loaded
 
