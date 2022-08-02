@@ -425,6 +425,12 @@ Once you have a concept of a file handle, you can implement file pickers using t
 | **File > Save** | `systemHooks.writeBlobToHandle` (or same as **File > Save As** if there's no file open yet) |
 | **Edit > Copy To** | `systemHooks.showSaveFileDialog`, then when a file is picked, `systemHooks.writeBlobToHandle` |
 | **Edit > Paste From** | `systemHooks.showOpenFileDialog`, then when a file is picked, `systemHooks.readBlobFromHandle` |
+| **File > Set As Wallpaper (Tiled)** | `systemHooks.setWallpaperTiled` if defined, else `systemHooks.setWallpaperCentered` if defined, else same as **File > Save As** |
+| **File > Set As Wallpaper (Centered)** | `systemHooks.setWallpaperCentered` if defined, else same as **File > Save As** |
+| **Extras > Render History As GIF** | Same as **File > Save As** |
+| **Colors > Save Colors** | Same as **File > Save As** |
+| **Colors > Get Colors** | Same as **File > Open** |
+
 
 These system hooks will be documented soon.
 
@@ -467,6 +473,8 @@ jspaint.systemHooks.setWallpaperCentered = (canvas) => { ... };
 ```
 
 If you define only `setWallpaperCentered`, JS Paint will attempt to guess your screen's dimensions and tile the image, applying it by calling your `setWallpaperCentered` function.
+
+If you don't specify `setWallpaperCentered`, JS Paint will default to saving a file (`<original file name> wallpaper.png"`) using `systemHooks.showSaveFileDialog` and `systemHooks.writeBlobToHandle`.
 
 Here's a full example supporting a persistent custom wallpaper as a background on the containing page:
 
