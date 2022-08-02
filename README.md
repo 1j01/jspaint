@@ -431,9 +431,6 @@ Once you have a concept of a file handle, you can implement file pickers using t
 | **Colors > Save Colors** | Same as **File > Save As** |
 | **Colors > Get Colors** | Same as **File > Open** |
 
-
-These system hooks will be documented soon.
-
 #### Loading a file initially
 
 To start the app with a file loaded for editing,
@@ -596,6 +593,105 @@ jspaint.undoable({
 	// do something to the canvas
 });
 ```
+
+#### async function `systemHooks.showSaveFileDialog({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle })`
+
+Define this function to override the default save dialog.
+This is used both for saving images, as well as palette files, and animations.
+
+Arguments:
+- `formats`: an array of objects representing types of files, with the following properties:
+	- `formatID`: a string that uniquely identifies the format (may be the same as `mimeType`)
+	- `mimeType`: the file format's designated [media type](https://en.wikipedia.org/wiki/Media_type), e.g. `"image/png"`
+	- `name`: the file format's name, e.g. `"WebP"`
+	- `nameWithExtensions`: the file format's name followed by a list of extensions, e.g. `"TIFF (*.tif;*.tiff)"`
+	- `extensions`: an array of file extensions, excluding the dot, with the preferred extension first, e.g. `["bmp", "dib"]`
+- `defaultFileName`: a suggested file name, e.g. `"Untitled.png"` or the name of an open document.
+- `defaultPath` (optional): a file handle for a document that was opened, so you can save to the same folder easily. Misnomer: this may not be a path, it depends on how you define file handles.
+- `defaultFileFormatID`: the `formatID` of a file format to select by default.
+- `async function getBlob(formatID)`: a function you call to get a file in one of the supported formats. It takes a `formatID` and returns a `Promise` that resolves with a `Blob` representing the file contents to save.
+- `function savedCallbackUnreliable({ newFileName, newFileFormatID, newFileHandle, newBlob })`: a function you call when the user has saved the file. The `newBlob` should come from `getBlob(newFileFormatID)`.
+- `dialogTitle`: a title for the save dialog.
+
+Note the inversion of control here:
+JS Paint calls your `systemHooks.showSaveFileDialog` function, and then you calls JS Paint's `getBlob` function.
+Once `getBlob` resolves, you can call the `savedCallbackUnreliable` function which is defined by JS Paint.
+(Hopefully I can clarify this in the future.)
+
+Also note that this function is responsible for saving the file, not just picking a save location.
+You may reuse your `systemHooks.writeBlobToHandle` function if it's helpful.
+
+#### async function `systemHooks.showOpenFileDialog({ formats })`
+
+Define this function to override the default open dialog.
+This is used for opening images and palettes.
+
+Arguments:
+- `formats`: same as `systemHooks.showSaveFileDialog`
+
+Note that this function is responsible for loading the contents of the file, not just picking a file.
+You may reuse your `systemHooks.readBlobFromHandle` function if it's helpful.
+
+#### async function `systemHooks.writeBlobToHandle(fileHandle, blob)`
+
+Define this function to tell JS Paint how to save a file.
+
+Arguments:
+- `fileHandle`: a file handle, as defined by your system, representing the file to write to.
+- `blob`: a `Blob` representing the file contents to save.
+
+#### async function `systemHooks.readBlobFromHandle(fileHandle)`
+
+Define this function to tell JS Paint how to load a file.
+
+Arguments:
+- `fileHandle`: a file handle, as defined by your system, representing the file to read from.
+
+#### function `systemHooks.setWallpaperTiled(canvas)`
+
+Define this function to tell JS Paint how to set the wallpaper.
+
+Arguments:
+- `canvas`: a `HTMLCanvasElement` with the image to set as the wallpaper.
+
+#### function `systemHooks.setWallpaperCentered(canvas)`
+
+Define this function to tell JS Paint how to set the wallpaper.
+
+Arguments:
+- `canvas`: a `HTMLCanvasElement` with the image to set as the wallpaper.
+
+#### function `undoable({ name, icon }, actionFunction)`
+
+Use this to make an action undoable.
+
+This function takes a snapshot of the canvas, and some other state, and then calls the `actionFunction` function.
+It creates an entry in the history so it can be undone.
+
+Arguments:
+- `name`: a name for the action, e.g. `"Brush"` or `"Rotate Image 270°"`
+- `icon` (optional): an `Image` to display in the History window. It is recommended to be 15x11 pixels.
+- `actionFunction`: a function that takes no arguments, and modifies the canvas.
+
+#### function `show_error_message(message, [error])`
+
+Use this to show an error message dialog box, optionally with expandable error details.
+
+Arguments:
+- `message`: plain text to show in the dialog box.
+- `error` (optional): an `Error` object to show in the dialog box, collapsed by default in a "Details" expandable section.
+
+#### function `open_from_file(blob, source_file_handle)`
+
+Use this to load a file into the app.
+
+Arguments:
+- `blob`: a `Blob` object representing the file to load.
+- `source_file_handle`: a *corresponding* file handle for the file, as defined by your system.
+
+Sorry for the quirky API.
+The API is new, and parts of it have not been designed at all. This was just a hack that I came to depend on, reaching into the internals of JS Paint to load a file.
+I decided to document it as the first version of the API, since I'll want a changelog when upgrading my usage of it anyways.
 
 #### Changelog
 

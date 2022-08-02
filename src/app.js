@@ -385,7 +385,7 @@ function get_format_from_extension(formats, file_path_or_name_or_ext) {
 	}
 }
 
-const image_formats = [];
+window.image_formats = [];
 // const ext_to_image_formats = {}; // there can be multiple with the same extension, e.g. different bit depth BMP files
 // const mime_type_to_image_formats = {};
 const add_image_format = (mime_type, name_and_exts, target_array = image_formats) => {
