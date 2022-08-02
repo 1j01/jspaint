@@ -367,8 +367,9 @@ with JS Paint's `systemHooks` API.
 <script>
 var iframe = document.getElementById('jspaint-iframe');
 var jspaint = iframe.contentWindow;
-// Wait for systemHooks to exist (the iframe needs to load)
+// Wait for systemHooks object to exist (the iframe needs to load)
 waitUntil(()=> contentWindow.systemHooks, 500, ()=> {
+	// Hook in
 	jspaint.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };
 	jspaint.systemHooks.showOpenFileDialog = async ({ formats }) => { ... };
 	jspaint.systemHooks.writeBlobToHandle = async (save_file_handle, blob) => { ... };
@@ -384,6 +385,8 @@ function waitUntil(test, interval, callback) {
 }
 </script>
 ```
+
+A [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) represents the contents of a file in memory.
 
 A file handle is anything that can identify a file.
 You get to own this concept, and define how to identify files.
