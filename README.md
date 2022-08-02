@@ -331,30 +331,186 @@ Add this to your HTML:
 
 ### Advanced
 
-If you want to control JS Paint, loading/saving files, etc.,
-there is not a formal API for it yet.
+If you want to control JS Paint, how it saves/loads files, or access the canvas directly,
+there is an unstable API.
 
-There is a very unstable API, which is not documented.
-If you're going to use it, make sure you clone the repository and host your own copy of JS Paint.
-(Otherwise it would surely break in the future.)
+First you need to [clone the repo](https://help.github.com/articles/cloning-a-repository/),
+so you can point an `iframe` to your local copy.
+
+The local copy of JS Paint has to be hosted on the same web server as the containing page, or more specifically, the [same origin](https://en.wikipedia.org/wiki/Same-origin_policy).
+
+A local copy also means things won't break any time I change the API.
+
+If JS Paint is cloned to a folder called `jspaint`, which lives in the same folder as the page you want to embed it in, you can use this:
 
 ```html
 <iframe src="jspaint/index.html" id="jspaint-iframe" width="100%" height="100%"></iframe>
 ```
 
-The methods in `systemHooks` can be overridden by a containing page like [98.js.org](https://98.js.org/) which hosts jspaint in a [same-origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) iframe.
-This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
-This API may be removed at any time (and perhaps replaced by something based around `postMessage`).
-```js
-var jspaint = document.getElementById('jspaint-iframe').contentWindow;
+#### Changing how files are saved/loaded
+
+You can override the file saving and opening dialogs
+with JS Paint's `systemHooks` API.
+
+```html
+<script>
+var iframe = document.getElementById('jspaint-iframe');
+var jspaint = iframe.contentWindow;
+// TODO: wait for systemHooks to exist
+// iframe.onload may work
 jspaint.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };
 jspaint.systemHooks.showOpenFileDialog = async ({ formats }) => { ... };
 jspaint.systemHooks.writeBlobToHandle = async (save_file_handle, blob) => { ... };
 jspaint.systemHooks.readBlobFromHandle = async (file_handle) => { ... };
+</script>
+```
+
+These will be documented soon.
+
+#### Loading a file initially
+
+To start the app with a file loaded for editing,
+...
+
+#### Integrating Set as Wallpaper
+
+You can define two functions to set the wallpaper, which will be used by **File > Set As Wallpaper (Tiled)** and **File > Set As Wallpaper (Centered)**.
+
+```js
 jspaint.systemHooks.setWallpaperTiled = (canvas) => { ... };
 jspaint.systemHooks.setWallpaperCentered = (canvas) => { ... };
 ```
 
+If you define only `setWallpaperCentered`, JS Paint will attempt to guess your screen's dimensions and tile the image, applying it by calling your `setWallpaperCentered` function.
+
+Here's a full example supporting a persistent custom wallpaper as a background on the containing page:
+
+```js
+const wallpaper = document.querySelector('body'); // or some other element
+
+jspaint.systemHooks.setWallpaperCentered = (canvas) => {
+	canvas.toBlob((blob) => {
+		setDesktopWallpaper(blob, "no-repeat", true);
+	});
+},
+jspaint.systemHooks.setWallpaperTiled = (canvas) => {
+	canvas.toBlob((blob) => {
+		setDesktopWallpaper(blob, "repeat", true);
+	});
+},
+
+function setDesktopWallpaper(file, repeat, saveToLocalStorage) {
+	const blob_url = URL.createObjectURL(file);
+	wallpaper.style.backgroundImage = `url(${blob_url})`;
+	wallpaper.style.backgroundRepeat = repeat;
+	wallpaper.style.backgroundPosition = "center";
+	wallpaper.style.backgroundSize = "auto";
+	if (saveToLocalStorage) {
+		const fr = new FileReader();
+		fr.onload = () => {
+			localStorage.setItem("wallpaper-data-url", fr.result);
+			localStorage.setItem("wallpaper-repeat", repeat);
+		};
+		fr.onerror = () => {
+			console.error("Error reading file (for setting wallpaper)", file);
+		};
+		fr.readAsDataURL(file);
+	}
+}
+try {
+	const wallpaper_data_url = localStorage.getItem("wallpaper-data-url");
+	const wallpaper_repeat = localStorage.getItem("wallpaper-repeat");
+	if (wallpaper_data_url) {
+		fetch(wallpaper_data_url).then(response => response.blob()).then(file => {
+			setDesktopWallpaper(file, wallpaper_repeat, false);
+		});
+	}
+} catch (error) {
+	console.error(error);
+}
+```
+
+It's a little bit recursive, sorry; it could probably be done simpler.
+Like by just using data URLs. (Actually, I think I wanted to use blob URLs just so that it doesn't bloat the DOM inspector with a super long URL. Which is really a devtools UX bug. Maybe they've improved this?)
+
+#### Specifying the canvas size
+
+You can load a file that has the desired dimensions.
+There's no special API for this at the moment.
+
+#### Specifying the theme
+
+You could change the theme programmatically:
+
+```js
+var iframe = document.getElementById('jspaint-iframe');
+var jspaint = iframe.contentWindow;
+jspaint.set_theme("modern.css");
+```
+but this will break the user preference.
+
+The **Extras > Themes** menu will still work, but the preference won't persist when reloading the page.
+
+In the future there may be a query string parameter to specify the default theme. You could also fork jspaint to change the default theme.
+
+#### Specifying the language
+
+Similar to the theme, you can change the language programmatically:
+
+```js
+var iframe = document.getElementById('jspaint-iframe');
+var jspaint = iframe.contentWindow;
+jspaint.set_language("ar");
+```
+but this will break the user preference.
+
+The **Extras > Language** menu will still work, but the preference won't persist when reloading the page.
+
+In the future there may be a query string parameter to specify the default language. You could also fork jspaint to change the default language.
+
+#### Adding custom menus
+
+Not supported yet.
+You could fork jspaint and add your own menus.
+
+#### Accessing the canvas directly
+
+With access to the canvas, you can implement a live preview of your drawing, for example updating a texture in a game engine in realtime.
+
+```js
+var iframe = document.getElementById('jspaint-iframe');
+// contentDocument here refers to the webpage loaded in the iframe, not the image document loaded in jspaint.
+// We're just reaching inside the iframe to get the canvas.
+var canvas = iframe.contentDocument.querySelector(".main-canvas");
+```
+
+It's recommended not to use this for loading a document, as it won't change the document title, or reset undo/redo history, among other things.
+
+#### Performing custom actions
+
+If you want to make buttons or other UI to do things to the document, you should (probably) make it undoable.
+It's very easy, just wrap your action in a call to `undoable()`.
+
+```js
+var iframe = document.getElementById('jspaint-iframe');
+var jspaint = iframe.contentWindow;
+var icon = new Image();
+icon.src = "some-folder/some-image-15x11-pixels.png";
+jspaint.undoable({
+	name: "",
+	icon: icon, // optional
+}, function() {
+	// do something to the canvas
+});
+```
+
+#### Changelog
+
+The API will change a lot, but changes will be documented in the [Changelog](CHANGELOG.md).
+
+Not just a history of changes, but a migration/upgrading guide. <!-- These are some Ctrl+F keywords. -->
+
+For general project news, click **Extras > Project News** in the app.
 
 ## License
 
