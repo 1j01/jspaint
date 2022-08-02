@@ -329,6 +329,14 @@ Add this to your HTML:
 <iframe src="https://jspaint.app" width="100%" height="100%"></iframe>
 ```
 
+#### Start with an image
+
+You can have it load an image from a URL by adding `#load:<URL>` to the URL.
+
+```html
+<iframe src="https://jspaint.app#load:https://jspaint.app/favicon.ico" width="100%" height="100%"></iframe>
+```
+
 ### Advanced
 
 If you want to control JS Paint, how it saves/loads files, or access the canvas directly,
@@ -356,21 +364,69 @@ with JS Paint's `systemHooks` API.
 <script>
 var iframe = document.getElementById('jspaint-iframe');
 var jspaint = iframe.contentWindow;
-// TODO: wait for systemHooks to exist
-// iframe.onload may work
-jspaint.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };
-jspaint.systemHooks.showOpenFileDialog = async ({ formats }) => { ... };
-jspaint.systemHooks.writeBlobToHandle = async (save_file_handle, blob) => { ... };
-jspaint.systemHooks.readBlobFromHandle = async (file_handle) => { ... };
+// Wait for systemHooks to exist (the iframe needs to load)
+waitUntil(()=> contentWindow.systemHooks, 500, ()=> {
+	jspaint.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };
+	jspaint.systemHooks.showOpenFileDialog = async ({ formats }) => { ... };
+	jspaint.systemHooks.writeBlobToHandle = async (save_file_handle, blob) => { ... };
+	jspaint.systemHooks.readBlobFromHandle = async (file_handle) => { ... };
+});
+// General function to wait for a condition to be met, checking at regular intervals
+function waitUntil(test, interval, callback) {
+	if (test()) {
+		callback();
+	} else {
+		setTimeout(waitUntil, interval, test, interval, callback);
+	}
+}
 </script>
 ```
 
-These will be documented soon.
+A file handle is anything that can identify a file.
+You get to own this concept, and define how to identify files.
+It could be anything from an index into an array, to a Dropbox file ID, to an IPFS URL, to a file path.
+It can be any type, or maybe it needs to be a string, I forget.
+
+Once you have a concept of a file handle, you can implement file pickers using the system hooks, and functions to read and write files.
+
+| Command | Hooks Used |
+| ------- | ---------- |
+| **File > Save As** | `systemHooks.showSaveFileDialog`, then when a file is picked, `systemHooks.writeBlobToHandle` |
+| **File > Open** | `systemHooks.showOpenFileDialog`, then when a file is picked, `systemHooks.readBlobFromHandle` |
+| **File > Save** | `systemHooks.writeBlobToHandle` (or same as **File > Save As** if there's no file open yet) |
+| **Edit > Copy To** | `systemHooks.showSaveFileDialog`, then when a file is picked, `systemHooks.writeBlobToHandle` |
+| **Edit > Paste From** | `systemHooks.showOpenFileDialog`, then when a file is picked, `systemHooks.readBlobFromHandle` |
+
+These system hooks will be documented soon.
 
 #### Loading a file initially
 
 To start the app with a file loaded for editing,
-...
+wait for the app to load, then call `systemHooks.readBlobFromHandle` with a file handle, and tell the app to load that file blob.
+
+```js
+const file_handle = "initial-file-to-load";
+systemHooks.readBlobFromHandle(file_handle).then(file => {
+	if (file) {
+		contentWindow.open_from_file(file, file_handle);
+	}
+}, (error) => {
+	// Note: in some cases, this handler may not be called, and instead an error message is shown by readBlobFromHandle directly.
+	contentWindow.show_error_message(`Failed to open file ${file_handle}`, error);
+});
+```
+
+This is clumsy, and in the future there may be a query string parameter to load an initial file by its handle.
+(Note to self: it will need to wait for your system hooks to be registered, somehow.)
+
+There's already a query string parameter to load from a URL:
+
+```html
+<iframe src="https://jspaint.app?load:SOME_URL_HERE"></iframe>
+```
+
+But this won't set up the file handle for saving.
+
 
 #### Integrating Set as Wallpaper
 
