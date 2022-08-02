@@ -319,6 +319,25 @@ JS Paint can be deployed using a regular web server.
 
 Nothing needs to be compiled.
 
+### CORS proxy
+
+Optionally, you can set up a [CORS Anywhere](https://github.com/Rob--W/cors-anywhere) server, for loading images from the web, if you paste a URL into JS Paint, or use the `#load:<URL>` feature with images that are not on the same domain.
+
+By default it will use the CORS Anywhere instance set up for jspaint.app, but it would be nice if you would set up your own instance if you expect significant traffic.
+
+It is hosted for free on [Heroku](https://www.heroku.com/) and gets bogged down from time to time.
+
+You'll have to find and replace `https://jspaint-cors-proxy.herokuapp.com` with your own instance URL.
+
+
+### Multiplayer Support
+
+Multiplayer support currently relies on Firebase,
+which is not open source software.
+
+You could create a [Firebase Realtime Database](https://firebase.google.com/docs/database/web/start) instance and fork JS Paint to point to it if you want,
+but the multiplayer mode is very shoddy so far.
+
 ## Embed in your website
 
 ### Simple
