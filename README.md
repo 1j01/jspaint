@@ -455,16 +455,16 @@ In the future there may be a query string parameter to specify the default theme
 
 #### Specifying the language
 
-Similar to the theme, you can change the language programmatically:
+Similar to the theme, you can try to change the language programmatically:
 
 ```js
 var iframe = document.getElementById('jspaint-iframe');
 var jspaint = iframe.contentWindow;
 jspaint.set_language("ar");
 ```
-but this will break the user preference.
+but this will actually **ask the user to reload the application** to change languages.
 
-The **Extras > Language** menu will still work, but the preference won't persist when reloading the page.
+The **Extras > Language** menu will still work, but the user will be bothered to change the language every time they reload the page.
 
 In the future there may be a query string parameter to specify the default language. You could also fork jspaint to change the default language.
 
