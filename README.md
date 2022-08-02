@@ -464,10 +464,8 @@ But this won't set up the file handle for saving.
 
 You can define two functions to set the wallpaper, which will be used by **File > Set As Wallpaper (Tiled)** and **File > Set As Wallpaper (Centered)**.
 
-```js
-jspaint.systemHooks.setWallpaperTiled = (canvas) => { ... };
-jspaint.systemHooks.setWallpaperCentered = (canvas) => { ... };
-```
+- [`systemHooks.setWallpaperTiled`][]` = (canvas) => { ... };`
+- [`systemHooks.setWallpaperCentered`][]` = (canvas) => { ... };`
 
 If you define only [`systemHooks.setWallpaperCentered`][], JS Paint will attempt to guess your screen's dimensions and tile the image, applying it by calling your [`systemHooks.setWallpaperCentered`][] function.
 
@@ -528,6 +526,8 @@ Like by just using data URLs. (Actually, I think I wanted to use blob URLs just 
 You can load a file that has the desired dimensions.
 There's no special API for this at the moment.
 
+See [Loading a file initially](#loading-a-file-initially).
+
 #### Specifying the theme
 
 You could change the theme programmatically:
@@ -574,12 +574,13 @@ var iframe = document.getElementById('jspaint-iframe');
 var canvas = iframe.contentDocument.querySelector(".main-canvas");
 ```
 
-It's recommended not to use this for loading a document, as it won't change the document title, or reset undo/redo history, among other things.
+It's recommended **not** to use this for loading a document, as it won't change the document title, or reset undo/redo history, among other things.
+Instead use [`open_from_file`][].
 
 #### Performing custom actions
 
 If you want to make buttons or other UI to do things to the document, you should (probably) make it undoable.
-It's very easy, just wrap your action in a call to `undoable()`.
+It's very easy, just wrap your action in a call to [`undoable`][].
 
 ```js
 var iframe = document.getElementById('jspaint-iframe');
@@ -587,7 +588,7 @@ var jspaint = iframe.contentWindow;
 var icon = new Image();
 icon.src = "some-folder/some-image-15x11-pixels.png";
 jspaint.undoable({
-	name: "",
+	name: "Seam Carve",
 	icon: icon, // optional
 }, function() {
 	// do something to the canvas
@@ -654,7 +655,7 @@ Arguments:
 #### <a href="#systemHooks.setWallpaperTiled" id="systemHooks.setWallpaperTiled">function `systemHooks.setWallpaperTiled(canvas)`</a>
 [`systemHooks.setWallpaperTiled`]: #systemHooks.setWallpaperTiled
 
-Define this function to tell JS Paint how to set the wallpaper.
+Define this function to tell JS Paint how to set the wallpaper. See [Integrating Set as Wallpaper](#integrating-set-as-wallpaper) for an example.
 
 Arguments:
 - `canvas`: a `HTMLCanvasElement` with the image to set as the wallpaper.
@@ -662,12 +663,13 @@ Arguments:
 #### <a href="#systemHooks.setWallpaperCentered" id="systemHooks.setWallpaperCentered">function `systemHooks.setWallpaperCentered(canvas)`</a>
 [`systemHooks.setWallpaperCentered`]: #systemHooks.setWallpaperCentered
 
-Define this function to tell JS Paint how to set the wallpaper.
+Define this function to tell JS Paint how to set the wallpaper. See [Integrating Set as Wallpaper](#integrating-set-as-wallpaper) for an example.
 
 Arguments:
 - `canvas`: a `HTMLCanvasElement` with the image to set as the wallpaper.
 
-#### function `undoable({ name, icon }, actionFunction)`
+#### <a href="#undoable" id="undoable">function `undoable({ name, icon }, actionFunction)`</a>
+[`undoable`]: #undoable
 
 Use this to make an action undoable.
 
@@ -679,7 +681,8 @@ Arguments:
 - `icon` (optional): an `Image` to display in the History window. It is recommended to be 15x11 pixels.
 - `actionFunction`: a function that takes no arguments, and modifies the canvas.
 
-#### function `show_error_message(message, [error])`
+#### <a href="#show_error_message" id="show_error_message">function `show_error_message(message, [error])`</a>
+[`show_error_message`]: #show_error_message
 
 Use this to show an error message dialog box, optionally with expandable error details.
 
@@ -687,7 +690,8 @@ Arguments:
 - `message`: plain text to show in the dialog box.
 - `error` (optional): an `Error` object to show in the dialog box, collapsed by default in a "Details" expandable section.
 
-#### function `open_from_file(blob, source_file_handle)`
+#### <a href="#open_from_file" id="open_from_file">function `open_from_file(blob, source_file_handle)`</a>
+[`open_from_file`]: #open_from_file
 
 Use this to load a file into the app.
 
