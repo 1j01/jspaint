@@ -420,13 +420,13 @@ Once you have a concept of a file handle, you can implement file pickers using t
 
 | Command | Hooks Used |
 | ------- | ---------- |
-| **File > Save As** | `systemHooks.showSaveFileDialog`, then when a file is picked, `systemHooks.writeBlobToHandle` |
-| **File > Open** | `systemHooks.showOpenFileDialog`, then when a file is picked, `systemHooks.readBlobFromHandle` |
-| **File > Save** | `systemHooks.writeBlobToHandle` (or same as **File > Save As** if there's no file open yet) |
-| **Edit > Copy To** | `systemHooks.showSaveFileDialog`, then when a file is picked, `systemHooks.writeBlobToHandle` |
-| **Edit > Paste From** | `systemHooks.showOpenFileDialog`, then when a file is picked, `systemHooks.readBlobFromHandle` |
-| **File > Set As Wallpaper (Tiled)** | `systemHooks.setWallpaperTiled` if defined, else `systemHooks.setWallpaperCentered` if defined, else same as **File > Save As** |
-| **File > Set As Wallpaper (Centered)** | `systemHooks.setWallpaperCentered` if defined, else same as **File > Save As** |
+| **File > Save As** | [`systemHooks.showSaveFileDialog`][], then when a file is picked, [`systemHooks.writeBlobToHandle`][] |
+| **File > Open** | [`systemHooks.showOpenFileDialog`][], then when a file is picked, [`systemHooks.readBlobFromHandle`][] |
+| **File > Save** | [`systemHooks.writeBlobToHandle`][] (or same as **File > Save As** if there's no file open yet) |
+| **Edit > Copy To** | [`systemHooks.showSaveFileDialog`][], then when a file is picked, [`systemHooks.writeBlobToHandle`][] |
+| **Edit > Paste From** | [`systemHooks.showOpenFileDialog`][], then when a file is picked, [`systemHooks.readBlobFromHandle`][] |
+| **File > Set As Wallpaper (Tiled)** | [`systemHooks.setWallpaperTiled`][] if defined, else [`systemHooks.setWallpaperCentered`][] if defined, else same as **File > Save As** |
+| **File > Set As Wallpaper (Centered)** | [`systemHooks.setWallpaperCentered`][] if defined, else same as **File > Save As** |
 | **Extras > Render History As GIF** | Same as **File > Save As** |
 | **Colors > Save Colors** | Same as **File > Save As** |
 | **Colors > Get Colors** | Same as **File > Open** |
@@ -434,7 +434,7 @@ Once you have a concept of a file handle, you can implement file pickers using t
 #### Loading a file initially
 
 To start the app with a file loaded for editing,
-wait for the app to load, then call `systemHooks.readBlobFromHandle` with a file handle, and tell the app to load that file blob.
+wait for the app to load, then call [`systemHooks.readBlobFromHandle`][] with a file handle, and tell the app to load that file blob.
 
 ```js
 const file_handle = "initial-file-to-load";
@@ -469,9 +469,9 @@ jspaint.systemHooks.setWallpaperTiled = (canvas) => { ... };
 jspaint.systemHooks.setWallpaperCentered = (canvas) => { ... };
 ```
 
-If you define only `setWallpaperCentered`, JS Paint will attempt to guess your screen's dimensions and tile the image, applying it by calling your `setWallpaperCentered` function.
+If you define only [`systemHooks.setWallpaperCentered`][], JS Paint will attempt to guess your screen's dimensions and tile the image, applying it by calling your [`systemHooks.setWallpaperCentered`][] function.
 
-If you don't specify `setWallpaperCentered`, JS Paint will default to saving a file (`<original file name> wallpaper.png"`) using `systemHooks.showSaveFileDialog` and `systemHooks.writeBlobToHandle`.
+If you don't specify [`systemHooks.setWallpaperCentered`][], JS Paint will default to saving a file (`<original file name> wallpaper.png"`) using [`systemHooks.showSaveFileDialog`][] and [`systemHooks.writeBlobToHandle`][].
 
 Here's a full example supporting a persistent custom wallpaper as a background on the containing page:
 
@@ -594,7 +594,8 @@ jspaint.undoable({
 });
 ```
 
-#### async function `systemHooks.showSaveFileDialog({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle })`
+#### <a href="#systemHooks.showSaveFileDialog" id="systemHooks.showSaveFileDialog">async function `systemHooks.showSaveFileDialog({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle })`</a>
+[`systemHooks.showSaveFileDialog`]: #systemHooks.showSaveFileDialog
 
 Define this function to override the default save dialog.
 This is used both for saving images, as well as palette files, and animations.
@@ -621,7 +622,8 @@ Once `getBlob` resolves, you can call the `savedCallbackUnreliable` function whi
 Also note that this function is responsible for saving the file, not just picking a save location.
 You may reuse your `systemHooks.writeBlobToHandle` function if it's helpful.
 
-#### async function `systemHooks.showOpenFileDialog({ formats })`
+#### <a href="#systemHooks.showOpenFileDialog" id="systemHooks.showOpenFileDialog">async function `systemHooks.showOpenFileDialog({ formats })`</a>
+[`systemHooks.showOpenFileDialog`]: #systemHooks.showOpenFileDialog
 
 Define this function to override the default open dialog.
 This is used for opening images and palettes.
@@ -632,7 +634,8 @@ Arguments:
 Note that this function is responsible for loading the contents of the file, not just picking a file.
 You may reuse your `systemHooks.readBlobFromHandle` function if it's helpful.
 
-#### async function `systemHooks.writeBlobToHandle(fileHandle, blob)`
+#### <a href="#systemHooks.writeBlobToHandle" id="systemHooks.writeBlobToHandle">async function `systemHooks.writeBlobToHandle(fileHandle, blob)`</a>
+[`systemHooks.writeBlobToHandle`]: #systemHooks.writeBlobToHandle
 
 Define this function to tell JS Paint how to save a file.
 
@@ -640,21 +643,24 @@ Arguments:
 - `fileHandle`: a file handle, as defined by your system, representing the file to write to.
 - `blob`: a `Blob` representing the file contents to save.
 
-#### async function `systemHooks.readBlobFromHandle(fileHandle)`
+#### <a href="#systemHooks.readBlobFromHandle" id="systemHooks.readBlobFromHandle">async function `systemHooks.readBlobFromHandle(fileHandle)`</a>
+[`systemHooks.readBlobFromHandle`]: #systemHooks.readBlobFromHandle
 
 Define this function to tell JS Paint how to load a file.
 
 Arguments:
 - `fileHandle`: a file handle, as defined by your system, representing the file to read from.
 
-#### function `systemHooks.setWallpaperTiled(canvas)`
+#### <a href="#systemHooks.setWallpaperTiled" id="systemHooks.setWallpaperTiled">function `systemHooks.setWallpaperTiled(canvas)`</a>
+[`systemHooks.setWallpaperTiled`]: #systemHooks.setWallpaperTiled
 
 Define this function to tell JS Paint how to set the wallpaper.
 
 Arguments:
 - `canvas`: a `HTMLCanvasElement` with the image to set as the wallpaper.
 
-#### function `systemHooks.setWallpaperCentered(canvas)`
+#### <a href="#systemHooks.setWallpaperCentered" id="systemHooks.setWallpaperCentered">function `systemHooks.setWallpaperCentered(canvas)`</a>
+[`systemHooks.setWallpaperCentered`]: #systemHooks.setWallpaperCentered
 
 Define this function to tell JS Paint how to set the wallpaper.
 
