@@ -391,7 +391,7 @@ with JS Paint's `systemHooks` API.
 var iframe = document.getElementById('jspaint-iframe');
 var jspaint = iframe.contentWindow;
 // Wait for systemHooks object to exist (the iframe needs to load)
-waitUntil(()=> contentWindow.systemHooks, 500, ()=> {
+waitUntil(()=> jspaint.systemHooks, 500, ()=> {
 	// Hook in
 	jspaint.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };
 	jspaint.systemHooks.showOpenFileDialog = async ({ formats }) => { ... };
