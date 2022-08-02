@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - function `undoable({ name, icon }, actionFunction)` to make an action undoable, as far is it modifies the canvas
 - function `show_error_message(message, [error])` to show an error message dialog box, optionally with expandable error details
 - function `open_from_file(blob, source_file_handle)` to load a file from a blob and file handle pair (kinda quirky API)
+- function `set_theme(theme_file_name)` to switch themes
+- function `set_language(language_code)` to switch languages, prompting the user to reload the application
 - You can use `.main-canvas` selector to access the canvas element.
 - URL parameter `#load:<URL>` to load a file from a URL
 

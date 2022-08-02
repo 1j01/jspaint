@@ -703,6 +703,28 @@ Sorry for the quirky API.
 The API is new, and parts of it have not been designed at all. This was just a hack that I came to depend on, reaching into the internals of JS Paint to load a file.
 I decided to document it as the first version of the API, since I'll want a changelog when upgrading my usage of it anyways.
 
+#### <a href="#set_theme" id="set_theme">function `set_theme(theme_file_name)`</a>
+[`set_theme`]: #set_theme
+
+Use this to change the look of the application.
+
+Arguments:
+- `theme_file_name`: the name of the theme file to load, one of:
+	- `"classic.css"`: the Windows98 theme.
+	- `"dark.css"`: the Dark theme.
+	- `"modern.css"`: the Modern theme.
+	- `"winter.css"`: the festive Winter theme.
+	- `"occult.css"`: a Satanic theme.
+
+#### <a href="#set_language" id="set_language">function `set_language(language_code)`</a>
+[`set_language`]: #set_language
+
+You can kind of use this to change the language of the application. But actually it will show a prompt to the user to change the language, because the application needs to reload to apply the change.
+And if that dialog isn't in the right language, well, they'll probably be confused.
+
+Arguments:
+- `language_code`: the language code to use, e.g. `"en"` for English, `"zh"` for Traditional Chinese, `"zh-simplified"` for Simplified Chinese, etc.
+
 #### Changelog
 
 The API will change a lot, but changes will be documented in the [Changelog](CHANGELOG.md).
