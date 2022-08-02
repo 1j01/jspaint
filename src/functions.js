@@ -844,6 +844,7 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 	}, canceled, from_session_load);
 }
 
+// Note: This function is part of the API.
 function open_from_file(file, source_file_handle) {
 	// The browser isn't very smart about MIME types.
 	// It seems to look at the file extension, but not the actual file contents.
@@ -1140,6 +1141,7 @@ function please_enter_a_number() {
 	});
 }
 
+// Note: This function is part of the API.
 function show_error_message(message, error) {
 	// Test global error handling resiliency by enabling one or both of these:
 	// Promise.reject(new Error("EMIT EMIT EMIT"));
@@ -1823,6 +1825,8 @@ function go_to_history_node(target_history_node, canceling, discard_document_sta
 	$G.triggerHandler("session-update"); // autosave
 	$G.triggerHandler("history-update"); // update history view
 }
+
+// Note: This function is part of the API.
 function undoable({ name, icon, use_loose_canvas_changes, soft }, callback) {
 	if (!use_loose_canvas_changes) {
 		/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.
