@@ -56,8 +56,8 @@
 				speech_recognition: [
 
 				],
-				action: () => { file_save(); },
-				description: localize("Saves the active document."),
+				action: () => { file_save_to_ipfs(); },
+				description: localize("Saves the active document to Ipfs."),
 			},
 			{
 				item: localize("Save &As"),
