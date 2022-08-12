@@ -303,7 +303,7 @@ See [Control Directives](https://rtlcss.com/learn/usage-guide/control-directives
 This is basically ready for release, but as of yet unreleased.
 
 - Install dependencies with `npm i`
-- Start the electron app with `npm run electron:start`
+- Start the electron app with `ELECTRON_ENABLE_LOGGING=true npm run electron:start`
 
 [electron-debug][] is included, so you can use <kbd>F5</kbd>/<kbd>Ctrl+R</kbd> to reload and <kbd>F12</kbd>/<kbd>Ctrl+Shift+I</kbd> to open the devtools.
 
