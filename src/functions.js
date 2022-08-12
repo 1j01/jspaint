@@ -1034,6 +1034,25 @@ function file_save(maybe_saved_callback = () => { }, update_from_saved = true) {
 }
 
 function file_save_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true) {
+	deselect();
+	// store and use file handle at this point in time, to avoid race conditions
+	const save_file_handle = system_file_handle;
+	if (!save_file_handle || file_name.match(/\.(svg|pdf)$/i)) {
+		return file_save_as_to_ipfs(maybe_saved_callback, update_from_saved);
+	}
+	write_image_file_to_ipfs(main_canvas, file_format, async (blob) => {
+		await systemHooks.writeBlobToHandle(save_file_handle, blob);
+
+		if (update_from_saved) {
+			update_from_saved_file(blob);
+		}
+		maybe_saved_callback();
+	});
+
+}
+
+function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true) {
+	deselect();
 	systemHooks.showSaveFileDialog({
 		dialogTitle: localize("Save As"),
 		formats: image_formats,
@@ -1042,7 +1061,7 @@ function file_save_to_ipfs(maybe_saved_callback = () => { }, update_from_saved =
 		defaultFileFormatID: file_format,
 		getBlob: (new_file_type) => {
 			return new Promise((resolve) => {
-				write_image_file_to_ipfs(main_canvas, new_file_type, (blob) => {
+				write_image_file(main_canvas, new_file_type, (blob) => {
 					resolve(blob);
 				});
 			});
@@ -1059,10 +1078,9 @@ function file_save_to_ipfs(maybe_saved_callback = () => { }, update_from_saved =
 			}
 		}
 	});
-
 }
 
-function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true) {
+function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true) {
 	deselect();
 	systemHooks.showSaveFileDialog({
 		dialogTitle: localize("Save As"),
