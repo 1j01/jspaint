@@ -1,16 +1,38 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
+	"compounds": [
+		{
+			"name": "Main + renderer",
+			"configurations": [
+				"Main",
+				"Renderer"
+			],
+			"stopAll": true
+		}
+	],
 	"configurations": [
 		{
-			"type": "pwa-chrome",
+			"name": "Renderer",
+			"port": 9222,
 			"request": "attach",
-			"name": "Attach to Chrome",
-			"port": 9222, // must run Chrome with a flag: google-chrome --remote-debugging-port=9222
-			"urlFilter": "http://127.0.0.1:1999/*",
+			"type": "pwa-chrome",
 			"webRoot": "${workspaceFolder}"
+		},
+		{
+			"name": "Main",
+			"type": "pwa-node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			},
+			"args": [
+				".",
+				"--remote-debugging-port=9222"
+			],
+			"outputCapture": "std",
+			"console": "integratedTerminal"
 		}
 	]
 }

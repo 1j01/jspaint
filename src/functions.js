@@ -1083,14 +1083,14 @@ function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true
 function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true) {
 	deselect();
 	systemHooks.showSaveFileDialog({
-		dialogTitle: localize("Save As"),
+		dialogTitle: localize("Save As to Ipfs"),
 		formats: image_formats,
 		defaultFileName: file_name,
 		defaultPath: typeof system_file_handle === "string" ? system_file_handle : null,
 		defaultFileFormatID: file_format,
 		getBlob: (new_file_type) => {
 			return new Promise((resolve) => {
-				write_image_file(main_canvas, new_file_type, (blob) => {
+				write_image_file_to_ipfs(main_canvas, new_file_type, (blob) => {
 					resolve(blob);
 				});
 			});
