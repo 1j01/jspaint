@@ -258,6 +258,7 @@ window.systemHookDefaults = {
 			const { newFileName, newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats });
 			const blob = await getBlob(newFileFormatID);
 			saveAs(blob, newFileName);
+			console.log("savedCallbackUnreliable 2");
 			savedCallbackUnreliable && savedCallbackUnreliable({
 				newFileName,
 				newFileFormatID,
@@ -306,6 +307,7 @@ window.systemHookDefaults = {
 				return;
 			}
 			try {
+				console.log("writableStream.write 3");
 				const writableStream = await save_file_handle.createWritable();
 				await writableStream.write(blob);
 				await writableStream.close();
