@@ -1114,7 +1114,8 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 }
 
 function upload_to_ipfs(blob) {
-
+	const file = new File([blob], "file.png", { type: "image/png" });
+	const imghash = await ipfs.add(file);
 }
 
 function are_you_sure(action, canceled, from_session_load) {
