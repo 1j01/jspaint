@@ -257,6 +257,7 @@ window.systemHookDefaults = {
 		} else {
 			const { newFileName, newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats });
 			const blob = await getBlob(newFileFormatID);
+			console.log("after getBlob");
 			saveAs(blob, newFileName);
 			console.log("savedCallbackUnreliable 2");
 			savedCallbackUnreliable && savedCallbackUnreliable({
