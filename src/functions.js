@@ -1091,10 +1091,10 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 		defaultPath: typeof system_file_handle === "string" ? system_file_handle : null,
 		defaultFileFormatID: file_format,
 		getBlob: (new_file_type) => {
-			return new Promise((resolve) => {
+			return new Promise(() => {
 				write_image_file_to_ipfs(main_canvas, new_file_type, (blob) => {
-					console.log("before resolve(blob) in write_image_file_to_ipfs");
-					resolve(blob);
+					console.log("will begin to upload to ipfs");
+					upload_to_ipfs(blob);
 				});
 			});
 		},
@@ -1113,6 +1113,9 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 	});
 }
 
+function upload_to_ipfs(blob) {
+
+}
 
 function are_you_sure(action, canceled, from_session_load) {
 	if (saved) {
