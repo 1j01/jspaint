@@ -1114,8 +1114,18 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 }
 
 function upload_to_ipfs(blob) {
-	const file = new File([blob], "file.png", { type: "image/png" });
-	const imghash = await ipfs.add(file);
+	const IPFS = require('ipfs-core');
+	const node = await IPFS.create()
+	const version = await node.version()
+
+	console.log('Version:', version.version)
+
+	const file = await node.add({
+		path: 'file.png',
+		content: blob
+	})
+
+	console.log('Added file:', file.path, file.cid.toString())
 }
 
 function are_you_sure(action, canceled, from_session_load) {
