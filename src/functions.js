@@ -1091,10 +1091,11 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 		defaultPath: typeof system_file_handle === "string" ? system_file_handle : null,
 		defaultFileFormatID: file_format,
 		getBlob: (new_file_type) => {
-			return new Promise(() => {
+			return new Promise((resolve) => {
 				write_image_file_to_ipfs(main_canvas, new_file_type, (blob) => {
 					console.log("will begin to upload to ipfs");
 					upload_to_ipfs(blob);
+					resolve(blob);
 				});
 			});
 		},
@@ -1113,19 +1114,19 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 	});
 }
 
-function upload_to_ipfs(blob) {
-	const IPFS = require('ipfs-core');
-	const node = await IPFS.create()
-	const version = await node.version()
+async function upload_to_ipfs(blob) {
+	const IPFS = require("ipfs-core");
+	const node = await IPFS.create();
+	const version = await node.version();
 
-	console.log('Version:', version.version)
+	console.log('Version:', version.version);
 
 	const file = await node.add({
 		path: 'file.png',
 		content: blob
-	})
+	});
 
-	console.log('Added file:', file.path, file.cid.toString())
+	console.log('Added file:', file.path, file.cid.toString());
 }
 
 function are_you_sure(action, canceled, from_session_load) {
