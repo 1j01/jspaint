@@ -1115,8 +1115,10 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 }
 
 async function upload_to_ipfs(blob) {
-	const IPFS = require("ipfs-core");
+
+	const IPFS = await import("ipfs-core")
 	const node = await IPFS.create();
+
 	const version = await node.version();
 
 	console.log('Version:', version.version);
