@@ -63,9 +63,8 @@
     "lookpath": "^1.2.2",
     "rtlcss": "^3.1.2",
     "wallpaper": "^4.4.2",
-    "ipfs-core": "^0.15.2",
-    "it-all": "^1.0.4",
-    "uint8arrays": "^3.0.0"
+    "mime": "^3.0.0",
+    "nft.storage": "^7.0.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",
