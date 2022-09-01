@@ -1038,11 +1038,9 @@ function file_save_to_ipfs(maybe_saved_callback = () => { }, update_from_saved =
 	// store and use file handle at this point in time, to avoid race conditions
 	const save_file_handle = system_file_handle;
 	if (!save_file_handle || file_name.match(/\.(svg|pdf)$/i)) {
-		console.log("go to file_save_as_to_ipfs");
 		return file_save_as_to_ipfs(maybe_saved_callback, update_from_saved);
 	}
 	write_image_file_to_ipfs(main_canvas, file_format, async (blob) => {
-		console.log("will write_image_file_to_ipfs");
 		await systemHooks.writeBlobToHandle(save_file_handle, blob);
 
 		if (update_from_saved) {
@@ -1093,14 +1091,12 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 		getBlob: (new_file_type) => {
 			return new Promise((resolve) => {
 				write_image_file_to_ipfs(main_canvas, new_file_type, (blob) => {
-					console.log("will begin to upload to ipfs");
 					upload_to_ipfs(blob);
 					resolve(blob);
 				});
 			});
 		},
 		savedCallbackUnreliable: ({ newFileName, newFileFormatID, newFileHandle, newBlob }) => {
-			console.log("before savedCallbackUnreliable :" + newFileHandle);
 			saved = true;
 			system_file_handle = newFileHandle;
 			file_name = newFileName;
