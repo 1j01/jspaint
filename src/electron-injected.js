@@ -30,6 +30,9 @@ window.setRepresentedFilename = (filePath) => {
 window.setDocumentEdited = (documentEdited) => {
 	ipcRenderer.send("set-document-edited", documentEdited);
 };
+window.uploadToIpfs = (blob) => {
+	ipcRenderer.send("upload-to-ipfs", blob);
+};
 
 function show_save_error_message(responseCode, error) {
 	if (responseCode === "ACCESS_DENIED") {

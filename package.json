@@ -63,8 +63,7 @@
     "lookpath": "^1.2.2",
     "rtlcss": "^3.1.2",
     "wallpaper": "^4.4.2",
-    "mime": "^3.0.0",
-    "nft.storage": "^7.0.0"
+    "web3.storage": "latest"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",

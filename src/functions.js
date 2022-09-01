@@ -1114,21 +1114,12 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 	});
 }
 
-async function upload_to_ipfs(blob) {
+function upload_to_ipfs(blob) {
 
-	const { NFTStorage, File } = await import('nft.storage');
-	const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDI1YWNBNUYyMzIwRDNlZjNlQmVDM2VCMDU4OTljZTYxZjVDMjVGM2EiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2MTQwMzU4NjAzOSwibmFtZSI6Inhpbm1pbnN1In0.kOYqRQqUNHKUWpTrTHq5gpF-Ty_BC50ld2iWBu_hEJM';
+	if (window.uploadToIpfs) {
+		window.uploadToIpfs(blob);
+	}
 
-	var image = new File([blob], "", { type: 'image/png' });
-
-	const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
-
-	// call client.store, passing in the image & metadata
-	const result = await nftstorage.store({
-		image
-	});
-
-	console.log(result);
 }
 
 function are_you_sure(action, canceled, from_session_load) {
