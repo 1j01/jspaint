@@ -1033,12 +1033,12 @@ function file_save(maybe_saved_callback = () => { }, update_from_saved = true) {
 	});
 }
 
-function file_save_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true) {
+function file_save_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true, save_to_ipfs = true) {
 	deselect();
 	// store and use file handle at this point in time, to avoid race conditions
 	const save_file_handle = system_file_handle;
 	if (!save_file_handle || file_name.match(/\.(svg|pdf)$/i)) {
-		return file_save_as_to_ipfs(maybe_saved_callback, update_from_saved);
+		return file_save_as_to_ipfs(maybe_saved_callback, update_from_saved, save_to_ipfs);
 	}
 	write_image_file_to_ipfs(main_canvas, file_format, async (blob) => {
 		await systemHooks.writeBlobToHandle(save_file_handle, blob);
@@ -1080,7 +1080,7 @@ function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true
 	});
 }
 
-function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true) {
+function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true, save_to_ipfs = true) {
 	deselect();
 	systemHooks.showSaveFileDialog({
 		dialogTitle: localize("Save As to Ipfs"),
@@ -1091,12 +1091,11 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 		getBlob: (new_file_type) => {
 			return new Promise((resolve) => {
 				write_image_file_to_ipfs(main_canvas, new_file_type, (blob) => {
-					upload_to_ipfs(blob);
 					resolve(blob);
 				});
 			});
 		},
-		savedCallbackUnreliable: ({ newFileName, newFileFormatID, newFileHandle, newBlob }) => {
+		savedCallbackUnreliable: ({ newFileName, newFileFormatID, newFileHandle, newBlob, newFilePath }) => {
 			saved = true;
 			system_file_handle = newFileHandle;
 			file_name = newFileName;
@@ -1106,14 +1105,17 @@ function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_save
 			if (update_from_saved) {
 				update_from_saved_file(newBlob);
 			}
+			if (save_to_ipfs) {
+				upload_to_ipfs(newFilePath);
+			}
 		}
 	});
 }
 
-function upload_to_ipfs(blob) {
+function upload_to_ipfs(file_name) {
 
 	if (window.uploadToIpfs) {
-		window.uploadToIpfs(blob);
+		window.uploadToIpfs(file_name);
 	}
 
 }
