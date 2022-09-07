@@ -30,6 +30,9 @@ window.setRepresentedFilename = (filePath) => {
 window.setDocumentEdited = (documentEdited) => {
 	ipcRenderer.send("set-document-edited", documentEdited);
 };
+window.uploadToIpfs = (fileName) => {
+	ipcRenderer.send("upload-to-ipfs", fileName);
+};
 
 function show_save_error_message(responseCode, error) {
 	if (responseCode === "ACCESS_DENIED") {
@@ -102,6 +105,7 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 		newFileFormatID: format.mimeType,
 		newFileHandle: filePath,
 		newBlob: blob,
+		newFilePath: filePath,
 	});
 };
 window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {

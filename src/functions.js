@@ -1034,6 +1034,24 @@ function file_save(maybe_saved_callback = () => { }, update_from_saved = true) {
 	});
 }
 
+function file_save_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true, save_to_ipfs = true) {
+	deselect();
+	// store and use file handle at this point in time, to avoid race conditions
+	const save_file_handle = system_file_handle;
+	if (!save_file_handle || file_name.match(/\.(svg|pdf)$/i)) {
+		return file_save_as_to_ipfs(maybe_saved_callback, update_from_saved, save_to_ipfs);
+	}
+	write_image_file_to_ipfs(main_canvas, file_format, async (blob) => {
+		await systemHooks.writeBlobToHandle(save_file_handle, blob);
+
+		if (update_from_saved) {
+			update_from_saved_file(blob);
+		}
+		maybe_saved_callback();
+	});
+
+}
+
 function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true) {
 	deselect();
 	systemHooks.showSaveFileDialog({
@@ -1063,6 +1081,45 @@ function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true
 	});
 }
 
+function file_save_as_to_ipfs(maybe_saved_callback = () => { }, update_from_saved = true, save_to_ipfs = true) {
+	deselect();
+	systemHooks.showSaveFileDialog({
+		dialogTitle: localize("Save As to Ipfs"),
+		formats: image_formats,
+		defaultFileName: file_name,
+		defaultPath: typeof system_file_handle === "string" ? system_file_handle : null,
+		defaultFileFormatID: file_format,
+		getBlob: (new_file_type) => {
+			return new Promise((resolve) => {
+				write_image_file_to_ipfs(main_canvas, new_file_type, (blob) => {
+					resolve(blob);
+				});
+			});
+		},
+		savedCallbackUnreliable: ({ newFileName, newFileFormatID, newFileHandle, newBlob, newFilePath }) => {
+			saved = true;
+			system_file_handle = newFileHandle;
+			file_name = newFileName;
+			file_format = newFileFormatID;
+			update_title();
+			maybe_saved_callback();
+			if (update_from_saved) {
+				update_from_saved_file(newBlob);
+			}
+			if (save_to_ipfs) {
+				upload_to_ipfs(newFilePath);
+			}
+		}
+	});
+}
+
+function upload_to_ipfs(file_name) {
+
+	if (window.uploadToIpfs) {
+		window.uploadToIpfs(file_name);
+	}
+
+}
 
 function are_you_sure(action, canceled, from_session_load) {
 	if (saved) {
@@ -3351,6 +3408,44 @@ function save_as_prompt({
 }
 
 function write_image_file(canvas, mime_type, blob_callback) {
+	const bmp_match = mime_type.match(/^image\/(?:x-)?bmp\s*(?:-(\d+)bpp)?/);
+	if (bmp_match) {
+		const file_content = encodeBMP(canvas.ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1] || "24", 10));
+		const blob = new Blob([file_content]);
+		sanity_check_blob(blob, () => {
+			blob_callback(blob);
+		});
+	} else if (mime_type === "image/png") {
+		// UPNG.js gives better compressed PNGs than the built-in browser PNG encoder
+		// In fact you can use it as a minifier! http://upng.photopea.com/
+		const image_data = canvas.ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const array_buffer = UPNG.encode([image_data.data.buffer], image_data.width, image_data.height);
+		const blob = new Blob([array_buffer]);
+		sanity_check_blob(blob, () => {
+			blob_callback(blob);
+		});
+	} else if (mime_type === "image/tiff") {
+		const image_data = canvas.ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const metadata = {
+			t305: ["jspaint (UTIF.js)"],
+		};
+		const array_buffer = UTIF.encodeImage(image_data.data.buffer, image_data.width, image_data.height, metadata);
+		const blob = new Blob([array_buffer]);
+		sanity_check_blob(blob, () => {
+			blob_callback(blob);
+		});
+	} else {
+		canvas.toBlob(blob => {
+			// Note: could check blob.type (mime type) instead
+			const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+			sanity_check_blob(blob, () => {
+				blob_callback(blob);
+			}, png_magic_bytes, mime_type === "image/png");
+		}, mime_type);
+	}
+}
+
+function write_image_file_to_ipfs(canvas, mime_type, blob_callback) {
 	const bmp_match = mime_type.match(/^image\/(?:x-)?bmp\s*(?:-(\d+)bpp)?/);
 	if (bmp_match) {
 		const file_content = encodeBMP(canvas.ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1] || "24", 10));
