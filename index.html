@@ -721,7 +721,8 @@
 	<!-- Note: no CDNs, even with fallback, as the fallback is too complicated to handle with CSP. -->
 	<script src="lib/jquery-3.4.1.min.js"></script>
 	<script src="lib/gif.js/gif.js"></script>
-	<script src="lib/pako-2.0.3.min.js"></script> <!-- for UPNG.js and UTIF.js -->
+	<!-- pako is used by UPNG.js and UTIF.js -->
+	<script src="lib/pako-2.0.3.min.js"></script>
 	<script src="lib/UPNG.js"></script>
 	<script src="lib/UTIF.js"></script>
 	<script src="lib/bmp.js"></script>
@@ -736,8 +737,9 @@
 	<script src="lib/os-gui/MenuBar.js"></script>
 	<script src="lib/imagetracer_v1.2.5.js"></script>
 
-	<script src="src/app-localization.js"></script>
 	<!-- must not be async/deferred, as it uses document.write(); and must come before other app code which uses localization functions -->
+	<script src="src/app-localization.js"></script>
+
 	<script src="src/msgbox.js"></script>
 	<script src="src/functions.js"></script>
 	<script src="src/helpers.js"></script>
