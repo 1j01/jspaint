@@ -1,4 +1,8 @@
 
+# Google Sheets API for repository Branch Budget
+google-sheets-token.json
+google-sheets-credentials.json
+
 # cypress-image-snapshot visual diffs
 __diff_output__
 
