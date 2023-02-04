@@ -505,6 +505,7 @@
 	const update_session_from_location_hash = () => {
 		const session_match = location.hash.match(/^#?(?:.*,)?(session|local):(.*)$/i);
 		const load_from_url_match = location.hash.match(/^#?(?:.*,)?(load):(.*)$/i);
+		const change_zoom_size = location.hash.match(/^#?(?:.*,)?(zoom):(.*)$/i);
 		if (session_match) {
 			const local = session_match[1].toLowerCase() === "local";
 			const session_id = session_match[2];
@@ -550,6 +551,22 @@
 			load_image_from_uri(url).then((info) => {
 				open_from_image_info(info, null, null, true, true);
 			}, show_resource_load_error_message);
+		
+		} else if (change_zoom_size) {
+			zoom_size = change_zoom_size[2];
+			let mag;
+			
+			if (`${zoom_size}`.match(/\dx$/)) { // ...you can't actually type an x; oh well...
+				mag = parseFloat(zoom_size);
+			} else if (`${zoom_size}`.match(/\d%?$/)) {
+				mag = parseFloat(zoom_size) / 100;
+			}
+			if (isNaN(mag)) {
+				please_enter_a_number();
+				return;
+			}
+
+			set_magnification(mag);
 
 		} else {
 			log("No session ID in hash");
