@@ -1,4 +1,5 @@
 const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
+const MINIMUN_STROKE_SIZE_TO_APPLY_ALIASING = 2; //1 is the default stroke line value, so it should be ignored from anti-aliasing
 
 function get_brush_canvas_size(brush_size, brush_shape) {
 	// brush_shape optional, only matters if it's circle
@@ -43,7 +44,7 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
 	const center_x = x + w / 2;
 	const center_y = y + h / 2;
 
-	if (aliasing) {
+	if (aliasing && stroke > MINIMUN_STROKE_SIZE_TO_APPLY_ALIASING) {
 		const points = [];
 		const step = 0.05;
 		for (let theta = 0; theta < TAU; theta += step) {
@@ -63,7 +64,7 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
 
 function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, stroke, fill) {
 
-	if (aliasing) {
+	if (aliasing && stroke > MINIMUN_STROKE_SIZE_TO_APPLY_ALIASING) {
 		const points = [];
 		const lineTo = (x, y) => {
 			points.push({ x, y });
@@ -189,14 +190,14 @@ $G.on("invalidate-brush-canvases", () => {
 let line_brush_canvas;
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 function update_brush_for_drawing_lines(stroke_size) {
-	if (aliasing && stroke_size > 1) {
+	if (aliasing && stroke_size > MINIMUN_STROKE_SIZE_TO_APPLY_ALIASING) {
 		line_brush_canvas = get_brush_canvas("circle", stroke_size);
 	}
 }
 
 function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1) {
 	if (aliasing) {
-		if (stroke_size > 1) {
+		if (stroke_size > MINIMUN_STROKE_SIZE_TO_APPLY_ALIASING) {
 			bresenham_line(x1, y1, x2, y2, (x, y) => {
 				ctx.drawImage(line_brush_canvas, ~~(x - line_brush_canvas.width / 2), ~~(y - line_brush_canvas.height / 2));
 			});
@@ -1207,7 +1208,7 @@ function draw_grid(ctx, scale) {
 		// otherwise update_brush_for_drawing_lines calls render_brush calls draw_ellipse calls draw_polygon calls draw_polygon_or_line_strip
 		// trying to use the same op_canvas
 		// (also, avoiding infinite recursion by checking for stroke; assuming brushes will never have outlines)
-		if (stroke && stroke_size > 1) {
+		if (stroke && stroke > MINIMUN_STROKE_SIZE_TO_APPLY_ALIASING) {
 			update_brush_for_drawing_lines(stroke_size);
 		}
 
@@ -1262,7 +1263,7 @@ function draw_grid(ctx, scale) {
 			ctx.drawImage(op_canvas_2d, x_min, y_min);
 		}
 		if (stroke) {
-			if (stroke_size > 1) {
+			if (stroke > MINIMUN_STROKE_SIZE_TO_APPLY_ALIASING) {
 				const stroke_margin = ~~(stroke_size * 1.1);
 
 				const op_canvas_x = x_min - stroke_margin;
