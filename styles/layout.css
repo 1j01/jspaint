@@ -1137,3 +1137,8 @@ summary {
 	user-select: none;
 	cursor: pointer;
 }
+input[type="radio"], input[type="checkbox"]{ 
+	appearance: auto !important;
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+}
