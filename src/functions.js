@@ -419,23 +419,12 @@ function show_custom_zoom_window() {
 
 	$w.$Button(localize("OK"), () => {
 		let option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
-		let mag;
 		if (option_val === "really-custom") {
-			option_val = $really_custom_input.val();
-			if (`${option_val}`.match(/\dx$/)) { // ...you can't actually type an x; oh well...
-				mag = parseFloat(option_val);
-			} else if (`${option_val}`.match(/\d%?$/)) {
-				mag = parseFloat(option_val) / 100;
-			}
-			if (isNaN(mag)) {
-				please_enter_a_number();
-				return;
-			}
+			setCustomizedSize($really_custom_input.val());
 		} else {
 			mag = parseFloat(option_val);
+			set_magnification(mag);
 		}
-
-		set_magnification(mag);
 
 		$w.close();
 	})[0].focus();
@@ -446,6 +435,20 @@ function show_custom_zoom_window() {
 	$w.center();
 }
 
+function setCustomizedSize(zoom_size) {
+	option_val = zoom_size;
+	let mag;
+	if (`${option_val}`.match(/\dx$/)) { // ...you can't actually type an x; oh well...
+		mag = parseFloat(option_val);
+	} else if (`${option_val}`.match(/\d%?$/)) {
+		mag = parseFloat(option_val) / 100;
+	}
+	if (isNaN(mag)) {
+		please_enter_a_number();
+		return;
+	}
+	set_magnification(mag);
+}
 
 function toggle_grid() {
 	show_grid = !show_grid;
