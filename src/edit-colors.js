@@ -2,7 +2,6 @@
 
 	// @TODO:
 	// - Persist custom colors list across reloads? It's not very persistent in real Windows...
-	// - OK with Enter, after selecting a focused color if applicable
 	// - maybe use https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Grid_Role
 	// - Question mark button in titlebar that lets you click on parts of UI to ask about them; also context menu "What's this?"
 	// - For mobile layout, maybe add a way to get back (<<) without adding (potentially overwriting) a custom color
@@ -516,6 +515,23 @@
 		});
 
 		$w.on("keydown", (event) => {
+			// For some reason Enter isn't working to submit the form. (Am I preventing it somewhere?)
+			// It's understandable that it wouldn't work for my custom grid controls,
+			// but it's not submitting even when regular inputs are focused.
+			if (event.code === "Enter" && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+				// There are no controls in this dialog that need to handle Enter like a multi-line textarea,
+				// other than buttons, which should trigger the specific button,
+				// and color cells, which should select the color and submit the dialog.
+				// The color should be already selected, by the more specific event handler, as the event bubbles up.
+				if (!event.target.closest("button")) {
+					callback(get_current_color());
+					$w.close();
+					event.preventDefault();
+					event.stopPropagation();
+					return;
+				}
+			}
+
 			if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
 				switch (event.key) {
 					case "o":
