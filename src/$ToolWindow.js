@@ -103,19 +103,20 @@
 		};
 
 		// Highlight button that will be activated if you press Enter, if any.
+		// - If there's any focused control that will handle Enter (highlight it if it's a button)
+		// - Otherwise the default submit button according to HTML form semantics (highlight it if there is one)
 		$w.on("focusin", (event) => {
 			$w.find("button, input").removeClass("default");
-			// TODO: handle textarea / any other controls that steal Enter?
-			let $defaultButton = $(event.target).closest("button");
-			if ($defaultButton.length === 0) {
-				$defaultButton = $w.$form.find('[type="submit"]').first();
+			let $default = $(event.target).closest("button, input[type='submit'], input[type='button'], textarea, select");
+			if ($default.length === 0) {
+				// Buttons in forms default to type="submit" implicitly.
+				$default = $w.$form.find('button[type="submit"], input[type="submit"], button:not([type])').first();
 			}
-			if ($defaultButton.length === 0) {
-				$defaultButton = $w.$form.find('button').first();
+			if ($default.is("button, input[type='submit'], input[type='button']")) {
+				$default.addClass("default");
 			}
-			$defaultButton.addClass("default");
 		});
-		$w.on("focusout", (event) => {
+		$w.on("focusout", () => {
 			$w.find("button, input").removeClass("default");
 		});
 
