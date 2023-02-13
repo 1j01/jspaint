@@ -2915,7 +2915,7 @@ function image_attributes() {
 		}
 
 		image_attributes.$window.close();
-	})[0].focus();
+	});
 
 	$w.$Button(localize("Cancel"), () => {
 		image_attributes.$window.close();
@@ -2927,6 +2927,10 @@ function image_attributes() {
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
 		$height.val(height_in_px / unit_sizes_in_px[current_unit]);
 	});
+
+	// Default focus
+
+	$width.select();
 
 	// Reposition the window
 
