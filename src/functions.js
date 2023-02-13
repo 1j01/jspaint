@@ -438,7 +438,7 @@ function show_custom_zoom_window() {
 		set_magnification(mag);
 
 		$w.close();
-	})[0].focus();
+	}, { type: "submit" })[0].focus();
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
@@ -965,7 +965,7 @@ function file_load_from_url() {
 		} else {
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}
-	});
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
@@ -2915,7 +2915,7 @@ function image_attributes() {
 		}
 
 		image_attributes.$window.close();
-	});
+	}, { type: "submit" });
 
 	$w.$Button(localize("Cancel"), () => {
 		image_attributes.$window.close();
@@ -2960,7 +2960,7 @@ function show_convert_to_black_and_white() {
 
 	$w.$Button(localize("OK"), () => {
 		$w.close();
-	}).focus();
+	}, { type: "submit" }).focus();
 	$w.$Button(localize("Cancel"), () => {
 		if (current_history_node.name === "Make Monochrome") {
 			undo();
@@ -3114,7 +3114,7 @@ function image_flip_and_rotate() {
 		$canvas_area.trigger("resize");
 
 		$w.close();
-	})[0].focus();
+	}, { type: "submit" })[0].focus();
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
@@ -3189,7 +3189,7 @@ function image_stretch_and_skew() {
 		}
 		$canvas_area.trigger("resize");
 		$w.close();
-	})[0].focus();
+	}, { type: "submit" })[0].focus();
 
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
@@ -3334,7 +3334,7 @@ function save_as_prompt({
 				newFileName: promptForName ? $file_name.val() : defaultFileName,
 				newFileFormatID: $file_type.val(),
 			});
-		});
+		}, { type: "submit" });
 		$w.$Button(localize("Cancel"), () => {
 			$w.close();
 		});
@@ -3701,7 +3701,7 @@ function show_multi_user_setup_dialog(from_current_document) {
 			}
 			$w.close();
 		}
-	});
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});

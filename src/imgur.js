@@ -182,7 +182,7 @@
 			req.send(form_data);
 
 			$imgur_status.text("Uploading...");
-		}).focus();
+		}, { type: "submit" }).focus();
 		const $cancel_button = $imgur_window.$Button(localize("Cancel"), () => {
 			$imgur_window.close();
 		});

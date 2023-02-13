@@ -83,7 +83,7 @@
 		$w.$main = $(E("div")).appendTo($w.$form);
 		$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 
-		$w.$Button = (label, action) => {
+		$w.$Button = (label, action, options = { type: "button" }) => {
 			const $b = $(E("button")).appendTo($w.$buttons).text(label);
 			$b.on("click", (e) => {
 				// prevent the form from submitting
@@ -97,8 +97,27 @@
 				$b.focus();
 			});
 
+			$b.attr({ type: options.type });
+
 			return $b;
 		};
+
+		// Highlight button that will be activated if you press Enter, if any.
+		$w.on("focusin", (event) => {
+			$w.find("button, input").removeClass("default");
+			// TODO: handle textarea / any other controls that steal Enter?
+			let $defaultButton = $(event.target).closest("button");
+			if ($defaultButton.length === 0) {
+				$defaultButton = $w.$form.find('[type="submit"]').first();
+			}
+			if ($defaultButton.length === 0) {
+				$defaultButton = $w.$form.find('button').first();
+			}
+			$defaultButton.addClass("default");
+		});
+		$w.on("focusout", (event) => {
+			$w.find("button, input").removeClass("default");
+		});
 
 		return $w;
 	}

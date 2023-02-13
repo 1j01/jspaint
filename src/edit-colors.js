@@ -272,7 +272,7 @@
 			// custom_colors_swatches_list_order[list_index].textContent = list_index; // visualization
 		}
 
-		const $define_custom_colors_button = $(`<button class="define-custom-colors-button">`)
+		const $define_custom_colors_button = $(`<button class="define-custom-colors-button" type="button">`)
 			.html(display_hotkey("&Define Custom Colors >>"))
 			.appendTo($left)
 			.on("click", (e) => {
@@ -582,7 +582,7 @@
 
 		$right.append(rainbow_canvas, luminosity_canvas, result_canvas, $color_solid_label, lum_arrow_canvas);
 
-		const $add_to_custom_colors_button = $(`<button class="add-to-custom-colors-button">`)
+		const $add_to_custom_colors_button = $(`<button class="add-to-custom-colors-button" type="button">`)
 			.html(display_hotkey("&Add To Custom Colors"))
 			.appendTo($right)
 			.on("click", (event) => {
@@ -602,7 +602,7 @@
 		$w.$Button(localize("OK"), () => {
 			callback(get_current_color());
 			$w.close();
-		})[0].focus();
+		}, { type: "submit" })[0].focus();
 		$w.$Button(localize("Cancel"), () => {
 			$w.close();
 		});
