@@ -2867,10 +2867,10 @@ function image_attributes() {
 	let width_in_px = main_canvas.width;
 	let height_in_px = main_canvas.height;
 
-	const $width_label = $(E("label")).appendTo($main).text(localize("Width:"));
-	const $height_label = $(E("label")).appendTo($main).text(localize("Height:"));
-	const $width = $(E("input")).attr({ type: "number", min: 1 }).addClass("no-spinner inset-deep").appendTo($width_label);
-	const $height = $(E("input")).attr({ type: "number", min: 1 }).addClass("no-spinner inset-deep").appendTo($height_label);
+	const $width_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Width:")));
+	const $height_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Height:")));
+	const $width = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+W" }).addClass("no-spinner inset-deep").appendTo($width_label);
+	const $height = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+H" }).addClass("no-spinner inset-deep").appendTo($height_label);
 
 	$main.find("input")
 		.css({ width: "40px" })
@@ -2884,9 +2884,9 @@ function image_attributes() {
 	const $units = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Units")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="units" id="unit-in" value="in"><label for="unit-in">${localize("Inches")}</label>
-			<input type="radio" name="units" id="unit-cm" value="cm"><label for="unit-cm">${localize("Cm")}</label>
-			<input type="radio" name="units" id="unit-px" value="px"><label for="unit-px">${localize("Pixels")}</label>
+			<input type="radio" name="units" id="unit-in" value="in" aria-keyshortcuts="Alt+I"><label for="unit-in">${display_hotkey(localize("&Inches"))}</label>
+			<input type="radio" name="units" id="unit-cm" value="cm" aria-keyshortcuts="Alt+M"><label for="unit-cm">${display_hotkey(localize("C&m"))}</label>
+			<input type="radio" name="units" id="unit-px" value="px" aria-keyshortcuts="Alt+P"><label for="unit-px">${display_hotkey(localize("&Pixels"))}</label>
 		</div>
 	`);
 	$units.find(`[value=${current_unit}]`).attr({ checked: true });
@@ -2900,8 +2900,8 @@ function image_attributes() {
 	const $colors = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Colors")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="colors" id="attribute-monochrome" value="monochrome"><label for="attribute-monochrome">${localize("Black and white")}</label>
-			<input type="radio" name="colors" id="attribute-polychrome" value="polychrome"><label for="attribute-polychrome">${localize("Colors")}</label>
+			<input type="radio" name="colors" id="attribute-monochrome" value="monochrome" aria-keyshortcuts="Alt+B"><label for="attribute-monochrome">${display_hotkey(localize("&Black and white"))}</label>
+			<input type="radio" name="colors" id="attribute-polychrome" value="polychrome" aria-keyshortcuts="Alt+L"><label for="attribute-polychrome">${display_hotkey(localize("Co&lors"))}</label>
 		</div>
 	`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({ checked: true });
@@ -2981,12 +2981,14 @@ function image_attributes() {
 		image_attributes.$window.close();
 	});
 
-	$w.$Button(localize("Default"), () => {
+	$w.$Button(display_hotkey(localize("&Default")), () => {
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
 		$height.val(height_in_px / unit_sizes_in_px[current_unit]);
-	});
+	}).attr("aria-keyshortcuts", "Alt+D");
+
+	handle_keyshortcuts($w);
 
 	// Default focus
 

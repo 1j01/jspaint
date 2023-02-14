@@ -84,7 +84,7 @@
 		$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 
 		$w.$Button = (label, action, options = { type: "button" }) => {
-			const $b = $(E("button")).appendTo($w.$buttons).text(label);
+			const $b = $(E("button")).appendTo($w.$buttons).html(label);
 			$b.on("click", (e) => {
 				action();
 			});
