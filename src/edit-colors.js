@@ -618,15 +618,16 @@
 		$w.$Button(localize("OK"), () => {
 			callback(get_current_color());
 			$w.close();
-		}, { type: "submit" })[0].focus();
+		}, { type: "submit" });
 		$w.$Button(localize("Cancel"), () => {
 			$w.close();
 		});
 
 		$left.append($w.$buttons);
 
-		// initially select the first color cell that matches the swatch to edit, if any
-		// (first in the basic colors, then in the custom colors otherwise - implicitly)
+		// Initially select the first color cell that matches the color to edit, if any
+		// (first in the basic colors, then in the custom colors otherwise.
+		// This works implicitly, since basic colors come before custom colors in the DOM.)
 		for (const swatch_el of $left.find(".swatch").toArray()) {
 			if (get_rgba_from_color(swatch_el.dataset.color).join(",") === get_rgba_from_color(initial_color).join(",")) {
 				select($(swatch_el));
@@ -637,6 +638,16 @@
 		custom_colors_index = Math.max(0, custom_colors_swatches_list_order.indexOf(
 			$custom_colors_grid.find(".swatch.selected")[0]
 		));
+		// If no color cell matches the color to edit,
+		// focus the first color cell, without changing the selected color value as displayed if you expand the dialog.
+		// This supports workflows:
+		// 1. Make a custom color, without saving it to the custom colors list, hit OK, then edit this new color.
+		// 2. Use the eye dropper tool to select a color in an image, then edit it or see the RGB/HSL values.
+		// (Also test adding to custom colors, without editing, a color not already in the custom colors list.
+		// I swear it added the wrong color once...)
+		if ($w.find(".swatch:focus").length === 0) {
+			$w.find(".swatch").first().focus();
+		}
 
 		set_color(initial_color);
 		update_inputs("hslrgb");
