@@ -429,6 +429,12 @@ function show_custom_zoom_window() {
 		}
 	});
 
+	// If you tab to the number input and type, it should select the radio button
+	// so that your input is actually used.
+	$really_custom_input.on("input", (event) => {
+		$really_custom_radio_option.prop("checked", true);
+	});
+
 	$fieldset.find("label").css({ display: "block" });
 
 	$w.$Button(localize("OK"), () => {
