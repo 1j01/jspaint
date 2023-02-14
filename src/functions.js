@@ -408,8 +408,21 @@ function show_custom_zoom_window() {
 
 	$really_custom_input.closest("label").on("click", (event) => {
 		$really_custom_radio_option.prop("checked", true);
+		// If the user clicks on the input, let it get focus naturally, placing the caret where you click.
+		// If the user clicks outside it on the label, focus the input and select the text.
 		if ($(event.target).closest("input").length === 0) {
-			$really_custom_input[0].focus();
+			// Why does focusing this input programmatically not lead to the input
+			// being focused ultimately after the click?
+			// I'm working around this by using requestAnimationFrame (setTimeout would lead to a flicker).
+			// What am I working around, though? Is it my os-gui.js library? It has code to focus the
+			// last focused control in a window. I didn't see that code in the debugger, but I could've missed it.
+			// Debugging without time travel is hard. Maybe I should attack this problem with time travel, using replay.io.
+			requestAnimationFrame(() => {
+				$really_custom_input[0].focus();
+				$really_custom_input[0].select();
+			});
+			// Maybe this would all be a little simpler if I made the label point to the input.
+			// I want the label to have a larger click target, but maybe I can do that with CSS.
 		}
 	});
 
