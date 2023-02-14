@@ -3235,11 +3235,13 @@ function image_stretch_and_skew() {
 		}
 		$canvas_area.trigger("resize");
 		$w.close();
-	}, { type: "submit" })[0].focus();
+	}, { type: "submit" });
 
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
+
+	$w.$main.find("input").first().focus().select();
 
 	$w.center();
 
