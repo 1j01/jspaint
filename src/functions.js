@@ -418,10 +418,14 @@ function show_custom_zoom_window() {
 	}
 
 	$really_custom_radio_option.on("keydown", (event) => {
-		if (event.key.match(/^[0-9]$/)) {
-			$really_custom_input.val(event.key);
-			$really_custom_input.focus(); // should move caret to end
-			event.preventDefault();
+		if (event.key.match(/^[0-9.]$/)) {
+			// Can't set number input to invalid number "." or even "0.",
+			// but if we don't prevent the default keydown behavior of typing the letter,
+			// we can actually change the focus before the letter is typed!
+			// $really_custom_input.val(event.key === "." ? "0." : event.key);
+			// $really_custom_input.focus(); // should move caret to end
+			// event.preventDefault();
+			$really_custom_input.val("").focus();
 		}
 	});
 
