@@ -399,6 +399,7 @@ function show_custom_zoom_window() {
 	$fieldset.find("input[type=radio]").get().forEach((el) => {
 		if (parseFloat(el.value) === magnification) {
 			el.checked = true;
+			el.focus();
 			is_custom = false;
 		}
 	});
@@ -413,6 +414,7 @@ function show_custom_zoom_window() {
 	if (is_custom) {
 		$really_custom_input.val(magnification * 100);
 		$really_custom_radio_option.prop("checked", true);
+		$really_custom_input.select();
 	}
 
 	$fieldset.find("label").css({ display: "block" });
@@ -438,7 +440,7 @@ function show_custom_zoom_window() {
 		set_magnification(mag);
 
 		$w.close();
-	}, { type: "submit" })[0].focus();
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
