@@ -406,9 +406,11 @@ function show_custom_zoom_window() {
 	const $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
 	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
-	$really_custom_input.closest("label").on("click", () => {
+	$really_custom_input.closest("label").on("click", (event) => {
 		$really_custom_radio_option.prop("checked", true);
-		$really_custom_input[0].focus();
+		if ($(event.target).closest("input").length === 0) {
+			$really_custom_input[0].focus();
+		}
 	});
 
 	if (is_custom) {
