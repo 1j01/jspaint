@@ -352,6 +352,7 @@ function set_magnification(new_scale, anchor_point) {
 
 	$G.triggerHandler("resize"); // updates handles & grid
 	$G.trigger("option-changed"); // updates options area
+	$G.trigger("magnification-changed"); // updates custom zoom window
 }
 
 let $custom_zoom_window;
@@ -380,8 +381,11 @@ function show_custom_zoom_window() {
 	$custom_zoom_window = $w;
 	$w.addClass("custom-zoom-window");
 
-	// @TODO: update when zoom changes
 	$w.$main.append(`<div class='current-zoom'>${localize("Current zoom:")} <bdi>${magnification * 100}%</bdi></div>`);
+	// update when zoom changes
+	$G.on("magnification-changed", () => {
+		$w.$main.find(".current-zoom bdi").text(`${magnification * 100}%`);
+	});
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append(`
