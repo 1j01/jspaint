@@ -391,11 +391,11 @@ function show_custom_zoom_window() {
 	$fieldset.append(`
 		<legend>${localize("Zoom to")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-1" value="1"/><label for="zoom-option-1">100%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-2" value="2"/><label for="zoom-option-2">200%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-4" value="4"/><label for="zoom-option-4">400%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-6" value="6"/><label for="zoom-option-6">600%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-8" value="8"/><label for="zoom-option-8">800%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-1" aria-keyshortcuts="Alt+1" value="1"/><label for="zoom-option-1">${display_hotkey("&100%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-2" aria-keyshortcuts="Alt+2" value="2"/><label for="zoom-option-2">${display_hotkey("&200%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-4" aria-keyshortcuts="Alt+4" value="4"/><label for="zoom-option-4">${display_hotkey("&400%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-6" aria-keyshortcuts="Alt+6" value="6"/><label for="zoom-option-6">${display_hotkey("&600%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-8" aria-keyshortcuts="Alt+8" value="8"/><label for="zoom-option-8">${display_hotkey("&800%")}</label>
 			<input type="radio" name="custom-zoom-radio" id="zoom-option-really-custom" value="really-custom"/><label for="zoom-option-really-custom"><input type="number" min="10" max="1000" name="really-custom-zoom-input" class="inset-deep no-spinner" value=""/>%</label>
 		</div>
 	`);
@@ -483,6 +483,8 @@ function show_custom_zoom_window() {
 	});
 
 	$w.center();
+
+	handle_keyshortcuts_alt_only($w);
 }
 
 
