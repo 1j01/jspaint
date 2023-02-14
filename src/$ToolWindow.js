@@ -86,10 +86,6 @@
 		$w.$Button = (label, action, options = { type: "button" }) => {
 			const $b = $(E("button")).appendTo($w.$buttons).text(label);
 			$b.on("click", (e) => {
-				// prevent the form from submitting
-				// @TODO: instead, prevent the form's submit event
-				e.preventDefault();
-
 				action();
 			});
 
@@ -101,6 +97,13 @@
 
 			return $b;
 		};
+		// Note: the "submit" event on the form element may not fire if the window is closed,
+		// as the form element is removed from the DOM. You can test this by preventing the "close" event on $w.
+		// But in case it does submit, prevent the default action of reloading the page.
+		// In the future, this could be cleaner by using the <dialog> element.
+		$w.$form.on("submit", (e) => {
+			e.preventDefault();
+		});
 
 		// Highlight button that will be activated if you press Enter, if any.
 		// - If there's any focused control that will handle Enter (highlight it if it's a button)
