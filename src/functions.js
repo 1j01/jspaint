@@ -2962,7 +2962,8 @@ function image_attributes() {
 		image_attributes.$window.close();
 	});
 
-	$w.$Button(display_hotkey(localize("&Default")), () => {
+	// Parsing HTML with jQuery; $Button takes text (not HTML) or Node/DocumentFragment
+	$w.$Button($.parseHTML(display_hotkey(localize("&Default")))[0], () => {
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);

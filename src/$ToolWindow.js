@@ -84,7 +84,12 @@
 		$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 
 		$w.$Button = (label, action, options = { type: "button" }) => {
-			const $b = $(E("button")).appendTo($w.$buttons).html(label);
+			const $b = $(E("button")).appendTo($w.$buttons);
+
+			// jQuery's append() is unsafe (text interpreted as HTML); native append() is safe,
+			// and accepts text, DOM nodes, or DocumentFragments.
+			$b[0].append(label);
+
 			$b.on("click", (e) => {
 				action();
 			});
