@@ -3158,10 +3158,12 @@ function image_flip_and_rotate() {
 		$canvas_area.trigger("resize");
 
 		$w.close();
-	}, { type: "submit" })[0].focus();
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
+
+	$fieldset.find("input[type='radio']").first().focus();
 
 	$w.center();
 
