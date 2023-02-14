@@ -391,11 +391,11 @@ function show_custom_zoom_window() {
 	$fieldset.append(`
 		<legend>${localize("Zoom to")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-1" aria-keyshortcuts="Alt+1" value="1"/><label for="zoom-option-1">${display_hotkey("&100%")}</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-2" aria-keyshortcuts="Alt+2" value="2"/><label for="zoom-option-2">${display_hotkey("&200%")}</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-4" aria-keyshortcuts="Alt+4" value="4"/><label for="zoom-option-4">${display_hotkey("&400%")}</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-6" aria-keyshortcuts="Alt+6" value="6"/><label for="zoom-option-6">${display_hotkey("&600%")}</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-8" aria-keyshortcuts="Alt+8" value="8"/><label for="zoom-option-8">${display_hotkey("&800%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-1" aria-keyshortcuts="Alt+1 1" value="1"/><label for="zoom-option-1">${display_hotkey("&100%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-2" aria-keyshortcuts="Alt+2 2" value="2"/><label for="zoom-option-2">${display_hotkey("&200%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-4" aria-keyshortcuts="Alt+4 4" value="4"/><label for="zoom-option-4">${display_hotkey("&400%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-6" aria-keyshortcuts="Alt+6 6" value="6"/><label for="zoom-option-6">${display_hotkey("&600%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-8" aria-keyshortcuts="Alt+8 8" value="8"/><label for="zoom-option-8">${display_hotkey("&800%")}</label>
 			<input type="radio" name="custom-zoom-radio" id="zoom-option-really-custom" value="really-custom"/><label for="zoom-option-really-custom"><input type="number" min="10" max="1000" name="really-custom-zoom-input" class="inset-deep no-spinner" value=""/>%</label>
 		</div>
 	`);
@@ -454,6 +454,25 @@ function show_custom_zoom_window() {
 		$really_custom_radio_option.prop("checked", true);
 	});
 
+	// Prevent keyboard shortcuts from interfering with typing in the number input.
+	// (I'm handling aria-keyshortcuts dynamically. The browser doesn't handle aria-keyshortcuts,
+	// to be clear. See handle_keyshortcuts.)
+	// Rather than conditionally handling the shortcut, I'm conditionally removing it,
+	// because _theoretically_ it's better for assistive technology to know that the shortcut isn't available.
+	// (Theoretically I should also remove aria-keyshortcuts when the window isn't focused...)
+	$really_custom_input.on("focus", () => {
+		for (const field of $fieldset.find("[aria-keyshortcuts]")) {
+			field._original_aria_keyshortcuts = field._original_aria_keyshortcuts ?? field.getAttribute("aria-keyshortcuts");
+			// Remove single-digit shortcuts.
+			field.setAttribute("aria-keyshortcuts", field.getAttribute("aria-keyshortcuts").replace(/\s\d/g, ""));
+		}
+	});
+	$really_custom_input.on("blur", () => {
+		for (const field of $fieldset.find("[aria-keyshortcuts]")) {
+			field.setAttribute("aria-keyshortcuts", field._original_aria_keyshortcuts);
+		}
+	});
+
 	$fieldset.find("label").css({ display: "block" });
 
 	$w.$Button(localize("OK"), () => {
@@ -484,7 +503,7 @@ function show_custom_zoom_window() {
 
 	$w.center();
 
-	handle_keyshortcuts_alt_only($w);
+	handle_keyshortcuts($w);
 }
 
 
@@ -3162,7 +3181,7 @@ function image_flip_and_rotate() {
 
 	$w.center();
 
-	handle_keyshortcuts_alt_only($w);
+	handle_keyshortcuts($w);
 }
 
 function image_stretch_and_skew() {
@@ -3238,22 +3257,32 @@ function image_stretch_and_skew() {
 
 	$w.center();
 
-	handle_keyshortcuts_alt_only($w);
+	handle_keyshortcuts($w);
 }
 
-// could be expanded to handle all different modifiers, but for now I'm naming it so the limitation is clear
-function handle_keyshortcuts_alt_only($container) {
+function handle_keyshortcuts($container) {
 	$container.on("keydown", (event) => {
-		if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-			let shortcut_target = $container.find(`[aria-keyshortcuts="Alt+${event.key.toUpperCase()}"]`)[0];
-			if (shortcut_target) {
-				event.preventDefault();
-				event.stopPropagation();
-				if (shortcut_target.disabled) {
-					shortcut_target = shortcut_target.closest(".radio-wrapper");
+		const $targets = $container.find("[aria-keyshortcuts]");
+		for (let shortcut_target of $targets) {
+			const shortcuts = $(shortcut_target).attr("aria-keyshortcuts").split(" ");
+			for (const shortcut of shortcuts) {
+				// TODO: should we use code instead of key? need examples
+				if (
+					!!shortcut.match(/Alt\+/i) === event.altKey &&
+					!!shortcut.match(/Ctrl\+/i) === event.ctrlKey &&
+					!!shortcut.match(/Meta\+/i) === event.metaKey &&
+					!!shortcut.match(/Shift\+/i) === event.shiftKey &&
+					shortcut.split("+").pop().toUpperCase() === event.key.toUpperCase()
+				) {
+					event.preventDefault();
+					event.stopPropagation();
+					if (shortcut_target.disabled) {
+						shortcut_target = shortcut_target.closest(".radio-wrapper");
+					}
+					shortcut_target.click();
+					shortcut_target.focus();
+					return;
 				}
-				shortcut_target.click();
-				shortcut_target.focus();
 			}
 		}
 	});
