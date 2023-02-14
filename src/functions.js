@@ -454,25 +454,6 @@ function show_custom_zoom_window() {
 		$really_custom_radio_option.prop("checked", true);
 	});
 
-	// Prevent keyboard shortcuts from interfering with typing in the number input.
-	// (I'm handling aria-keyshortcuts dynamically. The browser doesn't handle aria-keyshortcuts,
-	// to be clear. See handle_keyshortcuts.)
-	// Rather than conditionally handling the shortcut, I'm conditionally removing it,
-	// because _theoretically_ it's better for assistive technology to know that the shortcut isn't available.
-	// (Theoretically I should also remove aria-keyshortcuts when the window isn't focused...)
-	$really_custom_input.on("focus", () => {
-		for (const field of $fieldset.find("[aria-keyshortcuts]")) {
-			field._original_aria_keyshortcuts = field._original_aria_keyshortcuts ?? field.getAttribute("aria-keyshortcuts");
-			// Remove single-digit shortcuts.
-			field.setAttribute("aria-keyshortcuts", field.getAttribute("aria-keyshortcuts").replace(/\s\d/g, ""));
-		}
-	});
-	$really_custom_input.on("blur", () => {
-		for (const field of $fieldset.find("[aria-keyshortcuts]")) {
-			field.setAttribute("aria-keyshortcuts", field._original_aria_keyshortcuts);
-		}
-	});
-
 	$fieldset.find("label").css({ display: "block" });
 
 	$w.$Button(localize("OK"), () => {
@@ -2869,8 +2850,8 @@ function image_attributes() {
 
 	const $width_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Width:")));
 	const $height_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Height:")));
-	const $width = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+W" }).addClass("no-spinner inset-deep").appendTo($width_label);
-	const $height = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+H" }).addClass("no-spinner inset-deep").appendTo($height_label);
+	const $width = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+W W W" }).addClass("no-spinner inset-deep").appendTo($width_label);
+	const $height = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+H H H" }).addClass("no-spinner inset-deep").appendTo($height_label);
 
 	$main.find("input")
 		.css({ width: "40px" })
@@ -2884,9 +2865,9 @@ function image_attributes() {
 	const $units = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Units")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="units" id="unit-in" value="in" aria-keyshortcuts="Alt+I"><label for="unit-in">${display_hotkey(localize("&Inches"))}</label>
-			<input type="radio" name="units" id="unit-cm" value="cm" aria-keyshortcuts="Alt+M"><label for="unit-cm">${display_hotkey(localize("C&m"))}</label>
-			<input type="radio" name="units" id="unit-px" value="px" aria-keyshortcuts="Alt+P"><label for="unit-px">${display_hotkey(localize("&Pixels"))}</label>
+			<input type="radio" name="units" id="unit-in" value="in" aria-keyshortcuts="Alt+I I"><label for="unit-in">${display_hotkey(localize("&Inches"))}</label>
+			<input type="radio" name="units" id="unit-cm" value="cm" aria-keyshortcuts="Alt+M M"><label for="unit-cm">${display_hotkey(localize("C&m"))}</label>
+			<input type="radio" name="units" id="unit-px" value="px" aria-keyshortcuts="Alt+P P"><label for="unit-px">${display_hotkey(localize("&Pixels"))}</label>
 		</div>
 	`);
 	$units.find(`[value=${current_unit}]`).attr({ checked: true });
@@ -2900,8 +2881,8 @@ function image_attributes() {
 	const $colors = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Colors")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="colors" id="attribute-monochrome" value="monochrome" aria-keyshortcuts="Alt+B"><label for="attribute-monochrome">${display_hotkey(localize("&Black and white"))}</label>
-			<input type="radio" name="colors" id="attribute-polychrome" value="polychrome" aria-keyshortcuts="Alt+L"><label for="attribute-polychrome">${display_hotkey(localize("Co&lors"))}</label>
+			<input type="radio" name="colors" id="attribute-monochrome" value="monochrome" aria-keyshortcuts="Alt+B B"><label for="attribute-monochrome">${display_hotkey(localize("&Black and white"))}</label>
+			<input type="radio" name="colors" id="attribute-polychrome" value="polychrome" aria-keyshortcuts="Alt+L L"><label for="attribute-polychrome">${display_hotkey(localize("Co&lors"))}</label>
 		</div>
 	`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({ checked: true });
@@ -2986,7 +2967,7 @@ function image_attributes() {
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
 		$height.val(height_in_px / unit_sizes_in_px[current_unit]);
-	}).attr("aria-keyshortcuts", "Alt+D");
+	}).attr("aria-keyshortcuts", "Alt+D D");
 
 	handle_keyshortcuts($w);
 
@@ -3263,6 +3244,13 @@ function image_stretch_and_skew() {
 }
 
 function handle_keyshortcuts($container) {
+	// This function implements shortcuts defined with aria-keyshortcuts.
+	// It also modifies aria-keyshortcuts to remove shortcuts that don't
+	// contain a modifier (other than shift) when an input field is focused,
+	// in order to avoid conflicts with typing.
+	// It stores the original aria-keyshortcuts (indefinitely), so if aria-keyshortcuts
+	// is ever to be modified at runtime (externally), the code here may need to be changed.
+
 	$container.on("keydown", (event) => {
 		const $targets = $container.find("[aria-keyshortcuts]");
 		for (let shortcut_target of $targets) {
@@ -3284,6 +3272,32 @@ function handle_keyshortcuts($container) {
 					shortcut_target.click();
 					shortcut_target.focus();
 					return;
+				}
+			}
+		}
+	});
+
+	// Prevent keyboard shortcuts from interfering with typing in text fields.
+	// Rather than conditionally handling the shortcut, I'm conditionally removing it,
+	// because _theoretically_ it's better for assistive technology to know that the shortcut isn't available.
+	// (Theoretically I should also remove aria-keyshortcuts when the window isn't focused...)
+	$container.on("focusin focusout", (event) => {
+		if ($(event.target).is('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="file"]):not([type="color"]):not([type="range"])')) {
+			for (const control of $container.find("[aria-keyshortcuts]")) {
+				control._original_aria_keyshortcuts = control._original_aria_keyshortcuts ?? control.getAttribute("aria-keyshortcuts");
+				// Remove shortcuts without modifiers.
+				control.setAttribute("aria-keyshortcuts",
+					control.getAttribute("aria-keyshortcuts")
+						.split(" ")
+						.filter((shortcut) => shortcut.match(/(Alt|Ctrl|Meta)\+/i))
+						.join(" ")
+				);
+			}
+		} else {
+			// Restore shortcuts.
+			for (const control of $container.find("[aria-keyshortcuts]")) {
+				if (control._original_aria_keyshortcuts) {
+					control.setAttribute("aria-keyshortcuts", control._original_aria_keyshortcuts);
 				}
 			}
 		}
