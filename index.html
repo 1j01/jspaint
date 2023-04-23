@@ -108,6 +108,9 @@
 			</div>
 
 		</div>
+		<p>Open source under the permissive
+			<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt">MIT License</a>.
+		</p>
 		<p>JS Paint is a web-based remake of MS Paint by <a href="https://isaiahodhner.io/">Isaiah Odhner</a>.</p>
 		<p>Read about the project and extra features on <a href="https://github.com/1j01/jspaint#readme">the readme</a>.
 		</p>
@@ -116,6 +119,18 @@
 		<p>Support the project at <a href="https://www.paypal.me/IsaiahOdhner"
 				target="_blank">paypal.me/IsaiahOdhner</a>.</p>
 	</div>
+	<script defer src="src/test-news.js"></script>
+	<!--
+		Before publishing a news update, make sure:
+		- The <time> element matches the date of the update.
+		- The id of the <article> will never need to be changed.
+			I'm using the format "news-YYYY-very-brief-description".
+			Avoiding putting the date in the id, in case I push the update later.
+			The id is used to check for updates, and is stored in localStorage.
+		- The console shows no errors.
+			test-news.js checks for some problems.
+		- HTML is valid.
+	-->
 	<div id="news" hidden>
 		<!-- <article class="news-entry" id="news-2021-saving">
 			<h1>The Savior Update</h1>
@@ -163,6 +178,43 @@
 				the file, or simply drag and drop the file onto JS Paint to load the palette.
 			</p>
 		</article> -->
+		<article class="news-entry" id="news-2022-open-source">
+			<h1>Open Source</h1>
+			<time datetime="2022-07-28">2022-07-28</time>
+			<!-- <img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src="" /> -->
+			<p>
+				JS Paint is now finally open source, licensed under the
+				<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank">MIT License</a>.
+			</p>
+			<p>
+				The project has been
+				<a href="https://en.wikipedia.org/wiki/Source-available_software" target="_blank">source-available</a>
+				from the beginning, since I never felt the need to obfuscate or hide the code,
+				but it is now legally open source.
+			</p>
+			<p>
+				I look forward to seeing how you use JS Paint in your own projects!
+			</p>
+			<p>
+				There is not yet a formal API for JS Paint,
+				but if you want to get in on the cutting edge,
+				you can take a look at how <a href="https://98.js.org" target="_blank">98.js.org</a>
+				embeds JS Paint.
+				Expect the API to change significantly in the future.
+			</p>
+			<p>
+				I've been meaning to open source JS Paint for a long time.
+				There are some legal issues, resources I don't have the copyright to,
+				but I think they should generally fall under fair use.
+				And I have created beautiful SVG versions of the icons,
+				so it's likely possible to have a version of JS Paint without any directly copyrighted resources.
+				But I've finally decided to stop worrying about it,
+				and just open source it already!
+			</p>
+			<p>
+				I hope you enjoy JS Paint!
+			</p>
+		</article>
 		<article class="news-entry" id="news-2021-saving">
 			<h1>The GUIcci Update</h1>
 			<time datetime="2021-12-08">2021-12-08</time>
@@ -231,7 +283,7 @@
 				It also includes projects from other people, other recreations of old programs,
 				like <a target="_blank" href="https://webamp.org/">Webamp</a>,
 				a meticulous recreation of Winamp,
-				and <a href="https://github.com/rjanjic/js-solitaire">JS Solitaire</a>,
+				and <a target="_blank" href="https://github.com/rjanjic/js-solitaire">JS Solitaire</a>,
 				a Solitaire clone (I tweaked it for accuracy, adding the card back images, etc.)
 			</p>
 			<h2>Pixel Perfect</h2>

@@ -129,6 +129,7 @@ let enable_fs_access_api = false;
 // The methods in systemHooks can be overridden by a containing page like 98.js.org which hosts jspaint in a same-origin iframe.
 // This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
 // This API may be removed at any time (and perhaps replaced by something based around postMessage)
+// The API is documented in the README.md file.
 window.systemHooks = window.systemHooks || {};
 window.systemHookDefaults = {
 	// named to be distinct from various platform APIs (showSaveFilePicker, saveAs, electron's showSaveDialog; and saveFile is too ambiguous)
@@ -384,7 +385,7 @@ function get_format_from_extension(formats, file_path_or_name_or_ext) {
 	}
 }
 
-const image_formats = [];
+window.image_formats = [];
 // const ext_to_image_formats = {}; // there can be multiple with the same extension, e.g. different bit depth BMP files
 // const mime_type_to_image_formats = {};
 const add_image_format = (mime_type, name_and_exts, target_array = image_formats) => {
@@ -706,10 +707,13 @@ const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
 		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<span class='marquee' dir='ltr' style='--text-width: 60ch; --animation-duration: 3s;'>
+		<!--<span class='marquee' dir='ltr' style='--text-width: 50ch; --animation-duration: 3s;'>
 			<span>
-				<b>The GUIcci Update</b> — Thumbnail View, Pinch Zoom, Pixel Perfection!
+				<b>Open Source</b> — MIT Licensed! Free Software! Finally!
 			</span>
+		</span>-->
+		<span>
+			<b>Open Source!</b>
 		</span>
 	</a>
 `);
