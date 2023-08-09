@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>JS Paint — MS Paint online</title>
+
+	<!-- <meta http-equiv="Content-Security-Policy" content="
+		default-src 'self';
+		img-src 'self' data: blob: http: https:;
+	"> -->
+
+	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
+	<link href="styles/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
+	<!-- <link href="styles/print.css" rel="stylesheet" type="text/css" media="print"> -->
+	<link href="lib/os-gui/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
+	<link href="lib/98.css/98.custom-build.css" class="flippable-layout-stylesheet not-for-modern" rel="stylesheet"
+		type="text/css">
+
+	<link rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png">
+	<!-- Chrome will pick the largest image for some reason, instead of the most appropriate one. -->
+	<!-- <link rel="icon" type="image/png" sizes="192x192" href="images/icons/192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="images/icons/32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="images/icons/96x96.png"> -->
+	<!-- <link rel="icon" type="image/png" sizes="16x16" href="images/icons/16x16.png"> -->
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="mask-icon" href="images/icons/safari-pinned-tab.svg" color="red">
+	<link rel="manifest" href="manifest.webmanifest">
+	<meta name="msapplication-TileColor" content="#008080">
+	<meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
+	<meta name="theme-color" content="#000080">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta name="description" content="Classic MS Paint in the browser, with extra features">
+	<meta property="og:image:width" content="279">
+	<meta property="og:image:height" content="279">
+	<meta property="og:description" content="Classic MS Paint in the browser, with extra features.">
+	<meta property="og:title" content="JS Paint">
+	<meta property="og:url" content="https://jspaint.app">
+	<meta property="og:image" content="https://jspaint.app/images/icons/og-image-279x279.jpg">
+	<meta name="twitter:title" content="JS Paint">
+	<meta name="twitter:description" content="Classic MS Paint in the browser, with extra features">
+	<meta name="twitter:image" content="https://jspaint.app/images/meta/twitter-card-plz-no-crop.png">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@isaiahodhner">
+	<meta name="twitter:creator" content="@isaiahodhner">
+
+	<link rel="stylesheet" href="styles/themes/classic.css">
+	<link rel="stylesheet" href="styles/about.css">
+</head>
+
+<body>
+	<h1>
+		<img src="images/icons/32x32.png" width="32" height="32" id="paint-32x32" alt="">
+		<span id="jspaint-project-name">JS Paint</span>
+	</h1>
+
+	<p>JS Paint is a complete clone of MS Paint that runs in the browser.
+
+	<p>
+		<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank"><img
+				src="images/about/free.gif" width="88" height="39" alt="Free" style="vertical-align: middle"></a>
+		Open source under the permissive
+		<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank">MIT License</a>.
+	</p>
+	<p>
+		<a href="https://github.com/1j01/jspaint#readme" target="_blank"><img src="images/about/moreinfo_paint.gif"
+				width="100" height="60" alt="More info" style="vertical-align: middle"></a>
+		Read about the project and extra features on <a href="https://github.com/1j01/jspaint#readme"
+			target="_blank">the readme</a>.
+	</p>
+	<p>
+		<a href="https://github.com/1j01/jspaint/issues" target="_blank"><img src="images/about/foco.gif" width="40"
+				height="40" alt="Ideas" style="vertical-align: middle"></a>
+		Request features and report bugs <a href="https://github.com/1j01/jspaint/issues" target="_blank">on GitHub</a>
+		or <a href="mailto:isaiahodhner@gmail.com?subject=JS%20Paint" target="_blank">by email</a>.
+	</p>
+	<p>
+		<a href="https://www.paypal.me/IsaiahOdhner" target="_blank"><img src="images/about/money4.gif" width="32"
+				height="32" alt="Ideas" style="vertical-align: middle"></a>
+		Support the project at <a href="https://www.paypal.me/IsaiahOdhner" target="_blank">paypal.me/IsaiahOdhner</a>.
+	</p>
+
+	<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
+
+	<img src=" images/about/red_paint_bucket_brush_md_clr_24887PURPLE.gif" width="87" height="100" alt="Paint bucket"
+		style="float: right">
+
+	<!-- <iframe src="index.html" title="JS Paint app" id="jspaint-iframe"></iframe> -->
+
+	<div class="window os-window focused" id="os-window-jspaint"
+		style="width: 267px; height: 392px; touch-action: none; position: relative; z-index: 9; display: flex;">
+		<div class="window-titlebar" style="touch-action: none;"><img src="images/icons/16x16.png" width="16"
+				height="16" draggable="false" style="width: 16px; height: 16px;" alt="">
+			<div class="window-title-area"><span class="window-title">untitled - Paint</span></div><button
+				class="window-minimize-button window-action-minimize window-button" aria-label="Minimize window"><span
+					class="window-button-icon"></span></button><button
+				class="window-maximize-button window-action-maximize window-button"
+				aria-label="Maximize or restore window"><span class="window-button-icon"></span></button><button
+				class="window-close-button window-action-close window-button" aria-label="Close window"><span
+					class="window-button-icon"></span></button>
+		</div>
+		<div class="window-content" tabindex="-1" style="outline: none; display: flex; flex-direction: column;">
+			<!-- <iframe id="jspaint-iframe" src="index.html" -->
+			<iframe id="jspaint-iframe" src="/"
+				style="min-width: 0px; min-height: 0px; flex: 1 1 1px; border: 0px;"></iframe>
+		</div>
+		<!-- <div class="handle"
+			style="position: absolute; top: -2px; right: -2px; width: 4px; height: 4px; touch-action: none; cursor: ne-resize;">
+		</div>
+		<div class="handle"
+			style="position: absolute; top: -2px; left: calc(2px); width: calc(100% - 8px + 4px); height: 4px; touch-action: none; cursor: n-resize;">
+		</div>
+		<div class="handle"
+			style="position: absolute; top: -2px; left: -2px; width: 4px; height: 4px; touch-action: none; cursor: nw-resize;">
+		</div>
+		<div class="handle"
+			style="position: absolute; top: calc(2px); left: -2px; width: 4px; height: calc(100% - 8px + 4px); touch-action: none; cursor: w-resize;">
+		</div>
+		<div class="handle"
+			style="position: absolute; bottom: -2px; left: -2px; width: 4px; height: 4px; touch-action: none; cursor: sw-resize;">
+		</div>
+		<div class="handle"
+			style="position: absolute; bottom: -2px; left: calc(2px); width: calc(100% - 8px + 4px); height: 4px; touch-action: none; cursor: s-resize;">
+		</div>
+		<div class="handle"
+			style="position: absolute; bottom: -2px; right: -2px; width: 4px; height: 4px; touch-action: none; cursor: se-resize;">
+		</div>
+		<div class="handle"
+			style="position: absolute; top: calc(2px); right: -2px; width: 4px; height: calc(100% - 8px + 4px); touch-action: none; cursor: e-resize;">
+		</div> -->
+	</div>
+
+	<h2>Windows 98 online</h2>
+	<p>
+		<a href="https://98.js.org" target="_blank">
+			<img src="images/about/windows-button.gif" width="40" height="40" alt="Windows logo button">
+			<img src="images/about/flagani.gif" style="float: right" width="138" height="251"
+				alt="Windows 98 flag pole animation">
+		</a>
+		JS Paint is available in a <a href="https://98.js.org" target="_blank">web-based version of Windows 98</a>,
+		along with Notepad, Minesweeper, Sound Recorder, Calculator, and Winamp.
+	</p>
+	<a href="https://98.js.org" target="_blank">
+		<img src="https://github.com/1j01/98/raw/master/images/3d.jpg" width="250" height="188"
+			alt="3D render of a Windows 98 CD">
+	</a>
+
+	<h2>Desktop Version</h2>
+	<img src="images/about/atombgwht.gif" width="60" height="65" alt="built with Electron" style="float: right;">
+	<p>
+		Now, I don't know why you would want to use this rather than MS Paint, Paint.NET, or Krita,
+		but if you want to, you can <del>download</del> <a href="https://github.com/1j01/jspaint#desktop-app"
+			target="_blank">manually
+			install</a> the desktop version of JS Paint.
+	</p>
+	<a href="https://github.com/1j01/jspaint/issues/2" target="_blank">
+		<img src="images/about/download5.gif" width="100" height="40" alt="Download">
+		<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
+	</a>
+
+
+	<h2>Command-Line Version</h2>
+	<p>
+		MS Paint in the terminal? Yes, it's possible!
+		<code>pip install textual-paint</code>
+	</p>
+	<img src="images/about/dos-samp.gif" width="391" height="136" alt="MS DOS prompt">
+	<img src="images/about/Computer-04-june.gif" width="134" height="133" alt="Computer typing on its own keyboard">
+	<p>
+		<a href="https://github.com/1j01/textual-paint" target="_blank">Textual Paint</a>
+		lets you edit ANSI art as well as bitmaps.
+		It runs in the terminal, using the <a href="https://textual.textualize.io/" target="_blank">Textual</a>
+		TUI framework for Python.
+	</p>
+
+	<h2>Other Projects</h2>
+	<p>
+		<a href="https://isaiahodhner.io/" target="_blank"
+			style="color: rgb(160, 42, 52); font-weight: bold; font-style: italic;">
+			<img src="images/about/artcreated.gif" width="165" height="136" alt="Created by">
+			<br>
+			<span style="display: block; text-align: center; width: 165px;">
+				Isaiah Odhner
+			</span>
+		</a>
+	</p>
+	<a href="https://1j01.github.io/guitar/" target="_blank">
+		<img src=" images/about/guitar.gif" width="60" height="100" alt="Guitar" style="float: right;">
+	</a>
+	<p>
+		<a href="https://isaiahodhner.io/" target="_blank">
+			<img src="images/about/home.gif" width="40" height="40" alt="Home button" style="vertical-align: middle">
+			Check out my home page for more projects!
+		</a>
+	</p>
+
+	<script>
+		var maxButton = document.querySelector(".window-maximize-button");
+		var closeButton = document.querySelector(".window-close-button");
+		var minimizeButton = document.querySelector(".window-minimize-button");
+		var windowElement = document.querySelector(".window");
+
+		maxButton.addEventListener("click", function () {
+			var iframe = document.querySelector("#jspaint-iframe");
+			// `iframe.src` doesn't contain the document ID added by the app page.
+			// Accessing the iframe's `location.href` allows a more seamless transition,
+			// although undos are lost.
+			// TODO: Save undo history as part of the session.
+			// TODO: Make sure the session is saved before navigating away.
+			// if (iframe.contentWindow.undos.length) {
+			// 	if (!confirm("Maximizing will clear your undo history. Continue?")) {
+			// 		return;
+			// 	}
+			// }
+			location.href = iframe.contentWindow.location.href;
+		});
+		closeButton.addEventListener("click", function () {
+			windowElement.style.display = "none";
+		});
+		minimizeButton.addEventListener("click", function () {
+			windowElement.style.display = "none";
+		});
+	</script>
+</body>
+
+</html>
