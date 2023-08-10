@@ -132,6 +132,11 @@
 			style="position: absolute; top: calc(2px); right: -2px; width: 4px; height: calc(100% - 8px + 4px); touch-action: none; cursor: e-resize;">
 		</div> -->
 	</div>
+	<div id="try-me" style="position: absolute; left: 300px; margin-top: -200px; color: purple; font-weight: bold;">
+		<img src="images/about/izquierda.gif" width="49" height="23" alt="hand pointing left"
+			style="vertical-align: middle">
+		Try&nbsp;me!
+	</div>
 
 	<h2>Windows 98 online</h2>
 	<p>
@@ -201,7 +206,7 @@
 		var maxButton = document.querySelector(".window-maximize-button");
 		var closeButton = document.querySelector(".window-close-button");
 		var minimizeButton = document.querySelector(".window-minimize-button");
-		var windowElement = document.querySelector(".window");
+		var windowElements = document.querySelectorAll(".window, #try-me");
 
 		maxButton.addEventListener("click", function () {
 			var iframe = document.querySelector("#jspaint-iframe");
@@ -217,12 +222,13 @@
 			// }
 			location.href = iframe.contentWindow.location.href;
 		});
-		closeButton.addEventListener("click", function () {
-			windowElement.style.display = "none";
-		});
-		minimizeButton.addEventListener("click", function () {
-			windowElement.style.display = "none";
-		});
+		function hideDemo() {
+			for (var i = 0; i < windowElements.length; i++) {
+				windowElements[i].style.display = "none";
+			}
+		}
+		closeButton.addEventListener("click", hideDemo);
+		minimizeButton.addEventListener("click", hideDemo);
 	</script>
 </body>
 
