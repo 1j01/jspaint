@@ -1,5 +1,4 @@
 body {
-	padding: 10px;
 	font-family: sans-serif;
 	/* font-family: 'Comic Sans MS', 'Comic Sans', cursive; */
 	background-color: white;
@@ -10,4 +9,10 @@ html,
 body {
 	overflow: unset;
 	display: unset;
+}
+
+body>* {
+	/* margin/padding on the body doesn't work */
+	margin-left: 10px;
+	margin-right: 10px;
 }
