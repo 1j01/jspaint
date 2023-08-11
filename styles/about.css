@@ -94,3 +94,16 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 #textual-paint-section li i:last-of-type {
 	color: #ff0000;
 }
+
+#junkbot-area {
+	display: inline-block;
+	padding: 50px;
+	padding-bottom: 0;
+	border: 1px solid black;
+}
+
+#feeding-text {
+	font-style: italic;
+	position: relative;
+	left: -50px;
+}

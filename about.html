@@ -221,6 +221,12 @@
 
 	<section>
 		<h2>Other Projects</h2>
+		<div id="junkbot-area" style="position: absolute; left: 40%">
+			<a href="https://1j01.github.io/janitorial-android/#junkbot" target="_blank">
+				<img src="images/about/junkbot-collecting-bin.gif" width="105" height="126"
+					alt="LEGO Junkbot minifig eating a recycling bin" id="junkbot-img"></a>
+			<span id="feeding-text" hidden>Please don't feed Junkbot.</span>
+		</div>
 		<p>
 			<a href="https://isaiahodhner.io/" target="_blank"
 				style="color: rgb(160, 42, 52); font-weight: bold; font-style: italic;">
@@ -233,10 +239,6 @@
 		</p>
 		<a href="https://1j01.github.io/guitar/" target="_blank">
 			<img src=" images/about/guitar.gif" width="60" height="100" alt="Guitar" style="float: right;">
-		</a>
-		<a href="https://1j01.github.io/janitorial-android/#junkbot" target="_blank">
-			<img src="images/about/junkbot-collecting-bin.gif" width="105" height="126"
-				alt="LEGO Junkbot minifig eating a recycling bin" style="float: right;">
 		</a>
 		<a href="https://1j01.github.io/true-random-movie" target="_blank">
 			<img src="images/about/filmreel.gif" width="116" height="50" alt="film reel" style="float: right;">
@@ -284,6 +286,34 @@
 		}
 		closeButton.addEventListener("click", hideDemo);
 		minimizeButton.addEventListener("click", hideDemo);
+
+		// Junkbot "feeding" interaction
+		var junkbotArea = document.querySelector("#junkbot-area");
+		var junkbotImg = document.querySelector("#junkbot-img");
+		var cursorHasBin = true;
+		junkbotArea.style.cursor = "url(images/about/junkbot-bin.png) 16 16, auto";
+		junkbotImg.src = "images/about/junkbot.gif";
+		junkbotImg.addEventListener("mouseenter", function (event) {
+			// console.log("mouseenter, cursorHasBin =", cursorHasBin);
+			if (!cursorHasBin) {
+				return;
+			}
+			junkbotImg.src = "images/about/junkbot-collecting-bin.gif";
+			junkbotArea.style.cursor = "";
+			cursorHasBin = false;
+			// TODO: make non-looping version of GIF and increase timeout
+			// or do this differently, because setTimeout isn't reliable!
+			// It's not firing in Firefox sometimes (while loading the page?)
+			// and may not fire if the tab is in the background (is switched away from).
+			// console.log("setting timeout");
+			setTimeout(function () {
+				// console.log("timeout");
+				junkbotImg.src = "images/about/junkbot.gif";
+				junkbotArea.style.cursor = "url(images/about/junkbot-bin.png) 16 16, auto";
+				cursorHasBin = true;
+			}, 1000);
+		});
+		document.querySelector("#feeding-text").removeAttribute("hidden");
 	</script>
 </body>
 
