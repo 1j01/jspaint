@@ -51,63 +51,67 @@
 </head>
 
 <body>
-	<h1 style="text-align: center;">
-		<img src="images/icons/jspaint.svg" width="192" height="192" alt="">
-		<br>
-		<span id="jspaint-project-name">JS Paint</span>
-	</h1>
+	<section>
+		<h1 style="text-align: center;">
+			<img src="images/icons/jspaint.svg" width="192" height="192" alt="">
+			<br>
+			<span id="jspaint-project-name">JS Paint</span>
+		</h1>
 
-	<p>JS Paint is a complete clone of MS Paint that runs in the browser.
+		<p style="text-align: center;">JS Paint is a pixel-perfect remake of Microsoft Paint that runs in the browser.
+		</p>
 
-	<p>
-		<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank"><img
-				src="images/about/free.gif" width="88" height="39" alt="Free" style="vertical-align: middle"></a>
-		Open source under the permissive
-		<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank">MIT License</a>.
-	</p>
-	<p>
-		<a href="https://github.com/1j01/jspaint#readme" target="_blank"><img src="images/about/moreinfo_paint.gif"
-				width="100" height="60" alt="More info" style="vertical-align: middle"></a>
-		Read about the project and extra features on <a href="https://github.com/1j01/jspaint#readme"
-			target="_blank">the readme</a>.
-	</p>
-	<p>
-		<a href="https://github.com/1j01/jspaint/issues" target="_blank"><img src="images/about/foco.gif" width="40"
-				height="40" alt="Ideas" style="vertical-align: middle"></a>
-		Request features and report bugs <a href="https://github.com/1j01/jspaint/issues" target="_blank">on GitHub</a>
-		or <a href="mailto:isaiahodhner@gmail.com?subject=JS%20Paint" target="_blank">by email</a>.
-	</p>
-	<p>
-		<a href="https://www.paypal.me/IsaiahOdhner" target="_blank"><img src="images/about/money4.gif" width="32"
-				height="32" alt="$" style="vertical-align: middle"></a>
-		Support the project at <a href="https://www.paypal.me/IsaiahOdhner" target="_blank">paypal.me/IsaiahOdhner</a>.
-	</p>
+		<p>
+			<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank"><img
+					src="images/about/free.gif" width="88" height="39" alt="Free" style="vertical-align: middle"></a>
+			Open source under the permissive
+			<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt" target="_blank">MIT License</a>.
+		</p>
+		<p>
+			<a href="https://github.com/1j01/jspaint#readme" target="_blank"><img src="images/about/moreinfo_paint.gif"
+					width="100" height="60" alt="More info" style="vertical-align: middle"></a>
+			Read about the project and extra features on <a href="https://github.com/1j01/jspaint#readme"
+				target="_blank">the readme</a>.
+		</p>
+		<p>
+			<a href="https://github.com/1j01/jspaint/issues" target="_blank"><img src="images/about/foco.gif" width="40"
+					height="40" alt="Ideas" style="vertical-align: middle"></a>
+			Request features and report bugs <a href="https://github.com/1j01/jspaint/issues" target="_blank">on
+				GitHub</a>
+			or <a href="mailto:isaiahodhner@gmail.com?subject=JS%20Paint" target="_blank">by email</a>.
+		</p>
+		<p>
+			<a href="https://www.paypal.me/IsaiahOdhner" target="_blank"><img src="images/about/money4.gif" width="32"
+					height="32" alt="$" style="vertical-align: middle"></a>
+			Support the project at <a href="https://www.paypal.me/IsaiahOdhner"
+				target="_blank">paypal.me/IsaiahOdhner</a>.
+		</p>
 
-	<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
+		<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
 
-	<img src=" images/about/red_paint_bucket_brush_md_clr_24887PURPLE.gif" width="87" height="100" alt="Paint bucket"
-		style="float: right">
+		<img src=" images/about/red_paint_bucket_brush_md_clr_24887PURPLE.gif" width="87" height="100"
+			alt="Paint bucket" style="float: right">
 
-	<!-- <iframe src="index.html" title="JS Paint app" id="jspaint-iframe"></iframe> -->
+		<!-- <iframe src="index.html" title="JS Paint app" id="jspaint-iframe"></iframe> -->
 
-	<div class="window os-window focused" id="os-window-jspaint"
-		style="width: 267px; height: 392px; touch-action: none; position: relative; z-index: 9; display: flex;">
-		<div class="window-titlebar" style="touch-action: none;"><img src="images/icons/16x16.png" width="16"
-				height="16" draggable="false" style="width: 16px; height: 16px;" alt="">
-			<div class="window-title-area"><span class="window-title">untitled - Paint</span></div><button
-				class="window-minimize-button window-action-minimize window-button" aria-label="Minimize window"><span
-					class="window-button-icon"></span></button><button
-				class="window-maximize-button window-action-maximize window-button"
-				aria-label="Maximize or restore window"><span class="window-button-icon"></span></button><button
-				class="window-close-button window-action-close window-button" aria-label="Close window"><span
-					class="window-button-icon"></span></button>
-		</div>
-		<div class="window-content" tabindex="-1" style="outline: none; display: flex; flex-direction: column;">
-			<!-- <iframe id="jspaint-iframe" src="index.html" -->
-			<iframe id="jspaint-iframe" src="/"
-				style="min-width: 0px; min-height: 0px; flex: 1 1 1px; border: 0px;"></iframe>
-		</div>
-		<!-- <div class="handle"
+		<div class="window os-window focused" id="os-window-jspaint"
+			style="width: 267px; height: 392px; touch-action: none; position: relative; z-index: 9; display: flex;">
+			<div class="window-titlebar" style="touch-action: none;"><img src="images/icons/16x16.png" width="16"
+					height="16" draggable="false" style="width: 16px; height: 16px;" alt="">
+				<div class="window-title-area"><span class="window-title">untitled - Paint</span></div><button
+					class="window-minimize-button window-action-minimize window-button"
+					aria-label="Minimize window"><span class="window-button-icon"></span></button><button
+					class="window-maximize-button window-action-maximize window-button"
+					aria-label="Maximize or restore window"><span class="window-button-icon"></span></button><button
+					class="window-close-button window-action-close window-button" aria-label="Close window"><span
+						class="window-button-icon"></span></button>
+			</div>
+			<div class="window-content" tabindex="-1" style="outline: none; display: flex; flex-direction: column;">
+				<!-- <iframe id="jspaint-iframe" src="index.html" -->
+				<iframe id="jspaint-iframe" src="/"
+					style="min-width: 0px; min-height: 0px; flex: 1 1 1px; border: 0px;"></iframe>
+			</div>
+			<!-- <div class="handle"
 			style="position: absolute; top: -2px; right: -2px; width: 4px; height: 4px; touch-action: none; cursor: ne-resize;">
 		</div>
 		<div class="handle"
@@ -131,119 +135,127 @@
 		<div class="handle"
 			style="position: absolute; top: calc(2px); right: -2px; width: 4px; height: calc(100% - 8px + 4px); touch-action: none; cursor: e-resize;">
 		</div> -->
-	</div>
-	<div id="try-me"
-		style="position: absolute; margin-left: 300px; margin-top: -200px; color: purple; font-weight: bold;">
-		<img src="images/about/izquierda.gif" width="49" height="23" alt="hand pointing left"
-			style="vertical-align: middle">
-		Try&nbsp;me!
-	</div>
+		</div>
+		<div id="try-me"
+			style="position: absolute; margin-left: 300px; margin-top: -200px; color: purple; font-weight: bold;">
+			<img src="images/about/izquierda.gif" width="49" height="23" alt="hand pointing left"
+				style="vertical-align: middle">
+			Try&nbsp;me!
+		</div>
+	</section>
 
-	<h2>Windows 98 online</h2>
-	<p>
-		<a href="https://98.js.org" target="_blank">
-			<img src="images/about/windows-button.gif" width="40" height="40" alt="Windows logo button">
-			<img src="images/about/flagani.gif" style="float: right" width="138" height="251"
-				alt="Windows 98 flag pole animation">
+	<section>
+		<h2>Windows 98 online</h2>
+		<p>
+			<a href="https://98.js.org" target="_blank">
+				<img src="images/about/windows-button.gif" width="40" height="40" alt="Windows logo button">
+				<img src="images/about/flagani.gif" style="float: right" width="138" height="251"
+					alt="Windows 98 flag pole animation">
+			</a>
+			JS Paint is available in a <a href="https://98.js.org" target="_blank">web-based version of Windows 98</a>,
+			along with Notepad, Minesweeper, Sound Recorder, Calculator, and Winamp.
+		</p>
+		<a href="https://98.js.org" target="_blank"
+			style="position: relative; display: block; width: 360px; height: 287px">
+			<img src="images/about/98.js.org.png" width="360" height="287" alt="windows swung open outwards"
+				style="position: absolute; left: 0; top: 0">
+			<img src="images/about/WindowCLR_WRK.gif" width="360" height="287" alt="windows swung open outwards"
+				id="wooden-window-frame" style="position: absolute; left: 0; top: 0">
+			<img src="images/about/ENTERsolar.gif" width="128" height="45" alt="ENTER / 由此進入"
+				style="position: absolute; left: 50%; top: 80%; transform: translate(-50%, -50%); mix-blend-mode: lighten">;
 		</a>
-		JS Paint is available in a <a href="https://98.js.org" target="_blank">web-based version of Windows 98</a>,
-		along with Notepad, Minesweeper, Sound Recorder, Calculator, and Winamp.
-	</p>
-	<a href="https://98.js.org" target="_blank" style="position: relative; display: block; width: 360px; height: 287px">
-		<img src="images/about/98.js.org.png" width="360" height="287" alt="windows swung open outwards"
-			style="position: absolute; left: 0; top: 0">
-		<img src="images/about/WindowCLR_WRK.gif" width="360" height="287" alt="windows swung open outwards"
-			id="wooden-window-frame" style="position: absolute; left: 0; top: 0">
-		<img src="images/about/ENTERsolar.gif" width="128" height="45" alt="ENTER / 由此進入"
-			style="position: absolute; left: 50%; top: 80%; transform: translate(-50%, -50%); mix-blend-mode: lighten">;
-	</a>
 
-	<h2>Desktop Version</h2>
-	<img src="images/about/atombgwht.gif" width="60" height="65" alt="built with Electron" style="float: right;">
-	<p>
-		Now, I don't know why you would want to use this rather than MS Paint, Paint.NET, or Krita,
-		but if you want to, you can <del>download</del> <a href="https://github.com/1j01/jspaint#desktop-app"
-			target="_blank">manually
-			install</a> the desktop version of JS Paint.
-	</p>
-	<a href="https://github.com/1j01/jspaint/issues/2" target="_blank">
-		<img src="images/about/download5.gif" width="100" height="40" alt="Download">
-		<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
-	</a>
-
-
-	<h2>Textual Paint</h2>
-	<p>
-		I also made a <i>separate</i> elaborate MS Paint clone that runs in the terminal,
-		and edits ANSI art in addition to bitmaps.
-	</p>
-	<p>
-		You can install it with:
-		<code>pip install textual-paint</code>
-	</p>
-	<p>
-		And then run with simply:
-		<code>textual-paint</code>
-	</p>
-	<p>
-		Requires Python 3.10 or later, and a terminal emulator with Unicode and true color support.
-	<ul>
-		<li>
-			<span class="os-icon"><img src="images/about/windowslogo.gif" width="34" height="30"></span>
-			Runs well in <i>Windows Terminal</i>, but not in the older <i>Windows Console</i>.
-		</li>
-		<li>
-			<span class="os-icon"><img src="images/about/maclogo.gif" width="34" height="29"></span>
-			Runs well in <i>iTerm2</i>, but not the built in macOS <i>Terminal.app</i>.
-		</li>
-		<li>
-			<span class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"></span>
-			Runs well in <i>GNOME Terminal</i>, and most Linux terminal emulators, but not the <i>Linux console</i>.
-		</li>
-	</ul>
-	</p>
-	<!-- <img src="images/about/dos-samp.gif" width="391" height="136" alt="MS DOS prompt"> -->
-	<img src="images/about/Computer-04-june.gif" width="134" height="133" alt="Computer typing on its own keyboard">
-	<p>
-		<a href="https://github.com/1j01/textual-paint" target="_blank">Textual Paint</a>
-		was built using the <a href="https://textual.textualize.io/" target="_blank">Textual</a>
-		framework, which was very fun to work with!
-	</p>
-
-	<h2>Other Projects</h2>
-	<p>
-		<a href="https://isaiahodhner.io/" target="_blank"
-			style="color: rgb(160, 42, 52); font-weight: bold; font-style: italic;">
-			<img src="images/about/artcreated.gif" width="165" height="136" alt="Created by">
-			<br>
-			<span style="display: block; text-align: center; width: 165px;">
-				Isaiah Odhner
-			</span>
+		<h2>Desktop Version</h2>
+		<img src="images/about/atombgwht.gif" width="60" height="65" alt="built with Electron" style="float: right;">
+		<p>
+			Now, I don't know why you would want to use this rather than MS Paint, Paint.NET, or Krita,
+			but if you want to, you can <del>download</del> <a href="https://github.com/1j01/jspaint#desktop-app"
+				target="_blank">manually
+				install</a> the desktop version of JS Paint.
+		</p>
+		<a href="https://github.com/1j01/jspaint/issues/2" target="_blank">
+			<img src="images/about/download5.gif" width="100" height="40" alt="Download">
+			<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
 		</a>
-	</p>
-	<a href="https://1j01.github.io/guitar/" target="_blank">
-		<img src=" images/about/guitar.gif" width="60" height="100" alt="Guitar" style="float: right;">
-	</a>
-	<a href="https://1j01.github.io/janitorial-android/#junkbot" target="_blank">
-		<img src="images/about/junkbot-collecting-bin.gif" width="105" height="126"
-			alt="LEGO Junkbot minifig eating a recycling bin" style="float: right;">
-	</a>
-	<a href="https://1j01.github.io/true-random-movie" target="_blank">
-		<img src="images/about/filmreel.gif" width="116" height="50" alt="film reel" style="float: right;">
-	</a>
-	<a href="https://1j01.github.io/dat-boi/" target="_blank">
-		<img src="images/about/dat-boi-transparent-small.gif" width="96" height="120" alt="Dat Boi"
-			style="float: right;">
-	</a>
-	<a href="https://1j01.github.io/chess-mashup/" target="_blank">
-		<img src="images/about/CHESS_CUBE.gif" width="100" height="90" alt="Dat Boi" style="float: right;">
-	</a>
-	<p>
-		<a href="https://isaiahodhner.io/" target="_blank">
-			<img src="images/about/home.gif" width="40" height="40" alt="Home button" style="vertical-align: middle">
-			Check out my home page for more projects!
+	</section>
+
+	<section id="textual-paint-section">
+		<h2>Textual Paint</h2>
+		<p>
+			I also made a <i>separate</i> elaborate MS Paint clone that runs in the terminal,
+			and edits ANSI art in addition to bitmaps.
+		</p>
+		<p>
+			You can install it with:
+			<code>pip install textual-paint</code>
+		</p>
+		<p>
+			And then run with simply:
+			<code>textual-paint</code>
+		</p>
+		<p>
+			Requires Python 3.10 or later, and a terminal emulator with Unicode and true color support.
+		<ul>
+			<li>
+				<span class="os-icon"><img src="images/about/windowslogo.gif" width="34" height="30"></span>
+				Runs well in <i>Windows Terminal</i>, but not in the older <i>Windows Console</i>.
+			</li>
+			<li>
+				<span class="os-icon"><img src="images/about/maclogo.gif" width="34" height="29"></span>
+				Runs well in <i>iTerm2</i>, but not the built in macOS <i>Terminal.app</i>.
+			</li>
+			<li>
+				<span class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"></span>
+				Runs well in <i>GNOME Terminal</i>, and most Linux terminal emulators, but not the <i>Linux console</i>.
+			</li>
+		</ul>
+		</p>
+		<!-- <img src="images/about/dos-samp.gif" width="391" height="136" alt="MS DOS prompt"> -->
+		<img src="images/about/Computer-04-june.gif" width="134" height="133" alt="Computer typing on its own keyboard">
+		<p>
+			<a href="https://github.com/1j01/textual-paint" target="_blank">Textual Paint</a>
+			was built using the <a href="https://textual.textualize.io/" target="_blank">Textual</a>
+			framework, which was very fun to work with!
+		</p>
+	</section>
+
+	<section>
+		<h2>Other Projects</h2>
+		<p>
+			<a href="https://isaiahodhner.io/" target="_blank"
+				style="color: rgb(160, 42, 52); font-weight: bold; font-style: italic;">
+				<img src="images/about/artcreated.gif" width="165" height="136" alt="Created by">
+				<br>
+				<span style="display: block; text-align: center; width: 165px;">
+					Isaiah Odhner
+				</span>
+			</a>
+		</p>
+		<a href="https://1j01.github.io/guitar/" target="_blank">
+			<img src=" images/about/guitar.gif" width="60" height="100" alt="Guitar" style="float: right;">
 		</a>
-	</p>
+		<a href="https://1j01.github.io/janitorial-android/#junkbot" target="_blank">
+			<img src="images/about/junkbot-collecting-bin.gif" width="105" height="126"
+				alt="LEGO Junkbot minifig eating a recycling bin" style="float: right;">
+		</a>
+		<a href="https://1j01.github.io/true-random-movie" target="_blank">
+			<img src="images/about/filmreel.gif" width="116" height="50" alt="film reel" style="float: right;">
+		</a>
+		<a href="https://1j01.github.io/dat-boi/" target="_blank">
+			<img src="images/about/dat-boi-transparent-small.gif" width="96" height="120" alt="Dat Boi"
+				style="float: right;">
+		</a>
+		<a href="https://1j01.github.io/chess-mashup/" target="_blank">
+			<img src="images/about/CHESS_CUBE.gif" width="100" height="90" alt="Dat Boi" style="float: right;">
+		</a>
+		<p>
+			<a href="https://isaiahodhner.io/" target="_blank">
+				<img src="images/about/home.gif" width="40" height="40" alt="Home button"
+					style="vertical-align: middle">
+				Check out my home page for more projects!
+			</a>
+		</p>
+	</section>
 
 	<script>
 		var maxButton = document.querySelector(".window-maximize-button");

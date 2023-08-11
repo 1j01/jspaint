@@ -1,8 +1,3 @@
-html {
-	max-width: 1000px;
-	margin: 0 auto;
-}
-
 body {
 	font-family: sans-serif;
 	/* font-family: 'Comic Sans MS', 'Comic Sans', cursive; */
@@ -16,15 +11,22 @@ body {
 	display: unset;
 }
 
-body>* {
-	/* margin/padding on the body doesn't work */
-	margin-left: 10px;
-	margin-right: 10px;
+body>section {
+	padding-left: calc(50vw - 500px);
+	padding-right: calc(50vw - 500px);
+	padding-left: max(10px, calc(50vw - 500px));
+	padding-right: max(10px, calc(50vw - 500px));
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 
 #wooden-window-frame {
 	transition: transform 4s ease, box-shadow 5s ease;
+	/* Most images have this set to pixelated, but that looks bad for the transition. */
+	/* I have no idea why unset doesn't work here... */
+	/* Chrome shows the media query's `image-rendering` with strike-through, but maybe that's a bug and it's actually winning? */
+	image-rendering: auto;
 }
 
 a[href^="https://98.js.org"]:hover #wooden-window-frame,
@@ -65,4 +67,10 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 		bottom: unset;
 		left: unset;
 	}
+}
+
+#textual-paint-section {
+	font-family: monospace;
+	background-color: black;
+	color: white;
 }
