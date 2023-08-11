@@ -74,3 +74,23 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	background-color: black;
 	color: white;
 }
+
+#textual-paint-section a:link {
+	color: #00ff00;
+}
+
+#textual-paint-section a:visited {
+	color: #00aa00;
+}
+
+#textual-paint-section code {
+	color: #ff00ff;
+}
+
+#textual-paint-section li i:first-of-type {
+	color: #00ff00;
+}
+
+#textual-paint-section li i:last-of-type {
+	color: #ff0000;
+}
