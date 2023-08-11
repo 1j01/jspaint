@@ -37,10 +37,14 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 
 .os-icon {
 	display: inline-block;
-	vertical-align: bottom;
+	vertical-align: middle;
 	width: 35px;
 	height: 35px;
 	position: relative;
+	border: 2px solid black;
+	border-radius: 5px;
+	margin: 2px;
+	padding: 2px;
 }
 
 .os-icon>img {
