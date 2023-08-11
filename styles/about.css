@@ -1,3 +1,8 @@
+html {
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
 body {
 	font-family: sans-serif;
 	/* font-family: 'Comic Sans MS', 'Comic Sans', cursive; */
