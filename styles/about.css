@@ -37,6 +37,29 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 		0 0 100px 50px rgba(100, 163, 214, 0.5);
 }
 
+#main-section {
+	background-image: url("../images/cursors/precise-dotted.png");
+	background-repeat: repeat;
+	background-size: 32px 32px;
+	/* background-color: lightgray; */
+}
+
+#windows-98-section {
+	background-image: url("https://raw.githubusercontent.com/1j01/98/361bd759a6d9b71d0fad9e479840598dc0128bb6/images/clouds.jpg");
+	background-color: rgb(100, 163, 214);
+	background-size: cover;
+	background-position: center center;
+}
+
+#desktop-app-section {
+	background-image: url("../images/about/atombgwht.gif");
+	background-repeat: repeat;
+}
+
+#desktop-app-section * {
+	background-color: yellow;
+}
+
 .os-icon {
 	display: inline-block;
 	vertical-align: middle;
@@ -93,6 +116,14 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 
 #textual-paint-section li i:last-of-type {
 	color: #ff0000;
+}
+
+#other-projects-section {
+	background-image: url("../images/tracky-mouse-16x16.png");
+	background-repeat: repeat;
+	background-size: 5.1px 160px;
+	background-color: #ffeb77;
+	background-blend-mode: overlay;
 }
 
 #junkbot-area {
