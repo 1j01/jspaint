@@ -56,8 +56,10 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	background-repeat: repeat;
 }
 
-#desktop-app-section * {
+#desktop-app-section h2,
+#desktop-app-section p {
 	background-color: yellow;
+	padding: 5px;
 }
 
 .os-icon {

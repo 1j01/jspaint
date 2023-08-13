@@ -176,17 +176,48 @@
 		<h2>Desktop Version</h2>
 		<img src="images/about/atombgwht.gif" width="60" height="65" alt="built with Electron" style="float: right;">
 		<p>
-			Now, I don't know why you would want to use this rather than MS Paint, Paint.NET, or Krita,
-			but if you want to, you can <del>download</del> <a href="https://github.com/1j01/jspaint#desktop-app"
-				target="_blank">manually
-				install</a> the desktop version of JS Paint.
+			There is demand for a desktop version of JS Paint.
+			I have put in 99% of the work on this (integration with the file system, wallpaper setting,
+			inter-process communication, etc.), but I have not released it yet.
+		</p>
+		<p>
+			If you are motivated, you can
+			<a href="https://github.com/1j01/jspaint#desktop-app" target="_blank">manually install</a>
+			the desktop app, by cloning the repository and following development setup
+			instructions.
 		</p>
 		<a href="https://github.com/1j01/jspaint/issues/2" target="_blank">
 			<img src="images/about/download5.gif" width="100" height="40" alt="Download">
 			<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
 		</a>
 	</section>
-
+	<section id="pwa-section">
+		<h2>Progressive Web App</h2>
+		<img src="images/meta/mobipaint.png" width="308" height="193" alt="JS Paint on a phone" style="float: right;">
+		<p>
+			Alternatively, you can install JS Paint as a PWA (Progressive Web App),
+			but this does not <b>yet</b> support offline use
+			(as it doesn't include a Service Worker).
+			It's more like a bookmark (for now), except it runs in a special window.
+		</p>
+		<p>
+			The user interface for installing PWAs differs by browser and operating system.
+		</p>
+		<p>
+			<q>On most desktop browsers, the install prompt is in the URL bar.
+				On mobile, the install prompt is generally found in the menu of browser options.</q>
+			See <a
+				href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Installing#installing_pwas"
+				target="_blank">
+				Installing PWAs</a> for visual guidance.
+		</p>
+		<button id="install-pwa" hidden style="padding: 10px 30px; margin-bottom: 1em;">
+			<img src="images/about/monitor.png" width="16" height="16" alt="" style="vertical-align: middle;">
+			Install JS Paint
+		</button>
+		<!-- prevent floated image overlapping next section -->
+		<div style="clear: both;"></div>
+	</section>
 	<section id="textual-paint-section">
 		<h2>Textual Paint</h2>
 		<p>
@@ -324,6 +355,37 @@
 			}, 1000);
 		});
 		document.querySelector("#feeding-text").removeAttribute("hidden");
+	</script>
+	<!-- split script to keep above ES5-only -->
+	<script>
+		// PWA install button
+		// https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Trigger_install_prompt
+		const installButton = document.querySelector("#install-pwa");
+		let installPrompt = null;
+
+		window.addEventListener("beforeinstallprompt", (event) => {
+			event.preventDefault();
+			installPrompt = event;
+			installButton.removeAttribute("hidden");
+		});
+
+		installButton.addEventListener("click", async () => {
+			if (!installPrompt) {
+				return;
+			}
+			const result = await installPrompt.prompt();
+			console.log(`Install prompt was: ${result.outcome}`);
+			disableInAppInstallPrompt();
+		});
+
+		function disableInAppInstallPrompt() {
+			installPrompt = null;
+			installButton.setAttribute("hidden", "");
+		}
+
+		window.addEventListener("appinstalled", () => {
+			disableInAppInstallPrompt();
+		});
 	</script>
 </body>
 
