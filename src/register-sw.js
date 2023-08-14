@@ -42,10 +42,12 @@ async function promptForUpdate() {
 	if (!window.showMessageBox) {
 		// On about.html, there's no showMessageBox.
 		// I might include it later for better integration with the jspaint embed though.
-		// At any rate, it should be fairly harmless to skip the prompt on this page...
-		// excepppppt for the fact that there's a jspaint embed.
-		// @TODO
-		return true;
+		// At any rate, it would be fairly harmless to skip the prompt on this page...
+		// except for the fact that there's a jspaint embed.
+		// The service worker doesn't currently cache the about page anyways,
+		// so it shouldn't need to be refreshed.
+		// Save the prompt for in the app.
+		return false;
 	}
 	const { promise, $window } = showMessageBox({
 		title: localize("Update %1", localize("Paint")),
