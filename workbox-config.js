@@ -1,7 +1,7 @@
 module.exports = {
 	globDirectory: '.',
 	globPatterns: [
-		'**/*.{html,wav,xml,json,js,png,ico,jpg,css,gif,hhc,hhk,htm,svg,webmanifest}'
+		'**/*.{html,wav,xml,json,js,mjs,png,ico,jpg,css,gif,hhc,hhk,htm,svg,webmanifest}'
 	],
 	globIgnores: [
 		"node_modules/**", // Node modules (default, but needs inclusion when overriding)
