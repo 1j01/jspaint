@@ -40,17 +40,23 @@ module.exports = {
 		"lib/tracky-mouse/package.json", // Tracky Mouse package
 		"lib/tracky-mouse/package-lock.json", // Tracky Mouse package
 
+		// I want to include workbox in my `npm run dev` watch setup, but...
 		// Workbox's own output is not ignored when using --watch!
-		// (I include workbox in my `npm run dev` watch setup.)
+		// The only way to ignore things is by adding it here:
+		// "sw.js",
+		// "sw.js.map",
+		// "workbox-*.js",
+		// "workbox-*.js.map",
+		// But workbox-<hash>.js needs to be cached by the service worker!
+		// (So does workbox-window, by the way, which could be accidentally matched if it weren't .mjs)
+		// The service worker functioning is more important than the dev experience,
+		// so I'm leaving these un-ignored for now.
+
 		// Also I had to patch node_modules/workbox-cli/build/app.js to log the change it's detecting:
 		// .on('all', async (event, path) => {
 		// 	logger_js_1.logger.log(`Detected ${event}: ${path} (to ignore this, add ${path} to globIgnores in workbox-config.js)`);
 		// 	await runBuildCommand({ command, config, watch: true });
 		// })
-		"sw.js",
-		"sw.js.map",
-		"workbox-*.js",
-		"workbox-*.js.map",
 	],
 	swDest: 'sw.js',
 	// "An optional ID to be prepended to cache names. This is primarily useful for local development where multiple sites may be served from the same http://localhost:port origin."
