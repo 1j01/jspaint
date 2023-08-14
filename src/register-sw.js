@@ -1,5 +1,5 @@
 
-import { Workbox } from '../lib/workbox-window-7.0.0.prod.mjs';
+import { Workbox } from '../lib/workbox/workbox-window.prod.mjs';
 
 if ('serviceWorker' in navigator) {
 	const wb = new Workbox('/sw.js');
