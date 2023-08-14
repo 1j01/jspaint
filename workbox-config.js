@@ -39,6 +39,17 @@ module.exports = {
 		"lib/tracky-mouse/tracky-mouse.css", // Tracky Mouse UI
 		"lib/tracky-mouse/package.json", // Tracky Mouse package
 		"lib/tracky-mouse/package-lock.json", // Tracky Mouse package
+
+		// Workbox's own output is not ignored when running --watch! Dumb!
+		// Also I had to patch node_modules/workbox-cli/build/app.js to log the change it's detecting:
+		// .on('all', async (event, path) => {
+		// 	logger_js_1.logger.log(`Detected ${event}: ${path} (to ignore this, add ${path} to globIgnores in workbox-config.js)`);
+		// 	await runBuildCommand({ command, config, watch: true });
+		// })
+		"sw.js",
+		"sw.js.map",
+		"workbox-*.js",
+		"workbox-*.js.map",
 	],
 	swDest: 'sw.js',
 };
