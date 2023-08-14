@@ -54,7 +54,7 @@ if ('serviceWorker' in navigator) {
 
 async function promptForUpdate() {
 	const { promise, $window } = showMessageBox({
-		title: localize("Update"),
+		title: localize("Update %1", localize("Paint")),
 		message: localize("Update %1 before proceeding?", localize("Paint")),
 		buttons: [
 			{ label: localize("Update"), value: "update", default: true },
