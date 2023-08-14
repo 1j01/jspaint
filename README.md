@@ -312,7 +312,8 @@ Every file needed by the app must be matched by a glob pattern and not by the ne
 
 Take care when adding or renaming files to make sure they're cached if and only if they're needed.
 
-To generate the service worker, run `npm run workbox`. This is not included in the watch task because workbox's `--watch` watches its own output, stupidly. *Sigh*, I guess I could use a separate file monitoring CLI tool. I'm already using `onchange` for RTLCSS...
+The service worker will be regenerated during `npm run dev`, but you can also run `npm run workbox` to regenerate it.
+
 
 ### Desktop App (Electron)
 
