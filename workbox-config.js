@@ -52,4 +52,6 @@ module.exports = {
 		"workbox-*.js.map",
 	],
 	swDest: 'sw.js',
+	// "An optional ID to be prepended to cache names. This is primarily useful for local development where multiple sites may be served from the same http://localhost:port origin."
+	cacheId: 'jspaint',
 };
