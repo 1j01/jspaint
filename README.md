@@ -259,9 +259,11 @@ If you want to add extensive palette support to another application, I've made t
 
 ## Desktop App
 
-JS Paint can be installed as a PWA, altho it doesn't work offline.
+JS Paint can be installed as a Progressive Web App (PWA) on desktop and mobile devices.
 
-(Also I built it into a desktop app with [Electron][] and [Electron Forge][], but this will use unnecessary system resources and is not recommended. You can follow [this issue](https://github.com/1j01/jspaint/issues/2) for the first release.)
+It works without an internet connection once installed.
+
+(Also I built a JS Paint desktop app with [Electron][] and [Electron Forge][], but this will use unnecessary system resources and is not recommended. It's not released yet. You can follow [this issue](https://github.com/1j01/jspaint/issues/2) for updates.)
 
 [Electron]: https://electronjs.org/
 [Electron Forge]: https://electronforge.io/
@@ -297,6 +299,20 @@ When updating `layout.css`, a right-to-left version of the stylesheet is generat
 You should test the RTL layout by changing the language to Arabic or Hebrew.
 Go to **Extras > Language > العربية** or **עברית**.  
 See [Control Directives](https://rtlcss.com/learn/usage-guide/control-directives/) for how to control the RTL layout.
+
+#### Progressive Web App (PWA)
+
+The web app is a [Progressive Web App](https://web.dev/progressive-web-apps/),
+which works offline through a service worker.
+
+The service worker is generated with [Workbox](https://developer.chrome.com/docs/workbox/),
+and is configured in [`workbox-config.js`](workbox-config.js).
+
+Every file needed by the app must be matched by a glob pattern and not by the negative glob patterns.
+
+Take care when adding or renaming files to make sure they're cached if and only if they're needed.
+
+To generate the service worker, run `npm run workbox`. This is not included in the watch task because workbox's `--watch` watches its own output, stupidly. *Sigh*, I guess I could use a separate file monitoring CLI tool. I'm already using `onchange` for RTLCSS...
 
 ### Desktop App (Electron)
 
