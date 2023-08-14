@@ -40,7 +40,8 @@ module.exports = {
 		"lib/tracky-mouse/package.json", // Tracky Mouse package
 		"lib/tracky-mouse/package-lock.json", // Tracky Mouse package
 
-		// Workbox's own output is not ignored when running --watch! Dumb!
+		// Workbox's own output is not ignored when using --watch!
+		// (I include workbox in my `npm run dev` watch setup.)
 		// Also I had to patch node_modules/workbox-cli/build/app.js to log the change it's detecting:
 		// .on('all', async (event, path) => {
 		// 	logger_js_1.logger.log(`Detected ${event}: ${path} (to ignore this, add ${path} to globIgnores in workbox-config.js)`);
