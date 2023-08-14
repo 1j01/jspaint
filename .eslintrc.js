@@ -4,6 +4,7 @@ module.exports = {
 		"es2020": true,
 	},
 	"extends": "eslint:recommended",
+	"sourceType": "module",
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly",
