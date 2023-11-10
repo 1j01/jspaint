@@ -842,8 +842,13 @@
 					ctx.fillRect(x, y, w, h);
 					ctx.restore();
 				} else {
-					// @TODO: shouldn't that be ~~(stroke_size / 2)?
-					ctx.strokeRect(x + stroke_size / 2, y + stroke_size / 2, w - stroke_size, h - stroke_size);
+ 					ctx.save();
+ 					ctx.fillStyle = ctx.strokeStyle;
+ 					ctx.fillRect(x, y, stroke_size, h);
+ 					ctx.fillRect(x+w-stroke_size, y, stroke_size, h);
+ 					ctx.fillRect(x, y, w, stroke_size);
+ 					ctx.fillRect(x, y+h-stroke_size, w, stroke_size);
+ 					ctx.restore();
 				}
 			}
 		},
