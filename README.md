@@ -150,7 +150,7 @@ Capabilities marked with 🌐 are currently left up to the browser to support or
 If "Write" is marked with 🌐, the format will appear in the file type dropdown but may not work when you try to save.
 For opening files, see Wikipedia's [browser image format support table][] for more information.
 
-Capabilities marked with 🔜 are coming soon, and N/A of course means not applicable.
+Capabilities marked with 🔜 may be coming soon, and N/A means not applicable.
 
 "Read Palette" refers to loading the colors into the Colors box automatically (from an [indexed color][] image),
 and "Write Palette" refers to writing an [indexed color][] image.

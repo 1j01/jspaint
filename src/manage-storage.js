@@ -45,7 +45,7 @@
 		const $message = $(E("p")).appendTo($storage_manager.$main).html(
 			"Any images you've saved to your computer with <b>File > Save</b> will not be affected."
 		);
-		$storage_manager.$Button("Close", () => {
+		const $close = $storage_manager.$Button("Close", () => {
 			$storage_manager.close();
 		});
 
@@ -53,7 +53,7 @@
 			const $tr = $(E("tr")).appendTo($table);
 
 			const $img = $(E("img")).attr({ src: imgSrc }).addClass("thumbnail-img");
-			const $remove = $(E("button")).text("Remove").addClass("remove-button");
+			const $remove = $(E("button")).text("Remove").addClass("remove-button").attr("type", "button");
 			const href = `#${k.replace("image#", "local:")}`;
 			const $open_link = $(E("a")).attr({ href, target: "_blank" }).text(localize("Open"));
 			const $thumbnail_open_link = $(E("a")).attr({ href, target: "_blank" }).addClass("thumbnail-container");
@@ -63,6 +63,12 @@
 			$(E("td")).append($remove).appendTo($tr);
 
 			$remove.on("click", () => {
+				// Focus the next or previous row's remove button, or the close button if there are no more rows.
+				// Try focusing controls in reverse order of priority, so the highest priority control gets focus.
+				$close.focus();
+				$tr.prev().find(".remove-button").focus();
+				$tr.next().find(".remove-button").focus();
+
 				localStorage.removeItem(k);
 				$tr.remove();
 				if ($table.find("tr").length == 0) {

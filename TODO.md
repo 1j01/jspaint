@@ -22,8 +22,7 @@
 
 ### Visual
 
-* Fill bucket and airbrush cursors are supposed to invert the background in parts
-* Custom cursors in Edge; apparently they require `.cur` files? ugh
+* Fill bucket and airbrush cursors are supposed to invert the background in parts. This is not possible with `.png` files. Microsoft Edge also apparently requires `.cur` files for custom cursors. I already have `.cur` files in the repo for the modern theme (unused), and extracted (outside the repo) for the classic theme. I just need to copy them, rename them semantically, use them, and do some testing to see if format fallbacks work as expected.
 
 ### Extended editing
 
@@ -39,11 +38,11 @@
 
 * Documents with multiple sub-images
 	* Component to switch between sub-images
-	* Deal with undo/redo for sub-images
+	* Handle undo/redo for sub-images
 	* Animated GIFs
 		* Transparency ([jnordberg/gif.js issue #5](https://github.com/jnordberg/gif.js/issues/5))
 	* Animated Transparent APNGs
-		* APNG Library: [UPNG.js](https://github.com/photopea/UPNG.js/)
+		* APNG Library: [UPNG.js](https://github.com/photopea/UPNG.js/) (already used for loading/saving PNGs)
 	* Multi-size Icons
 		* Windows ICO ([jBinary can read](https://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
 		* Mac ICNS
@@ -93,15 +92,13 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 * Alternative way to access "Color Eraser" feature without a secondary mouse button?
 * Alternative access to functionality that would normally require a keyboard (with a numpad!)
 	* Numpad +/-: Increase/Decrease brush size, Double/Halve selection size, ...
-	* Shift (toggles; rename contextually?):
+	* Shift toggles a handful of things (could have one toggle button renamed contextually?):
 		* Proportional Resize
 		* Smear / Trail Selection
 		* Snap to 8 directions
 			* An isometric mode would also be good
-	* Ctrl+Select: Crop tool or "Crop to selection" option
-* Don't drag toolbars out into windows with touch
-	* Unless with two fingers perhaps
-		* I might want to use multitouch on the tool buttons for MultiTools tho...
+	* Ctrl+Select: "Crop To Selection" menu option
+* Don't drag toolbars out into windows with touch, it's too easy to do accidentally
 
 ### Tools
 
@@ -139,8 +136,6 @@ SVG (or HTML?) with invisible selectable transformed text elements?
 
 ### Desktop App (Electron)
 
-* Create a landing page / home page for the desktop app (similar to https://desktop.webamp.org/ or https://desktop.github.com/) - (perhaps https://desktop.jspaint.app/) - and/or for JS Paint in general (perhaps https://jspaint.app/about/)
-
 Electron boilerplate stuff:
 
 * Remember window position/state
@@ -149,8 +144,8 @@ Electron boilerplate stuff:
 
 Security:
 
-* context isolation
-* disable multiplayer???????????? should be fine
+* Context isolation
+* Disable multiplayer?? should be fine
 
 Functionality:
 

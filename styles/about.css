@@ -1,0 +1,142 @@
+body {
+	font-family: sans-serif;
+	/* font-family: 'Comic Sans MS', 'Comic Sans', cursive; */
+	background-color: white;
+	color: black;
+}
+
+html,
+body {
+	overflow: unset;
+	display: unset;
+}
+
+body>section {
+	padding-left: calc(50vw - 500px);
+	padding-right: calc(50vw - 500px);
+	padding-left: max(10px, calc(50vw - 500px));
+	padding-right: max(10px, calc(50vw - 500px));
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+
+#wooden-window-frame {
+	transition: transform 4s ease, box-shadow 5s ease;
+	/* Most images have this set to pixelated, but that looks bad for the transition. */
+	/* I have no idea why unset doesn't work here... */
+	/* Chrome shows the media query's `image-rendering` with strike-through, but maybe that's a bug and it's actually winning? */
+	image-rendering: auto;
+}
+
+a[href^="https://98.js.org"]:hover #wooden-window-frame,
+a[href^="https://98.js.org"]:focus #wooden-window-frame {
+	transform: scale(1.2);
+	box-shadow:
+		0 0 5px 2px rgba(0, 43, 78, 0.5),
+		0 0 100px 50px rgba(100, 163, 214, 0.5);
+}
+
+#main-section {
+	background-image: url("../images/cursors/precise-dotted.png");
+	background-repeat: repeat;
+	background-size: 32px 32px;
+	/* background-color: lightgray; */
+}
+
+#windows-98-section {
+	background-image: url("https://raw.githubusercontent.com/1j01/98/361bd759a6d9b71d0fad9e479840598dc0128bb6/images/clouds.jpg");
+	background-color: rgb(100, 163, 214);
+	background-size: cover;
+	background-position: center center;
+}
+
+#desktop-app-section {
+	background-image: url("../images/about/atombgwht.gif");
+	background-repeat: repeat;
+}
+
+#desktop-app-section h2,
+#desktop-app-section p {
+	background-color: yellow;
+	padding: 5px;
+}
+
+.os-icon {
+	display: inline-block;
+	vertical-align: middle;
+	width: 35px;
+	height: 35px;
+	position: relative;
+	border: 2px solid black;
+	border-radius: 5px;
+	margin: 2px;
+	padding: 2px;
+}
+
+.os-icon>img {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+@supports (display: inline-flex) {
+	.os-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.os-icon>img {
+		position: unset;
+		bottom: unset;
+		left: unset;
+	}
+}
+
+#textual-paint-section {
+	font-family: monospace;
+	background-color: black;
+	color: white;
+}
+
+#textual-paint-section a:link {
+	color: #00ff00;
+}
+
+#textual-paint-section a:visited {
+	color: #00aa00;
+}
+
+#textual-paint-section code {
+	color: #ff00ff;
+}
+
+#textual-paint-section li i:first-of-type {
+	color: #00ff00;
+}
+
+#textual-paint-section li i:last-of-type {
+	color: #ff0000;
+}
+
+#other-projects-section {
+	background-image: url("../images/tracky-mouse-16x16.png");
+	background-repeat: repeat;
+	background-size: 5.1px 160px;
+	background-color: #ffeb77;
+	background-blend-mode: overlay;
+}
+
+#junkbot-area {
+	display: inline-block;
+	padding: 50px;
+	padding-bottom: 0;
+	border: 1px solid black;
+}
+
+#feeding-text {
+	font-style: italic;
+	position: relative;
+	left: -50px;
+}

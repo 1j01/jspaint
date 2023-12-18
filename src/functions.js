@@ -352,6 +352,7 @@ function set_magnification(new_scale, anchor_point) {
 
 	$G.triggerHandler("resize"); // updates handles & grid
 	$G.trigger("option-changed"); // updates options area
+	$G.trigger("magnification-changed"); // updates custom zoom window
 }
 
 let $custom_zoom_window;
@@ -380,18 +381,21 @@ function show_custom_zoom_window() {
 	$custom_zoom_window = $w;
 	$w.addClass("custom-zoom-window");
 
-	// @TODO: update when zoom changes
 	$w.$main.append(`<div class='current-zoom'>${localize("Current zoom:")} <bdi>${magnification * 100}%</bdi></div>`);
+	// update when zoom changes
+	$G.on("magnification-changed", () => {
+		$w.$main.find(".current-zoom bdi").text(`${magnification * 100}%`);
+	});
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
 	$fieldset.append(`
 		<legend>${localize("Zoom to")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-1" value="1"/><label for="zoom-option-1">100%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-2" value="2"/><label for="zoom-option-2">200%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-4" value="4"/><label for="zoom-option-4">400%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-6" value="6"/><label for="zoom-option-6">600%</label>
-			<input type="radio" name="custom-zoom-radio" id="zoom-option-8" value="8"/><label for="zoom-option-8">800%</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-1" aria-keyshortcuts="Alt+1 1" value="1"/><label for="zoom-option-1">${display_hotkey("&100%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-2" aria-keyshortcuts="Alt+2 2" value="2"/><label for="zoom-option-2">${display_hotkey("&200%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-4" aria-keyshortcuts="Alt+4 4" value="4"/><label for="zoom-option-4">${display_hotkey("&400%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-6" aria-keyshortcuts="Alt+6 6" value="6"/><label for="zoom-option-6">${display_hotkey("&600%")}</label>
+			<input type="radio" name="custom-zoom-radio" id="zoom-option-8" aria-keyshortcuts="Alt+8 8" value="8"/><label for="zoom-option-8">${display_hotkey("&800%")}</label>
 			<input type="radio" name="custom-zoom-radio" id="zoom-option-really-custom" value="really-custom"/><label for="zoom-option-really-custom"><input type="number" min="10" max="1000" name="really-custom-zoom-input" class="inset-deep no-spinner" value=""/>%</label>
 		</div>
 	`);
@@ -399,21 +403,56 @@ function show_custom_zoom_window() {
 	$fieldset.find("input[type=radio]").get().forEach((el) => {
 		if (parseFloat(el.value) === magnification) {
 			el.checked = true;
+			el.focus();
 			is_custom = false;
 		}
 	});
 	const $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
 	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
-	$really_custom_input.closest("label").on("click", () => {
+	$really_custom_input.closest("label").on("click", (event) => {
 		$really_custom_radio_option.prop("checked", true);
-		$really_custom_input[0].focus();
+		// If the user clicks on the input, let it get focus naturally, placing the caret where you click.
+		// If the user clicks outside it on the label, focus the input and select the text.
+		if ($(event.target).closest("input").length === 0) {
+			// Why does focusing this input programmatically not lead to the input
+			// being focused ultimately after the click?
+			// I'm working around this by using requestAnimationFrame (setTimeout would lead to a flicker).
+			// What am I working around, though? Is it my os-gui.js library? It has code to focus the
+			// last focused control in a window. I didn't see that code in the debugger, but I could've missed it.
+			// Debugging without time travel is hard. Maybe I should attack this problem with time travel, using replay.io.
+			requestAnimationFrame(() => {
+				$really_custom_input[0].focus();
+				$really_custom_input[0].select();
+			});
+			// Maybe this would all be a little simpler if I made the label point to the input.
+			// I want the label to have a larger click target, but maybe I can do that with CSS.
+		}
 	});
 
 	if (is_custom) {
 		$really_custom_input.val(magnification * 100);
 		$really_custom_radio_option.prop("checked", true);
+		$really_custom_input.select();
 	}
+
+	$really_custom_radio_option.on("keydown", (event) => {
+		if (event.key.match(/^[0-9.]$/)) {
+			// Can't set number input to invalid number "." or even "0.",
+			// but if we don't prevent the default keydown behavior of typing the letter,
+			// we can actually change the focus before the letter is typed!
+			// $really_custom_input.val(event.key === "." ? "0." : event.key);
+			// $really_custom_input.focus(); // should move caret to end
+			// event.preventDefault();
+			$really_custom_input.val("").focus();
+		}
+	});
+
+	// If you tab to the number input and type, it should select the radio button
+	// so that your input is actually used.
+	$really_custom_input.on("input", (event) => {
+		$really_custom_radio_option.prop("checked", true);
+	});
 
 	$fieldset.find("label").css({ display: "block" });
 
@@ -438,12 +477,14 @@ function show_custom_zoom_window() {
 		set_magnification(mag);
 
 		$w.close();
-	})[0].focus();
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 
 	$w.center();
+
+	handle_keyshortcuts($w);
 }
 
 
@@ -965,7 +1006,7 @@ function file_load_from_url() {
 		} else {
 			show_error_message("Invalid URL. It must include a protocol (https:// or http://)");
 		}
-	});
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
@@ -2864,10 +2905,10 @@ function image_attributes() {
 	let width_in_px = main_canvas.width;
 	let height_in_px = main_canvas.height;
 
-	const $width_label = $(E("label")).appendTo($main).text(localize("Width:"));
-	const $height_label = $(E("label")).appendTo($main).text(localize("Height:"));
-	const $width = $(E("input")).attr({ type: "number", min: 1 }).addClass("no-spinner inset-deep").appendTo($width_label);
-	const $height = $(E("input")).attr({ type: "number", min: 1 }).addClass("no-spinner inset-deep").appendTo($height_label);
+	const $width_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Width:")));
+	const $height_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Height:")));
+	const $width = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+W W W" }).addClass("no-spinner inset-deep").appendTo($width_label);
+	const $height = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+H H H" }).addClass("no-spinner inset-deep").appendTo($height_label);
 
 	$main.find("input")
 		.css({ width: "40px" })
@@ -2881,9 +2922,9 @@ function image_attributes() {
 	const $units = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Units")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="units" id="unit-in" value="in"><label for="unit-in">${localize("Inches")}</label>
-			<input type="radio" name="units" id="unit-cm" value="cm"><label for="unit-cm">${localize("Cm")}</label>
-			<input type="radio" name="units" id="unit-px" value="px"><label for="unit-px">${localize("Pixels")}</label>
+			<input type="radio" name="units" id="unit-in" value="in" aria-keyshortcuts="Alt+I I"><label for="unit-in">${display_hotkey(localize("&Inches"))}</label>
+			<input type="radio" name="units" id="unit-cm" value="cm" aria-keyshortcuts="Alt+M M"><label for="unit-cm">${display_hotkey(localize("C&m"))}</label>
+			<input type="radio" name="units" id="unit-px" value="px" aria-keyshortcuts="Alt+P P"><label for="unit-px">${display_hotkey(localize("&Pixels"))}</label>
 		</div>
 	`);
 	$units.find(`[value=${current_unit}]`).attr({ checked: true });
@@ -2897,8 +2938,8 @@ function image_attributes() {
 	const $colors = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Colors")}</legend>
 		<div class="fieldset-body">
-			<input type="radio" name="colors" id="attribute-monochrome" value="monochrome"><label for="attribute-monochrome">${localize("Black and white")}</label>
-			<input type="radio" name="colors" id="attribute-polychrome" value="polychrome"><label for="attribute-polychrome">${localize("Colors")}</label>
+			<input type="radio" name="colors" id="attribute-monochrome" value="monochrome" aria-keyshortcuts="Alt+B B"><label for="attribute-monochrome">${display_hotkey(localize("&Black and white"))}</label>
+			<input type="radio" name="colors" id="attribute-polychrome" value="polychrome" aria-keyshortcuts="Alt+L L"><label for="attribute-polychrome">${display_hotkey(localize("Co&lors"))}</label>
 		</div>
 	`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({ checked: true });
@@ -2972,18 +3013,25 @@ function image_attributes() {
 		}
 
 		image_attributes.$window.close();
-	})[0].focus();
+	}, { type: "submit" });
 
 	$w.$Button(localize("Cancel"), () => {
 		image_attributes.$window.close();
 	});
 
-	$w.$Button(localize("Default"), () => {
+	// Parsing HTML with jQuery; $Button takes text (not HTML) or Node/DocumentFragment
+	$w.$Button($.parseHTML(display_hotkey(localize("&Default")))[0], () => {
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
 		$height.val(height_in_px / unit_sizes_in_px[current_unit]);
-	});
+	}).attr("aria-keyshortcuts", "Alt+D D");
+
+	handle_keyshortcuts($w);
+
+	// Default focus
+
+	$width.select();
 
 	// Reposition the window
 
@@ -3013,7 +3061,7 @@ function show_convert_to_black_and_white() {
 
 	$w.$Button(localize("OK"), () => {
 		$w.close();
-	}).focus();
+	}, { type: "submit" }).focus();
 	$w.$Button(localize("Cancel"), () => {
 		if (current_history_node.name === "Make Monochrome") {
 			undo();
@@ -3167,14 +3215,16 @@ function image_flip_and_rotate() {
 		$canvas_area.trigger("resize");
 
 		$w.close();
-	})[0].focus();
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 
+	$fieldset.find("input[type='radio']").first().focus();
+
 	$w.center();
 
-	handle_keyshortcuts_alt_only($w);
+	handle_keyshortcuts($w);
 }
 
 function image_stretch_and_skew() {
@@ -3242,30 +3292,75 @@ function image_stretch_and_skew() {
 		}
 		$canvas_area.trigger("resize");
 		$w.close();
-	})[0].focus();
+	}, { type: "submit" });
 
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
 
+	$w.$main.find("input").first().focus().select();
+
 	$w.center();
 
-	handle_keyshortcuts_alt_only($w);
+	handle_keyshortcuts($w);
 }
 
-// could be expanded to handle all different modifiers, but for now I'm naming it so the limitation is clear
-function handle_keyshortcuts_alt_only($container) {
+function handle_keyshortcuts($container) {
+	// This function implements shortcuts defined with aria-keyshortcuts.
+	// It also modifies aria-keyshortcuts to remove shortcuts that don't
+	// contain a modifier (other than shift) when an input field is focused,
+	// in order to avoid conflicts with typing.
+	// It stores the original aria-keyshortcuts (indefinitely), so if aria-keyshortcuts
+	// is ever to be modified at runtime (externally), the code here may need to be changed.
+
 	$container.on("keydown", (event) => {
-		if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-			let shortcut_target = $container.find(`[aria-keyshortcuts="Alt+${event.key.toUpperCase()}"]`)[0];
-			if (shortcut_target) {
-				event.preventDefault();
-				event.stopPropagation();
-				if (shortcut_target.disabled) {
-					shortcut_target = shortcut_target.closest(".radio-wrapper");
+		const $targets = $container.find("[aria-keyshortcuts]");
+		for (let shortcut_target of $targets) {
+			const shortcuts = $(shortcut_target).attr("aria-keyshortcuts").split(" ");
+			for (const shortcut of shortcuts) {
+				// TODO: should we use code instead of key? need examples
+				if (
+					!!shortcut.match(/Alt\+/i) === event.altKey &&
+					!!shortcut.match(/Ctrl\+/i) === event.ctrlKey &&
+					!!shortcut.match(/Meta\+/i) === event.metaKey &&
+					!!shortcut.match(/Shift\+/i) === event.shiftKey &&
+					shortcut.split("+").pop().toUpperCase() === event.key.toUpperCase()
+				) {
+					event.preventDefault();
+					event.stopPropagation();
+					if (shortcut_target.disabled) {
+						shortcut_target = shortcut_target.closest(".radio-wrapper");
+					}
+					shortcut_target.click();
+					shortcut_target.focus();
+					return;
 				}
-				shortcut_target.click();
-				shortcut_target.focus();
+			}
+		}
+	});
+
+	// Prevent keyboard shortcuts from interfering with typing in text fields.
+	// Rather than conditionally handling the shortcut, I'm conditionally removing it,
+	// because _theoretically_ it's better for assistive technology to know that the shortcut isn't available.
+	// (Theoretically I should also remove aria-keyshortcuts when the window isn't focused...)
+	$container.on("focusin focusout", (event) => {
+		if ($(event.target).is('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="file"]):not([type="color"]):not([type="range"])')) {
+			for (const control of $container.find("[aria-keyshortcuts]")) {
+				control._original_aria_keyshortcuts = control._original_aria_keyshortcuts ?? control.getAttribute("aria-keyshortcuts");
+				// Remove shortcuts without modifiers.
+				control.setAttribute("aria-keyshortcuts",
+					control.getAttribute("aria-keyshortcuts")
+						.split(" ")
+						.filter((shortcut) => shortcut.match(/(Alt|Ctrl|Meta)\+/i))
+						.join(" ")
+				);
+			}
+		} else {
+			// Restore shortcuts.
+			for (const control of $container.find("[aria-keyshortcuts]")) {
+				if (control._original_aria_keyshortcuts) {
+					control.setAttribute("aria-keyshortcuts", control._original_aria_keyshortcuts);
+				}
 			}
 		}
 	});
@@ -3387,7 +3482,7 @@ function save_as_prompt({
 				newFileName: promptForName ? $file_name.val() : defaultFileName,
 				newFileFormatID: $file_type.val(),
 			});
-		});
+		}, { type: "submit" });
 		$w.$Button(localize("Cancel"), () => {
 			$w.close();
 		});
@@ -3792,7 +3887,7 @@ function show_multi_user_setup_dialog(from_current_document) {
 			}
 			$w.close();
 		}
-	});
+	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
 		$w.close();
 	});
