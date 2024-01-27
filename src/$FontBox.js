@@ -1,5 +1,47 @@
 ((exports) => {
 
+	const eachFont = async (callback, afterAllCallback) => {
+		function localFontAccessUnavailable() {
+			FontDetective.each(callback);
+			FontDetective.all(afterAllCallback);
+		}
+		if (window.queryLocalFonts) {
+			let availableFonts;
+			try {
+				availableFonts = await window.queryLocalFonts();
+			} catch (error) {
+				console.log("queryLocalFonts failed:", error, "\nFalling back to FontDetective.");
+				localFontAccessUnavailable();
+				return;
+			}
+			if (availableFonts.length === 0) {
+				console.log("queryLocalFonts returned no fonts; falling back to FontDetective.");
+				localFontAccessUnavailable();
+				return;
+			}
+			const familyNames = new Set();
+			for (const font of availableFonts) {
+				if (familyNames.has(font.family)) {
+					continue;
+				}
+				familyNames.add(font.family);
+				callback({
+					name: font.family,
+					toString() {
+						return '"' + this.name.replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + '"';
+					},
+				});
+				// This class is not exported by FontDetective.
+				// That said, this queryLocalFonts functionality should be moved into FontDetective.
+				// callback(new FontDetective.Font(font.family));
+			}
+			afterAllCallback();
+		} else {
+			console.log("queryLocalFonts unavailable; falling back to FontDetective.");
+			localFontAccessUnavailable();
+		}
+	};
+
 	function $FontBox() {
 		const $fb = $(E("div")).addClass("font-box");
 
@@ -34,13 +76,40 @@
 			$G.trigger("option-changed");
 		};
 
-		FontDetective.each(font => {
+		const originalFamily = text_tool_font.family;
+		eachFont(font => {
 			const $option = $(E("option"));
 			$option.val(font).text(font.name);
-			$family.append($option);
+			// Insert in alphabetical order
+			const $options = $family.children("option");
+			let i = 0;
+			for (; i < $options.length; i++) {
+				if ($options.eq(i).text().localeCompare(font.name) > 0) {
+					break;
+				}
+			}
+			if ($options.eq(i).length) {
+				$options.eq(i).before($option);
+			} else {
+				$family.append($option);
+			}
+			// Select the first known-available font, just in case FontDetective.each is slow.
 			if (!text_tool_font.family) {
 				update_font();
 			}
+		}, () => {
+			// All fonts have been added to the list. Now we can select the default font.
+			$family.val(originalFamily);
+			// Liberation Sans is designed to be metrically compatible with Arial,
+			// and is available in free operating systems like Ubuntu.
+			if (!$family.val()) {
+				$family.val('"Liberation Sans"');
+			}
+			// Fallback to the first font in the list. At least it's something.
+			if (!$family.val()) {
+				$family.val($family.children("option").eq(0).val());
+			}
+			update_font();
 		});
 
 		if (text_tool_font.family) {
