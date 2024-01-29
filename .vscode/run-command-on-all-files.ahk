@@ -1,4 +1,20 @@
-; This script uses AutoHotkey v2
+; This script runs on AutoHotkey v2.
+;
+; I tried the VS Code extension "Command on All Files" first: https://marketplace.visualstudio.com/items?itemName=rioj7.commandOnAllFiles
+; but it didn't work with the "cSpell.addIssuesToDictionary" command.
+; I think it was too fast, and the spell checker didn't have time to run.
+;
+; A better solution would be to:
+; - Improve the "Command on All Files" extension:
+;   - add delay options
+;   - add a dry run mode, which I had to work around by setting it to a near-no-op command
+;     - just listing the files would be a lot nicer than opening them all one by one
+;   - unify file matching; you shouldn't have to specify a list of file extensions to include, it should be a glob like the exclusions
+; Or:
+; - Add a command to the cspell-cli to accept spellings
+; Or:
+; - Implement an external Node.js script using cspell's API (but that's less helpful than making a PR)
+
 root := A_ScriptDir "\..\*"
 ignoreFolders := [
 	".git",
@@ -24,6 +40,12 @@ beforeRunInfo := "This script is designed to add all spelling issues to the dict
 delayBeforeCommand := 2000 ; Give enough time for spell checker to run
 delayAfterCommand := 2000 ; Give enough time for CSpell to update the dictionary
 closeFileAfterCommand := false
+appName := "VS Code Automation"
+
+popup := Gui(, appName)
+popup.Opt("+AlwaysOnTop +Disabled -SysMenu +Owner")  ; +Owner avoids a taskbar button.
+popup.Add("Text", , "`nPress Esc to stop the script.`n`n")
+statusBar := popup.Add("StatusBar")
 
 IsIgnoredPath(path) {
 	SplitPath path, &name, &dir, &ext, &nameNoExt, &drive
@@ -61,17 +83,17 @@ Automate() {
 		return
 	}
 
-	; Focus VS Code
+	; Focus VS Code before confirmation to avoid confusion between multiple VS Code windows
 	try {
 		WinActivate "ahk_exe Code.exe"
 	} catch TargetError as e {
-		MsgBox "Could not find VS Code window. Please open it and try again."
+		MsgBox "Could not find VS Code window. Please open it and try again.", appName, 0x10
 		return
 	}
 
 	; Ask for confirmation
-	if MsgBox(beforeRunInfo "Found " targets.Length " files. Continue?", "VS Code Automation", 4) = "No" {
-		if MsgBox("Copy file paths to clipboard?", "VS Code Automation", 4) = "Yes" {
+	if MsgBox(beforeRunInfo "Found " targets.Length " files. Continue?", appName, 4) = "No" {
+		if MsgBox("Copy file paths to clipboard?", appName, 4) = "Yes" {
 			A_Clipboard := Join("`n", targets)
 		}
 		return
@@ -81,15 +103,15 @@ Automate() {
 }
 
 RunCommandOnFiles(targets) {
-	popup := Gui(, "VS Code Automation")
-	popup.Opt("+AlwaysOnTop +Disabled -SysMenu +Owner")  ; +Owner avoids a taskbar button.
-	popup.Add("Text", , "`nPress Esc to stop the script.`n`n")
-	statusBar := popup.Add("StatusBar")
 	popup.Show("NoActivate")  ; NoActivate avoids deactivating the currently active window.
 
 	for index, target in targets {
 		statusBar.SetText(index "/" targets.Length)
-		RunCommandOnFile(target)
+		if !RunCommandOnFile(target) {
+			popup.Destroy()
+			MsgBox "Processed " index " out of " targets.Length " files."  ; Shows after error message
+			return
+		}
 	}
 
 	popup.Destroy()
@@ -98,6 +120,17 @@ RunCommandOnFiles(targets) {
 }
 
 RunCommandOnFile(target) {
+	; Focus VS Code
+	; Could make this more robust by doing this at multiple points, but it's meant to be a sort of "fire and forget" script.
+	; OR, could use ControlSend to target the window regardless of focus, and wrap it all in a try/catch, that would be better.
+	try {
+		WinActivate "ahk_exe Code.exe"
+	} catch TargetError as e {
+		popup.Destroy()
+		MsgBox "Could not find VS Code window. Please open it and try again.", appName, 0x10
+		return false
+	}
+
 	; Open file in VS Code using Ctrl+P file switcher
 	Send "^p"
 	Sleep 100
@@ -118,6 +151,8 @@ RunCommandOnFile(target) {
 	if closeFileAfterCommand {
 		Send "^w"
 	}
+
+	return true
 }
 
 Join(sep, items) {
@@ -134,3 +169,4 @@ Esc:: {
 }
 
 Automate()
+ExitApp()
