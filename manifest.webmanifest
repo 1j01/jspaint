@@ -2,7 +2,11 @@
 	"name": "JS Paint",
 	"short_name": "Paint",
 	"description": "An MS Paint remake.",
-	"categories": ["photo", "utilities", "entertainment"],
+	"categories": [
+		"photo",
+		"utilities",
+		"entertainment"
+	],
 	"display": "standalone",
 	"start_url": ".",
 	"lang": "en-US",
