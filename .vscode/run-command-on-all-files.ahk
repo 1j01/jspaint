@@ -21,9 +21,12 @@ ignoreExtensions := [
 ]
 command := "cSpell.addIssuesToDictionary"
 beforeRunInfo := "This script is designed to add all spelling issues to the dictionary.`nTo use it to prune the dictionary of no-longer-needed words, you must empty the dictionary first.`n`nThis script will run the VS Code command '" command "' on all files in the directory '" root "'.`n`n"
+delayBeforeCommand := 2000 ; Give enough time for spell checker to run
+delayAfterCommand := 2000 ; Give enough time for CSpell to update the dictionary
+closeFileAfterCommand := false
 
 IsIgnoredPath(path) {
-	SplitPath path, &name, &dir, &ext, &name_no_ext, &drive
+	SplitPath path, &name, &dir, &ext, &nameNoExt, &drive
 	for _, ignoreExtension in ignoreExtensions {
 		if (StrLower(ext) = ignoreExtension) {
 			return true
@@ -45,7 +48,7 @@ IsIgnoredPath(path) {
 Automate() {
 	targets := []
 	; Loop through files (F) recursively (R)
-	Loop Files, root, "FR"
+	loop files, root, "FR"
 	{
 		if (IsIgnoredPath(A_LoopFileFullPath)) {
 			continue
@@ -59,7 +62,12 @@ Automate() {
 	}
 
 	; Focus VS Code
-	WinActivate "ahk_exe Code.exe"
+	try {
+		WinActivate "ahk_exe Code.exe"
+	} catch TargetError as e {
+		MsgBox "Could not find VS Code window. Please open it and try again."
+		return
+	}
 
 	; Ask for confirmation
 	if MsgBox(beforeRunInfo "Found " targets.Length " files. Continue?", "VS Code Automation", 4) = "No" {
@@ -73,15 +81,18 @@ Automate() {
 }
 
 RunCommandOnFiles(targets) {
-	MyGui := NotifyEscapeHatch()
-	SB := MyGui.Add("StatusBar")
+	popup := Gui(, "VS Code Automation")
+	popup.Opt("+AlwaysOnTop +Disabled -SysMenu +Owner")  ; +Owner avoids a taskbar button.
+	popup.Add("Text", , "`nPress Esc to stop the script.`n`n")
+	statusBar := popup.Add("StatusBar")
+	popup.Show("NoActivate")  ; NoActivate avoids deactivating the currently active window.
 
 	for index, target in targets {
-		SB.SetText(index "/" targets.Length)
+		statusBar.SetText(index "/" targets.Length)
 		RunCommandOnFile(target)
 	}
 
-	MyGui.Destroy()
+	popup.Destroy()
 	MsgBox "Processed " targets.Length " files."
 	return
 }
@@ -93,8 +104,7 @@ RunCommandOnFile(target) {
 	Send target
 	Sleep 100
 	Send "{Enter}"
-	; Give enough time for spell checker to run
-	Sleep 2000
+	Sleep delayBeforeCommand
 
 	; Run command via F1 command palette
 	Send "{F1}"
@@ -102,11 +112,12 @@ RunCommandOnFile(target) {
 	Send command
 	Sleep 100
 	Send "{Enter}"
-	; Give enough time for CSpell to update the dictionary
-	Sleep 2000
+	Sleep delayAfterCommand
 
 	; Close the file (optional)
-	; Send "^w"
+	if closeFileAfterCommand {
+		Send "^w"
+	}
 }
 
 Join(sep, items) {
@@ -118,13 +129,6 @@ Join(sep, items) {
 }
 
 ; Escape hatch
-NotifyEscapeHatch() {
-	MyGui := Gui(, "VS Code Automation")
-	MyGui.Opt("+AlwaysOnTop +Disabled -SysMenu +Owner")  ; +Owner avoids a taskbar button.
-	MyGui.Add("Text", , "`nPress Esc to stop the script.`n`n")
-	MyGui.Show("NoActivate")  ; NoActivate avoids deactivating the currently active window.
-	return MyGui
-}
 Esc:: {
 	ExitApp
 }
