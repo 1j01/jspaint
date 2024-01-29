@@ -10,6 +10,29 @@
 	},
 	"editor.formatOnSave": true,
 	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "always"
+	},
+	"[css]": {
+		// The CSS in this project uses (the lack of) newlines between rules for grouping, as well as inline comments.
+		// VS Code's default formatter adds newlines between all rules, and forces comments to the next line, dissociating them.
+		"editor.formatOnSave": false,
+	},
+	"[markdown]": {
+		// Formatting markdown tables automatically is cool, but doesn't allow padding cells to avoid superflous git diffs.
+		// Also, VS Code's markdown formatter doesn't handle emoji in tables as well as it could.
+		"editor.formatOnSave": false,
+	},
+	// Note: this doesn't apply to "JSON with comments" files, such as this one. That's [jsonc].
+	"[json]": {
+		// npm respects different indent styles, but always adds a newline at the end of package.json/package-lock.json,
+		// so this avoids ping-ponging changes in git.
+		// This could be applied to all files for consistency, but it may introduce noise if all files aren't formatted at once.
+		"files.insertFinalNewline": true,
+		// Maintaining current indentation for now, but could remove this for consistency.
+		"editor.detectIndentation": true
+	},
 	// @TODO: is there a way to prune this spelling list? I didn't know about the comment directives for a while,
 	// and accepted a lot of strings for the language names, in languages that I don't understand,
 	// and even with partial strings when it was buggy with Unicode.
