@@ -594,7 +594,7 @@ html, body, .jspaint {
 	max-width: 230px;
 	float: left;
 	margin: 5px;
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 .save-as .window-content > form > div > label:not(:first-of-type) {
 	margin-top: 8px;
@@ -704,7 +704,7 @@ html, body, .jspaint {
 .dialog-window:not(.horizontal-buttons):not(.edit-colors-window) .window-content .button-group {
 	padding-right: 10px;
 	display: flex;
-    flex-direction: column;
+	flex-direction: column;
 	gap: 5px;
 }
 
@@ -766,11 +766,11 @@ html, body, .jspaint {
 }
 .custom-zoom-window .fieldset-body {
 	display: flex;
-    flex-flow: column wrap;
-    width: 240px;
+	flex-flow: column wrap;
+	width: 240px;
 	height: 70px;
-    padding: 12px 5px;
-    row-gap: 10px;
+	padding: 12px 5px;
+	row-gap: 10px;
 }
 .custom-zoom-window bdi {
 	margin: 0 10px;

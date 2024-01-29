@@ -154,7 +154,7 @@ button.grinch-button {
 	right: 0px;
 	width: 100px;
 	height: 179px;
-    z-index: 2;
+	z-index: 2;
 	background-image: url("../../images/winter/grinch-smile-spritesheet.png");
 	border: 0;
 	background-color: transparent;

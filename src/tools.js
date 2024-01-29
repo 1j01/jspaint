@@ -842,13 +842,13 @@
 					ctx.fillRect(x, y, w, h);
 					ctx.restore();
 				} else {
- 					ctx.save();
- 					ctx.fillStyle = ctx.strokeStyle;
- 					ctx.fillRect(x, y, stroke_size, h);
- 					ctx.fillRect(x+w-stroke_size, y, stroke_size, h);
- 					ctx.fillRect(x, y, w, stroke_size);
- 					ctx.fillRect(x, y+h-stroke_size, w, stroke_size);
- 					ctx.restore();
+					ctx.save();
+					ctx.fillStyle = ctx.strokeStyle;
+					ctx.fillRect(x, y, stroke_size, h);
+					ctx.fillRect(x + w - stroke_size, y, stroke_size, h);
+					ctx.fillRect(x, y, w, stroke_size);
+					ctx.fillRect(x, y + h - stroke_size, w, stroke_size);
+					ctx.restore();
 				}
 			}
 		},
