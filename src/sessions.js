@@ -96,16 +96,16 @@
 	class LocalSession {
 		constructor(session_id) {
 			this.id = session_id;
-			const lsid = `image#${session_id}`;
-			log(`Local storage ID: ${lsid}`);
+			const ls_key = `image#${session_id}`;
+			log(`Local storage key: ${ls_key}`);
 			// save image to storage
 			this.save_image_to_storage_immediately = () => {
 				const save_paused = handle_data_loss();
 				if (save_paused) {
 					return;
 				}
-				log(`Saving image to storage: ${lsid}`);
-				storage.set(lsid, main_canvas.toDataURL("image/png"), err => {
+				log(`Saving image to storage: ${ls_key}`);
+				storage.set(ls_key, main_canvas.toDataURL("image/png"), err => {
 					if (err) {
 						if (err.quotaExceeded) {
 							storage_quota_exceeded();
@@ -119,7 +119,7 @@
 				});
 			};
 			this.save_image_to_storage_soon = debounce(this.save_image_to_storage_immediately, 100);
-			storage.get(lsid, (err, uri) => {
+			storage.get(ls_key, (err, uri) => {
 				if (err) {
 					if (localStorageAvailable) {
 						show_error_message("Failed to retrieve image from local storage.", err);
