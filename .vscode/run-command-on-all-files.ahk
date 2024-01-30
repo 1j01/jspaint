@@ -47,6 +47,8 @@ popup.Opt("+AlwaysOnTop +Disabled -SysMenu +Owner")  ; +Owner avoids a taskbar b
 popup.Add("Text", , "`nPress Esc to stop the script.`n`n")
 statusBar := popup.Add("StatusBar")
 
+windowId := WinExist("ahk_exe Code.exe")
+
 IsIgnoredPath(path) {
 	SplitPath path, &name, &dir, &ext, &nameNoExt, &drive
 	for _, ignoreExtension in ignoreExtensions {
@@ -85,7 +87,7 @@ Automate() {
 
 	; Focus VS Code before confirmation to avoid confusion between multiple VS Code windows
 	try {
-		WinActivate "ahk_exe Code.exe"
+		WinActivate { Hwnd: windowId }
 	} catch TargetError as e {
 		MsgBox "Could not find VS Code window. Please open it and try again.", appName, 0x10
 		return
@@ -107,9 +109,11 @@ RunCommandOnFiles(targets) {
 
 	for index, target in targets {
 		statusBar.SetText(index "/" targets.Length)
-		if !RunCommandOnFile(target) {
+		try {
+			RunCommandOnFile(target)
+		} catch TargetError as e {
 			popup.Destroy()
-			MsgBox "Processed " index " out of " targets.Length " files."  ; Shows after error message
+			MsgBox "Lost VS Code window. Please open it and try again.`n`n" index " out of " targets.Length " files were processed.", appName, 0x10
 			return
 		}
 	}
@@ -119,40 +123,34 @@ RunCommandOnFiles(targets) {
 	return
 }
 
-RunCommandOnFile(target) {
-	; Focus VS Code
-	; Could make this more robust by doing this at multiple points, but it's meant to be a sort of "fire and forget" script.
-	; OR, could use ControlSend to target the window regardless of focus, and wrap it all in a try/catch, that would be better.
-	try {
-		WinActivate "ahk_exe Code.exe"
-	} catch TargetError as e {
-		popup.Destroy()
-		MsgBox "Could not find VS Code window. Please open it and try again.", appName, 0x10
-		return false
-	}
 
+SendToVSCode(keys) {
+	; ControlSend(keys, , { Hwnd: windowId })
+	WinActivate { Hwnd: windowId }
+	Send keys
+}
+
+RunCommandOnFile(target) {
 	; Open file in VS Code using Ctrl+P file switcher
-	Send "^p"
+	SendToVSCode "^p"
 	Sleep 100
-	Send target
+	SendToVSCode target
 	Sleep 100
-	Send "{Enter}"
+	SendToVSCode "{Enter}"
 	Sleep delayBeforeCommand
 
 	; Run command via F1 command palette
-	Send "{F1}"
+	SendToVSCode "{F1}"
 	Sleep 100
-	Send command
+	SendToVSCode command
 	Sleep 100
-	Send "{Enter}"
+	SendToVSCode "{Enter}"
 	Sleep delayAfterCommand
 
 	; Close the file (optional)
 	if closeFileAfterCommand {
-		Send "^w"
+		SendToVSCode "^w"
 	}
-
-	return true
 }
 
 Join(sep, items) {
