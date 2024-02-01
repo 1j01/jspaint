@@ -618,7 +618,7 @@ Arguments:
 - `dialogTitle`: a title for the save dialog.
 
 Note the inversion of control here:
-JS Paint calls your `systemHooks.showSaveFileDialog` function, and then calls JS Paint's `getBlob` function.
+JS Paint calls your `systemHooks.showSaveFileDialog` function, and then you call JS Paint's `getBlob` function.
 Once `getBlob` resolves, you can call the `savedCallbackUnreliable` function which is defined by JS Paint.
 (Hopefully I can clarify this in the future.)
 
