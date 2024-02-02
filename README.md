@@ -113,7 +113,7 @@ See [TODO.md](TODO.md#Tools)
 
 Full clipboard support in the web app requires a browser supporting the [Async Clipboard API w/ Images](https://developers.google.com/web/updates/2019/07/image-support-for-async-clipboard), namely Chrome 76+ at the time of writing.
 
-In other browsers you can still can copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
+In other browsers you can still copy with <kbd>Ctrl+C</kbd>, cut with <kbd>Ctrl+X</kbd>, and paste with <kbd>Ctrl+V</kbd>,
 but data copied from JS Paint can only be pasted into other instances of JS Paint.
 External images can be pasted in.
 
@@ -618,7 +618,7 @@ Arguments:
 - `dialogTitle`: a title for the save dialog.
 
 Note the inversion of control here:
-JS Paint calls your `systemHooks.showSaveFileDialog` function, and then you calls JS Paint's `getBlob` function.
+JS Paint calls your `systemHooks.showSaveFileDialog` function, and then you call JS Paint's `getBlob` function.
 Once `getBlob` resolves, you can call the `savedCallbackUnreliable` function which is defined by JS Paint.
 (Hopefully I can clarify this in the future.)
 
