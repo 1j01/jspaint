@@ -379,11 +379,11 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="16"
-     inkscape:cx="248.28124"
-     inkscape:cy="33.656249"
+     inkscape:cx="287.53124"
+     inkscape:cy="27.093749"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
-     showgrid="true"
+     showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -414,7 +414,7 @@
        spacingy="1"
        spacingx="1"
        units="px"
-       visible="true"
+       visible="false"
        color="#0099e5"
        opacity="0.21568627"
        empcolor="#0099e5"
@@ -432,7 +432,7 @@
        empcolor="#7b70ff"
        empopacity=".25"
        units="px"
-       visible="true" /></sodipodi:namedview><metadata
+       visible="false" /></sodipodi:namedview><metadata
      id="metadata5"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>
           image/svg+xml
@@ -507,7 +507,7 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
        inkscape:label="line" /><g
-       transform="matrix(3.77958,0,0,3.77958,-77.72,-206.52)"
+       transform="matrix(3.77958,0,0,3.77958,-76.72,-205.52)"
        aria-label="A"
        style="font-style:normal;font-weight:normal;font-size:47.625px;line-height:125%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:url(#linearGradient38);fill-opacity:1;stroke:#000080;stroke-width:0.13229;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="text4577"
@@ -737,7 +737,7 @@
          d="M 32.37,2.16 C 32.19,2.08 32.05,1.97 31.93,1.91 31.76,1.82 31.77,1.99 31.73,1.37 31.7,0.93 31.7,0.36 31.8,0.36 32,0.35 31.98,1.4 31.97,1.8 c 0,0 0.23,0.1 0.35,0.2 0.11,0.08 0.07,0.17 0.05,0.16 z"
          style="display:inline;fill:#f5f593;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1" /></g><g
        id="g7275"
-       transform="matrix(3.6201554,1.0861398,-1.0861398,3.6201554,118.14163,-44.706727)"
+       transform="matrix(3.6201554,1.0861398,-1.0861398,3.6201554,118.14163,-43.706727)"
        inkscape:label="pencil"><path
          sodipodi:nodetypes="cccc"
          inkscape:connector-curvature="0"
