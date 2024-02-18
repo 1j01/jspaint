@@ -1,0 +1,47 @@
+@import "./modern.css";
+@import "./vista-esque-midnight-green.css";
+
+:root {
+	--theme-loaded: "dark-modern.css";
+
+	--Hilight: #0178d7;
+	--HilightText: #ffffff;
+	--WindowText: #ffffff;
+	--ButtonText: #ffffff;
+
+	--accent-color: #2196f3;
+	--accent-color-hover: #1976D2;
+	--window-frame-active-color: #3f51b5;
+	--window-frame-inactive-color: #3b3c42;
+	--help-window-resizer-color: var(--window-frame-inactive-color);
+	--canvas-area-background-color: #2c2c2c;
+	--canvas-area-border-color: #000000;
+	--window-background-color: #000000;
+	--window-text-color: #ffffff;
+	--menu-background-color: #000000;
+	--menu-text-color: #ffffff;
+	--menu-hover-color: #2c2c2c;
+	--menu-active-color: #505050;
+	--menu-text-disabled-color: #8d8d8d;
+	--menu-text-active-color: #eeeeee;
+	--menu-divider-color: rgba(128, 128, 128, 0.3);
+	--selected-tool-color: rgba(128, 128, 128, 0.5);
+}
+
+/* WET: same as dark.css; could extract to a dark-icons.css, but ideally the dark modern theme should have modern icons */
+.tool-icon {
+	background-image: url("../../images/dark/tools.png");
+	background-repeat: no-repeat;
+	background-position: calc(-16px * var(--icon-index)) 0; /* same as classic theme, but couldn't hurt */
+}
+.tool-icon.use-svg {
+	background-image: url("../../images/dark/tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px; /* same as classic theme, but couldn't hurt */
+}
+
+.eye-gaze-mode .toggle-dwell-clicking .button-icon {
+	background: url(../../images/dark/eye-gaze-pause.svg);
+}
+.eye-gaze-mode.eye-gaze-mode-paused .toggle-dwell-clicking .button-icon {
+	background: url(../../images/dark/eye-gaze-unpause.svg);
+}

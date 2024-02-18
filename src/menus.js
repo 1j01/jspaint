@@ -972,6 +972,17 @@
 						description: localize("Makes JS Paint look a bit more modern."),
 					},
 					{
+						item: "⚫ " + localize("Da&rk Modern"),
+						speech_recognition: [
+							"dark modern theme", "switch to dark modern theme", "use dark modern theme", "set theme to dark modern", "set theme dark modern", "switch to dark modern theme", "switch theme to dark modern", "switch theme dark modern",
+						],
+						action: () => {
+							set_theme("dark-modern.css");
+						},
+						enabled: () => get_theme() != "dark-modern.css",
+						description: localize("Makes JS Paint look a bit more modern and dark."),
+					},
+					{
 						item: "❄️ " + localize("&Winter"),
 						speech_recognition: [
 							"winter theme", "switch to winter theme", "use winter theme", "set theme to winter", "set theme winter", "switch to winter theme", "switch theme to winter", "switch theme winter",
