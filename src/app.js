@@ -847,17 +847,24 @@ $("body").on("dragover dragenter", (event) => {
 				if (item.kind === 'file') {
 					let handle;
 					try {
-						handle = await item.getAsFileSystemHandle();
+						// Experimental API, not supported on Firefox as of 2024-02-17
+						if (item.getAsFileSystemHandle) {
+							handle = await item.getAsFileSystemHandle();
+						}
 					} catch (error) {
 						// I'm not sure when this happens.
 						// should this use "An invalid file handle was associated with %1." message?
 						show_error_message(localize("File not found."), error);
 						return;
 					}
-					if (handle.kind === 'file') {
+					if (!handle || handle.kind === 'file') {
 						let file;
 						try {
-							file = await handle.getFile();
+							if (handle) {
+								file = await handle.getFile();
+							} else {
+								file = item.getAsFile();
+							}
 						} catch (error) {
 							// NotFoundError can happen when the file was moved or deleted,
 							// then dragged and dropped via the browser's downloads bar, or some other outdated file listing.
