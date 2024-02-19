@@ -302,7 +302,14 @@
          d="m 21.5,15.5 v -6 h 6"
          id="path13062"
          sodipodi:nodetypes="ccc"
-         inkscape:label="Cube front highlight" /><g
+         inkscape:label="Cube front highlight" /><rect
+         style="display:inline;fill:none;fill-opacity:0.308458;stroke:#ffffff;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:2.80003;stroke-opacity:0.3283582"
+         id="rect26"
+         width="18"
+         height="16"
+         x="16.5"
+         y="3.5"
+         inkscape:label="Selection marquee white outline for contrast" /><g
          id="g1"
          inkscape:label="Marquee dashes"><rect
            style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stop-color:#000000"
