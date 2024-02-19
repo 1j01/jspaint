@@ -379,6 +379,9 @@ body {
 .transparent-mode-option {
 	background-image: url("../../images/modern/options-transparency.png");
 }
+.transparent-mode-option.use-svg {
+	background-image: url("../../images/modern/options-transparency.svg");
+}
 
 .eye-gaze-mode .eye-gaze-mode-undo-button .button-icon {
 	background: url(../../images/classic/undo.svg);
