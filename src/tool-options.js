@@ -65,7 +65,11 @@ const ChooserDiv = (
 
 	// @TODO: single listener for all divs
 	const on_zoom_etc = () => {
-		const use_svg = (window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0);
+		const use_svg = get_theme() === "modern.css" || get_theme() === "dark-modern.css" ?
+			// only use raster when screen pixels line up with image pixels exactly
+			(window.devicePixelRatio !== 1) :
+			// with nearest neighbor scaling, favor raster at larger integer sizes as well, for retro look
+			(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
 		div.classList.toggle("use-svg", use_svg);
 	};
 	if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
