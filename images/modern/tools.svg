@@ -959,7 +959,7 @@
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
          id="path6593"
-         d="m 23.42,3.04 0.92,0.93 c 0.4,0.4 0.93,-0.13 0.53,-0.53 L 23.94,2.51 Z"
+         d="M 23.55229,3.04 24.34,3.97 c 0.4,0.4 0.93,-0.13 0.53,-0.53 L 23.94,2.6422898 Z"
          style="fill:url(#linearGradient25);fill-opacity:1;fill-rule:evenodd;stroke:#404040;stroke-width:0.198437;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" /><circle
          cy="1.5874779"
          cx="22.753851"
@@ -979,7 +979,7 @@
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
          id="path6595-0-1"
-         d="M 23.89,3.11 C 23.78,3.01 23.72,2.94 23.69,2.97 23.65,3 23.71,3.07 23.81,3.18 24.06,3.43 24.57,3.97 24.64,3.9 24.69,3.82 24.13,3.34 23.89,3.11 Z"
+         d="M 23.89,3.11 C 23.78,3.01 23.749232,2.9692322 23.719232,2.9992322 23.679232,3.0292322 23.71,3.07 23.81,3.18 24.06,3.43 24.57,3.97 24.64,3.9 24.69,3.82 24.13,3.34 23.89,3.11 Z"
          style="display:inline;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" /></g><g
        id="g7256"
        transform="matrix(3.77958,0,0,3.77958,80,-16)"
