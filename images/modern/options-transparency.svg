@@ -270,11 +270,7 @@
        transform="translate(0,23)"
        width="100%"
        height="100%"
-       inkscape:label="Clone of canvas stuff" /><path
-       style="fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stop-color:#000000"
-       d="m 30.5,12.5 h 4 l -3,3 h -4 z"
-       id="path14130"
-       inkscape:label="Cube shadow" /><g
+       inkscape:label="Clone of canvas stuff" /><g
        id="g14093"
        inkscape:label="Selection marquee and cube"><path
          style="display:inline;fill:url(#linearGradient8);fill-opacity:1;stroke:#008000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stop-color:#000000"
