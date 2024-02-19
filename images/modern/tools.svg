@@ -143,10 +143,10 @@
          id="stop32" /></linearGradient><linearGradient
        id="linearGradient23"
        inkscape:collect="always"><stop
-         style="stop-color:#0000bf;stop-opacity:1;"
+         style="stop-color:#606060;stop-opacity:1;"
          offset="0"
          id="stop24" /><stop
-         style="stop-color:#8383ff;stop-opacity:1;"
+         style="stop-color:#c1c1c1;stop-opacity:1;"
          offset="1"
          id="stop25" /></linearGradient><linearGradient
        id="linearGradient21"
@@ -960,7 +960,7 @@
          inkscape:connector-curvature="0"
          id="path6593"
          d="m 23.42,3.04 0.92,0.93 c 0.4,0.4 0.93,-0.13 0.53,-0.53 L 23.94,2.51 Z"
-         style="fill:url(#linearGradient25);fill-opacity:1;fill-rule:evenodd;stroke:#000080;stroke-width:0.198437;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" /><circle
+         style="fill:url(#linearGradient25);fill-opacity:1;fill-rule:evenodd;stroke:#404040;stroke-width:0.198437;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" /><circle
          cy="1.5874779"
          cx="22.753851"
          id="path6591"
