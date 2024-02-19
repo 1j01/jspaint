@@ -57,6 +57,7 @@ const ChooserDiv = (
 	destWidth,
 	destHeight,
 	reuse_div,
+	shift_y_by_1px_in_modern_theme_only,
 ) => {
 	const div = reuse_div(width, height);
 	div.classList.add(class_name);
@@ -65,12 +66,19 @@ const ChooserDiv = (
 
 	// @TODO: single listener for all divs
 	const on_zoom_etc = () => {
-		const use_svg = get_theme() === "modern.css" || get_theme() === "dark-modern.css" ?
+		const modern = get_theme() === "modern.css" || get_theme() === "dark-modern.css";
+		const use_svg = modern ?
 			// only use raster when screen pixels line up with image pixels exactly
 			(window.devicePixelRatio !== 1) :
 			// with nearest neighbor scaling, favor raster at larger integer sizes as well, for retro look
 			(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
 		div.classList.toggle("use-svg", use_svg);
+		// The classic theme's transparency tool options spritesheet uses an
+		// overlapped border, shared by the top and bottom options, as it is
+		// simply a row of black for both, whereas the modern theme's spritesheet
+		// uses a gradient in the border, and so does not use an overlap trick.
+		// This might be clearer if I made the option "shift_y_by_1px_in_classic_themes" with the baseline being the modern theme's metrics.
+		div.style.backgroundPosition = `${-sourceX}px ${-sourceY - (modern && shift_y_by_1px_in_modern_theme_only ? 1 : 0)}px`;
 	};
 	if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
 		$G.off("theme-load resize", div._on_zoom_etc);
@@ -79,7 +87,6 @@ const ChooserDiv = (
 	div._on_zoom_etc = on_zoom_etc;
 	on_zoom_etc();
 
-	div.style.backgroundPosition = `${-sourceX}px ${-sourceY}px`;
 	div.style.borderColor = "transparent";
 	div.style.borderStyle = "solid";
 	div.style.borderLeftWidth = destX + "px";
@@ -376,6 +383,7 @@ const $choose_transparent_mode = $Choose(
 			0, option ? 22 : 0, sw, sh, // x, y, width, height from source image
 			b, b, sw, sh, // x, y, width, height on created destination canvas
 			reuse_div,
+			option, // shift y by 1px in modern theme only, for lower image; border is separate in modern theme, but shared in classic theme
 		);
 	},
 	option => {
