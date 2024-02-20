@@ -993,7 +993,7 @@
        id="g7287-9"
        transform="matrix(3.77958,0,0,3.77958,128,-16)"
        inkscape:label="Brush (round tip with paint smear)"
-       style="display:inline"><g
+       style="display:none"><g
          id="g97"
          inkscape:label="paint blob"><path
            style="display:inline;fill:#ba4e85;fill-opacity:1;stroke:url(#linearGradient72);stroke-width:1;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:2.80003;stroke-opacity:1"
@@ -1054,7 +1054,7 @@
        id="g7287"
        transform="matrix(3.77958,0,0,3.77958,128,-16)"
        inkscape:label="Brush (wide flat bristled)"
-       style="display:none"><path
+       style="display:inline"><path
          sodipodi:nodetypes="ccccccccc"
          inkscape:connector-curvature="0"
          id="path6395"
