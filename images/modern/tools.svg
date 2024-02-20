@@ -1276,7 +1276,8 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-62.9,-18.4)"
-     style="display:none;opacity:1"><image
+     style="display:none;opacity:1"
+     sodipodi:insensitive="true"><image
        width="624"
        height="16"
        preserveAspectRatio="none"
