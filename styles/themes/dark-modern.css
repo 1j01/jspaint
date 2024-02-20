@@ -28,15 +28,16 @@
 	--selected-tool-color: rgba(128, 128, 128, 0.5);
 }
 
-/* WET: same as dark.css; could extract to a dark-icons.css, but ideally the dark modern theme should have modern icons */
-.tool-icon {
+/* .tool-icon {
 	background-image: url("../../images/dark/tools.png");
 	background-repeat: no-repeat;
-	background-position: calc(-16px * var(--icon-index)) 0; /* same as classic theme, but couldn't hurt */
-}
-.tool-icon.use-svg {
-	background-image: url("../../images/dark/tools.svg");
-	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px; /* same as classic theme, but couldn't hurt */
+	background-position: calc(-16px * var(--icon-index)) 0;
+} */
+.tool-icon,
+.tool-icon.use-svg,
+.eye-gaze-mode .tool-icon.use-svg {
+	background-image: url("../../images/modern/tools-dark.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 
 .eye-gaze-mode .toggle-dwell-clicking .button-icon {
