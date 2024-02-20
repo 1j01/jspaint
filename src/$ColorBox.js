@@ -75,15 +75,14 @@
 			// can do this with mousedown instead of pointerdown, but may need to improve eye gaze mode click simulation
 			$b.on("pointerdown", e => {
 				// @TODO: allow metaKey for ternary color, and selection cropping, on macOS?
-				ctrl = e.ctrlKey;
-				button = e.button;
+
 				if (button === 0) {
 					$c.data("$last_fg_color_button", $b);
 				}
 
-				const color_selection_slot = ctrl ? "ternary" : button === 0 ? "foreground" : button === 2 ? "background" : null;
+				const color_selection_slot = e.ctrlKey ? "ternary" : e.button === 0 ? "foreground" : e.button === 2 ? "background" : null;
 				if (color_selection_slot) {
-					if (within_double_click_period && button === double_click_button) {
+					if (within_double_click_period && e.button === double_click_button) {
 						show_edit_colors_window($b, color_selection_slot);
 					} else {
 						selected_colors[color_selection_slot] = $b.data("swatch");
@@ -96,7 +95,7 @@
 						double_click_button = null;
 					}, double_click_period_ms);
 					within_double_click_period = true;
-					double_click_button = button;
+					double_click_button = e.button;
 				}
 			});
 		};
