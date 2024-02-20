@@ -915,7 +915,7 @@
 				item: "💄 " + localize("&Themes"),
 				submenu: [
 					{
-						item: "🔙 " + localize("&Classic"),
+						item: "⬜ " + localize("&Classic Light"),
 						speech_recognition: [
 							"reset theme", "revert theme setting",
 							"classic theme", "switch to classic theme", "use classic theme", "set theme to classic", "set theme classic", "switch to classic theme", "switch theme to classic", "switch theme classic",
@@ -929,6 +929,7 @@
 							"windows 95 theme", "switch to windows 95 theme", "use windows 95 theme", "set theme to windows 95", "set theme windows 95", "switch to windows 95 theme", "switch theme to windows 95", "switch theme windows 95",
 							"windows 2000 theme", "switch to windows 2000 theme", "use windows 2000 theme", "set theme to windows 2000", "set theme windows 2000", "switch to windows 2000 theme", "switch theme to windows 2000", "switch theme windows 2000",
 							// in contrast to the Dark theme:
+							// TODO: stick with Modern/Classic while changing to Dark/Light variant
 							"light theme", "switch to light theme", "use light theme", "set theme to light", "set theme light", "switch to light theme", "switch theme to light", "switch theme light",
 							"light mode", "switch to light mode", "use light mode", "set mode to light", "set mode light", "switch to light mode", "switch mode to light", "switch mode light",
 							"bright theme", "switch to bright theme", "use bright theme", "set theme to bright", "set theme bright", "switch to bright theme", "switch theme to bright", "switch theme bright",
@@ -936,6 +937,8 @@
 							"day theme", "switch to day theme", "use day theme", "set theme to day", "set theme day", "switch to day theme", "switch theme to day", "switch theme day",
 							"day mode", "switch to day mode", "use day mode", "set mode to day", "set mode day", "switch to day mode", "switch mode to day", "switch mode day",
 							"go light", "go bright",
+							// new naming scheme
+							"classic light", "light classic",
 						],
 						action: () => {
 							set_theme("classic.css");
@@ -944,7 +947,7 @@
 						description: localize("Makes JS Paint look like MS Paint from Windows 98."),
 					},
 					{
-						item: "⬛ " + localize("&Dark"),
+						item: "⬛ " + localize("Classic &Dark"),
 						speech_recognition: [
 							"dark theme", "switch to dark theme", "use dark theme", "set theme to dark", "set theme dark", "switch to dark theme", "switch theme to dark", "switch theme dark",
 							"dark mode", "switch to dark mode", "use dark mode", "set mode to dark", "set mode dark", "switch to dark mode", "switch mode to dark", "switch mode dark",
@@ -953,34 +956,40 @@
 							"night theme", "switch to night theme", "use night theme", "set theme to night", "set theme night", "switch to night theme", "switch theme to night", "switch theme night",
 							"night mode", "switch to night mode", "use night mode", "set mode to night", "set mode night", "switch to night mode", "switch mode to night", "switch mode night",
 							"go dark", "go dim",
+							// new naming scheme
+							"classic dark", "dark classic",
 						],
 						action: () => {
 							set_theme("dark.css");
 						},
 						enabled: () => get_theme() != "dark.css",
-						description: localize("Makes JS Paint darker."),
+						description: localize("Makes JS Paint look like MS Paint from Windows 98, with a dark color scheme."),
 					},
 					{
-						item: "⚪ " + localize("&Modern"),
+						item: "⚪ " + localize("&Modern Light"),
 						speech_recognition: [
 							"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "set theme modern", "switch to modern theme", "switch theme to modern", "switch theme modern",
+							// new naming scheme
+							"modern light", "light modern",
 						],
 						action: () => {
 							set_theme("modern.css");
 						},
 						enabled: () => get_theme() != "modern.css",
-						description: localize("Makes JS Paint look a bit more modern."),
+						description: localize("Gives JS Paint a more modern look, with light colors."),
 					},
 					{
-						item: "⚫ " + localize("Da&rk Modern"),
+						item: "⚫ " + localize("Modern Da&rk"),
 						speech_recognition: [
 							"dark modern theme", "switch to dark modern theme", "use dark modern theme", "set theme to dark modern", "set theme dark modern", "switch to dark modern theme", "switch theme to dark modern", "switch theme dark modern",
+							// new naming scheme
+							"modern dark", "dark modern",
 						],
 						action: () => {
 							set_theme("dark-modern.css");
 						},
 						enabled: () => get_theme() != "dark-modern.css",
-						description: localize("Makes JS Paint look a bit more modern and dark."),
+						description: localize("Gives JS Paint a more modern look, with dark colors."),
 					},
 					{
 						item: "❄️ " + localize("&Winter"),
