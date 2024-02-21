@@ -1080,14 +1080,12 @@ $G.on("keydown", e => {
 			case "[":
 			case "{":
 				rotate(-TAU / 4);
-				$canvas_area.trigger("resize");
 				break;
 			case ".": // '>' without Shift
 			case ">":
 			case "]":
 			case "}":
 				rotate(+TAU / 4);
-				$canvas_area.trigger("resize");
 				break;
 			case "Z":
 				e.shiftKey ? redo() : undo();

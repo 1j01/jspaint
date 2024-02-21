@@ -594,7 +594,8 @@ function apply_image_transformation(meta, fn) {
 
 			main_ctx.copy(new_canvas);
 
-			$canvas.trigger("update"); // update handles
+			// $canvas.trigger("update"); // update handles
+			$canvas_area.trigger("resize"); // update handles and magnified canvas size (CSS width/height)
 		});
 	}
 }

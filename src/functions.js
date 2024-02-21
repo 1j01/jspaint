@@ -1614,7 +1614,7 @@ function paste(img_or_canvas) {
 					}
 				);
 				do_the_paste();
-				$canvas_area.trigger("resize");
+				$canvas_area.trigger("resize"); // already taken care of by resize_canvas_and_save_dimensions? or does this hide the main canvas handles?
 			} else if (result === "crop") {
 				do_the_paste();
 			}
@@ -3155,8 +3155,6 @@ function image_flip_and_rotate() {
 			}
 		}
 
-		$canvas_area.trigger("resize");
-
 		$w.close();
 	}, { type: "submit" });
 	$w.$Button(localize("Cancel"), () => {
@@ -3233,7 +3231,6 @@ function image_stretch_and_skew() {
 			// @TODO: undo and clean up undoable 
 			return;
 		}
-		$canvas_area.trigger("resize");
 		$w.close();
 	}, { type: "submit" });
 

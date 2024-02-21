@@ -228,7 +228,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		});
 		$status_position.text("");
 		$status_size.text("");
-		$canvas_area.trigger("resize"); // to update handles, get them to hide?
+		$canvas_area.trigger("resize"); // could use "update" event instead if this is just to hide the main canvas handles
 
 		if (OnCanvasTextBox.$fontbox && OnCanvasTextBox.$fontbox.closed) {
 			OnCanvasTextBox.$fontbox = null;

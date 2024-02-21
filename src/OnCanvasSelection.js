@@ -137,7 +137,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				}
 			};
 			$(this.canvas).on("pointerdown", this.canvas_pointerdown);
-			$canvas_area.trigger("resize");
+			$canvas_area.trigger("resize"); // could use "update" event instead if this is just to hide the main canvas handles
 			$status_position.text("");
 			$status_size.text("");
 		};

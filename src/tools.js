@@ -182,7 +182,7 @@
 						cropped_canvas.ctx.drawImage(main_canvas, -rect_x, -rect_y);
 						main_ctx.copy(cropped_canvas);
 						canvas_handles.show();
-						$canvas_area.trigger("resize");
+						$canvas_area.trigger("resize"); // does this not also call canvas_handles.show()?
 					});
 				} else if (free_form_selection) {
 					// for silly multitools feature,
