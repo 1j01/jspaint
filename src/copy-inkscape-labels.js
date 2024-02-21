@@ -3,7 +3,14 @@
 // I added labels to the first SVG, and wanted to copy them to the second SVG.
 // First I tried a proper XML approach, but whitespace wasn't preserved,
 // even when using a library that claims to preserve it. (Maybe this feature only works with JSDOM? I don't know.)
-// Regex is fragile, but it's a quick way to get a very readable diff.
+// Regex is fragile, but it's a reasonably quick way to get a result with a very readable diff,
+// which I consider to be more important than a technically robust transformation that appears to change everything.
+// I also tried opening the SVG in Inkscape and saving it, but it didn't format the SVG even close to the original.
+// And Inkscape has some weird ideas about how to format XML, so I can't just use any old formatter,
+// I would have to find a very configurable one; and if Inkscape won't even format it the way Inkscape wants,
+// I don't have high hopes for that approach.
+// So regexp it is. If I wanted to use this more often, I might look at other libraries for XML manipulation,
+// and consider writing it in other languages, since it's a simple transform, easy to port.
 
 // // import { default as XMLSerializer } from "https://cdn.skypack.dev/@teclone/xml-serializer@1.3.0/build/esm/main.js";
 
