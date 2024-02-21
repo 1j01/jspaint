@@ -986,9 +986,9 @@
 							"modern dark", "dark modern",
 						],
 						action: () => {
-							set_theme("dark-modern.css");
+							set_theme("modern-dark.css");
 						},
-						enabled: () => get_theme() != "dark-modern.css",
+						enabled: () => get_theme() != "modern-dark.css",
 						description: localize("Gives JS Paint a more modern look, with dark colors."),
 					},
 					{

@@ -2,7 +2,7 @@
 @import "./vista-esque-midnight-green.css";
 
 :root {
-	--theme-loaded: "dark-modern.css";
+	--theme-loaded: "modern-dark.css";
 
 	--Hilight: #0178d7;
 	--HilightText: #ffffff;

@@ -24,7 +24,7 @@
 			const update_css = () => {
 				const use_svg = !theme_dev_blob_url && (
 					(
-						get_theme() === "modern.css" || get_theme() === "dark-modern.css" ?
+						get_theme() === "modern.css" || get_theme() === "modern-dark.css" ?
 							// only use raster when screen pixels line up with image pixels exactly
 							(window.devicePixelRatio !== 1) :
 							// with nearest neighbor scaling, favor raster at larger integer sizes as well, for retro look
