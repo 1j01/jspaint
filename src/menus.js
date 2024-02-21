@@ -1029,6 +1029,7 @@
 							"ritual theme", "switch to ritual theme", "use ritual theme", "set theme to ritual", "set theme ritual", "switch to ritual theme", "switch theme to ritual", "switch theme ritual",
 							"ritualism theme", "switch to ritualism theme", "use ritualism theme", "set theme to ritualism", "set theme ritualism", "switch to ritualism theme", "switch theme to ritualism", "switch theme ritualism",
 							"ritualistic theme", "switch to ritualistic theme", "use ritualistic theme", "set theme to ritualistic", "set theme ritualistic", "switch to ritualistic theme", "switch theme to ritualistic", "switch theme ritualistic",
+							"Halloween theme", "switch to Halloween theme", "use Halloween theme", "set theme to Halloween", "set theme Halloween", "switch to Halloween theme", "switch theme to Halloween", "switch theme Halloween",
 
 							"summon demon", "summon daemon", "summon demon theme", "summon daemon theme",
 							"summon demons", "summon daemons", "summon demons theme", "summon daemons theme",
