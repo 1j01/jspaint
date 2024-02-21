@@ -26,6 +26,9 @@
 	--menu-text-active-color: #eeeeee;
 	--menu-divider-color: rgba(128, 128, 128, 0.3);
 	--selected-tool-color: rgba(128, 128, 128, 0.5);
+
+	/* Styles built-in controls like buttons. */
+	color-scheme: dark;
 }
 
 .tool-icon {
