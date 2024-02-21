@@ -598,27 +598,28 @@ function reset_canvas_and_history() {
 	$G.triggerHandler("history-update"); // update history view
 }
 
+// TODO: fix inconsistent use of ancestry metaphor (parent vs futures); could use the term "basis" for the parent, or "children" for the futures
 function make_history_node({
-	parent = null,
-	futures = [],
-	timestamp = Date.now(),
-	soft = false,
-	image_data = null,
-	selection_image_data = null,
-	selection_x,
-	selection_y,
-	textbox_text,
-	textbox_x,
-	textbox_y,
-	textbox_width,
-	textbox_height,
-	text_tool_font = null,
-	tool_transparent_mode,
-	foreground_color,
-	background_color,
-	ternary_color,
-	name,
-	icon = null,
+	parent = null, // the state before this state (its basis), or null if this is the first state
+	futures = [], // the states branching off from this state (its children)
+	timestamp = Date.now(), // when this state was created
+	soft = false, // indicates that undo should skip this state; it can still be accessed with the History window
+	image_data = null, // the image data for the canvas (TODO: region updates)
+	selection_image_data = null, // the image data for the selection, if any
+	selection_x, // the x position of the selection, if any
+	selection_y, // the y position of the selection, if any
+	textbox_text, // the text in the textbox, if any
+	textbox_x, // the x position of the textbox, if any
+	textbox_y, // the y position of the textbox, if any
+	textbox_width, // the width of the textbox, if any
+	textbox_height, // the height of the textbox, if any
+	text_tool_font = null, // the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
+	tool_transparent_mode, // whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
+	foreground_color, // selected foreground color (left click)
+	background_color, // selected background color (right click)
+	ternary_color, // selected ternary color (ctrl+click)
+	name, // the name of the operation, shown in the history window, e.g. localize("Resize Canvas")
+	icon = null, // an Image representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png")
 }) {
 	return {
 		parent,
