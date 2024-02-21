@@ -28,12 +28,10 @@
 	--selected-tool-color: rgba(128, 128, 128, 0.5);
 }
 
-/* .tool-icon {
-	background-image: url("../../images/dark/tools.png");
-	background-repeat: no-repeat;
-	background-position: calc(-16px * var(--icon-index)) 0;
-} */
-.tool-icon,
+.tool-icon {
+	background-image: url("../../images/modern/tools-dark.png");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+}
 .tool-icon.use-svg,
 .eye-gaze-mode .tool-icon.use-svg {
 	background-image: url("../../images/modern/tools-dark.svg");
