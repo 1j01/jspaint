@@ -12,6 +12,9 @@
 // So regexp it is. If I wanted to use this more often, I might look at other libraries for XML manipulation,
 // and consider writing it in other languages, since it's a simple transform, easy to port.
 
+// USAGE: paste this script into the devtools console in the app, updating the URLs as needed.
+// Copy the message (right click -> "Copy Object" in Firefox) and paste it into the target file.
+
 // // import { default as XMLSerializer } from "https://cdn.skypack.dev/@teclone/xml-serializer@1.3.0/build/esm/main.js";
 
 // async function fetchSVG(url) {
@@ -82,4 +85,4 @@ async function applyLabels(sourceURL, targetURL) {
 	return targetSVG;
 }
 
-console.log(await applyLabels("images/modern/tools-dark.svg", "images/classic/tools.svg"));
+console.log(await applyLabels("images/classic/tools.svg", "images/dark/tools.svg"));
