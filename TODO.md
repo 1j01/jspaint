@@ -46,10 +46,10 @@
 	* Multi-size Icons
 		* Windows ICO ([jBinary can read](https://jdataview.github.io/jBinary.Repo/demo/#ico) and presumably write ICO files)
 		* Mac ICNS
-	* Layered images?
-		* Photoshop PSD ([via psd.js](https://github.com/trevorlinton/psd.js))
-		* OpenRaster ORA ([via ora.js](https://github.com/zsgalusz/ora.js/tree/master))
-	* Paged Images?
+	* Layered images
+		* Photoshop PSD ([via psd.js](https://github.com/samccone/psd.js)
+		* OpenRaster ORA ([via ora.js](https://github.com/zsgalusz/ora.js))
+	* Paged Images
 		* PDF (via [pdf.js](https://github.com/mozilla/pdf.js)) (single page already supported)
 		* DjVu (via [djvu.js](https://djvu.js.org/))
 		* TIFF (via [utif.js](https://github.com/photopea/UTIF.js/)) (single page/frame already supported)
