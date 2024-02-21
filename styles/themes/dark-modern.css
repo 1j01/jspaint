@@ -29,12 +29,12 @@
 }
 
 .tool-icon {
-	background-image: url("../../images/modern/tools-dark.png");
+	background-image: url("../../images/modern/modern-dark-tools.png");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 .tool-icon.use-svg,
 .eye-gaze-mode .tool-icon.use-svg {
-	background-image: url("../../images/modern/tools-dark.svg");
+	background-image: url("../../images/modern/modern-dark-tools.svg");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 

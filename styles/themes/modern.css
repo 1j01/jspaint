@@ -352,16 +352,16 @@ body {
 }
 .tool-icon,
 .tool-icon.use-svg { /* specificity needed for overriding classic theme(?) */
-	background-image: url("../../images/modern/tools.png");
+	background-image: url("../../images/modern/vista-tools.png");
 	background-repeat: no-repeat;
 	background-position: calc(-16px * var(--icon-index)) 0;
 }
 .tool-icon.use-svg {
-	background-image: url("../../images/modern/tools.svg");
+	background-image: url("../../images/modern/modern-light-tools.svg");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 .eye-gaze-mode .tool-icon.use-svg {
-	background-image: url("../../images/modern/tools.svg");
+	background-image: url("../../images/modern/modern-light-tools.svg");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 
