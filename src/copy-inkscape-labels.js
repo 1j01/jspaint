@@ -75,4 +75,4 @@ async function applyLabels(sourceURL, targetURL) {
 	return targetSVG;
 }
 
-console.log(await applyLabels("images/modern/tools-dark.svg", "images/modern/tools.svg"));
+console.log(await applyLabels("images/modern/tools-dark.svg", "images/classic/tools.svg"));
