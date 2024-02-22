@@ -353,8 +353,7 @@ body {
 .toggle.selected {
 	box-shadow: 0px -2px 1px 0px blue;
 }
-.tool-icon,
-.tool-icon.use-svg { /* specificity needed for overriding classic theme(?) */
+.tool-icon {
 	background-image: url("../../images/modern/vista-tools.png");
 	background-repeat: no-repeat;
 	background-position: calc(-16px * var(--icon-index)) 0;
