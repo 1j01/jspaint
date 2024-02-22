@@ -122,62 +122,242 @@
 	<script defer src="src/test-news.js"></script>
 	<!--
 		Before publishing a news update, make sure:
+		- All important changes are mentioned. Check the commit history, ideally.
 		- The <time> element matches the date of the update.
 		- The id of the <article> will never need to be changed.
 			I'm using the format "news-YYYY-very-brief-description".
-			Avoiding putting the date in the id, in case I push the update later.
+			I'm avoiding putting the full date in the id, in case I push the update later.
 			The id is used to check for updates, and is stored in localStorage.
 		- The console shows no errors.
 			test-news.js checks for some problems.
 		- HTML is valid.
+		- News indicator is updated and reads well.
 	-->
 	<div id="news" hidden>
-		<!-- <article class="news-entry" id="news-2021-saving">
-			<h1>The Savior Update</h1>
+		<!-- <article class="news-entry" id="news-2024-textual-paint">
+			<h1>Paint... in the Terminal!?</h1>
 			<time datetime=""></time>
 			<img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src="" />
 			<p>
-				<b>Save</b> (<kbd>Ctrl+S</kbd>) can now save over the open file, in Chrome, Edge, and Opera browsers.
-				This works using new <a target="_blank"
-					href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a>.
-				Always use <b>Save As</b> (<kbd>Ctrl+Shift+S</kbd>) if you want to save a new file.
+				I have created an entirely new MS Paint clone, called <a target="_blank" href="https://github.com/1j01/textual-paint">Textual Paint</a>.
 			</p>
 			<p>
-				<b>Save As</b> now asks for a file name and format.
+				JS Paint runs in the browser, bringing nostalgia to the web, but if it's not retro enough for you,
+				what's more retro than a terminal?
+			</p>
+			<p>
+				Once again, I've implemented basically every feature of MS Paint, but this time as a Text User Interface (TUI).
+			</p>
+			<p>
+				Textual Paint is written in Python, and is built with the <a target="_blank" href="https://textual.textualize.io/">Textual</a> framework.
+			</p>
+			<p>
+				To install Textual Paint, first make sure you have Python 3.10 or later.
+				Then run <code>pip install textual-paint</code>
+				(or <code><a target="_blank" href="https://github.com/pypa/pipx">pipx</a> install textual-paint</code>).
+			</p>
+			<p>
+				To run Textual Paint, run <code>textual-paint</code>.
+				You'll need to use a modern terminal emulator with Unicode and true color support,
+				such as Windows Terminal, GNOME Terminal, or iTerm2.
+			</p>
+		-->
+		<article class="news-entry" id="news-2024-themes-and-save-formats">
+			<h1>Themes and File Formats</h1>
+			<time datetime="2024-02-22">2024-02-22</time>
+			<img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src="" />
+			<h2>New and Updated Themes</h2>
+			<p>
+				The Modern theme has been renamed <b>Modern Light</b> and a new <b>Modern Dark</b> theme has been added.
+			</p>
+			<div style="background: #c0c0c0; padding: 1em; border-radius: .5em; border: 1px inset;">
+				<img alt="MS Paint tool icons from Windows Vista"
+					src="images\modern\vista-tools-spaced-like-svg.png"><br>
+				<!-- TODO: custom pixel-fine-tuned PNG; SVG is designed to align with the pixel grid but it's not perfect -->
+				<!-- <img alt="New custom tool icons for JS Paint's Modern Light theme" src="images\modern\modern-light-tools.png"> -->
+				<img alt="New custom tool icons for JS Paint's Modern Light theme"
+					src="images\modern\modern-light-tools.svg">
+			</div>
+			<p>
+				I designed a custom icon set, inspired by Windows Vista's icons.
+
+				I also customized the icons significantly for the Modern Dark theme,
+				to improve the contrast across the board.
+			</p>
+			<div style="background: #222222; padding: 1em; border-radius: .5em; border: 1px inset;">
+				<img alt="MS Paint tool icons from Windows Vista don't look nice on a dark background"
+					src="images\modern\vista-tools-spaced-like-svg.png"><br>
+				<!-- <img alt="New custom tool icons for JS Paint's Modern Dark theme" src="images\modern\modern-dark-tools.png"> -->
+				<!-- To be consistent, use SVG here too. At least you can zoom in and see the scalability. -->
+				<!-- Though I'd prefer a nice magnifier effect like https://lenadesign.org/2021/06/30/css-javascript-image-magnifier-glass/ -->
+				<!-- Onion skin / swipe would be nice for comparison as well. -->
+				<img alt="New custom tool icons for JS Paint's Modern Dark theme"
+					src="images\modern\modern-dark-tools.svg">
+			</div>
+			<p>
+				When adapting the Vista icons to scalable vector graphics,
+				I had to make lots of subtle design decisions, but the biggest difference you'll notice is that
+				the Brush tool matches the Classic style of a flat tipped brush (albeit with added gradients),
+				since I really didn't like the Vista Brush tool icon.
+				I mean come on, it's the only icon that's <em>cut off, by design!</em>
+				And it just looks like a blob to me, at least the purple version. (There's also a green version.)
+				Besides, a wide brush emphasizes the distinction from the Pencil tool.
+			</p>
+			<p>
+				The Classic theme has been renamed <b>Classic Light</b>, and the <b>Classic Dark</b> theme has been
+				updated.
+			</p>
+			<!-- TODO: use github commit based references for permalinks; show old version of dark theme for comparison -->
+			<!-- Well, actually, ideally I would want a spaced out version of the icons, but it was a compact spritesheet... -->
+			<div style="background: #c0c0c0; padding: 1em; border-radius: .5em; border: 1px inset;">
+				<img alt="New custom tool icons for JS Paint" src="images\classic\tools.png">
+			</div>
+			<div style="background: #222222; padding: 1em; border-radius: .5em; border: 1px inset;">
+				<img alt="New custom tool icons for JS Paint" src="images\dark\tools.png">
+			</div>
+
+			<p>
+				I wasn't happy with the Classic Dark theme's icons, especially my use of color;
+				it felt like a cheap RGB color inversion, even though I'm sure I gave it some more thought than that.
+				I also wasn't sure how to achieve good contrast with the pencil tip while maintaining a consistent
+				skeuomorphic style, since graphite is dark just like the background.
+				So I've redesigned the pencil in a more abstract way (all white including the tip),
+				and I've made the icons monochrome.
+			</p>
+			<p>
+				I'm actually a big fan of color in icons, as I think it helps to distinguish them,
+				so if anyone wants to try their hand at a Classic Dark theme with colored icons,
+				I'd be interested to see it!
+			</p>
+			<p>
+				That said, monochrome has a nice elegance to it; it's less attention grabbing,
+				and I'm sure some people will always prefer it.
+			</p>
+			<p>
+				I also updated the <b>Occult</b> theme.
+				I changed the Fill With Color tool into a pouring cauldron, the Pick Color tool into a dagger,
+				and the Magnifier into an eyeball.
+			</p>
+			<div style="background: #660c08; padding: 1em; border-radius: .5em; border: 1px inset;">
+				<img alt="Updated tool icons for JS Paint's Occult theme" src="images\occult\tools.png">
+			</div>
+			<p>
+				Check out the themes in <b>Extras > Themes</b>!
+			</p>
+			<h2>File Formats</h2>
+			<aside
+				style="background-color: #ffffbb; padding: .5em 1em; border-radius: .5em; border: 1px outset; font-size: smaller">
+				<p>
+					These changes have actually been around since 2021,
+					but I didn't get around to finishing a news post about them until now.
+				</p>
+				<p>
+					Still, there's some good changes here, so it bears mentioning!
+				</p>
+			</aside>
+			<!-- I disabled this feature for now, as I saw some 0 bytes files saved, and I REALLY don't want people to lose work!
+			It needs thorough testing / gradual rollout.
+			Besides that, I didn't want to promote another feature available only in Chrome.
+			<p>
+				<b>Save</b> (<kbd>Ctrl+S</kbd>) can now save over the open file, in Chrome, Edge, and Opera browsers.
+				This works using new <a target="_blank"
+					href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access
+					API</a>.
+				Always use <b>Save As</b> (<kbd>Ctrl+Shift+S</kbd>) if you want to save a new file.
+			</p> -->
+			<p>
+				<img alt="" src="images/save.gif" width="50" height="50" style="float: right;" />
+				<b>File > Save As</b> now asks for a file name and format.
 				PNG, GIF, and BMP are supported, including indexed color BMPs.
 			</p>
 			<p>
+				See the <a href="https://github.com/1j01/jspaint?tab=readme-ov-file#supported-file-formats"
+					target="_blank">Supported File Formats</a> table for details.
+			</p>
+			<p>
+				<img alt="" src="images/idea.gif" width="33" height="26" style="float: left;" />
 				Tip: Use PNG if you don't have a specific reason to use another format,
 				as it has the best quality when saving.
 			</p>
+			<!-- I disabled this for now, I think because it's unclear if you'd always want to load the palette when opening an image,
+			or if there should be some UI around it, like an undo button beside the palette, or a prompt to load the palette.
+			Also indexed PNGs should be handled consistently with indexed BMPs.
+			The thing is, if you save an image with a subset of colors from a palette, and then load the image,
+			you might not want to load the palette, as it may simply remove colors from the palette,
+			particularly if it was the default palette.
+			But a prompt seems annoying. Maybe it should only load the palette for monochrome (two-color) images?
+			It's unclear.
 			<p>
 				If you open a BMP file with a palette, the palette is loaded into the Colors box.
 				If you load a monochrome BMP file, it loads a gradient of dither patterns into the Colors box.
-			</p>
+			</p>-->
 			<p>
-				<b>Black and White</b> mode in <b>Image > Attributes</b> is generalized to a monochrome mode
+				<!-- <img alt="" src="help/p_monochrome.png" width="14" height="11" style="vertical-align: middle;" /> -->
+				<b>Black and White</b> mode in <b>Image > Attributes</b> is generalized to handle two arbitrary colors
 				(although it's still called "Black and White" in the Attributes window.)
-				If an image has only two colors, when switching to "Black and White" mode,
-				it automatically adapts to these colors and gives you a gradient of dither patterns in the Colors box.
 			</p>
 			<p>
-				If you use <b>Image > Invert</b>, in monochrome mode, it flips the two colors in the image,
-				instead of changing colors to their RGB opposites.
-				(If the image is pure black and white, these two operations are equivalent.)
+				If an image has only two colors, when switching to "Black and White" mode,
+				it automatically adapts to these colors and fills the Colors box with appropriate dither patterns.
+			</p>
+			<p>
+				If you use <b>Image > Invert</b> in Black and White mode,
+				it now swaps the two colors present in the image,
+				instead of converting colors to their RGB opposites.
+				If the image is pure black and white, these two operations are equivalent,
+				but now, for example, a <i>green-and-black</i> image will become a <i>black-and-green</i> image,
+				rather than <i>pink-and-white</i>.
 			</p>
 			<p>
 				<b>Colors > Save Colors</b> also now asks for a file name and format.
-				An absurd number of file formats are supported.
+				An absurd number of file formats are <a
+					href="https://github.com/1j01/jspaint?tab=readme-ov-file#color-palette-formats"
+					target="_blank">supported</a>.
 				You can even export CSS variables for use in a web design project.
-				RIFF Palette (*.pal) is compatible with MS Paint, and GIMP Palette (*.gpl) is compatible with many open source
-				graphics programs such as Inkscape and Krita.
 			</p>
 			<p>
-				You can find lots of palettes to use on <a target="_blank" href="https://lospec.com/palette-list">Lospec</a>.
-				Download a palette as GIMP GPL (or several other formats) and use <b>Colors > Get Colors</b> and select
-				the file, or simply drag and drop the file onto JS Paint to load the palette.
+				<img alt="" src="images/idea.gif" width="33" height="26" style="float: left;" />
+				RIFF Palette (*.pal) is compatible with MS Paint, and GIMP Palette (*.gpl) is compatible with many open
+				source graphics programs such as Inkscape and Krita.
 			</p>
-		</article> -->
+			<p>
+				You can find lots of palettes to use on
+				<a target="_blank" href="https://lospec.com/palette-list">Lospec</a>.
+				Download a palette as GIMP GPL and use <b>Colors > Get Colors</b> to select
+				the file, or drag and drop the file onto JS Paint to load the palette.
+			</p>
+			<h2>API</h2>
+			<p>
+				I also documented a first version of the API for JS Paint.
+			</p>
+			<p>
+				I have not yet put much design into the API; rather, I have just documented the interface I came up with
+				for my own use in <a href="https://98.js.org" target="_blank">98.js.org</a>.
+				In other words, this is more of a draft of an API, though I will certainly create a changelog
+				when I decide to clean it up.
+				So feel free to start using it if you don't mind updating your code as the API changes.
+			</p>
+			<p>
+				If you want to embed JS Paint in your own project, you can take a look at the
+				<a href="https://github.com/1j01/jspaint?tab=readme-ov-file#embed-in-your-website" target="_blank">
+					Embed in your website</a> section of the readme.
+				<!-- Hm, I might want to move that to a separate markdown file... but maybe keep that heading around so the link stays valid. -->
+			</p>
+			<h2>Homepage</h2>
+			<p>
+				JS Paint now has a homepage at <a href="https://jspaint.app/about"
+					target="_blank">jspaint.app/about</a>.
+			</p>
+			<p>
+				I designed it like a 90s website.
+				You know, one of those thoughtless background pattern filled ones.
+			</p>
+			<p>
+				<a href="https://jspaint.app/about" target="_blank">
+					<img src="images/enter.gif" alt="Click to Enter" width="145" height="77" />
+				</a>
+			</p>
+		</article>
 		<article class="news-entry" id="news-2022-open-source">
 			<h1>Open Source</h1>
 			<time datetime="2022-07-28">2022-07-28</time>

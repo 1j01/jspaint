@@ -706,15 +706,18 @@ const news_seen_key = "jspaint latest news seen";
 const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
-		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<!--<span class='marquee' dir='ltr' style='--text-width: 50ch; --animation-duration: 3s;'>
+		<!--<img src='images/winter/present.png' width='24' height='22' alt=''/>-->
+		<img src='images/about/news.gif' width='40' height='16' alt=''/>
+		<!--<img src='images/new.gif' width='40' height='16' alt=''/>-->
+		<span class='marquee' dir='ltr' style='--text-width: 44ch; --animation-duration: 3s;'>
 			<span>
-				<b>Open Source</b> — MIT Licensed! Free Software! Finally!
+				<!--<b>Cool new things</b> — One thing! Another thing! Something else!-->
+				Themes, New Homepage, File Formats, and More!
 			</span>
-		</span>-->
-		<span>
-			<b>Open Source!</b>
 		</span>
+		<!--<span>
+			<b>Themes</b> and <b>File Formats</b>
+		</span>-->
 	</a>
 `);
 $news_indicator.on("click auxclick", (event) => {
