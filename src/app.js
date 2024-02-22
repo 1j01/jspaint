@@ -733,10 +733,11 @@ try {
 } catch (error) {
 	local_storage_unavailable = true;
 }
-const news_period_if_can_dismiss = 15;
-const news_period_if_cannot_dismiss = 5;
+const day = 24 * 60 * 60 * 1000;
+const news_period_if_can_dismiss = 15 * day;
+const news_period_if_cannot_dismiss = 5 * day;
 const news_period = local_storage_unavailable ? news_period_if_cannot_dismiss : news_period_if_can_dismiss;
-if (Date.now() < Date.parse(latest_news_datetime) + news_period * 24 * 60 * 60 * 1000 && news_seen !== latest_news_datetime) {
+if (Date.now() < Date.parse(latest_news_datetime) + news_period && news_seen !== latest_news_datetime) {
 	$status_area.append($news_indicator);
 }
 
@@ -769,6 +770,19 @@ $(menu_bar.element).on("info", (event) => {
 $(menu_bar.element).on("default-info", () => {
 	$status_text.default();
 });
+
+// Hidden in a menu, these GIFs are not as obtrusive even though they can't be dismissed
+const theme_updated_period = 20 * day;
+const theme_new_period = 40 * day;
+if (Date.now() < Date.parse("2024-02-22") + theme_new_period) {
+	$("[role=menuitem][aria-label*='Modern Dark'] .menu-item-shortcut").append("<img src='images/new2.gif' alt='New!'/>");
+}
+if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
+	$("[role=menuitem][aria-label*='Modern Light'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+	$("[role=menuitem][aria-label*='Classic Dark'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+	$("[role=menuitem][aria-label*='Occult'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+}
+
 // </menu bar>
 
 let $toolbox = $ToolBox(tools);
