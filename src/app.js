@@ -779,6 +779,8 @@ const theme_updated_period = 20 * day;
 const theme_new_period = 40 * day;
 if (Date.now() < Date.parse("2024-02-22") + theme_new_period) {
 	$("[role=menuitem][aria-label*='Modern Dark'] .menu-item-shortcut").append("<img src='images/new2.gif' alt='New!'/>");
+	// Will actually probably release this one later...
+	$("[role=menuitem][aria-label*='Bubblegum'] .menu-item-shortcut").append("<img src='images/new2.gif' alt='New!'/>");
 }
 if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
 	$("[role=menuitem][aria-label*='Modern Light'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");

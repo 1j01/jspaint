@@ -1,0 +1,99 @@
+@import url("modern.css");
+
+:root {
+	--theme-loaded: "bubblegum.css";
+
+	--window-frame-active-color: transparent;
+	--window-frame-inactive-color: transparent;
+	--menu-text-disabled-color: #5c71a0;
+}
+
+.os-window,
+.component-area,
+.status-field  {
+	border-image-source: url("../../images/bubblegum/bubblegum-border-with-recess.png") !important;
+	border-image-slice: 82 95 77 92 fill !important;
+	border-image-width: 20px 20px 20px 20px !important;
+	border-image-outset: 0px 0px 0px 0px !important;
+	border-image-repeat: stretch stretch !important;
+	border-style: solid !important;
+	padding: 7px !important;
+	background-color: transparent !important;
+	/* for box-shadow */
+	border-radius: 10px !important;
+}
+
+.os-window .window-titlebar {
+	background: transparent !important;
+}
+
+.os-window .window-content {
+	background: transparent !important;
+}
+
+.menu-button {
+	padding: 7px !important;
+}
+
+.os-window .window-titlebar,
+button:not(.lightweight):not(:active),
+button.lightweight:hover:not(:active),
+.menus,
+.menu-popup,
+.menu-button.highlight:not(.active),
+.status-area {
+	border-image-source: url("../../images/bubblegum/bubblegum-border.png") !important;
+	border-image-slice: 82 95 77 92 fill !important;
+	border-image-width: 20px 20px 20px 20px !important;
+	border-image-outset: 0px 0px 0px 0px !important;
+	border-image-repeat: stretch stretch !important;
+	border-style: solid !important;
+	background-color: transparent !important;
+	border-radius: 10px !important;
+}
+
+hr,
+.status-field,
+.menu-button.active,
+button:active {
+	border-image-source: url("../../images/bubblegum/bubblegum-recess.png") !important;
+	border-image-slice: 82 95 77 92 fill !important;
+	border-image-width: 20px 20px 20px 20px !important;
+	border-image-outset: 0px 0px 0px 0px !important;
+	border-image-repeat: stretch stretch !important;
+	border-style: solid !important;
+	padding: 7px !important;
+	background-color: transparent !important;
+	border-radius: 10px !important;
+}
+
+hr {
+	transform: scaleY(0.5);
+}
+
+.menu-button.active,
+.menu-button.active,
+button:active {
+	border-image-outset: 7px !important;
+}
+
+.menu-item.highlight {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+#paint-32x32 {
+	display: block;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	background: url("../../images/bubblegum/bubblegum-paint-128x128.png") no-repeat;
+	/* background-size: 32px 32px;
+	width: 32px;
+	height: 32px;
+	padding-left: 32px; */
+	background-size: 128px 128px;
+	width: 128px;
+	height: 128px;
+	padding-left: 128px;
+	transform: translateY(-40px);
+	margin-bottom: calc(32px - 128px);
+}

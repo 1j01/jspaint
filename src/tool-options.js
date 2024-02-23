@@ -66,7 +66,7 @@ const ChooserDiv = (
 
 	// @TODO: single listener for all divs
 	const on_zoom_etc = () => {
-		const modern = get_theme() === "modern.css" || get_theme() === "modern-dark.css";
+		const modern = get_theme() === "modern.css" || get_theme() === "modern-dark.css" || get_theme() === "bubblegum.css";
 		const use_svg = modern ?
 			// only use raster when screen pixels line up with image pixels exactly
 			(window.devicePixelRatio !== 1) :

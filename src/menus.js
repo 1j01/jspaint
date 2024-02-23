@@ -1055,6 +1055,18 @@
 						enabled: () => get_theme() != "occult.css",
 						description: localize("Starts the ritual."),
 					},
+					{
+						item: "🫧 " + localize("&Bubblegum"),
+						speech_recognition: [
+							"bubblegum theme", "switch to bubblegum theme", "use bubblegum theme", "set theme to bubblegum", "set theme bubblegum", "switch to bubblegum theme", "switch theme to bubblegum", "switch theme bubblegum",
+							"pink theme", "switch to pink theme", "use pink theme", "set theme to pink", "set theme pink", "switch to pink theme", "switch theme to pink", "switch theme pink",
+						],
+						action: () => {
+							set_theme("bubblegum.css");
+						},
+						enabled: () => get_theme() != "bubblegum.css",
+						description: localize("Makes JS Paint look like pearlescent bubblegum."),
+					},
 				]
 			},
 			{
