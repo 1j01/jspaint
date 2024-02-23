@@ -97,3 +97,23 @@ button:active {
 	transform: translateY(-40px);
 	margin-bottom: calc(32px - 128px);
 }
+
+
+.tool-icon {
+	background-image: url("../../images/bubblegum/bubblegum-tools.png");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+}
+.tool-icon.use-svg,
+.eye-gaze-mode .tool-icon.use-svg {
+	background-image: url("../../images/bubblegum/bubblegum-tools.svg");
+	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+}
+
+.eye-gaze-mode .toggle-dwell-clicking .button-icon {
+	background: url(../../images/bubblegum/eye-gaze-pause-128x128.png);
+	background-size: 100% 100%;
+}
+.eye-gaze-mode.eye-gaze-mode-paused .toggle-dwell-clicking .button-icon {
+	background: url(../../images/bubblegum/eye-gaze-unpause-128x128.png);
+	background-size: 100% 100%;
+}
