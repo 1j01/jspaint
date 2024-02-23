@@ -5,6 +5,7 @@ Automated checks to catch errors before publishing a news update:
 - The id of the <article> is unique and follows the format 'news-YYYY-some-topic'.
 - All <a> elements have a target="_blank" attribute.
 - All <a> elements have an href attribute.
+- All <img> elements have alt and non-empty src attributes.
 
 HTML validity checking is not performed.
 */
@@ -75,6 +76,19 @@ for (const article of articles) {
 		}
 		if (!href) {
 			console.error(`href is not set`, link);
+		}
+	}
+
+	// Check images
+	const images = article.querySelectorAll('img');
+	for (const img of images) {
+		const hasAlt = img.hasAttribute('alt');
+		const src = img.getAttribute('src');
+		if (!hasAlt) {
+			console.error(`img is missing alt (empty is often fine)`, img);
+		}
+		if (!src) {
+			console.error(`img is missing src URL`, img);
 		}
 	}
 }
