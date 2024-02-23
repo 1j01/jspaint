@@ -69,6 +69,28 @@ button:active {
 	padding: 7px !important;
 	background-color: transparent !important;
 	border-radius: 10px !important;
+	/* box-shadow can't be applied directly here, because of the border-image fill (as far as I know; might want to test that assumption) */
+}
+
+/* The shadows that are part of the border-image don't go on top of the
+contents of the element, but I can somewhat mimic the shadows,
+using box-shadow on a pseudo element.
+
+This better integrates the contents in the (virtual, imagined) physical scene,
+but it does increase the visual weight of the shadows,
+where it overlaps the shadows baked into the border-image. */
+.tool-options {
+	position: relative;
+}
+.tool-options::before {
+    content: '';
+    display: block;
+    box-shadow: inset 5px 5px 8px rgba(32, 49, 60, 0.36), inset -4px 4px 6px rgba(32, 49, 60, 0.26), inset 0px -4px 2px rgba(255, 224, 255, 0.96);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .status-field {
