@@ -71,6 +71,9 @@ button:active {
 	border-radius: 10px !important;
 }
 
+.status-field {
+	border-image-outset: 5px !important;
+}
 .swatch {
 	padding: 0px !important;
 	border-image-outset: 14px !important;
