@@ -119,11 +119,8 @@ button:active {
 	margin-bottom: calc(32px - 128px);
 }
 
-
-.tool-icon {
-	background-image: url("../../images/bubblegum/bubblegum-tools.png");
-	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
-}
+/* Need multiple specificity levels to override Modern theme. */
+.tool-icon,
 .tool-icon.use-svg,
 .eye-gaze-mode .tool-icon.use-svg {
 	background-image: url("../../images/bubblegum/bubblegum-tools.svg");
