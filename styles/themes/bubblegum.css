@@ -31,7 +31,8 @@
 	background: transparent !important;
 }
 
-.menu-button {
+.menu-button,
+button {
 	padding: 7px !important;
 }
 
