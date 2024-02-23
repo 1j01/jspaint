@@ -9,7 +9,7 @@
 }
 
 .os-window,
-.component-area,
+.component-area:not(:empty),
 .status-field  {
 	border-image-source: url("../../images/bubblegum/bubblegum-border-with-recess.png") !important;
 	border-image-slice: 82 95 77 92 fill !important;
