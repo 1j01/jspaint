@@ -53,6 +53,7 @@ button.lightweight:hover:not(:active),
 }
 
 hr,
+.tool-options,
 .status-field,
 .menu-button.active,
 button:active {
@@ -71,6 +72,12 @@ hr {
 	transform: scaleY(0.5);
 }
 
+.tool-options {
+	padding: 0px !important;
+	border-image-outset: 10px !important;
+	overflow: hidden;
+	margin-top: 7px;
+}
 .menu-button.active,
 .menu-button.active,
 button:active {
