@@ -979,7 +979,7 @@
 						description: localize("Gives JS Paint a more modern look, with light colors."),
 					},
 					{
-						item: "⚫ " + localize("Modern Da&rk"),
+						item: "⚫ " + localize("Mod&ern Dark"),
 						speech_recognition: [
 							"dark modern theme", "switch to dark modern theme", "use dark modern theme", "set theme to dark modern", "set theme dark modern", "switch to dark modern theme", "switch theme to dark modern", "switch theme dark modern",
 							// new naming scheme
