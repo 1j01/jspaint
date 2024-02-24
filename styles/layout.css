@@ -1137,3 +1137,12 @@ summary {
 	user-select: none;
 	cursor: pointer;
 }
+
+.too-big-soon-gif {
+	transition: transform 0.2s;
+	transform-origin: 0% 100%;
+	image-rendering: optimizeQuality;
+}
+.menu-item:not(.highlight) .too-big-soon-gif {
+	transform: scale(0.6);
+}

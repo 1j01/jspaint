@@ -1062,9 +1062,12 @@
 							"pink theme", "switch to pink theme", "use pink theme", "set theme to pink", "set theme pink", "switch to pink theme", "switch theme to pink", "switch theme pink",
 						],
 						action: () => {
-							set_theme("bubblegum.css");
+							// Have to comment this out because os-gui currently actually executes the action when it's disabled!
+							// Stupid! Who developed this library? (it was me) (I definitely consciously made this decision)
+							// set_theme("bubblegum.css");
 						},
-						enabled: () => get_theme() != "bubblegum.css",
+						enabled: false,
+						// enabled: () => get_theme() != "bubblegum.css",
 						description: localize("Makes JS Paint look like pearlescent bubblegum."),
 					},
 				]
