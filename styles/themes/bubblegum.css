@@ -142,7 +142,10 @@ hr {
 	padding: 0px !important;
 	border-image-outset: 10px !important;
 	overflow: hidden;
-	margin-top: 7px;
+	margin-top: 10px;
+}
+.tools-component {
+	padding-top: 5px;
 }
 .menu-button.active,
 .menu-button.active,
@@ -199,4 +202,9 @@ button:active {
 .tool.selected .tool-icon {
 	transform: translateY(1px);
 	filter: drop-shadow(1px 2px 0.5px rgba(53, 54, 134, 0.5));
+}
+
+/* Avoid light part of feathered recess texture appearing as a glow over top of the button above */
+.tool.selected:not(:nth-child(1)):not(:nth-child(2)) {
+	clip-path: inset(0 0 0 0);
 }
