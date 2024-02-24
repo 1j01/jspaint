@@ -179,3 +179,9 @@ button:active {
 .transparent-mode-option.use-svg {
 	background-image: url("../../images/bubblegum/options-transparency.svg");
 }
+
+/* Pressed effect: move icons down so they feel like they're recessed into the button */
+.tool.selected .tool-icon {
+	transform: translateY(1px);
+	filter: drop-shadow(1px 2px 0.5px rgba(53, 54, 134, 0.5));
+}
