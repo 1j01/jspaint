@@ -6,6 +6,19 @@
 	--window-frame-active-color: transparent;
 	--window-frame-inactive-color: transparent;
 	--menu-text-disabled-color: #5c71a0;
+	--menu-text-color: #330050;
+	--window-text-color: #330050;
+	--WindowText: #330050;
+}
+
+* {
+	text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.menu-button,
+button,
+.window-titlebar {
+	font-weight: bold;
 }
 
 .os-window,
