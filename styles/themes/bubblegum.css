@@ -40,7 +40,7 @@ button,
 .os-window .window-titlebar,
 button:not(.lightweight):not(:active),
 button.lightweight:hover:not(:active),
-.tools-component .tool:hover:not(.selected),
+.tools-component .tool,
 .menus,
 .menu-popup,
 .menu-button.highlight:not(.active),
@@ -71,16 +71,18 @@ button:active,
 	border-style: solid !important;
 	padding: 7px !important;
 	background-color: transparent !important;
+	/* border-radius affects hover outline in Eye Gaze Mode, as well as any clipping (with overflow: hidden), and box-shadows */
 	border-radius: 10px !important;
 	/* box-shadow can't be applied directly here, because of the border-image fill (as far as I know; might want to test that assumption) */
 }
 
 .tools-component .tool,
 .tools-component .tool.selected {
-	border-image-width: 10px !important;
+	border-image-width: 5px !important;
+	border-radius: 4px !important;
 }
 .tools-component .tool.selected {
-	border-image-outset: 3px !important;
+	border-image-outset: 2px !important;
 }
 
 /* The shadows that are part of the border-image don't go on top of the
