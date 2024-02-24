@@ -162,3 +162,9 @@ button:active {
 	background: url(../../images/bubblegum/eye-gaze-unpause-128x128.png);
 	background-size: 100% 100%;
 }
+
+/* Need multiple specificity levels to override Modern theme. */
+.transparent-mode-option,
+.transparent-mode-option.use-svg {
+	background-image: url("../../images/bubblegum/options-transparency.svg");
+}
