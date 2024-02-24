@@ -1070,6 +1070,40 @@
 						// enabled: () => get_theme() != "bubblegum.css",
 						description: localize("Makes JS Paint look like pearlescent bubblegum."),
 					},
+					// {
+					// 	item: "🪐 " + localize("&Retro Futurist"),
+					// 	speech_recognition: [
+					// 		"retrofuturist theme", "switch to retrofuturist theme", "use retrofuturist theme", "set theme to retrofuturist", "set theme retrofuturist", "switch to retrofuturist theme", "switch theme to retrofuturist", "switch theme retrofuturist",
+					// 		"retro futurist theme", "switch to retro futurist theme", "use retro futurist theme", "set theme to retro futurist", "set theme retro futurist", "switch to retro futurist theme", "switch theme to retro futurist", "switch theme retro futurist",
+					// 		"retrofuturistic theme", "switch to retrofuturistic theme", "use retrofuturistic theme", "set theme to retrofuturistic", "set theme retrofuturistic", "switch to retrofuturistic theme", "switch theme to retrofuturistic", "switch theme retrofuturistic",
+					// 		"retro futuristic theme", "switch to retro futuristic theme", "use retro futuristic theme", "set theme to retro futuristic", "set theme retro futuristic", "switch to retro futuristic theme", "switch theme to retro futuristic", "switch theme retro futuristic",
+					// 		// spell-checker: disable
+					// 		"scifi theme", "switch to scifi theme", "use scifi theme", "set theme to scifi", "set theme scifi", "switch to scifi theme", "switch theme to scifi", "switch theme scifi",
+					// 		// spell-checker: enable
+					// 		"sci-fi theme", "switch to sci-fi theme", "use sci-fi theme", "set theme to sci-fi", "set theme sci-fi", "switch to sci-fi theme", "switch theme to sci-fi", "switch theme sci-fi",
+					// 	],
+					// 	action: () => {
+					// 		set_theme("retrofuturist.css");
+					// 	},
+					// 	enabled: false,
+					// 	// enabled: () => get_theme() != "retrofuturist.css",
+					// 	description: localize("Makes JS Paint look like the future as imagined in the past."),
+					// },
+					// {
+					// 	item: "🧺 " + localize("&Picnic"),
+					// 	speech_recognition: [
+					// 		"picnic theme", "switch to picnic theme", "use picnic theme", "set theme to picnic", "set theme picnic", "switch to picnic theme", "switch theme to picnic", "switch theme picnic",
+					// 		"pic-nic theme", "switch to pic-nic theme", "use pic-nic theme", "set theme to pic-nic", "set theme pic-nic", "switch to pic-nic theme", "switch theme to pic-nic", "switch theme pic-nic",
+					// 		"sandbox theme", "switch to sandbox theme", "use sandbox theme", "set theme to sandbox", "set theme sandbox", "switch to sandbox theme", "switch theme to sandbox", "switch theme sandbox",
+					// 		"wooden theme", "switch to wooden theme", "use wooden theme", "set theme to wooden", "set theme wooden", "switch to wooden theme", "switch theme to wooden", "switch theme wooden",
+					// 	],
+					// 	action: () => {
+					// 		set_theme("picnic.css");
+					// 	},
+					// 	enabled: false,
+					// 	// enabled: () => get_theme() != "picnic.css",
+					// 	description: localize("Makes JS Paint look like a picnic in the park."),
+					// },
 				]
 			},
 			{

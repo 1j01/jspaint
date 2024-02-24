@@ -783,6 +783,8 @@ if (Date.now() < Date.parse("2024-02-22") + theme_new_period) {
 }
 if (Date.now() < Date.parse("2024-02-24") + theme_soon_period) {
 	$("[role=menuitem][aria-label*='Bubblegum'] .menu-item-shortcut").append("<img src='images/soon-twist-anim.gif' alt='Coming Soon!' class='too-big-soon-gif'/>");
+	// $("[role=menuitem][aria-label*='Retro Futurist'] .menu-item-shortcut").append("<img src='images/soon.gif' alt='Coming Soon!'/>");
+	// $("[role=menuitem][aria-label*='Picnic'] .menu-item-shortcut").append("<img src='images/soon.gif' alt='Coming Soon!'/>");
 }
 if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
 	$("[role=menuitem][aria-label*='Modern Light'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
