@@ -138,6 +138,16 @@ hr {
 	transform: scaleY(0.5);
 }
 
+.help-window iframe.inset-deep {
+	background-color: white !important;
+	/* padding: 0px !important; */
+	border-image-outset: 7px !important;
+	/* border-image-outset: 14px !important; */
+	border-image-slice: 82 95 77 92 !important; /* remove fill so background-color is visible */
+	/* background-clip: content-box; */
+	overflow: hidden;
+}
+
 .tool-options {
 	padding: 0px !important;
 	border-image-outset: 10px !important;
