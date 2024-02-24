@@ -32,13 +32,15 @@
 }
 
 .menu-button,
-button {
+button,
+.tools-component .tool {
 	padding: 7px !important;
 }
 
 .os-window .window-titlebar,
 button:not(.lightweight):not(:active),
 button.lightweight:hover:not(:active),
+.tools-component .tool,
 .menus,
 .menu-popup,
 .menu-button.highlight:not(.active),
@@ -59,7 +61,8 @@ hr,
 .tool-options,
 .status-field,
 .menu-button.active,
-button:active {
+button:active,
+.tools-component .tool.selected {
 	border-image-source: url("../../images/bubblegum/bubblegum-recess.png") !important;
 	border-image-slice: 82 95 77 92 fill !important;
 	border-image-width: 20px 20px 20px 20px !important;
@@ -70,6 +73,14 @@ button:active {
 	background-color: transparent !important;
 	border-radius: 10px !important;
 	/* box-shadow can't be applied directly here, because of the border-image fill (as far as I know; might want to test that assumption) */
+}
+
+.tools-component .tool,
+.tools-component .tool.selected {
+	border-image-width: 10px !important;
+}
+.tools-component .tool.selected {
+	border-image-outset: 3px !important;
 }
 
 /* The shadows that are part of the border-image don't go on top of the
