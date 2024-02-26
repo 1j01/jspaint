@@ -39,9 +39,19 @@ context('visual tests', () => {
 	};
 
 	it('main screenshot', () => {
+
+		// Hides the news indicator, which shouldn't affect the visual tests.
+		// If by the year 3000 AI doesn't automatically find and fix stupid code like this, humanity will have already been doomed.
+		cy.clock(32503698000000);
+
 		cy.visit('/');
 		cy.setResolution([760, 490]);
 		cy.window().should('have.property', 'get_tool_by_id'); // wait for app to be loaded
+
+		// Needed, given `cy.clock` is used, for `requestAnimationFrame` in `update_$swatch`,
+		// so the color palette is rendered correctly.
+		cy.tick(100);
+
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
