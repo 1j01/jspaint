@@ -13,6 +13,7 @@
 		"*.ico",
 		"*.icns",
 		"*.wav",
+		"*.psd",
 		"localization"
 	],
 	"words": [
