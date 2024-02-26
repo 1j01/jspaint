@@ -2,16 +2,34 @@
 
 context('visual tests', () => {
 
+	// These tests are not really cross-platform or even cross-computer,
+	// since they depend on pixel-exact text and SVG rendering, as well as browser-specific built-in styles and layout.
+	// Unfortunately, increasing the threshold to a point where the tests pass on all systems would introduce RIDICULOUS false negatives,
+	// like changing the entire icon set wasn't even detected as a change, in Eye Gaze Mode, where the icons are HUGE!
+	// And again unfortunately, decreasing the threshold to the point where it detects most changes that matter,
+	// it produces RIDICULOUS false positives, like the window title bar gradient and all text being said to be different,
+	// even on the same machine! In short, the image comparison is unusable.
+	// I suspect it treats a difference between 254 and 255 (white and white) the same as a difference between 0 and 255 (black and white),
+	// and if it just summed the differences instead of counting the number of pixels that differ, it would be much more useful,
+	// although still not cross-device due to font rendering differences etc.
+	// For now, I've removed the thresholds so it will always detect changes;
+	// that way I can at least use it to view the diffs, occasionally, if not automatically check for changes.
 	const withTextCompareOptions = {
-		failureThreshold: 0.05,
-		failureThresholdType: 'percent' // not actually percent - fraction
+		// failureThreshold: 0.05, // masks HUGE differences
+		// failureThresholdType: 'percent' // not actually percent - fraction
+		failureThreshold: 0,
+		failureThresholdType: 'pixel'
 	};
 	const withMuchTextCompareOptions = {
-		failureThreshold: 0.08,
-		failureThresholdType: 'percent' // not actually percent - fraction
+		// failureThreshold: 0.08, // masks HUGE differences
+		// failureThresholdType: 'percent' // not actually percent - fraction
+		failureThreshold: 0,
+		failureThresholdType: 'pixel'
 	};
 	const toolboxCompareOptions = {
-		failureThreshold: 40,
+		// failureThreshold: 40,
+		// failureThresholdType: 'pixel'
+		failureThreshold: 0,
 		failureThresholdType: 'pixel'
 	};
 
