@@ -743,7 +743,8 @@
 		],
 		[localize("E&xtras")]: [
 			{
-				item: "⌚ " + localize("&History"),
+				emoji_icon: "⌚",
+				item: localize("&History"),
 				shortcut: "Ctrl+Shift+Y",
 				speech_recognition: [
 					// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
@@ -752,7 +753,8 @@
 				description: localize("Shows the document history and lets you navigate to states not accessible with Undo or Repeat."),
 			},
 			{
-				item: "🎞️ " + localize("&Render History As GIF"),
+				emoji_icon: "🎞️",
+				item: localize("&Render History As GIF"),
 				shortcut: "Ctrl+Shift+G",
 				speech_recognition: [
 					// @TODO: animated gif, blah
@@ -821,7 +823,8 @@
 				description: localize("Draws randomly with different tools."),
 			},*/
 			{
-				item: "👥 " + localize("&Multi-User"),
+				emoji_icon: "👥",
+				item: localize("&Multi-User"),
 				submenu: [
 					{
 						item: localize("&New Session From Document"),
@@ -912,10 +915,12 @@
 				]
 			},
 			{
-				item: "💄 " + localize("&Themes"),
+				emoji_icon: "💄",
+				item: localize("&Themes"),
 				submenu: [
 					{
-						item: "⬜ " + localize("&Classic Light"),
+						emoji_icon: "⬜",
+						item: localize("&Classic Light"),
 						speech_recognition: [
 							"reset theme", "revert theme setting",
 							"classic theme", "switch to classic theme", "use classic theme", "set theme to classic", "set theme classic", "switch to classic theme", "switch theme to classic", "switch theme classic",
@@ -947,7 +952,8 @@
 						description: localize("Makes JS Paint look like MS Paint from Windows 98."),
 					},
 					{
-						item: "⬛ " + localize("Classic &Dark"),
+						emoji_icon: "⬛",
+						item: localize("Classic &Dark"),
 						speech_recognition: [
 							"dark theme", "switch to dark theme", "use dark theme", "set theme to dark", "set theme dark", "switch to dark theme", "switch theme to dark", "switch theme dark",
 							"dark mode", "switch to dark mode", "use dark mode", "set mode to dark", "set mode dark", "switch to dark mode", "switch mode to dark", "switch mode dark",
@@ -966,7 +972,8 @@
 						description: localize("Makes JS Paint look like MS Paint from Windows 98, with a dark color scheme."),
 					},
 					{
-						item: "⚪ " + localize("&Modern Light"),
+						emoji_icon: "⚪",
+						item: localize("&Modern Light"),
 						speech_recognition: [
 							"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "set theme modern", "switch to modern theme", "switch theme to modern", "switch theme modern",
 							// new naming scheme
@@ -979,7 +986,8 @@
 						description: localize("Gives JS Paint a more modern look, with light colors."),
 					},
 					{
-						item: "⚫ " + localize("Mod&ern Dark"),
+						emoji_icon: "⚫",
+						item: localize("Mod&ern Dark"),
 						speech_recognition: [
 							"dark modern theme", "switch to dark modern theme", "use dark modern theme", "set theme to dark modern", "set theme dark modern", "switch to dark modern theme", "switch theme to dark modern", "switch theme dark modern",
 							// new naming scheme
@@ -992,7 +1000,8 @@
 						description: localize("Gives JS Paint a more modern look, with dark colors."),
 					},
 					{
-						item: "❄️ " + localize("&Winter"),
+						emoji_icon: "❄️",
+						item: localize("&Winter"),
 						speech_recognition: [
 							"winter theme", "switch to winter theme", "use winter theme", "set theme to winter", "set theme winter", "switch to winter theme", "switch theme to winter", "switch theme winter",
 							"holiday theme", "switch to holiday theme", "use holiday theme", "set theme to holiday", "set theme holiday", "switch to holiday theme", "switch theme to holiday", "switch theme holiday",
@@ -1006,7 +1015,8 @@
 						description: localize("Makes JS Paint look festive for the holidays."),
 					},
 					{
-						item: "🤘 " + localize("&Occult"),
+						emoji_icon: "🤘",
+						item: localize("&Occult"),
 						speech_recognition: [
 							"occult theme", "switch to occult theme", "use occult theme", "set theme to occult", "set theme occult", "switch to occult theme", "switch theme to occult", "switch theme occult",
 							"occultist theme", "switch to occultist theme", "use occultist theme", "set theme to occultist", "set theme occultist", "switch to occultist theme", "switch theme to occultist", "switch theme occultist",
@@ -1056,7 +1066,8 @@
 						description: localize("Starts the ritual."),
 					},
 					{
-						item: "🫧 " + localize("&Bubblegum"),
+						emoji_icon: "🫧",
+						item: localize("&Bubblegum"),
 						speech_recognition: [
 							"bubblegum theme", "switch to bubblegum theme", "use bubblegum theme", "set theme to bubblegum", "set theme bubblegum", "switch to bubblegum theme", "switch theme to bubblegum", "switch theme bubblegum",
 							"pink theme", "switch to pink theme", "use pink theme", "set theme to pink", "set theme pink", "switch to pink theme", "switch theme to pink", "switch theme pink",
@@ -1071,7 +1082,8 @@
 						description: localize("Makes JS Paint look like pearlescent bubblegum."),
 					},
 					// {
-					// 	item: "🪐 " + localize("&Retro Futurist"),
+					// 	emoji_icon: "🪐",
+					// 	item: localize("&Retro Futurist"),
 					// 	speech_recognition: [
 					// 		"retrofuturist theme", "switch to retrofuturist theme", "use retrofuturist theme", "set theme to retrofuturist", "set theme retrofuturist", "switch to retrofuturist theme", "switch theme to retrofuturist", "switch theme retrofuturist",
 					// 		"retro futurist theme", "switch to retro futurist theme", "use retro futurist theme", "set theme to retro futurist", "set theme retro futurist", "switch to retro futurist theme", "switch theme to retro futurist", "switch theme retro futurist",
@@ -1090,7 +1102,8 @@
 					// 	description: localize("Makes JS Paint look like the future as imagined in the past."),
 					// },
 					// {
-					// 	item: "🧺 " + localize("&Picnic"),
+					// 	emoji_icon: "🧺",
+					// 	item: localize("&Picnic"),
 					// 	speech_recognition: [
 					// 		"picnic theme", "switch to picnic theme", "use picnic theme", "set theme to picnic", "set theme picnic", "switch to picnic theme", "switch theme to picnic", "switch theme picnic",
 					// 		"pic-nic theme", "switch to pic-nic theme", "use pic-nic theme", "set theme to pic-nic", "set theme pic-nic", "switch to pic-nic theme", "switch theme to pic-nic", "switch theme pic-nic",
@@ -1107,10 +1120,12 @@
 				]
 			},
 			{
-				item: "🌍 " + localize("&Language"),
+				emoji_icon: "🌍",
+				item: localize("&Language"),
 				submenu: available_languages.map((available_language) => (
 					{
-						item: get_language_emoji(available_language) + " " + get_language_endonym(available_language),
+						emoji_icon: get_language_emoji(available_language),
+						item: get_language_endonym(available_language),
 						action: () => {
 							set_language(available_language);
 						},
@@ -1120,7 +1135,8 @@
 				)),
 			},
 			{
-				item: "👁️ " + localize("&Eye Gaze Mode"),
+				emoji_icon: "👁️",
+				item: localize("&Eye Gaze Mode"),
 				speech_recognition: [
 					"toggle eye gaze mode",
 					"enable eye gaze mode",
@@ -1179,7 +1195,8 @@
 				description: localize("Enlarges buttons and provides dwell clicking."),
 			},
 			{
-				item: "🎙️ " + localize("&Speech Recognition"),
+				emoji_icon: "🎙️",
+				item: localize("&Speech Recognition"),
 				speech_recognition: [
 					"toggle speech recognition", "toggle speech recognition mode",
 					"disable speech recognition", "disable speech recognition mode", "turn off speech recognition", "turn off speech recognition mode", "leave speech recognition mode", "exit speech recognition mode",
@@ -1200,7 +1217,8 @@
 				description: localize("Controls the application with voice commands."),
 			},
 			{
-				item: "↕️ " + localize("&Vertical Color Box"),
+				emoji_icon: "↕️",
+				item: localize("&Vertical Color Box"),
 				speech_recognition: [
 					"toggle vertical color box", "toggle vertical color box mode",
 					"toggle vertical colors box", "toggle vertical colors box mode",
@@ -1237,7 +1255,8 @@
 			},
 			MENU_DIVIDER,
 			{
-				item: "🗃️ " + localize("Manage Storage"),
+				emoji_icon: "🗃️",
+				item: localize("Manage Storage"),
 				speech_recognition: [
 					// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 				],
@@ -1246,7 +1265,8 @@
 			},
 			MENU_DIVIDER,
 			{
-				item: "📢 " + localize("Project News"),
+				emoji_icon: "📢",
+				item: localize("Project News"),
 				speech_recognition: [
 					"project news", "news about the project", "news about this project",
 					"app news", "news about the app", "news about this app",
@@ -1258,7 +1278,8 @@
 				description: localize("Shows news about JS Paint."),
 			},
 			{
-				item: "ℹ️ " + localize("GitHub"),
+				emoji_icon: "ℹ️",
+				item: localize("GitHub"),
 				speech_recognition: [
 					"repo on github", "project on github", "show the source code", "show source code",
 				],
@@ -1266,7 +1287,8 @@
 				description: localize("Shows the project on GitHub."),
 			},
 			{
-				item: "💵 " + localize("Donate"),
+				emoji_icon: "💵",
+				item: localize("Donate"),
 				speech_recognition: [
 					"donate", "make a monetary contribution",
 				],

@@ -792,6 +792,35 @@ if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
 	$("[role=menuitem][aria-label*='Occult'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
 }
 
+// Extras menu emoji icons
+// (OS-GUI.js doesn't support icons yet but I wanted to spruce it up a bit.)
+// Originally I defined the emoji as part of the label, which worked well for a while.
+// Now I want to be able to match on the menu item text exactly, without including emoji in my tests.
+// It's also cleaner in the menu data, and will make it easier to switch to custom icons later.
+// Also, it hides the emoji from `aria-label`, for screen reader users.
+function* traverse_menu(menu) {
+	for (const menu_item of menu) {
+		yield menu_item;
+		if (menu_item.submenu) {
+			yield* traverse_menu(menu_item.submenu);
+		}
+	}
+}
+// console.log([...traverse_menu(menus["E&xtras"])])
+for (const menu_item of [...traverse_menu(menus["E&xtras"])]) {
+	if (menu_item.emoji_icon) {
+		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
+		// role can include "menuitem", "menuitemcheckbox", or "menuitemradio", so use class
+		const $el = $(`.menu-item[aria-label='${aria_label}'] .menu-item-label`);
+		if ($el.length) {
+			$el.prepend(menu_item.emoji_icon + " ");
+			// TODO: add icon in a way that is excluded from text() content
+		} else {
+			console.warn("Couldn't find menu item", menu_item, "with aria-label", aria_label);
+		}
+	}
+}
+
 // </menu bar>
 
 let $toolbox = $ToolBox(tools);
