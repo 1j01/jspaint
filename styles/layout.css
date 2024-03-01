@@ -779,6 +779,12 @@ html, body, .jspaint {
 	width: 50px;
 }
 
+.radio-field {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+}
+
 /* @TODO: part of os-gui */
 .os-window {
 	display: flex;
