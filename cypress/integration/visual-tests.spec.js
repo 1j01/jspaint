@@ -120,6 +120,38 @@ context('visual tests', () => {
 		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
+	it('modern dark theme -- image attributes window', () => {
+		selectTheme("Modern Dark");
+		cy.get('body').type('{ctrl}e');
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+	});
+
+	it('modern dark theme -- custom zoom window', () => {
+		clickMenuButton('View');
+		clickMenuItem('Zoom');
+		clickMenuItem('Custom...');
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+	});
+
+	it('bubblegum theme - custom zoom window', () => {
+		// selectTheme("Bubblegum"); // not released yet
+		cy.window().then((win) => {
+			win.set_theme("bubblegum.css");
+		});
+		clickMenuButton('View');
+		clickMenuItem('Zoom');
+		clickMenuItem('Custom...');
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+	});
+
+	it('custom zoom window', () => {
+		selectTheme("Classic Light");
+		clickMenuButton('View');
+		clickMenuItem('Zoom');
+		clickMenuItem('Custom...');
+		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+	});
+
 	it('flip and rotate window', () => {
 		clickMenuButton('Image');
 		clickMenuItem('Flip/Rotate');
@@ -160,6 +192,18 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
+	it('bubblegum theme -- eye gaze mode', () => {
+		cy.get(".eye-gaze-mode-undo-button").should('exist');
+		// selectTheme("Bubblegum"); // not released yet
+		cy.window().then((win) => {
+			win.set_theme("bubblegum.css");
+		});
+		// clickMenuButton("View");
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
 	it('modern light theme -- eye gaze mode', () => {
 		cy.get(".eye-gaze-mode-undo-button").should('exist');
 		selectTheme("Modern Light");
@@ -195,6 +239,23 @@ context('visual tests', () => {
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions));
 	};
 	it('modern light theme -- edit colors dialog (expanded)', test_edit_colors_dialog);
+
+	it('bubblegum theme -- main screenshot', () => {
+		// selectTheme("Bubblegum"); // not released yet
+		cy.window().then((win) => {
+			win.set_theme("bubblegum.css");
+		});
+		// clickMenuButton("View");
+		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
+		cy.wait(100);
+		cy.matchImageSnapshot(withTextCompareOptions);
+	});
+
+	it('bubblegum theme -- about window', () => {
+		clickMenuButton('Help');
+		clickMenuItem('About Paint');
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
+	});
 
 	it('winter theme -- main screenshot', () => {
 		selectTheme("Winter");
