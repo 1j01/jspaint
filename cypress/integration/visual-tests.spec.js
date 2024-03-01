@@ -33,24 +33,29 @@ context('visual tests', () => {
 		failureThresholdType: 'pixel'
 	};
 
+	const escapeRegExp = (string) =>
+		string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+
+	// Menus need pointer events currently.
+	// These "click*" functions are used to interact with menus, and don't trigger click events.
+	const clickElementWithExactText = (selector, text) => {
+		cy.contains(selector, new RegExp(`^${escapeRegExp(text)}$`))
+			// .click();
+			.trigger('pointerdown', { which: 1 })
+			.trigger('pointerup', { force: true });
+	};
 	const closeMenus = () => {
 		cy.get(".status-text").click({ force: true }); // force because a menu may be covering the status bar / part of it
 	};
 	const clickMenuButton = (label) => {
-		// cy.contains(".menu-button", label).click();
-		cy.contains(".menu-button", label)
-			.trigger('pointerdown', { which: 1 })
-			.trigger('pointerup', { force: true });
+		clickElementWithExactText(".menu-button", label);
 	};
 	const clickMenuItem = (label) => {
-		// cy.contains(".menu-item", label).click();
-		cy.contains(".menu-item", label)
-			.trigger('pointerdown', { which: 1 })
-			.trigger('pointerup', { force: true });
+		clickElementWithExactText(".menu-item-label", label);
 	};
 	const selectTheme = (themeName) => {
 		clickMenuButton("Extras");
-		clickMenuItem("Theme");
+		clickMenuItem("Themes");
 		clickMenuItem(themeName);
 		closeMenus();
 		cy.wait(1000); // give a bit of time for theme to load
@@ -182,7 +187,7 @@ context('visual tests', () => {
 
 	const test_edit_colors_dialog = (expand = true) => {
 		clickMenuButton("Colors");
-		clickMenuItem("Edit Colors");
+		clickMenuItem("Edit Colors...");
 		cy.wait(100);
 		if (expand) {
 			cy.contains("button", "Define Custom Colors >>").click();

@@ -807,19 +807,29 @@ function* traverse_menu(menu) {
 	}
 }
 // console.log([...traverse_menu(menus["E&xtras"])])
+let emoji_css = "";
 for (const menu_item of [...traverse_menu(menus["E&xtras"])]) {
 	if (menu_item.emoji_icon) {
 		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
 		// role can include "menuitem", "menuitemcheckbox", or "menuitemradio", so use class
 		const $el = $(`.menu-item[aria-label='${aria_label}'] .menu-item-label`);
 		if ($el.length) {
-			$el.prepend(menu_item.emoji_icon + " ");
-			// TODO: add icon in a way that is excluded from text() content
+			// $el.prepend(menu_item.emoji_icon + " ");
+			// Add the icon in a way that is excluded from text content,
+			// so that tests don't need to be changed in the future if emoji are replaced with custom icons.
+			emoji_css += `
+				.menu-item[aria-label='${aria_label}'] .menu-item-label::before {
+					content: '${menu_item.emoji_icon}';
+					margin-right: 0.2em;
+				}
+			`;
 		} else {
 			console.warn("Couldn't find menu item", menu_item, "with aria-label", aria_label);
 		}
 	}
 }
+$("<style>").text(emoji_css).appendTo("head");
+
 
 // </menu bar>
 
