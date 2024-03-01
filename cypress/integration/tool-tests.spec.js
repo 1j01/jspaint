@@ -7,17 +7,12 @@ context('tool tests', () => {
 		failureThresholdType: 'pixel'
 	};
 
-	// beforeAll isn't a thing, and beforeEach applies also to tests declared above it,
-	// so do this fake test + flag hack in order to execute some steps before the first test
-	let before_first_real_test = true;
-	it(`(fake test for setup)`, () => {
+	before(() => {
 		cy.visit('/')
 		cy.setResolution([800, 500]);
 		cy.window().should('have.property', 'selected_colors'); // wait for app to be loaded
-		before_first_real_test = false;
 	});
 	beforeEach(() => {
-		if (before_first_real_test) return;
 		// eslint-disable-next-line require-await
 		cy.window().then({ timeout: 60000 }, async (win) => {
 			win.selected_colors.foreground = "#000";

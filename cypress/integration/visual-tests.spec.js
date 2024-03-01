@@ -56,8 +56,7 @@ context('visual tests', () => {
 		cy.wait(1000); // give a bit of time for theme to load
 	};
 
-	it('main screenshot', () => {
-
+	before(() => {
 		// Hides the news indicator, which shouldn't affect the visual tests.
 		// If by the year 3000 AI doesn't automatically find and fix stupid code like this, humanity will have already been doomed.
 		cy.clock(32503698000000);
@@ -69,7 +68,9 @@ context('visual tests', () => {
 		// Needed, given `cy.clock` is used, for `requestAnimationFrame` in `update_$swatch`,
 		// so the color palette is rendered correctly.
 		cy.tick(100);
+	});
 
+	it('main screenshot', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
