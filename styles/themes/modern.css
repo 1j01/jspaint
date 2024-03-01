@@ -72,7 +72,7 @@ body {
 .canvas-area .handle {
 	background: #000080;
 }
-.useless-handle {
+.canvas-area .useless-handle {
 	background: #fff;
 	box-shadow: 1px 1px 0 #000080 inset;
 }
