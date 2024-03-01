@@ -116,33 +116,29 @@ context('visual tests', () => {
 	});
 
 	it('flip and rotate window', () => {
-		// @TODO: make menus more testable, with IDs
-		cy.get('.menu-button[id^="menu-button-&Image"]').click();
-		cy.get('.menu-popup[aria-labelledby^="menu-button-&Image"] tr:nth-child(1)').click();
+		clickMenuButton('Image');
+		clickMenuItem('Flip/Rotate');
 		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
 	it('stretch and skew window', () => {
-		// @TODO: make menus more testable, with IDs
-		cy.get('.menu-button[id^="menu-button-&Image"]').click();
-		cy.get('.menu-popup[aria-labelledby^="menu-button-&Image"] tr:nth-child(2)').click();
+		clickMenuButton('Image');
+		clickMenuItem('Stretch/Skew');
 		// @TODO: wait for images to load and include images?
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["img"] }));
 	});
 
 	it('help window', () => {
-		// @TODO: make menus more testable, with IDs
-		cy.get('.menu-button[id^="menu-button-&Help"]').click();
-		cy.get('.menu-popup[aria-labelledby^="menu-button-&Help"] tr:nth-child(1)').click();
+		clickMenuButton('Help');
+		clickMenuItem('Help Topics');
 		cy.get('.window:visible .folder', { timeout: 10000 }); // wait for sidebar contents to load
 		// @TODO: wait for iframe to load
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["iframe"] }));
 	});
 
 	it('about window', () => {
-		// @TODO: make menus more testable, with IDs
-		cy.get('.menu-button[id^="menu-button-&Help"]').click();
-		cy.get('.menu-popup[aria-labelledby^="menu-button-&Help"] tr:nth-child(3)').click();
+		clickMenuButton('Help');
+		clickMenuItem('About Paint');
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
 	});
 
