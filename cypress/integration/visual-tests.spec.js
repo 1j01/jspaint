@@ -155,9 +155,9 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('modern theme eye gaze mode', () => {
+	it('modern light theme -- eye gaze mode', () => {
 		cy.get(".eye-gaze-mode-undo-button").should('exist');
-		selectTheme("Modern");
+		selectTheme("Modern Light");
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
 		cy.wait(100);
@@ -171,7 +171,7 @@ context('visual tests', () => {
 		cy.get(".eye-gaze-mode-undo-button").should('not.exist');
 	});
 
-	it('modern theme', () => {
+	it('modern light theme -- main screenshot', () => {
 		cy.wait(100);
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
@@ -189,9 +189,9 @@ context('visual tests', () => {
 		}
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions));
 	};
-	it('modern theme edit colors dialog (expanded)', test_edit_colors_dialog);
+	it('modern light theme -- edit colors dialog (expanded)', test_edit_colors_dialog);
 
-	it('winter theme', () => {
+	it('winter theme -- main screenshot', () => {
 		selectTheme("Winter");
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
@@ -199,9 +199,9 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('winter theme edit colors dialog (expanded)', test_edit_colors_dialog);
+	it('winter theme -- edit colors dialog (expanded)', test_edit_colors_dialog);
 
-	it('winter theme vertical color box', () => {
+	it('winter theme -- vertical color box', () => {
 		cy.wait(500);
 		clickMenuButton("Extras");
 		clickMenuItem("Vertical Color Box");
@@ -211,17 +211,17 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('classic theme vertical color box', () => {
-		selectTheme("Classic");
+	it('vertical color box', () => {
+		selectTheme("Classic Light");
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('classic theme edit colors dialog', () => {
+	it('edit colors dialog', () => {
 		test_edit_colors_dialog(false);
 	});
 
-	it('modern theme vertical color box', () => {
-		selectTheme("Modern");
+	it('modern light theme -- vertical color box', () => {
+		selectTheme("Modern Light");
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
