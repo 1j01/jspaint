@@ -30,7 +30,9 @@ const remove_ellipsis = str => str.replace("...", "");
 const only_unique = (value, index, self) => self.indexOf(value) === index;
 
 const get_strings = (lang) => {
-	return glob.sync(`${lang}/**/*.rc`, { cwd: __dirname, absolute: true }).sort((a, b) => a.localeCompare(b, "en")).map(
+	const rc_files = glob.sync(`${lang}/**/*.rc`, { cwd: __dirname, absolute: true });
+	rc_files.sort((a, b) => a.localeCompare(b, "en"));
+	return rc_files.map(
 		(rc_file) => parse_rc_file(fs.readFileSync(rc_file, "utf16le").replace(/\ufeff/g, ""))
 	).flat();
 };
