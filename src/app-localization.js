@@ -820,6 +820,11 @@
 	}
 
 	const base_language = "en";
+	// This array can be updated automatically by preprocess.js, although that feature is likely no longer useful,
+	// as I have added all the languages from Windows 98 editions that I could find, and additional languages
+	// will not be through preprocessing resource files from Windows 98.
+	// (preprocess.js may still be useful since the preprocessing wasn't perfect, and I could improve and re-run it,
+	// but that won't add new languages.)
 	const available_languages = ["ar", "cs", "da", "de", "el", "en", "es", "fi", "fr", "he", "hu", "it", "ja", "ko", "nl", "no", "pl", "pt", "pt-br", "ru", "sk", "sl", "sv", "tr", "zh", "zh-simplified"];
 	// spell-checker:disable
 	const language_names = {

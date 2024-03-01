@@ -89,8 +89,21 @@ loaded_localizations("${target_lang}", ${JSON.stringify(localizations, null, "\t
 }
 
 // Update available_languages list automatically!
-const file = require("path").resolve(__dirname + "/../index.html");
-let code = fs.readFileSync(file, "utf8");
-code = code.replace(/(available_languages\s*=\s*)\[[^\]]*\]/, `$1${JSON.stringify(available_langs).replace(/","/g, `", "`)}`);
-fs.writeFileSync(file, code, "utf8");
-console.log(`Updated available_languages list in "${file}"`);
+// This feature is likely no longer useful, as I have added all the languages
+// from Windows 98 editions that I could find, and additional languages
+// will not be through preprocessing resource files from Windows 98,
+// but through AI and community translation.
+const file = require("path").resolve(__dirname + "/../src/app-localization.js");
+const old_code = fs.readFileSync(file, "utf8");
+const available_languages_regex = /(available_languages\s*=\s*)\[[^\]]*\]/;
+if (!old_code.match(available_languages_regex)) {
+	console.error(`Failed to find available_languages list in "${file}"`);
+	process.exit(1);
+}
+const new_code = old_code.replace(available_languages_regex, `$1${JSON.stringify(available_langs).replace(/","/g, `", "`)}`);
+if (new_code === old_code) {
+	console.log(`No changes needed to available_languages list in "${file}"`);
+} else {
+	fs.writeFileSync(file, new_code, "utf8");
+	console.log(`Updated available_languages list in "${file}"`);
+}
