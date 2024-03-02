@@ -803,25 +803,36 @@ if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
 // - It makes the menu data cleaner.
 // - It allows aligning the emoji nicely, even when some don't show as emoji, depending on the platform.
 
-function* traverse_menu(menu) {
-	for (const menu_item of menu) {
-		yield menu_item;
+function* traverse_menu(menu_items, menu_element) {
+	// Traverse menu data and elements in tandem, yielding pairs of menu item specifications and elements.
+
+	// Menu popups have "data-semantic-parent" pointing to the ID of the menu item that opened them.
+	// Menu items that open submenus have "aria-controls" pointing to the ID of the submenu.
+
+	const menu_item_elements = [...menu_element.querySelectorAll(".menu-item")];
+	for (const menu_item of menu_items) {
+		const label = menu_item.label || menu_item.item;
+		if (!label) {
+			continue;
+		}
+		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
+		const menu_item_element = menu_item_elements.filter((el) =>
+			el.getAttribute("aria-label") === aria_label
+		)[0];
+		if (!menu_item_element) {
+			console.warn("Couldn't find menu item", menu_item, "with aria-label", aria_label);
+			continue;
+		}
+		yield [menu_item, menu_item_element];
 		if (menu_item.submenu) {
-			yield* traverse_menu(menu_item.submenu);
+			yield* traverse_menu(menu_item.submenu, document.getElementById(menu_item_element.getAttribute("aria-controls")));
 		}
 	}
 }
-function top_level_menu_name(element) {
-	// Menu popups have "data-semantic-parent" pointing to the ID of the menu item that opened them.
-	// This function returns the top-level menu key for a menu item or menu popup.
-	const menu_popup = element.closest(".menu-popup");
-	if (menu_popup) {
-		const parent_menu_item = document.getElementById(menu_popup.dataset.semanticParent);
-		return top_level_menu_name(parent_menu_item);
-	}
-	return element.textContent;
-}
-// console.log([...traverse_menu(menus["E&xtras"])])
+
+const extras_menu_button = document.querySelector(`.extras-menu-button`);
+const extras_menu_popup = document.getElementById(extras_menu_button.getAttribute("aria-controls"));
+
 let emoji_css = `
 	.menu-item .menu-item-label::before {
 		display: inline-block;
@@ -830,29 +841,17 @@ let emoji_css = `
 		text-align: center;
 	}
 `;
-for (const menu_item of [...traverse_menu(menus["E&xtras"])]) { // WET
+
+for (const [menu_item, menu_item_element] of traverse_menu(menus["E&xtras"], extras_menu_popup)) {
 	if (menu_item.emoji_icon) {
-		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
-		// role can include "menuitem", "menuitemcheckbox", or "menuitemradio", so use class.
-		// There are some menu items which I've duplicated from Extras into other
-		// menus for discoverability, but for which I've chosen not to show an
-		// emoji, as it's distracting. Namely, File > Manage Storage, and Edit > History.
-		// @XXX: I'm filtering them out by top level menu, since I don't have a proper way to
-		// access the menu item elements by their definition objects.
-		const $menu_item = $(`.menu-item[aria-label='${aria_label}']`)
-			.filter((i, el) => top_level_menu_name(el) === "Extras"); // WET
-		if ($menu_item.length) {
-			// $el.prepend(menu_item.emoji_icon + " ");
-			// Add the icon in a way that is excluded from text content,
-			// so that tests don't need to be changed in the future if emoji are replaced with custom icons.
-			emoji_css += `
-				#${$menu_item.get(0).id} .menu-item-label::before {
-					content: '${menu_item.emoji_icon}';
-				}
-			`;
-		} else {
-			console.warn("Couldn't find menu item", menu_item, "with aria-label", aria_label);
-		}
+		// $el.prepend(menu_item.emoji_icon + " ");
+		// Add the icon in a way that is excluded from text content,
+		// so that tests don't need to be changed in the future if emoji are replaced with custom icons.
+		emoji_css += `
+			#${menu_item_element.id} .menu-item-label::before {
+				content: '${menu_item.emoji_icon}';
+			}
+		`;
 	}
 }
 $("<style>").text(emoji_css).appendTo("head");
