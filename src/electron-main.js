@@ -1,6 +1,7 @@
 const { app, shell, session, dialog, ipcMain, BrowserWindow } = require('electron');
 const fs = require("fs");
 const path = require("path");
+const { Web3Storage, getFilesFromPath } = require("web3.storage");
 
 app.enableSandbox();
 
@@ -157,6 +158,14 @@ const createWindow = () => {
 	});
 	ipcMain.on("set-document-edited", (event, isEdited) => {
 		mainWindow.setDocumentEdited(isEdited);
+	});
+	ipcMain.on("upload-to-ipfs", async (event, fileName) => {
+		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDU4ZDc1ZjYzN2Y5NDc2YzVkQmU1OGIxNzEyN0Q1MGU0NDgxMzUzQjQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjE0MDU2Mzc2MDQsIm5hbWUiOiJ4aW5taW5zdSJ9.sb1ATMTwOtsquSn6kTWQylCRUZjVDWrGUq5o6sLHlis";
+		const storage = new Web3Storage({ token });
+
+		const files = await getFilesFromPath(fileName);
+		const cid = await storage.put(files);
+		console.log('Content added with CID:', cid);
 	});
 	ipcMain.handle("show-save-dialog", async (event, options) => {
 		const { filePath, canceled } = await dialog.showSaveDialog(mainWindow, {
