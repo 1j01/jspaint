@@ -60,6 +60,27 @@ context('visual tests', () => {
 		closeMenus();
 		cy.wait(1000); // give a bit of time for theme to load
 	};
+	// `intercept` requires Cypress 6+
+	// cypress-image-snapshot@4.0.1 has a peer dependency on cypress@"^4.5.0",
+	// although I believe it works with v9, and only really has problems on v10.
+	// That said, this didn't work! So. No point in upgrading just yet.
+	// I'll upgrade when I'm ready to replace the visual testing framework.
+	// const waitForRequest = (urlPattern, callback) => {
+	// 	// intercept without changing or stubbing response
+	// 	cy.intercept(urlPattern).as('urlPattern');
+	// 	cy.wait('@urlPattern').then(callback);
+	// };
+	const waitForImage = (selector) => {
+		// should automatically retries
+		// checking visibility first ensures we're testing at least one image, theoretically
+		cy.get(selector).should('be.visible');
+		cy.get(selector).should(($imgs) => {
+			for (const img of $imgs) {
+				expect(img.naturalWidth).to.be.greaterThan(0);
+				expect(img.naturalHeight).to.be.greaterThan(0);
+			}
+		});
+	}
 
 	before(() => {
 		// Hides the news indicator, which shouldn't affect the visual tests.
@@ -161,8 +182,8 @@ context('visual tests', () => {
 	it('stretch and skew window', () => {
 		clickMenuButton('Image');
 		clickMenuItem('Stretch/Skew');
-		// @TODO: wait for images to load and include images?
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["img"] }));
+		waitForImage('.window:visible img');
+		cy.get('.window:visible').matchImageSnapshot(withTextCompareOptions);
 	});
 
 	it('help window', () => {
@@ -176,7 +197,8 @@ context('visual tests', () => {
 	it('about window', () => {
 		clickMenuButton('Help');
 		clickMenuItem('About Paint');
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
+		waitForImage('#paint-32x32');
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line"] }));
 	});
 
 	it('eye gaze mode', () => {
@@ -254,7 +276,12 @@ context('visual tests', () => {
 	it('bubblegum theme -- about window', () => {
 		clickMenuButton('Help');
 		clickMenuItem('About Paint');
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["img", "#maybe-outdated-line"] }));
+		// waitForImage('#paint-32x32'); // it's actually replaced with a background image in this theme
+		// waitForRequest("/images/bubblegum/bubblegum-paint-128x128.png", () => { // not working
+		// waitForRequest("**/bubblegum-paint-*.png", () => { // not working
+		cy.wait(1000); // wait and hope it's loaded
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line"] }));
+		// });
 	});
 
 	it('winter theme -- main screenshot', () => {
