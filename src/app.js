@@ -806,19 +806,35 @@ function* traverse_menu(menu) {
 		}
 	}
 }
+function top_level_menu_name(element) {
+	// Menu popups have "data-semantic-parent" pointing to the ID of the menu item that opened them.
+	// This function returns the top-level menu key for a menu item or menu popup.
+	const menu_popup = element.closest(".menu-popup");
+	if (menu_popup) {
+		const parent_menu_item = document.getElementById(menu_popup.dataset.semanticParent);
+		return top_level_menu_name(parent_menu_item);
+	}
+	return element.textContent;
+}
 // console.log([...traverse_menu(menus["E&xtras"])])
 let emoji_css = "";
-for (const menu_item of [...traverse_menu(menus["E&xtras"])]) {
+for (const menu_item of [...traverse_menu(menus["E&xtras"])]) { // WET
 	if (menu_item.emoji_icon) {
 		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
-		// role can include "menuitem", "menuitemcheckbox", or "menuitemradio", so use class
-		const $el = $(`.menu-item[aria-label='${aria_label}'] .menu-item-label`);
-		if ($el.length) {
+		// role can include "menuitem", "menuitemcheckbox", or "menuitemradio", so use class.
+		// There are some menu items which I've duplicated from Extras into other
+		// menus for discoverability, but for which I've chosen not to show an
+		// emoji, as it's distracting. Namely, File > Manage Storage, and Edit > History.
+		// @XXX: I'm filtering them out by top level menu, since I don't have a proper way to
+		// access the menu item elements by their definition objects.
+		const $menu_item = $(`.menu-item[aria-label='${aria_label}']`)
+			.filter((i, el) => top_level_menu_name(el) === "Extras"); // WET
+		if ($menu_item.length) {
 			// $el.prepend(menu_item.emoji_icon + " ");
 			// Add the icon in a way that is excluded from text content,
 			// so that tests don't need to be changed in the future if emoji are replaced with custom icons.
 			emoji_css += `
-				.menu-item[aria-label='${aria_label}'] .menu-item-label::before {
+				#${$menu_item.get(0).id} .menu-item-label::before {
 					content: '${menu_item.emoji_icon}';
 					margin-right: 0.2em;
 				}
