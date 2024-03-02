@@ -795,9 +795,14 @@ if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
 // Extras menu emoji icons
 // (OS-GUI.js doesn't support icons yet but I wanted to spruce it up a bit.)
 // Originally I defined the emoji as part of the label, which worked well for a while.
-// Now I want to be able to match on the menu item text exactly, without including emoji in my tests.
-// It's also cleaner in the menu data, and will make it easier to switch to custom icons later.
-// Also, it hides the emoji from `aria-label`, for screen reader users.
+// Now I'm rendering the emoji as pseudo elements.
+// - It allows for matching on the menu item text exactly, without including emoji in my tests,
+//   which will hopefully be replaced with custom icons in the future.
+// - It makes it easier to replace the emoji with custom icons in the future.
+// - It hides the emoji from `aria-label`, for screen reader users.
+// - It makes the menu data cleaner.
+// - It allows aligning the emoji nicely, even when some don't show as emoji, depending on the platform.
+
 function* traverse_menu(menu) {
 	for (const menu_item of menu) {
 		yield menu_item;
