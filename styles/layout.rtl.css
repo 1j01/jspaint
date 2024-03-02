@@ -779,6 +779,12 @@ html, body, .jspaint {
 	width: 50px;
 }
 
+.radio-field {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+}
+
 /* @TODO: part of os-gui */
 .os-window {
 	display: flex;
@@ -945,8 +951,13 @@ html, body, .jspaint {
 	text-decoration: underline;
 }
 
+/* TODO: reduce scope of this rule, and remove exception(s) to it */
 ::before, ::after {
 	pointer-events: none;
+}
+/* Quick fix for clicking directly on the radio button in themes which use styles from 98.css */
+input[type="radio"] + label::before {
+	pointer-events: all;
 }
 
 .cursor-bully * {
