@@ -817,7 +817,14 @@ function top_level_menu_name(element) {
 	return element.textContent;
 }
 // console.log([...traverse_menu(menus["E&xtras"])])
-let emoji_css = "";
+let emoji_css = `
+	.menu-item .menu-item-label::before {
+		display: inline-block;
+		width: 1.8em;
+		margin-right: 0.2em;
+		text-align: center;
+	}
+`;
 for (const menu_item of [...traverse_menu(menus["E&xtras"])]) { // WET
 	if (menu_item.emoji_icon) {
 		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
@@ -836,7 +843,6 @@ for (const menu_item of [...traverse_menu(menus["E&xtras"])]) { // WET
 			emoji_css += `
 				#${$menu_item.get(0).id} .menu-item-label::before {
 					content: '${menu_item.emoji_icon}';
-					margin-right: 0.2em;
 				}
 			`;
 		} else {
