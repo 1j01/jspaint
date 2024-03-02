@@ -1,12 +1,18 @@
 {
+	// This hides files from the file tree as well as search results.
 	"files.exclude": {
 		"**/node_modules": true,
 		"**/out": true,
 	},
+	// This affects Find In Files (Ctrl+Shift+F) but also Go To File (Ctrl+P) and
+	// the new Quick Search (experimental), which I've been using a lot since it was released.
 	"search.exclude": {
 		"**/images": true,
 		"**/lib": true,
 		"**/out": true,
+		// Ignore localization data, which is in subfolders, but not helper scripts.
+		// Any time a search matches a localized string, it matches an overwhelming number of files.
+		"**/localization/*/**/*": true,
 	},
 	"editor.formatOnSave": true,
 	"editor.insertSpaces": false,
