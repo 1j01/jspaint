@@ -1,18 +1,18 @@
 {
 	"files.exclude": {
 		"**/node_modules": true,
-		"**/out": true
+		"**/out": true,
 	},
 	"search.exclude": {
 		"**/images": true,
 		"**/lib": true,
-		"**/out": true
+		"**/out": true,
 	},
 	"editor.formatOnSave": true,
 	"editor.insertSpaces": false,
 	"editor.detectIndentation": false,
 	"editor.codeActionsOnSave": {
-		"source.organizeImports": "always"
+		"source.organizeImports": "always",
 	},
 	"[css]": {
 		// The CSS in this project uses (the lack of) newlines between rules for grouping, as well as inline comments.
@@ -31,7 +31,7 @@
 		// This could be applied to all files for consistency, but it may introduce noise if all files aren't formatted at once.
 		"files.insertFinalNewline": true,
 		// Maintaining current indentation for now, but could remove this for consistency.
-		"editor.detectIndentation": true
+		"editor.detectIndentation": true,
 	},
 	// Prevent accidental editing.
 	// This can always be overridden with the command "File: Toggle Active Editor Read-only in Session"
@@ -41,5 +41,7 @@
 		// Node.js
 		"node_modules/**": true,
 		"package-lock.json": true,
+		// RTLCSS output
+		"*.rtl.css": true,
 	},
 }
