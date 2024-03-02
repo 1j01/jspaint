@@ -805,9 +805,18 @@ if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
 
 function* traverse_menu(menu_items, menu_element) {
 	// Traverse menu data and elements in tandem, yielding pairs of menu item specifications and elements.
+	// This approach handles identically named menu items in separate menus,
+	// as is the case with "File > Manage Storage" and "Edit > History", both present in the Extras menu,
+	// but also in the other menus for discoverability.
+	// However, it doesn't handle identically named menu items in the same menu,
+	// as it still matches up items within the menu using aria-label.
 
-	// Menu popups have "data-semantic-parent" pointing to the ID of the menu item that opened them.
-	// Menu items that open submenus have "aria-controls" pointing to the ID of the submenu.
+	// Menu structure:
+	// - Menu popups are not descendants of the menu bar or other menu popups; they are always direct children of the body.
+	// - Menu items that open submenus have "aria-controls" pointing to the ID of the submenu.
+	// - (Menu popups also have "data-semantic-parent" pointing to the ID of the menu item that opens them.)
+	// - `submenu` is an array, but the top level (menu bar) is represented as an object, which is a bit awkward.
+	//   However, this function doesn't deal with the top level.
 
 	const menu_item_elements = [...menu_element.querySelectorAll(".menu-item")];
 	for (const menu_item of menu_items) {
@@ -841,12 +850,8 @@ let emoji_css = `
 		text-align: center;
 	}
 `;
-
 for (const [menu_item, menu_item_element] of traverse_menu(menus["E&xtras"], extras_menu_popup)) {
 	if (menu_item.emoji_icon) {
-		// $el.prepend(menu_item.emoji_icon + " ");
-		// Add the icon in a way that is excluded from text content,
-		// so that tests don't need to be changed in the future if emoji are replaced with custom icons.
 		emoji_css += `
 			#${menu_item_element.id} .menu-item-label::before {
 				content: '${menu_item.emoji_icon}';
@@ -2331,7 +2336,6 @@ $G.on("pointermove", (event) => {
 	}
 });
 
-// window.onerror = show_error_message;
 
 $canvas.on("pointerdown", e => {
 	update_canvas_rect();
