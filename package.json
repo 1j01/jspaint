@@ -3,6 +3,7 @@
   "productName": "JS Paint",
   "version": "1.0.0",
   "description": "Classic MS Paint clone with extra features",
+  "license": "MIT",
   "keywords": [
     "paint",
     "jspaint",
