@@ -157,7 +157,13 @@ button:active {
 	background: rgba(255, 255, 255, 0.2);
 }
 
+/* About window */
+#maybe-outdated-view-project-news {
+	/* Make room for enlarged icon */
+	margin-left: 120px;
+}
 #paint-32x32 {
+	/* Replace and enlarge icon */
 	display: block;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
