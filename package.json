@@ -25,37 +25,6 @@
   ],
   "author": "Isaiah Odhner <isaiahodhner@gmail.com>",
   "main": "src/electron-main.js",
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "./images/icons/jspaint",
-        "name": "jspaint",
-        "executableName": "jspaint"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "jspaint"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
-  },
   "dependencies": {
     "@1j01/live-server": "^1.3.1",
     "electron-squirrel-startup": "^1.0.0",
