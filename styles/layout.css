@@ -879,14 +879,14 @@ html, body, .jspaint {
 	vertical-align: middle;
 	width: 16px;
 	height: 16px;
-	background-position: 0 0;
+	background-position: 0 0/*rtl:ignore*/;
 	margin-right: 2px;
 }
 .help-window .folder.expanded:before {
-	background-position: -16px 0;
+	background-position: -16px 0/*rtl:ignore*/;
 }
 .help-window .page:before {
-	background-position: -32px 0;
+	background-position: -32px 0/*rtl:ignore*/;
 }
 
 .dragging iframe {
