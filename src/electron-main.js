@@ -144,7 +144,14 @@ const createWindow = () => {
 			}
 		})
 	});
-
+};
+// Register listeners outside of createWindow to avoid them being added multiple times
+// on macOS, where the app is not actually closed when the window is closed,
+// and thus it can be opened multiple times from the same electron main process.
+// (It causes an error in the case of handle() but not on().)
+//     Error: Attempted to register a second handler for 'show-save-dialog'
+// I'm using an indented block here just to avoid a large git diff, for now.
+{
 	ipcMain.on("get-env-info", (event) => {
 		event.returnValue = {
 			isDev,
@@ -261,7 +268,7 @@ const createWindow = () => {
 			// return { responseCode: "SUCCESS" };
 		}
 	});
-};
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
