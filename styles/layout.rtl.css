@@ -883,10 +883,10 @@ html, body, .jspaint {
 	margin-left: 2px;
 }
 .help-window .folder.expanded:before {
-	background-position: -16px 0;
+	background-position: right -16px top 0;
 }
 .help-window .page:before {
-	background-position: -32px 0;
+	background-position: right -32px top 0;
 }
 
 .dragging iframe {
