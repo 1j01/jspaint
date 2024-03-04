@@ -1,73 +1,45 @@
 const { app, shell, session, dialog, ipcMain, BrowserWindow } = require('electron');
 const fs = require("fs");
 const path = require("path");
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
+const { ArgumentParser, SUPPRESS } = require('argparse');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
 	app.quit();
 }
 
-// Note: hideBin handles Electron packaged apps specially.
+const parser = new ArgumentParser({
+	prog: 'jspaint',
+	description: 'MS Paint in JavaScript, running in Electron.',
+});
+
+parser.add_argument('file_path', {
+	help: 'Image file to open',
+	nargs: '?', // '?' indicates 0 or 1 arguments: it's optional
+});
+
+parser.add_argument('-v', '--version', {
+	action: 'version',
+	version: require('../package.json').version,
+});
+
+parser.add_argument('-s', '--squirrel-firstrun', {
+	help: SUPPRESS, // Hide and ignore this option, which is passed by Squirrel.Windows when the app is run after being installed.
+	action: 'store_true',
+});
+
 // Compare command line arguments:
 // - unpackaged (in development):      "path/to/electron.exe" "." "maybe/a/file.png"
 // - packaged (usually in production): "path/to/jspaint.exe" "maybe/a/file.png"
-
-// I regret using yargs; there are too many ways to do the same thing,
-// it's too implicit, and generally magical and complicated.
-// I just went with it because I saw it had special handling for Electron,
-// and because I remembered the name.
-const args = yargs(hideBin(process.argv))
-	.scriptName('jspaint')
-	.usage('Usage: $0 [file_path]')
-	// Implicit
-	// .option('version', {
-	// 	alias: 'v',
-	// 	description: 'Show version number',
-	// 	type: 'boolean',
-	// })
-	// .option('help', {
-	// 	alias: 'h',
-	// 	description: 'Show this help',
-	// 	type: 'boolean',
-	// })
-	.option('squirrel-firstrun', {
-		// Hide and ignore this option, which is passed by Squirrel.Windows
-		// when the app is run after being installed.
-		hidden: true,
-		type: 'boolean',
-	})
-	// Does not work unless in a command
-	// https://github.com/yargs/yargs/issues/1649
-	// .positional('file_path', {
-	// 	describe: 'Image file to open',
-	// 	type: 'string',
-	// })
-	.command('* <file_path>', 'default command', (yargs) => {
-		yargs.positional('file_path', {
-			describe: 'Image file to open',
-			type: 'string',
-		});
-	})
-	.parse();
-
-// if (args.version) {
-// 	console.log(app.getVersion());
-// 	process.exit(0);
-// }
-
-// if (args.help) {
-// 	console.log(yargs.help());
-// 	process.exit(0);
-// }
+const { isPackaged } = app;
+const args_array = process.argv.slice(isPackaged ? 1 : 2);
+const args = parser.parse_args(args_array);
 
 app.enableSandbox();
 app.commandLine.appendSwitch('high-dpi-support', 1);
 app.commandLine.appendSwitch('force-device-scale-factor', 1);
 
 // Reloading and dev tools shortcuts
-const { isPackaged } = app;
 const isDev = process.env.ELECTRON_DEBUG === "1" || !isPackaged;
 if (isDev) {
 	require('electron-debug')({ showDevTools: false });
