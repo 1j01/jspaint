@@ -124,7 +124,7 @@ window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 
 window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
 	if (typeof filePath !== "string") {
-		return show_error_message("writeBlobToHandle in Electron expects a file path");
+		return show_error_message("writeBlobToHandle in Electron expects a file path, got " + filePath);
 		// should it fall back to default writeBlobToHandle?
 	}
 	const { responseCode, error } = await write_blob_to_file_path(filePath, blob);
@@ -134,7 +134,7 @@ window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
 };
 window.systemHooks.readBlobFromHandle = async (filePath) => {
 	if (typeof filePath !== "string") {
-		return show_error_message("readBlobFromHandle in Electron expects a file path");
+		return show_error_message("readBlobFromHandle in Electron expects a file path, got " + filePath);
 		// should it fall back to default readBlobFromHandle?
 	}
 	const { responseCode, error, data, fileName } = await ipcRenderer.invoke("read-file", filePath);
