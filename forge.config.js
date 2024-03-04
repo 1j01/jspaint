@@ -13,6 +13,7 @@ module.exports = {
 			CFBundleDocumentTypes: [
 				{
 					CFBundleTypeName: "All Files",
+					CFBundleTypeRole: "Editor", // *
 					LSHandlerRank: "Alternate",
 					LSItemContentTypes: [
 						"public.data",
@@ -20,6 +21,11 @@ module.exports = {
 					],
 				},
 			],
+			// *Added, but... I'm not sure what CFBundleTypeRole exactly affects in practice.
+			// The app is an editor, of both images and palettes, but it's not an editor of all file types,
+			// so it's unclear if this is appropriate.
+			// TODO: granular image types?
+			// like https://github.com/electron/forge/issues/492#issuecomment-385956851
 		},
 		junk: true,
 		// TODO: assess filtering of files; I see eslint in node_modules, why? prune is true by default
