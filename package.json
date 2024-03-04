@@ -32,7 +32,8 @@
     "glob": "^10.3.10",
     "lookpath": "^1.2.2",
     "rtlcss": "^4.1.1",
-    "wallpaper": "^4.4.2"
+    "wallpaper": "^4.4.2",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.3.0",

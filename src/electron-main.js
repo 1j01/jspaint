@@ -1,15 +1,70 @@
 const { app, shell, session, dialog, ipcMain, BrowserWindow } = require('electron');
 const fs = require("fs");
 const path = require("path");
-
-app.enableSandbox();
-app.commandLine.appendSwitch('high-dpi-support', 1);
-app.commandLine.appendSwitch('force-device-scale-factor', 1);
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
 	app.quit();
 }
+
+// Note: hideBin handles Electron packaged apps specially.
+// Compare command line arguments:
+// - unpackaged (in development):      "path/to/electron.exe" "." "maybe/a/file.png"
+// - packaged (usually in production): "path/to/jspaint.exe" "maybe/a/file.png"
+
+// I regret using yargs; there are too many ways to do the same thing,
+// it's too implicit, and generally magical and complicated.
+// I just went with it because I saw it had special handling for Electron,
+// and because I remembered the name.
+const args = yargs(hideBin(process.argv))
+	.scriptName('jspaint')
+	.usage('Usage: $0 [file_path]')
+	// Implicit
+	// .option('version', {
+	// 	alias: 'v',
+	// 	description: 'Show version number',
+	// 	type: 'boolean',
+	// })
+	// .option('help', {
+	// 	alias: 'h',
+	// 	description: 'Show this help',
+	// 	type: 'boolean',
+	// })
+	.option('squirrel-firstrun', {
+		// Hide and ignore this option, which is passed by Squirrel.Windows
+		// when the app is run after being installed.
+		hidden: true,
+		type: 'boolean',
+	})
+	// Does not work unless in a command
+	// https://github.com/yargs/yargs/issues/1649
+	// .positional('file_path', {
+	// 	describe: 'Image file to open',
+	// 	type: 'string',
+	// })
+	.command('* <file_path>', 'default command', (yargs) => {
+		yargs.positional('file_path', {
+			describe: 'Image file to open',
+			type: 'string',
+		});
+	})
+	.parse();
+
+// if (args.version) {
+// 	console.log(app.getVersion());
+// 	process.exit(0);
+// }
+
+// if (args.help) {
+// 	console.log(yargs.help());
+// 	process.exit(0);
+// }
+
+app.enableSandbox();
+app.commandLine.appendSwitch('high-dpi-support', 1);
+app.commandLine.appendSwitch('force-device-scale-factor', 1);
 
 // Reloading and dev tools shortcuts
 const { isPackaged } = app;
@@ -48,11 +103,8 @@ if (process.platform == "win32" && isPackaged) {
 const allowed_file_paths = [];
 
 let initial_file_path;
-if (process.argv.length >= 2) {
-	// in production, "path/to/jspaint.exe" "maybe/a/file.png"
-	// in development, "path/to/electron.exe" "." "maybe/a/file.png"
-	const argv = process.argv.filter((arg) => arg != "--squirrel-firstrun"); // ignore argument passed when first installed on Windows
-	initial_file_path = argv[isPackaged ? 1 : 2];
+if (args.file_path) {
+	initial_file_path = path.resolve(args.file_path);
 	allowed_file_paths.push(initial_file_path);
 }
 
