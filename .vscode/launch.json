@@ -11,6 +11,20 @@
 			"port": 9222, // must run Chrome with a flag: google-chrome --remote-debugging-port=9222
 			"urlFilter": "http://127.0.0.1:1999/*",
 			"webRoot": "${workspaceFolder}"
+		},
+		{
+			"name": "Electron: Debug Main Process (Packaged on macOS)",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			},
+			"args": [
+				"."
+			],
+			"outputCapture": "std"
 		}
 	]
 }
