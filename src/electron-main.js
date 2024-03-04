@@ -51,7 +51,7 @@ let initial_file_path;
 if (process.argv.length >= 2) {
 	// in production, "path/to/jspaint.exe" "maybe/a/file.png"
 	// in development, "path/to/electron.exe" "." "maybe/a/file.png"
-	const initial_file_path = process.argv[isPackaged ? 1 : 2];
+	initial_file_path = process.argv[isPackaged ? 1 : 2];
 	allowed_file_paths.push(initial_file_path);
 }
 
