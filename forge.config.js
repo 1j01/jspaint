@@ -6,6 +6,21 @@ module.exports = {
 		appBundleId: "io.isaiahodhner.jspaint",
 		appCategoryType: "public.app-category.graphics-design",
 		appCopyright: "© 2024 Isaiah Odhner",
+		extendInfo: {
+			// Based on https://gist.github.com/sonnypgs/de2b6a4a4936d5b8e0fe43946002964a
+			// This extends Info.plist to allow dropping files onto the macOS dock icon.
+			// (all files, not just images, since it's much simpler and I support loading palettes from arbitrary text files)
+			CFBundleDocumentTypes: [
+				{
+					CFBundleTypeName: "All Files",
+					LSHandlerRank: "Alternate",
+					LSItemContentTypes: [
+						"public.data",
+						"public.content",
+					],
+				},
+			],
+		},
 		junk: true,
 		// TODO: assess filtering of files; I see eslint in node_modules, why? prune is true by default
 		ignore: [

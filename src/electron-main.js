@@ -292,5 +292,21 @@ app.on('activate', () => {
 	}
 });
 
+// Should this be delayed until will-finish-launching like in this example?
+// https://gist.github.com/sonnypgs/de2b6a4a4936d5b8e0fe43946002964a
+// Note: to test this, the app needs to be packaged, as far as I know,
+// since Info.plist tells macOS what files can be opened with the app.
+// Running in development mode, the dock icon doesn't accept files.
+app.on('open-file', (event, path) => {
+	// Emitted when dragging a file onto the dock on macOS (when the app was not running),
+	// or when opening a file from the file manager (when the app is already running).
+	event.preventDefault();
+	if (mainWindow === null) {
+		createWindow();
+	}
+	allowed_file_paths.push(path);
+	mainWindow.webContents.send('open-file', path);
+});
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

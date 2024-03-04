@@ -24,6 +24,20 @@ ipcRenderer.on("close-window-prompt", () => {
 	});
 });
 
+ipcRenderer.on("open-file", (event, file_path) => {
+	// Sent when dragging a file onto the dock on macOS.
+	// Comes from Electron's "open-file" event of the same name, though this is a custom IPC event.
+	// WET: copied from window.initial_system_file_handle handling
+	systemHooks.readBlobFromHandle(file_path).then(file => {
+		if (file) {
+			open_from_file(file, file_path);
+		}
+	}, (error) => {
+		// this handler is not always called, sometimes error message is shown from readBlobFromHandle
+		show_error_message(`Failed to open file ${file_path}`, error);
+	});
+});
+
 window.setRepresentedFilename = (filePath) => {
 	ipcRenderer.send("set-represented-filename", filePath);
 };
