@@ -212,11 +212,23 @@
 					"exit application", "exit paint", "close paint window",
 				],
 				action: () => {
+					// Note: For a Chrome PWA, window.close() is allowed only if there is only one history entry.
+					// I could make it try to close the window and then navigate to the official web desktop if it fails,
+					// but that would be inconsistent, as it wouldn't close the window after using File > New or File > Open.
+					// I could make it so that it uses replaceState when opening a new document (starting a new session);
+					// that would prevent you from using Alt+Left to go back to the previous document, but that may be acceptable
+					// for a desktop app experience, where the back button is already hidden.
+					// That said, if you just installed the PWA, it will have history already (even if just the New Tab page),
+					// as the tab is converted to a window, and in that case,
+					// it would be unable to close, again being inconsistent, but less so.
+					// (If on PWA install, the app could open a fresh new window and close itself, it could work from the start,
+					// but if we try to do that, we'll be back at square one, trying to close a window with history.)
 					try {
 						// API contract is containing page can override window.close()
 						// Note that e.g. (()=>{}).bind().toString() gives "function () { [native code] }"
 						// so the window.close() must not use bind() (not that that's common practice anyway)
-						if (frameElement && window.close && !/\{\s*\[native code\]\s*\}/.test(window.close.toString())) {
+						const close_overridden = frameElement && window.close && !/\{\s*\[native code\]\s*\}/.test(window.close.toString());
+						if (close_overridden || window.is_electron_app) {
 							window.close();
 							return;
 						}
