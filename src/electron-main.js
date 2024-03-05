@@ -358,22 +358,44 @@ app.on('activate', () => {
 	if (mainWindow === null) {
 		createWindow();
 	}
+	// don't really need focus/restore logic of activate_app here,
+	// as I believe the OS will do that
 });
+
+function activate_app() {
+	if (mainWindow) {
+		console.log("focusing existing window");
+		if (mainWindow.isMinimized()) mainWindow.restore();
+		mainWindow.focus();
+	} else {
+		createWindow();
+		// TODO: WHY is mainWindow not always set after createWindow()?? (┛✧Д✧ᴸ) (¿_?) (°_o)／
+		console.log("created new window (?):", mainWindow);
+	}
+}
+function open_file_in_app(file_path) {
+	allowed_file_paths.push(file_path);
+	if (mainWindow) {
+		console.log("sending open-file to mainWindow");
+		mainWindow.webContents.send('open-file', file_path);
+	} else {
+		console.log("setting initial_file_path");
+		initial_file_path = file_path;
+	}
+}
 
 // Should this be delayed until will-finish-launching like in this example?
 // https://gist.github.com/sonnypgs/de2b6a4a4936d5b8e0fe43946002964a
 // Note: to test this, the app needs to be packaged, as far as I know,
 // since Info.plist tells macOS what files can be opened with the app.
 // Running in development mode, the dock icon doesn't accept files.
-app.on('open-file', (event, path) => {
+app.on('open-file', (event, file_path) => {
 	// Emitted when dragging a file onto the dock on macOS (when the app was not running),
 	// or when opening a file from the file manager (when the app is already running).
 	event.preventDefault();
-	if (mainWindow === null) {
-		createWindow();
-	}
-	allowed_file_paths.push(path);
-	mainWindow.webContents.send('open-file', path);
+	console.log("open-file", file_path);
+	activate_app();
+	open_file_in_app(file_path);
 });
 
 app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additionalData) => {
@@ -383,12 +405,7 @@ app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additi
 	// so we have to use the additionalData object, passed from requestSingleInstanceLock.
 	// This hack is recommended in the docs: https://www.electronjs.org/docs/api/app#event-second-instance
 	console.log("second-instance", uselessCorruptedArgv, workingDirectory, additionalData);
-	if (mainWindow) {
-		if (mainWindow.isMinimized()) mainWindow.restore();
-		mainWindow.focus();
-	} else {
-		createWindow();
-	}
+	activate_app();
 	// Here I am being glad there's at least an official workaround for the broken argv,
 	// so I can finally be done with SOME of this complicated nonsense.
 	// I installed the app, tested opening files by dragging onto the shortcut in the file manager, that worked,
@@ -410,17 +427,6 @@ app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additi
 	if (args.file_path) {
 		const file_path = path.resolve(workingDirectory, args.file_path);
 		console.log("opening file from second instance:", file_path);
-		allowed_file_paths.push(file_path);
-		// TODO: WHY is mainWindow not always set after createWindow()??
-		// I also saw this for open-file, I think. I'm going mad, here.
-		// Do normal JS semantics not apply? I remember there was something about mainWindow being garbage collected if it's not global,
-		// but, it IS global, `let mainWindow` is at the top level, isn't it? (┛✧Д✧ᴸ) (¿_?) (°_o)／
-		if (mainWindow?.webContents) {
-			console.log("sending open-file to mainWindow");
-			mainWindow.webContents.send('open-file', file_path);
-		} else {
-			console.log("setting initial_file_path");
-			initial_file_path = file_path;
-		}
+		open_file_in_app(file_path);
 	}
 });
