@@ -383,14 +383,30 @@ app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additi
 	// so we have to use the additionalData object, passed from requestSingleInstanceLock.
 	// This hack is recommended in the docs: https://www.electronjs.org/docs/api/app#event-second-instance
 	console.log("second-instance", uselessCorruptedArgv, workingDirectory, additionalData);
-	const argv = additionalData.argv;
-	const args = parser.parse_args(argv);
 	if (mainWindow) {
 		if (mainWindow.isMinimized()) mainWindow.restore();
 		mainWindow.focus();
 	} else {
 		createWindow();
 	}
+	// Here I am being glad there's at least an official workaround for the broken argv,
+	// so I can finally be done with SOME of this complicated nonsense.
+	// I installed the app, tested opening files by dragging onto the shortcut in the file manager, that worked,
+	// but then launching the app from the start menu (i.e. without a file) gave me an error message:
+	//   TypeError: Cannot read properties of null (reading 'argv')
+	// `additionalData` doesn't always exist!?
+	// In fact, I can reproduce it in development mode too:
+	//   Terminal 1:  ./node_modules/electron/dist/electron.exe . images/icons/512x512.png
+	//   Terminal 2:  ./node_modules/electron/dist/electron.exe .
+	// Is `additionalData` of `{argv: []}` lost and converted to null?
+	// Is it not truthy enough? (𖦹ᯅ𖦹)
+	// What is truth, anyways? (◎~◎)
+	if (!additionalData) {
+		console.log("second-instance: no additionalData");
+		return;
+	}
+	const argv = additionalData.argv;
+	const args = parser.parse_args(argv);
 	if (args.file_path) {
 		const file_path = path.resolve(workingDirectory, args.file_path);
 		console.log("opening file from second instance:", file_path);
