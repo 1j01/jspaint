@@ -351,8 +351,23 @@ async function activate_app() {
 	await app.whenReady();
 	if (mainWindow) {
 		console.log("focusing existing window");
-		if (mainWindow.isMinimized()) mainWindow.restore();
-		mainWindow.focus();
+		// show() handles focus, un-minimizing, and bringing to front.
+		// focus() and restore() doesn't bring to front on macOS.
+
+		// However, on Windows, show() causes the window to become un-snapped from the corner/edge of the screen,
+		// and may end up significantly off-screen. https://github.com/electron/electron/issues/25359
+
+		// Here's some more people dealing with these pitfalls in various ways:
+		// https://stackoverflow.com/questions/70925355/why-does-win-focus-not-bring-the-window-to-the-front
+		// "If you want the window to be brought to the front, you'll have to get more creative."
+		if (process.platform === "win32") {
+			if (mainWindow.isMinimized()) {
+				mainWindow.restore();
+			}
+			mainWindow.focus();
+		} else {
+			mainWindow.show();
+		}
 	} else {
 		createWindow();
 		console.log("created new window:", mainWindow);
