@@ -48,14 +48,16 @@ const args = parser.parse_args(args_array);
 // - Opening an existing instance and exiting the app, forwarding arguments to the existing instance
 // (If it quit because there was an existing instance before handling `--help`,
 // you wouldn't get any help at the command line if the app was running.)
+
+// Note: The 'second-instance' event has an `argv` argument but it's unusably broken,
+// and the documented workaround is to pass the arguments as `additionalData` here.
+// https://www.electronjs.org/docs/api/app#event-second-instance
 const got_single_instance_lock = app.requestSingleInstanceLock({
 	argv: args_array,
 });
 
-// Note: When a second instance is opened, the `second-instance` event is emitted in the first instance.
-// See handler below.
-// Note: If the main process crashes during the second-instance event, the second instance will get the lock,
-// even if the first instance is still running, showing an error dialog. 
+// Note: If the main process crashes during the 'second-instance' event, the second instance will get the lock,
+// even if the first instance is still showing an error dialog. 
 if (!got_single_instance_lock) {
 	console.log("Opening in existing instance; exiting this one.");
 	app.quit();
@@ -68,6 +70,8 @@ if (!got_single_instance_lock) {
 	return;
 } else {
 	console.log("Got single instance lock.");
+	// When a second instance is opened, the `second-instance` event will be emitted in the this instance.
+	// See handler below.
 }
 
 app.enableSandbox();
