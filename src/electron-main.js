@@ -122,6 +122,7 @@ if (args.file_path) {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 // @TODO: It's been several electron versions. I doubt this is still necessary. (It was from a boilerplate.)
+/** @type {BrowserWindow | undefined} */
 let mainWindow;
 
 const createWindow = () => {
