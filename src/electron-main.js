@@ -35,6 +35,30 @@ const { isPackaged } = app;
 const args_array = process.argv.slice(isPackaged ? 1 : 2);
 const args = parser.parse_args(args_array);
 
+// After argument parsing that may have exited the app, handle single instance behavior.
+// In other words, the priority is:
+// - Squirrel event arguments (other than `--squirrel-firstrun`) which exit the app
+// - `--help` or `--version` which print a message and exit the app
+// - Opening a file which opens the file in the existing instance and exits the app
+// (If it quit because there was an existing instance before handling `--help`,
+// you wouldn't get any help at the command line if the app was running.)
+const got_single_instance_lock = app.requestSingleInstanceLock()
+console.log("Got single instance lock?", got_single_instance_lock);
+
+// Note: When a second instance is opened, the `second-instance` event is emitted in the first instance.
+// See handler below.
+// Note: If the main process crashes during the second-instance event, the second instance will get the lock,
+// even if the first instance is still running, showing an error dialog. 
+if (!got_single_instance_lock) {
+	// Why does it still get all these errors? ( ﾟдﾟ)
+	//   Got single instance lock? false
+	//   [52128:0304/194956.188:ERROR:cache_util_win.cc(20)] Unable to move the cache: Access is denied. (0x5)
+	//   [52128:0304/194956.189:ERROR:cache_util.cc(145)] Unable to move cache folder C:\Users\Isaiah\AppData\Roaming\Electron\GPUCache to C:\Users\Isaiah\AppData\Roaming\Electron\old_GPUCache_000
+	//   [52128:0304/194956.189:ERROR:disk_cache.cc(196)] Unable to create cache
+	//   [52128:0304/194956.189:ERROR:shader_disk_cache.cc(613)] Shader Cache Creation failed: -2
+	app.quit();
+}
+
 app.enableSandbox();
 app.commandLine.appendSwitch('high-dpi-support', 1);
 app.commandLine.appendSwitch('force-device-scale-factor', 1);
@@ -130,6 +154,8 @@ const createWindow = () => {
 		// Note: if the web contents are not responding, this will make the app harder to close.
 		// Similarly, if there's an error, the app will be harder to close (perhaps worse as it's less likely to show a Not Responding dialog).
 		// And this also prevents it from closing with Ctrl+C in the terminal, which is arguably a feature.
+		// TODO: focus window if it's not focused, which can happen via right clicking the dock/taskbar icon, or Ctrl+C in the terminal
+		// (but ideally not if it's going to close without prompting)
 		mainWindow.webContents.send('close-window-prompt');
 		event.preventDefault();
 	});
@@ -178,11 +204,17 @@ const createWindow = () => {
 // I'm using an indented block here just to avoid a large git diff, for now.
 {
 	ipcMain.on("get-env-info", (event) => {
-		event.returnValue = {
+		const env_info = {
 			isDev,
 			isMacOS: process.platform === "darwin",
 			initialFilePath: initial_file_path,
 		};
+		event.returnValue = env_info;
+		// event.returnValue is logged as undefined, so I guess it's a setter
+		console.log("get-env-info: event.returnValue:", event.returnValue, "env_info:", env_info);
+		// not sure if this is the best way to do this, but like,
+		// it shouldn't open the file if the window is closed and re-opened, right?
+		initial_file_path = null;
 	});
 	ipcMain.on("set-represented-filename", (event, filePath) => {
 		if (allowed_file_paths.includes(filePath)) {
@@ -333,5 +365,48 @@ app.on('open-file', (event, path) => {
 	mainWindow.webContents.send('open-file', path);
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+app.on('second-instance', (event, argv, workingDirectory) => {
+	// Someone tried to run a second instance, we should focus our window,
+	// and handle the file path if there is one.
+	console.log("second-instance", argv, workingDirectory);
+	if (mainWindow) {
+		if (mainWindow.isMinimized()) mainWindow.restore();
+		mainWindow.focus();
+	} else {
+		createWindow();
+	}
+	// TODO: how to properly ignore electron/chromium args? (`--allow-file-access-from-files`)
+	// Should I look for "electron-main.js"? Well, that can also just be ".", which works via `package.json`.
+	// (and btw, it has to be launched in the same way both times for it to get a second-instance event, otherwise both will get the lock and open.)
+	// `argv` looks like:
+	// [
+	// 	'C:\\Users\\Isaiah\\Projects\\jspaint\\node_modules\\electron\\dist\\electron.exe',
+	// 	'--allow-file-access-from-files',
+	// 	'./src/electron-main.js',
+	// 	'c:/Users/Isaiah/Projects/jspaint/images/icons/512x512.png'
+	// ]
+	// const args = parser.parse_args(argv.slice(isPackaged ? 1 : 2));
+	// FOR NOW, just assume the last argument is the file path.
+	// `--help` and `--version` would already be handled by the second instance,
+	// and the only other argument is `file_path`.
+	// But if we want to support multiple editor windows, this is going to get messy.
+	// ALSO, THAT SAID, the file_path is optional, and leaving it off will now error, either trying to open "electron-main.js" (with "Paint cannot open this file" dialog) or "." (with EISDIR).
+	// This could be very confusing. TODO: FIXME
+	const args = { file_path: argv.pop() };
+	if (args.file_path) {
+		const file_path = path.resolve(workingDirectory, args.file_path);
+		console.log("opening file from second instance:", file_path);
+		allowed_file_paths.push(file_path);
+		// TODO: WHY is mainWindow not always set after createWindow()??
+		// I also saw this for open-file, I think. I'm going mad, here.
+		// Do normal JS semantics not apply? I remember there was something about mainWindow being garbage collected if it's not global,
+		// but, it IS global, `let mainWindow` is at the top level, isn't it? (┛✧Д✧ᴸ) (¿_?) (°_o)／
+		if (mainWindow?.webContents) {
+			console.log("sending open-file to mainWindow");
+			mainWindow.webContents.send('open-file', file_path);
+		} else {
+			console.log("setting initial_file_path");
+			initial_file_path = file_path;
+		}
+	}
+});
