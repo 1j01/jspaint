@@ -43,20 +43,23 @@ const args = parser.parse_args(args_array);
 // (If it quit because there was an existing instance before handling `--help`,
 // you wouldn't get any help at the command line if the app was running.)
 const got_single_instance_lock = app.requestSingleInstanceLock()
-console.log("Got single instance lock?", got_single_instance_lock);
 
 // Note: When a second instance is opened, the `second-instance` event is emitted in the first instance.
 // See handler below.
 // Note: If the main process crashes during the second-instance event, the second instance will get the lock,
 // even if the first instance is still running, showing an error dialog. 
 if (!got_single_instance_lock) {
-	// Why does it still get all these errors? ( ﾟдﾟ)
-	//   Got single instance lock? false
+	console.log("Opening in existing instance; exiting this one.");
+	app.quit();
+	// `app.quit` does not immediately exit the process.
+	// Return to avoid errors / main window briefly appearing.
 	//   [52128:0304/194956.188:ERROR:cache_util_win.cc(20)] Unable to move the cache: Access is denied. (0x5)
 	//   [52128:0304/194956.189:ERROR:cache_util.cc(145)] Unable to move cache folder C:\Users\Isaiah\AppData\Roaming\Electron\GPUCache to C:\Users\Isaiah\AppData\Roaming\Electron\old_GPUCache_000
 	//   [52128:0304/194956.189:ERROR:disk_cache.cc(196)] Unable to create cache
 	//   [52128:0304/194956.189:ERROR:shader_disk_cache.cc(613)] Shader Cache Creation failed: -2
-	app.quit();
+	return;
+} else {
+	console.log("Got single instance lock.");
 }
 
 app.enableSandbox();
