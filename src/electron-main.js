@@ -45,10 +45,12 @@ const args = parser.parse_args(args_array);
 // In other words, the priority is:
 // - Squirrel event arguments (other than `--squirrel-firstrun`) which exit the app
 // - `--help` or `--version` which print a message and exit the app
-// - Opening a file which opens the file in the existing instance and exits the app
+// - Opening an existing instance and exiting the app, forwarding arguments to the existing instance
 // (If it quit because there was an existing instance before handling `--help`,
 // you wouldn't get any help at the command line if the app was running.)
-const got_single_instance_lock = app.requestSingleInstanceLock()
+const got_single_instance_lock = app.requestSingleInstanceLock({
+	argv: args_array,
+});
 
 // Note: When a second instance is opened, the `second-instance` event is emitted in the first instance.
 // See handler below.
@@ -374,34 +376,21 @@ app.on('open-file', (event, path) => {
 	mainWindow.webContents.send('open-file', path);
 });
 
-app.on('second-instance', (event, argv, workingDirectory) => {
+app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additionalData) => {
 	// Someone tried to run a second instance, we should focus our window,
 	// and handle the file path if there is one.
-	console.log("second-instance", argv, workingDirectory);
+	// Note: the second-instance event sends a broken argv which may rearrange and add extra arguments,
+	// so we have to use the additionalData object, passed from requestSingleInstanceLock.
+	// This hack is recommended in the docs: https://www.electronjs.org/docs/api/app#event-second-instance
+	console.log("second-instance", uselessCorruptedArgv, workingDirectory, additionalData);
+	const argv = additionalData.argv;
+	const args = parser.parse_args(argv);
 	if (mainWindow) {
 		if (mainWindow.isMinimized()) mainWindow.restore();
 		mainWindow.focus();
 	} else {
 		createWindow();
 	}
-	// TODO: how to properly ignore electron/chromium args? (`--allow-file-access-from-files`)
-	// Should I look for "electron-main.js"? Well, that can also just be ".", which works via `package.json`.
-	// (and btw, it has to be launched in the same way both times for it to get a second-instance event, otherwise both will get the lock and open.)
-	// `argv` looks like:
-	// [
-	// 	'C:\\Users\\Isaiah\\Projects\\jspaint\\node_modules\\electron\\dist\\electron.exe',
-	// 	'--allow-file-access-from-files',
-	// 	'./src/electron-main.js',
-	// 	'c:/Users/Isaiah/Projects/jspaint/images/icons/512x512.png'
-	// ]
-	// const args = parser.parse_args(argv.slice(isPackaged ? 1 : 2));
-	// FOR NOW, just assume the last argument is the file path.
-	// `--help` and `--version` would already be handled by the second instance,
-	// and the only other argument is `file_path`.
-	// But if we want to support multiple editor windows, this is going to get messy.
-	// ALSO, THAT SAID, the file_path is optional, and leaving it off will now error, either trying to open "electron-main.js" (with "Paint cannot open this file" dialog) or "." (with EISDIR).
-	// This could be very confusing. TODO: FIXME
-	const args = { file_path: argv.pop() };
 	if (args.file_path) {
 		const file_path = path.resolve(workingDirectory, args.file_path);
 		console.log("opening file from second instance:", file_path);
