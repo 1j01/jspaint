@@ -7,6 +7,8 @@ const { ArgumentParser, SUPPRESS } = require('argparse');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
 	app.quit();
+	// `app.quit` does not immediately exit the process.
+	return;
 }
 
 const parser = new ArgumentParser({
@@ -24,8 +26,11 @@ parser.add_argument('-v', '--version', {
 	version: require('../package.json').version,
 });
 
+// Squirrel.Windows passes "-squirrel-firstrun" when the app is first run after being installed.
+// Other Squirrel.Windows event argument are handled by `electron-squirrel-startup`, which returns whether it handled an event.
+// This could be used to show a "Thanks for installing" message or some such, but just hide and ignore it for now.
 parser.add_argument('-s', '--squirrel-firstrun', {
-	help: SUPPRESS, // Hide and ignore this option, which is passed by Squirrel.Windows when the app is run after being installed.
+	help: SUPPRESS,
 	action: 'store_true',
 });
 
