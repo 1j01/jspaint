@@ -4,11 +4,6 @@ module.exports = {
 		"es2020": true,
 	},
 	"extends": "eslint:recommended",
-	"parserOptions": {
-		"ecmaFeatures": {
-			"globalReturn": true, // needed in electron-main.js, only really valid in Node.js; TODO: configure different environments
-		},
-	},
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly",
