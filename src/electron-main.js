@@ -53,7 +53,7 @@ const args = parser.parse_args(args_array);
 // and the documented workaround is to pass the arguments as `additionalData` here.
 // https://www.electronjs.org/docs/api/app#event-second-instance
 const got_single_instance_lock = app.requestSingleInstanceLock({
-	argv: args_array,
+	[args.file_path]: [],
 });
 
 // Note: If the main process crashes during the 'second-instance' event, the second instance will get the lock,
@@ -428,6 +428,19 @@ app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additi
 	// Is `additionalData` of `{argv: []}` lost and converted to null?
 	// Is it not truthy enough? (𖦹ᯅ𖦹)
 	// What is truth, anyways? (◎~◎)
+
+	// ...OK, revisiting this, I'm guessing this is a bug in Electron where they're special-casing when there are no command line arguments,
+	// and not passing the `additionalData` object to the second-instance event in that case.
+	// Well, I should try to look for an issue...
+	// https://github.com/electron/electron/issues/40615
+	// ...Is it really THE EMPTY ARRAY causing null? (◎_◎;)
+	// (I didn't want to believe it, I thought I was going mad, but that looks like it's it.)
+	// Apparently it's Windows-specific as well.
+	// And it's not even the lack of items, in a sense, it's the presence of an empty array.
+	// Adding an extra property doesn't help; any time there's an empty array, the whole thing ends up null.
+	// Scratch that, any time the FIRST property is an empty array, it ends up null.
+	// Scratch that, it's dependant on key order and key name in some obscure way...
+	// Odd numbered keys seem to be unaffected.
 	if (!additionalData) {
 		console.log("second-instance: no additionalData");
 		return;

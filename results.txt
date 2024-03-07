@@ -1,0 +1,263 @@
+a -> { a: [] }
+b -> { b: [] }
+m -> { m: [] }
+aa -> null
+ab -> null
+am -> null
+ba -> null
+bb -> null
+bm -> null
+ma -> null
+mb -> null
+mm -> null
+aaa -> { aaa: [] }
+aab -> { aab: [] }
+aam -> { aam: [] }
+aba -> { aba: [] }
+abb -> { abb: [] }
+abm -> { abm: [] }
+ama -> { ama: [] }
+amb -> { amb: [] }
+amm -> { amm: [] }
+baa -> { baa: [] }
+bab -> { bab: [] }
+bam -> { bam: [] }
+bba -> { bba: [] }
+bbb -> { bbb: [] }
+bbm -> { bbm: [] }
+bma -> { bma: [] }
+bmb -> { bmb: [] }
+bmm -> { bmm: [] }
+maa -> { maa: [] }
+mab -> { mab: [] }
+mam -> { mam: [] }
+mba -> { mba: [] }
+mbb -> { mbb: [] }
+mbm -> { mbm: [] }
+mma -> { mma: [] }
+mmb -> { mmb: [] }
+mmm -> { mmm: [] }
+aaaa -> null
+aaab -> null
+aaam -> null
+aaba -> null
+aabb -> null
+aabm -> null
+aama -> null
+aamb -> null
+aamm -> null
+abaa -> null
+abab -> null
+abam -> null
+abba -> null
+abbb -> null
+abbm -> null
+abma -> null
+abmb -> null
+abmm -> null
+amaa -> null
+amab -> null
+amam -> null
+amba -> null
+ambb -> null
+ambm -> null
+amma -> null
+ammb -> null
+ammm -> null
+baaa -> null
+baab -> null
+baam -> null
+baba -> null
+babb -> null
+babm -> null
+bama -> null
+bamb -> null
+bamm -> null
+bbaa -> null
+bbab -> null
+bbam -> null
+bbba -> null
+bbbb -> null
+bbbm -> null
+bbma -> null
+bbmb -> null
+bbmm -> null
+bmaa -> null
+bmab -> null
+bmam -> null
+bmba -> null
+bmbb -> null
+bmbm -> null
+bmma -> null
+bmmb -> null
+bmmm -> null
+maaa -> null
+maab -> null
+maam -> null
+maba -> null
+mabb -> null
+mabm -> null
+mama -> null
+mamb -> null
+mamm -> null
+mbaa -> null
+mbab -> null
+mbam -> null
+mbba -> null
+mbbb -> null
+mbbm -> null
+mbma -> null
+mbmb -> null
+mbmm -> null
+mmaa -> null
+mmab -> null
+mmam -> null
+mmba -> null
+mmbb -> null
+mmbm -> null
+mmma -> null
+mmmb -> null
+mmmm -> null
+aaaaa -> { aaaaa: [] }
+aaaab -> { aaaab: [] }
+aaaam -> { aaaam: [] }
+aaaba -> { aaaba: [] }
+aaabb -> { aaabb: [] }
+aaabm -> { aaabm: [] }
+aaama -> { aaama: [] }
+aaamb -> { aaamb: [] }
+aaamm -> { aaamm: [] }
+aabaa -> { aabaa: [] }
+aabab -> { aabab: [] }
+aabam -> { aabam: [] }
+aabba -> { aabba: [] }
+aabbb -> { aabbb: [] }
+aabbm -> { aabbm: [] }
+aabma -> { aabma: [] }
+aabmb -> { aabmb: [] }
+aabmm -> { aabmm: [] }
+aamaa -> { aamaa: [] }
+aamab -> { aamab: [] }
+aamam -> { aamam: [] }
+aamba -> { aamba: [] }
+aambb -> { aambb: [] }
+aambm -> { aambm: [] }
+aamma -> { aamma: [] }
+aammb -> { aammb: [] }
+aammm -> { aammm: [] }
+abaaa -> { abaaa: [] }
+abaab -> { abaab: [] }
+abaam -> { abaam: [] }
+ababa -> { ababa: [] }
+ababb -> { ababb: [] }
+ababm -> { ababm: [] }
+abama -> { abama: [] }
+abamb -> { abamb: [] }
+abamm -> { abamm: [] }
+abbaa -> { abbaa: [] }
+abbab -> { abbab: [] }
+abbam -> { abbam: [] }
+abbba -> { abbba: [] }
+abbbb -> { abbbb: [] }
+abbbm -> { abbbm: [] }
+abbma -> { abbma: [] }
+abbmb -> { abbmb: [] }
+abbmm -> { abbmm: [] }
+abmaa -> { abmaa: [] }
+abmab -> { abmab: [] }
+abmam -> { abmam: [] }
+abmba -> { abmba: [] }
+abmbb -> { abmbb: [] }
+abmbm -> { abmbm: [] }
+abmma -> { abmma: [] }
+abmmb -> { abmmb: [] }
+abmmm -> { abmmm: [] }
+amaaa -> { amaaa: [] }
+amaab -> { amaab: [] }
+amaam -> { amaam: [] }
+amaba -> { amaba: [] }
+amabb -> { amabb: [] }
+amabm -> { amabm: [] }
+amama -> { amama: [] }
+amamb -> { amamb: [] }
+amamm -> { amamm: [] }
+ambaa -> { ambaa: [] }
+ambab -> { ambab: [] }
+ambam -> { ambam: [] }
+ambba -> { ambba: [] }
+ambbb -> { ambbb: [] }
+ambbm -> { ambbm: [] }
+ambma -> { ambma: [] }
+ambmb -> { ambmb: [] }
+ambmm -> { ambmm: [] }
+ammaa -> { ammaa: [] }
+ammab -> { ammab: [] }
+ammam -> { ammam: [] }
+ammba -> { ammba: [] }
+ammbb -> { ammbb: [] }
+ammbm -> { ammbm: [] }
+ammma -> { ammma: [] }
+ammmb -> { ammmb: [] }
+ammmm -> { ammmm: [] }
+baaaa -> { baaaa: [] }
+baaab -> { baaab: [] }
+baaam -> { baaam: [] }
+baaba -> { baaba: [] }
+baabb -> { baabb: [] }
+baabm -> { baabm: [] }
+baama -> { baama: [] }
+baamb -> { baamb: [] }
+baamm -> { baamm: [] }
+babaa -> { babaa: [] }
+babab -> { babab: [] }
+babam -> { babam: [] }
+babba -> { babba: [] }
+babbb -> { babbb: [] }
+babbm -> { babbm: [] }
+babma -> { babma: [] }
+babmb -> { babmb: [] }
+babmm -> { babmm: [] }
+bamaa -> { bamaa: [] }
+bamab -> { bamab: [] }
+bamam -> { bamam: [] }
+bamba -> { bamba: [] }
+bambb -> { bambb: [] }
+bambm -> { bambm: [] }
+bamma -> { bamma: [] }
+bammb -> { bammb: [] }
+bammm -> { bammm: [] }
+bbaaa -> { bbaaa: [] }
+bbaab -> { bbaab: [] }
+bbaam -> { bbaam: [] }
+bbaba -> { bbaba: [] }
+bbabb -> { bbabb: [] }
+bbabm -> { bbabm: [] }
+bbama -> { bbama: [] }
+bbamb -> { bbamb: [] }
+bbamm -> { bbamm: [] }
+bbbaa -> { bbbaa: [] }
+bbbab -> { bbbab: [] }
+bbbam -> { bbbam: [] }
+bbbba -> { bbbba: [] }
+bbbbb -> { bbbbb: [] }
+bbbbm -> { bbbbm: [] }
+bbbma -> { bbbma: [] }
+bbbmb -> { bbbmb: [] }
+bbbmm -> { bbbmm: [] }
+bbmaa -> { bbmaa: [] }
+bbmab -> { bbmab: [] }
+bbmam -> { bbmam: [] }
+bbmba -> { bbmba: [] }
+bbmbb -> { bbmbb: [] }
+bbmbm -> { bbmbm: [] }
+bbmma -> { bbmma: [] }
+bbmmb -> { bbmmb: [] }
+bbmmm -> { bbmmm: [] }
+bmaaa -> { bmaaa: [] }
+bmaab -> { bmaab: [] }
+bmaam -> { bmaam: [] }
+bmaba -> { bmaba: [] }
+bmabb -> { bmabb: [] }
+bmabm -> { bmabm: [] }
+bmama -> { bmama: [] }
+bmamb -> { bmamb: [] }
