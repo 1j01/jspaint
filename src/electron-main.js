@@ -338,11 +338,6 @@ const createWindow = () => {
 	});
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
 	// On OS X it is common for applications and their menu bar
@@ -352,27 +347,18 @@ app.on('window-all-closed', () => {
 	}
 });
 
-app.on('activate', () => {
-	// On OS X it's common to re-create a window in the app when the
-	// dock icon is clicked and there are no other windows open.
-	if (mainWindow === null) {
-		createWindow();
-	}
-	// don't really need focus/restore logic of activate_app here,
-	// as I believe the OS will do that
-});
-
-function activate_app() {
+async function activate_app() {
+	await app.whenReady();
 	if (mainWindow) {
 		console.log("focusing existing window");
 		if (mainWindow.isMinimized()) mainWindow.restore();
 		mainWindow.focus();
 	} else {
 		createWindow();
-		// TODO: WHY is mainWindow not always set after createWindow()?? (┛✧Д✧ᴸ) (¿_?) (°_o)／
-		console.log("created new window (?):", mainWindow);
+		console.log("created new window:", mainWindow);
 	}
 }
+
 function open_file_in_app(file_path) {
 	allowed_file_paths.push(file_path);
 	if (mainWindow) {
@@ -392,6 +378,10 @@ function open_file_in_app(file_path) {
 app.on('open-file', (event, file_path) => {
 	// Emitted when dragging a file onto the dock on macOS (when the app was not running),
 	// or when opening a file from the file manager (when the app is already running).
+
+	// NOTE: if implementing support for multiple editor windows, make sure not to create two windows at startup.
+	// Right now activate_app checks for an existing window, and both 'open-file' and the initial general window creation use it.
+
 	event.preventDefault();
 	console.log("open-file", file_path);
 	activate_app();
@@ -430,3 +420,14 @@ app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additi
 		open_file_in_app(file_path);
 	}
 });
+
+// On OS X it's common to re-create a window in the app when the
+// dock icon is clicked and there are no other windows open.
+// Don't really need focus/restore logic of activate_app here,
+// as I believe macOS will do that, but it's simpler to just call activate_app.
+app.on('activate', activate_app);
+
+// Create the main window when Electron is ready.
+// Use `activate_app` instead of `app.on('ready', createWindow)`, because it includes a check for an existing window,
+// so it could avoid potentially creating two windows at startup (though I suspect the event order would prevent that).
+activate_app();
