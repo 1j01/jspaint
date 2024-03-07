@@ -374,8 +374,8 @@ async function activate_app() {
 			mainWindow.show();
 		}
 	} else {
+		console.log("creating window");
 		createWindow();
-		console.log("created new window:", mainWindow);
 	}
 }
 
