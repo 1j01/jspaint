@@ -123,11 +123,11 @@ if (args.file_path) {
 // be closed automatically when the JavaScript object is garbage collected.
 // @TODO: It's been several electron versions. I doubt this is still necessary. (It was from a boilerplate.)
 /** @type {BrowserWindow | undefined} */
-let mainWindow;
+let editor_window;
 
 const createWindow = () => {
 	// Create the browser window.
-	mainWindow = new BrowserWindow({
+	editor_window = new BrowserWindow({
 		useContentSize: true,
 		autoHideMenuBar: true, // it adds height for a native menu bar unless we hide it here
 		// setMenu(null) below is too late; it's already decided on the size by then
@@ -150,34 +150,34 @@ const createWindow = () => {
 	});
 
 	// @TODO: maybe use the native menu for the "Modern" theme, or a "Native" theme
-	mainWindow.setMenu(null);
+	editor_window.setMenu(null);
 
 	// and load the index.html of the app.
-	mainWindow.loadURL(`file://${__dirname}/../index.html`);
+	editor_window.loadURL(`file://${__dirname}/../index.html`);
 
 	// Emitted when the window is closed.
-	mainWindow.on('closed', () => {
+	editor_window.on('closed', () => {
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
-		mainWindow = null;
+		editor_window = null;
 	});
 
 	// Emitted before the window is closed.
-	mainWindow.on('close', (event) => {
-		// Don't need to check mainWindow.isDocumentEdited(),
+	editor_window.on('close', (event) => {
+		// Don't need to check editor_window.isDocumentEdited(),
 		// because the (un)edited state is handled by the renderer process, in are_you_sure().
 		// Note: if the web contents are not responding, this will make the app harder to close.
 		// Similarly, if there's an error, the app will be harder to close (perhaps worse as it's less likely to show a Not Responding dialog).
 		// And this also prevents it from closing with Ctrl+C in the terminal, which is arguably a feature.
 		// TODO: focus window if it's not focused, which can happen via right clicking the dock/taskbar icon, or Ctrl+C in the terminal
 		// (but ideally not if it's going to close without prompting)
-		mainWindow.webContents.send('close-window-prompt');
+		editor_window.webContents.send('close-window-prompt');
 		event.preventDefault();
 	});
 
 	// Open links without target=_blank externally.
-	mainWindow.webContents.on('will-navigate', (e, url) => {
+	editor_window.webContents.on('will-navigate', (e, url) => {
 		// check that the URL is not part of the app
 		if (!url.includes("file://")) {
 			e.preventDefault();
@@ -185,7 +185,7 @@ const createWindow = () => {
 		}
 	});
 	// Open links with target=_blank externally.
-	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+	editor_window.webContents.setWindowOpenHandler(({ url }) => {
 		// check that the URL is not part of the app
 		if (!url.includes("file://")) {
 			shell.openExternal(url);
@@ -234,14 +234,14 @@ const createWindow = () => {
 	});
 	ipcMain.on("set-represented-filename", (event, filePath) => {
 		if (allowed_file_paths.includes(filePath)) {
-			mainWindow.setRepresentedFilename(filePath);
+			editor_window.setRepresentedFilename(filePath);
 		}
 	});
 	ipcMain.on("set-document-edited", (event, isEdited) => {
-		mainWindow.setDocumentEdited(isEdited);
+		editor_window.setDocumentEdited(isEdited);
 	});
 	ipcMain.handle("show-save-dialog", async (event, options) => {
-		const { filePath, canceled } = await dialog.showSaveDialog(mainWindow, {
+		const { filePath, canceled } = await dialog.showSaveDialog(editor_window, {
 			title: options.title,
 			// defaultPath: options.defaultPath,
 			defaultPath: options.defaultPath || path.basename(options.defaultFileName),
@@ -252,7 +252,7 @@ const createWindow = () => {
 		return { filePath, fileName, canceled };
 	});
 	ipcMain.handle("show-open-dialog", async (event, options) => {
-		const { filePaths, canceled } = await dialog.showOpenDialog(mainWindow, {
+		const { filePaths, canceled } = await dialog.showOpenDialog(editor_window, {
 			title: options.title,
 			defaultPath: options.defaultPath,
 			filters: options.filters,
@@ -354,7 +354,7 @@ app.on('window-all-closed', () => {
 
 async function activate_app() {
 	await app.whenReady();
-	if (mainWindow) {
+	if (editor_window) {
 		console.log("focusing existing window");
 		// show() handles focus, un-minimizing, and bringing to front.
 		// focus() and restore() doesn't bring to front on macOS.
@@ -366,12 +366,12 @@ async function activate_app() {
 		// https://stackoverflow.com/questions/70925355/why-does-win-focus-not-bring-the-window-to-the-front
 		// "If you want the window to be brought to the front, you'll have to get more creative."
 		if (process.platform === "win32") {
-			if (mainWindow.isMinimized()) {
-				mainWindow.restore();
+			if (editor_window.isMinimized()) {
+				editor_window.restore();
 			}
-			mainWindow.focus();
+			editor_window.focus();
 		} else {
-			mainWindow.show();
+			editor_window.show();
 		}
 	} else {
 		console.log("creating window");
@@ -381,9 +381,9 @@ async function activate_app() {
 
 function open_file_in_app(file_path) {
 	allowed_file_paths.push(file_path);
-	if (mainWindow) {
-		console.log("sending open-file to mainWindow");
-		mainWindow.webContents.send('open-file', file_path);
+	if (editor_window) {
+		console.log("sending open-file to editor_window");
+		editor_window.webContents.send('open-file', file_path);
 	} else {
 		console.log("setting initial_file_path");
 		initial_file_path = file_path;
