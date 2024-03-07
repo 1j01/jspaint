@@ -44,6 +44,8 @@
 	"files.readonlyInclude": {
 		// Electron Forge output
 		"out/**": true,
+		// Built/installed app (sometimes I follow error message links into the built app's code, and end up editing it by mistake)
+		"**/resources/app/**": true,
 		// Node.js
 		"node_modules/**": true,
 		"package-lock.json": true,
