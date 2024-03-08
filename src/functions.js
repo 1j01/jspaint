@@ -1110,6 +1110,13 @@ function are_you_sure(action, canceled, from_session_load) {
 	if (saved) {
 		action();
 	} else if (from_session_load) {
+		// @FIXME: this dialog is confusingly worded in the best case.
+		// It's intended for when the user edits the document while the initial document is loading,
+		// which is hard to do, at least for local sessions on my fast new computer.
+		// However it's also shown inappropriately if you edit the document and then either:
+		// - type a #load: URL into the address bar such as
+		//   http://127.0.0.1:1999/#load:https://i.imgur.com/M5zcPuk.jpeg
+		// - click an Open link in the Manage Storage dialog in the Electron app
 		showMessageBox({
 			message: localize("You've modified the document while an existing document was loading.\nSave the new document?", file_name),
 			buttons: [
