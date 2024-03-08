@@ -270,9 +270,12 @@ const createWindow = () => {
 		initial_file_path = null;
 	});
 	ipcMain.on("set-represented-filename", (event, filePath) => {
-		if (allowed_file_paths.includes(filePath)) {
-			editor_window.setRepresentedFilename(filePath);
+		// filePath of "" is used to reset the title bar's filename,
+		// and "" isn't in the allow list.
+		if (!allowed_file_paths.includes(filePath)) {
+			filePath = "";
 		}
+		editor_window.setRepresentedFilename(filePath);
 	});
 	ipcMain.on("set-document-edited", (event, isEdited) => {
 		editor_window.setDocumentEdited(isEdited);

@@ -155,7 +155,6 @@ Functionality:
 * Recent files (could also be implemented for 98.js.org in the future)
 * macOS:
 	* `win.setSheetOffset` with the menu bar height
-	* test `setRepresentedFilename`, `setDocumentEdited`
 * Windows: maybe handle `session-end` event and ask to save?
 * Detect if file changes on disk, ask if you want to reload it?
 
