@@ -1300,6 +1300,7 @@ function show_resource_load_error_message(error) {
 			`);
 		}
 	} else {
+		// TODO: what to do in Electron? also most users don't know how to check the console
 		$message.html(`
 			<p>Failed to load image from URL.</p>
 			<p>Check your browser's devtools for details.</p>
@@ -3757,7 +3758,10 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 						// 	<p>${localize("Unexpected file format.")}</p>
 						// 	<p>${localize("An unsupported operation was attempted.")}</p>
 						// `,
-						message: "Your browser does not support writing images in this file format.",
+						message:
+							window.is_electron_app ?
+								"Writing images in this file format is not supported." :
+								"Your browser does not support writing images in this file format.",
 						iconID: "error",
 					});
 				}

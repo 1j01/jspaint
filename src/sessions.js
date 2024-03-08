@@ -32,20 +32,28 @@
 		$w.title("Recover Document");
 		let backup_impossible = false;
 		try { window.localStorage } catch (e) { backup_impossible = true; }
+		// TODO: get rid of this invasive dialog https://github.com/1j01/jspaint/issues/325
+		// It appears when it shouldn't, in basic scenarios like Ctrl+A in a transparent document,
+		// and it gets bigger once you edit the document, which feels... almost aggressive.
+		// That said, I've made it more compact and delineated the expanded section with a horizontal rule,
+		// so it doesn't feel as much like it's changed out from under you and you have to re-read it.
 		$w.$main.append($(`
-			<h1>Woah!</h1>
-			<p>Your browser may have cleared the canvas due to memory usage.</p>
-			<p>Undo to recover the document, and remember to save with <b>File > Save</b>!</p>
+			<p>Woah! The canvas became empty.</p>
+			<p>If this was on purpose, please ignore this message.</p>
+			<p>
+				If the canvas was cleared due to memory usage,<br>
+				click Undo to recover the document.
+			</p>
+			<!--<p>Remember to save with <b>File > Save</b>!</p>-->
 			${backup_impossible ?
 				"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>"
 				: (
 					no_longer_blank ?
-						`<p>
-							<b>Note:</b> normally a backup is saved automatically,<br>
-							but autosave is paused while this dialog is open<br>
-							to avoid overwriting the (singular) backup.
+						`<hr>
+						<p style="opacity: 0.8; font-size: 0.9em;">
+							Auto-save is paused while this dialog is open.
 						</p>
-						<p>
+						<p style="opacity: 0.8; font-size: 0.9em;">
 							(See <b>File &gt; Manage Storage</b> to view backups.)
 						</p>`
 						: ""

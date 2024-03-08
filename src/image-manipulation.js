@@ -1069,11 +1069,13 @@ function draw_grid(ctx, scale) {
 		try {
 			gl = canvas.getContext('webgl', { antialias: false });
 		} catch (error) {
+			// TODO: reload button for Electron app
 			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.", error);
 			return;
 		}
 
 		if (!gl) {
+			// TODO: reload button for Electron app
 			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
 			return;
 		}
@@ -1157,6 +1159,7 @@ function draw_grid(ctx, scale) {
 		clamp_brush_sizes();
 
 		warning_tid = setTimeout(() => {
+			// TODO: reload button for Electron app
 			show_error_message("The WebGL context was lost. You may need to refresh the web page, or restart your computer.");
 		}, 3000);
 	}, false);
@@ -1200,6 +1203,7 @@ function draw_grid(ctx, scale) {
 
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
 		if (!gl) {
+			// TODO: reload button for Electron app
 			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
 			return; // @TODO: don't pollute brush cache with empty brushes (also maybe fallback to 2D canvas rendering)
 		}
