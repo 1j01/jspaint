@@ -210,7 +210,47 @@ const createWindow = () => {
 			}
 		})
 	});
+
+	// Allow write access to files dropped onto the window.
+	// I'm not sure if this is more secure than handling it in the preload script with IPC,
+	// but it might be, due to the isolated context.
+	// TODO: is there a way to intercept drag and drop from the main process directly?
+	// "will-navigate" isn't sent even if the app's dragstart/dragover/drop handlers are disabled.
+	// If there was an event for dropped files, or an API like wasFileDropped(filePath) or more generally,
+	// wasFileOpenedByUserGesture(filePath), that would allow for tighter control.
+	// Right now the renderer process tells the main process what file paths are allowed,
+	// which is not ideal, although it's within an isolated world, and even separate from the preload script.
+	// For file dialogs and command line arguments and all the other ways to open files,
+	// the file list is managed exclusively by the main process, so drag and drop is the weak link.
+	// If drag and drop could be handled by the main process, it would be more secure overall.
+	editor_window.webContents.on('did-finish-load', () => {
+		// Could use contextBridge, but re-registering an event listener recursively was easier.
+		// It's a pattern I've done before, and this code actually worked on the first try.
+		function handle_one_drop() {
+			editor_window.webContents.executeJavaScriptInIsolatedWorld(777, [
+				{
+					code: `
+						new Promise((resolve, reject) => {
+							// The app's normal drag and drop handling will take care of dragstart, dragover,
+							// and actually opening files. This is just to allow write access to the dropped file.
+							window.addEventListener('drop', (event) => {
+								const file_path = event.dataTransfer.files[0].path;
+								resolve(file_path);
+							}, { once: true });
+						})
+					`,
+				},
+			]).then((file_path) => {
+				console.log("Allowing write access to dropped file:", file_path);
+				allowed_file_paths.push(file_path);
+				editor_window.webContents.send('open-file', file_path);
+				handle_one_drop();
+			});
+		}
+		handle_one_drop();
+	});
 };
+
 // Register listeners outside of createWindow to avoid them being added multiple times
 // on macOS, where the app is not actually closed when the window is closed,
 // and thus it can be opened multiple times from the same electron main process.
