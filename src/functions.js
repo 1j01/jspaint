@@ -1067,12 +1067,25 @@ function file_save(maybe_saved_callback = () => { }, update_from_saved = true) {
 		return file_save_as(maybe_saved_callback, update_from_saved);
 	}
 	write_image_file(main_canvas, file_format, async (blob) => {
-		await systemHooks.writeBlobToHandle(save_file_handle, blob);
-
-		if (update_from_saved) {
-			update_from_saved_file(blob);
+		// An error may be shown by `systemHooks.writeBlobToHandle`,
+		// or it may be unknown whether the save will succeed,
+		// so for now: true means definite success, false means failure or cancelation, and undefined means it's unknown.
+		const success = await systemHooks.writeBlobToHandle(save_file_handle, blob);
+		// When using a file download, where it's unknown whether the save will succeed,
+		// we don't want to mark the file as saved, as it would prevent the user from retrying the save.
+		// So only mark the file as saved if it's definite.
+		if (success === true) {
+			saved = true;
+			update_title();
 		}
-		maybe_saved_callback();
+		// However, we can still apply format-specific color reduction to the canvas,
+		// and call the "maybe saved" callback, which, as the name implies, is intended to handle the uncertainty.
+		if (success !== false) {
+			if (update_from_saved) {
+				update_from_saved_file(blob);
+			}
+			maybe_saved_callback();
+		}
 	});
 }
 
@@ -1876,7 +1889,7 @@ function go_to_history_node(target_history_node, canceling, discard_document_sta
 }
 
 // Note: This function is part of the API.
-function undoable({ name, icon, use_loose_canvas_changes, soft }, callback) {
+function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, callback) {
 	if (!use_loose_canvas_changes) {
 		/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.
 		const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
@@ -1887,8 +1900,10 @@ function undoable({ name, icon, use_loose_canvas_changes, soft }, callback) {
 		*/
 	}
 
-	saved = false;
-	update_title();
+	if (!assume_saved) { // flag is used for undoable file reloading on save, for reduction in color depth
+		saved = false;
+		update_title();
+	}
 
 	const before_callback_history_node = current_history_node;
 	callback && callback();
@@ -3700,6 +3715,7 @@ function update_from_saved_file(blob) {
 		undoable({
 			name: `${localize("Save As")} ${format ? format.name : info.file_format}`,
 			icon: get_help_folder_icon("p_save.png"),
+			assume_saved: true, // prevent setting saved to false
 		}, () => {
 			main_ctx.copy(info.image || info.image_data);
 		});

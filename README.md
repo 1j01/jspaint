@@ -646,6 +646,9 @@ Arguments:
 - `fileHandle`: a file handle, as defined by your system, representing the file to write to.
 - `blob`: a `Blob` representing the file contents to save.
 
+Returns:
+- `Promise` that resolves with `true` if the file was definitely saved successfully, `false` if an error occurred or the user canceled, or `undefined` if it is not known whether the file was saved successfully, as is the case with file downloading with `<a href="..." download="...">`. The promise should not reject; errors should be handled by showing an error message and returning `false`.
+
 #### <a href="#systemHooks.readBlobFromHandle" id="systemHooks.readBlobFromHandle">async function `systemHooks.readBlobFromHandle(fileHandle)`</a>
 [`systemHooks.readBlobFromHandle`]: #systemHooks.readBlobFromHandle
 

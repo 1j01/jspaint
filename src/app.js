@@ -308,32 +308,34 @@ window.systemHookDefaults = {
 		if (save_file_handle && save_file_handle.createWritable && enable_fs_access_api) {
 			const acknowledged = await confirm_overwrite_capability();
 			if (!acknowledged) {
-				return;
+				return false;
 			}
 			try {
 				const writableStream = await save_file_handle.createWritable();
 				await writableStream.write(blob);
 				await writableStream.close();
+				return true;
 			} catch (error) {
 				if (error.name === "AbortError") {
 					// user canceled save (this might not be a real error code that can occur here)
-					return;
+					return false;
 				}
 				if (error.name === "NotAllowedError") {
 					// use didn't give permission to save
 					// is this too much of a warning?
 					show_error_message(localize("Save was interrupted, so your file has not been saved."), error);
-					return;
+					return false;
 				}
 				if (error.name === "SecurityError") {
 					// not in a user gesture ("User activation is required to request permissions.")
 					saveAs(blob, file_name);
-					return;
+					return undefined;
 				}
 			}
 		} else {
 			saveAs(blob, file_name);
 			// hopefully if the page reloads/closes the save dialog/download will persist and succeed?
+			return undefined;
 		}
 	},
 	readBlobFromHandle: async (file_handle) => {

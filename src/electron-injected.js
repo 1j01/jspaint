@@ -138,13 +138,16 @@ window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 
 window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
 	if (typeof filePath !== "string") {
-		return show_error_message("writeBlobToHandle in Electron expects a file path, got " + filePath);
+		show_error_message("writeBlobToHandle in Electron expects a file path, got " + filePath);
 		// should it fall back to default writeBlobToHandle?
+		return false;
 	}
 	const { responseCode, error } = await write_blob_to_file_path(filePath, blob);
 	if (responseCode !== "SUCCESS") {
-		return show_save_error_message(responseCode, error);
+		show_save_error_message(responseCode, error);
+		return false;
 	}
+	return true;
 };
 window.systemHooks.readBlobFromHandle = async (filePath) => {
 	if (typeof filePath !== "string") {
