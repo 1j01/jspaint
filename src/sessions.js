@@ -512,7 +512,8 @@
 	const generate_session_id = () => (Math.random() * (2 ** 32)).toString(16).replace(".", "");
 	const update_session_from_location_hash = () => {
 		const session_match = location.hash.match(/^#?(?:.*,)?(session|local):(.*)$/i);
-		const load_from_url_match = location.hash.match(/^#?(?:.*,)?(load):(.*)$/i);
+		let load_from_url_match = location.hash.match(/^#?(?:.*,)?(load):(.*)$/i);
+		let change_zoom_size = location.hash.match(/^#?(?:.*,)?(zoom):(.*)$/i);
 		if (session_match) {
 			const local = session_match[1].toLowerCase() === "local";
 			const session_id = session_match[2];
@@ -542,6 +543,11 @@
 				}
 			}
 		} else if (load_from_url_match) {
+			let urlSplitted = load_from_url_match[2].trim().split("?")
+			if (urlSplitted.length > 1) {
+				load_from_url_match[2] = urlSplitted[0];
+				change_zoom_size = urlSplitted[1].match(/^#?(?:.*,)?(zoom):(.*)$/i);
+			}
 			const url = decodeURIComponent(load_from_url_match[2]);
 
 			const uris = get_uris(url);
@@ -557,8 +563,17 @@
 
 			load_image_from_uri(url).then((info) => {
 				open_from_image_info(info, null, null, true, true);
+				if (change_zoom_size) {
+					setCustomizedSize(change_zoom_size[2]);
+				}
+
 			}, show_resource_load_error_message);
 
+		} else if (change_zoom_size) {
+			end_current_session();
+			change_url_param("local", generate_session_id());
+
+			setCustomizedSize(change_zoom_size[2]);
 		} else {
 			log("No session ID in hash");
 			const old_hash = location.hash;
@@ -572,6 +587,7 @@
 				update_session_from_location_hash();
 			}
 		}
+
 	};
 
 	$G.on("hashchange popstate change-url-params", e => {
