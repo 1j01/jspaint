@@ -10,6 +10,10 @@
 		"**/images": true,
 		"**/lib": true,
 		"**/out": true,
+		// The package lock file contains a lot of repetation, and is usually noise in search results.
+		// You can often search with `npm ls` if you want to check if a package is installed,
+		// and what depends on what.
+		"package-lock.json": true,
 		// Ignore localization data, which is in subfolders, but not helper scripts.
 		// Any time a search matches a localized string, it matches an overwhelming number of files.
 		"**/localization/*/**/*": true,
