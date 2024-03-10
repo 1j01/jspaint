@@ -25,7 +25,8 @@
 			"webRoot": "${workspaceFolder}"
 		},
 		{
-			"name": "Electron: Debug Main Process (Packaged on macOS)",
+			// https://www.electronjs.org/docs/latest/tutorial/debugging-vscode
+			"name": "Electron: Debug Main Process",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
