@@ -1,5 +1,5 @@
 {
-  "name": "jspaint",
+  "name": "@1j01/jspaint",
   "productName": "JS Paint",
   "version": "1.0.0",
   "description": "Classic MS Paint clone with extra features",
