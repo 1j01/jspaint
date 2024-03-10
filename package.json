@@ -67,7 +67,14 @@
     "bmp",
     "bitmap"
   ],
-  "author": "Isaiah Odhner <isaiahodhner@gmail.com>",
+  "homepage": "https://jspaint.app/about",
+  "author": "Isaiah Odhner <isaiahodhner@gmail.com> (https://isaiahodhner.io)",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://paypal.me/isaiahodhner"
+    }
+  ],
   "main": "src/electron-main.js",
   "dependencies": {
     "argparse": "^2.0.1",
@@ -125,6 +132,7 @@
     "url": "https://github.com/1j01/jspaint.git"
   },
   "bugs": {
-    "url": "https://github.com/1j01/jspaint/issues"
+    "url": "https://github.com/1j01/jspaint/issues",
+    "email": "isaiahodhner@gmail.com"
   }
 }
