@@ -282,6 +282,8 @@ Missing features:
 I've also built it into a desktop app with [Electron][] and [Electron Forge][].
 You can download it from the [releases page][].
 
+![JS Paint running as a desktop app on macOS](images/meta/electron-app-screenshot-mac.png)
+
 Electron app features:
 - No address bar; native experience
 - Cross-platform (macOS, Windows, Linux)
