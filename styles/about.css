@@ -57,9 +57,14 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 }
 
 #desktop-app-section h2,
-#desktop-app-section p {
+#desktop-app-section p,
+#desktop-app-section ul {
 	background-color: yellow;
 	padding: 5px;
+}
+
+#desktop-app-section ul {
+	margin-left: 20px;
 }
 
 .os-icon {
