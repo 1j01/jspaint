@@ -1,3 +1,30 @@
+const sharedDebRpmOptions = {
+	name: "jspaint",
+	productName: "JS Paint",
+	productDescription: "MS Paint clone with extra features",
+	genericName: "Image Editor",
+	homepage: "https://jspaint.app/about",
+	icon: "images/icons/512x512.png",
+	categories: [
+		"Graphics",
+	],
+	mimeType: [
+		// Affects whether the app shows as a recommended app in the "Open With" menu/dialog
+		"image/*", // wildcard doesn't seem to work
+		"image/bmp",
+		"image/gif",
+		"image/jpeg",
+		"image/png",
+		"image/tiff",
+		"image/webp",
+		"image/avif",
+		"image/x-icon",
+		"image/vnd.microsoft.icon",
+		"image/x-win-bitmap",
+		"image/x-icns",
+		"application/x-gimp-palette",
+	],
+};
 module.exports = {
 	packagerConfig: {
 		icon: "./images/icons/jspaint",
@@ -72,32 +99,8 @@ module.exports = {
 			name: "@electron-forge/maker-deb",
 			config: {
 				options: {
-					name: "jspaint",
-					productName: "JS Paint",
-					productDescription: "MS Paint clone with extra features",
-					genericName: "Image Editor",
-					homepage: "https://jspaint.app/about",
-					icon: "images/icons/512x512.png",
-					categories: [
-						"Graphics",
-					],
+					...sharedDebRpmOptions,
 					section: "graphics",
-					mimeType: [
-						// Affects whether the app shows as a recommended app in the "Open With" menu/dialog
-						"image/*", // wildcard doesn't seem to work
-						"image/bmp",
-						"image/gif",
-						"image/jpeg",
-						"image/png",
-						"image/tiff",
-						"image/webp",
-						"image/avif",
-						"image/x-icon",
-						"image/vnd.microsoft.icon",
-						"image/x-win-bitmap",
-						"image/x-icns",
-						"application/x-gimp-palette",
-					],
 					maintainer: "Isaiah Odhner <isaiahodhner@gmail.com>",
 				},
 			},
@@ -106,31 +109,8 @@ module.exports = {
 			name: "@electron-forge/maker-rpm",
 			config: {
 				options: {
-					name: "jspaint",
-					productName: "JS Paint",
-					productDescription: "MS Paint clone with extra features",
-					genericName: "Image Editor",
-					homepage: "https://jspaint.app/about",
-					icon: "images/icons/512x512.png",
-					categories: [
-						"Graphics",
-					],
+					...sharedDebRpmOptions,
 					license: "MIT",
-					mimeType: [
-						"image/*",
-						"image/bmp",
-						"image/gif",
-						"image/jpeg",
-						"image/png",
-						"image/tiff",
-						"image/webp",
-						"image/avif",
-						"image/x-icon",
-						"image/vnd.microsoft.icon",
-						"image/x-win-bitmap",
-						"image/x-icns",
-						"application/x-gimp-palette",
-					],
 				},
 			},
 		}
