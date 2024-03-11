@@ -299,7 +299,8 @@ Electron app features:
 - **File > Set As Wallpaper (Tiled)** and **File > Set As Wallpaper (Centered)**
 - On macOS, an icon representing the currently open file is shown in the titlebar. You can drag this icon into other applications, for example to include the image you're editing in an email. The icon is dimmed while there are unsaved changes.
 
-Known issues:
+<details><summary>Electron app limitations</summary>
+
 - Basics:
   - Execution is blocked by default on Mac and Windows
     - On macOS you need to Ctrl+click the file and then say Open
@@ -325,6 +326,7 @@ Known issues:
   - Opening an SVG file also isn't working via command line argument (dragging onto the shortcut in File Explorer) even though dragging and dropping into the window works.  
     - Seems to load load SVG as a palette... Is this what I was running into?
 
+</details>
 
 [Electron]: https://electronjs.org/
 [Electron Forge]: https://electronforge.io/
