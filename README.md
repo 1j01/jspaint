@@ -315,6 +315,7 @@ Electron app features:
   - The Windows registry (.reg) file generated points to a specific version of the app "C:\Users\Isaiah\AppData\Local\jspaint\app-1.0.0\jspaint.exe" instead of "C:\Users\Isaiah\AppData\Local\jspaint\jspaint.exe"
     - I guess this wouldn't be a problem if it manages the registry on every update, but it's manual for now, so it will break on any update
   - A very confusing message is shown if you edit a document before clicking an Open link in the Manage Storage dialog.
+  - WebGL error messages tell you to refresh without offering a way to reload; also, calling the app a web page feels unpolished
   - The File > Open dialog does not have an All Files (\*.\*) option, and the list of file types supported is not exhaustive; for example, AVIF images can be loaded but only by drag and drop
   - Drag and drop shows two "Save changes to X?" dialogs on top of each other?
 - I'm not sure if all of these are still issues, need to retest them:
