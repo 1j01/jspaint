@@ -275,7 +275,7 @@ PWA features:
 Missing features:
 
 - <details><summary>Directly saving to files is implemented but not enabled currently.</summary>I was concerned about data loss for two reasons: 1. the change in behavior of File > Save / Ctrl+S from effectively acting as Save As to overwriting files directly, although I made a warning dialog for this, with a don't show again option; 2. there was a bad bug with saved files ending up completely empty (zero bytes), which I don't know if was a bug in my code or in Chrome.</details>
-- <details><summary>Offline support is not implemented.</summary>I've taken a few stabs at this, and [I'm not the only one](https://github.com/1j01/jspaint/pull/144), but there are some huge caveats, such as the development server not being able to live-reload without disabling the service worker.
+- <details><summary>Offline support is not implemented.</summary>I've taken a few stabs at this, and <a href="https://github.com/1j01/jspaint/pull/144">I'm not the only one</a>, but there are some huge caveats, such as the development server not being able to live-reload without disabling the service worker.</details>
 
 ### Electron
 
