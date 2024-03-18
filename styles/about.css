@@ -58,9 +58,9 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 
 #desktop-app-section .bg {
 	/* matching Under Construction GIF */
-	background-color: rgb(254, 231, 48);
+	/* background-color: rgb(254, 231, 48); */
 	/* matching Electron logo as drawn in JS Paint */
-	/* background-color: rgb(0, 255, 128); */
+	background-color: rgb(0, 255, 128);
 	border: 1px solid black;
 	padding: 5px;
 }
