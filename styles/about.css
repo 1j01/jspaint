@@ -59,7 +59,7 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 #desktop-app-section h2,
 #desktop-app-section p,
 #desktop-app-section ul {
-	background-color: yellow;
+	background-color: rgb(254, 231, 48);
 	padding: 5px;
 }
 
