@@ -285,8 +285,9 @@ You can download it from the [releases page][].
 ![JS Paint running as a desktop app on macOS](images/meta/electron-app-screenshot-mac.png)
 
 Electron app features:
-- No address bar; native experience
+- Native-like experience (runs in a window with no address bar)
 - Cross-platform (macOS, Windows, Linux)
+- Clipboard support
 - Files can be opened in various ways:
   - **File > Open**
   - Drag and drop onto window
