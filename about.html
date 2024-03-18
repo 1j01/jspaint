@@ -333,9 +333,21 @@
 		<div style="clear: both;"></div>
 	</section>
 	<section id="textual-paint-section">
-		<h2>Textual Paint</h2>
+		<!-- <h2>Textual Paint</h2> -->
+		<!-- TODO: test screen reader accessibility -->
+		<h2 style="font-size: 1em">
+			<abbr title="Textual Paint" style="text-decoration: none">
+				<!-- figlet font used: smslant -->
+				<pre>
+ ______        __            __  ___       _      __ 
+/_  __/____ __/ /___ _____ _/ / / _ \___ _(_)__  / /_
+ / / / -_) \ / __/ // / _ `/ / / ___/ _ `/ / _ \/ __/
+/_/  \__/_\_\\__/\_,_/\_,_/_/ /_/   \_,_/_/_//_/\__/ 
+				</pre>
+			</abbr>
+		</h2>
 		<p>
-			I also made a <i>separate</i> elaborate MS Paint clone that runs in the terminal,
+			I also made a <em>separate</em> elaborate MS Paint clone that runs in the terminal,
 			and edits ANSI art in addition to bitmaps.
 		</p>
 		<p>
@@ -367,16 +379,26 @@
 			</li>
 		</ul>
 		<!-- <img src="images/about/dos-samp.gif" width="391" height="136" alt="MS DOS prompt"> -->
-		<img src="images/about/Computer-04-june.gif" width="134" height="133" alt="Computer typing on its own keyboard">
+		<!-- TODO: PNG screenshot of GNOME terminal, which has the best rendering (SVG uses browser's rendering and displays artifacts); and include it in the repo -->
+		<img src="https://raw.githubusercontent.com/1j01/textual-paint/v0.1.0/screenshot.svg" width="1238" height="1026"
+			alt="screenshot of Textual Paint showing the About Paint dialog" style="max-width: 100%; height: auto;">
+		<img src="images/about/Computer-04-june.gif" width="134" height="133" alt="Computer typing on its own keyboard"
+			style="float: left">
 		<p>
 			<a href="https://github.com/1j01/textual-paint" target="_blank">Textual Paint</a>
 			was built using the <a href="https://textual.textualize.io/" target="_blank">Textual</a>
 			framework, which was very fun to work with!
 		</p>
+		<p>
+			I may have more Paint projects planned, the mad man that I am. 🎨
+		</p>
+		<p>
+			<i style="color: gray">What's more retro than a terminal-based Paint program, I wonder?</i>
+		</p>
 	</section>
-
 	<section id="other-projects-section">
-		<h2>Other Projects</h2>
+		<!-- `clear: both` just in case the floated GIF intrudes too much, for instance if font sizes or margins were changed or paragraphs moved or removed. -->
+		<h2 style="clear: both">Other Projects</h2>
 		<p style="float: right;">
 			<a href="https://isaiahodhner.io/" target="_blank">
 				<img src="images/about/home.gif" width="40" height="40" alt="Home button"
