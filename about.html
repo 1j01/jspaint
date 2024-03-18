@@ -192,12 +192,108 @@
 			<li>File > Set As Wallpaper (Tiled/Centered)</li>
 			<li>Save directly to file instead of downloading a copy</li>
 		</ul>
-		<a href="https://github.com/1j01/jspaint/releases/" target="_blank">
+		<a href="https://github.com/1j01/jspaint/releases/" target="_blank" id="main-download-link">
 			<img src="images/about/download5.gif" width="100" height="40" alt="Download">
 		</a>
 		<a href="https://github.com/1j01/jspaint/issues/2" target="_blank">
 			<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction">
 		</a>
+		<details>
+			<summary>More download options</summary>
+			<ul>
+				<li>
+					<a id="download-link-windows"
+						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Windows-x64-Setup.exe"><span
+							class="os-icon"><img src="images/about/windowslogo.gif" width="34" height="30"
+								alt="Windows logo"></span>Download for Windows (x64)
+					</a>
+				</li>
+				<li>
+					<a id="download-link-mac"
+						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Mac-x64.zip"><span
+							class="os-icon"><img src="images/about/maclogo.gif" width="34" height="29"
+								alt="Macintosh logo"></span>Download for Mac (x64)
+					</a>
+				</li>
+				<li>
+					<a id="download-link-linux-deb"
+						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Linux-x64.deb"><span
+							class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
+								alt="Linux mascot Tux the penguin"></span>Download for Debian Linux (x64)
+						(Ubuntu, Mint, Kali, etc.)</a>
+					</a>
+				</li>
+				<li>
+					<a id="download-link-linux-rpm"
+						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Linux-x64.rpm"><span
+							class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
+								alt="Linux mascot Tux the penguin"></span>Download for Red Hat Linux
+						(x64) (Fedora, CentOS, OpenSUSE, etc.)</a>
+				</li>
+				<li>
+					<!-- icon options: ✱, 📚, 🕓, 🔍, ↩️, github logo -->
+					<a id="download-link-view-all-releases" href="https://github.com/1j01/jspaint/releases/"><span
+							class="os-icon">🕓</span>View all releases
+					</a>
+				</li>
+			</ul>
+		</details>
+		<script>
+			const downloadLinkWindows = document.querySelector("#download-link-windows");
+			const downloadLinkMac = document.querySelector("#download-link-mac");
+			const downloadLinkLinuxDeb = document.querySelector("#download-link-linux-deb");
+			const downloadLinkLinuxRpm = document.querySelector("#download-link-linux-rpm");
+			const downloadLinkViewAllReleases = document.querySelector("#download-link-view-all-releases");
+			const mainDownloadLink = document.querySelector("#main-download-link");
+
+			/**
+			 * @returns {"Windows" | "MacOS" | "Ubuntu" | "Debian" | "RPM" | "Linux" | "Unknown"}
+			 */
+			function detectOS() {
+				// UNTESTED AI CODE
+				// @TODO: vet this or find human-verified code
+				let platform = navigator.platform.toLowerCase();
+				let userAgent = navigator.userAgent.toLowerCase();
+
+				if (platform.includes('win') || userAgent.includes('windows')) {
+					return 'Windows';
+				} else if (platform.includes('mac') || userAgent.includes('mac')) {
+					return 'MacOS';
+				} else if (userAgent.includes('linux')) {
+					if (userAgent.includes('debian')) {
+						return 'Debian';
+					} else if (userAgent.includes('ubuntu')) {
+						return 'Ubuntu';
+					} else if (userAgent.includes('fedora') || userAgent.includes('rhel') || userAgent.includes('red hat')) {
+						return 'RPM';
+					} else {
+						return 'Linux'; // Generic Linux
+					}
+				} else {
+					return 'Unknown';
+				}
+			}
+
+			function updateDownloadLink() {
+				const os = detectOS();
+				const specificLink = {
+					'Windows': downloadLinkWindows,
+					'MacOS': downloadLinkMac,
+					'Ubuntu': downloadLinkLinuxDeb,
+					'Debian': downloadLinkLinuxDeb,
+					'RPM': downloadLinkLinuxRpm,
+					'Linux': downloadLinkLinuxDeb,
+					'Unknown': downloadLinkViewAllReleases,
+				}[os];
+				if (specificLink) {
+					mainDownloadLink.href = specificLink.href;
+					mainDownloadLink.innerHTML = specificLink.innerHTML.replace("Download", mainDownloadLink.innerHTML);
+				}
+			}
+
+			updateDownloadLink();
+
+		</script>
 	</section>
 	<section id="pwa-section">
 		<h2>Progressive Web App</h2>
