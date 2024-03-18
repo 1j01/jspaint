@@ -24,6 +24,7 @@
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "always",
 	},
+	"html.format.unformattedContentDelimiter": "<!--no_format-->",
 	"[css]": {
 		// The CSS in this project uses (the lack of) newlines between rules for grouping, as well as inline comments.
 		// VS Code's default formatter adds newlines between all rules, and forces comments to the next line, dissociating them.

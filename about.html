@@ -230,7 +230,7 @@
 						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Linux-x64.deb"><span
 							class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
 								alt="Linux mascot Tux the penguin"></span>Download for Debian Linux (x64)
-						(Ubuntu, Mint, Kali, etc.)</a>
+						(Ubuntu, Mint, Kali, etc.)
 					</a>
 				</li>
 				<li>
@@ -238,7 +238,8 @@
 						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Linux-x64.rpm"><span
 							class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
 								alt="Linux mascot Tux the penguin"></span>Download for Red Hat Linux
-						(x64) (Fedora, CentOS, OpenSUSE, etc.)</a>
+						(x64) (Fedora, CentOS, OpenSUSE, etc.)
+					</a>
 				</li>
 				<li>
 					<!-- icon options: ✱, 📚, 🕓, 🔍, ↩️, github logo -->
@@ -333,24 +334,31 @@
 		<div style="clear: both;"></div>
 	</section>
 	<section id="textual-paint-section">
-		<!-- <h2>Textual Paint</h2> -->
-		<!-- TODO: test screen reader accessibility -->
+		<!--
+			@TODO: test screen reader accessibility
+			Notes about this heading:
+			- FIGlet font used: "small"
+			- Separate elements for each word allows word wrapping on narrow screens
+			- Not using `<pre>` element because it's not allowed in a heading, and visa versa.
+				- VS Code knows not to format `<pre>` elements but not arbitrary elements with `white-space: pre;`,
+				  so I had to define "html.format.unformattedContentDelimiter" in .vscode/settings.json
+		-->
+		<!--no_format-->
 		<h2 style="font-size: 1em">
 			<abbr title="Textual Paint" style="text-decoration: none">
-				<!-- figlet font used: small -->
-				<!-- Separate pre elements allow wrapping on narrow screens -->
-				<pre style="display: inline-block; margin: 0;">
+				<span style="display: inline-block; white-space: pre; margin: 0;">
  _____        _             _ 
 |_   _|____ _| |_ _  _ __ _| |
   | |/ -_) \ /  _| || / _` | |
-  |_|\___/_\_\\__|\_,_\__,_|_|</pre>
-				<pre style="display: inline-block; margin: 0;">
+  |_|\___/_\_\\__|\_,_\__,_|_|</span><span style="display: inline-block; white-space: pre; margin: 0;">
   ___      _     _   
  | _ \__ _(_)_ _| |_ 
  |  _/ _` | | ' \  _|
- |_| \__,_|_|_||_\__|</pre>
+ |_| \__,_|_|_||_\__|</span>
 			</abbr>
 		</h2>
+		<!--no_format-->
+		<br>
 		<p>
 			I also made a <em>separate</em> elaborate MS Paint clone that runs in the terminal,
 			and edits ANSI art in addition to bitmaps.
