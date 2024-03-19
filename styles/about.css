@@ -65,8 +65,9 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	padding: 5px;
 }
 
-#desktop-app-section #main-download-link {
+#desktop-app-section .main-download-link {
 	border: 4px solid black;
+	padding: 4px;
 	background-color: rgb(149, 148, 154);
 	color: rgb(195, 195, 255);
 	text-shadow: 1px 2px 2px black, 1px 1px 2px black, 0px 0px 2px black;
@@ -74,7 +75,7 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	text-decoration: none;
 	width: auto;
 }
-#desktop-app-section #main-download-link img {
+#desktop-app-section .main-download-link img {
 	vertical-align: middle;
 }
 

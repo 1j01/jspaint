@@ -202,9 +202,12 @@
 			</ul>
 		</div>
 		<br>
-		<a href="https://github.com/1j01/jspaint/releases/" target="_blank" id="main-download-link">
-			<img src="images/about/download5.gif" width="100" height="40" alt="Download">
-		</a>
+		<div style="width: fit-content">
+			<!-- Using class instead of id because element is cloned on Linux. -->
+			<a href="https://github.com/1j01/jspaint/releases/" target="_blank" class="main-download-link">
+				<img src="images/about/download5.gif" width="100" height="40" alt="Download">
+			</a>
+		</div>
 		<!-- <a href="https://github.com/1j01/jspaint/issues/2" target="_blank">
 			<img src="images/about/conpaint.gif" width="350" height="50" alt="Under Construction" style="max-width: 100%; height: auto;">
 		</a> -->
@@ -229,16 +232,16 @@
 					<a id="download-link-linux-deb"
 						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Linux-x64.deb"><span
 							class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
-								alt="Linux mascot Tux the penguin"></span>Download for Debian Linux (x64)
-						(Ubuntu, Mint, Kali, etc.)
+								alt="Linux mascot Tux the penguin"></span>Download <span class="big">.deb</span> (x64)
+						for Ubuntu, Debian, Mint, Kali, etc.
 					</a>
 				</li>
 				<li>
 					<a id="download-link-linux-rpm"
 						href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/jspaint-1.0.0-Linux-x64.rpm"><span
 							class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
-								alt="Linux mascot Tux the penguin"></span>Download for Red Hat Linux
-						(x64) (Fedora, CentOS, OpenSUSE, etc.)
+								alt="Linux mascot Tux the penguin"></span>Download <span class="big">.rpm</span> (x64)
+						for Red Hat, Fedora, CentOS, OpenSUSE, etc.
 					</a>
 				</li>
 				<li>
@@ -255,50 +258,52 @@
 			const downloadLinkLinuxDeb = document.querySelector("#download-link-linux-deb");
 			const downloadLinkLinuxRpm = document.querySelector("#download-link-linux-rpm");
 			const downloadLinkViewAllReleases = document.querySelector("#download-link-view-all-releases");
-			const mainDownloadLink = document.querySelector("#main-download-link");
+			const mainDownloadLink = document.querySelector(".main-download-link");
 
 			/**
-			 * @returns {"Windows" | "MacOS" | "Ubuntu" | "Debian" | "RPM" | "Linux" | "Unknown"}
+			 * @returns {"Windows" | "Mac" | "Linux" | "Android" | "iOS" | "Unknown"}
 			 */
 			function detectOS() {
-				// UNTESTED AI CODE
-				// @TODO: vet this or find human-verified code
-				let platform = navigator.platform.toLowerCase();
-				let userAgent = navigator.userAgent.toLowerCase();
-
-				if (platform.includes('win') || userAgent.includes('windows')) {
+				const userAgent = window.navigator.userAgent,
+					platform = window.navigator?.userAgentData?.platform ?? window.navigator.platform;
+				if (/^Mac|Darwin/i.test(platform)) {
+					return 'Mac';
+				} else if (/iPhone|iPod|iPad/i.test(platform)) {
+					return 'iOS';
+				} else if (/^Win/i.test(platform)) {
 					return 'Windows';
-				} else if (platform.includes('mac') || userAgent.includes('mac')) {
-					return 'MacOS';
-				} else if (userAgent.includes('linux')) {
-					if (userAgent.includes('debian')) {
-						return 'Debian';
-					} else if (userAgent.includes('ubuntu')) {
-						return 'Ubuntu';
-					} else if (userAgent.includes('fedora') || userAgent.includes('rhel') || userAgent.includes('red hat')) {
-						return 'RPM';
-					} else {
-						return 'Linux'; // Generic Linux
-					}
-				} else {
-					return 'Unknown';
+				} else if (/Android/i.test(userAgent)) {
+					return 'Android';
+				} else if (/Linux/i.test(platform)) {
+					return 'Linux';
 				}
+				return 'Unknown';
 			}
 
 			function updateDownloadLink() {
 				const os = detectOS();
 				const specificLink = {
 					'Windows': downloadLinkWindows,
-					'MacOS': downloadLinkMac,
-					'Ubuntu': downloadLinkLinuxDeb,
-					'Debian': downloadLinkLinuxDeb,
-					'RPM': downloadLinkLinuxRpm,
-					'Linux': downloadLinkLinuxDeb,
-					'Unknown': downloadLinkViewAllReleases,
-				}[os];
-				if (specificLink) {
+					'Mac': downloadLinkMac,
+					'iOS': downloadLinkMac,
+					'Linux': [downloadLinkLinuxDeb, downloadLinkLinuxRpm],
+				}[os] ?? downloadLinkViewAllReleases;
+				const downloadImageHTML = mainDownloadLink.innerHTML + "<br>";
+				if (specificLink instanceof Array) {
+					const mainDownloadLink2 = mainDownloadLink.cloneNode(true);
+					mainDownloadLink.parentNode.insertBefore(mainDownloadLink2, mainDownloadLink.nextSibling);
+
+					mainDownloadLink.href = specificLink[0].href;
+					mainDownloadLink.innerHTML = specificLink[0].innerHTML.replace("Download", downloadImageHTML);
+
+					mainDownloadLink2.href = specificLink[1].href;
+					mainDownloadLink2.innerHTML = specificLink[1].innerHTML.replace("Download", downloadImageHTML);
+
+					mainDownloadLink.querySelector(".big").style.fontSize = "1.5em";
+					mainDownloadLink2.querySelector(".big").style.fontSize = "1.5em";
+				} else if (specificLink) {
 					mainDownloadLink.href = specificLink.href;
-					mainDownloadLink.innerHTML = specificLink.innerHTML.replace("Download", mainDownloadLink.innerHTML);
+					mainDownloadLink.innerHTML = specificLink.innerHTML.replace("Download", downloadImageHTML);
 				}
 			}
 
