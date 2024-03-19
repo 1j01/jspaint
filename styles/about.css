@@ -90,14 +90,25 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	border-left: none;
 	padding: 4px;
 	background-color: rgb(149, 148, 154);
+	list-style-type: none; /* no effect, testing in Firefox */
 }
 #desktop-app-section details[open] #more-download-options-toggle {
 	border-bottom: none;
 	background-color: var(--active-background-color);
 }
 #desktop-app-section #more-download-options-toggle::marker {
+	display: none; /* no effect, testing in Firefox */
+	content: ""; /* still leaves a ::marker, but hides it at least */
+}
+#desktop-app-section #more-download-options-toggle::after {
+	/* This shifts slightly when pressed due to the removed border, but that's fine, it's like a free pressed effect. */
 	content: "▼";
-	line-height: 70px;
+	display: block;
+	font-size: 25px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 #desktop-app-section #more-download-options-dropdown {
 	position: absolute;
@@ -122,6 +133,9 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	display: block;
 	text-decoration: none;
 	width: auto;
+}
+#desktop-app-section .main-download-link ~ .main-download-link {
+	border-top: none;
 }
 #desktop-app-section .main-download-link img {
 	vertical-align: middle;
