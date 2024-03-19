@@ -65,6 +65,47 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	padding: 5px;
 }
 
+#desktop-app-section #compound-download-button {
+	position: relative;
+	width: fit-content;
+	z-index: 1;
+	--active-background-color: rgb(192, 192, 192);
+}
+#desktop-app-section #compound-download-button details {
+	/* Resetting overly broad details { margin-top: 8px; } from layout.css */
+	margin: 0;
+}
+#desktop-app-section #more-download-options-toggle {
+	position: absolute;
+	left: 100%;
+	top: 0;
+	bottom: 0;
+	box-sizing: border-box;
+	border: 4px solid black;
+	border-left: none;
+	padding: 4px;
+	background-color: rgb(149, 148, 154);
+}
+#desktop-app-section details[open] #more-download-options-toggle {
+	border-bottom: none;
+	background-color: var(--active-background-color);
+}
+#desktop-app-section #more-download-options-toggle::marker {
+	content: "▼";
+	line-height: 70px;
+}
+#desktop-app-section #more-download-options-dropdown {
+	position: absolute;
+	left: 0;
+	width: 600px;
+	--border-width: 4px;
+	top: calc(100% - var(--border-width));
+	z-index: -1;
+	margin: 0;
+	border: var(--border-width) solid black;
+	padding: 4px;
+	background-color: var(--active-background-color);
+}
 #desktop-app-section .main-download-link {
 	border: 4px solid black;
 	padding: 4px;
@@ -77,10 +118,6 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 }
 #desktop-app-section .main-download-link img {
 	vertical-align: middle;
-}
-
-#desktop-app-section ul {
-	margin-left: 20px;
 }
 
 .os-icon {
