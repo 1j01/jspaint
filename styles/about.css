@@ -69,22 +69,25 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	--active-background-color: rgb(192, 192, 192);
 	--toggle-width: 40px;
 	--external-margin: 10px;
-	position: relative;
+	/* position: relative; */
 	width: fit-content;
 	max-width: calc(100vw - var(--external-margin) * 2 - var(--toggle-width));
+	margin: 0 auto;
 	/* z-index is needed so the negative z-index of the dropdown doesn't make it go beneath other things on the page, only the toggle button */
 	z-index: 1;
+	display: flex;
+	flex-direction: row;
 }
 #desktop-app-section #more-download-options-expandable {
 	/* Resetting overly broad details { margin-top: 8px; } from layout.css */
 	margin: 0;
+	flex: 0 0 var(--toggle-width);
+	display: flex;
+	flex-direction: column;
 }
 #desktop-app-section #more-download-options-toggle {
-	position: absolute;
-	left: 100%;
-	top: 0;
-	bottom: 0;
-	width: var(--toggle-width);
+	flex: 1;
+	position: relative;
 	text-align: center;
 	box-sizing: border-box;
 	border: 4px solid black;
