@@ -72,9 +72,10 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	position: relative;
 	width: fit-content;
 	max-width: calc(100vw - var(--external-margin) * 2 - var(--toggle-width));
+	/* z-index is needed so the negative z-index of the dropdown doesn't make it go beneath other things on the page, only the toggle button */
 	z-index: 1;
 }
-#desktop-app-section #compound-download-button details {
+#desktop-app-section #more-download-options-expandable {
 	/* Resetting overly broad details { margin-top: 8px; } from layout.css */
 	margin: 0;
 }
@@ -92,7 +93,7 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	background-color: rgb(149, 148, 154);
 	list-style-type: none; /* no effect, testing in Firefox */
 }
-#desktop-app-section details[open] #more-download-options-toggle {
+#desktop-app-section #more-download-options-expandable[open] > #more-download-options-toggle {
 	border-bottom: none;
 	background-color: var(--active-background-color);
 }
@@ -122,6 +123,7 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	max-width: calc(100vw - var(--external-margin) * 2);
 	--border-width: 4px;
 	top: calc(100% - var(--border-width));
+	/* Go underneath the toggle button so that the segment of border between the toggle and dropdown can disappear. */
 	z-index: -1;
 	margin: 0;
 	border: var(--border-width) solid black;
