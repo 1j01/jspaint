@@ -28,7 +28,7 @@ Hairy problem: causes horizontal scrolling on narrow viewports.
 - One way to avoid a horizontal scrollbar is to use `float: right`, as this makes it push the element to the left, but that's not ideal; I want it centered. Also requires extra `clear: both` element.
 - Can't simply use `overflow-x: hidden` since browsers don't support hidden and visible in separate axes.
   https://stackoverflow.com/questions/6421966/css-overflow-x-visible-and-overflow-y-hidden-causing-scrollbar-issue
-- Does `overflow-x: clip` work?
+- Does `overflow-x: clip` work? YES!!!!!!!!
 - `clip-path`? Does that affect page layout (overflow)?
 - `overflow-clip-margin` should be the saving grace, the magic sauce, but it's not supported in Safari,
   and two-value syntax is not supported in Chrome or Firefox.
@@ -37,17 +37,15 @@ Hairy problem: causes horizontal scrolling on narrow viewports.
 		- With the `transform`, if the viewport is EXTREMELY narrow, the text will go under the window frame link.
 	- Requires `pointer-events: none` on the parent to avoid breaking interactions outside of the visible area.
 		- Requires `pointer-events: all` on the link to re-enable interaction with the link.
-
-Also, there's a lot of space between the window and the floated flag GIF now.
-(Before, the window would ignore the flag and go in front of it, which looked nice.)
+	- Also, there's a lot of space between the window and the floated flag GIF now.
+	(Before, the window would ignore the flag and go in front of it, which looked nice.)
 */
 #enter-98-wrapper {
 	/* Full width; TODO: DRY with body>section padding of 10px */
 	margin: 0 -10px;
 	width: calc(100% + 10px * 2);
-	/* This approach doesn't work in safari and `overflow-clip-margin: 200px 0` doesn't work in Chrome or Firefox */
-	overflow: clip;
-	overflow-clip-margin: 200px; /* 200px 0; */
+	/* FINALLY THIS WORKS!!! TODO: clean up */
+	overflow-x: clip;
 	/* Might not be relevant to this approach, but with padding/negative margin approach was important*/
 	pointer-events: none;
 	/* Visualization */
