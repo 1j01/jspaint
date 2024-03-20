@@ -171,11 +171,13 @@
 		and before it was centered, which was a little nicer.
 		Also, there's a lot of space between the window and the floated flag GIF now.
 		(Before, the window would ignore the flag and go in front of it, which looked nice.)
+		Also, with the `transform` (added since negative top margin didn't work),
+		now if the viewport is EXTREMELY narrow, the text will go under the window.
 		-->
 		<div
-			style="padding: 100px 0; margin: -100px -10px; width: calc(100% + 10px * 2); overflow: hidden; background: rgba(0, 255, 0, 0.5)">
+			style="padding: 100px 0; margin: -200px -10px; width: calc(100% + 10px * 2); transform: translateY(-100px); overflow: hidden; pointer-events: none; /*background: rgba(0, 255, 0, 0.5)*/">
 			<a href="https://98.js.org" target="_blank"
-				style="position: relative; display: block; width: 360px; height: 287px; left: 50%; transform: translateX(-50%)">
+				style="position: relative; display: block; width: 360px; height: 287px; left: 50%; transform: translateX(-50%); pointer-events: all;">
 				<img src="images/about/98.js.org.png" width="360" height="287"
 					alt="Windows 98 desktop recreation with Minesweeper, Paint, and other programs"
 					style="position: absolute; left: 0; top: 0">
