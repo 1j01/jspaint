@@ -129,11 +129,10 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	border: var(--border-width) solid black;
 	padding: 4px;
 	background-color: var(--active-background-color);
-	animation: dropdown 0.3s linear;
 }
-@media (prefers-reduced-motion) {
-	#desktop-app-section #more-download-options-dropdown {
-		animation: none;
+@media not (prefers-reduced-motion) {
+	#desktop-app-section #more-download-options-expandable[open] > #more-download-options-dropdown {
+		animation: dropdown 0.3s linear;
 	}
 }
 @keyframes dropdown {
