@@ -12,12 +12,13 @@ body {
 }
 
 body>section {
+	--section-padding: 10px;
 	padding-left: calc(50vw - 500px);
 	padding-right: calc(50vw - 500px);
-	padding-left: max(10px, calc(50vw - 500px));
-	padding-right: max(10px, calc(50vw - 500px));
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-left: max(var(--section-padding), calc(50vw - 500px));
+	padding-right: max(var(--section-padding), calc(50vw - 500px));
+	padding-top: var(--section-padding);
+	padding-bottom: var(--section-padding);
 }
 
 /* 
@@ -25,31 +26,37 @@ Fancy multi-layered image link with a wooden window frame that zooms in on hover
 
 Hairy problem: causes horizontal scrolling on narrow viewports.
 - Can't simply use `overflow: hidden` since it would cut off the window frame (top and bottom) when it scales up.
-- One way to avoid a horizontal scrollbar is to use `float: right`, as this makes it push the element to the left, but that's not ideal; I want it centered. Also requires extra `clear: both` element.
+- One way to avoid a horizontal scrollbar is to use `float: right`, as this makes it push the element to the left.
+	- Not centered, when it gets pushed to the left.
+	- Requires extra `clear: both` element.
+	- Requires a wrapper, or at least, that's how I did it.
+	- Also causes extra space between the window and the floated flag GIF now.
+	  (Before, the window would ignore the flag and go in front of it, which looked nice.)
 - Can't simply use `overflow-x: hidden` since browsers don't support hidden and visible in separate axes.
   https://stackoverflow.com/questions/6421966/css-overflow-x-visible-and-overflow-y-hidden-causing-scrollbar-issue
-- Does `overflow-x: clip` work? YES!!!!!!!!
-- `clip-path`? Does that affect page layout (overflow)?
-- `overflow-clip-margin` should be the saving grace, the magic sauce, but it's not supported in Safari,
-  and two-value syntax is not supported in Chrome or Firefox.
+- `overflow-clip-margin` should be the magic sauce, the saving grace, but it's not supported in Safari,
+  and two-value syntax for specifying vertical and horizontal separately is not supported in Chrome or Firefox.
 - Adding padding on top and bottom and negative margins to compensate, in order to create a vertically extended clip:
 	- Top negative margin didn't work, so I had to use `transform: translateY()` instead.
 		- With the `transform`, if the viewport is EXTREMELY narrow, the text will go under the window frame link.
 	- Requires `pointer-events: none` on the parent to avoid breaking interactions outside of the visible area.
 		- Requires `pointer-events: all` on the link to re-enable interaction with the link.
-	- Also, there's a lot of space between the window and the floated flag GIF now.
-	(Before, the window would ignore the flag and go in front of it, which looked nice.)
+	- Also causes extra space between the window and the floated flag GIF now.
+	  (Before, the window would ignore the flag and go in front of it, which looked nice.)
+- Does `overflow-x: clip` work? YES!!!
+	- I guess they've designed `clip` to be more sensible, since it was a later addition to the spec.
+	- Requires a wrapper. Trying to simplify to one element with `overflow-x: clip; max-width: calc(100% + var(--section-padding) * 2);`
+	  makes it off-center, because the `transform` is relative to the computed width.
+	  Could probably do it with a complex `transform` calculation using `min` or `max`, but that's not worth it.
+	  Oh, actually, since it's a fixed width, duh, I can just halve it and use that... right?
+	  `transform: translateX(calc(360px / -2));`
+	  Well that doesn't work right.
+- `clip-path`? Does that affect page layout (overflow)?
 */
 #enter-98-wrapper {
-	/* Full width; TODO: DRY with body>section padding of 10px */
-	margin: 0 -10px;
-	width: calc(100% + 10px * 2);
-	/* FINALLY THIS WORKS!!! TODO: clean up */
+	margin: 0 calc(-1 * var(--section-padding));
+	width: calc(100% + var(--section-padding) * 2);
 	overflow-x: clip;
-	/* Might not be relevant to this approach, but with padding/negative margin approach was important*/
-	pointer-events: none;
-	/* Visualization */
-	/*background: rgba(0, 255, 0, 0.5)*/
 }
 
 #enter-98-link {
@@ -109,10 +116,9 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 #desktop-app-section #compound-download-button {
 	--active-background-color: rgb(192, 192, 192);
 	--toggle-width: 40px;
-	--external-margin: 10px;
 	position: relative;
 	width: fit-content;
-	max-width: calc(100vw - var(--external-margin) * 2 - var(--toggle-width));
+	max-width: calc(100vw - var(--section-padding) * 2 - var(--toggle-width));
 	/* z-index is needed so the negative z-index of the dropdown doesn't make it go beneath other things on the page, only the toggle button */
 	z-index: 1;
 }
