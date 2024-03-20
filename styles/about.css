@@ -129,6 +129,22 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	border: var(--border-width) solid black;
 	padding: 4px;
 	background-color: var(--active-background-color);
+	animation: dropdown 0.3s linear;
+}
+@media (prefers-reduced-motion) {
+	#desktop-app-section #more-download-options-dropdown {
+		animation: none;
+	}
+}
+@keyframes dropdown {
+	from {
+		/* clip-path: circle(0% at 50% 0%); */
+		clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+	}
+	to {
+		/* clip-path: circle(100% at 50% 0%); */
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+	}
 }
 #desktop-app-section .main-download-link {
 	border: 4px solid black;
