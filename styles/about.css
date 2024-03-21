@@ -282,7 +282,10 @@ a[href^="https://98.js.org"]:focus #wooden-window-frame {
 	display: inline-block;
 	padding: 50px;
 	padding-bottom: 0;
-	border: 1px solid black;
+	/* border: 5px ridge #acacac; */
+	/* background-color: #ebe3ba; */
+	border: 5px ridge #ccc08b;
+	background-color: #ffe76c;
 }
 
 #feeding-text {
