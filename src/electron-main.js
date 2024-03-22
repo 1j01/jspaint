@@ -1,5 +1,5 @@
 /*eslint-env node*/
-const { app, shell, session, dialog, ipcMain, BrowserWindow } = require('electron');
+const { app, shell, session, dialog, ipcMain, BrowserWindow, Menu } = require('electron');
 const fs = require("fs");
 const path = require("path");
 const { ArgumentParser, SUPPRESS } = require('argparse');
@@ -122,6 +122,7 @@ if (args.file_path) {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 // @TODO: It's been several electron versions. I doubt this is still necessary. (It was from a boilerplate.)
+/** @type {BrowserWindow | undefined} */
 let editor_window;
 
 const createWindow = () => {
@@ -279,6 +280,127 @@ const createWindow = () => {
 	});
 	ipcMain.on("set-document-edited", (event, isEdited) => {
 		editor_window.setDocumentEdited(isEdited);
+	});
+	ipcMain.on("set-menus", (event, menusJSON) => {
+		// Parse the JSON, reviving functions.
+		const menus = JSON.parse(menusJSON, (key, value) => {
+			if (typeof value === "string" && value.startsWith("$$function$$")) {
+				const function_id = Number(value.slice("$$function$$".length));
+				return () => {
+					// TODO: handle return values
+					editor_window.webContents.send("menu-function", function_id);
+				};
+			}
+			return value;
+		});
+		// Adapt the structure defined in menus.js to the Electron Menu API.
+		// const menus = {
+		// 	"&Example": [
+		// 		{
+		// 			item: "&Nothing", // or "label" in newer os-gui.js API
+		// 			shortcut?: "Ctrl+N",
+		// 			speech_recognition?: ["nothing", "no-op"],
+		// 			action?: () => { },
+		// 			description?: "Does nothing. This is an example.",
+		// 			submenu?: [ ... ],
+		// 			enabled?: () => true, // or a plain boolean
+		// 			emoji_icon?: "🚫", // not part of OS-GUI.js, just jspaint
+		// 			checkbox?: { // exclusive with action and submenu
+		// 				toggle?: () => { },
+		// 				check?: () => true,
+		// 			},
+		// 		},
+		// 	],
+		// 	"MENU_DIVIDER",
+		// 	...
+		// };
+		const menuTemplate = [];
+		if (process.platform === "darwin") {
+			menuTemplate.push({
+				label: "JS Paint",
+				submenu: [
+					{
+						label: "About JS Paint",
+						click: () => {
+							editor_window.webContents.send("show-about-dialog");
+						},
+					},
+					{ type: "separator" },
+					{
+						label: "Services",
+						role: "services",
+						submenu: [],
+					},
+					{ type: "separator" },
+					{
+						label: "Hide JS Paint",
+						role: "hide",
+					},
+					{
+						label: "Hide Others",
+						role: "hideothers",
+					},
+					{
+						label: "Show All",
+						role: "unhide",
+					},
+					{ type: "separator" },
+					{
+						label: "Quit JS Paint",
+						role: "quit",
+					},
+				],
+			});
+		}
+		for (const menu_key in menus) {
+			const menu = menus[menu_key];
+			menuTemplate.push({
+				label: menu_key,
+				submenu: makeMenu(menu),
+			});
+		}
+
+		function makeMenu(menu_items) {
+			return menu_items.map(menu_item => {
+				if (menu_item === "MENU_DIVIDER") {
+					return { type: "separator" };
+				}
+				// There's some hacky translation of shortcuts here,
+				// but the app supports Cmd for all Ctrl shortcuts.
+				const item = {
+					label:
+						(menu_item.emoji_icon ? menu_item.emoji_icon + " " : "") +
+						(menu_item.label ?? menu_item.item),
+					accelerator:
+						menu_item.shortcut ?
+							menu_item.shortcut
+								.replace(/^F4$/, "Shift+Cmd+Z")
+								.replace(/Ctrl/g, "Cmd")
+							: undefined,
+					click: () => menu_item.action(),
+					// @TODO: disable menu items when window is closed, and
+					// make File > Exit work on macOS or hide it since it's redundant with Quit JS Paint
+					// Right now it gets an Uncaught Exception:
+					// TypeError: Cannot read properties of null (reading 'webContents')
+					enabled:
+						typeof menu_item.enabled === "function" ?
+							menu_item.enabled() // TODO: update dynamically when the menu is shown etc.
+							: (menu_item.enabled ?? true),
+				};
+				if (menu_item.submenu) {
+					item.submenu = makeMenu(menu_item.submenu);
+				}
+				if (menu_item.checkbox) {
+					item.type = "checkbox";
+					item.checked = menu_item.checkbox.check?.(); // TODO: update dynamically when the menu is shown etc.
+					item.click = () => menu_item.checkbox.toggle?.();
+				}
+				return item;
+			});
+		}
+
+		const menu = Menu.buildFromTemplate(menuTemplate);
+		Menu.setApplicationMenu(menu);
 	});
 	ipcMain.handle("show-save-dialog", async (event, options) => {
 		const { filePath, canceled } = await dialog.showSaveDialog(editor_window, {

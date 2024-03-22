@@ -38,12 +38,33 @@ ipcRenderer.on("open-file", (event, file_path) => {
 	});
 });
 
+// TODO: decide if these should be moved into systemHooks, made part of API
 window.setRepresentedFilename = (filePath) => {
 	ipcRenderer.send("set-represented-filename", filePath);
 };
 window.setDocumentEdited = (documentEdited) => {
 	ipcRenderer.send("set-document-edited", documentEdited);
 };
+const menuFunctions = {};
+let menuFunctionId = 0;
+window.setMenus = (menus) => {
+	ipcRenderer.send("set-menus", JSON.stringify(menus, (key, value) => {
+		if (typeof value === "function") {
+			const id = menuFunctionId++;
+			menuFunctions[id] = value;
+			return `$$function$$${id}`;
+		}
+		return value;
+	}));
+};
+ipcRenderer.on("menu-function", (event, id) => {
+	menuFunctions[id]();
+});
+// Currently the macOS app menu is defined in the main process,
+// and not in menus.js; @TODO: move macOS specific menu items and shortcut logic to menus.js
+ipcRenderer.on("show-about-dialog", (event) => {
+	show_about_paint();
+});
 
 function show_save_error_message(responseCode, error) {
 	if (responseCode === "ACCESS_DENIED") {

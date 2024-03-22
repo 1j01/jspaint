@@ -884,6 +884,10 @@ for (const [menu_item, menu_item_element] of traverse_menu(menus["E&xtras"], ext
 }
 $("<style>").text(emoji_css).appendTo("head");
 
+// Electron menu integration
+if (window.is_electron_app) {
+	window.setMenus(menus);
+}
 
 // #endregion
 
