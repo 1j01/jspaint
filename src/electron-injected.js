@@ -57,8 +57,9 @@ window.setMenus = (menus) => {
 		return value;
 	}));
 };
-ipcRenderer.on("menu-function", (event, id) => {
-	menuFunctions[id]();
+ipcRenderer.on("menu-function", (event, function_id, request_id) => {
+	const result = menuFunctions[function_id]();
+	ipcRenderer.send(`menu-function-result-${request_id}`, result);
 });
 // Currently the macOS app menu is defined in the main process,
 // and not in menus.js; @TODO: move macOS specific menu items and shortcut logic to menus.js

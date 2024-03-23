@@ -1,5 +1,5 @@
 /*eslint-env node*/
-const { app, shell, session, dialog, ipcMain, BrowserWindow, Menu } = require('electron');
+const { app, shell, session, dialog, ipcMain, BrowserWindow, Menu, MenuItem } = require('electron');
 const fs = require("fs");
 const path = require("path");
 const { ArgumentParser, SUPPRESS } = require('argparse');
@@ -281,18 +281,31 @@ const createWindow = () => {
 	ipcMain.on("set-document-edited", (event, isEdited) => {
 		editor_window.setDocumentEdited(isEdited);
 	});
+	let request_counter = 0;
 	ipcMain.on("set-menus", (event, menusJSON) => {
 		// Parse the JSON, reviving functions.
 		const menus = JSON.parse(menusJSON, (key, value) => {
 			if (typeof value === "string" && value.startsWith("$$function$$")) {
 				const function_id = Number(value.slice("$$function$$".length));
 				return () => {
-					// TODO: handle return values
-					editor_window.webContents.send("menu-function", function_id);
+					// https://www.electronjs.org/docs/latest/tutorial/ipc#optional-returning-a-reply
+					// "There's no equivalent for ipcRenderer.invoke for main-to-renderer IPC.
+					// Instead, you can send a reply back to the main process from within the ipcRenderer.on callback."
+					// Kinda lame but OK.
+					// There's also no sendSync, so I have to make the (un)marshalled functions return Promises,
+					// deviating from OS-GUI's API.
+					const this_request_id = ++request_counter;
+					editor_window.webContents.send("menu-function", function_id, this_request_id);
+					return new Promise((resolve, reject) => {
+						ipcMain.once(`menu-function-result-${this_request_id}`, (event, result) => {
+							resolve(result);
+						});
+					});
 				};
 			}
 			return value;
 		});
+
 		// Adapt the structure defined in menus.js to the Electron Menu API.
 		// const menus = {
 		// 	"&Example": [
@@ -314,9 +327,9 @@ const createWindow = () => {
 		// 	"MENU_DIVIDER",
 		// 	...
 		// };
-		const menuTemplate = [];
+		const menubar = new Menu();
 		if (process.platform === "darwin") {
-			menuTemplate.push({
+			menubar.append(new MenuItem({
 				label: "JS Paint",
 				submenu: [
 					{
@@ -350,14 +363,14 @@ const createWindow = () => {
 						role: "quit",
 					},
 				],
-			});
+			}));
 		}
 		for (const menu_key in menus) {
 			const menu = menus[menu_key];
-			menuTemplate.push({
+			menubar.append(new MenuItem({
 				label: menu_key,
 				submenu: makeMenu(menu),
-			});
+			}));
 		}
 
 		function makeMenu(menu_items) {
@@ -367,7 +380,7 @@ const createWindow = () => {
 				}
 				// There's some hacky translation of shortcuts here,
 				// but the app supports Cmd for all Ctrl shortcuts.
-				const item = {
+				const electron_menu_item = new MenuItem({
 					label:
 						(menu_item.emoji_icon ? menu_item.emoji_icon + " " : "") +
 						(menu_item.label ?? menu_item.item),
@@ -378,29 +391,39 @@ const createWindow = () => {
 								.replace(/Ctrl/g, "Cmd")
 							: undefined,
 					click: () => menu_item.action(),
+					submenu: menu_item.submenu ? makeMenu(menu_item.submenu) : undefined,
+					type: menu_item.checkbox ? "checkbox" : undefined,
 					// @TODO: disable menu items when window is closed, and
 					// make File > Exit work on macOS or hide it since it's redundant with Quit JS Paint
 					// Right now it gets an Uncaught Exception:
 					// TypeError: Cannot read properties of null (reading 'webContents')
 					enabled:
 						typeof menu_item.enabled === "function" ?
-							menu_item.enabled() // TODO: update dynamically when the menu is shown etc.
+							true // await menu_item.enabled() // dynamically updated below
 							: (menu_item.enabled ?? true),
-				};
-				if (menu_item.submenu) {
-					item.submenu = makeMenu(menu_item.submenu);
+				});
+				if (typeof menu_item.enabled === "function") {
+					// @TODO: avoid polling (OS-GUI.js queries the state when showing the menu, but I doubt that's an option for the native menus)
+					setInterval(async () => {
+						// OS-GUI.js doesn't use Promises here but the (un)marshalled functions do.
+						electron_menu_item.enabled = await menu_item.enabled();
+					}, 100);
 				}
 				if (menu_item.checkbox) {
-					item.type = "checkbox";
-					item.checked = menu_item.checkbox.check?.(); // TODO: update dynamically when the menu is shown etc.
-					item.click = () => menu_item.checkbox.toggle?.();
+					electron_menu_item.type = "checkbox";
+					if (menu_item.checkbox.check) {
+						setInterval(async () => {
+							// OS-GUI.js doesn't use Promises here but the (un)marshalled functions do.
+							electron_menu_item.checked = await menu_item.checkbox.check();
+						}, 100);
+					}
+					electron_menu_item.click = () => menu_item.checkbox.toggle?.();
 				}
-				return item;
+				return electron_menu_item;
 			});
 		}
 
-		const menu = Menu.buildFromTemplate(menuTemplate);
-		Menu.setApplicationMenu(menu);
+		Menu.setApplicationMenu(menubar);
 	});
 	ipcMain.handle("show-save-dialog", async (event, options) => {
 		const { filePath, canceled } = await dialog.showSaveDialog(editor_window, {
