@@ -295,7 +295,7 @@ const createWindow = () => {
 					// There's also no sendSync, so I have to make the (un)marshalled functions return Promises,
 					// deviating from OS-GUI's API.
 					const this_request_id = ++request_counter;
-					editor_window.webContents.send("menu-function", function_id, this_request_id);
+					editor_window?.webContents.send("menu-function", function_id, this_request_id);
 					return new Promise((resolve, reject) => {
 						ipcMain.once(`menu-function-result-${this_request_id}`, (event, result) => {
 							resolve(result);
@@ -328,6 +328,25 @@ const createWindow = () => {
 		// 	...
 		// };
 		const menubar = new Menu();
+		const intervalIDs = [];
+		editor_window.once("closed", () => {
+			for (const intervalID of intervalIDs) {
+				clearInterval(intervalID);
+			}
+			function disable_menu(menu) {
+				// TypeError: menu.items is not iterable
+				// for (const menu_item of menu.items) {
+				for (let i = 0; i < menu.items.length; i++) {
+					const menu_item = menu.items[i];
+					if (menu_item.submenu) {
+						disable_menu(menu_item.submenu);
+					} else {
+						menu_item.enabled = false;
+					}
+				}
+			}
+			disable_menu(menubar);
+		});
 		if (process.platform === "darwin") {
 			// @TODO: localize like other menus
 			menubar.append(new MenuItem({
@@ -336,7 +355,8 @@ const createWindow = () => {
 					{
 						label: "About JS Paint",
 						click: () => {
-							editor_window.webContents.send("show-about-dialog");
+							// TODO handle editor_window closed on macOS
+							editor_window?.webContents.send("show-about-dialog");
 						},
 					},
 					{ type: "separator" },
@@ -417,18 +437,18 @@ const createWindow = () => {
 				});
 				if (typeof menu_item.enabled === "function") {
 					// @TODO: avoid polling (OS-GUI.js queries the state when showing the menu, but I doubt that's an option for the native menus)
-					setInterval(async () => {
+					intervalIDs.push(setInterval(async () => {
 						// OS-GUI.js doesn't use Promises here but the (un)marshalled functions do.
-						electron_menu_item.enabled = await menu_item.enabled();
-					}, 100);
+						electron_menu_item.enabled = editor_window?.webContents && await menu_item.enabled();
+					}, 100));
 				}
 				if (menu_item.checkbox) {
 					electron_menu_item.type = "checkbox";
 					if (menu_item.checkbox.check) {
-						setInterval(async () => {
+						intervalIDs.push(setInterval(async () => {
 							// OS-GUI.js doesn't use Promises here but the (un)marshalled functions do.
 							electron_menu_item.checked = await menu_item.checkbox.check();
-						}, 100);
+						}, 100));
 					}
 					electron_menu_item.click = () => menu_item.checkbox.toggle?.();
 				}
