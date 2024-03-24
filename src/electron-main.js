@@ -329,6 +329,7 @@ const createWindow = () => {
 		// };
 		const menubar = new Menu();
 		if (process.platform === "darwin") {
+			// @TODO: localize like other menus
 			menubar.append(new MenuItem({
 				label: "JS Paint",
 				submenu: [
@@ -380,6 +381,7 @@ const createWindow = () => {
 				}
 				// There's some hacky translation of shortcuts here,
 				// but the app supports Cmd for all Ctrl shortcuts.
+				// @TODO: use "CmdOrCtrl", make OS-GUI.js support it, and simplify this.
 				const electron_menu_item = new MenuItem({
 					label:
 						(menu_item.emoji_icon ? menu_item.emoji_icon + " " : "") +
