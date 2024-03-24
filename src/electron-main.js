@@ -379,19 +379,30 @@ const createWindow = () => {
 				if (menu_item === "MENU_DIVIDER") {
 					return { type: "separator" };
 				}
-				// There's some hacky translation of shortcuts here,
-				// but the app supports Cmd for all Ctrl shortcuts.
-				// @TODO: use "CmdOrCtrl", make OS-GUI.js support it, and simplify this.
 				const electron_menu_item = new MenuItem({
+					// Emoji actually look terrible in macOS (mojave at least),
+					// they get super blown out when white from the canvas shows through.
+					// @TODO: remove emoji or try using `icon` field,
+					// either by rendering emoji with <canvas> in the renderer process
+					// or by designing custom icons.
 					label:
 						(menu_item.emoji_icon ? menu_item.emoji_icon + " " : "") +
 						(menu_item.label ?? menu_item.item),
+					// There's some hacky translation of shortcuts here,
+					// but the app supports Cmd for all Ctrl shortcuts.
+					// @TODO: use "CmdOrCtrl", make OS-GUI.js support it, and simplify this.
 					accelerator:
 						menu_item.shortcut ?
 							menu_item.shortcut
 								.replace(/^F4$/, "Shift+Cmd+Z")
 								.replace(/Ctrl/g, "Cmd")
 							: undefined,
+					// Fix Cmd+C/Cmd+V etc. in devtools, let renderer process handle it.
+					// `role: "copy"` might work better, and handle text selections as well,
+					// but handling text selections from the non-native Edit menu is still TODO anyways,
+					// so might as well implement that instead if possible.
+					registerAccelerator: false,
+					//
 					click: () => menu_item.action(),
 					submenu: menu_item.submenu ? makeMenu(menu_item.submenu) : undefined,
 					type: menu_item.checkbox ? "checkbox" : undefined,
