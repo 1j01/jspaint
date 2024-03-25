@@ -593,6 +593,27 @@
 	</section>
 
 	<script>
+		// Ideally this would be baked into the HTML, but this is nice and automatic.
+		for (const button of document.querySelectorAll("#buttons-section img")) {
+			const subject = button.closest("a") ?? button;
+			const wrapper = document.createElement("div");
+			wrapper.style.display = "inline-block";
+			wrapper.style.margin = "0 10px 10px 0";
+			const textarea = document.createElement("textarea");
+			textarea.value = subject.outerHTML;
+			textarea.style.width = "88px";
+			textarea.style.height = "31px";
+			textarea.style.resize = "none";
+			textarea.style.display = "block";
+			wrapper.appendChild(textarea);
+
+			// Order matters here, because `appendChild` moves the element.
+			subject.parentNode.insertBefore(wrapper, subject);
+			wrapper.insertBefore(subject, textarea);
+		}
+	</script>
+
+	<script>
 		var maxButton = document.querySelector(".window-maximize-button");
 		var closeButton = document.querySelector(".window-close-button");
 		var minimizeButton = document.querySelector(".window-minimize-button");
