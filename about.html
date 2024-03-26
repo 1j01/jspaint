@@ -611,8 +611,10 @@
 			subject.parentNode.insertBefore(wrapper, subject);
 			wrapper.insertBefore(subject, textarea);
 		}
-		// Resize textareas back to normal size when they lose focus.
-		// This isn't necessarily great for usability, but it's kind of fun and restores the even grid.
+		// Resize textareas back to normal when clicking outside of them.
+		// This isn't necessarily great for usability (it may be surprising),
+		// but it's kind of fun and restores the even grid, which is nice for aesthetics.
+		// It shouldn't hamper usability too much, since you can still expand multiple at once if you wish.
 		function restoreTextareaSizes() {
 			for (const textarea of document.querySelectorAll("#buttons-section textarea")) {
 				if (getComputedStyle(textarea).width !== "88px" || getComputedStyle(textarea).height !== "31px") {
@@ -622,13 +624,21 @@
 					textarea.addEventListener("transitionend", function () {
 						textarea.style.transition = "";
 					}, { once: true });
+					// In case resize handle is grabbed during transition,
+					// interrupt the resize animation, to prevent a sluggish feeling
+					// from the transition being constantly restarted.
+					// (Test this by increasing the transition duration significantly!)
+					textarea.addEventListener("transitioncancel", function () {
+						textarea.style.transition = "";
+					}, { once: true });
 				}
 			}
 		}
-		// Textareas don't necessarily receive focus when resizing them.
-		// Handling both focusout and focusin will cause redundant style setting, but it should be fine.
-		document.querySelector("#buttons-section").addEventListener("focusout", restoreTextareaSizes);
-		document.querySelector("#buttons-section").addEventListener("focusin", restoreTextareaSizes);
+		document.addEventListener("click", function (event) {
+			if (!event.target.closest("#buttons-section textarea")) {
+				restoreTextareaSizes();
+			}
+		});
 	</script>
 
 	<script>
