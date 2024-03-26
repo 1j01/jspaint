@@ -603,7 +603,7 @@
 			textarea.value = subject.outerHTML;
 			textarea.style.width = "88px";
 			textarea.style.height = "31px";
-			textarea.style.resize = "none";
+			//textarea.style.resize = "none";
 			textarea.style.display = "block";
 			wrapper.appendChild(textarea);
 
@@ -611,6 +611,24 @@
 			subject.parentNode.insertBefore(wrapper, subject);
 			wrapper.insertBefore(subject, textarea);
 		}
+		// Resize textareas back to normal size when they lose focus.
+		// This isn't necessarily great for usability, but it's kind of fun and restores the even grid.
+		function restoreTextareaSizes() {
+			for (const textarea of document.querySelectorAll("#buttons-section textarea")) {
+				if (getComputedStyle(textarea).width !== "88px" || getComputedStyle(textarea).height !== "31px") {
+					textarea.style.transition = "width 0.5s, height 0.5s";
+					textarea.style.width = "88px";
+					textarea.style.height = "31px";
+					textarea.addEventListener("transitionend", function () {
+						textarea.style.transition = "";
+					}, { once: true });
+				}
+			}
+		}
+		// Textareas don't necessarily receive focus when resizing them.
+		// Handling both focusout and focusin will cause redundant style setting, but it should be fine.
+		document.querySelector("#buttons-section").addEventListener("focusout", restoreTextareaSizes);
+		document.querySelector("#buttons-section").addEventListener("focusin", restoreTextareaSizes);
 	</script>
 
 	<script>
