@@ -720,6 +720,21 @@
 					alert('Failed to load eSheep!');
 				};
 				document.head.appendChild(script);
+				// Make eSheep land on more surfaces
+				// It only lands on div and hr elements:
+				// https://github.com/Adrianotiger/web-esheep/blob/641210d262e484cab5441c6b5c8fe2c9c28bed58/src/esheep.js#L65
+				// which have a top border:
+				// https://github.com/Adrianotiger/web-esheep/blob/641210d262e484cab5441c6b5c8fe2c9c28bed58/src/esheep.js#L601
+				// and isn't configurable, as of writing.
+				for (const section of document.querySelectorAll('section, footer')) {
+					const hr = document.createElement('hr');
+					hr.style.border = '0';
+					hr.style.borderTop = '1px solid transparent';
+					hr.style.margin = '0';
+					hr.style.marginTop = '-1px';
+					section.parentNode.insertBefore(hr, section);
+					hr.classList.add('eSheep-landing-surface');
+				}
 			}
 			function addSheep() {
 				const sheep = new eSheep();
