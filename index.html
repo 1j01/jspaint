@@ -923,27 +923,30 @@
 	</div>
 
 	<!-- Note: no CDNs, even with fallback, as the fallback is too complicated to handle with CSP. -->
-	<script defer src="lib/jquery-3.4.1.min.js"></script>
-	<script defer src="lib/gif.js/gif.js"></script>
+	<script src="lib/jquery-3.4.1.min.js"></script>
+	<script src="lib/gif.js/gif.js"></script>
 	<!-- pako is used by UPNG.js and UTIF.js -->
-	<script defer src="lib/pako-2.0.3.min.js"></script>
-	<script defer src="lib/UPNG.js"></script>
-	<script defer src="lib/UTIF.js"></script>
-	<script defer src="lib/bmp.js"></script>
-	<script defer src="lib/pdf.js/build/pdf.js"></script>
-	<script defer src="lib/anypalette-0.6.0.js"></script>
-	<script defer src="lib/FileSaver.js"></script>
-	<script defer src="lib/font-detective.js"></script>
-	<script defer src="lib/libtess.min.js"></script>
-	<!-- <script defer src="lib/tracky-mouse/tracky-mouse.js"></script> -->
-	<script defer src="lib/os-gui/parse-theme.js"></script>
-	<script defer src="lib/os-gui/$Window.js"></script>
-	<script defer src="lib/os-gui/MenuBar.js"></script>
-	<script defer src="lib/imagetracer_v1.2.5.js"></script>
+	<script src="lib/pako-2.0.3.min.js"></script>
+	<script src="lib/UPNG.js"></script>
+	<script src="lib/UTIF.js"></script>
+	<script src="lib/bmp.js"></script>
+	<script src="lib/pdf.js/build/pdf.js"></script>
+	<script src="lib/anypalette-0.6.0.js"></script>
+	<script src="lib/FileSaver.js"></script>
+	<script src="lib/font-detective.js"></script>
+	<script src="lib/libtess.min.js"></script>
+	<!-- <script src="lib/tracky-mouse/tracky-mouse.js"></script> -->
+	<script src="lib/os-gui/parse-theme.js"></script>
+	<script src="lib/os-gui/$Window.js"></script>
+	<script src="lib/os-gui/MenuBar.js"></script>
+	<script src="lib/imagetracer_v1.2.5.js"></script>
 
 	<!-- must not be async/deferred, as it uses document.write(); and must come before other app code which uses localization functions -->
-	<script defer src="src/app-localization.js"></script>
+	<!-- (also depends on msgbox.js and thus os-gui.js, but not initially) -->
+	<script src="src/app-localization.js"></script>
 
+	<!-- Most scripts are marked as deferred in order to start transitioning to ES Modules,
+	so that the ES Modules (which are always deferred) can still export globals to be consumed by the non-module scripts. -->
 	<script defer src="src/msgbox.js"></script>
 	<script defer src="src/functions.js"></script>
 	<script defer src="src/helpers.js"></script>
