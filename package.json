@@ -80,6 +80,7 @@
     "argparse": "^2.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "lookpath": "^1.2.2",
+    "typescript": "^5.4.3",
     "wallpaper": "^4.4.2"
   },
   "devDependencies": {
@@ -90,6 +91,7 @@
     "@electron-forge/maker-squirrel": "^7.3.0",
     "@electron-forge/maker-zip": "^7.3.0",
     "@electron-forge/publisher-github": "^7.3.0",
+    "@types/jquery": "^3.5.29",
     "concat-glob-cli": "^0.1.0",
     "cspell-cli": "^8.4.0",
     "cypress": "4.7.0",
@@ -109,6 +111,7 @@
     "electron:package": "electron-forge package",
     "electron:make": "electron-forge make",
     "electron:publish": "electron-forge publish",
+    "typecheck": "tsc --noEmit -p jsconfig.json",
     "spellcheck": "cspell-cli lint .",
     "lint": "eslint src/",
     "lint-cat": "concat-glob-cli --files \"src/**/!(electron*).js\" --output concatenated-source.js && eslint --rule \"no-undef: error\" --rule \"no-unused-vars: error\" concatenated-source.js",

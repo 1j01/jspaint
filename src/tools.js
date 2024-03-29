@@ -21,6 +21,7 @@
 	window.TOOL_ELLIPSE = "TOOL_ELLIPSE";
 	window.TOOL_ROUNDED_RECTANGLE = "TOOL_ROUNDED_RECTANGLE";
 
+	/** @type {Tool[]} */
 	window.tools = [{
 		id: TOOL_FREE_FORM_SELECT,
 		name: localize("Free-Form Select"),

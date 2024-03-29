@@ -1,3 +1,4 @@
+// @ts-check
 ((exports) => {
 
 	const TAU =
@@ -237,10 +238,10 @@
 	 * Assumes r, g, and b are contained in the set [0, 255] and
 	 * returns h, s, and l in the set [0, 1].
 	 *
-	 * @param   Number  r       The red color value
-	 * @param   Number  g       The green color value
-	 * @param   Number  b       The blue color value
-	 * @return  Array           The HSL representation
+	 * @param   {number}  r  The red color value
+	 * @param   {number}  g  The green color value
+	 * @param   {number}  b  The blue color value
+	 * @return  {[number, number, number]}  The HSL representation
 	 */
 	function rgb_to_hsl(r, g, b) {
 		r /= 255; g /= 255; b /= 255;

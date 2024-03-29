@@ -343,6 +343,10 @@ Install [Node.js][] if you don't have it, then open up a command prompt / termin
 
 Run `npm run lint` to check for code problems.
 
+Run `npm run spellcheck` to check for spelling errors. This may be included in the linting script in the future.
+
+Run `npm run typecheck` to check for type errors. This may be included in the linting script in the future. Not much of the codebase is typechecked yet.
+
 Run `npm test` to run browser-based tests with Cypress. (It's slow to start up and run tests, unfortunately.)
 
 Run `npm run accept` to accept any visual changes.
@@ -351,7 +355,7 @@ If you use [GitHub Desktop](https://desktop.github.com/), you can view diffs of 
 
 To open the Cypress UI, first run `npm run test:start-server`, then concurrently `npm run cy:open`
 
-Tests are also run in continuous integration [with Travis CI](https://travis-ci.org/1j01/jspaint).
+~~Tests are also run in continuous integration [with Travis CI](https://travis-ci.org/1j01/jspaint).~~
 
 ### Web App (https://jspaint.app)
 

@@ -1,5 +1,12 @@
-
+// @ts-check
 class OnCanvasObject {
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} width
+	 * @param {number} height
+	 * @param {boolean} hideMainCanvasHandles
+	 */
 	constructor(x, y, width, height, hideMainCanvasHandles) {
 		this.x = x;
 		this.y = y;
