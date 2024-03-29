@@ -87,6 +87,10 @@ if (isDev) {
 // @TODO: let user apply this setting somewhere in the UI (togglable)
 // (Note: it would be better to use REG.EXE to apply the change, rather than a .reg file)
 // This registry modification changes the right click > Edit option for images in Windows Explorer
+// ...or in Windows 11, the right click > More Options > Edit option, increasingly buried and useless.
+// Also, currently, this points to a specific version of the app e.g. "C:\Users\Isaiah\AppData\Local\jspaint\app-1.0.0\jspaint.exe" instead of "C:\Users\Isaiah\AppData\Local\jspaint\jspaint.exe"
+// I guess this wouldn't be a problem if it manages the registry on every update, but it's manual for now, so it will break on any update.
+// FOR NOW, I'm recommending that users use the "Open with" dialog and paste in the path to the exe manually.
 const reg_contents = `Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\\SystemFileAssociations\\image\\shell\\edit\\command]

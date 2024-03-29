@@ -294,8 +294,8 @@ Electron app features:
   - Drag and drop onto dock icon on macOS
   - Drag and drop onto desktop shortcut
   - **Right Click > Open With** in file manager (macOS and Linux)
-    - On Windows, you can set up a registry file to add this option... more or less. I've made it generate a registry file, but you have to manually apply it, and it only adds it to **Show more options > Edit** in Windows 11.
-  - Command line: `jspaint some/path/to/a/file.png`
+    - On Windows, you can manually paste the path to the executable into the Open With dialog, which you can find by right clicking the app in the taskbar, then right clicking the app's name, and selecting Properties. In the Shortcut tab, the Target field is the path to the executable. Once you open the app in this way, the app will show up in the Open With list, and if you select "Always", it will become the default app for that file type.
+  - Command line: type `jspaint path/to/file.png` in the terminal
 - **File > Save** will save directly to the file
 - **File > Set As Wallpaper (Tiled)** and **File > Set As Wallpaper (Centered)**
 - On macOS, an icon representing the currently open file is shown in the titlebar. You can drag this icon into other applications, for example to include the image you're editing in an email. The icon is dimmed while there are unsaved changes.
@@ -313,8 +313,6 @@ Electron app features:
   - Only a single editor window can be opened at once.
   - The File menu's recent files list is not implemented, nor are [OS-specific jump menus](https://www.electronjs.org/docs/latest/tutorial/recent-documents).
 - Minor details:
-  - The Windows registry (.reg) file generated points to a specific version of the app "C:\Users\Isaiah\AppData\Local\jspaint\app-1.0.0\jspaint.exe" instead of "C:\Users\Isaiah\AppData\Local\jspaint\jspaint.exe"
-    - I guess this wouldn't be a problem if it manages the registry on every update, but it's manual for now, so it will break on any update
   - A very confusing message is shown if you edit a document before clicking an Open link in the Manage Storage dialog.
   - WebGL error messages tell you to refresh without offering a way to reload; also, calling the app a web page feels unpolished
   - The File > Open dialog does not have an All Files (\*.\*) option, and the list of file types supported is not exhaustive; for example, AVIF images can be loaded but only by drag and drop
