@@ -825,7 +825,15 @@
 			wrapper.style.display = "inline-block";
 			wrapper.style.margin = "0 10px 10px 0";
 			const textarea = document.createElement("textarea");
-			textarea.value = subject.outerHTML;
+			const html = subject.outerHTML;
+			// Normalize indentation for the snippet.
+			// The last indentation in the HTML will be for the closing tag, if applicable,
+			// which should not end up indented, and works for a search string to replace.
+			// The first indentation, by contrast, will include one more indent level,
+			// and so isn't suitable as a search string.
+			const lastIndentation = html.match(/^\s*/gm).pop() ?? "";
+			textarea.value = html
+				.replace(new RegExp("^" + lastIndentation, "gm"), "");
 			textarea.style.width = "88px";
 			textarea.style.height = "31px";
 			//textarea.style.resize = "none";
