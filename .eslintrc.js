@@ -201,4 +201,10 @@ module.exports = {
 		// "array-bracket-spacing": "error",
 		// "block-spacing": "error",
 	},
+	"overrides": [
+		{
+			files: ["src/theme.js"],
+			parserOptions: { sourceType: "module" },
+		}
+	]
 };

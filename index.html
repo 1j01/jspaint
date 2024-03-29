@@ -70,7 +70,7 @@
 	<meta name="twitter:creator" content="@isaiahodhner">
 
 	<script src="src/error-handling-basic.js"></script>
-	<script src="src/theme.js"></script>
+	<script type="module" src="src/theme.js"></script>
 </head>
 
 <body>
@@ -923,62 +923,62 @@
 	</div>
 
 	<!-- Note: no CDNs, even with fallback, as the fallback is too complicated to handle with CSP. -->
-	<script src="lib/jquery-3.4.1.min.js"></script>
-	<script src="lib/gif.js/gif.js"></script>
+	<script defer src="lib/jquery-3.4.1.min.js"></script>
+	<script defer src="lib/gif.js/gif.js"></script>
 	<!-- pako is used by UPNG.js and UTIF.js -->
-	<script src="lib/pako-2.0.3.min.js"></script>
-	<script src="lib/UPNG.js"></script>
-	<script src="lib/UTIF.js"></script>
-	<script src="lib/bmp.js"></script>
-	<script src="lib/pdf.js/build/pdf.js"></script>
-	<script src="lib/anypalette-0.6.0.js"></script>
-	<script src="lib/FileSaver.js"></script>
-	<script src="lib/font-detective.js"></script>
-	<script src="lib/libtess.min.js"></script>
-	<!-- <script src="lib/tracky-mouse/tracky-mouse.js"></script> -->
-	<script src="lib/os-gui/parse-theme.js"></script>
-	<script src="lib/os-gui/$Window.js"></script>
-	<script src="lib/os-gui/MenuBar.js"></script>
-	<script src="lib/imagetracer_v1.2.5.js"></script>
+	<script defer src="lib/pako-2.0.3.min.js"></script>
+	<script defer src="lib/UPNG.js"></script>
+	<script defer src="lib/UTIF.js"></script>
+	<script defer src="lib/bmp.js"></script>
+	<script defer src="lib/pdf.js/build/pdf.js"></script>
+	<script defer src="lib/anypalette-0.6.0.js"></script>
+	<script defer src="lib/FileSaver.js"></script>
+	<script defer src="lib/font-detective.js"></script>
+	<script defer src="lib/libtess.min.js"></script>
+	<!-- <script defer src="lib/tracky-mouse/tracky-mouse.js"></script> -->
+	<script defer src="lib/os-gui/parse-theme.js"></script>
+	<script defer src="lib/os-gui/$Window.js"></script>
+	<script defer src="lib/os-gui/MenuBar.js"></script>
+	<script defer src="lib/imagetracer_v1.2.5.js"></script>
 
 	<!-- must not be async/deferred, as it uses document.write(); and must come before other app code which uses localization functions -->
-	<script src="src/app-localization.js"></script>
+	<script defer src="src/app-localization.js"></script>
 
-	<script src="src/msgbox.js"></script>
-	<script src="src/functions.js"></script>
-	<script src="src/helpers.js"></script>
-	<script src="src/storage.js"></script>
-	<script src="src/$Component.js"></script>
-	<script src="src/$ToolWindow.js"></script>
+	<script defer src="src/msgbox.js"></script>
+	<script defer src="src/functions.js"></script>
+	<script defer src="src/helpers.js"></script>
+	<script defer src="src/storage.js"></script>
+	<script defer src="src/$Component.js"></script>
+	<script defer src="src/$ToolWindow.js"></script>
 
 	<!-- After show_error_message, showMessageBox, make_window_supporting_scale, and localize are defined,
 	set up better global error handling. -->
 	<!-- Note: This must be in the <body> as it also handles showing a message for Internet Explorer. -->
-	<script src="src/error-handling-enhanced.js"></script>
+	<script defer src="src/error-handling-enhanced.js"></script>
 
-	<script src="src/$ToolBox.js"></script>
-	<script src="src/$ColorBox.js"></script>
-	<script src="src/$FontBox.js"></script>
-	<script src="src/Handles.js"></script>
-	<script src="src/OnCanvasObject.js"></script>
-	<script src="src/OnCanvasSelection.js"></script>
-	<script src="src/OnCanvasTextBox.js"></script>
-	<script src="src/OnCanvasHelperLayer.js"></script>
-	<script src="src/image-manipulation.js"></script>
-	<script src="src/tool-options.js"></script>
-	<script src="src/tools.js"></script>
-	<!--<script src="src/extra-tools.js"></script>-->
-	<script src="src/edit-colors.js"></script>
-	<script src="src/manage-storage.js"></script>
-	<script src="src/imgur.js"></script>
-	<script src="src/help.js"></script>
-	<script src="src/simulate-random-gestures.js"></script>
-	<script src="src/menus.js"></script>
-	<script src="src/speech-recognition.js"></script>
-	<script src="src/app.js"></script>
-	<script src="src/sessions.js"></script>
-	<script src="lib/konami.js"></script>
-	<script src="src/vaporwave-fun.js"></script>
+	<script defer src="src/$ToolBox.js"></script>
+	<script defer src="src/$ColorBox.js"></script>
+	<script defer src="src/$FontBox.js"></script>
+	<script defer src="src/Handles.js"></script>
+	<script defer src="src/OnCanvasObject.js"></script>
+	<script defer src="src/OnCanvasSelection.js"></script>
+	<script defer src="src/OnCanvasTextBox.js"></script>
+	<script defer src="src/OnCanvasHelperLayer.js"></script>
+	<script defer src="src/image-manipulation.js"></script>
+	<script defer src="src/tool-options.js"></script>
+	<script defer src="src/tools.js"></script>
+	<!--<script defer src="src/extra-tools.js"></script>-->
+	<script defer src="src/edit-colors.js"></script>
+	<script defer src="src/manage-storage.js"></script>
+	<script defer src="src/imgur.js"></script>
+	<script defer src="src/help.js"></script>
+	<script defer src="src/simulate-random-gestures.js"></script>
+	<script defer src="src/menus.js"></script>
+	<script defer src="src/speech-recognition.js"></script>
+	<script defer src="src/app.js"></script>
+	<script defer src="src/sessions.js"></script>
+	<script defer src="lib/konami.js"></script>
+	<script defer src="src/vaporwave-fun.js"></script>
 
 	<noscript>
 		<h1><img src="images/icons/32x32.png" width="32" height="32" alt="" /> JS Paint</h1>
