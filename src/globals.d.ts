@@ -28,9 +28,11 @@ interface Window {
 	rgb_to_hsl: (r: number, g: number, b: number) => [number, number, number];
 	get_rgba_from_color: (color: string) => [number, number, number, number];
 	make_css_cursor: (name: string, coords: [number, number], fallback: string) => string;
-	make_canvas: (width: number, height: number) => HTMLCanvasElement;
-	make_canvas: (source: HTMLCanvasElement) => HTMLCanvasElement;
-	make_canvas: () => HTMLCanvasElement;
+	make_canvas: {
+		(width: number, height: number): HTMLCanvasElement,
+		(source: HTMLCanvasElement): HTMLCanvasElement,
+		(): HTMLCanvasElement,
+	};
 	image_data_match: (a: ImageData, b: ImageData, threshold: number) => boolean;
 	load_image_simple: (src: string) => Promise<HTMLImageElement>;
 	get_help_folder_icon: (file_name: string) => Image;
