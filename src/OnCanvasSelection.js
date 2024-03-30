@@ -1,5 +1,6 @@
 // @ts-check
 
+import { Handles } from "./Handles.js";
 import { OnCanvasObject } from "./OnCanvasObject.js";
 import { $G, get_icon_for_tool, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
 

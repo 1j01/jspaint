@@ -1,6 +1,8 @@
 // This file defines globals used in the app, for typescript.
 // jQuery has proper types installed, so it doesn't need to be defined here,
 // but some libraries don't, and the app uses a lot of custom globals.
+// I'm working on transitioning to ES Modules, but having the ES Modules
+// export globals until all dependent files are converted to ESM.
 
 declare const libtess: any;
 declare const firebase: any;
@@ -64,6 +66,8 @@ interface Window {
 	OnCanvasSelection: typeof OnCanvasSelection;
 	// OnCanvasTextBox.js
 	OnCanvasTextBox: typeof OnCanvasTextBox;
+	// Handles.js
+	Handles: typeof Handles;
 }
 
 class OnCanvasObject {
@@ -95,6 +99,67 @@ class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, starting_text: string);
 	position(): void;
 }
+class Handles {
+	/**
+	 * Handles for resizable, draggable, on-canvas objects.
+	 * @param {object} options
+	 * @param {JQuery} options.$handles_container
+	 * @param {JQuery} options.$object_container
+	 * @param {number} [options.outset=0]
+	 * @param {() => number} [options.get_handles_offset_left=() => 0]
+	 * @param {() => number} [options.get_handles_offset_top=() => 0]
+	 * @param {() => number} [options.get_ghost_offset_left=() => 0]
+	 * @param {() => number} [options.get_ghost_offset_top=() => 0]
+	 * @param {boolean} [options.size_only=false]
+	 * @param {() => { x: number, y: number, width: number, height: number }} options.get_rect
+	 * @param {(rect: { x: number, y: number, width: number, height: number }) => void} options.set_rect
+	 * @param {(rect: { x: number, y: number, width: number, height: number }, x_axis: -1 | 0 | 1, y_axis: -1 | 0 | 1) => { x: number, y: number, width: number, height: number }} [options.constrain_rect]
+	 * @param {boolean} [options.thick]
+	 * @constructor
+	 * @property {HTMLElement[]} handles
+	 * @property {() => void} hide
+	 * @property {() => void} show
+	 * @property {HTMLElement[]} handles
+	 */
+	constructor(options: {
+		$handles_container: JQuery;
+		$object_container: JQuery;
+		outset?: number;
+		get_handles_offset_left?: () => number;
+		get_handles_offset_top?: () => number;
+		get_ghost_offset_left?: () => number;
+		get_ghost_offset_top?: () => number;
+		size_only?: boolean;
+		get_rect: () => {
+			x: number;
+			y: number;
+			width: number;
+			height: number;
+		};
+		set_rect: (rect: {
+			x: number;
+			y: number;
+			width: number;
+			height: number;
+		}) => void;
+		constrain_rect?: (rect: {
+			x: number;
+			y: number;
+			width: number;
+			height: number;
+		}, x_axis: -1 | 0 | 1, y_axis: -1 | 0 | 1) => {
+			x: number;
+			y: number;
+			width: number;
+			height: number;
+		};
+		thick?: boolean;
+	});
+	handles: any[];
+	hide: () => void;
+	show: () => void;
+}
+
 
 
 type ToolID =

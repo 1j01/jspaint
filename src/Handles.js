@@ -1,4 +1,28 @@
+// @ts-check
 
+import { $G, E, make_css_cursor } from "./helpers.js";
+
+/**
+ * Handles for resizable, draggable, on-canvas objects.
+ * @param {object} options
+ * @param {JQuery} options.$handles_container
+ * @param {JQuery} options.$object_container
+ * @param {number} [options.outset=0]
+ * @param {() => number} [options.get_handles_offset_left=() => 0]
+ * @param {() => number} [options.get_handles_offset_top=() => 0]
+ * @param {() => number} [options.get_ghost_offset_left=() => 0]
+ * @param {() => number} [options.get_ghost_offset_top=() => 0]
+ * @param {boolean} [options.size_only=false]
+ * @param {() => { x: number, y: number, width: number, height: number }} options.get_rect
+ * @param {(rect: { x: number, y: number, width: number, height: number }) => void} options.set_rect
+ * @param {(rect: { x: number, y: number, width: number, height: number }, x_axis: -1 | 0 | 1, y_axis: -1 | 0 | 1) => { x: number, y: number, width: number, height: number }} [options.constrain_rect]
+ * @param {boolean} [options.thick]
+ * @constructor
+ * @property {HTMLElement[]} handles
+ * @property {() => void} hide
+ * @property {() => void} show
+ * @property {HTMLElement[]} handles
+ */
 function Handles(options) {
 	const { $handles_container, $object_container } = options; // required
 	const outset = options.outset || 0;
@@ -8,8 +32,11 @@ function Handles(options) {
 	const get_ghost_offset_top = options.get_ghost_offset_top || (() => 0);
 	const size_only = options.size_only || false;
 
+	/** @type {-1 | 0 | 1} */
 	const HANDLE_MIDDLE = 0;
+	/** @type {-1 | 0 | 1} */
 	const HANDLE_START = -1;
+	/** @type {-1 | 0 | 1} */
 	const HANDLE_END = 1;
 	const HANDLE_LEFT = HANDLE_START;
 	const HANDLE_RIGHT = HANDLE_END;
@@ -154,7 +181,7 @@ function Handles(options) {
 			const x = get_handles_offset_left();
 			const y = get_handles_offset_top();
 			const grab_size = 32;
-			for ({ len_key, pos_key, region, offset } of [
+			for (const { len_key, pos_key, region, offset } of [
 				{ len_key: "width", pos_key: "left", region: x_axis, offset: x },
 				{ len_key: "height", pos_key: "top", region: y_axis, offset: y },
 			]) {
@@ -219,3 +246,7 @@ function Handles(options) {
 	this.hide = () => { $(handles).css({ opacity: 0, pointerEvents: "none" }); };
 	this.show = () => { $(handles).css({ opacity: "", pointerEvents: "" }); };
 }
+
+export { Handles };
+// Temporary globals until all dependent code is converted to ES Modules
+window.Handles = Handles;

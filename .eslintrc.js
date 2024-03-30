@@ -211,6 +211,7 @@ module.exports = {
 				"src/OnCanvasHelperLayer.js",
 				"src/OnCanvasSelection.js",
 				"src/OnCanvasTextBox.js",
+				"src/Handles.js",
 				"cypress/**/*.js",
 			],
 			parserOptions: { sourceType: "module" },
