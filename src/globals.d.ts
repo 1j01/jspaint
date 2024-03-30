@@ -109,6 +109,7 @@ class OnCanvasSelection extends OnCanvasObject {
 class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, starting_text: string);
 	position(): void;
+	static $fontbox: $Window | null;
 }
 class Handles {
 	/**
@@ -171,6 +172,78 @@ class Handles {
 	show: () => void;
 }
 
+interface WindowOptions {
+	title?: string;
+	innerWidth?: number;
+	innerHeight?: number;
+	outerWidth?: number;
+	outerHeight?: number;
+	toolWindow?: boolean;
+	minimizeButton?: boolean;
+	maximizeButton?: boolean;
+	closeButton?: boolean;
+	resizable?: boolean;
+	parentWindow?: $Window;
+	$component?: any; // Replace with actual component type
+	icons?: { [size: string]: string | HTMLImageElement };
+	constrainRect?: (rect: { x: number; y: number; width: number; height: number; }, xAxis: number, yAxis: number) => { x: number; y: number; width: number; height: number; };
+	minOuterWidth?: number;
+	minOuterHeight?: number;
+	minInnerWidth?: number;
+	minInnerHeight?: number;
+	iframes?: { ignoreCrossOrigin?: boolean };
+}
+
+class $Window extends JQuery<HTMLDivElement> {
+	static Z_INDEX: number;
+	static DEBUG_FOCUS: boolean;
+	static OVERRIDE_TRANSITION_DURATION: number | null;
+
+	constructor(options?: WindowOptions);
+
+	element: HTMLDivElement;
+	$titlebar: JQuery<HTMLDivElement>;
+	$title_area: JQuery<HTMLDivElement>;
+	$title: JQuery<HTMLSpanElement>;
+	$minimize?: JQuery<HTMLButtonElement>;
+	$maximize?: JQuery<HTMLButtonElement>;
+	$x?: JQuery<HTMLButtonElement>;
+	$content: JQuery<HTMLDivElement>;
+	icons: { [size: string]: string | HTMLImageElement };
+
+	setDimensions(dimensions: { innerWidth?: number; innerHeight?: number; outerWidth?: number; outerHeight?: number; }): void;
+	focus(): void;
+	blur(): void;
+	minimize(): void;
+	unminimize(): void;
+	maximize(): void;
+	restore(): void;
+	close(force?: boolean): void;
+	closed: boolean;
+	title(title?: string): this | string;
+	getTitle(): string;
+	setMenuBar(menuBar: any): void; // Replace with actual menu bar type
+	bringToFront(): void;
+	addChildWindow($childWindow: $Window): void;
+	setMinimizeTarget(taskbarButtonEl: HTMLElement): void;
+
+	// Deprecated properties and methods
+	icon_name: string;
+	task: any; // Replace with actual task type
+	setIconByID(iconName: string): this;
+	setIcons(icons: { [size: string]: string | HTMLImageElement; }): void;
+	getIconName(): string;
+}
+
+class $FormWindow extends $Window {
+	constructor(title: string);
+
+	$form: JQuery<HTMLFormElement>;
+	$main: JQuery<HTMLDivElement>;
+	$buttons: JQuery<HTMLDivElement>;
+
+	$Button(label: string, action: () => void): JQuery<HTMLButtonElement>;
+}
 
 
 type ToolID =

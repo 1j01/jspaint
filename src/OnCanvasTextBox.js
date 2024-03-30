@@ -297,6 +297,13 @@ class OnCanvasTextBox extends OnCanvasObject {
 	}
 }
 
+/** 
+ * @static
+ * @type {$Window | null}
+ * @memberof OnCanvasTextBox
+ **/
+OnCanvasTextBox.$fontbox = null;
+
 export { OnCanvasTextBox };
 // Temporary globals until all dependent code is converted to ES Modules
 window.OnCanvasTextBox = OnCanvasTextBox;
