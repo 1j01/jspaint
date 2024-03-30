@@ -27,18 +27,35 @@ const is_pride_month = new Date().getMonth() === 5; // June (0-based, 0 is Janua
 
 const $G = $(window);
 
+/**
+ * @param {string} name  filename without extension
+ * @param {[number, number]} coords  hotspot coordinates
+ * @param {string} fallback  fallback cursor value
+ * @returns {string}  CSS `cursor` value
+ */
 function make_css_cursor(name, coords, fallback) {
 	return `url(images/cursors/${name}.png) ${coords.join(" ")}, ${fallback}`;
 }
 
-function E(t) {
+/**
+ * @type {typeof document.createElement}
+ */
+const E = function E(t) {
 	return document.createElement(t);
 }
 
-/** Returns a function, that, as long as it continues to be invoked, will not
-be triggered. The function will be called after it stops being called for
-N milliseconds. If `immediate` is passed, trigger the function on the
-leading edge, instead of the trailing. */
+/** 
+ * @param {Function} func  function to debounce
+ * @param {number} wait_ms  minimum milliseconds between invocations
+ * @param {boolean=} immediate  trigger the function on the leading edge, instead of the trailing.
+ * @returns {Function}  a function, that, as long as it continues to be invoked, will not be triggered.
+ *   The function will be called after it stops being called for `wait_ms` milliseconds.
+ * 
+ * @example
+ * window.addEventListener("resize", debounce(() => {
+ *  console.log(window.innerWidth);
+ * }, 250));
+ */
 function debounce(func, wait_ms, immediate) {
 	let timeout;
 	const debounced_func = function () {
@@ -68,6 +85,11 @@ function debounce(func, wait_ms, immediate) {
 	return debounced_func;
 }
 
+/**
+ * @param {Function} func  function to memoize
+ * @param {number=} max_entries  maximum number of entries to keep in the cache
+ * @returns {Function}  memoized function
+ */
 function memoize_synchronous_function(func, max_entries = 50000) {
 	const cache = {};
 	const keys = [];
@@ -98,6 +120,13 @@ function memoize_synchronous_function(func, max_entries = 50000) {
 	return memoized_func;
 }
 
+/**
+ * @param {string} color  CSS color value
+ * @returns {[number, number, number, number]}  [r, g, b, a] values ranging from 0 to 255
+ * @example
+ * const [r, g, b, a] = get_rgba_from_color("rgba(255, 0, 0, 0.5)");
+ * console.log(r, g, b, a); // 255, 0, 0, 128
+ */
 const get_rgba_from_color = memoize_synchronous_function((color) => {
 	const single_pixel_canvas = make_canvas(1, 1);
 
@@ -114,6 +143,9 @@ const get_rgba_from_color = memoize_synchronous_function((color) => {
 /**
  * Compare two ImageData.
  * Note: putImageData is lossy, due to premultiplied alpha.
+ * @param {ImageData} a
+ * @param {ImageData} b
+ * @param {number} threshold  maximum difference in channel values
  * @returns {boolean} whether all pixels match within the specified threshold
 */
 function image_data_match(a, b, threshold) {
@@ -132,11 +164,36 @@ function image_data_match(a, b, threshold) {
 	return true;
 }
 
+/**
+ * @typedef {HTMLCanvasElement & {ctx: PixelContext}} PixelCanvas
+ * @typedef {CanvasRenderingContext2D & ExtraContextMethods} PixelContext
+ * @typedef {Object} ExtraContextMethods
+ * @property {() => void} disable_image_smoothing
+ * @property {() => void} enable_image_smoothing
+ * @property {(image: HTMLImageElement | HTMLCanvasElement | ImageData) => void} copy
+ */
+
+/**
+ * @overload
+ * @param {number} width
+ * @param {number} height
+ * @returns {PixelCanvas}  a new canvas element, augmented with `ctx` property, which is also augmented
+ */
+/**
+ * @overload
+ * @param {HTMLImageElement | HTMLCanvasElement} source  image to copy
+ * @returns {PixelCanvas}  a new canvas element, augmented with `ctx` property, which is also augmented
+ */
+/**
+ * @overload
+ * @returns {PixelCanvas}  a new canvas element, augmented with `ctx` property, which is also augmented
+ */
 function make_canvas(width, height) {
 	const image = width;
 
-	const new_canvas = E("canvas");
-	const new_ctx = new_canvas.getContext("2d");
+
+	const new_canvas = /** @type {PixelCanvas} */ (E("canvas"));
+	const new_ctx = /** @type {PixelContext} */ (new_canvas.getContext("2d"));
 
 	new_canvas.ctx = new_ctx;
 
@@ -144,16 +201,22 @@ function make_canvas(width, height) {
 		new_ctx.imageSmoothingEnabled = false;
 		// condition is to avoid a deprecation warning in Firefox
 		if (new_ctx.imageSmoothingEnabled !== false) {
+			// @ts-ignore
 			new_ctx.mozImageSmoothingEnabled = false;
+			// @ts-ignore
 			new_ctx.webkitImageSmoothingEnabled = false;
+			// @ts-ignore
 			new_ctx.msImageSmoothingEnabled = false;
 		}
 	};
 	new_ctx.enable_image_smoothing = () => {
 		new_ctx.imageSmoothingEnabled = true;
 		if (new_ctx.imageSmoothingEnabled !== true) {
+			// @ts-ignore
 			new_ctx.mozImageSmoothingEnabled = true;
+			// @ts-ignore
 			new_ctx.webkitImageSmoothingEnabled = true;
+			// @ts-ignore
 			new_ctx.msImageSmoothingEnabled = true;
 		}
 	};
@@ -163,7 +226,9 @@ function make_canvas(width, height) {
 	// and make image smoothing a parameter to make_canvas
 
 	new_ctx.copy = image => {
+		// @ts-ignore
 		new_canvas.width = image.naturalWidth || image.width;
+		// @ts-ignore
 		new_canvas.height = image.naturalHeight || image.height;
 
 		// setting width/height resets image smoothing (along with everything)
@@ -190,17 +255,29 @@ function make_canvas(width, height) {
 	return new_canvas;
 }
 
+/**
+ * @param {string} file_name  name of an image file in the help/ folder, including extension
+ * @returns {HTMLImageElement}  an image element
+ */
 function get_help_folder_icon(file_name) {
 	const icon_img = new Image();
 	icon_img.src = `help/${file_name}`;
 	return icon_img;
 }
 
+/**
+ * @param {Tool} tool
+ * @returns {HTMLImageElement}  an image element representing the tool
+ */
 function get_icon_for_tool(tool) {
 	return get_help_folder_icon(tool.help_icon);
 }
 
-// not to be confused with load_image_from_uri
+/**
+ * not to be confused with load_image_from_uri
+ * @param {string} src  URI of an image
+ * @returns {Promise<HTMLImageElement>}  an image element
+ */
 function load_image_simple(src) {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
@@ -212,6 +289,10 @@ function load_image_simple(src) {
 	});
 }
 
+/**
+ * @param {Tool[]} tools  an array of selected tools
+ * @returns {HTMLImageElement | HTMLCanvasElement}  an icon representing the tools
+ */
 function get_icon_for_tools(tools) {
 	if (tools.length === 1) {
 		return get_icon_for_tool(tools[0]);
