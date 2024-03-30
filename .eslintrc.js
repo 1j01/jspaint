@@ -203,7 +203,10 @@ module.exports = {
 	},
 	"overrides": [
 		{
-			files: ["src/theme.js"],
+			files: [
+				"src/theme.js",
+				"cypress/**/*.js",
+			],
 			parserOptions: { sourceType: "module" },
 		}
 	]
