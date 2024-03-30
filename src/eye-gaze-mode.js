@@ -1,3 +1,5 @@
+// import { load_image_simple, $G } from "./helpers.js";
+
 let clean_up_eye_gaze_mode = () => { };
 $G.on("eye-gaze-mode-toggled", () => {
 	if ($("body").hasClass("eye-gaze-mode")) {
@@ -135,6 +137,20 @@ const eye_gaze_mode_config = {
 	},
 };
 
+// Tracky Mouse provides head tracking.
+// To enable Tracky Mouse, you must currently:
+// - toggle `enable_tracky_mouse` to true
+// - uncomment tracky-mouse.js and tracky-mouse.css in index.html
+// - add `'unsafe-eval' blob:` to the `script-src` directive of the Content-Security-Policy in index.html,
+//   as clmtrackr requires the use of eval().
+// The use of eval is why it's not enabled by default,
+// aside from UI/UX concerns like providing a way to disable it separately from eye gaze mode,
+// and the minimized window overlapping the floating buttons.
+// Terminologically, I'm not sure what to call the superset of eye gaze mode and head tracking.
+// - "Coarse Input Mode"? Sounds rough, and probably unclear.
+// - "Hands-Free Mode"? Although that could also refer to voice commands. Which are also supported.
+// - "Head Input Mode"/"Head Tracking Mode"? Technically your eyes are part of your head...
+// - "Face Mouse Mode"/"Facial Mouse Mode"? Maybe!
 var enable_tracky_mouse = false;
 var tracky_mouse_deps_promise;
 
@@ -149,7 +165,7 @@ async function init_eye_gaze_mode() {
 
 		const $tracky_mouse_window = $Window({
 			title: "Tracky Mouse",
-			icon: "tracky-mouse",
+			icon: await load_image_simple("images/tracky-mouse-16x16.png"),
 		});
 		$tracky_mouse_window.addClass("tracky-mouse-window");
 		const tracky_mouse_container = $tracky_mouse_window.$content[0];
