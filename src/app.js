@@ -625,7 +625,8 @@ if (get_direction() === "rtl") {
 	$right.prependTo($H);
 }
 
-// #endregion (arguably still App UI stuff below, but it becomes a fuzzy line later on)
+// #endregion
+// (arguably still App UI stuff below, but it becomes a fuzzy line later on)
 
 // #region Status Bar
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
