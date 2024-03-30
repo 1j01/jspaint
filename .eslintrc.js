@@ -211,6 +211,10 @@ module.exports = {
 				"cypress/**/*.js",
 			],
 			parserOptions: { sourceType: "module" },
+			rules: {
+				"no-undef": "warn",
+				"no-unused-vars": "error",
+			},
 		}
 	]
 };
