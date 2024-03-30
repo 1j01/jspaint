@@ -1,4 +1,17 @@
+// @ts-check
+
+import { OnCanvasObject } from "./OnCanvasObject.js";
+import { make_canvas } from "./helpers.js";
+
 class OnCanvasHelperLayer extends OnCanvasObject {
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} width
+	 * @param {number} height
+	 * @param {boolean} hideMainCanvasHandles
+	 * @param {number} [pixelRatio=1]
+	 */
 	constructor(x, y, width, height, hideMainCanvasHandles, pixelRatio = 1) {
 		super(x, y, width, height, hideMainCanvasHandles);
 
@@ -11,3 +24,7 @@ class OnCanvasHelperLayer extends OnCanvasObject {
 		this.$el.append(this.canvas);
 	}
 }
+
+export { OnCanvasHelperLayer };
+// Temporary globals until all dependent code is converted to ES Modules
+window.OnCanvasHelperLayer = OnCanvasHelperLayer;

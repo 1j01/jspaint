@@ -58,16 +58,15 @@ interface Window {
 	TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
 	// OnCanvasObject.js
 	OnCanvasObject: typeof OnCanvasObject;
+	// OnCanvasHelperLayer.js
+	OnCanvasHelperLayer: typeof OnCanvasHelperLayer;
+	// OnCanvasSelection.js
+	OnCanvasSelection: typeof OnCanvasSelection;
+	// OnCanvasTextBox.js
+	OnCanvasTextBox: typeof OnCanvasTextBox;
 }
 
 class OnCanvasObject {
-	/**
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} width
-	 * @param {number} height
-	 * @param {boolean} hideMainCanvasHandles
-	 */
 	constructor(x: number, y: number, width: number, height: number, hideMainCanvasHandles: boolean);
 	x: number;
 	y: number;
@@ -76,8 +75,25 @@ class OnCanvasObject {
 	hideMainCanvasHandles: boolean;
 	$el: JQuery<HTMLDivElement>;
 	// _global_resize_handler: () => void;
-	position(updateStatus: boolean): void;
+	position(updateStatus?: boolean): void;
 	destroy(): void;
+}
+class OnCanvasHelperLayer extends OnCanvasObject {
+	constructor(x: any, y: any, width: any, height: any, hideMainCanvasHandles: any, pixelRatio?: number);
+}
+class OnCanvasSelection extends OnCanvasObject {
+	constructor(x: number, y: number, width: number, height: number, img_or_canvas: HTMLImageElement | HTMLCanvasElement);
+	instantiate(img_or_canvas: HTMLImageElement | HTMLCanvasElement): void;
+	cut_out_background(): void;
+	update_tool_transparent_mode(): void;
+	replace_source_canvas(new_source_canvas: HTMLCanvasElement): void;
+	resize(): void;
+	scale(factor: number): void;
+	draw(): void;
+}
+class OnCanvasTextBox extends OnCanvasObject {
+	constructor(x: number, y: number, width: number, height: number, starting_text: string);
+	position(): void;
 }
 
 

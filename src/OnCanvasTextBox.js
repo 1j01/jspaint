@@ -1,16 +1,28 @@
+// @ts-check
+
+import { OnCanvasObject } from "./OnCanvasObject.js";
+import { $G, E, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
 
 class OnCanvasTextBox extends OnCanvasObject {
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} width
+	 * @param {number} height
+	 * @param {string} starting_text
+	 */
 	constructor(x, y, width, height, starting_text) {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("textbox");
-		this.$editor = $(E("textarea")).addClass("textbox-editor");
+		var edit_textarea = E("textarea");
+		this.$editor = $(edit_textarea).addClass("textbox-editor");
 
 		var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-		svg.setAttribute("version", 1.1);
+		svg.setAttribute("version", "1.1");
 		var foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
-		foreignObject.setAttribute("x", 0);
-		foreignObject.setAttribute("y", 0);
+		foreignObject.setAttribute("x", "0");
+		foreignObject.setAttribute("y", "0");
 		svg.append(foreignObject);
 
 		// inline styles so that they'll be serialized for the SVG
@@ -27,8 +39,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			overflow: "hidden",
 			minWidth: "3em",
 		});
-		var edit_textarea = this.$editor[0];
-		var render_textarea = edit_textarea.cloneNode(false);
+		var render_textarea = /** @type HTMLTextAreaElement */ (edit_textarea.cloneNode(false));
 		foreignObject.append(render_textarea);
 
 		edit_textarea.value = starting_text || "";
@@ -97,10 +108,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 			}
 			render_textarea.appendChild(document.createTextNode(edit_textarea.value));
 
-			svg.setAttribute("width", this.width);
-			svg.setAttribute("height", this.height);
-			foreignObject.setAttribute("width", this.width);
-			foreignObject.setAttribute("height", this.height);
+			svg.setAttribute("width", this.width.toString());
+			svg.setAttribute("height", this.height.toString());
+			foreignObject.setAttribute("width", this.width.toString());
+			foreignObject.setAttribute("height", this.height.toString());
 
 			var svg_source = new XMLSerializer().serializeToString(svg);
 			var data_url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg_source)}`;
@@ -284,3 +295,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
 }
+
+export { OnCanvasTextBox };
+// Temporary globals until all dependent code is converted to ES Modules
+window.OnCanvasTextBox = OnCanvasTextBox;

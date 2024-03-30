@@ -1,5 +1,16 @@
+// @ts-check
+
+import { OnCanvasObject } from "./OnCanvasObject.js";
+import { $G, get_icon_for_tool, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
 
 class OnCanvasSelection extends OnCanvasObject {
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} width
+	 * @param {number} height
+	 * @param {HTMLImageElement | HTMLCanvasElement} img_or_canvas
+	 */
 	constructor(x, y, width, height, img_or_canvas) {
 		super(x, y, width, height, true);
 
@@ -25,6 +36,10 @@ class OnCanvasSelection extends OnCanvasObject {
 		super.position(true);
 		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
+	/**
+	 * @param {HTMLImageElement | HTMLCanvasElement} img_or_canvas
+	 * @returns {void}
+	 */
 	instantiate(img_or_canvas) {
 		this.$el.css({
 			cursor: make_css_cursor("move", [8, 8], "move"),
@@ -242,6 +257,10 @@ class OnCanvasSelection extends OnCanvasObject {
 		update_helper_layer();
 	}
 	// @TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
+	/**
+	 * @param {HTMLCanvasElement} new_source_canvas
+	 * @returns {void}
+	 */
 	replace_source_canvas(new_source_canvas) {
 		this.source_canvas = new_source_canvas;
 		const new_canvas = make_canvas(new_source_canvas);
@@ -292,3 +311,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
 }
+
+export { OnCanvasSelection };
+// Temporary globals until all dependent code is converted to ES Modules
+window.OnCanvasSelection = OnCanvasSelection;
