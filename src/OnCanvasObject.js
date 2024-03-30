@@ -1,4 +1,6 @@
 // @ts-check
+import { $G, E } from "./helpers.js";
+
 class OnCanvasObject {
 	/**
 	 * @param {number} x
@@ -49,3 +51,7 @@ class OnCanvasObject {
 		$G.off("resize theme-load", this._global_resize_handler);
 	}
 }
+
+export { OnCanvasObject };
+// Temporary globals until all dependent code is converted to ES Modules
+window.OnCanvasObject = OnCanvasObject;

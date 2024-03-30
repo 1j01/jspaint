@@ -19,6 +19,7 @@ declare let $G: JQuery<Window>;
 // I have to define them inside the interface so that `window.E = ...` works.
 // And I can't define the types nearby the implementations with this strategy.
 interface Window {
+	// helpers.js
 	E: (tagName: string) => HTMLElement;
 	$G: JQuery<Window>;
 	TAU: number;
@@ -38,6 +39,7 @@ interface Window {
 	get_help_folder_icon: (file_name: string) => Image;
 	get_icon_for_tool: (tool: Tool) => Image;
 	get_icon_for_tools: (tools: Tool[]) => Image;
+	// tools.js
 	TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 	TOOL_SELECT: "TOOL_SELECT";
 	TOOL_ERASER: "TOOL_ERASER";
@@ -54,7 +56,30 @@ interface Window {
 	TOOL_POLYGON: "TOOL_POLYGON";
 	TOOL_ELLIPSE: "TOOL_ELLIPSE";
 	TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
+	// OnCanvasObject.js
+	OnCanvasObject: typeof OnCanvasObject;
 }
+
+class OnCanvasObject {
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} width
+	 * @param {number} height
+	 * @param {boolean} hideMainCanvasHandles
+	 */
+	constructor(x: number, y: number, width: number, height: number, hideMainCanvasHandles: boolean);
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	hideMainCanvasHandles: boolean;
+	$el: JQuery<HTMLDivElement>;
+	// _global_resize_handler: () => void;
+	position(updateStatus: boolean): void;
+	destroy(): void;
+}
+
 
 type ToolID =
 	"TOOL_FREE_FORM_SELECT" |

@@ -207,6 +207,7 @@ module.exports = {
 				"src/theme.js",
 				"src/helpers.js",
 				"src/$ToolBox.js",
+				"src/OnCanvasObject.js",
 				"cypress/**/*.js",
 			],
 			parserOptions: { sourceType: "module" },
