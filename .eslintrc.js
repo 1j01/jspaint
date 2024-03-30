@@ -205,6 +205,7 @@ module.exports = {
 		{
 			files: [
 				"src/theme.js",
+				"src/helpers.js",
 				"src/$ToolBox.js",
 				"cypress/**/*.js",
 			],
