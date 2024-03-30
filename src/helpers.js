@@ -86,10 +86,11 @@ function debounce(func, wait_ms, immediate) {
 }
 
 /**
- * @template {(...args: any[]) => any} T
- * @param {T} func  function to memoize
- * @param {number=} max_entries  maximum number of entries to keep in the cache
- * @returns {T & {clear_memo_cache: () => void}}  memoized function, with a method to clear the cache
+ * @template {any[]} A - The type of the arguments to the function
+ * @template {any} R - The return type of the function
+ * @param {(...args: A) => R} func - The function to memoize.
+ * @param {number} [max_entries=50000] - The maximum number of entries to store in the cache.
+ * @returns {(...args: A) => R} & { clear_memo_cache: () => void }} - The memoized function, with an extra `clear_memo_cache` method.
  */
 function memoize_synchronous_function(func, max_entries = 50000) {
 	const cache = {};
@@ -128,7 +129,7 @@ function memoize_synchronous_function(func, max_entries = 50000) {
  * const [r, g, b, a] = get_rgba_from_color("rgba(255, 0, 0, 0.5)");
  * console.log(r, g, b, a); // 255, 0, 0, 128
  */
-const get_rgba_from_color = memoize_synchronous_function((color) => {
+let get_rgba_from_color = (color) => {
 	const single_pixel_canvas = make_canvas(1, 1);
 
 	single_pixel_canvas.ctx.fillStyle = color;
@@ -138,8 +139,11 @@ const get_rgba_from_color = memoize_synchronous_function((color) => {
 
 	// We could just return image_data.data, but let's return an Array instead
 	// I'm not totally sure image_data.data wouldn't keep the ImageData object around in memory
-	return Array.from(image_data.data);
-});
+	return /** @type {[number, number, number, number]} */ (Array.from(image_data.data));
+	// Equivalently:
+	// return [image_data.data[0], image_data.data[1], image_data.data[2], image_data.data[3]];
+}
+get_rgba_from_color = memoize_synchronous_function(get_rgba_from_color);
 
 /**
  * Compare two ImageData.
