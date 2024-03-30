@@ -1,3 +1,4 @@
+import { $G, E, make_css_cursor } from "./helpers.js";
 import { get_theme } from "./theme.js";
 
 
