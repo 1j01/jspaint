@@ -86,9 +86,10 @@ function debounce(func, wait_ms, immediate) {
 }
 
 /**
- * @param {Function} func  function to memoize
+ * @template {(...args: any[]) => any} T
+ * @param {T} func  function to memoize
  * @param {number=} max_entries  maximum number of entries to keep in the cache
- * @returns {Function}  memoized function
+ * @returns {T & {clear_memo_cache: () => void}}  memoized function, with a method to clear the cache
  */
 function memoize_synchronous_function(func, max_entries = 50000) {
 	const cache = {};
