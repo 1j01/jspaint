@@ -599,6 +599,30 @@ function reset_canvas_and_history() {
 }
 
 // TODO: fix inconsistent use of ancestry metaphor (parent vs futures); could use the term "basis" for the parent, or "children" for the futures
+/**
+ * @param {object} options
+ * @param {HistoryNode | null=} options.parent - the state before this state (its basis), or null if this is the first state
+ * @param {HistoryNode[]=} options.futures - the states branching off from this state (its children)
+ * @param {number=} options.timestamp - when this state was created
+ * @param {boolean=} options.soft - indicates that undo should skip this state; it can still be accessed with the History window
+ * @param {ImageData | null=} options.image_data - the image data for the canvas (TODO: region updates)
+ * @param {ImageData | null=} options.selection_image_data - the image data for the selection, if any
+ * @param {number=} options.selection_x - the x position of the selection, if any
+ * @param {number=} options.selection_y - the y position of the selection, if any
+ * @param {string=} options.textbox_text - the text in the textbox, if any
+ * @param {number=} options.textbox_x - the x position of the textbox, if any
+ * @param {number=} options.textbox_y - the y position of the textbox, if any
+ * @param {number=} options.textbox_width - the width of the textbox, if any
+ * @param {number=} options.textbox_height - the height of the textbox, if any
+ * @param {string | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
+ * @param {boolean} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
+ * @param {string=} options.foreground_color - selected foreground color (left click)
+ * @param {string=} options.background_color - selected background color (right click)
+ * @param {string=} options.ternary_color - selected ternary color (ctrl+click)
+ * @param {string=} options.name - the name of the operation, shown in the history window, e.g. localize("Resize Canvas")
+ * @param {HTMLImageElement |HTMLCanvasElement | null=} options.icon - a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png")
+ * @returns {HistoryNode} 
+ */
 function make_history_node({
 	parent = null, // the state before this state (its basis), or null if this is the first state
 	futures = [], // the states branching off from this state (its children)
@@ -1890,6 +1914,16 @@ function go_to_history_node(target_history_node, canceling, discard_document_sta
 }
 
 // Note: This function is part of the API.
+/**
+ * Creates an undo point.
+ * @param {object} options
+ * @param {string} options.name
+ * @param {HTMLImageElement | HTMLCanvasElement=} options.icon
+ * @param {boolean=} options.use_loose_canvas_changes
+ * @param {boolean=} options.soft
+ * @param {boolean=} options.assume_saved
+ * @param {function=} callback
+ */
 function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, callback) {
 	if (!use_loose_canvas_changes) {
 		/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.

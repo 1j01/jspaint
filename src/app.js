@@ -472,12 +472,15 @@ let text_tool_font = {
 	background: "",
 };
 
+/** @type {HistoryNode} */
 let root_history_node = make_history_node({ name: "App Not Loaded Properly - Please send a bug report." }); // will be replaced
+/** @type {HistoryNode} */
 let current_history_node = root_history_node;
+/** @type {HistoryNode | null} */
 let history_node_to_cancel_to = null;
-/** array of history nodes */
+/** @type {HistoryNode[]} */
 let undos = [];
-/** array of history nodes */
+/** @type {HistoryNode[]} */
 let redos = [];
 
 let file_name;

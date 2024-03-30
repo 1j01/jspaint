@@ -286,3 +286,46 @@ interface Tool {
 	drawPreviewUnderGrid?(ctx: CanvasRenderingContext2D, x: number, y: number, grid_visible: boolean, scale: number, translate_x: number, translate_y: number);
 	$options?: JQuery<HTMLElement>,
 }
+
+interface HistoryNode {
+	/** the state before this state (its basis), or null if this is the first state */
+	parent: HistoryNode | null;
+	/** the states branching off from this state (its children) */
+	futures: HistoryNode[];
+	/** when this state was created */
+	timestamp: number;
+	/** indicates that undo should skip this state; it can still be accessed with the History window */
+	soft: boolean;
+	/** the image data for the canvas (TODO: region updates) */
+	image_data: ImageData | null;
+	/** the image data for the selection, if any */
+	selection_image_data: ImageData | null;
+	/** the x position of the selection, if any */
+	selection_x: number;
+	/** the y position of the selection, if any */
+	selection_y: number;
+	/** the text in the textbox, if any */
+	textbox_text: string;
+	/** the x position of the textbox, if any */
+	textbox_x: number;
+	/** the y position of the textbox, if any */
+	textbox_y: number;
+	/** the width of the textbox, if any */
+	textbox_width: number;
+	/** the height of the textbox, if any */
+	textbox_height: number;
+	/** the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox) */
+	text_tool_font: string | null;
+	/** whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque */
+	tool_transparent_mode: boolean;
+	/** selected foreground color (left click) */
+	foreground_color: string;
+	/** selected background color (right click) */
+	background_color: string;
+	/** selected ternary color (ctrl+click) */
+	ternary_color: string;
+	/** the name of the operation, shown in the history window, e.g. localize("Resize Canvas") */
+	name: string;
+	/** a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png") */
+	icon: Image | HTMLCanvasElement | null;
+}
