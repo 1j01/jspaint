@@ -2738,6 +2738,12 @@ function make_monochrome_palette(rgba1 = [0, 0, 0, 255], rgba2 = [255, 255, 255,
 	return palette;
 }
 
+/**
+ * @param {boolean} reverse 
+ * @param {string[]} colors 
+ * @param {number=} stripe_size 
+ * @returns {CanvasPattern}
+ */
 function make_stripe_pattern(reverse, colors, stripe_size = 4) {
 	const rgba_colors = colors.map(get_rgba_from_color);
 

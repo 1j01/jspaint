@@ -1348,95 +1348,11 @@ if (window.initial_system_file_handle) {
 }
 // #endregion
 
-// #region Colors (continued)
-const lerp = (a, b, b_ness) => a + (b - a) * b_ness;
-
-const color_ramp = (num_colors, start_hsla, end_hsla) =>
-	Array(num_colors).fill().map((_undefined, ramp_index, array) => {
-		// TODO: should this use (array.length - 1)?
-		const h = lerp(start_hsla[0], end_hsla[0], ramp_index / array.length);
-		const s = lerp(start_hsla[1], end_hsla[1], ramp_index / array.length);
-		const l = lerp(start_hsla[2], end_hsla[2], ramp_index / array.length);
-		const a = lerp(start_hsla[3], end_hsla[3], ramp_index / array.length);
-		return `hsla(${h}deg, ${s}%, ${l}%, ${a})`;
-	});
+// #region Palette Updating From Theme
 
 const update_palette_from_theme = () => {
 	if (get_theme() === "winter.css") {
-		const make_stripe_patterns = (reverse) => [
-			make_stripe_pattern(reverse, [
-				"hsl(166, 93%, 38%)",
-				"white",
-			]),
-			make_stripe_pattern(reverse, [
-				"white",
-				"hsl(355, 78%, 46%)",
-			]),
-			make_stripe_pattern(reverse, [
-				"hsl(355, 78%, 46%)",
-				"white",
-				"white",
-				"hsl(355, 78%, 46%)",
-				"hsl(355, 78%, 46%)",
-				"hsl(355, 78%, 46%)",
-				"white",
-				"white",
-				"hsl(355, 78%, 46%)",
-				"white",
-			], 2),
-			make_stripe_pattern(reverse, [
-				"hsl(166, 93%, 38%)",
-				"white",
-				"white",
-				"hsl(166, 93%, 38%)",
-				"hsl(166, 93%, 38%)",
-				"hsl(166, 93%, 38%)",
-				"white",
-				"white",
-				"hsl(166, 93%, 38%)",
-				"white",
-			], 2),
-			make_stripe_pattern(reverse, [
-				"hsl(166, 93%, 38%)",
-				"white",
-				"hsl(355, 78%, 46%)",
-				"white",
-			], 2),
-		];
-		palette = [
-			"black",
-			// green
-			"hsl(91, 55%, 81%)",
-			"hsl(142, 57%, 64%)",
-			"hsl(166, 93%, 38%)",
-			"#04ce1f", // elf green
-			"hsl(159, 93%, 16%)",
-			// red
-			"hsl(2, 77%, 27%)",
-			"hsl(350, 100%, 50%)",
-			"hsl(356, 97%, 64%)",
-			// brown
-			"#ad4632",
-			"#5b3b1d",
-			// stripes
-			...make_stripe_patterns(false),
-			// white to blue
-			...color_ramp(
-				6,
-				[200, 100, 100, 100],
-				[200, 100, 10, 100],
-			),
-			// pink
-			"#fcbaf8",
-			// silver
-			"hsl(0, 0%, 90%)",
-			"hsl(22, 5%, 71%)",
-			// gold
-			"hsl(48, 82%, 54%)",
-			"hsl(49, 82%, 72%)",
-			// stripes
-			...make_stripe_patterns(true),
-		];
+		palette = get_winter_palette();
 		$colorbox.rebuild_palette();
 	} else {
 		palette = default_palette;
