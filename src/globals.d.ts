@@ -25,12 +25,41 @@ declare const AnyPalette: any;
 declare const ImageTracer: any;
 declare let Konami: any;
 
-// This clearly is not sustainable.
-// I have to define things here outside the interface so that accessing them with `E` etc. works.
-declare let E: (tagName: string) => HTMLElement;
-declare let $G: JQuery<Window>;
-// I have to define them inside the interface so that `window.E = ...` works.
-// And I can't define the types nearby the implementations with this strategy.
+// Globals from scripts that are not converted to ESM yet,
+// and thus can't be imported. (I've been marking scripts as @ts-check as I convert them.)
+// This supports bare identifier global access (no `window.` needed).
+// tools.js
+declare const TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
+declare const TOOL_SELECT: "TOOL_SELECT";
+declare const TOOL_ERASER: "TOOL_ERASER";
+declare const TOOL_FILL: "TOOL_FILL";
+declare const TOOL_PICK_COLOR: "TOOL_PICK_COLOR";
+declare const TOOL_MAGNIFIER: "TOOL_MAGNIFIER";
+declare const TOOL_PENCIL: "TOOL_PENCIL";
+declare const TOOL_BRUSH: "TOOL_BRUSH";
+declare const TOOL_AIRBRUSH: "TOOL_AIRBRUSH";
+declare const TOOL_TEXT: "TOOL_TEXT";
+declare const TOOL_LINE: "TOOL_LINE";
+declare const TOOL_CURVE: "TOOL_CURVE";
+declare const TOOL_RECTANGLE: "TOOL_RECTANGLE";
+declare const TOOL_POLYGON: "TOOL_POLYGON";
+declare const TOOL_ELLIPSE: "TOOL_ELLIPSE";
+declare const TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
+// app.js
+declare let selected_tool: Tool;
+declare let selected_tools: Tool[];
+declare let return_to_tools: Tool[];
+declare let selected_colors: {
+	foreground: string,
+	background: string,
+	ternary: string,
+};
+// $FontBox.js
+declare class $FontBox extends $Window { }
+
+// Globals temporarily exported from ES Modules,
+// as well as globals from scripts that are not converted to ESM yet.
+// This supports `window.*` property access.
 interface Window {
 	// helpers.js
 	E: (tagName: string) => HTMLElement;
@@ -79,6 +108,15 @@ interface Window {
 	OnCanvasTextBox: typeof OnCanvasTextBox;
 	// Handles.js
 	Handles: typeof Handles;
+	// app.js
+	selected_tool: Tool;
+	selected_tools: Tool[];
+	return_to_tools: Tool[];
+	selected_colors: {
+		foreground: string,
+		background: string,
+		ternary: string,
+	};
 }
 
 class OnCanvasObject {
