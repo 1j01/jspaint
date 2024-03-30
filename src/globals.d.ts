@@ -4,6 +4,17 @@
 // I'm working on transitioning to ES Modules, but having the ES Modules
 // export globals until all dependent files are converted to ESM.
 
+// IMPORTING/EXPORTING ANYTHING WILL BREAK AMBIENT DECLARATIONS
+// import { PixelCanvas } from "./helpers.js";
+/**
+ * @typedef {HTMLCanvasElement & {ctx: PixelContext}} PixelCanvas
+ * @typedef {CanvasRenderingContext2D & ExtraContextMethods} PixelContext
+ * @typedef {Object} ExtraContextMethods
+ * @property {() => void} disable_image_smoothing
+ * @property {() => void} enable_image_smoothing
+ * @property {(image: HTMLImageElement | HTMLCanvasElement | ImageData) => void} copy
+ */
+
 declare const libtess: any;
 declare const firebase: any;
 declare const GIF: any;
@@ -90,7 +101,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	instantiate(img_or_canvas: HTMLImageElement | HTMLCanvasElement): void;
 	cut_out_background(): void;
 	update_tool_transparent_mode(): void;
-	replace_source_canvas(new_source_canvas: HTMLCanvasElement): void;
+	replace_source_canvas(new_source_canvas: PixelCanvas): void;
 	resize(): void;
 	scale(factor: number): void;
 	draw(): void;

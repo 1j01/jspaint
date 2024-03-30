@@ -259,7 +259,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	}
 	// @TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
 	/**
-	 * @param {HTMLCanvasElement} new_source_canvas
+	 * @param {import("./helpers.js").PixelCanvas} new_source_canvas
 	 * @returns {void}
 	 */
 	replace_source_canvas(new_source_canvas) {

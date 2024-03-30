@@ -63,7 +63,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			edit_textarea.style.height = "";
 			edit_textarea.style.minHeight = "0px";
 			edit_textarea.style.bottom = ""; // needed for when magnified
-			edit_textarea.setAttribute("rows", 1);
+			edit_textarea.setAttribute("rows", "1");
 			this.height = Math.max(edit_textarea.scrollHeight, this.height);
 			edit_textarea.removeAttribute("rows");
 			this.width = edit_textarea.scrollWidth;
