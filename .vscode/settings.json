@@ -24,6 +24,8 @@
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "always",
 	},
+	"javascript.preferences.importModuleSpecifierEnding": "js",
+	"typescript.preferences.importModuleSpecifierEnding": "js",
 	"html.format.unformattedContentDelimiter": "<!--no_format-->",
 	"[css]": {
 		// The CSS in this project uses (the lack of) newlines between rules for grouping, as well as inline comments.
