@@ -66,6 +66,10 @@ declare function $ToolBox(tools: Tool[], is_extras?: boolean): JQuery<HTMLDivEle
 declare interface $ToolBoxMethods {
 	update_selected_tool(): void;
 }
+// $ColorBox.js
+declare interface $ColorBoxMethods {
+	rebuild_palette(): void;
+}
 
 // $ToolWindow.js
 declare function $ToolWindow($component?: JQuery<HTMLElement>): $Window;
@@ -140,6 +144,10 @@ interface Window {
 	$FontBox: typeof $FontBox;
 	// $ToolBox.js
 	$ToolBox: typeof $ToolBox;
+	// $ColorBox.js
+	$ColorBox: (vertical: boolean) => JQuery<HTMLDivElement> & $ComponentMethods & $ColorBoxMethods;
+	$Swatch: (color: string | CanvasPattern | undefined) => JQuery<HTMLDivElement>;
+	update_$swatch: ($swatch: JQuery<HTMLDivElement>, color: string | CanvasPattern | undefined) => void;
 	// app.js
 	selected_tool: Tool;
 	selected_tools: Tool[];
