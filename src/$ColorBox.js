@@ -2,7 +2,11 @@
 /* global $Component, $left, $right, $bottom, get_direction, localize, selected_colors, button, show_edit_colors_window, palette */
 import { $G, E, make_canvas } from "./helpers.js";
 
-/** Used by the Colors Box and by the Edit Colors dialog */
+/** 
+ * Used by the Colors Box and by the Edit Colors dialog.
+ * @param {string | CanvasPattern} color
+ * @returns {JQuery<HTMLDivElement>}
+ **/
 function $Swatch(color) {
 	const $swatch = $(E("div")).addClass("swatch");
 	const swatch_canvas = make_canvas();
@@ -16,6 +20,11 @@ function $Swatch(color) {
 	return $swatch;
 }
 
+/**
+ * @param {JQuery<HTMLDivElement>} $swatch
+ * @param {string | CanvasPattern | undefined=} new_color
+ * @returns {void}
+ */
 function update_$swatch($swatch, new_color) {
 	if (new_color instanceof CanvasPattern) {
 		$swatch.addClass("pattern");
@@ -24,11 +33,13 @@ function update_$swatch($swatch, new_color) {
 		$swatch.removeClass("pattern");
 		$swatch[0].dataset.color = new_color;
 	} else if (new_color !== undefined) {
-		throw new TypeError(`argument to update must be CanvasPattern or string (or undefined); got type ${typeof new_color}`);
+		throw new TypeError(`argument to update_$swatch must be CanvasPattern or string (or undefined); got type ${typeof new_color}`);
 	}
 	new_color = new_color || $swatch.data("swatch");
 	$swatch.data("swatch", new_color);
-	const swatch_canvas = $swatch.find("canvas")[0];
+	const swatch_canvas = /** @type {import("./helpers.js").PixelCanvas} */ (
+		$swatch.find("canvas")[0]
+	);
 	requestAnimationFrame(() => {
 		swatch_canvas.width = $swatch.innerWidth();
 		swatch_canvas.height = $swatch.innerHeight();
@@ -39,6 +50,10 @@ function update_$swatch($swatch, new_color) {
 	});
 }
 
+/**
+ * @param {boolean} vertical 
+ * @returns {JQuery<HTMLDivElement> & $ComponentMethods & $ColorBoxMethods}
+ */
 function $ColorBox(vertical) {
 	const $cb = $(E("div")).addClass("color-box");
 
@@ -126,6 +141,7 @@ function $ColorBox(vertical) {
 		// the "last foreground color button" starts out as the first in the palette
 		$c.data("$last_fg_color_button", $palette.find(".color-button:first-child"));
 	};
+
 	let $c;
 	if (vertical) {
 		$c = $Component(localize("Colors"), "colors-component", "tall", $cb);
@@ -137,6 +153,10 @@ function $ColorBox(vertical) {
 
 	build_palette();
 	$(window).on("theme-change", build_palette);
+
+	// I'm gonna do things messy, got a long road to go!
+	// eslint-disable-next-line no-self-assign
+	$c = /** @type {JQuery<HTMLDivElement> & $ComponentMethods & $ColorBoxMethods} */ ($c);
 
 	$c.rebuild_palette = build_palette;
 

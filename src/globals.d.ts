@@ -87,7 +87,11 @@ interface $ComponentMethods {
 }
 // helpers.js
 declare function make_css_cursor(name: string, coords: [number, number], fallback: string): string;
-
+// edit-colors.js
+declare function show_edit_colors_window(
+	$swatch_to_edit?: JQuery<HTMLDivElement>,
+	color_selection_slot_to_edit?: "foreground" | "background" | "ternary",
+): void;
 
 // Globals temporarily exported from ES Modules,
 // as well as globals from scripts that are not converted to ESM yet.
