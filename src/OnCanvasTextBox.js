@@ -1,5 +1,6 @@
 // @ts-check
-
+/* global main_canvas, text_tool_font, selected_colors, tool_transparent_mode, $canvas_area, $status_position, $status_size, magnification, to_canvas_coords, update_helper_layer */
+import { $FontBox } from "./$FontBox.js";
 import { Handles } from "./Handles.js";
 import { OnCanvasObject } from "./OnCanvasObject.js";
 import { $G, E, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
@@ -245,7 +246,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		if (OnCanvasTextBox.$fontbox && OnCanvasTextBox.$fontbox.closed) {
 			OnCanvasTextBox.$fontbox = null;
 		}
-		const $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || new $FontBox();
+		const $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || $FontBox();
 		const displace_font_box = () => {
 			// move the font box out of the way if it's overlapping the OnCanvasTextBox
 			const fb_rect = $fb[0].getBoundingClientRect();

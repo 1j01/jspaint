@@ -1,5 +1,5 @@
 // @ts-check
-
+/* global $canvas_area, $status_position, $status_size, get_tool_by_id, main_canvas, main_ctx, make_or_update_undoable, replace_colors_with_swatch, selected_colors, to_canvas_coords, TOOL_SELECT, tool_transparent_mode, transparency, undoable, update_helper_layer */
 import { Handles } from "./Handles.js";
 import { OnCanvasObject } from "./OnCanvasObject.js";
 import { $G, get_icon_for_tool, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";

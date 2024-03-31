@@ -1,5 +1,5 @@
 // @ts-check
-
+/* global text_tool_font, localize, $ToolWindow */
 import { $G, E } from "./helpers.js";
 
 const eachFont = async (callback, afterAllCallback) => {
@@ -47,10 +47,14 @@ const eachFont = async (callback, afterAllCallback) => {
 function $FontBox() {
 	const $fb = $(E("div")).addClass("font-box");
 
-	const $family = $(E("select")).addClass("inset-deep").attr({
-		"aria-label": "Font Family",
-		"aria-description": localize("Selects the font used by the text."),
-	});
+	// This complex cast tells it that jQuery's val() method can return a string and not an array of strings.
+	// See the types for val().
+	const $family = /** @type {JQuery<HTMLSelectElement & { type: "select-one" }>} */(
+		$(E("select")).addClass("inset-deep").attr({
+			"aria-label": "Font Family",
+			"aria-description": localize("Selects the font used by the text."),
+		})
+	);
 	const $size = $(E("input")).addClass("inset-deep").attr({
 		type: "number",
 		min: 8,
@@ -67,7 +71,7 @@ function $FontBox() {
 	const $italic = $Toggle(1, "italic", "Italic", localize("Sets or clears the text italic attribute."));
 	const $underline = $Toggle(2, "underline", "Underline", localize("Sets or clears the text underline attribute."));
 	const $vertical = $Toggle(3, "vertical", "Vertical Writing Mode", localize("Only a Far East font can be used for vertical editing."));
-	$vertical.attr("disabled", true);
+	$vertical.prop("disabled", true);
 
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);
@@ -154,11 +158,11 @@ function $FontBox() {
 		$button.on("click", () => {
 			$button.toggleClass("selected");
 			text_tool_font[thing] = $button.hasClass("selected");
-			$button.attr("aria-pressed", $button.hasClass("selected"));
+			$button.attr("aria-pressed", $button.hasClass("selected") ? "true" : "false");
 			update_font();
 		});
 		if (text_tool_font[thing]) {
-			$button.addClass("selected").attr("aria-pressed", true);
+			$button.addClass("selected").attr("aria-pressed", "true");
 		}
 		return $button;
 	}

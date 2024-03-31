@@ -28,6 +28,8 @@ declare let Konami: any;
 // Globals from scripts that are not converted to ESM yet,
 // and thus can't be imported. (I've been marking scripts as @ts-check as I convert them.)
 // This supports bare identifier global access (no `window.` needed).
+// app-localization.js
+declare function localize(text: string): string;
 // tools.js
 declare const TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 declare const TOOL_SELECT: "TOOL_SELECT";
@@ -55,7 +57,13 @@ declare let selected_colors: {
 	ternary: string,
 };
 // $FontBox.js
-declare class $FontBox extends $Window { }
+// declare class $FontBox extends $Window { }
+// declare function $FontBox(): $FontBox;
+declare function $FontBox(): $Window;
+// $ToolWindow.js
+declare function $ToolWindow($component?: JQuery<HTMLElement>): $Window;
+declare function $DialogWindow(title?: string): $Window;
+declare function make_window_supporting_scale(options: $WindowOptions): $Window;
 
 // Globals temporarily exported from ES Modules,
 // as well as globals from scripts that are not converted to ESM yet.
@@ -119,6 +127,26 @@ interface Window {
 		background: string,
 		ternary: string,
 	};
+	text_tool_font: {
+		family: string, // should be an exact value detected by Font Detective
+		size: number,
+		line_scale: number,
+		bold: boolean,
+		italic: boolean,
+		underline: boolean,
+		vertical: boolean,
+		color: string,
+		background: string,
+	};
+	// Local Font Access API
+	queryLocalFonts?: () => Promise<FontData[]>;
+}
+
+class FontData {
+	family: string;
+	fullName: string;
+	postscriptName: string;
+	style: string;
 }
 
 class OnCanvasObject {
@@ -213,7 +241,7 @@ class Handles {
 }
 
 // OS-GUI's $Window.js
-interface WindowOptions {
+interface $WindowOptions {
 	title?: string;
 	innerWidth?: number;
 	innerHeight?: number;
@@ -235,12 +263,13 @@ interface WindowOptions {
 	iframes?: { ignoreCrossOrigin?: boolean };
 }
 
+
 declare class $Window extends JQuery<HTMLDivElement> {
 	static Z_INDEX: number;
 	static DEBUG_FOCUS: boolean;
 	static OVERRIDE_TRANSITION_DURATION: number | null;
 
-	constructor(options?: WindowOptions);
+	constructor(options?: $WindowOptions);
 
 	element: HTMLDivElement;
 	$titlebar: JQuery<HTMLDivElement>;
