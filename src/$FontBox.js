@@ -1,5 +1,6 @@
 // @ts-check
 
+import { localize } from "./app-localization.js";
 import { $G, E } from "./helpers.js";
 
 const eachFont = async (callback, afterAllCallback) => {

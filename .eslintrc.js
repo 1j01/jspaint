@@ -204,6 +204,7 @@ module.exports = {
 	"overrides": [
 		{
 			files: [
+				"src/app-localization.js",
 				"src/theme.js",
 				"src/helpers.js",
 				"src/$ToolBox.js",
