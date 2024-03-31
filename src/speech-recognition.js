@@ -1439,18 +1439,18 @@ if (exports.speech_recognition_available) {
 		recognition.stop();
 	};
 
-	recognition.onnomatch = function (event) {
+	recognition.onnomatch = function () {
 		if (document.visibilityState !== "visible") {
 			return;
 		}
 		$status_text.text("Speech not recognized.");
 	};
 
-	recognition.onstart = function (event) {
+	recognition.onstart = function () {
 		speech_recognition_active = true;
 		window.speech_recognition_active = true; // Temporary global until all dependent code is converted to ESM
 	};
-	recognition.onend = function (event) {
+	recognition.onend = function () {
 		speech_recognition_active = false;
 		window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 	};

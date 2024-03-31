@@ -251,7 +251,7 @@ function choose_color(initial_color, callback) {
 			// since the parent grid is previous in the tab order
 			$color_grid.attr("tabindex", -1);
 		});
-		$color_grid.on("focusout", (event) => {
+		$color_grid.on("focusout", () => {
 			$color_grid.attr("tabindex", 0);
 		});
 		return $color_grid;
@@ -387,7 +387,7 @@ function choose_color(initial_color, callback) {
 			rainbow_canvas.setPointerCapture(event.pointerId);
 		}
 	});
-	$G.on("pointerup pointercancel", (event) => {
+	$G.on("pointerup pointercancel", () => {
 		$(rainbow_canvas).off("pointermove", select_hue_sat);
 		// rainbow_canvas.releasePointerCapture(event.pointerId);
 		mouse_down_on_rainbow_canvas = false;
@@ -408,7 +408,7 @@ function choose_color(initial_color, callback) {
 			luminosity_canvas.setPointerCapture(event.pointerId);
 		}
 	});
-	$G.on("pointerup pointercancel", (event) => {
+	$G.on("pointerup pointercancel", () => {
 		$(luminosity_canvas).off("pointermove", select_lum);
 		// luminosity_canvas.releasePointerCapture(event.pointerId);
 	});

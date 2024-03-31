@@ -155,7 +155,7 @@ function open_help_viewer(options) {
 		bottom: 0,
 		zIndex: 1,
 	});
-	$resizer.on("pointerdown", (e) => {
+	$resizer.on("pointerdown", () => {
 		let pointermove, pointerup;
 		const getPos = (e) =>
 			Math.min($help_window.width() - 100, Math.max(20,
@@ -377,7 +377,7 @@ function $Iframe(options) {
 			}
 
 			var $contentWindow = $(iframe.contentWindow);
-			$contentWindow.on("pointerdown click", function (e) {
+			$contentWindow.on("pointerdown click", function () {
 				iframe.$window && iframe.$window.focus();
 
 				// from close_menus in $MenuBar
@@ -386,11 +386,11 @@ function $Iframe(options) {
 				$(".menu-popup").hide();
 			});
 			// We want to disable pointer events for other iframes, but not this one
-			$contentWindow.on("pointerdown", function (e) {
+			$contentWindow.on("pointerdown", function () {
 				$iframe.css("pointer-events", "all");
 				$("body").addClass("dragging");
 			});
-			$contentWindow.on("pointerup", function (e) {
+			$contentWindow.on("pointerup", function () {
 				$("body").removeClass("dragging");
 				$iframe.css("pointer-events", "");
 			});
@@ -472,7 +472,7 @@ function $Iframe(options) {
 // Fix dragging things (i.e. windows) over iframes (i.e. other windows)
 // (when combined with a bit of css, .dragging iframe { pointer-events: none; })
 // (and a similar thing in $IframeWindow)
-$(window).on("pointerdown", function (e) {
+$(window).on("pointerdown", function () {
 	//console.log(e.type);
 	$("body").addClass("dragging");
 });

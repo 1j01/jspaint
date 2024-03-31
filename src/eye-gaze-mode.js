@@ -254,7 +254,7 @@ async function init_eye_gaze_mode() {
 	const on_pointer_move = (e) => {
 		recent_points.push({ x: e.clientX, y: e.clientY, time: Date.now() });
 	};
-	const on_pointer_up_or_cancel = (e) => {
+	const on_pointer_up_or_cancel = () => {
 		deactivate_for_at_least(inactive_after_release_timespan);
 		gaze_dragging = null;
 	};
