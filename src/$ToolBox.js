@@ -1,3 +1,4 @@
+// @ts-check
 /* global $canvas, $Component, $left, $right, $status_text, get_direction, localize, main_canvas, return_to_tools, select_tool, select_tools, selected_tool, selected_tools */
 import { $G, E, make_css_cursor } from "./helpers.js";
 import { get_theme } from "./theme.js";
@@ -5,6 +6,11 @@ import { get_theme } from "./theme.js";
 
 let theme_dev_blob_url;
 
+/**
+ * @param {Tool[]} tools
+ * @param {boolean} is_extras
+ * @returns {JQuery<HTMLDivElement> & $ToolBoxMethods & $ComponentMethods}
+ */
 function $ToolBox(tools, is_extras) {
 	const $tools = $(E("div")).addClass("tools");
 	const $tool_options = $(E("div")).addClass("tool-options");
@@ -43,7 +49,7 @@ function $ToolBox(tools, is_extras) {
 				width: 16,
 				height: 16,
 				backgroundImage: theme_dev_blob_url ? `url(${theme_dev_blob_url})` : "",
-				"--icon-index": i,
+				"--icon-index": i.toString(),
 			});
 			$icon.toggleClass("use-svg", use_svg);
 		};
@@ -80,12 +86,17 @@ function $ToolBox(tools, is_extras) {
 		return $b[0];
 	}));
 
-	const $c = $Component(
+	/**
+	 * @typedef {Object} $ToolBoxMethods
+	 * @prop {() => void} update_selected_tool
+	 */
+
+	const $c = /** @type {JQuery<HTMLDivElement> & $ComponentMethods & $ToolBoxMethods} **/ ($Component(
 		is_extras ? "Extra Tools" : localize("Tools"),
 		is_extras ? "tools-component extra-tools-component" : "tools-component",
 		"tall",
 		$tools.add($tool_options)
-	);
+	));
 	$c.appendTo(get_direction() === "rtl" ? $right : $left); // opposite ColorBox by default
 	$c.update_selected_tool = () => {
 		$buttons.removeClass("selected");

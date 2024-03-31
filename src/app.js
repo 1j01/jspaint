@@ -444,9 +444,13 @@ let fill_color;
 let stroke_color_k = "foreground"; // enum of "foreground", "background", "ternary"
 let fill_color_k = "background"; // enum of "foreground", "background", "ternary"
 
+/** @type {Tool} */
 let selected_tool = default_tool;
+/** @type {Tool[]} */
 let selected_tools = [selected_tool];
+/** @type {Tool[]} */
 let return_to_tools = [selected_tool];
+
 window.selected_colors = { // declared like this for Cypress tests
 	foreground: "",
 	background: "",
@@ -633,6 +637,7 @@ if (get_direction() === "rtl") {
 
 // #region Status Bar
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
+/** @type {JQuery<HTMLDivElement> & {default: ()=> void}} */
 const $status_text = $(E("div")).addClass("status-text status-field inset-shallow").appendTo($status_area);
 const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 const $status_size = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);

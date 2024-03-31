@@ -30,6 +30,7 @@ declare let Konami: any;
 // This supports bare identifier global access (no `window.` needed).
 // app-localization.js
 declare function localize(text: string): string;
+declare function get_direction(language?: string): "rtl" | "ltr";
 // tools.js
 declare const TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 declare const TOOL_SELECT: "TOOL_SELECT";
@@ -60,10 +61,29 @@ declare let selected_colors: {
 // declare class $FontBox extends $Window { }
 // declare function $FontBox(): $FontBox;
 declare function $FontBox(): $Window;
+// $ToolBox.js
+declare function $ToolBox(tools: Tool[], is_extras?: boolean): JQuery<HTMLDivElement> & $ComponentMethods & $ToolBoxMethods;
+declare interface $ToolBoxMethods {
+	update_selected_tool(): void;
+}
+
 // $ToolWindow.js
 declare function $ToolWindow($component?: JQuery<HTMLElement>): $Window;
 declare function $DialogWindow(title?: string): $Window;
 declare function make_window_supporting_scale(options: $WindowOptions): $Window;
+// $Component.js
+declare function $Component(title: string, className: string, orientation: "tall" | "wide", $el: JQuery<HTMLElement>): JQuery<HTMLDivElement> & $ComponentMethods;
+interface $ComponentMethods {
+	hide(): this;
+	show(): this;
+	toggle(): this;
+	dock($dock_to: JQuery<HTMLElement>): void;
+	undock_to(x: number, y: number): void;
+	destroy(): void;
+}
+// helpers.js
+declare function make_css_cursor(name: string, coords: [number, number], fallback: string): string;
+
 
 // Globals temporarily exported from ES Modules,
 // as well as globals from scripts that are not converted to ESM yet.
@@ -118,6 +138,8 @@ interface Window {
 	Handles: typeof Handles;
 	// $FontBox.js
 	$FontBox: typeof $FontBox;
+	// $ToolBox.js
+	$ToolBox: typeof $ToolBox;
 	// app.js
 	selected_tool: Tool;
 	selected_tools: Tool[];
@@ -374,7 +396,7 @@ interface Tool {
 	speech_recognition: string[],
 	help_icon: string,
 	description: string,
-	cursor: [string, [number, number], string],
+	cursor: Parameters<typeof make_css_cursor>,
 
 	/** Called when... */
 	pointerdown?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
@@ -388,7 +410,12 @@ interface Tool {
 	cancel?(): void,
 	/** Called when rendering... */
 	drawPreviewUnderGrid?(ctx: CanvasRenderingContext2D, x: number, y: number, grid_visible: boolean, scale: number, translate_x: number, translate_y: number);
+	/** Called when selecting a different tool. */
+	deselect?(): void,
+
+	// UI
 	$options?: JQuery<HTMLElement>,
+	$button?: JQuery<HTMLElement>,
 }
 
 interface HistoryNode {
