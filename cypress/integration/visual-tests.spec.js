@@ -260,7 +260,9 @@ context('visual tests', () => {
 		}
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions));
 	};
-	it('modern light theme -- edit colors dialog (expanded)', test_edit_colors_dialog);
+	it('modern light theme -- edit colors dialog (expanded)', () => {
+		test_edit_colors_dialog(true);
+	});
 
 	it('bubblegum theme -- main screenshot', () => {
 		// selectTheme("Bubblegum"); // not released yet
@@ -292,7 +294,9 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('winter theme -- edit colors dialog (expanded)', test_edit_colors_dialog);
+	it('winter theme -- edit colors dialog (expanded)', () => {
+		test_edit_colors_dialog(true);
+	});
 
 	it('winter theme -- vertical color box', () => {
 		cy.wait(500);
