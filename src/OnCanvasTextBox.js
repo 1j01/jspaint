@@ -1,5 +1,5 @@
 // @ts-check
-/* global main_canvas, text_tool_font, selected_colors, tool_transparent_mode, $canvas_area, $status_position, $status_size, magnification, to_canvas_coords, update_helper_layer */
+/* global $canvas_area, $status_position, $status_size, magnification, main_canvas, selected_colors, text_tool_font, to_canvas_coords, tool_transparent_mode, update_helper_layer */
 import { $FontBox } from "./$FontBox.js";
 import { Handles } from "./Handles.js";
 import { OnCanvasObject } from "./OnCanvasObject.js";

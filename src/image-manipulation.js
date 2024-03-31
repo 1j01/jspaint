@@ -1,3 +1,13 @@
+// @ts-check
+// eslint-disable-next-line no-unused-vars
+/* global saved:writable, brush_size:writable, pencil_size:writable, stroke_size:writable */
+/* global $canvas_area, aliasing, cancel, deselect, detect_monochrome, get_help_folder_icon, get_rgba_from_color, localize, main_canvas, main_ctx, make_canvas, memoize_synchronous_function, palette, selected_colors, selection, show_error_message, stroke_color, TAU, transparency, undoable, update_title */
+import { $G } from "./helpers.js";
+
+// workaround for ES Modules only allowing exports at the top level
+// (I'm doing things messily in order to quickly adopt ESM.)
+const some_exports = {};
+
 const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 
 function get_brush_canvas_size(brush_size, brush_shape) {
@@ -984,7 +994,7 @@ function draw_grid(ctx, scale) {
 		ctx.restore();
 	}
 
-	window.draw_selection_box = (ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y) => {
+	some_exports.draw_selection_box = (ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y) => {
 		draw_dashes(ctx, rect_x, rect_y, rect_w - 1, 0, scale, translate_x, translate_y); // top
 		if (rect_h === 1) {
 			draw_dashes(ctx, rect_x, rect_y, 0, 1, scale, translate_x, translate_y); // left
@@ -1194,10 +1204,10 @@ function draw_grid(ctx, scale) {
 		}
 	}
 
-	window.draw_line_strip = (ctx, points) => {
+	some_exports.draw_line_strip = (ctx, points) => {
 		draw_polygon_or_line_strip(ctx, points, true, false, false);
 	};
-	window.draw_polygon = (ctx, points, stroke, fill) => {
+	some_exports.draw_polygon = (ctx, points, stroke, fill) => {
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
 	};
 
@@ -1306,7 +1316,7 @@ function draw_grid(ctx, scale) {
 		}
 	}
 
-	window.copy_contents_within_polygon = (canvas, points, x_min, y_min, x_max, y_max) => {
+	some_exports.copy_contents_within_polygon = (canvas, points, x_min, y_min, x_max, y_max) => {
 		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
 		x_max = Math.max(x_max, x_min + 1);
 		y_max = Math.max(y_max, y_min + 1);
@@ -1329,7 +1339,7 @@ function draw_grid(ctx, scale) {
 	}
 
 	// @TODO: maybe shouldn't be external...
-	window.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
+	some_exports.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
 		const stroke_margin = ~~(stroke_size * 1.1);
 
 		x_max = Math.max(x_max, x_min + 1);
@@ -1353,3 +1363,28 @@ function draw_grid(ctx, scale) {
 		// ctx.fillRect(x, y, op_canvas_2d.width, op_canvas_2d.height);
 	}
 })();
+
+const {
+	draw_selection_box,
+	draw_line_strip,
+	draw_polygon,
+	copy_contents_within_polygon,
+	draw_with_swatch,
+} = some_exports;
+
+export {
+	apply_image_transformation, bresenham_dense_line, bresenham_line, compute_bezier, copy_contents_within_polygon, draw_bezier_curve, draw_bezier_curve_without_pattern_support, draw_ellipse, draw_fill,
+	draw_fill_separately, draw_fill_without_pattern_support, draw_grid, draw_line, draw_line_strip, draw_line_without_pattern_support, draw_noncontiguous_fill,
+	draw_noncontiguous_fill_separately, draw_noncontiguous_fill_without_pattern_support, draw_polygon, draw_quadratic_curve, draw_rounded_rectangle, draw_selection_box, draw_with_swatch, find_color_globally, flip_horizontal,
+	flip_vertical, get_brush_canvas_size, get_circumference_points_for_brush, invert_monochrome, invert_rgb, render_brush, replace_color_globally, replace_colors_with_swatch, rotate, stamp_brush_canvas, stretch_and_skew, threshold_black_and_white, update_brush_for_drawing_lines
+};
+// Temporary globals until all dependent code is converted to ES Modules
+const all_exports = {
+	apply_image_transformation, bresenham_dense_line, bresenham_line, compute_bezier, copy_contents_within_polygon, draw_bezier_curve, draw_bezier_curve_without_pattern_support, draw_ellipse, draw_fill,
+	draw_fill_separately, draw_fill_without_pattern_support, draw_grid, draw_line, draw_line_strip, draw_line_without_pattern_support, draw_noncontiguous_fill,
+	draw_noncontiguous_fill_separately, draw_noncontiguous_fill_without_pattern_support, draw_polygon, draw_quadratic_curve, draw_rounded_rectangle, draw_selection_box, draw_with_swatch, find_color_globally, flip_horizontal,
+	flip_vertical, get_brush_canvas_size, get_circumference_points_for_brush, invert_monochrome, invert_rgb, render_brush, replace_color_globally, replace_colors_with_swatch, rotate, stamp_brush_canvas, stretch_and_skew, threshold_black_and_white, update_brush_for_drawing_lines
+};
+for (const key in all_exports) {
+	window[key] = all_exports[key];
+}

@@ -1,14 +1,21 @@
-(function (exports) {
+// @ts-check
+// eslint-disable-next-line no-unused-vars
+/* global airbrush_size:writable, brush_size:writable, eraser_size:writable, pencil_size:writable, stroke_size:writable, pointer_active:writable, pointer_over_canvas:writable, pointer_previous:writable, pointer:writable */
+/* global $canvas_area, $status_text, button, deselect, get_tool_by_id, localize, main_canvas, main_ctx, make_canvas, MENU_DIVIDER, menus, resize_canvas_without_saving_dimensions, select_tool, selected_colors, selected_tool, selected_tools, show_error_message, TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, tool_go, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT, tools, update_helper_layer */
+import { $G } from "./helpers.js";
 
-	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-	const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
-	// const SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
+// workaround for ES Modules only allowing exports at the top level
+// (I'm doing things messily in order to quickly adopt ESM.)
+const exports = {};
+export let speech_recognition_active = false;
 
-	exports.speech_recognition_available = !!(SpeechRecognition && SpeechGrammarList);
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+// const SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
 
-	if (!exports.speech_recognition_available) {
-		return;
-	}
+exports.speech_recognition_available = !!(SpeechRecognition && SpeechGrammarList);
+
+if (exports.speech_recognition_available) {
 
 	const recognitionFixes = [
 		// spell-checker:disable
@@ -1350,17 +1357,20 @@
 	recognition.interimResults = false;
 	recognition.maxAlternatives = 1;
 
-	exports.speech_recognition_active = false;
+	speech_recognition_active = false;
+	window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 
 	exports.enable_speech_recognition = function () {
-		if (!exports.speech_recognition_active) {
-			exports.speech_recognition_active = true;
+		if (!speech_recognition_active) {
+			speech_recognition_active = true;
+			window.speech_recognition_active = true; // Temporary global until all dependent code is converted to ESM
 			recognition.start();
 		}
 	};
 	exports.disable_speech_recognition = function () {
-		if (exports.speech_recognition_active) {
-			exports.speech_recognition_active = false;
+		if (speech_recognition_active) {
+			speech_recognition_active = false;
+			window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 			recognition.stop();
 		}
 	};
@@ -1437,10 +1447,12 @@
 	};
 
 	recognition.onstart = function (event) {
-		exports.speech_recognition_active = true;
+		speech_recognition_active = true;
+		window.speech_recognition_active = true; // Temporary global until all dependent code is converted to ESM
 	};
 	recognition.onend = function (event) {
-		exports.speech_recognition_active = false;
+		speech_recognition_active = false;
+		window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 	};
 
 	recognition.onerror = function (event) {
@@ -1455,7 +1467,8 @@
 		} else {
 			$status_text.text('Error occurred in speech recognition: ' + event.error);
 			console.log('Error occurred in speech recognition:', event.error);
-			// exports.speech_recognition_active = false;
+			// speech_recognition_active = false;
+			// window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 		}
 	};
 
@@ -1953,7 +1966,7 @@
 		// @TODO: clickable cancel button? (in addition to Escape key handling and the "stop" voice command)
 
 		// I'm suggesting saying "stop drawing" rather than "stop" because I think it's more likely to be picked up as speech at all
-		$status_text.text(`To stop drawing, ${exports.speech_recognition_active ? `say "stop drawing", or ` : ""}press Esc.`);
+		$status_text.text(`To stop drawing, ${speech_recognition_active ? `say "stop drawing", or ` : ""}press Esc.`);
 
 		// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
@@ -2256,4 +2269,27 @@
 		$(test_speech_recognition);
 	}
 
-}(window));
+}
+
+const {
+	disable_speech_recognition,
+	enable_speech_recognition,
+	interpret_command,
+	speech_recognition_available,
+	trace_and_sketch,
+	trace_and_sketch_stop,
+} = exports;
+
+export {
+	disable_speech_recognition,
+	enable_speech_recognition,
+	interpret_command,
+	speech_recognition_available,
+	trace_and_sketch,
+	trace_and_sketch_stop
+};
+// Temporary globals until all dependent code is converted to ES Modules
+// see also `speech_recognition_active` above
+for (const key in exports) {
+	window[key] = exports[key];
+}

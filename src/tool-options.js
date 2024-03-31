@@ -1,3 +1,9 @@
+// @ts-check
+/* global stroke_size:writable, airbrush_size:writable, brush_shape:writable, brush_size:writable, eraser_size:writable, magnification:writable, tool_transparent_mode:writable */
+/* global make_canvas, render_brush, replace_colors_with_swatch, set_magnification, stamp_brush_canvas */
+import { $G, E } from "./helpers.js";
+import { get_theme } from "./theme.js";
+
 const ChooserCanvas = (
 	url,
 	invert,
@@ -393,3 +399,16 @@ const $choose_transparent_mode = $Choose(
 	true,
 ).addClass("choose-transparent-mode");
 
+
+export {
+	$ChooseShapeStyle, $choose_airbrush_size, $choose_brush,
+	$choose_eraser_size, $choose_magnification, $choose_stroke_size, $choose_transparent_mode
+};
+// Temporary globals until all dependent code is converted to ES Modules
+window.$ChooseShapeStyle = $ChooseShapeStyle;
+window.$choose_brush = $choose_brush;
+window.$choose_eraser_size = $choose_eraser_size;
+window.$choose_stroke_size = $choose_stroke_size;
+window.$choose_magnification = $choose_magnification;
+window.$choose_airbrush_size = $choose_airbrush_size;
+window.$choose_transparent_mode = $choose_transparent_mode;

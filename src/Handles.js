@@ -1,6 +1,5 @@
 // @ts-check
 /* global magnification, to_canvas_coords */
-
 import { $G, E, make_css_cursor } from "./helpers.js";
 
 /**

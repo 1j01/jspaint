@@ -1,5 +1,5 @@
 // @ts-check
-/* global text_tool_font, localize, $ToolWindow */
+/* global $ToolWindow, localize, text_tool_font */
 import { $G, E } from "./helpers.js";
 
 const eachFont = async (callback, afterAllCallback) => {

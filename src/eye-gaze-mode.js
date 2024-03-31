@@ -1,4 +1,8 @@
-// import { load_image_simple, $G } from "./helpers.js";
+// @ts-check
+// eslint-disable-next-line no-unused-vars
+/* global pointers:writable */
+/* global $Window, average_points, main_canvas, pointer_active, selected_tool, TOOL_CURVE, TOOL_FILL, TOOL_MAGNIFIER, TOOL_PICK_COLOR, TOOL_POLYGON, TrackyMouse, undo */
+import { $G, load_image_simple } from "./helpers.js";
 
 let clean_up_eye_gaze_mode = () => { };
 $G.on("eye-gaze-mode-toggled", () => {

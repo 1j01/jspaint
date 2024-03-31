@@ -1,4 +1,6 @@
 // @ts-check
+/* global make_stripe_pattern */
+
 const default_palette = [
 	"rgb(0,0,0)", // Black
 	"rgb(128,128,128)", // Dark Gray
@@ -81,7 +83,8 @@ const basic_colors = [
 	"#400000", "#804000", "#004000", "#004040", "#000080", "#000040", "#400040", "#400080",
 	"#000000", "#808000", "#808040", "#808080", "#408080", "#C0C0C0", "#400040", "#FFFFFF",
 ];
-let custom_colors = [
+// Note: this array gets modified even though the reference to it is constant.
+const custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
@@ -178,3 +181,13 @@ const get_winter_palette = () => {
 	];
 }
 
+
+export {
+	basic_colors, custom_colors, default_palette, get_winter_palette, monochrome_palette_as_colors
+};
+// Temporary globals until all dependent code is converted to ES Modules
+window.default_palette = default_palette;
+window.monochrome_palette_as_colors = monochrome_palette_as_colors;
+window.basic_colors = basic_colors;
+window.custom_colors = custom_colors;
+window.get_winter_palette = get_winter_palette;

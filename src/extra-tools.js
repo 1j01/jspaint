@@ -1,5 +1,7 @@
+// @ts-check
+/* global $choose_airbrush_size, $choose_brush, airbrush_size, brush_canvas, brush_ctx, brush_shape, brush_size, get_brush_canvas_size, render_brush, stroke_color */
 
-extra_tools = [{
+const extra_tools = [{
 	name: "Airbrushbrush",
 	description: "Draws randomly within a radius based on the selected Airbrush size, using a brush with the selected shape and size.",
 	cursor: ["precise-dotted", [16, 16], "crosshair"],
@@ -111,3 +113,7 @@ extra_tools = [{
 	},
 	$options: $choose_airbrush_size
 }];
+
+export { extra_tools };
+// Temporary globals until all dependent code is converted to ES Modules
+window.extra_tools = extra_tools;

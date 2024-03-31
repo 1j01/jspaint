@@ -1,5 +1,5 @@
 // @ts-check
-/* global $Component, $left, $right, $bottom, get_direction, localize, selected_colors, button, show_edit_colors_window, palette */
+/* global $bottom, $Component, $left, $right, button, get_direction, localize, palette, selected_colors, show_edit_colors_window */
 import { $G, E, make_canvas } from "./helpers.js";
 
 /** 
