@@ -402,6 +402,15 @@ type ToolID =
 	"TOOL_ELLIPSE" |
 	"TOOL_ROUNDED_RECTANGLE";
 
+// This is very silly!
+// This isn't a coherent API, but rather a layered set of functionality
+// all typed as if it were a single API.
+// It's not providing much type safety,
+// just look at paint_iteration for example. There are two overloads,
+// simply because it's defined separately for two different tools.
+// A class hierarchy may be in order, or another way of encapsulating
+// subsets of functionality, such as functions that return tool objects,
+// instead of properties that imply other properties should be generated.
 interface Tool {
 	id: ToolID,
 	name: string,
@@ -409,21 +418,80 @@ interface Tool {
 	help_icon: string,
 	description: string,
 	cursor: Parameters<typeof make_css_cursor>,
+	/** Indicates that the brush operation should be previewed on the canvas at the cursor location. */
+	dynamic_preview_cursor?: boolean,
+	/** Indicates that the tool should be deselected after a single use. */
+	deselect?: boolean,
+	/** Used by Polygon tool. Indicates that the tool should use colors like point-to-point shape tools, even though it has different UI. */
+	shape_colors?: boolean,
+	/** Used for Curve, Line, Pencil tools. */
+	stroke_only?: boolean,
 
+	/** Called when... */
+	preload?(): void,
 	/** Called when... */
 	pointerdown?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
 	/** Called when... */
 	paint?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
-	/** Called when... */
-	paint_iteration(x: number, y: number): void,
+	/** Used by Free-Form Select tool */
+	paint_iteration?(x: number, y: number): void,
+	/** Used by Eraser tool */
+	paint_iteration?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
 	/** Called when... */
 	pointerup?(): void,
 	/** Called when... */
 	cancel?(): void,
+	/** Called when... */
+	end?(): void,
 	/** Called when rendering... */
 	drawPreviewUnderGrid?(ctx: CanvasRenderingContext2D, x: number, y: number, grid_visible: boolean, scale: number, translate_x: number, translate_y: number);
-	/** Called when selecting a different tool. */
-	deselect?(): void,
+	/** Called when rendering... */
+	drawPreviewAboveGrid?(ctx: CanvasRenderingContext2D, x: number, y: number, grid_visible: boolean, scale: number, translate_x: number, translate_y: number);
+	/** Called when... */
+	init_mask_canvas?(): void,
+	/** Called when... Can return true to indicate it should be animated (re-rendered next frame) */
+	render_from_mask?(ctx: CanvasRenderingContext2D, previewing?: boolean): void | boolean,
+	/** Defines the tool as one that draws a shape between the mouse down location and mouse up location. */
+	shape?(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void,
+	/** Defines the tool as one that paints a region with the current color... */
+	paint_mask?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
+	/** Called when... */
+	selectBox?(x: number, y: number, w: number, h: number): void,
+	/** Defines the tool as one that paints continuously as the cursor moves. */
+	get_brush?(): { size: number, shape: "circle" | "square" | "reverse_diagonal" | "diagonal" },
+	/** Used by Polygon tool */
+	reset?(): void,
+	/** Used by Polygon tool */
+	complete?(ctx: CanvasRenderingContext2D): void,
+	/** Used by Magnifier tool */
+	getProspectiveMagnification?(): number,
+
+	/** Used by several tools */
+	mask_canvas?: PixelCanvas,
+	/** Used by some tools */
+	shape_canvas?: PixelCanvas,
+	/** Used by some tools */
+	preview_canvas?: PixelCanvas,
+	/** Used by Free-Form Select tool */
+	x_min?: number,
+	/** Used by Free-Form Select tool */
+	x_max?: number,
+	/** Used by Free-Form Select tool */
+	y_min?: number,
+	/** Used by Free-Form Select tool */
+	y_max?: number,
+	/** Used by Free-Form Select, Curve, and Polygon tools */
+	points?: { x: number, y: number }[],
+	/** Used by Polygon tool */
+	last_click_pointerdown?: { x: number, y: number, time: number },
+	/** Used by Polygon tool */
+	last_click_pointerup?: { x: number, y: number, time: number },
+	/** Used by Eraser tool */
+	get_rect?(x: number, y: number): { rect_x: number, rect_y: number, rect_w: number, rect_h: number },
+	/** Used by Eraser tool */
+	color_eraser_mode?: boolean,
+	/** Used by Pick Color tool */
+	current_color?: string,
 
 	// UI
 	$options?: JQuery<HTMLElement>,
