@@ -210,6 +210,7 @@ class Handles {
 	show: () => void;
 }
 
+// OS-GUI's $Window.js
 interface WindowOptions {
 	title?: string;
 	innerWidth?: number;
@@ -232,7 +233,7 @@ interface WindowOptions {
 	iframes?: { ignoreCrossOrigin?: boolean };
 }
 
-class $Window extends JQuery<HTMLDivElement> {
+declare class $Window extends JQuery<HTMLDivElement> {
 	static Z_INDEX: number;
 	static DEBUG_FOCUS: boolean;
 	static OVERRIDE_TRANSITION_DURATION: number | null;
@@ -247,7 +248,9 @@ class $Window extends JQuery<HTMLDivElement> {
 	$maximize?: JQuery<HTMLButtonElement>;
 	$x?: JQuery<HTMLButtonElement>;
 	$content: JQuery<HTMLDivElement>;
-	icons: { [size: string]: string | HTMLImageElement };
+	$icon: JQuery<HTMLElement>;
+
+	icons: { [size: string]: string | HTMLElement };
 
 	setDimensions(dimensions: { innerWidth?: number; innerHeight?: number; outerWidth?: number; outerHeight?: number; }): void;
 	focus(): void;
@@ -258,22 +261,45 @@ class $Window extends JQuery<HTMLDivElement> {
 	restore(): void;
 	close(force?: boolean): void;
 	closed: boolean;
-	title(title?: string): this | string;
+	title(title: string): this;
+	title(): string;
 	getTitle(): string;
-	setMenuBar(menuBar: any): void; // Replace with actual menu bar type
+	setMenuBar(menuBar: MenuBar): void; // Replace with actual menu bar type
 	bringToFront(): void;
 	addChildWindow($childWindow: $Window): void;
 	setMinimizeTarget(taskbarButtonEl: HTMLElement): void;
+	setDimensions(dimensions: { innerWidth?: number; innerHeight?: number; outerWidth?: number; outerHeight?: number; }): void;
+	applyBounds(): void;
+	bringTitleBarInBounds(): void;
+	center(): void;
+	setTitlebarIconSize(size: number): this;
+	getTitlebarIconSize(): number;
+	getIconAtSize(size: number): HTMLElement | null;
+	$Button(label: string, action: () => void): JQuery<HTMLButtonElement>;
+	animateTitlebar(before_rect: { x: number, y: number, width: number, height: number }, after_rect: { x: number, y: number, width: number, height: number }, callback?: () => void): void;
+
+	// Events
+	// These functions return a function that removes the event listener.
+	onFocus(callback: () => void): () => void;
+	onBlur(callback: () => void): () => void;
+	onClosed(callback: () => void): () => void;
 
 	// Deprecated properties and methods
-	icon_name: string;
-	task: any; // Replace with actual task type
-	setIconByID(iconName: string): this;
-	setIcons(icons: { [size: string]: string | HTMLImageElement; }): void;
-	getIconName(): string;
+	// icon_name: string;
+	// task: { $task: JQuery<HTMLDivElement>, updateTitle: () => void; };
+	// setIconByID(iconName: string): this;
+	// setIcons(icons: { [size: string]: string | HTMLImageElement; }): void;
+	// getIconName(): string;
+
+	// Extending JQuery didn't seem to work, so I'm adding these here.
+	css(name: string): number;
+	css(name: string, value: number | string): this;
+	css(props: { [name: string]: string | number; }): this;
+	height(): number;
+	height(value: number): this;
 }
 
-class $FormWindow extends $Window {
+declare class $FormWindow extends $Window {
 	constructor(title: string);
 
 	$form: JQuery<HTMLFormElement>;
@@ -283,6 +309,15 @@ class $FormWindow extends $Window {
 	$Button(label: string, action: () => void): JQuery<HTMLButtonElement>;
 }
 
+// OS-GUI's MenuBar.js
+declare class MenuBar {
+	element: HTMLDivElement;
+	closeMenus: () => void;
+	setKeyboardScope: (...elements: HTMLElement[]) => void;
+}
+declare const MENU_DIVIDER: "MENU_DIVIDER";
+
+//
 
 type ToolID =
 	"TOOL_FREE_FORM_SELECT" |
