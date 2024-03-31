@@ -26,6 +26,7 @@ html, body, .jspaint {
 .component-area,
 .selection,
 .textbox,
+.helper-layer,
 button,
 .hover-halo,
 .dwell-indicator {
