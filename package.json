@@ -80,7 +80,6 @@
     "argparse": "^2.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "lookpath": "^1.2.2",
-    "typescript": "^5.4.3",
     "wallpaper": "^4.4.2"
   },
   "devDependencies": {
@@ -103,7 +102,8 @@
     "npm-run-all": "^4.1.5",
     "onchange": "^7.1.0",
     "rtlcss": "^4.1.1",
-    "start-server-and-test": "^2.0.3"
+    "start-server-and-test": "^2.0.3",
+    "typescript": "^5.4.3"
   },
   "scripts": {
     "electron:start": "electron-forge start",
