@@ -21,6 +21,7 @@ html, body, .jspaint {
 
 .window,
 .canvas-area .handle,
+.canvas-area .grab-region,
 .status-area,
 .menus,
 .component-area,
