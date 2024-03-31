@@ -381,7 +381,6 @@ const $choose_transparent_mode = $Choose(
 	(option, _is_chosen, reuse_canvas, reuse_div) => {
 		const sw = 35, sh = 23; // width, height from source image
 		const b = 2; // margin by which the source image is inset on the destination
-		const theme_folder = `images/${get_theme().replace(/\.css/i, "")}`;
 		return ChooserDiv(
 			"transparent-mode-option",
 			false, // never invert it
