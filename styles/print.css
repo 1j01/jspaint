@@ -16,6 +16,7 @@ html, body, .jspaint {
 	max-width: 100%;
 	width: auto !important;
 	height: auto !important;
+	border: 0 !important;
 }
 
 .window,
