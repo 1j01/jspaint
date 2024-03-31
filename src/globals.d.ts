@@ -108,6 +108,8 @@ interface Window {
 	OnCanvasTextBox: typeof OnCanvasTextBox;
 	// Handles.js
 	Handles: typeof Handles;
+	// $FontBox.js
+	$FontBox: typeof $FontBox;
 	// app.js
 	selected_tool: Tool;
 	selected_tools: Tool[];

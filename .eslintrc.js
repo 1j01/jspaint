@@ -207,6 +207,7 @@ module.exports = {
 				"src/theme.js",
 				"src/helpers.js",
 				"src/$ToolBox.js",
+				"src/$FontBox.js",
 				"src/OnCanvasObject.js",
 				"src/OnCanvasHelperLayer.js",
 				"src/OnCanvasSelection.js",
