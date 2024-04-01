@@ -93,7 +93,7 @@ function debounce(func, wait_ms, immediate) {
  * @template {any} R - The return type of the function
  * @param {(...args: A) => R} func - The function to memoize.
  * @param {number} [max_entries=50000] - The maximum number of entries to store in the cache.
- * @returns {(...args: A) => R} & { clear_memo_cache: () => void }} - The memoized function, with an extra `clear_memo_cache` method.
+ * @returns {((...args: A) => R) & { clear_memo_cache: () => void }} - The memoized function, with an extra `clear_memo_cache` method.
  */
 function memoize_synchronous_function(func, max_entries = 50000) {
 	const cache = {};
@@ -126,13 +126,13 @@ function memoize_synchronous_function(func, max_entries = 50000) {
 }
 
 /**
- * @param {string} color  CSS color value
+ * @param {string | CanvasPattern | CanvasGradient} color  CSS color value (or pattern/gradient, which will be sampled from a 1x1 canvas)
  * @returns {[number, number, number, number]}  [r, g, b, a] values ranging from 0 to 255
  * @example
  * const [r, g, b, a] = get_rgba_from_color("rgba(255, 0, 0, 0.5)");
  * console.log(r, g, b, a); // 255, 0, 0, 128
  */
-let get_rgba_from_color = (color) => {
+const get_rgba_from_color_implementation = (color) => {
 	const single_pixel_canvas = make_canvas(1, 1);
 
 	single_pixel_canvas.ctx.fillStyle = color;
@@ -145,8 +145,8 @@ let get_rgba_from_color = (color) => {
 	return /** @type {[number, number, number, number]} */ (Array.from(image_data.data));
 	// Equivalently:
 	// return [image_data.data[0], image_data.data[1], image_data.data[2], image_data.data[3]];
-}
-get_rgba_from_color = memoize_synchronous_function(get_rgba_from_color);
+};
+const get_rgba_from_color = memoize_synchronous_function(get_rgba_from_color_implementation);
 
 /**
  * Compare two ImageData.

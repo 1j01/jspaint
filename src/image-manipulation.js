@@ -127,7 +127,12 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 // @TODO: protect against browser clearing canvases, invalidate cache
-const get_brush_canvas = memoize_synchronous_function((brush_shape, brush_size) => {
+/**
+ * @param {string} brush_shape
+ * @param {number} brush_size
+ * @returns {import("./helpers.js").PixelCanvas}
+ */
+const get_brush_canvas_implementation = (brush_shape, brush_size) => {
 	const canvas_size = get_brush_canvas_size(brush_size, brush_shape);
 
 	const brush_canvas = make_canvas(canvas_size, canvas_size);
@@ -136,7 +141,9 @@ const get_brush_canvas = memoize_synchronous_function((brush_shape, brush_size) 
 	render_brush(brush_canvas.ctx, brush_shape, brush_size);
 
 	return brush_canvas;
-}, 20); // 12 brush tool options + current brush + current pencil + current eraser + current shape stroke + a few
+};
+// Cache size: 12 brush tool options + current brush + current pencil + current eraser + current shape stroke + a few
+const get_brush_canvas = memoize_synchronous_function(get_brush_canvas_implementation, 20);
 
 $G.on("invalidate-brush-canvases", () => {
 	get_brush_canvas.clear_memo_cache();
@@ -154,7 +161,12 @@ const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size) => {
 };
 
 // USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-const get_circumference_points_for_brush = memoize_synchronous_function((brush_shape, brush_size) => {
+/**
+ * @param {string} brush_shape
+ * @param {number} brush_size
+ * @returns {{ x: number, y: number }[]}
+ */
+const get_circumference_points_for_brush_implementation = (brush_shape, brush_size) => {
 
 	const brush_canvas = get_brush_canvas(brush_shape, brush_size);
 
@@ -189,7 +201,8 @@ const get_circumference_points_for_brush = memoize_synchronous_function((brush_s
 	}
 
 	return points;
-});
+}
+const get_circumference_points_for_brush = memoize_synchronous_function(get_circumference_points_for_brush_implementation);
 
 $G.on("invalidate-brush-canvases", () => {
 	get_circumference_points_for_brush.clear_memo_cache();
