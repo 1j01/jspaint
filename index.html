@@ -945,18 +945,20 @@
 	<!-- (also depends on msgbox.js and thus os-gui.js, but not initially) -->
 	<script src="src/app-localization.js"></script>
 
-	<!-- Most scripts are marked as deferred in order to start transitioning to ES Modules,
-	so that the ES Modules (which are always deferred) can still export globals to be consumed by the non-module scripts. -->
+	<!-- Scripts that are not yet transitioned to ES Modules are marked as "defer"
+	so that the ES Modules (which are implicitly deferred) can still export globals to be consumed by the non-module scripts,
+	which helps with progressively converting the codebase to ES Modules. -->
 	<script type="module" src="src/msgbox.js"></script>
 	<script defer src="src/functions.js"></script>
 	<script type="module" src="src/helpers.js"></script>
-	<script defer src="src/storage.js"></script>
-	<script defer src="src/$Component.js"></script>
-	<script defer src="src/$ToolWindow.js"></script>
+	<script type="module" src="src/storage.js"></script>
+	<script type="module" src="src/$Component.js"></script>
+	<script type="module" src="src/$ToolWindow.js"></script>
 
 	<!-- After show_error_message, showMessageBox, make_window_supporting_scale, and localize are defined,
 	set up better global error handling. -->
 	<!-- Note: This must be in the <body> as it also handles showing a message for Internet Explorer. -->
+	<!-- It's 2024; do I care about IE enough to show a nice error? Will it work at all now that I'm using ESM for other things? Probably not, right? And what's the significance of it being in the body, anyway? -->
 	<script defer src="src/error-handling-enhanced.js"></script>
 
 	<script type="module" src="src/$ToolBox.js"></script>
@@ -981,7 +983,7 @@
 	<script type="module" src="src/speech-recognition.js"></script>
 	<script type="module" src="src/eye-gaze-mode.js"></script>
 	<script defer src="src/app.js"></script>
-	<script defer src="src/sessions.js"></script>
+	<script type="module" src="src/sessions.js"></script>
 	<script defer src="lib/konami.js"></script>
 	<script defer src="src/vaporwave-fun.js"></script>
 
