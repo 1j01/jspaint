@@ -27,6 +27,18 @@
 		console.log("AudioContext not supported", error);
 	}
 
+	/**
+	 * @typedef {Object} MessageBoxOptions
+	 * @property {string} [title]
+	 * @property {string} [message]
+	 * @property {string} [messageHTML]
+	 * @property {Array<{ label: string, value: string, default?: boolean, action?: () => void }>} [buttons]
+	 * @property {"error" | "warning" | "info" | "nuke"} [iconID]
+	 * @property {$WindowOptions} [windowOptions]
+	 * 
+	 * @param {MessageBoxOptions} options
+	 * @returns {Promise<string>} Resolves with the value of the button that was clicked.
+	 */
 	function showMessageBox({
 		title = window.defaultMessageBoxTitle ?? "Alert",
 		message,

@@ -140,8 +140,8 @@ declare interface $ColorBoxMethods {
 }
 
 // $ToolWindow.js
-declare function $ToolWindow($component?: JQuery<HTMLElement>): $Window;
-declare function $DialogWindow(title?: string): $Window;
+declare function $ToolWindow($component?: JQuery<HTMLElement>): $Window & I$ToolWindow;
+declare function $DialogWindow(title?: string): $Window & I$DialogWindow;
 declare function make_window_supporting_scale(options: $WindowOptions): $Window;
 // $Component.js
 declare function $Component(title: string, className: string, orientation: "tall" | "wide", $el: JQuery<HTMLElement>): JQuery<HTMLDivElement> & $ComponentMethods;
@@ -264,6 +264,8 @@ interface Window {
 		color: string,
 		background: string,
 	};
+	// msgbox.js
+	showMessageBox: (options: MessageBoxOptions) => Promise<string>;
 	// color-data.js
 	default_palette: (string | CanvasPattern)[];
 	monochrome_palette_as_colors: (string | CanvasPattern)[];
@@ -298,6 +300,16 @@ interface Window {
 	queryLocalFonts?: () => Promise<FontData[]>;
 	// Chrome browser
 	chrome?: { loadTimes: unknown, csi: unknown };
+}
+
+
+interface MessageBoxOptions {
+	title?: string;
+	message?: string;
+	messageHTML?: string;
+	buttons?: { label: string, value: string, default?: boolean, action?: () => void }[];
+	iconID?: "error" | "warning" | "info" | "nuke";
+	windowOptions?: $WindowOptions;
 }
 
 class FontData {
@@ -423,6 +435,8 @@ interface $WindowOptions {
 }
 
 declare function $Window(options?: $WindowOptions): $Window;
+declare function $FormWindow(options?: $WindowOptions): $Window & I$FormWindow;
+
 // declare class $Window extends JQuery<HTMLDivElement> {
 // 	static Z_INDEX: number;
 // 	static DEBUG_FOCUS: boolean;
@@ -430,8 +444,8 @@ declare function $Window(options?: $WindowOptions): $Window;
 
 // 	constructor(options?: $WindowOptions);
 // }
-type $Window = JQuery<HTMLDivElement> & $WindowMethods;
-interface $WindowMethods {
+type $Window = JQuery<HTMLDivElement> & I$Window;
+interface I$Window {
 
 	element: HTMLDivElement;
 	$titlebar: JQuery<HTMLDivElement>;
@@ -485,15 +499,25 @@ interface $WindowMethods {
 	// getIconName(): string;
 }
 
-declare class $FormWindow extends $Window {
-	constructor(title: string);
-
+// part of os-gui.js which was extracted from jspaint into a library
+interface I$FormWindow {
 	$form: JQuery<HTMLFormElement>;
 	$main: JQuery<HTMLDivElement>;
 	$buttons: JQuery<HTMLDivElement>;
 
 	$Button(label: string, action: () => void): JQuery<HTMLButtonElement>;
 }
+
+// still part of jspaint, uncomfortably overlapping with os-gui.js
+interface I$DialogWindow {
+	$form: JQuery<HTMLFormElement>;
+	$main: JQuery<HTMLDivElement>;
+	$buttons: JQuery<HTMLDivElement>;
+
+	$Button(label: string, action: () => void, attrs?: Record<string, any>): JQuery<HTMLButtonElement>;
+}
+// definitely some cleanup to be done here regarding the window "classes"
+interface I$ToolWindow { }
 
 // OS-GUI's MenuBar.js
 declare class MenuBar {
