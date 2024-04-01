@@ -1,6 +1,7 @@
 // @ts-check
-/* global $DialogWindow, localize, showMessageBox */
+/* global $DialogWindow, localize */
 import { E } from "./helpers.js";
+import { showMessageBox } from "./msgbox.js";
 
 let $storage_manager;
 let $quota_exceeded_window;

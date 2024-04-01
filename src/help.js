@@ -1,6 +1,7 @@
 // @ts-check
-/* global $Window, applyTheme, localize, show_error_message, showMessageBox, themeCSSProperties */
+/* global $Window, applyTheme, localize, show_error_message, themeCSSProperties */
 import { $G, E } from "./helpers.js";
+import { showMessageBox } from "./msgbox.js";
 
 let $help_window;
 function show_help() {
