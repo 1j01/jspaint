@@ -1,3 +1,14 @@
+// @ts-check
+
+import { default_palette } from "./color-data.js";
+import { $G, E, TAU, debounce, get_help_folder_icon, get_icon_for_tool, get_rgba_from_color, is_pride_month, make_canvas } from "./helpers.js";
+import { apply_image_transformation, draw_grid, draw_selection_box, flip_horizontal, flip_vertical, invert_monochrome, invert_rgb, rotate, stretch_and_skew, threshold_black_and_white } from "./image-manipulation.js";
+import { showMessageBox } from "./msgbox.js";
+// `sessions.js` must be loaded after `app.js`
+// This would cause it to be loaded earlier, and error trying to access `undos`
+// I'm surprised I haven't been bitten by this sort of bug, and I've
+// mostly converted the whole app to ES Modules!
+// import { new_local_session } from "./sessions.js";
 
 // expresses order in the URL as well as type
 const param_types = {
@@ -3877,3 +3888,107 @@ function show_multi_user_setup_dialog(from_current_document) {
 	$w.center();
 	$session_name.focus();
 }
+
+export {
+	$this_version_news,
+	apply_file_format_and_palette_info, are_you_sure, cancel, change_some_url_params, change_url_param, choose_file_to_paste, cleanup_bitmap_view, clear, confirm_overwrite_capability, delete_selection, deselect, detect_monochrome,
+	edit_copy, edit_cut, edit_paste, exit_fullscreen_if_ios, file_load_from_url, file_new, file_open, file_save,
+	file_save_as, getSelectionText, get_all_url_params, get_history_ancestors, get_tool_by_id, get_uris, get_url_param, go_to_history_node, handle_keyshortcuts, has_any_transparency, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, load_image_from_uri, load_theme_from_text, make_history_node, make_monochrome_palette, make_monochrome_pattern, make_opaque, make_or_update_undoable, make_stripe_pattern, meld_selection_into_canvas,
+	meld_textbox_into_canvas, open_from_file, open_from_image_info, paste, paste_image_from_file, please_enter_a_number, read_image_file, redo, render_canvas_view, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, sanity_check_blob, save_as_prompt, save_selection_to_file, select_all, select_tool, select_tools, set_all_url_params, set_magnification, show_about_paint, show_convert_to_black_and_white, show_custom_zoom_window, show_document_history, show_error_message, show_file_format_errors, show_multi_user_setup_dialog, show_news, show_resource_load_error_message, switch_to_polychrome_palette, toggle_grid,
+	toggle_thumbnail, try_exec_command, undo, undoable, update_canvas_rect, update_css_classes_for_conditional_messages, update_disable_aa, update_from_saved_file, update_helper_layer,
+	update_helper_layer_immediately, update_magnified_canvas_size, update_title, view_bitmap, write_image_file
+};
+// Temporary globals until all dependent code is converted to ES Modules
+window.get_all_url_params = get_all_url_params;
+window.get_url_param = get_url_param;
+window.change_url_param = change_url_param;
+window.change_some_url_params = change_some_url_params;
+window.set_all_url_params = set_all_url_params;
+window.update_magnified_canvas_size = update_magnified_canvas_size;
+window.update_canvas_rect = update_canvas_rect;
+window.update_helper_layer = update_helper_layer;
+window.update_helper_layer_immediately = update_helper_layer_immediately;
+window.render_canvas_view = render_canvas_view;
+window.update_disable_aa = update_disable_aa;
+window.set_magnification = set_magnification;
+window.show_custom_zoom_window = show_custom_zoom_window;
+window.toggle_grid = toggle_grid;
+window.toggle_thumbnail = toggle_thumbnail;
+window.reset_selected_colors = reset_selected_colors;
+window.reset_file = reset_file;
+window.reset_canvas_and_history = reset_canvas_and_history;
+window.make_history_node = make_history_node;
+window.update_title = update_title;
+window.get_uris = get_uris;
+window.load_image_from_uri = load_image_from_uri;
+window.open_from_image_info = open_from_image_info;
+window.open_from_file = open_from_file;
+window.apply_file_format_and_palette_info = apply_file_format_and_palette_info;
+window.load_theme_from_text = load_theme_from_text;
+window.file_new = file_new;
+window.file_open = file_open;
+window.file_load_from_url = file_load_from_url;
+window.confirm_overwrite_capability = confirm_overwrite_capability;
+window.file_save = file_save;
+window.file_save_as = file_save_as;
+window.are_you_sure = are_you_sure;
+window.please_enter_a_number = please_enter_a_number;
+window.show_error_message = show_error_message;
+window.show_resource_load_error_message = show_resource_load_error_message;
+window.show_file_format_errors = show_file_format_errors;
+window.show_about_paint = show_about_paint;
+window.exit_fullscreen_if_ios = exit_fullscreen_if_ios;
+window.update_css_classes_for_conditional_messages = update_css_classes_for_conditional_messages;
+window.show_news = show_news;
+window.paste_image_from_file = paste_image_from_file;
+window.choose_file_to_paste = choose_file_to_paste;
+window.paste = paste;
+window.render_history_as_gif = render_history_as_gif;
+window.go_to_history_node = go_to_history_node;
+window.undoable = undoable;
+window.make_or_update_undoable = make_or_update_undoable;
+window.undo = undo;
+window.redo = redo;
+window.get_history_ancestors = get_history_ancestors;
+window.show_document_history = show_document_history;
+window.cancel = cancel;
+window.meld_selection_into_canvas = meld_selection_into_canvas;
+window.meld_textbox_into_canvas = meld_textbox_into_canvas;
+window.deselect = deselect;
+window.delete_selection = delete_selection;
+window.select_all = select_all;
+window.try_exec_command = try_exec_command;
+window.getSelectionText = getSelectionText;
+window.edit_copy = edit_copy;
+window.edit_cut = edit_cut;
+window.edit_paste = edit_paste;
+window.image_invert_colors = image_invert_colors;
+window.clear = clear;
+window.view_bitmap = view_bitmap;
+window.get_tool_by_id = get_tool_by_id;
+window.select_tools = select_tools;
+window.select_tool = select_tool;
+window.has_any_transparency = has_any_transparency;
+window.detect_monochrome = detect_monochrome;
+window.make_monochrome_pattern = make_monochrome_pattern;
+window.make_monochrome_palette = make_monochrome_palette;
+window.make_stripe_pattern = make_stripe_pattern;
+window.switch_to_polychrome_palette = switch_to_polychrome_palette;
+window.make_opaque = make_opaque;
+window.resize_canvas_without_saving_dimensions = resize_canvas_without_saving_dimensions;
+window.resize_canvas_and_save_dimensions = resize_canvas_and_save_dimensions;
+window.image_attributes = image_attributes;
+window.show_convert_to_black_and_white = show_convert_to_black_and_white;
+window.image_flip_and_rotate = image_flip_and_rotate;
+window.image_stretch_and_skew = image_stretch_and_skew;
+window.handle_keyshortcuts = handle_keyshortcuts;
+window.save_as_prompt = save_as_prompt;
+window.write_image_file = write_image_file;
+window.read_image_file = read_image_file;
+window.update_from_saved_file = update_from_saved_file;
+window.save_selection_to_file = save_selection_to_file;
+window.sanity_check_blob = sanity_check_blob;
+window.show_multi_user_setup_dialog = show_multi_user_setup_dialog;
+window.cleanup_bitmap_view = cleanup_bitmap_view;
+// Not a function, very strange to export this from here.
+window.$this_version_news = $this_version_news;

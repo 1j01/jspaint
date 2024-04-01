@@ -232,6 +232,7 @@ module.exports = {
 				"src/menus.js",
 				"src/speech-recognition.js",
 				"src/eye-gaze-mode.js",
+				"src/functions.js",
 				"cypress/**/*.js",
 			],
 			parserOptions: { sourceType: "module" },

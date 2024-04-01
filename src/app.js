@@ -497,6 +497,7 @@ let undos = [];
 let redos = [];
 
 let file_name;
+let file_format;
 let system_file_handle; // For saving over opened file on Save. Can be different type for File System Access API vs Electron.
 let saved = true;
 
