@@ -947,7 +947,7 @@
 
 	<!-- Most scripts are marked as deferred in order to start transitioning to ES Modules,
 	so that the ES Modules (which are always deferred) can still export globals to be consumed by the non-module scripts. -->
-	<script defer src="src/msgbox.js"></script>
+	<script type="module" src="src/msgbox.js"></script>
 	<script defer src="src/functions.js"></script>
 	<script type="module" src="src/helpers.js"></script>
 	<script defer src="src/storage.js"></script>
