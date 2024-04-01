@@ -1,8 +1,11 @@
 // @ts-check
 /* global tool_transparent_mode:writable, palette:writable */
-/* global $canvas_area, $colorbox, $status_area, $toolbox, available_languages, change_url_param, choose_file_to_paste, clear, delete_selection, deselect, edit_copy, edit_cut, edit_paste, file_load_from_url, file_new, file_open, file_save, file_save_as, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, get_rgba_from_color, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, localize, magnification, main_canvas, manage_storage, menu_bar, MENU_DIVIDER, palette_formats, redo, redos, render_history_as_gif, sanity_check_blob, save_selection_to_file, select_all, selection, set_language, set_magnification, set_theme, show_about_paint, show_custom_zoom_window, show_document_history, show_edit_colors_window, show_file_format_errors, show_grid, show_help, show_imgur_uploader, show_multi_user_setup_dialog, show_news, show_thumbnail, systemHooks, toggle_grid, toggle_thumbnail, undo, undos, view_bitmap */
-import { $G } from "./helpers.js";
-import { get_theme } from "./theme.js";
+/* global $canvas_area, $colorbox, $status_area, $toolbox, available_languages, change_url_param, choose_file_to_paste, clear, delete_selection, deselect, edit_copy, edit_cut, edit_paste, file_load_from_url, file_new, file_open, file_save, file_save_as, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, localize, magnification, main_canvas, menu_bar, MENU_DIVIDER, palette_formats, redo, redos, render_history_as_gif, sanity_check_blob, save_selection_to_file, select_all, selection, set_language, set_magnification, show_about_paint, show_custom_zoom_window, show_document_history, show_edit_colors_window, show_file_format_errors, show_grid, show_imgur_uploader, show_multi_user_setup_dialog, show_news, show_thumbnail, systemHooks, toggle_grid, toggle_thumbnail, undo, undos, view_bitmap */
+import { show_help } from "./help.js";
+import { $G, get_rgba_from_color } from "./helpers.js";
+import { manage_storage } from "./manage-storage.js";
+import { speech_recognition_active, speech_recognition_available } from "./speech-recognition.js";
+import { get_theme, set_theme } from "./theme.js";
 
 const looksLikeChrome = !!(window.chrome && (window.chrome.loadTimes || window.chrome.csi));
 // NOTE: Microsoft Edge includes window.chrome.app
@@ -1226,10 +1229,10 @@ const menus = {
 					}
 				},
 				check: () => {
-					return window.speech_recognition_active;
+					return speech_recognition_active;
 				},
 			},
-			enabled: () => window.speech_recognition_available,
+			enabled: () => speech_recognition_available,
 			description: localize("Controls the application with voice commands."),
 		},
 		{

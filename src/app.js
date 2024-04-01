@@ -502,6 +502,7 @@ let pointer_active = false;
 let pointer_type, pointer_buttons;
 let reverse;
 let ctrl;
+let shift;
 let button;
 let pointer_over_canvas = false;
 let update_helper_layer_on_pointermove_active = false;

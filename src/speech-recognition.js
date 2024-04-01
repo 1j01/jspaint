@@ -1,8 +1,9 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global airbrush_size:writable, brush_size:writable, eraser_size:writable, pencil_size:writable, stroke_size:writable, pointer_active:writable, pointer_over_canvas:writable, pointer_previous:writable, pointer:writable */
-/* global $canvas_area, $status_text, button, deselect, get_tool_by_id, localize, main_canvas, main_ctx, make_canvas, MENU_DIVIDER, menus, resize_canvas_without_saving_dimensions, select_tool, selected_colors, selected_tool, selected_tools, show_error_message, TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, tool_go, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT, tools, update_helper_layer */
-import { $G } from "./helpers.js";
+/* global $canvas_area, $status_text, button, deselect, get_tool_by_id, localize, main_canvas, main_ctx, MENU_DIVIDER, resize_canvas_without_saving_dimensions, select_tool, selected_colors, selected_tool, selected_tools, show_error_message, TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, tool_go, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT, tools, update_helper_layer */
+import { $G, make_canvas } from "./helpers.js";
+import { menus } from "./menus.js";
 
 // workaround for ES Modules only allowing exports at the top level
 // (I'm doing things messily in order to quickly adopt ESM.)

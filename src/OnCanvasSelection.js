@@ -1,8 +1,9 @@
 // @ts-check
-/* global $canvas_area, $status_position, $status_size, get_tool_by_id, main_canvas, main_ctx, make_or_update_undoable, replace_colors_with_swatch, selected_colors, to_canvas_coords, TOOL_SELECT, tool_transparent_mode, transparency, undoable, update_helper_layer */
+/* global $canvas_area, $status_position, $status_size, get_tool_by_id, main_canvas, main_ctx, make_or_update_undoable, selected_colors, to_canvas_coords, TOOL_SELECT, tool_transparent_mode, transparency, undoable, update_helper_layer */
 import { Handles } from "./Handles.js";
 import { OnCanvasObject } from "./OnCanvasObject.js";
 import { $G, get_icon_for_tool, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
+import { replace_colors_with_swatch } from "./image-manipulation.js";
 
 class OnCanvasSelection extends OnCanvasObject {
 	/**
@@ -10,7 +11,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	 * @param {number} y
 	 * @param {number} width
 	 * @param {number} height
-	 * @param {HTMLImageElement | HTMLCanvasElement} img_or_canvas
+	 * @param {HTMLImageElement | HTMLCanvasElement=} img_or_canvas
 	 */
 	constructor(x, y, width, height, img_or_canvas) {
 		super(x, y, width, height, true);
@@ -38,7 +39,7 @@ class OnCanvasSelection extends OnCanvasObject {
 		update_helper_layer(); // @TODO: under-grid specific helper layer?
 	}
 	/**
-	 * @param {HTMLImageElement | HTMLCanvasElement} img_or_canvas
+	 * @param {HTMLImageElement | HTMLCanvasElement=} img_or_canvas
 	 * @returns {void}
 	 */
 	instantiate(img_or_canvas) {

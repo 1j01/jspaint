@@ -23,6 +23,7 @@ declare const YT: any;
 declare const FontDetective: any;
 declare const AnyPalette: any;
 declare const ImageTracer: any;
+declare const TrackyMouse: any;
 declare let Konami: any;
 
 // Globals from scripts that are not converted to ESM yet,
@@ -31,6 +32,7 @@ declare let Konami: any;
 // app-localization.js
 declare function localize(text: string): string;
 declare function get_direction(language?: string): "rtl" | "ltr";
+declare function get_language(): string;
 // tools.js
 declare const TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 declare const TOOL_SELECT: "TOOL_SELECT";
@@ -48,7 +50,21 @@ declare const TOOL_RECTANGLE: "TOOL_RECTANGLE";
 declare const TOOL_POLYGON: "TOOL_POLYGON";
 declare const TOOL_ELLIPSE: "TOOL_ELLIPSE";
 declare const TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
+declare const tools: Tool[];
 // app.js
+declare let brush_shape = default_brush_shape;
+declare let brush_size = default_brush_size
+declare let eraser_size = default_eraser_size;
+declare let airbrush_size = default_airbrush_size;
+declare let pencil_size = default_pencil_size;
+declare let stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
+
+declare let tool_transparent_mode: boolean;
+declare let stroke_color: string | CanvasPattern;
+declare let fill_color: string | CanvasPattern;
+declare let stroke_color_k: "foreground" | "background" | "ternary";
+declare let fill_color_k: "foreground" | "background" | "ternary";
+
 declare let selected_tool: Tool;
 declare let selected_tools: Tool[];
 declare let return_to_tools: Tool[];
@@ -57,6 +73,47 @@ declare let selected_colors: {
 	background: string,
 	ternary: string,
 };
+
+declare let selection: OnCanvasSelection;
+declare let textbox: OnCanvasTextBox;
+declare let helper_layer: OnCanvasHelperLayer;
+declare let $thumbnail_window: $Window;
+declare let thumbnail_canvas: HTMLCanvasElement;
+declare let show_grid: boolean;
+declare let show_thumbnail: boolean;
+declare let text_tool_font: {
+	family: string, // should be an exact value detected by Font Detective
+	size: number,
+	line_scale: number,
+	bold: boolean,
+	italic: boolean,
+	underline: boolean,
+	vertical: boolean,
+	color: string,
+	background: string,
+};
+declare let root_history_node: HistoryNode;
+declare let current_history_node: HistoryNode;
+declare let history_node_to_cancel_to: HistoryNode | null;
+declare let undos: HistoryNode[];
+declare let redos: HistoryNode[];
+declare let file_name: string;
+declare let system_file_handle: any;
+declare let saved: boolean;
+declare let pointer: { x: number, y: number } | undefined;
+declare let pointer_start: { x: number, y: number } | undefined;
+declare let pointer_previous: { x: number, y: number } | undefined;
+declare let pointer_active: boolean;
+declare let pointer_type: string;
+declare let pointer_buttons: number;
+declare let reverse: boolean;
+declare let ctrl: boolean;
+declare let shift: boolean;
+declare let button: number;
+declare let pointer_over_canvas: boolean;
+declare let update_helper_layer_on_pointermove_active: boolean;
+declare let pointers: { x: number, y: number, pointerId: number, pointerType: string, isPrimary: boolean }[];
+
 // $FontBox.js
 // declare class $FontBox extends $Window { }
 // declare function $FontBox(): $FontBox;
@@ -92,6 +149,18 @@ declare function show_edit_colors_window(
 	$swatch_to_edit?: JQuery<HTMLDivElement>,
 	color_selection_slot_to_edit?: "foreground" | "background" | "ternary",
 ): void;
+// color-data.js
+// declare const default_palette: (string | CanvasPattern)[];
+// declare const monochrome_palette_as_colors: (string | CanvasPattern)[];
+// declare const basic_colors: (string | CanvasPattern)[];
+// declare const custom_colors: (string | CanvasPattern)[];
+// declare const get_winter_palette: () => (string | CanvasPattern)[];
+// imgur.js
+declare function show_imgur_uploader(blob: Blob): void;
+
+// The JS Paint API... ironically, untyped.
+// Hey, I'm just working on internals right now!
+declare const systemHooks: any;
 
 // Globals temporarily exported from ES Modules,
 // as well as globals from scripts that are not converted to ESM yet.
@@ -134,6 +203,7 @@ interface Window {
 	TOOL_POLYGON: "TOOL_POLYGON";
 	TOOL_ELLIPSE: "TOOL_ELLIPSE";
 	TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
+	tools: Tool[];
 	// OnCanvasObject.js
 	OnCanvasObject: typeof OnCanvasObject;
 	// OnCanvasHelperLayer.js
@@ -152,6 +222,14 @@ interface Window {
 	$ColorBox: (vertical: boolean) => JQuery<HTMLDivElement> & $ComponentMethods & $ColorBoxMethods;
 	$Swatch: (color: string | CanvasPattern | undefined) => JQuery<HTMLDivElement>;
 	update_$swatch: ($swatch: JQuery<HTMLDivElement>, color: string | CanvasPattern | undefined) => void;
+	// tool-options.js
+	$ChooseShapeStyle: () => JQuery<HTMLElement> & { fill: boolean, stroke: boolean };
+	$choose_brush: JQuery<HTMLElement>;
+	$choose_eraser_size: JQuery<HTMLElement>;
+	$choose_stroke_size: JQuery<HTMLElement>;
+	$choose_magnification: JQuery<HTMLElement>;
+	$choose_airbrush_size: JQuery<HTMLElement>;
+	$choose_transparent_mode: JQuery<HTMLElement>;
 	// app.js
 	selected_tool: Tool;
 	selected_tools: Tool[];
@@ -172,8 +250,16 @@ interface Window {
 		color: string,
 		background: string,
 	};
+	// The JS Paint API... ironically, untyped.
+	// Hey, I'm just working on internals right now!
+	systemHooks: any;
+	// electron-injected.js
+	is_electron_app?: boolean;
+	electron_is_dev?: boolean;
 	// Local Font Access API
 	queryLocalFonts?: () => Promise<FontData[]>;
+	// Chrome browser
+	chrome?: { loadTimes: unknown, csi: unknown };
 }
 
 class FontData {
@@ -199,7 +285,7 @@ class OnCanvasHelperLayer extends OnCanvasObject {
 	constructor(x: any, y: any, width: any, height: any, hideMainCanvasHandles: any, pixelRatio?: number);
 }
 class OnCanvasSelection extends OnCanvasObject {
-	constructor(x: number, y: number, width: number, height: number, img_or_canvas: HTMLImageElement | HTMLCanvasElement);
+	constructor(x: number, y: number, width: number, height: number, img_or_canvas?: HTMLImageElement | HTMLCanvasElement);
 	instantiate(img_or_canvas: HTMLImageElement | HTMLCanvasElement): void;
 	cut_out_background(): void;
 	update_tool_transparent_mode(): void;
@@ -209,7 +295,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	draw(): void;
 }
 class OnCanvasTextBox extends OnCanvasObject {
-	constructor(x: number, y: number, width: number, height: number, starting_text: string);
+	constructor(x: number, y: number, width: number, height: number, starting_text?: string);
 	position(): void;
 	static $fontbox: $Window | null;
 }
@@ -297,7 +383,7 @@ interface $WindowOptions {
 	iframes?: { ignoreCrossOrigin?: boolean };
 }
 
-
+declare function $Window(options?: $WindowOptions): $Window;
 declare class $Window extends JQuery<HTMLDivElement> {
 	static Z_INDEX: number;
 	static DEBUG_FOCUS: boolean;
@@ -426,6 +512,8 @@ interface Tool {
 	shape_colors?: boolean,
 	/** Used for Curve, Line, Pencil tools. */
 	stroke_only?: boolean,
+	/** Used by Airbrush tool */
+	paint_on_time_interval?: number,
 
 	/** Called when... */
 	preload?(): void,
@@ -492,9 +580,11 @@ interface Tool {
 	color_eraser_mode?: boolean,
 	/** Used by Pick Color tool */
 	current_color?: string,
+	/** Used by Pick Color tool */
+	display_current_color?(): void,
 
 	// UI
-	$options?: JQuery<HTMLElement>,
+	$options?: JQuery<HTMLElement> & { fill?: boolean, stroke?: boolean },
 	$button?: JQuery<HTMLElement>,
 }
 

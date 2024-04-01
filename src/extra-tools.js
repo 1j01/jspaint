@@ -1,5 +1,8 @@
 // @ts-check
-/* global $choose_airbrush_size, $choose_brush, airbrush_size, brush_canvas, brush_ctx, brush_shape, brush_size, get_brush_canvas_size, render_brush, stroke_color */
+/* global airbrush_size, brush_canvas, brush_ctx, brush_shape, brush_size, stroke_color */
+
+import { get_brush_canvas_size, render_brush } from "./image-manipulation.js";
+import { $choose_airbrush_size, $choose_brush } from "./tool-options.js";
 
 const extra_tools = [{
 	name: "Airbrushbrush",

@@ -11,9 +11,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 	 * @param {number} y
 	 * @param {number} width
 	 * @param {number} height
-	 * @param {string} starting_text
+	 * @param {string=} starting_text
 	 */
-	constructor(x, y, width, height, starting_text) {
+	constructor(x, y, width, height, starting_text = "") {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("textbox");
@@ -44,7 +44,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		var render_textarea = /** @type HTMLTextAreaElement */ (edit_textarea.cloneNode(false));
 		foreignObject.append(render_textarea);
 
-		edit_textarea.value = starting_text || "";
+		edit_textarea.value = starting_text;
 
 		this.canvas = make_canvas(width, height);
 		this.canvas.style.pointerEvents = "none";

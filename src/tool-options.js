@@ -1,7 +1,8 @@
 // @ts-check
 /* global stroke_size:writable, airbrush_size:writable, brush_shape:writable, brush_size:writable, eraser_size:writable, magnification:writable, tool_transparent_mode:writable */
-/* global make_canvas, render_brush, replace_colors_with_swatch, set_magnification, stamp_brush_canvas */
-import { $G, E } from "./helpers.js";
+/* global set_magnification */
+import { $G, E, make_canvas } from "./helpers.js";
+import { render_brush, replace_colors_with_swatch, stamp_brush_canvas } from "./image-manipulation.js";
 import { get_theme } from "./theme.js";
 
 const ChooserCanvas = (
@@ -105,7 +106,15 @@ const ChooserDiv = (
 };
 
 
-
+/**
+ * @template T
+ * @param {T[]} things
+ * @param {(thing: T, is_chosen: boolean, reuse_canvas: (width: number, height: number) => import("./helpers.js").PixelCanvas, reuse_div: (width: number, height: number) => HTMLDivElement) => HTMLCanvasElement | HTMLDivElement} display
+ * @param {(thing: T) => void} choose
+ * @param {(thing: T) => boolean} is_chosen
+ * @param {boolean=} gray_background_for_unselected
+ * @returns {JQuery<HTMLDivElement> & { stroke?: boolean, fill?: boolean }}
+ */
 const $Choose = (things, display, choose, is_chosen, gray_background_for_unselected) => {
 	const $chooser = $(E("div")).addClass("chooser").css("touch-action", "none");
 	const choose_thing = (thing) => {
@@ -194,6 +203,9 @@ const $Choose = (things, display, choose, is_chosen, gray_background_for_unselec
 	});
 	return $chooser;
 };
+/**
+ * @returns {JQuery<HTMLCanvasElement> & { stroke: boolean, fill: boolean }}
+ */
 const $ChooseShapeStyle = () => {
 	const $chooser = $Choose(
 		[

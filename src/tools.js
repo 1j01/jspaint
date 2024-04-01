@@ -1,7 +1,9 @@
 // @ts-check
 /* global selection:writable, stroke_size:writable, textbox:writable */
-/* global $canvas, $canvas_area, $choose_airbrush_size, $choose_brush, $choose_eraser_size, $choose_magnification, $choose_stroke_size, $choose_transparent_mode, $ChooseShapeStyle, airbrush_size, bresenham_dense_line, bresenham_line, brush_shape, brush_size, button, canvas_handles, copy_contents_within_polygon, ctrl, deselect, draw_bezier_curve, draw_ellipse, draw_fill, draw_line, draw_line_strip, draw_noncontiguous_fill, draw_polygon, draw_quadratic_curve, draw_rounded_rectangle, draw_selection_box, eraser_size, fill_color, fill_color_k, get_circumference_points_for_brush, get_icon_for_tool, get_icon_for_tools, get_language, get_rgba_from_color, get_tool_by_id, localize, magnification, main_canvas, main_ctx, make_canvas, meld_selection_into_canvas, meld_textbox_into_canvas, OnCanvasSelection, OnCanvasTextBox, pencil_size, pointer, pointer_active, pointer_over_canvas, pointer_previous, pointer_start, replace_colors_with_swatch, return_to_magnification, selected_colors, set_magnification, shift, show_error_message, stamp_brush_canvas, stroke_color, transparency, undoable, update_brush_for_drawing_lines, update_helper_layer */
-import { $G, E, make_css_cursor } from "./helpers.js";
+/* global $canvas, $canvas_area, airbrush_size, brush_shape, brush_size, button, canvas_handles, ctrl, deselect, eraser_size, fill_color, fill_color_k, get_language, get_tool_by_id, localize, magnification, main_canvas, main_ctx, meld_selection_into_canvas, meld_textbox_into_canvas, OnCanvasSelection, OnCanvasTextBox, pencil_size, pointer, pointer_active, pointer_over_canvas, pointer_previous, pointer_start, return_to_magnification, selected_colors, set_magnification, shift, show_error_message, stroke_color, transparency, undoable, update_helper_layer */
+import { $G, E, get_icon_for_tool, get_icon_for_tools, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
+import { bresenham_dense_line, bresenham_line, copy_contents_within_polygon, draw_bezier_curve, draw_ellipse, draw_fill, draw_line, draw_line_strip, draw_noncontiguous_fill, draw_polygon, draw_quadratic_curve, draw_rounded_rectangle, draw_selection_box, get_circumference_points_for_brush, replace_colors_with_swatch, stamp_brush_canvas, update_brush_for_drawing_lines } from "./image-manipulation.js";
+import { $ChooseShapeStyle, $choose_airbrush_size, $choose_brush, $choose_eraser_size, $choose_magnification, $choose_stroke_size, $choose_transparent_mode } from "./tool-options.js";
 
 // This is for linting stuff at the bottom.
 /* eslint no-restricted-syntax: ["error", "ThisExpression"] */
@@ -324,6 +326,7 @@ const tools = [{
 		ctx.restore();
 
 		if (previewing || !transparency) {
+			/** @type {string | CanvasGradient} */
 			let color = selected_colors.background;
 			if (transparency) {
 				const t = performance.now() / 2000;
@@ -371,6 +374,11 @@ const tools = [{
 			this.paint_iteration(ctx, x, y);
 		});
 	},
+	/**
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {number} x
+	 * @param {number} y
+	 */
 	paint_iteration(ctx, x, y) {
 		const { rect_x, rect_y, rect_w, rect_h } = this.get_rect(x, y);
 

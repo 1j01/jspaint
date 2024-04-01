@@ -1,8 +1,8 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global saved:writable, brush_size:writable, pencil_size:writable, stroke_size:writable */
-/* global $canvas_area, aliasing, cancel, deselect, detect_monochrome, get_help_folder_icon, get_rgba_from_color, localize, main_canvas, main_ctx, make_canvas, memoize_synchronous_function, palette, selected_colors, selection, show_error_message, stroke_color, TAU, transparency, undoable, update_title */
-import { $G } from "./helpers.js";
+/* global $canvas_area, aliasing, cancel, deselect, detect_monochrome, localize, main_canvas, main_ctx, palette, selected_colors, selection, show_error_message, stroke_color, transparency, undoable, update_title */
+import { $G, TAU, get_help_folder_icon, get_rgba_from_color, make_canvas, memoize_synchronous_function } from "./helpers.js";
 
 // workaround for ES Modules only allowing exports at the top level
 // (I'm doing things messily in order to quickly adopt ESM.)

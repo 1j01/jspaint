@@ -1,7 +1,10 @@
 // @ts-check
 /* global palette:writable */
-/* global $colorbox, $DialogWindow, $Swatch, basic_colors, custom_colors, detect_monochrome, display_hotkey, get_help_folder_icon, get_rgba_from_color, localize, main_ctx, make_canvas, make_monochrome_palette, monochrome, replace_color_globally, rgb_to_hsl, selected_colors, selection, show_error_message, undoable, update_$swatch */
-import { $G } from "./helpers.js";
+/* global $colorbox, $DialogWindow, detect_monochrome, display_hotkey, localize, main_ctx, make_monochrome_palette, monochrome, selected_colors, selection, show_error_message, undoable */
+import { $Swatch, update_$swatch } from "./$ColorBox.js";
+import { basic_colors, custom_colors } from "./color-data.js";
+import { $G, get_help_folder_icon, get_rgba_from_color, make_canvas, rgb_to_hsl } from "./helpers.js";
+import { replace_color_globally } from "./image-manipulation.js";
 
 // @TODO:
 // - Persist custom colors list across reloads? It's not very persistent in real Windows...

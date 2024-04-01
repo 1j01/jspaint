@@ -1333,6 +1333,19 @@ function show_resource_load_error_message(error) {
 	$message.css({ maxWidth: "500px" });
 	$window.center(); // after adding content
 }
+/**
+ * @typedef {object} PaletteErrorGroup
+ * @property {string} message
+ * @property {PaletteErrorObject[]} errors
+ * 
+ * @typedef {object} PaletteErrorObject
+ * @property {error} error
+ * @property {{name: string}} __PATCHED_LIB_TO_ADD_THIS__format
+ * 
+ * @param {object} options
+ * @param {Error=} options.as_image_error
+ * @param {Error|PaletteErrorGroup=} options.as_palette_error
+ */
 function show_file_format_errors({ as_image_error, as_palette_error }) {
 	let html = `
 		<p>${localize("Paint cannot open this file.")}</p>
