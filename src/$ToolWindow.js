@@ -4,7 +4,7 @@
 import { $G, E } from "./helpers.js";
 
 function make_window_supporting_scale(options) {
-	const $w = new $Window(options);
+	const $w = $Window(options);
 
 	const scale_for_eye_gaze_mode_and_center = () => {
 		if (!$w.is(".edit-colors-window, .storage-manager, .attributes-window, .flip-and-rotate, .stretch-and-skew")) {

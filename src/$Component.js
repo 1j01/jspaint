@@ -91,7 +91,7 @@ function $Component(title, className, orientation, $el) {
 	$c.append($el);
 	$c.css("touch-action", "none");
 
-	const $w = new $ToolWindow($c);
+	const $w = $ToolWindow($c);
 	$w.title(title);
 	$w.hide();
 	$w.$content.addClass({

@@ -438,7 +438,7 @@ function $Iframe(options) {
 
 // function $IframeWindow(options) {
 
-// 	var $win = new $Window(options);
+// 	var $win = $Window(options);
 
 // 	var $iframe = $win.$iframe = $Iframe({ src: options.src });
 // 	$win.$content.append($iframe);

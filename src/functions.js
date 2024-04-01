@@ -377,7 +377,7 @@ function show_custom_zoom_window() {
 	if ($custom_zoom_window) {
 		$custom_zoom_window.close();
 	}
-	const $w = new $DialogWindow(localize("Custom Zoom"));
+	const $w = $DialogWindow(localize("Custom Zoom"));
 	$custom_zoom_window = $w;
 	$w.addClass("custom-zoom-window");
 
@@ -505,7 +505,7 @@ function toggle_thumbnail() {
 			thumbnail_canvas.style.height = "100%";
 		}
 		if (!$thumbnail_window) {
-			$thumbnail_window = new $Window({
+			$thumbnail_window = $Window({
 				title: localize("Thumbnail"),
 				toolWindow: true,
 				resizable: true,
@@ -1007,7 +1007,7 @@ function file_load_from_url() {
 	if ($file_load_from_url_window) {
 		$file_load_from_url_window.close();
 	}
-	const $w = new $DialogWindow().addClass("horizontal-buttons");
+	const $w = $DialogWindow().addClass("horizontal-buttons");
 	$file_load_from_url_window = $w;
 	$w.title("Load from URL");
 	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
@@ -2070,7 +2070,7 @@ function show_document_history() {
 	if ($document_history_window) {
 		$document_history_window.close();
 	}
-	const $w = $document_history_window = new $Window({
+	const $w = $document_history_window = $Window({
 		title: "Document History",
 		resizable: false,
 		maximizeButton: false,
@@ -2896,7 +2896,7 @@ function image_attributes() {
 	if (image_attributes.$window) {
 		image_attributes.$window.close();
 	}
-	const $w = image_attributes.$window = new $DialogWindow(localize("Attributes"));
+	const $w = image_attributes.$window = $DialogWindow(localize("Attributes"));
 	$w.addClass("attributes-window");
 
 	const $main = $w.$main;
@@ -3059,7 +3059,7 @@ function image_attributes() {
 }
 
 function show_convert_to_black_and_white() {
-	const $w = new $DialogWindow("Convert to Black and White");
+	const $w = $DialogWindow("Convert to Black and White");
 	$w.addClass("convert-to-black-and-white");
 	$w.$main.append("<fieldset><legend>Threshold:</legend><input type='range' min='0' max='1' step='0.01' value='0.5'></fieldset>");
 	const $slider = $w.$main.find("input[type='range']");
@@ -3099,7 +3099,7 @@ function show_convert_to_black_and_white() {
 }
 
 function image_flip_and_rotate() {
-	const $w = new $DialogWindow(localize("Flip and Rotate"));
+	const $w = $DialogWindow(localize("Flip and Rotate"));
 	$w.addClass("flip-and-rotate");
 
 	const $fieldset = $(E("fieldset")).appendTo($w.$main);
@@ -3246,7 +3246,7 @@ function image_flip_and_rotate() {
 }
 
 function image_stretch_and_skew() {
-	const $w = new $DialogWindow(localize("Stretch and Skew"));
+	const $w = $DialogWindow(localize("Stretch and Skew"));
 	$w.addClass("stretch-and-skew");
 
 	const $fieldset_stretch = $(E("fieldset")).appendTo($w.$main);
@@ -3391,7 +3391,7 @@ function save_as_prompt({
 	promptForName = true,
 }) {
 	return new Promise((resolve) => {
-		const $w = new $DialogWindow(dialogTitle);
+		const $w = $DialogWindow(dialogTitle);
 		$w.addClass("save-as");
 
 		// This is needed to prevent the keyboard from closing when you tap the file name input! in FF mobile

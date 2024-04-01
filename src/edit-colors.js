@@ -163,7 +163,7 @@ function choose_color(initial_color, callback) {
 	if ($edit_colors_window) {
 		$edit_colors_window.close();
 	}
-	const $w = new $DialogWindow(localize("Edit Colors"));
+	const $w = $DialogWindow(localize("Edit Colors"));
 	$w.addClass("edit-colors-window");
 	$edit_colors_window = $w;
 
