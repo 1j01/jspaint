@@ -1,4 +1,6 @@
 // @ts-check
+/* global localize */
+
 // Note that this API must be kept in sync with the version in 98.js.org,
 // as 98.js.org will write the global `showMessageBox` to provide integration with the web desktop environment,
 // i.e. windows that can go outside the iframe.
@@ -6,16 +8,20 @@
 // and set `window.defaultMessageBoxTitle` which is used in 98.js.org to set the default title for message boxes...
 // or, couldn't we just provide the default in a wrapper function, similar to how 98.js.org does it?
 
+import { make_window_supporting_scale } from "./$ToolWindow.js";
+
 const exports = {};
+
+const CHORD_WAV_URL = "audio/chord.wav";
 
 try {
 	// <audio> element is simpler for sound effects,
 	// but in iOS/iPad it shows up in the Control Center, as if it's music you'd want to play/pause/etc.
 	// It's very silly. Also, on subsequent plays, it only plays part of the sound.
 	// And Web Audio API is better for playing SFX anyway because it can play a sound overlapping with itself.
-	window.audioContext = window.audioContext || new AudioContext();
+	const audioContext = window.audioContext = window.audioContext || new AudioContext();
 	const audio_buffer_promise =
-		fetch("audio/chord.wav")
+		fetch(CHORD_WAV_URL)
 			.then(response => response.arrayBuffer())
 			.then(array_buffer => audioContext.decodeAudioData(array_buffer))
 	var play_chord = async function () {
@@ -43,8 +49,10 @@ try {
  * @property {"error" | "warning" | "info" | "nuke"} [iconID]
  * @property {$WindowOptions} [windowOptions]
  * 
+ * @typedef {Promise<string> & { $window: JQuery<Window>, $message: JQuery<HTMLDivElement>, promise: MessageBoxPromise }} MessageBoxPromise
+ * 
  * @param {MessageBoxOptions} options
- * @returns {Promise<string>} Resolves with the value of the button that was clicked.
+ * @returns {MessageBoxPromise} Resolves with the value of the button that was clicked. The promise has extra properties for convenience.
  */
 function showMessageBox_implementation({
 	title = window.defaultMessageBoxTitle ?? "Alert",
@@ -55,7 +63,7 @@ function showMessageBox_implementation({
 	windowOptions = {}, // for controlling width, etc.
 }) {
 	let $window, $message;
-	const promise = new Promise((resolve, reject) => {
+	const promise = /** @type {MessageBoxPromise} */ (new Promise((resolve) => {
 		$window = make_window_supporting_scale(Object.assign({
 			title,
 			resizable: false,
@@ -123,14 +131,14 @@ function showMessageBox_implementation({
 			resolve("closed"); // or "cancel"? do you need to distinguish?
 		});
 		$window.center();
-	});
+	}));
 	promise.$window = $window;
 	promise.$message = $message;
 	promise.promise = promise; // for easy destructuring
 	try {
 		play_chord();
 	} catch (error) {
-		console.log(`Failed to play ${chord_audio.src}: `, error);
+		console.log(`Failed to play ${CHORD_WAV_URL}: `, error);
 	}
 	return promise;
 }

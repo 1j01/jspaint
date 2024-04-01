@@ -255,6 +255,8 @@ interface Window {
 	};
 	// msgbox.js
 	showMessageBox: (options: MessageBoxOptions) => Promise<string>;
+	defaultMessageBoxTitle: string;
+	audioContext: AudioContext;
 	// color-data.js
 	default_palette: (string | CanvasPattern)[];
 	monochrome_palette_as_colors: (string | CanvasPattern)[];
