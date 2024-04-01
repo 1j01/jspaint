@@ -458,7 +458,7 @@ function choose_color(initial_color, callback) {
 			$(input).css({
 				position: "absolute",
 				left: 106 + color_model_index * 80,
-				top: 202 + component_index * input_y_spacing + (component_index > 1), // spacing of rows is uneven by a pixel
+				top: 202 + component_index * input_y_spacing + (component_index > 1 ? 1 : 0), // spacing of rows is uneven by a pixel
 				width: 21,
 				height: 14,
 			});

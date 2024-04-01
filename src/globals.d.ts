@@ -30,9 +30,17 @@ declare let Konami: any;
 // and thus can't be imported. (I've been marking scripts as @ts-check as I convert them.)
 // This supports bare identifier global access (no `window.` needed).
 // app-localization.js
-declare function localize(text: string): string;
+declare function localize(english_text: string, ...interpolations: string[]): string;
 declare function get_direction(language?: string): "rtl" | "ltr";
 declare function get_language(): string;
+declare function set_language(language: string): void;
+declare function get_language_endonym(language: string): string;
+declare function get_iso_language_name(language: string): string;
+declare function get_language_emoji(language: string): string;
+declare const available_languages: string[];
+declare function remove_hotkey(text: string): string;
+declare function get_hotkey(text: string): string;
+declare function display_hotkey(text: string): string;
 // tools.js
 declare const TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 declare const TOOL_SELECT: "TOOL_SELECT";
@@ -51,6 +59,9 @@ declare const TOOL_POLYGON: "TOOL_POLYGON";
 declare const TOOL_ELLIPSE: "TOOL_ELLIPSE";
 declare const TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
 declare const tools: Tool[];
+declare const tools: Tool[];
+// extra-tools.js
+declare const extra_tools: Tool[];
 // app.js
 declare let brush_shape = default_brush_shape;
 declare let brush_size = default_brush_size
@@ -231,6 +242,9 @@ interface Window {
 	$choose_airbrush_size: JQuery<HTMLElement>;
 	$choose_transparent_mode: JQuery<HTMLElement>;
 	// app.js
+	selection: OnCanvasSelection;
+	textbox: OnCanvasTextBox;
+	helper_layer: OnCanvasHelperLayer;
 	selected_tool: Tool;
 	selected_tools: Tool[];
 	return_to_tools: Tool[];
@@ -250,6 +264,30 @@ interface Window {
 		color: string,
 		background: string,
 	};
+	// color-data.js
+	default_palette: (string | CanvasPattern)[];
+	monochrome_palette_as_colors: (string | CanvasPattern)[];
+	basic_colors: (string | CanvasPattern)[];
+	custom_colors: (string | CanvasPattern)[];
+	get_winter_palette: () => (string | CanvasPattern)[];
+	// help.js
+	show_help: () => void;
+	// menus.js
+	menus: object;
+	// manage-storage.js
+	manage_storage: () => void;
+	storage_quota_exceeded: () => Promise<void>;
+	// speech-recognition.js
+	sketching_iid: Timer;
+	speech_recognition_active: boolean;
+	// eye-gaze-mode.js and speech-recognition.js
+	untrusted_gesture: boolean;
+	// simulate-random-gestures.js
+	stopSimulatingGestures: () => void;
+	simulateRandomGesturesPeriodically: () => void;
+	simulateRandomGesture: (callback: () => void, options: { shift?: boolean, shiftToggleChance?: number, secondary?: boolean, secondaryToggleChance?: number, target?: HTMLElement }) => void;
+	simulatingGestures: boolean;
+	drawRandomlySeed: number;
 	// The JS Paint API... ironically, untyped.
 	// Hey, I'm just working on internals right now!
 	systemHooks: any;
@@ -375,6 +413,7 @@ interface $WindowOptions {
 	parentWindow?: $Window;
 	$component?: any; // Replace with actual component type
 	icons?: { [size: string]: string | HTMLImageElement };
+	icon?: string | HTMLImageElement;
 	constrainRect?: (rect: { x: number; y: number; width: number; height: number; }, xAxis: number, yAxis: number) => { x: number; y: number; width: number; height: number; };
 	minOuterWidth?: number;
 	minOuterHeight?: number;
@@ -415,7 +454,7 @@ declare class $Window extends JQuery<HTMLDivElement> {
 	title(title: string): this;
 	title(): string;
 	getTitle(): string;
-	setMenuBar(menuBar: MenuBar): void; // Replace with actual menu bar type
+	setMenuBar(menuBar: MenuBar): void;
 	bringToFront(): void;
 	addChildWindow($childWindow: $Window): void;
 	setMinimizeTarget(taskbarButtonEl: HTMLElement): void;
@@ -492,8 +531,8 @@ type ToolID =
 // This isn't a coherent API, but rather a layered set of functionality
 // all typed as if it were a single API.
 // It's not providing much type safety,
-// just look at paint_iteration for example. There are two overloads,
-// simply because it's defined separately for two different tools.
+// just look at eraser_paint_iteration/ffs_paint_iteration for example.
+// I had to rename them from "paint_iteration" because was defined differently for two different tools.
 // A class hierarchy may be in order, or another way of encapsulating
 // subsets of functionality, such as functions that return tool objects,
 // instead of properties that imply other properties should be generated.
@@ -522,9 +561,9 @@ interface Tool {
 	/** Called when... */
 	paint?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
 	/** Used by Free-Form Select tool */
-	paint_iteration?(x: number, y: number): void,
+	ffs_paint_iteration?(x: number, y: number): void,
 	/** Used by Eraser tool */
-	paint_iteration?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
+	eraser_paint_iteration?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
 	/** Called when... */
 	pointerup?(): void,
 	/** Called when... */
@@ -629,4 +668,22 @@ interface HistoryNode {
 	name: string;
 	/** a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png") */
 	icon: Image | HTMLCanvasElement | null;
+}
+
+// Fullscreen API vendor prefixes
+interface Document {
+	webkitFullscreenElement?: Document["fullscreenElement"];
+	mozFullScreenElement?: Document["fullscreenElement"];
+	msFullscreenElement?: Document["fullscreenElement"];
+	webkitExitFullscreen?: typeof Document.prototype.exitFullscreen;
+	mozCancelFullScreen?: typeof Document.prototype.exitFullscreen;
+	msExitFullscreen?: typeof Document.prototype.exitFullscreen;
+	webkitFullscreenEnabled?: Document["fullscreenEnabled"];
+	mozFullScreenEnabled?: Document["fullscreenEnabled"];
+	msFullscreenEnabled?: Document["fullscreenEnabled"];
+}
+interface HTMLElement {
+	webkitRequestFullscreen?: typeof HTMLElement.prototype.requestFullscreen;
+	mozRequestFullScreen?: typeof HTMLElement.prototype.requestFullscreen;
+	msRequestFullscreen?: typeof HTMLElement.prototype.requestFullscreen;
 }

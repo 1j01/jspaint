@@ -95,13 +95,13 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 
 		const x2 = x + width;
 		const y2 = y + height;
-		arc(x2 - radius_x, y + radius_y, radius_x, radius_y, TAU * 3 / 4, TAU, false);
+		arc(x2 - radius_x, y + radius_y, radius_x, radius_y, TAU * 3 / 4, TAU);
 		lineTo(x2, y2 - radius_y);
-		arc(x2 - radius_x, y2 - radius_y, radius_x, radius_y, 0, TAU * 1 / 4, false);
+		arc(x2 - radius_x, y2 - radius_y, radius_x, radius_y, 0, TAU * 1 / 4);
 		lineTo(x + radius_x, y2);
-		arc(x + radius_x, y2 - radius_y, radius_x, radius_y, TAU * 1 / 4, TAU * 1 / 2, false);
+		arc(x + radius_x, y2 - radius_y, radius_x, radius_y, TAU * 1 / 4, TAU * 1 / 2);
 		lineTo(x, y + radius_y);
-		arc(x + radius_x, y + radius_y, radius_x, radius_y, TAU / 2, TAU * 3 / 4, false);
+		arc(x + radius_x, y + radius_y, radius_x, radius_y, TAU / 2, TAU * 3 / 4);
 
 		draw_polygon(ctx, points, stroke, fill);
 	} else {
@@ -833,9 +833,9 @@ function threshold_black_and_white(ctx, threshold) {
 	const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	for (let i = 0; i < image_data.data.length; i += 4) {
 		const white = (image_data.data[i + 0] + image_data.data[i + 1] + image_data.data[i + 2]) / 3 / 255 > threshold;
-		image_data.data[i + 0] = 255 * white;
-		image_data.data[i + 1] = 255 * white;
-		image_data.data[i + 2] = 255 * white;
+		image_data.data[i + 0] = white ? 255 : 0;
+		image_data.data[i + 1] = white ? 255 : 0;
+		image_data.data[i + 2] = white ? 255 : 0;
 		image_data.data[i + 3] = 255;
 	}
 	ctx.putImageData(image_data, 0, 0);

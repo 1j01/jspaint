@@ -25,6 +25,11 @@
 	}
 
 	let localizations = {};
+	/**
+	 * @param {string} english_text - The English text to localize
+	 * @param  {...string} interpolations - Strings to replace %1, %2, etc.
+	 * @returns {string} - Text in the current language
+	 */
 	function localize(english_text, ...interpolations) {
 		function find_localization(english_text) {
 			const amp_index = index_of_hotkey(english_text);

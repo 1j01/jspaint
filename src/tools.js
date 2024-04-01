@@ -79,10 +79,10 @@ const tools = [{
 		this.y_max = Math.max(pointer.y, this.y_max);
 
 		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
-			this.paint_iteration(x, y);
+			this.ffs_paint_iteration(x, y);
 		});
 	},
-	paint_iteration(x, y) {
+	ffs_paint_iteration(x, y) {
 		// Constrain the inversion paint brush position to the canvas
 		x = Math.min(main_canvas.width, x);
 		x = Math.max(0, x);
@@ -371,15 +371,10 @@ const tools = [{
 	},
 	paint(ctx, x, y) {
 		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
-			this.paint_iteration(ctx, x, y);
+			this.eraser_paint_iteration(ctx, x, y);
 		});
 	},
-	/**
-	 * @param {CanvasRenderingContext2D} ctx
-	 * @param {number} x
-	 * @param {number} y
-	 */
-	paint_iteration(ctx, x, y) {
+	eraser_paint_iteration(ctx, x, y) {
 		const { rect_x, rect_y, rect_w, rect_h } = this.get_rect(x, y);
 
 		this.color_eraser_mode = button !== 0;

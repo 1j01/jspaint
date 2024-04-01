@@ -132,9 +132,15 @@ const $Choose = (things, display, choose, is_chosen, gray_background_for_unselec
 		for (let i = 0; i < things.length; i++) {
 			(thing => {
 				const $option_container = $(E("div")).addClass("chooser-option").appendTo($chooser);
+				// @ts-ignore
 				$option_container.data("thing", thing);
+				/**
+				 * @param {number} width
+				 * @param {number} height
+				 * @returns {import("./helpers.js").PixelCanvas}
+				 */
 				const reuse_canvas = (width, height) => {
-					let option_canvas = $option_container.find("canvas")[0];
+					let option_canvas = /** @type {import("./helpers.js").PixelCanvas | undefined} */ ($option_container.find("canvas")[0]);
 					if (option_canvas) {
 						if (option_canvas.width !== width) { option_canvas.width = width; }
 						if (option_canvas.height !== height) { option_canvas.height = height; }
@@ -367,7 +373,7 @@ const $choose_airbrush_size = $Choose(
 		const l = airbrush_sizes.length; // 3
 		const is_bottom = (i === 2);
 
-		const shrink = 4 * !is_bottom;
+		const shrink = is_bottom ? 0 : 4;
 		const w = image_width / l - shrink * 2;
 		const h = 23;
 		const source_x = image_width / l * i + shrink;

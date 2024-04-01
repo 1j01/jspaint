@@ -246,6 +246,7 @@ const menus = {
 				// In a cross-origin iframe, or same origin but without custom close(), or top level:
 				// Not all browsers support close() for closing a tab,
 				// so redirect instead. Exit to the official web desktop.
+				// @ts-ignore
 				window.location = "https://98.js.org/";
 			},
 			description: localize("Quits Paint."),

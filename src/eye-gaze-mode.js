@@ -133,7 +133,7 @@ const eye_gaze_mode_config = {
 				st.getPropertyValue("transform") ||
 				"none";
 			if (tm !== "none") {
-				const [a, b] = tm.split('(')[1].split(')')[0].split(',');
+				const [a, b] = tm.split('(')[1].split(')')[0].split(',').map(Number);
 				return Math.round(Math.atan2(a, b) * (180 / Math.PI));
 			}
 			return 0;
@@ -397,7 +397,7 @@ async function init_eye_gaze_mode() {
 					const occluder_rect = occluder.getBoundingClientRect();
 					const outline_width = 4;
 					occluder_indicator.style.pointerEvents = "none";
-					occluder_indicator.style.zIndex = 1000001;
+					occluder_indicator.style.zIndex = "1000001";
 					occluder_indicator.style.display = "block";
 					occluder_indicator.style.position = "fixed";
 					occluder_indicator.style.left = `${occluder_rect.left + outline_width}px`;
@@ -485,7 +485,7 @@ async function init_eye_gaze_mode() {
 				dwell_indicator.classList.remove("for-release");
 			}
 			dwell_indicator.style.display = "";
-			dwell_indicator.style.opacity = circle_opacity;
+			dwell_indicator.style.opacity = circle_opacity.toFixed(3);
 			dwell_indicator.style.transform = `scale(${circle_radius / circle_radius_max})`;
 			dwell_indicator.style.left = `${circle_position.x - circle_radius_max / 2}px`;
 			dwell_indicator.style.top = `${circle_position.y - circle_radius_max / 2}px`;
