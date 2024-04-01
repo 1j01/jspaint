@@ -1323,7 +1323,7 @@ if (exports.speech_recognition_available) {
 		// spell-checker:enable
 	];
 	const colorNames = ['aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
-	const toolNames = tools.map((tool) => tool.speech_recognition).flat();
+	// const toolNames = tools.map((tool) => tool.speech_recognition).flat();
 	// @TODO: select foreground/background/ternary color specifically
 	// @TODO: switch colors / swap colors / swap foreground and background colors
 	// @TODO: zoom in/out / increase/decrease magnification, zoom to 20x / 5% etc., zoom out all the way (actual size or best fit if it's too big), actual size
@@ -1336,6 +1336,8 @@ if (exports.speech_recognition_available) {
 	// @TODO: Is there a way to enable the grammar only as a hint, non-restrictively?
 	// Construct a grammar that just contains an English dictionary, and set it as lower weight?
 	// That might mess with / not work with things like "MC" in "MC Hammer", numbers, emoji, etc.
+	// and be super inefficient and terrible.
+	// (Really I just want the speech recognition to be better. I wonder if it's better these days...)
 	/*const grammar = `#JSGF V1.0;
 	grammar jspaintCommands;
 	<color> = ${colorNames.join(' | ')};
