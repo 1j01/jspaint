@@ -1134,6 +1134,7 @@ const tools = [{
 
 tools.forEach((tool) => {
 	if (tool.selectBox) {
+		// TODO: is drag_start_x/y redundant with pointer_start.x/y?
 		let drag_start_x = 0;
 		let drag_start_y = 0;
 		let pointer_has_moved = false;

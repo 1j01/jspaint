@@ -1466,6 +1466,8 @@ function canvas_pointer_move(e) {
 	}
 
 	if (e.shiftKey) {
+		// TODO: snap to 45 degrees for Pencil and Polygon tools
+		// TODO: manipulating the pointer object directly is a bit of a hack
 		if (
 			selected_tool.id === TOOL_LINE ||
 			selected_tool.id === TOOL_CURVE
