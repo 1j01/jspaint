@@ -4,16 +4,7 @@
 // I'm working on transitioning to ES Modules, but having the ES Modules
 // export globals until all dependent files are converted to ESM.
 
-// IMPORTING/EXPORTING ANYTHING WILL BREAK AMBIENT DECLARATIONS
-// import { PixelCanvas } from "./helpers.js";
-/**
- * @typedef {HTMLCanvasElement & {ctx: PixelContext}} PixelCanvas
- * @typedef {CanvasRenderingContext2D & ExtraContextMethods} PixelContext
- * @typedef {Object} ExtraContextMethods
- * @property {() => void} disable_image_smoothing
- * @property {() => void} enable_image_smoothing
- * @property {(image: HTMLImageElement | HTMLCanvasElement | ImageData) => void} copy
- */
+// NOTE: IMPORTING/EXPORTING ANYTHING WILL BREAK AMBIENT DECLARATIONS
 
 declare const libtess: any;
 declare const firebase: any;
@@ -687,6 +678,18 @@ interface HistoryNode {
 	name: string;
 	/** a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png") */
 	icon: Image | HTMLCanvasElement | null;
+}
+
+/**
+ * A canvas with a 2D context that has some extra methods. Returned by `make_canvas`.
+ */
+interface PixelCanvas extends HTMLCanvasElement {
+	ctx: PixelContext;
+}
+interface PixelContext extends CanvasRenderingContext2D {
+	disable_image_smoothing(): void;
+	enable_image_smoothing(): void;
+	copy(image: HTMLImageElement | HTMLCanvasElement | ImageData): void;
 }
 
 type BrushShape = "circle" | "square" | "reverse_diagonal" | "diagonal";

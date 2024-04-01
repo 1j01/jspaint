@@ -37,7 +37,7 @@ function update_$swatch($swatch, new_color) {
 	}
 	new_color = new_color || $swatch.data("swatch");
 	$swatch.data("swatch", new_color);
-	const swatch_canvas = /** @type {import("./helpers.js").PixelCanvas} */ (
+	const swatch_canvas = /** @type {PixelCanvas} */ (
 		$swatch.find("canvas")[0]
 	);
 	requestAnimationFrame(() => {

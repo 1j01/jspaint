@@ -130,7 +130,7 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 /**
  * @param {string} brush_shape
  * @param {number} brush_size
- * @returns {import("./helpers.js").PixelCanvas}
+ * @returns {PixelCanvas}
  */
 const get_brush_canvas_implementation = (brush_shape, brush_size) => {
 	const canvas_size = get_brush_canvas_size(brush_size, brush_shape);

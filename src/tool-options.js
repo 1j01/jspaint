@@ -109,7 +109,7 @@ const ChooserDiv = (
 /**
  * @template T
  * @param {T[]} things
- * @param {(thing: T, is_chosen: boolean, reuse_canvas: (width: number, height: number) => import("./helpers.js").PixelCanvas, reuse_div: (width: number, height: number) => HTMLDivElement) => HTMLCanvasElement | HTMLDivElement} display
+ * @param {(thing: T, is_chosen: boolean, reuse_canvas: (width: number, height: number) => PixelCanvas, reuse_div: (width: number, height: number) => HTMLDivElement) => HTMLCanvasElement | HTMLDivElement} display
  * @param {(thing: T) => void} choose
  * @param {(thing: T) => boolean} is_chosen
  * @param {boolean=} gray_background_for_unselected
@@ -137,10 +137,10 @@ const $Choose = (things, display, choose, is_chosen, gray_background_for_unselec
 				/**
 				 * @param {number} width
 				 * @param {number} height
-				 * @returns {import("./helpers.js").PixelCanvas}
+				 * @returns {PixelCanvas}
 				 */
 				const reuse_canvas = (width, height) => {
-					let option_canvas = /** @type {import("./helpers.js").PixelCanvas | undefined} */ ($option_container.find("canvas")[0]);
+					let option_canvas = /** @type {PixelCanvas | undefined} */ ($option_container.find("canvas")[0]);
 					if (option_canvas) {
 						if (option_canvas.width !== width) { option_canvas.width = width; }
 						if (option_canvas.height !== height) { option_canvas.height = height; }

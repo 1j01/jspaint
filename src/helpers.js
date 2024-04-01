@@ -173,15 +173,6 @@ function image_data_match(a, b, threshold) {
 }
 
 /**
- * @typedef {HTMLCanvasElement & {ctx: PixelContext}} PixelCanvas
- * @typedef {CanvasRenderingContext2D & ExtraContextMethods} PixelContext
- * @typedef {Object} ExtraContextMethods
- * @property {() => void} disable_image_smoothing
- * @property {() => void} enable_image_smoothing
- * @property {(image: HTMLImageElement | HTMLCanvasElement | ImageData) => void} copy
- */
-
-/**
  * @overload
  * @param {number} width
  * @param {number} height
