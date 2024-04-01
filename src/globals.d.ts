@@ -60,21 +60,19 @@ declare const TOOL_ELLIPSE: "TOOL_ELLIPSE";
 declare const TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
 declare const tools: Tool[];
 declare const tools: Tool[];
-// extra-tools.js
-declare const extra_tools: Tool[];
 // app.js
-declare let brush_shape = default_brush_shape;
-declare let brush_size = default_brush_size
-declare let eraser_size = default_eraser_size;
-declare let airbrush_size = default_airbrush_size;
-declare let pencil_size = default_pencil_size;
-declare let stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
+declare let brush_shape: BrushShape;
+declare let brush_size: number
+declare let eraser_size: number;
+declare let airbrush_size: number;
+declare let pencil_size: number;
+declare let stroke_size: number; // applies to lines, curves, shape outlines
 
 declare let tool_transparent_mode: boolean;
 declare let stroke_color: string | CanvasPattern;
 declare let fill_color: string | CanvasPattern;
-declare let stroke_color_k: "foreground" | "background" | "ternary";
-declare let fill_color_k: "foreground" | "background" | "ternary";
+declare let stroke_color_k: ColorSelectionSlot;
+declare let fill_color_k: ColorSelectionSlot;
 
 declare let selected_tool: Tool;
 declare let selected_tools: Tool[];
@@ -158,7 +156,7 @@ declare function make_css_cursor(name: string, coords: [number, number], fallbac
 // edit-colors.js
 declare function show_edit_colors_window(
 	$swatch_to_edit?: JQuery<HTMLDivElement>,
-	color_selection_slot_to_edit?: "foreground" | "background" | "ternary",
+	color_selection_slot_to_edit?: ColorSelectionSlot,
 ): void;
 // color-data.js
 // declare const default_palette: (string | CanvasPattern)[];
@@ -343,6 +341,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	resize(): void;
 	scale(factor: number): void;
 	draw(): void;
+	canvas: PixelCanvas;
 }
 class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, starting_text?: string);
@@ -585,7 +584,7 @@ interface Tool {
 	/** Used by Eraser tool */
 	eraser_paint_iteration?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
 	/** Called when... */
-	pointerup?(): void,
+	pointerup?(ctx: CanvasRenderingContext2D, x: number, y: number): void,
 	/** Called when... */
 	cancel?(): void,
 	/** Called when... */
@@ -605,7 +604,7 @@ interface Tool {
 	/** Called when... */
 	selectBox?(x: number, y: number, w: number, h: number): void,
 	/** Defines the tool as one that paints continuously as the cursor moves. */
-	get_brush?(): { size: number, shape: "circle" | "square" | "reverse_diagonal" | "diagonal" },
+	get_brush?(): { size: number, shape: BrushShape },
 	/** Used by Polygon tool */
 	reset?(): void,
 	/** Used by Polygon tool */
@@ -689,6 +688,10 @@ interface HistoryNode {
 	/** a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png") */
 	icon: Image | HTMLCanvasElement | null;
 }
+
+type BrushShape = "circle" | "square" | "reverse_diagonal" | "diagonal";
+
+type ColorSelectionSlot = "foreground" | "background" | "ternary";
 
 // Fullscreen API vendor prefixes
 interface Document {

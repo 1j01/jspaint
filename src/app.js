@@ -423,14 +423,14 @@ palette_formats.sort((a, b) =>
 
 // #region App State
 
-// declared like this for Cypress tests
+// declared with window.* for Cypress tests to access
 window.default_brush_shape = "circle";
 window.default_brush_size = 4;
 window.default_eraser_size = 8;
 window.default_airbrush_size = 9;
 window.default_pencil_size = 1;
 window.default_stroke_size = 1; // applies to lines, curves, shape outlines
-// declared like this for Cypress tests
+// declared with window.* for Cypress tests to access
 window.brush_shape = default_brush_shape;
 window.brush_size = default_brush_size
 window.eraser_size = default_eraser_size;
@@ -439,10 +439,14 @@ window.pencil_size = default_pencil_size;
 window.stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
 let tool_transparent_mode = false;
 
+/** @type {string | CanvasPattern | CanvasGradient} */
 let stroke_color;
+/** @type {string | CanvasPattern | CanvasGradient} */
 let fill_color;
-let stroke_color_k = "foreground"; // enum of "foreground", "background", "ternary"
-let fill_color_k = "background"; // enum of "foreground", "background", "ternary"
+/** @type {ColorSelectionSlot} */
+let stroke_color_k = "foreground";
+/** @type {ColorSelectionSlot} */
+let fill_color_k = "background";
 
 /** @type {Tool} */
 let selected_tool = default_tool;
@@ -451,16 +455,21 @@ let selected_tools = [selected_tool];
 /** @type {Tool[]} */
 let return_to_tools = [selected_tool];
 
-window.selected_colors = { // declared like this for Cypress tests
+window.selected_colors = { // declared with window.* for Cypress tests to access
 	foreground: "",
 	background: "",
 	ternary: "",
 };
 
-let selection; //the one and only OnCanvasSelection
-let textbox; //the one and only OnCanvasTextBox
-let helper_layer; //the OnCanvasHelperLayer for the grid and tool previews
+/** @type {OnCanvasSelection} */
+let selection; // singleton
+/** @type {OnCanvasTextBox} */
+let textbox; // singleton
+/** @type {OnCanvasHelperLayer} */
+let helper_layer; // instance used for the grid and tool previews (not a singleton)
+/** @type {$Window} */
 let $thumbnail_window;
+/** @type {PixelCanvas} */
 let thumbnail_canvas;
 let show_grid = false;
 let show_thumbnail = false;

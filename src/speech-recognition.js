@@ -1945,7 +1945,7 @@ if (exports.speech_recognition_available) {
 					match_text: input_text,
 					exec: () => {
 						if (document.activeElement && document.activeElement.matches("input[type='number']")) {
-							document.activeElement.value = input_text;
+							/** @type HTMLInputElement */ (document.activeElement).value = input_text;
 						} else {
 							document.execCommand("insertText", false, text_to_insert);
 						}
@@ -2010,7 +2010,7 @@ if (exports.speech_recognition_available) {
 			}
 			pointer_previous = { x: x1, y: y1 };
 			pointer = { x: x2, y: y2 };
-			brush.paint();
+			brush.paint(main_ctx, x2, y2);
 			pointer_active = true;
 			pointer_over_canvas = true;
 			update_helper_layer();
