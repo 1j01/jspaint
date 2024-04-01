@@ -265,6 +265,10 @@ interface Window {
 	get_winter_palette: () => (string | CanvasPattern)[];
 	// help.js
 	show_help: () => void;
+	jQuery: JQueryStatic; // help.js reaches into iframe to use jQuery
+	MouseEvent: typeof MouseEvent; // help.js reaches into iframe and uses MouseEvent
+	applyTheme: (cssProperties: Record<string, string>, documentElement?: DocumentElement) => void; // this is defined in 98.js.org... does it actually exist [when running in 98.js.org]?
+	themeCSSProperties: Record<string, string>;
 	// menus.js
 	menus: object;
 	// manage-storage.js

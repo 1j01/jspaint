@@ -1,5 +1,5 @@
 // @ts-check
-/* global $Window, applyTheme, localize, show_error_message, themeCSSProperties */
+/* global $Window, localize, show_error_message */
 import { $G, E } from "./helpers.js";
 import { showMessageBox } from "./msgbox.js";
 
@@ -39,12 +39,13 @@ function open_help_viewer(options) {
 	const $main = $(E("div")).addClass("main");
 	const $toolbar = $(E("div")).addClass("toolbar");
 	const add_toolbar_button = (name, sprite_n, action_fn, enabled_fn) => {
-		const $button = $("<button class='lightweight'>")
+		const $button = /** @type JQuery<HTMLButtonElement> */ ($("<button class='lightweight'>")
 			.append($("<span>").text(name))
 			.appendTo($toolbar)
 			.on("click", () => {
 				action_fn();
-			});
+			})
+		);
 		$("<div class='icon'/>")
 			.appendTo($button)
 			.css({
@@ -366,8 +367,8 @@ function $Iframe(options) {
 
 		// This try-catch may only be needed for running Cypress tests.
 		try {
-			if (window.themeCSSProperties) {
-				applyTheme(themeCSSProperties, iframe.contentDocument.documentElement);
+			if (window.themeCSSProperties && window.applyTheme) {
+				window.applyTheme(window.themeCSSProperties, iframe.contentDocument.documentElement);
 			}
 
 			// on Wayback Machine, and iframe's url not saved yet
