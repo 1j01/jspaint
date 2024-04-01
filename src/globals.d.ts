@@ -423,12 +423,15 @@ interface $WindowOptions {
 }
 
 declare function $Window(options?: $WindowOptions): $Window;
-declare class $Window extends JQuery<HTMLDivElement> {
-	static Z_INDEX: number;
-	static DEBUG_FOCUS: boolean;
-	static OVERRIDE_TRANSITION_DURATION: number | null;
+// declare class $Window extends JQuery<HTMLDivElement> {
+// 	static Z_INDEX: number;
+// 	static DEBUG_FOCUS: boolean;
+// 	static OVERRIDE_TRANSITION_DURATION: number | null;
 
-	constructor(options?: $WindowOptions);
+// 	constructor(options?: $WindowOptions);
+// }
+type $Window = JQuery<HTMLDivElement> & $WindowMethods;
+interface $WindowMethods {
 
 	element: HTMLDivElement;
 	$titlebar: JQuery<HTMLDivElement>;
@@ -480,13 +483,6 @@ declare class $Window extends JQuery<HTMLDivElement> {
 	// setIconByID(iconName: string): this;
 	// setIcons(icons: { [size: string]: string | HTMLImageElement; }): void;
 	// getIconName(): string;
-
-	// Extending JQuery didn't seem to work, so I'm adding these here.
-	css(name: string): number;
-	css(name: string, value: number | string): this;
-	css(props: { [name: string]: string | number; }): this;
-	height(): number;
-	height(value: number): this;
 }
 
 declare class $FormWindow extends $Window {
