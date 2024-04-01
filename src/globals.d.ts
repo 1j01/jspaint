@@ -287,6 +287,10 @@ interface Window {
 	// speech-recognition.js
 	sketching_iid: Timer;
 	speech_recognition_active: boolean;
+	search_page_html: string; // just for debugging
+	search_page_$html: JQuery; // just for debugging
+	// image-manipulation.js
+	WEBGL_lose_context: () => void; // just for debugging
 	// eye-gaze-mode.js and speech-recognition.js
 	untrusted_gesture: boolean;
 	// simulate-random-gestures.js

@@ -74,7 +74,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 	choose_color(initial_color, (color) => {
 		// The palette may have changed or rerendered due to switching themes,
 		// toggling vertical color box mode, or monochrome document mode.
-		$swatch_to_edit = $($palette.find(".swatch")[swatch_index]);
+		$swatch_to_edit = $(/** @type {HTMLDivElement} */($palette.find(".swatch")[swatch_index]));
 		if (!$swatch_to_edit.length) {
 			show_error_message("Swatch no longer exists.");
 			return;
@@ -243,7 +243,7 @@ function choose_color(initial_color, callback) {
 		});
 		$color_grid.on("focusin", (event) => {
 			if (event.target.closest(".swatch")) {
-				$local_last_focus = $(event.target.closest(".swatch"));
+				$local_last_focus = $(/** @type {HTMLElement} */(event.target.closest(".swatch")));
 			} else {
 				if (!$local_last_focus.is(":focus")) { // prevent infinite recursion
 					$local_last_focus.focus();
@@ -433,7 +433,7 @@ function choose_color(initial_color, callback) {
 			input.type = "text";
 			input.classList.add("inset-deep");
 			input.dataset.componentLetter = component_letter;
-			input.dataset.min = 0;
+			input.dataset.min = "0";
 			input.dataset.max = {
 				h: 360,
 				s: 100,

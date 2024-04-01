@@ -48,7 +48,7 @@ const E = function E(t) {
  * @param {Function} func  function to debounce
  * @param {number} wait_ms  minimum milliseconds between invocations
  * @param {boolean=} immediate  trigger the function on the leading edge, instead of the trailing.
- * @returns {Function}  a function, that, as long as it continues to be invoked, will not be triggered.
+ * @returns {Function & {cancel: ()=> void}}  a function, that, as long as it continues to be invoked, will not be triggered.
  *   The function will be called after it stops being called for `wait_ms` milliseconds.
  * 
  * @example

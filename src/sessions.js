@@ -73,8 +73,8 @@ function show_recovery_window(no_longer_blank) {
 		redo();
 	});
 	const update_buttons_disabled = () => {
-		$undo.attr("disabled", undos.length < 1);
-		$redo.attr("disabled", redos.length < 1);
+		$undo.prop("disabled", undos.length < 1);
+		$redo.prop("disabled", redos.length < 1);
 	};
 	$G.on("session-update.session-hook", update_buttons_disabled);
 	update_buttons_disabled();
@@ -120,6 +120,7 @@ class LocalSession {
 			log(`Saving image to storage: ${ls_key}`);
 			storage.set(ls_key, main_canvas.toDataURL("image/png"), err => {
 				if (err) {
+					// @ts-ignore (quotaExceeded is added by storage.js)
 					if (err.quotaExceeded) {
 						storage_quota_exceeded();
 					}
@@ -156,7 +157,9 @@ class LocalSession {
 				this.save_image_to_storage_soon();
 			}
 		});
-		$G.on("session-update.session-hook", this.save_image_to_storage_soon);
+		$G.on("session-update.session-hook", () => {
+			this.save_image_to_storage_soon();
+		});
 	}
 	end() {
 		// Skip debounce and save immediately
@@ -502,6 +505,12 @@ class MultiUserSession {
 	}
 }
 
+/** 
+ * fb_root is the root reference for the Firebase Realtime Database
+ * @memberof MultiUserSession
+ * @type {any} - @TODO: install types for Firebase or ditch Firebase
+ */
+MultiUserSession.fb_root = null;
 
 
 // Handle the starting, switching, and ending of sessions from the location.hash

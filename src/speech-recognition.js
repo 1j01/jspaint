@@ -1744,9 +1744,11 @@ if (exports.speech_recognition_available) {
 									}
 								}
 								if (el.matches("input[type=checkbox]")) {
-									el.checked = !el.checked;
+									const checkbox = /** @type {HTMLInputElement} */ (el);
+									checkbox.checked = !checkbox.checked;
 								} else if (el.matches("input[type=radio]")) {
-									el.checked = true;
+									const radio = /** @type {HTMLInputElement} */ (el);
+									radio.checked = true;
 								} else if (el.matches(".menu-button")) {
 									// pointerdown is needed, as of writing, for activating os-gui.js's menu items
 									// if click event is supported in future, this can be simplified
@@ -1756,7 +1758,7 @@ if (exports.speech_recognition_available) {
 										pointerId: 12345,
 										pointerType: "mouse",
 										isPrimary: true,
-										target: el,
+										// target: el,
 										button: 0,
 										buttons: 1,
 									});
@@ -1767,7 +1769,7 @@ if (exports.speech_recognition_available) {
 										pointerId: 12345,
 										pointerType: "mouse",
 										isPrimary: true,
-										target: el,
+										// target: el,
 										button: 0,
 										buttons: 0,
 									});
@@ -2108,14 +2110,14 @@ if (exports.speech_recognition_available) {
 				// fallback to thumbnails in case they get rid of the "m" attribute (thumbnails are not as good, more likely to be jpeg)
 				if (items.length === 0) {
 					console.log("Fallback to thumbnails");
-					items = $html.find("img.mimg").toArray()
+					items =  /** @type {HTMLImageElement[]} */($html.find("img.mimg").toArray())
 						.map((el) => ({ image_url: el.src || el.dataset.src, title: "" }))
 						.filter(validate_item);
 				}
 				// fallback in case they also change the class for images (this may match totally irrelevant things)
 				if (items.length === 0) {
 					console.log("Fallback to most imgs");
-					items = $html.find("img:not(.sw_spd):not(.rms_img):not(.flagIcon)").toArray()
+					items = /** @type {HTMLImageElement[]} */($html.find("img:not(.sw_spd):not(.rms_img):not(.flagIcon)").toArray())
 						.filter((el) => !el.closest("[role='navigation'], nav")) // ignore "Related searches", "Refine your search" etc.
 						.map((el) => ({ image_url: el.src || el.dataset.src, title: "" }))
 						.filter(validate_item);
@@ -2123,6 +2125,7 @@ if (exports.speech_recognition_available) {
 				console.log(`Search results for '${query}':`, items);
 				if (items.length === 0) {
 					const error = new Error(`failed to get clipart: no results returned for query '${query}'`);
+					// @ts-ignore
 					error.code = "no-results";
 					throw error;
 				}

@@ -73,16 +73,18 @@ function $ToolWindow($component) {
 }
 
 function $DialogWindow(title) {
-	const $w = make_window_supporting_scale({
+	const $w = /** @type {$Window & I$DialogWindow} */ (make_window_supporting_scale({
 		title,
 		resizable: false,
 		maximizeButton: false,
 		minimizeButton: false,
 		// helpButton: @TODO
-	});
+	}));
 	$w.addClass("dialog-window");
 
-	$w.$form = $(E("form")).appendTo($w.$content);
+	// I don't know why type inference isn't working here. It seems to infer HTMLDivElement but not HTMLFormElement.
+	// Both are in HTMLElementTagNameMap...
+	$w.$form = /** @type {JQuery<HTMLFormElement>} */($(E("form"))).appendTo($w.$content);
 	$w.$main = $(E("div")).appendTo($w.$form);
 	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 
@@ -93,7 +95,7 @@ function $DialogWindow(title) {
 		// and accepts text, DOM nodes, or DocumentFragments.
 		$b[0].append(label);
 
-		$b.on("click", (e) => {
+		$b.on("click", () => {
 			action();
 		});
 

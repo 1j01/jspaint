@@ -85,7 +85,7 @@ function apply_segments(component_area_el, pos_axis, segments) {
  */
 function $Component(title, className, orientation, $el) {
 	// A draggable widget that can be undocked into a window
-	const $c = $(E("div")).addClass("component");
+	const $c = /** @type {JQuery<HTMLDivElement> & I$Component} */ ($(E("div")).addClass("component"));
 	$c.addClass(className);
 	$c.addClass(orientation);
 	$c.append($el);
