@@ -52,7 +52,7 @@ function update_$swatch($swatch, new_color) {
 
 /**
  * @param {boolean} vertical 
- * @returns {JQuery<HTMLDivElement> & $ComponentMethods & $ColorBoxMethods}
+ * @returns {JQuery<HTMLDivElement> & I$Component & I$ColorBox}
  */
 function $ColorBox(vertical) {
 	const $cb = $(E("div")).addClass("color-box");
@@ -156,7 +156,7 @@ function $ColorBox(vertical) {
 
 	// I'm gonna do things messy, got a long road to go!
 	// eslint-disable-next-line no-self-assign
-	$c = /** @type {JQuery<HTMLDivElement> & $ComponentMethods & $ColorBoxMethods} */ ($c);
+	$c = /** @type {JQuery<HTMLDivElement> & I$Component & I$ColorBox} */ ($c);
 
 	$c.rebuild_palette = build_palette;
 

@@ -9,7 +9,7 @@ let theme_dev_blob_url;
 /**
  * @param {Tool[]} tools
  * @param {boolean} is_extras
- * @returns {JQuery<HTMLDivElement> & $ToolBoxMethods & $ComponentMethods}
+ * @returns {JQuery<HTMLDivElement> & I$ToolBox & I$Component}
  */
 function $ToolBox(tools, is_extras) {
 	const $tools = $(E("div")).addClass("tools");
@@ -87,11 +87,11 @@ function $ToolBox(tools, is_extras) {
 	}));
 
 	/**
-	 * @typedef {Object} $ToolBoxMethods
+	 * @typedef {Object} I$ToolBox
 	 * @prop {() => void} update_selected_tool
 	 */
 
-	const $c = /** @type {JQuery<HTMLDivElement> & $ComponentMethods & $ToolBoxMethods} **/ ($Component(
+	const $c = /** @type {JQuery<HTMLDivElement> & I$Component & I$ToolBox} **/ ($Component(
 		is_extras ? "Extra Tools" : localize("Tools"),
 		is_extras ? "tools-component extra-tools-component" : "tools-component",
 		"tall",

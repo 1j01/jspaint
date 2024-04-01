@@ -128,12 +128,12 @@ declare let pointers: { x: number, y: number, pointerId: number, pointerType: st
 // declare function $FontBox(): $FontBox;
 declare function $FontBox(): $Window;
 // $ToolBox.js
-declare function $ToolBox(tools: Tool[], is_extras?: boolean): JQuery<HTMLDivElement> & $ComponentMethods & $ToolBoxMethods;
-declare interface $ToolBoxMethods {
+declare function $ToolBox(tools: Tool[], is_extras?: boolean): JQuery<HTMLDivElement> & I$Component & I$ToolBox;
+declare interface I$ToolBox {
 	update_selected_tool(): void;
 }
 // $ColorBox.js
-declare interface $ColorBoxMethods {
+declare interface I$ColorBox {
 	rebuild_palette(): void;
 }
 
@@ -142,8 +142,8 @@ declare function $ToolWindow($component?: JQuery<HTMLElement>): $Window & I$Tool
 declare function $DialogWindow(title?: string): $Window & I$DialogWindow;
 declare function make_window_supporting_scale(options: $WindowOptions): $Window;
 // $Component.js
-declare function $Component(title: string, className: string, orientation: "tall" | "wide", $el: JQuery<HTMLElement>): JQuery<HTMLDivElement> & $ComponentMethods;
-interface $ComponentMethods {
+declare function $Component(title: string, className: string, orientation: "tall" | "wide", $el: JQuery<HTMLElement>): JQuery<HTMLDivElement> & I$Component;
+interface I$Component {
 	hide(): this;
 	show(): this;
 	toggle(): this;
@@ -228,7 +228,7 @@ interface Window {
 	// $ToolBox.js
 	$ToolBox: typeof $ToolBox;
 	// $ColorBox.js
-	$ColorBox: (vertical: boolean) => JQuery<HTMLDivElement> & $ComponentMethods & $ColorBoxMethods;
+	$ColorBox: (vertical: boolean) => JQuery<HTMLDivElement> & I$Component & I$ColorBox;
 	$Swatch: (color: string | CanvasPattern | undefined) => JQuery<HTMLDivElement>;
 	update_$swatch: ($swatch: JQuery<HTMLDivElement>, color: string | CanvasPattern | undefined) => void;
 	// tool-options.js

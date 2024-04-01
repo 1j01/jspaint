@@ -77,7 +77,7 @@
 	 * @param {string} className
 	 * @param {"tall" | "wide"} orientation
 	 * @param {JQuery<HTMLElement>} $el
-	 * @returns {JQuery<HTMLDivElement> & $ComponentMethods}
+	 * @returns {JQuery<HTMLDivElement> & I$Component}
 	 */
 	function $Component(title, className, orientation, $el) {
 		// A draggable widget that can be undocked into a window
