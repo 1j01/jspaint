@@ -157,6 +157,12 @@ declare function show_edit_colors_window(
 // declare const get_winter_palette: () => (string | CanvasPattern)[];
 // imgur.js
 declare function show_imgur_uploader(blob: Blob): void;
+// storage.js
+declare const storage: LocalStore;
+interface LocalStore {
+	get(key: string, callback: (error: Error | null, value: string) => void): void,
+	set(key: string, value: string, callback: (error: Error | null) => void): void,
+};
 
 // The JS Paint API... ironically, untyped.
 // Hey, I'm just working on internals right now!
@@ -274,6 +280,10 @@ interface Window {
 	// manage-storage.js
 	manage_storage: () => void;
 	storage_quota_exceeded: () => Promise<void>;
+	// storage.js
+	storage: LocalStore;
+	// sessions.js
+	new_local_session: () => void;
 	// speech-recognition.js
 	sketching_iid: Timer;
 	speech_recognition_active: boolean;
@@ -339,6 +349,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	scale(factor: number): void;
 	draw(): void;
 	canvas: PixelCanvas;
+	source_canvas: PixelCanvas;
 }
 class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, starting_text?: string);
