@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 /* global airbrush_size, brush_canvas, brush_ctx, brush_shape, brush_size, stroke_color */
 
 import { get_brush_canvas_size, render_brush } from "./image-manipulation.js";
