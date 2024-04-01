@@ -1,4 +1,5 @@
 // @ts-check
+/* eslint-disable no-inner-declarations */
 // eslint-disable-next-line no-unused-vars
 /* global airbrush_size:writable, brush_size:writable, eraser_size:writable, pencil_size:writable, stroke_size:writable, pointer_active:writable, pointer_over_canvas:writable, pointer_previous:writable, pointer:writable */
 /* global $canvas_area, $status_text, button, deselect, get_tool_by_id, localize, main_canvas, main_ctx, MENU_DIVIDER, resize_canvas_without_saving_dimensions, select_tool, selected_colors, selected_tool, selected_tools, show_error_message, TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, tool_go, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT, tools, update_helper_layer */
