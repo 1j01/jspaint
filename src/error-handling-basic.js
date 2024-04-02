@@ -36,10 +36,25 @@ window.onunhandledrejection = function (event) {
 // Show a message for old Internet Explorer.
 if (isIE) {
 	var html =
-		'<style>body { text-align: center; }</style>' +
+		'<style>' +
+		'	body { text-align: center; font-family: sans-serif; }' +
+		'	hr { width: 180px; }' +
+		'	.logo { position: relative; top: 3px; }' +
+		'</style>' +
 		'<div className="not-supported">' +
-		'	<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
-		'	<p className="not-supported-details">Try Chrome, Firefox, or Edge.</p>' +
+		'	<h1><img src="images/icons/32x32.png" class="logo"> JS Paint</h1>' +
+		'	<h2>Internet Explorer is not supported!</h2>' +
+		'	<p className="not-supported-details">' +
+		'		Try ' +
+		'		<a href="https://www.mozilla.org/firefox/">Firefox</a>, ' +
+		'		<a href="https://www.google.com/chrome/">Chrome</a>, ' +
+		'		or ' +
+		'		<a href="https://www.microsoft.com/edge/">Edge</a>.' +
+		'	</p>' +
+		'	<hr>' +
+		'	<p>' +
+		'		<a href="about.html">More about JS Paint</a>' +
+		'	</p>' +
 		'</div>';
 	// Wait for body to exist.
 	var interval = setInterval(function () {
