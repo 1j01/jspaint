@@ -1,3 +1,5 @@
+// @ts-check
+
 // This script progressively enhances from error-handling-basic.js.
 
 // Note that this can't simply be merged with the other onerror handler with a try/catch,
@@ -36,7 +38,7 @@ var new_onunhandledrejection = function (event) {
 	try {
 		show_error_message(localize("Internal application error.") + "\nUnhandled Rejection.", event.reason);
 	} catch (e) {
-		old_onunhandledrejection(event);
+		old_onunhandledrejection.call(window, event);
 		console.warn("Error in unhandledrejection handler:", e);
 	}
 };
