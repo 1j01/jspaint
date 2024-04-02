@@ -59,10 +59,8 @@ const E = function E(t) {
  */
 function debounce(func, wait_ms, immediate) {
 	let timeout;
-	// I'm not sure this @this is doing anything good for typescript,
-	// but it silences an eslint warning. May be better to just ignore the warning.
-	/** @this {ThisParameterType<func>} */
 	const debounced_func = function () {
+		// eslint-disable-next-line no-invalid-this
 		const context = this;
 		const args = arguments;
 
