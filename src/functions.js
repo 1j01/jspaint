@@ -414,7 +414,7 @@ function show_custom_zoom_window() {
 		</div>
 	`);
 	let is_custom = true;
-	$fieldset.find("input[type=radio]").get().forEach((el) => {
+	$fieldset.find("input[type=radio]").get().forEach((/** @type {HTMLInputElement} */ el) => {
 		if (parseFloat(el.value) === magnification) {
 			el.checked = true;
 			el.focus();
@@ -422,7 +422,7 @@ function show_custom_zoom_window() {
 		}
 	});
 	const $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
-	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
+	const $really_custom_input = /** @type {JQuery<HTMLInputElement>}*/($fieldset.find("input[name='really-custom-zoom-input']"));
 
 	$really_custom_input.closest("label").on("click", (event) => {
 		$really_custom_radio_option.prop("checked", true);
@@ -471,7 +471,7 @@ function show_custom_zoom_window() {
 	$fieldset.find("label").css({ display: "block" });
 
 	$w.$Button(localize("OK"), () => {
-		let option_val = $fieldset.find("input[name='custom-zoom-radio']:checked").val();
+		let option_val = String($fieldset.find("input[name='custom-zoom-radio']:checked").val());
 		let mag;
 		if (option_val === "really-custom") {
 			option_val = $really_custom_input.val();
@@ -636,7 +636,7 @@ function reset_canvas_and_history() {
  * @param {number=} options.textbox_width - the width of the textbox, if any
  * @param {number=} options.textbox_height - the height of the textbox, if any
  * @param {string | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
- * @param {boolean} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
+ * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
  * @param {string=} options.foreground_color - selected foreground color (left click)
  * @param {string=} options.background_color - selected background color (right click)
  * @param {string=} options.ternary_color - selected ternary color (ctrl+click)
@@ -659,7 +659,7 @@ function make_history_node({
 	textbox_width, // the width of the textbox, if any
 	textbox_height, // the height of the textbox, if any
 	text_tool_font = null, // the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
-	tool_transparent_mode, // whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
+	tool_transparent_mode = false, // whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
 	foreground_color, // selected foreground color (left click)
 	background_color, // selected background color (right click)
 	ternary_color, // selected ternary color (ctrl+click)
@@ -1166,7 +1166,12 @@ function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true
 	});
 }
 
-
+/**
+ * Prompts the user to save changes to the document.
+ * @param {(info?: { canvas_modified_while_loading?: boolean }) => void} action
+ * @param {() => void} [canceled]
+ * @param {boolean} [from_session_load]
+ */
 function are_you_sure(action, canceled, from_session_load) {
 	if (saved) {
 		action();
