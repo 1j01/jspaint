@@ -234,6 +234,7 @@ module.exports = {
 				"src/eye-gaze-mode.js",
 				"src/functions.js",
 				"src/test-news.js",
+				"src/error-handling-enhanced.js",
 				"src/vaporwave-fun.js",
 				"lib/konami.js",
 				"cypress/**/*.js",
