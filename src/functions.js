@@ -3088,7 +3088,7 @@ function show_convert_to_black_and_white() {
 		});
 	};
 	update_threshold();
-	const update_threshold_soon = /** @type ()=> void */(debounce(update_threshold, 100));
+	const update_threshold_soon = debounce(update_threshold, 100);
 	$slider.on("input", update_threshold_soon);
 
 	$w.$Button(localize("OK"), () => {
