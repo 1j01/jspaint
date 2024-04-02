@@ -233,6 +233,7 @@ module.exports = {
 				"src/speech-recognition.js",
 				"src/eye-gaze-mode.js",
 				"src/functions.js",
+				"src/test-news.js",
 				"src/vaporwave-fun.js",
 				"lib/konami.js",
 				"cypress/**/*.js",
