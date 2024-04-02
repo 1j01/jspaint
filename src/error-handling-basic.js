@@ -1,9 +1,17 @@
 /* eslint-disable no-useless-concat */
 /* eslint-disable no-alert */
 
-// use only ES5 syntax for this script
-// set up basic global error handling, which we can override later
+// Use only ES5 syntax for this script!
+// (I would enforce this but I wasn't able to get it working with ESLint.)
+
+// Set up basic global error handling, which we can override later in error-handling-enhanced.js
+
+var isIE = /MSIE \d|Trident.*rv:/.test(navigator.userAgent);
+
 window.onerror = function (msg, url, lineNo, columnNo, error) {
+	if (isIE) {
+		return false; // Don't need alerts covering up the "not supported" message.
+	}
 	var string = msg.toLowerCase();
 	var substring = "script error";
 	if (string.indexOf(substring) > -1) {
@@ -19,5 +27,25 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 };
 
 window.onunhandledrejection = function (event) {
+	if (isIE) {
+		return false; // Don't need alerts covering up the "not supported" message.
+	}
 	alert('Unhandled Rejection: ' + event.reason);
+}
+
+// Show a message for old Internet Explorer.
+if (isIE) {
+	var html =
+		'<style>body { text-align: center; }</style>' +
+		'<div className="not-supported">' +
+		'	<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
+		'	<p className="not-supported-details">Try Chrome, Firefox, or Edge.</p>' +
+		'</div>';
+	// Wait for body to exist.
+	var interval = setInterval(function () {
+		if (document.body) {
+			clearInterval(interval);
+			document.body.innerHTML = html;
+		}
+	}, 100);
 }

@@ -1,9 +1,11 @@
-// Use only ES5 syntax for this script, as it's meant to handle old IE.
+// This script progressively enhances from error-handling-basic.js.
 
 // Note that this can't simply be merged with the other onerror handler with a try/catch,
-// because showMessageBox is async, and could throw an error before dependencies are met (or if there was an error in the error handling),
-// and try doesn't catch errors in async code. It would need to be awaited.
-// And making show_error_message return a promise might cause subtle problems due to the pattern of `return show_error_message()`.
+// falling back to the other handler, because `showMessageBox` is async,
+// and could throw an error if used before dependencies are met[1] or if there was an error in the error handling itself,
+// and `try` doesn't catch errors in async code. It would need to be awaited.
+// And making `show_error_message` return a promise might cause subtle problems due to the pattern of `return show_error_message()`.
+// [1]: This possibility may be reduced as I'm transitioning to ES Modules.
 var old_onerror = window.onerror;
 window.onerror = function (message, source, lineno, colno, error) {
 	try {
@@ -39,14 +41,3 @@ var new_onunhandledrejection = function (event) {
 	}
 };
 window.onunhandledrejection = new_onunhandledrejection;
-
-// Show a message for old Internet Explorer.
-if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
-	document.write(
-		'<style>body { text-align: center; }</style>' +
-		'<div className="not-supported">' +
-		'	<h1 className="not-supported-header">Internet Explorer is not supported!</h1>' +
-		'	<p className="not-supported-details">Try Chrome, Firefox, or Edge.</p>' +
-		'</div>'
-	);
-}
