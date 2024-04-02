@@ -535,6 +535,9 @@ function toggle_thumbnail() {
 			$thumbnail_window.$content.addClass("inset-deep");
 			$thumbnail_window.$content.css({ marginTop: "1px" }); // @TODO: should this (or equivalent on titlebar) be for all windows?
 			$thumbnail_window.maximize = () => { }; // @TODO: disable maximize with an option
+			// NOTE: I'm not sure some of these fallbacks are relevant anymore,
+			// or if they even work since changing `box` from an array to a string.
+			// Presumably the spec changed, but I don't feel like trying to dig up the history.
 			new ResizeObserver((entries) => {
 				const entry = entries[0];
 				let width, height;
@@ -549,11 +552,15 @@ function toggle_thumbnail() {
 					// console.log("contentBoxSize", entry.contentBoxSize);
 					// round() seems to line up with what Firefox does for device pixel alignment, which is great.
 					// In Chrome it's blurry at some zoom levels with round(), ceil(), or floor(), but it (documentedly) supports devicePixelContentBoxSize.
+					// @ts-ignore
 					width = Math.round(entry.contentBoxSize[0].inlineSize * devicePixelRatio);
+					// @ts-ignore
 					height = Math.round(entry.contentBoxSize[0].blockSize * devicePixelRatio);
 				} else {
 					// Safari on iPad doesn't support either of the above as of iOS 15.0.2
+					// @ts-ignore
 					width = Math.round(entry.contentRect.width * devicePixelRatio);
+					// @ts-ignore
 					height = Math.round(entry.contentRect.height * devicePixelRatio);
 				}
 				if (width && height) { // If it's hidden, and then shown, it gets a width and height of 0 briefly on iOS. (This would give IndexSizeError in drawImage.)
@@ -561,7 +568,7 @@ function toggle_thumbnail() {
 					thumbnail_canvas.height = height;
 				}
 				update_helper_layer_immediately(); // updates thumbnail (but also unnecessarily the helper layer)
-			}).observe(thumbnail_canvas, { box: ['device-pixel-content-box'] });
+			}).observe(thumbnail_canvas, { box: 'device-pixel-content-box' });
 		}
 		$thumbnail_window.show();
 		$thumbnail_window.on("close", (e) => {
