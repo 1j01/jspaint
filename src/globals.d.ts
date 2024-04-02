@@ -320,6 +320,8 @@ interface Window {
 	setDocumentEdited?: (edited: boolean) => void;
 	setRepresentedFilename?: (filename: string) => void;
 	setMenus?: (menus: any) => void; // TODO: types for OS-GUI.js menus
+	// Youtube API, used by vaporwave-fun.js
+	onYouTubeIframeAPIReady?: () => void;
 	// Local Font Access API
 	queryLocalFonts?: () => Promise<FontData[]>;
 	// Chrome browser

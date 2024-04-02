@@ -1,9 +1,11 @@
+// @ts-check
+import { onKonamiCodeEntered } from "../lib/konami.js";
 (() => {
 	let rAF_ID, rotologo, $window, space_phase_key_handler, player, player_placeholder;
 	let vaporwave_active = false;
 
-	if (parent && frameElement && parent.$) {
-		$window = parent.$(frameElement).closest(".window");
+	if (parent && frameElement && parent.jQuery) {
+		$window = parent.jQuery(frameElement).closest(".window, .os-window");
 	} else {
 		$window = $();
 	}
@@ -197,7 +199,7 @@
 		}
 	};
 
-	addEventListener("keydown", Konami.code(toggle_vaporwave));
+	onKonamiCodeEntered(toggle_vaporwave);
 	addEventListener("keydown", (event) => {
 		if (event.key === "Escape") {
 			stop_vaporwave();
