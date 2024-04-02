@@ -179,7 +179,7 @@ function image_data_match(a, b, threshold) {
  */
 /**
  * @overload
- * @param {HTMLImageElement | HTMLCanvasElement} source  image to copy
+ * @param {HTMLImageElement | HTMLCanvasElement | ImageData} source  image to copy
  * @returns {PixelCanvas}  a new canvas element, augmented with `ctx` property, which is also augmented
  */
 /**

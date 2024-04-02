@@ -168,6 +168,8 @@ interface LocalStore {
 	set(key: string, value: string, callback: (error: Error | null) => void): void,
 	set(key_value_pairs: Record<string, string>, callback: (error: Error | null) => void): void,
 };
+// sessions.js
+declare function new_local_session(): void;
 
 // The JS Paint API... ironically, untyped.
 // Hey, I'm just working on internals right now!
@@ -189,7 +191,7 @@ interface Window {
 	make_css_cursor: (name: string, coords: [number, number], fallback: string) => string;
 	make_canvas: {
 		(width: number, height: number): HTMLCanvasElement,
-		(source: HTMLCanvasElement): HTMLCanvasElement,
+		(source: HTMLImageElement | HTMLCanvasElement | ImageData): HTMLCanvasElement,
 		(): HTMLCanvasElement,
 	};
 	image_data_match: (a: ImageData, b: ImageData, threshold: number) => boolean;
@@ -315,6 +317,9 @@ interface Window {
 	// electron-injected.js
 	is_electron_app?: boolean;
 	electron_is_dev?: boolean;
+	setDocumentEdited?: (edited: boolean) => void;
+	setRepresentedFilename?: (filename: string) => void;
+	setMenus?: (menus: any) => void; // TODO: types for OS-GUI.js menus
 	// Local Font Access API
 	queryLocalFonts?: () => Promise<FontData[]>;
 	// Chrome browser
@@ -371,6 +376,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, starting_text?: string);
 	position(): void;
 	static $fontbox: $Window | null;
+	canvas: PixelCanvas;
+	$editor: JQuery<HTMLTextAreaElement>;
 	dragging: boolean;
 }
 class Handles {
@@ -510,7 +517,7 @@ interface I$Window {
 	setTitlebarIconSize(size: number): this;
 	getTitlebarIconSize(): number;
 	getIconAtSize(size: number): HTMLElement | null;
-	$Button(label: string, action: () => void): JQuery<HTMLButtonElement>;
+	$Button(label: string | Node, action: () => void): JQuery<HTMLButtonElement>;
 	animateTitlebar(before_rect: { x: number, y: number, width: number, height: number }, after_rect: { x: number, y: number, width: number, height: number }, callback?: () => void): void;
 
 	// Events
@@ -542,7 +549,7 @@ interface I$DialogWindow {
 	$main: JQuery<HTMLDivElement>;
 	$buttons: JQuery<HTMLDivElement>;
 
-	$Button(label: string, action: () => void, attrs?: Record<string, any>): JQuery<HTMLButtonElement>;
+	$Button(label: string | node, action: () => void, options?: { type?: string }): JQuery<HTMLButtonElement>;
 }
 // definitely some cleanup to be done here regarding the window "classes"
 interface I$ToolWindow { }
@@ -617,7 +624,7 @@ interface Tool {
 	/** Called when... */
 	cancel?(): void,
 	/** Called when... */
-	end?(): void,
+	end?(ctx: CanvasRenderingContext2D): void,
 	/** Called when rendering... */
 	drawPreviewUnderGrid?(ctx: CanvasRenderingContext2D, x: number, y: number, grid_visible: boolean, scale: number, translate_x: number, translate_y: number);
 	/** Called when rendering... */

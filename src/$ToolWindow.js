@@ -88,6 +88,13 @@ function $DialogWindow(title) {
 	$w.$main = $(E("div")).appendTo($w.$form);
 	$w.$buttons = $(E("div")).appendTo($w.$form).addClass("button-group");
 
+	/**
+	 * @param {string | Node} label 
+	 * @param {()=> void} action 
+	 * @param {object} [options]
+	 * @param {string} [options.type]
+	 * @returns {JQuery<HTMLButtonElement>}
+	 */
 	$w.$Button = (label, action, options = { type: "button" }) => {
 		const $b = $(E("button")).appendTo($w.$buttons);
 

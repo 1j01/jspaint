@@ -757,6 +757,7 @@ async function load_image_from_uri(uri) {
 
 	if (is_blob_uri && uri.indexOf(`blob:${location.origin}`) === -1) {
 		const error = new Error("can't load blob: URI from another domain");
+		// @ts-ignore
 		error.code = "cross-origin-blob-uri";
 		throw error;
 	}
@@ -867,7 +868,9 @@ async function load_image_from_uri(uri) {
 	const error = new Error(`failed to fetch image from any of ${uris_to_try.length} URI(s):\n  ${fails.map((fail) =>
 		(fail.statusText ? `${fail.status} ${fail.statusText} ` : "") + fail.url + (fail.error ? `\n    ${fail.error}` : "")
 	).join("\n  ")}`);
+	// @ts-ignore
 	error.code = "access-failure";
+	// @ts-ignore
 	error.fails = fails;
 	throw error;
 }
@@ -1386,13 +1389,14 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 	const only_palette_error = as_palette_error && !as_image_error; // update me if there are more error types
 	if (as_palette_error) {
 		let details = "";
-		if (as_palette_error.errors) {
+		if ("errors" in as_palette_error) {
 			details = `<ul dir="ltr">${as_palette_error.errors.map((error) => {
 				const format = error.__PATCHED_LIB_TO_ADD_THIS__format;
 				if (format && error.error) {
 					return `<li><b>${escape_html(`${format.name}`)}</b>: ${escape_html(uppercase_first(error.error.message))}</li>`;
 				}
 				// Fallback for unknown errors
+				// @ts-ignore
 				return `<li>${escape_html(error.message || error)}</li>`;
 			}).join("\n")}</ul>`;
 		} else {
@@ -2163,6 +2167,7 @@ function show_document_history() {
 		$entry.on("click", () => {
 			go_to_history_node(node);
 		});
+		// @ts-ignore  (TODO: maybe don't tack properties onto objects so much!)
 		$entry.history_node = node;
 		rendered_$entries.push($entry);
 	}
@@ -2960,7 +2965,7 @@ function image_attributes() {
 	`);
 	$units.find(`[value=${current_unit}]`).attr({ checked: true });
 	$units.on("change", () => {
-		const new_unit = $units.find(":checked").val();
+		const new_unit = String($units.find(":checked").val());
 		$width.val(width_in_px / unit_sizes_in_px[new_unit]);
 		$height.val(height_in_px / unit_sizes_in_px[new_unit]);
 		current_unit = new_unit;
@@ -2989,7 +2994,7 @@ function image_attributes() {
 	$w.$Button(localize("OK"), () => {
 		const transparency_option = $transparency.find(":checked").val();
 		const colors_option = $colors.find(":checked").val();
-		const unit = $units.find(":checked").val();
+		const unit = String($units.find(":checked").val());
 
 		const was_monochrome = monochrome;
 		let monochrome_info;
@@ -3068,6 +3073,18 @@ function image_attributes() {
 
 	image_attributes.$window.center();
 }
+
+// TODO: maybe don't tack properties onto functions so much!?
+/**
+ * @memberof image_attributes
+ * @type {$Window}
+ */
+image_attributes.$window = null;
+/**
+ * @memberof image_attributes
+ * @type {string}
+ */
+image_attributes.unit = "px";
 
 function show_convert_to_black_and_white() {
 	const $w = $DialogWindow("Convert to Black and White");
@@ -3232,7 +3249,7 @@ function image_flip_and_rotate() {
 				if (angle_val === "arbitrary") {
 					angle_val = $fieldset.find("input[name='rotate-by-arbitrary-angle']").val();
 				}
-				const angle_deg = parseFloat(angle_val);
+				const angle_deg = Number(angle_val);
 				const angle = angle_deg / 360 * TAU;
 
 				if (isNaN(angle)) {
@@ -3448,7 +3465,7 @@ function save_as_prompt({
 
 		// Select file type when typing file name
 		const select_file_type_from_file_name = () => {
-			const extension_match = (promptForName ? $file_name.val() : defaultFileName).match(/\.([\w\d]+)$/);
+			const extension_match = (promptForName ? String($file_name.val()) : defaultFileName).match(/\.([\w\d]+)$/);
 			if (extension_match) {
 				const selected_format = get_selected_format();
 				const matched_ext = extension_match[1].toLowerCase();
