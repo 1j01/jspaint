@@ -303,9 +303,15 @@ function get_format_from_extension(formats, file_path_or_name_or_ext) {
 	}
 }
 
-window.image_formats = [];
+/** @type {ImageFileFormat[]} */
+let image_formats = [];
 // const ext_to_image_formats = {}; // there can be multiple with the same extension, e.g. different bit depth BMP files
 // const mime_type_to_image_formats = {};
+/**
+ * @param {string} mime_type 
+ * @param {string} name_and_exts 
+ * @param {ImageFileFormat[]} [target_array]
+ */
 const add_image_format = (mime_type, name_and_exts, target_array = image_formats) => {
 	// Note: some localizations have commas instead of semicolons to separate file extensions
 	// Assumption: file extensions are never localized

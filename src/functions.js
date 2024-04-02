@@ -461,7 +461,7 @@ function show_custom_zoom_window() {
 
 	// If you tab to the number input and type, it should select the radio button
 	// so that your input is actually used.
-	$really_custom_input.on("input", (event) => {
+	$really_custom_input.on("input", () => {
 		$really_custom_radio_option.prop("checked", true);
 	});
 
@@ -1350,7 +1350,7 @@ function show_resource_load_error_message(error) {
  * @property {PaletteErrorObject[]} errors
  * 
  * @typedef {object} PaletteErrorObject
- * @property {error} error
+ * @property {Error} error
  * @property {{name: string}} __PATCHED_LIB_TO_ADD_THIS__format
  * 
  * @param {object} options
@@ -2516,7 +2516,7 @@ let cleanup_bitmap_view = () => { };
 function view_bitmap() {
 	cleanup_bitmap_view();
 
-	bitmap_view_div = document.createElement("div");
+	const bitmap_view_div = document.createElement("div");
 	bitmap_view_div.classList.add("bitmap-view", "inset-deep");
 	document.body.appendChild(bitmap_view_div);
 	$(bitmap_view_div).css({
@@ -2547,8 +2547,8 @@ function view_bitmap() {
 		}
 	}, 100);
 	cleanup_bitmap_view = () => {
-		document.removeEventListener("fullscreenchange", onFullscreenChange, { once: true });
-		document.removeEventListener("webkitfullscreenchange", onFullscreenChange, { once: true });
+		document.removeEventListener("fullscreenchange", onFullscreenChange);
+		document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
 		document.removeEventListener("keydown", onKeyDown);
 		document.removeEventListener("mousedown", onMouseDown);
 		// If you have e.g. the Help window open,
@@ -2631,11 +2631,11 @@ function get_tool_by_id(id) {
 			return tools[i];
 		}
 	}
-	for (let i = 0; i < extra_tools.length; i++) {
-		if (extra_tools[i].id == id) {
-			return extra_tools[i];
-		}
-	}
+	// for (let i = 0; i < extra_tools.length; i++) {
+	// 	if (extra_tools[i].id == id) {
+	// 		return extra_tools[i];
+	// 	}
+	// }
 }
 
 // hacky but whatever
@@ -2944,8 +2944,8 @@ function image_attributes() {
 	$main.find("input")
 		.css({ width: "40px" })
 		.on("change keyup keydown keypress pointerdown pointermove paste drop", () => {
-			width_in_px = $width.val() * unit_sizes_in_px[current_unit];
-			height_in_px = $height.val() * unit_sizes_in_px[current_unit];
+			width_in_px = Number($width.val()) * unit_sizes_in_px[current_unit];
+			height_in_px = Number($height.val()) * unit_sizes_in_px[current_unit];
 		});
 
 	// Fieldsets
@@ -3023,8 +3023,8 @@ function image_attributes() {
 		}
 
 		const unit_to_px = unit_sizes_in_px[unit];
-		const width = $width.val() * unit_to_px;
-		const height = $height.val() * unit_to_px;
+		const width = Number($width.val()) * unit_to_px;
+		const height = Number($height.val()) * unit_to_px;
 		resize_canvas_and_save_dimensions(~~width, ~~height);
 
 		if (!transparency && has_any_transparency(main_ctx)) {
@@ -3088,7 +3088,8 @@ function show_convert_to_black_and_white() {
 		});
 	};
 	update_threshold();
-	$slider.on("input", debounce(update_threshold, 100));
+	const update_threshold_soon = /** @type ()=> void */(debounce(update_threshold, 100));
+	$slider.on("input", update_threshold_soon);
 
 	$w.$Button(localize("OK"), () => {
 		$w.close();
@@ -3478,7 +3479,7 @@ function save_as_prompt({
 			if (!promptForName) {
 				return;
 			}
-			let file_name = $file_name.val();
+			let file_name = /** @type {string} */($file_name.val());
 			const selected_format = get_selected_format();
 			if (!selected_format) {
 				return;
@@ -3745,10 +3746,12 @@ function read_image_file(blob, callback) {
 				URL.revokeObjectURL(blob_uri);
 				blob.text().then((file_text) => {
 					const error = new Error("failed to decode blob as an image");
+					// @ts-ignore
 					error.code = file_text.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decoding-failure";
 					callback(error);
 				}, (err) => {
 					const error = new Error("failed to decode blob as image or text");
+					// @ts-ignore
 					error.code = "decoding-failure";
 					callback(error);
 				});
@@ -3865,7 +3868,7 @@ function show_multi_user_setup_dialog(from_current_document) {
 	const $session_name = $w.$main.find("#session-name");
 	$w.$main.css({ maxWidth: "500px" });
 	$w.$Button("Start", () => {
-		let name = $session_name.val().trim();
+		let name = String($session_name.val()).trim();
 
 		if (name == "") {
 			show_error_message("The session name cannot be empty.");
