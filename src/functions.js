@@ -2357,21 +2357,24 @@ function try_exec_command(commandId) {
 }
 
 function getSelectionText() {
-	let text = "";
+	// instanceof might make this simpler, particularly with TypeScript JSDoc
 	const activeEl = document.activeElement;
 	const activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
 	if (
 		(activeElTagName == "textarea") || (
 			activeElTagName == "input" &&
-			/^(?:text|search|password|tel|url)$/i.test(activeEl.type)
-		) &&
-		(typeof activeEl.selectionStart == "number")
+			/^(?:text|search|password|tel|url)$/i.test(/** @type {HTMLInputElement} */(activeEl).type)
+		)
 	) {
-		text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
-	} else if (window.getSelection) {
-		text = window.getSelection().toString();
+		const textField = /** @type {HTMLInputElement | HTMLTextAreaElement} */(activeEl);
+		if (typeof textField.selectionStart == "number") {
+			return textField.value.slice(textField.selectionStart, textField.selectionEnd);
+		}
 	}
-	return text;
+	if (window.getSelection) {
+		return window.getSelection().toString();
+	}
+	return "";
 }
 
 function edit_copy(execCommandFallback) {
