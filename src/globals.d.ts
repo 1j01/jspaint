@@ -56,7 +56,6 @@ declare const TOOL_POLYGON: "TOOL_POLYGON";
 declare const TOOL_ELLIPSE: "TOOL_ELLIPSE";
 declare const TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
 declare const tools: Tool[];
-declare const tools: Tool[];
 // app.js
 declare let brush_shape: BrushShape;
 declare let brush_size: number
@@ -169,7 +168,7 @@ interface LocalStore {
 	get(key: string, callback: (error: Error | null, value: string) => void): void,
 	set(key: string, value: string, callback: (error: Error | null) => void): void,
 	set(key_value_pairs: Record<string, string>, callback: (error: Error | null) => void): void,
-};
+}
 // sessions.js
 declare function new_local_session(): void;
 
@@ -198,9 +197,9 @@ interface Window {
 	};
 	image_data_match: (a: ImageData, b: ImageData, threshold: number) => boolean;
 	load_image_simple: (src: string) => Promise<HTMLImageElement>;
-	get_help_folder_icon: (file_name: string) => Image;
-	get_icon_for_tool: (tool: Tool) => Image;
-	get_icon_for_tools: (tools: Tool[]) => Image;
+	get_help_folder_icon: (file_name: string) => HTMLImageElement;
+	get_icon_for_tool: (tool: Tool) => HTMLImageElement;
+	get_icon_for_tools: (tools: Tool[]) => HTMLImageElement | HTMLCanvasElement;
 	// tools.js
 	TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 	TOOL_SELECT: "TOOL_SELECT";
@@ -282,7 +281,7 @@ interface Window {
 	show_help: () => void;
 	jQuery: JQueryStatic; // help.js reaches into iframe to use jQuery
 	MouseEvent: typeof MouseEvent; // help.js reaches into iframe and uses MouseEvent
-	applyTheme: (cssProperties: Record<string, string>, documentElement?: DocumentElement) => void; // this is defined in 98.js.org... does it actually exist [when running in 98.js.org]?
+	applyTheme: (cssProperties: Record<string, string>, documentElement?: HTMLElement) => void; // this is defined in 98.js.org... does it actually exist [when running in 98.js.org]? btw HTMLHtmlElement would be more specific, but document.documentElement is typed as HTMLElement, so it'd just be annoying
 	themeCSSProperties: Record<string, string>;
 	// menus.js
 	menus: object;
@@ -294,7 +293,10 @@ interface Window {
 	// sessions.js
 	new_local_session: () => void;
 	// speech-recognition.js
-	sketching_iid: Timer;
+	// Node.js types are annoyingly loaded. I didn't install @types/node, it's a transitive dependency.
+	// This should just be type number.
+	// I tried configuring `types` in jsconfig.json, but it didn't work. Maybe I need to use tsconfig.json?
+	sketching_iid: ReturnType<typeof setInterval>;
 	speech_recognition_active: boolean;
 	search_page_html: string; // just for debugging
 	search_page_$html: JQuery; // just for debugging
@@ -340,14 +342,14 @@ interface MessageBoxOptions {
 	windowOptions?: $WindowOptions;
 }
 
-class FontData {
+declare class FontData {
 	family: string;
 	fullName: string;
 	postscriptName: string;
 	style: string;
 }
 
-class OnCanvasObject {
+declare class OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, hideMainCanvasHandles: boolean);
 	x: number;
 	y: number;
@@ -359,11 +361,11 @@ class OnCanvasObject {
 	position(updateStatus?: boolean): void;
 	destroy(): void;
 }
-class OnCanvasHelperLayer extends OnCanvasObject {
+declare class OnCanvasHelperLayer extends OnCanvasObject {
 	constructor(x: any, y: any, width: any, height: any, hideMainCanvasHandles: any, pixelRatio?: number);
 	canvas: PixelCanvas;
 }
-class OnCanvasSelection extends OnCanvasObject {
+declare class OnCanvasSelection extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, img_or_canvas?: HTMLImageElement | HTMLCanvasElement);
 	instantiate(img_or_canvas: HTMLImageElement | HTMLCanvasElement): void;
 	cut_out_background(): void;
@@ -376,7 +378,7 @@ class OnCanvasSelection extends OnCanvasObject {
 	source_canvas: PixelCanvas;
 	dragging: boolean;
 }
-class OnCanvasTextBox extends OnCanvasObject {
+declare class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, starting_text?: string);
 	position(): void;
 	static $fontbox: $Window | null;
@@ -384,7 +386,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 	$editor: JQuery<HTMLTextAreaElement>;
 	dragging: boolean;
 }
-class Handles {
+declare class Handles {
 	/**
 	 * Handles for resizable, draggable, on-canvas objects.
 	 * @param {object} options
@@ -553,7 +555,7 @@ interface I$DialogWindow {
 	$main: JQuery<HTMLDivElement>;
 	$buttons: JQuery<HTMLDivElement>;
 
-	$Button(label: string | node, action: () => void, options?: { type?: string }): JQuery<HTMLButtonElement>;
+	$Button(label: string | Node, action: () => void, options?: { type?: string }): JQuery<HTMLButtonElement>;
 }
 // definitely some cleanup to be done here regarding the window "classes"
 interface I$ToolWindow { }
@@ -726,7 +728,7 @@ interface HistoryNode {
 	/** the name of the operation, shown in the history window, e.g. localize("Resize Canvas") */
 	name: string;
 	/** a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png") */
-	icon: Image | HTMLCanvasElement | null;
+	icon: HTMLImageElement | HTMLCanvasElement | null;
 }
 
 /**
