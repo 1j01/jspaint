@@ -1,8 +1,11 @@
 // This file defines globals used in the app, for typescript.
-// jQuery has proper types installed, so it doesn't need to be defined here,
-// but some libraries don't, and the app uses a lot of custom globals.
+// Some types are installed through npm, like for jQuery and the Youtube API, so it doesn't need to be defined here,
+// but some libraries don't have types (at least not installed), and the app uses a lot of custom globals.
+
 // I'm working on transitioning to ES Modules, but having the ES Modules
 // export globals until all dependent files are converted to ESM.
+// The scripts are mostly converted to ESM, nominally, but not properly modularized.
+// Once they all use imports and no globals, I should be able to remove a lot of code from this file.
 
 // NOTE: IMPORTING/EXPORTING ANYTHING WILL BREAK AMBIENT DECLARATIONS
 
@@ -14,7 +17,6 @@ declare const UPNG: any;
 declare const encodeBMP: any;
 declare const decodeBMP: any;
 declare const saveAs: any;
-declare const YT: any;
 declare const FontDetective: any;
 declare const AnyPalette: any;
 declare const ImageTracer: any;
