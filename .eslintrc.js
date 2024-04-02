@@ -236,7 +236,7 @@ module.exports = {
 				"src/test-news.js",
 				"src/error-handling-enhanced.js",
 				"src/vaporwave-fun.js",
-				"lib/konami.js",
+				"src/konami.js",
 				"cypress/**/*.js",
 			],
 			parserOptions: { sourceType: "module" },

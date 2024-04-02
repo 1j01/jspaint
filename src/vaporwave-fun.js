@@ -1,5 +1,5 @@
 // @ts-check
-import { onKonamiCodeEntered } from "../lib/konami.js";
+import { onKonamiCodeEntered } from "./konami.js";
 (() => {
 	let rAF_ID, rotologo, $window, space_phase_key_handler, player, player_placeholder;
 	let vaporwave_active = false;
