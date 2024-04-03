@@ -1,4 +1,5 @@
 // @ts-check
+/* global localize, show_error_message */
 
 // This script progressively enhances from error-handling-basic.js.
 
