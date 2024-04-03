@@ -1,5 +1,15 @@
 // @ts-check
 
+import { $ColorBox } from "./$ColorBox.js";
+import { get_winter_palette } from "./color-data.js";
+import { show_help } from "./help.js";
+import { $G, E, TAU, get_file_extension, get_help_folder_icon } from "./helpers.js";
+import { rotate } from "./image-manipulation.js";
+import { menus } from "./menus.js";
+import { showMessageBox } from "./msgbox.js";
+import { disable_speech_recognition, enable_speech_recognition } from "./speech-recognition.js";
+import { get_theme } from "./theme.js";
+
 // #region Exports
 
 // Q: Why are the exports at the top of the file?
@@ -305,9 +315,9 @@ const update_from_url_params = () => {
 	}
 
 	if (location.hash.match(/speech-recognition-mode/i)) {
-		window.enable_speech_recognition && enable_speech_recognition();
+		enable_speech_recognition?.();
 	} else {
-		window.disable_speech_recognition && disable_speech_recognition();
+		disable_speech_recognition?.();
 	}
 
 	$("body").toggleClass("compare-reference", !!location.hash.match(/compare-reference/i));
