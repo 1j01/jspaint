@@ -1549,24 +1549,17 @@ $G.on("fullscreenchange webkitfullscreenchange", () => {
 
 // #region Exports
 
-// TODO: determine which of these are actually needed in the global scope
-// and if any of them can change over time
+// TODO: resolve circular dependencies by exporting these earlier when needed
+// and if any of them change over time, write them to a global in multiple places.
 const exports = {
 	get_file_extension,
 	get_format_from_extension,
-	traverse_menu,
 	to_canvas_coords,
 	from_canvas_coords,
 	update_fill_and_stroke_colors_and_lineWidth,
 	tool_go,
-	canvas_pointer_move,
 	average_points,
-	prevent_selection,
-	iOS,
-	update_from_url_params,
 	$app,
-	$V,
-	$H,
 	$canvas_area,
 	$canvas,
 	canvas_bounding_client_rect,
@@ -1579,32 +1572,9 @@ const exports = {
 	$status_text,
 	$status_position,
 	$status_size,
-	news_seen_key,
-	latest_news_datetime,
-	$news_indicator,
-	news_seen,
-	local_storage_unavailable,
-	day,
-	news_period_if_can_dismiss,
-	news_period_if_cannot_dismiss,
-	news_period,
-	menu_bar_outside_frame,
 	menu_bar,
-	theme_updated_period,
-	theme_new_period,
-	theme_soon_period,
-	extras_menu_button,
-	extras_menu_popup,
-	emoji_css,
 	$toolbox,
 	$colorbox,
-	alt_zooming,
-	update_palette_from_theme,
-	last_zoom_pointer_distance,
-	pan_last_pos,
-	pan_start_magnification,
-	first_pointer_time,
-	discard_quick_undo_period,
 };
 Object.assign(window, exports);
 
