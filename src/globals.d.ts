@@ -366,8 +366,8 @@ declare class OnCanvasHelperLayer extends OnCanvasObject {
 	canvas: PixelCanvas;
 }
 declare class OnCanvasSelection extends OnCanvasObject {
-	constructor(x: number, y: number, width: number, height: number, img_or_canvas?: HTMLImageElement | HTMLCanvasElement);
-	instantiate(img_or_canvas: HTMLImageElement | HTMLCanvasElement): void;
+	constructor(x: number, y: number, width: number, height: number, image_source?: HTMLImageElement | HTMLCanvasElement | ImageData);
+	instantiate(image_source: HTMLImageElement | HTMLCanvasElement | ImageData): void;
 	cut_out_background(): void;
 	update_tool_transparent_mode(): void;
 	replace_source_canvas(new_source_canvas: PixelCanvas): void;

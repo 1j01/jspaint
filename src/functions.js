@@ -1847,6 +1847,11 @@ function render_history_as_gif() {
 	}
 }
 
+/**
+ * @param {HistoryNode} target_history_node
+ * @param {boolean=} canceling
+ * @param {boolean=} discard_document_state
+ */
 function go_to_history_node(target_history_node, canceling, discard_document_state) {
 	const from_history_node = current_history_node;
 
