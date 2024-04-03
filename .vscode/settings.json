@@ -46,6 +46,11 @@
 		// Maintaining current indentation for now, but could remove this for consistency.
 		"editor.detectIndentation": true,
 	},
+	// Use local TypeScript version instead of the one bundled with VS Code.
+	// You may need to run "TypeScript: Select TypeScript Version..." and choose "Use workspace version"
+	// or that command might just set this setting for you, I'm not sure.
+	// Go to a TS or JS file for the command to show up in the command palette.
+	"typescript.tsdk": "node_modules/typescript/lib",
 	// Prevent accidental editing.
 	// This can always be overridden with the command "File: Toggle Active Editor Read-only in Session"
 	"files.readonlyInclude": {
