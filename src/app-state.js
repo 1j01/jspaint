@@ -1,7 +1,25 @@
 // @ts-check
 
+// Ugly temporary hack to avoid circular dependency issues.
+// functions.js, tools.js etc. now import app-localization.js,
+// which uses top-level await to load the localization data.
+// This delays imports of those modules until the localization data is loaded,
+// but not this script, which is the last remaining non-module script.
+// A better solution would be to make this script a module,
+// and make all of these global variables use `window.`.
+// For now, delay initialization of these variables until the start of app.js.
+// This is a fantastically fragile hack, since everything that is initialized
+// to one of the variables using it must also use it.
+let _inits = [];
+const init_app_state = () => {
+	for (const fn of _inits) {
+		fn();
+	}
+};
+
 const default_magnification = 1;
-const default_tool = get_tool_by_id(TOOL_PENCIL);
+// const default_tool = get_tool_by_id(TOOL_PENCIL);
+/* const */ let default_tool; _inits.push(() => { default_tool = get_tool_by_id(TOOL_PENCIL); });
 
 const default_canvas_width = 683;
 const default_canvas_height = 384;
@@ -15,13 +33,18 @@ let monochrome = false;
 let magnification = default_magnification;
 let return_to_magnification = 4;
 
-const main_canvas = make_canvas();
-main_canvas.classList.add("main-canvas");
-const main_ctx = main_canvas.ctx;
+// const main_canvas = make_canvas();
+// main_canvas.classList.add("main-canvas");
+/* const */ let main_canvas; _inits.push(() => { main_canvas = make_canvas(); main_canvas.classList.add("main-canvas"); });
+// const main_ctx = main_canvas.ctx;
+/* const */ let main_ctx; _inits.push(() => { main_ctx = main_canvas.ctx; });
 
-let palette = default_palette;
-let polychrome_palette = palette;
-let monochrome_palette = make_monochrome_palette();
+// let palette = default_palette;
+let palette; _inits.push(() => { palette = default_palette; });
+// let polychrome_palette = palette;
+let polychrome_palette; _inits.push(() => { polychrome_palette = palette; });
+// let monochrome_palette = make_monochrome_palette();
+let monochrome_palette; _inits.push(() => { monochrome_palette = make_monochrome_palette(); });
 
 // This feature is not ready yet.
 // It needs to let the user decide when to switch the palette or not, when saving/opening an image.
@@ -67,11 +90,14 @@ let stroke_color_k = "foreground";
 let fill_color_k = "background";
 
 /** @type {Tool} */
-let selected_tool = default_tool;
+// let selected_tool = default_tool;
+let selected_tool; _inits.push(() => { selected_tool = default_tool; });
 /** @type {Tool[]} */
-let selected_tools = [selected_tool];
+// let selected_tools = [selected_tool];
+let selected_tools; _inits.push(() => { selected_tools = [selected_tool]; });
 /** @type {Tool[]} */
-let return_to_tools = [selected_tool];
+// let return_to_tools = [selected_tool];
+let return_to_tools; _inits.push(() => { return_to_tools = [selected_tool]; });
 
 window.selected_colors = { // declared with window.* for Cypress tests to access
 	foreground: "",
@@ -104,9 +130,15 @@ let text_tool_font = {
 };
 
 /** @type {HistoryNode} */
-let root_history_node = make_history_node({ name: "App Not Loaded Properly - Please send a bug report." }); // will be replaced
+// let root_history_node = make_history_node({ name: "App Not Loaded Properly - Please send a bug report." }); // will be replaced
+let root_history_node; _inits.push(() => {
+	// This is a sort of "canary in the mine" history node which will be replaced.
+	// The initialization-delaying hack might make this canary less effective.
+	root_history_node = make_history_node({ name: "App Not Loaded Properly - Please send a bug report." });
+});
 /** @type {HistoryNode} */
-let current_history_node = root_history_node;
+// let current_history_node = root_history_node;
+let current_history_node; _inits.push(() => { current_history_node = root_history_node; });
 /** @type {HistoryNode | null} */
 let history_node_to_cancel_to = null;
 /** @type {HistoryNode[]} */

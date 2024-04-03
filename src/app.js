@@ -11,6 +11,9 @@ import { showMessageBox } from "./msgbox.js";
 import { disable_speech_recognition, enable_speech_recognition } from "./speech-recognition.js";
 import { get_theme } from "./theme.js";
 
+// HACK: This is a temporary solution to resolve circular dependencies.
+init_app_state();
+
 // #region Exports
 
 // Q: Why are the exports at the top of the file?
