@@ -56,13 +56,19 @@ declare const TOOL_POLYGON: "TOOL_POLYGON";
 declare const TOOL_ELLIPSE: "TOOL_ELLIPSE";
 declare const TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
 declare const tools: Tool[];
-// app.js
+// app-state.js
 declare let brush_shape: BrushShape;
 declare let brush_size: number
 declare let eraser_size: number;
 declare let airbrush_size: number;
 declare let pencil_size: number;
 declare let stroke_size: number; // applies to lines, curves, shape outlines
+declare let default_brush_shape: BrushShape;
+declare let default_brush_size: number
+declare let default_eraser_size: number;
+declare let default_airbrush_size: number;
+declare let default_pencil_size: number;
+declare let default_stroke_size: number;
 
 declare let tool_transparent_mode: boolean;
 declare let stroke_color: string | CanvasPattern;
@@ -149,13 +155,17 @@ interface I$Component {
 }
 // helpers.js
 declare function make_css_cursor(name: string, coords: [number, number], fallback: string): string;
+declare function make_canvas(width: number, height: number): PixelCanvas;
+declare function make_canvas(source: HTMLImageElement | HTMLCanvasElement | ImageData): PixelCanvas;
+declare function make_canvas(): PixelCanvas;
+
 // edit-colors.js
 declare function show_edit_colors_window(
 	$swatch_to_edit?: JQuery<HTMLDivElement>,
 	color_selection_slot_to_edit?: ColorSelectionSlot,
 ): void;
 // color-data.js
-// declare const default_palette: (string | CanvasPattern)[];
+declare const default_palette: (string | CanvasPattern)[];
 // declare const monochrome_palette_as_colors: (string | CanvasPattern)[];
 // declare const basic_colors: (string | CanvasPattern)[];
 // declare const custom_colors: (string | CanvasPattern)[];
@@ -195,9 +205,9 @@ interface Window {
 	get_rgba_from_color: (color: string) => [number, number, number, number];
 	make_css_cursor: (name: string, coords: [number, number], fallback: string) => string;
 	make_canvas: {
-		(width: number, height: number): HTMLCanvasElement,
-		(source: HTMLImageElement | HTMLCanvasElement | ImageData): HTMLCanvasElement,
-		(): HTMLCanvasElement,
+		(width: number, height: number): PixelCanvas,
+		(source: HTMLImageElement | HTMLCanvasElement | ImageData): PixelCanvas,
+		(): PixelCanvas,
 	};
 	image_data_match: (a: ImageData, b: ImageData, threshold: number) => boolean;
 	load_image_simple: (src: string) => Promise<HTMLImageElement>;
@@ -248,7 +258,7 @@ interface Window {
 	$choose_magnification: JQuery<HTMLElement>;
 	$choose_airbrush_size: JQuery<HTMLElement>;
 	$choose_transparent_mode: JQuery<HTMLElement>;
-	// app.js
+	// app-state.js
 	selection: OnCanvasSelection;
 	textbox: OnCanvasTextBox;
 	helper_layer: OnCanvasHelperLayer;
@@ -271,6 +281,19 @@ interface Window {
 		color: string,
 		background: string,
 	};
+	brush_shape: BrushShape;
+	brush_size: number
+	eraser_size: number;
+	airbrush_size: number;
+	pencil_size: number;
+	stroke_size: number;
+	default_brush_shape: BrushShape;
+	default_brush_size: number
+	default_eraser_size: number;
+	default_airbrush_size: number;
+	default_pencil_size: number;
+	default_stroke_size: number;
+
 	// msgbox.js
 	showMessageBox: (options: MessageBoxOptions) => Promise<string>;
 	defaultMessageBoxTitle: string;
