@@ -1,5 +1,4 @@
 // @ts-check
-/* global localize */
 
 // Note that this API must be kept in sync with the version in 98.js.org,
 // as 98.js.org will write the global `showMessageBox` to provide integration with the web desktop environment,
@@ -9,6 +8,7 @@
 // or, couldn't we just provide the default in a wrapper function, similar to how 98.js.org does it?
 
 import { make_window_supporting_scale } from "./$ToolWindow.js";
+import { localize } from "./app-localization.js";
 
 const exports = {};
 

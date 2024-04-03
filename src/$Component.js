@@ -1,6 +1,7 @@
 // @ts-check
-/* global $bottom, $canvas, $left, $right, $ToolWindow, $top, get_direction */
+/* global $bottom, $canvas, $left, $right, $ToolWindow, $top */
 
+import { get_direction } from "./app-localization.js";
 import { $G, E } from "./helpers.js";
 
 // Segments here represent UI components as far as a layout algorithm is concerned,

@@ -1,5 +1,7 @@
 // @ts-check
-/* global localize, show_error_message */
+/* global show_error_message */
+
+import { localize } from "./app-localization.js";
 
 // This script progressively enhances from error-handling-basic.js.
 

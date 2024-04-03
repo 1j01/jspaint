@@ -1,7 +1,8 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global file_name:writable */
-/* global $app, $canvas_area, $DialogWindow, change_url_param, get_uris, load_image_from_uri, localize, magnification, main_canvas, main_ctx, open_from_image_info, redo, redos, reset_file, show_error_message, show_resource_load_error_message, storage, to_canvas_coords, undo, undoable, undos, update_title */
+/* global $app, $canvas_area, $DialogWindow, change_url_param, get_uris, load_image_from_uri, magnification, main_canvas, main_ctx, open_from_image_info, redo, redos, reset_file, show_error_message, show_resource_load_error_message, storage, to_canvas_coords, undo, undoable, undos, update_title */
+import { localize } from "./app-localization.js";
 import { $G, debounce, get_help_folder_icon, image_data_match, make_canvas } from "./helpers.js";
 import { storage_quota_exceeded } from "./manage-storage.js";
 import { showMessageBox } from "./msgbox.js";

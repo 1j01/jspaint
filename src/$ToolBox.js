@@ -1,5 +1,6 @@
 // @ts-check
-/* global $canvas, $Component, $left, $right, $status_text, get_direction, localize, main_canvas, return_to_tools, select_tool, select_tools, selected_tool, selected_tools */
+/* global $canvas, $Component, $left, $right, $status_text, main_canvas, return_to_tools, select_tool, select_tools, selected_tool, selected_tools */
+import { get_direction, localize } from "./app-localization.js";
 import { $G, E, make_css_cursor } from "./helpers.js";
 import { get_theme } from "./theme.js";
 

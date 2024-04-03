@@ -1,5 +1,6 @@
 // @ts-check
-/* global $Window, localize, show_error_message */
+/* global $Window, show_error_message */
+import { localize } from "./app-localization.js";
 import { $G, E } from "./helpers.js";
 import { showMessageBox } from "./msgbox.js";
 

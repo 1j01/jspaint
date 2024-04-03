@@ -1,7 +1,8 @@
 // @ts-check
 /* global palette:writable */
-/* global $colorbox, $DialogWindow, detect_monochrome, display_hotkey, localize, main_ctx, make_monochrome_palette, monochrome, selected_colors, selection, show_error_message, undoable */
+/* global $colorbox, $DialogWindow, detect_monochrome, main_ctx, make_monochrome_palette, monochrome, selected_colors, selection, show_error_message, undoable */
 import { $Swatch, update_$swatch } from "./$ColorBox.js";
+import { display_hotkey, localize } from "./app-localization.js";
 import { basic_colors, custom_colors } from "./color-data.js";
 import { $G, get_help_folder_icon, get_rgba_from_color, make_canvas, rgb_to_hsl } from "./helpers.js";
 import { replace_color_globally } from "./image-manipulation.js";

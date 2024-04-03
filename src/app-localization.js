@@ -1,4 +1,16 @@
-((exports) => {
+// @ts-check
+
+// Circular dependency: msgbox.js uses localize for its default title.
+// Leaving as a global for now.
+// import { showMessageBox } from "./msgbox.js";
+
+// Messy conversion to ESM for now. Avoiding indentation changes to make the diff easier to read.
+const exports = {};
+
+/** @type {Promise} */
+let data_loaded;
+
+(() => {
 	// @TODO: DRY hotkey helpers
 	// & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
 	// & can be escaped by doubling it, e.g. "&Taskbar && Start Menu"
@@ -1051,7 +1063,7 @@
 	function get_direction(language = current_language) {
 		return language.match(/^(ar|dv|fa|ha|he|ks|ku|ms|pa|ps|sd|ug|yi)\b/i) ? "rtl" : "ltr";
 	}
-	function load_language(language) {
+	async function load_language(language) {
 		// const prev_language = current_language;
 
 		const stylesheets = [...document.querySelectorAll(".flippable-layout-stylesheet")];
@@ -1084,21 +1096,31 @@
 		}
 		// fetch(`localization/${language}/localizations.json`)
 		// .then((response)=> response.json())
-		// .then((new_localizations)=> {
-		// 	localizations = new_localizations;
-		// 	current_language = language;
-		// }).catch((error)=> {
-		// 	show_error_message(`Failed to load localizations for ${language_names[language]}.`, error);
-		// 	current_language = prev_language;
-		// });
-		const src = `localization/${language}/localizations.js`;
-		document.write(`<script src="${src}"></${""/*(avoiding ending script tag if inlined in HTML)*/}script>`);
+		// JSONP was used with document.write() before transitioning to ES Modules.
+		// ESM allows for dynamic imports, but the localization files are not ES Modules.
+		// However, top-level await is the important part, so fetch() can be used instead of dynamic import().
+		// This is a good substitute for the synchronous document.write() behavior,
+		// as dependent code will be delayed until the data is loaded.
+		await fetch(`localization/${language}/localizations.js`)
+			.then((response) => response.text())
+			.then((text) => {
+				return JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
+			})
+			.then((new_localizations) => {
+				localizations = new_localizations;
+				current_language = language;
+			}).catch((error) => {
+				show_error_message(`Failed to load localizations for ${language_names[language]}.`, error);
+				// current_language = prev_language;
+			});
+		// const src = `localization/${language}/localizations.js`;
+		// document.write(`<script src="${src}"></${""/*(avoiding ending script tag if inlined in HTML)*/}script>`);
 	}
 	// JSONP callback in the localization files
-	window.loaded_localizations = function loaded_localizations(language, mapping) {
-		localizations = mapping;
-		current_language = language;
-	}
+	// window.loaded_localizations = function loaded_localizations(language, mapping) {
+	// 	localizations = mapping;
+	// 	current_language = language;
+	// }
 	function set_language(language) {
 		showMessageBox({
 			title: "Reload Required",
@@ -1124,7 +1146,8 @@
 			}
 		});
 	}
-	load_language(current_language);
+
+	data_loaded = load_language(current_language);
 
 	exports.localize = localize;
 	exports.set_language = set_language;
@@ -1140,4 +1163,18 @@
 	exports.display_hotkey = display_hotkey;
 	exports.get_hotkey = get_hotkey;
 
-})(window);
+})();
+
+await data_loaded;
+
+const { localize, set_language, get_language, get_iso_language_name, get_language_endonym, get_language_emoji, get_direction, available_languages, remove_hotkey, display_hotkey, get_hotkey } = exports;
+export { available_languages, display_hotkey, get_direction, get_hotkey, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, remove_hotkey, set_language };
+
+// Global for electron-injected.js
+// Electron doesn't support ESM for `preload` when sandboxed
+// https://www.electronjs.org/docs/latest/tutorial/esm
+// This may expose a race condition, because localize() is not available
+// until the localization data is downloaded, but the electron code is
+// only using it for error messages, and hopefully those won't occur until
+// after the localization data is loaded.
+window.localize = localize;

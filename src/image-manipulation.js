@@ -1,7 +1,8 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global saved:writable, brush_size:writable, pencil_size:writable, stroke_size:writable */
-/* global $canvas_area, aliasing, cancel, deselect, detect_monochrome, localize, main_canvas, main_ctx, palette, selected_colors, selection, show_error_message, stroke_color, transparency, undoable, update_title */
+/* global $canvas_area, aliasing, cancel, deselect, detect_monochrome, main_canvas, main_ctx, palette, selected_colors, selection, show_error_message, stroke_color, transparency, undoable, update_title */
+import { localize } from "./app-localization.js";
 import { $G, TAU, get_help_folder_icon, get_rgba_from_color, make_canvas, memoize_synchronous_function } from "./helpers.js";
 
 // workaround for ES Modules only allowing exports at the top level

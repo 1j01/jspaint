@@ -1,5 +1,6 @@
 // @ts-check
-/* global get_direction, localize */
+
+import { get_direction, localize } from "./app-localization.js";
 
 /** @type {ImageFileFormat[]} */
 let image_formats = [];

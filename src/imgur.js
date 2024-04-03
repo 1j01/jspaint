@@ -1,5 +1,6 @@
 // @ts-check
-/* global $DialogWindow, localize */
+/* global $DialogWindow */
+import { localize } from "./app-localization.js";
 import { E } from "./helpers.js";
 
 let $imgur_window;

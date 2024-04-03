@@ -1,6 +1,7 @@
 // @ts-check
 
 import { $ColorBox } from "./$ColorBox.js";
+import { get_direction, localize, remove_hotkey } from "./app-localization.js";
 import { get_winter_palette } from "./color-data.js";
 import { show_help } from "./help.js";
 import { $G, E, TAU, get_file_extension, get_help_folder_icon } from "./helpers.js";
