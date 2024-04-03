@@ -38,7 +38,7 @@ declare function reset_canvas_and_history(): void;
  * @param {number=} options.textbox_width - the width of the textbox, if any
  * @param {number=} options.textbox_height - the height of the textbox, if any
  * @param {string | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
- * @param {boolean} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
+ * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
  * @param {string=} options.foreground_color - selected foreground color (left click)
  * @param {string=} options.background_color - selected background color (right click)
  * @param {string=} options.ternary_color - selected ternary color (ctrl+click)
@@ -61,7 +61,7 @@ declare function make_history_node({ parent, futures, timestamp, soft, image_dat
     textbox_width?: number | undefined;
     textbox_height?: number | undefined;
     text_tool_font?: (string | null) | undefined;
-    tool_transparent_mode: boolean;
+    tool_transparent_mode?: boolean | undefined;
     foreground_color?: string | undefined;
     background_color?: string | undefined;
     ternary_color?: string | undefined;
@@ -81,7 +81,15 @@ declare function file_load_from_url(): void;
 declare function confirm_overwrite_capability(): Promise<boolean>;
 declare function file_save(maybe_saved_callback?: () => void, update_from_saved?: boolean): void;
 declare function file_save_as(maybe_saved_callback?: () => void, update_from_saved?: boolean): void;
-declare function are_you_sure(action: any, canceled: any, from_session_load: any): void;
+/**
+ * Prompts the user to save changes to the document.
+ * @param {(info?: { canvas_modified_while_loading?: boolean }) => void} action
+ * @param {() => void} [canceled]
+ * @param {boolean} [from_session_load]
+ */
+declare function are_you_sure(action: (info?: {
+    canvas_modified_while_loading?: boolean;
+}) => void, canceled?: () => void, from_session_load?: boolean): void;
 declare function please_enter_a_number(): void;
 declare function show_error_message(message: any, error: any): void;
 declare function show_resource_load_error_message(error: any): void;
@@ -91,7 +99,7 @@ declare function show_resource_load_error_message(error: any): void;
  * @property {PaletteErrorObject[]} errors
  *
  * @typedef {object} PaletteErrorObject
- * @property {error} error
+ * @property {Error} error
  * @property {{name: string}} __PATCHED_LIB_TO_ADD_THIS__format
  *
  * @param {object} options
@@ -176,6 +184,10 @@ declare function make_opaque(): void;
 declare function resize_canvas_without_saving_dimensions(unclamped_width: any, unclamped_height: any, undoable_meta?: {}): void;
 declare function resize_canvas_and_save_dimensions(unclamped_width: any, unclamped_height: any, undoable_meta?: {}): void;
 declare function image_attributes(): void;
+declare namespace image_attributes {
+    let $window: $Window;
+    let unit: string;
+}
 declare function show_convert_to_black_and_white(): void;
 declare function image_flip_and_rotate(): void;
 declare function image_stretch_and_skew(): void;
@@ -224,7 +236,7 @@ type PaletteErrorGroup = {
     errors: PaletteErrorObject[];
 };
 type PaletteErrorObject = {
-    error: error;
+    error: Error;
     __PATCHED_LIB_TO_ADD_THIS__format: {
         name: string;
     };
