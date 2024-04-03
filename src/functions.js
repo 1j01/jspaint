@@ -705,8 +705,12 @@ function update_title() {
 	}
 }
 
+/**
+ * Parse text/uri-list format
+ * @param {string} text
+ * @returns {string[]} URLs
+ */
 function get_uris(text) {
-	// parse text/uri-list
 	// get lines, discarding comments
 	const lines = text.split(/[\n\r]+/).filter(line => line[0] !== "#" && line);
 	// discard text with too many lines (likely pasted HTML or something) - may want to revisit this
@@ -725,6 +729,13 @@ function get_uris(text) {
 	}
 	return uris;
 }
+/**
+ * Load an image file from a URL by any means necessary.
+ * For basic image loading, see `load_image_simple` instead.
+ * @param {string} uri
+ * @returns {Promise<ImageInfo>}
+ * @throws {Error & { code?: string }}
+ */
 async function load_image_from_uri(uri) {
 
 	// Cases to consider:
@@ -885,6 +896,13 @@ async function load_image_from_uri(uri) {
 	throw error;
 }
 
+/**
+ * @param {ImageInfo} info 
+ * @param {() => void} [callback]
+ * @param {() => void} [canceled]
+ * @param {boolean} [into_existing_session]
+ * @param {boolean} [from_session_load]
+ */
 function open_from_image_info(info, callback, canceled, into_existing_session, from_session_load) {
 	are_you_sure(({ canvas_modified_while_loading } = {}) => {
 		deselect();
@@ -922,6 +940,7 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 		if (info.source_blob instanceof File) {
 			file_name = info.source_blob.name;
 			// file.path is available in Electron (see https://www.electronjs.org/docs/api/file-object#file-object)
+			// @ts-ignore
 			system_file_handle = info.source_blob.path;
 		}
 		if (info.source_file_handle) {
@@ -1044,7 +1063,7 @@ function file_load_from_url() {
 	const $input = $w.$main.find("#url-input");
 	// $w.$Button("Load", () => {
 	$w.$Button(localize("Open"), () => {
-		const uris = get_uris($input.val());
+		const uris = get_uris(String($input.val()));
 		if (uris.length > 0) {
 			// @TODO: retry loading if same URL entered
 			// actually, make it change the hash only after loading successfully
@@ -3609,6 +3628,10 @@ function write_image_file(canvas, mime_type, blob_callback) {
 	}
 }
 
+/**
+ * @param {Blob} blob 
+ * @param {(error: Error|null, result?: ImageInfo) => void} callback
+ */
 function read_image_file(blob, callback) {
 	// @TODO: handle SVG (might need to keep track of source URL, for relative resources)
 	// @TODO: read palette from GIF files

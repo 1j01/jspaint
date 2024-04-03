@@ -47,6 +47,7 @@ function Handles(options) {
 	if (options.thick) {
 		$resize_ghost.addClass("thick");
 	}
+	/** @type {HTMLElement[]} */
 	const handles = [];
 	[
 		[HANDLE_TOP, HANDLE_RIGHT], // ↗

@@ -103,7 +103,7 @@ declare let history_node_to_cancel_to: HistoryNode | null;
 declare let undos: HistoryNode[];
 declare let redos: HistoryNode[];
 declare let file_name: string;
-declare let system_file_handle: any;
+declare let system_file_handle: UserFileHandle;
 declare let saved: boolean;
 declare let pointer: { x: number, y: number } | undefined;
 declare let pointer_start: { x: number, y: number } | undefined;
@@ -442,7 +442,7 @@ declare class Handles {
 		};
 		thick?: boolean;
 	});
-	handles: any[];
+	handles: HTMLElement[];
 	hide: () => void;
 	show: () => void;
 }
@@ -754,6 +754,20 @@ interface ImageFileFormat {
 	nameWithExtensions: string;
 	extensions: string[];
 }
+
+interface ImageInfo {
+	file_format: string,
+	monochrome: boolean,
+	palette?: string[],
+	image?: HTMLImageElement, // exclusive with image_data
+	image_data?: ImageData, // exclusive with image
+	source_blob: Blob,
+	source_file_handle?: UserFileHandle,
+}
+
+/** It's up to the user of the API to define this; could be parametrized in a better version of the JS Paint API. */
+type UserFileHandle = any;
+
 
 // Fullscreen API vendor prefixes
 interface Document {
