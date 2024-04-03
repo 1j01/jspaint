@@ -80,9 +80,9 @@ declare let selected_tool: Tool;
 declare let selected_tools: Tool[];
 declare let return_to_tools: Tool[];
 declare let selected_colors: {
-	foreground: string,
-	background: string,
-	ternary: string,
+	foreground: string | CanvasPattern,
+	background: string | CanvasPattern,
+	ternary: string | CanvasPattern,
 };
 
 declare let selection: OnCanvasSelection;
@@ -751,11 +751,11 @@ interface HistoryNode {
 	/** whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque */
 	tool_transparent_mode: boolean;
 	/** selected foreground color (left click) */
-	foreground_color: string;
+	foreground_color: string | CanvasPattern;
 	/** selected background color (right click) */
-	background_color: string;
+	background_color: string | CanvasPattern;
 	/** selected ternary color (ctrl+click) */
-	ternary_color: string;
+	ternary_color: string | CanvasPattern;
 	/** the name of the operation, shown in the history window, e.g. localize("Resize Canvas") */
 	name: string;
 	/** a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png") */

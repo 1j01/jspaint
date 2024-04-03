@@ -326,7 +326,7 @@ const tools = [{
 		ctx.restore();
 
 		if (previewing || !transparency) {
-			/** @type {string | CanvasGradient} */
+			/** @type {string | CanvasPattern | CanvasGradient} */
 			let color = selected_colors.background;
 			if (transparency) {
 				const t = performance.now() / 2000;

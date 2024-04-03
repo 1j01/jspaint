@@ -637,9 +637,9 @@ function reset_canvas_and_history() {
  * @param {number=} options.textbox_height - the height of the textbox, if any
  * @param {string | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
  * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
- * @param {string=} options.foreground_color - selected foreground color (left click)
- * @param {string=} options.background_color - selected background color (right click)
- * @param {string=} options.ternary_color - selected ternary color (ctrl+click)
+ * @param {string | CanvasPattern=} options.foreground_color - selected foreground color (left click)
+ * @param {string | CanvasPattern=} options.background_color - selected background color (right click)
+ * @param {string | CanvasPattern=} options.ternary_color - selected ternary color (ctrl+click)
  * @param {string=} options.name - the name of the operation, shown in the history window, e.g. localize("Resize Canvas")
  * @param {HTMLImageElement |HTMLCanvasElement | null=} options.icon - a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png")
  * @returns {HistoryNode} 
@@ -2943,8 +2943,8 @@ function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_heig
 function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height, undoable_meta = {}) {
 	resize_canvas_without_saving_dimensions(unclamped_width, unclamped_height, undoable_meta);
 	storage.set({
-		width: main_canvas.width,
-		height: main_canvas.height,
+		width: main_canvas.width.toString(),
+		height: main_canvas.height.toString(),
 	}, (/*error*/) => {
 		// oh well
 	})
