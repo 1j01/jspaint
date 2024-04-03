@@ -226,6 +226,7 @@ module.exports = {
 				"src/color-data.js",
 				"src/edit-colors.js",
 				"src/manage-storage.js",
+				"src/file-format-data.js",
 				"src/imgur.js",
 				"src/help.js",
 				"src/simulate-random-gestures.js",

@@ -160,6 +160,10 @@ declare function show_edit_colors_window(
 // declare const basic_colors: (string | CanvasPattern)[];
 // declare const custom_colors: (string | CanvasPattern)[];
 // declare const get_winter_palette: () => (string | CanvasPattern)[];
+// file-format-data.js
+declare const image_formats: ImageFileFormat[];
+declare const palette_formats: PaletteFileFormat[];
+declare function formats_unique_per_file_extension<T extends FileFormat>(formats: T[]): T[];
 // imgur.js
 declare function show_imgur_uploader(blob: Blob): void;
 // storage.js
@@ -288,6 +292,10 @@ interface Window {
 	// manage-storage.js
 	manage_storage: () => void;
 	storage_quota_exceeded: () => Promise<void>;
+	// file-format-data.js
+	image_formats: ImageFileFormat[];
+	palette_formats: PaletteFileFormat[];
+	formats_unique_per_file_extension: <T extends FileFormat>(formats: T[]) => T[];
 	// storage.js
 	storage: LocalStore;
 	// sessions.js
@@ -754,6 +762,16 @@ interface ImageFileFormat {
 	nameWithExtensions: string;
 	extensions: string[];
 }
+
+interface PaletteFileFormat {
+	formatID: string;
+	// mimeType: string;
+	name: string;
+	nameWithExtensions: string;
+	extensions: string[];
+}
+
+type FileFormat = ImageFileFormat | PaletteFileFormat;
 
 interface ImageInfo {
 	file_format: string,
