@@ -311,6 +311,32 @@ function get_icon_for_tools(tools) {
 }
 
 /**
+ * does NOT accept a file extension itself as input - if input does not have a dot, returns empty string
+ * @param {string} file_path_or_name  path or name of a file
+ * @returns {string}  file extension without the dot
+ */
+function get_file_extension(file_path_or_name) {
+	return file_path_or_name.match(/\.([^./]+)$/)?.[1] || "";
+}
+
+/**
+ * accepts a file extension as input, or a file name, or path
+ * @template {FileFormat} T
+ * @param {T[]} formats
+ * @param {string} file_path_or_name_or_ext  file path, name, or extension
+ * @returns {T}  format object
+ */
+function get_format_from_extension(formats, file_path_or_name_or_ext) {
+	const ext_match = file_path_or_name_or_ext.match(/\.([^.]+)$/);
+	const ext = ext_match ? ext_match[1].toLowerCase() : file_path_or_name_or_ext; // excluding dot
+	for (const format of formats) {
+		if (format.extensions.includes(ext)) {
+			return format;
+		}
+	}
+}
+
+/**
  * Converts an RGB color value to HSL. Conversion formula
  * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
  * Assumes r, g, and b are contained in the set [0, 255] and
@@ -350,6 +376,8 @@ export {
 	E,
 	TAU,
 	debounce,
+	get_file_extension,
+	get_format_from_extension,
 	get_help_folder_icon,
 	get_icon_for_tool,
 	get_icon_for_tools,
@@ -378,3 +406,5 @@ window.image_data_match = image_data_match;
 window.get_rgba_from_color = get_rgba_from_color;
 window.memoize_synchronous_function = memoize_synchronous_function;
 window.debounce = debounce;
+window.get_file_extension = get_file_extension;
+window.get_format_from_extension = get_format_from_extension;

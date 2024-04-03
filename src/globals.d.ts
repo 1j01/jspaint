@@ -214,6 +214,8 @@ interface Window {
 	get_help_folder_icon: (file_name: string) => HTMLImageElement;
 	get_icon_for_tool: (tool: Tool) => HTMLImageElement;
 	get_icon_for_tools: (tools: Tool[]) => HTMLImageElement | HTMLCanvasElement;
+	get_file_extension: (file_path_or_name: string) => string;
+	get_file_format: <T extends FileFormat>(formats: T[], file_path_or_name_or_ext: string) => T;
 	// tools.js
 	TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 	TOOL_SELECT: "TOOL_SELECT";

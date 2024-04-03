@@ -13,8 +13,6 @@
 //    is instantiated in the middle of this file (but after $left/$right are declared).
 // @TODO: Minimize global variables and exports from app.js
 const exports = {
-	get_file_extension,
-	get_format_from_extension,
 	to_canvas_coords,
 	from_canvas_coords,
 	update_fill_and_stroke_colors_and_lineWidth,
@@ -272,21 +270,6 @@ window.systemHookDefaults = {
 
 for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
 	window.systemHooks[key] = window.systemHooks[key] || defaultValue;
-}
-
-function get_file_extension(file_path_or_name) {
-	// does NOT accept a file extension itself as input - if input does not have a dot, returns empty string
-	return file_path_or_name.match(/\.([^./]+)$/)?.[1] || "";
-}
-function get_format_from_extension(formats, file_path_or_name_or_ext) {
-	// accepts a file extension as input, or a file name, or path
-	const ext_match = file_path_or_name_or_ext.match(/\.([^.]+)$/);
-	const ext = ext_match ? ext_match[1].toLowerCase() : file_path_or_name_or_ext; // excluding dot
-	for (const format of formats) {
-		if (format.extensions.includes(ext)) {
-			return format;
-		}
-	}
 }
 
 // #endregion
