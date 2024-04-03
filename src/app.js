@@ -391,8 +391,7 @@ window.$canvas_area = $canvas_area;
 const $canvas = $(main_canvas).appendTo($canvas_area);
 window.$canvas = $canvas;
 $canvas.css("touch-action", "none");
-let canvas_bounding_client_rect = main_canvas.getBoundingClientRect(); // cached for performance, updated later
-window.canvas_bounding_client_rect = canvas_bounding_client_rect;
+window.canvas_bounding_client_rect = main_canvas.getBoundingClientRect(); // cached for performance, updated later
 const canvas_handles = new Handles({
 	$handles_container: $canvas_area,
 	$object_container: $canvas_area,
@@ -1182,14 +1181,14 @@ function to_canvas_coords({ clientX, clientY }) {
 	if (clientX === undefined || clientY === undefined) {
 		throw new TypeError("clientX and clientY must be defined (not {x, y} or x, y or [x, y])");
 	}
-	const rect = canvas_bounding_client_rect;
+	const rect = window.canvas_bounding_client_rect;
 	return {
 		x: ~~((clientX - rect.left) / rect.width * main_canvas.width),
 		y: ~~((clientY - rect.top) / rect.height * main_canvas.height),
 	};
 }
 function from_canvas_coords({ x, y }) {
-	const rect = canvas_bounding_client_rect;
+	const rect = window.canvas_bounding_client_rect;
 	return {
 		clientX: ~~(x / main_canvas.width * rect.width + rect.left),
 		clientY: ~~(y / main_canvas.height * rect.height + rect.top),

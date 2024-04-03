@@ -115,8 +115,7 @@ function update_magnified_canvas_size() {
 }
 
 function update_canvas_rect() {
-	canvas_bounding_client_rect = main_canvas.getBoundingClientRect();
-	window.canvas_bounding_client_rect = canvas_bounding_client_rect;
+	window.canvas_bounding_client_rect = main_canvas.getBoundingClientRect();
 
 	update_helper_layer();
 }
