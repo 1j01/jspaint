@@ -1,11 +1,23 @@
 // @ts-check
 import { onKonamiCodeEntered } from "./konami.js";
 (() => {
-	let rAF_ID, rotologo, $window, space_phase_key_handler, player, player_placeholder;
+	/** @type {number} */
+	let rAF_ID;
+	/** @type {HTMLImageElement} */
+	let rotologo;
+	/** @type {(e: KeyboardEvent) => void} */
+	let space_phase_key_handler;
+	/** @type {YT.Player} */
+	let player;
+	/** @type {HTMLElement} */
+	let player_placeholder;
+	/** @type {boolean} */
 	let vaporwave_active = false;
 
+	/** @type {JQuery<HTMLElement>} */
+	let $window;
 	if (parent && frameElement && parent.jQuery) {
-		$window = parent.jQuery(frameElement).closest(".window, .os-window");
+		$window = /** @type {JQuery<HTMLElement>} */(parent.jQuery(frameElement).closest(".window, .os-window"));
 	} else {
 		$window = $();
 	}
@@ -86,7 +98,14 @@ import { onKonamiCodeEntered } from "./konami.js";
 				do {
 					offsetLeft += el.offsetLeft;
 					offsetTop += el.offsetTop;
-					el = el.offsetParent;
+					// Doing this a little bit messily because I want it to be type-safe,
+					// but I'm not 100% sure this is correct and I don't want to spend too much time on it
+					// To test this, I need to run it in 98.js.org
+					if (el.offsetParent instanceof HTMLElement) {
+						el = el.offsetParent;
+					} else {
+						break;
+					}
 				} while (el);
 
 				const rotateY = -(offsetLeft + ($window.outerWidth() - parent.innerWidth) / 2) / parent.innerWidth / 3;
