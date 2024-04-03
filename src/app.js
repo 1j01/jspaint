@@ -1,3 +1,30 @@
+// @ts-check
+
+// #region Exports
+
+// Q: Why are the exports at the top of the file?
+// A: The exports are scattered throughout the file, exactly where they were
+//    implicitly being exported before transitioning to ESM.
+//    For function declarations at the top level, this means the start of the file.
+//    For let/const, this means the line after the declaration.
+//    This is a temporary solution to resolve circular dependencies.
+//    For instance, $ToolBox uses $left/$right. If $left/$right were exported
+//    at the bottom of this file, an error would occur. This is because $ToolBox
+//    is instantiated in the middle of this file (but after $left/$right are declared).
+// @TODO: Minimize global variables and exports from app.js
+const exports = {
+	get_file_extension,
+	get_format_from_extension,
+	to_canvas_coords,
+	from_canvas_coords,
+	update_fill_and_stroke_colors_and_lineWidth,
+	tool_go,
+	average_points,
+};
+Object.assign(window, exports);
+
+// #endregion
+
 
 // #region System Hooks and default implementations
 
@@ -1566,21 +1593,4 @@ $G.on("fullscreenchange webkitfullscreenchange", () => {
 	// $status_text.text(`fullscreen: ${fullscreen}`);
 	$("html").toggleClass("fullscreen", fullscreen);
 });
-// #endregion
-
-// #region Exports
-
-// TODO: resolve circular dependencies by exporting these earlier when needed
-// and if any of them change over time, write them to a global in multiple places.
-const exports = {
-	get_file_extension,
-	get_format_from_extension,
-	to_canvas_coords,
-	from_canvas_coords,
-	update_fill_and_stroke_colors_and_lineWidth,
-	tool_go,
-	average_points,
-};
-Object.assign(window, exports);
-
 // #endregion
