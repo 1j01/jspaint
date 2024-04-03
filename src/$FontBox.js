@@ -1,7 +1,7 @@
 // @ts-check
 /* global localize, text_tool_font */
 import { $ToolWindow } from "./$ToolWindow.js";
-// import { localize } from "./app-localization.js";
+import { localize } from "./app-localization.js";
 import { $G, E } from "./helpers.js";
 
 const eachFont = async (callback, afterAllCallback) => {

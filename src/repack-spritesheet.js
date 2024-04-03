@@ -7,6 +7,7 @@
 
 const { apply_image_transformation } = await import("./src/image-manipulation.js");
 const { get_help_folder_icon } = await import("./src/helpers.js");
+const { localize } = await import("./src/app-localization.js");
 
 function repack_spritesheet(tile_width, tile_height = tile_width, padding = tile_width) {
 	apply_image_transformation({

@@ -1,7 +1,7 @@
 module.exports = {
 	"env": {
 		"browser": true,
-		"es2020": true,
+		"es2022": true,
 	},
 	"extends": "eslint:recommended",
 	"globals": {
@@ -69,6 +69,7 @@ module.exports = {
 			// TODO: make module the default, since the app is mostly ES6 modules now
 			files: [
 				"src/app.js",
+				"src/app-localization.js",
 				"src/theme.js",
 				"src/msgbox.js",
 				"src/helpers.js",

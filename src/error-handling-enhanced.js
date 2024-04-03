@@ -3,7 +3,7 @@
 
 import { show_error_message } from "./functions.js";
 
-// import { localize } from "./app-localization.js";
+import { localize } from "./app-localization.js";
 
 // This script progressively enhances from error-handling-basic.js.
 

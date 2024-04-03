@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 /* global saved:writable, brush_size:writable, pencil_size:writable, stroke_size:writable */
 /* global $canvas_area, aliasing, localize, main_canvas, main_ctx, palette, selected_colors, selection, stroke_color, transparency */
-// import { localize } from "./app-localization.js";
+import { localize } from "./app-localization.js";
 import { cancel, deselect, detect_monochrome, show_error_message, undoable, update_title } from "./functions.js";
 import { $G, TAU, get_help_folder_icon, get_rgba_from_color, make_canvas, memoize_synchronous_function } from "./helpers.js";
 
@@ -1393,3 +1393,4 @@ export {
 	draw_noncontiguous_fill_separately, draw_noncontiguous_fill_without_pattern_support, draw_polygon, draw_quadratic_curve, draw_rounded_rectangle, draw_selection_box, draw_with_swatch, find_color_globally, flip_horizontal,
 	flip_vertical, get_brush_canvas_size, get_circumference_points_for_brush, invert_monochrome, invert_rgb, render_brush, replace_color_globally, replace_colors_with_swatch, rotate, stamp_brush_canvas, stretch_and_skew, threshold_black_and_white, update_brush_for_drawing_lines
 };
+

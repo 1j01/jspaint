@@ -70,6 +70,9 @@
 	<meta name="twitter:site" content="@isaiahodhner">
 	<meta name="twitter:creator" content="@isaiahodhner">
 
+	<!-- For Electron, imagine there's a script tag before everything else:
+		<script src="src/electron-injected.js"></script>
+	-->
 	<script src="src/error-handling-basic.js"></script>
 	<script type="module" src="src/theme.js"></script>
 </head>
@@ -942,13 +945,8 @@
 	<script src="lib/os-gui/MenuBar.js"></script>
 	<script src="lib/imagetracer_v1.2.5.js"></script>
 
-	<!-- must not be async/deferred, as it uses document.write(); and must come before other app code which uses localization functions -->
-	<!-- (also depends on msgbox.js and thus os-gui.js, but not initially) -->
-	<script src="src/app-localization.js"></script>
+	<script type="module" src="src/app-localization.js"></script>
 
-	<!-- Scripts that are not yet transitioned to ES Modules are marked as "defer"
-	so that the ES Modules (which are implicitly deferred) can still export globals to be consumed by the non-module scripts,
-	which helps with progressively converting the codebase to ES Modules. -->
 	<script type="module" src="src/msgbox.js"></script>
 	<script type="module" src="src/functions.js"></script>
 	<script type="module" src="src/helpers.js"></script>
@@ -982,6 +980,11 @@
 	<script type="module" src="src/menus.js"></script>
 	<script type="module" src="src/speech-recognition.js"></script>
 	<script type="module" src="src/eye-gaze-mode.js"></script>
+	<!-- app-state.js is marked with `defer` because it's not yet transitioned to ES Modules.
+	ES Modules are implicitly deferred, so this keeps the order of the scripts' execution consistent.
+	I had to mark all scripts this way initially to start with,
+	and this is the last one! Split out from app.js, it contains a bunch of globals.
+	-->
 	<script defer src="src/app-state.js"></script>
 	<script type="module" src="src/app.js"></script>
 	<script type="module" src="src/sessions.js"></script>

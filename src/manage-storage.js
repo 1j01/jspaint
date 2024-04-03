@@ -1,7 +1,7 @@
 // @ts-check
 /* global localize */
 import { $DialogWindow } from "./$ToolWindow.js";
-// import { localize } from "./app-localization.js";
+import { localize } from "./app-localization.js";
 import { E } from "./helpers.js";
 import { showMessageBox } from "./msgbox.js";
 
