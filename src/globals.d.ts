@@ -258,6 +258,8 @@ interface Window {
 	$choose_magnification: JQuery<HTMLElement>;
 	$choose_airbrush_size: JQuery<HTMLElement>;
 	$choose_transparent_mode: JQuery<HTMLElement>;
+	// app.js
+	canvas_bounding_client_rect: DOMRect;
 	// app-state.js
 	selection: OnCanvasSelection;
 	textbox: OnCanvasTextBox;

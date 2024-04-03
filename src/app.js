@@ -353,15 +353,19 @@ if (location.search.match(/vertical-colors?-box/)) {
 // #region App UI
 
 const $app = $(E("div")).addClass("jspaint").appendTo("body");
+window.$app = $app;
 
 const $V = $(E("div")).addClass("vertical").appendTo($app);
 const $H = $(E("div")).addClass("horizontal").appendTo($V);
 
 const $canvas_area = $(E("div")).addClass("canvas-area inset-deep").appendTo($H);
+window.$canvas_area = $canvas_area;
 
 const $canvas = $(main_canvas).appendTo($canvas_area);
+window.$canvas = $canvas;
 $canvas.css("touch-action", "none");
 let canvas_bounding_client_rect = main_canvas.getBoundingClientRect(); // cached for performance, updated later
+window.canvas_bounding_client_rect = canvas_bounding_client_rect;
 const canvas_handles = new Handles({
 	$handles_container: $canvas_area,
 	$object_container: $canvas_area,
@@ -374,11 +378,18 @@ const canvas_handles = new Handles({
 	get_ghost_offset_top: () => parseFloat($canvas_area.css("padding-top")) + 1,
 	size_only: true,
 });
+window.canvas_handles = canvas_handles;
 
 const $top = $(E("div")).addClass("component-area top").prependTo($V);
+window.$top = $top;
 const $bottom = $(E("div")).addClass("component-area bottom").appendTo($V);
+window.$bottom = $bottom;
 const $left = $(E("div")).addClass("component-area left").prependTo($H);
+window.$left = $left;
 const $right = $(E("div")).addClass("component-area right").appendTo($H);
+window.$right = $right;
+
+
 // there's also probably a CSS solution alternative to this
 if (get_direction() === "rtl") {
 	$left.appendTo($H);
@@ -390,10 +401,14 @@ if (get_direction() === "rtl") {
 
 // #region Status Bar
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
+window.$status_area = $status_area;
 /** @type {JQuery<HTMLDivElement> & {default: ()=> void}} */
 const $status_text = $(E("div")).addClass("status-text status-field inset-shallow").appendTo($status_area);
+window.$status_text = $status_text;
 const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
+window.$status_position = $status_position;
 const $status_size = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
+window.$status_size = $status_size;
 
 // #region News Indicator
 const news_seen_key = "jspaint latest news seen";
@@ -458,6 +473,7 @@ if (frameElement) {
 	} catch (e) { }
 }
 const menu_bar = MenuBar(menus);
+window.menu_bar = menu_bar;
 if (menu_bar_outside_frame) {
 	$(menu_bar.element).insertBefore(frameElement);
 } else {
@@ -566,25 +582,30 @@ if (window.is_electron_app) {
 // #endregion
 
 let $toolbox = $ToolBox(tools);
+window.$toolbox = $toolbox;
 // let $toolbox2 = $ToolBox(extra_tools, true);//.hide();
 // Note: a second $ToolBox doesn't work because they use the same tool options (which could be remedied)
 // If there's to be extra tools, they should probably get a window, with different UI
 // so it can display names of the tools, and maybe authors and previews (and not necessarily icons)
 
 let $colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
+window.$colorbox = $colorbox;
 
 $G.on("vertical-color-box-mode-toggled", () => {
 	$colorbox.destroy();
 	$colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
+	window.$colorbox = $colorbox;
 	prevent_selection($colorbox);
 });
 $G.on("eye-gaze-mode-toggled", () => {
 	$colorbox.destroy();
 	$colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
+	window.$colorbox = $colorbox;
 	prevent_selection($colorbox);
 
 	$toolbox.destroy();
 	$toolbox = $ToolBox(tools);
+	window.$toolbox = $toolbox;
 	prevent_selection($toolbox);
 
 	// $toolbox2.destroy();
@@ -1559,22 +1580,6 @@ const exports = {
 	update_fill_and_stroke_colors_and_lineWidth,
 	tool_go,
 	average_points,
-	$app,
-	$canvas_area,
-	$canvas,
-	canvas_bounding_client_rect,
-	canvas_handles,
-	$top,
-	$bottom,
-	$left,
-	$right,
-	$status_area,
-	$status_text,
-	$status_position,
-	$status_size,
-	menu_bar,
-	$toolbox,
-	$colorbox,
 };
 Object.assign(window, exports);
 
