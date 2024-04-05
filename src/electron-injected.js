@@ -1,3 +1,5 @@
+// @ts-check
+
 // Electron-specific code injected into the renderer process
 // to provide integrations, for the desktop app
 
@@ -5,6 +7,11 @@
 // Operations must be carried out in the main process.
 
 const { /*contextBridge,*/ ipcRenderer } = require('electron');
+
+// const { are_you_sure, open_from_file, show_error_message, show_about_paint, sanity_check_blob } = require('./functions.js');
+// const { get_format_from_extension } = require('./helpers.js');
+const { are_you_sure, open_from_file, show_error_message, show_about_paint, sanity_check_blob, get_format_from_extension } = window;
+
 
 const { isDev, isMacOS, initialFilePath } = ipcRenderer.sendSync("get-env-info");
 

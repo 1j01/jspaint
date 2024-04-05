@@ -1,3 +1,10 @@
+// @ts-check
+
+// const { are_you_sure, exit_fullscreen_if_ios, show_error_message } = require("./functions.js");
+// const { $G } = require("./helpers.js");
+// const { showMessageBox } = require("./msgbox.js");
+const { are_you_sure, exit_fullscreen_if_ios, show_error_message, $G, showMessageBox } = window;
+
 ((exports) => {
 	// @TODO: DRY hotkey helpers
 	// & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.

@@ -5,6 +5,8 @@
 // import { make_canvas } from "./helpers.js";
 // import { TOOL_PENCIL } from "./tools.js";
 
+const { get_tool_by_id, make_monochrome_palette, make_history_node, default_palette, make_canvas, TOOL_PENCIL } = window;
+
 const default_magnification = 1;
 
 /** @type {Tool} */
