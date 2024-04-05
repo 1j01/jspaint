@@ -10,20 +10,12 @@ context('tool tests', () => {
 	before(() => {
 		cy.visit('/')
 		cy.setResolution([800, 500]);
-		cy.window().should('have.property', 'selected_colors'); // wait for app to be loaded
+		cy.window().should('have.property', 'api_for_cypress_tests'); // wait for app to be loaded
 	});
 	beforeEach(() => {
 		// eslint-disable-next-line require-await
 		cy.window().then({ timeout: 60000 }, async (win) => {
-			win.selected_colors.foreground = "#000";
-			win.selected_colors.background = "#fff";
-			win.brush_shape = win.default_brush_shape;
-			win.brush_size = win.default_brush_size
-			win.eraser_size = win.default_eraser_size;
-			win.airbrush_size = win.default_airbrush_size;
-			win.pencil_size = win.default_pencil_size;
-			win.stroke_size = win.default_stroke_size;
-			win.clear();
+			win.api_for_cypress_tests.reset_for_next_test();
 		});
 	});
 
@@ -157,6 +149,7 @@ context('tool tests', () => {
 		cy.get(`.tool[title='Eraser/Color Eraser']`).click();
 		// gesture([{ x: 50, y: 50 }, { x: 100, y: 100 }]);
 		cy.window().then({ timeout: 60000 }, async (win) => {
+			const { selected_colors } = win.api_for_cypress_tests;
 			for (let row = 0; row < 4; row++) {
 				const secondary = !!(row % 2);
 				const increaseSize = row >= 2;
@@ -168,15 +161,15 @@ context('tool tests', () => {
 							win.$('body').trigger(new win.$.Event("keydown", { code: "NumpadAdd" }));
 						}
 					}
-					win.selected_colors.background = "#f0f";
+					selected_colors.background = "#f0f";
 					const start = { x: 0.05 + o * 0.05, y: 0.1 + 0.1 * row };
 					const end = { x: start.x + 0.04, y: start.y + 0.04 };
 					await simulateGesture(win, { shift: false, secondary: false, start, end });
 					if (secondary) {
 						// eslint-disable-next-line require-atomic-updates
-						win.selected_colors.background = "#ff0";
+						selected_colors.background = "#ff0";
 						// eslint-disable-next-line require-atomic-updates
-						win.selected_colors.foreground = "#f0f";
+						selected_colors.foreground = "#f0f";
 						const start = { x: 0.04 + o * 0.05, y: 0.11 + 0.1 * row };
 						const end = { x: start.x + 0.03, y: start.y + 0.02 };
 						await simulateGesture(win, { shift: false, secondary: true, start, end });

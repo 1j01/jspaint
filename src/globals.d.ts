@@ -341,9 +341,9 @@ interface Window {
 	selected_tools: Tool[];
 	return_to_tools: Tool[];
 	selected_colors: {
-		foreground: string,
-		background: string,
-		ternary: string,
+		foreground: string | CanvasPattern,
+		background: string | CanvasPattern,
+		ternary: string | CanvasPattern,
 	};
 	text_tool_font: {
 		family: string, // should be an exact value detected by Font Detective
@@ -368,6 +368,17 @@ interface Window {
 	default_airbrush_size: number;
 	default_pencil_size: number;
 	default_stroke_size: number;
+
+	api_for_cypress_tests: {
+		reset_for_next_test: () => void;
+		selected_colors: {
+			foreground: string | CanvasPattern,
+			background: string | CanvasPattern,
+			ternary: string | CanvasPattern,
+		};
+		set_theme: (theme_file_name: string) => void;
+		$: JQueryStatic;
+	};
 
 	// msgbox.js
 	showMessageBox: (options: MessageBoxOptions) => Promise<string>;

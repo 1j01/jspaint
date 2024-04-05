@@ -48,34 +48,22 @@ let enable_palette_loading_from_indexed_images = false;
 // Also, while I've implemented most of the UI, it'd be nice to release this with recent files support.
 let enable_fs_access_api = false;
 
-// A bunch of these variables are declared with window.* for Cypress tests to access.
-// TODO: consider exposing a little API specifically for Cypress tests
+/** @type {BrushShape} */
+const default_brush_shape = "circle";
+const default_brush_size = 4;
+const default_eraser_size = 8;
+const default_airbrush_size = 9;
+const default_pencil_size = 1;
+const default_stroke_size = 1; // applies to lines, curves, shape outlines
 
 /** @type {BrushShape} */
-window.default_brush_shape = "circle";
-/** @type {number} */
-window.default_brush_size = 4;
-/** @type {number} */
-window.default_eraser_size = 8;
-/** @type {number} */
-window.default_airbrush_size = 9;
-/** @type {number} */
-window.default_pencil_size = 1;
-/** @type {number} */
-window.default_stroke_size = 1; // applies to lines, curves, shape outlines
+let brush_shape = default_brush_shape;
+let brush_size = default_brush_size
+let eraser_size = default_eraser_size;
+let airbrush_size = default_airbrush_size;
+let pencil_size = default_pencil_size;
+let stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
 
-/** @type {BrushShape} */
-window.brush_shape = default_brush_shape;
-/** @type {number} */
-window.brush_size = default_brush_size
-/** @type {number} */
-window.eraser_size = default_eraser_size;
-/** @type {number} */
-window.airbrush_size = default_airbrush_size;
-/** @type {number} */
-window.pencil_size = default_pencil_size;
-/** @type {number} */
-window.stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
 /** @type {boolean} */
 let tool_transparent_mode = false;
 
@@ -96,7 +84,7 @@ let selected_tools = [selected_tool];
 let return_to_tools = [selected_tool];
 
 /** @type {{foreground: string | CanvasPattern, background: string | CanvasPattern, ternary: string | CanvasPattern}} */
-window.selected_colors = { // declared with window.* for Cypress tests to access
+let selected_colors = { // declared with window.* for Cypress tests to access
 	foreground: "",
 	background: "",
 	ternary: "",

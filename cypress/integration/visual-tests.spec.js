@@ -89,7 +89,7 @@ context('visual tests', () => {
 
 		cy.visit('/');
 		cy.setResolution([760, 490]);
-		cy.window().should('have.property', 'get_tool_by_id'); // wait for app to be loaded
+		cy.window().should('have.property', 'api_for_cypress_tests'); // wait for app to be loaded
 
 		// Needed, given `cy.clock` is used, for `requestAnimationFrame` in `update_$swatch`,
 		// so the color palette is rendered correctly.
@@ -157,7 +157,7 @@ context('visual tests', () => {
 	it('bubblegum theme - custom zoom window', () => {
 		// selectTheme("Bubblegum"); // not released yet
 		cy.window().then((win) => {
-			win.set_theme("bubblegum.css");
+			win.api_for_cypress_tests.set_theme("bubblegum.css");
 		});
 		clickMenuButton('View');
 		clickMenuItem('Zoom');
@@ -218,7 +218,7 @@ context('visual tests', () => {
 		cy.get(".eye-gaze-mode-undo-button").should('exist');
 		// selectTheme("Bubblegum"); // not released yet
 		cy.window().then((win) => {
-			win.set_theme("bubblegum.css");
+			win.api_for_cypress_tests.set_theme("bubblegum.css");
 		});
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
@@ -267,7 +267,7 @@ context('visual tests', () => {
 	it('bubblegum theme -- main screenshot', () => {
 		// selectTheme("Bubblegum"); // not released yet
 		cy.window().then((win) => {
-			win.set_theme("bubblegum.css");
+			win.api_for_cypress_tests.set_theme("bubblegum.css");
 		});
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
