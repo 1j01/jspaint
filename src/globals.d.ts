@@ -206,6 +206,85 @@ interface LocalStore {
 // sessions.js
 declare function new_local_session(): void;
 
+// functions.js
+declare function get_tool_by_id(id: string): Tool;
+declare function make_monochrome_palette(rgba1?: number[], rgba2?: number[]): (string | CanvasPattern)[];
+/**
+ * @param {object} options
+ * @param {HistoryNode | null=} options.parent - the state before this state (its basis), or null if this is the first state
+ * @param {HistoryNode[]=} options.futures - the states branching off from this state (its children)
+ * @param {number=} options.timestamp - when this state was created
+ * @param {boolean=} options.soft - indicates that undo should skip this state; it can still be accessed with the History window
+ * @param {ImageData | null=} options.image_data - the image data for the canvas (TODO: region updates)
+ * @param {ImageData | null=} options.selection_image_data - the image data for the selection, if any
+ * @param {number=} options.selection_x - the x position of the selection, if any
+ * @param {number=} options.selection_y - the y position of the selection, if any
+ * @param {string=} options.textbox_text - the text in the textbox, if any
+ * @param {number=} options.textbox_x - the x position of the textbox, if any
+ * @param {number=} options.textbox_y - the y position of the textbox, if any
+ * @param {number=} options.textbox_width - the width of the textbox, if any
+ * @param {number=} options.textbox_height - the height of the textbox, if any
+ * @param {TextToolFontOptions | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
+ * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
+ * @param {string | CanvasPattern=} options.foreground_color - selected foreground color (left click)
+ * @param {string | CanvasPattern=} options.background_color - selected background color (right click)
+ * @param {string | CanvasPattern=} options.ternary_color - selected ternary color (ctrl+click)
+ * @param {string=} options.name - the name of the operation, shown in the history window, e.g. localize("Resize Canvas")
+ * @param {HTMLImageElement |HTMLCanvasElement | null=} options.icon - a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png")
+ * @returns {HistoryNode}
+ */
+declare function make_history_node({ parent, futures, timestamp, soft, image_data, selection_image_data, selection_x, selection_y, textbox_text, textbox_x, textbox_y, textbox_width, textbox_height, text_tool_font, tool_transparent_mode, foreground_color, background_color, ternary_color, name, icon, }: {
+	parent?: (HistoryNode | null) | undefined;
+	futures?: HistoryNode[] | undefined;
+	timestamp?: number | undefined;
+	soft?: boolean | undefined;
+	image_data?: (ImageData | null) | undefined;
+	selection_image_data?: (ImageData | null) | undefined;
+	selection_x?: number | undefined;
+	selection_y?: number | undefined;
+	textbox_text?: string | undefined;
+	textbox_x?: number | undefined;
+	textbox_y?: number | undefined;
+	textbox_width?: number | undefined;
+	textbox_height?: number | undefined;
+	text_tool_font?: (TextToolFontOptions | null) | undefined;
+	tool_transparent_mode?: boolean | undefined;
+	foreground_color?: (string | CanvasPattern) | undefined;
+	background_color?: (string | CanvasPattern) | undefined;
+	ternary_color?: (string | CanvasPattern) | undefined;
+	name?: string | undefined;
+	icon?: (HTMLImageElement | HTMLCanvasElement | null) | undefined;
+}): HistoryNode;
+declare function exit_fullscreen_if_ios(): void;
+declare function show_about_paint(): void;
+/**
+ * @param {Blob} blob
+ * @param {() => void} okay_callback
+ * @param {number[]} [magic_number_bytes]
+ * @param {boolean} [magic_wanted]
+ */
+declare function sanity_check_blob(blob: Blob, okay_callback: () => void, magic_number_bytes?: number[], magic_wanted?: boolean): void;
+/**
+ * @param {string} message
+ * @param {Error | string} [error]
+ */
+declare function show_error_message(message: string, error?: Error | string | undefined): void;
+/**
+ * Prompts the user to save changes to the document.
+ * @param {(info?: { canvas_modified_while_loading?: boolean }) => void} action
+ * @param {() => void} [canceled]
+ * @param {boolean} [from_session_load]
+ */
+declare function are_you_sure(
+	action: (info?: { canvas_modified_while_loading?: boolean }) => void,
+	canceled?: () => void, from_session_load?: boolean
+): void;
+/**
+ * @param {File} file
+ * @param {UserFileHandle} source_file_handle
+ */
+declare function open_from_file(file: File, source_file_handle: UserFileHandle): void;
+
 // app.js
 declare const systemHooks: SystemHooks;
 declare const systemHookDefaults: SystemHooks;
@@ -265,6 +344,84 @@ interface Window {
 	get_icon_for_tools: (tools: Tool[]) => HTMLImageElement | HTMLCanvasElement;
 	get_file_extension: (file_path_or_name: string) => string;
 	get_format_from_extension: <T extends FileFormat>(formats: T[], file_path_or_name_or_ext: string) => T;
+	// functions.js
+	get_tool_by_id(id: string): Tool;
+	make_monochrome_palette(rgba1?: number[], rgba2?: number[]): (string | CanvasPattern)[];
+	/**
+	 * @param {object} options
+	 * @param {HistoryNode | null=} options.parent - the state before this state (its basis), or null if this is the first state
+	 * @param {HistoryNode[]=} options.futures - the states branching off from this state (its children)
+	 * @param {number=} options.timestamp - when this state was created
+	 * @param {boolean=} options.soft - indicates that undo should skip this state; it can still be accessed with the History window
+	 * @param {ImageData | null=} options.image_data - the image data for the canvas (TODO: region updates)
+	 * @param {ImageData | null=} options.selection_image_data - the image data for the selection, if any
+	 * @param {number=} options.selection_x - the x position of the selection, if any
+	 * @param {number=} options.selection_y - the y position of the selection, if any
+	 * @param {string=} options.textbox_text - the text in the textbox, if any
+	 * @param {number=} options.textbox_x - the x position of the textbox, if any
+	 * @param {number=} options.textbox_y - the y position of the textbox, if any
+	 * @param {number=} options.textbox_width - the width of the textbox, if any
+	 * @param {number=} options.textbox_height - the height of the textbox, if any
+	 * @param {TextToolFontOptions | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
+	 * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
+	 * @param {string | CanvasPattern=} options.foreground_color - selected foreground color (left click)
+	 * @param {string | CanvasPattern=} options.background_color - selected background color (right click)
+	 * @param {string | CanvasPattern=} options.ternary_color - selected ternary color (ctrl+click)
+	 * @param {string=} options.name - the name of the operation, shown in the history window, e.g. localize("Resize Canvas")
+	 * @param {HTMLImageElement |HTMLCanvasElement | null=} options.icon - a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png")
+	 * @returns {HistoryNode}
+	 */
+	make_history_node({ parent, futures, timestamp, soft, image_data, selection_image_data, selection_x, selection_y, textbox_text, textbox_x, textbox_y, textbox_width, textbox_height, text_tool_font, tool_transparent_mode, foreground_color, background_color, ternary_color, name, icon, }: {
+		parent?: (HistoryNode | null) | undefined;
+		futures?: HistoryNode[] | undefined;
+		timestamp?: number | undefined;
+		soft?: boolean | undefined;
+		image_data?: (ImageData | null) | undefined;
+		selection_image_data?: (ImageData | null) | undefined;
+		selection_x?: number | undefined;
+		selection_y?: number | undefined;
+		textbox_text?: string | undefined;
+		textbox_x?: number | undefined;
+		textbox_y?: number | undefined;
+		textbox_width?: number | undefined;
+		textbox_height?: number | undefined;
+		text_tool_font?: (TextToolFontOptions | null) | undefined;
+		tool_transparent_mode?: boolean | undefined;
+		foreground_color?: (string | CanvasPattern) | undefined;
+		background_color?: (string | CanvasPattern) | undefined;
+		ternary_color?: (string | CanvasPattern) | undefined;
+		name?: string | undefined;
+		icon?: (HTMLImageElement | HTMLCanvasElement | null) | undefined;
+	}): HistoryNode;
+	exit_fullscreen_if_ios: () => void;
+	show_about_paint: () => void;
+	/**
+	 * @param {Blob} blob
+	 * @param {() => void} okay_callback
+	 * @param {number[]} [magic_number_bytes]
+	 * @param {boolean} [magic_wanted]
+	 */
+	sanity_check_blob: (blob: Blob, okay_callback: () => void, magic_number_bytes?: number[], magic_wanted?: boolean) => void;
+	/**
+	 * @param {string} message
+	 * @param {Error | string} [error]
+	 */
+	show_error_message: (message: string, error?: Error | string | undefined) => void;
+	/**
+	 * Prompts the user to save changes to the document.
+	 * @param {(info?: { canvas_modified_while_loading?: boolean }) => void} action
+	 * @param {() => void} [canceled]
+	 * @param {boolean} [from_session_load]
+	 */
+	are_you_sure(
+		action: (info?: { canvas_modified_while_loading?: boolean }) => void,
+		canceled?: () => void, from_session_load?: boolean
+	): void;
+	/**
+	 * @param {File} file
+	 * @param {UserFileHandle} source_file_handle
+	 */
+	open_from_file(file: File, source_file_handle: UserFileHandle): void;
 	// tools.js
 	TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 	TOOL_SELECT: "TOOL_SELECT";
@@ -427,11 +584,6 @@ interface Window {
 	simulateRandomGesture: (callback: () => void, options: { shift?: boolean, shiftToggleChance?: number, secondary?: boolean, secondaryToggleChance?: number, target?: HTMLElement }) => void;
 	simulatingGestures: boolean;
 	drawRandomlySeed: number;
-	// functions.js
-	// SEE: functions.d.ts generated by TypeScript
-	// I haven't decided if I'm going to adapt functions.d.ts or delete it yet.
-	// Not a function, very strange to export this from here.
-	$this_version_news: JQuery<HTMLElement>;
 	// electron-injected.js
 	is_electron_app?: boolean;
 	electron_is_dev?: boolean;
