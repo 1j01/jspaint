@@ -180,7 +180,22 @@ declare function show_imgur_uploader(blob: Blob): void;
 declare const storage: LocalStore;
 interface LocalStore {
 	get(key: string, callback: (error: Error | null, value: string) => void): void,
+
+	get(key_default_value_pairs: Record<string, string>, callback: (error: Error | null, values: Record<string, string>) => void): void,
+
+	// This signature is more for showing a mistake, as only strings can be stored in localStorage.
+	// That said, you can get arbitrary types when the default values are returned.
+	// get(key_default_value_pairs: Record<string, unknown>, callback: (error: Error | null, values: Record<string, unknown>) => void): void,
+	// This was an attempt to handle arbitrary default types as a feature, but it didn't work out.
+	// get<T extends string>(key_default_value_pairs: Record<string, T>, callback: (error: Error | null, values: Record<string, T>) => void): void,
+	// Actually this does what I meant (and I think this is most accurate):
+	// (This generalizes the above too, but I might want to keep the above string-specific version for clarity.)
+	get<T>(key_default_value_pairs: Record<string, T | string>, callback: (error: Error | null, values: Record<string, T | string>) => void): void,
+
+	get(keys: string[], callback: (error: Error | null, values: Record<string, string>) => void): void,
+
 	set(key: string, value: string, callback: (error: Error | null) => void): void,
+
 	set(key_value_pairs: Record<string, string>, callback: (error: Error | null) => void): void,
 }
 // sessions.js
