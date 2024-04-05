@@ -392,7 +392,7 @@ export {
 };
 // Temporary globals until all dependent code is converted to ES Modules
 window.$G = $G; // may be used by app-localization.js
-window.E = E; // may be used by app-localization.js, app-state.js, color-data.js, copy-inkscape-labels.js, edit-colors.js, electron-injected.js, electron-main.js, error-handling-basic.js, error-handling-enhanced.js, extra-tools.js, file-format-data.js, image-manipulation.js, konami.js, menus.js, msgbox.js, OnCanvasHelperLayer.js, repack-spritesheet.js, sessions.js, simulate-random-gestures.js, storage.js, test-news.js, theme.js
+window.E = E; // may be used by app-localization.js, app-state.js, color-data.js, copy-inkscape-labels.js, edit-colors.js, electron-injected.js, electron-main.js, error-handling-basic.js, error-handling-enhanced.js, file-format-data.js, image-manipulation.js, konami.js, menus.js, msgbox.js, OnCanvasHelperLayer.js, repack-spritesheet.js, sessions.js, simulate-random-gestures.js, storage.js, test-news.js, theme.js
 window.make_canvas = make_canvas; // may be used by app-state.js, electron-injected.js
 window.get_help_folder_icon = get_help_folder_icon; // may be used by repack-spritesheet.js
 window.load_image_simple = load_image_simple; // may be used by functions.js
