@@ -27,17 +27,20 @@ function escapeRegExp(string) {
 function findDependencies(identifier, fileContent, excludeFiles = []) {
 	// console.log("Finding dependencies for", identifier);
 	const importRegex = new RegExp(`^\\s*import .*${escapeRegExp(identifier)}.* from`, 'm');
+	// Identifiers starting with $ will not work with \b because $ is not part of \w
+	// const usageRegex = new RegExp(`\\b${escapeRegExp(identifier)}\\b`, 'm');
+	// So instead we use a negative lookbehind and a negative lookahead
+	// This is not Unicode-friendly, but it should work for ASCII
+	const usageRegex = new RegExp(`(?<![0-9A-Z_$])${escapeRegExp(identifier)}(?![0-9A-Z_$])`, 'm');
 	const dependencies = [];
 	for (const [filePath, content] of Object.entries(fileContent)) {
 		if (excludeFiles.includes(filePath)) {
 			continue;
 		}
-		if (content.includes(identifier)) {
-			// importRegex.lastIndex = 0; // Bugger! I hate stateful RegExp! Actually I don't need the g flag.
+		if (usageRegex.test(content)) {
 			if (!importRegex.test(content)) {
 				// console.log(`'${filePath}' includes '${identifier}' but doesn't match ${importRegex}`);
 				// console.log("Usage:\n    ", content.match(new RegExp(`.*${escapeRegExp(identifier)}.*`, 'm'))[0]);
-				// console.log("Debug:\n    ", content.match(new RegExp(`.*${escapeRegExp(identifier)}.*`, 'm'))[0].match(importRegex));
 				dependencies.push(filePath);
 			}
 		}

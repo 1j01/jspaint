@@ -3976,7 +3976,7 @@ export {
 };
 // Temporary globals until all dependent code is converted to ES Modules
 window.change_some_url_params = change_some_url_params; // may be used by menus.js
-window.update_helper_layer = update_helper_layer; // may be used by app-state.js
+// window.update_helper_layer = update_helper_layer; // unused
 window.make_history_node = make_history_node; // may be used by app-state.js
 window.load_image_from_uri = load_image_from_uri; // may be used by helpers.js
 window.open_from_file = open_from_file; // may be used by electron-injected.js
@@ -3988,9 +3988,9 @@ window.paste = paste; // may be used by copy-inkscape-labels.js, electron-main.j
 window.undoable = undoable; // may be used by OnCanvasTextBox.js
 window.undo = undo; // may be used by $Component.js, app-state.js, OnCanvasTextBox.js, speech-recognition.js
 window.redo = redo; // may be used by app-state.js, speech-recognition.js
-window.cancel = cancel; // may be used by app-localization.js, app-state.js, edit-colors.js, electron-injected.js, electron-main.js, eye-gaze-mode.js, helpers.js, imgur.js, menus.js, msgbox.js, sessions.js, speech-recognition.js, theme.js, tool-options.js, tools.js, vaporwave-fun.js
+window.cancel = cancel; // may be used by app-localization.js, app-state.js, edit-colors.js, electron-injected.js, electron-main.js, eye-gaze-mode.js, helpers.js, imgur.js, menus.js, msgbox.js, sessions.js, speech-recognition.js, tool-options.js, tools.js
 window.deselect = deselect; // may be used by $ToolBox.js
-window.clear = clear; // may be used by $ColorBox.js, $Component.js, $FontBox.js, $ToolBox.js, electron-main.js, error-handling-basic.js, error-handling-enhanced.js, eye-gaze-mode.js, helpers.js, image-manipulation.js, imgur.js, manage-storage.js, OnCanvasSelection.js, OnCanvasTextBox.js, sessions.js, simulate-random-gestures.js, speech-recognition.js, theme.js, tool-options.js, tools.js
+window.clear = clear; // may be used by $FontBox.js, eye-gaze-mode.js, image-manipulation.js, imgur.js, manage-storage.js, OnCanvasSelection.js, OnCanvasTextBox.js, sessions.js, speech-recognition.js, tool-options.js, tools.js
 window.get_tool_by_id = get_tool_by_id; // may be used by app-state.js
 window.has_any_transparency = has_any_transparency; // may be used by sessions.js
 window.make_monochrome_palette = make_monochrome_palette; // may be used by app-state.js
