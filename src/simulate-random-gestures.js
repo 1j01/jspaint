@@ -1,5 +1,7 @@
 // @ts-check
-/* global $app, $canvas_area, $status_text, cancel, main_canvas, selection */
+/* global $app, $canvas_area, $status_text, main_canvas, selection */
+
+import { cancel } from "./functions.js";
 
 // I'm doing things messily and inconsistently in order to quickly adopt ES Modules in the codebase.
 const exports = window;

@@ -1,6 +1,6 @@
 // @ts-check
 /* global stroke_size:writable, airbrush_size:writable, brush_shape:writable, brush_size:writable, eraser_size:writable, magnification:writable, tool_transparent_mode:writable */
-/* global set_magnification */
+import { set_magnification } from "./functions.js";
 import { $G, E, make_canvas } from "./helpers.js";
 import { render_brush, replace_colors_with_swatch, stamp_brush_canvas } from "./image-manipulation.js";
 import { get_theme } from "./theme.js";

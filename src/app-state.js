@@ -1,5 +1,10 @@
 // @ts-check
 
+// import { default_palette } from "./color-data.js";
+// import { get_tool_by_id, make_monochrome_palette, make_history_node } from "./functions.js";
+// import { make_canvas } from "./helpers.js";
+// import { TOOL_PENCIL } from "./tools.js";
+
 const default_magnification = 1;
 
 /** @type {Tool} */

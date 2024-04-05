@@ -1,9 +1,11 @@
 // @ts-check
-/* global $canvas_area, $status_position, $status_size, get_tool_by_id, main_canvas, main_ctx, make_or_update_undoable, selected_colors, to_canvas_coords, TOOL_SELECT, tool_transparent_mode, transparency, undoable, update_helper_layer */
+/* global $canvas_area, $status_position, $status_size, main_canvas, main_ctx, selected_colors, to_canvas_coords, tool_transparent_mode, transparency */
 import { Handles } from "./Handles.js";
 import { OnCanvasObject } from "./OnCanvasObject.js";
+import { get_tool_by_id, make_or_update_undoable, undoable, update_helper_layer } from "./functions.js";
 import { $G, get_icon_for_tool, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
 import { replace_colors_with_swatch } from "./image-manipulation.js";
+import { TOOL_SELECT } from "./tools.js";
 
 class OnCanvasSelection extends OnCanvasObject {
 	/**

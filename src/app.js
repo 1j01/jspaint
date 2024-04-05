@@ -1,17 +1,24 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global airbrush_size:writable, brush_shape:writable, brush_size:writable, button:writable, ctrl:writable, eraser_size:writable, fill_color:writable, fill_color_k:writable, history_node_to_cancel_to:writable, MenuBar:writable, my_canvas_height:writable, my_canvas_width:writable, palette:writable, pencil_size:writable, pointer:writable, pointer_active:writable, pointer_buttons:writable, pointer_over_canvas:writable, pointer_previous:writable, pointer_start:writable, pointer_type:writable, pointers:writable, reverse:writable, shift:writable, stroke_color:writable, stroke_color_k:writable, stroke_size:writable, update_helper_layer_on_pointermove_active:writable */
-/* global $this_version_news, $ToolBox, cancel, change_url_param, clear, confirm_overwrite_capability, copy, current_history_node, cut, default_airbrush_size, default_brush_shape, default_brush_size, default_canvas_height, default_canvas_width, default_eraser_size, default_magnification, default_palette, default_pencil_size, default_stroke_size, delete_selection, deselect, edit_copy, edit_cut, enable_fs_access_api, file_name, file_new, file_open, file_save, file_save_as, get_direction, get_tool_by_id, get_uris, Handles, image_attributes, image_flip_and_rotate, image_formats, image_invert_colors, image_stretch_and_skew, load_image_from_uri, localize, magnification, main_canvas, main_ctx, make_canvas, make_or_update_undoable, open_from_file, paste, paste_image_from_file, redo, remove_hotkey, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, return_to_tools, save_as_prompt, select_all, select_tool, select_tools, selected_colors, selected_tool, selected_tools, selection, set_magnification, show_document_history, show_error_message, show_news, show_resource_load_error_message, showSaveFilePicker, storage, systemHooks, textbox, toggle_grid, TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, tools, transparency, undo, update_canvas_rect, update_disable_aa, update_helper_layer, update_magnified_canvas_size, view_bitmap, write_image_file */
+/* global copy, current_history_node, cut, default_airbrush_size, default_brush_shape, default_brush_size, default_canvas_height, default_canvas_width, default_eraser_size, default_magnification, default_pencil_size, default_stroke_size, enable_fs_access_api, file_name, get_direction, localize, magnification, main_canvas, main_ctx, remove_hotkey, return_to_tools, selected_colors, selected_tool, selected_tools, selection, showSaveFilePicker, systemHooks, textbox, transparency */
 
 import { $ColorBox } from "./$ColorBox.js";
-import { get_winter_palette } from "./color-data.js";
+import { $ToolBox } from "./$ToolBox.js";
+import { Handles } from "./Handles.js";
+// import { get_direction, localize, remove_hotkey } from "./app-localization.js";
+import { default_palette, get_winter_palette } from "./color-data.js";
+import { image_formats } from "./file-format-data.js";
+import { $this_version_news, cancel, change_url_param, clear, confirm_overwrite_capability, delete_selection, deselect, edit_copy, edit_cut, file_new, file_open, file_save, file_save_as, get_tool_by_id, get_uris, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, load_image_from_uri, make_or_update_undoable, open_from_file, paste, paste_image_from_file, redo, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, save_as_prompt, select_all, select_tool, select_tools, set_magnification, show_document_history, show_error_message, show_news, show_resource_load_error_message, toggle_grid, undo, update_canvas_rect, update_disable_aa, update_helper_layer, update_magnified_canvas_size, view_bitmap, write_image_file } from "./functions.js";
 import { show_help } from "./help.js";
-import { $G, E, TAU, get_file_extension, get_help_folder_icon } from "./helpers.js";
+import { $G, E, TAU, get_file_extension, get_help_folder_icon, make_canvas } from "./helpers.js";
 import { rotate } from "./image-manipulation.js";
 import { menus } from "./menus.js";
 import { showMessageBox } from "./msgbox.js";
 import { disable_speech_recognition, enable_speech_recognition } from "./speech-recognition.js";
+import { localStore } from "./storage.js";
 import { get_theme, set_theme } from "./theme.js";
+import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, tools } from "./tools.js";
 
 // #region Exports
 
@@ -1127,7 +1134,7 @@ set_magnification(default_magnification);
 
 // this is synchronous for now, but @TODO: handle possibility of loading a document before callback
 // when switching to asynchronous storage, e.g. with localforage
-storage.get({
+localStore.get({
 	width: default_canvas_width,
 	height: default_canvas_height,
 }, (err, stored_values) => {

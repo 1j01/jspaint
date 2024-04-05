@@ -1,6 +1,8 @@
 // @ts-check
 /* global get_direction, localize */
 
+// import { get_direction, localize } from "./app-localization.js";
+
 /** @type {ImageFileFormat[]} */
 let image_formats = [];
 // const ext_to_image_formats = {}; // there can be multiple with the same extension, e.g. different bit depth BMP files

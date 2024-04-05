@@ -1,5 +1,8 @@
 // @ts-check
-/* global $bottom, $Component, $left, $right, button, get_direction, localize, palette, selected_colors, show_edit_colors_window */
+/* global $bottom, $left, $right, button, get_direction, localize, palette, selected_colors */
+import { $Component } from "./$Component.js";
+// import { get_direction, localize } from "./app-localization.js";
+import { show_edit_colors_window } from "./edit-colors.js";
 import { $G, E, make_canvas } from "./helpers.js";
 
 /** 

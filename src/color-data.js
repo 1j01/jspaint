@@ -1,5 +1,6 @@
 // @ts-check
-/* global make_stripe_pattern */
+
+import { make_stripe_pattern } from "./functions.js";
 
 const default_palette = [
 	"rgb(0,0,0)", // Black
