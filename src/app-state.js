@@ -128,6 +128,7 @@ let pointer_previous;
 
 let pointer_active = false;
 let pointer_type, pointer_buttons;
+/** @type {boolean} */
 let reverse;
 let ctrl;
 let shift;

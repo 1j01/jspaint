@@ -202,14 +202,15 @@ window.systemHookDefaults = {
 		} else {
 			// @TODO: specify mime types?
 			return new Promise((resolve) => {
-				const $input = $("<input type='file'>")
+				const $input = /** @type {JQuery<HTMLInputElement>} */($("<input type='file'>")
 					.on("change", () => {
 						resolve({ file: $input[0].files[0] });
 						$input.remove();
 					})
 					.appendTo($app)
 					.hide()
-					.trigger("click");
+					.trigger("click")
+				);
 			});
 		}
 	},
@@ -424,8 +425,7 @@ if (get_direction() === "rtl") {
 // #region Status Bar
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
 window.$status_area = $status_area;
-/** @type {JQuery<HTMLDivElement> & {default: ()=> void}} */
-const $status_text = $(E("div")).addClass("status-text status-field inset-shallow").appendTo($status_area);
+const $status_text = /** @type {JQuery<HTMLDivElement> & {default: ()=> void}} */($(E("div")).addClass("status-text status-field inset-shallow").appendTo($status_area));
 window.$status_text = $status_text;
 const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 window.$status_position = $status_position;
@@ -488,6 +488,7 @@ let menu_bar_outside_frame = false;
 if (frameElement) {
 	try {
 		if (parent.MenuBar) {
+			// @ts-ignore
 			MenuBar = parent.MenuBar;
 			menu_bar_outside_frame = true;
 		}
@@ -503,6 +504,7 @@ if (menu_bar_outside_frame) {
 }
 
 $(menu_bar.element).on("info", (event) => {
+	// @ts-ignore
 	$status_text.text(event.detail?.description ?? "");
 });
 $(menu_bar.element).on("default-info", () => {
@@ -659,7 +661,9 @@ $G.on("scroll focusin", () => {
 });
 
 // #region Drag and Drop
-$("body").on("dragover dragenter", (event) => {
+
+// jQuery's multiple event handling is not that useful in the first place, but when adding type info... it's downright ugly.
+$("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.DragEnterEvent} */event) => {
 	const dt = event.originalEvent.dataTransfer;
 	const has_files = dt && Array.from(dt.types).includes("Files");
 	if (has_files) {
@@ -686,7 +690,8 @@ $("body").on("dragover dragenter", (event) => {
 					let handle;
 					try {
 						// Experimental API, not supported on Firefox as of 2024-02-17
-						if (item.getAsFileSystemHandle) {
+						if ("getAsFileSystemHandle" in item) {
+							// @ts-ignore
 							handle = await item.getAsFileSystemHandle();
 						}
 					} catch (error) {
@@ -745,11 +750,14 @@ $("body").on("dragover dragenter", (event) => {
 
 // #region Keyboard Shortcuts
 $G.on("keydown", e => {
+	// typecast to HTMLElement because e.target is incorrectly given as Window, due to $G wrapping window
+	const target = /** @type {HTMLElement} */ (/** @type {unknown} */ (e.target));
+
 	if (e.isDefaultPrevented()) {
 		return;
 	}
 	if (e.key === "Escape") { // Note: Escape handled below too! (after input/textarea return condition)
-		if (textbox && textbox.$editor.is(e.target)) {
+		if (textbox && textbox.$editor.is(target)) {
 			deselect();
 		}
 	}
@@ -855,7 +863,7 @@ $G.on("keydown", e => {
 	) {
 		const plus = e.code === "NumpadAdd" || e.key === "+" || e.key === "=";
 		const minus = e.code === "NumpadSubtract" || e.key === "-";
-		const delta = plus - minus; // const delta = +plus++ -minus--; // Δ = ±±±±
+		const delta = Number(plus) - Number(minus); // const delta = +plus++ -minus--; // Δ = ±±±±
 
 		if (selection) {
 			selection.scale(2 ** delta);
@@ -939,6 +947,7 @@ $G.on("keydown", e => {
 				e.shiftKey ? render_history_as_gif() : toggle_grid();
 				break;
 			case "F":
+				// @ts-ignore (repeat doesn't exist on jQuery.Event, I guess, but this is fine)
 				if (!e.repeat && !e.originalEvent?.repeat) {
 					view_bitmap();
 				}
@@ -1051,6 +1060,7 @@ $G.on("cut copy paste", e => {
 	}
 
 	e.preventDefault();
+	// @ts-ignore
 	const cd = e.originalEvent.clipboardData || window.clipboardData;
 	if (!cd) { return; }
 
@@ -1122,8 +1132,8 @@ storage.get({
 	height: default_canvas_height,
 }, (err, stored_values) => {
 	if (err) { return; }
-	my_canvas_width = stored_values.width;
-	my_canvas_height = stored_values.height;
+	my_canvas_width = Number(stored_values.width);
+	my_canvas_height = Number(stored_values.height);
 
 	make_or_update_undoable({
 		match: (history_node) => history_node.name === localize("New"),
@@ -1195,21 +1205,21 @@ function from_canvas_coords({ x, y }) {
 function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	main_ctx.lineWidth = stroke_size;
 
-	const reverse_because_fill_only = selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke;
+	const reverse_because_fill_only = !!(selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke);
 	main_ctx.fillStyle = fill_color =
 		main_ctx.strokeStyle = stroke_color =
 		selected_colors[
 		(ctrl && selected_colors.ternary && pointer_active) ? "ternary" :
-			((reverse ^ reverse_because_fill_only) ? "background" : "foreground")
+			((reverse !== reverse_because_fill_only) ? "background" : "foreground")
 		];
 
 	fill_color_k =
 		stroke_color_k =
-		ctrl ? "ternary" : ((reverse ^ reverse_because_fill_only) ? "background" : "foreground");
+		ctrl ? "ternary" : ((reverse !== reverse_because_fill_only) ? "background" : "foreground");
 
 	if (selected_tool.shape || selected_tool.shape_colors) {
 		if (!selected_tool.stroke_only) {
-			if ((reverse ^ reverse_because_fill_only)) {
+			if ((reverse !== reverse_because_fill_only)) {
 				fill_color_k = "foreground";
 				stroke_color_k = "background";
 			} else {
@@ -1337,7 +1347,11 @@ function average_points(points) {
 	return average;
 }
 $canvas_area.on("pointerdown", (event) => {
-	if (document.activeElement && document.activeElement !== document.body && document.activeElement !== document.documentElement) {
+	if (
+		document.activeElement instanceof HTMLElement && // exists and (for type checker:) has blur()
+		document.activeElement !== document.body &&
+		document.activeElement !== document.documentElement
+	) {
 		// Allow unfocusing dialogs etc. in order to use keyboard shortcuts
 		document.activeElement.blur();
 	}
@@ -1354,6 +1368,7 @@ $canvas_area.on("pointerdown", (event) => {
 			pointerId: event.pointerId,
 			pointerType: event.pointerType,
 			// isPrimary not available on jQuery.Event, and originalEvent not available in synthetic case
+			// @ts-ignore
 			isPrimary: event.originalEvent && event.originalEvent.isPrimary || event.isPrimary,
 			x: event.clientX,
 			y: event.clientY,
