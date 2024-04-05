@@ -186,9 +186,38 @@ interface LocalStore {
 // sessions.js
 declare function new_local_session(): void;
 
-// The JS Paint API... ironically, untyped.
-// Hey, I'm just working on internals right now!
-declare const systemHooks: any;
+// app.js
+declare const systemHooks: SystemHooks;
+declare const systemHookDefaults: SystemHooks;
+declare const canvas_bounding_client_rect: DOMRect;
+declare const _open_images_serially: boolean; // for testing
+declare const $app: JQuery<HTMLDivElement>;
+declare const $left: JQuery<HTMLDivElement>;
+declare const $right: JQuery<HTMLDivElement>;
+declare const $top: JQuery<HTMLDivElement>;
+declare const $bottom: JQuery<HTMLDivElement>;
+declare const $canvas_area: JQuery<HTMLDivElement>;
+declare const $canvas: JQuery<HTMLCanvasElement>;
+declare const $colorbox: JQuery<HTMLDivElement> & I$Component & I$ColorBox;
+declare const $status_area: JQuery<HTMLDivElement>;
+declare const $status_position: JQuery<HTMLDivElement>;
+declare const $status_size: JQuery<HTMLDivElement>;
+declare const $status_text: JQuery<HTMLDivElement> & { default: () => void };
+declare const $toolbox: JQuery<HTMLDivElement> & I$Component & I$ToolBox;
+declare const canvas_handles: Handles;
+declare const clipboardData: DataTransfer | null; // old IE?
+declare const debugKeepMenusOpen: boolean; // for debugging (otherwise you need `setTimeout(() => { debugger; }, 4000);`)
+declare const initial_system_file_handle: UserFileHandle | null;
+declare const menu_bar: MenuBar;
+declare const systemHookDefaults: SystemHooks;
+declare const systemHooks: SystemHooks;
+declare const trace_and_sketch_stop: () => void;
+
+declare function to_canvas_coords(point: { clientX: number, clientY: number }): { x: number, y: number };
+declare function from_canvas_coords(point: { x: number, y: number }): { clientX: number, clientY: number };
+declare function update_fill_and_stroke_colors_and_lineWidth(tool: Tool): void;
+declare function tool_go(tool: Tool, event_name?: string): void;
+declare function average_points(points: { x: number, y: number }[]): { x: number, y: number };
 
 // Globals temporarily exported from ES Modules,
 // as well as globals from scripts that are not converted to ESM yet.
@@ -215,7 +244,7 @@ interface Window {
 	get_icon_for_tool: (tool: Tool) => HTMLImageElement;
 	get_icon_for_tools: (tools: Tool[]) => HTMLImageElement | HTMLCanvasElement;
 	get_file_extension: (file_path_or_name: string) => string;
-	get_file_format: <T extends FileFormat>(formats: T[], file_path_or_name_or_ext: string) => T;
+	get_format_from_extension: <T extends FileFormat>(formats: T[], file_path_or_name_or_ext: string) => T;
 	// tools.js
 	TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
 	TOOL_SELECT: "TOOL_SELECT";
@@ -262,6 +291,28 @@ interface Window {
 	$choose_transparent_mode: JQuery<HTMLElement>;
 	// app.js
 	canvas_bounding_client_rect: DOMRect;
+	_open_images_serially: boolean; // for testing
+	$app: JQuery<HTMLDivElement>;
+	$left: JQuery<HTMLDivElement>;
+	$right: JQuery<HTMLDivElement>;
+	$top: JQuery<HTMLDivElement>;
+	$bottom: JQuery<HTMLDivElement>;
+	$canvas_area: JQuery<HTMLDivElement>;
+	$canvas: JQuery<HTMLCanvasElement>;
+	$colorbox: JQuery<HTMLDivElement> & I$Component & I$ColorBox;
+	$status_area: JQuery<HTMLDivElement>;
+	$status_position: JQuery<HTMLDivElement>;
+	$status_size: JQuery<HTMLDivElement>;
+	$status_text: JQuery<HTMLDivElement> & { default: () => void };
+	$toolbox: JQuery<HTMLDivElement> & I$Component & I$ToolBox;
+	canvas_handles: Handles;
+	clipboardData: DataTransfer | null; // old IE?
+	debugKeepMenusOpen: boolean; // for debugging (otherwise you need `setTimeout(() => { debugger; }, 4000);`)
+	initial_system_file_handle: UserFileHandle | null;
+	menu_bar: MenuBar;
+	systemHookDefaults: SystemHooks;
+	systemHooks: SystemHooks;
+	trace_and_sketch_stop: () => void;
 	// app-state.js
 	selection: OnCanvasSelection;
 	textbox: OnCanvasTextBox;
@@ -350,23 +401,37 @@ interface Window {
 	// I haven't decided if I'm going to adapt functions.d.ts or delete it yet.
 	// Not a function, very strange to export this from here.
 	$this_version_news: JQuery<HTMLElement>;
-	// The JS Paint API... ironically, untyped.
-	// Hey, I'm just working on internals right now!
-	systemHooks: any;
 	// electron-injected.js
 	is_electron_app?: boolean;
 	electron_is_dev?: boolean;
 	setDocumentEdited?: (edited: boolean) => void;
 	setRepresentedFilename?: (filename: string) => void;
 	setMenus?: (menus: any) => void; // TODO: types for OS-GUI.js menus
+	// OS-GUI's MenuBar.js
+	MenuBar: typeof MenuBar;
 	// Youtube API, used by vaporwave-fun.js
 	onYouTubeIframeAPIReady?: () => void;
 	// Local Font Access API
 	queryLocalFonts?: () => Promise<FontData[]>;
+	// File System Access API
+	// TODO: install types?
+	showOpenFilePicker?: (any) => any;
+	showSaveFilePicker?: (any) => any;
 	// Chrome browser
 	chrome?: { loadTimes: unknown, csi: unknown };
 }
+// File System Access API
+// TODO: install types?
+declare const showOpenFilePicker: (any) => any;
+declare const showSaveFilePicker: (any) => any;
 
+// The JS Paint API... ironically, untyped.
+// Hey, I'm just working on internals right now!
+// TODO
+type SystemHooks = any;
+// interface SystemHooks {
+// 	// showSaveFileDialog({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }): Promise<>;
+// }
 
 interface MessageBoxOptions {
 	title?: string;
@@ -596,7 +661,9 @@ interface I$DialogWindow {
 interface I$ToolWindow { }
 
 // OS-GUI's MenuBar.js
+declare function MenuBar(menus: any): MenuBar;
 declare class MenuBar {
+	constructor(menus: any);
 	element: HTMLDivElement;
 	closeMenus: () => void;
 	setKeyboardScope: (...elements: HTMLElement[]) => void;

@@ -204,6 +204,7 @@ module.exports = {
 	"overrides": [
 		{
 			files: [
+				"src/app.js",
 				"src/theme.js",
 				"src/msgbox.js",
 				"src/helpers.js",
