@@ -635,7 +635,7 @@ function reset_canvas_and_history() {
  * @param {number=} options.textbox_y - the y position of the textbox, if any
  * @param {number=} options.textbox_width - the width of the textbox, if any
  * @param {number=} options.textbox_height - the height of the textbox, if any
- * @param {string | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
+ * @param {TextToolFontOptions | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
  * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
  * @param {string | CanvasPattern=} options.foreground_color - selected foreground color (left click)
  * @param {string | CanvasPattern=} options.background_color - selected background color (right click)

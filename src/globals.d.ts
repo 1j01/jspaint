@@ -92,14 +92,19 @@ declare let $thumbnail_window: $Window;
 declare let thumbnail_canvas: HTMLCanvasElement;
 declare let show_grid: boolean;
 declare let show_thumbnail: boolean;
-declare let text_tool_font: {
-	family: string, // should be an exact value detected by Font Detective
+declare let text_tool_font: TextToolFontOptions;
+interface TextToolFontOptions {
+	/** should be an exact value detected by Font Detective */
+	family: string,
+
 	size: number,
 	line_scale: number,
+
 	bold: boolean,
 	italic: boolean,
 	underline: boolean,
 	vertical: boolean,
+
 	color: string,
 	background: string,
 };
@@ -833,7 +838,7 @@ interface HistoryNode {
 	/** the height of the textbox, if any */
 	textbox_height: number;
 	/** the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox) */
-	text_tool_font: string | null;
+	text_tool_font: TextToolFontOptions | null;
 	/** whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque */
 	tool_transparent_mode: boolean;
 	/** selected foreground color (left click) */

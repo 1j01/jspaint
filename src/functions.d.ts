@@ -37,7 +37,7 @@ declare function reset_canvas_and_history(): void;
  * @param {number=} options.textbox_y - the y position of the textbox, if any
  * @param {number=} options.textbox_width - the width of the textbox, if any
  * @param {number=} options.textbox_height - the height of the textbox, if any
- * @param {string | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
+ * @param {TextToolFontOptions | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
  * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
  * @param {string=} options.foreground_color - selected foreground color (left click)
  * @param {string=} options.background_color - selected background color (right click)
@@ -60,7 +60,7 @@ declare function make_history_node({ parent, futures, timestamp, soft, image_dat
     textbox_y?: number | undefined;
     textbox_width?: number | undefined;
     textbox_height?: number | undefined;
-    text_tool_font?: (string | null) | undefined;
+    text_tool_font?: (TextToolFontOptions | null) | undefined;
     tool_transparent_mode?: boolean | undefined;
     foreground_color?: string | undefined;
     background_color?: string | undefined;

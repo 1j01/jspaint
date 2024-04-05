@@ -1,6 +1,8 @@
 // @ts-check
 
 const default_magnification = 1;
+
+/** @type {Tool} */
 const default_tool = get_tool_by_id(TOOL_PENCIL);
 
 const default_canvas_width = 683;
@@ -15,12 +17,17 @@ let monochrome = false;
 let magnification = default_magnification;
 let return_to_magnification = 4;
 
+/** @type {PixelCanvas} */
 const main_canvas = make_canvas();
 main_canvas.classList.add("main-canvas");
+/** @type {PixelContext} */
 const main_ctx = main_canvas.ctx;
 
+/** @type {(string | CanvasPattern)[]} */
 let palette = default_palette;
+/** @type {(string | CanvasPattern)[]} */
 let polychrome_palette = palette;
+/** @type {(string | CanvasPattern)[]} */
 let monochrome_palette = make_monochrome_palette();
 
 // This feature is not ready yet.
@@ -41,20 +48,35 @@ let enable_palette_loading_from_indexed_images = false;
 // Also, while I've implemented most of the UI, it'd be nice to release this with recent files support.
 let enable_fs_access_api = false;
 
-// declared with window.* for Cypress tests to access
+// A bunch of these variables are declared with window.* for Cypress tests to access.
+// TODO: consider exposing a little API specifically for Cypress tests
+
+/** @type {BrushShape} */
 window.default_brush_shape = "circle";
+/** @type {number} */
 window.default_brush_size = 4;
+/** @type {number} */
 window.default_eraser_size = 8;
+/** @type {number} */
 window.default_airbrush_size = 9;
+/** @type {number} */
 window.default_pencil_size = 1;
+/** @type {number} */
 window.default_stroke_size = 1; // applies to lines, curves, shape outlines
-// declared with window.* for Cypress tests to access
+
+/** @type {BrushShape} */
 window.brush_shape = default_brush_shape;
+/** @type {number} */
 window.brush_size = default_brush_size
+/** @type {number} */
 window.eraser_size = default_eraser_size;
+/** @type {number} */
 window.airbrush_size = default_airbrush_size;
+/** @type {number} */
 window.pencil_size = default_pencil_size;
+/** @type {number} */
 window.stroke_size = default_stroke_size; // applies to lines, curves, shape outlines
+/** @type {boolean} */
 let tool_transparent_mode = false;
 
 /** @type {string | CanvasPattern | CanvasGradient} */
@@ -73,6 +95,7 @@ let selected_tools = [selected_tool];
 /** @type {Tool[]} */
 let return_to_tools = [selected_tool];
 
+/** @type {{foreground: string | CanvasPattern, background: string | CanvasPattern, ternary: string | CanvasPattern}} */
 window.selected_colors = { // declared with window.* for Cypress tests to access
 	foreground: "",
 	background: "",
@@ -89,8 +112,11 @@ let helper_layer; // instance used for the grid and tool previews (not a singlet
 let $thumbnail_window;
 /** @type {PixelCanvas} */
 let thumbnail_canvas;
+/** @type {boolean} */
 let show_grid = false;
+/** @type {boolean} */
 let show_thumbnail = false;
+/** @type {TextToolFontOptions} */
 let text_tool_font = {
 	family: '"Arial"', // should be an exact value detected by Font Detective
 	size: 12,
@@ -114,27 +140,40 @@ let undos = [];
 /** @type {HistoryNode[]} */
 let redos = [];
 
+/** @type {string | undefined} */
 let file_name;
+/** @type {string | undefined} */
 let file_format;
-let system_file_handle; // For saving over opened file on Save. Can be different type for File System Access API vs Electron.
+/** For saving over opened file on Save. Can be different type for File System Access API vs Electron. 
+ * @type {UserFileHandle} */
+let system_file_handle;
+/** @type {boolean} */
 let saved = true;
 
-/** works in canvas coordinates */
+/** works in canvas coordinates @type {{x: number, y: number} | undefined} */
 let pointer;
-/** works in canvas coordinates */
+/** works in canvas coordinates @type {{x: number, y: number} | undefined} */
 let pointer_start;
-/** works in canvas coordinates */
+/** works in canvas coordinates @type {{x: number, y: number} | undefined} */
 let pointer_previous;
 
+/** @type {boolean} */
 let pointer_active = false;
+/** @type {string | undefined} */
 let pointer_type, pointer_buttons;
 /** @type {boolean} */
 let reverse;
+/** @type {boolean} */
 let ctrl;
+/** @type {boolean} */
 let shift;
+/** @type {number | undefined} */
 let button;
+/** @type {boolean} */
 let pointer_over_canvas = false;
+/** @type {boolean} */
 let update_helper_layer_on_pointermove_active = false;
 
-/** works in client coordinates */
+/** works in client coordinates, NOT canvas coordinates
+ * @type {{ x: number, y: number, pointerId: number, pointerType: string, isPrimary: boolean }[]} */
 let pointers = [];
