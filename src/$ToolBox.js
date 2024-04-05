@@ -145,5 +145,4 @@ if (dev_theme_tool_icons) {
 }
 
 export { $ToolBox };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.$ToolBox = $ToolBox; // unused
+

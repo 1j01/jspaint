@@ -671,5 +671,4 @@ function choose_color(initial_color, callback) {
 }
 
 export { show_edit_colors_window };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.show_edit_colors_window = show_edit_colors_window; // unused
+

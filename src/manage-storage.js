@@ -131,6 +131,4 @@ function manage_storage() {
 export {
 	manage_storage, storage_quota_exceeded
 };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.storage_quota_exceeded = storage_quota_exceeded; // unused
-// window.manage_storage = manage_storage; // unused
+

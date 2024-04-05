@@ -421,11 +421,4 @@ export {
 	$ChooseShapeStyle, $choose_airbrush_size, $choose_brush,
 	$choose_eraser_size, $choose_magnification, $choose_stroke_size, $choose_transparent_mode
 };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.$ChooseShapeStyle = $ChooseShapeStyle; // unused
-// window.$choose_brush = $choose_brush; // unused
-// window.$choose_eraser_size = $choose_eraser_size; // unused
-// window.$choose_stroke_size = $choose_stroke_size; // unused
-// window.$choose_magnification = $choose_magnification; // unused
-// window.$choose_airbrush_size = $choose_airbrush_size; // unused
-// window.$choose_transparent_mode = $choose_transparent_mode; // unused
+

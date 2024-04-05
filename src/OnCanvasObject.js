@@ -54,5 +54,4 @@ class OnCanvasObject {
 }
 
 export { OnCanvasObject };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.OnCanvasObject = OnCanvasObject; // unused
+

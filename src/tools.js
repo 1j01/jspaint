@@ -1438,20 +1438,5 @@ export {
 	tools
 };
 // Temporary globals until all dependent code is converted to ES Modules
-// window.TOOL_FREE_FORM_SELECT = TOOL_FREE_FORM_SELECT; // unused
-// window.TOOL_SELECT = TOOL_SELECT; // unused
-// window.TOOL_ERASER = TOOL_ERASER; // unused
-// window.TOOL_FILL = TOOL_FILL; // unused
-// window.TOOL_PICK_COLOR = TOOL_PICK_COLOR; // unused
-// window.TOOL_MAGNIFIER = TOOL_MAGNIFIER; // unused
 window.TOOL_PENCIL = TOOL_PENCIL; // may be used by app-state.js
-// window.TOOL_BRUSH = TOOL_BRUSH; // unused
-// window.TOOL_AIRBRUSH = TOOL_AIRBRUSH; // unused
-// window.TOOL_TEXT = TOOL_TEXT; // unused
-// window.TOOL_LINE = TOOL_LINE; // unused
-// window.TOOL_CURVE = TOOL_CURVE; // unused
-// window.TOOL_RECTANGLE = TOOL_RECTANGLE; // unused
-// window.TOOL_POLYGON = TOOL_POLYGON; // unused
-// window.TOOL_ELLIPSE = TOOL_ELLIPSE; // unused
-// window.TOOL_ROUNDED_RECTANGLE = TOOL_ROUNDED_RECTANGLE; // unused
 window.tools = tools; // may be used by app-state.js, copy-inkscape-labels.js, electron-main.js, extra-tools.js, eye-gaze-mode.js, helpers.js, menus.js, OnCanvasSelection.js
