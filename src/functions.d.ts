@@ -39,9 +39,9 @@ declare function reset_canvas_and_history(): void;
  * @param {number=} options.textbox_height - the height of the textbox, if any
  * @param {TextToolFontOptions | null=} options.text_tool_font - the font of the Text tool (important to restore a textbox-containing state, but persists without a textbox)
  * @param {boolean=} options.tool_transparent_mode - whether transparent mode is on for Select/Free-Form Select/Text tools; otherwise box is opaque
- * @param {string=} options.foreground_color - selected foreground color (left click)
- * @param {string=} options.background_color - selected background color (right click)
- * @param {string=} options.ternary_color - selected ternary color (ctrl+click)
+ * @param {string | CanvasPattern=} options.foreground_color - selected foreground color (left click)
+ * @param {string | CanvasPattern=} options.background_color - selected background color (right click)
+ * @param {string | CanvasPattern=} options.ternary_color - selected ternary color (ctrl+click)
  * @param {string=} options.name - the name of the operation, shown in the history window, e.g. localize("Resize Canvas")
  * @param {HTMLImageElement |HTMLCanvasElement | null=} options.icon - a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png")
  * @returns {HistoryNode}
@@ -62,16 +62,35 @@ declare function make_history_node({ parent, futures, timestamp, soft, image_dat
     textbox_height?: number | undefined;
     text_tool_font?: (TextToolFontOptions | null) | undefined;
     tool_transparent_mode?: boolean | undefined;
-    foreground_color?: string | undefined;
-    background_color?: string | undefined;
-    ternary_color?: string | undefined;
+    foreground_color?: (string | CanvasPattern) | undefined;
+    background_color?: (string | CanvasPattern) | undefined;
+    ternary_color?: (string | CanvasPattern) | undefined;
     name?: string | undefined;
     icon?: (HTMLImageElement | HTMLCanvasElement | null) | undefined;
 }): HistoryNode;
 declare function update_title(): void;
-declare function get_uris(text: any): string[];
-declare function load_image_from_uri(uri: any): Promise<any>;
-declare function open_from_image_info(info: any, callback: any, canceled: any, into_existing_session: any, from_session_load: any): void;
+/**
+ * Parse text/uri-list format
+ * @param {string} text
+ * @returns {string[]} URLs
+ */
+declare function get_uris(text: string): string[];
+/**
+ * Load an image file from a URL by any means necessary.
+ * For basic image loading, see `load_image_simple` instead.
+ * @param {string} uri
+ * @returns {Promise<ImageInfo>}
+ * @throws {Error & { code?: string }}
+ */
+declare function load_image_from_uri(uri: string): Promise<ImageInfo>;
+/**
+ * @param {ImageInfo} info
+ * @param {() => void} [callback]
+ * @param {() => void} [canceled]
+ * @param {boolean} [into_existing_session]
+ * @param {boolean} [from_session_load]
+ */
+declare function open_from_image_info(info: ImageInfo, callback?: () => void, canceled?: () => void, into_existing_session?: boolean, from_session_load?: boolean): void;
 declare function open_from_file(file: any, source_file_handle: any): void;
 declare function apply_file_format_and_palette_info(info: any): void;
 declare function load_theme_from_text(fileText: any): void;
@@ -118,7 +137,12 @@ declare function paste_image_from_file(blob: any): void;
 declare function choose_file_to_paste(): Promise<void>;
 declare function paste(img_or_canvas: any): void;
 declare function render_history_as_gif(): void;
-declare function go_to_history_node(target_history_node: any, canceling: any, discard_document_state: any): void;
+/**
+ * @param {HistoryNode} target_history_node
+ * @param {boolean=} canceling
+ * @param {boolean=} discard_document_state
+ */
+declare function go_to_history_node(target_history_node: HistoryNode, canceling?: boolean | undefined, discard_document_state?: boolean | undefined): void;
 /**
  * Creates an undo point.
  * @param {object} options
@@ -200,7 +224,11 @@ declare function save_as_prompt({ dialogTitle, defaultFileName, defaultFileForma
     promptForName?: boolean;
 }): Promise<any>;
 declare function write_image_file(canvas: any, mime_type: any, blob_callback: any): void;
-declare function read_image_file(blob: any, callback: any): void;
+/**
+ * @param {Blob} blob
+ * @param {(error: Error|null, result?: ImageInfo) => void} callback
+ */
+declare function read_image_file(blob: Blob, callback: (error: Error | null, result?: ImageInfo) => void): void;
 declare function update_from_saved_file(blob: any): void;
 declare function save_selection_to_file(): void;
 declare function sanity_check_blob(blob: any, okay_callback: any, magic_number_bytes: any, magic_wanted?: boolean): void;
