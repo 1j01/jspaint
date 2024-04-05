@@ -173,6 +173,6 @@ export {
 };
 
 // Temporary globals until all dependent code is converted to ES Modules
-window.$ColorBox = $ColorBox;
-window.$Swatch = $Swatch;
-window.update_$swatch = update_$swatch;
+window.$ColorBox = $ColorBox; // may be used by edit-colors.js
+// window.$Swatch = $Swatch; // unused
+// window.update_$swatch = update_$swatch; // unused

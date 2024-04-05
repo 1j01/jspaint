@@ -391,20 +391,20 @@ export {
 	rgb_to_hsl
 };
 // Temporary globals until all dependent code is converted to ES Modules
-window.TAU = TAU;
-window.is_pride_month = is_pride_month;
-window.$G = $G;
-window.E = E;
-window.make_css_cursor = make_css_cursor;
-window.make_canvas = make_canvas;
-window.get_help_folder_icon = get_help_folder_icon;
-window.get_icon_for_tool = get_icon_for_tool;
-window.get_icon_for_tools = get_icon_for_tools;
-window.load_image_simple = load_image_simple;
-window.rgb_to_hsl = rgb_to_hsl;
-window.image_data_match = image_data_match;
-window.get_rgba_from_color = get_rgba_from_color;
-window.memoize_synchronous_function = memoize_synchronous_function;
-window.debounce = debounce;
-window.get_file_extension = get_file_extension;
-window.get_format_from_extension = get_format_from_extension;
+// window.TAU = TAU; // unused
+// window.is_pride_month = is_pride_month; // unused
+window.$G = $G; // may be used by app-localization.js
+window.E = E; // may be used by app-localization.js, app-state.js, color-data.js, copy-inkscape-labels.js, edit-colors.js, electron-injected.js, electron-main.js, error-handling-basic.js, error-handling-enhanced.js, extra-tools.js, file-format-data.js, image-manipulation.js, konami.js, menus.js, msgbox.js, OnCanvasHelperLayer.js, repack-spritesheet.js, sessions.js, simulate-random-gestures.js, storage.js, test-news.js, theme.js
+// window.make_css_cursor = make_css_cursor; // unused
+window.make_canvas = make_canvas; // may be used by app-state.js, electron-injected.js
+window.get_help_folder_icon = get_help_folder_icon; // may be used by repack-spritesheet.js
+// window.get_icon_for_tool = get_icon_for_tool; // unused
+// window.get_icon_for_tools = get_icon_for_tools; // unused
+window.load_image_simple = load_image_simple; // may be used by functions.js
+// window.rgb_to_hsl = rgb_to_hsl; // unused
+window.image_data_match = image_data_match; // may be used by functions.js
+window.get_rgba_from_color = get_rgba_from_color; // may be used by speech-recognition.js
+// window.memoize_synchronous_function = memoize_synchronous_function; // unused
+// window.debounce = debounce; // unused
+window.get_file_extension = get_file_extension; // may be used by electron-injected.js
+window.get_format_from_extension = get_format_from_extension; // may be used by app.js, electron-injected.js

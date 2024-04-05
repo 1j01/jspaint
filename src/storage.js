@@ -71,4 +71,4 @@ const localStore = {
 
 export { localStore };
 // Temporary globals until all dependent code is converted to ES Modules
-window.storage = localStore;
+window.storage = localStore; // may be used by $ToolWindow.js, app-localization.js, app.js, functions.js, manage-storage.js, theme.js

@@ -198,4 +198,4 @@ function show_imgur_uploader(blob) {
 
 export { show_imgur_uploader };
 // Temporary globals until all dependent code is converted to ES Modules
-window.show_imgur_uploader = show_imgur_uploader;
+// window.show_imgur_uploader = show_imgur_uploader; // unused

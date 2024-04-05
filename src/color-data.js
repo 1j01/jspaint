@@ -187,8 +187,8 @@ export {
 	basic_colors, custom_colors, default_palette, get_winter_palette, monochrome_palette_as_colors
 };
 // Temporary globals until all dependent code is converted to ES Modules
-window.default_palette = default_palette;
-window.monochrome_palette_as_colors = monochrome_palette_as_colors;
-window.basic_colors = basic_colors;
-window.custom_colors = custom_colors;
-window.get_winter_palette = get_winter_palette;
+window.default_palette = default_palette; // may be used by app-state.js
+// window.monochrome_palette_as_colors = monochrome_palette_as_colors; // unused
+// window.basic_colors = basic_colors; // unused
+// window.custom_colors = custom_colors; // unused
+// window.get_winter_palette = get_winter_palette; // unused

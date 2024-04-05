@@ -27,4 +27,4 @@ class OnCanvasHelperLayer extends OnCanvasObject {
 
 export { OnCanvasHelperLayer };
 // Temporary globals until all dependent code is converted to ES Modules
-window.OnCanvasHelperLayer = OnCanvasHelperLayer;
+window.OnCanvasHelperLayer = OnCanvasHelperLayer; // may be used by app-state.js

@@ -166,4 +166,4 @@ window.defaultMessageBoxTitle = localize("Paint");
 const { showMessageBox } = exports;
 export { showMessageBox };
 // Temporary globals until all dependent code is converted to ES Modules
-window.showMessageBox = showMessageBox;
+window.showMessageBox = showMessageBox; // may be used by app-localization.js, error-handling-enhanced.js

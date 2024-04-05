@@ -172,4 +172,4 @@ function $FontBox() {
 
 export { $FontBox };
 // Temporary globals until all dependent code is converted to ES Modules
-window.$FontBox = $FontBox;
+// window.$FontBox = $FontBox; // unused

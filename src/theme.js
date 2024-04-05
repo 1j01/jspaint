@@ -178,5 +178,5 @@ function make_grinch_button() {
 
 export { get_theme, set_theme };
 // Temporary globals until all dependent code is converted to ES Modules
-window.get_theme = get_theme;
-window.set_theme = set_theme;
+// window.get_theme = get_theme; // unused
+// window.set_theme = set_theme; // unused

@@ -424,4 +424,4 @@ function $Component(title, className, orientation, $el) {
 
 export { $Component };
 // Temporary globals until all dependent code is converted to ES Modules
-window.$Component = $Component;
+// window.$Component = $Component; // unused

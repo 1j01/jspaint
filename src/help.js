@@ -505,4 +505,4 @@ $(window).on("pointerup dragend blur", function (e) {
 
 export { show_help };
 // Temporary globals until all dependent code is converted to ES Modules
-window.show_help = show_help;
+// window.show_help = show_help; // unused
