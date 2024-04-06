@@ -919,6 +919,19 @@ interface HistoryNode {
 	icon: HTMLImageElement | HTMLCanvasElement | null;
 }
 
+interface ActionMetadata {
+	name: string;
+	icon?: HTMLImageElement | HTMLCanvasElement;
+	use_loose_canvas_changes?: boolean;
+	soft?: boolean;
+	assume_saved?: boolean;
+}
+
+interface ActionMetadataUpdate extends ActionMetadata {
+	update_name?: boolean;
+	match?: (current_history_node: HistoryNode) => boolean;
+}
+
 /**
  * A canvas with a 2D context that has some extra methods. Returned by `make_canvas`.
  */

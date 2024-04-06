@@ -42,6 +42,7 @@ const exclusive_params = [
 ];
 
 function get_all_url_params() {
+	/** @type {Record<string, string | boolean>} */
 	const params = {};
 	location.hash.replace(/^#/, "").split(/,/).forEach((param_decl) => {
 		// colon is used in param value for URLs so split(":") isn't good enough
@@ -68,10 +69,21 @@ function get_url_param(param_name) {
 	return get_all_url_params()[param_name];
 }
 
+/**
+ * @param {string} param_name
+ * @param {string | boolean} value
+ * @param {object} [options]
+ * @param {boolean} [options.replace_history_state=false]
+ */
 function change_url_param(param_name, value, { replace_history_state = false } = {}) {
 	change_some_url_params({ [param_name]: value }, { replace_history_state });
 }
 
+/**
+ * @param {Record<string, string | boolean>} updates
+ * @param {object} [options]
+ * @param {boolean} [options.replace_history_state=false]
+ */
 function change_some_url_params(updates, { replace_history_state = false } = {}) {
 	for (const exclusive_param of exclusive_params) {
 		if (updates[exclusive_param]) {
@@ -85,6 +97,11 @@ function change_some_url_params(updates, { replace_history_state = false } = {})
 	set_all_url_params(Object.assign({}, get_all_url_params(), updates), { replace_history_state });
 }
 
+/**
+ * @param {Record<string, string | boolean>} params
+ * @param {object} [options]
+ * @param {boolean} [options.replace_history_state=false]
+ */
 function set_all_url_params(params, { replace_history_state = false } = {}) {
 
 	let new_hash = "";
@@ -130,9 +147,14 @@ function update_canvas_rect() {
 	update_helper_layer();
 }
 
-let helper_layer_update_queued;
-let info_for_updating_pointer; // for updating the brush preview when the mouse stays in the same place,
-// but its coordinates in the document change due to scrolling or browser zooming (handled with scroll and resize events)
+let helper_layer_update_queued = false;
+/**
+ * for updating the brush preview when the mouse stays in the same place,
+ * but its coordinates in the document change due to scrolling or browser zooming (handled with scroll and resize events)
+ * @type {{ clientX: number, clientY: number, devicePixelRatio: number }}
+ */
+let info_for_updating_pointer;
+/** @param {{ clientX: number, clientY: number }} [e] */
 function update_helper_layer(e) {
 	// e should be passed for pointer events, but not scroll or resize events
 	// e may be a synthetic event without clientX/Y, so ignore that (using isFinite)
@@ -234,6 +256,13 @@ function update_helper_layer_immediately() {
 	}
 }
 
+/**
+ * @param {PixelCanvas} hcanvas 
+ * @param {number} scale 
+ * @param {number} viewport_x 
+ * @param {number} viewport_y 
+ * @param {boolean} is_helper_layer 
+ */
 function render_canvas_view(hcanvas, scale, viewport_x, viewport_y, is_helper_layer) {
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
 
@@ -346,10 +375,11 @@ function update_disable_aa() {
 	$canvas_area.toggleClass("disable-aa-for-things-at-main-canvas-scale", dots_per_canvas_px >= 3 || round);
 }
 
+/**
+ * @param {number} new_scale
+ * @param {{x: number, y: number}} anchor_point - uses canvas coordinates; default is the top-left of the $canvas_area viewport
+ */
 function set_magnification(new_scale, anchor_point) {
-	// anchor_point is optional, and uses canvas coordinates;
-	// the default is the top-left of the $canvas_area viewport
-
 	// How this works is, you imagine "what if it was zoomed, where would the anchor point be?"
 	// Then to make it end up where it started, you simply shift the viewport by the difference.
 	// And actually you don't have to "imagine" zooming, you can just do the zoom.
@@ -379,6 +409,7 @@ function set_magnification(new_scale, anchor_point) {
 	$G.trigger("magnification-changed"); // updates custom zoom window
 }
 
+/** @type {$Window} */
 let $custom_zoom_window;
 
 let dev_custom_zoom = false;
@@ -1002,6 +1033,9 @@ function open_from_file(file, source_file_handle) {
 	});
 }
 
+/**
+ * @param {ImageInfo} info
+ */
 function apply_file_format_and_palette_info(info) {
 	file_format = info.file_format;
 
@@ -1024,6 +1058,9 @@ function apply_file_format_and_palette_info(info) {
 	monochrome = info.monochrome;
 }
 
+/**
+ * @param {string} fileText
+ */
 function load_theme_from_text(fileText) {
 	var cssProperties = parseThemeFileString(fileText);
 	if (!cssProperties) {
@@ -1059,6 +1096,7 @@ async function file_open() {
 	open_from_file(file, fileHandle);
 }
 
+/** @type {$Window} */
 let $file_load_from_url_window;
 function file_load_from_url() {
 	if ($file_load_from_url_window) {
@@ -1350,6 +1388,7 @@ function show_error_message(message, error) {
 
 // @TODO: close are_you_sure windows and these Error windows when switching sessions
 // because it can get pretty confusing
+/** @param {Error & {code: string, fails?: {status: number, statusText: string, url: string}[]}} error */
 function show_resource_load_error_message(error) {
 	const { $window, $message } = showMessageBox({});
 	const firefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
@@ -1469,9 +1508,11 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 	});
 }
 
+/** @type {$Window} */
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
 
+/** @type {$Window} */
 let $news_window;
 const $this_version_news = $("#news");
 let $latest_news = $this_version_news;
@@ -1679,6 +1720,9 @@ function show_news() {
 
 // @TODO: DRY between these functions and open_from_* functions further?
 
+/**
+ * @param {Blob} blob 
+ */
 function paste_image_from_file(blob) {
 	read_image_file(blob, (error, info) => {
 		if (error) {
@@ -1699,6 +1743,9 @@ async function choose_file_to_paste() {
 	show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."));
 }
 
+/**
+ * @param {HTMLImageElement | HTMLCanvasElement} img_or_canvas 
+ */
 function paste(img_or_canvas) {
 
 	if (img_or_canvas.width > main_canvas.width || img_or_canvas.height > main_canvas.height) {
@@ -2002,12 +2049,7 @@ function go_to_history_node(target_history_node, canceling, discard_document_sta
 // Note: This function is part of the API.
 /**
  * Creates an undo point.
- * @param {object} options
- * @param {string} options.name
- * @param {HTMLImageElement | HTMLCanvasElement=} options.icon
- * @param {boolean=} options.use_loose_canvas_changes
- * @param {boolean=} options.soft
- * @param {boolean=} options.assume_saved
+ * @param {ActionMetadata} options
  * @param {function=} callback
  */
 function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, callback) {
@@ -2065,6 +2107,10 @@ function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, 
 
 	$G.triggerHandler("session-update"); // autosave
 }
+/**
+ * @param {ActionMetadataUpdate} undoable_meta 
+ * @param {()=> void} undoable_action 
+ */
 function make_or_update_undoable(undoable_meta, undoable_action) {
 	if (current_history_node.futures.length === 0 && undoable_meta.match(current_history_node)) {
 		undoable_action();
@@ -2097,6 +2143,7 @@ function undo() {
 }
 
 // @TODO: use Clippy.js instead for potentially annoying tips
+/** @type {$Window} */
 let $document_history_prompt_window;
 function redo() {
 	if (redos.length < 1) {
@@ -2126,6 +2173,10 @@ function redo() {
 	return true;
 }
 
+/**
+ * @param {HistoryNode} node 
+ * @returns {HistoryNode[]} ancestors
+ */
 function get_history_ancestors(node) {
 	const ancestors = [];
 	for (node = node.parent; node; node = node.parent) {
@@ -2134,6 +2185,7 @@ function get_history_ancestors(node) {
 	return ancestors;
 }
 
+/** @type {$Window} */
 let $document_history_window;
 // setTimeout(show_document_history, 100);
 function show_document_history() {
@@ -2179,6 +2231,9 @@ function show_document_history() {
 		render_tree();
 	});
 
+	/**
+	 * @param {HistoryNode} node 
+	 */
 	function render_tree_from_node(node) {
 		const $entry = $(`
 			<div class="history-entry">
@@ -2282,9 +2337,13 @@ function show_document_history() {
 	$w.center();
 }
 
+/**
+ * Cancel the current tool gesture, if any.
+ * Note: this function should be idempotent. `cancel(); cancel();` should do the same thing as `cancel();`
+ * @param {boolean} going_to_history_node 
+ * @param {boolean} discard_document_state 
+ */
 function cancel(going_to_history_node, discard_document_state) {
-	// Note: this function should be idempotent.
-	// `cancel(); cancel();` should do the same thing as `cancel();`
 	if (!history_node_to_cancel_to) {
 		return;
 	}
@@ -2332,6 +2391,9 @@ function cancel(going_to_history_node, discard_document_state) {
 	history_node_to_cancel_to = null;
 	update_helper_layer();
 }
+/**
+ * @param {boolean} going_to_history_node
+ */
 function meld_selection_into_canvas(going_to_history_node) {
 	selection.draw();
 	selection.destroy();
@@ -2344,6 +2406,9 @@ function meld_selection_into_canvas(going_to_history_node) {
 		}, () => { });
 	}
 }
+/**
+ * @param {boolean} going_to_history_node 
+ */
 function meld_textbox_into_canvas(going_to_history_node) {
 	const text = textbox.$editor.val();
 	if (text && !going_to_history_node) {
@@ -2365,6 +2430,9 @@ function meld_textbox_into_canvas(going_to_history_node) {
 		textbox = null;
 	}
 }
+/**
+ * @param {boolean} going_to_history_node
+ */
 function deselect(going_to_history_node) {
 	if (selection) {
 		meld_selection_into_canvas(going_to_history_node);
@@ -2376,6 +2444,10 @@ function deselect(going_to_history_node) {
 		selected_tool.end && selected_tool.end(main_ctx);
 	}
 }
+
+/**
+ * @param {{name?: string, icon?: HTMLImageElement | HTMLCanvasElement}} [meta] - overrides certain properties of ActionMetadata
+ */
 function delete_selection(meta = {}) {
 	if (selection) {
 		undoable({
@@ -2403,6 +2475,9 @@ function select_all() {
 
 const ctrlOrCmd = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform) ? "⌘" : "Ctrl";
 const recommendationForClipboardAccess = `Please use the keyboard: ${ctrlOrCmd}+C to copy, ${ctrlOrCmd}+X to cut, ${ctrlOrCmd}+V to paste. If keyboard is not an option, try using Chrome version 76 or higher.`;
+/**
+ * @param {string} commandId 
+ */
 function try_exec_command(commandId) {
 	if (document.queryCommandEnabled(commandId)) { // not a reliable source for whether it'll work, if I recall
 		document.execCommand(commandId);
@@ -2435,6 +2510,9 @@ function getSelectionText() {
 	return "";
 }
 
+/**
+ * @param {boolean} execCommandFallback 
+ */
 function edit_copy(execCommandFallback) {
 	const text = getSelectionText();
 
@@ -2473,6 +2551,9 @@ function edit_copy(execCommandFallback) {
 		});
 	}
 }
+/**
+ * @param {boolean} execCommandFallback 
+ */
 function edit_cut(execCommandFallback) {
 	if (!navigator.clipboard || !navigator.clipboard.write) {
 		if (execCommandFallback) {
@@ -2488,6 +2569,9 @@ function edit_cut(execCommandFallback) {
 		icon: get_help_folder_icon("p_cut.png"),
 	});
 }
+/**
+ * @param {boolean} execCommandFallback 
+ */
 async function edit_paste(execCommandFallback) {
 	if (
 		document.activeElement instanceof HTMLInputElement ||
@@ -2690,7 +2774,10 @@ function view_bitmap() {
 		bitmap_view_div.appendChild(img);
 	}, "image/png");
 }
-
+/**
+ * @param {ToolID} id 
+ * @returns {Tool} tool object
+ */
 function get_tool_by_id(id) {
 	for (let i = 0; i < tools.length; i++) {
 		if (tools[i].id == id) {
@@ -2706,6 +2793,9 @@ function get_tool_by_id(id) {
 
 // hacky but whatever
 // this whole "multiple tools" thing is hacky for now
+/**
+ * @param {Tool[]} tools 
+ */
 function select_tools(tools) {
 	for (let i = 0; i < tools.length; i++) {
 		select_tool(tools[i], i > 0);
@@ -2713,6 +2803,10 @@ function select_tools(tools) {
 	update_helper_layer();
 }
 
+/**
+ * @param {Tool} tool 
+ * @param {boolean} toggle 
+ */
 function select_tool(tool, toggle) {
 	deselect();
 
@@ -2754,6 +2848,10 @@ function select_tool(tool, toggle) {
 	// $toolbox2.update_selected_tool();
 }
 
+/**
+ * @param {CanvasRenderingContext2D} ctx 
+ * @returns {boolean} whether the canvas has any translucent pixels (with a stupid margin of error)
+ */
 function has_any_transparency(ctx) {
 	// @TODO Optimization: Assume JPEGs and some other file types are opaque.
 	// Raster file formats that SUPPORT transparency include GIF, PNG, BMP and TIFF
@@ -2769,6 +2867,10 @@ function has_any_transparency(ctx) {
 	return false;
 }
 
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @returns {{ isMonochrome: boolean, presentNonTransparentRGBAs?: Uint8ClampedArray[], presentNonTransparentUint32s?: number[], monochromeWithTransparency?: boolean }}
+ */
 function detect_monochrome(ctx) {
 	// Note: Brave browser, and DuckDuckGo Privacy Essentials browser extension
 	// implement a privacy technique known as "farbling", which breaks this code.
@@ -2810,6 +2912,13 @@ function detect_monochrome(ctx) {
 	};
 }
 
+/**
+ * Creates a dithered pattern using two colors.
+ * @param {number} lightness - The approximate fraction of pixels that will use the second(?) color.
+ * @param {number[]} rgba1 - RGBA color values for the first color.
+ * @param {number[]} rgba2 - RGBA color values for the second color.
+ * @returns {CanvasPattern}
+ */
 function make_monochrome_pattern(lightness, rgba1 = [0, 0, 0, 255], rgba2 = [255, 255, 255, 255]) {
 
 	const dither_threshold_table = Array.from({ length: 64 }, (_undefined, p) => {
@@ -2921,6 +3030,13 @@ function make_opaque() {
 	});
 }
 
+/**
+ * Resizes the canvas without saving the dimensions to local storage.
+ *
+ * @param {number} unclamped_width - The new width of the canvas. Will be clamped to a minimum of 1.
+ * @param {number} unclamped_height - The new height of the canvas. Will be clamped to a minimum of 1.
+ * @param {{name?: string, icon?: HTMLImageElement | HTMLCanvasElement}} [undoable_meta={}] - overrides certain properties of ActionMetadata
+ */
 function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_height, undoable_meta = {}) {
 	const new_width = Math.max(1, unclamped_width);
 	const new_height = Math.max(1, unclamped_height);
@@ -2959,6 +3075,13 @@ function resize_canvas_without_saving_dimensions(unclamped_width, unclamped_heig
 	}
 }
 
+/**
+ * Resizes the canvas and saves the dimensions to local storage as the new default.
+ *
+ * @param {number} unclamped_width - The new width of the canvas. Will be clamped to a minimum of 1.
+ * @param {number} unclamped_height - The new height of the canvas. Will be clamped to a minimum of 1.
+ * @param {{name?: string, icon?: HTMLImageElement | HTMLCanvasElement}} [undoable_meta={}] - overrides certain properties of ActionMetadata
+ */
 function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height, undoable_meta = {}) {
 	resize_canvas_without_saving_dimensions(unclamped_width, unclamped_height, undoable_meta);
 	localStore.set({
@@ -3412,6 +3535,9 @@ function image_stretch_and_skew() {
 	handle_keyshortcuts($w);
 }
 
+/**
+ * @param {JQuery<HTMLElement>} $container
+ */
 function handle_keyshortcuts($container) {
 	// This function implements shortcuts defined with aria-keyshortcuts.
 	// It also modifies aria-keyshortcuts to remove shortcuts that don't
@@ -3473,6 +3599,18 @@ function handle_keyshortcuts($container) {
 	});
 }
 
+/**
+ * Displays a save prompt dialog with options to specify the file name and format.
+ *
+ * @param {Object} options
+ * @param {string} [options.dialogTitle="Save As"] - The title of the dialog.
+ * @param {string} [options.defaultFileName=""] - The default file name.
+ * @param {string} [options.defaultFileFormatID] - The file format to select by default.
+ * @param {FileFormat[]} options.formats - The file formats available in the dropdown.
+ * @param {boolean} [options.promptForName=true] - Whether to prompt for the file name, or just the format.
+ * 
+ * @returns {Promise<{newFileName: string, newFileFormatID: string}>} - A promise that resolves with the new file name and format ID.
+ */
 function save_as_prompt({
 	dialogTitle = localize("Save As"),
 	defaultFileName = "",
@@ -3609,6 +3747,12 @@ function save_as_prompt({
 	});
 }
 
+/**
+ * Writes an image file to a blob, in the given format.
+ * @param {PixelCanvas} canvas - The canvas to export as an image file.
+ * @param {string} mime_type - The MIME type of the image file.
+ * @param {(Blob)=> void} blob_callback - This function is called with the blob, or may never be called if there is an error.
+ */
 function write_image_file(canvas, mime_type, blob_callback) {
 	const bmp_match = mime_type.match(/^image\/(?:x-)?bmp\s*(?:-(\d+)bpp)?/);
 	if (bmp_match) {
@@ -3854,6 +3998,10 @@ function read_image_file(blob, callback) {
 	});
 }
 
+/**
+ * Updates the canvas to reflect reductions in color when saving to certain file formats.
+ * @param {Blob} blob - The saved file blob.
+ */
 function update_from_saved_file(blob) {
 	read_image_file(blob, (error, info) => {
 		if (error) {
@@ -3931,6 +4079,9 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 	}
 }
 
+/**
+ * @param {boolean} from_current_document 
+ */
 function show_multi_user_setup_dialog(from_current_document) {
 	const $w = $DialogWindow().title("Multi-User Setup").addClass("horizontal-buttons");
 	$w.$main.html(`
