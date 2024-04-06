@@ -24,8 +24,8 @@ import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_
 // #region Exports
 
 // Q: Why are the exports at the top of the file?
-// A: The exports are scattered throughout the file, exactly where they were
-//    implicitly being exported before transitioning to ESM.
+// A: The exports are scattered throughout the file, exactly where they
+//    were implicitly being exported before transitioning to ESM.
 //    For function declarations at the top level, this means the start of the file.
 //    For let/const, this means the line after the declaration.
 //    This is a temporary solution to resolve circular dependencies.
@@ -33,14 +33,11 @@ import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_
 //    at the bottom of this file, an error would occur. This is because $ToolBox
 //    is instantiated in the middle of this file (but after $left/$right are declared).
 // @TODO: Minimize global variables and exports from app.js
-const exports = {
-	to_canvas_coords,
-	from_canvas_coords,
-	update_fill_and_stroke_colors_and_lineWidth,
-	tool_go,
-	average_points,
-};
-Object.assign(window, exports);
+window.to_canvas_coords = to_canvas_coords;
+window.from_canvas_coords = from_canvas_coords;
+window.update_fill_and_stroke_colors_and_lineWidth = update_fill_and_stroke_colors_and_lineWidth;
+window.tool_go = tool_go;
+window.average_points = average_points;
 
 // #endregion
 

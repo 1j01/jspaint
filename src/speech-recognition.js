@@ -2301,6 +2301,10 @@ export {
 };
 // Temporary globals until all dependent code is converted to ES Modules
 // see also `speech_recognition_active` above
-for (const key in exports) {
-	window[key] = exports[key];
-}
+// window.disable_speech_recognition = disable_speech_recognition; // unused
+// window.enable_speech_recognition = enable_speech_recognition; // unused
+// window.interpret_command = interpret_command; // unused
+// window.speech_recognition_available = speech_recognition_available; // unused
+// window.trace_and_sketch = trace_and_sketch; // unused
+window.trace_and_sketch_stop = trace_and_sketch_stop; // may be used by app.js
+// window.speech_recognition_active = false; // unused
