@@ -136,6 +136,8 @@ declare function make_css_cursor(name: string, coords: [number, number], fallbac
 declare function make_canvas(width: number, height: number): PixelCanvas;
 declare function make_canvas(source: HTMLImageElement | HTMLCanvasElement | ImageData): PixelCanvas;
 declare function make_canvas(): PixelCanvas;
+declare function get_format_from_extension<T extends FileFormat>(formats: T[], file_path_or_name_or_ext: string): T;
+declare const $G: JQuery<Window>;
 
 // color-data.js
 declare const default_palette: (string | CanvasPattern)[];
@@ -243,6 +245,9 @@ declare function are_you_sure(
  * @param {UserFileHandle} source_file_handle
  */
 declare function open_from_file(file: File, source_file_handle: UserFileHandle): void;
+
+// msgbox.js
+declare function showMessageBox(options: MessageBoxOptions): Promise<string>;
 
 // app.js
 declare const systemHooks: SystemHooks;
@@ -441,6 +446,8 @@ interface Window {
 		$: JQueryStatic;
 	};
 
+	// app-localization.js
+	available_languages: string[];
 	// msgbox.js
 	showMessageBox: (options: MessageBoxOptions) => Promise<string>;
 	defaultMessageBoxTitle: string;
