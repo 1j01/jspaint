@@ -21,7 +21,6 @@ declare const FontDetective: any;
 declare const AnyPalette: any;
 declare const ImageTracer: any;
 declare const TrackyMouse: any;
-declare let Konami: any;
 
 // Globals from scripts that are not converted to ESM yet,
 // and thus can't be imported. (I've been marking scripts as @ts-check as I convert them.)
@@ -39,23 +38,7 @@ declare function remove_hotkey(text: string): string;
 declare function get_hotkey(text: string): string;
 declare function display_hotkey(text: string): string;
 // tools.js
-declare const TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
-declare const TOOL_SELECT: "TOOL_SELECT";
-declare const TOOL_ERASER: "TOOL_ERASER";
-declare const TOOL_FILL: "TOOL_FILL";
-declare const TOOL_PICK_COLOR: "TOOL_PICK_COLOR";
-declare const TOOL_MAGNIFIER: "TOOL_MAGNIFIER";
 declare const TOOL_PENCIL: "TOOL_PENCIL";
-declare const TOOL_BRUSH: "TOOL_BRUSH";
-declare const TOOL_AIRBRUSH: "TOOL_AIRBRUSH";
-declare const TOOL_TEXT: "TOOL_TEXT";
-declare const TOOL_LINE: "TOOL_LINE";
-declare const TOOL_CURVE: "TOOL_CURVE";
-declare const TOOL_RECTANGLE: "TOOL_RECTANGLE";
-declare const TOOL_POLYGON: "TOOL_POLYGON";
-declare const TOOL_ELLIPSE: "TOOL_ELLIPSE";
-declare const TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
-declare const tools: Tool[];
 // app-state.js
 declare let brush_shape: BrushShape;
 declare let brush_size: number
@@ -130,12 +113,7 @@ declare let pointer_over_canvas: boolean;
 declare let update_helper_layer_on_pointermove_active: boolean;
 declare let pointers: { x: number, y: number, pointerId: number, pointerType: string, isPrimary: boolean }[];
 
-// $FontBox.js
-// declare class $FontBox extends $Window { }
-// declare function $FontBox(): $FontBox;
-declare function $FontBox(): $Window;
 // $ToolBox.js
-declare function $ToolBox(tools: Tool[], is_extras?: boolean): JQuery<HTMLDivElement> & I$Component & I$ToolBox;
 declare interface I$ToolBox {
 	update_selected_tool(): void;
 }
@@ -144,12 +122,7 @@ declare interface I$ColorBox {
 	rebuild_palette(): void;
 }
 
-// $ToolWindow.js
-declare function $ToolWindow($component?: JQuery<HTMLElement>): $Window & I$ToolWindow;
-declare function $DialogWindow(title?: string): $Window & I$DialogWindow;
-declare function make_window_supporting_scale(options: $WindowOptions): $Window;
 // $Component.js
-declare function $Component(title: string, className: string, orientation: "tall" | "wide", $el: JQuery<HTMLElement>): JQuery<HTMLDivElement> & I$Component;
 interface I$Component {
 	hide(): this;
 	show(): this;
@@ -164,25 +137,11 @@ declare function make_canvas(width: number, height: number): PixelCanvas;
 declare function make_canvas(source: HTMLImageElement | HTMLCanvasElement | ImageData): PixelCanvas;
 declare function make_canvas(): PixelCanvas;
 
-// edit-colors.js
-declare function show_edit_colors_window(
-	$swatch_to_edit?: JQuery<HTMLDivElement>,
-	color_selection_slot_to_edit?: ColorSelectionSlot,
-): void;
 // color-data.js
 declare const default_palette: (string | CanvasPattern)[];
-// declare const monochrome_palette_as_colors: (string | CanvasPattern)[];
-// declare const basic_colors: (string | CanvasPattern)[];
-// declare const custom_colors: (string | CanvasPattern)[];
-// declare const get_winter_palette: () => (string | CanvasPattern)[];
 // file-format-data.js
-declare const image_formats: ImageFileFormat[];
-declare const palette_formats: PaletteFileFormat[];
 declare function formats_unique_per_file_extension<T extends FileFormat>(formats: T[]): T[];
-// imgur.js
-declare function show_imgur_uploader(blob: Blob): void;
 // storage.js
-declare const storage: LocalStore;
 interface LocalStore {
 	get(key: string, callback: (error: Error | null, value: string) => void): void,
 
@@ -323,26 +282,13 @@ declare function average_points(points: { x: number, y: number }[]): { x: number
 // This supports `window.*` property access.
 interface Window {
 	// helpers.js
-	E: (tagName: string) => HTMLElement;
 	$G: JQuery<Window>;
-	TAU: number;
-	is_pride_month: boolean;
-	debounce: (func: Function, wait_ms: number, immediate?: boolean) => Function;
-	memoize_synchronous_function: (func: Function, max_entries?: number) => Function;
-	rgb_to_hsl: (r: number, g: number, b: number) => [number, number, number];
-	get_rgba_from_color: (color: string) => [number, number, number, number];
-	make_css_cursor: (name: string, coords: [number, number], fallback: string) => string;
 	make_canvas: {
 		(width: number, height: number): PixelCanvas,
 		(source: HTMLImageElement | HTMLCanvasElement | ImageData): PixelCanvas,
 		(): PixelCanvas,
 	};
-	image_data_match: (a: ImageData, b: ImageData, threshold: number) => boolean;
-	load_image_simple: (src: string) => Promise<HTMLImageElement>;
 	get_help_folder_icon: (file_name: string) => HTMLImageElement;
-	get_icon_for_tool: (tool: Tool) => HTMLImageElement;
-	get_icon_for_tools: (tools: Tool[]) => HTMLImageElement | HTMLCanvasElement;
-	get_file_extension: (file_path_or_name: string) => string;
 	get_format_from_extension: <T extends FileFormat>(formats: T[], file_path_or_name_or_ext: string) => T;
 	// functions.js
 	get_tool_by_id(id: string): Tool;
@@ -423,49 +369,7 @@ interface Window {
 	 */
 	open_from_file(file: File, source_file_handle: UserFileHandle): void;
 	// tools.js
-	TOOL_FREE_FORM_SELECT: "TOOL_FREE_FORM_SELECT";
-	TOOL_SELECT: "TOOL_SELECT";
-	TOOL_ERASER: "TOOL_ERASER";
-	TOOL_FILL: "TOOL_FILL";
-	TOOL_PICK_COLOR: "TOOL_PICK_COLOR";
-	TOOL_MAGNIFIER: "TOOL_MAGNIFIER";
 	TOOL_PENCIL: "TOOL_PENCIL";
-	TOOL_BRUSH: "TOOL_BRUSH";
-	TOOL_AIRBRUSH: "TOOL_AIRBRUSH";
-	TOOL_TEXT: "TOOL_TEXT";
-	TOOL_LINE: "TOOL_LINE";
-	TOOL_CURVE: "TOOL_CURVE";
-	TOOL_RECTANGLE: "TOOL_RECTANGLE";
-	TOOL_POLYGON: "TOOL_POLYGON";
-	TOOL_ELLIPSE: "TOOL_ELLIPSE";
-	TOOL_ROUNDED_RECTANGLE: "TOOL_ROUNDED_RECTANGLE";
-	tools: Tool[];
-	// OnCanvasObject.js
-	OnCanvasObject: typeof OnCanvasObject;
-	// OnCanvasHelperLayer.js
-	OnCanvasHelperLayer: typeof OnCanvasHelperLayer;
-	// OnCanvasSelection.js
-	OnCanvasSelection: typeof OnCanvasSelection;
-	// OnCanvasTextBox.js
-	OnCanvasTextBox: typeof OnCanvasTextBox;
-	// Handles.js
-	Handles: typeof Handles;
-	// $FontBox.js
-	$FontBox: typeof $FontBox;
-	// $ToolBox.js
-	$ToolBox: typeof $ToolBox;
-	// $ColorBox.js
-	$ColorBox: (vertical: boolean) => JQuery<HTMLDivElement> & I$Component & I$ColorBox;
-	$Swatch: (color: string | CanvasPattern | undefined) => JQuery<HTMLDivElement>;
-	update_$swatch: ($swatch: JQuery<HTMLDivElement>, color: string | CanvasPattern | undefined) => void;
-	// tool-options.js
-	$ChooseShapeStyle: () => JQuery<HTMLElement> & { fill: boolean, stroke: boolean };
-	$choose_brush: JQuery<HTMLElement>;
-	$choose_eraser_size: JQuery<HTMLElement>;
-	$choose_stroke_size: JQuery<HTMLElement>;
-	$choose_magnification: JQuery<HTMLElement>;
-	$choose_airbrush_size: JQuery<HTMLElement>;
-	$choose_transparent_mode: JQuery<HTMLElement>;
 	// app.js
 	canvas_bounding_client_rect: DOMRect;
 	_open_images_serially: boolean; // for testing
@@ -543,27 +447,15 @@ interface Window {
 	audioContext: AudioContext;
 	// color-data.js
 	default_palette: (string | CanvasPattern)[];
-	monochrome_palette_as_colors: (string | CanvasPattern)[];
-	basic_colors: (string | CanvasPattern)[];
-	custom_colors: (string | CanvasPattern)[];
-	get_winter_palette: () => (string | CanvasPattern)[];
 	// help.js
-	show_help: () => void;
 	jQuery: JQueryStatic; // help.js reaches into iframe to use jQuery
 	MouseEvent: typeof MouseEvent; // help.js reaches into iframe and uses MouseEvent
 	applyTheme: (cssProperties: Record<string, string>, documentElement?: HTMLElement) => void; // this is defined in 98.js.org... does it actually exist [when running in 98.js.org]? btw HTMLHtmlElement would be more specific, but document.documentElement is typed as HTMLElement, so it'd just be annoying
 	themeCSSProperties: Record<string, string>;
-	// menus.js
-	menus: object;
-	// manage-storage.js
-	manage_storage: () => void;
-	storage_quota_exceeded: () => Promise<void>;
 	// file-format-data.js
 	image_formats: ImageFileFormat[];
 	palette_formats: PaletteFileFormat[];
 	formats_unique_per_file_extension: <T extends FileFormat>(formats: T[]) => T[];
-	// storage.js
-	storage: LocalStore;
 	// sessions.js
 	new_local_session: () => void;
 	// speech-recognition.js
@@ -669,6 +561,9 @@ declare class OnCanvasTextBox extends OnCanvasObject {
 	$editor: JQuery<HTMLTextAreaElement>;
 	dragging: boolean;
 }
+
+// `Handles` declaration may not be needed anymore, but its options are complex enough
+// that it might make sense to define them here as `HandlesOptions`...
 declare class Handles {
 	/**
 	 * Handles for resizable, draggable, on-canvas objects.

@@ -6,6 +6,9 @@ import { E } from "./helpers.js";
 
 let $imgur_window;
 
+/**
+ * @param {Blob} blob 
+ */
 function show_imgur_uploader(blob) {
 	if ($imgur_window) {
 		$imgur_window.close();
