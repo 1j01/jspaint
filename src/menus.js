@@ -828,25 +828,27 @@ const menus = {
 		// 	},
 		// 	description: localize("Configures JS Paint."),
 		// }
-		/*{
-			item: localize("&Draw Randomly",
+		{
+			emoji_icon: "🤪",
+			item: localize("&Draw Randomly"),
 			speech_recognition: [
 				"draw randomly", "draw pseudorandomly", "draw wildly", "make random art",
 			],
 			checkbox: {
-				toggle: ()=> {
+				toggle: () => {
 					if (window.simulatingGestures) {
-						stopSimulatingGestures();
+						window.stopSimulatingGestures();
 					} else {
-						simulateRandomGesturesPeriodically();
+						window.simulateRandomGesturesPeriodically();
 					}
 				},
-				check: ()=> {
+				check: () => {
 					return window.simulatingGestures;
 				},
 			},
 			description: localize("Draws randomly with different tools."),
-		},*/
+		},
+		MENU_DIVIDER,
 		{
 			emoji_icon: "👥",
 			item: localize("&Multi-User"),
