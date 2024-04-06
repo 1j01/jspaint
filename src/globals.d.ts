@@ -583,9 +583,9 @@ declare class Handles {
 	 * @param {() => number} [options.get_ghost_offset_left=() => 0]
 	 * @param {() => number} [options.get_ghost_offset_top=() => 0]
 	 * @param {boolean} [options.size_only=false]
-	 * @param {() => { x: number, y: number, width: number, height: number }} options.get_rect
-	 * @param {(rect: { x: number, y: number, width: number, height: number }) => void} options.set_rect
-	 * @param {(rect: { x: number, y: number, width: number, height: number }, x_axis: -1 | 0 | 1, y_axis: -1 | 0 | 1) => { x: number, y: number, width: number, height: number }} [options.constrain_rect]
+	 * @param {() => Rect} options.get_rect
+	 * @param {(rect: Rect) => void} options.set_rect
+	 * @param {(rect: Rect, x_axis: -1 | 0 | 1, y_axis: -1 | 0 | 1) => Rect} [options.constrain_rect]
 	 * @param {boolean} [options.thick]
 	 * @constructor
 	 * @property {HTMLElement[]} handles
@@ -652,13 +652,14 @@ interface $WindowOptions {
 	$component?: JQuery<HTMLDivElement> & I$Component; // { dock: () => void; detach: () => void; }; detach being a jQuery method
 	icons?: { [size: string]: string | HTMLImageElement };
 	icon?: string | HTMLImageElement;
-	constrainRect?: (rect: { x: number; y: number; width: number; height: number; }, xAxis: number, yAxis: number) => { x: number; y: number; width: number; height: number; };
+	constrainRect?: (rect: Rect, xAxis: number, yAxis: number) => Rect;
 	minOuterWidth?: number;
 	minOuterHeight?: number;
 	minInnerWidth?: number;
 	minInnerHeight?: number;
 	iframes?: { ignoreCrossOrigin?: boolean };
 }
+interface Rect { x: number; y: number; width: number; height: number; }
 
 declare function $Window(options?: $WindowOptions): $Window;
 declare function $FormWindow(options?: $WindowOptions): $Window & I$FormWindow;
@@ -709,7 +710,7 @@ interface I$Window {
 	getTitlebarIconSize(): number;
 	getIconAtSize(size: number): HTMLElement | null;
 	$Button(label: string | Node, action: () => void): JQuery<HTMLButtonElement>;
-	animateTitlebar(before_rect: { x: number, y: number, width: number, height: number }, after_rect: { x: number, y: number, width: number, height: number }, callback?: () => void): void;
+	animateTitlebar(before_rect: Rect, after_rect: Rect, callback?: () => void): void;
 
 	// Events
 	// These functions return a function that removes the event listener.
