@@ -296,7 +296,10 @@ const tools = [{
 			this.render_from_mask(ctx, true);
 			if (transparency) {
 				// animate for gradient
-				requestAnimationFrame(update_helper_layer);
+				// TODO: is rAF needed? update_helper_layer uses rAF
+				requestAnimationFrame(() => {
+					update_helper_layer();
+				});
 			}
 		}
 
@@ -1312,7 +1315,10 @@ tools.forEach((tool) => {
 				const should_animate = tool.render_from_mask(ctx, true);
 				if (should_animate) {
 					// animate for gradient
-					requestAnimationFrame(update_helper_layer);
+					// TODO: is rAF needed? update_helper_layer uses rAF
+					requestAnimationFrame(() => {
+						update_helper_layer();
+					});
 				}
 			}
 		};
@@ -1424,7 +1430,10 @@ tools.forEach((tool) => {
 
 			if (should_animate) {
 				// animate for gradient
-				requestAnimationFrame(update_helper_layer);
+				// TODO: is rAF needed? update_helper_layer uses rAF
+				requestAnimationFrame(() => {
+					update_helper_layer();
+				});
 			}
 		};
 	}

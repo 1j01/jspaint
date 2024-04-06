@@ -72,6 +72,7 @@
 	}
 
 	const language_storage_key = "jspaint language";
+	// @ts-ignore
 	const accepted_languages = Array.from(navigator.languages || [navigator.language || navigator.userLanguage]);
 	try {
 		if (localStorage[language_storage_key]) {

@@ -100,9 +100,10 @@ class OnCanvasSelection extends OnCanvasObject {
 			let mox, moy;
 			const pointermove = e => {
 				make_or_update_undoable({
+					// XXX: Localization hazard: logic based on English action names
 					match: (history_node) =>
-						(e.shiftKey && history_node.name.match(/^(Smear|Stamp|Move) Selection$/)) ||
-						(!e.shiftKey && history_node.name.match(/^Move Selection$/)),
+						(e.shiftKey && /^(Smear|Stamp|Move) Selection$/.test(history_node.name)) ||
+						(!e.shiftKey && /^Move Selection$/.test(history_node.name)),
 					name: e.shiftKey ? "Smear Selection" : "Move Selection",
 					update_name: true,
 					icon: get_icon_for_tool(get_tool_by_id(TOOL_SELECT)),

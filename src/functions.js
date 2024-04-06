@@ -377,7 +377,7 @@ function update_disable_aa() {
 
 /**
  * @param {number} new_scale
- * @param {{x: number, y: number}} anchor_point - uses canvas coordinates; default is the top-left of the $canvas_area viewport
+ * @param {{x: number, y: number}} [anchor_point] - uses canvas coordinates; default is the top-left of the $canvas_area viewport
  */
 function set_magnification(new_scale, anchor_point) {
 	// How this works is, you imagine "what if it was zoomed, where would the anchor point be?"
@@ -2340,8 +2340,8 @@ function show_document_history() {
 /**
  * Cancel the current tool gesture, if any.
  * Note: this function should be idempotent. `cancel(); cancel();` should do the same thing as `cancel();`
- * @param {boolean} going_to_history_node 
- * @param {boolean} discard_document_state 
+ * @param {boolean} [going_to_history_node] 
+ * @param {boolean} [discard_document_state] 
  */
 function cancel(going_to_history_node, discard_document_state) {
 	if (!history_node_to_cancel_to) {
@@ -2392,7 +2392,7 @@ function cancel(going_to_history_node, discard_document_state) {
 	update_helper_layer();
 }
 /**
- * @param {boolean} going_to_history_node
+ * @param {boolean} [going_to_history_node]
  */
 function meld_selection_into_canvas(going_to_history_node) {
 	selection.draw();
@@ -2407,7 +2407,7 @@ function meld_selection_into_canvas(going_to_history_node) {
 	}
 }
 /**
- * @param {boolean} going_to_history_node 
+ * @param {boolean} [going_to_history_node] 
  */
 function meld_textbox_into_canvas(going_to_history_node) {
 	const text = textbox.$editor.val();
@@ -2431,7 +2431,7 @@ function meld_textbox_into_canvas(going_to_history_node) {
 	}
 }
 /**
- * @param {boolean} going_to_history_node
+ * @param {boolean} [going_to_history_node]
  */
 function deselect(going_to_history_node) {
 	if (selection) {
@@ -2511,7 +2511,7 @@ function getSelectionText() {
 }
 
 /**
- * @param {boolean} execCommandFallback 
+ * @param {boolean} [execCommandFallback] 
  */
 function edit_copy(execCommandFallback) {
 	const text = getSelectionText();
@@ -2552,7 +2552,7 @@ function edit_copy(execCommandFallback) {
 	}
 }
 /**
- * @param {boolean} execCommandFallback 
+ * @param {boolean} [execCommandFallback] 
  */
 function edit_cut(execCommandFallback) {
 	if (!navigator.clipboard || !navigator.clipboard.write) {
@@ -2570,7 +2570,7 @@ function edit_cut(execCommandFallback) {
 	});
 }
 /**
- * @param {boolean} execCommandFallback 
+ * @param {boolean} [execCommandFallback] 
  */
 async function edit_paste(execCommandFallback) {
 	if (
@@ -2805,7 +2805,7 @@ function select_tools(tools) {
 
 /**
  * @param {Tool} tool 
- * @param {boolean} toggle 
+ * @param {boolean} [toggle] 
  */
 function select_tool(tool, toggle) {
 	deselect();
@@ -2915,8 +2915,8 @@ function detect_monochrome(ctx) {
 /**
  * Creates a dithered pattern using two colors.
  * @param {number} lightness - The approximate fraction of pixels that will use the second(?) color.
- * @param {number[]} rgba1 - RGBA color values for the first color.
- * @param {number[]} rgba2 - RGBA color values for the second color.
+ * @param {Uint8ClampedArray | number[]} rgba1 - RGBA color values for the first color.
+ * @param {Uint8ClampedArray | number[]} rgba2 - RGBA color values for the second color.
  * @returns {CanvasPattern}
  */
 function make_monochrome_pattern(lightness, rgba1 = [0, 0, 0, 255], rgba2 = [255, 255, 255, 255]) {
@@ -2955,6 +2955,11 @@ function make_monochrome_pattern(lightness, rgba1 = [0, 0, 0, 255], rgba2 = [255
 	return main_ctx.createPattern(pattern_canvas, "repeat");
 }
 
+/**
+ * @param {Uint8ClampedArray | number[]} rgba1 
+ * @param {Uint8ClampedArray | number[]} rgba2 
+ * @returns {CanvasPattern[]}
+ */
 function make_monochrome_palette(rgba1 = [0, 0, 0, 255], rgba2 = [255, 255, 255, 255]) {
 	const palette = [];
 	const n_colors_per_row = 14;
@@ -3561,6 +3566,7 @@ function handle_keyshortcuts($container) {
 				) {
 					event.preventDefault();
 					event.stopPropagation();
+					// @ts-ignore
 					if (shortcut_target.disabled) {
 						shortcut_target = shortcut_target.closest(".radio-wrapper");
 					}
@@ -3579,6 +3585,7 @@ function handle_keyshortcuts($container) {
 	$container.on("focusin focusout", (event) => {
 		if ($(event.target).is('textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="file"]):not([type="color"]):not([type="range"])')) {
 			for (const control of $container.find("[aria-keyshortcuts]")) {
+				// @ts-ignore (could use a Map but that would be a little more complicated)
 				control._original_aria_keyshortcuts = control._original_aria_keyshortcuts ?? control.getAttribute("aria-keyshortcuts");
 				// Remove shortcuts without modifiers.
 				control.setAttribute("aria-keyshortcuts",
@@ -3591,7 +3598,9 @@ function handle_keyshortcuts($container) {
 		} else {
 			// Restore shortcuts.
 			for (const control of $container.find("[aria-keyshortcuts]")) {
+				// @ts-ignore
 				if (control._original_aria_keyshortcuts) {
+					// @ts-ignore
 					control.setAttribute("aria-keyshortcuts", control._original_aria_keyshortcuts);
 				}
 			}
@@ -3724,8 +3733,8 @@ function save_as_prompt({
 			$w.close();
 			update_extension_from_file_type(true);
 			resolve({
-				newFileName: promptForName ? $file_name.val() : defaultFileName,
-				newFileFormatID: $file_type.val(),
+				newFileName: promptForName ? String($file_name.val()) : defaultFileName,
+				newFileFormatID: String($file_type.val()),
 			});
 		}, { type: "submit" });
 		$w.$Button(localize("Cancel"), () => {
