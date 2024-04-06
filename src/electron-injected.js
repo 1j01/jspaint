@@ -10,7 +10,8 @@ const { /*contextBridge,*/ ipcRenderer } = require('electron');
 
 // const { are_you_sure, open_from_file, show_error_message, show_about_paint, sanity_check_blob } = require('./functions.js');
 // const { get_format_from_extension } = require('./helpers.js');
-const { are_you_sure, open_from_file, show_error_message, show_about_paint, sanity_check_blob, get_format_from_extension } = window;
+// Can't immediately access globals from window, since this script is executed before any other scripts.
+// const { are_you_sure, open_from_file, show_error_message, show_about_paint, sanity_check_blob, get_format_from_extension, formats_unique_per_file_extension } = window;
 
 
 const { isDev, isMacOS, initialFilePath } = ipcRenderer.sendSync("get-env-info");
