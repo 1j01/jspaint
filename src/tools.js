@@ -1439,4 +1439,4 @@ export {
 };
 // Temporary globals until all dependent code is converted to ES Modules
 window.TOOL_PENCIL = TOOL_PENCIL; // may be used by app-state.js
-window.tools = tools; // may be used by app-state.js, copy-inkscape-labels.js, electron-main.js, eye-gaze-mode.js, helpers.js, menus.js, OnCanvasSelection.js
+window.tools = tools; // may be used by $ToolBox.js

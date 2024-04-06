@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const espree = require('espree');
 
 // Assuming all files are in the src directory and not subdirectories
 const srcDir = './src';
@@ -24,24 +25,65 @@ function escapeRegExp(string) {
 }
 
 // Function to find non-ESM usages of an identifier
-function findDependencies(identifier, fileContent, excludeFiles = []) {
-	// console.log("Finding dependencies for", identifier);
-	const importRegex = new RegExp(`^\\s*import .*${escapeRegExp(identifier)}.* from`, 'm');
-	// Identifiers starting with $ will not work with \b because $ is not part of \w
-	// const usageRegex = new RegExp(`\\b${escapeRegExp(identifier)}\\b`, 'm');
-	// So instead we use a negative lookbehind and a negative lookahead
-	// This is not Unicode-friendly, but it should work for ASCII
-	const usageRegex = new RegExp(`(?<![0-9A-Z_$])${escapeRegExp(identifier)}(?![0-9A-Z_$])`, 'm');
+// Unstructured naive search
+// function findDependencies(identifier, fileContent, excludeFiles = []) {
+// 	// console.log("Finding dependencies for", identifier);
+// 	const importRegex = new RegExp(`^\\s*import .*${escapeRegExp(identifier)}.* from`, 'm');
+// 	// Identifiers starting with $ will not work with \b because $ is not part of \w
+// 	// const usageRegex = new RegExp(`\\b${escapeRegExp(identifier)}\\b`, 'm');
+// 	// So instead we use a negative lookbehind and a negative lookahead
+// 	// This is not Unicode-friendly, but it should work for ASCII
+// 	const usageRegex = new RegExp(`(?<![0-9A-Z_$])${escapeRegExp(identifier)}(?![0-9A-Z_$])`, 'm');
+// 	const dependencies = [];
+// 	for (const [filePath, content] of Object.entries(fileContent)) {
+// 		if (excludeFiles.includes(filePath)) {
+// 			continue;
+// 		}
+// 		if (usageRegex.test(content)) {
+// 			if (!importRegex.test(content)) {
+// 				// console.log(`'${filePath}' includes '${identifier}' but doesn't match ${importRegex}`);
+// 				// console.log("Usage:\n    ", content.match(new RegExp(`.*${escapeRegExp(identifier)}.*`, 'm'))[0]);
+// 				dependencies.push(filePath);
+// 			}
+// 		}
+// 	}
+// 	return dependencies;
+// }
+
+// Somewhat more structured search using tokens but not fully utilizing AST
+// This will correctly ignore comments and strings, but will still give false positives for identifiers in local scopes and such.
+function findDependencies(identifier, fileContentTree, excludeFiles = []) {
 	const dependencies = [];
-	for (const [filePath, content] of Object.entries(fileContent)) {
+	for (const [filePath, tree] of Object.entries(fileContentTree)) {
 		if (excludeFiles.includes(filePath)) {
 			continue;
 		}
-		if (usageRegex.test(content)) {
-			if (!importRegex.test(content)) {
-				// console.log(`'${filePath}' includes '${identifier}' but doesn't match ${importRegex}`);
-				// console.log("Usage:\n    ", content.match(new RegExp(`.*${escapeRegExp(identifier)}.*`, 'm'))[0]);
+		console.log("Checking", filePath, "for", identifier);
+		// Look for imports of the identifier:
+		let foundImport = false;
+		for (const node of tree.body) {
+			if (node.type === 'ImportDeclaration') {
+				for (const specifier of node.specifiers) {
+					if (specifier.imported.name === identifier) {
+						console.log("Found ESM (non-global) import of", identifier, "in", filePath);
+						foundImport = true;
+						break;
+					}
+				}
+			}
+		}
+		if (foundImport) {
+			continue;
+		}
+
+		// Look for other usages of the identifier:
+		// console.log("Tokens:", tree.tokens);
+		for (const token of tree.tokens) {
+			if (token.type === 'Identifier' && token.value === identifier) {
+				const parent = token.parent;
 				dependencies.push(filePath);
+				console.log("Found", identifier, "in", filePath);
+				break;
 			}
 		}
 	}
@@ -51,6 +93,7 @@ function findDependencies(identifier, fileContent, excludeFiles = []) {
 // Function to process each file in the src directory
 function processFiles() {
 	const fileUpperContent = {};
+	const fileUpperContentTree = {};
 	const fileLowerContent = {};
 	fs.readdir(srcDir, (err, files) => {
 		if (err) {
@@ -77,6 +120,15 @@ function processFiles() {
 					fileUpperContent[filePath] = content;
 					fileLowerContent[filePath] = '';
 				}
+				try {
+					fileUpperContentTree[filePath] = espree.parse(fileUpperContent[filePath], {
+						ecmaVersion: 2020,
+						sourceType: fileUpperContent[filePath].match(/import .* from/) ? 'module' : 'script',
+						tokens: true,
+					});
+				} catch (e) {
+					console.error(`Error parsing ${filePath}:`, e);
+				}
 			}
 		}
 		// Then process each file.
@@ -88,7 +140,7 @@ function processFiles() {
 			const updatedContent = upper + lower.replace(
 				/(?:\/\/\s*)?(window\.(.*?) = .*;)(\s*\/\/.*)?/g,
 				(match, assignment, identifier, comment) => {
-					const dependencies = findDependencies(identifier, fileUpperContent, [filePath]);
+					const dependencies = findDependencies(identifier, fileUpperContentTree, [filePath]);
 					const formatPath = filePath => path.relative(srcDir, filePath).replace(/\\/g, '/');
 					const formattedPaths = dependencies.map(formatPath).join(', ');
 					console.log(`Dependencies for ${identifier}: ${formattedPaths || "(none found)"}`);

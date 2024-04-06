@@ -250,4 +250,4 @@ function Handles(options) {
 
 export { Handles };
 // Temporary globals until all dependent code is converted to ES Modules
-window.Handles = Handles; // may be used by OnCanvasHelperLayer.js, OnCanvasObject.js
+// window.Handles = Handles; // unused

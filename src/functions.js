@@ -3975,23 +3975,23 @@ export {
 	update_helper_layer_immediately, update_magnified_canvas_size, update_title, view_bitmap, write_image_file
 };
 // Temporary globals until all dependent code is converted to ES Modules
-window.change_some_url_params = change_some_url_params; // may be used by menus.js
+// window.change_some_url_params = change_some_url_params; // unused
 // window.update_helper_layer = update_helper_layer; // unused
 window.make_history_node = make_history_node; // may be used by app-state.js
-window.load_image_from_uri = load_image_from_uri; // may be used by helpers.js
+// window.load_image_from_uri = load_image_from_uri; // unused
 window.open_from_file = open_from_file; // may be used by electron-injected.js
-window.are_you_sure = are_you_sure; // may be used by app-localization.js, app.js, electron-injected.js, electron-main.js
-window.show_error_message = show_error_message; // may be used by app-localization.js, electron-injected.js, imgur.js
+window.are_you_sure = are_you_sure; // may be used by app-localization.js, electron-injected.js
+window.show_error_message = show_error_message; // may be used by app-localization.js, electron-injected.js
 window.show_about_paint = show_about_paint; // may be used by electron-injected.js
-window.exit_fullscreen_if_ios = exit_fullscreen_if_ios; // may be used by app-localization.js, app.js
-window.paste = paste; // may be used by copy-inkscape-labels.js, electron-main.js, extra-tools.js, help.js, repack-spritesheet.js
-window.undoable = undoable; // may be used by OnCanvasTextBox.js
-window.undo = undo; // may be used by $Component.js, app-state.js, OnCanvasTextBox.js, speech-recognition.js
-window.redo = redo; // may be used by app-state.js, speech-recognition.js
-window.cancel = cancel; // may be used by app-localization.js, app-state.js, edit-colors.js, electron-injected.js, electron-main.js, eye-gaze-mode.js, helpers.js, imgur.js, menus.js, msgbox.js, sessions.js, speech-recognition.js, tool-options.js, tools.js
+window.exit_fullscreen_if_ios = exit_fullscreen_if_ios; // may be used by app-localization.js
+// window.paste = paste; // unused
+// window.undoable = undoable; // unused
+// window.undo = undo; // unused
+// window.redo = redo; // unused
+window.cancel = cancel; // may be used by sessions.js, tools.js
 window.deselect = deselect; // may be used by $ToolBox.js
-window.clear = clear; // may be used by $FontBox.js, eye-gaze-mode.js, image-manipulation.js, imgur.js, manage-storage.js, OnCanvasSelection.js, OnCanvasTextBox.js, sessions.js, speech-recognition.js, tool-options.js, tools.js
+window.clear = clear; // may be used by image-manipulation.js
 window.get_tool_by_id = get_tool_by_id; // may be used by app-state.js
-window.has_any_transparency = has_any_transparency; // may be used by sessions.js
+// window.has_any_transparency = has_any_transparency; // unused
 window.make_monochrome_palette = make_monochrome_palette; // may be used by app-state.js
 window.sanity_check_blob = sanity_check_blob; // may be used by electron-injected.js

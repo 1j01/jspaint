@@ -133,4 +133,4 @@ palette_formats.sort((a, b) =>
 
 export { formats_unique_per_file_extension, image_formats, palette_formats };
 // Temporary globals until all dependent code is converted to ES Modules
-window.formats_unique_per_file_extension = formats_unique_per_file_extension; // may be used by app.js, electron-injected.js
+window.formats_unique_per_file_extension = formats_unique_per_file_extension; // may be used by electron-injected.js

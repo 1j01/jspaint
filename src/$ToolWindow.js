@@ -149,4 +149,4 @@ function $DialogWindow(title) {
 
 export { $DialogWindow, $ToolWindow, make_window_supporting_scale };
 // Temporary globals until all dependent code is converted to ES Modules
-window.$ToolWindow = $ToolWindow; // may be used by edit-colors.js, functions.js, imgur.js, manage-storage.js, msgbox.js, sessions.js
+// window.$ToolWindow = $ToolWindow; // unused

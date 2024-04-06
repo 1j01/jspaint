@@ -308,4 +308,4 @@ OnCanvasTextBox.$fontbox = null;
 
 export { OnCanvasTextBox };
 // Temporary globals until all dependent code is converted to ES Modules
-window.OnCanvasTextBox = OnCanvasTextBox; // may be used by app-state.js
+// window.OnCanvasTextBox = OnCanvasTextBox; // unused

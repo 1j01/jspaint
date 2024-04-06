@@ -173,4 +173,4 @@ export {
 };
 
 // Temporary globals until all dependent code is converted to ES Modules
-window.$ColorBox = $ColorBox; // may be used by edit-colors.js
+// window.$ColorBox = $ColorBox; // unused
