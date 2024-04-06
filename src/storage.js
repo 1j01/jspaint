@@ -1,35 +1,40 @@
 // @ts-check
 
-// @TODO: remove remaining cruft from being compiled from CoffeeScript
-// or maybe replace this module with localforage actually
+// @TODO: maybe replace this module with localforage or similar
 // (but need to address asynchronous concerns if doing that)
 
 /** @type {LocalStore} */
 const localStore = {
-	get(key, callback) {
-		let i, item, len, obj, keys, keys_obj;
+	/**
+	 * See overrides in interface LocalStore.
+	 * @param {string | string[] | Record<string, string>} key_or_keys_or_pairs
+	 * @param {((error: Error, value_or_values?: string) => void) | ((error: Error, value_or_values?: Record<string, string>) => void)} callback
+	 */
+	get(key_or_keys_or_pairs, callback) {
+		let obj;
 		try {
-			if (typeof key === "string") {
-				item = localStorage.getItem(key);
+			if (typeof key_or_keys_or_pairs === "string") {
+				const key = key_or_keys_or_pairs;
+				const item = localStorage.getItem(key);
 				if (item) {
 					obj = JSON.parse(item);
 				}
 			} else {
 				obj = {};
-				if (Array.isArray(key)) {
-					keys = key;
-					for (i = 0, len = keys.length; i < len; i++) {
-						key = keys[i];
-						item = localStorage.getItem(key);
+				if (Array.isArray(key_or_keys_or_pairs)) {
+					const keys = key_or_keys_or_pairs;
+					for (let i = 0, len = keys.length; i < len; i++) {
+						const key = keys[i];
+						const item = localStorage.getItem(key);
 						if (item) {
 							obj[key] = JSON.parse(item);
 						}
 					}
 				} else {
-					keys_obj = key;
-					for (key in keys_obj) {
+					const keys_obj = key_or_keys_or_pairs;
+					for (const key in keys_obj) {
 						let defaultValue = keys_obj[key];
-						item = localStorage.getItem(key);
+						const item = localStorage.getItem(key);
 						if (item) {
 							obj[key] = JSON.parse(item);
 						} else {
@@ -44,20 +49,26 @@ const localStore = {
 		}
 		callback(null, obj);
 	},
-	set(key, value, callback) {
+	/**
+	 * See overrides in interface LocalStore.
+	 * @param {string | Record<string, string>} key_or_pairs
+	 * @param {string | ((error: Error) => void)} value_or_callback
+	 * @param {(error: Error) => void} [callback]
+	 */
+	set(key_or_pairs, value_or_callback, callback) {
 		let to_set = {};
-		if (typeof key === "string") {
+		if (typeof key_or_pairs === "string") {
 			to_set = {
-				[key]: value
+				[key_or_pairs]: value_or_callback
 			};
-		} else if (Array.isArray(key)) {
+		} else if (Array.isArray(key_or_pairs)) {
 			throw new TypeError("Cannot set an array of keys (to what?)");
 		} else {
-			to_set = key;
-			callback = value;
+			to_set = key_or_pairs;
+			callback = /** @type {(error: Error) => void} */ (value_or_callback);
 		}
-		for (key in to_set) {
-			value = to_set[key];
+		for (const key in to_set) {
+			const value = to_set[key];
 			try {
 				localStorage.setItem(key, JSON.stringify(value));
 			} catch (error) {
