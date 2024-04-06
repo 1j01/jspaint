@@ -3,6 +3,10 @@
 
 import { $G, E } from "./helpers.js";
 
+/**
+ * @param {$WindowOptions} options
+ * @returns {$Window}
+ */
 function make_window_supporting_scale(options) {
 	const $w = $Window(options);
 
@@ -65,6 +69,10 @@ function make_window_supporting_scale(options) {
 	return $w;
 }
 
+/**
+ * @param {JQuery<HTMLDivElement> & I$Component} [$component]
+ * @returns {$Window & I$ToolWindow}
+ */
 function $ToolWindow($component) {
 	return make_window_supporting_scale({
 		$component,
@@ -72,6 +80,10 @@ function $ToolWindow($component) {
 	});
 }
 
+/**
+ * @param {string} [title]
+ * @returns {$Window & I$DialogWindow}
+ */
 function $DialogWindow(title) {
 	const $w = /** @type {$Window & I$DialogWindow} */ (make_window_supporting_scale({
 		title,

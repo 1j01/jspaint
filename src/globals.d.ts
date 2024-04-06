@@ -491,7 +491,7 @@ interface Window {
 	setMenus?: (menus: any) => void; // TODO: types for OS-GUI.js menus
 	// OS-GUI's MenuBar.js
 	MenuBar: typeof MenuBar;
-	// Youtube API, used by vaporwave-fun.js
+	// Youtube API, used by vaporwave-fun.js, missing from @types/youtube
 	onYouTubeIframeAPIReady?: () => void;
 	// Local Font Access API
 	queryLocalFonts?: () => Promise<FontData[]>;
@@ -499,7 +499,7 @@ interface Window {
 	// TODO: install types?
 	showOpenFilePicker?: (any) => any;
 	showSaveFilePicker?: (any) => any;
-	// Chrome browser
+	// Chrome browser detection
 	chrome?: { loadTimes: unknown, csi: unknown };
 }
 // File System Access API
@@ -649,7 +649,7 @@ interface $WindowOptions {
 	closeButton?: boolean;
 	resizable?: boolean;
 	parentWindow?: $Window;
-	$component?: any; // Replace with actual component type
+	$component?: JQuery<HTMLDivElement> & I$Component; // { dock: () => void; detach: () => void; }; detach being a jQuery method
 	icons?: { [size: string]: string | HTMLImageElement };
 	icon?: string | HTMLImageElement;
 	constrainRect?: (rect: { x: number; y: number; width: number; height: number; }, xAxis: number, yAxis: number) => { x: number; y: number; width: number; height: number; };

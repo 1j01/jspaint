@@ -964,6 +964,10 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 }
 
 // Note: This function is part of the API.
+/**
+ * @param {File} file
+ * @param {UserFileHandle} source_file_handle
+ */
 function open_from_file(file, source_file_handle) {
 	// The browser isn't very smart about MIME types.
 	// It seems to look at the file extension, but not the actual file contents.
@@ -1286,6 +1290,10 @@ function please_enter_a_number() {
 }
 
 // Note: This function is part of the API.
+/**
+ * @param {string} message
+ * @param {Error | string} [error]
+ */
 function show_error_message(message, error) {
 	// Test global error handling resiliency by enabling one or both of these:
 	// Promise.reject(new Error("EMIT EMIT EMIT"));
@@ -1310,13 +1318,14 @@ function show_error_message(message, error) {
 		// for instance Exception { message: "", name: "NS_ERROR_FAILURE", ... } for out of memory when resizing the canvas too large in Firefox.
 		// Chrome just lets you bring the system to a grating halt by trying to grab too much memory.
 		// Firefox does too sometimes.
-		let error_string = error.stack;
+		const e = /** @type {Error} */(error);
+		let error_string = e.stack;
 		if (!error_string) {
 			error_string = error.toString();
-		} else if (error.message && error_string.indexOf(error.message) === -1) {
+		} else if (e.message && error_string.indexOf(e.message) === -1) {
 			error_string = `${error.toString()}\n\n${error_string}`;
-		} else if (error.name && error_string.indexOf(error.name) === -1) {
-			error_string = `${error.name}\n\n${error_string}`;
+		} else if (e.name && error_string.indexOf(e.name) === -1) {
+			error_string = `${e.name}\n\n${error_string}`;
 		}
 		$(E("pre"))
 			.text(error_string)
@@ -3881,6 +3890,12 @@ function save_selection_to_file() {
 	}
 }
 
+/**
+ * @param {Blob} blob
+ * @param {() => void} okay_callback
+ * @param {number[]} [magic_number_bytes]
+ * @param {boolean} [magic_wanted]
+ */
 function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted = true) {
 	if (blob.size > 0) {
 		if (magic_number_bytes) {

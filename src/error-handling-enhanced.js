@@ -17,6 +17,7 @@ var old_onerror = window.onerror;
 window.onerror = function (message, source, lineno, colno, error) {
 	try {
 		// Some errors don't give an error object, like "ResizeObserver loop limit exceeded"
+		// @ts-ignore
 		show_error_message(localize("Internal application error."), error || message);
 	} catch (e) {
 		old_onerror(message, source, lineno, colno, error);

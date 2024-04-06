@@ -46,11 +46,16 @@ Object.assign(window, exports);
 
 // #region System Hooks and default implementations
 
-// The methods in systemHooks can be overridden by a containing page like 98.js.org which hosts jspaint in a same-origin iframe.
-// This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
-// This API may be removed at any time (and perhaps replaced by something based around postMessage)
-// The API is documented in the README.md file.
+// Note: JSDoc type annotations don't seem to actually work on window.*
+/**
+ * @type {SystemHooks}
+ * The methods in systemHooks can be overridden by a containing page like 98.js.org which hosts jspaint in a same-origin iframe.
+ * This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
+ * This API may be removed at any time (and perhaps replaced by something based around postMessage)
+ * The API is documented in the README.md file.
+ */
 window.systemHooks = window.systemHooks || {};
+/** @type {SystemHooks} */
 window.systemHookDefaults = {
 	// named to be distinct from various platform APIs (showSaveFilePicker, saveAs, electron's showSaveDialog; and saveFile is too ambiguous)
 	// could call it saveFileAs maybe but then it'd be weird that you don't pass in the file directly
