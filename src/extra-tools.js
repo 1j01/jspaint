@@ -118,5 +118,4 @@ const extra_tools = [{
 }];
 
 export { extra_tools };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.extra_tools = extra_tools; // unused
+

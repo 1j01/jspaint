@@ -392,11 +392,6 @@ export {
 };
 // Temporary globals until all dependent code is converted to ES Modules
 window.$G = $G; // may be used by app-localization.js
-// window.E = E; // unused
 window.make_canvas = make_canvas; // may be used by app-state.js, electron-injected.js
 window.get_help_folder_icon = get_help_folder_icon; // may be used by repack-spritesheet.js
-// window.load_image_simple = load_image_simple; // unused
-// window.image_data_match = image_data_match; // unused
-// window.get_rgba_from_color = get_rgba_from_color; // unused
-// window.get_file_extension = get_file_extension; // unused
 window.get_format_from_extension = get_format_from_extension; // may be used by electron-injected.js

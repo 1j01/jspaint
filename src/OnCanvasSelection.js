@@ -317,5 +317,4 @@ class OnCanvasSelection extends OnCanvasObject {
 }
 
 export { OnCanvasSelection };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.OnCanvasSelection = OnCanvasSelection; // unused
+

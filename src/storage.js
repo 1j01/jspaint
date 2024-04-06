@@ -70,5 +70,4 @@ const localStore = {
 };
 
 export { localStore };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.storage = localStore; // unused
+

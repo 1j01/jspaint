@@ -148,5 +148,4 @@ function $DialogWindow(title) {
 }
 
 export { $DialogWindow, $ToolWindow, make_window_supporting_scale };
-// Temporary globals until all dependent code is converted to ES Modules
-// window.$ToolWindow = $ToolWindow; // unused
+

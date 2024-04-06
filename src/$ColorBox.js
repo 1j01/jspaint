@@ -172,5 +172,4 @@ export {
 	update_$swatch
 };
 
-// Temporary globals until all dependent code is converted to ES Modules
-// window.$ColorBox = $ColorBox; // unused
+
