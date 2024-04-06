@@ -3975,15 +3975,12 @@ export {
 	update_helper_layer_immediately, update_magnified_canvas_size, update_title, view_bitmap, write_image_file
 };
 // Temporary globals until all dependent code is converted to ES Modules
-window.make_history_node = make_history_node; // may be used by app-state.js
-window.open_from_file = open_from_file; // may be used by electron-injected.js
-window.are_you_sure = are_you_sure; // may be used by app-localization.js, electron-injected.js
-window.show_error_message = show_error_message; // may be used by app-localization.js, electron-injected.js
-window.show_about_paint = show_about_paint; // may be used by electron-injected.js
-window.exit_fullscreen_if_ios = exit_fullscreen_if_ios; // may be used by app-localization.js
-window.cancel = cancel; // may be used by sessions.js, tools.js
-window.deselect = deselect; // may be used by $ToolBox.js
-window.clear = clear; // may be used by image-manipulation.js
-window.get_tool_by_id = get_tool_by_id; // may be used by app-state.js
-window.make_monochrome_palette = make_monochrome_palette; // may be used by app-state.js
-window.sanity_check_blob = sanity_check_blob; // may be used by electron-injected.js
+window.make_history_node = make_history_node; // used by app-state.js
+window.open_from_file = open_from_file; // used by electron-injected.js
+window.are_you_sure = are_you_sure; // used by app-localization.js, electron-injected.js
+window.show_error_message = show_error_message; // used by app-localization.js, electron-injected.js
+window.show_about_paint = show_about_paint; // used by electron-injected.js
+window.exit_fullscreen_if_ios = exit_fullscreen_if_ios; // used by app-localization.js
+window.get_tool_by_id = get_tool_by_id; // used by app-state.js
+window.make_monochrome_palette = make_monochrome_palette; // used by app-state.js
+window.sanity_check_blob = sanity_check_blob; // used by electron-injected.js

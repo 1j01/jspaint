@@ -1356,5 +1356,4 @@ for (const [top_level_menu_key, menu] of Object.entries(menus)) {
 }
 
 export { menus };
-// Temporary globals until all dependent code is converted to ES Modules
-window.menus = menus; // may be used by electron-injected.js
+

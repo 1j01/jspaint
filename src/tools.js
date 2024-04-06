@@ -1438,5 +1438,4 @@ export {
 	tools
 };
 // Temporary globals until all dependent code is converted to ES Modules
-window.TOOL_PENCIL = TOOL_PENCIL; // may be used by app-state.js
-window.tools = tools; // may be used by $ToolBox.js
+window.TOOL_PENCIL = TOOL_PENCIL; // used by app-state.js

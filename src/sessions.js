@@ -615,4 +615,4 @@ const new_local_session = () => {
 
 export { new_local_session };
 // Temporary globals until all dependent code is converted to ES Modules
-window.new_local_session = new_local_session; // may be used by functions.js
+window.new_local_session = new_local_session; // used by functions.js

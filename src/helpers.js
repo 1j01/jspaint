@@ -391,7 +391,7 @@ export {
 	rgb_to_hsl
 };
 // Temporary globals until all dependent code is converted to ES Modules
-window.$G = $G; // may be used by app-localization.js
-window.make_canvas = make_canvas; // may be used by app-state.js, electron-injected.js
-window.get_help_folder_icon = get_help_folder_icon; // may be used by repack-spritesheet.js
-window.get_format_from_extension = get_format_from_extension; // may be used by electron-injected.js
+window.$G = $G; // used by app-localization.js
+window.make_canvas = make_canvas; // used by app-state.js, electron-injected.js
+window.get_help_folder_icon = get_help_folder_icon; // used by repack-spritesheet.js
+window.get_format_from_extension = get_format_from_extension; // used by electron-injected.js
