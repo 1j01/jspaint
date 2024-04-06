@@ -15,6 +15,7 @@ import { $G, E, TAU, get_file_extension, get_help_folder_icon, make_canvas } fro
 import { rotate } from "./image-manipulation.js";
 import { menus } from "./menus.js";
 import { showMessageBox } from "./msgbox.js";
+import { stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { disable_speech_recognition, enable_speech_recognition } from "./speech-recognition.js";
 import { localStore } from "./storage.js";
 import { get_theme, set_theme } from "./theme.js";
@@ -832,7 +833,7 @@ $G.on("keydown", e => {
 		} else {
 			cancel();
 		}
-		window.stopSimulatingGestures && window.stopSimulatingGestures();
+		stopSimulatingGestures();
 		window.trace_and_sketch_stop && window.trace_and_sketch_stop();
 	} else if (e.key === "Enter") {
 		if (selection) {

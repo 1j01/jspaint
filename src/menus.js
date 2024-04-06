@@ -9,6 +9,7 @@ import { show_help } from "./help.js";
 import { $G, get_rgba_from_color } from "./helpers.js";
 import { show_imgur_uploader } from "./imgur.js";
 import { manage_storage } from "./manage-storage.js";
+import { simulateRandomGesturesPeriodically, simulatingGestures, stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { speech_recognition_active, speech_recognition_available } from "./speech-recognition.js";
 import { get_theme, set_theme } from "./theme.js";
 
@@ -836,14 +837,14 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (window.simulatingGestures) {
-						window.stopSimulatingGestures();
+					if (simulatingGestures) {
+						stopSimulatingGestures();
 					} else {
-						window.simulateRandomGesturesPeriodically();
+						simulateRandomGesturesPeriodically();
 					}
 				},
 				check: () => {
-					return window.simulatingGestures;
+					return simulatingGestures;
 				},
 			},
 			description: localize("Draws randomly with different tools."),

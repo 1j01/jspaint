@@ -3,9 +3,6 @@
 
 import { cancel } from "./functions.js";
 
-// I'm doing things messily and inconsistently in order to quickly adopt ES Modules in the codebase.
-const exports = window;
-
 let seed = 4; // chosen later
 
 const seededRandom = (max = 1, min = 0) => {
@@ -15,8 +12,7 @@ const seededRandom = (max = 1, min = 0) => {
 	return min + rnd * (max - min);
 };
 
-exports.stopSimulatingGestures && exports.stopSimulatingGestures();
-exports.simulatingGestures = false;
+export let simulatingGestures = false;
 
 let gestureTimeoutID;
 let periodicGesturesTimeoutID;
@@ -38,7 +34,7 @@ $cursor.css({
 	transition: "opacity 0.5s",
 });
 
-exports.simulateRandomGesture = (callback, { shift, shiftToggleChance = 0.01, secondary, secondaryToggleChance, target = main_canvas }) => {
+export const simulateRandomGesture = (callback, { shift, shiftToggleChance = 0.01, secondary, secondaryToggleChance, target = main_canvas }) => {
 	let startWithinRect = target.getBoundingClientRect();
 	let canvasAreaRect = $canvas_area[0].getBoundingClientRect();
 
@@ -156,8 +152,8 @@ exports.simulateRandomGesture = (callback, { shift, shiftToggleChance = 0.01, se
 	move();
 };
 
-exports.simulateRandomGesturesPeriodically = () => {
-	exports.simulatingGestures = true;
+export const simulateRandomGesturesPeriodically = () => {
+	simulatingGestures = true;
 
 	if (window.drawRandomlySeed != null) {
 		seed = window.drawRandomlySeed;
@@ -165,16 +161,16 @@ exports.simulateRandomGesturesPeriodically = () => {
 		seed = ~~(Math.random() * 5000000);
 	}
 	window.console && console.log("Using seed:", seed);
-	window.console && console.log("Note: Seeds are not guaranteed to work with different versions of the app, but within the same version it should produce the same results given the same starting document & other state & NO interference... except for airbrush randomness");
+	window.console && console.log("Note: Seeds are not guaranteed to work with different versions of the app, but within the same version it should produce the same results given the same starting document & other state & NO interference, and except for airbrush randomness which is uncontrolled by the seed.");
 	window.console && console.log(`To use this seed:
 
-			window.drawRandomlySeed = ${seed};
-			document.body.style.width = "${getComputedStyle(document.body).width}";
-			document.body.style.height = "${getComputedStyle(document.body).height}";
-			simulateRandomGesturesPeriodically();
-			delete window.drawRandomlySeed;
+		window.drawRandomlySeed = ${seed};
+		document.body.style.width = "${getComputedStyle(document.body).width}";
+		document.body.style.height = "${getComputedStyle(document.body).height}";
+		window.simulateRandomGesturesPeriodically();
+		delete window.drawRandomlySeed;
 
-		`);
+	`);
 
 	let delayBetweenGestures = 500;
 	let shiftStart = false;
@@ -195,7 +191,7 @@ exports.simulateRandomGesturesPeriodically = () => {
 	$canvas_area.scrollLeft($canvas_area.height() * seededRandom());
 
 	let _simulateRandomGesture = (callback) => {
-		exports.simulateRandomGesture(callback, {
+		simulateRandomGesture(callback, {
 			shift: shiftStart,
 			shiftToggleChance,
 			secondary: secondaryStart,
@@ -243,7 +239,7 @@ exports.simulateRandomGesturesPeriodically = () => {
 		periodicGesturesTimeoutID = setTimeout(() => {
 			_simulateRandomGesture(() => {
 				if (selection && seededRandom() < dragSelectionChance) {
-					exports.simulateRandomGesture(waitThenGo, {
+					simulateRandomGesture(waitThenGo, {
 						shift: shiftStart,
 						shiftToggleChance,
 						secondary: secondaryStart,
@@ -259,11 +255,11 @@ exports.simulateRandomGesturesPeriodically = () => {
 	_simulateRandomGesture(waitThenGo);
 };
 
-exports.stopSimulatingGestures = () => {
-	if (exports.simulatingGestures) {
+export const stopSimulatingGestures = () => {
+	if (simulatingGestures) {
 		clearTimeout(gestureTimeoutID);
 		clearTimeout(periodicGesturesTimeoutID);
-		exports.simulatingGestures = false;
+		simulatingGestures = false;
 		$status_text.default();
 		$cursor.remove();
 		cancel();
@@ -272,18 +268,5 @@ exports.stopSimulatingGestures = () => {
 	document.body.style.height = "";
 };
 
-const {
-	simulateRandomGesture,
-	simulateRandomGesturesPeriodically,
-	simulatingGestures,
-	stopSimulatingGestures,
-} = exports;
-
-export {
-	simulateRandomGesture,
-	simulateRandomGesturesPeriodically,
-	simulatingGestures,
-	stopSimulatingGestures
-};
-// Temporary globals until all dependent code is converted to ES Modules
-// see: `exports` above
+// For code snippet logged to console
+window.simulateRandomGesturesPeriodically = simulateRandomGesturesPeriodically;

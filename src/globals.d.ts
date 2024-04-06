@@ -478,10 +478,7 @@ interface Window {
 	// eye-gaze-mode.js and speech-recognition.js
 	untrusted_gesture: boolean;
 	// simulate-random-gestures.js
-	stopSimulatingGestures: () => void;
 	simulateRandomGesturesPeriodically: () => void;
-	simulateRandomGesture: (callback: () => void, options: { shift?: boolean, shiftToggleChance?: number, secondary?: boolean, secondaryToggleChance?: number, target?: HTMLElement }) => void;
-	simulatingGestures: boolean;
 	drawRandomlySeed: number;
 	// electron-injected.js
 	is_electron_app?: boolean;

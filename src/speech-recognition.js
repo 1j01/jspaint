@@ -7,6 +7,7 @@
 import { deselect, get_tool_by_id, resize_canvas_without_saving_dimensions, select_tool, show_error_message, update_helper_layer } from "./functions.js";
 import { $G, make_canvas } from "./helpers.js";
 import { menus } from "./menus.js";
+import { stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT, tools } from "./tools.js";
 
 // workaround for ES Modules only allowing exports at the top level
@@ -1800,7 +1801,7 @@ if (exports.speech_recognition_available) {
 					match_text: stop_match[0],
 					type: "stop-drawing",
 					exec: () => {
-						window.stopSimulatingGestures && window.stopSimulatingGestures();
+						stopSimulatingGestures();
 						exports.trace_and_sketch_stop && exports.trace_and_sketch_stop();
 					},
 					prioritize: true,
