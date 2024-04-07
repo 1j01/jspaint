@@ -1,4 +1,6 @@
 // @ts-check
+/* eslint-env node */
+/* global are_you_sure, formats_unique_per_file_extension, get_format_from_extension, localize, make_canvas, open_from_file, sanity_check_blob, show_about_paint, show_error_message, systemHooks */
 
 // Electron-specific code injected into the renderer process
 // to provide integrations, for the desktop app
