@@ -1394,7 +1394,7 @@ export {
 	flip_vertical, get_brush_canvas_size, get_circumference_points_for_brush, invert_monochrome, invert_rgb, render_brush, replace_color_globally, replace_colors_with_swatch, rotate, stamp_brush_canvas, stretch_and_skew, threshold_black_and_white, update_brush_for_drawing_lines
 };
 // Temporary globals until all dependent code is converted to ES Modules
-window.apply_image_transformation = apply_image_transformation; // may be used by repack-spritesheet.js
+// window.apply_image_transformation = apply_image_transformation; // unused
 // window.bresenham_dense_line = bresenham_dense_line; // unused
 // window.bresenham_line = bresenham_line; // unused
 // window.compute_bezier = compute_bezier; // unused

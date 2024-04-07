@@ -1,7 +1,12 @@
+// @ts-check
+
 // This script adds padding between tiles in a spritesheet, to avoid bleeding when at non-integer zoom levels
 // (or indeed, design errors, where one icon accidentally extends into the space of another)
 
 // USAGE: load an image into the app, then paste this code into the browser console, updating parameters as needed.
+
+const { apply_image_transformation } = await import("./src/image-manipulation.js");
+const { get_help_folder_icon } = await import("./src/helpers.js");
 
 function repack_spritesheet(tile_width, tile_height = tile_width, padding = tile_width) {
 	apply_image_transformation({

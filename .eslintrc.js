@@ -239,6 +239,7 @@ module.exports = {
 				"src/error-handling-enhanced.js",
 				"src/vaporwave-fun.js",
 				"src/konami.js",
+				"src/repack-spritesheet.js",
 				"cypress/**/*.js",
 			],
 			parserOptions: { sourceType: "module" },
