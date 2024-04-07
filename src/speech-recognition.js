@@ -10,18 +10,29 @@ import { menus } from "./menus.js";
 import { stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT, tools } from "./tools.js";
 
-// workaround for ES Modules only allowing exports at the top level
-// (I'm doing things messily in order to quickly adopt ESM.)
-const exports = {};
 export let speech_recognition_active = false;
+
+/** @param {ImageData} subject_imagedata */
+export let trace_and_sketch = (subject_imagedata) => { void subject_imagedata; };
+export let trace_and_sketch_stop = () => { };
+export let enable_speech_recognition = () => { };
+export let disable_speech_recognition = () => { };
+/** 
+ * @param {string} input_text
+ * @param {boolean} [default_to_entering_text]
+ * @returns {VoiceCommand[]} interpretations
+ */
+export let interpret_command = (input_text, default_to_entering_text) => { void input_text; void default_to_entering_text; return []; };
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
 // const SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
 
-exports.speech_recognition_available = !!(SpeechRecognition && SpeechGrammarList);
+export const speech_recognition_available = !!(SpeechRecognition && SpeechGrammarList);
 
-if (exports.speech_recognition_available) {
+let sketching_iid = -1;
+
+if (speech_recognition_available) {
 
 	const recognitionFixes = [
 		// spell-checker:disable
@@ -1366,19 +1377,16 @@ if (exports.speech_recognition_available) {
 	recognition.maxAlternatives = 1;
 
 	speech_recognition_active = false;
-	window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 
-	exports.enable_speech_recognition = function () {
+	enable_speech_recognition = function () {
 		if (!speech_recognition_active) {
 			speech_recognition_active = true;
-			window.speech_recognition_active = true; // Temporary global until all dependent code is converted to ESM
 			recognition.start();
 		}
 	};
-	exports.disable_speech_recognition = function () {
+	disable_speech_recognition = function () {
 		if (speech_recognition_active) {
 			speech_recognition_active = false;
-			window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 			recognition.stop();
 		}
 	};
@@ -1456,11 +1464,9 @@ if (exports.speech_recognition_available) {
 
 	recognition.onstart = function () {
 		speech_recognition_active = true;
-		window.speech_recognition_active = true; // Temporary global until all dependent code is converted to ESM
 	};
 	recognition.onend = function () {
 		speech_recognition_active = false;
-		window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 	};
 
 	recognition.onerror = function (event) {
@@ -1476,7 +1482,6 @@ if (exports.speech_recognition_available) {
 			$status_text.text('Error occurred in speech recognition: ' + event.error);
 			console.log('Error occurred in speech recognition:', event.error);
 			// speech_recognition_active = false;
-			// window.speech_recognition_active = false; // Temporary global until all dependent code is converted to ESM
 		}
 	};
 
@@ -1497,8 +1502,10 @@ if (exports.speech_recognition_available) {
 		return best_interpretation;
 	}
 
-	exports.interpret_command = (input_text, default_to_entering_text) => {
+	interpret_command = (input_text, default_to_entering_text) => {
+		/** @type {VoiceCommand[]} */
 		const interpretations = [];
+		/** @param {VoiceCommand} interpretation */
 		const add_interpretation = (interpretation) => {
 			interpretations.push(interpretation);
 		};
@@ -1802,7 +1809,7 @@ if (exports.speech_recognition_available) {
 					type: "stop-drawing",
 					exec: () => {
 						stopSimulatingGestures();
-						exports.trace_and_sketch_stop && exports.trace_and_sketch_stop();
+						trace_and_sketch_stop();
 					},
 					prioritize: true,
 				});
@@ -1970,8 +1977,8 @@ if (exports.speech_recognition_available) {
 		return interpretations;
 	};
 
-	exports.trace_and_sketch = (subject_imagedata) => {
-		exports.trace_and_sketch_stop && exports.trace_and_sketch_stop();
+	trace_and_sketch = (subject_imagedata) => {
+		trace_and_sketch_stop();
 
 		// @TODO: clickable cancel button? (in addition to Escape key handling and the "stop" voice command)
 
@@ -1989,10 +1996,12 @@ if (exports.speech_recognition_available) {
 		let path_index = 0;
 		let segment_index = 0;
 		let active_path;
-		window.sketching_iid = setInterval(() => {
+		// @ts-ignore (@types/node is annoyingly loaded even though it's a transitive dependency)
+		// (I tried configuring `types` in jsconfig.json, but it didn't work. I tried tsconfig.json, but it broke finding ambient declarations in VS Code.)
+		sketching_iid = setInterval(() => {
 			const layer = layers[layer_index];
 			if (!layer) {
-				clearInterval(window.sketching_iid);
+				clearInterval(sketching_iid);
 				return;
 			}
 			const path = layer[path_index];
@@ -2025,8 +2034,8 @@ if (exports.speech_recognition_available) {
 			segment_index += 1;
 		}, 20);
 	};
-	exports.trace_and_sketch_stop = () => {
-		clearInterval(window.sketching_iid);
+	trace_and_sketch_stop = () => {
+		clearInterval(sketching_iid);
 		pointer_active = false;
 		pointer_over_canvas = false;
 	};
@@ -2281,30 +2290,3 @@ if (exports.speech_recognition_available) {
 	}
 
 }
-
-const {
-	disable_speech_recognition,
-	enable_speech_recognition,
-	interpret_command,
-	speech_recognition_available,
-	trace_and_sketch,
-	trace_and_sketch_stop,
-} = exports;
-
-export {
-	disable_speech_recognition,
-	enable_speech_recognition,
-	interpret_command,
-	speech_recognition_available,
-	trace_and_sketch,
-	trace_and_sketch_stop
-};
-// Temporary globals until all dependent code is converted to ES Modules
-// see also `speech_recognition_active` above
-// window.disable_speech_recognition = disable_speech_recognition; // unused
-// window.enable_speech_recognition = enable_speech_recognition; // unused
-// window.interpret_command = interpret_command; // unused
-// window.speech_recognition_available = speech_recognition_available; // unused
-// window.trace_and_sketch = trace_and_sketch; // unused
-window.trace_and_sketch_stop = trace_and_sketch_stop; // may be used by app.js
-// window.speech_recognition_active = false; // unused

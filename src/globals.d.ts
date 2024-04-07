@@ -274,7 +274,6 @@ declare const initial_system_file_handle: UserFileHandle | null;
 declare const menu_bar: MenuBar;
 declare const systemHookDefaults: SystemHooks;
 declare const systemHooks: SystemHooks;
-declare const trace_and_sketch_stop: () => void;
 
 declare function update_fill_and_stroke_colors_and_lineWidth(tool: Tool): void;
 declare function tool_go(tool: Tool, event_name?: string): void;
@@ -396,7 +395,6 @@ interface Window {
 	menu_bar: MenuBar;
 	systemHookDefaults: SystemHooks;
 	systemHooks: SystemHooks;
-	trace_and_sketch_stop: () => void;
 	// app-state.js
 	selection: OnCanvasSelection;
 	textbox: OnCanvasTextBox;
@@ -464,11 +462,6 @@ interface Window {
 	// sessions.js
 	new_local_session: () => void;
 	// speech-recognition.js
-	// Node.js types are annoyingly loaded. I didn't install @types/node, it's a transitive dependency.
-	// This should just be type number.
-	// I tried configuring `types` in jsconfig.json, but it didn't work. Maybe I need to use tsconfig.json?
-	sketching_iid: ReturnType<typeof setInterval>;
-	speech_recognition_active: boolean;
 	search_page_html: string; // just for debugging
 	search_page_$html: JQuery; // just for debugging
 	// image-manipulation.js
@@ -974,6 +967,18 @@ interface ImageInfo {
 /** It's up to the user of the API to define this; could be parametrized in a better version of the JS Paint API. */
 type UserFileHandle = any;
 
+interface VoiceCommand {
+	match_text: string,
+	exec: () => void,
+	// for sorting
+	prioritize?: boolean,
+	// extra info for test assertions
+	type?: string,
+	tool_id?: ToolID,
+	sketch_subject?: string,
+	vector?: { x: number, y: number },
+	size?: number,
+}
 
 // Fullscreen API vendor prefixes
 interface Document {
