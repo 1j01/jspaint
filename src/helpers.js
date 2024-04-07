@@ -1,5 +1,7 @@
 // @ts-check
 
+/* global main_canvas */
+
 const TAU =
 	//                //////|//////
 	//            /////     |     /////
@@ -371,11 +373,40 @@ function rgb_to_hsl(r, g, b) {
 	return [h, s, l];
 }
 
+// #region Coordinate Transformations
+/**
+ * @param {{ clientX: number, clientY: number }} client_point e.g. a MouseEvent
+ * @returns {{ x: number, y: number }} canvas coordinates
+ */
+function to_canvas_coords({ clientX, clientY }) {
+	if (clientX === undefined || clientY === undefined) {
+		throw new TypeError("clientX and clientY must be defined (not {x, y} or x, y or [x, y])");
+	}
+	const rect = window.canvas_bounding_client_rect;
+	return {
+		x: ~~((clientX - rect.left) / rect.width * main_canvas.width),
+		y: ~~((clientY - rect.top) / rect.height * main_canvas.height),
+	};
+}
+/**
+ * @param {{ x: number, y: number }} canvas_point
+ * @returns {{ clientX: number, clientY: number }} client coordinates
+ */
+function from_canvas_coords({ x, y }) {
+	const rect = window.canvas_bounding_client_rect;
+	return {
+		clientX: ~~(x / main_canvas.width * rect.width + rect.left),
+		clientY: ~~(y / main_canvas.height * rect.height + rect.top),
+	};
+}
+// #endregion
+
 export {
 	$G,
 	E,
 	TAU,
 	debounce,
+	from_canvas_coords,
 	get_file_extension,
 	get_format_from_extension,
 	get_help_folder_icon,
@@ -388,7 +419,8 @@ export {
 	make_canvas,
 	make_css_cursor,
 	memoize_synchronous_function,
-	rgb_to_hsl
+	rgb_to_hsl,
+	to_canvas_coords
 };
 // Temporary globals until all dependent code is converted to ES Modules
 window.$G = $G; // used by app-localization.js

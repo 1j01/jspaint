@@ -11,7 +11,7 @@ import { default_palette, get_winter_palette } from "./color-data.js";
 import { image_formats } from "./file-format-data.js";
 import { $this_version_news, cancel, change_url_param, clear, confirm_overwrite_capability, delete_selection, deselect, edit_copy, edit_cut, file_new, file_open, file_save, file_save_as, get_tool_by_id, get_uris, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, load_image_from_uri, make_or_update_undoable, open_from_file, paste, paste_image_from_file, redo, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, save_as_prompt, select_all, select_tool, select_tools, set_magnification, show_document_history, show_error_message, show_news, show_resource_load_error_message, toggle_grid, undo, update_canvas_rect, update_disable_aa, update_helper_layer, update_magnified_canvas_size, view_bitmap, write_image_file } from "./functions.js";
 import { show_help } from "./help.js";
-import { $G, E, TAU, get_file_extension, get_help_folder_icon, make_canvas } from "./helpers.js";
+import { $G, E, TAU, get_file_extension, get_help_folder_icon, make_canvas, to_canvas_coords } from "./helpers.js";
 import { rotate } from "./image-manipulation.js";
 import { menus } from "./menus.js";
 import { showMessageBox } from "./msgbox.js";
@@ -33,8 +33,6 @@ import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_
 //    at the bottom of this file, an error would occur. This is because $ToolBox
 //    is instantiated in the middle of this file (but after $left/$right are declared).
 // @TODO: Minimize global variables and exports from app.js
-window.to_canvas_coords = to_canvas_coords;
-window.from_canvas_coords = from_canvas_coords;
 window.update_fill_and_stroke_colors_and_lineWidth = update_fill_and_stroke_colors_and_lineWidth;
 window.tool_go = tool_go;
 window.average_points = average_points;
@@ -1190,26 +1188,6 @@ $G.on("theme-load", update_palette_from_theme);
 update_palette_from_theme();
 // #endregion
 
-// #endregion
-
-// #region Coordinate Transformations
-function to_canvas_coords({ clientX, clientY }) {
-	if (clientX === undefined || clientY === undefined) {
-		throw new TypeError("clientX and clientY must be defined (not {x, y} or x, y or [x, y])");
-	}
-	const rect = window.canvas_bounding_client_rect;
-	return {
-		x: ~~((clientX - rect.left) / rect.width * main_canvas.width),
-		y: ~~((clientY - rect.top) / rect.height * main_canvas.height),
-	};
-}
-function from_canvas_coords({ x, y }) {
-	const rect = window.canvas_bounding_client_rect;
-	return {
-		clientX: ~~(x / main_canvas.width * rect.width + rect.left),
-		clientY: ~~(y / main_canvas.height * rect.height + rect.top),
-	};
-}
 // #endregion
 
 function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {

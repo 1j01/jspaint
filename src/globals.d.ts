@@ -276,8 +276,6 @@ declare const systemHookDefaults: SystemHooks;
 declare const systemHooks: SystemHooks;
 declare const trace_and_sketch_stop: () => void;
 
-declare function to_canvas_coords(point: { clientX: number, clientY: number }): { x: number, y: number };
-declare function from_canvas_coords(point: { x: number, y: number }): { clientX: number, clientY: number };
 declare function update_fill_and_stroke_colors_and_lineWidth(tool: Tool): void;
 declare function tool_go(tool: Tool, event_name?: string): void;
 declare function average_points(points: { x: number, y: number }[]): { x: number, y: number };

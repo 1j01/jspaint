@@ -1,10 +1,10 @@
 // @ts-check
-/* global $canvas_area, $status_position, $status_size, magnification, main_canvas, selected_colors, text_tool_font, to_canvas_coords, tool_transparent_mode */
+/* global $canvas_area, $status_position, $status_size, magnification, main_canvas, selected_colors, text_tool_font, tool_transparent_mode */
 import { $FontBox } from "./$FontBox.js";
 import { Handles } from "./Handles.js";
 import { OnCanvasObject } from "./OnCanvasObject.js";
 import { update_helper_layer } from "./functions.js";
-import { $G, E, get_rgba_from_color, make_canvas, make_css_cursor } from "./helpers.js";
+import { $G, E, get_rgba_from_color, make_canvas, make_css_cursor, to_canvas_coords } from "./helpers.js";
 
 class OnCanvasTextBox extends OnCanvasObject {
 	/**

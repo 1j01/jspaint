@@ -1,6 +1,6 @@
 // @ts-check
-/* global magnification, to_canvas_coords */
-import { $G, E, make_css_cursor } from "./helpers.js";
+/* global magnification */
+import { $G, E, make_css_cursor, to_canvas_coords } from "./helpers.js";
 
 /**
  * Handles for resizable, draggable, on-canvas objects.
