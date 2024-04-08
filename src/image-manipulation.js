@@ -73,8 +73,8 @@ function render_brush(ctx, shape, size) {
  * @param {number} y - The y-coordinate of the top-left corner of the ellipse's bounding box.
  * @param {number} w - The width of the ellipse's bounding box.
  * @param {number} h - The height of the ellipse's bounding box.
- * @param {string} stroke - The stroke color of the ellipse.
- * @param {string} fill - The fill color of the ellipse.
+ * @param {boolean} stroke - Whether to outline the shape.
+ * @param {boolean} fill - Whether to fill the shape.
  */
 function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
 	const center_x = x + w / 2;
@@ -92,7 +92,7 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
 		draw_polygon(ctx, points, stroke, fill);
 	} else {
 		ctx.beginPath();
-		ctx.ellipse(center_x, center_y, Math.abs(w / 2), Math.abs(h / 2), 0, TAU, false);
+		ctx.ellipse(center_x, center_y, Math.abs(w / 2), Math.abs(h / 2), 0, 0, TAU, false);
 		ctx.stroke();
 		ctx.fill();
 	}
@@ -108,7 +108,7 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
  * @param {number} height - The height of the rectangle.
  * @param {number} radius_x - The x-radius of the rounded corners.
  * @param {number} radius_y - The y-radius of the rounded corners.
- * @param {boolean} stroke - Whether to stroke the rectangle.
+ * @param {boolean} stroke - Whether to outline the rectangle.
  * @param {boolean} fill - Whether to fill the rectangle.
  */
 function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, stroke, fill) {
@@ -497,7 +497,7 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 /**
  * Flood-fills a region in the canvas with a specified color or pattern.
  *
- * @param {PixelContext} ctx - The rendering context of the canvas.
+ * @param {CanvasRenderingContext2D} ctx - The rendering context of the canvas.
  * @param {number} start_x - The x-coordinate of the starting point of the region.
  * @param {number} start_y - The y-coordinate of the starting point of the region.
  * @param {string | CanvasPattern} swatch - The color or pattern to fill the region with.
@@ -509,7 +509,7 @@ function draw_fill(ctx, start_x, start_y, swatch) {
 	} else {
 		const source_canvas = ctx.canvas;
 		const fill_canvas = make_canvas(source_canvas.width, source_canvas.height);
-		draw_fill_separately(source_canvas.ctx, fill_canvas.ctx, start_x, start_y, 255, 255, 255, 255);
+		draw_fill_separately(ctx, fill_canvas.ctx, start_x, start_y, 255, 255, 255, 255);
 		replace_colors_with_swatch(fill_canvas.ctx, swatch, 0, 0);
 		ctx.drawImage(fill_canvas, 0, 0);
 	}
@@ -729,7 +729,7 @@ function draw_noncontiguous_fill(ctx, x, y, swatch) {
 	} else {
 		const source_canvas = ctx.canvas;
 		const fill_canvas = make_canvas(source_canvas.width, source_canvas.height);
-		draw_noncontiguous_fill_separately(source_canvas.ctx, fill_canvas.ctx, x, y);
+		draw_noncontiguous_fill_separately(ctx, fill_canvas.ctx, x, y);
 		replace_colors_with_swatch(fill_canvas.ctx, swatch, 0, 0);
 		ctx.drawImage(fill_canvas, 0, 0);
 	}
@@ -772,8 +772,8 @@ function apply_image_transformation(meta, fn) {
 
 	const new_canvas = make_canvas(original_canvas.width, original_canvas.height);
 
-	const original_ctx = original_canvas.getContext("2d");
-	const new_ctx = new_canvas.getContext("2d");
+	const original_ctx = original_canvas.ctx;
+	const new_ctx = new_canvas.ctx;
 
 	fn(original_canvas, original_ctx, new_canvas, new_ctx);
 
@@ -1074,7 +1074,7 @@ function threshold_black_and_white(ctx, threshold) {
  * USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas, and presumably for the pattern alignment as well)
  * 
  * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
- * @param {string | CanvasPattern} swatch - The color swatch to replace the colors with.
+ * @param {string | CanvasPattern | CanvasGradient} swatch - The color swatch to replace the colors with.
  * @param {number} [x_offset_from_global_canvas=0] - The x-coordinate of the mask's top-left corner relative to the global canvas.
  * @param {number} [y_offset_from_global_canvas=0] - The y-coordinate of the mask's top-left corner relative to the global canvas.
  */
@@ -1211,6 +1211,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size) {
 
 /** @type {CanvasPattern} */
 let grid_pattern;
+let grid_pattern_size = -1;
 /**
  * Draws the pixel grid pattern, for View > Zoom > Show Grid.
  *
@@ -1219,7 +1220,9 @@ let grid_pattern;
  */
 function draw_grid(ctx, scale) {
 	const pattern_size = Math.floor(scale); // @TODO: try ceil too
-	if (!grid_pattern || grid_pattern.width !== pattern_size || grid_pattern.height !== pattern_size) {
+	// CanvasPattern doesn't have width/height properties, annoyingly.
+	if (!grid_pattern || grid_pattern_size !== pattern_size) {
+		grid_pattern_size = pattern_size;
 		const grid_pattern_canvas = make_canvas(pattern_size, pattern_size);
 		const dark_gray = "#808080";
 		const light_gray = "#c0c0c0";
@@ -1737,3 +1740,4 @@ export {
 	draw_noncontiguous_fill_separately, draw_noncontiguous_fill_without_pattern_support, draw_polygon, draw_quadratic_curve, draw_rounded_rectangle, draw_selection_box, draw_with_swatch, find_color_globally, flip_horizontal,
 	flip_vertical, get_brush_canvas_size, get_circumference_points_for_brush, invert_monochrome, invert_rgb, render_brush, replace_color_globally, replace_colors_with_swatch, rotate, stamp_brush_canvas, stretch_and_skew, threshold_black_and_white, update_brush_for_drawing_lines
 };
+

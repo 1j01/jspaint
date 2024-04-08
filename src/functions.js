@@ -3288,7 +3288,7 @@ function show_convert_to_black_and_white() {
 			match: (history_node) => history_node.name === "Make Monochrome",
 			icon: get_help_folder_icon("p_monochrome.png"),
 		}, () => {
-			threshold = $slider.val();
+			threshold = Number($slider.val());
 			main_ctx.copy(original_canvas);
 			threshold_black_and_white(main_ctx, threshold);
 		});

@@ -1273,6 +1273,7 @@ tools.forEach((tool) => {
 			ctx.drawImage(tool.mask_canvas, 0, 0);
 			ctx.restore();
 
+			/** @type {string | CanvasGradient | CanvasPattern} */
 			let color = stroke_color;
 			// I've seen firefox give [ 254, 254, 254, 254 ] for get_rgba_from_color("#fff")
 			// or other values
@@ -1380,6 +1381,7 @@ tools.forEach((tool) => {
 			ctx.drawImage(tool.mask_canvas, 0, 0);
 			ctx.restore();
 
+			/** @type {string | CanvasGradient | CanvasPattern} */
 			let color = stroke_color;
 			// I've seen firefox give [ 254, 254, 254, 254 ] for get_rgba_from_color("#fff")
 			// or other values

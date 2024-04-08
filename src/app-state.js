@@ -74,9 +74,9 @@ let stroke_size = default_stroke_size; // applies to lines, curves, shape outlin
 /** @type {boolean} */
 let tool_transparent_mode = false;
 
-/** @type {string | CanvasPattern | CanvasGradient} */
+/** @type {string | CanvasPattern} */
 let stroke_color;
-/** @type {string | CanvasPattern | CanvasGradient} */
+/** @type {string | CanvasPattern} */
 let fill_color;
 /** @type {ColorSelectionSlot} */
 let stroke_color_k = "foreground";
