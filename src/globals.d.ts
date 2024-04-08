@@ -930,6 +930,7 @@ interface PixelContext extends CanvasRenderingContext2D {
 	disable_image_smoothing(): void;
 	enable_image_smoothing(): void;
 	copy(image: HTMLImageElement | HTMLCanvasElement | ImageData): void;
+	canvas: PixelCanvas;
 }
 
 type BrushShape = "circle" | "square" | "reverse_diagonal" | "diagonal";
@@ -950,6 +951,13 @@ interface PaletteFileFormat {
 	name: string;
 	nameWithExtensions: string;
 	extensions: string[];
+}
+
+interface MonochromeInfo {
+	isMonochrome: boolean;
+	presentNonTransparentRGBAs?: Uint8ClampedArray[];
+	presentNonTransparentUint32s?: number[];
+	monochromeWithTransparency?: boolean;
 }
 
 type FileFormat = ImageFileFormat | PaletteFileFormat;

@@ -12,6 +12,13 @@ const some_exports = {};
 
 const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 
+/**
+ * Calculates the canvas size required for a brush based on the brush size and shape.
+ *
+ * @param {number} brush_size - The size of the brush.
+ * @param {BrushShape} [brush_shape] - The shape of the brush.
+ * @returns {number} The canvas width/height required for the brush.
+ */
 function get_brush_canvas_size(brush_size, brush_shape) {
 	// brush_shape optional, only matters if it's circle
 	// @TODO: does it actually still matter? the ellipse drawing code has changed
@@ -19,6 +26,13 @@ function get_brush_canvas_size(brush_size, brush_shape) {
 	// round to nearest even number in order for the canvas to be drawn centered at a point reasonably
 	return Math.ceil(brush_size * (brush_shape === "circle" ? 2.1 : 1) / 2) * 2;
 }
+/**
+ * Renders a brush shape onto a canvas for later drawing onto the main canvas.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {BrushShape} shape - The shape of the brush.
+ * @param {number} size - The size of the brush.
+ */
 function render_brush(ctx, shape, size) {
 	// USAGE NOTE: must be called outside of any other usage of op_canvas (because of draw_ellipse)
 	if (shape.match(/diagonal/)) {
@@ -51,6 +65,17 @@ function render_brush(ctx, shape, size) {
 	}
 }
 
+/**
+ * Draws an oval.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {number} x - The x-coordinate of the top-left corner of the ellipse's bounding box.
+ * @param {number} y - The y-coordinate of the top-left corner of the ellipse's bounding box.
+ * @param {number} w - The width of the ellipse's bounding box.
+ * @param {number} h - The height of the ellipse's bounding box.
+ * @param {string} stroke - The stroke color of the ellipse.
+ * @param {string} fill - The fill color of the ellipse.
+ */
 function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
 	const center_x = x + w / 2;
 	const center_y = y + h / 2;
@@ -73,6 +98,19 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
 	}
 }
 
+/**
+ * Draws a rectangle with rounded corners.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {number} x - The x-coordinate of the top-left corner of the rectangle.
+ * @param {number} y - The y-coordinate of the top-left corner of the rectangle.
+ * @param {number} width - The width of the rectangle.
+ * @param {number} height - The height of the rectangle.
+ * @param {number} radius_x - The x-radius of the rounded corners.
+ * @param {number} radius_y - The y-radius of the rounded corners.
+ * @param {boolean} stroke - Whether to stroke the rectangle.
+ * @param {boolean} fill - Whether to fill the rectangle.
+ */
 function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, stroke, fill) {
 
 	if (aliasing) {
@@ -127,10 +165,13 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 	}
 }
 
-// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
-// @TODO: protect against browser clearing canvases, invalidate cache
 /**
- * @param {string} brush_shape
+ * Gets the canvas for a brush.
+ * 
+ * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+ * @TODO: protect against browser clearing canvases, invalidate cache
+ * 
+ * @param {BrushShape} brush_shape
  * @param {number} brush_size
  * @returns {PixelCanvas}
  */
@@ -152,7 +193,17 @@ $G.on("invalidate-brush-canvases", () => {
 });
 
 
-// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+/**
+ * Stamps a brush canvas onto the specified context at the given coordinates.
+ * 
+ * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+ * 
+ * @param {CanvasRenderingContext2D} ctx - The rendering context to draw on.
+ * @param {number} x - The x-coordinate for the center of the brush.
+ * @param {number} y - The y-coordinate for the center of the brush.
+ * @param {BrushShape} brush_shape - The shape of the brush.
+ * @param {number} brush_size - The size of the brush.
+ */
 const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size) => {
 	const brush_canvas = get_brush_canvas(brush_shape, brush_size);
 
@@ -162,9 +213,12 @@ const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size) => {
 	ctx.drawImage(brush_canvas, x + offset_x, y + offset_y);
 };
 
-// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
 /**
- * @param {string} brush_shape
+ * Returns the points on the circumference of a brush shape.
+ * 
+ * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+ * 
+ * @param {BrushShape} brush_shape
  * @param {number} brush_size
  * @returns {{ x: number, y: number }[]}
  */
@@ -211,14 +265,31 @@ $G.on("invalidate-brush-canvases", () => {
 });
 
 
+/** @type {PixelCanvas} */
 let line_brush_canvas;
-// USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+/**
+ * Updates the brush canvas used for line drawing.
+ * 
+ * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
+ *
+ * @param {number} stroke_size - The line width of the stroke.
+ */
 function update_brush_for_drawing_lines(stroke_size) {
 	if (aliasing && stroke_size > 1) {
 		line_brush_canvas = get_brush_canvas("circle", stroke_size);
 	}
 }
 
+/**
+ * Draws a line on the canvas, without pattern support, only solid colors.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+ * @param {number} x1 - The x-coordinate of the starting point of the line.
+ * @param {number} y1 - The y-coordinate of the starting point of the line.
+ * @param {number} x2 - The x-coordinate of the ending point of the line.
+ * @param {number} y2 - The y-coordinate of the ending point of the line.
+ * @param {number} [stroke_size=1] - The line width of the stroke.
+ */
 function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1) {
 	if (aliasing) {
 		if (stroke_size > 1) {
@@ -242,6 +313,15 @@ function draw_line_without_pattern_support(ctx, x1, y1, x2, y2, stroke_size = 1)
 	}
 }
 
+/**
+ * Calls the given function for each point along a line segment.
+ *
+ * @param {number} x1 - The x-coordinate of the starting point.
+ * @param {number} y1 - The y-coordinate of the starting point.
+ * @param {number} x2 - The x-coordinate of the ending point.
+ * @param {number} y2 - The y-coordinate of the ending point.
+ * @param {function} callback - A callback function that will be called for each point on the line.
+ */
 function bresenham_line(x1, y1, x2, y2, callback) {
 	// Bresenham's line algorithm
 	x1 = ~~x1; x2 = ~~x2; y1 = ~~y1; y2 = ~~y2;
@@ -263,6 +343,15 @@ function bresenham_line(x1, y1, x2, y2, callback) {
 	}
 }
 
+/**
+ * Calls the given function for each point along a line segment, moving horizontally and vertically, never diagonally.
+ *
+ * @param {number} x1 - The x-coordinate of the starting point.
+ * @param {number} y1 - The y-coordinate of the starting point.
+ * @param {number} x2 - The x-coordinate of the ending point.
+ * @param {number} y2 - The y-coordinate of the ending point.
+ * @param {function} callback - The callback function to be called for each point on the line.
+ */
 function bresenham_dense_line(x1, y1, x2, y2, callback) {
 	// Bresenham's line algorithm with a callback between going horizontal and vertical
 	x1 = ~~x1; x2 = ~~x2; y1 = ~~y1; y2 = ~~y2;
@@ -285,6 +374,17 @@ function bresenham_dense_line(x1, y1, x2, y2, callback) {
 	}
 }
 
+/**
+ * Flood-fills a region of the canvas with a specified solid color.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+ * @param {number} start_x - The starting x-coordinate of the region to flood.
+ * @param {number} start_y - The starting y-coordinate of the region to flood.
+ * @param {number} fill_r - The red component of the fill color (0-255).
+ * @param {number} fill_g - The green component of the fill color (0-255).
+ * @param {number} fill_b - The blue component of the fill color (0-255).
+ * @param {number} fill_a - The alpha component of the fill color (0-255).
+ */
 function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a) {
 
 	// @TODO: split up processing in case it takes too long?
@@ -394,6 +494,14 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 	}
 }
 
+/**
+ * Flood-fills a region in the canvas with a specified color or pattern.
+ *
+ * @param {PixelContext} ctx - The rendering context of the canvas.
+ * @param {number} start_x - The x-coordinate of the starting point of the region.
+ * @param {number} start_y - The y-coordinate of the starting point of the region.
+ * @param {string | CanvasPattern} swatch - The color or pattern to fill the region with.
+ */
 function draw_fill(ctx, start_x, start_y, swatch) {
 	if (typeof swatch === "string") {
 		const fill_rgba = get_rgba_from_color(swatch);
@@ -407,6 +515,19 @@ function draw_fill(ctx, start_x, start_y, swatch) {
 	}
 }
 
+/**
+ * Draws a flood-fill region in a separate destination canvas, bounded by sampling from the source canvas.
+ *
+ * @param {CanvasRenderingContext2D} source_ctx - The source canvas context from which to start filling.
+ * @param {CanvasRenderingContext2D} dest_ctx - The destination canvas context in which to fill the region.
+ * @param {number} start_x - The x-coordinate of the starting position.
+ * @param {number} start_y - The y-coordinate of the starting position.
+ * @param {number} fill_r - The red component of the fill color (0-255).
+ * @param {number} fill_g - The green component of the fill color (0-255).
+ * @param {number} fill_b - The blue component of the fill color (0-255).
+ * @param {number} fill_a - The alpha component of the fill color (0-255).
+ * @throws {Error} If filling with an alpha of zero, which is not supported.
+ */
 function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fill_g, fill_b, fill_a) {
 	if (fill_a === 0) {
 		throw new Error("Filling with alpha of zero is not supported. Zero alpha is used for detecting whether a pixel has been visited.");
@@ -501,6 +622,19 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 	}
 }
 
+/**
+ * Replaces a specific color globally in the given image data.
+ *
+ * @param {ImageData} image_data - The image data to manipulate.
+ * @param {number} from_r - The red component of the color to replace.
+ * @param {number} from_g - The green component of the color to replace.
+ * @param {number} from_b - The blue component of the color to replace.
+ * @param {number} from_a - The alpha component of the color to replace.
+ * @param {number} to_r - The red component of the new color.
+ * @param {number} to_g - The green component of the new color.
+ * @param {number} to_b - The blue component of the new color.
+ * @param {number} to_a - The alpha component of the new color.
+ */
 function replace_color_globally(image_data, from_r, from_g, from_b, from_a, to_r, to_g, to_b, to_a) {
 	if (
 		from_r === to_r &&
@@ -526,6 +660,16 @@ function replace_color_globally(image_data, from_r, from_g, from_b, from_a, to_r
 	}
 }
 
+/**
+ * Creates a mask for a specific color in the given image data, as separate destination image data.
+ * 
+ * @param {ImageData} source_image_data - The source image data containing the color to be found.
+ * @param {ImageData} dest_image_data - The destination image data where the mask will be created.
+ * @param {number} find_r - The red component of the color to be found.
+ * @param {number} find_g - The green component of the color to be found.
+ * @param {number} find_b - The blue component of the color to be found.
+ * @param {number} find_a - The alpha component of the color to be found.
+ */
 function find_color_globally(source_image_data, dest_image_data, find_r, find_g, find_b, find_a) {
 	const source_data = source_image_data.data;
 	const dest_data = dest_image_data.data;
@@ -544,6 +688,17 @@ function find_color_globally(source_image_data, dest_image_data, find_r, find_g,
 	}
 }
 
+/**
+ * Replaces a color globally on the canvas with the specified solid color.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {number} x - The x-coordinate of the color to replace.
+ * @param {number} y - The y-coordinate of the color to replace.
+ * @param {number} fill_r - The red component of the new color.
+ * @param {number} fill_g - The green component of the new color.
+ * @param {number} fill_b - The blue component of the new color.
+ * @param {number} fill_a - The alpha component of the new color.
+ */
 function draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_r, fill_g, fill_b, fill_a) {
 	x = Math.max(0, Math.min(Math.floor(x), ctx.canvas.width));
 	y = Math.max(0, Math.min(Math.floor(y), ctx.canvas.height));
@@ -559,6 +714,14 @@ function draw_noncontiguous_fill_without_pattern_support(ctx, x, y, fill_r, fill
 	ctx.putImageData(image_data, 0, 0);
 }
 
+/**
+ * Replaces a color globally on the canvas with the specified color or pattern.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {number} x - The x-coordinate of the color to replace.
+ * @param {number} y - The y-coordinate of the color to replace.
+ * @param {string | CanvasPattern} swatch - The color or pattern to replace the color with.
+ */
 function draw_noncontiguous_fill(ctx, x, y, swatch) {
 	if (typeof swatch === "string") {
 		const fill_rgba = get_rgba_from_color(swatch);
@@ -572,6 +735,14 @@ function draw_noncontiguous_fill(ctx, x, y, swatch) {
 	}
 }
 
+/**
+ * Creates a mask for a specific color in the given canvas context, within a separate destination context.
+ *
+ * @param {CanvasRenderingContext2D} source_ctx - The source canvas context.
+ * @param {CanvasRenderingContext2D} dest_ctx - The destination canvas context.
+ * @param {number} x - The x-coordinate of the color to create a mask for.
+ * @param {number} y - The y-coordinate of the color to create a mask for.
+ */
 function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y) {
 	x = Math.max(0, Math.min(Math.floor(x), source_ctx.canvas.width));
 	y = Math.max(0, Math.min(Math.floor(y), source_ctx.canvas.height));
@@ -588,8 +759,15 @@ function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y) {
 	dest_ctx.putImageData(dest_image_data, 0, 0);
 }
 
+/**
+ * Applies an image transformation to the selection, if it exists, or otherwise the whole document.
+ * 
+ * The transformation function can change the size of the new canvas, and it will update the selection or document accordingly.
+ *
+ * @param {{name: string, icon: HTMLImageElement | HTMLCanvasElement}} meta - object containing the name and icon for undo history.
+ * @param {(original_canvas: PixelCanvas, original_ctx: PixelContext, new_canvas: PixelCanvas, new_ctx: PixelContext) => void} fn - The image transformation function to apply.
+ */
 function apply_image_transformation(meta, fn) {
-	// Apply an image transformation function to either the selection or the entire canvas
 	const original_canvas = selection ? selection.source_canvas : main_canvas;
 
 	const new_canvas = make_canvas(original_canvas.width, original_canvas.height);
@@ -647,6 +825,11 @@ function flip_vertical() {
 	});
 }
 
+/**
+ * Rotates the image (or selection) by the specified angle.
+ *
+ * @param {number} angle - The angle of rotation in radians.
+ */
 function rotate(angle) {
 	apply_image_transformation({
 		name: `${localize("Rotate by angle")} ${angle / TAU * 360} ${localize("Degrees")}`,
@@ -722,6 +905,14 @@ function rotate(angle) {
 	});
 }
 
+/**
+ * Applies a stretch and skew transformation to the image (or selection).
+ *
+ * @param {number} x_scale - The horizontal scale factor.
+ * @param {number} y_scale - The vertical scale factor.
+ * @param {number} h_skew - The horizontal skew angle in radians.
+ * @param {number} v_skew - The vertical skew angle in radians.
+ */
 function stretch_and_skew(x_scale, y_scale, h_skew, v_skew) {
 	apply_image_transformation({
 		name:
@@ -785,6 +976,12 @@ function stretch_and_skew(x_scale, y_scale, h_skew, v_skew) {
 	});
 }
 
+/**
+ * Inverts the RGB values in a canvas, optionally storing the result in a separate destination canvas.
+ * 
+ * @param {CanvasRenderingContext2D} source_ctx - The source canvas rendering context.
+ * @param {CanvasRenderingContext2D} [dest_ctx=source_ctx] - The destination canvas rendering context.
+ */
 function invert_rgb(source_ctx, dest_ctx = source_ctx) {
 	const image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	for (let i = 0; i < image_data.data.length; i += 4) {
@@ -795,6 +992,15 @@ function invert_rgb(source_ctx, dest_ctx = source_ctx) {
 	dest_ctx.putImageData(image_data, 0, 0);
 }
 
+/**
+ * Swaps the two colors of a monochrome image.
+ * If no destination context is provided, the source context is used as the destination context.
+ * If no monochrome information is provided, it is detected from the source context.
+ *
+ * @param {CanvasRenderingContext2D} source_ctx - The source canvas context.
+ * @param {CanvasRenderingContext2D} [dest_ctx=source_ctx] - The destination canvas context.
+ * @param {MonochromeInfo} [monochrome_info=detect_monochrome(source_ctx)] - The monochrome information.
+ */
 function invert_monochrome(source_ctx, dest_ctx = source_ctx, monochrome_info = detect_monochrome(source_ctx)) {
 	const image_data = source_ctx.getImageData(0, 0, source_ctx.canvas.width, source_ctx.canvas.height);
 	// Note: values in pixel_array may be different on big endian vs little endian machines.
@@ -844,6 +1050,11 @@ function invert_monochrome(source_ctx, dest_ctx = source_ctx, monochrome_info = 
 	dest_ctx.putImageData(image_data, 0, 0);
 }
 
+/**
+ * Converts the image to black and white by applying a lightness threshold.
+ * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+ * @param {number} threshold - The threshold value between black and white (0 to 1).
+ */
 function threshold_black_and_white(ctx, threshold) {
 	const image_data = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 	for (let i = 0; i < image_data.data.length; i += 4) {
@@ -856,9 +1067,18 @@ function threshold_black_and_white(ctx, threshold) {
 	ctx.putImageData(image_data, 0, 0);
 }
 
+/**
+ * Replaces colors from a mask with a specified color or pattern.
+ * This function is mainly for patterns support but naturally handles solid colors as well.
+ * 
+ * USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas, and presumably for the pattern alignment as well)
+ * 
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {string | CanvasPattern} swatch - The color swatch to replace the colors with.
+ * @param {number} [x_offset_from_global_canvas=0] - The x-coordinate of the mask's top-left corner relative to the global canvas.
+ * @param {number} [y_offset_from_global_canvas=0] - The y-coordinate of the mask's top-left corner relative to the global canvas.
+ */
 function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas = 0, y_offset_from_global_canvas = 0) {
-	// USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas, and presumably for the pattern alignment as well)
-	// This function is mainly for patterns support (for black & white mode) but naturally handles solid colors as well.
 	ctx.globalCompositeOperation = "source-in";
 	ctx.fillStyle = swatch;
 	ctx.beginPath();
@@ -869,8 +1089,21 @@ function replace_colors_with_swatch(ctx, swatch, x_offset_from_global_canvas = 0
 	ctx.restore();
 }
 
-// adapted from https://github.com/Pomax/bezierjs
+/**
+ * Computes the position on a cubic Bezier curve at a given parameter `t`.
+ * @param {number} t - The parameter value between 0 and 1.
+ * @param {number} start_x - The x-coordinate of the starting point.
+ * @param {number} start_y - The y-coordinate of the starting point.
+ * @param {number} control_1_x - The x-coordinate of the first control point.
+ * @param {number} control_1_y - The y-coordinate of the first control point.
+ * @param {number} control_2_x - The x-coordinate of the second control point.
+ * @param {number} control_2_y - The y-coordinate of the second control point.
+ * @param {number} end_x - The x-coordinate of the ending point.
+ * @param {number} end_y - The y-coordinate of the ending point.
+ * @returns {{x: number, y: number}} The position on the Bezier curve at parameter `t`.
+ */
 function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y) {
+	// adapted from https://github.com/Pomax/bezierjs
 	const mt = 1 - t;
 	const mt2 = mt * mt;
 	const t2 = t * t;
@@ -887,6 +1120,20 @@ function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2
 	};
 }
 
+/**
+ * Draws a solid-color mask of a bezier curve.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The rendering context of the canvas.
+ * @param {number} start_x - The x-coordinate of the starting point of the curve.
+ * @param {number} start_y - The y-coordinate of the starting point of the curve.
+ * @param {number} control_1_x - The x-coordinate of the first control point of the curve.
+ * @param {number} control_1_y - The y-coordinate of the first control point of the curve.
+ * @param {number} control_2_x - The x-coordinate of the second control point of the curve.
+ * @param {number} control_2_y - The y-coordinate of the second control point of the curve.
+ * @param {number} end_x - The x-coordinate of the ending point of the curve.
+ * @param {number} end_y - The y-coordinate of the ending point of the curve.
+ * @param {number} stroke_size - The line width of the curve.
+ */
 function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
 	const steps = 100;
 	let point_a = { x: start_x, y: start_y };
@@ -897,10 +1144,37 @@ function draw_bezier_curve_without_pattern_support(ctx, start_x, start_y, contro
 		point_a = point_b;
 	}
 }
+
+/**
+ * Draws a quadratic curve on the canvas context, supporting patterns.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {number} start_x - The x-coordinate of the starting point of the curve.
+ * @param {number} start_y - The y-coordinate of the starting point of the curve.
+ * @param {number} control_x - The x-coordinate of the control point of the curve.
+ * @param {number} control_y - The y-coordinate of the control point of the curve.
+ * @param {number} end_x - The x-coordinate of the ending point of the curve.
+ * @param {number} end_y - The y-coordinate of the ending point of the curve.
+ * @param {number} stroke_size - The size of the stroke used to draw the curve.
+ */
 function draw_quadratic_curve(ctx, start_x, start_y, control_x, control_y, end_x, end_y, stroke_size) {
 	draw_bezier_curve(ctx, start_x, start_y, control_x, control_y, control_x, control_y, end_x, end_y, stroke_size);
 }
 
+/**
+ * Draws a bezier curve on the canvas, supporting patterns.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The rendering context of the canvas.
+ * @param {number} start_x - The x-coordinate of the starting point of the curve.
+ * @param {number} start_y - The y-coordinate of the starting point of the curve.
+ * @param {number} control_1_x - The x-coordinate of the first control point of the curve.
+ * @param {number} control_1_y - The y-coordinate of the first control point of the curve.
+ * @param {number} control_2_x - The x-coordinate of the second control point of the curve.
+ * @param {number} control_2_y - The y-coordinate of the second control point of the curve.
+ * @param {number} end_x - The x-coordinate of the ending point of the curve.
+ * @param {number} end_y - The y-coordinate of the ending point of the curve.
+ * @param {number} stroke_size - The line width of the curve.
+ */
 function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size) {
 	// could calculate bounds of Bezier curve with something like bezier-js
 	// but just using the control points should be fine
@@ -912,6 +1186,17 @@ function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, cont
 		draw_bezier_curve_without_pattern_support(op_ctx_2d, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size);
 	});
 }
+
+/**
+ * Draws a line on the canvas context, supporting patterns.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {number} x1 - The x-coordinate of the starting point of the line.
+ * @param {number} y1 - The y-coordinate of the starting point of the line.
+ * @param {number} x2 - The x-coordinate of the ending point of the line.
+ * @param {number} y2 - The y-coordinate of the ending point of the line.
+ * @param {number} stroke_size - The line width.
+ */
 function draw_line(ctx, x1, y1, x2, y2, stroke_size) {
 	const min_x = Math.min(x1, x2);
 	const min_y = Math.min(y1, y2);
@@ -924,7 +1209,14 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size) {
 	// draw_line_strip(ctx, [{ x: x1, y: y1 }, { x: x2, y: y2 }]);
 }
 
+/** @type {CanvasPattern} */
 let grid_pattern;
+/**
+ * Draws the pixel grid pattern, for View > Zoom > Show Grid.
+ *
+ * @param {PixelContext} ctx - The helper layer canvas rendering context.
+ * @param {number} scale - The scale factor for the grid pattern.
+ */
 function draw_grid(ctx, scale) {
 	const pattern_size = Math.floor(scale); // @TODO: try ceil too
 	if (!grid_pattern || grid_pattern.width !== pattern_size || grid_pattern.height !== pattern_size) {
@@ -1009,6 +1301,17 @@ function draw_grid(ctx, scale) {
 		ctx.restore();
 	}
 
+	// TODO: move so JSDoc comment actually applies
+	/**
+	 * @param {CanvasRenderingContext2D} ctx 
+	 * @param {number} rect_x 
+	 * @param {number} rect_y 
+	 * @param {number} rect_w 
+	 * @param {number} rect_h 
+	 * @param {number} scale 
+	 * @param {number} translate_x 
+	 * @param {number} translate_y 
+	 */
 	some_exports.draw_selection_box = (ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y) => {
 		draw_dashes(ctx, rect_x, rect_y, rect_w - 1, 0, scale, translate_x, translate_y); // top
 		if (rect_h === 1) {
@@ -1219,13 +1522,34 @@ function draw_grid(ctx, scale) {
 		}
 	}
 
+	// TODO: move so JSDoc comment actually applies
+	/**
+	 * @param {CanvasRenderingContext2D} ctx 
+	 * @param {{x: number, y: number}[]} points
+	 */
 	some_exports.draw_line_strip = (ctx, points) => {
 		draw_polygon_or_line_strip(ctx, points, true, false, false);
 	};
+	// TODO: move so JSDoc comment actually applies
+	/**
+	 * @param {CanvasRenderingContext2D} ctx 
+	 * @param {{x: number, y: number}[]} points
+	 * @param {boolean} stroke
+	 * @param {boolean} fill
+	 */
 	some_exports.draw_polygon = (ctx, points, stroke, fill) => {
 		draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
 	};
 
+	/**
+	 * Draws a polygon or line strip (polyline) on the canvas context.
+	 *
+	 * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+	 * @param {{x: number, y: number}[]} points - The array of points defining the polygon or line strip.
+	 * @param {boolean} stroke - Whether to stroke the shape.
+	 * @param {boolean} fill - Whether to fill the shape.
+	 * @param {boolean} close_path - Whether to join the start and end points, forming a closed polygon.
+	 */
 	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
 		if (!gl) {
 			// TODO: reload button for Electron app
@@ -1331,6 +1655,16 @@ function draw_grid(ctx, scale) {
 		}
 	}
 
+	// TODO: move so JSDoc comment actually applies
+	/**
+	 * @param {HTMLCanvasElement} canvas 
+	 * @param {{x: number, y: number}[]} points 
+	 * @param {number} x_min 
+	 * @param {number} y_min 
+	 * @param {number} x_max 
+	 * @param {number} y_max 
+	 * @returns {PixelCanvas}
+	 */
 	some_exports.copy_contents_within_polygon = (canvas, points, x_min, y_min, x_max, y_max) => {
 		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
 		x_max = Math.max(x_max, x_min + 1);
@@ -1354,6 +1688,16 @@ function draw_grid(ctx, scale) {
 	}
 
 	// @TODO: maybe shouldn't be external...
+	// TODO: move so JSDoc comment actually applies
+	/**
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {number} x_min
+	 * @param {number} y_min
+	 * @param {number} x_max
+	 * @param {number} y_max
+	 * @param {CanvasPattern | string} swatch
+	 * @param {(ctx: CanvasRenderingContext2D) => void} callback
+	 */
 	some_exports.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
 		const stroke_margin = ~~(stroke_size * 1.1);
 

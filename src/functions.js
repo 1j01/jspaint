@@ -2869,7 +2869,7 @@ function has_any_transparency(ctx) {
 
 /**
  * @param {CanvasRenderingContext2D} ctx
- * @returns {{ isMonochrome: boolean, presentNonTransparentRGBAs?: Uint8ClampedArray[], presentNonTransparentUint32s?: number[], monochromeWithTransparency?: boolean }}
+ * @returns {MonochromeInfo}
  */
 function detect_monochrome(ctx) {
 	// Note: Brave browser, and DuckDuckGo Privacy Essentials browser extension
