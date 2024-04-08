@@ -26,7 +26,6 @@ function $Swatch(color) {
 /**
  * @param {JQuery<HTMLDivElement>} $swatch
  * @param {string | CanvasPattern | undefined=} new_color
- * @returns {void}
  */
 function update_$swatch($swatch, new_color) {
 	if (new_color instanceof CanvasPattern) {

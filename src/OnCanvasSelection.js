@@ -42,7 +42,6 @@ class OnCanvasSelection extends OnCanvasObject {
 	}
 	/**
 	 * @param {HTMLImageElement | HTMLCanvasElement | ImageData=} image_source
-	 * @returns {void}
 	 */
 	instantiate(image_source) {
 		this.$el.css({
@@ -264,7 +263,6 @@ class OnCanvasSelection extends OnCanvasObject {
 	// @TODO: should Image > Invert apply to this.source_canvas or to this.canvas (replacing this.source_canvas with the result)?
 	/**
 	 * @param {PixelCanvas} new_source_canvas
-	 * @returns {void}
 	 */
 	replace_source_canvas(new_source_canvas) {
 		this.source_canvas = new_source_canvas;
