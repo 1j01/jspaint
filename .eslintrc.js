@@ -71,6 +71,7 @@ module.exports = {
 				"src/app.js",
 				"src/theme.js",
 				"src/msgbox.js",
+				"src/error-msgbox.js",
 				"src/helpers.js",
 				"src/storage.js",
 				"src/sessions.js",

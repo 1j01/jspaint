@@ -4,7 +4,8 @@
 /* global $app, $canvas_area, localize, magnification, main_canvas, main_ctx, redos, undos */
 import { $DialogWindow } from "./$ToolWindow.js";
 // import { localize } from "./app-localization.js";
-import { change_url_param, get_uris, load_image_from_uri, open_from_image_info, redo, reset_file, show_error_message, show_resource_load_error_message, undo, undoable, update_title } from "./functions.js";
+import { show_error_message, show_resource_load_error_message } from "./error-msgbox.js";
+import { change_url_param, get_uris, load_image_from_uri, open_from_image_info, redo, reset_file, undo, undoable, update_title } from "./functions.js";
 import { $G, debounce, get_help_folder_icon, image_data_match, make_canvas, to_canvas_coords } from "./helpers.js";
 import { storage_quota_exceeded } from "./manage-storage.js";
 import { showMessageBox } from "./msgbox.js";

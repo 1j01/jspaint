@@ -1,7 +1,7 @@
 // @ts-check
 /* global localize */
 
-import { show_error_message } from "./functions.js";
+import { show_error_message } from "./error-msgbox.js";
 
 // import { localize } from "./app-localization.js";
 

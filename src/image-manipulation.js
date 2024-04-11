@@ -3,7 +3,8 @@
 /* global saved:writable, brush_size:writable, pencil_size:writable, stroke_size:writable */
 /* global $canvas_area, aliasing, localize, main_canvas, main_ctx, palette, selected_colors, selection, stroke_color, transparency */
 // import { localize } from "./app-localization.js";
-import { cancel, deselect, detect_monochrome, show_error_message, undoable, update_title } from "./functions.js";
+import { show_error_message } from "./error-msgbox.js";
+import { cancel, deselect, detect_monochrome, undoable, update_title } from "./functions.js";
 import { $G, TAU, get_help_folder_icon, get_rgba_from_color, make_canvas, memoize_synchronous_function } from "./helpers.js";
 
 const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
