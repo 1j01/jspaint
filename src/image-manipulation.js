@@ -6,10 +6,6 @@
 import { cancel, deselect, detect_monochrome, show_error_message, undoable, update_title } from "./functions.js";
 import { $G, TAU, get_help_folder_icon, get_rgba_from_color, make_canvas, memoize_synchronous_function } from "./helpers.js";
 
-// workaround for ES Modules only allowing exports at the top level
-// (I'm doing things messily in order to quickly adopt ESM.)
-const some_exports = {};
-
 const fill_threshold = 1; // 1 is just enough for a workaround for Brave browser's farbling: https://github.com/1j01/jspaint/issues/184
 
 /**
@@ -1251,238 +1247,252 @@ function draw_grid(ctx, scale) {
 	ctx.restore();
 }
 
-(() => {
+// #region Dashed Selection Box Border
+// TODO: move to a separate file
 
-	// the dashes of the border are sized such that at 4x zoom,
-	// they're squares equal to one canvas pixel
-	// they're offset by a screen pixel tho from the canvas pixel cells
+// the dashes of the border are sized such that at 4x zoom,
+// they're squares equal to one canvas pixel
+// they're offset by a screen pixel tho from the canvas pixel cells
 
-	const svg_for_creating_matrices = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+const svg_for_creating_matrices = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
-	const horizontal_pattern_canvas = make_canvas(8, 4);
-	const vertical_pattern_canvas = make_canvas(4, 8);
-	let horizontal_pattern;
-	let vertical_pattern;
+const horizontal_pattern_canvas = make_canvas(8, 4);
+const vertical_pattern_canvas = make_canvas(4, 8);
+let horizontal_pattern;
+let vertical_pattern;
 
-	function draw_dashes(ctx, x, y, go_x, go_y, scale, translate_x, translate_y) {
-		if (!vertical_pattern) {
-			horizontal_pattern_canvas.ctx.fillStyle = "white";
-			horizontal_pattern_canvas.ctx.fillRect(4, 0, 4, 4);
-			vertical_pattern_canvas.ctx.fillStyle = "white";
-			vertical_pattern_canvas.ctx.fillRect(0, 4, 4, 4);
-			horizontal_pattern = ctx.createPattern(horizontal_pattern_canvas, "repeat");
-			vertical_pattern = ctx.createPattern(vertical_pattern_canvas, "repeat");
-		}
-
-		const dash_width = 1;
-		const hairline_width = 1 / scale; // size of a screen pixel
-
-		ctx.save();
-
-		ctx.scale(scale, scale);
-		ctx.translate(translate_x, translate_y);
-
-		ctx.translate(x, y);
-		ctx.globalCompositeOperation = "difference";
-
-
-		if (go_x > 0) {
-			const matrix = svg_for_creating_matrices.createSVGMatrix();
-			if (horizontal_pattern.setTransform) { // not supported by Edge as of 2019-12-04
-				horizontal_pattern.setTransform(matrix.translate(-x, -y).translate(hairline_width, 0).scale(1 / scale));
-			}
-			ctx.fillStyle = horizontal_pattern;
-			ctx.fillRect(0, 0, go_x, dash_width);
-		} else if (go_y > 0) {
-			const matrix = svg_for_creating_matrices.createSVGMatrix();
-			if (vertical_pattern.setTransform) { // not supported by Edge as of 2019-12-04
-				vertical_pattern.setTransform(matrix.translate(-x, -y).translate(0, hairline_width).scale(1 / scale));
-			}
-			ctx.fillStyle = vertical_pattern;
-			ctx.fillRect(0, 0, dash_width, go_y);
-		}
-		ctx.restore();
+function draw_dashes(ctx, x, y, go_x, go_y, scale, translate_x, translate_y) {
+	if (!vertical_pattern) {
+		horizontal_pattern_canvas.ctx.fillStyle = "white";
+		horizontal_pattern_canvas.ctx.fillRect(4, 0, 4, 4);
+		vertical_pattern_canvas.ctx.fillStyle = "white";
+		vertical_pattern_canvas.ctx.fillRect(0, 4, 4, 4);
+		horizontal_pattern = ctx.createPattern(horizontal_pattern_canvas, "repeat");
+		vertical_pattern = ctx.createPattern(vertical_pattern_canvas, "repeat");
 	}
 
-	// TODO: move so JSDoc comment actually applies
-	/**
-	 * @param {CanvasRenderingContext2D} ctx 
-	 * @param {number} rect_x 
-	 * @param {number} rect_y 
-	 * @param {number} rect_w 
-	 * @param {number} rect_h 
-	 * @param {number} scale 
-	 * @param {number} translate_x 
-	 * @param {number} translate_y 
-	 */
-	some_exports.draw_selection_box = (ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y) => {
-		draw_dashes(ctx, rect_x, rect_y, rect_w - 1, 0, scale, translate_x, translate_y); // top
-		if (rect_h === 1) {
-			draw_dashes(ctx, rect_x, rect_y, 0, 1, scale, translate_x, translate_y); // left
-		} else {
-			draw_dashes(ctx, rect_x, rect_y + 1, 0, rect_h - 2, scale, translate_x, translate_y); // left
+	const dash_width = 1;
+	const hairline_width = 1 / scale; // size of a screen pixel
+
+	ctx.save();
+
+	ctx.scale(scale, scale);
+	ctx.translate(translate_x, translate_y);
+
+	ctx.translate(x, y);
+	ctx.globalCompositeOperation = "difference";
+
+
+	if (go_x > 0) {
+		const matrix = svg_for_creating_matrices.createSVGMatrix();
+		if (horizontal_pattern.setTransform) { // not supported by Edge as of 2019-12-04
+			horizontal_pattern.setTransform(matrix.translate(-x, -y).translate(hairline_width, 0).scale(1 / scale));
 		}
-		draw_dashes(ctx, rect_x + rect_w - 1, rect_y, 0, rect_h, scale, translate_x, translate_y); // right
-		draw_dashes(ctx, rect_x, rect_y + rect_h - 1, rect_w - 1, 0, scale, translate_x, translate_y); // bottom
-		draw_dashes(ctx, rect_x, rect_y + 1, 0, 1, scale, translate_x, translate_y); // top left dangling bit???
-	};
-
-})();
-
-(() => {
-
-	const tessy = (function initTesselator() {
-		// function called for each vertex of tesselator output
-		function vertex_callback(data, poly_vert_array) {
-			// window.console && console.log(data[0], data[1]);
-			poly_vert_array[poly_vert_array.length] = data[0];
-			poly_vert_array[poly_vert_array.length] = data[1];
+		ctx.fillStyle = horizontal_pattern;
+		ctx.fillRect(0, 0, go_x, dash_width);
+	} else if (go_y > 0) {
+		const matrix = svg_for_creating_matrices.createSVGMatrix();
+		if (vertical_pattern.setTransform) { // not supported by Edge as of 2019-12-04
+			vertical_pattern.setTransform(matrix.translate(-x, -y).translate(0, hairline_width).scale(1 / scale));
 		}
-		function begin_callback(type) {
-			if (type !== libtess.primitiveType.GL_TRIANGLES) {
-				window.console && console.log(`Expected TRIANGLES but got type: ${type}`);
-			}
+		ctx.fillStyle = vertical_pattern;
+		ctx.fillRect(0, 0, dash_width, go_y);
+	}
+	ctx.restore();
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx 
+ * @param {number} rect_x 
+ * @param {number} rect_y 
+ * @param {number} rect_w 
+ * @param {number} rect_h 
+ * @param {number} scale 
+ * @param {number} translate_x 
+ * @param {number} translate_y 
+ */
+export function draw_selection_box(ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y) {
+	draw_dashes(ctx, rect_x, rect_y, rect_w - 1, 0, scale, translate_x, translate_y); // top
+	if (rect_h === 1) {
+		draw_dashes(ctx, rect_x, rect_y, 0, 1, scale, translate_x, translate_y); // left
+	} else {
+		draw_dashes(ctx, rect_x, rect_y + 1, 0, rect_h - 2, scale, translate_x, translate_y); // left
+	}
+	draw_dashes(ctx, rect_x + rect_w - 1, rect_y, 0, rect_h, scale, translate_x, translate_y); // right
+	draw_dashes(ctx, rect_x, rect_y + rect_h - 1, rect_w - 1, 0, scale, translate_x, translate_y); // bottom
+	draw_dashes(ctx, rect_x, rect_y + 1, 0, 1, scale, translate_x, translate_y); // top left dangling bit???
+}
+
+// #endregion
+// #region WebGL
+// TODO: move to a separate file
+
+let tessy;
+/** @type {WebGLRenderingContext} */
+let gl;
+/** @type {number} */
+let positionLoc;
+/** @type {HTMLCanvasElement} */
+let op_canvas_webgl;
+/** @type {HTMLCanvasElement} */
+let op_canvas_2d;
+/** @type {CanvasRenderingContext2D} */
+let op_ctx_2d;
+
+
+function initTesselator() {
+	// function called for each vertex of tesselator output
+	function vertex_callback(data, poly_vert_array) {
+		// window.console && console.log(data[0], data[1]);
+		poly_vert_array[poly_vert_array.length] = data[0];
+		poly_vert_array[poly_vert_array.length] = data[1];
+	}
+	function begin_callback(type) {
+		if (type !== libtess.primitiveType.GL_TRIANGLES) {
+			window.console && console.log(`Expected TRIANGLES but got type: ${type}`);
 		}
-		function error_callback(errno) {
-			window.console && console.log('error callback');
-			window.console && console.log(`error number: ${errno}`);
-		}
-		// callback for when segments intersect and must be split
-		function combine_callback(coords/*, data, weight*/) {
-			// window.console && console.log('combine callback');
-			return [coords[0], coords[1], coords[2]];
-		}
-		function edge_callback(/*flag*/) {
-			// don't really care about the flag, but need no-strip/no-fan behavior
-			// window.console && console.log('edge flag: ' + flag);
-		}
-
-		const tessy = new libtess.GluTesselator();
-		// tessy.gluTessProperty(libtess.gluEnum.GLU_TESS_WINDING_RULE, libtess.windingRule.GLU_TESS_WINDING_POSITIVE);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_VERTEX_DATA, vertex_callback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_BEGIN, begin_callback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_ERROR, error_callback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_COMBINE, combine_callback);
-		tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_EDGE_FLAG, edge_callback);
-
-		return tessy;
-	}());
-
-	function triangulate(contours) {
-		// libtess will take 3d verts and flatten to a plane for tesselation
-		// since only doing 2d tesselation here, provide z=1 normal to skip
-		// iterating over verts only to get the same answer.
-		tessy.gluTessNormal(0, 0, 1);
-
-		const triangleVerts = [];
-		tessy.gluTessBeginPolygon(triangleVerts);
-
-		for (let i = 0; i < contours.length; i++) {
-			tessy.gluTessBeginContour();
-			const contour = contours[i];
-			for (let j = 0; j < contour.length; j += 2) {
-				const coords = [contour[j], contour[j + 1], 0];
-				tessy.gluTessVertex(coords, coords);
-			}
-			tessy.gluTessEndContour();
-		}
-
-		tessy.gluTessEndPolygon();
-
-		return triangleVerts;
+	}
+	function error_callback(errno) {
+		window.console && console.log('error callback');
+		window.console && console.log(`error number: ${errno}`);
+	}
+	// callback for when segments intersect and must be split
+	function combine_callback(coords/*, data, weight*/) {
+		// window.console && console.log('combine callback');
+		return [coords[0], coords[1], coords[2]];
+	}
+	function edge_callback(/*flag*/) {
+		// don't really care about the flag, but need no-strip/no-fan behavior
+		// window.console && console.log('edge flag: ' + flag);
 	}
 
+	const tessy = new libtess.GluTesselator();
+	// tessy.gluTessProperty(libtess.gluEnum.GLU_TESS_WINDING_RULE, libtess.windingRule.GLU_TESS_WINDING_POSITIVE);
+	tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_VERTEX_DATA, vertex_callback);
+	tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_BEGIN, begin_callback);
+	tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_ERROR, error_callback);
+	tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_COMBINE, combine_callback);
+	tessy.gluTessCallback(libtess.gluEnum.GLU_TESS_EDGE_FLAG, edge_callback);
 
-	let gl;
-	let positionLoc;
+	return tessy;
+}
 
-	function initWebGL(canvas) {
-		try {
-			gl = canvas.getContext('webgl', { antialias: false });
-		} catch (error) {
-			// TODO: reload button for Electron app
-			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.", error);
-			return;
+function triangulate(contours) {
+	// libtess will take 3d verts and flatten to a plane for tesselation
+	// since only doing 2d tesselation here, provide z=1 normal to skip
+	// iterating over verts only to get the same answer.
+	tessy.gluTessNormal(0, 0, 1);
+
+	const triangleVerts = [];
+	tessy.gluTessBeginPolygon(triangleVerts);
+
+	for (let i = 0; i < contours.length; i++) {
+		tessy.gluTessBeginContour();
+		const contour = contours[i];
+		for (let j = 0; j < contour.length; j += 2) {
+			const coords = [contour[j], contour[j + 1], 0];
+			tessy.gluTessVertex(coords, coords);
 		}
-
-		if (!gl) {
-			// TODO: reload button for Electron app
-			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
-			return;
-		}
-
-		window.WEBGL_lose_context = gl.getExtension("WEBGL_lose_context");
-
-		const program = createShaderProgram();
-		positionLoc = gl.getAttribLocation(program, 'position');
-		gl.enableVertexAttribArray(positionLoc);
+		tessy.gluTessEndContour();
 	}
 
-	function initArrayBuffer(triangleVertexCoords) {
-		// put triangle coordinates into a WebGL ArrayBuffer and bind to
-		// shader's 'position' attribute variable
-		const rawData = new Float32Array(triangleVertexCoords);
-		const polygonArrayBuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, polygonArrayBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, rawData, gl.STATIC_DRAW);
-		gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+	tessy.gluTessEndPolygon();
 
-		return triangleVertexCoords.length / 2;
+	return triangleVerts;
+}
+
+
+function initWebGL(canvas) {
+	try {
+		gl = canvas.getContext('webgl', { antialias: false });
+	} catch (error) {
+		// TODO: reload button for Electron app
+		show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.", error);
+		return;
 	}
 
-	function createShaderProgram() {
-		// create vertex shader
-		const vertexSrc = [
-			'attribute vec4 position;',
-			'void main() {',
-			'	/* already in normalized coordinates, so just pass through */',
-			'	gl_Position = position;',
-			'}'
-		].join('');
-		const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-		gl.shaderSource(vertexShader, vertexSrc);
-		gl.compileShader(vertexShader);
-
-		if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-			window.console && console.log(
-				`Vertex shader failed to compile. Log: ${gl.getShaderInfoLog(vertexShader)}`
-			);
-		}
-
-		// create fragment shader
-		const fragmentSrc = [
-			'precision mediump float;',
-			'void main() {',
-			'	gl_FragColor = vec4(0, 0, 0, 1);',
-			'}'
-		].join('');
-		const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-		gl.shaderSource(fragmentShader, fragmentSrc);
-		gl.compileShader(fragmentShader);
-
-		if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-			window.console && console.log(
-				`Fragment shader failed to compile. Log: ${gl.getShaderInfoLog(fragmentShader)}`
-			);
-		}
-
-		// link shaders to create our program
-		const program = gl.createProgram();
-		gl.attachShader(program, vertexShader);
-		gl.attachShader(program, fragmentShader);
-		gl.linkProgram(program);
-
-		gl.useProgram(program);
-
-		return program;
+	if (!gl) {
+		// TODO: reload button for Electron app
+		show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
+		return;
 	}
 
+	window.WEBGL_lose_context = gl.getExtension("WEBGL_lose_context");
 
-	const op_canvas_webgl = document.createElement('canvas');
-	const op_canvas_2d = document.createElement('canvas');
-	const op_ctx_2d = op_canvas_2d.getContext("2d");
+	const program = createShaderProgram();
+	positionLoc = gl.getAttribLocation(program, 'position');
+	gl.enableVertexAttribArray(positionLoc);
+}
+
+function initArrayBuffer(triangleVertexCoords) {
+	// put triangle coordinates into a WebGL ArrayBuffer and bind to
+	// shader's 'position' attribute variable
+	const rawData = new Float32Array(triangleVertexCoords);
+	const polygonArrayBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, polygonArrayBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, rawData, gl.STATIC_DRAW);
+	gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+	return triangleVertexCoords.length / 2;
+}
+
+function createShaderProgram() {
+	// create vertex shader
+	const vertexSrc = [
+		'attribute vec4 position;',
+		'void main() {',
+		'	/* already in normalized coordinates, so just pass through */',
+		'	gl_Position = position;',
+		'}'
+	].join('');
+	const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+	gl.shaderSource(vertexShader, vertexSrc);
+	gl.compileShader(vertexShader);
+
+	if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+		window.console && console.log(
+			`Vertex shader failed to compile. Log: ${gl.getShaderInfoLog(vertexShader)}`
+		);
+	}
+
+	// create fragment shader
+	const fragmentSrc = [
+		'precision mediump float;',
+		'void main() {',
+		'	gl_FragColor = vec4(0, 0, 0, 1);',
+		'}'
+	].join('');
+	const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+	gl.shaderSource(fragmentShader, fragmentSrc);
+	gl.compileShader(fragmentShader);
+
+	if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+		window.console && console.log(
+			`Fragment shader failed to compile. Log: ${gl.getShaderInfoLog(fragmentShader)}`
+		);
+	}
+
+	// link shaders to create our program
+	const program = gl.createProgram();
+	gl.attachShader(program, vertexShader);
+	gl.attachShader(program, fragmentShader);
+	gl.linkProgram(program);
+
+	gl.useProgram(program);
+
+	return program;
+}
+
+export function init_webgl_stuff() {
+
+	tessy = initTesselator();
+
+	op_canvas_webgl = document.createElement('canvas');
+	op_canvas_2d = document.createElement('canvas');
+	op_ctx_2d = op_canvas_2d.getContext("2d");
 
 	initWebGL(op_canvas_webgl);
+
 	let warning_tid;
 	op_canvas_webgl.addEventListener("webglcontextlost", (e) => {
 		e.preventDefault();
@@ -1508,236 +1518,224 @@ function draw_grid(ctx, scale) {
 
 		$G.triggerHandler("redraw-tool-options-because-webglcontextrestored");
 	}, false);
+}
 
-	function clamp_brush_sizes() {
-		const max_size = 100;
-		if (brush_size > max_size) {
-			brush_size = max_size;
-			show_error_message(`Brush size clamped to ${max_size}`);
-		}
-		if (pencil_size > max_size) {
-			pencil_size = max_size;
-			show_error_message(`Pencil size clamped to ${max_size}`);
-		}
-		if (stroke_size > max_size) {
-			stroke_size = max_size;
-			show_error_message(`Stroke size clamped to ${max_size}`);
-		}
+function clamp_brush_sizes() {
+	const max_size = 100;
+	if (brush_size > max_size) {
+		brush_size = max_size;
+		show_error_message(`Brush size clamped to ${max_size}`);
+	}
+	if (pencil_size > max_size) {
+		pencil_size = max_size;
+		show_error_message(`Pencil size clamped to ${max_size}`);
+	}
+	if (stroke_size > max_size) {
+		stroke_size = max_size;
+		show_error_message(`Stroke size clamped to ${max_size}`);
+	}
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx 
+ * @param {{x: number, y: number}[]} points
+ */
+export function draw_line_strip(ctx, points) {
+	draw_polygon_or_line_strip(ctx, points, true, false, false);
+}
+/**
+ * @param {CanvasRenderingContext2D} ctx 
+ * @param {{x: number, y: number}[]} points
+ * @param {boolean} stroke
+ * @param {boolean} fill
+ */
+export function draw_polygon(ctx, points, stroke, fill) {
+	draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
+}
+
+/**
+ * Draws a polygon or line strip (polyline) on the canvas context.
+ *
+ * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+ * @param {{x: number, y: number}[]} points - The array of points defining the polygon or line strip.
+ * @param {boolean} stroke - Whether to stroke the shape.
+ * @param {boolean} fill - Whether to fill the shape.
+ * @param {boolean} close_path - Whether to join the start and end points, forming a closed polygon.
+ */
+function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
+	if (!gl) {
+		// TODO: reload button for Electron app
+		show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
+		return; // @TODO: don't pollute brush cache with empty brushes (also maybe fallback to 2D canvas rendering)
 	}
 
-	// TODO: move so JSDoc comment actually applies
-	/**
-	 * @param {CanvasRenderingContext2D} ctx 
-	 * @param {{x: number, y: number}[]} points
-	 */
-	some_exports.draw_line_strip = (ctx, points) => {
-		draw_polygon_or_line_strip(ctx, points, true, false, false);
-	};
-	// TODO: move so JSDoc comment actually applies
-	/**
-	 * @param {CanvasRenderingContext2D} ctx 
-	 * @param {{x: number, y: number}[]} points
-	 * @param {boolean} stroke
-	 * @param {boolean} fill
-	 */
-	some_exports.draw_polygon = (ctx, points, stroke, fill) => {
-		draw_polygon_or_line_strip(ctx, points, stroke, fill, true);
-	};
+	// this must be before stuff is done with op_canvas
+	// otherwise update_brush_for_drawing_lines calls render_brush calls draw_ellipse calls draw_polygon calls draw_polygon_or_line_strip
+	// trying to use the same op_canvas
+	// (also, avoiding infinite recursion by checking for stroke; assuming brushes will never have outlines)
+	if (stroke && stroke_size > 1) {
+		update_brush_for_drawing_lines(stroke_size);
+	}
 
-	/**
-	 * Draws a polygon or line strip (polyline) on the canvas context.
-	 *
-	 * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
-	 * @param {{x: number, y: number}[]} points - The array of points defining the polygon or line strip.
-	 * @param {boolean} stroke - Whether to stroke the shape.
-	 * @param {boolean} fill - Whether to fill the shape.
-	 * @param {boolean} close_path - Whether to join the start and end points, forming a closed polygon.
-	 */
-	function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
-		if (!gl) {
-			// TODO: reload button for Electron app
-			show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
-			return; // @TODO: don't pollute brush cache with empty brushes (also maybe fallback to 2D canvas rendering)
-		}
+	const stroke_color = ctx.strokeStyle;
+	const fill_color = ctx.fillStyle;
 
-		// this must be before stuff is done with op_canvas
-		// otherwise update_brush_for_drawing_lines calls render_brush calls draw_ellipse calls draw_polygon calls draw_polygon_or_line_strip
-		// trying to use the same op_canvas
-		// (also, avoiding infinite recursion by checking for stroke; assuming brushes will never have outlines)
-		if (stroke && stroke_size > 1) {
-			update_brush_for_drawing_lines(stroke_size);
-		}
+	const numPoints = points.length;
+	const numCoords = numPoints * 2;
 
-		const stroke_color = ctx.strokeStyle;
-		const fill_color = ctx.fillStyle;
+	if (numPoints === 0) {
+		return;
+	}
 
-		const numPoints = points.length;
-		const numCoords = numPoints * 2;
+	let x_min = +Infinity;
+	let x_max = -Infinity;
+	let y_min = +Infinity;
+	let y_max = -Infinity;
+	for (const { x, y } of points) {
+		x_min = Math.min(x, x_min);
+		x_max = Math.max(x, x_max);
+		y_min = Math.min(y, y_min);
+		y_max = Math.max(y, y_max);
+	}
+	x_max += 1;
+	y_max += 1;
+	x_min -= 1;
+	y_min -= 1;
 
-		if (numPoints === 0) {
-			return;
-		}
+	op_canvas_webgl.width = x_max - x_min;
+	op_canvas_webgl.height = y_max - y_min;
+	gl.viewport(0, 0, op_canvas_webgl.width, op_canvas_webgl.height);
 
-		let x_min = +Infinity;
-		let x_max = -Infinity;
-		let y_min = +Infinity;
-		let y_max = -Infinity;
-		for (const { x, y } of points) {
-			x_min = Math.min(x, x_min);
-			x_max = Math.max(x, x_max);
-			y_min = Math.min(y, y_min);
-			y_max = Math.max(y, y_max);
-		}
-		x_max += 1;
-		y_max += 1;
-		x_min -= 1;
-		y_min -= 1;
+	const coords = new Float32Array(numCoords);
+	for (let i = 0; i < numPoints; i++) {
+		coords[i * 2 + 0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
+		coords[i * 2 + 1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
+		// @TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
+	}
 
-		op_canvas_webgl.width = x_max - x_min;
-		op_canvas_webgl.height = y_max - y_min;
-		gl.viewport(0, 0, op_canvas_webgl.width, op_canvas_webgl.height);
+	if (fill) {
+		const contours = [coords];
+		const polyTriangles = triangulate(contours);
+		let numVertices = initArrayBuffer(polyTriangles);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+		gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 
-		const coords = new Float32Array(numCoords);
-		for (let i = 0; i < numPoints; i++) {
-			coords[i * 2 + 0] = (points[i].x - x_min) / op_canvas_webgl.width * 2 - 1;
-			coords[i * 2 + 1] = 1 - (points[i].y - y_min) / op_canvas_webgl.height * 2;
-			// @TODO: investigate: does this cause resolution/information loss? can we change the coordinate system?
-		}
+		op_canvas_2d.width = op_canvas_webgl.width;
+		op_canvas_2d.height = op_canvas_webgl.height;
 
-		if (fill) {
-			const contours = [coords];
-			const polyTriangles = triangulate(contours);
-			let numVertices = initArrayBuffer(polyTriangles);
+		op_ctx_2d.drawImage(op_canvas_webgl, 0, 0);
+		replace_colors_with_swatch(op_ctx_2d, fill_color, x_min, y_min);
+		ctx.drawImage(op_canvas_2d, x_min, y_min);
+	}
+	if (stroke) {
+		if (stroke_size > 1) {
+			const stroke_margin = ~~(stroke_size * 1.1);
+
+			const op_canvas_x = x_min - stroke_margin;
+			const op_canvas_y = y_min - stroke_margin;
+
+			op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
+			op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
+			for (let i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
+				const point_a = points[i];
+				const point_b = points[(i + 1) % numPoints];
+				// Note: update_brush_for_drawing_lines way above
+				draw_line_without_pattern_support(
+					op_ctx_2d,
+					point_a.x - op_canvas_x,
+					point_a.y - op_canvas_y,
+					point_b.x - op_canvas_x,
+					point_b.y - op_canvas_y,
+					stroke_size
+				);
+			}
+
+			replace_colors_with_swatch(op_ctx_2d, stroke_color, op_canvas_x, op_canvas_y);
+			ctx.drawImage(op_canvas_2d, op_canvas_x, op_canvas_y);
+		} else {
+			let numVertices = initArrayBuffer(coords);
 			gl.clear(gl.COLOR_BUFFER_BIT);
-			gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+			gl.drawArrays(close_path ? gl.LINE_LOOP : gl.LINE_STRIP, 0, numVertices);
 
 			op_canvas_2d.width = op_canvas_webgl.width;
 			op_canvas_2d.height = op_canvas_webgl.height;
 
 			op_ctx_2d.drawImage(op_canvas_webgl, 0, 0);
-			replace_colors_with_swatch(op_ctx_2d, fill_color, x_min, y_min);
+			replace_colors_with_swatch(op_ctx_2d, stroke_color, x_min, y_min);
 			ctx.drawImage(op_canvas_2d, x_min, y_min);
 		}
-		if (stroke) {
-			if (stroke_size > 1) {
-				const stroke_margin = ~~(stroke_size * 1.1);
-
-				const op_canvas_x = x_min - stroke_margin;
-				const op_canvas_y = y_min - stroke_margin;
-
-				op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
-				op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
-				for (let i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
-					const point_a = points[i];
-					const point_b = points[(i + 1) % numPoints];
-					// Note: update_brush_for_drawing_lines way above
-					draw_line_without_pattern_support(
-						op_ctx_2d,
-						point_a.x - op_canvas_x,
-						point_a.y - op_canvas_y,
-						point_b.x - op_canvas_x,
-						point_b.y - op_canvas_y,
-						stroke_size
-					);
-				}
-
-				replace_colors_with_swatch(op_ctx_2d, stroke_color, op_canvas_x, op_canvas_y);
-				ctx.drawImage(op_canvas_2d, op_canvas_x, op_canvas_y);
-			} else {
-				let numVertices = initArrayBuffer(coords);
-				gl.clear(gl.COLOR_BUFFER_BIT);
-				gl.drawArrays(close_path ? gl.LINE_LOOP : gl.LINE_STRIP, 0, numVertices);
-
-				op_canvas_2d.width = op_canvas_webgl.width;
-				op_canvas_2d.height = op_canvas_webgl.height;
-
-				op_ctx_2d.drawImage(op_canvas_webgl, 0, 0);
-				replace_colors_with_swatch(op_ctx_2d, stroke_color, x_min, y_min);
-				ctx.drawImage(op_canvas_2d, x_min, y_min);
-			}
-		}
 	}
+}
 
-	// TODO: move so JSDoc comment actually applies
-	/**
-	 * @param {HTMLCanvasElement} canvas 
-	 * @param {{x: number, y: number}[]} points 
-	 * @param {number} x_min 
-	 * @param {number} y_min 
-	 * @param {number} x_max 
-	 * @param {number} y_max 
-	 * @returns {PixelCanvas}
-	 */
-	some_exports.copy_contents_within_polygon = (canvas, points, x_min, y_min, x_max, y_max) => {
-		// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
-		x_max = Math.max(x_max, x_min + 1);
-		y_max = Math.max(y_max, y_min + 1);
-		const width = x_max - x_min;
-		const height = y_max - y_min;
+/**
+ * @param {HTMLCanvasElement} canvas 
+ * @param {{x: number, y: number}[]} points 
+ * @param {number} x_min 
+ * @param {number} y_min 
+ * @param {number} x_max 
+ * @param {number} y_max 
+ * @returns {PixelCanvas}
+ */
+export function copy_contents_within_polygon(canvas, points, x_min, y_min, x_max, y_max) {
+	// Copy the contents of the given canvas within the polygon given by points bounded by x/y_min/max
+	x_max = Math.max(x_max, x_min + 1);
+	y_max = Math.max(y_max, y_min + 1);
+	const width = x_max - x_min;
+	const height = y_max - y_min;
 
-		// @TODO: maybe have the cutout only the width/height of the bounds
-		// const cutout = make_canvas(width, height);
-		const cutout = make_canvas(canvas);
+	// @TODO: maybe have the cutout only the width/height of the bounds
+	// const cutout = make_canvas(width, height);
+	const cutout = make_canvas(canvas);
 
-		cutout.ctx.save();
-		cutout.ctx.globalCompositeOperation = "destination-in";
-		draw_polygon(cutout.ctx, points, false, true);
-		cutout.ctx.restore();
+	cutout.ctx.save();
+	cutout.ctx.globalCompositeOperation = "destination-in";
+	draw_polygon(cutout.ctx, points, false, true);
+	cutout.ctx.restore();
 
-		const cutout_crop = make_canvas(width, height);
-		cutout_crop.ctx.drawImage(cutout, x_min, y_min, width, height, 0, 0, width, height);
+	const cutout_crop = make_canvas(width, height);
+	cutout_crop.ctx.drawImage(cutout, x_min, y_min, width, height, 0, 0, width, height);
 
-		return cutout_crop;
-	}
+	return cutout_crop;
+}
 
-	// @TODO: maybe shouldn't be external...
-	// TODO: move so JSDoc comment actually applies
-	/**
-	 * @param {CanvasRenderingContext2D} ctx
-	 * @param {number} x_min
-	 * @param {number} y_min
-	 * @param {number} x_max
-	 * @param {number} y_max
-	 * @param {CanvasPattern | string} swatch
-	 * @param {(ctx: CanvasRenderingContext2D) => void} callback
-	 */
-	some_exports.draw_with_swatch = (ctx, x_min, y_min, x_max, y_max, swatch, callback) => {
-		const stroke_margin = ~~(stroke_size * 1.1);
+// @TODO: maybe shouldn't be external...
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} x_min
+ * @param {number} y_min
+ * @param {number} x_max
+ * @param {number} y_max
+ * @param {CanvasPattern | string} swatch
+ * @param {(ctx: CanvasRenderingContext2D) => void} callback
+ */
+export function draw_with_swatch(ctx, x_min, y_min, x_max, y_max, swatch, callback) {
+	const stroke_margin = ~~(stroke_size * 1.1);
 
-		x_max = Math.max(x_max, x_min + 1);
-		y_max = Math.max(y_max, y_min + 1);
-		op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
-		op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
+	x_max = Math.max(x_max, x_min + 1);
+	y_max = Math.max(y_max, y_min + 1);
+	op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
+	op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
 
-		const x = x_min - stroke_margin;
-		const y = y_min - stroke_margin;
+	const x = x_min - stroke_margin;
+	const y = y_min - stroke_margin;
 
-		op_ctx_2d.save();
-		op_ctx_2d.translate(-x, -y);
-		callback(op_ctx_2d);
-		op_ctx_2d.restore(); // for replace_colors_with_swatch!
+	op_ctx_2d.save();
+	op_ctx_2d.translate(-x, -y);
+	callback(op_ctx_2d);
+	op_ctx_2d.restore(); // for replace_colors_with_swatch!
 
-		replace_colors_with_swatch(op_ctx_2d, swatch, x, y);
-		ctx.drawImage(op_canvas_2d, x, y);
+	replace_colors_with_swatch(op_ctx_2d, swatch, x, y);
+	ctx.drawImage(op_canvas_2d, x, y);
 
-		// for debug:
-		// ctx.fillStyle = "rgba(255, 0, 255, 0.1)";
-		// ctx.fillRect(x, y, op_canvas_2d.width, op_canvas_2d.height);
-	}
-})();
-
-const {
-	draw_selection_box,
-	draw_line_strip,
-	draw_polygon,
-	copy_contents_within_polygon,
-	draw_with_swatch,
-} = some_exports;
+	// for debug:
+	// ctx.fillStyle = "rgba(255, 0, 255, 0.1)";
+	// ctx.fillRect(x, y, op_canvas_2d.width, op_canvas_2d.height);
+}
 
 export {
-	apply_image_transformation, bresenham_dense_line, bresenham_line, compute_bezier, copy_contents_within_polygon, draw_bezier_curve, draw_bezier_curve_without_pattern_support, draw_ellipse, draw_fill,
-	draw_fill_separately, draw_fill_without_pattern_support, draw_grid, draw_line, draw_line_strip, draw_line_without_pattern_support, draw_noncontiguous_fill,
-	draw_noncontiguous_fill_separately, draw_noncontiguous_fill_without_pattern_support, draw_polygon, draw_quadratic_curve, draw_rounded_rectangle, draw_selection_box, draw_with_swatch, find_color_globally, flip_horizontal,
+	apply_image_transformation, bresenham_dense_line, bresenham_line, compute_bezier, draw_bezier_curve, draw_bezier_curve_without_pattern_support, draw_ellipse, draw_fill,
+	draw_fill_separately, draw_fill_without_pattern_support, draw_grid, draw_line, draw_line_without_pattern_support, draw_noncontiguous_fill,
+	draw_noncontiguous_fill_separately, draw_noncontiguous_fill_without_pattern_support, draw_quadratic_curve, draw_rounded_rectangle, find_color_globally, flip_horizontal,
 	flip_vertical, get_brush_canvas_size, get_circumference_points_for_brush, invert_monochrome, invert_rgb, render_brush, replace_color_globally, replace_colors_with_swatch, rotate, stamp_brush_canvas, stretch_and_skew, threshold_black_and_white, update_brush_for_drawing_lines
 };
 
