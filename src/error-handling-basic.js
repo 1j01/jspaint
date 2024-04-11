@@ -10,7 +10,7 @@ var isIE = /MSIE \d|Trident.*rv:/.test(navigator.userAgent);
 
 window.onerror = function (msg, url, lineNo, columnNo, error) {
 	if (isIE) {
-		return false; // Don't need alerts covering up the "not supported" message.
+		return false; // Don't need alerts postponing the "not supported" message.
 	}
 	var string = msg.toLowerCase();
 	var substring = "script error";
@@ -28,7 +28,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 
 window.onunhandledrejection = function (event) {
 	if (isIE) {
-		return false; // Don't need alerts covering up the "not supported" message.
+		return false; // Don't need alerts postponing the "not supported" message.
 	}
 	alert('Unhandled Rejection: ' + event.reason);
 }
