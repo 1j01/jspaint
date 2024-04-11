@@ -1,12 +1,20 @@
 // @ts-check
+/* global localize */
 
 // This script adds padding between tiles in a spritesheet, to avoid bleeding when at non-integer zoom levels
 // (or indeed, design errors, where one icon accidentally extends into the space of another)
 
 // USAGE: load an image into the app, then paste this code into the browser console, updating parameters as needed.
 
-const { apply_image_transformation } = await import("./src/image-manipulation.js");
-const { get_help_folder_icon } = await import("./src/helpers.js");
+// HACK: Using unnecessary-looking "../src" so that TypeScript can follow the path, but in the browser,
+// pasting this script into the console, it will be relative to the current page's URL, but the ".." will be ignored,
+// assuming the app is hosted at the root of the domain.
+// TypeScript still doesn't like the top-level await because there are no exports, but
+// exports are not valid in the JS console. So, ignore the errors.
+// @ts-ignore
+const { apply_image_transformation } = await import("../src/image-manipulation.js");
+// @ts-ignore
+const { get_help_folder_icon } = await import("../src/helpers.js");
 
 function repack_spritesheet(tile_width, tile_height = tile_width, padding = tile_width) {
 	apply_image_transformation({
