@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
-		"target": "es6"
+		"target": "ES2022",
+		"module": "ES2022"
 	},
 	"include": [
 		"src/**/*"
