@@ -465,7 +465,7 @@ interface Window {
 	search_page_html: string; // just for debugging
 	search_page_$html: JQuery; // just for debugging
 	// image-manipulation.js
-	WEBGL_lose_context: () => void; // just for debugging
+	WEBGL_lose_context: WEBGL_lose_context | null; // just for debugging
 	// eye-gaze-mode.js and speech-recognition.js
 	untrusted_gesture: boolean;
 	// simulate-random-gestures.js
