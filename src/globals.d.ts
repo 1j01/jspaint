@@ -72,7 +72,7 @@ declare let selection: OnCanvasSelection;
 declare let textbox: OnCanvasTextBox;
 declare let helper_layer: OnCanvasHelperLayer;
 declare let $thumbnail_window: $Window;
-declare let thumbnail_canvas: HTMLCanvasElement;
+declare let thumbnail_canvas: PixelCanvas;
 declare let show_grid: boolean;
 declare let show_thumbnail: boolean;
 declare let text_tool_font: TextToolFontOptions;
