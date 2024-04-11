@@ -546,16 +546,13 @@ const createWindow = () => {
 			// Note: { scale: "center" } is only supported on macOS.
 			// I worked around this by providing an image with a transparent margin on other platforms,
 			// in setWallpaperCentered.
-			return new Promise((resolve, reject) => {
-				require("wallpaper").set(image_path, { scale: "center" }, error => {
-					if (error) {
-						resolve({ responseCode: "SET_WALLPAPER_FAILED", error });
-					} else {
-						resolve({ responseCode: "SUCCESS" });
-					}
-				});
-			});
-			// Newer promise-based wallpaper API that I can't import:
+			try {
+				await require("wallpaper").set(image_path, { scale: "center" });
+			} catch (error) {
+				return { responseCode: "SET_WALLPAPER_FAILED", error };
+			}
+			return { responseCode: "SUCCESS" };
+			// Newer ESM wallpaper API that I can't import:
 			// try {
 			// 	await setWallpaper(image_path, { scale: "center" });
 			// } catch (error) {
