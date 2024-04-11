@@ -1,3 +1,5 @@
+// @ts-check
+
 // This script copies inkscape:label attributes from one SVG to another.
 // I have SVGs with ids that correspond because they're tweaked copies of the same SVG.
 // I added labels to the first SVG, and wanted to copy them to the second SVG.

@@ -1,3 +1,4 @@
+// @ts-check
 /* eslint-disable no-useless-concat */
 /* eslint-disable no-alert */
 
@@ -12,7 +13,8 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 	if (isIE) {
 		return false; // Don't need alerts postponing the "not supported" message.
 	}
-	var string = msg.toLowerCase();
+	// (`msg` is not an Event in this context, unlike for img/video/script onerror events.)
+	var string = /** @type {string} */(msg).toLowerCase();
 	var substring = "script error";
 	if (string.indexOf(substring) > -1) {
 		alert('Script Error: See Browser Console for Detail');
