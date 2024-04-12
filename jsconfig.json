@@ -1,9 +1,16 @@
 {
 	"compilerOptions": {
 		"target": "ES2022",
-		"module": "ES2022"
+		"module": "ES2022",
+		"composite": true
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*",
+		"!src/electron-main/**/*"
+	],
+	"references": [
+		{
+			"path": "./src/electron-main/jsconfig.json"
+		}
 	]
 }

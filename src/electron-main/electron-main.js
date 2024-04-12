@@ -24,7 +24,7 @@ parser.add_argument('file_path', {
 
 parser.add_argument('-v', '--version', {
 	action: 'version',
-	version: require('../package.json').version,
+	version: require('../../package.json').version,
 });
 
 // Squirrel.Windows passes "-squirrel-firstrun" when the app is first run after being installed.
