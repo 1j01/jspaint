@@ -1576,10 +1576,19 @@ function show_about_paint() {
 
 	$("#checking-for-updates").removeAttr("hidden");
 
+	// Forward compatibility note: I could change what's served at /?news and remove the news from the HTML,
+	// but I've only added this query string on 2024-04-12, so I may not choose to take advantage of this.
+	// I wish I had used a separate URL from the beginning, maybe a proper blog with an RSS feed.
+	// It's somewhat unsustainable to add news continuously to the HTML of the app,
+	// especially when images are requested even though the container is hidden. (https://github.com/1j01/jspaint/issues/320)
+	// Also note: as long as I preserve the basic structure of the news entries at /, I should be able to
+	// have old versions of the app still say they're outdated, and I could include some short message instead of full news articles.
+	// Maybe I could even include the news in an iframe, just for old versions of the app, within the latest `.news-entry`...
+	// as long as it doesn't have the same problem as images, of loading in the background.
 	const url =
 		// ".";
 		// "test-news-newer.html";
-		"https://jspaint.app";
+		"https://jspaint.app/?news";
 	fetch(url)
 		.then((response) => response.text())
 		.then((text) => {
