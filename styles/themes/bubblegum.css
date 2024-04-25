@@ -21,7 +21,6 @@ button,
 	font-weight: bold;
 }
 
-.os-window,
 .component-area:not(:empty),
 .status-field  {
 	border-image-source: url("../../images/bubblegum/bubblegum-border-with-recess.png") !important;
@@ -50,7 +49,7 @@ button,
 	padding: 7px !important;
 }
 
-.os-window .window-titlebar,
+.os-window,
 button:not(.lightweight):not(:active),
 button.lightweight:hover:not(:active),
 .tools-component .tool,
@@ -68,6 +67,7 @@ button.lightweight:hover:not(:active),
 	border-radius: 10px !important;
 }
 
+.window-content,
 hr,
 .inset-deep,
 .swatch,
@@ -119,6 +119,7 @@ where it overlaps the shadows baked into the border-image. */
     height: 100%;
 }
 
+.window-content,
 .status-field {
 	border-image-outset: 5px !important;
 }
