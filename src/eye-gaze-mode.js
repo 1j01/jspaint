@@ -143,20 +143,26 @@ const eye_gaze_mode_config = {
 	},
 };
 
-// Tracky Mouse provides head tracking.
+// Tracky Mouse provides head tracking. https://trackymouse.js.org/
 // To enable Tracky Mouse, you must currently:
 // - toggle `enable_tracky_mouse` to true
 // - uncomment tracky-mouse.js and tracky-mouse.css in index.html
 // - add `'unsafe-eval' blob:` to the `script-src` directive of the Content-Security-Policy in index.html,
-//   as clmtrackr requires the use of eval().
-// The use of eval is why it's not enabled by default,
-// aside from UI/UX concerns like providing a way to disable it separately from eye gaze mode,
+//   as clmtrackr uses eval().
+// TODO: update Tracky Mouse; I actually created a tool to remove the need for eval in clmtrackr,
+// so the next version shouldn't need 'unsafe-eval'.
+// I also brought the dwell clicking code into Tracky Mouse, and it looks like I still need to update jspaint to use the library version.
+// For introducing head tracking as a feature (with the Tracky Mouse UI),
+// there's still UI/UX concerns like providing a way to disable it separately from eye gaze mode,
 // and the minimized window overlapping the floating buttons.
 // Terminologically, I'm not sure what to call the superset of eye gaze mode and head tracking.
 // - "Coarse Input Mode"? Sounds rough, and probably unclear.
 // - "Hands-Free Mode"? Although that could also refer to voice commands. Which are also supported.
 // - "Head Input Mode"/"Head Tracking Mode"? Technically your eyes are part of your head...
 // - "Face Mouse Mode"/"Facial Mouse Mode"? Maybe!
+// I might want to separate it into "Enlarge Interface", "Dwell Clicking", "Head Tracking", and (already split out) "Vertical Color Box".
+// Or "Enlarge UI" and "Tracky Mouse", which would open up a window which would control dwell clicking and head tracking.
+// (I can maintain backwards compatibility with the #eye-gaze-mode URL fragment, breaking it up into the new settings.)
 var enable_tracky_mouse = false;
 var tracky_mouse_deps_promise;
 
