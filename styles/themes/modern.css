@@ -12,6 +12,7 @@
 	--accent-color-hover: #1976D2;
 	--window-frame-active-color: #3f51b5;
 	--window-frame-inactive-color: #9396a5;
+	--window-titlebar-text-color: #ffffff;
 	--help-window-resizer-color: #aaaaaa;
 	--canvas-area-background-color: #7b7b7b;
 	--canvas-area-border-color: #808080;
@@ -101,7 +102,7 @@ body {
 }
 .window-titlebar {
 	background: var(--window-frame-color);
-	color: white;
+	color: var(--window-titlebar-text-color);
 	padding-left: 8px;
 	padding-right: 8px;
 	border-bottom: 4px solid var(--window-frame-color);
@@ -147,7 +148,7 @@ body {
 	transform: scale(1.8);
 }
 .window-button::after {
-	color: white;
+	color: var(--window-titlebar-text-color);
 	font-size: 15px;
 	position: absolute;
 	left: 0;
