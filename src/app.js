@@ -446,17 +446,16 @@ const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
 		<!--<img src='images/winter/present.png' width='24' height='22' alt=''/>-->
-		<img src='images/about/news.gif' width='40' height='16' alt=''/>
+		<img src='images/about/news.gif' width='40' height='16' alt='' style='filter: hue-rotate(234deg);'/>
 		<!--<img src='images/new.gif' width='40' height='16' alt=''/>-->
-		<span class='marquee' dir='ltr' style='--text-width: 44ch; --animation-duration: 3s;'>
+		<!--<span class='marquee' dir='ltr' style='--text-width: 44ch; --animation-duration: 3s;'>
 			<span>
-				<!--<b>Cool new things</b> — One thing! Another thing! Something else!-->
-				Themes, New Homepage, File Formats, and More!
+				<b>Cool new things</b> — One thing! Another thing! Something else!
 			</span>
-		</span>
-		<!--<span>
-			<b>Themes</b> and <b>File Formats</b>
 		</span>-->
+		<span>
+			<b>Bubblegum theme</b>
+		</span>
 	</a>
 `);
 $news_indicator.on("click auxclick", (event) => {
@@ -481,6 +480,70 @@ const news_period_if_cannot_dismiss = 5 * day;
 const news_period = local_storage_unavailable ? news_period_if_cannot_dismiss : news_period_if_can_dismiss;
 if (Date.now() < Date.parse(latest_news_datetime) + news_period && news_seen !== latest_news_datetime) {
 	$status_area.append($news_indicator);
+}
+if ($news_indicator.text().includes("Bubblegum")) {
+	let bubbles_raf_id = -1;
+	const bubbles = [];
+	const make_bubble = () => {
+		const $bubble = $(E("img")).attr({
+			src: "images/bubblegum/bubble.png",
+			width: 24,
+			height: 24,
+			alt: "",
+		}).css({
+			position: "absolute",
+			pointerEvents: "none",
+			top: 0,
+			left: 0,
+			zIndex: 10,
+		}).appendTo("body");
+		const rect = $news_indicator[0].getBoundingClientRect();
+		const x = rect.left + Math.random() * rect.width;
+		const y = rect.top + rect.height;
+		const scale = Math.random() * 0.5 + 0.5;
+		const bubble = { $bubble, x, y, scale, vx: Math.random() * 2 - 1, vy: -Math.random() * 2 };
+		bubbles.push(bubble);
+		if (bubbles_raf_id === -1) {
+			animate_bubbles();
+		}
+		setTimeout(() => {
+			$bubble.remove();
+			bubbles.splice(bubbles.indexOf(bubble), 1);
+			if (bubbles.length === 0) {
+				cancelAnimationFrame(bubbles_raf_id);
+				bubbles_raf_id = -1;
+			}
+		}, 10000);
+	};
+	let last_time = performance.now();
+	const animate_bubbles = () => {
+		bubbles_raf_id = requestAnimationFrame(animate_bubbles);
+		const now = performance.now();
+		const dt = now - last_time;
+		for (const bubble of bubbles) {
+			// not actually frame rate independent physics, I don't think
+			bubble.x += bubble.vx * dt / 16;
+			bubble.y += bubble.vy * dt / 16;
+			const wind_x = Math.sin(bubble.y / 100 + now / 3000) * 0.01;
+			const wind_y = Math.cos(bubble.x / 100 + now / 3000) * 0.01;
+			bubble.vx += wind_x;
+			bubble.vy += wind_y;
+			bubble.$bubble.css({
+				transform: `translate(${bubble.x}px, ${bubble.y}px) scale(${bubble.scale})`,
+			});
+		}
+		last_time = now;
+	};
+	$news_indicator.on("pointerenter", () => {
+		for (let i = 0; i < 10; i++) {
+			setTimeout(make_bubble, i * 100);
+		}
+	});
+	$news_indicator.on("pointerdown", () => {
+		for (let i = 0; i < 50; i++) {
+			setTimeout(make_bubble, i * 1);
+		}
+	});
 }
 // #endregion
 
@@ -527,7 +590,7 @@ if (Date.now() < Date.parse("2024-02-22") + theme_new_period) {
 	$("[role=menuitem][aria-label*='Modern Dark'] .menu-item-shortcut").append("<img src='images/new2.gif' alt='New!'/>");
 }
 if (Date.now() < Date.parse("2024-02-24") + theme_soon_period) {
-	$("[role=menuitem][aria-label*='Bubblegum'] .menu-item-shortcut").append("<img src='images/soon-twist-anim.gif' alt='Coming Soon!' class='too-big-soon-gif'/>");
+	// $("[role=menuitem][aria-label*='Bubblegum'] .menu-item-shortcut").append("<img src='images/soon-twist-anim.gif' alt='Coming Soon!' class='too-big-soon-gif'/>");
 	// $("[role=menuitem][aria-label*='Retro Futurist'] .menu-item-shortcut").append("<img src='images/soon.gif' alt='Coming Soon!'/>");
 	// $("[role=menuitem][aria-label*='Picnic'] .menu-item-shortcut").append("<img src='images/soon.gif' alt='Coming Soon!'/>");
 }
