@@ -121,6 +121,7 @@ where it overlaps the shadows baked into the border-image. */
 }
 
 .window-content,
+.canvas-area.inset-deep,
 .status-field {
 	border-image-outset: 5px !important;
 }
