@@ -1101,6 +1101,13 @@ const menus = {
 					speech_recognition: [
 						"bubblegum theme", "switch to bubblegum theme", "use bubblegum theme", "set theme to bubblegum", "set theme bubblegum", "switch to bubblegum theme", "switch theme to bubblegum", "switch theme bubblegum",
 						"pink theme", "switch to pink theme", "use pink theme", "set theme to pink", "set theme pink", "switch to pink theme", "switch theme to pink", "switch theme pink",
+						"pearlescent theme", "pearlescent bubblegum", "pearlescent pink",
+						"pearly theme", "pearly bubblegum", "pearly pink",
+						"shiny theme", "shiny bubblegum", "shiny pink",
+						"3D theme", "3D bubblegum", "3D pink",
+						"bubbly theme",
+						"corporate bubblegum",
+						"business pink",
 					],
 					action: () => {
 						set_theme("bubblegum.css");
