@@ -228,41 +228,47 @@
 				by scrolling the mouse wheel while holding <kbd>Ctrl</kbd> or <kbd>⌘</kbd>,
 				for the full effect.
 			</p>
-			<h2>Maintenance <span style="font-size: 0.8em; font-style: italic; color: gray">(Boring!)</span></h2>
+			<h2>Maintenance</h2>
 			<p>
 				In other news, I've been investing a lot into making JS Paint more maintainable.
 			<p>
 				You won't see these changes in the app directly,
-				but they help make the code more malleable,
-				much like adding water to clay to shape it without breaking it.
+				but they help make the code more <em>malleable</em>,
+				like adding water to clay to shape it without breaking it.
 			</p>
-			<p>
-				I've converted the code almost entirely to <strong>ES Modules</strong>,
-				and made it explicit what remaining global variables are used in each file.
-			</p>
-			<p>
-				I've also split up some huge files into smaller ones.
-			</p>
-			<p>
-				I've added <strong>type annotations</strong> to the codebase, using JSDoc comments.
-				This way <a target="_blank" href="https://www.typescriptlang.org/">TypeScript</a>
-				can check for problems in the code, and editors can provide better autocompletion, among other benefits,
-				all while keeping the code in plain JavaScript, with no compile step.
-				(It's "JS Paint", not "TS Paint", after all!)
-			</p>
+			<ul>
+				<li>
+					Converted the codebase almost entirely to <strong>ES Modules</strong>.
+				</li>
+				<li>
+					Made remaining usage of <strong>global variables explicit</strong> in each file.
+				</li>
+				<li>
+					Split up some huge files into <strong>smaller files</strong>.
+				</li>
+				<li>
+					Added <strong>type annotations</strong> to the codebase, using JSDoc comments.
+					This way errors can be spotted earlier, and editors can provide better autocompletion,
+					all while keeping the code in plain JavaScript, with no compile step.
+				</li>
+			</ul>
 			<p>
 				These changes will make it easier to add cool new features to JS Paint in the future.
 			</p>
+			<!-- 
+			(It's "JS Paint", not "TS Paint", after all!)
 			<p>
 				P.S. <strong>Fun fact</strong>: ECMAScript (ES) is a synonym for JavaScript (JS),
 				which is a completely different language from Java.
 				The more you know!
+				Also, TypeScript (TS) is a superset of JavaScript, and the TypeScript compiler (tsc)
+				can be used to check JavaScript code for type errors, not just compile TypeScript code.
 			</p>
 			<p>
 				(It's not "ES Paint", but it <em>could have been</em>,
 				and then I could have designed a logo with a rotated 'M' to make it an 'E'.
 				Missed opportunity?? 🤔)
-			</p>
+			</p> -->
 		</article>
 		<article class="news-entry" id="news-2024-themes-and-save-formats">
 			<h1>Themes and File Formats</h1>
