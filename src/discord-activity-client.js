@@ -7,11 +7,13 @@ const Discord = await import("../lib/discord-embedded-app-sdk-v1.2.0-bundled-wit
 window._Discord = Discord;
 
 const CLIENT_ID = "1234578915415167067"; // TODO: get from .env
+const APPLICATION_ID = CLIENT_ID; // seems to be the same
+
+const DISCORD_API_BASE = "https://discord.com/api";
 
 const { DiscordSDK } = Discord;
 const discordSdk = new DiscordSDK(CLIENT_ID);
 await discordSdk.ready();
-
 
 // Authorize with Discord Client
 const { code } = await discordSdk.commands.authorize({
@@ -86,8 +88,35 @@ export function handleExternalLinks() {
 	window.open = (url) => discordSdk.commands.openExternalLink({ url });
 }
 
-export { Discord, discordSdk, guildMember, newAuth };
+export async function shareImage(blob, filename) {
+	const mimeType = blob.type;
 
+	// image data as buffer
+	const buf = await blob.arrayBuffer();
+
+	// image as file
+	const imageFile = new File([buf], filename, { type: mimeType });
+
+	const body = new FormData();
+	body.append('file', imageFile);
+
+	const attachmentResponse = await fetch(`${DISCORD_API_BASE}/applications/${APPLICATION_ID}/attachment`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${access_token}`,
+		},
+		body,
+	});
+	const attachmentJson = await attachmentResponse.json();
+
+	// mediaUrl is an ephemeral Discord CDN URL
+	const mediaUrl = attachmentJson.attachment.url;
+
+	// opens dialog in Discord client
+	await discordSdk.commands.openShareMomentDialog({ mediaUrl });
+}
+
+export { Discord, discordSdk, guildMember, newAuth };
 
 // Done with discord-specific setup
 

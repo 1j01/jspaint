@@ -83,7 +83,6 @@ window.systemHookDefaults = {
 			//   SecurityError
 			//   Error: Failed to execute 'showSaveFilePicker' on 'Window': Cross origin sub frames aren't allowed to show a file picker.
 
-			// So just show a message for now.
 			// Some other things to try:
 			// - See if the Discord bot API can upload files to a channel
 			// - Upload the file to our Discord Activity server and give a link to that
@@ -94,9 +93,19 @@ window.systemHookDefaults = {
 			// - openShareMomentDialog?
 			//   https://discord.com/developers/docs/activities/development-guides#open-share-moment-dialog
 			//   Oh, there's an "activities attachment API endpoint (discord.com/api/applications/${applicationId}/attachment) to create an ephemeral CDN URL"
-			showMessageBox({
-				title: localize('Save As'),
-				message: localize('File saving is not supported in the Discord Activity yet.'),
+			//   ...eventually got it working! see discord-activity-client.js
+			// - Show a dialog and ask users to right click and save the image
+
+			const { shareImage } = await import("./discord-activity-client.js");
+
+			const { newFileName, newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats });
+			const blob = await getBlob(newFileFormatID);
+			await shareImage(blob, newFileName);
+			savedCallbackUnreliable && savedCallbackUnreliable({
+				newFileName,
+				newFileFormatID,
+				newFileHandle: null,
+				newBlob: blob,
 			});
 			return;
 		}
