@@ -7,7 +7,7 @@ window._Discord = Discord;
 
 const CLIENT_ID = "1234578915415167067"; // TODO: get from .env
 
-const { DiscordSDK, Events } = Discord;
+const { DiscordSDK } = Discord;
 const discordSdk = new DiscordSDK(CLIENT_ID);
 await discordSdk.ready();
 
@@ -73,6 +73,9 @@ const guildMember = await fetch(
 		return null;
 	});
 
+export { Discord, discordSdk, guildMember, newAuth };
+
+
 // Done with discord-specific setup
 
 // // Now we create a colyseus client
@@ -91,22 +94,22 @@ const guildMember = await fetch(
 // 	}
 // }
 
-// Get the user's guild-specific avatar uri
-// If none, fall back to the user profile avatar
-// If no main avatar, use a default avatar
-const avatarUri = getUserAvatarUrl({
-	guildMember,
-	user: newAuth.user,
-});
-console.log(avatarUri);
+// // Get the user's guild-specific avatar uri
+// // If none, fall back to the user profile avatar
+// // If no main avatar, use a default avatar
+// const avatarUri = getUserAvatarUrl({
+// 	guildMember,
+// 	user: newAuth.user,
+// });
+// console.log(avatarUri);
 
-// Get the user's guild nickname. If none set, fall back to global_name, or username
-// Note - this name is note guaranteed to be unique
-const name = getUserDisplayName({
-	guildMember,
-	user: newAuth.user,
-});
-console.log(name);
+// // Get the user's guild nickname. If none set, fall back to global_name, or username
+// // Note - this name is note guaranteed to be unique
+// const name = getUserDisplayName({
+// 	guildMember,
+// 	user: newAuth.user,
+// });
+// console.log(name);
 
 
 // // The second argument has to include for the room as well as the current player
