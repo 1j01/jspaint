@@ -60,8 +60,13 @@ function manage_storage() {
 		const $img = $(E("img")).attr({ src: imgSrc }).addClass("thumbnail-img");
 		const $remove = $(E("button")).text("Remove").addClass("remove-button").attr("type", "button");
 		const href = `#${k.replace("image#", "local:")}`;
-		// Electron app is a single window for now. This isn't a great experience, but it's better a broken link.
-		const target = window.is_electron_app ? "_self" : "_blank";
+		// The Electron app is a single window for now. This isn't a great experience, but it's better than a broken link.
+		// The Discord Activity can open a external links (with a prompt), but opening internally seems better,
+		// and it was opening a new tab with the app but not loading the document, so this fixes that.
+		// (It seemed to be a separate storage area, despite the same origin? only glancing, not sure.)
+		const queryParams = new URLSearchParams(window.location.search);
+		const isDiscordEmbed = queryParams.get('frame_id') != null; // TODO: DRY; could move to helpers.js
+		const target = window.is_electron_app || isDiscordEmbed ? "_self" : "_blank";
 		const $open_link = $(E("a")).attr({ href, target }).text(localize("Open"));
 		const $thumbnail_open_link = $(E("a")).attr({ href, target }).addClass("thumbnail-container");
 		$thumbnail_open_link.append($img);

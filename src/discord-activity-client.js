@@ -75,8 +75,9 @@ const guildMember = await fetch(
 
 export function handleExternalLinks() {
 	document.addEventListener('click', (e) => {
+		if (e.defaultPrevented) return;
 		const target = e.target;
-		if (target.tagName === 'A' && target.href) {
+		if (target.tagName === 'A' && target.href && target.target === '_blank') {
 			e.preventDefault();
 			discordSdk.commands.openExternalLink({ url: target.href });
 		}
