@@ -9,6 +9,7 @@ import { show_help } from "./help.js";
 import { $G, get_rgba_from_color } from "./helpers.js";
 import { show_imgur_uploader } from "./imgur.js";
 import { manage_storage } from "./manage-storage.js";
+import { showMessageBox } from "./msgbox.js";
 import { simulateRandomGesturesPeriodically, simulatingGestures, stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { speech_recognition_active, speech_recognition_available } from "./speech-recognition.js";
 import { get_theme, set_theme } from "./theme.js";
@@ -226,6 +227,16 @@ const menus = {
 			],
 			action: () => {
 				are_you_sure(() => {
+					const queryParams = new URLSearchParams(window.location.search);
+					const isDiscordEmbed = queryParams.get('frame_id') != null; // TODO: DRY; could move to helpers.js
+					if (isDiscordEmbed) {
+						// For the Discord Activity, there doesn't seem to be an API to exit the activity.
+						showMessageBox({
+							message: "Click the Leave Activity button in Discord to exit.",
+						});
+						return;
+					}
+
 					// Note: For a Chrome PWA, window.close() is allowed only if there is only one history entry.
 					// I could make it try to close the window and then navigate to the official web desktop if it fails,
 					// but that would be inconsistent, as it wouldn't close the window after using File > New or File > Open.
