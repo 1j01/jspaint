@@ -74,6 +74,7 @@ module.exports = {
 				"src/helpers.js",
 				"src/storage.js",
 				"src/sessions.js",
+				"src/discord-activity-client.js",
 				"src/$Component.js",
 				"src/$ToolWindow.js",
 				"src/$ToolBox.js",

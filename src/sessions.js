@@ -617,15 +617,7 @@ const queryParams = new URLSearchParams(window.location.search);
 const isDiscordEmbed = queryParams.get('frame_id') != null;
 
 if (isDiscordEmbed) {
-	// Discord Embedded App SDK, bundled with Skypack, saved from:
-	// https://cdn.skypack.dev/-/@discord/embedded-app-sdk@v1.2.0-QXsdBg8VfgltgT8IEtBP/dist=es2019,mode=imports/optimized/@discord/embedded-app-sdk.js
-	const Discord = await import("../lib/discord-embedded-app-sdk-v1.2.0-bundled-with-skypack.js");
-	// @ts-ignore
-	window._Discord = Discord;
-
-	const { DiscordSDK, Events } = Discord;
-	const discordSdk = new DiscordSDK("1234578915415167067");
-	await discordSdk.ready();
+	await import("./discord-activity-client.js");
 
 	// Fetch
 	const participants = await discordSdk.commands.getInstanceConnectedParticipants();
