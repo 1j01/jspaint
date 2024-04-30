@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>JS Paint — Privacy Policy</title>
+
+	<meta http-equiv="Content-Security-Policy" content="
+		default-src 'self';
+		style-src 'self' 'unsafe-inline';
+	">
+
+	<link rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png">
+	<!-- Chrome will pick the largest image for some reason, instead of the most appropriate one. -->
+	<!-- <link rel="icon" type="image/png" sizes="192x192" href="images/icons/192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="images/icons/32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="images/icons/96x96.png"> -->
+	<!-- <link rel="icon" type="image/png" sizes="16x16" href="images/icons/16x16.png"> -->
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="mask-icon" href="images/icons/safari-pinned-tab.svg" color="red">
+	<link rel="manifest" href="manifest.webmanifest">
+	<meta name="msapplication-TileColor" content="#008080">
+	<meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
+	<meta name="theme-color" content="#000080">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta name="description" content="Classic MS Paint in the browser, with extra features">
+
+	<link href="styles/legal.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+	<h1 style="text-align: center;">
+		<a href="https://jspaint.app">
+			<img src="images/icons/jspaint.svg" width="192" height="192" alt="">
+			<br>
+			<span id="jspaint-project-name">JS Paint</span>
+		</a>
+		<br>
+		<span id="jspaint-page-title">Privacy Policy</span>
+	</h1>
+
+	<p style="text-align: center;">JS Paint is a pixel-perfect remake of Microsoft Paint that runs in the browser.
+	</p>
+
+	<p style="text-align: center;">This privacy policy applies to the JS Paint website at
+		<a href="https://jspaint.app">jspaint.app</a>.
+	</p>
+
+	<main>
+		<h2>Personal Data</h2>
+		<p>
+			JS Paint doesn't track you or sell your data.
+		</p>
+		<h2>Third-Party Services</h2>
+		<p>
+			JS Paint doesn't send any information to a server in most cases.
+		</p>
+		<p>
+			There are a few features which do talk to a server:
+		</p>
+		<ul>
+			<li>
+				<strong>File > Upload to Imgur</strong> naturally requires sending the image to
+				<a href="https://imgur.com">Imgur</a> for hosting.
+			</li>
+			<li>
+				If you paste an image URL, the app will fetch the image via the URL,
+				or if that doesn't work, fetch via a
+				<a href="https://github.com/Rob--W/cors-anywhere">CORS Anywhere</a>
+				proxy service, or if that doesn't work, attempt to fetch via the
+				<a href="https://web.archive.org/">Internet Archive Wayback Machine</a>.
+			</li>
+			<li>
+				In Speech Recognition mode (<strong>Extras > Speech Recognition</strong>),
+				if you say for example "draw a cat",
+				it will try to do an anonymous Bing Images search for "cat" clipart,
+				and then animate sketching it.
+			</li>
+			<li>
+				Multi-User mode (<strong>Extras > Multi-User</strong>), intended for online collaboration, uses
+				<a href="https://firebase.google.com/">Firebase</a> for real-time communication.
+			</li>
+		</ul>
+		<p>
+			Some of these features may be defunct due to changes in the services they rely on.
+			They may be replaced or removed in the future, to simplify the privacy policy.
+		</p>
+
+		<h2>Local Storage</h2>
+		<p>
+			JS Paint uses local storage to save your work in progress.
+		</p>
+		<p>
+			You can view and delete stored images with <strong>File > Manage Storage</strong>.
+		</p>
+		<p>
+			Think of this as a backup, in case you close the tab by accident or your computer crashes.
+			Don't rely on it as your only backup.
+		</p>
+		<p>
+			There is currently no option to prevent the app from saving a backup,
+			however you can use your browser's private browsing mode to prevent the data from being persisted.
+		</p>
+		<p>
+			If the URL starts with <code>https://jspaint.app/#local:</code>, it's a local session, private to you.
+		</p>
+
+		<h2>Collaborative Sessions</h2>
+		<p>
+			Multi-user sessions are currently public. Anyone could find and view, edit, or delete them.
+		</p>
+		<p>
+			Private collaborative sessions are not yet supported.
+		</p>
+		<p>
+			If the URL starts with <code>https://jspaint.app/#session:</code>, it's a multi-user session.
+		</p>
+	</main>
+	<hr>
+	<footer>
+		<h2>More Info</h2>
+		<p>
+			<a href="https://jspaint.app"><img src="images/icons/32x32.png" width="32" height="32" alt=""
+					style="vertical-align: middle"></a>
+			JS Paint is a project by <a href="https://isaiahodhner.io">Isaiah Odhner</a>.
+		<p>
+			<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt"><img src="images/about/free.gif"
+					width="88" height="39" alt="Free" style="vertical-align: middle"></a>
+			The project is open source under the permissive
+			<a href="https://github.com/1j01/jspaint/blob/master/LICENSE.txt">MIT License</a>.
+		</p>
+		<p>
+			<a href="https://github.com/1j01/jspaint/issues"><img src="images/about/foco.gif" width="40" height="40"
+					alt="Ideas" style="vertical-align: middle"></a>
+			You can request features and report bugs
+			<a href="https://github.com/1j01/jspaint/issues">on GitHub</a>
+			or <a href="mailto:isaiahodhner@gmail.com?subject=JS%20Paint">by email</a>.
+		</p>
+		<p>
+			<a href="about.html">
+				<img src="images/about/moreinfo_paint.gif" width="100" height="60" alt="More info"
+					style="vertical-align: middle">
+				More about JS Paint
+			</a>
+		</p>
+	</footer>
+</body>
+
+</html>

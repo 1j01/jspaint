@@ -1,0 +1,10 @@
+body {
+	font-family: sans-serif;
+}
+
+main,
+footer {
+	margin: 0 auto;
+	max-width: 60em;
+	padding: 1em;
+}
