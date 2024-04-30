@@ -4,17 +4,11 @@ This repo is a minimal starter-project. Getting an embedded app running in Disco
 
 ## Client architecture
 
-The client (aka front-end) is using [ViteJS](https://vitejs.dev/)'s Vanilla Typescript starter project. Vite has great starter projects in [many common javascript frameworks](https://vitejs.dev/guide/#trying-vite-online). All of these projects use the same config setup, which means that if you prefer React, Svelte, etc... you can swap frameworks and still get the following:
+The client (aka front-end) is using vanilla JS.
 
-- Fast typescript bundling with hot-module-reloading
-- Identical configuration API
-- Identical environment variable API
+### Server architecture
 
-Note: ViteJS is not required to use Discord's `embedded-app-sdk`. ViteJS is a meta-client-framework we are using to make it easy to help you get running quickly, but the core concepts of developing an embedded application are the same, regardless of how you are consuming `embedded-app-sdk`.
-
-## Server architecture
-
-The server (aka back-end) is using Express with typescript. Any file in the server project can be imported by the client, in case you need to share business logic.
+The server (aka back-end) is using Express with typescript.
 
 ## Setting up your Discord Application
 
