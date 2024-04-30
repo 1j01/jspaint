@@ -116,10 +116,10 @@ function set_all_url_params(params, { replace_history_state = false } = {}) {
 			}
 		}
 	}
-	// Note: gets rid of query string (?) portion of the URL
-	// This is desired for upgrading backwards compatibility URLs;
-	// may not be desired for future cases.
-	const new_url = `${location.origin}${location.pathname}#${new_hash}`;
+	// Note: previously this omitted the query string (`location.search`) portion of the URL
+	// to support upgrading backwards compatibility URLs, but the query string is needed for the Discord app.
+	// TODO: fix backwards compatibility URLs? what were they? are they still relevant? probably not...
+	const new_url = `${location.origin}${location.pathname}${location.search}#${new_hash}`;
 	try {
 		// can fail when running from file: protocol
 		if (replace_history_state) {
