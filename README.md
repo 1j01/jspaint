@@ -2,6 +2,7 @@
 # [![](images/icons/32x32.png) JS Paint](https://jspaint.app)
 
 A pixel-perfect web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
+Then join the [Discord server](https://discord.gg/Q2AHv7VM) to say hi!
 
 JS Paint recreates every tool and menu of MS Paint, and even [little-known features](#did-you-know), to a high degree of fidelity.
 

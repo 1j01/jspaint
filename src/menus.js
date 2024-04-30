@@ -1312,6 +1312,17 @@ const menus = {
 			description: localize("Shows news about JS Paint."),
 		},
 		{
+			emoji_icon: "👾", // "👋",
+			item: localize("Discord"),
+			speech_recognition: [
+				"chat on discord", "discord server", "discord community", "join the discord", "join discord", "visit the discord", "visit discord", "discord chat",
+			],
+			action: () => {
+				window.open("https://discord.gg/Q2AHv7VM");
+			},
+			description: localize("Joins the community on Discord."),
+		},
+		{
 			emoji_icon: "ℹ️",
 			item: localize("GitHub"),
 			speech_recognition: [
