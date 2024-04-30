@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "description": "The app server",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm-run-all build start:prod",
+    "start:prod": "NODE_ENV=production node ./dist/app.js",
+    "dev": "nodemon --watch src -e ts,ejs --exec $npm_execpath start",
+    "build": "npm-run-all build:clean build:tsc",
+    "build:clean": "rimraf dist/*",
+    "build:tsc": "tsc",
+    "debug:start": "npm-run-all build debug:start:prod",
+    "debug:start:prod": "node --nolazy --inspect-brk=9229 ./dist/app.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "nodemon": "^3.1.0"
+  },
+  "devDependencies": {
+    "npm-run-all2": "^6.0.0"
+  }
+}

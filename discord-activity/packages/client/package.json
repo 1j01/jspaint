@@ -1,0 +1,16 @@
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@discord/embedded-app-sdk": "workspace:@discord/embedded-app-sdk@*"
+  },
+  "devDependencies": {
+    "vite": "^5.2.9"
+  }
+}
