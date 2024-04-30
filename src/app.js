@@ -99,6 +99,7 @@ window.systemHookDefaults = {
 			const { newFileName, newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats });
 			const blob = await getBlob(newFileFormatID);
 			await shareImage(blob, newFileName);
+			// not guaranteed saved, but the share dialog should be shown successfully
 			savedCallbackUnreliable && savedCallbackUnreliable({
 				newFileName,
 				newFileFormatID,
