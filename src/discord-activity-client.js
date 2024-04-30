@@ -1,7 +1,4 @@
 // @ts-check
-/* global localize */
-
-import { showMessageBox } from "./msgbox.js";
 
 // Discord Embedded App SDK, bundled with Skypack, saved from:
 // https://cdn.skypack.dev/-/@discord/embedded-app-sdk@v1.2.0-QXsdBg8VfgltgT8IEtBP/dist=es2019,mode=imports/optimized/@discord/embedded-app-sdk.js
@@ -77,7 +74,6 @@ const guildMember = await fetch(
 		return null;
 	});
 
-// TODO: rename function to encompass saveAs functionality
 export function handleExternalLinks() {
 	document.addEventListener('click', (e) => {
 		if (e.defaultPrevented) return;
@@ -88,30 +84,6 @@ export function handleExternalLinks() {
 		}
 	});
 	window.open = (url) => discordSdk.commands.openExternalLink({ url });
-
-	// Also override the FileSaver.js saveAs function
-	window.saveAs = (blob, name) => {
-		console.log('saveAs', blob, name);
-
-		// Discord has a nice prompt asking you if you want to allow `blob:` URLs, rather than allow a domain (which is the usual case),
-		// but it fails to open a tab with the image.
-		// const blob_url = URL.createObjectURL(blob);
-		// console.log('blob_url', blob_url);
-		// discordSdk.commands.openExternalLink({ url: blob_url });
-		// Data URI doesn't work either. For a data URI it says it's "malformed and potentially dangerous"
-		// const reader = new FileReader();
-		// reader.onload = () => {
-		// 	const dataUri = reader.result;
-		// 	discordSdk.commands.openExternalLink({ url: dataUri });
-		// };
-		// reader.readAsDataURL(blob);
-
-		// So, just show a message for now.
-		showMessageBox({
-			title: localize('Save As'),
-			message: localize('File saving is not supported in the Discord Activity yet.'),
-		});
-	};
 }
 
 export { Discord, discordSdk, guildMember, newAuth };
