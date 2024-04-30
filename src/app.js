@@ -177,6 +177,15 @@ window.systemHookDefaults = {
 				newBlob: blob,
 			});
 		} else {
+
+			// Note: Currently, I'm overriding window.saveAs for the Discord Activity.
+			// const queryParams = new URLSearchParams(window.location.search);
+			// const isDiscordEmbed = queryParams.get('frame_id') != null; // TODO: DRY; could move to helpers.js
+			// if (isDiscordEmbed) {
+			//	...
+			// 	return;
+			// }
+
 			const { newFileName, newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats });
 			const blob = await getBlob(newFileFormatID);
 			saveAs(blob, newFileName);
