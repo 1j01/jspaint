@@ -1578,6 +1578,20 @@ function show_about_paint() {
 		show_news();
 	});//.focus();
 
+	const queryParams = new URLSearchParams(window.location.search);
+	const isDiscordEmbed = queryParams.get('frame_id') != null; // TODO: DRY; could move to helpers.js
+
+	if (isDiscordEmbed) {
+		// No checking for updates in the Discord Activity for now at least.
+		// It's sandboxed, so it can't fetch the news without some extra server logic to proxy it,
+		// and since there will be one official version of the Discord Activity,
+		// the user isn't responsible for updating it.
+
+		// Might be cute to say "This product is licensed to <Discord User>",
+		// since we have the API for that.
+		return;
+	}
+
 	$("#checking-for-updates").removeAttr("hidden");
 
 	// Forward compatibility note: I could change what's served at /?news and remove the news from the HTML,
