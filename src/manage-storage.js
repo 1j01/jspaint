@@ -2,7 +2,7 @@
 /* global localize */
 import { $DialogWindow } from "./$ToolWindow.js";
 // import { localize } from "./app-localization.js";
-import { E } from "./helpers.js";
+import { E, is_discord_embed } from "./helpers.js";
 import { showMessageBox } from "./msgbox.js";
 
 let $storage_manager;
@@ -64,9 +64,7 @@ function manage_storage() {
 		// The Discord Activity can open a external links (with a prompt), but opening internally seems better,
 		// and it was opening a new tab with the app but not loading the document, so this fixes that.
 		// (It seemed to be a separate storage area, despite the same origin? only glancing, not sure.)
-		const queryParams = new URLSearchParams(window.location.search);
-		const isDiscordEmbed = queryParams.get('frame_id') != null; // TODO: DRY; could move to helpers.js
-		const target = window.is_electron_app || isDiscordEmbed ? "_self" : "_blank";
+		const target = window.is_electron_app || is_discord_embed ? "_self" : "_blank";
 		const $open_link = $(E("a")).attr({ href, target }).text(localize("Open"));
 		const $thumbnail_open_link = $(E("a")).attr({ href, target }).addClass("thumbnail-container");
 		$thumbnail_open_link.append($img);

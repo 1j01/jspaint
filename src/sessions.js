@@ -5,7 +5,7 @@
 import { $DialogWindow } from "./$ToolWindow.js";
 // import { localize } from "./app-localization.js";
 import { change_url_param, get_uris, load_image_from_uri, open_from_image_info, redo, reset_file, show_error_message, show_resource_load_error_message, undo, undoable, update_title } from "./functions.js";
-import { $G, debounce, get_help_folder_icon, image_data_match, make_canvas, to_canvas_coords } from "./helpers.js";
+import { $G, debounce, get_help_folder_icon, image_data_match, is_discord_embed, make_canvas, to_canvas_coords } from "./helpers.js";
 import { storage_quota_exceeded } from "./manage-storage.js";
 import { showMessageBox } from "./msgbox.js";
 import { localStore } from "./storage.js";
@@ -613,10 +613,7 @@ const new_local_session = () => {
 // Probably in app.js so as to handle the possibility of sessions.js failing to load.
 
 
-const queryParams = new URLSearchParams(window.location.search);
-const isDiscordEmbed = queryParams.get('frame_id') != null;
-
-if (isDiscordEmbed) {
+if (is_discord_embed) {
 	const { Discord, discordSdk, newAuth, guildMember, handleExternalLinks } = await import("./discord-activity-client.js");
 	const { Events } = Discord;
 

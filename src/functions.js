@@ -10,7 +10,7 @@ import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
 // import { display_hotkey, get_hotkey, localize, remove_hotkey } from "./app-localization.js";
 import { default_palette } from "./color-data.js";
 import { image_formats } from "./file-format-data.js";
-import { $G, E, TAU, debounce, from_canvas_coords, get_help_folder_icon, get_icon_for_tool, get_rgba_from_color, is_pride_month, make_canvas, to_canvas_coords } from "./helpers.js";
+import { $G, E, TAU, debounce, from_canvas_coords, get_help_folder_icon, get_icon_for_tool, get_rgba_from_color, is_discord_embed, is_pride_month, make_canvas, to_canvas_coords } from "./helpers.js";
 import { apply_image_transformation, draw_grid, draw_selection_box, flip_horizontal, flip_vertical, invert_monochrome, invert_rgb, rotate, stretch_and_skew, threshold_black_and_white } from "./image-manipulation.js";
 import { show_imgur_uploader } from "./imgur.js";
 import { showMessageBox } from "./msgbox.js";
@@ -1578,10 +1578,7 @@ function show_about_paint() {
 		show_news();
 	});//.focus();
 
-	const queryParams = new URLSearchParams(window.location.search);
-	const isDiscordEmbed = queryParams.get('frame_id') != null; // TODO: DRY; could move to helpers.js
-
-	if (isDiscordEmbed) {
+	if (is_discord_embed) {
 		// No checking for updates in the Discord Activity for now at least.
 		// It's sandboxed, so it can't fetch the news without some extra server logic to proxy it,
 		// and since there will be one official version of the Discord Activity,

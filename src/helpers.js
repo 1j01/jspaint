@@ -27,6 +27,9 @@ const TAU =
 
 const is_pride_month = new Date().getMonth() === 5; // June (0-based, 0 is January)
 
+const query_params = new URLSearchParams(window.location.search);
+export const is_discord_embed = query_params.get('frame_id') != null;
+
 const $G = $(window);
 
 /**
