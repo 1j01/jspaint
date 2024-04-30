@@ -5,7 +5,7 @@ import { fetchAndRetry } from './utils';
 dotenv.config({ path: '../../.env' });
 
 const app: Application = express();
-const port: number = Number(process.env.PORT) || 3001;
+const port: number = Number(process.env.PORT) || 1999;
 
 app.use(express.json());
 
