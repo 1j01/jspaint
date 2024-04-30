@@ -73,6 +73,17 @@ const guildMember = await fetch(
 		return null;
 	});
 
+export function handleExternalLinks() {
+	document.addEventListener('click', (e) => {
+		const target = e.target;
+		if (target.tagName === 'A' && target.href) {
+			e.preventDefault();
+			discordSdk.commands.openExternalLink({ url: target.href });
+		}
+	});
+	window.open = (url) => discordSdk.commands.openExternalLink({ url });
+}
+
 export { Discord, discordSdk, guildMember, newAuth };
 
 

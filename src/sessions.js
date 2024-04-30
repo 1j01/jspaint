@@ -617,7 +617,7 @@ const queryParams = new URLSearchParams(window.location.search);
 const isDiscordEmbed = queryParams.get('frame_id') != null;
 
 if (isDiscordEmbed) {
-	const { Discord, discordSdk, newAuth, guildMember } = await import("./discord-activity-client.js");
+	const { Discord, discordSdk, newAuth, guildMember, handleExternalLinks } = await import("./discord-activity-client.js");
 	const { Events } = Discord;
 
 	console.log("Discord SDK", discordSdk);
@@ -632,6 +632,9 @@ if (isDiscordEmbed) {
 	discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
 	// Unsubscribe
 	discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+
+	// Handle external links
+	handleExternalLinks();
 }
 
 function updateParticipants(participants) {
