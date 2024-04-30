@@ -1329,7 +1329,7 @@ const menus = {
 				"chat on discord", "discord server", "discord community", "join the discord", "join discord", "visit the discord", "visit discord", "discord chat",
 			],
 			action: () => {
-				window.open("https://discord.gg/Q2AHv7VM");
+				window.open("https://discord.gg/SyFweYjTKx");
 			},
 			description: localize("Joins the community on Discord."),
 		},
