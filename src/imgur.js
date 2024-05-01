@@ -1,8 +1,9 @@
 // @ts-check
 /* global localize */
 import { $DialogWindow } from "./$ToolWindow.js";
+import { show_error_message } from "./functions.js";
 // import { localize } from "./app-localization.js";
-import { E } from "./helpers.js";
+import { E, is_discord_embed } from "./helpers.js";
 
 let $imgur_window;
 
@@ -119,7 +120,9 @@ function show_imgur_uploader(blob) {
 				if (!response) return;
 
 				if (!response.success) {
-					$imgur_status.text("Failed to upload image :(");
+					//$imgur_status.text("Failed to upload image :(");
+					$imgur_window.close();
+					show_error_message("Failed to upload image.", req.responseText);
 					return;
 				}
 				const url = response.data.link;
@@ -174,8 +177,27 @@ function show_imgur_uploader(blob) {
 					$imgur_window.close();
 				}).focus();
 			} else if (req.readyState == 4) {
-				$progress.add($progress_percent).remove();
-				$imgur_status.text("Error uploading image :(");
+				//$progress.add($progress_percent).remove();
+				//$imgur_status.text("Error uploading image :(");
+				$imgur_window.close();
+				if (is_discord_embed) {
+					// closest localized string: "An unsupported operation was attempted."
+					show_error_message("Uploading to Imgur is not currently supported in the Discord Activity.");
+				} else {
+					let response;
+					try {
+						response = JSON.parse(req.responseText);
+					} catch (error) {
+						// Prefer to show error about failing to upload,
+						// rather than it not being JSON.
+						// Full response can be shown in the expandible details.
+					}
+					if (response && response.data && response.data.error) {
+						show_error_message(`Failed to upload image.\n\n${response.data.error}`, req.responseText);
+					} else {
+						show_error_message(`Failed to upload image. HTTP ${req.status}`, req.responseText);
+					}
+				}
 			}
 		});
 
