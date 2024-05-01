@@ -1,11 +1,15 @@
+import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
+// import enableWs from 'express-ws';
 import path from 'path';
 import { fetchAndRetry } from './utils';
 dotenv.config({ path: '../../.env' });
 
 const app: Application = express();
 const port: number = Number(process.env.PORT) || 1999;
+
+// enableWs(app);
 
 app.use(express.json());
 
@@ -50,6 +54,47 @@ app.post('/api/token', async (req: Request, res: Response) => {
 
 	res.send({ access_token });
 });
+
+// Simple multiplayer image editing
+
+const rooms: { [key: string]: string } = {};
+
+// app.post('/api/rooms', (req: Request, res: Response) => {
+// 	const roomId = uuid(); // or the room id might be the Discord Activity instance ID
+// 	rooms[roomId] = '';
+// 	res.send({ roomId });
+// });
+
+app.get('/api/rooms/:roomId/data', (req: Request, res: Response) => {
+	const { roomId } = req.params;
+	res.send(rooms[roomId]);
+});
+
+app.put('/api/rooms/:roomId/data', bodyParser.text({ type: '*/*' }), (req: Request, res: Response) => {
+	const { roomId } = req.params;
+	const image = req.body;
+	rooms[roomId] = image;
+	res.send({ success: true });
+});
+
+// app.ws('/api/sessions/:session_id', (ws, req) => {
+// console.log('WebSocket support is enabled')
+// @ts-ignore
+// app.ws('/api/session', (ws, req) => {
+// 	console.log('WebSocket was opened')
+
+// 	ws.on('message', (msg: string) => {
+// 		console.log('Received message', msg)
+// 		ws.send(msg)
+// 	})
+
+// 	ws.on('close', () => {
+// 		console.log('WebSocket was closed')
+// 	})
+// })
+
+
+
 
 app.listen(port, () => {
 	// eslint-disable-next-line no-console

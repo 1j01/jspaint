@@ -214,7 +214,7 @@ const cursor_image = new Image();
 cursor_image.src = "images/cursors/default.png";
 
 
-class MultiUserSession {
+class FirebaseSession {
 	constructor(session_id) {
 		this.id = session_id;
 		this._fb_listeners = [];
@@ -226,7 +226,7 @@ class MultiUserSession {
 			update_title();
 			this.start();
 		};
-		if (!MultiUserSession.fb_root) {
+		if (!FirebaseSession.fb_root) {
 			var script = document.createElement("script");
 			script.addEventListener("load", () => {
 				const config = {
@@ -238,7 +238,7 @@ class MultiUserSession {
 					messagingSenderId: "63395010995"
 				};
 				firebase.initializeApp(config);
-				MultiUserSession.fb_root = firebase.database().ref("/");
+				FirebaseSession.fb_root = firebase.database().ref("/");
 				on_firebase_loaded();
 			});
 			script.addEventListener("error", () => {
@@ -274,7 +274,7 @@ class MultiUserSession {
 			fb.on(event_type, callback, error_callback);
 		};
 		// Get Firebase references
-		this.fb = MultiUserSession.fb_root.child(this.id);
+		this.fb = FirebaseSession.fb_root.child(this.id);
 		this.fb_data = this.fb.child("data");
 		this.fb_users = this.fb.child("users");
 		if (user_id) {
@@ -511,10 +511,395 @@ class MultiUserSession {
 
 /** 
  * fb_root is the root reference for the Firebase Realtime Database
- * @memberof MultiUserSession
+ * @memberof FirebaseSession
  * @type {any} - @TODO: install types for Firebase or ditch Firebase
  */
-MultiUserSession.fb_root = null;
+FirebaseSession.fb_root = null;
+
+
+
+
+// class WebSocketSession {
+// 	constructor(session_id) {
+// 		this.id = session_id;
+// 		this._listeners = [];
+
+// 		// this.ws = new WebSocket(`wss://${location.host}/api/sessions/${this.id}`);
+// 		this.ws = new WebSocket(`ws://${location.host}/api/session`);
+
+// 		file_name = `[${this.id}]`;
+// 		update_title();
+// 		this.start();
+// 	}
+// 	start() {
+// 		this.ws.addEventListener("open", () => {
+// 			this.ws.send(JSON.stringify({
+// 				type: "join",
+// 				user,
+// 				session_id: this.id,
+// 			}));
+// 		});
+
+// 		this.ws.addEventListener("message", e => {
+// 			const data = JSON.parse(e.data);
+// 			if (data.type === "image") {
+// 				// TODO: transfer as binary data
+// 				const img = new Image();
+// 				img.onload = () => {
+// 					undoable({
+// 						name: "Sync Session",
+// 						icon: get_help_folder_icon("p_database.png"),
+// 					}, () => {
+// 						main_ctx.copy(img);
+// 						$canvas_area.trigger("resize");
+// 					});
+// 				};
+// 				img.src = data.uri;
+// 			} else if (data.type === "cursor") {
+// 				const cursor_canvas = make_canvas(32, 32);
+// 				const $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
+// 				$cursor.css({
+// 					display: "none",
+// 					position: "absolute",
+// 					left: 0,
+// 					top: 0,
+// 					opacity: 0,
+// 					zIndex: 5, // @#: z-index
+// 					pointerEvents: "none",
+// 					transition: "opacity 0.5s",
+// 				});
+// 				const draw_cursor = () => {
+// 					cursor_canvas.width = cursor_image.width;
+// 					cursor_canvas.height = cursor_image.height;
+// 					const cursor_ctx = cursor_canvas.ctx;
+// 					cursor_ctx.fillStyle = data.color;
+// 					cursor_ctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
+// 					cursor_ctx.globalCompositeOperation = "multiply";
+// 					cursor_ctx.drawImage(cursor_image, 0, 0);
+// 					cursor_ctx.globalCompositeOperation = "destination-atop";
+// 					cursor_ctx.drawImage(cursor_image, 0, 0);
+// 				};
+// 				if (cursor_image.complete) {
+// 					draw_cursor();
+// 				}
+// 				else {
+// 					$(cursor_image).one("load", draw_cursor);
+// 				}
+// 				// Update the cursor element
+// 				const canvas_rect = window.canvas_bounding_client_rect;
+// 				$cursor.css({
+// 					display: "block",
+// 					position: "absolute",
+// 					left: canvas_rect.left + magnification * data.x,
+// 					top: canvas_rect.top + magnification * data.y,
+// 					opacity: 1 - data.away,
+// 				});
+// 			} else {
+// 				console.warn("Unknown message type", data.type);
+// 			}
+// 		});
+
+
+// 		// // For each existing and new user
+// 		// _fb_on(this.fb_users, "child_added", snap => {
+// 		// 	// Is this you?
+// 		// 	if (snap.key === user_id) {
+// 		// 		// You already have a cursor.
+// 		// 		return;
+// 		// 	}
+// 		// 	// Get the Firebase reference for this user
+// 		// 	const fb_other_user = snap.ref;
+// 		// 	// Get the user object stored on the server
+// 		// 	let other_user = snap.val();
+// 		// 	// @TODO: display other cursor types?
+// 		// 	// @TODO: display pointer button state?
+// 		// 	// @TODO: display selections
+// 		// 	const cursor_canvas = make_canvas(32, 32);
+// 		// 	// Make the cursor element
+// 		// 	const $cursor = $(cursor_canvas).addClass("user-cursor").appendTo($app);
+// 		// 	$cursor.css({
+// 		// 		display: "none",
+// 		// 		position: "absolute",
+// 		// 		left: 0,
+// 		// 		top: 0,
+// 		// 		opacity: 0,
+// 		// 		zIndex: 5, // @#: z-index
+// 		// 		pointerEvents: "none",
+// 		// 		transition: "opacity 0.5s",
+// 		// 	});
+// 		// 	// When the cursor data changes
+// 		// 	_fb_on(fb_other_user, "value", snap => {
+// 		// 		other_user = snap.val();
+// 		// 		// If the user has left
+// 		// 		if (other_user == null) {
+// 		// 			// Remove the cursor element
+// 		// 			$cursor.remove();
+// 		// 		}
+// 		// 		else {
+// 		// 			// Draw the cursor
+// 		// 			const draw_cursor = () => {
+// 		// 				cursor_canvas.width = cursor_image.width;
+// 		// 				cursor_canvas.height = cursor_image.height;
+// 		// 				const cursor_ctx = cursor_canvas.ctx;
+// 		// 				cursor_ctx.fillStyle = other_user.color;
+// 		// 				cursor_ctx.fillRect(0, 0, cursor_canvas.width, cursor_canvas.height);
+// 		// 				cursor_ctx.globalCompositeOperation = "multiply";
+// 		// 				cursor_ctx.drawImage(cursor_image, 0, 0);
+// 		// 				cursor_ctx.globalCompositeOperation = "destination-atop";
+// 		// 				cursor_ctx.drawImage(cursor_image, 0, 0);
+// 		// 			};
+// 		// 			if (cursor_image.complete) {
+// 		// 				draw_cursor();
+// 		// 			}
+// 		// 			else {
+// 		// 				$(cursor_image).one("load", draw_cursor);
+// 		// 			}
+// 		// 			// Update the cursor element
+// 		// 			const canvas_rect = window.canvas_bounding_client_rect;
+// 		// $cursor.css({
+// 		// 				display: "block",
+// 		// 				position: "absolute",
+// 		// 				left: canvas_rect.left + magnification * other_user.cursor.x,
+// 		// 				top: canvas_rect.top + magnification * other_user.cursor.y,
+// 		// 				opacity: 1 - other_user.cursor.away,
+// 		// 			});
+// 		// 		}
+// 		// 	});
+// 		// });
+// 		// let previous_uri;
+// 		// // let pointer_operations = []; // the multiplayer syncing stuff is a can of worms, so this is disabled
+// 		// this.write_canvas_to_database_immediately = () => {
+// 		// 	const save_paused = handle_data_loss();
+// 		// 	if (save_paused) {
+// 		// 		return;
+// 		// 	}
+// 		// 	// Sync the data from this client to the server (one-way)
+// 		// 	const uri = main_canvas.toDataURL();
+// 		// 	if (previous_uri !== uri) {
+// 		// 		// log("clear pointer operations to set data", pointer_operations);
+// 		// 		// pointer_operations = [];
+// 		// 		log("Write canvas data to Firebase");
+// 		// 		this.fb_data.set(uri);
+// 		// 		previous_uri = uri;
+// 		// 	}
+// 		// 	else {
+// 		// 		log("(Don't write canvas data to Firebase; it hasn't changed)");
+// 		// 	}
+// 		// };
+// 		// this.write_canvas_to_database_soon = debounce(this.write_canvas_to_database_immediately, 100);
+// 		// let ignore_session_update = false;
+// 		// $G.on("session-update.session-hook", () => {
+// 		// 	if (ignore_session_update) {
+// 		// 		log("(Ignore session-update from Sync Session undoable)");
+// 		// 		return;
+// 		// 	}
+// 		// 	this.write_canvas_to_database_soon();
+// 		// });
+// 		// // Any time we change or receive the image data
+// 		// _fb_on(this.fb_data, "value", snap => {
+// 		// 	log("Firebase data update");
+// 		// 	const uri = snap.val();
+// 		// 	if (uri == null) {
+// 		// 		// If there's no value at the data location, this is a new session
+// 		// 		// Sync the current data to it
+// 		// 		this.write_canvas_to_database_soon();
+// 		// 	}
+// 		// 	else {
+// 		// 		previous_uri = uri;
+// 		// 		// Load the new image data
+// 		// 		const img = new Image();
+// 		// 		img.onload = () => {
+// 		// 			// Cancel any in-progress pointer operations
+// 		// 			// if (pointer_operations.length) {
+// 		// 			// 	$G.triggerHandler("pointerup", "cancel");
+// 		// 			// }
+
+// 		// 			const test_canvas = make_canvas(img);
+// 		// 			const image_data_remote = test_canvas.ctx.getImageData(0, 0, test_canvas.width, test_canvas.height);
+// 		// 			const image_data_local = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
+
+// 		// 			if (!image_data_match(image_data_remote, image_data_local, 5)) {
+// 		// 				ignore_session_update = true;
+// 		// 				undoable({
+// 		// 					name: "Sync Session",
+// 		// 					icon: get_help_folder_icon("p_database.png"),
+// 		// 				}, () => {
+// 		// 					// Write the image data to the canvas
+// 		// 					main_ctx.copy(img);
+// 		// 					$canvas_area.trigger("resize");
+// 		// 				});
+// 		// 				ignore_session_update = false;
+// 		// 			}
+// 		// 		};
+// 		// 		img.src = uri;
+// 		// 	}
+// 		// }, error => {
+// 		// 	show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
+// 		// 	file_name = `[Failed to load ${this.id}]`;
+// 		// 	update_title();
+// 		// });
+// 		// // Update the cursor status
+// 		// $G.on("pointermove.session-hook", e => {
+// 		// 	const m = to_canvas_coords(e);
+// 		// 	this.fb_user.child("cursor").update({
+// 		// 		x: m.x,
+// 		// 		y: m.y,
+// 		// 		away: false,
+// 		// 	});
+// 		// });
+// 		// $G.on("blur.session-hook", () => {
+// 		// 	this.fb_user.child("cursor").update({
+// 		// 		away: true,
+// 		// 	});
+// 		// });
+// 		// @FIXME: the cursor can come back from "away" via a pointer event
+// 		// while the window is blurred and stay there when the user goes away
+// 		// maybe replace "away" with a timestamp of activity and then
+// 		// clients can decide whether a given cursor should be visible
+// 	}
+// 	end() {
+// 		// Skip debounce and save immediately
+// 		this.write_canvas_to_database_soon.cancel();
+// 		this.write_canvas_to_database_immediately();
+// 		// Remove session-related hooks
+// 		$G.off(".session-hook");
+// 		// $canvas_area.off("pointerdown.session-hook");
+// 		// Remove collected Firebase event listeners
+// 		this._fb_listeners.forEach(({ fb, event_type, callback/*, error_callback*/ }) => {
+// 			log(`Remove listener for ${fb.path.toString()} .on ${event_type}`);
+// 			fb.off(event_type, callback);
+// 		});
+// 		this._fb_listeners.length = 0;
+// 		// Remove the user from the session
+// 		this.fb_user.remove();
+// 		// Remove any cursor elements
+// 		$app.find(".user-cursor").remove();
+// 		// Reset to "untitled"
+// 		reset_file();
+// 	}
+// }
+
+
+class RESTSession {
+	constructor(session_id) {
+		this.id = session_id;
+
+		file_name = `[Loading ${this.id}]`;
+		update_title();
+		this.start();
+
+		this._previous_uri = "";
+		this._ignore_session_update = false;
+		this._poll_tid = -1;
+	}
+	_write_canvas_to_server_immediately() {
+		const save_paused = handle_data_loss();
+		if (save_paused) {
+			return;
+		}
+		// Sync the data from this client to the server (one-way)
+		const uri = main_canvas.toDataURL();
+		if (this._previous_uri !== uri) {
+			// log("clear pointer operations to set data", pointer_operations);
+			// pointer_operations = [];
+			log("Write canvas data to server");
+			fetch(`/api/rooms/${this.id}/data`, {
+				method: "PUT",
+				body: uri,
+			});
+			this._previous_uri = uri;
+		}
+		else {
+			log("(Don't write canvas data to server; it hasn't changed)");
+		}
+	}
+	start() {
+		this._write_canvas_to_server_soon = debounce(this._write_canvas_to_server_immediately, 100);
+		$G.on("session-update.session-hook", () => {
+			if (this._ignore_session_update) {
+				log("(Ignore session-update from Sync Session undoable)");
+				return;
+			}
+			this._write_canvas_to_server_soon();
+		});
+		// Poll for changes
+		const poll = async () => {
+			let received_image_data_uri;
+			try {
+				const response = await fetch(`/api/rooms/${this.id}/data`);
+				if (response.status === 404) {
+					// If the image data wasn't found, this is a new session
+					received_image_data_uri = null;
+				} else {
+					received_image_data_uri = await response.text();
+				}
+			} catch (error) {
+				show_error_message("Failed to load image document from the server.", error);
+				file_name = `[Failed to load ${this.id}]`;
+				update_title();
+				return; // Uh, TODO: retry?
+			}
+			file_name = `[${this.id}]`;
+			update_title();
+			this.handle_data_snapshot(received_image_data_uri);
+			// @ts-ignore  (stupid @types/node interference, with their setTimeout typing)
+			this._poll_tid = setTimeout(poll, 1000);
+		};
+		poll();
+	}
+	handle_data_snapshot(uri) {
+		// Any time we change or receive the image data
+		if (!uri) {
+			// This is a new session; sync the current data to it
+			this._write_canvas_to_server_soon();
+		} else {
+			this._previous_uri = uri;
+			// Load the new image data
+			const img = new Image();
+			img.onload = () => {
+				// Cancel any in-progress pointer operations
+				// if (pointer_operations.length) {
+				// 	$G.triggerHandler("pointerup", "cancel");
+				// }
+
+				const test_canvas = make_canvas(img);
+				const image_data_remote = test_canvas.ctx.getImageData(0, 0, test_canvas.width, test_canvas.height);
+				const image_data_local = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
+
+				if (!image_data_match(image_data_remote, image_data_local, 5)) {
+					this._ignore_session_update = true;
+					undoable({
+						name: "Sync Session",
+						icon: get_help_folder_icon("p_database.png"),
+					}, () => {
+						// Write the image data to the canvas
+						main_ctx.copy(img);
+						$canvas_area.trigger("resize");
+					});
+					this._ignore_session_update = false;
+				}
+			};
+			img.onerror = () => {
+				// uri is invalid, so it might be an error message or something; I'll include it in the expandible details.
+				show_error_message("Failed to load image document from the server. Invalid image data.", uri);
+			};
+			img.src = uri;
+		}
+	}
+	end() {
+		// Stop polling
+		clearTimeout(this._poll_tid);
+		// Skip debounce and save immediately
+		this._write_canvas_to_server_soon.cancel();
+		this._write_canvas_to_server_immediately();
+		// Remove session-related hooks
+		$G.off(".session-hook");
+		// Remove any cursor elements
+		$app.find(".user-cursor").remove();
+		// Reset to "untitled"
+		reset_file();
+	}
+}
 
 
 // Handle the starting, switching, and ending of sessions from the location.hash
@@ -554,9 +939,14 @@ const update_session_from_location_hash = () => {
 			if (local) {
 				log(`Starting a new LocalSession, ID: ${session_id}`);
 				current_session = new LocalSession(session_id);
+			} else if (is_discord_embed) {
+				// log(`Starting a new WebSocketSession, ID: ${session_id}`);
+				// current_session = new WebSocketSession(session_id);
+				log(`Starting a new RESTSession, ID: ${session_id}`);
+				current_session = new RESTSession(session_id);
 			} else {
-				log(`Starting a new MultiUserSession, ID: ${session_id}`);
-				current_session = new MultiUserSession(session_id);
+				log(`Starting a new FirebaseSession, ID: ${session_id}`);
+				current_session = new FirebaseSession(session_id);
 			}
 		}
 	} else if (load_from_url_match) {
@@ -596,8 +986,6 @@ $G.on("hashchange popstate change-url-params", e => {
 	log(e.type, location.hash);
 	update_session_from_location_hash();
 });
-log("Initializing with location hash:", location.hash);
-update_session_from_location_hash();
 
 const new_local_session = () => {
 	end_current_session();
@@ -615,29 +1003,37 @@ const new_local_session = () => {
 
 if (is_discord_embed) {
 	const { Discord, discordSdk, newAuth, guildMember, handleExternalLinks } = await import("./discord-activity-client.js");
-	const { Events } = Discord;
+	// const { Events } = Discord;
 
-	console.log("Discord SDK", discordSdk);
-	console.log("New Auth", newAuth);
-	console.log("Guild Member", guildMember);
-
-	// Fetch
-	const participants = await discordSdk.commands.getInstanceConnectedParticipants();
-	console.log("Initial participants", participants);
-
-	// Subscribe
-	discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
-	// Unsubscribe
-	discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+	log("Discord SDK", discordSdk);
+	log("New Auth:", newAuth);
+	log("Guild Member", guildMember);
 
 	// Handle external links
 	handleExternalLinks();
+
+	// Start session for the Discord Activity instance
+	// (Would channelId be better?)
+	log(`Starting session for Discord Activity instance ${discordSdk.instanceId}`);
+	change_url_param("session", `discord-activity-${discordSdk.instanceId}`);
+
+	// // Fetch
+	// const participants = await discordSdk.commands.getInstanceConnectedParticipants();
+	// console.log("Initial participants", participants);
+
+	// // Subscribe
+	// discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+	// // Unsubscribe
+	// discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+} else {
+	log("Initializing with location hash:", location.hash);
+	update_session_from_location_hash();
 }
 
-function updateParticipants(participants) {
-	// Do something really cool
-	console.log("Updated participants:", participants);
-}
+// function updateParticipants(participants) {
+// 	// Do something really cool
+// 	console.log("Updated participants:", participants);
+// }
 
 export { new_local_session };
 // Temporary globals until all dependent code is converted to ES Modules
