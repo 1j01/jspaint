@@ -1204,7 +1204,7 @@ $G.on("cut copy paste", e => {
 					});
 				}
 			};
-			if (!navigator.clipboard || !navigator.clipboard.write) {
+			if (!navigator.clipboard || !navigator.clipboard.write || is_discord_embed) {
 				return do_sync_clipboard_copy_or_cut();
 			}
 			try {
