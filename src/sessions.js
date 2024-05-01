@@ -791,8 +791,9 @@ class RESTSession {
 		this._previous_uri = "";
 		this._ignore_session_update = false;
 		this._poll_tid = -1;
+		this._last_write_time = -1;
 	}
-	_write_canvas_to_server_immediately() {
+	async _write_canvas_to_server_immediately() {
 		const save_paused = handle_data_loss();
 		if (save_paused) {
 			return;
@@ -803,11 +804,13 @@ class RESTSession {
 			// log("clear pointer operations to set data", pointer_operations);
 			// pointer_operations = [];
 			log("Write canvas data to server");
-			fetch(`/api/rooms/${this.id}/data`, {
+			this._previous_uri = uri;
+			this._last_write_time = performance.now(); // not sure about this
+			await fetch(`/api/rooms/${this.id}/data`, {
 				method: "PUT",
 				body: uri,
 			});
-			this._previous_uri = uri;
+			this._last_write_time = performance.now(); // not sure about this
 		}
 		else {
 			log("(Don't write canvas data to server; it hasn't changed)");
@@ -821,17 +824,25 @@ class RESTSession {
 				return;
 			}
 			this._write_canvas_to_server_soon();
+			this._last_write_time = performance.now(); // not sure about this
 		});
 		// Poll for changes
 		const poll = async () => {
 			let received_image_data_uri;
+			let ignore = false;
 			try {
+				let fetch_start = performance.now();
 				const response = await fetch(`/api/rooms/${this.id}/data`);
 				if (response.status === 404) {
 					// If the image data wasn't found, this is a new session
 					received_image_data_uri = null;
 				} else {
 					received_image_data_uri = await response.text();
+					if (this._last_write_time > fetch_start) {
+						// If the image data was written since we started fetching it,
+						// ignore the likely-stale data.
+						ignore = true;
+					}
 				}
 			} catch (error) {
 				show_error_message("Failed to load image document from the server.", error);
@@ -841,7 +852,9 @@ class RESTSession {
 			}
 			file_name = `[${this.id}]`;
 			update_title();
-			this.handle_data_snapshot(received_image_data_uri);
+			if (!ignore) {
+				this.handle_data_snapshot(received_image_data_uri);
+			}
 			// @ts-ignore  (stupid @types/node interference, with their setTimeout typing)
 			this._poll_tid = setTimeout(poll, 1000);
 		};
@@ -852,6 +865,7 @@ class RESTSession {
 		if (!uri) {
 			// This is a new session; sync the current data to it
 			this._write_canvas_to_server_soon();
+			this._last_write_time = performance.now(); // not sure about this
 		} else {
 			this._previous_uri = uri;
 			// Load the new image data
