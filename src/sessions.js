@@ -791,6 +791,7 @@ class RESTSession {
 		this._previous_uri = "";
 		this._ignore_session_update = false;
 		this._poll_tid = -1;
+		this._poll_fetch_start_time = -1;
 		this._last_write_time = -1;
 	}
 	async _write_canvas_to_server_immediately() {
@@ -829,20 +830,14 @@ class RESTSession {
 		// Poll for changes
 		const poll = async () => {
 			let received_image_data_uri;
-			let ignore = false;
 			try {
-				let fetch_start = performance.now();
+				this._poll_fetch_start_time = performance.now();
 				const response = await fetch(`/api/rooms/${this.id}/data`);
 				if (response.status === 404) {
 					// If the image data wasn't found, this is a new session
 					received_image_data_uri = null;
 				} else {
 					received_image_data_uri = await response.text();
-					if (this._last_write_time > fetch_start) {
-						// If the image data was written since we started fetching it,
-						// ignore the likely-stale data.
-						ignore = true;
-					}
 				}
 			} catch (error) {
 				show_error_message("Failed to load image document from the server.", error);
@@ -852,15 +847,13 @@ class RESTSession {
 			}
 			file_name = `[${this.id}]`;
 			update_title();
-			if (!ignore) {
-				this.handle_data_snapshot(received_image_data_uri);
-			}
+			this.handle_data_snapshot(received_image_data_uri, this._poll_fetch_start_time);
 			// @ts-ignore  (stupid @types/node interference, with their setTimeout typing)
 			this._poll_tid = setTimeout(poll, 1000);
 		};
 		poll();
 	}
-	handle_data_snapshot(uri) {
+	handle_data_snapshot(uri, start_time) {
 		// Any time we change or receive the image data
 		if (!uri) {
 			// This is a new session; sync the current data to it
@@ -871,6 +864,14 @@ class RESTSession {
 			// Load the new image data
 			const img = new Image();
 			img.onload = () => {
+
+				if (this._last_write_time > start_time) {
+					// If the image data was written since we started fetching it,
+					// ignore the likely-stale data.
+					log("(Ignore stale image data)");
+					return;
+				}
+
 				// Cancel any in-progress pointer operations
 				// if (pointer_operations.length) {
 				// 	$G.triggerHandler("pointerup", "cancel");
