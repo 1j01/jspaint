@@ -1373,6 +1373,14 @@ function show_error_message(message, error) {
 		let error_string = e.stack;
 		if (!error_string) {
 			error_string = error.toString();
+			// Discord API throws plain objects.
+			if (error_string === "[object Object]") {
+				try {
+					error_string = JSON.stringify(error, null, 2);
+				} catch (e) {
+					error_string = "Error details could not be stringified: " + e;
+				}
+			}
 		} else if (e.message && error_string.indexOf(e.message) === -1) {
 			error_string = `${error.toString()}\n\n${error_string}`;
 		} else if (e.name && error_string.indexOf(e.name) === -1) {
