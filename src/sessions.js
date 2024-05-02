@@ -780,19 +780,48 @@ FirebaseSession.fb_root = null;
 // }
 
 
+function logPropertyAccess(/** @type{object}*/obj, keys = Object.keys(obj)) {
+	/** @type {PropertyDescriptorMap} */
+	const propertyDescriptors = {};
+	/** @type {Record<keyof typeof obj, (typeof obj)[keyof typeof obj]> } */
+	const propertyValues = {};
+	const formatValue = (value) => {
+		if (typeof value === "string") {
+			return value.slice(0, 100) + (value.length > 100 ? "…" : "");
+		}
+		return value;
+	};
+	for (const key of keys) {
+		propertyDescriptors[key] = {
+			get() {
+				log(`RESTSession: Accessed property ${key} with value`, formatValue(propertyValues[key]));
+				return propertyValues[key];
+			},
+			set(value) {
+				log(`RESTSession: Set property ${key} to`, formatValue(value));
+				propertyValues[key] = value;
+			},
+		};
+		propertyValues[key] = obj[key];
+	}
+	Object.defineProperties(obj, propertyDescriptors);
+}
+
 class RESTSession {
 	constructor(session_id) {
 		this.id = session_id;
-
-		file_name = `[Loading ${this.id}]`;
-		update_title();
-		this.start();
 
 		this._previous_uri = "";
 		this._ignore_session_update = false;
 		this._poll_tid = -1;
 		this._poll_fetch_start_time = -1;
 		this._last_write_time = -1;
+
+		logPropertyAccess(this);
+
+		file_name = `[Loading ${this.id}]`;
+		update_title();
+		this.start()
 	}
 	async _write_canvas_to_server_immediately() {
 		const save_paused = handle_data_loss();
