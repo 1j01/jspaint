@@ -951,17 +951,26 @@ const update_session_from_location_hash = () => {
 		} else {
 			// @TODO: Ask if you want to save before starting a new session
 			end_current_session();
+			let online_session_implementation = is_discord_embed ? "RESTSession" : "FirebaseSession";
+			try {
+				online_session_implementation = localStorage["online_session_implementation"] || online_session_implementation;
+			} catch (e) {
+				// ignore, as this is only for development
+			}
 			if (local) {
 				log(`Starting a new LocalSession, ID: ${session_id}`);
 				current_session = new LocalSession(session_id);
-			} else if (is_discord_embed) {
+			} else if (online_session_implementation === "RESTSession") {
 				// log(`Starting a new WebSocketSession, ID: ${session_id}`);
 				// current_session = new WebSocketSession(session_id);
 				log(`Starting a new RESTSession, ID: ${session_id}`);
 				current_session = new RESTSession(session_id);
-			} else {
+			} else if (online_session_implementation === "FirebaseSession") {
 				log(`Starting a new FirebaseSession, ID: ${session_id}`);
 				current_session = new FirebaseSession(session_id);
+			} else {
+				show_error_message(`Invalid online session implementation '${online_session_implementation}'`);
+				current_session = new LocalSession(session_id);
 			}
 		}
 	} else if (load_from_url_match) {
