@@ -56,8 +56,22 @@ app.post('/api/token', async (req: Request, res: Response) => {
 });
 
 // Simple multiplayer image editing
+// TODO: require authentication to access a room associated with a Discord Activity instance
 
-const rooms: { [key: string]: string } = {};
+// I'm using edit counts to try to minimize work lost in case of conflicts,
+// but I'm not sure it's a better idea than the standard way to handle conflicts with If-Match.
+// If-Match would require the client to fetch the latest revision ID before sending the PUT request,
+// which would mean losing potentially a long string of edits during a period of dis-connectivity,
+// but I'm not sure the edit count is worth the complexity to get it working right,
+// especially when I plan to replace the multiplayer system with a more robust one later,
+// which would actually be able to RESOLVE conflicts, replaying edits on top of each other.
+
+interface Room {
+	imageData: string;
+	editCount: number;
+	revisionId: string;
+}
+const rooms: { [key: string]: Room } = {};
 
 // app.post('/api/rooms', (req: Request, res: Response) => {
 // 	const roomId = uuid(); // or the room id might be the Discord Activity instance ID
@@ -67,13 +81,33 @@ const rooms: { [key: string]: string } = {};
 
 app.get('/api/rooms/:roomId/data', (req: Request, res: Response) => {
 	const { roomId } = req.params;
+	res.setHeader('X-Revision-Id', rooms[roomId]?.revisionId || '');
+	res.setHeader('X-Edit-Count', rooms[roomId]?.editCount || 0);
+	// Hacky If-None-Match parsing for ETag support (although more proper than what the AI suggests!)
+	if (req.get('If-None-Match')?.split(',').map((s) => s.trim().replace(/^"|"$/g, '')).includes(rooms[roomId]?.revisionId)) {
+		return res.status(304).send();
+	}
 	res.send(rooms[roomId]);
 });
 
 app.put('/api/rooms/:roomId/data', bodyParser.text({ type: '*/*' }), (req: Request, res: Response) => {
 	const { roomId } = req.params;
 	const image = req.body;
-	rooms[roomId] = image;
+	const room = rooms[roomId];
+	if (!room) {
+		return res.status(404).send('Room not found');
+	}
+	const editCount = parseInt(req.get('X-Edit-Count') || '0', 10);
+	if (!isFinite(editCount)) {
+		return res.status(400).send('Invalid edit count');
+	}
+	// as the edit count is incremented in the client, we're expecting a greater number, not equal
+	if (editCount <= room.editCount) {
+		return res.status(409).send('Conflict');
+	}
+	room.imageData = image;
+	room.editCount = editCount; // incremented in client currently
+	room.revisionId = req.get('X-Revision-Id') || '';
 	res.send({ success: true });
 });
 

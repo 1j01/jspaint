@@ -814,14 +814,19 @@ class RESTSession {
 		this._previous_uri = "";
 		this._ignore_session_update = false;
 		this._poll_tid = -1;
-		this._poll_fetch_start_time = -1;
+		// this._poll_fetch_start_time = -1;
 		this._last_write_time = -1;
+		this._last_write_id = "";
+		this._edit_count = 0;
 
 		logPropertyAccess(this);
 
 		file_name = `[Loading ${this.id}]`;
 		update_title();
 		this.start()
+	}
+	_revision_id() {
+		return `${this._edit_count}-${this._last_write_time}-${user_id}`;
 	}
 	async _write_canvas_to_server_immediately() {
 		const save_paused = handle_data_loss();
@@ -835,12 +840,18 @@ class RESTSession {
 			// pointer_operations = [];
 			log("Write canvas data to server");
 			this._previous_uri = uri;
-			this._last_write_time = performance.now(); // not sure about this
+			this._edit_count++;
+			this._last_write_time = performance.now();
+			this._last_write_id = this._revision_id();
 			await fetch(`/api/rooms/${this.id}/data`, {
 				method: "PUT",
 				body: uri,
+				headers: {
+					"X-Edit-Count": this._edit_count.toString(),
+					"X-Revision-Id": this._last_write_id,
+				},
 			});
-			this._last_write_time = performance.now(); // not sure about this
+			// this._last_write_time = performance.now(); // not sure about this
 		}
 		else {
 			log("(Don't write canvas data to server; it hasn't changed)");
@@ -854,19 +865,37 @@ class RESTSession {
 				return;
 			}
 			this._write_canvas_to_server_soon();
-			this._last_write_time = performance.now(); // not sure about this
+			// this._last_write_time = performance.now(); // not sure about this
 		});
 		// Poll for changes
 		const poll = async () => {
 			let received_image_data_uri;
+			let received_revision_id;
 			try {
-				this._poll_fetch_start_time = performance.now();
-				const response = await fetch(`/api/rooms/${this.id}/data`);
+				// this._poll_fetch_start_time = performance.now();
+				const response = await fetch(`/api/rooms/${this.id}/data`, {
+					headers: {
+						"If-None-Match": `"${this._last_write_id}"`,
+					},
+				});
 				if (response.status === 404) {
 					// If the image data wasn't found, this is a new session
 					received_image_data_uri = null;
+					received_revision_id = null;
+				} else if (response.status === 304) {
+					// If the image data hasn't changed, ignore (could restructure so we don't need to do something to do nothing)
+					received_image_data_uri = this._previous_uri;
+					received_revision_id = this._last_write_id;
 				} else {
 					received_image_data_uri = await response.text();
+					received_revision_id = response.headers.get("X-Revision-Id");
+					// The edit count can have overlap in general, but it should be synced so that
+					// the server can prioritize greater edit counts, to minimize lost work.
+					// But wait, if we receive an update from the server before our many updates
+					// are sent (during an offline period, say), if we update the count to a lower number,
+					// the server will ignore our updates. So maybe we should only update the count if it's higher?
+					// Or maybe the edit count needs to be relative somehow, or be a vector clock or something. This is complicated.
+					this._edit_count = parseInt(response.headers.get("X-Edit-Count"), 10);
 				}
 			} catch (error) {
 				show_error_message("Failed to load image document from the server.", error);
@@ -876,25 +905,27 @@ class RESTSession {
 			}
 			file_name = `[${this.id}]`;
 			update_title();
-			this.handle_data_snapshot(received_image_data_uri, this._poll_fetch_start_time);
+			this.handle_data_snapshot(received_image_data_uri, received_revision_id);
 			// @ts-ignore  (stupid @types/node interference, with their setTimeout typing)
 			this._poll_tid = setTimeout(poll, 1000);
 		};
 		poll();
 	}
-	handle_data_snapshot(uri, start_time) {
+	handle_data_snapshot(uri, received_revision_id) {
 		// Any time we change or receive the image data
 		if (!uri) {
 			// This is a new session; sync the current data to it
 			this._write_canvas_to_server_soon();
-			this._last_write_time = performance.now(); // not sure about this
+			// this._last_write_time = performance.now(); // not sure about this
+		} else if (uri === this._previous_uri) {
+			// The image data hasn't changed; do nothing
 		} else {
 			this._previous_uri = uri;
 			// Load the new image data
 			const img = new Image();
 			img.onload = () => {
 
-				if (this._last_write_time > start_time) {
+				if (this._last_write_id !== received_revision_id) {
 					// If the image data was written since we started fetching it,
 					// ignore the likely-stale data.
 					log("(Ignore stale image data)");
