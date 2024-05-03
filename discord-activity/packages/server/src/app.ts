@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 // import enableWs from 'express-ws';
+import fs from 'fs';
 import path from 'path';
 import { fetchAndRetry } from './utils';
 dotenv.config({ path: '../../.env' });
@@ -12,6 +13,19 @@ const port: number = Number(process.env.PORT) || 1999;
 // enableWs(app);
 
 app.use(express.json());
+
+const clientSourcePath = path.join(__dirname, '../../../..');
+const clientId = process.env.VITE_CLIENT_ID;
+const clientIdNeedle = "$$$$$CLIENT_ID$$$$$"; // same length as the client ID, just in case
+const urlPathForPatching = "/src/discord-activity-client.js";
+const fsPathForPatching = path.join(clientSourcePath, urlPathForPatching);
+// Ensure the file exists and prepare it for serving
+const patchedFileContent = fs.readFileSync(fsPathForPatching, 'utf8').replace(clientIdNeedle, clientId);
+// Serve the patched file
+app.get(urlPathForPatching, (req, res) => {
+	res.setHeader("Content-Type", "text/javascript");
+	res.send(patchedFileContent);
+});
 
 // if (process.env.NODE_ENV === 'production') {
 //   const clientBuildPath = path.join(__dirname, '../../client/dist');
@@ -30,7 +44,6 @@ app.use((req, res, next) => {
 	}
 	next();
 });
-const clientSourcePath = path.join(__dirname, '../../../..');
 app.use(express.static(clientSourcePath));
 
 // Fetch token from developer portal and return to the embedded app

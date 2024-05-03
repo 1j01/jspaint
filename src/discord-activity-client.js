@@ -6,7 +6,7 @@ const Discord = await import("../lib/discord-embedded-app-sdk-v1.2.0-bundled-wit
 // @ts-ignore
 window._Discord = Discord;
 
-const CLIENT_ID = "1234578915415167067"; // TODO: get from .env
+const CLIENT_ID = "$$$$$CLIENT_ID$$$$$"; // monkey-patched in by the server
 const APPLICATION_ID = CLIENT_ID; // seems to be the same
 
 const DISCORD_API_BASE = "https://discord.com/api";
