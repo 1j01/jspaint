@@ -23,25 +23,14 @@ const { code } = await discordSdk.commands.authorize({
 	prompt: 'none',
 	// More info on scopes here: https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes
 	scope: [
-		// "applications.builds.upload",
-		// "applications.builds.read",
-		// "applications.store.update",
-		// "applications.entitlements",
-		// "bot",
-		'identify',
-		// "connections",
-		// "email",
-		// "gdm.join",
-		'guilds',
-		// "guilds.join",
-		'guilds.members.read',
-		// "messages.read",
-		// "relationships.read",
-		// 'rpc.activities.write',
-		// "rpc.notifications.read",
-		// "rpc.voice.write",
-		// 'rpc.voice.read',
-		// "webhook.incoming",
+		// At least one scope is required. Otherwise authorize will throw an error.
+		// Likely useful scopes:
+		'identify', // for user presence, and including username/avatar in the undo history window (Edit > History)
+		// 'guilds.members.read', // for server-specific nicknames/avatars
+		// 'messages.read', // could plug into the interpret_command of Extras > Speech Recognition (not sure how useless this would be on a scale of Google Assistant to Twitch Plays Pokemon)
+		// For Extras > Speech Recognition, could use something like https://github.com/Rei-x/discord-speech-recognition
+		// but that works server-side as a bot. There's 'rpc.voice.read' but I don't see a way to get the audio stream.
+		// There's also 'voice'... but the docs are hard to find.
 	],
 });
 
