@@ -20,11 +20,25 @@ const clientIdNeedle = "$$$$$CLIENT_ID$$$$$"; // same length as the client ID, j
 const urlPathForPatching = "/src/discord-activity-client.js";
 const fsPathForPatching = path.join(clientSourcePath, urlPathForPatching);
 // Ensure the file exists and prepare it for serving
-const patchedFileContent = fs.readFileSync(fsPathForPatching, 'utf8').replace(clientIdNeedle, clientId);
-// Serve the patched file
+// const patchedFileContent = fs.readFileSync(fsPathForPatching, 'utf8').replace(clientIdNeedle, clientId);
+// // Serve the patched file
+// app.get(urlPathForPatching, (req, res) => {
+// 	res.setHeader("Content-Type", "text/javascript");
+// 	res.send(patchedFileContent);
+// });
+if (!fs.existsSync(fsPathForPatching)) {
+	throw new Error(`Could not find file at ${fsPathForPatching}`);
+}
+// Serve the patched file without caching it, for development purposes
 app.get(urlPathForPatching, (req, res) => {
-	res.setHeader("Content-Type", "text/javascript");
-	res.send(patchedFileContent);
+	fs.readFile(fsPathForPatching, 'utf8', (err, data) => {
+		if (err) {
+			res.status(500).send(err);
+			return;
+		}
+		res.setHeader("Content-Type", "text/javascript");
+		res.send(data.replace(clientIdNeedle, clientId));
+	});
 });
 
 // if (process.env.NODE_ENV === 'production') {
