@@ -444,6 +444,7 @@ interface Window {
 
 	// app-localization.js
 	available_languages: string[];
+	loaded_localizations: (language: string, mapping: Record<string, string>) => void; // JSONP callback in the localization files
 	// msgbox.js
 	showMessageBox: (options: MessageBoxOptions) => Promise<string>;
 	defaultMessageBoxTitle: string;
