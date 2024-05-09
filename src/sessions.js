@@ -1026,7 +1026,7 @@ const new_local_session = () => {
 
 
 if (is_discord_embed) {
-	const { Discord, discordSdk, newAuth, guildMember, handleExternalLinks } = await import("./discord-activity-client.js");
+	const { /*Discord,*/ discordSdk, newAuth, guildMember, handleExternalLinks } = await import("./discord-activity-client.js");
 	// const { Events } = Discord;
 
 	log("Discord SDK", discordSdk);

@@ -803,7 +803,7 @@ function flip_horizontal() {
 	apply_image_transformation({
 		name: localize("Flip horizontal"),
 		icon: get_help_folder_icon("p_fliph.png"),
-	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	}, (original_canvas, _original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(new_canvas.width, 0);
 		new_ctx.scale(-1, 1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -814,7 +814,7 @@ function flip_vertical() {
 	apply_image_transformation({
 		name: localize("Flip vertical"),
 		icon: get_help_folder_icon("p_flipv.png"),
-	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	}, (original_canvas, _original_ctx, new_canvas, new_ctx) => {
 		new_ctx.translate(0, new_canvas.height);
 		new_ctx.scale(1, -1);
 		new_ctx.drawImage(original_canvas, 0, 0);
@@ -830,7 +830,7 @@ function rotate(angle) {
 	apply_image_transformation({
 		name: `${localize("Rotate by angle")} ${angle / TAU * 360} ${localize("Degrees")}`,
 		icon: get_help_folder_icon(`p_rotate_${angle >= 0 ? "cw" : "ccw"}.png`),
-	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	}, (original_canvas, _original_ctx, new_canvas, new_ctx) => {
 		new_ctx.save();
 		switch (angle) {
 			case TAU / 4:
@@ -922,7 +922,7 @@ function stretch_and_skew(x_scale, y_scale, h_skew, v_skew) {
 						(x_scale !== 1) ? "p_stretch_both.png" : "p_stretch_v.png"
 					) : "p_stretch_h.png"
 		),
-	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	}, (original_canvas, _original_ctx, new_canvas, new_ctx) => {
 		const w = original_canvas.width * x_scale;
 		const h = original_canvas.height * y_scale;
 

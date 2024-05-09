@@ -69,12 +69,15 @@ export function handleExternalLinks() {
 	document.addEventListener('click', (e) => {
 		if (e.defaultPrevented) return;
 		const target = e.target;
-		if (target.tagName === 'A' && target.href && target.target === '_blank') {
+		if (target instanceof HTMLAnchorElement && target.href && target.target === '_blank') {
 			e.preventDefault();
 			discordSdk.commands.openExternalLink({ url: target.href });
 		}
 	});
-	window.open = (url) => discordSdk.commands.openExternalLink({ url });
+	window.open = (url) => {
+		discordSdk.commands.openExternalLink({ url });
+		return null;
+	};
 }
 
 export async function shareImage(blob, filename) {

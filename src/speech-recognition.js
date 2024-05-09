@@ -2092,7 +2092,7 @@ if (speech_recognition_available) {
 				// handle relative data-src
 				html = html.replace(
 					/((?:data-src)=["'])(?!(?:https?:|data:))(\/?)/gi,
-					($0, $1, $2) => `${$1}${bing_url.origin}${$2 ? bing_url.pathname : ""}`
+					(_$0, $1, $2) => `${$1}${bing_url.origin}${$2 ? bing_url.pathname : ""}`
 				);
 				// handle relative src and href in a less error-prone way, with a <base> tag
 				const doc = new DOMParser().parseFromString(html, "text/html");

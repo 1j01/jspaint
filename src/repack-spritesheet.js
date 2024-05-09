@@ -21,7 +21,7 @@ function repack_spritesheet(tile_width, tile_height = tile_width, padding = tile
 		name: localize("Repack Spritesheet"),
 		icon: get_help_folder_icon("p_paste.png"),
 		// icon: get_help_folder_icon("p_stretch_both.png"),
-	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	}, (original_canvas, _original_ctx, new_canvas, new_ctx) => {
 		const tiles_x = Math.ceil(original_canvas.width / tile_width);
 		const tiles_y = Math.ceil(original_canvas.height / tile_height);
 		new_canvas.width = tiles_x * (tile_width + padding) + padding;

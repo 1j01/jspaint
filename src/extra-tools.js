@@ -62,7 +62,7 @@ const extra_tools = [{
 		x: 0,
 		y: 0,
 	},
-	pointerdown(ctx, x, y) {
+	pointerdown(_ctx, x, y) {
 		this.position.x = x;
 		this.position.y = y;
 		this.velocity.x = 0;
@@ -111,7 +111,7 @@ const extra_tools = [{
 	description: "Lets you configure the Airbrushbrush. It uses this type of tool option as well.",
 	cursor: ["airbrush", [7, 22], "crosshair"],
 	continuous: "time",
-	paint(ctx, x, y) {
+	paint(_ctx, _x, _y) {
 
 	},
 	$options: $choose_airbrush_size

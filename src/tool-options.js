@@ -332,7 +332,7 @@ const $choose_stroke_size = $Choose(
 const magnifications = [1, 2, 6, 8, 10];
 const $choose_magnification = $Choose(
 	magnifications,
-	(scale, is_chosen, reuse_canvas, reuse_div) => {
+	(scale, is_chosen, _reuse_canvas, reuse_div) => {
 		const i = magnifications.indexOf(scale);
 		const secret = scale === 10; // 10x is secret
 		const chooser_el = ChooserDiv(
@@ -396,7 +396,7 @@ const $choose_airbrush_size = $Choose(
 
 const $choose_transparent_mode = $Choose(
 	[false, true],
-	(option, _is_chosen, reuse_canvas, reuse_div) => {
+	(option, _is_chosen, _reuse_canvas, reuse_div) => {
 		const sw = 35, sh = 23; // width, height from source image
 		const b = 2; // margin by which the source image is inset on the destination
 		return ChooserDiv(

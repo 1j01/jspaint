@@ -110,7 +110,12 @@ module.exports = {
 			parserOptions: { sourceType: "module" },
 			rules: {
 				"no-undef": "warn",
-				"no-unused-vars": "error",
+				"no-unused-vars": ["warn", {
+					"args": "all",
+					"argsIgnorePattern": "^_",
+					"caughtErrorsIgnorePattern": "^_",
+					// "varsIgnorePattern": "^_",
+				}],
 			},
 		}
 	]

@@ -68,7 +68,7 @@ const tools = [{
 		// End prior selection, drawing it to the canvas
 		deselect();
 	},
-	paint(ctx, x, y) {
+	paint(_ctx, _x, _y) {
 		// Constrain the pointer to the canvas
 		pointer.x = Math.min(main_canvas.width, pointer.x);
 		pointer.x = Math.max(0, pointer.x);
@@ -153,7 +153,7 @@ const tools = [{
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 	},
-	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewUnderGrid(ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) {
 		if (!pointer_active && !pointer_over_canvas) { return; }
 		if (!this.preview_canvas) { return; }
 
@@ -285,7 +285,7 @@ const tools = [{
 		return { rect_x, rect_y, rect_w, rect_h };
 	},
 
-	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewUnderGrid(ctx, x, y, _grid_visible, scale, translate_x, translate_y) {
 		if (!pointer_active && !pointer_over_canvas) { return; }
 		const { rect_x, rect_y, rect_w, rect_h } = this.get_rect(x, y);
 
@@ -376,7 +376,7 @@ const tools = [{
 	cancel() {
 		this.mask_canvas = null;
 	},
-	paint(ctx, x, y) {
+	paint(ctx, _x, _y) {
 		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 			this.eraser_paint_iteration(ctx, x, y);
 		});
@@ -519,7 +519,7 @@ const tools = [{
 		magnification === 1 ? return_to_magnification : 1
 	),
 
-	drawPreviewAboveGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewAboveGrid(ctx, x, y, _grid_visible, scale, translate_x, translate_y) {
 		if (!pointer_active && !pointer_over_canvas) { return; }
 		if (pointer_active) { return; }
 		const prospective_magnification = this.getProspectiveMagnification();
@@ -606,7 +606,7 @@ const tools = [{
 		// ctx.strokeStyle = "#f0f";
 		// ctx.strokeRect(rect_x1, rect_y1, rect_w, rect_h);
 	},
-	pointerdown(ctx, x, y) {
+	pointerdown(_ctx, x, y) {
 		const prev_magnification = magnification;
 		const prospective_magnification = this.getProspectiveMagnification();
 
@@ -736,7 +736,7 @@ const tools = [{
 	stroke_only: true,
 	points: [],
 	preview_canvas: null,
-	pointerup(ctx, x, y) {
+	pointerup(ctx, _x, _y) {
 		if (this.points.length >= 4) {
 			undoable({
 				name: localize("Curve"),
@@ -747,7 +747,7 @@ const tools = [{
 			this.points = [];
 		}
 	},
-	pointerdown(ctx, x, y) {
+	pointerdown(_ctx, x, y) {
 		if (this.points.length < 1) {
 			this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			this.points.push({ x, y });
@@ -759,7 +759,7 @@ const tools = [{
 			this.points.push({ x, y });
 		}
 	},
-	paint(ctx, x, y) {
+	paint(_ctx, x, y) {
 		if (this.points.length < 1) { return; }
 
 		update_brush_for_drawing_lines(stroke_size);
@@ -805,7 +805,7 @@ const tools = [{
 			);
 		}
 	},
-	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewUnderGrid(ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) {
 		// if (!pointer_active && !pointer_over_canvas) { return; }
 		if (!this.preview_canvas) { return; }
 		ctx.scale(scale, scale);
@@ -944,7 +944,7 @@ const tools = [{
 		}
 		this.last_click_pointerdown = { x, y, time: +new Date };
 	},
-	paint(ctx, x, y) {
+	paint(_ctx, x, y) {
 		if (this.points.length < 1) { return; }
 
 		const i = this.points.length - 1;
@@ -978,7 +978,7 @@ const tools = [{
 			);
 		}
 	},
-	drawPreviewUnderGrid(ctx, x, y, grid_visible, scale, translate_x, translate_y) {
+	drawPreviewUnderGrid(ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) {
 		// if (!pointer_active && !pointer_over_canvas) { return; }
 		if (!this.preview_canvas) { return; }
 
@@ -1178,7 +1178,7 @@ tools.forEach((tool) => {
 		tool.cancel = () => {
 			canvas_handles.show();
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+		tool.drawPreviewUnderGrid = (ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) => {
 			if (!pointer_active) { return; }
 			if (!pointer_has_moved) { return; }
 
@@ -1188,7 +1188,7 @@ tools.forEach((tool) => {
 			// make the document canvas part of the helper canvas so that inversion can apply to it
 			ctx.drawImage(main_canvas, 0, 0);
 		};
-		tool.drawPreviewAboveGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+		tool.drawPreviewAboveGrid = (ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) => {
 			if (!pointer_active) { return; }
 			if (!pointer_has_moved) { return; }
 
@@ -1217,7 +1217,7 @@ tools.forEach((tool) => {
 				tool.shape_canvas = null;
 			});
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+		tool.drawPreviewUnderGrid = (ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) => {
 			if (!pointer_active) { return; }
 			if (!tool.shape_canvas) { return; }
 
@@ -1232,7 +1232,7 @@ tools.forEach((tool) => {
 		// binary mask of the drawn area, either opaque white or transparent
 		tool.mask_canvas = null;
 
-		tool.pointerdown = (ctx, x, y) => {
+		tool.pointerdown = (_ctx, _x, _y) => {
 			if (!tool.mask_canvas) {
 				tool.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			}
@@ -1258,7 +1258,7 @@ tools.forEach((tool) => {
 				tool.mask_canvas.height = 1;
 			});
 		};
-		tool.paint = (ctx, x, y) => {
+		tool.paint = (_ctx, x, y) => {
 			tool.paint_mask(tool.mask_canvas.ctx, x, y);
 		};
 		tool.cancel = () => {
@@ -1306,7 +1306,7 @@ tools.forEach((tool) => {
 			ctx.drawImage(mask_fill_canvas, 0, 0);
 			return translucent;
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+		tool.drawPreviewUnderGrid = (ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) => {
 			if (!pointer_active && !pointer_over_canvas) { return; }
 
 			ctx.scale(scale, scale);
@@ -1328,7 +1328,7 @@ tools.forEach((tool) => {
 		// binary mask of the drawn area, either opaque white or transparent
 		tool.mask_canvas = null;
 
-		tool.init_mask_canvas = (ctx, x, y) => {
+		tool.init_mask_canvas = (_ctx, _x, _y) => {
 			if (!tool.mask_canvas) {
 				tool.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			}
@@ -1340,7 +1340,7 @@ tools.forEach((tool) => {
 			}
 			tool.mask_canvas.ctx.disable_image_smoothing();
 		};
-		tool.pointerdown = (ctx, x, y) => {
+		tool.pointerdown = (_ctx, _x, _y) => {
 			tool.init_mask_canvas();
 		};
 		tool.pointerup = () => {
@@ -1420,7 +1420,7 @@ tools.forEach((tool) => {
 			ctx.drawImage(mask_fill_canvas, 0, 0);
 			return translucent;
 		};
-		tool.drawPreviewUnderGrid = (ctx, x, y, grid_visible, scale, translate_x, translate_y) => {
+		tool.drawPreviewUnderGrid = (ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) => {
 			if (!pointer_active && !pointer_over_canvas) { return; }
 
 			ctx.scale(scale, scale);

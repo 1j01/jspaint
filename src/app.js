@@ -1438,7 +1438,7 @@ $canvas.on("pointerleave", (e) => {
 // #region Panning and Zooming
 let last_zoom_pointer_distance;
 let pan_last_pos;
-let pan_start_magnification; // for panning and zooming in the same gesture
+// let pan_start_magnification; // for panning and zooming in the same gesture (...was this ever used?)
 let first_pointer_time;
 const discard_quick_undo_period = 500; // milliseconds in which to treat gesture as just a pan/zoom if you use two fingers, rather than treating it as a brush stroke you might care about
 function average_points(points) {
@@ -1485,7 +1485,7 @@ $canvas_area.on("pointerdown", (event) => {
 	if (pointers.length == 2) {
 		last_zoom_pointer_distance = Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
 		pan_last_pos = average_points(pointers);
-		pan_start_magnification = magnification;
+		// pan_start_magnification = magnification;
 	}
 	// Quick Undo when there are multiple pointers (i.e. for touch)
 	// See pointermove for other pointer types

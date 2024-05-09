@@ -1976,9 +1976,8 @@ function render_history_as_gif() {
 /**
  * @param {HistoryNode} target_history_node
  * @param {boolean=} canceling
- * @param {boolean=} discard_document_state
  */
-function go_to_history_node(target_history_node, canceling, discard_document_state) {
+function go_to_history_node(target_history_node, canceling) {
 	const from_history_node = current_history_node;
 
 	if (!target_history_node.image_data) {
@@ -2674,7 +2673,7 @@ function image_invert_colors() {
 	apply_image_transformation({
 		name: localize("Invert Colors"),
 		icon: get_help_folder_icon("p_invert.png"),
-	}, (original_canvas, original_ctx, new_canvas, new_ctx) => {
+	}, (_original_canvas, original_ctx, _new_canvas, new_ctx) => {
 		const monochrome_info = monochrome && detect_monochrome(original_ctx);
 		if (monochrome && monochrome_info.isMonochrome) {
 			invert_monochrome(original_ctx, new_ctx, monochrome_info);
@@ -2793,7 +2792,7 @@ function view_bitmap() {
 		// but it also doesn't do anything else — other than changing the cursor. Stupid.
 		cleanup_bitmap_view();
 	}
-	function onMouseDown(event) {
+	function onMouseDown(_event) {
 		// Note: in mspaint, only left click exits View Bitmap mode.
 		// Right click can show a useless context menu.
 		cleanup_bitmap_view();
@@ -3157,7 +3156,7 @@ function image_attributes() {
 	const $table = $(E("table")).appendTo($main);
 	for (const k in table) {
 		const $tr = $(E("tr")).appendTo($table);
-		const $key = $(E("td")).appendTo($tr).text(k);
+		// const $key = $(E("td")).appendTo($tr).text(k);
 		const $value = $(E("td")).appendTo($tr).text(table[k]);
 		if (table[k].indexOf("72") !== -1) {
 			$value.css("direction", "ltr");
@@ -4025,7 +4024,7 @@ function read_image_file(blob, callback) {
 					// @ts-ignore
 					error.code = file_text.match(/^\s*<!doctype\s+html/i) ? "html-not-image" : "decoding-failure";
 					callback(error);
-				}, (err) => {
+				}, (_err) => {
 					const error = new Error("failed to decode blob as image or text");
 					// @ts-ignore
 					error.code = "decoding-failure";
