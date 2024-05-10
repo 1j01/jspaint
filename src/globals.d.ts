@@ -500,12 +500,12 @@ declare const showSaveFilePicker: (any) => any;
 // The JS Paint `systemHooks` API
 interface SaveFileDialogOptions {
 	formats: FileFormat[];
-	defaultFileName: string;
+	defaultFileName?: string;
 	defaultPath?: UserFileHandle; // a bit of a misnomer since UserFileHandle is not _necessarily_ a path
-	defaultFileFormatID: string;
+	defaultFileFormatID?: string;
 	getBlob: (formatID: string) => Promise<Blob>;
-	savedCallbackUnreliable: (params: { newFileName: string; newFileFormatID: string; newFileHandle: any; newBlob: Blob }) => void;
-	dialogTitle: string;
+	savedCallbackUnreliable?: (params: { newFileName: string; newFileFormatID: string; newFileHandle: any; newBlob: Blob }) => void;
+	dialogTitle?: string;
 }
 
 interface OpenFileDialogOptions {
@@ -516,7 +516,7 @@ interface SystemHooks {
 	showSaveFileDialog(options: SaveFileDialogOptions): Promise<void>;
 	showOpenFileDialog(options: OpenFileDialogOptions): Promise<{ file: Blob; fileHandle?: UserFileHandle; }>;
 	writeBlobToHandle(fileHandle: UserFileHandle, blob: Blob): Promise<boolean | undefined>;
-	readBlobFromHandle(fileHandle: UserFileHandle): Promise<Blob>;
+	readBlobFromHandle(fileHandle: UserFileHandle): Promise<Blob | undefined>;
 	setWallpaperTiled(canvas: HTMLCanvasElement): void;
 	setWallpaperCentered(canvas: HTMLCanvasElement): void;
 }

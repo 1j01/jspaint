@@ -681,16 +681,16 @@ This is used both for saving images, as well as palette files, and animations.
 Arguments:
 - `formats`: an array of objects representing types of files, with the following properties:
 	- `formatID`: a string that uniquely identifies the format (may be the same as `mimeType`)
-	- `mimeType`: the file format's designated [media type](https://en.wikipedia.org/wiki/Media_type), e.g. `"image/png"`
+	- `mimeType` (optional): the file format's designated [media type](https://en.wikipedia.org/wiki/Media_type), e.g. `"image/png"` (palette formats do not have this property)
 	- `name`: the file format's name, e.g. `"WebP"`
 	- `nameWithExtensions`: the file format's name followed by a list of extensions, e.g. `"TIFF (*.tif;*.tiff)"`
 	- `extensions`: an array of file extensions, excluding the dot, with the preferred extension first, e.g. `["bmp", "dib"]`
-- `defaultFileName`: a suggested file name, e.g. `"Untitled.png"` or the name of an open document.
+- `defaultFileName` (optional): a suggested file name, e.g. `"Untitled.png"` or the name of an open document.
 - `defaultPath` (optional): a file handle for a document that was opened, so you can save to the same folder easily. Misnomer: this may not be a path, it depends on how you define file handles.
-- `defaultFileFormatID`: the `formatID` of a file format to select by default.
+- `defaultFileFormatID` (optional): the `formatID` of a file format to select by default.
 - `async function getBlob(formatID)`: a function you call to get a file in one of the supported formats. It takes a `formatID` and returns a `Promise` that resolves with a `Blob` representing the file contents to save.
-- `function savedCallbackUnreliable({ newFileName, newFileFormatID, newFileHandle, newBlob })`: a function you call when the user has saved the file. The `newBlob` should come from `getBlob(newFileFormatID)`.
-- `dialogTitle`: a title for the save dialog.
+- `function savedCallbackUnreliable({ newFileName, newFileFormatID, newFileHandle, newBlob })` (optional): a function you call when the user has saved the file. The `newBlob` should come from `getBlob(newFileFormatID)`.
+- `dialogTitle` (optional): a title for the save dialog.
 
 Note the inversion of control here:
 JS Paint calls your `systemHooks.showSaveFileDialog` function, and then you call JS Paint's `getBlob` function.
