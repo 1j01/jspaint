@@ -496,13 +496,32 @@ interface Window {
 declare const showOpenFilePicker: (any) => any;
 declare const showSaveFilePicker: (any) => any;
 
-// The JS Paint API... ironically, untyped.
-// Hey, I'm just working on internals right now!
-// TODO
-type SystemHooks = any;
-// interface SystemHooks {
-// 	// showSaveFileDialog({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }): Promise<>;
-// }
+
+// The JS Paint `systemHooks` API
+interface SaveFileDialogOptions {
+	formats: FileFormat[];
+	defaultFileName: string;
+	defaultPath?: UserFileHandle; // a bit of a misnomer since UserFileHandle is not _necessarily_ a path
+	defaultFileFormatID: string;
+	getBlob: (formatID: string) => Promise<Blob>;
+	savedCallbackUnreliable: (params: { newFileName: string; newFileFormatID: string; newFileHandle: any; newBlob: Blob }) => void;
+	dialogTitle: string;
+}
+
+interface OpenFileDialogOptions {
+	formats: FileFormat[];
+}
+
+interface SystemHooks {
+	showSaveFileDialog(options: SaveFileDialogOptions): Promise<void>;
+	showOpenFileDialog(options: OpenFileDialogOptions): Promise<{ file: Blob; fileHandle?: UserFileHandle; }>;
+	writeBlobToHandle(fileHandle: UserFileHandle, blob: Blob): Promise<boolean | undefined>;
+	readBlobFromHandle(fileHandle: UserFileHandle): Promise<Blob>;
+	setWallpaperTiled(canvas: HTMLCanvasElement): void;
+	setWallpaperCentered(canvas: HTMLCanvasElement): void;
+}
+
+//
 
 interface MessageBoxOptions {
 	title?: string;
