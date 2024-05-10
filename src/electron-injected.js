@@ -128,14 +128,20 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 	}
 
 	const extension = (filePath.indexOf(".") > -1) && filePath.split(/\./g).pop().toLowerCase();
+	// macOS and Windows seem to automatically add the extension based on the selected filter
+	// so this is only for Linux (and perhaps older versions of macOS/Windows/Electron? I don't know.)
+	// Better would be to just append the default extension to the file name when missing/unsupported, frankly.
+	// It's a shame that the selected filter can't be accessed, but it's probably not worth showing an error message about.
+	// PNG is a safe bet, and for palettes, so is GPL.
+	const allowedExtensions = formats.flatMap(({ extensions }) => extensions).map(ext => `.${ext}`).join(", ");
 	if (!extension) {
 		// @TODO: Linux/Unix?? you're not supposed to need file extensions
 		// should it use defaultFileFormatID?
-		return show_error_message("Missing file extension - Try adding .png to the end of the file name");
+		return show_error_message(`Missing file extension; the file name must end in one of the following: ${allowedExtensions}`);
 	}
 	const format = get_format_from_extension(formats, filePath);
 	if (!format) {
-		return show_error_message(`Can't save as *.${extension} - Try adding .png to the end of the file name`);
+		return show_error_message(`Can't save as *.${extension}; the file name must end in one of the following: ${allowedExtensions}`);
 	}
 	const blob = await getBlob(format.mimeType);
 	const { responseCode, error } = await write_blob_to_file_path(filePath, blob);
