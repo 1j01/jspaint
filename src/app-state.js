@@ -1,16 +1,19 @@
 // @ts-check
 
+// Can't import things until this file is a module...
+// (Well, could use dynamic imports, but that's async and thus probably as complicated as getting it to work with all ESM.)
 // import { default_palette } from "./color-data.js";
 // import { get_tool_by_id, make_monochrome_palette, make_history_node } from "./functions.js";
 // import { make_canvas } from "./helpers.js";
 // import { TOOL_PENCIL } from "./tools.js";
 
-const { get_tool_by_id, make_monochrome_palette, make_history_node, default_palette, make_canvas, TOOL_PENCIL } = window;
+// Causes TypeScript errors
+// const { get_tool_by_id, make_monochrome_palette, make_history_node, default_palette, make_canvas, TOOL_PENCIL } = window;
 
 const default_magnification = 1;
 
 /** @type {Tool} */
-const default_tool = get_tool_by_id(TOOL_PENCIL);
+const default_tool = window.get_tool_by_id(window.TOOL_PENCIL);
 
 const default_canvas_width = 683;
 const default_canvas_height = 384;
@@ -25,17 +28,17 @@ let magnification = default_magnification;
 let return_to_magnification = 4;
 
 /** @type {PixelCanvas} */
-const main_canvas = make_canvas();
+const main_canvas = window.make_canvas();
 main_canvas.classList.add("main-canvas");
 /** @type {PixelContext} */
 const main_ctx = main_canvas.ctx;
 
 /** @type {(string | CanvasPattern)[]} */
-let palette = default_palette;
+let palette = window.default_palette;
 /** @type {(string | CanvasPattern)[]} */
 let polychrome_palette = palette;
 /** @type {(string | CanvasPattern)[]} */
-let monochrome_palette = make_monochrome_palette();
+let monochrome_palette = window.make_monochrome_palette();
 
 // This feature is not ready yet.
 // It needs to let the user decide when to switch the palette or not, when saving/opening an image.
@@ -125,7 +128,7 @@ let text_tool_font = {
 };
 
 /** @type {HistoryNode} */
-let root_history_node = make_history_node({ name: "App Not Loaded Properly - Please send a bug report." }); // will be replaced
+let root_history_node = window.make_history_node({ name: "App Not Loaded Properly - Please send a bug report." }); // will be replaced
 /** @type {HistoryNode} */
 let current_history_node = root_history_node;
 /** @type {HistoryNode | null} */

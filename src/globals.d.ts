@@ -40,42 +40,42 @@ declare function display_hotkey(text: string): string;
 // tools.js
 declare const TOOL_PENCIL: "TOOL_PENCIL";
 // app-state.js
-declare let brush_shape: BrushShape;
-declare let brush_size: number
-declare let eraser_size: number;
-declare let airbrush_size: number;
-declare let pencil_size: number;
-declare let stroke_size: number; // applies to lines, curves, shape outlines
-declare let default_brush_shape: BrushShape;
-declare let default_brush_size: number
-declare let default_eraser_size: number;
-declare let default_airbrush_size: number;
-declare let default_pencil_size: number;
-declare let default_stroke_size: number;
+// declare let brush_shape: BrushShape;
+// declare let brush_size: number
+// declare let eraser_size: number;
+// declare let airbrush_size: number;
+// declare let pencil_size: number;
+// declare let stroke_size: number; // applies to lines, curves, shape outlines
+// declare let default_brush_shape: BrushShape;
+// declare let default_brush_size: number
+// declare let default_eraser_size: number;
+// declare let default_airbrush_size: number;
+// declare let default_pencil_size: number;
+// declare let default_stroke_size: number;
 
-declare let tool_transparent_mode: boolean;
-declare let stroke_color: string | CanvasPattern;
-declare let fill_color: string | CanvasPattern;
-declare let stroke_color_k: ColorSelectionSlot;
-declare let fill_color_k: ColorSelectionSlot;
+// declare let tool_transparent_mode: boolean;
+// declare let stroke_color: string | CanvasPattern;
+// declare let fill_color: string | CanvasPattern;
+// declare let stroke_color_k: ColorSelectionSlot;
+// declare let fill_color_k: ColorSelectionSlot;
 
-declare let selected_tool: Tool;
-declare let selected_tools: Tool[];
-declare let return_to_tools: Tool[];
-declare let selected_colors: {
-	foreground: string | CanvasPattern,
-	background: string | CanvasPattern,
-	ternary: string | CanvasPattern,
-};
+// declare let selected_tool: Tool;
+// declare let selected_tools: Tool[];
+// declare let return_to_tools: Tool[];
+// declare let selected_colors: {
+// 	foreground: string | CanvasPattern,
+// 	background: string | CanvasPattern,
+// 	ternary: string | CanvasPattern,
+// };
 
-declare let selection: OnCanvasSelection;
-declare let textbox: OnCanvasTextBox;
-declare let helper_layer: OnCanvasHelperLayer;
-declare let $thumbnail_window: $Window;
-declare let thumbnail_canvas: HTMLCanvasElement;
-declare let show_grid: boolean;
-declare let show_thumbnail: boolean;
-declare let text_tool_font: TextToolFontOptions;
+// declare let selection: OnCanvasSelection;
+// declare let textbox: OnCanvasTextBox;
+// declare let helper_layer: OnCanvasHelperLayer;
+// declare let $thumbnail_window: $Window;
+// declare let thumbnail_canvas: HTMLCanvasElement;
+// declare let show_grid: boolean;
+// declare let show_thumbnail: boolean;
+// declare let text_tool_font: TextToolFontOptions;
 interface TextToolFontOptions {
 	/** should be an exact value detected by Font Detective */
 	family: string,
@@ -91,27 +91,27 @@ interface TextToolFontOptions {
 	color: string,
 	background: string,
 };
-declare let root_history_node: HistoryNode;
-declare let current_history_node: HistoryNode;
-declare let history_node_to_cancel_to: HistoryNode | null;
-declare let undos: HistoryNode[];
-declare let redos: HistoryNode[];
-declare let file_name: string;
-declare let system_file_handle: UserFileHandle;
-declare let saved: boolean;
-declare let pointer: { x: number, y: number } | undefined;
-declare let pointer_start: { x: number, y: number } | undefined;
-declare let pointer_previous: { x: number, y: number } | undefined;
-declare let pointer_active: boolean;
-declare let pointer_type: string;
-declare let pointer_buttons: number;
-declare let reverse: boolean;
-declare let ctrl: boolean;
-declare let shift: boolean;
-declare let button: number;
-declare let pointer_over_canvas: boolean;
-declare let update_helper_layer_on_pointermove_active: boolean;
-declare let pointers: { x: number, y: number, pointerId: number, pointerType: string, isPrimary: boolean }[];
+// declare let root_history_node: HistoryNode;
+// declare let current_history_node: HistoryNode;
+// declare let history_node_to_cancel_to: HistoryNode | null;
+// declare let undos: HistoryNode[];
+// declare let redos: HistoryNode[];
+// declare let file_name: string;
+// declare let system_file_handle: UserFileHandle;
+// declare let saved: boolean;
+// declare let pointer: { x: number, y: number } | undefined;
+// declare let pointer_start: { x: number, y: number } | undefined;
+// declare let pointer_previous: { x: number, y: number } | undefined;
+// declare let pointer_active: boolean;
+// declare let pointer_type: string;
+// declare let pointer_buttons: number;
+// declare let reverse: boolean;
+// declare let ctrl: boolean;
+// declare let shift: boolean;
+// declare let button: number;
+// declare let pointer_over_canvas: boolean;
+// declare let update_helper_layer_on_pointermove_active: boolean;
+// declare let pointers: { x: number, y: number, pointerId: number, pointerType: string, isPrimary: boolean }[];
 
 // $ToolBox.js
 declare interface I$ToolBox {
