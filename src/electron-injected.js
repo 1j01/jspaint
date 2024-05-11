@@ -137,7 +137,7 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 	if (!format) {
 		return show_error_message(`Can't save as *.${extension} - Try adding .png to the end of the file name`);
 	}
-	const blob = await getBlob(format.mimeType);
+	const blob = await getBlob(format.formatID);
 	const { responseCode, error } = await write_blob_to_file_path(filePath, blob);
 	if (responseCode !== "SUCCESS") {
 		return show_save_error_message(responseCode, error);
@@ -145,7 +145,7 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 	savedCallbackUnreliable && savedCallbackUnreliable({
 		// newFileName: path.basename(filePath),
 		newFileName: fileName,
-		newFileFormatID: format.mimeType,
+		newFileFormatID: format.formatID,
 		newFileHandle: filePath,
 		newBlob: blob,
 	});
