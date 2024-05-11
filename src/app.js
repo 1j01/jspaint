@@ -330,7 +330,7 @@ window.systemHookDefaults = {
 	setWallpaperCentered: (canvas) => {
 		systemHooks.showSaveFileDialog({
 			dialogTitle: localize("Save As"),
-			defaultName: `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`,
+			defaultFileName: `${file_name.replace(/\.(bmp|dib|a?png|gif|jpe?g|jpe|jfif|tiff?|webp|raw)$/i, "")} wallpaper.png`,
 			defaultFileFormatID: "image/png",
 			formats: image_formats,
 			getBlob: (new_file_type) => {
