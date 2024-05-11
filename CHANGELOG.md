@@ -10,7 +10,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `systemHooks.writeBlobToHandle` promise can resolve with `true` to indicate success, in which case **File > Save** will not prompt to save the file again. `false` indicates failure or cancellation, whereas `undefined` can be used if it is unknown whether the file will be saved successfully, as is the case when using the `download` attribute on an anchor element. If saving as a monochrome bitmap, `undefined` will cause the canvas to become monochrome, but it will still prompt to save the file again. This tradeoff is reasonable because the download attribute doesn't support saving over an already saved file anyways
 
 
-## [1.0.0] - 2022-08-02
+
+## Desktop App [1.0.0]
+
+### Changed
+- Converted code almost entirely to ES Modules
+- Marked more of `systemHooks.showSaveFileDialog` options as optional. Since this is a function defined by the user of the API, this means you should make sure to handle the options being `undefined` in your implementation.
+- Some documented globals may be unavailable, after switching to ESM...
+
+### Added
+- Bubblegum theme
+- Modern Dark theme(?)
+- Native menu bar for macOS in the desktop app
+- other things
+- TypeScript type definitions for the API are available in `globals.d.ts` but you'll need to copy them to your project to use them
+
+## Desktop App [1.0.0-pre]
+
+### Changed
+No API changes.
+
+### Added
+- Electron app release
+
+## API [1.0.0] - 2022-08-02
 ### Added
 - `systemHooks` API for overriding file dialogs, file saving/loading, and Set as Wallpaper commands
 	- `systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };`
