@@ -484,17 +484,9 @@ interface Window {
 	onYouTubeIframeAPIReady?: () => void;
 	// Local Font Access API
 	queryLocalFonts?: () => Promise<FontData[]>;
-	// File System Access API
-	// TODO: install types?
-	showOpenFilePicker?: (any) => any;
-	showSaveFilePicker?: (any) => any;
 	// Chrome browser detection
 	chrome?: { loadTimes: unknown, csi: unknown };
 }
-// File System Access API
-// TODO: install types?
-declare const showOpenFilePicker: (any) => any;
-declare const showSaveFilePicker: (any) => any;
 
 
 // The JS Paint `systemHooks` API
