@@ -42,6 +42,17 @@ window.average_points = average_points;
 
 // #region System Hooks and default implementations
 
+/**
+ * @param {string} extension
+ * @returns {`.${string}`}
+ */
+const prependDot = (extension) => `.${extension}`;
+/**
+ * @param {FileFormat} format
+ * @returns {string}
+ */
+const getMimeType = (format) => "mimeType" in format ? format.mimeType : `application/x-${format.formatID}`;
+
 // Note: JSDoc type annotations don't seem to actually work on window.*
 /**
  * @type {SystemHooks}
@@ -137,7 +148,7 @@ window.systemHookDefaults = {
 						return {
 							description: format.name,
 							accept: {
-								[format.mimeType]: format.extensions.map((extension) => "." + extension)
+								[getMimeType(format)]: format.extensions.map(prependDot)
 							}
 						}
 					})
@@ -254,7 +265,7 @@ window.systemHookDefaults = {
 					return {
 						description: format.name,
 						accept: {
-							[format.mimeType]: format.extensions.map((extension) => "." + extension)
+							[getMimeType(format)]: format.extensions.map(prependDot)
 						}
 					}
 				})
