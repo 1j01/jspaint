@@ -3803,14 +3803,15 @@ function save_as_prompt({
 
 /**
  * Writes an image file to a blob, in the given format.
- * @param {PixelCanvas} canvas - The canvas to export as an image file.
+ * @param {HTMLCanvasElement} canvas - The canvas to export as an image file. Must have a 2d context.
  * @param {string} mime_type - The MIME type of the image file.
  * @param {(Blob)=> void} blob_callback - This function is called with the blob, or may never be called if there is an error.
  */
 function write_image_file(canvas, mime_type, blob_callback) {
+	const ctx = canvas.getContext("2d");
 	const bmp_match = mime_type.match(/^image\/(?:x-)?bmp\s*(?:-(\d+)bpp)?/);
 	if (bmp_match) {
-		const file_content = encodeBMP(canvas.ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1] || "24", 10));
+		const file_content = encodeBMP(ctx.getImageData(0, 0, canvas.width, canvas.height), parseInt(bmp_match[1] || "24", 10));
 		const blob = new Blob([file_content]);
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);
@@ -3818,14 +3819,14 @@ function write_image_file(canvas, mime_type, blob_callback) {
 	} else if (mime_type === "image/png") {
 		// UPNG.js gives better compressed PNGs than the built-in browser PNG encoder
 		// In fact you can use it as a minifier! http://upng.photopea.com/
-		const image_data = canvas.ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		const array_buffer = UPNG.encode([image_data.data.buffer], image_data.width, image_data.height);
 		const blob = new Blob([array_buffer]);
 		sanity_check_blob(blob, () => {
 			blob_callback(blob);
 		});
 	} else if (mime_type === "image/tiff") {
-		const image_data = canvas.ctx.getImageData(0, 0, canvas.width, canvas.height);
+		const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		const metadata = {
 			t305: ["jspaint (UTIF.js)"],
 		};
