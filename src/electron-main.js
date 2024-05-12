@@ -466,7 +466,7 @@ const createWindow = () => {
 		const { filePath, canceled } = await dialog.showSaveDialog(editor_window, {
 			title: options.title,
 			// defaultPath: options.defaultPath,
-			defaultPath: options.defaultPath || path.basename(options.defaultFileName),
+			defaultPath: options.defaultPath || (options.defaultFileName ? path.basename(options.defaultFileName) : undefined),
 			filters: options.filters,
 		});
 		const fileName = path.basename(filePath);
