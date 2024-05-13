@@ -712,8 +712,9 @@ function* traverse_menu(menu_items, menu_element) {
 	}
 }
 
-const extras_menu_button = document.querySelector(`.extras-menu-button`);
-const extras_menu_popup = document.getElementById(extras_menu_button.getAttribute("aria-controls"));
+const menu_document = menu_bar.element.ownerDocument;
+const extras_menu_button = menu_document.querySelector(`.extras-menu-button`);
+const extras_menu_popup = menu_document.getElementById(extras_menu_button.getAttribute("aria-controls"));
 
 let emoji_css = `
 	.menu-item .menu-item-label::before {
