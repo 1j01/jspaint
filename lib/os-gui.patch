@@ -1,0 +1,53 @@
+diff --git a/lib/os-gui/$Window.js b/lib/os-gui/$Window.js
+index 7c785c54..bb776126 100644
+--- a/lib/os-gui/$Window.js
++++ b/lib/os-gui/$Window.js
+@@ -1,3 +1,4 @@
++/*eslint-disable*/
+ ((exports) => {
+ 
+ // TODO: E\("([a-z]+)"\) -> "<$1>" or get rid of jQuery as a dependency
+@@ -341,7 +342,9 @@ function $Window(options) {
+ 				showAsFocused();
+ 			}
+ 		}
+-	} else {
++	}
++	/*else - PATCHED; I want focus tracking in a tool window; @TODO: dissolve the concept of a "tool window" */
++	{
+ 		// global focusout is needed, to continue showing as focused while child windows or menu popups are focused (@TODO: Is this redundant with focusin?)
+ 		// global focusin is needed, to show as focused when a child window becomes focused (when perhaps nothing was focused before, so no focusout event)
+ 		// global blur is needed, to show as focused when an iframe gets focus, because focusin/out doesn't fire at all in that case
+@@ -463,7 +466,9 @@ function $Window(options) {
+ 
+ 				// console.log(`[${$w.title()}] (is_root=${is_root})`, `outside_or_at_exactly=${outside_or_at_exactly}`, `firmly_outside=${firmly_outside}`);
+ 				if (firmly_outside && is_root) {
+-					stopShowingAsFocused();
++					if (!options.toolWindow) { // PATCHED
++						stopShowingAsFocused();
++					}
+ 				}
+ 				if (
+ 					!outside_or_at_exactly &&
+@@ -540,7 +545,9 @@ function $Window(options) {
+ 					newly_focused.window !== newly_focused && // cross-frame test for Window object
+ 					container_node.contains(newly_focused)
+ 				) {
+-					showAsFocused();
++					if (!options.toolWindow) { // PATCHED
++						showAsFocused();
++					}
+ 					$w.bringToFront();
+ 					if (!is_root) {
+ 						// trigger focusin events for iframes
+@@ -558,7 +565,9 @@ function $Window(options) {
+ 						}
+ 					}
+ 				} else if (is_root) {
+-					stopShowingAsFocused();
++					if (!options.toolWindow) { // PATCHED
++						stopShowingAsFocused();
++					}
+ 				}
+ 			}
+ 		}

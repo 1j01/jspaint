@@ -31,7 +31,9 @@ See [**Development Setup**](./README.md#Development-Setup) on the readme.
 - `functions.js` has functions that shouldn't own any global state, altho they very much modify global state, and there may be a few stateful global variables defined in there.
 - The project uses [jQuery](https://jquery.com/), and a convention of prefixing variables that hold jQuery objects with `$`
 	- There are also some weird pseudo-classes like `$ColorBox` which extend and return jQuery objects. I don't recommend this pattern for new code.
-- Menu code and windowing code is in `lib/os-gui/` and should be kept in sync with the [os-gui](https://github.com/1j01/os-gui) project.
+- Menu code and windowing code lives in the [os-gui](https://github.com/1j01/os-gui) project.
+	- It can be synced (one-way) by running `npm i os-gui@latest && npm run sync-os-gui`
+	- To develop os-gui in the context of jspaint, you can run `npm link` in a clone of os-gui, then run `npm link os-gui` in jspaint and then `npm run sync-os-gui` after making any changes in os-gui.
 	- (Maybe I should version this using git-subrepo?)
 	- Some window behavior specific to jspaint is in `$ToolWindow.js` and `$Component.js`
 - `image-manipulation.js` should contain just rendering related code, and ideally no dialogs except maybe some error messages.

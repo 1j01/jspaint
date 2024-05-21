@@ -103,6 +103,7 @@
     "glob": "^10.3.10",
     "npm-run-all": "^4.1.5",
     "onchange": "^7.1.0",
+    "os-gui": "github:1j01/os-gui#1b027810bac0aa9a0e0c78adbb889e6c4a0adb04",
     "rtlcss": "^4.1.1",
     "start-server-and-test": "^2.0.3",
     "typescript": "^5.4.3"
@@ -119,6 +120,7 @@
     "build-css": "rtlcss styles/layout.css styles/layout.rtl.css && rtlcss lib/os-gui/build/layout.css lib/os-gui/build/layout.rtl.css && rtlcss lib/98.css/98.custom-build.css lib/98.css/98.custom-build.rtl.css",
     "watch-css": "onchange --initial --poll 100 \"styles/layout.css\" \"lib/os-gui/build/layout.css\" \"lib/98.css/98.custom-build.css\" -- npm run build-css",
     "update-localization": "node ./localization/preprocess.js",
+    "sync-os-gui": "node ./sync-package.js os-gui && git apply --ignore-whitespace ./lib/os-gui.patch && npm run build-css",
     "dev": "run-p watch-css dev:start-server",
     "dev:start-server": "live-server --port=1999 --ignorePattern=\"(node_modules|cypress|out)[/\\\\\\\\]|package\\.json|cypress\\.json\"",
     "dev:start-server:NOTE": "@XXX: the octuple backlash ends up meaning a single backslash on Linux, two backslashes on Windows. In this case it's fine because it's in a regexp character class so the extra is redundant and doesn't cause an error.",
