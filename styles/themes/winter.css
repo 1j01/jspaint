@@ -1,5 +1,5 @@
 @import "./classic.css";
-@import "../../lib/os-gui/blue.css";
+@import "../../lib/os-gui/build/blue.css";
 @import url('https://fonts.googleapis.com/css?family=Charm|Princess+Sofia&display=swap');
 
 :root {
