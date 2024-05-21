@@ -241,10 +241,10 @@ declare function are_you_sure(
 	canceled?: () => void, from_session_load?: boolean
 ): void;
 /**
- * @param {File} file
+ * @param {Blob} file
  * @param {UserFileHandle} source_file_handle
  */
-declare function open_from_file(file: File, source_file_handle: UserFileHandle): void;
+declare function open_from_file(file: Blob, source_file_handle: UserFileHandle): void;
 
 // msgbox.js
 declare function showMessageBox(options: MessageBoxOptions): Promise<string>;

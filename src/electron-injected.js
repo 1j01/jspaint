@@ -183,15 +183,18 @@ window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
 };
 window.systemHooks.readBlobFromHandle = async (filePath) => {
 	if (typeof filePath !== "string") {
-		return show_error_message("readBlobFromHandle in Electron expects a file path, got " + filePath);
+		show_error_message("readBlobFromHandle in Electron expects a file path, got " + filePath);
+		return;
 		// should it fall back to default readBlobFromHandle?
 	}
 	const { responseCode, error, data, fileName } = await ipcRenderer.invoke("read-file", filePath);
 	if (responseCode === "ACCESS_DENIED") {
-		return show_error_message(localize("Access denied."));
+		show_error_message(localize("Access denied."));
+		return;
 	}
 	if (responseCode !== "SUCCESS") {
-		return show_error_message(localize("Paint cannot open this file."), error);
+		show_error_message(localize("Paint cannot open this file."), error);
+		return;
 	}
 	const file = new File([new Uint8Array(data)], fileName);
 	// can't set file.path directly, but we can do this:

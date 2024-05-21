@@ -1000,7 +1000,7 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 
 // Note: This function is part of the API.
 /**
- * @param {File} file
+ * @param {Blob} file
  * @param {UserFileHandle} source_file_handle
  */
 function open_from_file(file, source_file_handle) {
@@ -1012,7 +1012,7 @@ function open_from_file(file, source_file_handle) {
 	// It's better to look at the file content to determine file type.
 	// We do this for image files in read_image_file, and palette files in AnyPalette.js.
 
-	if (file.name.match(/\.theme(pack)?$/i)) {
+	if (file instanceof File && file.name.match(/\.theme(pack)?$/i)) {
 		file.text().then(load_theme_from_text, (error) => {
 			show_error_message(localize("Paint cannot open this file."), error);
 		});
