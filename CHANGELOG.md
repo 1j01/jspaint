@@ -7,11 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- `systemHooks.writeBlobToHandle` promise can resolve with `true` to indicate success, in which case **File > Save** will not prompt to save the file again. `false` indicates failure or cancellation, whereas `undefined` can be used if it is unknown whether the file will be saved successfully, as is the case when using the `download` attribute on an anchor element. If saving as a monochrome bitmap, `undefined` will cause the canvas to become monochrome, but it will still prompt to save the file again. This tradeoff is reasonable because the download attribute doesn't support saving over an already saved file anyways
 
 
 
-## Desktop App [1.0.0]
+## [1.1.0]
 
 ### Changed
 - Converted code almost entirely to ES Modules
@@ -28,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Desktop App [1.0.0-pre]
 
 ### Changed
-No API changes.
+- `systemHooks.writeBlobToHandle` promise can resolve with `true` to indicate success, in which case **File > Save** will not prompt to save the file again. `false` indicates failure or cancellation, whereas `undefined` can be used if it is unknown whether the file will be saved successfully, as is the case when using the `download` attribute on an anchor element. If saving as a monochrome bitmap, `undefined` will cause the canvas to become monochrome, but it will still prompt to save the file again. This tradeoff is reasonable because the download attribute doesn't support saving over an already saved file anyways
 
 ### Added
 - Electron app release
