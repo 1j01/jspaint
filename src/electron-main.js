@@ -314,7 +314,7 @@ const createWindow = () => {
 		// const menus = {
 		// 	"&Example": [
 		// 		{
-		// 			item: "&Nothing", // or "label" in newer os-gui.js API
+		// 			label: "&Nothing",
 		// 			shortcut?: "Ctrl+N",
 		// 			speech_recognition?: ["nothing", "no-op"],
 		// 			action?: () => { },
@@ -398,6 +398,10 @@ const createWindow = () => {
 			}));
 		}
 
+		/**
+		 * @param {OSGUIMenuFragment[]} menu_items 
+		 * @returns {MenuItem[]}
+		 */
 		function makeMenu(menu_items) {
 			return menu_items.map(menu_item => {
 				if (menu_item === "MENU_DIVIDER") {
@@ -411,7 +415,7 @@ const createWindow = () => {
 					// or by designing custom icons.
 					label:
 						(menu_item.emoji_icon ? menu_item.emoji_icon + " " : "") +
-						(menu_item.label ?? menu_item.item),
+						menu_item.label,
 					// There's some hacky translation of shortcuts here,
 					// but the app supports Cmd for all Ctrl shortcuts.
 					// @TODO: use "CmdOrCtrl", make OS-GUI.js support it, and simplify this.

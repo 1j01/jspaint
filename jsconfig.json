@@ -5,6 +5,7 @@
 		"moduleResolution": "node", // Fixes error TS2792: Cannot find module 'electron'. https://stackoverflow.com/a/46562884/2624876
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*",
+		"lib/os-gui/os-gui.d.ts"
 	]
 }

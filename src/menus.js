@@ -18,10 +18,11 @@ const looksLikeChrome = !!(window.chrome && (window.chrome.loadTimes || window.c
 // NOTE: Microsoft Edge includes window.chrome.app
 // (also this browser detection logic could likely use some more nuance)
 
+/** @type {OSGUITopLevelMenus} */
 const menus = {
 	[localize("&File")]: [
 		{
-			item: localize("&New"),
+			label: localize("&New"),
 			shortcut: window.is_electron_app ? "Ctrl+N" : "Ctrl+Alt+N", // Ctrl+N opens a new browser window
 			speech_recognition: [
 				"new", "new file", "new document", "create new document", "create a new document", "start new document", "start a new document",
@@ -30,7 +31,7 @@ const menus = {
 			description: localize("Creates a new document."),
 		},
 		{
-			item: localize("&Open"),
+			label: localize("&Open"),
 			shortcut: "Ctrl+O",
 			speech_recognition: [
 				"open", "open document", "open file", "open an image file", "open a document", "open a file",
@@ -42,7 +43,7 @@ const menus = {
 			description: localize("Opens an existing document."),
 		},
 		{
-			item: localize("&Save"),
+			label: localize("&Save"),
 			shortcut: "Ctrl+S",
 			speech_recognition: [
 				"save", "save document", "save file", "save image", "save picture", "save image file",
@@ -56,7 +57,7 @@ const menus = {
 			description: localize("Saves the active document."),
 		},
 		{
-			item: localize("Save &As"),
+			label: localize("Save &As"),
 			// in mspaint, no shortcut is listed; it supports F12 (but in a browser that opens the dev tools)
 			// it doesn't support Ctrl+Shift+S but that's a good & common modern shortcut
 			shortcut: "Ctrl+Shift+S",
@@ -76,7 +77,7 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("&Load From URL"),
+			label: localize("&Load From URL"),
 			// shortcut: "", // no shortcut: Ctrl+L is taken, and you can paste a URL with Ctrl+V, so it's not really needed
 			speech_recognition: [
 				"load from url",
@@ -116,7 +117,7 @@ const menus = {
 			description: localize("Opens an image from the web."),
 		},
 		{
-			item: localize("&Upload To Imgur"),
+			label: localize("&Upload To Imgur"),
 			speech_recognition: [
 				"upload to imgur", "upload image to imgur", "upload picture to imgur",
 			],
@@ -134,7 +135,7 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("Manage Storage"),
+			label: localize("Manage Storage"),
 			speech_recognition: [
 				"manage storage", "show storage", "open storage window", "manage sessions", "show sessions", "show local sessions", "local sessions", "storage manager", "show storage manager", "open storage manager",
 				"show autosaves", "show saves", "show saved documents", "show saved files", "show saved pictures", "show saved images", "show local storage",
@@ -145,7 +146,7 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("Print Pre&view"),
+			label: localize("Print Pre&view"),
 			speech_recognition: [
 				"preview print", "print preview", "show print preview", "show preview of print",
 			],
@@ -156,7 +157,7 @@ const menus = {
 			//description: localize("Displays full pages."),
 		},
 		{
-			item: localize("Page Se&tup"),
+			label: localize("Page Se&tup"),
 			speech_recognition: [
 				"setup page for print", "setup page for printing", "set-up page for print", "set-up page for printing", "set up page for print", "set up page for printing",
 				"page setup", "printing setup", "page set-up", "printing set-up", "page set up", "printing set up",
@@ -168,7 +169,7 @@ const menus = {
 			//description: localize("Changes the page layout."),
 		},
 		{
-			item: localize("&Print"),
+			label: localize("&Print"),
 			shortcut: "Ctrl+P", // relies on browser's print shortcut being Ctrl+P
 			speech_recognition: [
 				"print", "send to printer", "show print dialog",
@@ -188,7 +189,7 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("Set As &Wallpaper (Tiled)"),
+			label: localize("Set As &Wallpaper (Tiled)"),
 			speech_recognition: [
 				"set as wallpaper",
 				"set as wallpaper tiled",
@@ -201,7 +202,7 @@ const menus = {
 			description: localize("Tiles this bitmap as the desktop background."),
 		},
 		{
-			item: localize("Set As Wallpaper (&Centered)"), // in mspaint it's Wa&llpaper
+			label: localize("Set As Wallpaper (&Centered)"), // in mspaint it's Wa&llpaper
 			speech_recognition: [
 				"set as wallpaper centered",
 				"set image as wallpaper centered", "set picture as wallpaper centered", "set drawing as wallpaper centered",
@@ -214,13 +215,13 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("Recent File"),
+			label: localize("Recent File"),
 			enabled: false, // @TODO for desktop app
 			description: localize(""),
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("E&xit"),
+			label: localize("E&xit"),
 			shortcut: window.is_electron_app ? "Alt+F4" : "", // Alt+F4 closes the browser window (in most window managers)
 			speech_recognition: [
 				"exit application", "exit paint", "close paint window",
@@ -271,7 +272,7 @@ const menus = {
 	],
 	[localize("&Edit")]: [
 		{
-			item: localize("&Undo"),
+			label: localize("&Undo"),
 			shortcut: "Ctrl+Z",
 			speech_recognition: [
 				"undo", "undo that",
@@ -281,7 +282,7 @@ const menus = {
 			description: localize("Undoes the last action."),
 		},
 		{
-			item: localize("&Repeat"),
+			label: localize("&Repeat"),
 			shortcut: "F4", // also supported: Ctrl+Shift+Z, Ctrl+Y
 			speech_recognition: [
 				"repeat", "redo",
@@ -291,7 +292,7 @@ const menus = {
 			description: localize("Redoes the previously undone action."),
 		},
 		{
-			item: localize("&History"),
+			label: localize("&History"),
 			shortcut: "Ctrl+Shift+Y",
 			speech_recognition: [
 				"show history", "history",
@@ -301,7 +302,7 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("Cu&t"),
+			label: localize("Cu&t"),
 			shortcut: "Ctrl+X",
 			speech_recognition: [
 				"cut", "cut selection", "cut selection to clipboard", "cut the selection", "cut the selection to clipboard", "cut the selection to the clipboard",
@@ -315,7 +316,7 @@ const menus = {
 			description: localize("Cuts the selection and puts it on the Clipboard."),
 		},
 		{
-			item: localize("&Copy"),
+			label: localize("&Copy"),
 			shortcut: "Ctrl+C",
 			speech_recognition: [
 				"copy", "copy selection", "copy selection to clipboard", "copy the selection", "copy the selection to clipboard", "copy the selection to the clipboard",
@@ -329,7 +330,7 @@ const menus = {
 			description: localize("Copies the selection and puts it on the Clipboard."),
 		},
 		{
-			item: localize("&Paste"),
+			label: localize("&Paste"),
 			shortcut: "Ctrl+V",
 			speech_recognition: [
 				"paste", "paste from clipboard", "paste from the clipboard", "insert clipboard", "insert clipboard contents", "insert the contents of the clipboard", "paste what's on the clipboard",
@@ -343,7 +344,7 @@ const menus = {
 			description: localize("Inserts the contents of the Clipboard."),
 		},
 		{
-			item: localize("C&lear Selection"),
+			label: localize("C&lear Selection"),
 			shortcut: "Del",
 			speech_recognition: [
 				"delete", "clear selection", "delete selection", "delete selected", "delete selected area", "clear selected area", "erase selected", "erase selected area",
@@ -353,7 +354,7 @@ const menus = {
 			description: localize("Deletes the selection."),
 		},
 		{
-			item: localize("Select &All"),
+			label: localize("Select &All"),
 			shortcut: "Ctrl+A",
 			speech_recognition: [
 				"select all", "select everything",
@@ -365,7 +366,7 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: `${localize("C&opy To")}...`,
+			label: `${localize("C&opy To")}...`,
 			speech_recognition: [
 				"copy to file", "copy selection to file", "copy selection to a file", "save selection",
 				"save selection as file", "save selection as image", "save selection as picture", "save selection as image file", "save selection as document",
@@ -378,7 +379,7 @@ const menus = {
 			description: localize("Copies the selection to a file."),
 		},
 		{
-			item: `${localize("Paste &From")}...`,
+			label: `${localize("Paste &From")}...`,
 			speech_recognition: [
 				"paste a file", "paste from a file", "insert a file", "insert an image file",
 			],
@@ -388,7 +389,7 @@ const menus = {
 	],
 	[localize("&View")]: [
 		{
-			item: localize("&Tool Box"),
+			label: localize("&Tool Box"),
 			shortcut: window.is_electron_app ? "Ctrl+T" : "", // Ctrl+T opens a new browser tab, Ctrl+Alt+T opens a Terminal in Ubuntu, and Ctrl+Shift+Alt+T feels silly.
 			speech_recognition: [
 				"toggle tool box", "toggle tools box", "toggle toolbox", "toggle tool palette", "toggle tools palette",
@@ -403,7 +404,7 @@ const menus = {
 			description: localize("Shows or hides the tool box."),
 		},
 		{
-			item: localize("&Color Box"),
+			label: localize("&Color Box"),
 			shortcut: "Ctrl+L", // focuses browser address bar, but Firefox and Chrome both allow overriding the default behavior
 			speech_recognition: [
 				"toggle color box", "toggle colors box", "toggle palette", "toggle color palette", "toggle colors palette",
@@ -418,7 +419,7 @@ const menus = {
 			description: localize("Shows or hides the color box."),
 		},
 		{
-			item: localize("&Status Bar"),
+			label: localize("&Status Bar"),
 			speech_recognition: [
 				"toggle status bar", "toggle status text", "toggle status area", "toggle status indicator",
 				// @TODO: hide/show
@@ -432,7 +433,7 @@ const menus = {
 			description: localize("Shows or hides the status bar."),
 		},
 		{
-			item: localize("T&ext Toolbar"),
+			label: localize("T&ext Toolbar"),
 			speech_recognition: [
 				"toggle text toolbar", "toggle font toolbar", "toggle text tool bar", "toggle font tool bar",
 				"toggle font box", "toggle fonts box", "toggle text options box", "toggle text tool options box", "toggle font options box",
@@ -440,15 +441,20 @@ const menus = {
 				// @TODO: hide/show
 			],
 			enabled: false, // @TODO: toggle fonts box
-			checkbox: {},
+			checkbox: {
+				toggle: () => {
+					// Kind of silly that I haven't implemented this in the 10 years I've been working on this project.
+				},
+				check: () => false,
+			},
 			description: localize("Shows or hides the text toolbar."),
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("&Zoom"),
+			label: localize("&Zoom"),
 			submenu: [
 				{
-					item: localize("&Normal Size"),
+					label: localize("&Normal Size"),
 					shortcut: window.is_electron_app ? "Ctrl+PgUp" : "", // Ctrl+PageUp cycles thru browser tabs in Chrome & Firefox; can be overridden in Chrome in fullscreen only
 					speech_recognition: [
 						"reset zoom", "zoom to normal size",
@@ -464,7 +470,7 @@ const menus = {
 					},
 				},
 				{
-					item: localize("&Large Size"),
+					label: localize("&Large Size"),
 					shortcut: window.is_electron_app ? "Ctrl+PgDn" : "", // Ctrl+PageDown cycles thru browser tabs in Chrome & Firefox; can be overridden in Chrome in fullscreen only
 					speech_recognition: [
 						"zoom to large size",
@@ -480,7 +486,7 @@ const menus = {
 					},
 				},
 				{
-					item: localize("Zoom To &Window"),
+					label: localize("Zoom To &Window"),
 					speech_recognition: [
 						"zoom to window", "zoom to view",
 						"zoom to fit",
@@ -514,7 +520,7 @@ const menus = {
 					},
 				},
 				{
-					item: `${localize("C&ustom")}...`,
+					label: `${localize("C&ustom")}...`,
 					description: localize("Zooms the picture."),
 					speech_recognition: [
 						"zoom custom", "custom zoom", "set custom zoom", "set custom zoom level", "zoom to custom level", "zoom to custom", "zoom level", "set zoom level",
@@ -523,7 +529,7 @@ const menus = {
 				},
 				MENU_DIVIDER,
 				{
-					item: localize("Show &Grid"),
+					label: localize("Show &Grid"),
 					shortcut: "Ctrl+G",
 					speech_recognition: [
 						"toggle show grid",
@@ -538,7 +544,7 @@ const menus = {
 					description: localize("Shows or hides the grid."),
 				},
 				{
-					item: localize("Show T&humbnail"),
+					label: localize("Show T&humbnail"),
 					speech_recognition: [
 						"toggle show thumbnail",
 						"toggle thumbnail", "toggle thumbnail view", "toggle thumbnail box", "toggle thumbnail window",
@@ -555,7 +561,7 @@ const menus = {
 			]
 		},
 		{
-			item: localize("&View Bitmap"),
+			label: localize("&View Bitmap"),
 			shortcut: "Ctrl+F",
 			speech_recognition: [
 				"view bitmap", "show bitmap",
@@ -569,14 +575,14 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("&Fullscreen"),
+			label: localize("&Fullscreen"),
 			shortcut: "F11", // relies on browser's shortcut
 			speech_recognition: [
 				// won't work with speech recognition, needs a user gesture
 			],
-			enabled: () => document.fullscreenEnabled || document.webkitFullscreenEnabled,
+			enabled: () => Boolean(document.fullscreenEnabled || document.webkitFullscreenEnabled),
 			checkbox: {
-				check: () => document.fullscreenElement || document.webkitFullscreenElement,
+				check: () => Boolean(document.fullscreenElement || document.webkitFullscreenElement),
 				toggle: () => {
 					if (document.fullscreenElement || document.webkitFullscreenElement) {
 						if (document.exitFullscreen) { document.exitFullscreen(); }
@@ -596,7 +602,7 @@ const menus = {
 	[localize("&Image")]: [
 		// @TODO: speech recognition: terms that apply to selection
 		{
-			item: localize("&Flip/Rotate"),
+			label: localize("&Flip/Rotate"),
 			shortcut: (window.is_electron_app && !window.electron_is_dev) ? "Ctrl+R" : "Ctrl+Alt+R", // Ctrl+R reloads the browser tab (or Electron window in dev mode via electron-debug)
 			speech_recognition: [
 				"flip",
@@ -608,7 +614,7 @@ const menus = {
 			description: localize("Flips or rotates the picture or a selection."),
 		},
 		{
-			item: localize("&Stretch/Skew"),
+			label: localize("&Stretch/Skew"),
 			shortcut: window.is_electron_app ? "Ctrl+W" : "Ctrl+Alt+W", // Ctrl+W closes the browser tab
 			speech_recognition: [
 				"stretch", "scale", "resize image",
@@ -620,7 +626,7 @@ const menus = {
 			description: localize("Stretches or skews the picture or a selection."),
 		},
 		{
-			item: localize("&Invert Colors"),
+			label: localize("&Invert Colors"),
 			shortcut: "Ctrl+I",
 			speech_recognition: [
 				"invert",
@@ -633,7 +639,7 @@ const menus = {
 			description: localize("Inverts the colors of the picture or a selection."),
 		},
 		{
-			item: `${localize("&Attributes")}...`,
+			label: `${localize("&Attributes")}...`,
 			shortcut: "Ctrl+E",
 			speech_recognition: [
 				"attributes", "image attributes", "picture attributes", "image options", "picture options",
@@ -647,7 +653,7 @@ const menus = {
 			description: localize("Changes the attributes of the picture."),
 		},
 		{
-			item: localize("&Clear Image"),
+			label: localize("&Clear Image"),
 			shortcut: (window.is_electron_app || !looksLikeChrome) ? "Ctrl+Shift+N" : "", // Ctrl+Shift+N opens incognito window in chrome
 			speech_recognition: [
 				"clear image", "clear canvas", "clear picture", "clear page", "clear drawing",
@@ -667,7 +673,7 @@ const menus = {
 			// mspaint says localize("Clears the picture or selection."), but grays out the option when there's a selection
 		},
 		{
-			item: localize("&Draw Opaque"),
+			label: localize("&Draw Opaque"),
 			speech_recognition: [
 				"toggle draw opaque",
 				"toggle transparent selection", "toggle transparent selections",
@@ -689,7 +695,7 @@ const menus = {
 	],
 	[localize("&Colors")]: [
 		{
-			item: `${localize("&Edit Colors")}...`,
+			label: `${localize("&Edit Colors")}...`,
 			speech_recognition: [
 				"edit colors", "edit color", "edit custom colors", "edit custom color",
 				"pick custom color", "choose custom color", "pick a custom color", "choose a custom color",
@@ -701,7 +707,7 @@ const menus = {
 			description: localize("Creates a new color."),
 		},
 		{
-			item: localize("&Get Colors"),
+			label: localize("&Get Colors"),
 			speech_recognition: [
 				"get colors", "load colors", "load color palette", "load palette", "load color palette file", "load palette file", "load list of colors",
 			],
@@ -720,7 +726,7 @@ const menus = {
 			description: localize("Uses a previously saved palette of colors."),
 		},
 		{
-			item: localize("&Save Colors"),
+			label: localize("&Save Colors"),
 			speech_recognition: [
 				"save colors", "save list of colors", "save color palette", "save palette", "save color palette file", "save palette file",
 			],
@@ -756,7 +762,7 @@ const menus = {
 	],
 	[localize("&Help")]: [
 		{
-			item: localize("&Help Topics"),
+			label: localize("&Help Topics"),
 			speech_recognition: [
 				"help topics", "help me", "show help", "help", "show help window", "show help topics", "open help",
 				"help viewer", "show help viewer", "open help viewer",
@@ -766,7 +772,7 @@ const menus = {
 		},
 		MENU_DIVIDER,
 		{
-			item: localize("&About Paint"),
+			label: localize("&About Paint"),
 			speech_recognition: [
 				"about paint", "about js paint", "about jspaint", "show about window", "open about window", "about window",
 				"app info", "about the app", "app information", "information about the app",
@@ -781,7 +787,7 @@ const menus = {
 	[localize("E&xtras")]: [
 		{
 			emoji_icon: "⌚",
-			item: localize("&History"),
+			label: localize("&History"),
 			shortcut: "Ctrl+Shift+Y",
 			speech_recognition: [
 				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
@@ -791,7 +797,7 @@ const menus = {
 		},
 		{
 			emoji_icon: "🎞️",
-			item: localize("&Render History As GIF"),
+			label: localize("&Render History As GIF"),
 			shortcut: "Ctrl+Shift+G",
 			speech_recognition: [
 				// @TODO: animated gif, blah
@@ -813,14 +819,14 @@ const menus = {
 			description: localize("Creates an animation from the document history."),
 		},
 		// {
-		// 	item: localize("Render History as &APNG",
+		// 	label: localize("Render History as &APNG",
 		// 	// shortcut: "Ctrl+Shift+A",
 		// 	action: ()=> { render_history_as_apng(); },
 		// 	description: localize("Creates an animation from the document history."),
 		// },
 		MENU_DIVIDER,
 		// {
-		// 	item: localize("Extra T&ool Box",
+		// 	label: localize("Extra T&ool Box",
 		// 	checkbox: {
 		// 		toggle: ()=> {
 		// 			// this doesn't really work well at all to have two toolboxes
@@ -834,7 +840,7 @@ const menus = {
 		// 	description: localize("Shows or hides an extra tool box."),
 		// },
 		// {
-		// 	item: localize("&Preferences",
+		// 	label: localize("&Preferences",
 		// 	action: ()=> {
 		// 		// :)
 		// 	},
@@ -842,7 +848,7 @@ const menus = {
 		// }
 		{
 			emoji_icon: "🤪",
-			item: localize("&Draw Randomly"),
+			label: localize("&Draw Randomly"),
 			speech_recognition: [
 				"draw randomly", "draw pseudorandomly", "draw wildly", "make random art",
 			],
@@ -863,10 +869,10 @@ const menus = {
 		MENU_DIVIDER,
 		{
 			emoji_icon: "👥",
-			item: localize("&Multi-User"),
+			label: localize("&Multi-User"),
 			submenu: [
 				{
-					item: localize("&New Session From Document"),
+					label: localize("&New Session From Document"),
 					speech_recognition: [
 						"new session from document",
 						"session from document",
@@ -902,7 +908,7 @@ const menus = {
 					description: localize("Starts a new multi-user session from the current document."),
 				},
 				{
-					item: localize("New &Blank Session"),
+					label: localize("New &Blank Session"),
 					speech_recognition: [
 						"new blank session",
 						"new empty session",
@@ -955,11 +961,11 @@ const menus = {
 		},
 		{
 			emoji_icon: "💄",
-			item: localize("&Themes"),
+			label: localize("&Themes"),
 			submenu: [
 				{
 					emoji_icon: "⬜",
-					item: localize("&Classic Light"),
+					label: localize("&Classic Light"),
 					speech_recognition: [
 						"reset theme", "revert theme setting",
 						"classic theme", "switch to classic theme", "use classic theme", "set theme to classic", "set theme classic", "switch to classic theme", "switch theme to classic", "switch theme classic",
@@ -992,7 +998,7 @@ const menus = {
 				},
 				{
 					emoji_icon: "⬛",
-					item: localize("Classic &Dark"),
+					label: localize("Classic &Dark"),
 					speech_recognition: [
 						"dark theme", "switch to dark theme", "use dark theme", "set theme to dark", "set theme dark", "switch to dark theme", "switch theme to dark", "switch theme dark",
 						"dark mode", "switch to dark mode", "use dark mode", "set mode to dark", "set mode dark", "switch to dark mode", "switch mode to dark", "switch mode dark",
@@ -1012,7 +1018,7 @@ const menus = {
 				},
 				{
 					emoji_icon: "⚪",
-					item: localize("&Modern Light"),
+					label: localize("&Modern Light"),
 					speech_recognition: [
 						"modern theme", "switch to modern theme", "use modern theme", "set theme to modern", "set theme modern", "switch to modern theme", "switch theme to modern", "switch theme modern",
 						// new naming scheme
@@ -1026,7 +1032,7 @@ const menus = {
 				},
 				{
 					emoji_icon: "⚫",
-					item: localize("Mod&ern Dark"),
+					label: localize("Mod&ern Dark"),
 					speech_recognition: [
 						"dark modern theme", "switch to dark modern theme", "use dark modern theme", "set theme to dark modern", "set theme dark modern", "switch to dark modern theme", "switch theme to dark modern", "switch theme dark modern",
 						// new naming scheme
@@ -1040,7 +1046,7 @@ const menus = {
 				},
 				{
 					emoji_icon: "❄️",
-					item: localize("&Winter"),
+					label: localize("&Winter"),
 					speech_recognition: [
 						"winter theme", "switch to winter theme", "use winter theme", "set theme to winter", "set theme winter", "switch to winter theme", "switch theme to winter", "switch theme winter",
 						"holiday theme", "switch to holiday theme", "use holiday theme", "set theme to holiday", "set theme holiday", "switch to holiday theme", "switch theme to holiday", "switch theme holiday",
@@ -1055,7 +1061,7 @@ const menus = {
 				},
 				{
 					emoji_icon: "🤘",
-					item: localize("&Occult"),
+					label: localize("&Occult"),
 					speech_recognition: [
 						"occult theme", "switch to occult theme", "use occult theme", "set theme to occult", "set theme occult", "switch to occult theme", "switch theme to occult", "switch theme occult",
 						"occultist theme", "switch to occultist theme", "use occultist theme", "set theme to occultist", "set theme occultist", "switch to occultist theme", "switch theme to occultist", "switch theme occultist",
@@ -1106,7 +1112,7 @@ const menus = {
 				},
 				{
 					emoji_icon: "🫧",
-					item: localize("&Bubblegum"),
+					label: localize("&Bubblegum"),
 					speech_recognition: [
 						"bubblegum theme", "switch to bubblegum theme", "use bubblegum theme", "set theme to bubblegum", "set theme bubblegum", "switch to bubblegum theme", "switch theme to bubblegum", "switch theme bubblegum",
 						"pink theme", "switch to pink theme", "use pink theme", "set theme to pink", "set theme pink", "switch to pink theme", "switch theme to pink", "switch theme pink",
@@ -1126,7 +1132,7 @@ const menus = {
 				},
 				// {
 				// 	emoji_icon: "🪐",
-				// 	item: localize("&Retro Futurist"),
+				// 	label: localize("&Retro Futurist"),
 				// 	speech_recognition: [
 				// 		"retrofuturist theme", "switch to retrofuturist theme", "use retrofuturist theme", "set theme to retrofuturist", "set theme retrofuturist", "switch to retrofuturist theme", "switch theme to retrofuturist", "switch theme retrofuturist",
 				// 		"retro futurist theme", "switch to retro futurist theme", "use retro futurist theme", "set theme to retro futurist", "set theme retro futurist", "switch to retro futurist theme", "switch theme to retro futurist", "switch theme retro futurist",
@@ -1146,7 +1152,7 @@ const menus = {
 				// },
 				// {
 				// 	emoji_icon: "🧺",
-				// 	item: localize("&Picnic"),
+				// 	label: localize("&Picnic"),
 				// 	speech_recognition: [
 				// 		"picnic theme", "switch to picnic theme", "use picnic theme", "set theme to picnic", "set theme picnic", "switch to picnic theme", "switch theme to picnic", "switch theme picnic",
 				// 		"pic-nic theme", "switch to pic-nic theme", "use pic-nic theme", "set theme to pic-nic", "set theme pic-nic", "switch to pic-nic theme", "switch theme to pic-nic", "switch theme pic-nic",
@@ -1164,11 +1170,11 @@ const menus = {
 		},
 		{
 			emoji_icon: "🌍",
-			item: localize("&Language"),
+			label: localize("&Language"),
 			submenu: available_languages.map((available_language) => (
 				{
 					emoji_icon: get_language_emoji(available_language),
-					item: get_language_endonym(available_language),
+					label: get_language_endonym(available_language),
 					action: () => {
 						set_language(available_language);
 					},
@@ -1179,7 +1185,7 @@ const menus = {
 		},
 		{
 			emoji_icon: "👁️",
-			item: localize("&Eye Gaze Mode"),
+			label: localize("&Eye Gaze Mode"),
 			speech_recognition: [
 				"toggle eye gaze mode",
 				"enable eye gaze mode",
@@ -1222,7 +1228,7 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (location.hash.match(/eye-gaze-mode/i)) {
+					if (/eye-gaze-mode/i.test(location.hash)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
 						change_url_param("eye-gaze-mode", false);
@@ -1232,21 +1238,21 @@ const menus = {
 					}
 				},
 				check: () => {
-					return location.hash.match(/eye-gaze-mode/i);
+					return /eye-gaze-mode/i.test(location.hash);
 				},
 			},
 			description: localize("Enlarges buttons and provides dwell clicking."),
 		},
 		{
 			emoji_icon: "🎙️",
-			item: localize("&Speech Recognition"),
+			label: localize("&Speech Recognition"),
 			speech_recognition: [
 				"toggle speech recognition", "toggle speech recognition mode",
 				"disable speech recognition", "disable speech recognition mode", "turn off speech recognition", "turn off speech recognition mode", "leave speech recognition mode", "exit speech recognition mode",
 			],
 			checkbox: {
 				toggle: () => {
-					if (location.hash.match(/speech-recognition-mode/i)) {
+					if (/speech-recognition-mode/i.test(location.hash)) {
 						change_url_param("speech-recognition-mode", false);
 					} else {
 						change_url_param("speech-recognition-mode", true);
@@ -1261,7 +1267,7 @@ const menus = {
 		},
 		{
 			emoji_icon: "↕️",
-			item: localize("&Vertical Color Box"),
+			label: localize("&Vertical Color Box"),
 			speech_recognition: [
 				"toggle vertical color box", "toggle vertical color box mode",
 				"toggle vertical colors box", "toggle vertical colors box mode",
@@ -1273,7 +1279,7 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (location.hash.match(/eye-gaze-mode/i)) {
+					if (/eye-gaze-mode/i.test(location.hash)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
 						// if (confirm("This will disable eye gaze mode.")) {
 						// change_some_url_params({
@@ -1281,25 +1287,25 @@ const menus = {
 						// 	"vertical-color-box-mode": false,
 						// });
 						// }
-					} else if (location.hash.match(/vertical-color-box-mode/i)) {
+					} else if (/vertical-color-box-mode/i.test(location.hash)) {
 						change_url_param("vertical-color-box-mode", false);
 					} else {
 						change_url_param("vertical-color-box-mode", true);
 					}
 				},
 				check: () => {
-					return location.hash.match(/vertical-color-box-mode|eye-gaze-mode/i);
+					return /vertical-color-box-mode|eye-gaze-mode/i.test(location.hash);
 				},
 			},
 			enabled: () => {
-				return !location.hash.match(/eye-gaze-mode/i);
+				return !/eye-gaze-mode/i.test(location.hash);
 			},
 			description: localize("Arranges the color box vertically."),
 		},
 		MENU_DIVIDER,
 		{
 			emoji_icon: "🗃️",
-			item: localize("Manage Storage"),
+			label: localize("Manage Storage"),
 			speech_recognition: [
 				// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 			],
@@ -1309,7 +1315,7 @@ const menus = {
 		MENU_DIVIDER,
 		{
 			emoji_icon: "📢",
-			item: localize("Project News"),
+			label: localize("Project News"),
 			speech_recognition: [
 				"project news", "news about the project", "news about this project",
 				"app news", "news about the app", "news about this app",
@@ -1322,7 +1328,7 @@ const menus = {
 		},
 		{
 			emoji_icon: "👾", // "👋",
-			item: localize("Discord"),
+			label: localize("Discord"),
 			speech_recognition: [
 				"chat on discord", "discord server", "discord community", "join the discord", "join discord", "visit the discord", "visit discord", "discord chat",
 			],
@@ -1333,7 +1339,7 @@ const menus = {
 		},
 		{
 			emoji_icon: "ℹ️",
-			item: localize("GitHub"),
+			label: localize("GitHub"),
 			speech_recognition: [
 				"repo on github", "project on github", "show the source code", "show source code",
 			],
@@ -1342,7 +1348,7 @@ const menus = {
 		},
 		{
 			emoji_icon: "💵",
-			item: localize("Donate"),
+			label: localize("Donate"),
 			speech_recognition: [
 				"donate", "make a monetary contribution",
 			],
@@ -1357,10 +1363,10 @@ for (const [top_level_menu_key, menu] of Object.entries(menus)) {
 	const add_literal_navigation_speech_recognition = (menu, ancestor_names) => {
 		for (const menu_item of menu) {
 			if (menu_item !== MENU_DIVIDER) {
-				const menu_item_name = menu_item.item.replace(/&|\.\.\.|\(|\)/g, "");
+				const menu_item_name = menu_item.label.replace(/&|\.\.\.|\(|\)/g, "");
 				// console.log(menu_item_name);
 				let menu_item_matchers = [menu_item_name];
-				if (menu_item_name.match(/\//)) {
+				if (/\//.test(menu_item_name)) {
 					menu_item_matchers = [
 						menu_item_name,
 						menu_item_name.replace(/\//, " "),

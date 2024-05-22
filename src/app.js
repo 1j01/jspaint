@@ -676,6 +676,12 @@ if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
 // - It makes the menu data cleaner.
 // - It allows aligning the emoji nicely, even when some don't show as emoji, depending on the platform.
 
+/**
+ * @param {OSGUIMenuFragment[]} menu_items
+ * @param {HTMLElement} menu_element
+ * @yields {[OSGUIMenuItem, HTMLElement]}
+ * @returns {Generator<[OSGUIMenuItem, HTMLElement], void, void>}
+ */
 function* traverse_menu(menu_items, menu_element) {
 	// Traverse menu data and elements in tandem, yielding pairs of menu item specifications and elements.
 	// This approach handles identically named menu items in separate menus,
@@ -691,13 +697,12 @@ function* traverse_menu(menu_items, menu_element) {
 	// - `submenu` is an array, but the top level (menu bar) is represented as an object, which is a bit awkward.
 	//   However, this function doesn't deal with the top level.
 
-	const menu_item_elements = [...menu_element.querySelectorAll(".menu-item")];
+	const menu_item_elements = /** @type {HTMLElement[]} */([...menu_element.querySelectorAll(".menu-item")]);
 	for (const menu_item of menu_items) {
-		const label = menu_item.label || menu_item.item;
-		if (!label) {
+		if (typeof menu_item !== "object" || !("label" in menu_item)) {
 			continue;
 		}
-		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
+		const aria_label = remove_hotkey(menu_item.label); // TODO: replace with OS-GUI's new AccessKeys API
 		const menu_item_element = menu_item_elements.filter((el) =>
 			el.getAttribute("aria-label") === aria_label
 		)[0];
@@ -709,6 +714,9 @@ function* traverse_menu(menu_items, menu_element) {
 		if (menu_item.submenu) {
 			yield* traverse_menu(menu_item.submenu, document.getElementById(menu_item_element.getAttribute("aria-controls")));
 		}
+		// if (menu_item.radioItems) {
+		// 	yield* traverse_menu(menu_item.radioItems, menu_element);
+		// }
 	}
 }
 

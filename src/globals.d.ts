@@ -488,6 +488,11 @@ interface Window {
 	chrome?: { loadTimes: unknown, csi: unknown };
 }
 
+// Extending OS-GUI's MenuBar API
+interface OSGUIMenuItem {
+	speech_recognition?: string[];
+	emoji_icon?: string;
+}
 
 // The JS Paint `systemHooks` API
 interface SaveFileDialogOptions {
