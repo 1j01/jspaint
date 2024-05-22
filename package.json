@@ -103,7 +103,7 @@
     "glob": "^10.3.10",
     "npm-run-all": "^4.1.5",
     "onchange": "^7.1.0",
-    "os-gui": "github:1j01/os-gui#1b027810bac0aa9a0e0c78adbb889e6c4a0adb04",
+    "os-gui": "0.7.0",
     "rtlcss": "^4.1.1",
     "start-server-and-test": "^2.0.3",
     "typescript": "^5.4.3"

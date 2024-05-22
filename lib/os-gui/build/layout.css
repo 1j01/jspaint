@@ -6,7 +6,6 @@
 	cursor: default;
 	-webkit-user-select: none;
 	   -moz-user-select: none;
-	    -ms-user-select: none;
 	        user-select: none;
 }
 
@@ -80,6 +79,8 @@ body > .window-titlebar {
 	height: 0;
 	width: auto;
 }
+/* @TODO: rename .access-key */
+/* @TODO: what are these !important flags about? */
 .menu-hotkey {
 	display: inline !important;
 }

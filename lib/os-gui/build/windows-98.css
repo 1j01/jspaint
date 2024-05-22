@@ -1,6 +1,7 @@
 :root {
 	/* These resources are generated. */
 	/* JS: makeThemeCSSFile(renderThemeGraphics(getComputedStyle(document.documentElement))) */
+	/* spell-checker: disable */
 	--checker: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC");
 	--button-active-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h256v256h-256v-256z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h192v192h-192v-192z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
 	--button-normal-border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22%20rgb(255%2C%20255%2C%20255)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22%20rgb(223%2C%20223%2C%20223)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
@@ -10,6 +11,7 @@
 	--scrollbar-arrows-ButtonText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
 	--scrollbar-arrows-GrayText: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDmpoaPjf0NBAlNnoauGaQBLooYXLUEIWwswi5Chs6lB8gewofI6BOZwWajCCFZ/viQ1FqoUQtRI4oShFtgdnGqKWYyg1h6icQKklpOgHAM9mQArEvm5+AAAAAElFTkSuQmCC");
 	--scrollbar-arrows-ButtonHilight: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAYElEQVQ4T2NkGGSAcZC5h4EmDvr///9/RkZGosxGVwvXBJJADy1chhKyEGYWIUdhU4fiC2RH4XMMzOG0UIMRrPh8T2woUi2EqJXACUUpsj040xC1HEOpOUTlBEotIUU/AKXFQAqyTJ6DAAAAAElFTkSuQmCC");
+	/* spell-checker: enable */
 	--scrollbar-size: 13px;
 	--scrollbar-button-inner-size: 9px;
 
@@ -243,9 +245,7 @@ button:not(.lightweight).toggle.selected, button:not(.lightweight).pressed {
 button:not(.lightweight).toggle.selected, button:not(.lightweight).pressed {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 }
 
 .os-window .window-titlebar,
@@ -330,9 +330,7 @@ body > .window-titlebar {
 	/* background-image: url("images/titlebar-buttons.png"); */
 	--sprite-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAKCAYAAADo3z3CAAAAoUlEQVRIS9VVWw7AIAib9z/0FpZgCOFRgpluf9MClhYdV++7gfDhYLxYDw+UyiHd5F8S5lr6zNa6Xpv/KwhHOahQpLB1+CwfycgYrwmE0WK8MTsIR1aOGsR+NYkkYzN5/pGwVA9xA/diq8LeHCKuQxQ+aoYt2yJWtpSNZth0edRpGVC5eGQcSg4hXLml3fdpBeHs8evWyPKX9ruXVqnYCeAHA8IyC9K2kmkAAAAASUVORK5CYII=");
 	--sprite-y: 0;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 	width: 12px;
 	height: 10px;
 	position: relative;
@@ -356,10 +354,10 @@ body > .window-titlebar {
 	top: 0;
 	right: 0;
 	bottom: 0;
+	mask-image: var(--sprite-image);
+	mask-position: var(--sprite-x) var(--sprite-y);
 	-webkit-mask-image: var(--sprite-image);
-	        mask-image: var(--sprite-image);
 	-webkit-mask-position: var(--sprite-x) var(--sprite-y);
-	        mask-position: var(--sprite-x) var(--sprite-y);
 	background-color: rgb(0, 0, 0);
 	background-color: var(--ButtonText);
 }
@@ -444,61 +442,32 @@ body > .window-titlebar {
 }
 .menu-button {
 	box-sizing: border-box;
-	/* Using a balanced border to offset the contents on press */
-	border: 0px solid transparent;
-	border-top-width: 0px;
-	border-left-width: 0px;
-	border-bottom-width: 1px;
-	border-right-width: 1px;
-	/* Unfortunately, everything else has to be balanced by 1px (very carefully) in many places. */
-	
-	height: 18px; /* (EFFECTIVELY NORMAL but...) +1px -1px: +1px due to transparent border, but needs to be metrically same as visual height for the menu popup positioning, so I used bottom: -1px on the pseudo element to get it so this can be -1px to 18px again */
+	height: 18px;
 	line-height: 1;
-	margin-top: 1px; /* NORMAL MARGIN */
-	/* margin-bottom: 1px; consumed margin */
-	margin-right: -1px; /* keep menu items directly abutting */
-
-	/* need the overflow visible for the psuedo element's top and left borders to be visible */
-	overflow: visible;
-	-webkit-clip-path: inset(0 1px 0 0);
-	        clip-path: inset(0 1px 0 0); /* clipping text off inside the border, without clipping the border (somewhat mysteriously) */
-
-	padding: 2px 5px; /* NORMAL PADDING; I took great lengths to make this easily changable from outside code (padding is an obvious strategy for making the press offset effect, but I think this is a common thing you might want to customize) */
-	position: relative;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	padding: 2px 5px;
 	outline: 0;
 	/* @extend button.lightweight; */
 	background: rgb(192, 192, 192);
 	background: var(--Menu);
 }
-.menu-button.highlight.active {
-	border-top-width: 1px;
-	border-left-width: 1px;
-	border-bottom-width: 0px;
-	border-right-width: 0px;
-}
 /* Note: In Windows 98, normal menu bars have an inset highlight if you use Esc and then the arrow keys,
 whereas Explorer's menu bars are outset and match the hover effect, which I feel makes more sense,
-so I think I'll immitate that. */
+so I think I'll imitate that. (I might change it later) */
 /* Also, to prevent duplicate highlight (via keyboard + mouse), and lingering highlight with touch, I'm using a class, rather than :hover/:focus/:active */
-.menu-button.highlight::after {
-	content: "";
-	display: block;
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: -1px;
+.menu-button.highlight {
 	box-shadow: 1px 1px 0 rgb(255, 255, 255) inset, -1px -1px 0 rgb(128, 128, 128) inset;
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 }
-.menu-button.highlight.active::after {
+.menu-button.highlight.active {
 	box-shadow: 1px 1px 0 rgb(128, 128, 128) inset, -1px -1px 0 rgb(255, 255, 255) inset;
 	box-shadow: 1px 1px 0 var(--ButtonShadow) inset, -1px -1px 0 var(--ButtonHilight) inset;
-	/* counteract the balanced border, in order to render this border, in the proper place */
-	left: -1px;
-	top: -1px;
-	right: 1px;
-	bottom: 0;
+}
+.menu-button.highlight.active > span {
+	position: relative;
+	top: 1px;
+	left: 1px;
 }
 
 .menu-popup {
@@ -552,16 +521,22 @@ so I think I'll immitate that. */
 }
 /* Note: viewBox is needed for scaling the SVG, used in JS Paint's Eye Gaze Mode */
 .menu-item-checkbox-area::after {
+	/* spell-checker: disable */
+	mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
-	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");
+	/* spell-checker: enable */
 }
 .menu-item-checkbox-area.radio::after {
+	/* spell-checker: disable */
+	mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
-	        mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+	/* spell-checker: enable */
 }
 .has-submenu .menu-item-submenu-area::after {
+	/* spell-checker: disable */
+	mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
-	        mask-image: url("data:image/svg+xml, %3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='m6 4 4 4-4 4z'/%3E%3C/svg%3E");
+	/* spell-checker: enable */
 }
 .has-submenu .menu-item-submenu-area.point-right::after {
 	transform: scaleX(-1);
@@ -590,6 +565,7 @@ so I think I'll immitate that. */
 	margin-top: 3px;
 	margin-bottom: 4px;
 }
+/* @TODO: rename .access-key (could also make it a <u> element, in which case this rule isn't needed) */
 .menu-hotkey {
 	text-decoration: underline;
 }
@@ -625,9 +601,7 @@ so I think I'll immitate that. */
 .scrollbar {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 }
 .scrollbar-thumb {
 	background-color: rgb(192, 192, 192);
@@ -646,9 +620,7 @@ so I think I'll immitate that. */
 .scrollbar-track-piece:hover:active {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC") repeat;
 	background: var(--checker) repeat;
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 	background-color: white;
 	background-blend-mode: difference;
 	/* background-attachment: fixed; breaks the checkered background in chrome */
@@ -676,9 +648,7 @@ so I think I'll immitate that. */
 	box-shadow: 1px 1px 0 var(--ButtonHilight) inset, -1px -1px 0 var(--ButtonShadow) inset;
 	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==");
 	background-image: var(--scrollbar-arrows-ButtonText);
-	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -moz-crisp-edges;
-	    image-rendering: pixelated;
+	image-rendering: pixelated;
 	width: 13px;
 	width: var(--scrollbar-size);
 	height: 13px;
