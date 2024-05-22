@@ -33,6 +33,18 @@ export const is_discord_embed = query_params.get('frame_id') != null;
 const $G = $(window);
 
 /**
+ * Wrapper for AccessKeys.toHTML that ensures whitespace isn't collapsed in cases like "Fox &Trot" or "Fo&x Trot" where the access key abuts a space.
+ * 
+ * (Actually a simple `<span>` may be enough (since it's an inline element?), but `white-space: pre` is more explicit.)
+ * 
+ * @param {string} label  text with an access key denoted by an ampersand (can escape with double ampersand)
+ * @returns {string}  HTML for label with access key underlined
+ */
+function render_access_key(label) {
+	return `<span style="white-space: pre">${AccessKeys.toHTML(label)}</span>`;
+}
+
+/**
  * @param {string} name  filename without extension
  * @param {[number, number]} coords  hotspot coordinates
  * @param {string} fallback  fallback cursor value
@@ -422,6 +434,7 @@ export {
 	make_canvas,
 	make_css_cursor,
 	memoize_synchronous_function,
+	render_access_key,
 	rgb_to_hsl,
 	to_canvas_coords
 };

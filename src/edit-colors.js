@@ -6,7 +6,7 @@ import { $DialogWindow } from "./$ToolWindow.js";
 // import { localize } from "./app-localization.js";
 import { basic_colors, custom_colors } from "./color-data.js";
 import { detect_monochrome, make_monochrome_palette, show_error_message, undoable } from "./functions.js";
-import { $G, get_help_folder_icon, get_rgba_from_color, make_canvas, rgb_to_hsl } from "./helpers.js";
+import { $G, get_help_folder_icon, get_rgba_from_color, make_canvas, render_access_key, rgb_to_hsl } from "./helpers.js";
 import { replace_color_globally } from "./image-manipulation.js";
 
 // @TODO:
@@ -265,9 +265,9 @@ function choose_color(initial_color, callback) {
 	const $left_right_split = $(`<div class="left-right-split">`).appendTo($w.$main);
 	const $left = $(`<div class="left-side">`).appendTo($left_right_split);
 	const $right = $(`<div class="right-side">`).appendTo($left_right_split).hide();
-	$left.append(`<label for="basic-colors">${AccessKeys.toHTML("&Basic colors:")}</label>`);
+	$left.append(`<label for="basic-colors">${render_access_key("&Basic colors:")}</label>`);
 	const $basic_colors_grid = make_color_grid(basic_colors, "basic-colors").appendTo($left);
-	$left.append(`<label for="custom-colors">${AccessKeys.toHTML("&Custom colors:")}</label>`);
+	$left.append(`<label for="custom-colors">${render_access_key("&Custom colors:")}</label>`);
 	const custom_colors_dom_order = []; // (wanting) horizontal top to bottom
 	for (let list_index = 0; list_index < custom_colors.length; list_index++) {
 		const row = list_index % 2;
@@ -287,7 +287,7 @@ function choose_color(initial_color, callback) {
 	}
 
 	const $define_custom_colors_button = $(`<button class="define-custom-colors-button" type="button">`)
-		.html(AccessKeys.toHTML("&Define Custom Colors >>"))
+		.html(render_access_key("&Define Custom Colors >>"))
 		.appendTo($left)
 		.on("click", (e) => {
 			// prevent the form from submitting
@@ -314,7 +314,7 @@ function choose_color(initial_color, callback) {
 	};
 	$(window).on("resize", maybe_reenable_button_for_mobile_navigation);
 
-	const $color_solid_label = $(`<label for="color-solid-canvas">${AccessKeys.toHTML("Color|S&olid")}</label>`);
+	const $color_solid_label = $(`<label for="color-solid-canvas">${render_access_key("Color|S&olid")}</label>`);
 	$color_solid_label.css({
 		position: "absolute",
 		left: 10,
@@ -446,7 +446,7 @@ function choose_color(initial_color, callback) {
 				b: 255,
 			}[component_letter];
 			const label = document.createElement("label");
-			label.innerHTML = AccessKeys.toHTML(text_with_hotkey);
+			label.innerHTML = render_access_key(text_with_hotkey);
 			const input_y_spacing = 22;
 			$(label).css({
 				position: "absolute",
@@ -614,7 +614,7 @@ function choose_color(initial_color, callback) {
 	$right.append(rainbow_canvas, luminosity_canvas, result_canvas, $color_solid_label, lum_arrow_canvas);
 
 	const $add_to_custom_colors_button = $(`<button class="add-to-custom-colors-button" type="button">`)
-		.html(AccessKeys.toHTML("&Add To Custom Colors"))
+		.html(render_access_key("&Add To Custom Colors"))
 		.appendTo($right)
 		.on("click", (event) => {
 			// prevent the form from submitting
