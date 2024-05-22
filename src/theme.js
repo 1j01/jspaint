@@ -1,3 +1,4 @@
+// @ts-check
 const default_theme = "classic.css";
 const theme_storage_key = "jspaint theme";
 const disable_seasonal_theme_key = "jspaint disable seasonal theme";
@@ -71,7 +72,7 @@ const set_theme = theme => {
 };
 
 function update_not_for_modern_theme() {
-	const not_for_modern = document.querySelectorAll("link.not-for-modern");
+	const not_for_modern = /** @type {NodeListOf<HTMLLinkElement>} */(document.querySelectorAll("link.not-for-modern"));
 	for (const link of not_for_modern) {
 		link.disabled = current_theme === "modern.css" || current_theme === "modern-dark.css" || current_theme === "bubblegum.css";
 	}
@@ -94,19 +95,19 @@ function make_grinch_button() {
 		}
 		clicked = true;
 	};
-	button.onmouseleave = () => {
+	const start_smile = button.onmouseleave = () => {
 		smile_target = clicked ? 1 : 0;
 		animate();
 		document.removeEventListener('touchmove', document_touchmove);
 	};
-	button.onmouseenter = () => {
+	const stop_smile = button.onmouseenter = () => {
 		smile_target = 1;
 		momentum = Math.max(momentum, 0.02); // for the immediacy of the hover effect
 		animate();
 	};
 	button.onpointerdown = (event) => {
 		if (event.pointerType === "touch") {
-			button.onmouseenter();
+			start_smile();
 			document.addEventListener('touchmove', document_touchmove);
 		}
 	};
@@ -117,7 +118,7 @@ function make_grinch_button() {
 		if (button !== document.elementFromPoint(touch.pageX, touch.pageY)) {
 			// finger left the button
 			clicked = false;
-			button.onmouseleave();
+			stop_smile();
 		}
 	}
 
