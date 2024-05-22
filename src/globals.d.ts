@@ -34,9 +34,6 @@ declare function get_language_endonym(language: string): string;
 declare function get_iso_language_name(language: string): string;
 declare function get_language_emoji(language: string): string;
 declare const available_languages: string[];
-declare function remove_hotkey(text: string): string;
-declare function get_hotkey(text: string): string;
-declare function display_hotkey(text: string): string;
 // tools.js
 declare const TOOL_PENCIL: "TOOL_PENCIL";
 // app-state.js

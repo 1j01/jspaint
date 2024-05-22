@@ -1,13 +1,13 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global $thumbnail_window:writable, canvas_bounding_client_rect:writable, current_history_node:writable, file_format:writable, file_name:writable, helper_layer:writable, history_node_to_cancel_to:writable, magnification:writable, monochrome:writable, palette:writable, pointer:writable, return_to_magnification:writable, return_to_tools:writable, root_history_node:writable, saved:writable, selected_colors:writable, selected_tool:writable, selected_tools:writable, selection:writable, show_grid:writable, show_thumbnail:writable, system_file_handle:writable, textbox:writable, thumbnail_canvas:writable, tool_transparent_mode:writable, transparency:writable, undos:writable */
-/* global $canvas, $canvas_area, $colorbox, $status_text, $toolbox, $Window, applyCSSProperties, decodeBMP, default_canvas_height, default_canvas_width, default_magnification, default_tool, display_hotkey, enable_palette_loading_from_indexed_images, encodeBMP, get_hotkey, localize, main_canvas, main_ctx, monochrome_palette, my_canvas_height, my_canvas_width, new_local_session, parseThemeFileString, pointer_active, pointers, polychrome_palette, redos, remove_hotkey, systemHooks, text_tool_font, update_fill_and_stroke_colors_and_lineWidth, UPNG, UTIF */
+/* global $canvas, $canvas_area, $colorbox, $status_text, $toolbox, $Window, AccessKeys, applyCSSProperties, decodeBMP, default_canvas_height, default_canvas_width, default_magnification, default_tool, enable_palette_loading_from_indexed_images, encodeBMP, localize, main_canvas, main_ctx, monochrome_palette, my_canvas_height, my_canvas_width, new_local_session, parseThemeFileString, pointer_active, pointers, polychrome_palette, redos, systemHooks, text_tool_font, update_fill_and_stroke_colors_and_lineWidth, UPNG, UTIF */
 
 import { $DialogWindow } from "./$ToolWindow.js";
 import { OnCanvasHelperLayer } from "./OnCanvasHelperLayer.js";
 import { OnCanvasSelection } from "./OnCanvasSelection.js";
 import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
-// import { display_hotkey, get_hotkey, localize, remove_hotkey } from "./app-localization.js";
+// import { localize } from "./app-localization.js";
 import { default_palette } from "./color-data.js";
 import { image_formats } from "./file-format-data.js";
 import { $G, E, TAU, debounce, from_canvas_coords, get_help_folder_icon, get_icon_for_tool, get_rgba_from_color, is_discord_embed, is_pride_month, make_canvas, to_canvas_coords } from "./helpers.js";
@@ -450,11 +450,11 @@ function show_custom_zoom_window() {
 	$fieldset.append(`
 		<legend>${localize("Zoom to")}</legend>
 		<div class="fieldset-body">
-			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-1" aria-keyshortcuts="Alt+1 1" value="1"/><label for="zoom-option-1">${display_hotkey("&100%")}</label></div>
-			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-2" aria-keyshortcuts="Alt+2 2" value="2"/><label for="zoom-option-2">${display_hotkey("&200%")}</label></div>
-			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-4" aria-keyshortcuts="Alt+4 4" value="4"/><label for="zoom-option-4">${display_hotkey("&400%")}</label></div>
-			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-6" aria-keyshortcuts="Alt+6 6" value="6"/><label for="zoom-option-6">${display_hotkey("&600%")}</label></div>
-			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-8" aria-keyshortcuts="Alt+8 8" value="8"/><label for="zoom-option-8">${display_hotkey("&800%")}</label></div>
+			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-1" aria-keyshortcuts="Alt+1 1" value="1"/><label for="zoom-option-1">${AccessKeys.toHTML("&100%")}</label></div>
+			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-2" aria-keyshortcuts="Alt+2 2" value="2"/><label for="zoom-option-2">${AccessKeys.toHTML("&200%")}</label></div>
+			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-4" aria-keyshortcuts="Alt+4 4" value="4"/><label for="zoom-option-4">${AccessKeys.toHTML("&400%")}</label></div>
+			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-6" aria-keyshortcuts="Alt+6 6" value="6"/><label for="zoom-option-6">${AccessKeys.toHTML("&600%")}</label></div>
+			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-8" aria-keyshortcuts="Alt+8 8" value="8"/><label for="zoom-option-8">${AccessKeys.toHTML("&800%")}</label></div>
 			<div class="radio-field"><input type="radio" name="custom-zoom-radio" id="zoom-option-really-custom" value="really-custom"/><label for="zoom-option-really-custom"><input type="number" min="10" max="1000" name="really-custom-zoom-input" class="inset-deep no-spinner" value=""/>%</label></div>
 		</div>
 	`);
@@ -3175,8 +3175,8 @@ function image_attributes() {
 	let width_in_px = main_canvas.width;
 	let height_in_px = main_canvas.height;
 
-	const $width_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Width:")));
-	const $height_label = $(E("label")).appendTo($main).html(display_hotkey(localize("&Height:")));
+	const $width_label = $(E("label")).appendTo($main).html(AccessKeys.toHTML(localize("&Width:")));
+	const $height_label = $(E("label")).appendTo($main).html(AccessKeys.toHTML(localize("&Height:")));
 	const $width = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+W W W" }).addClass("no-spinner inset-deep").appendTo($width_label);
 	const $height = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+H H H" }).addClass("no-spinner inset-deep").appendTo($height_label);
 
@@ -3192,9 +3192,9 @@ function image_attributes() {
 	const $units = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Units")}</legend>
 		<div class="fieldset-body">
-			<div class="radio-field"><input type="radio" name="units" id="unit-in" value="in" aria-keyshortcuts="Alt+I I"><label for="unit-in">${display_hotkey(localize("&Inches"))}</label></div>
-			<div class="radio-field"><input type="radio" name="units" id="unit-cm" value="cm" aria-keyshortcuts="Alt+M M"><label for="unit-cm">${display_hotkey(localize("C&m"))}</label></div>
-			<div class="radio-field"><input type="radio" name="units" id="unit-px" value="px" aria-keyshortcuts="Alt+P P"><label for="unit-px">${display_hotkey(localize("&Pixels"))}</label></div>
+			<div class="radio-field"><input type="radio" name="units" id="unit-in" value="in" aria-keyshortcuts="Alt+I I"><label for="unit-in">${AccessKeys.toHTML(localize("&Inches"))}</label></div>
+			<div class="radio-field"><input type="radio" name="units" id="unit-cm" value="cm" aria-keyshortcuts="Alt+M M"><label for="unit-cm">${AccessKeys.toHTML(localize("C&m"))}</label></div>
+			<div class="radio-field"><input type="radio" name="units" id="unit-px" value="px" aria-keyshortcuts="Alt+P P"><label for="unit-px">${AccessKeys.toHTML(localize("&Pixels"))}</label></div>
 		</div>
 	`);
 	$units.find(`[value=${current_unit}]`).attr({ checked: true });
@@ -3208,8 +3208,8 @@ function image_attributes() {
 	const $colors = $(E("fieldset")).appendTo($main).append(`
 		<legend>${localize("Colors")}</legend>
 		<div class="fieldset-body">
-			<div class="radio-field"><input type="radio" name="colors" id="attribute-monochrome" value="monochrome" aria-keyshortcuts="Alt+B B"><label for="attribute-monochrome">${display_hotkey(localize("&Black and white"))}</label></div>
-			<div class="radio-field"><input type="radio" name="colors" id="attribute-polychrome" value="polychrome" aria-keyshortcuts="Alt+L L"><label for="attribute-polychrome">${display_hotkey(localize("Co&lors"))}</label></div>
+			<div class="radio-field"><input type="radio" name="colors" id="attribute-monochrome" value="monochrome" aria-keyshortcuts="Alt+B B"><label for="attribute-monochrome">${AccessKeys.toHTML(localize("&Black and white"))}</label></div>
+			<div class="radio-field"><input type="radio" name="colors" id="attribute-polychrome" value="polychrome" aria-keyshortcuts="Alt+L L"><label for="attribute-polychrome">${AccessKeys.toHTML(localize("Co&lors"))}</label></div>
 		</div>
 	`);
 	$colors.find(`[value=${monochrome ? "monochrome" : "polychrome"}]`).attr({ checked: true });
@@ -3290,7 +3290,7 @@ function image_attributes() {
 	});
 
 	// Parsing HTML with jQuery; $Button takes text (not HTML) or Node/DocumentFragment
-	$w.$Button($.parseHTML(display_hotkey(localize("&Default")))[0], () => {
+	$w.$Button($.parseHTML(AccessKeys.toHTML(localize("&Default")))[0], () => {
 		width_in_px = default_canvas_width;
 		height_in_px = default_canvas_height;
 		$width.val(width_in_px / unit_sizes_in_px[current_unit]);
@@ -3376,7 +3376,7 @@ function image_flip_and_rotate() {
 				value="flip-horizontal"
 				aria-keyshortcuts="Alt+F"
 				checked
-			/><label for="flip-horizontal">${display_hotkey(localize("&Flip horizontal"))}</label>
+			/><label for="flip-horizontal">${AccessKeys.toHTML(localize("&Flip horizontal"))}</label>
 		</div>
 		<div class="radio-wrapper">
 			<input
@@ -3385,7 +3385,7 @@ function image_flip_and_rotate() {
 				id="flip-vertical"
 				value="flip-vertical"
 				aria-keyshortcuts="Alt+V"
-			/><label for="flip-vertical">${display_hotkey(localize("Flip &vertical"))}</label>
+			/><label for="flip-vertical">${AccessKeys.toHTML(localize("Flip &vertical"))}</label>
 		</div>
 		<div class="radio-wrapper">
 			<input
@@ -3394,7 +3394,7 @@ function image_flip_and_rotate() {
 				id="rotate-by-angle"
 				value="rotate-by-angle"
 				aria-keyshortcuts="Alt+R"
-			/><label for="rotate-by-angle">${display_hotkey(localize("&Rotate by angle"))}</label>
+			/><label for="rotate-by-angle">${AccessKeys.toHTML(localize("&Rotate by angle"))}</label>
 		</div>
 	`);
 
@@ -3405,7 +3405,7 @@ function image_flip_and_rotate() {
 		"&180°",
 		"&270°",
 	]) {
-		const degrees = parseInt(remove_hotkey(label_with_hotkey), 10);
+		const degrees = parseInt(AccessKeys.toText(label_with_hotkey), 10);
 		$rotate_by_angle.append(`
 			<div class="radio-wrapper">
 				<input
@@ -3413,10 +3413,10 @@ function image_flip_and_rotate() {
 					name="rotate-by-angle"
 					value="${degrees}"
 					id="rotate-${degrees}"
-					aria-keyshortcuts="Alt+${get_hotkey(label_with_hotkey).toUpperCase()}"
+					aria-keyshortcuts="Alt+${AccessKeys.get(label_with_hotkey).toUpperCase()}"
 				/><label
 					for="rotate-${degrees}"
-				>${display_hotkey(label_with_hotkey)}</label>
+				>${AccessKeys.toHTML(label_with_hotkey)}</label>
 			</div>
 		`);
 	}
@@ -3533,12 +3533,12 @@ function image_stretch_and_skew() {
 			max,
 			value: default_value,
 			id: input_id,
-			"aria-keyshortcuts": `Alt+${get_hotkey(label_with_hotkey).toUpperCase()}`,
+			"aria-keyshortcuts": `Alt+${AccessKeys.get(label_with_hotkey).toUpperCase()}`,
 		}).css({
 			width: "40px"
 		}).addClass("no-spinner inset-deep");
 		$(E("td")).appendTo($tr).append($img);
-		$(E("td")).appendTo($tr).append($(E("label")).html(display_hotkey(label_with_hotkey)).attr("for", input_id));
+		$(E("td")).appendTo($tr).append($(E("label")).html(AccessKeys.toHTML(label_with_hotkey)).attr("for", input_id));
 		$(E("td")).appendTo($tr).append($input);
 		$(E("td")).appendTo($tr).text(label_unit);
 

@@ -1,5 +1,5 @@
 // @ts-check
-/* global $G, are_you_sure, exit_fullscreen_if_ios, show_error_message, showMessageBox */
+/* global $G, AccessKeys, are_you_sure, exit_fullscreen_if_ios, show_error_message, showMessageBox */
 
 // const { are_you_sure, exit_fullscreen_if_ios, show_error_message } = require("./functions.js");
 // const { $G } = require("./helpers.js");
@@ -8,31 +8,6 @@
 // const { are_you_sure, exit_fullscreen_if_ios, show_error_message, $G, showMessageBox } = window;
 
 ((exports) => {
-	// @TODO: DRY hotkey helpers
-	// & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
-	// & can be escaped by doubling it, e.g. "&Taskbar && Start Menu"
-	function index_of_hotkey(text) {
-		// Returns the index of the ampersand that defines a hotkey, or -1 if not present.
-
-		// return english_text.search(/(?<!&)&(?!&|\s)/); // not enough browser support for negative lookbehind assertions
-
-		// The space here handles beginning-of-string matching and counteracts the offset for the [^&] so it acts like a negative lookbehind
-		return ` ${text}`.search(/[^&]&[^&\s]/);
-	}
-	function has_hotkey(text) {
-		return index_of_hotkey(text) !== -1;
-	}
-	function remove_hotkey(text) {
-		return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
-	}
-	function display_hotkey(text) {
-		// misnomer: using .menu-hotkey out of laziness, instead of a more general term like .hotkey or .accelerator
-		return `<span style="white-space: pre">${text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&")}</span>`;
-	}
-	function get_hotkey(text) {
-		return text[index_of_hotkey(text) + 1].toUpperCase();
-	}
-
 	let localizations = {};
 	/**
 	 * @param {string} english_text - The English text to localize
@@ -41,18 +16,17 @@
 	 */
 	function localize(english_text, ...interpolations) {
 		function find_localization(english_text) {
-			const amp_index = index_of_hotkey(english_text);
-			if (amp_index > -1) {
-				const without_hotkey = remove_hotkey(english_text);
+			if (AccessKeys.has(english_text)) {
+				const without_hotkey = AccessKeys.remove(english_text);
 				if (localizations[without_hotkey]) {
-					const hotkey_def = english_text.slice(amp_index, amp_index + 2);
+					const hotkey_def = AccessKeys.get(english_text);
 					if (localizations[without_hotkey].toUpperCase().indexOf(hotkey_def.toUpperCase()) > -1) {
 						return localizations[without_hotkey];
 					} else {
-						if (has_hotkey(localizations[without_hotkey])) {
-							// window.console && console.warn(`Localization has differing accelerator (hotkey) hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
-							// @TODO: detect differing accelerator more generally
-							return `${remove_hotkey(localizations[without_hotkey])} (${hotkey_def})`;
+						if (AccessKeys.has(localizations[without_hotkey])) {
+							// window.console && console.warn(`Localization has differing access key hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
+							// @TODO: detect differing access key more generally
+							return `${AccessKeys.remove(localizations[without_hotkey])} (${hotkey_def})`;
 						}
 						return `${localizations[without_hotkey]} (${hotkey_def})`;
 					}
@@ -1144,10 +1118,5 @@
 	exports.get_language_emoji = get_language_emoji;
 	exports.get_direction = get_direction;
 	exports.available_languages = available_languages;
-
-	// @TODO: these should come from os-gui.js (new AccessKeys API)
-	exports.remove_hotkey = remove_hotkey;
-	exports.display_hotkey = display_hotkey;
-	exports.get_hotkey = get_hotkey;
 
 })(window);
