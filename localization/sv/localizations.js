@@ -354,7 +354,7 @@ loaded_localizations("sv", {
 	"&Update %1": "&Uppdatera %1",
 	"Update %1": "Uppdatera %1",
 	"E&xit && Return to %1": "A&vsluta och återvänd till %1",
-	"Exit && Return to %1": "Avsluta och återvänd till %1",
+	"Exit & Return to %1": "Avsluta och återvänd till %1",
 	"Linked %s": "Länkad %s",
 	"Unknown Type": "Okänd typ",
 	"Invalid filename.": "Ogiltigt filnamn.",

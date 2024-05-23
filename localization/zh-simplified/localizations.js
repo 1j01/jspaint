@@ -365,7 +365,7 @@ loaded_localizations("zh-simplified", {
 	"&Update %1": "更新 %1(&U)",
 	"Update %1": "更新 %1",
 	"E&xit && Return to %1": "退出并返回到 %1(&X)",
-	"Exit && Return to %1": "退出并返回到 %1",
+	"Exit & Return to %1": "退出并返回到 %1",
 	"Linked %s": "链接的 %s",
 	"Unknown Type": "未知类型",
 	"Invalid filename.": "无效文件名。",

@@ -344,7 +344,7 @@ loaded_localizations("hu", {
 	"&Update %1": "%1 &frissítése",
 	"Update %1": "%1 frissítése",
 	"E&xit && Return to %1": "Kilépés és &visszatérés a következőbe: %1",
-	"Exit && Return to %1": "Kilépés és visszatérés a következőbe: %1",
+	"Exit & Return to %1": "Kilépés és visszatérés a következőbe: %1",
 	"Linked %s": "Csatolva: %s",
 	"Unknown Type": "Ismeretlen típus",
 	"Invalid filename.": "Érvénytelen fájlnév",

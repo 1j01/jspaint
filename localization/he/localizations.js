@@ -348,7 +348,7 @@ loaded_localizations("he", {
 	"&Update %1": "&עדכן את %1",
 	"Update %1": "עדכן את %1",
 	"E&xit && Return to %1": "י&ציאה וחזרה אל %1",
-	"Exit && Return to %1": "יציאה וחזרה אל %1",
+	"Exit & Return to %1": "יציאה וחזרה אל %1",
 	"Linked %s": "%s מקושר",
 	"Unknown Type": "‏‏סוג לא מוכר",
 	"Invalid filename.": "‏‏שם קובץ לא חוקי.",

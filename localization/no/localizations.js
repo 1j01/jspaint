@@ -355,7 +355,7 @@ loaded_localizations("no", {
 	"&Update %1": "&Oppdater %1",
 	"Update %1": "Oppdater %1",
 	"E&xit && Return to %1": "&Avslutt og gå til %1",
-	"Exit && Return to %1": "Avslutt og gå til %1",
+	"Exit & Return to %1": "Avslutt og gå til %1",
 	"Linked %s": "Koblet %s",
 	"Unknown Type": "Ukjent type",
 	"Invalid filename.": "Ugyldig filnavn.",

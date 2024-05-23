@@ -345,7 +345,7 @@ loaded_localizations("sl", {
 	"&Update %1": "&Posodobi %1",
 	"Update %1": "Posodobi %1",
 	"E&xit && Return to %1": "I&zhod in vrnitev v %1",
-	"Exit && Return to %1": "Izhod in vrnitev v %1",
+	"Exit & Return to %1": "Izhod in vrnitev v %1",
 	"Linked %s": "Povezan %s",
 	"Unknown Type": "Neznana vrsta",
 	"Invalid filename.": "Neveljavno ime datoteke.",

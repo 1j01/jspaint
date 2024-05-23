@@ -333,7 +333,7 @@ loaded_localizations("nl", {
 	"&Update %1": "%1 &bijwerken",
 	"Update %1": "%1 bijwerken",
 	"E&xit && Return to %1": "&Afsluiten en terugkeren naar %1",
-	"Exit && Return to %1": "Afsluiten en terugkeren naar %1",
+	"Exit & Return to %1": "Afsluiten en terugkeren naar %1",
 	"Linked %s": "Gekoppeld(e) %s",
 	"Unknown Type": "Onbekend type",
 	"Invalid filename.": "De bestandsnaam is ongeldig.",

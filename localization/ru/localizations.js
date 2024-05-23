@@ -344,7 +344,7 @@ loaded_localizations("ru", {
 	"&Update %1": "&Обновить %1",
 	"Update %1": "Обновить %1",
 	"E&xit && Return to %1": "В&ыход и возврат к %1",
-	"Exit && Return to %1": "Выход и возврат к %1",
+	"Exit & Return to %1": "Выход и возврат к %1",
 	"Linked %s": "Связанный %s",
 	"Unknown Type": "Неизвестный тип",
 	"Invalid filename.": "Неправильное имя файла.",

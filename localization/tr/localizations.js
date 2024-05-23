@@ -355,7 +355,7 @@ loaded_localizations("tr", {
 	"&Update %1": "%1 Nesnesini &Güncelleştir",
 	"Update %1": "%1 Nesnesini Güncelleştir",
 	"E&xit && Return to %1": "Çık ve %1 &Uygulamasına Geri Dön",
-	"Exit && Return to %1": "Çık ve %1 Uygulamasına Geri Dön",
+	"Exit & Return to %1": "Çık ve %1 Uygulamasına Geri Dön",
 	"Linked %s": "Bağlı %s",
 	"Unknown Type": "Bilinmeyen Tür",
 	"Invalid filename.": "Geçersiz dosya adı.",

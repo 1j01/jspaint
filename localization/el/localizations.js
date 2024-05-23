@@ -346,7 +346,7 @@ loaded_localizations("el", {
 	"&Update %1": "&Ενημέρωση του %1",
 	"Update %1": "Ενημέρωση του %1",
 	"E&xit && Return to %1": "Έ&ξοδος && επιστροφή στο %1",
-	"Exit && Return to %1": "Έξοδος && επιστροφή στο %1",
+	"Exit & Return to %1": "Έξοδος & επιστροφή στο %1",
 	"Linked %s": "Δεσμός %s",
 	"Unknown Type": "Άγνωστου τύπου",
 	"Invalid filename.": "Το όνομα του αρχείου δεν είναι έγκυρο.",

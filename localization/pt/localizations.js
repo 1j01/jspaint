@@ -335,7 +335,7 @@ loaded_localizations("pt", {
 	"&Update %1": "Act&ualizar %1",
 	"Update %1": "Actualizar %1",
 	"E&xit && Return to %1": "Sai&r e regressar a %1",
-	"Exit && Return to %1": "Sair e regressar a %1",
+	"Exit & Return to %1": "Sair e regressar a %1",
 	"Linked %s": "Ligado %s",
 	"Unknown Type": "Tipo desconhecido",
 	"Invalid filename.": "Nome de ficheiro inválido.",

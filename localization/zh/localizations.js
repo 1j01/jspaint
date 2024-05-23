@@ -366,7 +366,7 @@ loaded_localizations("zh", {
 	"&Update %1": "升級 %1(&U)",
 	"Update %1": "升級 %1",
 	"E&xit && Return to %1": "結束後回到 %1 (&X)",
-	"Exit && Return to %1": "結束後回到 %1",
+	"Exit & Return to %1": "結束後回到 %1",
 	"Linked %s": "已連結的 %s",
 	"Unknown Type": "未知的類型",
 	"Invalid filename.": "檔名無效。",

@@ -351,7 +351,7 @@ loaded_localizations("es", {
 	"&Update %1": "Act&ualizar %1",
 	"Update %1": "Actualizar %1",
 	"E&xit && Return to %1": "&Salir y regresar a %1",
-	"Exit && Return to %1": "Salir y regresar a %1",
+	"Exit & Return to %1": "Salir y regresar a %1",
 	"Linked %s": "%s vinculado",
 	"Unknown Type": "Tipo desconocido",
 	"Invalid filename.": "Nombre de archivo no válido.",

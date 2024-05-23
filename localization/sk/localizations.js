@@ -345,7 +345,7 @@ loaded_localizations("sk", {
 	"&Update %1": "&Aktualizovať %1",
 	"Update %1": "Aktualizovať %1",
 	"E&xit && Return to %1": "&Skončiť a vrátiť sa k %1",
-	"Exit && Return to %1": "Skončiť a vrátiť sa k %1",
+	"Exit & Return to %1": "Skončiť a vrátiť sa k %1",
 	"Linked %s": "Prepojený %s",
 	"Unknown Type": "Neznámy typ",
 	"Invalid filename.": "Neplatný názov súboru.",

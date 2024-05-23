@@ -363,7 +363,7 @@ loaded_localizations("ja", {
 	"&Update %1": "%1 を更新(&U)",
 	"Update %1": "%1 を更新",
 	"E&xit && Return to %1": "終了して %1 に戻る(&X)",
-	"Exit && Return to %1": "終了して %1 に戻る",
+	"Exit & Return to %1": "終了して %1 に戻る",
 	"Linked %s": "%s をリンクしました。",
 	"Unknown Type": "不明な型です。",
 	"Invalid filename.": "無効なファイル名です。",

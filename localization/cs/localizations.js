@@ -345,7 +345,7 @@ loaded_localizations("cs", {
 	"&Update %1": "&Aktualizovat %1",
 	"Update %1": "Aktualizovat %1",
 	"E&xit && Return to %1": "&Ukončit a návrat do %1",
-	"Exit && Return to %1": "Ukončit a návrat do %1",
+	"Exit & Return to %1": "Ukončit a návrat do %1",
 	"Linked %s": "Připojený objekt %s",
 	"Unknown Type": "Neznámý typ",
 	"Invalid filename.": "Neplatný název souboru.",

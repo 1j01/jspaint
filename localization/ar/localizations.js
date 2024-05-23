@@ -347,7 +347,7 @@ loaded_localizations("ar", {
 	"&Update %1": "&تحديث %1",
 	"Update %1": "تحديث %1",
 	"E&xit && Return to %1": "&خروج وعودة إلى %1",
-	"Exit && Return to %1": "خروج وعودة إلى %1",
+	"Exit & Return to %1": "خروج وعودة إلى %1",
 	"Linked %s": "%s مرتبط",
 	"Unknown Type": "‏‏نوع غير معروف",
 	"Invalid filename.": "‏‏اسم ملف غير صالح.",

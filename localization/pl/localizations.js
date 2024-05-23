@@ -344,7 +344,7 @@ loaded_localizations("pl", {
 	"&Update %1": "&Aktualizuj %1",
 	"Update %1": "Aktualizuj %1",
 	"E&xit && Return to %1": "Wy&jście && Powrót do %1",
-	"Exit && Return to %1": "Wyjście && Powrót do %1",
+	"Exit & Return to %1": "Wyjście & Powrót do %1",
 	"Linked %s": "Łączony %s",
 	"Unknown Type": "Nieznany typ",
 	"Invalid filename.": "Niewłaściwa nazwa pliku.",

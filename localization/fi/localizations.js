@@ -354,7 +354,7 @@ loaded_localizations("fi", {
 	"&Update %1": "&Päivitä %1",
 	"Update %1": "Päivitä %1",
 	"E&xit && Return to %1": "&Lopeta ja palaa kohteeseen %1",
-	"Exit && Return to %1": "Lopeta ja palaa kohteeseen %1",
+	"Exit & Return to %1": "Lopeta ja palaa kohteeseen %1",
 	"Linked %s": "Linkitetty %s",
 	"Unknown Type": "Tuntematon tyyppi",
 	"Invalid filename.": "Tiedostonimi ei kelpaa.",

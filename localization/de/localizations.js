@@ -359,7 +359,7 @@ loaded_localizations("de", {
 	"&Update %1": "%1 &aktualisieren",
 	"Update %1": "%1 aktualisieren",
 	"E&xit && Return to %1": "&Beenden und zurück zu %1",
-	"Exit && Return to %1": "Beenden und zurück zu %1",
+	"Exit & Return to %1": "Beenden und zurück zu %1",
 	"Linked %s": "Verknüpft %s",
 	"Unknown Type": "Unbekannter Typ",
 	"Invalid filename.": "Ungültiger Dateiname",

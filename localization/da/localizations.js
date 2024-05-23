@@ -342,7 +342,7 @@ loaded_localizations("da", {
 	"&Update %1": "&Opdater %1",
 	"Update %1": "Opdater %1",
 	"E&xit && Return to %1": "A&fslut, og vend tilbage til %1",
-	"Exit && Return to %1": "Afslut, og vend tilbage til %1",
+	"Exit & Return to %1": "Afslut, og vend tilbage til %1",
 	"Linked %s": "Sammenkædet %s",
 	"Unknown Type": "Ukendt type",
 	"Invalid filename.": "Ugyldigt filnavn.",
