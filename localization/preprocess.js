@@ -1,6 +1,7 @@
 const fs = require("fs");
 const glob = require("glob");
 const parse_rc_file = require("./parse-rc-file");
+const { AccessKeys } = require("../lib/os-gui/MenuBar.js");
 
 const base_lang = "en";
 const available_langs = fs.readdirSync(__dirname).filter((dir) => dir.match(/^\w+(-\w+)?$/));
@@ -8,23 +9,6 @@ const target_langs = available_langs.filter((lang) => lang !== base_lang);
 
 console.log("Target languages:", target_langs);
 
-// @TODO: DRY hotkey helpers
-// & defines accelerators (hotkeys) in menus and buttons and things, which get underlined in the UI.
-// & can be escaped by doubling it, e.g. "&Taskbar && Start Menu"
-function index_of_hotkey(text) {
-	// Returns the index of the ampersand that defines a hotkey, or -1 if not present.
-
-	// return english_text.search(/(?<!&)&(?!&|\s)/); // not enough browser support for negative lookbehind assertions
-
-	// The space here handles beginning-of-string matching and counteracts the offset for the [^&] so it acts like a negative lookbehind
-	return ` ${text}`.search(/[^&]&[^&\s]/);
-}
-function has_hotkey(text) {
-	return index_of_hotkey(text) !== -1;
-}
-function remove_hotkey(text) {
-	return text.replace(/\s?\(&.\)/, "").replace(/([^&]|^)&([^&\s])/, "$1$2");
-}
 const remove_ellipsis = str => str.replace("...", "");
 
 const only_unique = (value, index, self) => self.indexOf(value) === index;
@@ -61,9 +45,9 @@ for (const target_lang of target_langs) {
 				} else {
 					// add_localization(base_string, target_string, 0);
 					add_localization(remove_ellipsis(base_string), remove_ellipsis(target_string), 1);
-					if (has_hotkey(base_string)) {
-						// add_localization(remove_hotkey(base_string), remove_hotkey(target_string), 2);
-						add_localization(remove_ellipsis(remove_hotkey(base_string)), remove_ellipsis(remove_hotkey(target_string)), 3);
+					if (AccessKeys.has(base_string)) {
+						// add_localization(AccessKeys.remove(base_string), AccessKeys.remove(target_string), 2);
+						add_localization(remove_ellipsis(AccessKeys.remove(base_string)), remove_ellipsis(AccessKeys.remove(target_string)), 3);
 					}
 				}
 			}
