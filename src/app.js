@@ -68,58 +68,6 @@ window.systemHookDefaults = {
 	// could call it saveFileAs maybe but then it'd be weird that you don't pass in the file directly
 	showSaveFileDialog: async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => {
 
-		// Discord Activity
-		// (maybe should set its own systemHooks rather than being part of the default)
-		if (is_discord_embed) {
-
-			// Discord has a nice prompt asking you if you want to allow `blob:` URLs, rather than allow a domain (which is the usual case),
-			// but it fails to open a tab with the image or send a download.
-			// const blob_url = URL.createObjectURL(blob);
-			// console.log('blob_url', blob_url);
-			// discordSdk.commands.openExternalLink({ url: blob_url });
-
-			// A data URI doesn't work either.
-			// For a data URI it says it's "malformed and potentially dangerous".
-			// Probably just because it's a long string. Not very friendly.
-			// const reader = new FileReader();
-			// reader.onload = () => {
-			// 	const dataUri = reader.result;
-			// 	discordSdk.commands.openExternalLink({ url: dataUri });
-			// };
-			// reader.readAsDataURL(blob);
-
-			// The FS Access API gives
-			//   SecurityError
-			//   Error: Failed to execute 'showSaveFilePicker' on 'Window': Cross origin sub frames aren't allowed to show a file picker.
-
-			// Some other things to try:
-			// - See if the Discord bot API can upload files to a channel
-			// - Upload the file to our Discord Activity server and give a link to that
-			//   - Have to be wary of security, and not allow arbitrary files to be uploaded
-			// - Open an external link to a page that lets you download the file
-			//   - Maybe include the blob URL as a query parameter
-			// - Ask for a new API for downloads, possibly a parameter to openExternalLink
-			// - openShareMomentDialog?
-			//   https://discord.com/developers/docs/activities/development-guides#open-share-moment-dialog
-			//   Oh, there's an "activities attachment API endpoint (discord.com/api/applications/${applicationId}/attachment) to create an ephemeral CDN URL"
-			//   ...eventually got it working! see discord-activity-client.js
-			// - Show a dialog and ask users to right click and save the image
-
-			const { shareImage } = await import("./discord-activity-client.js");
-
-			const { newFileName, newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats });
-			const blob = await getBlob(newFileFormatID);
-			await shareImage(blob, newFileName);
-			// not guaranteed saved, but the share dialog should be shown successfully
-			savedCallbackUnreliable && savedCallbackUnreliable({
-				newFileName,
-				newFileFormatID,
-				newFileHandle: null,
-				newBlob: blob,
-			});
-			return;
-		}
-
 		// Note: showSaveFilePicker currently doesn't support suggesting a filename,
 		// or retrieving which file type was selected in the dialog (you have to get it (guess it) from the file name)
 		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.

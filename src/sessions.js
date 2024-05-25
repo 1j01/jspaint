@@ -1026,7 +1026,7 @@ const new_local_session = () => {
 
 
 if (is_discord_embed) {
-	const { /*Discord,*/ discordSdk, newAuth, guildMember, handleExternalLinks } = await import("./discord-activity-client.js");
+	const { /*Discord,*/ discordSdk, newAuth, guildMember, handleExternalLinks, discordActivitySystemHooks } = await import("./discord-activity-client.js");
 	// const { Events } = Discord;
 
 	log("Discord SDK", discordSdk);
@@ -1040,6 +1040,9 @@ if (is_discord_embed) {
 	// (Would channelId be better?)
 	log(`Starting session for Discord Activity instance ${discordSdk.instanceId}`);
 	change_url_param("session", `discord-activity-${discordSdk.instanceId}`);
+
+	// Apply system hooks
+	Object.assign(window.systemHooks, discordActivitySystemHooks);
 
 	// // Fetch
 	// const participants = await discordSdk.commands.getInstanceConnectedParticipants();
