@@ -198,7 +198,7 @@ context('visual tests', () => {
 		clickMenuButton('Help');
 		clickMenuItem('About Paint');
 		waitForImage('#paint-32x32');
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line"] }));
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
 	});
 
 	it('eye gaze mode', () => {
@@ -282,7 +282,7 @@ context('visual tests', () => {
 		// waitForRequest("/images/bubblegum/bubblegum-paint-128x128.png", () => { // not working
 		// waitForRequest("**/bubblegum-paint-*.png", () => { // not working
 		cy.wait(1000); // wait and hope it's loaded
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line"] }));
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
 		// });
 	});
 
