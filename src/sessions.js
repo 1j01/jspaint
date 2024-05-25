@@ -1026,32 +1026,37 @@ const new_local_session = () => {
 
 
 if (is_discord_embed) {
-	const { /*Discord,*/ discordSdk, newAuth, guildMember, handleExternalLinks, discordActivitySystemHooks } = await import("./discord-activity-client.js");
-	// const { Events } = Discord;
+	// I'm using top level await WITHIN the discord-activity-client.js module,
+	// but not here due to lack of support in the current browser version used for Cypress tests.
+	// This async IIFE could be eliminated if Cypress was updated.
+	(async () => {
+		const { /*Discord,*/ discordSdk, newAuth, guildMember, handleExternalLinks, discordActivitySystemHooks } = await import("./discord-activity-client.js");
+		// const { Events } = Discord;
 
-	log("Discord SDK", discordSdk);
-	log("New Auth:", newAuth);
-	log("Guild Member", guildMember);
+		log("Discord SDK", discordSdk);
+		log("New Auth:", newAuth);
+		log("Guild Member", guildMember);
 
-	// Handle external links
-	handleExternalLinks();
+		// Handle external links
+		handleExternalLinks();
 
-	// Start session for the Discord Activity instance
-	// (Would channelId be better?)
-	log(`Starting session for Discord Activity instance ${discordSdk.instanceId}`);
-	change_url_param("session", `discord-activity-${discordSdk.instanceId}`);
+		// Start session for the Discord Activity instance
+		// (Would channelId be better?)
+		log(`Starting session for Discord Activity instance ${discordSdk.instanceId}`);
+		change_url_param("session", `discord-activity-${discordSdk.instanceId}`);
 
-	// Apply system hooks
-	Object.assign(window.systemHooks, discordActivitySystemHooks);
+		// Apply system hooks
+		Object.assign(window.systemHooks, discordActivitySystemHooks);
 
-	// // Fetch
-	// const participants = await discordSdk.commands.getInstanceConnectedParticipants();
-	// console.log("Initial participants", participants);
+		// // Fetch
+		// const participants = await discordSdk.commands.getInstanceConnectedParticipants();
+		// console.log("Initial participants", participants);
 
-	// // Subscribe
-	// discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
-	// // Unsubscribe
-	// discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+		// // Subscribe
+		// discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+		// // Unsubscribe
+		// discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+	})();
 } else {
 	log("Initializing with location hash:", location.hash);
 	update_session_from_location_hash();
