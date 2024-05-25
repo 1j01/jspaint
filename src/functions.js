@@ -3161,7 +3161,7 @@ function image_attributes() {
 	const $table = $(E("table")).appendTo($main);
 	for (const k in table) {
 		const $tr = $(E("tr")).appendTo($table);
-		// const $key = $(E("td")).appendTo($tr).text(k);
+		$(E("td")).appendTo($tr).text(k);
 		const $value = $(E("td")).appendTo($tr).text(table[k]);
 		if (table[k].indexOf("72") !== -1) {
 			$value.css("direction", "ltr");
