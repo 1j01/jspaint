@@ -967,9 +967,11 @@ input[type="radio"] + label::before {
 #about-paint-header {
 	display: flex;
 	flex-direction: row;
+	flex-wrap: wrap;
 	margin: 0;
 	margin-top: 30px;
 	margin-bottom: 10px;
+	line-height: 30px;
 }
 #jspaint-project-name {
 	margin-right: 10px;
@@ -977,9 +979,13 @@ input[type="radio"] + label::before {
 	white-space: nowrap;
 }
 #jspaint-version {
-	/* @TODO: separate into a shared.css? (not really layout!) */
-	font-size: 0.6em;
-	color: #7b7b7b;
+	/* @TODO: separate some of this into a shared.css? (not all layout!) */
+	font-size: 0.7em;
+	font-weight: normal;
+	vertical-align: bottom;
+	/* limited by Bubblegum theme's layout FYI */
+	margin-right: 2px;
+	display: inline-block;
 }
 #maybe-outdated-line {
 	font-style: italic;
