@@ -1570,9 +1570,6 @@ function show_about_paint() {
 	$("#failed-to-check-if-outdated").attr("hidden", "hidden");
 	$("#outdated").attr("hidden", "hidden");
 
-	$about_paint_window.center();
-	$about_paint_window.center(); // @XXX - but it helps tho
-
 	$about_paint_window.$Button(localize("OK"), () => {
 		$about_paint_window.close();
 	})
@@ -1594,6 +1591,13 @@ function show_about_paint() {
 	$("#view-project-news").on("click", () => {
 		show_news();
 	});//.focus();
+
+	// Hack to avoid mis-centering within small screens,
+	// due to dynamic width of window when it abuts the right side of the screen
+	// (due to line wrapping of text content at the right edge of the screen)
+	// TODO: include this in OS-GUI library's centering logic
+	$about_paint_window.css({ left: -innerWidth, top: -innerHeight });
+	$about_paint_window.center();
 
 	if (is_discord_embed) {
 		// No checking for updates in the Discord Activity for now at least.
