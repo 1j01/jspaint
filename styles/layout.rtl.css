@@ -972,27 +972,32 @@ input[type="radio"] + label::before {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-#jspaint-project-name-and-version {
-	margin-right: 10px;
+#about-paint-beside-icon {
+	margin: auto 10px;
+}
+#jspaint-project-name {
 	white-space: nowrap;
-	margin: auto;
-	margin-right: 10px;
+	font-size: 2rem;
+	margin: 0;
 }
 #jspaint-version {
 	/* @TODO: separate some of this into a shared.css? (not all layout!) */
-	font-size: 0.7em;
+	white-space: nowrap;
+	font-size: 1.4rem;
 	font-weight: normal;
 }
 #maybe-outdated-line {
 	font-style: italic;
-	height: 2em;
+	line-height: 1;
+	/* min-height avoids a flaky test where sometimes the element blackout is visible and sometimes not depending on whether the news had been loaded when the test runs */
+	min-height: 1em;
 }
 #view-project-news,
 #close-about-paint {
 	margin: auto; /* for right-alignment AND avoiding stretching to height of the container */
 	margin-left: 0;
 	width: 100px;
-	min-height: 2.2em;
+	min-height: 2.2rem;
 }
 #close-about-paint {
 	float: left;

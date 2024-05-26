@@ -76,43 +76,44 @@
 
 <body>
 	<div id="about-paint" style="display: none">
-		<h1 id="about-paint-header">
+		<div id="about-paint-header">
 			<img src="images/icons/128x128.png" width="128" height="128" id="about-paint-icon" alt="" />
-			<div id="jspaint-project-name-and-version">
-				<div id="jspaint-project-name">JS Paint</div>
+			<div id="about-paint-beside-icon">
+				<h1 id="jspaint-project-name">JS Paint</h1>
 				<div id="jspaint-version" title="About time to increment the version number, don't you think?">
 					Version 1.0.0+
 				</div>
+				<div id="jspaint-update-status-area" hidden>
+					<!-- perhaps this can be merged with the container now that it's the only child -->
+					<div id="maybe-outdated-line">
+						<div id="outdated" hidden>
+							<div class="on-official-host">
+								There's a new version of JS Paint.
+								<a id="refresh-to-update" href=".">Refresh</a> to get it.
+							</div>
+							<div class="on-third-party-host">
+								This instance of JS Paint is outdated compared to
+								<a href="https://jspaint.app" target="_blank">jspaint.app</a>.
+							</div>
+							<div class="on-dev-host">
+								This version of JS Paint is outdated compared to
+								<a href="https://jspaint.app" target="_blank">jspaint.app</a>.
+							</div>
+						</div>
+						<div id="checking-for-updates" hidden>
+							Checking for updates...
+						</div>
+						<div id="failed-to-check-if-outdated" hidden>
+							Couldn't check for updates.
+							<span class="navigator-offline">You're offline.</span>
+							<span class="navigator-online">JS Paint may be outdated.</span>
+						</div>
+					</div>
+				</div>
 			</div>
 			<button id="view-project-news">What's New?</button>
-		</h1>
-
-		<div id="jspaint-update-status-area" hidden>
-			<!-- perhaps this can be merged with the container now that it's the only child -->
-			<div id="maybe-outdated-line">
-				<div id="outdated" hidden>
-					<div class="on-official-host">
-						There's a new version of JS Paint. <a id="refresh-to-update" href=".">Refresh</a> to get it.
-					</div>
-					<div class="on-third-party-host">
-						This instance of JS Paint is outdated compared to <a href="https://jspaint.app"
-							target="_blank">jspaint.app</a>.
-					</div>
-					<div class="on-dev-host">
-						This version of JS Paint is outdated compared to <a href="https://jspaint.app"
-							target="_blank">jspaint.app</a>.
-					</div>
-				</div>
-				<div id="checking-for-updates" hidden>
-					Checking for updates...
-				</div>
-				<div id="failed-to-check-if-outdated" hidden>
-					Couldn't check for updates.
-					<span class="navigator-offline">You're offline.</span>
-					<span class="navigator-online">JS Paint may be outdated.</span>
-				</div>
-			</div>
 		</div>
+
 		<!-- <p>JS Paint is a web-based MS Paint remake by <a href="https://isaiahodhner.io/">Isaiah Odhner</a>.</p> -->
 		<p>MS Paint remake by <a href="https://isaiahodhner.io/" target="_blank">Isaiah Odhner</a></p>
 		<!-- <p>Read about the project and extra features on <a href="https://github.com/1j01/jspaint#readme">the readme</a>.</p> -->
