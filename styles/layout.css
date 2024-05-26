@@ -969,12 +969,14 @@ input[type="radio"] + label::before {
 	flex-direction: row;
 	flex-wrap: wrap;
 	margin: 0;
-	margin-top: 30px;
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 #jspaint-project-name-and-version {
 	margin-left: 10px;
 	white-space: nowrap;
+	margin: auto;
+	margin-left: 10px;
 }
 #jspaint-version {
 	/* @TODO: separate some of this into a shared.css? (not all layout!) */

@@ -197,7 +197,7 @@ context('visual tests', () => {
 	it('about window', () => {
 		clickMenuButton('Help');
 		clickMenuItem('About Paint');
-		waitForImage('#paint-32x32');
+		waitForImage('#about-paint-icon');
 		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
 	});
 
@@ -278,7 +278,7 @@ context('visual tests', () => {
 	it('bubblegum theme -- about window', () => {
 		clickMenuButton('Help');
 		clickMenuItem('About Paint');
-		// waitForImage('#paint-32x32'); // it's actually replaced with a background image in this theme
+		// waitForImage('#about-paint-icon'); // it's actually replaced with a background image in this theme
 		// waitForRequest("/images/bubblegum/bubblegum-paint-128x128.png", () => { // not working
 		// waitForRequest("**/bubblegum-paint-*.png", () => { // not working
 		cy.wait(1000); // wait and hope it's loaded
