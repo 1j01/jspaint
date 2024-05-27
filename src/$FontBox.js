@@ -47,7 +47,7 @@ const eachFont = async (callback, afterAllCallback) => {
 };
 
 /**
- * @returns {$Window}
+ * @returns {OSGUI$Window}
  */
 function $FontBox() {
 	const $fb = $(E("div")).addClass("font-box");

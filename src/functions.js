@@ -413,7 +413,7 @@ function set_magnification(new_scale, anchor_point) {
 	$G.trigger("magnification-changed"); // updates custom zoom window
 }
 
-/** @type {$Window} */
+/** @type {OSGUI$Window} */
 let $custom_zoom_window;
 
 let dev_custom_zoom = false;
@@ -1100,7 +1100,7 @@ async function file_open() {
 	open_from_file(file, fileHandle);
 }
 
-/** @type {$Window} */
+/** @type {OSGUI$Window} */
 let $file_load_from_url_window;
 function file_load_from_url() {
 	if ($file_load_from_url_window) {
@@ -1529,11 +1529,11 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 	});
 }
 
-/** @type {$Window} */
+/** @type {OSGUI$Window} */
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
 
-/** @type {$Window} */
+/** @type {OSGUI$Window} */
 let $news_window;
 const $this_version_news = $("#news");
 let $latest_news = $this_version_news;
@@ -2187,7 +2187,7 @@ function undo() {
 }
 
 // @TODO: use Clippy.js instead for potentially annoying tips
-/** @type {$Window} */
+/** @type {OSGUI$Window} */
 let $document_history_prompt_window;
 function redo() {
 	if (redos.length < 1) {
@@ -2229,7 +2229,7 @@ function get_history_ancestors(node) {
 	return ancestors;
 }
 
-/** @type {$Window} */
+/** @type {OSGUI$Window} */
 let $document_history_window;
 // setTimeout(show_document_history, 100);
 function show_document_history() {
@@ -3315,7 +3315,7 @@ function image_attributes() {
 // TODO: maybe don't tack properties onto functions so much!?
 /**
  * @memberof image_attributes
- * @type {$Window}
+ * @type {OSGUI$Window}
  */
 image_attributes.$window = null;
 /**
@@ -4142,7 +4142,8 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
  * @param {boolean} from_current_document 
  */
 function show_multi_user_setup_dialog(from_current_document) {
-	const $w = $DialogWindow().title("Multi-User Setup").addClass("horizontal-buttons");
+	const $w = $DialogWindow();
+	$w.title("Multi-User Setup").addClass("horizontal-buttons");
 	$w.$main.html(`
 		${from_current_document ? "<p>This will make the current document public.</p>" : ""}
 		<p>

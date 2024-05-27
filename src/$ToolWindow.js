@@ -4,8 +4,8 @@
 import { $G, E } from "./helpers.js";
 
 /**
- * @param {$WindowOptions} options
- * @returns {$Window}
+ * @param {OSGUIWindowOptions} options
+ * @returns {OSGUI$Window}
  */
 function make_window_supporting_scale(options) {
 	const $w = $Window(options);
@@ -71,7 +71,7 @@ function make_window_supporting_scale(options) {
 
 /**
  * @param {JQuery<HTMLDivElement> & I$Component} [$component]
- * @returns {$Window & I$ToolWindow}
+ * @returns {OSGUI$Window & I$ToolWindow}
  */
 function $ToolWindow($component) {
 	return make_window_supporting_scale({
@@ -82,10 +82,10 @@ function $ToolWindow($component) {
 
 /**
  * @param {string} [title]
- * @returns {$Window & I$DialogWindow}
+ * @returns {OSGUI$Window & I$DialogWindow}
  */
 function $DialogWindow(title) {
-	const $w = /** @type {$Window & I$DialogWindow} */ (make_window_supporting_scale({
+	const $w = /** @type {OSGUI$Window & I$DialogWindow} */ (make_window_supporting_scale({
 		title,
 		resizable: false,
 		maximizeButton: false,

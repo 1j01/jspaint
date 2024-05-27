@@ -106,7 +106,7 @@ let selection; // singleton
 let textbox; // singleton
 /** @type {OnCanvasHelperLayer} */
 let helper_layer; // instance used for the grid and tool previews (not a singleton)
-/** @type {$Window} */
+/** @type {OSGUI$Window} */
 let $thumbnail_window;
 /** @type {PixelCanvas} */
 let thumbnail_canvas;

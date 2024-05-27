@@ -68,7 +68,7 @@ declare const TOOL_PENCIL: "TOOL_PENCIL";
 // declare let selection: OnCanvasSelection;
 // declare let textbox: OnCanvasTextBox;
 // declare let helper_layer: OnCanvasHelperLayer;
-// declare let $thumbnail_window: $Window;
+// declare let $thumbnail_window: OSGUI$Window;
 // declare let thumbnail_canvas: HTMLCanvasElement;
 // declare let show_grid: boolean;
 // declare let show_thumbnail: boolean;
@@ -523,7 +523,7 @@ interface MessageBoxOptions {
 	messageHTML?: string;
 	buttons?: { label: string, value: string, default?: boolean, action?: () => void }[];
 	iconID?: "error" | "warning" | "info" | "nuke";
-	windowOptions?: $WindowOptions;
+	windowOptions?: OSGUIWindowOptions;
 }
 
 declare class FontData {
@@ -565,7 +565,7 @@ declare class OnCanvasSelection extends OnCanvasObject {
 declare class OnCanvasTextBox extends OnCanvasObject {
 	constructor(x: number, y: number, width: number, height: number, starting_text?: string);
 	position(): void;
-	static $fontbox: $Window | null;
+	static $fontbox: OSGUI$Window | null;
 	canvas: PixelCanvas;
 	$editor: JQuery<HTMLTextAreaElement>;
 	dragging: boolean;
@@ -634,110 +634,18 @@ declare class Handles {
 	show: () => void;
 }
 
-// OS-GUI
-declare function applyCSSProperties(cssProperties: Record<string, string>, options?: { recurseIntoIframes: boolean }): void;
-declare function parseThemeFileString(themeFileString: string): Record<string, string>;
-
-// OS-GUI's $Window.js
-interface $WindowOptions {
-	title?: string;
-	innerWidth?: number;
-	innerHeight?: number;
-	outerWidth?: number;
-	outerHeight?: number;
-	toolWindow?: boolean;
-	minimizeButton?: boolean;
-	maximizeButton?: boolean;
-	closeButton?: boolean;
-	resizable?: boolean;
-	parentWindow?: $Window;
-	$component?: JQuery<HTMLDivElement> & I$Component; // { dock: () => void; detach: () => void; }; detach being a jQuery method
-	icons?: { [size: string]: string | HTMLImageElement };
-	icon?: string | HTMLImageElement;
-	constrainRect?: (rect: Rect, xAxis: number, yAxis: number) => Rect;
-	minOuterWidth?: number;
-	minOuterHeight?: number;
-	minInnerWidth?: number;
-	minInnerHeight?: number;
-	iframes?: { ignoreCrossOrigin?: boolean };
-}
 interface Rect { x: number; y: number; width: number; height: number; }
 
-declare function $Window(options?: $WindowOptions): $Window;
-declare function $FormWindow(options?: $WindowOptions): $Window & I$FormWindow;
-
-// declare class $Window extends JQuery<HTMLDivElement> {
-// 	static Z_INDEX: number;
-// 	static DEBUG_FOCUS: boolean;
-// 	static OVERRIDE_TRANSITION_DURATION: number | null;
-
-// 	constructor(options?: $WindowOptions);
-// }
-type $Window = JQuery<HTMLDivElement> & I$Window;
-interface I$Window {
-
-	element: HTMLDivElement;
-	$titlebar: JQuery<HTMLDivElement>;
-	$title_area: JQuery<HTMLDivElement>;
-	$title: JQuery<HTMLSpanElement>;
-	$minimize?: JQuery<HTMLButtonElement>;
-	$maximize?: JQuery<HTMLButtonElement>;
-	$x?: JQuery<HTMLButtonElement>;
-	$content: JQuery<HTMLDivElement>;
-	$icon: JQuery<HTMLElement>;
-
-	icons: { [size: string]: string | HTMLElement };
-
-	setDimensions(dimensions: { innerWidth?: number; innerHeight?: number; outerWidth?: number; outerHeight?: number; }): void;
-	focus(): void;
-	blur(): void;
-	minimize(): void;
-	unminimize(): void;
-	maximize(): void;
-	restore(): void;
-	close(force?: boolean): void;
-	closed: boolean;
-	title(title: string): this;
-	title(): string;
-	getTitle(): string;
-	setMenuBar(menuBar: MenuBar): void;
-	bringToFront(): void;
-	addChildWindow($childWindow: $Window): void;
-	setMinimizeTarget(taskbarButtonEl: HTMLElement): void;
-	setDimensions(dimensions: { innerWidth?: number; innerHeight?: number; outerWidth?: number; outerHeight?: number; }): void;
-	applyBounds(): void;
-	bringTitleBarInBounds(): void;
-	center(): void;
-	setTitlebarIconSize(size: number): this;
-	getTitlebarIconSize(): number;
-	getIconAtSize(size: number): HTMLElement | null;
-	$Button(label: string | Node, action: () => void): JQuery<HTMLButtonElement>;
-	animateTitlebar(before_rect: Rect, after_rect: Rect, callback?: () => void): void;
-
-	// Events
-	// These functions return a function that removes the event listener.
-	onFocus(callback: () => void): () => void;
-	onBlur(callback: () => void): () => void;
-	onClosed(callback: () => void): () => void;
-
-	// Deprecated properties and methods
-	// icon_name: string;
-	// task: { $task: JQuery<HTMLDivElement>, updateTitle: () => void; };
-	// setIconByID(iconName: string): this;
-	// setIcons(icons: { [size: string]: string | HTMLImageElement; }): void;
-	// getIconName(): string;
-}
-
 // part of os-gui.js which was extracted from jspaint into a library
-interface I$FormWindow {
-	$form: JQuery<HTMLFormElement>;
-	$main: JQuery<HTMLDivElement>;
-	$buttons: JQuery<HTMLDivElement>;
+// interface I$FormWindow {
+// 	$form: JQuery<HTMLFormElement>;
+// 	$main: JQuery<HTMLDivElement>;
+// 	$buttons: JQuery<HTMLDivElement>;
 
-	$Button(label: string, action: () => void): JQuery<HTMLButtonElement>;
-}
+// 	$Button(label: string, action: () => void): JQuery<HTMLButtonElement>;
+// }
 
-// still part of jspaint, uncomfortably overlapping with os-gui.js
+// still part of jspaint, uncomfortably overlapping with os-gui.js's I$FormWindow
 interface I$DialogWindow {
 	$form: JQuery<HTMLFormElement>;
 	$main: JQuery<HTMLDivElement>;
@@ -747,16 +655,6 @@ interface I$DialogWindow {
 }
 // definitely some cleanup to be done here regarding the window "classes"
 interface I$ToolWindow { }
-
-// OS-GUI's MenuBar.js
-declare function MenuBar(menus: any): MenuBar;
-declare class MenuBar {
-	constructor(menus: any);
-	element: HTMLDivElement;
-	closeMenus: () => void;
-	setKeyboardScope: (...elements: HTMLElement[]) => void;
-}
-declare const MENU_DIVIDER: "MENU_DIVIDER";
 
 //
 

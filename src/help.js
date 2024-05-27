@@ -305,10 +305,10 @@ var programs_being_loaded = 0;
  * @param {object} options 
  * @param {string} options.src
  * 
- * @returns {JQuery<HTMLIFrameElement & {$window: $Window}>} $iframe
+ * @returns {JQuery<HTMLIFrameElement & {$window: OSGUI$Window}>} $iframe
  */
 function $Iframe(options) {
-	var $iframe = /** @type {JQuery<HTMLIFrameElement & {$window: $Window}> & I$Iframe} */ (
+	var $iframe = /** @type {JQuery<HTMLIFrameElement & {$window: OSGUI$Window}> & I$Iframe} */ (
 		$("<iframe allowfullscreen sandbox='allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-modals allow-popups allow-downloads'>")
 	);
 	var iframe = $iframe[0];

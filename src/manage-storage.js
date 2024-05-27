@@ -5,6 +5,7 @@ import { $DialogWindow } from "./$ToolWindow.js";
 import { E, is_discord_embed } from "./helpers.js";
 import { showMessageBox } from "./msgbox.js";
 
+/** @type {OSGUI$Window & I$DialogWindow} */
 let $storage_manager;
 let $quota_exceeded_window;
 let ignoring_quota_exceeded = false;
@@ -44,7 +45,8 @@ function manage_storage() {
 	if ($storage_manager) {
 		$storage_manager.close();
 	}
-	$storage_manager = $DialogWindow().title("Manage Storage").addClass("storage-manager squish");
+	$storage_manager = $DialogWindow();
+	$storage_manager.title("Manage Storage").addClass("storage-manager squish");
 	// @TODO: way to remove all (with confirmation)
 	const $table = $(E("table")).appendTo($storage_manager.$main);
 	const $message = $(E("p")).appendTo($storage_manager.$main).html(

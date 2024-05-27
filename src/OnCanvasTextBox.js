@@ -301,7 +301,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 /** 
  * @static
- * @type {$Window | null}
+ * @type {OSGUI$Window | null}
  * @memberof OnCanvasTextBox
  **/
 OnCanvasTextBox.$fontbox = null;

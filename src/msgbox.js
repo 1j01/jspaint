@@ -48,7 +48,7 @@ try {
  * @property {string} [messageHTML]
  * @property {Array<{ label: string, value: string, default?: boolean, action?: () => void }>} [buttons]
  * @property {"error" | "warning" | "info" | "nuke"} [iconID]
- * @property {$WindowOptions} [windowOptions]
+ * @property {OSGUIWindowOptions} [windowOptions]
  * 
  * @typedef {Promise<string> & { $window: JQuery<Window>, $message: JQuery<HTMLDivElement>, promise: MessageBoxPromise }} MessageBoxPromise
  * 
