@@ -991,6 +991,8 @@ input[type="radio"] + label::before {
 	line-height: 1;
 	/* min-height avoids a flaky test where sometimes the element blackout is visible and sometimes not depending on whether the news had been loaded when the test runs */
 	min-height: 1em;
+	/* top margin is almost just to separate blackout regions for clarity in the visual test snapshots */
+	margin-top: 3px;
 }
 #view-project-news,
 #close-about-paint {
