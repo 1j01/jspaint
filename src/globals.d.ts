@@ -124,7 +124,7 @@ interface I$Component {
 	hide(): this;
 	show(): this;
 	toggle(): this;
-	dock($dock_to: JQuery<HTMLElement>): void;
+	dock($dock_to?: JQuery<HTMLElement>): void;
 	undock_to(x: number, y: number): void;
 	destroy(): void;
 }

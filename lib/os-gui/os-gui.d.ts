@@ -16,7 +16,7 @@ interface OSGUIWindow {
 	/**
 	 * Closes the window.
 	 */
-	close(): void;
+	close(force?: boolean): void;
 
 	/**
 	 * Tries to focus something within the window, in this order of priority:
@@ -102,7 +102,7 @@ interface OSGUIWindow {
 	 * Picks the closest icon size that's available, and returns a unique DOM node (i.e. cloned).
 	 * This can be used for representing the window in the taskbar.
 	 */
-	getIconAtSize(size: number): HTMLElement;
+	getIconAtSize(size: number): Node | null;
 
 	/**
 	 * Appends the menu bar to the window, and sets the keyboard scope for the menu bar's hotkeys to the window.
@@ -216,7 +216,7 @@ interface OSGUIWindow {
 	/**
 	 * The titlebar icon.
 	 */
-	private $icon: JQuery<HTMLElement>;
+	private $icon: JQuery<Node>;
 
 	/**
 	 * @deprecated The titlebar icon name/ID.
@@ -273,7 +273,7 @@ type OSGUI$FormWindow = JQuery<HTMLElement & { $window: OSGUI$FormWindow }> & OS
  * Creates a new window.
  */
 interface $WindowConstructor {
-	new (options?: OSGUIWindowOptions): OSGUI$Window;
+	new(options?: OSGUIWindowOptions): OSGUI$Window;
 	(options?: OSGUIWindowOptions): OSGUI$Window;
 
 	DEBUG_FOCUS?: boolean;
@@ -336,7 +336,12 @@ interface OSGUIWindowOptions {
 	/** The minimum height of the window contents (when resizing), in pixels. */
 	minInnerHeight?: number;
 
-	/** A function that can be used to constrain the window to a particular rectangle. Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties. `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom, and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height. */
+	/**
+	 * A function that can be used to constrain the window to a particular rectangle.
+	 * Takes and returns a rectangle object with `x`, `y`, `width`, and `height` properties.
+	 * `x_axis` and `y_axis` define what is being dragged `-1` for left and top, `1` for right and bottom,
+	 * and `0` for middle. Note that the window will always be constrained to not move past the minimum width and height.
+	 */
 	constrainRect?: (rect: { x: number; y: number; width: number; height: number }, x_axis: -1 | 0 | 1, y_axis: -1 | 0 | 1) => { x: number; y: number; width: number; height: number };
 
 	/**
@@ -354,7 +359,7 @@ interface OSGUIWindowOptions {
 	};
 
 	/** @deprecated */
-	$component?: JQuery<HTMLElement>;
+	$component?: JQuery<HTMLElement> & { dock: () => void };
 	/** @deprecated */
 	icon?: string | { srcset: string } | Node;
 }
@@ -447,7 +452,7 @@ type OSGUIMenuFragment = OSGUIMenuItem | OSGUIRadioGroup | typeof MENU_DIVIDER;
 type OSGUITopLevelMenus = Record<string, OSGUIMenuFragment[]>;
 
 interface MenuBarConstructor {
-	new (menus: OSGUITopLevelMenus): MenuBar;
+	new(menus: OSGUITopLevelMenus): MenuBar;
 	(menus: OSGUITopLevelMenus): MenuBar;
 }
 
@@ -497,7 +502,7 @@ function parseThemeFileString(themeString: string): Record<string, string>;
  * If `recurseIntoIframes` is true, then the properties will be applied to all `<iframe>` elements within the element as well.
  * This only works with same-origin iframes.
  */
-function applyCSSProperties(cssProperties: CSSProps, options: { element: HTMLElement, recurseIntoIframes?: boolean });
+function applyCSSProperties(cssProperties: CSSProps, options?: { element?: HTMLElement, recurseIntoIframes?: boolean });
 
 /**
  * Can be used to update theme graphics (scrollbar icons, etc.) for a specific section of the page. Used by the demo to show variations.
