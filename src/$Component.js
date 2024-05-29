@@ -139,6 +139,9 @@ function $Component(title, className, orientation, $el) {
 		pos_axis = "left";
 	}
 
+	/**
+	 * @param {JQuery<HTMLElement>} $dock_to 
+	 */
 	const dock_to = $dock_to => {
 		$w.hide();
 
@@ -165,6 +168,10 @@ function $Component(title, className, orientation, $el) {
 		$last_docked_to = $dock_to;
 		last_docked_to_pos = pos;
 	};
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 */
 	const undock_to = (x, y) => {
 		const component_area_el = $c.closest(".component-area")[0];
 		// must get layout state *before* changing it
