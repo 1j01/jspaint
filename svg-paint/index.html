@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>SVG Paint Experiment</title>
+</head>
+
+<body>
+	<svg width="800" height="600">
+		<defs>
+			<radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+				<stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0" />
+				<stop offset="100%" style="stop-color:rgb(0,0,255);stop-opacity:1" />
+			</radialGradient>
+		</defs>
+		<rect x="10" y="10" width="200" height="100" fill="url(#grad1)" />
+		<text x="10" y="150" font-family="Verdana" font-size="35" fill="navy" stroke="url(#grad1)"
+			stroke-width="3">Hello SVG</text>
+		<text x="10" y="200" font-family="Verdana" font-size="20" fill="black">
+			Left click to draw circles.
+		</text>
+		<text x="10" y="230" font-family="Verdana" font-size="20" fill="black">
+			Right click to cut/paste a rectangular region at a fixed offset.
+		</text>
+	</svg>
+	<h1>SVG Paint Experiment</h1>
+	<p>
+		This is a proof of concept of a cutting/pasting operation in SVG,
+		which could be used for saving as SVG in JS Paint.
+	</p>
+	<p>
+		Note the exponential slowdown when cutting/pasting multiple times.
+		This is due to the fact that all the contents of the document are cloned (using <code>&lt;use&gt;</code>)
+		and masked/clipped in order to separate the cutout region from the rest of the document.
+		When cloning the document content, it includes any previous clones.
+		Therefore, if you have one circle, and cut/paste it twice,
+		it will have to render the circle in potentially four places.
+	</p>
+	<p>
+		It may be more feasible to embed a raster image in the SVG,
+		so it looks exactly as the canvas,
+		and only use special logic for text elements,
+		in order to support text selection and screen readers.
+	</p>
+	<p>
+		However it would need some limits to avoid the exponential rendering problem.
+		A given piece of text could be limited to a specific number of clones,
+		and preference given to larger portions of text.
+	</p>
+	<p>
+		In the end, it would therefore always have edge cases where it would not (fully) work.
+		It would be a trade-off between performance and correctness.
+	</p>
+	<p>
+		Besides that, if you erase text, it should no longer be selectable, but this would be hard to codify.
+		It may be best to leave text selection up to OCR tools like
+		<a href="https://projectnaptha.com/">Project Naptha</a>.
+	</p>
+	<script src="./svg-paint.js"></script>
+	<style>
+		svg {
+			border: 5px ridge gray;
+		}
+	</style>
+</body>
+
+</html>
