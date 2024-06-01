@@ -322,4 +322,26 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
+	it('about window during pride month', () => {
+		// TODO: DRY with other about window tests and the app loading in the `before` hook,
+		// maybe enable test isolation even though it's slower to load the app every time
+
+		// June 19, 3000
+		cy.clock(32518299600000);
+
+		cy.visit('/');
+		cy.setResolution([760, 490]);
+		cy.window().should('have.property', 'api_for_cypress_tests'); // wait for app to be loaded
+
+		// Needed, given `cy.clock` is used, for `requestAnimationFrame` in `update_$swatch`,
+		// so the color palette is rendered correctly.
+		// (Doesn't apply to this test.)
+		cy.tick(100);
+
+		clickMenuButton('Help');
+		clickMenuItem('About Paint');
+		waitForImage('#about-paint-icon');
+		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
+	});
+
 });
