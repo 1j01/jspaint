@@ -41,7 +41,7 @@ class OnCanvasObject {
 		});
 		if (updateStatus) {
 			$status_position.text(`${this.x},${this.y}`);
-			$status_size.text(`${this.width},${this.height}`);
+			$status_size.text(`${this.width}x${this.height}`);
 		}
 	}
 	destroy() {
