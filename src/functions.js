@@ -1560,7 +1560,7 @@ function show_about_paint() {
 	});
 	$about_paint_window.addClass("about-paint squish");
 	if (is_pride_month) {
-		$("#about-paint-icon").attr("src", "./images/icons/gay-es-about-paint-icon-light-outline.png");
+		$("#about-paint-icon").attr("src", "./images/icons/gay-es-paint-128x128.png");
 	}
 
 	$about_paint_window.$content.append($about_paint_content.show()).css({ padding: "15px" });
