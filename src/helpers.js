@@ -1,6 +1,6 @@
 // @ts-check
 
-/* global main_canvas */
+/* global AccessKeys, main_canvas */
 
 const TAU =
 	//                //////|//////

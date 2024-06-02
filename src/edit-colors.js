@@ -1,6 +1,6 @@
 // @ts-check
 /* global palette:writable */
-/* global $colorbox, AccessKeys, localize, main_ctx, monochrome, selected_colors, selection */
+/* global $colorbox, localize, main_ctx, monochrome, selected_colors, selection */
 import { $Swatch, update_$swatch } from "./$ColorBox.js";
 import { $DialogWindow } from "./$ToolWindow.js";
 // import { localize } from "./app-localization.js";

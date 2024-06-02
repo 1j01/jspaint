@@ -114,7 +114,7 @@ export async function shareImage(blob, filename) {
 export const discordActivitySystemHooks = {
 	// named to be distinct from various platform APIs (showSaveFilePicker, saveAs, electron's showSaveDialog; and saveFile is too ambiguous)
 	// could call it saveFileAs maybe but then it'd be weird that you don't pass in the file directly
-	showSaveFileDialog: async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => {
+	showSaveFileDialog: async ({ formats, defaultFileName, defaultPath: _unused, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => {
 
 		// Discord has a nice prompt asking you if you want to allow `blob:` URLs, rather than allow a domain (which is the usual case),
 		// but it fails to open a tab with the image or send a download.
