@@ -53,7 +53,7 @@
 		if (localStorage[language_storage_key]) {
 			accepted_languages.unshift(localStorage[language_storage_key]);
 		}
-	} catch (error) {
+	} catch (_error) {
 		// if there's no localStorage access, you can still configure the language via system settings, theoretically
 		// TODO: also via URL?
 	}

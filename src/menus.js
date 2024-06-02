@@ -256,7 +256,7 @@ const menus = {
 							window.close();
 							return;
 						}
-					} catch (e) {
+					} catch (_error) {
 						// In a cross-origin iframe, most likely
 						// @TODO: establish postMessage API
 					}

@@ -37,7 +37,7 @@ const ChooserCanvas = (
 				destX, destY, destWidth, destHeight
 			);
 			// eslint-disable-next-line no-empty
-		} catch (error) { }
+		} catch (_error) { }
 		// if (invert) {
 		// 	invert_rgb(c.ctx); // can fail due to tainted canvas if running from file: protocol
 		// }

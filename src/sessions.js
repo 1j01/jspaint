@@ -20,7 +20,7 @@ try {
 	localStorageAvailable = localStorage._available;
 	delete localStorage._available;
 	// eslint-disable-next-line no-empty
-} catch (e) { }
+} catch (_error) { }
 
 // @TODO: keep other data in addition to the image data
 // such as the file_name and other state
@@ -40,7 +40,7 @@ function show_recovery_window(no_longer_blank) {
 	});
 	$w.title("Recover Document");
 	let backup_impossible = false;
-	try { window.localStorage } catch (e) { backup_impossible = true; }
+	try { window.localStorage } catch (_error) { backup_impossible = true; }
 	// TODO: get rid of this invasive dialog https://github.com/1j01/jspaint/issues/325
 	// It appears when it shouldn't, in basic scenarios like Ctrl+A in a transparent document,
 	// and it gets bigger once you edit the document, which feels... almost aggressive.
@@ -954,7 +954,7 @@ const update_session_from_location_hash = () => {
 			let online_session_implementation = is_discord_embed ? "RESTSession" : "FirebaseSession";
 			try {
 				online_session_implementation = localStorage["online_session_implementation"] || online_session_implementation;
-			} catch (e) {
+			} catch (_error) {
 				// ignore, as this is only for development
 			}
 			if (local) {

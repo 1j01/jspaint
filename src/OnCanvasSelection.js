@@ -306,7 +306,7 @@ class OnCanvasSelection extends OnCanvasObject {
 			main_ctx.drawImage(this.canvas, this.x, this.y);
 		}
 		// eslint-disable-next-line no-empty
-		catch (e) { }
+		catch (_error) { }
 	}
 	destroy() {
 		super.destroy();

@@ -1472,7 +1472,7 @@ if (speech_recognition_available) {
 		if (event.error.toString().match(/no-speech/)) {
 			try {
 				recognition.start();
-			} catch (error) {
+			} catch (_error) {
 				recognition.addEventListener("end", () => {
 					recognition.start();
 				}, { once: true });
@@ -2111,7 +2111,7 @@ if (speech_recognition_available) {
 					.map((json) => {
 						try {
 							return JSON.parse(json);
-						} catch (error) {
+						} catch (_error) {
 							return null;
 						}
 					})
@@ -2283,7 +2283,7 @@ if (speech_recognition_available) {
 	try {
 		should_test_speech_recognition = localStorage.test_speech_recognition === "true";
 		// eslint-disable-next-line no-empty
-	} catch (error) { }
+	} catch (_error) { }
 	if (should_test_speech_recognition) {
 		$(test_speech_recognition);
 	}

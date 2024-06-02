@@ -189,7 +189,7 @@ function show_imgur_uploader(blob) {
 					let response;
 					try {
 						response = JSON.parse(req.responseText);
-					} catch (error) {
+					} catch (_error) {
 						// Prefer to show error about failing to upload,
 						// rather than it not being JSON.
 						// Full response can be shown in the expandible details.

@@ -42,7 +42,7 @@ let dev_edit_colors = false;
 try {
 	dev_edit_colors = localStorage.dev_edit_colors === "true";
 	// eslint-disable-next-line no-empty
-} catch (error) { }
+} catch (_error) { }
 if (dev_edit_colors) {
 	$(() => {
 		show_edit_colors_window();

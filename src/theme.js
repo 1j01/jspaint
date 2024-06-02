@@ -56,7 +56,7 @@ const set_theme = theme => {
 		localStorage[disable_seasonal_theme_key] = "true"; // any theme change disables seasonal theme (unless of course you select the seasonal theme)
 		grinch_button?.remove();
 		// eslint-disable-next-line no-empty
-	} catch (error) { }
+	} catch (_error) { }
 
 	const signal_theme_load = () => {
 		$(window).triggerHandler("theme-load");
@@ -164,7 +164,7 @@ function make_grinch_button() {
 			localStorage[disable_seasonal_theme_key] = "true";
 			new_theme = localStorage[theme_storage_key] || default_theme;
 			// eslint-disable-next-line no-empty
-		} catch (error) { }
+		} catch (_error) { }
 		if (new_theme === "winter.css") {
 			new_theme = default_theme;
 		}

@@ -102,7 +102,7 @@ function manage_storage() {
 			delete localStorage._available;
 		}
 		// eslint-disable-next-line no-empty
-	} catch (e) { }
+	} catch (_error) { }
 
 	if (localStorageAvailable) {
 		for (const k in localStorage) {
@@ -113,7 +113,7 @@ function manage_storage() {
 						v = JSON.parse(v);
 					}
 					// eslint-disable-next-line no-empty
-				} catch (e) { }
+				} catch (_error) { }
 				addRow(k, v);
 			}
 		}

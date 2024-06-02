@@ -478,13 +478,13 @@ $news_indicator.on("click auxclick", (event) => {
 	try {
 		localStorage[news_seen_key] = latest_news_datetime;
 		// eslint-disable-next-line no-empty
-	} catch (error) { }
+	} catch (_error) { }
 });
 let news_seen;
 let local_storage_unavailable;
 try {
 	news_seen = localStorage[news_seen_key];
-} catch (error) {
+} catch (_error) {
 	local_storage_unavailable = true;
 }
 const day = 24 * 60 * 60 * 1000;
@@ -577,7 +577,7 @@ if (frameElement) {
 			menu_bar_outside_frame = true;
 		}
 		// eslint-disable-next-line no-empty
-	} catch (e) { }
+	} catch (_error) { }
 }
 const menu_bar = MenuBar(menus);
 window.menu_bar = menu_bar;
@@ -1182,7 +1182,7 @@ $G.on("cut copy paste", e => {
 				} else {
 					edit_copy();
 				}
-			} catch (e) {
+			} catch (_error) {
 				do_sync_clipboard_copy_or_cut();
 			}
 		}

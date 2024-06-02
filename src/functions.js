@@ -131,7 +131,7 @@ function set_all_url_params(params, { replace_history_state = false } = {}) {
 		} else {
 			history.pushState(null, document.title, new_url);
 		}
-	} catch (error) {
+	} catch (_error) {
 		location.hash = new_hash;
 	}
 
@@ -420,7 +420,7 @@ let dev_custom_zoom = false;
 try {
 	dev_custom_zoom = localStorage.dev_custom_zoom === "true";
 	// eslint-disable-next-line no-empty
-} catch (error) { }
+} catch (_error) { }
 if (dev_custom_zoom) {
 	$(() => {
 		show_custom_zoom_window();
@@ -770,7 +770,7 @@ function get_uris(text) {
 			const url = new URL(lines[i]);
 			uris.push(url.href);
 			// eslint-disable-next-line no-empty
-		} catch (e) { }
+		} catch (_error) { }
 	}
 	return uris;
 }
@@ -1144,7 +1144,7 @@ let acknowledged_overwrite_capability = false;
 const confirmed_overwrite_key = "jspaint confirmed overwrite capable";
 try {
 	acknowledged_overwrite_capability = localStorage[confirmed_overwrite_key] === "true";
-} catch (error) {
+} catch (_error) {
 	// no localStorage
 	// In the year 2033, people will be more used to it, right?
 	// This will be known as the "Y2T bug"
@@ -1173,7 +1173,7 @@ async function confirm_overwrite_capability() {
 		acknowledged_overwrite_capability = $window.$content.find("#do-not-ask-me-again-checkbox").prop("checked");
 		try {
 			localStorage[confirmed_overwrite_key] = acknowledged_overwrite_capability;
-		} catch (error) {
+		} catch (_error) {
 			// no localStorage... @TODO: don't show the checkbox in this case
 		}
 		return true;
@@ -1685,7 +1685,7 @@ function exit_fullscreen_if_ios() {
 			} else if (document.msExitFullscreen) {
 				document.msExitFullscreen();
 			}
-		} catch (error) {
+		} catch (_error) {
 			// not important, just trying to prevent broken fullscreen after refresh
 			// (:fullscreen and document.fullscreenElement stops working because it's not "requested by the page" anymore)
 			// (the fullscreen styling is not generally obtrusive, but it is obtrusive when it DOESN'T work)
