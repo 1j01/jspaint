@@ -4,7 +4,7 @@ const path = require("path");
 const { ArgumentParser, SUPPRESS } = require('argparse');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
+if (require('electron-squirrel-startup')) {
 	app.quit();
 	// `app.quit` does not immediately exit the process.
 	return;

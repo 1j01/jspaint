@@ -1,5 +1,4 @@
 // @ts-check
-/* eslint-disable no-inner-declarations */
 // eslint-disable-next-line no-unused-vars
 /* global airbrush_size:writable, brush_size:writable, eraser_size:writable, pencil_size:writable, stroke_size:writable, pointer_active:writable, pointer_over_canvas:writable, pointer_previous:writable, pointer:writable */
 /* global $canvas_area, $status_text, button, localize, main_canvas, main_ctx, MENU_DIVIDER, selected_colors, selected_tool, selected_tools, tool_go */

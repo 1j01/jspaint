@@ -5,6 +5,9 @@ import globals from "globals";
 export default [
 	js.configs.recommended,
 	{
+		"linterOptions": {
+			"reportUnusedDisableDirectives": "warn",
+		},
 		"languageOptions": {
 			"ecmaVersion": 2022,
 			"sourceType": "module",
