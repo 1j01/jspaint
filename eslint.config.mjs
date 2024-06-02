@@ -1,9 +1,19 @@
 import js from "@eslint/js";
+import stylistic from '@stylistic/eslint-plugin';
 import globals from "globals";
 
 /** @type {import('@types/eslint').Linter.FlatConfig[]} */
 export default [
 	js.configs.recommended,
+	// stylistic.configs.customize({
+	// 	indent: "tab",
+	// 	quotes: 'double',
+	// 	semi: true,
+	// 	jsx: false,
+	// 	braceStyle: '1tbs',
+	// 	arrowParens: 'always',
+	// 	commaDangle: 'always-multiline',
+	// }),
 	{
 		"linterOptions": {
 			"reportUnusedDisableDirectives": "warn",
@@ -33,6 +43,9 @@ export default [
 				// "$FormWindow": "readonly",
 				// os-gui's parse-theme.js has more
 			},
+		},
+		"plugins": {
+			"@stylistic": stylistic,
 		},
 		"rules": {
 			"no-undef": "warn",
@@ -75,9 +88,17 @@ export default [
 			"no-restricted-globals": ["error", "event", "canvas", "ctx", "colors", "i", "j", "k", "x", "y", "z", "width", "height", "w", "h"],
 
 			// Stylistic:
-			// @TODO: https://eslint.style/guide/getting-started
 			// "@stylistic/array-bracket-spacing": "error",
 			// "@stylistic/block-spacing": "error",
+			// "@stylistic/padded-blocks": "off",
+			// "@stylistic/brace-style": "error",
+			"@stylistic/comma-dangle": ["error", {
+				"arrays": "always-multiline", // ensure commas to avoid confusing git diffs
+				"objects": "always-multiline", // ensure commas to avoid confusing git diffs
+				"imports": "never", // always a single line anyways
+				"exports": "never", // matches VS Code's default JS/TS formatter
+				"functions": "only-multiline", // commas sometimes avoid confusing git diffs, sometimes are confusing themselves
+			}],
 		},
 	},
 	{
