@@ -1,6 +1,6 @@
 // @ts-check
 /* global selection:writable, stroke_size:writable, textbox:writable */
-/* global $canvas, $canvas_area, airbrush_size, brush_shape, brush_size, button, canvas_handles, ctrl, eraser_size, fill_color, fill_color_k, get_language, localize, magnification, main_canvas, main_ctx, pencil_size, pointer, pointer_active, pointer_over_canvas, pointer_previous, pointer_start, return_to_magnification, selected_colors, shift, stroke_color, transparency */
+/* global $canvas, $canvas_area, $status_size, airbrush_size, brush_shape, brush_size, button, canvas_handles, ctrl, eraser_size, fill_color, fill_color_k, get_language, localize, magnification, main_canvas, main_ctx, pencil_size, pointer, pointer_active, pointer_over_canvas, pointer_previous, pointer_start, return_to_magnification, selected_colors, shift, stroke_color, transparency */
 import { OnCanvasSelection } from "./OnCanvasSelection.js";
 import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
 // import { get_language, localize } from "./app-localization.js";
@@ -85,6 +85,10 @@ const tools = [{
 		bresenham_line(pointer_previous.x, pointer_previous.y, pointer.x, pointer.y, (x, y) => {
 			this.ffs_paint_iteration(x, y);
 		});
+
+		// Note: MS Paint in Windows 98 shows the difference between the starting point and the current mouse position
+		// An absolute bounding box seems more useful though.
+		$status_size.text(`${this.x_max - this.x_min}x${this.y_max - this.y_min}`);
 	},
 	ffs_paint_iteration(x, y) {
 		// Constrain the inversion paint brush position to the canvas
@@ -115,6 +119,7 @@ const tools = [{
 		ctx_dest.putImageData(id_dest, rect_x, rect_y);
 	},
 	pointerup() {
+		$status_size.text("");
 		this.preview_canvas.width = 1;
 		this.preview_canvas.height = 1;
 
@@ -745,6 +750,7 @@ const tools = [{
 				ctx.drawImage(this.preview_canvas, 0, 0);
 			});
 			this.points = [];
+			$status_size.text("");
 		}
 	},
 	pointerdown(_ctx, x, y) {
@@ -804,6 +810,14 @@ const tools = [{
 				stroke_size
 			);
 		}
+
+		// MS Paint shows the mouse position relative to the first point
+		// (and is afraid of the number zero)
+		const signed_width = x - this.points[0].x || 1;
+		const signed_height = y - this.points[0].y || 1;
+		$status_size.text(`${signed_width}x${signed_height}`);
+		// I don't know how helpful this is, might be more useful to show the number of points:
+		// $status_size.text(`${this.points.length} / 4 points`);
 	},
 	drawPreviewUnderGrid(ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) {
 		// if (!pointer_active && !pointer_over_canvas) { return; }
@@ -817,10 +831,12 @@ const tools = [{
 	},
 	cancel() {
 		this.points = [];
+		$status_size.text("");
 	},
 	end() {
 		this.points = [];
 		update_helper_layer();
+		$status_size.text("");
 	},
 	$options: $choose_stroke_size
 }, {
@@ -915,6 +931,8 @@ const tools = [{
 		}
 
 		this.last_click_pointerup = { x, y, time: +(new Date) };
+
+		this.updateStatus();
 	},
 	pointerdown(ctx, x, y) {
 		if (this.points.length < 1) {
@@ -977,6 +995,8 @@ const tools = [{
 				stroke_size
 			);
 		}
+
+		this.updateStatus();
 	},
 	drawPreviewUnderGrid(ctx, _x, _y, _grid_visible, scale, translate_x, translate_y) {
 		// if (!pointer_active && !pointer_over_canvas) { return; }
@@ -1022,7 +1042,23 @@ const tools = [{
 		this.complete(ctx);
 		update_helper_layer();
 	},
+	updateStatus() {
+		let x_min = +Infinity;
+		let x_max = -Infinity;
+		let y_min = +Infinity;
+		let y_max = -Infinity;
+		for (const point of this.points) {
+			x_min = Math.min(point.x, x_min);
+			x_max = Math.max(point.x, x_max);
+			y_min = Math.min(point.y, y_min);
+			y_max = Math.max(point.y, y_max);
+		}
+		const signed_width = x_max - x_min || 1;
+		const signed_height = y_max - y_min || 1;
+		$status_size.text(`${signed_width}x${signed_height}`);
+	},
 	reset() {
+		$status_size.text("");
 		this.points = [];
 		this.last_click_pointerdown = { x: -Infinity, y: -Infinity, time: -Infinity };
 		this.last_click_pointerup = { x: -Infinity, y: -Infinity, time: -Infinity };
@@ -1170,8 +1206,10 @@ tools.forEach((tool) => {
 			rect_y = ~~Math.max(0, Math.min(drag_start_y, pointer.y));
 			rect_width = (~~Math.min(main_canvas.width, Math.max(drag_start_x, pointer.x) + 1)) - rect_x;
 			rect_height = (~~Math.min(main_canvas.height, Math.max(drag_start_y, pointer.y + 1))) - rect_y;
+			$status_size.text(`${rect_width}x${rect_height}`); // note that OnCanvasObject/OnCanvasTextBox/OnCanvasSelection also manages this status text
 		};
 		tool.pointerup = () => {
+			$status_size.text(""); // note that OnCanvasObject/OnCanvasTextBox/OnCanvasSelection also manages this status text
 			canvas_handles.show();
 			tool.selectBox(rect_x, rect_y, rect_width, rect_height);
 		};
@@ -1206,8 +1244,12 @@ tools.forEach((tool) => {
 			tool.shape_canvas.ctx.strokeStyle = main_ctx.strokeStyle;
 			tool.shape_canvas.ctx.lineWidth = main_ctx.lineWidth;
 			tool.shape(tool.shape_canvas.ctx, pointer_start.x, pointer_start.y, pointer.x - pointer_start.x, pointer.y - pointer_start.y);
+			const signed_width = pointer.x - pointer_start.x || 1;
+			const signed_height = pointer.y - pointer_start.y || 1;
+			$status_size.text(`${signed_width}x${signed_height}`);
 		};
 		tool.pointerup = () => {
+			$status_size.text(""); // also handles canceling with two mouse buttons or escape key
 			if (!tool.shape_canvas) { return; }
 			undoable({
 				name: tool.name,

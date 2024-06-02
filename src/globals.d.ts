@@ -739,6 +739,8 @@ interface Tool {
 	reset?(): void,
 	/** Used by Polygon tool */
 	complete?(ctx: CanvasRenderingContext2D): void,
+	/** Used by Polygon tool */
+	updateStatus?(): void,
 	/** Used by Magnifier tool */
 	getProspectiveMagnification?(): number,
 
