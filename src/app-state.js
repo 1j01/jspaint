@@ -94,7 +94,7 @@ let selected_tools = [selected_tool];
 let return_to_tools = [selected_tool];
 
 /** @type {{foreground: string | CanvasPattern, background: string | CanvasPattern, ternary: string | CanvasPattern}} */
-let selected_colors = { // declared with window.* for Cypress tests to access
+let selected_colors = {
 	foreground: "",
 	background: "",
 	ternary: "",
