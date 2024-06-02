@@ -59,7 +59,7 @@ const localStore = {
 		let to_set = {};
 		if (typeof key_or_pairs === "string") {
 			to_set = {
-				[key_or_pairs]: value_or_callback
+				[key_or_pairs]: value_or_callback,
 			};
 		} else if (Array.isArray(key_or_pairs)) {
 			throw new TypeError("Cannot set an array of keys (to what?)");
@@ -78,7 +78,7 @@ const localStore = {
 			}
 		}
 		return callback(null);
-	}
+	},
 };
 
 export { localStore };

@@ -271,7 +271,7 @@ const tools = [{
 
 		ctx.drawImage(this.preview_canvas, 0, 0);
 	},
-	$options: $choose_transparent_mode
+	$options: $choose_transparent_mode,
 }, {
 	id: TOOL_SELECT,
 	name: localize("Select"),
@@ -370,7 +370,7 @@ const tools = [{
 			}
 		}
 	},
-	$options: $choose_transparent_mode
+	$options: $choose_transparent_mode,
 }, {
 	id: TOOL_ERASER,
 	name: localize("Eraser/Color Eraser"),
@@ -528,7 +528,7 @@ const tools = [{
 			this.mask_canvas.ctx.putImageData(result_image_data, rect_x, rect_y);
 		}
 	},
-	$options: $choose_eraser_size
+	$options: $choose_eraser_size,
 }, {
 	id: TOOL_FILL,
 	name: localize("Fill With Color"),
@@ -559,7 +559,7 @@ const tools = [{
 				draw_fill(ctx, x, y, fill_color);
 			});
 		}
-	}
+	},
 }, {
 	id: TOOL_PICK_COLOR,
 	name: localize("Pick Color"),
@@ -587,13 +587,13 @@ const tools = [{
 	current_color: "",
 	display_current_color() {
 		this.$options.css({
-			background: this.current_color
+			background: this.current_color,
 		});
 	},
 	pointerdown() {
 		$G.one("pointerup", () => {
 			this.$options.css({
-				background: ""
+				background: "",
 			});
 		});
 	},
@@ -611,7 +611,7 @@ const tools = [{
 		selected_colors[fill_color_k] = this.current_color;
 		$G.trigger("option-changed");
 	},
-	$options: $(E("div"))
+	$options: $(E("div")),
 }, {
 	id: TOOL_MAGNIFIER,
 	name: localize("Magnifier"),
@@ -739,7 +739,7 @@ const tools = [{
 			$canvas_area.trigger("scroll");
 		}
 	},
-	$options: $choose_magnification
+	$options: $choose_magnification,
 }, {
 	id: TOOL_PENCIL,
 	name: localize("Pencil"),
@@ -752,7 +752,7 @@ const tools = [{
 	stroke_only: true,
 	get_brush() {
 		return { size: pencil_size, shape: "circle" };
-	}
+	},
 }, {
 	id: TOOL_BRUSH,
 	name: localize("Brush"),
@@ -771,7 +771,7 @@ const tools = [{
 	get_brush() {
 		return { size: brush_size, shape: brush_shape };
 	},
-	$options: $choose_brush
+	$options: $choose_brush,
 }, {
 	id: TOOL_AIRBRUSH,
 	name: localize("Airbrush"),
@@ -797,7 +797,7 @@ const tools = [{
 		}
 		update_helper_layer();
 	},
-	$options: $choose_airbrush_size
+	$options: $choose_airbrush_size,
 }, {
 	id: TOOL_TEXT,
 	name: localize("Text"),
@@ -815,7 +815,7 @@ const tools = [{
 			textbox = new OnCanvasTextBox(rect_x, rect_y, rect_width, rect_height);
 		}
 	},
-	$options: $choose_transparent_mode
+	$options: $choose_transparent_mode,
 }, {
 	id: TOOL_LINE,
 	name: localize("Line"),
@@ -831,7 +831,7 @@ const tools = [{
 		update_brush_for_drawing_lines(stroke_size);
 		draw_line(ctx, x, y, x + w, y + h, stroke_size);
 	},
-	$options: $choose_stroke_size
+	$options: $choose_stroke_size,
 }, {
 	id: TOOL_CURVE,
 	name: localize("Curve"),
@@ -942,7 +942,7 @@ const tools = [{
 		update_helper_layer();
 		$status_size.text("");
 	},
-	$options: $choose_stroke_size
+	$options: $choose_stroke_size,
 }, {
 	id: TOOL_RECTANGLE,
 	name: localize("Rectangle"),
@@ -986,7 +986,7 @@ const tools = [{
 			}
 		}
 	},
-	$options: $ChooseShapeStyle()
+	$options: $ChooseShapeStyle(),
 }, {
 	id: TOOL_POLYGON,
 	name: localize("Polygon"),
@@ -1172,7 +1172,7 @@ const tools = [{
 		this.preview_canvas.height = 1;
 	},
 	shape_colors: true,
-	$options: $ChooseShapeStyle()
+	$options: $ChooseShapeStyle(),
 }, {
 	id: TOOL_ELLIPSE,
 	name: localize("Ellipse"),
@@ -1202,7 +1202,7 @@ const tools = [{
 			);
 		}
 	},
-	$options: $ChooseShapeStyle()
+	$options: $ChooseShapeStyle(),
 }, {
 	id: TOOL_ROUNDED_RECTANGLE,
 	name: localize("Rounded Rectangle"),
@@ -1274,7 +1274,7 @@ const tools = [{
 			);
 		}
 	},
-	$options: $ChooseShapeStyle()
+	$options: $ChooseShapeStyle(),
 }];
 
 /* eslint-enable no-restricted-syntax */

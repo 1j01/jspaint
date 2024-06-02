@@ -261,7 +261,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			) {
 				// move the font box out of the way
 				$fb.css({
-					top: this.$el.position().top - $fb.height()
+					top: this.$el.position().top - $fb.height(),
 				});
 			}
 			$fb.applyBounds();

@@ -45,7 +45,7 @@ const extra_tools = [{
 			}
 		}
 	},
-	$options: $choose_brush
+	$options: $choose_brush,
 }, {
 	name: "Spirobrush",
 	description: "Spirals chaotically using a brush with the selected shape and size.",
@@ -105,7 +105,7 @@ const extra_tools = [{
 			draw_brush(this.position.x, this.position.y);
 		}
 	},
-	$options: $choose_brush
+	$options: $choose_brush,
 }, {
 	name: "Airbrush Options",
 	description: "Lets you configure the Airbrushbrush. It uses this type of tool option as well.",
@@ -114,7 +114,7 @@ const extra_tools = [{
 	paint(_ctx, _x, _y) {
 
 	},
-	$options: $choose_airbrush_size
+	$options: $choose_airbrush_size,
 }];
 
 export { extra_tools };

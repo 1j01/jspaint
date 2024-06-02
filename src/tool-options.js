@@ -217,7 +217,7 @@ const $ChooseShapeStyle = () => {
 		[
 			{ stroke: true, fill: false },
 			{ stroke: true, fill: true },
-			{ stroke: false, fill: true }
+			{ stroke: false, fill: true },
 		],
 		({ stroke, fill }, is_chosen, reuse_canvas) => {
 			const ss_canvas = reuse_canvas(39, 21);

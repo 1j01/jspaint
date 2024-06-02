@@ -96,10 +96,10 @@ window.systemHookDefaults = {
 						return {
 							description: format.name,
 							accept: {
-								[getMimeType(format)]: format.extensions.map(prependDot)
-							}
+								[getMimeType(format)]: format.extensions.map(prependDot),
+							},
 						}
-					})
+					}),
 				});
 				newFileName = newHandle.name;
 				const newFileExtension = get_file_extension(newFileName);
@@ -213,10 +213,10 @@ window.systemHookDefaults = {
 					return {
 						description: format.name,
 						accept: {
-							[getMimeType(format)]: format.extensions.map(prependDot)
-						}
+							[getMimeType(format)]: format.extensions.map(prependDot),
+						},
 					}
-				})
+				}),
 			});
 			const file = await fileHandle.getFile();
 			return { file, fileHandle };
@@ -1665,7 +1665,7 @@ function iOS() {
 		'iPod Simulator',
 		'iPad',
 		'iPhone',
-		'iPod'
+		'iPod',
 	].includes(navigator.platform) ||
 		// iPad on iOS 13 detection
 		(navigator.userAgent.includes("Mac") && "ontouchend" in document)

@@ -268,7 +268,7 @@ const menus = {
 				});
 			},
 			description: localize("Quits Paint."),
-		}
+		},
 	],
 	[localize("&Edit")]: [
 		{
@@ -385,7 +385,7 @@ const menus = {
 			],
 			action: () => { choose_file_to_paste(); },
 			description: localize("Pastes a file into the selection."),
-		}
+		},
 	],
 	[localize("&View")]: [
 		{
@@ -557,8 +557,8 @@ const menus = {
 						check: () => show_thumbnail,
 					},
 					description: localize("Shows or hides the thumbnail view of the picture."),
-				}
-			]
+				},
+			],
 		},
 		{
 			label: localize("&View Bitmap"),
@@ -691,7 +691,7 @@ const menus = {
 				check: () => !tool_transparent_mode,
 			},
 			description: localize("Makes the current selection either opaque or transparent."),
-		}
+		},
 	],
 	[localize("&Colors")]: [
 		{
@@ -758,7 +758,7 @@ const menus = {
 				});
 			},
 			description: localize("Saves the current palette of colors to a file."),
-		}
+		},
 	],
 	[localize("&Help")]: [
 		{
@@ -782,7 +782,7 @@ const menus = {
 			action: () => { show_about_paint(); },
 			description: localize("Displays information about this application."),
 			//description: localize("Displays program information, version number, and copyright."),
-		}
+		},
 	],
 	[localize("E&xtras")]: [
 		{
@@ -957,7 +957,7 @@ const menus = {
 					},
 					description: localize("Starts a new multi-user session from an empty document."),
 				},
-			]
+			],
 		},
 		{
 			emoji_icon: "💄",
@@ -1166,7 +1166,7 @@ const menus = {
 				// 	// enabled: () => get_theme() != "picnic.css",
 				// 	description: localize("Makes JS Paint look like a picnic in the park."),
 				// },
-			]
+			],
 		},
 		{
 			emoji_icon: "🌍",
@@ -1433,7 +1433,7 @@ function validateAriaKeyshortcuts(value) {
 		"PageUp", "PageDown", "End", "Home", "Escape", "Space", "Plus",
 		"Minus", "Comma", "Period", "Slash", "Backslash", "Quote", "Semicolon",
 		"BracketLeft", "BracketRight", "F1", "F2", "F3", "F4", "F5", "F6",
-		"F7", "F8", "F9", "F10", "F11", "F12"
+		"F7", "F8", "F9", "F10", "F11", "F12",
 		// Add more non-modifier keys as needed
 	];
 

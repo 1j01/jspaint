@@ -1112,7 +1112,7 @@ function compute_bezier(t, start_x, start_y, control_1_x, control_1_y, control_2
 
 	return {
 		x: a * start_x + b * control_1_x + c * control_2_x + d * end_x,
-		y: a * start_y + b * control_1_y + c * control_2_y + d * end_y
+		y: a * start_y + b * control_1_y + c * control_2_y + d * end_y,
 	};
 }
 
@@ -1443,7 +1443,7 @@ function createShaderProgram() {
 		'void main() {',
 		'	/* already in normalized coordinates, so just pass through */',
 		'	gl_Position = position;',
-		'}'
+		'}',
 	].join('');
 	const vertexShader = gl.createShader(gl.VERTEX_SHADER);
 	gl.shaderSource(vertexShader, vertexSrc);
@@ -1460,7 +1460,7 @@ function createShaderProgram() {
 		'precision mediump float;',
 		'void main() {',
 		'	gl_FragColor = vec4(0, 0, 0, 1);',
-		'}'
+		'}',
 	].join('');
 	const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 	gl.shaderSource(fragmentShader, fragmentSrc);

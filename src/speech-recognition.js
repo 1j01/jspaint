@@ -1986,7 +1986,7 @@ if (speech_recognition_available) {
 
 		// const subject_imagedata = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		// const pal = palette.map((color)=> get_rgba_from_color(color)).map(([r, g, b, a])=> ({r, g, b, a}));
-		const trace_data = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres: 1, qtres: 0.01, scale: 10, /*pal,*/ numberofcolors: 6, });
+		const trace_data = ImageTracer.imagedataToTracedata(subject_imagedata, { ltres: 1, qtres: 0.01, scale: 10, /*pal,*/ numberofcolors: 6 });
 		const { layers } = trace_data;
 		const brush = get_tool_by_id(TOOL_BRUSH);
 		select_tool(brush);

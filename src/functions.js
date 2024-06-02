@@ -898,7 +898,7 @@ async function load_image_from_uri(uri) {
 										controller.error(error)
 									})
 								}
-							}
+							},
 						})
 					);
 				}
@@ -1237,7 +1237,7 @@ function file_save_as(maybe_saved_callback = () => { }, update_from_saved = true
 			if (update_from_saved) {
 				update_from_saved_file(newBlob);
 			}
-		}
+		},
 	});
 }
 
@@ -2587,7 +2587,7 @@ function edit_copy(execCommandFallback) {
 					new ClipboardItem(Object.defineProperty({}, blob.type, {
 						value: blob,
 						enumerable: true,
-					}))
+					})),
 				]).then(() => {
 					window.console && console.log("Copied image to the clipboard.");
 				}, error => {
@@ -3450,7 +3450,7 @@ function image_flip_and_rotate() {
 	$fieldset.find("input").on("change", () => {
 		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		$rotate_by_angle.find("input").attr({
-			disabled: action !== "rotate-by-angle"
+			disabled: action !== "rotate-by-angle",
 		});
 	});
 	$rotate_by_angle.find(".radio-wrapper").on("click", (e) => {
@@ -3528,7 +3528,7 @@ function image_stretch_and_skew() {
 			width: 32,
 			height: 32,
 		}).css({
-			marginRight: "20px"
+			marginRight: "20px",
 		});
 		const input_id = ("input" + Math.random() + Math.random()).replace(/\./, "");
 		const $input = $(E("input")).attr({
@@ -3539,7 +3539,7 @@ function image_stretch_and_skew() {
 			id: input_id,
 			"aria-keyshortcuts": `Alt+${AccessKeys.get(label_with_hotkey).toUpperCase()}`,
 		}).css({
-			width: "40px"
+			width: "40px",
 		}).addClass("no-spinner inset-deep");
 		$(E("td")).appendTo($tr).append($img);
 		$(E("td")).appendTo($tr).append($(E("label")).html(render_access_key(label_with_hotkey)).attr("for", input_id));

@@ -195,7 +195,7 @@ export const simulateRandomGesturesPeriodically = () => {
 			shift: shiftStart,
 			shiftToggleChance,
 			secondary: secondaryStart,
-			secondaryToggleChance
+			secondaryToggleChance,
 		});
 	};
 	let waitThenGo = () => {
@@ -244,7 +244,7 @@ export const simulateRandomGesturesPeriodically = () => {
 						shiftToggleChance,
 						secondary: secondaryStart,
 						secondaryToggleChance,
-						target: selection.canvas
+						target: selection.canvas,
 					});
 				} else {
 					waitThenGo();

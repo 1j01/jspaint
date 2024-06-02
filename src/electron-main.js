@@ -211,7 +211,7 @@ const createWindow = () => {
 					font-src 'self' https://fonts.gstatic.com;
 					connect-src * data: blob:;
 				`],
-			}
+			},
 		})
 	});
 

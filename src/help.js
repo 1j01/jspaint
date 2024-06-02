@@ -168,7 +168,7 @@ function open_help_viewer(options) {
 		$G.on("pointermove", pointermove = (e) => {
 			$resizer.css({
 				position: "absolute",
-				left: getPos(e)
+				left: getPos(e),
 			});
 			$contents.css({
 				marginRight: resizer_width,
@@ -179,7 +179,7 @@ function open_help_viewer(options) {
 			$G.off("pointerup", pointerup);
 			$resizer.css({
 				position: "",
-				left: ""
+				left: "",
 			});
 			$contents.css({
 				flexBasis: getPos(e) - resizer_width,
