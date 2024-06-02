@@ -328,7 +328,7 @@ function bresenham_line(x1, y1, x2, y2, callback) {
 	const sy = (y1 < y2) ? 1 : -1;
 	let err = dx - dy;
 
-	// eslint-disable-next-line no-constant-condition
+	 
 	while (true) {
 		callback(x1, y1);
 
@@ -358,7 +358,7 @@ function bresenham_dense_line(x1, y1, x2, y2, callback) {
 	const sy = (y1 < y2) ? 1 : -1;
 	let err = dx - dy;
 
-	// eslint-disable-next-line no-constant-condition
+	 
 	while (true) {
 		callback(x1, y1);
 
@@ -434,7 +434,7 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 		}
 		reach_left = false;
 		reach_right = false;
-		// eslint-disable-next-line no-constant-condition
+		 
 		while (true) {
 			y++;
 			pixel_pos = (y * c_width + x) * 4;
@@ -558,7 +558,7 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 		}
 		reach_left = false;
 		reach_right = false;
-		// eslint-disable-next-line no-constant-condition
+		 
 		while (true) {
 			y++;
 			pixel_pos = (y * c_width + x) * 4;
