@@ -158,7 +158,9 @@ let pointer_previous;
 /** @type {boolean} */
 let pointer_active = false;
 /** @type {string | undefined} */
-let pointer_type, pointer_buttons;
+let pointer_type;
+/** @type {number} */
+let pointer_buttons;
 /** @type {boolean} */
 let reverse;
 /** @type {boolean} */
