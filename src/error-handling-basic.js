@@ -8,7 +8,7 @@
 
 var isIE = /MSIE \d|Trident.*rv:/.test(navigator.userAgent);
 
-window.onerror = function (msg, url, lineNo, columnNo, error) {
+window.onerror = function (msg, url, lineNo, columnNo, _error) {
 	if (isIE) {
 		return false; // Don't need alerts postponing the "not supported" message.
 	}

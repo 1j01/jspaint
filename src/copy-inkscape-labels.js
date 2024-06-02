@@ -73,7 +73,7 @@ async function applyLabels(sourceURL, targetURL) {
 				if (match.includes("inkscape:label")) {
 					return match.replace(/inkscape:label="[^"]+"/, `inkscape:label="${label}"`);
 				} else {
-					return match.replace(/(\s*)(\/?)>$/, (match, whitespace, slash) =>
+					return match.replace(/(\s*)(\/?)>$/, (_match, whitespace, slash) =>
 						`${whitespace || " "}inkscape:label="${label}"${slash}>`
 					);
 				}

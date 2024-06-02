@@ -34,7 +34,7 @@ ipcRenderer.on("close-window-prompt", () => {
 	});
 });
 
-ipcRenderer.on("open-file", (event, file_path) => {
+ipcRenderer.on("open-file", (_event, file_path) => {
 	// Sent when dragging a file onto the dock on macOS.
 	// Comes from Electron's "open-file" event of the same name, though this is a custom IPC event.
 	// WET: copied from window.initial_system_file_handle handling
@@ -58,7 +58,7 @@ window.setDocumentEdited = (documentEdited) => {
 const menuFunctions = {};
 let menuFunctionId = 0;
 window.setMenus = (menus) => {
-	ipcRenderer.send("set-menus", JSON.stringify(menus, (key, value) => {
+	ipcRenderer.send("set-menus", JSON.stringify(menus, (_key, value) => {
 		if (typeof value === "function") {
 			const id = menuFunctionId++;
 			menuFunctions[id] = value;
@@ -67,13 +67,13 @@ window.setMenus = (menus) => {
 		return value;
 	}));
 };
-ipcRenderer.on("menu-function", (event, function_id, request_id) => {
+ipcRenderer.on("menu-function", (_event, function_id, request_id) => {
 	const result = menuFunctions[function_id]();
 	ipcRenderer.send(`menu-function-result-${request_id}`, result);
 });
 // Currently the macOS app menu is defined in the main process,
 // and not in menus.js; @TODO: move macOS specific menu items and shortcut logic to menus.js
-ipcRenderer.on("show-about-dialog", (event) => {
+ipcRenderer.on("show-about-dialog", (_event) => {
 	show_about_paint();
 });
 
@@ -96,7 +96,7 @@ async function write_blob_to_file_path(filePath, blob) {
 }
 
 window.systemHooks = window.systemHooks || {};
-window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable }) => {
+window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID: _unused, getBlob, savedCallbackUnreliable }) => {
 
 	// First filter in filters list determines default selected file type.
 	// @TODO: default to existing extension, except it would be awkward to rearrange the list...

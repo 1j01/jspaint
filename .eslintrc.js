@@ -90,9 +90,6 @@ module.exports = {
 				"localization/**/*.js",
 			],
 			parserOptions: { sourceType: "script" },
-			rules: {
-				"no-unused-vars": 0,
-			},
 		}
 	]
 };

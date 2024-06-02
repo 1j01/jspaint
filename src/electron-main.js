@@ -274,7 +274,7 @@ const createWindow = () => {
 		// it shouldn't open the file if the window is closed and re-opened, right?
 		initial_file_path = null;
 	});
-	ipcMain.on("set-represented-filename", (event, filePath) => {
+	ipcMain.on("set-represented-filename", (_event, filePath) => {
 		// filePath of "" is used to reset the title bar's filename,
 		// and "" isn't in the allow list.
 		if (!allowed_file_paths.includes(filePath)) {
@@ -282,13 +282,13 @@ const createWindow = () => {
 		}
 		editor_window.setRepresentedFilename(filePath);
 	});
-	ipcMain.on("set-document-edited", (event, isEdited) => {
+	ipcMain.on("set-document-edited", (_event, isEdited) => {
 		editor_window.setDocumentEdited(isEdited);
 	});
 	let request_counter = 0;
-	ipcMain.on("set-menus", (event, menusJSON) => {
+	ipcMain.on("set-menus", (_event, menusJSON) => {
 		// Parse the JSON, reviving functions.
-		const menus = JSON.parse(menusJSON, (key, value) => {
+		const menus = JSON.parse(menusJSON, (_key, value) => {
 			if (typeof value === "string" && value.startsWith("$$function$$")) {
 				const function_id = Number(value.slice("$$function$$".length));
 				return () => {
@@ -300,8 +300,8 @@ const createWindow = () => {
 					// deviating from OS-GUI's API.
 					const this_request_id = ++request_counter;
 					editor_window?.webContents.send("menu-function", function_id, this_request_id);
-					return new Promise((resolve, reject) => {
-						ipcMain.once(`menu-function-result-${this_request_id}`, (event, result) => {
+					return new Promise((resolve, _reject) => {
+						ipcMain.once(`menu-function-result-${this_request_id}`, (_event, result) => {
 							resolve(result);
 						});
 					});
@@ -466,7 +466,7 @@ const createWindow = () => {
 
 		Menu.setApplicationMenu(menubar);
 	});
-	ipcMain.handle("show-save-dialog", async (event, options) => {
+	ipcMain.handle("show-save-dialog", async (_event, options) => {
 		const { filePath, canceled } = await dialog.showSaveDialog(editor_window, {
 			title: options.title,
 			// defaultPath: options.defaultPath,
@@ -477,7 +477,7 @@ const createWindow = () => {
 		allowed_file_paths.push(filePath);
 		return { filePath, fileName, canceled };
 	});
-	ipcMain.handle("show-open-dialog", async (event, options) => {
+	ipcMain.handle("show-open-dialog", async (_event, options) => {
 		const { filePaths, canceled } = await dialog.showOpenDialog(editor_window, {
 			title: options.title,
 			defaultPath: options.defaultPath,
@@ -487,7 +487,7 @@ const createWindow = () => {
 		allowed_file_paths.push(...filePaths);
 		return { filePaths, canceled };
 	});
-	ipcMain.handle("write-file", async (event, file_path, data) => {
+	ipcMain.handle("write-file", async (_event, file_path, data) => {
 		if (!allowed_file_paths.includes(file_path)) {
 			return { responseCode: "ACCESS_DENIED" };
 		}
@@ -503,7 +503,7 @@ const createWindow = () => {
 			return { responseCode: "INVALID_DATA" };
 		}
 	});
-	ipcMain.handle("read-file", async (event, file_path) => {
+	ipcMain.handle("read-file", async (_event, file_path) => {
 		if (!allowed_file_paths.includes(file_path)) {
 			return { responseCode: "ACCESS_DENIED" };
 		}
@@ -514,7 +514,7 @@ const createWindow = () => {
 			return { responseCode: "READ_FAILED", error };
 		}
 	});
-	ipcMain.handle("set-wallpaper", async (event, data) => {
+	ipcMain.handle("set-wallpaper", async (_event, data) => {
 		const image_path = path.join(app.getPath("userData"), "bg.png"); // Note: used without escaping
 		if (!(data instanceof ArrayBuffer)) {
 			return { responseCode: "INVALID_DATA" };
@@ -549,7 +549,7 @@ const createWindow = () => {
 			// Note: { scale: "center" } is only supported on macOS.
 			// I worked around this by providing an image with a transparent margin on other platforms,
 			// in setWallpaperCentered.
-			return new Promise((resolve, reject) => {
+			return new Promise((resolve, _reject) => {
 				require("wallpaper").set(image_path, { scale: "center" }, error => {
 					if (error) {
 						resolve({ responseCode: "SET_WALLPAPER_FAILED", error });
@@ -638,7 +638,7 @@ app.on('open-file', (event, file_path) => {
 	open_file_in_app(file_path);
 });
 
-app.on('second-instance', (event, uselessCorruptedArgv, workingDirectory, additionalData) => {
+app.on('second-instance', (_event, uselessCorruptedArgv, workingDirectory, additionalData) => {
 	// Someone tried to run a second instance, we should focus our window,
 	// and handle the file path if there is one.
 
