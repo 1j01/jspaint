@@ -10,9 +10,113 @@ import { bresenham_dense_line, bresenham_line, copy_contents_within_polygon, dra
 import { $ChooseShapeStyle, $choose_airbrush_size, $choose_brush, $choose_eraser_size, $choose_magnification, $choose_stroke_size, $choose_transparent_mode } from "./tool-options.js";
 
 // This is for linting stuff at the bottom.
+// It has to be defined per file, so I'm defining it up top and immediately disabling it.
+// It's re-enabled below to disallow the use of `this` in functions that are added to the tool objects
+// based on properties of the tool objects.
 /* eslint no-restricted-syntax: ["error", "ThisExpression"] */
 /* eslint-disable no-restricted-syntax */
 
+// Note that the way tool objects are defined and extended is a bit unconventional,
+// and makes type checking less useful (see `interface Tool`).
+// It would be better to define the tool objects using either:
+// - classes and inheritance (e.g. `class EllipseTool extends ShapeTool`), or
+// - functional composition (e.g. `const ellipseTool = shapeTool((ctx, x, y, w, h) => { ... })`).
+
+// Notes about tool status indicators:
+//
+// In MS Paint in Windows 98:
+// - Free-Form Select:
+//   - Shows the difference between the start and current mouse position, NOT the bounding box
+//   - Disappears when done making selection; does not show while dragging selection
+//   - Shows the absolute size while resizing selection (but not with using Numpad +/- or menu commands)
+// - Select:
+//   - Shows the absolute size of the selection
+//   - Disappears when done making selection; does not show while dragging selection
+//   - Shows the absolute size while resizing selection (but not with using Numpad +/- or menu commands)
+// - Eraser: N/A
+// - Fill With Color: N/A
+// - Eraser: N/A
+// - Pick Color: N/A
+// - Magnifier: N/A
+// - Pencil: N/A
+// - Brush: N/A
+// - Text:
+//   - Absolute size shown while making box
+//   - Stays after making box
+//   - Not affected when resizing the box or snapping to min width/height; it just shows the size of the box you originally "asked for"
+// - Line:
+//   - Relative to mouse down point
+//   - Disappears when finalizing or canceling
+// - Curve:
+//   - Relative to first point defining the curve
+//   - Disappears when finalizing or canceling
+// - Rectangle:
+//   - Relative to mouse down point
+//   - Disappears when finalizing or canceling
+// - Polygon:
+//   - Shows absolute bounding box of polygon
+//   - Always at least 2x2 for some reason (maybe takes a starting point and then finds the min/max from there, each at least 1?)
+//   - Disappears when finalizing or canceling
+// - Ellipse:
+//   - Relative to mouse down point
+//   - 3 wide or 3 tall is the smallest visible oval, and it's rendered 2px wide or tall respectively
+//   - Disappears when finalizing or canceling
+// - Rounded Rectangle:
+//   - Relative to mouse down point
+//   - 3 wide or 3 tall is the smallest visible rounded rectangle, and it's rendered 2px wide or tall respectively
+//   - Disappears when finalizing or canceling
+//
+// When showing relative sizes, MS Paint is afraid to show the number 0, so it shows 1 instead,
+// while it's happy to show negative numbers.
+// I've tentatively copied this behavior in JS Paint, although it feels like conflating
+// the visual (assuming a 1x1 brush) with the logical (the geometry defining the shape).
+// It's not affected by the chosen line width... EXCEPT for the Polygon tool!
+// (The Ellipse, Rectangle, and Rounded Rectangle tools show the outline inside, so they're ambiguous,
+// but the Polygon tool is definitely inconsistent with the Line and Curve tools.)
+//
+// The size shown is affected by holding Shift to constrain proportions.
+// The position indicator is actually locked into showing the first point defining a shape,
+// while the mouse is down, thus, Shift doesn't come into play.
+//
+// In JS Paint:
+//
+// - Free-Form Select:
+//   - (Tracks a `points` array)
+//   - I've made it show the bounding box
+//   - Updates after resizing the box; TODO: show while resizing the box
+// - Select:
+//   - (Implements `selectBox()`)
+//   - Shows the absolute size of the selection
+//   - Updates after resizing the box; TODO: show while resizing the box
+// - Text:
+//   - (Implements `selectBox()`)
+//   - Shows the absolute size of the box while making it
+//   - Shows actual size of the box after making it and snapping to min width/height
+//   - Updates after resizing the box; TODO: show while resizing the box (even though MS Paint doesn't)
+// - Line:
+//   - (Implements `shape()`)
+//   - Relative to mouse down point
+// - Curve:
+//   - (Tracks a `points` array)
+//   - Relative to first point
+// - Rectangle:
+//   - (Implements `shape()`)
+//   - Relative to mouse down point
+// - Polygon:
+//   - (Tracks a `points` array)
+//   - Shows absolute size of the bounding box
+// - Ellipse:
+//   - (Implements `shape()`)
+//   - Relative to mouse down point
+// - Rounded Rectangle:
+//   - (Implements `shape()`)
+//   - Relative to mouse down point
+//
+// The size shown is affected by holding Shift to constrain proportions.
+// TODO: either make Shift affect the position indicator, or do what MS Paint does
+// and lock it into showing the first point defining a shape while the mouse is down.
+
+// Tool IDs have type `ToolID`
 const TOOL_FREE_FORM_SELECT = "TOOL_FREE_FORM_SELECT";
 const TOOL_SELECT = "TOOL_SELECT";
 const TOOL_ERASER = "TOOL_ERASER";
