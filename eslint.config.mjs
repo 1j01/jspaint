@@ -103,7 +103,47 @@ export default [
 			// "@stylistic/function-paren-newline": ["error", "multiline-arguments"], // several places with meaningful line breaks grouping arguments
 			"@stylistic/generator-star-spacing": ["error", "after"],
 			// "@stylistic/implicit-arrow-linebreak": ["error", "beside"], // could encourage parens for clarity, but ESLint won't mention that's the reason, so probably not a good idea
-			// "@stylistic/indent": ["error", "tab"], // TODO: there's some conflicts with VS Code's formatter; could investigate the options here or perhaps configure VS Code to use ESLint for formatting
+			// The indent settings are mostly defaults copied from https://github.com/eslint-stylistic/eslint-stylistic/blob/c11f1d6f26c13b29fd44c95c908922cb79a0ac82/packages/eslint-plugin/configs/customize.ts#L115-L154
+			'@stylistic/indent': ['error', "tab", {
+				ArrayExpression: 1,
+				CallExpression: { arguments: 1 },
+				flatTernaryExpressions: false,
+				FunctionDeclaration: { body: 1, parameters: 1 },
+				FunctionExpression: { body: 1, parameters: 1 },
+				ignoreComments: true, // modified from default
+				ignoredNodes: [
+					'TemplateLiteral *',
+					'JSXElement',
+					'JSXElement > *',
+					'JSXAttribute',
+					'JSXIdentifier',
+					'JSXNamespacedName',
+					'JSXMemberExpression',
+					'JSXSpreadAttribute',
+					'JSXExpressionContainer',
+					'JSXOpeningElement',
+					'JSXClosingElement',
+					'JSXFragment',
+					'JSXOpeningFragment',
+					'JSXClosingFragment',
+					'JSXText',
+					'JSXEmptyExpression',
+					'JSXSpreadChild',
+					'TSUnionType',
+					'TSIntersectionType',
+					'TSTypeParameterInstantiation',
+					'FunctionExpression > .params[decorators.length > 0]',
+					'FunctionExpression > .params > :matches(Decorator, :not(:first-child))',
+					'ClassBody.body > PropertyDefinition[decorators.length > 0] > .key',
+				],
+				ImportDeclaration: 1,
+				MemberExpression: 1,
+				ObjectExpression: 1,
+				offsetTernaryExpressions: false,
+				outerIIFEBody: 1,
+				SwitchCase: 1,
+				VariableDeclarator: 1,
+			}],
 			// "@stylistic/indent-binary-ops": ["error", "tab"], // TODO (conflicts with VS Code's formatter)
 			// "@stylistic/jsx-child-element-spacing": "off",
 			// "@stylistic/jsx-closing-bracket-location": "off",

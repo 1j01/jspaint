@@ -1281,8 +1281,8 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	main_ctx.fillStyle = fill_color =
 		main_ctx.strokeStyle = stroke_color =
 		selected_colors[
-		(ctrl && selected_colors.ternary && pointer_active) ? "ternary" :
-			((reverse !== reverse_because_fill_only) ? "background" : "foreground")
+			(ctrl && selected_colors.ternary && pointer_active) ? "ternary" :
+				((reverse !== reverse_because_fill_only) ? "background" : "foreground")
 		];
 
 	fill_color_k =
