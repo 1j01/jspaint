@@ -20,9 +20,9 @@ function writeFile(filePath, content) {
 	fs.writeFileSync(filePath, content, "utf8");
 }
 
-function escapeRegExp(string) {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
-}
+// function escapeRegExp(string) {
+// 	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+// }
 
 // Function to find non-ESM usages of an identifier
 // Unstructured naive search
@@ -80,7 +80,7 @@ function findDependencies(identifier, fileContentTree, excludeFiles = []) {
 		// console.log("Tokens:", tree.tokens);
 		for (const token of tree.tokens) {
 			if (token.type === "Identifier" && token.value === identifier) {
-				const parent = token.parent;
+				// const parent = token.parent;
 				dependencies.push(filePath);
 				console.log("Found", identifier, "in", filePath);
 				break;
@@ -139,7 +139,7 @@ function processFiles() {
 			// Match and replace in one fell swoop
 			const updatedContent = upper + lower.replace(
 				/(?:\/\/\s*)?(window\.(.*?) = .*;)(\s*\/\/.*)?/g,
-				(match, assignment, identifier, comment) => {
+				(_match, assignment, identifier, _comment) => {
 					const dependencies = findDependencies(identifier, fileUpperContentTree, [filePath]);
 					const formatPath = filePath => path.relative(srcDir, filePath).replace(/\\/g, "/");
 					const formattedPaths = dependencies.map(formatPath).join(", ");

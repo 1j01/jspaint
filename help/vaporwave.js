@@ -10,7 +10,7 @@ const canvas = document.createElement("canvas");
 document.getElementById("background-animation").append(canvas);
 const ctx = canvas.getContext("2d");
 const animate = () => {
-	rAF_ID = requestAnimationFrame(animate);
+	requestAnimationFrame(animate);
 
 	if (
 		canvas.width !== mask_img.width ||

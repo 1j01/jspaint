@@ -9,10 +9,10 @@ svg.appendChild(docGroup);
 
 var pt = svg.createSVGPoint();
 var mouseDown = false;
-svg.addEventListener("mousedown", function (event) {
+svg.addEventListener("mousedown", function (_event) {
 	mouseDown = true;
 });
-svg.addEventListener("mouseup", function (event) {
+svg.addEventListener("mouseup", function (_event) {
 	mouseDown = false;
 });
 svg.addEventListener("mousemove", function (event) {

@@ -19,7 +19,7 @@ context("tool tests", () => {
 		});
 	});
 
-	const simulateGesture = (win, { start, end, shift, shiftToggleChance = 0.01, secondary, secondaryToggleChance, target }) => {
+	const simulateGesture = (win, { start, end, shift, /*shiftToggleChance = 0.01,*/ secondary, /*secondaryToggleChance,*/ target }) => {
 		target = target || win.$(".main-canvas")[0];
 		let startWithinRect = target.getBoundingClientRect();
 		let canvasAreaRect = win.$(".canvas-area")[0].getBoundingClientRect();

@@ -84,7 +84,7 @@
 
 	// mousedown is TAKEN - with stopPropagation, presumably
 	// (useCapture doesn't help)
-	addEventListener("pointerdown", (e) => {
+	addEventListener("pointerdown", (_event) => {
 		if (cleanUp) { cleanUp(); }
 	});
 
