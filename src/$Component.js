@@ -142,7 +142,7 @@ function $Component(title, className, orientation, $el) {
 	/**
 	 * @param {JQuery<HTMLElement>} $dock_to 
 	 */
-	const dock_to = $dock_to => {
+	const dock_to = ($dock_to) => {
 		$w.hide();
 
 		// must get layout state *before* changing it
@@ -274,7 +274,7 @@ function $Component(title, className, orientation, $el) {
 			$ghost.removeClass("dock");
 		}
 	};
-	$c.add($w.$titlebar).on("pointerdown", e => {
+	$c.add($w.$titlebar).on("pointerdown", (e) => {
 		// Only start a drag via a left click directly on the component element or titlebar
 		if (e.button !== 0) { return; }
 		const validTarget =
@@ -302,7 +302,7 @@ function $Component(title, className, orientation, $el) {
 		$("body").css({ cursor: "default" }).addClass("cursor-bully");
 
 		$G.on("pointermove", drag_update_position);
-		$G.one("pointerup", e => {
+		$G.one("pointerup", (e) => {
 			$G.off("pointermove", drag_update_position);
 			drag_onpointerup(e);
 			$("body").removeClass("dragging");
@@ -316,7 +316,7 @@ function $Component(title, className, orientation, $el) {
 		// Prevent text selection anywhere within the component
 		e.preventDefault();
 	});
-	const drag_update_position = e => {
+	const drag_update_position = (e) => {
 
 		$ghost.css({
 			left: e.clientX + ox,
@@ -364,7 +364,7 @@ function $Component(title, className, orientation, $el) {
 		e.preventDefault();
 	};
 
-	const drag_onpointerup = e => {
+	const drag_onpointerup = (e) => {
 
 		$w.hide();
 
@@ -421,7 +421,7 @@ function $Component(title, className, orientation, $el) {
 		clearInterval(iid);
 	};
 
-	$w.on("close", e => {
+	$w.on("close", (e) => {
 		e.preventDefault();
 		$w.hide();
 	});

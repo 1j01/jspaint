@@ -152,7 +152,7 @@ function Handles(options) {
 				});
 				rect = new_rect;
 			};
-			$h.add($grab_region).on("pointerdown", event => {
+			$h.add($grab_region).on("pointerdown", (event) => {
 				dragged = false;
 				if (event.button === 0) {
 					$G.on("pointermove", drag);
@@ -169,7 +169,7 @@ function Handles(options) {
 					$handles_container.trigger("update");
 				});
 			});
-			$h.on("mousedown selectstart", event => {
+			$h.on("mousedown selectstart", (event) => {
 				event.preventDefault();
 			});
 		}

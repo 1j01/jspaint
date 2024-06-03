@@ -62,7 +62,7 @@ function show_imgur_uploader(blob) {
 			textAlign: "center",
 		});
 
-		const parseImgurResponseJSON = responseJSON => {
+		const parseImgurResponseJSON = (responseJSON) => {
 			try {
 				return JSON.parse(responseJSON);
 			} catch (error) {
@@ -104,7 +104,7 @@ function show_imgur_uploader(blob) {
 		const req = new XMLHttpRequest();
 
 		if (req.upload) {
-			req.upload.addEventListener('progress', event => {
+			req.upload.addEventListener('progress', (event) => {
 				if (event.lengthComputable) {
 					const progress_value = event.loaded / event.total;
 					const percentage_text = `${Math.floor(progress_value * 100)}%`;

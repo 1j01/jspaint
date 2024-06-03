@@ -92,7 +92,7 @@ function $ColorBox(vertical) {
 		let double_click_tid;
 		// @TODO: handle left+right click at same time
 		// can do this with mousedown instead of pointerdown, but may need to improve eye gaze mode click simulation
-		$b.on("pointerdown", e => {
+		$b.on("pointerdown", (e) => {
 			// @TODO: allow metaKey for ternary color, and selection cropping, on macOS?
 
 			if (button === 0) {

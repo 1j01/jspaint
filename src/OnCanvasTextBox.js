@@ -208,7 +208,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			get_ghost_offset_top: () => parseFloat($canvas_area.css("padding-top")) + 1,
 		});
 		let mox, moy; // mouse offset
-		const pointermove = e => {
+		const pointermove = (e) => {
 			const m = to_canvas_coords(e);
 			this.x = Math.max(Math.min(m.x - mox, main_canvas.width), -this.width);
 			this.y = Math.max(Math.min(m.y - moy, main_canvas.height), -this.height);
@@ -218,7 +218,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				// this.draw();
 			}
 		};
-		this.$el.on("pointerdown", e => {
+		this.$el.on("pointerdown", (e) => {
 			if (e.target instanceof HTMLInputElement ||
 				e.target instanceof HTMLTextAreaElement ||
 				e.target.classList.contains("handle") ||

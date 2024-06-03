@@ -59,7 +59,7 @@ function $ToolBox(tools, is_extras) {
 		update_css();
 		$G.on("theme-load resize", update_css);
 
-		$b.on("click", e => {
+		$b.on("click", (e) => {
 			if (e.shiftKey || e.ctrlKey) {
 				select_tool(tool, true);
 				return;

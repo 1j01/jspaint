@@ -1178,7 +1178,7 @@ function draw_bezier_curve(ctx, start_x, start_y, control_1_x, control_1_y, cont
 	const min_y = Math.min(start_y, control_1_y, control_2_y, end_y);
 	const max_x = Math.max(start_x, control_1_x, control_2_x, end_x);
 	const max_y = Math.max(start_y, control_1_y, control_2_y, end_y);
-	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, op_ctx_2d => {
+	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, (op_ctx_2d) => {
 		draw_bezier_curve_without_pattern_support(op_ctx_2d, start_x, start_y, control_1_x, control_1_y, control_2_x, control_2_y, end_x, end_y, stroke_size);
 	});
 }
@@ -1198,7 +1198,7 @@ function draw_line(ctx, x1, y1, x2, y2, stroke_size) {
 	const min_y = Math.min(y1, y2);
 	const max_x = Math.max(x1, x2);
 	const max_y = Math.max(y1, y2);
-	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, op_ctx_2d => {
+	draw_with_swatch(ctx, min_x, min_y, max_x, max_y, stroke_color, (op_ctx_2d) => {
 		draw_line_without_pattern_support(op_ctx_2d, x1, y1, x2, y2, stroke_size);
 	});
 	// also works:

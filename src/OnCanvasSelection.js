@@ -97,7 +97,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				get_ghost_offset_top: () => parseFloat($canvas_area.css("padding-top")) + 1,
 			});
 			let mox, moy;
-			const pointermove = e => {
+			const pointermove = (e) => {
 				make_or_update_undoable({
 					// XXX: Localization hazard: logic based on English action names
 					match: (history_node) =>
@@ -118,7 +118,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					}
 				});
 			};
-			this.canvas_pointerdown = e => {
+			this.canvas_pointerdown = (e) => {
 				e.preventDefault();
 				const rect = this.canvas.getBoundingClientRect();
 				const cx = e.clientX - rect.left;

@@ -757,7 +757,7 @@ function update_title() {
  */
 function get_uris(text) {
 	// get lines, discarding comments
-	const lines = text.split(/[\n\r]+/).filter(line => line[0] !== "#" && line);
+	const lines = text.split(/[\n\r]+/).filter((line) => line[0] !== "#" && line);
 	// discard text with too many lines (likely pasted HTML or something) - may want to revisit this
 	if (lines.length > 15) {
 		return [];
@@ -893,7 +893,7 @@ async function load_image_from_uri(uri) {
 										show_progress({ loaded, total })
 										controller.enqueue(value);
 										read();
-									}).catch(error => {
+									}).catch((error) => {
 										console.error(error);
 										controller.error(error)
 									})
@@ -1901,12 +1901,12 @@ function render_history_as_gif() {
 			gif.abort();
 		});
 
-		gif.on("progress", p => {
+		gif.on("progress", (p) => {
 			$progress.val(p);
 			$progress_percent.text(`${~~(p * 100)}%`);
 		});
 
-		gif.on("finished", blob => {
+		gif.on("finished", (blob) => {
 			$win.title("Rendered GIF");
 			const blob_url = URL.createObjectURL(blob);
 			$output.empty().append(
@@ -2581,7 +2581,7 @@ function edit_copy(execCommandFallback) {
 				return;
 			}
 		}
-		selection.canvas.toBlob(blob => {
+		selection.canvas.toBlob((blob) => {
 			sanity_check_blob(blob, () => {
 				navigator.clipboard.write([
 					new ClipboardItem(Object.defineProperty({}, blob.type, {
@@ -2590,7 +2590,7 @@ function edit_copy(execCommandFallback) {
 					})),
 				]).then(() => {
 					window.console && console.log("Copied image to the clipboard.");
-				}, error => {
+				}, (error) => {
 					show_error_message("Failed to copy to the Clipboard.", error);
 				});
 			});
@@ -2816,7 +2816,7 @@ function view_bitmap() {
 	// considering that if you right click on the image in View Bitmap mode,
 	// it shows the silly "Thumbnail" context menu item.
 	// (It also shows the selection, in a meaningless place, similar to the Thumbnail's bugs)
-	main_canvas.toBlob(blob => {
+	main_canvas.toBlob((blob) => {
 		blob_url = URL.createObjectURL(blob);
 		const img = document.createElement("img");
 		img.src = blob_url;
@@ -3840,7 +3840,7 @@ function write_image_file(canvas, mime_type, blob_callback) {
 			blob_callback(blob);
 		});
 	} else {
-		canvas.toBlob(blob => {
+		canvas.toBlob((blob) => {
 			// Note: could check blob.type (mime type) instead
 			const png_magic_bytes = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
 			sanity_check_blob(blob, () => {

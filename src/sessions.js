@@ -122,7 +122,7 @@ class LocalSession {
 				return;
 			}
 			log(`Saving image to storage: ${ls_key}`);
-			localStore.set(ls_key, main_canvas.toDataURL("image/png"), err => {
+			localStore.set(ls_key, main_canvas.toDataURL("image/png"), (err) => {
 				if (err) {
 					// @ts-ignore (quotaExceeded is added by storage.js)
 					if (err.quotaExceeded) {
@@ -290,7 +290,7 @@ class FirebaseSession {
 		this.fb_user.set(user);
 		// @TODO: Execute the above two lines when .info/connected
 		// For each existing and new user
-		_fb_on(this.fb_users, "child_added", snap => {
+		_fb_on(this.fb_users, "child_added", (snap) => {
 			// Is this you?
 			if (snap.key === user_id) {
 				// You already have a cursor.
@@ -317,7 +317,7 @@ class FirebaseSession {
 				transition: "opacity 0.5s",
 			});
 			// When the cursor data changes
-			_fb_on(fb_other_user, "value", snap => {
+			_fb_on(fb_other_user, "value", (snap) => {
 				other_user = snap.val();
 				// If the user has left
 				if (other_user == null) {
@@ -385,7 +385,7 @@ class FirebaseSession {
 			this.write_canvas_to_database_soon();
 		});
 		// Any time we change or receive the image data
-		_fb_on(this.fb_data, "value", snap => {
+		_fb_on(this.fb_data, "value", (snap) => {
 			log("Firebase data update");
 			const uri = snap.val();
 			if (uri == null) {
@@ -436,13 +436,13 @@ class FirebaseSession {
 				};
 				img.src = uri;
 			}
-		}, error => {
+		}, (error) => {
 			show_error_message("Failed to retrieve data from Firebase. The document will not load, and changes will not be saved.", error);
 			file_name = `[Failed to load ${this.id}]`;
 			update_title();
 		});
 		// Update the cursor status
-		$G.on("pointermove.session-hook", e => {
+		$G.on("pointermove.session-hook", (e) => {
 			const m = to_canvas_coords(e);
 			this.fb_user.child("cursor").update({
 				x: m.x,
@@ -1006,7 +1006,7 @@ const update_session_from_location_hash = () => {
 	}
 };
 
-$G.on("hashchange popstate change-url-params", e => {
+$G.on("hashchange popstate change-url-params", (e) => {
 	log(e.type, location.hash);
 	update_session_from_location_hash();
 });

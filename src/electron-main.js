@@ -402,7 +402,7 @@ const createWindow = () => {
 		 * @returns {MenuItem[]}
 		 */
 		function makeMenu(menu_items) {
-			return menu_items.map(menu_item => {
+			return menu_items.map((menu_item) => {
 				if (menu_item === "MENU_DIVIDER") {
 					return { type: "separator" };
 				}
@@ -549,7 +549,7 @@ const createWindow = () => {
 			// I worked around this by providing an image with a transparent margin on other platforms,
 			// in setWallpaperCentered.
 			return new Promise((resolve, _reject) => {
-				require("wallpaper").set(image_path, { scale: "center" }, error => {
+				require("wallpaper").set(image_path, { scale: "center" }, (error) => {
 					if (error) {
 						resolve({ responseCode: "SET_WALLPAPER_FAILED", error });
 					} else {

@@ -240,7 +240,7 @@ function make_canvas(width, height) {
 	// that reset the image smoothing to disabled
 	// and make image smoothing a parameter to make_canvas
 
-	new_ctx.copy = image => {
+	new_ctx.copy = (image) => {
 		// @ts-ignore
 		new_canvas.width = image.naturalWidth || image.width;
 		// @ts-ignore

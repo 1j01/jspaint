@@ -2,7 +2,7 @@
 const default_theme = "classic.css";
 const theme_storage_key = "jspaint theme";
 const disable_seasonal_theme_key = "jspaint disable seasonal theme";
-const href_for = theme => `styles/themes/${theme}`;
+const href_for = (theme) => `styles/themes/${theme}`;
 
 let iid;
 function wait_for_theme_loaded(theme, callback) {
@@ -48,7 +48,7 @@ update_not_for_modern_theme();
 
 const get_theme = () => current_theme;
 
-const set_theme = theme => {
+const set_theme = (theme) => {
 	current_theme = theme;
 
 	try {

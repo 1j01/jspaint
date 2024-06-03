@@ -88,7 +88,7 @@ function $FontBox() {
 	};
 
 	const originalFamily = text_tool_font.family;
-	eachFont(font => {
+	eachFont((font) => {
 		const $option = $(E("option"));
 		$option.val(font).text(font.name);
 		// Insert in alphabetical order

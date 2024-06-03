@@ -188,7 +188,7 @@ function open_help_viewer(options) {
 		});
 	});
 
-	const parse_object_params = $object => {
+	const parse_object_params = ($object) => {
 		// parse an $(<object>) to a plain object of key value pairs
 		const object = {};
 		for (const param of $object.children("param").get()) {
@@ -199,7 +199,7 @@ function open_help_viewer(options) {
 
 	let $last_expanded;
 
-	const $Item = text => {
+	const $Item = (text) => {
 		const $item = $(E("div")).addClass("item").text(text.trim());
 		$item.on("mousedown", () => {
 			$contents.find(".item").removeClass("selected");

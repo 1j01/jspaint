@@ -811,7 +811,7 @@ $("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.Dra
 						open_from_file(file, handle);
 						if (window._open_images_serially) {
 							// For testing a suite of files:
-							await new Promise(resolve => setTimeout(resolve, 500));
+							await new Promise((resolve) => setTimeout(resolve, 500));
 						} else {
 							// Normal behavior: only open one file.
 							return;
@@ -843,7 +843,7 @@ $("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.Dra
 // #endregion
 
 // #region Keyboard Shortcuts
-$G.on("keydown", e => {
+$G.on("keydown", (e) => {
 	// typecast to HTMLElement because e.target is incorrectly given as Window, due to $G wrapping window
 	const target = /** @type {HTMLElement} */ (/** @type {unknown} */ (e.target));
 
@@ -1140,7 +1140,7 @@ addEventListener("wheel", (e) => {
 // #endregion
 
 // #region Clipboard Handling
-$G.on("cut copy paste", e => {
+$G.on("cut copy paste", (e) => {
 	if (e.isDefaultPrevented()) {
 		return;
 	}
@@ -1189,7 +1189,7 @@ $G.on("cut copy paste", e => {
 	} else if (e.type === "paste") {
 		for (const item of cd.items) {
 			if (item.type.match(/^text\/(?:x-data-uri|uri-list|plain)|URL$/)) {
-				item.getAsString(text => {
+				item.getAsString((text) => {
 					const uris = get_uris(text);
 					if (uris.length > 0) {
 						load_image_from_uri(uris[0]).then((info) => {
@@ -1246,7 +1246,7 @@ localStore.get({
 });
 
 if (window.initial_system_file_handle) {
-	systemHooks.readBlobFromHandle(window.initial_system_file_handle).then(file => {
+	systemHooks.readBlobFromHandle(window.initial_system_file_handle).then((file) => {
 		if (file) {
 			open_from_file(file, window.initial_system_file_handle);
 		}
@@ -1376,7 +1376,7 @@ function canvas_pointer_move(e) {
 	});
 	pointer_previous = pointer;
 }
-$canvas.on("pointermove", e => {
+$canvas.on("pointermove", (e) => {
 	pointer = to_canvas_coords(e);
 	$status_position.text(`${pointer.x},${pointer.y}`);
 });
@@ -1507,7 +1507,7 @@ $G.on("pointermove", (event) => {
 // #endregion
 
 // #region Primary Canvas Interaction (continued)
-$canvas.on("pointerdown", e => {
+$canvas.on("pointerdown", (e) => {
 	update_canvas_rect();
 
 	// Quick Undo when there are multiple pointers (i.e. for touch)
@@ -1610,7 +1610,7 @@ $canvas.on("pointerdown", e => {
 // #endregion
 
 // #region Deselection / Selection Prevention
-$canvas_area.on("pointerdown", e => {
+$canvas_area.on("pointerdown", (e) => {
 	if (e.button === 0) {
 		if ($canvas_area.is(e.target)) {
 			if (selection) {

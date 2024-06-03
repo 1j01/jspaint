@@ -22,7 +22,7 @@ import { onKonamiCodeEntered } from "./konami.js";
 		$window = $();
 	}
 
-	const wait_for_youtube_api = callback => {
+	const wait_for_youtube_api = (callback) => {
 		if (typeof YT !== "undefined") {
 			callback();
 		} else {
@@ -186,7 +186,7 @@ import { onKonamiCodeEntered } from "./konami.js";
 		}
 
 		let is_theoretically_playing = true;
-		space_phase_key_handler = e => {
+		space_phase_key_handler = (e) => {
 			// press space to phase in and out of space phase スペース相 - windows 98 マイクロソフト 『ＷＩＮＴＲＡＰ』 X 将来のオペレーティングシステムサウンド 1998 VAPORWAVE
 			if (e.which === 32) {
 				// @TODO: record player SFX

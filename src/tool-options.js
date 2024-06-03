@@ -130,7 +130,7 @@ const $Choose = (things, display, choose, is_chosen, gray_background_for_unselec
 		}
 		$chooser.empty();
 		for (let i = 0; i < things.length; i++) {
-			(thing => {
+			((thing) => {
 				const $option_container = $(E("div")).addClass("chooser-option").appendTo($chooser);
 				// @ts-ignore
 				$option_container.data("thing", thing);
@@ -306,10 +306,10 @@ const $choose_eraser_size = $Choose(
 
 		return ce_canvas;
 	},
-	size => {
+	(size) => {
 		eraser_size = size;
 	},
-	size => eraser_size === size
+	(size) => eraser_size === size
 ).addClass("choose-eraser");
 
 const $choose_stroke_size = $Choose(
@@ -323,10 +323,10 @@ const $choose_stroke_size = $Choose(
 		cs_canvas.ctx.fillRect(b, ~~center_y, w - b * 2, size);
 		return cs_canvas;
 	},
-	size => {
+	(size) => {
 		stroke_size = size;
 	},
-	size => stroke_size === size
+	(size) => stroke_size === size
 ).addClass("choose-stroke-size");
 
 const magnifications = [1, 2, 6, 8, 10];
@@ -348,10 +348,10 @@ const $choose_magnification = $Choose(
 		}
 		return chooser_el;
 	},
-	scale => {
+	(scale) => {
 		set_magnification(scale);
 	},
-	scale => scale === magnification,
+	(scale) => scale === magnification,
 	true,
 ).addClass("choose-magnification")
 	.css({ position: "relative" }); // positioning context for .secret-option `position: "absolute"` canvas
@@ -387,10 +387,10 @@ const $choose_airbrush_size = $Choose(
 			reuse_canvas,
 		);
 	},
-	size => {
+	(size) => {
 		airbrush_size = size;
 	},
-	size => size === airbrush_size,
+	(size) => size === airbrush_size,
 	true,
 ).addClass("choose-airbrush-size");
 
@@ -409,10 +409,10 @@ const $choose_transparent_mode = $Choose(
 			option, // shift y by 1px in modern theme only, for lower image; border is separate in modern theme, but shared in classic theme
 		);
 	},
-	option => {
+	(option) => {
 		tool_transparent_mode = option;
 	},
-	option => option === tool_transparent_mode,
+	(option) => option === tool_transparent_mode,
 	true,
 ).addClass("choose-transparent-mode");
 

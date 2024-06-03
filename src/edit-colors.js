@@ -94,7 +94,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			const selection_matches_main_canvas_colors =
 				selection_monochrome_info.isMonochrome &&
 				selection_monochrome_info.presentNonTransparentRGBAs.every((rgba) =>
-					main_monochrome_info.presentNonTransparentRGBAs.map(rgba => rgba.toString()).includes(rgba.toString())
+					main_monochrome_info.presentNonTransparentRGBAs.map((rgba) => rgba.toString()).includes(rgba.toString())
 				);
 			if (
 				main_monochrome_info.isMonochrome &&

@@ -82,7 +82,7 @@ export default [
 			"@stylistic/array-bracket-newline": ["error", "consistent"],
 			"@stylistic/array-bracket-spacing": ["error", "never"],
 			// "@stylistic/array-element-newline": ["error", "consistent"], // lot of big arrays with sometimes meaningful line breaks; could exclude certain files though
-			// "@stylistic/arrow-parens": ["error", "always"], // TODO
+			"@stylistic/arrow-parens": ["error", "always"],
 			"@stylistic/arrow-spacing": ["error", { "before": true, "after": true }],
 			"@stylistic/block-spacing": ["error", "always"],
 			// "@stylistic/brace-style": ["error", "1tbs", { "allowSingleLine": true }], // TODO

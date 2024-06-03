@@ -37,7 +37,7 @@ ipcRenderer.on("open-file", (_event, file_path) => {
 	// Sent when dragging a file onto the dock on macOS.
 	// Comes from Electron's "open-file" event of the same name, though this is a custom IPC event.
 	// WET: copied from window.initial_system_file_handle handling
-	systemHooks.readBlobFromHandle(file_path).then(file => {
+	systemHooks.readBlobFromHandle(file_path).then((file) => {
 		if (file) {
 			open_from_file(file, file_path);
 		}
@@ -217,7 +217,7 @@ window.systemHooks.setWallpaperCentered = (canvas) => {
 		wallpaperCanvas.ctx.drawImage(canvas, ~~x, ~~y);
 	}
 
-	wallpaperCanvas.toBlob(blob => {
+	wallpaperCanvas.toBlob((blob) => {
 		sanity_check_blob(blob, () => {
 			blob.arrayBuffer().then((arrayBuffer) => {
 				ipcRenderer.invoke("set-wallpaper", arrayBuffer).then(({ responseCode, error }) => {
@@ -236,7 +236,7 @@ window.systemHooks.setWallpaperCentered = (canvas) => {
 					if (responseCode !== "SUCCESS") {
 						return show_error_message("Failed to set wallpaper.", error);
 					}
-				}).catch(error => {
+				}).catch((error) => {
 					show_error_message("Failed to set wallpaper.", error);
 				});
 			}, (error) => {
