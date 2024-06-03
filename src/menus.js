@@ -666,7 +666,7 @@ const menus = {
 				// @TODO: erase?
 			],
 			// (mspaint says "Ctrl+Shft+N")
-			action: () => { !selection && clear(); },
+			action: () => { if (!selection) { clear(); } },
 			enabled: () => !selection,
 			description: localize("Clears the picture."),
 			// action: ()=> {
@@ -725,7 +725,7 @@ const menus = {
 					} else {
 						palette = new_palette.map((color) => color.toString());
 						$colorbox.rebuild_palette();
-						window.console && console.log(`Loaded palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
+						window.console?.log(`Loaded palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
 					}
 				});
 			},

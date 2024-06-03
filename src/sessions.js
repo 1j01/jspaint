@@ -11,7 +11,7 @@ import { showMessageBox } from "./msgbox.js";
 import { localStore } from "./storage.js";
 
 const log = (...args) => {
-	window.console && console.log(...args);
+	window.console?.log(...args);
 };
 
 let localStorageAvailable = false;
@@ -32,14 +32,14 @@ const canvas_has_any_apparent_image_data = () =>
 
 let $recovery_window;
 function show_recovery_window(no_longer_blank) {
-	$recovery_window && $recovery_window.close();
+	$recovery_window?.close();
 	const $w = $recovery_window = $DialogWindow();
 	$w.on("close", () => {
 		$recovery_window = null;
 	});
 	$w.title("Recover Document");
 	let backup_impossible = false;
-	try { window.localStorage; } catch (_error) { backup_impossible = true; }
+	try { window.localStorage.getItem("bogus test key"); } catch (_error) { backup_impossible = true; }
 	// TODO: get rid of this invasive dialog https://github.com/1j01/jspaint/issues/325
 	// It appears when it shouldn't, in basic scenarios like Ctrl+A in a transparent document,
 	// and it gets bigger once you edit the document, which feels... almost aggressive.
@@ -453,7 +453,7 @@ class FirebaseSession {
 		/*
 		const debug_event = (e, synthetic) => {
 			// const label = synthetic ? "(synthetic)" : "(normal)";
-			// window.console && console.debug && console.debug(e.type, label);
+			// window.console?.debug?.debug(e.type, label);
 		};
 
 		$canvas_area.on("pointerdown.session-hook", "*", (e, synthetic) => {

@@ -167,10 +167,10 @@ function update_helper_layer(e) {
 		info_for_updating_pointer = { clientX: e.clientX, clientY: e.clientY, devicePixelRatio };
 	}
 	if (helper_layer_update_queued) {
-		// window.console && console.log("update_helper_layer - nah, already queued");
+		// window.console?.log("update_helper_layer - nah, already queued");
 		return;
 	} else {
-		// window.console && console.log("update_helper_layer");
+		// window.console?.log("update_helper_layer");
 	}
 	helper_layer_update_queued = true;
 	requestAnimationFrame(() => {
@@ -179,7 +179,7 @@ function update_helper_layer(e) {
 	});
 }
 function update_helper_layer_immediately() {
-	// window.console && console.log("Update helper layer NOW");
+	// window.console?.log("Update helper layer NOW");
 	if (info_for_updating_pointer) {
 		const rescale = info_for_updating_pointer.devicePixelRatio / devicePixelRatio;
 		info_for_updating_pointer.clientX *= rescale;
@@ -992,7 +992,7 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 		saved = true;
 		update_title();
 
-		callback && callback();
+		callback?.();
 	}, canceled, from_session_load);
 }
 
@@ -1026,7 +1026,7 @@ function open_from_file(file, source_file_handle) {
 				}
 				palette = new_palette.map((color) => color.toString());
 				$colorbox.rebuild_palette();
-				window.console && console.log(`Loaded palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
+				window.console?.log(`Loaded palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
 			});
 			return;
 		}
@@ -1046,7 +1046,7 @@ function apply_file_format_and_palette_info(info) {
 	}
 
 	if (info.palette) {
-		window.console && console.log(`Loaded palette from image file: ${info.palette.map(() => `%c█`).join("")}`, ...info.palette.map((color) => `color: ${color};`));
+		window.console?.log(`Loaded palette from image file: ${info.palette.map(() => `%c█`).join("")}`, ...info.palette.map((color) => `color: ${color};`));
 		palette = info.palette;
 		selected_colors.foreground = palette[0];
 		selected_colors.background = palette.length === 14 * 2 ? palette[14] : palette[1]; // first in second row for default sized palette, else second color (debatable behavior; should it find a dark and a light color?)
@@ -1667,7 +1667,7 @@ function show_about_paint() {
 			$("#failed-to-check-if-outdated").removeAttr("hidden");
 			$("#checking-for-updates").attr("hidden", "hidden");
 			update_css_classes_for_conditional_messages();
-			window.console && console.log("Couldn't check for updates.", exception);
+			window.console?.log("Couldn't check for updates.", exception);
 		});
 }
 
@@ -1745,8 +1745,8 @@ function show_news() {
 
 	// const $latest_entries = $latest_news.find(".news-entry");
 	// const latest_entry = $latest_entries[$latest_entries.length - 1];
-	// window.console && console.log("LATEST MEWS:", $latest_news);
-	// window.console && console.log("LATEST ENTRY:", latest_entry);
+	// window.console?.log("LATEST MEWS:", $latest_news);
+	// window.console?.log("LATEST ENTRY:", latest_entry);
 
 	const $latest_news_style = $latest_news.find("style");
 	$this_version_news.find("style").remove();
@@ -1986,14 +1986,14 @@ function go_to_history_node(target_history_node, canceling) {
 	if (!target_history_node.image_data) {
 		if (!canceling) {
 			show_error_message("History entry has no image data.");
-			window.console && console.log("Target history entry has no image data:", target_history_node);
+			window.console?.log("Target history entry has no image data:", target_history_node);
 		}
 		return;
 	}
 	/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.
 	const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 	if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
-		window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
+		window.console?.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 		undoable({name: "Unknown [go_to_history_node]", use_loose_canvas_changes: true}, ()=> {});
 	}
 	*/
@@ -2061,9 +2061,9 @@ function go_to_history_node(target_history_node, canceling) {
 			[redos[0], ...get_history_ancestors(redos[0])] :
 			[from_history_node, ...get_history_ancestors(from_history_node)];
 
-	// window.console && console.log("target_history_node:", target_history_node);
-	// window.console && console.log("ancestors_of_target:", ancestors_of_target);
-	// window.console && console.log("old_history_path:", old_history_path);
+	// window.console?.log("target_history_node:", target_history_node);
+	// window.console?.log("ancestors_of_target:", ancestors_of_target);
+	// window.console?.log("old_history_path:", old_history_path);
 	redos.length = 0;
 
 	let latest_node = target_history_node;
@@ -2081,8 +2081,8 @@ function go_to_history_node(target_history_node, canceling) {
 		latest_node = futures[0];
 		redos.unshift(latest_node);
 	}
-	// window.console && console.log("new undos:", undos);
-	// window.console && console.log("new redos:", redos);
+	// window.console?.log("new undos:", undos);
+	// window.console?.log("new redos:", redos);
 
 	$canvas_area.trigger("resize");
 	$G.triggerHandler("session-update"); // autosave
@@ -2100,7 +2100,7 @@ function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, 
 		/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.
 		const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
 		if (!current_history_node.image_data || !image_data_match(current_history_node.image_data, current_image_data, 5)) {
-			window.console && console.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
+			window.console?.log("Canvas image data changed outside of undoable", current_history_node, "current_history_node.image_data:", current_history_node.image_data, "document's current image data:", current_image_data);
 			undoable({name: "Unknown [undoable]", use_loose_canvas_changes: true}, ()=> {});
 		}
 		*/
@@ -2112,10 +2112,10 @@ function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, 
 	}
 
 	const before_callback_history_node = current_history_node;
-	callback && callback();
+	callback?.();
 	if (current_history_node !== before_callback_history_node) {
 		show_error_message(`History node switched during undoable callback for ${name}. This shouldn't happen.`);
-		window.console && console.log(`History node switched during undoable callback for ${name}, from`, before_callback_history_node, "to", current_history_node);
+		window.console?.log(`History node switched during undoable callback for ${name}, from`, before_callback_history_node, "to", current_history_node);
 	}
 
 	const image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
@@ -2410,7 +2410,7 @@ function cancel(going_to_history_node, discard_document_state) {
 	// history_node_to_cancel_to = history_node_to_cancel_to || current_history_node;
 	$G.triggerHandler("pointerup", ["canceling", discard_document_state]);
 	for (const selected_tool of selected_tools) {
-		selected_tool.cancel && selected_tool.cancel();
+		selected_tool.cancel?.();
 	}
 	if (!going_to_history_node) {
 		// Note: this will revert any changes from other users in multi-user sessions
@@ -2484,7 +2484,7 @@ function deselect(going_to_history_node) {
 		meld_textbox_into_canvas(going_to_history_node);
 	}
 	for (const selected_tool of selected_tools) {
-		selected_tool.end && selected_tool.end(main_ctx);
+		selected_tool.end?.(main_ctx);
 	}
 }
 
@@ -2588,7 +2588,7 @@ function edit_copy(execCommandFallback) {
 						enumerable: true,
 					})),
 				]).then(() => {
-					window.console && console.log("Copied image to the clipboard.");
+					window.console?.log("Copied image to the clipboard.");
 				}, (error) => {
 					show_error_message("Failed to copy to the Clipboard.", error);
 				});

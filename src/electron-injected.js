@@ -141,7 +141,7 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 	if (responseCode !== "SUCCESS") {
 		return show_save_error_message(responseCode, error);
 	}
-	savedCallbackUnreliable && savedCallbackUnreliable({
+	savedCallbackUnreliable?.({
 		// newFileName: path.basename(filePath),
 		newFileName: fileName,
 		newFileFormatID: format.formatID,

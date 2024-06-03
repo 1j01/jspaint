@@ -384,7 +384,7 @@ function $Component(title, className, orientation, $el) {
 			undock_to(e.clientX + ox2, e.clientY + oy2);
 		}
 
-		$ghost && $ghost.remove();
+		$ghost?.remove();
 		$ghost = null;
 
 		$G.trigger("resize");

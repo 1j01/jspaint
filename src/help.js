@@ -394,7 +394,7 @@ function $Iframe(options) {
 
 			var $contentWindow = $(iframe.contentWindow);
 			$contentWindow.on("pointerdown click", function () {
-				iframe.$window && iframe.$window.focus();
+				iframe.$window?.focus();
 
 				// from close_menus in $MenuBar
 				$(".menu-button").trigger("release");
@@ -414,7 +414,7 @@ function $Iframe(options) {
 			// Otherwise iframes would get stuck in this interaction mode
 
 			iframe.contentWindow.close = function () {
-				iframe.$window && iframe.$window.close();
+				iframe.$window?.close();
 			};
 			// @TODO: hook into saveAs (a la FileSaver.js) and another function for opening files
 			// iframe.contentWindow.saveAs = function(){

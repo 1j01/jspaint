@@ -24,7 +24,7 @@
 						return localizations[without_hotkey];
 					} else {
 						if (AccessKeys.has(localizations[without_hotkey])) {
-							// window.console && console.warn(`Localization has differing access key hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
+							// window.console?.warn(`Localization has differing access key hint: '${localizations[without_hotkey]}' vs '${english_text}'`);
 							// @TODO: detect differing access key more generally
 							return `${AccessKeys.remove(localizations[without_hotkey])} (${hotkey_def})`;
 						}

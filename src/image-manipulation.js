@@ -1343,27 +1343,27 @@ let op_ctx_2d;
 function initTesselator() {
 	// function called for each vertex of tesselator output
 	function vertex_callback(data, poly_vert_array) {
-		// window.console && console.log(data[0], data[1]);
+		// window.console?.log(data[0], data[1]);
 		poly_vert_array[poly_vert_array.length] = data[0];
 		poly_vert_array[poly_vert_array.length] = data[1];
 	}
 	function begin_callback(type) {
 		if (type !== libtess.primitiveType.GL_TRIANGLES) {
-			window.console && console.log(`Expected TRIANGLES but got type: ${type}`);
+			window.console?.log(`Expected TRIANGLES but got type: ${type}`);
 		}
 	}
 	function error_callback(errno) {
-		window.console && console.log("error callback");
-		window.console && console.log(`error number: ${errno}`);
+		window.console?.log("error callback");
+		window.console?.log(`error number: ${errno}`);
 	}
 	// callback for when segments intersect and must be split
 	function combine_callback(coords, _data, _weight) {
-		// window.console && console.log('combine callback');
+		// window.console?.log('combine callback');
 		return [coords[0], coords[1], coords[2]];
 	}
 	function edge_callback(_flag) {
 		// don't really care about the flag, but need no-strip/no-fan behavior
-		// window.console && console.log('edge flag: ' + flag);
+		// window.console?.log('edge flag: ' + flag);
 	}
 
 	const tessy = new libtess.GluTesselator();
@@ -1450,7 +1450,7 @@ function createShaderProgram() {
 	gl.compileShader(vertexShader);
 
 	if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-		window.console && console.log(
+		window.console?.log(
 			`Vertex shader failed to compile. Log: ${gl.getShaderInfoLog(vertexShader)}`
 		);
 	}
@@ -1467,7 +1467,7 @@ function createShaderProgram() {
 	gl.compileShader(fragmentShader);
 
 	if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-		window.console && console.log(
+		window.console?.log(
 			`Fragment shader failed to compile. Log: ${gl.getShaderInfoLog(fragmentShader)}`
 		);
 	}
@@ -1496,7 +1496,7 @@ export function init_webgl_stuff() {
 	let warning_tid;
 	op_canvas_webgl.addEventListener("webglcontextlost", (e) => {
 		e.preventDefault();
-		window.console && console.warn("WebGL context lost");
+		window.console?.warn("WebGL context lost");
 		clamp_brush_sizes();
 
 		warning_tid = setTimeout(() => {
@@ -1507,7 +1507,7 @@ export function init_webgl_stuff() {
 	op_canvas_webgl.addEventListener("webglcontextrestored", () => {
 		initWebGL(op_canvas_webgl);
 
-		window.console && console.warn("WebGL context restored");
+		window.console?.warn("WebGL context restored");
 		clearTimeout(warning_tid);
 
 		clamp_brush_sizes();

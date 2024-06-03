@@ -160,9 +160,9 @@ export const simulateRandomGesturesPeriodically = () => {
 	} else {
 		seed = ~~(Math.random() * 5000000);
 	}
-	window.console && console.log("Using seed:", seed);
-	window.console && console.log("Note: Seeds are not guaranteed to work with different versions of the app, but within the same version it should produce the same results given the same starting document & other state & NO interference, and except for airbrush randomness which is uncontrolled by the seed.");
-	window.console && console.log(`To use this seed:
+	window.console?.log("Using seed:", seed);
+	window.console?.log("Note: Seeds are not guaranteed to work with different versions of the app, but within the same version it should produce the same results given the same starting document & other state & NO interference, and except for airbrush randomness which is uncontrolled by the seed.");
+	window.console?.log(`To use this seed:
 
 		window.drawRandomlySeed = ${seed};
 		document.body.style.width = "${getComputedStyle(document.body).width}";

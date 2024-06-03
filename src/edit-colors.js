@@ -155,7 +155,7 @@ function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) 
 			update_$swatch($swatch_to_edit, color);
 			selected_colors[color_selection_slot_to_edit] = color;
 			$G.triggerHandler("option-changed");
-			window.console && console.log(`Updated palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
+			window.console?.log(`Updated palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
 		}
 	});
 }

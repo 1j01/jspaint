@@ -79,7 +79,7 @@ export default [
 			"no-sequences": "error",
 			"no-throw-literal": "error",
 			"no-unmodified-loop-condition": "error",
-			// "no-unused-expressions": "error", // a && a() used a lot, could switch to a?.() etc. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
+			"no-unused-expressions": "error", // a && a() used a lot, could switch to a?.() etc. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
 			"no-useless-concat": "error",
 			"prefer-promise-reject-errors": "error",
 			"radix": "error",

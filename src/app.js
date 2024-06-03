@@ -138,7 +138,7 @@ window.systemHookDefaults = {
 						const writableStream = await newHandle.createWritable();
 						await writableStream.write(blob);
 						await writableStream.close();
-						savedCallbackUnreliable && savedCallbackUnreliable({
+						savedCallbackUnreliable?.({
 							newFileName: newFileName,
 							newFileFormatID: new_format && new_format.formatID,
 							newFileHandle: newHandle,
@@ -182,7 +182,7 @@ window.systemHookDefaults = {
 				show_error_message(localize("Failed to save document."), error);
 				return;
 			}
-			savedCallbackUnreliable && savedCallbackUnreliable({
+			savedCallbackUnreliable?.({
 				newFileName: newFileName,
 				newFileFormatID: new_format && new_format.formatID,
 				newFileHandle: newHandle,
@@ -193,7 +193,7 @@ window.systemHookDefaults = {
 			const { newFileName, newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats });
 			const blob = await getBlob(newFileFormatID);
 			saveAs(blob, newFileName);
-			savedCallbackUnreliable && savedCallbackUnreliable({
+			savedCallbackUnreliable?.({
 				newFileName,
 				newFileFormatID,
 				newFileHandle: null,
@@ -1029,14 +1029,22 @@ $G.on("keydown", (e) => {
 				rotate(+TAU / 4);
 				break;
 			case "Z":
-				e.shiftKey ? redo() : undo();
+				if (e.shiftKey) {
+					redo();
+				} else {
+					undo();
+				}
 				break;
 			case "Y":
 				// Ctrl+Shift+Y handled above
 				redo();
 				break;
 			case "G":
-				e.shiftKey ? render_history_as_gif() : toggle_grid();
+				if (e.shiftKey) {
+					render_history_as_gif();
+				} else {
+					toggle_grid();
+				}
 				break;
 			case "F":
 				// @ts-ignore (repeat doesn't exist on jQuery.Event, I guess, but this is fine)
@@ -1048,7 +1056,11 @@ $G.on("keydown", (e) => {
 				file_open();
 				break;
 			case "S":
-				e.shiftKey ? file_save_as() : file_save();
+				if (e.shiftKey) {
+					file_save_as();
+				} else {
+					file_save();
+				}
 				break;
 			case "A":
 				select_all();
@@ -1067,7 +1079,11 @@ $G.on("keydown", (e) => {
 			// I'm supporting Alt+<shortcut> here (implicitly) as a workaround (and showing this in the menus in some cases).
 			// Also, note that Chrome allows some shortcuts to be overridden in fullscreen (but showing/hiding the shortcuts would be confusing).
 			case "N":
-				e.shiftKey ? clear() : file_new();
+				if (e.shiftKey) {
+					clear();
+				} else {
+					file_new();
+				}
 				break;
 			case "T":
 				$toolbox.toggle();
@@ -1585,7 +1601,7 @@ $canvas.on("pointerdown", (e) => {
 			// @TODO: do any tools use pointerup for cleanup?
 			if (!no_undoable) {
 				selected_tools.forEach((selected_tool) => {
-					selected_tool.pointerup && selected_tool.pointerup(main_ctx, pointer.x, pointer.y);
+					selected_tool.pointerup?.(main_ctx, pointer.x, pointer.y);
 				});
 			}
 
