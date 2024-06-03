@@ -2,26 +2,26 @@
 // This script will document which `window.* = ...` assignments are used by other files in the src directory.
 // Also its purpose is very specific; it only looks for global assignments following a "// Temporary globals" comment.
 
-const fs = require('fs');
-const path = require('path');
-const espree = require('espree');
+const fs = require("fs");
+const path = require("path");
+const espree = require("espree");
 
 // Assuming all files are in the src directory and not subdirectories
-const srcDir = './src';
+const srcDir = "./src";
 
 // Silly wrapper function to read a file and return its content
 function readFile(filePath) {
-	return fs.readFileSync(filePath, 'utf8');
+	return fs.readFileSync(filePath, "utf8");
 }
 
 // Function to write content to a file
 function writeFile(filePath, content) {
 	console.log("Writing file", filePath);
-	fs.writeFileSync(filePath, content, 'utf8');
+	fs.writeFileSync(filePath, content, "utf8");
 }
 
 function escapeRegExp(string) {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 }
 
 // Function to find non-ESM usages of an identifier
@@ -62,7 +62,7 @@ function findDependencies(identifier, fileContentTree, excludeFiles = []) {
 		// Look for imports of the identifier:
 		let foundImport = false;
 		for (const node of tree.body) {
-			if (node.type === 'ImportDeclaration') {
+			if (node.type === "ImportDeclaration") {
 				for (const specifier of node.specifiers) {
 					if (specifier.imported.name === identifier) {
 						console.log("Found ESM (non-global) import of", identifier, "in", filePath);
@@ -79,7 +79,7 @@ function findDependencies(identifier, fileContentTree, excludeFiles = []) {
 		// Look for other usages of the identifier:
 		// console.log("Tokens:", tree.tokens);
 		for (const token of tree.tokens) {
-			if (token.type === 'Identifier' && token.value === identifier) {
+			if (token.type === "Identifier" && token.value === identifier) {
 				const parent = token.parent;
 				dependencies.push(filePath);
 				console.log("Found", identifier, "in", filePath);
@@ -97,13 +97,13 @@ function processFiles() {
 	const fileLowerContent = {};
 	fs.readdir(srcDir, (err, files) => {
 		if (err) {
-			console.error('Error reading directory:', err);
+			console.error("Error reading directory:", err);
 			return;
 		}
 		// First read all files into memory, since we'll need to look at each file
 		// in reference to every other file, and there's not that many files.
 		for (const file of files) {
-			if (path.extname(file) === '.js') {
+			if (path.extname(file) === ".js") {
 				const filePath = path.join(srcDir, file);
 				const content = readFile(filePath);
 				// Break the files into content above and below (and including) the "// Temporary globals" comment,
@@ -112,18 +112,18 @@ function processFiles() {
 				// By passing only upper content to findDependencies,
 				// while the replacements are only made to the lower content,
 				// we avoid changes to the content that would affect the ultimate behavior of the script.
-				const startIndex = content.indexOf('// Temporary globals');
+				const startIndex = content.indexOf("// Temporary globals");
 				if (startIndex !== -1) {
 					fileUpperContent[filePath] = content.slice(0, startIndex);
 					fileLowerContent[filePath] = content.slice(startIndex);
 				} else {
 					fileUpperContent[filePath] = content;
-					fileLowerContent[filePath] = '';
+					fileLowerContent[filePath] = "";
 				}
 				try {
 					fileUpperContentTree[filePath] = espree.parse(fileUpperContent[filePath], {
 						ecmaVersion: 2020,
-						sourceType: fileUpperContent[filePath].match(/import .* from/) ? 'module' : 'script',
+						sourceType: fileUpperContent[filePath].match(/import .* from/) ? "module" : "script",
 						tokens: true,
 					});
 				} catch (e) {
@@ -141,8 +141,8 @@ function processFiles() {
 				/(?:\/\/\s*)?(window\.(.*?) = .*;)(\s*\/\/.*)?/g,
 				(match, assignment, identifier, comment) => {
 					const dependencies = findDependencies(identifier, fileUpperContentTree, [filePath]);
-					const formatPath = filePath => path.relative(srcDir, filePath).replace(/\\/g, '/');
-					const formattedPaths = dependencies.map(formatPath).join(', ');
+					const formatPath = filePath => path.relative(srcDir, filePath).replace(/\\/g, "/");
+					const formattedPaths = dependencies.map(formatPath).join(", ");
 					console.log(`Dependencies for ${identifier}: ${formattedPaths || "(none found)"}`);
 					if (dependencies.length) {
 						return `${assignment} // may be used by ${formattedPaths}`;

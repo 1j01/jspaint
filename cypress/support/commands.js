@@ -1,9 +1,9 @@
-import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
+import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 addMatchImageSnapshotCommand({
 	failureThreshold: 0,
-	failureThresholdType: 'pixel',
+	failureThresholdType: "pixel",
 	customDiffConfig: { threshold: 0 },
-	capture: 'viewport',
+	capture: "viewport",
 });
 Cypress.Commands.add("setResolution", (size) => {
 	if (Cypress._.isArray(size)) {

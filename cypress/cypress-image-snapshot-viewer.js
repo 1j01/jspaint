@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 (function () {
-	'use strict';
+	"use strict";
 
 	let cleanUp = null;
 

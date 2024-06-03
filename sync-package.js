@@ -2,8 +2,8 @@
 
 /* global process, __dirname, require */
 
-const fs = require('fs/promises');
-const path = require('path');
+const fs = require("fs/promises");
+const path = require("path");
 
 (async () => {
 
@@ -15,17 +15,17 @@ const path = require('path');
 	}
 
 	const alwaysIncludedFiles = []; // ['README.md', 'LICENSE', 'CHANGELOG.md', 'package.json'];
-	const alwaysExclude = ['demo/', 'index.html', '$MenuBar.js'];
+	const alwaysExclude = ["demo/", "index.html", "$MenuBar.js"];
 
-	const packageDir = path.join(__dirname, 'node_modules', packageName);
+	const packageDir = path.join(__dirname, "node_modules", packageName);
 
-	const outputDir = path.join(__dirname, 'lib', packageName);
+	const outputDir = path.join(__dirname, "lib", packageName);
 
 	console.log(`Syncing ${packageName}...`);
 	console.log(`Source directory: ${packageDir}`);
 	console.log(`Output directory: ${outputDir}`);
 
-	const packageJson = JSON.parse(await fs.readFile(path.join(packageDir, 'package.json'), 'utf8'));
+	const packageJson = JSON.parse(await fs.readFile(path.join(packageDir, "package.json"), "utf8"));
 	const { files } = packageJson;
 	if (!files) {
 		console.log(`No "files" field in ${packageDir}`);

@@ -1,5 +1,5 @@
 import js from "@eslint/js";
-import stylistic from '@stylistic/eslint-plugin';
+import stylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
 
 /** @type {import('@types/eslint').Linter.FlatConfig[]} */
@@ -119,7 +119,7 @@ export default [
 			"@stylistic/generator-star-spacing": ["error", "after"],
 			// "@stylistic/implicit-arrow-linebreak": ["error", "beside"], // could encourage parens for clarity, but ESLint won't mention that's the reason, so probably not a good idea
 			// The indent settings are mostly defaults copied from https://github.com/eslint-stylistic/eslint-stylistic/blob/c11f1d6f26c13b29fd44c95c908922cb79a0ac82/packages/eslint-plugin/configs/customize.ts#L115-L154
-			'@stylistic/indent': ['error', "tab", {
+			"@stylistic/indent": ["error", "tab", {
 				ArrayExpression: 1,
 				CallExpression: { arguments: 1 },
 				flatTernaryExpressions: false,
@@ -127,29 +127,29 @@ export default [
 				FunctionExpression: { body: 1, parameters: 1 },
 				ignoreComments: true, // modified from default
 				ignoredNodes: [
-					'TemplateLiteral *',
-					'JSXElement',
-					'JSXElement > *',
-					'JSXAttribute',
-					'JSXIdentifier',
-					'JSXNamespacedName',
-					'JSXMemberExpression',
-					'JSXSpreadAttribute',
-					'JSXExpressionContainer',
-					'JSXOpeningElement',
-					'JSXClosingElement',
-					'JSXFragment',
-					'JSXOpeningFragment',
-					'JSXClosingFragment',
-					'JSXText',
-					'JSXEmptyExpression',
-					'JSXSpreadChild',
-					'TSUnionType',
-					'TSIntersectionType',
-					'TSTypeParameterInstantiation',
-					'FunctionExpression > .params[decorators.length > 0]',
-					'FunctionExpression > .params > :matches(Decorator, :not(:first-child))',
-					'ClassBody.body > PropertyDefinition[decorators.length > 0] > .key',
+					"TemplateLiteral *",
+					"JSXElement",
+					"JSXElement > *",
+					"JSXAttribute",
+					"JSXIdentifier",
+					"JSXNamespacedName",
+					"JSXMemberExpression",
+					"JSXSpreadAttribute",
+					"JSXExpressionContainer",
+					"JSXOpeningElement",
+					"JSXClosingElement",
+					"JSXFragment",
+					"JSXOpeningFragment",
+					"JSXClosingFragment",
+					"JSXText",
+					"JSXEmptyExpression",
+					"JSXSpreadChild",
+					"TSUnionType",
+					"TSIntersectionType",
+					"TSTypeParameterInstantiation",
+					"FunctionExpression > .params[decorators.length > 0]",
+					"FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
+					"ClassBody.body > PropertyDefinition[decorators.length > 0] > .key",
 				],
 				ImportDeclaration: 1,
 				MemberExpression: 1,

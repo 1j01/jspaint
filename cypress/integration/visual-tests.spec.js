@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-context('visual tests', () => {
+context("visual tests", () => {
 
 	// These tests are not really cross-platform or even cross-computer,
 	// since they depend on pixel-exact text and SVG rendering, as well as browser-specific built-in styles and layout.
@@ -18,31 +18,31 @@ context('visual tests', () => {
 		// failureThreshold: 0.05, // masks HUGE differences
 		// failureThresholdType: 'percent' // not actually percent - fraction
 		failureThreshold: 0,
-		failureThresholdType: 'pixel'
+		failureThresholdType: "pixel"
 	};
 	const withMuchTextCompareOptions = {
 		// failureThreshold: 0.08, // masks HUGE differences
 		// failureThresholdType: 'percent' // not actually percent - fraction
 		failureThreshold: 0,
-		failureThresholdType: 'pixel'
+		failureThresholdType: "pixel"
 	};
 	const toolboxCompareOptions = {
 		// failureThreshold: 40,
 		// failureThresholdType: 'pixel'
 		failureThreshold: 0,
-		failureThresholdType: 'pixel'
+		failureThresholdType: "pixel"
 	};
 
 	const escapeRegExp = (string) =>
-		string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+		string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 
 	// Menus need pointer events currently.
 	// These "click*" functions are used to interact with menus, and don't trigger click events.
 	const clickElementWithExactText = (selector, text) => {
 		cy.contains(selector, new RegExp(`^${escapeRegExp(text)}$`))
 			// .click();
-			.trigger('pointerdown', { which: 1 })
-			.trigger('pointerup', { force: true });
+			.trigger("pointerdown", { which: 1 })
+			.trigger("pointerup", { force: true });
 	};
 	const closeMenus = () => {
 		cy.get(".status-text").click({ force: true }); // force because a menu may be covering the status bar / part of it
@@ -73,7 +73,7 @@ context('visual tests', () => {
 	const waitForImage = (selector) => {
 		// should automatically retries
 		// checking visibility first ensures we're testing at least one image, theoretically
-		cy.get(selector).should('be.visible');
+		cy.get(selector).should("be.visible");
 		cy.get(selector).should(($imgs) => {
 			for (const img of $imgs) {
 				expect(img.naturalWidth).to.be.greaterThan(0);
@@ -87,121 +87,121 @@ context('visual tests', () => {
 		// If by the year 3000 AI doesn't automatically find and fix stupid code like this, humanity will have already been doomed.
 		cy.clock(32503698000000);
 
-		cy.visit('/');
+		cy.visit("/");
 		cy.setResolution([760, 490]);
-		cy.window().should('have.property', 'api_for_cypress_tests'); // wait for app to be loaded
+		cy.window().should("have.property", "api_for_cypress_tests"); // wait for app to be loaded
 
 		// Needed, given `cy.clock` is used, for `requestAnimationFrame` in `update_$swatch`,
 		// so the color palette is rendered correctly.
 		cy.tick(100);
 	});
 
-	it('main screenshot', () => {
+	it("main screenshot", () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('brush selected', () => {
+	it("brush selected", () => {
 		cy.get('.tool[title="Brush"]').click();
-		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get(".tools-component").matchImageSnapshot(toolboxCompareOptions);
 	});
-	it('select selected', () => {
+	it("select selected", () => {
 		cy.get('.tool[title="Select"]').click();
-		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get(".tools-component").matchImageSnapshot(toolboxCompareOptions);
 	});
-	it('magnifier selected', () => {
+	it("magnifier selected", () => {
 		cy.get('.tool[title="Magnifier"]').click();
-		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get(".tools-component").matchImageSnapshot(toolboxCompareOptions);
 	});
-	it('airbrush selected', () => {
+	it("airbrush selected", () => {
 		cy.get('.tool[title="Airbrush"]').click();
-		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get(".tools-component").matchImageSnapshot(toolboxCompareOptions);
 	});
-	it('eraser selected', () => {
+	it("eraser selected", () => {
 		cy.get('.tool[title="Eraser/Color Eraser"]').click();
-		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get(".tools-component").matchImageSnapshot(toolboxCompareOptions);
 	});
-	it('line selected', () => {
+	it("line selected", () => {
 		cy.get('.tool[title="Line"]').click();
-		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get(".tools-component").matchImageSnapshot(toolboxCompareOptions);
 	});
-	it('rectangle selected', () => {
+	it("rectangle selected", () => {
 		cy.get('.tool[title="Rectangle"]').click();
-		cy.get('.tools-component').matchImageSnapshot(toolboxCompareOptions);
+		cy.get(".tools-component").matchImageSnapshot(toolboxCompareOptions);
 	});
 
 	beforeEach(() => {
-		if (Cypress.$('.window:visible')[0]) {
-			cy.get('.window:visible .window-close-button').click();
-			cy.get('.window').should('not.be.visible');
+		if (Cypress.$(".window:visible")[0]) {
+			cy.get(".window:visible .window-close-button").click();
+			cy.get(".window").should("not.be.visible");
 		}
 	});
 
-	it('image attributes window', () => {
-		cy.get('body').type('{ctrl}e');
-		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+	it("image attributes window", () => {
+		cy.get("body").type("{ctrl}e");
+		cy.get(".window:visible").matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
-	it('modern dark theme -- image attributes window', () => {
+	it("modern dark theme -- image attributes window", () => {
 		selectTheme("Modern Dark");
-		cy.get('body').type('{ctrl}e');
-		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+		cy.get("body").type("{ctrl}e");
+		cy.get(".window:visible").matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
-	it('modern dark theme -- custom zoom window', () => {
-		clickMenuButton('View');
-		clickMenuItem('Zoom');
-		clickMenuItem('Custom...');
-		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+	it("modern dark theme -- custom zoom window", () => {
+		clickMenuButton("View");
+		clickMenuItem("Zoom");
+		clickMenuItem("Custom...");
+		cy.get(".window:visible").matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
-	it('bubblegum theme - custom zoom window', () => {
+	it("bubblegum theme - custom zoom window", () => {
 		// selectTheme("Bubblegum"); // not released yet
 		cy.window().then((win) => {
 			win.api_for_cypress_tests.set_theme("bubblegum.css");
 		});
-		clickMenuButton('View');
-		clickMenuItem('Zoom');
-		clickMenuItem('Custom...');
-		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+		clickMenuButton("View");
+		clickMenuItem("Zoom");
+		clickMenuItem("Custom...");
+		cy.get(".window:visible").matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
-	it('custom zoom window', () => {
+	it("custom zoom window", () => {
 		selectTheme("Classic Light");
-		clickMenuButton('View');
-		clickMenuItem('Zoom');
-		clickMenuItem('Custom...');
-		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+		clickMenuButton("View");
+		clickMenuItem("Zoom");
+		clickMenuItem("Custom...");
+		cy.get(".window:visible").matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
-	it('flip and rotate window', () => {
-		clickMenuButton('Image');
-		clickMenuItem('Flip/Rotate');
-		cy.get('.window:visible').matchImageSnapshot(withMuchTextCompareOptions);
+	it("flip and rotate window", () => {
+		clickMenuButton("Image");
+		clickMenuItem("Flip/Rotate");
+		cy.get(".window:visible").matchImageSnapshot(withMuchTextCompareOptions);
 	});
 
-	it('stretch and skew window', () => {
-		clickMenuButton('Image');
-		clickMenuItem('Stretch/Skew');
-		waitForImage('.window:visible img');
-		cy.get('.window:visible').matchImageSnapshot(withTextCompareOptions);
+	it("stretch and skew window", () => {
+		clickMenuButton("Image");
+		clickMenuItem("Stretch/Skew");
+		waitForImage(".window:visible img");
+		cy.get(".window:visible").matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('help window', () => {
-		clickMenuButton('Help');
-		clickMenuItem('Help Topics');
-		cy.get('.window:visible .folder', { timeout: 10000 }); // wait for sidebar contents to load
+	it("help window", () => {
+		clickMenuButton("Help");
+		clickMenuItem("Help Topics");
+		cy.get(".window:visible .folder", { timeout: 10000 }); // wait for sidebar contents to load
 		// @TODO: wait for iframe to load
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["iframe"] }));
+		cy.get(".window:visible").matchImageSnapshot(Object.assign({}, withTextCompareOptions, { blackout: ["iframe"] }));
 	});
 
-	it('about window', () => {
-		clickMenuButton('Help');
-		clickMenuItem('About Paint');
-		waitForImage('#about-paint-icon');
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
+	it("about window", () => {
+		clickMenuButton("Help");
+		clickMenuItem("About Paint");
+		waitForImage("#about-paint-icon");
+		cy.get(".window:visible").matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
 	});
 
-	it('eye gaze mode', () => {
+	it("eye gaze mode", () => {
 		cy.get('.tool[title="Select"]').click();
 		clickMenuButton("Extras");
 		clickMenuItem("Eye Gaze Mode");
@@ -210,12 +210,12 @@ context('visual tests', () => {
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
 		closeMenus();
 		cy.wait(100);
-		cy.get(".eye-gaze-mode-undo-button").should('exist');
+		cy.get(".eye-gaze-mode-undo-button").should("exist");
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('bubblegum theme -- eye gaze mode', () => {
-		cy.get(".eye-gaze-mode-undo-button").should('exist');
+	it("bubblegum theme -- eye gaze mode", () => {
+		cy.get(".eye-gaze-mode-undo-button").should("exist");
 		// selectTheme("Bubblegum"); // not released yet
 		cy.window().then((win) => {
 			win.api_for_cypress_tests.set_theme("bubblegum.css");
@@ -226,8 +226,8 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('modern light theme -- eye gaze mode', () => {
-		cy.get(".eye-gaze-mode-undo-button").should('exist');
+	it("modern light theme -- eye gaze mode", () => {
+		cy.get(".eye-gaze-mode-undo-button").should("exist");
 		selectTheme("Modern Light");
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
@@ -235,14 +235,14 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('exit eye gaze mode', () => {
+	it("exit eye gaze mode", () => {
 		// this acts as teardown for the eye gaze mode tests
 		clickMenuButton("Extras");
 		clickMenuItem("Eye Gaze Mode");
-		cy.get(".eye-gaze-mode-undo-button").should('not.exist');
+		cy.get(".eye-gaze-mode-undo-button").should("not.exist");
 	});
 
-	it('modern light theme -- main screenshot', () => {
+	it("modern light theme -- main screenshot", () => {
 		cy.wait(100);
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
@@ -258,13 +258,13 @@ context('visual tests', () => {
 		if (expand) {
 			cy.contains("button", "Define Custom Colors >>").click();
 		}
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withTextCompareOptions));
+		cy.get(".window:visible").matchImageSnapshot(Object.assign({}, withTextCompareOptions));
 	};
-	it('modern light theme -- edit colors dialog (expanded)', () => {
+	it("modern light theme -- edit colors dialog (expanded)", () => {
 		test_edit_colors_dialog(true);
 	});
 
-	it('bubblegum theme -- main screenshot', () => {
+	it("bubblegum theme -- main screenshot", () => {
 		// selectTheme("Bubblegum"); // not released yet
 		cy.window().then((win) => {
 			win.api_for_cypress_tests.set_theme("bubblegum.css");
@@ -275,18 +275,18 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('bubblegum theme -- about window', () => {
-		clickMenuButton('Help');
-		clickMenuItem('About Paint');
+	it("bubblegum theme -- about window", () => {
+		clickMenuButton("Help");
+		clickMenuItem("About Paint");
 		// waitForImage('#about-paint-icon'); // it's actually replaced with a background image in this theme
 		// waitForRequest("/images/bubblegum/bubblegum-paint-128x128.png", () => { // not working
 		// waitForRequest("**/bubblegum-paint-*.png", () => { // not working
 		cy.wait(1000); // wait and hope it's loaded
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
+		cy.get(".window:visible").matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
 		// });
 	});
 
-	it('winter theme -- main screenshot', () => {
+	it("winter theme -- main screenshot", () => {
 		selectTheme("Winter");
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
@@ -294,11 +294,11 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('winter theme -- edit colors dialog (expanded)', () => {
+	it("winter theme -- edit colors dialog (expanded)", () => {
 		test_edit_colors_dialog(true);
 	});
 
-	it('winter theme -- vertical color box', () => {
+	it("winter theme -- vertical color box", () => {
 		cy.wait(500);
 		clickMenuButton("Extras");
 		clickMenuItem("Vertical Color Box");
@@ -308,40 +308,40 @@ context('visual tests', () => {
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('vertical color box', () => {
+	it("vertical color box", () => {
 		selectTheme("Classic Light");
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('edit colors dialog', () => {
+	it("edit colors dialog", () => {
 		test_edit_colors_dialog(false);
 	});
 
-	it('modern light theme -- vertical color box', () => {
+	it("modern light theme -- vertical color box", () => {
 		selectTheme("Modern Light");
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
-	it('about window during pride month', () => {
+	it("about window during pride month", () => {
 		// TODO: DRY with other about window tests and the app loading in the `before` hook,
 		// maybe enable test isolation even though it's slower to load the app every time
 
 		// June 19, 3000
 		cy.clock(32518299600000);
 
-		cy.visit('/');
+		cy.visit("/");
 		cy.setResolution([760, 490]);
-		cy.window().should('have.property', 'api_for_cypress_tests'); // wait for app to be loaded
+		cy.window().should("have.property", "api_for_cypress_tests"); // wait for app to be loaded
 
 		// Needed, given `cy.clock` is used, for `requestAnimationFrame` in `update_$swatch`,
 		// so the color palette is rendered correctly.
 		// (Doesn't apply to this test.)
 		cy.tick(100);
 
-		clickMenuButton('Help');
-		clickMenuItem('About Paint');
-		waitForImage('#about-paint-icon');
-		cy.get('.window:visible').matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
+		clickMenuButton("Help");
+		clickMenuItem("About Paint");
+		waitForImage("#about-paint-icon");
+		cy.get(".window:visible").matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
 	});
 
 });

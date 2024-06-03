@@ -117,11 +117,11 @@ module.exports = {
 	],
 	publishers: [
 		{
-			name: '@electron-forge/publisher-github',
+			name: "@electron-forge/publisher-github",
 			config: {
 				repository: {
-					owner: '1j01',
-					name: 'jspaint'
+					owner: "1j01",
+					name: "jspaint"
 				},
 				prerelease: true,
 				draft: true,

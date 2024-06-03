@@ -1,16 +1,16 @@
 /// <reference types="Cypress" />
 
-context('tool tests', () => {
+context("tool tests", () => {
 	// @TODO: make rounded tools render consistently across platforms
 	const roundedToolsCompareOptions = {
 		failureThreshold: 13,
-		failureThresholdType: 'pixel'
+		failureThresholdType: "pixel"
 	};
 
 	before(() => {
-		cy.visit('/')
+		cy.visit("/")
 		cy.setResolution([800, 500]);
-		cy.window().should('have.property', 'api_for_cypress_tests'); // wait for app to be loaded
+		cy.window().should("have.property", "api_for_cypress_tests"); // wait for app to be loaded
 	});
 	beforeEach(() => {
 		// eslint-disable-next-line require-await
@@ -158,7 +158,7 @@ context('tool tests', () => {
 					$options[o].click();
 					if (increaseSize) {
 						for (let i = 0; i < 5; i++) {
-							win.$('body').trigger(new win.$.Event("keydown", { code: "NumpadAdd" }));
+							win.$("body").trigger(new win.$.Event("keydown", { code: "NumpadAdd" }));
 						}
 					}
 					selected_colors.background = "#f0f";
@@ -198,7 +198,7 @@ context('tool tests', () => {
 						$options[o].click();
 						if (increaseSize && (o === 0 || toolName === "Brush" || toolName === "Line")) {
 							for (let i = 0; i < 5; i++) {
-								win.$('body').trigger(new win.$.Event("keydown", { code: "NumpadAdd" }));
+								win.$("body").trigger(new win.$.Event("keydown", { code: "NumpadAdd" }));
 							}
 						}
 						const start = { x: 0.05 + o * 0.05, y: 0.1 + 0.1 * row };
