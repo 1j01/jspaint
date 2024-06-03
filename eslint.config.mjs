@@ -4,6 +4,21 @@ import globals from "globals";
 
 /** @type {import('@types/eslint').Linter.FlatConfig[]} */
 export default [
+	{
+		// "if an ignores key is used without any other keys in the configuration object, then the patterns act as global ignores"
+		"ignores": [
+			"**/node_modules/",
+			"**/.git/",
+			"**/.history/",
+			"**/.idea/",
+			"**/.vscode/",
+			"**/lib/", // vendored dependencies
+			"**/out/", // Electron build
+			"**/build/", // maybe nothing
+			"**/dist/", // maybe nothing
+			"**/localization/**/*.js", // generated files
+		],
+	},
 	js.configs.recommended,
 	{
 		"linterOptions": {
