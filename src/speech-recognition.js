@@ -2122,7 +2122,7 @@ if (speech_recognition_available) {
 				// fallback to thumbnails in case they get rid of the "m" attribute (thumbnails are not as good, more likely to be jpeg)
 				if (items.length === 0) {
 					console.log("Fallback to thumbnails");
-					items =  /** @type {HTMLImageElement[]} */($html.find("img.mimg").toArray())
+					items = /** @type {HTMLImageElement[]} */($html.find("img.mimg").toArray())
 						.map((el) => ({ image_url: el.src || el.dataset.src, title: "" }))
 						.filter(validate_item);
 				}
