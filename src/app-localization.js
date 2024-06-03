@@ -1082,7 +1082,7 @@
 	window.loaded_localizations = function loaded_localizations(language, mapping) {
 		localizations = mapping;
 		current_language = language;
-	}
+	};
 	function set_language(language) {
 		showMessageBox({
 			title: "Reload Required",

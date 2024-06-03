@@ -31,7 +31,7 @@ window.onunhandledrejection = function (event) {
 		return false; // Don't need alerts postponing the "not supported" message.
 	}
 	alert('Unhandled Rejection: ' + event.reason);
-}
+};
 
 // Show a message for old Internet Explorer.
 if (isIE) {

@@ -247,7 +247,7 @@ function $Component(title, className, orientation, $el) {
 	};
 	const render_ghost = (e) => {
 
-		const { rect } = $dock_to ? imagine_docked_dimensions($dock_to) : imagine_window_dimensions()
+		const { rect } = $dock_to ? imagine_docked_dimensions($dock_to) : imagine_window_dimensions();
 
 		// Make sure these dimensions are odd numbers
 		// so the alternating pattern of the border is unbroken

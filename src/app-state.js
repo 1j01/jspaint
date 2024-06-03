@@ -69,7 +69,7 @@ const default_stroke_size = 1; // applies to lines, curves, shape outlines
 
 /** @type {BrushShape} */
 let brush_shape = default_brush_shape;
-let brush_size = default_brush_size
+let brush_size = default_brush_size;
 let eraser_size = default_eraser_size;
 let airbrush_size = default_airbrush_size;
 let pencil_size = default_pencil_size;

@@ -66,7 +66,7 @@ const formats_unique_per_file_extension = (formats) => {
 	// first handle BMP format specifically to make sure the 24-bpp is the selected BMP format
 	formats = formats.filter((format) =>
 		format.extensions.includes("bmp") ? (/**@type {ImageFileFormat}*/(format).mimeType === "image/bmp") : true
-	)
+	);
 	// then generally uniquify on extensions
 	// (this could be overzealous in case of partial overlap in extensions of different formats,
 	// but in general it needs special care anyways, to decide which format should win)

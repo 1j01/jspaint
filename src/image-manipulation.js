@@ -253,7 +253,7 @@ const get_circumference_points_for_brush_implementation = (brush_shape, brush_si
 	}
 
 	return points;
-}
+};
 const get_circumference_points_for_brush = memoize_synchronous_function(get_circumference_points_for_brush_implementation);
 
 $G.on("invalidate-brush-canvases", () => {

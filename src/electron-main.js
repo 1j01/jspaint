@@ -212,7 +212,7 @@ const createWindow = () => {
 					connect-src * data: blob:;
 				`],
 			},
-		})
+		});
 	});
 
 	// Allow write access to files dropped onto the window.

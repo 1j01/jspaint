@@ -31,7 +31,7 @@ function open_help_viewer(options) {
 			16: "images/chm-16x16.png",
 		},
 		resizable: true,
-	})
+	});
 	$help_window.addClass("help-window");
 
 	let ignore_one_load = true;

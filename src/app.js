@@ -98,7 +98,7 @@ window.systemHookDefaults = {
 							accept: {
 								[getMimeType(format)]: format.extensions.map(prependDot),
 							},
-						}
+						};
 					}),
 				});
 				newFileName = newHandle.name;
@@ -122,7 +122,7 @@ window.systemHookDefaults = {
 								value: "cancel",
 							},
 						],
-					})
+					});
 					if (button_value === "show-save-as-dialog-again") {
 						return window.systemHookDefaults.showSaveFileDialog({
 							formats,
@@ -215,7 +215,7 @@ window.systemHookDefaults = {
 						accept: {
 							[getMimeType(format)]: format.extensions.map(prependDot),
 						},
-					}
+					};
 				}),
 			});
 			const file = await fileHandle.getFile();
@@ -1668,7 +1668,7 @@ function iOS() {
 		'iPod',
 	].includes(navigator.platform) ||
 		// iPad on iOS 13 detection
-		(navigator.userAgent.includes("Mac") && "ontouchend" in document)
+		(navigator.userAgent.includes("Mac") && "ontouchend" in document);
 }
 $("html").toggleClass("ios", iOS());
 $G.on("fullscreenchange webkitfullscreenchange", () => {
@@ -1686,7 +1686,7 @@ window.api_for_cypress_tests = {
 		selected_colors.foreground = "#000";
 		selected_colors.background = "#fff";
 		brush_shape = default_brush_shape;
-		brush_size = default_brush_size
+		brush_size = default_brush_size;
 		eraser_size = default_eraser_size;
 		airbrush_size = default_airbrush_size;
 		pencil_size = default_pencil_size;

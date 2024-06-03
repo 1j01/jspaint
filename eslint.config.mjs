@@ -162,7 +162,7 @@ export default [
 			// "@stylistic/quote-props": ["error", "consistent"], // TODO probably
 			// "@stylistic/quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": true }], // TODO maybe
 			"@stylistic/rest-spread-spacing": ["error", "never"],
-			// "@stylistic/semi": ["error", "always"], // TODO
+			"@stylistic/semi": ["error", "always"],
 			"@stylistic/semi-spacing": ["error", { "before": false, "after": true }],
 			"@stylistic/semi-style": ["error", "last"],
 			"@stylistic/space-before-blocks": ["error", "always"],

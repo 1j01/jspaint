@@ -180,7 +180,7 @@ const get_winter_palette = () => {
 		// stripes
 		...make_stripe_patterns(true),
 	];
-}
+};
 
 
 export {

@@ -40,7 +40,7 @@ function show_recovery_window(no_longer_blank) {
 	});
 	$w.title("Recover Document");
 	let backup_impossible = false;
-	try { window.localStorage } catch (_error) { backup_impossible = true; }
+	try { window.localStorage; } catch (_error) { backup_impossible = true; }
 	// TODO: get rid of this invasive dialog https://github.com/1j01/jspaint/issues/325
 	// It appears when it shouldn't, in basic scenarios like Ctrl+A in a transparent document,
 	// and it gets bigger once you edit the document, which feels... almost aggressive.

@@ -2084,7 +2084,7 @@ if (speech_recognition_available) {
 	}
 
 	function find_clipart(query) {
-		const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart&FORM=IRFLTR`)
+		const bing_url = new URL(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&qft=+filterui:photo-clipart&FORM=IRFLTR`);
 		return fetch(`https://jspaint-cors-proxy.herokuapp.com/${bing_url}`)
 			.then((response) => response.text())
 			.then((html) => {
@@ -2142,7 +2142,7 @@ if (speech_recognition_available) {
 					throw error;
 				}
 				return items;
-			})
+			});
 	}
 
 	function clickButtonVisibly(button) {

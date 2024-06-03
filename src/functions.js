@@ -890,13 +890,13 @@ async function load_image_from_uri(uri) {
 											return;
 										}
 										loaded += value.byteLength;
-										show_progress({ loaded, total })
+										show_progress({ loaded, total });
 										controller.enqueue(value);
 										read();
 									}).catch((error) => {
 										console.error(error);
-										controller.error(error)
-									})
+										controller.error(error);
+									});
 								}
 							},
 						})
@@ -1016,7 +1016,7 @@ function open_from_file(file, source_file_handle) {
 		file.text().then(load_theme_from_text, (error) => {
 			show_error_message(localize("Paint cannot open this file."), error);
 		});
-		return
+		return;
 	}
 	// Try loading as an image file first, then as a palette file, but show a combined error message if both fail.
 	read_image_file(file, (as_image_error, image_info) => {
@@ -1032,7 +1032,7 @@ function open_from_file(file, source_file_handle) {
 			});
 			return;
 		}
-		image_info.source_file_handle = source_file_handle
+		image_info.source_file_handle = source_file_handle;
 		open_from_image_info(image_info);
 	});
 }
@@ -1096,7 +1096,7 @@ function file_new() {
 }
 
 async function file_open() {
-	const { file, fileHandle } = await systemHooks.showOpenFileDialog({ formats: image_formats })
+	const { file, fileHandle } = await systemHooks.showOpenFileDialog({ formats: image_formats });
 	open_from_file(file, fileHandle);
 }
 
@@ -3143,7 +3143,7 @@ function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height, un
 		height: main_canvas.height.toString(),
 	}, (/*error*/) => {
 		// oh well
-	})
+	});
 }
 
 function image_attributes() {

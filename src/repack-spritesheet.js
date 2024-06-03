@@ -38,4 +38,4 @@ function repack_spritesheet(tile_width, tile_height = tile_width, padding = tile
 	});
 }
 
-repack_spritesheet(16, 16, 16)
+repack_spritesheet(16, 16, 16);

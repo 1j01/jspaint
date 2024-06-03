@@ -59,7 +59,7 @@ function make_css_cursor(name, coords, fallback) {
  */
 const E = function E(t) {
 	return document.createElement(t);
-}
+};
 
 /**
  * @template {any[]} A
@@ -131,7 +131,7 @@ function memoize_synchronous_function(func, max_entries = 50000) {
 			}
 			return val;
 		}
-	}
+	};
 	memoized_func.clear_memo_cache = () => {
 		for (const key of keys) {
 			delete cache[key];
@@ -323,7 +323,7 @@ function get_icon_for_tools(tools) {
 				const y = 0;
 				icon_canvas.ctx.drawImage(icon, x, y, w, h, x, y, w, h);
 			});
-		})
+		});
 	return icon_canvas;
 }
 
