@@ -26,9 +26,9 @@ import { onKonamiCodeEntered } from "./konami.js";
 		if (typeof YT !== "undefined") {
 			callback();
 		} else {
-			const tag = document.createElement('script');
+			const tag = document.createElement("script");
 			tag.src = "https://www.youtube.com/player_api";
-			const firstScriptTag = document.getElementsByTagName('script')[0];
+			const firstScriptTag = document.getElementsByTagName("script")[0];
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 			// The YouTube API will call this global function when loaded and ready.

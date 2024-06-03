@@ -104,7 +104,7 @@ function show_imgur_uploader(blob) {
 		const req = new XMLHttpRequest();
 
 		if (req.upload) {
-			req.upload.addEventListener('progress', (event) => {
+			req.upload.addEventListener("progress", (event) => {
 				if (event.lengthComputable) {
 					const progress_value = event.loaded / event.total;
 					const percentage_text = `${Math.floor(progress_value * 100)}%`;
@@ -134,7 +134,7 @@ function show_imgur_uploader(blob) {
 				const $imgur_url = $(E("a")).attr({ id: "imgur-url", target: "_blank" });
 
 				$imgur_url.text(url);
-				$imgur_url.attr('href', url);
+				$imgur_url.attr("href", url);
 				$imgur_url_area.append(
 					"<label>URL: </label>"
 				).append($imgur_url);

@@ -20,14 +20,14 @@ await discordSdk.ready();
 // Authorize with Discord Client
 const { code } = await discordSdk.commands.authorize({
 	client_id: CLIENT_ID,
-	response_type: 'code',
-	state: '',
-	prompt: 'none',
+	response_type: "code",
+	state: "",
+	prompt: "none",
 	// More info on scopes here: https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes
 	scope: [
 		// At least one scope is required. Otherwise authorize will throw an error.
 		// Likely useful scopes:
-		'identify', // for user presence, and including username/avatar in the undo history window (Edit > History)
+		"identify", // for user presence, and including username/avatar in the undo history window (Edit > History)
 		// 'guilds.members.read', // for server-specific nicknames/avatars
 		// 'messages.read', // could plug into the interpret_command of Extras > Speech Recognition (not sure how useless this would be on a scale of Google Assistant to Twitch Plays Pokemon)
 		// For Extras > Speech Recognition, could use something like https://github.com/Rei-x/discord-speech-recognition
@@ -37,10 +37,10 @@ const { code } = await discordSdk.commands.authorize({
 });
 
 // Retrieve an access_token from your embedded app's server
-const response = await fetch('/api/token', {
-	method: 'POST',
+const response = await fetch("/api/token", {
+	method: "POST",
 	headers: {
-		'Content-Type': 'application/json',
+		"Content-Type": "application/json",
 	},
 	body: JSON.stringify({
 		code,
@@ -58,7 +58,7 @@ const newAuth = await discordSdk.commands.authenticate({
 const guildMember = await fetch(
 	`/discord/api/users/@me/guilds/${discordSdk.guildId}/member`,
 	{
-		method: 'get',
+		method: "get",
 		headers: { Authorization: `Bearer ${access_token}` },
 	},
 )
@@ -68,10 +68,10 @@ const guildMember = await fetch(
 	});
 
 export function handleExternalLinks() {
-	document.addEventListener('click', (e) => {
+	document.addEventListener("click", (e) => {
 		if (e.defaultPrevented) return;
 		const target = e.target;
-		if (target instanceof HTMLAnchorElement && target.href && target.target === '_blank') {
+		if (target instanceof HTMLAnchorElement && target.href && target.target === "_blank") {
 			e.preventDefault();
 			discordSdk.commands.openExternalLink({ url: target.href });
 		}
@@ -92,10 +92,10 @@ export async function shareImage(blob, filename) {
 	const imageFile = new File([buf], filename, { type: mimeType });
 
 	const body = new FormData();
-	body.append('file', imageFile);
+	body.append("file", imageFile);
 
 	const attachmentResponse = await fetch(`${DISCORD_API_BASE}/applications/${APPLICATION_ID}/attachment`, {
-		method: 'POST',
+		method: "POST",
 		headers: {
 			Authorization: `Bearer ${access_token}`,
 		},

@@ -10,8 +10,8 @@ Automated checks to catch errors before publishing a news update:
 HTML validity checking is not performed.
 */
 
-const newsEl = document.querySelector('#news');
-const articles = newsEl.querySelectorAll('article');
+const newsEl = document.querySelector("#news");
+const articles = newsEl.querySelectorAll("article");
 const articleIDs = [];
 for (const article of articles) {
 	// Check id
@@ -19,16 +19,16 @@ for (const article of articles) {
 		console.error(`Duplicate article id: #${article.id}`, article);
 	}
 	articleIDs.push(article.id);
-	if (!article.id.startsWith('news-')) {
+	if (!article.id.startsWith("news-")) {
 		console.error(`Article id does not start with 'news-': #${article.id}`, article);
 	}
 
 	// Check date
-	const time = article.querySelector('time');
+	const time = article.querySelector("time");
 	if (!time) {
 		console.error(`Missing <time> element in article #${article.id}`, article);
 	} else {
-		const datetime = time.getAttribute('datetime');
+		const datetime = time.getAttribute("datetime");
 		const dateText = time.textContent;
 		if (!datetime) {
 			console.error(`Missing datetime attribute in <time> element in article #${article.id}`, time);
@@ -67,11 +67,11 @@ for (const article of articles) {
 	}
 
 	// Check links
-	const links = article.querySelectorAll('a');
+	const links = article.querySelectorAll("a");
 	for (const link of links) {
-		const target = link.getAttribute('target');
-		const href = link.getAttribute('href');
-		if (target !== '_blank') {
+		const target = link.getAttribute("target");
+		const href = link.getAttribute("href");
+		if (target !== "_blank") {
 			console.error(`target is not "_blank"`, link);
 		}
 		if (!href) {
@@ -80,10 +80,10 @@ for (const article of articles) {
 	}
 
 	// Check images
-	const images = article.querySelectorAll('img');
+	const images = article.querySelectorAll("img");
 	for (const img of images) {
-		const hasAlt = img.hasAttribute('alt');
-		const src = img.getAttribute('src');
+		const hasAlt = img.hasAttribute("alt");
+		const src = img.getAttribute("src");
 		if (!hasAlt) {
 			console.error(`img is missing alt (empty is often fine)`, img);
 		}

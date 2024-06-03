@@ -1,36 +1,36 @@
-const { app, shell, session, dialog, ipcMain, BrowserWindow, Menu, MenuItem } = require('electron');
+const { app, shell, session, dialog, ipcMain, BrowserWindow, Menu, MenuItem } = require("electron");
 const fs = require("fs");
 const path = require("path");
-const { ArgumentParser, SUPPRESS } = require('argparse');
+const { ArgumentParser, SUPPRESS } = require("argparse");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
+if (require("electron-squirrel-startup")) {
 	app.quit();
 	// `app.quit` does not immediately exit the process.
 	return;
 }
 
 const parser = new ArgumentParser({
-	prog: 'jspaint',
-	description: 'MS Paint in JavaScript, running in Electron.',
+	prog: "jspaint",
+	description: "MS Paint in JavaScript, running in Electron.",
 });
 
-parser.add_argument('file_path', {
-	help: 'Image file to open',
-	nargs: '?', // '?' indicates 0 or 1 arguments: it's optional
+parser.add_argument("file_path", {
+	help: "Image file to open",
+	nargs: "?", // '?' indicates 0 or 1 arguments: it's optional
 });
 
-parser.add_argument('-v', '--version', {
-	action: 'version',
-	version: require('../package.json').version,
+parser.add_argument("-v", "--version", {
+	action: "version",
+	version: require("../package.json").version,
 });
 
 // Squirrel.Windows passes "-squirrel-firstrun" when the app is first run after being installed.
 // Other Squirrel.Windows event argument are handled by `electron-squirrel-startup`, which returns whether it handled an event.
 // This could be used to show a "Thanks for installing" message or some such, but just hide and ignore it for now.
-parser.add_argument('-s', '--squirrel-firstrun', {
+parser.add_argument("-s", "--squirrel-firstrun", {
 	help: SUPPRESS,
-	action: 'store_true',
+	action: "store_true",
 });
 
 // Compare command line arguments:
@@ -74,13 +74,13 @@ if (!got_single_instance_lock) {
 }
 
 app.enableSandbox();
-app.commandLine.appendSwitch('high-dpi-support', 1);
-app.commandLine.appendSwitch('force-device-scale-factor', 1);
+app.commandLine.appendSwitch("high-dpi-support", 1);
+app.commandLine.appendSwitch("force-device-scale-factor", 1);
 
 // Reloading and dev tools shortcuts
 const isDev = process.env.ELECTRON_DEBUG === "1" || !isPackaged;
 if (isDev) {
-	require('electron-debug')({ showDevTools: false });
+	require("electron-debug")({ showDevTools: false });
 }
 
 // @TODO: let user apply this setting somewhere in the UI (togglable)
@@ -159,7 +159,7 @@ const createWindow = () => {
 	editor_window.loadURL(`file://${__dirname}/../index.html`);
 
 	// Emitted when the window is closed.
-	editor_window.on('closed', () => {
+	editor_window.on("closed", () => {
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
@@ -167,7 +167,7 @@ const createWindow = () => {
 	});
 
 	// Emitted before the window is closed.
-	editor_window.on('close', (event) => {
+	editor_window.on("close", (event) => {
 		// Don't need to check editor_window.isDocumentEdited(),
 		// because the (un)edited state is handled by the renderer process, in are_you_sure().
 		// Note: if the web contents are not responding, this will make the app harder to close.
@@ -175,12 +175,12 @@ const createWindow = () => {
 		// And this also prevents it from closing with Ctrl+C in the terminal, which is arguably a feature.
 		// TODO: focus window if it's not focused, which can happen via right clicking the dock/taskbar icon, or Ctrl+C in the terminal
 		// (but ideally not if it's going to close without prompting)
-		editor_window.webContents.send('close-window-prompt');
+		editor_window.webContents.send("close-window-prompt");
 		event.preventDefault();
 	});
 
 	// Open links without target=_blank externally.
-	editor_window.webContents.on('will-navigate', (e, url) => {
+	editor_window.webContents.on("will-navigate", (e, url) => {
 		// check that the URL is not part of the app
 		if (!url.includes("file://")) {
 			e.preventDefault();
@@ -227,7 +227,7 @@ const createWindow = () => {
 	// For file dialogs and command line arguments and all the other ways to open files,
 	// the file list is managed exclusively by the main process, so drag and drop is the weak link.
 	// If drag and drop could be handled by the main process, it would be more secure overall.
-	editor_window.webContents.on('did-finish-load', () => {
+	editor_window.webContents.on("did-finish-load", () => {
 		// Could use contextBridge, but re-registering an event listener recursively was easier.
 		// It's a pattern I've done before, and this code actually worked on the first try.
 		function handle_one_drop() {
@@ -247,7 +247,7 @@ const createWindow = () => {
 			]).then((file_path) => {
 				console.log("Allowing write access to dropped file:", file_path);
 				allowed_file_paths.push(file_path);
-				editor_window.webContents.send('open-file', file_path);
+				editor_window.webContents.send("open-file", file_path);
 				handle_one_drop();
 			});
 		}
@@ -536,7 +536,7 @@ const createWindow = () => {
 		const bash_for_xfce = `xfconf-query -c xfce4-desktop -l | grep last-image | while read path; do xfconf-query -c xfce4-desktop -p $path -s '${image_path}'; done`;
 		const { lookpath } = require("lookpath");
 		if (await lookpath("xfconf-query") && await lookpath("grep")) {
-			const exec = require("util").promisify(require('child_process').exec);
+			const exec = require("util").promisify(require("child_process").exec);
 			try {
 				await exec(bash_for_xfce);
 			} catch (error) {
@@ -569,10 +569,10 @@ const createWindow = () => {
 }
 
 // Quit when all windows are closed.
-app.on('window-all-closed', () => {
+app.on("window-all-closed", () => {
 	// On OS X it is common for applications and their menu bar
 	// to stay active until the user quits explicitly with Cmd + Q
-	if (process.platform !== 'darwin') {
+	if (process.platform !== "darwin") {
 		app.quit();
 	}
 });
@@ -608,7 +608,7 @@ function open_file_in_app(file_path) {
 	allowed_file_paths.push(file_path);
 	if (editor_window) {
 		console.log("Telling existing editor window to open file.");
-		editor_window.webContents.send('open-file', file_path);
+		editor_window.webContents.send("open-file", file_path);
 	} else {
 		console.log("Setting initial file path to be opened when window is ready.");
 		initial_file_path = file_path;
@@ -623,7 +623,7 @@ function open_file_in_app(file_path) {
 // or somehow, though I haven't seen any evidence of anyone achieving that.
 // Worst case scenario, I guess you could edit files within the package to iterate more quickly,
 // possibly with some symbolic links or rsync or something.
-app.on('open-file', (event, file_path) => {
+app.on("open-file", (event, file_path) => {
 	// Emitted when dragging a file onto the dock on macOS (when the app was NOT running),
 	// or when opening a file from the file manager (when the app WAS already running),
 	// either via Open With or dragging a file onto the desktop icon.
@@ -637,7 +637,7 @@ app.on('open-file', (event, file_path) => {
 	open_file_in_app(file_path);
 });
 
-app.on('second-instance', (_event, uselessCorruptedArgv, workingDirectory, additionalData) => {
+app.on("second-instance", (_event, uselessCorruptedArgv, workingDirectory, additionalData) => {
 	// Someone tried to run a second instance, we should focus our window,
 	// and handle the file path if there is one.
 
@@ -678,7 +678,7 @@ app.on('second-instance', (_event, uselessCorruptedArgv, workingDirectory, addit
 // dock icon is clicked and there are no other windows open.
 // Don't really need focus/restore logic of activate_app here,
 // as I believe macOS will do that, but it's simpler to just call activate_app.
-app.on('activate', activate_app);
+app.on("activate", activate_app);
 
 // Create the main window when Electron is ready.
 // Use `activate_app` instead of `app.on('ready', createWindow)`, because it includes a check for an existing window,

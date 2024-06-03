@@ -97,7 +97,7 @@ function make_grinch_button() {
 	const start_smile = button.onmouseleave = () => {
 		smile_target = clicked ? 1 : 0;
 		animate();
-		document.removeEventListener('touchmove', document_touchmove);
+		document.removeEventListener("touchmove", document_touchmove);
 	};
 	const stop_smile = button.onmouseenter = () => {
 		smile_target = 1;
@@ -107,7 +107,7 @@ function make_grinch_button() {
 	button.onpointerdown = (event) => {
 		if (event.pointerType === "touch") {
 			start_smile();
-			document.addEventListener('touchmove', document_touchmove);
+			document.addEventListener("touchmove", document_touchmove);
 		}
 	};
 	// Not using pointerleave because it includes when the finger is lifted off the screen
@@ -169,7 +169,7 @@ function make_grinch_button() {
 		set_theme(new_theme);
 		button.remove();
 		window.removeEventListener("resize", on_zoom_etc);
-		document.removeEventListener('touchmove', document_touchmove);
+		document.removeEventListener("touchmove", document_touchmove);
 	}
 	document.body.appendChild(button);
 	grinch_button = button;

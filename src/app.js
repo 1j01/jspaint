@@ -777,7 +777,7 @@ $("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.Dra
 		if (window.FileSystemHandle && !window.is_electron_app) {
 			for (const item of dt.items) {
 				// kind will be 'file' for file/directory entries.
-				if (item.kind === 'file') {
+				if (item.kind === "file") {
 					let handle;
 					try {
 						// Experimental API, not supported on Firefox as of 2024-02-17
@@ -791,7 +791,7 @@ $("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.Dra
 						show_error_message(localize("File not found."), error);
 						return;
 					}
-					if (!handle || handle.kind === 'file') {
+					if (!handle || handle.kind === "file") {
 						let file;
 						try {
 							// instanceof is for the type checker; it should be guaranteed since kind is 'file'
@@ -1663,12 +1663,12 @@ $G.on("blur", () => {
 function iOS() {
 	return (
 		[
-			'iPad Simulator',
-			'iPhone Simulator',
-			'iPod Simulator',
-			'iPad',
-			'iPhone',
-			'iPod',
+			"iPad Simulator",
+			"iPhone Simulator",
+			"iPod Simulator",
+			"iPad",
+			"iPhone",
+			"iPod",
 		].includes(navigator.platform) ||
 		// iPad on iOS 13 detection
 		(navigator.userAgent.includes("Mac") && "ontouchend" in document)

@@ -612,7 +612,7 @@ function toggle_thumbnail() {
 					thumbnail_canvas.height = height;
 				}
 				update_helper_layer_immediately(); // updates thumbnail (but also unnecessarily the helper layer)
-			}).observe(thumbnail_canvas, { box: 'device-pixel-content-box' });
+			}).observe(thumbnail_canvas, { box: "device-pixel-content-box" });
 		}
 		$thumbnail_window.show();
 		$thumbnail_window.on("close", (e) => {
@@ -1485,14 +1485,14 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 		`;
 	}
 	var entity_map = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&#39;',
-		'/': '&#x2F;',
-		'`': '&#x60;',
-		'=': '&#x3D;',
+		"&": "&amp;",
+		"<": "&lt;",
+		">": "&gt;",
+		'"': "&quot;",
+		"'": "&#39;",
+		"/": "&#x2F;",
+		"`": "&#x60;",
+		"=": "&#x3D;",
 	};
 	const escape_html = (string) => String(string).replace(/[&<>"'`=/]/g, (s) => entity_map[s]);
 	const uppercase_first = (string) => string.charAt(0).toUpperCase() + string.slice(1);
@@ -1880,7 +1880,7 @@ function render_history_as_gif() {
 	});
 	$win.$main.css({ padding: 5 });
 
-	const $cancel = $win.$Button('Cancel', () => {
+	const $cancel = $win.$Button("Cancel", () => {
 		$win.close();
 	}).focus();
 
@@ -1896,7 +1896,7 @@ function render_history_as_gif() {
 			height,
 		});
 
-		$win.on('close', () => {
+		$win.on("close", () => {
 			gif.abort();
 		});
 
@@ -3969,9 +3969,9 @@ function read_image_file(blob, callback) {
 		} else if (detected_type_id === "pdf") {
 			file_format = "application/pdf";
 
-			const pdfjs = window['pdfjs-dist/build/pdf'];
+			const pdfjs = window["pdfjs-dist/build/pdf"];
 
-			pdfjs.GlobalWorkerOptions.workerSrc = 'lib/pdf.js/build/pdf.worker.js';
+			pdfjs.GlobalWorkerOptions.workerSrc = "lib/pdf.js/build/pdf.worker.js";
 
 			const file_bytes = new Uint8Array(arrayBuffer);
 
@@ -3982,13 +3982,13 @@ function read_image_file(blob, callback) {
 			});
 
 			loadingTask.promise.then((pdf) => {
-				console.log('PDF loaded');
+				console.log("PDF loaded");
 
 				// Fetch the first page
 				// TODO: maybe concatenate all pages into one image?
 				var pageNumber = 1;
 				pdf.getPage(pageNumber).then((page) => {
-					console.log('Page loaded');
+					console.log("Page loaded");
 
 					var scale = 1.5;
 					var viewport = page.getViewport({ scale });
@@ -4003,7 +4003,7 @@ function read_image_file(blob, callback) {
 					};
 					var renderTask = page.render(renderContext);
 					renderTask.promise.then(() => {
-						console.log('Page rendered');
+						console.log("Page rendered");
 						const image_data = canvas.ctx.getImageData(0, 0, canvas.width, canvas.height);
 						callback(null, { file_format, monochrome, palette, image_data, source_blob: blob });
 					});

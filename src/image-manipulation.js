@@ -1353,7 +1353,7 @@ function initTesselator() {
 		}
 	}
 	function error_callback(errno) {
-		window.console && console.log('error callback');
+		window.console && console.log("error callback");
 		window.console && console.log(`error number: ${errno}`);
 	}
 	// callback for when segments intersect and must be split
@@ -1404,7 +1404,7 @@ function triangulate(contours) {
 
 function initWebGL(canvas) {
 	try {
-		gl = canvas.getContext('webgl', { antialias: false });
+		gl = canvas.getContext("webgl", { antialias: false });
 	} catch (error) {
 		// TODO: reload button for Electron app
 		show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.", error);
@@ -1420,7 +1420,7 @@ function initWebGL(canvas) {
 	window.WEBGL_lose_context = gl.getExtension("WEBGL_lose_context");
 
 	const program = createShaderProgram();
-	positionLoc = gl.getAttribLocation(program, 'position');
+	positionLoc = gl.getAttribLocation(program, "position");
 	gl.enableVertexAttribArray(positionLoc);
 }
 
@@ -1439,12 +1439,12 @@ function initArrayBuffer(triangleVertexCoords) {
 function createShaderProgram() {
 	// create vertex shader
 	const vertexSrc = [
-		'attribute vec4 position;',
-		'void main() {',
-		'	/* already in normalized coordinates, so just pass through */',
-		'	gl_Position = position;',
-		'}',
-	].join('');
+		"attribute vec4 position;",
+		"void main() {",
+		"	/* already in normalized coordinates, so just pass through */",
+		"	gl_Position = position;",
+		"}",
+	].join("");
 	const vertexShader = gl.createShader(gl.VERTEX_SHADER);
 	gl.shaderSource(vertexShader, vertexSrc);
 	gl.compileShader(vertexShader);
@@ -1457,11 +1457,11 @@ function createShaderProgram() {
 
 	// create fragment shader
 	const fragmentSrc = [
-		'precision mediump float;',
-		'void main() {',
-		'	gl_FragColor = vec4(0, 0, 0, 1);',
-		'}',
-	].join('');
+		"precision mediump float;",
+		"void main() {",
+		"	gl_FragColor = vec4(0, 0, 0, 1);",
+		"}",
+	].join("");
 	const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 	gl.shaderSource(fragmentShader, fragmentSrc);
 	gl.compileShader(fragmentShader);
@@ -1487,8 +1487,8 @@ export function init_webgl_stuff() {
 
 	tessy = initTesselator();
 
-	op_canvas_webgl = document.createElement('canvas');
-	op_canvas_2d = document.createElement('canvas');
+	op_canvas_webgl = document.createElement("canvas");
+	op_canvas_2d = document.createElement("canvas");
 	op_ctx_2d = op_canvas_2d.getContext("2d");
 
 	initWebGL(op_canvas_webgl);

@@ -135,7 +135,7 @@ const eye_gaze_mode_config = {
 				st.getPropertyValue("transform") ||
 				"none";
 			if (tm !== "none") {
-				const [a, b] = tm.split('(')[1].split(')')[0].split(',').map(Number);
+				const [a, b] = tm.split("(")[1].split(")")[0].split(",").map(Number);
 				return Math.round(Math.atan2(a, b) * (180 / Math.PI));
 			}
 			return 0;

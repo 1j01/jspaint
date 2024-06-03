@@ -7,7 +7,7 @@
 // I've enabled sandboxing, so the fs module is not available.
 // Operations must be carried out in the main process.
 
-const { /*contextBridge,*/ ipcRenderer } = require('electron');
+const { /*contextBridge,*/ ipcRenderer } = require("electron");
 
 // const { are_you_sure, open_from_file, show_error_message, show_about_paint, sanity_check_blob } = require('./functions.js');
 // const { get_format_from_extension } = require('./helpers.js');
@@ -197,7 +197,7 @@ window.systemHooks.readBlobFromHandle = async (filePath) => {
 	}
 	const file = new File([new Uint8Array(data)], fileName);
 	// can't set file.path directly, but we can do this:
-	Object.defineProperty(file, 'path', {
+	Object.defineProperty(file, "path", {
 		value: filePath,
 	});
 

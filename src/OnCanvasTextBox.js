@@ -277,7 +277,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		// Mobile browsers generally scroll the view for a textbox well enough, but
 		// don't include the custom behavior of moving the font box out of the way.
 		$(window).on("resize", this._on_window_resize = () => {
-			this.$editor[0].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+			this.$editor[0].scrollIntoView({ block: "nearest", inline: "nearest" });
 			displace_font_box();
 		});
 	}

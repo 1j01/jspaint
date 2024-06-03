@@ -1336,7 +1336,7 @@ if (speech_recognition_available) {
 
 		// spell-checker:enable
 	];
-	const colorNames = ['aqua', 'azure', 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
+	const colorNames = ["aqua", "azure", "beige", "bisque", "black", "blue", "brown", "chocolate", "coral", "crimson", "cyan", "fuchsia", "ghostwhite", "gold", "goldenrod", "gray", "green", "indigo", "ivory", "khaki", "lavender", "lime", "linen", "magenta", "maroon", "moccasin", "navy", "olive", "orange", "orchid", "peru", "pink", "plum", "purple", "red", "salmon", "sienna", "silver", "snow", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "white", "yellow"];
 	// const toolNames = tools.map((tool) => tool.speech_recognition).flat();
 	// @TODO: select foreground/background/ternary color specifically
 	// @TODO: switch colors / swap colors / swap foreground and background colors
@@ -1371,7 +1371,7 @@ if (speech_recognition_available) {
 	// speechRecognitionList.addFromString(grammar, 1);
 	// recognition.grammars = speechRecognitionList;
 	recognition.continuous = false;
-	recognition.lang = 'en-US';
+	recognition.lang = "en-US";
 	recognition.interimResults = false;
 	recognition.maxAlternatives = 1;
 
@@ -1426,7 +1426,7 @@ if (speech_recognition_available) {
 		console.log(event.results);
 		let command = event.results[0][0].transcript;
 		console.log(`Result received: "${command}"`);
-		console.log('Confidence: ' + event.results[0][0].confidence);
+		console.log("Confidence: " + event.results[0][0].confidence);
 		command = fix_up_speech_recognition(command);
 		console.log(`After any fixes: "${command}"`);
 
@@ -1478,8 +1478,8 @@ if (speech_recognition_available) {
 				}, { once: true });
 			}
 		} else {
-			$status_text.text('Error occurred in speech recognition: ' + event.error);
-			console.log('Error occurred in speech recognition:', event.error);
+			$status_text.text("Error occurred in speech recognition: " + event.error);
+			console.log("Error occurred in speech recognition:", event.error);
 			// speech_recognition_active = false;
 		}
 	};
@@ -2182,7 +2182,7 @@ if (speech_recognition_available) {
 	}
 
 	function escapeRegExp(string) {
-		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+		return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 	}
 
 	function test_command(input_text, expected, from_speech_text) {
