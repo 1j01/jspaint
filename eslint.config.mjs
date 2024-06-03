@@ -145,7 +145,7 @@ export default [
 			"@stylistic/no-extra-semi": "error",
 			"@stylistic/no-floating-decimal": "error",
 			// "@stylistic/no-mixed-operators": ["error", ...], // TODO: investigate options
-			// "@stylistic/no-mixed-spaces-and-tabs": "error", // TODO
+			"@stylistic/no-mixed-spaces-and-tabs": "error",
 			"@stylistic/no-multi-spaces": "error",
 			"@stylistic/no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
 			// "@stylistic/no-tabs": "off", // I use tabs for indentation, in disabled code, and in template literals
