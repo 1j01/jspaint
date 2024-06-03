@@ -93,7 +93,7 @@ export default [
 				"exports": "never", // matches VS Code's default JS/TS formatter
 				"functions": "only-multiline", // commas sometimes avoid confusing git diffs, sometimes are confusing themselves
 			}],
-			// "@stylistic/comma-spacing": ["error", { "before": false, "after": true }], // TODO
+			"@stylistic/comma-spacing": ["error", { "before": false, "after": true }],
 			"@stylistic/comma-style": ["error", "last"],
 			"@stylistic/computed-property-spacing": ["error", "never"],
 			"@stylistic/dot-location": ["error", "property"],
