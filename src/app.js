@@ -150,12 +150,12 @@ window.systemHookDefaults = {
 				};
 				if (!newFileExtension) {
 					// return await doItAgain(`Missing file extension.`);
-					return await doItAgain(`'${newFileName}' doesn't have an extension.`);
+					return await doItAgain(`"${newFileName}" doesn't have an extension.`);
 				}
 				if (!new_format.extensions.includes(newFileExtension)) {
 					// Closest translation: "Paint cannot save to the same filename with a different file type."
 					// return await doItAgain(`Wrong file extension for selected file type.`);
-					return await doItAgain(`File extension '.${newFileExtension}' does not match the selected file type ${new_format.name}.`);
+					return await doItAgain(`File extension ".${newFileExtension}" does not match the selected file type ${new_format.name}.`);
 				}
 				// const new_format =
 				// 	get_format_from_extension(formats, newHandle.name) ||
