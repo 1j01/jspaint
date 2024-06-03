@@ -1,6 +1,7 @@
 // @ts-check
 
 /* global AccessKeys, main_canvas */
+/* eslint-disable @stylistic/space-unary-ops */
 
 const TAU =
 	//                //////|//////

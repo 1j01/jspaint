@@ -213,11 +213,10 @@ export default [
 			}],
 			"@stylistic/space-in-parens": ["error", "never"],
 			"@stylistic/space-infix-ops": "error",
-			// TODO: one file actually uses spaces between unary operators _artistically_; could disable for that file (helpers.js)
-			// "@stylistic/space-unary-ops": ["error", {
-			// 	"words": true,
-			// 	"nonwords": false,
-			// }],
+			"@stylistic/space-unary-ops": ["error", {
+				"words": true,
+				"nonwords": false,
+			}],
 			// "@stylistic/spaced-comment": ["error", "always"], // TODO: investigate
 			"@stylistic/switch-colon-spacing": ["error", { "after": true, "before": false }],
 			"@stylistic/template-curly-spacing": ["error", "never"],
