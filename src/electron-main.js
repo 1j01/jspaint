@@ -56,7 +56,7 @@ const got_single_instance_lock = app.requestSingleInstanceLock({
 });
 
 // Note: If the main process crashes during the 'second-instance' event, the second instance will get the lock,
-// even if the first instance is still showing an error dialog. 
+// even if the first instance is still showing an error dialog.
 if (!got_single_instance_lock) {
 	console.log("Already running. Opening in existing instance.");
 	app.quit();
@@ -398,7 +398,7 @@ const createWindow = () => {
 		}
 
 		/**
-		 * @param {OSGUIMenuFragment[]} menu_items 
+		 * @param {OSGUIMenuFragment[]} menu_items
 		 * @returns {MenuItem[]}
 		 */
 		function makeMenu(menu_items) {

@@ -34,9 +34,9 @@ const $G = $(window);
 
 /**
  * Wrapper for AccessKeys.toHTML that ensures whitespace isn't collapsed in cases like "Fox &Trot" or "Fo&x Trot" where the access key abuts a space.
- * 
+ *
  * (Actually a simple `<span>` may be enough (since it's an inline element?), but `white-space: pre` is more explicit.)
- * 
+ *
  * @param {string} label  text with an access key denoted by an ampersand (can escape with double ampersand)
  * @returns {string}  HTML for label with access key underlined
  */
@@ -61,14 +61,14 @@ const E = function E(t) {
 	return document.createElement(t);
 }
 
-/** 
+/**
  * @template {any[]} A
  * @param {(...args: A)=> void} func  function to debounce
  * @param {number} wait_ms  minimum milliseconds between invocations
  * @param {boolean=} immediate  trigger the function on the leading edge, instead of the trailing.
  * @returns {((...args: A)=> void) & {cancel: ()=> void}}  a function, that, as long as it continues to be invoked, will not be triggered.
  *   The function will be called after it stops being called for `wait_ms` milliseconds.
- * 
+ *
  * @example
  * window.addEventListener("resize", debounce(() => {
  *  console.log(window.innerWidth);

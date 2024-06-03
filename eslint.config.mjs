@@ -149,7 +149,7 @@ export default [
 			"@stylistic/no-multi-spaces": "error",
 			"@stylistic/no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
 			// "@stylistic/no-tabs": "off", // I use tabs for indentation, in disabled code, and in template literals
-			// "@stylistic/no-trailing-spaces": "error", // TODO
+			"@stylistic/no-trailing-spaces": "error",
 			"@stylistic/no-whitespace-before-property": "error",
 			"@stylistic/nonblock-statement-body-position": ["error", "beside"], // TODO: maybe drop curly braces from single line conditionals
 			// "@stylistic/object-curly-newline": ["error", ""], // TODO: investigate options

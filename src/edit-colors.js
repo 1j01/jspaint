@@ -57,14 +57,14 @@ if (dev_edit_colors) {
 
 /**
  * Paint-specific handling of color picking.
- * 
+ *
  * Note: It always updates a cell in the palette and one of the color selections.
  * When the dialog is opened, it always starts[1] with one of the color selections,
  * which lets you use the color picker and then add a custom color based on that.
  * [1]: It may not show the color in the grid, but it will in the custom colors area.
- * 
- * @param {JQuery<HTMLDivElement>=} $swatch_to_edit 
- * @param {ColorSelectionSlot=} color_selection_slot_to_edit 
+ *
+ * @param {JQuery<HTMLDivElement>=} $swatch_to_edit
+ * @param {ColorSelectionSlot=} color_selection_slot_to_edit
  */
 function show_edit_colors_window($swatch_to_edit, color_selection_slot_to_edit) {
 	// console.log($swatch_to_edit, $colorbox.data("$last_fg_color_button"));

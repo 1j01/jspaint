@@ -9,7 +9,7 @@ import { E, is_discord_embed } from "./helpers.js";
 let $imgur_window;
 
 /**
- * @param {Blob} blob 
+ * @param {Blob} blob
  */
 function show_imgur_uploader(blob) {
 	if ($imgur_window) {

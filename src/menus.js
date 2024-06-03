@@ -1398,7 +1398,7 @@ export { menus };
  * Of course it would be more ergonomic if OS-GUI.js handled this sort of thing,
  * and I have thought about rewriting the OS-GUI API to mimic Electron's.
  * I also have some munging logic in electron-main.js related to this.
- * @param {string} shortcutLabel 
+ * @param {string} shortcutLabel
  * @returns {{shortcutLabel?: string, ariaKeyShortcuts?: string}}
  */
 function shortcut(shortcutLabel) {
@@ -1415,10 +1415,10 @@ function shortcut(shortcutLabel) {
 
 /**
  * Validates an aria-keyshortcuts value.
- * 
+ *
  * AI-generated code (ChatGPT), prompted with the spec section: https://w3c.github.io/aria/#aria-keyshortcuts
- * 
- * @param {string} value 
+ *
+ * @param {string} value
  * @returns {boolean} valid
  */
 function validateAriaKeyshortcuts(value) {

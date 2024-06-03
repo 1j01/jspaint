@@ -301,10 +301,10 @@ var programs_being_loaded = 0;
  * @typedef {object} I$Iframe
  * @property {() => void} focus_contents
  * @property {() => void} destroy
- * 
- * @param {object} options 
+ *
+ * @param {object} options
  * @param {string} options.src
- * 
+ *
  * @returns {JQuery<HTMLIFrameElement & {$window: OSGUI$Window}>} $iframe
  */
 function $Iframe(options) {

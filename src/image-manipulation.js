@@ -163,10 +163,10 @@ function draw_rounded_rectangle(ctx, x, y, width, height, radius_x, radius_y, st
 
 /**
  * Gets the canvas for a brush.
- * 
+ *
  * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
  * @TODO: protect against browser clearing canvases, invalidate cache
- * 
+ *
  * @param {BrushShape} brush_shape
  * @param {number} brush_size
  * @returns {PixelCanvas}
@@ -191,9 +191,9 @@ $G.on("invalidate-brush-canvases", () => {
 
 /**
  * Stamps a brush canvas onto the specified context at the given coordinates.
- * 
+ *
  * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
- * 
+ *
  * @param {CanvasRenderingContext2D} ctx - The rendering context to draw on.
  * @param {number} x - The x-coordinate for the center of the brush.
  * @param {number} y - The y-coordinate for the center of the brush.
@@ -211,9 +211,9 @@ const stamp_brush_canvas = (ctx, x, y, brush_shape, brush_size) => {
 
 /**
  * Returns the points on the circumference of a brush shape.
- * 
+ *
  * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
- * 
+ *
  * @param {BrushShape} brush_shape
  * @param {number} brush_size
  * @returns {{ x: number, y: number }[]}
@@ -265,7 +265,7 @@ $G.on("invalidate-brush-canvases", () => {
 let line_brush_canvas;
 /**
  * Updates the brush canvas used for line drawing.
- * 
+ *
  * USAGE NOTE: must be called outside of any other usage of op_canvas (because of render_brush)
  *
  * @param {number} stroke_size - The line width of the stroke.
@@ -328,7 +328,7 @@ function bresenham_line(x1, y1, x2, y2, callback) {
 	const sy = (y1 < y2) ? 1 : -1;
 	let err = dx - dy;
 
-	 
+
 	while (true) {
 		callback(x1, y1);
 
@@ -358,7 +358,7 @@ function bresenham_dense_line(x1, y1, x2, y2, callback) {
 	const sy = (y1 < y2) ? 1 : -1;
 	let err = dx - dy;
 
-	 
+
 	while (true) {
 		callback(x1, y1);
 
@@ -434,7 +434,7 @@ function draw_fill_without_pattern_support(ctx, start_x, start_y, fill_r, fill_g
 		}
 		reach_left = false;
 		reach_right = false;
-		 
+
 		while (true) {
 			y++;
 			pixel_pos = (y * c_width + x) * 4;
@@ -558,7 +558,7 @@ function draw_fill_separately(source_ctx, dest_ctx, start_x, start_y, fill_r, fi
 		}
 		reach_left = false;
 		reach_right = false;
-		 
+
 		while (true) {
 			y++;
 			pixel_pos = (y * c_width + x) * 4;
@@ -658,7 +658,7 @@ function replace_color_globally(image_data, from_r, from_g, from_b, from_a, to_r
 
 /**
  * Creates a mask for a specific color in the given image data, as separate destination image data.
- * 
+ *
  * @param {ImageData} source_image_data - The source image data containing the color to be found.
  * @param {ImageData} dest_image_data - The destination image data where the mask will be created.
  * @param {number} find_r - The red component of the color to be found.
@@ -757,7 +757,7 @@ function draw_noncontiguous_fill_separately(source_ctx, dest_ctx, x, y) {
 
 /**
  * Applies an image transformation to the selection, if it exists, or otherwise the whole document.
- * 
+ *
  * The transformation function can change the size of the new canvas, and it will update the selection or document accordingly.
  *
  * @param {{name: string, icon: HTMLImageElement | HTMLCanvasElement}} meta - object containing the name and icon for undo history.
@@ -974,7 +974,7 @@ function stretch_and_skew(x_scale, y_scale, h_skew, v_skew) {
 
 /**
  * Inverts the RGB values in a canvas, optionally storing the result in a separate destination canvas.
- * 
+ *
  * @param {CanvasRenderingContext2D} source_ctx - The source canvas rendering context.
  * @param {CanvasRenderingContext2D} [dest_ctx=source_ctx] - The destination canvas rendering context.
  */
@@ -1066,9 +1066,9 @@ function threshold_black_and_white(ctx, threshold) {
 /**
  * Replaces colors from a mask with a specified color or pattern.
  * This function is mainly for patterns support but naturally handles solid colors as well.
- * 
+ *
  * USAGE NOTE: Context MUST be untranslated! (for the rectangle to cover the exact area of the canvas, and presumably for the pattern alignment as well)
- * 
+ *
  * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
  * @param {string | CanvasPattern | CanvasGradient} swatch - The color swatch to replace the colors with.
  * @param {number} [x_offset_from_global_canvas=0] - The x-coordinate of the mask's top-left corner relative to the global canvas.
@@ -1302,14 +1302,14 @@ function draw_dashes(ctx, x, y, go_x, go_y, scale, translate_x, translate_y) {
 }
 
 /**
- * @param {CanvasRenderingContext2D} ctx 
- * @param {number} rect_x 
- * @param {number} rect_y 
- * @param {number} rect_w 
- * @param {number} rect_h 
- * @param {number} scale 
- * @param {number} translate_x 
- * @param {number} translate_y 
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} rect_x
+ * @param {number} rect_y
+ * @param {number} rect_w
+ * @param {number} rect_h
+ * @param {number} scale
+ * @param {number} translate_x
+ * @param {number} translate_y
  */
 export function draw_selection_box(ctx, rect_x, rect_y, rect_w, rect_h, scale, translate_x, translate_y) {
 	draw_dashes(ctx, rect_x, rect_y, rect_w - 1, 0, scale, translate_x, translate_y); // top
@@ -1537,14 +1537,14 @@ function clamp_brush_sizes() {
 }
 
 /**
- * @param {CanvasRenderingContext2D} ctx 
+ * @param {CanvasRenderingContext2D} ctx
  * @param {{x: number, y: number}[]} points
  */
 export function draw_line_strip(ctx, points) {
 	draw_polygon_or_line_strip(ctx, points, true, false, false);
 }
 /**
- * @param {CanvasRenderingContext2D} ctx 
+ * @param {CanvasRenderingContext2D} ctx
  * @param {{x: number, y: number}[]} points
  * @param {boolean} stroke
  * @param {boolean} fill
@@ -1668,12 +1668,12 @@ function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
 }
 
 /**
- * @param {HTMLCanvasElement} canvas 
- * @param {{x: number, y: number}[]} points 
- * @param {number} x_min 
- * @param {number} y_min 
- * @param {number} x_max 
- * @param {number} y_max 
+ * @param {HTMLCanvasElement} canvas
+ * @param {{x: number, y: number}[]} points
+ * @param {number} x_min
+ * @param {number} y_min
+ * @param {number} x_max
+ * @param {number} y_max
  * @returns {PixelCanvas}
  */
 export function copy_contents_within_polygon(canvas, points, x_min, y_min, x_max, y_max) {

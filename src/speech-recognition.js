@@ -16,7 +16,7 @@ export let trace_and_sketch = (subject_imagedata) => { void subject_imagedata; }
 export let trace_and_sketch_stop = () => { };
 export let enable_speech_recognition = () => { };
 export let disable_speech_recognition = () => { };
-/** 
+/**
  * @param {string} input_text
  * @param {boolean} [default_to_entering_text]
  * @returns {VoiceCommand[]} interpretations

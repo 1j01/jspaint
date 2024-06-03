@@ -140,7 +140,7 @@ function $Component(title, className, orientation, $el) {
 	}
 
 	/**
-	 * @param {JQuery<HTMLElement>} $dock_to 
+	 * @param {JQuery<HTMLElement>} $dock_to
 	 */
 	const dock_to = ($dock_to) => {
 		$w.hide();

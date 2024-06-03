@@ -261,11 +261,11 @@ function update_helper_layer_immediately() {
 }
 
 /**
- * @param {PixelCanvas} hcanvas 
- * @param {number} scale 
- * @param {number} viewport_x 
- * @param {number} viewport_y 
- * @param {boolean} is_helper_layer 
+ * @param {PixelCanvas} hcanvas
+ * @param {number} scale
+ * @param {number} viewport_x
+ * @param {number} viewport_y
+ * @param {boolean} is_helper_layer
  */
 function render_canvas_view(hcanvas, scale, viewport_x, viewport_y, is_helper_layer) {
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
@@ -687,7 +687,7 @@ function reset_canvas_and_history() {
  * @param {string | CanvasPattern=} options.ternary_color - selected ternary color (ctrl+click)
  * @param {string=} options.name - the name of the operation, shown in the history window, e.g. localize("Resize Canvas")
  * @param {HTMLImageElement |HTMLCanvasElement | null=} options.icon - a visual representation of the operation type, shown in the history window, e.g. get_help_folder_icon("p_blank.png")
- * @returns {HistoryNode} 
+ * @returns {HistoryNode}
  */
 function make_history_node({
 	parent = null, // the state before this state (its basis), or null if this is the first state
@@ -942,7 +942,7 @@ async function load_image_from_uri(uri) {
 }
 
 /**
- * @param {ImageInfo} info 
+ * @param {ImageInfo} info
  * @param {() => void} [callback]
  * @param {() => void} [canceled]
  * @param {boolean} [into_existing_session]
@@ -1464,11 +1464,11 @@ function show_resource_load_error_message(error) {
  * @typedef {object} PaletteErrorGroup
  * @property {string} message
  * @property {PaletteErrorObject[]} errors
- * 
+ *
  * @typedef {object} PaletteErrorObject
  * @property {Error} error
  * @property {{name: string}} __PATCHED_LIB_TO_ADD_THIS__format
- * 
+ *
  * @param {object} options
  * @param {Error=} options.as_image_error
  * @param {Error|PaletteErrorGroup=} options.as_palette_error
@@ -1766,7 +1766,7 @@ function show_news() {
 // @TODO: DRY between these functions and open_from_* functions further?
 
 /**
- * @param {Blob} blob 
+ * @param {Blob} blob
  */
 function paste_image_from_file(blob) {
 	read_image_file(blob, (error, info) => {
@@ -1789,7 +1789,7 @@ async function choose_file_to_paste() {
 }
 
 /**
- * @param {HTMLImageElement | HTMLCanvasElement} img_or_canvas 
+ * @param {HTMLImageElement | HTMLCanvasElement} img_or_canvas
  */
 function paste(img_or_canvas) {
 
@@ -2152,8 +2152,8 @@ function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, 
 	$G.triggerHandler("session-update"); // autosave
 }
 /**
- * @param {ActionMetadataUpdate} undoable_meta 
- * @param {()=> void} undoable_action 
+ * @param {ActionMetadataUpdate} undoable_meta
+ * @param {()=> void} undoable_action
  */
 function make_or_update_undoable(undoable_meta, undoable_action) {
 	if (current_history_node.futures.length === 0 && undoable_meta.match(current_history_node)) {
@@ -2218,7 +2218,7 @@ function redo() {
 }
 
 /**
- * @param {HistoryNode} node 
+ * @param {HistoryNode} node
  * @returns {HistoryNode[]} ancestors
  */
 function get_history_ancestors(node) {
@@ -2276,7 +2276,7 @@ function show_document_history() {
 	});
 
 	/**
-	 * @param {HistoryNode} node 
+	 * @param {HistoryNode} node
 	 */
 	function render_tree_from_node(node) {
 		const $entry = $(`
@@ -2384,8 +2384,8 @@ function show_document_history() {
 /**
  * Cancel the current tool gesture, if any.
  * Note: this function should be idempotent. `cancel(); cancel();` should do the same thing as `cancel();`
- * @param {boolean} [going_to_history_node] 
- * @param {boolean} [discard_document_state] 
+ * @param {boolean} [going_to_history_node]
+ * @param {boolean} [discard_document_state]
  */
 function cancel(going_to_history_node, discard_document_state) {
 	if (!history_node_to_cancel_to) {
@@ -2451,7 +2451,7 @@ function meld_selection_into_canvas(going_to_history_node) {
 	}
 }
 /**
- * @param {boolean} [going_to_history_node] 
+ * @param {boolean} [going_to_history_node]
  */
 function meld_textbox_into_canvas(going_to_history_node) {
 	const text = textbox.$editor.val();
@@ -2520,7 +2520,7 @@ function select_all() {
 const ctrlOrCmd = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform) ? "⌘" : "Ctrl";
 const recommendationForClipboardAccess = `Please use the keyboard: ${ctrlOrCmd}+C to copy, ${ctrlOrCmd}+X to cut, ${ctrlOrCmd}+V to paste. If keyboard is not an option, try using Chrome version 76 or higher.`;
 /**
- * @param {string} commandId 
+ * @param {string} commandId
  */
 function try_exec_command(commandId) {
 	if (document.queryCommandEnabled(commandId)) { // not a reliable source for whether it'll work, if I recall
@@ -2555,7 +2555,7 @@ function getSelectionText() {
 }
 
 /**
- * @param {boolean} [execCommandFallback] 
+ * @param {boolean} [execCommandFallback]
  */
 function edit_copy(execCommandFallback) {
 	const text = getSelectionText();
@@ -2598,7 +2598,7 @@ function edit_copy(execCommandFallback) {
 	}
 }
 /**
- * @param {boolean} [execCommandFallback] 
+ * @param {boolean} [execCommandFallback]
  */
 function edit_cut(execCommandFallback) {
 	if (!navigator.clipboard || !navigator.clipboard.write) {
@@ -2617,7 +2617,7 @@ function edit_cut(execCommandFallback) {
 	});
 }
 /**
- * @param {boolean} [execCommandFallback] 
+ * @param {boolean} [execCommandFallback]
  */
 async function edit_paste(execCommandFallback) {
 	if (
@@ -2824,7 +2824,7 @@ function view_bitmap() {
 	}, "image/png");
 }
 /**
- * @param {ToolID} id 
+ * @param {ToolID} id
  * @returns {Tool} tool object
  */
 function get_tool_by_id(id) {
@@ -2843,7 +2843,7 @@ function get_tool_by_id(id) {
 // hacky but whatever
 // this whole "multiple tools" thing is hacky for now
 /**
- * @param {Tool[]} tools 
+ * @param {Tool[]} tools
  */
 function select_tools(tools) {
 	for (let i = 0; i < tools.length; i++) {
@@ -2853,8 +2853,8 @@ function select_tools(tools) {
 }
 
 /**
- * @param {Tool} tool 
- * @param {boolean} [toggle] 
+ * @param {Tool} tool
+ * @param {boolean} [toggle]
  */
 function select_tool(tool, toggle) {
 	deselect();
@@ -2898,7 +2898,7 @@ function select_tool(tool, toggle) {
 }
 
 /**
- * @param {CanvasRenderingContext2D} ctx 
+ * @param {CanvasRenderingContext2D} ctx
  * @returns {boolean} whether the canvas has any translucent pixels (with a stupid margin of error)
  */
 function has_any_transparency(ctx) {
@@ -3005,8 +3005,8 @@ function make_monochrome_pattern(lightness, rgba1 = [0, 0, 0, 255], rgba2 = [255
 }
 
 /**
- * @param {Uint8ClampedArray | number[]} rgba1 
- * @param {Uint8ClampedArray | number[]} rgba2 
+ * @param {Uint8ClampedArray | number[]} rgba1
+ * @param {Uint8ClampedArray | number[]} rgba2
  * @returns {CanvasPattern[]}
  */
 function make_monochrome_palette(rgba1 = [0, 0, 0, 255], rgba2 = [255, 255, 255, 255]) {
@@ -3026,9 +3026,9 @@ function make_monochrome_palette(rgba1 = [0, 0, 0, 255], rgba2 = [255, 255, 255,
 }
 
 /**
- * @param {boolean} reverse 
- * @param {string[]} colors 
- * @param {number=} stripe_size 
+ * @param {boolean} reverse
+ * @param {string[]} colors
+ * @param {number=} stripe_size
  * @returns {CanvasPattern}
  */
 function make_stripe_pattern(reverse, colors, stripe_size = 4) {
@@ -3572,7 +3572,7 @@ function image_stretch_and_skew() {
 			} else {
 				show_error_message(localize("An unknown error has occurred."), exception);
 			}
-			// @TODO: undo and clean up undoable 
+			// @TODO: undo and clean up undoable
 			return;
 		}
 		$w.close();
@@ -3666,7 +3666,7 @@ function handle_keyshortcuts($container) {
  * @param {string} [options.defaultFileFormatID] - The file format to select by default.
  * @param {FileFormat[]} options.formats - The file formats available in the dropdown.
  * @param {boolean} [options.promptForName=true] - Whether to prompt for the file name, or just the format.
- * 
+ *
  * @returns {Promise<{newFileName: string, newFileFormatID: string}>} - A promise that resolves with the new file name and format ID.
  */
 function save_as_prompt({
@@ -3851,7 +3851,7 @@ function write_image_file(canvas, mime_type, blob_callback) {
 }
 
 /**
- * @param {Blob} blob 
+ * @param {Blob} blob
  * @param {(error: Error|null, result?: ImageInfo) => void} callback
  */
 function read_image_file(blob, callback) {
@@ -3944,7 +3944,7 @@ function read_image_file(blob, callback) {
 		} else if (detected_type_id === "tiff_be" || detected_type_id === "tiff_le") {
 			// IFDs = image file directories
 			// VSNs = ???
-			// This code is based on UTIF.bufferToURI	
+			// This code is based on UTIF.bufferToURI
 			var ifds = UTIF.decode(arrayBuffer);
 			//console.log(ifds);
 			var vsns = ifds, ma = 0, page = vsns[0];
@@ -4139,7 +4139,7 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 }
 
 /**
- * @param {boolean} from_current_document 
+ * @param {boolean} from_current_document
  */
 function show_multi_user_setup_dialog(from_current_document) {
 	const $w = $DialogWindow();

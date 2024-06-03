@@ -509,7 +509,7 @@ class FirebaseSession {
 	}
 }
 
-/** 
+/**
  * fb_root is the root reference for the Firebase Realtime Database
  * @memberof FirebaseSession
  * @type {any} - @TODO: install types for Firebase or ditch Firebase

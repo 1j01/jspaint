@@ -143,7 +143,7 @@ let redos = [];
 let file_name;
 /** @type {string | undefined} */
 let file_format;
-/** For saving over opened file on Save. Can be different type for File System Access API vs Electron. 
+/** For saving over opened file on Save. Can be different type for File System Access API vs Electron.
  * @type {UserFileHandle} */
 let system_file_handle;
 /** @type {boolean} */

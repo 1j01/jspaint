@@ -5,7 +5,7 @@ import { $Component } from "./$Component.js";
 import { show_edit_colors_window } from "./edit-colors.js";
 import { $G, E, make_canvas } from "./helpers.js";
 
-/** 
+/**
  * Used by the Colors Box and by the Edit Colors dialog.
  * @param {string | CanvasPattern} color
  * @returns {JQuery<HTMLDivElement>}
@@ -53,7 +53,7 @@ function update_$swatch($swatch, new_color) {
 }
 
 /**
- * @param {boolean} vertical 
+ * @param {boolean} vertical
  * @returns {JQuery<HTMLDivElement> & I$Component & I$ColorBox}
  */
 function $ColorBox(vertical) {

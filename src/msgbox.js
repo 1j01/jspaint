@@ -49,9 +49,9 @@ try {
  * @property {Array<{ label: string, value: string, default?: boolean, action?: () => void }>} [buttons]
  * @property {"error" | "warning" | "info" | "nuke"} [iconID]
  * @property {OSGUIWindowOptions} [windowOptions]
- * 
+ *
  * @typedef {Promise<string> & { $window: JQuery<Window>, $message: JQuery<HTMLDivElement>, promise: MessageBoxPromise }} MessageBoxPromise
- * 
+ *
  * @param {MessageBoxOptions} options
  * @returns {MessageBoxPromise} Resolves with the value of the button that was clicked. The promise has extra properties for convenience.
  */
