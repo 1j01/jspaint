@@ -1792,9 +1792,10 @@ async function choose_file_to_paste() {
 function paste(img_or_canvas) {
 
 	if (img_or_canvas.width > main_canvas.width || img_or_canvas.height > main_canvas.height) {
+		const message = localize("The image in the clipboard is larger than the bitmap.") + "\n" +
+			localize("Would you like the bitmap enlarged?");
 		showMessageBox({
-			message: localize("The image in the clipboard is larger than the bitmap.") + "\n" +
-				localize("Would you like the bitmap enlarged?"),
+			message,
 			iconID: "question",
 			windowOptions: {
 				icons: {

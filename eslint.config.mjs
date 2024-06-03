@@ -144,7 +144,7 @@ export default [
 				SwitchCase: 1,
 				VariableDeclarator: 1,
 			}],
-			// "@stylistic/indent-binary-ops": ["error", "tab"], // TODO (conflicts with VS Code's formatter)
+			"@stylistic/indent-binary-ops": ["error", "tab"],
 			// "@stylistic/jsx-child-element-spacing": "off",
 			// "@stylistic/jsx-closing-bracket-location": "off",
 			// "@stylistic/jsx-closing-tag-location": "off",

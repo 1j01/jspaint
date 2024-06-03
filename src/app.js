@@ -1661,16 +1661,18 @@ $G.on("blur", () => {
 // For Safari on iPad, Fullscreen mode overlays the system bar, completely obscuring our menu bar.
 // See CSS .fullscreen handling (and exit_fullscreen_if_ios) for more info.
 function iOS() {
-	return [
-		'iPad Simulator',
-		'iPhone Simulator',
-		'iPod Simulator',
-		'iPad',
-		'iPhone',
-		'iPod',
-	].includes(navigator.platform) ||
+	return (
+		[
+			'iPad Simulator',
+			'iPhone Simulator',
+			'iPod Simulator',
+			'iPad',
+			'iPhone',
+			'iPod',
+		].includes(navigator.platform) ||
 		// iPad on iOS 13 detection
-		(navigator.userAgent.includes("Mac") && "ontouchend" in document);
+		(navigator.userAgent.includes("Mac") && "ontouchend" in document)
+	);
 }
 $("html").toggleClass("ios", iOS());
 $G.on("fullscreenchange webkitfullscreenchange", () => {
