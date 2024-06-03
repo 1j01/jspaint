@@ -73,7 +73,6 @@ export default [
 			"no-new-wrappers": "error",
 			"no-proto": "error",
 			"no-return-assign": "error",
-			"no-return-await": "error",
 			"no-script-url": "error",
 			"no-self-compare": "error",
 			"no-sequences": "error",
