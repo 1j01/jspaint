@@ -11,4 +11,4 @@ Cypress.Commands.add("setResolution", (size) => {
 	} else {
 		cy.viewport(size);
 	}
-})
+});

@@ -85,7 +85,6 @@ export default [
 			"radix": "error",
 			"require-await": "error",
 			// "vars-on-top": "error",
-			"wrap-iife": "error",
 			"no-label-var": "error",
 			// "no-shadow": "error",
 			// "no-use-before-define": "error",
@@ -224,7 +223,7 @@ export default [
 			"@stylistic/space-before-function-paren": ["error", {
 				"anonymous": "always",
 				"named": "never",
-				"asyncArrow": "always"
+				"asyncArrow": "always",
 			}],
 			"@stylistic/space-in-parens": ["error", "never"],
 			"@stylistic/space-infix-ops": "error",

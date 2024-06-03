@@ -65,7 +65,7 @@
 		};
 	}
 
-	addEventListener("keydown", e => {
+	addEventListener("keydown", (e) => {
 		if (e.key === "d") {
 			if (cleanUp) {
 				cleanUp();
@@ -88,4 +88,4 @@
 		if (cleanUp) { cleanUp(); }
 	});
 
-}());
+})();

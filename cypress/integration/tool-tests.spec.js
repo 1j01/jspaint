@@ -4,11 +4,11 @@ context("tool tests", () => {
 	// @TODO: make rounded tools render consistently across platforms
 	const roundedToolsCompareOptions = {
 		failureThreshold: 13,
-		failureThresholdType: "pixel"
+		failureThresholdType: "pixel",
 	};
 
 	before(() => {
-		cy.visit("/")
+		cy.visit("/");
 		cy.setResolution([800, 500]);
 		cy.window().should("have.property", "api_for_cypress_tests"); // wait for app to be loaded
 	});
@@ -166,9 +166,7 @@ context("tool tests", () => {
 					const end = { x: start.x + 0.04, y: start.y + 0.04 };
 					await simulateGesture(win, { shift: false, secondary: false, start, end });
 					if (secondary) {
-						// eslint-disable-next-line require-atomic-updates
 						selected_colors.background = "#ff0";
-						// eslint-disable-next-line require-atomic-updates
 						selected_colors.foreground = "#f0f";
 						const start = { x: 0.04 + o * 0.05, y: 0.11 + 0.1 * row };
 						const end = { x: start.x + 0.03, y: start.y + 0.02 };

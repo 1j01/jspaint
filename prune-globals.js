@@ -141,7 +141,7 @@ function processFiles() {
 				/(?:\/\/\s*)?(window\.(.*?) = .*;)(\s*\/\/.*)?/g,
 				(_match, assignment, identifier, _comment) => {
 					const dependencies = findDependencies(identifier, fileUpperContentTree, [filePath]);
-					const formatPath = filePath => path.relative(srcDir, filePath).replace(/\\/g, "/");
+					const formatPath = (filePath) => path.relative(srcDir, filePath).replace(/\\/g, "/");
 					const formattedPaths = dependencies.map(formatPath).join(", ");
 					console.log(`Dependencies for ${identifier}: ${formattedPaths || "(none found)"}`);
 					if (dependencies.length) {

@@ -18,19 +18,19 @@ context("visual tests", () => {
 		// failureThreshold: 0.05, // masks HUGE differences
 		// failureThresholdType: 'percent' // not actually percent - fraction
 		failureThreshold: 0,
-		failureThresholdType: "pixel"
+		failureThresholdType: "pixel",
 	};
 	const withMuchTextCompareOptions = {
 		// failureThreshold: 0.08, // masks HUGE differences
 		// failureThresholdType: 'percent' // not actually percent - fraction
 		failureThreshold: 0,
-		failureThresholdType: "pixel"
+		failureThresholdType: "pixel",
 	};
 	const toolboxCompareOptions = {
 		// failureThreshold: 40,
 		// failureThresholdType: 'pixel'
 		failureThreshold: 0,
-		failureThresholdType: "pixel"
+		failureThresholdType: "pixel",
 	};
 
 	const escapeRegExp = (string) =>
@@ -80,7 +80,7 @@ context("visual tests", () => {
 				expect(img.naturalHeight).to.be.greaterThan(0);
 			}
 		});
-	}
+	};
 
 	before(() => {
 		// Hides the news indicator, which shouldn't affect the visual tests.

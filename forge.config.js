@@ -92,7 +92,7 @@ module.exports = {
 		{
 			name: "@electron-forge/maker-zip",
 			platforms: [
-				"darwin",  // macOS uses a .zip, which may be automatically extracted when opened
+				"darwin", // macOS uses a .zip, which may be automatically extracted when opened
 			],
 		},
 		{
@@ -113,7 +113,7 @@ module.exports = {
 					license: "MIT",
 				},
 			},
-		}
+		},
 	],
 	publishers: [
 		{
@@ -121,11 +121,11 @@ module.exports = {
 			config: {
 				repository: {
 					owner: "1j01",
-					name: "jspaint"
+					name: "jspaint",
 				},
 				prerelease: true,
 				draft: true,
-			}
-		}
+			},
+		},
 	],
 };

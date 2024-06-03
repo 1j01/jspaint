@@ -53,7 +53,7 @@ svg.addEventListener("contextmenu", function (event) {
 
 let idCounter = 0;
 /**
- * @param {SVGGeometryElement} clipShape 
+ * @param {SVGGeometryElement} clipShape
  * @returns {SVGUseElement}
  */
 function cutOut(clipShape) {
