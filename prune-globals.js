@@ -41,7 +41,7 @@ function writeFile(filePath, content) {
 // 		}
 // 		if (usageRegex.test(content)) {
 // 			if (!importRegex.test(content)) {
-// 				// console.log(`'${filePath}' includes '${identifier}' but doesn't match ${importRegex}`);
+// 				// console.log(`"${filePath}" includes "${identifier}" but doesn't match ${importRegex}`);
 // 				// console.log("Usage:\n    ", content.match(new RegExp(`.*${escapeRegExp(identifier)}.*`, "m"))[0]);
 // 				dependencies.push(filePath);
 // 			}
