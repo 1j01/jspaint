@@ -1880,7 +1880,7 @@ if (speech_recognition_available) {
 						}
 						update_helper_layer();
 					} else {
-						show_error_message(`Keywords like '${line_width_match[1]}' are not supported yet. Try a number of pixels instead.`);
+						show_error_message(`Keywords like "${line_width_match[1]}" are not supported yet. Try a number of pixels instead.`);
 					}
 				},
 			});
@@ -2076,7 +2076,7 @@ if (speech_recognition_available) {
 			img.src = image_url;
 		}, (error) => {
 			if (error.code === "no-results") {
-				$status_text.text(`No clipart found for '${subject_matter}'`);
+				$status_text.text(`No clipart found for "${subject_matter}"`);
 			} else {
 				show_error_message("Failed to find clipart.", error);
 			}
@@ -2134,9 +2134,9 @@ if (speech_recognition_available) {
 						.map((el) => ({ image_url: el.src || el.dataset.src, title: "" }))
 						.filter(validate_item);
 				}
-				console.log(`Search results for '${query}':`, items);
+				console.log(`Search results for "${query}":`, items);
 				if (items.length === 0) {
-					const error = new Error(`failed to get clipart: no results returned for query '${query}'`);
+					const error = new Error(`failed to get clipart: no results returned for query "${query}"`);
 					// @ts-ignore
 					error.code = "no-results";
 					throw error;
@@ -2187,17 +2187,17 @@ if (speech_recognition_available) {
 
 	function test_command(input_text, expected, from_speech_text) {
 		const interpretations = interpret_command(input_text);
-		const failed_message = `Failed test.${from_speech_text ? ` (From speech '${from_speech_text}')` : ""}`;
+		const failed_message = `Failed test.${from_speech_text ? ` (From speech "${from_speech_text}")` : ""}`;
 		if (expected === null) {
 			if (interpretations.length > 0) {
 				console.error(`${failed_message}
-	Expected '${input_text}' to have no interpretations; saw`, interpretations);
+	Expected "${input_text}" to have no interpretations; saw`, interpretations);
 			}
 			return;
 		}
 		if (interpretations.length === 0) {
 			console.error(`${failed_message}
-	Expected '${input_text}' to be interpreted as`, expected, `but found no interpretations`);
+	Expected "${input_text}" to be interpreted as`, expected, `but found no interpretations`);
 			return;
 		}
 		const interpretation = choose_interpretation(interpretations);
@@ -2208,7 +2208,7 @@ if (speech_recognition_available) {
 		const actual_json = JSON.stringify(actual, null, 4);
 		if (expected_json !== actual_json) {
 			console.error(`${failed_message}
-	Expected '${input_text}' to be interpreted as ${expected_json} but it was interpreted as ${actual_json}
+	Expected "${input_text}" to be interpreted as ${expected_json} but it was interpreted as ${actual_json}
 	Note: object key order matters in this test! Functions don't count.
 	All interpretations:`, interpretations);
 			return;
@@ -2218,8 +2218,8 @@ if (speech_recognition_available) {
 			const fixed_up_input_text = fix_up_speech_recognition(input_text);
 			if (fixed_up_input_text !== input_text) {
 				console.error(`Failed test. Speech recognition fixup changed the input from:
-	'${input_text}' to:
-	'${fixed_up_input_text}'`);
+	"${input_text}" to:
+	"${fixed_up_input_text}"`);
 				return;
 			}
 		}
@@ -2230,9 +2230,9 @@ if (speech_recognition_available) {
 		if (typeof expected === "string") {
 			if (fixed_up_input_text !== expected) {
 				console.error(`Failed test. Speech recognition fixup changed the input from:
-	'${input_text}' to:
-	'${fixed_up_input_text}' instead of:
-	'${expected}'`);
+	"${input_text}" to:
+	"${fixed_up_input_text}" instead of:
+	"${expected}"`);
 				return;
 			}
 		} else {
