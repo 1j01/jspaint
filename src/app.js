@@ -1278,12 +1278,13 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	main_ctx.lineWidth = stroke_size;
 
 	const reverse_because_fill_only = !!(selected_tool.$options && selected_tool.$options.fill && !selected_tool.$options.stroke);
+	/** @type {ColorSelectionSlot} */
+	const color_k =
+		(ctrl && selected_colors.ternary && pointer_active) ? "ternary" :
+			((reverse !== reverse_because_fill_only) ? "background" : "foreground");
 	main_ctx.fillStyle = fill_color =
 		main_ctx.strokeStyle = stroke_color =
-		selected_colors[
-			(ctrl && selected_colors.ternary && pointer_active) ? "ternary" :
-				((reverse !== reverse_because_fill_only) ? "background" : "foreground")
-		];
+		selected_colors[color_k];
 
 	fill_color_k =
 		stroke_color_k =
