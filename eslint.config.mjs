@@ -154,7 +154,7 @@ export default [
 			"@stylistic/nonblock-statement-body-position": ["error", "beside"], // TODO: maybe drop curly braces from single line conditionals
 			// "@stylistic/object-curly-newline": ["error", ""], // TODO: investigate options
 			"@stylistic/object-curly-spacing": ["error", "always"],
-			// "@stylistic/object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }], // TODO
+			"@stylistic/object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }],
 			// "@stylistic/one-var-declaration-per-line": ["error", "always"], // TODO maybe? (too bad there's no "usually" option, haha)
 			// "@stylistic/operator-linebreak": ["error", "after"], // TODO maybe, there's just a few exceptions currently
 			// "@stylistic/padded-blocks": "off", // it depends, especially on how much stuff is in the block

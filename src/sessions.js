@@ -189,7 +189,8 @@ const user = {
 	// Cursor status
 	cursor: {
 		// cursor position in canvas coordinates
-		x: 0, y: 0,
+		x: 0,
+		y: 0,
 		// whether the user is elsewhere, such as in another tab
 		away: true,
 	},
