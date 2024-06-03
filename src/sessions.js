@@ -46,28 +46,28 @@ function show_recovery_window(no_longer_blank) {
 	// That said, I've made it more compact and delineated the expanded section with a horizontal rule,
 	// so it doesn't feel as much like it's changed out from under you and you have to re-read it.
 	$w.$main.append($(`
-			<p>Woah! The canvas became empty.</p>
-			<p>If this was on purpose, please ignore this message.</p>
-			<p>
-				If the canvas was cleared due to memory usage,<br>
-				click Undo to recover the document.
-			</p>
-			<!--<p>Remember to save with <b>File > Save</b>!</p>-->
-			${backup_impossible ?
+		<p>Woah! The canvas became empty.</p>
+		<p>If this was on purpose, please ignore this message.</p>
+		<p>
+			If the canvas was cleared due to memory usage,<br>
+			click Undo to recover the document.
+		</p>
+		<!--<p>Remember to save with <b>File > Save</b>!</p>-->
+		${backup_impossible ?
 			"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>" :
 			(
 				no_longer_blank ?
 					`<hr>
-						<p style="opacity: 0.8; font-size: 0.9em;">
-							Auto-save is paused while this dialog is open.
-						</p>
-						<p style="opacity: 0.8; font-size: 0.9em;">
-							(See <b>File &gt; Manage Storage</b> to view backups.)
-						</p>` :
+					<p style="opacity: 0.8; font-size: 0.9em;">
+						Auto-save is paused while this dialog is open.
+					</p>
+					<p style="opacity: 0.8; font-size: 0.9em;">
+						(See <b>File &gt; Manage Storage</b> to view backups.)
+					</p>` :
 					""
 			)
 		}
-		`));
+	`));
 
 	const $undo = $w.$Button("Undo", () => {
 		undo();
