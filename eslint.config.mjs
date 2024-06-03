@@ -85,7 +85,7 @@ export default [
 			"@stylistic/arrow-parens": ["error", "always"],
 			"@stylistic/arrow-spacing": ["error", { "before": true, "after": true }],
 			"@stylistic/block-spacing": ["error", "always"],
-			// "@stylistic/brace-style": ["error", "1tbs", { "allowSingleLine": true }], // TODO
+			"@stylistic/brace-style": ["error", "1tbs", { "allowSingleLine": true }],
 			"@stylistic/comma-dangle": ["error", {
 				"arrays": "always-multiline", // ensure commas to avoid confusing git diffs
 				"objects": "always-multiline", // ensure commas to avoid confusing git diffs

@@ -66,8 +66,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					this.source_canvas.height = this.height;
 				}
 				this.canvas = make_canvas(this.source_canvas);
-			}
-			else {
+			} else {
 				this.source_canvas = make_canvas(this.width, this.height);
 				this.source_canvas.ctx.drawImage(main_canvas, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
 				this.canvas = make_canvas(this.source_canvas);
@@ -142,9 +141,7 @@ class OnCanvasSelection extends OnCanvasObject {
 					}, () => {
 						this.draw();
 					});
-				}
-				// @TODO: how should this work for macOS? where ctrl+click = secondary click?
-				else if (e.ctrlKey) {
+				} else if (e.ctrlKey) { // @TODO: how should this work for macOS? where ctrl+click = secondary click?
 					// Stamp selection
 					undoable({
 						name: "Stamp Selection",
@@ -192,8 +189,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				canvasImageData.data[i + 1] = 0;
 				canvasImageData.data[i + 2] = 0;
 				canvasImageData.data[i + 3] = 0;
-			}
-			else {
+			} else {
 				cutoutImageData.data[i + 0] = 0;
 				cutoutImageData.data[i + 1] = 0;
 				cutoutImageData.data[i + 2] = 0;
@@ -248,8 +244,7 @@ class OnCanvasSelection extends OnCanvasObject {
 				cutoutImageData.data[i + 1] = sourceImageData.data[i + 1];
 				cutoutImageData.data[i + 2] = sourceImageData.data[i + 2];
 				cutoutImageData.data[i + 3] = sourceImageData.data[i + 3];
-			}
-			else {
+			} else {
 				// cutoutImageData.data[i+0] = 0;
 				// cutoutImageData.data[i+1] = 0;
 				// cutoutImageData.data[i+2] = 0;
@@ -304,9 +299,9 @@ class OnCanvasSelection extends OnCanvasObject {
 	draw() {
 		try {
 			main_ctx.drawImage(this.canvas, this.x, this.y);
+		} catch (_error) {
+			// ignore
 		}
-		// eslint-disable-next-line no-empty
-		catch (_error) { }
 	}
 	destroy() {
 		super.destroy();

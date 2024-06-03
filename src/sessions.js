@@ -127,8 +127,7 @@ class LocalSession {
 					// @ts-ignore (quotaExceeded is added by storage.js)
 					if (err.quotaExceeded) {
 						storage_quota_exceeded();
-					}
-					else {
+					} else {
 						// e.g. localStorage is disabled
 						// (or there's some other error?)
 						// @TODO: show warning with "Don't tell me again" type option
@@ -141,22 +140,19 @@ class LocalSession {
 			if (err) {
 				if (localStorageAvailable) {
 					show_error_message("Failed to retrieve image from local storage.", err);
-				}
-				else {
+				} else {
 					// @TODO: DRY with storage manager message
 					showMessageBox({
 						message: "Please enable local storage in your browser's settings for local backup. It may be called Cookies, Storage, or Site Data.",
 					});
 				}
-			}
-			else if (uri) {
+			} else if (uri) {
 				load_image_from_uri(uri).then((info) => {
 					open_from_image_info(info, null, null, true, true);
 				}, (error) => {
 					show_error_message("Failed to open image from local storage.", error);
 				});
-			}
-			else {
+			} else {
 				// no uri so lets save the blank canvas
 				this.save_image_to_storage_soon();
 			}
@@ -249,8 +245,7 @@ class FirebaseSession {
 			});
 			script.src = "lib/firebase.js";
 			document.head.appendChild(script);
-		}
-		else {
+		} else {
 			on_firebase_loaded();
 		}
 	}
@@ -280,8 +275,7 @@ class FirebaseSession {
 		this.fb_users = this.fb.child("users");
 		if (user_id) {
 			this.fb_user = this.fb_users.child(user_id);
-		}
-		else {
+		} else {
 			this.fb_user = this.fb_users.push();
 			user_id = this.fb_user.key;
 		}
@@ -324,8 +318,7 @@ class FirebaseSession {
 				if (other_user == null) {
 					// Remove the cursor element
 					$cursor.remove();
-				}
-				else {
+				} else {
 					// Draw the cursor
 					const draw_cursor = () => {
 						cursor_canvas.width = cursor_image.width;
@@ -340,8 +333,7 @@ class FirebaseSession {
 					};
 					if (cursor_image.complete) {
 						draw_cursor();
-					}
-					else {
+					} else {
 						$(cursor_image).one("load", draw_cursor);
 					}
 					// Update the cursor element
@@ -371,8 +363,7 @@ class FirebaseSession {
 				log("Write canvas data to Firebase");
 				this.fb_data.set(uri);
 				previous_uri = uri;
-			}
-			else {
+			} else {
 				log("(Don't write canvas data to Firebase; it hasn't changed)");
 			}
 		};
@@ -393,8 +384,7 @@ class FirebaseSession {
 				// If there's no value at the data location, this is a new session
 				// Sync the current data to it
 				this.write_canvas_to_database_soon();
-			}
-			else {
+			} else {
 				previous_uri = uri;
 				// Load the new image data
 				const img = new Image();
@@ -811,8 +801,7 @@ class RESTSession {
 				body: uri,
 			});
 			this._last_write_time = performance.now(); // not sure about this
-		}
-		else {
+		} else {
 			log("(Don't write canvas data to server; it hasn't changed)");
 		}
 	}

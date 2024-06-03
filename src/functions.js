@@ -2730,8 +2730,11 @@ function view_bitmap() {
 		zIndex: "9999",
 		background: "var(--Background)",
 	});
-	if (bitmap_view_div.requestFullscreen) { bitmap_view_div.requestFullscreen(); }
-	else if (bitmap_view_div.webkitRequestFullscreen) { bitmap_view_div.webkitRequestFullscreen(); }
+	if (bitmap_view_div.requestFullscreen) {
+		bitmap_view_div.requestFullscreen();
+	} else if (bitmap_view_div.webkitRequestFullscreen) {
+		bitmap_view_div.webkitRequestFullscreen();
+	}
 
 	let blob_url;
 	let got_fullscreen = false;

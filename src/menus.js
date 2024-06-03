@@ -585,11 +585,17 @@ const menus = {
 				check: () => Boolean(document.fullscreenElement || document.webkitFullscreenElement),
 				toggle: () => {
 					if (document.fullscreenElement || document.webkitFullscreenElement) {
-						if (document.exitFullscreen) { document.exitFullscreen(); }
-						else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
+						if (document.exitFullscreen) {
+							document.exitFullscreen();
+						} else if (document.webkitExitFullscreen) {
+							document.webkitExitFullscreen();
+						}
 					} else {
-						if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
-						else if (document.documentElement.webkitRequestFullscreen) { document.documentElement.webkitRequestFullscreen(); }
+						if (document.documentElement.requestFullscreen) {
+							document.documentElement.requestFullscreen();
+						} else if (document.documentElement.webkitRequestFullscreen) {
+							document.documentElement.webkitRequestFullscreen();
+						}
 					}
 					// check() would need to be async or faked with a timeout,
 					// if the menus stayed open. @TODO: make all checkboxes close menus
