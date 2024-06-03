@@ -496,7 +496,7 @@ class FirebaseSession {
 		$G.off(".session-hook");
 		// $canvas_area.off("pointerdown.session-hook");
 		// Remove collected Firebase event listeners
-		this._fb_listeners.forEach(({ fb, event_type, callback/*, error_callback*/ }) => {
+		this._fb_listeners.forEach(({ fb, event_type, callback, _error_callback }) => {
 			log(`Remove listener for ${fb.path.toString()} .on ${event_type}`);
 			fb.off(event_type, callback);
 		});
@@ -764,7 +764,7 @@ FirebaseSession.fb_root = null;
 // 		$G.off(".session-hook");
 // 		// $canvas_area.off("pointerdown.session-hook");
 // 		// Remove collected Firebase event listeners
-// 		this._fb_listeners.forEach(({ fb, event_type, callback/*, error_callback*/ }) => {
+// 		this._fb_listeners.forEach(({ fb, event_type, callback, _error_callback }) => {
 // 			log(`Remove listener for ${fb.path.toString()} .on ${event_type}`);
 // 			fb.off(event_type, callback);
 // 		});

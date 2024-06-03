@@ -3141,7 +3141,7 @@ function resize_canvas_and_save_dimensions(unclamped_width, unclamped_height, un
 	localStore.set({
 		width: main_canvas.width.toString(),
 		height: main_canvas.height.toString(),
-	}, (/*error*/) => {
+	}, (_error) => {
 		// oh well
 	});
 }

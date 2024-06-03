@@ -259,7 +259,7 @@ function open_help_viewer(options) {
 		}, (error) => {
 			show_error_message(`${localize("Failed to launch help.")} Failed to read ${options.contentsFile}.`, error);
 		});
-	}, (/* error */) => {
+	}, (_error) => {
 		// access to error message is not allowed either, basically
 		if (location.protocol === "file:") {
 			showMessageBox({

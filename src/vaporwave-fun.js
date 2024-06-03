@@ -158,7 +158,7 @@ import { onKonamiCodeEntered } from "./konami.js";
 		});
 
 		// The API will call this function when the video player is ready.
-		function onPlayerReady(/*event*/) {
+		function onPlayerReady(_event) {
 			player.playVideo();
 			player.unMute();
 		}
