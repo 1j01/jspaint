@@ -196,7 +196,7 @@ export default [
 			"@stylistic/object-curly-spacing": ["error", "always"],
 			"@stylistic/object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }],
 			// "@stylistic/one-var-declaration-per-line": ["error", "always"], // TODO maybe? (too bad there's no "usually" option, haha)
-			// "@stylistic/operator-linebreak": ["error", "after"], // TODO maybe, there's just a few exceptions currently
+			"@stylistic/operator-linebreak": ["error", "after"], // not sure about ternary operator tbh
 			// "@stylistic/padded-blocks": "off", // it depends, especially on how much stuff is in the block
 			// "@stylistic/padding-line-between-statements": ["error", ""], // TODO: investigate options, looks very complex
 			// "@stylistic/quote-props": ["error", "consistent"], // TODO probably

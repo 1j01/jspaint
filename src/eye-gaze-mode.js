@@ -446,8 +446,8 @@ async function init_eye_gaze_mode() {
 				circle_position = hover_candidate;
 				circle_opacity = 0.4;
 				circle_radius =
-					(hover_candidate.time - time + hover_timespan) / hover_timespan
-					* circle_radius_max;
+					circle_radius_max *
+					(hover_candidate.time - time + hover_timespan) / hover_timespan;
 				if (time > hover_candidate.time + hover_timespan) {
 					if (pointer_active || gaze_dragging) {
 						window.untrusted_gesture = true;

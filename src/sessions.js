@@ -54,8 +54,8 @@ function show_recovery_window(no_longer_blank) {
 			</p>
 			<!--<p>Remember to save with <b>File > Save</b>!</p>-->
 			${backup_impossible ?
-			"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>"
-			: (
+			"<p><b>Note:</b> No automatic backup is possible unless you enable Cookies in your browser.</p>" :
+			(
 				no_longer_blank ?
 					`<hr>
 						<p style="opacity: 0.8; font-size: 0.9em;">
@@ -63,8 +63,8 @@ function show_recovery_window(no_longer_blank) {
 						</p>
 						<p style="opacity: 0.8; font-size: 0.9em;">
 							(See <b>File &gt; Manage Storage</b> to view backups.)
-						</p>`
-					: ""
+						</p>` :
+					""
 			)
 		}
 		`));

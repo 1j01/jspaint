@@ -422,8 +422,8 @@ const createWindow = () => {
 						menu_item.shortcut ?
 							menu_item.shortcut
 								.replace(/^F4$/, "Shift+Cmd+Z")
-								.replace(/Ctrl/g, "Cmd")
-							: undefined,
+								.replace(/Ctrl/g, "Cmd") :
+							undefined,
 					// Fix Cmd+C/Cmd+V etc. in devtools, let renderer process handle it.
 					// `role: "copy"` might work better, and handle text selections as well,
 					// but handling text selections from the non-native Edit menu is still TODO anyways,
@@ -439,8 +439,8 @@ const createWindow = () => {
 					// TypeError: Cannot read properties of null (reading 'webContents')
 					enabled:
 						typeof menu_item.enabled === "function" ?
-							true // await menu_item.enabled() // dynamically updated below
-							: (menu_item.enabled ?? true),
+							true : // dynamically updated below, don't need `await menu_item.enabled()`
+							(menu_item.enabled ?? true),
 				});
 				if (typeof menu_item.enabled === "function") {
 					// @TODO: avoid polling (OS-GUI.js queries the state when showing the menu, but I doubt that's an option for the native menus)
