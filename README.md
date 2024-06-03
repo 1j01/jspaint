@@ -322,7 +322,7 @@ Electron app features:
   - Quit doesn't exit app completely, only closes the window if it's open... intended behavior? shouldn't right click > Quit really quit? https://stackoverflow.com/questions/44316306/how-to-quit-electron-app-on-mac
   - Quit doesn't show/focus window when save changes prompt is shown on maybe mac/linux
   - Ctrl+C doesn't exit on mac/linux https://github.com/electron/electron/issues/5273
-    - this is because of mainWindow.on('close') preventDefault and may be a feature but needs to show/focus the window
+    - this is because of `editor_window.on("close")` calling `preventDefault` and may be a feature but needs to show/focus the window
     - https://stackoverflow.com/questions/75362687/electron-js-processes-do-not-exit-on-app-quit
   - Opening an SVG file also isn't working via command line argument (dragging onto the shortcut in File Explorer) even though dragging and dropping into the window works.  
     - Seems to load load SVG as a palette... Is this what I was running into?
