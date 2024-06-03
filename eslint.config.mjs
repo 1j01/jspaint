@@ -246,15 +246,12 @@ export default [
 	},
 	{
 		"files": [
-			"forge.config.js",
 			"help/vaporwave.js",
 			"src/app-localization.js",
 			"src/app-state.js",
 			"src/copy-inkscape-labels.js",
 			"src/error-handling-basic.js",
 			"svg-paint/svg-paint.js",
-			"sync-package.js",
-			"prune-globals.js",
 			"localization/**/*.js",
 		],
 		"languageOptions": {
@@ -263,13 +260,30 @@ export default [
 	},
 	{
 		"files": [
+			"forge.config.js",
 			"src/electron-injected.js",
 			"src/electron-main.js",
+			"sync-package.js",
+			"prune-globals.js",
+			"cypress/plugins/index.js",
 		],
 		"languageOptions": {
 			"sourceType": "commonjs",
 			"globals": {
 				...globals.node,
+			},
+		},
+	},
+	{
+		"files": [
+			"cypress/**/*.js",
+		],
+		"languageOptions": {
+			"globals": {
+				...globals.mocha,
+				"expect": "readonly",
+				"cy": "readonly",
+				"Cypress": "readonly",
 			},
 		},
 	},

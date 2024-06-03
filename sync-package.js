@@ -1,7 +1,5 @@
 // Pulls a dependency's code into the repo, based on the package.json "files" field.
 
-/* global process, __dirname, require */
-
 const fs = require("fs/promises");
 const path = require("path");
 
