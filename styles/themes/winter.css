@@ -1,6 +1,6 @@
 @import "./classic.css";
 @import "../../lib/os-gui/build/blue.css";
-@import url('https://fonts.googleapis.com/css?family=Charm|Princess+Sofia&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Charm|Princess+Sofia&display=swap");
 
 :root {
 	--theme-loaded: "winter.css";
@@ -80,7 +80,7 @@
 
 /* Fancy cursive menus */
 .menus * {
-	font-family: 'Princess Sofia', cursive;
+	font-family: "Princess Sofia", cursive;
 	font-size: 20px;
 }
 .menu-button {
@@ -88,7 +88,7 @@
 	height: 30px;
 }
 .menu-popup * {
-	font-family: 'Charm', cursive;
+	font-family: "Charm", cursive;
 	font-size: 18px;
 }
 

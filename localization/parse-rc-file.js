@@ -3,7 +3,7 @@
 
 module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 	// if (!callback) {
-	// 	throw new TypeError('callback not specified');
+	// 	throw new TypeError("callback not specified");
 	// }
 
 	// fetch().text() assumes utf8; hack to make it more readable (not needed in Node.js)
@@ -41,13 +41,13 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 			dialog_id = dialog_match[1];
 			dialog = true;
 		}
-		if (norm_line === 'STRINGTABLE') {
+		if (norm_line === "STRINGTABLE") {
 			stringtable = true;
 		}
-		if (norm_line === 'BEGIN') {
+		if (norm_line === "BEGIN") {
 			block_level++;
 		}
-		if (norm_line === 'END') {
+		if (norm_line === "END") {
 			block_level--;
 			if (block_level == 0) {
 				menu = undefined;

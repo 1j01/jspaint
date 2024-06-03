@@ -1,11 +1,11 @@
-import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
-import express, { Application, Request, Response } from 'express';
-// import enableWs from 'express-ws';
-import fs from 'fs';
-import path from 'path';
-import { fetchAndRetry } from './utils';
-dotenv.config({ path: '../../.env' });
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import express, { Application, Request, Response } from "express";
+// import enableWs from "express-ws";
+import fs from "fs";
+import path from "path";
+import { fetchAndRetry } from "./utils";
+dotenv.config({ path: "../../.env" });
 
 const app: Application = express();
 const port: number = Number(process.env.PORT) || 1999;
@@ -14,13 +14,13 @@ const port: number = Number(process.env.PORT) || 1999;
 
 app.use(express.json());
 
-const clientSourcePath = path.join(__dirname, '../../../..');
+const clientSourcePath = path.join(__dirname, "../../../..");
 const clientId = process.env.VITE_CLIENT_ID;
 const clientIdNeedle = "$$$$$CLIENT_ID$$$$$"; // same length as the client ID, just in case
 const urlPathForPatching = "/src/discord-activity-client.js";
 const fsPathForPatching = path.join(clientSourcePath, urlPathForPatching);
 // Ensure the file exists and prepare it for serving
-// const patchedFileContent = fs.readFileSync(fsPathForPatching, 'utf8').replace(clientIdNeedle, clientId);
+// const patchedFileContent = fs.readFileSync(fsPathForPatching, "utf8").replace(clientIdNeedle, clientId);
 // // Serve the patched file
 // app.get(urlPathForPatching, (req, res) => {
 // 	res.setHeader("Content-Type", "text/javascript");
@@ -31,7 +31,7 @@ if (!fs.existsSync(fsPathForPatching)) {
 }
 // Serve the patched file without caching it, for development purposes
 app.get(urlPathForPatching, (req, res) => {
-	fs.readFile(fsPathForPatching, 'utf8', (err, data) => {
+	fs.readFile(fsPathForPatching, "utf8", (err, data) => {
 		if (err) {
 			res.status(500).send(err);
 			return;
@@ -41,8 +41,8 @@ app.get(urlPathForPatching, (req, res) => {
 	});
 });
 
-// if (process.env.NODE_ENV === 'production') {
-//   const clientBuildPath = path.join(__dirname, '../../client/dist');
+// if (process.env.NODE_ENV === "production") {
+//   const clientBuildPath = path.join(__dirname, "../../client/dist");
 //   app.use(express.static(clientBuildPath));
 // }
 // I'm hacking this to work without Vite, without a build step, and without a client folder / monorepo structure.
@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 	// There are quite possibly ways to bypass this, with URL encoding or similar...
 	// TODO: use a clean allowed set of files.
 	if (req.path.match(/\.(git|history|env)/i)) {
-		res.status(403).send('Forbidden');
+		res.status(403).send("Forbidden");
 		return;
 	}
 	next();
@@ -61,16 +61,16 @@ app.use((req, res, next) => {
 app.use(express.static(clientSourcePath));
 
 // Fetch token from developer portal and return to the embedded app
-app.post('/api/token', async (req: Request, res: Response) => {
+app.post("/api/token", async (req: Request, res: Response) => {
 	const response = await fetchAndRetry(`https://discord.com/api/oauth2/token`, {
-		method: 'POST',
+		method: "POST",
 		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
+			"Content-Type": "application/x-www-form-urlencoded",
 		},
 		body: new URLSearchParams({
 			client_id: process.env.VITE_CLIENT_ID,
 			client_secret: process.env.CLIENT_SECRET,
-			grant_type: 'authorization_code',
+			grant_type: "authorization_code",
 			code: req.body.code,
 		}),
 	});
@@ -86,37 +86,37 @@ app.post('/api/token', async (req: Request, res: Response) => {
 
 const rooms: { [key: string]: string } = {};
 
-// app.post('/api/rooms', (req: Request, res: Response) => {
+// app.post("/api/rooms", (req: Request, res: Response) => {
 // 	const roomId = uuid(); // or the room id might be the Discord Activity instance ID
-// 	rooms[roomId] = '';
+// 	rooms[roomId] = "";
 // 	res.send({ roomId });
 // });
 
-app.get('/api/rooms/:roomId/data', (req: Request, res: Response) => {
+app.get("/api/rooms/:roomId/data", (req: Request, res: Response) => {
 	const { roomId } = req.params;
 	res.send(rooms[roomId]);
 });
 
-app.put('/api/rooms/:roomId/data', bodyParser.text({ type: '*/*' }), (req: Request, res: Response) => {
+app.put("/api/rooms/:roomId/data", bodyParser.text({ type: "*/*" }), (req: Request, res: Response) => {
 	const { roomId } = req.params;
 	const image = req.body;
 	rooms[roomId] = image;
 	res.send({ success: true });
 });
 
-// app.ws('/api/sessions/:session_id', (ws, req) => {
-// console.log('WebSocket support is enabled')
+// app.ws("/api/sessions/:session_id", (ws, req) => {
+// console.log("WebSocket support is enabled")
 // @ts-ignore
-// app.ws('/api/session', (ws, req) => {
-// 	console.log('WebSocket was opened')
+// app.ws("/api/session", (ws, req) => {
+// 	console.log("WebSocket was opened")
 
-// 	ws.on('message', (msg: string) => {
-// 		console.log('Received message', msg)
+// 	ws.on("message", (msg: string) => {
+// 		console.log("Received message", msg)
 // 		ws.send(msg)
 // 	})
 
-// 	ws.on('close', () => {
-// 		console.log('WebSocket was closed')
+// 	ws.on("close", () => {
+// 		console.log("WebSocket was closed")
 // 	})
 // })
 

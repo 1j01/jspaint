@@ -16,19 +16,19 @@ context("visual tests", () => {
 	// that way I can at least use it to view the diffs, occasionally, if not automatically check for changes.
 	const withTextCompareOptions = {
 		// failureThreshold: 0.05, // masks HUGE differences
-		// failureThresholdType: 'percent' // not actually percent - fraction
+		// failureThresholdType: "percent" // not actually percent - fraction
 		failureThreshold: 0,
 		failureThresholdType: "pixel",
 	};
 	const withMuchTextCompareOptions = {
 		// failureThreshold: 0.08, // masks HUGE differences
-		// failureThresholdType: 'percent' // not actually percent - fraction
+		// failureThresholdType: "percent" // not actually percent - fraction
 		failureThreshold: 0,
 		failureThresholdType: "pixel",
 	};
 	const toolboxCompareOptions = {
 		// failureThreshold: 40,
-		// failureThresholdType: 'pixel'
+		// failureThresholdType: "pixel"
 		failureThreshold: 0,
 		failureThresholdType: "pixel",
 	};
@@ -67,8 +67,8 @@ context("visual tests", () => {
 	// I'll upgrade when I'm ready to replace the visual testing framework.
 	// const waitForRequest = (urlPattern, callback) => {
 	// 	// intercept without changing or stubbing response
-	// 	cy.intercept(urlPattern).as('urlPattern');
-	// 	cy.wait('@urlPattern').then(callback);
+	// 	cy.intercept(urlPattern).as("urlPattern");
+	// 	cy.wait("@urlPattern").then(callback);
 	// };
 	const waitForImage = (selector) => {
 		// should automatically retries
@@ -278,7 +278,7 @@ context("visual tests", () => {
 	it("bubblegum theme -- about window", () => {
 		clickMenuButton("Help");
 		clickMenuItem("About Paint");
-		// waitForImage('#about-paint-icon'); // it's actually replaced with a background image in this theme
+		// waitForImage("#about-paint-icon"); // it's actually replaced with a background image in this theme
 		// waitForRequest("/images/bubblegum/bubblegum-paint-128x128.png", () => { // not working
 		// waitForRequest("**/bubblegum-paint-*.png", () => { // not working
 		cy.wait(1000); // wait and hope it's loaded

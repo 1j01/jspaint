@@ -17,7 +17,7 @@ const parser = new ArgumentParser({
 
 parser.add_argument("file_path", {
 	help: "Image file to open",
-	nargs: "?", // '?' indicates 0 or 1 arguments: it's optional
+	nargs: "?", // "?" indicates 0 or 1 arguments: it's optional
 });
 
 parser.add_argument("-v", "--version", {
@@ -48,14 +48,14 @@ const args = parser.parse_args(args_array);
 // (If it quit because there was an existing instance before handling `--help`,
 // you wouldn't get any help at the command line if the app was running.)
 
-// Note: The 'second-instance' event has an `argv` argument but it's unusably broken,
+// Note: The "second-instance" event has an `argv` argument but it's unusably broken,
 // and the documented workaround is to pass the arguments as `additionalData` here.
 // https://www.electronjs.org/docs/api/app#event-second-instance
 const got_single_instance_lock = app.requestSingleInstanceLock({
 	argv: args_array,
 });
 
-// Note: If the main process crashes during the 'second-instance' event, the second instance will get the lock,
+// Note: If the main process crashes during the "second-instance" event, the second instance will get the lock,
 // even if the first instance is still showing an error dialog.
 if (!got_single_instance_lock) {
 	console.log("Already running. Opening in existing instance.");
@@ -237,7 +237,7 @@ const createWindow = () => {
 						new Promise((resolve, reject) => {
 							// The app's normal drag and drop handling will take care of dragstart, dragover,
 							// and actually opening files. This is just to allow write access to the dropped file.
-							window.addEventListener('drop', (event) => {
+							window.addEventListener("drop", (event) => {
 								const file_path = event.dataTransfer.files[0].path;
 								resolve(file_path);
 							}, { once: true });
@@ -629,7 +629,7 @@ app.on("open-file", (event, file_path) => {
 	// either via Open With or dragging a file onto the desktop icon.
 
 	// NOTE: if implementing support for multiple editor windows, make sure not to create two windows at startup.
-	// Right now activate_app checks for an existing window, and both 'open-file' and the initial general window creation use it.
+	// Right now activate_app checks for an existing window, and both "open-file" and the initial general window creation use it.
 
 	event.preventDefault();
 	console.log("open-file", file_path);
@@ -681,7 +681,7 @@ app.on("second-instance", (_event, uselessCorruptedArgv, workingDirectory, addit
 app.on("activate", activate_app);
 
 // Create the main window when Electron is ready.
-// Use `activate_app` instead of `app.on('ready', createWindow)`, because it includes a check for an existing window,
+// Use `activate_app` instead of `app.on("ready", createWindow)`, because it includes a check for an existing window,
 // so it could avoid potentially creating two windows at startup (though I suspect the event order would prevent that).
 activate_app();
 

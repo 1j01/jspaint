@@ -564,7 +564,7 @@
 		pra: "PK",
 		prd: "IR",
 		ps: "AF",
-		pt: "PT", //'BR',
+		pt: "PT", //"BR",
 		puu: "GA",
 		qu: "PE",
 		quc: "GT",

@@ -1109,7 +1109,7 @@ function file_load_from_url() {
 	$w.title("Load from URL");
 	// @TODO: URL validation (input has to be in a form (and we don't want the form to submit))
 	$w.$main.html(`
-		<div style='padding: 10px;'>
+		<div style="padding: 10px;">
 			<label style="display: block; margin-bottom: 5px;" for="url-input">Paste or type the web address of an image:</label>
 			<input type="url" required value="" id="url-input" class="inset-deep" style="width: 300px;"/></label>
 		</div>

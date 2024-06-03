@@ -28,11 +28,11 @@ const { code } = await discordSdk.commands.authorize({
 		// At least one scope is required. Otherwise authorize will throw an error.
 		// Likely useful scopes:
 		"identify", // for user presence, and including username/avatar in the undo history window (Edit > History)
-		// 'guilds.members.read', // for server-specific nicknames/avatars
-		// 'messages.read', // could plug into the interpret_command of Extras > Speech Recognition (not sure how useless this would be on a scale of Google Assistant to Twitch Plays Pokemon)
+		// "guilds.members.read", // for server-specific nicknames/avatars
+		// "messages.read", // could plug into the interpret_command of Extras > Speech Recognition (not sure how useless this would be on a scale of Google Assistant to Twitch Plays Pokemon)
 		// For Extras > Speech Recognition, could use something like https://github.com/Rei-x/discord-speech-recognition
-		// but that works server-side as a bot. There's 'rpc.voice.read' but I don't see a way to get the audio stream.
-		// There's also 'voice'... but the docs are hard to find.
+		// but that works server-side as a bot. There's "rpc.voice.read" but I don't see a way to get the audio stream.
+		// There's also "voice"... but the docs are hard to find.
 	],
 });
 
@@ -119,7 +119,7 @@ export const discordActivitySystemHooks = {
 		// Discord has a nice prompt asking you if you want to allow `blob:` URLs, rather than allow a domain (which is the usual case),
 		// but it fails to open a tab with the image or send a download.
 		// const blob_url = URL.createObjectURL(blob);
-		// console.log('blob_url', blob_url);
+		// console.log("blob_url", blob_url);
 		// discordSdk.commands.openExternalLink({ url: blob_url });
 
 		// A data URI doesn't work either.
@@ -173,7 +173,7 @@ export { Discord, discordSdk, guildMember, newAuth };
 // const wsUrl = `wss://${location.host}/api/colyseus`;
 // const client = new Client(wsUrl);
 
-// let roomName = 'Channel';
+// let roomName = "Channel";
 
 // // Requesting the channel in GDMs (when the guild ID is null) requires
 // // the dm_channels.read scope which requires Discord approval.

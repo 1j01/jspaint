@@ -2,7 +2,7 @@ import js from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
 
-/** @type {import('@types/eslint').Linter.FlatConfig[]} */
+/** @type {import("@types/eslint").Linter.FlatConfig[]} */
 export default [
 	{
 		// "if an ignores key is used without any other keys in the configuration object, then the patterns act as global ignores"

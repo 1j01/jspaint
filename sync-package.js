@@ -12,7 +12,7 @@ const path = require("path");
 		process.exit(1);
 	}
 
-	const alwaysIncludedFiles = []; // ['README.md', 'LICENSE', 'CHANGELOG.md', 'package.json'];
+	const alwaysIncludedFiles = []; // ["README.md", "LICENSE", "CHANGELOG.md", "package.json"];
 	const alwaysExclude = ["demo/", "index.html", "$MenuBar.js"];
 
 	const packageDir = path.join(__dirname, "node_modules", packageName);

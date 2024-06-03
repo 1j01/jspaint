@@ -127,7 +127,7 @@ context("tool tests", () => {
 	// 	trigger("pointerup", points[i].x, points[i].y, options);
 	// };
 
-	// it('brush tool', () => {
+	// it("brush tool", () => {
 	// 	cy.get(".tool[title='Brush']").click();
 	// 	// gesture([{ x: 50, y: 50 }, { x: 100, y: 100 }]);
 	// 	cy.get(".swatch:nth-child(21)").rightclick();

@@ -457,11 +457,11 @@ window.$status_size = $status_size;
 const news_seen_key = "jspaint latest news seen";
 const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
-	<a class='news-indicator' href='#project-news'>
-		<!--<img src='images/winter/present.png' width='24' height='22' alt=''/>-->
-		<img src='images/about/news.gif' width='40' height='16' alt='' style='filter: hue-rotate(234deg);'/>
-		<!--<img src='images/new.gif' width='40' height='16' alt=''/>-->
-		<!--<span class='marquee' dir='ltr' style='--text-width: 44ch; --animation-duration: 3s;'>
+	<a class="news-indicator" href="#project-news">
+		<!--<img src="images/winter/present.png" width="24" height="22" alt=""/>-->
+		<img src="images/about/news.gif" width="40" height="16" alt="" style="filter: hue-rotate(234deg);"/>
+		<!--<img src="images/new.gif" width="40" height="16" alt=""/>-->
+		<!--<span class="marquee" dir="ltr" style="--text-width: 44ch; --animation-duration: 3s;">
 			<span>
 				<b>Cool new things</b> — One thing! Another thing! Something else!
 			</span>
@@ -682,7 +682,7 @@ for (const [menu_item, menu_item_element] of traverse_menu(menus["E&xtras"], ext
 	if (menu_item.emoji_icon) {
 		emoji_css += `
 			#${menu_item_element.id} .menu-item-label::before {
-				content: '${menu_item.emoji_icon}';
+				content: "${menu_item.emoji_icon}";
 			}
 		`;
 	}
@@ -776,7 +776,7 @@ $("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.Dra
 		// 2. we want to save the file.path, which the dt.files code path takes care of
 		if (window.FileSystemHandle && !window.is_electron_app) {
 			for (const item of dt.items) {
-				// kind will be 'file' for file/directory entries.
+				// kind will be "file" for file/directory entries.
 				if (item.kind === "file") {
 					let handle;
 					try {
@@ -794,7 +794,7 @@ $("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.Dra
 					if (!handle || handle.kind === "file") {
 						let file;
 						try {
-							// instanceof is for the type checker; it should be guaranteed since kind is 'file'
+							// instanceof is for the type checker; it should be guaranteed since kind is "file"
 							if (handle && handle instanceof FileSystemFileHandle) {
 								file = await handle.getFile();
 							} else {
@@ -815,7 +815,7 @@ $("body").on("dragover dragenter", (/** @type {JQuery.DragOverEvent | JQuery.Dra
 							return;
 						}
 					}
-					// else if (handle.kind === 'directory') {}
+					// else if (handle.kind === "directory") {}
 				}
 			}
 		} else if (dt.files && dt.files.length) {
@@ -1016,13 +1016,13 @@ $G.on("keydown", (e) => {
 			return;
 		}
 		switch (e.key.toUpperCase()) {
-			case ",": // '<' without Shift
+			case ",": // "<" without Shift
 			case "<":
 			case "[":
 			case "{":
 				rotate(-TAU / 4);
 				break;
-			case ".": // '>' without Shift
+			case ".": // ">" without Shift
 			case ">":
 			case "]":
 			case "}":

@@ -463,7 +463,7 @@ with JS Paint's `systemHooks` API.
 
 ```html
 <script>
-var iframe = document.getElementById('jspaint-iframe');
+var iframe = document.getElementById("jspaint-iframe");
 var jspaint = iframe.contentWindow;
 // Wait for systemHooks object to exist (the iframe needs to load)
 waitUntil(()=> jspaint.systemHooks, 500, ()=> {
@@ -549,7 +549,7 @@ If you don't specify [`systemHooks.setWallpaperCentered`][], JS Paint will defau
 Here's a full example supporting a persistent custom wallpaper as a background on the containing page:
 
 ```js
-const wallpaper = document.querySelector('body'); // or some other element
+const wallpaper = document.querySelector("body"); // or some other element
 
 jspaint.systemHooks.setWallpaperCentered = (canvas) => {
 	canvas.toBlob((blob) => {
@@ -610,7 +610,7 @@ See [Loading a file initially](#loading-a-file-initially).
 You could change the theme programmatically:
 
 ```js
-var iframe = document.getElementById('jspaint-iframe');
+var iframe = document.getElementById("jspaint-iframe");
 var jspaint = iframe.contentWindow;
 jspaint.set_theme("modern.css");
 ```
@@ -625,7 +625,7 @@ In the future there may be a query string parameter to specify the default theme
 Similar to the theme, you can try to change the language programmatically:
 
 ```js
-var iframe = document.getElementById('jspaint-iframe');
+var iframe = document.getElementById("jspaint-iframe");
 var jspaint = iframe.contentWindow;
 jspaint.set_language("ar");
 ```
@@ -645,7 +645,7 @@ You could fork jspaint and add your own menus.
 With access to the canvas, you can implement a live preview of your drawing, for example updating a texture in a game engine in realtime.
 
 ```js
-var iframe = document.getElementById('jspaint-iframe');
+var iframe = document.getElementById("jspaint-iframe");
 // contentDocument here refers to the webpage loaded in the iframe, not the image document loaded in jspaint.
 // We're just reaching inside the iframe to get the canvas.
 var canvas = iframe.contentDocument.querySelector(".main-canvas");
@@ -660,7 +660,7 @@ If you want to make buttons or other UI to do things to the document, you should
 It's very easy, just wrap your action in a call to [`undoable`][].
 
 ```js
-var iframe = document.getElementById('jspaint-iframe');
+var iframe = document.getElementById("jspaint-iframe");
 var jspaint = iframe.contentWindow;
 var icon = new Image();
 icon.src = "some-folder/some-image-15x11-pixels.png";

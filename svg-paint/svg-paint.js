@@ -41,7 +41,7 @@ svg.addEventListener("auxclick", function (event) {
 	rect.setAttribute("height", 100);
 	rect.setAttribute("x", svgCoords.x);
 	rect.setAttribute("y", svgCoords.y);
-	// rect.setAttribute('fill', 'white'); // why?
+	// rect.setAttribute("fill", "white"); // why?
 
 	const use = cutOut(rect);
 	use.setAttribute("transform", `translate(50, 50)`);

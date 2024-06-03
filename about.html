@@ -305,26 +305,26 @@
 				const userAgent = window.navigator.userAgent,
 					platform = window.navigator?.userAgentData?.platform ?? window.navigator.platform;
 				if (/^Mac|Darwin/i.test(platform)) {
-					return 'Mac';
+					return "Mac";
 				} else if (/iPhone|iPod|iPad/i.test(platform)) {
-					return 'iOS';
+					return "iOS";
 				} else if (/^Win/i.test(platform)) {
-					return 'Windows';
+					return "Windows";
 				} else if (/Android/i.test(userAgent)) {
-					return 'Android';
+					return "Android";
 				} else if (/Linux/i.test(platform)) {
-					return 'Linux';
+					return "Linux";
 				}
-				return 'Unknown';
+				return "Unknown";
 			}
 
 			function updateDownloadLink() {
 				const os = detectOS();
 				const specificLink = {
-					'Windows': downloadLinkWindows,
-					'Mac': downloadLinkMac,
-					'iOS': downloadLinkMac,
-					'Linux': [downloadLinkLinuxDeb, downloadLinkLinuxRpm],
+					"Windows": downloadLinkWindows,
+					"Mac": downloadLinkMac,
+					"iOS": downloadLinkMac,
+					"Linux": [downloadLinkLinuxDeb, downloadLinkLinuxRpm],
 				}[os] ?? downloadLinkViewAllReleases;
 				const downloadImageHTML = mainDownloadLink.innerHTML + "<br>";
 				if (specificLink instanceof Array) {

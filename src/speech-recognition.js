@@ -1354,8 +1354,8 @@ if (speech_recognition_available) {
 	// (Really I just want the speech recognition to be better. I wonder if it's better these days...)
 	/*const grammar = `#JSGF V1.0;
 	grammar jspaintCommands;
-	<color> = ${colorNames.join(' | ')};
-	<tool_name> = ${toolNames.join(' | ')};
+	<color> = ${colorNames.join(" | ")};
+	<tool_name> = ${toolNames.join(" | ")};
 	<tool> = [the] <tool_name> [tool];
 	<pick-verb> = select | pick | choose | use | activate | "pick up" | grab;
 	<stop> = stop | end | cease | (that's | that is) enough | enough of that | terminate | halt | put an end to [this] | break off;

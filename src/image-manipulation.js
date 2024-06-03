@@ -1358,12 +1358,12 @@ function initTesselator() {
 	}
 	// callback for when segments intersect and must be split
 	function combine_callback(coords, _data, _weight) {
-		// window.console?.log('combine callback');
+		// window.console?.log("combine callback");
 		return [coords[0], coords[1], coords[2]];
 	}
 	function edge_callback(_flag) {
 		// don't really care about the flag, but need no-strip/no-fan behavior
-		// window.console?.log('edge flag: ' + flag);
+		// window.console?.log("edge flag: " + flag);
 	}
 
 	const tessy = new libtess.GluTesselator();

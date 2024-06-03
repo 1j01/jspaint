@@ -18,7 +18,7 @@ export async function fetchAndRetry(
 		// If there's a 429 error code, retry after retry_after seconds
 		// https://discord.com/developers/docs/topics/rate-limits#rate-limits
 		if (response.status === 429 && nRetries > 0) {
-			const retryAfter = Number(response.headers.get('retry_after'));
+			const retryAfter = Number(response.headers.get("retry_after"));
 			if (Number.isNaN(retryAfter)) {
 				return response;
 			}

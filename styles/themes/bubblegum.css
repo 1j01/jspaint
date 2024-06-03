@@ -110,7 +110,7 @@ where it overlaps the shadows baked into the border-image. */
 	position: relative;
 }
 .tool-options::before {
-	content: '';
+	content: "";
 	display: block;
 	box-shadow: inset 5px 5px 8px rgba(32, 49, 60, 0.36), inset -4px 4px 6px rgba(32, 49, 60, 0.26), inset 0px -4px 2px rgba(255, 224, 255, 0.96);
 	position: absolute;

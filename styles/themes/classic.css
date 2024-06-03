@@ -82,7 +82,7 @@ body,
 
 .selection:after,
 .textbox:after {
-	content: '';
+	content: "";
 	position: absolute;
 	left: 0px;
 	top: 0px;
@@ -108,7 +108,7 @@ body,
 
 .status-area {
 	gap: 2px;
-	font-family: 'Segoe UI', sans-serif;
+	font-family: "Segoe UI", sans-serif;
 	font-size: 12px;
 	color: var(--ButtonText);
 	padding-top: 2px;
@@ -216,7 +216,7 @@ body,
 	border-bottom: 1px solid var(--ButtonShadow);
 }
 .color-selection:after {
-	content: '';
+	content: "";
 	position: absolute;
 	left: 0px;
 	top: 0px;
@@ -235,7 +235,7 @@ body,
 	/*box-shadow: 1px 1px 0px var(--ButtonDkShadow) inset;*/
 }
 .swatch:before {
-	content: '';
+	content: "";
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -260,7 +260,7 @@ body,
 }
 .current-colors:after,
 .color-button:after {
-	content: '';
+	content: "";
 	position: absolute;
 	left: -1px;
 	top: -1px;
@@ -280,11 +280,11 @@ body,
 	z-index: 0;
 }
 .vertical > .component-area::before {
-	content: '';
+	content: "";
 	top: -2px;
 }
 .vertical > .component-area:not(:empty)::after {
-	content: '';
+	content: "";
 	bottom: 0;
 }
 .vertical > .top.component-area::before {
@@ -310,7 +310,7 @@ body,
 /* @TODO: thicker resize ghost (4px instead of 3px) */
 .resize-ghost.thick:after,
 .resize-ghost.thick:before {
-	content: '';
+	content: "";
 	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
 	outline: 1px dotted #ccc;
 }
@@ -362,7 +362,7 @@ body,
 }
 
 .help-window .item {
-	font-family: 'Segoe UI', sans-serif;
+	font-family: "Segoe UI", sans-serif;
 	font-size: 12px;
 	padding: 0 2px;
 	position: relative; /* for ::after */

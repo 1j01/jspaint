@@ -775,7 +775,7 @@ html, body, .jspaint {
 .custom-zoom-window bdi {
 	margin: 0 10px;
 }
-.custom-zoom-window input[name='really-custom-zoom-input'] {
+.custom-zoom-window input[name="really-custom-zoom-input"] {
 	width: 50px;
 }
 

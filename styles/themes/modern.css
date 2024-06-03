@@ -61,7 +61,7 @@ body {
 
 .selection:after,
 .textbox:after {
-	content: '';
+	content: "";
 	position: absolute;
 	left: 0px;
 	top: 0px;
@@ -295,7 +295,7 @@ body {
 .color-button::after,
 .color-selection::after,
 .edit-colors-window .swatch::after {
-	content: '';
+	content: "";
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -468,7 +468,7 @@ body,
 
 .resize-ghost.thick:after,
 .resize-ghost.thick:before {
-	content: '';
+	content: "";
 	position: absolute; left: 0; right: 0; top: 0; bottom: 0;
 	outline: 1px dotted #ccc;
 }
@@ -510,7 +510,7 @@ body,
 	border-right: 1px solid rgba(128, 128, 128, 0.5);
 }
 .help-window .item {
-	font-family: 'Segoe UI', sans-serif;
+	font-family: "Segoe UI", sans-serif;
 	font-size: 12px;
 	padding: 0 2px;
 }

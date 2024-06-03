@@ -131,7 +131,7 @@ grab "wordpad.exe" # "C:\\Program Files\\Accessories\\wordpad.exe"
 grab "Write.exe" # "C:\\Windows\\Write.exe"
 
 echo "Grabbed files, now copy them to the Windows 10 VM shared folder"
-rsync -av --exclude='HELP/' "/home/io/Downloads/Windowses/resources" "/home/io/VirtualBox VMs/Win10 Share"
+rsync -av --exclude="HELP/" "/home/io/Downloads/Windowses/resources" "/home/io/VirtualBox VMs/Win10 Share"
 
 echo "Go to Windows 10 VM"
 VBoxManage controlvm "Windows 10" resume
