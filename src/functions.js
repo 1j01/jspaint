@@ -419,8 +419,7 @@ let $custom_zoom_window;
 let dev_custom_zoom = false;
 try {
 	dev_custom_zoom = localStorage.dev_custom_zoom === "true";
-	// eslint-disable-next-line no-empty
-} catch (_error) { }
+} catch (_error) { /* ignore */ }
 if (dev_custom_zoom) {
 	$(() => {
 		show_custom_zoom_window();
@@ -769,8 +768,7 @@ function get_uris(text) {
 		try {
 			const url = new URL(lines[i]);
 			uris.push(url.href);
-			// eslint-disable-next-line no-empty
-		} catch (_error) { }
+		} catch (_error) { /* ignore */ }
 	}
 	return uris;
 }

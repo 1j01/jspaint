@@ -2282,8 +2282,7 @@ if (speech_recognition_available) {
 	var should_test_speech_recognition = false;
 	try {
 		should_test_speech_recognition = localStorage.test_speech_recognition === "true";
-		// eslint-disable-next-line no-empty
-	} catch (_error) { }
+	} catch (_error) { /* ignore */ }
 	if (should_test_speech_recognition) {
 		$(test_speech_recognition);
 	}

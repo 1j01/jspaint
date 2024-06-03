@@ -19,8 +19,7 @@ try {
 	localStorage._available = true;
 	localStorageAvailable = localStorage._available;
 	delete localStorage._available;
-	// eslint-disable-next-line no-empty
-} catch (_error) { }
+} catch (_error) { /* ignore */ }
 
 // @TODO: keep other data in addition to the image data
 // such as the file_name and other state

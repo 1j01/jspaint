@@ -125,8 +125,7 @@ function $ToolBox(tools, is_extras) {
 let dev_theme_tool_icons = false;
 try {
 	dev_theme_tool_icons = localStorage.dev_theme_tool_icons === "true";
-	// eslint-disable-next-line no-empty
-} catch (_error) { }
+} catch (_error) { /* ignore */ }
 if (dev_theme_tool_icons) {
 	let last_update_id = 0;
 	$G.on("session-update", () => {

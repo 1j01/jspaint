@@ -477,8 +477,7 @@ $news_indicator.on("click auxclick", (event) => {
 	$news_indicator.remove();
 	try {
 		localStorage[news_seen_key] = latest_news_datetime;
-		// eslint-disable-next-line no-empty
-	} catch (_error) { }
+	} catch (_error) { /* ignore */ }
 });
 let news_seen;
 let local_storage_unavailable;
@@ -576,8 +575,7 @@ if (frameElement) {
 			MenuBar = parent.MenuBar;
 			menu_bar_outside_frame = true;
 		}
-		// eslint-disable-next-line no-empty
-	} catch (_error) { }
+	} catch (_error) { /* ignore */ }
 }
 const menu_bar = MenuBar(menus);
 window.menu_bar = menu_bar;

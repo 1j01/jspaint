@@ -41,8 +41,7 @@ let $edit_colors_window;
 let dev_edit_colors = false;
 try {
 	dev_edit_colors = localStorage.dev_edit_colors === "true";
-	// eslint-disable-next-line no-empty
-} catch (_error) { }
+} catch (_error) { /* ignore */ }
 if (dev_edit_colors) {
 	$(() => {
 		show_edit_colors_window();
