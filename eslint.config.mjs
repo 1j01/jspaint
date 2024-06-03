@@ -97,7 +97,7 @@ export default [
 			"@stylistic/comma-style": ["error", "last"],
 			"@stylistic/computed-property-spacing": ["error", "never"],
 			"@stylistic/dot-location": ["error", "property"],
-			// "@stylistic/eol-last": ["error", "always"], // TODO
+			"@stylistic/eol-last": ["error", "always"],
 			// "@stylistic/function-call-argument-newline": ["error", "consistent"], // several places with meaningful line breaks grouping arguments
 			"@stylistic/function-call-spacing": ["error", "never"],
 			// "@stylistic/function-paren-newline": ["error", "multiline-arguments"], // several places with meaningful line breaks grouping arguments
