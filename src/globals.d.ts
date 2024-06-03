@@ -53,8 +53,7 @@ declare const TOOL_PENCIL: "TOOL_PENCIL";
 // declare let tool_transparent_mode: boolean;
 // declare let stroke_color: string | CanvasPattern;
 // declare let fill_color: string | CanvasPattern;
-// declare let stroke_color_k: ColorSelectionSlot;
-// declare let fill_color_k: ColorSelectionSlot;
+// declare let pick_color_slot: ColorSelectionSlot;
 
 // declare let selected_tool: Tool;
 // declare let selected_tools: Tool[];

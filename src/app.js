@@ -1,6 +1,6 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
-/* global airbrush_size:writable, brush_shape:writable, brush_size:writable, button:writable, ctrl:writable, eraser_size:writable, fill_color:writable, fill_color_k:writable, history_node_to_cancel_to:writable, MenuBar:writable, my_canvas_height:writable, my_canvas_width:writable, palette:writable, pencil_size:writable, pointer:writable, pointer_active:writable, pointer_buttons:writable, pointer_over_canvas:writable, pointer_previous:writable, pointer_start:writable, pointer_type:writable, pointers:writable, reverse:writable, shift:writable, stroke_color:writable, stroke_color_k:writable, stroke_size:writable, update_helper_layer_on_pointermove_active:writable */
+/* global airbrush_size:writable, brush_shape:writable, brush_size:writable, button:writable, ctrl:writable, eraser_size:writable, fill_color:writable, pick_color_slot:writable, history_node_to_cancel_to:writable, MenuBar:writable, my_canvas_height:writable, my_canvas_width:writable, palette:writable, pencil_size:writable, pointer:writable, pointer_active:writable, pointer_buttons:writable, pointer_over_canvas:writable, pointer_previous:writable, pointer_start:writable, pointer_type:writable, pointers:writable, reverse:writable, shift:writable, stroke_color:writable, stroke_size:writable, update_helper_layer_on_pointermove_active:writable */
 /* global AccessKeys, current_history_node, default_airbrush_size, default_brush_shape, default_brush_size, default_canvas_height, default_canvas_width, default_eraser_size, default_magnification, default_pencil_size, default_stroke_size, enable_fs_access_api, file_name, get_direction, localize, magnification, main_canvas, main_ctx, return_to_tools, selected_colors, selected_tool, selected_tools, selection, systemHooks, textbox, transparency */
 
 import { $ColorBox } from "./$ColorBox.js";
@@ -1286,9 +1286,11 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 		main_ctx.strokeStyle = stroke_color =
 		selected_colors[color_k];
 
-	fill_color_k =
-		stroke_color_k =
+	/** @type {ColorSelectionSlot} */
+	let fill_color_k =
 		ctrl ? "ternary" : ((reverse !== reverse_because_fill_only) ? "background" : "foreground");
+	/** @type {ColorSelectionSlot} */
+	let stroke_color_k = fill_color_k;
 
 	if (selected_tool.shape || selected_tool.shape_colors) {
 		if (!selected_tool.stroke_only) {
@@ -1303,6 +1305,7 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 		main_ctx.fillStyle = fill_color = selected_colors[fill_color_k];
 		main_ctx.strokeStyle = stroke_color = selected_colors[stroke_color_k];
 	}
+	pick_color_slot = fill_color_k;
 }
 
 // #region Primary Canvas Interaction
