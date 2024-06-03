@@ -1034,7 +1034,7 @@ const tools = [{
 			}
 		}
 
-		this.last_click_pointerup = { x, y, time: +(new Date) };
+		this.last_click_pointerup = { x, y, time: +(new Date()) };
 
 		this.updateStatus();
 	},
@@ -1055,7 +1055,7 @@ const tools = [{
 			const lt = this.last_click_pointerdown.time;
 			const dx = x - lx;
 			const dy = y - ly;
-			const dt = +(new Date) - lt;
+			const dt = +(new Date()) - lt;
 			const d = Math.sqrt(dx * dx + dy * dy);
 			if (d < 4.1010101 && dt < 250) { // arbitrary 101 (@TODO: find correct value (or formula))
 				this.complete(ctx);
@@ -1064,7 +1064,7 @@ const tools = [{
 				this.points.push({ x, y });
 			}
 		}
-		this.last_click_pointerdown = { x, y, time: +new Date };
+		this.last_click_pointerdown = { x, y, time: +new Date() };
 	},
 	paint(_ctx, x, y) {
 		if (this.points.length < 1) { return; }

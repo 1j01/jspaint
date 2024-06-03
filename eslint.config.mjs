@@ -138,7 +138,7 @@ export default [
 			// "@stylistic/member-delimiter-style": ["error", { "multiline": { "delimiter": "semi", "requireLast": true }, "singleline": { "delimiter": "semi", "requireLast": true } }],
 			// "@stylistic/multiline-comment-style": ["error", "separate-lines"], // I use block comments sometimes for disabled code; also this is detecting a few JSDoc comments even though it says it won't without "checkJSDoc" set to true.
 			// "@stylistic/multiline-ternary": ["error", "always-multiline"], // TODO maybe
-			// "@stylistic/new-parens": ["error", "always"], // TODO
+			"@stylistic/new-parens": ["error", "always"],
 			"@stylistic/newline-per-chained-call": ["error", { "ignoreChainWithDepth": 5 }], // TODO: maybe decrease this
 			// "@stylistic/no-confusing-arrow": ["error"], // TODO: just two cases to look at
 			// "@stylistic/no-extra-parens": "off", // if there are extra parens, it's probably for clarity (TODO: look at the granular options)
