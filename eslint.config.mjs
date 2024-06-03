@@ -170,18 +170,18 @@ export default [
 			"@stylistic/keyword-spacing": ["error", { "before": true, "after": true }],
 			// "@stylistic/line-comment-position": "off",
 			// "@stylistic/linebreak-style": "off",
-			// "@stylistic/lines-around-comment": ["error", ""], // TODO (so many options...)
+			// "@stylistic/lines-around-comment": ["error", ""], // TODO maybe (so many options...)
 			"@stylistic/lines-between-class-members": ["error", "never"],
-			// "@stylistic/max-len": ["error", ""], // TODO
+			// "@stylistic/max-len": ["error", ""], // TODO maybe along with changing export {} to individual exports
 			"@stylistic/max-statements-per-line": ["error", { "max": 4 }], // TODO: maybe decrease this
 			// TODO: lint .d.ts files, and ideally JSDoc comments
 			// "@stylistic/member-delimiter-style": ["error", { "multiline": { "delimiter": "semi", "requireLast": true }, "singleline": { "delimiter": "semi", "requireLast": true } }],
 			// "@stylistic/multiline-comment-style": ["error", "separate-lines"], // I use block comments sometimes for disabled code; also this is detecting a few JSDoc comments even though it says it won't without "checkJSDoc" set to true.
-			// "@stylistic/multiline-ternary": ["error", "always-multiline"], // TODO maybe
+			// "@stylistic/multiline-ternary": ["error", "always-multiline"], // might want to change the ternary style in the future...
 			"@stylistic/new-parens": ["error", "always"],
 			"@stylistic/newline-per-chained-call": ["error", { "ignoreChainWithDepth": 5 }], // TODO: maybe decrease this
-			// "@stylistic/no-confusing-arrow": ["error"], // TODO: just two cases to look at
-			// "@stylistic/no-extra-parens": "off", // if there are extra parens, it's probably for clarity (TODO: look at the granular options)
+			// "@stylistic/no-confusing-arrow": ["error", { "allowParens": true }], // don't really like the changes this implies in the couple of places it flags
+			// "@stylistic/no-extra-parens": ["error", "all"], // if there are extra parens, it's probably for clarity (TODO: look at the granular options), also, this doesn't seem to detect cases it should for function calls?
 			"@stylistic/no-extra-semi": "error",
 			"@stylistic/no-floating-decimal": "error",
 			// "@stylistic/no-mixed-operators": ["error", ...], // TODO: investigate options
@@ -199,7 +199,7 @@ export default [
 			"@stylistic/operator-linebreak": ["error", "after"], // not sure about ternary operator tbh
 			// "@stylistic/padded-blocks": "off", // it depends, especially on how much stuff is in the block
 			// "@stylistic/padding-line-between-statements": ["error", ""], // TODO: investigate options, looks very complex
-			// "@stylistic/quote-props": ["error", "consistent"], // TODO probably
+			// "@stylistic/quote-props": ["error", "consistent"], // I prefer it inconsistent if it's just for a few CSS custom properties when setting several CSS properties at once, especially since it's not going to be consistent with object property shorthand e.g. { "--requires-quotes": requiresQuotes, "quotedForConsistency": true, inconsistent }
 			// "@stylistic/quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": true }], // TODO maybe
 			"@stylistic/rest-spread-spacing": ["error", "never"],
 			"@stylistic/semi": ["error", "always"],
