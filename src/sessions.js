@@ -517,8 +517,6 @@ class FirebaseSession {
 FirebaseSession.fb_root = null;
 
 
-
-
 // class WebSocketSession {
 // 	constructor(session_id) {
 // 		this.id = session_id;
