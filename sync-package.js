@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Pulls a dependency's code into the repo, based on the package.json "files" field.
 
 const fs = require("fs/promises");

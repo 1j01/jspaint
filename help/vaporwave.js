@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 const clouds_img = document.createElement("img");
 clouds_img.src = "clouds.jpg";
