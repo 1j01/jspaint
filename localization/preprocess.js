@@ -10,7 +10,7 @@ const target_langs = available_langs.filter((lang) => lang !== base_lang);
 
 console.log("Target languages:", target_langs);
 
-const remove_ellipsis = str => str.replace("...", "");
+const remove_ellipsis = (str) => str.replace("...", "");
 
 const only_unique = (value, index, self) => self.indexOf(value) === index;
 

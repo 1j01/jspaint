@@ -28,7 +28,6 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 		// let translated_str;
 
 		// normalize line
-
 		let norm_line = line.trim()
 			.replace(/[\t ]+/g, " ")
 			.replace(/\/\/.*$/g, "");
@@ -142,4 +141,4 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 
 	return strings;
 	// return translated_text;
-}
+};
