@@ -1,3 +1,4 @@
+/// <reference path="../node_modules/@discord/embedded-app-sdk/output/index.d.ts" />
 
 import { save_as_prompt } from "./functions.js";
 
