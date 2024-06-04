@@ -6,7 +6,10 @@
 		"checkJs": true,
 		"types": [
 			"jquery",
-			"node"
+			"node",
+			"youtube",
+			"dom-speech-recognition",
+			"wicg-file-system-access",
 		],
 		"skipLibCheck": true,
 	},

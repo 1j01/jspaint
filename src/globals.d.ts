@@ -922,22 +922,24 @@ interface HTMLElement {
 // Discord Embedded App SDK
 // Copied from:
 // https://github.com/discord/embedded-app-sdk/blob/49d23756144ebf36a5735bd7f161aae6cb359939/examples/react-colyseus/packages/client/src/types.tsx#L13C1-L31C2
-interface IGuildsMembersRead {
-	roles: string[];
-	nick: string | null;
-	avatar: string | null;
-	premium_since: string | null;
-	joined_at: string;
-	is_pending: boolean;
-	pending: boolean;
-	communication_disabled_until: string | null;
-	user: {
-		id: string;
-		username: string;
-		avatar: string | null;
-		discriminator: string;
-		public_flags: number;
-	};
-	mute: boolean;
-	deaf: boolean;
-}
+// interface IGuildsMembersRead {
+// 	roles: string[];
+// 	nick: string | null;
+// 	avatar: string | null;
+// 	premium_since: string | null;
+// 	joined_at: string;
+// 	is_pending: boolean;
+// 	pending: boolean;
+// 	communication_disabled_until: string | null;
+// 	user: {
+// 		id: string;
+// 		username: string;
+// 		avatar: string | null;
+// 		discriminator: string;
+// 		public_flags: number;
+// 	};
+// 	mute: boolean;
+// 	deaf: boolean;
+// }
+
+
