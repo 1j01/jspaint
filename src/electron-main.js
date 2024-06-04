@@ -69,7 +69,7 @@ if (!got_single_instance_lock) {
 	return;
 } else {
 	console.log("Got single instance lock.");
-	// When a second instance is opened, the `second-instance` event will be emitted in the this instance.
+	// When a second instance is opened, the "second-instance" event will be emitted in the this instance.
 	// See handler below.
 }
 
@@ -641,8 +641,8 @@ app.on("second-instance", (_event, uselessCorruptedArgv, workingDirectory, addit
 	// Someone tried to run a second instance, we should focus our window,
 	// and handle the file path if there is one.
 
-	// Note: the second-instance event sends a broken argv which may rearrange and add extra arguments,
-	// so we have to use the additionalData object, passed from requestSingleInstanceLock.
+	// Note: the "second-instance" event sends a broken argv which may rearrange and add extra arguments,
+	// so we have to use the `additionalData` object, passed from `requestSingleInstanceLock`.
 	// This hack is recommended in the docs: https://www.electronjs.org/docs/api/app#event-second-instance
 	console.log("second-instance", uselessCorruptedArgv, workingDirectory, additionalData);
 

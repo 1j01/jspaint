@@ -376,7 +376,7 @@ const update_from_url_params = () => {
 			// $(".help-menu-button").trigger("pointerdown").trigger("pointerup"); // and it doesn't use jQuery
 			$(".help-menu-button")[0].dispatchEvent(new Event("pointerdown"));
 			$(".help-menu-button")[0].dispatchEvent(new Event("pointerup"));
-			$('[aria-label="About Paint"]')[0].dispatchEvent(new Event("pointerenter"));
+			$("[aria-label='About Paint']")[0].dispatchEvent(new Event("pointerenter"));
 		}
 	}, 500);
 };
