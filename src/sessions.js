@@ -252,9 +252,9 @@ class FirebaseSession {
 		// @TODO: how do you actually detect if it's failing???
 		showMessageBox({
 			messageHTML: `
-					<p>The document may not load. Changes may not save.</p>
-					<p>Multiuser sessions are public. There is no security.</p>
-				`,
+				<p>The document may not load. Changes may not save.</p>
+				<p>Multiuser sessions are public. There is no security.</p>
+			`,
 		});
 		// "<p>The document may not load. Changes may not save. If it does save, it's public. There is no security.</p>"// +
 		// "<p>I haven't found a way to detect Firebase quota limits being exceeded, " +
