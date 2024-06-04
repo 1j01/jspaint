@@ -6,20 +6,16 @@
  * @param {string} rc_file_text - text from a .rc file; may need to be read as UTF-16
  * @returns {string[]} - Array of translatable strings found in the file
  */
-module.exports = function parse_rc_file(rc_file_text, callback, lang) {
-	// if (!callback) {
-	// 	throw new TypeError("callback not specified");
-	// }
+module.exports = function parse_rc_file(rc_file_text) {
 
 	// fetch().text() assumes utf8; hack to make it more readable (not needed in Node.js)
 	// rc_file_text = rc_file_text.replace(/\0/g, "");
 
 	let strings = [];
-	// let translated_text = "";
 
 	let menu;
 	let dialog;
-	let stringtable;
+	// let stringtable;
 	let block_level = 0;
 	let id_str;
 	let dialog_id;
@@ -28,7 +24,6 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 
 		// let hint;
 		let orig_str;
-		// let translated_str;
 
 		// normalize line
 		let norm_line = line.trim()
@@ -44,7 +39,7 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 			dialog = true;
 		}
 		if (norm_line === "STRINGTABLE") {
-			stringtable = true;
+			// stringtable = true;
 		}
 		if (norm_line === "BEGIN") {
 			block_level++;
@@ -55,7 +50,7 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 				menu = undefined;
 				dialog = undefined;
 				dialog_id = undefined;
-				stringtable = undefined;
+				// stringtable = undefined;
 			}
 		}
 
@@ -68,7 +63,7 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 			const match = line.match(/^[\t ]*(CAPTION)[\t ]+(L?"(.*?("")*)*?")/);
 			if (match) {
 				id_str = `${dialog_id}:${match[1]}`;
-				hint = `${dialog_id} ${match[1]}`;
+				// hint = `${dialog_id} ${match[1]}`;
 				orig_str = match[2];
 			}
 
@@ -77,7 +72,7 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 			const match = line.match(/^[\t ]*(\w+)[\t ]+(L?"([^"]*?("")*)*?")(,[\t ]*(\w+)){0,1}/);
 			if (match) {
 				id_str = match[6];
-				hint = match[6] ? `${match[1]} ${match[6]}` : match[1];
+				// hint = match[6] ? `${match[1]} ${match[6]}` : match[1];
 				orig_str = match[2];
 			}
 
@@ -100,7 +95,7 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 				} else {
 					match = line.match(/^[\t ]*(L?"(.*)")/);
 					if (id_str && match) { // test for the second line (string) of the two-line string definitions
-						hint = id_str;
+						// hint = id_str;
 						orig_str = match[1];
 					} else {
 						id_str = undefined;
@@ -124,24 +119,11 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 
 			strings.push(str);
 
-			// translated_str = callback(str, hint, lang, id_str);
-
-			// if (lang) {
-			// 	translated_str = translated_str.replace(/"/g, '""');
-			// 	translated_str = translated_str.replace(/\n/g, "\\n");
-			// 	line = line.replace(orig_str, translated_str);
-			// }
-
 			id_str = undefined;
-			hint = undefined;
+			// hint = undefined;
 			orig_str = undefined;
 		}
-
-		// if (lang) {
-		// 	translated_text += `${line}\n`;
-		// }
 	}
 
 	return strings;
-	// return translated_text;
 };
