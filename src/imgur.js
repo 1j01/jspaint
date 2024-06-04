@@ -1,4 +1,3 @@
-// @ts-check
 /* global localize */
 import { $DialogWindow } from "./$ToolWindow.js";
 import { show_error_message } from "./functions.js";

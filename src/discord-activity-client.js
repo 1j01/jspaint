@@ -1,4 +1,3 @@
-// @ts-check
 
 import { save_as_prompt } from "./functions.js";
 

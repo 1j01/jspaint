@@ -1,4 +1,3 @@
-// @ts-check
 /* global stroke_size:writable, airbrush_size:writable, brush_shape:writable, brush_size:writable, eraser_size:writable, magnification:writable, tool_transparent_mode:writable */
 import { set_magnification } from "./functions.js";
 import { $G, E, make_canvas } from "./helpers.js";

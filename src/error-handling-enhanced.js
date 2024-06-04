@@ -1,4 +1,3 @@
-// @ts-check
 /* global localize */
 
 import { show_error_message } from "./functions.js";

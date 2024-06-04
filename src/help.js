@@ -1,4 +1,3 @@
-// @ts-check
 /* global $Window, localize */
 // import { localize } from "./app-localization.js";
 import { show_error_message } from "./functions.js";

@@ -1,4 +1,3 @@
-// @ts-check
 /* global $bottom, $canvas, $left, $right, $top, get_direction */
 
 import { $ToolWindow } from "./$ToolWindow.js";

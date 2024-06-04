@@ -1,4 +1,3 @@
-// @ts-check
 /* global $Window */
 
 import { $G, E } from "./helpers.js";

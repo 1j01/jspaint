@@ -1,4 +1,3 @@
-// @ts-check
 /* global palette:writable */
 /* global $colorbox, localize, main_ctx, monochrome, selected_colors, selection */
 import { $Swatch, update_$swatch } from "./$ColorBox.js";

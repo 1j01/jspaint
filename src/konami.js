@@ -1,4 +1,3 @@
-// @ts-check
 function afterSequence(sequence, action) {
 	var index = 0;
 

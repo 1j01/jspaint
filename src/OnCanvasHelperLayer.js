@@ -1,4 +1,3 @@
-// @ts-check
 
 import { OnCanvasObject } from "./OnCanvasObject.js";
 import { make_canvas } from "./helpers.js";

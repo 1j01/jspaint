@@ -1,4 +1,3 @@
-// @ts-check
 import { onKonamiCodeEntered } from "./konami.js";
 (() => {
 	/** @type {number} */
