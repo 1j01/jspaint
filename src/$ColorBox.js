@@ -1,4 +1,3 @@
-// @ts-check
 /* global $bottom, $left, $right, button, get_direction, localize, palette, selected_colors */
 import { $Component } from "./$Component.js";
 // import { get_direction, localize } from "./app-localization.js";

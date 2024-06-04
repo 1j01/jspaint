@@ -1,4 +1,3 @@
-// @ts-check
 /* global $G, AccessKeys, are_you_sure, exit_fullscreen_if_ios, show_error_message, showMessageBox */
 
 // const { are_you_sure, exit_fullscreen_if_ios, show_error_message } = require("./functions.js");

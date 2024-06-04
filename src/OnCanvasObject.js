@@ -1,4 +1,3 @@
-// @ts-check
 /* global $canvas_area, $status_position, $status_size, canvas_handles, magnification */
 import { $G, E } from "./helpers.js";
 

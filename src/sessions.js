@@ -1,4 +1,3 @@
-// @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global file_name:writable */
 /* global $app, $canvas_area, localize, magnification, main_canvas, main_ctx, redos, undos */

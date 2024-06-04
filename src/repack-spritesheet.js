@@ -1,4 +1,3 @@
-// @ts-check
 /* global localize */
 
 // This script adds padding between tiles in a spritesheet, to avoid bleeding when at non-integer zoom levels

@@ -1,4 +1,3 @@
-// @ts-check
 /* global $canvas, $left, $right, $status_text, get_direction, localize, main_canvas, return_to_tools, selected_tool, selected_tools */
 import { $Component } from "./$Component.js";
 // import { get_direction, localize } from "./app-localization.js";

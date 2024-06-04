@@ -1,4 +1,3 @@
-// @ts-check
 // Based on: https://github.com/evernote/serge/blob/master/lib/Serge/Engine/Plugin/parse_rc.pm
 
 /**

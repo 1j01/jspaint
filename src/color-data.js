@@ -1,4 +1,3 @@
-// @ts-check
 
 import { make_stripe_pattern } from "./functions.js";
 

@@ -23,7 +23,7 @@ declare const ImageTracer: any;
 declare const TrackyMouse: any;
 
 // Globals from scripts that are not converted to ESM yet,
-// and thus can't be imported. (I've been marking scripts as @ts-check as I convert them.)
+// and thus can't be imported.
 // This supports bare identifier global access (no `window.` needed).
 // app-localization.js
 declare function localize(english_text: string, ...interpolations: string[]): string;

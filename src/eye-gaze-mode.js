@@ -1,4 +1,3 @@
-// @ts-check
 // eslint-disable-next-line no-unused-vars
 /* global pointers:writable */
 /* global $Window, average_points, main_canvas, pointer_active, selected_tool, TrackyMouse */

@@ -1,4 +1,3 @@
-// @ts-check
 /* global localize */
 
 // Note that this API must be kept in sync with the version in 98.js.org,

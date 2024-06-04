@@ -1,4 +1,3 @@
-// @ts-check
 
 // @TODO: maybe replace this module with localforage or similar
 // (but need to address asynchronous concerns if doing that)

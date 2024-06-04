@@ -1,4 +1,3 @@
-// @ts-check
 /* global $app, $canvas_area, $status_text, main_canvas, selection */
 
 import { cancel } from "./functions.js";

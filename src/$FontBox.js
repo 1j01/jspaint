@@ -1,4 +1,3 @@
-// @ts-check
 /* global localize, text_tool_font */
 import { $ToolWindow } from "./$ToolWindow.js";
 // import { localize } from "./app-localization.js";
