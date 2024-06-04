@@ -667,7 +667,7 @@ function* traverse_menu(menu_items, menu_element) {
 }
 
 const menu_document = menu_bar.element.ownerDocument;
-const extras_menu_button = menu_document.querySelector(`.extras-menu-button`);
+const extras_menu_button = menu_document.querySelector(".extras-menu-button");
 const extras_menu_popup = menu_document.getElementById(extras_menu_button.getAttribute("aria-controls"));
 
 let emoji_css = `

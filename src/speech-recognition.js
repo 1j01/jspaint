@@ -2197,7 +2197,7 @@ if (speech_recognition_available) {
 		}
 		if (interpretations.length === 0) {
 			console.error(`${failed_message}
-	Expected '${input_text}' to be interpreted as`, expected, `but found no interpretations`);
+	Expected '${input_text}' to be interpreted as`, expected, "but found no interpretations");
 			return;
 		}
 		const interpretation = choose_interpretation(interpretations);

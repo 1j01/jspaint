@@ -225,7 +225,7 @@ window.systemHooks.setWallpaperCentered = (canvas) => {
 						return show_error_message("Failed to set wallpaper: Couldn't write temporary image file.", error);
 					}
 					if (responseCode === "INVALID_DATA") {
-						return show_error_message(`Failed to set wallpaper. Invalid data in IPC.`, error);
+						return show_error_message("Failed to set wallpaper. Invalid data in IPC.", error);
 					}
 					if (responseCode === "INVALID_PNG_DATA") {
 						return show_error_message(`Failed to set wallpaper.\n\n${localize("Unexpected file format.")}`, error);

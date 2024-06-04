@@ -213,7 +213,7 @@ export default [
 			// "@stylistic/padded-blocks": "off", // it depends, especially on how much stuff is in the block
 			// "@stylistic/padding-line-between-statements": ["error", ""], // TODO: investigate options, looks very complex
 			// "@stylistic/quote-props": ["error", "consistent"], // I prefer it inconsistent if it's just for a few CSS custom properties when setting several CSS properties at once, especially since it's not going to be consistent with object property shorthand e.g. { "--requires-quotes": requiresQuotes, "quotedForConsistency": true, inconsistent }
-			"@stylistic/quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": true }], // TODO maybe
+			"@stylistic/quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": true }], // Note: allowTemplateLiterals allows template literals without any substitutions, and removing "allowTemplateLiterals" doesn't allow them for avoiding escaping
 			"@stylistic/rest-spread-spacing": ["error", "never"],
 			"@stylistic/semi": ["error", "always"],
 			"@stylistic/semi-spacing": ["error", { "before": false, "after": true }],

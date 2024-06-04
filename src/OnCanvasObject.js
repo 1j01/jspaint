@@ -29,7 +29,7 @@ class OnCanvasObject {
 		// const direction = get_direction();
 		// const left_for_ltr = direction === "rtl" ? "right" : "left";
 		// const offset_left = parseFloat($canvas_area.css(`padding-${left_for_ltr}`));
-		const offset_left = parseFloat($canvas_area.css(`padding-left`));
+		const offset_left = parseFloat($canvas_area.css("padding-left"));
 		const offset_top = parseFloat($canvas_area.css("padding-top"));
 		this.$el.css({
 			position: "absolute",

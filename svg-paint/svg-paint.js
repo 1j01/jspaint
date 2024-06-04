@@ -44,7 +44,7 @@ svg.addEventListener("auxclick", function (event) {
 	// rect.setAttribute("fill", "white"); // why?
 
 	const use = cutOut(rect);
-	use.setAttribute("transform", `translate(50, 50)`);
+	use.setAttribute("transform", "translate(50, 50)");
 });
 svg.addEventListener("contextmenu", function (event) {
 	event.preventDefault();

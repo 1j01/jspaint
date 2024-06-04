@@ -725,7 +725,7 @@ const menus = {
 					} else {
 						palette = new_palette.map((color) => color.toString());
 						$colorbox.rebuild_palette();
-						window.console?.log(`Loaded palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
+						window.console?.log(`Loaded palette: ${palette.map(() => "%c█").join("")}`, ...palette.map((color) => `color: ${color};`));
 					}
 				});
 			},

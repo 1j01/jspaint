@@ -1026,7 +1026,7 @@ function open_from_file(file, source_file_handle) {
 				}
 				palette = new_palette.map((color) => color.toString());
 				$colorbox.rebuild_palette();
-				window.console?.log(`Loaded palette: ${palette.map(() => `%c█`).join("")}`, ...palette.map((color) => `color: ${color};`));
+				window.console?.log(`Loaded palette: ${palette.map(() => "%c█").join("")}`, ...palette.map((color) => `color: ${color};`));
 			});
 			return;
 		}
@@ -1046,7 +1046,7 @@ function apply_file_format_and_palette_info(info) {
 	}
 
 	if (info.palette) {
-		window.console?.log(`Loaded palette from image file: ${info.palette.map(() => `%c█`).join("")}`, ...info.palette.map((color) => `color: ${color};`));
+		window.console?.log(`Loaded palette from image file: ${info.palette.map(() => "%c█").join("")}`, ...info.palette.map((color) => `color: ${color};`));
 		palette = info.palette;
 		selected_colors.foreground = palette[0];
 		selected_colors.background = palette.length === 14 * 2 ? palette[14] : palette[1]; // first in second row for default sized palette, else second color (debatable behavior; should it find a dark and a light color?)
@@ -2196,7 +2196,7 @@ function redo() {
 		if (!$document_history_window || $document_history_window.closed) {
 			$document_history_prompt_window = showMessageBox({
 				title: "Redo",
-				messageHTML: `To view all branches of the history tree, click <b>Edit > History</b>.`,
+				messageHTML: "To view all branches of the history tree, click <b>Edit > History</b>.",
 				iconID: "info",
 			}).$window;
 		}

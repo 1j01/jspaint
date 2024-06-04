@@ -145,15 +145,15 @@ context("tool tests", () => {
 	// });
 
 	// @TODO: test transparent document mode
-	it(`eraser tool`, () => {
-		cy.get(`.tool[title='Eraser/Color Eraser']`).click();
+	it("eraser tool", () => {
+		cy.get(".tool[title='Eraser/Color Eraser']").click();
 		// gesture([{ x: 50, y: 50 }, { x: 100, y: 100 }]);
 		cy.window().then({ timeout: 60000 }, async (win) => {
 			const { selected_colors } = win.api_for_cypress_tests;
 			for (let row = 0; row < 4; row++) {
 				const secondary = !!(row % 2);
 				const increaseSize = row >= 2;
-				let $options = win.$(`.chooser > *`);
+				let $options = win.$(".chooser > *");
 				for (let o = 0; o < $options.length; o++) {
 					$options[o].click();
 					if (increaseSize) {
@@ -187,7 +187,7 @@ context("tool tests", () => {
 				for (let row = 0; row < 4; row++) {
 					const secondary = !!(row % 2);
 					const increaseSize = row >= 2;
-					let $options = win.$(`.chooser > *`);
+					let $options = win.$(".chooser > *");
 					// Pencil has no options
 					if ($options.length === 0) {
 						$options = win.$("<dummy>");

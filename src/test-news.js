@@ -75,7 +75,7 @@ for (const article of articles) {
 			console.error(`target is not "_blank"`, link);
 		}
 		if (!href) {
-			console.error(`href is not set`, link);
+			console.error("href is not set", link);
 		}
 	}
 
@@ -85,10 +85,10 @@ for (const article of articles) {
 		const hasAlt = img.hasAttribute("alt");
 		const src = img.getAttribute("src");
 		if (!hasAlt) {
-			console.error(`img is missing alt (empty is often fine)`, img);
+			console.error("img is missing alt (empty is often fine)", img);
 		}
 		if (!src) {
-			console.error(`img is missing src URL`, img);
+			console.error("img is missing src URL", img);
 		}
 	}
 }
