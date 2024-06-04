@@ -1,4 +1,4 @@
-
+// @ts-check
 // Based on: https://github.com/evernote/serge/blob/master/lib/Serge/Engine/Plugin/parse_rc.pm
 
 module.exports = function parse_rc_file(rc_file_text, callback, lang) {

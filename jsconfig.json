@@ -6,6 +6,7 @@
 	},
 	"include": [
 		"src/**/*",
+		"localization/*.js",
 		"lib/os-gui/os-gui.d.ts"
 	]
 }

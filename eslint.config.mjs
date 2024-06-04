@@ -16,7 +16,7 @@ export default [
 			"**/out/", // Electron build
 			"**/build/", // maybe nothing
 			"**/dist/", // maybe nothing
-			"**/localization/**/*.js", // generated files
+			"**/localization/*/*.js", // generated files (note that there is some non-generated JS directly in `localization/`, hence not using `**/localization/**/*.js`)
 		],
 	},
 	js.configs.recommended,
@@ -264,6 +264,7 @@ export default [
 			"sync-package.js",
 			"prune-globals.js",
 			"cypress/plugins/index.js",
+			"localization/*.js",
 		],
 		"languageOptions": {
 			"sourceType": "commonjs",
