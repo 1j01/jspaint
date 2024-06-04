@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 
 const svg = document.querySelector("svg");

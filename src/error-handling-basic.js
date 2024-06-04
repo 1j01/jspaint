@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable no-useless-concat */
 /* eslint-disable no-alert */
 

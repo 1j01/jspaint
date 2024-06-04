@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ==UserScript==
 // @name         Cypress Image Snapshot Viewer
 // @namespace    https://github.com/1j01/

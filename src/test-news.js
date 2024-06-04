@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
 Automated checks to catch errors before publishing a news update:
 - The <time> element's datetime attribute is set to the date of the update.

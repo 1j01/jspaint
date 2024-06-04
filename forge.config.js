@@ -1,3 +1,4 @@
+// @ts-nocheck
 const sharedDebRpmOptions = {
 	name: "jspaint",
 	productName: "JS Paint",

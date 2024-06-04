@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Usage: node prune-globals.js
 // This script will document which `window.* = ...` assignments are used by other files in the src directory.
 // Also its purpose is very specific; it only looks for global assignments following a "// Temporary globals" comment.

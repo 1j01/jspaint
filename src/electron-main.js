@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { app, shell, session, dialog, ipcMain, BrowserWindow, Menu, MenuItem } = require("electron");
 const fs = require("fs");
 const path = require("path");

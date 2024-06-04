@@ -1,3 +1,4 @@
+// @ts-nocheck
 /// <reference types="Cypress" />
 
 context("visual tests", () => {
