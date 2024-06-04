@@ -1,6 +1,11 @@
 // @ts-check
 // Based on: https://github.com/evernote/serge/blob/master/lib/Serge/Engine/Plugin/parse_rc.pm
 
+/**
+ * Find translatable strings in a .rc file
+ * @param {string} rc_file_text - text from a .rc file; may need to be read as UTF-16
+ * @returns {string[]} - Array of translatable strings found in the file
+ */
 module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 	// if (!callback) {
 	// 	throw new TypeError("callback not specified");
@@ -11,8 +16,6 @@ module.exports = function parse_rc_file(rc_file_text, callback, lang) {
 
 	let strings = [];
 	// let translated_text = "";
-
-	// Finding translatable strings in file
 
 	let menu;
 	let dialog;
