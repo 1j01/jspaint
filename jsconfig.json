@@ -4,6 +4,15 @@
 		"module": "ES2022",
 		"moduleResolution": "node", // Fixes error TS2792: Cannot find module 'electron'. https://stackoverflow.com/a/46562884/2624876
 		"checkJs": true,
+		"baseUrl": ".",
+		"paths": {
+			"url": [
+				"node_modules/@types/node/url.d.ts"
+			],
+			"os-gui": [
+				"lib/os-gui/os-gui.d.ts"
+			],
+		}
 	},
 	"include": [
 		"src/**/*",
