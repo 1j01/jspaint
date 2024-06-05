@@ -96,6 +96,7 @@
     "@types/argparse": "^2.0.16",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/jquery": "^3.5.29",
+    "@types/node": "^20.14.2",
     "@types/wicg-file-system-access": "^2023.10.5",
     "@types/youtube": "^0.0.50",
     "cspell-cli": "^8.4.0",
