@@ -77,7 +77,7 @@ export function handleExternalLinks() {
 		}
 	});
 	window.open = (url) => {
-		discordSdk.commands.openExternalLink({ url });
+		discordSdk.commands.openExternalLink({ url: url.toString() });
 		return null;
 	};
 }
