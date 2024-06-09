@@ -340,9 +340,13 @@ Electron app features:
 
 Install [Node.js][] if you don't have it, then open up a command prompt / terminal in the project directory.
 
-### Testing
+### Quality Assurance
 
 Run `npm run lint` to check for spelling errors, type errors, code style issues, and other problems.
+
+Run `npm run format` to automatically fix formatting issues, or `npx eslint --fix` to fix all auto-fixable issues.
+
+The formatting rules are configured for compatibility with VS Code's built-in formatter.
 
 Run `npm test` to run browser-based tests with Cypress. (It's slow to start up and run tests, unfortunately.)
 

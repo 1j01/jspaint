@@ -121,6 +121,7 @@
     "lint-tsc": "tsc --noEmit --project jsconfig.json",
     "lint-eslint": "eslint",
     "lint": "npm-run-all --continue-on-error --serial lint-*",
+    "format": "eslint --fix --fix-type layout",
     "build-css": "rtlcss styles/layout.css styles/layout.rtl.css && rtlcss lib/os-gui/build/layout.css lib/os-gui/build/layout.rtl.css && rtlcss lib/98.css/98.custom-build.css lib/98.css/98.custom-build.rtl.css",
     "watch-css": "onchange --initial --poll 100 \"styles/layout.css\" \"lib/os-gui/build/layout.css\" \"lib/98.css/98.custom-build.css\" -- npm run build-css",
     "update-localization": "node ./localization/preprocess.js",
