@@ -342,11 +342,7 @@ Install [Node.js][] if you don't have it, then open up a command prompt / termin
 
 ### Testing
 
-Run `npm run lint` to check for code problems.
-
-Run `npm run spellcheck` to check for spelling errors. This may be included in the linting script in the future.
-
-Run `npm run typecheck` to check for type errors. This may be included in the linting script in the future. Not much of the codebase is typechecked yet.
+Run `npm run lint` to check for spelling errors, type errors, code style issues, and other problems.
 
 Run `npm test` to run browser-based tests with Cypress. (It's slow to start up and run tests, unfortunately.)
 
