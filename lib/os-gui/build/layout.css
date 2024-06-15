@@ -50,6 +50,11 @@ body > .window-titlebar {
 	display: none; /* prevent resizing when window is minimized */
 }
 
+.os-window.minimized-without-taskbar .menus {
+	display: none; /* hide menubar when window is minimized */
+}
+
+
 /* Fix dragging things (like windows) over iframes */
 .dragging iframe {
 	pointer-events: none;
