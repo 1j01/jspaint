@@ -658,7 +658,7 @@ function* traverse_menu(menu_items, menu_element) {
 		}
 		yield [menu_item, menu_item_element];
 		if (menu_item.submenu) {
-			yield* traverse_menu(menu_item.submenu, document.getElementById(menu_item_element.getAttribute("aria-controls")));
+			yield* traverse_menu(menu_item.submenu, menu_document.getElementById(menu_item_element.getAttribute("aria-controls")));
 		}
 		// if (menu_item.radioItems) {
 		// 	yield* traverse_menu(menu_item.radioItems, menu_element);
@@ -687,7 +687,7 @@ for (const [menu_item, menu_item_element] of traverse_menu(menus["E&xtras"], ext
 		`;
 	}
 }
-$("<style>").text(emoji_css).appendTo("head");
+$("<style>").text(emoji_css).appendTo(menu_document.head);
 
 // Electron menu integration
 if (window.is_electron_app) {
