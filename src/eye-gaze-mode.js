@@ -147,11 +147,9 @@ const eye_gaze_mode_config = {
 // To enable Tracky Mouse, you must currently:
 // - toggle `enable_tracky_mouse` to true
 // - uncomment tracky-mouse.js and tracky-mouse.css in index.html
-// - add `'unsafe-eval' blob:` to the `script-src` directive of the Content-Security-Policy in index.html,
-//   as clmtrackr uses eval().
-// TODO: update Tracky Mouse; I actually created a tool to remove the need for eval in clmtrackr,
-// so the next version shouldn't need 'unsafe-eval'.
-// I also brought the dwell clicking code into Tracky Mouse, and it looks like I still need to update jspaint to use the library version.
+// - add `blob:` to the `script-src` directive of the Content-Security-Policy in index.html,
+//   as clmtrackr loads a Worker with a blob URL
+// TODO: use the dwell clicking API that is now part of Tracky Mouse.
 // For introducing head tracking as a feature (with the Tracky Mouse UI),
 // there's still UI/UX concerns like providing a way to disable it separately from eye gaze mode,
 // and the minimized window overlapping the floating buttons.
