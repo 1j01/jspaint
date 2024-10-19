@@ -145,7 +145,7 @@ const eye_gaze_mode_config = {
 
 // Tracky Mouse provides head tracking. https://trackymouse.js.org/
 // To enable Tracky Mouse, you must currently:
-// - toggle `enable_tracky_mouse` to true
+// - toggle `enable_tracky_mouse_ui` to true
 // - uncomment tracky-mouse.js and tracky-mouse.css in index.html
 // - add `blob:` to the `script-src` directive of the Content-Security-Policy in index.html,
 //   as clmtrackr loads a Worker with a blob URL
@@ -161,12 +161,12 @@ const eye_gaze_mode_config = {
 // I might want to separate it into "Enlarge Interface", "Dwell Clicking", "Head Tracking", and (already split out) "Vertical Color Box".
 // Or "Enlarge UI" and "Tracky Mouse", which would open up a window which would control dwell clicking and head tracking.
 // (I can maintain backwards compatibility with the #eye-gaze-mode URL fragment, breaking it up into the new settings.)
-var enable_tracky_mouse = false;
+var enable_tracky_mouse_ui = false;
 var tracky_mouse_deps_promise;
 
 async function init_eye_gaze_mode() {
 	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before eye gaze mode UI
-	if (enable_tracky_mouse) {
+	if (enable_tracky_mouse_ui) {
 		if (!tracky_mouse_deps_promise) {
 			TrackyMouse.dependenciesRoot = "lib/tracky-mouse/core";
 			tracky_mouse_deps_promise = TrackyMouse.loadDependencies();
