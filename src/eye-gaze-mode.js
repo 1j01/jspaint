@@ -172,7 +172,7 @@ const dwell_clicker_config = {
 // I might want to separate it into "Enlarge Interface", "Dwell Clicking", "Head Tracking", and (already split out) "Vertical Color Box".
 // Or "Enlarge UI" and "Tracky Mouse", which would open up a window which would control dwell clicking and head tracking.
 // (I can maintain backwards compatibility with the #eye-gaze-mode URL fragment, breaking it up into the new settings.)
-var enable_tracky_mouse_ui = false;
+var enable_tracky_mouse_ui = true;
 var tracky_mouse_deps_promise;
 
 async function init_eye_gaze_mode() {

@@ -11,7 +11,7 @@
 	<!-- connect-src needs data:/blob: for loading images via fetch, including from local storage. -->
 	<meta http-equiv="Content-Security-Policy" content="
 		default-src 'self';
-		script-src 'self' https://jspaint.firebaseio.com https://www.youtube.com;
+		script-src 'self' blob: https://jspaint.firebaseio.com https://www.youtube.com;
 		frame-src 'self' https://youtube.com https://www.youtube.com;
 		style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 		img-src 'self' data: blob: http: https:;
