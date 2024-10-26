@@ -273,7 +273,6 @@ declare const systemHooks: SystemHooks;
 
 declare function update_fill_and_stroke_colors_and_lineWidth(tool: Tool): void;
 declare function tool_go(tool: Tool, event_name?: string): void;
-declare function average_points(points: { x: number, y: number }[]): { x: number, y: number };
 
 // Globals temporarily exported from ES Modules,
 // as well as globals from scripts that are not converted to ESM yet.

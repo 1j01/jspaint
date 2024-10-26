@@ -35,7 +35,6 @@ import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_
 // @TODO: Minimize global variables and exports from app.js
 window.update_fill_and_stroke_colors_and_lineWidth = update_fill_and_stroke_colors_and_lineWidth;
 window.tool_go = tool_go;
-window.average_points = average_points;
 
 // #endregion
 

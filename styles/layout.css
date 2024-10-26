@@ -195,40 +195,6 @@ html, body, .jspaint {
 	padding-left: 3px;
 }
 
-.hover-halo {
-	pointer-events: none;
-	z-index: 1000000;
-	box-shadow: 0 0 10px yellow, 0 0 3px yellow;
-}
-.dwell-indicator {
-	position: fixed;
-	pointer-events: none;
-	z-index: 1000000;
-}
-.dwell-indicator::after {
-	content: "";
-	display: block;
-	position: absolute;
-	background: red;
-	left: 2px;
-	top: 2px;
-	right: 2px;
-	bottom: 2px;
-}
-.dwell-indicator:not(.for-release) {
-	background: yellow;
-}
-.dwell-indicator.for-release {
-	background: white;
-}
-.dwell-indicator:not(.for-release),
-.dwell-indicator:not(.for-release)::after {
-	border-radius: 50%;
-}
-.dwell-indicator.for-release,
-.dwell-indicator.for-release::after {
-	clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-}
 .eye-gaze-mode .color-button {
 	width: 25px;
 	height: 25px;

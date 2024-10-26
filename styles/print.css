@@ -29,8 +29,8 @@ html, body, .jspaint {
 .textbox,
 .helper-layer,
 button,
-.hover-halo,
-.dwell-indicator {
+.tracky-mouse-hover-halo,
+.tracky-mouse-dwell-indicator {
 	display: none !important;
 }
 
