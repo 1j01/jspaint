@@ -1,0 +1,271 @@
+.tracky-mouse-pointer {
+	z-index: 900000;
+	pointer-events: none;
+	border-radius: 50%;
+	background-color: red;
+	width: 20px;
+	height: 20px;
+	position: fixed;
+	transform: translate(-50%, -50%);
+}
+
+.tracky-mouse-dwell-indicator {
+	position: fixed;
+	pointer-events: none;
+	z-index: 1000000;
+}
+
+.tracky-mouse-dwell-indicator::after {
+	content: "";
+	display: block;
+	position: absolute;
+	background: red;
+	left: 2px;
+	top: 2px;
+	right: 2px;
+	bottom: 2px;
+}
+
+.tracky-mouse-dwell-indicator:not(.tracky-mouse-for-release) {
+	background: yellow;
+}
+
+.tracky-mouse-dwell-indicator.tracky-mouse-for-release {
+	background: white;
+}
+
+.tracky-mouse-dwell-indicator:not(.tracky-mouse-for-release),
+.tracky-mouse-dwell-indicator:not(.tracky-mouse-for-release)::after {
+	border-radius: 50%;
+}
+
+.tracky-mouse-dwell-indicator.tracky-mouse-for-release,
+.tracky-mouse-dwell-indicator.tracky-mouse-for-release::after {
+	clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.tracky-mouse-hover-halo {
+	pointer-events: none;
+	z-index: 1000000;
+	box-shadow: 0 0 10px yellow, 0 0 3px yellow;
+}
+
+.tracky-mouse-ui {
+	display: flex;
+	flex-direction: column;
+	background-color: rgb(223, 204, 255);
+	color: black;
+	padding: 10px;
+	border-radius: 5px;
+	--max-ui-width: 600px;
+	max-width: var(--max-ui-width);
+	box-sizing: border-box;
+	font-size: 15px;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	accent-color: rgb(191, 36, 234);
+}
+
+.tracky-mouse-canvas {
+	max-width: 100%;
+	object-fit: scale-down;
+	background-color: rgba(15, 0, 20, 0.5);
+}
+
+.tracky-mouse-start-stop-button {
+	background-color: rgb(191, 36, 234);
+	color: white;
+	font-size: 20px;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 5px;
+	width: 120px;
+	cursor: pointer;
+}
+
+.tracky-mouse-start-stop-button::after {
+	content: "(" attr(aria-keyshortcuts) ")";
+	opacity: 0.6;
+	margin-left: 0.5em;
+}
+
+.tracky-mouse-ui .tracky-mouse-control-row:not([hidden]) {
+	display: flex;
+}
+
+.tracky-mouse-ui .tracky-mouse-control-row label {
+	/* Avoid accidental clicks on controls by their labels, when otherwise 100% width. */
+	/* This may not be needed in the current layout. */
+	width: fit-content;
+}
+
+.tracky-mouse-ui .tracky-mouse-label-text {
+	display: inline-block;
+	min-width: 150px;
+}
+
+.tracky-mouse-ui .tracky-mouse-labeled-slider {
+	display: inline-flex;
+	position: relative;
+	margin-bottom: 20px;
+	flex: 1;
+	max-width: 400px;
+}
+
+.tracky-mouse-ui .tracky-mouse-labeled-slider input {
+	flex: 1;
+}
+
+.tracky-mouse-ui .tracky-mouse-labeled-slider .tracky-mouse-min-label,
+.tracky-mouse-ui .tracky-mouse-labeled-slider .tracky-mouse-max-label {
+	opacity: 0.8;
+	position: absolute;
+	bottom: -10px;
+	pointer-events: none;
+}
+
+.tracky-mouse-ui .tracky-mouse-labeled-slider .tracky-mouse-min-label {
+	left: 0;
+}
+
+.tracky-mouse-ui .tracky-mouse-labeled-slider .tracky-mouse-max-label {
+	right: 0;
+}
+
+.tracky-mouse-canvas-container-container {
+	flex: 1;
+	flex-basis: 0;
+	min-width: 0;
+	/* I might be able to simplify this or let it have an intrinsic height
+	based on the width, for the web demo, by leaving min-height unset (auto),
+	and only setting it	to 0 for the desktop app.
+	Well, really the difference is whether the height of the .tracky-mouse-ui
+	is fixed or not, not whether it's a web demo or desktop app.
+	So I might differentiate based on a .constrained-height class or something,
+	if not detect it automatically. */
+	min-height: var(--tracky-mouse-camera-view-min-height, 300px);
+}
+
+.tracky-mouse-canvas-container {
+	position: relative;
+	/* Note: aspect-ratio is set from JS, which determines the width implicitly. */
+	max-height: 100%;
+	margin: auto;
+}
+
+.tracky-mouse-canvas-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.tracky-mouse-use-camera-button {
+	font-size: min(2em, 8vw);
+	color: white;
+	background-color: rgb(220, 20, 60);
+	border: 0;
+	border-radius: 5px;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.tracky-mouse-use-camera-button:hover {
+	background-color: rgb(230, 20, 62);
+}
+
+.tracky-mouse-error-message {
+	font-size: min(1.5em, 6vw);
+	text-align: center;
+	color: white;
+	padding: 5px;
+}
+
+/* Screen overlay in electron app */
+
+#tracky-mouse-screen-overlay-message {
+	color: yellow;
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	text-align: center;
+	padding: 0 5px;
+	white-space: nowrap;
+	--overlay-background-color: rgba(0, 0, 0, 0.3);
+	--height: 25px;
+	height: var(--height);
+	line-height: var(--height);
+	background-color: var(--overlay-background-color);
+	text-shadow: 0 0 8px rgba(3, 2, 2, 0.5);
+	font-size: calc(var(--height) * 0.8);
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* triangles */
+#tracky-mouse-screen-overlay-message::before,
+#tracky-mouse-screen-overlay-message::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	width: 0px;
+	height: 0px;
+	border-style: solid;
+}
+
+#tracky-mouse-screen-overlay-message::before {
+	border-width: 0 0 var(--height) var(--height);
+	border-color: transparent transparent var(--overlay-background-color) transparent;
+	left: calc(var(--height) * -1);
+}
+
+#tracky-mouse-screen-overlay-message::after {
+	border-width: var(--height) 0 0 var(--height);
+	border-color: transparent transparent transparent var(--overlay-background-color);
+	right: calc(var(--height) * -1);
+}
+
+@keyframes tracky-mouse-screen-overlay-message-fade-out {
+	0% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+.tracky-mouse-absolute-center {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* prefer manual takeback indicator, rather than showing both at once */
+body.tracky-mouse-manual-takeback .tracky-mouse-head-not-found-indicator,
+body:not(.tracky-mouse-head-not-found) .tracky-mouse-head-not-found-indicator {
+	display: none;
+}
+
+body:not(.tracky-mouse-manual-takeback) .tracky-mouse-manual-takeback-indicator {
+	display: none;
+}
+
+.tracky-mouse-manual-takeback .tracky-mouse-no-takeback-indicator {
+	display: none;
+}
+
+.tracky-mouse-screen-overlay-status-indicator img {
+	filter: drop-shadow(0 0 4px #000) drop-shadow(2px 2px 2px #000);
+	opacity: 0.5;
+}
+
+.tracky-mouse-ui a:link,
+.tracky-mouse-ui a:visited {
+	color: rgb(135 0 191);
+}

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' blob:">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>JS Library De-eval()-er</title>
+	<style>
+		body {
+			background-color: white;
+			color: black;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			body {
+				background-color: black;
+				color: white;
+			}
+
+			a:link {
+				color: aquamarine;
+			}
+
+			a:visited {
+				color: rgb(197, 127, 255);
+			}
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="core/tracky-mouse.css">
+	<link rel="icon" type="image/png" sizes="16x16" href="images/tracky-mouse-logo-16.png">
+	<link rel="icon" type="image/png" sizes="512x512" href="images/tracky-mouse-logo-512.png">
+</head>
+
+<body>
+	<h2>JS Library De-<code>eval()</code>-er</h2>
+	<p>
+		This page runs a library that uses <code>eval</code> and <code>Function</code>, but instruments them,
+		in order to figure out ahead of time what code the library actually needs to run.
+	</p>
+	<p>
+		In cases where this stays the same generally, and there is not a billion lines of evaluated code,
+		this allows generating a library that does not require <code>eval</code> and <code>Function</code> to be used,
+		so you can do away with <code>unsafe-eval</code> and in the Content-Security-Policy.
+	</p>
+	<p>
+		This doesn't work for all libraries, but it works for the ones I use.
+		Libraries that use <code>eval</code> and <code>Function</code> for performance reasons only
+		are more likely to work.
+		But something that uses it for a JavaScript command prompt (like on-page dev tools) will not.
+	</p>
+	<p>
+		This tool doesn't detect when the code evaluation is dynamic or not.
+		It simply generates code to replace <code>eval</code> and <code>Function</code>
+		with versions that only allows snippets of code already seen while running on this page.
+	</p>
+	<p>
+		The output is a monkey patch to be loaded before any code that uses <code>eval</code> and <code>Function</code>.
+		The monkey patch can be included in the library itself, or in a separate file.
+	</p>
+	<h2>Won't this miss certain cases?</h2>
+	<p>
+		There are other ways of accessing <code>eval</code> and <code>Function</code>,
+		such as <code>(function(){}).constructor("alert('hey')")()</code>;
+		but the intent of this tool is not to catch all possible cases in order to directly prevent access to eval,
+		but rather to allow you to prevent access with Content-Security-Policy's <code>script-src</code>.
+	</p>
+	<h2>Won't this generate huge amounts of code?</h2>
+	<p>
+		For code that evaluates code using templates, as a way of metaprogramming,
+		it may lead to a huge amount of code.
+		However, it should compress well, as it is very repetitive.
+	</p>
+	<p>
+		Parsing performance may still be an issue.
+	</p>
+	<p>
+		It will be interesting to test this.
+		I would expect it to work better if you include the monkey patch as a wrapper around the library,
+		so that it can compress together with the library.
+	</p>
+	<h2>Can this work without first running the code using <code>eval</code>?</h2>
+	<p>
+		It would be possible to generate combinatorially all possibilities of code to be generated,
+		<em>in some cases</em>, however in general it is undecidable.
+	</p>
+	<p>
+		It may be worthwhile to attempt, but in this project,
+		it wasn't necessary to statically analyze the code.
+	</p>
+	<p>
+		Executing it with instrumentation was actually quite simple and effective.
+	</p>
+	<h2>How does this behave differently from native <code>eval</code>?</h2>
+	<p>
+		The generated functions do not run in the same context as the original code.
+		So this makes <code>eval</code> more like how <code>Function</code> works.
+		You may get <code>ReferenceError</code>s if <code>eval</code> accesses variables in the surrounding code.
+	</p>
+	<p>
+		This could be fixed by passing a function to get/set variables from the surrounding code into each
+		<code>eval</code> call site (that needs it).
+		This would need some static analysis to determine which variables are accessed... or, to do it lazily,
+		perhaps every valid JS literal within the eval code could be assumed as possibly accessing a variable outside,
+		and getters/setters generated for it, and the functions generated for recorded eval calls could be wrapped in
+		<code>with (contextGettersAndSetters) {}</code>
+		and the <code>contextGettersAndSetters</code> is passed in to each <code>eval</code> call site,
+		so that the inner code does not need to be modified into function calls.
+	</p>
+	<h2>Will you make this into a reusable tool?</h2>
+	<!-- <p>
+		I'm thinking about it, <em>as you can tell from this heading.</em> Cough.
+	</p> -->
+	<p>
+		I'd like to, yes. I think it would be very valuable for tightening security in various projects.
+	</p>
+	<p>
+		For now, this is part of <a href="https://github.com/1j01/tracky-mouse">Tracky Mouse</a>.
+		MIT-licensed.
+	</p>
+	<p>
+		That said, if you need this, you can copy this HTML file and change the code it loads.
+		It should be pretty easy to use already.
+	</p>
+
+	<hr>
+
+	<!-- Record code evaluations -->
+	<script>
+		const originalEval = eval;
+		const OriginalFunction = Function;
+		const evalCodes = [];
+		const functionConstructions = [];
+		window.eval = function (code) {
+			evalCodes.push(code);
+			return originalEval(code);
+		};
+		window.Function = function (...args) {
+			const argNames = args.slice(0, -1);
+			const code = args.slice(-1)[0];
+			functionConstructions.push({ argNames, code });
+			return new OriginalFunction(...args);
+		};
+	</script>
+
+	<!-- Run code that uses eval, in a similar way to how it's normally used: -->
+	<script src="core/lib/stats.js"></script>
+	<script src="core/lib/clmtrackr.js"></script>
+	<script src="core/tracky-mouse.js"></script>
+	<script>
+		TrackyMouse.dependenciesRoot = "./core";
+		TrackyMouse.init();
+	</script>
+	<!--
+		There's a Function construction that happens in tf.js which I'm loading in a worker.
+		I'm manually triggering a similar construction here because
+		I don't want to get it to load a camera/video stream just for this.
+		(TrackyMouse.useCamera() could be used, but it can fail if the camera is not available.)
+		(Undocumented TrackyMouse.useDemoFootage could work, but the demo video is currently gitignored.)
+	-->
+	<script>
+		Function("r", "regeneratorRuntime = r");
+	</script>
+
+	<!-- Generate code for eval and Function replacements -->
+	<script>
+
+		function generateMonkeyPatch() {
+			let mapCode = "const evalMap = new Map();\n\t";
+			for (const evalCode of evalCodes) {
+				// eval supports both expressions and statements.
+				// eval("1")
+				// eval("var foo=1; foo;")
+				// We need to detect the last expression, and turn it into a return statement.
+				// eval("var foo=1; foo;") -> function() { var foo=1; return foo; }
+				// eval("var foo=1;") -> function() { var foo=1; }
+				// eval("foo=1;") -> function() { return foo=1; }
+				// eval("1;") -> function() { return 1; }
+
+				// We can't use a regex to find the last expression, because it might be inside a string.
+				// Instead, split on semicolons, and try expanding from the end until we find valid expression.
+				// I'm ignoring semicolon insertion for now, only supporting single-line eval code.
+				const potentialStatements = evalCode.replace(/(;|\s)+$/, "").split(";");
+				console.log(potentialStatements);
+				let fnCode = "";
+				let parsed = false;
+				for (let i = potentialStatements.length - 1; i >= 0; i--) {
+					fnCode = potentialStatements.slice(0, i).join(";") + (i ? "; " : "") + "return (" + potentialStatements.slice(i).join(";") + ");";
+					try {
+						new OriginalFunction(fnCode);
+						parsed = true;
+						break;
+					} catch (e) {
+						if (e instanceof SyntaxError) {
+							// Continue.
+						} else {
+							throw e;
+						}
+					}
+				}
+				if (!parsed) {
+					// The code may be just statements (i.e. with side-effects), with no return value expression.
+					fnCode = evalCode;
+					console.log("Leaving code as-is for function body:", evalCode);
+				} else {
+					console.log("Parsed eval code into function body:", { evalCode, fnCode });
+				}
+
+				mapCode += `evalMap.set(${JSON.stringify(evalCode)}, function() { ${fnCode} });\n\t`;
+			}
+			mapCode += "const functionMap = new Map();\n\t";
+			for (const { argNames, code } of functionConstructions) {
+				const key = JSON.stringify({ argNames, code });
+				try {
+					new OriginalFunction(...argNames, code);
+					mapCode += `functionMap.set(${JSON.stringify(key)}, function(${argNames}) { ${code} });\n\t`;
+				} catch (e) {
+					console.warn("Failed to parse function:", { argNames, code });
+				}
+			}
+			const code = `// @generated by eval-is-evil.html
+// 
+// This is a monkey patch that replaces eval and Function
+// with versions that and only run code known ahead of time.
+// They do not use the real eval and Function, and thus
+// the Content Security Policy (CSP) can be tightened.
+(()=> {
+	${mapCode}
+	const eval = (code) => {
+		const fn = evalMap.get(code);
+		if (fn) {
+			return fn();
+		} else {
+			throw new Error("Prevented eval of code not seen ahead-of-time on De-eval()-er page: " + code);
+		}
+	};
+	const Function = function (...args) {
+		const argNames = args.slice(0, -1);
+		const code = args.slice(-1)[0];
+		const key = JSON.stringify({argNames, code});
+		const fn = functionMap.get(key);
+		if (fn) {
+			return fn;
+		} else {
+			throw new Error("Prevented Function constructor called with arguments not seen ahead-of-time on De-eval()-er page: " + JSON.stringify(args));
+		}
+	};
+	// ------------------------------------------------------------
+	// Option 1. Insert original library code here.
+	// If the original library uses ES modules, you would need to ensure
+	// import/export statements remain at the top level,
+	// as they're not allowed within a function.
+	// This is the cleanest option, as it requires no globals to be added or modified.
+	/*__ORIGINAL_LIBRARY_CODE__*/;
+
+	// Option 2. Export eval and Function globally:
+	// globalThis.eval = eval;
+	// globalThis.Function = Function;
+	// This is the simplest option, but it may conflict with other code.
+	
+	// Option 3. Export eval and Function to a namespace:
+	globalThis.ClmtrackrAntiEval = { eval, Function };
+	// This requires patching the library to use the namespace,
+	// e.g. with const { eval, Function } = globalThis.ClmtrackrAntiEval ?? globalThis;
+	// The fallback to globalThis allows to run without the generated monkey patch loaded,
+	// which makes possible running the code collection process on the modified library,
+	// which may or may not be useful.
+	// (If you're updating the library, you'll likely have an unpatched version to run against anyway,
+	// but if you're using an automated patching solution, it may be patched as soon as you update it,
+	// and, another reason to re-run the code collection process is to trigger new code paths that weren't previously run.)
+	// ------------------------------------------------------------
+})();`;
+			const blob = new Blob([code], { type: "text/javascript" });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = "no-eval.js";
+			a.textContent = "Download no-eval.js";
+			document.body.appendChild(a);
+			a.style.position = "fixed";
+			a.style.bottom = "10px";
+			a.style.right = "10px";
+			a.style.fontSize = "2em";
+			a.style.color = "white";
+			a.style.backgroundColor = "#07a";
+			a.style.padding = "0.5em";
+			a.style.borderRadius = "0.5em";
+			a.style.border = "1px outset rgba(255,255,255,0.5)";
+			a.style.zIndex = "1000000";
+			a.style.textDecoration = "none";
+			a.style.boxShadow = "0 0 0.5em 0.5em #07a2, 5px 5px 5px rgba(0,0,0,0.5)";
+		}
+
+		setTimeout(generateMonkeyPatch, 1000);
+
+	</script>
+</body>
+
+</html>

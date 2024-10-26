@@ -1,0 +1,69 @@
+{
+	// .----------------------------.
+	// | Filtering                  |
+	// '----------------------------'
+	// This hides files from the file tree as well as search results.
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/out": true,
+		"**/dist": true,
+	},
+	// This affects Find In Files (Ctrl+Shift+F) but also Go To File (Ctrl+P) and
+	// the new Quick Search (experimental), which I've been using a lot since it was released.
+	"search.exclude": {
+		"**/images": true,
+		"**/lib": true,
+		"**/out": true,
+		// Symbolic link to the core library, causes duplicate/non-canonical search results.
+		"website/core": true,
+		// The package lock files contain a lot of repetition, and are usually noise in search results.
+		// You can often search with `npm ls` if you want to check if a package is installed,
+		// and what depends on what.
+		"**/package-lock.json": true,
+	},
+	// Prevent accidental editing.
+	// This can always be overridden with the command "File: Toggle Active Editor Read-only in Session"
+	"files.readonlyInclude": {
+		// Electron Forge output
+		"**/out/**": true,
+		// Built/installed app (sometimes I follow error message links into the built app's code, and end up editing it by mistake)
+		"**/resources/app/**": true,
+		// Node.js
+		"**/node_modules/**": true,
+		"**/package-lock.json": true,
+	},
+	// .----------------------------.
+	// | Formatting                 |
+	// '----------------------------'
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "always",
+	},
+	"javascript.preferences.importModuleSpecifierEnding": "js",
+	"typescript.preferences.importModuleSpecifierEnding": "js",
+	"html.format.unformattedContentDelimiter": "<!--no_format-->",
+	// Note: this doesn't apply to "JSON with comments" files, such as this one. That's [jsonc].
+	"[json]": {
+		// npm respects different indent styles, but always adds a newline at the end of package.json/package-lock.json,
+		// so this avoids ping-ponging changes in git.
+		// This could be applied to all files for consistency, but it may introduce noise if all files aren't formatted at once.
+		"files.insertFinalNewline": true,
+		// Maintaining current indentation for now, but could remove this for consistency.
+		"editor.detectIndentation": true,
+	},
+	// .----------------------------.
+	// | Theming                    |
+	// '----------------------------'
+	"workbench.colorTheme": "fairyfloss",
+	"workbench.colorCustomizations": {
+		"[fairyfloss]": {
+			"terminal.ansiMagenta": "#f36aff", // hard to see npm errors otherwise
+			"terminal.ansiBrightMagenta": "#f8adff", // not sure if needed, but figured I'd override the set of magentas
+		}
+	},
+	// .------------------------- - .
+	// | Uncategorised settings
+	// '------------------------- - .
+}

@@ -1,0 +1,65 @@
+{
+  "name": "tracky-mouse-electron",
+  "productName": "Tracky Mouse",
+  "version": "1.1.0",
+  "description": "Control your computer with your head movements",
+  "license": "MIT",
+  "author": {
+    "name": "Isaiah Odhner",
+    "email": "isaiahodhner@gmail.com",
+    "url": "https://isaiahodhner.io"
+  },
+  "keywords": [
+    "camera-mouse",
+    "mouse",
+    "camera",
+    "webcam",
+    "head-tracker",
+    "head-tracking",
+    "face-tracker",
+    "face-tracking",
+    "headmouse",
+    "facial-mouse",
+    "accessibility",
+    "cursor",
+    "pointer",
+    "pointing",
+    "input-method",
+    "hands-free",
+    "handsfree",
+    "desktop-automation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1j01/tracky-mouse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/1j01/tracky-mouse/issues"
+  },
+  "homepage": "https://trackymouse.js.org/",
+  "main": "src/electron-main/electron-main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "env-cmd electron-forge publish"
+  },
+  "dependencies": {
+    "about-window": "^1.15.2",
+    "argparse": "^2.0.1",
+    "electron-window-state": "^5.0.3",
+    "fs-plus": "^3.1.1",
+    "serenade-driver": "^1.1.13",
+    "tracky-mouse": "file:../core"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "7.4.0",
+    "@electron-forge/maker-deb": "7.4.0",
+    "@electron-forge/maker-rpm": "7.4.0",
+    "@electron-forge/maker-squirrel": "7.4.0",
+    "@electron-forge/maker-zip": "7.4.0",
+    "@electron-forge/publisher-github": "7.4.0",
+    "electron": "20.0.1",
+    "env-cmd": "^10.1.0"
+  }
+}

@@ -1,0 +1,283 @@
+html {
+	background-color: white;
+	color: black;
+	font-family: sans-serif;
+}
+
+body {
+	max-width: 70em;
+	max-width: min(70em, calc(100% - 2em));
+	margin: 0 auto;
+}
+
+@media (prefers-color-scheme: dark) {
+	html {
+		background-color: black;
+		color: white;
+	}
+
+	a:link {
+		color: aquamarine;
+	}
+
+	a:visited {
+		color: rgb(197, 127, 255);
+	}
+}
+
+header {
+	text-align: center;
+	margin-top: 2em;
+}
+
+header h1 {
+	font-size: 2.6em;
+	margin-bottom: 0;
+}
+
+header .tagline {
+	font-size: 1.5em;
+	margin-top: 0.3em;
+}
+
+header .logo {
+	filter: drop-shadow(0 0 0.8em rgb(0, 217, 255));
+}
+
+.page-section {
+	margin-top: 3em;
+	margin-bottom: 3em;
+}
+
+.features-list {
+	max-width: 50em;
+	margin: 0 auto;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	grid-gap: 1rem;
+	list-style-type: none;
+}
+
+.features-list>li {
+	margin: 1em;
+	padding: 1em;
+	background-color: rgb(73, 77, 80);
+	color: white;
+	border-radius: 0.5em;
+}
+
+.features-list>li>h3 {
+	text-align: center;
+}
+
+.features-list>li>img {
+	display: block;
+	margin: 0 auto;
+	width: 75%;
+	height: auto;
+	min-height: 100px;
+	max-height: 220px;
+}
+
+/* Applies to IE10-11; fixes image aspect ratio; not important, feel free to remove this */
+@media all and (-ms-high-contrast: none),
+(-ms-high-contrast: active) {
+	.features-list>li>img {
+		width: auto;
+	}
+}
+
+.comparison-left-right {
+	display: flex;
+	justify-content: space-around;
+	text-align: center;
+	max-width: 50em;
+	margin: 0 auto;
+}
+
+.comparison-left-right p {
+	flex: 1 1 auto;
+	max-width: 45%;
+}
+
+@media (max-width: 30em) {
+	.comparison-left-right {
+		flex-direction: column;
+	}
+
+	.comparison-left-right p {
+		max-width: 100%;
+	}
+}
+
+.comparison-left-right img {
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 0.8em;
+	width: 50%;
+	height: auto;
+}
+
+.comparison-middle {
+	max-width: 40em;
+	margin: 0 auto;
+	text-align: center;
+}
+
+a.big-download-button {
+	display: inline-block;
+	padding: 0.8em 1em;
+	background-color: rgb(0, 96, 206);
+	color: white;
+	text-decoration: none;
+	border-radius: 0.5em;
+}
+
+.cursors-background {
+	/*background-image: url(images/cursor-tesselation-ceramic-random-colors.svg);*/
+	/*background-image: url(images/cursor-tesselation-curved-random-colors.svg);*/
+	background-image: url(images/cursor-tesselation-melted-rainbow.svg);
+	background-size: 100%;
+	background-color: rgb(234, 215, 255);
+	background-blend-mode: overlay;
+	background-attachment: fixed;
+	padding: 1em;
+	border-radius: 1em / 10em;
+}
+
+@media (prefers-color-scheme: dark) {
+	.cursors-background {
+		background-color: rgb(86, 39, 124);
+	}
+}
+
+.tracky-mouse-ui #tracky-mouse-demo-placeholder {
+	display: none;
+}
+
+#tracky-mouse-demo:not(.tracky-mouse-ui) {
+	text-align: center;
+	min-height: 300px;
+	/* WET: styles copied from .tracky-mouse-ui */
+	background-color: rgb(223, 204, 255);
+	color: black;
+	padding: 10px;
+	border-radius: 5px;
+	max-width: 600px;
+	box-sizing: border-box;
+}
+
+#tracky-mouse-demo-error {
+	color: rgb(255, 182, 182);
+	background-color: rgb(136, 0, 0);
+	padding: 1em;
+	border-radius: 0.2em;
+}
+
+.archery-target {
+	background: radial-gradient(circle, rgba(255, 255, 255, 1) 24%, rgba(255, 0, 0, 1) 25%, rgba(255, 0, 0, 1) 48%, rgba(255, 255, 255, 1) 49%, rgba(255, 255, 255, 1) 66%, rgba(255, 0, 0, 1) 67%, rgba(255, 0, 0, 1) 100%);
+	border-radius: 50%;
+	border: 2px solid #222;
+	width: 100px;
+	height: 100px;
+	width: var(--diameter, 100px);
+	height: var(--diameter, 100px);
+	position: absolute;
+	transform: translate(-50%, -50%);
+	/* `center` for basic hit animation, `center bottom` for hinge hit animation */
+	transform-origin: center bottom;
+}
+
+.round-over .archery-target {
+	background: radial-gradient(circle, rgba(255, 255, 255, 1) 24%, rgb(97, 216, 0) 25%, rgb(97, 216, 0) 48%, rgba(255, 255, 255, 1) 49%, rgba(255, 255, 255, 1) 66%, rgb(97, 216, 0) 67%, rgb(97, 216, 0) 100%);
+}
+
+#archery-scoreboard {
+	position: absolute;
+	top: 77.7%;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-size: 2rem;
+}
+
+#archery-scoreboard .slot-indicator {
+	font-size: 1.2rem;
+	color: gray;
+	margin-top: 0;
+	margin-bottom: 0.5rem;
+}
+
+#archery-scoreboard .best-times-label {
+	font-size: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+#archery-scoreboard ul {
+	list-style-type: none;
+	padding: 0;
+	font-size: 1rem;
+	text-align: left;
+	margin: 0 auto;
+	/* display: inline-block; */
+	width: fit-content;
+}
+
+#archery-scoreboard li.new-best-time span {
+	color: rgb(97, 216, 0);
+	font-weight: bold;
+	font-style: italic;
+}
+
+/*@keyframes archery-target-hit-basic {
+	0% {
+		transform: translate(-50%, -50%) scale(1);
+	}
+
+	50% {
+		transform: translate(-50%, -50%) scale(1.2);
+	}
+
+	100% {
+		transform: translate(-50%, -50%) scale(1);
+	}
+}*/
+/*@keyframes archery-target-spin {
+	0% {
+		transform: translate(-50%, -50%) rotateY(0deg);
+	}
+
+	100% {
+		transform: translate(-50%, -50%) rotateY(3600deg);
+	}
+}*/
+/*@keyframes archery-target-hit {
+	0% {
+		transform: translate(-50%, -50%) rotateX(0deg);
+	}
+
+	50% {
+		transform: translate(-50%, -50%) rotateX(200deg);
+	}
+
+	60% {
+		transform: translate(-50%, -50%) rotateX(160deg);
+	}
+
+	70% {
+		transform: translate(-50%, -50%) rotateX(190deg);
+	}
+
+	80% {
+		transform: translate(-50%, -50%) rotateX(176deg);
+	}
+
+	90% {
+		transform: translate(-50%, -50%) rotateX(183deg);
+	}
+
+	100% {
+		transform: translate(-50%, -50%) rotateX(180deg);
+	}
+}*/

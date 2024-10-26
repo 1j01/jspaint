@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' blob:">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tracky Mouse</title>
+	<meta name="description" content="Control your computer with just a webcam.">
+	<link rel="preload" href="core/lib/stats.js" as="script">
+	<link rel="preload" href="core/lib/no-eval.js" as="script">
+	<link rel="preload" href="core/lib/clmtrackr.js" as="script">
+	<!-- TODO: figure out how to preload worker-context dependencies that use `importScripts` -->
+	<!-- <link rel="preload" href="core/lib/tf.js" as="worker-importScripts-dependency?"> -->
+	<!-- <link rel="preload" href="core/lib/facemesh/facemesh.js" as="worker-importScripts-dependency?"> -->
+	<!-- <link rel="preload" href="core/lib/jsfeat-min.js" as="script"> exported from patched clmtrackr.js -->
+	<!-- TODO: defer loading tracky-mouse.css -->
+	<!-- <link rel="preload" href="core/tracky-mouse.css" as="style"> -->
+	<link rel="stylesheet" type="text/css" href="core/tracky-mouse.css">
+	<link rel="stylesheet" type="text/css" href="tracky-mouse-homepage.css">
+	<link rel="icon" type="image/png" sizes="16x16" href="images/tracky-mouse-logo-16.png">
+	<link rel="icon" type="image/png" sizes="512x512" href="images/tracky-mouse-logo-512.png">
+</head>
+
+<body>
+	<header>
+		<img src="images/tracky-mouse-logo-512.png" width="200" height="200" alt="" class="logo">
+		<h1>Tracky Mouse</h1>
+		<!-- <p class="tagline">Control your computer with your head!</p> -->
+		<p class="tagline">Hands-free mouse control</p>
+		<!-- <p class="tagline">Hands-free computer control</p> -->
+	</header>
+	<section class="page-section">
+		<p>
+			Tracky Mouse lets you control your computer with just a webcam.
+		</p>
+	</section>
+	<section class="page-section">
+		<h2>Features</h2>
+		<ul class="features-list">
+			<li>
+				<img width="64" height="64" src="images/input-head.svg" alt="Head with horizontal and vertical arrows">
+				<div>
+					<h3>Head Tracking</h3>
+					<p>Precisely control the mouse cursor by moving your head.</p>
+				</div>
+			</li>
+			<li>
+				<img width="64" height="64" src="images/dwell-clicking.svg" alt="Mouse cursor with timer">
+				<div>
+					<h3>Dwell Clicking</h3>
+					<p>Click by hovering over a control for a set amount of time. Cancel by moving away.</p>
+				</div>
+			</li>
+			<li>
+				<img width="64" height="64" src="images/manual-takeback.svg" alt="Mouse with hand grabbing it">
+				<!-- <img width="64" height="64" src="images/input-mouse.svg" alt="Mouse with horizontal and vertical arrows"> -->
+				<div>
+					<h3>Manual Takeback</h3>
+					<p>Regain control of the mouse by simply moving it. Head tracking will pause temporarily.</p>
+				</div>
+			</li>
+			<!-- <li>
+				<img width="64" height="64" src="images/keyboard-shortcuts.svg" alt="Keyboard with keys highlighted">
+				<div>
+					<h3>Keyboard Shortcuts</h3>
+					<p>Use the keyboard to toggle head tracking, dwell clicking, and more.</p>
+				</div>
+			</li> -->
+			<li>
+				<img width="64" height="64" src="images/sliders.svg" alt="Sliders">
+				<div>
+					<h3>Settings</h3>
+					<p>Adjust the sensitivity and smoothing of head tracking.</p>
+				</div>
+			</li>
+			<!-- <li>
+				<img width="64" height="64" src="images/gestures.svg" alt="Facial gestures">
+				<div>
+					<h3>Gestures</h3>
+					<p>Blink, smile, or raise your eyebrows to trigger actions.</p>
+				</div>
+			</li> -->
+			<!-- <li>
+				<img width="64" height="64" src="images/open-source.svg" alt="Open source logo">
+				<div>
+					<h3>Free and Open Source</h3>
+					<p>The software is yours forever.</p>
+				</div>
+			</li> -->
+		</ul>
+	</section>
+	<section class="page-section">
+		<h2>The best of both worlds</h2>
+		<p>
+			Tracky Mouse combines state-of-the-art face detection with tried-and-true optical flow tracking
+			to precisely control mouse movement with your head.
+		</p>
+		<div class="comparison-left-right">
+			<p>
+				<img src="images/enable-viacam.png" width="220" height="220" alt="">
+				<a href="https://eviacam.crea-si.com/"><b>Enable Viacam</b></a>
+				uses optical flow to track the movement of points on your face,
+				but it has trouble finding your face in the first place.
+			</p>
+			<p>
+				<img src="images/project-gameface.png" width="220" height="220" alt="">
+				<a href="https://blog.google/technology/ai/google-project-gameface/"><b>Project Gameface</b></a>
+				uses state-of-the art machine learning model FaceMesh to find your face,
+				but cursor movement is very jittery because it uses the face position information directly.
+			</p>
+		</div>
+		<div class="comparison-middle">
+			<p>
+				<b>Tracky Mouse</b> works like Enable Viacam, tracking points on your face precisely with optical flow,
+				but it uses state-of-the-art face detection to place those points.
+			</p>
+			<p>
+				Since the face detection is so good, it can place the points not just on your face,
+				but at locations on your face that are ideal for tracking, and it can prune away the points
+				when they stray from those specific locations on your face.
+			</p>
+			<p>
+				The result is a system that's <b>more accurate than either.</b>
+			</p>
+		</div>
+	</section>
+	<section class="cursors-background">
+		<h2>Who is this for?</h2>
+		<p>
+			People who have limited mobility, due to motor neuron diseases like ALS,
+			or other conditions that make it difficult to use a mouse,
+			can greatly benefit from hands-free computer control.
+		</p>
+		<p>
+			I hope to make it good enough that people want to use it even for common repetitive strain injuries like
+			carpal tunnel syndrome.
+		</p>
+		<p>
+			It's also just fun! It feels like controlling the computer with your mind.
+		</p>
+		<p>
+			Ever wanted to use your computer while playing guitar, or while eating a sandwich?
+			Maybe Tracky Mouse is for you!
+		</p>
+	</section>
+	<section class="page-section">
+		<h2>Try it out</h2>
+		<p>
+			You can try out Tracky Mouse right here in your browser.
+		</p>
+		<p>
+			Just click to allow camera access, and then adjust the settings until it feels comfortable pointing to any
+			part of the screen.
+		</p>
+		<p>
+			If you scroll down, there is an area where you can practice pointing at targets.
+		</p>
+		<!-- TODO: maybe expose "Use Demo Footage" option I've used for testing?
+			I'm a bit worried about bloating the size of the repo with demo footage though.
+			Also, it would probably work better to just embed a video showing the software in action.
+			That way it could give more context for how its used, not just demonstrate the head tracking.
+		-->
+		<div id="tracky-mouse-demo">
+			<p id="tracky-mouse-demo-placeholder">
+				A demo of Tracky Mouse should appear here.
+			</p>
+			<p id="tracky-mouse-demo-error" hidden>
+			</p>
+			<noscript>
+				<p>
+					Tracky Mouse requires JavaScript to run.
+				</p>
+			</noscript>
+			<script>
+				// Only ES5 syntax here please
+				window.onerror = function (message, source, lineno, colno, error) {
+					var isIE = /Trident|MSIE/.test(window.navigator.userAgent);
+					var errorElement = document.getElementById("tracky-mouse-demo-error");
+					if (!errorElement) {
+						// Tracky Mouse UI already loaded
+						// Might still be good to show the error, but it also might not be a showstopper.
+						// For now, just ignore it, to avoid an additional error during error handling.
+						return;
+					}
+					errorElement.hidden = false;
+					if (isIE) {
+						errorElement.textContent = "Internet Explorer is not supported. Please use a modern browser like Chrome, Firefox, or Edge.";
+						return;
+					}
+					errorElement.textContent = message;
+					var location = source + ":" + lineno + ":" + colno;
+					var locationElement = document.createElement("code");
+					locationElement.textContent = location;
+					errorElement.appendChild(document.createElement("br"));
+					errorElement.appendChild(locationElement);
+				};
+			</script>
+		</div>
+		<h3 style="font-weight: normal; font-size: 5em; opacity: 0.5; margin: 0.2em; text-align: center;">
+			Archery Practice Area
+			<!-- 🏹 -->
+			<!-- Could be nice to represent the bow and arrow, but an emoji isn't cutting it for me. -->
+		</h3>
+		<!-- margin is radius of largest target -->
+		<div id="archery-demo" style="position: relative; height: 400px; margin: 100px;">
+			<div id="archery-scoreboard"></div>
+			<button class="archery-target" style="--diameter: 200px; top: 50%; left: 50%"
+				aria-label="archery target"></button>
+			<button class="archery-target" style="--diameter: 100px; top: 0%; left: 0%"
+				aria-label="archery target"></button>
+			<button class="archery-target" style="--diameter: 100px; top: 0%; left: 100%"
+				aria-label="archery target"></button>
+			<button class="archery-target" style="--diameter: 100px; top: 100%; left: 0%"
+				aria-label="archery target"></button>
+			<button class="archery-target" style="--diameter: 100px; top: 100%; left: 100%"
+				aria-label="archery target"></button>
+		</div>
+	</section>
+	<section class="page-section">
+		<h2>Download for desktop</h2>
+		<p>
+			Install the desktop app to control your whole computer.
+		</p>
+		<p>
+			<!-- TODO: download links for multiple platforms; detect platform, present download with dropdown similar to VS Code homepage, near top of page -->
+			<a href="https://github.com/1j01/tracky-mouse/releases/download/v1.1.0/Tracky.Mouse.v1.1.0.Setup.exe"
+				class="big-download-button">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"
+					style="vertical-align: middle; margin-right: 11px; height: 1em; transform: scale(1.7, 1.5) perspective(9px) rotateY(-10deg) translateY(-1px)">
+					<rect x="5" y="5" width="50" height="50" fill="white" />
+					<rect x="65" y="5" width="50" height="50" fill="white" />
+					<rect x="5" y="65" width="50" height="50" fill="white" />
+					<rect x="65" y="65" width="50" height="50" fill="white" />
+				</svg>
+				Download for Windows
+			</a>
+			<!-- <br>
+			<a href="" class="secondary-download-button">Download for Windows</a>
+			<br>
+			<a href="" class="secondary-download-button">Download for Linux</a>
+			<br>
+			<a href="" class="secondary-download-button">Download for Mac</a> -->
+		</p>
+		<p>
+			<a href="https://github.com/1j01/tracky-mouse/releases">View All Releases</a>
+		</p>
+	</section>
+	<section class="page-section">
+		<h2>Embed in your own web application</h2>
+		<p>
+			Most of the functionality of Tracky Mouse is available as a JavaScript library.
+		</p>
+		<p>
+			You can use it to add head tracking and dwell clicking to your own web application.
+		</p>
+		<p>
+			Check out the
+			<a href="https://github.com/1j01/tracky-mouse/blob/main/core/README.md#tracky-mouse-api">API
+				documentation</a>
+			<!-- <a href="https://www.npmjs.com/package/tracky-mouse">API documentation</a> -->
+			for more information.
+		</p>
+		<p>
+			<a href="https://jspaint.app/about">JS Paint</a> uses Tracky Mouse for dwell clicking in its
+			<a href="https://jspaint.app/#eye-gaze-mode">Eye Gaze Mode</a>.
+		</p>
+	</section>
+	<section class="page-section">
+		<h2>Technical Info</h2>
+		<p>
+			This is a head tracking system similar to <a href="https://eviacam.crea-si.com/">eViacam</a>,
+			using <a href="https://en.wikipedia.org/wiki/Lucas%E2%80%93Kanade_method">Lucas–Kanade optical flow</a>
+			to track points for high accuracy,
+			and face detection for understanding of where to place tracking points.
+			It uses two different face detectors, a fast-to-load one
+			(<a href="https://github.com/auduno/clmtrackr">clmtrackr.js</a>)
+			and a slower to load but much more accurate one
+			(<a href="https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection">FaceMesh</a>),
+			which it switches to automatically when available.
+		</p>
+		<p>
+			<a href="https://inspirit.github.io/jsfeat/">JSFeat</a>
+			is used for optical flow, and clmtrackr.js also uses JSFeat,
+			so I patched clmtrackr.js to export JSFeat so it doesn't need to be loaded twice.
+		</p>
+		<p>
+			clmtrackr.js used <code>eval</code> heavily, but I created
+			<a href="eval-is-evil.html">a tool that eliminates the need for <code>eval</code></a>
+			by running the code and seeing what it tries to evaluate,
+			and creating functions that do the same thing.
+			This allows Tracky Mouse to run in a context secured with <code>Content-Security-Policy</code>.
+		</p>
+	</section>
+	<section class="page-section">
+		<h2>Source Code</h2>
+		<p><a href="https://github.com/1j01/tracky-mouse">Open source on GitHub.</a> MIT-licensed.</p>
+	</section>
+	<section class="page-section">
+		<h2>Privacy Policy</h2>
+		<p>
+			All processing is done locally on your computer.
+		</p>
+		<p>
+			Tracky Mouse does not store any personally identifiable information.
+		</p>
+		<p>
+			Tracky Mouse may use a third-party service to report errors,
+			including some context about how you've configured the software.
+		</p>
+	</section>
+	<section class="page-section">
+		<h2>Feedback</h2>
+		<p>
+			Please <a href="mailto:isaiahodhner@gmail.com">email me</a> with any feedback or questions,
+			or <a href="https://github.com/1j01/tracky-mouse/issues">open an issue on GitHub</a>.
+		</p>
+	</section>
+	<script defer src="core/tracky-mouse.js"></script>
+	<!-- `<script type="module">` is implicitly deferred, so this will load after the library despite `defer` on the library -->
+	<script type="module" src="demo.js"></script>
+</body>
+
+</html>

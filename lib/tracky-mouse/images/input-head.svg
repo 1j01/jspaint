@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="64.0px"
+   height="64.0px"
+   viewBox="0 0 64.0 64.0"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="input-head.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1054"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="11.656384"
+     inkscape:cx="26.637764"
+     inkscape:cy="30.15515"
+     inkscape:current-layer="g3699"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid1540"
+       empspacing="8"
+       originx="0"
+       originy="0"
+       spacingy="1"
+       spacingx="1"
+       units="px"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1049" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3699"
+       transform="translate(0.44861459,3.114008)"
+       inkscape:label="head/face">
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         d="m 30.141868,12.978181 c 14.494394,-1.150235 14.279704,11.10915 12.398736,17.726188 -1.811897,6.374057 -1.014423,8.596418 -3.989219,11.681623 C 35.57659,45.471196 28.068583,46.316195 24.159832,42.123198 21.531192,39.303401 21.197535,35.865302 19.751164,31.11657 17.067937,22.306985 19.888772,13.791838 30.141868,12.978181 Z"
+         id="path1660"
+         sodipodi:nodetypes="ssssss"
+         inkscape:label="head outline" />
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         d="m 34.049842,27.080668 c 0.01551,1.045547 0.30038,1.817774 0.538426,2.018566 2.96671,2.50248 -1.324581,6.211798 -3.858385,3.634784"
+         id="path3273"
+         sodipodi:nodetypes="csc"
+         inkscape:label="nose" />
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         d="m 37.164979,36.569026 c -1.967047,3.259348 -6.756567,4.047549 -9.731686,0.636254"
+         id="path3273-3"
+         sodipodi:nodetypes="cc"
+         inkscape:label="mouth" />
+      <path
+         d="m 29.303443,26.583633 c -0.286386,-3.512331 -5.95152,-3.14935 -6.125787,0.0025 1.177451,1.011134 4.143639,1.403238 6.125787,-0.0025 z"
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         id="path3547"
+         sodipodi:nodetypes="ccc"
+         inkscape:label="eye" />
+      <path
+         d="m 40.199316,26.313676 c -0.388768,-3.372612 -6.017232,-3.133673 -6.152333,0.105298 1.343476,1.302451 4.337462,1.588922 6.152333,-0.105298 z"
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         id="path3547-3"
+         sodipodi:nodetypes="ccc"
+         inkscape:label="eye" />
+      <circle
+         style="fill:#ffffff;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         id="path3815"
+         cx="26.390192"
+         cy="26.663704"
+         r="0.75630671"
+         inkscape:label="pupil" />
+      <circle
+         style="fill:#ffffff;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         id="path3815-2"
+         cx="37.200237"
+         cy="26.602921"
+         r="0.75630671"
+         inkscape:label="pupil" />
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         d="m 23.975227,24.831052 c 2.776779,-1.22921 3.865192,-0.537986 5.217286,-0.146685"
+         id="path3942"
+         sodipodi:nodetypes="cc"
+         inkscape:label="eye brow"
+         transform="translate(-0.44861459,-3.114008)" />
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         d="m 34.747591,24.816768 c 2.776779,-1.22921 3.865192,-0.537986 5.217286,-0.146685"
+         id="path3942-6"
+         sodipodi:nodetypes="cc"
+         inkscape:label="eye brow"
+         transform="translate(-0.44861459,-3.114008)" />
+    </g>
+    <g
+       id="g3604"
+       transform="translate(-1.2902128,1.7529011)"
+       style="stroke-width:1"
+       inkscape:label="arrow left">
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         d="M 8.5115839,29.673665 H 20.500416"
+         id="path3594"
+         sodipodi:nodetypes="cc"
+         inkscape:label="stem" />
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:square;stop-color:#000000"
+         d="M 12.710586,33.54024 7.8742917,29.593304 12.666634,25.671743"
+         id="path3596"
+         sodipodi:nodetypes="ccc"
+         inkscape:label="head" />
+    </g>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g3604"
+       id="use3606"
+       transform="matrix(-1,0,0,1,63.290614,0.28671953)"
+       style="stroke-width:1"
+       inkscape:label="arrow right" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g3604"
+       id="use3606-7"
+       transform="matrix(0,1,1,0,0.26118063,-3.4097407)"
+       style="stroke-width:1"
+       inkscape:label="arrow up" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g3604"
+       id="use3606-7-5"
+       transform="rotate(-90,34.317638,33.52309)"
+       style="stroke-width:1"
+       inkscape:label="arrow down" />
+  </g>
+</svg>

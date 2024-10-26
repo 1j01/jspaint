@@ -1,0 +1,45 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			// To use this configuration, you must run Chrome with a flag:
+			//   google-chrome --remote-debugging-port=9222 http://127.0.0.1:64206
+			// or for Windows:
+			//   start chrome --remote-debugging-port=9222 http://127.0.0.1:64206
+			// and Chrome must not be running beforehand, as the flag won't apply otherwise.
+			// And you need to have the dev server running:
+			//   npm run dev
+			// If you really don't want to close Chrome, you can use a temporary profile.
+			// Assuming cmd.exe and not bash:
+			//   mkdir C:\TempChromeProfile
+			//   echo {"browser": {"has_seen_welcome_page": true, "default_browser_infobar_last_declined": "13354566465257726"}} > C:\TempChromeProfile\Preferences
+			//   start chrome --remote-debugging-port=9222 --user-data-dir="C:\TempChromeProfile" --disable-fre --no-default-browser-check --no-first-run http://127.0.0.1:64206
+			// Cleanup:
+			//   rmdir /s /q C:\TempChromeProfile
+			"type": "chrome",
+			"request": "attach",
+			"name": "Attach to Chrome",
+			"port": 9222,
+			"urlFilter": "http://127.0.0.1:64206/*",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
+			// https://www.electronjs.org/docs/latest/tutorial/debugging-vscode
+			"name": "Electron: Debug Main Process",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "${workspaceFolder}/desktop-app/node_modules/.bin/electron",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/desktop-app/node_modules/.bin/electron.cmd"
+			},
+			"args": [
+				"desktop-app"
+			],
+			"outputCapture": "std"
+		}
+	]
+}

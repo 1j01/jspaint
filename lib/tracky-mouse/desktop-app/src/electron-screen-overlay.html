@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+	<!-- XXX: localization hazard: relying on the untranslated window title for View > Toggle Developer Tools (Screen Overlay) -->
+	<title>Tracky Mouse Screen Overlay</title>
+	<link rel="stylesheet" type="text/css" href="../node_modules/tracky-mouse/tracky-mouse.css">
+	<link rel="stylesheet" type="text/css" href="screen-overlay.css">
+	<!-- <link rel="icon" type="image/png" sizes="16x16" href="../images/tracky-mouse-logo-16.png"> -->
+	<!-- <link rel="icon" type="image/png" sizes="512x512" href="../images/tracky-mouse-logo-512.png"> -->
+</head>
+
+<body>
+	<div class="tracky-mouse-absolute-center">
+		<div class="tracky-mouse-screen-overlay-status-indicator tracky-mouse-manual-takeback-indicator">
+			<img src="../images/manual-takeback.svg" alt="hand reaching for mouse" width="128" height="128">
+		</div>
+		<div class="tracky-mouse-screen-overlay-status-indicator tracky-mouse-head-not-found-indicator">
+			<img src="../images/head-not-found.svg" alt="head not found" width="128" height="128">
+		</div>
+	</div>
+	<div id="tracky-mouse-screen-overlay-message">
+		<div class="tracky-mouse-manual-takeback-indicator">
+			<!-- Pausing temporarily for manual takeback. -->
+			<!-- Manual Takeback -->
+			<!-- Will resume in <span id="countdown">5</span> seconds. -->
+			Will resume after mouse stops moving.
+		</div>
+		<div class="tracky-mouse-no-takeback-indicator">
+			Press F9 to <span id="enable-disable">toggle</span> Tracky Mouse.
+		</div>
+	</div>
+</body>
+
+<script src="../node_modules/tracky-mouse/tracky-mouse.js"></script>
+<script src="screen-overlay.js"></script>
+
+</html>

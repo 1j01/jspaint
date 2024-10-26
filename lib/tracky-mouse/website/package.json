@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "tracky-mouse-website",
+  "version": "1.1.0",
+  "description": "Website for Tracky Mouse",
+  "devDependencies": {
+    "gh-pages": "^6.1.1",
+    "live-server": "^1.2.1"
+  },
+  "scripts": {
+    "start": "live-server --port=64206",
+    "deploy:@TODO": "echo 'Please make the deploy script efficient with rsync or something.'",
+    "deploy": "cp -rL . ../dist && rm -rf ../dist/node_modules && rm ../dist/package-lock.json && rm ../dist/package.json && gh-pages -d ../dist"
+  },
+  "license": "MIT"
+}

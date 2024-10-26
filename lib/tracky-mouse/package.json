@@ -1,47 +1,32 @@
 {
-  "name": "tracky-mouse",
-  "version": "1.0.0",
-  "description": "Add facial mouse accessibility to JavaScript applications",
-  "license": "MIT",
-  "author": {
-    "name": "Isaiah Odhner",
-    "email": "isaiahodhner@gmail.com",
-    "url": "https://isaiahodhner.io"
-  },
-  "keywords": [
-    "camera-mouse",
-    "mouse",
-    "camera",
-    "webcam",
-    "head-tracker",
-    "head-tracking",
-    "face-tracker",
-    "face-tracking",
-    "headmouse",
-    "facial-mouse",
-    "accessibility",
-    "cursor",
-    "pointer",
-    "pointing",
-    "input-method",
-    "hands-free",
-    "handsfree",
-    "desktop-automation"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/1j01/tracky-mouse.git"
-  },
-  "bugs": {
-    "url": "https://github.com/1j01/tracky-mouse/issues"
-  },
-  "homepage": "https://github.com/1j01/tracky-mouse#readme",
-  "main": "tracky-mouse.js",
-  "browser": "tracky-mouse.js",
-  "files": [
-    "tracky-mouse.js",
-    "tracky-mouse.css",
-    "lib/"
-  ],
-  "scripts": {}
+	"private": true,
+	"name": "tracky-mouse-monorepo",
+	"description": "This package contains scripts shared between packages.",
+	"version": "1.1.0",
+	"CAN'T USE NPM WORKSPACES, see: https://github.com/1j01/tracky-mouse/issues/53": [
+		"core",
+		"desktop-app",
+		"website"
+	],
+	"scripts": {
+		"website": "cd website && npm run start",
+		"in-website": "cd website &&",
+		"desktop-app": "cd desktop-app && npm run start",
+		"in-desktop-app": "cd desktop-app &&",
+		"in-core": "cd core &&",
+		"lint-cspell": "cspell-cli lint .",
+		"lint-eslint": "eslint .",
+		"lint": "npm-run-all --continue-on-error --serial lint-*",
+		"update-cli-docs": "node -e \"const fs = require('fs'); fs.writeFileSync('CLI.md', fs.readFileSync('CLI.md', 'utf8').replace(/```HELP_OUTPUT.+?```/s, '```HELP_OUTPUT\\n' + require('child_process').execSync('tracky-mouse --help').toString().trim() + '\\n```'))\""
+	},
+	"bin": {
+		"tracky-mouse": "desktop-app/src/tracky-mouse-bin.js"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.0.0",
+		"@types/eslint": "^8.56.9",
+		"cspell-cli": "^8.7.0",
+		"eslint": "^9.0.0",
+		"npm-run-all": "^4.1.5"
+	}
 }
