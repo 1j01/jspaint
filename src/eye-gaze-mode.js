@@ -170,7 +170,7 @@ async function init_eye_gaze_mode() {
 	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before eye gaze mode UI
 	if (enable_tracky_mouse) {
 		if (!tracky_mouse_deps_promise) {
-			TrackyMouse.dependenciesRoot = "lib/tracky-mouse";
+			TrackyMouse.dependenciesRoot = "lib/tracky-mouse/core";
 			tracky_mouse_deps_promise = TrackyMouse.loadDependencies();
 		}
 		await tracky_mouse_deps_promise;
