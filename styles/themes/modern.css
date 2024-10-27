@@ -244,7 +244,7 @@ body {
 }
 
 /* Menu item SVG for checkboxes and submenu indicators, copy pasted from OS-GUI's CSS */
-/* Note: viewBox is needed for scaling the SVG, used in Eye Gaze Mode */
+/* Note: viewBox is needed for scaling the SVG, used in Enlarge UI mode */
 /* spell-checker: disable */
 .menu-item-checkbox-area::after {
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' style='fill:currentColor;display:inline-block;vertical-align:middle' %3E%3Cpath d='M5 7v3l2 2 5-5V4L7 9Z'/%3E%3C/svg%3E");

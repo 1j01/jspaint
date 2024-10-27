@@ -1613,6 +1613,7 @@ if (speech_recognition_available) {
 			if (button_text.match(/^(Okay|OK)$/i)) {
 				button_text_phrases = ["Okay", localize("OK")];
 			}
+			// TODO: "clicker" variant
 			if (button_text.match(/^(Pause Dwell Clicking)$/i)) {
 				button_text_phrases = [
 					"Toggle Dwell Clicking", "Toggle Dwell Clicks",

@@ -1250,6 +1250,122 @@ const menus = {
 			description: localize("Enlarges buttons and provides dwell clicking."),
 		},
 		{
+			emoji_icon: "🔍",
+			// label: localize("&Enlarge Buttons"), // too specific; it also enlarges windows and other UI elements
+			label: localize("&Enlarge UI"), // a bit technical, but hopefully common enough
+			// label: localize("&Enlarge Interface"), // avoids an acronym, but not much less technical
+			speech_recognition: [
+				"enlarge buttons", "enlarge ui", "enlarge user interface", "enlarge interface", "enlarge the buttons", "enlarge the user interface", "enlarge the interface", "make buttons bigger", "make ui bigger", "make user interface bigger", "make interface bigger", "make the buttons bigger", "make the user interface bigger", "make the interface bigger", "bigger buttons", "bigger ui", "bigger user interface", "bigger interface",
+				"toggle enlarged buttons", "toggle enlarged ui", "toggle enlarged user interface", "toggle enlarged interface", "toggle bigger buttons", "toggle bigger ui", "toggle bigger user interface", "toggle bigger interface",
+				"enable enlarged buttons", "enable enlarged ui", "enable enlarged user interface", "enable enlarged interface", "enable bigger buttons", "enable bigger ui", "enable bigger user interface", "enable bigger interface",
+				"disable enlarged buttons", "disable enlarged ui", "disable enlarged user interface", "disable enlarged interface", "disable bigger buttons", "disable bigger ui", "disable bigger user interface", "disable bigger interface",
+				"shrink buttons", "shrink ui", "shrink user interface", "shrink interface", "shrink the buttons", "shrink the user interface", "shrink the interface", "make buttons smaller", "make ui smaller", "make user interface smaller", "make interface smaller", "make the buttons smaller", "make the user interface smaller", "make the interface smaller", "smaller buttons", "smaller ui", "smaller user interface", "smaller interface",
+			],
+			checkbox: {
+				toggle: () => {
+					if (/eye-gaze-mode/i.test(location.hash)) {
+						// @TODO: confirmation dialog that you could cancel with dwell clicking!
+						// if (confirm("This will disable eye gaze mode.")) {
+						// change_some_url_params({
+						// 	"eye-gaze-mode": false,
+						// 	"enlarge-ui": false,
+						// });
+						// }
+					} else if (/enlarge-ui/i.test(location.hash)) {
+						change_url_param("enlarge-ui", false);
+					} else {
+						change_url_param("enlarge-ui", true);
+					}
+				},
+				check: () => {
+					return /enlarge-ui|eye-gaze-mode/i.test(location.hash);
+				},
+			},
+			enabled: () => {
+				return !/eye-gaze-mode/i.test(location.hash);
+			},
+			description: localize("Enlarges buttons, windows, and menus for easier clicking."),
+		},
+		// TODO: split up Eye Gaze Mode into more separate features
+		// {
+		// 	emoji_icon: "↩️", // doesn't match orientation of the actual button icon's arrow
+		// 	// label: localize("&Floating Undo/Redo Buttons"),
+		// 	// label: localize("Easy Undo/Redo"),
+		// 	// label: localize("Easy &Undo"),
+		// 	// label: localize("Easy &Undo Button"),
+		// 	// label: localize("Floating &Undo"), // it might not always be floating, it might become part of the tool box
+		// 	label: localize("Quick Undo Button"), // a bit long
+		// 	// label: localize("Quick Undo"), // "Quick Undo" also refers to pressing both mouse buttons to cancel an action, not that you can't have multiple ways to "quick undo" if that's the better name
+		// 	speech_recognition: [
+		// 	],
+		// 	checkbox: {
+		// 		toggle: () => {
+		// 			if (/easy-undo/i.test(location.hash)) {
+		// 				change_url_param("easy-undo", false);
+		// 			} else {
+		// 				change_url_param("easy-undo", true);
+		// 			}
+		// 		},
+		// 		check: () => {
+		// 			return /easy-undo/i.test(location.hash);
+		// 		},
+		// 	},
+		// 	description: localize("Enlarges buttons for easier clicking."),
+		// },
+		// {
+		// 	emoji_icon: "⏱️",
+		// 	// label: localize("Dwell &Click"),
+		// 	label: localize("Dwell &Clicker"),
+		// 	speech_recognition: [
+		// 		"dwell clicking", "dwell click", "dwell clicker", "auto click", "auto clicker", "auto clicking", "click automatically",
+		// 		"stop clicking", "stop auto clicking", "stop auto click", "stop auto clicker", "stop dwell clicking", "stop dwell click", "stop dwell clicker",
+		// 	],
+		// 	checkbox: {
+		// 		toggle: () => {
+		// 			if (/dwell-clicker/i.test(location.hash)) {
+		// 				change_url_param("dwell-clicker", false);
+		// 			} else {
+		// 				change_url_param("dwell-clicker", true);
+		// 			}
+		// 		},
+		// 		check: () => {
+		// 			return /dwell-clicker/i.test(location.hash);
+		// 		},
+		// 	},
+		// 	description: localize("Clicks automatically after hovering in one place."),
+		// },
+		// {
+		// 	emoji_icon: "🧑",
+		// 	// label: localize("Head Tracking"),
+		// 	// label: localize("M&ove Cursor With Head"),
+		// 	label: localize("Head Tracker"), // adding (Experimental) makes it too long, "WIP" or "Beta" feels too techy
+		// 	speech_recognition: [
+		// 		"head tracking", "head tracker", "move cursor with head", "control cursor with head", "mouse with head", "mouse cursor with head",
+		// 		"face tracking", "face tracker", "move cursor with face", "control cursor with face", "mouse with face", "mouse cursor with face",
+		// 		"head mouse", "face mouse", "facial mouse",
+		// 		"head cursor", "face cursor", "facial cursor",
+		// 		"head pointer", "face pointer", "facial pointer",
+		// 		"head control", "face control", "facial control",
+		// 		"head movement", "face movement", "facial movement",
+		// 		"head motion", "face motion", "facial motion",
+		// 		"head gestures", "face gestures", "facial gestures",
+		// 		"tracky mouse", // name of the library
+		// 	],
+		// 	checkbox: {
+		// 		toggle: () => {
+		// 			if (/head-tracker/i.test(location.hash)) {
+		// 				change_url_param("head-tracker", false);
+		// 			} else {
+		// 				change_url_param("head-tracker", true);
+		// 			}
+		// 		},
+		// 		check: () => {
+		// 			return /head-tracker/i.test(location.hash);
+		// 		},
+		// 	},
+		// 	description: localize("Controls the cursor with head movements."),
+		// },
+		{
 			emoji_icon: "🎙️",
 			label: localize("&Speech Recognition"),
 			speech_recognition: [

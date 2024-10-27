@@ -310,26 +310,42 @@ for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
 
 // #region URL Params
 const update_from_url_params = () => {
-	// Currently, Eye Gaze Mode controls several loosely related features.
-	// I'm in the process of splitting UI enlargement into its own feature,
-	// so for now, Eye Gaze Mode toggles two classes.
+	// Currently, Eye Gaze Mode controls several loosely related features,
+	// some of which are partially separated, but which are required when Eye Gaze Mode is enabled.
+
+	// Eye Gaze Mode
 	if (location.hash.match(/eye-gaze-mode/i)) {
 		if (!$("body").hasClass("eye-gaze-mode")) {
-			$("body").addClass("eye-gaze-mode enlarge-ui");
+			$("body").addClass("eye-gaze-mode");
 			$G.triggerHandler("eye-gaze-mode-toggled");
-			$G.triggerHandler("enlarge-ui-toggled");
 			$G.triggerHandler("theme-load"); // signal layout change
 		}
 	} else {
 		if ($("body").hasClass("eye-gaze-mode")) {
-			$("body").removeClass("eye-gaze-mode enlarge-ui");
+			$("body").removeClass("eye-gaze-mode");
 			$G.triggerHandler("eye-gaze-mode-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change
+		}
+	}
+
+	// Enlarge UI
+	// (Eye Gaze Mode implies Enlarge UI)
+	if (location.hash.match(/enlarge-ui|eye-gaze-mode/i)) {
+		if (!$("body").hasClass("enlarge-ui")) {
+			$("body").addClass("enlarge-ui");
+			$G.triggerHandler("enlarge-ui-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change
+		}
+	} else {
+		if ($("body").hasClass("enlarge-ui")) {
+			$("body").removeClass("enlarge-ui");
 			$G.triggerHandler("enlarge-ui-toggled");
 			$G.triggerHandler("theme-load"); // signal layout change
 		}
 	}
 
-	// Eye Gaze Mode also implies Vertical Color Box Mode
+	// Vertical Color Box Mode
+	// (Eye Gaze Mode implies Vertical Color Box Mode)
 	if (location.hash.match(/vertical-color-box-mode|eye-gaze-mode/i)) {
 		if (!$("body").hasClass("vertical-color-box-mode")) {
 			$("body").addClass("vertical-color-box-mode");

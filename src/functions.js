@@ -26,9 +26,14 @@ import { TOOL_CURVE, TOOL_FREE_FORM_SELECT, TOOL_POLYGON, TOOL_SELECT, TOOL_TEXT
 // expresses order in the URL as well as type
 const param_types = {
 	// settings
-	"eye-gaze-mode": "bool",
-	"vertical-color-box-mode": "bool",
-	"speech-recognition-mode": "bool",
+	"eye-gaze-mode": "bool", // will map to to "enlarge-ui"+"dwell-clicker"+"vertical-color-box-mode"+"easy-undo"
+	"enlarge-ui": "bool",
+	// "easy-undo": "bool", // TODO: split from Eye Gaze Mode
+	// "dwell-clicker": "bool", // TODO: split from Eye Gaze Mode
+	// "head-tracker": "bool", // TODO: introduce feature (see enable_tracky_mouse_ui)
+	"vertical-color-box-mode": "bool", // could rename this to simply "vertical-color-box" or "vertical-palette"
+	"speech-recognition-mode": "bool", // could rename this to simply "voice"
+
 	// sessions
 	"local": "string",
 	"session": "string",

@@ -169,8 +169,15 @@ const dwell_clicker_config = {
 // - "Hands-Free Mode"? Although that could also refer to voice commands. Which are also supported.
 // - "Head Input Mode"/"Head Tracking Mode"? Technically your eyes are part of your head...
 // - "Face Mouse Mode"/"Facial Mouse Mode"? Maybe!
-// I might want to separate it into "Enlarge Interface", "Dwell Clicking", "Head Tracking", and (already split out) "Vertical Color Box".
-// Or "Enlarge UI" and "Tracky Mouse", which would open up a window which would control dwell clicking and head tracking.
+// I think it's best if I separate "Eye Gaze Mode" into several distinct features:
+// - "Vertical Color Box" (✅ already split out)
+// - "Enlarge UI" (✅ already split out)
+// - "Quick Undo Button" (also including redo button, or if dwell clicking is enabled, a pause button)
+// - Either:
+//   - "Tracky Mouse", which would open up a window which would control dwell clicking and head tracking.
+//   - Or two separate options:
+//     - "Head Tracker"
+//     - "Dwell Clicker"
 // (I can maintain backwards compatibility with the #eye-gaze-mode URL fragment, breaking it up into the new settings.)
 var enable_tracky_mouse_ui = false;
 var tracky_mouse_deps_promise;

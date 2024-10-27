@@ -513,7 +513,7 @@ html, body, .jspaint {
 .edit-colors-window .result-color-canvas {
 	margin-top: 4px;
 }
-/* WET layout code for small viewports and eye gaze mode */
+/* WET layout code for small viewports and Enlarge UI mode */
 /* could do it cleaner with JavaScript or CSS preprocessor */
 @media (max-width: 450px) {
 	.edit-colors-window {
@@ -529,7 +529,7 @@ html, body, .jspaint {
 		display: none !important;
 	}
 }
-/* WET layout code for small viewports and eye gaze mode */
+/* WET layout code for small viewports and Enlarge UI mode */
 .enlarge-ui .edit-colors-window {
 	overflow: hidden;
 }
@@ -1081,12 +1081,12 @@ input[type="radio"] + label::before {
 	/* Also nudge the tools downward to avoid the exit fullscreen button */
 	/* (not if it's in a window, only if it's docked) */
 	/* (I considered using `.ios.fullscreen .horizontal > .component-area:first-child`
-	so that it's not affected by the transform in Eye Gaze Mode,
+	so that it's not affected by the transform in Enlarge UI mode,
 	but it wants tweaking in that case anyways due to the menu bar being bigger */
 	.ios.fullscreen .component-area .tools-component {
 		padding-top: 40px;
 	}
-	/* Not so much in Eye Gaze Mode, where it's scaled with transform,
+	/* Not so much in Enlarge UI mode, where it's scaled with transform,
 	and where the menu bar takes more of the space reserved for the exit fullscreen button */
 	.ios.fullscreen .enlarge-ui .component-area .tools-component {
 		padding-top: 10px;
