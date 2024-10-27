@@ -196,6 +196,19 @@ async function init_eye_gaze_mode() {
 
 		$tracky_mouse_window.center();
 
+		const get_event_options = ({ x, y }) => {
+			return {
+				view: window, // needed for offsetX/Y calculation
+				clientX: x,
+				clientY: y,
+				pointerId: 1234567890,
+				pointerType: "mouse",
+				isPrimary: true,
+				bubbles: true,
+				cancelable: true,
+			};
+		};
+
 		let last_el_over;
 		TrackyMouse.onPointerMove = (x, y) => {
 			const target = document.elementFromPoint(x, y) || document.body;
@@ -237,19 +250,6 @@ async function init_eye_gaze_mode() {
 		// tracky_mouse_container.querySelector(".tracky-mouse-canvas").classList.add("inset-deep");
 
 	}
-
-	const get_event_options = ({ x, y }) => {
-		return {
-			view: window, // needed for offsetX/Y calculation
-			clientX: x,
-			clientY: y,
-			pointerId: 1234567890,
-			pointerType: "mouse",
-			isPrimary: true,
-			bubbles: true,
-			cancelable: true,
-		};
-	};
 
 	// (TODO: disable hovering to open submenus in eye gaze mode)
 
