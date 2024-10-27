@@ -42,7 +42,7 @@ function $ToolBox(tools, is_extras) {
 						// with nearest neighbor scaling, favor raster at larger integer sizes as well, for retro look
 						(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
 				) ||
-				$("body").hasClass("eye-gaze-mode")
+				$("body").hasClass("enlarge-ui")
 			);
 			$icon.css({
 				display: "block",

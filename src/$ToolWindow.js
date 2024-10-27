@@ -23,7 +23,7 @@ function make_window_supporting_scale(options) {
 			marginRight: "",
 			marginBottom: "",
 		});
-		if (document.body.classList.contains("eye-gaze-mode")) {
+		if (document.body.classList.contains("enlarge-ui")) {
 			scale = Math.min(
 				(innerWidth) / c.offsetWidth,
 				(innerHeight - t.offsetHeight) / c.offsetHeight
@@ -52,10 +52,10 @@ function make_window_supporting_scale(options) {
 		};
 		const on_close = () => {
 			$w.off("close", on_close);
-			$G.off("eye-gaze-mode-toggled resize", scale_for_eye_gaze_mode_and_center_next_frame);
+			$G.off("enlarge-ui-toggled resize", scale_for_eye_gaze_mode_and_center_next_frame);
 		};
 		$w.on("close", on_close);
-		$G.on("eye-gaze-mode-toggled resize", scale_for_eye_gaze_mode_and_center_next_frame);
+		$G.on("enlarge-ui-toggled resize", scale_for_eye_gaze_mode_and_center_next_frame);
 
 		scale_for_eye_gaze_mode_and_center_next_frame();
 	}

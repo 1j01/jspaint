@@ -108,7 +108,7 @@ function $Component(title, className, orientation, $el) {
 	}
 
 	let iid;
-	if ($("body").hasClass("eye-gaze-mode")) {
+	if ($("body").hasClass("enlarge-ui")) {
 		// @TODO: don't use an interval for this!
 		iid = setInterval(() => {
 			const scale = 3;

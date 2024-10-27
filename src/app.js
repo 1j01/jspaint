@@ -310,20 +310,26 @@ for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
 
 // #region URL Params
 const update_from_url_params = () => {
+	// Currently, Eye Gaze Mode controls several loosely related features.
+	// I'm in the process of splitting UI enlargement into its own feature,
+	// so for now, Eye Gaze Mode toggles two classes.
 	if (location.hash.match(/eye-gaze-mode/i)) {
 		if (!$("body").hasClass("eye-gaze-mode")) {
-			$("body").addClass("eye-gaze-mode");
+			$("body").addClass("eye-gaze-mode enlarge-ui");
 			$G.triggerHandler("eye-gaze-mode-toggled");
+			$G.triggerHandler("enlarge-ui-toggled");
 			$G.triggerHandler("theme-load"); // signal layout change
 		}
 	} else {
 		if ($("body").hasClass("eye-gaze-mode")) {
-			$("body").removeClass("eye-gaze-mode");
+			$("body").removeClass("eye-gaze-mode enlarge-ui");
 			$G.triggerHandler("eye-gaze-mode-toggled");
+			$G.triggerHandler("enlarge-ui-toggled");
 			$G.triggerHandler("theme-load"); // signal layout change
 		}
 	}
 
+	// Eye Gaze Mode also implies Vertical Color Box Mode
 	if (location.hash.match(/vertical-color-box-mode|eye-gaze-mode/i)) {
 		if (!$("body").hasClass("vertical-color-box-mode")) {
 			$("body").addClass("vertical-color-box-mode");
@@ -706,12 +712,17 @@ let $colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
 window.$colorbox = $colorbox;
 
 $G.on("vertical-color-box-mode-toggled", () => {
+	// Destroy and recreate the color box because it uses a constructor parameter
+	// for this state and this handles re-docking to the correct edge
 	$colorbox.destroy();
 	$colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
 	window.$colorbox = $colorbox;
 	prevent_selection($colorbox);
 });
-$G.on("eye-gaze-mode-toggled", () => {
+$G.on("enlarge-ui-toggled", () => {
+	// Destroy and recreate the color box AND toolbox to toggle auto-scaling logic in $Component.js
+	// which checks for the "enlarge-ui" class at construction time currently.
+	// TODO: could totally just have a method like .setAutoScale(bool) on $Component
 	$colorbox.destroy();
 	$colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
 	window.$colorbox = $colorbox;

@@ -195,66 +195,66 @@ html, body, .jspaint {
 	padding-left: 3px;
 }
 
-.eye-gaze-mode .color-button {
+.enlarge-ui .color-button {
 	width: 25px;
 	height: 25px;
 }
-.eye-gaze-mode .colors-component.tall {
+.enlarge-ui .colors-component.tall {
 	width: 50px;
 }
-.eye-gaze-mode .colors-component.tall .color-box {
+.enlarge-ui .colors-component.tall .color-box {
 	width: 100%;
 }
-.eye-gaze-mode .colors-component.tall .current-colors {
+.enlarge-ui .colors-component.tall .current-colors {
 	width: 100%;
 }
-.eye-gaze-mode .colors-component.tall .foreground-color {
+.enlarge-ui .colors-component.tall .foreground-color {
 	left: 12px;
 }
-.eye-gaze-mode .colors-component.tall .background-color {
+.enlarge-ui .colors-component.tall .background-color {
 	right: 12px;
 }
 
-.eye-gaze-mode .os-window .window-titlebar {
+.enlarge-ui .os-window .window-titlebar {
 	font-size: 2rem;
 	line-height: 1.2;
 	height: 2.8rem;
 }
-.eye-gaze-mode .os-window .window-title-area {
+.enlarge-ui .os-window .window-title-area {
 	height: 100%;
 }
-.eye-gaze-mode .os-window .window-titlebar button {
+.enlarge-ui .os-window .window-titlebar button {
 	transform: scale(3);
 	margin-right: 32px;
 }
-.eye-gaze-mode .tool-window .window-titlebar button {
+.enlarge-ui .tool-window .window-titlebar button {
 	transform-origin: 0 0;
 }
 
-.eye-gaze-mode .menu-button {
+.enlarge-ui .menu-button {
 	padding-right: 10px;
 	padding-left: 10px;
 }
-.eye-gaze-mode .menu-button {
+.enlarge-ui .menu-button {
 	height: 3rem;
 	line-height: 2.5rem;
 }
-.eye-gaze-mode .menu-button,
-.eye-gaze-mode .menu-button * {
+.enlarge-ui .menu-button,
+.enlarge-ui .menu-button * {
 	font-size: 2rem;
 }
-.eye-gaze-mode .menu-item * {
+.enlarge-ui .menu-item * {
 	font-size: 2rem;
 	line-height: 1.5;
 }
-.eye-gaze-mode .menu-item-checkbox-area::after,
-.eye-gaze-mode .menu-item-submenu-area::after {
+.enlarge-ui .menu-item-checkbox-area::after,
+.enlarge-ui .menu-item-submenu-area::after {
 	width: 1.2em;
 	height: 1.2em;
 	mask-size: 1.2em 1.2em;
 }
 
-.eye-gaze-mode .status-area {
+.enlarge-ui .status-area {
 	padding-left: 170px;
 }
 
@@ -530,16 +530,16 @@ html, body, .jspaint {
 	}
 }
 /* WET layout code for small viewports and eye gaze mode */
-.eye-gaze-mode .edit-colors-window {
+.enlarge-ui .edit-colors-window {
 	overflow: hidden;
 }
-.eye-gaze-mode .edit-colors-window.defining-custom-colors .left-side {
+.enlarge-ui .edit-colors-window.defining-custom-colors .left-side {
 	/* display: none !important; */
 	/* this element is determining the height */
 	width: 0;
 	visibility: hidden;
 }
-.eye-gaze-mode .edit-colors-window:not(.defining-custom-colors) .right-side {
+.enlarge-ui .edit-colors-window:not(.defining-custom-colors) .right-side {
 	display: none !important;
 }
 
@@ -1088,7 +1088,7 @@ input[type="radio"] + label::before {
 	}
 	/* Not so much in Eye Gaze Mode, where it's scaled with transform,
 	and where the menu bar takes more of the space reserved for the exit fullscreen button */
-	.ios.fullscreen .eye-gaze-mode .component-area .tools-component {
+	.ios.fullscreen .enlarge-ui .component-area .tools-component {
 		padding-top: 10px;
 	}
 }

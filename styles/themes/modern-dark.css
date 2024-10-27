@@ -36,7 +36,7 @@
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 .tool-icon.use-svg,
-.eye-gaze-mode .tool-icon.use-svg {
+.enlarge-ui .tool-icon.use-svg {
 	background-image: url("../../images/modern/modern-dark-tools.svg");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }

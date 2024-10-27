@@ -307,7 +307,7 @@ function choose_color(initial_color, callback) {
 	// for mobile layout, re-enable button because it's a navigation button in that case, rather than one-time expand action
 	const maybe_reenable_button_for_mobile_navigation = () => {
 		// if ($right.is(":hidden")) {
-		if ($w.width() < 300 || document.body.classList.contains("eye-gaze-mode")) {
+		if ($w.width() < 300 || document.body.classList.contains("enlarge-ui")) {
 			$define_custom_colors_button.removeAttr("disabled");
 		}
 	};

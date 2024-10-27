@@ -171,7 +171,7 @@ body {
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
 }
 
-.eye-gaze-mode .menu-button {
+.enlarge-ui .menu-button {
 	height: 3rem;
 	line-height: 3rem;
 }
@@ -303,10 +303,10 @@ body {
 	bottom: 0;
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
 }
-.eye-gaze-mode .colors-component.tall {
+.enlarge-ui .colors-component.tall {
 	width: 53px;
 }
-.eye-gaze-mode .colors-component.tall .color-button {
+.enlarge-ui .colors-component.tall .color-button {
 	margin-left: 1px;
 }
 
@@ -363,7 +363,7 @@ body {
 	background-image: url("../../images/modern/modern-light-tools.svg");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
-.eye-gaze-mode .tool-icon.use-svg {
+.enlarge-ui .tool-icon.use-svg {
 	background-image: url("../../images/modern/modern-light-tools.svg");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
