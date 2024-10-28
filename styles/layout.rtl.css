@@ -230,12 +230,15 @@ html, body, .jspaint {
 	bottom: 12px;
 }
 
-.enlarge-ui .os-window .window-titlebar {
+/* more specific .tool-window selectors are needed to override titlebar height currently defined in classic.css */
+.enlarge-ui .os-window .window-titlebar,
+.enlarge-ui .os-window.tool-window .window-titlebar {
 	font-size: 2rem;
 	line-height: 1.2;
 	height: 2.8rem;
 }
-.enlarge-ui .os-window .window-title-area {
+.enlarge-ui .os-window .window-title-area,
+.enlarge-ui .os-window.tool-window .window-title-area {
 	height: 100%;
 }
 .enlarge-ui .os-window .window-titlebar button {
