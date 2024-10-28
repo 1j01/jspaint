@@ -269,7 +269,10 @@ html, body, .jspaint {
 	mask-size: 1.2em 1.2em;
 }
 
-.enlarge-ui .status-area {
+.easy-undo-mode .status-area {
+	padding-left: 58px;
+}
+.easy-undo-mode.enlarge-ui .status-area {
 	padding-left: 170px;
 }
 
@@ -278,12 +281,15 @@ html, body, .jspaint {
 	bottom: 0;
 	left: 0;
 	transform-origin: bottom left;
-	transform: scale(3);
+	transform: scale(2);
 	/* They're not within .jspaint currently */
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+.enlarge-ui .eye-gaze-mode-floating-buttons {
+	transform: scale(3);
 }
 .eye-gaze-mode-floating-buttons button {
 	width: 28px;
