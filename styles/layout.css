@@ -272,11 +272,17 @@ html, body, .jspaint {
 	mask-size: 1.2em 1.2em;
 }
 
-.easy-undo-mode .status-area,
+/* sigh, trying to move two things in a similar way but padding does look a bit better for the status area (esp. in Bubblegum theme),
+whereas it breaks component docking calculations if used to shift the colors box */
+.easy-undo-mode .status-area {
+	padding-left: 58px;
+}
 .easy-undo-mode .component-area.bottom {
 	margin-left: 58px;
 }
-.easy-undo-mode.enlarge-ui .status-area,
+.easy-undo-mode.enlarge-ui .status-area {
+	padding-left: 170px;
+}
 .easy-undo-mode.enlarge-ui .component-area.bottom {
 	margin-left: 170px;
 }
