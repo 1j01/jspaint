@@ -416,7 +416,7 @@ body,
 	background-image: url("../../images/classic/options-transparency.svg");
 }
 
-.eye-gaze-mode-undo-button .button-icon {
+.floating-undo-button .button-icon {
 	background: url(../../images/classic/undo.svg);
 }
 .toggle-dwell-clicking .button-icon {

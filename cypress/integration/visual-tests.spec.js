@@ -210,12 +210,12 @@ context("visual tests", () => {
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
 		closeMenus();
 		cy.wait(100);
-		cy.get(".eye-gaze-mode-undo-button").should("exist");
+		cy.get(".floating-undo-button").should("exist");
 		cy.matchImageSnapshot(withTextCompareOptions);
 	});
 
 	it("bubblegum theme -- eye gaze mode", () => {
-		cy.get(".eye-gaze-mode-undo-button").should("exist");
+		cy.get(".floating-undo-button").should("exist");
 		// selectTheme("Bubblegum"); // not released yet
 		cy.window().then((win) => {
 			win.api_for_cypress_tests.set_theme("bubblegum.css");
@@ -227,7 +227,7 @@ context("visual tests", () => {
 	});
 
 	it("modern light theme -- eye gaze mode", () => {
-		cy.get(".eye-gaze-mode-undo-button").should("exist");
+		cy.get(".floating-undo-button").should("exist");
 		selectTheme("Modern Light");
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
@@ -239,7 +239,7 @@ context("visual tests", () => {
 		// this acts as teardown for the eye gaze mode tests
 		clickMenuButton("Extras");
 		clickMenuItem("Eye Gaze Mode");
-		cy.get(".eye-gaze-mode-undo-button").should("not.exist");
+		cy.get(".floating-undo-button").should("not.exist");
 	});
 
 	it("modern light theme -- main screenshot", () => {

@@ -274,7 +274,6 @@ async function init_eye_gaze_mode() {
 	};
 }
 
-// TODO: rename CSS classes since this is now separate from eye gaze mode
 // TODO: move this to a separate file (note dependency on `dwell_clicker`)
 let $floating_buttons = null;
 async function update_floating_buttons() {
@@ -286,10 +285,10 @@ async function update_floating_buttons() {
 	}
 
 	$floating_buttons =
-		$("<div class='eye-gaze-mode-floating-buttons'/>")
+		$("<div class='floating-buttons'/>")
 			.appendTo("body");
 
-	$("<button title='Undo' class='eye-gaze-mode-undo-button'/>")
+	$("<button title='Undo' class='floating-undo-button'/>")
 		.on("click", undo)
 		.appendTo($floating_buttons)
 		.append(
@@ -314,7 +313,7 @@ async function update_floating_buttons() {
 			);
 	} else {
 		// TODO: redo button (needs an icon)
-		// $("<button title='Redo' class='eye-gaze-mode-redo-button'/>")
+		// $("<button title='Redo' class='floating-redo-button'/>")
 		// 	.on("click", redo)
 		// 	.appendTo($floating_buttons)
 		// 	.append(
