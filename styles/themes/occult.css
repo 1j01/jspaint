@@ -15,10 +15,6 @@
 	background-image: url("../../images/occult/tools.svg");
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 } */
-.enlarge-ui .tool-icon.use-svg {
-	background-image: url("../../images/dark/tools.svg");
-	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
-}
 
 .transparent-mode-option,
 .transparent-mode-option.use-svg { /* specificity needed for overriding classic theme; SVG is not supported yet for this theme */
