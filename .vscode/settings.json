@@ -62,6 +62,6 @@
 		"node_modules/**": true,
 		"package-lock.json": true,
 		// RTLCSS output
-		"*.rtl.css": true,
+		"**/*.rtl.css": true,
 	},
 }
