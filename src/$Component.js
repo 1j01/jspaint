@@ -214,6 +214,17 @@ function $Component(title, className, orientation, $el) {
 	$w.on("window-drag-start", (e) => {
 		e.preventDefault();
 	});
+	const size_css_props = (styles) => {
+		const scale_match = styles.transform.match(/(?:scale|matrix)\((\d+(?:\.\d+)?)/);
+		const scale = Number((scale_match ?? [])[1] ?? "1");
+		return {
+			width: `calc(${styles.width} * ${scale})`,
+			height: `calc(${styles.height} * ${scale})`,
+			// don't copy margin, margin is actually used for positioning the components in the docking areas
+			// don't copy padding, padding changes based on whether the component is in a window in modern theme
+			// let padding be influenced by CSS
+		};
+	};
 	const imagine_window_dimensions = () => {
 		const prev_window_shown = $w.is(":visible");
 		$w.show();
@@ -221,13 +232,7 @@ function $Component(title, className, orientation, $el) {
 		let { offsetLeft, offsetTop } = $c[0];
 		if ($c.closest(".tool-window").length == 0) {
 			const styles = getComputedStyle($c[0]);
-			$spacer = $(E("div")).addClass("component").css({
-				width: styles.width,
-				height: styles.height,
-				// don't copy margin, margin is actually used for positioning the components in the docking areas
-				// don't copy padding, padding changes based on whether the component is in a window in modern theme
-				// let padding be influenced by CSS
-			});
+			$spacer = $(E("div")).addClass("component").css(size_css_props(styles));
 			$w.append($spacer);
 			({ offsetLeft, offsetTop } = $spacer[0]);
 		}
@@ -249,8 +254,7 @@ function $Component(title, className, orientation, $el) {
 		}
 		const styles = getComputedStyle($c[0]);
 		const $spacer = $(E("div")).addClass("component").css({
-			width: styles.width,
-			height: styles.height,
+			...size_css_props(styles),
 			flex: "0 0 auto",
 		});
 		$dock_to.prepend($spacer);
