@@ -107,19 +107,34 @@ function $Component(title, className, orientation, $el) {
 		$c.css(`margin-${get_direction() === "rtl" ? "right" : "left"}`, "3px");
 	}
 
+	const apply_scale = () => {
+		const enabled = $("body").hasClass("enlarge-ui");
+		const scale = 3;
+		const props = {
+			transform: `scale(${scale})`,
+			transformOrigin: "0 0",
+			marginRight: $c[0].scrollWidth * (scale - 1),
+			marginBottom: $c[0].scrollHeight * (scale - 1),
+		};
+		if (enabled) {
+			$c.css(props);
+		} else {
+			for (const key in props) {
+				$c.css(key, "");
+			}
+		}
+	};
 	let iid;
-	if ($("body").hasClass("enlarge-ui")) {
-		// @TODO: don't use an interval for this!
-		iid = setInterval(() => {
-			const scale = 3;
-			$c.css({
-				transform: `scale(${scale})`,
-				transformOrigin: "0 0",
-				marginRight: $c[0].scrollWidth * (scale - 1),
-				marginBottom: $c[0].scrollHeight * (scale - 1),
-			});
-		}, 200);
-	}
+	const update_auto_scaling = () => {
+		clearInterval(iid);
+		if ($("body").hasClass("enlarge-ui")) {
+			// @TODO: don't use an interval for this!
+			iid = setInterval(apply_scale, 200);
+		}
+		apply_scale();
+	};
+	$G.on("enlarge-ui-toggled", update_auto_scaling);
+	update_auto_scaling();
 
 	let ox, oy;
 	let ox2, oy2;

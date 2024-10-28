@@ -735,25 +735,6 @@ $G.on("vertical-color-box-mode-toggled", () => {
 	window.$colorbox = $colorbox;
 	prevent_selection($colorbox);
 });
-$G.on("enlarge-ui-toggled", () => {
-	// Destroy and recreate the color box AND toolbox to toggle auto-scaling logic in $Component.js
-	// which checks for the "enlarge-ui" class at construction time currently.
-	// TODO: could totally just have a method like .setAutoScale(bool) on $Component
-	$colorbox.destroy();
-	$colorbox = $ColorBox($("body").hasClass("vertical-color-box-mode"));
-	window.$colorbox = $colorbox;
-	prevent_selection($colorbox);
-
-	$toolbox.destroy();
-	$toolbox = $ToolBox(tools);
-	window.$toolbox = $toolbox;
-	prevent_selection($toolbox);
-
-	// $toolbox2.destroy();
-	// $toolbox2 = $ToolBox(extra_tools, true);
-	// prevent_selection($toolbox2);
-});
-
 
 $G.on("resize", () => { // for browser zoom, and in-app zoom of the canvas
 	update_canvas_rect();
