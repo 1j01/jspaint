@@ -1286,32 +1286,43 @@ const menus = {
 			},
 			description: localize("Enlarges buttons, windows, and menus for easier clicking."),
 		},
-		// TODO: split up Eye Gaze Mode into more separate features
-		// {
-		// 	emoji_icon: "↩️", // doesn't match orientation of the actual button icon's arrow
-		// 	// label: localize("&Floating Undo/Redo Buttons"),
-		// 	// label: localize("Easy Undo/Redo"),
-		// 	// label: localize("Easy &Undo"),
-		// 	// label: localize("Easy &Undo Button"),
-		// 	// label: localize("Floating &Undo"), // it might not always be floating, it might become part of the tool box
-		// 	label: localize("Quick Undo Button"), // a bit long
-		// 	// label: localize("Quick Undo"), // "Quick Undo" also refers to pressing both mouse buttons to cancel an action, not that you can't have multiple ways to "quick undo" if that's the better name
-		// 	speech_recognition: [
-		// 	],
-		// 	checkbox: {
-		// 		toggle: () => {
-		// 			if (/easy-undo/i.test(location.hash)) {
-		// 				change_url_param("easy-undo", false);
-		// 			} else {
-		// 				change_url_param("easy-undo", true);
-		// 			}
-		// 		},
-		// 		check: () => {
-		// 			return /easy-undo/i.test(location.hash);
-		// 		},
-		// 	},
-		// 	description: localize("Enlarges buttons for easier clicking."),
-		// },
+		{
+			emoji_icon: "↩️", // doesn't match orientation of the actual button icon's arrow
+			// label: localize("&Floating Undo/Redo Buttons"),
+			// label: localize("Easy Undo/Redo"),
+			// label: localize("Easy &Undo"),
+			// label: localize("Easy &Undo Button"),
+			// label: localize("Floating &Undo"), // it might not always be floating, it might become part of the tool box
+			label: localize("Quick Undo Button"), // a bit long
+			// label: localize("Quick Undo"), // "Quick Undo" also refers to pressing both mouse buttons to cancel an action, not that you can't have multiple ways to "quick undo" if that's the better name
+			speech_recognition: [
+			],
+			checkbox: {
+				toggle: () => {
+					if (/eye-gaze-mode/i.test(location.hash)) {
+						// @TODO: confirmation dialog that you could cancel with dwell clicking!
+						// if (confirm("This will disable eye gaze mode.")) {
+						// change_some_url_params({
+						// 	"eye-gaze-mode": false,
+						// 	"easy-undo": false,
+						// });
+						// }
+					} else if (/easy-undo/i.test(location.hash)) {
+						change_url_param("easy-undo", false);
+					} else {
+						change_url_param("easy-undo", true);
+					}
+				},
+				check: () => {
+					return /easy-undo|eye-gaze-mode/i.test(location.hash);
+				},
+			},
+			enabled: () => {
+				return !/eye-gaze-mode/i.test(location.hash);
+			},
+			description: localize("Adds a button for undoing the last action."),
+		},
+		// TODO: convert Eye Gaze Mode into Dwell Clicker mode
 		// {
 		// 	emoji_icon: "⏱️",
 		// 	// label: localize("Dwell &Click"),

@@ -416,10 +416,10 @@ body,
 	background-image: url("../../images/classic/options-transparency.svg");
 }
 
-.eye-gaze-mode .eye-gaze-mode-undo-button .button-icon {
+.eye-gaze-mode-undo-button .button-icon {
 	background: url(../../images/classic/undo.svg);
 }
-.eye-gaze-mode .toggle-dwell-clicking .button-icon {
+.toggle-dwell-clicking .button-icon {
 	background: url(../../images/classic/eye-gaze-pause.svg);
 }
 .eye-gaze-mode.eye-gaze-mode-paused .toggle-dwell-clicking .button-icon {

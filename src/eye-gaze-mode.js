@@ -6,6 +6,8 @@ import { undo } from "./functions.js";
 import { $G, load_image_simple } from "./helpers.js";
 import { TOOL_CURVE, TOOL_FILL, TOOL_MAGNIFIER, TOOL_PICK_COLOR, TOOL_POLYGON } from "./tools.js";
 
+let dwell_clicker = { paused: false };
+
 let clean_up_eye_gaze_mode = () => { };
 $G.on("eye-gaze-mode-toggled", () => {
 	if ($("body").hasClass("eye-gaze-mode")) {
@@ -172,7 +174,7 @@ const dwell_clicker_config = {
 // I think it's best if I separate "Eye Gaze Mode" into several distinct features:
 // - "Vertical Color Box" (✅ already split out)
 // - "Enlarge UI" (✅ already split out)
-// - "Quick Undo Button" (also including redo button, or if dwell clicking is enabled, a pause button)
+// - "Quick Undo Button" (✅ already split out)
 // - Either:
 //   - "Tracky Mouse", which would open up a window which would control dwell clicking and head tracking.
 //   - Or two separate options:
@@ -260,9 +262,30 @@ async function init_eye_gaze_mode() {
 
 	// (TODO: disable hovering to open submenus in eye gaze mode)
 
-	const dwell_clicker = TrackyMouse.initDwellClicking(dwell_clicker_config);
+	dwell_clicker = TrackyMouse.initDwellClicking(dwell_clicker_config);
 
-	const $floating_buttons =
+	update_floating_buttons();
+
+	clean_up_eye_gaze_mode = () => {
+		console.log("Cleaning up / disabling eye gaze mode");
+		TrackyMouse.cleanupDwellClicking();
+		update_floating_buttons();
+		clean_up_eye_gaze_mode = () => { };
+	};
+}
+
+// TODO: rename CSS classes since this is now separate from eye gaze mode
+// TODO: move this to a separate file (note dependency on `dwell_clicker`)
+let $floating_buttons = null;
+async function update_floating_buttons() {
+	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before eye gaze mode UI
+
+	$floating_buttons?.remove();
+	if (!$("body").hasClass("easy-undo-mode")) {
+		return;
+	}
+
+	$floating_buttons =
 		$("<div class='eye-gaze-mode-floating-buttons'/>")
 			.appendTo("body");
 
@@ -273,26 +296,31 @@ async function init_eye_gaze_mode() {
 			$("<div class='button-icon'>")
 		);
 
-	// These are matched on exactly, for code that provides speech command synonyms
-	const pause_button_text = "Pause Dwell Clicking";
-	const resume_button_text = "Resume Dwell Clicking";
+	if ($("body").hasClass("eye-gaze-mode")) {
+		// These are matched on exactly, for code that provides speech command synonyms
+		const pause_button_text = "Pause Dwell Clicking";
+		const resume_button_text = "Resume Dwell Clicking";
 
-	const $pause_button = $(`<button class="toggle-dwell-clicking"/>`)
-		.attr("title", pause_button_text)
-		.on("click", () => {
-			dwell_clicker.paused = !dwell_clicker.paused;
-			$("body").toggleClass("eye-gaze-mode-paused", dwell_clicker.paused);
-			$pause_button.attr("title", dwell_clicker.paused ? resume_button_text : pause_button_text);
-		})
-		.appendTo($floating_buttons)
-		.append(
-			$("<div class='button-icon'>")
-		);
-
-	clean_up_eye_gaze_mode = () => {
-		console.log("Cleaning up / disabling eye gaze mode");
-		$floating_buttons.remove();
-		TrackyMouse.cleanupDwellClicking();
-		clean_up_eye_gaze_mode = () => { };
-	};
+		const $pause_button = $(`<button class="toggle-dwell-clicking"/>`)
+			.attr("title", pause_button_text)
+			.on("click", () => {
+				dwell_clicker.paused = !dwell_clicker.paused;
+				$("body").toggleClass("eye-gaze-mode-paused", dwell_clicker.paused);
+				$pause_button.attr("title", dwell_clicker.paused ? resume_button_text : pause_button_text);
+			})
+			.appendTo($floating_buttons)
+			.append(
+				$("<div class='button-icon'>")
+			);
+	} else {
+		// TODO: redo button (needs an icon)
+		// $("<button title='Redo' class='eye-gaze-mode-redo-button'/>")
+		// 	.on("click", redo)
+		// 	.appendTo($floating_buttons)
+		// 	.append(
+		// 		$("<div class='button-icon'>")
+		// 	);
+	}
 }
+
+$G.on("easy-undo-mode-toggled", update_floating_buttons);

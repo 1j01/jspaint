@@ -28,7 +28,7 @@ const param_types = {
 	// settings
 	"eye-gaze-mode": "bool", // will map to to "enlarge-ui"+"dwell-clicker"+"vertical-color-box-mode"+"easy-undo"
 	"enlarge-ui": "bool",
-	// "easy-undo": "bool", // TODO: split from Eye Gaze Mode
+	"easy-undo": "bool",
 	// "dwell-clicker": "bool", // TODO: split from Eye Gaze Mode
 	// "head-tracker": "bool", // TODO: introduce feature (see enable_tracky_mouse_ui)
 	"vertical-color-box-mode": "bool", // could rename this to simply "vertical-color-box" or "vertical-palette"

@@ -180,7 +180,7 @@ button:active {
 	filter: drop-shadow(2px 3px 1px rgba(53, 54, 134, 0.5));
 }
 
-.eye-gaze-mode .toggle-dwell-clicking .button-icon {
+.toggle-dwell-clicking .button-icon {
 	background: url(../../images/bubblegum/eye-gaze-pause-128x128.png);
 	background-size: 100% 100%;
 }

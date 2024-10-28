@@ -360,6 +360,22 @@ const update_from_url_params = () => {
 		}
 	}
 
+	// Quick Undo Button
+	// (Eye Gaze Mode implies Quick Undo Button)
+	if (location.hash.match(/easy-undo|eye-gaze-mode/i)) {
+		if (!$("body").hasClass("easy-undo-mode")) {
+			$("body").addClass("easy-undo-mode");
+			$G.triggerHandler("easy-undo-mode-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change (just copying pattern thoughtlessly)
+		}
+	} else {
+		if ($("body").hasClass("easy-undo-mode")) {
+			$("body").removeClass("easy-undo-mode");
+			$G.triggerHandler("easy-undo-mode-toggled");
+			$G.triggerHandler("theme-load"); // signal layout change (just copying pattern thoughtlessly)
+		}
+	}
+
 	if (location.hash.match(/speech-recognition-mode/i)) {
 		enable_speech_recognition();
 	} else {

@@ -24,7 +24,7 @@
 	background-image: url("../../images/occult/options-transparency.svg");
 } */
 
-.eye-gaze-mode .toggle-dwell-clicking .button-icon {
+.toggle-dwell-clicking .button-icon {
 	background: url(../../images/dark/eye-gaze-pause.svg);
 }
 .eye-gaze-mode.eye-gaze-mode-paused .toggle-dwell-clicking .button-icon {
