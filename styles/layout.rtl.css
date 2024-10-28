@@ -214,6 +214,21 @@ html, body, .jspaint {
 .enlarge-ui .colors-component.tall .background-color {
 	left: 12px;
 }
+.enlarge-ui .colors-component.wide {
+	height: 50px;
+}
+.enlarge-ui .colors-component.wide .color-box {
+	height: 100%;
+}
+.enlarge-ui .colors-component.wide .current-colors {
+	height: 100%;
+}
+.enlarge-ui .colors-component.wide .foreground-color {
+	top: 12px;
+}
+.enlarge-ui .colors-component.wide .background-color {
+	bottom: 12px;
+}
 
 .enlarge-ui .os-window .window-titlebar {
 	font-size: 2rem;

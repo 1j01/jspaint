@@ -303,11 +303,19 @@ body {
 	bottom: 0;
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
 }
+
+/* stupid slight margin in Enlarge UI mode, is it worth it? */
 .enlarge-ui .colors-component.tall {
 	width: 53px;
 }
 .enlarge-ui .colors-component.tall .color-button {
 	margin-left: 1px;
+}
+.enlarge-ui .colors-component.wide {
+	height: 53px;
+}
+.enlarge-ui .colors-component.wide .color-button {
+	margin-top: 1px;
 }
 
 .edit-colors-window .inset-shallow {
