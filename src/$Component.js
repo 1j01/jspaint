@@ -303,8 +303,6 @@ function $Component(title, className, orientation, $el) {
 				$(e.target).closest("button").length === 0
 			);
 		if (!validTarget) { return; }
-		// Don't allow dragging in eye gaze mode
-		if ($("body").hasClass("eye-gaze-mode")) { return; }
 
 		const docked = imagine_docked_dimensions();
 		const rect = $c[0].getBoundingClientRect();
