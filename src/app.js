@@ -1217,7 +1217,12 @@ $G.on("cut copy paste", (e) => {
 				});
 				break;
 			} else if (item.type.match(/^image\//)) {
-				paste_image_from_file(item.getAsFile());
+				const file = item.getAsFile();
+				if (!file) {
+					console.warn("Clipboard item is not a file", item);
+					continue;
+				}
+				paste_image_from_file(file);
 				break;
 			}
 		}
