@@ -2590,7 +2590,46 @@ function edit_copy(execCommandFallback) {
 				]).then(() => {
 					window.console?.log("Copied image to the clipboard.");
 				}, (error) => {
-					show_error_message("Failed to copy to the Clipboard.", error);
+					if (error.name !== "NotAllowedError") {
+						show_error_message("Failed to copy to the Clipboard.", error);
+						return;
+					}
+					// Instead of showing an error message, prompt the user meaninglessly
+					// so we can get a "user gesture".
+					// TODO: for keyboard, also make pressing Ctrl+C or Ctrl+X twice work
+					// Man I hate dealing with these arbitrary limitations.
+					// I want to fucking punch something.
+					const doItAgain = async () => {
+						const button_value = await showMessageBox({
+							message: `Click "Retry" for a better chance of success.`,
+							iconID: "warning",
+							buttons: [
+								{
+									label: localize("Retry"),
+									value: "retry",
+									default: true,
+								},
+								{
+									label: localize("Abort"),
+									value: "cancel",
+								},
+							],
+						});
+						if (button_value === "cancel") {
+							return;
+						}
+						navigator.clipboard.write([
+							new ClipboardItem(Object.defineProperty({}, blob.type, {
+								value: blob,
+								enumerable: true,
+							})),
+						]).then(() => {
+							window.console?.log("Copied image to the clipboard.");
+						}, (error) => {
+							show_error_message("Failed to copy to the Clipboard.", error);
+						});
+					};
+					doItAgain();
 				});
 			});
 		});
