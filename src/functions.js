@@ -2580,19 +2580,25 @@ function edit_copy(execCommandFallback) {
 				return;
 			}
 		}
-		selection.canvas.toBlob((blob) => {
-			sanity_check_blob(blob, () => {
-				navigator.clipboard.write([
-					new ClipboardItem(Object.defineProperty({}, blob.type, {
-						value: blob,
-						enumerable: true,
-					})),
-				]).then(() => {
-					window.console?.log("Copied image to the clipboard.");
-				}, (error) => {
-					show_error_message("Failed to copy to the Clipboard.", error);
-				});
+		// Don't use `selection.canvas.toBlob` here as its asynchronous,
+		// and will lead to NotAllowedError in Safari.
+		// Tested in Safari version 14.1.2 (14611.3.10.1.7)
+		// By the way, `sanity_check_blob` is used in `write_image_file`
+		// so it would be redundant to include here.
+		// selection.canvas.toBlob((blob) => {
+		// sanity_check_blob(blob, () => {
+		write_image_file(selection.canvas, "image/png", (blob) => {
+			navigator.clipboard.write([
+				new ClipboardItem(Object.defineProperty({}, blob.type, {
+					value: blob,
+					enumerable: true,
+				})),
+			]).then(() => {
+				window.console?.log("Copied image to the clipboard.");
+			}, (error) => {
+				show_error_message("Failed to copy to the Clipboard.", error);
 			});
+			// });
 		});
 	}
 }
