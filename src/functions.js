@@ -33,6 +33,9 @@ const param_types = {
 	// "head-tracker": "bool", // TODO: introduce feature (see enable_tracky_mouse_ui)
 	"vertical-color-box-mode": "bool", // could rename this to simply "vertical-color-box" or "vertical-palette"
 	"speech-recognition-mode": "bool", // could rename this to simply "voice"
+	// dev settings
+	"compare-reference": "bool",
+	"compare-reference-tool-windows": "bool",
 
 	// sessions
 	"local": "string",

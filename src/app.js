@@ -310,8 +310,12 @@ for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
 
 // #region URL Params
 const update_from_url_params = () => {
-	// Currently, Eye Gaze Mode controls several loosely related features,
-	// some of which are partially separated, but which are required when Eye Gaze Mode is enabled.
+	// Eye Gaze Mode was a monolithic feature that has been since been split into smaller features.
+	// We can maintain backwards compatibility with the old URL param by mapping it to the new features.
+	// TODO: separate out the remaining feature (Dwell Clicker) from Eye Gaze Mode
+	// (It will almost be a rename, except that Eye Gaze Mode can still exist as a legacy umbrella feature.)
+	// (BTW: Eye Gaze Mode never included an actual eye tracker (instead relying on external software),
+	// but if I added that as a feature I could call the feature Eye Tracker, so it wouldn't be too confusing.)
 
 	// Eye Gaze Mode
 	if (location.hash.match(/eye-gaze-mode/i)) {
@@ -376,12 +380,16 @@ const update_from_url_params = () => {
 		}
 	}
 
+	// Speech Recognition Mode
 	if (location.hash.match(/speech-recognition-mode/i)) {
 		enable_speech_recognition();
 	} else {
 		disable_speech_recognition();
 	}
 
+	// Developer helpers to compare with reference screenshots of MS Paint
+	// (Seems like the color box is getting (un)shifted when this is enabled, making it line up less than it should?
+	// like the code "// Nudge the Colors component over a tiny bit" is applying and then being reset.)
 	$("body").toggleClass("compare-reference", !!location.hash.match(/compare-reference/i));
 	$("body").toggleClass("compare-reference-tool-windows", !!location.hash.match(/compare-reference-tool-windows/i));
 	setTimeout(() => {
