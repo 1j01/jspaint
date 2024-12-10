@@ -293,6 +293,8 @@ whereas it breaks component docking calculations if used to shift the colors box
 	right: 0;
 	transform-origin: bottom right;
 	transform: scale(2);
+	/* Go on top of canvas if both left/bottom docking areas are empty */
+	z-index: 1;
 	/* They're not within .jspaint currently */
 	-webkit-user-select: none;
 	-moz-user-select: none;
