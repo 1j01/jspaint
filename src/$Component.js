@@ -123,6 +123,11 @@ function $Component(title, className, orientation, $el) {
 
 		// Define CSS properties for scaling
 		const props = {
+			// The `transform` breaks the overflow of the Winter theme's tool button flaps, but what are you going to do?
+			// Well, `zIndex: 2` or higher seems to fix it, probably competing with the .main-canvas's z-index of 2,
+			// but causes other problems, like depth ordering with the floating undo button,
+			// and there's probably a reason for the .main-canvas having that z-index, and I don't really want to play z-index wack-a-mole.
+			// zIndex: 2, // @#: z-index
 			transform: `scale(${scale})`,
 			transformOrigin: "0 0",
 			marginRight: containerWidth * (scale - 1),
