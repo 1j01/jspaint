@@ -109,7 +109,6 @@ function $Component(title, className, orientation, $el) {
 
 	const apply_scale = () => {
 		const enabled = $("body").hasClass("enlarge-ui");
-		const scale = 3;
 
 		// Temporarily disable the transform to measure the unscaled size
 		// (Previously used scrollWidth/scrollHeight, which is naturally unaffected by the scale,
@@ -122,6 +121,15 @@ function $Component(title, className, orientation, $el) {
 		const containerHeight = containerBounds.height;
 
 		// Define CSS properties for scaling
+		let scale = 3;
+		const docked = $c.parent().is(".component-area");
+		if (docked) {
+			scale = Math.min(scale,
+				orientation === "tall" ?
+					$c.parent().height() / containerHeight :
+					$c.parent().width() / containerWidth
+			);
+		}
 		const props = {
 			// The `transform` breaks the overflow of the Winter theme's tool button flaps, but what are you going to do?
 			// Well, `zIndex: 2` or higher seems to fix it, probably competing with the .main-canvas's z-index of 2,
