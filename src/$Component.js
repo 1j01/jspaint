@@ -110,12 +110,26 @@ function $Component(title, className, orientation, $el) {
 	const apply_scale = () => {
 		const enabled = $("body").hasClass("enlarge-ui");
 		const scale = 3;
+
+		// Temporarily disable the transform to measure the unscaled size
+		// (Previously used scrollWidth/scrollHeight, which is naturally unaffected by the scale,
+		// but that is affected by the advent calendar style tool button flaps in the Winter theme.)
+		$c.css("transform", "none");
+
+		// Measure the untransformed size
+		const containerBounds = $c[0].getBoundingClientRect();
+		const containerWidth = containerBounds.width;
+		const containerHeight = containerBounds.height;
+
+		// Define CSS properties for scaling
 		const props = {
 			transform: `scale(${scale})`,
 			transformOrigin: "0 0",
-			marginRight: $c[0].scrollWidth * (scale - 1),
-			marginBottom: $c[0].scrollHeight * (scale - 1),
+			marginRight: containerWidth * (scale - 1),
+			marginBottom: containerHeight * (scale - 1),
 		};
+
+		// Apply or remove the scaling
 		if (enabled) {
 			$c.css(props);
 		} else {
