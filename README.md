@@ -6,7 +6,7 @@ Then join the [Discord server](https://discord.gg/jxQBK3k8tx) to share your art!
 
 JS Paint recreates every tool and menu of MS Paint, and even [little-known features](#did-you-know), to a high degree of fidelity.
 
-It supports themes, additional file types, and accessibility features like Eye Gaze Mode and Speech Recognition.
+It supports themes, additional file types, and accessibility features like a Dwell Clicker and Speech Recognition.
 
 ![Screenshot](images/meta/main-screenshot.png)
 
@@ -40,6 +40,8 @@ I want to bring good old Paint into the modern era.
   * Touch support: use two fingers to pan the view, and pinch to zoom
   * Click/tap the selected colors area to swap the foreground and background colors
   * **View > Fullscreen** to toggle fullscreen mode, nice for small screens
+  * **Extras > Easy Undo Button** to add a floating undo button for easier access
+    * (this may be enabled by default in the future for touch devices)
 * Web features
   * **File > Load From URL...** to open an image from the Web.
   * **File > Upload to Imgur** to upload the current image to Imgur.
@@ -52,10 +54,25 @@ I want to bring good old Paint into the modern era.
     It isn't seamless; actions by other users interrupt what you're doing, and visa versa.
     Sessions are not private, and you may lose your work at any time.
     If you want better collaboration support, follow the development of [Mopaint](https://github.com/1j01/mopaint).
-* **Extras > Themes** to change the look of the app. Dark mode included.
-* [Eye Gaze Mode](https://jspaint.app/#eye-gaze-mode), for use with an eye tracker, head tracker, or other coarse input device, accessible from **Extras > Eye Gaze Mode**. With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker) or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).
-* [Speech Recognition Mode](https://jspaint.app/#speech-recognition-mode).
-  Using your voice you can select tools and colors, pan the view ("scroll down and to the left", or "go southwest", etc.), explore the menus (but you can activate any menu item without opening the menus first), interact with windows (including scrolling the history view with "scroll up"/"scroll down" etc.), dictate text with the Text tool, and even tell the application to sketch things (for instance, "draw a house")
+* **Extras > Themes** to change the look of the app.
+  * Dark and light variants
+  * Vector tool icons handcrafted to match the pixel art versions, for both Modern and Classic themes
+  * Occult theme, in the spirit of Halloween
+  * Winter theme, with a special color palette including candy cane stripes, and advent calendar style flaps revealing pixel art for each tool
+  * Bubblegum theme, featuring *Business Pink* color scheme and AI-generated icons
+* **Extras > Enlarge UI** to make buttons and menus bigger, for usage with an eye tracker, head tracker, or other course input devices. May also work well for a tablet, but not so much for a phone at the moment.
+* **Extras > Dwell Clicker** to click automatically by hovering in one spot, for usage with an eye tracker or head tracker.
+  * Hovered buttons are highlighted, and the click is performed after a delay.
+  * Supports dragging windows and drawing on the canvas.
+  * With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker), <img src="images/tracky-mouse-16x16.png" height="16"> [Tracky Mouse](https://trackymouse.js.org/) (head tracker), or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).
+  * This feature can be easily added to other web applications, using the <img src="images/tracky-mouse-16x16.png" height="16"> [Tracky Mouse API](https://www.npmjs.com/package/tracky-mouse).
+* **Extras > Speech Recognition** to control the app with your voice.
+  * Select tools and colors ("fill tool", "orange", etc.)
+  * Pan the view ("scroll down and to the left", or "go southwest", etc.)
+  * Explore the menus, or activate any menu item without opening the menus first
+  * Interact with windows
+  * Dictate text with the Text tool
+  <!-- (Broken due to no-longer-free service) * Even tell the application to sketch things (for instance, "draw a house") -->
 * Create an animated GIF from the current document history.
   Accessible from the Extras menu or with <kbd>Ctrl+Shift+G</kbd>.
   It's pretty nifty, you should try it out!
