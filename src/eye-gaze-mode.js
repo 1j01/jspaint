@@ -8,17 +8,17 @@ import { TOOL_CURVE, TOOL_FILL, TOOL_MAGNIFIER, TOOL_PICK_COLOR, TOOL_POLYGON } 
 
 let dwell_clicker = { paused: false };
 
-let clean_up_eye_gaze_mode = () => { };
-$G.on("eye-gaze-mode-toggled", () => {
-	if ($("body").hasClass("eye-gaze-mode")) {
-		init_eye_gaze_mode();
+let clean_up_dwell_clicker = () => { };
+$G.on("dwell-clicker-toggled", () => {
+	if ($("body").hasClass("dwell-clicker-mode")) {
+		init_dwell_clicker();
 	} else {
-		clean_up_eye_gaze_mode();
+		clean_up_dwell_clicker();
 	}
 });
-if ($("body").hasClass("eye-gaze-mode")) {
+if ($("body").hasClass("dwell-clicker-mode")) {
 	// #region Initialization (continued; marking stuff that ideally should be at the end of the file)
-	init_eye_gaze_mode();
+	init_dwell_clicker();
 	// #endregion
 }
 
@@ -159,33 +159,21 @@ const dwell_clicker_config = {
 };
 
 // Tracky Mouse provides head tracking. https://trackymouse.js.org/
-// To enable Tracky Mouse, you must currently:
+// To enable Tracky Mouse head tracking, you must currently:
 // - toggle `enable_tracky_mouse_ui` to true
 // - add `blob:` to the `script-src` directive of the Content-Security-Policy in index.html,
 //   as clmtrackr loads a Worker with a blob URL
-// For introducing head tracking as a feature (with the Tracky Mouse UI),
-// there's still UI/UX concerns like providing a way to disable it separately from eye gaze mode,
-// and the minimized window overlapping the floating buttons.
-// Terminologically, I'm not sure what to call the superset of eye gaze mode and head tracking.
-// - "Coarse Input Mode"? Sounds rough, and probably unclear.
-// - "Hands-Free Mode"? Although that could also refer to voice commands. Which are also supported.
-// - "Head Input Mode"/"Head Tracking Mode"? Technically your eyes are part of your head...
-// - "Face Mouse Mode"/"Facial Mouse Mode"? Maybe!
-// I think it's best if I separate "Eye Gaze Mode" into several distinct features:
-// - "Vertical Color Box" (✅ already split out)
-// - "Enlarge UI" (✅ already split out)
-// - "Quick Undo Button" (✅ already split out)
-// - Either:
-//   - "Tracky Mouse", which would open up a window which would control dwell clicking and head tracking.
-//   - Or two separate options:
-//     - "Head Tracker"
-//     - "Dwell Clicker"
-// (I can maintain backwards compatibility with the #eye-gaze-mode URL fragment, breaking it up into the new settings.)
+// For introducing head tracking as a feature (with the Tracky Mouse UI):
+// - Enable "Head Tracker" menu item.
+// - Separate from Dwell Clicker mode.
+// - Fix the minimized window overlapping the floating buttons.
+// - Need a way to cleanup when the head tracking feature is disabled.
+// - Handle close button to disable the feature.
 var enable_tracky_mouse_ui = false;
 var tracky_mouse_deps_promise;
 
-async function init_eye_gaze_mode() {
-	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before eye gaze mode UI
+async function init_dwell_clicker() {
+	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before Dwell Clicker visuals
 	if (enable_tracky_mouse_ui) {
 		if (!tracky_mouse_deps_promise) {
 			TrackyMouse.dependenciesRoot = "lib/tracky-mouse/core";
@@ -260,24 +248,24 @@ async function init_eye_gaze_mode() {
 
 	}
 
-	// (TODO: disable hovering to open submenus in eye gaze mode)
+	// (TODO: disable hovering to open submenus (other than with dwell clicking) while Dwell Clicker is enabled?)
 
 	dwell_clicker = TrackyMouse.initDwellClicking(dwell_clicker_config);
 
 	update_floating_buttons();
 
-	clean_up_eye_gaze_mode = () => {
-		console.log("Cleaning up / disabling eye gaze mode");
+	clean_up_dwell_clicker = () => {
+		console.log("Cleaning up / disabling Dwell Clicker mode");
 		TrackyMouse.cleanupDwellClicking();
 		update_floating_buttons();
-		clean_up_eye_gaze_mode = () => { };
+		clean_up_dwell_clicker = () => { };
 	};
 }
 
 // TODO: move this to a separate file (note dependency on `dwell_clicker`)
 let $floating_buttons = null;
 async function update_floating_buttons() {
-	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before eye gaze mode UI
+	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before floating buttons
 
 	$floating_buttons?.remove();
 	if (!$("body").hasClass("easy-undo-mode")) {
@@ -295,7 +283,7 @@ async function update_floating_buttons() {
 			$("<div class='button-icon'>")
 		);
 
-	if ($("body").hasClass("eye-gaze-mode")) {
+	if ($("body").hasClass("dwell-clicker-mode")) {
 		// These are matched on exactly, for code that provides speech command synonyms
 		const pause_button_text = "Pause Dwell Clicking";
 		const resume_button_text = "Resume Dwell Clicking";
@@ -304,7 +292,7 @@ async function update_floating_buttons() {
 			.attr("title", pause_button_text)
 			.on("click", () => {
 				dwell_clicker.paused = !dwell_clicker.paused;
-				$("body").toggleClass("eye-gaze-mode-paused", dwell_clicker.paused);
+				$("body").toggleClass("dwell-clicker-paused", dwell_clicker.paused);
 				$pause_button.attr("title", dwell_clicker.paused ? resume_button_text : pause_button_text);
 			})
 			.appendTo($floating_buttons)

@@ -862,7 +862,7 @@ const tools = [{
 			this.preview_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			this.points.push({ x, y });
 			// TODO: can we detect if the gesture is from the dwell clicker instead of checking the class?
-			if (!$("body").hasClass("eye-gaze-mode")) {
+			if (!$("body").hasClass("dwell-clicker-mode")) {
 				// second point so first action draws a line
 				this.points.push({ x, y });
 			}
@@ -1024,7 +1024,7 @@ const tools = [{
 		const dy = this.points[i].y - this.points[0].y;
 		const d = Math.sqrt(dx * dx + dy * dy);
 		// TODO: can we detect if the gesture is from the dwell clicker instead of checking the class?
-		if ($("body").hasClass("eye-gaze-mode")) {
+		if ($("body").hasClass("dwell-clicker-mode")) {
 			if (this.points.length >= 3) {
 				if (d < stroke_size * 10 + 20) {
 					this.complete(ctx);
@@ -1048,7 +1048,7 @@ const tools = [{
 			this.points.push({ x, y });
 
 			// TODO: can we detect if the gesture is from the dwell clicker instead of checking the class?
-			if (!$("body").hasClass("eye-gaze-mode")) {
+			if (!$("body").hasClass("dwell-clicker-mode")) {
 				// Add a second point so first action draws a line
 				this.points.push({ x, y });
 			}

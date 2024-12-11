@@ -72,12 +72,12 @@ window.systemHookDefaults = {
 		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.
 		// So, it's a tradeoff with the benefit of overwriting on Save.
 		// https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
-		// Also, if you're using accessibility options Speech Recognition or Eye Gaze Mode,
+		// Also, if you're using accessibility options Speech Recognition or Dwell Clicker,
 		// `showSaveFilePicker` fails based on a notion of it not being a "user gesture".
 		// `saveAs` will likely also fail on the same basis,
 		// but at least in chrome, there's a "Downloads Blocked" icon with a popup where you can say Always Allow.
 		// I can't detect when it's allowed or blocked, but `saveAs` has a better chance of working,
-		// so in Speech Recognition and Eye Gaze Mode, I set a global flag temporarily to disable File System Access API (window.untrusted_gesture).
+		// so for Speech Recognition and Dwell Clicker, I set a global flag temporarily to disable File System Access API (window.untrusted_gesture).
 		if (window.showSaveFilePicker && !window.untrusted_gesture && enable_fs_access_api) {
 			// We can't get the selected file type, not even from newHandle.getFile()
 			// so limit formats shown to a set that can all be used by their unique file extensions
@@ -203,7 +203,8 @@ window.systemHookDefaults = {
 	showOpenFileDialog: async ({ formats }) => {
 		if (window.untrusted_gesture) {
 			// We can't show a file picker RELIABLY.
-			show_error_message("Sorry, a file picker cannot be shown when using Speech Recognition or Eye Gaze Mode. You must click File > Open directly with the mouse, or press Ctrl+O on the keyboard.");
+			// FIXME: double error message
+			show_error_message("Sorry, a file picker cannot be shown when using Speech Recognition or Dwell Clicker. You must click File > Open directly with the mouse, or press Ctrl+O on the keyboard.");
 			throw new Error("can't show file picker reliably");
 		}
 		if (window.showOpenFilePicker && enable_fs_access_api) {
@@ -312,23 +313,20 @@ for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
 const update_from_url_params = () => {
 	// Eye Gaze Mode was a monolithic feature that has been since been split into smaller features.
 	// We can maintain backwards compatibility with the old URL param by mapping it to the new features.
-	// TODO: separate out the remaining feature (Dwell Clicker) from Eye Gaze Mode
-	// (It will almost be a rename, except that Eye Gaze Mode can still exist as a legacy umbrella feature.)
 	// (BTW: Eye Gaze Mode never included an actual eye tracker (instead relying on external software),
 	// but if I added that as a feature I could call the feature Eye Tracker, so it wouldn't be too confusing.)
 
-	// Eye Gaze Mode
-	if (location.hash.match(/eye-gaze-mode/i)) {
-		if (!$("body").hasClass("eye-gaze-mode")) {
-			$("body").addClass("eye-gaze-mode");
-			$G.triggerHandler("eye-gaze-mode-toggled");
-			$G.triggerHandler("theme-load"); // signal layout change
+	// Dwell Clicker
+	// (Eye Gaze Mode implies Dwell Clicker)
+	if (location.hash.match(/dwell-clicker|eye-gaze-mode/i)) {
+		if (!$("body").hasClass("dwell-clicker-mode")) {
+			$("body").addClass("dwell-clicker-mode");
+			$G.triggerHandler("dwell-clicker-toggled");
 		}
 	} else {
-		if ($("body").hasClass("eye-gaze-mode")) {
-			$("body").removeClass("eye-gaze-mode");
-			$G.triggerHandler("eye-gaze-mode-toggled");
-			$G.triggerHandler("theme-load"); // signal layout change
+		if ($("body").hasClass("dwell-clicker-mode")) {
+			$("body").removeClass("dwell-clicker-mode");
+			$G.triggerHandler("dwell-clicker-toggled");
 		}
 	}
 
@@ -1480,7 +1478,7 @@ $canvas_area.on("pointerdown", (event) => {
 	}
 
 	if (pointers.every((pointer) =>
-		// prevent multitouch panning in case of synthetic events from eye gaze mode
+		// prevent multitouch panning in case of synthetic events from Dwell Clicker
 		pointer.pointerId !== 1234567890 &&
 		// prevent multitouch panning in case of dragging across iframe boundary with a mouse/pen
 		// Note: there can be multiple active primary pointers, one per pointer type
@@ -1571,7 +1569,7 @@ $canvas.on("pointerdown", (e) => {
 		cancel(false, discard_document_state);
 		pointer_active = false; // NOTE: pointer_active used in cancel(); must be set after cancel()
 
-		// in eye gaze mode, allow drawing with mouse after canceling gaze gesture with mouse
+		// in Dwell Clicker mode, allow drawing with mouse after canceling dwell gesture with mouse
 		pointers = pointers.filter((pointer) =>
 			pointer.pointerId !== 1234567890
 		);

@@ -281,8 +281,8 @@ body {
 	width: 18px;
 	height: 18px;
 }
-.color-button, /* this outer one is only for detection for the hover halo in eye gaze mode */
-.edit-colors-window .swatch, /* this outer one is only for detection for the hover halo in eye gaze mode */
+.color-button, /* this outer one is only for detection for the hover halo in Dwell Clicker mode */
+.edit-colors-window .swatch, /* this outer one is only for detection for the hover halo in Dwell Clicker mode */
 .color-button canvas,
 .color-selection canvas,
 .edit-colors-window .swatch canvas,
@@ -400,7 +400,7 @@ body {
 .toggle-dwell-clicking .button-icon {
 	background: url(../../images/classic/eye-gaze-pause.svg);
 }
-.eye-gaze-mode.eye-gaze-mode-paused .toggle-dwell-clicking .button-icon {
+.eye-gaze-mode.dwell-clicker-paused .toggle-dwell-clicking .button-icon {
 	background: url(../../images/classic/eye-gaze-unpause.svg);
 }
 

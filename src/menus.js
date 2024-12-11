@@ -1189,6 +1189,8 @@ const menus = {
 				}
 			)),
 		},
+		// TODO: remove "Eye Gaze Mode", which has been split into Dwell Clicker, Enlarge UI, Vertical Color Box, and Quick Undo Button.
+		// Note that this menu item is relied on in tests.
 		{
 			emoji_icon: "👁️",
 			label: localize("&Eye Gaze Mode"),
@@ -1322,29 +1324,39 @@ const menus = {
 			},
 			description: localize("Adds a button for undoing the last action."),
 		},
-		// TODO: convert Eye Gaze Mode into Dwell Clicker mode
-		// {
-		// 	emoji_icon: "⏱️",
-		// 	// label: localize("Dwell &Click"),
-		// 	label: localize("Dwell &Clicker"),
-		// 	speech_recognition: [
-		// 		"dwell clicking", "dwell click", "dwell clicker", "auto click", "auto clicker", "auto clicking", "click automatically",
-		// 		"stop clicking", "stop auto clicking", "stop auto click", "stop auto clicker", "stop dwell clicking", "stop dwell click", "stop dwell clicker",
-		// 	],
-		// 	checkbox: {
-		// 		toggle: () => {
-		// 			if (/dwell-clicker/i.test(location.hash)) {
-		// 				change_url_param("dwell-clicker", false);
-		// 			} else {
-		// 				change_url_param("dwell-clicker", true);
-		// 			}
-		// 		},
-		// 		check: () => {
-		// 			return /dwell-clicker/i.test(location.hash);
-		// 		},
-		// 	},
-		// 	description: localize("Clicks automatically after hovering in one place."),
-		// },
+		{
+			emoji_icon: "⏱️",
+			// label: localize("Dwell &Click"),
+			label: localize("Dwell &Clicker"),
+			speech_recognition: [
+				"dwell clicking", "dwell click", "dwell clicker", "auto click", "auto clicker", "auto clicking", "click automatically",
+				"stop clicking", "stop auto clicking", "stop auto click", "stop auto clicker", "stop dwell clicking", "stop dwell click", "stop dwell clicker",
+			],
+			checkbox: {
+				toggle: () => {
+					if (/eye-gaze-mode/i.test(location.hash)) {
+						// @TODO: confirmation dialog that you could cancel with dwell clicking!
+						// if (confirm("This will disable eye gaze mode.")) {
+						// change_some_url_params({
+						// 	"eye-gaze-mode": false,
+						// 	"dwell-clicker": false,
+						// });
+						// }
+					} else if (/dwell-clicker/i.test(location.hash)) {
+						change_url_param("dwell-clicker", false);
+					} else {
+						change_url_param("dwell-clicker", true);
+					}
+				},
+				check: () => {
+					return /dwell-clicker|eye-gaze-mode/i.test(location.hash);
+				},
+			},
+			enabled: () => {
+				return !/eye-gaze-mode/i.test(location.hash);
+			},
+			description: localize("Clicks automatically after hovering in one place."),
+		},
 		// {
 		// 	emoji_icon: "🧑",
 		// 	// label: localize("Head Tracking"),

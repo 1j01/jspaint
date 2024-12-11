@@ -29,7 +29,7 @@ const param_types = {
 	"eye-gaze-mode": "bool", // will map to to "enlarge-ui"+"dwell-clicker"+"vertical-color-box-mode"+"easy-undo"
 	"enlarge-ui": "bool",
 	"easy-undo": "bool",
-	// "dwell-clicker": "bool", // TODO: split from Eye Gaze Mode
+	"dwell-clicker": "bool",
 	// "head-tracker": "bool", // TODO: introduce feature (see enable_tracky_mouse_ui)
 	"vertical-color-box-mode": "bool", // could rename this to simply "vertical-color-box" or "vertical-palette"
 	"speech-recognition-mode": "bool", // could rename this to simply "voice"
