@@ -1252,6 +1252,39 @@ const menus = {
 			description: localize("Enlarges buttons and provides dwell clicking."),
 		},
 		{
+			emoji_icon: "⏱️",
+			// label: localize("Dwell &Click"),
+			label: localize("Dwell &Clicker"),
+			speech_recognition: [
+				"dwell clicking", "dwell click", "dwell clicker", "auto click", "auto clicker", "auto clicking", "click automatically",
+				"stop clicking", "stop auto clicking", "stop auto click", "stop auto clicker", "stop dwell clicking", "stop dwell click", "stop dwell clicker",
+			],
+			checkbox: {
+				toggle: () => {
+					if (/eye-gaze-mode/i.test(location.hash)) {
+						// @TODO: confirmation dialog that you could cancel with dwell clicking!
+						// if (confirm("This will disable eye gaze mode.")) {
+						// change_some_url_params({
+						// 	"eye-gaze-mode": false,
+						// 	"dwell-clicker": false,
+						// });
+						// }
+					} else if (/dwell-clicker/i.test(location.hash)) {
+						change_url_param("dwell-clicker", false);
+					} else {
+						change_url_param("dwell-clicker", true);
+					}
+				},
+				check: () => {
+					return /dwell-clicker|eye-gaze-mode/i.test(location.hash);
+				},
+			},
+			enabled: () => {
+				return !/eye-gaze-mode/i.test(location.hash);
+			},
+			description: localize("Clicks automatically after hovering in one place."),
+		},
+		{
 			emoji_icon: "🔍",
 			// label: localize("&Enlarge Buttons"), // too specific; it also enlarges windows and other UI elements
 			label: localize("&Enlarge UI"), // a bit technical, but hopefully common enough
@@ -1325,12 +1358,16 @@ const menus = {
 			description: localize("Adds a button for undoing the last action."),
 		},
 		{
-			emoji_icon: "⏱️",
-			// label: localize("Dwell &Click"),
-			label: localize("Dwell &Clicker"),
+			emoji_icon: "↕️",
+			label: localize("&Vertical Color Box"),
 			speech_recognition: [
-				"dwell clicking", "dwell click", "dwell clicker", "auto click", "auto clicker", "auto clicking", "click automatically",
-				"stop clicking", "stop auto clicking", "stop auto click", "stop auto clicker", "stop dwell clicking", "stop dwell click", "stop dwell clicker",
+				"toggle vertical color box", "toggle vertical color box mode",
+				"toggle vertical colors box", "toggle vertical colors box mode",
+				"toggle vertical palette", "toggle vertical palette mode",
+				"toggle horizontal color box", "toggle horizontal color box mode",
+				"toggle horizontal colors box", "toggle horizontal colors box mode",
+				"toggle horizontal palette", "toggle horizontal palette mode",
+				// @TODO: "use a vertical/horizontal color box", "place palette on the left", "make palette tall/wide", etc.
 			],
 			checkbox: {
 				toggle: () => {
@@ -1339,23 +1376,23 @@ const menus = {
 						// if (confirm("This will disable eye gaze mode.")) {
 						// change_some_url_params({
 						// 	"eye-gaze-mode": false,
-						// 	"dwell-clicker": false,
+						// 	"vertical-color-box-mode": false,
 						// });
 						// }
-					} else if (/dwell-clicker/i.test(location.hash)) {
-						change_url_param("dwell-clicker", false);
+					} else if (/vertical-color-box-mode/i.test(location.hash)) {
+						change_url_param("vertical-color-box-mode", false);
 					} else {
-						change_url_param("dwell-clicker", true);
+						change_url_param("vertical-color-box-mode", true);
 					}
 				},
 				check: () => {
-					return /dwell-clicker|eye-gaze-mode/i.test(location.hash);
+					return /vertical-color-box-mode|eye-gaze-mode/i.test(location.hash);
 				},
 			},
 			enabled: () => {
 				return !/eye-gaze-mode/i.test(location.hash);
 			},
-			description: localize("Clicks automatically after hovering in one place."),
+			description: localize("Arranges the color box vertically."),
 		},
 		// {
 		// 	emoji_icon: "🧑",
@@ -1409,43 +1446,6 @@ const menus = {
 			},
 			enabled: () => speech_recognition_available,
 			description: localize("Controls the application with voice commands."),
-		},
-		{
-			emoji_icon: "↕️",
-			label: localize("&Vertical Color Box"),
-			speech_recognition: [
-				"toggle vertical color box", "toggle vertical color box mode",
-				"toggle vertical colors box", "toggle vertical colors box mode",
-				"toggle vertical palette", "toggle vertical palette mode",
-				"toggle horizontal color box", "toggle horizontal color box mode",
-				"toggle horizontal colors box", "toggle horizontal colors box mode",
-				"toggle horizontal palette", "toggle horizontal palette mode",
-				// @TODO: "use a vertical/horizontal color box", "place palette on the left", "make palette tall/wide", etc.
-			],
-			checkbox: {
-				toggle: () => {
-					if (/eye-gaze-mode/i.test(location.hash)) {
-						// @TODO: confirmation dialog that you could cancel with dwell clicking!
-						// if (confirm("This will disable eye gaze mode.")) {
-						// change_some_url_params({
-						// 	"eye-gaze-mode": false,
-						// 	"vertical-color-box-mode": false,
-						// });
-						// }
-					} else if (/vertical-color-box-mode/i.test(location.hash)) {
-						change_url_param("vertical-color-box-mode", false);
-					} else {
-						change_url_param("vertical-color-box-mode", true);
-					}
-				},
-				check: () => {
-					return /vertical-color-box-mode|eye-gaze-mode/i.test(location.hash);
-				},
-			},
-			enabled: () => {
-				return !/eye-gaze-mode/i.test(location.hash);
-			},
-			description: localize("Arranges the color box vertically."),
 		},
 		MENU_DIVIDER,
 		{
