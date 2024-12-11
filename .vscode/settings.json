@@ -5,7 +5,7 @@
 		"**/out": true,
 	},
 	// This affects Find In Files (Ctrl+Shift+F) but also Go To File (Ctrl+P) and
-	// the new Quick Search (experimental), which I've been using a lot since it was released.
+	// the Quick Search, which I've been using a lot since it was released.
 	"search.exclude": {
 		"**/images": true,
 		"**/lib": true,
