@@ -400,7 +400,7 @@ body {
 .toggle-dwell-clicking .button-icon {
 	background: url(../../images/classic/eye-gaze-pause.svg);
 }
-.eye-gaze-mode.dwell-clicker-paused .toggle-dwell-clicking .button-icon {
+.dwell-clicker-mode.dwell-clicker-paused .toggle-dwell-clicking .button-icon {
 	background: url(../../images/classic/eye-gaze-unpause.svg);
 }
 

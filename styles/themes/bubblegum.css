@@ -184,7 +184,7 @@ button:active {
 	background: url(../../images/bubblegum/eye-gaze-pause-128x128.png);
 	background-size: 100% 100%;
 }
-.eye-gaze-mode.dwell-clicker-paused .toggle-dwell-clicking .button-icon {
+.dwell-clicker-mode.dwell-clicker-paused .toggle-dwell-clicking .button-icon {
 	background: url(../../images/bubblegum/eye-gaze-unpause-128x128.png);
 	background-size: 100% 100%;
 }
