@@ -58,6 +58,7 @@ const dwell_clicker_config = {
 		textarea,
 		label,
 		a,
+		details summary,
 		.flip-and-rotate .sub-options .radio-wrapper,
 		.current-colors,
 		.color-button,
