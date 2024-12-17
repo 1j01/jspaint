@@ -1282,6 +1282,8 @@ const menus = {
 			},
 			description: localize("Controls the cursor with head movements."),
 		},
+		// Later on I'll probably merge the Head Tracker and Dwell Clicker options into a Tracky Mouse option,
+		// or I'll create a preferences screen, where I'll be able to better clarify the relationships between features.
 		{
 			emoji_icon: "⏱️",
 			// label: localize("Dwell &Click"),
@@ -1292,11 +1294,12 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (/eye-gaze-mode/i.test(location.hash)) {
+					if (/eye-gaze-mode|head-tracker/i.test(location.hash)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
-						// if (confirm("This will disable eye gaze mode.")) {
+						// if (confirm("This will disable eye gaze mode / head tracker mode.")) {
 						// change_some_url_params({
 						// 	"eye-gaze-mode": false,
+						// 	"head-tracker": false,
 						// 	"dwell-clicker": false,
 						// });
 						// }
@@ -1307,11 +1310,11 @@ const menus = {
 					}
 				},
 				check: () => {
-					return /dwell-clicker|eye-gaze-mode/i.test(location.hash);
+					return /dwell-clicker|eye-gaze-mode|head-tracker/i.test(location.hash);
 				},
 			},
 			enabled: () => {
-				return !/eye-gaze-mode/i.test(location.hash);
+				return !/eye-gaze-mode|head-tracker/i.test(location.hash);
 			},
 			description: localize("Clicks automatically after hovering in one place."),
 		},

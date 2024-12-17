@@ -13,9 +13,6 @@ import { TOOL_CURVE, TOOL_FILL, TOOL_MAGNIFIER, TOOL_PICK_COLOR, TOOL_POLYGON } 
 // - Fix the minimized window overlapping the floating buttons.
 //   - Probably best to put it in the top right corner. Although, on phones, it may cover the Extras menu...
 //   - Should I make a minimize target (AKA taskbar button) for it? Probably; it would be easier, since I have an API for that whereas the taskbar-less minimization behavior is hardcoded.
-// - Make Head Tracker imply Dwell Clicker for now, just like Eye Gaze Mode implies Dwell Clicker (and other things)
-//   - (Later on I'll probably merge the Head Tracker and Dwell Clicker options into a Tracky Mouse option,
-//      or I'll have a preferences screen where I'll be able to better clarify the relationships between features.)
 // - Sliders are kinda broken:
 //   - visually (min/max labels overlap slider)
 //   - functionally (can't click the slider except on the sliver of it that's literally visually part of it; dwell clicker may retarget from control label to slider, but not in a way that sets the value)

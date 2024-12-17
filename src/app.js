@@ -318,7 +318,8 @@ const update_from_url_params = () => {
 
 	// Dwell Clicker
 	// (Eye Gaze Mode implies Dwell Clicker)
-	if (location.hash.match(/dwell-clicker|eye-gaze-mode/i)) {
+	// (Head Tracker implies Dwell Clicker)
+	if (location.hash.match(/dwell-clicker|eye-gaze-mode|head-tracker/i)) {
 		if (!$("body").hasClass("dwell-clicker-mode")) {
 			$("body").addClass("dwell-clicker-mode");
 			$G.triggerHandler("dwell-clicker-toggled");
