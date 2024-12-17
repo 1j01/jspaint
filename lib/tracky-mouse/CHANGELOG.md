@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No changes here yet.
 
+## [1.2.0] - 2024-12-17
+
+### Deprecated
+- `TrackyMouse.cleanupDwellClicking()` is deprecated in favor of calling `dispose()` on the object returned by `TrackyMouse.initDwellClicking()`.
+
+### Changed
+- The Tracky Mouse UI no longer includes a stats.js performance monitor by default. You can still enable it by passing `{statsJs: true}` to `TrackyMouse.init()` and, if needed, also to `TrackyMouse.loadDependencies()`.
+
+### Added
+- `TrackyMouse.init()` now returns an object with a `dispose()` method, which you can call to stop head tracking and remove the UI.
+- The object returned by `TrackyMouse.initDwellClicking()` now has a `dispose()` method as well, which you can use instead of `TrackyMouse.cleanupDwellClicking()`.
+
+### Fixed
+- `TrackyMouse.cleanupDwellClicking()` now handles multiple dwell clickers, not that I know of any use case for that.
+
 ## [1.1.0] - 2024-10-20
 
 ### Added
@@ -53,6 +68,7 @@ No changes here yet.
 - [Electron](https://electronjs.org/) app for desktop (not yet packaged for distribution).
 
 
-[Unreleased]: https://github.com/1j01/tracky-mouse/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/1j01/tracky-mouse/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/1j01/tracky-mouse/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/1j01/tracky-mouse/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/1j01/tracky-mouse/releases/tag/v1.0.0

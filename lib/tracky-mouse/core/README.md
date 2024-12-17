@@ -102,13 +102,16 @@ TrackyMouse.loadDependencies().then(function() {
 
 Set this to the path to the folder where you installed tracky-mouse, without a trailing slash.
 
-### `TrackyMouse.loadDependencies()`
+### `TrackyMouse.loadDependencies([options])`
 
 This loads dependencies needed *for head tracking*. (It is not needed for dwell clicking.)
 
+If you pass an options object, it can have the following properties:
+- `statsJs` (optional): a boolean, whether to load stats.js for performance monitoring. Default is `false`.
+
 Returns a promise that resolves when the dependencies are loaded.
 
-### `TrackyMouse.init([element])`
+### `TrackyMouse.init([element, options])`
 
 `TrackyMouse.init` initializes the library *for head tracking*. (It is not needed for dwell clicking.)
 
@@ -117,6 +120,13 @@ or using, and modifying, and existing element.
 
 If you pass an element, it should be an empty `<div>` element.
 It will add `class="tracky-mouse-ui"` directly to the element if it doesn't already have it.
+
+If you pass an options object, it can have the following properties:
+- `statsJs` (optional): a boolean, whether to include the stats.js performance monitor. Default is `false`.
+
+Returns an object with a `dispose` method that you can call to remove the UI and clean up the web worker and camera stream.
+
+*(Search keywords: disposal, destroy, teardown, cleanup, clean-up, clean up, deinitialize, de-initialize, remove, stop, end)* - see return value
 
 ### `TrackyMouse.useCamera()`
 
@@ -154,8 +164,8 @@ Arguments:
 
 Returns an object with the following properties:
 - `paused`: a getter/setter for whether dwell clicking is paused. Use this to implement a pause/resume button, in conjunction with `config.dwellClickEvenIfPaused`.
-- (that's all for now)
-
+- `dispose`: a method to clean up the dwell clicker.  
+  *(Search keywords: disposal, destroy, teardown, cleanup, clean-up, clean up, deinitialize, de-initialize, remove, stop, end)*
 
 Example:
 ```javascript
@@ -248,7 +258,9 @@ const config = {
 	beforePointerDownDispatch: () => { window.pointers = []; },
 	afterReleaseDrag: () => { window.pointers = []; },
 };
-TrackyMouse.initDwellClicking(config);
+const dwellClicker = TrackyMouse.initDwellClicking(config);
+// dwellClicker.paused = !dwellClicker.paused; // toggle
+// dwellClicker.dispose(); // clean up
 
 // Source: https://stackoverflow.com/a/54492696/2624876
 function getCurrentRotation(el) {
@@ -268,6 +280,8 @@ function getCurrentRotation(el) {
 ```
 
 ### `TrackyMouse.cleanupDwellClicking()`
+
+**Deprecated**: instead call `dispose()` on the object returned from `initDwellClicking()`.
 
 This stops the dwell clicker.
 

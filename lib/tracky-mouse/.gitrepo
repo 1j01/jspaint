@@ -5,8 +5,8 @@
 ;
 [subrepo]
 	remote = https://github.com/1j01/tracky-mouse.git
-	branch = v1.1.0
-	commit = 00b25fdb8821e7d73c2d99b66f8128abc7dcf3b0
-	parent = 6c2e10d736e2dff20d4e158f97a9601ca2a73bbe
+	branch = v1.2.0
+	commit = 2cca8048692bef586e6814f04e408c7072525b21
+	parent = 6ac7bc577041f3933d4cfac31ec995045c9c2056
 	method = merge
 	cmdver = 0.4.6

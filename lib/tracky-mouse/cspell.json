@@ -11,6 +11,7 @@
 		"argparse",
 		"clmtrackr",
 		"combinatorially",
+		"deinitialize",
 		"Eigen",
 		"embeddable",
 		"eviacam",
