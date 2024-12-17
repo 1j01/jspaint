@@ -218,6 +218,10 @@ async function init_tracky_mouse_ui() {
 		$tracky_mouse_window.addClass("tracky-mouse-window");
 		const tracky_mouse_container = $tracky_mouse_window.$content[0];
 
+		$tracky_mouse_window.on("closed", () => {
+			change_url_param("head-tracker", false);
+		});
+
 		const tracky_mouse_ui = TrackyMouse.init(tracky_mouse_container);
 		TrackyMouse.useCamera();
 
@@ -284,10 +288,6 @@ async function init_tracky_mouse_ui() {
 			}
 			clean_up_tracky_mouse_ui = () => { };
 		};
-
-		$tracky_mouse_window.on("closed", () => {
-			change_url_param("head-tracker", false);
-		});
 	}
 }
 // TODO: move this to a separate file (note dependency on `dwell_clicker`)
