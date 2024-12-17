@@ -99,6 +99,10 @@ html, body, .jspaint {
 .window:not(.squish) {
 	white-space: nowrap;
 }
+/* reset the above to avoid .tracky-mouse-error-message getting clipped (when webcam in use for example) */
+.tracky-mouse-window .tracky-mouse-canvas-overlay {
+	white-space: normal;
+}
 .component-area {
 	-webkit-user-select: none;
 	-moz-user-select: none;
