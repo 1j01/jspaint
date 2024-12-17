@@ -206,6 +206,7 @@ const createWindow = () => {
 				// Note: this should mirror the CSP in index.html, except maybe for firebase stuff.
 				"Content-Security-Policy": [`
 					default-src 'self';
+					script-src 'self' blob:;
 					style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 					img-src 'self' data: blob: http: https:;
 					font-src 'self' https://fonts.gstatic.com;

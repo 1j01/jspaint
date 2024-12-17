@@ -30,7 +30,7 @@ const param_types = {
 	"enlarge-ui": "bool",
 	"easy-undo": "bool",
 	"dwell-clicker": "bool",
-	// "head-tracker": "bool", // TODO: introduce feature (see enable_tracky_mouse_ui)
+	"head-tracker": "bool",
 	"vertical-color-box-mode": "bool", // could rename this to simply "vertical-color-box" or "vertical-palette"
 	"speech-recognition-mode": "bool", // could rename this to simply "voice"
 	// dev settings

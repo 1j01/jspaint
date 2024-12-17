@@ -2,11 +2,26 @@
 // eslint-disable-next-line no-unused-vars
 /* global pointers:writable */
 /* global $Window, main_canvas, pointer_active, selected_tool, TrackyMouse */
-import { undo } from "./functions.js";
+import { change_url_param, undo } from "./functions.js";
 import { $G, load_image_simple } from "./helpers.js";
 import { TOOL_CURVE, TOOL_FILL, TOOL_MAGNIFIER, TOOL_PICK_COLOR, TOOL_POLYGON } from "./tools.js";
 
-let dwell_clicker = { paused: false };
+// Tracky Mouse provides dwell clicking and head tracking features.
+// https://trackymouse.js.org/
+
+// TODO: for introducing head tracking as a feature (with the Tracky Mouse UI):
+// - Fix the minimized window overlapping the floating buttons.
+//   - Probably best to put it in the top right corner. Although, on phones, it may cover the Extras menu...
+//   - Should I make a minimize target (AKA taskbar button) for it? Probably; it would be easier, since I have an API for that whereas the taskbar-less minimization behavior is hardcoded.
+// - Make Head Tracker imply Dwell Clicker for now, just like Eye Gaze Mode implies Dwell Clicker (and other things)
+//   - (Later on I'll probably merge the Head Tracker and Dwell Clicker options into a Tracky Mouse option,
+//      or I'll have a preferences screen where I'll be able to better clarify the relationships between features.)
+// - Sliders are kinda broken:
+//   - visually (min/max labels overlap slider)
+//   - functionally (can't click the slider except on the sliver of it that's literally visually part of it; dwell clicker may retarget from control label to slider, but not in a way that sets the value)
+
+
+let dwell_clicker = { paused: false, dispose: () => { } };
 
 let clean_up_dwell_clicker = () => { };
 $G.on("dwell-clicker-toggled", () => {
@@ -19,6 +34,20 @@ $G.on("dwell-clicker-toggled", () => {
 if ($("body").hasClass("dwell-clicker-mode")) {
 	// #region Initialization (continued; marking stuff that ideally should be at the end of the file)
 	init_dwell_clicker();
+	// #endregion
+}
+
+let clean_up_tracky_mouse_ui = () => { };
+$G.on("head-tracker-toggled", () => {
+	if ($("body").hasClass("head-tracker-mode")) {
+		init_tracky_mouse_ui();
+	} else {
+		clean_up_tracky_mouse_ui();
+	}
+});
+if ($("body").hasClass("head-tracker-mode")) {
+	// #region Initialization (continued; marking stuff that ideally should be at the end of the file)
+	init_tracky_mouse_ui();
 	// #endregion
 }
 
@@ -158,23 +187,29 @@ const dwell_clicker_config = {
 	},
 };
 
-// Tracky Mouse provides head tracking. https://trackymouse.js.org/
-// To enable Tracky Mouse head tracking, you must currently:
-// - toggle `enable_tracky_mouse_ui` to true
-// - add `blob:` to the `script-src` directive of the Content-Security-Policy in index.html,
-//   as clmtrackr loads a Worker with a blob URL
-// For introducing head tracking as a feature (with the Tracky Mouse UI):
-// - Enable "Head Tracker" menu item.
-// - Separate from Dwell Clicker mode.
-// - Fix the minimized window overlapping the floating buttons.
-// - Need a way to cleanup when the head tracking feature is disabled.
-// - Handle close button to disable the feature.
-var enable_tracky_mouse_ui = false;
-var tracky_mouse_deps_promise;
-
 async function init_dwell_clicker() {
 	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before Dwell Clicker visuals
-	if (enable_tracky_mouse_ui) {
+
+	// (TODO: disable hovering to open submenus (other than with dwell clicking) while Dwell Clicker is enabled?)
+
+	dwell_clicker = TrackyMouse.initDwellClicking(dwell_clicker_config);
+
+	update_floating_buttons();
+
+	clean_up_dwell_clicker = () => {
+		console.log("Cleaning up / disabling Dwell Clicker mode");
+		dwell_clicker.dispose();
+		update_floating_buttons();
+		clean_up_dwell_clicker = () => { };
+	};
+}
+
+var tracky_mouse_deps_promise;
+
+async function init_tracky_mouse_ui() {
+	await new Promise((resolve) => $(resolve)); // wait for document ready... maybe not needed here?
+	// block for indentation to avoid confusing git diff
+	{
 		if (!tracky_mouse_deps_promise) {
 			TrackyMouse.dependenciesRoot = "lib/tracky-mouse/core";
 			tracky_mouse_deps_promise = TrackyMouse.loadDependencies();
@@ -188,7 +223,7 @@ async function init_dwell_clicker() {
 		$tracky_mouse_window.addClass("tracky-mouse-window");
 		const tracky_mouse_container = $tracky_mouse_window.$content[0];
 
-		TrackyMouse.init(tracky_mouse_container);
+		const tracky_mouse_ui = TrackyMouse.init(tracky_mouse_container);
 		TrackyMouse.useCamera();
 
 		$tracky_mouse_window.center();
@@ -246,22 +281,20 @@ async function init_dwell_clicker() {
 
 		// tracky_mouse_container.querySelector(".tracky-mouse-canvas").classList.add("inset-deep");
 
+		clean_up_tracky_mouse_ui = () => {
+			console.log("Cleaning up / disabling Head Tracker mode");
+			tracky_mouse_ui.dispose();
+			if (!$tracky_mouse_window.closed) {
+				$tracky_mouse_window.close();
+			}
+			clean_up_tracky_mouse_ui = () => { };
+		};
+
+		$tracky_mouse_window.on("closed", () => {
+			change_url_param("head-tracker", false);
+		});
 	}
-
-	// (TODO: disable hovering to open submenus (other than with dwell clicking) while Dwell Clicker is enabled?)
-
-	dwell_clicker = TrackyMouse.initDwellClicking(dwell_clicker_config);
-
-	update_floating_buttons();
-
-	clean_up_dwell_clicker = () => {
-		console.log("Cleaning up / disabling Dwell Clicker mode");
-		TrackyMouse.cleanupDwellClicking();
-		update_floating_buttons();
-		clean_up_dwell_clicker = () => { };
-	};
 }
-
 // TODO: move this to a separate file (note dependency on `dwell_clicker`)
 let $floating_buttons = null;
 async function update_floating_buttons() {

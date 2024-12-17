@@ -9,9 +9,10 @@
 	<!-- Firebase stuff is somewhat speculative, as the quota is exceeded as I'm adding this. -->
 	<!-- Lax img-src is needed for speech recognition, e.g. interpret_command("draw a cat")[0].exec(); -->
 	<!-- connect-src needs data:/blob: for loading images via fetch, including from local storage. -->
+	<!-- script-src needs blob: for the Web Worker used by clmtrackr for Tracky Mouse head tracking feature -->
 	<meta http-equiv="Content-Security-Policy" content="
 		default-src 'self';
-		script-src 'self' https://jspaint.firebaseio.com https://www.youtube.com;
+		script-src 'self' blob: https://jspaint.firebaseio.com https://www.youtube.com;
 		frame-src 'self' https://youtube.com https://www.youtube.com;
 		style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 		img-src 'self' data: blob: http: https:;

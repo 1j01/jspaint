@@ -378,6 +378,19 @@ const update_from_url_params = () => {
 		}
 	}
 
+	// Head Tracker Mode
+	if (location.hash.match(/head-tracker/i)) {
+		if (!$("body").hasClass("head-tracker-mode")) {
+			$("body").addClass("head-tracker-mode");
+			$G.triggerHandler("head-tracker-toggled");
+		}
+	} else {
+		if ($("body").hasClass("head-tracker-mode")) {
+			$("body").removeClass("head-tracker-mode");
+			$G.triggerHandler("head-tracker-toggled");
+		}
+	}
+
 	// Speech Recognition Mode
 	if (location.hash.match(/speech-recognition-mode/i)) {
 		enable_speech_recognition();

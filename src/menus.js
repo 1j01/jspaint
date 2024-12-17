@@ -1252,6 +1252,37 @@ const menus = {
 			description: localize("Enlarges buttons and provides dwell clicking."),
 		},
 		{
+			emoji_icon: "🧑",
+			// label: localize("Head Tracking"),
+			// label: localize("M&ove Cursor With Head"),
+			label: localize("Head Tracker"), // adding (Experimental) makes it too long, "WIP" or "Beta" feels too techy
+			speech_recognition: [
+				"head tracking", "head tracker", "move cursor with head", "control cursor with head", "mouse with head", "mouse cursor with head",
+				"face tracking", "face tracker", "move cursor with face", "control cursor with face", "mouse with face", "mouse cursor with face",
+				"head mouse", "face mouse", "facial mouse",
+				"head cursor", "face cursor", "facial cursor",
+				"head pointer", "face pointer", "facial pointer",
+				"head control", "face control", "facial control",
+				"head movement", "face movement", "facial movement",
+				"head motion", "face motion", "facial motion",
+				"head gestures", "face gestures", "facial gestures",
+				"tracky mouse", // name of the library
+			],
+			checkbox: {
+				toggle: () => {
+					if (/head-tracker/i.test(location.hash)) {
+						change_url_param("head-tracker", false);
+					} else {
+						change_url_param("head-tracker", true);
+					}
+				},
+				check: () => {
+					return /head-tracker/i.test(location.hash);
+				},
+			},
+			description: localize("Controls the cursor with head movements."),
+		},
+		{
 			emoji_icon: "⏱️",
 			// label: localize("Dwell &Click"),
 			label: localize("Dwell &Clicker"),
@@ -1394,37 +1425,6 @@ const menus = {
 			},
 			description: localize("Arranges the color box vertically."),
 		},
-		// {
-		// 	emoji_icon: "🧑",
-		// 	// label: localize("Head Tracking"),
-		// 	// label: localize("M&ove Cursor With Head"),
-		// 	label: localize("Head Tracker"), // adding (Experimental) makes it too long, "WIP" or "Beta" feels too techy
-		// 	speech_recognition: [
-		// 		"head tracking", "head tracker", "move cursor with head", "control cursor with head", "mouse with head", "mouse cursor with head",
-		// 		"face tracking", "face tracker", "move cursor with face", "control cursor with face", "mouse with face", "mouse cursor with face",
-		// 		"head mouse", "face mouse", "facial mouse",
-		// 		"head cursor", "face cursor", "facial cursor",
-		// 		"head pointer", "face pointer", "facial pointer",
-		// 		"head control", "face control", "facial control",
-		// 		"head movement", "face movement", "facial movement",
-		// 		"head motion", "face motion", "facial motion",
-		// 		"head gestures", "face gestures", "facial gestures",
-		// 		"tracky mouse", // name of the library
-		// 	],
-		// 	checkbox: {
-		// 		toggle: () => {
-		// 			if (/head-tracker/i.test(location.hash)) {
-		// 				change_url_param("head-tracker", false);
-		// 			} else {
-		// 				change_url_param("head-tracker", true);
-		// 			}
-		// 		},
-		// 		check: () => {
-		// 			return /head-tracker/i.test(location.hash);
-		// 		},
-		// 	},
-		// 	description: localize("Controls the cursor with head movements."),
-		// },
 		{
 			emoji_icon: "🎙️",
 			label: localize("&Speech Recognition"),
