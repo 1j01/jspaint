@@ -426,6 +426,13 @@ body,
 	background: url(../../images/classic/eye-gaze-unpause.svg);
 }
 
+/* Remove hover effect (and specify non-hover style just to be sure) */
+/* The hover effect is way too dramatic when it goes from classic theme-overridden gray to non-overridden red, where it's meant to be only a tweaked shade of red. */
+.tracky-mouse-use-camera-button,
+.tracky-mouse-use-camera-button:hover {
+	background-color: var(--ButtonFace);
+}
+
 input[type=text]:not(.inset-deep),
 input[type=url]:not(.inset-deep),
 input[type=number]:not(.inset-deep) {
