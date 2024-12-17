@@ -9,11 +9,6 @@ import { TOOL_CURVE, TOOL_FILL, TOOL_MAGNIFIER, TOOL_PICK_COLOR, TOOL_POLYGON } 
 // Tracky Mouse provides dwell clicking and head tracking features.
 // https://trackymouse.js.org/
 
-// TODO: for introducing head tracking as a feature (with the Tracky Mouse UI):
-// - Fix the minimized window overlapping the floating buttons.
-//   - Probably best to put it in the top right corner. Although, on phones, it may cover the Extras menu...
-//   - Should I make a minimize target (AKA taskbar button) for it? Probably; it would be easier, since I have an API for that whereas the taskbar-less minimization behavior is hardcoded.
-
 
 let dwell_clicker = { paused: false, dispose: () => { } };
 
@@ -222,6 +217,32 @@ async function init_tracky_mouse_ui() {
 			change_url_param("head-tracker", false);
 		});
 
+		// Use a minimize target so that the window doesn't minimize to the bottom left corner of the screen, overlapping the floating buttons.
+		// Adding it to the menu bar ensures visibility and no overlap because it will wrap to the next row if necessary.
+		// However, this is volatile because if I decided to destroy and recreate the menu bar, this extra button would be lost.
+		// The OS-GUI.js menu bar API doesn't support changing menus on the fly yet, so I'm likely to want to do that (for Recent Files, for example).
+		// I could make an event for menu modifications and listen for it here and re-add the minimize target if necessary.
+		// Of course if OS-GUI.js does support changing menus in the future, I could make this minimize target an actual menu item,
+		// which would be a little different but probably good. (I would need to support non-menu-opening top level buttons too - a real Windows feature, btw.)
+		const minimize_target = document.createElement("button");
+		minimize_target.classList.add("minimize-target");
+		minimize_target.title = "Restore window";
+		minimize_target.addEventListener("click", () => {
+			if ($tracky_mouse_window.is(":visible")) {
+				$tracky_mouse_window.minimize();
+			} else {
+				$tracky_mouse_window.unminimize();
+			}
+		});
+		minimize_target.textContent = "Tracky Mouse";
+		const icon = document.createElement("img");
+		icon.src = "images/tracky-mouse-16x16.png";
+		icon.width = 16;
+		icon.height = 16;
+		minimize_target.prepend(icon);
+		$(".menus").append(minimize_target);
+		$tracky_mouse_window.setMinimizeTarget(minimize_target);
+
 		const tracky_mouse_ui = TrackyMouse.init(tracky_mouse_container);
 		TrackyMouse.useCamera();
 
@@ -286,6 +307,7 @@ async function init_tracky_mouse_ui() {
 			if (!$tracky_mouse_window.closed) {
 				$tracky_mouse_window.close();
 			}
+			minimize_target.remove();
 			clean_up_tracky_mouse_ui = () => { };
 		};
 	}
