@@ -103,6 +103,10 @@ html, body, .jspaint {
 .tracky-mouse-window .tracky-mouse-canvas-overlay {
 	white-space: normal;
 }
+/* fix overlapped min/max labels and barely clickable slider due to 98.css slider styles */
+.tracky-mouse-labeled-slider {
+	height: 20px;
+}
 .component-area {
 	-webkit-user-select: none;
 	-moz-user-select: none;
