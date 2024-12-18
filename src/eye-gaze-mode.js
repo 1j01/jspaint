@@ -390,7 +390,6 @@ $G.on("easy-undo-mode-toggled", update_floating_buttons);
 // TODO: separate file too?
 
 const apply_scale = (menu_popup) => {
-	// console.log("Applying scale to", menu_popup.id);
 	const enabled = $("body").hasClass("enlarge-ui");
 
 	const $menu_popup = $(menu_popup);
@@ -464,7 +463,9 @@ const update_auto_scaling = () => {
 					mutation.oldValue?.includes("display: none") &&
 					mutation.target.matches(".menu-popup")
 				) {
+					// setTimeout(() => {
 					apply_scale(mutation.target);
+					// }, 1000);
 				}
 			}
 		});
@@ -476,7 +477,15 @@ const update_auto_scaling = () => {
 		});
 	}
 	// Apply scaling to existing menus
-	$(".menu-popup").each((i, el) => apply_scale(el));
+	setTimeout(() => {
+		$(".menu-popup").each((i, el) => { apply_scale(el); });
+		// Trigger update_position_from_containing_bounds in MenuBar.js, since it's based on getBoundingClientRect() which will include the transform
+		// I don't have a sound reason why this should be done only when disabling Enlarge UI mode, but it kinda makes sense that it would screw things up
+		// if we trigger this while the menus are scaled.
+		if (!$("body").hasClass("enlarge-ui")) {
+			$(".menu-popup").each((i, el) => { el.dispatchEvent(new CustomEvent("update", {})); });
+		}
+	}, 0);
 };
 $G.on("enlarge-ui-toggled", update_auto_scaling);
 update_auto_scaling();
