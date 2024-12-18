@@ -314,10 +314,12 @@ async function init_tracky_mouse_ui() {
 }
 // TODO: move this to a separate file (note dependency on `dwell_clicker`)
 let $floating_buttons = null;
+let clean_up_floating_buttons = null;
 async function update_floating_buttons() {
 	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before floating buttons
 
-	$floating_buttons?.remove();
+	clean_up_floating_buttons?.();
+
 	if (!$("body").is(".easy-undo-mode, .dwell-clicker-mode")) {
 		return;
 	}
@@ -360,6 +362,24 @@ async function update_floating_buttons() {
 		// 		$("<div class='button-icon'>")
 		// 	);
 	}
+
+	const update_width = () => {
+		// It's transformed so needs getBoundingClientRect() instead of width()
+		$("body").css("--floating-buttons-width", $floating_buttons[0].getBoundingClientRect().width + "px");
+	};
+	update_width();
+
+	// Update when Enlarge UI mode is toggled, which currently triggers this event, piggybacking off of existing handlers for it, making it a misnomer
+	// (but also when the theme is changed; either could alter the layout)
+	$G.on("theme-load", update_width);
+
+	clean_up_floating_buttons = () => {
+		$("body").css("--floating-buttons-width", "0px");
+		$G.off("theme-load", update_width);
+		$floating_buttons.remove();
+		$floating_buttons = null;
+		clean_up_floating_buttons = null;
+	};
 }
 
 $G.on("easy-undo-mode-toggled", update_floating_buttons);
