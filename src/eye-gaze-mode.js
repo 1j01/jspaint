@@ -383,3 +383,74 @@ async function update_floating_buttons() {
 }
 
 $G.on("easy-undo-mode-toggled", update_floating_buttons);
+
+// Enlarge UI mode: menu scaling
+// other scaling code is in specific files like $Component.js and $ToolWindow.js
+// but MenuBar isn't owned by this repo
+// TODO: separate file too?
+
+const apply_scale = () => {
+	const enabled = $("body").hasClass("enlarge-ui");
+
+	for (const menu_popup of document.querySelectorAll(".menu-popup")) {
+		const $menu_popup = $(menu_popup);
+		const is_submenu = $menu_popup.is("[data-semantic-parent^='menu-popup']");
+
+		// Temporarily disable the transform to measure the unscaled size
+		$menu_popup.css("transform", "none");
+		$menu_popup.css("margin-left", "0");
+		$menu_popup.css("margin-top", "0");
+
+		// Measure the untransformed size
+		const base_bounds = menu_popup.getBoundingClientRect();
+
+		// Define CSS properties for scaling
+		const scale = Math.min(1,
+			Math.min(
+				$menu_popup.parent().width() / base_bounds.width,
+				$menu_popup.parent().height() / base_bounds.height,
+			)
+		);
+		const scaled_height = base_bounds.height * scale;
+		const new_top = is_submenu ? Math.min(base_bounds.top, window.innerHeight - scaled_height) : base_bounds.top;
+
+		const props = {
+			transform: `scale(${scale})`,
+			transformOrigin: "100% 0%",
+
+			// Don't need to reserve space for other elements since menu popups are floating
+			// marginRight: base_bounds.width * (scale - 1),
+			// marginBottom: base_bounds.height * (scale - 1),
+
+			// Move the menu up/left to fit all on the screen
+			// Not using left/top so that the effect can be reset; they're already used for positioning.
+			// That may not be an important concern considering the menus would need repositioning when toggling the setting, and should really be closed when toggling the setting.
+			// Left works differently due to the transform origin, which I chose due to the existing menu fitting-on-screen behavior.
+			// May be able to do it more similarly, but this is what I was able to get working.
+			marginLeft: Math.min(0, window.innerWidth - base_bounds.right),
+			marginTop: new_top - base_bounds.top,
+		};
+
+		// Apply or remove the scaling
+		if (enabled) {
+			$menu_popup.css(props);
+		} else {
+			for (const key in props) {
+				$menu_popup.css(key, "");
+			}
+		}
+	}
+};
+
+let iid;
+const update_auto_scaling = () => {
+	clearInterval(iid);
+	if ($("body").hasClass("enlarge-ui")) {
+		// @TODO: don't use an interval for this!
+		iid = setInterval(apply_scale, 200);
+	}
+	apply_scale();
+};
+$G.on("enlarge-ui-toggled", update_auto_scaling);
+update_auto_scaling();
+
