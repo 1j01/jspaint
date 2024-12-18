@@ -389,55 +389,54 @@ $G.on("easy-undo-mode-toggled", update_floating_buttons);
 // but MenuBar isn't owned by this repo
 // TODO: separate file too?
 
-const apply_scale = () => {
+const apply_scale = (menu_popup) => {
+	// console.log("Applying scale to", menu_popup.id);
 	const enabled = $("body").hasClass("enlarge-ui");
 
-	for (const menu_popup of document.querySelectorAll(".menu-popup")) {
-		const $menu_popup = $(menu_popup);
-		const is_submenu = $menu_popup.is("[data-semantic-parent^='menu-popup']");
+	const $menu_popup = $(menu_popup);
+	const is_submenu = $menu_popup.is("[data-semantic-parent^='menu-popup']");
 
-		// Temporarily disable the transform to measure the unscaled size
-		$menu_popup.css("transform", "none");
-		$menu_popup.css("margin-left", "0");
-		$menu_popup.css("margin-top", "0");
+	// Temporarily disable the transform to measure the unscaled size
+	$menu_popup.css("transform", "none");
+	$menu_popup.css("margin-left", "0");
+	$menu_popup.css("margin-top", "0");
 
-		// Measure the untransformed size
-		const base_bounds = menu_popup.getBoundingClientRect();
+	// Measure the untransformed size
+	const base_bounds = menu_popup.getBoundingClientRect();
 
-		// Define CSS properties for scaling
-		const scale = Math.min(1,
-			Math.min(
-				$menu_popup.parent().width() / base_bounds.width,
-				$menu_popup.parent().height() / base_bounds.height,
-			)
-		);
-		const scaled_height = base_bounds.height * scale;
-		const new_top = is_submenu ? Math.min(base_bounds.top, window.innerHeight - scaled_height) : base_bounds.top;
+	// Define CSS properties for scaling
+	const scale = Math.min(1,
+		Math.min(
+			$menu_popup.parent().width() / base_bounds.width,
+			$menu_popup.parent().height() / base_bounds.height,
+		)
+	);
+	const scaled_height = base_bounds.height * scale;
+	const new_top = is_submenu ? Math.min(base_bounds.top, window.innerHeight - scaled_height) : base_bounds.top;
 
-		const props = {
-			transform: `scale(${scale})`,
-			transformOrigin: "100% 0%",
+	const props = {
+		transform: `scale(${scale})`,
+		transformOrigin: "100% 0%",
 
-			// Don't need to reserve space for other elements since menu popups are floating
-			// marginRight: base_bounds.width * (scale - 1),
-			// marginBottom: base_bounds.height * (scale - 1),
+		// Don't need to reserve space for other elements since menu popups are floating
+		// marginRight: base_bounds.width * (scale - 1),
+		// marginBottom: base_bounds.height * (scale - 1),
 
-			// Move the menu up/left to fit all on the screen
-			// Not using left/top so that the effect can be reset; they're already used for positioning.
-			// That may not be an important concern considering the menus would need repositioning when toggling the setting, and should really be closed when toggling the setting.
-			// Left works differently due to the transform origin, which I chose due to the existing menu fitting-on-screen behavior.
-			// May be able to do it more similarly, but this is what I was able to get working.
-			marginLeft: Math.min(0, window.innerWidth - base_bounds.right),
-			marginTop: new_top - base_bounds.top,
-		};
+		// Move the menu up/left to fit all on the screen
+		// Not using left/top so that the effect can be reset; they're already used for positioning.
+		// That may not be an important concern considering the menus would need repositioning when toggling the setting, and should really be closed when toggling the setting.
+		// Left works differently due to the transform origin, which I chose due to the existing menu fitting-on-screen behavior.
+		// May be able to do it more similarly, but this is what I was able to get working.
+		marginLeft: Math.min(0, window.innerWidth - base_bounds.right),
+		marginTop: new_top - base_bounds.top,
+	};
 
-		// Apply or remove the scaling
-		if (enabled) {
-			$menu_popup.css(props);
-		} else {
-			for (const key in props) {
-				$menu_popup.css(key, "");
-			}
+	// Apply or remove the scaling
+	if (enabled) {
+		$menu_popup.css(props);
+	} else {
+		for (const key in props) {
+			$menu_popup.css(key, "");
 		}
 	}
 };
@@ -465,7 +464,7 @@ const update_auto_scaling = () => {
 					mutation.oldValue?.includes("display: none") &&
 					mutation.target.matches(".menu-popup")
 				) {
-					apply_scale();
+					apply_scale(mutation.target);
 				}
 			}
 		});
@@ -476,7 +475,8 @@ const update_auto_scaling = () => {
 			subtree: true,
 		});
 	}
-	apply_scale();
+	// Apply scaling to existing menus
+	$(".menu-popup").each((i, el) => apply_scale(el));
 };
 $G.on("enlarge-ui-toggled", update_auto_scaling);
 update_auto_scaling();
