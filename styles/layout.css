@@ -278,6 +278,7 @@ html, body, .jspaint {
 	width: 1.2em;
 	height: 1.2em;
 	mask-size: 1.2em 1.2em;
+	-webkit-mask-size: 1.2em 1.2em;
 }
 
 /* sigh, trying to move two things in a similar way but padding does look a bit better for the status area (esp. in Bubblegum theme),
