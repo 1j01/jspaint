@@ -318,7 +318,7 @@ async function update_floating_buttons() {
 	await new Promise((resolve) => $(resolve)); // wait for document ready so app UI is appended before floating buttons
 
 	$floating_buttons?.remove();
-	if (!$("body").hasClass("easy-undo-mode")) {
+	if (!$("body").is(".easy-undo-mode, .dwell-clicker-mode")) {
 		return;
 	}
 
@@ -326,12 +326,14 @@ async function update_floating_buttons() {
 		$("<div class='floating-buttons'/>")
 			.appendTo("body");
 
-	$("<button title='Undo' class='floating-undo-button'/>")
-		.on("click", undo)
-		.appendTo($floating_buttons)
-		.append(
-			$("<div class='button-icon'>")
-		);
+	if ($("body").hasClass("easy-undo-mode")) {
+		$("<button title='Undo' class='floating-undo-button'/>")
+			.on("click", undo)
+			.appendTo($floating_buttons)
+			.append(
+				$("<div class='button-icon'>")
+			);
+	}
 
 	if ($("body").hasClass("dwell-clicker-mode")) {
 		// These are matched on exactly, for code that provides speech command synonyms
@@ -349,7 +351,7 @@ async function update_floating_buttons() {
 			.append(
 				$("<div class='button-icon'>")
 			);
-	} else {
+	} else if ($("body").hasClass("easy-undo-mode")) {
 		// TODO: redo button (needs an icon)
 		// $("<button title='Redo' class='floating-redo-button'/>")
 		// 	.on("click", redo)
