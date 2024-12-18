@@ -442,12 +442,39 @@ const apply_scale = () => {
 	}
 };
 
-let iid;
+let observer;
 const update_auto_scaling = () => {
-	clearInterval(iid);
+	if (observer) {
+		observer.disconnect();
+		observer = null;
+	}
 	if ($("body").hasClass("enlarge-ui")) {
-		// @TODO: don't use an interval for this!
-		iid = setInterval(apply_scale, 200);
+		// - `.menu-popup` elements can exist in the DOM before the menu is opened, hidden with `style.display = "none";`
+		// - `.menu-popup` elements may not exist yet when this code runs
+		// - We want to avoid running the scaling code any time other than a menu being opened
+		//   - It MUST not cause recursion when modifying the styles for scaling in the `MutationObserver` callback
+		// - This code should work regardless of whether `.menu-popup` elements are be shown with `style.display = "block";` or `style.display = "";`
+		observer = new MutationObserver((mutations) => {
+			for (const mutation of mutations) {
+				if (!(mutation.target instanceof HTMLElement)) {
+					continue; // type narrowing, to avoid type checker errors
+				}
+				if (
+					mutation.attributeName === "style" &&
+					mutation.target.style.display !== "none" &&
+					mutation.oldValue?.includes("display: none") &&
+					mutation.target.matches(".menu-popup")
+				) {
+					apply_scale();
+				}
+			}
+		});
+		observer.observe(document.body, {
+			attributes: true,
+			attributeOldValue: true,
+			attributeFilter: ["style"],
+			subtree: true,
+		});
 	}
 	apply_scale();
 };
