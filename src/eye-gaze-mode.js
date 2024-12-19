@@ -395,10 +395,39 @@ const apply_scale = (menu_popup) => {
 	const $menu_popup = $(menu_popup);
 	const is_submenu = $menu_popup.is("[data-semantic-parent^='menu-popup']");
 
-	// Temporarily disable the transform to measure the unscaled size
-	$menu_popup.css("transform", "none");
-	$menu_popup.css("margin-left", "0");
-	$menu_popup.css("margin-top", "0");
+	const get_current_scale_css = () => {
+		return {
+			transform: $menu_popup.css("transform"),
+			transformOrigin: $menu_popup.css("transformOrigin"),
+			marginLeft: $menu_popup.css("marginLeft"),
+			marginTop: $menu_popup.css("marginTop"),
+		};
+	};
+
+	const reset_scale_css = () => {
+		$menu_popup.css({
+			transform: "",
+			transformOrigin: "",
+			marginLeft: "",
+			marginTop: "",
+		});
+	};
+
+	if (!enabled) {
+		menu_popup.getBoundingClientRect = HTMLElement.prototype.getBoundingClientRect;
+		reset_scale_css();
+		return;
+	}
+
+	// Override getBoundingClientRect to ignore the transform
+	// It's used in here but also in MenuBar.js for positioning (see update_position_from_containing_bounds)
+	menu_popup.getBoundingClientRect = () => {
+		const before = get_current_scale_css();
+		reset_scale_css();
+		const bounds = HTMLElement.prototype.getBoundingClientRect.call(menu_popup);
+		$menu_popup.css(before); // or Object.assign(menu_popup.style, before);
+		return bounds;
+	};
 
 	// Measure the untransformed size
 	const base_bounds = menu_popup.getBoundingClientRect();
@@ -413,7 +442,7 @@ const apply_scale = (menu_popup) => {
 	const scaled_height = base_bounds.height * scale;
 	const new_top = is_submenu ? Math.min(base_bounds.top, window.innerHeight - scaled_height) : base_bounds.top;
 
-	const props = {
+	$menu_popup.css({
 		transform: `scale(${scale})`,
 		transformOrigin: "100% 0%",
 
@@ -428,16 +457,7 @@ const apply_scale = (menu_popup) => {
 		// May be able to do it more similarly, but this is what I was able to get working.
 		marginLeft: Math.min(0, window.innerWidth - base_bounds.right),
 		marginTop: new_top - base_bounds.top,
-	};
-
-	// Apply or remove the scaling
-	if (enabled) {
-		$menu_popup.css(props);
-	} else {
-		for (const key in props) {
-			$menu_popup.css(key, "");
-		}
-	}
+	});
 };
 
 let observer;
@@ -478,13 +498,11 @@ const update_auto_scaling = () => {
 	}
 	// Apply scaling to existing menus
 	setTimeout(() => {
-		$(".menu-popup").each((i, el) => { apply_scale(el); });
-		// Trigger update_position_from_containing_bounds in MenuBar.js, since it's based on getBoundingClientRect() which will include the transform
-		// I don't have a sound reason why this should be done only when disabling Enlarge UI mode, but it kinda makes sense that it would screw things up
-		// if we trigger this while the menus are scaled.
+		// Trigger update_position_from_containing_bounds in MenuBar.js, which uses getBoundingClientRect overridden above
 		if (!$("body").hasClass("enlarge-ui")) {
 			$(".menu-popup").each((i, el) => { el.dispatchEvent(new CustomEvent("update", {})); });
 		}
+		$(".menu-popup").each((i, el) => { apply_scale(el); });
 	}, 0);
 };
 $G.on("enlarge-ui-toggled", update_auto_scaling);
