@@ -9,7 +9,9 @@
 	<!-- Firebase stuff is somewhat speculative, as the quota is exceeded as I'm adding this. -->
 	<!-- Lax img-src is needed for speech recognition, e.g. interpret_command("draw a cat")[0].exec(); -->
 	<!-- connect-src needs data:/blob: for loading images via fetch, including from local storage. -->
-	<!-- script-src needs blob: for the Web Worker used by clmtrackr for Tracky Mouse head tracking feature -->
+	<!-- script⁂-src needs blob: for the Web Worker used by clmtrackr for Tracky Mouse head tracking feature -->
+	<!-- ⁂: working around bug in @1j01/live-server, my fork of live-server meant to handle CSP (https://github.com/1j01/live-server)
+	where the directive (that shall not be named) is replaced even if it's outside the CSP in a comment. -->
 	<meta http-equiv="Content-Security-Policy" content="
 		default-src 'self';
 		script-src 'self' blob: https://jspaint.firebaseio.com https://www.youtube.com;
