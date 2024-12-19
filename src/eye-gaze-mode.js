@@ -448,12 +448,14 @@ const apply_scale = (menu_popup) => {
 			(is_submenu ? innerHeight : innerHeight - base_bounds.top) / base_bounds.height,
 		)
 	);
+	const scaled_width = base_bounds.width * scale;
 	const scaled_height = base_bounds.height * scale;
+	const new_left = Math.max(Math.min(base_bounds.left, window.innerWidth - scaled_width), 0);
 	const new_top = is_submenu ? Math.min(base_bounds.top, window.innerHeight - scaled_height) : base_bounds.top;
 
 	$menu_popup.css({
 		transform: `scale(${scale})`,
-		transformOrigin: "100% 0%",
+		transformOrigin: "0% 0%",
 
 		// Don't need to reserve space for other elements since menu popups are floating
 		// marginRight: base_bounds.width * (scale - 1),
@@ -462,9 +464,7 @@ const apply_scale = (menu_popup) => {
 		// Move the menu up/left to fit all on the screen
 		// Not using left/top so that the effect can be reset; they're already used for positioning.
 		// That may not be an important concern considering the menus would need repositioning when toggling the setting, and should really be closed when toggling the setting.
-		// Left works differently due to the transform origin, which I chose due to the existing menu fitting-on-screen behavior.
-		// May be able to do it more similarly, but this is what I was able to get working.
-		marginLeft: Math.min(0, window.innerWidth - base_bounds.right),
+		marginLeft: new_left - base_bounds.left,
 		marginTop: new_top - base_bounds.top,
 	});
 };
