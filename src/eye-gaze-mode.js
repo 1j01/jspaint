@@ -419,18 +419,27 @@ const apply_scale = (menu_popup) => {
 		return;
 	}
 
-	// Override getBoundingClientRect to ignore the transform
+	let own_call = true;
+	// Override getBoundingClientRect to ignore the transform,
+	// and potentially schedule updating the scale, for a resize event.
 	// It's used in here but also in MenuBar.js for positioning (see update_position_from_containing_bounds)
 	menu_popup.getBoundingClientRect = () => {
 		const before = get_current_scale_css();
 		reset_scale_css();
 		const bounds = HTMLElement.prototype.getBoundingClientRect.call(menu_popup);
-		$menu_popup.css(before); // or Object.assign(menu_popup.style, before);
+		if (own_call) {
+			$menu_popup.css(before); // or Object.assign(menu_popup.style, before); // or... maybe not necessarily since all the styles are being set anyway
+		} else {
+			requestAnimationFrame(() => {
+				apply_scale(menu_popup);
+			});
+		}
 		return bounds;
 	};
 
 	// Measure the untransformed size
 	const base_bounds = menu_popup.getBoundingClientRect();
+	own_call = false;
 
 	// Define CSS properties for scaling
 	const scale = Math.min(1,
