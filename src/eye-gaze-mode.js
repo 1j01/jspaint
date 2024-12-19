@@ -395,15 +395,6 @@ const apply_scale = (menu_popup) => {
 	const $menu_popup = $(menu_popup);
 	const is_submenu = $menu_popup.is("[data-semantic-parent^='menu-popup']");
 
-	const get_current_scale_css = () => {
-		return {
-			transform: $menu_popup.css("transform"),
-			transformOrigin: $menu_popup.css("transformOrigin"),
-			marginLeft: $menu_popup.css("marginLeft"),
-			marginTop: $menu_popup.css("marginTop"),
-		};
-	};
-
 	const reset_scale_css = () => {
 		$menu_popup.css({
 			transform: "",
@@ -424,12 +415,11 @@ const apply_scale = (menu_popup) => {
 	// and potentially schedule updating the scale, for a resize event.
 	// It's used in here but also in MenuBar.js for positioning (see update_position_from_containing_bounds)
 	menu_popup.getBoundingClientRect = () => {
-		const before = get_current_scale_css();
 		reset_scale_css();
 		const bounds = HTMLElement.prototype.getBoundingClientRect.call(menu_popup);
-		if (own_call) {
-			$menu_popup.css(before); // or Object.assign(menu_popup.style, before); // or... maybe not necessarily since all the styles are being set anyway
-		} else {
+		// For our own call of getBoundingClientRect, we don't want to recurse,
+		// and we don't need to restore the CSS either since we'll be setting it again.
+		if (!own_call) {
 			requestAnimationFrame(() => {
 				apply_scale(menu_popup);
 			});
