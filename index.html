@@ -156,6 +156,7 @@
 		- News indicator is updated and reads well.
 	-->
 	<div id="news" hidden>
+		<!-- maybe release Textual Paint first as an April Fools day prank? -->
 		<!-- <article class="news-entry" id="news-2024-textual-paint">
 			<h1>Paint... in the Terminal!?</h1>
 			<time datetime=""></time>
@@ -184,6 +185,321 @@
 				such as Windows Terminal, GNOME Terminal, or iTerm2.
 			</p>
 		-->
+		<article class="news-entry" id="news-2024-split-eye-gaze-mode">
+			<h1>More Accessibility Options, and new Discord Server</h1>
+			<time datetime="2024-12-23">2024-12-23</time>
+			<!-- <img width="" height="" style="max-width: 100%; height: auto; image-rendering: auto;" alt="" src="" /> -->
+			<h2>Separated out accessibility features</h2>
+			<p>I've split up "Eye Gaze Mode" into several discrete features:</p>
+			<ul>
+				<li>
+					<strong>↩️ Quick Undo Button</strong>: Adds a floating undo button that's always visible.
+				</li>
+				<li>
+					<strong>🔍 Enlarge UI</strong>: Enlarges menus, buttons, and windows.
+				</li>
+				<li>
+					<strong>⏱️ Dwell Clicker</strong>: Automatically clicks by hovering over controls for a time.
+				</li>
+				<li>
+					<strong>↕️ Vertical Color Box</strong>: Makes the Colors box tall instead of wide.
+					(This one was already split out.)
+				</li>
+			</ul>
+			<p>I've also added a brand-new feature:</p>
+			<ul>
+				<li>
+					<strong>🧑 Head Tracker</strong>: Lets you move the cursor with your head.
+					(See demo video below.)
+				</li>
+			</ul>
+			<!-- <p>Initially I developed Eye Gaze Mode as a monolithic feature because it was easier,
+				as it limited the combinatorial complexity of the intersection of various features.
+				For instance, any theme can be used with any feature. (Not sure how to explain this better.)
+				But I decided it was worth the extra development overhead to separate these out.</p>
+			<p>I had to fix a number of things, and generalize various code in order to handle different combinations of
+				these features.
+				For instance, the Dwell Clicker adds a floating button and Quick Undo Button adds a floating button;
+				previously they were always enabled together, but now I have to calculate the width needed for the
+				currently enabled buttons,
+				also different based on whether they're scaled with Enlarge UI mode,
+				in order to move the status bar text over,
+				and the colors box over if Vertical Colors Box is not enabled, which previously it always would be
+				together with those features.</p> -->
+			<h2>↩️ Quick Undo Button</h2>
+			<p><b>Extras > Quick Undo Button</b> is a huge advancement for usability on touchscreen devices.</p>
+			<p>Making mistakes is no more a chore. Just tap, tap, tap to undo. Easy as that.</p>
+			<h2>🔍 Enlarge UI</h2>
+			<p><b>Extras > Enlarge UI</b> increases the size of menus, buttons, and windows.</p>
+			<p>Scaling of toolbars and menus will be limited
+				to the available space on the screen, making it more useful on mobile devices,
+				compared to the basic UI scaling that existed in Eye Gaze Mode.</p>
+			<h2>⏱️ Dwell Clicker</h2>
+			<p><b>Extras > Dwell Clicker</b> automatically clicks by hovering.</p>
+			<p>It's intended for use with an eye tracker or head tracker — software (and optionally
+				specialized hardware) that lets you move the mouse without using your hands.</p>
+			<p>This was the core feature of Eye Gaze Mode, but it can now be used in any UI configuration: with any
+				theme, with or without enlarged UI, with a horizontal or vertical colors box.</p>
+			<h2>🧑 Head Tracker (All-New Feature!)</h2>
+			<p>
+				<b>Extras > Head Tracker</b> mode uses your webcam to
+				track your head movements and move the mouse cursor accordingly.
+			</p>
+			<p>It's powered by
+				<a href="https://trackymouse.js.org" target="_blank"><img src="images/tracky-mouse-16x16.png"
+						alt="" />Tracky Mouse</a>.
+			</p>
+			<p>I recorded a short demonstration, drawing the Tracky Mouse logo using Tracky Mouse:</p>
+			<figure>
+				<video style="width: 100%; height: auto;" controls loop muted playsinline autoplay>
+					<source src="images/tracky-mouse-jspaint-demo.mp4" type="video/mp4">
+					Your browser does not support the video tag.
+				</video>
+				<figcaption>
+					<!-- Drawing the Tracky Mouse logo using Tracky Mouse. -->
+					I made sure to tilt the webcam down so you can see that I'm not using my arms.
+				</figcaption>
+			</figure>
+			<a href="https://trackymouse.js.org" target="_blank">
+				<img src="lib/tracky-mouse/images/tracky-mouse-logo-512.png" width="128" height="128"
+					alt="Tracky Mouse logo" style="float: right" />
+			</a>
+			<p>To try it out:</p>
+			<ul>
+				<li>Enable <b>Extras > Head Tracker</b>.</li>
+				<li>Click <b>Start</b> and allow access to your camera.</li>
+				<li>Ensure your face is well lit and centered in the camera's view.</li>
+				<li>Adjust sensitivity and smoothness settings to your liking.</li>
+				<li>Move your head to move the red dot on the page, which acts as your cursor, and hover over elements
+					to click them.</li>
+			</ul>
+			<p>Tips:</p>
+			<ul>
+				<li>You can pause dwell clicking by hovering over the pause button
+					(<img alt="an eye with three zees" src="images/classic/eye-gaze-pause.svg"
+						style="vertical-align: middle; width: 1em; height: 1em;" />)
+					in the bottom left corner.</li>
+				<li>When hovering over a window title bar, or using certain tools on the canvas,
+					like the brush, it knows to hold down the mouse button to drag or draw.
+					The next dwell will release instead of clicking.</li>
+				<li>If you minimize the Tracky Mouse window, it will minimize to a button in the menu bar,
+					which you can click to restore the window.
+					If you close the window, it will disable the feature.</li>
+			</ul>
+			<p>
+				Right now this only works with dwell clicking, and automatically enables the Dwell Clicker,
+				but in the future, it may work with other ways of clicking, like blinking or smiling.
+			</p>
+			<p>
+				You can also download the
+				<a href="https://trackymouse.js.org" target="_blank">Tracky Mouse</a>
+				desktop app to control your whole computer with your head.
+			</p>
+			<h2>Discord server</h2>
+			<figure>
+				<a href="https://discord.gg/jxQBK3k8tx" target="_blank">
+					<img width="470" height="470" src="https://flipanim.com/gif/b/h/BhZWtwfg.gif"
+						alt="Animation of Discord logo blinking its eyes">
+				</a>
+				<figcaption>
+					Animation credit:
+					<a href="https://flipanim.com/profile?name=Wolfie-le-Wolf" target="_blank">Wolfie-le-Wolf</a>
+				</figcaption>
+			</figure>
+			<p>Join the new
+				<a href="https://discord.gg/jxQBK3k8tx" target="_blank">
+					98.JS.org Discord server</a>
+				to discuss these features and share your JS Paint drawings!
+			</p>
+			<h2>Improved About window</h2>
+			<p>I managed to make the <b>Help > About Paint</b> window much more compact while including more
+				information.</p>
+			<p>See a <a href="https://github.com/1j01/jspaint/commit/da994966ec2231743867f232d8e1fb334071b512">visual
+					comparison here</a>.
+				You can switch to swipe or onion skin modes and move the slider to compare before and after images.</p>
+			<p>Here's what's new:</p>
+			<ul>
+				<li>Reworded everything to be terser, using short labels instead of full sentences.
+					(<a href="https://github.com/1j01/jspaint/commit/7bc134226f9994cd68fd69d78fb0343f5c873d53"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Replaced <a href="https://github.com/1j01/jspaint#readme" target="_blank">readme</a> link
+					with a link to the <a href="https://jspaint.app/about.html" target="_blank">homepage</a>.
+					(<a href="https://github.com/1j01/jspaint/commit/7bc134226f9994cd68fd69d78fb0343f5c873d53"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Added a link to the Discord server.
+					(<a href="https://github.com/1j01/jspaint/commit/7bc134226f9994cd68fd69d78fb0343f5c873d53"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Made sure all links open in a new tab.
+					(<a href="https://github.com/1j01/jspaint/commit/7bc134226f9994cd68fd69d78fb0343f5c873d53"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Made it use a bigger app icon
+					(<a href="https://github.com/1j01/jspaint/commit/3dd5ee94ba123a053c7fee64a112914902d825ae"
+						target="_blank">⟜</a>);
+					also created a bigger version of the gay pride icon variant for pride month
+					(<a href="https://github.com/1j01/jspaint/commit/be03638fad35a51cacef5c4f524c81581c2be587"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Added a version number back into the About window
+					(<a href="https://github.com/1j01/jspaint/commit/224cc37bfa022b912c9b48e70d0e7a412c0f3ec6"
+						target="_blank">⟜</a>)
+					and moved it to a new line
+					(<a href="https://github.com/1j01/jspaint/commit/aaed9a78945aeec13b15d74dca0502474e268c1e"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Moved the update check status indicator beside the icon
+					(<a href="https://github.com/1j01/jspaint/commit/c1b407d9134af75533adb3fd3938a82d3a2d71dd"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed centering of the About window on small screens
+					(<a href="https://github.com/1j01/jspaint/commit/2aa2e66b8ba5927ee833b68480342f1d62477940"
+						target="_blank">⟜</a>)
+				</li>
+			</ul>
+			<h2>Misc. Changes</h2>
+			<ul>
+				<li>I updated JS Paint within <a href="https://98.js.org/" target="_blank">98.js.org</a>
+					recently, although it might not have the latest changes yet.
+				</li>
+				<li>If an image is dropped on the Project News window, it will no longer try to open it as a document.
+					It was easy to do this accidentally by idly clicking and dragging while reading the news.
+					(<a href="https://github.com/1j01/jspaint/commit/77d341378f9a8d84f0f922ab6545e4cab5fca038"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed checkbox menu items showing a grid of small checkmarks instead of a single checkmark
+					in the Electron app with Enlarge UI mode enabled.
+					(<a href="https://github.com/1j01/jspaint/commit/f367ce043a81c7fdea2c506fcf5aee1ac18b56e3"
+						target="_blank">⟜</a>)
+				</li>
+				<li>The Dwell Clicker can now toggle collapsed details in error dialogs.
+					(<a href="https://github.com/1j01/jspaint/commit/2637467762753234af4d40d097af7f1c2b6aea35"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Enabled dragging toolbars with the mouse in Dwell Clicker
+					(but not with dwell clicker itself).
+					(<a href="https://github.com/1j01/jspaint/commit/7094171b1644391f4ea3b3467865952c39427a4e"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed the titlebar size for tool windows in Enlarge UI mode.
+					(<a href="https://github.com/1j01/jspaint/commit/a2691ec7c953c3eca7b56f4831c47855044fff6d"
+						target="_blank">⟜</a>)
+				</li>
+				<li>All themed tool icons now work in Enlarge UI mode.
+					(<a href="https://github.com/1j01/jspaint/commit/068c61d20c907925a140677eecd5513e03397fbc"
+						target="_blank">⟜</a> +
+					<a href="https://github.com/1j01/jspaint/commit/9e6a19c9aa6434a354f067357487946ea92a1670"
+						target="_blank">⟜</a> +
+					<a href="https://github.com/1j01/jspaint/commit/8dc1286dd0d4dc219f043b7e2199e47b8cb52f48"
+						target="_blank">⟜</a>)
+				</li>
+				<li>I've implemented the size status indicator for all tools.
+					(<a href="https://github.com/1j01/jspaint/commit/3500496b0801a52e05d5ae69f6f98bb09e477e86"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed missing width/height labels in <b>Image > Attributes</b> dialog.
+					(<a href="https://github.com/1j01/jspaint/commit/af94876a4ffef95c2d00c0022d89a452034793b7"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed default file name when saving a wallpaper with <b>File > Set As Wallpaper
+						(Tiled/Centered)</b>.
+					(<a href="https://github.com/1j01/jspaint/commit/8f89d874a77cc8cf00e4731e3979ceaac070aad7"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed default file name when saving selection with <b>Edit > Copy To</b>,
+					and an error that occurred with <b>Edit > Copy To</b> in the Electron app.
+					(<a href="https://github.com/1j01/jspaint/commit/fc59a369fd306bedc31611e6729f4fc2ae9e2cc0"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed ignoring of file format choice when saving a palette with <b>Colors > Save Colors</b>
+					in the Electron app
+					(<a href="https://github.com/1j01/jspaint/commit/2f8f4e7c51a0c1b2d2d26828855d888e8ed641f9"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed error handling for clipboard access
+					(<a href="https://github.com/1j01/jspaint/commit/193404199b384532a945f382a56fa2deca679950"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed <kbd>Shift+Insert</kbd>, <kbd>Ctrl+Insert</kbd>, and <kbd>Ctrl+Delete</kbd> shortcuts
+					(<a href="https://github.com/1j01/jspaint/commit/e3ef424d61e0621e36adeeaa37070d07cf7f5d29"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Improved error message dialogs for Imgur upload failures
+					(<a href="https://github.com/1j01/jspaint/commit/cbfc9cad47b3aa3c6a8acc6ce525b2b426608dca"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Added a <a href="https://jspaint.app/privacy" target="_blank">Privacy Policy</a>
+					(<b>tl;dr</b>: jspaint doesn't try to track you, unlike most of the internet)
+					(<a href="https://github.com/1j01/jspaint/commit/9d2d4040c0b20532e3819aa662e39b9fd8f3f543"
+						target="_blank">⟜</a>)
+				</li>
+			</ul>
+			<h2>Behind-the-Scenes Changes</h2>
+			<ul>
+				<li>Updated <a href="https://os-gui.js.org/" target="_blank">OS-GUI.js</a> from ~0.6.0 to 0.7.3
+					<ul>
+						<li>Made use of OS-GUI's new <code>AccessKeys</code> API
+							(<a href="https://github.com/1j01/jspaint/commit/e6ad042195ce70470f401c400d62575d6c09ea6f"
+								target="_blank">⟜</a>
+							+
+							<a href="https://github.com/1j01/jspaint/commit/52b7b7632046b578b721a84bf0ceaca6ae3e1a8d"
+								target="_blank">⟜</a>
+							+
+							<a href="https://github.com/1j01/jspaint/commit/a9fe9d3f8d1d1ff176b7fd91fd9463e66c08cf73"
+								target="_blank">⟜</a>)
+						</li>
+						<li>
+							Now using proper <a
+								href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-keyshortcuts"
+								target="_blank"><code>aria-keyshortcuts</code></a>
+							values to tell screen reader software about keyboard shortcuts
+							(<a href="https://github.com/1j01/jspaint/commit/be233d07e918703b122c415369be5679f588e0c3"
+								target="_blank">⟜</a>)
+						</li>
+					</ul>
+				</li>
+				<li>
+					Dwell Clicker is now powered by Tracky Mouse.
+					(<a href="https://github.com/1j01/jspaint/commit/1598f42d309ad878b762c5a411476617b16c22f2"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Migrated to ESLint v9 and its flat config, and improved code uniformity.
+					(<a href="https://github.com/1j01/jspaint/compare/a140810a897afa9dd6111cffb065e5d8f71f1ed8...bddaaffd2837b9696e8e6e159f742b05391067c7"
+						target="_blank">⟜⧟...⊸</a>)
+				</li>
+				<li>Simplified code quality checking workflow by bundling different checks into one script
+					(<code>npm run lint</code>)
+					(<a href="https://github.com/1j01/jspaint/commit/991b1cceaa12a40701d251f5dcd109d23903e614"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Improved handling of errors with no stack trace, like <code>SyntaxError</code>.
+					It will now show the URL and line/column numbers for errors with no call stack.
+					(<a href="https://github.com/1j01/jspaint/commit/dafef7b1b4f2d33c32c434b1e1fe0ffbc271600d"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Fixed an error that occurred when embedded in 98.js.org due to looking for menus
+					inside the app frame when they're actually outside
+					(<a href="https://github.com/1j01/jspaint/commit/421fad7dc25c4d27caa46535a2641b12e49a9b18"
+						target="_blank">⟜</a> +
+					<a href="https://github.com/1j01/jspaint/commit/04804396e187b1bf4af9cc31ca449d18661f97ed"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Marked more parts of the JS Paint <code>systemHooks</code> API as optional
+					(<a href="https://github.com/1j01/jspaint/commit/2fe8c35ca6500cc32584dae30f8c3d4ffe989aa3"
+						target="_blank">⟜</a>)
+				</li>
+				<li>Defined TypeScript types for the JS Paint <code>systemHooks</code> API
+					(<a href="https://github.com/1j01/jspaint/commit/cb8bc8893d3c9c049916ac5873a15edc7262ac73"
+						target="_blank">⟜</a>)
+				</li>
+				<li style="color: transparent;">Worked on secret features which should be really fun in the future.</li>
+			</ul>
+			<p>
+				Merry Christmas! 🎄🎁
+			</p>
+		</article>
 		<article class="news-entry" id="news-2024-bubblegum-theme">
 			<h1>Bubblegum Theme</h1>
 			<time datetime="2024-04-27">2024-04-27</time>
