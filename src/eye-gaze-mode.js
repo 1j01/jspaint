@@ -444,8 +444,8 @@ const apply_scale = (menu_popup) => {
 	// Define CSS properties for scaling
 	const scale = Math.min(1,
 		Math.min(
-			$menu_popup.parent().width() / base_bounds.width,
-			$menu_popup.parent().height() / base_bounds.height,
+			innerWidth / base_bounds.width,
+			(is_submenu ? innerHeight : innerHeight - base_bounds.top) / base_bounds.height,
 		)
 	);
 	const scaled_height = base_bounds.height * scale;
