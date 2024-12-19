@@ -440,7 +440,14 @@ const apply_scale = (menu_popup) => {
 	);
 	const scaled_width = base_bounds.width * scale;
 	const scaled_height = base_bounds.height * scale;
-	const new_left = Math.max(Math.min(base_bounds.left, window.innerWidth - scaled_width), 0);
+	let new_left = Math.max(Math.min(base_bounds.left, window.innerWidth - scaled_width), 0);
+	// Move submenus to the right edge of the screen if there's not enough room
+	// I don't know what Windows 98 does, but this feels better, although the left border is hard to see...
+	// Also, not really taking into account RTL languages here.
+	// Hm, also, this makes it inconsistent with the non-Enlarge UI mode behavior....
+	if (base_bounds.left === 0 && is_submenu) {
+		new_left = window.innerWidth - scaled_width;
+	}
 	const new_top = is_submenu ? Math.min(base_bounds.top, window.innerHeight - scaled_height) : base_bounds.top;
 
 	$menu_popup.css({
