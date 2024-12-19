@@ -40,7 +40,7 @@ I want to bring good old Paint into the modern era.
   * Touch support: use two fingers to pan the view, and pinch to zoom
   * Click/tap the selected colors area to swap the foreground and background colors
   * **View > Fullscreen** to toggle fullscreen mode, nice for small screens
-  * **Extras > Easy Undo Button** to add a floating undo button for easier access
+  * **Extras > Quick Undo Button** to add a floating undo button for easier access
     * (this may be enabled by default in the future for touch devices)
 * Web features
   * **File > Load From URL...** to open an image from the Web.
