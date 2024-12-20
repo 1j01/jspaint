@@ -1766,6 +1766,25 @@ function show_news() {
 	$news_window.center(); // @XXX - but it helps tho
 
 	$latest_news.attr("tabIndex", "-1").focus();
+
+	// Prevent opening images dropped on news window
+	// especially those dragged from the news window itself (accidentally or habitually/idly)
+	// TODO: should this be for all windows?
+	$news_window.on("dragover", (event) => {
+		// the default behavior is to not allow dropping,
+		// so don't prevent the default, but do stop propagation
+		// so that the global handler doesn't allow the drop
+		event.stopPropagation();
+	});
+	$news_window.on("dragenter", (event) => {
+		// same as dragover, but just prevents flickering of the cursor basically,
+		// when dragover is already handled
+		event.stopPropagation();
+	});
+	$news_window.on("drop", (event) => {
+		event.preventDefault();
+		event.stopPropagation();
+	});
 }
 
 
