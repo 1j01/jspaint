@@ -6,6 +6,7 @@ Automated checks to catch errors before publishing a news update:
 - All <a> elements have a target="_blank" attribute.
 - All <a> elements have an href attribute.
 - All <img> elements have alt and non-empty src attributes.
+- Grave accent characters are checked for, as they should likely be <code> elements.
 
 HTML validity checking is not performed.
 */
@@ -90,5 +91,11 @@ for (const article of articles) {
 		if (!src) {
 			console.error("img is missing src URL", img);
 		}
+	}
+
+	// Check for grave accent characters which should probably be <code> elements
+	const graveAccentChars = article.textContent.match(/`/g);
+	if (graveAccentChars) {
+		console.error(`Found ${graveAccentChars.length} grave accent characters in article #${article.id}, pairs of which should likely be <code> elements`);
 	}
 }
