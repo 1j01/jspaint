@@ -64,8 +64,8 @@ I want to bring good old Paint into the modern era.
 * **Extras > Dwell Clicker** to click automatically by hovering in one spot, for usage with an eye tracker or head tracker.
   * Hovered buttons are highlighted, and the click is performed after a delay.
   * Supports dragging windows and drawing on the canvas.
-  * With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker), <img src="images/tracky-mouse-16x16.png" height="16"> [Tracky Mouse](https://trackymouse.js.org/) (head tracker), or [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker).
-  * This feature can be easily added to other web applications, using the <img src="images/tracky-mouse-16x16.png" height="16"> [Tracky Mouse API](https://www.npmjs.com/package/tracky-mouse).
+  * With just a webcam, you can try it out with [Enable Viacam](https://eviacam.crea-si.com/) (head tracker), [GazePointer](https://sourceforge.net/projects/gazepointer/) (eye tracker), or the built in [<img src="images/tracky-mouse-16x16.png" width="16" height="16"> Tracky Mouse](https://trackymouse.js.org/) head tracker using **Extras > Head Tracker**.
+  * This feature can be easily added to other web applications, using the [<img src="images/tracky-mouse-16x16.png" width="16" height="16"> Tracky Mouse API](https://www.npmjs.com/package/tracky-mouse).
 * **Extras > Speech Recognition** to control the app with your voice.
   * Select tools and colors ("fill tool", "orange", etc.)
   * Pan the view ("scroll down and to the left", or "go southwest", etc.)
