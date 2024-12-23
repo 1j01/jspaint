@@ -506,9 +506,13 @@ const update_auto_scaling = () => {
 	setTimeout(() => {
 		// Trigger update_position_from_containing_bounds in MenuBar.js, which uses getBoundingClientRect overridden above
 		if (!$("body").hasClass("enlarge-ui")) {
-			$(".menu-popup").each((i, el) => { el.dispatchEvent(new CustomEvent("update", {})); });
+			for (const el of $(".menu-popup")) {
+				el.dispatchEvent(new CustomEvent("update", {}));
+			}
 		}
-		$(".menu-popup").each((i, el) => { apply_scale(el); });
+		for (const el of $(".menu-popup")) {
+			apply_scale(el);
+		}
 	}, 0);
 };
 $G.on("enlarge-ui-toggled", update_auto_scaling);
