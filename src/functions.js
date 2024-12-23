@@ -1771,7 +1771,9 @@ function show_news() {
 	$news_window.on("closed", () => {
 		change_url_param("project-news", false, { replace_history_state: true });
 	});
-	change_url_param("project-news", true, { replace_history_state: true });
+	if (!location.hash.match(/project-news/)) {
+		change_url_param("project-news", true, { replace_history_state: true });
+	}
 
 	// Prevent opening images dropped on news window
 	// especially those dragged from the news window itself (accidentally or habitually/idly)
