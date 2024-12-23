@@ -301,8 +301,31 @@ async function init_tracky_mouse_ui() {
 
 		// tracky_mouse_container.querySelector(".tracky-mouse-canvas").classList.add("inset-deep");
 
+		// TODO: avoid using setInterval for this
+		let last_head_tracker_paused;
+		const update_paused_iid = setInterval(() => {
+			// TODO: avoid accessing UI state like this
+			const head_tracker_paused = $tracky_mouse_window.find(".tracky-mouse-start-stop-button").attr("aria-pressed") === "false";
+			// Be careful so that the floating pause button still works.
+			if (head_tracker_paused !== last_head_tracker_paused) {
+				dwell_clicker.paused = head_tracker_paused;
+				last_head_tracker_paused = head_tracker_paused;
+			}
+			const $pause_button = $(".toggle-dwell-clicking");
+			// TODO: ensure disabled state is visually distinct
+			// or instead of disabling it, make it toggle the head tracker pause state as well?
+			// but that might be confusing
+			$pause_button.prop("disabled", head_tracker_paused);
+			// TODO: DRY
+			const pause_button_text = "Pause Dwell Clicking";
+			const resume_button_text = "Resume Dwell Clicking";
+			$("body").toggleClass("dwell-clicker-paused", dwell_clicker.paused);
+			$pause_button.attr("title", dwell_clicker.paused ? resume_button_text : pause_button_text);
+		}, 100);
+
 		clean_up_tracky_mouse_ui = () => {
 			console.log("Cleaning up / disabling Head Tracker mode");
+			clearInterval(update_paused_iid);
 			tracky_mouse_ui.dispose();
 			if (!$tracky_mouse_window.closed) {
 				$tracky_mouse_window.close();
@@ -346,6 +369,8 @@ async function update_floating_buttons() {
 			.attr("title", pause_button_text)
 			.on("click", () => {
 				dwell_clicker.paused = !dwell_clicker.paused;
+				// TODO: also apply when initially toggling Dwell Clicker mode
+				// I guess the class would already be there, but the title would be wrong.
 				$("body").toggleClass("dwell-clicker-paused", dwell_clicker.paused);
 				$pause_button.attr("title", dwell_clicker.paused ? resume_button_text : pause_button_text);
 			})
