@@ -36,7 +36,7 @@ const param_types = {
 	// dev settings
 	"compare-reference": "bool",
 	"compare-reference-tool-windows": "bool",
-
+	"force-open-project-news": "bool",
 	// sessions
 	"local": "string",
 	"session": "string",

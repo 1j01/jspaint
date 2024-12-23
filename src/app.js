@@ -427,6 +427,21 @@ const update_from_url_params = () => {
 			$("[aria-label='About Paint']")[0].dispatchEvent(new Event("pointerenter"));
 		}
 	}, 500);
+
+	// dev helper to open Project News window to preview news write-up
+	// I'm naming this "force-open-project-news" and not simply "project-news"
+	// because I'm not handling closing the window, and I don't want it to sound
+	// super friendly.
+	// I did go on a tangent of making it a proper UI navigation URL hash,
+	// and binding the window state to the URL state (bidirectionally),
+	// but I'm not sure how it should work with the back button.
+	// It's probably nice on mobile for the back button to close windows,
+	// but I'd want it to be consistent between all the windows of the app.
+	if (location.hash.match(/force-open-project-news/i)) {
+		if (!$(".news-window:visible").length) {
+			show_news();
+		}
+	}
 };
 update_from_url_params();
 $G.on("hashchange popstate change-url-params", update_from_url_params);
