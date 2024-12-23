@@ -427,6 +427,14 @@ const update_from_url_params = () => {
 			$("[aria-label='About Paint']")[0].dispatchEvent(new Event("pointerenter"));
 		}
 	}, 500);
+
+	// UI navigation
+	if (location.hash.match(/project-news/i)) {
+		// avoiding infinite loop of changing the URL
+		if (!$(".news-window:visible").length) {
+			show_news();
+		}
+	}
 };
 update_from_url_params();
 $G.on("hashchange popstate change-url-params", update_from_url_params);

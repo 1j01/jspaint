@@ -36,7 +36,8 @@ const param_types = {
 	// dev settings
 	"compare-reference": "bool",
 	"compare-reference-tool-windows": "bool",
-
+	// UI navigation
+	"project-news": "bool",
 	// sessions
 	"local": "string",
 	"session": "string",
@@ -1766,6 +1767,11 @@ function show_news() {
 	$news_window.center(); // @XXX - but it helps tho
 
 	$latest_news.attr("tabIndex", "-1").focus();
+
+	$news_window.on("closed", () => {
+		change_url_param("project-news", false, { replace_history_state: true });
+	});
+	change_url_param("project-news", true, { replace_history_state: true });
 
 	// Prevent opening images dropped on news window
 	// especially those dragged from the news window itself (accidentally or habitually/idly)
