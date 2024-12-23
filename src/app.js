@@ -9,7 +9,7 @@ import { Handles } from "./Handles.js";
 // import { get_direction, localize } from "./app-localization.js";
 import { default_palette, get_winter_palette } from "./color-data.js";
 import { image_formats } from "./file-format-data.js";
-import { $this_version_news, cancel, change_url_param, clear, confirm_overwrite_capability, delete_selection, deselect, edit_copy, edit_cut, edit_paste, file_new, file_open, file_save, file_save_as, get_tool_by_id, get_uris, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, load_image_from_uri, make_or_update_undoable, open_from_file, paste, paste_image_from_file, redo, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, save_as_prompt, select_all, select_tool, select_tools, set_magnification, show_document_history, show_error_message, show_news, show_resource_load_error_message, toggle_grid, undo, update_canvas_rect, update_disable_aa, update_helper_layer, update_magnified_canvas_size, view_bitmap, write_image_file } from "./functions.js";
+import { $this_version_news, cancel, change_some_url_params, change_url_param, clear, confirm_overwrite_capability, delete_selection, deselect, edit_copy, edit_cut, edit_paste, file_new, file_open, file_save, file_save_as, get_tool_by_id, get_uris, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, load_image_from_uri, make_or_update_undoable, open_from_file, paste, paste_image_from_file, redo, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, save_as_prompt, select_all, select_tool, select_tools, set_magnification, show_document_history, show_error_message, show_news, show_resource_load_error_message, toggle_grid, undo, update_canvas_rect, update_disable_aa, update_helper_layer, update_magnified_canvas_size, view_bitmap, write_image_file } from "./functions.js";
 import { show_help } from "./help.js";
 import { $G, E, TAU, get_file_extension, get_help_folder_icon, is_discord_embed, make_canvas, to_canvas_coords } from "./helpers.js";
 import { init_webgl_stuff, rotate } from "./image-manipulation.js";
@@ -311,15 +311,9 @@ for (const [key, defaultValue] of Object.entries(window.systemHookDefaults)) {
 
 // #region URL Params
 const update_from_url_params = () => {
-	// Eye Gaze Mode was a monolithic feature that has been since been split into smaller features.
-	// We can maintain backwards compatibility with the old URL param by mapping it to the new features.
-	// (BTW: Eye Gaze Mode never included an actual eye tracker (instead relying on external software),
-	// but if I added that as a feature I could call the feature Eye Tracker, so it wouldn't be too confusing.)
-
 	// Dwell Clicker
-	// (Eye Gaze Mode implies Dwell Clicker)
-	// (Head Tracker implies Dwell Clicker)
-	if (location.hash.match(/dwell-clicker|eye-gaze-mode|head-tracker/i)) {
+	// (Head Tracker implies Dwell Clicker for now, but could be made independent if Tracky Mouse supports other modes in the future.)
+	if (location.hash.match(/dwell-clicker|head-tracker/i)) {
 		if (!$("body").hasClass("dwell-clicker-mode")) {
 			$("body").addClass("dwell-clicker-mode");
 			$G.triggerHandler("dwell-clicker-toggled");
@@ -332,8 +326,7 @@ const update_from_url_params = () => {
 	}
 
 	// Enlarge UI
-	// (Eye Gaze Mode implies Enlarge UI)
-	if (location.hash.match(/enlarge-ui|eye-gaze-mode/i)) {
+	if (location.hash.match(/enlarge-ui/i)) {
 		if (!$("body").hasClass("enlarge-ui")) {
 			$("body").addClass("enlarge-ui");
 			$G.triggerHandler("enlarge-ui-toggled");
@@ -348,8 +341,7 @@ const update_from_url_params = () => {
 	}
 
 	// Vertical Color Box Mode
-	// (Eye Gaze Mode implies Vertical Color Box Mode)
-	if (location.hash.match(/vertical-color-box-mode|eye-gaze-mode/i)) {
+	if (location.hash.match(/vertical-color-box-mode/i)) {
 		if (!$("body").hasClass("vertical-color-box-mode")) {
 			$("body").addClass("vertical-color-box-mode");
 			$G.triggerHandler("vertical-color-box-mode-toggled");
@@ -364,8 +356,7 @@ const update_from_url_params = () => {
 	}
 
 	// Quick Undo Button
-	// (Eye Gaze Mode implies Quick Undo Button)
-	if (location.hash.match(/easy-undo|eye-gaze-mode/i)) {
+	if (location.hash.match(/easy-undo/i)) {
 		if (!$("body").hasClass("easy-undo-mode")) {
 			$("body").addClass("easy-undo-mode");
 			$G.triggerHandler("easy-undo-mode-toggled");
@@ -441,8 +432,18 @@ update_from_url_params();
 $G.on("hashchange popstate change-url-params", update_from_url_params);
 
 // handle backwards compatibility URLs
-if (location.search.match(/eye-gaze-mode/)) {
-	change_url_param("eye-gaze-mode", true, { replace_history_state: true });
+// Eye Gaze Mode was a monolithic feature that has been since been split into smaller features.
+// We can maintain backwards compatibility with the old URL param by mapping it to the new features.
+// (BTW: Eye Gaze Mode never included an actual eye tracker (instead relying on external software),
+// but if I added that as a feature I could call the feature Eye Tracker, so it wouldn't be too confusing.)
+if (location.search.match(/eye-gaze-mode/) || location.hash.match(/eye-gaze-mode/)) {
+	change_some_url_params({
+		"eye-gaze-mode": false,
+		"enlarge-ui": true,
+		"dwell-clicker": true,
+		"vertical-color-box-mode": true,
+		"easy-undo": true,
+	}, { replace_history_state: true });
 	update_from_url_params();
 }
 if (location.search.match(/vertical-colors?-box/)) {

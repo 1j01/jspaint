@@ -26,7 +26,7 @@ import { TOOL_CURVE, TOOL_FREE_FORM_SELECT, TOOL_POLYGON, TOOL_SELECT, TOOL_TEXT
 // expresses order in the URL as well as type
 const param_types = {
 	// settings
-	"eye-gaze-mode": "bool", // will map to to "enlarge-ui"+"dwell-clicker"+"vertical-color-box-mode"+"easy-undo"
+	"eye-gaze-mode": "bool", // maps to "enlarge-ui"+"dwell-clicker"+"vertical-color-box-mode"+"easy-undo"
 	"enlarge-ui": "bool",
 	"easy-undo": "bool",
 	"dwell-clicker": "bool",

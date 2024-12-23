@@ -1189,68 +1189,6 @@ const menus = {
 				}
 			)),
 		},
-		// TODO: remove "Eye Gaze Mode", which has been split into Dwell Clicker, Enlarge UI, Vertical Color Box, and Quick Undo Button.
-		// Note that this menu item is relied on in tests.
-		{
-			emoji_icon: "👁️",
-			label: localize("&Eye Gaze Mode"),
-			speech_recognition: [
-				"toggle eye gaze mode",
-				"enable eye gaze mode",
-				"disable eye gaze mode",
-				"enter eye gaze mode",
-				"leave eye gaze mode",
-				"exit eye gaze mode",
-				"turn on eye gaze mode",
-				"turn off eye gaze mode",
-				"eye gaze mode on",
-				"eye gaze mode off",
-				"start eye gaze mode",
-				"stop eye gaze mode",
-
-				"toggle eye gaze",
-				"enable eye gaze",
-				"disable eye gaze",
-				"enter eye gaze",
-				"leave eye gaze",
-				"exit eye gaze",
-				"turn on eye gaze",
-				"turn off eye gaze",
-				"eye gaze on",
-				"eye gaze off",
-				"start eye gaze",
-				"stop eye gaze",
-
-				"toggle eye gazing",
-				"enable eye gazing",
-				"disable eye gazing",
-				"enter eye gazing",
-				"leave eye gazing",
-				"exit eye gazing",
-				"turn on eye gazing",
-				"turn off eye gazing",
-				"eye gazing on",
-				"eye gazing off",
-				"start eye gazing",
-				"stop eye gazing",
-			],
-			checkbox: {
-				toggle: () => {
-					if (/eye-gaze-mode/i.test(location.hash)) {
-						// @TODO: confirmation dialog that you could cancel with dwell clicking!
-						// if (confirm("This will disable eye gaze mode.")) {
-						change_url_param("eye-gaze-mode", false);
-						// }
-					} else {
-						change_url_param("eye-gaze-mode", true);
-					}
-				},
-				check: () => {
-					return /eye-gaze-mode/i.test(location.hash);
-				},
-			},
-			description: localize("Enlarges buttons and provides dwell clicking."),
-		},
 		{
 			emoji_icon: "🧑",
 			// label: localize("Head Tracking"),
@@ -1294,11 +1232,11 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (/eye-gaze-mode|head-tracker/i.test(location.hash)) {
+					if (/head-tracker/i.test(location.hash)) {
 						// @TODO: confirmation dialog that you could cancel with dwell clicking!
-						// if (confirm("This will disable eye gaze mode / head tracker mode.")) {
+						// Or: make head tracker work independently of dwell clicking, i.e. with facial gestures
+						// if (confirm("This will disable head tracker mode.")) {
 						// change_some_url_params({
-						// 	"eye-gaze-mode": false,
 						// 	"head-tracker": false,
 						// 	"dwell-clicker": false,
 						// });
@@ -1310,11 +1248,11 @@ const menus = {
 					}
 				},
 				check: () => {
-					return /dwell-clicker|eye-gaze-mode|head-tracker/i.test(location.hash);
+					return /dwell-clicker|head-tracker/i.test(location.hash);
 				},
 			},
 			enabled: () => {
-				return !/eye-gaze-mode|head-tracker/i.test(location.hash);
+				return !/head-tracker/i.test(location.hash);
 			},
 			description: localize("Clicks automatically after hovering in one place."),
 		},
@@ -1332,26 +1270,11 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (/eye-gaze-mode/i.test(location.hash)) {
-						// @TODO: confirmation dialog that you could cancel with dwell clicking!
-						// if (confirm("This will disable eye gaze mode.")) {
-						// change_some_url_params({
-						// 	"eye-gaze-mode": false,
-						// 	"enlarge-ui": false,
-						// });
-						// }
-					} else if (/enlarge-ui/i.test(location.hash)) {
-						change_url_param("enlarge-ui", false);
-					} else {
-						change_url_param("enlarge-ui", true);
-					}
+					change_url_param("enlarge-ui", !/enlarge-ui/i.test(location.hash));
 				},
 				check: () => {
-					return /enlarge-ui|eye-gaze-mode/i.test(location.hash);
+					return /enlarge-ui/i.test(location.hash);
 				},
-			},
-			enabled: () => {
-				return !/eye-gaze-mode/i.test(location.hash);
 			},
 			description: localize("Enlarges buttons, windows, and menus for easier clicking."),
 		},
@@ -1368,26 +1291,11 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (/eye-gaze-mode/i.test(location.hash)) {
-						// @TODO: confirmation dialog that you could cancel with dwell clicking!
-						// if (confirm("This will disable eye gaze mode.")) {
-						// change_some_url_params({
-						// 	"eye-gaze-mode": false,
-						// 	"easy-undo": false,
-						// });
-						// }
-					} else if (/easy-undo/i.test(location.hash)) {
-						change_url_param("easy-undo", false);
-					} else {
-						change_url_param("easy-undo", true);
-					}
+					change_url_param("easy-undo", !/easy-undo/i.test(location.hash));
 				},
 				check: () => {
-					return /easy-undo|eye-gaze-mode/i.test(location.hash);
+					return /easy-undo/i.test(location.hash);
 				},
-			},
-			enabled: () => {
-				return !/eye-gaze-mode/i.test(location.hash);
 			},
 			description: localize("Adds a button for undoing the last action."),
 		},
@@ -1405,26 +1313,11 @@ const menus = {
 			],
 			checkbox: {
 				toggle: () => {
-					if (/eye-gaze-mode/i.test(location.hash)) {
-						// @TODO: confirmation dialog that you could cancel with dwell clicking!
-						// if (confirm("This will disable eye gaze mode.")) {
-						// change_some_url_params({
-						// 	"eye-gaze-mode": false,
-						// 	"vertical-color-box-mode": false,
-						// });
-						// }
-					} else if (/vertical-color-box-mode/i.test(location.hash)) {
-						change_url_param("vertical-color-box-mode", false);
-					} else {
-						change_url_param("vertical-color-box-mode", true);
-					}
+					change_url_param("vertical-color-box-mode", !/vertical-color-box-mode/i.test(location.hash));
 				},
 				check: () => {
-					return /vertical-color-box-mode|eye-gaze-mode/i.test(location.hash);
+					return /vertical-color-box-mode/i.test(location.hash);
 				},
-			},
-			enabled: () => {
-				return !/eye-gaze-mode/i.test(location.hash);
 			},
 			description: localize("Arranges the color box vertically."),
 		},

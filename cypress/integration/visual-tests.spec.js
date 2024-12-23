@@ -201,14 +201,26 @@ context("visual tests", () => {
 		cy.get(".window:visible").matchImageSnapshot(Object.assign({}, withMuchTextCompareOptions, { blackout: ["#maybe-outdated-line", "#jspaint-version"] }));
 	});
 
+	const toggleEyeGazeMode = () => {
+		// Eye Gaze Mode has been split into several features.
+		clickMenuButton("Extras");
+		clickMenuItem("Vertical Color Box");
+		closeMenus();
+		clickMenuButton("Extras");
+		clickMenuItem("Quick Undo Button");
+		closeMenus();
+		clickMenuButton("Extras");
+		clickMenuItem("Dwell Clicker");
+		closeMenus();
+		clickMenuButton("Extras");
+		clickMenuItem("Enlarge UI");
+		closeMenus();
+	};
 	it("eye gaze mode", () => {
 		cy.get('.tool[title="Select"]').click();
-		clickMenuButton("Extras");
-		clickMenuItem("Eye Gaze Mode");
-		cy.wait(100);
+		toggleEyeGazeMode();
 		// clickMenuButton("View");
 		// cy.get("body").trigger("pointermove", { clientX: 200, clientY: 150 });
-		closeMenus();
 		cy.wait(100);
 		cy.get(".floating-undo-button").should("exist");
 		cy.matchImageSnapshot(withTextCompareOptions);
@@ -237,8 +249,7 @@ context("visual tests", () => {
 
 	it("exit eye gaze mode", () => {
 		// this acts as teardown for the eye gaze mode tests
-		clickMenuButton("Extras");
-		clickMenuItem("Eye Gaze Mode");
+		toggleEyeGazeMode();
 		cy.get(".floating-undo-button").should("not.exist");
 	});
 
