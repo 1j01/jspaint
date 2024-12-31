@@ -1186,10 +1186,11 @@ addEventListener("wheel", (e) => {
 	if (e.altKey) {
 		e.preventDefault();
 		let new_magnification = magnification;
+		const factor = 1 + Math.min(0.5, Math.abs(e.deltaY) / 100);
 		if (e.deltaY < 0) {
-			new_magnification *= 1.5;
+			new_magnification *= factor;
 		} else {
-			new_magnification /= 1.5;
+			new_magnification /= factor;
 		}
 		new_magnification = Math.max(0.5, Math.min(new_magnification, 80));
 		set_magnification(new_magnification, to_canvas_coords(e));
