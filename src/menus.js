@@ -1,7 +1,8 @@
 // @ts-check
 /* global tool_transparent_mode:writable, palette:writable */
-/* global $canvas_area, $colorbox, $status_area, $toolbox, available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, magnification, main_canvas, menu_bar, MENU_DIVIDER, redos, selection, set_language, show_grid, show_thumbnail, systemHooks, undos */
+/* global $canvas_area, $colorbox, $status_area, $toolbox, available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, magnification, main_canvas, menu_bar, MENU_DIVIDER, redos, selected_tool, selection, set_language, show_grid, show_thumbnail, systemHooks, undos */
 // import { available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, set_language } from "./app-localization.js";
+import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
 import { show_edit_colors_window } from "./edit-colors.js";
 import { palette_formats } from "./file-format-data.js";
 import { are_you_sure, change_url_param, choose_file_to_paste, clear, delete_selection, deselect, edit_copy, edit_cut, edit_paste, file_load_from_url, file_new, file_open, file_print, file_save, file_save_as, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, redo, render_history_as_gif, sanity_check_blob, save_selection_to_file, select_all, set_magnification, show_about_paint, show_custom_zoom_window, show_document_history, show_file_format_errors, show_multi_user_setup_dialog, show_news, toggle_grid, toggle_thumbnail, undo, view_bitmap } from "./functions.js";
@@ -13,6 +14,7 @@ import { showMessageBox } from "./msgbox.js";
 import { simulateRandomGesturesPeriodically, simulatingGestures, stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { speech_recognition_active, speech_recognition_available } from "./speech-recognition.js";
 import { get_theme, set_theme } from "./theme.js";
+import { TOOL_TEXT } from "./tools.js";
 
 const looksLikeChrome = !!(window.chrome && (window.chrome.loadTimes || window.chrome.csi));
 // NOTE: Microsoft Edge includes window.chrome.app
@@ -440,12 +442,13 @@ const menus = {
 				"toggle font window", "toggle fonts window", "toggle text options window", "toggle text tool options window", "toggle font options window",
 				// @TODO: hide/show
 			],
-			enabled: false, // @TODO: toggle fonts box
+			enabled: () => selected_tool.id === TOOL_TEXT,
+			// @TODO: persist this setting across tool changes
 			checkbox: {
 				toggle: () => {
-					// Kind of silly that I haven't implemented this in the 10 years I've been working on this project.
+					OnCanvasTextBox.$fontbox?.toggle();
 				},
-				check: () => false,
+				check: () => OnCanvasTextBox.$fontbox?.is(":visible"),
 			},
 			description: localize("Shows or hides the text toolbar."),
 		},

@@ -245,6 +245,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		$canvas_area.trigger("resize"); // could use "update" event instead if this is just to hide the main canvas handles
 
 		if (OnCanvasTextBox.$fontbox && OnCanvasTextBox.$fontbox.closed) {
+			// This might never happen anymore given the "close" event handler that hides instead of closing the font box.
 			OnCanvasTextBox.$fontbox = null;
 		}
 		const $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || $FontBox();
@@ -266,6 +267,12 @@ class OnCanvasTextBox extends OnCanvasObject {
 			}
 			$fb.applyBounds();
 		};
+
+		$fb.on("close", (e) => {
+			// Allow reopening the font box (without reinitializing it), via View > Text Toolbar.
+			e.preventDefault();
+			$fb.hide();
+		});
 
 		// must be after textbox is in the DOM
 		update();
