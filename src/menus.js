@@ -1,6 +1,6 @@
 // @ts-check
 /* global tool_transparent_mode:writable, palette:writable */
-/* global $canvas_area, $colorbox, $status_area, $toolbox, available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, magnification, main_canvas, menu_bar, MENU_DIVIDER, redos, selected_tool, selection, set_language, show_grid, show_thumbnail, systemHooks, undos */
+/* global $canvas_area, $colorbox, $status_area, $toolbox, available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, magnification, main_canvas, menu_bar, MENU_DIVIDER, redos, selection, set_language, show_grid, show_thumbnail, systemHooks, textbox, undos */
 // import { available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, set_language } from "./app-localization.js";
 import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
 import { show_edit_colors_window } from "./edit-colors.js";
@@ -14,7 +14,6 @@ import { showMessageBox } from "./msgbox.js";
 import { simulateRandomGesturesPeriodically, simulatingGestures, stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { speech_recognition_active, speech_recognition_available } from "./speech-recognition.js";
 import { get_theme, set_theme } from "./theme.js";
-import { TOOL_TEXT } from "./tools.js";
 
 const looksLikeChrome = !!(window.chrome && (window.chrome.loadTimes || window.chrome.csi));
 // NOTE: Microsoft Edge includes window.chrome.app
@@ -442,7 +441,7 @@ const menus = {
 				"toggle font window", "toggle fonts window", "toggle text options window", "toggle text tool options window", "toggle font options window",
 				// @TODO: hide/show
 			],
-			enabled: () => selected_tool.id === TOOL_TEXT,
+			enabled: () => !!textbox,
 			// @TODO: persist this setting across tool changes
 			checkbox: {
 				toggle: () => {
