@@ -1,4 +1,5 @@
 // @ts-check
+/* global show_font_box:writable */
 /* global $canvas_area, $status_position, $status_size, magnification, main_canvas, selected_colors, text_tool_font, tool_transparent_mode */
 import { $FontBox } from "./$FontBox.js";
 import { Handles } from "./Handles.js";
@@ -249,6 +250,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			OnCanvasTextBox.$fontbox = null;
 		}
 		const $fb = OnCanvasTextBox.$fontbox = OnCanvasTextBox.$fontbox || $FontBox();
+		$fb.toggle(show_font_box);
 		const displace_font_box = () => {
 			// move the font box out of the way if it's overlapping the OnCanvasTextBox
 			const fb_rect = $fb[0].getBoundingClientRect();
@@ -272,6 +274,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 			// Allow reopening the font box (without reinitializing it), via View > Text Toolbar.
 			e.preventDefault();
 			$fb.hide();
+			show_font_box = false;
 		});
 
 		// must be after textbox is in the DOM
@@ -294,10 +297,14 @@ class OnCanvasTextBox extends OnCanvasObject {
 	}
 	destroy() {
 		super.destroy();
-		if (OnCanvasTextBox.$fontbox && !OnCanvasTextBox.$fontbox.closed) {
-			OnCanvasTextBox.$fontbox.close();
-		}
-		OnCanvasTextBox.$fontbox = null;
+		// Don't want to call close() anymore since the "close" event is handled to toggle `show_font_box` now,
+		// and we don't want to toggle the preference when destroying the textbox.
+		// The window is essentially a lazy-loaded singleton, hidden instead of closed.
+		// if (OnCanvasTextBox.$fontbox && !OnCanvasTextBox.$fontbox.closed) {
+		// 	OnCanvasTextBox.$fontbox.close();
+		// }
+		// OnCanvasTextBox.$fontbox = null;
+		OnCanvasTextBox.$fontbox?.hide();
 		$G.off("option-changed", this._on_option_changed);
 		this.$editor.off("input", this._on_input);
 		this.$editor.off("scroll", this._on_scroll);

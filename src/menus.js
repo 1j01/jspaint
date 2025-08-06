@@ -1,5 +1,5 @@
 // @ts-check
-/* global tool_transparent_mode:writable, palette:writable */
+/* global tool_transparent_mode:writable, palette:writable, show_font_box:writable */
 /* global $canvas_area, $colorbox, $status_area, $toolbox, available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, magnification, main_canvas, menu_bar, MENU_DIVIDER, redos, selection, set_language, show_grid, show_thumbnail, systemHooks, textbox, undos */
 // import { available_languages, get_iso_language_name, get_language, get_language_emoji, get_language_endonym, localize, set_language } from "./app-localization.js";
 import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
@@ -442,12 +442,13 @@ const menus = {
 				// @TODO: hide/show
 			],
 			enabled: () => !!textbox,
-			// @TODO: persist this setting across tool changes
 			checkbox: {
 				toggle: () => {
-					OnCanvasTextBox.$fontbox?.toggle();
+					show_font_box = !show_font_box;
+					// Without converting `textbox` to boolean, toggle() would be treated as the no-arguments version when `textbox` is null.
+					OnCanvasTextBox.$fontbox?.toggle(!!textbox && show_font_box);
 				},
-				check: () => OnCanvasTextBox.$fontbox?.is(":visible"),
+				check: () => show_font_box,
 			},
 			description: localize("Shows or hides the text toolbar."),
 		},
