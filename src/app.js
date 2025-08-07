@@ -531,13 +531,11 @@ const news_seen_key = "jspaint latest news seen";
 const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class="news-indicator" href="#project-news">
-		<img src="images/winter/present.png" width="24" height="22" alt=""/>
+		<!--<img src="images/winter/present.png" width="24" height="22" alt=""/>-->
 		<!--<img src="images/about/news.gif" width="40" height="16" alt=""/>-->
-		<!--<img src="images/new.gif" width="40" height="16" alt=""/>-->
-		<span class="marquee" dir="ltr" style="--text-width: 69ch; --animation-duration: 3s;">
-			<span>
-				Discord server, Head Tracker, Quick Undo Button, Enlarge UI, and Dwell Clicker
-			</span>
+		<img src="images/new.gif" width="40" height="16" alt=""/>
+		<span>
+			<b>Font Box Fixes</b>
 		</span>
 		<!--<span class="marquee" dir="ltr" style="--text-width: 44ch; --animation-duration: 3s;">
 			<span>
