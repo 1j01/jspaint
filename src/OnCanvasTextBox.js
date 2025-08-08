@@ -63,14 +63,25 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		const auto_size = () => {
 			// Auto-expand, and apply minimum size.
-			edit_textarea.style.height = "";
-			edit_textarea.style.minHeight = "0px";
-			edit_textarea.style.bottom = ""; // needed for when magnified
-			edit_textarea.setAttribute("rows", "1");
-			this.height = Math.max(edit_textarea.scrollHeight, this.height);
-			edit_textarea.removeAttribute("rows");
-			this.width = edit_textarea.scrollWidth;
-			edit_textarea.style.bottom = "0"; // doesn't seem to be needed?
+			if (text_tool_font.vertical) {
+				edit_textarea.style.width = "";
+				edit_textarea.style.minWidth = "0px";
+				edit_textarea.style.right = ""; // needed for when magnified
+				edit_textarea.setAttribute("rows", "1");
+				this.width = Math.max(edit_textarea.scrollWidth, this.width);
+				edit_textarea.removeAttribute("rows");
+				this.height = edit_textarea.scrollHeight;
+				edit_textarea.style.right = "0"; // doesn't seem to be needed?
+			} else {
+				edit_textarea.style.height = "";
+				edit_textarea.style.minHeight = "0px";
+				edit_textarea.style.bottom = ""; // needed for when magnified
+				edit_textarea.setAttribute("rows", "1");
+				this.height = Math.max(edit_textarea.scrollHeight, this.height);
+				edit_textarea.removeAttribute("rows");
+				this.width = edit_textarea.scrollWidth;
+				edit_textarea.style.bottom = "0"; // doesn't seem to be needed?
+			}
 			// always needs to update at least this.$editor, since style.height is reset above
 			update_size();
 		};
@@ -99,6 +110,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 				writingMode: font.vertical ? "vertical-lr" : "",
 				MsWritingMode: font.vertical ? "vertical-lr" : "",
 				WebkitWritingMode: font.vertical ? "vertical-lr" : "",
+				// textOrientation: "upright",
 				lineHeight: `${font.size * font.line_scale}px`,
 				color: font.color,
 				background: font.background,

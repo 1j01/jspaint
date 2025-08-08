@@ -75,8 +75,13 @@ function $FontBox() {
 	const $bold = $Toggle(0, "bold", "Bold", localize("Sets or clears the text bold attribute."));
 	const $italic = $Toggle(1, "italic", "Italic", localize("Sets or clears the text italic attribute."));
 	const $underline = $Toggle(2, "underline", "Underline", localize("Sets or clears the text underline attribute."));
-	const $vertical = $Toggle(3, "vertical", "Vertical Writing Mode", localize("Only a Far East font can be used for vertical editing."));
-	$vertical.prop("disabled", true);
+	// The original text from MS Paint is simply not true: browsers that support vertical writing also work with Latin text
+	// However, vertical-lr is a bit weird for Latin text.
+	// const $vertical = $Toggle(3, "vertical", "Vertical Writing Mode", localize("Only a Far East font can be used for vertical editing."));
+	// So alternate text, which we won't have translations for...
+	const $vertical = $Toggle(3, "vertical", "Vertical Writing Mode", localize("Vertical writing is intended for Far East scripts."));
+	// const $vertical = $Toggle(3, "vertical", "Vertical Writing Mode", localize("Vertical writing works best with Far East scripts."));
+	// $vertical.prop("disabled", true);
 
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);
