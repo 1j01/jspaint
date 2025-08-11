@@ -99,6 +99,20 @@ button:active,
 	border-image-outset: 2px !important;
 }
 
+
+.tools-component .tool .tool-icon {
+	transition: transform 0.2s ease-in-out;
+	pointer-events: none;
+	z-index: 1;
+}
+.tools-component .tool:not(.selected):hover .tool-icon {
+	transform: scale(5);
+	z-index: 2;
+}
+.tools-component .tool.selected .tool-icon {
+	transition: transform 0.1s ease-in-out;
+}
+
 /* The shadows that are part of the border-image don't go on top of the
 contents of the element, but I can somewhat mimic the shadows,
 using box-shadow on a pseudo element.
