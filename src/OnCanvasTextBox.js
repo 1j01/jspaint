@@ -64,6 +64,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		const auto_size = () => {
 			// Auto-expand, and apply minimum size.
 			if (text_tool_font.vertical) {
+				const old_width = this.width;
 				edit_textarea.style.width = "";
 				edit_textarea.style.minWidth = "0px";
 				edit_textarea.style.right = ""; // needed for when magnified
@@ -72,6 +73,9 @@ class OnCanvasTextBox extends OnCanvasObject {
 				edit_textarea.removeAttribute("rows");
 				this.height = edit_textarea.scrollHeight;
 				edit_textarea.style.right = "0"; // doesn't seem to be needed?
+				// Expand to the left when typing, since text flows right to left.
+				// TODO: for Mongolian, use vertical-lr and disable this x adjustment
+				this.x += old_width - this.width;
 			} else {
 				edit_textarea.style.height = "";
 				edit_textarea.style.minHeight = "0px";
