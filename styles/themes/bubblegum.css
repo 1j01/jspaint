@@ -76,6 +76,7 @@ hr,
 .status-field,
 .menu-button.active,
 button:active,
+.font-box .toggle.selected,
 .tools-component .tool.selected {
 	border-image-source: url("../../images/bubblegum/bubblegum-recess.png") !important;
 	border-image-slice: 82 95 77 92 fill !important;
@@ -88,6 +89,9 @@ button:active,
 	/* border-radius affects hover outline in Dwell Clicker mode, as well as any clipping (with overflow: hidden), and box-shadows */
 	border-radius: 10px !important;
 	/* box-shadow can't be applied directly here, because of the border-image fill (as far as I know; might want to test that assumption) */
+}
+.toggle.selected {
+	box-shadow: unset;
 }
 
 .tools-component .tool,
@@ -152,7 +156,8 @@ hr {
 }
 .menu-button.active,
 .menu-button.active,
-button:active {
+button:active,
+.font-box .toggle.selected {
 	border-image-outset: 7px !important;
 }
 
