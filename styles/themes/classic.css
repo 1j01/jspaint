@@ -352,6 +352,11 @@ body,
 	background-image: url("../../images/text-tools.png");
 	background-position: calc(-16px * var(--icon-index)) 0;
 }
+.font-box .toggle.selected > .icon::before,
+.font-box .toggle.selected > .icon::after {
+	left: 1px;
+	top: 1px;
+}
 
 .tool-window .window-titlebar {
 	font-size: 12px;
