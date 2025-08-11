@@ -19,7 +19,8 @@ class OnCanvasTextBox extends OnCanvasObject {
 		super(x, y, width, height, true);
 
 		this.$el.addClass("textbox");
-		var edit_textarea = E("textarea");
+		var edit_textarea = E("div");
+		edit_textarea.contentEditable = "true";
 		this.$editor = $(edit_textarea).addClass("textbox-editor");
 
 		var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -46,7 +47,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 		var render_textarea = /** @type HTMLTextAreaElement */ (edit_textarea.cloneNode(false));
 		foreignObject.append(render_textarea);
 
-		edit_textarea.value = starting_text;
+		edit_textarea.textContent = starting_text;
 
 		this.canvas = make_canvas(width, height);
 		this.canvas.style.pointerEvents = "none";
@@ -126,7 +127,10 @@ class OnCanvasTextBox extends OnCanvasObject {
 			while (render_textarea.firstChild) {
 				render_textarea.removeChild(render_textarea.firstChild);
 			}
-			render_textarea.appendChild(document.createTextNode(edit_textarea.value));
+			// render_textarea.appendChild(document.createTextNode(edit_textarea.textContent));
+			Array.from(edit_textarea.childNodes).forEach((node) => {
+				render_textarea.appendChild(node.cloneNode(true));
+			});
 
 			svg.setAttribute("width", this.width.toString());
 			svg.setAttribute("height", this.height.toString());
