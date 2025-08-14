@@ -2,7 +2,7 @@
 /* global localize, text_tool_font */
 import { $ToolWindow } from "./$ToolWindow.js";
 // import { localize } from "./app-localization.js";
-import { $G, E } from "./helpers.js";
+import { $G, E, supports_vertical_writing_mode } from "./helpers.js";
 
 const eachFont = async (callback, afterAllCallback) => {
 	function localFontAccessUnavailable() {
@@ -81,7 +81,7 @@ function $FontBox() {
 	// So alternate text, which we won't have translations for...
 	const $vertical = $Toggle(3, "vertical", "Vertical Writing Mode", localize("Vertical writing is intended for Far East scripts."));
 	// const $vertical = $Toggle(3, "vertical", "Vertical Writing Mode", localize("Vertical writing works best with Far East scripts."));
-	// $vertical.prop("disabled", true);
+	$vertical.prop("disabled", !supports_vertical_writing_mode());
 
 	$button_group.append($bold, $italic, $underline, $vertical);
 	$fb.append($family, $size, $button_group);

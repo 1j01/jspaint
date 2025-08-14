@@ -417,6 +417,36 @@ function from_canvas_coords({ x, y }) {
 }
 // #endregion
 
+
+/**
+ * Checks if the browser supports vertical writing mode for textareas.
+ * @returns {boolean} True if vertical writing mode is supported, false otherwise.
+ */
+function supports_vertical_writing_mode() {
+	const el = document.createElement("textarea");
+	el.style.writingMode = "vertical-rl";
+	// @ts-ignore
+	el.style.webkitWritingMode = "vertical-rl";
+	// @ts-ignore
+	el.style.msWritingMode = "vertical-rl";
+	// @ts-ignore
+	el.style.mozWritingMode = "vertical-rl";
+	// not sure if this "hiding" is needed given that it'll be removed immediately...
+	el.style.position = "absolute";
+	// el.style.opacity = "0";
+	el.style.top = "-9999px";
+	document.body.appendChild(el);
+
+	const computed = getComputedStyle(el);
+	// Need to check properties of `computed` BEFORE removing the element, in Firefox.
+	// @ts-ignore
+	const supported = computed.writingMode === "vertical-rl" || computed.webkitWritingMode === "vertical-rl" || computed.msWritingMode === "vertical-rl" || computed.mozWritingMode === "vertical-rl";
+	document.body.removeChild(el);
+
+	return supported;
+}
+
+
 export {
 	$G,
 	E,
@@ -437,6 +467,7 @@ export {
 	memoize_synchronous_function,
 	render_access_key,
 	rgb_to_hsl,
+	supports_vertical_writing_mode,
 	to_canvas_coords
 };
 // Temporary globals until all dependent code is converted to ES Modules
