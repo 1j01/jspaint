@@ -56,6 +56,7 @@ button,
 .os-window,
 button:not(.lightweight):not(:active),
 button.lightweight:hover:not(:active),
+button[disabled]:active,
 .tools-component .tool,
 .menus,
 .menu-popup,
@@ -78,7 +79,7 @@ hr,
 .tool-options,
 .status-field,
 .menu-button.active,
-button:active,
+button:not([disabled]):active,
 .font-box .toggle.selected,
 .tools-component .tool.selected {
 	border-image-source: url("../../images/bubblegum/bubblegum-recess.png") !important;
@@ -159,7 +160,7 @@ hr {
 }
 .menu-button.active,
 .menu-button.active,
-button:active,
+button:not([disabled]):active,
 .font-box .toggle.selected {
 	border-image-outset: 7px !important;
 }
