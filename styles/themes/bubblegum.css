@@ -214,3 +214,9 @@ button:not([disabled]):active,
 .tool.selected:not(:nth-child(1)):not(:nth-child(2)) {
 	clip-path: inset(0 0 0 0);
 }
+
+/* Edit Colors window normally has a fixed height, but the controls are bigger in the Bubblegum theme so they don't fit in the same height. */
+/* We don't need a fixed height since we're not trying to mimic Windows 98 in this theme. */
+.edit-colors-window .window-content .left-side {
+	height: unset;
+}
