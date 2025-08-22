@@ -535,7 +535,7 @@ const $news_indicator = $(`
 		<!--<img src="images/about/news.gif" width="40" height="16" alt=""/>-->
 		<img src="images/new.gif" width="40" height="16" alt=""/>
 		<span>
-			<b>Font Box Fixes</b>
+			<b>Font Finesse</b>
 		</span>
 		<!--<span class="marquee" dir="ltr" style="--text-width: 44ch; --animation-duration: 3s;">
 			<span>
