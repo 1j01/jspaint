@@ -38,6 +38,23 @@
 				"."
 			],
 			"outputCapture": "std"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Debug electron-forge make",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge.cmd"
+			},
+			"args": [
+				"make",
+			],
+			"console": "integratedTerminal",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"cwd": "${workspaceFolder}",
 		}
 	]
 }
