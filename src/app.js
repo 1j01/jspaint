@@ -1550,6 +1550,24 @@ $canvas_area.on("pointerdown", (event) => {
 	}
 });
 $G.on("pointerup pointercancel", (event) => {
+	// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1583480
+	// In Firefox on Windows, using a Wacom pen tablet, with Windows Ink disabled*, the pointerId changes constantly.
+	// This was causing a problem where you could only interact with the canvas once before it would stop responding,
+	// because `pointers` was non-empty so it was treated as a cancel/zoom/pan gesture.
+	// Unfortunately, while this fix is effective, it reveals a related Firefox bug https://bugzilla.mozilla.org/show_bug.cgi?id=1584314
+	// where the pointer events are out of order, causing a barbed wire effect on pencil strokes.
+	// (Tested on Firefox 143 on Windows 11. Both bugs are 6+ years old.)
+	// A workaround for the latter bug could be to buffer pointer events and reorder them by pointerId, keeping in mind that pointerIds will cycle,
+	// although it's an implementation detail that shouldn't be depended on. This will necessarily add some latency, although if done smartly,
+	// we could still draw the latest pointer positions available, revising the tail end of the stroke when out-of-order events arrive,
+	// rather than keeping an invisible leading edge of the stroke.
+	// (*Enabling Windows Ink means you can't select text in webpages, among other things.)
+	if (event.pointerId !== undefined && !pointers.some((pointer) => pointer.pointerId === event.pointerId) && pointers.length > 0) {
+		pointers = [];
+		return;
+	}
+
+	// Normal pointer release handling
 	pointers = pointers.filter((pointer) =>
 		pointer.pointerId !== event.pointerId
 	);
