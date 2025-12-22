@@ -160,14 +160,57 @@ const createWindow = () => {
 
 	// Emitted when the window is closed.
 	editor_window.on("closed", () => {
+		// If we were quitting the app, actually quit now (for Mac)
+		if (process.platform === "darwin" && is_quitting_app_mac) {
+			is_quitting_app_mac = false;
+			app.quit();
+		}
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
 		editor_window = null;
 	});
 
-	// Emitted before the window is closed.
+	// Track if we're in the process of quitting the app (for Mac)
+	let is_quitting_app_mac = false;
+
+	// Handle app-level quit (from menu Quit or Cmd+Q, only on Mac)
+	app.on("before-quit", (event) => {
+		if (process.platform === "darwin") {
+			// Mark that we're quitting so that when the window's "close" event is triggered,
+			// We know to quit the entire app after the save prompt (vs just closing the window).
+			if (editor_window && !editor_window.isDestroyed()) {
+				is_quitting_app_mac = true;
+			}
+		}
+	});
+
+	// Listen for response from renderer about whether we can quit
+	ipcMain.on("can-quit", () => {
+		if (process.platform === "darwin") {
+			if (is_quitting_app_mac) {
+				is_quitting_app_mac = false;
+				// Close the window first (if it exists and isn't destroyed)
+				if (editor_window && !editor_window.isDestroyed()) {
+					editor_window.close();
+				}
+				// On macOS, closing the window doesn't quit the app, so quit explicitly
+				// The closed handler will also call app.quit() as a backup
+				app.quit();
+			}
+		}
+	});
+
+	// Listen for cancel quit
+	ipcMain.on("cancel-quit", () => {
+		if (process.platform === "darwin") {
+			is_quitting_app_mac = false;
+		}
+	});
+
+	// Emitted before the window is closed (Mac: For window closing, not app quitting)
 	editor_window.on("close", (event) => {
+		// This is just closing the window (e.g., clicking X button) on Mac. On any other platform, ignore this comment
 		// Don't need to check editor_window.isDocumentEdited(),
 		// because the (un)edited state is handled by the renderer process, in are_you_sure().
 		// Note: if the web contents are not responding, this will make the app harder to close.
@@ -175,10 +218,17 @@ const createWindow = () => {
 		// And this also prevents it from closing with Ctrl+C in the terminal, which is arguably a feature.
 		// TODO: focus window if it's not focused, which can happen via right clicking the dock/taskbar icon, or Ctrl+C in the terminal
 		// (but ideally not if it's going to close without prompting)
-		editor_window.webContents.send("close-window-prompt");
+		if (process.platform === "darwin") {
+			if (editor_window && !editor_window.isDestroyed()) {
+				activate_app(); // Focus/show window
+				editor_window.webContents.send("close-window-prompt");
+			}
+		} else {
+			editor_window.webContents.send("close-window-prompt");
+		}
+
 		event.preventDefault();
 	});
-
 	// Open links without target=_blank externally.
 	editor_window.webContents.on("will-navigate", (e, url) => {
 		// check that the URL is not part of the app
