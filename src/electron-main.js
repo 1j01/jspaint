@@ -177,14 +177,10 @@ const createWindow = () => {
 	// Handle app-level quit (from menu Quit or Cmd+Q, only on Mac)
 	app.on("before-quit", (event) => {
 		if (process.platform === "darwin") {
-			if (!editor_window || editor_window.isDestroyed()) {
-				return; // Window already destroyed, allow quit
-			}
-			else {
+			// Mark that we're quitting so that when the window's "close" event is triggered,
+			// We know to quit the entire app after the save prompt (vs just closing the window).
+			if (editor_window && !editor_window.isDestroyed()) {
 				is_quitting_app_mac = true;
-			}
-			if (is_quitting_app_mac) {
-				return; // Already handling quit, allow it to proceed
 			}
 		}
 	});
@@ -224,6 +220,7 @@ const createWindow = () => {
 		// (but ideally not if it's going to close without prompting)
 		if (process.platform === "darwin") {
 			if (editor_window && !editor_window.isDestroyed()) {
+				activate_app(); // Focus/show window
 				editor_window.webContents.send("close-window-prompt");
 			}
 		} else {
