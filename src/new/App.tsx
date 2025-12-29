@@ -1,8 +1,9 @@
 import React, { useMemo, Component as ReactComponent, ReactNode, ErrorInfo } from "react";
-import { Frame, ColorBox, ToolBox, Canvas } from "../react/components";
-import { Tool } from "../react/components/ToolBox";
+import { Frame, DEFAULT_STATUS_TEXT } from "../react/components/Frame";
+import { ColorBox } from "../react/components/ColorBox";
+import { ToolBox, Tool } from "../react/components/ToolBox";
+import { Canvas } from "../react/components/Canvas";
 import { AppProvider, useApp, useColors, useTool, useHistory, TOOL_IDS } from "../react/context/AppContext";
-import { DEFAULT_STATUS_TEXT } from "../react/components/Frame";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
