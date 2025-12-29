@@ -167,7 +167,7 @@ From `src/image-manipulation.js`:
 1. Curve tool (bezier)
 2. Polygon tool
 3. Text tool
-4. Airbrush tool
+4. ~~Airbrush tool~~ ✅
 5. Magnifier/zoom
 
 #### Priority 4 - Polish

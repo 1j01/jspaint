@@ -77,12 +77,7 @@ function getRgbaFromColor(color: string): [number, number, number, number] {
 	// Handle hex format
 	const hexMatch = color.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/);
 	if (hexMatch) {
-		return [
-			parseInt(hexMatch[1], 16),
-			parseInt(hexMatch[2], 16),
-			parseInt(hexMatch[3], 16),
-			255,
-		];
+		return [parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16), parseInt(hexMatch[3], 16), 255];
 	}
 
 	// Default to black
@@ -92,12 +87,7 @@ function getRgbaFromColor(color: string): [number, number, number, number] {
 /**
  * Flood fill algorithm (scanline-based)
  */
-function floodFill(
-	ctx: CanvasRenderingContext2D,
-	startX: number,
-	startY: number,
-	fillColor: string,
-) {
+function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY: number, fillColor: string) {
 	const canvas = ctx.canvas;
 	const width = canvas.width;
 	const height = canvas.height;
@@ -290,6 +280,86 @@ function drawRectangle(
 }
 
 /**
+ * Airbrush spray effect - random dots within a circular radius
+ */
+function sprayAirbrush(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size: number = 10) {
+	const radius = size / 2;
+	const density = Math.floor(6 + radius / 5);
+
+	ctx.fillStyle = color;
+
+	for (let i = 0; i < density; i++) {
+		const rx = (Math.random() * 2 - 1) * radius;
+		const ry = (Math.random() * 2 - 1) * radius;
+		const distance = rx * rx + ry * ry;
+
+		// Only place dots within the circular radius
+		if (distance <= radius * radius) {
+			ctx.fillRect(Math.floor(x + rx), Math.floor(y + ry), 1, 1);
+		}
+	}
+}
+
+/**
+ * Draw a quadratic bezier curve
+ */
+function drawQuadraticCurve(
+	ctx: CanvasRenderingContext2D,
+	x1: number,
+	y1: number,
+	x2: number,
+	y2: number,
+	cpX: number,
+	cpY: number,
+	strokeColor: string,
+	strokeWidth: number = 1,
+) {
+	ctx.strokeStyle = strokeColor;
+	ctx.lineWidth = strokeWidth;
+	ctx.lineCap = "round";
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.quadraticCurveTo(cpX, cpY, x2, y2);
+	ctx.stroke();
+}
+
+/**
+ * Draw a polygon from an array of points
+ */
+function drawPolygon(
+	ctx: CanvasRenderingContext2D,
+	points: Array<{ x: number; y: number }>,
+	strokeColor: string,
+	fillColor: string | null,
+	strokeWidth: number = 1,
+	closed: boolean = true,
+) {
+	if (points.length < 2) return;
+
+	ctx.beginPath();
+	ctx.moveTo(points[0].x, points[0].y);
+
+	for (let i = 1; i < points.length; i++) {
+		ctx.lineTo(points[i].x, points[i].y);
+	}
+
+	if (closed) {
+		ctx.closePath();
+	}
+
+	if (fillColor) {
+		ctx.fillStyle = fillColor;
+		ctx.fill();
+	}
+
+	if (strokeColor && strokeWidth > 0) {
+		ctx.strokeStyle = strokeColor;
+		ctx.lineWidth = strokeWidth;
+		ctx.stroke();
+	}
+}
+
+/**
  * Canvas component for drawing
  */
 export function Canvas({ className = "" }) {
@@ -337,6 +407,8 @@ export function Canvas({ className = "" }) {
 				return brushSize;
 			case TOOL_IDS.ERASER:
 				return eraserSize;
+			case TOOL_IDS.AIRBRUSH:
+				return brushSize; // Use brush size for airbrush radius
 			default:
 				return 1;
 		}
@@ -429,6 +501,11 @@ export function Canvas({ className = "" }) {
 					break;
 				}
 
+				case TOOL_IDS.AIRBRUSH:
+					// Spray at current position (continuous effect)
+					sprayAirbrush(ctx, x, y, color, size);
+					break;
+
 				default:
 					// Default to pencil behavior for unimplemented tools
 					drawLine(ctx, prevX, prevY, x, y, color, 1);
@@ -460,9 +537,7 @@ export function Canvas({ className = "" }) {
 			saveState();
 
 			// Save starting point and canvas state for shape tools
-			const previewImageData = isShapeTool
-				? ctx.getImageData(0, 0, canvas.width, canvas.height)
-				: null;
+			const previewImageData = isShapeTool ? ctx.getImageData(0, 0, canvas.width, canvas.height) : null;
 
 			drawingState.current = {
 				isDrawing: true,

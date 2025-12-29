@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 import {
-    canvasHasContent,
-    drawOnCanvas,
-    getCanvasDataUrl,
-    selectToolByIndex,
-    waitForAppLoaded,
+	canvasHasContent,
+	drawOnCanvas,
+	getCanvasDataUrl,
+	selectToolByIndex,
+	waitForAppLoaded,
 } from "./utils/test-helpers";
 
 test.describe("Fill Tool", () => {
@@ -143,5 +143,31 @@ test.describe("Pick Color Tool", () => {
 		// The foreground color indicator should have changed
 		// (We can't easily verify the exact color, but the test should pass without error)
 		await expect(page.locator(".colors-component")).toBeVisible();
+	});
+});
+
+test.describe("Airbrush Tool", () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto("");
+		await waitForAppLoaded(page);
+	});
+
+	test("airbrush tool sprays paint on canvas", async ({ page }) => {
+		// Select airbrush tool (index 8)
+		await selectToolByIndex(page, 8);
+
+		// Verify canvas is initially white
+		const hasContentBefore = await canvasHasContent(page);
+		expect(hasContentBefore).toBe(false);
+
+		// Draw with airbrush
+		await drawOnCanvas(page, {
+			start: { x: 0.3, y: 0.3 },
+			end: { x: 0.7, y: 0.7 },
+		});
+
+		// Verify something was sprayed
+		const hasContentAfter = await canvasHasContent(page);
+		expect(hasContentAfter).toBe(true);
 	});
 });
