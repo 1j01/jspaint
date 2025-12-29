@@ -81,7 +81,7 @@ export function Canvas({ className = "" }) {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 
-		const ctx = canvas.getContext("2d");
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		ctx.fillStyle = "#ffffff";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}, [canvasRef]);
@@ -211,7 +211,7 @@ export function Canvas({ className = "" }) {
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 
-			const ctx = canvas.getContext("2d");
+			const ctx = canvas.getContext("2d", { willReadFrequently: true });
 			const { x, y } = getCanvasCoords(e);
 
 			// Save state for undo before drawing
@@ -256,7 +256,7 @@ export function Canvas({ className = "" }) {
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 
-			const ctx = canvas.getContext("2d");
+			const ctx = canvas.getContext("2d", { willReadFrequently: true });
 			const { x, y } = getCanvasCoords(e);
 			const { lastX, lastY, button } = drawingState.current;
 

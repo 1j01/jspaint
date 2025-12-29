@@ -279,7 +279,7 @@ export function useHistory() {
 	const saveState = useCallback(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
-		const ctx = canvas.getContext("2d");
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		actions.pushUndo(imageData);
 	}, [canvasRef, actions]);
@@ -288,7 +288,7 @@ export function useHistory() {
 		const canvas = canvasRef.current;
 		if (!canvas || state.undoStack.length === 0) return;
 
-		const ctx = canvas.getContext("2d");
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		const currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 		// Get the last undo state
@@ -302,7 +302,7 @@ export function useHistory() {
 		const canvas = canvasRef.current;
 		if (!canvas || state.redoStack.length === 0) return;
 
-		const ctx = canvas.getContext("2d");
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		const currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 		// Get the last redo state
