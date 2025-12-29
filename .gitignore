@@ -16,3 +16,10 @@ node_modules/
 # os crap
 Thumbs.db
 ~*
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.playwright/
