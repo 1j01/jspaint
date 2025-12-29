@@ -86,3 +86,132 @@ body {
 .react-preview__footer a {
         color: inherit;
 }
+
+/* Tool Options Panel */
+.tool-options {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 2px;
+        min-height: 50px;
+        background: var(--ButtonFace, #c0c0c0);
+        width: 100%;
+        box-sizing: border-box;
+}
+
+.tool-options-section {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1px;
+        padding: 2px;
+        justify-content: center;
+        border-top: 1px solid var(--ButtonShadow, #808080);
+        margin-top: 2px;
+        padding-top: 4px;
+}
+
+.tool-options-section:first-child {
+        border-top: none;
+        margin-top: 0;
+        padding-top: 2px;
+}
+
+.tool-option-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 22px;
+        padding: 2px;
+        border: 1px solid transparent;
+        background: var(--ButtonFace, #c0c0c0);
+        cursor: pointer;
+        box-sizing: border-box;
+}
+
+.tool-option-button:hover {
+        border-color: var(--ButtonHighlight, #ffffff) var(--ButtonShadow, #808080) 
+                      var(--ButtonShadow, #808080) var(--ButtonHighlight, #ffffff);
+}
+
+.tool-option-button.selected {
+        border-color: var(--ButtonShadow, #808080) var(--ButtonHighlight, #ffffff) 
+                      var(--ButtonHighlight, #ffffff) var(--ButtonShadow, #808080);
+        background: var(--ButtonHilight, #ffffff);
+}
+
+/* Fill style options - horizontal row */
+.fill-style-options {
+        flex-direction: row;
+        justify-content: center;
+}
+
+/* Line width options - vertical stack */
+.line-width-options {
+        flex-direction: column;
+        align-items: center;
+}
+
+.line-width-options .tool-option-button {
+        width: 42px;
+        height: 12px;
+        padding: 1px;
+}
+
+/* Brush/eraser/airbrush size options - horizontal row */
+.brush-size-options,
+.eraser-size-options,
+.airbrush-size-options {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+}
+
+/* Text tool options */
+.text-options {
+        padding: 4px;
+}
+
+.text-option-row {
+        margin-bottom: 4px;
+}
+
+.font-family-select,
+.font-size-select {
+        width: 100%;
+        font-size: 11px;
+        padding: 2px;
+}
+
+.text-style-buttons {
+        display: flex;
+        gap: 2px;
+}
+
+.text-style-button {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        border: 1px solid transparent;
+        background: var(--ButtonFace, #c0c0c0);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+}
+
+.text-style-button:hover {
+        border-color: var(--ButtonHighlight, #ffffff) var(--ButtonShadow, #808080) 
+                      var(--ButtonShadow, #808080) var(--ButtonHighlight, #ffffff);
+}
+
+.text-style-button.selected {
+        border-color: var(--ButtonShadow, #808080) var(--ButtonHighlight, #ffffff) 
+                      var(--ButtonHighlight, #ffffff) var(--ButtonShadow, #808080);
+        background: var(--ButtonHilight, #ffffff);
+}
+
+.tool-options-empty {
+        min-height: 50px;
+}

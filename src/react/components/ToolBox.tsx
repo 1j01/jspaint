@@ -6,7 +6,6 @@ export interface Tool {
 	name: string;
 	description: string;
 	iconIndex?: number;
-	options?: ReactNode | ((tool: Tool) => ReactNode);
 }
 
 interface ToolBoxProps {
@@ -16,6 +15,7 @@ interface ToolBoxProps {
 	onHoverChange?: (tool: Tool | null) => void;
 	isExtras?: boolean;
 	title?: string;
+	children?: ReactNode; // Tool options content
 }
 
 const ensureTools = (tools: Tool[] = []): Tool[] =>
@@ -23,16 +23,6 @@ const ensureTools = (tools: Tool[] = []): Tool[] =>
 		...tool,
 		id: tool.id ?? tool.name,
 	}));
-
-const resolveOptionsContent = (tool: Tool | null): ReactNode => {
-	if (!tool) {
-		return null;
-	}
-	if (typeof tool.options === "function") {
-		return tool.options(tool);
-	}
-	return tool.options ?? null;
-};
 
 const TOOL_ICON_STYLE: React.CSSProperties = {
 	display: "block",
@@ -54,6 +44,7 @@ export function ToolBox({
 	onHoverChange,
 	isExtras = false,
 	title,
+	children,
 }: ToolBoxProps) {
 	const tools = useMemo(() => ensureTools(toolsProp), [toolsProp]);
 
@@ -77,8 +68,6 @@ export function ToolBox({
 		},
 		[selected, tools, onSelectionChange],
 	);
-
-	const activeTool = useMemo(() => tools.find((tool) => selected.includes(tool.id)) ?? null, [tools, selected]);
 
 	const handlePointerEnter = useCallback(
 		(tool: Tool) => {
@@ -125,9 +114,7 @@ export function ToolBox({
 					);
 				})}
 			</div>
-			<div className="tool-options" aria-live="polite">
-				{resolveOptionsContent(activeTool)}
-			</div>
+			{children}
 		</Component>
 	);
 }

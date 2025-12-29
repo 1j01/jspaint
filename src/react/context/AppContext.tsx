@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useRef, useCallback } from "react";
+import { createContext, useCallback, useContext, useReducer, useRef } from "react";
 import { DEFAULT_PALETTE } from "../data/palette";
 
 // Tool IDs matching legacy tools.js
@@ -21,11 +21,36 @@ export const TOOL_IDS = {
 	ROUNDED_RECTANGLE: "rounded-rectangle",
 };
 
+// Selection type
+export interface Selection {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	imageData: ImageData | null;
+	path?: Array<{ x: number; y: number }>; // For free-form selection
+}
+
+// Text box state
+export interface TextBoxState {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	text: string;
+	fontFamily: string;
+	fontSize: number;
+	fontBold: boolean;
+	fontItalic: boolean;
+	fontUnderline: boolean;
+	isActive: boolean;
+}
+
 // Initial state
 const initialState = {
 	// Colors
 	primaryColor: DEFAULT_PALETTE[0],
-	secondaryColor: DEFAULT_PALETTE[DEFAULT_PALETTE.length - 1],
+	secondaryColor: DEFAULT_PALETTE[14], // White - matches original MS Paint
 	palette: DEFAULT_PALETTE,
 
 	// Tool
@@ -38,10 +63,36 @@ const initialState = {
 	// Drawing state
 	isDrawing: false,
 
+	// Cursor position (for status bar)
+	cursorPosition: null as { x: number; y: number } | null,
+
 	// Brush settings
 	brushSize: 4,
 	pencilSize: 1,
 	eraserSize: 8,
+
+	// Shape settings (outline, fill, both)
+	fillStyle: "outline" as "outline" | "fill" | "both",
+	lineWidth: 1,
+
+	// Selection state
+	selection: null as Selection | null,
+
+	// Text box state
+	textBox: null as TextBoxState | null,
+
+	// Text settings
+	fontFamily: "Arial",
+	fontSize: 12,
+	fontBold: false,
+	fontItalic: false,
+	fontUnderline: false,
+
+	// Magnification
+	magnification: 1,
+
+	// Clipboard
+	clipboard: null as ImageData | null,
 
 	// History
 	undoStack: [],
@@ -62,12 +113,25 @@ const ActionTypes = {
 	SET_CANVAS_SIZE: "SET_CANVAS_SIZE",
 	SET_DRAWING: "SET_DRAWING",
 	SET_BRUSH_SIZE: "SET_BRUSH_SIZE",
+	SET_CURSOR_POSITION: "SET_CURSOR_POSITION",
+	SET_CLIPBOARD: "SET_CLIPBOARD",
 	PUSH_UNDO: "PUSH_UNDO",
 	UNDO: "UNDO",
 	REDO: "REDO",
 	CLEAR_HISTORY: "CLEAR_HISTORY",
 	SET_SAVED: "SET_SAVED",
 	SET_FILE_NAME: "SET_FILE_NAME",
+	SET_SELECTION: "SET_SELECTION",
+	CLEAR_SELECTION: "CLEAR_SELECTION",
+	SET_MAGNIFICATION: "SET_MAGNIFICATION",
+	SET_TEXT_BOX: "SET_TEXT_BOX",
+	CLEAR_TEXT_BOX: "CLEAR_TEXT_BOX",
+	SET_FONT_FAMILY: "SET_FONT_FAMILY",
+	SET_FONT_SIZE: "SET_FONT_SIZE",
+	SET_FONT_STYLE: "SET_FONT_STYLE",
+	SET_FILL_STYLE: "SET_FILL_STYLE",
+	SET_LINE_WIDTH: "SET_LINE_WIDTH",
+	SET_ERASER_SIZE: "SET_ERASER_SIZE",
 };
 
 // Reducer
@@ -102,6 +166,15 @@ function appReducer(state, action) {
 
 		case ActionTypes.SET_BRUSH_SIZE:
 			return { ...state, brushSize: action.payload };
+
+		case ActionTypes.SET_ERASER_SIZE:
+			return { ...state, eraserSize: action.payload };
+
+		case ActionTypes.SET_CURSOR_POSITION:
+			return { ...state, cursorPosition: action.payload };
+
+		case ActionTypes.SET_CLIPBOARD:
+			return { ...state, clipboard: action.payload };
 
 		case ActionTypes.PUSH_UNDO: {
 			const newUndoStack = [...state.undoStack, action.payload];
@@ -148,6 +221,41 @@ function appReducer(state, action) {
 		case ActionTypes.SET_FILE_NAME:
 			return { ...state, fileName: action.payload };
 
+		case ActionTypes.SET_SELECTION:
+			return { ...state, selection: action.payload };
+
+		case ActionTypes.CLEAR_SELECTION:
+			return { ...state, selection: null };
+
+		case ActionTypes.SET_MAGNIFICATION:
+			return { ...state, magnification: action.payload };
+
+		case ActionTypes.SET_TEXT_BOX:
+			return { ...state, textBox: action.payload };
+
+		case ActionTypes.CLEAR_TEXT_BOX:
+			return { ...state, textBox: null };
+
+		case ActionTypes.SET_FONT_FAMILY:
+			return { ...state, fontFamily: action.payload };
+
+		case ActionTypes.SET_FONT_SIZE:
+			return { ...state, fontSize: action.payload };
+
+		case ActionTypes.SET_FONT_STYLE:
+			return {
+				...state,
+				fontBold: action.payload.bold ?? state.fontBold,
+				fontItalic: action.payload.italic ?? state.fontItalic,
+				fontUnderline: action.payload.underline ?? state.fontUnderline,
+			};
+
+		case ActionTypes.SET_FILL_STYLE:
+			return { ...state, fillStyle: action.payload };
+
+		case ActionTypes.SET_LINE_WIDTH:
+			return { ...state, lineWidth: action.payload };
+
 		default:
 			return state;
 	}
@@ -193,6 +301,18 @@ export function AppProvider({ children }) {
 			dispatch({ type: ActionTypes.SET_BRUSH_SIZE, payload: size });
 		}, []),
 
+		setEraserSize: useCallback((size) => {
+			dispatch({ type: ActionTypes.SET_ERASER_SIZE, payload: size });
+		}, []),
+
+		setCursorPosition: useCallback((position: { x: number; y: number } | null) => {
+			dispatch({ type: ActionTypes.SET_CURSOR_POSITION, payload: position });
+		}, []),
+
+		setClipboard: useCallback((imageData: ImageData | null) => {
+			dispatch({ type: ActionTypes.SET_CLIPBOARD, payload: imageData });
+		}, []),
+
 		pushUndo: useCallback((imageData) => {
 			dispatch({ type: ActionTypes.PUSH_UNDO, payload: imageData });
 		}, []),
@@ -216,8 +336,47 @@ export function AppProvider({ children }) {
 		setFileName: useCallback((name) => {
 			dispatch({ type: ActionTypes.SET_FILE_NAME, payload: name });
 		}, []),
-	};
 
+		setSelection: useCallback((selection: Selection | null) => {
+			dispatch({ type: ActionTypes.SET_SELECTION, payload: selection });
+		}, []),
+
+		clearSelection: useCallback(() => {
+			dispatch({ type: ActionTypes.CLEAR_SELECTION });
+		}, []),
+
+		setMagnification: useCallback((magnification: number) => {
+			dispatch({ type: ActionTypes.SET_MAGNIFICATION, payload: magnification });
+		}, []),
+
+		setTextBox: useCallback((textBox: TextBoxState | null) => {
+			dispatch({ type: ActionTypes.SET_TEXT_BOX, payload: textBox });
+		}, []),
+
+		clearTextBox: useCallback(() => {
+			dispatch({ type: ActionTypes.CLEAR_TEXT_BOX });
+		}, []),
+
+		setFontFamily: useCallback((fontFamily: string) => {
+			dispatch({ type: ActionTypes.SET_FONT_FAMILY, payload: fontFamily });
+		}, []),
+
+		setFontSize: useCallback((fontSize: number) => {
+			dispatch({ type: ActionTypes.SET_FONT_SIZE, payload: fontSize });
+		}, []),
+
+		setFontStyle: useCallback((style: { bold?: boolean; italic?: boolean; underline?: boolean }) => {
+			dispatch({ type: ActionTypes.SET_FONT_STYLE, payload: style });
+		}, []),
+
+		setFillStyle: useCallback((fillStyle: "outline" | "fill" | "both") => {
+			dispatch({ type: ActionTypes.SET_FILL_STYLE, payload: fillStyle });
+		}, []),
+
+		setLineWidth: useCallback((lineWidth: number) => {
+			dispatch({ type: ActionTypes.SET_LINE_WIDTH, payload: lineWidth });
+		}, []),
+	};
 	const value = {
 		state,
 		actions,
@@ -258,6 +417,15 @@ export function useTool() {
 		pencilSize: state.pencilSize,
 		eraserSize: state.eraserSize,
 		setBrushSize: actions.setBrushSize,
+		setEraserSize: actions.setEraserSize,
+	};
+}
+
+export function useCursorPosition() {
+	const { state, actions } = useApp();
+	return {
+		cursorPosition: state.cursorPosition,
+		setCursorPosition: actions.setCursorPosition,
 	};
 }
 
@@ -319,6 +487,116 @@ export function useHistory() {
 		undo,
 		redo,
 		clearHistory: actions.clearHistory,
+	};
+}
+
+export function useSelection() {
+	const { state, actions, canvasRef } = useApp();
+	return {
+		selection: state.selection,
+		setSelection: actions.setSelection,
+		clearSelection: actions.clearSelection,
+		hasSelection: state.selection !== null,
+	};
+}
+
+export function useClipboard() {
+	const { state, actions, canvasRef } = useApp();
+
+	const copy = useCallback(() => {
+		const canvas = canvasRef.current;
+		if (!canvas || !state.selection) return;
+
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return;
+
+		// Get the image data from the selection area
+		const { x, y, width, height } = state.selection;
+		const imageData = ctx.getImageData(
+			Math.min(x, x + width),
+			Math.min(y, y + height),
+			Math.abs(width),
+			Math.abs(height),
+		);
+		actions.setClipboard(imageData);
+	}, [canvasRef, state.selection, actions]);
+
+	const cut = useCallback(() => {
+		const canvas = canvasRef.current;
+		if (!canvas || !state.selection) return;
+
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return;
+
+		// Copy first
+		const { x, y, width, height } = state.selection;
+		const imageData = ctx.getImageData(
+			Math.min(x, x + width),
+			Math.min(y, y + height),
+			Math.abs(width),
+			Math.abs(height),
+		);
+		actions.setClipboard(imageData);
+
+		// Then clear the selection area with background color
+		ctx.fillStyle = state.secondaryColor;
+		ctx.fillRect(Math.min(x, x + width), Math.min(y, y + height), Math.abs(width), Math.abs(height));
+	}, [canvasRef, state.selection, state.secondaryColor, actions]);
+
+	const paste = useCallback(() => {
+		if (!state.clipboard) return;
+
+		// Set the selection to the clipboard content, positioned at origin
+		actions.setSelection({
+			x: 0,
+			y: 0,
+			width: state.clipboard.width,
+			height: state.clipboard.height,
+			imageData: state.clipboard,
+		});
+	}, [state.clipboard, actions]);
+
+	return {
+		clipboard: state.clipboard,
+		hasClipboard: state.clipboard !== null,
+		copy,
+		cut,
+		paste,
+	};
+}
+
+export function useMagnification() {
+	const { state, actions } = useApp();
+	return {
+		magnification: state.magnification,
+		setMagnification: actions.setMagnification,
+	};
+}
+
+export function useTextBox() {
+	const { state, actions } = useApp();
+	return {
+		textBox: state.textBox,
+		setTextBox: actions.setTextBox,
+		clearTextBox: actions.clearTextBox,
+		fontFamily: state.fontFamily,
+		fontSize: state.fontSize,
+		fontBold: state.fontBold,
+		fontItalic: state.fontItalic,
+		fontUnderline: state.fontUnderline,
+		setFontFamily: actions.setFontFamily,
+		setFontSize: actions.setFontSize,
+		setFontStyle: actions.setFontStyle,
+	};
+}
+
+export function useShapeSettings() {
+	const { state, actions } = useApp();
+	return {
+		fillStyle: state.fillStyle,
+		lineWidth: state.lineWidth,
+		setFillStyle: actions.setFillStyle,
+		setLineWidth: actions.setLineWidth,
 	};
 }
 

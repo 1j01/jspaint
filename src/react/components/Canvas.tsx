@@ -1,383 +1,55 @@
 import { useCallback, useEffect, useRef } from "react";
-import { TOOL_IDS, useApp, useColors, useHistory, useTool } from "../context/AppContext";
+import { TOOL_IDS, useApp, useCursorPosition, useHistory, useMagnification, useTool } from "../context/AppContext";
+import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
+import { useCanvasSelection } from "../hooks/useCanvasSelection";
+import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
+import { useCanvasShapes } from "../hooks/useCanvasShapes";
+import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
+import { CanvasOverlay } from "./CanvasOverlay";
+import { CanvasTextBox } from "./CanvasTextBox";
 
-/**
- * Draw a line using Bresenham's algorithm for pixel-perfect lines
- */
-function bresenhamLine(x0, y0, x1, y1, callback) {
-	const dx = Math.abs(x1 - x0);
-	const dy = Math.abs(y1 - y0);
-	const sx = x0 < x1 ? 1 : -1;
-	const sy = y0 < y1 ? 1 : -1;
-	let err = dx - dy;
-
-	while (true) {
-		callback(x0, y0);
-
-		if (x0 === x1 && y0 === y1) break;
-
-		const e2 = 2 * err;
-		if (e2 > -dy) {
-			err -= dy;
-			x0 += sx;
-		}
-		if (e2 < dx) {
-			err += dx;
-			y0 += sy;
-		}
-	}
-}
-
-/**
- * Get brush shape points for a given size and shape
- */
-function getBrushPoints(size, shape = "circle") {
-	const points = [];
-	const radius = Math.floor(size / 2);
-
-	if (shape === "circle") {
-		for (let y = -radius; y <= radius; y++) {
-			for (let x = -radius; x <= radius; x++) {
-				if (x * x + y * y <= radius * radius) {
-					points.push({ x, y });
-				}
-			}
-		}
-	} else if (shape === "square") {
-		for (let y = -radius; y <= radius; y++) {
-			for (let x = -radius; x <= radius; x++) {
-				points.push({ x, y });
-			}
-		}
-	}
-
-	// Ensure at least one point (for size 1)
-	if (points.length === 0) {
-		points.push({ x: 0, y: 0 });
-	}
-
-	return points;
-}
-
-/**
- * Parse RGBA values from a color string
- */
-function getRgbaFromColor(color: string): [number, number, number, number] {
-	// Handle rgba() format
-	const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-	if (rgbaMatch) {
-		return [
-			parseInt(rgbaMatch[1], 10),
-			parseInt(rgbaMatch[2], 10),
-			parseInt(rgbaMatch[3], 10),
-			rgbaMatch[4] !== undefined ? Math.round(parseFloat(rgbaMatch[4]) * 255) : 255,
-		];
-	}
-
-	// Handle hex format
-	const hexMatch = color.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/);
-	if (hexMatch) {
-		return [parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16), parseInt(hexMatch[3], 16), 255];
-	}
-
-	// Default to black
-	return [0, 0, 0, 255];
-}
-
-/**
- * Flood fill algorithm (scanline-based)
- */
-function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY: number, fillColor: string) {
-	const canvas = ctx.canvas;
-	const width = canvas.width;
-	const height = canvas.height;
-
-	startX = Math.max(0, Math.min(Math.floor(startX), width - 1));
-	startY = Math.max(0, Math.min(Math.floor(startY), height - 1));
-
-	const imageData = ctx.getImageData(0, 0, width, height);
-	const data = imageData.data;
-
-	// Get start color
-	const startPos = (startY * width + startX) * 4;
-	const startR = data[startPos];
-	const startG = data[startPos + 1];
-	const startB = data[startPos + 2];
-	const startA = data[startPos + 3];
-
-	// Get fill color
-	const [fillR, fillG, fillB, fillA] = getRgbaFromColor(fillColor);
-
-	// Don't fill if clicking on the same color
-	const tolerance = 2;
-	if (
-		Math.abs(fillR - startR) <= tolerance &&
-		Math.abs(fillG - startG) <= tolerance &&
-		Math.abs(fillB - startB) <= tolerance &&
-		Math.abs(fillA - startA) <= tolerance
-	) {
-		return;
-	}
-
-	const stack: [number, number][] = [[startX, startY]];
-
-	const shouldFill = (pos: number): boolean => {
-		return (
-			Math.abs(data[pos] - startR) <= tolerance &&
-			Math.abs(data[pos + 1] - startG) <= tolerance &&
-			Math.abs(data[pos + 2] - startB) <= tolerance &&
-			Math.abs(data[pos + 3] - startA) <= tolerance
-		);
-	};
-
-	const doFill = (pos: number) => {
-		data[pos] = fillR;
-		data[pos + 1] = fillG;
-		data[pos + 2] = fillB;
-		data[pos + 3] = fillA;
-	};
-
-	while (stack.length > 0) {
-		const [x, y] = stack.pop()!;
-		let pixelPos = (y * width + x) * 4;
-
-		// Go up to find the top of the fill area
-		let currentY = y;
-		while (currentY >= 0 && shouldFill((currentY * width + x) * 4)) {
-			currentY--;
-		}
-		currentY++;
-		pixelPos = (currentY * width + x) * 4;
-
-		let reachLeft = false;
-		let reachRight = false;
-
-		// Fill downward
-		while (currentY < height && shouldFill(pixelPos)) {
-			doFill(pixelPos);
-
-			// Check left
-			if (x > 0) {
-				if (shouldFill(pixelPos - 4)) {
-					if (!reachLeft) {
-						stack.push([x - 1, currentY]);
-						reachLeft = true;
-					}
-				} else {
-					reachLeft = false;
-				}
-			}
-
-			// Check right
-			if (x < width - 1) {
-				if (shouldFill(pixelPos + 4)) {
-					if (!reachRight) {
-						stack.push([x + 1, currentY]);
-						reachRight = true;
-					}
-				} else {
-					reachRight = false;
-				}
-			}
-
-			currentY++;
-			pixelPos = (currentY * width + x) * 4;
-		}
-	}
-
-	ctx.putImageData(imageData, 0, 0);
-}
-
-/**
- * Draw an ellipse using midpoint algorithm (aliased, pixel-perfect)
- */
-function drawEllipse(
-	ctx: CanvasRenderingContext2D,
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	strokeColor: string,
-	fillColor: string | null,
-	strokeWidth: number = 1,
-) {
-	// Normalize coordinates
-	if (width < 0) {
-		x += width;
-		width = -width;
-	}
-	if (height < 0) {
-		y += height;
-		height = -height;
-	}
-
-	if (width < 2 || height < 2) return;
-
-	const cx = x + width / 2;
-	const cy = y + height / 2;
-	const rx = width / 2;
-	const ry = height / 2;
-
-	// Fill first
-	if (fillColor) {
-		ctx.fillStyle = fillColor;
-		ctx.beginPath();
-		ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-		ctx.fill();
-	}
-
-	// Stroke
-	if (strokeColor && strokeWidth > 0) {
-		ctx.strokeStyle = strokeColor;
-		ctx.lineWidth = strokeWidth;
-		ctx.beginPath();
-		ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-		ctx.stroke();
-	}
-}
-
-/**
- * Draw a rectangle
- */
-function drawRectangle(
-	ctx: CanvasRenderingContext2D,
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	strokeColor: string,
-	fillColor: string | null,
-	strokeWidth: number = 1,
-) {
-	// Normalize coordinates
-	if (width < 0) {
-		x += width;
-		width = -width;
-	}
-	if (height < 0) {
-		y += height;
-		height = -height;
-	}
-
-	// Fill first
-	if (fillColor) {
-		ctx.fillStyle = fillColor;
-		ctx.fillRect(x, y, width, height);
-	}
-
-	// Stroke - draw as filled rectangles for pixel-perfect rendering
-	if (strokeColor && strokeWidth > 0) {
-		ctx.fillStyle = strokeColor;
-		// Top
-		ctx.fillRect(x, y, width, strokeWidth);
-		// Bottom
-		ctx.fillRect(x, y + height - strokeWidth, width, strokeWidth);
-		// Left
-		ctx.fillRect(x, y, strokeWidth, height);
-		// Right
-		ctx.fillRect(x + width - strokeWidth, y, strokeWidth, height);
-	}
-}
-
-/**
- * Airbrush spray effect - random dots within a circular radius
- */
-function sprayAirbrush(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size: number = 10) {
-	const radius = size / 2;
-	const density = Math.floor(6 + radius / 5);
-
-	ctx.fillStyle = color;
-
-	for (let i = 0; i < density; i++) {
-		const rx = (Math.random() * 2 - 1) * radius;
-		const ry = (Math.random() * 2 - 1) * radius;
-		const distance = rx * rx + ry * ry;
-
-		// Only place dots within the circular radius
-		if (distance <= radius * radius) {
-			ctx.fillRect(Math.floor(x + rx), Math.floor(y + ry), 1, 1);
-		}
-	}
-}
-
-/**
- * Draw a quadratic bezier curve
- */
-function drawQuadraticCurve(
-	ctx: CanvasRenderingContext2D,
-	x1: number,
-	y1: number,
-	x2: number,
-	y2: number,
-	cpX: number,
-	cpY: number,
-	strokeColor: string,
-	strokeWidth: number = 1,
-) {
-	ctx.strokeStyle = strokeColor;
-	ctx.lineWidth = strokeWidth;
-	ctx.lineCap = "round";
-	ctx.beginPath();
-	ctx.moveTo(x1, y1);
-	ctx.quadraticCurveTo(cpX, cpY, x2, y2);
-	ctx.stroke();
-}
-
-/**
- * Draw a polygon from an array of points
- */
-function drawPolygon(
-	ctx: CanvasRenderingContext2D,
-	points: Array<{ x: number; y: number }>,
-	strokeColor: string,
-	fillColor: string | null,
-	strokeWidth: number = 1,
-	closed: boolean = true,
-) {
-	if (points.length < 2) return;
-
-	ctx.beginPath();
-	ctx.moveTo(points[0].x, points[0].y);
-
-	for (let i = 1; i < points.length; i++) {
-		ctx.lineTo(points[i].x, points[i].y);
-	}
-
-	if (closed) {
-		ctx.closePath();
-	}
-
-	if (fillColor) {
-		ctx.fillStyle = fillColor;
-		ctx.fill();
-	}
-
-	if (strokeColor && strokeWidth > 0) {
-		ctx.strokeStyle = strokeColor;
-		ctx.lineWidth = strokeWidth;
-		ctx.stroke();
-	}
-}
+// Magnification levels
+const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
 
 /**
  * Canvas component for drawing
  */
-export function Canvas({ className = "" }) {
+export function Canvas({ className = "" }: { className?: string }) {
 	const { canvasRef } = useApp();
-	const { primaryColor, secondaryColor, setPrimaryColor, setSecondaryColor } = useColors();
-	const { selectedToolId, brushSize, pencilSize, eraserSize } = useTool();
+	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
+	const { magnification, setMagnification } = useMagnification();
+	const { setCursorPosition } = useCursorPosition();
 
-	// Track drawing state locally for performance
-	const drawingState = useRef({
-		isDrawing: false,
-		lastX: 0,
-		lastY: 0,
-		button: 0, // 0 = left, 2 = right
-		// Shape preview state
-		startX: 0,
-		startY: 0,
-		previewImageData: null as ImageData | null,
+	// Overlay canvas ref for selection marching ants
+	const overlayRef = useRef<HTMLCanvasElement>(null);
+
+	// Text input ref
+	const textInputRef = useRef<HTMLTextAreaElement>(null);
+
+	// Initialize drawing hook
+	const drawing = useCanvasDrawing(canvasRef);
+
+	// Initialize selection hook
+	const selection = useCanvasSelection({
+		canvasRef,
+		overlayRef,
+		getCanvasCoords: drawing.getCanvasCoords,
+	});
+
+	// Initialize text box hook
+	const textBoxHook = useCanvasTextBox({ canvasRef });
+
+	// Initialize shapes hook
+	const shapes = useCanvasShapes({
+		canvasRef,
+		getDrawColor: drawing.getDrawColor,
+	});
+
+	// Initialize curve/polygon hook
+	const curvePolygon = useCanvasCurvePolygon({
+		canvasRef,
+		getDrawColor: drawing.getDrawColor,
 	});
 
 	// Initialize canvas with white background
@@ -386,215 +58,109 @@ export function Canvas({ className = "" }) {
 		if (!canvas) return;
 
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return;
 		ctx.fillStyle = "#ffffff";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}, [canvasRef]);
 
-	// Get the current drawing color based on mouse button
-	const getDrawColor = useCallback(
-		(button) => {
-			return button === 0 ? primaryColor : secondaryColor;
-		},
-		[primaryColor, secondaryColor],
-	);
-
-	// Get tool-specific brush size
-	const getToolSize = useCallback(() => {
-		switch (selectedToolId) {
-			case TOOL_IDS.PENCIL:
-				return pencilSize;
-			case TOOL_IDS.BRUSH:
-				return brushSize;
-			case TOOL_IDS.ERASER:
-				return eraserSize;
-			case TOOL_IDS.AIRBRUSH:
-				return brushSize; // Use brush size for airbrush radius
-			default:
-				return 1;
+	// Focus text input when text box is active
+	useEffect(() => {
+		if (textBoxHook.textBox?.isActive && textInputRef.current) {
+			textInputRef.current.focus();
 		}
-	}, [selectedToolId, pencilSize, brushSize, eraserSize]);
-
-	// Draw a single point or brush stamp
-	const drawPoint = useCallback((ctx, x, y, color, size) => {
-		ctx.fillStyle = color;
-
-		if (size <= 1) {
-			ctx.fillRect(x, y, 1, 1);
-		} else {
-			const points = getBrushPoints(size, "circle");
-			for (const point of points) {
-				ctx.fillRect(x + point.x, y + point.y, 1, 1);
-			}
-		}
-	}, []);
-
-	// Draw a line from one point to another
-	const drawLine = useCallback((ctx, x0, y0, x1, y1, color, size) => {
-		ctx.fillStyle = color;
-
-		if (size <= 1) {
-			bresenhamLine(Math.floor(x0), Math.floor(y0), Math.floor(x1), Math.floor(y1), (x, y) => {
-				ctx.fillRect(x, y, 1, 1);
-			});
-		} else {
-			const points = getBrushPoints(size, "circle");
-			bresenhamLine(Math.floor(x0), Math.floor(y0), Math.floor(x1), Math.floor(y1), (x, y) => {
-				for (const point of points) {
-					ctx.fillRect(x + point.x, y + point.y, 1, 1);
-				}
-			});
-		}
-	}, []);
-
-	// Erase (draw with background color or white)
-	const erase = useCallback(
-		(ctx, x0, y0, x1, y1, size) => {
-			drawLine(ctx, x0, y0, x1, y1, secondaryColor, size);
-		},
-		[drawLine, secondaryColor],
-	);
-
-	// Get canvas coordinates from mouse event
-	const getCanvasCoords = useCallback(
-		(e) => {
-			const canvas = canvasRef.current;
-			if (!canvas) return { x: 0, y: 0 };
-
-			const rect = canvas.getBoundingClientRect();
-			const scaleX = canvas.width / rect.width;
-			const scaleY = canvas.height / rect.height;
-
-			return {
-				x: Math.floor((e.clientX - rect.left) * scaleX),
-				y: Math.floor((e.clientY - rect.top) * scaleY),
-			};
-		},
-		[canvasRef],
-	);
-
-	// Handle tool action
-	const handleToolAction = useCallback(
-		(ctx, x, y, prevX, prevY, button) => {
-			const size = getToolSize();
-			const color = getDrawColor(button);
-
-			switch (selectedToolId) {
-				case TOOL_IDS.PENCIL:
-					drawLine(ctx, prevX, prevY, x, y, color, 1);
-					break;
-
-				case TOOL_IDS.BRUSH:
-					drawLine(ctx, prevX, prevY, x, y, color, size);
-					break;
-
-				case TOOL_IDS.ERASER:
-					erase(ctx, prevX, prevY, x, y, size);
-					break;
-
-				case TOOL_IDS.PICK_COLOR: {
-					// Get color at point
-					const imageData = ctx.getImageData(x, y, 1, 1);
-					const [r, g, b, a] = imageData.data;
-					const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
-					// TODO: Update color in context
-					console.log("Picked color:", pickedColor);
-					break;
-				}
-
-				case TOOL_IDS.AIRBRUSH:
-					// Spray at current position (continuous effect)
-					sprayAirbrush(ctx, x, y, color, size);
-					break;
-
-				default:
-					// Default to pencil behavior for unimplemented tools
-					drawLine(ctx, prevX, prevY, x, y, color, 1);
-					break;
-			}
-		},
-		[selectedToolId, getToolSize, getDrawColor, drawLine, erase],
-	);
+	}, [textBoxHook.textBox?.isActive]);
 
 	// Mouse event handlers
 	const handlePointerDown = useCallback(
-		(e) => {
+		(e: React.PointerEvent<HTMLCanvasElement>) => {
 			e.preventDefault();
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 
 			const ctx = canvas.getContext("2d", { willReadFrequently: true });
-			const { x, y } = getCanvasCoords(e);
+			if (!ctx) return;
 
-			// Determine if this is a shape tool that needs preview
-			const isShapeTool = [
-				TOOL_IDS.LINE,
-				TOOL_IDS.RECTANGLE,
-				TOOL_IDS.ELLIPSE,
-				TOOL_IDS.ROUNDED_RECTANGLE,
-			].includes(selectedToolId);
+			const { x, y } = drawing.getCanvasCoords(e);
+			const color = drawing.getDrawColor(e.button);
+			const size = drawing.getToolSize();
 
-			// Save state for undo before drawing
-			saveState();
-
-			// Save starting point and canvas state for shape tools
-			const previewImageData = isShapeTool ? ctx.getImageData(0, 0, canvas.width, canvas.height) : null;
-
-			drawingState.current = {
-				isDrawing: true,
-				lastX: x,
-				lastY: y,
-				button: e.button,
-				startX: x,
-				startY: y,
-				previewImageData,
-			};
-
-			const color = getDrawColor(e.button);
-			const size = getToolSize();
+			// Save state for undo before drawing (for most tools)
+			const toolsWithOwnSaveState = [
+				TOOL_IDS.SELECT,
+				TOOL_IDS.FREE_FORM_SELECT,
+				TOOL_IDS.CURVE,
+				TOOL_IDS.POLYGON,
+			];
+			if (!toolsWithOwnSaveState.includes(selectedToolId)) {
+				saveState();
+			}
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
-					drawPoint(ctx, x, y, color, 1);
+					drawing.drawPoint(ctx, x, y, color, 1);
 					break;
 
 				case TOOL_IDS.BRUSH:
-					drawPoint(ctx, x, y, color, size);
+					drawing.drawPoint(ctx, x, y, color, size);
 					break;
 
 				case TOOL_IDS.ERASER:
-					drawPoint(ctx, x, y, secondaryColor, size);
+					drawing.drawPoint(ctx, x, y, drawing.secondaryColor, size);
 					break;
 
 				case TOOL_IDS.FILL:
-					// Fill is immediate - click to fill
-					floodFill(ctx, x, y, color);
+					drawing.handleFill(ctx, x, y, e.button);
 					break;
 
-				case TOOL_IDS.PICK_COLOR: {
-					// Pick color is immediate
-					if (x >= 0 && y >= 0 && x < canvas.width && y < canvas.height) {
-						const imageData = ctx.getImageData(x, y, 1, 1);
-						const [r, g, b, a] = imageData.data;
-						const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
-						if (e.button === 0) {
-							setPrimaryColor(pickedColor);
-						} else {
-							setSecondaryColor(pickedColor);
-						}
+				case TOOL_IDS.PICK_COLOR:
+					drawing.pickColor(ctx, x, y, e.button);
+					break;
+
+				case TOOL_IDS.SELECT:
+					selection.startRectangularSelection(x, y, ctx);
+					break;
+
+				case TOOL_IDS.FREE_FORM_SELECT:
+					selection.startFreeFormSelection(x, y, ctx);
+					break;
+
+				case TOOL_IDS.TEXT:
+					if (textBoxHook.textBox?.isActive) {
+						textBoxHook.commitTextBox();
+					}
+					textBoxHook.startTextBox(x, y);
+					saveState();
+					break;
+
+				case TOOL_IDS.MAGNIFIER: {
+					const currentIndex = MAGNIFICATION_LEVELS.indexOf(magnification);
+					if (e.button === 0) {
+						const nextIndex = Math.min(currentIndex + 1, MAGNIFICATION_LEVELS.length - 1);
+						setMagnification(MAGNIFICATION_LEVELS[nextIndex]);
+					} else {
+						const nextIndex = Math.max(currentIndex - 1, 0);
+						setMagnification(MAGNIFICATION_LEVELS[nextIndex]);
 					}
 					break;
 				}
+
+				case TOOL_IDS.CURVE:
+					curvePolygon.handleCurveClick(x, y, e.button, ctx);
+					break;
+
+				case TOOL_IDS.POLYGON:
+					curvePolygon.handlePolygonClick(x, y, e.button, ctx);
+					break;
 
 				case TOOL_IDS.LINE:
 				case TOOL_IDS.RECTANGLE:
 				case TOOL_IDS.ELLIPSE:
 				case TOOL_IDS.ROUNDED_RECTANGLE:
-					// Shape tools - just record start point, drawing happens on move/up
+					shapes.startShape(x, y, e.button, ctx);
 					break;
 
 				default:
-					// Default to pencil behavior
-					drawPoint(ctx, x, y, color, 1);
+					drawing.drawPoint(ctx, x, y, color, 1);
 					break;
 			}
 
@@ -603,158 +169,149 @@ export function Canvas({ className = "" }) {
 		},
 		[
 			canvasRef,
-			getCanvasCoords,
-			saveState,
-			getToolSize,
-			getDrawColor,
+			drawing,
 			selectedToolId,
-			drawPoint,
-			secondaryColor,
-			setPrimaryColor,
-			setSecondaryColor,
+			saveState,
+			selection,
+			textBoxHook,
+			magnification,
+			setMagnification,
+			curvePolygon,
+			shapes,
 		],
 	);
 
 	const handlePointerMove = useCallback(
-		(e) => {
-			if (!drawingState.current.isDrawing) return;
-
+		(e: React.PointerEvent<HTMLCanvasElement>) => {
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 
 			const ctx = canvas.getContext("2d", { willReadFrequently: true });
-			const { x, y } = getCanvasCoords(e);
-			const { lastX, lastY, button, startX, startY, previewImageData } = drawingState.current;
-			const color = getDrawColor(button);
+			if (!ctx) return;
 
-			// Check if this is a shape tool
-			const isShapeTool = [
-				TOOL_IDS.LINE,
-				TOOL_IDS.RECTANGLE,
-				TOOL_IDS.ELLIPSE,
-				TOOL_IDS.ROUNDED_RECTANGLE,
-			].includes(selectedToolId);
+			const { x, y } = drawing.getCanvasCoords(e);
 
-			if (isShapeTool && previewImageData) {
-				// Restore original state before drawing preview
-				ctx.putImageData(previewImageData, 0, 0);
+			// Update cursor position for status bar
+			setCursorPosition({ x: Math.floor(x), y: Math.floor(y) });
 
-				const width = x - startX;
-				const height = y - startY;
-				const strokeWidth = 1; // Default stroke width
-
-				switch (selectedToolId) {
-					case TOOL_IDS.LINE:
-						// Draw line from start to current
-						ctx.strokeStyle = color;
-						ctx.lineWidth = strokeWidth;
-						ctx.beginPath();
-						ctx.moveTo(startX, startY);
-						ctx.lineTo(x, y);
-						ctx.stroke();
-						break;
-
-					case TOOL_IDS.RECTANGLE:
-						drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
-						break;
-
-					case TOOL_IDS.ELLIPSE:
-						drawEllipse(ctx, startX, startY, width, height, color, null, strokeWidth);
-						break;
-
-					case TOOL_IDS.ROUNDED_RECTANGLE:
-						// Use rectangle for now (rounded rect implementation similar)
-						drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
-						break;
-				}
-			} else {
-				// Regular drawing tools
-				handleToolAction(ctx, x, y, lastX, lastY, button);
+			// Handle selection
+			if (selection.isActive()) {
+				selection.handleSelectionMove(x, y, selectedToolId === TOOL_IDS.SELECT);
+				return;
 			}
 
-			drawingState.current.lastX = x;
-			drawingState.current.lastY = y;
+			// Handle curve/polygon preview
+			if (curvePolygon.isCurveActive() && selectedToolId === TOOL_IDS.CURVE) {
+				curvePolygon.previewCurve(x, y, ctx);
+				return;
+			}
+			if (curvePolygon.isPolygonActive() && selectedToolId === TOOL_IDS.POLYGON) {
+				curvePolygon.previewPolygon(x, y, ctx);
+				return;
+			}
+
+			// Handle shape preview
+			if (shapes.isDrawing() && shapes.isShapeTool(selectedToolId)) {
+				shapes.previewShape(x, y, selectedToolId, ctx);
+				return;
+			}
+
+			// Handle continuous drawing tools
+			const state = shapes.getDrawingState();
+			if (!state.isDrawing) return;
+
+			const { lastX, lastY, button } = state;
+
+			if (!shapes.isShapeTool(selectedToolId)) {
+				drawing.handleToolAction(ctx, x, y, lastX, lastY, button);
+				shapes.drawingState.current.lastX = x;
+				shapes.drawingState.current.lastY = y;
+			}
 		},
-		[canvasRef, getCanvasCoords, handleToolAction, selectedToolId, getDrawColor],
+		[canvasRef, drawing, setCursorPosition, selection, selectedToolId, curvePolygon, shapes],
 	);
+
+	const handlePointerLeave = useCallback(() => {
+		setCursorPosition(null);
+	}, [setCursorPosition]);
 
 	const handlePointerUp = useCallback(
-		(e) => {
+		(e: React.PointerEvent<HTMLCanvasElement>) => {
 			const canvas = canvasRef.current;
-			const { startX, startY, button, previewImageData } = drawingState.current;
+			if (!canvas) return;
 
-			if (canvas && drawingState.current.isDrawing) {
-				const ctx = canvas.getContext("2d", { willReadFrequently: true });
-				const { x, y } = getCanvasCoords(e);
-				const color = getDrawColor(button);
+			const ctx = canvas.getContext("2d", { willReadFrequently: true });
+			if (!ctx) return;
 
-				// Finalize shape drawing
-				const isShapeTool = [
-					TOOL_IDS.LINE,
-					TOOL_IDS.RECTANGLE,
-					TOOL_IDS.ELLIPSE,
-					TOOL_IDS.ROUNDED_RECTANGLE,
-				].includes(selectedToolId);
+			const { x, y } = drawing.getCanvasCoords(e);
 
-				if (isShapeTool && previewImageData) {
-					// Restore and draw final shape
-					ctx.putImageData(previewImageData, 0, 0);
-
-					const width = x - startX;
-					const height = y - startY;
-					const strokeWidth = 1;
-
-					switch (selectedToolId) {
-						case TOOL_IDS.LINE:
-							ctx.strokeStyle = color;
-							ctx.lineWidth = strokeWidth;
-							ctx.beginPath();
-							ctx.moveTo(startX, startY);
-							ctx.lineTo(x, y);
-							ctx.stroke();
-							break;
-
-						case TOOL_IDS.RECTANGLE:
-							drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
-							break;
-
-						case TOOL_IDS.ELLIPSE:
-							drawEllipse(ctx, startX, startY, width, height, color, null, strokeWidth);
-							break;
-
-						case TOOL_IDS.ROUNDED_RECTANGLE:
-							drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
-							break;
-					}
+			// Handle selection finalization
+			if (selection.isActive()) {
+				if (selectedToolId === TOOL_IDS.SELECT) {
+					selection.finalizeRectangularSelection(x, y, ctx);
+				} else if (selectedToolId === TOOL_IDS.FREE_FORM_SELECT) {
+					selection.finalizeFreeFormSelection(ctx);
 				}
-
-				canvas.releasePointerCapture(e.pointerId);
+				return;
 			}
 
-			drawingState.current.isDrawing = false;
-			drawingState.current.previewImageData = null;
+			// Handle text box creation
+			if (textBoxHook.isCreating()) {
+				textBoxHook.finalizeTextBox(x, y);
+				return;
+			}
+
+			// Finalize shape drawing
+			if (shapes.isDrawing() && shapes.isShapeTool(selectedToolId)) {
+				shapes.finalizeShape(x, y, selectedToolId, ctx);
+				canvas.releasePointerCapture(e.pointerId);
+				return;
+			}
+
+			// Release pointer capture
+			if (shapes.getDrawingState().isDrawing) {
+				canvas.releasePointerCapture(e.pointerId);
+				shapes.drawingState.current.isDrawing = false;
+			}
 		},
-		[canvasRef, getCanvasCoords, selectedToolId, getDrawColor],
+		[canvasRef, drawing, selectedToolId, selection, textBoxHook, shapes],
 	);
 
+	// Handle text input change
+	const handleTextChange = useCallback(
+		(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+			textBoxHook.updateText(e.target.value);
+		},
+		[textBoxHook],
+	);
+
+	// Handle text input key events
+	const handleTextKeyDown = useCallback(
+		(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+			if (e.key === "Escape") {
+				textBoxHook.clearTextBox();
+			}
+		},
+		[textBoxHook],
+	);
+
+	// Handle clicking outside text box to commit
+	const handleTextBlur = useCallback(() => {
+		setTimeout(() => {
+			if (textBoxHook.textBox?.isActive) {
+				textBoxHook.commitTextBox();
+			}
+		}, 100);
+	}, [textBoxHook]);
+
 	// Prevent context menu on right-click
-	const handleContextMenu = useCallback((e) => {
+	const handleContextMenu = useCallback((e: React.MouseEvent) => {
 		e.preventDefault();
 	}, []);
 
 	// Get cursor style based on tool
-	const getCursorStyle = useCallback(() => {
+	const getCursorStyle = useCallback((): string => {
 		switch (selectedToolId) {
-			case TOOL_IDS.PENCIL:
-				return "crosshair";
-			case TOOL_IDS.BRUSH:
-				return "crosshair";
-			case TOOL_IDS.ERASER:
-				return "crosshair";
-			case TOOL_IDS.FILL:
-				return "crosshair";
-			case TOOL_IDS.PICK_COLOR:
-				return "crosshair";
 			case TOOL_IDS.MAGNIFIER:
 				return "zoom-in";
 			case TOOL_IDS.TEXT:
@@ -764,20 +321,43 @@ export function Canvas({ className = "" }) {
 		}
 	}, [selectedToolId]);
 
+	const canvasStyle: React.CSSProperties = {
+		cursor: getCursorStyle(),
+		transform: magnification > 1 ? `scale(${magnification})` : undefined,
+		transformOrigin: "top left",
+	};
+
 	return (
-		<canvas
-			ref={canvasRef}
-			className={`main-canvas ${className}`}
-			width={480}
-			height={320}
-			style={{ cursor: getCursorStyle() }}
-			onPointerDown={handlePointerDown}
-			onPointerMove={handlePointerMove}
-			onPointerUp={handlePointerUp}
-			onPointerLeave={handlePointerUp}
-			onContextMenu={handleContextMenu}
-			aria-label="Drawing canvas"
-		/>
+		<div className={`canvas-container ${className}`} style={{ position: "relative", display: "inline-block" }}>
+			<canvas
+				ref={canvasRef}
+				className="main-canvas"
+				width={480}
+				height={320}
+				style={canvasStyle}
+				onPointerDown={handlePointerDown}
+				onPointerMove={handlePointerMove}
+				onPointerUp={handlePointerUp}
+				onPointerLeave={(e) => {
+					handlePointerUp(e);
+					handlePointerLeave();
+				}}
+				onContextMenu={handleContextMenu}
+				aria-label="Drawing canvas"
+			/>
+			<CanvasOverlay ref={overlayRef} width={480} height={320} magnification={magnification} />
+			{textBoxHook.textBox?.isActive && (
+				<CanvasTextBox
+					ref={textInputRef}
+					textBox={textBoxHook.textBox}
+					magnification={magnification}
+					primaryColor={drawing.primaryColor}
+					onChange={handleTextChange}
+					onKeyDown={handleTextKeyDown}
+					onBlur={handleTextBlur}
+				/>
+			)}
+		</div>
 	);
 }
 

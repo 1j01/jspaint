@@ -15,13 +15,29 @@ mcpaint/
 │   ├── new/                  # React entry point
 │   │   ├── main.jsx
 │   │   └── App.jsx
-│   ├── react/components/     # React components
-│   │   ├── Component.jsx     # Legacy $Component wrapper
-│   │   ├── Frame.jsx         # Main layout with menu bar
-│   │   ├── ToolBox.jsx       # Tool selection grid
-│   │   ├── ColorBox.jsx      # Color palette
-│   │   ├── FontBox.jsx       # Font selector
-│   │   └── index.js
+│   ├── react/
+│   │   ├── components/       # React components
+│   │   │   ├── Canvas.tsx         # Main drawing canvas (~360 lines)
+│   │   │   ├── CanvasOverlay.tsx  # Selection overlay with marching ants
+│   │   │   ├── CanvasTextBox.tsx  # Text input overlay
+│   │   │   ├── ColorBox.tsx       # Color palette
+│   │   │   ├── Component.tsx      # Legacy $Component wrapper
+│   │   │   ├── FontBox.tsx        # Font selector
+│   │   │   ├── Frame.tsx          # Main layout with menu bar
+│   │   │   ├── ToolBox.tsx        # Tool selection grid
+│   │   │   └── ToolOptions.tsx    # Tool-specific options panel
+│   │   ├── context/
+│   │   │   └── AppContext.tsx     # Global state management (~600 lines)
+│   │   ├── hooks/            # Custom hooks for canvas operations
+│   │   │   ├── useCanvasDrawing.ts      # Core drawing logic
+│   │   │   ├── useCanvasSelection.ts    # Selection tools
+│   │   │   ├── useCanvasTextBox.ts      # Text tool logic
+│   │   │   ├── useCanvasShapes.ts       # Shape tools (line, rect, ellipse)
+│   │   │   └── useCanvasCurvePolygon.ts # Curve and polygon tools
+│   │   ├── utils/            # Pure utility functions
+│   │   │   └── drawingUtils.ts    # Drawing algorithms (~460 lines)
+│   │   └── data/
+│   │       └── palette.ts         # Color palette data
 │   ├── $Component.js         # jQuery component helpers (legacy)
 │   ├── $ToolBox.js
 │   ├── $ColorBox.js
@@ -186,10 +202,32 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 
 ## New React Files
 
+### Components
 | File | Purpose |
 |------|---------|
-| `src/react/context/AppContext.jsx` | Global state management with useReducer |
-| `src/react/components/Canvas.jsx` | Drawing canvas with tool support |
+| `src/react/components/Canvas.tsx` | Main drawing canvas orchestrator (~360 lines) |
+| `src/react/components/CanvasOverlay.tsx` | Selection overlay with marching ants |
+| `src/react/components/CanvasTextBox.tsx` | Text input overlay for text tool |
+| `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
+
+### Context
+| File | Purpose |
+|------|---------|
+| `src/react/context/AppContext.tsx` | Global state management with useReducer (~600 lines) |
+
+### Hooks
+| File | Purpose |
+|------|---------|
+| `src/react/hooks/useCanvasDrawing.ts` | Core drawing operations (drawPoint, drawLine, erase) |
+| `src/react/hooks/useCanvasSelection.ts` | Rectangular and free-form selection tools |
+| `src/react/hooks/useCanvasTextBox.ts` | Text box creation and commit logic |
+| `src/react/hooks/useCanvasShapes.ts` | Shape tools (line, rectangle, ellipse, rounded rect) |
+| `src/react/hooks/useCanvasCurvePolygon.ts` | Multi-click tools (curve, polygon) |
+
+### Utils
+| File | Purpose |
+|------|---------|
+| `src/react/utils/drawingUtils.ts` | Pure drawing algorithms (bresenhamLine, floodFill, etc.) |
 
 ## Testing
 

@@ -3,7 +3,18 @@ import { Canvas } from "../react/components/Canvas";
 import { ColorBox } from "../react/components/ColorBox";
 import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
 import { Tool, ToolBox } from "../react/components/ToolBox";
-import { AppProvider, TOOL_IDS, useApp, useColors, useHistory, useTool } from "../react/context/AppContext";
+import { ToolOptions } from "../react/components/ToolOptions";
+import {
+	AppProvider,
+	TOOL_IDS,
+	useApp,
+	useClipboard,
+	useColors,
+	useCursorPosition,
+	useHistory,
+	useSelection,
+	useTool,
+} from "../react/context/AppContext";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -144,6 +155,9 @@ function AppContent() {
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
 	const { canUndo, canRedo, undo, redo } = useHistory();
+	const { cursorPosition } = useCursorPosition();
+	const { selection, clearSelection } = useSelection();
+	const { copy, cut, paste, hasClipboard } = useClipboard();
 
 	const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
 
@@ -156,32 +170,303 @@ function AppContent() {
 
 	// Handle keyboard shortcuts
 	React.useEffect(() => {
-		const handleKeyDown = (e) => {
-			// Ctrl+Z for undo
-			if (e.ctrlKey && e.key === "z" && !e.shiftKey) {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// Don't handle shortcuts if typing in a text input
+			const target = e.target as HTMLElement;
+			if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+				// Allow Escape to exit text input
+				if (e.key === "Escape") {
+					target.blur();
+				}
+				return;
+			}
+
+			// Modifier key detection (Ctrl on Windows/Linux, Cmd on Mac)
+			const isMod = e.ctrlKey || e.metaKey;
+
+			// Ctrl/Cmd+Z for undo
+			if (isMod && e.key === "z" && !e.shiftKey) {
 				e.preventDefault();
 				if (canUndo) undo();
+				return;
 			}
-			// Ctrl+Y or Ctrl+Shift+Z for redo
-			if ((e.ctrlKey && e.key === "y") || (e.ctrlKey && e.shiftKey && e.key === "z")) {
+
+			// Ctrl/Cmd+Y or Ctrl/Cmd+Shift+Z for redo
+			if (
+				(isMod && e.key === "y") ||
+				(isMod && e.shiftKey && e.key === "z") ||
+				(isMod && e.shiftKey && e.key === "Z")
+			) {
 				e.preventDefault();
 				if (canRedo) redo();
+				return;
+			}
+
+			// Ctrl/Cmd+A for select all
+			if (isMod && e.key === "a") {
+				e.preventDefault();
+				setTool(TOOL_IDS.SELECT);
+				// TODO: Implement select all functionality in canvas
+				return;
+			}
+
+			// Ctrl/Cmd+C for copy
+			if (isMod && e.key === "c") {
+				if (selection) {
+					e.preventDefault();
+					copy();
+				}
+				return;
+			}
+
+			// Ctrl/Cmd+X for cut
+			if (isMod && e.key === "x") {
+				if (selection) {
+					e.preventDefault();
+					cut();
+					clearSelection();
+				}
+				return;
+			}
+
+			// Ctrl/Cmd+V for paste
+			if (isMod && e.key === "v") {
+				if (hasClipboard) {
+					e.preventDefault();
+					paste();
+				}
+				return;
+			}
+
+			// Delete or Backspace to clear selection
+			if (e.key === "Delete" || e.key === "Backspace") {
+				if (selection) {
+					e.preventDefault();
+					// TODO: Clear selection - delete selected area
+				}
+				return;
+			}
+
+			// Escape to cancel current operation / deselect
+			if (e.key === "Escape") {
+				e.preventDefault();
+				// Clear any active selection
+				// Note: This will be wired up when useSelection provides clearSelection
+				return;
+			}
+
+			// Tool shortcuts (single keys)
+			if (!isMod && !e.shiftKey && !e.altKey) {
+				switch (e.key.toLowerCase()) {
+					case "p":
+						setTool(TOOL_IDS.PENCIL);
+						break;
+					case "b":
+						setTool(TOOL_IDS.BRUSH);
+						break;
+					case "e":
+						setTool(TOOL_IDS.ERASER);
+						break;
+					case "f":
+						setTool(TOOL_IDS.FILL);
+						break;
+					case "k":
+						setTool(TOOL_IDS.PICK_COLOR);
+						break;
+					case "l":
+						setTool(TOOL_IDS.LINE);
+						break;
+					case "r":
+						setTool(TOOL_IDS.RECTANGLE);
+						break;
+					case "o":
+						setTool(TOOL_IDS.ELLIPSE);
+						break;
+					case "s":
+						setTool(TOOL_IDS.SELECT);
+						break;
+					case "a":
+						setTool(TOOL_IDS.AIRBRUSH);
+						break;
+					case "t":
+						setTool(TOOL_IDS.TEXT);
+						break;
+					case "m":
+						setTool(TOOL_IDS.MAGNIFIER);
+						break;
+					case "c":
+						setTool(TOOL_IDS.CURVE);
+						break;
+					case "g":
+						setTool(TOOL_IDS.POLYGON);
+						break;
+				}
 			}
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [canUndo, canRedo, undo, redo]);
+	}, [canUndo, canRedo, undo, redo, setTool, selection, copy, cut, paste, hasClipboard, clearSelection]);
+
+	// Format cursor position for status bar
+	const positionText = cursorPosition ? `${cursorPosition.x}, ${cursorPosition.y}` : "";
+
+	// Format selection or canvas size for status bar
+	const sizeText = selection
+		? `${Math.abs(selection.width)}x${Math.abs(selection.height)}`
+		: `${state.canvasWidth}x${state.canvasHeight}`;
+
+	// Get MENU_DIVIDER from global scope (set by os-gui)
+	const MENU_DIVIDER = (globalThis as typeof globalThis & { MENU_DIVIDER: symbol }).MENU_DIVIDER;
+
+	// Build dynamic menu with working actions
+	const menu = useMemo(
+		() => ({
+			"&File": [
+				{
+					label: "&New",
+					shortcutLabel: "Ctrl+N",
+					ariaKeyShortcuts: "Control+N",
+					description: "Create a new image.",
+					action: () => {
+						// TODO: Clear canvas and reset state
+						console.info("[React] File > New");
+					},
+				},
+				MENU_DIVIDER,
+				{
+					label: "E&xit",
+					description: "Close the application.",
+					disabled: true,
+					action: () => {},
+				},
+			],
+			"&Edit": [
+				{
+					label: "&Undo",
+					shortcutLabel: "Ctrl+Z",
+					ariaKeyShortcuts: "Control+Z",
+					disabled: !canUndo,
+					description: canUndo ? "Undo the last action." : "Nothing to undo.",
+					action: () => {
+						if (canUndo) undo();
+					},
+				},
+				{
+					label: "&Redo",
+					shortcutLabel: "Ctrl+Y",
+					ariaKeyShortcuts: "Control+Y",
+					disabled: !canRedo,
+					description: canRedo ? "Redo the last undone action." : "Nothing to redo.",
+					action: () => {
+						if (canRedo) redo();
+					},
+				},
+				MENU_DIVIDER,
+				{
+					label: "Cu&t",
+					shortcutLabel: "Ctrl+X",
+					ariaKeyShortcuts: "Control+X",
+					disabled: !selection,
+					description: "Cut the selection to clipboard.",
+					action: () => {
+						if (selection) {
+							cut();
+							clearSelection();
+						}
+					},
+				},
+				{
+					label: "&Copy",
+					shortcutLabel: "Ctrl+C",
+					ariaKeyShortcuts: "Control+C",
+					disabled: !selection,
+					description: "Copy the selection to clipboard.",
+					action: () => {
+						if (selection) copy();
+					},
+				},
+				{
+					label: "&Paste",
+					shortcutLabel: "Ctrl+V",
+					ariaKeyShortcuts: "Control+V",
+					disabled: !hasClipboard,
+					description: "Paste from clipboard.",
+					action: () => {
+						if (hasClipboard) paste();
+					},
+				},
+				MENU_DIVIDER,
+				{
+					label: "Select &All",
+					shortcutLabel: "Ctrl+A",
+					ariaKeyShortcuts: "Control+A",
+					description: "Select the entire canvas.",
+					action: () => {
+						setTool(TOOL_IDS.SELECT);
+						// TODO: Implement select all
+					},
+				},
+			],
+			"&View": [
+				{
+					label: "&Zoom",
+					submenu: [
+						{
+							label: "100%",
+							action: () => console.info("[React] View > Zoom 100%"),
+						},
+						{
+							label: "200%",
+							action: () => console.info("[React] View > Zoom 200%"),
+						},
+						{
+							label: "400%",
+							action: () => console.info("[React] View > Zoom 400%"),
+						},
+					],
+				},
+			],
+			"&Help": [
+				{
+					label: "&About MCPaint",
+					description: "About this React version of MCPaint.",
+					action: () => {
+						alert(
+							"MCPaint - React Preview\n\nA pixel-perfect MS Paint clone built with React.\n\nSee MIGRATE.md for implementation progress.",
+						);
+					},
+				},
+			],
+		}),
+		[
+			canUndo,
+			canRedo,
+			undo,
+			redo,
+			selection,
+			hasClipboard,
+			copy,
+			cut,
+			paste,
+			clearSelection,
+			setTool,
+			MENU_DIVIDER,
+		],
+	);
 
 	return (
 		<Frame
+			menu={menu}
 			leftContent={
 				<ToolBox
 					tools={TOOLBOX_ITEMS}
 					selectedToolIds={[selectedToolId]}
 					onSelectionChange={(toolIds) => setTool(toolIds[0])}
 					onHoverChange={setHoveredTool}
-				/>
+				>
+					<ToolOptions />
+				</ToolBox>
 			}
 			bottomContent={
 				<ColorBox
@@ -194,8 +479,8 @@ function AppContent() {
 			}
 			canvasContent={<Canvas />}
 			statusText={statusMessage}
-			statusPosition={`${state.canvasWidth}x${state.canvasHeight}`}
-			statusSize={canUndo ? "Undo available" : ""}
+			statusPosition={positionText}
+			statusSize={sizeText}
 		/>
 	);
 }

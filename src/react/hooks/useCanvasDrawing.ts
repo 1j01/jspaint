@@ -1,0 +1,183 @@
+import { useCallback, RefObject } from "react";
+import { TOOL_IDS, useColors, useTool } from "../context/AppContext";
+import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill } from "../utils/drawingUtils";
+
+/**
+ * Hook for core canvas drawing operations
+ */
+export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>) {
+	const { primaryColor, secondaryColor, setPrimaryColor, setSecondaryColor } = useColors();
+	const { selectedToolId, brushSize, pencilSize, eraserSize } = useTool();
+
+	// Get the current drawing color based on mouse button
+	const getDrawColor = useCallback(
+		(button: number): string => {
+			return button === 0 ? primaryColor : secondaryColor;
+		},
+		[primaryColor, secondaryColor],
+	);
+
+	// Get tool-specific brush size
+	const getToolSize = useCallback((): number => {
+		switch (selectedToolId) {
+			case TOOL_IDS.PENCIL:
+				return pencilSize;
+			case TOOL_IDS.BRUSH:
+				return brushSize;
+			case TOOL_IDS.ERASER:
+				return eraserSize;
+			case TOOL_IDS.AIRBRUSH:
+				return brushSize; // Use brush size for airbrush radius
+			default:
+				return 1;
+		}
+	}, [selectedToolId, pencilSize, brushSize, eraserSize]);
+
+	// Get canvas coordinates from mouse event
+	const getCanvasCoords = useCallback(
+		(e: { clientX: number; clientY: number }): { x: number; y: number } => {
+			const canvas = canvasRef.current;
+			if (!canvas) return { x: 0, y: 0 };
+
+			const rect = canvas.getBoundingClientRect();
+			const scaleX = canvas.width / rect.width;
+			const scaleY = canvas.height / rect.height;
+
+			return {
+				x: Math.floor((e.clientX - rect.left) * scaleX),
+				y: Math.floor((e.clientY - rect.top) * scaleY),
+			};
+		},
+		[canvasRef],
+	);
+
+	// Draw a single point or brush stamp
+	const drawPoint = useCallback(
+		(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size: number): void => {
+			ctx.fillStyle = color;
+
+			if (size <= 1) {
+				ctx.fillRect(x, y, 1, 1);
+			} else {
+				const points = getBrushPoints(size, "circle");
+				for (const point of points) {
+					ctx.fillRect(x + point.x, y + point.y, 1, 1);
+				}
+			}
+		},
+		[],
+	);
+
+	// Draw a line from one point to another
+	const drawLine = useCallback(
+		(
+			ctx: CanvasRenderingContext2D,
+			x0: number,
+			y0: number,
+			x1: number,
+			y1: number,
+			color: string,
+			size: number,
+		): void => {
+			ctx.fillStyle = color;
+
+			if (size <= 1) {
+				bresenhamLine(Math.floor(x0), Math.floor(y0), Math.floor(x1), Math.floor(y1), (x, y) => {
+					ctx.fillRect(x, y, 1, 1);
+				});
+			} else {
+				const points = getBrushPoints(size, "circle");
+				bresenhamLine(Math.floor(x0), Math.floor(y0), Math.floor(x1), Math.floor(y1), (x, y) => {
+					for (const point of points) {
+						ctx.fillRect(x + point.x, y + point.y, 1, 1);
+					}
+				});
+			}
+		},
+		[],
+	);
+
+	// Erase (draw with background color)
+	const erase = useCallback(
+		(ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number, size: number): void => {
+			drawLine(ctx, x0, y0, x1, y1, secondaryColor, size);
+		},
+		[drawLine, secondaryColor],
+	);
+
+	// Handle tool action for continuous drawing tools
+	const handleToolAction = useCallback(
+		(ctx: CanvasRenderingContext2D, x: number, y: number, prevX: number, prevY: number, button: number): void => {
+			const size = getToolSize();
+			const color = getDrawColor(button);
+
+			switch (selectedToolId) {
+				case TOOL_IDS.PENCIL:
+					drawLine(ctx, prevX, prevY, x, y, color, 1);
+					break;
+
+				case TOOL_IDS.BRUSH:
+					drawLine(ctx, prevX, prevY, x, y, color, size);
+					break;
+
+				case TOOL_IDS.ERASER:
+					erase(ctx, prevX, prevY, x, y, size);
+					break;
+
+				case TOOL_IDS.AIRBRUSH:
+					// Spray at current position (continuous effect)
+					sprayAirbrush(ctx, x, y, color, size);
+					break;
+
+				default:
+					// Default to pencil behavior for unimplemented tools
+					drawLine(ctx, prevX, prevY, x, y, color, 1);
+					break;
+			}
+		},
+		[selectedToolId, getToolSize, getDrawColor, drawLine, erase],
+	);
+
+	// Handle color picker
+	const pickColor = useCallback(
+		(ctx: CanvasRenderingContext2D, x: number, y: number, button: number): void => {
+			const canvas = canvasRef.current;
+			if (!canvas) return;
+
+			if (x >= 0 && y >= 0 && x < canvas.width && y < canvas.height) {
+				const imageData = ctx.getImageData(x, y, 1, 1);
+				const [r, g, b, a] = imageData.data;
+				const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
+				if (button === 0) {
+					setPrimaryColor(pickedColor);
+				} else {
+					setSecondaryColor(pickedColor);
+				}
+			}
+		},
+		[canvasRef, setPrimaryColor, setSecondaryColor],
+	);
+
+	// Handle fill tool
+	const handleFill = useCallback(
+		(ctx: CanvasRenderingContext2D, x: number, y: number, button: number): void => {
+			const color = getDrawColor(button);
+			floodFill(ctx, x, y, color);
+		},
+		[getDrawColor],
+	);
+
+	return {
+		getDrawColor,
+		getToolSize,
+		getCanvasCoords,
+		drawPoint,
+		drawLine,
+		erase,
+		handleToolAction,
+		pickColor,
+		handleFill,
+		primaryColor,
+		secondaryColor,
+	};
+}
