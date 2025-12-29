@@ -30,8 +30,8 @@ test.describe("Visual Layout Tests", () => {
 	});
 
 	test("status bar displays information", async ({ page }) => {
-		const statusBar = page.locator(".status-bar");
-		await expect(statusBar).toBeVisible();
+		const statusArea = page.locator(".status-area");
+		await expect(statusArea).toBeVisible();
 	});
 });
 

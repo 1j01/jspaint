@@ -145,7 +145,7 @@ test.describe("Undo/Redo Functionality", () => {
 	});
 
 	test("status bar shows undo availability", async ({ page }) => {
-		const statusBar = page.locator(".status-bar");
+		const statusArea = page.locator(".status-area");
 
 		// Initially, no undo should be available
 		// (This depends on how the status bar is implemented)
@@ -157,8 +157,8 @@ test.describe("Undo/Redo Functionality", () => {
 			end: { x: 0.6, y: 0.6 },
 		});
 
-		// Status should indicate undo is available
-		await expect(statusBar).toContainText(/[Uu]ndo/);
+		// Status should indicate undo is available (in the third status field)
+		await expect(statusArea).toContainText(/[Uu]ndo/);
 	});
 
 	test("keyboard shortcuts work for undo/redo", async ({ page }) => {
