@@ -1,9 +1,9 @@
-import React, { useMemo, Component as ReactComponent, ReactNode, ErrorInfo } from "react";
-import { Frame, DEFAULT_STATUS_TEXT } from "../react/components/Frame";
-import { ColorBox } from "../react/components/ColorBox";
-import { ToolBox, Tool } from "../react/components/ToolBox";
+import React, { ErrorInfo, Component as ReactComponent, ReactNode, useMemo } from "react";
 import { Canvas } from "../react/components/Canvas";
-import { AppProvider, useApp, useColors, useTool, useHistory, TOOL_IDS } from "../react/context/AppContext";
+import { ColorBox } from "../react/components/ColorBox";
+import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
+import { Tool, ToolBox } from "../react/components/ToolBox";
+import { AppProvider, TOOL_IDS, useApp, useColors, useHistory, useTool } from "../react/context/AppContext";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -20,15 +20,12 @@ class ErrorBoundary extends ReactComponent<ErrorBoundaryProps, ErrorBoundaryStat
 		super(props);
 		this.state = { hasError: false, error: null };
 	}
-
 	static getDerivedStateFromError(error: Error): ErrorBoundaryState {
 		return { hasError: true, error };
 	}
-
 	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
 		console.error("React Error:", error, errorInfo);
 	}
-
 	render() {
 		if (this.state.hasError) {
 			return (

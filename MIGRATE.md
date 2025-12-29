@@ -157,10 +157,11 @@ From `src/image-manipulation.js`:
 #### Priority 2 - Selection & Shapes
 1. Rectangular selection
 2. Free-form selection
-3. Line tool
-4. Rectangle tool
-5. Ellipse tool
-6. Fill tool
+3. ~~Line tool~~ ✅
+4. ~~Rectangle tool~~ ✅
+5. ~~Ellipse tool~~ ✅
+6. ~~Fill tool~~ ✅
+7. ~~Pick Color tool~~ ✅
 
 #### Priority 3 - Advanced Tools
 1. Curve tool (bezier)
@@ -190,7 +191,7 @@ From `src/image-manipulation.js`:
 - [x] **Phase 2**: Canvas integration with drawing capability
 - [x] **Phase 3**: Basic tool implementations (Pencil, Brush, Eraser)
 - [x] **Phase 4**: State management with undo/redo
-- [ ] **Phase 5**: Additional tools (shapes, selection, fill)
+- [/] **Phase 5**: Additional tools (shapes, selection, fill) - Line, Rectangle, Ellipse, Fill, Pick Color done
 - [ ] **Phase 6**: File operations and dialogs
 - [ ] **Phase 7**: Remove jQuery, delete legacy code
 

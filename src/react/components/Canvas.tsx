@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useCallback } from "react";
-import { useApp, useColors, useTool, useHistory, TOOL_IDS } from "../context/AppContext";
+import { useCallback, useEffect, useRef } from "react";
+import { TOOL_IDS, useApp, useColors, useHistory, useTool } from "../context/AppContext";
 
 /**
  * Draw a line using Bresenham's algorithm for pixel-perfect lines
@@ -60,11 +60,241 @@ function getBrushPoints(size, shape = "circle") {
 }
 
 /**
+ * Parse RGBA values from a color string
+ */
+function getRgbaFromColor(color: string): [number, number, number, number] {
+	// Handle rgba() format
+	const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+	if (rgbaMatch) {
+		return [
+			parseInt(rgbaMatch[1], 10),
+			parseInt(rgbaMatch[2], 10),
+			parseInt(rgbaMatch[3], 10),
+			rgbaMatch[4] !== undefined ? Math.round(parseFloat(rgbaMatch[4]) * 255) : 255,
+		];
+	}
+
+	// Handle hex format
+	const hexMatch = color.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/);
+	if (hexMatch) {
+		return [
+			parseInt(hexMatch[1], 16),
+			parseInt(hexMatch[2], 16),
+			parseInt(hexMatch[3], 16),
+			255,
+		];
+	}
+
+	// Default to black
+	return [0, 0, 0, 255];
+}
+
+/**
+ * Flood fill algorithm (scanline-based)
+ */
+function floodFill(
+	ctx: CanvasRenderingContext2D,
+	startX: number,
+	startY: number,
+	fillColor: string,
+) {
+	const canvas = ctx.canvas;
+	const width = canvas.width;
+	const height = canvas.height;
+
+	startX = Math.max(0, Math.min(Math.floor(startX), width - 1));
+	startY = Math.max(0, Math.min(Math.floor(startY), height - 1));
+
+	const imageData = ctx.getImageData(0, 0, width, height);
+	const data = imageData.data;
+
+	// Get start color
+	const startPos = (startY * width + startX) * 4;
+	const startR = data[startPos];
+	const startG = data[startPos + 1];
+	const startB = data[startPos + 2];
+	const startA = data[startPos + 3];
+
+	// Get fill color
+	const [fillR, fillG, fillB, fillA] = getRgbaFromColor(fillColor);
+
+	// Don't fill if clicking on the same color
+	const tolerance = 2;
+	if (
+		Math.abs(fillR - startR) <= tolerance &&
+		Math.abs(fillG - startG) <= tolerance &&
+		Math.abs(fillB - startB) <= tolerance &&
+		Math.abs(fillA - startA) <= tolerance
+	) {
+		return;
+	}
+
+	const stack: [number, number][] = [[startX, startY]];
+
+	const shouldFill = (pos: number): boolean => {
+		return (
+			Math.abs(data[pos] - startR) <= tolerance &&
+			Math.abs(data[pos + 1] - startG) <= tolerance &&
+			Math.abs(data[pos + 2] - startB) <= tolerance &&
+			Math.abs(data[pos + 3] - startA) <= tolerance
+		);
+	};
+
+	const doFill = (pos: number) => {
+		data[pos] = fillR;
+		data[pos + 1] = fillG;
+		data[pos + 2] = fillB;
+		data[pos + 3] = fillA;
+	};
+
+	while (stack.length > 0) {
+		const [x, y] = stack.pop()!;
+		let pixelPos = (y * width + x) * 4;
+
+		// Go up to find the top of the fill area
+		let currentY = y;
+		while (currentY >= 0 && shouldFill((currentY * width + x) * 4)) {
+			currentY--;
+		}
+		currentY++;
+		pixelPos = (currentY * width + x) * 4;
+
+		let reachLeft = false;
+		let reachRight = false;
+
+		// Fill downward
+		while (currentY < height && shouldFill(pixelPos)) {
+			doFill(pixelPos);
+
+			// Check left
+			if (x > 0) {
+				if (shouldFill(pixelPos - 4)) {
+					if (!reachLeft) {
+						stack.push([x - 1, currentY]);
+						reachLeft = true;
+					}
+				} else {
+					reachLeft = false;
+				}
+			}
+
+			// Check right
+			if (x < width - 1) {
+				if (shouldFill(pixelPos + 4)) {
+					if (!reachRight) {
+						stack.push([x + 1, currentY]);
+						reachRight = true;
+					}
+				} else {
+					reachRight = false;
+				}
+			}
+
+			currentY++;
+			pixelPos = (currentY * width + x) * 4;
+		}
+	}
+
+	ctx.putImageData(imageData, 0, 0);
+}
+
+/**
+ * Draw an ellipse using midpoint algorithm (aliased, pixel-perfect)
+ */
+function drawEllipse(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+	strokeColor: string,
+	fillColor: string | null,
+	strokeWidth: number = 1,
+) {
+	// Normalize coordinates
+	if (width < 0) {
+		x += width;
+		width = -width;
+	}
+	if (height < 0) {
+		y += height;
+		height = -height;
+	}
+
+	if (width < 2 || height < 2) return;
+
+	const cx = x + width / 2;
+	const cy = y + height / 2;
+	const rx = width / 2;
+	const ry = height / 2;
+
+	// Fill first
+	if (fillColor) {
+		ctx.fillStyle = fillColor;
+		ctx.beginPath();
+		ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+		ctx.fill();
+	}
+
+	// Stroke
+	if (strokeColor && strokeWidth > 0) {
+		ctx.strokeStyle = strokeColor;
+		ctx.lineWidth = strokeWidth;
+		ctx.beginPath();
+		ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+		ctx.stroke();
+	}
+}
+
+/**
+ * Draw a rectangle
+ */
+function drawRectangle(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+	strokeColor: string,
+	fillColor: string | null,
+	strokeWidth: number = 1,
+) {
+	// Normalize coordinates
+	if (width < 0) {
+		x += width;
+		width = -width;
+	}
+	if (height < 0) {
+		y += height;
+		height = -height;
+	}
+
+	// Fill first
+	if (fillColor) {
+		ctx.fillStyle = fillColor;
+		ctx.fillRect(x, y, width, height);
+	}
+
+	// Stroke - draw as filled rectangles for pixel-perfect rendering
+	if (strokeColor && strokeWidth > 0) {
+		ctx.fillStyle = strokeColor;
+		// Top
+		ctx.fillRect(x, y, width, strokeWidth);
+		// Bottom
+		ctx.fillRect(x, y + height - strokeWidth, width, strokeWidth);
+		// Left
+		ctx.fillRect(x, y, strokeWidth, height);
+		// Right
+		ctx.fillRect(x + width - strokeWidth, y, strokeWidth, height);
+	}
+}
+
+/**
  * Canvas component for drawing
  */
 export function Canvas({ className = "" }) {
 	const { canvasRef } = useApp();
-	const { primaryColor, secondaryColor } = useColors();
+	const { primaryColor, secondaryColor, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, brushSize, pencilSize, eraserSize } = useTool();
 	const { saveState } = useHistory();
 
@@ -74,6 +304,10 @@ export function Canvas({ className = "" }) {
 		lastX: 0,
 		lastY: 0,
 		button: 0, // 0 = left, 2 = right
+		// Shape preview state
+		startX: 0,
+		startY: 0,
+		previewImageData: null as ImageData | null,
 	});
 
 	// Initialize canvas with white background
@@ -214,31 +448,77 @@ export function Canvas({ className = "" }) {
 			const ctx = canvas.getContext("2d", { willReadFrequently: true });
 			const { x, y } = getCanvasCoords(e);
 
+			// Determine if this is a shape tool that needs preview
+			const isShapeTool = [
+				TOOL_IDS.LINE,
+				TOOL_IDS.RECTANGLE,
+				TOOL_IDS.ELLIPSE,
+				TOOL_IDS.ROUNDED_RECTANGLE,
+			].includes(selectedToolId);
+
 			// Save state for undo before drawing
 			saveState();
+
+			// Save starting point and canvas state for shape tools
+			const previewImageData = isShapeTool
+				? ctx.getImageData(0, 0, canvas.width, canvas.height)
+				: null;
 
 			drawingState.current = {
 				isDrawing: true,
 				lastX: x,
 				lastY: y,
 				button: e.button,
+				startX: x,
+				startY: y,
+				previewImageData,
 			};
 
-			// Draw initial point
-			const size = getToolSize();
 			const color = getDrawColor(e.button);
+			const size = getToolSize();
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
 					drawPoint(ctx, x, y, color, 1);
 					break;
+
 				case TOOL_IDS.BRUSH:
 					drawPoint(ctx, x, y, color, size);
 					break;
+
 				case TOOL_IDS.ERASER:
 					drawPoint(ctx, x, y, secondaryColor, size);
 					break;
+
+				case TOOL_IDS.FILL:
+					// Fill is immediate - click to fill
+					floodFill(ctx, x, y, color);
+					break;
+
+				case TOOL_IDS.PICK_COLOR: {
+					// Pick color is immediate
+					if (x >= 0 && y >= 0 && x < canvas.width && y < canvas.height) {
+						const imageData = ctx.getImageData(x, y, 1, 1);
+						const [r, g, b, a] = imageData.data;
+						const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
+						if (e.button === 0) {
+							setPrimaryColor(pickedColor);
+						} else {
+							setSecondaryColor(pickedColor);
+						}
+					}
+					break;
+				}
+
+				case TOOL_IDS.LINE:
+				case TOOL_IDS.RECTANGLE:
+				case TOOL_IDS.ELLIPSE:
+				case TOOL_IDS.ROUNDED_RECTANGLE:
+					// Shape tools - just record start point, drawing happens on move/up
+					break;
+
 				default:
+					// Default to pencil behavior
 					drawPoint(ctx, x, y, color, 1);
 					break;
 			}
@@ -246,7 +526,18 @@ export function Canvas({ className = "" }) {
 			// Capture pointer for smooth drawing even outside canvas
 			canvas.setPointerCapture(e.pointerId);
 		},
-		[canvasRef, getCanvasCoords, saveState, getToolSize, getDrawColor, selectedToolId, drawPoint, secondaryColor],
+		[
+			canvasRef,
+			getCanvasCoords,
+			saveState,
+			getToolSize,
+			getDrawColor,
+			selectedToolId,
+			drawPoint,
+			secondaryColor,
+			setPrimaryColor,
+			setSecondaryColor,
+		],
 	);
 
 	const handlePointerMove = useCallback(
@@ -258,26 +549,117 @@ export function Canvas({ className = "" }) {
 
 			const ctx = canvas.getContext("2d", { willReadFrequently: true });
 			const { x, y } = getCanvasCoords(e);
-			const { lastX, lastY, button } = drawingState.current;
+			const { lastX, lastY, button, startX, startY, previewImageData } = drawingState.current;
+			const color = getDrawColor(button);
 
-			handleToolAction(ctx, x, y, lastX, lastY, button);
+			// Check if this is a shape tool
+			const isShapeTool = [
+				TOOL_IDS.LINE,
+				TOOL_IDS.RECTANGLE,
+				TOOL_IDS.ELLIPSE,
+				TOOL_IDS.ROUNDED_RECTANGLE,
+			].includes(selectedToolId);
+
+			if (isShapeTool && previewImageData) {
+				// Restore original state before drawing preview
+				ctx.putImageData(previewImageData, 0, 0);
+
+				const width = x - startX;
+				const height = y - startY;
+				const strokeWidth = 1; // Default stroke width
+
+				switch (selectedToolId) {
+					case TOOL_IDS.LINE:
+						// Draw line from start to current
+						ctx.strokeStyle = color;
+						ctx.lineWidth = strokeWidth;
+						ctx.beginPath();
+						ctx.moveTo(startX, startY);
+						ctx.lineTo(x, y);
+						ctx.stroke();
+						break;
+
+					case TOOL_IDS.RECTANGLE:
+						drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
+						break;
+
+					case TOOL_IDS.ELLIPSE:
+						drawEllipse(ctx, startX, startY, width, height, color, null, strokeWidth);
+						break;
+
+					case TOOL_IDS.ROUNDED_RECTANGLE:
+						// Use rectangle for now (rounded rect implementation similar)
+						drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
+						break;
+				}
+			} else {
+				// Regular drawing tools
+				handleToolAction(ctx, x, y, lastX, lastY, button);
+			}
 
 			drawingState.current.lastX = x;
 			drawingState.current.lastY = y;
 		},
-		[canvasRef, getCanvasCoords, handleToolAction],
+		[canvasRef, getCanvasCoords, handleToolAction, selectedToolId, getDrawColor],
 	);
 
 	const handlePointerUp = useCallback(
 		(e) => {
-			drawingState.current.isDrawing = false;
-
 			const canvas = canvasRef.current;
-			if (canvas) {
+			const { startX, startY, button, previewImageData } = drawingState.current;
+
+			if (canvas && drawingState.current.isDrawing) {
+				const ctx = canvas.getContext("2d", { willReadFrequently: true });
+				const { x, y } = getCanvasCoords(e);
+				const color = getDrawColor(button);
+
+				// Finalize shape drawing
+				const isShapeTool = [
+					TOOL_IDS.LINE,
+					TOOL_IDS.RECTANGLE,
+					TOOL_IDS.ELLIPSE,
+					TOOL_IDS.ROUNDED_RECTANGLE,
+				].includes(selectedToolId);
+
+				if (isShapeTool && previewImageData) {
+					// Restore and draw final shape
+					ctx.putImageData(previewImageData, 0, 0);
+
+					const width = x - startX;
+					const height = y - startY;
+					const strokeWidth = 1;
+
+					switch (selectedToolId) {
+						case TOOL_IDS.LINE:
+							ctx.strokeStyle = color;
+							ctx.lineWidth = strokeWidth;
+							ctx.beginPath();
+							ctx.moveTo(startX, startY);
+							ctx.lineTo(x, y);
+							ctx.stroke();
+							break;
+
+						case TOOL_IDS.RECTANGLE:
+							drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
+							break;
+
+						case TOOL_IDS.ELLIPSE:
+							drawEllipse(ctx, startX, startY, width, height, color, null, strokeWidth);
+							break;
+
+						case TOOL_IDS.ROUNDED_RECTANGLE:
+							drawRectangle(ctx, startX, startY, width, height, color, null, strokeWidth);
+							break;
+					}
+				}
+
 				canvas.releasePointerCapture(e.pointerId);
 			}
+
+			drawingState.current.isDrawing = false;
+			drawingState.current.previewImageData = null;
 		},
-		[canvasRef],
+		[canvasRef, getCanvasCoords, selectedToolId, getDrawColor],
 	);
 
 	// Prevent context menu on right-click
