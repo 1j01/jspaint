@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { default_palette as DEFAULT_PALETTE } from "../../color-data.js";
+import { DEFAULT_PALETTE } from "../data/palette.js";
 import { Component } from "./Component.jsx";
 
 const FALLBACK_PRIMARY = "rgb(0,0,0)";

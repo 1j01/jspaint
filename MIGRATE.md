@@ -1,99 +1,271 @@
 # Migration Roadmap
 
-## Current architecture snapshot
-- `index.html` bootstraps the entire experience with more than twenty `<script type="module">` tags that directly load individual modules such as `src/app.js`, `src/helpers.js`, `src/$ToolBox.js`, and others, relying on the browser to resolve module ordering and exposing globals on `window` for cross-module communication.【F:index.html†L1432-L1471】【F:src/app.js†L1-L63】
-- `src/app.js` orchestrates most runtime behavior: it imports UI widgets (for example `$ColorBox`, `$ToolBox`, `Handles`) and exports functions to the global scope to keep legacy consumers working, revealing the project’s reliance on implicit globals and tight coupling between modules.【F:src/app.js†L1-L67】【F:src/app.js†L80-L110】
-- Layout and UI utilities lean heavily on jQuery-style helpers (for example `$Component`, `$ToolWindow`, `$G`), custom DOM manipulation, and CSS produced outside of a bundler, which will influence how we transition to component-based tooling.【F:src/'$Component.js'†L1-L120】【F:styles/layout.css†L1-L40】
-- Tooling today centers on `@1j01/live-server` for local development and manual CSS builds via `rtlcss`, with no modern build pipeline for JavaScript bundling or asset hashing. This context informs the work needed before Vite can take over build and dev-server responsibilities.【F:package.json†L87-L140】
+## Current State (Updated December 2024)
 
-## Phase 1 – Adopt Vite as the build and dev platform
+The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2 (React migration):
 
-### 1. Preparation and inventory
-1. Catalogue entry points and side-effect modules. Confirm which modules must execute in order (for example, `helpers.js` before `app.js`) and identify any scripts that still depend on being loaded globally (e.g., `app-state.js` is loaded as a classic script).【F:index.html†L1432-L1471】
-2. Enumerate global variables that `app.js` and its peers set on `window` so we can deliberately expose them in a controlled way once bundled by Vite.【F:src/app.js†L35-L63】
-3. Document CSS and static asset expectations (for example, theme CSS loaded dynamically in `src/theme.js`, localization assets in `localization/`, and image/font paths) because Vite will need to serve them from `/public` or import them explicitly.【F:src/theme.js†L1-L56】
+- **Build System**: Vite is fully configured with multi-page app support
+- **Legacy App**: Moved to `/old/` subdirectory, fully functional
+- **React Preview**: Available at `/new/` with basic UI components
+- **Entry Points**: `index.html` (selector), `old/index.html` (legacy), `new/index.html` (React)
 
-### 2. Introduce Vite scaffolding without breaking existing flows
-1. Add Vite (`npm install --save-dev vite`) and create `vite.config.js` that configures:
-   - The HTML entry (`index.html`) as Vite’s root.
-   - Aliases for frequently imported modules if helpful (e.g., resolve `$` prefixed files).
-   - Static asset directories (e.g., move `styles`, `images`, `localization`, `lib` into `public` or use copy plugins).
-2. Update `package.json` scripts to add `vite`-based dev (`vite dev`) and build commands, keeping existing scripts temporarily for fallback until parity is proven.【F:package.json†L108-L139】
-3. Remove legacy desktop integration details that referenced `src/electron-main.js` so Vite can become the only entrypoint.
+## Architecture Overview
 
-### 3. Migrate HTML entry to Vite semantics
-1. Convert `index.html` into a Vite entry template:
-   - Replace individual `<script type="module" src="...">` tags with a single script that imports the new entry (e.g., `/src/main.js`).
-   - Move `defer`/classic scripts (`src/app-state.js`) to modules or inline dynamic imports so Vite can process them; use `import "./app-state.js";` to preserve side effects.
-   - Preserve meta tags and CSP requirements by mirroring them inside the Vite-served HTML (Vite supports `<meta http-equiv>` entries).
-2. Add a new `src/main.js` (or TypeScript equivalent) that reproduces the current load order via explicit imports so bundling remains deterministic:
-   ```js
-   import "./helpers.js";
-   import "./storage.js";
-   import "./$Component.js";
-   // ...
-   import "./app.js";
-   import "./sessions.js";
-   ```
-   This file will become the single entry point for Vite while maintaining side effects.
-3. Validate that runtime globals expected by other integrations (e.g., `window.systemHooks`, `window.update_fill_and_stroke_colors_and_lineWidth`) are still set. If tree-shaking removes them, explicitly re-export them from the entry (`window.update_fill... = update_fill...`).【F:src/app.js†L35-L63】
+### Legacy Architecture (`/old/`)
+- `old/index.html` loads 20+ `<script type="module">` tags
+- `src/app.js` orchestrates runtime behavior (~3400 lines)
+- Heavy reliance on jQuery-style helpers (`$Component`, `$ToolWindow`, `$G`)
+- Global variables on `window` for cross-module communication
+- CSS in `styles/layout.css` with dynamic theme loading
 
-### 4. Adjust asset loading for Vite
-1. Move CSS build outputs and vendor CSS (`lib/os-gui`, `lib/98.css`) into Vite’s asset pipeline. Either copy them into `public/` for now or import them in `main.js` (Vite will process CSS imports).
-2. Update dynamic theme loading in `src/theme.js` so that `href_for(theme)` resolves relative to Vite’s base path (e.g., `/styles/themes/${theme}`) or convert themes to modules imported via Vite’s glob imports.【F:src/theme.js†L1-L56】
-3. Audit asset references inside JS for relative path assumptions (for example, `images/icons/...` in `index.html`). Adjust to use `new URL("../images/...", import.meta.url)` where bundling is required.
+### React Architecture (`/new/`)
+- `src/new/main.jsx` - React entry point
+- `src/new/App.jsx` - Main app component with basic state
+- `src/react/components/` - UI components (Frame, ToolBox, ColorBox, FontBox)
+- Reuses legacy CSS from `styles/`
 
-### 5. Update development workflows
-1. Replace `npm run dev` to launch `vite dev` plus any CSS watchers (decide whether to keep `rtlcss` or replace with PostCSS plugins run by Vite). Update documentation (`README.md`) to explain the new flow.
-2. Update Cypress and other automation to target the Vite dev server port (default 5173) or start Vite in preview mode during tests. Ensure `start-server-and-test` scripts reference the new commands.【F:package.json†L120-L139】
-3. Introduce linting or TypeScript integrations Vite supports (e.g., ESLint plugin, `tsconfig` path mapping) to catch module resolution issues early.
+## Phase 1 – Vite Adoption ✅ COMPLETE
 
-### 6. Hardening before React work
-1. Verify production build output matches expectations by deploying Vite’s `dist` to a staging environment.
-2. Monitor bundle size and module chunks; consider code-splitting heavy features (e.g., `speech-recognition.js`, `eye-gaze-mode.js`) using dynamic imports to preserve load performance.
-3. Freeze the migration once parity is confirmed so React work can start from a stable baseline.
+### 1. Preparation and inventory ✅
+- Entry points catalogued: `index.html`, `old/index.html`, `new/index.html`, `about.html`, `privacy.html`
+- Global variables documented in legacy code
+- Asset paths configured for Vite
 
-## Phase 2 – Comprehensive React migration plan
+### 2. Vite scaffolding ✅
+- `vite.config.mjs` configured with:
+  - Multi-page app support (rollupOptions.input)
+  - Static asset copying (images, styles, lib, localization, etc.)
+  - Dev server on port 1999
+- Legacy app isolated in `/old/` subdirectory
+
+### 3. HTML entry migration ✅
+- Legacy app preserved in `old/index.html`
+- React app uses `new/index.html` with single entry point
+- Workspace selector at root `index.html`
+
+### 4. Asset loading ✅
+- CSS served from `styles/` directory
+- Themes load dynamically via `src/theme.js`
+- Static assets copied to dist during build
+
+### 5. Development workflows ✅
+- `npm run dev` - Vite dev server + CSS watch
+- `npm run build` - Production build
+- `npm run preview` - Preview built output
+- Cypress configured for Vite dev server
+
+### 6. Hardening ✅
+- Production builds working
+- Legacy and React apps coexist
+
+## Phase 2 – React Migration (IN PROGRESS)
 
 ### 1. Foundational groundwork
-1. Establish project-wide TypeScript or JSDoc conventions for React components. The codebase already uses JSDoc for types (see `src/app.js`), so decide whether to continue with `// @ts-check` and `.jsx` files or move to `.tsx` with a `tsconfig` aligned to React.【F:src/app.js†L1-L19】
-2. Introduce React and React DOM (`npm install react react-dom`) along with supporting typings if TypeScript is adopted.
-3. Decide on a state management strategy. The existing code uses a mixture of mutable globals (e.g., `selected_tool`, `palette`) and custom event emitters (`$G`). Catalog these in a migration spreadsheet so each global has a React state counterpart or context provider planned.【F:src/app.js†L1-L63】【F:src/functions.js†L180-L240】
-4. Create a React root entry (`src/main.jsx`) that renders into the body or a dedicated `<div id="root">`. For coexistence with legacy DOM during the transition, mount React inside a container and let legacy scripts populate the rest until replaced.
 
-### 2. Incremental componentization strategy
-1. Map existing UI modules to candidate React components:
-   - Toolbars and floating windows produced via `$Component` / `$ToolWindow` become React components (`<Toolbox />`, `<ColorBox />`).【F:src/'$Component.js'†L48-L120】
-   - Canvas workspace managed in `src/app.js` (`main_canvas`, `Handles`) becomes a React-managed canvas component where imperative APIs are exposed via refs.【F:src/app.js†L15-L32】【F:src/Handles.js†L1-L80】
-   - Dialogs built with `showMessageBox` / `menus.js` can be wrapped in React portals over time.【F:src/msgbox.js†L1-L80】【F:src/menus.js†L1-L60】
-2. Prioritize components that have clearer boundaries (e.g., menus, tool options panels) for the first React conversions to reduce risk.
-3. For each targeted component:
-   - Translate the markup defined in HTML templates or created via jQuery into JSX.
-   - Replace direct DOM manipulation with React state/props; where imperative behavior is unavoidable (dragging, canvas rendering), isolate it in `useEffect` hooks.
-   - Re-implement event wiring using React synthetic events, ensuring keyboard and pointer interactions remain intact (review existing handlers in `src/app.js` and `src/tools.js`).【F:src/tools.js†L1-L80】
+#### Completed ✅
+- React 18 and React DOM installed
+- JSX components created in `src/react/components/`
+- React entry point at `src/new/main.jsx`
+- Basic state management with `useState` in App.jsx
 
-### 3. State migration plan
-1. Introduce a central React state (e.g., using Context + reducers) to hold application-wide data (current tool, colors, canvas history). Start by mirroring the existing global variables and gradually replace reads/writes in legacy modules with context-aware hooks.
-2. Wrap legacy modules that must remain temporarily (e.g., specialized algorithms in `functions.js`) so they receive state via arguments instead of reaching for globals.
-3. Convert the command/history system managed in `functions.js` to a React-friendly service (possibly using Zustand or Redux Toolkit if reducers become complex). Ensure undo/redo still interacts correctly with the canvas state.【F:src/functions.js†L2400-L2520】
-4. Plan for asynchronous features (speech recognition, Discord activity, Imgur integration) to run through React effects or dedicated service layers to avoid side effects outside React’s lifecycle.【F:src/speech-recognition.js†L1-L80】【F:src/imgur.js†L1-L80】
+#### TODO
+- [x] Decide on state management strategy (Context + hooks vs Zustand vs Redux) - **Using React Context + useReducer**
+- [ ] Create migration spreadsheet mapping globals to React state
+- [ ] Establish TypeScript or stricter JSDoc conventions
 
-### 4. Rendering and performance considerations
-1. Benchmark current canvas rendering flows (`make_canvas`, `update_helper_layer`, `Handles`) to understand which pieces must stay imperative. Create React wrapper components that expose imperative methods via `forwardRef` so tools can manipulate the canvas without causing unnecessary rerenders.【F:src/helpers.js†L1-L40】【F:src/Handles.js†L200-L320】
-2. Use React’s lazy loading to defer heavy optional features (e.g., `simulate-random-gestures`, `eye-gaze-mode`) similar to how Vite dynamic imports were planned, keeping initial bundle size manageable.【F:src/simulate-random-gestures.js†L1-L40】【F:src/eye-gaze-mode.js†L1-L80】
-3. Introduce unit tests around newly created components to ensure refactoring does not regress behavior. Consider using React Testing Library plus Jest, leveraging existing Cypress tests for end-to-end validation.
+### 2. Incremental componentization
 
-### 5. Migration sequencing
-1. Phase 0: Ship Vite-only build (from earlier phase) and freeze new features.
-2. Phase 1: Introduce React root and render a minimal shell (e.g., the surrounding chrome) while keeping tool interactions powered by legacy code.
-3. Phase 2: Convert sidebar/tool windows to React components that read/write from shared state.
-4. Phase 3: Port the canvas interaction layer, encapsulating drawing logic in React-managed hooks/services.
-5. Phase 4: Replace remaining modals/menus with React equivalents, remove jQuery dependencies, and delete the legacy module loader scaffolding.
-6. Final phase: Enable strict mode, remove `window` globals, and document the new architecture in `README.md` and developer guides.
+#### Completed ✅
+| Legacy Module | React Component | Status |
+|---------------|-----------------|--------|
+| `$Component.js` | `Component.jsx` | Wrapper created |
+| `$ToolBox.js` | `ToolBox.jsx` | UI only (no tool logic) |
+| `$ColorBox.js` | `ColorBox.jsx` | UI only (no color logic) |
+| `$FontBox.js` | `FontBox.jsx` | Partial implementation |
+| Layout chrome | `Frame.jsx` | Basic layout with menu bar |
 
-### 6. Risk mitigation and documentation
-1. Maintain feature parity by keeping Cypress regression tests running throughout; update selectors to target stable data attributes introduced during the React migration.
-2. Document each conversion step in `MIGRATE.md`, updating checklists as modules move to React.
-3. Provide developer onboarding docs covering the React architecture, state management choices, and coding conventions so contributors can align with the new system.
+#### TODO - UI Components
+- [ ] Port menu system to React (currently bridged via legacy MenuBar)
+- [ ] Create StatusBar component
+- [ ] Create ToolOptions component
+- [ ] Create dialog components (About, Help, etc.)
 
-This plan should guide the project through adopting Vite for modern tooling and subsequently re-platforming the UI onto React with minimal service disruption.
+#### TODO - Canvas Components
+- [x] Create Canvas component with imperative ref API
+- [ ] Port Handles.js for resize/selection handles
+- [ ] Port OnCanvasSelection.js
+- [ ] Port OnCanvasTextBox.js
+- [ ] Port OnCanvasHelperLayer.js
+
+### 3. State migration
+
+#### Core State - Implemented ✅
+- [x] Create AppContext with core state:
+  - `selectedTool` / `selectedTools`
+  - `primaryColor` / `secondaryColor`
+  - `palette`
+  - `canvasSize` (width/height)
+  - `brushSize` / `pencilSize` / `eraserSize`
+  - `fileName` / `saved` status
+- [x] Create basic undo/redo history (linear stack)
+- [x] Create shared canvas ref via context
+
+#### TODO - Advanced State
+- [ ] Port tree-based history from `functions.js` (branching undo/redo)
+- [ ] Add `magnification` state
+- [ ] Add Selection state
+- [ ] Add active text box state
+
+#### TODO - Tool State
+- [ ] Create tools registry/context
+- [ ] Port tool implementations from `tools.js`
+- [ ] Connect tools to canvas via context
+
+### 4. Core functionality migration
+
+#### TODO - Drawing Functions
+Key functions to port from `src/functions.js`:
+- [ ] `draw_line()`, `draw_bezier_curve()`
+- [ ] `draw_ellipse()`, `draw_rounded_rectangle()`
+- [ ] `fill()` (flood fill algorithm)
+- [ ] `select_all()`, `delete_selection()`
+- [ ] `crop_to_selection()`
+- [ ] `image_invert_colors()`, `image_flip_horizontal/vertical()`
+
+#### TODO - Image Manipulation
+From `src/image-manipulation.js`:
+- [ ] Canvas rotation algorithms
+- [ ] Stretch/skew operations
+- [ ] Color quantization
+- [ ] Image tracing
+
+#### TODO - File Operations
+- [ ] File open/save dialogs
+- [ ] Format encoding/decoding (PNG, BMP, GIF, JPEG)
+- [ ] Palette import/export
+
+### 5. Feature migration priority
+
+#### Priority 1 - Core Drawing ✅ DONE
+1. ~~Canvas component with basic mouse events~~
+2. ~~Pencil tool (simplest drawing tool)~~
+3. ~~Brush tool with sizes~~
+4. ~~Eraser tool~~
+5. ~~Color selection working~~
+6. ~~Undo/redo (single level first, then tree)~~ - Linear undo/redo implemented
+
+#### Priority 2 - Selection & Shapes
+1. Rectangular selection
+2. Free-form selection
+3. Line tool
+4. Rectangle tool
+5. Ellipse tool
+6. Fill tool
+
+#### Priority 3 - Advanced Tools
+1. Curve tool (bezier)
+2. Polygon tool
+3. Text tool
+4. Airbrush tool
+5. Magnifier/zoom
+
+#### Priority 4 - Polish
+1. Menu system fully in React
+2. All dialogs as React components
+3. Keyboard shortcuts
+4. File operations
+5. Clipboard operations
+
+#### Priority 5 - Advanced Features
+1. Multi-user sessions
+2. Speech recognition
+3. Eye gaze mode
+4. Themes (already CSS-based)
+5. Localization
+
+### 6. Migration sequencing
+
+- [x] **Phase 0**: Vite build working, legacy app preserved
+- [x] **Phase 1**: React shell with basic UI components
+- [x] **Phase 2**: Canvas integration with drawing capability
+- [x] **Phase 3**: Basic tool implementations (Pencil, Brush, Eraser)
+- [x] **Phase 4**: State management with undo/redo
+- [ ] **Phase 5**: Additional tools (shapes, selection, fill)
+- [ ] **Phase 6**: File operations and dialogs
+- [ ] **Phase 7**: Remove jQuery, delete legacy code
+
+## Technical Decisions Needed
+
+### State Management
+Options to evaluate:
+1. **React Context + useReducer** - Simple, no dependencies
+2. **Zustand** - Lightweight, good for imperative canvas ops
+3. **Redux Toolkit** - Full-featured, good for complex undo/redo
+
+Recommendation: Start with Context + hooks, migrate to Zustand if needed.
+
+### Canvas Integration Pattern
+Options:
+1. **Imperative ref** - Expose canvas methods via `forwardRef`
+2. **Effect-based** - Redraw in `useEffect` based on state
+3. **Hybrid** - State for UI, imperative for drawing
+
+Recommendation: Hybrid approach - React manages tool/color state, canvas ops are imperative.
+
+### Component Library
+Options:
+1. **Keep os-gui** - Already integrated, Windows 98 look
+2. **Custom components** - More control, more work
+3. **Headless UI** - Accessibility built-in
+
+Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
+
+## Files Reference
+
+### Key Legacy Files to Port
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/app.js` | ~3400 | Main orchestration |
+| `src/functions.js` | ~2200 | Drawing functions |
+| `src/tools.js` | ~1600 | Tool implementations |
+| `src/menus.js` | ~1550 | Menu definitions |
+| `src/image-manipulation.js` | ~1740 | Canvas algorithms |
+| `src/sessions.js` | ~1060 | Multi-user |
+
+### React Files Created
+| File | Purpose |
+|------|---------|
+| `src/new/main.jsx` | React entry point |
+| `src/new/App.jsx` | Main app component |
+| `src/react/components/Frame.jsx` | Layout container |
+| `src/react/components/ToolBox.jsx` | Tool grid |
+| `src/react/components/ColorBox.jsx` | Color palette |
+| `src/react/components/FontBox.jsx` | Font selector |
+| `src/react/components/Component.jsx` | Legacy wrapper |
+| `src/react/components/Canvas.jsx` | Drawing canvas with tool support |
+| `src/react/context/AppContext.jsx` | Global state management |
+
+## Risk Mitigation
+
+1. **Feature parity**: Keep Cypress tests running throughout
+2. **Parallel development**: Legacy app at `/old/` always works
+3. **Incremental migration**: One component/feature at a time
+4. **State isolation**: New React state doesn't break legacy globals
+
+## Commands
+
+```bash
+# Development
+npm run dev           # Start dev server (port 1999)
+
+# Access points
+http://localhost:1999/        # Workspace selector
+http://localhost:1999/old/    # Legacy jQuery app
+http://localhost:1999/new/    # React preview
+
+# Build & Test
+npm run build         # Production build
+npm run preview       # Preview build
+npm run test          # Cypress E2E tests
+npm run lint          # ESLint + TypeScript check
+```

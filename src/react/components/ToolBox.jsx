@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Component } from "./Component.jsx";
 
 /** @typedef {import("react").ReactNode} ReactNode */
@@ -58,38 +58,24 @@ export function ToolBox({
         title,
 }) {
         const tools = useMemo(() => ensureTools(toolsProp), [toolsProp]);
-        const [selected, setSelected] = useState(() => (
-                selectedToolIds.length ? selectedToolIds : tools[0] ? [tools[0].id] : []
-        ));
 
-        const emitSelectionChange = useCallback((nextSelection) => {
-                const resolvedTools = tools.filter((tool) => nextSelection.includes(tool.id));
-                onSelectionChange?.(nextSelection, resolvedTools);
-        }, [onSelectionChange, tools]);
-
-        useEffect(() => {
+        // Use selectedToolIds directly (controlled component - no internal state)
+        const selected = useMemo(() => {
                 if (selectedToolIds.length) {
-                        setSelected(selectedToolIds);
-                        emitSelectionChange(selectedToolIds);
-                        return;
+                        return selectedToolIds;
                 }
-                if (!selected.length && tools[0]) {
-                        const fallback = [tools[0].id];
-                        setSelected(fallback);
-                        emitSelectionChange(fallback);
-                }
-        }, [selectedToolIds, selected, tools, emitSelectionChange]);
+                // Fallback to first tool if nothing selected
+                return tools[0] ? [tools[0].id] : [];
+        }, [selectedToolIds, tools]);
 
         const selectTool = useCallback((tool) => {
-                setSelected((prev) => {
-                        if (prev.length === 1 && prev[0] === tool.id) {
-                                return prev;
-                        }
-                        const next = [tool.id];
-                        emitSelectionChange(next);
-                        return next;
-                });
-        }, [emitSelectionChange]);
+                if (selected.length === 1 && selected[0] === tool.id) {
+                        return; // Already selected
+                }
+                const next = [tool.id];
+                const resolvedTools = tools.filter((t) => next.includes(t.id));
+                onSelectionChange?.(next, resolvedTools);
+        }, [selected, tools, onSelectionChange]);
 
         const activeTool = useMemo(() => tools.find((tool) => selected.includes(tool.id)) ?? null, [tools, selected]);
 
