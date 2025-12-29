@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback } from "react";
-import { useApp, useColors, useTool, useHistory, TOOL_IDS } from "../context/AppContext.jsx";
+import { useApp, useColors, useTool, useHistory, TOOL_IDS } from "../context/AppContext";
 
 /**
  * Draw a line using Bresenham's algorithm for pixel-perfect lines
@@ -87,9 +87,12 @@ export function Canvas({ className = "" }) {
 	}, [canvasRef]);
 
 	// Get the current drawing color based on mouse button
-	const getDrawColor = useCallback((button) => {
-		return button === 0 ? primaryColor : secondaryColor;
-	}, [primaryColor, secondaryColor]);
+	const getDrawColor = useCallback(
+		(button) => {
+			return button === 0 ? primaryColor : secondaryColor;
+		},
+		[primaryColor, secondaryColor],
+	);
 
 	// Get tool-specific brush size
 	const getToolSize = useCallback(() => {
@@ -138,126 +141,144 @@ export function Canvas({ className = "" }) {
 	}, []);
 
 	// Erase (draw with background color or white)
-	const erase = useCallback((ctx, x0, y0, x1, y1, size) => {
-		drawLine(ctx, x0, y0, x1, y1, secondaryColor, size);
-	}, [drawLine, secondaryColor]);
+	const erase = useCallback(
+		(ctx, x0, y0, x1, y1, size) => {
+			drawLine(ctx, x0, y0, x1, y1, secondaryColor, size);
+		},
+		[drawLine, secondaryColor],
+	);
 
 	// Get canvas coordinates from mouse event
-	const getCanvasCoords = useCallback((e) => {
-		const canvas = canvasRef.current;
-		if (!canvas) return { x: 0, y: 0 };
+	const getCanvasCoords = useCallback(
+		(e) => {
+			const canvas = canvasRef.current;
+			if (!canvas) return { x: 0, y: 0 };
 
-		const rect = canvas.getBoundingClientRect();
-		const scaleX = canvas.width / rect.width;
-		const scaleY = canvas.height / rect.height;
+			const rect = canvas.getBoundingClientRect();
+			const scaleX = canvas.width / rect.width;
+			const scaleY = canvas.height / rect.height;
 
-		return {
-			x: Math.floor((e.clientX - rect.left) * scaleX),
-			y: Math.floor((e.clientY - rect.top) * scaleY),
-		};
-	}, [canvasRef]);
+			return {
+				x: Math.floor((e.clientX - rect.left) * scaleX),
+				y: Math.floor((e.clientY - rect.top) * scaleY),
+			};
+		},
+		[canvasRef],
+	);
 
 	// Handle tool action
-	const handleToolAction = useCallback((ctx, x, y, prevX, prevY, button) => {
-		const size = getToolSize();
-		const color = getDrawColor(button);
+	const handleToolAction = useCallback(
+		(ctx, x, y, prevX, prevY, button) => {
+			const size = getToolSize();
+			const color = getDrawColor(button);
 
-		switch (selectedToolId) {
-			case TOOL_IDS.PENCIL:
-				drawLine(ctx, prevX, prevY, x, y, color, 1);
-				break;
+			switch (selectedToolId) {
+				case TOOL_IDS.PENCIL:
+					drawLine(ctx, prevX, prevY, x, y, color, 1);
+					break;
 
-			case TOOL_IDS.BRUSH:
-				drawLine(ctx, prevX, prevY, x, y, color, size);
-				break;
+				case TOOL_IDS.BRUSH:
+					drawLine(ctx, prevX, prevY, x, y, color, size);
+					break;
 
-			case TOOL_IDS.ERASER:
-				erase(ctx, prevX, prevY, x, y, size);
-				break;
+				case TOOL_IDS.ERASER:
+					erase(ctx, prevX, prevY, x, y, size);
+					break;
 
-			case TOOL_IDS.PICK_COLOR: {
-				// Get color at point
-				const imageData = ctx.getImageData(x, y, 1, 1);
-				const [r, g, b, a] = imageData.data;
-				const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
-				// TODO: Update color in context
-				console.log("Picked color:", pickedColor);
-				break;
+				case TOOL_IDS.PICK_COLOR: {
+					// Get color at point
+					const imageData = ctx.getImageData(x, y, 1, 1);
+					const [r, g, b, a] = imageData.data;
+					const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
+					// TODO: Update color in context
+					console.log("Picked color:", pickedColor);
+					break;
+				}
+
+				default:
+					// Default to pencil behavior for unimplemented tools
+					drawLine(ctx, prevX, prevY, x, y, color, 1);
+					break;
 			}
-
-			default:
-				// Default to pencil behavior for unimplemented tools
-				drawLine(ctx, prevX, prevY, x, y, color, 1);
-				break;
-		}
-	}, [selectedToolId, getToolSize, getDrawColor, drawLine, erase]);
+		},
+		[selectedToolId, getToolSize, getDrawColor, drawLine, erase],
+	);
 
 	// Mouse event handlers
-	const handlePointerDown = useCallback((e) => {
-		e.preventDefault();
-		const canvas = canvasRef.current;
-		if (!canvas) return;
+	const handlePointerDown = useCallback(
+		(e) => {
+			e.preventDefault();
+			const canvas = canvasRef.current;
+			if (!canvas) return;
 
-		const ctx = canvas.getContext("2d");
-		const { x, y } = getCanvasCoords(e);
+			const ctx = canvas.getContext("2d");
+			const { x, y } = getCanvasCoords(e);
 
-		// Save state for undo before drawing
-		saveState();
+			// Save state for undo before drawing
+			saveState();
 
-		drawingState.current = {
-			isDrawing: true,
-			lastX: x,
-			lastY: y,
-			button: e.button,
-		};
+			drawingState.current = {
+				isDrawing: true,
+				lastX: x,
+				lastY: y,
+				button: e.button,
+			};
 
-		// Draw initial point
-		const size = getToolSize();
-		const color = getDrawColor(e.button);
+			// Draw initial point
+			const size = getToolSize();
+			const color = getDrawColor(e.button);
 
-		switch (selectedToolId) {
-			case TOOL_IDS.PENCIL:
-				drawPoint(ctx, x, y, color, 1);
-				break;
-			case TOOL_IDS.BRUSH:
-				drawPoint(ctx, x, y, color, size);
-				break;
-			case TOOL_IDS.ERASER:
-				drawPoint(ctx, x, y, secondaryColor, size);
-				break;
-			default:
-				drawPoint(ctx, x, y, color, 1);
-				break;
-		}
+			switch (selectedToolId) {
+				case TOOL_IDS.PENCIL:
+					drawPoint(ctx, x, y, color, 1);
+					break;
+				case TOOL_IDS.BRUSH:
+					drawPoint(ctx, x, y, color, size);
+					break;
+				case TOOL_IDS.ERASER:
+					drawPoint(ctx, x, y, secondaryColor, size);
+					break;
+				default:
+					drawPoint(ctx, x, y, color, 1);
+					break;
+			}
 
-		// Capture pointer for smooth drawing even outside canvas
-		canvas.setPointerCapture(e.pointerId);
-	}, [canvasRef, getCanvasCoords, saveState, getToolSize, getDrawColor, selectedToolId, drawPoint, secondaryColor]);
+			// Capture pointer for smooth drawing even outside canvas
+			canvas.setPointerCapture(e.pointerId);
+		},
+		[canvasRef, getCanvasCoords, saveState, getToolSize, getDrawColor, selectedToolId, drawPoint, secondaryColor],
+	);
 
-	const handlePointerMove = useCallback((e) => {
-		if (!drawingState.current.isDrawing) return;
+	const handlePointerMove = useCallback(
+		(e) => {
+			if (!drawingState.current.isDrawing) return;
 
-		const canvas = canvasRef.current;
-		if (!canvas) return;
+			const canvas = canvasRef.current;
+			if (!canvas) return;
 
-		const ctx = canvas.getContext("2d");
-		const { x, y } = getCanvasCoords(e);
-		const { lastX, lastY, button } = drawingState.current;
+			const ctx = canvas.getContext("2d");
+			const { x, y } = getCanvasCoords(e);
+			const { lastX, lastY, button } = drawingState.current;
 
-		handleToolAction(ctx, x, y, lastX, lastY, button);
+			handleToolAction(ctx, x, y, lastX, lastY, button);
 
-		drawingState.current.lastX = x;
-		drawingState.current.lastY = y;
-	}, [canvasRef, getCanvasCoords, handleToolAction]);
+			drawingState.current.lastX = x;
+			drawingState.current.lastY = y;
+		},
+		[canvasRef, getCanvasCoords, handleToolAction],
+	);
 
-	const handlePointerUp = useCallback((e) => {
-		drawingState.current.isDrawing = false;
+	const handlePointerUp = useCallback(
+		(e) => {
+			drawingState.current.isDrawing = false;
 
-		const canvas = canvasRef.current;
-		if (canvas) {
-			canvas.releasePointerCapture(e.pointerId);
-		}
-	}, [canvasRef]);
+			const canvas = canvasRef.current;
+			if (canvas) {
+				canvas.releasePointerCapture(e.pointerId);
+			}
+		},
+		[canvasRef],
+	);
 
 	// Prevent context menu on right-click
 	const handleContextMenu = useCallback((e) => {

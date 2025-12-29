@@ -1,6 +1,9 @@
 import js from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
+import tseslint from "typescript-eslint";
+import prettier from "eslint-plugin-prettier";
+import prettierConfig from "eslint-config-prettier";
 
 /** @type {import("@types/eslint").Linter.FlatConfig[]} */
 export default [
@@ -255,4 +258,34 @@ export default [
 			},
 		},
 	},
+	// TypeScript/React configuration
+	...tseslint.configs.recommended.map((config) => ({
+		...config,
+		files: ["src/react/**/*.{ts,tsx}", "src/new/**/*.{ts,tsx,jsx}"],
+	})),
+	{
+		files: ["src/react/**/*.{ts,tsx,jsx}", "src/new/**/*.{ts,tsx,jsx}"],
+		languageOptions: {
+			parserOptions: {
+				ecmaFeatures: {
+					jsx: true,
+				},
+			},
+		},
+		plugins: {
+			prettier,
+		},
+		rules: {
+			"prettier/prettier": "warn",
+			"@typescript-eslint/no-unused-vars": ["warn", {
+				argsIgnorePattern: "^_",
+				varsIgnorePattern: "^_",
+			}],
+			"@typescript-eslint/explicit-function-return-type": "off",
+			"@typescript-eslint/explicit-module-boundary-types": "off",
+			"@typescript-eslint/no-explicit-any": "warn",
+		},
+	},
+	// Prettier config (disables conflicting rules) - must be last
+	prettierConfig,
 ];

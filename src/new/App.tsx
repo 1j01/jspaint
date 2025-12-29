@@ -1,20 +1,30 @@
-import React, { useMemo, Component as ReactComponent } from "react";
-import { Frame, ColorBox, ToolBox, Canvas } from "../react/components/index.js";
-import { AppProvider, useApp, useColors, useTool, useHistory, TOOL_IDS } from "../react/context/AppContext.jsx";
-import { DEFAULT_STATUS_TEXT } from "../react/components/Frame.jsx";
+import React, { useMemo, Component as ReactComponent, ReactNode, ErrorInfo } from "react";
+import { Frame, ColorBox, ToolBox, Canvas } from "../react/components";
+import { Tool } from "../react/components/ToolBox";
+import { AppProvider, useApp, useColors, useTool, useHistory, TOOL_IDS } from "../react/context/AppContext";
+import { DEFAULT_STATUS_TEXT } from "../react/components/Frame";
+
+interface ErrorBoundaryProps {
+	children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+	hasError: boolean;
+	error: Error | null;
+}
 
 // Error boundary to catch rendering errors
-class ErrorBoundary extends ReactComponent {
-	constructor(props) {
+class ErrorBoundary extends ReactComponent<ErrorBoundaryProps, ErrorBoundaryState> {
+	constructor(props: ErrorBoundaryProps) {
 		super(props);
 		this.state = { hasError: false, error: null };
 	}
 
-	static getDerivedStateFromError(error) {
+	static getDerivedStateFromError(error: Error): ErrorBoundaryState {
 		return { hasError: true, error };
 	}
 
-	componentDidCatch(error, errorInfo) {
+	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
 		console.error("React Error:", error, errorInfo);
 	}
 
@@ -32,7 +42,7 @@ class ErrorBoundary extends ReactComponent {
 	}
 }
 
-const TOOLBOX_ITEMS = [
+const TOOLBOX_ITEMS: Tool[] = [
 	{
 		id: TOOL_IDS.FREE_FORM_SELECT,
 		name: "Free-Form Select",
@@ -137,7 +147,7 @@ function AppContent() {
 	const { selectedToolId, setTool } = useTool();
 	const { canUndo, canRedo, undo, redo } = useHistory();
 
-	const [hoveredTool, setHoveredTool] = React.useState(null);
+	const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
 
 	const activeTool = useMemo(
 		() => TOOLBOX_ITEMS.find((tool) => tool.id === selectedToolId) ?? TOOLBOX_ITEMS[6],
@@ -167,15 +177,15 @@ function AppContent() {
 
 	return (
 		<Frame
-			leftContent={(
+			leftContent={
 				<ToolBox
 					tools={TOOLBOX_ITEMS}
 					selectedToolIds={[selectedToolId]}
 					onSelectionChange={(toolIds) => setTool(toolIds[0])}
 					onHoverChange={setHoveredTool}
 				/>
-			)}
-			bottomContent={(
+			}
+			bottomContent={
 				<ColorBox
 					palette={palette}
 					initialPrimary={primaryColor}
@@ -183,7 +193,7 @@ function AppContent() {
 					onPrimaryChange={setPrimaryColor}
 					onSecondaryChange={setSecondaryColor}
 				/>
-			)}
+			}
 			canvasContent={<Canvas />}
 			statusText={statusMessage}
 			statusPosition={`${state.canvasWidth}x${state.canvasHeight}`}

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useRef, useCallback } from "react";
-import { DEFAULT_PALETTE } from "../data/palette.js";
+import { DEFAULT_PALETTE } from "../data/palette";
 
 // Tool IDs matching legacy tools.js
 export const TOOL_IDS = {

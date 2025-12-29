@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import react from "@vitejs/plugin-react";
 
 const htmlEntries = {
   main: resolve(__dirname, "index.html"),
@@ -45,6 +46,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    react(),
     viteStaticCopy({
       targets: staticAssets,
     }),

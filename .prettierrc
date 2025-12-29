@@ -1,0 +1,20 @@
+{
+	"useTabs": true,
+	"tabWidth": 4,
+	"semi": true,
+	"singleQuote": false,
+	"trailingComma": "all",
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"arrowParens": "always",
+	"printWidth": 120,
+	"endOfLine": "lf",
+	"overrides": [
+		{
+			"files": ["*.jsx", "*.tsx"],
+			"options": {
+				"jsxSingleQuote": false
+			}
+		}
+	]
+}

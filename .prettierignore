@@ -1,0 +1,7 @@
+node_modules/
+dist/
+lib/
+*.min.js
+*.min.css
+localization/*/*.js
+help/
