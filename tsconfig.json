@@ -25,7 +25,8 @@
 	},
 	"include": [
 		"src/react/**/*",
-		"src/new/**/*"
+		"src/new/**/*",
+		"tests/**/*"
 	],
 	"exclude": [
 		"node_modules",

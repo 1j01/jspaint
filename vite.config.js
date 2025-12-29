@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const htmlEntries = {
@@ -45,6 +46,11 @@ export default defineConfig({
 		},
 	},
 	plugins: [
+		react({
+			babel: {
+				plugins: [["babel-plugin-react-compiler", {}]],
+			},
+		}),
 		viteStaticCopy({
 			targets: staticAssets,
 		}),

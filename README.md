@@ -1,8 +1,7 @@
 
-# [![](images/icons/32x32.png) JS Paint](https://jspaint.app)
+# [![](images/icons/32x32.png) MCPaint](https://vercel.com/evgenyvinniks-projects/mcpaint)
 
-A pixel-perfect web-based MS Paint remake and more... [Try it out!](https://jspaint.app)
-Then join the [Discord server](https://discord.gg/jxQBK3k8tx) to share your art!
+A pixel-perfect web-based MS Paint remake and more... [Try it out!](https://vercel.com/evgenyvinniks-projects/mcpaint)
 
 JS Paint recreates every tool and menu of MS Paint, and even [little-known features](#did-you-know), to a high degree of fidelity.
 

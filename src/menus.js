@@ -1368,33 +1368,13 @@ const menus = {
 			description: localize("Shows news about JS Paint."),
 		},
 		{
-			emoji_icon: "👾", // "👋",
-			label: localize("Discord"),
-			speech_recognition: [
-				"chat on discord", "discord server", "discord community", "join the discord", "join discord", "visit the discord", "visit discord", "discord chat",
-			],
-			action: () => {
-				window.open("https://discord.gg/jxQBK3k8tx");
-			},
-			description: localize("Joins the community on Discord."),
-		},
-		{
 			emoji_icon: "ℹ️",
 			label: localize("GitHub"),
 			speech_recognition: [
 				"repo on github", "project on github", "show the source code", "show source code",
 			],
-			action: () => { window.open("https://github.com/1j01/jspaint"); },
+			action: () => { window.open("https://github.com/evgenyvinnik/mcpaint"); },
 			description: localize("Shows the project on GitHub."),
-		},
-		{
-			emoji_icon: "💵",
-			label: localize("Donate"),
-			speech_recognition: [
-				"donate", "make a monetary contribution",
-			],
-			action: () => { window.open("https://www.paypal.me/IsaiahOdhner"); },
-			description: localize("Supports the project."),
 		},
 	],
 };

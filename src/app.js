@@ -536,7 +536,7 @@ const $news_indicator = $(`
 		<!--<img src="images/new.gif" width="40" height="16" alt=""/>-->
 		<span class="marquee" dir="ltr" style="--text-width: 69ch; --animation-duration: 3s;">
 			<span>
-				Discord server, Head Tracker, Quick Undo Button, Enlarge UI, and Dwell Clicker
+				Head Tracker, Quick Undo Button, Enlarge UI, and Dwell Clicker
 			</span>
 		</span>
 		<!--<span class="marquee" dir="ltr" style="--text-width: 44ch; --animation-duration: 3s;">
