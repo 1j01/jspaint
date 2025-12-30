@@ -22,8 +22,8 @@ const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
 const MIN_WIDTH = 400;
 const MIN_HEIGHT = 300;
-const HELP_ROOT = "help";
-const CONTENTS_FILE = "help/mspaint.hhc";
+const HELP_ROOT = "/help";
+const CONTENTS_FILE = "/help/mspaint.hhc";
 const DEFAULT_PAGE = "default.html";
 const WEB_HELP_PAGE = "online_support.htm";
 
@@ -213,7 +213,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 					(windowRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
 				}
 			}}
-			className={`window os-window focused help-window ${isDragging ? "dragging" : ""} ${isResizing ? "resizing" : ""}`}
+			className={`window os-window focused help-window dialog ${isDragging ? "dragging" : ""} ${isResizing ? "resizing" : ""}`}
 			style={windowStyle}
 			role="dialog"
 			aria-modal={false}
@@ -232,7 +232,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 			{/* Title bar */}
 			<div className="window-titlebar" {...handleProps}>
 				<img
-					src="images/chm-16x16.png"
+					src="/images/chm-16x16.png"
 					width={16}
 					height={16}
 					draggable={false}
@@ -253,7 +253,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 			</div>
 
 			{/* Window content */}
-			<div className="window-content help-window-content" ref={contentRef} tabIndex={-1}>
+			<div className="window-content" ref={contentRef} tabIndex={-1}>
 				<HelpToolbar
 					onToggleSidebar={handleToggleSidebar}
 					sidebarVisible={sidebarVisible}
@@ -263,29 +263,31 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 					canGoBack={canGoBack}
 					canGoForward={canGoForward}
 				/>
-				<ResizableSplitPane
-					left={
-						<HelpContents
-							items={tocItems}
-							onSelectTopic={handleSelectTopic}
-							selectedUrl={currentUrl}
-							isLoading={tocLoading}
-							error={tocError}
-						/>
-					}
-					right={
-						<HelpContent
-							src={currentUrl}
-							basePath={HELP_ROOT}
-							onLoad={handleContentLoad}
-							windowRef={windowRef}
-						/>
-					}
-					leftVisible={sidebarVisible}
-					initialLeftWidth={200}
-					minLeftWidth={100}
-					minRightWidth={200}
-				/>
+				<div className="main">
+					<ResizableSplitPane
+						left={
+							<HelpContents
+								items={tocItems}
+								onSelectTopic={handleSelectTopic}
+								selectedUrl={currentUrl}
+								isLoading={tocLoading}
+								error={tocError}
+							/>
+						}
+						right={
+							<HelpContent
+								src={currentUrl}
+								basePath={HELP_ROOT}
+								onLoad={handleContentLoad}
+								windowRef={windowRef}
+							/>
+						}
+						leftVisible={sidebarVisible}
+						initialLeftWidth={200}
+						minLeftWidth={100}
+						minRightWidth={200}
+					/>
+				</div>
 			</div>
 		</div>
 	);

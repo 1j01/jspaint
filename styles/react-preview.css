@@ -295,11 +295,10 @@ body.dragging iframe {
         pointer-events: none;
 }
 
-/* Ensure canvas area stays visible during help window drag */
-body.dragging .canvas-area,
-body.dragging .jspaint {
-        visibility: visible !important;
-        opacity: 1 !important;
+/* Ensure canvas always has white background */
+/* More specific selector to override theme checkerboard pattern */
+.canvas-area > canvas.main-canvas {
+	background-color: white !important;
 }
 
 

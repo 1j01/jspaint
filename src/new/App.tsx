@@ -4,6 +4,7 @@ import { ColorBox } from "../react/components/ColorBox";
 import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
 import { Tool, ToolBox } from "../react/components/ToolBox";
 import { ToolOptions } from "../react/components/ToolOptions";
+import { FontBoxWindow } from "../react/components/FontBoxWindow";
 import {
 	AppProvider,
 	TOOL_IDS,
@@ -15,6 +16,7 @@ import {
 	useHistory,
 	useMagnification,
 	useSelection,
+	useTextBox,
 	useTool,
 	useViewState,
 } from "../react/context/AppContext";
@@ -207,6 +209,17 @@ function AppContent() {
 	const { magnification, setMagnification } = useMagnification();
 	const { canvasRef, canvasWidth, canvasHeight, setCanvasSize } = useCanvas();
 	const {
+		textBox,
+		fontFamily,
+		fontSize,
+		fontBold,
+		fontItalic,
+		fontUnderline,
+		setFontFamily,
+		setFontSize,
+		setFontStyle,
+	} = useTextBox();
+	const {
 		showToolBox,
 		showColorBox,
 		showStatusBar,
@@ -227,6 +240,41 @@ function AppContent() {
 
 	// Custom colors state for the color editor
 	const [customColors, setCustomColors] = useState<string[]>(defaultCustomColors);
+
+	// Font state for FontBoxWindow
+	const fontState = useMemo(
+		() => ({
+			family: fontFamily,
+			size: fontSize,
+			bold: fontBold,
+			italic: fontItalic,
+			underline: fontUnderline,
+			vertical: false,
+		}),
+		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline],
+	);
+
+	const handleFontChange = useCallback(
+		(newFontState: typeof fontState) => {
+			if (newFontState.family !== fontFamily) {
+				setFontFamily(newFontState.family);
+			}
+			if (newFontState.size !== fontSize) {
+				setFontSize(newFontState.size);
+			}
+			if (
+				newFontState.bold !== fontBold ||
+				newFontState.italic !== fontItalic ||
+				newFontState.underline !== fontUnderline
+			) {
+				setFontStyle(newFontState.bold, newFontState.italic, newFontState.underline);
+			}
+		},
+		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle],
+	);
+
+	// Show font box when text tool is selected or text box is active
+	const showFontBox = selectedToolId === TOOL_IDS.TEXT || textBox?.isActive;
 
 	// Dialog state
 	const [dialogs, setDialogs] = useState<DialogState>({
@@ -1014,6 +1062,16 @@ function AppContent() {
 						undo();
 					}
 				}}
+			/>
+
+			{/* Floating Font Box Window for Text Tool */}
+			<FontBoxWindow
+				isOpen={showFontBox && showTextToolbar}
+				onClose={toggleTextToolbar}
+				fontState={fontState}
+				onFontChange={handleFontChange}
+				textBoxRect={textBox}
+				magnification={magnification}
 			/>
 		</>
 	);

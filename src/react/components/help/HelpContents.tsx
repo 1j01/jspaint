@@ -55,9 +55,9 @@ function HelpItemComponent({
 	}, []);
 
 	return (
-		<li className={`help-toc-item ${isFolder ? "folder" : "page"} ${isExpanded ? "expanded" : ""}`}>
+		<li className={`${isFolder ? "folder" : "page"} ${isExpanded ? "expanded" : ""}`}>
 			<div
-				className={`help-toc-item-content ${isSelected ? "selected" : ""}`}
+				className={`item ${isSelected ? "selected" : ""}`}
 				onClick={handleClick}
 				onMouseDown={handleMouseDown}
 				role="treeitem"
@@ -71,11 +71,10 @@ function HelpItemComponent({
 					}
 				}}
 			>
-				<span className="help-toc-icon" />
-				<span className="help-toc-label">{item.name}</span>
+				{item.name}
 			</div>
 			{isFolder && isExpanded && item.children && (
-				<ul className="help-toc-children" role="group">
+				<ul role="group">
 					{item.children.map((child, index) => (
 						<HelpItemComponent
 							key={`${child.name}-${index}`}
@@ -109,7 +108,7 @@ export function HelpContents({
 
 	if (isLoading) {
 		return (
-			<div className="help-contents inset-deep">
+			<div className="contents inset-deep">
 				<div className="help-contents-loading">Loading...</div>
 			</div>
 		);
@@ -117,18 +116,18 @@ export function HelpContents({
 
 	if (error) {
 		return (
-			<div className="help-contents inset-deep">
+			<div className="contents inset-deep">
 				<div className="help-contents-error">{error}</div>
 			</div>
 		);
 	}
 
 	return (
-		<ul className="help-contents inset-deep" role="tree">
+		<ul className="contents inset-deep" role="tree">
 			{/* Welcome item always at top */}
-			<li className="help-toc-item page">
+			<li className="page">
 				<div
-					className={`help-toc-item-content ${selectedUrl?.endsWith("default.html") ? "selected" : ""}`}
+					className={`item ${selectedUrl?.endsWith("default.html") ? "selected" : ""}`}
 					onClick={handleWelcomeClick}
 					role="treeitem"
 					aria-selected={selectedUrl?.endsWith("default.html") || false}
@@ -140,8 +139,7 @@ export function HelpContents({
 						}
 					}}
 				>
-					<span className="help-toc-icon" />
-					<span className="help-toc-label">Welcome to Help</span>
+					Welcome to Help
 				</div>
 			</li>
 			{/* TOC items */}

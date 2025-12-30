@@ -188,6 +188,14 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 		[getDrawColor],
 	);
 
+	// Spray airbrush at a specific point
+	const spray = useCallback(
+		(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size: number): void => {
+			sprayAirbrush(ctx, x, y, color, size);
+		},
+		[],
+	);
+
 	return {
 		getDrawColor,
 		getToolSize,
@@ -199,6 +207,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 		handleToolAction,
 		pickColor,
 		handleFill,
+		sprayAirbrush: spray,
 		primaryColor,
 		secondaryColor,
 	};

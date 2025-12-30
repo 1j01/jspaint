@@ -34,6 +34,8 @@ interface UseDraggableReturn {
 	isDragging: boolean;
 	/** Center the element in the viewport */
 	center: () => void;
+	/** Programmatically set position */
+	setPosition: (pos: Position) => void;
 }
 
 export function useDraggable(options: UseDraggableOptions = {}): UseDraggableReturn {
@@ -168,6 +170,7 @@ export function useDraggable(options: UseDraggableOptions = {}): UseDraggableRet
 		},
 		isDragging,
 		center,
+		setPosition,
 	};
 }
 

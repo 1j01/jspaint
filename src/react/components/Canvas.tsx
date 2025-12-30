@@ -28,8 +28,15 @@ export function Canvas({ className = "" }: { className?: string }) {
 	// Overlay canvas ref for selection marching ants
 	const overlayRef = useRef<HTMLCanvasElement>(null);
 
-	// Container ref for selection handles
+	// Container ref for selection handles - use canvas parent (.canvas-area)
 	const containerRef = useRef<HTMLDivElement>(null);
+
+	// Set container ref to canvas parent on mount
+	useEffect(() => {
+		if (canvasRef.current && canvasRef.current.parentElement) {
+			containerRef.current = canvasRef.current.parentElement as HTMLDivElement;
+		}
+	}, [canvasRef]);
 
 	// Text input ref
 	const textInputRef = useRef<HTMLTextAreaElement>(null);
@@ -76,6 +83,37 @@ export function Canvas({ className = "" }: { className?: string }) {
 			textInputRef.current.focus();
 		}
 	}, [textBoxHook.textBox?.isActive]);
+
+	// Continuous airbrush painting when mouse is held down
+	useEffect(() => {
+		if (selectedToolId !== TOOL_IDS.AIRBRUSH || !shapes.drawingState.current?.isDrawing) {
+			return;
+		}
+
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return;
+
+		// Set up interval for continuous painting (every 5ms, matching original implementation)
+		const intervalId = setInterval(() => {
+			if (!shapes.drawingState.current?.isDrawing) {
+				return;
+			}
+
+			const { lastX, lastY, button } = shapes.drawingState.current;
+			const color = drawing.getDrawColor(button);
+			const size = drawing.getToolSize();
+
+			// Spray airbrush at current position
+			drawing.sprayAirbrush(ctx, lastX, lastY, color, size);
+		}, 5);
+
+		return () => {
+			clearInterval(intervalId);
+		};
+	}, [selectedToolId, canvasRef, drawing, shapes.drawingState]);
 
 	// Mouse event handlers
 	const handlePointerDown = useCallback(
@@ -421,11 +459,7 @@ selectionHook,
 	);
 
 	return (
-		<div
-			ref={containerRef}
-			className={`canvas-container ${className}`}
-			style={{ position: "relative", display: "inline-block" }}
-		>
+		<>
 			<canvas
 				ref={canvasRef}
 				className="main-canvas"
@@ -467,7 +501,7 @@ selectionHook,
 				onResize={handleCanvasResize}
 				containerRef={containerRef}
 			/>
-		</div>
+		</>
 	);
 }
 
