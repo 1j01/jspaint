@@ -88,15 +88,37 @@ body {
 }
 
 /* Tool Options Panel */
+/* Note: width/height from layout.css (41px x 66px) must be preserved for proper brush grid layout */
 .tool-options {
         display: flex;
         flex-direction: column;
         gap: 2px;
         padding: 2px;
-        min-height: 50px;
         background: var(--ButtonFace, #c0c0c0);
-        width: 100%;
         box-sizing: border-box;
+}
+
+/* Brush chooser grid layout - 3 columns × 4 rows of 10x10 canvases (12 total) */
+.choose-brush {
+        display: flex;
+        flex-flow: row wrap;
+        width: 36px;
+        height: 48px;
+        justify-content: space-around;
+        align-content: space-around;
+}
+
+.choose-brush .chooser-option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        width: 12px;
+        height: 12px;
+}
+
+.choose-brush .chooser-option canvas {
+        display: block;
 }
 
 .tool-options-section {

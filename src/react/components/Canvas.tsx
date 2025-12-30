@@ -108,8 +108,9 @@ export function Canvas({ className = "" }: { className?: string }) {
 					};
 					break;
 
-				case TOOL_IDS.BRUSH:
-					drawing.drawPoint(ctx, x, y, color, size);
+				case TOOL_IDS.BRUSH: {
+					const brushShapeType = drawing.getToolShape();
+					drawing.drawPoint(ctx, x, y, color, size, brushShapeType);
 					// Initialize drawing state for continuous drawing
 					shapes.drawingState.current = {
 						...shapes.drawingState.current,
@@ -119,9 +120,10 @@ export function Canvas({ className = "" }: { className?: string }) {
 						button: e.button,
 					};
 					break;
+				}
 
 				case TOOL_IDS.ERASER:
-					drawing.drawPoint(ctx, x, y, drawing.secondaryColor, size);
+					drawing.drawPoint(ctx, x, y, drawing.secondaryColor, size, "square");
 					// Initialize drawing state for continuous drawing
 					shapes.drawingState.current = {
 						...shapes.drawingState.current,

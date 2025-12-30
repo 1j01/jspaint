@@ -1,13 +1,13 @@
 import { useCallback, RefObject } from "react";
 import { TOOL_IDS, useColors, useTool } from "../context/AppContext";
-import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill } from "../utils/drawingUtils";
+import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill, BrushShape } from "../utils/drawingUtils";
 
 /**
  * Hook for core canvas drawing operations
  */
 export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>) {
 	const { primaryColor, secondaryColor, setPrimaryColor, setSecondaryColor } = useColors();
-	const { selectedToolId, brushSize, pencilSize, eraserSize } = useTool();
+	const { selectedToolId, brushSize, brushShape, pencilSize, eraserSize } = useTool();
 
 	// Get the current drawing color based on mouse button
 	const getDrawColor = useCallback(
@@ -33,6 +33,18 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 		}
 	}, [selectedToolId, pencilSize, brushSize, eraserSize]);
 
+	// Get tool-specific brush shape
+	const getToolShape = useCallback((): BrushShape => {
+		switch (selectedToolId) {
+			case TOOL_IDS.BRUSH:
+				return brushShape;
+			case TOOL_IDS.ERASER:
+				return "square"; // Eraser always uses square shape
+			default:
+				return "circle";
+		}
+	}, [selectedToolId, brushShape]);
+
 	// Get canvas coordinates from mouse event
 	const getCanvasCoords = useCallback(
 		(e: { clientX: number; clientY: number }): { x: number; y: number } => {
@@ -53,13 +65,20 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 
 	// Draw a single point or brush stamp
 	const drawPoint = useCallback(
-		(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size: number): void => {
+		(
+			ctx: CanvasRenderingContext2D,
+			x: number,
+			y: number,
+			color: string,
+			size: number,
+			shape: BrushShape = "circle",
+		): void => {
 			ctx.fillStyle = color;
 
 			if (size <= 1) {
 				ctx.fillRect(x, y, 1, 1);
 			} else {
-				const points = getBrushPoints(size, "circle");
+				const points = getBrushPoints(size, shape);
 				for (const point of points) {
 					ctx.fillRect(x + point.x, y + point.y, 1, 1);
 				}
@@ -78,6 +97,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			y1: number,
 			color: string,
 			size: number,
+			shape: BrushShape = "circle",
 		): void => {
 			ctx.fillStyle = color;
 
@@ -86,7 +106,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 					ctx.fillRect(x, y, 1, 1);
 				});
 			} else {
-				const points = getBrushPoints(size, "circle");
+				const points = getBrushPoints(size, shape);
 				bresenhamLine(Math.floor(x0), Math.floor(y0), Math.floor(x1), Math.floor(y1), (x, y) => {
 					for (const point of points) {
 						ctx.fillRect(x + point.x, y + point.y, 1, 1);
@@ -97,10 +117,10 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 		[],
 	);
 
-	// Erase (draw with background color)
+	// Erase (draw with background color) - uses square shape
 	const erase = useCallback(
 		(ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number, size: number): void => {
-			drawLine(ctx, x0, y0, x1, y1, secondaryColor, size);
+			drawLine(ctx, x0, y0, x1, y1, secondaryColor, size, "square");
 		},
 		[drawLine, secondaryColor],
 	);
@@ -109,6 +129,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 	const handleToolAction = useCallback(
 		(ctx: CanvasRenderingContext2D, x: number, y: number, prevX: number, prevY: number, button: number): void => {
 			const size = getToolSize();
+			const shape = getToolShape();
 			const color = getDrawColor(button);
 
 			switch (selectedToolId) {
@@ -117,7 +138,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 					break;
 
 				case TOOL_IDS.BRUSH:
-					drawLine(ctx, prevX, prevY, x, y, color, size);
+					drawLine(ctx, prevX, prevY, x, y, color, size, shape);
 					break;
 
 				case TOOL_IDS.ERASER:
@@ -135,7 +156,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 					break;
 			}
 		},
-		[selectedToolId, getToolSize, getDrawColor, drawLine, erase],
+		[selectedToolId, getToolSize, getToolShape, getDrawColor, drawLine, erase],
 	);
 
 	// Handle color picker
@@ -170,6 +191,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 	return {
 		getDrawColor,
 		getToolSize,
+		getToolShape,
 		getCanvasCoords,
 		drawPoint,
 		drawLine,

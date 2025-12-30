@@ -3,8 +3,23 @@ import { TOOL_IDS, useShapeSettings, useTextBox, useTool } from "../context/AppC
 // Line width options (matches original)
 const LINE_WIDTHS = [1, 2, 3, 4, 5];
 
-// Brush size options - matches original circular sizes
-const BRUSH_SIZES = [7, 4, 1]; // circular brush sizes
+// Brush shapes and sizes - matches original $choose_brush
+// 4 shapes × 3 sizes = 12 options arranged in 3 columns × 4 rows
+type BrushShape = "circle" | "square" | "reverse_diagonal" | "diagonal";
+const BRUSH_SHAPES: BrushShape[] = ["circle", "square", "reverse_diagonal", "diagonal"];
+const CIRCULAR_BRUSH_SIZES = [7, 4, 1];
+const OTHER_BRUSH_SIZES = [8, 5, 2];
+
+interface BrushOption {
+	shape: BrushShape;
+	size: number;
+}
+
+// Generate all brush options (matches legacy tool-options.js)
+const BRUSH_OPTIONS: BrushOption[] = BRUSH_SHAPES.flatMap((shape) => {
+	const sizes = shape === "circle" ? CIRCULAR_BRUSH_SIZES : OTHER_BRUSH_SIZES;
+	return sizes.map((size) => ({ shape, size }));
+});
 
 // Eraser size options - matches original
 const ERASER_SIZES = [4, 6, 8, 10];
@@ -12,12 +27,59 @@ const ERASER_SIZES = [4, 6, 8, 10];
 // Airbrush size options - matches original
 const AIRBRUSH_SIZES = [9, 16, 24];
 
+// Draw brush shape on canvas (matches legacy stamp_brush_canvas)
+function drawBrushShape(
+	ctx: CanvasRenderingContext2D,
+	centerX: number,
+	centerY: number,
+	shape: BrushShape,
+	size: number,
+	color: string,
+): void {
+	ctx.fillStyle = color;
+
+	switch (shape) {
+		case "circle": {
+			// Draw circular brush
+			const radius = size / 2;
+			for (let y = -Math.ceil(radius); y <= Math.ceil(radius); y++) {
+				for (let x = -Math.ceil(radius); x <= Math.ceil(radius); x++) {
+					if (x * x + y * y <= radius * radius) {
+						ctx.fillRect(centerX + x, centerY + y, 1, 1);
+					}
+				}
+			}
+			break;
+		}
+		case "square": {
+			// Draw square brush
+			const halfSize = Math.floor(size / 2);
+			ctx.fillRect(centerX - halfSize, centerY - halfSize, size, size);
+			break;
+		}
+		case "reverse_diagonal": {
+			// Draw reverse diagonal line (top-right to bottom-left: /)
+			for (let i = 0; i < size; i++) {
+				ctx.fillRect(centerX + Math.floor(size / 2) - i - 1, centerY - Math.floor(size / 2) + i, 1, 1);
+			}
+			break;
+		}
+		case "diagonal": {
+			// Draw diagonal line (top-left to bottom-right: \)
+			for (let i = 0; i < size; i++) {
+				ctx.fillRect(centerX - Math.floor(size / 2) + i, centerY - Math.floor(size / 2) + i, 1, 1);
+			}
+			break;
+		}
+	}
+}
+
 interface ToolOptionsProps {
 	className?: string;
 }
 
 export function ToolOptions({ className = "" }: ToolOptionsProps) {
-	const { selectedToolId, brushSize, eraserSize, setBrushSize, setEraserSize } = useTool();
+	const { selectedToolId, brushSize, brushShape, eraserSize, setBrushSize, setBrushShape, setEraserSize } = useTool();
 	const { fillStyle, lineWidth, setFillStyle, setLineWidth } = useShapeSettings();
 	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } =
 		useTextBox();
@@ -123,17 +185,20 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 		</div>
 	);
 
-	// Render brush size options (matches $choose_brush)
-	// Original: 10x10 canvases in row wrap layout
+	// Render brush options (matches $choose_brush)
+	// Original: 10x10 canvases in 3 columns × 4 rows layout (12 options total)
 	const renderBrushSizeOptions = () => (
 		<div className="chooser choose-brush">
-			{BRUSH_SIZES.map((size) => {
-				const isSelected = brushSize === size;
+			{BRUSH_OPTIONS.map((option, index) => {
+				const isSelected = brushSize === option.size && brushShape === option.shape;
 				return (
 					<div
-						key={size}
+						key={`${option.shape}-${option.size}-${index}`}
 						className="chooser-option"
-						onClick={() => setBrushSize(size)}
+						onClick={() => {
+							setBrushSize(option.size);
+							setBrushShape(option.shape);
+						}}
 						style={{ backgroundColor: isSelected ? "var(--Hilight, #000080)" : undefined }}
 					>
 						<canvas
@@ -145,10 +210,8 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 								if (!ctx) return;
 								ctx.clearRect(0, 0, 10, 10);
 
-								ctx.fillStyle = isSelected ? "#ffffff" : "#000000";
-								ctx.beginPath();
-								ctx.arc(5, 5, size / 2, 0, Math.PI * 2);
-								ctx.fill();
+								const color = isSelected ? "#ffffff" : "#000000";
+								drawBrushShape(ctx, 5, 5, option.shape, option.size, color);
 							}}
 						/>
 					</div>

@@ -39,7 +39,7 @@ export function bresenhamLine(
 	}
 }
 
-export type BrushShape = "circle" | "square";
+export type BrushShape = "circle" | "square" | "reverse_diagonal" | "diagonal";
 
 export interface BrushPoint {
 	x: number;
@@ -53,20 +53,38 @@ export function getBrushPoints(size: number, shape: BrushShape = "circle"): Brus
 	const points: BrushPoint[] = [];
 	const radius = Math.floor(size / 2);
 
-	if (shape === "circle") {
-		for (let y = -radius; y <= radius; y++) {
-			for (let x = -radius; x <= radius; x++) {
-				if (x * x + y * y <= radius * radius) {
+	switch (shape) {
+		case "circle":
+			for (let y = -radius; y <= radius; y++) {
+				for (let x = -radius; x <= radius; x++) {
+					if (x * x + y * y <= radius * radius) {
+						points.push({ x, y });
+					}
+				}
+			}
+			break;
+
+		case "square":
+			for (let y = -radius; y <= radius; y++) {
+				for (let x = -radius; x <= radius; x++) {
 					points.push({ x, y });
 				}
 			}
-		}
-	} else if (shape === "square") {
-		for (let y = -radius; y <= radius; y++) {
-			for (let x = -radius; x <= radius; x++) {
-				points.push({ x, y });
+			break;
+
+		case "reverse_diagonal":
+			// Diagonal line from top-right to bottom-left (/)
+			for (let i = 0; i < size; i++) {
+				points.push({ x: radius - i, y: -radius + i });
 			}
-		}
+			break;
+
+		case "diagonal":
+			// Diagonal line from top-left to bottom-right (\)
+			for (let i = 0; i < size; i++) {
+				points.push({ x: -radius + i, y: -radius + i });
+			}
+			break;
 	}
 
 	// Ensure at least one point (for size 1)

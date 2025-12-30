@@ -68,6 +68,7 @@ const initialState = {
 
 	// Brush settings
 	brushSize: 4,
+	brushShape: "circle" as "circle" | "square" | "reverse_diagonal" | "diagonal",
 	pencilSize: 1,
 	eraserSize: 8,
 
@@ -124,6 +125,7 @@ const ActionTypes = {
 	SET_CANVAS_SIZE: "SET_CANVAS_SIZE",
 	SET_DRAWING: "SET_DRAWING",
 	SET_BRUSH_SIZE: "SET_BRUSH_SIZE",
+	SET_BRUSH_SHAPE: "SET_BRUSH_SHAPE",
 	SET_CURSOR_POSITION: "SET_CURSOR_POSITION",
 	SET_CLIPBOARD: "SET_CLIPBOARD",
 	PUSH_UNDO: "PUSH_UNDO",
@@ -185,6 +187,9 @@ function appReducer(state, action) {
 
 		case ActionTypes.SET_BRUSH_SIZE:
 			return { ...state, brushSize: action.payload };
+
+		case ActionTypes.SET_BRUSH_SHAPE:
+			return { ...state, brushShape: action.payload };
 
 		case ActionTypes.SET_ERASER_SIZE:
 			return { ...state, eraserSize: action.payload };
@@ -341,6 +346,10 @@ export function AppProvider({ children }) {
 			dispatch({ type: ActionTypes.SET_BRUSH_SIZE, payload: size });
 		}, []),
 
+		setBrushShape: useCallback((shape: "circle" | "square" | "reverse_diagonal" | "diagonal") => {
+			dispatch({ type: ActionTypes.SET_BRUSH_SHAPE, payload: shape });
+		}, []),
+
 		setEraserSize: useCallback((size) => {
 			dispatch({ type: ActionTypes.SET_ERASER_SIZE, payload: size });
 		}, []),
@@ -483,9 +492,11 @@ export function useTool() {
 		selectedToolId: state.selectedToolId,
 		setTool: actions.setTool,
 		brushSize: state.brushSize,
+		brushShape: state.brushShape,
 		pencilSize: state.pencilSize,
 		eraserSize: state.eraserSize,
 		setBrushSize: actions.setBrushSize,
+		setBrushShape: actions.setBrushShape,
 		setEraserSize: actions.setEraserSize,
 	};
 }
