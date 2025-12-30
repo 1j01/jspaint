@@ -215,3 +215,187 @@ body {
 .tool-options-empty {
         min-height: 50px;
 }
+
+/* Dialog Styles */
+.dialog-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+}
+
+.dialog.os-window {
+        background: var(--ButtonFace, #c0c0c0);
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dialog.os-window.dragging {
+        user-select: none;
+}
+
+.dialog .window-titlebar {
+        cursor: default;
+}
+
+.dialog .window-content {
+        padding: 12px;
+        outline: none;
+}
+
+/* Prevent iframes from capturing pointer during drag */
+body.dragging iframe {
+        pointer-events: none;
+}
+
+.dialog fieldset {
+        margin: 0;
+        padding: 8px;
+        border: 1px solid var(--ButtonShadow, #808080);
+}
+
+.dialog fieldset legend {
+        padding: 0 4px;
+}
+
+.dialog label {
+        display: block;
+        margin: 4px 0;
+        cursor: pointer;
+}
+
+.dialog input[type="radio"],
+.dialog input[type="checkbox"] {
+        margin-right: 6px;
+}
+
+.dialog input[type="number"],
+.dialog input[type="text"],
+.dialog input[type="url"] {
+        padding: 2px 4px;
+        border: 2px inset;
+        background: white;
+        font-family: inherit;
+        font-size: inherit;
+}
+
+.dialog-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        margin-top: 12px;
+        padding-top: 8px;
+        border-top: 1px solid var(--ButtonShadow, #808080);
+}
+
+.dialog-buttons button {
+        min-width: 75px;
+        padding: 4px 12px;
+}
+
+.dialog-table {
+        border-collapse: collapse;
+}
+
+.dialog-table td {
+        padding: 4px 8px 4px 0;
+}
+
+.radio-group {
+        display: flex;
+        flex-direction: column;
+}
+
+.zoom-options {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+}
+
+.custom-zoom-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+}
+
+/* About Paint Dialog - matches legacy #about-paint styling */
+.about-paint-content {
+        padding: 5px;
+}
+
+.about-paint-content p {
+        margin: 0 0 8px 0;
+}
+
+.about-paint-content a {
+        color: #0000ee;
+}
+
+.about-paint-content a:visited {
+        color: #551a8b;
+}
+
+.about-paint-header {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 0;
+        margin-top: 10px;
+        margin-bottom: 10px;
+}
+
+.about-paint-icon {
+        image-rendering: pixelated;
+}
+
+.about-paint-beside-icon {
+        margin: auto 10px;
+}
+
+.about-project-name {
+        white-space: nowrap;
+        font-size: 2rem;
+        margin: 0;
+}
+
+.about-version {
+        white-space: nowrap;
+        font-size: 1.4rem;
+        font-weight: normal;
+}
+
+.attributes-content {
+        font-size: 12px;
+}
+
+.attributes-row {
+        margin-bottom: 4px;
+}
+
+.attributes-label {
+        display: inline-block;
+        width: 100px;
+}
+
+.attributes-dimensions {
+        display: flex;
+        gap: 16px;
+}
+
+.attributes-dimensions label {
+        display: inline;
+        margin-right: 8px;
+}
+
+.load-url-content {
+        font-size: 12px;
+}
+
+.error-message {
+        font-size: 11px;
+}

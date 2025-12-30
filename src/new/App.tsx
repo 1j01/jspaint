@@ -1,4 +1,4 @@
-import React, { ErrorInfo, Component as ReactComponent, ReactNode, useMemo } from "react";
+import React, { ErrorInfo, Component as ReactComponent, ReactNode, useMemo, useState, useCallback } from "react";
 import { Canvas } from "../react/components/Canvas";
 import { ColorBox } from "../react/components/ColorBox";
 import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
@@ -8,13 +8,38 @@ import {
 	AppProvider,
 	TOOL_IDS,
 	useApp,
+	useCanvas,
 	useClipboard,
 	useColors,
 	useCursorPosition,
 	useHistory,
+	useMagnification,
 	useSelection,
 	useTool,
+	useViewState,
 } from "../react/context/AppContext";
+import { createMenus, MenuActions } from "../react/menus/menuDefinitions";
+import {
+	AboutDialog,
+	AttributesDialog,
+	CustomZoomDialog,
+	FlipRotateDialog,
+	LoadFromUrlDialog,
+	StretchSkewDialog,
+} from "../react/components/dialogs";
+import type { FlipRotateAction } from "../react/components/dialogs/FlipRotateDialog";
+import type { StretchSkewValues } from "../react/components/dialogs/StretchSkewDialog";
+import type { AttributesValues } from "../react/components/dialogs/AttributesDialog";
+import {
+	flipHorizontal,
+	flipVertical,
+	rotate,
+	stretch,
+	skew,
+	invertColors,
+	applyToCanvas,
+	transformCanvas,
+} from "../react/utils/imageTransforms";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -150,16 +175,62 @@ const TOOLBOX_ITEMS: Tool[] = [
 	},
 ];
 
+// Dialog state type
+interface DialogState {
+	about: boolean;
+	flipRotate: boolean;
+	stretchSkew: boolean;
+	attributes: boolean;
+	customZoom: boolean;
+	loadFromUrl: boolean;
+}
+
 function AppContent() {
 	const { state } = useApp();
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
-	const { canUndo, canRedo, undo, redo } = useHistory();
+	const { canUndo, canRedo, undo, redo, saveState } = useHistory();
 	const { cursorPosition } = useCursorPosition();
-	const { selection, clearSelection } = useSelection();
+	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
 	const { copy, cut, paste, hasClipboard } = useClipboard();
+	const { magnification, setMagnification } = useMagnification();
+	const { canvasRef, canvasWidth, canvasHeight, setCanvasSize } = useCanvas();
+	const {
+		showToolBox,
+		showColorBox,
+		showStatusBar,
+		showTextToolbar,
+		showGrid,
+		showThumbnail,
+		drawOpaque,
+		toggleToolBox,
+		toggleColorBox,
+		toggleStatusBar,
+		toggleTextToolbar,
+		toggleGrid,
+		toggleThumbnail,
+		toggleDrawOpaque,
+	} = useViewState();
 
 	const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
+
+	// Dialog state
+	const [dialogs, setDialogs] = useState<DialogState>({
+		about: false,
+		flipRotate: false,
+		stretchSkew: false,
+		attributes: false,
+		customZoom: false,
+		loadFromUrl: false,
+	});
+
+	const openDialog = useCallback((dialog: keyof DialogState) => {
+		setDialogs((prev) => ({ ...prev, [dialog]: true }));
+	}, []);
+
+	const closeDialog = useCallback((dialog: keyof DialogState) => {
+		setDialogs((prev) => ({ ...prev, [dialog]: false }));
+	}, []);
 
 	const activeTool = useMemo(
 		() => TOOLBOX_ITEMS.find((tool) => tool.id === selectedToolId) ?? TOOLBOX_ITEMS[6],
@@ -167,6 +238,445 @@ function AppContent() {
 	);
 
 	const statusMessage = hoveredTool?.description ?? activeTool?.description ?? DEFAULT_STATUS_TEXT;
+
+	// Dialog handlers
+	const handleFlipRotate = useCallback(
+		(action: FlipRotateAction) => {
+			const canvas = canvasRef.current;
+			if (!canvas) return;
+			const ctx = canvas.getContext("2d", { willReadFrequently: true });
+			if (!ctx) return;
+
+			saveState();
+
+			let result: ImageData;
+			if (action.type === "flipHorizontal") {
+				result = transformCanvas(ctx, flipHorizontal);
+			} else if (action.type === "flipVertical") {
+				result = transformCanvas(ctx, flipVertical);
+			} else {
+				result = transformCanvas(ctx, (data) => rotate(data, action.degrees));
+			}
+
+			applyToCanvas(ctx, result, true);
+			if (canvas.width !== result.width || canvas.height !== result.height) {
+				setCanvasSize(result.width, result.height);
+			}
+		},
+		[canvasRef, saveState, setCanvasSize],
+	);
+
+	const handleStretchSkew = useCallback(
+		(values: StretchSkewValues) => {
+			const canvas = canvasRef.current;
+			if (!canvas) return;
+			const ctx = canvas.getContext("2d", { willReadFrequently: true });
+			if (!ctx) return;
+
+			saveState();
+
+			let result = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+			// Apply stretch if not 100%
+			if (values.stretchHorizontal !== 100 || values.stretchVertical !== 100) {
+				result = stretch(result, values.stretchHorizontal / 100, values.stretchVertical / 100);
+			}
+
+			// Apply skew if not 0
+			if (values.skewHorizontal !== 0 || values.skewVertical !== 0) {
+				result = skew(result, values.skewHorizontal, values.skewVertical);
+			}
+
+			applyToCanvas(ctx, result, true);
+			setCanvasSize(result.width, result.height);
+		},
+		[canvasRef, saveState, setCanvasSize],
+	);
+
+	const handleAttributes = useCallback(
+		(values: AttributesValues) => {
+			if (values.width !== canvasWidth || values.height !== canvasHeight) {
+				saveState();
+				setCanvasSize(values.width, values.height);
+			}
+		},
+		[canvasWidth, canvasHeight, saveState, setCanvasSize],
+	);
+
+	const handleLoadFromUrl = useCallback(
+		(url: string) => {
+			const img = new Image();
+			img.crossOrigin = "anonymous";
+			img.onload = () => {
+				const canvas = canvasRef.current;
+				if (!canvas) return;
+				const ctx = canvas.getContext("2d", { willReadFrequently: true });
+				if (!ctx) return;
+
+				saveState();
+				canvas.width = img.width;
+				canvas.height = img.height;
+				ctx.drawImage(img, 0, 0);
+				setCanvasSize(img.width, img.height);
+			};
+			img.onerror = () => {
+				alert("Failed to load image from URL. The image may not allow cross-origin access.");
+			};
+			img.src = url;
+		},
+		[canvasRef, saveState, setCanvasSize],
+	);
+
+	const handleInvertColors = useCallback(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return;
+
+		saveState();
+		const result = transformCanvas(ctx, invertColors);
+		applyToCanvas(ctx, result, false);
+	}, [canvasRef, saveState]);
+
+	const handleClearImage = useCallback(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return;
+
+		saveState();
+		ctx.fillStyle = secondaryColor;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}, [canvasRef, saveState, secondaryColor]);
+
+	const handleSelectAll = useCallback(() => {
+		setSelection({
+			x: 0,
+			y: 0,
+			width: canvasWidth,
+			height: canvasHeight,
+			imageData: null,
+		});
+		setTool(TOOL_IDS.SELECT);
+	}, [canvasWidth, canvasHeight, setSelection, setTool]);
+
+	// Create menu actions
+	const menuActions: MenuActions = useMemo(
+		() => ({
+			// File menu
+			fileNew: () => {
+				if (confirm("Clear the current image and start new?")) {
+					saveState();
+					const canvas = canvasRef.current;
+					if (canvas) {
+						const ctx = canvas.getContext("2d", { willReadFrequently: true });
+						if (ctx) {
+							ctx.fillStyle = "#FFFFFF";
+							ctx.fillRect(0, 0, canvas.width, canvas.height);
+						}
+					}
+				}
+			},
+			fileOpen: () => {
+				const input = document.createElement("input");
+				input.type = "file";
+				input.accept = "image/*";
+				input.onchange = (e) => {
+					const file = (e.target as HTMLInputElement).files?.[0];
+					if (!file) return;
+					const reader = new FileReader();
+					reader.onload = (ev) => {
+						const img = new Image();
+						img.onload = () => {
+							const canvas = canvasRef.current;
+							if (!canvas) return;
+							const ctx = canvas.getContext("2d", { willReadFrequently: true });
+							if (!ctx) return;
+							saveState();
+							canvas.width = img.width;
+							canvas.height = img.height;
+							ctx.drawImage(img, 0, 0);
+							setCanvasSize(img.width, img.height);
+						};
+						img.src = ev.target?.result as string;
+					};
+					reader.readAsDataURL(file);
+				};
+				input.click();
+			},
+			fileSave: () => {
+				const canvas = canvasRef.current;
+				if (!canvas) return;
+				const link = document.createElement("a");
+				link.download = "image.png";
+				link.href = canvas.toDataURL("image/png");
+				link.click();
+			},
+			fileSaveAs: () => {
+				const canvas = canvasRef.current;
+				if (!canvas) return;
+				const link = document.createElement("a");
+				link.download = "image.png";
+				link.href = canvas.toDataURL("image/png");
+				link.click();
+			},
+			fileLoadFromUrl: () => openDialog("loadFromUrl"),
+			fileUploadToImgur: () => {
+				alert("Imgur upload not yet implemented in React version.");
+			},
+			fileManageStorage: () => {
+				alert("Storage management not yet implemented in React version.");
+			},
+			filePrint: () => window.print(),
+			fileExit: () => {
+				if (confirm("Are you sure you want to exit?")) {
+					window.close();
+				}
+			},
+
+			// Edit menu
+			editUndo: undo,
+			editRedo: redo,
+			editHistory: () => {
+				alert("History panel not yet implemented in React version.");
+			},
+			editCut: () => {
+				if (hasSelection) {
+					cut();
+					clearSelection();
+				}
+			},
+			editCopy: () => {
+				if (hasSelection) copy();
+			},
+			editPaste: () => {
+				if (hasClipboard) paste();
+			},
+			editClearSelection: () => {
+				if (hasSelection) {
+					const canvas = canvasRef.current;
+					if (canvas && selection) {
+						const ctx = canvas.getContext("2d", { willReadFrequently: true });
+						if (ctx) {
+							saveState();
+							ctx.fillStyle = secondaryColor;
+							ctx.fillRect(selection.x, selection.y, selection.width, selection.height);
+						}
+					}
+					clearSelection();
+				}
+			},
+			editSelectAll: handleSelectAll,
+			editCopyTo: () => {
+				if (hasSelection) {
+					const canvas = canvasRef.current;
+					if (canvas && selection) {
+						const tempCanvas = document.createElement("canvas");
+						tempCanvas.width = selection.width;
+						tempCanvas.height = selection.height;
+						const tempCtx = tempCanvas.getContext("2d");
+						if (tempCtx) {
+							const ctx = canvas.getContext("2d", { willReadFrequently: true });
+							if (ctx) {
+								const imageData = ctx.getImageData(
+									selection.x,
+									selection.y,
+									selection.width,
+									selection.height,
+								);
+								tempCtx.putImageData(imageData, 0, 0);
+								const link = document.createElement("a");
+								link.download = "selection.png";
+								link.href = tempCanvas.toDataURL("image/png");
+								link.click();
+							}
+						}
+					}
+				}
+			},
+			editPasteFrom: () => {
+				const input = document.createElement("input");
+				input.type = "file";
+				input.accept = "image/*";
+				input.onchange = (e) => {
+					const file = (e.target as HTMLInputElement).files?.[0];
+					if (!file) return;
+					const reader = new FileReader();
+					reader.onload = (ev) => {
+						const img = new Image();
+						img.onload = () => {
+							const tempCanvas = document.createElement("canvas");
+							tempCanvas.width = img.width;
+							tempCanvas.height = img.height;
+							const tempCtx = tempCanvas.getContext("2d");
+							if (tempCtx) {
+								tempCtx.drawImage(img, 0, 0);
+								const imageData = tempCtx.getImageData(0, 0, img.width, img.height);
+								setSelection({
+									x: 0,
+									y: 0,
+									width: img.width,
+									height: img.height,
+									imageData,
+								});
+								setTool(TOOL_IDS.SELECT);
+							}
+						};
+						img.src = ev.target?.result as string;
+					};
+					reader.readAsDataURL(file);
+				};
+				input.click();
+			},
+
+			// View menu
+			viewToggleToolBox: toggleToolBox,
+			viewToggleColorBox: toggleColorBox,
+			viewToggleStatusBar: toggleStatusBar,
+			viewToggleTextToolbar: toggleTextToolbar,
+			viewZoomNormal: () => setMagnification(1),
+			viewZoomLarge: () => setMagnification(4),
+			viewZoomToWindow: () => {
+				// Calculate zoom to fit window
+				const container = document.querySelector(".canvas-area");
+				if (container && canvasRef.current) {
+					const containerRect = container.getBoundingClientRect();
+					const canvas = canvasRef.current;
+					const scaleX = containerRect.width / canvas.width;
+					const scaleY = containerRect.height / canvas.height;
+					const scale = Math.min(scaleX, scaleY, 8);
+					setMagnification(Math.max(0.1, scale));
+				}
+			},
+			viewZoomCustom: () => openDialog("customZoom"),
+			viewToggleGrid: toggleGrid,
+			viewToggleThumbnail: toggleThumbnail,
+			viewBitmap: () => {
+				const canvas = canvasRef.current;
+				if (canvas) {
+					const dataUrl = canvas.toDataURL("image/png");
+					const win = window.open();
+					if (win) {
+						win.document.write(`<img src="${dataUrl}" style="image-rendering: pixelated;">`);
+					}
+				}
+			},
+			viewFullscreen: () => {
+				if (document.fullscreenElement) {
+					document.exitFullscreen();
+				} else {
+					document.documentElement.requestFullscreen();
+				}
+			},
+
+			// Image menu
+			imageFlipRotate: () => openDialog("flipRotate"),
+			imageStretchSkew: () => openDialog("stretchSkew"),
+			imageInvertColors: handleInvertColors,
+			imageAttributes: () => openDialog("attributes"),
+			imageClearImage: handleClearImage,
+			imageCropToSelection: () => {
+				if (!selection) return;
+				const canvas = canvasRef.current;
+				if (!canvas) return;
+				const ctx = canvas.getContext("2d", { willReadFrequently: true });
+				if (!ctx) return;
+
+				saveState();
+
+				// Get the selection area from the canvas
+				const imageData = ctx.getImageData(selection.x, selection.y, selection.width, selection.height);
+
+				// Resize canvas to selection size
+				canvas.width = selection.width;
+				canvas.height = selection.height;
+
+				// Draw the cropped content
+				ctx.putImageData(imageData, 0, 0);
+
+				// Update canvas size in state
+				setCanvasSize(selection.width, selection.height);
+
+				// Clear the selection
+				clearSelection();
+			},
+			imageToggleDrawOpaque: toggleDrawOpaque,
+
+			// Colors menu
+			colorsEditColors: () => {
+				alert("Color editor not yet implemented in React version.");
+			},
+			colorsGetColors: () => {
+				alert("Get colors not yet implemented in React version.");
+			},
+			colorsSaveColors: () => {
+				alert("Save colors not yet implemented in React version.");
+			},
+
+			// Help menu
+			helpTopics: () => {
+				window.open("https://github.com/1j01/jspaint", "_blank");
+			},
+			helpAbout: () => openDialog("about"),
+
+			// State checks
+			canUndo: () => canUndo,
+			canRedo: () => canRedo,
+			hasSelection: () => hasSelection,
+			hasClipboard: () => hasClipboard,
+			isToolBoxVisible: () => showToolBox,
+			isColorBoxVisible: () => showColorBox,
+			isStatusBarVisible: () => showStatusBar,
+			isTextToolbarVisible: () => showTextToolbar,
+			isGridVisible: () => showGrid,
+			isThumbnailVisible: () => showThumbnail,
+			isFullscreen: () => !!document.fullscreenElement,
+			isDrawOpaque: () => drawOpaque,
+			getMagnification: () => magnification,
+		}),
+		[
+			canUndo,
+			canRedo,
+			undo,
+			redo,
+			hasSelection,
+			hasClipboard,
+			copy,
+			cut,
+			paste,
+			clearSelection,
+			selection,
+			secondaryColor,
+			handleSelectAll,
+			handleInvertColors,
+			handleClearImage,
+			showToolBox,
+			showColorBox,
+			showStatusBar,
+			showTextToolbar,
+			showGrid,
+			showThumbnail,
+			drawOpaque,
+			magnification,
+			toggleToolBox,
+			toggleColorBox,
+			toggleStatusBar,
+			toggleTextToolbar,
+			toggleGrid,
+			toggleThumbnail,
+			toggleDrawOpaque,
+			setMagnification,
+			openDialog,
+			saveState,
+			canvasRef,
+			setCanvasSize,
+			setSelection,
+			setTool,
+		],
+	);
+
+	// Create the menu structure
+	const menu = useMemo(() => createMenus(menuActions), [menuActions]);
 
 	// Handle keyboard shortcuts
 	React.useEffect(() => {
@@ -205,14 +715,13 @@ function AppContent() {
 			// Ctrl/Cmd+A for select all
 			if (isMod && e.key === "a") {
 				e.preventDefault();
-				setTool(TOOL_IDS.SELECT);
-				// TODO: Implement select all functionality in canvas
+				handleSelectAll();
 				return;
 			}
 
 			// Ctrl/Cmd+C for copy
 			if (isMod && e.key === "c") {
-				if (selection) {
+				if (hasSelection) {
 					e.preventDefault();
 					copy();
 				}
@@ -221,7 +730,7 @@ function AppContent() {
 
 			// Ctrl/Cmd+X for cut
 			if (isMod && e.key === "x") {
-				if (selection) {
+				if (hasSelection) {
 					e.preventDefault();
 					cut();
 					clearSelection();
@@ -238,11 +747,18 @@ function AppContent() {
 				return;
 			}
 
+			// Ctrl/Cmd+I for invert colors
+			if (isMod && e.key === "i") {
+				e.preventDefault();
+				handleInvertColors();
+				return;
+			}
+
 			// Delete or Backspace to clear selection
 			if (e.key === "Delete" || e.key === "Backspace") {
-				if (selection) {
+				if (hasSelection) {
 					e.preventDefault();
-					// TODO: Clear selection - delete selected area
+					menuActions.editClearSelection();
 				}
 				return;
 			}
@@ -250,8 +766,14 @@ function AppContent() {
 			// Escape to cancel current operation / deselect
 			if (e.key === "Escape") {
 				e.preventDefault();
-				// Clear any active selection
-				// Note: This will be wired up when useSelection provides clearSelection
+				clearSelection();
+				return;
+			}
+
+			// F11 for fullscreen
+			if (e.key === "F11") {
+				e.preventDefault();
+				menuActions.viewFullscreen();
 				return;
 			}
 
@@ -306,7 +828,22 @@ function AppContent() {
 
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [canUndo, canRedo, undo, redo, setTool, selection, copy, cut, paste, hasClipboard, clearSelection]);
+	}, [
+		canUndo,
+		canRedo,
+		undo,
+		redo,
+		setTool,
+		hasSelection,
+		copy,
+		cut,
+		paste,
+		hasClipboard,
+		clearSelection,
+		handleSelectAll,
+		handleInvertColors,
+		menuActions,
+	]);
 
 	// Format cursor position for status bar
 	const positionText = cursorPosition ? `${cursorPosition.x}, ${cursorPosition.y}` : "";
@@ -316,172 +853,70 @@ function AppContent() {
 		? `${Math.abs(selection.width)}x${Math.abs(selection.height)}`
 		: `${state.canvasWidth}x${state.canvasHeight}`;
 
-	// Get MENU_DIVIDER from global scope (set by os-gui)
-	const MENU_DIVIDER = (globalThis as typeof globalThis & { MENU_DIVIDER: symbol }).MENU_DIVIDER;
-
-	// Build dynamic menu with working actions
-	const menu = useMemo(
-		() => ({
-			"&File": [
-				{
-					label: "&New",
-					shortcutLabel: "Ctrl+N",
-					ariaKeyShortcuts: "Control+N",
-					description: "Create a new image.",
-					action: () => {
-						// TODO: Clear canvas and reset state
-						console.info("[React] File > New");
-					},
-				},
-				MENU_DIVIDER,
-				{
-					label: "E&xit",
-					description: "Close the application.",
-					disabled: true,
-					action: () => {},
-				},
-			],
-			"&Edit": [
-				{
-					label: "&Undo",
-					shortcutLabel: "Ctrl+Z",
-					ariaKeyShortcuts: "Control+Z",
-					disabled: !canUndo,
-					description: canUndo ? "Undo the last action." : "Nothing to undo.",
-					action: () => {
-						if (canUndo) undo();
-					},
-				},
-				{
-					label: "&Redo",
-					shortcutLabel: "Ctrl+Y",
-					ariaKeyShortcuts: "Control+Y",
-					disabled: !canRedo,
-					description: canRedo ? "Redo the last undone action." : "Nothing to redo.",
-					action: () => {
-						if (canRedo) redo();
-					},
-				},
-				MENU_DIVIDER,
-				{
-					label: "Cu&t",
-					shortcutLabel: "Ctrl+X",
-					ariaKeyShortcuts: "Control+X",
-					disabled: !selection,
-					description: "Cut the selection to clipboard.",
-					action: () => {
-						if (selection) {
-							cut();
-							clearSelection();
-						}
-					},
-				},
-				{
-					label: "&Copy",
-					shortcutLabel: "Ctrl+C",
-					ariaKeyShortcuts: "Control+C",
-					disabled: !selection,
-					description: "Copy the selection to clipboard.",
-					action: () => {
-						if (selection) copy();
-					},
-				},
-				{
-					label: "&Paste",
-					shortcutLabel: "Ctrl+V",
-					ariaKeyShortcuts: "Control+V",
-					disabled: !hasClipboard,
-					description: "Paste from clipboard.",
-					action: () => {
-						if (hasClipboard) paste();
-					},
-				},
-				MENU_DIVIDER,
-				{
-					label: "Select &All",
-					shortcutLabel: "Ctrl+A",
-					ariaKeyShortcuts: "Control+A",
-					description: "Select the entire canvas.",
-					action: () => {
-						setTool(TOOL_IDS.SELECT);
-						// TODO: Implement select all
-					},
-				},
-			],
-			"&View": [
-				{
-					label: "&Zoom",
-					submenu: [
-						{
-							label: "100%",
-							action: () => console.info("[React] View > Zoom 100%"),
-						},
-						{
-							label: "200%",
-							action: () => console.info("[React] View > Zoom 200%"),
-						},
-						{
-							label: "400%",
-							action: () => console.info("[React] View > Zoom 400%"),
-						},
-					],
-				},
-			],
-			"&Help": [
-				{
-					label: "&About MCPaint",
-					description: "About this React version of MCPaint.",
-					action: () => {
-						alert(
-							"MCPaint - React Preview\n\nA pixel-perfect MS Paint clone built with React.\n\nSee MIGRATE.md for implementation progress.",
-						);
-					},
-				},
-			],
-		}),
-		[
-			canUndo,
-			canRedo,
-			undo,
-			redo,
-			selection,
-			hasClipboard,
-			copy,
-			cut,
-			paste,
-			clearSelection,
-			setTool,
-			MENU_DIVIDER,
-		],
-	);
-
 	return (
-		<Frame
-			menu={menu}
-			leftContent={
-				<ToolBox
-					tools={TOOLBOX_ITEMS}
-					selectedToolIds={[selectedToolId]}
-					onSelectionChange={(toolIds) => setTool(toolIds[0])}
-					onHoverChange={setHoveredTool}
-				>
-					<ToolOptions />
-				</ToolBox>
-			}
-			bottomContent={
-				<ColorBox
-					palette={palette}
-					initialPrimary={primaryColor}
-					initialSecondary={secondaryColor}
-					onPrimaryChange={setPrimaryColor}
-					onSecondaryChange={setSecondaryColor}
-				/>
-			}
-			canvasContent={<Canvas />}
-			statusText={statusMessage}
-			statusPosition={positionText}
-			statusSize={sizeText}
-		/>
+		<>
+			<Frame
+				menu={menu}
+				leftContent={
+					showToolBox ? (
+						<ToolBox
+							tools={TOOLBOX_ITEMS}
+							selectedToolIds={[selectedToolId]}
+							onSelectionChange={(toolIds) => setTool(toolIds[0])}
+							onHoverChange={setHoveredTool}
+						>
+							<ToolOptions />
+						</ToolBox>
+					) : null
+				}
+				bottomContent={
+					showColorBox ? (
+						<ColorBox
+							palette={palette}
+							initialPrimary={primaryColor}
+							initialSecondary={secondaryColor}
+							onPrimaryChange={setPrimaryColor}
+							onSecondaryChange={setSecondaryColor}
+						/>
+					) : null
+				}
+				canvasContent={<Canvas />}
+				statusText={showStatusBar ? statusMessage : ""}
+				statusPosition={showStatusBar ? positionText : ""}
+				statusSize={showStatusBar ? sizeText : ""}
+			/>
+
+			{/* Dialogs */}
+			<AboutDialog isOpen={dialogs.about} onClose={() => closeDialog("about")} />
+			<FlipRotateDialog
+				isOpen={dialogs.flipRotate}
+				onClose={() => closeDialog("flipRotate")}
+				onApply={handleFlipRotate}
+			/>
+			<StretchSkewDialog
+				isOpen={dialogs.stretchSkew}
+				onClose={() => closeDialog("stretchSkew")}
+				onApply={handleStretchSkew}
+			/>
+			<AttributesDialog
+				isOpen={dialogs.attributes}
+				onClose={() => closeDialog("attributes")}
+				onApply={handleAttributes}
+				currentWidth={canvasWidth}
+				currentHeight={canvasHeight}
+			/>
+			<CustomZoomDialog
+				isOpen={dialogs.customZoom}
+				onClose={() => closeDialog("customZoom")}
+				onApply={setMagnification}
+				currentMagnification={magnification}
+			/>
+			<LoadFromUrlDialog
+				isOpen={dialogs.loadFromUrl}
+				onClose={() => closeDialog("loadFromUrl")}
+				onLoad={handleLoadFromUrl}
+			/>
+		</>
 	);
 }
 

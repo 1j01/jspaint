@@ -25,17 +25,28 @@ mcpaint/
 │   │   │   ├── FontBox.tsx        # Font selector
 │   │   │   ├── Frame.tsx          # Main layout with menu bar
 │   │   │   ├── ToolBox.tsx        # Tool selection grid
-│   │   │   └── ToolOptions.tsx    # Tool-specific options panel
+│   │   │   ├── ToolOptions.tsx    # Tool-specific options panel
+│   │   │   └── dialogs/           # Dialog components
+│   │   │       ├── Dialog.tsx           # Base modal dialog
+│   │   │       ├── AboutDialog.tsx      # About Paint dialog
+│   │   │       ├── FlipRotateDialog.tsx # Flip/Rotate options
+│   │   │       ├── StretchSkewDialog.tsx# Stretch/Skew values
+│   │   │       ├── AttributesDialog.tsx # Canvas attributes
+│   │   │       ├── CustomZoomDialog.tsx # Custom zoom level
+│   │   │       └── LoadFromUrlDialog.tsx# Load image from URL
 │   │   ├── context/
-│   │   │   └── AppContext.tsx     # Global state management (~600 lines)
+│   │   │   └── AppContext.tsx     # Global state management (~700 lines)
 │   │   ├── hooks/            # Custom hooks for canvas operations
 │   │   │   ├── useCanvasDrawing.ts      # Core drawing logic
 │   │   │   ├── useCanvasSelection.ts    # Selection tools
 │   │   │   ├── useCanvasTextBox.ts      # Text tool logic
 │   │   │   ├── useCanvasShapes.ts       # Shape tools (line, rect, ellipse)
 │   │   │   └── useCanvasCurvePolygon.ts # Curve and polygon tools
+│   │   ├── menus/            # Menu system
+│   │   │   └── menuDefinitions.ts # Full menu structure for all 6 menus
 │   │   ├── utils/            # Pure utility functions
-│   │   │   └── drawingUtils.ts    # Drawing algorithms (~460 lines)
+│   │   │   ├── drawingUtils.ts    # Drawing algorithms (~460 lines)
+│   │   │   └── imageTransforms.ts # Image transformations (flip, rotate, etc.)
 │   │   └── data/
 │   │       └── palette.ts         # Color palette data
 │   ├── $Component.js         # jQuery component helpers (legacy)
@@ -153,19 +164,22 @@ $G                             // jQuery event emitter
 - Multi-page Vite configuration
 - **AppContext** for state management (React Context + useReducer)
 - **Canvas component** with drawing support
-- **Pencil, Brush, Eraser tools** working
+- **All 16 drawing tools** working (Pencil, Brush, Eraser, Fill, Pick Color, Magnifier, Line, Curve, Rectangle, Ellipse, Rounded Rectangle, Polygon, Text, Airbrush, Rectangular Select, Free-Form Select)
 - **Basic undo/redo** (linear stack, Ctrl+Z/Ctrl+Y)
 - Color selection (primary/secondary with left/right click)
+- **Full menu system** (File, Edit, View, Image, Colors, Help menus)
+- **Dialog components** (About, Flip/Rotate, Stretch/Skew, Attributes, Custom Zoom, Load From URL)
+- **Image transformations** (flip horizontal/vertical, rotate, stretch, skew, invert colors)
+- **File operations** (New, Open, Save, Save As, Load from URL)
+- **Clipboard operations** (Cut, Copy, Paste, Copy To, Paste From)
+- **View state management** (toggle Tool Box, Color Box, Status Bar, Grid, etc.)
 
 ### In Progress
-- Additional tools (shapes, selection, fill)
+- Color editor dialog
+- Advanced file format support
 
 ### Not Started
 - Tree-based undo/redo (branching history)
-- File I/O in React
-- Menu actions wired to React
-- Selection tools
-- Shape tools (rectangle, ellipse, line, etc.)
 - jQuery removal
 
 ## Migration Strategy
@@ -210,10 +224,26 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 | `src/react/components/CanvasTextBox.tsx` | Text input overlay for text tool |
 | `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
 
+### Dialogs
+| File | Purpose |
+|------|---------|
+| `src/react/components/dialogs/Dialog.tsx` | Base modal dialog component |
+| `src/react/components/dialogs/AboutDialog.tsx` | About Paint dialog |
+| `src/react/components/dialogs/FlipRotateDialog.tsx` | Flip/Rotate options dialog |
+| `src/react/components/dialogs/StretchSkewDialog.tsx` | Stretch/Skew values dialog |
+| `src/react/components/dialogs/AttributesDialog.tsx` | Canvas attributes dialog |
+| `src/react/components/dialogs/CustomZoomDialog.tsx` | Custom zoom level dialog |
+| `src/react/components/dialogs/LoadFromUrlDialog.tsx` | Load image from URL dialog |
+
+### Menus
+| File | Purpose |
+|------|---------|
+| `src/react/menus/menuDefinitions.ts` | Full menu structure with all 6 menus (File, Edit, View, Image, Colors, Help) |
+
 ### Context
 | File | Purpose |
 |------|---------|
-| `src/react/context/AppContext.tsx` | Global state management with useReducer (~600 lines) |
+| `src/react/context/AppContext.tsx` | Global state management with useReducer (~700 lines) |
 
 ### Hooks
 | File | Purpose |
@@ -228,6 +258,7 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 | File | Purpose |
 |------|---------|
 | `src/react/utils/drawingUtils.ts` | Pure drawing algorithms (bresenhamLine, floodFill, etc.) |
+| `src/react/utils/imageTransforms.ts` | Image transformations (flip, rotate, stretch, skew, invert) |
 
 ## Testing
 

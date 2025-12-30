@@ -86,10 +86,10 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 | Canvas | `Canvas.tsx` | Full implementation with all tools |
 
 #### TODO - UI Components
-- [ ] Port menu system to React (currently bridged via legacy MenuBar)
-- [ ] Create StatusBar component
-- [ ] Create ToolOptions component (fill style, line width selector)
-- [ ] Create dialog components (About, Help, etc.)
+- [x] Port menu system to React - **Full menu definitions in `menuDefinitions.ts`**
+- [x] Create StatusBar component - **Integrated in Frame.tsx**
+- [x] Create ToolOptions component - **`ToolOptions.tsx` with fill style, line width selector**
+- [x] Create dialog components - **About, FlipRotate, StretchSkew, Attributes, CustomZoom, LoadFromUrl**
 
 #### TODO - Canvas Components
 - [x] Create Canvas component with imperative ref API
@@ -140,20 +140,21 @@ Key functions ported to `src/react/utils/drawingUtils.ts` and hooks:
 
 #### TODO - Drawing Functions
 - [x] `drawRoundedRectangle()` - ✅ Implemented in `drawingUtils.ts`
-- [ ] `select_all()`, `delete_selection()`
+- [x] `select_all()`, `delete_selection()` - **Implemented in App.tsx menu actions**
 - [ ] `crop_to_selection()`
-- [ ] `image_invert_colors()`, `image_flip_horizontal/vertical()`
+- [x] `image_invert_colors()`, `image_flip_horizontal/vertical()` - **Implemented in `imageTransforms.ts`**
 
 #### TODO - Image Manipulation
 From `src/image-manipulation.js`:
-- [ ] Canvas rotation algorithms
-- [ ] Stretch/skew operations
+- [x] Canvas rotation algorithms - **Implemented in `imageTransforms.ts` (rotate, rotateArbitrary)**
+- [x] Stretch/skew operations - **Implemented in `imageTransforms.ts` (stretch, skew)**
 - [ ] Color quantization
 - [ ] Image tracing
 
 #### TODO - File Operations
-- [ ] File open/save dialogs
-- [ ] Format encoding/decoding (PNG, BMP, GIF, JPEG)
+- [x] File open/save dialogs - **Basic implementation using file picker and download**
+- [x] Load from URL dialog - **`LoadFromUrlDialog.tsx`**
+- [ ] Format encoding/decoding (PNG, BMP, GIF, JPEG) - PNG via toDataURL, others pending
 - [ ] Palette import/export
 
 ### 5. Feature migration priority
@@ -182,12 +183,12 @@ From `src/image-manipulation.js`:
 4. ~~Airbrush tool~~ ✅
 5. ~~Magnifier/zoom~~ ✅ (1x, 2x, 4x, 6x, 8x)
 
-#### Priority 4 - Polish (In Progress)
-1. ~~Menu system fully in React~~ ✅ (Edit menu with undo/redo/cut/copy/paste)
-2. All dialogs as React components
-3. ~~Keyboard shortcuts~~ ✅ (Ctrl+Z/Y, tool hotkeys, clipboard shortcuts)
-4. File operations
-5. ~~Clipboard operations~~ ✅ (Copy, Cut, Paste)
+#### Priority 4 - Polish ✅ MOSTLY DONE
+1. ~~Menu system fully in React~~ ✅ (All 6 menus: File, Edit, View, Image, Colors, Help)
+2. ~~All dialogs as React components~~ ✅ (About, FlipRotate, StretchSkew, Attributes, CustomZoom, LoadFromUrl)
+3. ~~Keyboard shortcuts~~ ✅ (Ctrl+Z/Y, tool hotkeys, clipboard shortcuts, F11, Ctrl+I)
+4. ~~File operations~~ ✅ (New, Open, Save, Save As, Load from URL)
+5. ~~Clipboard operations~~ ✅ (Copy, Cut, Paste, Copy To, Paste From)
 
 #### Additional UI Components Implemented
 - ~~ToolOptions panel~~ ✅ (brush size, line width, fill style per tool)
@@ -270,6 +271,18 @@ Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
 | `src/react/components/CanvasOverlay.tsx` | Selection overlay with marching ants |
 | `src/react/components/CanvasTextBox.tsx` | Text input overlay for text tool |
 | `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
+| `src/react/components/dialogs/Dialog.tsx` | Base modal dialog component |
+| `src/react/components/dialogs/AboutDialog.tsx` | About Paint dialog |
+| `src/react/components/dialogs/FlipRotateDialog.tsx` | Flip/Rotate options dialog |
+| `src/react/components/dialogs/StretchSkewDialog.tsx` | Stretch/Skew values dialog |
+| `src/react/components/dialogs/AttributesDialog.tsx` | Canvas attributes dialog |
+| `src/react/components/dialogs/CustomZoomDialog.tsx` | Custom zoom level dialog |
+| `src/react/components/dialogs/LoadFromUrlDialog.tsx` | Load image from URL dialog |
+
+#### Menus
+| File | Purpose |
+|------|---------|
+| `src/react/menus/menuDefinitions.ts` | Full menu structure with all 6 menus |
 
 #### Context
 | File | Purpose |
@@ -289,6 +302,7 @@ Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
 | File | Purpose |
 |------|---------|
 | `src/react/utils/drawingUtils.ts` | Pure drawing algorithms (~460 lines) |
+| `src/react/utils/imageTransforms.ts` | Image transformations (flip, rotate, stretch, skew, invert) |
 | `src/react/data/palette.ts` | Color palette data |
 
 ### Key State Interfaces (AppContext.tsx)
@@ -309,6 +323,8 @@ Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
 | `useTextBox()` | Text tool state and font settings |
 | `useShapeSettings()` | Fill style and line width |
 | `useCursorPosition()` | Cursor tracking for status bar |
+| `useViewState()` | View toggles (toolbox, colorbox, statusbar, grid, thumbnail, drawOpaque) |
+| `useFileState()` | File name and saved status |
 
 ### Canvas Hooks (src/react/hooks/)
 | Hook | Purpose |

@@ -195,11 +195,9 @@ export function Frame({
 	const resolvedClassName = useMemo(() => ["jspaint", className].filter(Boolean).join(" "), [className]);
 
 	const resolvedCanvas = canvasContent ?? DEFAULT_CANVAS_PLACEHOLDER;
-	const resolvedTop = topContent ? (
-		<div className="component-area top">{topContent}</div>
-	) : (
-		<div className="component-area top" aria-hidden="true" />
-	);
+	// Only render top component-area if there's actual content
+	// An empty div can still take up space and push the canvas down
+	const resolvedTop = topContent ? <div className="component-area top">{topContent}</div> : null;
 	const resolvedLeft = leftContent ? (
 		<div className="component-area left">{leftContent}</div>
 	) : (

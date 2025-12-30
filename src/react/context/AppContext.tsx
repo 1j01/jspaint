@@ -102,6 +102,17 @@ const initialState = {
 	// File state
 	fileName: "untitled",
 	saved: true,
+
+	// View state - visibility toggles
+	showToolBox: true,
+	showColorBox: true,
+	showStatusBar: true,
+	showTextToolbar: false,
+	showGrid: false,
+	showThumbnail: false,
+
+	// Image mode
+	drawOpaque: true,
 };
 
 // Action types
@@ -132,6 +143,14 @@ const ActionTypes = {
 	SET_FILL_STYLE: "SET_FILL_STYLE",
 	SET_LINE_WIDTH: "SET_LINE_WIDTH",
 	SET_ERASER_SIZE: "SET_ERASER_SIZE",
+	// View toggles
+	TOGGLE_TOOL_BOX: "TOGGLE_TOOL_BOX",
+	TOGGLE_COLOR_BOX: "TOGGLE_COLOR_BOX",
+	TOGGLE_STATUS_BAR: "TOGGLE_STATUS_BAR",
+	TOGGLE_TEXT_TOOLBAR: "TOGGLE_TEXT_TOOLBAR",
+	TOGGLE_GRID: "TOGGLE_GRID",
+	TOGGLE_THUMBNAIL: "TOGGLE_THUMBNAIL",
+	TOGGLE_DRAW_OPAQUE: "TOGGLE_DRAW_OPAQUE",
 };
 
 // Reducer
@@ -256,6 +275,27 @@ function appReducer(state, action) {
 		case ActionTypes.SET_LINE_WIDTH:
 			return { ...state, lineWidth: action.payload };
 
+		case ActionTypes.TOGGLE_TOOL_BOX:
+			return { ...state, showToolBox: !state.showToolBox };
+
+		case ActionTypes.TOGGLE_COLOR_BOX:
+			return { ...state, showColorBox: !state.showColorBox };
+
+		case ActionTypes.TOGGLE_STATUS_BAR:
+			return { ...state, showStatusBar: !state.showStatusBar };
+
+		case ActionTypes.TOGGLE_TEXT_TOOLBAR:
+			return { ...state, showTextToolbar: !state.showTextToolbar };
+
+		case ActionTypes.TOGGLE_GRID:
+			return { ...state, showGrid: !state.showGrid };
+
+		case ActionTypes.TOGGLE_THUMBNAIL:
+			return { ...state, showThumbnail: !state.showThumbnail };
+
+		case ActionTypes.TOGGLE_DRAW_OPAQUE:
+			return { ...state, drawOpaque: !state.drawOpaque };
+
 		default:
 			return state;
 	}
@@ -375,6 +415,35 @@ export function AppProvider({ children }) {
 
 		setLineWidth: useCallback((lineWidth: number) => {
 			dispatch({ type: ActionTypes.SET_LINE_WIDTH, payload: lineWidth });
+		}, []),
+
+		// View toggles
+		toggleToolBox: useCallback(() => {
+			dispatch({ type: ActionTypes.TOGGLE_TOOL_BOX });
+		}, []),
+
+		toggleColorBox: useCallback(() => {
+			dispatch({ type: ActionTypes.TOGGLE_COLOR_BOX });
+		}, []),
+
+		toggleStatusBar: useCallback(() => {
+			dispatch({ type: ActionTypes.TOGGLE_STATUS_BAR });
+		}, []),
+
+		toggleTextToolbar: useCallback(() => {
+			dispatch({ type: ActionTypes.TOGGLE_TEXT_TOOLBAR });
+		}, []),
+
+		toggleGrid: useCallback(() => {
+			dispatch({ type: ActionTypes.TOGGLE_GRID });
+		}, []),
+
+		toggleThumbnail: useCallback(() => {
+			dispatch({ type: ActionTypes.TOGGLE_THUMBNAIL });
+		}, []),
+
+		toggleDrawOpaque: useCallback(() => {
+			dispatch({ type: ActionTypes.TOGGLE_DRAW_OPAQUE });
 		}, []),
 	};
 	const value = {
@@ -597,6 +666,36 @@ export function useShapeSettings() {
 		lineWidth: state.lineWidth,
 		setFillStyle: actions.setFillStyle,
 		setLineWidth: actions.setLineWidth,
+	};
+}
+
+export function useViewState() {
+	const { state, actions } = useApp();
+	return {
+		showToolBox: state.showToolBox,
+		showColorBox: state.showColorBox,
+		showStatusBar: state.showStatusBar,
+		showTextToolbar: state.showTextToolbar,
+		showGrid: state.showGrid,
+		showThumbnail: state.showThumbnail,
+		drawOpaque: state.drawOpaque,
+		toggleToolBox: actions.toggleToolBox,
+		toggleColorBox: actions.toggleColorBox,
+		toggleStatusBar: actions.toggleStatusBar,
+		toggleTextToolbar: actions.toggleTextToolbar,
+		toggleGrid: actions.toggleGrid,
+		toggleThumbnail: actions.toggleThumbnail,
+		toggleDrawOpaque: actions.toggleDrawOpaque,
+	};
+}
+
+export function useFileState() {
+	const { state, actions } = useApp();
+	return {
+		fileName: state.fileName,
+		saved: state.saved,
+		setFileName: actions.setFileName,
+		setSaved: actions.setSaved,
 	};
 }
 
