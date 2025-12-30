@@ -23,9 +23,13 @@ import {
 	AboutDialog,
 	AttributesDialog,
 	CustomZoomDialog,
+	EditColorsDialog,
 	FlipRotateDialog,
 	LoadFromUrlDialog,
 	StretchSkewDialog,
+	ImgurUploadDialog,
+	ManageStorageDialog,
+	HistoryDialog,
 } from "../react/components/dialogs";
 import { HelpWindow } from "../react/components/help";
 import type { FlipRotateAction } from "../react/components/dialogs/FlipRotateDialog";
@@ -41,6 +45,7 @@ import {
 	applyToCanvas,
 	transformCanvas,
 } from "../react/utils/imageTransforms";
+import { defaultCustomColors } from "../react/data/basicColors";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -185,6 +190,10 @@ interface DialogState {
 	customZoom: boolean;
 	loadFromUrl: boolean;
 	helpTopics: boolean;
+	editColors: boolean;
+	imgurUpload: boolean;
+	manageStorage: boolean;
+	history: boolean;
 }
 
 function AppContent() {
@@ -216,6 +225,9 @@ function AppContent() {
 
 	const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
 
+	// Custom colors state for the color editor
+	const [customColors, setCustomColors] = useState<string[]>(defaultCustomColors);
+
 	// Dialog state
 	const [dialogs, setDialogs] = useState<DialogState>({
 		about: false,
@@ -225,6 +237,10 @@ function AppContent() {
 		customZoom: false,
 		loadFromUrl: false,
 		helpTopics: false,
+		editColors: false,
+		imgurUpload: false,
+		manageStorage: false,
+		history: false,
 	});
 
 	const openDialog = useCallback((dialog: keyof DialogState) => {
@@ -341,6 +357,14 @@ function AppContent() {
 		applyToCanvas(ctx, result, false);
 	}, [canvasRef, saveState]);
 
+	const handleColorSelect = useCallback(
+		(color: string, newCustomColors: string[]) => {
+			setPrimaryColor(color);
+			setCustomColors(newCustomColors);
+		},
+		[setPrimaryColor],
+	);
+
 	const handleClearImage = useCallback(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
@@ -425,10 +449,10 @@ function AppContent() {
 			},
 			fileLoadFromUrl: () => openDialog("loadFromUrl"),
 			fileUploadToImgur: () => {
-				alert("Imgur upload not yet implemented in React version.");
+				openDialog("imgurUpload");
 			},
 			fileManageStorage: () => {
-				alert("Storage management not yet implemented in React version.");
+				openDialog("manageStorage");
 			},
 			filePrint: () => window.print(),
 			fileExit: () => {
@@ -441,7 +465,7 @@ function AppContent() {
 			editUndo: undo,
 			editRedo: redo,
 			editHistory: () => {
-				alert("History panel not yet implemented in React version.");
+				openDialog("history");
 			},
 			editCut: () => {
 				if (hasSelection) {
@@ -607,13 +631,56 @@ function AppContent() {
 
 			// Colors menu
 			colorsEditColors: () => {
-				alert("Color editor not yet implemented in React version.");
+				openDialog("editColors");
 			},
 			colorsGetColors: () => {
-				alert("Get colors not yet implemented in React version.");
+				// Open file picker for palette files
+				const input = document.createElement("input");
+				input.type = "file";
+				input.accept = ".pal,.gpl,.act,.aco,.ase,.txt";
+				input.onchange = (e) => {
+					const file = (e.target as HTMLInputElement).files?.[0];
+					if (!file) return;
+					const reader = new FileReader();
+					reader.onload = (ev) => {
+						const text = ev.target?.result as string;
+						// Simple PAL/GPL parser - just extract hex colors
+						const hexColorRegex = /#([0-9A-Fa-f]{6})/g;
+						const colors: string[] = [];
+						let match;
+						while ((match = hexColorRegex.exec(text)) !== null) {
+							colors.push(`#${match[1]}`);
+						}
+						if (colors.length > 0) {
+							// For now, just show success - full palette updating would require palette state management
+							alert(`Loaded ${colors.length} colors from palette file. Full palette integration coming soon.`);
+						} else {
+							alert("No colors found in the palette file. Please make sure it's a valid .PAL or .GPL file.");
+						}
+					};
+					reader.readAsText(file);
+				};
+				input.click();
 			},
 			colorsSaveColors: () => {
-				alert("Save colors not yet implemented in React version.");
+				// Save current palette as a simple GIMP Palette (.gpl) file
+				let gplContent = "GIMP Palette\nName: JS Paint Colors\nColumns: 14\n#\n";
+				for (let i = 0; i < palette.length; i++) {
+					const color = palette[i];
+					// Convert hex to RGB
+					const r = parseInt(color.slice(1, 3), 16);
+					const g = parseInt(color.slice(3, 5), 16);
+					const b = parseInt(color.slice(5, 7), 16);
+					gplContent += `${r.toString().padStart(3)} ${g.toString().padStart(3)} ${b.toString().padStart(3)}\tColor ${i + 1}\n`;
+				}
+
+				// Download the file
+				const blob = new Blob([gplContent], { type: "text/plain" });
+				const link = document.createElement("a");
+				link.download = "palette.gpl";
+				link.href = URL.createObjectURL(blob);
+				link.click();
+				URL.revokeObjectURL(link.href);
 			},
 
 			// Help menu
@@ -917,7 +984,37 @@ function AppContent() {
 				onClose={() => closeDialog("loadFromUrl")}
 				onLoad={handleLoadFromUrl}
 			/>
+			<EditColorsDialog
+				isOpen={dialogs.editColors}
+				onClose={() => closeDialog("editColors")}
+				initialColor={primaryColor}
+				customColors={customColors}
+				onColorSelect={handleColorSelect}
+			/>
 			<HelpWindow isOpen={dialogs.helpTopics} onClose={() => closeDialog("helpTopics")} />
+			<ImgurUploadDialog
+				isOpen={dialogs.imgurUpload}
+				onClose={() => closeDialog("imgurUpload")}
+				onUpload={() => {}}
+				imageDataUrl={canvasRef.current?.toDataURL("image/png") || ""}
+			/>
+			<ManageStorageDialog
+				isOpen={dialogs.manageStorage}
+				onClose={() => closeDialog("manageStorage")}
+			/>
+			<HistoryDialog
+				isOpen={dialogs.history}
+				onClose={() => closeDialog("history")}
+				undoStack={state.undoStack}
+				redoStack={state.redoStack}
+				onGoToState={(index, isRedo) => {
+					if (isRedo) {
+						redo();
+					} else {
+						undo();
+					}
+				}}
+			/>
 		</>
 	);
 }

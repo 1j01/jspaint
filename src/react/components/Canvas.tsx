@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { TOOL_IDS, useApp, useCursorPosition, useHistory, useMagnification, useSelection, useTool } from "../context/AppContext";
+import { TOOL_IDS, useApp, useCanvas, useCursorPosition, useHistory, useMagnification, useSelection, useTool } from "../context/AppContext";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
@@ -8,6 +8,7 @@ import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
+import { CanvasResizeHandles } from "./CanvasResizeHandles";
 
 // Magnification levels
 const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
@@ -22,6 +23,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 	const { magnification, setMagnification } = useMagnification();
 	const { setCursorPosition } = useCursorPosition();
 	const { selection: currentSelection, setSelection } = useSelection();
+	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvas();
 
 	// Overlay canvas ref for selection marching ants
 	const overlayRef = useRef<HTMLCanvasElement>(null);
@@ -370,7 +372,7 @@ selectionHook,
 		transformOrigin: "top left",
 	};
 
-// Handle selection resize from SelectionHandles
+	// Handle selection resize from SelectionHandles
 	const handleSelectionResize = useCallback(
 		(newRect: { x: number; y: number; width: number; height: number }) => {
 			if (!currentSelection || !currentSelection.imageData) return;
@@ -409,6 +411,15 @@ selectionHook,
 		[currentSelection, setSelection],
 	);
 
+	// Handle canvas resize from CanvasResizeHandles
+	const handleCanvasResize = useCallback(
+		(width: number, height: number) => {
+			saveState();
+			setCanvasSize(width, height);
+		},
+		[saveState, setCanvasSize],
+	);
+
 	return (
 		<div
 			ref={containerRef}
@@ -418,8 +429,8 @@ selectionHook,
 			<canvas
 				ref={canvasRef}
 				className="main-canvas"
-				width={480}
-				height={320}
+				width={canvasWidth}
+				height={canvasHeight}
 				style={canvasStyle}
 				onPointerDown={handlePointerDown}
 				onPointerMove={handlePointerMove}
@@ -431,7 +442,7 @@ selectionHook,
 				onContextMenu={handleContextMenu}
 				aria-label="Drawing canvas"
 			/>
-			<CanvasOverlay ref={overlayRef} width={480} height={320} magnification={magnification} />
+			<CanvasOverlay ref={overlayRef} width={canvasWidth} height={canvasHeight} magnification={magnification} />
 			{currentSelection && (
 				<SelectionHandles
 					selection={currentSelection}
@@ -450,6 +461,12 @@ selectionHook,
 					onBlur={handleTextBlur}
 				/>
 			)}
+			<CanvasResizeHandles
+				canvasWidth={canvasWidth}
+				canvasHeight={canvasHeight}
+				onResize={handleCanvasResize}
+				containerRef={containerRef}
+			/>
 		</div>
 	);
 }

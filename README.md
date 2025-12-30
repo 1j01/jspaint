@@ -1,7 +1,9 @@
 
-# [![](images/icons/32x32.png) MCPaint](https://vercel.com/evgenyvinniks-projects/mcpaint)
+# [![](images/icons/32x32.png) MCPaint](https://mcpaint.vercel.app)
 
-A pixel-perfect web-based MS Paint remake and more... [Try it out!](https://vercel.com/evgenyvinniks-projects/mcpaint)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fevgenyvinnik%2Fmcpaint)
+
+A pixel-perfect web-based MS Paint remake and more... [Try it out!](https://mcpaint.vercel.app)
 
 JS Paint recreates every tool and menu of MS Paint, and even [little-known features](#did-you-know), to a high degree of fidelity.
 
@@ -322,9 +324,9 @@ After you've installed dependencies with `npm i`,
 use `npm run dev` to start a live-reloading server.
 
 Make sure any layout-important styles go in `layout.css`.
-When updating `layout.css`, a right-to-left version of the stylesheet is generated, using [RTLCSS](https://rtlcss.com/).  
+When updating `layout.css`, a right-to-left version of the stylesheet is generated, using [RTLCSS](https://rtlcss.com/).
 You should test the RTL layout by changing the language to Arabic or Hebrew.
-Go to **Extras > Language > العربية** or **עברית**.  
+Go to **Extras > Language > العربية** or **עברית**.
 See [Control Directives](https://rtlcss.com/learn/usage-guide/control-directives/) for how to control the RTL layout.
 
 There is a VS Code launch task for attaching to Chrome for debugging.
@@ -765,4 +767,3 @@ JS Paint is free and open source software, licensed under the permissive [MIT li
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Repo stars](https://img.shields.io/github/stars/1j01/jspaint?label=GitHub%20Stars&style=social)](https://github.com/1j01/jspaint/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/1j01/jspaint?style=social)](https://github.com/1j01/jspaint/network/members)
-

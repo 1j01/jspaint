@@ -1,0 +1,30 @@
+/* Canvas Resize Handles */
+
+.canvas-resize-handle {
+	position: absolute;
+	width: 6px;
+	height: 6px;
+	background: #000;
+	border: 1px solid #fff;
+	box-sizing: border-box;
+	z-index: 50;
+	pointer-events: auto;
+}
+
+.canvas-resize-handle.useless-handle {
+	display: none;
+}
+
+.canvas-resize-handle:hover {
+	background: #0078d7;
+	box-shadow: 0 0 4px rgba(0, 120, 215, 0.5);
+}
+
+.resize-ghost {
+	box-sizing: border-box;
+	background: transparent;
+}
+
+.resize-ghost.thick {
+	border-width: 2px;
+}

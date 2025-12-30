@@ -24,3 +24,16 @@ export type { LoadFromUrlDialogProps } from "./LoadFromUrlDialog";
 
 export { SaveAsDialog } from "./SaveAsDialog";
 export type { default as SaveAsDialogProps } from "./SaveAsDialog";
+
+export { default as EditColorsDialog } from "./EditColorsDialog";
+export type { default as EditColorsDialogProps } from "./EditColorsDialog";
+
+export { default as HistoryTreeDialog } from "./HistoryTreeDialog";
+export type { default as HistoryTreeDialogProps } from "./HistoryTreeDialog";
+
+export { ImgurUploadDialog } from "./ImgurUploadDialog";
+export { ManageStorageDialog } from "./ManageStorageDialog";
+export { HistoryDialog } from "./HistoryDialog";
+
+export { default as HelpDialog } from "./HelpDialog";
+export type { default as HelpDialogProps } from "./HelpDialog";

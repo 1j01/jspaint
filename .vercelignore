@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Test files
+tests/
+cypress/
+playwright.config.ts
+cypress.config.js
+
+# Development files
+*.log
+.env
+.env.*
+.DS_Store
+
+# Build artifacts (Vercel builds fresh)
+dist/
+
+# Documentation
+*.md
+!README.md
+old_docs/
+
+# Git
+.git/
+.gitignore
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Config files not needed for build
+jsconfig.json
+tsconfig.json
+eslint.config.mjs
+cspell.json
+.prettierrc
+
+# Playwright test results
+test-results/
+playwright-report/

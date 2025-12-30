@@ -1,0 +1,179 @@
+/* History Tree Dialog - Subway Map Aesthetic */
+
+.history-tree-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 20px;
+	background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+	border-radius: 8px;
+	max-height: 600px;
+}
+
+.history-tree-legend {
+	display: flex;
+	gap: 24px;
+	padding: 16px;
+	background: rgba(255, 255, 255, 0.7);
+	backdrop-filter: blur(10px);
+	border-radius: 8px;
+	box-shadow:
+		0 2px 8px rgba(0, 0, 0, 0.06),
+		inset 0 1px 0 rgba(255, 255, 255, 0.8);
+	font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+.legend-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #475569;
+	letter-spacing: 0.3px;
+}
+
+.legend-color {
+	width: 24px;
+	height: 24px;
+	border-radius: 6px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.legend-color.current {
+	background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.legend-color.hover {
+	background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.legend-color.branch {
+	background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+	position: relative;
+}
+
+.legend-color.branch::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 8px;
+	height: 8px;
+	background: white;
+	border-radius: 50%;
+}
+
+.legend-item:hover .legend-color {
+	transform: scale(1.1) rotate(5deg);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.history-tree-canvas-wrapper {
+	overflow: auto;
+	max-height: 450px;
+	border-radius: 8px;
+	background: white;
+	box-shadow:
+		inset 0 2px 8px rgba(0, 0, 0, 0.05),
+		0 4px 16px rgba(0, 0, 0, 0.08);
+	padding: 20px;
+	position: relative;
+}
+
+.history-tree-canvas-wrapper::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.03) 0%, transparent 60%),
+		radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 60%);
+	pointer-events: none;
+	border-radius: 8px;
+}
+
+.history-tree-canvas-wrapper::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+.history-tree-canvas-wrapper::-webkit-scrollbar-track {
+	background: #f1f5f9;
+	border-radius: 6px;
+}
+
+.history-tree-canvas-wrapper::-webkit-scrollbar-thumb {
+	background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+	border-radius: 6px;
+	border: 2px solid #f1f5f9;
+	transition: background 0.3s;
+}
+
+.history-tree-canvas-wrapper::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+}
+
+.history-tree-canvas-wrapper canvas {
+	display: block;
+	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.history-tree-help {
+	padding: 16px;
+	background: rgba(255, 255, 255, 0.6);
+	backdrop-filter: blur(8px);
+	border-radius: 8px;
+	border: 1px dashed rgba(99, 102, 241, 0.3);
+	font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+.history-tree-help p {
+	margin: 0;
+	padding: 6px 0;
+	font-size: 12px;
+	color: #64748b;
+	line-height: 1.6;
+}
+
+.history-tree-help p:first-child {
+	font-weight: 600;
+	color: #475569;
+}
+
+.history-tree-help p:not(:last-child) {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	padding-bottom: 8px;
+	margin-bottom: 8px;
+}
+
+/* Animation for dialog entrance */
+.history-tree-container {
+	animation: slideUpFade 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUpFade {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.history-tree-legend {
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.history-tree-canvas-wrapper {
+		max-height: 350px;
+	}
+}
