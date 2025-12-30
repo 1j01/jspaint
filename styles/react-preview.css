@@ -288,9 +288,7 @@ body.dragging iframe {
         display: flex;
         justify-content: flex-end;
         gap: 6px;
-        margin-top: 12px;
-        padding-top: 8px;
-        border-top: 1px solid var(--ButtonShadow, #808080);
+        margin-top: 16px;
 }
 
 .dialog-buttons button {
@@ -326,11 +324,11 @@ body.dragging iframe {
 /* About Paint Dialog - matches legacy #about-paint styling */
 /* Legacy uses: $about_paint_window.$content.css({ padding: "15px" }) */
 .about-paint-content {
-        padding: 3px;
+        padding: 0;
 }
 
 .about-paint-content p {
-        margin: 0 0 6px 0;
+        margin: 0 0 10px 0;
         line-height: 1.4;
 }
 
@@ -347,7 +345,7 @@ body.dragging iframe {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: flex-start;
-        margin: 0 0 10px 0;
+        margin: 0 0 15px 0;
 }
 
 .about-paint-icon {
@@ -356,24 +354,45 @@ body.dragging iframe {
 }
 
 .about-paint-beside-icon {
-        margin-left: 12px;
+        margin-left: 10px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        padding-top: 25px;
 }
 
 .about-project-name {
         white-space: nowrap;
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: bold;
-        margin: 0 0 2px 0;
+        margin: 0;
+        color: #000080;
 }
 
 .about-version {
         white-space: nowrap;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-weight: normal;
-        color: #444;
+        margin-top: 2px;
+}
+
+.about-whats-new-button {
+        margin-left: auto;
+        align-self: center;
+        min-width: 100px;
+        min-height: 26px;
+        padding: 4px 8px;
+}
+
+.about-ok-button {
+        min-width: 100px;
+        min-height: 26px;
+        padding: 4px 8px;
+}
+
+.about-ok-button:focus {
+        outline: 1px dotted #000;
+        outline-offset: -4px;
 }
 
 .attributes-content {

@@ -19,6 +19,7 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
 						<h1 className="about-project-name">JS Paint</h1>
 						<div className="about-version">Version 1.0.0+</div>
 					</div>
+					<button className="about-whats-new-button">What's&nbsp;New?</button>
 				</div>
 				<p>
 					MS Paint remake by{" "}
@@ -51,7 +52,7 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
 				</p>
 			</div>
 			<DialogButtons>
-				<button onClick={onClose} autoFocus>
+				<button className="about-ok-button" onClick={onClose} autoFocus>
 					OK
 				</button>
 			</DialogButtons>
