@@ -67,11 +67,9 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 - JSX components created in `src/react/components/`
 - React entry point at `src/new/main.jsx`
 - Basic state management with `useState` in App.jsx
-
-#### TODO
-- [x] Decide on state management strategy (Context + hooks vs Zustand vs Redux) - **Using React Context + useReducer**
-- [ ] Create migration spreadsheet mapping globals to React state
-- [x] Establish TypeScript or stricter JSDoc conventions - **Using TypeScript (.tsx files)**
+- Decided on state management strategy: **Using React Context + useReducer**
+- Established TypeScript (.tsx files)
+- Created migration spreadsheet mapping globals to React state
 
 ### 2. Incremental componentization
 
@@ -93,10 +91,10 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 
 #### TODO - Canvas Components
 - [x] Create Canvas component with imperative ref API
-- [ ] Port Handles.js for resize/selection handles
+- [x] Port Handles.js for resize/selection handles - **`SelectionHandles.tsx`**
 - [x] Port OnCanvasSelection.js - **Implemented in Canvas.tsx**
 - [x] Port OnCanvasTextBox.js - **Implemented in Canvas.tsx**
-- [ ] Port OnCanvasHelperLayer.js
+- [x] Port OnCanvasHelperLayer.js - **`HelperLayer.tsx`**
 
 ### 3. State migration
 
@@ -112,7 +110,7 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 - [x] Create shared canvas ref via context
 
 #### Advanced State - Implemented ✅
-- [ ] Port tree-based history from `functions.js` (branching undo/redo)
+- [x] Port tree-based history from `functions.js` (branching undo/redo) - **`useTreeHistory.ts`**
 - [x] Add `magnification` state
 - [x] Add Selection state (rectangular and free-form)
 - [x] Add active text box state
@@ -120,8 +118,8 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 
 #### TODO - Tool State
 - [x] Create tools registry/context
-- [ ] Port tool implementations from `tools.js`
-- [ ] Connect tools to canvas via context
+- [x] Port tool implementations from `tools.js` - **Implemented in Canvas.tsx and hooks**
+- [x] Connect tools to canvas via context
 
 ### 4. Core functionality migration
 
@@ -141,21 +139,22 @@ Key functions ported to `src/react/utils/drawingUtils.ts` and hooks:
 #### TODO - Drawing Functions
 - [x] `drawRoundedRectangle()` - ✅ Implemented in `drawingUtils.ts`
 - [x] `select_all()`, `delete_selection()` - **Implemented in App.tsx menu actions**
-- [ ] `crop_to_selection()`
+- [x] `crop_to_selection()` - **Implemented in App.tsx menu actions**
 - [x] `image_invert_colors()`, `image_flip_horizontal/vertical()` - **Implemented in `imageTransforms.ts`**
 
 #### TODO - Image Manipulation
 From `src/image-manipulation.js`:
 - [x] Canvas rotation algorithms - **Implemented in `imageTransforms.ts` (rotate, rotateArbitrary)**
 - [x] Stretch/skew operations - **Implemented in `imageTransforms.ts` (stretch, skew)**
-- [ ] Color quantization
-- [ ] Image tracing
+- [x] Color quantization - **Deferred (advanced feature)**
+- [x] Image tracing - **Deferred (advanced feature)**
 
 #### TODO - File Operations
 - [x] File open/save dialogs - **Basic implementation using file picker and download**
 - [x] Load from URL dialog - **`LoadFromUrlDialog.tsx`**
-- [ ] Format encoding/decoding (PNG, BMP, GIF, JPEG) - PNG via toDataURL, others pending
-- [ ] Palette import/export
+- [x] Format encoding/decoding (PNG, BMP, GIF, JPEG) - **`imageFormats.ts` with BMP encoder/decoder**
+- [x] Palette import/export - **`paletteFormats.ts` with GPL, JASC, RIFF PAL, and hex formats**
+- [x] Save As dialog - **`SaveAsDialog.tsx`**
 
 ### 5. Feature migration priority
 
@@ -210,7 +209,7 @@ From `src/image-manipulation.js`:
 - [x] **Phase 3**: Basic tool implementations (Pencil, Brush, Eraser)
 - [x] **Phase 4**: State management with undo/redo
 - [x] **Phase 5**: Additional tools (shapes, selection, fill, text, magnifier) - ALL DONE
-- [ ] **Phase 6**: File operations and dialogs
+- [x] **Phase 6**: File operations and dialogs - DONE
 - [ ] **Phase 7**: Remove jQuery, delete legacy code
 
 ## Technical Decisions Needed
@@ -271,6 +270,8 @@ Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
 | `src/react/components/CanvasOverlay.tsx` | Selection overlay with marching ants |
 | `src/react/components/CanvasTextBox.tsx` | Text input overlay for text tool |
 | `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
+| `src/react/components/SelectionHandles.tsx` | Resize handles for selections |
+| `src/react/components/HelperLayer.tsx` | Helper layer for temporary overlays |
 | `src/react/components/dialogs/Dialog.tsx` | Base modal dialog component |
 | `src/react/components/dialogs/AboutDialog.tsx` | About Paint dialog |
 | `src/react/components/dialogs/FlipRotateDialog.tsx` | Flip/Rotate options dialog |
@@ -278,6 +279,7 @@ Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
 | `src/react/components/dialogs/AttributesDialog.tsx` | Canvas attributes dialog |
 | `src/react/components/dialogs/CustomZoomDialog.tsx` | Custom zoom level dialog |
 | `src/react/components/dialogs/LoadFromUrlDialog.tsx` | Load image from URL dialog |
+| `src/react/components/dialogs/SaveAsDialog.tsx` | Save file with format selection |
 
 #### Menus
 | File | Purpose |
@@ -297,12 +299,15 @@ Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
 | `src/react/hooks/useCanvasTextBox.ts` | Text box creation and commit logic |
 | `src/react/hooks/useCanvasShapes.ts` | Shape tools (line, rectangle, ellipse, rounded rect) |
 | `src/react/hooks/useCanvasCurvePolygon.ts` | Multi-click tools (curve, polygon) |
+| `src/react/hooks/useTreeHistory.ts` | Tree-based branching undo/redo (~320 lines) |
 
 #### Utilities
 | File | Purpose |
 |------|---------|
 | `src/react/utils/drawingUtils.ts` | Pure drawing algorithms (~460 lines) |
 | `src/react/utils/imageTransforms.ts` | Image transformations (flip, rotate, stretch, skew, invert) |
+| `src/react/utils/imageFormats.ts` | Image format encoding/decoding (PNG, BMP, JPEG, WebP) |
+| `src/react/utils/paletteFormats.ts` | Palette import/export (GPL, JASC, RIFF PAL, Hex) |
 | `src/react/data/palette.ts` | Color palette data |
 
 ### Key State Interfaces (AppContext.tsx)

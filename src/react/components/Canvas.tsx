@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef } from "react";
-import { TOOL_IDS, useApp, useCursorPosition, useHistory, useMagnification, useTool } from "../context/AppContext";
+import { TOOL_IDS, useApp, useCursorPosition, useHistory, useMagnification, useSelection, useTool } from "../context/AppContext";
+import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
-import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
-import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
+import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasTextBox } from "./CanvasTextBox";
+import { SelectionHandles } from "./SelectionHandles";
 
 // Magnification levels
 const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
@@ -20,9 +21,13 @@ export function Canvas({ className = "" }: { className?: string }) {
 	const { saveState } = useHistory();
 	const { magnification, setMagnification } = useMagnification();
 	const { setCursorPosition } = useCursorPosition();
+	const { selection: currentSelection, setSelection } = useSelection();
 
 	// Overlay canvas ref for selection marching ants
 	const overlayRef = useRef<HTMLCanvasElement>(null);
+
+	// Container ref for selection handles
+	const containerRef = useRef<HTMLDivElement>(null);
 
 	// Text input ref
 	const textInputRef = useRef<HTMLTextAreaElement>(null);
@@ -31,7 +36,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 	const drawing = useCanvasDrawing(canvasRef);
 
 	// Initialize selection hook
-	const selection = useCanvasSelection({
+	const selectionHook = useCanvasSelection({
 		canvasRef,
 		overlayRef,
 		getCanvasCoords: drawing.getCanvasCoords,
@@ -142,12 +147,12 @@ export function Canvas({ className = "" }: { className?: string }) {
 					drawing.pickColor(ctx, x, y, e.button);
 					break;
 
-				case TOOL_IDS.SELECT:
-					selection.startRectangularSelection(x, y, ctx);
+case TOOL_IDS.SELECT:
+					selectionHook.startRectangularSelection(x, y, ctx);
 					break;
 
 				case TOOL_IDS.FREE_FORM_SELECT:
-					selection.startFreeFormSelection(x, y, ctx);
+					selectionHook.startFreeFormSelection(x, y, ctx);
 					break;
 
 				case TOOL_IDS.TEXT:
@@ -210,7 +215,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 			drawing,
 			selectedToolId,
 			saveState,
-			selection,
+selectionHook,
 			textBoxHook,
 			magnification,
 			setMagnification,
@@ -232,9 +237,9 @@ export function Canvas({ className = "" }: { className?: string }) {
 			// Update cursor position for status bar
 			setCursorPosition({ x: Math.floor(x), y: Math.floor(y) });
 
-			// Handle selection
-			if (selection.isActive()) {
-				selection.handleSelectionMove(x, y, selectedToolId === TOOL_IDS.SELECT);
+// Handle selection
+			if (selectionHook.isActive()) {
+				selectionHook.handleSelectionMove(x, y, selectedToolId === TOOL_IDS.SELECT);
 				return;
 			}
 
@@ -266,7 +271,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 				shapes.drawingState.current.lastY = y;
 			}
 		},
-		[canvasRef, drawing, setCursorPosition, selection, selectedToolId, curvePolygon, shapes],
+		[canvasRef, drawing, setCursorPosition, selectionHook, selectedToolId, curvePolygon, shapes],
 	);
 
 	const handlePointerLeave = useCallback(() => {
@@ -283,12 +288,12 @@ export function Canvas({ className = "" }: { className?: string }) {
 
 			const { x, y } = drawing.getCanvasCoords(e);
 
-			// Handle selection finalization
-			if (selection.isActive()) {
+// Handle selection finalization
+			if (selectionHook.isActive()) {
 				if (selectedToolId === TOOL_IDS.SELECT) {
-					selection.finalizeRectangularSelection(x, y, ctx);
+					selectionHook.finalizeRectangularSelection(x, y, ctx);
 				} else if (selectedToolId === TOOL_IDS.FREE_FORM_SELECT) {
-					selection.finalizeFreeFormSelection(ctx);
+					selectionHook.finalizeFreeFormSelection(ctx);
 				}
 				return;
 			}
@@ -312,7 +317,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 				shapes.drawingState.current.isDrawing = false;
 			}
 		},
-		[canvasRef, drawing, selectedToolId, selection, textBoxHook, shapes],
+		[canvasRef, drawing, selectedToolId, selectionHook, textBoxHook, shapes],
 	);
 
 	// Handle text input change
@@ -365,8 +370,51 @@ export function Canvas({ className = "" }: { className?: string }) {
 		transformOrigin: "top left",
 	};
 
+// Handle selection resize from SelectionHandles
+	const handleSelectionResize = useCallback(
+		(newRect: { x: number; y: number; width: number; height: number }) => {
+			if (!currentSelection || !currentSelection.imageData) return;
+
+			// Create a scaled version of the selection image data
+			const tempCanvas = document.createElement("canvas");
+			tempCanvas.width = currentSelection.imageData.width;
+			tempCanvas.height = currentSelection.imageData.height;
+			const tempCtx = tempCanvas.getContext("2d");
+			if (!tempCtx) return;
+			tempCtx.putImageData(currentSelection.imageData, 0, 0);
+
+			// Create a new canvas with the new size
+			const resizedCanvas = document.createElement("canvas");
+			resizedCanvas.width = newRect.width;
+			resizedCanvas.height = newRect.height;
+			const resizedCtx = resizedCanvas.getContext("2d");
+			if (!resizedCtx) return;
+
+			// Draw the original selection scaled to the new size
+			resizedCtx.drawImage(tempCanvas, 0, 0, newRect.width, newRect.height);
+
+			// Get the new image data
+			const newImageData = resizedCtx.getImageData(0, 0, newRect.width, newRect.height);
+
+			// Update the selection with the new position and resized image data
+			setSelection({
+				...currentSelection,
+				x: newRect.x,
+				y: newRect.y,
+				width: newRect.width,
+				height: newRect.height,
+				imageData: newImageData,
+			});
+		},
+		[currentSelection, setSelection],
+	);
+
 	return (
-		<div className={`canvas-container ${className}`} style={{ position: "relative", display: "inline-block" }}>
+		<div
+			ref={containerRef}
+			className={`canvas-container ${className}`}
+			style={{ position: "relative", display: "inline-block" }}
+		>
 			<canvas
 				ref={canvasRef}
 				className="main-canvas"
@@ -384,6 +432,13 @@ export function Canvas({ className = "" }: { className?: string }) {
 				aria-label="Drawing canvas"
 			/>
 			<CanvasOverlay ref={overlayRef} width={480} height={320} magnification={magnification} />
+			{currentSelection && (
+				<SelectionHandles
+					selection={currentSelection}
+					onResize={handleSelectionResize}
+					containerRef={containerRef}
+				/>
+			)}
 			{textBoxHook.textBox?.isActive && (
 				<CanvasTextBox
 					ref={textInputRef}
