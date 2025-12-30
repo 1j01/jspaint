@@ -191,7 +191,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		position: "fixed",
 		width: size.width,
 		height: size.height,
-		zIndex: 1000,
+		zIndex: 10000,
 		...(position
 			? {
 					left: windowX,

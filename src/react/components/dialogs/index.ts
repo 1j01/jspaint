@@ -34,6 +34,3 @@ export type { default as HistoryTreeDialogProps } from "./HistoryTreeDialog";
 export { ImgurUploadDialog } from "./ImgurUploadDialog";
 export { ManageStorageDialog } from "./ManageStorageDialog";
 export { HistoryDialog } from "./HistoryDialog";
-
-export { default as HelpDialog } from "./HelpDialog";
-export type { default as HelpDialogProps } from "./HelpDialog";

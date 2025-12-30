@@ -295,6 +295,14 @@ body.dragging iframe {
         pointer-events: none;
 }
 
+/* Ensure canvas area stays visible during help window drag */
+body.dragging .canvas-area,
+body.dragging .jspaint {
+        visibility: visible !important;
+        opacity: 1 !important;
+}
+
+
 .dialog fieldset {
         margin: 0;
         padding: 8px;
