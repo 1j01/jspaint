@@ -425,3 +425,232 @@ body.dragging iframe {
 .error-message {
         font-size: 11px;
 }
+
+/* Help Window Styles */
+.help-window {
+        display: flex;
+        flex-direction: column;
+        background: var(--ButtonFace, #c0c0c0);
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.help-window.dragging,
+.help-window.resizing {
+        user-select: none;
+}
+
+.help-window .window-titlebar {
+        cursor: default;
+        flex-shrink: 0;
+}
+
+.help-window .window-titlebar img {
+        margin-right: 4px;
+}
+
+.help-window-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        padding: 0;
+        overflow: hidden;
+}
+
+/* Resize handles */
+.help-window .resize-handle {
+        position: absolute;
+        z-index: 10;
+}
+
+/* Help Toolbar */
+.help-toolbar {
+        display: flex;
+        flex-direction: row;
+        padding: 2px 4px;
+        background: var(--ButtonFace, #c0c0c0);
+        border-bottom: 1px solid var(--ButtonShadow, #808080);
+        flex-shrink: 0;
+}
+
+.help-toolbar-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2px 8px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        min-width: 50px;
+}
+
+.help-toolbar-button:hover:not(:disabled) {
+        background: var(--ButtonHilight, #ffffff);
+}
+
+.help-toolbar-button:active:not(:disabled) {
+        background: var(--ButtonShadow, #808080);
+}
+
+.help-toolbar-button:disabled {
+        opacity: 0.5;
+        cursor: default;
+}
+
+.help-toolbar-icon {
+        width: 55px;
+        height: 36px;
+        background-image: url('../images/help-viewer-toolbar-icons.png');
+        background-repeat: no-repeat;
+}
+
+.help-toolbar-button:disabled .help-toolbar-icon {
+        filter: grayscale(100%);
+}
+
+.help-toolbar-label {
+        font-size: 11px;
+        margin-top: 2px;
+        color: var(--ButtonText, #000000);
+}
+
+/* Help Split Pane */
+.help-split-pane {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+}
+
+.help-split-pane.dragging {
+        cursor: ew-resize;
+}
+
+.help-split-pane-left {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+}
+
+.help-split-pane-resizer {
+        flex-shrink: 0;
+        background: var(--ButtonFace, #c0c0c0);
+        border-left: 1px solid var(--ButtonShadow, #808080);
+        box-shadow: inset 1px 0 0 var(--ButtonHilight, #ffffff);
+}
+
+.help-split-pane-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        overflow: hidden;
+}
+
+/* Help Contents (TOC) */
+.help-contents {
+        flex: 1;
+        margin: 1px;
+        padding: 0;
+        overflow: auto;
+        background: white;
+        list-style: none;
+}
+
+.help-contents-loading,
+.help-contents-error {
+        padding: 10px;
+        color: var(--ButtonText, #000000);
+}
+
+.help-contents-error {
+        color: #cc0000;
+}
+
+/* Help TOC Items */
+.help-toc-item {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+}
+
+.help-toc-item-content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 2px 4px;
+        cursor: pointer;
+        user-select: none;
+}
+
+.help-toc-item-content:hover {
+        background: var(--Highlight, #000080);
+        color: var(--HighlightText, #ffffff);
+}
+
+.help-toc-item-content.selected {
+        background: var(--Highlight, #000080);
+        color: var(--HighlightText, #ffffff);
+}
+
+.help-toc-item-content:focus {
+        outline: 1px dotted var(--ButtonText, #000000);
+        outline-offset: -1px;
+}
+
+.help-toc-icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+        flex-shrink: 0;
+        background-image: url('../images/help-icons.png');
+        background-repeat: no-repeat;
+        background-position: 0 0;
+}
+
+/* Page icon */
+.help-toc-item.page .help-toc-icon {
+        background-position: -16px 0;
+}
+
+/* Folder icons */
+.help-toc-item.folder > .help-toc-item-content .help-toc-icon {
+        background-position: 0 0;
+}
+
+.help-toc-item.folder.expanded > .help-toc-item-content .help-toc-icon {
+        background-position: -32px 0;
+}
+
+.help-toc-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 11px;
+}
+
+.help-toc-children {
+        list-style: none;
+        margin: 0;
+        padding: 0 0 0 16px;
+}
+
+/* Help Content iframe */
+.help-content-iframe {
+        flex: 1;
+        margin: 1px;
+        border: none;
+        background: white;
+        min-width: 0;
+        min-height: 0;
+}
+
+/* Body class for resizing */
+body.resizing {
+        cursor: ew-resize;
+}
+
+body.resizing iframe {
+        pointer-events: none;
+}

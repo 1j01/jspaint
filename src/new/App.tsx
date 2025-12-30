@@ -27,6 +27,7 @@ import {
 	LoadFromUrlDialog,
 	StretchSkewDialog,
 } from "../react/components/dialogs";
+import { HelpWindow } from "../react/components/help";
 import type { FlipRotateAction } from "../react/components/dialogs/FlipRotateDialog";
 import type { StretchSkewValues } from "../react/components/dialogs/StretchSkewDialog";
 import type { AttributesValues } from "../react/components/dialogs/AttributesDialog";
@@ -183,6 +184,7 @@ interface DialogState {
 	attributes: boolean;
 	customZoom: boolean;
 	loadFromUrl: boolean;
+	helpTopics: boolean;
 }
 
 function AppContent() {
@@ -222,6 +224,7 @@ function AppContent() {
 		attributes: false,
 		customZoom: false,
 		loadFromUrl: false,
+		helpTopics: false,
 	});
 
 	const openDialog = useCallback((dialog: keyof DialogState) => {
@@ -614,9 +617,7 @@ function AppContent() {
 			},
 
 			// Help menu
-			helpTopics: () => {
-				window.open("https://github.com/1j01/jspaint", "_blank");
-			},
+			helpTopics: () => openDialog("helpTopics"),
 			helpAbout: () => openDialog("about"),
 
 			// State checks
@@ -916,6 +917,7 @@ function AppContent() {
 				onClose={() => closeDialog("loadFromUrl")}
 				onLoad={handleLoadFromUrl}
 			/>
+			<HelpWindow isOpen={dialogs.helpTopics} onClose={() => closeDialog("helpTopics")} />
 		</>
 	);
 }
