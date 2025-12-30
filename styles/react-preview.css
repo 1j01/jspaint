@@ -244,7 +244,7 @@ body {
 }
 
 .dialog .window-content {
-        padding: 12px;
+        padding: 15px;
         outline: none;
 }
 
@@ -324,12 +324,14 @@ body.dragging iframe {
 }
 
 /* About Paint Dialog - matches legacy #about-paint styling */
+/* Legacy uses: $about_paint_window.$content.css({ padding: "15px" }) */
 .about-paint-content {
-        padding: 5px;
+        padding: 3px;
 }
 
 .about-paint-content p {
-        margin: 0 0 8px 0;
+        margin: 0 0 6px 0;
+        line-height: 1.4;
 }
 
 .about-paint-content a {
@@ -344,29 +346,34 @@ body.dragging iframe {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        margin: 0;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        align-items: flex-start;
+        margin: 0 0 10px 0;
 }
 
 .about-paint-icon {
         image-rendering: pixelated;
+        flex-shrink: 0;
 }
 
 .about-paint-beside-icon {
-        margin: auto 10px;
+        margin-left: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 }
 
 .about-project-name {
         white-space: nowrap;
-        font-size: 2rem;
-        margin: 0;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin: 0 0 2px 0;
 }
 
 .about-version {
         white-space: nowrap;
-        font-size: 1.4rem;
+        font-size: 1.1rem;
         font-weight: normal;
+        color: #444;
 }
 
 .attributes-content {

@@ -397,45 +397,106 @@ interface ResizeSelectionCommand {
 
 ```typescript
 // ═══════════════════════════════════════════════════════════
-// CANVAS MANAGEMENT
+// CLEAR IMAGE
 // ═══════════════════════════════════════════════════════════
 
 interface ClearCanvasCommand {
   tool: 'clear';
   params: {
-    color?: string;            // Fill color (default: white)
+    color?: string;            // Fill color (default: secondary color/white)
+    target?: 'canvas' | 'selection';  // Clear entire canvas or just selection
   };
 }
+
+// ═══════════════════════════════════════════════════════════
+// RESIZE / IMAGE ATTRIBUTES
+// ═══════════════════════════════════════════════════════════
 
 interface ResizeCanvasCommand {
   tool: 'resize_canvas';
   params: {
     width: number;
     height: number;
+    units?: 'pixels' | 'inches' | 'cm';
     anchor?: 'top-left' | 'top' | 'top-right' |
              'left' | 'center' | 'right' |
              'bottom-left' | 'bottom' | 'bottom-right';
+    resample?: boolean;        // Scale content or just resize canvas
   };
 }
 
 interface SetAttributesCommand {
   tool: 'set_attributes';
   params: {
+    // Dimensions
     width?: number;
     height?: number;
+    units?: 'pixels' | 'inches' | 'cm';
+
+    // Color mode
     colorMode?: 'color' | 'black_and_white';
-    transparent?: boolean;     // Use transparency
+
+    // Transparency
+    transparent?: boolean;     // Use transparency (vs opaque white background)
+
+    // For new images - default canvas color
+    defaultColor?: string;
   };
 }
 
+interface GetAttributesCommand {
+  tool: 'get_attributes';
+  params: {};                  // Returns current width, height, colorMode, transparent
+}
+
 // ═══════════════════════════════════════════════════════════
-// INVERT COLORS
+// IMAGE EFFECTS
 // ═══════════════════════════════════════════════════════════
 
 interface InvertColorsCommand {
   tool: 'invert_colors';
   params: {
     target?: 'selection' | 'canvas';
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// FILE OPERATIONS (for completeness)
+// ═══════════════════════════════════════════════════════════
+
+interface NewImageCommand {
+  tool: 'new_image';
+  params: {
+    width?: number;            // Default: 800
+    height?: number;           // Default: 600
+    backgroundColor?: string;  // Default: white
+    transparent?: boolean;
+  };
+}
+
+interface LoadImageCommand {
+  tool: 'load_image';
+  params: {
+    // Load from URL
+    url?: string;
+
+    // OR load from base64
+    data?: string;
+    format?: 'png' | 'jpg' | 'bmp' | 'gif';
+
+    // How to load
+    mode?: 'replace' | 'paste';  // Replace canvas or paste as selection
+    x?: number;                  // If pasting, position
+    y?: number;
+  };
+}
+
+interface ExportImageCommand {
+  tool: 'export_image';
+  params: {
+    format: 'png' | 'jpg' | 'bmp' | 'gif';
+    quality?: number;          // For JPEG: 0-100
+    // Returns base64 data in response
   };
 }
 ```
@@ -446,7 +507,7 @@ interface InvertColorsCommand {
 
 ```typescript
 // ═══════════════════════════════════════════════════════════
-// COLOR SETTING
+// BASIC COLOR SETTING
 // ═══════════════════════════════════════════════════════════
 
 interface SetColorCommand {
@@ -462,11 +523,87 @@ interface SwapColorsCommand {
   params: {};                  // Swap primary ↔ secondary
 }
 
+// ═══════════════════════════════════════════════════════════
+// PALETTE MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+
 interface SetPaletteColorCommand {
   tool: 'set_palette_color';
   params: {
-    index: number;             // 0-27 (palette position)
-    color: string;
+    index: number;             // 0-27 (standard palette position)
+    color: string;             // Hex color
+  };
+}
+
+interface SetCustomColorCommand {
+  tool: 'set_custom_color';
+  params: {
+    slot: number;              // 0-15 (16 custom color slots)
+    color: string;             // Hex color "#RRGGBB"
+  };
+}
+
+interface GetCustomColorsCommand {
+  tool: 'get_custom_colors';
+  params: {};                  // Returns current custom colors array
+}
+
+// ═══════════════════════════════════════════════════════════
+// EDIT COLORS DIALOG (Advanced Color Picker)
+// ═══════════════════════════════════════════════════════════
+
+interface DefineColorCommand {
+  tool: 'define_color';
+  params: {
+    // Can specify color in multiple formats:
+    hex?: string;              // "#RRGGBB"
+
+    // OR RGB values (0-255)
+    red?: number;
+    green?: number;
+    blue?: number;
+
+    // OR HSL values
+    hue?: number;              // 0-239 (MS Paint uses 0-239 scale)
+    saturation?: number;       // 0-240
+    luminosity?: number;       // 0-240
+
+    // Where to save:
+    saveToCustomSlot?: number; // 0-15, save to custom colors
+    setAsPrimary?: boolean;    // Set as current primary color
+    setAsSecondary?: boolean;  // Set as current secondary color
+  };
+}
+
+// Load/save entire palette
+interface LoadPaletteCommand {
+  tool: 'load_palette';
+  params: {
+    format: 'pal' | 'gpl' | 'act' | 'aco' | 'colors';
+    data: string;              // Base64 encoded palette file
+    // OR use preset:
+    preset?: 'windows' | 'web_safe' | 'grayscale' | 'pastel' | 'vibrant';
+  };
+}
+
+interface SavePaletteCommand {
+  tool: 'save_palette';
+  params: {
+    format: 'pal' | 'gpl';
+  };
+}
+
+// Get color from coordinates (programmatic eyedropper)
+interface SampleColorCommand {
+  tool: 'sample_color';
+  params: {
+    x: number;
+    y: number;
+    // What to do with the sampled color:
+    setAsPrimary?: boolean;
+    setAsSecondary?: boolean;
+    saveToCustomSlot?: number;
+    returnValue?: boolean;     // Return the hex value in response
   };
 }
 ```
@@ -580,31 +717,52 @@ interface DrawPathCommand {
 
 ```typescript
 type Tool =
-  // Drawing (16 tools)
+  // ─────────────────────────────────────────────────────────
+  // DRAWING TOOLS (16 core tools)
+  // ─────────────────────────────────────────────────────────
   | 'pencil' | 'brush' | 'airbrush' | 'eraser'
   | 'line' | 'curve' | 'rectangle' | 'rounded_rectangle'
   | 'ellipse' | 'polygon' | 'fill' | 'pick_color'
   | 'text' | 'magnifier'
   | 'select_rectangle' | 'select_freeform'
 
-  // Selection operations
+  // ─────────────────────────────────────────────────────────
+  // SELECTION OPERATIONS
+  // ─────────────────────────────────────────────────────────
   | 'select_all' | 'deselect' | 'move_selection'
   | 'copy' | 'cut' | 'paste' | 'delete_selection' | 'crop_to_selection'
 
-  // Transform
+  // ─────────────────────────────────────────────────────────
+  // TRANSFORM OPERATIONS
+  // ─────────────────────────────────────────────────────────
   | 'flip' | 'rotate' | 'stretch' | 'skew' | 'resize_selection'
 
-  // Canvas
-  | 'clear' | 'resize_canvas' | 'set_attributes' | 'invert_colors'
+  // ─────────────────────────────────────────────────────────
+  // CANVAS / IMAGE OPERATIONS
+  // ─────────────────────────────────────────────────────────
+  | 'clear' | 'resize_canvas' | 'set_attributes' | 'get_attributes'
+  | 'invert_colors'
+  | 'new_image' | 'load_image' | 'export_image'
 
-  // Color
-  | 'set_color' | 'swap_colors' | 'set_palette_color'
+  // ─────────────────────────────────────────────────────────
+  // COLOR MANAGEMENT
+  // ─────────────────────────────────────────────────────────
+  | 'set_color' | 'swap_colors'
+  | 'set_palette_color' | 'set_custom_color' | 'get_custom_colors'
+  | 'define_color' | 'sample_color'
+  | 'load_palette' | 'save_palette'
 
-  // Edit
+  // ─────────────────────────────────────────────────────────
+  // EDIT OPERATIONS
+  // ─────────────────────────────────────────────────────────
   | 'undo' | 'redo' | 'repeat'
 
-  // Batch/efficiency
+  // ─────────────────────────────────────────────────────────
+  // BATCH / EFFICIENCY COMMANDS
+  // ─────────────────────────────────────────────────────────
   | 'batch_shapes' | 'batch_points' | 'pattern_repeat' | 'draw_grid' | 'draw_path';
+
+// Total: 50+ commands covering ALL Paint functionality
 ```
 
 ---
