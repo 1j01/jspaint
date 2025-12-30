@@ -98,14 +98,38 @@ export function Canvas({ className = "" }: { className?: string }) {
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
 					drawing.drawPoint(ctx, x, y, color, 1);
+					// Initialize drawing state for continuous drawing
+					shapes.drawingState.current = {
+						...shapes.drawingState.current,
+						isDrawing: true,
+						lastX: x,
+						lastY: y,
+						button: e.button,
+					};
 					break;
 
 				case TOOL_IDS.BRUSH:
 					drawing.drawPoint(ctx, x, y, color, size);
+					// Initialize drawing state for continuous drawing
+					shapes.drawingState.current = {
+						...shapes.drawingState.current,
+						isDrawing: true,
+						lastX: x,
+						lastY: y,
+						button: e.button,
+					};
 					break;
 
 				case TOOL_IDS.ERASER:
 					drawing.drawPoint(ctx, x, y, drawing.secondaryColor, size);
+					// Initialize drawing state for continuous drawing
+					shapes.drawingState.current = {
+						...shapes.drawingState.current,
+						isDrawing: true,
+						lastX: x,
+						lastY: y,
+						button: e.button,
+					};
 					break;
 
 				case TOOL_IDS.FILL:
@@ -152,6 +176,17 @@ export function Canvas({ className = "" }: { className?: string }) {
 					curvePolygon.handlePolygonClick(x, y, e.button, ctx);
 					break;
 
+				case TOOL_IDS.AIRBRUSH:
+					// Airbrush uses continuous drawing
+					shapes.drawingState.current = {
+						...shapes.drawingState.current,
+						isDrawing: true,
+						lastX: x,
+						lastY: y,
+						button: e.button,
+					};
+					break;
+
 				case TOOL_IDS.LINE:
 				case TOOL_IDS.RECTANGLE:
 				case TOOL_IDS.ELLIPSE:
@@ -160,6 +195,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 					break;
 
 				default:
+					// For any other tool, just draw a point (no continuous drawing)
 					drawing.drawPoint(ctx, x, y, color, 1);
 					break;
 			}
