@@ -1,5 +1,6 @@
 import { TOOL_IDS, useShapeSettings, useTextBox, useTool } from "../context/AppContext";
 
+
 // Line width options (matches original)
 const LINE_WIDTHS = [1, 2, 3, 4, 5];
 
@@ -79,7 +80,7 @@ interface ToolOptionsProps {
 }
 
 export function ToolOptions({ className = "" }: ToolOptionsProps) {
-	const { selectedToolId, brushSize, brushShape, eraserSize, setBrushSize, setBrushShape, setEraserSize } = useTool();
+	const { selectedToolId, brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize } = useTool();
 	const { fillStyle, lineWidth, setFillStyle, setLineWidth } = useShapeSettings();
 	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } =
 		useTextBox();
@@ -112,6 +113,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 						style={{ backgroundColor: isSelected ? "var(--Hilight, #000080)" : undefined }}
 					>
 						<canvas
+							key={`fill-${style}-${isSelected}`}
 							width={39}
 							height={21}
 							ref={(canvas) => {
@@ -165,6 +167,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 						style={{ backgroundColor: isSelected ? "var(--Hilight, #000080)" : undefined }}
 					>
 						<canvas
+							key={`line-${width}-${isSelected}`}
 							width={39}
 							height={12}
 							ref={(canvas) => {
@@ -202,6 +205,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 						style={{ backgroundColor: isSelected ? "var(--Hilight, #000080)" : undefined }}
 					>
 						<canvas
+							key={`brush-${option.shape}-${option.size}-${isSelected}`}
 							width={10}
 							height={10}
 							ref={(canvas) => {
@@ -234,6 +238,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 						style={{ backgroundColor: isSelected ? "var(--Hilight, #000080)" : undefined }}
 					>
 						<canvas
+							key={`eraser-${size}-${isSelected}`}
 							width={39}
 							height={16}
 							ref={(canvas) => {
@@ -255,54 +260,65 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	);
 
 	// Render airbrush size options (matches $choose_airbrush_size)
-	const renderAirbrushSizeOptions = () => (
-		<div className="chooser choose-airbrush-size">
-			{AIRBRUSH_SIZES.map((size, i) => {
-				const isSelected = brushSize === size;
-				const isBottom = i === 2;
-				const shrink = isBottom ? 0 : 4;
-				const w = 72 / 3 - shrink * 2;
+	// Uses image sprite from images/options-airbrush-size.png (72x23 px, 3 sections)
+	const renderAirbrushSizeOptions = () => {
+		const imageWidth = 72;
+		const imageHeight = 23;
+		const numOptions = AIRBRUSH_SIZES.length; // 3
 
-				return (
-					<div
-						key={size}
-						className="chooser-option"
-						onClick={() => setBrushSize(size)}
-						style={{
-							backgroundColor: isSelected ? "var(--Hilight, #000080)" : "rgb(192, 192, 192)",
-						}}
-					>
-						<canvas
-							width={w}
-							height={23}
-							ref={(canvas) => {
-								if (!canvas) return;
-								const ctx = canvas.getContext("2d");
-								if (!ctx) return;
-								ctx.clearRect(0, 0, w, 23);
+		return (
+			<div className="chooser choose-airbrush-size">
+				{AIRBRUSH_SIZES.map((size, i) => {
+					const isSelected = airbrushSize === size;
+					const isBottom = i === 2;
+					const shrink = isBottom ? 0 : 4;
+					const w = imageWidth / numOptions - shrink * 2;
+					const sourceX = (imageWidth / numOptions) * i + shrink;
 
-								// Draw spray pattern (simplified)
-								ctx.fillStyle = isSelected ? "#ffffff" : "#000000";
-								const centerX = w / 2;
-								const centerY = 12;
-								const radius = size / 3;
-
-								for (let j = 0; j < size; j++) {
-									const angle = (j / size) * Math.PI * 2;
-									const r = radius * (0.5 + Math.random() * 0.5);
-									const x = centerX + Math.cos(angle) * r;
-									const y = centerY + Math.sin(angle) * r;
-									ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-								}
-								// Center dot
-								ctx.fillRect(Math.floor(centerX), Math.floor(centerY), 1, 1);
+					return (
+						<div
+							key={size}
+							className="chooser-option"
+							onClick={() => setAirbrushSize(size)}
+							style={{
+								backgroundColor: isSelected ? "var(--Hilight, #000080)" : "rgb(192, 192, 192)",
 							}}
-						/>
-					</div>
-				);
-			})}
-		</div>
-	);
+						>
+							<canvas
+								key={`airbrush-${size}-${isSelected}`}
+								width={w}
+								height={imageHeight}
+								style={{ filter: isSelected ? "invert(1)" : "none" }}
+								ref={(canvas) => {
+									if (!canvas) return;
+									const ctx = canvas.getContext("2d");
+									if (!ctx) return;
+
+									// Load and draw the airbrush sprite
+									const img = new Image();
+									img.onload = () => {
+										ctx.clearRect(0, 0, w, imageHeight);
+										ctx.drawImage(
+											img,
+											sourceX,
+											0,
+											w,
+											imageHeight, // source rectangle
+											0,
+											0,
+											w,
+											imageHeight, // destination rectangle
+										);
+									};
+									img.src = "/images/options-airbrush-size.png";
+								}}
+							/>
+						</div>
+					);
+				})}
+			</div>
+		);
+	};
 
 	// Render text options
 	const renderTextOptions = () => (

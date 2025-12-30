@@ -71,6 +71,7 @@ const initialState = {
 	brushShape: "circle" as "circle" | "square" | "reverse_diagonal" | "diagonal",
 	pencilSize: 1,
 	eraserSize: 8,
+	airbrushSize: 9,
 
 	// Shape settings (outline, fill, both)
 	fillStyle: "outline" as "outline" | "fill" | "both",
@@ -145,6 +146,7 @@ const ActionTypes = {
 	SET_FILL_STYLE: "SET_FILL_STYLE",
 	SET_LINE_WIDTH: "SET_LINE_WIDTH",
 	SET_ERASER_SIZE: "SET_ERASER_SIZE",
+	SET_AIRBRUSH_SIZE: "SET_AIRBRUSH_SIZE",
 	// View toggles
 	TOGGLE_TOOL_BOX: "TOGGLE_TOOL_BOX",
 	TOGGLE_COLOR_BOX: "TOGGLE_COLOR_BOX",
@@ -193,6 +195,9 @@ function appReducer(state, action) {
 
 		case ActionTypes.SET_ERASER_SIZE:
 			return { ...state, eraserSize: action.payload };
+
+		case ActionTypes.SET_AIRBRUSH_SIZE:
+			return { ...state, airbrushSize: action.payload };
 
 		case ActionTypes.SET_CURSOR_POSITION:
 			return { ...state, cursorPosition: action.payload };
@@ -354,6 +359,10 @@ export function AppProvider({ children }) {
 			dispatch({ type: ActionTypes.SET_ERASER_SIZE, payload: size });
 		}, []),
 
+		setAirbrushSize: useCallback((size) => {
+			dispatch({ type: ActionTypes.SET_AIRBRUSH_SIZE, payload: size });
+		}, []),
+
 		setCursorPosition: useCallback((position: { x: number; y: number } | null) => {
 			dispatch({ type: ActionTypes.SET_CURSOR_POSITION, payload: position });
 		}, []),
@@ -495,9 +504,11 @@ export function useTool() {
 		brushShape: state.brushShape,
 		pencilSize: state.pencilSize,
 		eraserSize: state.eraserSize,
+		airbrushSize: state.airbrushSize,
 		setBrushSize: actions.setBrushSize,
 		setBrushShape: actions.setBrushShape,
 		setEraserSize: actions.setEraserSize,
+		setAirbrushSize: actions.setAirbrushSize,
 	};
 }
 

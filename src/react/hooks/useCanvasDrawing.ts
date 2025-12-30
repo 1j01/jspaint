@@ -7,7 +7,7 @@ import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill, BrushShape } f
  */
 export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>) {
 	const { primaryColor, secondaryColor, setPrimaryColor, setSecondaryColor } = useColors();
-	const { selectedToolId, brushSize, brushShape, pencilSize, eraserSize } = useTool();
+	const { selectedToolId, brushSize, brushShape, pencilSize, eraserSize, airbrushSize } = useTool();
 
 	// Get the current drawing color based on mouse button
 	const getDrawColor = useCallback(
@@ -27,11 +27,11 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			case TOOL_IDS.ERASER:
 				return eraserSize;
 			case TOOL_IDS.AIRBRUSH:
-				return brushSize; // Use brush size for airbrush radius
+				return airbrushSize;
 			default:
 				return 1;
 		}
-	}, [selectedToolId, pencilSize, brushSize, eraserSize]);
+	}, [selectedToolId, pencilSize, brushSize, eraserSize, airbrushSize]);
 
 	// Get tool-specific brush shape
 	const getToolShape = useCallback((): BrushShape => {

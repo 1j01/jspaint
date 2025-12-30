@@ -121,6 +121,26 @@ body {
         display: block;
 }
 
+/* Airbrush chooser - 3 spray pattern options in a row */
+.choose-airbrush-size {
+        display: flex;
+        flex-flow: row wrap;
+        width: 72px;
+        justify-content: center;
+        align-content: flex-start;
+}
+
+.choose-airbrush-size .chooser-option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+}
+
+.choose-airbrush-size .chooser-option canvas {
+        display: block;
+}
+
 .tool-options-section {
         display: flex;
         flex-direction: row;
