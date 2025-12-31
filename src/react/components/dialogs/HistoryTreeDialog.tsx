@@ -1,319 +1,430 @@
-import React, { useEffect, useRef, useState } from "react";
-import Dialog from "./Dialog";
-import { HistoryNode, getHistoryTreeData } from "../../hooks/useTreeHistory";
-import "./HistoryTreeDialog.css";
+/**
+ * HistoryTreeDialog - Neo-Brutalist Tech Archive
+ *
+ * A visually stunning tree visualization for non-linear history navigation.
+ * Inspired by git graphs, version control systems, and technical diagrams.
+ */
+
+import { useEffect, useRef, useState } from "react";
+import { Dialog, DialogButtons } from "./Dialog";
+import type { HistoryNode } from "../../utils/historyTree";
 
 interface HistoryTreeDialogProps {
 	isOpen: boolean;
 	onClose: () => void;
-	root: HistoryNode | null;
-	current: HistoryNode | null;
-	onNavigate: (node: HistoryNode) => void;
+	rootNode: HistoryNode | null;
+	currentNode: HistoryNode | null;
+	onNavigateToNode: (nodeId: string) => void;
+}
+
+interface TreeLayout {
+	node: HistoryNode;
+	x: number;
+	y: number;
+	depth: number;
 }
 
 /**
- * History Tree Visualization Dialog
- *
- * An innovative, visually stunning tree viewer for the branching undo/redo system.
- * Features smooth animations, interactive navigation, and a unique subway-map inspired layout.
+ * Calculate tree layout positions for visualization
  */
-export default function HistoryTreeDialog({
+function calculateTreeLayout(root: HistoryNode | null): TreeLayout[] {
+	if (!root) return [];
+
+	const layouts: TreeLayout[] = [];
+	const nodeWidth = 140;
+	const nodeHeight = 120;
+	const horizontalSpacing = 40;
+	const verticalSpacing = 40;
+
+	// Track occupied positions to prevent overlaps
+	const occupiedY = new Map<number, number>(); // depth -> max y position
+
+	const traverse = (node: HistoryNode, depth: number, parentY?: number) => {
+		// Calculate y position
+		let y: number;
+		if (parentY !== undefined && node.parent?.children.length === 1) {
+			// Single child: align with parent
+			y = parentY;
+		} else {
+			// Multiple children or root: stack vertically
+			const currentMaxY = occupiedY.get(depth) || 0;
+			y = currentMaxY;
+			occupiedY.set(depth, y + nodeHeight + verticalSpacing);
+		}
+
+		const x = depth * (nodeWidth + horizontalSpacing);
+
+		layouts.push({ node, x, y, depth });
+
+		// Process children
+		node.children.forEach((child) => {
+			traverse(child, depth + 1, y);
+		});
+	};
+
+	traverse(root, 0);
+
+	return layouts;
+}
+
+/**
+ * Generate SVG paths for connections between nodes
+ */
+function generateConnections(layouts: TreeLayout[]): JSX.Element[] {
+	const connections: JSX.Element[] = [];
+
+	layouts.forEach((layout) => {
+		const parent = layouts.find((l) => l.node === layout.node.parent);
+		if (!parent) return;
+
+		const x1 = parent.x + 70; // Center of parent node
+		const y1 = parent.y + 45;
+		const x2 = layout.x + 70; // Center of current node
+		const y2 = layout.y + 45;
+
+		// Cubic bezier curve for smooth connections
+		const midX = (x1 + x2) / 2;
+		const path = `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`;
+
+		connections.push(
+			<path
+				key={`${parent.node.id}-${layout.node.id}`}
+				d={path}
+				stroke="rgba(100, 255, 100, 0.3)"
+				strokeWidth="2"
+				fill="none"
+				strokeDasharray="5,5"
+				className="tree-connection"
+			/>
+		);
+	});
+
+	return connections;
+}
+
+export function HistoryTreeDialog({
 	isOpen,
 	onClose,
-	root,
-	current,
-	onNavigate,
+	rootNode,
+	currentNode,
+	onNavigateToNode,
 }: HistoryTreeDialogProps) {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const containerRef = useRef<HTMLDivElement>(null);
 	const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-	const [nodePositions, setNodePositions] = useState<Map<string, { x: number; y: number }>>(
-		new Map(),
-	);
+	const [selectedNode, setSelectedNode] = useState<string | null>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const [viewBox, setViewBox] = useState({ x: 0, y: 0, width: 800, height: 600 });
 
-	// Draw the tree
+	const layouts = calculateTreeLayout(rootNode);
+	const connections = generateConnections(layouts);
+
+	// Auto-scroll to current node when dialog opens
 	useEffect(() => {
-		if (!isOpen || !root) return;
+		if (isOpen && currentNode && containerRef.current) {
+			const currentLayout = layouts.find((l) => l.node.id === currentNode.id);
+			if (currentLayout) {
+				// Center viewport on current node
+				setTimeout(() => {
+					setViewBox({
+						x: Math.max(0, currentLayout.x - 200),
+						y: Math.max(0, currentLayout.y - 200),
+						width: 800,
+						height: 600,
+					});
+				}, 100);
+			}
+		}
+	}, [isOpen, currentNode, layouts]);
 
-		const canvas = canvasRef.current;
-		if (!canvas) return;
+	const handleNodeClick = (nodeId: string) => {
+		setSelectedNode(nodeId);
+		onNavigateToNode(nodeId);
+	};
 
+	const renderNode = (layout: TreeLayout) => {
+		const { node, x, y } = layout;
+		const isCurrent = currentNode?.id === node.id;
+		const isHovered = hoveredNode === node.id;
+		const isSelected = selectedNode === node.id;
+
+		// Generate thumbnail
+		const canvas = document.createElement("canvas");
+		const thumbSize = 60;
+		const scale = Math.min(thumbSize / node.imageData.width, thumbSize / node.imageData.height);
+		canvas.width = node.imageData.width * scale;
+		canvas.height = node.imageData.height * scale;
 		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
 
-		const { nodes, edges } = getHistoryTreeData(root);
-
-		// Calculate layout
-		const positions = new Map<string, { x: number; y: number }>();
-		const nodeWidth = 120;
-		const nodeHeight = 80;
-		const horizontalSpacing = 180;
-		const verticalSpacing = 100;
-
-		// Group nodes by depth
-		const depthGroups = new Map<number, typeof nodes>();
-		nodes.forEach((node) => {
-			if (!depthGroups.has(node.depth)) {
-				depthGroups.set(node.depth, []);
-			}
-			depthGroups.get(node.depth)!.push(node);
-		});
-
-		// Position nodes
-		let maxDepth = 0;
-		depthGroups.forEach((groupNodes, depth) => {
-			maxDepth = Math.max(maxDepth, depth);
-			groupNodes.forEach((node, index) => {
-				const x = depth * horizontalSpacing + 60;
-				const y = index * verticalSpacing + 60;
-				positions.set(node.id, { x, y });
-			});
-		});
-
-		// Set canvas size
-		const canvasWidth = (maxDepth + 1) * horizontalSpacing + 120;
-		const canvasHeight = Math.max(
-			...Array.from(depthGroups.values()).map((g) => g.length * verticalSpacing + 120),
-		);
-		canvas.width = canvasWidth;
-		canvas.height = canvasHeight;
-
-		setNodePositions(positions);
-
-		// Clear canvas
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-		// Draw connections (edges) first
-		ctx.strokeStyle = "rgba(99, 102, 241, 0.4)";
-		ctx.lineWidth = 3;
-		ctx.lineCap = "round";
-
-		edges.forEach((edge) => {
-			const fromPos = positions.get(edge.from);
-			const toPos = positions.get(edge.to);
-			if (fromPos && toPos) {
-				// Draw curved bezier connection
-				ctx.beginPath();
-				ctx.moveTo(fromPos.x + nodeWidth / 2, fromPos.y + nodeHeight / 2);
-
-				const controlPointOffset = horizontalSpacing * 0.5;
-				ctx.bezierCurveTo(
-					fromPos.x + nodeWidth / 2 + controlPointOffset,
-					fromPos.y + nodeHeight / 2,
-					toPos.x + nodeWidth / 2 - controlPointOffset,
-					toPos.y + nodeHeight / 2,
-					toPos.x + nodeWidth / 2,
-					toPos.y + nodeHeight / 2,
-				);
-
-				ctx.stroke();
-			}
-		});
-
-		// Draw nodes
-		nodes.forEach((node) => {
-			const pos = positions.get(node.id);
-			if (!pos) return;
-
-			const isCurrent = current?.id === node.id;
-			const isHovered = hoveredNode === node.id;
-
-			// Node background with glass morphism effect
-			const gradient = ctx.createLinearGradient(pos.x, pos.y, pos.x, pos.y + nodeHeight);
-
-			if (isCurrent) {
-				gradient.addColorStop(0, "rgba(59, 130, 246, 0.9)");
-				gradient.addColorStop(1, "rgba(37, 99, 235, 0.9)");
-			} else if (isHovered) {
-				gradient.addColorStop(0, "rgba(139, 92, 246, 0.8)");
-				gradient.addColorStop(1, "rgba(124, 58, 237, 0.8)");
-			} else {
-				gradient.addColorStop(0, "rgba(255, 255, 255, 0.95)");
-				gradient.addColorStop(1, "rgba(241, 245, 249, 0.95)");
-			}
-
-			ctx.fillStyle = gradient;
-			ctx.strokeStyle = isCurrent
-				? "rgba(59, 130, 246, 1)"
-				: isHovered
-					? "rgba(139, 92, 246, 1)"
-					: "rgba(203, 213, 225, 0.6)";
-			ctx.lineWidth = isCurrent ? 3 : isHovered ? 2 : 1;
-
-			// Draw rounded rectangle
-			const radius = 12;
-			ctx.beginPath();
-			ctx.moveTo(pos.x + radius, pos.y);
-			ctx.lineTo(pos.x + nodeWidth - radius, pos.y);
-			ctx.quadraticCurveTo(pos.x + nodeWidth, pos.y, pos.x + nodeWidth, pos.y + radius);
-			ctx.lineTo(pos.x + nodeWidth, pos.y + nodeHeight - radius);
-			ctx.quadraticCurveTo(
-				pos.x + nodeWidth,
-				pos.y + nodeHeight,
-				pos.x + nodeWidth - radius,
-				pos.y + nodeHeight,
-			);
-			ctx.lineTo(pos.x + radius, pos.y + nodeHeight);
-			ctx.quadraticCurveTo(pos.x, pos.y + nodeHeight, pos.x, pos.y + nodeHeight - radius);
-			ctx.lineTo(pos.x, pos.y + radius);
-			ctx.quadraticCurveTo(pos.x, pos.y, pos.x + radius, pos.y);
-			ctx.closePath();
-			ctx.fill();
-			ctx.stroke();
-
-			// Shadow for depth
-			if (isCurrent || isHovered) {
-				ctx.shadowColor = isCurrent ? "rgba(59, 130, 246, 0.4)" : "rgba(139, 92, 246, 0.4)";
-				ctx.shadowBlur = 15;
-				ctx.shadowOffsetX = 0;
-				ctx.shadowOffsetY = 5;
-			}
-
-			// Node text
-			ctx.shadowBlur = 0;
-			ctx.shadowOffsetX = 0;
-			ctx.shadowOffsetY = 0;
-			ctx.fillStyle = isCurrent ? "white" : "#1e293b";
-			ctx.font = isCurrent ? "bold 13px 'Segoe UI'" : "600 12px 'Segoe UI'";
-			ctx.textAlign = "center";
-			ctx.textBaseline = "middle";
-
-			// Truncate text if too long
-			let displayName = node.name;
-			if (displayName.length > 14) {
-				displayName = displayName.slice(0, 11) + "...";
-			}
-
-			ctx.fillText(displayName, pos.x + nodeWidth / 2, pos.y + nodeHeight / 2 - 8);
-
-			// Timestamp
-			const time = new Date(node.timestamp).toLocaleTimeString([], {
-				hour: "2-digit",
-				minute: "2-digit",
-			});
-			ctx.font = "10px 'Segoe UI'";
-			ctx.fillStyle = isCurrent ? "rgba(255, 255, 255, 0.8)" : "rgba(71, 85, 105, 0.7)";
-			ctx.fillText(time, pos.x + nodeWidth / 2, pos.y + nodeHeight / 2 + 10);
-
-			// Branch indicator
-			if (node.hasChildren) {
-				ctx.fillStyle = isCurrent ? "rgba(255, 255, 255, 0.6)" : "rgba(99, 102, 241, 0.6)";
-				ctx.beginPath();
-				ctx.arc(pos.x + nodeWidth - 15, pos.y + 15, 5, 0, Math.PI * 2);
-				ctx.fill();
-			}
-		});
-	}, [isOpen, root, current, hoveredNode]);
-
-	// Handle canvas click
-	const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-
-		const rect = canvas.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-
-		// Find clicked node
-		const { nodes } = getHistoryTreeData(root);
-		for (const node of nodes) {
-			const pos = nodePositions.get(node.id);
-			if (!pos) continue;
-
-			if (x >= pos.x && x <= pos.x + 120 && y >= pos.y && y <= pos.y + 80) {
-				// Find the actual HistoryNode
-				const findNode = (n: HistoryNode): HistoryNode | null => {
-					if (n.id === node.id) return n;
-					for (const future of n.futures) {
-						const found = findNode(future);
-						if (found) return found;
-					}
-					return null;
-				};
-
-				if (root) {
-					const historyNode = findNode(root);
-					if (historyNode) {
-						onNavigate(historyNode);
-					}
-				}
-				break;
-			}
-		}
-	};
-
-	// Handle canvas hover
-	const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-
-		const rect = canvas.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-
-		// Find hovered node
-		const { nodes } = getHistoryTreeData(root);
-		let foundHover = false;
-		for (const node of nodes) {
-			const pos = nodePositions.get(node.id);
-			if (!pos) continue;
-
-			if (x >= pos.x && x <= pos.x + 120 && y >= pos.y && y <= pos.y + 80) {
-				setHoveredNode(node.id);
-				canvas.style.cursor = "pointer";
-				foundHover = true;
-				break;
+		if (ctx) {
+			const tempCanvas = document.createElement("canvas");
+			tempCanvas.width = node.imageData.width;
+			tempCanvas.height = node.imageData.height;
+			const tempCtx = tempCanvas.getContext("2d");
+			if (tempCtx) {
+				tempCtx.putImageData(node.imageData, 0, 0);
+				ctx.imageSmoothingEnabled = false;
+				ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
 			}
 		}
 
-		if (!foundHover) {
-			setHoveredNode(null);
-			canvas.style.cursor = "default";
-		}
-	};
+		const dataUrl = canvas.toDataURL();
+		const timestamp = new Date(node.timestamp).toLocaleTimeString();
 
-	if (!root) {
 		return (
-			<Dialog isOpen={isOpen} onClose={onClose} title="History" width={400}>
-				<div style={{ padding: "20px", textAlign: "center", color: "#64748b" }}>
-					No history available yet. Start drawing to build your history tree!
-				</div>
-			</Dialog>
+			<g
+				key={node.id}
+				transform={`translate(${x}, ${y})`}
+				onMouseEnter={() => setHoveredNode(node.id)}
+				onMouseLeave={() => setHoveredNode(null)}
+				onClick={() => handleNodeClick(node.id)}
+				className="history-node"
+				style={{ cursor: "pointer" }}
+			>
+				{/* Outer glow for current node */}
+				{isCurrent && (
+					<rect
+						x="-5"
+						y="-5"
+						width="150"
+						height="100"
+						fill="none"
+						stroke="#00ff00"
+						strokeWidth="3"
+						rx="4"
+						className="current-glow"
+					>
+						<animate
+							attributeName="stroke-opacity"
+							values="0.3;1;0.3"
+							dur="2s"
+							repeatCount="indefinite"
+						/>
+					</rect>
+				)}
+
+				{/* Node container */}
+				<rect
+					x="0"
+					y="0"
+					width="140"
+					height="90"
+					fill={isCurrent ? "#1a3a1a" : isHovered ? "#2a2a2a" : "#1a1a1a"}
+					stroke={isCurrent ? "#00ff00" : isSelected ? "#00aaff" : "#444"}
+					strokeWidth={isCurrent ? "2" : "1"}
+					rx="3"
+					className="node-bg"
+				/>
+
+				{/* Thumbnail */}
+				<foreignObject x="5" y="5" width="60" height="60">
+					<div
+						style={{
+							width: "60px",
+							height: "60px",
+							border: "2px solid #333",
+							background: "#000",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							overflow: "hidden",
+						}}
+					>
+						<img
+							src={dataUrl}
+							alt={node.name}
+							style={{
+								maxWidth: "100%",
+								maxHeight: "100%",
+								imageRendering: "pixelated",
+								filter: isCurrent ? "brightness(1.2)" : "brightness(0.9)",
+							}}
+						/>
+					</div>
+				</foreignObject>
+
+				{/* Node info */}
+				<foreignObject x="70" y="5" width="65" height="80">
+					<div
+						style={{
+							fontFamily: '"JetBrains Mono", "Fira Code", "Courier New", monospace',
+							fontSize: "9px",
+							color: isCurrent ? "#00ff00" : "#aaa",
+							lineHeight: "1.2",
+						}}
+					>
+						<div
+							style={{
+								fontWeight: "bold",
+								marginBottom: "3px",
+								color: isCurrent ? "#00ff00" : "#fff",
+								textTransform: "uppercase",
+								letterSpacing: "0.5px",
+							}}
+						>
+							{node.name.substring(0, 12)}
+						</div>
+						<div style={{ fontSize: "8px", color: "#666" }}>{timestamp}</div>
+						<div style={{ fontSize: "8px", marginTop: "2px" }}>
+							{node.imageData.width}×{node.imageData.height}
+						</div>
+						{node.children.length > 0 && (
+							<div style={{ fontSize: "8px", marginTop: "2px", color: "#00aaff" }}>
+								↳ {node.children.length} branch{node.children.length > 1 ? "es" : ""}
+							</div>
+						)}
+					</div>
+				</foreignObject>
+
+				{/* Current node indicator */}
+				{isCurrent && (
+					<circle cx="135" cy="10" r="4" fill="#00ff00">
+						<animate attributeName="r" values="3;5;3" dur="1.5s" repeatCount="indefinite" />
+					</circle>
+				)}
+			</g>
 		);
-	}
+	};
+
+	if (!isOpen || !rootNode) return null;
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="History Tree" width={800}>
+		<Dialog isOpen={isOpen} onClose={onClose} title="◢ HISTORY TREE ◣" width="900px">
+			<style>{`
+				.history-tree-container {
+					background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+					border: 2px solid #333;
+					border-radius: 4px;
+					position: relative;
+					overflow: hidden;
+				}
+
+				.tree-connection {
+					transition: stroke 0.3s ease;
+				}
+
+				.history-node:hover .tree-connection {
+					stroke: rgba(0, 170, 255, 0.6) !important;
+				}
+
+				.node-bg {
+					transition: all 0.2s ease;
+				}
+
+				.history-node:hover .node-bg {
+					filter: brightness(1.3);
+				}
+
+				.current-glow {
+					filter: drop-shadow(0 0 10px #00ff00);
+				}
+
+				.history-controls {
+					display: flex;
+					gap: 10px;
+					margin-top: 15px;
+					padding: 10px;
+					background: #1a1a1a;
+					border: 1px solid #333;
+					border-radius: 3px;
+					font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+					font-size: 11px;
+				}
+
+				.history-legend {
+					display: flex;
+					gap: 20px;
+					align-items: center;
+					color: #888;
+				}
+
+				.legend-item {
+					display: flex;
+					align-items: center;
+					gap: 6px;
+				}
+
+				.legend-dot {
+					width: 10px;
+					height: 10px;
+					border-radius: 50%;
+				}
+
+				@keyframes scanline {
+					0% { transform: translateY(-100%); }
+					100% { transform: translateY(100%); }
+				}
+
+				.scanline-effect {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					height: 2px;
+					background: linear-gradient(transparent, rgba(0, 255, 0, 0.1), transparent);
+					animation: scanline 3s linear infinite;
+					pointer-events: none;
+				}
+			`}</style>
+
 			<div className="history-tree-container" ref={containerRef}>
-				<div className="history-tree-legend">
-					<div className="legend-item">
-						<div className="legend-color current"></div>
-						<span>Current State</span>
-					</div>
-					<div className="legend-item">
-						<div className="legend-color hover"></div>
-						<span>Hover</span>
-					</div>
-					<div className="legend-item">
-						<div className="legend-color branch"></div>
-						<span>Has Branches</span>
-					</div>
-				</div>
+				{/* Scanline effect for retro feel */}
+				<div className="scanline-effect" />
 
-				<div className="history-tree-canvas-wrapper">
-					<canvas
-						ref={canvasRef}
-						onClick={handleCanvasClick}
-						onMouseMove={handleCanvasMouseMove}
-						onMouseLeave={() => setHoveredNode(null)}
-					/>
-				</div>
+				<svg
+					width="100%"
+					height="500"
+					viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
+					style={{
+						background: "#0a0a0a",
+						borderRadius: "4px",
+					}}
+				>
+					{/* Grid pattern */}
+					<defs>
+						<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+							<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a1a1a" strokeWidth="0.5" />
+						</pattern>
+					</defs>
+					<rect width="100%" height="100%" fill="url(#grid)" />
 
-				<div className="history-tree-help">
-					<p>Click any node to jump to that state in history</p>
-					<p>Branches show where you undid and made different changes</p>
+					{/* Connections */}
+					<g className="connections">{connections}</g>
+
+					{/* Nodes */}
+					<g className="nodes">{layouts.map((layout) => renderNode(layout))}</g>
+				</svg>
+			</div>
+
+			<div className="history-controls">
+				<div className="history-legend">
+					<div className="legend-item">
+						<div className="legend-dot" style={{ background: "#00ff00", boxShadow: "0 0 5px #00ff00" }} />
+						<span>CURRENT</span>
+					</div>
+					<div className="legend-item">
+						<div className="legend-dot" style={{ background: "#00aaff" }} />
+						<span>SELECTED</span>
+					</div>
+					<div className="legend-item">
+						<div className="legend-dot" style={{ background: "#666" }} />
+						<span>AVAILABLE</span>
+					</div>
+					<div style={{ marginLeft: "auto", color: "#666", fontSize: "10px" }}>
+						{layouts.length} STATE{layouts.length !== 1 ? "S" : ""} | TREE DEPTH: {Math.max(...layouts.map((l) => l.depth)) + 1}
+					</div>
 				</div>
 			</div>
+
+			<div style={{ marginTop: "10px", color: "#888", fontSize: "11px", fontFamily: '"JetBrains Mono", monospace' }}>
+				<strong style={{ color: "#00ff00" }}>◢</strong> Click any node to jump to that state
+				<br />
+				<strong style={{ color: "#00ff00" }}>◢</strong> Branches show alternate timelines where you made different choices
+			</div>
+
+			<DialogButtons>
+				<button onClick={onClose} style={{ fontFamily: '"JetBrains Mono", monospace', textTransform: "uppercase" }}>
+					[ESC] Close
+				</button>
+			</DialogButtons>
 		</Dialog>
 	);
 }

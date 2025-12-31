@@ -1,8 +1,8 @@
 /**
  * Table of Contents component for the Help window.
- * Displays a tree structure of help topics.
+ * Displays a Windows 98-style tree structure of help topics.
  */
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import type { HelpItem } from "../../utils/helpParser";
 
 export interface HelpContentsProps {
@@ -22,32 +22,42 @@ interface HelpItemComponentProps {
 	item: HelpItem;
 	onSelectTopic: (url: string) => void;
 	selectedUrl: string | null;
-	expandedFolder: string | null;
-	onExpandFolder: (name: string | null) => void;
+	expandedFolders: Set<string>;
+	onToggleFolder: (name: string) => void;
 	depth: number;
+	isSubItem?: boolean;
 }
 
 function HelpItemComponent({
 	item,
 	onSelectTopic,
 	selectedUrl,
-	expandedFolder,
-	onExpandFolder,
+	expandedFolders,
+	onToggleFolder,
 	depth,
+	isSubItem = false,
 }: HelpItemComponentProps) {
 	const isFolder = item.children && item.children.length > 0;
-	const isExpanded = expandedFolder === item.name;
+	const isExpanded = expandedFolders.has(item.name);
 	const isSelected = item.local && selectedUrl?.endsWith(item.local);
-
-	console.log(`[HelpItemComponent] Rendering: "${item.name}" (folder: ${isFolder}, expanded: ${isExpanded})`);
 
 	const handleClick = useCallback(() => {
 		if (isFolder) {
-			onExpandFolder(isExpanded ? null : item.name);
+			onToggleFolder(item.name);
 		} else if (item.local) {
 			onSelectTopic(item.local);
 		}
-	}, [isFolder, isExpanded, item.name, item.local, onExpandFolder, onSelectTopic]);
+	}, [isFolder, item.name, item.local, onToggleFolder, onSelectTopic]);
+
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent) => {
+			if (e.key === "Enter" || e.key === " ") {
+				e.preventDefault();
+				handleClick();
+			}
+		},
+		[handleClick],
+	);
 
 	const handleMouseDown = useCallback((e: React.MouseEvent) => {
 		// Prevent text selection on double-click
@@ -56,25 +66,29 @@ function HelpItemComponent({
 		}
 	}, []);
 
+	// Determine the class for the list item
+	const liClassName = [
+		isFolder ? "folder" : "page",
+		isExpanded ? "expanded" : "",
+		isSubItem ? "sub-item" : "",
+	]
+		.filter(Boolean)
+		.join(" ");
+
 	return (
-		<li className={`${isFolder ? "folder" : "page"} ${isExpanded ? "expanded" : ""}`}>
+		<li className={liClassName}>
 			<div
 				className={`item ${isSelected ? "selected" : ""}`}
 				onClick={handleClick}
 				onMouseDown={handleMouseDown}
+				onKeyDown={handleKeyDown}
 				role="treeitem"
 				aria-expanded={isFolder ? isExpanded : undefined}
 				aria-selected={isSelected || false}
 				tabIndex={0}
-				onKeyDown={(e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						handleClick();
-					}
-				}}
-				style={{ border: "1px solid red" }} // DEBUG
+				style={{ paddingLeft: `${depth * 16 + 4}px` }}
 			>
-				{item.name}
+				<span className="item-text">{item.name}</span>
 			</div>
 			{isFolder && isExpanded && item.children && (
 				<ul role="group">
@@ -84,9 +98,10 @@ function HelpItemComponent({
 							item={child}
 							onSelectTopic={onSelectTopic}
 							selectedUrl={selectedUrl}
-							expandedFolder={expandedFolder}
-							onExpandFolder={onExpandFolder}
+							expandedFolders={expandedFolders}
+							onToggleFolder={onToggleFolder}
 							depth={depth + 1}
+							isSubItem={true}
 						/>
 					))}
 				</ul>
@@ -102,15 +117,20 @@ export function HelpContents({
 	isLoading = false,
 	error = null,
 }: HelpContentsProps) {
-	// Track which folder is expanded (accordion style - only one at a time at root level)
-	const [expandedFolder, setExpandedFolder] = useState<string | null>(null);
+	// Track which folders are expanded (can have multiple open)
+	const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
 
-	console.log("[HelpContents] Rendering with:", {
-		itemsCount: items.length,
-		isLoading,
-		error,
-		firstItem: items[0],
-	});
+	const handleToggleFolder = useCallback((name: string) => {
+		setExpandedFolders((prev) => {
+			const next = new Set(prev);
+			if (next.has(name)) {
+				next.delete(name);
+			} else {
+				next.add(name);
+			}
+			return next;
+		});
+	}, []);
 
 	const handleWelcomeClick = useCallback(() => {
 		onSelectTopic("default.html");
@@ -118,39 +138,39 @@ export function HelpContents({
 
 	if (isLoading) {
 		return (
-			<div className="contents inset-deep">
-				<div className="help-contents-loading">Loading...</div>
+			<div className="help-contents inset-deep">
+				<div className="help-contents-loading">Loading help contents...</div>
 			</div>
 		);
 	}
 
 	if (error) {
 		return (
-			<div className="contents inset-deep">
+			<div className="help-contents inset-deep">
 				<div className="help-contents-error">{error}</div>
 			</div>
 		);
 	}
 
 	return (
-		<ul className="contents inset-deep" role="tree">
-			{/* Welcome item always at top */}
-			<li className="page">
+		<ul className="help-contents" role="tree">
+			{/* Welcome item always at top with question mark icon */}
+			<li className="page welcome">
 				<div
-					className={`item ${selectedUrl?.endsWith("default.html") ? "selected" : ""}`}
+					className={`item welcome ${selectedUrl?.endsWith("default.html") ? "selected" : ""}`}
 					onClick={handleWelcomeClick}
-					role="treeitem"
-					aria-selected={selectedUrl?.endsWith("default.html") || false}
-					tabIndex={0}
 					onKeyDown={(e) => {
 						if (e.key === "Enter" || e.key === " ") {
 							e.preventDefault();
 							handleWelcomeClick();
 						}
 					}}
-					style={{ border: "2px solid blue" }} // DEBUG
+					role="treeitem"
+					aria-selected={selectedUrl?.endsWith("default.html") || false}
+					tabIndex={0}
+					style={{ paddingLeft: "4px" }}
 				>
-					Welcome to Help
+					<span className="item-text">Welcome to Help</span>
 				</div>
 			</li>
 			{/* TOC items */}
@@ -160,8 +180,8 @@ export function HelpContents({
 					item={item}
 					onSelectTopic={onSelectTopic}
 					selectedUrl={selectedUrl}
-					expandedFolder={expandedFolder}
-					onExpandFolder={setExpandedFolder}
+					expandedFolders={expandedFolders}
+					onToggleFolder={handleToggleFolder}
 					depth={0}
 				/>
 			))}

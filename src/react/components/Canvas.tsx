@@ -1,3 +1,19 @@
+/**
+ * Canvas Component
+ *
+ * Main drawing canvas component for the Paint application.
+ * Handles all drawing operations, tool interactions, and canvas state management.
+ *
+ * Features:
+ * - 16 drawing tools (pencil, brush, shapes, selection, text, etc.)
+ * - Persistent canvas state across remounts
+ * - Magnification/zoom support (1x-8x)
+ * - Selection with resize handles
+ * - Text input overlay
+ * - Canvas resize handles
+ * - Pointer event handling for all tools
+ */
+
 import React, { useCallback, useEffect, useRef } from "react";
 import { TOOL_IDS, useApp, useCanvas, useCursorPosition, useHistory, useMagnification, useSelection, useTool } from "../context/AppContext";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
@@ -10,18 +26,41 @@ import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
 import { CanvasResizeHandles } from "./CanvasResizeHandles";
 
-// Module-level flag to track canvas initialization
-// This persists across component remounts
+/**
+ * Module-level flag to track canvas initialization.
+ * Prevents re-initializing the canvas with white background on every remount.
+ * This persists across component remounts to maintain canvas state.
+ */
 let canvasInitialized = false;
 
-// Magnification levels
+/**
+ * Module-level storage for canvas data when component unmounts.
+ * Used to preserve drawing when the component temporarily unmounts (e.g., during React updates).
+ * The ImageData is restored on the next mount if available.
+ */
+let savedCanvasData: ImageData | null = null;
+
+/**
+ * Available magnification levels for the Magnifier tool.
+ * Matches MS Paint's zoom levels: 1x, 2x, 4x, 6x, 8x
+ */
 const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
 
 /**
- * Canvas component for drawing
+ * Canvas component - the main drawing surface.
+ *
+ * This component orchestrates all drawing operations by:
+ * - Managing canvas lifecycle (initialization, preservation across remounts)
+ * - Coordinating tool-specific hooks (drawing, selection, shapes, text)
+ * - Handling all pointer events (down, move, up, leave)
+ * - Rendering overlay elements (selection handles, text box, resize handles)
+ *
+ * @param {Object} props - Component props
+ * @param {string} [props.className=""] - Additional CSS class names
+ * @returns {JSX.Element} Canvas element with overlays and handles
  */
 export function Canvas({ className = "" }: { className?: string }) {
-	console.log("[Canvas] Component rendering");
+	console.warn("[Canvas] Component rendering");
 
 	const { canvasRef } = useApp();
 	const { selectedToolId } = useTool();
@@ -74,25 +113,67 @@ export function Canvas({ className = "" }: { className?: string }) {
 
 	// Initialize canvas with white background (only once ever)
 	useEffect(() => {
-		console.log("[Canvas] Mount effect running, canvasInitialized:", canvasInitialized);
-
-		if (canvasInitialized) return;
+		console.warn("[Canvas] Mount effect running, canvasInitialized:", canvasInitialized);
 
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas) {
+			console.warn("[Canvas] No canvas ref yet");
+			return;
+		}
 
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) return;
+		if (!ctx) {
+			console.warn("[Canvas] Could not get 2d context");
+			return;
+		}
 
-		console.log("[Canvas] Initializing canvas with white background");
+		console.warn(`[Canvas] Canvas dimensions: ${canvas.width}x${canvas.height}`);
+
+		// If we have saved canvas data, restore it
+		if (savedCanvasData) {
+			console.warn("[Canvas] 🔄 RESTORING SAVED CANVAS DATA 🔄");
+			ctx.putImageData(savedCanvasData, 0, 0);
+			savedCanvasData = null; // Clear after restoring
+			return () => {
+				// Save canvas data on unmount
+				console.warn("[Canvas] 💾 Saving canvas data before unmount");
+				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				savedCanvasData = imageData;
+				console.warn("[Canvas] ❌ COMPONENT UNMOUNTING! ❌");
+			};
+		}
+
+		// Otherwise, initialize with white background (only once)
+		if (canvasInitialized) {
+			console.warn("[Canvas] Skipping initialization - already done");
+			return () => {
+				// Save canvas data on unmount
+				console.warn("[Canvas] 💾 Saving canvas data before unmount");
+				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				savedCanvasData = imageData;
+				console.warn("[Canvas] ❌ COMPONENT UNMOUNTING! ❌");
+			};
+		}
+
+		console.warn("[Canvas] ⚠️ INITIALIZING CANVAS WITH WHITE BACKGROUND ⚠️");
 		ctx.fillStyle = "#ffffff";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		canvasInitialized = true;
+		console.warn("[Canvas] Initialization complete, flag set to true");
 
 		return () => {
-			console.log("[Canvas] Component unmounting!");
+			// Save canvas data on unmount
+			console.warn("[Canvas] 💾 Saving canvas data before unmount");
+			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			savedCanvasData = imageData;
+			console.warn("[Canvas] ❌ COMPONENT UNMOUNTING! ❌");
 		};
 	}, [canvasRef]);
+
+	// Watch for canvas dimension changes (which auto-clear the canvas)
+	useEffect(() => {
+		console.warn(`[Canvas] Dimension effect: ${canvasWidth}x${canvasHeight}`);
+	}, [canvasWidth, canvasHeight]);
 
 	// Focus text input when text box is active
 	useEffect(() => {
@@ -132,7 +213,29 @@ export function Canvas({ className = "" }: { className?: string }) {
 		};
 	}, [selectedToolId, canvasRef, drawing, shapes.drawingState]);
 
-	// Mouse event handlers
+	/**
+	 * Pointer down event handler - initiates drawing operations.
+	 *
+	 * Handles the start of all drawing operations based on the currently selected tool.
+	 * Responsibilities:
+	 * - Saves undo state (except for multi-click tools like SELECT, CURVE, POLYGON)
+	 * - Dispatches to appropriate tool handler
+	 * - Initializes drawing state for continuous tools (PENCIL, BRUSH, ERASER)
+	 * - Captures pointer for smooth drawing outside canvas bounds
+	 *
+	 * Tool dispatch:
+	 * - PENCIL/BRUSH/ERASER: Draw point and enable continuous drawing
+	 * - FILL: Flood fill at point
+	 * - PICK_COLOR: Sample color at point
+	 * - SELECT/FREE_FORM_SELECT: Start selection region
+	 * - TEXT: Commit existing text box and start new one
+	 * - MAGNIFIER: Zoom in (left) or out (right)
+	 * - CURVE/POLYGON: Add point to multi-click sequence
+	 * - AIRBRUSH: Enable continuous spray effect
+	 * - LINE/RECTANGLE/ELLIPSE/ROUNDED_RECTANGLE: Start shape preview
+	 *
+	 * @param {React.PointerEvent<HTMLCanvasElement>} e - Pointer event
+	 */
 	const handlePointerDown = useCallback(
 		(e: React.PointerEvent<HTMLCanvasElement>) => {
 			e.preventDefault();
@@ -281,6 +384,29 @@ selectionHook,
 		],
 	);
 
+	/**
+	 * Pointer move event handler - handles drawing and preview updates.
+	 *
+	 * Responds to mouse movement over the canvas. Behavior depends on current tool and state:
+	 *
+	 * Always:
+	 * - Updates cursor position for status bar display
+	 *
+	 * When selection is active:
+	 * - Updates selection region bounds (rectangular or free-form)
+	 *
+	 * When curve/polygon tool is active:
+	 * - Shows preview of curve/polygon with current mouse position
+	 *
+	 * When shape tool is drawing:
+	 * - Shows preview of shape (line, rectangle, ellipse, etc.) from start to current position
+	 *
+	 * When continuous drawing tool is active (PENCIL, BRUSH, ERASER):
+	 * - Draws line from last position to current position
+	 * - Updates last position for next move event
+	 *
+	 * @param {React.PointerEvent<HTMLCanvasElement>} e - Pointer event
+	 */
 	const handlePointerMove = useCallback(
 		(e: React.PointerEvent<HTMLCanvasElement>) => {
 			const canvas = canvasRef.current;
@@ -331,10 +457,37 @@ selectionHook,
 		[canvasRef, drawing, setCursorPosition, selectionHook, selectedToolId, curvePolygon, shapes],
 	);
 
+	/**
+	 * Pointer leave event handler - clears cursor position.
+	 * Called when the pointer leaves the canvas area.
+	 * Clears cursor position in state so the status bar shows no coordinates.
+	 */
 	const handlePointerLeave = useCallback(() => {
 		setCursorPosition(null);
 	}, [setCursorPosition]);
 
+	/**
+	 * Pointer up event handler - finalizes drawing operations.
+	 *
+	 * Completes the current drawing operation based on tool and state:
+	 *
+	 * Selection tools:
+	 * - Finalizes rectangular or free-form selection region
+	 * - Captures the selected area as ImageData
+	 *
+	 * Text box creation:
+	 * - Finalizes text box dimensions and activates for editing
+	 *
+	 * Shape tools (LINE, RECTANGLE, ELLIPSE, ROUNDED_RECTANGLE):
+	 * - Commits the shape from preview to canvas
+	 * - Releases pointer capture
+	 *
+	 * Continuous drawing tools (PENCIL, BRUSH, ERASER):
+	 * - Ends continuous drawing mode
+	 * - Releases pointer capture
+	 *
+	 * @param {React.PointerEvent<HTMLCanvasElement>} e - Pointer event
+	 */
 	const handlePointerUp = useCallback(
 		(e: React.PointerEvent<HTMLCanvasElement>) => {
 			const canvas = canvasRef.current;
@@ -377,7 +530,12 @@ selectionHook,
 		[canvasRef, drawing, selectedToolId, selectionHook, textBoxHook, shapes],
 	);
 
-	// Handle text input change
+	/**
+	 * Text input change handler.
+	 * Updates the text content in the active text box.
+	 *
+	 * @param {React.ChangeEvent<HTMLTextAreaElement>} e - Change event from textarea
+	 */
 	const handleTextChange = useCallback(
 		(e: React.ChangeEvent<HTMLTextAreaElement>) => {
 			textBoxHook.updateText(e.target.value);
@@ -385,7 +543,13 @@ selectionHook,
 		[textBoxHook],
 	);
 
-	// Handle text input key events
+	/**
+	 * Text input key down handler.
+	 * Handles keyboard shortcuts in the text box:
+	 * - Escape: Cancel text box (discard text)
+	 *
+	 * @param {React.KeyboardEvent<HTMLTextAreaElement>} e - Keyboard event
+	 */
 	const handleTextKeyDown = useCallback(
 		(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 			if (e.key === "Escape") {
@@ -395,7 +559,11 @@ selectionHook,
 		[textBoxHook],
 	);
 
-	// Handle clicking outside text box to commit
+	/**
+	 * Text input blur handler.
+	 * Commits text to canvas when clicking outside the text box.
+	 * Uses a 100ms timeout to allow other click handlers to process first.
+	 */
 	const handleTextBlur = useCallback(() => {
 		setTimeout(() => {
 			if (textBoxHook.textBox?.isActive) {
@@ -404,12 +572,23 @@ selectionHook,
 		}, 100);
 	}, [textBoxHook]);
 
-	// Prevent context menu on right-click
+	/**
+	 * Context menu handler.
+	 * Prevents the browser's default context menu on right-click.
+	 * Right mouse button is used for secondary color in drawing tools.
+	 *
+	 * @param {React.MouseEvent} e - Mouse event
+	 */
 	const handleContextMenu = useCallback((e: React.MouseEvent) => {
 		e.preventDefault();
 	}, []);
 
-	// Get cursor style based on tool
+	/**
+	 * Get cursor style based on current tool.
+	 * Returns appropriate CSS cursor value for the selected tool.
+	 *
+	 * @returns {string} CSS cursor value
+	 */
 	const getCursorStyle = useCallback((): string => {
 		switch (selectedToolId) {
 			case TOOL_IDS.MAGNIFIER:
@@ -421,13 +600,33 @@ selectionHook,
 		}
 	}, [selectedToolId]);
 
+	/**
+	 * Canvas inline styles.
+	 * Applies cursor and magnification transform to the canvas element.
+	 */
 	const canvasStyle: React.CSSProperties = {
 		cursor: getCursorStyle(),
 		transform: magnification > 1 ? `scale(${magnification})` : undefined,
 		transformOrigin: "top left",
 	};
 
-	// Handle selection resize from SelectionHandles
+	/**
+	 * Selection resize handler.
+	 * Called when user drags selection resize handles.
+	 *
+	 * Process:
+	 * 1. Creates temporary canvas with original selection ImageData
+	 * 2. Creates new canvas with new dimensions
+	 * 3. Draws original selection scaled to new size (bilinear interpolation)
+	 * 4. Captures new ImageData
+	 * 5. Updates selection state with new position and resized image
+	 *
+	 * @param {Object} newRect - New selection bounds
+	 * @param {number} newRect.x - New x position
+	 * @param {number} newRect.y - New y position
+	 * @param {number} newRect.width - New width
+	 * @param {number} newRect.height - New height
+	 */
 	const handleSelectionResize = useCallback(
 		(newRect: { x: number; y: number; width: number; height: number }) => {
 			if (!currentSelection || !currentSelection.imageData) return;
@@ -466,13 +665,53 @@ selectionHook,
 		[currentSelection, setSelection],
 	);
 
-	// Handle canvas resize from CanvasResizeHandles
+	/**
+	 * Canvas resize handler.
+	 * Called when user drags canvas resize handles (bottom or right edge).
+	 *
+	 * Process:
+	 * 1. Saves current canvas content as ImageData
+	 * 2. Resizes canvas to new dimensions (which clears it)
+	 * 3. Restores the previous content to the resized canvas
+	 * 4. Saves state for undo
+	 *
+	 * @param {number} width - New canvas width in pixels
+	 * @param {number} height - New canvas height in pixels
+	 */
 	const handleCanvasResize = useCallback(
 		(width: number, height: number) => {
+			const canvas = canvasRef.current;
+			if (!canvas) return;
+
+			const ctx = canvas.getContext("2d", { willReadFrequently: true });
+			if (!ctx) return;
+
+			// Save current canvas content
+			const currentImageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+			// Save to undo stack before resizing
 			saveState();
+
+			// Resize canvas (this will clear it)
 			setCanvasSize(width, height);
+
+			// Restore the previous content on the next frame (after resize completes)
+			requestAnimationFrame(() => {
+				const resizedCanvas = canvasRef.current;
+				if (!resizedCanvas) return;
+
+				const resizedCtx = resizedCanvas.getContext("2d", { willReadFrequently: true });
+				if (!resizedCtx) return;
+
+				// Fill with white background
+				resizedCtx.fillStyle = "#ffffff";
+				resizedCtx.fillRect(0, 0, width, height);
+
+				// Restore the previous content
+				resizedCtx.putImageData(currentImageData, 0, 0);
+			});
 		},
-		[saveState, setCanvasSize],
+		[canvasRef, canvasWidth, canvasHeight, saveState, setCanvasSize],
 	);
 
 	return (

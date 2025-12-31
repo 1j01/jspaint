@@ -8,6 +8,7 @@ import {
     EditColorsDialog,
     FlipRotateDialog,
     HistoryDialog,
+    HistoryTreeDialog,
     ImgurUploadDialog,
     LoadFromUrlDialog,
     ManageStorageDialog,
@@ -22,6 +23,7 @@ import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
 import { HelpWindow } from "../react/components/help";
 import { Tool, ToolBox } from "../react/components/ToolBox";
 import { ToolOptions } from "../react/components/ToolOptions";
+import { ThumbnailWindow } from "../react/components/ThumbnailWindow";
 import {
     AppProvider,
     TOOL_IDS,
@@ -1054,17 +1056,14 @@ function AppContent() {
 				isOpen={dialogs.manageStorage}
 				onClose={() => closeDialog("manageStorage")}
 			/>
-			<HistoryDialog
+			<HistoryTreeDialog
 				isOpen={dialogs.history}
 				onClose={() => closeDialog("history")}
-				undoStack={state.undoStack}
-				redoStack={state.redoStack}
-				onGoToState={(index, isRedo) => {
-					if (isRedo) {
-						redo();
-					} else {
-						undo();
-					}
+				rootNode={null} // TODO: Connect to actual history tree
+				currentNode={null}
+				onNavigateToNode={(nodeId) => {
+					// TODO: Navigate to specific history node
+					console.log("Navigate to node:", nodeId);
 				}}
 			/>
 
@@ -1076,6 +1075,12 @@ function AppContent() {
 				onFontChange={handleFontChange}
 				textBoxRect={textBox}
 				magnification={magnification}
+			/>
+
+			{/* Thumbnail Window */}
+			<ThumbnailWindow
+				visible={showThumbnail}
+				onClose={toggleThumbnail}
 			/>
 		</>
 	);

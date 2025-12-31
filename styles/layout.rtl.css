@@ -831,7 +831,19 @@ whereas it breaks component docking calculations if used to shift the colors box
 .help-split-pane-right {
 	flex: 1;
 	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	background-color: pink; /* DEBUG */
+	border: 3px solid blue; /* DEBUG */
 }
+
+.help-window iframe {
+	flex: 1;
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
 .help-window .toolbar button {
 	width: 55px;
 	height: 40px;

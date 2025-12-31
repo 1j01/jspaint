@@ -2,15 +2,16 @@
  * Main Help window component.
  * A resizable floating window with toolbar, TOC sidebar, and content iframe.
  */
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDraggable } from "../../hooks/useDraggable";
-import { useResizable } from "../../hooks/useResizable";
 import { useHelpNavigation } from "../../hooks/useHelpNavigation";
+import { useResizable } from "../../hooks/useResizable";
 import { parseHelpContents, type HelpItem } from "../../utils/helpParser";
-import { HelpToolbar } from "./HelpToolbar";
-import { HelpContents } from "./HelpContents";
 import { HelpContent } from "./HelpContent";
+import { HelpContents } from "./HelpContents";
+import { HelpToolbar } from "./HelpToolbar";
+import "./HelpWindow.css";
 import { ResizableSplitPane } from "./ResizableSplitPane";
 
 export interface HelpWindowProps {

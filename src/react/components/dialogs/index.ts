@@ -28,8 +28,8 @@ export type { default as SaveAsDialogProps } from "./SaveAsDialog";
 export { default as EditColorsDialog } from "./EditColorsDialog";
 export type { default as EditColorsDialogProps } from "./EditColorsDialog";
 
-export { default as HistoryTreeDialog } from "./HistoryTreeDialog";
-export type { default as HistoryTreeDialogProps } from "./HistoryTreeDialog";
+export { HistoryTreeDialog } from "./HistoryTreeDialog";
+export type { HistoryTreeDialogProps } from "./HistoryTreeDialog";
 
 export { ImgurUploadDialog } from "./ImgurUploadDialog";
 export { ManageStorageDialog } from "./ManageStorageDialog";

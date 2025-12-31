@@ -1,28 +1,37 @@
-/* Canvas Resize Handles */
+/* Canvas Resize Handles - matching legacy layout.css */
 
 .canvas-resize-handle {
 	position: absolute;
-	width: 6px;
-	height: 6px;
-	background: #000;
-	border: 1px solid #fff;
-	box-sizing: border-box;
-	z-index: 50;
-	pointer-events: auto;
+	width: 3px;
+	height: 3px;
+	z-index: 10;
+	pointer-events: none; /* important for Dwell Clicker mode */
+	background: var(--Hilight, #000080);
 }
 
 .canvas-resize-handle.useless-handle {
-	display: none;
+	background: var(--HilightText, #fff);
+	box-shadow: 1px 1px 0 var(--Hilight, #000080) inset;
 }
 
-.canvas-resize-handle:hover {
-	background: #0078d7;
-	box-shadow: 0 0 4px rgba(0, 120, 215, 0.5);
+.canvas-resize-grab-region {
+	/* the grab-region makes handles way easier to grab by extending outside the visual representation of the handle */
+	position: absolute;
+	pointer-events: auto;
+	cursor: inherit;
+	z-index: 1;
+	/*background: rgba(255, 0, 0, 0.5);*/ /* debug */
+}
+
+.canvas-resize-grab-region.is-middle {
+	/*background: rgba(255, 255, 0, 0.5);*/ /* debug */
 }
 
 .resize-ghost {
 	box-sizing: border-box;
 	background: transparent;
+	outline: 1px dotted #ccc;
+	mix-blend-mode: difference;
 }
 
 .resize-ghost.thick {

@@ -12,15 +12,26 @@ interface CanvasTextBoxProps {
 
 /**
  * Text input overlay for the text tool
+ * Positioned relative to .canvas-area accounting for padding
  */
 export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>(function CanvasTextBox(
 	{ textBox, magnification, primaryColor, onChange, onKeyDown, onBlur },
 	ref,
 ) {
+	// Get .canvas-area padding (3px from layout.css)
+	// This matches the original jQuery implementation in OnCanvasObject.position()
+	const canvasArea = document.querySelector(".canvas-area");
+	const padding = canvasArea
+		? {
+				left: parseFloat(window.getComputedStyle(canvasArea).paddingLeft) || 0,
+				top: parseFloat(window.getComputedStyle(canvasArea).paddingTop) || 0,
+			}
+		: { left: 0, top: 0 };
+
 	const containerStyle: CSSProperties = {
 		position: "absolute",
-		top: textBox.y * magnification,
-		left: textBox.x * magnification,
+		top: textBox.y * magnification + padding.top,
+		left: textBox.x * magnification + padding.left,
 		width: textBox.width * magnification,
 		minHeight: textBox.height * magnification,
 		border: "1px dashed #000",

@@ -41,8 +41,12 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 		active: false,
 	});
 
-	// Track last click time for double-click detection
-	const lastClickTimeRef = useRef<number>(0);
+	// Track last click for double-click detection (time + position)
+	const lastClickRef = useRef<{ x: number; y: number; time: number }>({
+		x: -Infinity,
+		y: -Infinity,
+		time: -Infinity,
+	});
 
 	// Handle curve click
 	const handleCurveClick = useCallback(
@@ -129,10 +133,13 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			const poly = polygonState.current;
 			const color = getDrawColor(0); // Always use primary color for stroke
 
-			// Detect double-click (within 300ms)
+			// Detect double-click (same position within time window, like jQuery implementation)
 			const now = Date.now();
-			const isDoubleClick = now - lastClickTimeRef.current < 300;
-			lastClickTimeRef.current = now;
+			const dx = x - lastClickRef.current.x;
+			const dy = y - lastClickRef.current.y;
+			const dt = now - lastClickRef.current.time;
+			const distance = Math.sqrt(dx * dx + dy * dy);
+			const isDoubleClick = distance < 4 && dt < 250; // Match jQuery: distance < 4.1010101 and dt < 250
 
 			if (!poly.active) {
 				// First point - start a new polygon
@@ -140,6 +147,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 				poly.active = true;
 				poly.points = [{ x, y }];
 				saveState();
+				lastClickRef.current = { x, y, time: now };
 				return true;
 			} else {
 				// Double-click or right-click closes the polygon
@@ -155,7 +163,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					poly.points = [];
 					poly.active = false;
 					poly.previewImageData = null;
-					lastClickTimeRef.current = 0; // Reset double-click timer
+					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
 					return false;
 				} else if (button === 2) {
 					// Right-click with fewer than 3 points - cancel polygon
@@ -165,7 +173,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					poly.points = [];
 					poly.active = false;
 					poly.previewImageData = null;
-					lastClickTimeRef.current = 0;
+					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
 					return false;
 				} else {
 					// Check if clicking near the starting point (close polygon)
@@ -183,11 +191,12 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 						poly.points = [];
 						poly.active = false;
 						poly.previewImageData = null;
-						lastClickTimeRef.current = 0;
+						lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
 						return false;
 					} else if (!isDoubleClick) {
 						// Single click not near start - add a new point
 						poly.points.push({ x, y });
+						lastClickRef.current = { x, y, time: now };
 						return true;
 					}
 				}

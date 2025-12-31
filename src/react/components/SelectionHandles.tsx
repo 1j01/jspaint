@@ -65,16 +65,28 @@ export function SelectionHandles({
 		return { left: rect.left, top: rect.top };
 	}, [containerRef]);
 
+	// Get container padding (matches .canvas-area padding from layout.css)
+	const getContainerPadding = useCallback(() => {
+		const container = containerRef.current;
+		if (!container) return { left: 0, top: 0 };
+		const styles = window.getComputedStyle(container);
+		return {
+			left: parseFloat(styles.paddingLeft) || 0,
+			top: parseFloat(styles.paddingTop) || 0,
+		};
+	}, [containerRef]);
+
 	// Convert screen coords to canvas coords
 	const toCanvasCoords = useCallback(
 		(clientX: number, clientY: number) => {
 			const offset = getContainerOffset();
+			const padding = getContainerPadding();
 			return {
-				x: Math.round((clientX - offset.left) / magnification),
-				y: Math.round((clientY - offset.top) / magnification),
+				x: Math.round((clientX - offset.left - padding.left) / magnification),
+				y: Math.round((clientY - offset.top - padding.top) / magnification),
 			};
 		},
-		[getContainerOffset, magnification],
+		[getContainerOffset, getContainerPadding, magnification],
 	);
 
 	// Handle pointer down on a resize handle
@@ -96,9 +108,10 @@ export function SelectionHandles({
 
 			// Show ghost element
 			if (ghostRef.current) {
+				const padding = getContainerPadding();
 				ghostRef.current.style.display = "block";
-				ghostRef.current.style.left = `${selection.x * magnification}px`;
-				ghostRef.current.style.top = `${selection.y * magnification}px`;
+				ghostRef.current.style.left = `${selection.x * magnification + padding.left}px`;
+				ghostRef.current.style.top = `${selection.y * magnification + padding.top}px`;
 				ghostRef.current.style.width = `${selection.width * magnification}px`;
 				ghostRef.current.style.height = `${selection.height * magnification}px`;
 			}
@@ -106,7 +119,7 @@ export function SelectionHandles({
 			// Capture pointer for reliable drag
 			(e.target as HTMLElement).setPointerCapture(e.pointerId);
 		},
-		[selection, magnification],
+		[selection, magnification, getContainerPadding],
 	);
 
 	// Handle pointer move during drag
@@ -156,13 +169,14 @@ export function SelectionHandles({
 
 			// Update ghost preview
 			if (ghostRef.current) {
-				ghostRef.current.style.left = `${newX * magnification}px`;
-				ghostRef.current.style.top = `${newY * magnification}px`;
+				const padding = getContainerPadding();
+				ghostRef.current.style.left = `${newX * magnification + padding.left}px`;
+				ghostRef.current.style.top = `${newY * magnification + padding.top}px`;
 				ghostRef.current.style.width = `${newWidth * magnification}px`;
 				ghostRef.current.style.height = `${newHeight * magnification}px`;
 			}
 		},
-		[toCanvasCoords, magnification],
+		[toCanvasCoords, magnification, getContainerPadding],
 	);
 
 	// Handle pointer up - finalize resize
@@ -200,8 +214,9 @@ export function SelectionHandles({
 	if (!selection) return null;
 
 	const { x, y, width, height } = selection;
-	const scaledX = x * magnification;
-	const scaledY = y * magnification;
+	const padding = getContainerPadding();
+	const scaledX = x * magnification + padding.left;
+	const scaledY = y * magnification + padding.top;
 	const scaledWidth = width * magnification;
 	const scaledHeight = height * magnification;
 

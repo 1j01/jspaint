@@ -438,7 +438,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 
 	// If no options for current tool, render empty placeholder
 	const hasOptions =
-		showFillStyle || showLineWidth || showBrushSize || showEraserSize || showAirbrushSize || showTextOptions;
+		showFillStyle || showLineWidth || showBrushSize || showEraserSize || showAirbrushSize || showTextOptions || showTransparencyMode;
 
 	// Always use tool-options class for proper legacy CSS styling
 	return (
@@ -451,6 +451,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 					{showEraserSize && renderEraserSizeOptions()}
 					{showAirbrushSize && renderAirbrushSizeOptions()}
 					{showTextOptions && renderTextOptions()}
+					{showTransparencyMode && renderTransparencyMode()}
 				</>
 			)}
 		</div>

@@ -302,11 +302,16 @@ body.dragging iframe {
 }
 
 /* Ensure proper z-index stacking order for canvas layers */
+/* Canvas is positioned at padding edge (0,0) */
 canvas.main-canvas {
 	z-index: 2 !important;
 	position: absolute;
+	left: 0;
+	top: 0;
 }
 
+/* Selection overlay positioned same as canvas at padding edge */
+/* CanvasOverlay component handles the positioning inline */
 .selection-overlay {
 	z-index: 3 !important;
 	position: absolute;

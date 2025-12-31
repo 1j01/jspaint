@@ -1,8 +1,8 @@
 /**
  * Toolbar component for the Help window.
  * Contains Hide/Show, Back, Forward, Options, and Web Help buttons.
+ * Matches the Windows 98 Help toolbar look.
  */
-import React from "react";
 
 export interface HelpToolbarProps {
 	/** Toggle sidebar visibility */
@@ -23,30 +23,27 @@ export interface HelpToolbarProps {
 
 interface ToolbarButtonProps {
 	label: string;
-	spriteIndex: number;
+	action: string;
 	onClick: () => void;
 	disabled?: boolean;
 }
 
 function ToolbarButton({
 	label,
-	spriteIndex,
+	action,
 	onClick,
 	disabled = false,
 }: ToolbarButtonProps) {
 	return (
 		<button
-			className="help-toolbar-button lightweight"
+			className="help-toolbar-button"
+			data-action={action}
 			onClick={onClick}
 			disabled={disabled}
 			type="button"
+			title={label}
 		>
-			<div
-				className="help-toolbar-icon"
-				style={{
-					backgroundPosition: `${-spriteIndex * 55}px 0px`,
-				}}
-			/>
+			<div className="help-toolbar-icon" />
 			<span className="help-toolbar-label">{label}</span>
 		</button>
 	);
@@ -65,30 +62,30 @@ export function HelpToolbar({
 		<div className="help-toolbar">
 			<ToolbarButton
 				label={sidebarVisible ? "Hide" : "Show"}
-				spriteIndex={sidebarVisible ? 0 : 5}
+				action={sidebarVisible ? "hide" : "show"}
 				onClick={onToggleSidebar}
 			/>
 			<ToolbarButton
 				label="Back"
-				spriteIndex={1}
+				action="back"
 				onClick={onBack}
 				disabled={!canGoBack}
 			/>
 			<ToolbarButton
 				label="Forward"
-				spriteIndex={2}
+				action="forward"
 				onClick={onForward}
 				disabled={!canGoForward}
 			/>
 			<ToolbarButton
 				label="Options"
-				spriteIndex={3}
+				action="options"
 				onClick={() => {}}
 				disabled={true}
 			/>
 			<ToolbarButton
 				label="Web Help"
-				spriteIndex={4}
+				action="webhelp"
 				onClick={onWebHelp}
 			/>
 		</div>

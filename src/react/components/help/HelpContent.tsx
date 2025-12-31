@@ -130,6 +130,13 @@ export function HelpContent({
 			title="Help Content"
 			name="help-frame"
 			sandbox="allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-modals allow-popups"
+			style={{
+				flex: 1,
+				width: "100%",
+				height: "100%",
+				border: "3px solid magenta",
+				boxSizing: "border-box"
+			}}
 		/>
 	);
 }
