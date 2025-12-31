@@ -101,8 +101,8 @@ export default [
 			"@stylistic/arrow-parens": ["error", "always"],
 			"@stylistic/arrow-spacing": ["error", { "before": true, "after": true }],
 			"@stylistic/block-spacing": ["error", "always"],
-                        "@stylistic/brace-style": ["error", "1tbs", { "allowSingleLine": true }],
-                        "@stylistic/indent": "off",
+			"@stylistic/brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+			"@stylistic/indent": ["error", 2, { "SwitchCase": 1 }],
 			"@stylistic/comma-dangle": ["error", {
 				"arrays": "always-multiline", // ensure commas to avoid confusing git diffs
 				"objects": "always-multiline", // ensure commas to avoid confusing git diffs

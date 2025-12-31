@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import { useApp, useCanvas } from "../context/state";
+import { useCanvasDimensions } from "../context/state";
 
 /**
  * ThumbnailWindow component props
@@ -22,6 +22,8 @@ interface ThumbnailWindowProps {
 	visible: boolean;
 	/** Callback to close the window */
 	onClose: () => void;
+	/** Reference to the main canvas element */
+	canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
 /**
@@ -33,9 +35,8 @@ interface ThumbnailWindowProps {
  * @param {ThumbnailWindowProps} props - Component props
  * @returns {JSX.Element | null} Window element or null if not visible
  */
-export function ThumbnailWindow({ visible, onClose }: ThumbnailWindowProps) {
-	const { canvasRef } = useApp();
-	const { canvasWidth, canvasHeight } = useCanvas();
+export function ThumbnailWindow({ visible, onClose, canvasRef }: ThumbnailWindowProps) {
+	const { canvasWidth, canvasHeight } = useCanvasDimensions();
 	const thumbnailCanvasRef = useRef<HTMLCanvasElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 
