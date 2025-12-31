@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
-import { TOOL_IDS, useApp, useCursorPosition, useHistory, useUIStore, useSelection, useTool, useCanvasDimensions } from "../context/state";
+import { useCursorPosition, useHistory, useUIStore, useSelection, useTool, useCanvasDimensions } from "../context/state";
 import { useTreeHistory } from "../context/state";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
@@ -25,7 +25,7 @@ import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
 import { useCanvasLifecycle } from "../hooks/useCanvasLifecycle";
 import { useAirbrushEffect } from "../hooks/useAirbrushEffect";
 import { useCanvasEventHandlers } from "../hooks/useCanvasEventHandlers";
-import { getCanvasStyle, resizeSelection, prepareCanvasResize, restoreCanvasAfterResize, getCursorForTool } from "../utils/canvasHelpers";
+import { getCanvasStyle, resizeSelection, prepareCanvasResize, restoreCanvasAfterResize } from "../utils/canvasHelpers";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
@@ -41,13 +41,14 @@ import { CanvasResizeHandles } from "./CanvasResizeHandles";
  * - Rendering overlay elements (selection handles, text box, resize handles)
  *
  * @param {Object} props - Component props
+ * @param {React.RefObject<HTMLCanvasElement>} props.canvasRef - Ref to canvas element
  * @param {string} [props.className=""] - Additional CSS class names
  * @returns {JSX.Element} Canvas element with overlays and handles
  */
 export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObject<HTMLCanvasElement>; className?: string }) {
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
-	const { pushState: pushTreeState, historyTree } = useTreeHistory();
+	const { pushState: pushTreeState } = useTreeHistory();
 	const magnification = useUIStore((state) => state.magnification);
 	const setMagnification = useUIStore((state) => state.setMagnification);
 	const { setCursorPosition } = useCursorPosition();
@@ -60,15 +61,15 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	// Container ref for selection handles - use canvas parent (.canvas-area)
 	const containerRef = useRef<HTMLDivElement>(null);
 
+	// Text input ref
+	const textInputRef = useRef<HTMLTextAreaElement>(null);
+
 	// Set container ref to canvas parent on mount
 	useEffect(() => {
 		if (canvasRef.current && canvasRef.current.parentElement) {
 			containerRef.current = canvasRef.current.parentElement as HTMLDivElement;
 		}
 	}, [canvasRef]);
-
-	// Text input ref
-	const textInputRef = useRef<HTMLTextAreaElement>(null);
 
 	// Initialize drawing hook
 	const drawing = useCanvasDrawing(canvasRef);
@@ -101,7 +102,12 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	// Initialize airbrush effect (continuous painting)
 	useAirbrushEffect({ canvasRef, selectedToolId, drawing, shapes });
 
-	// Helper to save state to both linear and tree history
+	/**
+	 * Helper to save state to tree history.
+	 * Captures current canvas state and stores it in the history tree.
+	 *
+	 * @param operationName - Human-readable name for the operation (e.g., "Pencil", "Fill")
+	 */
 	const saveHistoryState = useCallback((operationName: string = "Edit") => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
@@ -112,7 +118,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		// Get current canvas state
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-		// Save to tree history (new system)
+		// Save to tree history
 		pushTreeState(imageData, operationName, {
 			selectionImageData: currentSelection?.imageData,
 			selectionX: currentSelection?.x,
@@ -122,9 +128,9 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		});
 
 		console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
-	}, [canvasRef, saveState, pushTreeState, currentSelection]);
+	}, [canvasRef, pushTreeState, currentSelection]);
 
-	// Initialize all event handlers
+	// Initialize all event handlers from the hook
 	const eventHandlers = useCanvasEventHandlers({
 		canvasRef,
 		selectedToolId,
@@ -145,16 +151,6 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 			textInputRef.current.focus();
 		}
 	}, [textBoxHook.textBox?.isActive]);
-
-	/**
-	 * Canvas inline styles.
-	 * Applies cursor and magnification transform to the canvas element.
-	 * Position and transform-origin are handled by CSS for exact alignment with overlay.
-	 */
-	const canvasStyle: React.CSSProperties = {
-		cursor: getCursorForTool(selectedToolId),
-		transform: magnification > 1 ? `scale(${magnification})` : undefined,
-	};
 
 	/**
 	 * Selection resize handler.
@@ -200,6 +196,9 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		},
 		[canvasRef, canvasWidth, canvasHeight, setCanvasSize, saveHistoryState],
 	);
+
+	// Compute canvas style (cursor and magnification transform)
+	const canvasStyle = getCanvasStyle(selectedToolId, magnification);
 
 	return (
 		<>

@@ -86,16 +86,15 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	const { fillStyle, lineWidth, setFillStyle, setLineWidth } = useShapeSettings();
 
 	// Use stores directly to avoid helper hook issues
-	const { textBox, setTextBox, clearTextBox } = useToolStore(
+	const { textBox, setTextBox, clearTextBox } = useToolStore(useShallow(
 		(state) => ({
 			textBox: state.textBox,
 			setTextBox: state.setTextBox,
 			clearTextBox: state.clearTextBox,
-		}),
-		useShallow,
-	);
+		})
+	));
 
-	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } = useSettingsStore(
+	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } = useSettingsStore(useShallow(
 		(state) => ({
 			fontFamily: state.fontFamily,
 			fontSize: state.fontSize,
@@ -105,18 +104,16 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 			setFontFamily: state.setFontFamily,
 			setFontSize: state.setFontSize,
 			setFontStyle: state.setFontStyle,
-		}),
-		useShallow,
-	);
+		})
+	));
 
 	// Get drawOpaque and toggleDrawOpaque from settingsStore directly
-	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(
+	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(useShallow(
 		(state) => ({
 			drawOpaque: state.drawOpaque,
 			toggleDrawOpaque: state.toggleDrawOpaque,
-		}),
-		useShallow,
-	);
+		})
+	));
 
 	// Determine which options to show based on tool
 	// Shape tools show fill style only (matches original $ChooseShapeStyle)
