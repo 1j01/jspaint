@@ -1,18 +1,20 @@
 # Migration Roadmap
 
-## Current State (Updated December 2024)
+## Current State (Updated December 30, 2024)
 
-The project has successfully completed Phase 1 (Vite adoption) and is **significantly advanced** in Phase 2 (React migration):
+The project has successfully completed Phase 1 (Vite adoption) and is **nearly complete** with Phase 2 (React migration):
 
 - **Build System**: Vite is fully configured with multi-page app support
 - **Legacy App**: Moved to `/old/` subdirectory, fully functional
-- **React Preview**: Available at `/new/` with **nearly complete feature parity**
+- **React Preview**: Available at `/new/` with **feature parity to legacy app**
 - **Entry Points**: `index.html` (selector), `old/index.html` (legacy), `new/index.html` (React)
 - **State Management**: Migrated to Zustand with IndexedDB persistence
 - **All 16 Tools**: Fully implemented with all drawing operations
 - **Full Menu System**: All 6 menus (File, Edit, View, Image, Colors, Help) working
 - **Dialogs**: All major dialogs implemented (About, Attributes, FlipRotate, StretchSkew, CustomZoom, LoadFromUrl, SaveAs, EditColors, ManageStorage, ImgurUpload, History, HistoryTree)
 - **Help System**: Complete help viewer with table of contents and navigation
+- **i18n Support**: Internationalization with i18next, 26+ languages supported
+- **Recent Refactoring**: Canvas component cleaned up from ~760 lines to ~250 lines through hook extraction
 
 ## Architecture Overview
 
@@ -25,11 +27,12 @@ The project has successfully completed Phase 1 (Vite adoption) and is **signific
 
 ### React Architecture (`/new/`)
 - `src/new/main.jsx` - React entry point
-- `src/new/App.tsx` - Main app component with Zustand state management
+- `src/new/App.tsx` - Main app component with Zustand state management (~1000+ lines)
 - `src/react/components/` - UI components (Frame, ToolBox, ColorBox, Canvas, etc.)
 - `src/react/context/state/` - Zustand stores with IndexedDB persistence
-- `src/react/hooks/` - Custom hooks for canvas operations
-- `src/react/utils/` - Pure utility functions for drawing and image manipulation
+- `src/react/hooks/` - Custom hooks for canvas operations (drawing, selection, shapes, lifecycle, events)
+- `src/react/utils/` - Pure utility functions (drawing algorithms, image transforms, canvas helpers)
+- `src/react/i18n/` - Internationalization with i18next (26+ languages)
 - Reuses legacy CSS from `styles/` with React-specific overrides in `styles/react-preview.css`
 
 ## Phase 1 – Vite Adoption ✅ COMPLETE
@@ -79,8 +82,10 @@ The project has successfully completed Phase 1 (Vite adoption) and is **signific
   - `uiStore` - View state (toolbar visibility, grid, thumbnail) with persistence
   - `toolStore` - Active tool, selection, text box state (session-only)
   - `canvasStore` - Canvas dimensions, undo/redo history with IndexedDB
+  - `historyStore` - Tree-based history with non-linear undo/redo
 - Established TypeScript (.tsx files)
 - Created migration spreadsheet mapping globals to React state
+- **Optimized state hooks with useShallow** for better performance and preventing unnecessary re-renders
 
 ### 2. Incremental componentization
 
@@ -110,6 +115,9 @@ The project has successfully completed Phase 1 (Vite adoption) and is **signific
 - [x] Port OnCanvasTextBox.js - **Integrated in `useCanvasTextBox.ts`**
 - [x] Port OnCanvasHelperLayer.js - **`HelperLayer.tsx`**
 - [x] Fix layout positioning - **Canvas and overlays properly aligned with .canvas-area padding**
+- [x] Extract canvas hooks - **`useCanvasLifecycle.ts`, `useAirbrushEffect.ts`, `useCanvasEventHandlers.ts`**
+- [x] Create canvas helpers - **`canvasHelpers.ts` for cursor, resize, selection operations**
+- [x] Refactor Canvas.tsx - **Reduced from ~760 lines to ~250 lines through better separation of concerns**
 
 ### 3. State migration ✅ COMPLETE
 
@@ -254,10 +262,12 @@ All major dialogs are implemented in React:
 - [x] **Phase 6**: File operations and dialogs - ALL DONE
 - [x] **Phase 7**: Zustand state migration - DONE
 - [x] **Phase 8**: Help system implementation - DONE
-- [ ] **Phase 9**: Testing and stabilization - IN PROGRESS
-- [ ] **Phase 10**: Performance optimization
-- [ ] **Phase 11**: jQuery removal (when React app is production-ready)
-- [ ] **Phase 12**: Advanced features (multi-user, speech, localization)
+- [x] **Phase 9**: i18n internationalization support - DONE
+- [x] **Phase 10**: Canvas refactoring and hook extraction - DONE
+- [ ] **Phase 11**: Testing and stabilization - IN PROGRESS
+- [ ] **Phase 12**: Performance optimization
+- [ ] **Phase 13**: jQuery removal (when React app is production-ready)
+- [ ] **Phase 14**: Advanced features (multi-user, speech, localization enhancements)
 
 ## Technical Decisions
 
@@ -331,7 +341,7 @@ All major dialogs are implemented in React:
 | `src/react/components/ColorBox.tsx` | ~200 | Color palette selector |
 | `src/react/components/FontBox.tsx` | ~100 | Font selector (inline) |
 | `src/react/components/FontBoxWindow.tsx` | ~200 | Floating font window |
-| `src/react/components/Canvas.tsx` | ~250 | Main drawing canvas orchestrator (refactored) |
+| `src/react/components/Canvas.tsx` | ~250 | Main drawing canvas orchestrator (refactored from ~760 lines) |
 | `src/react/components/CanvasOverlay.tsx` | ~40 | Selection marching ants overlay |
 | `src/react/components/CanvasTextBox.tsx` | ~60 | Text input overlay |
 | `src/react/components/ToolOptions.tsx` | ~300 | Tool-specific settings panel |
@@ -375,14 +385,16 @@ All major dialogs are implemented in React:
 #### Custom Hooks
 | File | Lines | Purpose |
 |------|-------|---------|
-| `src/react/hooks/useCanvasDrawing.ts` | ~400 | Core drawing (point, line, fill, erase, airbrush) |
-| `src/react/hooks/useCanvasSelection.ts` | ~440 | Rectangular/free-form selection |
-| `src/react/hooks/useCanvasTextBox.ts` | ~150 | Text box creation and commit |
-| `src/react/hooks/useCanvasShapes.ts` | ~300 | Shape tools (line, rect, ellipse, rounded rect) |
+| `src/react/hooks/useCanvasDrawing.ts` | ~400 | Core drawing (point, line, fill, erase, airbrush, pickColor) |
+| `src/react/hooks/useCanvasSelection.ts` | ~440 | Rectangular/free-form selection with marching ants |
+| `src/react/hooks/useCanvasTextBox.ts` | ~150 | Text box creation and commit to canvas |
+| `src/react/hooks/useCanvasShapes.ts` | ~300 | Shape tools (line, rect, ellipse, rounded rect) with fill styles |
 | `src/react/hooks/useCanvasCurvePolygon.ts` | ~250 | Curve and polygon multi-click tools |
-| `src/react/hooks/useCanvasEventHandlers.ts` | ~445 | All canvas event handlers (pointer, text, context menu) |
-| `src/react/hooks/useCanvasLifecycle.ts` | ~100 | Canvas initialization and persistence |
-| `src/react/hooks/useAirbrushEffect.ts` | ~80 | Airbrush continuous spray effect |
+| `src/react/hooks/useCanvasEventHandlers.ts` | ~445 | All canvas event handlers (pointer, text, context menu, keyboard) |
+| `src/react/hooks/useCanvasLifecycle.ts` | ~115 | Canvas initialization, persistence across remounts, cleanup |
+| `src/react/hooks/useAirbrushEffect.ts` | ~70 | Airbrush continuous spray effect with setInterval |
+| `src/react/hooks/useMenuActions.ts` | ~200 | Menu action handlers for Edit, View, Image menus |
+| `src/react/hooks/useSelectionOperations.ts` | ~200 | Selection manipulation (cut, copy, paste, drag, resize) |
 
 #### Utilities
 | File | Lines | Purpose |
@@ -393,9 +405,16 @@ All major dialogs are implemented in React:
 | `src/react/utils/paletteFormats.ts` | ~300 | Palette I/O (GPL, JASC, RIFF PAL, hex) |
 | `src/react/utils/colorUtils.ts` | ~150 | Color manipulation (RGB↔HSL) |
 | `src/react/utils/historyTree.ts` | ~337 | Tree-based undo/redo with smart branching |
+| `src/react/utils/canvasHelpers.ts` | ~155 | Canvas utility functions (cursor styles, resize, selection bounds) |
 | `src/react/utils/viewBitmap.ts` | ~100 | Bitmap viewing utilities |
 | `src/react/data/palette.ts` | ~50 | Default color palette |
 | `src/react/data/basicColors.ts` | ~30 | Basic color constants |
+
+#### i18n
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/react/i18n/i18n.ts` | ~93 | i18next configuration with language detection |
+| `src/react/i18n/languages.ts` | ~56 | Language metadata for 26+ supported languages |
 
 ### Key State Interfaces (Zustand Stores)
 
@@ -488,35 +507,33 @@ npm run lint          # ESLint + TypeScript check
 
 ## Migration Progress Summary
 
-### ✅ Complete (95%+)
-- **All 16 drawing tools** fully functional
-- **State management** migrated to Zustand with IndexedDB persistence
+### ✅ Complete (98%+)
+- **All 16 drawing tools** fully functional with all features
+- **State management** migrated to Zustand with IndexedDB persistence and optimized with useShallow
 - **All menus and dialogs** implemented in React
 - **File operations** (open, save, save as, load from URL)
 - **Clipboard operations** (copy, cut, paste, copy to, paste from)
 - **Image transformations** (flip, rotate, stretch, skew, invert)
-- **Help system** with full navigation
+- **Help system** with full navigation and table of contents
 - **View toggles** (toolbox, colorbox, status bar, grid, thumbnail)
 - **Canvas positioning** fixed (overlays aligned with .canvas-area padding)
 - **Keyboard shortcuts** (tools, undo/redo, clipboard, fullscreen)
-- **Tree-based history** ✅ COMPLETE - Non-linear undo/redo with smart branching that matches jQuery implementation:
-  - Operation names: Each state labeled (Pencil, Brush, Fill, etc.)
-  - Smart redo: Prefers branches you came from (not just most recent)
-  - Tree navigation: Jump to any state via history dialog
-  - Soft states: Skippable intermediate states
-  - Old path tracking: Maintains navigation history for intelligent branch selection
+- **Tree-based history** - Non-linear undo/redo with smart branching
+- **i18n Support** - Internationalization with i18next, 26+ languages, language switching via Extras menu
+- **Canvas Architecture** - Cleaned up and refactored:
+  - Extracted reusable hooks: `useCanvasLifecycle`, `useAirbrushEffect`, `useCanvasEventHandlers`
+  - Created `canvasHelpers.ts` utility module for cursor, resize, and selection operations
+  - Reduced Canvas.tsx from ~760 lines to ~250 lines
+  - Better separation of concerns between UI, lifecycle, drawing logic, and event handling
 
 ### 🚧 Remaining Work
 - **Testing and bug fixes** - Thorough testing of all features for edge cases
 - **Performance optimization** - Canvas rendering, state updates, memory management
-- **Icon support for history nodes** - Add operation-specific icons to history tree entries
-- **Advanced features** - Multi-user, speech recognition, eye gaze, localization
+- **Advanced features** - Multi-user, speech recognition, eye gaze (long-term)
 
 ### 🎯 Next Steps
 1. **Comprehensive testing** - Test all tools, dialogs, and features for edge cases
 2. **Bug fixes** - Address any issues found during testing
 3. **Performance review** - Profile and optimize critical paths
-4. **Add history icons** - Operation-specific icons for history tree entries
-5. **Port any remaining legacy features** - If found during testing
-6. **Consider jQuery removal** - Once React app is fully stable and tested
-7. **Advanced features** - Multi-user sessions, accessibility, i18n (long-term)
+4. **Consider jQuery removal** - Once React app is fully stable and tested
+5. **Advanced features** - Multi-user sessions, accessibility enhancements, extended i18n features (long-term)

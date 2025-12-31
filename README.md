@@ -298,14 +298,33 @@ Missing features:
 
 ## Recent Changes
 
-### React Migration (In Progress)
+### React Migration (In Progress - December 2024)
 
 MCPaint is undergoing a major refactoring effort to migrate from jQuery to React. This modernization effort includes:
 
 - **Phase 1-6 Complete**: Core application structure, components, and dialogs migrated to React
 - **React Components**: ToolBox, ColorBox, MenuBar, StatusBar, Canvas, and all dialogs
-- **Modern Patterns**: React hooks, TypeScript, CSS variables for theming
+- **Modern Patterns**: React hooks, TypeScript, Zustand state management
 - **Windows 98 UI**: OS-GUI library integration with authentic Windows 98 styling
+
+### Recent Refactoring (Late December 2024)
+
+- **Canvas Architecture Cleanup**:
+  - Extracted reusable hooks: `useCanvasLifecycle`, `useAirbrushEffect`
+  - Created `canvasHelpers.ts` utility module for cursor, selection, and canvas resize logic
+  - Improved Canvas.tsx readability by reducing from ~760 lines to ~250 lines
+  - Better separation of concerns between UI, lifecycle, and drawing logic
+
+- **State Management Improvements**:
+  - Refined Zustand store hooks with `useShallow` for better performance
+  - Optimized re-render behavior in ToolOptions and Canvas components
+  - Cleaner dependency arrays in useEffect hooks
+
+- **Internationalization (i18n)**:
+  - Integrated i18next for multi-language support
+  - Added language metadata for 26+ supported languages
+  - Language switching via **Extras > Language** menu
+  - Refactored state hooks to support localized UI
 
 ### New Features
 
@@ -319,6 +338,11 @@ MCPaint is undergoing a major refactoring effort to migrate from jQuery to React
   - Tree view navigation with expandable folders
   - Classic toolbar with emoji-based icons
   - Split-pane layout
+
+- **Tree-Based History**: Non-linear undo/redo system with:
+  - Git-like branching for alternate history paths
+  - Visual history tree dialog with SVG visualization
+  - Smart redo that prefers branches you came from
 
 - **GitHub Actions**:
   - Dependabot for automated dependency updates

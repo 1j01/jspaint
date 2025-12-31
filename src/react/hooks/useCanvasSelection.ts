@@ -127,7 +127,7 @@ export function useCanvasSelection({ canvasRef, overlayRef, getCanvasCoords }: U
 				cancelAnimationFrame(animationFrameId.current);
 			}
 		};
-	}, [selection, drawSelectionOverlay, overlayRef]);
+	}, [selection, drawSelectionOverlay]); // ✅ Removed overlayRef - refs are stable and shouldn't be in deps
 
 	// Start a new rectangular selection
 	const startRectangularSelection = useCallback(

@@ -15,8 +15,8 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
-import { useCursorPosition, useHistory, useUIStore, useSelection, useTool, useCanvasDimensions } from "../context/state";
-import { useTreeHistory } from "../context/state";
+import { useCursorPosition, useHistory, useSelection, useTool, useCanvasDimensions, useTreeHistory } from "../context/state/hooks";
+import { useUIStore } from "../context/state/uiStore";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
@@ -118,6 +118,9 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		// Get current canvas state
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
+		// Get current selection from store directly (avoids dependency on unstable object)
+		const currentSelection = useToolStore.getState().selection;
+
 		// Save to tree history
 		pushTreeState(imageData, operationName, {
 			selectionImageData: currentSelection?.imageData,
@@ -128,7 +131,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		});
 
 		console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
-	}, [canvasRef, pushTreeState, currentSelection]);
+	}, [canvasRef, pushTreeState]);
 
 	// Initialize all event handlers from the hook
 	const eventHandlers = useCanvasEventHandlers({
@@ -158,12 +161,14 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	 */
 	const handleSelectionResize = useCallback(
 		(newRect: { x: number; y: number; width: number; height: number }) => {
+			// Get current selection from store directly (avoids dependency on unstable object)
+			const currentSelection = useToolStore.getState().selection;
 			const resized = resizeSelection(currentSelection, newRect);
 			if (resized) {
 				setSelection(resized);
 			}
 		},
-		[currentSelection, setSelection],
+		[setSelection],
 	);
 
 	/**

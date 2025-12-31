@@ -213,7 +213,7 @@ function AppContent() {
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
 	const { canUndo, canRedo, undo, redo, saveState } = useHistory();
-	const { rootNode, currentNode, goToNode } = useTreeHistory();
+	const { getRoot, currentNode, goToNode } = useTreeHistory();
 	const { cursorPosition } = useCursorPosition();
 	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
 	const { copy, cut, paste, hasClipboard } = useClipboard();
@@ -322,11 +322,10 @@ function AppContent() {
 	);
 
 	// Show font box when text tool is selected or text box is active
-	const showFontBox = selectedToolId === TOOL_IDS.TEXT || textBox?.isActive;
-	// Debug: Log when showFontBox changes
-	React.useEffect(() => {
-		console.log("[FontBox] showFontBox:", showFontBox, "selectedToolId:", selectedToolId, "TOOL_IDS.TEXT:", TOOL_IDS.TEXT, "textBox?.isActive:", textBox?.isActive);
-	}, [showFontBox, selectedToolId, textBox?.isActive]);
+	// Use useMemo to stabilize this value - only recalculate when selectedToolId or textBox.isActive actually changes
+	const showFontBox = useMemo(() => {
+		return selectedToolId === TOOL_IDS.TEXT || textBox?.isActive;
+	}, [selectedToolId, textBox?.isActive]);
 
 	// Dialog state from uiStore
 	const dialogs = useUIStore((state) => state.dialogs);
@@ -630,7 +629,7 @@ function AppContent() {
 			setMagnification={setMagnification}
 			primaryColor={primaryColor}
 			customColors={customColors}
-			rootNode={rootNode}
+			rootNode={getRoot()}
 			currentNode={currentNode}
 			canvasRef={canvasRef}
 			showFontBox={showFontBox}

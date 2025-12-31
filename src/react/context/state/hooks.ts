@@ -1,67 +1,11 @@
 /**
- * Zustand Stores - Centralized state management with IndexedDB persistence
+ * Convenience hooks for Zustand stores
  *
- * This module provides a clean, modular state management solution using Zustand.
- * State is split into logical domains for better performance and maintainability:
- *
- * - **settingsStore**: User preferences and tool settings (persisted)
- * - **uiStore**: UI visibility and view state (persisted)
- * - **toolStore**: Active tool and drawing state (session-only)
- * - **canvasStore**: Document state and undo/redo history (IndexedDB for history)
- *
- * Usage:
- * ```tsx
- * import { useSettingsStore, useUIStore, useToolStore, useCanvasStore } from './state';
- *
- * function MyComponent() {
- *   const primaryColor = useSettingsStore(state => state.primaryColor);
- *   const setPrimaryColor = useSettingsStore(state => state.setPrimaryColor);
- *   // ...
- * }
- * ```
- *
- * To initialize persisted state on app load:
- * ```tsx
- * useEffect(() => {
- *   useSettingsStore.getState().loadPersistedSettings();
- *   useUIStore.getState().loadPersistedUIState();
- * }, []);
- * ```
+ * These hooks provide clean, composable selectors for common state combinations.
+ * They use useShallow for optimal re-render performance.
  */
 
 import { useShallow } from "zustand/shallow";
-
-export { useSettingsStore, type SettingsState } from "./settingsStore";
-export { useUIStore, type UIState, type DialogName } from "./uiStore";
-export { useToolStore, type ToolState } from "./toolStore";
-export { useCanvasStore, type CanvasState } from "./canvasStore";
-export { useHistoryStore, type HistoryState, type HistoryNode } from "./historyStore";
-export { saveSetting, loadSetting, removeSetting, clearAllData } from "./persistence";
-export { useInitializeStores } from "./useInitializeStores";
-
-// Export types from single source
-export { TOOL_IDS, type ToolId, type Selection, type TextBoxState, type BrushShape, type FillStyle } from "./types";
-
-/**
- * Initialize all persisted stores
- * Call this once on app startup
- */
-export async function initializeStores(): Promise<void> {
-	const settingsStore = await import("./settingsStore");
-	const uiStore = await import("./uiStore");
-
-	// Load settings from IndexedDB
-	await Promise.all([
-		settingsStore.useSettingsStore.getState().loadPersistedSettings(),
-		uiStore.useUIStore.getState().loadPersistedUIState(),
-	]);
-}
-
-/**
- * Selector hooks for common state combinations
- * These improve performance by selecting only needed values
- */
-
 import { useSettingsStore } from "./settingsStore";
 import { useToolStore } from "./toolStore";
 import { useUIStore } from "./uiStore";
@@ -79,7 +23,6 @@ export function useDrawingColor(button: number = 0): string {
  * Get all color-related state
  */
 export function useColors() {
-	console.warn("[HOOK] useColors called");
 	return useSettingsStore(useShallow(
 		(state) => ({
 			primaryColor: state.primaryColor,
@@ -96,7 +39,6 @@ export function useColors() {
  * Get all shape-related settings
  */
 export function useShapeSettings() {
-	console.warn("[HOOK] useShapeSettings called");
 	return useSettingsStore(useShallow(
 		(state) => ({
 		fillStyle: state.fillStyle,
@@ -111,7 +53,6 @@ export function useShapeSettings() {
  * Get all brush-related settings
  */
 export function useBrushSettings() {
-	console.warn("[HOOK] useBrushSettings called");
 	return useSettingsStore(useShallow(
 		(state) => ({
 		brushSize: state.brushSize,
@@ -151,7 +92,6 @@ export function useFontSettings() {
  * Get undo/redo state and actions
  */
 export function useHistory() {
-	console.warn("[HOOK] useHistory called");
 	return useCanvasStore(useShallow(
 		(state) => ({
 		canUndo: state.undoStack.length > 0,
@@ -169,7 +109,6 @@ export function useHistory() {
  * Use this for the advanced branching history UI
  */
 export function useTreeHistory() {
-	console.warn("[HOOK] useTreeHistory called");
 	return useHistoryStore(useShallow(
 		(state) => ({
 			historyTree: state.historyTree,
@@ -190,10 +129,8 @@ export function useTreeHistory() {
 
 /**
  * Get canvas dimensions and actions
- * Note: canvasRef should be managed locally with useRef in the component
  */
 export function useCanvasDimensions() {
-	console.warn("[HOOK] useCanvasDimensions called");
 	return useCanvasStore(useShallow(
 		(state) => ({
 			canvasWidth: state.canvasWidth,
@@ -207,7 +144,6 @@ export function useCanvasDimensions() {
  * Get tool state and actions
  */
 export function useTool() {
-	console.warn("[HOOK] useTool called");
 	return useToolStore(useShallow(
 		(state) => ({
 		selectedToolId: state.selectedToolId,
@@ -316,7 +252,6 @@ export function useViewState() {
 		})
 	));
 
-	// No need for useMemo since useShallow already handles shallow comparison
 	return { ...uiState, ...settingsState };
 }
 
@@ -346,7 +281,6 @@ export function useCursorPosition() {
 
 /**
  * Get app state (for backwards compatibility)
- * Note: canvasRef must be passed to components that need it
  */
 export function useApp() {
 	return useCanvasStore(useShallow(

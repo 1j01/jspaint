@@ -17,7 +17,7 @@ mcpaint/
 │   │   └── App.jsx
 │   ├── react/
 │   │   ├── components/       # React components
-│   │   │   ├── Canvas.tsx         # Main drawing canvas (~760 lines, fully documented)
+│   │   │   ├── Canvas.tsx         # Main drawing canvas orchestrator (~250 lines after refactoring)
 │   │   │   ├── CanvasOverlay.tsx  # Selection overlay with marching ants
 │   │   │   ├── CanvasTextBox.tsx  # Text input overlay
 │   │   │   ├── ColorBox.tsx       # Color palette
@@ -55,7 +55,12 @@ mcpaint/
 │   │   │   ├── useCanvasSelection.ts    # Selection tools
 │   │   │   ├── useCanvasTextBox.ts      # Text tool logic
 │   │   │   ├── useCanvasShapes.ts       # Shape tools (line, rect, ellipse)
-│   │   │   └── useCanvasCurvePolygon.ts # Curve and polygon tools
+│   │   │   ├── useCanvasCurvePolygon.ts # Curve and polygon tools
+│   │   │   ├── useCanvasEventHandlers.ts# Event handling logic (pointer, text, context menu)
+│   │   │   ├── useCanvasLifecycle.ts    # Canvas initialization and cleanup
+│   │   │   ├── useAirbrushEffect.ts     # Airbrush continuous spray effect
+│   │   │   ├── useMenuActions.ts        # Menu action handlers
+│   │   │   └── useSelectionOperations.ts# Selection manipulation (cut, copy, paste)
 │   │   ├── menus/            # Menu system
 │   │   │   └── menuDefinitions.ts # Full menu structure for all 6 menus
 │   │   ├── utils/            # Pure utility functions
@@ -64,7 +69,11 @@ mcpaint/
 │   │   │   ├── historyTree.ts     # Tree-based history system (~350 lines)
 │   │   │   ├── imageFormats.ts    # Image format read/write utilities
 │   │   │   ├── paletteFormats.ts  # Palette format read/write utilities
+│   │   │   ├── canvasHelpers.ts   # Canvas utility functions (cursor, resize, selection)
 │   │   │   └── viewBitmap.ts      # View bitmap in new window
+│   │   ├── i18n/             # Internationalization
+│   │   │   ├── i18n.ts            # i18next configuration
+│   │   │   └── languages.ts       # Language metadata for 26+ languages
 │   │   └── data/
 │   │       └── palette.ts         # Color palette data
 │   ├── $Component.js         # jQuery component helpers (legacy)
@@ -99,10 +108,11 @@ mcpaint/
 ## Key Technologies
 
 - **Current**: jQuery 3.4.1, vanilla JavaScript, CSS
-- **Target**: React 18, Vite 7
+- **Target**: React 18, Vite 7, Zustand (state management)
 - **Build**: Vite with multi-page app support
-- **Testing**: Cypress E2E
+- **Testing**: Cypress E2E, Playwright
 - **Linting**: ESLint 9, TypeScript (JSDoc type checking)
+- **i18n**: i18next with 26+ language support
 
 ## Commands
 
@@ -135,8 +145,9 @@ $G                             // jQuery event emitter
 
 ### React Pattern (target)
 - Component-based UI
-- State via useState/useContext (or Redux/Zustand TBD)
+- State via Zustand stores (modular state management with IndexedDB persistence)
 - Canvas accessed via refs with imperative API
+- Custom hooks for canvas operations (drawing, selection, shapes, etc.)
 - Legacy CSS reused unchanged
 
 ## Paint Features
@@ -181,7 +192,8 @@ $G                             // jQuery event emitter
 - CSS reuse in React preview
 - Multi-page Vite configuration
 - **AppContext** for state management (React Context + useReducer, fully documented)
-- **Canvas component** with drawing support (fully documented with JSDoc)
+- **Zustand state management** with IndexedDB persistence (migrated from AppContext)
+- **Canvas component** with drawing support (~250 lines after refactoring)
 - **All 16 drawing tools** working (Pencil, Brush, Eraser, Fill, Pick Color, Magnifier, Line, Curve, Rectangle, Ellipse, Rounded Rectangle, Polygon, Text, Airbrush, Rectangular Select, Free-Form Select)
 - **Basic undo/redo** (linear stack, Ctrl+Z/Ctrl+Y)
 - Color selection (primary/secondary with left/right click)
@@ -201,13 +213,18 @@ $G                             // jQuery event emitter
 - **Image format support** (PNG, BMP, GIF, JPEG read/write utilities)
 - **Palette format support** (PAL, GPL, ACT and 10+ format read/write utilities)
 - **View Bitmap** functionality (open canvas in new window)
+- **Internationalization** (i18next integration with 26+ language support)
+- **Canvas refactoring** (extracted hooks: useCanvasLifecycle, useAirbrushEffect, useCanvasEventHandlers)
+- **Canvas helpers** (canvasHelpers.ts utility module for cursor, resize, selection operations)
+- **State management optimization** (useShallow for better performance in Zustand stores)
 
 ### In Progress
-- Integration of tree-based history with AppContext (HistoryTree class created, dialog integrated)
+- Testing and stabilization
+- Performance optimization
 
 ### Not Started
-- Full tree-based undo/redo integration (replace linear stacks with HistoryTree)
-- jQuery removal
+- Advanced features (multi-user sessions, eye gaze, speech recognition)
+- jQuery removal (planned after React app is fully stable)
 
 ## Migration Strategy
 
@@ -246,7 +263,7 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 ### Components
 | File | Purpose |
 |------|---------|
-| `src/react/components/Canvas.tsx` | Main drawing canvas orchestrator (~760 lines, fully documented) |
+| `src/react/components/Canvas.tsx` | Main drawing canvas orchestrator (~250 lines after refactoring) |
 | `src/react/components/CanvasOverlay.tsx` | Selection overlay with marching ants |
 | `src/react/components/CanvasTextBox.tsx` | Text input overlay for text tool |
 | `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
@@ -293,6 +310,11 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 | `src/react/hooks/useCanvasTextBox.ts` | Text box creation and commit logic |
 | `src/react/hooks/useCanvasShapes.ts` | Shape tools (line, rectangle, ellipse, rounded rect) |
 | `src/react/hooks/useCanvasCurvePolygon.ts` | Multi-click tools (curve, polygon) |
+| `src/react/hooks/useCanvasEventHandlers.ts` | All canvas event handlers (pointer, text, context menu) |
+| `src/react/hooks/useCanvasLifecycle.ts` | Canvas initialization, persistence, cleanup |
+| `src/react/hooks/useAirbrushEffect.ts` | Airbrush continuous spray effect with interval |
+| `src/react/hooks/useMenuActions.ts` | Menu action handlers for Edit, View, Image menus |
+| `src/react/hooks/useSelectionOperations.ts` | Selection manipulation (cut, copy, paste, drag) |
 
 ### Utils
 | File | Purpose |
@@ -302,7 +324,14 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 | `src/react/utils/historyTree.ts` | Tree-based history system (~350 lines) |
 | `src/react/utils/imageFormats.ts` | Image format read/write utilities (PNG, BMP, GIF, JPEG) |
 | `src/react/utils/paletteFormats.ts` | Palette format read/write utilities (PAL, GPL, ACT, etc.) |
+| `src/react/utils/canvasHelpers.ts` | Canvas utility functions (cursor styles, resize, selection ops) |
 | `src/react/utils/viewBitmap.ts` | View bitmap in new window |
+
+### i18n
+| File | Purpose |
+|------|---------|
+| `src/react/i18n/i18n.ts` | i18next configuration with language detection |
+| `src/react/i18n/languages.ts` | Language metadata for 26+ supported languages |
 
 ## Tree-Based History System
 
