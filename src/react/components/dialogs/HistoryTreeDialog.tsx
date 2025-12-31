@@ -11,12 +11,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog } from "./Dialog";
 import type { HistoryNode } from "../../utils/historyTree";
+import { useCurrentHistoryNode } from "../../context/state/hooks";
 
 interface HistoryTreeDialogProps {
 	isOpen: boolean;
 	onClose: () => void;
 	rootNode: HistoryNode | null;
-	currentNode: HistoryNode | null;
+	currentNode: HistoryNode | null;  // Kept for backward compatibility but will use store directly
 	onNavigateToNode: (nodeId: string) => void;
 }
 
@@ -76,9 +77,12 @@ export function HistoryTreeDialog({
 	isOpen,
 	onClose,
 	rootNode,
-	currentNode,
+	currentNode: _currentNodeProp,  // Ignored - we get it from store
 	onNavigateToNode,
 }: HistoryTreeDialogProps) {
+	// Get current node directly from store to avoid prop drilling and unnecessary re-renders in parent
+	const currentNode = useCurrentHistoryNode();
+
 	const [viewMode, setViewMode] = useState<ViewMode>("tree");
 	const listRef = useRef<HTMLDivElement>(null);
 	const currentEntryRef = useRef<HTMLDivElement>(null);

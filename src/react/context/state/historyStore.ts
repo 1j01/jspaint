@@ -66,20 +66,27 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
 	},
 
 	pushState: (imageData, name, options = {}) => {
+		console.warn(`[historyStore.pushState] 🔵 CALLED with name: "${name}"`);
+		console.trace('[historyStore.pushState] Call stack:');
+
 		const { historyTree } = get();
 
 		if (!historyTree) {
+			console.warn('[historyStore.pushState] 🟡 Initializing new history tree');
 			// Initialize if not already done
 			const tree = new HistoryTree(imageData, name);
 			set({
 				historyTree: tree,
 				currentNode: tree.getCurrent(),
 			});
+			console.warn('[historyStore.pushState] ✅ History tree initialized');
 			return;
 		}
 
+		console.warn('[historyStore.pushState] 🟢 Pushing to existing tree');
 		const newNode = historyTree.push(imageData, name, options);
 		set({ currentNode: newNode });
+		console.warn(`[historyStore.pushState] ✅ Pushed node: ${newNode.id}`);
 	},
 
 	undo: () => {

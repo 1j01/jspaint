@@ -204,6 +204,8 @@ function StoreInitializer({ children }: { children: ReactNode }) {
 }
 
 function AppContent() {
+	console.warn('[AppContent] 🎨 RENDER START');
+
 	// Create canvas ref locally (was in AppProvider)
 	const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -212,9 +214,11 @@ function AppContent() {
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
 	const { canUndo, canRedo, undo, redo, saveState } = useHistory();
-	const { getRoot, currentNode, goToNode } = useTreeHistory();
+	const { getRoot, goToNode } = useTreeHistory();
 	const { cursorPosition } = useCursorPosition();
 	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
+
+	console.warn('[AppContent] 📦 All hooks called successfully');
 
 	// Clipboard actions using direct store access to avoid infinite loops
 	const clipboard = useToolStore((state) => state.clipboard);
@@ -595,6 +599,8 @@ function AppContent() {
 		? `${Math.abs(selection.width)}x${Math.abs(selection.height)}`
 		: `${state.canvasWidth}x${state.canvasHeight}`;
 
+	console.warn('[AppContent] 🎨 RENDER END - returning JSX');
+
 	return (
 		<>
 			<Frame
@@ -645,7 +651,7 @@ function AppContent() {
 			primaryColor={primaryColor}
 			customColors={customColors}
 			rootNode={getRoot()}
-			currentNode={currentNode}
+			currentNode={null}  // Dialog will get this directly from store
 			canvasRef={canvasRef}
 			showFontBox={showFontBox}
 			toggleTextToolbar={toggleTextToolbar}

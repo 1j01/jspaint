@@ -33,6 +33,7 @@ export {
 	useFontSettings,
 	useHistory,
 	useTreeHistory,
+	useCurrentHistoryNode,
 	useCanvasDimensions,
 	useTool,
 	useSelection,

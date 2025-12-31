@@ -108,24 +108,42 @@ export function useHistory() {
 /**
  * Get tree-based history state and actions
  * Use this for the advanced branching history UI
+ *
+ * NOTE: This hook does NOT return currentNode to avoid unnecessary re-renders.
+ * Use useCurrentHistoryNode() if you specifically need to track the current node.
  */
 export function useTreeHistory() {
-	return useHistoryStore(useShallow(
-		(state) => ({
-			historyTree: state.historyTree,
-			currentNode: state.currentNode,
-			// Return the functions themselves, NOT their results
-			getRoot: state.getRoot,
-			canUndo: state.canUndo,
-			canRedo: state.canRedo,
-			pushState: state.pushState,
-			undo: state.undo,
-			redo: state.redo,
-			goToNode: state.goToNode,
-			getAllNodes: state.getAllNodes,
-			pruneHistory: state.pruneHistory,
-		})
+	console.warn('[useTreeHistory] 🔄 Hook called');
+	const result = useHistoryStore(useShallow(
+		(state) => {
+			console.warn('[useTreeHistory] 📊 Selector running');
+			return {
+				// Return the functions themselves, NOT their results
+				getRoot: state.getRoot,
+				canUndo: state.canUndo,
+				canRedo: state.canRedo,
+				pushState: state.pushState,
+				undo: state.undo,
+				redo: state.redo,
+				goToNode: state.goToNode,
+				getAllNodes: state.getAllNodes,
+				pruneHistory: state.pruneHistory,
+			};
+		}
 	));
+	console.warn('[useTreeHistory] ✅ Hook returning');
+	return result;
+}
+
+/**
+ * Get only the current history node
+ * Use this sparingly as it will cause re-renders on every history change
+ */
+export function useCurrentHistoryNode() {
+	console.warn('[useCurrentHistoryNode] 🔄 Hook called');
+	const node = useHistoryStore((state) => state.currentNode);
+	console.warn(`[useCurrentHistoryNode] ✅ Returning node: ${node?.id ?? 'null'}`);
+	return node;
 }
 
 /**
