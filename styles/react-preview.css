@@ -305,16 +305,17 @@ body.dragging iframe {
 /* Canvas is positioned at padding edge (0,0) */
 canvas.main-canvas {
 	z-index: 2 !important;
-	position: absolute;
-	left: 0;
-	top: 0;
+	position: absolute !important;
+	left: 0 !important;
+	top: 0 !important;
 }
 
 /* Selection overlay positioned same as canvas at padding edge */
-/* CanvasOverlay component handles the positioning inline */
 .selection-overlay {
 	z-index: 3 !important;
-	position: absolute;
+	position: absolute !important;
+	left: 0 !important;
+	top: 0 !important;
 	pointer-events: none;
 }
 

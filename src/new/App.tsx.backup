@@ -1089,30 +1089,11 @@ function AppContent() {
 			<HistoryTreeDialog
 				isOpen={dialogs.history}
 				onClose={() => closeDialog("history")}
-				rootNode={rootNode}
-				currentNode={currentNode}
+				rootNode={null} // TODO: Connect to actual history tree
+				currentNode={null}
 				onNavigateToNode={(nodeId) => {
-					const node = goToNode(nodeId);
-					if (node && canvasRef.current) {
-						// Restore canvas from history node
-						const ctx = canvasRef.current.getContext("2d");
-						if (ctx) {
-							ctx.putImageData(node.imageData, 0, 0);
-						}
-
-						// Restore selection if present
-						if (node.selectionImageData) {
-							setSelection({
-								x: node.selectionX ?? 0,
-								y: node.selectionY ?? 0,
-								width: node.selectionWidth ?? 0,
-								height: node.selectionHeight ?? 0,
-								imageData: node.selectionImageData,
-							});
-						} else {
-							clearSelection();
-						}
-					}
+					// TODO: Navigate to specific history node
+					console.log("Navigate to node:", nodeId);
 				}}
 			/>
 

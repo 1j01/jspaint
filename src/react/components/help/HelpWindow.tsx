@@ -54,13 +54,14 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	} = useHelpNavigation({ initialUrl: DEFAULT_PAGE });
 
 	// Dragging
-	const { position, elementRef, handleProps, isDragging, center } = useDraggable({
+	const { position, elementRef, handleProps, isDragging, center, setPosition } = useDraggable({
 		enabled: true,
 	});
 
 	// Resizing
 	const {
 		size,
+		setSize,
 		resizeHandleProps,
 		isResizing,
 		positionOffset,
@@ -134,10 +135,63 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		}
 	}, [isOpen, position, center]);
 
+	// Measure sidebar width (matching jQuery's measure_sidebar_width)
+	const measureSidebarWidth = useCallback(() => {
+		if (!windowRef.current) return 0;
+		const contentsEl = windowRef.current.querySelector('.help-contents');
+		const resizerEl = windowRef.current.querySelector('.resizer');
+		if (!contentsEl || !resizerEl) return 0;
+
+		const contentsWidth = (contentsEl as HTMLElement).offsetWidth;
+		const contentsStyle = getComputedStyle(contentsEl);
+		const marginLeft = parseFloat(contentsStyle.marginLeft);
+		const marginRight = parseFloat(contentsStyle.marginRight);
+		const resizerWidth = (resizerEl as HTMLElement).offsetWidth;
+
+		return contentsWidth + marginLeft + marginRight + resizerWidth;
+	}, []);
+
 	// Handlers
 	const handleToggleSidebar = useCallback(() => {
-		setSidebarVisible((prev) => !prev);
-	}, []);
+		if (!windowRef.current || !position) return;
+
+		const togglingWidth = measureSidebarWidth();
+		const currentWindowX = (position?.x ?? 0) + positionOffset.x;
+
+		setSidebarVisible((prev) => {
+			const willBeVisible = !prev;
+
+			// Use setTimeout to ensure DOM has updated after state change
+			setTimeout(() => {
+				if (willBeVisible) {
+					// Showing sidebar: increase width, move left
+					const newWidth = size.width + togglingWidth;
+					const newLeft = currentWindowX - togglingWidth;
+
+					// Trim if going off left edge (like jQuery does)
+					if (newLeft < 0) {
+						// Window would go off screen - trim the width instead
+						const trimmedWidth = size.width + togglingWidth + newLeft;
+						setSize({ width: trimmedWidth, height: size.height });
+						setPosition({ x: 0, y: position.y });
+					} else {
+						// Normal case - just adjust position and size
+						setSize({ width: newWidth, height: size.height });
+						setPosition({ x: newLeft, y: position.y });
+					}
+				} else {
+					// Hiding sidebar: decrease width, move right
+					const newWidth = size.width - togglingWidth;
+					const newLeft = currentWindowX + togglingWidth;
+
+					setSize({ width: newWidth, height: size.height });
+					setPosition({ x: newLeft, y: position.y });
+				}
+			}, 0);
+
+			return willBeVisible;
+		});
+	}, [measureSidebarWidth, position, positionOffset, size, setSize, setPosition]);
 
 	const handleBack = useCallback(() => {
 		markInternalNavigation();

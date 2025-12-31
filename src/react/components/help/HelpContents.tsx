@@ -117,20 +117,19 @@ export function HelpContents({
 	isLoading = false,
 	error = null,
 }: HelpContentsProps) {
-	// Track which folders are expanded (can have multiple open)
-	const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+	// Track which folder is expanded (only ONE at a time, matching jQuery's $last_expanded)
+	const [expandedFolder, setExpandedFolder] = useState<string | null>(null);
 
 	const handleToggleFolder = useCallback((name: string) => {
-		setExpandedFolders((prev) => {
-			const next = new Set(prev);
-			if (next.has(name)) {
-				next.delete(name);
-			} else {
-				next.add(name);
-			}
-			return next;
+		setExpandedFolder((prev) => {
+			// If clicking the already-expanded folder, collapse it
+			// Otherwise, expand the new folder (auto-collapsing the previous one)
+			return prev === name ? null : name;
 		});
 	}, []);
+
+	// Convert single folder to Set for compatibility with HelpItemComponent
+	const expandedFolders = expandedFolder ? new Set([expandedFolder]) : new Set<string>();
 
 	const handleWelcomeClick = useCallback(() => {
 		onSelectTopic("default.html");

@@ -134,8 +134,10 @@ export function HelpContent({
 				flex: 1,
 				width: "100%",
 				height: "100%",
-				border: "3px solid magenta",
-				boxSizing: "border-box"
+				border: "",
+				margin: "1px",
+				backgroundColor: "white",
+				boxSizing: "border-box",
 			}}
 		/>
 	);

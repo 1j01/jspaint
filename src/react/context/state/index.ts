@@ -33,6 +33,7 @@ export { useSettingsStore, type SettingsState } from "./settingsStore";
 export { useUIStore, type UIState } from "./uiStore";
 export { useToolStore, type ToolState, TOOL_IDS, type ToolId, type Selection, type TextBoxState } from "./toolStore";
 export { useCanvasStore, type CanvasState } from "./canvasStore";
+export { useHistoryStore, type HistoryState } from "./historyStore";
 export { saveSetting, loadSetting, removeSetting, clearAllData } from "./persistence";
 export { useInitializeStores } from "./useInitializeStores";
 
@@ -60,6 +61,7 @@ import { useSettingsStore } from "./settingsStore";
 import { useToolStore } from "./toolStore";
 import { useUIStore } from "./uiStore";
 import { useCanvasStore } from "./canvasStore";
+import { useHistoryStore } from "./historyStore";
 
 /**
  * Get current drawing color based on mouse button
@@ -141,4 +143,24 @@ export function useHistory() {
 		redo: state.redo,
 		clearHistory: state.clearHistory,
 	}));
+}
+
+/**
+ * Get tree-based history state and actions
+ * Use this for the advanced branching history UI
+ */
+export function useTreeHistory() {
+	return {
+		historyTree: useHistoryStore((state) => state.historyTree),
+		currentNode: useHistoryStore((state) => state.currentNode),
+		rootNode: useHistoryStore((state) => state.getRoot()),
+		canUndo: useHistoryStore((state) => state.canUndo()),
+		canRedo: useHistoryStore((state) => state.canRedo()),
+		pushState: useHistoryStore((state) => state.pushState),
+		undo: useHistoryStore((state) => state.undo),
+		redo: useHistoryStore((state) => state.redo),
+		goToNode: useHistoryStore((state) => state.goToNode),
+		getAllNodes: useHistoryStore((state) => state.getAllNodes),
+		pruneHistory: useHistoryStore((state) => state.pruneHistory),
+	};
 }
