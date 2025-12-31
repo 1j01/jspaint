@@ -1,5 +1,5 @@
 import { CSSProperties, forwardRef, useImperativeHandle, useRef } from "react";
-import { useMagnification } from "../context/state";
+import { useUIStore } from "../context/state";
 
 interface HelperLayerProps {
 	x: number;
@@ -25,7 +25,7 @@ export const HelperLayer = forwardRef<HelperLayerHandle, HelperLayerProps>(funct
 	{ x, y, width, height, pixelRatio = 1 },
 	ref,
 ) {
-	const { magnification } = useMagnification();
+	const magnification = useUIStore((state) => state.magnification);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	// Expose imperative methods to parent

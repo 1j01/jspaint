@@ -159,7 +159,7 @@ export function useCanvasSelection({ canvasRef, overlayRef, getCanvasCoords }: U
 			}
 
 			// Start a new selection
-			saveState();
+			const canvas = canvasRef.current; if (canvas) { const ctx = canvas.getContext("2d"); if (ctx) saveState(ctx.getImageData(0, 0, canvas.width, canvas.height)); }
 			selectionState.current = {
 				isSelecting: true,
 				startX: x,
@@ -204,7 +204,7 @@ export function useCanvasSelection({ canvasRef, overlayRef, getCanvasCoords }: U
 			}
 
 			// Start a new free-form selection
-			saveState();
+			const canvas = canvasRef.current; if (canvas) { const ctx = canvas.getContext("2d"); if (ctx) saveState(ctx.getImageData(0, 0, canvas.width, canvas.height)); }
 			selectionState.current = {
 				isSelecting: true,
 				startX: x,

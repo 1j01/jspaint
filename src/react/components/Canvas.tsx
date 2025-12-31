@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
-import { TOOL_IDS, useApp, useCursorPosition, useHistory, useMagnification, useSelection, useTool, useCanvasDimensions } from "../context/state";
+import { TOOL_IDS, useApp, useCursorPosition, useHistory, useUIStore, useSelection, useTool, useCanvasDimensions } from "../context/state";
 import { useTreeHistory } from "../context/state";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
@@ -66,7 +66,8 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
 	const { pushState: pushTreeState, historyTree } = useTreeHistory();
-	const { magnification, setMagnification } = useMagnification();
+	const magnification = useUIStore((state) => state.magnification);
+	const setMagnification = useUIStore((state) => state.setMagnification);
 	const { setCursorPosition } = useCursorPosition();
 	const { selection: currentSelection, setSelection } = useSelection();
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
@@ -273,6 +274,17 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	 */
 	const handlePointerDown = useCallback(
 		(e: React.PointerEvent<HTMLCanvasElement>) => {
+			// Skip if clicking on handles (selection handles, canvas resize handles, etc.)
+			const target = e.target as HTMLElement;
+			if (
+				target.classList.contains('selection-handle') ||
+				target.classList.contains('canvas-resize-handle') ||
+				target.classList.contains('canvas-resize-grab-region') ||
+				target.classList.contains('resize-ghost')
+			) {
+				return;
+			}
+
 			e.preventDefault();
 			const canvas = canvasRef.current;
 			if (!canvas) return;

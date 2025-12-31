@@ -1,4 +1,4 @@
-import { TOOL_IDS, useShapeSettings, useTextBox, useTool } from "../context/state";
+import { TOOL_IDS, useBrushSettings, useShapeSettings, useTextBox, useTool, useViewState } from "../context/state";
 
 
 // Line width options (matches original)
@@ -80,10 +80,12 @@ interface ToolOptionsProps {
 }
 
 export function ToolOptions({ className = "" }: ToolOptionsProps) {
-	const { selectedToolId, brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize, textTransparent, setTextTransparent } = useTool();
+	const { selectedToolId } = useTool();
+	const { brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize } = useBrushSettings();
 	const { fillStyle, lineWidth, setFillStyle, setLineWidth } = useShapeSettings();
 	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } =
 		useTextBox();
+	const { drawOpaque, toggleDrawOpaque } = useViewState();
 
 	// Determine which options to show based on tool
 	// Shape tools show fill style only (matches original $ChooseShapeStyle)
@@ -398,14 +400,14 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 		return (
 			<div className="chooser choose-transparent-mode">
 				{[false, true].map((transparent) => {
-					const isSelected = textTransparent === transparent;
+					const isSelected = (!drawOpaque) === transparent; // drawOpaque is inverse of transparent
 					const sourceX = transparent ? 93 : 0; // Second half or first half of 186px image
 
 					return (
 						<div
 							key={transparent ? "transparent" : "opaque"}
 							className="chooser-option transparent-mode-option"
-							onClick={() => setTextTransparent(transparent)}
+							onClick={() => toggleDrawOpaque()} // Toggle the opaque mode
 							style={{
 								backgroundColor: isSelected ? "var(--Hilight, #000080)" : undefined,
 								display: "inline-block",

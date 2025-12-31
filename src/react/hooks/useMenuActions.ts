@@ -4,6 +4,7 @@
  */
 
 import { RefObject, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import type { MenuActions } from "../menus/menuDefinitions";
 import { useUIStore } from "../context/state";
 
@@ -89,6 +90,9 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 	} = params;
 
 	const openDialog = useUIStore((state) => state.openDialog);
+
+	// Get i18next for language switching
+	const { i18n } = useTranslation();
 
 	return {
 		// File menu
@@ -341,6 +345,19 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 				alert(`Failed to save palette: ${error instanceof Error ? error.message : "Unknown error"}`);
 			}
 		}, [palette]),
+
+		// Extras menu
+		extrasChangeLanguage: useCallback((languageCode: string) => {
+			i18n.changeLanguage(languageCode);
+			// Store in localStorage for persistence
+			try {
+				localStorage.setItem('mcpaint-language', languageCode);
+			} catch (error) {
+				console.warn('Failed to save language preference:', error);
+			}
+		}, [i18n]),
+
+		getCurrentLanguage: useCallback(() => i18n.language, [i18n]),
 
 		// Help menu
 		helpTopics: useCallback(() => openDialog("helpTopics"), [openDialog]),

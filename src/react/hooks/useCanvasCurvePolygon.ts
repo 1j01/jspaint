@@ -65,7 +65,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					{ x, y },
 					{ x, y },
 				]; // Start + end point
-				saveState();
+				saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
 				return true;
 			} else if (curve.points.length < 4) {
 				// Add control point
@@ -146,7 +146,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 				poly.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				poly.active = true;
 				poly.points = [{ x, y }];
-				saveState();
+				saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
 				lastClickRef.current = { x, y, time: now };
 				return true;
 			} else {

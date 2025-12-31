@@ -1,5 +1,5 @@
 import { useCallback, RefObject } from "react";
-import { TOOL_IDS, useColors, useTool } from "../context/state";
+import { TOOL_IDS, useBrushSettings, useColors, useTool } from "../context/state";
 import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill, BrushShape } from "../utils/drawingUtils";
 
 /**
@@ -7,7 +7,8 @@ import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill, BrushShape } f
  */
 export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>) {
 	const { primaryColor, secondaryColor, setPrimaryColor, setSecondaryColor } = useColors();
-	const { selectedToolId, brushSize, brushShape, pencilSize, eraserSize, airbrushSize } = useTool();
+	const { selectedToolId } = useTool();
+	const { brushSize, brushShape, pencilSize, eraserSize, airbrushSize } = useBrushSettings();
 
 	// Get the current drawing color based on mouse button
 	const getDrawColor = useCallback(

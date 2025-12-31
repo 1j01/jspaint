@@ -29,6 +29,8 @@
  * ```
  */
 
+import { useShallow } from "zustand/react/shallow";
+
 export { useSettingsStore, type SettingsState } from "./settingsStore";
 export { useUIStore, type UIState, type DialogName } from "./uiStore";
 export { useToolStore, type ToolState } from "./toolStore";
@@ -77,33 +79,40 @@ export function useDrawingColor(button: number = 0): string {
  * Get all color-related state
  */
 export function useColors() {
-	return useSettingsStore((state) => ({
-		primaryColor: state.primaryColor,
-		secondaryColor: state.secondaryColor,
-		palette: state.palette,
-		setPrimaryColor: state.setPrimaryColor,
-		setSecondaryColor: state.setSecondaryColor,
-		swapColors: state.swapColors,
-	}));
+	return useSettingsStore(
+		(state) => ({
+			primaryColor: state.primaryColor,
+			secondaryColor: state.secondaryColor,
+			palette: state.palette,
+			setPrimaryColor: state.setPrimaryColor,
+			setSecondaryColor: state.setSecondaryColor,
+			swapColors: state.swapColors,
+		}),
+		useShallow,
+	);
 }
 
 /**
  * Get all shape-related settings
  */
 export function useShapeSettings() {
-	return useSettingsStore((state) => ({
+	return useSettingsStore(
+		(state) => ({
 		fillStyle: state.fillStyle,
 		lineWidth: state.lineWidth,
 		setFillStyle: state.setFillStyle,
 		setLineWidth: state.setLineWidth,
-	}));
+		}),
+		useShallow,
+	);
 }
 
 /**
  * Get all brush-related settings
  */
 export function useBrushSettings() {
-	return useSettingsStore((state) => ({
+	return useSettingsStore(
+		(state) => ({
 		brushSize: state.brushSize,
 		brushShape: state.brushShape,
 		pencilSize: state.pencilSize,
@@ -113,14 +122,17 @@ export function useBrushSettings() {
 		setBrushShape: state.setBrushShape,
 		setEraserSize: state.setEraserSize,
 		setAirbrushSize: state.setAirbrushSize,
-	}));
+		}),
+		useShallow,
+	);
 }
 
 /**
  * Get all font-related settings
  */
 export function useFontSettings() {
-	return useSettingsStore((state) => ({
+	return useSettingsStore(
+		(state) => ({
 		fontFamily: state.fontFamily,
 		fontSize: state.fontSize,
 		fontBold: state.fontBold,
@@ -131,21 +143,26 @@ export function useFontSettings() {
 		setFontSize: state.setFontSize,
 		setFontStyle: state.setFontStyle,
 		setTextTransparent: state.setTextTransparent,
-	}));
+		}),
+		useShallow,
+	);
 }
 
 /**
  * Get undo/redo state and actions
  */
 export function useHistory() {
-	return useCanvasStore((state) => ({
+	return useCanvasStore(
+		(state) => ({
 		canUndo: state.undoStack.length > 0,
 		canRedo: state.redoStack.length > 0,
 		saveState: state.saveState,
 		undo: state.undo,
 		redo: state.redo,
 		clearHistory: state.clearHistory,
-	}));
+		}),
+		useShallow,
+	);
 }
 
 /**
@@ -153,19 +170,22 @@ export function useHistory() {
  * Use this for the advanced branching history UI
  */
 export function useTreeHistory() {
-	return {
-		historyTree: useHistoryStore((state) => state.historyTree),
-		currentNode: useHistoryStore((state) => state.currentNode),
-		rootNode: useHistoryStore((state) => state.getRoot()),
-		canUndo: useHistoryStore((state) => state.canUndo()),
-		canRedo: useHistoryStore((state) => state.canRedo()),
-		pushState: useHistoryStore((state) => state.pushState),
-		undo: useHistoryStore((state) => state.undo),
-		redo: useHistoryStore((state) => state.redo),
-		goToNode: useHistoryStore((state) => state.goToNode),
-		getAllNodes: useHistoryStore((state) => state.getAllNodes),
-		pruneHistory: useHistoryStore((state) => state.pruneHistory),
-	};
+	return useHistoryStore(
+		(state) => ({
+			historyTree: state.historyTree,
+			currentNode: state.currentNode,
+			rootNode: state.getRoot(),
+			canUndo: state.canUndo(),
+			canRedo: state.canRedo(),
+			pushState: state.pushState,
+			undo: state.undo,
+			redo: state.redo,
+			goToNode: state.goToNode,
+			getAllNodes: state.getAllNodes,
+			pruneHistory: state.pruneHistory,
+		}),
+		useShallow,
+	);
 }
 
 /**
@@ -184,113 +204,152 @@ export function useCanvasDimensions() {
  * Get tool state and actions
  */
 export function useTool() {
-	return useToolStore((state) => ({
+	return useToolStore(
+		(state) => ({
 		selectedToolId: state.selectedToolId,
 		setTool: state.setTool,
-	}));
+		}),
+		useShallow,
+	);
 }
 
 /**
  * Get selection state and actions
  */
 export function useSelection() {
-	return useToolStore((state) => ({
+	return useToolStore(
+		(state) => ({
 		selection: state.selection,
 		setSelection: state.setSelection,
 		clearSelection: state.clearSelection,
 		hasSelection: state.selection !== null,
-	}));
+		}),
+		useShallow,
+	);
 }
 
 /**
  * Get clipboard state and actions
  */
 export function useClipboard() {
-	const clipboard = useToolStore((state) => state.clipboard);
-	const setClipboard = useToolStore((state) => state.setClipboard);
-	const selection = useToolStore((state) => state.selection);
+	return useToolStore(
+		(state) => {
+			const clipboard = state.clipboard;
+			const setClipboard = state.setClipboard;
+			const selection = state.selection;
 
-	return {
-		clipboard,
-		hasClipboard: clipboard !== null,
-		copy: () => {
-			if (selection?.imageData) {
-				setClipboard(selection.imageData);
-			}
+			return {
+				clipboard,
+				hasClipboard: clipboard !== null,
+				copy: () => {
+					if (selection?.imageData) {
+						setClipboard(selection.imageData);
+					}
+				},
+				cut: () => {
+					if (selection?.imageData) {
+						setClipboard(selection.imageData);
+					}
+				},
+				paste: () => {
+					if (clipboard) {
+						// Paste logic handled by Canvas component
+						return clipboard;
+					}
+				},
+			};
 		},
-		cut: () => {
-			if (selection?.imageData) {
-				setClipboard(selection.imageData);
-			}
-		},
-		paste: () => {
-			if (clipboard) {
-				// Paste logic handled by Canvas component
-				return clipboard;
-			}
-		},
-	};
+		useShallow,
+	);
 }
 
 /**
  * Get text box state and actions
  */
 export function useTextBox() {
-	return {
-		textBox: useToolStore((state) => state.textBox),
-		setTextBox: useToolStore((state) => state.setTextBox),
-		clearTextBox: useToolStore((state) => state.clearTextBox),
-		fontFamily: useSettingsStore((state) => state.fontFamily),
-		fontSize: useSettingsStore((state) => state.fontSize),
-		fontBold: useSettingsStore((state) => state.fontBold),
-		fontItalic: useSettingsStore((state) => state.fontItalic),
-		fontUnderline: useSettingsStore((state) => state.fontUnderline),
-		setFontFamily: useSettingsStore((state) => state.setFontFamily),
-		setFontSize: useSettingsStore((state) => state.setFontSize),
-		setFontStyle: useSettingsStore((state) => state.setFontStyle),
-	};
+	const textBoxData = useToolStore(
+		(state) => ({
+			textBox: state.textBox,
+			setTextBox: state.setTextBox,
+			clearTextBox: state.clearTextBox,
+		}),
+		useShallow,
+	);
+
+	const fontData = useSettingsStore(
+		(state) => ({
+			fontFamily: state.fontFamily,
+			fontSize: state.fontSize,
+			fontBold: state.fontBold,
+			fontItalic: state.fontItalic,
+			fontUnderline: state.fontUnderline,
+			setFontFamily: state.setFontFamily,
+			setFontSize: state.setFontSize,
+			setFontStyle: state.setFontStyle,
+		}),
+		useShallow,
+	);
+
+	return { ...textBoxData, ...fontData };
 }
 
 /**
  * Get view state toggles
  */
 export function useViewState() {
-	return {
-		showToolBox: useUIStore((state) => state.showToolBox),
-		showColorBox: useUIStore((state) => state.showColorBox),
-		showStatusBar: useUIStore((state) => state.showStatusBar),
-		showTextToolbar: useUIStore((state) => state.showTextToolbar),
-		showGrid: useUIStore((state) => state.showGrid),
-		showThumbnail: useUIStore((state) => state.showThumbnail),
-		drawOpaque: useSettingsStore((state) => state.drawOpaque),
-		toggleToolBox: useUIStore((state) => state.toggleToolBox),
-		toggleColorBox: useUIStore((state) => state.toggleColorBox),
-		toggleStatusBar: useUIStore((state) => state.toggleStatusBar),
-		toggleTextToolbar: useUIStore((state) => state.toggleTextToolbar),
-		toggleGrid: useUIStore((state) => state.toggleGrid),
-		toggleThumbnail: useUIStore((state) => state.toggleThumbnail),
-		toggleDrawOpaque: useSettingsStore((state) => state.toggleDrawOpaque),
-	};
+	const uiState = useUIStore(
+		(state) => ({
+			showToolBox: state.showToolBox,
+			showColorBox: state.showColorBox,
+			showStatusBar: state.showStatusBar,
+			showTextToolbar: state.showTextToolbar,
+			showGrid: state.showGrid,
+			showThumbnail: state.showThumbnail,
+			toggleToolBox: state.toggleToolBox,
+			toggleColorBox: state.toggleColorBox,
+			toggleStatusBar: state.toggleStatusBar,
+			toggleTextToolbar: state.toggleTextToolbar,
+			toggleGrid: state.toggleGrid,
+			toggleThumbnail: state.toggleThumbnail,
+		}),
+		useShallow,
+	);
+
+	const settingsState = useSettingsStore(
+		(state) => ({
+			drawOpaque: state.drawOpaque,
+			toggleDrawOpaque: state.toggleDrawOpaque,
+		}),
+		useShallow,
+	);
+
+	return { ...uiState, ...settingsState };
 }
 
 /**
  * Get magnification state and actions
  */
 export function useMagnification() {
-	return {
-		magnification: useUIStore((state) => state.magnification),
-		setMagnification: useUIStore((state) => state.setMagnification),
-	};
+	return useUIStore(
+		(state) => ({
+			magnification: state.magnification,
+			setMagnification: state.setMagnification,
+		}),
+		useShallow,
+	);
 }
 
 /**
  * Get cursor position state
  */
 export function useCursorPosition() {
-	return {
-		cursorPosition: useUIStore((state) => state.cursorPosition),
-		setCursorPosition: useUIStore((state) => state.setCursorPosition),
-	};
+	return useUIStore(
+		(state) => ({
+			cursorPosition: state.cursorPosition,
+			setCursorPosition: state.setCursorPosition,
+		}),
+		useShallow,
+	);
 }
 
 /**
@@ -298,10 +357,13 @@ export function useCursorPosition() {
  * Note: canvasRef must be passed to components that need it
  */
 export function useApp() {
-	return {
-		state: {
-			canvasWidth: useCanvasStore((state) => state.canvasWidth),
-			canvasHeight: useCanvasStore((state) => state.canvasHeight),
-		},
-	};
+	return useCanvasStore(
+		(state) => ({
+			state: {
+				canvasWidth: state.canvasWidth,
+				canvasHeight: state.canvasHeight,
+			},
+		}),
+		useShallow,
+	);
 }

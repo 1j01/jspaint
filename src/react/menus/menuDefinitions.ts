@@ -3,6 +3,8 @@
  * Matches the structure expected by os-gui MenuBar.
  */
 
+import { LANGUAGES } from '../i18n/languages';
+
 // Get MENU_DIVIDER from global scope (loaded by os-gui)
 const MENU_DIVIDER = (globalThis as typeof globalThis & { MENU_DIVIDER: symbol }).MENU_DIVIDER;
 
@@ -18,7 +20,7 @@ export interface MenuAction {
 		check: () => boolean;
 		toggle: () => void;
 	};
-	submenu?: (MenuAction | symbol)[];
+	submenu?: (MenuAction | symbol)[] | (() => (MenuAction | symbol)[]);
 }
 
 export type MenuItem = MenuAction | symbol;
@@ -74,6 +76,10 @@ export interface MenuActions {
 	colorsEditColors: () => void;
 	colorsGetColors: () => void;
 	colorsSaveColors: () => void;
+
+	// Extras menu
+	extrasChangeLanguage: (languageCode: string) => void;
+	getCurrentLanguage: () => string;
 
 	// Help menu
 	helpTopics: () => void;
@@ -456,6 +462,23 @@ export function createMenus(actions: MenuActions): Record<string, MenuItem[]> {
 				action: actions.helpAbout,
 			},
 		],
+
+		"E&xtras": [
+			{
+				label: "🌍 &Language",
+				description: "Changes the display language.",
+				submenu: () => {
+					const currentLang = actions.getCurrentLanguage();
+
+					return LANGUAGES.map((lang) => ({
+						label: `${lang.emoji} ${lang.name}`,
+						action: () => actions.extrasChangeLanguage(lang.code),
+						enabled: currentLang !== lang.code,
+						description: `Changes the language to ${lang.englishName || lang.name}.`,
+					}));
+				},
+			},
+		],
 	};
 }
 
@@ -517,6 +540,10 @@ export function createStubActions(): MenuActions {
 		colorsEditColors: stub("Colors > Edit Colors"),
 		colorsGetColors: stub("Colors > Get Colors"),
 		colorsSaveColors: stub("Colors > Save Colors"),
+
+		// Extras menu
+		extrasChangeLanguage: (lang: string) => console.log(`[Menu Action] Extras > Change Language to ${lang}`),
+		getCurrentLanguage: () => 'en',
 
 		// Help menu
 		helpTopics: stub("Help > Help Topics"),

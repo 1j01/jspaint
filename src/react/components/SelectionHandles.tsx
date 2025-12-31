@@ -1,5 +1,5 @@
 import { CSSProperties, RefObject, useCallback, useEffect, useRef } from "react";
-import { Selection, useMagnification } from "../context/state";
+import { Selection, useUIStore } from "../context/state";
 
 // Handle positions relative to selection
 const HANDLE_START = -1;
@@ -48,7 +48,7 @@ export function SelectionHandles({
 	containerRef,
 	handleSize = 6,
 }: SelectionHandlesProps) {
-	const { magnification } = useMagnification();
+	const magnification = useUIStore((state) => state.magnification);
 
 	// Ghost element for resize preview
 	const ghostRef = useRef<HTMLDivElement>(null);
