@@ -1,5 +1,5 @@
 import { useCallback, useRef, RefObject } from "react";
-import { TOOL_IDS, useColors, useShapeSettings } from "../context/AppContext";
+import { TOOL_IDS, useColors, useShapeSettings } from "../context/state";
 import { drawRectangle, drawEllipse, drawRoundedRectangle } from "../utils/drawingUtils";
 
 export interface ShapeDrawingState {

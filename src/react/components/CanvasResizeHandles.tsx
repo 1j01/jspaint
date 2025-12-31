@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useMagnification } from "../context/state";
+import { useUIStore } from "../context/state";
 import "./CanvasResizeHandles.css";
 
 // Handle positions - matching Handles.js
@@ -59,7 +59,7 @@ export function CanvasResizeHandles({
 	onResize,
 	containerRef,
 }: CanvasResizeHandlesProps) {
-	const { magnification } = useMagnification();
+	const magnification = useUIStore((state) => state.magnification);
 	const [isDragging, setIsDragging] = useState(false);
 	const [ghostRect, setGhostRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
 	const dragStateRef = useRef<{

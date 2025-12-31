@@ -33,7 +33,7 @@ export { useSettingsStore, type SettingsState } from "./settingsStore";
 export { useUIStore, type UIState, type DialogName } from "./uiStore";
 export { useToolStore, type ToolState } from "./toolStore";
 export { useCanvasStore, type CanvasState } from "./canvasStore";
-export { useHistoryStore, type HistoryState } from "./historyStore";
+export { useHistoryStore, type HistoryState, type HistoryNode } from "./historyStore";
 export { saveSetting, loadSetting, removeSetting, clearAllData } from "./persistence";
 export { useInitializeStores } from "./useInitializeStores";
 
@@ -238,6 +238,8 @@ export function useClipboard() {
 export function useTextBox() {
 	return {
 		textBox: useToolStore((state) => state.textBox),
+		setTextBox: useToolStore((state) => state.setTextBox),
+		clearTextBox: useToolStore((state) => state.clearTextBox),
 		fontFamily: useSettingsStore((state) => state.fontFamily),
 		fontSize: useSettingsStore((state) => state.fontSize),
 		fontBold: useSettingsStore((state) => state.fontBold),
@@ -287,6 +289,7 @@ export function useMagnification() {
 export function useCursorPosition() {
 	return {
 		cursorPosition: useUIStore((state) => state.cursorPosition),
+		setCursorPosition: useUIStore((state) => state.setCursorPosition),
 	};
 }
 

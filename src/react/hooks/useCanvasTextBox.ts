@@ -1,5 +1,5 @@
 import { useCallback, useRef, RefObject } from "react";
-import { TextBoxState, useColors, useTextBox } from "../context/AppContext";
+import { TextBoxState, useColors, useTextBox } from "../context/state";
 
 export interface TextBoxCreationState {
 	isCreating: boolean;

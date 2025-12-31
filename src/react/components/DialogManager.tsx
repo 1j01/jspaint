@@ -182,7 +182,7 @@ export function DialogManager(props: DialogManagerProps) {
 			/>
 
 			{/* Thumbnail Window */}
-			<ThumbnailWindow visible={showThumbnail} onClose={toggleThumbnail} />
+			<ThumbnailWindow visible={showThumbnail} onClose={toggleThumbnail} canvasRef={canvasRef} />
 		</>
 	);
 }

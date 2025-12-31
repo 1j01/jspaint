@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
-import { TOOL_IDS, useApp, useCanvas, useCursorPosition, useHistory, useMagnification, useSelection, useTool, useCanvasDimensions } from "../context/state";
+import { TOOL_IDS, useApp, useCursorPosition, useHistory, useMagnification, useSelection, useTool, useCanvasDimensions } from "../context/state";
 import { useTreeHistory } from "../context/state";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";

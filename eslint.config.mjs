@@ -120,7 +120,7 @@ export default [
 			// "@stylistic/function-paren-newline": ["error", "multiline-arguments"], // several places with meaningful line breaks grouping arguments
 			"@stylistic/generator-star-spacing": ["error", "after"],
 			// "@stylistic/implicit-arrow-linebreak": ["error", "beside"], // could encourage parens for clarity, but ESLint won't mention that's the reason, so probably not a good idea
-                        "@stylistic/indent-binary-ops": ["error", "tab"],
+			"@stylistic/indent-binary-ops": ["error", 2],
 			// "@stylistic/jsx-child-element-spacing": "off",
 			// "@stylistic/jsx-closing-bracket-location": "off",
 			// "@stylistic/jsx-closing-tag-location": "off",

@@ -1,0 +1,106 @@
+{
+  "ar": {
+    "name": "العربية",
+    "emoji": "🇦🇪"
+  },
+  "cs": {
+    "name": "Čeština",
+    "emoji": "🇨🇿"
+  },
+  "da": {
+    "name": "Dansk",
+    "emoji": "🇩🇰"
+  },
+  "de": {
+    "name": "Deutsch",
+    "emoji": "🇩🇪"
+  },
+  "el": {
+    "name": "Ελληνικά",
+    "emoji": "🇬🇷"
+  },
+  "en": {
+    "name": "English",
+    "emoji": "🇺🇸"
+  },
+  "es": {
+    "name": "Español",
+    "emoji": "🇪🇸"
+  },
+  "fi": {
+    "name": "Suomi",
+    "emoji": "🇫🇮"
+  },
+  "fr": {
+    "name": "Français",
+    "emoji": "🇫🇷"
+  },
+  "he": {
+    "name": "עברית",
+    "emoji": "🇮🇱"
+  },
+  "hu": {
+    "name": "Magyar",
+    "emoji": "🇭🇺"
+  },
+  "it": {
+    "name": "Italiano",
+    "emoji": "🇮🇹"
+  },
+  "ja": {
+    "name": "日本語",
+    "emoji": "🇯🇵"
+  },
+  "ko": {
+    "name": "한국어",
+    "emoji": "🇰🇷"
+  },
+  "nl": {
+    "name": "Nederlands",
+    "emoji": "🇳🇱"
+  },
+  "no": {
+    "name": "Norsk",
+    "emoji": "🇳🇴"
+  },
+  "pl": {
+    "name": "Polski",
+    "emoji": "🇵🇱"
+  },
+  "pt-br": {
+    "name": "Português (Brasil)",
+    "emoji": "🇧🇷"
+  },
+  "pt": {
+    "name": "Português",
+    "emoji": "🇵🇹"
+  },
+  "ru": {
+    "name": "Русский",
+    "emoji": "🇷🇺"
+  },
+  "sk": {
+    "name": "Slovenčina",
+    "emoji": "🇸🇰"
+  },
+  "sl": {
+    "name": "Slovenščina",
+    "emoji": "🇸🇮"
+  },
+  "sv": {
+    "name": "Svenska",
+    "emoji": "🇸🇪"
+  },
+  "tr": {
+    "name": "Türkçe",
+    "emoji": "🇹🇷"
+  },
+  "uk": {
+    "name": "Українська",
+    "emoji": "🇺🇦"
+  },
+  "zh-cn": {
+    "name": "简体中文",
+    "emoji": "🇨🇳"
+  }
+}

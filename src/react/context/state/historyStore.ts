@@ -11,6 +11,9 @@
 import { create } from "zustand";
 import { HistoryTree, type HistoryNode } from "../../utils/historyTree";
 
+// Re-export HistoryNode for convenience
+export type { HistoryNode };
+
 export interface HistoryState {
 	// History tree instance
 	historyTree: HistoryTree | null;

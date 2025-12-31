@@ -1,5 +1,5 @@
 import { useCallback, useRef, useEffect, RefObject } from "react";
-import { Selection, useColors, useHistory, useSelection } from "../context/AppContext";
+import { Selection, useColors, useHistory, useSelection } from "../context/state";
 
 export interface SelectionState {
 	isSelecting: boolean;
