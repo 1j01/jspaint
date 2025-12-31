@@ -8,6 +8,9 @@ __diff_output__
 # electron forge output
 out/
 
+# vite build output
+dist/
+
 # npm
 node_modules/
 *.log
