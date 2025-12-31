@@ -12,18 +12,27 @@ interface CanvasTextBoxProps {
 
 /**
  * Text input overlay for the text tool
- * Positioned relative to canvas which is at (0,0) of .canvas-area padding edge
+ * Positioned relative to .canvas-area border box, accounting for padding
  */
 export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>(function CanvasTextBox(
 	{ textBox, magnification, primaryColor, onChange, onKeyDown, onBlur },
 	ref,
 ) {
-	// Canvas is at (0,0) relative to .canvas-area padding edge
-	// So we just scale by magnification, no padding offset needed
+	// Get .canvas-area padding to position correctly
+	// Text box is absolutely positioned relative to .canvas-area border box
+	// Canvas is at padding edge, so we add padding to align with canvas content
+	const canvasArea = document.querySelector(".canvas-area");
+	const padding = canvasArea
+		? {
+				left: parseFloat(window.getComputedStyle(canvasArea).paddingLeft) || 0,
+				top: parseFloat(window.getComputedStyle(canvasArea).paddingTop) || 0,
+			}
+		: { left: 0, top: 0 };
+
 	const containerStyle: CSSProperties = {
 		position: "absolute",
-		top: textBox.y * magnification,
-		left: textBox.x * magnification,
+		top: textBox.y * magnification + padding.top,
+		left: textBox.x * magnification + padding.left,
 		width: textBox.width * magnification,
 		minHeight: textBox.height * magnification,
 		border: "1px dashed #000",

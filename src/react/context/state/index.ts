@@ -167,3 +167,137 @@ export function useTreeHistory() {
 		pruneHistory: useHistoryStore((state) => state.pruneHistory),
 	};
 }
+
+/**
+ * Get canvas state and actions
+ * Note: canvasRef must be created and passed from the component using useRef
+ */
+export function useCanvas(canvasRef: React.RefObject<HTMLCanvasElement>) {
+	const canvasWidth = useCanvasStore((state) => state.canvasWidth);
+	const canvasHeight = useCanvasStore((state) => state.canvasHeight);
+	const setCanvasSize = useCanvasStore((state) => state.setCanvasSize);
+
+	return { canvasRef, canvasWidth, canvasHeight, setCanvasSize };
+}
+
+/**
+ * Get tool state and actions
+ */
+export function useTool() {
+	return useToolStore((state) => ({
+		selectedToolId: state.selectedToolId,
+		setTool: state.setTool,
+	}));
+}
+
+/**
+ * Get selection state and actions
+ */
+export function useSelection() {
+	return useToolStore((state) => ({
+		selection: state.selection,
+		setSelection: state.setSelection,
+		clearSelection: state.clearSelection,
+		hasSelection: state.selection !== null,
+	}));
+}
+
+/**
+ * Get clipboard state and actions
+ */
+export function useClipboard() {
+	const clipboard = useToolStore((state) => state.clipboard);
+	const setClipboard = useToolStore((state) => state.setClipboard);
+	const selection = useToolStore((state) => state.selection);
+
+	return {
+		clipboard,
+		hasClipboard: clipboard !== null,
+		copy: () => {
+			if (selection?.imageData) {
+				setClipboard(selection.imageData);
+			}
+		},
+		cut: () => {
+			if (selection?.imageData) {
+				setClipboard(selection.imageData);
+			}
+		},
+		paste: () => {
+			if (clipboard) {
+				// Paste logic handled by Canvas component
+				return clipboard;
+			}
+		},
+	};
+}
+
+/**
+ * Get text box state and actions
+ */
+export function useTextBox() {
+	return {
+		textBox: useToolStore((state) => state.textBox),
+		fontFamily: useSettingsStore((state) => state.fontFamily),
+		fontSize: useSettingsStore((state) => state.fontSize),
+		fontBold: useSettingsStore((state) => state.fontBold),
+		fontItalic: useSettingsStore((state) => state.fontItalic),
+		fontUnderline: useSettingsStore((state) => state.fontUnderline),
+		setFontFamily: useSettingsStore((state) => state.setFontFamily),
+		setFontSize: useSettingsStore((state) => state.setFontSize),
+		setFontStyle: useSettingsStore((state) => state.setFontStyle),
+	};
+}
+
+/**
+ * Get view state toggles
+ */
+export function useViewState() {
+	return {
+		showToolBox: useUIStore((state) => state.showToolBox),
+		showColorBox: useUIStore((state) => state.showColorBox),
+		showStatusBar: useUIStore((state) => state.showStatusBar),
+		showTextToolbar: useUIStore((state) => state.showTextToolbar),
+		showGrid: useUIStore((state) => state.showGrid),
+		showThumbnail: useUIStore((state) => state.showThumbnail),
+		drawOpaque: useSettingsStore((state) => state.drawOpaque),
+		toggleToolBox: useUIStore((state) => state.toggleToolBox),
+		toggleColorBox: useUIStore((state) => state.toggleColorBox),
+		toggleStatusBar: useUIStore((state) => state.toggleStatusBar),
+		toggleTextToolbar: useUIStore((state) => state.toggleTextToolbar),
+		toggleGrid: useUIStore((state) => state.toggleGrid),
+		toggleThumbnail: useUIStore((state) => state.toggleThumbnail),
+		toggleDrawOpaque: useSettingsStore((state) => state.toggleDrawOpaque),
+	};
+}
+
+/**
+ * Get magnification state and actions
+ */
+export function useMagnification() {
+	return {
+		magnification: useUIStore((state) => state.magnification),
+		setMagnification: useUIStore((state) => state.setMagnification),
+	};
+}
+
+/**
+ * Get cursor position state
+ */
+export function useCursorPosition() {
+	return {
+		cursorPosition: useUIStore((state) => state.cursorPosition),
+	};
+}
+
+/**
+ * Get app state (for backwards compatibility)
+ */
+export function useApp() {
+	return {
+		state: {
+			canvasWidth: useCanvasStore((state) => state.canvasWidth),
+			canvasHeight: useCanvasStore((state) => state.canvasHeight),
+		},
+	};
+}

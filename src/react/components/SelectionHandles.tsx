@@ -121,7 +121,7 @@ export function SelectionHandles({
 			// Capture pointer for reliable drag
 			(e.target as HTMLElement).setPointerCapture(e.pointerId);
 		},
-		[selection, magnification],
+		[selection, magnification, getContainerPadding],
 	);
 
 	// Handle pointer move during drag
@@ -178,7 +178,7 @@ export function SelectionHandles({
 				ghostRef.current.style.height = `${newHeight * magnification}px`;
 			}
 		},
-		[toCanvasCoords, magnification],
+		[toCanvasCoords, magnification, getContainerPadding],
 	);
 
 	// Handle pointer up - finalize resize

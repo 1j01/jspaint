@@ -119,12 +119,13 @@
     "build": "npm-run-all build-css build:vite",
     "build:vite": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port=4173",
-    "test:start-server": "vite --host 0.0.0.0 --port=11822",
+    "test:start-server": "vite --port=11822",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "test:update-snapshots": "playwright test --update-snapshots"
+    "test:update-snapshots": "playwright test --update-snapshots",
+    "sloc": "node scripts/calc-sloc.mjs"
   },
   "repository": {
     "type": "git",

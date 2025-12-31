@@ -181,14 +181,26 @@ export function CanvasResizeHandles({
 		};
 	}, [isDragging, handlePointerMove, handlePointerUp]);
 
+	// Get container padding - matches SelectionHandles and CanvasTextBox approach
+	const getContainerPadding = useCallback(() => {
+		const container = containerRef.current;
+		if (!container) return { left: 0, top: 0 };
+		const styles = window.getComputedStyle(container);
+		return {
+			left: parseFloat(styles.paddingLeft) || 0,
+			top: parseFloat(styles.paddingTop) || 0,
+		};
+	}, [containerRef]);
+
 	// Calculate handle and grab region positions - matching Handles.js logic
 	const getHandlePositions = (xAxis: HandleAxis, yAxis: HandleAxis) => {
 		const handleSize = 3;
 		const grabSize = 32;
 		const outset = 0;
-		// Account for canvas-area padding (3px) + 1px offset from jQuery implementation
-		const offsetLeft = 4;
-		const offsetTop = 4;
+		// Get dynamic padding from .canvas-area
+		const padding = getContainerPadding();
+		const offsetLeft = padding.left;
+		const offsetTop = padding.top;
 
 		const rect = { width: canvasWidth, height: canvasHeight };
 
@@ -218,8 +230,10 @@ export function CanvasResizeHandles({
 			// HANDLE_END
 			positions.handle.left = rect.width * magnification - handleSize / 2 + offsetLeft;
 			const startEnd = Math.min(grabSize / 2, rect.width * magnification / 3);
-			positions.grabRegion.left = rect.width * magnification - startEnd + offsetLeft;
-			positions.grabRegion.width = rect.width * magnification + grabSize / 2 - positions.grabRegion.left + offsetLeft;
+			const endStart = rect.width * magnification - startEnd;
+			const endEnd = rect.width * magnification + grabSize / 2;
+			positions.grabRegion.left = endStart + offsetLeft;
+			positions.grabRegion.width = endEnd - endStart;
 		}
 
 		// Y-axis calculations
@@ -256,8 +270,8 @@ export function CanvasResizeHandles({
 	const ghostStyle: React.CSSProperties | undefined = ghostRect
 		? {
 				position: "absolute",
-				left: `${ghostRect.x * magnification + 4}px`, // +4 for canvas-area padding + offset
-				top: `${ghostRect.y * magnification + 4}px`,
+				left: `${ghostRect.x * magnification + getContainerPadding().left}px`,
+				top: `${ghostRect.y * magnification + getContainerPadding().top}px`,
 				width: `${ghostRect.width * magnification - 2}px`,
 				height: `${ghostRect.height * magnification - 2}px`,
 				pointerEvents: "none",

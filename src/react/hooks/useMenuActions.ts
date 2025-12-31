@@ -271,7 +271,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		viewBitmap: useCallback(() => {
 			const canvas = canvasRef.current;
 			if (canvas) {
-				const { viewBitmap } = require("../react/utils/viewBitmap");
+				const { viewBitmap } = require("../utils/viewBitmap");
 				viewBitmap(canvas);
 			}
 		}, [canvasRef]),
@@ -317,7 +317,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 				if (!file) return;
 
 				try {
-					const { loadPaletteFile } = await import("../react/utils/paletteFormats");
+					const { loadPaletteFile } = await import("../utils/paletteFormats");
 					const colors = await loadPaletteFile(file);
 					if (colors.length > 0) {
 						alert(`Loaded ${colors.length} colors from palette file.\n\nFull palette replacement coming soon. For now, you can use the Edit Colors dialog to manually add these colors.`);
@@ -334,7 +334,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		}, []),
 		colorsSaveColors: useCallback(async () => {
 			try {
-				const { downloadPalette } = await import("../react/utils/paletteFormats");
+				const { downloadPalette } = await import("../utils/paletteFormats");
 				await downloadPalette(palette, "palette.gpl", "gpl");
 			} catch (error) {
 				console.error("Failed to save palette:", error);

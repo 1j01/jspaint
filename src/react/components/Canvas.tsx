@@ -126,7 +126,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 		// Save to linear history (existing system)
-		saveState();
+		// Moved to after resize completes
 
 		// Save to tree history (new system)
 		pushTreeState(imageData, operationName, {
@@ -285,16 +285,8 @@ export function Canvas({ className = "" }: { className?: string }) {
 			const color = drawing.getDrawColor(e.button);
 			const size = drawing.getToolSize();
 
-			// Save state for undo before drawing (for most tools)
-			const toolsWithOwnSaveState = [
-				TOOL_IDS.SELECT,
-				TOOL_IDS.FREE_FORM_SELECT,
-				TOOL_IDS.CURVE,
-				TOOL_IDS.POLYGON,
-			];
-			if (!toolsWithOwnSaveState.includes(selectedToolId)) {
-				saveState();
-			}
+			// History is now saved on pointer UP (after operation completes), not down
+			// This matches the jQuery version's undoable() pattern
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
@@ -356,7 +348,6 @@ case TOOL_IDS.SELECT:
 						textBoxHook.commitTextBox();
 					}
 					textBoxHook.startTextBox(x, y);
-					saveState();
 					break;
 
 				case TOOL_IDS.MAGNIFIER: {
@@ -534,12 +525,14 @@ selectionHook,
 
 			const { x, y } = drawing.getCanvasCoords(e);
 
-// Handle selection finalization
+			// Handle selection finalization
 			if (selectionHook.isActive()) {
 				if (selectedToolId === TOOL_IDS.SELECT) {
 					selectionHook.finalizeRectangularSelection(x, y, ctx);
+					saveHistoryState("Select");
 				} else if (selectedToolId === TOOL_IDS.FREE_FORM_SELECT) {
 					selectionHook.finalizeFreeFormSelection(ctx);
+					saveHistoryState("Free-Form Select");
 				}
 				return;
 			}
@@ -547,6 +540,7 @@ selectionHook,
 			// Handle text box creation
 			if (textBoxHook.isCreating()) {
 				textBoxHook.finalizeTextBox(x, y);
+				saveHistoryState("Text Box");
 				return;
 			}
 
@@ -554,16 +548,55 @@ selectionHook,
 			if (shapes.isDrawing() && shapes.isShapeTool(selectedToolId)) {
 				shapes.finalizeShape(x, y, selectedToolId, ctx);
 				canvas.releasePointerCapture(e.pointerId);
+				
+				// Save with specific tool name
+				const toolNames: Record<string, string> = {
+					[TOOL_IDS.LINE]: "Line",
+					[TOOL_IDS.CURVE]: "Curve",
+					[TOOL_IDS.RECTANGLE]: "Rectangle",
+					[TOOL_IDS.ROUNDED_RECTANGLE]: "Rounded Rectangle",
+					[TOOL_IDS.ELLIPSE]: "Ellipse",
+					[TOOL_IDS.POLYGON]: "Polygon",
+				};
+				saveHistoryState(toolNames[selectedToolId] || "Shape");
 				return;
 			}
 
-			// Release pointer capture
+			// Save history for continuous drawing tools (Pencil, Brush, Eraser, Airbrush)
 			if (shapes.getDrawingState().isDrawing) {
 				canvas.releasePointerCapture(e.pointerId);
 				shapes.drawingState.current.isDrawing = false;
+
+				// Determine tool name
+				let toolName = "Edit";
+				switch (selectedToolId) {
+					case TOOL_IDS.PENCIL:
+						toolName = "Pencil";
+						break;
+					case TOOL_IDS.BRUSH:
+						toolName = "Brush";
+						break;
+					case TOOL_IDS.ERASER:
+						toolName = "Eraser";
+						break;
+					case TOOL_IDS.AIRBRUSH:
+						toolName = "Airbrush";
+						break;
+				}
+				saveHistoryState(toolName);
+			}
+
+			// Save for instant tools (Fill, Pick Color)
+			switch (selectedToolId) {
+				case TOOL_IDS.FILL:
+					saveHistoryState("Fill");
+					break;
+				case TOOL_IDS.PICK_COLOR:
+					// Pick color doesn't modify canvas, no history needed
+					break;
 			}
 		},
-		[canvasRef, drawing, selectedToolId, selectionHook, textBoxHook, shapes],
+		[canvasRef, drawing, selectedToolId, selectionHook, textBoxHook, shapes, saveHistoryState],
 	);
 
 	/**
@@ -726,7 +759,7 @@ selectionHook,
 			const currentImageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
 			// Save to undo stack before resizing
-			saveState();
+			// Moved to after resize completes
 
 			// Resize canvas (this will clear it)
 			setCanvasSize(width, height);
@@ -744,10 +777,14 @@ selectionHook,
 				resizedCtx.fillRect(0, 0, width, height);
 
 				// Restore the previous content
+			resizedCtx.putImageData(currentImageData, 0, 0);
+
+			// Save to history AFTER resize completes
+			saveHistoryState("Resize Canvas");
 				resizedCtx.putImageData(currentImageData, 0, 0);
 			});
 		},
-		[canvasRef, canvasWidth, canvasHeight, saveState, setCanvasSize],
+		[canvasRef, canvasWidth, canvasHeight, setCanvasSize, saveHistoryState],
 	);
 
 	return (

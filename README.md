@@ -296,6 +296,75 @@ Missing features:
 - <details><summary>Directly saving to files is implemented but not enabled currently.</summary>I was concerned about data loss for two reasons: 1. the change in behavior of File > Save / Ctrl+S from effectively acting as Save As to overwriting files directly, although I made a warning dialog for this, with a don't show again option; 2. there was a bad bug with saved files ending up completely empty (zero bytes), which I don't know if was a bug in my code or in Chrome.</details>
 - <details><summary>Offline support is not implemented.</summary>I've taken a few stabs at this, and <a href="https://github.com/1j01/jspaint/pull/144">I'm not the only one</a>, but there are some huge caveats, such as the development server not being able to live-reload without disabling the service worker.</details>
 
+## Recent Changes
+
+### React Migration (In Progress)
+
+MCPaint is undergoing a major refactoring effort to migrate from jQuery to React. This modernization effort includes:
+
+- **Phase 1-6 Complete**: Core application structure, components, and dialogs migrated to React
+- **React Components**: ToolBox, ColorBox, MenuBar, StatusBar, Canvas, and all dialogs
+- **Modern Patterns**: React hooks, TypeScript, CSS variables for theming
+- **Windows 98 UI**: OS-GUI library integration with authentic Windows 98 styling
+
+### New Features
+
+- **Floating Font Dialog**: Text tool now shows a draggable font selection window with:
+  - Local Font Access API support for system fonts
+  - Bold, Italic, Underline toggle buttons
+  - Font size selector
+  - Auto-repositioning to avoid overlapping text
+
+- **Windows 98 Help UI**: Authentic Windows 98-style Help window with:
+  - Tree view navigation with expandable folders
+  - Classic toolbar with emoji-based icons
+  - Split-pane layout
+
+- **GitHub Actions**:
+  - Dependabot for automated dependency updates
+  - Automatic semantic versioning based on commit messages
+
+See [MIGRATE.md](MIGRATE.md) for detailed migration progress.
+
+---
+
+## Code Statistics
+
+Compare the legacy jQuery implementation vs the new React implementation:
+
+```bash
+npm run sloc
+```
+
+### Implementation Comparison (December 2024)
+
+| Metric        | Legacy (jQuery) | React (New) | Change |
+|---------------|-----------------|-------------|--------|
+| Files         | 42              | 69          | +27    |
+| Code Lines    | 17,531          | 11,557      | -5,974 |
+| Comment Lines | 4,100           | 1,943       | -2,157 |
+| Total Lines   | 23,363          | 15,349      | -8,014 |
+
+**📈 Migration Progress**: React implementation is **65.9%** the size of legacy code
+**✨ Result**: React code is **34.1% more concise!**
+
+### By File Type
+
+**Legacy (src/ - jQuery)**
+| Extension | Files | Code Lines |
+|-----------|-------|------------|
+| .js       | 41    | 16,987     |
+| .ts       | 1     | 544        |
+
+**React (src/react + src/new)**
+| Extension | Files | Code Lines |
+|-----------|-------|------------|
+| .tsx      | 32    | 5,938      |
+| .ts       | 34    | 5,315      |
+| .css      | 3     | 304        |
+
+---
+
 ## Development Setup
 
 [Clone the repo.](https://help.github.com/articles/cloning-a-repository/)
