@@ -169,15 +169,15 @@ export function useTreeHistory() {
 }
 
 /**
- * Get canvas state and actions
- * Note: canvasRef must be created and passed from the component using useRef
+ * Get canvas dimensions and actions
+ * Note: canvasRef should be managed locally with useRef in the component
  */
-export function useCanvas(canvasRef: React.RefObject<HTMLCanvasElement>) {
+export function useCanvasDimensions() {
 	const canvasWidth = useCanvasStore((state) => state.canvasWidth);
 	const canvasHeight = useCanvasStore((state) => state.canvasHeight);
 	const setCanvasSize = useCanvasStore((state) => state.setCanvasSize);
 
-	return { canvasRef, canvasWidth, canvasHeight, setCanvasSize };
+	return { canvasWidth, canvasHeight, setCanvasSize };
 }
 
 /**
@@ -292,6 +292,7 @@ export function useCursorPosition() {
 
 /**
  * Get app state (for backwards compatibility)
+ * Note: canvasRef must be passed to components that need it
  */
 export function useApp() {
 	return {

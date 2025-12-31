@@ -1,5 +1,5 @@
 import { CSSProperties, forwardRef, useImperativeHandle, useRef } from "react";
-import { useMagnification } from "../context/AppContext";
+import { useMagnification } from "../context/state";
 
 interface HelperLayerProps {
 	x: number;

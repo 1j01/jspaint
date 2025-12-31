@@ -68,6 +68,7 @@ export class HistoryTree {
 	private root: HistoryNode;
 	private current: HistoryNode;
 	private nextId = 0;
+	private oldHistoryPath: Set<HistoryNode> = new Set(); // Track previous path for smart redo
 
 	/**
 	 * Create a new history tree with an initial state.
@@ -224,20 +225,39 @@ export class HistoryTree {
 	}
 
 	/**
-	 * Redo to the most recent child state.
-	 * Skips soft states during normal redo.
+	 * Redo to a child state.
+	 * Uses smart branch selection - prefers nodes on the previous path (where you came from).
+	 * This matches jQuery's behavior from functions.js:2089-2103
 	 *
 	 * @returns The node we moved to, or null if can't redo
 	 */
 	redo(): HistoryNode | null {
 		if (!this.canRedo()) return null;
 
-		// Move to the most recent child (last in array)
-		let node = this.current.children[this.current.children.length - 1];
+		// Sort children to prefer nodes on the old history path
+		// This ensures redo takes you back to where you came from after jumping around
+		const sortedChildren = [...this.current.children].sort((a, b) => {
+			const aOnOldPath = this.oldHistoryPath.has(a);
+			const bOnOldPath = this.oldHistoryPath.has(b);
+
+			if (aOnOldPath && !bOnOldPath) return -1; // a comes first
+			if (!aOnOldPath && bOnOldPath) return 1;  // b comes first
+			return 0; // Keep original order
+		});
+
+		// Move to the first child (prioritized by old path)
+		let node = sortedChildren[0];
 
 		// Skip soft states during normal redo
 		while (node.soft && node.children.length > 0) {
-			node = node.children[node.children.length - 1];
+			const sortedGrandchildren = [...node.children].sort((a, b) => {
+				const aOnOldPath = this.oldHistoryPath.has(a);
+				const bOnOldPath = this.oldHistoryPath.has(b);
+				if (aOnOldPath && !bOnOldPath) return -1;
+				if (!aOnOldPath && bOnOldPath) return 1;
+				return 0;
+			});
+			node = sortedGrandchildren[0];
 		}
 
 		this.current = node;
@@ -247,6 +267,8 @@ export class HistoryTree {
 	/**
 	 * Go to a specific node in the tree.
 	 * Used by the history dialog for non-linear navigation.
+	 * Updates the old history path for smart redo behavior.
+	 * Matches jQuery's go_to_history_node logic from functions.js:2074-2109
 	 *
 	 * @param nodeId - ID of the node to go to
 	 * @returns The node we moved to, or null if not found
@@ -263,13 +285,25 @@ export class HistoryTree {
 			return null;
 		};
 
-		const node = findNode(this.root);
-		if (node) {
-			this.current = node;
-			return node;
+		const targetNode = findNode(this.root);
+		if (!targetNode) return null;
+
+		// Save the old history path before jumping
+		// This allows redo to intelligently choose branches
+		const oldPath: HistoryNode[] = [];
+		let node: HistoryNode | null = this.current;
+		while (node) {
+			oldPath.push(node);
+			node = node.parent;
 		}
 
-		return null;
+		// Update old history path set
+		this.oldHistoryPath = new Set(oldPath);
+
+		// Move to the target node
+		this.current = targetNode;
+
+		return targetNode;
 	}
 
 	/**

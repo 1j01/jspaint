@@ -1,5 +1,5 @@
 import { CSSProperties, RefObject, useCallback, useEffect, useRef } from "react";
-import { Selection, useMagnification } from "../context/AppContext";
+import { Selection, useMagnification } from "../context/state";
 
 // Handle positions relative to selection
 const HANDLE_START = -1;

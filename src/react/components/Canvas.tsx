@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
-import { TOOL_IDS, useApp, useCanvas, useCursorPosition, useHistory, useMagnification, useSelection, useTool } from "../context/AppContext";
+import { TOOL_IDS, useApp, useCanvas, useCursorPosition, useHistory, useMagnification, useSelection, useTool, useCanvasDimensions } from "../context/state";
 import { useTreeHistory } from "../context/state";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
@@ -60,17 +60,16 @@ const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
  * @param {string} [props.className=""] - Additional CSS class names
  * @returns {JSX.Element} Canvas element with overlays and handles
  */
-export function Canvas({ className = "" }: { className?: string }) {
+export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObject<HTMLCanvasElement>; className?: string }) {
 	console.warn("[Canvas] Component rendering");
 
-	const { canvasRef } = useApp();
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
 	const { pushState: pushTreeState, historyTree } = useTreeHistory();
 	const { magnification, setMagnification } = useMagnification();
 	const { setCursorPosition } = useCursorPosition();
 	const { selection: currentSelection, setSelection } = useSelection();
-	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvas();
+	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
 
 	// Overlay canvas ref for selection marching ants
 	const overlayRef = useRef<HTMLCanvasElement>(null);

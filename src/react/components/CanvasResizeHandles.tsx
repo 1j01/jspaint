@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useMagnification } from "../context/AppContext";
+import { useMagnification } from "../context/state";
 import "./CanvasResizeHandles.css";
 
 // Handle positions - matching Handles.js
@@ -207,60 +207,66 @@ export function CanvasResizeHandles({
 		// Calculate positions for each axis
 		const positions = { handle: { left: 0, top: 0 }, grabRegion: { left: 0, top: 0, width: 0, height: 0 } };
 
-		// X-axis calculations
+		// X-axis calculations - calculate middleStart first as it's needed for start_end
+		let middleStartX = Math.max(
+			rect.width * magnification / 2 - grabSize / 2,
+			Math.min(grabSize / 2, rect.width * magnification / 3)
+		);
+		let middleEndX = rect.width * magnification - middleStartX;
+		if (middleEndX - middleStartX < magnification) {
+			middleStartX = 0;
+			middleEndX = magnification;
+		}
+
+		const startStartX = -grabSize / 2;
+		const startEndX = Math.min(grabSize / 2, middleStartX);
+
 		if (xAxis === HANDLE_START) {
 			positions.handle.left = -outset + offsetLeft;
-			positions.grabRegion.left = -grabSize / 2 + offsetLeft;
-			positions.grabRegion.width = Math.min(grabSize / 2, rect.width * magnification / 3);
+			positions.grabRegion.left = startStartX + offsetLeft;
+			positions.grabRegion.width = startEndX - startStartX;
 		} else if (xAxis === HANDLE_MIDDLE) {
-			const middleStart = Math.max(
-				rect.width * magnification / 2 - grabSize / 2,
-				Math.min(grabSize / 2, rect.width * magnification / 3)
-			);
-			let middleEnd = rect.width * magnification - middleStart;
-			if (middleEnd - middleStart < magnification) {
-				positions.grabRegion.left = 0 + offsetLeft;
-				positions.grabRegion.width = magnification;
-			} else {
-				positions.grabRegion.left = middleStart + offsetLeft;
-				positions.grabRegion.width = middleEnd - middleStart;
-			}
 			positions.handle.left = (rect.width * magnification - handleSize) / 2 + offsetLeft;
+			positions.grabRegion.left = middleStartX + offsetLeft;
+			positions.grabRegion.width = middleEndX - middleStartX;
 		} else {
 			// HANDLE_END
 			positions.handle.left = rect.width * magnification - handleSize / 2 + offsetLeft;
-			const startEnd = Math.min(grabSize / 2, rect.width * magnification / 3);
-			const endStart = rect.width * magnification - startEnd;
-			const endEnd = rect.width * magnification + grabSize / 2;
-			positions.grabRegion.left = endStart + offsetLeft;
-			positions.grabRegion.width = endEnd - endStart;
+			const endStartX = rect.width * magnification - startEndX;
+			const endEndX = rect.width * magnification - startStartX;
+			positions.grabRegion.left = endStartX + offsetLeft;
+			positions.grabRegion.width = endEndX - endStartX;
 		}
 
-		// Y-axis calculations
+		// Y-axis calculations - calculate middleStart first as it's needed for start_end
+		let middleStartY = Math.max(
+			rect.height * magnification / 2 - grabSize / 2,
+			Math.min(grabSize / 2, rect.height * magnification / 3)
+		);
+		let middleEndY = rect.height * magnification - middleStartY;
+		if (middleEndY - middleStartY < magnification) {
+			middleStartY = 0;
+			middleEndY = magnification;
+		}
+
+		const startStartY = -grabSize / 2;
+		const startEndY = Math.min(grabSize / 2, middleStartY);
+
 		if (yAxis === HANDLE_START) {
 			positions.handle.top = -outset + offsetTop;
-			positions.grabRegion.top = -grabSize / 2 + offsetTop;
-			positions.grabRegion.height = Math.min(grabSize / 2, rect.height * magnification / 3);
+			positions.grabRegion.top = startStartY + offsetTop;
+			positions.grabRegion.height = startEndY - startStartY;
 		} else if (yAxis === HANDLE_MIDDLE) {
-			const middleStart = Math.max(
-				rect.height * magnification / 2 - grabSize / 2,
-				Math.min(grabSize / 2, rect.height * magnification / 3)
-			);
-			let middleEnd = rect.height * magnification - middleStart;
-			if (middleEnd - middleStart < magnification) {
-				positions.grabRegion.top = 0 + offsetTop;
-				positions.grabRegion.height = magnification;
-			} else {
-				positions.grabRegion.top = middleStart + offsetTop;
-				positions.grabRegion.height = middleEnd - middleStart;
-			}
 			positions.handle.top = (rect.height * magnification - handleSize) / 2 + offsetTop;
+			positions.grabRegion.top = middleStartY + offsetTop;
+			positions.grabRegion.height = middleEndY - middleStartY;
 		} else {
 			// HANDLE_END
 			positions.handle.top = rect.height * magnification - handleSize / 2 + offsetTop;
-			const startEnd = Math.min(grabSize / 2, rect.height * magnification / 3);
-			positions.grabRegion.top = rect.height * magnification - startEnd + offsetTop;
-			positions.grabRegion.height = rect.height * magnification + grabSize / 2 - positions.grabRegion.top + offsetTop;
+			const endStartY = rect.height * magnification - startEndY;
+			const endEndY = rect.height * magnification - startStartY;
+			positions.grabRegion.top = endStartY + offsetTop;
+			positions.grabRegion.height = endEndY - endStartY;
 		}
 
 		return positions;

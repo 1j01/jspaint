@@ -11,7 +11,7 @@ The project has successfully completed Phase 1 (Vite adoption) and is **signific
 - **State Management**: Migrated to Zustand with IndexedDB persistence
 - **All 16 Tools**: Fully implemented with all drawing operations
 - **Full Menu System**: All 6 menus (File, Edit, View, Image, Colors, Help) working
-- **Dialogs**: All major dialogs implemented (About, Attributes, FlipRotate, StretchSkew, CustomZoom, LoadFromUrl, SaveAs, EditColors, ManageStorage, ImgurUpload, History)
+- **Dialogs**: All major dialogs implemented (About, Attributes, FlipRotate, StretchSkew, CustomZoom, LoadFromUrl, SaveAs, EditColors, ManageStorage, ImgurUpload, History, HistoryTree)
 - **Help System**: Complete help viewer with table of contents and navigation
 
 ## Architecture Overview
@@ -138,6 +138,13 @@ The application uses **Zustand** for state management with modular stores:
 - History: `undoStack`, `redoStack` (linear undo/redo with canvas snapshots)
 - Clipboard: `clipboard` (ImageData for copy/paste)
 
+**historyStore** (NEW - tree-based history):
+- History tree: Non-linear undo/redo with branching timelines
+- Smart redo: Prefers branches you came from (matches jQuery implementation)
+- Operation names: Each state labeled with tool name (Pencil, Brush, Fill, etc.)
+- Tree navigation: Jump to any state via history dialog
+- Soft states: Skippable intermediate states during undo/redo
+
 #### Tools Registry ✅
 - [x] Create tools registry/context - **In `toolStore.ts` with TOOL_IDS constant**
 - [x] Port tool implementations from `tools.js` - **All 16 tools in Canvas.tsx and hooks**
@@ -159,6 +166,7 @@ All key functions ported to `src/react/utils/drawingUtils.ts` and hooks:
 - [x] Selection tools - Rectangular and free-form with marching ants
 - [x] `select_all()`, `delete_selection()` - **In App.tsx menu actions**
 - [x] `crop_to_selection()` - **In App.tsx menu actions**
+- [x] Undo/redo with operation names - **Tree-based history with smart branch selection**
 
 #### Image Manipulation ✅ COMPLETE
 From `src/image-manipulation.js` → `src/react/utils/imageTransforms.ts`:
@@ -226,7 +234,7 @@ All major dialogs are implemented in React:
 - `ManageStorageDialog.tsx` - Storage management for saved states
 - `ImgurUploadDialog.tsx` - Upload to Imgur integration
 - `HistoryDialog.tsx` - Linear undo/redo history viewer
-- `HistoryTreeDialog.tsx` - Tree-based history visualization (future: branching undo) (~430 lines)
+- `HistoryTreeDialog.tsx` - Tree-based history with branching navigation (~284 lines, jQuery-faithful UI)
 
 #### Priority 5 - Advanced Features (NOT STARTED)
 1. Multi-user sessions (WebRTC/WebSocket)
@@ -309,6 +317,7 @@ All major dialogs are implemented in React:
 | `src/react/context/state/uiStore.ts` | View state (toolbox, statusbar visibility) |
 | `src/react/context/state/toolStore.ts` | Active tool, selection, text box state |
 | `src/react/context/state/canvasStore.ts` | Canvas size, history, clipboard |
+| `src/react/context/state/historyStore.ts` | Tree-based undo/redo with branching |
 | `src/react/context/state/persistence.ts` | IndexedDB persistence layer |
 | `src/react/context/state/initialState.ts` | Default state values |
 | `src/react/context/state/useInitializeStores.ts` | Store initialization hook |
@@ -356,7 +365,7 @@ All major dialogs are implemented in React:
 | `src/react/components/dialogs/ManageStorageDialog.tsx` | ~250 | Storage management |
 | `src/react/components/dialogs/ImgurUploadDialog.tsx` | ~200 | Imgur integration |
 | `src/react/components/dialogs/HistoryDialog.tsx` | ~150 | Linear history viewer |
-| `src/react/components/dialogs/HistoryTreeDialog.tsx` | ~430 | Tree history viz |
+| `src/react/components/dialogs/HistoryTreeDialog.tsx` | ~284 | Tree history with branching |
 
 #### Menus
 | File | Purpose |
@@ -380,7 +389,7 @@ All major dialogs are implemented in React:
 | `src/react/utils/imageFormats.ts` | ~400 | Format encoding (PNG, BMP, JPEG, WebP, GIF) |
 | `src/react/utils/paletteFormats.ts` | ~300 | Palette I/O (GPL, JASC, RIFF PAL, hex) |
 | `src/react/utils/colorUtils.ts` | ~150 | Color manipulation (RGB↔HSL) |
-| `src/react/utils/historyTree.ts` | ~320 | Tree-based undo/redo (future branching) |
+| `src/react/utils/historyTree.ts` | ~337 | Tree-based undo/redo with smart branching |
 | `src/react/utils/viewBitmap.ts` | ~100 | Bitmap viewing utilities |
 | `src/react/data/palette.ts` | ~50 | Default color palette |
 | `src/react/data/basicColors.ts` | ~30 | Basic color constants |
@@ -411,6 +420,7 @@ Zustand stores provide direct state access:
 | `useUIStore()` | Access UI state (visibility toggles) |
 | `useToolStore()` | Access active tool, selection, text box |
 | `useCanvasStore()` | Access canvas dimensions, history, clipboard |
+| `useHistoryStore()` | Access tree-based history (undo/redo/goToNode) |
 | `useColors()` | Convenience hook for color state |
 | `useShapeSettings()` | Convenience hook for fill/line settings |
 | `useBrushSettings()` | Convenience hook for brush sizes |
@@ -486,18 +496,24 @@ npm run lint          # ESLint + TypeScript check
 - **View toggles** (toolbox, colorbox, status bar, grid, thumbnail)
 - **Canvas positioning** fixed (overlays aligned with .canvas-area padding)
 - **Keyboard shortcuts** (tools, undo/redo, clipboard, fullscreen)
+- **Tree-based history** ✅ COMPLETE - Non-linear undo/redo with smart branching that matches jQuery implementation:
+  - Operation names: Each state labeled (Pencil, Brush, Fill, etc.)
+  - Smart redo: Prefers branches you came from (not just most recent)
+  - Tree navigation: Jump to any state via history dialog
+  - Soft states: Skippable intermediate states
+  - Old path tracking: Maintains navigation history for intelligent branch selection
 
 ### 🚧 Remaining Work
 - **Testing and bug fixes** - Thorough testing of all features for edge cases
 - **Performance optimization** - Canvas rendering, state updates, memory management
-- **Tree-based undo/redo** - Branching history (foundation in place via historyTree.ts)
+- **Icon support for history nodes** - Add operation-specific icons to history tree entries
 - **Advanced features** - Multi-user, speech recognition, eye gaze, localization
 
 ### 🎯 Next Steps
 1. **Comprehensive testing** - Test all tools, dialogs, and features for edge cases
 2. **Bug fixes** - Address any issues found during testing
 3. **Performance review** - Profile and optimize critical paths
-4. **Port any remaining legacy features** - If found during testing
-5. **Implement branching undo/redo** - Using historyTree utilities
+4. **Add history icons** - Operation-specific icons for history tree entries
+5. **Port any remaining legacy features** - If found during testing
 6. **Consider jQuery removal** - Once React app is fully stable and tested
 7. **Advanced features** - Multi-user sessions, accessibility, i18n (long-term)

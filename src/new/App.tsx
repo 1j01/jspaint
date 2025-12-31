@@ -12,9 +12,17 @@ import {
 	useInitializeStores,
 	useTreeHistory,
 	useUIStore,
-	useSettingsStore,
-	useToolStore,
-	useCanvasStore,
+	useColors,
+	useTool,
+	useHistory,
+	useSelection,
+	useClipboard,
+	useTextBox,
+	useViewState,
+	useMagnification,
+	useCursorPosition,
+	useApp,
+	useCanvasDimensions,
 	TOOL_IDS,
 } from "../react/context/state";
 import { defaultCustomColors } from "../react/data/basicColors";
@@ -196,6 +204,10 @@ function StoreInitializer({ children }: { children: ReactNode }) {
 }
 
 function AppContent() {
+	// Create canvas ref locally (was in AppProvider)
+	const canvasRef = React.useRef<HTMLCanvasElement>(null);
+
+	// Use Zustand hooks instead of AppContext
 	const { state } = useApp();
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
@@ -205,7 +217,7 @@ function AppContent() {
 	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
 	const { copy, cut, paste, hasClipboard } = useClipboard();
 	const { magnification, setMagnification } = useMagnification();
-	const { canvasRef, canvasWidth, canvasHeight, setCanvasSize } = useCanvas();
+	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
 	const {
 		textBox,
 		fontFamily,
@@ -558,7 +570,7 @@ function AppContent() {
 						/>
 					) : null
 				}
-				canvasContent={<Canvas key="main-canvas" />}
+				canvasContent={<Canvas canvasRef={canvasRef} key="main-canvas" />}
 				statusText={showStatusBar ? statusMessage : ""}
 				statusPosition={showStatusBar ? positionText : ""}
 				statusSize={showStatusBar ? sizeText : ""}
@@ -599,9 +611,7 @@ export function App() {
 	return (
 		<ErrorBoundary>
 			<StoreInitializer>
-				<AppProvider>
-					<AppContent />
-				</AppProvider>
+				<AppContent />
 			</StoreInitializer>
 		</ErrorBoundary>
 	);
