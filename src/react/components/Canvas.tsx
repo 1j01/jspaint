@@ -16,6 +16,7 @@
 
 import React, { useCallback, useEffect, useRef } from "react";
 import { TOOL_IDS, useApp, useCanvas, useCursorPosition, useHistory, useMagnification, useSelection, useTool } from "../context/AppContext";
+import { useTreeHistory } from "../context/state";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
@@ -65,6 +66,7 @@ export function Canvas({ className = "" }: { className?: string }) {
 	const { canvasRef } = useApp();
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
+	const { pushState: pushTreeState, historyTree } = useTreeHistory();
 	const { magnification, setMagnification } = useMagnification();
 	const { setCursorPosition } = useCursorPosition();
 	const { selection: currentSelection, setSelection } = useSelection();
@@ -110,6 +112,33 @@ export function Canvas({ className = "" }: { className?: string }) {
 		canvasRef,
 		getDrawColor: drawing.getDrawColor,
 	});
+
+
+	// Helper to save state to both linear and tree history
+	const saveHistoryState = useCallback((operationName: string = "Edit") => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return;
+
+		// Get current canvas state
+		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+		// Save to linear history (existing system)
+		saveState();
+
+		// Save to tree history (new system)
+		pushTreeState(imageData, operationName, {
+			selectionImageData: currentSelection?.imageData,
+			selectionX: currentSelection?.x,
+			selectionY: currentSelection?.y,
+			selectionWidth: currentSelection?.width,
+			selectionHeight: currentSelection?.height,
+		});
+
+		console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
+	}, [canvasRef, saveState, pushTreeState, currentSelection]);
 
 	// Initialize canvas with white background (only once ever)
 	useEffect(() => {
@@ -160,6 +189,13 @@ export function Canvas({ className = "" }: { className?: string }) {
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		canvasInitialized = true;
 		console.warn("[Canvas] Initialization complete, flag set to true");
+		// Initialize history tree with the blank canvas
+		if (!historyTree) {
+			const initialImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			pushTreeState(initialImageData, "New Document");
+			console.warn("[Canvas] 🌳 History tree initialized with blank canvas");
+		}
+
 
 		return () => {
 			// Save canvas data on unmount
@@ -603,11 +639,11 @@ selectionHook,
 	/**
 	 * Canvas inline styles.
 	 * Applies cursor and magnification transform to the canvas element.
+	 * Position and transform-origin are handled by CSS for exact alignment with overlay.
 	 */
 	const canvasStyle: React.CSSProperties = {
 		cursor: getCursorStyle(),
 		transform: magnification > 1 ? `scale(${magnification})` : undefined,
-		transformOrigin: "top left",
 	};
 
 	/**

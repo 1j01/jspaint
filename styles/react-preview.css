@@ -302,21 +302,23 @@ body.dragging iframe {
 }
 
 /* Ensure proper z-index stacking order for canvas layers */
-/* Canvas is positioned at padding edge (0,0) */
-canvas.main-canvas {
-	z-index: 2 !important;
+/* Both canvases positioned identically at padding edge (0,0) */
+canvas.main-canvas,
+.selection-overlay {
 	position: absolute !important;
 	left: 0 !important;
 	top: 0 !important;
+	/* Ensure transform-origin is the same for both when scaling */
+	transform-origin: top left !important;
 }
 
-/* Selection overlay positioned same as canvas at padding edge */
+canvas.main-canvas {
+	z-index: 2 !important;
+}
+
 .selection-overlay {
 	z-index: 3 !important;
-	position: absolute !important;
-	left: 0 !important;
-	top: 0 !important;
-	pointer-events: none;
+	pointer-events: none !important;
 }
 
 /* Prevent canvas from being affected by dragging/resizing help window */

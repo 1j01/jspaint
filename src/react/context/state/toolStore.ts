@@ -4,53 +4,10 @@
  */
 
 import { create } from "zustand";
+import { TOOL_IDS, type ToolId, type Selection, type TextBoxState } from "./types";
 
-// Tool IDs matching legacy tools.js
-export const TOOL_IDS = {
-	FREE_FORM_SELECT: "free-form-select",
-	SELECT: "select",
-	ERASER: "eraser",
-	FILL: "fill",
-	PICK_COLOR: "pick-color",
-	MAGNIFIER: "magnifier",
-	PENCIL: "pencil",
-	BRUSH: "brush",
-	AIRBRUSH: "airbrush",
-	TEXT: "text",
-	LINE: "line",
-	CURVE: "curve",
-	RECTANGLE: "rectangle",
-	POLYGON: "polygon",
-	ELLIPSE: "ellipse",
-	ROUNDED_RECTANGLE: "rounded-rectangle",
-} as const;
-
-export type ToolId = (typeof TOOL_IDS)[keyof typeof TOOL_IDS];
-
-// Selection type
-export interface Selection {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	imageData: ImageData | null;
-	path?: Array<{ x: number; y: number }>; // For free-form selection
-}
-
-// Text box state
-export interface TextBoxState {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	text: string;
-	fontFamily: string;
-	fontSize: number;
-	fontBold: boolean;
-	fontItalic: boolean;
-	fontUnderline: boolean;
-	isActive: boolean;
-}
+// Re-export for convenience
+export { TOOL_IDS, type ToolId, type Selection, type TextBoxState };
 
 export interface ToolState {
 	// Current tool

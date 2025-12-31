@@ -31,11 +31,14 @@
 
 export { useSettingsStore, type SettingsState } from "./settingsStore";
 export { useUIStore, type UIState } from "./uiStore";
-export { useToolStore, type ToolState, TOOL_IDS, type ToolId, type Selection, type TextBoxState } from "./toolStore";
+export { useToolStore, type ToolState } from "./toolStore";
 export { useCanvasStore, type CanvasState } from "./canvasStore";
 export { useHistoryStore, type HistoryState } from "./historyStore";
 export { saveSetting, loadSetting, removeSetting, clearAllData } from "./persistence";
 export { useInitializeStores } from "./useInitializeStores";
+
+// Export types from single source
+export { TOOL_IDS, type ToolId, type Selection, type TextBoxState, type BrushShape, type FillStyle } from "./types";
 
 /**
  * Initialize all persisted stores

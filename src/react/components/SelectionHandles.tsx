@@ -80,13 +80,14 @@ export function SelectionHandles({
 	const toCanvasCoords = useCallback(
 		(clientX: number, clientY: number) => {
 			const offset = getContainerOffset();
-			const padding = getContainerPadding();
+			// Canvas is at (0,0) relative to .canvas-area padding edge
+			// No need to subtract padding - just the container offset
 			return {
-				x: Math.round((clientX - offset.left - padding.left) / magnification),
-				y: Math.round((clientY - offset.top - padding.top) / magnification),
+				x: Math.round((clientX - offset.left) / magnification),
+				y: Math.round((clientY - offset.top) / magnification),
 			};
 		},
-		[getContainerOffset, getContainerPadding, magnification],
+		[getContainerOffset, magnification],
 	);
 
 	// Handle pointer down on a resize handle
@@ -108,10 +109,9 @@ export function SelectionHandles({
 
 			// Show ghost element
 			if (ghostRef.current) {
-				const padding = getContainerPadding();
 				ghostRef.current.style.display = "block";
-				ghostRef.current.style.left = `${selection.x * magnification + padding.left}px`;
-				ghostRef.current.style.top = `${selection.y * magnification + padding.top}px`;
+				ghostRef.current.style.left = `${selection.x * magnification}px`;
+				ghostRef.current.style.top = `${selection.y * magnification}px`;
 				ghostRef.current.style.width = `${selection.width * magnification}px`;
 				ghostRef.current.style.height = `${selection.height * magnification}px`;
 			}
@@ -119,7 +119,7 @@ export function SelectionHandles({
 			// Capture pointer for reliable drag
 			(e.target as HTMLElement).setPointerCapture(e.pointerId);
 		},
-		[selection, magnification, getContainerPadding],
+		[selection, magnification],
 	);
 
 	// Handle pointer move during drag
@@ -169,14 +169,13 @@ export function SelectionHandles({
 
 			// Update ghost preview
 			if (ghostRef.current) {
-				const padding = getContainerPadding();
-				ghostRef.current.style.left = `${newX * magnification + padding.left}px`;
-				ghostRef.current.style.top = `${newY * magnification + padding.top}px`;
+				ghostRef.current.style.left = `${newX * magnification}px`;
+				ghostRef.current.style.top = `${newY * magnification}px`;
 				ghostRef.current.style.width = `${newWidth * magnification}px`;
 				ghostRef.current.style.height = `${newHeight * magnification}px`;
 			}
 		},
-		[toCanvasCoords, magnification, getContainerPadding],
+		[toCanvasCoords, magnification],
 	);
 
 	// Handle pointer up - finalize resize
@@ -214,9 +213,10 @@ export function SelectionHandles({
 	if (!selection) return null;
 
 	const { x, y, width, height } = selection;
-	const padding = getContainerPadding();
-	const scaledX = x * magnification + padding.left;
-	const scaledY = y * magnification + padding.top;
+	// Canvas is positioned at (0,0) which is the padding edge of .canvas-area
+	// So we don't need to add padding - just scale by magnification
+	const scaledX = x * magnification;
+	const scaledY = y * magnification;
 	const scaledWidth = width * magnification;
 	const scaledHeight = height * magnification;
 
