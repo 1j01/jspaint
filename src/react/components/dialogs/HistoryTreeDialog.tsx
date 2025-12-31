@@ -11,7 +11,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog } from "./Dialog";
 import type { HistoryNode } from "../../utils/historyTree";
-import { useCurrentHistoryNode } from "../../context/state/hooks";
+import { useCurrentHistoryNode } from "../../context/state/useCurrentHistoryNode";
 
 interface HistoryTreeDialogProps {
 	isOpen: boolean;

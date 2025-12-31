@@ -7,7 +7,7 @@
  * Direct imports examples:
  * - import { useSettingsStore } from './context/state/settingsStore';
  * - import { TOOL_IDS } from './context/state/types';
- * - import { useColors } from './context/state/hooks';
+ * - import { useColors } from './context/state/useColors';
  */
 
 // Re-export stores
@@ -25,25 +25,23 @@ export { useInitializeStores } from "./useInitializeStores";
 export { TOOL_IDS, type ToolId, type Selection, type TextBoxState, type BrushShape, type FillStyle } from "./types";
 
 // Re-export convenience hooks
-export {
-	useDrawingColor,
-	useColors,
-	useShapeSettings,
-	useBrushSettings,
-	useFontSettings,
-	useHistory,
-	useTreeHistory,
-	useCurrentHistoryNode,
-	useCanvasDimensions,
-	useTool,
-	useSelection,
-	useClipboard,
-	useTextBox,
-	useViewState,
-	useMagnification,
-	useCursorPosition,
-	useApp,
-} from "./hooks";
+export { useDrawingColor } from "./useDrawingColor";
+export { useColors } from "./useColors";
+export { useShapeSettings } from "./useShapeSettings";
+export { useBrushSettings } from "./useBrushSettings";
+export { useFontSettings } from "./useFontSettings";
+export { useHistory } from "./useHistory";
+export { useTreeHistory } from "./useTreeHistory";
+export { useCurrentHistoryNode } from "./useCurrentHistoryNode";
+export { useCanvasDimensions } from "./useCanvasDimensions";
+export { useTool } from "./useTool";
+export { useSelection } from "./useSelection";
+export { useClipboard } from "./useClipboard";
+export { useTextBox } from "./useTextBox";
+export { useViewState } from "./useViewState";
+export { useMagnification } from "./useMagnification";
+export { useCursorPosition } from "./useCursorPosition";
+export { useApp } from "./useApp";
 
 /**
  * Initialize all persisted stores

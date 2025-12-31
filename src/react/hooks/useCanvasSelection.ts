@@ -1,5 +1,7 @@
 import { useCallback, useRef, useEffect, RefObject } from "react";
-import { useColors, useHistory, useSelection } from "../context/state/hooks";
+import { useColors } from "../context/state/useColors";
+import { useHistory } from "../context/state/useHistory";
+import { useSelection } from "../context/state/useSelection";
 import type { Selection } from "../context/state/types";
 
 export interface SelectionState {

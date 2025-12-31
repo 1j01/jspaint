@@ -182,6 +182,7 @@ export function CanvasResizeHandles({
 	}, [isDragging, handlePointerMove, handlePointerUp]);
 
 	// Get container padding - matches SelectionHandles and CanvasTextBox approach
+	// Note: This needs to be recalculated when canvas size or magnification changes
 	const getContainerPadding = useCallback(() => {
 		const container = containerRef.current;
 		if (!container) return { left: 0, top: 0 };
@@ -190,7 +191,7 @@ export function CanvasResizeHandles({
 			left: parseFloat(styles.paddingLeft) || 0,
 			top: parseFloat(styles.paddingTop) || 0,
 		};
-	}, [containerRef]);
+	}, [containerRef, canvasWidth, canvasHeight, magnification]);
 
 	// Calculate handle and grab region positions - matching Handles.js logic
 	const getHandlePositions = (xAxis: HandleAxis, yAxis: HandleAxis) => {

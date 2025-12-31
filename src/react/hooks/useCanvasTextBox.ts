@@ -1,5 +1,5 @@
 import { useCallback, useRef, RefObject } from "react";
-import { useColors } from "../context/state/hooks";
+import { useColors } from "../context/state/useColors";
 import { useToolStore } from "../context/state/toolStore";
 import { useSettingsStore } from "../context/state/settingsStore";
 import type { TextBoxState } from "../context/state/types";

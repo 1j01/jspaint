@@ -111,7 +111,7 @@ export function FontBoxWindow({
 				}
 			} catch (error) {
 				if (!cancelled) {
-					console.warn("Local Font Access API failed:", error);
+					// console.warn("Local Font Access API failed:", error);
 				}
 			}
 
@@ -127,7 +127,7 @@ export function FontBoxWindow({
 				}
 			} catch (error) {
 				if (!cancelled) {
-					console.warn("Unable to read document fonts:", error);
+					// console.warn("Unable to read document fonts:", error);
 				}
 			}
 
@@ -222,7 +222,7 @@ export function FontBoxWindow({
 		return null;
 	}
 
-	console.log("[FontBoxWindow] Rendering with isOpen:", isOpen, "position:", position);
+	// console.log("[FontBoxWindow] Rendering with isOpen:", isOpen, "position:", position);
 
 	const windowStyle: React.CSSProperties = {
 		position: "fixed",

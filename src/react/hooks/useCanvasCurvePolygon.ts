@@ -1,5 +1,7 @@
 import { useCallback, useRef, RefObject } from "react";
-import { useColors, useShapeSettings, useHistory } from "../context/state/hooks";
+import { useColors } from "../context/state/useColors";
+import { useShapeSettings } from "../context/state/useShapeSettings";
+import { useHistory } from "../context/state/useHistory";
 import { TOOL_IDS } from "../context/state/types";
 import { drawPolygon, Point } from "../utils/drawingUtils";
 

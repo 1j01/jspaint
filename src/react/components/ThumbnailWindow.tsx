@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import { useCanvasDimensions } from "../context/state/hooks";
+import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
 
 /**
  * ThumbnailWindow component props

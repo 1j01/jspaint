@@ -1,5 +1,8 @@
 import { useCallback, RefObject } from "react";
-import { useBrushSettings, useColors, useTool } from "../context/state/hooks";
+import { useBrushSettings } from "../context/state/useBrushSettings";
+import { useColors } from "../context/state/useColors";
+import { useTool } from "../context/state/useTool";
+import { useMagnification } from "../context/state/useMagnification";
 import { TOOL_IDS } from "../context/state/types";
 import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill, BrushShape } from "../utils/drawingUtils";
 
@@ -10,6 +13,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 	const { primaryColor, secondaryColor, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId } = useTool();
 	const { brushSize, brushShape, pencilSize, eraserSize, airbrushSize } = useBrushSettings();
+	const { magnification } = useMagnification();
 
 	// Get the current drawing color based on mouse button
 	const getDrawColor = useCallback(
@@ -48,21 +52,26 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 	}, [selectedToolId, brushShape]);
 
 	// Get canvas coordinates from mouse event
+	// Accounts for CSS transform scaling (magnification)
 	const getCanvasCoords = useCallback(
 		(e: { clientX: number; clientY: number }): { x: number; y: number } => {
 			const canvas = canvasRef.current;
 			if (!canvas) return { x: 0, y: 0 };
 
 			const rect = canvas.getBoundingClientRect();
-			const scaleX = canvas.width / rect.width;
-			const scaleY = canvas.height / rect.height;
+
+			// When magnification > 1, CSS transform: scale() is applied
+			// The rect dimensions are scaled by magnification, but canvas.width/height are not
+			// We need to divide by magnification to get the actual canvas coordinates
+			const scaleX = canvas.width / (rect.width / magnification);
+			const scaleY = canvas.height / (rect.height / magnification);
 
 			return {
 				x: Math.floor((e.clientX - rect.left) * scaleX),
 				y: Math.floor((e.clientY - rect.top) * scaleY),
 			};
 		},
-		[canvasRef],
+		[canvasRef, magnification],
 	);
 
 	// Draw a single point or brush stamp

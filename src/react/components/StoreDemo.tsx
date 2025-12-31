@@ -4,12 +4,10 @@
  */
 
 import React from "react";
-import {
-	useColors,
-	useBrushSettings,
-	useShapeSettings,
-	useHistory,
-} from "../context/state/hooks";
+import { useColors } from "../context/state/useColors";
+import { useBrushSettings } from "../context/state/useBrushSettings";
+import { useShapeSettings } from "../context/state/useShapeSettings";
+import { useHistory } from "../context/state/useHistory";
 import { useToolStore } from "../context/state/toolStore";
 import { useUIStore } from "../context/state/uiStore";
 import { useCanvasStore } from "../context/state/canvasStore";

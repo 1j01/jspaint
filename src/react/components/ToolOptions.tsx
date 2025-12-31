@@ -1,4 +1,6 @@
-import { useBrushSettings, useShapeSettings, useTool } from "../context/state/hooks";
+import { useBrushSettings } from "../context/state/useBrushSettings";
+import { useShapeSettings } from "../context/state/useShapeSettings";
+import { useTool } from "../context/state/useTool";
 import { useToolStore } from "../context/state/toolStore";
 import { useSettingsStore } from "../context/state/settingsStore";
 import { useUIStore } from "../context/state/uiStore";

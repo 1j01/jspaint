@@ -1,5 +1,8 @@
 import { useCallback } from "react";
-import { useHistory, useSelection, useColors, useTool } from "../context/state/hooks";
+import { useHistory } from "../context/state/useHistory";
+import { useSelection } from "../context/state/useSelection";
+import { useColors } from "../context/state/useColors";
+import { useTool } from "../context/state/useTool";
 import { useCanvasStore } from "../context/state/canvasStore";
 import { TOOL_IDS } from "../context/state/types";
 

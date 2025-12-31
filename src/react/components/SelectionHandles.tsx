@@ -75,7 +75,7 @@ export function SelectionHandles({
 			left: parseFloat(styles.paddingLeft) || 0,
 			top: parseFloat(styles.paddingTop) || 0,
 		};
-	}, [containerRef]);
+	}, [containerRef, selection, magnification]);
 
 	// Convert screen coords to canvas coords
 	const toCanvasCoords = useCallback(

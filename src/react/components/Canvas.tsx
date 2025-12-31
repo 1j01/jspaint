@@ -15,7 +15,12 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
-import { useCursorPosition, useHistory, useSelection, useTool, useCanvasDimensions, useTreeHistory } from "../context/state/hooks";
+import { useCursorPosition } from "../context/state/useCursorPosition";
+import { useHistory } from "../context/state/useHistory";
+import { useSelection } from "../context/state/useSelection";
+import { useTool } from "../context/state/useTool";
+import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
+import { useTreeHistory } from "../context/state/useTreeHistory";
 import { useUIStore } from "../context/state/uiStore";
 import { useToolStore } from "../context/state/toolStore";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
@@ -131,7 +136,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 			selectionHeight: currentSelection?.height,
 		});
 
-		console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
+		// console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
 	}, [canvasRef, pushTreeState]);
 
 	// Initialize all event handlers from the hook

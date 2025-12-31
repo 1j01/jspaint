@@ -94,7 +94,7 @@ export function FontBox({
 					}
 				} catch (error) {
 					if (!cancelled) {
-						console.warn("Failed to enumerate local fonts", error);
+						// console.warn("Failed to enumerate local fonts", error);
 						setFontError("Local font access denied or unavailable.");
 					}
 				}
@@ -114,7 +114,7 @@ export function FontBox({
 					}
 				} catch (error) {
 					if (!cancelled) {
-						console.warn("Unable to read document fonts", error);
+						// console.warn("Unable to read document fonts", error);
 					}
 				}
 

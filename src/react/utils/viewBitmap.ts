@@ -36,7 +36,7 @@ export function viewBitmap(canvas: HTMLCanvasElement): void {
 	// Request fullscreen with vendor prefix support
 	if (bitmapViewDiv.requestFullscreen) {
 		bitmapViewDiv.requestFullscreen().catch((err) => {
-			console.warn("Fullscreen request failed:", err);
+			// console.warn("Fullscreen request failed:", err);
 		});
 	} else if ((bitmapViewDiv as any).webkitRequestFullscreen) {
 		(bitmapViewDiv as any).webkitRequestFullscreen();
@@ -157,7 +157,7 @@ export function viewBitmap(canvas: HTMLCanvasElement): void {
 	// @TODO: include selection in the bitmap (like the legacy implementation mentions)
 	canvas.toBlob((blob) => {
 		if (!blob) {
-			console.error("Failed to create blob from canvas");
+			// console.error("Failed to create blob from canvas");
 			cleanup();
 			return;
 		}

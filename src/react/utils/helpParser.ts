@@ -23,7 +23,7 @@ export async function parseHelpContents(hhcPath: string): Promise<HelpItem[]> {
 		const html = await response.text();
 		return parseHhcHtml(html);
 	} catch (error) {
-		console.error("Failed to parse help contents:", error);
+		// console.error("Failed to parse help contents:", error);
 		throw error;
 	}
 }

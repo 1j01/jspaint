@@ -45,14 +45,14 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 								timestamp: Date.now(), // In real version, store this with the image
 							});
 						} catch (err) {
-							console.error(`Failed to load image ${key}:`, err);
+							// console.error(`Failed to load image ${key}:`, err);
 						}
 					}
 				}
 			}
 			images.sort((a, b) => b.timestamp - a.timestamp);
 		} catch (err) {
-			console.error("Failed to access localStorage:", err);
+			// console.error("Failed to access localStorage:", err);
 		}
 
 		setStoredImages(images);

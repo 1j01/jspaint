@@ -59,7 +59,7 @@ export async function saveSetting(key: string, value: unknown): Promise<void> {
 		const db = await initDB();
 		await db.put("settings", value, key);
 	} catch (error) {
-		console.error(`Failed to save setting ${key}:`, error);
+		// console.error(`Failed to save setting ${key}:`, error);
 	}
 }
 
@@ -72,7 +72,7 @@ export async function loadSetting<T>(key: string, defaultValue: T): Promise<T> {
 		const value = await db.get("settings", key);
 		return value !== undefined ? (value as T) : defaultValue;
 	} catch (error) {
-		console.error(`Failed to load setting ${key}:`, error);
+		// console.error(`Failed to load setting ${key}:`, error);
 		return defaultValue;
 	}
 }
@@ -85,7 +85,7 @@ export async function removeSetting(key: string): Promise<void> {
 		const db = await initDB();
 		await db.delete("settings", key);
 	} catch (error) {
-		console.error(`Failed to remove setting ${key}:`, error);
+		// console.error(`Failed to remove setting ${key}:`, error);
 	}
 }
 
@@ -107,7 +107,7 @@ export async function saveCanvasHistory(
 			height: imageData.height,
 		}, id);
 	} catch (error) {
-		console.error(`Failed to save canvas history ${id}:`, error);
+		// console.error(`Failed to save canvas history ${id}:`, error);
 	}
 }
 
@@ -124,7 +124,7 @@ export async function loadCanvasHistory(id: string): Promise<ImageData | null> {
 		const data = new Uint8ClampedArray(entry.imageData);
 		return new ImageData(data, entry.width, entry.height);
 	} catch (error) {
-		console.error(`Failed to load canvas history ${id}:`, error);
+		// console.error(`Failed to load canvas history ${id}:`, error);
 		return null;
 	}
 }
@@ -147,7 +147,7 @@ export async function cleanupCanvasHistory(keepCount: number = 50): Promise<void
 
 		await tx.done;
 	} catch (error) {
-		console.error("Failed to cleanup canvas history:", error);
+		// console.error("Failed to cleanup canvas history:", error);
 	}
 }
 
@@ -160,6 +160,6 @@ export async function clearAllData(): Promise<void> {
 		await db.clear("settings");
 		await db.clear("canvasHistory");
 	} catch (error) {
-		console.error("Failed to clear all data:", error);
+		// console.error("Failed to clear all data:", error);
 	}
 }

@@ -54,14 +54,14 @@ export interface HistoryState {
 }
 
 export const useHistoryStore = create<HistoryState>((set, get) => {
-	console.warn('[historyStore] 🏗️ Store created');
+	// console.warn('[historyStore] 🏗️ Store created');
 
 	return {
 		historyTree: null,
 		currentNode: null,
 
 		initializeHistory: (initialImageData, name = "Initial State") => {
-			console.warn(`[historyStore.initializeHistory] Called with name: "${name}"`);
+			// console.warn(`[historyStore.initializeHistory] Called with name: "${name}"`);
 			const tree = new HistoryTree(initialImageData, name);
 			set({
 				historyTree: tree,
@@ -70,27 +70,27 @@ export const useHistoryStore = create<HistoryState>((set, get) => {
 		},
 
 	pushState: (imageData, name, options = {}) => {
-		console.warn(`[historyStore.pushState] 🔵 CALLED with name: "${name}"`);
-		console.trace('[historyStore.pushState] Call stack:');
+		// console.warn(`[historyStore.pushState] 🔵 CALLED with name: "${name}"`);
+		// console.trace('[historyStore.pushState] Call stack:');
 
 		const { historyTree } = get();
 
 		if (!historyTree) {
-			console.warn('[historyStore.pushState] 🟡 Initializing new history tree');
+			// console.warn('[historyStore.pushState] 🟡 Initializing new history tree');
 			// Initialize if not already done
 			const tree = new HistoryTree(imageData, name);
 			set({
 				historyTree: tree,
 				currentNode: tree.getCurrent(),
 			});
-			console.warn('[historyStore.pushState] ✅ History tree initialized');
+			// console.warn('[historyStore.pushState] ✅ History tree initialized');
 			return;
 		}
 
-		console.warn('[historyStore.pushState] 🟢 Pushing to existing tree');
+		// console.warn('[historyStore.pushState] 🟢 Pushing to existing tree');
 		const newNode = historyTree.push(imageData, name, options);
 		set({ currentNode: newNode });
-		console.warn(`[historyStore.pushState] ✅ Pushed node: ${newNode.id}`);
+		// console.warn(`[historyStore.pushState] ✅ Pushed node: ${newNode.id}`);
 	},
 
 	undo: () => {
@@ -156,7 +156,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => {
 	},
 
 	clearHistory: () => {
-		console.warn('[historyStore.clearHistory] 🗑️ Clearing history');
+		// console.warn('[historyStore.clearHistory] 🗑️ Clearing history');
 		set({
 			historyTree: null,
 			currentNode: null,

@@ -22,7 +22,7 @@ export function useInitializeStores() {
 
 				setIsInitialized(true);
 			} catch (err) {
-				console.error("Failed to initialize stores:", err);
+				// console.error("Failed to initialize stores:", err);
 				setError(err instanceof Error ? err : new Error("Unknown error"));
 				// Continue anyway - app will use default values
 				setIsInitialized(true);

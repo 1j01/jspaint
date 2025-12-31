@@ -117,22 +117,52 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 			input.onchange = (e) => {
 				const file = (e.target as HTMLInputElement).files?.[0];
 				if (!file) return;
+
 				const reader = new FileReader();
 				reader.onload = (ev) => {
 					const img = new Image();
 					img.onload = () => {
 						const canvas = canvasRef.current;
-						if (!canvas) return;
+						if (!canvas) {
+							console.error("[fileOpen] Canvas ref not available");
+							return;
+						}
 						const ctx = canvas.getContext("2d", { willReadFrequently: true });
-						if (!ctx) return;
-						saveState();
+						if (!ctx) {
+							console.error("[fileOpen] Could not get 2d context");
+							return;
+						}
+
+						// Resize canvas to match image
 						canvas.width = img.width;
 						canvas.height = img.height;
+
+						// Draw the image
 						ctx.drawImage(img, 0, 0);
+
+						// Update canvas size in store
 						setCanvasSize(img.width, img.height);
+
+						// Save to history AFTER drawing (so the new image is captured)
+						const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+						saveState(imageData);
+
+						console.log(`[fileOpen] Successfully loaded image: ${img.width}x${img.height}`);
 					};
+
+					img.onerror = (err) => {
+						console.error("[fileOpen] Failed to load image:", err);
+						alert("Failed to load image. Please make sure it's a valid image file.");
+					};
+
 					img.src = ev.target?.result as string;
 				};
+
+				reader.onerror = (err) => {
+					console.error("[fileOpen] Failed to read file:", err);
+					alert("Failed to read file. Please try again.");
+				};
+
 				reader.readAsDataURL(file);
 			};
 			input.click();
@@ -325,12 +355,12 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 					const colors = await loadPaletteFile(file);
 					if (colors.length > 0) {
 						alert(`Loaded ${colors.length} colors from palette file.\n\nFull palette replacement coming soon. For now, you can use the Edit Colors dialog to manually add these colors.`);
-						console.log("Loaded palette colors:", colors);
+						// console.log("Loaded palette colors:", colors);
 					} else {
 						alert("No colors found in the palette file.");
 					}
 				} catch (error) {
-					console.error("Failed to load palette:", error);
+					// console.error("Failed to load palette:", error);
 					alert(`Failed to load palette: ${error instanceof Error ? error.message : "Unknown error"}`);
 				}
 			};
@@ -341,7 +371,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 				const { downloadPalette } = await import("../utils/paletteFormats");
 				await downloadPalette(palette, "palette.gpl", "gpl");
 			} catch (error) {
-				console.error("Failed to save palette:", error);
+				// console.error("Failed to save palette:", error);
 				alert(`Failed to save palette: ${error instanceof Error ? error.message : "Unknown error"}`);
 			}
 		}, [palette]),
@@ -353,7 +383,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 			try {
 				localStorage.setItem('mcpaint-language', languageCode);
 			} catch (error) {
-				console.warn('Failed to save language preference:', error);
+				// console.warn('Failed to save language preference:', error);
 			}
 		}, [i18n]),
 

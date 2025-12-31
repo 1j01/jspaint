@@ -13,17 +13,15 @@ import { useUIStore } from "../react/context/state/uiStore";
 import { useSettingsStore } from "../react/context/state/settingsStore";
 import { useToolStore } from "../react/context/state/toolStore";
 import { TOOL_IDS } from "../react/context/state/types";
-import {
-	useTreeHistory,
-	useColors,
-	useTool,
-	useHistory,
-	useSelection,
-	useMagnification,
-	useCursorPosition,
-	useApp,
-	useCanvasDimensions,
-} from "../react/context/state/hooks";
+import { useTreeHistory } from "../react/context/state/useTreeHistory";
+import { useColors } from "../react/context/state/useColors";
+import { useTool } from "../react/context/state/useTool";
+import { useHistory } from "../react/context/state/useHistory";
+import { useSelection } from "../react/context/state/useSelection";
+import { useMagnification } from "../react/context/state/useMagnification";
+import { useCursorPosition } from "../react/context/state/useCursorPosition";
+import { useApp } from "../react/context/state/useApp";
+import { useCanvasDimensions } from "../react/context/state/useCanvasDimensions";
 import { useShallow } from "zustand/react/shallow";
 import { defaultCustomColors } from "../react/data/basicColors";
 import { createMenus } from "../react/menus/menuDefinitions";
@@ -60,7 +58,7 @@ class ErrorBoundary extends ReactComponent<ErrorBoundaryProps, ErrorBoundaryStat
 		return { hasError: true, error };
 	}
 	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-		console.error("React Error:", error, errorInfo);
+		// console.error("React Error:", error, errorInfo);
 	}
 	render() {
 		if (this.state.hasError) {
@@ -197,14 +195,14 @@ function StoreInitializer({ children }: { children: ReactNode }) {
 
 	// Log initialization errors but continue (will use defaults)
 	if (storeInitError) {
-		console.warn('[Store Init] Failed to load persisted settings, using defaults:', storeInitError);
+		// console.warn('[Store Init] Failed to load persisted settings, using defaults:', storeInitError);
 	}
 
 	return <>{children}</>;
 }
 
 function AppContent() {
-	console.warn('[AppContent] 🎨 RENDER START');
+	// console.warn('[AppContent] 🎨 RENDER START');
 
 	// Create canvas ref locally (was in AppProvider)
 	const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -218,7 +216,7 @@ function AppContent() {
 	const { cursorPosition } = useCursorPosition();
 	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
 
-	console.warn('[AppContent] 📦 All hooks called successfully');
+	// console.warn('[AppContent] 📦 All hooks called successfully');
 
 	// Clipboard actions using direct store access to avoid infinite loops
 	const clipboard = useToolStore((state) => state.clipboard);
@@ -454,7 +452,7 @@ function AppContent() {
 			try {
 				await downloadCanvas(canvas, filename, formatId);
 			} catch (error) {
-				console.error("Failed to save file:", error);
+				// console.error("Failed to save file:", error);
 				alert(`Failed to save file: ${error instanceof Error ? error.message : "Unknown error"}`);
 			}
 		},
@@ -599,7 +597,7 @@ function AppContent() {
 		? `${Math.abs(selection.width)}x${Math.abs(selection.height)}`
 		: `${state.canvasWidth}x${state.canvasHeight}`;
 
-	console.warn('[AppContent] 🎨 RENDER END - returning JSX');
+	// console.warn('[AppContent] 🎨 RENDER END - returning JSX');
 
 	return (
 		<>
