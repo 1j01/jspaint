@@ -9,7 +9,7 @@
  * - Bold, Italic, Underline, Vertical toggle buttons
  * - Auto-repositions to avoid overlapping the text box
  */
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDraggable } from "../hooks/useDraggable";
 import "./FontBoxWindow.css";

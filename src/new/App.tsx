@@ -1,53 +1,53 @@
-import React, { ErrorInfo, Component as ReactComponent, ReactNode, useMemo, useState, useCallback } from "react";
+import React, { ErrorInfo, Component as ReactComponent, ReactNode, useCallback, useMemo, useState } from "react";
 import { Canvas } from "../react/components/Canvas";
 import { ColorBox } from "../react/components/ColorBox";
-import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
-import { Tool, ToolBox } from "../react/components/ToolBox";
-import { ToolOptions } from "../react/components/ToolOptions";
-import { FontBoxWindow } from "../react/components/FontBoxWindow";
 import {
-	AppProvider,
-	TOOL_IDS,
-	useApp,
-	useCanvas,
-	useClipboard,
-	useColors,
-	useCursorPosition,
-	useHistory,
-	useMagnification,
-	useSelection,
-	useTextBox,
-	useTool,
-	useViewState,
-} from "../react/context/AppContext";
-import { createMenus, MenuActions } from "../react/menus/menuDefinitions";
-import {
-	AboutDialog,
-	AttributesDialog,
-	CustomZoomDialog,
-	EditColorsDialog,
-	FlipRotateDialog,
-	LoadFromUrlDialog,
-	StretchSkewDialog,
-	ImgurUploadDialog,
-	ManageStorageDialog,
-	HistoryDialog,
+    AboutDialog,
+    AttributesDialog,
+    CustomZoomDialog,
+    EditColorsDialog,
+    FlipRotateDialog,
+    HistoryDialog,
+    ImgurUploadDialog,
+    LoadFromUrlDialog,
+    ManageStorageDialog,
+    StretchSkewDialog,
 } from "../react/components/dialogs";
-import { HelpWindow } from "../react/components/help";
+import type { AttributesValues } from "../react/components/dialogs/AttributesDialog";
 import type { FlipRotateAction } from "../react/components/dialogs/FlipRotateDialog";
 import type { StretchSkewValues } from "../react/components/dialogs/StretchSkewDialog";
-import type { AttributesValues } from "../react/components/dialogs/AttributesDialog";
+import { FontBoxWindow } from "../react/components/FontBoxWindow";
+import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
+import { HelpWindow } from "../react/components/help";
+import { Tool, ToolBox } from "../react/components/ToolBox";
+import { ToolOptions } from "../react/components/ToolOptions";
 import {
-	flipHorizontal,
-	flipVertical,
-	rotate,
-	stretch,
-	skew,
-	invertColors,
-	applyToCanvas,
-	transformCanvas,
-} from "../react/utils/imageTransforms";
+    AppProvider,
+    TOOL_IDS,
+    useApp,
+    useCanvas,
+    useClipboard,
+    useColors,
+    useCursorPosition,
+    useHistory,
+    useMagnification,
+    useSelection,
+    useTextBox,
+    useTool,
+    useViewState,
+} from "../react/context/AppContext";
 import { defaultCustomColors } from "../react/data/basicColors";
+import { createMenus, MenuActions } from "../react/menus/menuDefinitions";
+import {
+    applyToCanvas,
+    flipHorizontal,
+    flipVertical,
+    invertColors,
+    rotate,
+    skew,
+    stretch,
+    transformCanvas,
+} from "../react/utils/imageTransforms";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -996,7 +996,7 @@ function AppContent() {
 						/>
 					) : null
 				}
-				canvasContent={<Canvas />}
+				canvasContent={<Canvas key="main-canvas" />}
 				statusText={showStatusBar ? statusMessage : ""}
 				statusPosition={showStatusBar ? positionText : ""}
 				statusSize={showStatusBar ? sizeText : ""}

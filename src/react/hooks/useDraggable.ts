@@ -2,7 +2,7 @@
  * Hook for making elements draggable by a handle (like a titlebar).
  * Implements Windows 98-style window dragging behavior similar to OS-GUI.
  */
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Position {
 	x: number;
