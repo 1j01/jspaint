@@ -39,6 +39,7 @@ import {
     useTool,
     useViewState,
 } from "../react/context/AppContext";
+import { useInitializeStores } from "../react/context/state";
 import { defaultCustomColors } from "../react/data/basicColors";
 import { createMenus, MenuActions } from "../react/menus/menuDefinitions";
 import {
@@ -203,6 +204,34 @@ interface DialogState {
 	manageStorage: boolean;
 	history: boolean;
 	saveAs: boolean;
+}
+
+// Store initialization wrapper
+function StoreInitializer({ children }: { children: ReactNode }) {
+	const { isInitialized, error: storeInitError } = useInitializeStores();
+
+	// Show loading state while stores are initializing
+	if (!isInitialized) {
+		return (
+			<div style={{
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				height: '100vh',
+				fontFamily: 'Arial',
+				fontSize: '14px'
+			}}>
+				Loading persisted settings...
+			</div>
+		);
+	}
+
+	// Log initialization errors but continue (will use defaults)
+	if (storeInitError) {
+		console.warn('[Store Init] Failed to load persisted settings, using defaults:', storeInitError);
+	}
+
+	return <>{children}</>;
 }
 
 function AppContent() {
@@ -1089,9 +1118,11 @@ function AppContent() {
 export function App() {
 	return (
 		<ErrorBoundary>
-			<AppProvider>
-				<AppContent />
-			</AppProvider>
+			<StoreInitializer>
+				<AppProvider>
+					<AppContent />
+				</AppProvider>
+			</StoreInitializer>
 		</ErrorBoundary>
 	);
 }

@@ -17,15 +17,23 @@ mcpaint/
 │   │   └── App.jsx
 │   ├── react/
 │   │   ├── components/       # React components
-│   │   │   ├── Canvas.tsx         # Main drawing canvas (~360 lines)
+│   │   │   ├── Canvas.tsx         # Main drawing canvas (~760 lines, fully documented)
 │   │   │   ├── CanvasOverlay.tsx  # Selection overlay with marching ants
 │   │   │   ├── CanvasTextBox.tsx  # Text input overlay
 │   │   │   ├── ColorBox.tsx       # Color palette
 │   │   │   ├── Component.tsx      # Legacy $Component wrapper
 │   │   │   ├── FontBox.tsx        # Font selector
+│   │   │   ├── FontBoxWindow.tsx  # Floating font selector window
 │   │   │   ├── Frame.tsx          # Main layout with menu bar
 │   │   │   ├── ToolBox.tsx        # Tool selection grid
 │   │   │   ├── ToolOptions.tsx    # Tool-specific options panel
+│   │   │   ├── ThumbnailWindow.tsx# Real-time canvas thumbnail preview (~200 lines)
+│   │   │   ├── SelectionHandles.tsx # Resize handles for selections
+│   │   │   ├── CanvasResizeHandles.tsx # Resize handles for canvas
+│   │   │   ├── help/              # Help system components
+│   │   │   │   ├── HelpWindow.tsx
+│   │   │   │   ├── HelpContents.tsx
+│   │   │   │   └── HelpToolbar.tsx
 │   │   │   └── dialogs/           # Dialog components
 │   │   │       ├── Dialog.tsx           # Base modal dialog
 │   │   │       ├── AboutDialog.tsx      # About Paint dialog
@@ -33,7 +41,13 @@ mcpaint/
 │   │   │       ├── StretchSkewDialog.tsx# Stretch/Skew values
 │   │   │       ├── AttributesDialog.tsx # Canvas attributes
 │   │   │       ├── CustomZoomDialog.tsx # Custom zoom level
-│   │   │       └── LoadFromUrlDialog.tsx# Load image from URL
+│   │   │       ├── LoadFromUrlDialog.tsx# Load image from URL
+│   │   │       ├── SaveAsDialog.tsx     # Save with format selection
+│   │   │       ├── EditColorsDialog.tsx # Color editor with HSL controls
+│   │   │       ├── HistoryDialog.tsx    # Linear undo/redo history (legacy)
+│   │   │       ├── HistoryTreeDialog.tsx# Tree-based history visualization (~430 lines)
+│   │   │       ├── ImgurUploadDialog.tsx# Upload to Imgur
+│   │   │       └── ManageStorageDialog.tsx # Storage management
 │   │   ├── context/
 │   │   │   └── AppContext.tsx     # Global state management (~700 lines)
 │   │   ├── hooks/            # Custom hooks for canvas operations
@@ -46,7 +60,11 @@ mcpaint/
 │   │   │   └── menuDefinitions.ts # Full menu structure for all 6 menus
 │   │   ├── utils/            # Pure utility functions
 │   │   │   ├── drawingUtils.ts    # Drawing algorithms (~460 lines)
-│   │   │   └── imageTransforms.ts # Image transformations (flip, rotate, etc.)
+│   │   │   ├── imageTransforms.ts # Image transformations (flip, rotate, etc.)
+│   │   │   ├── historyTree.ts     # Tree-based history system (~350 lines)
+│   │   │   ├── imageFormats.ts    # Image format read/write utilities
+│   │   │   ├── paletteFormats.ts  # Palette format read/write utilities
+│   │   │   └── viewBitmap.ts      # View bitmap in new window
 │   │   └── data/
 │   │       └── palette.ts         # Color palette data
 │   ├── $Component.js         # jQuery component helpers (legacy)
@@ -162,24 +180,33 @@ $G                             // jQuery event emitter
 - React component structure (Frame, ToolBox, ColorBox, FontBox, Canvas)
 - CSS reuse in React preview
 - Multi-page Vite configuration
-- **AppContext** for state management (React Context + useReducer)
-- **Canvas component** with drawing support
+- **AppContext** for state management (React Context + useReducer, fully documented)
+- **Canvas component** with drawing support (fully documented with JSDoc)
 - **All 16 drawing tools** working (Pencil, Brush, Eraser, Fill, Pick Color, Magnifier, Line, Curve, Rectangle, Ellipse, Rounded Rectangle, Polygon, Text, Airbrush, Rectangular Select, Free-Form Select)
 - **Basic undo/redo** (linear stack, Ctrl+Z/Ctrl+Y)
 - Color selection (primary/secondary with left/right click)
 - **Full menu system** (File, Edit, View, Image, Colors, Help menus)
-- **Dialog components** (About, Flip/Rotate, Stretch/Skew, Attributes, Custom Zoom, Load From URL)
+- **Dialog components** (About, Flip/Rotate, Stretch/Skew, Attributes, Custom Zoom, Load From URL, Save As, Edit Colors, History, Imgur Upload, Manage Storage)
 - **Image transformations** (flip horizontal/vertical, rotate, stretch, skew, invert colors)
 - **File operations** (New, Open, Save, Save As, Load from URL)
 - **Clipboard operations** (Cut, Copy, Paste, Copy To, Paste From)
-- **View state management** (toggle Tool Box, Color Box, Status Bar, Grid, etc.)
+- **View state management** (toggle Tool Box, Color Box, Status Bar, Grid, Thumbnail, Text Toolbar)
+- **ThumbnailWindow** (real-time canvas preview with device pixel ratio support)
+- **Help system** (HelpWindow with navigation and content display)
+- **Selection handles** (resize handles for selections)
+- **Canvas resize handles** (resize handles for canvas edges)
+- **FontBoxWindow** (floating font selector with all text formatting options)
+- **Tree-based history system** (`historyTree.ts` - non-linear undo/redo with branching)
+- **HistoryTreeDialog** (visual tree navigation with SVG, neo-brutalist design)
+- **Image format support** (PNG, BMP, GIF, JPEG read/write utilities)
+- **Palette format support** (PAL, GPL, ACT and 10+ format read/write utilities)
+- **View Bitmap** functionality (open canvas in new window)
 
 ### In Progress
-- Color editor dialog
-- Advanced file format support
+- Integration of tree-based history with AppContext (HistoryTree class created, dialog integrated)
 
 ### Not Started
-- Tree-based undo/redo (branching history)
+- Full tree-based undo/redo integration (replace linear stacks with HistoryTree)
 - jQuery removal
 
 ## Migration Strategy
@@ -219,10 +246,17 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 ### Components
 | File | Purpose |
 |------|---------|
-| `src/react/components/Canvas.tsx` | Main drawing canvas orchestrator (~360 lines) |
+| `src/react/components/Canvas.tsx` | Main drawing canvas orchestrator (~760 lines, fully documented) |
 | `src/react/components/CanvasOverlay.tsx` | Selection overlay with marching ants |
 | `src/react/components/CanvasTextBox.tsx` | Text input overlay for text tool |
 | `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
+| `src/react/components/ThumbnailWindow.tsx` | Real-time canvas thumbnail preview (~200 lines) |
+| `src/react/components/SelectionHandles.tsx` | Resize handles for selections |
+| `src/react/components/CanvasResizeHandles.tsx` | Resize handles for canvas edges |
+| `src/react/components/FontBoxWindow.tsx` | Floating font selector window |
+| `src/react/components/help/HelpWindow.tsx` | Help system window |
+| `src/react/components/help/HelpContents.tsx` | Help content display |
+| `src/react/components/help/HelpToolbar.tsx` | Help navigation toolbar |
 
 ### Dialogs
 | File | Purpose |
@@ -234,6 +268,12 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 | `src/react/components/dialogs/AttributesDialog.tsx` | Canvas attributes dialog |
 | `src/react/components/dialogs/CustomZoomDialog.tsx` | Custom zoom level dialog |
 | `src/react/components/dialogs/LoadFromUrlDialog.tsx` | Load image from URL dialog |
+| `src/react/components/dialogs/SaveAsDialog.tsx` | Save with format selection dialog |
+| `src/react/components/dialogs/EditColorsDialog.tsx` | Color editor with HSL controls |
+| `src/react/components/dialogs/HistoryDialog.tsx` | Linear undo/redo history (legacy) |
+| `src/react/components/dialogs/HistoryTreeDialog.tsx` | Tree-based history visualization (~430 lines) |
+| `src/react/components/dialogs/ImgurUploadDialog.tsx` | Upload to Imgur dialog |
+| `src/react/components/dialogs/ManageStorageDialog.tsx` | Storage management dialog |
 
 ### Menus
 | File | Purpose |
@@ -243,7 +283,7 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 ### Context
 | File | Purpose |
 |------|---------|
-| `src/react/context/AppContext.tsx` | Global state management with useReducer (~700 lines) |
+| `src/react/context/AppContext.tsx` | Global state management with useReducer (~700 lines, fully documented) |
 
 ### Hooks
 | File | Purpose |
@@ -259,6 +299,72 @@ See [MIGRATE.md](MIGRATE.md) for detailed roadmap.
 |------|---------|
 | `src/react/utils/drawingUtils.ts` | Pure drawing algorithms (bresenhamLine, floodFill, etc.) |
 | `src/react/utils/imageTransforms.ts` | Image transformations (flip, rotate, stretch, skew, invert) |
+| `src/react/utils/historyTree.ts` | Tree-based history system (~350 lines) |
+| `src/react/utils/imageFormats.ts` | Image format read/write utilities (PNG, BMP, GIF, JPEG) |
+| `src/react/utils/paletteFormats.ts` | Palette format read/write utilities (PAL, GPL, ACT, etc.) |
+| `src/react/utils/viewBitmap.ts` | View bitmap in new window |
+
+## Tree-Based History System
+
+MCPaint now implements a sophisticated non-linear undo/redo system inspired by version control systems like Git.
+
+### Architecture
+
+**HistoryTree Class** (`src/react/utils/historyTree.ts`)
+- Each canvas state is a **HistoryNode** with:
+  - Unique ID, timestamp, operation name
+  - ImageData (canvas pixels)
+  - Optional selection/text box state
+  - Parent node reference
+  - Array of child nodes (branches)
+  - "Soft" flag for skippable intermediate states
+
+- Tree operations:
+  - `push()` - Create new state as child of current node
+  - `undo()` - Move to parent (skips soft states)
+  - `redo()` - Move to most recent child (skips soft states)
+  - `goToNode(id)` - Jump to any node by ID
+  - `prune(maxNodes)` - Memory management
+
+### Key Features
+
+1. **Non-destructive branching**: Making a change after undo creates a new branch instead of destroying redo history
+2. **Visual navigation**: HistoryTreeDialog displays the full tree with SVG
+3. **Soft states**: Intermediate states (like preview frames) can be marked as "soft" and skipped during normal undo/redo
+4. **Memory management**: Automatic pruning of old nodes while preserving the current path
+
+### HistoryTreeDialog Component
+
+**Visual Design** (Neo-Brutalist "Tech Archive" aesthetic)
+- SVG tree visualization with cubic bezier connections
+- Monospace fonts (JetBrains Mono, Fira Code)
+- Dark color scheme (#0a0a0a background)
+- Green accent (#00ff00) for current state
+- Blue (#00aaff) for selected nodes
+- Animated glow effects and scanline CRT effect
+- Thumbnail previews for each state
+- Technical metadata (timestamp, dimensions, branch count)
+
+**Features**:
+- Auto-scroll to current node on open
+- Click any node to jump to that state
+- Interactive hover effects
+- Grid pattern background
+- Dashed animated connections between nodes
+- Real-time layout calculation prevents overlaps
+
+### Integration Status
+
+✅ **Completed**:
+- HistoryTree class implementation
+- HistoryTreeDialog UI component
+- Dialog integrated into App.tsx
+- SVG visualization working
+
+⏳ **In Progress**:
+- Replace linear undo/redo stacks in AppContext with HistoryTree
+- Connect dialog to real history data (currently shows `null` placeholders)
+- Implement actual navigation from dialog to canvas states
 
 ## Testing
 

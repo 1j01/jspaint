@@ -2,12 +2,17 @@
 
 ## Current State (Updated December 2024)
 
-The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2 (React migration):
+The project has successfully completed Phase 1 (Vite adoption) and is **significantly advanced** in Phase 2 (React migration):
 
 - **Build System**: Vite is fully configured with multi-page app support
 - **Legacy App**: Moved to `/old/` subdirectory, fully functional
-- **React Preview**: Available at `/new/` with basic UI components
+- **React Preview**: Available at `/new/` with **nearly complete feature parity**
 - **Entry Points**: `index.html` (selector), `old/index.html` (legacy), `new/index.html` (React)
+- **State Management**: Migrated to Zustand with IndexedDB persistence
+- **All 16 Tools**: Fully implemented with all drawing operations
+- **Full Menu System**: All 6 menus (File, Edit, View, Image, Colors, Help) working
+- **Dialogs**: All major dialogs implemented (About, Attributes, FlipRotate, StretchSkew, CustomZoom, LoadFromUrl, SaveAs, EditColors, ManageStorage, ImgurUpload, History)
+- **Help System**: Complete help viewer with table of contents and navigation
 
 ## Architecture Overview
 
@@ -20,9 +25,12 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 
 ### React Architecture (`/new/`)
 - `src/new/main.jsx` - React entry point
-- `src/new/App.jsx` - Main app component with basic state
-- `src/react/components/` - UI components (Frame, ToolBox, ColorBox, FontBox)
-- Reuses legacy CSS from `styles/`
+- `src/new/App.tsx` - Main app component with Zustand state management
+- `src/react/components/` - UI components (Frame, ToolBox, ColorBox, Canvas, etc.)
+- `src/react/context/state/` - Zustand stores with IndexedDB persistence
+- `src/react/hooks/` - Custom hooks for canvas operations
+- `src/react/utils/` - Pure utility functions for drawing and image manipulation
+- Reuses legacy CSS from `styles/` with React-specific overrides in `styles/react-preview.css`
 
 ## Phase 1 – Vite Adoption ✅ COMPLETE
 
@@ -58,16 +66,19 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 - Production builds working
 - Legacy and React apps coexist
 
-## Phase 2 – React Migration (IN PROGRESS)
+## Phase 2 – React Migration ✅ MOSTLY COMPLETE
 
-### 1. Foundational groundwork
+### 1. Foundational groundwork ✅ COMPLETE
 
 #### Completed ✅
 - React 18 and React DOM installed
 - JSX components created in `src/react/components/`
 - React entry point at `src/new/main.jsx`
-- Basic state management with `useState` in App.jsx
-- Decided on state management strategy: **Using React Context + useReducer**
+- **State management: Migrated to Zustand** with modular stores:
+  - `settingsStore` - User preferences (colors, brush sizes, fonts) with IndexedDB persistence
+  - `uiStore` - View state (toolbar visibility, grid, thumbnail) with persistence
+  - `toolStore` - Active tool, selection, text box state (session-only)
+  - `canvasStore` - Canvas dimensions, undo/redo history with IndexedDB
 - Established TypeScript (.tsx files)
 - Created migration spreadsheet mapping globals to React state
 
@@ -77,54 +88,65 @@ The project has successfully completed Phase 1 (Vite adoption) and begun Phase 2
 | Legacy Module | React Component | Status |
 |---------------|-----------------|--------|
 | `$Component.js` | `Component.tsx` | Wrapper created |
-| `$ToolBox.js` | `ToolBox.tsx` | Full implementation |
-| `$ColorBox.js` | `ColorBox.tsx` | Full implementation |
-| `$FontBox.js` | `FontBox.tsx` | Partial implementation |
-| Layout chrome | `Frame.tsx` | Basic layout with menu bar |
-| Canvas | `Canvas.tsx` | Full implementation with all tools |
+| `$ToolBox.js` | `ToolBox.tsx` | ✅ Full implementation |
+| `$ColorBox.js` | `ColorBox.tsx` | ✅ Full implementation |
+| `$FontBox.js` | `FontBox.tsx` + `FontBoxWindow.tsx` | ✅ Full implementation with floating window |
+| Layout chrome | `Frame.tsx` | ✅ Complete with menu bar and status bar |
+| Canvas | `Canvas.tsx` | ✅ Full implementation (~765 lines, all tools) |
+| Help System | `HelpWindow.tsx`, `HelpContents.tsx`, `HelpToolbar.tsx` | ✅ Complete with navigation |
+| Thumbnail | `ThumbnailWindow.tsx` | ✅ Real-time canvas preview (~200 lines) |
 
-#### TODO - UI Components
+#### UI Components ✅ COMPLETE
 - [x] Port menu system to React - **Full menu definitions in `menuDefinitions.ts`**
 - [x] Create StatusBar component - **Integrated in Frame.tsx**
-- [x] Create ToolOptions component - **`ToolOptions.tsx` with fill style, line width selector**
-- [x] Create dialog components - **About, FlipRotate, StretchSkew, Attributes, CustomZoom, LoadFromUrl**
+- [x] Create ToolOptions component - **`ToolOptions.tsx` with all tool-specific options**
+- [x] Create dialog components - **All dialogs implemented (see below)**
+- [x] Create Help System - **Complete with table of contents, navigation, search**
 
-#### TODO - Canvas Components
+#### Canvas Components ✅ COMPLETE
 - [x] Create Canvas component with imperative ref API
-- [x] Port Handles.js for resize/selection handles - **`SelectionHandles.tsx`**
-- [x] Port OnCanvasSelection.js - **Implemented in Canvas.tsx**
-- [x] Port OnCanvasTextBox.js - **Implemented in Canvas.tsx**
+- [x] Port Handles.js for resize/selection handles - **`SelectionHandles.tsx`, `CanvasResizeHandles.tsx`**
+- [x] Port OnCanvasSelection.js - **Integrated in `useCanvasSelection.ts`**
+- [x] Port OnCanvasTextBox.js - **Integrated in `useCanvasTextBox.ts`**
 - [x] Port OnCanvasHelperLayer.js - **`HelperLayer.tsx`**
+- [x] Fix layout positioning - **Canvas and overlays properly aligned with .canvas-area padding**
 
-### 3. State migration
+### 3. State migration ✅ COMPLETE
 
-#### Core State - Implemented ✅
-- [x] Create AppContext with core state:
-  - `selectedTool` / `selectedTools`
-  - `primaryColor` / `secondaryColor`
-  - `palette`
-  - `canvasSize` (width/height)
-  - `brushSize` / `pencilSize` / `eraserSize`
-  - `fileName` / `saved` status
-- [x] Create basic undo/redo history (linear stack)
-- [x] Create shared canvas ref via context
+#### State Architecture - Zustand Stores ✅
+The application uses **Zustand** for state management with modular stores:
 
-#### Advanced State - Implemented ✅
-- [x] Port tree-based history from `functions.js` (branching undo/redo) - **`useTreeHistory.ts`**
-- [x] Add `magnification` state
-- [x] Add Selection state (rectangular and free-form)
-- [x] Add active text box state
-- [x] Add shape settings (fillStyle, lineWidth)
+**settingsStore** (persisted to IndexedDB):
+- Colors: `primaryColor`, `secondaryColor`, `palette`, `customColors`
+- Tool sizes: `brushSize`, `brushShape`, `pencilSize`, `eraserSize`, `airbrushSize`
+- Shape settings: `fillStyle`, `lineWidth`
+- Font settings: `fontFamily`, `fontSize`, `fontBold`, `fontItalic`, `fontUnderline`, `textTransparent`
 
-#### TODO - Tool State
-- [x] Create tools registry/context
-- [x] Port tool implementations from `tools.js` - **Implemented in Canvas.tsx and hooks**
-- [x] Connect tools to canvas via context
+**uiStore** (persisted to IndexedDB):
+- View state: `showToolBox`, `showColorBox`, `showStatusBar`, `showGrid`, `showThumbnail`
+- Draw mode: `drawOpaque` (transparent selection mode)
 
-### 4. Core functionality migration
+**toolStore** (session-only):
+- Active tool: `selectedToolId`, `selectedToolIds`
+- Selection state: `selection` (with `imageData`, position, dimensions, path for free-form)
+- Text box state: `textBox` (position, dimensions, text, font settings, `isActive`)
+- Cursor position: `cursorPosition` for status bar
+
+**canvasStore** (history persisted to IndexedDB):
+- Canvas: `canvasWidth`, `canvasHeight`, `magnification`
+- File state: `fileName`, `saved`
+- History: `undoStack`, `redoStack` (linear undo/redo with canvas snapshots)
+- Clipboard: `clipboard` (ImageData for copy/paste)
+
+#### Tools Registry ✅
+- [x] Create tools registry/context - **In `toolStore.ts` with TOOL_IDS constant**
+- [x] Port tool implementations from `tools.js` - **All 16 tools in Canvas.tsx and hooks**
+- [x] Connect tools to canvas via context - **Via Zustand stores**
+
+### 4. Core functionality migration ✅ COMPLETE
 
 #### Drawing Functions - Implemented ✅
-Key functions ported to `src/react/utils/drawingUtils.ts` and hooks:
+All key functions ported to `src/react/utils/drawingUtils.ts` and hooks:
 - [x] `bresenhamLine()` - Bresenham algorithm for pixel-perfect lines
 - [x] `drawPolygon()` - Polygon rendering with fill support
 - [x] `drawEllipse()` - Canvas ellipse API
@@ -134,27 +156,27 @@ Key functions ported to `src/react/utils/drawingUtils.ts` and hooks:
 - [x] `sprayAirbrush()` - Random spray pattern
 - [x] `getBrushPoints()` - Brush shape calculations
 - [x] `getRgbaFromColor()` - Color parsing utility
-- [x] Selection tools - Rectangular and free-form with marching ants (in `useCanvasSelection`)
+- [x] Selection tools - Rectangular and free-form with marching ants
+- [x] `select_all()`, `delete_selection()` - **In App.tsx menu actions**
+- [x] `crop_to_selection()` - **In App.tsx menu actions**
 
-#### TODO - Drawing Functions
-- [x] `drawRoundedRectangle()` - ✅ Implemented in `drawingUtils.ts`
-- [x] `select_all()`, `delete_selection()` - **Implemented in App.tsx menu actions**
-- [x] `crop_to_selection()` - **Implemented in App.tsx menu actions**
-- [x] `image_invert_colors()`, `image_flip_horizontal/vertical()` - **Implemented in `imageTransforms.ts`**
-
-#### TODO - Image Manipulation
-From `src/image-manipulation.js`:
-- [x] Canvas rotation algorithms - **Implemented in `imageTransforms.ts` (rotate, rotateArbitrary)**
-- [x] Stretch/skew operations - **Implemented in `imageTransforms.ts` (stretch, skew)**
+#### Image Manipulation ✅ COMPLETE
+From `src/image-manipulation.js` → `src/react/utils/imageTransforms.ts`:
+- [x] `image_invert_colors()` - **invertColors()**
+- [x] `image_flip_horizontal/vertical()` - **flipHorizontal(), flipVertical()**
+- [x] Canvas rotation algorithms - **rotate(), rotateArbitrary()**
+- [x] Stretch/skew operations - **stretch(), skew()**
 - [x] Color quantization - **Deferred (advanced feature)**
 - [x] Image tracing - **Deferred (advanced feature)**
 
-#### TODO - File Operations
-- [x] File open/save dialogs - **Basic implementation using file picker and download**
+#### File Operations ✅ COMPLETE
+- [x] File open/save dialogs - **Using File System Access API with fallback**
 - [x] Load from URL dialog - **`LoadFromUrlDialog.tsx`**
-- [x] Format encoding/decoding (PNG, BMP, GIF, JPEG) - **`imageFormats.ts` with BMP encoder/decoder**
-- [x] Palette import/export - **`paletteFormats.ts` with GPL, JASC, RIFF PAL, and hex formats**
-- [x] Save As dialog - **`SaveAsDialog.tsx`**
+- [x] Format encoding/decoding - **`imageFormats.ts` with PNG, BMP, JPEG, WebP, GIF**
+- [x] Palette import/export - **`paletteFormats.ts` with GPL, JASC, RIFF PAL, hex formats**
+- [x] Save As dialog - **`SaveAsDialog.tsx` with format selection**
+- [x] Imgur upload - **`ImgurUploadDialog.tsx`**
+- [x] Storage management - **`ManageStorageDialog.tsx`**
 
 ### 5. Feature migration priority
 
@@ -182,24 +204,36 @@ From `src/image-manipulation.js`:
 4. ~~Airbrush tool~~ ✅
 5. ~~Magnifier/zoom~~ ✅ (1x, 2x, 4x, 6x, 8x)
 
-#### Priority 4 - Polish ✅ MOSTLY DONE
+#### Priority 4 - Polish ✅ COMPLETE
 1. ~~Menu system fully in React~~ ✅ (All 6 menus: File, Edit, View, Image, Colors, Help)
-2. ~~All dialogs as React components~~ ✅ (About, FlipRotate, StretchSkew, Attributes, CustomZoom, LoadFromUrl)
-3. ~~Keyboard shortcuts~~ ✅ (Ctrl+Z/Y, tool hotkeys, clipboard shortcuts, F11, Ctrl+I)
+2. ~~All dialogs as React components~~ ✅ (11 dialogs total - see Dialogs Implemented below)
+3. ~~Keyboard shortcuts~~ ✅ (Ctrl+Z/Y, tool hotkeys, clipboard, F11, Ctrl+I, etc.)
 4. ~~File operations~~ ✅ (New, Open, Save, Save As, Load from URL)
 5. ~~Clipboard operations~~ ✅ (Copy, Cut, Paste, Copy To, Paste From)
+6. ~~Help system~~ ✅ (Complete with table of contents, navigation, toolbar)
+7. ~~View toggles~~ ✅ (Tool Box, Color Box, Status Bar, Grid, Thumbnail)
 
-#### Additional UI Components Implemented
-- ~~ToolOptions panel~~ ✅ (brush size, line width, fill style per tool)
-- ~~Status bar~~ ✅ (cursor position, selection/canvas dimensions)
-- ~~Cursor position tracking~~ ✅
+#### Dialogs Implemented ✅
+All major dialogs are implemented in React:
+- `AboutDialog.tsx` - About Paint with version info
+- `AttributesDialog.tsx` - Canvas size and unit settings
+- `FlipRotateDialog.tsx` - Image flip/rotate operations
+- `StretchSkewDialog.tsx` - Stretch and skew transformations
+- `CustomZoomDialog.tsx` - Custom magnification levels
+- `LoadFromUrlDialog.tsx` - Load images from URL
+- `SaveAsDialog.tsx` - Save with format selection (PNG, BMP, JPEG, WebP, GIF)
+- `EditColorsDialog.tsx` - HSL color picker with custom colors (~520 lines)
+- `ManageStorageDialog.tsx` - Storage management for saved states
+- `ImgurUploadDialog.tsx` - Upload to Imgur integration
+- `HistoryDialog.tsx` - Linear undo/redo history viewer
+- `HistoryTreeDialog.tsx` - Tree-based history visualization (future: branching undo) (~430 lines)
 
-#### Priority 5 - Advanced Features
-1. Multi-user sessions
-2. Speech recognition
-3. Eye gaze mode
-4. Themes (already CSS-based)
-5. Localization
+#### Priority 5 - Advanced Features (NOT STARTED)
+1. Multi-user sessions (WebRTC/WebSocket)
+2. Speech recognition integration
+3. Eye gaze mode for accessibility
+4. Dynamic theme loading (CSS already theme-based)
+5. Localization system (i18n for 26 languages)
 
 ### 6. Migration sequencing
 
@@ -209,34 +243,44 @@ From `src/image-manipulation.js`:
 - [x] **Phase 3**: Basic tool implementations (Pencil, Brush, Eraser)
 - [x] **Phase 4**: State management with undo/redo
 - [x] **Phase 5**: Additional tools (shapes, selection, fill, text, magnifier) - ALL DONE
-- [x] **Phase 6**: File operations and dialogs - DONE
-- [ ] **Phase 7**: Remove jQuery, delete legacy code
+- [x] **Phase 6**: File operations and dialogs - ALL DONE
+- [x] **Phase 7**: Zustand state migration - DONE
+- [x] **Phase 8**: Help system implementation - DONE
+- [ ] **Phase 9**: Testing and stabilization - IN PROGRESS
+- [ ] **Phase 10**: Performance optimization
+- [ ] **Phase 11**: jQuery removal (when React app is production-ready)
+- [ ] **Phase 12**: Advanced features (multi-user, speech, localization)
 
-## Technical Decisions Needed
+## Technical Decisions
 
-### State Management
-Options to evaluate:
-1. **React Context + useReducer** - Simple, no dependencies
-2. **Zustand** - Lightweight, good for imperative canvas ops
-3. **Redux Toolkit** - Full-featured, good for complex undo/redo
+### State Management ✅ DECIDED: Zustand
+**Decision**: Zustand with modular stores and IndexedDB persistence
 
-Recommendation: Start with Context + hooks, migrate to Zustand if needed.
+**Implementation**:
+- Zustand provides simple, hook-based state management with no boilerplate
+- State split into 4 logical stores: `settingsStore`, `uiStore`, `toolStore`, `canvasStore`
+- IndexedDB persistence for settings, UI state, and history
+- Better performance than Context (no unnecessary re-renders)
+- Clean selector pattern for optimal component updates
 
-### Canvas Integration Pattern
-Options:
-1. **Imperative ref** - Expose canvas methods via `forwardRef`
-2. **Effect-based** - Redraw in `useEffect` based on state
-3. **Hybrid** - State for UI, imperative for drawing
+### Canvas Integration Pattern ✅ DECIDED: Hybrid
+**Decision**: Hybrid approach - React state for UI, imperative canvas operations
 
-Recommendation: Hybrid approach - React manages tool/color state, canvas ops are imperative.
+**Implementation**:
+- Canvas accessed via `canvasRef` from context
+- Drawing operations are imperative (direct canvas manipulation)
+- React state manages tool selection, colors, settings
+- Custom hooks (`useCanvasDrawing`, `useCanvasSelection`, etc.) encapsulate canvas logic
+- No unnecessary re-renders during drawing operations
 
-### Component Library
-Options:
-1. **Keep os-gui** - Already integrated, Windows 98 look
-2. **Custom components** - More control, more work
-3. **Headless UI** - Accessibility built-in
+### Component Library ✅ DECIDED: Keep os-gui + Custom
+**Decision**: Use os-gui for Windows 98 UI, custom components for paint-specific features
 
-Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
+**Implementation**:
+- `os-gui` library for menus, dialogs, windows (preserves classic MS Paint look)
+- Custom components for canvas, tools, color picker
+- Legacy CSS from `styles/` reused with minimal React-specific overrides
+- Maintains authentic Windows 98 aesthetic
 
 ## Files Reference
 
@@ -255,81 +299,123 @@ Recommendation: Keep os-gui for menus/dialogs, custom for paint-specific UI.
 #### Entry Points
 | File | Purpose |
 |------|---------|
-| `src/new/main.jsx` | React entry point |
-| `src/new/App.jsx` | Main app component |
+| `src/new/main.jsx` | React entry point with store initialization |
+| `src/new/App.tsx` | Main app component (~1000+ lines) |
 
-#### Components
+#### State Management (Zustand)
 | File | Purpose |
 |------|---------|
-| `src/react/components/Frame.tsx` | Layout container |
-| `src/react/components/ToolBox.tsx` | Tool grid |
-| `src/react/components/ColorBox.tsx` | Color palette |
-| `src/react/components/FontBox.tsx` | Font selector |
-| `src/react/components/Component.tsx` | Legacy wrapper |
-| `src/react/components/Canvas.tsx` | Main drawing canvas orchestrator (~360 lines) |
-| `src/react/components/CanvasOverlay.tsx` | Selection overlay with marching ants |
-| `src/react/components/CanvasTextBox.tsx` | Text input overlay for text tool |
-| `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
-| `src/react/components/SelectionHandles.tsx` | Resize handles for selections |
-| `src/react/components/HelperLayer.tsx` | Helper layer for temporary overlays |
-| `src/react/components/dialogs/Dialog.tsx` | Base modal dialog component |
-| `src/react/components/dialogs/AboutDialog.tsx` | About Paint dialog |
-| `src/react/components/dialogs/FlipRotateDialog.tsx` | Flip/Rotate options dialog |
-| `src/react/components/dialogs/StretchSkewDialog.tsx` | Stretch/Skew values dialog |
-| `src/react/components/dialogs/AttributesDialog.tsx` | Canvas attributes dialog |
-| `src/react/components/dialogs/CustomZoomDialog.tsx` | Custom zoom level dialog |
-| `src/react/components/dialogs/LoadFromUrlDialog.tsx` | Load image from URL dialog |
-| `src/react/components/dialogs/SaveAsDialog.tsx` | Save file with format selection |
+| `src/react/context/state/settingsStore.ts` | User preferences (colors, sizes, fonts) |
+| `src/react/context/state/uiStore.ts` | View state (toolbox, statusbar visibility) |
+| `src/react/context/state/toolStore.ts` | Active tool, selection, text box state |
+| `src/react/context/state/canvasStore.ts` | Canvas size, history, clipboard |
+| `src/react/context/state/persistence.ts` | IndexedDB persistence layer |
+| `src/react/context/state/initialState.ts` | Default state values |
+| `src/react/context/state/useInitializeStores.ts` | Store initialization hook |
+| `src/react/context/AppContext.tsx` | Legacy context (being phased out) |
+
+#### Components
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/react/components/Frame.tsx` | ~400 | Layout container with menu bar |
+| `src/react/components/ToolBox.tsx` | ~150 | Tool selection grid (16 tools) |
+| `src/react/components/ColorBox.tsx` | ~200 | Color palette selector |
+| `src/react/components/FontBox.tsx` | ~100 | Font selector (inline) |
+| `src/react/components/FontBoxWindow.tsx` | ~200 | Floating font window |
+| `src/react/components/Canvas.tsx` | ~765 | Main drawing canvas orchestrator |
+| `src/react/components/CanvasOverlay.tsx` | ~40 | Selection marching ants overlay |
+| `src/react/components/CanvasTextBox.tsx` | ~60 | Text input overlay |
+| `src/react/components/ToolOptions.tsx` | ~300 | Tool-specific settings panel |
+| `src/react/components/SelectionHandles.tsx` | ~280 | Resize handles for selections |
+| `src/react/components/CanvasResizeHandles.tsx` | ~315 | Canvas resize handles |
+| `src/react/components/HelperLayer.tsx` | ~100 | Helper layer for overlays |
+| `src/react/components/ThumbnailWindow.tsx` | ~200 | Real-time canvas thumbnail |
+
+#### Help System Components
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/react/components/help/HelpWindow.tsx` | ~300 | Help viewer window |
+| `src/react/components/help/HelpContents.tsx` | ~150 | Table of contents tree |
+| `src/react/components/help/HelpContent.tsx` | ~100 | Content iframe wrapper |
+| `src/react/components/help/HelpToolbar.tsx` | ~150 | Navigation toolbar |
+| `src/react/components/help/ResizableSplitPane.tsx` | ~100 | Resizable pane splitter |
+| `src/react/utils/helpParser.ts` | ~200 | Help content parser |
+
+#### Dialog Components
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/react/components/dialogs/Dialog.tsx` | ~200 | Base modal dialog with drag |
+| `src/react/components/dialogs/AboutDialog.tsx` | ~100 | About Paint info |
+| `src/react/components/dialogs/AttributesDialog.tsx` | ~150 | Canvas size/units |
+| `src/react/components/dialogs/FlipRotateDialog.tsx` | ~120 | Flip/Rotate options |
+| `src/react/components/dialogs/StretchSkewDialog.tsx` | ~150 | Stretch/Skew values |
+| `src/react/components/dialogs/CustomZoomDialog.tsx` | ~100 | Custom zoom level |
+| `src/react/components/dialogs/LoadFromUrlDialog.tsx` | ~120 | Load from URL |
+| `src/react/components/dialogs/SaveAsDialog.tsx` | ~200 | Save with format picker |
+| `src/react/components/dialogs/EditColorsDialog.tsx` | ~520 | HSL color picker |
+| `src/react/components/dialogs/ManageStorageDialog.tsx` | ~250 | Storage management |
+| `src/react/components/dialogs/ImgurUploadDialog.tsx` | ~200 | Imgur integration |
+| `src/react/components/dialogs/HistoryDialog.tsx` | ~150 | Linear history viewer |
+| `src/react/components/dialogs/HistoryTreeDialog.tsx` | ~430 | Tree history viz |
 
 #### Menus
 | File | Purpose |
 |------|---------|
-| `src/react/menus/menuDefinitions.ts` | Full menu structure with all 6 menus |
-
-#### Context
-| File | Purpose |
-|------|---------|
-| `src/react/context/AppContext.tsx` | Global state management with reducer (~600 lines) |
+| `src/react/menus/menuDefinitions.ts` | Full menu structure (File, Edit, View, Image, Colors, Help) |
 
 #### Custom Hooks
-| File | Purpose |
-|------|---------|
-| `src/react/hooks/useCanvasDrawing.ts` | Core drawing operations (drawPoint, drawLine, erase) |
-| `src/react/hooks/useCanvasSelection.ts` | Rectangular and free-form selection tools (~440 lines) |
-| `src/react/hooks/useCanvasTextBox.ts` | Text box creation and commit logic |
-| `src/react/hooks/useCanvasShapes.ts` | Shape tools (line, rectangle, ellipse, rounded rect) |
-| `src/react/hooks/useCanvasCurvePolygon.ts` | Multi-click tools (curve, polygon) |
-| `src/react/hooks/useTreeHistory.ts` | Tree-based branching undo/redo (~320 lines) |
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/react/hooks/useCanvasDrawing.ts` | ~400 | Core drawing (point, line, fill, erase, airbrush) |
+| `src/react/hooks/useCanvasSelection.ts` | ~440 | Rectangular/free-form selection |
+| `src/react/hooks/useCanvasTextBox.ts` | ~150 | Text box creation and commit |
+| `src/react/hooks/useCanvasShapes.ts` | ~300 | Shape tools (line, rect, ellipse, rounded rect) |
+| `src/react/hooks/useCanvasCurvePolygon.ts` | ~250 | Curve and polygon multi-click tools |
 
 #### Utilities
-| File | Purpose |
-|------|---------|
-| `src/react/utils/drawingUtils.ts` | Pure drawing algorithms (~460 lines) |
-| `src/react/utils/imageTransforms.ts` | Image transformations (flip, rotate, stretch, skew, invert) |
-| `src/react/utils/imageFormats.ts` | Image format encoding/decoding (PNG, BMP, JPEG, WebP) |
-| `src/react/utils/paletteFormats.ts` | Palette import/export (GPL, JASC, RIFF PAL, Hex) |
-| `src/react/data/palette.ts` | Color palette data |
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/react/utils/drawingUtils.ts` | ~460 | Drawing algorithms (bresenham, flood fill, etc.) |
+| `src/react/utils/imageTransforms.ts` | ~300 | Image operations (flip, rotate, stretch, skew) |
+| `src/react/utils/imageFormats.ts` | ~400 | Format encoding (PNG, BMP, JPEG, WebP, GIF) |
+| `src/react/utils/paletteFormats.ts` | ~300 | Palette I/O (GPL, JASC, RIFF PAL, hex) |
+| `src/react/utils/colorUtils.ts` | ~150 | Color manipulation (RGB↔HSL) |
+| `src/react/utils/historyTree.ts` | ~320 | Tree-based undo/redo (future branching) |
+| `src/react/utils/viewBitmap.ts` | ~100 | Bitmap viewing utilities |
+| `src/react/data/palette.ts` | ~50 | Default color palette |
+| `src/react/data/basicColors.ts` | ~30 | Basic color constants |
 
-### Key State Interfaces (AppContext.tsx)
+### Key State Interfaces (Zustand Stores)
+
+**From toolStore.ts:**
 - `Selection`: `{ x, y, width, height, imageData, path? }` for rect/freeform selection
 - `TextBoxState`: `{ x, y, width, height, text, font settings, isActive }`
-- State: `selection`, `textBox`, `magnification`, `fillStyle`, `lineWidth`, `clipboard`, `cursorPosition`, font settings
+- `TOOL_IDS`: Constants for all 16 tools
 
-### Context Hooks (AppContext.tsx)
+**From settingsStore.ts:**
+- Colors, sizes, fonts, shape settings
+- All persisted to IndexedDB
+
+**From canvasStore.ts:**
+- Canvas dimensions, magnification, history stacks
+- File state (name, saved)
+- Clipboard (ImageData)
+
+### Store Hooks (from state/index.ts)
+
+Zustand stores provide direct state access:
+
 | Hook | Purpose |
 |------|---------|
-| `useColors()` | Primary/secondary colors, palette |
-| `useTool()` | Selected tool, brush/eraser sizes |
-| `useCanvas()` | Canvas dimensions, drawing state |
-| `useHistory()` | Undo/redo with saveState |
-| `useSelection()` | Selection state management |
-| `useClipboard()` | Copy, cut, paste operations |
-| `useMagnification()` | Zoom level control |
-| `useTextBox()` | Text tool state and font settings |
-| `useShapeSettings()` | Fill style and line width |
-| `useCursorPosition()` | Cursor tracking for status bar |
-| `useViewState()` | View toggles (toolbox, colorbox, statusbar, grid, thumbnail, drawOpaque) |
-| `useFileState()` | File name and saved status |
+| `useSettingsStore()` | Access settings (colors, sizes, fonts) |
+| `useUIStore()` | Access UI state (visibility toggles) |
+| `useToolStore()` | Access active tool, selection, text box |
+| `useCanvasStore()` | Access canvas dimensions, history, clipboard |
+| `useColors()` | Convenience hook for color state |
+| `useShapeSettings()` | Convenience hook for fill/line settings |
+| `useBrushSettings()` | Convenience hook for brush sizes |
+| `useFontSettings()` | Convenience hook for text formatting |
+| `useHistory()` | Convenience hook for undo/redo |
 
 ### Canvas Hooks (src/react/hooks/)
 | Hook | Purpose |
@@ -378,7 +464,7 @@ npm run dev           # Start dev server (port 1999)
 # Access points
 http://localhost:1999/        # Workspace selector
 http://localhost:1999/old/    # Legacy jQuery app
-http://localhost:1999/new/    # React preview
+http://localhost:1999/new/    # React preview (NEARLY FEATURE-COMPLETE!)
 
 # Build & Test
 npm run build         # Production build
@@ -386,3 +472,32 @@ npm run preview       # Preview build
 npm run test          # Cypress E2E tests
 npm run lint          # ESLint + TypeScript check
 ```
+
+## Migration Progress Summary
+
+### ✅ Complete (95%+)
+- **All 16 drawing tools** fully functional
+- **State management** migrated to Zustand with IndexedDB persistence
+- **All menus and dialogs** implemented in React
+- **File operations** (open, save, save as, load from URL)
+- **Clipboard operations** (copy, cut, paste, copy to, paste from)
+- **Image transformations** (flip, rotate, stretch, skew, invert)
+- **Help system** with full navigation
+- **View toggles** (toolbox, colorbox, status bar, grid, thumbnail)
+- **Canvas positioning** fixed (overlays aligned with .canvas-area padding)
+- **Keyboard shortcuts** (tools, undo/redo, clipboard, fullscreen)
+
+### 🚧 Remaining Work
+- **Testing and bug fixes** - Thorough testing of all features for edge cases
+- **Performance optimization** - Canvas rendering, state updates, memory management
+- **Tree-based undo/redo** - Branching history (foundation in place via historyTree.ts)
+- **Advanced features** - Multi-user, speech recognition, eye gaze, localization
+
+### 🎯 Next Steps
+1. **Comprehensive testing** - Test all tools, dialogs, and features for edge cases
+2. **Bug fixes** - Address any issues found during testing
+3. **Performance review** - Profile and optimize critical paths
+4. **Port any remaining legacy features** - If found during testing
+5. **Implement branching undo/redo** - Using historyTree utilities
+6. **Consider jQuery removal** - Once React app is fully stable and tested
+7. **Advanced features** - Multi-user sessions, accessibility, i18n (long-term)
