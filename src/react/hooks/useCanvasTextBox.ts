@@ -19,25 +19,23 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 	const { primaryColor } = useColors();
 
 	// Use stores directly
-	const { textBox, setTextBox, clearTextBox } = useToolStore(
+	const { textBox, setTextBox, clearTextBox } = useToolStore(useShallow(
 		(state) => ({
 			textBox: state.textBox,
 			setTextBox: state.setTextBox,
 			clearTextBox: state.clearTextBox,
-		}),
-		useShallow,
-	);
+		})
+	));
 
-	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline } = useSettingsStore(
+	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline } = useSettingsStore(useShallow(
 		(state) => ({
 			fontFamily: state.fontFamily,
 			fontSize: state.fontSize,
 			fontBold: state.fontBold,
 			fontItalic: state.fontItalic,
 			fontUnderline: state.fontUnderline,
-		}),
-		useShallow,
-	);
+		})
+	));
 
 	// Text box creation state
 	const textBoxState = useRef<TextBoxCreationState>({

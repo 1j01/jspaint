@@ -331,7 +331,7 @@ All major dialogs are implemented in React:
 | `src/react/components/ColorBox.tsx` | ~200 | Color palette selector |
 | `src/react/components/FontBox.tsx` | ~100 | Font selector (inline) |
 | `src/react/components/FontBoxWindow.tsx` | ~200 | Floating font window |
-| `src/react/components/Canvas.tsx` | ~765 | Main drawing canvas orchestrator |
+| `src/react/components/Canvas.tsx` | ~250 | Main drawing canvas orchestrator (refactored) |
 | `src/react/components/CanvasOverlay.tsx` | ~40 | Selection marching ants overlay |
 | `src/react/components/CanvasTextBox.tsx` | ~60 | Text input overlay |
 | `src/react/components/ToolOptions.tsx` | ~300 | Tool-specific settings panel |
@@ -380,6 +380,9 @@ All major dialogs are implemented in React:
 | `src/react/hooks/useCanvasTextBox.ts` | ~150 | Text box creation and commit |
 | `src/react/hooks/useCanvasShapes.ts` | ~300 | Shape tools (line, rect, ellipse, rounded rect) |
 | `src/react/hooks/useCanvasCurvePolygon.ts` | ~250 | Curve and polygon multi-click tools |
+| `src/react/hooks/useCanvasEventHandlers.ts` | ~445 | All canvas event handlers (pointer, text, context menu) |
+| `src/react/hooks/useCanvasLifecycle.ts` | ~100 | Canvas initialization and persistence |
+| `src/react/hooks/useAirbrushEffect.ts` | ~80 | Airbrush continuous spray effect |
 
 #### Utilities
 | File | Lines | Purpose |
