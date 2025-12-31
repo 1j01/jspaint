@@ -24,17 +24,12 @@ import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
 import { useCanvasLifecycle } from "../hooks/useCanvasLifecycle";
 import { useAirbrushEffect } from "../hooks/useAirbrushEffect";
+import { useCanvasEventHandlers } from "../hooks/useCanvasEventHandlers";
 import { getCursorForTool, resizeSelection, prepareCanvasResize, restoreCanvasAfterResize } from "../utils/canvasHelpers";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
 import { CanvasResizeHandles } from "./CanvasResizeHandles";
-
-/**
- * Available magnification levels for the Magnifier tool.
- * Matches MS Paint's zoom levels: 1x, 2x, 4x, 6x, 8x
- */
-const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
 
 /**
  * Canvas component - the main drawing surface.
@@ -50,8 +45,6 @@ const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
  * @returns {JSX.Element} Canvas element with overlays and handles
  */
 export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObject<HTMLCanvasElement>; className?: string }) {
-	// console.warn("[Canvas] Component rendering");
-
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
 	const { pushState: pushTreeState, historyTree } = useTreeHistory();
@@ -119,9 +112,6 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		// Get current canvas state
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-		// Save to linear history (existing system)
-		// Moved to after resize completes
-
 		// Save to tree history (new system)
 		pushTreeState(imageData, operationName, {
 			selectionImageData: currentSelection?.imageData,
@@ -134,9 +124,23 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
 	}, [canvasRef, saveState, pushTreeState, currentSelection]);
 
+	// Initialize all event handlers
+	const eventHandlers = useCanvasEventHandlers({
+		canvasRef,
+		selectedToolId,
+		drawing,
+		selectionHook,
+		textBoxHook,
+		shapes,
+		curvePolygon,
+		setCursorPosition,
+		saveHistoryState,
+		magnification,
+		setMagnification,
+	});
+
 	// Watch for canvas dimension changes (which auto-clear the canvas)
 	useEffect(() => {
-		console.warn(`[Canvas] Dimension effect: ${canvasWidth}x${canvasHeight}`);
 	}, [canvasWidth, canvasHeight]);
 
 	// Focus text input when text box is active

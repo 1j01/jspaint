@@ -80,6 +80,7 @@ export function useDrawingColor(button: number = 0): string {
  * Get all color-related state
  */
 export function useColors() {
+	console.warn("[HOOK] useColors called");
 	return useSettingsStore(
 		(state) => ({
 			primaryColor: state.primaryColor,
@@ -97,6 +98,7 @@ export function useColors() {
  * Get all shape-related settings
  */
 export function useShapeSettings() {
+	console.warn("[HOOK] useShapeSettings called");
 	return useSettingsStore(
 		(state) => ({
 		fillStyle: state.fillStyle,
@@ -112,6 +114,7 @@ export function useShapeSettings() {
  * Get all brush-related settings
  */
 export function useBrushSettings() {
+	console.warn("[HOOK] useBrushSettings called");
 	return useSettingsStore(
 		(state) => ({
 		brushSize: state.brushSize,
@@ -153,6 +156,7 @@ export function useFontSettings() {
  * Get undo/redo state and actions
  */
 export function useHistory() {
+	console.warn("[HOOK] useHistory called");
 	return useCanvasStore(
 		(state) => ({
 		canUndo: state.undoStack.length > 0,
@@ -171,6 +175,7 @@ export function useHistory() {
  * Use this for the advanced branching history UI
  */
 export function useTreeHistory() {
+	console.warn("[HOOK] useTreeHistory called");
 	return useHistoryStore(
 		(state) => ({
 			historyTree: state.historyTree,
@@ -194,6 +199,7 @@ export function useTreeHistory() {
  * Note: canvasRef should be managed locally with useRef in the component
  */
 export function useCanvasDimensions() {
+	console.warn("[HOOK] useCanvasDimensions called");
 	return useCanvasStore(
 		(state) => ({
 			canvasWidth: state.canvasWidth,
@@ -208,6 +214,7 @@ export function useCanvasDimensions() {
  * Get tool state and actions
  */
 export function useTool() {
+	console.warn("[HOOK] useTool called");
 	return useToolStore(
 		(state) => ({
 		selectedToolId: state.selectedToolId,

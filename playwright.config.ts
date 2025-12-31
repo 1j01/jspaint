@@ -42,8 +42,8 @@ export default defineConfig({
 	/* Run your local dev server before starting the tests */
 	webServer: {
 		command: "npm run test:start-server",
-		url: "http://localhost:11822/new/index.html",
-		reuseExistingServer: true,
+		url: "http://localhost:11822/new/",
+		reuseExistingServer: !process.env.CI,
 		timeout: 120 * 1000,
 	},
 
