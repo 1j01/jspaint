@@ -41,6 +41,9 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 		active: false,
 	});
 
+	// Track last click time for double-click detection
+	const lastClickTimeRef = useRef<number>(0);
+
 	// Handle curve click
 	const handleCurveClick = useCallback(
 		(x: number, y: number, button: number, ctx: CanvasRenderingContext2D): boolean => {
@@ -126,6 +129,11 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			const poly = polygonState.current;
 			const color = getDrawColor(0); // Always use primary color for stroke
 
+			// Detect double-click (within 300ms)
+			const now = Date.now();
+			const isDoubleClick = now - lastClickTimeRef.current < 300;
+			lastClickTimeRef.current = now;
+
 			if (!poly.active) {
 				// First point - start a new polygon
 				poly.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -134,8 +142,8 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 				saveState();
 				return true;
 			} else {
-				// Right-click closes the polygon
-				if (button === 2 && poly.points.length > 2) {
+				// Double-click or right-click closes the polygon
+				if ((isDoubleClick || button === 2) && poly.points.length > 2) {
 					// Close polygon - commit it
 					if (poly.previewImageData) {
 						ctx.putImageData(poly.previewImageData, 0, 0);
@@ -147,6 +155,17 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					poly.points = [];
 					poly.active = false;
 					poly.previewImageData = null;
+					lastClickTimeRef.current = 0; // Reset double-click timer
+					return false;
+				} else if (button === 2) {
+					// Right-click with fewer than 3 points - cancel polygon
+					if (poly.previewImageData) {
+						ctx.putImageData(poly.previewImageData, 0, 0);
+					}
+					poly.points = [];
+					poly.active = false;
+					poly.previewImageData = null;
+					lastClickTimeRef.current = 0;
 					return false;
 				} else {
 					// Check if clicking near the starting point (close polygon)
@@ -164,14 +183,16 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 						poly.points = [];
 						poly.active = false;
 						poly.previewImageData = null;
+						lastClickTimeRef.current = 0;
 						return false;
-					} else {
-						// Add a new point
+					} else if (!isDoubleClick) {
+						// Single click not near start - add a new point
 						poly.points.push({ x, y });
 						return true;
 					}
 				}
 			}
+			return false;
 		},
 		[canvasRef, getDrawColor, fillStyle, secondaryColor, lineWidth, saveState],
 	);

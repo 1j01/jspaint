@@ -134,7 +134,7 @@ export function Dialog({
 					</button>
 				)}
 			</div>
-			<div className="window-content" ref={contentRef} tabIndex={-1}>
+			<div className="window-content window-body" ref={contentRef} tabIndex={-1}>
 				{children}
 			</div>
 		</div>
@@ -158,7 +158,7 @@ export interface DialogButtonsProps {
 }
 
 export function DialogButtons({ children }: DialogButtonsProps) {
-	return <div className="dialog-buttons">{children}</div>;
+	return <div className="dialog-buttons" style={{ display: "flex", gap: "6px", marginTop: "12px" }}>{children}</div>;
 }
 
 export default Dialog;

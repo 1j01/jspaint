@@ -80,7 +80,7 @@ interface ToolOptionsProps {
 }
 
 export function ToolOptions({ className = "" }: ToolOptionsProps) {
-	const { selectedToolId, brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize } = useTool();
+	const { selectedToolId, brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize, textTransparent, setTextTransparent } = useTool();
 	const { fillStyle, lineWidth, setFillStyle, setLineWidth } = useShapeSettings();
 	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } =
 		useTextBox();
@@ -98,6 +98,9 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	const showEraserSize = selectedToolId === TOOL_IDS.ERASER;
 	const showAirbrushSize = selectedToolId === TOOL_IDS.AIRBRUSH;
 	const showTextOptions = selectedToolId === TOOL_IDS.TEXT;
+
+	// Transparency mode for Select and Text tools
+	const showTransparencyMode = [TOOL_IDS.SELECT, TOOL_IDS.FREE_FORM_SELECT, TOOL_IDS.TEXT].includes(selectedToolId);
 
 	// Render fill style options (matches $ChooseShapeStyle)
 	// Original: 39x21 canvases in column layout
@@ -385,6 +388,53 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 			</div>
 		</div>
 	);
+
+	// Render transparency mode (for Select and Text tools)
+	// Uses text-tools.png sprite (186x15) - 2 icons: opaque (left) and transparent (right)
+	const renderTransparencyMode = () => {
+		const iconWidth = 39;
+		const iconHeight = 15;
+
+		return (
+			<div className="chooser choose-transparent-mode">
+				{[false, true].map((transparent) => {
+					const isSelected = textTransparent === transparent;
+					const sourceX = transparent ? 93 : 0; // Second half or first half of 186px image
+
+					return (
+						<div
+							key={transparent ? "transparent" : "opaque"}
+							className="chooser-option transparent-mode-option"
+							onClick={() => setTextTransparent(transparent)}
+							style={{
+								backgroundColor: isSelected ? "var(--Hilight, #000080)" : undefined,
+								display: "inline-block",
+							}}
+						>
+							<canvas
+								key={`transparency-${transparent}-${isSelected}`}
+								width={iconWidth}
+								height={iconHeight}
+								style={{ filter: isSelected ? "invert(1)" : "none" }}
+								ref={(canvas) => {
+									if (!canvas) return;
+									const ctx = canvas.getContext("2d");
+									if (!ctx) return;
+
+									const img = new Image();
+									img.onload = () => {
+										ctx.clearRect(0, 0, iconWidth, iconHeight);
+										ctx.drawImage(img, sourceX, 0, iconWidth, iconHeight, 0, 0, iconWidth, iconHeight);
+									};
+									img.src = "/images/text-tools.png";
+								}}
+							/>
+						</div>
+					);
+				})}
+			</div>
+		);
+	};
 
 	// If no options for current tool, render empty placeholder
 	const hasOptions =

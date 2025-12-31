@@ -301,6 +301,27 @@ body.dragging iframe {
 	background-color: white !important;
 }
 
+/* Ensure proper z-index stacking order for canvas layers */
+canvas.main-canvas {
+	z-index: 2 !important;
+	position: absolute;
+}
+
+.selection-overlay {
+	z-index: 3 !important;
+	position: absolute;
+	pointer-events: none;
+}
+
+/* Prevent canvas from being affected by dragging/resizing help window */
+body.dragging .canvas-area,
+body.resizing .canvas-area,
+body.dragging canvas.main-canvas,
+body.resizing canvas.main-canvas {
+	visibility: visible !important;
+	display: block !important;
+}
+
 
 .dialog fieldset {
         margin: 0;

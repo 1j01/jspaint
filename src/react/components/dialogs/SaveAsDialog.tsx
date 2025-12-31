@@ -11,6 +11,7 @@ interface SaveAsDialogProps {
 
 /**
  * Save As dialog for saving canvas to various image formats
+ * Windows 98 style with proper form controls
  */
 export function SaveAsDialog({
 	isOpen,
@@ -56,39 +57,32 @@ export function SaveAsDialog({
 	);
 
 	return (
-		<Dialog
-			title="Save As"
-			isOpen={isOpen}
-			onClose={onClose}
-			width={400}
-		>
-			<div className="save-as-dialog" style={{ padding: "8px" }}>
-				<div style={{ marginBottom: "12px" }}>
-					<label style={{ display: "block", marginBottom: "4px" }}>File name:</label>
+		<Dialog title="Save As" isOpen={isOpen} onClose={onClose} width={400}>
+			<div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+				<div>
+					<label htmlFor="filename-input" style={{ display: "block", marginBottom: "4px" }}>
+						File name:
+					</label>
 					<input
+						id="filename-input"
 						type="text"
 						value={baseName}
 						onChange={(e) => setBaseName(e.target.value)}
 						onKeyDown={handleKeyDown}
 						autoFocus
-						style={{
-							width: "100%",
-							padding: "4px",
-							boxSizing: "border-box",
-						}}
+						style={{ width: "100%", boxSizing: "border-box" }}
 					/>
 				</div>
 
-				<div style={{ marginBottom: "12px" }}>
-					<label style={{ display: "block", marginBottom: "4px" }}>Save as type:</label>
+				<div>
+					<label htmlFor="format-select" style={{ display: "block", marginBottom: "4px" }}>
+						Save as type:
+					</label>
 					<select
+						id="format-select"
 						value={selectedFormat}
 						onChange={(e) => setSelectedFormat(e.target.value)}
-						style={{
-							width: "100%",
-							padding: "4px",
-							boxSizing: "border-box",
-						}}
+						style={{ width: "100%", boxSizing: "border-box" }}
 					>
 						{IMAGE_FORMATS.map((format) => (
 							<option key={format.formatID} value={format.formatID}>
@@ -98,17 +92,17 @@ export function SaveAsDialog({
 					</select>
 				</div>
 
-				<div style={{ fontSize: "12px", color: "#666", marginBottom: "12px" }}>
+				<div style={{ fontSize: "11px", padding: "4px 0" }}>
 					Full filename: <strong>{getFullFilename()}</strong>
 				</div>
-
-				<DialogButtons>
-					<button onClick={handleSave} disabled={!baseName.trim()}>
-						Save
-					</button>
-					<button onClick={onClose}>Cancel</button>
-				</DialogButtons>
 			</div>
+
+			<DialogButtons>
+				<button onClick={handleSave} disabled={!baseName.trim()}>
+					Save
+				</button>
+				<button onClick={onClose}>Cancel</button>
+			</DialogButtons>
 		</Dialog>
 	);
 }

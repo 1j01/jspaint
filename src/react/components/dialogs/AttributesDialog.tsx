@@ -56,105 +56,123 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 
 	return (
 		<Dialog title="Attributes" isOpen={isOpen} onClose={onClose} width={380}>
-			<div className="attributes-content">
-				<div className="attributes-row">
-					<span className="attributes-label">File last saved:</span>
+			<div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+				<div style={{ display: "flex", justifyContent: "space-between" }}>
+					<span>File last saved:</span>
 					<span>Not Available</span>
 				</div>
-				<div className="attributes-row">
-					<span className="attributes-label">Size on disk:</span>
+				<div style={{ display: "flex", justifyContent: "space-between" }}>
+					<span>Size on disk:</span>
 					<span>Not Available</span>
 				</div>
-				<div className="attributes-row">
-					<span className="attributes-label">Resolution:</span>
+				<div style={{ display: "flex", justifyContent: "space-between" }}>
+					<span>Resolution:</span>
 					<span>72 x 72 dots per inch</span>
 				</div>
 
-				<fieldset style={{ marginTop: 10 }}>
-					<div className="attributes-dimensions">
+				<fieldset style={{ marginTop: "6px" }}>
+					<legend>Image</legend>
+					<div style={{ display: "flex", gap: "12px" }}>
 						<div>
-							<label>Width:</label>
+							<label htmlFor="width-input">Width:</label>
 							<input
+								id="width-input"
 								type="number"
 								value={width}
 								onChange={(e) => setWidth(parseInt(e.target.value) || 1)}
 								min={1}
 								max={9999}
-								style={{ width: 70 }}
+								style={{ width: "70px", marginLeft: "4px" }}
 							/>
 						</div>
 						<div>
-							<label>Height:</label>
+							<label htmlFor="height-input">Height:</label>
 							<input
+								id="height-input"
 								type="number"
 								value={height}
 								onChange={(e) => setHeight(parseInt(e.target.value) || 1)}
 								min={1}
 								max={9999}
-								style={{ width: 70 }}
+								style={{ width: "70px", marginLeft: "4px" }}
 							/>
 						</div>
 					</div>
 				</fieldset>
 
-				<fieldset style={{ marginTop: 10 }}>
+				<fieldset style={{ marginTop: "6px" }}>
 					<legend>Units</legend>
-					<label>
-						<input
-							type="radio"
-							name="units"
-							checked={units === "inches"}
-							onChange={() => setUnits("inches")}
-						/>
-						Inches
-					</label>
-					<label>
-						<input type="radio" name="units" checked={units === "cm"} onChange={() => setUnits("cm")} />
-						Cm
-					</label>
-					<label>
-						<input
-							type="radio"
-							name="units"
-							checked={units === "pixels"}
-							onChange={() => setUnits("pixels")}
-						/>
-						Pixels
-					</label>
+					<div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+						<div>
+							<input
+								type="radio"
+								id="units-inches"
+								name="units"
+								checked={units === "inches"}
+								onChange={() => setUnits("inches")}
+							/>
+							<label htmlFor="units-inches">Inches</label>
+						</div>
+						<div>
+							<input
+								type="radio"
+								id="units-cm"
+								name="units"
+								checked={units === "cm"}
+								onChange={() => setUnits("cm")}
+							/>
+							<label htmlFor="units-cm">Cm</label>
+						</div>
+						<div>
+							<input
+								type="radio"
+								id="units-pixels"
+								name="units"
+								checked={units === "pixels"}
+								onChange={() => setUnits("pixels")}
+							/>
+							<label htmlFor="units-pixels">Pixels</label>
+						</div>
+					</div>
 				</fieldset>
 
-				<fieldset style={{ marginTop: 10 }}>
+				<fieldset style={{ marginTop: "6px" }}>
 					<legend>Colors</legend>
-					<label>
-						<input
-							type="radio"
-							name="colorMode"
-							checked={colorMode === "blackAndWhite"}
-							onChange={() => setColorMode("blackAndWhite")}
-						/>
-						Black and white
-					</label>
-					<label>
-						<input
-							type="radio"
-							name="colorMode"
-							checked={colorMode === "color"}
-							onChange={() => setColorMode("color")}
-						/>
-						Colors
-					</label>
+					<div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+						<div>
+							<input
+								type="radio"
+								id="color-bw"
+								name="colorMode"
+								checked={colorMode === "blackAndWhite"}
+								onChange={() => setColorMode("blackAndWhite")}
+							/>
+							<label htmlFor="color-bw">Black and white</label>
+						</div>
+						<div>
+							<input
+								type="radio"
+								id="color-color"
+								name="colorMode"
+								checked={colorMode === "color"}
+								onChange={() => setColorMode("color")}
+							/>
+							<label htmlFor="color-color">Colors</label>
+						</div>
+					</div>
 				</fieldset>
 
-				<fieldset style={{ marginTop: 10 }}>
+				<fieldset style={{ marginTop: "6px" }}>
 					<legend>Transparency</legend>
-					<label>
+					<div>
 						<input
 							type="checkbox"
+							id="transparent-checkbox"
 							checked={transparent}
 							onChange={(e) => setTransparent(e.target.checked)}
 						/>
-						Use transparency
-					</label>
+						<label htmlFor="transparent-checkbox">Use transparency</label>
+					</div>
 				</fieldset>
 			</div>
 			<DialogButtons>

@@ -807,6 +807,31 @@ whereas it breaks component docking calculations if used to shift the colors box
 	flex-flow: row;
 	height: 0; /* fixes an overflow issue with small window height, where the iframe and contents tree would be sized based on the intrinsic height of the contents tree */
 }
+
+/* ResizableSplitPane component */
+.help-split-pane {
+	display: flex;
+	flex-flow: row;
+	flex: 1;
+	height: 100%;
+}
+
+.help-split-pane-left {
+	flex-shrink: 0;
+	overflow: auto;
+}
+
+.help-split-pane-resizer {
+	flex-shrink: 0;
+	background: var(--ButtonFace);
+	border-right: 1px solid var(--ButtonShadow);
+	box-shadow: inset -1px 0 0 var(--ButtonHilight);
+}
+
+.help-split-pane-right {
+	flex: 1;
+	min-width: 0;
+}
 .help-window .toolbar button {
 	width: 55px;
 	height: 40px;
@@ -881,6 +906,7 @@ whereas it breaks component docking calculations if used to shift the colors box
 	vertical-align: middle;
 	width: 16px;
 	height: 16px;
+	background-image: url("/images/help-icons.png");
 	background-position: 0 0;
 	margin-left: 2px;
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { TOOL_IDS, useApp, useCanvas, useCursorPosition, useHistory, useMagnification, useSelection, useTool } from "../context/AppContext";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
@@ -10,6 +10,10 @@ import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
 import { CanvasResizeHandles } from "./CanvasResizeHandles";
 
+// Module-level flag to track canvas initialization
+// This persists across component remounts
+let canvasInitialized = false;
+
 // Magnification levels
 const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
 
@@ -17,6 +21,8 @@ const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
  * Canvas component for drawing
  */
 export function Canvas({ className = "" }: { className?: string }) {
+	console.log("[Canvas] Component rendering");
+
 	const { canvasRef } = useApp();
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
@@ -66,15 +72,26 @@ export function Canvas({ className = "" }: { className?: string }) {
 		getDrawColor: drawing.getDrawColor,
 	});
 
-	// Initialize canvas with white background
+	// Initialize canvas with white background (only once ever)
 	useEffect(() => {
+		console.log("[Canvas] Mount effect running, canvasInitialized:", canvasInitialized);
+
+		if (canvasInitialized) return;
+
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) return;
+
+		console.log("[Canvas] Initializing canvas with white background");
 		ctx.fillStyle = "#ffffff";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		canvasInitialized = true;
+
+		return () => {
+			console.log("[Canvas] Component unmounting!");
+		};
 	}, [canvasRef]);
 
 	// Focus text input when text box is active

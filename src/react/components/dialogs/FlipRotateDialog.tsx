@@ -1,5 +1,6 @@
 /**
  * Flip/Rotate dialog for image transformations.
+ * Windows 98 style with proper fieldset and radio button layout.
  */
 import React, { useState } from "react";
 import { Dialog, DialogButtons } from "./Dialog";
@@ -33,15 +34,22 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 		<Dialog title="Flip and Rotate" isOpen={isOpen} onClose={onClose} width={280}>
 			<fieldset>
 				<legend>Flip or rotate</legend>
-				<div className="radio-group">
-					<label>
-						<input type="radio" name="mode" checked={mode === "flip"} onChange={() => setMode("flip")} />
-						Flip horizontal
-					</label>
-					<div style={{ marginLeft: 20 }}>
-						<label>
+				<div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+					<div>
+						<input
+							type="radio"
+							id="flip-mode"
+							name="mode"
+							checked={mode === "flip"}
+							onChange={() => setMode("flip")}
+						/>
+						<label htmlFor="flip-mode">Flip horizontal</label>
+					</div>
+					<div style={{ marginLeft: "20px", display: "flex", flexDirection: "column", gap: "4px" }}>
+						<div>
 							<input
 								type="radio"
+								id="flip-horizontal"
 								name="flipDir"
 								checked={flipDirection === "horizontal"}
 								onChange={() => {
@@ -50,11 +58,12 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								}}
 								disabled={mode !== "flip"}
 							/>
-							Horizontally
-						</label>
-						<label>
+							<label htmlFor="flip-horizontal">Horizontally</label>
+						</div>
+						<div>
 							<input
 								type="radio"
+								id="flip-vertical"
 								name="flipDir"
 								checked={flipDirection === "vertical"}
 								onChange={() => {
@@ -63,24 +72,26 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								}}
 								disabled={mode !== "flip"}
 							/>
-							Vertically
-						</label>
+							<label htmlFor="flip-vertical">Vertically</label>
+						</div>
 					</div>
 				</div>
-				<div className="radio-group" style={{ marginTop: 10 }}>
-					<label>
+				<div style={{ display: "flex", flexDirection: "column", gap: "4px", marginTop: "8px" }}>
+					<div>
 						<input
 							type="radio"
+							id="rotate-mode"
 							name="mode"
 							checked={mode === "rotate"}
 							onChange={() => setMode("rotate")}
 						/>
-						Rotate by angle
-					</label>
-					<div style={{ marginLeft: 20 }}>
-						<label>
+						<label htmlFor="rotate-mode">Rotate by angle</label>
+					</div>
+					<div style={{ marginLeft: "20px", display: "flex", flexDirection: "column", gap: "4px" }}>
+						<div>
 							<input
 								type="radio"
+								id="rotate-90"
 								name="angle"
 								checked={rotateAngle === 90}
 								onChange={() => {
@@ -89,11 +100,12 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								}}
 								disabled={mode !== "rotate"}
 							/>
-							90°
-						</label>
-						<label>
+							<label htmlFor="rotate-90">90°</label>
+						</div>
+						<div>
 							<input
 								type="radio"
+								id="rotate-180"
 								name="angle"
 								checked={rotateAngle === 180}
 								onChange={() => {
@@ -102,11 +114,12 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								}}
 								disabled={mode !== "rotate"}
 							/>
-							180°
-						</label>
-						<label>
+							<label htmlFor="rotate-180">180°</label>
+						</div>
+						<div>
 							<input
 								type="radio"
+								id="rotate-270"
 								name="angle"
 								checked={rotateAngle === 270}
 								onChange={() => {
@@ -115,8 +128,8 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								}}
 								disabled={mode !== "rotate"}
 							/>
-							270°
-						</label>
+							<label htmlFor="rotate-270">270°</label>
+						</div>
 					</div>
 				</div>
 			</fieldset>

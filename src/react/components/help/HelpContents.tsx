@@ -39,6 +39,8 @@ function HelpItemComponent({
 	const isExpanded = expandedFolder === item.name;
 	const isSelected = item.local && selectedUrl?.endsWith(item.local);
 
+	console.log(`[HelpItemComponent] Rendering: "${item.name}" (folder: ${isFolder}, expanded: ${isExpanded})`);
+
 	const handleClick = useCallback(() => {
 		if (isFolder) {
 			onExpandFolder(isExpanded ? null : item.name);
@@ -70,6 +72,7 @@ function HelpItemComponent({
 						handleClick();
 					}
 				}}
+				style={{ border: "1px solid red" }} // DEBUG
 			>
 				{item.name}
 			</div>
@@ -101,6 +104,13 @@ export function HelpContents({
 }: HelpContentsProps) {
 	// Track which folder is expanded (accordion style - only one at a time at root level)
 	const [expandedFolder, setExpandedFolder] = useState<string | null>(null);
+
+	console.log("[HelpContents] Rendering with:", {
+		itemsCount: items.length,
+		isLoading,
+		error,
+		firstItem: items[0],
+	});
 
 	const handleWelcomeClick = useCallback(() => {
 		onSelectTopic("default.html");
@@ -138,6 +148,7 @@ export function HelpContents({
 							handleWelcomeClick();
 						}
 					}}
+					style={{ border: "2px solid blue" }} // DEBUG
 				>
 					Welcome to Help
 				</div>

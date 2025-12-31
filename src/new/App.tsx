@@ -11,7 +11,8 @@ import {
     ImgurUploadDialog,
     LoadFromUrlDialog,
     ManageStorageDialog,
-    StretchSkewDialog,
+    SaveAsDialog,
+    StretchSkewDialog
 } from "../react/components/dialogs";
 import type { AttributesValues } from "../react/components/dialogs/AttributesDialog";
 import type { FlipRotateAction } from "../react/components/dialogs/FlipRotateDialog";
@@ -48,6 +49,9 @@ import {
     stretch,
     transformCanvas,
 } from "../react/utils/imageTransforms";
+import { downloadCanvas } from "../react/utils/imageFormats";
+import { loadPaletteFile, downloadPalette } from "../react/utils/paletteFormats";
+import { viewBitmap } from "../react/utils/viewBitmap";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -196,6 +200,7 @@ interface DialogState {
 	imgurUpload: boolean;
 	manageStorage: boolean;
 	history: boolean;
+	saveAs: boolean;
 }
 
 function AppContent() {
@@ -275,6 +280,11 @@ function AppContent() {
 
 	// Show font box when text tool is selected or text box is active
 	const showFontBox = selectedToolId === TOOL_IDS.TEXT || textBox?.isActive;
+	// Debug: Log when showFontBox changes
+	React.useEffect(() => {
+		console.log("[FontBox] showFontBox:", showFontBox, "selectedToolId:", selectedToolId, "TOOL_IDS.TEXT:", TOOL_IDS.TEXT, "textBox?.isActive:", textBox?.isActive);
+	}, [showFontBox, selectedToolId, textBox?.isActive]);
+
 
 	// Dialog state
 	const [dialogs, setDialogs] = useState<DialogState>({
@@ -289,6 +299,7 @@ function AppContent() {
 		imgurUpload: false,
 		manageStorage: false,
 		history: false,
+		saveAs: false,
 	});
 
 	const openDialog = useCallback((dialog: keyof DialogState) => {
@@ -394,6 +405,21 @@ function AppContent() {
 		[canvasRef, saveState, setCanvasSize],
 	);
 
+	const handleSaveAs = useCallback(
+		async (filename: string, formatId: string) => {
+			const canvas = canvasRef.current;
+			if (!canvas) return;
+
+			try {
+				await downloadCanvas(canvas, filename, formatId);
+			} catch (error) {
+				console.error("Failed to save file:", error);
+				alert(`Failed to save file: ${error instanceof Error ? error.message : "Unknown error"}`);
+			}
+		},
+		[canvasRef],
+	);
+
 	const handleInvertColors = useCallback(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
@@ -487,14 +513,7 @@ function AppContent() {
 				link.href = canvas.toDataURL("image/png");
 				link.click();
 			},
-			fileSaveAs: () => {
-				const canvas = canvasRef.current;
-				if (!canvas) return;
-				const link = document.createElement("a");
-				link.download = "image.png";
-				link.href = canvas.toDataURL("image/png");
-				link.click();
-			},
+			fileSaveAs: () => openDialog("saveAs"),
 			fileLoadFromUrl: () => openDialog("loadFromUrl"),
 			fileUploadToImgur: () => {
 				openDialog("imgurUpload");
@@ -629,11 +648,7 @@ function AppContent() {
 			viewBitmap: () => {
 				const canvas = canvasRef.current;
 				if (canvas) {
-					const dataUrl = canvas.toDataURL("image/png");
-					const win = window.open();
-					if (win) {
-						win.document.write(`<img src="${dataUrl}" style="image-rendering: pixelated;">`);
-					}
+					viewBitmap(canvas);
 				}
 			},
 			viewFullscreen: () => {
@@ -681,54 +696,37 @@ function AppContent() {
 			colorsEditColors: () => {
 				openDialog("editColors");
 			},
-			colorsGetColors: () => {
+			colorsGetColors: async () => {
 				// Open file picker for palette files
 				const input = document.createElement("input");
 				input.type = "file";
-				input.accept = ".pal,.gpl,.act,.aco,.ase,.txt";
-				input.onchange = (e) => {
+				input.accept = ".pal,.gpl,.txt,.hex";
+				input.onchange = async (e) => {
 					const file = (e.target as HTMLInputElement).files?.[0];
 					if (!file) return;
-					const reader = new FileReader();
-					reader.onload = (ev) => {
-						const text = ev.target?.result as string;
-						// Simple PAL/GPL parser - just extract hex colors
-						const hexColorRegex = /#([0-9A-Fa-f]{6})/g;
-						const colors: string[] = [];
-						let match;
-						while ((match = hexColorRegex.exec(text)) !== null) {
-							colors.push(`#${match[1]}`);
-						}
+
+					try {
+						const colors = await loadPaletteFile(file);
 						if (colors.length > 0) {
-							// For now, just show success - full palette updating would require palette state management
-							alert(`Loaded ${colors.length} colors from palette file. Full palette integration coming soon.`);
+							alert(`Loaded ${colors.length} colors from palette file.\n\nFull palette replacement coming soon. For now, you can use the Edit Colors dialog to manually add these colors.`);
+							console.log("Loaded palette colors:", colors);
 						} else {
-							alert("No colors found in the palette file. Please make sure it's a valid .PAL or .GPL file.");
+							alert("No colors found in the palette file.");
 						}
-					};
-					reader.readAsText(file);
+					} catch (error) {
+						console.error("Failed to load palette:", error);
+						alert(`Failed to load palette: ${error instanceof Error ? error.message : "Unknown error"}`);
+					}
 				};
 				input.click();
 			},
-			colorsSaveColors: () => {
-				// Save current palette as a simple GIMP Palette (.gpl) file
-				let gplContent = "GIMP Palette\nName: JS Paint Colors\nColumns: 14\n#\n";
-				for (let i = 0; i < palette.length; i++) {
-					const color = palette[i];
-					// Convert hex to RGB
-					const r = parseInt(color.slice(1, 3), 16);
-					const g = parseInt(color.slice(3, 5), 16);
-					const b = parseInt(color.slice(5, 7), 16);
-					gplContent += `${r.toString().padStart(3)} ${g.toString().padStart(3)} ${b.toString().padStart(3)}\tColor ${i + 1}\n`;
+			colorsSaveColors: async () => {
+				try {
+					await downloadPalette(palette, "palette.gpl", "gpl");
+				} catch (error) {
+					console.error("Failed to save palette:", error);
+					alert(`Failed to save palette: ${error instanceof Error ? error.message : "Unknown error"}`);
 				}
-
-				// Download the file
-				const blob = new Blob([gplContent], { type: "text/plain" });
-				const link = document.createElement("a");
-				link.download = "palette.gpl";
-				link.href = URL.createObjectURL(blob);
-				link.click();
-				URL.revokeObjectURL(link.href);
 			},
 
 			// Help menu
@@ -1032,6 +1030,12 @@ function AppContent() {
 				onClose={() => closeDialog("loadFromUrl")}
 				onLoad={handleLoadFromUrl}
 			/>
+			<SaveAsDialog
+				isOpen={dialogs.saveAs}
+				onClose={() => closeDialog("saveAs")}
+				onSave={handleSaveAs}
+				currentFilename="untitled.png"
+			/>
 			<EditColorsDialog
 				isOpen={dialogs.editColors}
 				onClose={() => closeDialog("editColors")}
@@ -1064,9 +1068,9 @@ function AppContent() {
 				}}
 			/>
 
-			{/* Floating Font Box Window for Text Tool */}
+		{/* Floating Font Box Window for Text Tool */}
 			<FontBoxWindow
-				isOpen={showFontBox && showTextToolbar}
+				isOpen={showFontBox}
 				onClose={toggleTextToolbar}
 				fontState={fontState}
 				onFontChange={handleFontChange}

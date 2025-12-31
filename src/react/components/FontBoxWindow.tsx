@@ -222,9 +222,15 @@ export function FontBoxWindow({
 		return null;
 	}
 
+	console.log("[FontBoxWindow] Rendering with isOpen:", isOpen, "position:", position);
+
 	const windowStyle: React.CSSProperties = {
 		position: "fixed",
-		zIndex: 999,
+		zIndex: 9999,
+		backgroundColor: "#c0c0c0",
+		border: "2px outset #c0c0c0",
+		boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.3)",
+		minWidth: "280px",
 		...(position
 			? {
 					left: position.x,
