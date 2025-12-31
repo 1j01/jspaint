@@ -1,4 +1,8 @@
-import { TOOL_IDS, useBrushSettings, useShapeSettings, useTool, useToolStore, useSettingsStore, useUIStore } from "../context/state";
+import { useBrushSettings, useShapeSettings, useTool } from "../context/state/hooks";
+import { useToolStore } from "../context/state/toolStore";
+import { useSettingsStore } from "../context/state/settingsStore";
+import { useUIStore } from "../context/state/uiStore";
+import { TOOL_IDS } from "../context/state/types";
 import { useShallow } from "zustand/react/shallow";
 
 

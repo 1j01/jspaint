@@ -5,7 +5,7 @@
  * These functions don't use React hooks and can be tested independently.
  */
 
-import { TOOL_IDS } from "../context/state";
+import { TOOL_IDS } from "../context/state/types";
 
 /**
  * Available magnification levels for the Magnifier tool.

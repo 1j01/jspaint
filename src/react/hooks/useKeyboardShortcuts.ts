@@ -4,7 +4,7 @@
  */
 
 import { useEffect } from "react";
-import { TOOL_IDS } from "../context/state";
+import { TOOL_IDS } from "../context/state/types";
 import type { MenuActions } from "../menus/menuDefinitions";
 
 interface UseKeyboardShortcutsParams {

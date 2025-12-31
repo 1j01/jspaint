@@ -1,5 +1,6 @@
 import { CSSProperties, RefObject, useCallback, useEffect, useRef } from "react";
-import { Selection, useUIStore } from "../context/state";
+import { useUIStore } from "../context/state/uiStore";
+import type { Selection } from "../context/state/types";
 
 // Handle positions relative to selection
 const HANDLE_START = -1;

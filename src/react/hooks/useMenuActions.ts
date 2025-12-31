@@ -6,7 +6,7 @@
 import { RefObject, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import type { MenuActions } from "../menus/menuDefinitions";
-import { useUIStore } from "../context/state";
+import { useUIStore } from "../context/state/uiStore";
 
 interface UseMenuActionsParams {
 	canvasRef: RefObject<HTMLCanvasElement>;

@@ -6,7 +6,7 @@
  */
 
 import { RefObject, useCallback } from "react";
-import { TOOL_IDS } from "../context/state";
+import { TOOL_IDS } from "../context/state/types";
 import { MAGNIFICATION_LEVELS, TOOL_NAMES } from "../utils/canvasHelpers";
 import type { useCanvasDrawing } from "./useCanvasDrawing";
 import type { useCanvasSelection } from "./useCanvasSelection";

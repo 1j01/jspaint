@@ -1,5 +1,5 @@
 import { forwardRef, CSSProperties, ChangeEvent, KeyboardEvent, FocusEvent } from "react";
-import { TextBoxState } from "../context/state";
+import type { TextBoxState } from "../context/state/types";
 
 interface CanvasTextBoxProps {
 	textBox: TextBoxState;

@@ -4,28 +4,26 @@
  */
 
 import type { RefObject } from "react";
-import {
-	AboutDialog,
-	AttributesDialog,
-	CustomZoomDialog,
-	EditColorsDialog,
-	FlipRotateDialog,
-	HistoryTreeDialog,
-	ImgurUploadDialog,
-	LoadFromUrlDialog,
-	ManageStorageDialog,
-	SaveAsDialog,
-	StretchSkewDialog,
-} from "./dialogs";
+import { AboutDialog } from "./dialogs/AboutDialog";
+import { AttributesDialog } from "./dialogs/AttributesDialog";
+import { CustomZoomDialog } from "./dialogs/CustomZoomDialog";
+import { EditColorsDialog } from "./dialogs/EditColorsDialog";
+import { FlipRotateDialog } from "./dialogs/FlipRotateDialog";
+import { HistoryTreeDialog } from "./dialogs/HistoryTreeDialog";
+import { ImgurUploadDialog } from "./dialogs/ImgurUploadDialog";
+import { LoadFromUrlDialog } from "./dialogs/LoadFromUrlDialog";
+import { ManageStorageDialog } from "./dialogs/ManageStorageDialog";
+import { SaveAsDialog } from "./dialogs/SaveAsDialog";
+import { StretchSkewDialog } from "./dialogs/StretchSkewDialog";
 import type { AttributesValues } from "./dialogs/AttributesDialog";
 import type { FlipRotateAction } from "./dialogs/FlipRotateDialog";
 import type { StretchSkewValues } from "./dialogs/StretchSkewDialog";
 import { FontBoxWindow } from "./FontBoxWindow";
-import { HelpWindow } from "./help";
+import { HelpWindow } from "./help/HelpWindow";
 import { ThumbnailWindow } from "./ThumbnailWindow";
-import type { DialogName } from "../context/state";
+import type { DialogName } from "../context/state/uiStore";
 import type { HistoryNode } from "../context/state/historyStore";
-import type { Selection, TextBoxState } from "../context/state";
+import type { Selection, TextBoxState } from "../context/state/types";
 
 interface DialogManagerProps {
 	// Dialog visibility

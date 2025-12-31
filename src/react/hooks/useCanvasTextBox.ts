@@ -1,5 +1,8 @@
 import { useCallback, useRef, RefObject } from "react";
-import { TextBoxState, useColors, useToolStore, useSettingsStore } from "../context/state";
+import { useColors } from "../context/state/hooks";
+import { useToolStore } from "../context/state/toolStore";
+import { useSettingsStore } from "../context/state/settingsStore";
+import type { TextBoxState } from "../context/state/types";
 import { useShallow } from "zustand/react/shallow";
 
 export interface TextBoxCreationState {

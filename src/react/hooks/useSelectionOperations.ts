@@ -1,6 +1,7 @@
 import { useCallback } from "react";
-import { useHistory, useSelection, useColors, useTool, TOOL_IDS } from "../context/state";
+import { useHistory, useSelection, useColors, useTool } from "../context/state/hooks";
 import { useCanvasStore } from "../context/state/canvasStore";
+import { TOOL_IDS } from "../context/state/types";
 
 /**
  * Hook providing selection operations: selectAll, deleteSelection, cropToSelection

@@ -9,11 +9,11 @@ import {
 	useBrushSettings,
 	useShapeSettings,
 	useHistory,
-	useToolStore,
-	useUIStore,
-	useCanvasStore,
-	TOOL_IDS,
-} from "../context/state";
+} from "../context/state/hooks";
+import { useToolStore } from "../context/state/toolStore";
+import { useUIStore } from "../context/state/uiStore";
+import { useCanvasStore } from "../context/state/canvasStore";
+import { TOOL_IDS } from "../context/state/types";
 
 export function StoreDemo() {
 	// Using selector hooks (recommended)

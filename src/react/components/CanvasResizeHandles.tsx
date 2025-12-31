@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useUIStore } from "../context/state";
+import { useUIStore } from "../context/state/uiStore";
 import "./CanvasResizeHandles.css";
 
 // Handle positions - matching Handles.js

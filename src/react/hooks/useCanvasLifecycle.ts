@@ -11,7 +11,7 @@
  */
 
 import { RefObject, useEffect } from "react";
-import { useTreeHistory } from "../context/state";
+import { useTreeHistory } from "../context/state/hooks";
 
 /**
  * Module-level flag to track canvas initialization.

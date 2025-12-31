@@ -15,7 +15,7 @@ interface EditColorsDialogProps {
  * Color Editor Dialog - Windows 98 Style
  * Faithful recreation of the Windows system color picker with authentic styling
  */
-export default function EditColorsDialog({
+export function EditColorsDialog({
 	isOpen,
 	onClose,
 	initialColor,

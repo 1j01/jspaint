@@ -1,5 +1,6 @@
 import { useCallback, RefObject } from "react";
-import { TOOL_IDS, useBrushSettings, useColors, useTool } from "../context/state";
+import { useBrushSettings, useColors, useTool } from "../context/state/hooks";
+import { TOOL_IDS } from "../context/state/types";
 import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill, BrushShape } from "../utils/drawingUtils";
 
 /**

@@ -171,32 +171,31 @@ export function useSelection() {
  */
 export function useClipboard() {
 	return useToolStore(useShallow(
-		(state) => {
-			const clipboard = state.clipboard;
-			const setClipboard = state.setClipboard;
-			const selection = state.selection;
-
-			return {
-				clipboard,
-				hasClipboard: clipboard !== null,
-				copy: () => {
-					if (selection?.imageData) {
-						setClipboard(selection.imageData);
-					}
-				},
-				cut: () => {
-					if (selection?.imageData) {
-						setClipboard(selection.imageData);
-					}
-				},
-				paste: () => {
-					if (clipboard) {
-						// Paste logic handled by Canvas component
-						return clipboard;
-					}
-				},
-			};
-		}
+		(state) => ({
+			clipboard: state.clipboard,
+			hasClipboard: state.clipboard !== null,
+			setClipboard: state.setClipboard,
+			selection: state.selection,
+			// Helper methods that use current state values
+			copy: () => {
+				const currentSelection = useToolStore.getState().selection;
+				if (currentSelection?.imageData) {
+					state.setClipboard(currentSelection.imageData);
+				}
+			},
+			cut: () => {
+				const currentSelection = useToolStore.getState().selection;
+				if (currentSelection?.imageData) {
+					state.setClipboard(currentSelection.imageData);
+				}
+			},
+			paste: () => {
+				const currentClipboard = useToolStore.getState().clipboard;
+				if (currentClipboard) {
+					return currentClipboard;
+				}
+			},
+		})
 	));
 }
 
@@ -204,24 +203,29 @@ export function useClipboard() {
  * Get text box state and actions
  */
 export function useTextBox() {
-	return useToolStore(useShallow(
-		(state) => {
-			const settingsState = useSettingsStore.getState();
-			return {
-				textBox: state.textBox,
-				setTextBox: state.setTextBox,
-				clearTextBox: state.clearTextBox,
-				fontFamily: settingsState.fontFamily,
-				fontSize: settingsState.fontSize,
-				fontBold: settingsState.fontBold,
-				fontItalic: settingsState.fontItalic,
-				fontUnderline: settingsState.fontUnderline,
-				setFontFamily: settingsState.setFontFamily,
-				setFontSize: settingsState.setFontSize,
-				setFontStyle: settingsState.setFontStyle,
-			};
-		}
+	const toolStoreState = useToolStore(useShallow(
+		(state) => ({
+			textBox: state.textBox,
+			setTextBox: state.setTextBox,
+			clearTextBox: state.clearTextBox,
+		})
 	));
+
+	const settingsStoreState = useSettingsStore(useShallow(
+		(state) => ({
+			fontFamily: state.fontFamily,
+			fontSize: state.fontSize,
+			fontBold: state.fontBold,
+			fontItalic: state.fontItalic,
+			fontUnderline: state.fontUnderline,
+			setFontFamily: state.setFontFamily,
+			setFontSize: state.setFontSize,
+			setFontStyle: state.setFontStyle,
+		})
+	));
+
+	// Simply combine the two - don't use useMemo as it causes infinite loops
+	return { ...toolStoreState, ...settingsStoreState };
 }
 
 /**

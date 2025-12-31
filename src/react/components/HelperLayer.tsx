@@ -1,5 +1,5 @@
 import { CSSProperties, forwardRef, useImperativeHandle, useRef } from "react";
-import { useUIStore } from "../context/state";
+import { useUIStore } from "../context/state/uiStore";
 
 interface HelperLayerProps {
 	x: number;

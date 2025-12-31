@@ -7,7 +7,7 @@
  */
 
 import { RefObject, useEffect } from "react";
-import { TOOL_IDS } from "../context/state";
+import { TOOL_IDS } from "../context/state/types";
 import { useCanvasDrawing } from "./useCanvasDrawing";
 import { useCanvasShapes } from "./useCanvasShapes";
 
