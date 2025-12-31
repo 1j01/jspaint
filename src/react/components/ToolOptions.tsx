@@ -3,7 +3,6 @@ import { useToolStore } from "../context/state/toolStore";
 import { useSettingsStore } from "../context/state/settingsStore";
 import { useUIStore } from "../context/state/uiStore";
 import { TOOL_IDS } from "../context/state/types";
-import { useShallow } from "zustand/react/shallow";
 
 
 // Line width options (matches original)
@@ -89,35 +88,23 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	const { brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize } = useBrushSettings();
 	const { fillStyle, lineWidth, setFillStyle, setLineWidth } = useShapeSettings();
 
-	// Use stores directly to avoid helper hook issues
-	const { textBox, setTextBox, clearTextBox } = useToolStore(useShallow(
-		(state) => ({
-			textBox: state.textBox,
-			setTextBox: state.setTextBox,
-			clearTextBox: state.clearTextBox,
-		})
-	));
+	// Use stores directly with individual selectors (no useShallow needed)
+	const textBox = useToolStore((state) => state.textBox);
+	const setTextBox = useToolStore((state) => state.setTextBox);
+	const clearTextBox = useToolStore((state) => state.clearTextBox);
 
-	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } = useSettingsStore(useShallow(
-		(state) => ({
-			fontFamily: state.fontFamily,
-			fontSize: state.fontSize,
-			fontBold: state.fontBold,
-			fontItalic: state.fontItalic,
-			fontUnderline: state.fontUnderline,
-			setFontFamily: state.setFontFamily,
-			setFontSize: state.setFontSize,
-			setFontStyle: state.setFontStyle,
-		})
-	));
+	const fontFamily = useSettingsStore((state) => state.fontFamily);
+	const fontSize = useSettingsStore((state) => state.fontSize);
+	const fontBold = useSettingsStore((state) => state.fontBold);
+	const fontItalic = useSettingsStore((state) => state.fontItalic);
+	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
+	const setFontFamily = useSettingsStore((state) => state.setFontFamily);
+	const setFontSize = useSettingsStore((state) => state.setFontSize);
+	const setFontStyle = useSettingsStore((state) => state.setFontStyle);
 
 	// Get drawOpaque and toggleDrawOpaque from settingsStore directly
-	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(useShallow(
-		(state) => ({
-			drawOpaque: state.drawOpaque,
-			toggleDrawOpaque: state.toggleDrawOpaque,
-		})
-	));
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+	const toggleDrawOpaque = useSettingsStore((state) => state.toggleDrawOpaque);
 
 	// Determine which options to show based on tool
 	// Shape tools show fill style only (matches original $ChooseShapeStyle)

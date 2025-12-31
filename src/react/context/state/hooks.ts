@@ -2,11 +2,10 @@
  * Convenience hooks for Zustand stores
  *
  * These hooks provide clean, composable selectors for common state combinations.
- * They use useShallow for optimal re-render performance.
+ * IMPORTANT: We do NOT use useShallow for actions - Zustand actions are already stable.
+ * Individual selectors provide better stability and prevent infinite re-render loops.
  */
 
-import { useMemo } from "react";
-import { useShallow } from "zustand/shallow";
 import { useSettingsStore } from "./settingsStore";
 import { useToolStore } from "./toolStore";
 import { useUIStore } from "./uiStore";
@@ -24,85 +23,115 @@ export function useDrawingColor(button: number = 0): string {
  * Get all color-related state
  */
 export function useColors() {
-	return useSettingsStore(useShallow(
-		(state) => ({
-			primaryColor: state.primaryColor,
-			secondaryColor: state.secondaryColor,
-			palette: state.palette,
-			setPrimaryColor: state.setPrimaryColor,
-			setSecondaryColor: state.setSecondaryColor,
-			swapColors: state.swapColors,
-		})
-	));
+	const primaryColor = useSettingsStore((state) => state.primaryColor);
+	const secondaryColor = useSettingsStore((state) => state.secondaryColor);
+	const palette = useSettingsStore((state) => state.palette);
+	const setPrimaryColor = useSettingsStore((state) => state.setPrimaryColor);
+	const setSecondaryColor = useSettingsStore((state) => state.setSecondaryColor);
+	const swapColors = useSettingsStore((state) => state.swapColors);
+
+	return {
+		primaryColor,
+		secondaryColor,
+		palette,
+		setPrimaryColor,
+		setSecondaryColor,
+		swapColors,
+	};
 }
 
 /**
  * Get all shape-related settings
  */
 export function useShapeSettings() {
-	return useSettingsStore(useShallow(
-		(state) => ({
-		fillStyle: state.fillStyle,
-		lineWidth: state.lineWidth,
-		setFillStyle: state.setFillStyle,
-		setLineWidth: state.setLineWidth,
-		})
-	));
+	const fillStyle = useSettingsStore((state) => state.fillStyle);
+	const lineWidth = useSettingsStore((state) => state.lineWidth);
+	const setFillStyle = useSettingsStore((state) => state.setFillStyle);
+	const setLineWidth = useSettingsStore((state) => state.setLineWidth);
+
+	return {
+		fillStyle,
+		lineWidth,
+		setFillStyle,
+		setLineWidth,
+	};
 }
 
 /**
  * Get all brush-related settings
  */
 export function useBrushSettings() {
-	return useSettingsStore(useShallow(
-		(state) => ({
-		brushSize: state.brushSize,
-		brushShape: state.brushShape,
-		pencilSize: state.pencilSize,
-		eraserSize: state.eraserSize,
-		airbrushSize: state.airbrushSize,
-		setBrushSize: state.setBrushSize,
-		setBrushShape: state.setBrushShape,
-		setEraserSize: state.setEraserSize,
-		setAirbrushSize: state.setAirbrushSize,
-		})
-	));
+	const brushSize = useSettingsStore((state) => state.brushSize);
+	const brushShape = useSettingsStore((state) => state.brushShape);
+	const pencilSize = useSettingsStore((state) => state.pencilSize);
+	const eraserSize = useSettingsStore((state) => state.eraserSize);
+	const airbrushSize = useSettingsStore((state) => state.airbrushSize);
+	const setBrushSize = useSettingsStore((state) => state.setBrushSize);
+	const setBrushShape = useSettingsStore((state) => state.setBrushShape);
+	const setEraserSize = useSettingsStore((state) => state.setEraserSize);
+	const setAirbrushSize = useSettingsStore((state) => state.setAirbrushSize);
+
+	return {
+		brushSize,
+		brushShape,
+		pencilSize,
+		eraserSize,
+		airbrushSize,
+		setBrushSize,
+		setBrushShape,
+		setEraserSize,
+		setAirbrushSize,
+	};
 }
 
 /**
  * Get all font-related settings
  */
 export function useFontSettings() {
-	return useSettingsStore(useShallow(
-		(state) => ({
-		fontFamily: state.fontFamily,
-		fontSize: state.fontSize,
-		fontBold: state.fontBold,
-		fontItalic: state.fontItalic,
-		fontUnderline: state.fontUnderline,
-		textTransparent: state.textTransparent,
-		setFontFamily: state.setFontFamily,
-		setFontSize: state.setFontSize,
-		setFontStyle: state.setFontStyle,
-		setTextTransparent: state.setTextTransparent,
-		})
-	));
+	const fontFamily = useSettingsStore((state) => state.fontFamily);
+	const fontSize = useSettingsStore((state) => state.fontSize);
+	const fontBold = useSettingsStore((state) => state.fontBold);
+	const fontItalic = useSettingsStore((state) => state.fontItalic);
+	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
+	const textTransparent = useSettingsStore((state) => state.textTransparent);
+	const setFontFamily = useSettingsStore((state) => state.setFontFamily);
+	const setFontSize = useSettingsStore((state) => state.setFontSize);
+	const setFontStyle = useSettingsStore((state) => state.setFontStyle);
+	const setTextTransparent = useSettingsStore((state) => state.setTextTransparent);
+
+	return {
+		fontFamily,
+		fontSize,
+		fontBold,
+		fontItalic,
+		fontUnderline,
+		textTransparent,
+		setFontFamily,
+		setFontSize,
+		setFontStyle,
+		setTextTransparent,
+	};
 }
 
 /**
  * Get undo/redo state and actions
  */
 export function useHistory() {
-	return useCanvasStore(useShallow(
-		(state) => ({
-		canUndo: state.undoStack.length > 0,
-		canRedo: state.redoStack.length > 0,
-		saveState: state.saveState,
-		undo: state.undo,
-		redo: state.redo,
-		clearHistory: state.clearHistory,
-		})
-	));
+	const canUndo = useCanvasStore((state) => state.undoStack.length > 0);
+	const canRedo = useCanvasStore((state) => state.redoStack.length > 0);
+	const saveState = useCanvasStore((state) => state.saveState);
+	const undo = useCanvasStore((state) => state.undo);
+	const redo = useCanvasStore((state) => state.redo);
+	const clearHistory = useCanvasStore((state) => state.clearHistory);
+
+	return {
+		canUndo,
+		canRedo,
+		saveState,
+		undo,
+		redo,
+		clearHistory,
+	};
 }
 
 /**
@@ -113,20 +142,29 @@ export function useHistory() {
  * Use useCurrentHistoryNode() if you specifically need to track the current node.
  */
 export function useTreeHistory() {
-	return useHistoryStore(useShallow(
-		(state) => ({
-			historyTree: state.historyTree,
-			getRoot: state.getRoot,
-			canUndo: state.canUndo,
-			canRedo: state.canRedo,
-			pushState: state.pushState,
-			undo: state.undo,
-			redo: state.redo,
-			goToNode: state.goToNode,
-			getAllNodes: state.getAllNodes,
-			pruneHistory: state.pruneHistory,
-		})
-	));
+	const historyTree = useHistoryStore((state) => state.historyTree);
+	const getRoot = useHistoryStore((state) => state.getRoot);
+	const canUndo = useHistoryStore((state) => state.canUndo);
+	const canRedo = useHistoryStore((state) => state.canRedo);
+	const pushState = useHistoryStore((state) => state.pushState);
+	const undo = useHistoryStore((state) => state.undo);
+	const redo = useHistoryStore((state) => state.redo);
+	const goToNode = useHistoryStore((state) => state.goToNode);
+	const getAllNodes = useHistoryStore((state) => state.getAllNodes);
+	const pruneHistory = useHistoryStore((state) => state.pruneHistory);
+
+	return {
+		historyTree,
+		getRoot,
+		canUndo,
+		canRedo,
+		pushState,
+		undo,
+		redo,
+		goToNode,
+		getAllNodes,
+		pruneHistory,
+	};
 }
 
 /**
@@ -141,101 +179,115 @@ export function useCurrentHistoryNode() {
  * Get canvas dimensions and actions
  */
 export function useCanvasDimensions() {
-	return useCanvasStore(useShallow(
-		(state) => ({
-			canvasWidth: state.canvasWidth,
-			canvasHeight: state.canvasHeight,
-			setCanvasSize: state.setCanvasSize,
-		})
-	));
+	const canvasWidth = useCanvasStore((state) => state.canvasWidth);
+	const canvasHeight = useCanvasStore((state) => state.canvasHeight);
+	const setCanvasSize = useCanvasStore((state) => state.setCanvasSize);
+
+	return {
+		canvasWidth,
+		canvasHeight,
+		setCanvasSize,
+	};
 }
 
 /**
  * Get tool state and actions
  */
 export function useTool() {
-	return useToolStore(useShallow(
-		(state) => ({
-		selectedToolId: state.selectedToolId,
-		setTool: state.setTool,
-		})
-	));
+	const selectedToolId = useToolStore((state) => state.selectedToolId);
+	const setTool = useToolStore((state) => state.setTool);
+
+	return {
+		selectedToolId,
+		setTool,
+	};
 }
 
 /**
  * Get selection state and actions
  */
 export function useSelection() {
-	return useToolStore(useShallow(
-		(state) => ({
-		selection: state.selection,
-		setSelection: state.setSelection,
-		clearSelection: state.clearSelection,
-		hasSelection: state.selection !== null,
-		})
-	));
-}
+	const selection = useToolStore((state) => state.selection);
+	const setSelection = useToolStore((state) => state.setSelection);
+	const clearSelection = useToolStore((state) => state.clearSelection);
+	const hasSelection = selection !== null;
 
-// Stable clipboard helper functions (defined at module level to avoid recreation)
-const clipboardHelpers = {
-	copy: () => {
-		const selection = useToolStore.getState().selection;
-		if (selection?.imageData) {
-			useToolStore.getState().setClipboard(selection.imageData);
-		}
-	},
-	cut: () => {
-		const selection = useToolStore.getState().selection;
-		if (selection?.imageData) {
-			useToolStore.getState().setClipboard(selection.imageData);
-		}
-	},
-	paste: () => {
-		return useToolStore.getState().clipboard || undefined;
-	},
-};
+	return {
+		selection,
+		setSelection,
+		clearSelection,
+		hasSelection,
+	};
+}
 
 /**
  * Get clipboard state and actions
+ * Actions are stable module-level functions for maximum stability
  */
 export function useClipboard() {
 	const clipboard = useToolStore((state) => state.clipboard);
+	const hasClipboard = clipboard !== null;
 
-	// Memoize the returned object to prevent infinite re-renders
-	return useMemo(() => ({
+	// Return stable object - no useMemo needed
+	return {
 		clipboard,
-		hasClipboard: clipboard !== null,
-		...clipboardHelpers,
-	}), [clipboard]);
+		hasClipboard,
+		copy: () => {
+			const selection = useToolStore.getState().selection;
+			if (selection?.imageData) {
+				useToolStore.getState().setClipboard(selection.imageData);
+			}
+		},
+		cut: () => {
+			const selection = useToolStore.getState().selection;
+			if (selection?.imageData) {
+				useToolStore.getState().setClipboard(selection.imageData);
+			}
+		},
+		paste: () => {
+			return useToolStore.getState().clipboard || undefined;
+		},
+	};
 }
 
 /**
- * Get text box state and actions
+ * Get text box state
+ */
+export function useTextBoxState() {
+	return useToolStore((state) => state.textBox);
+}
+
+/**
+ * Get text box actions
+ */
+export function useTextBoxActions() {
+	const setTextBox = useToolStore((state) => state.setTextBox);
+	const clearTextBox = useToolStore((state) => state.clearTextBox);
+
+	return {
+		setTextBox,
+		clearTextBox,
+	};
+}
+
+/**
+ * Combined text box hook (for backwards compatibility)
+ * NOTE: This combines multiple stores - prefer using separate hooks for better performance
  */
 export function useTextBox() {
-	const { textBox, setTextBox, clearTextBox } = useToolStore(useShallow(
-		(state) => ({
-			textBox: state.textBox,
-			setTextBox: state.setTextBox,
-			clearTextBox: state.clearTextBox,
-		})
-	));
+	const textBox = useToolStore((state) => state.textBox);
+	const setTextBox = useToolStore((state) => state.setTextBox);
+	const clearTextBox = useToolStore((state) => state.clearTextBox);
+	const fontFamily = useSettingsStore((state) => state.fontFamily);
+	const fontSize = useSettingsStore((state) => state.fontSize);
+	const fontBold = useSettingsStore((state) => state.fontBold);
+	const fontItalic = useSettingsStore((state) => state.fontItalic);
+	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
+	const setFontFamily = useSettingsStore((state) => state.setFontFamily);
+	const setFontSize = useSettingsStore((state) => state.setFontSize);
+	const setFontStyle = useSettingsStore((state) => state.setFontStyle);
 
-	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } = useSettingsStore(useShallow(
-		(state) => ({
-			fontFamily: state.fontFamily,
-			fontSize: state.fontSize,
-			fontBold: state.fontBold,
-			fontItalic: state.fontItalic,
-			fontUnderline: state.fontUnderline,
-			setFontFamily: state.setFontFamily,
-			setFontSize: state.setFontSize,
-			setFontStyle: state.setFontStyle,
-		})
-	));
-
-	// Memoize the combined result to prevent infinite re-renders
-	return useMemo(() => ({
+	return {
 		textBox,
 		setTextBox,
 		clearTextBox,
@@ -247,75 +299,83 @@ export function useTextBox() {
 		setFontFamily,
 		setFontSize,
 		setFontStyle,
-	}), [textBox, setTextBox, clearTextBox, fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle]);
+	};
 }
 
 /**
  * Get view state toggles
  */
 export function useViewState() {
-	const uiState = useUIStore(useShallow(
-		(state) => ({
-			showToolBox: state.showToolBox,
-			showColorBox: state.showColorBox,
-			showStatusBar: state.showStatusBar,
-			showTextToolbar: state.showTextToolbar,
-			showGrid: state.showGrid,
-			showThumbnail: state.showThumbnail,
-			toggleToolBox: state.toggleToolBox,
-			toggleColorBox: state.toggleColorBox,
-			toggleStatusBar: state.toggleStatusBar,
-			toggleTextToolbar: state.toggleTextToolbar,
-			toggleGrid: state.toggleGrid,
-			toggleThumbnail: state.toggleThumbnail,
-		})
-	));
+	const showToolBox = useUIStore((state) => state.showToolBox);
+	const showColorBox = useUIStore((state) => state.showColorBox);
+	const showStatusBar = useUIStore((state) => state.showStatusBar);
+	const showTextToolbar = useUIStore((state) => state.showTextToolbar);
+	const showGrid = useUIStore((state) => state.showGrid);
+	const showThumbnail = useUIStore((state) => state.showThumbnail);
+	const toggleToolBox = useUIStore((state) => state.toggleToolBox);
+	const toggleColorBox = useUIStore((state) => state.toggleColorBox);
+	const toggleStatusBar = useUIStore((state) => state.toggleStatusBar);
+	const toggleTextToolbar = useUIStore((state) => state.toggleTextToolbar);
+	const toggleGrid = useUIStore((state) => state.toggleGrid);
+	const toggleThumbnail = useUIStore((state) => state.toggleThumbnail);
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+	const toggleDrawOpaque = useSettingsStore((state) => state.toggleDrawOpaque);
 
-	const settingsState = useSettingsStore(useShallow(
-		(state) => ({
-			drawOpaque: state.drawOpaque,
-			toggleDrawOpaque: state.toggleDrawOpaque,
-		})
-	));
-
-	// Memoize the combined result to prevent infinite re-renders
-	return useMemo(() => ({ ...uiState, ...settingsState }), [uiState, settingsState]);
+	return {
+		showToolBox,
+		showColorBox,
+		showStatusBar,
+		showTextToolbar,
+		showGrid,
+		showThumbnail,
+		toggleToolBox,
+		toggleColorBox,
+		toggleStatusBar,
+		toggleTextToolbar,
+		toggleGrid,
+		toggleThumbnail,
+		drawOpaque,
+		toggleDrawOpaque,
+	};
 }
 
 /**
  * Get magnification state and actions
  */
 export function useMagnification() {
-	return useUIStore(useShallow(
-		(state) => ({
-			magnification: state.magnification,
-			setMagnification: state.setMagnification,
-		})
-	));
+	const magnification = useUIStore((state) => state.magnification);
+	const setMagnification = useUIStore((state) => state.setMagnification);
+
+	return {
+		magnification,
+		setMagnification,
+	};
 }
 
 /**
  * Get cursor position state
  */
 export function useCursorPosition() {
-	return useUIStore(useShallow(
-		(state) => ({
-			cursorPosition: state.cursorPosition,
-			setCursorPosition: state.setCursorPosition,
-		})
-	));
+	const cursorPosition = useUIStore((state) => state.cursorPosition);
+	const setCursorPosition = useUIStore((state) => state.setCursorPosition);
+
+	return {
+		cursorPosition,
+		setCursorPosition,
+	};
 }
 
 /**
  * Get app state (for backwards compatibility)
  */
 export function useApp() {
-	return useCanvasStore(useShallow(
-		(state) => ({
-			state: {
-				canvasWidth: state.canvasWidth,
-				canvasHeight: state.canvasHeight,
-			},
-		})
-	));
+	const canvasWidth = useCanvasStore((state) => state.canvasWidth);
+	const canvasHeight = useCanvasStore((state) => state.canvasHeight);
+
+	return {
+		state: {
+			canvasWidth,
+			canvasHeight,
+		},
+	};
 }

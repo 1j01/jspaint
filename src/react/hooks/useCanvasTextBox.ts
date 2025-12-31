@@ -3,7 +3,6 @@ import { useColors } from "../context/state/hooks";
 import { useToolStore } from "../context/state/toolStore";
 import { useSettingsStore } from "../context/state/settingsStore";
 import type { TextBoxState } from "../context/state/types";
-import { useShallow } from "zustand/react/shallow";
 
 export interface TextBoxCreationState {
 	isCreating: boolean;
@@ -21,24 +20,16 @@ interface UseCanvasTextBoxProps {
 export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 	const { primaryColor } = useColors();
 
-	// Use stores directly
-	const { textBox, setTextBox, clearTextBox } = useToolStore(useShallow(
-		(state) => ({
-			textBox: state.textBox,
-			setTextBox: state.setTextBox,
-			clearTextBox: state.clearTextBox,
-		})
-	));
+	// Use stores directly with individual selectors (no useShallow needed)
+	const textBox = useToolStore((state) => state.textBox);
+	const setTextBox = useToolStore((state) => state.setTextBox);
+	const clearTextBox = useToolStore((state) => state.clearTextBox);
 
-	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline } = useSettingsStore(useShallow(
-		(state) => ({
-			fontFamily: state.fontFamily,
-			fontSize: state.fontSize,
-			fontBold: state.fontBold,
-			fontItalic: state.fontItalic,
-			fontUnderline: state.fontUnderline,
-		})
-	));
+	const fontFamily = useSettingsStore((state) => state.fontFamily);
+	const fontSize = useSettingsStore((state) => state.fontSize);
+	const fontBold = useSettingsStore((state) => state.fontBold);
+	const fontItalic = useSettingsStore((state) => state.fontItalic);
+	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
 
 	// Text box creation state
 	const textBoxState = useRef<TextBoxCreationState>({
