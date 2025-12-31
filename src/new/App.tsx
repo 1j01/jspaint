@@ -8,23 +8,23 @@ import type { StretchSkewValues } from "../react/components/dialogs/StretchSkewD
 import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
 import { Tool, ToolBox } from "../react/components/ToolBox";
 import { ToolOptions } from "../react/components/ToolOptions";
+import { useInitializeStores } from "../react/context/state/useInitializeStores";
+import { useUIStore } from "../react/context/state/uiStore";
+import { useSettingsStore } from "../react/context/state/settingsStore";
+import { useToolStore } from "../react/context/state/toolStore";
+import { TOOL_IDS } from "../react/context/state/types";
 import {
-	useInitializeStores,
 	useTreeHistory,
-	useUIStore,
 	useColors,
 	useTool,
 	useHistory,
 	useSelection,
 	useClipboard,
-	useToolStore,
-	useSettingsStore,
 	useMagnification,
 	useCursorPosition,
 	useApp,
 	useCanvasDimensions,
-	TOOL_IDS,
-} from "../react/context/state";
+} from "../react/context/state/hooks";
 import { useShallow } from "zustand/react/shallow";
 import { defaultCustomColors } from "../react/data/basicColors";
 import { createMenus } from "../react/menus/menuDefinitions";
