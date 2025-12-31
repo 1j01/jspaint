@@ -24,6 +24,7 @@ import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
 import { useCanvasLifecycle } from "../hooks/useCanvasLifecycle";
 import { useAirbrushEffect } from "../hooks/useAirbrushEffect";
+import { getCursorForTool, resizeSelection, prepareCanvasResize, restoreCanvasAfterResize } from "../utils/canvasHelpers";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
@@ -49,7 +50,7 @@ const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
  * @returns {JSX.Element} Canvas element with overlays and handles
  */
 export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObject<HTMLCanvasElement>; className?: string }) {
-	console.warn("[Canvas] Component rendering");
+	// console.warn("[Canvas] Component rendering");
 
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
@@ -560,83 +561,25 @@ selectionHook,
 	}, []);
 
 	/**
-	 * Get cursor style based on current tool.
-	 * Returns appropriate CSS cursor value for the selected tool.
-	 *
-	 * @returns {string} CSS cursor value
-	 */
-	const getCursorStyle = useCallback((): string => {
-		switch (selectedToolId) {
-			case TOOL_IDS.MAGNIFIER:
-				return "zoom-in";
-			case TOOL_IDS.TEXT:
-				return "text";
-			default:
-				return "crosshair";
-		}
-	}, [selectedToolId]);
-
-	/**
 	 * Canvas inline styles.
 	 * Applies cursor and magnification transform to the canvas element.
 	 * Position and transform-origin are handled by CSS for exact alignment with overlay.
 	 */
 	const canvasStyle: React.CSSProperties = {
-		cursor: getCursorStyle(),
+		cursor: getCursorForTool(selectedToolId),
 		transform: magnification > 1 ? `scale(${magnification})` : undefined,
 	};
 
 	/**
 	 * Selection resize handler.
 	 * Called when user drags selection resize handles.
-	 *
-	 * Process:
-	 * 1. Creates temporary canvas with original selection ImageData
-	 * 2. Creates new canvas with new dimensions
-	 * 3. Draws original selection scaled to new size (bilinear interpolation)
-	 * 4. Captures new ImageData
-	 * 5. Updates selection state with new position and resized image
-	 *
-	 * @param {Object} newRect - New selection bounds
-	 * @param {number} newRect.x - New x position
-	 * @param {number} newRect.y - New y position
-	 * @param {number} newRect.width - New width
-	 * @param {number} newRect.height - New height
 	 */
 	const handleSelectionResize = useCallback(
 		(newRect: { x: number; y: number; width: number; height: number }) => {
-			if (!currentSelection || !currentSelection.imageData) return;
-
-			// Create a scaled version of the selection image data
-			const tempCanvas = document.createElement("canvas");
-			tempCanvas.width = currentSelection.imageData.width;
-			tempCanvas.height = currentSelection.imageData.height;
-			const tempCtx = tempCanvas.getContext("2d");
-			if (!tempCtx) return;
-			tempCtx.putImageData(currentSelection.imageData, 0, 0);
-
-			// Create a new canvas with the new size
-			const resizedCanvas = document.createElement("canvas");
-			resizedCanvas.width = newRect.width;
-			resizedCanvas.height = newRect.height;
-			const resizedCtx = resizedCanvas.getContext("2d");
-			if (!resizedCtx) return;
-
-			// Draw the original selection scaled to the new size
-			resizedCtx.drawImage(tempCanvas, 0, 0, newRect.width, newRect.height);
-
-			// Get the new image data
-			const newImageData = resizedCtx.getImageData(0, 0, newRect.width, newRect.height);
-
-			// Update the selection with the new position and resized image data
-			setSelection({
-				...currentSelection,
-				x: newRect.x,
-				y: newRect.y,
-				width: newRect.width,
-				height: newRect.height,
-				imageData: newImageData,
-			});
+			const resized = resizeSelection(currentSelection, newRect);
+			if (resized) {
+				setSelection(resized);
+			}
 		},
 		[currentSelection, setSelection],
 	);
@@ -644,29 +587,15 @@ selectionHook,
 	/**
 	 * Canvas resize handler.
 	 * Called when user drags canvas resize handles (bottom or right edge).
-	 *
-	 * Process:
-	 * 1. Saves current canvas content as ImageData
-	 * 2. Resizes canvas to new dimensions (which clears it)
-	 * 3. Restores the previous content to the resized canvas
-	 * 4. Saves state for undo
-	 *
-	 * @param {number} width - New canvas width in pixels
-	 * @param {number} height - New canvas height in pixels
 	 */
 	const handleCanvasResize = useCallback(
 		(width: number, height: number) => {
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 
-			const ctx = canvas.getContext("2d", { willReadFrequently: true });
-			if (!ctx) return;
-
 			// Save current canvas content
-			const currentImageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-
-			// Save to undo stack before resizing
-			// Moved to after resize completes
+			const currentImageData = prepareCanvasResize(canvas, canvasWidth, canvasHeight);
+			if (!currentImageData) return;
 
 			// Resize canvas (this will clear it)
 			setCanvasSize(width, height);
@@ -676,19 +605,11 @@ selectionHook,
 				const resizedCanvas = canvasRef.current;
 				if (!resizedCanvas) return;
 
-				const resizedCtx = resizedCanvas.getContext("2d", { willReadFrequently: true });
-				if (!resizedCtx) return;
+				// Restore content with white background
+				restoreCanvasAfterResize(resizedCanvas, currentImageData, width, height);
 
-				// Fill with white background
-				resizedCtx.fillStyle = "#ffffff";
-				resizedCtx.fillRect(0, 0, width, height);
-
-				// Restore the previous content
-			resizedCtx.putImageData(currentImageData, 0, 0);
-
-			// Save to history AFTER resize completes
-			saveHistoryState("Resize Canvas");
-				resizedCtx.putImageData(currentImageData, 0, 0);
+				// Save to history AFTER resize completes
+				saveHistoryState("Resize Canvas");
 			});
 		},
 		[canvasRef, canvasWidth, canvasHeight, setCanvasSize, saveHistoryState],

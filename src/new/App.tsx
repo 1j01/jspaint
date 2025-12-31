@@ -17,14 +17,15 @@ import {
 	useHistory,
 	useSelection,
 	useClipboard,
-	useTextBox,
-	useViewState,
+	useToolStore,
+	useSettingsStore,
 	useMagnification,
 	useCursorPosition,
 	useApp,
 	useCanvasDimensions,
 	TOOL_IDS,
 } from "../react/context/state";
+import { useShallow } from "zustand/react/shallow";
 import { defaultCustomColors } from "../react/data/basicColors";
 import { createMenus } from "../react/menus/menuDefinitions";
 import { useMenuActions } from "../react/hooks/useMenuActions";
@@ -218,8 +219,14 @@ function AppContent() {
 	const { copy, cut, paste, hasClipboard } = useClipboard();
 	const { magnification, setMagnification } = useMagnification();
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
+
+	// Use stores directly
+	const { textBox } = useToolStore(
+		(state) => ({ textBox: state.textBox }),
+		useShallow,
+	);
+
 	const {
-		textBox,
 		fontFamily,
 		fontSize,
 		fontBold,
@@ -228,7 +235,20 @@ function AppContent() {
 		setFontFamily,
 		setFontSize,
 		setFontStyle,
-	} = useTextBox();
+	} = useSettingsStore(
+		(state) => ({
+			fontFamily: state.fontFamily,
+			fontSize: state.fontSize,
+			fontBold: state.fontBold,
+			fontItalic: state.fontItalic,
+			fontUnderline: state.fontUnderline,
+			setFontFamily: state.setFontFamily,
+			setFontSize: state.setFontSize,
+			setFontStyle: state.setFontStyle,
+		}),
+		useShallow,
+	);
+
 	const {
 		showToolBox,
 		showColorBox,
@@ -236,15 +256,37 @@ function AppContent() {
 		showTextToolbar,
 		showGrid,
 		showThumbnail,
-		drawOpaque,
 		toggleToolBox,
 		toggleColorBox,
 		toggleStatusBar,
 		toggleTextToolbar,
 		toggleGrid,
 		toggleThumbnail,
-		toggleDrawOpaque,
-	} = useViewState();
+	} = useUIStore(
+		(state) => ({
+			showToolBox: state.showToolBox,
+			showColorBox: state.showColorBox,
+			showStatusBar: state.showStatusBar,
+			showTextToolbar: state.showTextToolbar,
+			showGrid: state.showGrid,
+			showThumbnail: state.showThumbnail,
+			toggleToolBox: state.toggleToolBox,
+			toggleColorBox: state.toggleColorBox,
+			toggleStatusBar: state.toggleStatusBar,
+			toggleTextToolbar: state.toggleTextToolbar,
+			toggleGrid: state.toggleGrid,
+			toggleThumbnail: state.toggleThumbnail,
+		}),
+		useShallow,
+	);
+
+	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(
+		(state) => ({
+			drawOpaque: state.drawOpaque,
+			toggleDrawOpaque: state.toggleDrawOpaque,
+		}),
+		useShallow,
+	);
 
 	const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
 
