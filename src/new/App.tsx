@@ -221,10 +221,9 @@ function AppContent() {
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
 
 	// Use stores directly
-	const { textBox } = useToolStore(
-		(state) => ({ textBox: state.textBox }),
-		useShallow,
-	);
+	const { textBox } = useToolStore(useShallow(
+		(state) => ({ textBox: state.textBox })
+	));
 
 	const {
 		fontFamily,
@@ -235,7 +234,7 @@ function AppContent() {
 		setFontFamily,
 		setFontSize,
 		setFontStyle,
-	} = useSettingsStore(
+	} = useSettingsStore(useShallow(
 		(state) => ({
 			fontFamily: state.fontFamily,
 			fontSize: state.fontSize,
@@ -245,9 +244,8 @@ function AppContent() {
 			setFontFamily: state.setFontFamily,
 			setFontSize: state.setFontSize,
 			setFontStyle: state.setFontStyle,
-		}),
-		useShallow,
-	);
+		})
+	));
 
 	const {
 		showToolBox,
@@ -262,7 +260,7 @@ function AppContent() {
 		toggleTextToolbar,
 		toggleGrid,
 		toggleThumbnail,
-	} = useUIStore(
+	} = useUIStore(useShallow(
 		(state) => ({
 			showToolBox: state.showToolBox,
 			showColorBox: state.showColorBox,
@@ -276,17 +274,15 @@ function AppContent() {
 			toggleTextToolbar: state.toggleTextToolbar,
 			toggleGrid: state.toggleGrid,
 			toggleThumbnail: state.toggleThumbnail,
-		}),
-		useShallow,
-	);
+		})
+	));
 
-	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(
+	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(useShallow(
 		(state) => ({
 			drawOpaque: state.drawOpaque,
 			toggleDrawOpaque: state.toggleDrawOpaque,
-		}),
-		useShallow,
-	);
+		})
+	));
 
 	const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
 

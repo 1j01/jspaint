@@ -7,17 +7,12 @@
 
 import { RefObject, useCallback } from "react";
 import { TOOL_IDS } from "../context/state";
+import { MAGNIFICATION_LEVELS, TOOL_NAMES } from "../utils/canvasHelpers";
 import type { useCanvasDrawing } from "./useCanvasDrawing";
 import type { useCanvasSelection } from "./useCanvasSelection";
 import type { useCanvasTextBox } from "./useCanvasTextBox";
 import type { useCanvasShapes } from "./useCanvasShapes";
 import type { useCanvasCurvePolygon } from "./useCanvasCurvePolygon";
-
-/**
- * Available magnification levels for the Magnifier tool.
- * Matches MS Paint's zoom levels: 1x, 2x, 4x, 6x, 8x
- */
-const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
 
 interface UseCanvasEventHandlersParams {
 	canvasRef: RefObject<HTMLCanvasElement>;
@@ -336,15 +331,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 				shapes.finalizeShape(x, y, selectedToolId, ctx);
 				canvas.releasePointerCapture(e.pointerId);
 
-				const toolNames: Record<string, string> = {
-					[TOOL_IDS.LINE]: "Line",
-					[TOOL_IDS.CURVE]: "Curve",
-					[TOOL_IDS.RECTANGLE]: "Rectangle",
-					[TOOL_IDS.ROUNDED_RECTANGLE]: "Rounded Rectangle",
-					[TOOL_IDS.ELLIPSE]: "Ellipse",
-					[TOOL_IDS.POLYGON]: "Polygon",
-				};
-				saveHistoryState(toolNames[selectedToolId] || "Shape");
+				saveHistoryState(TOOL_NAMES[selectedToolId] || "Shape");
 				return;
 			}
 
@@ -353,22 +340,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 				canvas.releasePointerCapture(e.pointerId);
 				shapes.drawingState.current.isDrawing = false;
 
-				let toolName = "Edit";
-				switch (selectedToolId) {
-					case TOOL_IDS.PENCIL:
-						toolName = "Pencil";
-						break;
-					case TOOL_IDS.BRUSH:
-						toolName = "Brush";
-						break;
-					case TOOL_IDS.ERASER:
-						toolName = "Eraser";
-						break;
-					case TOOL_IDS.AIRBRUSH:
-						toolName = "Airbrush";
-						break;
-				}
-				saveHistoryState(toolName);
+				saveHistoryState(TOOL_NAMES[selectedToolId] || "Edit");
 			}
 
 			// Save for instant tools

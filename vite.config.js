@@ -5,7 +5,7 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const htmlEntries = {
 	main: resolve(__dirname, "index.html"),
-	legacy: resolve(__dirname, "old/index.html"),
+	// legacy: resolve(__dirname, "old/index.html"), // Exclude from Vite processing
 	reactPreview: resolve(__dirname, "new/index.html"),
 	about: resolve(__dirname, "about.html"),
 	privacy: resolve(__dirname, "privacy.html"),
@@ -13,13 +13,15 @@ const htmlEntries = {
 };
 
 const staticAssets = [
-	{ src: "audio/**/*", dest: "audio" },
-	{ src: "help/**/*", dest: "help" },
-	{ src: "images/**/*", dest: "images" },
-	{ src: "lib/**/*", dest: "lib" },
-	{ src: "localization/**/*", dest: "localization" },
-	{ src: "styles/**/*", dest: "styles" },
-	{ src: "svg-paint/**/*", dest: "svg-paint" },
+	{ src: "audio", dest: "audio" },
+	{ src: "help", dest: "help" },
+	{ src: "images", dest: "images" },
+	{ src: "lib", dest: "lib" },
+	{ src: "localization", dest: "localization" },
+	{ src: "styles", dest: "styles" },
+	{ src: "svg-paint", dest: "svg-paint" },
+	{ src: "src", dest: "src" }, // Copy entire src directory for legacy app
+	{ src: "old", dest: "old" }, // Copy entire old directory as-is
 	{ src: "browserconfig.xml", dest: "" },
 	{ src: "favicon.ico", dest: "" },
 	{ src: "manifest.webmanifest", dest: "" },

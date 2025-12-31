@@ -8,6 +8,12 @@
 import { TOOL_IDS } from "../context/state";
 
 /**
+ * Available magnification levels for the Magnifier tool.
+ * Matches MS Paint's zoom levels: 1x, 2x, 4x, 6x, 8x
+ */
+export const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
+
+/**
  * Get CSS cursor style based on current tool.
  *
  * Returns the appropriate cursor for each drawing tool:
@@ -152,4 +158,42 @@ export function restoreCanvasAfterResize(
 
 	// Restore the previous content
 	ctx.putImageData(imageData, 0, 0);
+}
+
+/**
+ * Map of tool IDs to their display names for history.
+ * Used when saving operations to the undo/redo stack.
+ */
+export const TOOL_NAMES: Record<string, string> = {
+	[TOOL_IDS.LINE]: "Line",
+	[TOOL_IDS.CURVE]: "Curve",
+	[TOOL_IDS.RECTANGLE]: "Rectangle",
+	[TOOL_IDS.ROUNDED_RECTANGLE]: "Rounded Rectangle",
+	[TOOL_IDS.ELLIPSE]: "Ellipse",
+	[TOOL_IDS.POLYGON]: "Polygon",
+	[TOOL_IDS.PENCIL]: "Pencil",
+	[TOOL_IDS.BRUSH]: "Brush",
+	[TOOL_IDS.ERASER]: "Eraser",
+	[TOOL_IDS.AIRBRUSH]: "Airbrush",
+	[TOOL_IDS.FILL]: "Fill",
+	[TOOL_IDS.PICK_COLOR]: "Pick Color",
+	[TOOL_IDS.SELECT]: "Select",
+	[TOOL_IDS.FREE_FORM_SELECT]: "Free-Form Select",
+	[TOOL_IDS.TEXT]: "Text",
+	[TOOL_IDS.MAGNIFIER]: "Magnifier",
+};
+
+/**
+ * Get the CSS style object for the canvas element.
+ * Applies cursor and magnification transform.
+ *
+ * @param selectedToolId - Currently selected tool ID
+ * @param magnification - Current magnification level (1-8)
+ * @returns CSS style object for canvas element
+ */
+export function getCanvasStyle(selectedToolId: string, magnification: number): React.CSSProperties {
+	return {
+		cursor: getCursorForTool(selectedToolId),
+		transform: magnification > 1 ? `scale(${magnification})` : undefined,
+	};
 }

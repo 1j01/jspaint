@@ -209,14 +209,14 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 				width={canvasWidth}
 				height={canvasHeight}
 				style={canvasStyle}
-				onPointerDown={eventHandlers.handlePointerDown}
-				onPointerMove={eventHandlers.handlePointerMove}
-				onPointerUp={eventHandlers.handlePointerUp}
+				onPointerDown={handlePointerDown}
+				onPointerMove={handlePointerMove}
+				onPointerUp={handlePointerUp}
 				onPointerLeave={(e) => {
-					eventHandlers.handlePointerUp(e);
-					eventHandlers.handlePointerLeave();
+					handlePointerUp(e);
+					handlePointerLeave();
 				}}
-				onContextMenu={eventHandlers.handleContextMenu}
+				onContextMenu={handleContextMenu}
 				aria-label="Drawing canvas"
 			/>
 			<CanvasOverlay ref={overlayRef} width={canvasWidth} height={canvasHeight} magnification={magnification} />
@@ -233,9 +233,9 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 					textBox={textBoxHook.textBox}
 					magnification={magnification}
 					primaryColor={drawing.primaryColor}
-					onChange={eventHandlers.handleTextChange}
-					onKeyDown={eventHandlers.handleTextKeyDown}
-					onBlur={eventHandlers.handleTextBlur}
+					onChange={handleTextChange}
+					onKeyDown={handleTextKeyDown}
+					onBlur={handleTextBlur}
 				/>
 			)}
 			<CanvasResizeHandles

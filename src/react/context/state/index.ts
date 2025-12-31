@@ -29,7 +29,6 @@
  * ```
  */
 
-import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export { useSettingsStore, type SettingsState } from "./settingsStore";
@@ -81,7 +80,7 @@ export function useDrawingColor(button: number = 0): string {
  */
 export function useColors() {
 	console.warn("[HOOK] useColors called");
-	return useSettingsStore(
+	return useSettingsStore(useShallow(
 		(state) => ({
 			primaryColor: state.primaryColor,
 			secondaryColor: state.secondaryColor,
@@ -89,9 +88,8 @@ export function useColors() {
 			setPrimaryColor: state.setPrimaryColor,
 			setSecondaryColor: state.setSecondaryColor,
 			swapColors: state.swapColors,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
@@ -99,15 +97,14 @@ export function useColors() {
  */
 export function useShapeSettings() {
 	console.warn("[HOOK] useShapeSettings called");
-	return useSettingsStore(
+	return useSettingsStore(useShallow(
 		(state) => ({
 		fillStyle: state.fillStyle,
 		lineWidth: state.lineWidth,
 		setFillStyle: state.setFillStyle,
 		setLineWidth: state.setLineWidth,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
@@ -115,7 +112,7 @@ export function useShapeSettings() {
  */
 export function useBrushSettings() {
 	console.warn("[HOOK] useBrushSettings called");
-	return useSettingsStore(
+	return useSettingsStore(useShallow(
 		(state) => ({
 		brushSize: state.brushSize,
 		brushShape: state.brushShape,
@@ -126,16 +123,15 @@ export function useBrushSettings() {
 		setBrushShape: state.setBrushShape,
 		setEraserSize: state.setEraserSize,
 		setAirbrushSize: state.setAirbrushSize,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
  * Get all font-related settings
  */
 export function useFontSettings() {
-	return useSettingsStore(
+	return useSettingsStore(useShallow(
 		(state) => ({
 		fontFamily: state.fontFamily,
 		fontSize: state.fontSize,
@@ -147,9 +143,8 @@ export function useFontSettings() {
 		setFontSize: state.setFontSize,
 		setFontStyle: state.setFontStyle,
 		setTextTransparent: state.setTextTransparent,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
@@ -157,7 +152,7 @@ export function useFontSettings() {
  */
 export function useHistory() {
 	console.warn("[HOOK] useHistory called");
-	return useCanvasStore(
+	return useCanvasStore(useShallow(
 		(state) => ({
 		canUndo: state.undoStack.length > 0,
 		canRedo: state.redoStack.length > 0,
@@ -165,9 +160,8 @@ export function useHistory() {
 		undo: state.undo,
 		redo: state.redo,
 		clearHistory: state.clearHistory,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
@@ -176,7 +170,7 @@ export function useHistory() {
  */
 export function useTreeHistory() {
 	console.warn("[HOOK] useTreeHistory called");
-	return useHistoryStore(
+	return useHistoryStore(useShallow(
 		(state) => ({
 			historyTree: state.historyTree,
 			currentNode: state.currentNode,
@@ -189,9 +183,8 @@ export function useTreeHistory() {
 			goToNode: state.goToNode,
 			getAllNodes: state.getAllNodes,
 			pruneHistory: state.pruneHistory,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
@@ -200,14 +193,13 @@ export function useTreeHistory() {
  */
 export function useCanvasDimensions() {
 	console.warn("[HOOK] useCanvasDimensions called");
-	return useCanvasStore(
+	return useCanvasStore(useShallow(
 		(state) => ({
 			canvasWidth: state.canvasWidth,
 			canvasHeight: state.canvasHeight,
 			setCanvasSize: state.setCanvasSize,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
@@ -215,35 +207,33 @@ export function useCanvasDimensions() {
  */
 export function useTool() {
 	console.warn("[HOOK] useTool called");
-	return useToolStore(
+	return useToolStore(useShallow(
 		(state) => ({
 		selectedToolId: state.selectedToolId,
 		setTool: state.setTool,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
  * Get selection state and actions
  */
 export function useSelection() {
-	return useToolStore(
+	return useToolStore(useShallow(
 		(state) => ({
 		selection: state.selection,
 		setSelection: state.setSelection,
 		clearSelection: state.clearSelection,
 		hasSelection: state.selection !== null,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
  * Get clipboard state and actions
  */
 export function useClipboard() {
-	return useToolStore(
+	return useToolStore(useShallow(
 		(state) => {
 			const clipboard = state.clipboard;
 			const setClipboard = state.setClipboard;
@@ -269,16 +259,15 @@ export function useClipboard() {
 					}
 				},
 			};
-		},
-		useShallow,
-	);
+		}
+	));
 }
 
 /**
  * Get text box state and actions
  */
 export function useTextBox() {
-	return useToolStore(
+	return useToolStore(useShallow(
 		(state) => {
 			const settingsState = useSettingsStore.getState();
 			return {
@@ -294,16 +283,15 @@ export function useTextBox() {
 				setFontSize: settingsState.setFontSize,
 				setFontStyle: settingsState.setFontStyle,
 			};
-		},
-		useShallow,
-	);
+		}
+	));
 }
 
 /**
  * Get view state toggles
  */
 export function useViewState() {
-	const uiState = useUIStore(
+	const uiState = useUIStore(useShallow(
 		(state) => ({
 			showToolBox: state.showToolBox,
 			showColorBox: state.showColorBox,
@@ -317,45 +305,42 @@ export function useViewState() {
 			toggleTextToolbar: state.toggleTextToolbar,
 			toggleGrid: state.toggleGrid,
 			toggleThumbnail: state.toggleThumbnail,
-		}),
-		useShallow,
-	);
+		})
+	));
 
-	const settingsState = useSettingsStore(
+	const settingsState = useSettingsStore(useShallow(
 		(state) => ({
 			drawOpaque: state.drawOpaque,
 			toggleDrawOpaque: state.toggleDrawOpaque,
-		}),
-		useShallow,
-	);
+		})
+	));
 
-	return useMemo(() => ({ ...uiState, ...settingsState }), [uiState, settingsState]);
+	// No need for useMemo since useShallow already handles shallow comparison
+	return { ...uiState, ...settingsState };
 }
 
 /**
  * Get magnification state and actions
  */
 export function useMagnification() {
-	return useUIStore(
+	return useUIStore(useShallow(
 		(state) => ({
 			magnification: state.magnification,
 			setMagnification: state.setMagnification,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
  * Get cursor position state
  */
 export function useCursorPosition() {
-	return useUIStore(
+	return useUIStore(useShallow(
 		(state) => ({
 			cursorPosition: state.cursorPosition,
 			setCursorPosition: state.setCursorPosition,
-		}),
-		useShallow,
-	);
+		})
+	));
 }
 
 /**
@@ -363,13 +348,12 @@ export function useCursorPosition() {
  * Note: canvasRef must be passed to components that need it
  */
 export function useApp() {
-	return useCanvasStore(
+	return useCanvasStore(useShallow(
 		(state) => ({
 			state: {
 				canvasWidth: state.canvasWidth,
 				canvasHeight: state.canvasHeight,
 			},
-		}),
-		useShallow,
-	);
+		})
+	));
 }
