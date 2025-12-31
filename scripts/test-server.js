@@ -8,7 +8,11 @@ const __dirname = dirname(__filename);
 const root = resolve(__dirname, '..');
 
 async function startTestServer() {
+	// Load the vite.config.js
+	const configFile = resolve(root, 'vite.config.js');
+
 	const server = await createServer({
+		configFile,
 		root,
 		server: {
 			port: 11822,
@@ -21,10 +25,15 @@ async function startTestServer() {
 	await server.listen();
 
 	const { port } = server.config.server;
-	console.log(`Test server ready at http://localhost:${port}/new/`);
+	console.log(`\nTest server ready at http://localhost:${port}/new/\n`);
 
 	// Signal that the server is ready
 	process.on('SIGTERM', async () => {
+		await server.close();
+		process.exit(0);
+	});
+
+	process.on('SIGINT', async () => {
 		await server.close();
 		process.exit(0);
 	});

@@ -122,7 +122,7 @@
     "build": "npm-run-all build-css build:vite",
     "build:vite": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port=4173",
-    "test:start-server": "node scripts/test-server.js",
+    "test:start-server": "vite --port=11822",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
