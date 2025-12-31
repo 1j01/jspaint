@@ -5,6 +5,7 @@
  * They use useShallow for optimal re-render performance.
  */
 
+import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useSettingsStore } from "./settingsStore";
 import { useToolStore } from "./toolStore";
@@ -166,44 +167,44 @@ export function useSelection() {
 	));
 }
 
+// Stable clipboard helper functions (defined at module level to avoid recreation)
+const clipboardHelpers = {
+	copy: () => {
+		const selection = useToolStore.getState().selection;
+		if (selection?.imageData) {
+			useToolStore.getState().setClipboard(selection.imageData);
+		}
+	},
+	cut: () => {
+		const selection = useToolStore.getState().selection;
+		if (selection?.imageData) {
+			useToolStore.getState().setClipboard(selection.imageData);
+		}
+	},
+	paste: () => {
+		return useToolStore.getState().clipboard || undefined;
+	},
+};
+
 /**
  * Get clipboard state and actions
  */
 export function useClipboard() {
-	return useToolStore(useShallow(
-		(state) => ({
-			clipboard: state.clipboard,
-			hasClipboard: state.clipboard !== null,
-			setClipboard: state.setClipboard,
-			selection: state.selection,
-			// Helper methods that use current state values
-			copy: () => {
-				const currentSelection = useToolStore.getState().selection;
-				if (currentSelection?.imageData) {
-					state.setClipboard(currentSelection.imageData);
-				}
-			},
-			cut: () => {
-				const currentSelection = useToolStore.getState().selection;
-				if (currentSelection?.imageData) {
-					state.setClipboard(currentSelection.imageData);
-				}
-			},
-			paste: () => {
-				const currentClipboard = useToolStore.getState().clipboard;
-				if (currentClipboard) {
-					return currentClipboard;
-				}
-			},
-		})
-	));
+	const clipboard = useToolStore((state) => state.clipboard);
+
+	// Memoize the returned object to prevent infinite re-renders
+	return useMemo(() => ({
+		clipboard,
+		hasClipboard: clipboard !== null,
+		...clipboardHelpers,
+	}), [clipboard]);
 }
 
 /**
  * Get text box state and actions
  */
 export function useTextBox() {
-	const toolStoreState = useToolStore(useShallow(
+	const { textBox, setTextBox, clearTextBox } = useToolStore(useShallow(
 		(state) => ({
 			textBox: state.textBox,
 			setTextBox: state.setTextBox,
@@ -211,7 +212,7 @@ export function useTextBox() {
 		})
 	));
 
-	const settingsStoreState = useSettingsStore(useShallow(
+	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } = useSettingsStore(useShallow(
 		(state) => ({
 			fontFamily: state.fontFamily,
 			fontSize: state.fontSize,
@@ -224,8 +225,20 @@ export function useTextBox() {
 		})
 	));
 
-	// Simply combine the two - don't use useMemo as it causes infinite loops
-	return { ...toolStoreState, ...settingsStoreState };
+	// Memoize the combined result to prevent infinite re-renders
+	return useMemo(() => ({
+		textBox,
+		setTextBox,
+		clearTextBox,
+		fontFamily,
+		fontSize,
+		fontBold,
+		fontItalic,
+		fontUnderline,
+		setFontFamily,
+		setFontSize,
+		setFontStyle,
+	}), [textBox, setTextBox, clearTextBox, fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle]);
 }
 
 /**
@@ -256,7 +269,8 @@ export function useViewState() {
 		})
 	));
 
-	return { ...uiState, ...settingsState };
+	// Memoize the combined result to prevent infinite re-renders
+	return useMemo(() => ({ ...uiState, ...settingsState }), [uiState, settingsState]);
 }
 
 /**

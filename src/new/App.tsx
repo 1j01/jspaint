@@ -19,7 +19,6 @@ import {
 	useTool,
 	useHistory,
 	useSelection,
-	useClipboard,
 	useMagnification,
 	useCursorPosition,
 	useApp,
@@ -216,7 +215,23 @@ function AppContent() {
 	const { getRoot, currentNode, goToNode } = useTreeHistory();
 	const { cursorPosition } = useCursorPosition();
 	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
-	const { copy, cut, paste, hasClipboard } = useClipboard();
+
+	// Clipboard actions using direct store access to avoid infinite loops
+	const clipboard = useToolStore((state) => state.clipboard);
+	const setClipboard = useToolStore((state) => state.setClipboard);
+	const hasClipboard = clipboard !== null;
+	const copy = useCallback(() => {
+		if (selection?.imageData) {
+			setClipboard(selection.imageData);
+		}
+	}, [selection, setClipboard]);
+	const cut = useCallback(() => {
+		if (selection?.imageData) {
+			setClipboard(selection.imageData);
+		}
+	}, [selection, setClipboard]);
+	const paste = useCallback(() => clipboard, [clipboard]);
+
 	const { magnification, setMagnification } = useMagnification();
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
 
