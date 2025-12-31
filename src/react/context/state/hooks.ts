@@ -5,7 +5,7 @@
  * They use useShallow for optimal re-render performance.
  */
 
-import { useShallow } from "zustand/shallow";
+import { useShallow } from "zustand/react/shallow";
 import { useSettingsStore } from "./settingsStore";
 import { useToolStore } from "./toolStore";
 import { useUIStore } from "./uiStore";

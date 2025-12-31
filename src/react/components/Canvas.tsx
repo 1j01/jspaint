@@ -17,6 +17,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { useCursorPosition, useHistory, useSelection, useTool, useCanvasDimensions, useTreeHistory } from "../context/state/hooks";
 import { useUIStore } from "../context/state/uiStore";
+import { useToolStore } from "../context/state/toolStore";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
