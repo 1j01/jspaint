@@ -53,17 +53,21 @@ export interface HistoryState {
 	clearHistory: () => void;
 }
 
-export const useHistoryStore = create<HistoryState>((set, get) => ({
-	historyTree: null,
-	currentNode: null,
+export const useHistoryStore = create<HistoryState>((set, get) => {
+	console.warn('[historyStore] 🏗️ Store created');
 
-	initializeHistory: (initialImageData, name = "Initial State") => {
-		const tree = new HistoryTree(initialImageData, name);
-		set({
-			historyTree: tree,
-			currentNode: tree.getCurrent(),
-		});
-	},
+	return {
+		historyTree: null,
+		currentNode: null,
+
+		initializeHistory: (initialImageData, name = "Initial State") => {
+			console.warn(`[historyStore.initializeHistory] Called with name: "${name}"`);
+			const tree = new HistoryTree(initialImageData, name);
+			set({
+				historyTree: tree,
+				currentNode: tree.getCurrent(),
+			});
+		},
 
 	pushState: (imageData, name, options = {}) => {
 		console.warn(`[historyStore.pushState] 🔵 CALLED with name: "${name}"`);
@@ -152,9 +156,10 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
 	},
 
 	clearHistory: () => {
+		console.warn('[historyStore.clearHistory] 🗑️ Clearing history');
 		set({
 			historyTree: null,
 			currentNode: null,
 		});
 	},
-}));
+}});

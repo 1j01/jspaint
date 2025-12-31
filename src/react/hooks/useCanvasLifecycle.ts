@@ -11,7 +11,7 @@
  */
 
 import { RefObject, useEffect } from "react";
-import { useTreeHistory } from "../context/state/hooks";
+import { useHistoryStore } from "../context/state/historyStore";
 
 /**
  * Module-level flag to track canvas initialization.
@@ -47,9 +47,11 @@ let historyTreeInitialized = false;
  * @param canvasRef - Reference to the canvas element
  */
 export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
-	const { pushState: pushTreeState } = useTreeHistory();
+	console.warn('[useCanvasLifecycle] 🔄 Hook called');
 
 	useEffect(() => {
+		console.warn('[useCanvasLifecycle] 🎯 useEffect RUNNING');
+
 		const canvas = canvasRef.current;
 		if (!canvas) {
 			console.warn("[useCanvasLifecycle] Canvas ref not available");
@@ -98,8 +100,10 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
 		// Initialize history tree with the blank canvas (only once)
 		if (!historyTreeInitialized) {
+			console.warn("[useCanvasLifecycle] 🌳 Initializing history tree...");
 			const initialImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			pushTreeState(initialImageData, "New Document");
+			// Use getState() to get stable action reference - no need to include in deps
+			useHistoryStore.getState().pushState(initialImageData, "New Document");
 			historyTreeInitialized = true;
 			console.warn("[useCanvasLifecycle] 🌳 History tree initialized with blank canvas");
 		}
@@ -111,5 +115,5 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 			savedCanvasData = imageData;
 			console.warn("[useCanvasLifecycle] ❌ COMPONENT UNMOUNTING! ❌");
 		};
-	}, [canvasRef, pushTreeState]);
+	}, [canvasRef]); // Only canvasRef in deps - actions are stable via getState()
 }
