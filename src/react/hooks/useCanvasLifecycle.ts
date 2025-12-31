@@ -36,12 +36,18 @@ export function resetCanvasLifecycle() {
 }
 
 /**
+ * Module-level flag to track if history tree was initialized.
+ * Prevents re-initializing history on every effect run.
+ */
+let historyTreeInitialized = false;
+
+/**
  * Hook to manage canvas lifecycle - initialization, persistence, cleanup
  *
  * @param canvasRef - Reference to the canvas element
  */
 export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
-	const { pushState: pushTreeState, historyTree } = useTreeHistory();
+	const { pushState: pushTreeState } = useTreeHistory();
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -90,10 +96,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 		canvasInitialized = true;
 		console.warn("[useCanvasLifecycle] Initialization complete, flag set to true");
 
-		// Initialize history tree with the blank canvas
-		if (!historyTree) {
+		// Initialize history tree with the blank canvas (only once)
+		if (!historyTreeInitialized) {
 			const initialImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 			pushTreeState(initialImageData, "New Document");
+			historyTreeInitialized = true;
 			console.warn("[useCanvasLifecycle] 🌳 History tree initialized with blank canvas");
 		}
 
@@ -104,5 +111,5 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 			savedCanvasData = imageData;
 			console.warn("[useCanvasLifecycle] ❌ COMPONENT UNMOUNTING! ❌");
 		};
-	}, [canvasRef, pushTreeState, historyTree]);
+	}, [canvasRef, pushTreeState]);
 }

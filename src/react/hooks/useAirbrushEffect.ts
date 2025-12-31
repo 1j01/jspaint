@@ -38,7 +38,9 @@ export function useAirbrushEffect({
 }: UseAirbrushEffectParams) {
 	useEffect(() => {
 		// Only activate for airbrush tool when drawing
-		if (selectedToolId !== TOOL_IDS.AIRBRUSH || !shapes.drawingState.current?.isDrawing) {
+		// Note: We check shapes.drawingState.current inside the effect, not in dependencies
+		// because .current is a mutable ref and shouldn't be in the dependency array
+		if (selectedToolId !== TOOL_IDS.AIRBRUSH) {
 			return;
 		}
 
@@ -50,11 +52,13 @@ export function useAirbrushEffect({
 
 		// Set up interval for continuous painting (every 5ms, matching original implementation)
 		const intervalId = setInterval(() => {
-			if (!shapes.drawingState.current?.isDrawing) {
+			// Check drawing state inside the interval callback
+			const state = shapes.drawingState.current;
+			if (!state?.isDrawing) {
 				return;
 			}
 
-			const { lastX, lastY, button } = shapes.drawingState.current;
+			const { lastX, lastY, button } = state;
 			const color = drawing.getDrawColor(button);
 			const size = drawing.getToolSize();
 
@@ -65,5 +69,5 @@ export function useAirbrushEffect({
 		return () => {
 			clearInterval(intervalId);
 		};
-	}, [selectedToolId, canvasRef, drawing, shapes.drawingState]);
+	}, [selectedToolId, canvasRef, drawing, shapes]);
 }
