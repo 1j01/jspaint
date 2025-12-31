@@ -80,14 +80,15 @@ export function SelectionHandles({
 	const toCanvasCoords = useCallback(
 		(clientX: number, clientY: number) => {
 			const offset = getContainerOffset();
-			// Canvas is at (0,0) relative to .canvas-area padding edge
-			// No need to subtract padding - just the container offset
+			const padding = getContainerPadding();
+			// getBoundingClientRect gives us the border box
+			// We need to subtract padding to get to the canvas origin
 			return {
-				x: Math.round((clientX - offset.left) / magnification),
-				y: Math.round((clientY - offset.top) / magnification),
+				x: Math.round((clientX - offset.left - padding.left) / magnification),
+				y: Math.round((clientY - offset.top - padding.top) / magnification),
 			};
 		},
-		[getContainerOffset, magnification],
+		[getContainerOffset, getContainerPadding, magnification],
 	);
 
 	// Handle pointer down on a resize handle
@@ -109,9 +110,10 @@ export function SelectionHandles({
 
 			// Show ghost element
 			if (ghostRef.current) {
+				const padding = getContainerPadding();
 				ghostRef.current.style.display = "block";
-				ghostRef.current.style.left = `${selection.x * magnification}px`;
-				ghostRef.current.style.top = `${selection.y * magnification}px`;
+				ghostRef.current.style.left = `${selection.x * magnification + padding.left}px`;
+				ghostRef.current.style.top = `${selection.y * magnification + padding.top}px`;
 				ghostRef.current.style.width = `${selection.width * magnification}px`;
 				ghostRef.current.style.height = `${selection.height * magnification}px`;
 			}
@@ -169,8 +171,9 @@ export function SelectionHandles({
 
 			// Update ghost preview
 			if (ghostRef.current) {
-				ghostRef.current.style.left = `${newX * magnification}px`;
-				ghostRef.current.style.top = `${newY * magnification}px`;
+				const padding = getContainerPadding();
+				ghostRef.current.style.left = `${newX * magnification + padding.left}px`;
+				ghostRef.current.style.top = `${newY * magnification + padding.top}px`;
 				ghostRef.current.style.width = `${newWidth * magnification}px`;
 				ghostRef.current.style.height = `${newHeight * magnification}px`;
 			}
@@ -213,10 +216,13 @@ export function SelectionHandles({
 	if (!selection) return null;
 
 	const { x, y, width, height } = selection;
-	// Canvas is positioned at (0,0) which is the padding edge of .canvas-area
-	// So we don't need to add padding - just scale by magnification
-	const scaledX = x * magnification;
-	const scaledY = y * magnification;
+	const padding = getContainerPadding();
+	// Handles are positioned absolutely relative to .canvas-area border box
+	// Canvas is at (0,0) which is the padding edge, so at (padding.left, padding.top) from border edge
+	// Selection at canvas coords (x,y) with magnification appears at screen coords:
+	// (x * mag + padding.left, y * mag + padding.top) from .canvas-area border edge
+	const scaledX = x * magnification + padding.left;
+	const scaledY = y * magnification + padding.top;
 	const scaledWidth = width * magnification;
 	const scaledHeight = height * magnification;
 

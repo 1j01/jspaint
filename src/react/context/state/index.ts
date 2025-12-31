@@ -30,7 +30,7 @@
  */
 
 export { useSettingsStore, type SettingsState } from "./settingsStore";
-export { useUIStore, type UIState } from "./uiStore";
+export { useUIStore, type UIState, type DialogName } from "./uiStore";
 export { useToolStore, type ToolState } from "./toolStore";
 export { useCanvasStore, type CanvasState } from "./canvasStore";
 export { useHistoryStore, type HistoryState } from "./historyStore";

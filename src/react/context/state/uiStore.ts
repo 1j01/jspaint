@@ -6,6 +6,20 @@
 import { create } from "zustand";
 import { saveSetting, loadSetting } from "./persistence";
 
+export type DialogName =
+	| "about"
+	| "flipRotate"
+	| "stretchSkew"
+	| "attributes"
+	| "customZoom"
+	| "loadFromUrl"
+	| "helpTopics"
+	| "editColors"
+	| "imgurUpload"
+	| "manageStorage"
+	| "history"
+	| "saveAs";
+
 export interface UIState {
 	// Panel visibility
 	showToolBox: boolean;
@@ -21,6 +35,9 @@ export interface UIState {
 	// Cursor position (for status bar)
 	cursorPosition: { x: number; y: number } | null;
 
+	// Dialog visibility (not persisted - session only)
+	dialogs: Record<DialogName, boolean>;
+
 	// Actions
 	toggleToolBox: () => void;
 	toggleColorBox: () => void;
@@ -30,6 +47,8 @@ export interface UIState {
 	toggleThumbnail: () => void;
 	setMagnification: (mag: number) => void;
 	setCursorPosition: (position: { x: number; y: number } | null) => void;
+	openDialog: (name: DialogName) => void;
+	closeDialog: (name: DialogName) => void;
 	loadPersistedUIState: () => Promise<void>;
 }
 
@@ -43,6 +62,22 @@ export const useUIStore = create<UIState>((set, get) => ({
 	showThumbnail: false,
 	magnification: 1,
 	cursorPosition: null,
+
+	// Dialog state (all closed initially)
+	dialogs: {
+		about: false,
+		flipRotate: false,
+		stretchSkew: false,
+		attributes: false,
+		customZoom: false,
+		loadFromUrl: false,
+		helpTopics: false,
+		editColors: false,
+		imgurUpload: false,
+		manageStorage: false,
+		history: false,
+		saveAs: false,
+	},
 
 	// Actions with persistence
 	toggleToolBox: () => {
@@ -89,6 +124,19 @@ export const useUIStore = create<UIState>((set, get) => ({
 	setCursorPosition: (position) => {
 		set({ cursorPosition: position });
 		// Don't persist cursor position - it's ephemeral
+	},
+
+	// Dialog actions (not persisted)
+	openDialog: (name) => {
+		set((state) => ({
+			dialogs: { ...state.dialogs, [name]: true },
+		}));
+	},
+
+	closeDialog: (name) => {
+		set((state) => ({
+			dialogs: { ...state.dialogs, [name]: false },
+		}));
 	},
 
 	// Load persisted UI state on app initialization

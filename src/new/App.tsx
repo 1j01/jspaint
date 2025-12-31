@@ -39,7 +39,7 @@ import {
     useTool,
     useViewState,
 } from "../react/context/AppContext";
-import { useInitializeStores, useTreeHistory } from "../react/context/state";
+import { useInitializeStores, useTreeHistory, useUIStore } from "../react/context/state";
 import { defaultCustomColors } from "../react/data/basicColors";
 import { createMenus, MenuActions } from "../react/menus/menuDefinitions";
 import {
@@ -190,22 +190,6 @@ const TOOLBOX_ITEMS: Tool[] = [
 	},
 ];
 
-// Dialog state type
-interface DialogState {
-	about: boolean;
-	flipRotate: boolean;
-	stretchSkew: boolean;
-	attributes: boolean;
-	customZoom: boolean;
-	loadFromUrl: boolean;
-	helpTopics: boolean;
-	editColors: boolean;
-	imgurUpload: boolean;
-	manageStorage: boolean;
-	history: boolean;
-	saveAs: boolean;
-}
-
 // Store initialization wrapper
 function StoreInitializer({ children }: { children: ReactNode }) {
 	const { isInitialized, error: storeInitError } = useInitializeStores();
@@ -317,30 +301,10 @@ function AppContent() {
 		console.log("[FontBox] showFontBox:", showFontBox, "selectedToolId:", selectedToolId, "TOOL_IDS.TEXT:", TOOL_IDS.TEXT, "textBox?.isActive:", textBox?.isActive);
 	}, [showFontBox, selectedToolId, textBox?.isActive]);
 
-
-	// Dialog state
-	const [dialogs, setDialogs] = useState<DialogState>({
-		about: false,
-		flipRotate: false,
-		stretchSkew: false,
-		attributes: false,
-		customZoom: false,
-		loadFromUrl: false,
-		helpTopics: false,
-		editColors: false,
-		imgurUpload: false,
-		manageStorage: false,
-		history: false,
-		saveAs: false,
-	});
-
-	const openDialog = useCallback((dialog: keyof DialogState) => {
-		setDialogs((prev) => ({ ...prev, [dialog]: true }));
-	}, []);
-
-	const closeDialog = useCallback((dialog: keyof DialogState) => {
-		setDialogs((prev) => ({ ...prev, [dialog]: false }));
-	}, []);
+	// Dialog state from uiStore
+	const dialogs = useUIStore((state) => state.dialogs);
+	const openDialog = useUIStore((state) => state.openDialog);
+	const closeDialog = useUIStore((state) => state.closeDialog);
 
 	const activeTool = useMemo(
 		() => TOOLBOX_ITEMS.find((tool) => tool.id === selectedToolId) ?? TOOLBOX_ITEMS[6],
