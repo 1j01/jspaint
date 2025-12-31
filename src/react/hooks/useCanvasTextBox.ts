@@ -1,5 +1,6 @@
 import { useCallback, useRef, RefObject } from "react";
-import { TextBoxState, useColors, useTextBox } from "../context/state";
+import { TextBoxState, useColors, useToolStore, useSettingsStore } from "../context/state";
+import { useShallow } from "zustand/react/shallow";
 
 export interface TextBoxCreationState {
 	isCreating: boolean;
@@ -16,8 +17,27 @@ interface UseCanvasTextBoxProps {
  */
 export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 	const { primaryColor } = useColors();
-	const { textBox, setTextBox, clearTextBox, fontFamily, fontSize, fontBold, fontItalic, fontUnderline } =
-		useTextBox();
+
+	// Use stores directly
+	const { textBox, setTextBox, clearTextBox } = useToolStore(
+		(state) => ({
+			textBox: state.textBox,
+			setTextBox: state.setTextBox,
+			clearTextBox: state.clearTextBox,
+		}),
+		useShallow,
+	);
+
+	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline } = useSettingsStore(
+		(state) => ({
+			fontFamily: state.fontFamily,
+			fontSize: state.fontSize,
+			fontBold: state.fontBold,
+			fontItalic: state.fontItalic,
+			fontUnderline: state.fontUnderline,
+		}),
+		useShallow,
+	);
 
 	// Text box creation state
 	const textBoxState = useRef<TextBoxCreationState>({

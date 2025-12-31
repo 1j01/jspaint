@@ -22,24 +22,12 @@ import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
+import { useCanvasLifecycle } from "../hooks/useCanvasLifecycle";
+import { useAirbrushEffect } from "../hooks/useAirbrushEffect";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
 import { CanvasResizeHandles } from "./CanvasResizeHandles";
-
-/**
- * Module-level flag to track canvas initialization.
- * Prevents re-initializing the canvas with white background on every remount.
- * This persists across component remounts to maintain canvas state.
- */
-let canvasInitialized = false;
-
-/**
- * Module-level storage for canvas data when component unmounts.
- * Used to preserve drawing when the component temporarily unmounts (e.g., during React updates).
- * The ImageData is restored on the next mount if available.
- */
-let savedCanvasData: ImageData | null = null;
 
 /**
  * Available magnification levels for the Magnifier tool.
@@ -113,6 +101,11 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		getDrawColor: drawing.getDrawColor,
 	});
 
+	// Initialize canvas lifecycle (initialization, persistence, cleanup)
+	useCanvasLifecycle(canvasRef);
+
+	// Initialize airbrush effect (continuous painting)
+	useAirbrushEffect({ canvasRef, selectedToolId, drawing, shapes });
 
 	// Helper to save state to both linear and tree history
 	const saveHistoryState = useCallback((operationName: string = "Edit") => {
@@ -140,72 +133,6 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
 	}, [canvasRef, saveState, pushTreeState, currentSelection]);
 
-	// Initialize canvas with white background (only once ever)
-	useEffect(() => {
-		console.warn("[Canvas] Mount effect running, canvasInitialized:", canvasInitialized);
-
-		const canvas = canvasRef.current;
-		if (!canvas) {
-			console.warn("[Canvas] No canvas ref yet");
-			return;
-		}
-
-		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) {
-			console.warn("[Canvas] Could not get 2d context");
-			return;
-		}
-
-		console.warn(`[Canvas] Canvas dimensions: ${canvas.width}x${canvas.height}`);
-
-		// If we have saved canvas data, restore it
-		if (savedCanvasData) {
-			console.warn("[Canvas] 🔄 RESTORING SAVED CANVAS DATA 🔄");
-			ctx.putImageData(savedCanvasData, 0, 0);
-			savedCanvasData = null; // Clear after restoring
-			return () => {
-				// Save canvas data on unmount
-				console.warn("[Canvas] 💾 Saving canvas data before unmount");
-				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				savedCanvasData = imageData;
-				console.warn("[Canvas] ❌ COMPONENT UNMOUNTING! ❌");
-			};
-		}
-
-		// Otherwise, initialize with white background (only once)
-		if (canvasInitialized) {
-			console.warn("[Canvas] Skipping initialization - already done");
-			return () => {
-				// Save canvas data on unmount
-				console.warn("[Canvas] 💾 Saving canvas data before unmount");
-				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				savedCanvasData = imageData;
-				console.warn("[Canvas] ❌ COMPONENT UNMOUNTING! ❌");
-			};
-		}
-
-		console.warn("[Canvas] ⚠️ INITIALIZING CANVAS WITH WHITE BACKGROUND ⚠️");
-		ctx.fillStyle = "#ffffff";
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		canvasInitialized = true;
-		console.warn("[Canvas] Initialization complete, flag set to true");
-		// Initialize history tree with the blank canvas
-		if (!historyTree) {
-			const initialImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			pushTreeState(initialImageData, "New Document");
-			console.warn("[Canvas] 🌳 History tree initialized with blank canvas");
-		}
-
-
-		return () => {
-			// Save canvas data on unmount
-			console.warn("[Canvas] 💾 Saving canvas data before unmount");
-			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			savedCanvasData = imageData;
-			console.warn("[Canvas] ❌ COMPONENT UNMOUNTING! ❌");
-		};
-	}, [canvasRef]);
-
 	// Watch for canvas dimension changes (which auto-clear the canvas)
 	useEffect(() => {
 		console.warn(`[Canvas] Dimension effect: ${canvasWidth}x${canvasHeight}`);
@@ -217,37 +144,6 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 			textInputRef.current.focus();
 		}
 	}, [textBoxHook.textBox?.isActive]);
-
-	// Continuous airbrush painting when mouse is held down
-	useEffect(() => {
-		if (selectedToolId !== TOOL_IDS.AIRBRUSH || !shapes.drawingState.current?.isDrawing) {
-			return;
-		}
-
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-
-		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) return;
-
-		// Set up interval for continuous painting (every 5ms, matching original implementation)
-		const intervalId = setInterval(() => {
-			if (!shapes.drawingState.current?.isDrawing) {
-				return;
-			}
-
-			const { lastX, lastY, button } = shapes.drawingState.current;
-			const color = drawing.getDrawColor(button);
-			const size = drawing.getToolSize();
-
-			// Spray airbrush at current position
-			drawing.sprayAirbrush(ctx, lastX, lastY, color, size);
-		}, 5);
-
-		return () => {
-			clearInterval(intervalId);
-		};
-	}, [selectedToolId, canvasRef, drawing, shapes.drawingState]);
 
 	/**
 	 * Pointer down event handler - initiates drawing operations.

@@ -29,6 +29,7 @@
  * ```
  */
 
+import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export { useSettingsStore, type SettingsState } from "./settingsStore";
@@ -193,11 +194,14 @@ export function useTreeHistory() {
  * Note: canvasRef should be managed locally with useRef in the component
  */
 export function useCanvasDimensions() {
-	const canvasWidth = useCanvasStore((state) => state.canvasWidth);
-	const canvasHeight = useCanvasStore((state) => state.canvasHeight);
-	const setCanvasSize = useCanvasStore((state) => state.setCanvasSize);
-
-	return { canvasWidth, canvasHeight, setCanvasSize };
+	return useCanvasStore(
+		(state) => ({
+			canvasWidth: state.canvasWidth,
+			canvasHeight: state.canvasHeight,
+			setCanvasSize: state.setCanvasSize,
+		}),
+		useShallow,
+	);
 }
 
 /**
@@ -267,30 +271,25 @@ export function useClipboard() {
  * Get text box state and actions
  */
 export function useTextBox() {
-	const textBoxData = useToolStore(
-		(state) => ({
-			textBox: state.textBox,
-			setTextBox: state.setTextBox,
-			clearTextBox: state.clearTextBox,
-		}),
+	return useToolStore(
+		(state) => {
+			const settingsState = useSettingsStore.getState();
+			return {
+				textBox: state.textBox,
+				setTextBox: state.setTextBox,
+				clearTextBox: state.clearTextBox,
+				fontFamily: settingsState.fontFamily,
+				fontSize: settingsState.fontSize,
+				fontBold: settingsState.fontBold,
+				fontItalic: settingsState.fontItalic,
+				fontUnderline: settingsState.fontUnderline,
+				setFontFamily: settingsState.setFontFamily,
+				setFontSize: settingsState.setFontSize,
+				setFontStyle: settingsState.setFontStyle,
+			};
+		},
 		useShallow,
 	);
-
-	const fontData = useSettingsStore(
-		(state) => ({
-			fontFamily: state.fontFamily,
-			fontSize: state.fontSize,
-			fontBold: state.fontBold,
-			fontItalic: state.fontItalic,
-			fontUnderline: state.fontUnderline,
-			setFontFamily: state.setFontFamily,
-			setFontSize: state.setFontSize,
-			setFontStyle: state.setFontStyle,
-		}),
-		useShallow,
-	);
-
-	return { ...textBoxData, ...fontData };
 }
 
 /**
@@ -323,7 +322,7 @@ export function useViewState() {
 		useShallow,
 	);
 
-	return { ...uiState, ...settingsState };
+	return useMemo(() => ({ ...uiState, ...settingsState }), [uiState, settingsState]);
 }
 
 /**

@@ -1,4 +1,5 @@
-import { TOOL_IDS, useBrushSettings, useShapeSettings, useTextBox, useTool, useViewState } from "../context/state";
+import { TOOL_IDS, useBrushSettings, useShapeSettings, useTool, useToolStore, useSettingsStore, useUIStore } from "../context/state";
+import { useShallow } from "zustand/react/shallow";
 
 
 // Line width options (matches original)
@@ -83,9 +84,39 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	const { selectedToolId } = useTool();
 	const { brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize } = useBrushSettings();
 	const { fillStyle, lineWidth, setFillStyle, setLineWidth } = useShapeSettings();
-	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } =
-		useTextBox();
-	const { drawOpaque, toggleDrawOpaque } = useViewState();
+
+	// Use stores directly to avoid helper hook issues
+	const { textBox, setTextBox, clearTextBox } = useToolStore(
+		(state) => ({
+			textBox: state.textBox,
+			setTextBox: state.setTextBox,
+			clearTextBox: state.clearTextBox,
+		}),
+		useShallow,
+	);
+
+	const { fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle } = useSettingsStore(
+		(state) => ({
+			fontFamily: state.fontFamily,
+			fontSize: state.fontSize,
+			fontBold: state.fontBold,
+			fontItalic: state.fontItalic,
+			fontUnderline: state.fontUnderline,
+			setFontFamily: state.setFontFamily,
+			setFontSize: state.setFontSize,
+			setFontStyle: state.setFontStyle,
+		}),
+		useShallow,
+	);
+
+	// Get drawOpaque and toggleDrawOpaque from settingsStore directly
+	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(
+		(state) => ({
+			drawOpaque: state.drawOpaque,
+			toggleDrawOpaque: state.toggleDrawOpaque,
+		}),
+		useShallow,
+	);
 
 	// Determine which options to show based on tool
 	// Shape tools show fill style only (matches original $ChooseShapeStyle)
