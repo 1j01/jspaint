@@ -8,6 +8,7 @@ import type { StretchSkewValues } from "../react/components/dialogs/StretchSkewD
 import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
 import { Tool, ToolBox } from "../react/components/ToolBox";
 import { ToolOptions } from "../react/components/ToolOptions";
+import { MessageBoxDialog, type MessageBoxResult } from "../react/components/dialogs/MessageBoxDialog";
 import { useInitializeStores } from "../react/context/state/useInitializeStores";
 import { useUIStore } from "../react/context/state/uiStore";
 import { useSettingsStore } from "../react/context/state/settingsStore";
@@ -305,6 +306,9 @@ function AppContent() {
 
 	// Custom colors state for the color editor
 	const [customColors, setCustomColors] = useState<string[]>(defaultCustomColors);
+
+	// MessageBox state for File > New confirmation
+	const [showNewConfirm, setShowNewConfirm] = useState(false);
 
 	// Font state for FontBoxWindow
 	const fontState = useMemo(

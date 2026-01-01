@@ -195,5 +195,6 @@ export function getCanvasStyle(selectedToolId: string, magnification: number): R
 	return {
 		cursor: getCursorForTool(selectedToolId),
 		transform: magnification > 1 ? `scale(${magnification})` : undefined,
+		transformOrigin: magnification > 1 ? "top left" : undefined,
 	};
 }

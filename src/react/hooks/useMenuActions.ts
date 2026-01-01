@@ -46,6 +46,7 @@ interface UseMenuActionsParams {
 	magnification: number;
 	setMagnification: (mag: number) => void;
 	palette: string[];
+	onShowNewConfirm?: () => void; // Callback to show File > New confirmation dialog
 }
 
 export function useMenuActions(params: UseMenuActionsParams): MenuActions {
@@ -87,6 +88,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		magnification,
 		setMagnification,
 		palette,
+		onShowNewConfirm,
 	} = params;
 
 	const openDialog = useUIStore((state) => state.openDialog);
@@ -97,18 +99,23 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 	return {
 		// File menu
 		fileNew: useCallback(() => {
-			if (confirm("Clear the current image and start new?")) {
-				saveState();
-				const canvas = canvasRef.current;
-				if (canvas) {
-					const ctx = canvas.getContext("2d", { willReadFrequently: true });
-					if (ctx) {
-						ctx.fillStyle = "#FFFFFF";
-						ctx.fillRect(0, 0, canvas.width, canvas.height);
+			if (onShowNewConfirm) {
+				onShowNewConfirm();
+			} else {
+				// Fallback to confirm if callback not provided
+				if (confirm("Clear the current image and start new?")) {
+					saveState();
+					const canvas = canvasRef.current;
+					if (canvas) {
+						const ctx = canvas.getContext("2d", { willReadFrequently: true });
+						if (ctx) {
+							ctx.fillStyle = "#FFFFFF";
+							ctx.fillRect(0, 0, canvas.width, canvas.height);
+						}
 					}
 				}
 			}
-		}, [canvasRef, saveState]),
+		}, [onShowNewConfirm, canvasRef, saveState]),
 
 		fileOpen: useCallback(() => {
 			const input = document.createElement("input");
@@ -124,12 +131,27 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 					const img = new Image();
 					img.onload = () => {
 						console.log("[fileOpen] Image element loaded, starting canvas operations");
-						const canvas = canvasRef.current;
-						if (!canvas) {
-							console.error("[fileOpen] Canvas ref not available");
-							return;
-						}
-						console.log("[fileOpen] Canvas ref obtained:", canvas);
+
+						// Helper to wait for canvas ref to be available
+						const waitForCanvas = (attempts = 0): void => {
+							const canvas = canvasRef.current;
+							if (!canvas) {
+								if (attempts < 10) {
+									console.log(`[fileOpen] Canvas ref not available yet, retrying... (attempt ${attempts + 1}/10)`);
+									setTimeout(() => waitForCanvas(attempts + 1), 100);
+									return;
+								}
+								console.error("[fileOpen] Canvas ref not available after 10 attempts");
+								alert("Failed to load image - canvas not ready. Please try again.");
+								return;
+							}
+							console.log("[fileOpen] Canvas ref obtained:", canvas);
+
+							loadImageToCanvas(canvas, img);
+						};
+
+						// Actual image loading logic extracted to separate function
+						const loadImageToCanvas = (canvas: HTMLCanvasElement, img: HTMLImageElement) => {
 
 						const ctx = canvas.getContext("2d", { willReadFrequently: true });
 						if (!ctx) {
@@ -180,6 +202,10 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 						console.log("[fileOpen] Saved to history");
 
 						console.log(`[fileOpen] ✅ Successfully loaded image: ${img.width}x${img.height}`);
+						};
+
+						// Start waiting for canvas
+						waitForCanvas();
 					};
 
 					img.onerror = (err) => {
