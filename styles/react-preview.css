@@ -310,6 +310,12 @@ canvas.main-canvas,
 	top: 0 !important;
 	/* Ensure transform-origin is the same for both when scaling */
 	transform-origin: top left !important;
+	/* Ensure no default browser spacing affects alignment */
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+	/* Prevent subpixel rendering differences */
+	box-sizing: content-box !important;
 }
 
 canvas.main-canvas {

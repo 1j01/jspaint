@@ -1,14 +1,29 @@
 # Canvas Lifecycle Fix - File Upload Issue Resolution
 
-## Problem
+## ✅ STATUS: FIXED
 
+File upload via File → Open now works correctly!
+
+## Problems Fixed
+
+### Problem 1: Canvas Ref Not Available (Timing Issue)
+When loading an image via File → Open:
+1. Canvas ref was null when image finished loading
+2. Caused by hot reload or component remount timing
+3. Error: `[fileOpen] Canvas ref not available`
+
+### Problem 2: Canvas Being Overwritten
 When loading an image via File → Open:
 1. Image loaded successfully (confirmed by logs showing pixel data)
 2. Image drawn to canvas successfully
 3. **But image disappeared immediately after**
 
-## Root Cause
+## Root Causes
 
+### Root Cause 1: Canvas Ref Timing (Problem 1)
+During hot reload or component remount, the canvas ref could be temporarily null when the image finished loading asynchronously.
+
+### Root Cause 2: Canvas Being Overwritten (Problem 2)
 The `useCanvasLifecycle` hook was **overwriting the loaded image** with old data from:
 - Module-level `savedCanvasData` (from component unmount)
 - IndexedDB persistence (from page refresh)
@@ -27,9 +42,39 @@ The `useCanvasLifecycle` hook was **overwriting the loaded image** with old data
    - OR checks IndexedDB → restores old saved canvas
    - **Overwrites the newly loaded image** ❌
 
-## Solution
+## Solutions
 
-Added **content detection** to `useCanvasLifecycle.ts` as **Priority 0** (before all other priorities):
+### Solution 1: Retry Mechanism for Canvas Ref (`useMenuActions.ts`)
+
+Added a retry mechanism that waits up to 1 second (10 attempts × 100ms) for the canvas ref to become available:
+
+```typescript
+// Helper to wait for canvas ref to be available
+const waitForCanvas = (attempts = 0): void => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+        if (attempts < 10) {
+            console.log(`[fileOpen] Canvas ref not available yet, retrying... (attempt ${attempts + 1}/10)`);
+            setTimeout(() => waitForCanvas(attempts + 1), 100);
+            return;
+        }
+        console.error("[fileOpen] Canvas ref not available after 10 attempts");
+        alert("Failed to load image - canvas not ready. Please try again.");
+        return;
+    }
+    console.log("[fileOpen] Canvas ref obtained:", canvas);
+    loadImageToCanvas(canvas, img);
+};
+
+// Start waiting for canvas
+waitForCanvas();
+```
+
+This handles timing issues during hot reload or component remounting.
+
+### Solution 2: Content Detection in Canvas Lifecycle (`useCanvasLifecycle.ts`)
+
+Added **content detection** as Priority 0 (before all other priorities):
 
 ```typescript
 // Check if canvas already has content (e.g., from fileOpen)

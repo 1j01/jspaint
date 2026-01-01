@@ -15,9 +15,9 @@ export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(f
 	ref,
 ) {
 	const style: CSSProperties = {
-		// Position and transform-origin handled by CSS (.selection-overlay) to ensure exact alignment with main-canvas
-		// Only set transform here to match main-canvas scaling
+		// Match main-canvas transform and transform-origin exactly
 		transform: magnification > 1 ? `scale(${magnification})` : undefined,
+		transformOrigin: magnification > 1 ? "top left" : undefined,
 	};
 
 	return (

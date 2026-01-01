@@ -1,12 +1,13 @@
-import React, { ErrorInfo, Component as ReactComponent, ReactNode, useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useRef } from "react";
 import { Canvas } from "../react/components/Canvas";
 import { ColorBox } from "../react/components/ColorBox";
 import { DialogManager } from "../react/components/DialogManager";
+import { ErrorBoundary } from "../react/components/ErrorBoundary";
 import type { AttributesValues } from "../react/components/dialogs/AttributesDialog";
 import type { FlipRotateAction } from "../react/components/dialogs/FlipRotateDialog";
 import type { StretchSkewValues } from "../react/components/dialogs/StretchSkewDialog";
 import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
-import { Tool, ToolBox } from "../react/components/ToolBox";
+import { type Tool, ToolBox } from "../react/components/ToolBox";
 import { ToolOptions } from "../react/components/ToolOptions";
 import { MessageBoxDialog, type MessageBoxResult } from "../react/components/dialogs/MessageBoxDialog";
 import { useInitializeStores } from "../react/context/state/useInitializeStores";
@@ -25,20 +26,12 @@ import { useApp } from "../react/context/state/useApp";
 import { useCanvasDimensions } from "../react/context/state/useCanvasDimensions";
 import { useShallow } from "zustand/react/shallow";
 import { defaultCustomColors } from "../react/data/basicColors";
+import { TOOLBOX_ITEMS } from "../react/data/toolboxItems";
 import { createMenus } from "../react/menus/menuDefinitions";
 import { useMenuActions } from "../react/hooks/useMenuActions";
 import { useKeyboardShortcuts } from "../react/hooks/useKeyboardShortcuts";
-import {
-    applyToCanvas,
-    flipHorizontal,
-    flipVertical,
-    invertColors,
-    rotate,
-    skew,
-    stretch,
-    transformCanvas,
-} from "../react/utils/imageTransforms";
-import { downloadCanvas } from "../react/utils/imageFormats";
+import { useDialogHandlers } from "../react/hooks/useDialogHandlers";
+import { useFontState } from "../react/hooks/useFontState";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -310,6 +303,22 @@ function AppContent() {
 	// MessageBox state for File > New confirmation
 	const [showNewConfirm, setShowNewConfirm] = useState(false);
 
+	// Handler for File > New confirmation
+	const handleNewConfirm = useCallback((result: MessageBoxResult) => {
+		setShowNewConfirm(false);
+		if (result === "yes") {
+			saveState();
+			const canvas = canvasRef.current;
+			if (canvas) {
+				const ctx = canvas.getContext("2d", { willReadFrequently: true });
+				if (ctx) {
+					ctx.fillStyle = "#FFFFFF";
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+				}
+			}
+		}
+	}, [canvasRef, saveState]);
+
 	// Font state for FontBoxWindow
 	const fontState = useMemo(
 		() => ({
@@ -570,6 +579,7 @@ function AppContent() {
 		magnification,
 		setMagnification,
 		palette,
+		onShowNewConfirm: () => setShowNewConfirm(true),
 	});
 
 	// Create the menu structure
@@ -635,6 +645,16 @@ function AppContent() {
 				statusPosition={showStatusBar ? positionText : ""}
 				statusSize={showStatusBar ? sizeText : ""}
 			/>
+
+		<MessageBoxDialog
+			isOpen={showNewConfirm}
+			onClose={handleNewConfirm}
+			title="Paint"
+			message="Clear the current image and start new?"
+			buttons="yesNo"
+			icon="question"
+			defaultButton="yes"
+		/>
 
 		<DialogManager
 			dialogs={dialogs}
