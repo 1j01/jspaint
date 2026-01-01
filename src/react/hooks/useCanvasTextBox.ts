@@ -58,6 +58,7 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 	const fontBold = useSettingsStore((state) => state.fontBold);
 	const fontItalic = useSettingsStore((state) => state.fontItalic);
 	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
+	const fontVertical = useSettingsStore((state) => state.fontVertical);
 
 	// Text box creation state
 	const textBoxState = useRef<TextBoxCreationState>({
@@ -106,18 +107,19 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 				fontBold,
 				fontItalic,
 				fontUnderline,
+				fontVertical,
 				isActive: true,
 			});
 
-			textBoxState.current.isCreating = false;
-		},
-		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setTextBox],
-	);
+		textBoxState.current.isCreating = false;
+	},
+	[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, fontVertical, setTextBox],
+);
 
 	/**
 	 * Commit text box to canvas
 	 * Renders the text with current font settings and clears the text box
-	 * Supports multi-line text and underline styling
+	 * Uses SVG foreignObject approach to support vertical text via CSS
 	 */
 	const commitTextBox = useCallback((): void => {
 		if (!textBox || !textBox.text.trim()) {
@@ -131,31 +133,63 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) return;
 
-		// Build font string
-		let fontStyle = "";
-		if (textBox.fontItalic) fontStyle += "italic ";
-		if (textBox.fontBold) fontStyle += "bold ";
-		fontStyle += `${textBox.fontSize}px ${textBox.fontFamily}`;
+		// Create SVG with foreignObject containing styled textarea (same as preview)
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.setAttribute("version", "1.1");
+		svg.setAttribute("width", textBox.width.toString());
+		svg.setAttribute("height", textBox.height.toString());
 
-		ctx.font = fontStyle;
-		ctx.fillStyle = primaryColor;
-		ctx.textBaseline = "top";
+		const foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+		foreignObject.setAttribute("x", "0");
+		foreignObject.setAttribute("y", "0");
+		foreignObject.setAttribute("width", textBox.width.toString());
+		foreignObject.setAttribute("height", textBox.height.toString());
 
-		// Split text into lines and draw each
-		const lines = textBox.text.split("\n");
-		const lineHeight = textBox.fontSize * 1.2;
+		const textarea = document.createElement("textarea");
+		textarea.value = textBox.text;
+		textarea.style.cssText = `
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			padding: 0;
+			margin: 0;
+			border: 0;
+			resize: none;
+			overflow: hidden;
+			width: ${textBox.width}px;
+			height: ${textBox.height}px;
+			font-family: ${textBox.fontFamily};
+			font-size: ${textBox.fontSize}px;
+			font-weight: ${textBox.fontBold ? "bold" : "normal"};
+			font-style: ${textBox.fontItalic ? "italic" : "normal"};
+			text-decoration: ${textBox.fontUnderline ? "underline" : "none"};
+			writing-mode: ${textBox.fontVertical ? "vertical-lr" : "horizontal-tb"};
+			-ms-writing-mode: ${textBox.fontVertical ? "tb-lr" : "lr-tb"};
+			-webkit-writing-mode: ${textBox.fontVertical ? "vertical-lr" : "horizontal-tb"};
+			line-height: ${Math.round(textBox.fontSize * 1.2)}px;
+			color: ${primaryColor};
+			background: transparent;
+		`;
 
-		lines.forEach((line, index) => {
-			ctx.fillText(line, textBox.x, textBox.y + index * lineHeight);
+		foreignObject.appendChild(textarea);
+		svg.appendChild(foreignObject);
 
-			// Draw underline if needed
-			if (textBox.fontUnderline) {
-				const textWidth = ctx.measureText(line).width;
-				ctx.fillRect(textBox.x, textBox.y + index * lineHeight + textBox.fontSize + 1, textWidth, 1);
-			}
-		});
+		const svgSource = new XMLSerializer().serializeToString(svg);
+		const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgSource)}`;
 
-		clearTextBox();
+		const img = new Image();
+		img.onload = () => {
+			// Draw the rendered text to the main canvas
+			ctx.drawImage(img, textBox.x, textBox.y);
+			clearTextBox();
+		};
+		img.onerror = (event) => {
+			console.error("Failed to render text to canvas", event);
+			clearTextBox();
+		};
+		img.src = dataUrl;
 	}, [textBox, primaryColor, canvasRef, clearTextBox]);
 
 	// Check if currently creating

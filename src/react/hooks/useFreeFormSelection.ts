@@ -111,8 +111,8 @@ export function useFreeFormSelection({
 			// Start a new free-form selection
 			const canvas = canvasRef.current;
 			if (canvas) {
-				const ctx = canvas.getContext("2d");
-				if (ctx) saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
+				const canvasCtx = canvas.getContext("2d");
+				if (canvasCtx) saveState(canvasCtx.getImageData(0, 0, canvas.width, canvas.height));
 			}
 
 			state.current = {
@@ -229,6 +229,16 @@ export function useFreeFormSelection({
 					ctx.fill();
 					ctx.restore();
 
+					// Clear overlay FIRST (before setting selection)
+					const overlay = overlayRef.current;
+					if (overlay) {
+						const overlayCtx = overlay.getContext("2d");
+						if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+					}
+
+					state.current.isSelecting = false;
+					state.current.points = [];
+
 					setSelection({
 						x: minX,
 						y: minY,
@@ -238,16 +248,15 @@ export function useFreeFormSelection({
 						path: points.map((p) => ({ x: p.x - minX, y: p.y - minY })),
 					});
 				}
-			}
-
-			state.current.isSelecting = false;
-			state.current.points = [];
-
-			// Clear overlay
-			const overlay = overlayRef.current;
-			if (overlay) {
-				const overlayCtx = overlay.getContext("2d");
-				if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+			} else {
+				// Clear overlay if selection was too small
+				const overlay = overlayRef.current;
+				if (overlay) {
+					const overlayCtx = overlay.getContext("2d");
+					if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+				}
+				state.current.isSelecting = false;
+				state.current.points = [];
 			}
 		},
 		[secondaryColor, setSelection, overlayRef],

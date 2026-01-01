@@ -35,6 +35,7 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 	// Animate marching ants for selection
 	useEffect(() => {
 		if (!selection) {
+			console.log("[useSelectionAnimation] No selection, clearing overlay");
 			if (animationFrameId.current) {
 				cancelAnimationFrame(animationFrameId.current);
 				animationFrameId.current = null;
@@ -48,11 +49,21 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 			return;
 		}
 
+		console.log("[useSelectionAnimation] Starting animation for selection:", selection);
+
 		const overlay = overlayRef.current;
-		if (!overlay) return;
+		if (!overlay) {
+			console.error("[useSelectionAnimation] No overlay ref!");
+			return;
+		}
 
 		const ctx = overlay.getContext("2d");
-		if (!ctx) return;
+		if (!ctx) {
+			console.error("[useSelectionAnimation] Could not get overlay context!");
+			return;
+		}
+
+		console.log("[useSelectionAnimation] Overlay canvas size:", overlay.width, "x", overlay.height);
 
 		const animate = () => {
 			marchingAntsOffset.current = (marchingAntsOffset.current + 1) % 16;

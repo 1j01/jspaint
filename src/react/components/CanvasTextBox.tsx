@@ -104,6 +104,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		: { left: 0, top: 0 };
 
 	// Update canvas overlay when text changes
+	// Uses SVG foreignObject approach (like legacy code) to support vertical text via CSS
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
@@ -114,39 +115,63 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		// Clear canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-		// Draw background if opaque mode
-		if (drawOpaque) {
-			ctx.fillStyle = secondaryColor;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-		}
+		// Create SVG with foreignObject containing styled textarea
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.setAttribute("version", "1.1");
+		svg.setAttribute("width", textBox.width.toString());
+		svg.setAttribute("height", textBox.height.toString());
 
-		// Render text preview on canvas
-		if (textBox.text) {
-			const fontString = `${textBox.fontItalic ? "italic " : ""}${textBox.fontBold ? "bold " : ""}${textBox.fontSize}px ${textBox.fontFamily}`;
-			ctx.font = fontString;
-			ctx.fillStyle = primaryColor;
-			ctx.textBaseline = "top";
+		const foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+		foreignObject.setAttribute("x", "0");
+		foreignObject.setAttribute("y", "0");
+		foreignObject.setAttribute("width", textBox.width.toString());
+		foreignObject.setAttribute("height", textBox.height.toString());
 
-			const lines = textBox.text.split("\n");
-			const lineHeight = textBox.fontSize * 1.2; // Approximate line height
+		const textarea = document.createElement("textarea");
+		textarea.value = textBox.text;
+		textarea.style.cssText = `
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			padding: 0;
+			margin: 0;
+			border: 0;
+			resize: none;
+			overflow: hidden;
+			width: ${textBox.width}px;
+			height: ${textBox.height}px;
+			font-family: ${textBox.fontFamily};
+			font-size: ${textBox.fontSize}px;
+			font-weight: ${textBox.fontBold ? "bold" : "normal"};
+			font-style: ${textBox.fontItalic ? "italic" : "normal"};
+			text-decoration: ${textBox.fontUnderline ? "underline" : "none"};
+			writing-mode: ${textBox.fontVertical ? "vertical-lr" : "horizontal-tb"};
+			-ms-writing-mode: ${textBox.fontVertical ? "tb-lr" : "lr-tb"};
+			-webkit-writing-mode: ${textBox.fontVertical ? "vertical-lr" : "horizontal-tb"};
+			line-height: ${Math.round(textBox.fontSize * 1.2)}px;
+			color: ${primaryColor};
+			background: ${drawOpaque ? secondaryColor : "transparent"};
+		`;
 
-			lines.forEach((line, index) => {
-				const y = index * lineHeight;
-				ctx.fillText(line, 0, y);
+		foreignObject.appendChild(textarea);
+		svg.appendChild(foreignObject);
 
-				// Draw underline if needed
-				if (textBox.fontUnderline) {
-					const metrics = ctx.measureText(line);
-					ctx.strokeStyle = primaryColor;
-					ctx.lineWidth = 1;
-					ctx.beginPath();
-					ctx.moveTo(0, y + textBox.fontSize);
-					ctx.lineTo(metrics.width, y + textBox.fontSize);
-					ctx.stroke();
-				}
-			});
-		}
-	}, [textBox.text, textBox.fontFamily, textBox.fontSize, textBox.fontBold, textBox.fontItalic, textBox.fontUnderline, primaryColor, secondaryColor, drawOpaque]);
+		const svgSource = new XMLSerializer().serializeToString(svg);
+		const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgSource)}`;
+
+		const img = new Image();
+		img.onload = () => {
+			canvas.width = textBox.width;
+			canvas.height = textBox.height;
+			ctx.drawImage(img, 0, 0);
+		};
+		img.onerror = (event) => {
+			console.error("Failed to load SVG image for text preview", event);
+		};
+		img.src = dataUrl;
+	}, [textBox.text, textBox.width, textBox.height, textBox.fontFamily, textBox.fontSize, textBox.fontBold, textBox.fontItalic, textBox.fontUnderline, textBox.fontVertical, primaryColor, secondaryColor, drawOpaque]);
 
 	// Handle container drag (move)
 	const handleContainerPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
@@ -317,6 +342,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		fontWeight: textBox.fontBold ? "bold" : "normal",
 		fontStyle: textBox.fontItalic ? "italic" : "normal",
 		textDecoration: textBox.fontUnderline ? "underline" : "none",
+		writingMode: textBox.fontVertical ? "vertical-lr" : undefined,
 		lineHeight: `${Math.round(textBox.fontSize * 1.2)}px`,
 		color: primaryColor,
 		background: drawOpaque ? secondaryColor : "transparent", // Transparent background when drawOpaque is false

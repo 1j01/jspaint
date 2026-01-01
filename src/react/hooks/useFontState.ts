@@ -29,6 +29,7 @@ export function useFontState(selectedToolId: string, isTextBoxActive?: boolean) 
 	const fontBold = useSettingsStore((state) => state.fontBold);
 	const fontItalic = useSettingsStore((state) => state.fontItalic);
 	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
+	const fontVertical = useSettingsStore((state) => state.fontVertical);
 	const setFontFamily = useSettingsStore((state) => state.setFontFamily);
 	const setFontSize = useSettingsStore((state) => state.setFontSize);
 	const setFontStyle = useSettingsStore((state) => state.setFontStyle);
@@ -43,9 +44,9 @@ export function useFontState(selectedToolId: string, isTextBoxActive?: boolean) 
 			bold: fontBold,
 			italic: fontItalic,
 			underline: fontUnderline,
-			vertical: false, // Not supported in this version
+			vertical: fontVertical,
 		}),
-		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline],
+		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, fontVertical],
 	);
 
 	/**
@@ -62,12 +63,13 @@ export function useFontState(selectedToolId: string, isTextBoxActive?: boolean) 
 			if (
 				newFontState.bold !== fontBold ||
 				newFontState.italic !== fontItalic ||
-				newFontState.underline !== fontUnderline
+				newFontState.underline !== fontUnderline ||
+				newFontState.vertical !== fontVertical
 			) {
-				setFontStyle(newFontState.bold, newFontState.italic, newFontState.underline);
+				setFontStyle(newFontState.bold, newFontState.italic, newFontState.underline, newFontState.vertical);
 			}
 		},
-		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setFontFamily, setFontSize, setFontStyle],
+		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, fontVertical, setFontFamily, setFontSize, setFontStyle],
 	);
 
 	/**

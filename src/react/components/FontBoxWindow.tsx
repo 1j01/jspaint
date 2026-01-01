@@ -133,7 +133,7 @@ export function FontBoxWindow({
 	const handleSizeChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			const size = parseInt(e.target.value, 10);
-			if (!isNaN(size) && size >= 6 && size <= 200) {
+			if (!isNaN(size) && size >= 8 && size <= 72) {
 				onFontChange({ ...fontState, size });
 			}
 		},
@@ -228,12 +228,13 @@ export function FontBoxWindow({
 					{/* Font Size Input */}
 					<input
 						type="number"
-						className="font-size-input inset-deep"
+						className="inset-deep"
 						value={fontState.size}
 						onChange={handleSizeChange}
-						min={6}
-						max={200}
+						min={8}
+						max={72}
 						aria-label="Font Size"
+						style={{ maxWidth: 50 }}
 					/>
 
 					{/* Formatting Toggle Buttons */}

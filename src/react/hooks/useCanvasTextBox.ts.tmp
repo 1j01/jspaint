@@ -1,0 +1,14 @@
+		setTextBox({
+			x: boxX,
+			y: boxY,
+			width,
+			height,
+			text: "",
+			fontFamily,
+			fontSize,
+			fontBold,
+			fontItalic,
+			fontUnderline,
+			fontVertical,
+			isActive: true,
+		});

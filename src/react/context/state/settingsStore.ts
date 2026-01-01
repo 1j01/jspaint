@@ -89,6 +89,11 @@ export interface SettingsState {
 	fontUnderline: boolean;
 
 	/**
+	 * Whether text uses vertical writing mode (Far East fonts)
+	 */
+	fontVertical: boolean;
+
+	/**
 	 * Whether text background should be transparent
 	 */
 	textTransparent: boolean;
@@ -174,12 +179,13 @@ export interface SettingsState {
 	setFontSize: (size: number) => void;
 
 	/**
-	 * Set font style (bold, italic, underline)
+	 * Set font style (bold, italic, underline, vertical)
 	 * @param {boolean} bold - Whether text should be bold
 	 * @param {boolean} italic - Whether text should be italic
 	 * @param {boolean} underline - Whether text should be underlined
+	 * @param {boolean} vertical - Whether text uses vertical writing mode
 	 */
-	setFontStyle: (bold: boolean, italic: boolean, underline: boolean) => void;
+	setFontStyle: (bold: boolean, italic: boolean, underline: boolean, vertical: boolean) => void;
 
 	/**
 	 * Set text transparency mode
@@ -221,6 +227,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 	fontBold: false,
 	fontItalic: false,
 	fontUnderline: false,
+	fontVertical: false,
 	textTransparent: false,
 	defaultCanvasWidth: DEFAULT_CANVAS_WIDTH,
 	defaultCanvasHeight: DEFAULT_CANVAS_HEIGHT,
@@ -284,11 +291,12 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 		saveSetting("fontSize", size);
 	},
 
-	setFontStyle: (bold, italic, underline) => {
-		set({ fontBold: bold, fontItalic: italic, fontUnderline: underline });
+	setFontStyle: (bold, italic, underline, vertical) => {
+		set({ fontBold: bold, fontItalic: italic, fontUnderline: underline, fontVertical: vertical });
 		saveSetting("fontBold", bold);
 		saveSetting("fontItalic", italic);
 		saveSetting("fontUnderline", underline);
+		saveSetting("fontVertical", vertical);
 	},
 
 	setTextTransparent: (transparent) => {
@@ -317,6 +325,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 		const fontBold = await loadSetting("fontBold", false);
 		const fontItalic = await loadSetting("fontItalic", false);
 		const fontUnderline = await loadSetting("fontUnderline", false);
+		const fontVertical = await loadSetting("fontVertical", false);
 		const textTransparent = await loadSetting("textTransparent", false);
 		const drawOpaque = await loadSetting("drawOpaque", true);
 
@@ -334,6 +343,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 			fontBold,
 			fontItalic,
 			fontUnderline,
+			fontVertical,
 			textTransparent,
 			drawOpaque,
 		});

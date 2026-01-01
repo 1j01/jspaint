@@ -32,6 +32,7 @@
 
 /* Font Family Dropdown */
 .font-family-select {
+	width: 150px;
 	height: 21px;
 	font-size: 11px;
 	padding: 2px 4px;
@@ -55,19 +56,6 @@
 	/* background handled by inset-deep class */
 }
 
-/* Hide spinner buttons on number input */
-.font-size-input::-webkit-outer-spin-button,
-.font-size-input::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	appearance: none;
-	margin: 0;
-}
-
-.font-size-input[type="number"] {
-	-moz-appearance: textfield;
-	appearance: textfield;
-}
-
 /* Formatting Toggle Buttons Group */
 .font-style-toggles {
 	display: flex;
@@ -84,6 +72,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	color: ButtonText; /* Ensure text color is set for currentColor in icon mask */
+	color: #000; /* Fallback for ButtonText */
 }
 
 .font-box-window .toggle > .icon {
@@ -91,6 +81,12 @@
 	display: block;
 	width: 16px;
 	height: 16px;
+	/* Ensure icon shows with mask - theme CSS should handle this but adding as backup */
+	-webkit-mask-image: url("../../images/text-tools.png");
+	-webkit-mask-position: calc(-16px * var(--icon-index)) 0;
+	mask-image: url("../../images/text-tools.png");
+	mask-position: calc(-16px * var(--icon-index)) 0;
+	background-color: currentColor;
 }
 
 /* Tool window specific overrides */

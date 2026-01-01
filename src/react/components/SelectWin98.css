@@ -15,8 +15,9 @@
 	height: 21px;
 	background-color: white;
 	cursor: default;
-	padding: 2px 0 2px 4px;
+	padding: 0 0 0 4px;
 	font-size: 11px;
+	box-sizing: border-box;
 }
 
 .select-win98.disabled .select-win98-display {
@@ -34,7 +35,7 @@
 
 .select-win98-arrow {
 	width: 16px;
-	height: 17px;
+	height: 21px;
 	flex-shrink: 0;
 	display: flex;
 	align-items: center;
@@ -50,10 +51,7 @@
 
 /* Dropdown options list */
 .select-win98-options {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	right: 0;
+	/* Position is now handled via inline styles (portal rendering) */
 	margin: 0;
 	padding: 0;
 	list-style: none;

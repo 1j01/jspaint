@@ -3,6 +3,7 @@
  * Replaces native browser select with a fully styled dropdown
  */
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import "./SelectWin98.css";
 
 export interface SelectWin98Props {
@@ -23,19 +24,42 @@ export function SelectWin98({
 	"aria-label": ariaLabel,
 }: SelectWin98Props) {
 	const [isOpen, setIsOpen] = useState(false);
+	const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
 	const containerRef = useRef<HTMLDivElement>(null);
+	const displayRef = useRef<HTMLDivElement>(null);
 	const listRef = useRef<HTMLUListElement>(null);
+
+	console.log("[SelectWin98] Render - options count:", options.length, "isOpen:", isOpen, "value:", value);
 
 	// Find current option
 	const selectedOption = options.find((opt) => opt.value === value);
 	const selectedIndex = options.findIndex((opt) => opt.value === value);
+
+	// Update dropdown position when opening
+	useEffect(() => {
+		if (isOpen && displayRef.current) {
+			const rect = displayRef.current.getBoundingClientRect();
+			setDropdownPosition({
+				top: rect.bottom,
+				left: rect.left,
+				width: rect.width,
+			});
+		}
+	}, [isOpen]);
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
 		if (!isOpen) return;
 
 		const handleClickOutside = (e: MouseEvent) => {
-			if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+			const target = e.target as Node;
+			// Check if click is outside both the container and the options list
+			if (
+				containerRef.current &&
+				!containerRef.current.contains(target) &&
+				listRef.current &&
+				!listRef.current.contains(target)
+			) {
 				setIsOpen(false);
 			}
 		};
@@ -55,13 +79,18 @@ export function SelectWin98({
 	}, [isOpen, selectedIndex]);
 
 	const handleToggle = useCallback(() => {
+		console.log("[SelectWin98] handleToggle called, disabled:", disabled);
 		if (!disabled) {
-			setIsOpen((prev) => !prev);
+			setIsOpen((prev) => {
+				console.log("[SelectWin98] Toggling isOpen from", prev, "to", !prev);
+				return !prev;
+			});
 		}
 	}, [disabled]);
 
 	const handleSelect = useCallback(
 		(optionValue: string) => {
+			console.log("[SelectWin98] handleSelect called with:", optionValue);
 			onChange(optionValue);
 			setIsOpen(false);
 		},
@@ -113,7 +142,7 @@ export function SelectWin98({
 			tabIndex={disabled ? -1 : 0}
 			onKeyDown={handleKeyDown}
 		>
-			<div className="select-win98-display inset-deep" onClick={handleToggle}>
+			<div ref={displayRef} className="select-win98-display inset-deep" onClick={handleToggle}>
 				<span className="select-win98-value" style={selectedOption?.style}>
 					{selectedOption?.label || ""}
 				</span>
@@ -126,8 +155,18 @@ export function SelectWin98({
 				</div>
 			</div>
 
-			{isOpen && (
-				<ul ref={listRef} className="select-win98-options" role="listbox">
+			{isOpen && createPortal(
+				<ul
+					ref={listRef}
+					className="select-win98-options"
+					role="listbox"
+					style={{
+						position: 'fixed',
+						top: dropdownPosition.top,
+						left: dropdownPosition.left,
+						minWidth: dropdownPosition.width,
+					}}
+				>
 					{options.map((option, index) => (
 						<li
 							key={option.value}
@@ -140,7 +179,8 @@ export function SelectWin98({
 							{option.label}
 						</li>
 					))}
-				</ul>
+				</ul>,
+				document.body
 			)}
 		</div>
 	);

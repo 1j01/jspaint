@@ -81,39 +81,16 @@ export function EditColorsDialog({
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Edit Colors" width={expanded ? 450 : 240}>
-			<div style={{ display: "flex", gap: "8px" }}>
-				<div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+		<Dialog isOpen={isOpen} onClose={onClose} title="Edit Colors" width={expanded ? 640 : 254} className="edit-colors-window">
+			<div className="left-right-split">
+				<div className="left-side">
 					<label htmlFor="basic-colors">Basic colors:</label>
-					<div
-						id="basic-colors"
-						className="color-grid inset-shallow"
-						style={{
-							display: "grid",
-							gridTemplateColumns: "repeat(8, 20px)",
-							gridTemplateRows: "repeat(6, 20px)",
-							gap: "0",
-							border: "2px solid",
-							borderColor:
-								"var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow)",
-							padding: "2px",
-							background: "var(--surface)",
-						}}
-					>
+					<div id="basic-colors" className="color-grid inset-shallow">
 						{basicColors.map((color, index) => (
 							<button
 								key={index}
-								className={`color-swatch ${selectedColor === color ? "selected" : ""}`}
-								style={{
-									width: "20px",
-									height: "20px",
-									backgroundColor: color,
-									border: selectedColor === color ? "2px solid black" : "1px solid #808080",
-									padding: 0,
-									minWidth: 0,
-									minHeight: 0,
-									boxShadow: "none",
-								}}
+								className={`swatch ${selectedColor === color ? "selected" : ""}`}
+								style={{ backgroundColor: color }}
 								onClick={() => handleColorSelect(color)}
 								title={color}
 								aria-label={`Basic color ${index + 1}: ${color}`}
@@ -122,35 +99,12 @@ export function EditColorsDialog({
 					</div>
 
 					<label htmlFor="custom-colors">Custom colors:</label>
-					<div
-						id="custom-colors"
-						className="color-grid inset-shallow"
-						style={{
-							display: "grid",
-							gridTemplateColumns: "repeat(8, 20px)",
-							gridTemplateRows: "repeat(2, 20px)",
-							gap: "0",
-							border: "2px solid",
-							borderColor:
-								"var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow)",
-							padding: "2px",
-							background: "var(--surface)",
-						}}
-					>
+					<div id="custom-colors" className="color-grid inset-shallow">
 						{customColors.map((color, index) => (
 							<button
 								key={index}
-								className={`color-swatch ${selectedColor === color ? "selected" : ""}`}
-								style={{
-									width: "20px",
-									height: "20px",
-									backgroundColor: color,
-									border: selectedColor === color ? "2px solid black" : "1px solid #808080",
-									padding: 0,
-									minWidth: 0,
-									minHeight: 0,
-									boxShadow: "none",
-								}}
+								className={`swatch ${selectedColor === color ? "selected" : ""}`}
+								style={{ backgroundColor: color }}
 								onClick={() => handleColorSelect(color)}
 								title={color}
 								aria-label={`Custom color ${index + 1}: ${color}`}
@@ -159,19 +113,19 @@ export function EditColorsDialog({
 					</div>
 
 					{!expanded && (
-						<button onClick={() => setExpanded(true)} style={{ marginTop: "4px" }}>
+						<button className="define-custom-colors-button" onClick={() => setExpanded(true)}>
 							Define Custom Colors &gt;&gt;
 						</button>
 					)}
 
-					<div style={{ display: "flex", gap: "6px", marginTop: "12px" }}>
+					<div className="button-group">
 						<button onClick={handleOk}>OK</button>
 						<button onClick={onClose}>Cancel</button>
 					</div>
 				</div>
 
 				{expanded && (
-					<div style={{ display: "flex", flexDirection: "column", gap: "8px", position: "relative" }}>
+					<div className="right-side">
 						<ColorPickerCanvas
 							rainbowCanvasRef={rainbowCanvasRef}
 							luminosityCanvasRef={luminosityCanvasRef}

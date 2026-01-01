@@ -47,6 +47,7 @@ export const initialState: AppState = {
 	fontBold: false,
 	fontItalic: false,
 	fontUnderline: false,
+	fontVertical: false,
 	textTransparent: false, // Transparency mode for text/select tools
 
 	// Magnification
