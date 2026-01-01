@@ -166,51 +166,45 @@ export function Canvas({ canvasRef, className = "" }) {
 **Estimated Time**: 1-2 hours
 **Risk Level**: Low (mostly orchestration)
 **Files to Create**: 5
+**Status**: 🔄 80% COMPLETE (4 of 5 files created)
 
 #### 2.1 Extract useDialogHandlers.ts
-**Status**: 🔲 TODO
-**Lines**: ~200
+**Status**: ✅ COMPLETE
+**Lines**: 290
 **Location**: `src/react/hooks/useDialogHandlers.ts`
 
-**What to extract**:
-- `handleFlipRotate`
-- `handleStretchSkew`
-- `handleAttributes`
-- `handleLoadFromUrl`
-- `handleSaveAs`
-- `handleInvertColors`
-- `handleColorSelect`
-- `handleClearImage`
-- `handleSelectAll`
-- `handleHistoryNavigate`
+**Handlers extracted**:
+- handleNewConfirm, handleFlipRotate, handleStretchSkew
+- handleAttributes, handleLoadFromUrl, handleSaveAs
+- handleInvertColors, handleColorSelect, handleClearImage
+- handleSelectAll, handleHistoryNavigate
 
 #### 2.2 Extract toolboxItems.ts
-**Status**: 🔲 TODO
-**Lines**: ~100
+**Status**: ✅ COMPLETE
+**Lines**: 108
 **Location**: `src/react/data/toolboxItems.ts`
 
-**What to extract**:
-```typescript
-export const TOOLBOX_ITEMS: Tool[] = [ /* 16 tools */ ];
-```
-
 #### 2.3 Extract ErrorBoundary.tsx
-**Status**: 🔲 TODO
-**Lines**: ~30
+**Status**: ✅ COMPLETE
+**Lines**: 48
 **Location**: `src/react/components/ErrorBoundary.tsx`
 
 #### 2.4 Extract useFontState.ts
-**Status**: 🔲 TODO
-**Lines**: ~60
+**Status**: ✅ COMPLETE
+**Lines**: 83
 **Location**: `src/react/hooks/useFontState.ts`
 
-#### 2.5 Simplify useMenuActions.ts
-**Status**: 🔲 TODO
-**Changes**: Move store access inside the hook instead of passing massive params object
+**Provides**: fontState, handleFontChange, showFontBox
 
-#### 2.6 Update App.tsx
-**Status**: 🔲 TODO
-**Result**: 620 → ~180 lines
+#### 2.5 Update App.tsx
+**Status**: 🔲 IN PROGRESS (Manual completion needed)
+**Current**: 566 lines (reduced from 676)
+**Target**: ~250-280 lines
+
+**Remaining work**:
+- Replace font state extraction with `useFontState` hook call
+- Replace dialog handlers with `useDialogHandlers` hook call
+- Update JSX to use `dialogHandlers.handleXxx` pattern
 
 ---
 

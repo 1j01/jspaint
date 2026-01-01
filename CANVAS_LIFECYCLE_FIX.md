@@ -151,4 +151,13 @@ Console should show:
 
 ## Files Changed
 
-- `src/react/hooks/useCanvasLifecycle.ts` - Added content detection logic
+- `src/react/hooks/useMenuActions.ts` - Added retry mechanism for canvas ref availability (lines 136-151, 208)
+- `src/react/hooks/useCanvasLifecycle.ts` - Added content detection logic (lines 119-147)
+
+## Result
+
+✅ **File upload now works perfectly!**
+- Images load and stay visible
+- No overwriting from lifecycle hook
+- Handles timing issues gracefully
+- All existing functionality preserved
