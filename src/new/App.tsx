@@ -106,8 +106,7 @@ function AppContent() {
 	const { state } = useApp();
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
-	const { canUndo, canRedo, undo: undoRaw, redo: redoRaw, saveState } = useHistory();
-	const { getRoot, goToNode } = useTreeHistory();
+	const { getRoot, goToNode, undo: undoTree, redo: redoTree, canUndo, canRedo, pushState: pushTreeState } = useTreeHistory();
 	const { cursorPosition } = useCursorPosition();
 	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
 
@@ -129,36 +128,38 @@ function AppContent() {
 	}, [selection, setClipboard]);
 	const paste = useCallback(() => clipboard, [clipboard]);
 
-	// Wrapper for saveState that captures canvas imageData
+	// Wrapper for saveState that captures canvas imageData and saves to tree history
 	const saveHistoryState = useCallback(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) return;
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-		saveState(imageData);
-	}, [canvasRef, saveState]);
 
-	// Wrap undo/redo to actually restore canvas
-	const undo = useCallback(async () => {
-		const imageData = await undoRaw();
-		if (imageData && canvasRef.current) {
+		// Save to tree history (used by Canvas component and dialogs)
+		pushTreeState(imageData, "Manual Save");
+	}, [canvasRef, pushTreeState]);
+
+	// Wrap undo/redo to actually restore canvas using tree history
+	const undo = useCallback(() => {
+		const node = undoTree();
+		if (node && canvasRef.current) {
 			const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
 			if (ctx) {
-				ctx.putImageData(imageData, 0, 0);
+				ctx.putImageData(node.imageData, 0, 0);
 			}
 		}
-	}, [undoRaw, canvasRef]);
+	}, [undoTree, canvasRef]);
 
-	const redo = useCallback(async () => {
-		const imageData = await redoRaw();
-		if (imageData && canvasRef.current) {
+	const redo = useCallback(() => {
+		const node = redoTree();
+		if (node && canvasRef.current) {
 			const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
 			if (ctx) {
-				ctx.putImageData(imageData, 0, 0);
+				ctx.putImageData(node.imageData, 0, 0);
 			}
 		}
-	}, [redoRaw, canvasRef]);
+	}, [redoTree, canvasRef]);
 
 	const { magnification, setMagnification } = useMagnification();
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();

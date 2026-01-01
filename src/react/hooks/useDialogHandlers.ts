@@ -61,28 +61,55 @@ export function useDialogHandlers({
 }: UseDialogHandlersProps) {
 	/**
 	 * Handle File > New confirmation
+	 * - "Yes": Save current canvas as file (download), then clear to white
+	 * - "No": Clear to white without saving
+	 * - "Cancel": Do nothing
 	 */
 	const handleNewConfirm = useCallback(
 		(result: MessageBoxResult) => {
+			console.log('[handleNewConfirm] Called with result:', result);
+
 			if (setShowNewConfirm) {
 				setShowNewConfirm(false);
 			}
 
 			// Only proceed if user clicked Yes or No (not Cancel)
 			if (result === "yes" || result === "no") {
+				console.log('[handleNewConfirm] Processing yes/no action');
 				const canvas = canvasRef.current;
-				if (!canvas) return;
+				if (!canvas) {
+					console.error('[handleNewConfirm] Canvas ref is null!');
+					return;
+				}
 				const ctx = canvas.getContext("2d", { willReadFrequently: true });
-				if (!ctx) return;
-
-				// Save current state before clearing (only if user clicked Yes)
-				if (result === "yes") {
-					saveState();
+				if (!ctx) {
+					console.error('[handleNewConfirm] Could not get 2d context!');
+					return;
 				}
 
-				// Clear the canvas
+				// Save file (download) before clearing (only if user clicked Yes)
+				if (result === "yes") {
+					console.log('[handleNewConfirm] Downloading file...');
+					// Download the canvas as PNG file
+					const link = document.createElement("a");
+					link.download = "Untitled.png";
+					link.href = canvas.toDataURL("image/png");
+					link.click();
+					console.log('[handleNewConfirm] File download triggered');
+				}
+
+				console.log('[handleNewConfirm] Clearing canvas...');
+				// Clear the canvas to white
 				ctx.fillStyle = "#FFFFFF";
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				console.log('[handleNewConfirm] Canvas cleared');
+
+				// Save the new white canvas state to history
+				console.log('[handleNewConfirm] Saving to history...');
+				saveState();
+				console.log('[handleNewConfirm] Saved to history');
+			} else {
+				console.log('[handleNewConfirm] Cancel clicked, doing nothing');
 			}
 			// If result === "cancel", do nothing
 		},

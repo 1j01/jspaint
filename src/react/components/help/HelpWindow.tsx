@@ -43,7 +43,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	const [tocItems, setTocItems] = useState<HelpItem[]>([]);
 	const [sidebarVisible, setSidebarVisible] = useState(true);
 	const [selectedUrl, setSelectedUrl] = useState(DEFAULT_PAGE);
-	const [expandedFolder, setExpandedFolder] = useState<string | null>(null); // Only one folder expanded at a time
+	const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set()); // Multiple folders can be expanded
 
 	// Navigation state
 	const [history, setHistory] = useState<string[]>([DEFAULT_PAGE]);
@@ -262,16 +262,24 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		navigate(WEB_HELP_PAGE);
 	}, [navigate]);
 
-	// Toggle folder expansion (only one folder at a time, like jQuery)
+	// Toggle folder expansion (multiple folders can be expanded)
 	const toggleFolder = useCallback((folderId: string) => {
-		setExpandedFolder(prev => prev === folderId ? null : folderId);
+		setExpandedFolders(prev => {
+			const newSet = new Set(prev);
+			if (newSet.has(folderId)) {
+				newSet.delete(folderId);
+			} else {
+				newSet.add(folderId);
+			}
+			return newSet;
+		});
 	}, []);
 
 	// Render TOC item recursively
 	const renderTocItem = useCallback((item: HelpItem, depth = 0): React.ReactNode => {
 		const isFolder = item.children && item.children.length > 0;
 		const isSelected = item.url === selectedUrl;
-		const isExpanded = expandedFolder === item.id;
+		const isExpanded = expandedFolders.has(item.id);
 
 		console.log("[HelpWindow] Rendering item:", {
 			id: item.id,
@@ -307,7 +315,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 				)}
 			</li>
 		);
-	}, [selectedUrl, expandedFolder, toggleFolder, navigate]);
+	}, [selectedUrl, expandedFolders, toggleFolder, navigate]);
 
 	if (!isOpen) return null;
 
@@ -329,6 +337,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	const contentsStyle: React.CSSProperties = {
 		flexBasis: isSplitResizing ? undefined : (sidebarVisible ? splitPosition : 0),
 		marginRight: isSplitResizing ? 4 : undefined, // Add margin during resize for the resizer width
+		margin: "1px",
 		display: sidebarVisible ? undefined : "none",
 	};
 
@@ -341,13 +350,15 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	};
 
 	const iframeStyle: React.CSSProperties = {
-		// CSS already handles: flex: 1, width: 100%, height: 100%
+		margin: "1px",
+		backgroundColor: "white",
+		border: "",
 	};
 
 	return createPortal(
 		<div
 			ref={windowRef}
-			className="window os-window help-window"
+			className="window os-window help-window focused"
 			style={windowStyle}
 		>
 			{/* Titlebar */}

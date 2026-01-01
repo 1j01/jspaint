@@ -104,23 +104,31 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 			} else {
 				// Fallback to confirm if callback not provided
 				if (confirm("Clear the current image and start new?")) {
-					saveState();
-					const canvas = canvasRef.current;
-					if (canvas) {
-						const ctx = canvas.getContext("2d", { willReadFrequently: true });
-						if (ctx) {
-							ctx.fillStyle = "#FFFFFF";
-							ctx.fillRect(0, 0, canvas.width, canvas.height);
+					// Reset canvas to default size (480x320)
+					setCanvasSize(480, 320);
+
+					// Fill with white on next frame after resize
+					requestAnimationFrame(() => {
+						const canvas = canvasRef.current;
+						if (canvas) {
+							const ctx = canvas.getContext("2d", { willReadFrequently: true });
+							if (ctx) {
+								ctx.fillStyle = "#FFFFFF";
+								ctx.fillRect(0, 0, canvas.width, canvas.height);
+								saveState();
+							}
 						}
-					}
+					});
 				}
 			}
-		}, [onShowNewConfirm, canvasRef, saveState]),
+		}, [onShowNewConfirm, canvasRef, setCanvasSize, saveState]),
 
 		fileOpen: useCallback(() => {
 			const input = document.createElement("input");
 			input.type = "file";
-			input.accept = "image/*";
+			// Limit to well-supported image formats: PNG, JPEG, and BMP
+			// These are the core formats that MS Paint supports
+			input.accept = ".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp";
 			input.onchange = (e) => {
 				const file = (e.target as HTMLInputElement).files?.[0];
 				if (!file) return;
@@ -307,7 +315,8 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		editPasteFrom: useCallback(() => {
 			const input = document.createElement("input");
 			input.type = "file";
-			input.accept = "image/*";
+			// Limit to well-supported image formats: PNG, JPEG, and BMP
+			input.accept = ".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp";
 			input.onchange = (e) => {
 				const file = (e.target as HTMLInputElement).files?.[0];
 				if (!file) return;
@@ -451,19 +460,19 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		helpTopics: useCallback(() => openDialog("helpTopics"), [openDialog]),
 		helpAbout: useCallback(() => openDialog("about"), [openDialog]),
 
-		// State checks
-		canUndo: () => canUndo,
-		canRedo: () => canRedo,
-		hasSelection: () => hasSelection,
-		hasClipboard: () => hasClipboard,
-		isToolBoxVisible: () => showToolBox,
-		isColorBoxVisible: () => showColorBox,
-		isStatusBarVisible: () => showStatusBar,
-		isTextToolbarVisible: () => showTextToolbar,
-		isGridVisible: () => showGrid,
-		isThumbnailVisible: () => showThumbnail,
+		// State checks - these must return CURRENT values, not captured values
+		canUndo: useCallback(() => canUndo(), [canUndo]),
+		canRedo: useCallback(() => canRedo(), [canRedo]),
+		hasSelection: useCallback(() => hasSelection, [hasSelection]),
+		hasClipboard: useCallback(() => hasClipboard, [hasClipboard]),
+		isToolBoxVisible: useCallback(() => showToolBox, [showToolBox]),
+		isColorBoxVisible: useCallback(() => showColorBox, [showColorBox]),
+		isStatusBarVisible: useCallback(() => showStatusBar, [showStatusBar]),
+		isTextToolbarVisible: useCallback(() => showTextToolbar, [showTextToolbar]),
+		isGridVisible: useCallback(() => showGrid, [showGrid]),
+		isThumbnailVisible: useCallback(() => showThumbnail, [showThumbnail]),
 		isFullscreen: () => !!document.fullscreenElement,
-		isDrawOpaque: () => drawOpaque,
-		getMagnification: () => magnification,
+		isDrawOpaque: useCallback(() => drawOpaque, [drawOpaque]),
+		getMagnification: useCallback(() => magnification, [magnification]),
 	};
 }

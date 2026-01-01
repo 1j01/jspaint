@@ -24,37 +24,20 @@ interface MessageBoxDialogProps {
 }
 
 /**
- * Get the icon symbol for the message box
+ * Get the icon image filename for the message box
+ * Matches legacy msgbox.js implementation
+ * Uses absolute path from root to work from /new/ directory
  */
-function getIconSymbol(icon: MessageBoxIcon): string {
+function getIconImage(icon: MessageBoxIcon): string {
 	switch (icon) {
 		case "question":
-			return "?";
+			return "/images/info-32x32-8bpp.png"; // Use info icon for questions
 		case "warning":
-			return "!";
+			return "/images/warning-32x32-8bpp.png";
 		case "error":
-			return "✕";
+			return "/images/error-32x32-8bpp.png";
 		case "information":
-			return "ℹ";
-		case "none":
-		default:
-			return "";
-	}
-}
-
-/**
- * Get CSS class for the icon
- */
-function getIconClass(icon: MessageBoxIcon): string {
-	switch (icon) {
-		case "question":
-			return "messagebox-icon-question";
-		case "warning":
-			return "messagebox-icon-warning";
-		case "error":
-			return "messagebox-icon-error";
-		case "information":
-			return "messagebox-icon-information";
+			return "/images/info-32x32-8bpp.png";
 		case "none":
 		default:
 			return "";
@@ -91,6 +74,7 @@ export function MessageBoxDialog({
 }: MessageBoxDialogProps) {
 	const handleClose = useCallback(
 		(result: MessageBoxResult) => {
+			console.log('[MessageBoxDialog.handleClose] Called with result:', result);
 			onClose(result);
 		},
 		[onClose],
@@ -124,24 +108,28 @@ export function MessageBoxDialog({
 		[buttons, defaultButton, handleClose],
 	);
 
-	const iconSymbol = getIconSymbol(icon);
-	const iconClass = getIconClass(icon);
+	const iconImage = getIconImage(icon);
 
 	return (
 		<Dialog
 			isOpen={isOpen}
 			onClose={() => handleClose("cancel")}
 			title={title}
-			width={380}
+			width={400}
 			height="auto"
 			className="messagebox-dialog"
 		>
 			<div className="messagebox-content" onKeyDown={handleKeyDown}>
 				<div className="messagebox-body">
-					{iconSymbol && (
-						<div className={`messagebox-icon ${iconClass}`} aria-hidden="true">
-							{iconSymbol}
-						</div>
+					{iconImage && (
+						<img
+							src={iconImage}
+							width={32}
+							height={32}
+							className="messagebox-icon"
+							alt=""
+							aria-hidden="true"
+						/>
 					)}
 					<div className="messagebox-message">{message}</div>
 				</div>
