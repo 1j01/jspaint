@@ -7,7 +7,7 @@ test.describe("File Menu", () => {
 		await waitForAppLoaded(page);
 	});
 
-	test("File > New clears canvas after confirmation", async ({ page }) => {
+	test("File > New shows MessageBox dialog", async ({ page }) => {
 		// Draw something first
 		await selectToolByIndex(page, 6); // Pencil
 		await drawOnCanvas(page, {
@@ -21,15 +21,44 @@ test.describe("File Menu", () => {
 
 		// Click New
 		const newItem = page.locator('text="New"').first();
-
-		// Listen for confirm dialog
-		page.on('dialog', dialog => dialog.accept());
-
 		await newItem.click();
+
+		// MessageBox dialog should appear
+		const messageBox = page.locator('.messagebox-dialog');
+		await expect(messageBox).toBeVisible();
+		await expect(messageBox).toContainText('Save changes to Untitled?');
+
+		// Should have Yes, No, Cancel buttons
+		await expect(messageBox.locator('button:has-text("Yes")')).toBeVisible();
+		await expect(messageBox.locator('button:has-text("No")')).toBeVisible();
+		await expect(messageBox.locator('button:has-text("Cancel")')).toBeVisible();
+	});
+
+	test("File > New clears canvas when clicking No", async ({ page }) => {
+		// Draw something first
+		await selectToolByIndex(page, 6); // Pencil
+		await drawOnCanvas(page, {
+			start: { x: 0.2, y: 0.2 },
+			end: { x: 0.8, y: 0.8 },
+		});
+
+		// Open File menu
+		const fileMenu = page.locator('button:has-text("File")');
+		await fileMenu.click();
+
+		// Click New
+		const newItem = page.locator('text="New"').first();
+		await newItem.click();
+
+		// Click No button
+		const noButton = page.locator('.messagebox-dialog button:has-text("No")');
+		await noButton.click();
+
+		// Dialog should close
+		await expect(page.locator('.messagebox-dialog')).not.toBeVisible();
 
 		// Canvas should be cleared (all white)
 		await page.waitForTimeout(100);
-		const canvas = page.locator("canvas.main-canvas");
 		const imageData = await page.evaluate(() => {
 			const canvas = document.querySelector("canvas.main-canvas") as HTMLCanvasElement;
 			const ctx = canvas.getContext("2d");
@@ -44,6 +73,37 @@ test.describe("File Menu", () => {
 			return true;
 		});
 		expect(imageData).toBe(true);
+	});
+
+	test("File > New cancels when clicking Cancel", async ({ page }) => {
+		// Draw something first
+		await selectToolByIndex(page, 6); // Pencil
+		await drawOnCanvas(page, {
+			start: { x: 0.2, y: 0.2 },
+			end: { x: 0.8, y: 0.8 },
+		});
+
+		// Get canvas state before
+		const beforeDataUrl = await getCanvasDataUrl(page);
+
+		// Open File menu
+		const fileMenu = page.locator('button:has-text("File")');
+		await fileMenu.click();
+
+		// Click New
+		const newItem = page.locator('text="New"').first();
+		await newItem.click();
+
+		// Click Cancel button
+		const cancelButton = page.locator('.messagebox-dialog button:has-text("Cancel")');
+		await cancelButton.click();
+
+		// Dialog should close
+		await expect(page.locator('.messagebox-dialog')).not.toBeVisible();
+
+		// Canvas should remain unchanged
+		const afterDataUrl = await getCanvasDataUrl(page);
+		expect(afterDataUrl).toBe(beforeDataUrl);
 	});
 
 	test("File > Open opens file picker", async ({ page }) => {

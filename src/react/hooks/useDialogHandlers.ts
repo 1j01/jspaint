@@ -67,17 +67,24 @@ export function useDialogHandlers({
 			if (setShowNewConfirm) {
 				setShowNewConfirm(false);
 			}
-			if (result === "yes") {
-				saveState();
+
+			// Only proceed if user clicked Yes or No (not Cancel)
+			if (result === "yes" || result === "no") {
 				const canvas = canvasRef.current;
-				if (canvas) {
-					const ctx = canvas.getContext("2d", { willReadFrequently: true });
-					if (ctx) {
-						ctx.fillStyle = "#FFFFFF";
-						ctx.fillRect(0, 0, canvas.width, canvas.height);
-					}
+				if (!canvas) return;
+				const ctx = canvas.getContext("2d", { willReadFrequently: true });
+				if (!ctx) return;
+
+				// Save current state before clearing (only if user clicked Yes)
+				if (result === "yes") {
+					saveState();
 				}
+
+				// Clear the canvas
+				ctx.fillStyle = "#FFFFFF";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
 			}
+			// If result === "cancel", do nothing
 		},
 		[canvasRef, saveState, setShowNewConfirm],
 	);

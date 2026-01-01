@@ -21,9 +21,9 @@ const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
 const MIN_WIDTH = 400;
 const MIN_HEIGHT = 300;
-const CONTENTS_FILE = "/help/mspaint.hhc";
-const DEFAULT_PAGE = "/help/default.html";
-const WEB_HELP_PAGE = "/help/online_support.htm";
+const CONTENTS_FILE = "help/mspaint.hhc";
+const DEFAULT_PAGE = "help/default.html";
+const WEB_HELP_PAGE = "help/online_support.htm";
 
 export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	const windowRef = useRef<HTMLDivElement>(null);
@@ -43,7 +43,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	const [tocItems, setTocItems] = useState<HelpItem[]>([]);
 	const [sidebarVisible, setSidebarVisible] = useState(true);
 	const [selectedUrl, setSelectedUrl] = useState(DEFAULT_PAGE);
-	const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+	const [expandedFolder, setExpandedFolder] = useState<string | null>(null); // Only one folder expanded at a time
 
 	// Navigation state
 	const [history, setHistory] = useState<string[]>([DEFAULT_PAGE]);
@@ -69,14 +69,25 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 
 	// Split pane resizing state
 	const [isSplitResizing, setIsSplitResizing] = useState(false);
-	const [splitPosition, setSplitPosition] = useState(200); // Contents width
+	const [splitPosition, setSplitPosition] = useState(200); // Contents flex-basis
 	const splitResizeRef = useRef<{ startX: number; originalWidth: number } | null>(null);
 
 	// Load TOC on mount
 	useEffect(() => {
 		if (isOpen && tocItems.length === 0) {
 			parseHelpContents(CONTENTS_FILE)
-				.then((items) => setTocItems(items))
+				.then((items) => {
+					console.log("[HelpWindow] Loaded TOC items:", items);
+					// Add default "Welcome to Help" item at the beginning
+					const defaultItem: typeof items[0] = {
+						id: "welcome",
+						name: "Welcome to Help",
+						title: "Welcome to Help",
+						url: "default.html",
+						local: "default.html",
+					};
+					setTocItems([defaultItem, ...items]);
+				})
 				.catch((err) => console.error("Failed to load help contents:", err));
 		}
 	}, [isOpen, tocItems.length]);
@@ -191,8 +202,10 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 
 	// Navigation handlers
 	const navigate = useCallback((url: string) => {
-		setSelectedUrl(url);
-		setHistory(prev => [...prev.slice(0, historyIndex + 1), url]);
+		// Prepend "help/" to local paths that don't already have it
+		const fullUrl = url.startsWith("help/") ? url : `help/${url}`;
+		setSelectedUrl(fullUrl);
+		setHistory(prev => [...prev.slice(0, historyIndex + 1), fullUrl]);
 		setHistoryIndex(prev => prev + 1);
 	}, [historyIndex]);
 
@@ -242,24 +255,25 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		navigate(WEB_HELP_PAGE);
 	}, [navigate]);
 
-	// Toggle folder expansion
+	// Toggle folder expansion (only one folder at a time, like jQuery)
 	const toggleFolder = useCallback((folderId: string) => {
-		setExpandedFolders(prev => {
-			const newSet = new Set(prev);
-			if (newSet.has(folderId)) {
-				newSet.delete(folderId);
-			} else {
-				newSet.add(folderId);
-			}
-			return newSet;
-		});
+		setExpandedFolder(prev => prev === folderId ? null : folderId);
 	}, []);
 
 	// Render TOC item recursively
 	const renderTocItem = useCallback((item: HelpItem, depth = 0): React.ReactNode => {
 		const isFolder = item.children && item.children.length > 0;
 		const isSelected = item.url === selectedUrl;
-		const isExpanded = expandedFolders.has(item.id);
+		const isExpanded = expandedFolder === item.id;
+
+		console.log("[HelpWindow] Rendering item:", {
+			id: item.id,
+			title: item.title,
+			url: item.url,
+			isFolder,
+			isExpanded,
+			hasChildren: item.children?.length
+		});
 
 		const handleClick = () => {
 			if (isFolder) {
@@ -286,7 +300,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 				)}
 			</li>
 		);
-	}, [selectedUrl, expandedFolders, toggleFolder, navigate]);
+	}, [selectedUrl, expandedFolder, toggleFolder, navigate]);
 
 	if (!isOpen) return null;
 
@@ -305,15 +319,15 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		position: "relative",
 		display: "flex",
 		flexDirection: "row",
-		height: "calc(100% - 28px)", // Subtract toolbar height
-		overflow: "hidden",
+		flex: 1,
+		height: 0, // Required by CSS - fixes overflow issue
 	};
 
 	const contentsStyle: React.CSSProperties = {
-		width: sidebarVisible ? splitPosition : 0,
+		flexBasis: sidebarVisible ? splitPosition : 0,
 		flexShrink: 0,
 		overflow: "auto",
-		margin: 1,
+		margin: "1px",
 		display: sidebarVisible ? "block" : "none",
 	};
 
@@ -332,9 +346,9 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		flex: 1,
 		minWidth: 0,
 		minHeight: 0,
-		border: "none",
+		border: "0",
 		backgroundColor: "white",
-		margin: 1,
+		margin: "1px",
 	};
 
 	return createPortal(
@@ -384,7 +398,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 			</div>
 
 			{/* Window content */}
-			<div className="window-content" ref={contentRef} tabIndex={-1} style={{ outline: "none" }}>
+			<div className="window-content" ref={contentRef} tabIndex={-1} style={{ display: "flex", flexDirection: "column", outline: "none" }}>
 				{/* Toolbar */}
 				<div className="toolbar">
 					<button className="lightweight" onClick={handleToggleSidebar}>
@@ -412,15 +426,13 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 				{/* Main content area */}
 				<div className="main" style={mainStyle}>
 					{/* Contents list */}
-					<div
-						ref={contentRef}
+					<ul
+						ref={contentsListRef}
 						className="contents inset-deep"
 						style={contentsStyle}
 					>
-						<ul ref={contentsListRef}>
-							{tocItems.map(item => renderTocItem(item))}
-						</ul>
-					</div>
+						{tocItems.map(item => renderTocItem(item))}
+					</ul>
 
 					{/* Resizer */}
 					<div

@@ -334,7 +334,7 @@ function AppContent() {
 			isOpen={showNewConfirm}
 			onClose={dialogHandlers.handleNewConfirm}
 			title="Paint"
-			message="Save changes to untitled?"
+			message="Save changes to Untitled?"
 			buttons="yesNoCancel"
 			icon="warning"
 			defaultButton="yes"

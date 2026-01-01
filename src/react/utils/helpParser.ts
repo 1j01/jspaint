@@ -4,8 +4,11 @@
  */
 
 export interface HelpItem {
-	name: string;
-	local?: string; // URL path to the help page
+	id: string; // Unique identifier for each item
+	title: string; // Display name
+	url?: string; // URL path to the help page
+	name: string; // Original name from .hhc file
+	local?: string; // Original local path from .hhc file
 	children?: HelpItem[];
 }
 
@@ -66,16 +69,19 @@ export function parseHhcHtml(html: string): HelpItem[] {
  * Handles nested UL elements for hierarchical structure.
  *
  * @param ul - The UL element to parse
+ * @param prefix - ID prefix for generating unique IDs
  * @returns Array of HelpItem objects for this level
  */
-function parseUlElement(ul: Element): HelpItem[] {
+function parseUlElement(ul: Element, prefix: string = ""): HelpItem[] {
 	const items: HelpItem[] = [];
 
 	// Get direct LI children
 	const listItems = ul.querySelectorAll(":scope > li");
 
-	for (const li of listItems) {
-		const item = parseLiElement(li);
+	for (let i = 0; i < listItems.length; i++) {
+		const li = listItems[i];
+		const itemId = prefix ? `${prefix}-${i}` : `${i}`;
+		const item = parseLiElement(li, itemId);
 		if (item) {
 			items.push(item);
 		}
@@ -90,9 +96,10 @@ function parseUlElement(ul: Element): HelpItem[] {
  * Recursively processes nested UL for child items.
  *
  * @param li - The LI element to parse
+ * @param id - Unique ID for this item
  * @returns HelpItem object or null if invalid/empty
  */
-function parseLiElement(li: Element): HelpItem | null {
+function parseLiElement(li: Element, id: string): HelpItem | null {
 	// Find the OBJECT element with sitemap data
 	const objectEl = li.querySelector(":scope > object");
 	if (!objectEl) {
@@ -107,20 +114,20 @@ function parseLiElement(li: Element): HelpItem | null {
 		return null;
 	}
 
-	const item: HelpItem = {
-		name: name.trim(),
-	};
-
-	// Get the Local param (URL path)
 	const local = params.Local || params.local;
-	if (local) {
-		item.local = local;
-	}
+
+	const item: HelpItem = {
+		id,
+		name: name.trim(),
+		title: name.trim(), // title is same as name
+		local,
+		url: local ? local : undefined, // Use local path as-is, don't prepend "help/"
+	};
 
 	// Check for nested UL (children)
 	const childUl = li.querySelector(":scope > ul");
 	if (childUl) {
-		const children = parseUlElement(childUl);
+		const children = parseUlElement(childUl, id);
 		if (children.length > 0) {
 			item.children = children;
 		}

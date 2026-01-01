@@ -429,7 +429,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		textDecoration: textBox.fontUnderline ? "underline" : "none",
 		lineHeight: `${Math.round(textBox.fontSize * 1.2)}px`,
 		color: primaryColor,
-		background: "transparent", // Transparent background so canvas preview shows through
+		background: secondaryColor, // Background color for text visibility
 		minHeight: 0,
 		height: textBox.height,
 		outline: "none",
