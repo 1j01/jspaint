@@ -62,7 +62,9 @@ async function saveCanvasToIndexedDB(imageData: ImageData): Promise<void> {
 			width: imageData.width,
 			height: imageData.height,
 		};
+		console.log(`[useCanvasLifecycle] Saving to IndexedDB: ${canvasData.width}x${canvasData.height}`);
 		await saveSetting("savedCanvas", canvasData);
+		console.log("[useCanvasLifecycle] ✅ Saved to IndexedDB successfully");
 	} catch (error) {
 		console.error("[useCanvasLifecycle] Failed to save canvas to IndexedDB:", error);
 	}
@@ -152,6 +154,8 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 				console.log("[useCanvasLifecycle] Restoring from savedCanvasData");
 				ctx.putImageData(savedCanvasData, 0, 0);
 				savedCanvasData = null;
+				canvasInitialized = true; // Mark as initialized
+				loadedFromIndexedDB = true; // Prevent IndexedDB from overwriting this
 				console.log("[useCanvasLifecycle] Restored from savedCanvasData");
 				return;
 			}
@@ -164,6 +168,7 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
 				if (persistedCanvas) {
 					console.log(`[useCanvasLifecycle] Found persisted canvas: ${persistedCanvas.width}x${persistedCanvas.height}`);
+					console.log(`[useCanvasLifecycle] Current canvas element: ${canvas.width}x${canvas.height}`);
 					// Check if dimensions match
 					if (persistedCanvas.width === canvas.width && persistedCanvas.height === canvas.height) {
 						console.log("[useCanvasLifecycle] Dimensions match, restoring from IndexedDB");
@@ -179,7 +184,8 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 						console.log("[useCanvasLifecycle] Restored from IndexedDB");
 						return;
 					} else {
-						console.log(`[useCanvasLifecycle] Dimension mismatch (persisted: ${persistedCanvas.width}x${persistedCanvas.height} vs canvas: ${canvas.width}x${canvas.height})`);
+						console.warn(`[useCanvasLifecycle] ⚠️ Dimension mismatch! Persisted: ${persistedCanvas.width}x${persistedCanvas.height}, Canvas: ${canvas.width}x${canvas.height}`);
+						console.log("[useCanvasLifecycle] Will initialize with white background instead");
 					}
 					// If dimensions don't match, fall through to white background initialization
 				} else {

@@ -128,7 +128,10 @@ export function Dialog({
 					<button
 						className="window-close-button window-action-close window-button"
 						aria-label="Close"
-						onClick={onClose}
+						onClick={(e) => {
+							e.stopPropagation();
+							onClose();
+						}}
 					>
 						<span className="window-button-icon"></span>
 					</button>

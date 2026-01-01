@@ -60,15 +60,11 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 
 			const rect = canvas.getBoundingClientRect();
 
-			// When magnification > 1, CSS transform: scale() is applied
-			// The rect dimensions are scaled by magnification, but canvas.width/height are not
-			// We need to divide by magnification to get the actual canvas coordinates
-			const scaleX = canvas.width / (rect.width / magnification);
-			const scaleY = canvas.height / (rect.height / magnification);
-
+			// When magnification > 1, CSS transform: scale() is applied with transform-origin: top left
+			// The click position is in screen space (scaled), so we divide by magnification to get canvas coords
 			return {
-				x: Math.floor((e.clientX - rect.left) * scaleX),
-				y: Math.floor((e.clientY - rect.top) * scaleY),
+				x: Math.floor((e.clientX - rect.left) / magnification),
+				y: Math.floor((e.clientY - rect.top) / magnification),
 			};
 		},
 		[canvasRef, magnification],
