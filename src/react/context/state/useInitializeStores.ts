@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { useSettingsStore } from "./settingsStore";
 import { useUIStore } from "./uiStore";
+import { useCanvasStore } from "./canvasStore";
 
 export function useInitializeStores() {
 	const [isInitialized, setIsInitialized] = useState(false);
@@ -14,10 +15,11 @@ export function useInitializeStores() {
 	useEffect(() => {
 		async function loadStores() {
 			try {
-				// Load persisted settings and UI state
+				// Load persisted settings, UI state, and canvas state
 				await Promise.all([
 					useSettingsStore.getState().loadPersistedSettings(),
 					useUIStore.getState().loadPersistedUIState(),
+					useCanvasStore.getState().loadPersistedCanvasState(),
 				]);
 
 				setIsInitialized(true);

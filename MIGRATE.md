@@ -300,6 +300,12 @@ All major dialogs are implemented in React:
 - Legacy CSS from `styles/` reused with minimal React-specific overrides
 - Maintains authentic Windows 98 aesthetic
 
+**Important Note**:
+- **The React app (`/new/`) is already jQuery-free!** No jQuery dependencies in React code
+- jQuery only used in legacy app (`/old/`)
+- os-gui provides the Windows 98 UI without requiring jQuery
+- When "jQuery removal" is mentioned, it refers to archiving the `/old/` directory once React app is production-ready
+
 ## Files Reference
 
 ### Key Legacy Files to Port
@@ -535,5 +541,5 @@ npm run lint          # ESLint + TypeScript check
 1. **Comprehensive testing** - Test all tools, dialogs, and features for edge cases
 2. **Bug fixes** - Address any issues found during testing
 3. **Performance review** - Profile and optimize critical paths
-4. **Consider jQuery removal** - Once React app is fully stable and tested
+4. **Legacy cleanup** - Archive `/old/` jQuery app once React version is production-ready (keeping os-gui for Windows 98 UI)
 5. **Advanced features** - Multi-user sessions, accessibility enhancements, extended i18n features (long-term)

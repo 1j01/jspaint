@@ -23,6 +23,7 @@ import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
 import { useTreeHistory } from "../context/state/useTreeHistory";
 import { useUIStore } from "../context/state/uiStore";
 import { useToolStore } from "../context/state/toolStore";
+import { saveSetting } from "../context/state/persistence";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
@@ -111,6 +112,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	/**
 	 * Helper to save state to tree history.
 	 * Captures current canvas state and stores it in the history tree.
+	 * Also persists canvas content to IndexedDB for page refresh persistence.
 	 *
 	 * @param operationName - Human-readable name for the operation (e.g., "Pencil", "Fill")
 	 */
@@ -135,6 +137,14 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 			selectionWidth: currentSelection?.width,
 			selectionHeight: currentSelection?.height,
 		});
+
+		// Also persist canvas content to IndexedDB for page refresh
+		const canvasData = {
+			data: Array.from(imageData.data),
+			width: imageData.width,
+			height: imageData.height,
+		};
+		saveSetting("savedCanvas", canvasData);
 
 		// console.warn(`[Canvas] 🌳 Saved to history tree: ${operationName}`);
 	}, [canvasRef, pushTreeState]);

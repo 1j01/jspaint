@@ -50,10 +50,12 @@ export { useApp } from "./useApp";
 export async function initializeStores(): Promise<void> {
 	const settingsStore = await import("./settingsStore");
 	const uiStore = await import("./uiStore");
+	const canvasStore = await import("./canvasStore");
 
 	// Load settings from IndexedDB
 	await Promise.all([
 		settingsStore.useSettingsStore.getState().loadPersistedSettings(),
 		uiStore.useUIStore.getState().loadPersistedUIState(),
+		canvasStore.useCanvasStore.getState().loadPersistedCanvasState(),
 	]);
 }

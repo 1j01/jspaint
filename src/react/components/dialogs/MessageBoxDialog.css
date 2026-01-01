@@ -1,0 +1,93 @@
+/* MessageBox Dialog Styles */
+.messagebox-dialog {
+	/* Use default dialog styles from Dialog.tsx */
+}
+
+.messagebox-content {
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.messagebox-body {
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	padding: 8px;
+	min-height: 60px;
+}
+
+.messagebox-icon {
+	flex-shrink: 0;
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 32px;
+	font-weight: bold;
+	border-radius: 50%;
+	user-select: none;
+}
+
+.messagebox-icon-question {
+	background-color: #0080ff;
+	color: white;
+}
+
+.messagebox-icon-warning {
+	background-color: #ffcc00;
+	color: black;
+}
+
+.messagebox-icon-error {
+	background-color: #ff0000;
+	color: white;
+}
+
+.messagebox-icon-information {
+	background-color: #0080ff;
+	color: white;
+}
+
+.messagebox-message {
+	flex: 1;
+	font-size: 11px;
+	line-height: 1.5;
+	padding-top: 8px;
+	word-wrap: break-word;
+}
+
+.messagebox-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	padding: 8px 0 0 0;
+}
+
+.messagebox-button {
+	min-width: 75px;
+	height: 23px;
+	padding: 0 12px;
+	font-size: 11px;
+	background: linear-gradient(180deg, #ffffff 0%, #dfdfdf 100%);
+	border: 1px solid #000000;
+	box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+	cursor: pointer;
+}
+
+.messagebox-button:hover {
+	background: linear-gradient(180deg, #f0f0f0 0%, #d0d0d0 100%);
+}
+
+.messagebox-button:active {
+	background: linear-gradient(180deg, #c0c0c0 0%, #d0d0d0 100%);
+	box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff;
+	transform: translateY(1px);
+}
+
+.messagebox-button:focus {
+	outline: 1px dotted #000000;
+	outline-offset: -4px;
+}

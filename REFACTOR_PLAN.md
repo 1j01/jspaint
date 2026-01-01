@@ -26,12 +26,52 @@ This document outlines a systematic refactoring plan for the MCPaint React codeb
 
 ---
 
-## Refactoring Phases
+### Phase 0: State Hooks Organization (Priority: HIGH)
+**Estimated Time**: 1 hour
+**Risk Level**: Low (pure refactoring)
+**Files Created**: 19
+**Status**: ✅ COMPLETE (December 31, 2024)
+
+#### 0.1 Split hooks.ts into individual files
+**Status**: ✅ COMPLETE
+**Lines Refactored**: 382 lines → 19 individual hook files
+**Location**: `src/react/context/state/`
+
+**Individual hook files created**:
+- `useDrawingColor.ts` - Get drawing color by mouse button
+- `useColors.ts` - All color-related state
+- `useShapeSettings.ts` - Shape fill/line settings
+- `useBrushSettings.ts` - Brush sizes and shapes
+- `useFontSettings.ts` - Font-related settings
+- `useHistory.ts` - Undo/redo state (linear)
+- `useTreeHistory.ts` - Tree-based history state
+- `useCurrentHistoryNode.ts` - Current history node
+- `useCanvasDimensions.ts` - Canvas size state
+- `useTool.ts` - Active tool state
+- `useSelection.ts` - Selection state
+- `useClipboard.ts` - Clipboard operations
+- `useTextBoxState.ts` - Text box state
+- `useTextBoxActions.ts` - Text box actions
+- `useTextBox.ts` - Combined text box hook
+- `useViewState.ts` - View toggles state
+- `useMagnification.ts` - Zoom level state
+- `useCursorPosition.ts` - Cursor position state
+- `useApp.ts` - App state (backwards compatibility)
+
+**Benefits**:
+- Better file organization (one hook per file)
+- Easier to find and maintain individual hooks
+- Better IDE performance and tree-shaking
+- Updated `index.ts` to re-export from individual files
+- All imports updated across 12+ files
+
+---
 
 ### Phase 1: Canvas.tsx (Priority: HIGH)
 **Estimated Time**: 2-3 hours
 **Risk Level**: Medium (core functionality)
 **Files to Create**: 5
+**Status**: ✅ COMPLETE
 
 #### 1.1 Extract useCanvasLifecycle.ts
 **Status**: ✅ COMPLETE
@@ -44,8 +84,8 @@ This document outlines a systematic refactoring plan for the MCPaint React codeb
 **Location**: `src/react/hooks/useAirbrushEffect.ts`
 
 #### 1.3 Extract useCanvasEventHandlers.ts
-**Status**: 🔲 TODO
-**Lines**: ~350
+**Status**: ✅ COMPLETE
+**Lines**: ~445 (actual: more comprehensive than planned)
 **Location**: `src/react/hooks/useCanvasEventHandlers.ts`
 
 **What to extract**:
@@ -75,8 +115,8 @@ export function useCanvasEventHandlers({
 ```
 
 #### 1.4 Extract canvasHelpers.ts
-**Status**: 🔲 TODO
-**Lines**: ~140
+**Status**: ✅ COMPLETE
+**Lines**: ~155 (actual)
 **Location**: `src/react/utils/canvasHelpers.ts`
 
 **What to extract**:
@@ -85,8 +125,8 @@ export function useCanvasEventHandlers({
 - `handleCanvasResize()` (~50 lines)
 
 #### 1.5 Update Canvas.tsx
-**Status**: 🔲 TODO
-**Result**: 848 → ~200 lines
+**Status**: ✅ COMPLETE
+**Result**: 848 → ~271 lines (even better than target!)
 
 **Changes**:
 ```typescript
@@ -380,19 +420,27 @@ src/react/
 
 ## Progress Tracking
 
-### Completed
-- ✅ useCanvasLifecycle.ts (120 lines extracted)
-- ✅ useAirbrushEffect.ts (65 lines extracted)
+### Completed ✅
+- ✅ **Phase 0: State Hooks Organization** (382 lines → 19 individual hook files)
+  - Split hooks.ts into individual files
+  - Updated all imports across codebase
+  - Better organization and maintainability
+- ✅ **Phase 1: Canvas.tsx** (848 lines → 271 lines)
+  - useCanvasLifecycle.ts (120 lines extracted)
+  - useAirbrushEffect.ts (65 lines extracted)
+  - useCanvasEventHandlers.ts (445 lines extracted)
+  - canvasHelpers.ts (155 lines extracted)
+  - Canvas.tsx reduced by 68% (577 lines removed!)
 
-### In Progress
-- 🔄 Phase 1: Canvas.tsx refactoring
+### In Progress 🔄
+- None currently
 
-### Todo
-- 🔲 Phase 2: App.tsx refactoring
-- 🔲 Phase 3: EditColorsDialog.tsx refactoring
-- 🔲 Phase 4: ToolOptions.tsx refactoring
-- 🔲 Phase 5: useCanvasSelection.ts refactoring
-- 🔲 Phase 6: useMenuActions.ts refactoring
+### Todo 🔲
+- 🔲 Phase 2: App.tsx refactoring (676 lines → target ~180 lines)
+- 🔲 Phase 3: EditColorsDialog.tsx refactoring (496 lines → target ~170 lines)
+- 🔲 Phase 4: ToolOptions.tsx refactoring (484 lines → target ~60 lines)
+- 🔲 Phase 5: useCanvasSelection.ts refactoring (443 lines → target ~100 lines)
+- 🔲 Phase 6: useMenuActions.ts refactoring (443 lines → target ~50 lines)
 
 ---
 

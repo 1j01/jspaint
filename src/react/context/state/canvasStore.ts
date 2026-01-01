@@ -4,7 +4,7 @@
  */
 
 import { create } from "zustand";
-import { saveCanvasHistory, loadCanvasHistory, cleanupCanvasHistory } from "./persistence";
+import { saveCanvasHistory, loadCanvasHistory, cleanupCanvasHistory, saveSetting, loadSetting } from "./persistence";
 
 export interface CanvasState {
 	// Canvas dimensions
@@ -28,6 +28,7 @@ export interface CanvasState {
 	undo: () => Promise<ImageData | null>;
 	redo: () => Promise<ImageData | null>;
 	clearHistory: () => void;
+	loadPersistedCanvasState: () => Promise<void>;
 }
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
@@ -43,6 +44,9 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
 	// Actions
 	setCanvasSize: (width, height) => {
 		set({ canvasWidth: width, canvasHeight: height, saved: false });
+		// Persist canvas dimensions
+		saveSetting("canvasWidth", width);
+		saveSetting("canvasHeight", height);
 	},
 
 	setFileName: (name) => {
@@ -130,5 +134,11 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
 
 	clearHistory: () => {
 		set({ undoStack: [], redoStack: [] });
+	},
+
+	loadPersistedCanvasState: async () => {
+		const canvasWidth = await loadSetting("canvasWidth", 480);
+		const canvasHeight = await loadSetting("canvasHeight", 320);
+		set({ canvasWidth, canvasHeight });
 	},
 }));

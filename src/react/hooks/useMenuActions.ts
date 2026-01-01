@@ -120,34 +120,66 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 
 				const reader = new FileReader();
 				reader.onload = (ev) => {
+					console.log("[fileOpen] FileReader loaded successfully");
 					const img = new Image();
 					img.onload = () => {
+						console.log("[fileOpen] Image element loaded, starting canvas operations");
 						const canvas = canvasRef.current;
 						if (!canvas) {
 							console.error("[fileOpen] Canvas ref not available");
 							return;
 						}
+						console.log("[fileOpen] Canvas ref obtained:", canvas);
+
 						const ctx = canvas.getContext("2d", { willReadFrequently: true });
 						if (!ctx) {
 							console.error("[fileOpen] Could not get 2d context");
 							return;
 						}
+						console.log("[fileOpen] Canvas context obtained");
+
+						// Clear any existing selection before loading new image
+						console.log("[fileOpen] Clearing selection...");
+						clearSelection();
+						console.log("[fileOpen] Selection cleared");
 
 						// Resize canvas to match image
+						console.log(`[fileOpen] Resizing canvas from ${canvas.width}x${canvas.height} to ${img.width}x${img.height}`);
 						canvas.width = img.width;
 						canvas.height = img.height;
+						console.log(`[fileOpen] Canvas resized to ${canvas.width}x${canvas.height}`);
 
 						// Draw the image
+						console.log("[fileOpen] Drawing image to canvas...");
 						ctx.drawImage(img, 0, 0);
+						console.log("[fileOpen] Image drawn to canvas");
+
+						// Verify the image was drawn by checking a pixel
+						const pixelData = ctx.getImageData(0, 0, 1, 1).data;
+						console.log("[fileOpen] Sample pixel at (0,0):", {
+							r: pixelData[0],
+							g: pixelData[1],
+							b: pixelData[2],
+							a: pixelData[3]
+						});
 
 						// Update canvas size in store
+						console.log("[fileOpen] Updating canvas size in store...");
 						setCanvasSize(img.width, img.height);
+						console.log("[fileOpen] Canvas size updated in store");
 
 						// Save to history AFTER drawing (so the new image is captured)
+						console.log("[fileOpen] Saving to history...");
 						const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+						console.log("[fileOpen] ImageData captured:", {
+							width: imageData.width,
+							height: imageData.height,
+							dataLength: imageData.data.length
+						});
 						saveState(imageData);
+						console.log("[fileOpen] Saved to history");
 
-						console.log(`[fileOpen] Successfully loaded image: ${img.width}x${img.height}`);
+						console.log(`[fileOpen] ✅ Successfully loaded image: ${img.width}x${img.height}`);
 					};
 
 					img.onerror = (err) => {
@@ -166,7 +198,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 				reader.readAsDataURL(file);
 			};
 			input.click();
-		}, [canvasRef, saveState, setCanvasSize]),
+		}, [canvasRef, saveState, setCanvasSize, clearSelection]),
 
 		fileSave: useCallback(() => {
 			const canvas = canvasRef.current;
