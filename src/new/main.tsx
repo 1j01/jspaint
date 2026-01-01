@@ -5,6 +5,9 @@ import { App } from "./App";
 // Initialize i18next for internationalization
 import "../react/i18n/i18n";
 
+// Windows 98 style for select elements
+import "../react/styles/select-win98.css";
+
 const mountNode = document.getElementById("root");
 
 if (!mountNode) {

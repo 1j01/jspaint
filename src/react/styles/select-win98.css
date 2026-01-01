@@ -1,0 +1,41 @@
+/**
+ * Windows 98 style select/combobox styling
+ * Applies classic dropdown arrow and styling to all select elements
+ */
+
+select {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-color: var(--Window, #ffffff);
+	color: var(--WindowText, #000000);
+	border: none;
+	padding-right: 20px;
+	background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 0H16V16H15V15H1V16H0V0H1V1H15V0ZM1 1V14H15V1H1Z" fill="black"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 2H14V14H2V2Z" fill="%23c0c0c0"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8 11L4 7H12L8 11Z" fill="black"/></svg>');
+	background-position: right 2px center;
+	background-repeat: no-repeat;
+	cursor: default;
+	border-radius: 0;
+}
+
+select:active:not(:disabled),
+select:focus:not(:disabled) {
+	outline: 1px dotted var(--ButtonText, #000);
+	outline-offset: -4px;
+}
+
+select:disabled {
+	color: var(--GrayText, #808080);
+	background-color: var(--ButtonFace, #c0c0c0);
+}
+
+/* Option styling */
+select option {
+	background-color: var(--Window, #fff);
+	color: var(--WindowText, #000);
+}
+
+select option:checked {
+	background-color: var(--Highlight, #000080);
+	color: var(--HighlightText, #fff);
+}

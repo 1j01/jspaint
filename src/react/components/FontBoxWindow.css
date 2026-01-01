@@ -32,14 +32,11 @@
 
 /* Font Family Dropdown */
 .font-family-select {
-	flex: 1 1 auto;
-	min-width: 120px;
-	max-width: 180px;
 	height: 21px;
 	font-size: 11px;
 	padding: 2px 4px;
 	border: none;
-	background: white;
+	/* background and appearance handled by global select-win98.css */
 }
 
 .font-family-select option {
@@ -55,7 +52,7 @@
 	padding: 2px 4px;
 	text-align: center;
 	border: none;
-	background: white;
+	/* background handled by inset-deep class */
 }
 
 /* Hide spinner buttons on number input */

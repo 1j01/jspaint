@@ -106,30 +106,10 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 	// Update canvas overlay when text changes
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) {
-			console.log('[CanvasTextBox] No canvas ref');
-			return;
-		}
+		if (!canvas) return;
 
 		const ctx = canvas.getContext("2d");
-		if (!ctx) {
-			console.log('[CanvasTextBox] No canvas context');
-			return;
-		}
-
-		console.log('[CanvasTextBox] Canvas rendering:', {
-			text: textBox.text,
-			textLength: textBox.text.length,
-			canvasWidth: canvas.width,
-			canvasHeight: canvas.height,
-			canvasDisplayWidth: canvas.style.width,
-			canvasDisplayHeight: canvas.style.height,
-			primaryColor,
-			secondaryColor,
-			drawOpaque,
-			fontSize: textBox.fontSize,
-			fontFamily: textBox.fontFamily
-		});
+		if (!ctx) return;
 
 		// Clear canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -138,7 +118,6 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		if (drawOpaque) {
 			ctx.fillStyle = secondaryColor;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
-			console.log('[CanvasTextBox] Drew background:', secondaryColor);
 		}
 
 		// Render text preview on canvas
@@ -148,15 +127,12 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 			ctx.fillStyle = primaryColor;
 			ctx.textBaseline = "top";
 
-			console.log('[CanvasTextBox] Drawing text with font:', fontString, 'color:', primaryColor);
-
 			const lines = textBox.text.split("\n");
 			const lineHeight = textBox.fontSize * 1.2; // Approximate line height
 
 			lines.forEach((line, index) => {
 				const y = index * lineHeight;
 				ctx.fillText(line, 0, y);
-				console.log('[CanvasTextBox] Drew line:', line, 'at y:', y);
 
 				// Draw underline if needed
 				if (textBox.fontUnderline) {
@@ -169,8 +145,6 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 					ctx.stroke();
 				}
 			});
-		} else {
-			console.log('[CanvasTextBox] No text to draw');
 		}
 	}, [textBox.text, textBox.fontFamily, textBox.fontSize, textBox.fontBold, textBox.fontItalic, textBox.fontUnderline, primaryColor, secondaryColor, drawOpaque]);
 
@@ -317,13 +291,13 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 
 	const canvasStyle: CSSProperties = {
 		position: "absolute",
-		inset: 0,
+		left: 0,
+		top: 0,
 		pointerEvents: "none",
 		transform: `scale(${magnification})`,
 		transformOrigin: "left top",
 		zIndex: 5, // Above textarea (z-index: 4) to show rendered text
-		border: "2px solid red", // TEMP: Visual debugging
-		backgroundColor: "rgba(255, 255, 0, 0.3)", // TEMP: Visual debugging
+		opacity: 1, // Override CSS that sets opacity: 0
 	};
 
 	const textareaStyle: CSSProperties = {
