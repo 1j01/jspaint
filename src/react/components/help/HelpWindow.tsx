@@ -70,6 +70,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	// Split pane resizing state
 	const [isSplitResizing, setIsSplitResizing] = useState(false);
 	const [splitPosition, setSplitPosition] = useState(200); // Contents flex-basis
+	const [tempResizerPosition, setTempResizerPosition] = useState<number | null>(null); // Temporary position during drag
 	const splitResizeRef = useRef<{ startX: number; originalWidth: number } | null>(null);
 
 	// Load TOC on mount
@@ -146,11 +147,17 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		} else if (isSplitResizing && splitResizeRef.current) {
 			const deltaX = e.clientX - splitResizeRef.current.startX;
 			const newWidth = Math.max(100, Math.min(size.width - 200, splitResizeRef.current.originalWidth + deltaX));
-			setSplitPosition(newWidth);
+			setTempResizerPosition(newWidth);
 		}
 	}, [isDragging, isResizing, isSplitResizing, size.width]);
 
 	const handlePointerUp = useCallback(() => {
+		// Commit the split position if we were resizing
+		if (isSplitResizing && tempResizerPosition !== null) {
+			setSplitPosition(tempResizerPosition);
+			setTempResizerPosition(null);
+		}
+
 		setIsDragging(false);
 		setIsResizing(false);
 		setIsSplitResizing(false);
@@ -158,7 +165,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		resizeStateRef.current = null;
 		splitResizeRef.current = null;
 		document.body.classList.remove("cursor-bully");
-	}, []);
+	}, [isSplitResizing, tempResizerPosition]);
 
 	// Handle window resize handles
 	const handleResizePointerDown = useCallback((direction: string, e: React.PointerEvent) => {
@@ -312,43 +319,29 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		top: position.top,
 		width: size.width,
 		height: size.height,
-		display: isMinimized ? "none" : "block",
+		display: isMinimized ? "none" : undefined, // Let CSS handle display: flex
 	};
 
 	const mainStyle: React.CSSProperties = {
 		position: "relative",
-		display: "flex",
-		flexDirection: "row",
-		flex: 1,
-		height: 0, // Required by CSS - fixes overflow issue
 	};
 
 	const contentsStyle: React.CSSProperties = {
-		flexBasis: sidebarVisible ? splitPosition : 0,
-		flexShrink: 0,
-		overflow: "auto",
-		margin: "1px",
-		display: sidebarVisible ? "block" : "none",
+		flexBasis: isSplitResizing ? undefined : (sidebarVisible ? splitPosition : 0),
+		marginRight: isSplitResizing ? 4 : undefined, // Add margin during resize for the resizer width
+		display: sidebarVisible ? undefined : "none",
 	};
 
 	const resizerStyle: React.CSSProperties = {
-		cursor: "ew-resize",
-		width: 4,
-		flexShrink: 0,
-		boxSizing: "border-box",
-		background: "var(--ButtonFace)",
-		borderLeft: "1px solid var(--ButtonShadow)",
-		boxShadow: "inset 1px 0 0 var(--ButtonHilight)",
-		display: sidebarVisible ? "block" : "none",
+		position: isSplitResizing ? "absolute" : undefined,
+		left: isSplitResizing ? tempResizerPosition ?? splitPosition : undefined,
+		top: isSplitResizing ? 0 : undefined,
+		bottom: isSplitResizing ? 0 : undefined,
+		display: sidebarVisible ? undefined : "none",
 	};
 
 	const iframeStyle: React.CSSProperties = {
-		flex: 1,
-		minWidth: 0,
-		minHeight: 0,
-		border: "0",
-		backgroundColor: "white",
-		margin: "1px",
+		// CSS already handles: flex: 1, width: 100%, height: 100%
 	};
 
 	return createPortal(
@@ -398,7 +391,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 			</div>
 
 			{/* Window content */}
-			<div className="window-content" ref={contentRef} tabIndex={-1} style={{ display: "flex", flexDirection: "column", outline: "none" }}>
+			<div className="window-content" ref={contentRef} tabIndex={-1} style={{ flexDirection: "column", outline: "none" }}>
 				{/* Toolbar */}
 				<div className="toolbar">
 					<button className="lightweight" onClick={handleToggleSidebar}>

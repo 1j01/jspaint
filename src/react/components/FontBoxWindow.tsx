@@ -9,21 +9,11 @@
  * - Bold, Italic, Underline, Vertical toggle buttons
  * - Auto-repositions to avoid overlapping the text box
  */
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useDraggable } from "../hooks/useDraggable";
+import { useSystemFonts } from "../hooks/useSystemFonts";
 import "./FontBoxWindow.css";
-
-// Extend Window interface for Local Font Access API and FontDetective
-declare global {
-	interface Window {
-		queryLocalFonts?: () => Promise<{ family: string }[]>;
-		FontDetective?: {
-			each: (callback: (font: { name: string; toString: () => string }) => void) => void;
-			all: (callback: (fonts: { name: string }[]) => void) => void;
-		};
-	}
-}
 
 interface FontState {
 	family: string;
@@ -43,39 +33,8 @@ interface FontBoxWindowProps {
 	magnification?: number;
 }
 
-const FALLBACK_FONTS: string[] = [
-	"Arial",
-	"Calibri",
-	"Cambria",
-	"Comic Sans MS",
-	"Courier New",
-	"Georgia",
-	"Helvetica",
-	"Impact",
-	"Liberation Sans",
-	"Lucida Console",
-	"Palatino Linotype",
-	"Tahoma",
-	"Times New Roman",
-	"Trebuchet MS",
-	"Verdana",
-];
-
 /**
- * Ensures font list is valid, unique, and sorted
- * Deduplicates and alphabetically sorts the font list.
- * Falls back to FALLBACK_FONTS if empty.
- *
- * @param {string[]} fonts - Font family names to process
- * @returns {string[]} Unique, sorted font list
- */
-const ensureFonts = (fonts: string[]): string[] => {
-	const source = !fonts || !fonts.length ? FALLBACK_FONTS : fonts;
-	return Array.from(new Set(source)).sort((a, b) => a.localeCompare(b));
-};
-
-/**
- * FontBoxWindow - Floating font selection window
+ * FontBoxWindow - Floating font window
  * Appears when text tool is active or text box is being edited.
  * Matches the legacy $FontBox.js floating window behavior.
  *
@@ -115,97 +74,13 @@ export function FontBoxWindow({
 	textBoxRect,
 	magnification = 1,
 }: FontBoxWindowProps) {
-	const [availableFonts, setAvailableFonts] = useState<string[]>(() => ensureFonts([]));
-	const [loadingFonts, setLoadingFonts] = useState(false);
+	const { fonts: availableFonts, loading: loadingFonts } = useSystemFonts();
 	const windowRef = useRef<HTMLDivElement>(null);
 
 	const { position, elementRef, handleProps, setPosition } = useDraggable({
 		enabled: true,
 		initialPosition: { x: 100, y: 100 },
 	});
-
-	// Load available fonts using Local Font Access API or fallback to FontDetective
-	useEffect(() => {
-		let cancelled = false;
-
-		const loadFonts = async () => {
-			if (typeof window === "undefined") {
-				setAvailableFonts(ensureFonts([]));
-				return;
-			}
-
-			setLoadingFonts(true);
-
-			// Helper to use FontDetective fallback
-			const useFontDetective = () => {
-				if (cancelled) return;
-
-				if (!window.FontDetective) {
-					// console.warn("FontDetective not available, using fallback fonts");
-					setAvailableFonts(ensureFonts([]));
-					setLoadingFonts(false);
-					return;
-				}
-
-				const detectedFonts: string[] = [];
-
-				window.FontDetective.each((font) => {
-					if (!cancelled) {
-						detectedFonts.push(font.name);
-						// Update incrementally as fonts are detected
-						setAvailableFonts(ensureFonts([...detectedFonts]));
-					}
-				});
-
-				window.FontDetective.all(() => {
-					if (!cancelled) {
-						setAvailableFonts(ensureFonts(detectedFonts));
-						setLoadingFonts(false);
-					}
-				});
-			};
-
-			try {
-				// Try Local Font Access API first
-				if (window.queryLocalFonts) {
-					const fonts = await window.queryLocalFonts();
-					if (cancelled) return;
-
-					if (fonts.length) {
-						const familyNames = new Set<string>();
-						for (const font of fonts) {
-							if (!familyNames.has(font.family)) {
-								familyNames.add(font.family);
-							}
-						}
-						setAvailableFonts(ensureFonts(Array.from(familyNames)));
-						setLoadingFonts(false);
-						return;
-					} else {
-						// console.log("queryLocalFonts returned no fonts, falling back to FontDetective");
-						useFontDetective();
-						return;
-					}
-				}
-			} catch (error) {
-				if (!cancelled) {
-					// console.log("queryLocalFonts failed:", error, "\nFalling back to FontDetective");
-					useFontDetective();
-					return;
-				}
-			}
-
-			// No Local Font Access API, use FontDetective
-			// console.log("queryLocalFonts unavailable, falling back to FontDetective");
-			useFontDetective();
-		};
-
-		loadFonts();
-
-		return () => {
-			cancelled = true;
-		};
-	}, []);
 
 	// Auto-reposition to avoid overlapping the text box
 	useEffect(() => {

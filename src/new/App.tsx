@@ -106,7 +106,7 @@ function AppContent() {
 	const { state } = useApp();
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
-	const { canUndo, canRedo, undo, redo, saveState } = useHistory();
+	const { canUndo, canRedo, undo: undoRaw, redo: redoRaw, saveState } = useHistory();
 	const { getRoot, goToNode } = useTreeHistory();
 	const { cursorPosition } = useCursorPosition();
 	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
@@ -138,6 +138,27 @@ function AppContent() {
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		saveState(imageData);
 	}, [canvasRef, saveState]);
+
+	// Wrap undo/redo to actually restore canvas
+	const undo = useCallback(async () => {
+		const imageData = await undoRaw();
+		if (imageData && canvasRef.current) {
+			const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
+			if (ctx) {
+				ctx.putImageData(imageData, 0, 0);
+			}
+		}
+	}, [undoRaw, canvasRef]);
+
+	const redo = useCallback(async () => {
+		const imageData = await redoRaw();
+		if (imageData && canvasRef.current) {
+			const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
+			if (ctx) {
+				ctx.putImageData(imageData, 0, 0);
+			}
+		}
+	}, [redoRaw, canvasRef]);
 
 	const { magnification, setMagnification } = useMagnification();
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
