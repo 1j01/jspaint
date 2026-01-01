@@ -16,6 +16,34 @@ interface UseCanvasTextBoxProps {
 
 /**
  * Hook for handling text tool operations
+ *
+ * Manages the complete text box lifecycle:
+ * - Creating new text boxes by dragging
+ * - Displaying editable text box overlay
+ * - Committing text to canvas with font styling
+ * - Moving and resizing text boxes
+ * - Font formatting (family, size, bold, italic, underline)
+ *
+ * Text box workflow:
+ * 1. User drags to create text box bounds
+ * 2. Text box appears with textarea for editing
+ * 3. User types text and changes font settings
+ * 4. On commit (blur or tool change), text is rendered to canvas
+ *
+ * @param {UseCanvasTextBoxProps} props - Hook configuration
+ * @param {RefObject<HTMLCanvasElement | null>} props.canvasRef - Reference to the canvas element
+ * @returns {Object} Text box state and control functions
+ *
+ * @example
+ * const textBox = useCanvasTextBox({ canvasRef });
+ * // Start creating text box
+ * textBox.startTextBox(x, y);
+ * // Finalize dimensions on mouse up
+ * textBox.finalizeTextBox(x2, y2);
+ * // User edits text...
+ * textBox.updateText('Hello World');
+ * // Commit to canvas
+ * textBox.commitTextBox();
  */
 export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 	const { primaryColor } = useColors();
@@ -38,7 +66,11 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		startY: 0,
 	});
 
-	// Start creating a text box
+	/**
+	 * Start creating a text box
+	 * @param {number} x - Start X coordinate
+	 * @param {number} y - Start Y coordinate
+	 */
 	const startTextBox = useCallback((x: number, y: number): void => {
 		textBoxState.current = {
 			isCreating: true,
@@ -47,7 +79,12 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		};
 	}, []);
 
-	// Finalize text box creation
+	/**
+	 * Finalize text box creation with final dimensions
+	 * Creates the text box state with minimum size constraints
+	 * @param {number} x - End X coordinate
+	 * @param {number} y - End Y coordinate
+	 */
 	const finalizeTextBox = useCallback(
 		(x: number, y: number): void => {
 			if (!textBoxState.current.isCreating) return;
@@ -77,7 +114,11 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, setTextBox],
 	);
 
-	// Commit text box to canvas
+	/**
+	 * Commit text box to canvas
+	 * Renders the text with current font settings and clears the text box
+	 * Supports multi-line text and underline styling
+	 */
 	const commitTextBox = useCallback((): void => {
 		if (!textBox || !textBox.text.trim()) {
 			clearTextBox();
@@ -135,6 +176,34 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		[textBox, setTextBox],
 	);
 
+	// Move text box
+	const moveTextBox = useCallback(
+		(x: number, y: number): void => {
+			if (textBox) {
+				setTextBox({
+					...textBox,
+					x,
+					y,
+				});
+			}
+		},
+		[textBox, setTextBox],
+	);
+
+	// Resize text box
+	const resizeTextBox = useCallback(
+		(width: number, height: number): void => {
+			if (textBox) {
+				setTextBox({
+					...textBox,
+					width,
+					height,
+				});
+			}
+		},
+		[textBox, setTextBox],
+	);
+
 	return {
 		textBox,
 		textBoxState,
@@ -144,6 +213,8 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		clearTextBox,
 		isCreating,
 		updateText,
+		moveTextBox,
+		resizeTextBox,
 		fontFamily,
 		fontSize,
 		fontBold,

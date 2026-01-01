@@ -1,25 +1,80 @@
 import { CSSProperties, forwardRef, useImperativeHandle, useRef } from "react";
 import { useUIStore } from "../context/state/uiStore";
 
+/**
+ * Props for HelperLayer component
+ */
 interface HelperLayerProps {
+	/** X position in canvas coordinates */
 	x: number;
+	/** Y position in canvas coordinates */
 	y: number;
+	/** Width in canvas pixels */
 	width: number;
+	/** Height in canvas pixels */
 	height: number;
+	/** Device pixel ratio for high-DPI rendering (default: 1) */
 	pixelRatio?: number;
 }
 
+/**
+ * Imperative handle exposed to parent components
+ */
 export interface HelperLayerHandle {
+	/** Direct access to canvas element */
 	canvas: HTMLCanvasElement | null;
+	/** Get 2D rendering context */
 	getContext: () => CanvasRenderingContext2D | null;
+	/** Clear the entire canvas */
 	clear: () => void;
 }
 
 /**
- * Helper layer overlay for temporary drawing hints and previews.
- * This is used for things like shape previews, grid overlay, etc.
+ * HelperLayer component - Overlay canvas for temporary drawing hints
+ * Provides a transparent overlay canvas for rendering temporary visuals like:
+ * - Shape tool previews (line, rectangle, ellipse during drag)
+ * - Grid overlay
+ * - Cursor crosshairs
+ * - Other non-permanent drawing hints
  *
- * Port of legacy OnCanvasHelperLayer.js
+ * Port of legacy OnCanvasHelperLayer.js to React.
+ *
+ * Features:
+ * - Positioned absolutely over the specified region
+ * - Pointer events disabled (doesn't interfere with mouse input)
+ * - Pixelated rendering for crisp pixels
+ * - Exposes imperative handle for direct canvas manipulation
+ * - Scales with magnification
+ * - Supports high-DPI displays via pixelRatio
+ *
+ * @param {HelperLayerProps} props - Component props
+ * @param {React.Ref<HelperLayerHandle>} ref - Forwarded ref exposing canvas and methods
+ * @returns {JSX.Element} Overlay canvas element
+ *
+ * @example
+ * const helperRef = useRef<HelperLayerHandle>(null);
+ *
+ * // Clear helper layer
+ * helperRef.current?.clear();
+ *
+ * // Draw line preview
+ * const ctx = helperRef.current?.getContext();
+ * if (ctx) {
+ *   ctx.strokeStyle = 'red';
+ *   ctx.beginPath();
+ *   ctx.moveTo(x1, y1);
+ *   ctx.lineTo(x2, y2);
+ *   ctx.stroke();
+ * }
+ *
+ * <HelperLayer
+ *   ref={helperRef}
+ *   x={0}
+ *   y={0}
+ *   width={640}
+ *   height={480}
+ *   pixelRatio={window.devicePixelRatio}
+ * />
  */
 export const HelperLayer = forwardRef<HelperLayerHandle, HelperLayerProps>(function HelperLayer(
 	{ x, y, width, height, pixelRatio = 1 },

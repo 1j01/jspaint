@@ -5,30 +5,52 @@
 
 import { openDB, DBSchema, IDBPDatabase } from "idb";
 
+/**
+ * Database schema interface
+ * Defines the structure of the MCPaint IndexedDB database
+ */
 interface MCPaintDB extends DBSchema {
+	/**
+	 * Settings object store
+	 * Stores user preferences and configuration (key-value pairs)
+	 */
 	settings: {
 		key: string;
 		value: unknown;
 	};
+	/**
+	 * Canvas history object store
+	 * Stores canvas history entries for undo/redo functionality
+	 */
 	canvasHistory: {
 		key: string;
 		value: {
+			/** Timestamp when this state was saved */
 			timestamp: number;
+			/** Canvas image data as ArrayBuffer */
 			imageData: ArrayBuffer;
+			/** Canvas width in pixels */
 			width: number;
+			/** Canvas height in pixels */
 			height: number;
 		};
+		/** Index for querying by timestamp */
 		indexes: { "by-timestamp": number };
 	};
 }
 
+/** Database name */
 const DB_NAME = "mcpaint-db";
+/** Database version */
 const DB_VERSION = 1;
 
+/** Cached database instance */
 let dbInstance: IDBPDatabase<MCPaintDB> | null = null;
 
 /**
  * Initialize the IndexedDB database
+ * Creates object stores and indexes if they don't exist
+ * @returns {Promise<IDBPDatabase<MCPaintDB>>} Database instance
  */
 async function initDB(): Promise<IDBPDatabase<MCPaintDB>> {
 	if (dbInstance) return dbInstance;
@@ -53,6 +75,9 @@ async function initDB(): Promise<IDBPDatabase<MCPaintDB>> {
 
 /**
  * Save a setting to IndexedDB
+ * @param {string} key - Setting key
+ * @param {unknown} value - Setting value (any JSON-serializable type)
+ * @returns {Promise<void>}
  */
 export async function saveSetting(key: string, value: unknown): Promise<void> {
 	try {
@@ -65,6 +90,10 @@ export async function saveSetting(key: string, value: unknown): Promise<void> {
 
 /**
  * Load a setting from IndexedDB
+ * @template T - Type of the setting value
+ * @param {string} key - Setting key
+ * @param {T} defaultValue - Default value if setting doesn't exist
+ * @returns {Promise<T>} Setting value or default value
  */
 export async function loadSetting<T>(key: string, defaultValue: T): Promise<T> {
 	try {
@@ -79,6 +108,8 @@ export async function loadSetting<T>(key: string, defaultValue: T): Promise<T> {
 
 /**
  * Remove a setting from IndexedDB
+ * @param {string} key - Setting key to remove
+ * @returns {Promise<void>}
  */
 export async function removeSetting(key: string): Promise<void> {
 	try {
@@ -91,6 +122,10 @@ export async function removeSetting(key: string): Promise<void> {
 
 /**
  * Save canvas history entry
+ * Converts ImageData to ArrayBuffer for efficient storage
+ * @param {string} id - Unique ID for this history entry
+ * @param {ImageData} imageData - Canvas image data to save
+ * @returns {Promise<void>}
  */
 export async function saveCanvasHistory(
 	id: string,
@@ -113,6 +148,9 @@ export async function saveCanvasHistory(
 
 /**
  * Load canvas history entry
+ * Reconstructs ImageData from stored ArrayBuffer
+ * @param {string} id - Unique ID of the history entry to load
+ * @returns {Promise<ImageData | null>} Loaded ImageData or null if not found
  */
 export async function loadCanvasHistory(id: string): Promise<ImageData | null> {
 	try {
@@ -131,6 +169,9 @@ export async function loadCanvasHistory(id: string): Promise<ImageData | null> {
 
 /**
  * Clear old canvas history entries (keep only recent ones)
+ * Removes oldest entries by timestamp to manage storage space
+ * @param {number} [keepCount=50] - Maximum number of entries to keep
+ * @returns {Promise<void>}
  */
 export async function cleanupCanvasHistory(keepCount: number = 50): Promise<void> {
 	try {
@@ -153,6 +194,8 @@ export async function cleanupCanvasHistory(keepCount: number = 50): Promise<void
 
 /**
  * Clear all persisted data
+ * Removes all settings and canvas history from IndexedDB
+ * @returns {Promise<void>}
  */
 export async function clearAllData(): Promise<void> {
 	try {

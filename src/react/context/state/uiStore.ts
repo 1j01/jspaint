@@ -6,6 +6,9 @@
 import { create } from "zustand";
 import { saveSetting, loadSetting } from "./persistence";
 
+/**
+ * Dialog names for all available dialogs in the application
+ */
 export type DialogName =
 	| "about"
 	| "flipRotate"
@@ -20,38 +23,122 @@ export type DialogName =
 	| "history"
 	| "saveAs";
 
+/**
+ * UI state interface
+ * Manages visibility of panels, dialogs, and view settings
+ */
 export interface UIState {
-	// Panel visibility
+	/**
+	 * Whether Tool Box panel is visible
+	 */
 	showToolBox: boolean;
+
+	/**
+	 * Whether Color Box panel is visible
+	 */
 	showColorBox: boolean;
+
+	/**
+	 * Whether status bar is visible
+	 */
 	showStatusBar: boolean;
+
+	/**
+	 * Whether text formatting toolbar is visible
+	 */
 	showTextToolbar: boolean;
+
+	/**
+	 * Whether pixel grid overlay is visible
+	 */
 	showGrid: boolean;
+
+	/**
+	 * Whether thumbnail preview window is visible
+	 */
 	showThumbnail: boolean;
 
-	// Magnification
+	/**
+	 * Current zoom magnification level (1 = 100%, 2 = 200%, etc.)
+	 */
 	magnification: number;
 
-	// Cursor position (for status bar)
+	/**
+	 * Current cursor position in canvas coordinates (for status bar display)
+	 */
 	cursorPosition: { x: number; y: number } | null;
 
-	// Dialog visibility (not persisted - session only)
+	/**
+	 * Dialog visibility state (session-only, not persisted)
+	 */
 	dialogs: Record<DialogName, boolean>;
 
-	// Actions
+	/**
+	 * Toggle Tool Box panel visibility
+	 */
 	toggleToolBox: () => void;
+
+	/**
+	 * Toggle Color Box panel visibility
+	 */
 	toggleColorBox: () => void;
+
+	/**
+	 * Toggle status bar visibility
+	 */
 	toggleStatusBar: () => void;
+
+	/**
+	 * Toggle text formatting toolbar visibility
+	 */
 	toggleTextToolbar: () => void;
+
+	/**
+	 * Toggle pixel grid overlay visibility
+	 */
 	toggleGrid: () => void;
+
+	/**
+	 * Toggle thumbnail preview window visibility
+	 */
 	toggleThumbnail: () => void;
+
+	/**
+	 * Set zoom magnification level
+	 * @param {number} mag - Magnification level (1 = 100%, 2 = 200%, etc.)
+	 */
 	setMagnification: (mag: number) => void;
+
+	/**
+	 * Set cursor position for status bar display
+	 * @param {{ x: number; y: number } | null} position - Cursor position or null to clear
+	 */
 	setCursorPosition: (position: { x: number; y: number } | null) => void;
+
+	/**
+	 * Open a dialog by name
+	 * @param {DialogName} name - Name of the dialog to open
+	 */
 	openDialog: (name: DialogName) => void;
+
+	/**
+	 * Close a dialog by name
+	 * @param {DialogName} name - Name of the dialog to close
+	 */
 	closeDialog: (name: DialogName) => void;
+
+	/**
+	 * Load all persisted UI state from IndexedDB
+	 * @returns {Promise<void>}
+	 */
 	loadPersistedUIState: () => Promise<void>;
 }
 
+/**
+ * Zustand store for UI state
+ * Panel visibility is persisted to IndexedDB, dialog state is session-only
+ * @returns {UIState} The UI state store
+ */
 export const useUIStore = create<UIState>((set, get) => ({
 	// Initial values
 	showToolBox: true,

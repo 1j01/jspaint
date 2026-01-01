@@ -1,6 +1,7 @@
 /**
  * DialogManager - Centralized dialog rendering component
- * Extracted from App.tsx to reduce complexity
+ * Manages all application dialogs in a single location to reduce App.tsx complexity.
+ * Handles dialog visibility, props passing, and callback routing.
  */
 
 import type { RefObject } from "react";
@@ -25,34 +26,54 @@ import type { DialogName } from "../context/state/uiStore";
 import type { HistoryNode } from "../context/state/historyStore";
 import type { Selection, TextBoxState } from "../context/state/types";
 
+/**
+ * Props for DialogManager component
+ */
 interface DialogManagerProps {
-	// Dialog visibility
+	/** Dialog visibility states (record of dialog name to boolean) */
 	dialogs: Record<DialogName, boolean>;
+	/** Callback to close a dialog by name */
 	closeDialog: (name: DialogName) => void;
 
-	// Dialog handlers
+	/** Callback when Flip/Rotate dialog submits */
 	handleFlipRotate: (action: FlipRotateAction) => void;
+	/** Callback when Stretch/Skew dialog submits */
 	handleStretchSkew: (values: StretchSkewValues) => void;
+	/** Callback when Attributes dialog submits */
 	handleAttributes: (values: AttributesValues) => void;
+	/** Callback when Load From URL dialog submits */
 	handleLoadFromUrl: (url: string) => void;
+	/** Callback when Save As dialog submits */
 	handleSaveAs: (filename: string, formatId: string) => void;
+	/** Callback when color is selected/edited */
 	handleColorSelect: (color: string, customColors: string[]) => void;
+	/** Callback when history tree node is navigated to */
 	handleHistoryNavigate: (nodeId: string) => void;
 
-	// State for dialogs
+	/** Current canvas width in pixels */
 	canvasWidth: number;
+	/** Current canvas height in pixels */
 	canvasHeight: number;
+	/** Current magnification level (1 = 100%, 2 = 200%, etc.) */
 	magnification: number;
+	/** Callback to set magnification */
 	setMagnification: (mag: number) => void;
+	/** Primary/foreground color */
 	primaryColor: string;
+	/** Custom colors array for Edit Colors dialog */
 	customColors: string[];
+	/** Root node of history tree */
 	rootNode: HistoryNode | null;
+	/** Current node in history tree */
 	currentNode: HistoryNode | null;
+	/** Reference to main canvas element */
 	canvasRef: RefObject<HTMLCanvasElement>;
 
-	// Font Box Window
+	/** Whether font box window is visible (for text tool) */
 	showFontBox: boolean;
+	/** Callback to toggle text toolbar */
 	toggleTextToolbar: () => void;
+	/** Font state for text tool */
 	fontState: {
 		family: string;
 		size: number;
@@ -61,6 +82,7 @@ interface DialogManagerProps {
 		underline: boolean;
 		vertical: boolean;
 	};
+	/** Callback when font state changes */
 	handleFontChange: (fontState: {
 		family: string;
 		size: number;
@@ -69,13 +91,42 @@ interface DialogManagerProps {
 		underline: boolean;
 		vertical: boolean;
 	}) => void;
+	/** Current text box state (null if no text box active) */
 	textBox: TextBoxState | null;
 
-	// Thumbnail Window
+	/** Whether thumbnail window is visible */
 	showThumbnail: boolean;
+	/** Callback to toggle thumbnail window */
 	toggleThumbnail: () => void;
 }
 
+/**
+ * DialogManager component - Central dialog orchestrator
+ * Renders all application dialogs based on visibility state.
+ * Extracted from App.tsx to improve code organization and reduce complexity.
+ *
+ * Manages:
+ * - Image transformation dialogs (Flip/Rotate, Stretch/Skew, Attributes)
+ * - File operation dialogs (Load From URL, Save As)
+ * - Color editor dialog
+ * - History dialogs (linear and tree-based)
+ * - Special windows (Help, FontBox, Thumbnail, Imgur Upload, Manage Storage)
+ * - About dialog
+ *
+ * All dialogs are conditionally rendered based on the `dialogs` record.
+ * Callbacks are passed through to parent (App.tsx) for state mutations.
+ *
+ * @param {DialogManagerProps} props - Component props
+ * @returns {JSX.Element} Collection of dialog components (only visible ones render)
+ *
+ * @example
+ * <DialogManager
+ *   dialogs={{ about: true, flipRotate: false, ... }}
+ *   closeDialog={(name) => setDialogOpen(name, false)}
+ *   handleFlipRotate={(action) => applyFlipRotate(action)}
+ *   {...otherProps}
+ * />
+ */
 export function DialogManager(props: DialogManagerProps) {
 	const {
 		dialogs,

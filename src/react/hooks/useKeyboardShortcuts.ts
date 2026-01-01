@@ -24,6 +24,46 @@ interface UseKeyboardShortcutsParams {
 	menuActions: MenuActions;
 }
 
+/**
+ * Custom hook for keyboard shortcuts
+ *
+ * Manages global keyboard shortcuts for the application:
+ * - Undo/Redo: Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z
+ * - Clipboard: Ctrl+C, Ctrl+X, Ctrl+V
+ * - Selection: Ctrl+A, Delete/Backspace, Escape
+ * - Tools: Single letter keys (P=Pencil, B=Brush, E=Eraser, etc.)
+ * - Colors: Ctrl+I for invert
+ * - View: F11 for fullscreen
+ *
+ * Smart text input detection:
+ * - Shortcuts disabled when typing in inputs/textareas
+ * - Escape key exits text input by blurring
+ *
+ * @param {UseKeyboardShortcutsParams} params - Hook configuration
+ * @param {boolean} params.canUndo - Whether undo is available
+ * @param {boolean} params.canRedo - Whether redo is available
+ * @param {Function} params.undo - Undo function
+ * @param {Function} params.redo - Redo function
+ * @param {Function} params.setTool - Tool selection function
+ * @param {boolean} params.hasSelection - Whether a selection exists
+ * @param {Function} params.copy - Copy selection function
+ * @param {Function} params.cut - Cut selection function
+ * @param {Function} params.paste - Paste clipboard function
+ * @param {boolean} params.hasClipboard - Whether clipboard has content
+ * @param {Function} params.clearSelection - Clear selection function
+ * @param {Function} params.handleSelectAll - Select all function
+ * @param {Function} params.handleInvertColors - Invert colors function
+ * @param {MenuActions} params.menuActions - Menu action handlers
+ *
+ * @example
+ * useKeyboardShortcuts({
+ *   canUndo, canRedo, undo, redo,
+ *   setTool, hasSelection, copy, cut, paste,
+ *   hasClipboard, clearSelection,
+ *   handleSelectAll, handleInvertColors, menuActions
+ * });
+ * // Shortcuts are automatically registered and cleaned up
+ */
 export function useKeyboardShortcuts(params: UseKeyboardShortcutsParams): void {
 	const {
 		canUndo,

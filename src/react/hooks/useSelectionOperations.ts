@@ -8,7 +8,32 @@ import { TOOL_IDS } from "../context/state/types";
 
 /**
  * Hook providing selection operations: selectAll, deleteSelection, cropToSelection
- * Requires canvasRef to be passed in since it's no longer in context
+ *
+ * High-level selection manipulation functions:
+ * - Select All: Creates a selection covering the entire canvas
+ * - Delete Selection: Removes the selected content (area is already cleared)
+ * - Crop to Selection: Resizes canvas to match selection bounds
+ *
+ * All operations automatically:
+ * - Save undo state before modification
+ * - Switch to appropriate tool when needed
+ * - Update canvas and selection state
+ *
+ * @param {React.RefObject<HTMLCanvasElement>} canvasRef - Canvas reference (passed as parameter, not from context)
+ * @returns {Object} Selection operation functions and state checks
+ *
+ * @example
+ * const selectionOps = useSelectionOperations(canvasRef);
+ * // Select entire canvas
+ * selectionOps.selectAll();
+ * // Delete selected content
+ * if (selectionOps.hasSelection) {
+ *   selectionOps.deleteSelection();
+ * }
+ * // Crop canvas to selection
+ * if (selectionOps.hasSelectionWithData) {
+ *   selectionOps.cropToSelection();
+ * }
  */
 export function useSelectionOperations(canvasRef: React.RefObject<HTMLCanvasElement>) {
 	const { saveState } = useHistory();

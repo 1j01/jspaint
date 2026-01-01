@@ -3,6 +3,17 @@
  */
 import { useSettingsStore } from "./settingsStore";
 
+/**
+ * Hook to access color state and actions
+ * @returns {{
+ *   primaryColor: string;
+ *   secondaryColor: string;
+ *   palette: string[];
+ *   setPrimaryColor: (color: string) => void;
+ *   setSecondaryColor: (color: string) => void;
+ *   swapColors: () => void;
+ * }} Color state and actions
+ */
 export function useColors() {
 	const primaryColor = useSettingsStore((state) => state.primaryColor);
 	const secondaryColor = useSettingsStore((state) => state.secondaryColor);

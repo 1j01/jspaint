@@ -7,6 +7,21 @@
  */
 import { useHistoryStore } from "./historyStore";
 
+/**
+ * Hook to access tree-based history system (non-linear undo/redo with branching)
+ * @returns {{
+ *   historyTree: HistoryTree | null;
+ *   getRoot: () => HistoryNode | null;
+ *   canUndo: () => boolean;
+ *   canRedo: () => boolean;
+ *   pushState: (imageData: ImageData, name: string, options?: object) => void;
+ *   undo: () => HistoryNode | null;
+ *   redo: () => HistoryNode | null;
+ *   goToNode: (nodeId: string) => HistoryNode | null;
+ *   getAllNodes: () => HistoryNode[];
+ *   pruneHistory: (maxNodes?: number) => void;
+ * }} Tree history state and actions
+ */
 export function useTreeHistory() {
 	const historyTree = useHistoryStore((state) => state.historyTree);
 	const getRoot = useHistoryStore((state) => state.getRoot);

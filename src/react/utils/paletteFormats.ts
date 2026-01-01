@@ -42,7 +42,16 @@ export const PALETTE_FORMATS: PaletteFormat[] = [
 ];
 
 /**
- * Parse a color string to RGB values
+ * Parse a color string to RGB values.
+ * Supports hex colors (#RGB, #RRGGBB) and rgb() format.
+ *
+ * @param color - CSS color string to parse
+ * @returns Object with {r, g, b} values (0-255), or null if parsing fails
+ *
+ * @example
+ * parseColor("#ff0000"); // Returns {r: 255, g: 0, b: 0}
+ * parseColor("#f00"); // Returns {r: 255, g: 0, b: 0}
+ * parseColor("rgb(255, 0, 0)"); // Returns {r: 255, g: 0, b: 0}
  */
 export function parseColor(color: string): { r: number; g: number; b: number } | null {
 	// Handle hex colors
@@ -81,7 +90,17 @@ export function parseColor(color: string): { r: number; g: number; b: number } |
 }
 
 /**
- * Convert RGB to hex color string
+ * Convert RGB to hex color string.
+ * Values are clamped and rounded to 0-255 range.
+ *
+ * @param r - Red component (0-255)
+ * @param g - Green component (0-255)
+ * @param b - Blue component (0-255)
+ * @returns Hex color string with # prefix (e.g., "#ff0000")
+ *
+ * @example
+ * rgbToHex(255, 0, 0); // Returns "#ff0000"
+ * rgbToHex(128, 128, 128); // Returns "#808080"
  */
 export function rgbToHex(r: number, g: number, b: number): string {
 	return (
@@ -96,7 +115,17 @@ export function rgbToHex(r: number, g: number, b: number): string {
 }
 
 /**
- * Export palette to GIMP GPL format
+ * Export palette to GIMP GPL format.
+ * Creates text file with GIMP Palette header and color list.
+ * Each color is on its own line with RGB values and name.
+ *
+ * @param colors - Array of color strings (hex or rgb format)
+ * @param name - Palette name for header (default: "Untitled")
+ * @returns GPL format string with newline separators
+ *
+ * @example
+ * const gpl = exportToGPL(["#ff0000", "#00ff00", "#0000ff"], "Primary Colors");
+ * // Returns multiline string with GIMP Palette header
  */
 export function exportToGPL(colors: string[], name: string = "Untitled"): string {
 	const lines: string[] = [
@@ -117,7 +146,16 @@ export function exportToGPL(colors: string[], name: string = "Untitled"): string
 }
 
 /**
- * Import palette from GIMP GPL format
+ * Import palette from GIMP GPL format.
+ * Parses GPL text format and extracts RGB color values.
+ * Skips header lines and comments.
+ *
+ * @param content - GPL file content as string
+ * @returns Array of hex color strings
+ *
+ * @example
+ * const colors = importFromGPL(gplContent);
+ * // Returns ["#ff0000", "#00ff00", "#0000ff", ...]
  */
 export function importFromGPL(content: string): string[] {
 	const colors: string[] = [];
@@ -153,7 +191,16 @@ export function importFromGPL(content: string): string[] {
 }
 
 /**
- * Export palette to JASC PAL format (Paint Shop Pro)
+ * Export palette to JASC PAL format (Paint Shop Pro).
+ * Creates text file with JASC-PAL header, version, count, and RGB values.
+ * Uses Windows line endings (CRLF).
+ *
+ * @param colors - Array of color strings (hex or rgb format)
+ * @returns JASC PAL format string with CRLF line endings
+ *
+ * @example
+ * const jasc = exportToJASC(["#ff0000", "#00ff00"]);
+ * // Returns "JASC-PAL\r\n0100\r\n2\r\n255 0 0\r\n0 255 0\r\n"
  */
 export function exportToJASC(colors: string[]): string {
 	const lines: string[] = [
@@ -173,7 +220,16 @@ export function exportToJASC(colors: string[]): string {
 }
 
 /**
- * Import palette from JASC PAL format
+ * Import palette from JASC PAL format.
+ * Verifies JASC-PAL header and parses RGB color values.
+ *
+ * @param content - JASC PAL file content as string
+ * @returns Array of hex color strings
+ * @throws Error if header is invalid or color count is missing
+ *
+ * @example
+ * const colors = importFromJASC(jascContent);
+ * // Returns ["#ff0000", "#00ff00", ...]
  */
 export function importFromJASC(content: string): string[] {
 	const colors: string[] = [];
@@ -207,7 +263,15 @@ export function importFromJASC(content: string): string[] {
 }
 
 /**
- * Export palette to hex text format (one color per line)
+ * Export palette to hex text format (one color per line).
+ * Simple text format with hex colors, one per line.
+ *
+ * @param colors - Array of color strings (hex or rgb format)
+ * @returns Text string with hex colors separated by newlines
+ *
+ * @example
+ * const hex = exportToHex(["#ff0000", "#00ff00"]);
+ * // Returns "#ff0000\n#00ff00"
  */
 export function exportToHex(colors: string[]): string {
 	return colors.map((color) => {
@@ -220,7 +284,17 @@ export function exportToHex(colors: string[]): string {
 }
 
 /**
- * Import palette from hex text format
+ * Import palette from hex text format.
+ * Parses hex colors from text, one per line.
+ * Supports both 3-digit and 6-digit hex colors.
+ * Skips comments starting with // or #!
+ *
+ * @param content - Text content with hex colors
+ * @returns Array of hex color strings
+ *
+ * @example
+ * const colors = importFromHex("#ff0000\n#00ff00\n#0000ff");
+ * // Returns ["#ff0000", "#00ff00", "#0000ff"]
  */
 export function importFromHex(content: string): string[] {
 	const colors: string[] = [];
@@ -244,7 +318,16 @@ export function importFromHex(content: string): string[] {
 }
 
 /**
- * Export palette to RIFF PAL format (Windows palette)
+ * Export palette to RIFF PAL format (Windows palette).
+ * Creates binary RIFF file with PAL chunk containing RGB color data.
+ * Format: RIFF header + PAL type + data chunk with colors.
+ *
+ * @param colors - Array of color strings (hex or rgb format)
+ * @returns Blob containing binary RIFF PAL file
+ *
+ * @example
+ * const blob = exportToRIFF(["#ff0000", "#00ff00"]);
+ * // Returns Blob with binary RIFF PAL data
  */
 export function exportToRIFF(colors: string[]): Blob {
 	// RIFF PAL format:
@@ -309,7 +392,17 @@ export function exportToRIFF(colors: string[]): Blob {
 }
 
 /**
- * Import palette from RIFF PAL format
+ * Import palette from RIFF PAL format.
+ * Parses binary RIFF PAL file and extracts RGB color values.
+ * Verifies RIFF and PAL signatures before parsing.
+ *
+ * @param blob - Blob containing RIFF PAL file data
+ * @returns Promise resolving to array of hex color strings
+ * @throws Error if file is not valid RIFF PAL or data chunk missing
+ *
+ * @example
+ * const colors = await importFromRIFF(palBlob);
+ * // Returns ["#ff0000", "#00ff00", ...]
  */
 export async function importFromRIFF(blob: Blob): Promise<string[]> {
 	const buffer = await blob.arrayBuffer();
@@ -359,7 +452,17 @@ if (chunkType === "data") {
 }
 
 /**
- * Detect palette format from file content
+ * Detect palette format from file content.
+ * Analyzes text content to identify format type.
+ * Checks for GIMP, JASC headers, or hex color patterns.
+ *
+ * @param content - Text content to analyze
+ * @returns Format ID string ("gpl", "jasc", "hex") or null if unknown
+ *
+ * @example
+ * detectPaletteFormat("GIMP Palette\n..."); // Returns "gpl"
+ * detectPaletteFormat("JASC-PAL\n..."); // Returns "jasc"
+ * detectPaletteFormat("#ff0000\n#00ff00"); // Returns "hex"
  */
 export function detectPaletteFormat(content: string): string | null {
 	const lines = content.trim().split(/\r?\n/);
@@ -382,7 +485,16 @@ export function detectPaletteFormat(content: string): string | null {
 }
 
 /**
- * Import palette from string content (auto-detect format)
+ * Import palette from string content (auto-detect format).
+ * Automatically detects format and uses appropriate parser.
+ * Tries GPL, JASC, then hex parsing in sequence.
+ *
+ * @param content - Palette file content as string
+ * @returns Array of hex color strings
+ *
+ * @example
+ * const colors = importPalette(fileContent);
+ * // Automatically detects and parses format
  */
 export function importPalette(content: string): string[] {
 	const format = detectPaletteFormat(content);
@@ -411,7 +523,18 @@ export function importPalette(content: string): string[] {
 }
 
 /**
- * Export palette to specified format
+ * Export palette to specified format.
+ * Converts color array to requested palette format.
+ *
+ * @param colors - Array of color strings (hex or rgb format)
+ * @param formatId - Format identifier ("gpl", "jasc", "hex", "riff")
+ * @param name - Optional palette name (used for GPL format)
+ * @returns String or Blob depending on format (RIFF returns Blob, others return string)
+ * @throws Error if format ID is unknown
+ *
+ * @example
+ * const gpl = exportPalette(colors, "gpl", "My Palette");
+ * const riffBlob = exportPalette(colors, "riff");
  */
 export function exportPalette(colors: string[], formatId: string, name?: string): string | Blob {
 	switch (formatId) {
@@ -429,7 +552,18 @@ export function exportPalette(colors: string[], formatId: string, name?: string)
 }
 
 /**
- * Download palette as file
+ * Download palette as file.
+ * Exports palette in specified format and triggers browser download.
+ * Format is auto-detected from file extension if not specified.
+ *
+ * @param colors - Array of color strings (hex or rgb format)
+ * @param filename - Desired filename for download
+ * @param formatId - Optional format override (otherwise determined from extension)
+ * @returns Promise that resolves when download is initiated
+ *
+ * @example
+ * await downloadPalette(colors, "mypalette.gpl");
+ * await downloadPalette(colors, "colors.pal", "jasc");
  */
 export async function downloadPalette(colors: string[], filename: string, formatId?: string): Promise<void> {
 	// Determine format from filename or default to hex
@@ -463,7 +597,17 @@ export async function downloadPalette(colors: string[], filename: string, format
 }
 
 /**
- * Load palette from file
+ * Load palette from file.
+ * Auto-detects format (binary RIFF or text-based) and parses accordingly.
+ * Checks file extension and header bytes to determine format.
+ *
+ * @param file - File object from input or drag-and-drop
+ * @returns Promise resolving to array of hex color strings
+ * @throws Error if file cannot be parsed
+ *
+ * @example
+ * const colors = await loadPaletteFile(file);
+ * // Returns ["#ff0000", "#00ff00", ...]
  */
 export async function loadPaletteFile(file: File): Promise<string[]> {
 	// Check for binary RIFF format

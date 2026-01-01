@@ -8,26 +8,42 @@ declare global {
 	}
 }
 
+/**
+ * Font formatting state
+ */
+interface FontFormattingState {
+	family: string;
+	size: number;
+	bold: boolean;
+	italic: boolean;
+	underline: boolean;
+	vertical: boolean;
+}
+
+/**
+ * Props for FontBox component
+ */
 interface FontBoxProps {
+	/** List of available font families (auto-detected if not provided) */
 	fonts?: string[];
+	/** Default font family (default: "Arial") */
 	defaultFamily?: string;
+	/** Default font size in points (default: 12) */
 	defaultSize?: number;
+	/** Default formatting toggles */
 	defaultFormatting?: {
 		bold?: boolean;
 		italic?: boolean;
 		underline?: boolean;
 		vertical?: boolean;
 	};
-	onChange?: (state: {
-		family: string;
-		size: number;
-		bold: boolean;
-		italic: boolean;
-		underline: boolean;
-		vertical: boolean;
-	}) => void;
+	/** Callback when font state changes */
+	onChange?: (state: FontFormattingState) => void;
 }
 
+/**
+ * Fallback font list when Local Font Access API is unavailable
+ */
 const FALLBACK_FONTS: string[] = [
 	"Arial",
 	"Calibri",
@@ -41,16 +57,56 @@ const FALLBACK_FONTS: string[] = [
 	"Verdana",
 ];
 
+/**
+ * Ensures font list is valid, unique, and sorted
+ * Deduplicates and alphabetically sorts the font list.
+ *
+ * @param {string[]} fonts - Font family names to process
+ * @returns {string[]} Unique, sorted font list
+ */
 const ensureFonts = (fonts?: string[]): string[] => {
 	const source = !fonts || !fonts.length ? FALLBACK_FONTS : fonts;
 	return Array.from(new Set(source)).sort((a, b) => a.localeCompare(b));
 };
 
+/**
+ * Cleans font family name for display
+ * Removes surrounding quotes and trims whitespace.
+ *
+ * @param {string} font - Font family name
+ * @returns {string} Cleaned font name
+ */
 const getFontLabel = (font: string): string => font.replace(/"/g, "").trim();
 
 /**
- * React analogue of the legacy font selection window.
- * Handles font enumeration (with progressive enhancement) and exposes formatting toggles.
+ * FontBox component - Font selection panel (legacy/unused in current app)
+ * Provides font family dropdown, size input, and formatting toggles.
+ * Uses progressive enhancement for font enumeration:
+ * 1. Try Local Font Access API (window.queryLocalFonts)
+ * 2. Fallback to document.fonts
+ * 3. Fallback to hardcoded FALLBACK_FONTS list
+ *
+ * NOTE: This component is superseded by FontBoxWindow in the current app.
+ * FontBoxWindow is a floating draggable window, while FontBox was designed
+ * as a docked panel. Both share similar functionality.
+ *
+ * Features:
+ * - Font family dropdown with font preview in options
+ * - Font size number input (6-200 range)
+ * - Bold, Italic, Underline, Vertical toggle buttons
+ * - Loading state during font enumeration
+ * - Error handling for font access failures
+ *
+ * @param {FontBoxProps} props - Component props
+ * @returns {JSX.Element} Font selection panel with formatting controls
+ *
+ * @example
+ * <FontBox
+ *   defaultFamily="Arial"
+ *   defaultSize={12}
+ *   defaultFormatting={{ bold: false, italic: false, underline: false }}
+ *   onChange={(state) => console.log('Font changed:', state)}
+ * />
  */
 export function FontBox({
 	fonts: fontsProp,

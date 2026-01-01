@@ -1,14 +1,40 @@
 import { forwardRef, CSSProperties } from "react";
 
+/**
+ * Props for CanvasOverlay component
+ */
 interface CanvasOverlayProps {
+	/** Canvas width in logical pixels (matches main canvas) */
 	width: number;
+	/** Canvas height in logical pixels (matches main canvas) */
 	height: number;
+	/** Magnification/zoom level (1 = 100%, 2 = 200%, etc.) */
 	magnification: number;
 }
 
 /**
- * Overlay canvas for selection marching ants and other overlays
- * Positioned via CSS to match main-canvas exactly
+ * CanvasOverlay component - Selection and effects overlay canvas
+ * Renders selection "marching ants" animation and other temporary overlays.
+ * Positioned via CSS to exactly overlay the main canvas.
+ * Uses CSS transform to match main canvas magnification.
+ *
+ * The overlay canvas is used for:
+ * - Selection rectangle marching ants border
+ * - Free-form selection path preview
+ * - Drag handles visualization
+ * - Any other temporary visual effects
+ *
+ * @param {CanvasOverlayProps} props - Component props
+ * @param {React.Ref<HTMLCanvasElement>} ref - Forwarded ref to canvas element
+ * @returns {JSX.Element} Overlay canvas element
+ *
+ * @example
+ * <CanvasOverlay
+ *   ref={overlayCanvasRef}
+ *   width={640}
+ *   height={480}
+ *   magnification={2}
+ * />
  */
 export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(function CanvasOverlay(
 	{ width, height, magnification },

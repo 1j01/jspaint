@@ -3,6 +3,17 @@
  */
 import { useCanvasStore } from "./canvasStore";
 
+/**
+ * Hook to access linear undo/redo history (legacy system)
+ * @returns {{
+ *   canUndo: boolean;
+ *   canRedo: boolean;
+ *   saveState: (imageData: ImageData) => Promise<void>;
+ *   undo: () => Promise<ImageData | null>;
+ *   redo: () => Promise<ImageData | null>;
+ *   clearHistory: () => void;
+ * }} History state and actions
+ */
 export function useHistory() {
 	const canUndo = useCanvasStore((state) => state.undoStack.length > 0);
 	const canRedo = useCanvasStore((state) => state.redoStack.length > 0);

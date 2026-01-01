@@ -24,6 +24,35 @@ const SHAPE_TOOLS = [TOOL_IDS.LINE, TOOL_IDS.RECTANGLE, TOOL_IDS.ELLIPSE, TOOL_I
 
 /**
  * Hook for handling shape drawing tools (line, rectangle, ellipse, rounded rectangle)
+ *
+ * Provides preview-and-commit workflow for shape tools:
+ * - Saves canvas state before preview
+ * - Shows live preview while dragging
+ * - Commits final shape on mouse up
+ * - Supports fill styles: outline, fill, both
+ * - Configurable line width and colors
+ *
+ * Shape drawing workflow:
+ * 1. Mouse down -> Save canvas state, record start point
+ * 2. Mouse move -> Restore state, draw preview shape
+ * 3. Mouse up -> Draw final shape, clear preview state
+ *
+ * @param {UseCanvasShapesProps} props - Hook configuration
+ * @param {RefObject<HTMLCanvasElement | null>} props.canvasRef - Reference to the canvas element
+ * @param {Function} props.getDrawColor - Function to get color based on mouse button
+ * @returns {Object} Shape drawing functions and state
+ *
+ * @example
+ * const shapes = useCanvasShapes({ canvasRef, getDrawColor });
+ * // Check if tool is a shape
+ * if (shapes.isShapeTool(toolId)) {
+ *   // Start shape
+ *   shapes.startShape(x, y, button, ctx);
+ *   // Preview during drag
+ *   shapes.previewShape(x, y, toolId, ctx);
+ *   // Finalize on mouse up
+ *   shapes.finalizeShape(x, y, toolId, ctx);
+ * }
  */
 export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProps) {
 	const { secondaryColor } = useColors();

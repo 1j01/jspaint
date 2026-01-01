@@ -3,7 +3,17 @@
  */
 
 /**
- * Parse a CSS color string and return RGBA values
+ * Parse a CSS color string and return RGBA values.
+ * Uses canvas to normalize any valid CSS color to RGBA.
+ * This handles named colors, hex, rgb(), rgba(), hsl(), etc.
+ *
+ * @param color - Any valid CSS color string
+ * @returns Tuple of [red, green, blue, alpha] where RGB are 0-255 and alpha is 0-255
+ *
+ * @example
+ * getRgbaFromColor("red"); // Returns [255, 0, 0, 255]
+ * getRgbaFromColor("#ff0000"); // Returns [255, 0, 0, 255]
+ * getRgbaFromColor("rgba(255, 0, 0, 0.5)"); // Returns [255, 0, 0, 128]
  */
 export function getRgbaFromColor(color: string): [number, number, number, number] {
 	const canvas = document.createElement("canvas");
@@ -19,11 +29,18 @@ export function getRgbaFromColor(color: string): [number, number, number, number
 }
 
 /**
- * Convert RGB to HSL
- * @param r Red (0-255)
- * @param g Green (0-255)
- * @param b Blue (0-255)
- * @returns [h (0-1), s (0-1), l (0-1)]
+ * Convert RGB to HSL color space.
+ * Useful for color picker sliders and color manipulation.
+ * All values are normalized to 0-1 range.
+ *
+ * @param r - Red component (0-255)
+ * @param g - Green component (0-255)
+ * @param b - Blue component (0-255)
+ * @returns Tuple of [hue, saturation, lightness] where all values are 0-1
+ *
+ * @example
+ * rgbToHsl(255, 0, 0); // Returns [0, 1, 0.5] (pure red)
+ * rgbToHsl(128, 128, 128); // Returns [0, 0, 0.502] (gray)
  */
 export function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
 	r /= 255;
@@ -57,11 +74,18 @@ export function rgbToHsl(r: number, g: number, b: number): [number, number, numb
 }
 
 /**
- * Convert HSL to RGB
- * @param h Hue (0-1)
- * @param s Saturation (0-1)
- * @param l Luminosity (0-1)
- * @returns [r (0-255), g (0-255), b (0-255)]
+ * Convert HSL to RGB color space.
+ * Inverse of rgbToHsl, used for color picker updates.
+ * All input values should be in 0-1 range.
+ *
+ * @param h - Hue (0-1, where 0=red, 0.33=green, 0.67=blue, 1=red)
+ * @param s - Saturation (0-1, where 0=gray, 1=full color)
+ * @param l - Lightness (0-1, where 0=black, 0.5=full color, 1=white)
+ * @returns Tuple of [red, green, blue] where all values are 0-255
+ *
+ * @example
+ * hslToRgb(0, 1, 0.5); // Returns [255, 0, 0] (pure red)
+ * hslToRgb(0.33, 1, 0.5); // Returns [0, 255, 0] (pure green)
  */
 export function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 	let r: number, g: number, b: number;

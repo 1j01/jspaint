@@ -10,10 +10,35 @@ import { EraserSizeOptions } from "./tooloptions/EraserSizeOptions";
 import { AirbrushSizeOptions } from "./tooloptions/AirbrushSizeOptions";
 import { TransparencyModeOptions } from "./tooloptions/TransparencyModeOptions";
 
+/**
+ * Props for ToolOptions component
+ */
 interface ToolOptionsProps {
+	/** Additional CSS class name */
 	className?: string;
 }
 
+/**
+ * ToolOptions component - Tool-specific settings panel
+ * Renders context-sensitive options based on currently selected tool.
+ * Displays below the tool grid in the ToolBox component.
+ *
+ * Options by tool:
+ * - Shape tools (Rectangle, Ellipse, Rounded Rectangle, Polygon): Fill style (outline/filled/outlined)
+ * - Line/Curve tools: Line width (1-5px)
+ * - Brush: Brush size and shape (circle/square)
+ * - Eraser: Eraser size (4 sizes)
+ * - Airbrush: Spray radius (3 sizes)
+ * - Select/Free-Form Select/Text: Transparency mode (opaque/transparent background)
+ *
+ * @param {ToolOptionsProps} props - Component props
+ * @returns {JSX.Element} Tool options panel with context-sensitive controls
+ *
+ * @example
+ * <ToolBox tools={TOOLBOX_ITEMS} selectedToolIds={["rectangle"]}>
+ *   <ToolOptions />
+ * </ToolBox>
+ */
 export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	const { selectedToolId } = useTool();
 	const { brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize } =

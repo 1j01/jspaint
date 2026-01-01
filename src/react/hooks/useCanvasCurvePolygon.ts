@@ -24,6 +24,35 @@ interface UseCanvasCurvePolygonProps {
 
 /**
  * Hook for handling curve and polygon multi-click tools
+ *
+ * Manages multi-step drawing operations:
+ * - Curve tool: 4 points (start, end, 2 control points) for Bezier curves
+ * - Polygon tool: Unlimited points with double-click or right-click to close
+ *
+ * Curve workflow:
+ * 1. Click 1: Set start point
+ * 2. Click 2: Set end point (shows line preview)
+ * 3. Click 3: First control point (shows quadratic curve)
+ * 4. Click 4: Second control point -> commit Bezier curve
+ *
+ * Polygon workflow:
+ * 1. Click points to add vertices
+ * 2. Double-click, right-click, or click near start -> close and commit
+ * 3. Shows live preview line to cursor during drawing
+ *
+ * @param {UseCanvasCurvePolygonProps} props - Hook configuration
+ * @param {RefObject<HTMLCanvasElement | null>} props.canvasRef - Reference to the canvas element
+ * @param {Function} props.getDrawColor - Function to get color based on mouse button
+ * @returns {Object} Curve and polygon drawing functions and state
+ *
+ * @example
+ * const curvePolygon = useCanvasCurvePolygon({ canvasRef, getDrawColor });
+ * // Handle curve click
+ * const stillDrawing = curvePolygon.handleCurveClick(x, y, button, ctx);
+ * // Preview during move
+ * if (curvePolygon.isCurveActive()) {
+ *   curvePolygon.previewCurve(x, y, ctx);
+ * }
  */
 export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurvePolygonProps) {
 	const { primaryColor, secondaryColor } = useColors();

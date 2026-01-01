@@ -2,19 +2,33 @@ import { CSSProperties, RefObject, useCallback, useEffect, useRef } from "react"
 import { useUIStore } from "../context/state/uiStore";
 import type { Selection } from "../context/state/types";
 
-// Handle positions relative to selection
-const HANDLE_START = -1;
-const HANDLE_MIDDLE = 0;
-const HANDLE_END = 1;
+/**
+ * Handle position constants for selection resize handles
+ * Matches the legacy implementation
+ */
+const HANDLE_START = -1;  // Top or left edge
+const HANDLE_MIDDLE = 0;  // Center (horizontal or vertical)
+const HANDLE_END = 1;     // Bottom or right edge
 
+/**
+ * Handle axis type - position along an axis
+ */
 type HandleAxis = typeof HANDLE_START | typeof HANDLE_MIDDLE | typeof HANDLE_END;
 
+/**
+ * Configuration for a single resize handle
+ */
 interface HandleConfig {
+	/** Horizontal axis position */
 	xAxis: HandleAxis;
+	/** Vertical axis position */
 	yAxis: HandleAxis;
 }
 
-// 8 handles around the selection (corners and edges)
+/**
+ * 8 resize handles around the selection
+ * Order matches legacy implementation for consistency
+ */
 const HANDLE_CONFIGS: HandleConfig[] = [
 	{ yAxis: HANDLE_START, xAxis: HANDLE_END }, // top-right (↗)
 	{ yAxis: HANDLE_START, xAxis: HANDLE_MIDDLE }, // top (↑)
@@ -26,13 +40,28 @@ const HANDLE_CONFIGS: HandleConfig[] = [
 	{ yAxis: HANDLE_MIDDLE, xAxis: HANDLE_END }, // right (→)
 ];
 
+/**
+ * Props for SelectionHandles component
+ */
 interface SelectionHandlesProps {
+	/** Current selection state (null if no selection) */
 	selection: Selection | null;
+	/** Callback when selection is resized */
 	onResize: (newRect: { x: number; y: number; width: number; height: number }) => void;
+	/** Reference to canvas container element for coordinate calculation */
 	containerRef: RefObject<HTMLDivElement | null>;
+	/** Size of resize handles in pixels (default: 6) */
 	handleSize?: number;
 }
 
+/**
+ * Gets the appropriate cursor style for a resize handle
+ * Based on handle position (corner vs edge vs middle).
+ *
+ * @param {HandleAxis} xAxis - Horizontal axis position
+ * @param {HandleAxis} yAxis - Vertical axis position
+ * @returns {string} CSS cursor value
+ */
 function getCursor(xAxis: HandleAxis, yAxis: HandleAxis): string {
 	if (xAxis === HANDLE_START && yAxis === HANDLE_START) return "nwse-resize";
 	if (xAxis === HANDLE_END && yAxis === HANDLE_END) return "nwse-resize";
@@ -43,6 +72,34 @@ function getCursor(xAxis: HandleAxis, yAxis: HandleAxis): string {
 	return "move";
 }
 
+/**
+ * SelectionHandles component - Resize handles for selections
+ * Provides 8 resize handles (4 corners + 4 edges) around the current selection.
+ * Handles dragging with live ghost preview and pointer capture for smooth interaction.
+ *
+ * Features:
+ * - 8 draggable resize handles (corners and edges)
+ * - Ghost preview during resize (semi-transparent overlay)
+ * - Pointer capture for reliable drag tracking
+ * - Coordinate transformation for magnification support
+ * - Minimum size enforcement (1x1 pixel)
+ * - Handles negative dimensions correctly
+ *
+ * The handles appear when a selection is active and allow the user to
+ * resize the selection by dragging. The ghost preview shows the new size
+ * during drag, and the final size is committed on pointer up.
+ *
+ * @param {SelectionHandlesProps} props - Component props
+ * @returns {JSX.Element | null} Resize handles and ghost preview, or null if no selection
+ *
+ * @example
+ * <SelectionHandles
+ *   selection={selection}
+ *   onResize={(newRect) => setSelection({ ...selection, ...newRect })}
+ *   containerRef={canvasContainerRef}
+ *   handleSize={6}
+ * />
+ */
 export function SelectionHandles({
 	selection,
 	onResize,

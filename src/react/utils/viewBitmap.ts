@@ -7,8 +7,17 @@
 let cleanupBitmapView = () => {};
 
 /**
- * Display the canvas in fullscreen mode with proper exit handling
- * @param canvas The canvas element to display
+ * Display the canvas in fullscreen mode with proper exit handling.
+ * Creates a fullscreen overlay showing the canvas as an image.
+ * User can exit by pressing any key, clicking, or exiting fullscreen.
+ * Matches MS Paint's "View Bitmap" behavior (Ctrl+F).
+ *
+ * @param canvas - The canvas element to display in fullscreen
+ * @returns void
+ *
+ * @example
+ * viewBitmap(canvasRef.current);
+ * // Displays canvas fullscreen, exits on any interaction
  */
 export function viewBitmap(canvas: HTMLCanvasElement): void {
 	// Cleanup any existing bitmap view

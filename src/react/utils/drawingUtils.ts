@@ -4,7 +4,22 @@
  */
 
 /**
- * Draw a line using Bresenham's algorithm for pixel-perfect lines
+ * Draw a line using Bresenham's algorithm for pixel-perfect lines.
+ * This algorithm efficiently rasterizes a line between two points by calling
+ * a callback function for each pixel along the line path.
+ *
+ * @param x0 - Starting X coordinate
+ * @param y0 - Starting Y coordinate
+ * @param x1 - Ending X coordinate
+ * @param y1 - Ending Y coordinate
+ * @param callback - Function called for each pixel (x, y) on the line
+ * @returns void
+ *
+ * @example
+ * // Draw a line from (10, 10) to (50, 30)
+ * bresenhamLine(10, 10, 50, 30, (x, y) => {
+ *   ctx.fillRect(x, y, 1, 1);
+ * });
  */
 export function bresenhamLine(
 	x0: number,
@@ -47,7 +62,18 @@ export interface BrushPoint {
 }
 
 /**
- * Get brush shape points for a given size and shape
+ * Get brush shape points for a given size and shape.
+ * Returns an array of relative offsets from the brush center that define
+ * the brush pattern. Used by the Brush and Eraser tools.
+ *
+ * @param size - Brush diameter in pixels (1-4)
+ * @param shape - Brush shape: "circle" (default), "square", "diagonal", or "reverse_diagonal"
+ * @returns Array of {x, y} offset points relative to brush center
+ *
+ * @example
+ * // Get points for a 3-pixel circle brush
+ * const points = getBrushPoints(3, "circle");
+ * // Returns points like [{x: 0, y: 0}, {x: -1, y: 0}, {x: 1, y: 0}, ...]
  */
 export function getBrushPoints(size: number, shape: BrushShape = "circle"): BrushPoint[] {
 	const points: BrushPoint[] = [];
@@ -96,7 +122,16 @@ export function getBrushPoints(size: number, shape: BrushShape = "circle"): Brus
 }
 
 /**
- * Parse RGBA values from a color string
+ * Parse RGBA values from a color string.
+ * Supports both rgba() format and hex format (#RRGGBB).
+ * Falls back to black [0, 0, 0, 255] if parsing fails.
+ *
+ * @param color - CSS color string (e.g., "rgba(255, 0, 0, 0.5)" or "#ff0000")
+ * @returns Tuple of [red, green, blue, alpha] where RGB are 0-255 and alpha is 0-255
+ *
+ * @example
+ * getRgbaFromColor("rgba(255, 0, 0, 0.5)"); // Returns [255, 0, 0, 128]
+ * getRgbaFromColor("#ff0000"); // Returns [255, 0, 0, 255]
  */
 export function getRgbaFromColor(color: string): [number, number, number, number] {
 	// Handle rgba() format
@@ -121,7 +156,20 @@ export function getRgbaFromColor(color: string): [number, number, number, number
 }
 
 /**
- * Flood fill algorithm (scanline-based)
+ * Flood fill algorithm (scanline-based).
+ * Fills a contiguous region of similar colors starting from a point.
+ * Uses a tolerance of 2 to handle slight color variations.
+ * Does nothing if clicking on the same color as the fill color.
+ *
+ * @param ctx - Canvas 2D rendering context to fill on
+ * @param startX - Starting X coordinate (will be clamped to canvas bounds)
+ * @param startY - Starting Y coordinate (will be clamped to canvas bounds)
+ * @param fillColor - CSS color string for the fill color
+ * @returns void
+ *
+ * @example
+ * // Fill from point (50, 50) with red color
+ * floodFill(ctx, 50, 50, "#ff0000");
  */
 export function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY: number, fillColor: string): void {
 	const canvas = ctx.canvas;
@@ -224,7 +272,24 @@ export function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY:
 }
 
 /**
- * Draw an ellipse using midpoint algorithm (aliased, pixel-perfect)
+ * Draw an ellipse using the native canvas ellipse method.
+ * Fills first, then strokes (so stroke is on top of fill).
+ * Automatically normalizes negative width/height values.
+ * Minimum size is 2x2 pixels.
+ *
+ * @param ctx - Canvas 2D rendering context
+ * @param x - Top-left X coordinate of bounding box
+ * @param y - Top-left Y coordinate of bounding box
+ * @param width - Width of bounding box (can be negative)
+ * @param height - Height of bounding box (can be negative)
+ * @param strokeColor - Stroke color (null for no stroke)
+ * @param fillColor - Fill color (null for no fill)
+ * @param strokeWidth - Stroke width in pixels (default: 1)
+ * @returns void
+ *
+ * @example
+ * // Draw a filled red ellipse with black outline
+ * drawEllipse(ctx, 10, 10, 100, 50, "#000000", "#ff0000", 2);
  */
 export function drawEllipse(
 	ctx: CanvasRenderingContext2D,
@@ -277,7 +342,23 @@ export function drawEllipse(
 }
 
 /**
- * Draw a rectangle
+ * Draw a rectangle with pixel-perfect rendering.
+ * Fills first, then strokes using fillRect for crisp edges.
+ * Automatically normalizes negative width/height values.
+ *
+ * @param ctx - Canvas 2D rendering context
+ * @param x - Top-left X coordinate (can be negative)
+ * @param y - Top-left Y coordinate (can be negative)
+ * @param width - Rectangle width (can be negative)
+ * @param height - Rectangle height (can be negative)
+ * @param strokeColor - Stroke color (null for no stroke)
+ * @param fillColor - Fill color (null for no fill)
+ * @param strokeWidth - Stroke width in pixels (default: 1)
+ * @returns void
+ *
+ * @example
+ * // Draw a filled blue rectangle with black outline
+ * drawRectangle(ctx, 10, 10, 100, 50, "#000000", "#0000ff", 2);
  */
 export function drawRectangle(
 	ctx: CanvasRenderingContext2D,
@@ -325,7 +406,20 @@ export function drawRectangle(
 }
 
 /**
- * Airbrush spray effect - random dots within a circular radius
+ * Airbrush spray effect - random dots within a circular radius.
+ * Creates a natural spray paint effect by placing random pixels
+ * within a circular area. Density increases with size.
+ *
+ * @param ctx - Canvas 2D rendering context
+ * @param x - Center X coordinate
+ * @param y - Center Y coordinate
+ * @param color - CSS color string for spray dots
+ * @param size - Spray radius diameter in pixels (default: 10)
+ * @returns void
+ *
+ * @example
+ * // Spray red paint at point (100, 100) with 20px radius
+ * sprayAirbrush(ctx, 100, 100, "#ff0000", 20);
  */
 export function sprayAirbrush(
 	ctx: CanvasRenderingContext2D,
@@ -352,7 +446,24 @@ export function sprayAirbrush(
 }
 
 /**
- * Draw a quadratic bezier curve
+ * Draw a quadratic bezier curve.
+ * Used by the Curve tool to create smooth curved lines
+ * defined by two endpoints and one control point.
+ *
+ * @param ctx - Canvas 2D rendering context
+ * @param x1 - Starting X coordinate
+ * @param y1 - Starting Y coordinate
+ * @param x2 - Ending X coordinate
+ * @param y2 - Ending Y coordinate
+ * @param cpX - Control point X coordinate
+ * @param cpY - Control point Y coordinate
+ * @param strokeColor - CSS color string for the curve
+ * @param strokeWidth - Stroke width in pixels (default: 1)
+ * @returns void
+ *
+ * @example
+ * // Draw a curved line from (10, 10) to (100, 10) with control at (55, 50)
+ * drawQuadraticCurve(ctx, 10, 10, 100, 10, 55, 50, "#000000", 2);
  */
 export function drawQuadraticCurve(
 	ctx: CanvasRenderingContext2D,
@@ -380,7 +491,22 @@ export interface Point {
 }
 
 /**
- * Draw a polygon from an array of points
+ * Draw a polygon from an array of points.
+ * Connects points with straight lines. Optionally closes the path
+ * and fills/strokes the shape. Fills first, then strokes.
+ *
+ * @param ctx - Canvas 2D rendering context
+ * @param points - Array of {x, y} points defining the polygon vertices
+ * @param strokeColor - Stroke color (null for no stroke)
+ * @param fillColor - Fill color (null for no fill)
+ * @param strokeWidth - Stroke width in pixels (default: 1)
+ * @param closed - Whether to close the path (connect last to first point) (default: true)
+ * @returns void
+ *
+ * @example
+ * // Draw a filled triangle
+ * const points = [{x: 50, y: 10}, {x: 10, y: 90}, {x: 90, y: 90}];
+ * drawPolygon(ctx, points, "#000000", "#ffff00", 2, true);
  */
 export function drawPolygon(
 	ctx: CanvasRenderingContext2D,
@@ -418,7 +544,24 @@ export function drawPolygon(
 }
 
 /**
- * Draw a rounded rectangle
+ * Draw a rounded rectangle with quadratic curve corners.
+ * Corner radius is automatically calculated (max 8px, limited by dimensions).
+ * Fills first, then strokes. Automatically normalizes negative width/height.
+ * Minimum size is 2x2 pixels.
+ *
+ * @param ctx - Canvas 2D rendering context
+ * @param x - Top-left X coordinate
+ * @param y - Top-left Y coordinate
+ * @param width - Rectangle width (can be negative)
+ * @param height - Rectangle height (can be negative)
+ * @param strokeColor - Stroke color (null for no stroke)
+ * @param fillColor - Fill color (null for no fill)
+ * @param strokeWidth - Stroke width in pixels (default: 1)
+ * @returns void
+ *
+ * @example
+ * // Draw a filled rounded rectangle with black outline
+ * drawRoundedRectangle(ctx, 10, 10, 100, 50, "#000000", "#00ff00", 2);
  */
 export function drawRoundedRectangle(
 	ctx: CanvasRenderingContext2D,

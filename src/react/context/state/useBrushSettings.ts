@@ -3,6 +3,20 @@
  */
 import { useSettingsStore } from "./settingsStore";
 
+/**
+ * Hook to access brush tool settings and actions
+ * @returns {{
+ *   brushSize: number;
+ *   brushShape: "circle" | "square" | "reverse_diagonal" | "diagonal";
+ *   pencilSize: number;
+ *   eraserSize: number;
+ *   airbrushSize: number;
+ *   setBrushSize: (size: number) => void;
+ *   setBrushShape: (shape: "circle" | "square" | "reverse_diagonal" | "diagonal") => void;
+ *   setEraserSize: (size: number) => void;
+ *   setAirbrushSize: (size: number) => void;
+ * }} Brush settings and actions
+ */
 export function useBrushSettings() {
 	const brushSize = useSettingsStore((state) => state.brushSize);
 	const brushShape = useSettingsStore((state) => state.brushShape);

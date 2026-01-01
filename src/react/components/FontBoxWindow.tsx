@@ -61,11 +61,52 @@ const FALLBACK_FONTS: string[] = [
 	"Verdana",
 ];
 
+/**
+ * Ensures font list is valid, unique, and sorted
+ * Deduplicates and alphabetically sorts the font list.
+ * Falls back to FALLBACK_FONTS if empty.
+ *
+ * @param {string[]} fonts - Font family names to process
+ * @returns {string[]} Unique, sorted font list
+ */
 const ensureFonts = (fonts: string[]): string[] => {
 	const source = !fonts || !fonts.length ? FALLBACK_FONTS : fonts;
 	return Array.from(new Set(source)).sort((a, b) => a.localeCompare(b));
 };
 
+/**
+ * FontBoxWindow - Floating font selection window
+ * Appears when text tool is active or text box is being edited.
+ * Matches the legacy $FontBox.js floating window behavior.
+ *
+ * Features:
+ * - Draggable floating window (via useDraggable hook)
+ * - Font family dropdown with Local Font Access API / FontDetective fallback
+ * - Font size input (6-200 range)
+ * - Bold, Italic, Underline, Vertical formatting toggle buttons
+ * - Auto-repositions to avoid overlapping the text box
+ * - Incremental font loading (updates dropdown as fonts are detected)
+ * - Close button and Escape key support
+ * - Portal-rendered (outside main DOM tree)
+ *
+ * Progressive font enumeration:
+ * 1. Try Local Font Access API (window.queryLocalFonts)
+ * 2. Fallback to FontDetective library (incremental detection)
+ * 3. Fallback to FALLBACK_FONTS list
+ *
+ * @param {FontBoxWindowProps} props - Component props
+ * @returns {JSX.Element | null} Floating font window or null if not open
+ *
+ * @example
+ * <FontBoxWindow
+ *   isOpen={showFontBox}
+ *   onClose={() => setShowFontBox(false)}
+ *   fontState={{ family: "Arial", size: 12, bold: false, italic: false, underline: false, vertical: false }}
+ *   onFontChange={(state) => updateTextBoxFont(state)}
+ *   textBoxRect={{ x: 100, y: 100, width: 200, height: 50 }}
+ *   magnification={2}
+ * />
+ */
 export function FontBoxWindow({
 	isOpen,
 	onClose,

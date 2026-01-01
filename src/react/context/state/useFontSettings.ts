@@ -3,6 +3,21 @@
  */
 import { useSettingsStore } from "./settingsStore";
 
+/**
+ * Hook to access text/font settings and actions
+ * @returns {{
+ *   fontFamily: string;
+ *   fontSize: number;
+ *   fontBold: boolean;
+ *   fontItalic: boolean;
+ *   fontUnderline: boolean;
+ *   textTransparent: boolean;
+ *   setFontFamily: (family: string) => void;
+ *   setFontSize: (size: number) => void;
+ *   setFontStyle: (bold: boolean, italic: boolean, underline: boolean) => void;
+ *   setTextTransparent: (transparent: boolean) => void;
+ * }} Font settings and actions
+ */
 export function useFontSettings() {
 	const fontFamily = useSettingsStore((state) => state.fontFamily);
 	const fontSize = useSettingsStore((state) => state.fontSize);

@@ -4,6 +4,25 @@
 import { useUIStore } from "./uiStore";
 import { useSettingsStore } from "./settingsStore";
 
+/**
+ * Hook to access view state (panel visibility and display modes)
+ * @returns {{
+ *   showToolBox: boolean;
+ *   showColorBox: boolean;
+ *   showStatusBar: boolean;
+ *   showTextToolbar: boolean;
+ *   showGrid: boolean;
+ *   showThumbnail: boolean;
+ *   toggleToolBox: () => void;
+ *   toggleColorBox: () => void;
+ *   toggleStatusBar: () => void;
+ *   toggleTextToolbar: () => void;
+ *   toggleGrid: () => void;
+ *   toggleThumbnail: () => void;
+ *   drawOpaque: boolean;
+ *   toggleDrawOpaque: () => void;
+ * }} View state and actions
+ */
 export function useViewState() {
 	const showToolBox = useUIStore((state) => state.showToolBox);
 	const showColorBox = useUIStore((state) => state.showColorBox);

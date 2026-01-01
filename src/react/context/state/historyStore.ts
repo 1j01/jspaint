@@ -14,15 +14,47 @@ import { HistoryTree, type HistoryNode } from "../../utils/historyTree";
 // Re-export HistoryNode for convenience
 export type { HistoryNode };
 
+/**
+ * History state interface
+ * Manages a tree-based history system for non-linear undo/redo
+ */
 export interface HistoryState {
-	// History tree instance
+	/**
+	 * History tree instance containing all canvas states
+	 */
 	historyTree: HistoryTree | null;
 
-	// Quick access to current state
+	/**
+	 * Quick access to current history node
+	 */
 	currentNode: HistoryNode | null;
 
-	// Actions
+	/**
+	 * Initialize the history tree with an initial canvas state
+	 * @param {ImageData} initialImageData - Initial canvas state
+	 * @param {string} [name="Initial State"] - Name for the initial state
+	 */
 	initializeHistory: (initialImageData: ImageData, name?: string) => void;
+
+	/**
+	 * Push a new state to the history tree
+	 * @param {ImageData} imageData - Canvas image data to save
+	 * @param {string} name - Name/description of the change
+	 * @param {Object} [options] - Optional metadata
+	 * @param {ImageData | null} [options.selectionImageData] - Selection image data
+	 * @param {number} [options.selectionX] - Selection X position
+	 * @param {number} [options.selectionY] - Selection Y position
+	 * @param {number} [options.selectionWidth] - Selection width
+	 * @param {number} [options.selectionHeight] - Selection height
+	 * @param {string} [options.textBoxText] - Text box content
+	 * @param {number} [options.textBoxX] - Text box X position
+	 * @param {number} [options.textBoxY] - Text box Y position
+	 * @param {number} [options.textBoxWidth] - Text box width
+	 * @param {number} [options.textBoxHeight] - Text box height
+	 * @param {boolean} [options.soft] - Whether this is a soft state (skippable)
+	 * @param {string} [options.foregroundColor] - Foreground color at time of change
+	 * @param {string} [options.backgroundColor] - Background color at time of change
+	 */
 	pushState: (
 		imageData: ImageData,
 		name: string,
@@ -42,17 +74,67 @@ export interface HistoryState {
 			backgroundColor?: string;
 		}
 	) => void;
+
+	/**
+	 * Undo to the previous state (skips soft states)
+	 * @returns {HistoryNode | null} The previous state node, or null if at root
+	 */
 	undo: () => HistoryNode | null;
+
+	/**
+	 * Redo to the next state (skips soft states)
+	 * @returns {HistoryNode | null} The next state node, or null if at leaf
+	 */
 	redo: () => HistoryNode | null;
+
+	/**
+	 * Jump to a specific node in the history tree by ID
+	 * @param {string} nodeId - ID of the node to navigate to
+	 * @returns {HistoryNode | null} The target node, or null if not found
+	 */
 	goToNode: (nodeId: string) => HistoryNode | null;
+
+	/**
+	 * Check if undo is available
+	 * @returns {boolean} True if there are previous states to undo to
+	 */
 	canUndo: () => boolean;
+
+	/**
+	 * Check if redo is available
+	 * @returns {boolean} True if there are future states to redo to
+	 */
 	canRedo: () => boolean;
+
+	/**
+	 * Get the root node of the history tree
+	 * @returns {HistoryNode | null} The root node, or null if tree not initialized
+	 */
 	getRoot: () => HistoryNode | null;
+
+	/**
+	 * Get all nodes in the history tree (for visualization)
+	 * @returns {HistoryNode[]} Array of all history nodes
+	 */
 	getAllNodes: () => HistoryNode[];
+
+	/**
+	 * Prune old history nodes to limit memory usage
+	 * @param {number} [maxNodes=50] - Maximum number of nodes to keep
+	 */
 	pruneHistory: (maxNodes?: number) => void;
+
+	/**
+	 * Clear all history and reset the tree
+	 */
 	clearHistory: () => void;
 }
 
+/**
+ * Zustand store for tree-based history management
+ * Provides non-linear undo/redo with branching support
+ * @returns {HistoryState} The history state store
+ */
 export const useHistoryStore = create<HistoryState>((set, get) => {
 	// console.warn('[historyStore] 🏗️ Store created');
 

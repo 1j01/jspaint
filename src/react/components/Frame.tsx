@@ -122,6 +122,13 @@ export const DEFAULT_STATUS_TEXT = "For Help, click Help Topics on the Help Menu
 
 const DEFAULT_CANVAS_PLACEHOLDER = <canvas className="main-canvas" width={480} height={320} aria-hidden="true" />;
 
+/**
+ * Gets or creates the global MenuBar instance store
+ * Stores MenuBar instances by menu object reference to enable reuse
+ * across React re-renders. This prevents recreating MenuBar DOM on every render.
+ *
+ * @returns {Map<object, MenuBarInstance> | null} Map of menu objects to MenuBar instances, or null if SSR
+ */
 const getMenuBarStore = (): Map<object, MenuBarInstance> | null => {
 	if (typeof window === "undefined") {
 		return null;
@@ -132,22 +139,62 @@ const getMenuBarStore = (): Map<object, MenuBarInstance> | null => {
 	return window.__jspaintReactPreviewMenuBars;
 };
 
+/**
+ * Props for Frame component
+ */
 interface FrameProps {
+	/** Menu structure compatible with os-gui MenuBar (default: DEFAULT_MENU) */
 	menu?: Record<string, unknown[]>;
+	/** Content to render in top component area (above canvas) */
 	topContent?: ReactNode;
+	/** Content to render in left component area (typically ToolBox) */
 	leftContent?: ReactNode;
+	/** Content to render in right component area */
 	rightContent?: ReactNode;
+	/** Content to render in bottom component area (typically ColorBox) */
 	bottomContent?: ReactNode;
+	/** Main canvas content to render in center area */
 	canvasContent?: ReactNode;
+	/** Main status text (left field) */
 	statusText?: string;
+	/** Cursor position text (middle field) */
 	statusPosition?: string;
+	/** Canvas/selection size text (right field) */
 	statusSize?: string;
+	/** Additional CSS class name for root element */
 	className?: string;
+	/** Additional inline styles for root element */
 	style?: CSSProperties;
 }
 
 /**
- * React wrapper for the legacy menu/frame layout.
+ * Main application frame component
+ * Provides the classic MS Paint layout with menu bar, component areas, canvas, and status bar.
+ * Uses legacy os-gui MenuBar for menu rendering to maintain Windows 98 aesthetic.
+ *
+ * Layout structure:
+ * - Menu bar (os-gui)
+ * - Top component area (optional)
+ * - Horizontal row:
+ *   - Left component area (ToolBox)
+ *   - Canvas area (center, with inset-deep border)
+ *   - Right component area (optional)
+ * - Bottom component area (ColorBox)
+ * - Status bar (3 fields: text, position, size)
+ *
+ * @param {FrameProps} props - Component props
+ * @returns {JSX.Element} Application frame with menu, canvas area, and status bar
+ *
+ * @example
+ * <Frame
+ *   menu={createMenus(menuActions)}
+ *   leftContent={<ToolBox />}
+ *   bottomContent={<ColorBox />}
+ *   canvasContent={<Canvas />}
+ *   statusText="Ready"
+ *   statusPosition="100, 200"
+ *   statusSize="640x480"
+ * />
  */
 export function Frame({
 	menu = DEFAULT_MENU,

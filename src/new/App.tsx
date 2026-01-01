@@ -33,8 +33,22 @@ import { useKeyboardShortcuts } from "../react/hooks/useKeyboardShortcuts";
 import { useDialogHandlers } from "../react/hooks/useDialogHandlers";
 import { useFontState } from "../react/hooks/useFontState";
 
-// Store initialization wrapper
-function StoreInitializer({ children }: { children: React.ReactNode }) {
+/**
+ * Props for StoreInitializer component
+ */
+interface StoreInitializerProps {
+	children: React.ReactNode;
+}
+
+/**
+ * Store initialization wrapper component
+ * Displays loading state while Zustand stores are being initialized from persisted state.
+ * Shows error message if initialization fails, but continues with defaults.
+ *
+ * @param {StoreInitializerProps} props - Component props
+ * @returns {JSX.Element} Loading state or children once initialized
+ */
+function StoreInitializer({ children }: StoreInitializerProps) {
 	const { isInitialized, error: storeInitError } = useInitializeStores();
 
 	// Show loading state while stores are initializing
@@ -61,6 +75,27 @@ function StoreInitializer({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
 
+/**
+ * Main application content component
+ * Orchestrates the entire MCPaint UI including:
+ * - Canvas with drawing tools
+ * - ToolBox and ColorBox sidebars
+ * - Menu system with all File/Edit/View/Image/Colors/Help menus
+ * - Dialog management
+ * - Keyboard shortcuts
+ * - State management via Zustand stores
+ *
+ * This component connects all Zustand stores to the UI and provides
+ * handlers for user interactions that modify canvas state.
+ *
+ * @returns {JSX.Element} Complete MCPaint application UI
+ *
+ * @example
+ * // Used inside StoreInitializer wrapper
+ * <StoreInitializer>
+ *   <AppContent />
+ * </StoreInitializer>
+ */
 function AppContent() {
 	// console.warn('[AppContent] 🎨 RENDER START');
 
@@ -299,9 +334,9 @@ function AppContent() {
 			isOpen={showNewConfirm}
 			onClose={dialogHandlers.handleNewConfirm}
 			title="Paint"
-			message="Clear the current image and start new?"
-			buttons="yesNo"
-			icon="question"
+			message="Save changes to untitled?"
+			buttons="yesNoCancel"
+			icon="warning"
 			defaultButton="yes"
 		/>
 
@@ -336,6 +371,22 @@ function AppContent() {
 );
 }
 
+/**
+ * Root application component for MCPaint React preview
+ * Wraps the application in error boundary and store initialization.
+ *
+ * This is the entry point for the React version of MCPaint.
+ *
+ * @returns {JSX.Element} Root app with error handling and store initialization
+ *
+ * @example
+ * // In main.tsx
+ * ReactDOM.createRoot(document.getElementById('root')!).render(
+ *   <React.StrictMode>
+ *     <App />
+ *   </React.StrictMode>
+ * )
+ */
 export function App() {
 	return (
 		<ErrorBoundary>

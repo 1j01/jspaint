@@ -2,20 +2,40 @@ import React, { useCallback, useMemo, useState, useRef, useLayoutEffect, Keyboar
 import { DEFAULT_PALETTE } from "../data/palette";
 import { Component } from "./Component";
 
+/**
+ * Props for ColorBox component
+ */
 interface ColorBoxProps {
+	/** Array of color strings for the palette (default: DEFAULT_PALETTE) */
 	palette?: string[];
+	/** Initial primary/foreground color */
 	initialPrimary?: string;
+	/** Initial secondary/background color */
 	initialSecondary?: string;
+	/** Callback when primary color changes (left click) */
 	onPrimaryChange?: (color: string) => void;
+	/** Callback when secondary color changes (right click) */
 	onSecondaryChange?: (color: string) => void;
+	/** Callback when user double-clicks to edit a color */
 	onEditRequest?: (color: string, slot: "foreground" | "background") => void;
+	/** Whether to use vertical/tall layout (default: false for wide layout) */
 	vertical?: boolean;
 }
 
+/** Default primary color */
 const FALLBACK_PRIMARY = "rgb(0,0,0)";
+/** Default secondary color */
 const FALLBACK_SECONDARY = "rgb(255,255,255)";
+/** Double-click detection window in milliseconds */
 const DOUBLE_CLICK_MS = 400;
 
+/**
+ * Ensures palette is valid and non-empty
+ * Falls back to DEFAULT_PALETTE if palette is missing or empty.
+ *
+ * @param {string[]} palette - Palette array to validate
+ * @returns {string[]} Valid non-empty palette
+ */
 const ensurePalette = (palette?: string[]): string[] => {
 	if (!Array.isArray(palette) || palette.length === 0) {
 		return DEFAULT_PALETTE;
@@ -23,12 +43,44 @@ const ensurePalette = (palette?: string[]): string[] => {
 	return palette;
 };
 
+/**
+ * Normalizes a color value to a valid string
+ * Returns fallback if color is undefined or empty.
+ *
+ * @param {string | undefined} color - Color to normalize
+ * @param {string} fallback - Fallback color value
+ * @returns {string} Valid color string
+ */
 const normalizeColor = (color: string | undefined, fallback: string): string =>
 	typeof color === "string" && color ? color : fallback;
 
 /**
- * React-friendly recreation of the legacy Colors component using the classic styles.
- * Matches the legacy $ColorBox structure and behavior.
+ * ColorBox component - Color palette and selection
+ * Recreates the classic MS Paint color palette with foreground/background color selection.
+ * Mirrors the legacy $ColorBox structure and behavior for CSS compatibility.
+ *
+ * Features:
+ * - Current colors display (overlapping squares showing foreground/background)
+ * - Click current colors to swap foreground and background
+ * - Color palette grid (forced 2-row layout via dynamic sizing)
+ * - Left-click palette color to set foreground
+ * - Right-click palette color to set background
+ * - Double-click palette color to open edit dialog
+ * - Supports both wide (horizontal) and tall (vertical) layouts
+ * - Prevents context menu on right-click
+ *
+ * @param {ColorBoxProps} props - Component props
+ * @returns {JSX.Element} Color palette with current colors and palette grid
+ *
+ * @example
+ * <ColorBox
+ *   palette={DEFAULT_PALETTE}
+ *   initialPrimary="rgb(0,0,0)"
+ *   initialSecondary="rgb(255,255,255)"
+ *   onPrimaryChange={setPrimaryColor}
+ *   onSecondaryChange={setSecondaryColor}
+ *   onEditRequest={(color, slot) => openDialog('editColors', { color, slot })}
+ * />
  */
 export function ColorBox({
 	palette: paletteProp,

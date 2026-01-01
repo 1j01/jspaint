@@ -52,7 +52,14 @@ export const IMAGE_FORMATS: ImageFormat[] = [
 ];
 
 /**
- * Get format by extension
+ * Get image format by file extension.
+ * Matches extensions case-insensitively and handles leading dots.
+ *
+ * @param extension - File extension (with or without leading dot, e.g., ".png" or "png")
+ * @returns ImageFormat object if found, undefined otherwise
+ *
+ * @example
+ * const format = getFormatByExtension(".jpg"); // Returns JPEG format
  */
 export function getFormatByExtension(extension: string): ImageFormat | undefined {
 	const ext = extension.toLowerCase().replace(/^\./, "");
@@ -60,14 +67,30 @@ export function getFormatByExtension(extension: string): ImageFormat | undefined
 }
 
 /**
- * Get format by MIME type
+ * Get image format by MIME type.
+ * Matches exact MIME types (e.g., "image/png", "image/jpeg").
+ *
+ * @param mimeType - MIME type string (e.g., "image/png")
+ * @returns ImageFormat object if found, undefined otherwise
+ *
+ * @example
+ * const format = getFormatByMimeType("image/jpeg"); // Returns JPEG format
  */
 export function getFormatByMimeType(mimeType: string): ImageFormat | undefined {
 	return IMAGE_FORMATS.find((f) => f.mimeType === mimeType);
 }
 
 /**
- * Get file extension from filename
+ * Get file extension from filename.
+ * Extracts the last extension from a filename (after the last dot).
+ *
+ * @param filename - Filename with or without path
+ * @returns Lowercase file extension without dot, or empty string if no extension
+ *
+ * @example
+ * getFileExtension("image.png"); // Returns "png"
+ * getFileExtension("archive.tar.gz"); // Returns "gz"
+ * getFileExtension("noextension"); // Returns ""
  */
 export function getFileExtension(filename: string): string {
 	const match = filename.match(/\.([^.]+)$/);
@@ -75,7 +98,18 @@ export function getFileExtension(filename: string): string {
 }
 
 /**
- * Encode canvas to a specific format and return as Blob
+ * Encode canvas to a specific format and return as Blob.
+ * Uses native canvas.toBlob() for PNG/JPEG/WebP, custom encoder for BMP.
+ *
+ * @param canvas - HTMLCanvasElement to encode
+ * @param formatId - Format identifier ("png", "jpeg", "webp", "bmp")
+ * @param quality - Optional quality for lossy formats (0-1, default: format default)
+ * @returns Promise resolving to Blob containing encoded image
+ * @throws Error if format is unknown or encoding fails
+ *
+ * @example
+ * const blob = await encodeToBlob(canvas, "png");
+ * const jpegBlob = await encodeToBlob(canvas, "jpeg", 0.9);
  */
 export async function encodeToBlob(
 	canvas: HTMLCanvasElement,
@@ -110,7 +144,19 @@ export async function encodeToBlob(
 }
 
 /**
- * Encode canvas to a specific format and return as data URL
+ * Encode canvas to a specific format and return as data URL.
+ * Uses native canvas.toDataURL() for PNG/JPEG/WebP.
+ * For BMP, creates object URL (not a true data URL).
+ *
+ * @param canvas - HTMLCanvasElement to encode
+ * @param formatId - Format identifier ("png", "jpeg", "webp", "bmp")
+ * @param quality - Optional quality for lossy formats (0-1, default: format default)
+ * @returns Data URL string (or object URL for BMP)
+ * @throws Error if format is unknown
+ *
+ * @example
+ * const dataUrl = encodeToDataURL(canvas, "png");
+ * img.src = dataUrl;
  */
 export function encodeToDataURL(
 	canvas: HTMLCanvasElement,
@@ -133,7 +179,18 @@ export function encodeToDataURL(
 }
 
 /**
- * Download canvas as file
+ * Download canvas as an image file.
+ * Automatically determines format from filename extension if not specified.
+ * Creates temporary download link and triggers browser download.
+ *
+ * @param canvas - HTMLCanvasElement to download
+ * @param filename - Desired filename for download
+ * @param formatId - Optional format override (otherwise determined from extension)
+ * @returns Promise that resolves when download is initiated
+ *
+ * @example
+ * await downloadCanvas(canvas, "myimage.png");
+ * await downloadCanvas(canvas, "photo.jpg", "jpeg");
  */
 export async function downloadCanvas(
 	canvas: HTMLCanvasElement,
@@ -161,15 +218,32 @@ export async function downloadCanvas(
 }
 
 /**
- * Encode canvas as 24-bit BMP
- * BMP format: https://en.wikipedia.org/wiki/BMP_file_format
+ * Encode canvas as 24-bit BMP (asynchronous wrapper).
+ * BMP format specification: https://en.wikipedia.org/wiki/BMP_file_format
+ * Creates uncompressed BMP with bottom-up row order and 4-byte row padding.
+ *
+ * @param canvas - HTMLCanvasElement to encode
+ * @returns Promise resolving to Blob containing BMP data
+ *
+ * @example
+ * const bmpBlob = await encodeBMP(canvas);
  */
 export function encodeBMP(canvas: HTMLCanvasElement): Promise<Blob> {
 	return Promise.resolve(encodeBMPSync(canvas));
 }
 
 /**
- * Synchronous BMP encoder
+ * Synchronous BMP encoder.
+ * Creates a 24-bit uncompressed BMP with proper file and DIB headers.
+ * Uses bottom-up row ordering and BGR color format as per BMP specification.
+ *
+ * @param canvas - HTMLCanvasElement to encode
+ * @returns Blob containing complete BMP file data
+ * @throws Error if canvas context cannot be obtained
+ *
+ * @example
+ * const bmpBlob = encodeBMPSync(canvas);
+ * const url = URL.createObjectURL(bmpBlob);
  */
 export function encodeBMPSync(canvas: HTMLCanvasElement): Blob {
 	const ctx = canvas.getContext("2d");
@@ -278,7 +352,17 @@ export function encodeBMPSync(canvas: HTMLCanvasElement): Blob {
 }
 
 /**
- * Decode BMP file to ImageData
+ * Decode BMP file to ImageData.
+ * Supports 24-bit and 32-bit BMPs, both top-down and bottom-up.
+ * Does not support compressed BMPs or palette-based formats.
+ *
+ * @param blob - Blob containing BMP file data
+ * @returns Promise resolving to ImageData
+ * @throws Error if file is invalid, corrupted, or uses unsupported format
+ *
+ * @example
+ * const imageData = await decodeBMP(bmpBlob);
+ * ctx.putImageData(imageData, 0, 0);
  */
 export async function decodeBMP(blob: Blob): Promise<ImageData> {
 	const buffer = await blob.arrayBuffer();
@@ -344,8 +428,17 @@ export async function decodeBMP(blob: Blob): Promise<ImageData> {
 }
 
 /**
- * Load an image file and return it as ImageData
- * Supports all browser-supported image formats plus BMP
+ * Load an image file and return it as ImageData.
+ * Supports all browser-supported image formats (PNG, JPEG, GIF, WebP, etc.)
+ * plus custom BMP decoding for better compatibility.
+ *
+ * @param file - File object from input or drag-and-drop
+ * @returns Promise resolving to ImageData
+ * @throws Error if file cannot be loaded or decoded
+ *
+ * @example
+ * const imageData = await loadImageFile(file);
+ * ctx.putImageData(imageData, 0, 0);
  */
 export async function loadImageFile(file: File): Promise<ImageData> {
 	// Check if it's a BMP file that might need custom decoding
@@ -384,7 +477,17 @@ export async function loadImageFile(file: File): Promise<ImageData> {
 }
 
 /**
- * Load image from URL and return as ImageData
+ * Load image from URL and return as ImageData.
+ * Uses CORS anonymous mode to allow cross-origin image loading.
+ * Creates temporary canvas to extract pixel data.
+ *
+ * @param url - Image URL (must allow CORS if cross-origin)
+ * @returns Promise resolving to ImageData
+ * @throws Error if image fails to load or canvas context unavailable
+ *
+ * @example
+ * const imageData = await loadImageFromURL("https://example.com/image.png");
+ * ctx.putImageData(imageData, 0, 0);
  */
 export async function loadImageFromURL(url: string): Promise<ImageData> {
 	return new Promise((resolve, reject) => {
@@ -409,7 +512,15 @@ export async function loadImageFromURL(url: string): Promise<ImageData> {
 }
 
 /**
- * Get accept string for file input
+ * Get accept string for file input.
+ * Returns comma-separated list of MIME types and extensions
+ * for all supported image formats.
+ *
+ * @returns Accept attribute value for input[type="file"]
+ *
+ * @example
+ * <input type="file" accept={getAcceptString()} />
+ * // Generates: "image/png,.png,image/jpeg,.jpg,.jpeg,..."
  */
 export function getAcceptString(): string {
 	const mimeTypes = IMAGE_FORMATS.map((f) => f.mimeType);

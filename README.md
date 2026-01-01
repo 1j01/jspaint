@@ -364,13 +364,13 @@ npm run sloc
 
 | Metric        | Legacy (jQuery) | React (New) | Change |
 |---------------|-----------------|-------------|--------|
-| Files         | 42              | 69          | +27    |
-| Code Lines    | 17,531          | 11,557      | -5,974 |
-| Comment Lines | 4,100           | 1,943       | -2,157 |
-| Total Lines   | 23,363          | 15,349      | -8,014 |
+| Files         | 42              | 113         | +71    |
+| Code Lines    | 17,531          | 12,532      | -4,999 |
+| Comment Lines | 4,100           | 4,105       | +5     |
+| Total Lines   | 23,363          | 18,672      | -4,691 |
 
-**📈 Migration Progress**: React implementation is **65.9%** the size of legacy code
-**✨ Result**: React code is **34.1% more concise!**
+**📈 Migration Progress**: React implementation is **71.5%** the size of legacy code
+**✨ Result**: React code is **28.5% more concise!**
 
 ### By File Type
 
@@ -383,9 +383,9 @@ npm run sloc
 **React (src/react + src/new)**
 | Extension | Files | Code Lines |
 |-----------|-------|------------|
-| .tsx      | 32    | 5,938      |
-| .ts       | 34    | 5,315      |
-| .css      | 3     | 304        |
+| .ts       | 68    | 6,905      |
+| .tsx      | 41    | 5,245      |
+| .css      | 4     | 382        |
 
 ---
 

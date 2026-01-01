@@ -5,6 +5,14 @@
 
 /**
  * Flips an image horizontally (mirror along vertical axis).
+ * Creates a new ImageData with pixels reversed left-to-right.
+ *
+ * @param imageData - Source image data to flip
+ * @returns New ImageData with horizontally flipped pixels
+ *
+ * @example
+ * const flipped = flipHorizontal(originalImageData);
+ * ctx.putImageData(flipped, 0, 0);
  */
 export function flipHorizontal(imageData: ImageData): ImageData {
 	const { width, height, data } = imageData;
@@ -28,6 +36,14 @@ export function flipHorizontal(imageData: ImageData): ImageData {
 
 /**
  * Flips an image vertically (mirror along horizontal axis).
+ * Creates a new ImageData with pixels reversed top-to-bottom.
+ *
+ * @param imageData - Source image data to flip
+ * @returns New ImageData with vertically flipped pixels
+ *
+ * @example
+ * const flipped = flipVertical(originalImageData);
+ * ctx.putImageData(flipped, 0, 0);
  */
 export function flipVertical(imageData: ImageData): ImageData {
 	const { width, height, data } = imageData;
@@ -51,7 +67,16 @@ export function flipVertical(imageData: ImageData): ImageData {
 
 /**
  * Rotates an image by the specified degrees (90, 180, or 270).
- * For arbitrary angles, use rotateArbitrary.
+ * For 90/270 degree rotations, swaps width and height dimensions.
+ * For arbitrary angles, use rotateArbitrary instead.
+ *
+ * @param imageData - Source image data to rotate
+ * @param degrees - Rotation angle in degrees (normalized to 0, 90, 180, or 270)
+ * @returns New ImageData with rotated pixels (may have swapped dimensions)
+ *
+ * @example
+ * const rotated = rotate(originalImageData, 90);
+ * // Returns image rotated 90 degrees clockwise
  */
 export function rotate(imageData: ImageData, degrees: number): ImageData {
 	const { width, height, data } = imageData;
@@ -119,9 +144,17 @@ export function rotate(imageData: ImageData, degrees: number): ImageData {
 
 /**
  * Rotates an image by an arbitrary angle using bilinear interpolation.
- * @param imageData - Source image data
- * @param degrees - Rotation angle in degrees
- * @param backgroundColor - Background color for empty areas [r, g, b, a]
+ * Calculates new dimensions to contain the full rotated image.
+ * Empty areas are filled with the specified background color.
+ *
+ * @param imageData - Source image data to rotate
+ * @param degrees - Rotation angle in degrees (can be any value)
+ * @param backgroundColor - RGBA values for empty areas (default: white [255, 255, 255, 255])
+ * @returns New ImageData with rotated pixels and expanded dimensions
+ *
+ * @example
+ * const rotated = rotateArbitrary(imageData, 45, [255, 0, 0, 255]);
+ * // Returns image rotated 45 degrees with red background
  */
 export function rotateArbitrary(
 	imageData: ImageData,
@@ -213,10 +246,18 @@ export function rotateArbitrary(
 }
 
 /**
- * Stretches/scales an image by the given factors.
- * @param imageData - Source image data
- * @param scaleX - Horizontal scale factor (1 = 100%)
- * @param scaleY - Vertical scale factor (1 = 100%)
+ * Stretches/scales an image by the given factors using bilinear interpolation.
+ * Creates a new ImageData with dimensions multiplied by the scale factors.
+ * Minimum size is 1x1 pixel.
+ *
+ * @param imageData - Source image data to stretch
+ * @param scaleX - Horizontal scale factor (1.0 = 100%, 2.0 = 200%, etc.)
+ * @param scaleY - Vertical scale factor (1.0 = 100%, 2.0 = 200%, etc.)
+ * @returns New ImageData with stretched/scaled pixels
+ *
+ * @example
+ * const stretched = stretch(imageData, 2.0, 1.5);
+ * // Returns image doubled in width, 1.5x height
  */
 export function stretch(imageData: ImageData, scaleX: number, scaleY: number): ImageData {
 	const { width, height, data } = imageData;
@@ -261,10 +302,19 @@ export function stretch(imageData: ImageData, scaleX: number, scaleY: number): I
 
 /**
  * Skews an image by the given angles.
- * @param imageData - Source image data
- * @param degreesX - Horizontal skew angle in degrees
- * @param degreesY - Vertical skew angle in degrees
- * @param backgroundColor - Background color for empty areas [r, g, b, a]
+ * Applies shear transformation along X and/or Y axes.
+ * Creates expanded canvas to fit skewed image.
+ * Empty areas are filled with the specified background color.
+ *
+ * @param imageData - Source image data to skew
+ * @param degreesX - Horizontal skew angle in degrees (positive = skew right)
+ * @param degreesY - Vertical skew angle in degrees (positive = skew down)
+ * @param backgroundColor - RGBA values for empty areas (default: white [255, 255, 255, 255])
+ * @returns New ImageData with skewed pixels and expanded dimensions
+ *
+ * @example
+ * const skewed = skew(imageData, 15, 0, [255, 255, 255, 255]);
+ * // Returns image skewed 15 degrees horizontally
  */
 export function skew(
 	imageData: ImageData,
@@ -319,7 +369,16 @@ export function skew(
 }
 
 /**
- * Inverts all colors in the image.
+ * Inverts all colors in the image (creates negative).
+ * Alpha channel is preserved unchanged.
+ * RGB values are inverted: newValue = 255 - oldValue
+ *
+ * @param imageData - Source image data to invert
+ * @returns New ImageData with inverted RGB channels
+ *
+ * @example
+ * const inverted = invertColors(imageData);
+ * // White becomes black, red becomes cyan, etc.
  */
 export function invertColors(imageData: ImageData): ImageData {
 	const { width, height, data } = imageData;
@@ -337,10 +396,17 @@ export function invertColors(imageData: ImageData): ImageData {
 }
 
 /**
- * Clears an image to a solid color.
- * @param width - Width of the resulting image
- * @param height - Height of the resulting image
- * @param color - Fill color [r, g, b, a]
+ * Creates a new ImageData filled with a solid color.
+ * Used for clearing canvas or creating blank images.
+ *
+ * @param width - Width of the resulting image in pixels
+ * @param height - Height of the resulting image in pixels
+ * @param color - RGBA color values (default: white [255, 255, 255, 255])
+ * @returns New ImageData filled with the specified color
+ *
+ * @example
+ * const whiteCanvas = clearToColor(800, 600);
+ * const redCanvas = clearToColor(800, 600, [255, 0, 0, 255]);
  */
 export function clearToColor(
 	width: number,
@@ -362,7 +428,16 @@ export function clearToColor(
 
 /**
  * Applies a transformation to canvas ImageData and returns the result.
- * Helper for working with canvas contexts.
+ * Helper function for working with canvas contexts.
+ * Extracts ImageData, applies transform function, and returns result.
+ *
+ * @param ctx - Canvas 2D rendering context to extract ImageData from
+ * @param transform - Function that transforms ImageData
+ * @returns Transformed ImageData
+ *
+ * @example
+ * const flipped = transformCanvas(ctx, flipHorizontal);
+ * ctx.putImageData(flipped, 0, 0);
  */
 export function transformCanvas(
 	ctx: CanvasRenderingContext2D,
@@ -375,6 +450,17 @@ export function transformCanvas(
 
 /**
  * Applies transformed ImageData to a canvas, optionally resizing the canvas.
+ * If resize is true and dimensions don't match, resizes canvas to fit ImageData.
+ * Always puts the ImageData at (0, 0) coordinate.
+ *
+ * @param ctx - Canvas 2D rendering context to apply ImageData to
+ * @param imageData - ImageData to apply to the canvas
+ * @param resize - Whether to resize canvas to match ImageData dimensions (default: true)
+ * @returns void
+ *
+ * @example
+ * const stretched = stretch(imageData, 2.0, 2.0);
+ * applyToCanvas(ctx, stretched, true); // Resizes canvas and applies
  */
 export function applyToCanvas(ctx: CanvasRenderingContext2D, imageData: ImageData, resize: boolean = true): void {
 	const canvas = ctx.canvas;

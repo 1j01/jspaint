@@ -5,6 +5,24 @@
 import { useToolStore } from "./toolStore";
 import { useSettingsStore } from "./settingsStore";
 
+/**
+ * Hook to access text box state and font settings (combined)
+ * WARNING: This hook subscribes to multiple stores, which may cause unnecessary re-renders.
+ * Consider using useTextBoxState and useFontSettings separately for better performance.
+ * @returns {{
+ *   textBox: TextBoxState | null;
+ *   setTextBox: (textBox: TextBoxState | null) => void;
+ *   clearTextBox: () => void;
+ *   fontFamily: string;
+ *   fontSize: number;
+ *   fontBold: boolean;
+ *   fontItalic: boolean;
+ *   fontUnderline: boolean;
+ *   setFontFamily: (family: string) => void;
+ *   setFontSize: (size: number) => void;
+ *   setFontStyle: (bold: boolean, italic: boolean, underline: boolean) => void;
+ * }} Text box state and font settings
+ */
 export function useTextBox() {
 	const textBox = useToolStore((state) => state.textBox);
 	const setTextBox = useToolStore((state) => state.setTextBox);

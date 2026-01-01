@@ -2,19 +2,33 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useUIStore } from "../context/state/uiStore";
 import "./CanvasResizeHandles.css";
 
-// Handle positions - matching Handles.js
-const HANDLE_START = -1;
-const HANDLE_MIDDLE = 0;
-const HANDLE_END = 1;
+/**
+ * Handle position constants for canvas resize handles
+ * Matches the legacy Handles.js implementation
+ */
+const HANDLE_START = -1;  // Top or left edge
+const HANDLE_MIDDLE = 0;  // Center (horizontal or vertical)
+const HANDLE_END = 1;     // Bottom or right edge
 
+/**
+ * Handle axis type - position along an axis
+ */
 type HandleAxis = typeof HANDLE_START | typeof HANDLE_MIDDLE | typeof HANDLE_END;
 
+/**
+ * Configuration for a single resize handle
+ */
 interface HandleConfig {
+	/** Horizontal axis position */
 	xAxis: HandleAxis;
+	/** Vertical axis position */
 	yAxis: HandleAxis;
 }
 
-// 8 handles around the canvas - matching Handles.js order
+/**
+ * 8 resize handles around the canvas
+ * Order matches legacy Handles.js implementation
+ */
 const HANDLE_CONFIGS: HandleConfig[] = [
 	{ yAxis: HANDLE_START, xAxis: HANDLE_END }, // top-right (↗)
 	{ yAxis: HANDLE_START, xAxis: HANDLE_MIDDLE }, // top (↑)
@@ -26,13 +40,28 @@ const HANDLE_CONFIGS: HandleConfig[] = [
 	{ yAxis: HANDLE_MIDDLE, xAxis: HANDLE_END }, // right (→)
 ];
 
+/**
+ * Props for CanvasResizeHandles component
+ */
 interface CanvasResizeHandlesProps {
+	/** Current canvas width in pixels */
 	canvasWidth: number;
+	/** Current canvas height in pixels */
 	canvasHeight: number;
+	/** Callback when canvas is resized */
 	onResize: (width: number, height: number) => void;
+	/** Reference to canvas container element for coordinate calculation */
 	containerRef: React.RefObject<HTMLDivElement>;
 }
 
+/**
+ * Gets the appropriate cursor style for a resize handle
+ * Based on handle position (corner vs edge vs middle).
+ *
+ * @param {HandleAxis} xAxis - Horizontal axis position
+ * @param {HandleAxis} yAxis - Vertical axis position
+ * @returns {string} CSS cursor value
+ */
 function getCursor(xAxis: HandleAxis, yAxis: HandleAxis): string {
 	if ((xAxis === HANDLE_START && yAxis === HANDLE_START) || (xAxis === HANDLE_END && yAxis === HANDLE_END)) {
 		return "nwse-resize";
@@ -46,12 +75,34 @@ function getCursor(xAxis: HandleAxis, yAxis: HandleAxis): string {
 }
 
 /**
- * Canvas Resize Handles Component
+ * CanvasResizeHandles component - Resize handles for canvas
+ * Provides draggable handles around the canvas to resize it, matching MS Paint behavior.
+ * Includes intelligent grab regions for easier interaction.
  *
- * Provides draggable handles around the canvas to resize it, matching the original
- * MS Paint behavior with grab regions for easier interaction.
+ * Features:
+ * - Size-only mode (like MS Paint): only bottom and right handles work
+ * - Top and left handles are visible but inactive ("useless")
+ * - Ghost preview during resize (dashed outline)
+ * - Pointer capture for reliable drag tracking
+ * - Intelligent grab regions (larger hit areas for easier grabbing)
+ * - Magnification support with dynamic positioning
+ * - Minimum size enforcement (1x1 pixel)
  *
- * In "size-only" mode (like MS Paint), only the bottom and right handles work.
+ * The handles appear around the canvas edges and allow the user to
+ * drag to resize. In "size-only" mode (matching MS Paint), only the
+ * bottom and right handles actually resize - dragging top or left
+ * handles does nothing.
+ *
+ * @param {CanvasResizeHandlesProps} props - Component props
+ * @returns {JSX.Element} Canvas resize handles with ghost preview
+ *
+ * @example
+ * <CanvasResizeHandles
+ *   canvasWidth={640}
+ *   canvasHeight={480}
+ *   onResize={(width, height) => setCanvasSize(width, height)}
+ *   containerRef={canvasAreaRef}
+ * />
  */
 export function CanvasResizeHandles({
 	canvasWidth,

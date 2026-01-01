@@ -11,8 +11,15 @@ export interface HelpItem {
 
 /**
  * Parse an HTML Help Contents (.hhc) file and extract the TOC structure.
- * @param hhcPath - Path to the .hhc file
- * @returns Promise resolving to array of HelpItem objects
+ * Fetches the file and parses it into a hierarchical structure.
+ *
+ * @param hhcPath - Path to the .hhc file (relative or absolute URL)
+ * @returns Promise resolving to array of HelpItem objects representing the table of contents
+ * @throws Error if file cannot be fetched or parsed
+ *
+ * @example
+ * const toc = await parseHelpContents("help/contents.hhc");
+ * // Returns structured table of contents
  */
 export async function parseHelpContents(hhcPath: string): Promise<HelpItem[]> {
 	try {
@@ -30,8 +37,15 @@ export async function parseHelpContents(hhcPath: string): Promise<HelpItem[]> {
 
 /**
  * Parse the HTML content of an .hhc file.
- * @param html - The raw HTML content
- * @returns Array of HelpItem objects
+ * Converts HTML structure into JavaScript object hierarchy.
+ * Looks for UL/LI structure with OBJECT elements containing params.
+ *
+ * @param html - The raw HTML content from .hhc file
+ * @returns Array of HelpItem objects representing the parsed structure
+ *
+ * @example
+ * const items = parseHhcHtml(htmlString);
+ * // Returns structured help items
  */
 export function parseHhcHtml(html: string): HelpItem[] {
 	const parser = new DOMParser();
@@ -48,8 +62,11 @@ export function parseHhcHtml(html: string): HelpItem[] {
 
 /**
  * Recursively parse a UL element and its children.
+ * Extracts all LI elements and converts them to HelpItem objects.
+ * Handles nested UL elements for hierarchical structure.
+ *
  * @param ul - The UL element to parse
- * @returns Array of HelpItem objects
+ * @returns Array of HelpItem objects for this level
  */
 function parseUlElement(ul: Element): HelpItem[] {
 	const items: HelpItem[] = [];
@@ -69,8 +86,11 @@ function parseUlElement(ul: Element): HelpItem[] {
 
 /**
  * Parse a single LI element.
+ * Extracts OBJECT params for name and local (URL) properties.
+ * Recursively processes nested UL for child items.
+ *
  * @param li - The LI element to parse
- * @returns HelpItem or null if invalid
+ * @returns HelpItem object or null if invalid/empty
  */
 function parseLiElement(li: Element): HelpItem | null {
 	// Find the OBJECT element with sitemap data
@@ -111,8 +131,11 @@ function parseLiElement(li: Element): HelpItem | null {
 
 /**
  * Parse param elements within an object element.
- * @param objectEl - The object element containing params
- * @returns Object mapping param names to values
+ * Extracts name-value pairs from HTML Help OBJECT parameters.
+ * Common params include "Name" (title) and "Local" (URL path).
+ *
+ * @param objectEl - The object element containing param children
+ * @returns Object mapping param names to their string values
  */
 function parseObjectParams(objectEl: Element): Record<string, string> {
 	const params: Record<string, string> = {};

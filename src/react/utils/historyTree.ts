@@ -90,6 +90,9 @@ export class HistoryTree {
 
 	/**
 	 * Generate a unique ID for a history node.
+	 * Uses incrementing counter for simplicity.
+	 *
+	 * @returns Unique string ID in format "node-N"
 	 */
 	private generateId(): string {
 		return `node-${this.nextId++}`;
@@ -97,6 +100,8 @@ export class HistoryTree {
 
 	/**
 	 * Get the current history node.
+	 *
+	 * @returns The currently active history node
 	 */
 	getCurrent(): HistoryNode {
 		return this.current;
@@ -104,6 +109,8 @@ export class HistoryTree {
 
 	/**
 	 * Get the root history node.
+	 *
+	 * @returns The root node of the history tree (first state)
 	 */
 	getRoot(): HistoryNode {
 		return this.root;
@@ -111,7 +118,10 @@ export class HistoryTree {
 
 	/**
 	 * Get all nodes in the tree (for history dialog).
-	 * Returns nodes in depth-first order.
+	 * Returns nodes in depth-first order starting from root.
+	 * Used to display the complete history tree visualization.
+	 *
+	 * @returns Array of all HistoryNode objects in the tree
 	 */
 	getAllNodes(): HistoryNode[] {
 		const nodes: HistoryNode[] = [];
@@ -129,6 +139,10 @@ export class HistoryTree {
 
 	/**
 	 * Get path from root to current node (for linear undo/redo display).
+	 * Returns array of nodes starting with root and ending with current.
+	 * Used by linear history views and for calculating undo depth.
+	 *
+	 * @returns Array of HistoryNode objects from root to current
 	 */
 	getCurrentPath(): HistoryNode[] {
 		const path: HistoryNode[] = [];
@@ -191,6 +205,9 @@ export class HistoryTree {
 
 	/**
 	 * Check if undo is possible.
+	 * Undo is possible when current node has a parent (not at root).
+	 *
+	 * @returns True if undo operation can be performed
 	 */
 	canUndo(): boolean {
 		return this.current.parent !== null;
@@ -198,7 +215,10 @@ export class HistoryTree {
 
 	/**
 	 * Check if redo is possible.
-	 * Redo is possible if the current node has at least one child.
+	 * Redo is possible if the current node has at least one child node.
+	 * When multiple children exist, redo chooses the most recent or preferred branch.
+	 *
+	 * @returns True if redo operation can be performed
 	 */
 	canRedo(): boolean {
 		return this.current.children.length > 0;
@@ -309,6 +329,9 @@ export class HistoryTree {
 	/**
 	 * Get undo stack (path from root to current, excluding current).
 	 * For compatibility with linear undo/redo UI.
+	 * Returns all previous states that can be undone to.
+	 *
+	 * @returns Array of HistoryNode objects representing undo stack
 	 */
 	getUndoStack(): HistoryNode[] {
 		const path = this.getCurrentPath();
@@ -318,6 +341,9 @@ export class HistoryTree {
 	/**
 	 * Get redo stack (most recent child branch from current).
 	 * For compatibility with linear undo/redo UI.
+	 * Follows the most recently created child at each level.
+	 *
+	 * @returns Array of HistoryNode objects representing redo stack
 	 */
 	getRedoStack(): HistoryNode[] {
 		const redos: HistoryNode[] = [];

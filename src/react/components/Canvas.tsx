@@ -253,9 +253,12 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 					textBox={textBoxHook.textBox}
 					magnification={magnification}
 					primaryColor={drawing.primaryColor}
+					secondaryColor={drawing.secondaryColor}
 					onChange={eventHandlers.handleTextChange}
 					onKeyDown={eventHandlers.handleTextKeyDown}
 					onBlur={eventHandlers.handleTextBlur}
+					onMove={textBoxHook.moveTextBox}
+					onResize={textBoxHook.resizeTextBox}
 				/>
 			)}
 			<CanvasResizeHandles
