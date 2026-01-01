@@ -3,6 +3,8 @@
  * Pure functions that perform drawing algorithms
  */
 
+import { getRgbaFromColor } from "./colorUtils";
+
 /**
  * Draw a line using Bresenham's algorithm for pixel-perfect lines.
  * This algorithm efficiently rasterizes a line between two points by calling
@@ -119,40 +121,6 @@ export function getBrushPoints(size: number, shape: BrushShape = "circle"): Brus
 	}
 
 	return points;
-}
-
-/**
- * Parse RGBA values from a color string.
- * Supports both rgba() format and hex format (#RRGGBB).
- * Falls back to black [0, 0, 0, 255] if parsing fails.
- *
- * @param color - CSS color string (e.g., "rgba(255, 0, 0, 0.5)" or "#ff0000")
- * @returns Tuple of [red, green, blue, alpha] where RGB are 0-255 and alpha is 0-255
- *
- * @example
- * getRgbaFromColor("rgba(255, 0, 0, 0.5)"); // Returns [255, 0, 0, 128]
- * getRgbaFromColor("#ff0000"); // Returns [255, 0, 0, 255]
- */
-export function getRgbaFromColor(color: string): [number, number, number, number] {
-	// Handle rgba() format
-	const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-	if (rgbaMatch) {
-		return [
-			parseInt(rgbaMatch[1], 10),
-			parseInt(rgbaMatch[2], 10),
-			parseInt(rgbaMatch[3], 10),
-			rgbaMatch[4] !== undefined ? Math.round(parseFloat(rgbaMatch[4]) * 255) : 255,
-		];
-	}
-
-	// Handle hex format
-	const hexMatch = color.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/);
-	if (hexMatch) {
-		return [parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16), parseInt(hexMatch[3], 16), 255];
-	}
-
-	// Default to black
-	return [0, 0, 0, 255];
 }
 
 /**
@@ -617,4 +585,34 @@ export function drawRoundedRectangle(
 		ctx.lineWidth = strokeWidth;
 		ctx.stroke();
 	}
+}
+
+/**
+ * Calculate fill and stroke colors for shapes based on fill style.
+ * Used by shape tools (rectangle, ellipse, rounded rect, polygon) to determine
+ * how to render based on the current fill style setting.
+ *
+ * Fill style behavior:
+ * - "outline": Stroke only with draw color, no fill
+ * - "fill": Fill only with secondary color, no stroke
+ * - "both": Fill with secondary color, stroke with draw color
+ *
+ * @param fillStyle - Current fill style ("outline", "fill", or "both")
+ * @param drawColor - Primary color for stroke (from left or right button)
+ * @param secondaryColor - Secondary color for fill
+ * @returns Object with fillColor and strokeColor (null means don't draw that part)
+ *
+ * @example
+ * const { fillColor, strokeColor } = getShapeColors("both", "#000000", "#ffffff");
+ * // Returns: { fillColor: "#ffffff", strokeColor: "#000000" }
+ */
+export function getShapeColors(
+	fillStyle: "outline" | "fill" | "both",
+	drawColor: string,
+	secondaryColor: string,
+): { fillColor: string | null; strokeColor: string | null } {
+	const fillColor = fillStyle === "fill" || fillStyle === "both" ? secondaryColor : null;
+	const strokeColor = fillStyle === "fill" ? null : drawColor;
+
+	return { fillColor, strokeColor };
 }

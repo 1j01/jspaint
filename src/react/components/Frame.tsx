@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, CSSProperties, ReactNode } from "react";
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../constants/canvas";
 import "../../../lib/os-gui/MenuBar.js";
 
 // Declare global types for os-gui MenuBar
@@ -120,7 +121,7 @@ const DEFAULT_MENU = {
 
 export const DEFAULT_STATUS_TEXT = "For Help, click Help Topics on the Help Menu.";
 
-const DEFAULT_CANVAS_PLACEHOLDER = <canvas className="main-canvas" width={480} height={320} aria-hidden="true" />;
+const DEFAULT_CANVAS_PLACEHOLDER = <canvas className="main-canvas" width={DEFAULT_CANVAS_WIDTH} height={DEFAULT_CANVAS_HEIGHT} aria-hidden="true" />;
 
 /**
  * Gets or creates the global MenuBar instance store

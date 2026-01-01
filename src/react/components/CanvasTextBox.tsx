@@ -1,5 +1,6 @@
 import React, { forwardRef, CSSProperties, ChangeEvent, KeyboardEvent, FocusEvent, useCallback, useRef, useState, useEffect } from "react";
 import type { TextBoxState } from "../context/state/types";
+import { useSettingsStore } from "../context/state/settingsStore";
 import {
 	HANDLE_CONFIGS,
 	HANDLE_START,
@@ -76,6 +77,8 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 	{ textBox, magnification, primaryColor, secondaryColor, onChange, onKeyDown, onBlur, onMove, onResize },
 	ref,
 ) {
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [isDragging, setIsDragging] = useState(false);
@@ -103,19 +106,49 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 	// Update canvas overlay when text changes
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas) {
+			console.log('[CanvasTextBox] No canvas ref');
+			return;
+		}
 
 		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
+		if (!ctx) {
+			console.log('[CanvasTextBox] No canvas context');
+			return;
+		}
+
+		console.log('[CanvasTextBox] Canvas rendering:', {
+			text: textBox.text,
+			textLength: textBox.text.length,
+			canvasWidth: canvas.width,
+			canvasHeight: canvas.height,
+			canvasDisplayWidth: canvas.style.width,
+			canvasDisplayHeight: canvas.style.height,
+			primaryColor,
+			secondaryColor,
+			drawOpaque,
+			fontSize: textBox.fontSize,
+			fontFamily: textBox.fontFamily
+		});
 
 		// Clear canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+		// Draw background if opaque mode
+		if (drawOpaque) {
+			ctx.fillStyle = secondaryColor;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			console.log('[CanvasTextBox] Drew background:', secondaryColor);
+		}
+
 		// Render text preview on canvas
 		if (textBox.text) {
-			ctx.font = `${textBox.fontItalic ? "italic " : ""}${textBox.fontBold ? "bold " : ""}${textBox.fontSize}px ${textBox.fontFamily}`;
+			const fontString = `${textBox.fontItalic ? "italic " : ""}${textBox.fontBold ? "bold " : ""}${textBox.fontSize}px ${textBox.fontFamily}`;
+			ctx.font = fontString;
 			ctx.fillStyle = primaryColor;
 			ctx.textBaseline = "top";
+
+			console.log('[CanvasTextBox] Drawing text with font:', fontString, 'color:', primaryColor);
 
 			const lines = textBox.text.split("\n");
 			const lineHeight = textBox.fontSize * 1.2; // Approximate line height
@@ -123,6 +156,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 			lines.forEach((line, index) => {
 				const y = index * lineHeight;
 				ctx.fillText(line, 0, y);
+				console.log('[CanvasTextBox] Drew line:', line, 'at y:', y);
 
 				// Draw underline if needed
 				if (textBox.fontUnderline) {
@@ -135,8 +169,10 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 					ctx.stroke();
 				}
 			});
+		} else {
+			console.log('[CanvasTextBox] No text to draw');
 		}
-	}, [textBox.text, textBox.fontFamily, textBox.fontSize, textBox.fontBold, textBox.fontItalic, textBox.fontUnderline, primaryColor]);
+	}, [textBox.text, textBox.fontFamily, textBox.fontSize, textBox.fontBold, textBox.fontItalic, textBox.fontUnderline, primaryColor, secondaryColor, drawOpaque]);
 
 	// Handle container drag (move)
 	const handleContainerPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
@@ -280,9 +316,14 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 	};
 
 	const canvasStyle: CSSProperties = {
+		position: "absolute",
+		inset: 0,
 		pointerEvents: "none",
 		transform: `scale(${magnification})`,
 		transformOrigin: "left top",
+		zIndex: 5, // Above textarea (z-index: 4) to show rendered text
+		border: "2px solid red", // TEMP: Visual debugging
+		backgroundColor: "rgba(255, 255, 0, 0.3)", // TEMP: Visual debugging
 	};
 
 	const textareaStyle: CSSProperties = {
@@ -304,7 +345,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		textDecoration: textBox.fontUnderline ? "underline" : "none",
 		lineHeight: `${Math.round(textBox.fontSize * 1.2)}px`,
 		color: primaryColor,
-		background: secondaryColor, // Background color for text visibility
+		background: drawOpaque ? secondaryColor : "transparent", // Transparent background when drawOpaque is false
 		minHeight: 0,
 		height: textBox.height,
 		outline: "none",
@@ -338,14 +379,6 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 			style={containerStyle}
 			onPointerDown={handleContainerPointerDown}
 		>
-			{/* Canvas overlay for text preview */}
-			<canvas
-				ref={canvasRef}
-				width={textBox.width}
-				height={textBox.height}
-				style={canvasStyle}
-			/>
-
 			{/* Textarea for editing */}
 			<textarea
 				ref={ref}
@@ -356,6 +389,14 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 				onBlur={onBlur}
 				style={textareaStyle}
 				aria-label="Text input"
+			/>
+
+			{/* Canvas overlay for text preview */}
+			<canvas
+				ref={canvasRef}
+				width={textBox.width}
+				height={textBox.height}
+				style={canvasStyle}
 			/>
 
 			{/* Resize handles and grab regions */}

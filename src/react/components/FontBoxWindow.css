@@ -10,17 +10,24 @@
 
 .font-box-window .window-titlebar {
 	cursor: move;
+	user-select: none;
+}
+
+.font-box-window .window-close-button {
+	cursor: pointer;
+	pointer-events: auto;
 }
 
 .font-box-content {
-	padding: 4px;
+	padding: 0;
 }
 
 .font-box-controls {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 4px;
+	margin: 4px 7px;
+	gap: 10px;
 }
 
 /* Font Family Dropdown */
@@ -41,7 +48,8 @@
 
 /* Font Size Input */
 .font-size-input {
-	width: 45px;
+	width: 50px;
+	max-width: 50px;
 	height: 21px;
 	font-size: 11px;
 	padding: 2px 4px;
@@ -66,12 +74,12 @@
 /* Formatting Toggle Buttons Group */
 .font-style-toggles {
 	display: flex;
-	gap: 1px;
-	margin-left: 4px;
+	gap: 0;
+	margin-left: 0;
 }
 
-/* Toggle Button Base */
-.toggle-button {
+/* Toggle Button - Use font-box naming to inherit theme styles */
+.font-box-window .toggle {
 	width: 23px;
 	height: 22px;
 	padding: 0;
@@ -79,64 +87,13 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid;
-	border-color: #fff #808080 #808080 #fff;
-	background: #c0c0c0;
-	cursor: pointer;
-	font-family: inherit;
 }
 
-.toggle-button:hover:not(:disabled) {
-	background: #d4d4d4;
-}
-
-.toggle-button:active:not(:disabled),
-.toggle-button.selected {
-	border-color: #808080 #fff #fff #808080;
-	background: #b0b0b0;
-}
-
-.toggle-button.selected {
-	background: #a0a0a0;
-}
-
-.toggle-button:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
-.toggle-button:focus {
-	outline: 1px dotted #000;
-	outline-offset: -3px;
-}
-
-/* Toggle Icons */
-.toggle-icon {
+.font-box-window .toggle > .icon {
+	flex: 0 0 auto;
 	display: block;
 	width: 16px;
 	height: 16px;
-	line-height: 16px;
-	text-align: center;
-	font-size: 12px;
-	font-weight: normal;
-	font-style: normal;
-	text-decoration: none;
-}
-
-.bold-icon {
-	font-weight: bold;
-}
-
-.italic-icon {
-	font-style: italic;
-}
-
-.underline-icon {
-	text-decoration: underline;
-}
-
-.vertical-icon {
-	font-size: 14px;
 }
 
 /* Tool window specific overrides */
@@ -151,9 +108,4 @@
 
 .font-box-window.tool-window .window-title {
 	font-size: 11px;
-}
-
-.font-box-window.tool-window .window-close-button {
-	width: 16px;
-	height: 14px;
 }

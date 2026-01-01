@@ -4,6 +4,7 @@ import type { StretchSkewValues } from "../components/dialogs/StretchSkewDialog"
 import type { AttributesValues } from "../components/dialogs/AttributesDialog";
 import type { MessageBoxResult } from "../components/dialogs/MessageBoxDialog";
 import { TOOL_IDS } from "../context/state/types";
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../constants/canvas";
 import {
 	applyToCanvas,
 	flipHorizontal,
@@ -61,8 +62,8 @@ export function useDialogHandlers({
 }: UseDialogHandlersProps) {
 	/**
 	 * Handle File > New confirmation
-	 * - "Yes": Save current canvas as file (download), then clear to white
-	 * - "No": Clear to white without saving
+	 * - "Yes": Save current canvas as file (download), then create new blank canvas
+	 * - "No": Create new blank canvas without saving
 	 * - "Cancel": Do nothing
 	 */
 	const handleNewConfirm = useCallback(
@@ -98,22 +99,33 @@ export function useDialogHandlers({
 					console.log('[handleNewConfirm] File download triggered');
 				}
 
-				console.log('[handleNewConfirm] Clearing canvas...');
-				// Clear the canvas to white
-				ctx.fillStyle = "#FFFFFF";
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-				console.log('[handleNewConfirm] Canvas cleared');
+				// Reset canvas to default size (Windows XP: 512x384)
+				console.log(`[handleNewConfirm] Resizing canvas to ${DEFAULT_CANVAS_WIDTH}x${DEFAULT_CANVAS_HEIGHT}...`);
+				setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 
-				// Save the new white canvas state to history
-				console.log('[handleNewConfirm] Saving to history...');
-				saveState();
-				console.log('[handleNewConfirm] Saved to history');
+				// Clear to white on next frame (after resize completes)
+				requestAnimationFrame(() => {
+					const canvas = canvasRef.current;
+					if (!canvas) return;
+					const ctx = canvas.getContext("2d", { willReadFrequently: true });
+					if (!ctx) return;
+
+					console.log('[handleNewConfirm] Clearing canvas to white...');
+					ctx.fillStyle = "#FFFFFF";
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+					console.log('[handleNewConfirm] Canvas cleared');
+
+					// Save the new white canvas state to history
+					console.log('[handleNewConfirm] Saving to history...');
+					saveState();
+					console.log('[handleNewConfirm] Saved to history');
+				});
 			} else {
 				console.log('[handleNewConfirm] Cancel clicked, doing nothing');
 			}
 			// If result === "cancel", do nothing
 		},
-		[canvasRef, saveState, setShowNewConfirm],
+		[canvasRef, saveState, setShowNewConfirm, setCanvasSize],
 	);
 
 	/**

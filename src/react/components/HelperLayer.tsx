@@ -71,8 +71,8 @@ export interface HelperLayerHandle {
  *   ref={helperRef}
  *   x={0}
  *   y={0}
- *   width={640}
- *   height={480}
+ *   width={512}
+ *   height={384}
  *   pixelRatio={window.devicePixelRatio}
  * />
  */

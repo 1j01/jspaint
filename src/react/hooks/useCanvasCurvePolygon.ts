@@ -3,7 +3,7 @@ import { useColors } from "../context/state/useColors";
 import { useShapeSettings } from "../context/state/useShapeSettings";
 import { useHistory } from "../context/state/useHistory";
 import { TOOL_IDS } from "../context/state/types";
-import { drawPolygon, Point } from "../utils/drawingUtils";
+import { drawPolygon, Point, getShapeColors } from "../utils/drawingUtils";
 
 export interface CurveState {
 	points: Point[];
@@ -188,8 +188,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					if (poly.previewImageData) {
 						ctx.putImageData(poly.previewImageData, 0, 0);
 					}
-					const shapeFillColor = fillStyle === "fill" || fillStyle === "both" ? secondaryColor : null;
-					const strokeColor = fillStyle === "fill" ? null : color;
+					const { fillColor: shapeFillColor, strokeColor } = getShapeColors(fillStyle, color, secondaryColor);
 					drawPolygon(ctx, poly.points, strokeColor, shapeFillColor, lineWidth, true);
 					// Reset polygon state
 					poly.points = [];

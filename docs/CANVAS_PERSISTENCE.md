@@ -187,8 +187,8 @@ Canvas restored successfully
    - Refresh multiple times - drawing should persist
 
 3. **Test Dimension Mismatch**:
-   - Draw something on 480×320 canvas
-   - Change canvas size to 640×480
+   - Draw something on 512×384 canvas
+   - Change canvas size to 800×600
    - Refresh page
    - Canvas should initialize with white background (dimension mismatch)
 

@@ -2,7 +2,7 @@ import { useCallback, useRef, RefObject } from "react";
 import { useColors } from "../context/state/useColors";
 import { useShapeSettings } from "../context/state/useShapeSettings";
 import { TOOL_IDS } from "../context/state/types";
-import { drawRectangle, drawEllipse, drawRoundedRectangle } from "../utils/drawingUtils";
+import { drawRectangle, drawEllipse, drawRoundedRectangle, getShapeColors } from "../utils/drawingUtils";
 
 export interface ShapeDrawingState {
 	isDrawing: boolean;
@@ -112,8 +112,11 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 			const strokeWidth = lineWidth;
 
 			// Determine fill and stroke colors based on fill style
-			const shapeFillColor = fillStyle === "fill" || fillStyle === "both" ? secondaryColor : null;
-			const shapeStrokeColor = fillStyle === "fill" ? null : color;
+			const { fillColor: shapeFillColor, strokeColor: shapeStrokeColor } = getShapeColors(
+				fillStyle,
+				color,
+				secondaryColor,
+			);
 
 			switch (toolId) {
 				case TOOL_IDS.LINE:
@@ -173,8 +176,11 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 			const strokeWidth = lineWidth;
 
 			// Determine fill and stroke colors based on fill style
-			const shapeFillColor = fillStyle === "fill" || fillStyle === "both" ? secondaryColor : null;
-			const shapeStrokeColor = fillStyle === "fill" ? null : color;
+			const { fillColor: shapeFillColor, strokeColor: shapeStrokeColor } = getShapeColors(
+				fillStyle,
+				color,
+				secondaryColor,
+			);
 
 			switch (toolId) {
 				case TOOL_IDS.LINE:

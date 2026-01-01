@@ -2,6 +2,7 @@
  * Initial state for the application
  */
 import { DEFAULT_PALETTE } from "../../data/palette";
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../../constants/canvas";
 import { AppState, TOOL_IDS } from "./types";
 
 export const initialState: AppState = {
@@ -13,9 +14,9 @@ export const initialState: AppState = {
 	// Tool
 	selectedToolId: TOOL_IDS.PENCIL,
 
-	// Canvas dimensions
-	canvasWidth: 480,
-	canvasHeight: 320,
+	// Canvas dimensions (Windows XP defaults)
+	canvasWidth: DEFAULT_CANVAS_WIDTH,
+	canvasHeight: DEFAULT_CANVAS_HEIGHT,
 
 	// Drawing state
 	isDrawing: false,

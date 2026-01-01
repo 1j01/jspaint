@@ -280,10 +280,10 @@ test.describe("Image Menu", () => {
 			return { width: canvas.width, height: canvas.height };
 		});
 
-		// Canvas should be smaller than the default 640x480 or whatever initial size
+		// Canvas should be smaller than the default 512×384 size
 		// (exact size depends on selection coordinates)
-		expect(canvas.width).toBeLessThan(640);
-		expect(canvas.height).toBeLessThan(480);
+		expect(canvas.width).toBeLessThan(512);
+		expect(canvas.height).toBeLessThan(384);
 	});
 
 	test("Image > Crop to Selection is disabled without selection", async ({ page }) => {

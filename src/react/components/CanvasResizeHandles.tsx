@@ -98,8 +98,8 @@ function getCursor(xAxis: HandleAxis, yAxis: HandleAxis): string {
  *
  * @example
  * <CanvasResizeHandles
- *   canvasWidth={640}
- *   canvasHeight={480}
+ *   canvasWidth={512}
+ *   canvasHeight={384}
  *   onResize={(width, height) => setCanvasSize(width, height)}
  *   containerRef={canvasAreaRef}
  * />

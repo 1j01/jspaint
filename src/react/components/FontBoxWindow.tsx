@@ -159,15 +159,9 @@ export function FontBoxWindow({
 		return null;
 	}
 
-	// console.log("[FontBoxWindow] Rendering with isOpen:", isOpen, "position:", position);
-
 	const windowStyle: React.CSSProperties = {
 		position: "fixed",
 		zIndex: 9999,
-		backgroundColor: "#c0c0c0",
-		border: "2px outset #c0c0c0",
-		boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.3)",
-		minWidth: "280px",
 		...(position
 			? {
 					left: position.x,
@@ -187,7 +181,7 @@ export function FontBoxWindow({
 				}
 				windowRef.current = el;
 			}}
-			className="font-box-window window os-window tool-window"
+			className="font-box-window window os-window tool-window focused"
 			style={windowStyle}
 			role="dialog"
 			aria-label="Fonts"
@@ -200,15 +194,17 @@ export function FontBoxWindow({
 					className="window-close-button window-action-close window-button"
 					aria-label="Close"
 					onClick={(e) => {
+						console.log("[FontBoxWindow] Close button clicked!");
 						e.stopPropagation();
 						onClose();
 					}}
+					type="button"
 				>
 					<span className="window-button-icon"></span>
 				</button>
 			</div>
 			<div className="window-content font-box-content">
-				<div className="font-box-controls">
+				<div className="font-box font-box-controls">
 					{/* Font Family Dropdown */}
 					<select
 						className="font-family-select inset-deep"
@@ -243,44 +239,44 @@ export function FontBoxWindow({
 					<div className="font-style-toggles" role="toolbar" aria-label="Text formatting">
 						<button
 							type="button"
-							className={`toggle-button ${fontState.bold ? "selected" : ""}`}
+							className={`toggle ${fontState.bold ? "selected" : ""}`}
 							onClick={toggleBold}
 							aria-pressed={fontState.bold}
 							aria-label="Bold"
 							title="Bold"
 						>
-							<span className="toggle-icon bold-icon">B</span>
+							<span className="icon" style={{ "--icon-index": 0 } as React.CSSProperties}></span>
 						</button>
 						<button
 							type="button"
-							className={`toggle-button ${fontState.italic ? "selected" : ""}`}
+							className={`toggle ${fontState.italic ? "selected" : ""}`}
 							onClick={toggleItalic}
 							aria-pressed={fontState.italic}
 							aria-label="Italic"
 							title="Italic"
 						>
-							<span className="toggle-icon italic-icon">I</span>
+							<span className="icon" style={{ "--icon-index": 1 } as React.CSSProperties}></span>
 						</button>
 						<button
 							type="button"
-							className={`toggle-button ${fontState.underline ? "selected" : ""}`}
+							className={`toggle ${fontState.underline ? "selected" : ""}`}
 							onClick={toggleUnderline}
 							aria-pressed={fontState.underline}
 							aria-label="Underline"
 							title="Underline"
 						>
-							<span className="toggle-icon underline-icon">U</span>
+							<span className="icon" style={{ "--icon-index": 2 } as React.CSSProperties}></span>
 						</button>
 						<button
 							type="button"
-							className={`toggle-button ${fontState.vertical ? "selected" : ""}`}
+							className={`toggle ${fontState.vertical ? "selected" : ""}`}
 							onClick={toggleVertical}
 							aria-pressed={fontState.vertical}
 							aria-label="Vertical Writing Mode"
 							title="Vertical Writing Mode (Far East fonts only)"
 							disabled
 						>
-							<span className="toggle-icon vertical-icon">↕</span>
+							<span className="icon" style={{ "--icon-index": 3 } as React.CSSProperties}></span>
 						</button>
 					</div>
 				</div>

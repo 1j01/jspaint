@@ -4,6 +4,7 @@
  */
 
 import { create } from "zustand";
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../../constants/canvas";
 import { saveCanvasHistory, loadCanvasHistory, cleanupCanvasHistory, saveSetting, loadSetting } from "./persistence";
 
 /**
@@ -102,9 +103,9 @@ export interface CanvasState {
  * @returns {CanvasState} The canvas state store
  */
 export const useCanvasStore = create<CanvasState>((set, get) => ({
-	// Initial values
-	canvasWidth: 480,
-	canvasHeight: 320,
+	// Initial values (Windows XP MS Paint defaults)
+	canvasWidth: DEFAULT_CANVAS_WIDTH,
+	canvasHeight: DEFAULT_CANVAS_HEIGHT,
 	fileName: "untitled",
 	saved: true,
 	undoStack: [],
@@ -207,8 +208,8 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
 	},
 
 	loadPersistedCanvasState: async () => {
-		const canvasWidth = await loadSetting("canvasWidth", 480);
-		const canvasHeight = await loadSetting("canvasHeight", 320);
+		const canvasWidth = await loadSetting("canvasWidth", DEFAULT_CANVAS_WIDTH);
+		const canvasHeight = await loadSetting("canvasHeight", DEFAULT_CANVAS_HEIGHT);
 		set({ canvasWidth, canvasHeight });
 	},
 }));

@@ -3,6 +3,7 @@
  */
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogButtons } from "./Dialog";
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../../constants/canvas";
 
 export interface AttributesValues {
 	width: number;
@@ -47,8 +48,8 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 	};
 
 	const handleDefault = () => {
-		setWidth(640);
-		setHeight(480);
+		setWidth(DEFAULT_CANVAS_WIDTH);
+		setHeight(DEFAULT_CANVAS_HEIGHT);
 		setUnits("pixels");
 		setColorMode("color");
 		setTransparent(false);

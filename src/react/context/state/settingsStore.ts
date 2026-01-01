@@ -4,6 +4,7 @@
  */
 
 import { create } from "zustand";
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../../constants/canvas";
 import { saveSetting, loadSetting } from "./persistence";
 import { DEFAULT_PALETTE } from "../../data/palette";
 
@@ -221,8 +222,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 	fontItalic: false,
 	fontUnderline: false,
 	textTransparent: false,
-	defaultCanvasWidth: 480,
-	defaultCanvasHeight: 320,
+	defaultCanvasWidth: DEFAULT_CANVAS_WIDTH,
+	defaultCanvasHeight: DEFAULT_CANVAS_HEIGHT,
 	drawOpaque: true,
 
 	// Actions with persistence

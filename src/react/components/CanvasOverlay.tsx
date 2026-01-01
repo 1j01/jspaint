@@ -31,8 +31,8 @@ interface CanvasOverlayProps {
  * @example
  * <CanvasOverlay
  *   ref={overlayCanvasRef}
- *   width={640}
- *   height={480}
+ *   width={512}
+ *   height={384}
  *   magnification={2}
  * />
  */

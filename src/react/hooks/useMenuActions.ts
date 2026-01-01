@@ -7,6 +7,8 @@ import { RefObject, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import type { MenuActions } from "../menus/menuDefinitions";
 import { useUIStore } from "../context/state/uiStore";
+import { loadImageFileToCanvas, createFileInput } from "../utils/fileOperations";
+import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../constants/canvas";
 
 interface UseMenuActionsParams {
 	canvasRef: RefObject<HTMLCanvasElement>;
@@ -104,8 +106,8 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 			} else {
 				// Fallback to confirm if callback not provided
 				if (confirm("Clear the current image and start new?")) {
-					// Reset canvas to default size (480x320)
-					setCanvasSize(480, 320);
+					// Reset canvas to default size (Windows XP: 512x384)
+					setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 
 					// Fill with white on next frame after resize
 					requestAnimationFrame(() => {
@@ -124,114 +126,18 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		}, [onShowNewConfirm, canvasRef, setCanvasSize, saveState]),
 
 		fileOpen: useCallback(() => {
-			const input = document.createElement("input");
-			input.type = "file";
-			// Limit to well-supported image formats: PNG, JPEG, and BMP
-			// These are the core formats that MS Paint supports
-			input.accept = ".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp";
-			input.onchange = (e) => {
-				const file = (e.target as HTMLInputElement).files?.[0];
-				if (!file) return;
-
-				const reader = new FileReader();
-				reader.onload = (ev) => {
-					console.log("[fileOpen] FileReader loaded successfully");
-					const img = new Image();
-					img.onload = () => {
-						console.log("[fileOpen] Image element loaded, starting canvas operations");
-
-						// Helper to wait for canvas ref to be available
-						const waitForCanvas = (attempts = 0): void => {
-							const canvas = canvasRef.current;
-							if (!canvas) {
-								if (attempts < 10) {
-									console.log(`[fileOpen] Canvas ref not available yet, retrying... (attempt ${attempts + 1}/10)`);
-									setTimeout(() => waitForCanvas(attempts + 1), 100);
-									return;
-								}
-								console.error("[fileOpen] Canvas ref not available after 10 attempts");
-								alert("Failed to load image - canvas not ready. Please try again.");
-								return;
-							}
-							console.log("[fileOpen] Canvas ref obtained:", canvas);
-
-							loadImageToCanvas(canvas, img);
-						};
-
-						// Actual image loading logic extracted to separate function
-						const loadImageToCanvas = (canvas: HTMLCanvasElement, img: HTMLImageElement) => {
-
-						const ctx = canvas.getContext("2d", { willReadFrequently: true });
-						if (!ctx) {
-							console.error("[fileOpen] Could not get 2d context");
-							return;
-						}
-						console.log("[fileOpen] Canvas context obtained");
-
-						// Clear any existing selection before loading new image
-						console.log("[fileOpen] Clearing selection...");
-						clearSelection();
-						console.log("[fileOpen] Selection cleared");
-
-						// Resize canvas to match image
-						console.log(`[fileOpen] Resizing canvas from ${canvas.width}x${canvas.height} to ${img.width}x${img.height}`);
-						canvas.width = img.width;
-						canvas.height = img.height;
-						console.log(`[fileOpen] Canvas resized to ${canvas.width}x${canvas.height}`);
-
-						// Draw the image
-						console.log("[fileOpen] Drawing image to canvas...");
-						ctx.drawImage(img, 0, 0);
-						console.log("[fileOpen] Image drawn to canvas");
-
-						// Verify the image was drawn by checking a pixel
-						const pixelData = ctx.getImageData(0, 0, 1, 1).data;
-						console.log("[fileOpen] Sample pixel at (0,0):", {
-							r: pixelData[0],
-							g: pixelData[1],
-							b: pixelData[2],
-							a: pixelData[3]
-						});
-
-						// Update canvas size in store
-						console.log("[fileOpen] Updating canvas size in store...");
-						setCanvasSize(img.width, img.height);
-						console.log("[fileOpen] Canvas size updated in store");
-
-						// Save to history AFTER drawing (so the new image is captured)
-						console.log("[fileOpen] Saving to history...");
-						const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-						console.log("[fileOpen] ImageData captured:", {
-							width: imageData.width,
-							height: imageData.height,
-							dataLength: imageData.data.length
-						});
-						saveState(imageData);
-						console.log("[fileOpen] Saved to history");
-
-						console.log(`[fileOpen] ✅ Successfully loaded image: ${img.width}x${img.height}`);
-						};
-
-						// Start waiting for canvas
-						waitForCanvas();
-					};
-
-					img.onerror = (err) => {
-						console.error("[fileOpen] Failed to load image:", err);
-						alert("Failed to load image. Please make sure it's a valid image file.");
-					};
-
-					img.src = ev.target?.result as string;
-				};
-
-				reader.onerror = (err) => {
-					console.error("[fileOpen] Failed to read file:", err);
-					alert("Failed to read file. Please try again.");
-				};
-
-				reader.readAsDataURL(file);
-			};
-			input.click();
+			createFileInput(".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp", async (file) => {
+				try {
+					await loadImageFileToCanvas(file, canvasRef, {
+						onClearSelection: clearSelection,
+						onSetCanvasSize: setCanvasSize,
+						onSaveState: saveState,
+					});
+				} catch (error) {
+					console.error("[fileOpen] Error loading file:", error);
+					alert(`Failed to load image: ${error instanceof Error ? error.message : "Unknown error"}`);
+				}
+			});
 		}, [canvasRef, saveState, setCanvasSize, clearSelection]),
 
 		fileSave: useCallback(() => {
