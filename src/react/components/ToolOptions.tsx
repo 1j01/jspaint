@@ -95,15 +95,6 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	const setTextBox = useToolStore((state) => state.setTextBox);
 	const clearTextBox = useToolStore((state) => state.clearTextBox);
 
-	const fontFamily = useSettingsStore((state) => state.fontFamily);
-	const fontSize = useSettingsStore((state) => state.fontSize);
-	const fontBold = useSettingsStore((state) => state.fontBold);
-	const fontItalic = useSettingsStore((state) => state.fontItalic);
-	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
-	const setFontFamily = useSettingsStore((state) => state.setFontFamily);
-	const setFontSize = useSettingsStore((state) => state.setFontSize);
-	const setFontStyle = useSettingsStore((state) => state.setFontStyle);
-
 	// Get drawOpaque and toggleDrawOpaque from settingsStore directly
 	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
 	const toggleDrawOpaque = useSettingsStore((state) => state.toggleDrawOpaque);
@@ -120,9 +111,10 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	const showBrushSize = selectedToolId === TOOL_IDS.BRUSH;
 	const showEraserSize = selectedToolId === TOOL_IDS.ERASER;
 	const showAirbrushSize = selectedToolId === TOOL_IDS.AIRBRUSH;
-	const showTextOptions = selectedToolId === TOOL_IDS.TEXT;
 
 	// Transparency mode for Select and Text tools
+	// Note: Text tool shows ONLY transparency mode here. Text formatting (font, size, bold, italic, underline)
+	// is shown in the separate FontBoxWindow, matching the original MS Paint behavior.
 	const showTransparencyMode = [TOOL_IDS.SELECT, TOOL_IDS.FREE_FORM_SELECT, TOOL_IDS.TEXT].includes(selectedToolId);
 
 	// Render fill style options (matches $ChooseShapeStyle)
@@ -346,72 +338,6 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 		);
 	};
 
-	// Render text options
-	const renderTextOptions = () => (
-		<div className="chooser choose-text">
-			<div className="text-option-row">
-				<select
-					value={fontFamily}
-					onChange={(e) => setFontFamily(e.target.value)}
-					className="font-family-select"
-					aria-label="Font family"
-					style={{ width: "100%", fontSize: "10px" }}
-				>
-					<option value="Arial">Arial</option>
-					<option value="Times New Roman">Times</option>
-					<option value="Courier New">Courier</option>
-					<option value="Verdana">Verdana</option>
-					<option value="Georgia">Georgia</option>
-					<option value="Comic Sans MS">Comic</option>
-				</select>
-			</div>
-			<div className="text-option-row">
-				<select
-					value={fontSize}
-					onChange={(e) => setFontSize(parseInt(e.target.value, 10))}
-					className="font-size-select"
-					aria-label="Font size"
-					style={{ width: "100%", fontSize: "10px" }}
-				>
-					{[8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72].map((size) => (
-						<option key={size} value={size}>
-							{size}
-						</option>
-					))}
-				</select>
-			</div>
-			<div className="text-option-row text-style-buttons" style={{ display: "flex", justifyContent: "center" }}>
-				<button
-					className={`text-style-button ${fontBold ? "selected" : ""}`}
-					onClick={() => setFontStyle({ bold: !fontBold })}
-					title="Bold"
-					aria-pressed={fontBold}
-					style={{ fontWeight: "bold", padding: "2px 4px" }}
-				>
-					B
-				</button>
-				<button
-					className={`text-style-button ${fontItalic ? "selected" : ""}`}
-					onClick={() => setFontStyle({ italic: !fontItalic })}
-					title="Italic"
-					aria-pressed={fontItalic}
-					style={{ fontStyle: "italic", padding: "2px 4px" }}
-				>
-					I
-				</button>
-				<button
-					className={`text-style-button ${fontUnderline ? "selected" : ""}`}
-					onClick={() => setFontStyle({ underline: !fontUnderline })}
-					title="Underline"
-					aria-pressed={fontUnderline}
-					style={{ textDecoration: "underline", padding: "2px 4px" }}
-				>
-					U
-				</button>
-			</div>
-		</div>
-	);
-
 	// Render transparency mode (for Select and Text tools)
 	// Uses text-tools.png sprite (186x15) - 2 icons: opaque (left) and transparent (right)
 	const renderTransparencyMode = () => {
@@ -461,7 +387,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 
 	// If no options for current tool, render empty placeholder
 	const hasOptions =
-		showFillStyle || showLineWidth || showBrushSize || showEraserSize || showAirbrushSize || showTextOptions || showTransparencyMode;
+		showFillStyle || showLineWidth || showBrushSize || showEraserSize || showAirbrushSize || showTransparencyMode;
 
 	// Always use tool-options class for proper legacy CSS styling
 	return (
@@ -473,7 +399,6 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 					{showBrushSize && renderBrushSizeOptions()}
 					{showEraserSize && renderEraserSizeOptions()}
 					{showAirbrushSize && renderAirbrushSizeOptions()}
-					{showTextOptions && renderTextOptions()}
 					{showTransparencyMode && renderTransparencyMode()}
 				</>
 			)}

@@ -135,7 +135,8 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 			if (hasContent) {
 				console.log("[useCanvasLifecycle] Canvas already has content, skipping initialization");
 				canvasInitialized = true;
-				loadedFromIndexedDB = true; // Prevent IndexedDB load on next mount
+				// Don't set loadedFromIndexedDB here - this could be fresh content from fileOpen
+				// and we still want to save/load from IndexedDB on actual page refresh
 
 				// Initialize history tree with existing canvas if needed
 				if (!historyTreeInitialized) {

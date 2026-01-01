@@ -14,10 +14,14 @@ import { createPortal } from "react-dom";
 import { useDraggable } from "../hooks/useDraggable";
 import "./FontBoxWindow.css";
 
-// Extend Window interface for Local Font Access API
+// Extend Window interface for Local Font Access API and FontDetective
 declare global {
 	interface Window {
 		queryLocalFonts?: () => Promise<{ family: string }[]>;
+		FontDetective?: {
+			each: (callback: (font: { name: string; toString: () => string }) => void) => void;
+			all: (callback: (fonts: { name: string }[]) => void) => void;
+		};
 	}
 }
 
@@ -79,7 +83,7 @@ export function FontBoxWindow({
 		initialPosition: { x: 100, y: 100 },
 	});
 
-	// Load available fonts using Local Font Access API or fallback
+	// Load available fonts using Local Font Access API or fallback to FontDetective
 	useEffect(() => {
 		let cancelled = false;
 
@@ -90,6 +94,35 @@ export function FontBoxWindow({
 			}
 
 			setLoadingFonts(true);
+
+			// Helper to use FontDetective fallback
+			const useFontDetective = () => {
+				if (cancelled) return;
+
+				if (!window.FontDetective) {
+					// console.warn("FontDetective not available, using fallback fonts");
+					setAvailableFonts(ensureFonts([]));
+					setLoadingFonts(false);
+					return;
+				}
+
+				const detectedFonts: string[] = [];
+
+				window.FontDetective.each((font) => {
+					if (!cancelled) {
+						detectedFonts.push(font.name);
+						// Update incrementally as fonts are detected
+						setAvailableFonts(ensureFonts([...detectedFonts]));
+					}
+				});
+
+				window.FontDetective.all(() => {
+					if (!cancelled) {
+						setAvailableFonts(ensureFonts(detectedFonts));
+						setLoadingFonts(false);
+					}
+				});
+			};
 
 			try {
 				// Try Local Font Access API first
@@ -107,35 +140,23 @@ export function FontBoxWindow({
 						setAvailableFonts(ensureFonts(Array.from(familyNames)));
 						setLoadingFonts(false);
 						return;
-					}
-				}
-			} catch (error) {
-				if (!cancelled) {
-					// console.warn("Local Font Access API failed:", error);
-				}
-			}
-
-			// Fallback to document.fonts
-			try {
-				if (typeof document !== "undefined" && document.fonts && document.fonts.size > 0) {
-					const names = Array.from(document.fonts).map((fontFace) => fontFace.family);
-					if (names.length) {
-						setAvailableFonts(ensureFonts(names));
-						setLoadingFonts(false);
+					} else {
+						// console.log("queryLocalFonts returned no fonts, falling back to FontDetective");
+						useFontDetective();
 						return;
 					}
 				}
 			} catch (error) {
 				if (!cancelled) {
-					// console.warn("Unable to read document fonts:", error);
+					// console.log("queryLocalFonts failed:", error, "\nFalling back to FontDetective");
+					useFontDetective();
+					return;
 				}
 			}
 
-			// Use fallback fonts
-			if (!cancelled) {
-				setAvailableFonts(ensureFonts([]));
-				setLoadingFonts(false);
-			}
+			// No Local Font Access API, use FontDetective
+			// console.log("queryLocalFonts unavailable, falling back to FontDetective");
+			useFontDetective();
 		};
 
 		loadFonts();

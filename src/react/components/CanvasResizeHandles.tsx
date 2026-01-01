@@ -62,6 +62,7 @@ export function CanvasResizeHandles({
 	const magnification = useUIStore((state) => state.magnification);
 	const [isDragging, setIsDragging] = useState(false);
 	const [ghostRect, setGhostRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+	const [, forceUpdate] = useState(0); // For forcing re-render when padding changes
 	const dragStateRef = useRef<{
 		xAxis: HandleAxis;
 		yAxis: HandleAxis;
@@ -69,6 +70,16 @@ export function CanvasResizeHandles({
 		startMouseY: number;
 		originalRect: { x: number; y: number; width: number; height: number };
 	} | null>(null);
+
+	// Force recalculation after canvas dimensions or magnification change
+	// This ensures padding is read AFTER the DOM has updated
+	useEffect(() => {
+		// Use requestAnimationFrame to ensure DOM has painted
+		const rafId = requestAnimationFrame(() => {
+			forceUpdate((n) => n + 1);
+		});
+		return () => cancelAnimationFrame(rafId);
+	}, [canvasWidth, canvasHeight, magnification]);
 
 	const handlePointerDown = useCallback(
 		(xAxis: HandleAxis, yAxis: HandleAxis, e: React.PointerEvent) => {
@@ -181,8 +192,9 @@ export function CanvasResizeHandles({
 		};
 	}, [isDragging, handlePointerMove, handlePointerUp]);
 
-	// Get container padding - matches SelectionHandles and CanvasTextBox approach
-	// Note: This needs to be recalculated when canvas size or magnification changes
+	// Get container padding - recalculated on every render
+	// Note: Dependencies removed as they don't actually affect the computation
+	// The useEffect above ensures this is called after DOM updates
 	const getContainerPadding = useCallback(() => {
 		const container = containerRef.current;
 		if (!container) return { left: 0, top: 0 };
@@ -191,7 +203,7 @@ export function CanvasResizeHandles({
 			left: parseFloat(styles.paddingLeft) || 0,
 			top: parseFloat(styles.paddingTop) || 0,
 		};
-	}, [containerRef, canvasWidth, canvasHeight, magnification]);
+	}, [containerRef]);
 
 	// Calculate handle and grab region positions - matching Handles.js logic
 	const getHandlePositions = (xAxis: HandleAxis, yAxis: HandleAxis) => {
