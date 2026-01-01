@@ -1,0 +1,112 @@
+/**
+ * Windows 98 style custom select component CSS
+ */
+
+.select-win98 {
+	position: relative;
+	display: inline-block;
+	user-select: none;
+	outline: none;
+}
+
+.select-win98-display {
+	display: flex;
+	align-items: center;
+	height: 21px;
+	background-color: white;
+	cursor: default;
+	padding: 2px 0 2px 4px;
+	font-size: 11px;
+}
+
+.select-win98.disabled .select-win98-display {
+	background-color: #c0c0c0;
+	color: #808080;
+	cursor: not-allowed;
+}
+
+.select-win98-value {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.select-win98-arrow {
+	width: 16px;
+	height: 17px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 2px;
+}
+
+.select-win98-arrow svg {
+	display: block;
+	width: 16px;
+	height: 17px;
+}
+
+/* Dropdown options list */
+.select-win98-options {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	background: white;
+	border: 2px solid;
+	border-color: #dfdfdf #808080 #808080 #dfdfdf;
+	box-shadow: 1px 1px 0 0 #000;
+	max-height: 200px;
+	overflow-y: auto;
+	z-index: 10000;
+	font-size: 11px;
+}
+
+.select-win98-option {
+	padding: 2px 4px;
+	cursor: default;
+	white-space: nowrap;
+}
+
+.select-win98-option:hover {
+	background-color: #000080;
+	color: white;
+}
+
+.select-win98-option.selected {
+	background-color: #000080;
+	color: white;
+}
+
+/* Focus outline */
+.select-win98:focus .select-win98-display {
+	outline: 1px dotted #000;
+	outline-offset: -4px;
+}
+
+/* Scrollbar styling for Windows 98 look */
+.select-win98-options::-webkit-scrollbar {
+	width: 16px;
+}
+
+.select-win98-options::-webkit-scrollbar-track {
+	background: #c0c0c0;
+}
+
+.select-win98-options::-webkit-scrollbar-thumb {
+	background: #c0c0c0;
+	border: 2px solid;
+	border-color: #dfdfdf #000 #000 #dfdfdf;
+}
+
+.select-win98-options::-webkit-scrollbar-button {
+	background: #c0c0c0;
+	border: 2px solid;
+	border-color: #dfdfdf #000 #000 #dfdfdf;
+	height: 16px;
+}

@@ -388,6 +388,7 @@ function AppContent() {
 			textBox={textBox}
 			showThumbnail={showThumbnail}
 			toggleThumbnail={toggleThumbnail}
+			setTool={setTool}
 		/>
 	</>
 );

@@ -13,6 +13,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useDraggable } from "../hooks/useDraggable";
 import { useSystemFonts } from "../hooks/useSystemFonts";
+import { SelectWin98 } from "./SelectWin98";
 import "./FontBoxWindow.css";
 
 interface FontState {
@@ -206,23 +207,23 @@ export function FontBoxWindow({
 			<div className="window-content font-box-content">
 				<div className="font-box font-box-controls">
 					{/* Font Family Dropdown */}
-					<select
-						className="font-family-select inset-deep"
-						value={fontState.family}
-						onChange={handleFamilyChange}
-						aria-label="Font Family"
-						disabled={loadingFonts}
-					>
-						{loadingFonts ? (
-							<option>Loading fonts...</option>
-						) : (
-							availableFonts.map((font) => (
-								<option key={font} value={font} style={{ fontFamily: font }}>
-									{font}
-								</option>
-							))
-						)}
-					</select>
+					{loadingFonts ? (
+						<div className="font-family-select inset-deep" style={{ padding: "2px 4px", height: "21px" }}>
+							Loading fonts...
+						</div>
+					) : (
+						<SelectWin98
+							className="font-family-select"
+							value={fontState.family}
+							onChange={(value) => onFontChange({ ...fontState, family: value })}
+							options={availableFonts.map((font) => ({
+								value: font,
+								label: font,
+								style: { fontFamily: font },
+							}))}
+							aria-label="Font Family"
+						/>
+					)}
 
 					{/* Font Size Input */}
 					<input
@@ -274,7 +275,6 @@ export function FontBoxWindow({
 							aria-pressed={fontState.vertical}
 							aria-label="Vertical Writing Mode"
 							title="Vertical Writing Mode (Far East fonts only)"
-							disabled
 						>
 							<span className="icon" style={{ "--icon-index": 3 } as React.CSSProperties}></span>
 						</button>

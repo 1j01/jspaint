@@ -98,6 +98,9 @@ interface DialogManagerProps {
 	showThumbnail: boolean;
 	/** Callback to toggle thumbnail window */
 	toggleThumbnail: () => void;
+
+	/** Callback to change the selected tool */
+	setTool: (toolId: string) => void;
 }
 
 /**
@@ -154,6 +157,7 @@ export function DialogManager(props: DialogManagerProps) {
 		textBox,
 		showThumbnail,
 		toggleThumbnail,
+		setTool,
 	} = props;
 
 	return (
@@ -223,7 +227,7 @@ export function DialogManager(props: DialogManagerProps) {
 			{/* Floating Font Box Window for Text Tool */}
 			<FontBoxWindow
 				isOpen={showFontBox}
-				onClose={toggleTextToolbar}
+				onClose={() => setTool("select")} // Switch to select tool to close font box
 				fontState={fontState}
 				onFontChange={handleFontChange}
 				textBoxRect={textBox}

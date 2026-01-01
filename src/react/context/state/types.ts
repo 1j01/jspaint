@@ -90,6 +90,8 @@ export interface TextBoxState {
 	fontItalic: boolean;
 	/** Whether text is underlined */
 	fontUnderline: boolean;
+	/** Whether text uses vertical writing mode (Far East fonts) */
+	fontVertical: boolean;
 	/** Whether the text box is currently active/editable */
 	isActive: boolean;
 }
@@ -175,6 +177,8 @@ export interface AppState {
 	fontItalic: boolean;
 	/** Whether text should be underlined */
 	fontUnderline: boolean;
+	/** Whether text uses vertical writing mode (Far East fonts) */
+	fontVertical: boolean;
 	/** Transparency mode for text/select tools */
 	textTransparent: boolean;
 
