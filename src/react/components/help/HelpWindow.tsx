@@ -21,9 +21,9 @@ const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
 const MIN_WIDTH = 400;
 const MIN_HEIGHT = 300;
-const CONTENTS_FILE = "help/mspaint.hhc";
-const DEFAULT_PAGE = "help/default.html";
-const WEB_HELP_PAGE = "help/online_support.htm";
+const CONTENTS_FILE = "/help/mspaint.hhc";
+const DEFAULT_PAGE = "/help/default.html";
+const WEB_HELP_PAGE = "/help/online_support.htm";
 
 export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	const windowRef = useRef<HTMLDivElement>(null);
@@ -83,7 +83,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 						id: "welcome",
 						name: "Welcome to Help",
 						title: "Welcome to Help",
-						url: "default.html",
+						url: "/help/default.html",
 						local: "default.html",
 					};
 					setTocItems([defaultItem, ...items]);
@@ -202,8 +202,8 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 
 	// Navigation handlers
 	const navigate = useCallback((url: string) => {
-		// Prepend "help/" to local paths that don't already have it
-		const fullUrl = url.startsWith("help/") ? url : `help/${url}`;
+		// Prepend "/help/" to local paths that don't already have it
+		const fullUrl = url.startsWith("/help/") ? url : `/help/${url}`;
 		setSelectedUrl(fullUrl);
 		setHistory(prev => [...prev.slice(0, historyIndex + 1), fullUrl]);
 		setHistoryIndex(prev => prev + 1);

@@ -40,21 +40,30 @@ export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(f
 	{ width, height, magnification },
 	ref,
 ) {
-	const style: CSSProperties = {
+	const canvasStyle: CSSProperties = {
 		// Match main-canvas transform and transform-origin exactly
 		transform: magnification > 1 ? `scale(${magnification})` : undefined,
 		transformOrigin: magnification > 1 ? "top left" : undefined,
 	};
 
+	const wrapperStyle: CSSProperties = {
+		position: "absolute",
+		left: 0,
+		top: 0,
+		pointerEvents: "none",
+		zIndex: 3, // Above main canvas (z-index: 2) but below selection handles (z-index: 4)
+	};
+
 	return (
-		<canvas
-			ref={ref}
-			className="selection-overlay"
-			width={width}
-			height={height}
-			style={style}
-			aria-hidden="true"
-		/>
+		<div className="helper-layer" style={wrapperStyle}>
+			<canvas
+				ref={ref}
+				width={width}
+				height={height}
+				style={canvasStyle}
+				aria-hidden="true"
+			/>
+		</div>
 	);
 });
 

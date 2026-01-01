@@ -114,7 +114,18 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	 * Captures current canvas state and stores it in the history tree.
 	 * Also persists canvas content to IndexedDB for page refresh persistence.
 	 *
+	 * IMPORTANT: This is the PRIMARY save point for IndexedDB persistence!
+	 *
+	 * This function is called after every drawing operation (pencil stroke, fill, etc.)
+	 * and is the ONLY place where we save canvas data to IndexedDB. We do NOT save
+	 * to IndexedDB in useCanvasLifecycle cleanup because React may clear the canvas
+	 * before cleanup runs, resulting in corrupted empty data being saved.
+	 *
+	 * By saving here during active drawing, we guarantee the canvas has valid data.
+	 * This ensures the canvas restores correctly after page refresh.
+	 *
 	 * @param operationName - Human-readable name for the operation (e.g., "Pencil", "Fill")
+	 * @see useCanvasLifecycle for detailed persistence strategy documentation
 	 */
 	const saveHistoryState = useCallback((operationName: string = "Edit") => {
 		const canvas = canvasRef.current;

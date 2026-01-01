@@ -9,6 +9,53 @@
  * - Canvas data preservation across unmounts
  * - Canvas data persistence to IndexedDB across page refreshes
  * - History tree initialization
+ *
+ * ## Persistence Strategy
+ *
+ * This hook uses a **two-tier persistence strategy** to handle different scenarios:
+ *
+ * ### 1. Module-Level Persistence (savedCanvasData)
+ * - **Purpose**: Preserve canvas across component remounts during React updates
+ * - **Scope**: In-memory, same page session only
+ * - **When saved**: In cleanup function when component unmounts
+ * - **When restored**: On component remount if available
+ * - **Use case**: Hot module reloading, React strict mode double-mounting
+ *
+ * ### 2. IndexedDB Persistence
+ * - **Purpose**: Persist canvas across page refreshes
+ * - **Scope**: Browser storage, survives page reloads
+ * - **When saved**: During drawing operations (via Canvas.tsx saveHistoryState())
+ * - **When restored**: On initial mount after page refresh
+ * - **Use case**: User refreshes page, browser crash recovery
+ *
+ * ## CRITICAL: Why We Don't Save to IndexedDB in Cleanup
+ *
+ * **Problem**: React may clear the canvas DOM before the cleanup function runs.
+ * When this happens, `ctx.getImageData()` returns empty/transparent pixels instead
+ * of the actual drawing. If we save this to IndexedDB, we overwrite valid data
+ * with corrupted data, causing the canvas to appear blank after multiple refreshes.
+ *
+ * **Solution**: Only save to IndexedDB during active drawing operations when we
+ * KNOW the canvas has valid data. The cleanup function only saves to module-level
+ * for immediate component remounts within the same page session.
+ *
+ * **Reproduction of the bug**:
+ * 1. Draw something on canvas
+ * 2. Refresh page → canvas restores correctly ✅
+ * 3. Refresh again → canvas becomes blank ❌
+ * 4. Cause: Second refresh's cleanup saved empty canvas data, overwriting the drawing
+ *
+ * **Timeline of operations**:
+ * ```
+ * User draws → saveHistoryState() saves to IndexedDB ✅
+ * Page refresh → cleanup runs → saves module-level only (may be corrupted) ⚠️
+ *             → new mount → loads from IndexedDB (still valid) ✅
+ * User draws → saveHistoryState() saves to IndexedDB ✅
+ * Page refresh → cleanup runs → saves module-level only ⚠️
+ *             → new mount → loads from IndexedDB (still valid) ✅
+ * ```
+ *
+ * @module useCanvasLifecycle
  */
 
 import { RefObject, useEffect } from "react";
@@ -19,6 +66,8 @@ import { saveSetting, loadSetting } from "../context/state/persistence";
  * Module-level flag to track canvas initialization.
  * Prevents re-initializing the canvas with white background on every remount.
  * This persists across component remounts to maintain canvas state.
+ *
+ * @private
  */
 let canvasInitialized = false;
 
@@ -26,6 +75,11 @@ let canvasInitialized = false;
  * Module-level storage for canvas data when component unmounts.
  * Used to preserve drawing when the component temporarily unmounts (e.g., during React updates).
  * The ImageData is restored on the next mount if available.
+ *
+ * IMPORTANT: This is in-memory only and does NOT persist across page refreshes.
+ * For page refresh persistence, we rely on IndexedDB (saved during drawing operations).
+ *
+ * @private
  */
 let savedCanvasData: ImageData | null = null;
 
@@ -213,11 +267,29 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
 		initializeCanvas();
 
-		// Cleanup: Save to both module-level AND IndexedDB
+		// Cleanup: Save to module-level for component remount, but DON'T save to IndexedDB
+		//
+		// CRITICAL WARNING: Do NOT save to IndexedDB in this cleanup function!
+		//
+		// React may clear the canvas DOM before this cleanup runs, causing
+		// ctx.getImageData() to return empty/corrupted data. Saving this to
+		// IndexedDB would overwrite valid saved data with blank pixels.
+		//
+		// IndexedDB persistence is handled by Canvas.tsx saveHistoryState()
+		// which is called during actual drawing operations when we KNOW the
+		// canvas contains valid data.
+		//
+		// Module-level savedCanvasData is safe to update here because it's
+		// only used for immediate component remounts within the same page
+		// session (HMR, strict mode, etc.), not for page refresh recovery.
+		//
+		// See top-of-file documentation for detailed explanation.
 		return () => {
+			console.log("[useCanvasLifecycle] Cleanup: saving to module-level only");
 			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 			savedCanvasData = imageData;
-			saveCanvasToIndexedDB(imageData); // Persist to IndexedDB
+			// ❌ DO NOT: saveCanvasToIndexedDB(imageData)
+			// ✅ IndexedDB saving is handled by Canvas.tsx saveHistoryState()
 		};
 	}, [canvasRef]);
 }
