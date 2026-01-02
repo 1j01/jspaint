@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from "react";
+import { useEffect, useLayoutEffect, RefObject } from "react";
 
 interface UseColorCanvasesProps {
 	rainbowCanvasRef: RefObject<HTMLCanvasElement>;
@@ -37,20 +37,12 @@ export function useColorCanvases({
 	isExpanded = true,
 }: UseColorCanvasesProps) {
 	// Draw rainbow canvas (hue/saturation picker)
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const canvas = rainbowCanvasRef.current;
-		if (!canvas) {
-			console.log('[useColorCanvases] Rainbow canvas ref not set');
-			return;
-		}
+		if (!canvas) return;
 
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) {
-			console.log('[useColorCanvases] Rainbow canvas context not available');
-			return;
-		}
-
-		console.log('[useColorCanvases] Drawing rainbow canvas');
+		if (!ctx) return;
 
 		// Draw rainbow gradient
 		for (let y = 0; y < canvas.height; y += 6) {
@@ -76,7 +68,7 @@ export function useColorCanvases({
 	}, [hue, saturation, mouseDownOnRainbow, crosshairShown, rainbowCanvasRef, isExpanded]);
 
 	// Draw luminosity slider
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const canvas = luminosityCanvasRef.current;
 		if (!canvas) return;
 
@@ -95,7 +87,7 @@ export function useColorCanvases({
 	}, [hue, saturation, luminosity, luminosityCanvasRef, isExpanded]);
 
 	// Draw result color
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const canvas = resultCanvasRef.current;
 		if (!canvas) return;
 
@@ -104,10 +96,10 @@ export function useColorCanvases({
 
 		ctx.fillStyle = getCurrentColor();
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-	}, [getCurrentColor, resultCanvasRef]);
+	}, [hue, saturation, luminosity, getCurrentColor, resultCanvasRef, isExpanded]);
 
 	// Draw luminosity arrow
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const canvas = lumArrowCanvasRef.current;
 		if (!canvas) return;
 
@@ -119,5 +111,5 @@ export function useColorCanvases({
 		for (let x = 0; x < canvas.width; x++) {
 			ctx.fillRect(x, canvas.width - x - 1, 1, 1 + x * 2);
 		}
-	}, [lumArrowCanvasRef]);
+	}, [lumArrowCanvasRef, isExpanded]);
 }

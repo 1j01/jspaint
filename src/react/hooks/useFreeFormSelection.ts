@@ -36,7 +36,7 @@ interface FreeFormSelectionState {
  * 1. Mouse down -> Start recording path
  * 2. Mouse move -> Add points to path and update preview
  * 3. Mouse up -> Close path, create mask, extract ImageData
- * 4. Transparent pixels outside the path are preserved in ImageData
+ * 4. Pixels outside the path are filled with background color
  *
  * @param {UseFreeFormSelectionProps} props - Hook configuration
  * @param {RefObject<HTMLCanvasElement | null>} props.canvasRef - Reference to main canvas
@@ -209,10 +209,20 @@ export function useFreeFormSelection({
 
 						const maskData = maskCtx.getImageData(0, 0, selWidth, selHeight);
 
-						// Apply mask to image data (transparent outside selection)
+						// Apply mask to image data (fill transparent areas with background color)
+						// Parse secondaryColor to get RGB values
+						const bgColor = secondaryColor.startsWith("#") ? secondaryColor : "#ffffff";
+						const r = parseInt(bgColor.substring(1, 3), 16);
+						const g = parseInt(bgColor.substring(3, 5), 16);
+						const b = parseInt(bgColor.substring(5, 7), 16);
+
 						for (let i = 0; i < fullImageData.data.length; i += 4) {
 							if (maskData.data[i + 3] === 0) {
-								fullImageData.data[i + 3] = 0; // Make transparent
+								// Fill with background color instead of making transparent
+								fullImageData.data[i] = r;
+								fullImageData.data[i + 1] = g;
+								fullImageData.data[i + 2] = b;
+								fullImageData.data[i + 3] = 255; // Fully opaque
 							}
 						}
 					}

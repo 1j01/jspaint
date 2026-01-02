@@ -62,11 +62,13 @@ export function EditColorsDialog({
 	// Force redraw when dialog expands
 	useEffect(() => {
 		if (expanded) {
-			// Wait for next frame to ensure canvases are mounted
+			// Wait for next frame to ensure canvases are mounted and refs are set
 			requestAnimationFrame(() => {
-				// Trigger a redraw by updating color picker state
-				const [r, g, b] = getRgbaFromColor(colorPicker.getCurrentColor());
-				colorPicker.updateFromRgb(r, g, b);
+				requestAnimationFrame(() => {
+					// Double RAF to ensure DOM is fully updated
+					const [r, g, b] = getRgbaFromColor(colorPicker.getCurrentColor());
+					colorPicker.updateFromRgb(r, g, b);
+				});
 			});
 		}
 	}, [expanded]);
