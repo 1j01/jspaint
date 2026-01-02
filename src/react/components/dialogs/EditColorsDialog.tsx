@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import Dialog from "./Dialog";
 import { getRgbaFromColor } from "../../utils/colorUtils";
 import { basicColors } from "../../data/basicColors";
@@ -30,6 +30,9 @@ export function EditColorsDialog({
 	const [selectedColor, setSelectedColor] = useState(initialColor);
 	const [customColors, setCustomColors] = useState(initialCustomColors);
 	const [customColorIndex, setCustomColorIndex] = useState(0);
+
+	// Refs to track swatch elements for focus management
+	const swatchRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
 	// Canvas refs
 	const rainbowCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -73,6 +76,17 @@ export function EditColorsDialog({
 		}
 	}, [expanded]);
 
+	// Callback ref to register swatch elements
+	const setSwatchRef = useCallback((color: string) => {
+		return (el: HTMLButtonElement | null) => {
+			if (el) {
+				swatchRefs.current.set(color, el);
+			} else {
+				swatchRefs.current.delete(color);
+			}
+		};
+	}, []);
+
 	// On mount: select the matching color swatch if it exists in basic or custom colors
 	useEffect(() => {
 		if (!isOpen) return;
@@ -83,6 +97,11 @@ export function EditColorsDialog({
 		for (const color of basicColors) {
 			if (getRgbaFromColor(color).join(",") === initialRgba) {
 				setSelectedColor(color);
+				// Focus the matching swatch element
+				const swatchEl = swatchRefs.current.get(color);
+				if (swatchEl) {
+					swatchEl.focus();
+				}
 				return;
 			}
 		}
@@ -91,6 +110,11 @@ export function EditColorsDialog({
 		for (const color of customColors) {
 			if (getRgbaFromColor(color).join(",") === initialRgba) {
 				setSelectedColor(color);
+				// Focus the matching swatch element
+				const swatchEl = swatchRefs.current.get(color);
+				if (swatchEl) {
+					swatchEl.focus();
+				}
 				return;
 			}
 		}
@@ -115,7 +139,13 @@ export function EditColorsDialog({
 		setCustomColorIndex((customColorIndex + 1) % newCustomColors.length);
 	};
 
-	// Handle OK
+	// Handle expanding the dialog to show color picker
+	const handleExpand = () => {
+		setExpanded(true);
+		// Select a random color from basic colors when expanding
+		const randomColor = basicColors[Math.floor(Math.random() * basicColors.length)];
+		handleColorSelect(randomColor);
+	};
 	const handleOk = () => {
 		onColorSelect(colorPicker.getCurrentColor(), customColors);
 		onClose();
@@ -130,6 +160,7 @@ export function EditColorsDialog({
 						{basicColors.map((color, index) => (
 							<button
 								key={index}
+								ref={setSwatchRef(color)}
 								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
 								style={{
 									backgroundColor: color,
@@ -148,6 +179,7 @@ export function EditColorsDialog({
 						{customColors.map((color, index) => (
 							<button
 								key={index}
+								ref={setSwatchRef(color)}
 								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
 								style={{
 									backgroundColor: color,
@@ -162,7 +194,7 @@ export function EditColorsDialog({
 					</div>
 
 					{!expanded && (
-						<button className="define-custom-colors-button" onClick={() => setExpanded(true)}>
+						<button className="define-custom-colors-button" onClick={handleExpand}>
 							Define Custom Colors &gt;&gt;
 						</button>
 					)}

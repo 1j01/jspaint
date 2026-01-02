@@ -89,6 +89,14 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			const curve = curveState.current;
 			const color = getDrawColor(button);
 
+			// Detect double-click
+			const now = Date.now();
+			const dx = x - lastClickRef.current.x;
+			const dy = y - lastClickRef.current.y;
+			const dt = now - lastClickRef.current.time;
+			const distance = Math.sqrt(dx * dx + dy * dy);
+			const isDoubleClick = distance < 4 && dt < 250;
+
 			if (!curve.active) {
 				// First point - save canvas state
 				curve.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -98,10 +106,34 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					{ x, y },
 				]; // Start + end point
 				saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
+				lastClickRef.current = { x, y, time: now };
 				return true;
 			} else if (curve.points.length < 4) {
+				// Double-click commits the curve early (straight line if < 4 points)
+				if (isDoubleClick && curve.points.length >= 2) {
+					if (curve.previewImageData) {
+						ctx.putImageData(curve.previewImageData, 0, 0);
+					}
+					// Draw line from start to end
+					const p = curve.points;
+					ctx.strokeStyle = color;
+					ctx.lineWidth = lineWidth;
+					ctx.beginPath();
+					ctx.moveTo(p[0].x, p[0].y);
+					ctx.lineTo(p[1].x, p[1].y);
+					ctx.stroke();
+					// Reset curve state
+					curve.points = [];
+					curve.active = false;
+					curve.previewImageData = null;
+					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
+					return false;
+				}
+
 				// Add control point
 				curve.points.push({ x, y });
+				lastClickRef.current = { x, y, time: now };
+
 				if (curve.points.length === 4) {
 					// Final point - commit the curve
 					if (curve.previewImageData) {
@@ -119,6 +151,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					curve.points = [];
 					curve.active = false;
 					curve.previewImageData = null;
+					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
 					return false;
 				}
 				return true;

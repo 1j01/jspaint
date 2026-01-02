@@ -37,6 +37,7 @@ interface UseDialogHandlersProps {
 	goToNode: (nodeId: string) => any;
 	setShowNewConfirm?: (show: boolean) => void;
 	setCustomColors?: (colors: string[]) => void;
+	setMagnification: (mag: number) => void;
 }
 
 /**
@@ -59,6 +60,7 @@ export function useDialogHandlers({
 	goToNode,
 	setShowNewConfirm,
 	setCustomColors,
+	setMagnification,
 }: UseDialogHandlersProps) {
 	/**
 	 * Handle File > New confirmation
@@ -103,6 +105,10 @@ export function useDialogHandlers({
 				console.log(`[handleNewConfirm] Resizing canvas to ${DEFAULT_CANVAS_WIDTH}x${DEFAULT_CANVAS_HEIGHT}...`);
 				setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 
+				// Reset magnification to 1x (100%)
+				console.log('[handleNewConfirm] Resetting magnification to 1x...');
+				setMagnification(1);
+
 				// Clear to white on next frame (after resize completes)
 				requestAnimationFrame(() => {
 					const canvas = canvasRef.current;
@@ -128,7 +134,7 @@ export function useDialogHandlers({
 			}
 			// If result === "cancel", do nothing
 		},
-		[canvasRef, saveState, setShowNewConfirm, setCanvasSize, clearSelection],
+		[canvasRef, saveState, setShowNewConfirm, setCanvasSize, clearSelection, setMagnification],
 	);
 
 	/**

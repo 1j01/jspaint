@@ -62,6 +62,7 @@ export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(f
 		<div className="helper-layer" style={wrapperStyle}>
 			<canvas
 				ref={ref}
+				className="selection-overlay"
 				width={width}
 				height={height}
 				style={canvasStyle}

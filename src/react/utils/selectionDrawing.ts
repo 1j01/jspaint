@@ -14,27 +14,9 @@ export function drawSelectionOverlay(
 ): void {
 	const { x, y, width, height, path } = selection;
 
-	// Draw the selection content first if we have it
-	if (selection.imageData) {
-		// Create a temporary canvas to draw the selection
-		const tempCanvas = document.createElement("canvas");
-		tempCanvas.width = selection.imageData.width;
-		tempCanvas.height = selection.imageData.height;
-		const tempCtx = tempCanvas.getContext("2d");
-		if (tempCtx) {
-			// For free-form selections with transparency, we need to composite properly
-			// Set composite mode to copy to avoid showing checkered background
-			tempCtx.globalCompositeOperation = "copy";
-			tempCtx.putImageData(selection.imageData, 0, 0);
+	console.log('[drawSelectionOverlay] Drawing selection:', { x, y, width, height, hasPath: !!path });
 
-			// Draw to overlay with source-over for proper alpha blending
-			overlayCtx.globalCompositeOperation = "source-over";
-			overlayCtx.drawImage(tempCanvas, x, y);
-			overlayCtx.globalCompositeOperation = "source-over"; // Reset to default
-		}
-	}
-
-	// Draw marching ants border on top
+	// Draw marching ants border
 	overlayCtx.save();
 	overlayCtx.setLineDash([4, 4]);
 	overlayCtx.lineDashOffset = -offset;
@@ -58,11 +40,11 @@ export function drawSelectionOverlay(
 		// Rectangular selection
 		overlayCtx.strokeStyle = "#000000";
 		overlayCtx.lineWidth = 1;
-		overlayCtx.strokeRect(x + 0.5, y + 0.5, width, height);
+		overlayCtx.strokeRect(x, y, width, height);
 
 		overlayCtx.strokeStyle = "#ffffff";
 		overlayCtx.lineDashOffset = -offset + 4;
-		overlayCtx.strokeRect(x + 0.5, y + 0.5, width, height);
+		overlayCtx.strokeRect(x, y, width, height);
 	}
 
 	overlayCtx.restore();
@@ -89,10 +71,10 @@ export function drawRectangularPreview(
 
 	overlayCtx.setLineDash([4, 4]);
 	overlayCtx.strokeStyle = "#000000";
-	overlayCtx.strokeRect(Math.min(startX, currentX) + 0.5, Math.min(startY, currentY) + 0.5, Math.abs(width), Math.abs(height));
+	overlayCtx.strokeRect(Math.min(startX, currentX), Math.min(startY, currentY), Math.abs(width), Math.abs(height));
 	overlayCtx.strokeStyle = "#ffffff";
 	overlayCtx.lineDashOffset = 4;
-	overlayCtx.strokeRect(Math.min(startX, currentX) + 0.5, Math.min(startY, currentY) + 0.5, Math.abs(width), Math.abs(height));
+	overlayCtx.strokeRect(Math.min(startX, currentX), Math.min(startY, currentY), Math.abs(width), Math.abs(height));
 }
 
 /**

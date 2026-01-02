@@ -182,10 +182,11 @@ export function useRectangularSelection({
 			if (!state.current.isSelecting) return;
 
 			const { startX, startY } = state.current;
-			const selX = Math.min(startX, x);
-			const selY = Math.min(startY, y);
-			const selWidth = Math.abs(x - startX);
-			const selHeight = Math.abs(y - startY);
+			// Round to integer pixel coordinates to avoid misalignment
+			const selX = Math.floor(Math.min(startX, x));
+			const selY = Math.floor(Math.min(startY, y));
+			const selWidth = Math.round(Math.abs(x - startX));
+			const selHeight = Math.round(Math.abs(y - startY));
 
 			// Clear overlay FIRST (before setting selection, so animation can redraw properly)
 			const overlay = overlayRef.current;
@@ -200,9 +201,8 @@ export function useRectangularSelection({
 				// Get the image data for the selection
 				const imageData = ctx.getImageData(selX, selY, selWidth, selHeight);
 
-				// Fill the selected area with background color
-				ctx.fillStyle = secondaryColor;
-				ctx.fillRect(selX, selY, selWidth, selHeight);
+				// DON'T fill with background color yet - that happens when selection is moved
+				// For now, just store the selection with its imageData
 
 				setSelection({
 					x: selX,

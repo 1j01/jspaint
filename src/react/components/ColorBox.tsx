@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useRef, useLayoutEffect, KeyboardEvent, PointerEvent } from "react";
+import React, { useCallback, useMemo, useState, useRef, useLayoutEffect, useEffect, KeyboardEvent, PointerEvent } from "react";
 import { DEFAULT_PALETTE } from "../data/palette";
 import { Component } from "./Component";
 
@@ -96,6 +96,21 @@ export function ColorBox({
 	const [background, setBackground] = useState(() =>
 		normalizeColor(initialSecondary, palette[palette.length - 1] ?? FALLBACK_SECONDARY),
 	);
+
+	// Sync internal state with props when they change externally (e.g., from color picker tool)
+	useEffect(() => {
+		if (initialPrimary && initialPrimary !== foreground) {
+			console.log('[ColorBox] Syncing foreground color from prop:', initialPrimary);
+			setForeground(initialPrimary);
+		}
+	}, [initialPrimary]); // Intentionally not including foreground in deps to avoid loops
+
+	useEffect(() => {
+		if (initialSecondary && initialSecondary !== background) {
+			console.log('[ColorBox] Syncing background color from prop:', initialSecondary);
+			setBackground(initialSecondary);
+		}
+	}, [initialSecondary]); // Intentionally not including background in deps to avoid loops
 
 	// Ref for palette to calculate dimensions for 2-row layout
 	const paletteRef = useRef<HTMLDivElement>(null);

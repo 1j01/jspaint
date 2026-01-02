@@ -109,6 +109,9 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 					// Reset canvas to default size (Windows XP: 512x384)
 					setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 
+					// Reset magnification to 1x (100%)
+					setMagnification(1);
+
 					// Fill with white on next frame after resize
 					requestAnimationFrame(() => {
 						const canvas = canvasRef.current;
@@ -123,7 +126,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 					});
 				}
 			}
-		}, [onShowNewConfirm, canvasRef, setCanvasSize, saveState]),
+		}, [onShowNewConfirm, canvasRef, setCanvasSize, saveState, setMagnification]),
 
 		fileOpen: useCallback(() => {
 			createFileInput(".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp", async (file) => {

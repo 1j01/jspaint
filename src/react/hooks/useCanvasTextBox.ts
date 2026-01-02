@@ -154,16 +154,15 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 			ctx.translate(textBox.x + textBox.width, textBox.y);
 			ctx.rotate(Math.PI / 2); // Rotate 90 degrees clockwise
 
-			// Use tighter character spacing for vertical text
-			const charSpacing = textBox.fontSize * 1.1; // Slightly tighter than lineHeight
+			// Character spacing for vertical text (use fontSize for vertical stacking)
+			const charHeight = textBox.fontSize;
 
 			lines.forEach((line, lineIndex) => {
 				const chars = Array.from(line); // Handle multi-byte characters properly
-				let currentY = 0; // Track cumulative character position
 				chars.forEach((char, charIndex) => {
 					// Characters go downward (positive X after rotation)
 					// Lines go leftward (positive Y moves left in original coords after 90° CW rotation)
-					const rotatedX = currentY;
+					const rotatedX = charIndex * charHeight;
 					const rotatedY = lineIndex * lineHeight; // Positive to go left
 					ctx.fillText(char, rotatedX, rotatedY);
 
@@ -173,10 +172,6 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 						// Underline appears as a vertical line to the right of the rotated character
 						ctx.fillRect(rotatedX + textBox.fontSize - 2, rotatedY - textWidth, 1, textWidth);
 					}
-
-					// Advance by actual character width for tight spacing
-					const metrics = ctx.measureText(char);
-					currentY += metrics.width;
 				});
 			});
 

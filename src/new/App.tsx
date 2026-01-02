@@ -244,6 +244,7 @@ function AppContent() {
 		goToNode,
 		setShowNewConfirm,
 		setCustomColors,
+		setMagnification,
 	});
 
 	// Create menu actions using extracted hook

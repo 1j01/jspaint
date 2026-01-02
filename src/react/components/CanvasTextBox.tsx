@@ -81,6 +81,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [isDragging, setIsDragging] = useState(false);
 	const [isResizing, setIsResizing] = useState(false);
 	const dragStateRef = useRef<{
@@ -94,6 +95,9 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		yAxis?: HandleAxis;
 	} | null>(null);
 
+	// Combine external ref with internal ref
+	React.useImperativeHandle(ref, () => textareaRef.current!);
+
 	// Get .canvas-area padding to position correctly
 	const canvasArea = document.querySelector(".canvas-area");
 	const padding = canvasArea
@@ -102,6 +106,53 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 				top: parseFloat(window.getComputedStyle(canvasArea).paddingTop) || 0,
 			}
 		: { left: 0, top: 0 };
+
+	// Auto-size text box to fit content (matching legacy behavior)
+	useEffect(() => {
+		const textarea = textareaRef.current;
+		if (!textarea) return;
+
+		// Don't auto-resize while dragging or resizing manually
+		if (isDragging || isResizing) return;
+
+		// Temporarily reset dimensions to get accurate scroll measurements
+		const originalHeight = textarea.style.height;
+		const originalMinHeight = textarea.style.minHeight;
+		const originalWidth = textarea.style.width;
+		textarea.style.height = '';
+		textarea.style.width = '';
+		textarea.style.minHeight = '0px';
+
+		// Get scroll dimensions
+		const scrollHeight = textarea.scrollHeight;
+		const scrollWidth = textarea.scrollWidth;
+
+		// Restore original styles
+		textarea.style.height = originalHeight;
+		textarea.style.width = originalWidth;
+		textarea.style.minHeight = originalMinHeight;
+
+		// In vertical mode, scrollWidth = character height (downward), scrollHeight = line width (leftward)
+		// We need to swap them because writing-mode rotates the coordinate system
+		let newHeight, newWidth;
+		if (textBox.fontVertical) {
+			// Vertical: characters stack downward (use scrollWidth for height), lines go left (use scrollHeight for width)
+			newHeight = Math.max(scrollWidth, textBox.height);
+			newWidth = Math.max(scrollHeight, textBox.width);
+		} else {
+			// Horizontal: normal behavior
+			newHeight = Math.max(scrollHeight, textBox.height);
+			newWidth = Math.max(scrollWidth, textBox.width);
+		}
+
+		// Only resize if dimensions changed by at least 2 pixels to avoid thrashing
+		const heightDiff = Math.abs(newHeight - textBox.height);
+		const widthDiff = Math.abs(newWidth - textBox.width);
+
+		if (heightDiff > 1 || widthDiff > 1) {
+			onResize(Math.round(newWidth), Math.round(newHeight));
+		}
+	}, [textBox.text, textBox.fontVertical, isDragging, isResizing]);
 
 	// Update canvas overlay when text changes
 	useEffect(() => {
@@ -138,16 +189,15 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 					ctx.translate(textBox.width, 0);
 					ctx.rotate(Math.PI / 2); // Rotate 90 degrees clockwise
 
-					// Use tighter character spacing for vertical text
-					const charSpacing = textBox.fontSize * 1.1; // Slightly tighter than lineHeight
+					// Character spacing for vertical text (use fontSize for vertical stacking)
+					const charHeight = textBox.fontSize;
 
 					lines.forEach((line, lineIndex) => {
 						const chars = Array.from(line); // Handle multi-byte characters properly
-						let currentY = 0; // Track cumulative character position
 						chars.forEach((char, charIndex) => {
 							// Characters go downward (positive X after rotation)
 							// Lines go leftward (positive Y moves left in original coords after 90° CW rotation)
-							const rotatedX = currentY;
+							const rotatedX = charIndex * charHeight;
 							const rotatedY = lineIndex * lineHeight; // Positive to go left
 							ctx.fillText(char, rotatedX, rotatedY);
 
@@ -157,10 +207,6 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 								// Underline appears as a vertical line to the right of the rotated character
 								ctx.fillRect(rotatedX + textBox.fontSize - 2, rotatedY - textWidth, 1, textWidth);
 							}
-
-							// Advance by actual character width for tight spacing
-							const metrics = ctx.measureText(char);
-							currentY += metrics.width;
 						});
 					});
 
@@ -349,6 +395,9 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		border: 0,
 		resize: "none",
 		overflow: "hidden",
+		overflowWrap: "break-word", // Allow text to wrap to next line
+		wordWrap: "break-word", // Legacy support
+		whiteSpace: textBox.fontVertical ? "normal" : "pre-wrap", // Wrap in vertical, preserve spaces in horizontal
 		minWidth: "3em",
 		transform: `scale(${magnification})`,
 		transformOrigin: "left top",
@@ -358,8 +407,9 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		fontWeight: textBox.fontBold ? "bold" : "normal",
 		fontStyle: textBox.fontItalic ? "italic" : "normal",
 		textDecoration: textBox.fontUnderline ? "underline" : "none",
-		writingMode: textBox.fontVertical ? "vertical-lr" : undefined,
+		writingMode: textBox.fontVertical ? "vertical-rl" : undefined, // vertical-rl makes text flow right-to-left, matching canvas rotation
 		lineHeight: `${Math.round(textBox.fontSize * 1.2)}px`,
+		letterSpacing: textBox.fontVertical ? "0px" : undefined, // Tight spacing for vertical text
 		color: textBox.fontVertical ? "transparent" : primaryColor, // Hide textarea text when vertical, show canvas overlay instead
 		caretColor: primaryColor, // Keep cursor visible
 		background: drawOpaque ? secondaryColor : "transparent", // Transparent background when drawOpaque is false
@@ -398,7 +448,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		>
 			{/* Textarea for editing */}
 			<textarea
-				ref={ref}
+				ref={textareaRef}
 				className="textbox-editor"
 				value={textBox.text}
 				onChange={onChange}

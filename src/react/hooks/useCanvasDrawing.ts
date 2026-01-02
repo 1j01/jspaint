@@ -250,15 +250,23 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 
+			console.log('[pickColor] Called with:', { x, y, button, canvasWidth: canvas.width, canvasHeight: canvas.height });
+
 			if (x >= 0 && y >= 0 && x < canvas.width && y < canvas.height) {
 				const imageData = ctx.getImageData(x, y, 1, 1);
 				const [r, g, b, a] = imageData.data;
 				const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
+				console.log('[pickColor] Sampled color:', pickedColor, 'at coords:', { x, y });
+				console.log('[pickColor] Button:', button, 'Setting to:', button === 0 ? 'primary' : 'secondary');
 				if (button === 0) {
+					console.log('[pickColor] Setting primary color to:', pickedColor);
 					setPrimaryColor(pickedColor);
 				} else {
+					console.log('[pickColor] Setting secondary color to:', pickedColor);
 					setSecondaryColor(pickedColor);
 				}
+			} else {
+				console.log('[pickColor] Coordinates out of bounds:', { x, y, canvasWidth: canvas.width, canvasHeight: canvas.height });
 			}
 		},
 		[canvasRef, setPrimaryColor, setSecondaryColor],

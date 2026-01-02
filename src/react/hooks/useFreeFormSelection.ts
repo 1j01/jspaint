@@ -185,8 +185,11 @@ export function useFreeFormSelection({
 					maxY = Math.max(maxY, p.y);
 				}
 
-				const selWidth = maxX - minX;
-				const selHeight = maxY - minY;
+				// Round to integer pixel coordinates to avoid misalignment
+				minX = Math.floor(minX);
+				minY = Math.floor(minY);
+				const selWidth = Math.round(maxX - minX);
+				const selHeight = Math.round(maxY - minY);
 
 				if (selWidth > 0 && selHeight > 0) {
 					// Get the full area image data
@@ -227,17 +230,17 @@ export function useFreeFormSelection({
 						}
 					}
 
-					// Fill the selected area with background color
-					ctx.save();
-					ctx.beginPath();
-					ctx.moveTo(points[0].x, points[0].y);
-					for (let i = 1; i < points.length; i++) {
-						ctx.lineTo(points[i].x, points[i].y);
-					}
-					ctx.closePath();
-					ctx.fillStyle = secondaryColor;
-					ctx.fill();
-					ctx.restore();
+// 					// Fill the selected area with background color
+// 					ctx.save();
+// 					ctx.beginPath();
+// 					ctx.moveTo(points[0].x, points[0].y);
+// 					for (let i = 1; i < points.length; i++) {
+// 						ctx.lineTo(points[i].x, points[i].y);
+// 					}
+// 					ctx.closePath();
+// 					ctx.fillStyle = secondaryColor;
+// 					ctx.fill();
+// 					ctx.restore();
 
 					// Clear overlay FIRST (before setting selection)
 					const overlay = overlayRef.current;
