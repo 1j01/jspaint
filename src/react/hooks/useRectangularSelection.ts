@@ -86,8 +86,6 @@ export function useRectangularSelection({
 	 */
 	const start = useCallback(
 		(x: number, y: number, ctx: CanvasRenderingContext2D): boolean => {
-			console.log("[RectangularSelection] start() called at", x, y);
-
 			// Check if clicking inside existing selection to drag it
 			if (selection) {
 				const inSelection =
@@ -97,7 +95,6 @@ export function useRectangularSelection({
 					y < selection.y + selection.height;
 
 				if (inSelection) {
-					console.log("[RectangularSelection] Starting drag of existing selection");
 					// Start dragging the selection
 					state.current = {
 						...state.current,
@@ -107,7 +104,6 @@ export function useRectangularSelection({
 					};
 					return true;
 				} else {
-					console.log("[RectangularSelection] Click outside selection, committing it");
 					// Click outside - commit the selection to canvas first
 					if (selection.imageData) {
 						ctx.putImageData(selection.imageData, selection.x, selection.y);
@@ -117,7 +113,6 @@ export function useRectangularSelection({
 			}
 
 			// Start a new selection
-			console.log("[RectangularSelection] Starting new selection");
 			const canvas = canvasRef.current;
 			if (canvas) {
 				const canvasCtx = canvas.getContext("2d");
@@ -132,7 +127,6 @@ export function useRectangularSelection({
 				dragOffsetX: 0,
 				dragOffsetY: 0,
 			};
-			console.log("[RectangularSelection] State set to:", state.current);
 			return false;
 		},
 		[selection, clearSelection, saveState, canvasRef],
@@ -145,8 +139,6 @@ export function useRectangularSelection({
 	 */
 	const move = useCallback(
 		(x: number, y: number): void => {
-			console.log("[RectangularSelection] move() called, isDragging:", state.current.isDragging, "isSelecting:", state.current.isSelecting);
-
 			// Handle selection dragging
 			if (state.current.isDragging && selection) {
 				const newX = x - state.current.dragOffsetX;
@@ -163,17 +155,10 @@ export function useRectangularSelection({
 			if (!state.current.isSelecting) return;
 
 			const overlay = overlayRef.current;
-			if (!overlay) {
-				console.log("[RectangularSelection] No overlay canvas!");
-				return;
-			}
+			if (!overlay) return;
 			const overlayCtx = overlay.getContext("2d");
-			if (!overlayCtx) {
-				console.log("[RectangularSelection] Could not get overlay context!");
-				return;
-			}
+			if (!overlayCtx) return;
 
-			console.log("[RectangularSelection] Drawing preview from", state.current.startX, state.current.startY, "to", x, y);
 			overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
 			drawRectangularPreview(overlayCtx, state.current.startX, state.current.startY, x, y);
 		},
@@ -189,26 +174,18 @@ export function useRectangularSelection({
 	 */
 	const finalize = useCallback(
 		(x: number, y: number, ctx: CanvasRenderingContext2D): void => {
-			console.log("[RectangularSelection] finalize() called at", x, y, "isDragging:", state.current.isDragging, "isSelecting:", state.current.isSelecting);
-
 			if (state.current.isDragging) {
-				console.log("[RectangularSelection] Was dragging, stopping drag");
 				state.current.isDragging = false;
 				return;
 			}
 
-			if (!state.current.isSelecting) {
-				console.log("[RectangularSelection] Was not selecting, nothing to finalize");
-				return;
-			}
+			if (!state.current.isSelecting) return;
 
 			const { startX, startY } = state.current;
 			const selX = Math.min(startX, x);
 			const selY = Math.min(startY, y);
 			const selWidth = Math.abs(x - startX);
 			const selHeight = Math.abs(y - startY);
-
-			console.log("[RectangularSelection] Final selection rect:", { selX, selY, selWidth, selHeight });
 
 			// Clear overlay FIRST (before setting selection, so animation can redraw properly)
 			const overlay = overlayRef.current;
@@ -222,12 +199,10 @@ export function useRectangularSelection({
 			if (selWidth > 0 && selHeight > 0) {
 				// Get the image data for the selection
 				const imageData = ctx.getImageData(selX, selY, selWidth, selHeight);
-				console.log("[RectangularSelection] Extracted imageData:", imageData.width, "x", imageData.height);
 
 				// Fill the selected area with background color
 				ctx.fillStyle = secondaryColor;
 				ctx.fillRect(selX, selY, selWidth, selHeight);
-				console.log("[RectangularSelection] Filled selection area with", secondaryColor);
 
 				setSelection({
 					x: selX,
@@ -236,12 +211,7 @@ export function useRectangularSelection({
 					height: selHeight,
 					imageData,
 				});
-				console.log("[RectangularSelection] Selection state set");
-			} else {
-				console.log("[RectangularSelection] Selection too small, ignoring");
 			}
-
-			console.log("[RectangularSelection] Finalize complete");
 		},
 		[secondaryColor, setSelection, overlayRef],
 	);
@@ -254,10 +224,28 @@ export function useRectangularSelection({
 		return state.current.isSelecting || state.current.isDragging;
 	}, []);
 
+	/**
+	 * Cancel current selection (clear preview)
+	 */
+	const cancel = useCallback((): void => {
+		if (state.current.isSelecting || state.current.isDragging) {
+			// Clear overlay preview
+			const overlay = overlayRef.current;
+			if (overlay) {
+				const overlayCtx = overlay.getContext("2d");
+				if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+			}
+			// Reset state
+			state.current.isSelecting = false;
+			state.current.isDragging = false;
+		}
+	}, [overlayRef]);
+
 	return {
 		start,
 		move,
 		finalize,
 		isActive,
+		cancel,
 	};
 }

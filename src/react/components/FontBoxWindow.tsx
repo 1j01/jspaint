@@ -77,11 +77,17 @@ export function FontBoxWindow({
 }: FontBoxWindowProps) {
 	const { fonts: availableFonts, loading: loadingFonts } = useSystemFonts();
 	const windowRef = useRef<HTMLDivElement>(null);
+	const [sizeInput, setSizeInput] = React.useState(fontState.size.toString());
 
 	const { position, elementRef, handleProps, setPosition } = useDraggable({
 		enabled: true,
 		initialPosition: { x: 100, y: 100 },
 	});
+
+	// Update local size input when fontState.size changes externally
+	useEffect(() => {
+		setSizeInput(fontState.size.toString());
+	}, [fontState.size]);
 
 	// Auto-reposition to avoid overlapping the text box
 	useEffect(() => {
@@ -132,13 +138,26 @@ export function FontBoxWindow({
 
 	const handleSizeChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			const size = parseInt(e.target.value, 10);
-			if (!isNaN(size) && size >= 8 && size <= 72) {
-				onFontChange({ ...fontState, size });
-			}
+			const value = e.target.value;
+			setSizeInput(value); // Always update the input display to allow free typing
 		},
-		[fontState, onFontChange],
+		[],
 	);
+
+	const handleSizeBlur = useCallback(() => {
+		const size = parseInt(sizeInput, 10);
+		// On blur, validate and clamp to the range 8-72 (matching jQuery implementation)
+		if (isNaN(size) || size < 8) {
+			setSizeInput("8");
+			onFontChange({ ...fontState, size: 8 });
+		} else if (size > 72) {
+			setSizeInput("72");
+			onFontChange({ ...fontState, size: 72 });
+		} else {
+			// Valid size in range, update font state
+			onFontChange({ ...fontState, size });
+		}
+	}, [sizeInput, fontState, onFontChange]);
 
 	const toggleBold = useCallback(() => {
 		onFontChange({ ...fontState, bold: !fontState.bold });
@@ -229,8 +248,9 @@ export function FontBoxWindow({
 					<input
 						type="number"
 						className="inset-deep"
-						value={fontState.size}
+						value={sizeInput}
 						onChange={handleSizeChange}
+						onBlur={handleSizeBlur}
 						min={8}
 						max={72}
 						aria-label="Font Size"

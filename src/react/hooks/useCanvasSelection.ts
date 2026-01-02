@@ -158,6 +158,20 @@ export function useCanvasSelection({ canvasRef, overlayRef, getCanvasCoords }: U
 		return rectangularSelection.isActive() || freeFormSelection.isActive();
 	}, [rectangularSelection, freeFormSelection]);
 
+	/**
+	 * Cancel current selection operation (clear preview and reset state)
+	 */
+	const cancelSelection = useCallback((): void => {
+		rectangularSelection.cancel();
+		freeFormSelection.cancel();
+	}, [rectangularSelection, freeFormSelection]);
+
+	// Wrap clearSelection to also cancel any in-progress selection
+	const clearSelectionWithCancel = useCallback((): void => {
+		cancelSelection();
+		clearSelection();
+	}, [cancelSelection, clearSelection]);
+
 	return {
 		startRectangularSelection,
 		startFreeFormSelection,
@@ -165,7 +179,8 @@ export function useCanvasSelection({ canvasRef, overlayRef, getCanvasCoords }: U
 		finalizeRectangularSelection,
 		finalizeFreeFormSelection,
 		isActive,
+		cancelSelection,
 		selection,
-		clearSelection,
+		clearSelection: clearSelectionWithCancel,
 	};
 }

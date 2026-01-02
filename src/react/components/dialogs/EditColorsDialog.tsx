@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Dialog from "./Dialog";
 import { getRgbaFromColor } from "../../utils/colorUtils";
 import { basicColors } from "../../data/basicColors";
@@ -56,7 +56,46 @@ export function EditColorsDialog({
 		mouseDownOnRainbow: colorPicker.mouseDownOnRainbow,
 		crosshairShown: colorPicker.crosshairShown,
 		getCurrentColor: colorPicker.getCurrentColor,
+		isExpanded: expanded,
 	});
+
+	// Force redraw when dialog expands
+	useEffect(() => {
+		if (expanded) {
+			// Wait for next frame to ensure canvases are mounted
+			requestAnimationFrame(() => {
+				// Trigger a redraw by updating color picker state
+				const [r, g, b] = getRgbaFromColor(colorPicker.getCurrentColor());
+				colorPicker.updateFromRgb(r, g, b);
+			});
+		}
+	}, [expanded]);
+
+	// On mount: select the matching color swatch if it exists in basic or custom colors
+	useEffect(() => {
+		if (!isOpen) return;
+
+		const initialRgba = getRgbaFromColor(initialColor).join(",");
+
+		// Check basic colors first
+		for (const color of basicColors) {
+			if (getRgbaFromColor(color).join(",") === initialRgba) {
+				setSelectedColor(color);
+				return;
+			}
+		}
+
+		// Then check custom colors
+		for (const color of customColors) {
+			if (getRgbaFromColor(color).join(",") === initialRgba) {
+				setSelectedColor(color);
+				return;
+			}
+		}
+
+		// If no match found, keep initialColor as selected
+		setSelectedColor(initialColor);
+	}, [isOpen, initialColor, customColors]);
 
 	// Select a color from grid
 	const handleColorSelect = (color: string) => {
@@ -81,16 +120,20 @@ export function EditColorsDialog({
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Edit Colors" width={expanded ? 640 : 254} className="edit-colors-window">
+		<Dialog isOpen={isOpen} onClose={onClose} title="Edit Colors" width={expanded ? 435 : 254} className="edit-colors-window">
 			<div className="left-right-split">
 				<div className="left-side">
 					<label htmlFor="basic-colors">Basic colors:</label>
-					<div id="basic-colors" className="color-grid inset-shallow">
+					<div id="basic-colors" className="color-grid">
 						{basicColors.map((color, index) => (
 							<button
 								key={index}
-								className={`swatch ${selectedColor === color ? "selected" : ""}`}
-								style={{ backgroundColor: color }}
+								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
+								style={{
+									backgroundColor: color,
+									width: "16px",
+									height: "13px",
+								}}
 								onClick={() => handleColorSelect(color)}
 								title={color}
 								aria-label={`Basic color ${index + 1}: ${color}`}
@@ -99,12 +142,16 @@ export function EditColorsDialog({
 					</div>
 
 					<label htmlFor="custom-colors">Custom colors:</label>
-					<div id="custom-colors" className="color-grid inset-shallow">
+					<div id="custom-colors" className="color-grid">
 						{customColors.map((color, index) => (
 							<button
 								key={index}
-								className={`swatch ${selectedColor === color ? "selected" : ""}`}
-								style={{ backgroundColor: color }}
+								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
+								style={{
+									backgroundColor: color,
+									width: "16px",
+									height: "13px",
+								}}
 								onClick={() => handleColorSelect(color)}
 								title={color}
 								aria-label={`Custom color ${index + 1}: ${color}`}

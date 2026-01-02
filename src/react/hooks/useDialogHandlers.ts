@@ -115,6 +115,9 @@ export function useDialogHandlers({
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
 					console.log('[handleNewConfirm] Canvas cleared');
 
+					// Clear any active selection
+					clearSelection();
+
 					// Save the new white canvas state to history
 					console.log('[handleNewConfirm] Saving to history...');
 					saveState();
@@ -125,7 +128,7 @@ export function useDialogHandlers({
 			}
 			// If result === "cancel", do nothing
 		},
-		[canvasRef, saveState, setShowNewConfirm, setCanvasSize],
+		[canvasRef, saveState, setShowNewConfirm, setCanvasSize, clearSelection],
 	);
 
 	/**

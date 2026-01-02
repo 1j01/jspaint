@@ -14,8 +14,27 @@ export function drawSelectionOverlay(
 ): void {
 	const { x, y, width, height, path } = selection;
 
-	console.log("[drawSelectionOverlay] Drawing selection at", x, y, "size", width, "x", height, "has imageData:", !!selection.imageData);
+	// Draw the selection content first if we have it
+	if (selection.imageData) {
+		// Create a temporary canvas to draw the selection
+		const tempCanvas = document.createElement("canvas");
+		tempCanvas.width = selection.imageData.width;
+		tempCanvas.height = selection.imageData.height;
+		const tempCtx = tempCanvas.getContext("2d");
+		if (tempCtx) {
+			// For free-form selections with transparency, we need to composite properly
+			// Set composite mode to copy to avoid showing checkered background
+			tempCtx.globalCompositeOperation = "copy";
+			tempCtx.putImageData(selection.imageData, 0, 0);
 
+			// Draw to overlay with source-over for proper alpha blending
+			overlayCtx.globalCompositeOperation = "source-over";
+			overlayCtx.drawImage(tempCanvas, x, y);
+			overlayCtx.globalCompositeOperation = "source-over"; // Reset to default
+		}
+	}
+
+	// Draw marching ants border on top
 	overlayCtx.save();
 	overlayCtx.setLineDash([4, 4]);
 	overlayCtx.lineDashOffset = -offset;
@@ -47,25 +66,6 @@ export function drawSelectionOverlay(
 	}
 
 	overlayCtx.restore();
-
-	// Draw the selection content if we have it
-	if (selection.imageData) {
-		console.log("[drawSelectionOverlay] Drawing imageData:", selection.imageData.width, "x", selection.imageData.height);
-		// Create a temporary canvas to draw the selection
-		const tempCanvas = document.createElement("canvas");
-		tempCanvas.width = selection.imageData.width;
-		tempCanvas.height = selection.imageData.height;
-		const tempCtx = tempCanvas.getContext("2d");
-		if (tempCtx) {
-			tempCtx.putImageData(selection.imageData, 0, 0);
-			overlayCtx.drawImage(tempCanvas, x, y);
-			console.log("[drawSelectionOverlay] ImageData drawn at", x, y);
-		} else {
-			console.error("[drawSelectionOverlay] Could not get temp canvas context!");
-		}
-	} else {
-		console.warn("[drawSelectionOverlay] No imageData to draw!");
-	}
 }
 
 /**

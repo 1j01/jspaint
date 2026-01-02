@@ -29,8 +29,6 @@ export function SelectWin98({
 	const displayRef = useRef<HTMLDivElement>(null);
 	const listRef = useRef<HTMLUListElement>(null);
 
-	console.log("[SelectWin98] Render - options count:", options.length, "isOpen:", isOpen, "value:", value);
-
 	// Find current option
 	const selectedOption = options.find((opt) => opt.value === value);
 	const selectedIndex = options.findIndex((opt) => opt.value === value);
@@ -79,18 +77,13 @@ export function SelectWin98({
 	}, [isOpen, selectedIndex]);
 
 	const handleToggle = useCallback(() => {
-		console.log("[SelectWin98] handleToggle called, disabled:", disabled);
 		if (!disabled) {
-			setIsOpen((prev) => {
-				console.log("[SelectWin98] Toggling isOpen from", prev, "to", !prev);
-				return !prev;
-			});
+			setIsOpen((prev) => !prev);
 		}
 	}, [disabled]);
 
 	const handleSelect = useCallback(
 		(optionValue: string) => {
-			console.log("[SelectWin98] handleSelect called with:", optionValue);
 			onChange(optionValue);
 			setIsOpen(false);
 		},

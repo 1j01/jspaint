@@ -119,7 +119,7 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 	/**
 	 * Commit text box to canvas
 	 * Renders the text with current font settings and clears the text box
-	 * Uses SVG foreignObject approach to support vertical text via CSS
+	 * Supports multi-line text, underline styling, and vertical text
 	 */
 	const commitTextBox = useCallback((): void => {
 		if (!textBox || !textBox.text.trim()) {
@@ -133,63 +133,68 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) return;
 
-		// Create SVG with foreignObject containing styled textarea (same as preview)
-		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-		svg.setAttribute("version", "1.1");
-		svg.setAttribute("width", textBox.width.toString());
-		svg.setAttribute("height", textBox.height.toString());
+		// Build font string
+		let fontStyle = "";
+		if (textBox.fontItalic) fontStyle += "italic ";
+		if (textBox.fontBold) fontStyle += "bold ";
+		fontStyle += `${textBox.fontSize}px ${textBox.fontFamily}`;
 
-		const foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
-		foreignObject.setAttribute("x", "0");
-		foreignObject.setAttribute("y", "0");
-		foreignObject.setAttribute("width", textBox.width.toString());
-		foreignObject.setAttribute("height", textBox.height.toString());
+		ctx.font = fontStyle;
+		ctx.fillStyle = primaryColor;
+		ctx.textBaseline = "top";
 
-		const textarea = document.createElement("textarea");
-		textarea.value = textBox.text;
-		textarea.style.cssText = `
-			position: absolute;
-			left: 0;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			padding: 0;
-			margin: 0;
-			border: 0;
-			resize: none;
-			overflow: hidden;
-			width: ${textBox.width}px;
-			height: ${textBox.height}px;
-			font-family: ${textBox.fontFamily};
-			font-size: ${textBox.fontSize}px;
-			font-weight: ${textBox.fontBold ? "bold" : "normal"};
-			font-style: ${textBox.fontItalic ? "italic" : "normal"};
-			text-decoration: ${textBox.fontUnderline ? "underline" : "none"};
-			writing-mode: ${textBox.fontVertical ? "vertical-lr" : "horizontal-tb"};
-			-ms-writing-mode: ${textBox.fontVertical ? "tb-lr" : "lr-tb"};
-			-webkit-writing-mode: ${textBox.fontVertical ? "vertical-lr" : "horizontal-tb"};
-			line-height: ${Math.round(textBox.fontSize * 1.2)}px;
-			color: ${primaryColor};
-			background: transparent;
-		`;
+		// Split text into lines and draw each
+		const lines = textBox.text.split("\n");
+		const lineHeight = textBox.fontSize * 1.2;
 
-		foreignObject.appendChild(textarea);
-		svg.appendChild(foreignObject);
+		if (textBox.fontVertical) {
+			// Vertical text: rotate context 90 degrees and render from upper-right
+			ctx.save();
+			// Move to upper-right corner of text box, then rotate
+			ctx.translate(textBox.x + textBox.width, textBox.y);
+			ctx.rotate(Math.PI / 2); // Rotate 90 degrees clockwise
 
-		const svgSource = new XMLSerializer().serializeToString(svg);
-		const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgSource)}`;
+			// Use tighter character spacing for vertical text
+			const charSpacing = textBox.fontSize * 1.1; // Slightly tighter than lineHeight
 
-		const img = new Image();
-		img.onload = () => {
-			// Draw the rendered text to the main canvas
-			ctx.drawImage(img, textBox.x, textBox.y);
-			clearTextBox();
-		};
-		img.onerror = (event) => {
-			console.error("Failed to render text to canvas", event);
-			clearTextBox();
-		};
-		img.src = dataUrl;
+			lines.forEach((line, lineIndex) => {
+				const chars = Array.from(line); // Handle multi-byte characters properly
+				let currentY = 0; // Track cumulative character position
+				chars.forEach((char, charIndex) => {
+					// Characters go downward (positive X after rotation)
+					// Lines go leftward (positive Y moves left in original coords after 90° CW rotation)
+					const rotatedX = currentY;
+					const rotatedY = lineIndex * lineHeight; // Positive to go left
+					ctx.fillText(char, rotatedX, rotatedY);
+
+					// Draw underline if needed (vertical line to the right of rotated character)
+					if (textBox.fontUnderline) {
+						const textWidth = ctx.measureText(char).width;
+						// Underline appears as a vertical line to the right of the rotated character
+						ctx.fillRect(rotatedX + textBox.fontSize - 2, rotatedY - textWidth, 1, textWidth);
+					}
+
+					// Advance by actual character width for tight spacing
+					const metrics = ctx.measureText(char);
+					currentY += metrics.width;
+				});
+			});
+
+			ctx.restore();
+		} else {
+			// Horizontal text: render normally
+			lines.forEach((line, index) => {
+				ctx.fillText(line, textBox.x, textBox.y + index * lineHeight);
+
+				// Draw underline if needed
+				if (textBox.fontUnderline) {
+					const textWidth = ctx.measureText(line).width;
+					ctx.fillRect(textBox.x, textBox.y + index * lineHeight + textBox.fontSize + 1, textWidth, 1);
+				}
+			});
+		}
+
+		clearTextBox();
 	}, [textBox, primaryColor, canvasRef, clearTextBox]);
 
 	// Check if currently creating
@@ -237,6 +242,17 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		},
 		[textBox, setTextBox],
 	);
+
+	// Get current drag bounds for preview
+	const getDragBounds = useCallback(():  { x: number; y: number; width: number; height: number } | null => {
+		if (!textBoxState.current.isCreating) return null;
+		return {
+			x: textBoxState.current.startX,
+			y: textBoxState.current.startY,
+			width: 0,
+			height: 0,
+		};
+	}, []);
 
 	return {
 		textBox,

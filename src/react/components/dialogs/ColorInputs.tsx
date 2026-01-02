@@ -17,13 +17,16 @@ interface ColorInputsProps {
 }
 
 /**
- * Color input fields component
+ * Color input fields component - matches jQuery implementation with absolute positioning
  *
  * Displays:
- * - Result color preview canvas
- * - HSL input fields (Hue, Saturation, Luminosity)
- * - RGB input fields (Red, Green, Blue)
- * - "Add to Custom Colors" button
+ * - Result color preview canvas (positioned at left:10, top:198)
+ * - "Color|Solid" label (positioned at left:10, top:244)
+ * - HSL input fields (Hue, Sat, Lum) - absolutely positioned
+ * - RGB input fields (Red, Green, Blue) - absolutely positioned
+ * - "Add to Custom Colors" button (positioned at bottom:5, right:5)
+ *
+ * All elements use absolute positioning to exactly match edit-colors.js layout.
  */
 export function ColorInputs({
 	resultCanvasRef,
@@ -40,120 +43,214 @@ export function ColorInputs({
 	setSaturation,
 	setLuminosity,
 }: ColorInputsProps) {
+	const inputYSpacing = 22;
+
 	return (
-		<div style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
-			<div>
-				<label htmlFor="color-solid-canvas">Color|Solid</label>
-				<canvas
-					ref={resultCanvasRef}
-					id="color-solid-canvas"
-					className="result-color-canvas inset-shallow"
-					width={58}
-					height={40}
-					style={{
-						display: "block",
-						marginTop: "4px",
-						border: "2px solid",
-						borderColor: "var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow)",
-					}}
-				/>
-			</div>
+		<>
+			{/* Result canvas - shows current color */}
+			<canvas
+				ref={resultCanvasRef}
+				id="color-solid-canvas"
+				className="result-color-canvas inset-shallow"
+				width={58}
+				height={40}
+				style={{
+					position: "absolute",
+					left: 10,
+					top: 198,
+				}}
+			/>
 
-			<div style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "11px" }}>
-				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-					<label htmlFor="hue-input" style={{ width: "30px" }}>
-						Hue:
-					</label>
-					<input
-						id="hue-input"
-						type="number"
-						min="0"
-						max="360"
-						value={Math.round(hue)}
-						onChange={(e) => onHslInput(e.target.value, setHue, 360)}
-						style={{ width: "40px" }}
-					/>
-				</div>
+			{/* "Color|Solid" label */}
+			<label
+				htmlFor="color-solid-canvas"
+				style={{
+					position: "absolute",
+					left: 10,
+					top: 244,
+				}}
+			>
+				Color|Solid
+			</label>
 
-				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-					<label htmlFor="sat-input" style={{ width: "30px" }}>
-						Sat:
-					</label>
-					<input
-						id="sat-input"
-						type="number"
-						min="0"
-						max="100"
-						value={Math.round(saturation)}
-						onChange={(e) => onHslInput(e.target.value, setSaturation, 100)}
-						style={{ width: "40px" }}
-					/>
-				</div>
+			{/* HSL inputs - column at left: 63 */}
+			<label
+				style={{
+					position: "absolute",
+					left: 63,
+					top: 202,
+					textAlign: "right",
+					display: "inline-block",
+					width: 40,
+					height: 20,
+					lineHeight: "20px",
+				}}
+			>
+				Hue:
+			</label>
+			<input
+				type="text"
+				className="inset-deep"
+				value={Math.floor(hue)}
+				onChange={(e) => onHslInput(e.target.value, setHue, 360)}
+				style={{
+					position: "absolute",
+					left: 106,
+					top: 202,
+					width: 21,
+					height: 14,
+				}}
+			/>
 
-				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-					<label htmlFor="lum-input" style={{ width: "30px" }}>
-						Lum:
-					</label>
-					<input
-						id="lum-input"
-						type="number"
-						min="0"
-						max="100"
-						value={Math.round(luminosity)}
-						onChange={(e) => onHslInput(e.target.value, setLuminosity, 100)}
-						style={{ width: "40px" }}
-					/>
-				</div>
+			<label
+				style={{
+					position: "absolute",
+					left: 63,
+					top: 202 + inputYSpacing,
+					textAlign: "right",
+					display: "inline-block",
+					width: 40,
+					height: 20,
+					lineHeight: "20px",
+				}}
+			>
+				Sat:
+			</label>
+			<input
+				type="text"
+				className="inset-deep"
+				value={Math.floor(saturation)}
+				onChange={(e) => onHslInput(e.target.value, setSaturation, 100)}
+				style={{
+					position: "absolute",
+					left: 106,
+					top: 202 + inputYSpacing,
+					width: 21,
+					height: 14,
+				}}
+			/>
 
-				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-					<label htmlFor="red-input" style={{ width: "30px" }}>
-						Red:
-					</label>
-					<input
-						id="red-input"
-						type="number"
-						min="0"
-						max="255"
-						value={red}
-						onChange={(e) => onRgbInput("r", e.target.value)}
-						style={{ width: "40px" }}
-					/>
-				</div>
+			<label
+				style={{
+					position: "absolute",
+					left: 63,
+					top: 202 + inputYSpacing * 2,
+					textAlign: "right",
+					display: "inline-block",
+					width: 40,
+					height: 20,
+					lineHeight: "20px",
+				}}
+			>
+				Lum:
+			</label>
+			<input
+				type="text"
+				className="inset-deep"
+				value={Math.floor(luminosity)}
+				onChange={(e) => onHslInput(e.target.value, setLuminosity, 100)}
+				style={{
+					position: "absolute",
+					left: 106,
+					top: 202 + inputYSpacing * 2 + 1, // uneven spacing by 1px
+					width: 21,
+					height: 14,
+				}}
+			/>
 
-				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-					<label htmlFor="green-input" style={{ width: "30px" }}>
-						Green:
-					</label>
-					<input
-						id="green-input"
-						type="number"
-						min="0"
-						max="255"
-						value={green}
-						onChange={(e) => onRgbInput("g", e.target.value)}
-						style={{ width: "40px" }}
-					/>
-				</div>
+			{/* RGB inputs - column at left: 143 (63 + 80) */}
+			<label
+				style={{
+					position: "absolute",
+					left: 143,
+					top: 202,
+					textAlign: "right",
+					display: "inline-block",
+					width: 40,
+					height: 20,
+					lineHeight: "20px",
+				}}
+			>
+				Red:
+			</label>
+			<input
+				type="text"
+				className="inset-deep"
+				value={red}
+				onChange={(e) => onRgbInput("r", e.target.value)}
+				style={{
+					position: "absolute",
+					left: 186,
+					top: 202,
+					width: 21,
+					height: 14,
+				}}
+			/>
 
-				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-					<label htmlFor="blue-input" style={{ width: "30px" }}>
-						Blue:
-					</label>
-					<input
-						id="blue-input"
-						type="number"
-						min="0"
-						max="255"
-						value={blue}
-						onChange={(e) => onRgbInput("b", e.target.value)}
-						style={{ width: "40px" }}
-					/>
-				</div>
+			<label
+				style={{
+					position: "absolute",
+					left: 143,
+					top: 202 + inputYSpacing,
+					textAlign: "right",
+					display: "inline-block",
+					width: 40,
+					height: 20,
+					lineHeight: "20px",
+				}}
+			>
+				Green:
+			</label>
+			<input
+				type="text"
+				className="inset-deep"
+				value={green}
+				onChange={(e) => onRgbInput("g", e.target.value)}
+				style={{
+					position: "absolute",
+					left: 186,
+					top: 202 + inputYSpacing,
+					width: 21,
+					height: 14,
+				}}
+			/>
 
-				<button onClick={onAddToCustomColors} style={{ marginTop: "4px", fontSize: "11px" }}>
-					Add to Custom Colors
-				</button>
-			</div>
-		</div>
+			<label
+				style={{
+					position: "absolute",
+					left: 143,
+					top: 202 + inputYSpacing * 2,
+					textAlign: "right",
+					display: "inline-block",
+					width: 40,
+					height: 20,
+					lineHeight: "20px",
+				}}
+			>
+				Blue:
+			</label>
+			<input
+				type="text"
+				className="inset-deep"
+				value={blue}
+				onChange={(e) => onRgbInput("b", e.target.value)}
+				style={{
+					position: "absolute",
+					left: 186,
+					top: 202 + inputYSpacing * 2 + 1, // uneven spacing by 1px
+					width: 21,
+					height: 14,
+				}}
+			/>
+
+			{/* Add to Custom Colors button - positioned at bottom right */}
+			<button
+				className="add-to-custom-colors-button"
+				type="button"
+				onClick={onAddToCustomColors}
+			>
+				Add To Custom Colors
+			</button>
+		</>
 	);
 }

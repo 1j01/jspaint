@@ -32,10 +32,18 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 	const marchingAntsOffset = useRef(0);
 	const animationFrameId = useRef<number | null>(null);
 
+	// Clear overlay on mount
+	useEffect(() => {
+		const overlay = overlayRef.current;
+		if (overlay) {
+			const ctx = overlay.getContext("2d");
+			if (ctx) ctx.clearRect(0, 0, overlay.width, overlay.height);
+		}
+	}, [overlayRef]);
+
 	// Animate marching ants for selection
 	useEffect(() => {
 		if (!selection) {
-			console.log("[useSelectionAnimation] No selection, clearing overlay");
 			if (animationFrameId.current) {
 				cancelAnimationFrame(animationFrameId.current);
 				animationFrameId.current = null;
@@ -49,24 +57,14 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 			return;
 		}
 
-		console.log("[useSelectionAnimation] Starting animation for selection:", selection);
-
 		const overlay = overlayRef.current;
-		if (!overlay) {
-			console.error("[useSelectionAnimation] No overlay ref!");
-			return;
-		}
+		if (!overlay) return;
 
 		const ctx = overlay.getContext("2d");
-		if (!ctx) {
-			console.error("[useSelectionAnimation] Could not get overlay context!");
-			return;
-		}
-
-		console.log("[useSelectionAnimation] Overlay canvas size:", overlay.width, "x", overlay.height);
+		if (!ctx) return;
 
 		const animate = () => {
-			marchingAntsOffset.current = (marchingAntsOffset.current + 1) % 16;
+			marchingAntsOffset.current = (marchingAntsOffset.current + 0.25) % 16;
 
 			ctx.clearRect(0, 0, overlay.width, overlay.height);
 			drawSelectionOverlay(ctx, selection, marchingAntsOffset.current);

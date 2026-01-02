@@ -267,10 +267,27 @@ export function useFreeFormSelection({
 		return state.current.isSelecting || state.current.isDragging;
 	}, []);
 
+	// Cancel current selection (clear preview)
+	const cancel = useCallback((): void => {
+		if (state.current.isSelecting || state.current.isDragging) {
+			// Clear overlay preview
+			const overlay = overlayRef.current;
+			if (overlay) {
+				const overlayCtx = overlay.getContext("2d");
+				if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+			}
+			// Reset state
+			state.current.isSelecting = false;
+			state.current.isDragging = false;
+			state.current.points = [];
+		}
+	}, [overlayRef]);
+
 	return {
 		start,
 		move,
 		finalize,
 		isActive,
+		cancel,
 	};
 }

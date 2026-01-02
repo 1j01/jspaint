@@ -11,6 +11,7 @@ interface UseColorCanvasesProps {
 	mouseDownOnRainbow: boolean;
 	crosshairShown: boolean;
 	getCurrentColor: () => string;
+	isExpanded?: boolean; // Add this to trigger redraw when dialog expands
 }
 
 /**
@@ -33,14 +34,23 @@ export function useColorCanvases({
 	mouseDownOnRainbow,
 	crosshairShown,
 	getCurrentColor,
+	isExpanded = true,
 }: UseColorCanvasesProps) {
 	// Draw rainbow canvas (hue/saturation picker)
 	useEffect(() => {
 		const canvas = rainbowCanvasRef.current;
-		if (!canvas) return;
+		if (!canvas) {
+			console.log('[useColorCanvases] Rainbow canvas ref not set');
+			return;
+		}
 
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) return;
+		if (!ctx) {
+			console.log('[useColorCanvases] Rainbow canvas context not available');
+			return;
+		}
+
+		console.log('[useColorCanvases] Drawing rainbow canvas');
 
 		// Draw rainbow gradient
 		for (let y = 0; y < canvas.height; y += 6) {
@@ -63,7 +73,7 @@ export function useColorCanvases({
 			ctx.fillRect(x - 9, y - 1, 5, 3);
 			ctx.fillRect(x + 5, y - 1, 5, 3);
 		}
-	}, [hue, saturation, mouseDownOnRainbow, crosshairShown, rainbowCanvasRef]);
+	}, [hue, saturation, mouseDownOnRainbow, crosshairShown, rainbowCanvasRef, isExpanded]);
 
 	// Draw luminosity slider
 	useEffect(() => {
@@ -73,13 +83,16 @@ export function useColorCanvases({
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
+		// Clear canvas first
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 		// Draw gradient
 		for (let y = -2; y < canvas.height; y += 6) {
 			const l = (1 - y / canvas.height) * 100;
 			ctx.fillStyle = `hsl(${hue}deg, ${saturation}%, ${l}%)`;
 			ctx.fillRect(0, y, canvas.width, 6);
 		}
-	}, [hue, saturation, luminosityCanvasRef]);
+	}, [hue, saturation, luminosity, luminosityCanvasRef, isExpanded]);
 
 	// Draw result color
 	useEffect(() => {

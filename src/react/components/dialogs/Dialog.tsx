@@ -19,6 +19,8 @@ export interface DialogProps {
 	icon?: string;
 	/** Whether to show a backdrop that dims the background */
 	modal?: boolean;
+	/** Optional className to add to the window element */
+	className?: string;
 }
 
 export function Dialog({
@@ -31,6 +33,7 @@ export function Dialog({
 	showCloseButton = true,
 	icon,
 	modal = false,
+	className,
 }: DialogProps) {
 	const previousActiveElement = useRef<Element | null>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -110,7 +113,7 @@ export function Dialog({
 	const windowContent = (
 		<div
 			ref={elementRef}
-			className={`window os-window focused dialog ${isDragging ? "dragging" : ""}`}
+			className={`window os-window focused dialog ${className || ""} ${isDragging ? "dragging" : ""}`}
 			style={windowStyle}
 			role="dialog"
 			aria-modal={modal}

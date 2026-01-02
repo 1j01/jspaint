@@ -297,7 +297,8 @@ body.dragging iframe {
 
 /* Ensure canvas always has white background */
 /* More specific selector to override theme checkerboard pattern */
-.canvas-area > canvas.main-canvas {
+.canvas-area > canvas.main-canvas,
+.canvas-area > .helper-layer > canvas {
 	background-color: white !important;
 }
 

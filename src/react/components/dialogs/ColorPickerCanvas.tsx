@@ -13,10 +13,12 @@ interface ColorPickerCanvasProps {
 }
 
 /**
- * Color picker canvas component
+ * Color picker canvas component - matches jQuery implementation with absolute positioning
  *
  * Renders the rainbow (hue/saturation) canvas and luminosity slider
  * with interactive crosshair and arrow indicators.
+ *
+ * All elements use absolute positioning to match the original edit-colors.js layout.
  */
 export function ColorPickerCanvas({
 	rainbowCanvasRef,
@@ -30,7 +32,8 @@ export function ColorPickerCanvas({
 	onLuminosityPointerMove,
 }: ColorPickerCanvasProps) {
 	return (
-		<div style={{ display: "flex", gap: "8px" }}>
+		<>
+			{/* Rainbow canvas - no positioning, flows naturally */}
 			<canvas
 				ref={rainbowCanvasRef}
 				className="rainbow-canvas inset-shallow"
@@ -42,36 +45,34 @@ export function ColorPickerCanvas({
 				onPointerLeave={onRainbowPointerUp}
 				style={{
 					cursor: "crosshair",
-					border: "2px solid",
-					borderColor: "var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow)",
 				}}
 			/>
-			<div style={{ position: "relative" }}>
-				<canvas
-					ref={luminosityCanvasRef}
-					className="luminosity-canvas inset-shallow"
-					width={10}
-					height={187}
-					onPointerDown={onLuminosityPointerDown}
-					onPointerMove={onLuminosityPointerMove}
-					style={{
-						cursor: "ns-resize",
-						border: "2px solid",
-						borderColor: "var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow)",
-					}}
-				/>
-				<canvas
-					ref={lumArrowCanvasRef}
-					width={5}
-					height={9}
-					style={{
-						position: "absolute",
-						left: "15px",
-						top: `${3 + Math.floor((1 - luminosity / 100) * 187)}px`,
-						pointerEvents: "none",
-					}}
-				/>
-			</div>
-		</div>
+
+			{/* Luminosity canvas - uses CSS margin-left: 15px to position next to rainbow */}
+			<canvas
+				ref={luminosityCanvasRef}
+				className="luminosity-canvas inset-shallow"
+				width={10}
+				height={187}
+				onPointerDown={onLuminosityPointerDown}
+				onPointerMove={onLuminosityPointerMove}
+				style={{
+					cursor: "ns-resize",
+				}}
+			/>
+
+			{/* Lum arrow - absolute positioned at left: 215px, dynamic top */}
+			<canvas
+				ref={lumArrowCanvasRef}
+				width={5}
+				height={9}
+				style={{
+					position: "absolute",
+					left: "215px",
+					top: `${3 + Math.floor((1 - luminosity / 100) * 187)}px`,
+					pointerEvents: "none",
+				}}
+			/>
+		</>
 	);
 }
