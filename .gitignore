@@ -16,3 +16,6 @@ node_modules/
 # os crap
 Thumbs.db
 ~*
+
+# temporary files when using git subrepo
+.git-rewrite/
