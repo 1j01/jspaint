@@ -126,15 +126,29 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 			);
 
 			switch (toolId) {
-				case TOOL_IDS.LINE:
+				case TOOL_IDS.LINE: {
 					// Draw line from start to current
+					let endX = x;
+					let endY = y;
+					// Constrain line to 45-degree angles when Shift is held
+					if (shiftKey) {
+						const dx = x - startX;
+						const dy = y - startY;
+						const angle = Math.atan2(dy, dx);
+						const length = Math.sqrt(dx * dx + dy * dy);
+						// Snap to nearest 45-degree increment (0, 45, 90, 135, 180, 225, 270, 315)
+						const snapAngle = Math.round(angle / (Math.PI / 4)) * (Math.PI / 4);
+						endX = startX + length * Math.cos(snapAngle);
+						endY = startY + length * Math.sin(snapAngle);
+					}
 					ctx.strokeStyle = color;
 					ctx.lineWidth = strokeWidth;
 					ctx.beginPath();
 					ctx.moveTo(startX, startY);
-					ctx.lineTo(x, y);
+					ctx.lineTo(endX, endY);
 					ctx.stroke();
 					break;
+				}
 
 				case TOOL_IDS.RECTANGLE:
 					drawRectangle(ctx, startX, startY, width, height, shapeStrokeColor, shapeFillColor, strokeWidth);
@@ -197,14 +211,28 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 			);
 
 			switch (toolId) {
-				case TOOL_IDS.LINE:
+				case TOOL_IDS.LINE: {
+					let endX = x;
+					let endY = y;
+					// Constrain line to 45-degree angles when Shift is held
+					if (shiftKey) {
+						const dx = x - startX;
+						const dy = y - startY;
+						const angle = Math.atan2(dy, dx);
+						const length = Math.sqrt(dx * dx + dy * dy);
+						// Snap to nearest 45-degree increment (0, 45, 90, 135, 180, 225, 270, 315)
+						const snapAngle = Math.round(angle / (Math.PI / 4)) * (Math.PI / 4);
+						endX = startX + length * Math.cos(snapAngle);
+						endY = startY + length * Math.sin(snapAngle);
+					}
 					ctx.strokeStyle = color;
 					ctx.lineWidth = strokeWidth;
 					ctx.beginPath();
 					ctx.moveTo(startX, startY);
-					ctx.lineTo(x, y);
+					ctx.lineTo(endX, endY);
 					ctx.stroke();
 					break;
+				}
 
 				case TOOL_IDS.RECTANGLE:
 					drawRectangle(ctx, startX, startY, width, height, shapeStrokeColor, shapeFillColor, strokeWidth);

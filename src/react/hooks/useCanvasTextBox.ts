@@ -159,21 +159,22 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 
 			lines.forEach((line, lineIndex) => {
 				const chars = Array.from(line); // Handle multi-byte characters properly
+				const rotatedY = lineIndex * lineHeight; // Positive to go left in original coords
+
 				chars.forEach((char, charIndex) => {
 					// Characters go downward (positive X after rotation)
 					// Lines go leftward (positive Y moves left in original coords after 90° CW rotation)
 					const rotatedX = charIndex * charHeight;
-					const rotatedY = lineIndex * lineHeight; // Positive to go left
 					ctx.fillText(char, rotatedX, rotatedY);
-
-					// Draw underline if needed (vertical line to the right of rotated character)
-					if (textBox.fontUnderline) {
-						const textWidth = ctx.measureText(char).width;
-						// In rotated space, underline appears below the character (at rotatedX + fontSize + 1)
-						// spanning the character width along the Y axis
-						ctx.fillRect(rotatedX + textBox.fontSize + 1, rotatedY, 1, textWidth);
-					}
 				});
+
+				// Draw underline for the entire column (vertical line in display)
+				// In rotated space: X spans the column height, Y is offset to the left of the column
+				if (textBox.fontUnderline && chars.length > 0) {
+					const columnLength = chars.length * charHeight;
+					// Offset by fontSize + 2 in Y direction (appears to the left of text column in display)
+					ctx.fillRect(0, rotatedY + textBox.fontSize + 2, columnLength, 1);
+				}
 			});
 
 			ctx.restore();
