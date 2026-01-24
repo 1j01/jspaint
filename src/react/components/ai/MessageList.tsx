@@ -11,12 +11,12 @@ import { StreamingMessage } from "./StreamingMessage";
  * Props for the MessageList component
  */
 export interface MessageListProps {
-	/** Array of chat messages to display */
-	messages: ChatMessageType[];
-	/** Current streaming content for real-time display */
-	streamContent: string;
-	/** Whether the AI is currently streaming a response */
-	isStreaming: boolean;
+  /** Array of chat messages to display */
+  messages: ChatMessageType[];
+  /** Current streaming content for real-time display */
+  streamContent: string;
+  /** Whether the AI is currently streaming a response */
+  isStreaming: boolean;
 }
 
 /**
@@ -25,87 +25,69 @@ export interface MessageListProps {
  * @param {MessageListProps} props - Component props
  * @returns {JSX.Element} The rendered message list
  */
-export function MessageList({
-	messages,
-	streamContent,
-	isStreaming,
-}: MessageListProps) {
-	const listRef = useRef<HTMLDivElement>(null);
+export function MessageList({ messages, streamContent, isStreaming }: MessageListProps) {
+  const listRef = useRef<HTMLDivElement>(null);
 
-	// Auto-scroll to bottom when new content arrives
-	useEffect(() => {
-		if (listRef.current) {
-			listRef.current.scrollTop = listRef.current.scrollHeight;
-		}
-	}, [messages, streamContent]);
+  // Auto-scroll to bottom when new content arrives
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [messages, streamContent]);
 
-	const isEmpty = messages.length === 0 && !isStreaming;
+  const isEmpty = messages.length === 0 && !isStreaming;
 
-	return (
-		<div
-			ref={listRef}
-			className="chat-message-list"
-			style={{
-				flex: 1,
-				overflowY: "auto",
-				padding: "8px",
-				backgroundColor: "#ffffff",
-				border: "2px inset #ffffff",
-				minHeight: "100px",
-			}}
-		>
-			{isEmpty ? (
-				<div
-					className="chat-empty-state"
-					style={{
-						display: "flex",
-						flexDirection: "column",
-						alignItems: "center",
-						justifyContent: "center",
-						height: "100%",
-						color: "#808080",
-						fontSize: "12px",
-						textAlign: "center",
-						padding: "20px",
-					}}
-				>
-					<div style={{ marginBottom: "8px" }}>
-						Ask the AI to draw something!
-					</div>
-					<div style={{ fontSize: "11px" }}>
-						Try: "Draw a red circle in the center" or "Fill the canvas with blue"
-					</div>
-				</div>
-			) : (
-				<>
-					{/* Filter out the last assistant message if it's empty and we're streaming */}
-					{messages
-						.filter((msg, idx) => {
-							// If streaming, skip the last empty assistant message (it's the placeholder)
-							if (
-								isStreaming &&
-								idx === messages.length - 1 &&
-								msg.role === "assistant" &&
-								!msg.content.trim()
-							) {
-								return false;
-							}
-							return true;
-						})
-						.map((msg) => (
-							<ChatMessage key={msg.id} message={msg} />
-						))}
-					{/* Show streaming message if active */}
-					{isStreaming && (
-						<StreamingMessage
-							content={streamContent}
-							isStreaming={isStreaming}
-						/>
-					)}
-				</>
-			)}
-		</div>
-	);
+  return (
+    <div
+      ref={listRef}
+      className="chat-message-list"
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "8px",
+        backgroundColor: "#ffffff",
+        border: "2px inset #ffffff",
+        minHeight: "100px",
+      }}
+    >
+      {isEmpty ? (
+        <div
+          className="chat-empty-state"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            color: "#808080",
+            fontSize: "12px",
+            textAlign: "center",
+            padding: "20px",
+          }}
+        >
+          <div style={{ marginBottom: "8px" }}>Ask the AI to draw something!</div>
+          <div style={{ fontSize: "11px" }}>Try: "Draw a red circle in the center" or "Fill the canvas with blue"</div>
+        </div>
+      ) : (
+        <>
+          {/* Filter out the last assistant message if it's empty and we're streaming */}
+          {messages
+            .filter((msg, idx) => {
+              // If streaming, skip the last empty assistant message (it's the placeholder)
+              if (isStreaming && idx === messages.length - 1 && msg.role === "assistant" && !msg.content.trim()) {
+                return false;
+              }
+              return true;
+            })
+            .map((msg) => (
+              <ChatMessage key={msg.id} message={msg} />
+            ))}
+          {/* Show streaming message if active */}
+          {isStreaming && <StreamingMessage content={streamContent} isStreaming={isStreaming} />}
+        </>
+      )}
+    </div>
+  );
 }
 
 export default MessageList;

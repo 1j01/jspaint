@@ -107,60 +107,31 @@ function AppContent() {
 	const { state } = useApp();
 	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
 	const { selectedToolId, setTool } = useTool();
-	const { getRoot, goToNode, undo: undoTree, redo: redoTree, canUndo, canRedo, pushState: pushTreeState } = useTreeHistory();
 	const { cursorPosition } = useCursorPosition();
-	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
+
+	// Use extracted hooks for canvas history and clipboard
+	const {
+		saveHistoryState,
+		undo,
+		redo,
+		canUndo,
+		canRedo,
+		getRoot,
+		goToNode,
+	} = useCanvasHistory({ canvasRef });
+
+	const {
+		hasClipboard,
+		hasSelection,
+		selection,
+		setSelection,
+		clearSelection,
+		copy,
+		cut,
+		paste,
+	} = useClipboardOperations();
 
 	// console.warn('[AppContent] 📦 All hooks called successfully');
-
-	// Clipboard actions using direct store access to avoid infinite loops
-	const clipboard = useToolStore((state) => state.clipboard);
-	const setClipboard = useToolStore((state) => state.setClipboard);
-	const hasClipboard = clipboard !== null;
-	const copy = useCallback(() => {
-		if (selection?.imageData) {
-			setClipboard(selection.imageData);
-		}
-	}, [selection, setClipboard]);
-	const cut = useCallback(() => {
-		if (selection?.imageData) {
-			setClipboard(selection.imageData);
-		}
-	}, [selection, setClipboard]);
-	const paste = useCallback(() => clipboard, [clipboard]);
-
-	// Wrapper for saveState that captures canvas imageData and saves to tree history
-	const saveHistoryState = useCallback(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) return;
-		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-		// Save to tree history (used by Canvas component and dialogs)
-		pushTreeState(imageData, "Manual Save");
-	}, [canvasRef, pushTreeState]);
-
-	// Wrap undo/redo to actually restore canvas using tree history
-	const undo = useCallback(() => {
-		const node = undoTree();
-		if (node && canvasRef.current) {
-			const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
-			if (ctx) {
-				ctx.putImageData(node.imageData, 0, 0);
-			}
-		}
-	}, [undoTree, canvasRef]);
-
-	const redo = useCallback(() => {
-		const node = redoTree();
-		if (node && canvasRef.current) {
-			const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
-			if (ctx) {
-				ctx.putImageData(node.imageData, 0, 0);
-			}
-		}
-	}, [redoTree, canvasRef]);
 
 	const { magnification, setMagnification } = useMagnification();
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
