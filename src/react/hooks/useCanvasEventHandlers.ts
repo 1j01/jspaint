@@ -265,7 +265,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 			// Handle shape preview
 			if (shapes.isDrawing() && shapes.isShapeTool(selectedToolId)) {
-				shapes.previewShape(x, y, selectedToolId, ctx);
+				shapes.previewShape(x, y, selectedToolId, ctx, e.shiftKey);
 				return;
 			}
 
@@ -333,7 +333,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 			// Finalize shape drawing
 			if (shapes.isDrawing() && shapes.isShapeTool(selectedToolId)) {
-				shapes.finalizeShape(x, y, selectedToolId, ctx);
+				shapes.finalizeShape(x, y, selectedToolId, ctx, e.shiftKey);
 				canvas.releasePointerCapture(e.pointerId);
 
 				saveHistoryState(TOOL_NAMES[selectedToolId] || "Shape");

@@ -21,14 +21,18 @@ npm run lint-tsc-react   # TypeScript checking for React code
 npm run lint-eslint      # ESLint only
 npm run format           # Format React code with Prettier
 
-# Testing (Playwright)
+# Testing (Playwright - runs against React app at port 11822)
 npm run test                              # Run all Playwright tests
 npm run test -- tests/tools.spec.ts       # Run single test file
+npm run test -- tests/shape-tools.spec.ts # Run shape tools tests
 npm run test -- -g "pencil tool"          # Run tests matching pattern
 npm run test:headed                       # Run tests with visible browser
 npm run test:ui                           # Open Playwright UI
 npm run test:debug                        # Debug tests
 npm run test:update-snapshots             # Update visual snapshots
+
+# Available test files: tools, shape-tools, undo-redo, visual, magnifier,
+# help-window, menu-file, menu-edit, menu-view, menu-image, menu-colors, menu-help
 ```
 
 ## Architecture
@@ -51,6 +55,14 @@ npm run test:update-snapshots             # Update visual snapshots
 - `useCanvasEventHandlers` - Centralized event delegation to tool-specific hooks
 - `useCanvasLifecycle` - Initialization and cleanup
 - Module-level state persists canvas data across React remounts
+
+**Canvas Hooks** (`src/react/hooks/`) - Organized by domain:
+- Drawing: `useCanvasDrawing`, `useAirbrushEffect`
+- Selection: `useCanvasSelection`, `useRectangularSelection`, `useFreeFormSelection`, `useSelectionOperations`, `useSelectionAnimation`
+- Shapes: `useCanvasShapes`, `useCanvasCurvePolygon`
+- Text: `useCanvasTextBox`, `useFontState`, `useSystemFonts`
+- Events/Lifecycle: `useCanvasEventHandlers`, `useCanvasLifecycle`, `useKeyboardShortcuts`
+- UI: `useDraggable`, `useResizable`, `useColorPicker`, `useColorCanvases`, `useDialogHandlers`
 
 **Key Hook Pattern**:
 ```typescript
@@ -82,7 +94,7 @@ useCanvasEventHandlers({ canvasRef, drawingOps, shapeOps, selectionOps, ... });
 
 ### Build System
 
-Vite multi-page app with React Compiler enabled (`babel-plugin-react-compiler`). Entry points:
+Vite multi-page app (`vite.config.js`) with React Compiler enabled (`babel-plugin-react-compiler`). Entry points:
 - `/index.html` - Workspace selector
 - `/new/index.html` - React app
 - `/old/` - Legacy app (copied as static files, not processed by Vite)
@@ -120,6 +132,12 @@ Free-Form Select, Rectangular Select, Eraser, Fill (flood fill), Pick Color (eye
 - http://localhost:1999/new/ - React app
 - http://localhost:1999/old/ - Legacy jQuery app
 - Tests run against http://localhost:11822/new/ (auto-started by Playwright)
+
+## Debugging
+
+**Clear IndexedDB State**: To reset persisted state during development, open browser DevTools > Application > IndexedDB > delete `mcpaint-db`.
+
+**VS Code Debugging**: Launch configuration in `.vscode/launch.json` for attaching to Chrome.
 
 ## Key Features Beyond MS Paint
 

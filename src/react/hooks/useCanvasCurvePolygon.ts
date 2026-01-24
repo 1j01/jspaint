@@ -57,7 +57,7 @@ interface UseCanvasCurvePolygonProps {
  * }
  */
 export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurvePolygonProps) {
-	const { primaryColor, secondaryColor } = useColors();
+	const { secondaryColor } = useColors();
 	const { fillStyle, lineWidth } = useShapeSettings();
 	const { saveState } = useHistory();
 
@@ -312,6 +312,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			points: [],
 			previewImageData: null,
 			active: false,
+			button: 0,
 		};
 	}, []);
 
@@ -321,6 +322,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			points: [],
 			previewImageData: null,
 			active: false,
+			button: 0,
 		};
 	}, []);
 
