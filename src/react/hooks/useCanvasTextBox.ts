@@ -52,7 +52,8 @@ interface UseCanvasTextBoxProps {
  * textBox.commitTextBox();
  */
 export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
-	const { primaryColor } = useColors();
+	const { primaryColor, secondaryColor } = useColors();
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
 
 	// Use stores directly with individual selectors (no useShallow needed)
 	const textBox = useToolStore((state) => state.textBox);
@@ -139,6 +140,12 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) return;
 
+		// Draw background if opaque mode is enabled (matching jQuery behavior)
+		if (drawOpaque) {
+			ctx.fillStyle = secondaryColor;
+			ctx.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
+		}
+
 		// Build font string
 		let fontStyle = "";
 		if (textBox.fontItalic) fontStyle += "italic ";
@@ -198,7 +205,7 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 		}
 
 		clearTextBox();
-	}, [textBox, primaryColor, canvasRef, clearTextBox]);
+	}, [textBox, primaryColor, secondaryColor, drawOpaque, canvasRef, clearTextBox]);
 
 	// Check if currently creating
 	const isCreating = useCallback((): boolean => {

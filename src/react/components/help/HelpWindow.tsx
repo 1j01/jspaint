@@ -6,10 +6,18 @@
  * - Resizable split pane (contents list + iframe)
  * - 8 resize handles
  * - Draggable titlebar
+ *
+ * Refactored to use:
+ * - useDraggable hook for window dragging
+ * - useResizable hook for window resizing
+ * - useHelpNavigation hook for back/forward navigation
  */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { parseHelpContents, type HelpItem } from "../../utils/helpParser";
+import { useDraggable } from "../../hooks/useDraggable";
+import { useResizable } from "../../hooks/useResizable";
+import { useHelpNavigation } from "../../hooks/useHelpNavigation";
 import "./HelpWindow.css";
 
 export interface HelpWindowProps {
@@ -26,51 +34,73 @@ const DEFAULT_PAGE = "/help/default.html";
 const WEB_HELP_PAGE = "/help/online_support.htm";
 
 export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
-	const windowRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement>(null);
 	const contentsListRef = useRef<HTMLUListElement>(null);
-	const resizerRef = useRef<HTMLDivElement>(null);
+
+	// Use draggable hook for window movement
+	const {
+		position,
+		elementRef: windowRef,
+		handleProps: titlebarProps,
+		isDragging,
+		setPosition,
+	} = useDraggable({
+		initialPosition: { x: 100, y: 150 },
+		enabled: true,
+	});
+
+	// Use resizable hook for window sizing
+	const {
+		size,
+		setSize,
+		resizeHandleProps,
+		isResizing,
+		positionOffset,
+		resetPositionOffset,
+	} = useResizable({
+		initialSize: { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT },
+		minWidth: MIN_WIDTH,
+		minHeight: MIN_HEIGHT,
+	});
+
+	// Apply position offset from resizing (for north/west edges)
+	useEffect(() => {
+		if (positionOffset.x !== 0 || positionOffset.y !== 0) {
+			if (position) {
+				setPosition({
+					x: position.x + positionOffset.x,
+					y: position.y + positionOffset.y,
+				});
+			}
+			resetPositionOffset();
+		}
+	}, [positionOffset, position, setPosition, resetPositionOffset]);
 
 	// Window state
-	const [position, setPosition] = useState({ left: 0, top: 150 });
-	const [size, setSize] = useState({ width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT });
 	const [isMinimized, setIsMinimized] = useState(false);
 	const [isMaximized, setIsMaximized] = useState(false);
-	const [savedState, setSavedState] = useState<{ position: typeof position; size: typeof size } | null>(null);
+	const [savedState, setSavedState] = useState<{ position: { x: number; y: number }; size: { width: number; height: number } } | null>(null);
 
 	// TOC state
 	const [tocItems, setTocItems] = useState<HelpItem[]>([]);
 	const [sidebarVisible, setSidebarVisible] = useState(true);
-	const [selectedUrl, setSelectedUrl] = useState(DEFAULT_PAGE);
-	const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set()); // Multiple folders can be expanded
+	const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
 
-	// Navigation state
-	const [history, setHistory] = useState<string[]>([DEFAULT_PAGE]);
-	const [historyIndex, setHistoryIndex] = useState(0);
-	const canGoBack = historyIndex > 0;
-	const canGoForward = historyIndex < history.length - 1;
+	// Use navigation hook for history
+	const {
+		currentUrl,
+		navigate,
+		goBack,
+		goForward,
+		canGoBack,
+		canGoForward,
+	} = useHelpNavigation({ initialUrl: DEFAULT_PAGE });
 
-	// Dragging state
-	const [isDragging, setIsDragging] = useState(false);
-	const dragStateRef = useRef<{ startX: number; startY: number; originalLeft: number; originalTop: number } | null>(null);
-
-	// Resizing state
-	const [isResizing, setIsResizing] = useState(false);
-	const resizeStateRef = useRef<{
-		direction: string;
-		startX: number;
-		startY: number;
-		originalLeft: number;
-		originalTop: number;
-		originalWidth: number;
-		originalHeight: number;
-	} | null>(null);
-
-	// Split pane resizing state
+	// Split pane resizing state (kept inline as it's simple and specific to this component)
 	const [isSplitResizing, setIsSplitResizing] = useState(false);
-	const [splitPosition, setSplitPosition] = useState(200); // Contents flex-basis
-	const [tempResizerPosition, setTempResizerPosition] = useState<number | null>(null); // Temporary position during drag
+	const [splitPosition, setSplitPosition] = useState(200);
+	const [tempResizerPosition, setTempResizerPosition] = useState<number | null>(null);
 	const splitResizeRef = useRef<{ startX: number; originalWidth: number } | null>(null);
 
 	// Load TOC on mount
@@ -78,7 +108,6 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		if (isOpen && tocItems.length === 0) {
 			parseHelpContents(CONTENTS_FILE)
 				.then((items) => {
-					// Add default "Welcome to Help" item at the beginning
 					const defaultItem: typeof items[0] = {
 						id: "welcome",
 						name: "Welcome to Help",
@@ -92,97 +121,6 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		}
 	}, [isOpen, tocItems.length]);
 
-	// Handle titlebar drag
-	const handleTitlebarPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-		if ((e.target as HTMLElement).closest('button')) return;
-
-		e.preventDefault();
-		setIsDragging(true);
-		dragStateRef.current = {
-			startX: e.clientX,
-			startY: e.clientY,
-			originalLeft: position.left,
-			originalTop: position.top,
-		};
-		(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-		document.body.classList.add("cursor-bully");
-	}, [position]);
-
-	const handlePointerMove = useCallback((e: PointerEvent) => {
-		if (isDragging && dragStateRef.current) {
-			const deltaX = e.clientX - dragStateRef.current.startX;
-			const deltaY = e.clientY - dragStateRef.current.startY;
-			setPosition({
-				left: dragStateRef.current.originalLeft + deltaX,
-				top: dragStateRef.current.originalTop + deltaY,
-			});
-		} else if (isResizing && resizeStateRef.current) {
-			const { direction, startX, startY, originalLeft, originalTop, originalWidth, originalHeight } = resizeStateRef.current;
-			const deltaX = e.clientX - startX;
-			const deltaY = e.clientY - startY;
-
-			let newLeft = originalLeft;
-			let newTop = originalTop;
-			let newWidth = originalWidth;
-			let newHeight = originalHeight;
-
-			if (direction.includes('n')) {
-				newTop = originalTop + deltaY;
-				newHeight = Math.max(MIN_HEIGHT, originalHeight - deltaY);
-			}
-			if (direction.includes('s')) {
-				newHeight = Math.max(MIN_HEIGHT, originalHeight + deltaY);
-			}
-			if (direction.includes('w')) {
-				newLeft = originalLeft + deltaX;
-				newWidth = Math.max(MIN_WIDTH, originalWidth - deltaX);
-			}
-			if (direction.includes('e')) {
-				newWidth = Math.max(MIN_WIDTH, originalWidth + deltaX);
-			}
-
-			setPosition({ left: newLeft, top: newTop });
-			setSize({ width: newWidth, height: newHeight });
-		} else if (isSplitResizing && splitResizeRef.current) {
-			const deltaX = e.clientX - splitResizeRef.current.startX;
-			const newWidth = Math.max(100, Math.min(size.width - 200, splitResizeRef.current.originalWidth + deltaX));
-			setTempResizerPosition(newWidth);
-		}
-	}, [isDragging, isResizing, isSplitResizing, size.width]);
-
-	const handlePointerUp = useCallback(() => {
-		// Commit the split position if we were resizing
-		if (isSplitResizing && tempResizerPosition !== null) {
-			setSplitPosition(tempResizerPosition);
-			setTempResizerPosition(null);
-		}
-
-		setIsDragging(false);
-		setIsResizing(false);
-		setIsSplitResizing(false);
-		dragStateRef.current = null;
-		resizeStateRef.current = null;
-		splitResizeRef.current = null;
-		document.body.classList.remove("cursor-bully");
-	}, [isSplitResizing, tempResizerPosition]);
-
-	// Handle window resize handles
-	const handleResizePointerDown = useCallback((direction: string, e: React.PointerEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-		setIsResizing(true);
-		resizeStateRef.current = {
-			direction,
-			startX: e.clientX,
-			startY: e.clientY,
-			originalLeft: position.left,
-			originalTop: position.top,
-			originalWidth: size.width,
-			originalHeight: size.height,
-		};
-		(e.target as HTMLElement).setPointerCapture(e.pointerId);
-	}, [position, size]);
-
 	// Handle split pane resizer
 	const handleSplitResizePointerDown = useCallback((e: React.PointerEvent) => {
 		e.preventDefault();
@@ -194,42 +132,34 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		(e.target as HTMLElement).setPointerCapture(e.pointerId);
 	}, [splitPosition]);
 
-	// Global event listeners
+	// Split pane pointer move/up handlers
 	useEffect(() => {
-		if (isDragging || isResizing || isSplitResizing) {
-			window.addEventListener('pointermove', handlePointerMove);
-			window.addEventListener('pointerup', handlePointerUp);
-			return () => {
-				window.removeEventListener('pointermove', handlePointerMove);
-				window.removeEventListener('pointerup', handlePointerUp);
-			};
-		}
-	}, [isDragging, isResizing, isSplitResizing, handlePointerMove, handlePointerUp]);
+		if (!isSplitResizing) return;
 
-	// Navigation handlers
-	const navigate = useCallback((url: string) => {
-		// Prepend "/help/" to local paths that don't already have it
-		const fullUrl = url.startsWith("/help/") ? url : `/help/${url}`;
-		setSelectedUrl(fullUrl);
-		setHistory(prev => [...prev.slice(0, historyIndex + 1), fullUrl]);
-		setHistoryIndex(prev => prev + 1);
-	}, [historyIndex]);
+		const handlePointerMove = (e: PointerEvent) => {
+			if (splitResizeRef.current) {
+				const deltaX = e.clientX - splitResizeRef.current.startX;
+				const newWidth = Math.max(100, Math.min(size.width - 200, splitResizeRef.current.originalWidth + deltaX));
+				setTempResizerPosition(newWidth);
+			}
+		};
 
-	const goBack = useCallback(() => {
-		if (canGoBack) {
-			const newIndex = historyIndex - 1;
-			setHistoryIndex(newIndex);
-			setSelectedUrl(history[newIndex]);
-		}
-	}, [canGoBack, historyIndex, history]);
+		const handlePointerUp = () => {
+			if (tempResizerPosition !== null) {
+				setSplitPosition(tempResizerPosition);
+				setTempResizerPosition(null);
+			}
+			setIsSplitResizing(false);
+			splitResizeRef.current = null;
+		};
 
-	const goForward = useCallback(() => {
-		if (canGoForward) {
-			const newIndex = historyIndex + 1;
-			setHistoryIndex(newIndex);
-			setSelectedUrl(history[newIndex]);
-		}
-	}, [canGoForward, historyIndex, history]);
+		window.addEventListener('pointermove', handlePointerMove);
+		window.addEventListener('pointerup', handlePointerUp);
+		return () => {
+			window.removeEventListener('pointermove', handlePointerMove);
+			window.removeEventListener('pointerup', handlePointerUp);
+		};
+	}, [isSplitResizing, size.width, tempResizerPosition]);
 
 	// Window control handlers
 	const handleMinimize = useCallback(() => {
@@ -238,20 +168,20 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 
 	const handleMaximize = useCallback(() => {
 		if (isMaximized) {
-			// Restore
 			if (savedState) {
 				setPosition(savedState.position);
 				setSize(savedState.size);
 			}
 			setIsMaximized(false);
 		} else {
-			// Maximize
-			setSavedState({ position, size });
-			setPosition({ left: 0, top: 0 });
+			if (position) {
+				setSavedState({ position, size });
+			}
+			setPosition({ x: 0, y: 0 });
 			setSize({ width: window.innerWidth, height: window.innerHeight });
 			setIsMaximized(true);
 		}
-	}, [isMaximized, savedState, position, size]);
+	}, [isMaximized, savedState, position, size, setPosition, setSize]);
 
 	const handleToggleSidebar = useCallback(() => {
 		setSidebarVisible(prev => !prev);
@@ -261,7 +191,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		navigate(WEB_HELP_PAGE);
 	}, [navigate]);
 
-	// Toggle folder expansion (multiple folders can be expanded)
+	// Toggle folder expansion
 	const toggleFolder = useCallback((folderId: string) => {
 		setExpandedFolders(prev => {
 			const newSet = new Set(prev);
@@ -277,7 +207,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 	// Render TOC item recursively
 	const renderTocItem = useCallback((item: HelpItem, depth = 0): React.ReactNode => {
 		const isFolder = item.children && item.children.length > 0;
-		const isSelected = item.url === selectedUrl;
+		const isSelected = item.url === currentUrl;
 		const isExpanded = expandedFolders.has(item.id);
 
 		const handleClick = () => {
@@ -305,7 +235,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 				)}
 			</li>
 		);
-	}, [selectedUrl, expandedFolders, toggleFolder, navigate]);
+	}, [currentUrl, expandedFolders, toggleFolder, navigate]);
 
 	if (!isOpen) return null;
 
@@ -313,20 +243,16 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		touchAction: "none",
 		position: "absolute",
 		zIndex: 22,
-		left: position.left,
-		top: position.top,
+		left: position?.x ?? 100,
+		top: position?.y ?? 150,
 		width: size.width,
 		height: size.height,
-		display: isMinimized ? "none" : undefined, // Let CSS handle display: flex
-	};
-
-	const mainStyle: React.CSSProperties = {
-		position: "relative",
+		display: isMinimized ? "none" : undefined,
 	};
 
 	const contentsStyle: React.CSSProperties = {
 		flexBasis: isSplitResizing ? undefined : (sidebarVisible ? splitPosition : 0),
-		marginRight: isSplitResizing ? 4 : undefined, // Add margin during resize for the resizer width
+		marginRight: isSplitResizing ? 4 : undefined,
 		margin: "1px",
 		display: sidebarVisible ? undefined : "none",
 	};
@@ -339,23 +265,16 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		display: sidebarVisible ? undefined : "none",
 	};
 
-	const iframeStyle: React.CSSProperties = {
-		margin: "1px",
-		backgroundColor: "white",
-		border: "",
-	};
-
 	return createPortal(
 		<div
 			ref={windowRef}
-			className="window os-window help-window focused"
+			className={`window os-window help-window focused ${isDragging ? "dragging" : ""} ${isResizing ? "resizing" : ""}`}
 			style={windowStyle}
 		>
 			{/* Titlebar */}
 			<div
 				className="window-titlebar"
-				style={{ touchAction: "none" }}
-				onPointerDown={handleTitlebarPointerDown}
+				{...titlebarProps}
 			>
 				<img
 					src="/images/chm-16x16.png"
@@ -418,7 +337,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 				</div>
 
 				{/* Main content area */}
-				<div className="main" style={mainStyle}>
+				<div className="main" style={{ position: "relative" }}>
 					{/* Contents list */}
 					<ul
 						ref={contentsListRef}
@@ -430,7 +349,6 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 
 					{/* Resizer */}
 					<div
-						ref={resizerRef}
 						className="resizer"
 						style={resizerStyle}
 						onPointerDown={handleSplitResizePointerDown}
@@ -441,55 +359,27 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 						ref={iframeRef}
 						allowFullScreen
 						sandbox="allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-modals allow-popups allow-downloads"
-						src={selectedUrl}
+						src={currentUrl}
 						className="inset-deep"
 						name="help-frame"
-						style={iframeStyle}
+						style={{
+							margin: "1px",
+							backgroundColor: "white",
+							border: "",
+						}}
 					/>
 				</div>
 			</div>
 
-			{/* Window resize handles */}
-			<div
-				className="handle"
-				style={{ position: "absolute", top: -2, right: -2, width: 4, height: 4, touchAction: "none", cursor: "ne-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("ne", e)}
-			/>
-			<div
-				className="handle"
-				style={{ position: "absolute", top: -2, left: "calc(2px)", width: "calc(100% - 4px)", height: 4, touchAction: "none", cursor: "n-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("n", e)}
-			/>
-			<div
-				className="handle"
-				style={{ position: "absolute", top: -2, left: -2, width: 4, height: 4, touchAction: "none", cursor: "nw-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("nw", e)}
-			/>
-			<div
-				className="handle"
-				style={{ position: "absolute", top: "calc(2px)", left: -2, width: 4, height: "calc(100% - 4px)", touchAction: "none", cursor: "w-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("w", e)}
-			/>
-			<div
-				className="handle"
-				style={{ position: "absolute", bottom: -2, left: -2, width: 4, height: 4, touchAction: "none", cursor: "sw-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("sw", e)}
-			/>
-			<div
-				className="handle"
-				style={{ position: "absolute", bottom: -2, left: "calc(2px)", width: "calc(100% - 4px)", height: 4, touchAction: "none", cursor: "s-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("s", e)}
-			/>
-			<div
-				className="handle"
-				style={{ position: "absolute", bottom: -2, right: -2, width: 4, height: 4, touchAction: "none", cursor: "se-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("se", e)}
-			/>
-			<div
-				className="handle"
-				style={{ position: "absolute", top: "calc(2px)", right: -2, width: 4, height: "calc(100% - 4px)", touchAction: "none", cursor: "e-resize" }}
-				onPointerDown={(e) => handleResizePointerDown("e", e)}
-			/>
+			{/* Window resize handles - using useResizable hook */}
+			<div className="handle" {...resizeHandleProps.ne} />
+			<div className="handle" {...resizeHandleProps.n} />
+			<div className="handle" {...resizeHandleProps.nw} />
+			<div className="handle" {...resizeHandleProps.w} />
+			<div className="handle" {...resizeHandleProps.sw} />
+			<div className="handle" {...resizeHandleProps.s} />
+			<div className="handle" {...resizeHandleProps.se} />
+			<div className="handle" {...resizeHandleProps.e} />
 		</div>,
 		document.body
 	);

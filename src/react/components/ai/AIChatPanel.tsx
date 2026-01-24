@@ -4,7 +4,7 @@
  * the canvas through natural language commands.
  * Uses Windows 98 styling to match the rest of the application.
  */
-import { useRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useAIChat } from "../../hooks/useAIChat";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
@@ -32,8 +32,6 @@ export interface AIChatPanelProps {
  * @returns {JSX.Element | null} The rendered panel or null if closed
  */
 export function AIChatPanel({ canvasRef, isOpen, onClose }: AIChatPanelProps) {
-	const panelRef = useRef<HTMLDivElement>(null);
-
 	const {
 		messages,
 		isStreaming,
@@ -42,7 +40,6 @@ export function AIChatPanel({ canvasRef, isOpen, onClose }: AIChatPanelProps) {
 		error,
 		sendMessage,
 		cancel,
-		clearMessages,
 		resetChat,
 	} = useAIChat({
 		canvasRef,

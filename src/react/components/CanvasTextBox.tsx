@@ -1,21 +1,9 @@
-import React, { forwardRef, CSSProperties, ChangeEvent, KeyboardEvent, FocusEvent, useCallback, useRef, useState, useEffect } from "react";
+import React, { forwardRef, CSSProperties, ChangeEvent, KeyboardEvent, FocusEvent, useCallback, useRef, useEffect } from "react";
 import type { TextBoxState } from "../context/state/types";
 import { useSettingsStore } from "../context/state/settingsStore";
-import {
-	HANDLE_CONFIGS,
-	HANDLE_START,
-	HANDLE_MIDDLE,
-	HANDLE_END,
-	getCursor,
-	getHandlePositions,
-	type HandleAxis,
-} from "../utils/resizeHandles";
-
-/**
- * Line scale factor matching jQuery implementation (20/12 ≈ 1.667)
- * This determines the line height as a multiplier of font size
- */
-const LINE_SCALE = 20 / 12;
+import { useTextCanvasPreview, LINE_SCALE } from "../hooks/useTextCanvasPreview";
+import { useTextBoxDragResize } from "../hooks/useTextBoxDragResize";
+import { TextBoxResizeHandles } from "./TextBoxResizeHandles";
 
 /**
  * Props for CanvasTextBox component
@@ -88,21 +76,29 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
-	const [isDragging, setIsDragging] = useState(false);
-	const [isResizing, setIsResizing] = useState(false);
-	const dragStateRef = useRef<{
-		startX: number;
-		startY: number;
-		originalX: number;
-		originalY: number;
-		originalWidth: number;
-		originalHeight: number;
-		xAxis?: HandleAxis;
-		yAxis?: HandleAxis;
-	} | null>(null);
 
 	// Combine external ref with internal ref
 	React.useImperativeHandle(ref, () => textareaRef.current!);
+
+	// Use drag/resize hook for state management
+	const { isDragging, isResizing, handleContainerPointerDown, handleResizePointerDown } = useTextBoxDragResize({
+		x: textBox.x,
+		y: textBox.y,
+		width: textBox.width,
+		height: textBox.height,
+		magnification,
+		onMove,
+		onResize,
+	});
+
+	// Use canvas preview hook for text rendering
+	useTextCanvasPreview({
+		canvasRef,
+		textBox,
+		primaryColor,
+		secondaryColor,
+		drawOpaque,
+	});
 
 	// Get .canvas-area padding to position correctly
 	const canvasArea = document.querySelector(".canvas-area");
@@ -166,215 +162,13 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		}
 	}, [textBox.text, textBox.fontVertical, textBox.height, textBox.width, isDragging, isResizing, onResize]);
 
-	// Update canvas overlay when text changes
-	useEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
-
-		try {
-			// Clear canvas
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-			// Draw background if opaque mode
-			if (drawOpaque) {
-				ctx.fillStyle = secondaryColor;
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-			}
-
-			// Render text preview on canvas
-			if (textBox.text) {
-				const fontString = `${textBox.fontItalic ? "italic " : ""}${textBox.fontBold ? "bold " : ""}${textBox.fontSize}px ${textBox.fontFamily}`;
-				ctx.font = fontString;
-				ctx.fillStyle = primaryColor;
-				ctx.textBaseline = "top";
-
-				const lines = textBox.text.split("\n");
-				const lineHeight = textBox.fontSize * LINE_SCALE;
-
-				if (textBox.fontVertical) {
-					// Vertical text: rotate context 90 degrees and render from upper-right
-					ctx.save();
-					// Move to upper-right corner, then rotate
-					ctx.translate(textBox.width, 0);
-					ctx.rotate(Math.PI / 2); // Rotate 90 degrees clockwise
-
-					// Character spacing for vertical text (use fontSize for vertical stacking)
-					const charHeight = textBox.fontSize;
-
-					lines.forEach((line, lineIndex) => {
-						const chars = Array.from(line); // Handle multi-byte characters properly
-						const rotatedY = lineIndex * lineHeight; // Positive to go left in original coords
-
-						chars.forEach((char, charIndex) => {
-							// Characters go downward (positive X after rotation)
-							// Lines go leftward (positive Y moves left in original coords after 90° CW rotation)
-							const rotatedX = charIndex * charHeight;
-							ctx.fillText(char, rotatedX, rotatedY);
-						});
-
-						// Draw underline for the entire column (vertical line in display)
-						// In rotated space: X spans the column height, Y is offset to the left of the column
-						if (textBox.fontUnderline && chars.length > 0) {
-							const columnLength = chars.length * charHeight;
-							// Offset by fontSize + 2 in Y direction (appears to the left of text column in display)
-							ctx.fillRect(0, rotatedY + textBox.fontSize + 2, columnLength, 1);
-						}
-					});
-
-					ctx.restore();
-				} else {
-					// Horizontal text: render normally
-					lines.forEach((line, index) => {
-						const y = index * lineHeight;
-						ctx.fillText(line, 0, y);
-
-						// Draw underline if needed
-						if (textBox.fontUnderline) {
-							const metrics = ctx.measureText(line);
-							// Use fillRect to match commit rendering
-							ctx.fillRect(0, y + textBox.fontSize + 1, metrics.width, 1);
-						}
-					});
-				}
-			}
-		} catch (error) {
-			console.error("Error rendering text preview:", error);
-		}
-	}, [textBox.text, textBox.width, textBox.height, textBox.fontFamily, textBox.fontSize, textBox.fontBold, textBox.fontItalic, textBox.fontUnderline, textBox.fontVertical, primaryColor, secondaryColor, drawOpaque]);
-
-	// Handle container drag (move)
-	const handleContainerPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-		// Only drag if clicking on the container itself, not textarea or handles
-		if (e.target !== containerRef.current) return;
-
-		e.preventDefault();
-		e.stopPropagation();
-
-		setIsDragging(true);
-		dragStateRef.current = {
-			startX: e.clientX,
-			startY: e.clientY,
-			originalX: textBox.x,
-			originalY: textBox.y,
-			originalWidth: textBox.width,
-			originalHeight: textBox.height,
-		};
-
-		(e.target as HTMLElement).setPointerCapture(e.pointerId);
-		document.body.style.cursor = "move";
-		document.body.classList.add("cursor-bully");
-	}, [textBox.x, textBox.y, textBox.width, textBox.height]);
-
-	// Handle resize handle drag
-	const handleResizePointerDown = useCallback((xAxis: HandleAxis, yAxis: HandleAxis, e: React.PointerEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		setIsResizing(true);
-		dragStateRef.current = {
-			startX: e.clientX,
-			startY: e.clientY,
-			originalX: textBox.x,
-			originalY: textBox.y,
-			originalWidth: textBox.width,
-			originalHeight: textBox.height,
-			xAxis,
-			yAxis,
-		};
-
-		(e.target as HTMLElement).setPointerCapture(e.pointerId);
-		document.body.style.cursor = getCursor(xAxis, yAxis);
-		document.body.classList.add("cursor-bully");
-	}, [textBox.x, textBox.y, textBox.width, textBox.height]);
-
-	const handlePointerMove = useCallback((e: PointerEvent) => {
-		if (!isDragging && !isResizing) return;
-		if (!dragStateRef.current) return;
-
-		const deltaX = (e.clientX - dragStateRef.current.startX) / magnification;
-		const deltaY = (e.clientY - dragStateRef.current.startY) / magnification;
-
-		if (isDragging) {
-			// Move the textbox
-			onMove(
-				Math.round(dragStateRef.current.originalX + deltaX),
-				Math.round(dragStateRef.current.originalY + deltaY)
-			);
-		} else if (isResizing && dragStateRef.current.xAxis !== undefined && dragStateRef.current.yAxis !== undefined) {
-			// Resize the textbox
-			const { xAxis, yAxis, originalX, originalY, originalWidth, originalHeight } = dragStateRef.current;
-
-			let newX = originalX;
-			let newY = originalY;
-			let newWidth = originalWidth;
-			let newHeight = originalHeight;
-
-			// Handle horizontal resizing
-			if (xAxis === HANDLE_START) {
-				newX = originalX + deltaX;
-				newWidth = originalWidth - deltaX;
-			} else if (xAxis === HANDLE_END) {
-				newWidth = originalWidth + deltaX;
-			}
-
-			// Handle vertical resizing
-			if (yAxis === HANDLE_START) {
-				newY = originalY + deltaY;
-				newHeight = originalHeight - deltaY;
-			} else if (yAxis === HANDLE_END) {
-				newHeight = originalHeight + deltaY;
-			}
-
-			// Enforce minimum size
-			const minSize = 20;
-			if (newWidth < minSize) {
-				if (xAxis === HANDLE_START) {
-					newX = originalX + originalWidth - minSize;
-				}
-				newWidth = minSize;
-			}
-			if (newHeight < minSize) {
-				if (yAxis === HANDLE_START) {
-					newY = originalY + originalHeight - minSize;
-				}
-				newHeight = minSize;
-			}
-
-			// Update position if resizing from top or left
-			if (xAxis === HANDLE_START || yAxis === HANDLE_START) {
-				onMove(Math.round(newX), Math.round(newY));
-			}
-
-			onResize(Math.round(newWidth), Math.round(newHeight));
-		}
-	}, [isDragging, isResizing, magnification, onMove, onResize]);
-
-	const handlePointerUp = useCallback(() => {
-		if (!isDragging && !isResizing) return;
-
-		setIsDragging(false);
-		setIsResizing(false);
-		dragStateRef.current = null;
-
-		document.body.style.cursor = "";
-		document.body.classList.remove("cursor-bully");
-	}, [isDragging, isResizing]);
-
-	// Add global pointer event listeners
-	useEffect(() => {
-		if (!isDragging && !isResizing) return;
-
-		window.addEventListener("pointermove", handlePointerMove);
-		window.addEventListener("pointerup", handlePointerUp);
-
-		return () => {
-			window.removeEventListener("pointermove", handlePointerMove);
-			window.removeEventListener("pointerup", handlePointerUp);
-		};
-	}, [isDragging, isResizing, handlePointerMove, handlePointerUp]);
+	// Handler wrapper for container pointer down
+	const handleContainerDown = useCallback(
+		(e: React.PointerEvent<HTMLDivElement>) => {
+			handleContainerPointerDown(e, containerRef.current);
+		},
+		[handleContainerPointerDown]
+	);
 
 	const containerStyle: CSSProperties = {
 		cursor: "move",
@@ -429,33 +223,12 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		outline: "none",
 	};
 
-	const handleStyle = (left: number, top: number): CSSProperties => ({
-		touchAction: "none",
-		position: "absolute",
-		left: `${left}px`,
-		top: `${top}px`,
-		width: "3px",
-		height: "3px",
-		border: "1px solid #000",
-		background: "#fff",
-		boxSizing: "border-box",
-	});
-
-	const grabRegionStyle = (positions: ReturnType<typeof getHandlePositions>, cursor: string): CSSProperties => ({
-		position: "absolute",
-		cursor,
-		left: `${positions.grabRegion.left}px`,
-		top: `${positions.grabRegion.top}px`,
-		width: `${positions.grabRegion.width}px`,
-		height: `${positions.grabRegion.height}px`,
-	});
-
 	return (
 		<div
 			ref={containerRef}
 			className="on-canvas-object textbox"
 			style={containerStyle}
-			onPointerDown={handleContainerPointerDown}
+			onPointerDown={handleContainerDown}
 		>
 			{/* Textarea for editing */}
 			<textarea
@@ -479,26 +252,11 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 			/>
 
 			{/* Resize handles and grab regions */}
-			{HANDLE_CONFIGS.map(({ xAxis, yAxis }, index) => {
-				const positions = getHandlePositions(xAxis, yAxis, textBox.width, textBox.height);
-				const cursor = getCursor(xAxis, yAxis);
-				const isMiddle = xAxis === HANDLE_MIDDLE || yAxis === HANDLE_MIDDLE;
-
-				return (
-					<React.Fragment key={index}>
-						<div
-							className="handle"
-							style={handleStyle(positions.handle.left, positions.handle.top)}
-						/>
-						<div
-							className={`grab-region ${isMiddle ? "is-middle" : ""}`}
-							style={grabRegionStyle(positions, cursor)}
-							onPointerDown={(e) => handleResizePointerDown(xAxis, yAxis, e)}
-							onMouseDown={(e) => e.preventDefault()}
-						/>
-					</React.Fragment>
-				);
-			})}
+			<TextBoxResizeHandles
+				width={textBox.width}
+				height={textBox.height}
+				onResizePointerDown={handleResizePointerDown}
+			/>
 		</div>
 	);
 });

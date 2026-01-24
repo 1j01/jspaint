@@ -1,26 +1,20 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Canvas } from "../react/components/Canvas";
 import { ColorBox } from "../react/components/ColorBox";
 import { DialogManager } from "../react/components/DialogManager";
 import { ErrorBoundary } from "../react/components/ErrorBoundary";
-import type { AttributesValues } from "../react/components/dialogs/AttributesDialog";
-import type { FlipRotateAction } from "../react/components/dialogs/FlipRotateDialog";
-import type { StretchSkewValues } from "../react/components/dialogs/StretchSkewDialog";
 import { DEFAULT_STATUS_TEXT, Frame } from "../react/components/Frame";
 import { type Tool, ToolBox } from "../react/components/ToolBox";
 import { ToolOptions } from "../react/components/ToolOptions";
-import { MessageBoxDialog, type MessageBoxResult } from "../react/components/dialogs/MessageBoxDialog";
+import { MessageBoxDialog } from "../react/components/dialogs/MessageBoxDialog";
 import { useInitializeStores } from "../react/context/state/useInitializeStores";
 import { useUIStore } from "../react/context/state/uiStore";
 import { useSettingsStore } from "../react/context/state/settingsStore";
 import { useToolStore } from "../react/context/state/toolStore";
 import { TOOL_IDS } from "../react/context/state/types";
-import { useTreeHistory } from "../react/context/state/useTreeHistory";
 import { useColors } from "../react/context/state/useColors";
 import { useTool } from "../react/context/state/useTool";
-import { useHistory } from "../react/context/state/useHistory";
-import { useSelection } from "../react/context/state/useSelection";
 import { useMagnification } from "../react/context/state/useMagnification";
 import { useCursorPosition } from "../react/context/state/useCursorPosition";
 import { useApp } from "../react/context/state/useApp";
@@ -33,6 +27,8 @@ import { useMenuActions } from "../react/hooks/useMenuActions";
 import { useKeyboardShortcuts } from "../react/hooks/useKeyboardShortcuts";
 import { useDialogHandlers } from "../react/hooks/useDialogHandlers";
 import { useFontState } from "../react/hooks/useFontState";
+import { useCanvasHistory } from "../react/hooks/useCanvasHistory";
+import { useClipboardOperations } from "../react/hooks/useClipboardOperations";
 import { AIChatPanel } from "../react/components/ai/AIChatPanel";
 
 /**
