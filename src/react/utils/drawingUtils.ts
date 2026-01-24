@@ -416,7 +416,9 @@ export function sprayAirbrush(
 
 		// Only place dots within the circular radius
 		if (distance <= radius * radius) {
-			ctx.fillRect(Math.floor(x + rx), Math.floor(y + ry), 1, 1);
+			// Use bitwise OR for truncation toward zero (matches jQuery's ~~rx behavior)
+			// This differs from Math.floor which floors toward negative infinity
+			ctx.fillRect(x + (rx | 0), y + (ry | 0), 1, 1);
 		}
 	}
 }

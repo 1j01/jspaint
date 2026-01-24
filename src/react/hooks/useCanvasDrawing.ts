@@ -224,8 +224,9 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 					break;
 
 				case TOOL_IDS.AIRBRUSH:
-					// Airbrush continuous spray is handled by useAirbrushEffect interval
-					// No action needed here - the interval handles spray at lastX, lastY
+					// Spray on move to match jQuery behavior (sprays on both move AND interval)
+					// This creates denser trails when moving fast
+					sprayAirbrush(ctx, x, y, color, size);
 					break;
 
 				default:
