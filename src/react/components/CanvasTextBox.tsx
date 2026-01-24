@@ -204,8 +204,9 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 							// Draw underline if needed (vertical line to the right of character after rotation)
 							if (textBox.fontUnderline) {
 								const textWidth = ctx.measureText(char).width;
-								// Underline appears as a vertical line to the right of the rotated character
-								ctx.fillRect(rotatedX + textBox.fontSize - 2, rotatedY - textWidth, 1, textWidth);
+								// Underline appears below the character in rotated space
+								// Match the commit rendering coordinates
+								ctx.fillRect(rotatedX + textBox.fontSize + 1, rotatedY, 1, textWidth);
 							}
 						});
 					});
@@ -220,12 +221,8 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 						// Draw underline if needed
 						if (textBox.fontUnderline) {
 							const metrics = ctx.measureText(line);
-							ctx.strokeStyle = primaryColor;
-							ctx.lineWidth = 1;
-							ctx.beginPath();
-							ctx.moveTo(0, y + textBox.fontSize);
-							ctx.lineTo(metrics.width, y + textBox.fontSize);
-							ctx.stroke();
+							// Use fillRect to match commit rendering
+							ctx.fillRect(0, y + textBox.fontSize + 1, metrics.width, 1);
 						}
 					});
 				}

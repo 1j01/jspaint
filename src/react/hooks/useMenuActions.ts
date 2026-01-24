@@ -168,17 +168,42 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		editRedo: redo,
 		editHistory: useCallback(() => openDialog("history"), [openDialog]),
 		editCut: useCallback(() => {
-			if (hasSelection) {
-				cut();
+			if (hasSelection && selection) {
+				const canvas = canvasRef.current;
+				if (canvas) {
+					const ctx = canvas.getContext("2d", { willReadFrequently: true });
+					if (ctx) {
+						// Copy to clipboard first
+						cut();
+						// Save state before clearing
+						saveState();
+						// Clear the selection area with secondary color
+						ctx.fillStyle = secondaryColor;
+						ctx.fillRect(selection.x, selection.y, selection.width, selection.height);
+					}
+				}
 				clearSelection();
 			}
-		}, [hasSelection, cut, clearSelection]),
+		}, [hasSelection, selection, cut, clearSelection, canvasRef, saveState, secondaryColor]),
 		editCopy: useCallback(() => {
 			if (hasSelection) copy();
 		}, [hasSelection, copy]),
 		editPaste: useCallback(() => {
-			if (hasClipboard) paste();
-		}, [hasClipboard, paste]),
+			if (hasClipboard) {
+				const clipboardData = paste();
+				if (clipboardData) {
+					// Create a floating selection from clipboard data at (0, 0)
+					setSelection({
+						x: 0,
+						y: 0,
+						width: clipboardData.width,
+						height: clipboardData.height,
+						imageData: clipboardData,
+					});
+					setTool("select");
+				}
+			}
+		}, [hasClipboard, paste, setSelection, setTool]),
 		editClearSelection: useCallback(() => {
 			if (hasSelection) {
 				const canvas = canvasRef.current;

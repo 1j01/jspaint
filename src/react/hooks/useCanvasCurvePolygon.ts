@@ -9,12 +9,14 @@ export interface CurveState {
 	points: Point[];
 	previewImageData: ImageData | null;
 	active: boolean;
+	button: number; // Track which mouse button was used to start
 }
 
 export interface PolygonState {
 	points: Point[];
 	previewImageData: ImageData | null;
 	active: boolean;
+	button: number; // Track which mouse button was used to start
 }
 
 interface UseCanvasCurvePolygonProps {
@@ -64,6 +66,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 		points: [],
 		previewImageData: null,
 		active: false,
+		button: 0,
 	});
 
 	// Polygon state
@@ -71,6 +74,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 		points: [],
 		previewImageData: null,
 		active: false,
+		button: 0,
 	});
 
 	// Track last click for double-click detection (time + position)

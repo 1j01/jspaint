@@ -91,8 +91,8 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 			if (!textBoxState.current.isCreating) return;
 
 			const { startX, startY } = textBoxState.current;
-			const width = Math.max(50, Math.abs(x - startX));
-			const height = Math.max(20, Math.abs(y - startY));
+			const width = Math.max(20, Math.abs(x - startX));
+			const height = Math.max(10, Math.abs(y - startY));
 			const boxX = Math.min(startX, x);
 			const boxY = Math.min(startY, y);
 
