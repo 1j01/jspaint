@@ -128,7 +128,6 @@ Half-features:
 #### Limitations:
 
 A few things with the tools aren't done yet.
-See [TODO.md](TODO.md#Tools)
 
 Full clipboard support in the web app requires a browser supporting the [Async Clipboard API w/ Images](https://developers.google.com/web/updates/2019/07/image-support-for-async-clipboard), namely Chrome 76+ at the time of writing.
 
@@ -348,7 +347,7 @@ MCPaint is undergoing a major refactoring effort to migrate from jQuery to React
   - Dependabot for automated dependency updates
   - Automatic semantic versioning based on commit messages
 
-See [MIGRATE.md](MIGRATE.md) for detailed migration progress.
+See [CLAUDE.md](CLAUDE.md) for architecture details.
 
 ---
 
@@ -360,17 +359,17 @@ Compare the legacy jQuery implementation vs the new React implementation:
 npm run sloc
 ```
 
-### Implementation Comparison (December 2024)
+### Implementation Comparison (January 2026)
 
 | Metric        | Legacy (jQuery) | React (New) | Change |
 |---------------|-----------------|-------------|--------|
-| Files         | 42              | 113         | +71    |
-| Code Lines    | 17,531          | 12,532      | -4,999 |
-| Comment Lines | 4,100           | 4,105       | +5     |
-| Total Lines   | 23,363          | 18,672      | -4,691 |
+| Files         | 42              | 145         | +103   |
+| Code Lines    | 17,531          | 16,422      | -1,109 |
+| Comment Lines | 4,100           | 6,417       | +2,317 |
+| Total Lines   | 23,363          | 25,543      | +2,180 |
 
-**📈 Migration Progress**: React implementation is **71.5%** the size of legacy code
-**✨ Result**: React code is **28.5% more concise!**
+**📈 Migration Progress**: React implementation is **93.7%** the size of legacy code
+**✨ Result**: React code is **6.3% more concise** with better documentation!
 
 ### By File Type
 
@@ -383,9 +382,9 @@ npm run sloc
 **React (src/react + src/new)**
 | Extension | Files | Code Lines |
 |-----------|-------|------------|
-| .ts       | 68    | 6,905      |
-| .tsx      | 41    | 5,245      |
-| .css      | 4     | 382        |
+| .ts       | 90    | 10,137     |
+| .tsx      | 49    | 5,870      |
+| .css      | 6     | 415        |
 
 ---
 
