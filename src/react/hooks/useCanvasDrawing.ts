@@ -212,7 +212,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
-					drawLine(ctx, prevX, prevY, x, y, color, 1);
+					drawLine(ctx, prevX, prevY, x, y, color, size);
 					break;
 
 				case TOOL_IDS.BRUSH:
@@ -224,8 +224,8 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 					break;
 
 				case TOOL_IDS.AIRBRUSH:
-					// Spray at current position (continuous effect)
-					sprayAirbrush(ctx, x, y, color, size);
+					// Airbrush continuous spray is handled by useAirbrushEffect interval
+					// No action needed here - the interval handles spray at lastX, lastY
 					break;
 
 				default:
@@ -250,23 +250,15 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 
-			console.log('[pickColor] Called with:', { x, y, button, canvasWidth: canvas.width, canvasHeight: canvas.height });
-
 			if (x >= 0 && y >= 0 && x < canvas.width && y < canvas.height) {
 				const imageData = ctx.getImageData(x, y, 1, 1);
 				const [r, g, b, a] = imageData.data;
 				const pickedColor = `rgba(${r},${g},${b},${a / 255})`;
-				console.log('[pickColor] Sampled color:', pickedColor, 'at coords:', { x, y });
-				console.log('[pickColor] Button:', button, 'Setting to:', button === 0 ? 'primary' : 'secondary');
 				if (button === 0) {
-					console.log('[pickColor] Setting primary color to:', pickedColor);
 					setPrimaryColor(pickedColor);
 				} else {
-					console.log('[pickColor] Setting secondary color to:', pickedColor);
 					setSecondaryColor(pickedColor);
 				}
-			} else {
-				console.log('[pickColor] Coordinates out of bounds:', { x, y, canvasWidth: canvas.width, canvasHeight: canvas.height });
 			}
 		},
 		[canvasRef, setPrimaryColor, setSecondaryColor],

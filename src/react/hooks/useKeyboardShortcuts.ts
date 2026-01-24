@@ -22,6 +22,10 @@ interface UseKeyboardShortcutsParams {
 	handleSelectAll: () => void;
 	handleInvertColors: () => void;
 	menuActions: MenuActions;
+	/** Whether the text tool is currently selected */
+	isTextToolActive?: boolean;
+	/** Whether there's an active text box being edited */
+	hasActiveTextBox?: boolean;
 }
 
 /**
@@ -80,6 +84,8 @@ export function useKeyboardShortcuts(params: UseKeyboardShortcutsParams): void {
 		handleSelectAll,
 		handleInvertColors,
 		menuActions,
+		isTextToolActive,
+		hasActiveTextBox,
 	} = params;
 
 	useEffect(() => {
@@ -181,7 +187,8 @@ export function useKeyboardShortcuts(params: UseKeyboardShortcutsParams): void {
 			}
 
 			// Tool shortcuts (single keys)
-			if (!isMod && !e.shiftKey && !e.altKey) {
+			// Skip tool shortcuts when text tool is active and has an active text box
+			if (!isMod && !e.shiftKey && !e.altKey && !(isTextToolActive && hasActiveTextBox)) {
 				switch (e.key.toLowerCase()) {
 					case "p":
 						setTool(TOOL_IDS.PENCIL);
@@ -246,5 +253,7 @@ export function useKeyboardShortcuts(params: UseKeyboardShortcutsParams): void {
 		handleSelectAll,
 		handleInvertColors,
 		menuActions,
+		isTextToolActive,
+		hasActiveTextBox,
 	]);
 }

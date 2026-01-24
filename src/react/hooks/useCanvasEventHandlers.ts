@@ -155,6 +155,10 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 				case TOOL_IDS.TEXT:
 					if (textBoxHook.textBox?.isActive) {
+						// Save history if there's actual text to commit
+						if (textBoxHook.textBox.text.trim()) {
+							saveHistoryState("Text");
+						}
 						textBoxHook.commitTextBox();
 					}
 					textBoxHook.startTextBox(x, y);
@@ -216,6 +220,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 			setMagnification,
 			curvePolygon,
 			shapes,
+			saveHistoryState,
 		],
 	);
 
@@ -322,7 +327,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 			// Handle text box creation
 			if (textBoxHook.isCreating()) {
 				textBoxHook.finalizeTextBox(x, y);
-				saveHistoryState("Text Box");
+				// Don't save history here - save when text is committed to canvas
 				return;
 			}
 
@@ -389,10 +394,14 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 	const handleTextBlur = useCallback(() => {
 		setTimeout(() => {
 			if (textBoxHook.textBox?.isActive) {
+				// Only save history if there's actual text to commit
+				if (textBoxHook.textBox.text.trim()) {
+					saveHistoryState("Text");
+				}
 				textBoxHook.commitTextBox();
 			}
 		}, 100);
-	}, [textBoxHook]);
+	}, [textBoxHook, saveHistoryState]);
 
 	/**
 	 * Context menu handler.

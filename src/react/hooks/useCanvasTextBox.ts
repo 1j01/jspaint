@@ -169,8 +169,9 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 					// Draw underline if needed (vertical line to the right of rotated character)
 					if (textBox.fontUnderline) {
 						const textWidth = ctx.measureText(char).width;
-						// Underline appears as a vertical line to the right of the rotated character
-						ctx.fillRect(rotatedX + textBox.fontSize - 2, rotatedY - textWidth, 1, textWidth);
+						// In rotated space, underline appears below the character (at rotatedX + fontSize + 1)
+						// spanning the character width along the Y axis
+						ctx.fillRect(rotatedX + textBox.fontSize + 1, rotatedY, 1, textWidth);
 					}
 				});
 			});

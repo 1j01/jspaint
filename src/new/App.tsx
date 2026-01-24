@@ -308,6 +308,8 @@ function AppContent() {
 		handleSelectAll: dialogHandlers.handleSelectAll,
 		handleInvertColors: dialogHandlers.handleInvertColors,
 		menuActions,
+		isTextToolActive: selectedToolId === TOOL_IDS.TEXT,
+		hasActiveTextBox: textBox?.isActive ?? false,
 	});
 
 	// Format cursor position for status bar
