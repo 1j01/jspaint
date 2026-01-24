@@ -408,7 +408,8 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		writingMode: textBox.fontVertical ? "vertical-rl" : undefined, // vertical-rl makes text flow right-to-left, matching canvas rotation
 		lineHeight: `${Math.round(textBox.fontSize * 1.2)}px`,
 		letterSpacing: textBox.fontVertical ? "0px" : undefined, // Tight spacing for vertical text
-		color: textBox.fontVertical ? "transparent" : primaryColor, // Hide textarea text when vertical, show canvas overlay instead
+		color: primaryColor, // Keep color for selection highlighting
+		WebkitTextFillColor: textBox.fontVertical ? "transparent" : undefined, // Hide text but show selection in vertical mode
 		caretColor: primaryColor, // Keep cursor visible
 		background: drawOpaque ? secondaryColor : "transparent", // Transparent background when drawOpaque is false
 		minHeight: 0,

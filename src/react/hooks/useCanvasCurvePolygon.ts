@@ -2,6 +2,7 @@ import { useCallback, useRef, RefObject } from "react";
 import { useColors } from "../context/state/useColors";
 import { useShapeSettings } from "../context/state/useShapeSettings";
 import { useHistory } from "../context/state/useHistory";
+import { useMagnification } from "../context/state/useMagnification";
 import { TOOL_IDS } from "../context/state/types";
 import { drawPolygon, Point, getShapeColors } from "../utils/drawingUtils";
 
@@ -60,6 +61,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 	const { secondaryColor } = useColors();
 	const { fillStyle, lineWidth } = useShapeSettings();
 	const { saveState } = useHistory();
+	const { magnification } = useMagnification();
 
 	// Curve state
 	const curveState = useRef<CurveState>({
@@ -247,9 +249,11 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 					return false;
 				} else {
 					// Check if clicking near the starting point (close polygon)
+					// Scale threshold with magnification so it feels consistent in screen pixels
 					const start = poly.points[0];
 					const dist = Math.sqrt((x - start.x) ** 2 + (y - start.y) ** 2);
-					if (dist < 10 && poly.points.length > 2) {
+					const closeThreshold = 10 / magnification;
+					if (dist < closeThreshold && poly.points.length > 2) {
 						// Close polygon - commit it
 						if (poly.previewImageData) {
 							ctx.putImageData(poly.previewImageData, 0, 0);
@@ -272,7 +276,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			}
 			return false;
 		},
-		[canvasRef, getDrawColor, fillStyle, secondaryColor, lineWidth, saveState],
+		[canvasRef, getDrawColor, fillStyle, secondaryColor, lineWidth, saveState, magnification],
 	);
 
 	// Preview polygon during mouse move

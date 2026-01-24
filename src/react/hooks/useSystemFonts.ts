@@ -22,7 +22,7 @@ declare global {
 	}
 }
 
-const FALLBACK_FONTS: string[] = [
+export const FALLBACK_FONTS: string[] = [
 	"Arial",
 	"Calibri",
 	"Cambria",

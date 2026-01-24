@@ -18,8 +18,8 @@ i18n
 		// Fallback language if translation missing
 		fallbackLng: 'en',
 
-		// Debug mode (disable in production)
-		debug: false,
+		// Debug mode (enable to verify language changes)
+		debug: true,
 
 		// Namespace configuration
 		ns: ['translation'],

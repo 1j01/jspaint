@@ -12,7 +12,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useDraggable } from "../hooks/useDraggable";
-import { useSystemFonts } from "../hooks/useSystemFonts";
+import { useSystemFonts, FALLBACK_FONTS } from "../hooks/useSystemFonts";
 import { SelectWin98 } from "./SelectWin98";
 import "./FontBoxWindow.css";
 
@@ -114,6 +114,48 @@ export function FontBoxWindow({
 			setPosition({ x: fbLeft, y: newTop });
 		}
 	}, [isOpen, textBoxRect, magnification, position, setPosition]);
+
+	/**
+	 * Font fallback validation - matches jQuery $FontBox.js behavior
+	 * When fonts finish loading, validate that the selected font is available.
+	 * Falls back to Liberation Sans -> Arial -> first available font if not found.
+	 */
+	useEffect(() => {
+		// Wait for fonts to finish loading
+		if (loadingFonts || availableFonts.length === 0) return;
+
+		// Check if current font is in the available list (case-insensitive)
+		const normalizedFamily = fontState.family.toLowerCase();
+		const fontAvailable = availableFonts.some(
+			(font) => font.toLowerCase() === normalizedFamily
+		);
+
+		if (!fontAvailable) {
+			// Font not available - apply fallback cascade like jQuery
+			// Try "Liberation Sans" first (common fallback)
+			const liberationSans = availableFonts.find(
+				(font) => font.toLowerCase() === "liberation sans"
+			);
+			if (liberationSans) {
+				onFontChange({ ...fontState, family: liberationSans });
+				return;
+			}
+
+			// Try "Arial" as secondary fallback
+			const arial = availableFonts.find(
+				(font) => font.toLowerCase() === "arial"
+			);
+			if (arial) {
+				onFontChange({ ...fontState, family: arial });
+				return;
+			}
+
+			// Fall back to first available font
+			if (availableFonts[0]) {
+				onFontChange({ ...fontState, family: availableFonts[0] });
+			}
+		}
+	}, [loadingFonts, availableFonts, fontState, onFontChange]);
 
 	// Handle keyboard events
 	useEffect(() => {

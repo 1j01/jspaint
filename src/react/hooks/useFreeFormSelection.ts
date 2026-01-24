@@ -189,11 +189,14 @@ export function useFreeFormSelection({
 					maxY = Math.max(maxY, p.y);
 				}
 
-				// Round to integer pixel coordinates to avoid misalignment
+				// Round to integer pixel coordinates consistently
+				// Floor min coordinates, ceil max coordinates for complete pixel coverage
 				minX = Math.floor(minX);
 				minY = Math.floor(minY);
-				const selWidth = Math.round(maxX - minX);
-				const selHeight = Math.round(maxY - minY);
+				maxX = Math.ceil(maxX);
+				maxY = Math.ceil(maxY);
+				const selWidth = maxX - minX;
+				const selHeight = maxY - minY;
 
 				if (selWidth > 0 && selHeight > 0) {
 					// Get the full area image data

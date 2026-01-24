@@ -186,11 +186,14 @@ export function useRectangularSelection({
 			if (!state.current.isSelecting) return;
 
 			const { startX, startY } = state.current;
-			// Round to integer pixel coordinates to avoid misalignment
+			// Round to integer pixel coordinates consistently
+			// Floor min coordinates, ceil max coordinates for complete pixel coverage
 			const selX = Math.floor(Math.min(startX, x));
 			const selY = Math.floor(Math.min(startY, y));
-			const selWidth = Math.round(Math.abs(x - startX));
-			const selHeight = Math.round(Math.abs(y - startY));
+			const maxX = Math.ceil(Math.max(startX, x));
+			const maxY = Math.ceil(Math.max(startY, y));
+			const selWidth = maxX - selX;
+			const selHeight = maxY - selY;
 
 			// Clear overlay FIRST (before setting selection, so animation can redraw properly)
 			const overlay = overlayRef.current;

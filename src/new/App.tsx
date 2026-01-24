@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Canvas } from "../react/components/Canvas";
 import { ColorBox } from "../react/components/ColorBox";
 import { DialogManager } from "../react/components/DialogManager";
@@ -98,6 +99,9 @@ function StoreInitializer({ children }: StoreInitializerProps) {
  */
 function AppContent() {
 	// console.warn('[AppContent] 🎨 RENDER START');
+
+	// Get translation function for menu labels
+	const { t } = useTranslation();
 
 	// Create canvas ref locally (was in AppProvider)
 	const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -290,7 +294,7 @@ function AppContent() {
 	});
 
 	// Create the menu structure
-	const menu = useMemo(() => createMenus(menuActions), [menuActions]);
+	const menu = useMemo(() => createMenus(menuActions, t), [menuActions, t]);
 
 	// Handle keyboard shortcuts
 	useKeyboardShortcuts({

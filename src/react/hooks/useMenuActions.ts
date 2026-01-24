@@ -379,6 +379,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 
 		// Extras menu
 		extrasChangeLanguage: useCallback((languageCode: string) => {
+			console.log('Changing language to:', languageCode);
 			i18n.changeLanguage(languageCode);
 			// Store in localStorage for persistence
 			try {
