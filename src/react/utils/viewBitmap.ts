@@ -12,6 +12,8 @@ let cleanupBitmapView = () => {};
  * User can exit by pressing any key, clicking, or exiting fullscreen.
  * Matches MS Paint's "View Bitmap" behavior (Ctrl+F).
  *
+ * Performance: Uses direct canvas copy instead of PNG encoding for instant display.
+ *
  * @param canvas - The canvas element to display in fullscreen
  * @returns void
  *
@@ -20,8 +22,6 @@ let cleanupBitmapView = () => {};
  * // Displays canvas fullscreen, exits on any interaction
  */
 export function viewBitmap(canvas: HTMLCanvasElement): void {
-	console.log("[viewBitmap] Called with canvas:", canvas, "width:", canvas?.width, "height:", canvas?.height);
-
 	// Cleanup any existing bitmap view
 	cleanupBitmapView();
 
@@ -44,17 +44,26 @@ export function viewBitmap(canvas: HTMLCanvasElement): void {
 		background: "var(--Background)",
 	});
 
+	// Create display canvas and copy pixels directly (fast - no PNG encoding/decoding)
+	const displayCanvas = document.createElement("canvas");
+	displayCanvas.width = canvas.width;
+	displayCanvas.height = canvas.height;
+	displayCanvas.style.imageRendering = "pixelated";
+	const ctx = displayCanvas.getContext("2d");
+	if (ctx) {
+		ctx.drawImage(canvas, 0, 0);
+	}
+	bitmapViewDiv.appendChild(displayCanvas);
+
 	// Request fullscreen with vendor prefix support
-	console.log("[viewBitmap] Requesting fullscreen on div:", bitmapViewDiv);
 	if (bitmapViewDiv.requestFullscreen) {
-		bitmapViewDiv.requestFullscreen().catch((err) => {
-			console.warn("[viewBitmap] Fullscreen request failed:", err);
+		bitmapViewDiv.requestFullscreen().catch(() => {
+			// Fullscreen request failed, but view is still usable
 		});
 	} else if ((bitmapViewDiv as any).webkitRequestFullscreen) {
 		(bitmapViewDiv as any).webkitRequestFullscreen();
 	}
 
-	let blobUrl: string | undefined;
 	let gotFullscreen = false;
 
 	// Poll for fullscreen state changes (Chrome workaround)
@@ -83,11 +92,6 @@ export function viewBitmap(canvas: HTMLCanvasElement): void {
 		setTimeout(() => {
 			document.removeEventListener("contextmenu", onContextMenu);
 		}, 100);
-
-		// Revoke blob URL
-		if (blobUrl) {
-			URL.revokeObjectURL(blobUrl);
-		}
 
 		clearInterval(pollInterval);
 
@@ -164,20 +168,4 @@ export function viewBitmap(canvas: HTMLCanvasElement): void {
 	document.addEventListener("keydown", onKeyDown);
 	document.addEventListener("mousedown", onMouseDown);
 	document.addEventListener("contextmenu", onContextMenu);
-
-	// Convert canvas to blob and display
-	// @TODO: include selection in the bitmap (like the legacy implementation mentions)
-	canvas.toBlob((blob) => {
-		if (!blob) {
-			// console.error("Failed to create blob from canvas");
-			cleanup();
-			return;
-		}
-
-		blobUrl = URL.createObjectURL(blob);
-		const img = document.createElement("img");
-		img.src = blobUrl;
-		img.style.imageRendering = "pixelated"; // Preserve pixel art look
-		bitmapViewDiv.appendChild(img);
-	}, "image/png");
 }

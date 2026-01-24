@@ -28,7 +28,7 @@ export function Dialog({
 	isOpen,
 	onClose,
 	children,
-	width = 300,
+	width,
 	height,
 	showCloseButton = true,
 	icon,
