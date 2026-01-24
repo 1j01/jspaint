@@ -68,8 +68,6 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 
 			ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-			console.log('[useSelectionAnimation] Animating, overlay z-index:', window.getComputedStyle(overlay).zIndex);
-
 			drawSelectionOverlay(ctx, selection, marchingAntsOffset.current);
 
 			animationFrameId.current = requestAnimationFrame(animate);

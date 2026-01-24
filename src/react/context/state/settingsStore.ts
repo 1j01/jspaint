@@ -235,17 +235,13 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
 	// Actions with persistence
 	setPrimaryColor: (color) => {
-		console.log('[settingsStore] setPrimaryColor called with:', color);
 		set({ primaryColor: color });
 		saveSetting("primaryColor", color);
-		console.log('[settingsStore] setPrimaryColor completed, new state:', get().primaryColor);
 	},
 
 	setSecondaryColor: (color) => {
-		console.log('[settingsStore] setSecondaryColor called with:', color);
 		set({ secondaryColor: color });
 		saveSetting("secondaryColor", color);
-		console.log('[settingsStore] setSecondaryColor completed, new state:', get().secondaryColor);
 	},
 
 	swapColors: () => {

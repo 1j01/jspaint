@@ -22,7 +22,7 @@ import { useTool } from "../context/state/useTool";
 import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
 import { useTreeHistory } from "../context/state/useTreeHistory";
 import { useUIStore } from "../context/state/uiStore";
-import { useToolStore } from "../context/state/toolStore";
+import { useToolStore, TOOL_IDS } from "../context/state/toolStore";
 import { saveSetting } from "../context/state/persistence";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
@@ -181,6 +181,50 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 			textInputRef.current.focus();
 		}
 	}, [textBoxHook.textBox?.isActive]);
+
+	// Track previous tool ID for tool change detection
+	const prevToolIdRef = useRef<string>(selectedToolId);
+
+	/**
+	 * Auto-commit selection and text box when switching tools.
+	 * Matches jQuery behavior where floating selection is committed when switching away.
+	 */
+	useEffect(() => {
+		const prevToolId = prevToolIdRef.current;
+		const isSelectionTool = (toolId: string) =>
+			toolId === TOOL_IDS.SELECT || toolId === TOOL_IDS.FREE_FORM_SELECT;
+		const isTextTool = (toolId: string) => toolId === TOOL_IDS.TEXT;
+
+		// Only act when tool actually changes
+		if (prevToolId !== selectedToolId) {
+			const canvas = canvasRef.current;
+			const ctx = canvas?.getContext("2d", { willReadFrequently: true });
+
+			// Commit selection when switching away from selection tools
+			if (isSelectionTool(prevToolId) && !isSelectionTool(selectedToolId)) {
+				const selection = useToolStore.getState().selection;
+				if (selection?.imageData && ctx) {
+					ctx.putImageData(selection.imageData, selection.x, selection.y);
+					useToolStore.getState().clearSelection();
+					saveHistoryState("Deselect");
+				}
+			}
+
+			// Commit text box when switching away from text tool
+			if (isTextTool(prevToolId) && !isTextTool(selectedToolId)) {
+				const textBox = useToolStore.getState().textBox;
+				if (textBox?.isActive && textBox.text.trim()) {
+					textBoxHook.commitTextBox();
+					saveHistoryState("Text");
+				} else if (textBox?.isActive) {
+					textBoxHook.clearTextBox();
+				}
+			}
+
+			// Update previous tool reference
+			prevToolIdRef.current = selectedToolId;
+		}
+	}, [selectedToolId, canvasRef, textBoxHook, saveHistoryState]);
 
 	/**
 	 * Selection resize handler.

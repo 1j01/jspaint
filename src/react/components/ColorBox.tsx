@@ -100,14 +100,12 @@ export function ColorBox({
 	// Sync internal state with props when they change externally (e.g., from color picker tool)
 	useEffect(() => {
 		if (initialPrimary && initialPrimary !== foreground) {
-			console.log('[ColorBox] Syncing foreground color from prop:', initialPrimary);
 			setForeground(initialPrimary);
 		}
 	}, [initialPrimary]); // Intentionally not including foreground in deps to avoid loops
 
 	useEffect(() => {
 		if (initialSecondary && initialSecondary !== background) {
-			console.log('[ColorBox] Syncing background color from prop:', initialSecondary);
 			setBackground(initialSecondary);
 		}
 	}, [initialSecondary]); // Intentionally not including background in deps to avoid loops

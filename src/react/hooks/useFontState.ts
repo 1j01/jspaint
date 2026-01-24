@@ -54,13 +54,10 @@ export function useFontState(selectedToolId: string, isTextBoxActive?: boolean) 
 	 */
 	const handleFontChange = useCallback(
 		(newFontState: FontState) => {
-			console.log("[useFontState] handleFontChange called with:", newFontState);
 			if (newFontState.family !== fontFamily) {
-				console.log("[useFontState] Updating font family to:", newFontState.family);
 				setFontFamily(newFontState.family);
 			}
 			if (newFontState.size !== fontSize) {
-				console.log("[useFontState] Updating font size from", fontSize, "to", newFontState.size);
 				setFontSize(newFontState.size);
 			}
 			if (
@@ -69,7 +66,6 @@ export function useFontState(selectedToolId: string, isTextBoxActive?: boolean) 
 				newFontState.underline !== fontUnderline ||
 				newFontState.vertical !== fontVertical
 			) {
-				console.log("[useFontState] Updating font style:", { bold: newFontState.bold, italic: newFontState.italic, underline: newFontState.underline, vertical: newFontState.vertical });
 				setFontStyle(newFontState.bold, newFontState.italic, newFontState.underline, newFontState.vertical);
 			}
 		},

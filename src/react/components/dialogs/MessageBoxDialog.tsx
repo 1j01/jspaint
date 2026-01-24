@@ -74,7 +74,6 @@ export function MessageBoxDialog({
 }: MessageBoxDialogProps) {
 	const handleClose = useCallback(
 		(result: MessageBoxResult) => {
-			console.log('[MessageBoxDialog.handleClose] Called with result:', result);
 			onClose(result);
 		},
 		[onClose],

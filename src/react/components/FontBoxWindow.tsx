@@ -214,7 +214,6 @@ export function FontBoxWindow({
 					className="window-close-button window-action-close window-button"
 					aria-label="Close"
 					onClick={(e) => {
-						console.log("[FontBoxWindow] Close button clicked!");
 						e.stopPropagation();
 						onClose();
 					}}

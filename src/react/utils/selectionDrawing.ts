@@ -14,8 +14,6 @@ export function drawSelectionOverlay(
 ): void {
 	const { x, y, width, height, path } = selection;
 
-	console.log('[drawSelectionOverlay] Drawing selection:', { x, y, width, height, hasPath: !!path });
-
 	// Draw marching ants border
 	overlayCtx.save();
 	overlayCtx.setLineDash([4, 4]);

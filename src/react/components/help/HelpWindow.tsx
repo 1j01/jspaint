@@ -78,7 +78,6 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		if (isOpen && tocItems.length === 0) {
 			parseHelpContents(CONTENTS_FILE)
 				.then((items) => {
-					console.log("[HelpWindow] Loaded TOC items:", items);
 					// Add default "Welcome to Help" item at the beginning
 					const defaultItem: typeof items[0] = {
 						id: "welcome",
@@ -280,15 +279,6 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 		const isFolder = item.children && item.children.length > 0;
 		const isSelected = item.url === selectedUrl;
 		const isExpanded = expandedFolders.has(item.id);
-
-		console.log("[HelpWindow] Rendering item:", {
-			id: item.id,
-			title: item.title,
-			url: item.url,
-			isFolder,
-			isExpanded,
-			hasChildren: item.children?.length
-		});
 
 		const handleClick = () => {
 			if (isFolder) {

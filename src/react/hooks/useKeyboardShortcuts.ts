@@ -37,7 +37,7 @@ interface UseKeyboardShortcutsParams {
  * - Selection: Ctrl+A, Delete/Backspace, Escape
  * - Tools: Single letter keys (P=Pencil, B=Brush, E=Eraser, etc.)
  * - Colors: Ctrl+I for invert
- * - View: F11 for fullscreen
+ * - View: F11 for fullscreen, Ctrl+F for View Bitmap
  *
  * Smart text input detection:
  * - Shortcuts disabled when typing in inputs/textareas
@@ -160,6 +160,13 @@ export function useKeyboardShortcuts(params: UseKeyboardShortcutsParams): void {
 			if (isMod && e.key === "i") {
 				e.preventDefault();
 				handleInvertColors();
+				return;
+			}
+
+			// Ctrl/Cmd+F for View Bitmap
+			if (isMod && e.key === "f") {
+				e.preventDefault();
+				menuActions.viewBitmap();
 				return;
 			}
 

@@ -70,43 +70,34 @@ export function useDialogHandlers({
 	 */
 	const handleNewConfirm = useCallback(
 		(result: MessageBoxResult) => {
-			console.log('[handleNewConfirm] Called with result:', result);
-
 			if (setShowNewConfirm) {
 				setShowNewConfirm(false);
 			}
 
 			// Only proceed if user clicked Yes or No (not Cancel)
 			if (result === "yes" || result === "no") {
-				console.log('[handleNewConfirm] Processing yes/no action');
 				const canvas = canvasRef.current;
 				if (!canvas) {
-					console.error('[handleNewConfirm] Canvas ref is null!');
 					return;
 				}
 				const ctx = canvas.getContext("2d", { willReadFrequently: true });
 				if (!ctx) {
-					console.error('[handleNewConfirm] Could not get 2d context!');
 					return;
 				}
 
 				// Save file (download) before clearing (only if user clicked Yes)
 				if (result === "yes") {
-					console.log('[handleNewConfirm] Downloading file...');
 					// Download the canvas as PNG file
 					const link = document.createElement("a");
 					link.download = "Untitled.png";
 					link.href = canvas.toDataURL("image/png");
 					link.click();
-					console.log('[handleNewConfirm] File download triggered');
 				}
 
 				// Reset canvas to default size (Windows XP: 512x384)
-				console.log(`[handleNewConfirm] Resizing canvas to ${DEFAULT_CANVAS_WIDTH}x${DEFAULT_CANVAS_HEIGHT}...`);
 				setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 
 				// Reset magnification to 1x (100%)
-				console.log('[handleNewConfirm] Resetting magnification to 1x...');
 				setMagnification(1);
 
 				// Clear to white on next frame (after resize completes)
@@ -116,21 +107,15 @@ export function useDialogHandlers({
 					const ctx = canvas.getContext("2d", { willReadFrequently: true });
 					if (!ctx) return;
 
-					console.log('[handleNewConfirm] Clearing canvas to white...');
 					ctx.fillStyle = "#FFFFFF";
 					ctx.fillRect(0, 0, canvas.width, canvas.height);
-					console.log('[handleNewConfirm] Canvas cleared');
 
 					// Clear any active selection
 					clearSelection();
 
 					// Save the new white canvas state to history
-					console.log('[handleNewConfirm] Saving to history...');
 					saveState();
-					console.log('[handleNewConfirm] Saved to history');
 				});
-			} else {
-				console.log('[handleNewConfirm] Cancel clicked, doing nothing');
 			}
 			// If result === "cancel", do nothing
 		},

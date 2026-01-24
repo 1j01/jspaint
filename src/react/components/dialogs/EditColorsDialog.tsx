@@ -162,12 +162,8 @@ export function EditColorsDialog({
 								key={index}
 								type="button"
 								ref={setSwatchRef(color)}
-								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
-								style={{
-									backgroundColor: color,
-									width: "16px",
-									height: "13px",
-								}}
+								className={`swatch inset-deep lightweight ${selectedColor === color ? "selected" : ""}`}
+								style={{ backgroundColor: color }}
 								onClick={() => handleColorSelect(color)}
 								title={color}
 								aria-label={`Basic color ${index + 1}: ${color}`}
@@ -182,12 +178,8 @@ export function EditColorsDialog({
 								key={index}
 								type="button"
 								ref={setSwatchRef(color)}
-								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
-								style={{
-									backgroundColor: color,
-									width: "16px",
-									height: "13px",
-								}}
+								className={`swatch inset-deep lightweight ${selectedColor === color ? "selected" : ""}`}
+								style={{ backgroundColor: color }}
 								onClick={() => handleColorSelect(color)}
 								title={color}
 								aria-label={`Custom color ${index + 1}: ${color}`}
