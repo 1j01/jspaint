@@ -14,7 +14,7 @@ The project has successfully completed Phase 1 (Vite adoption) and is **nearly c
 - **Dialogs**: All major dialogs implemented (About, Attributes, FlipRotate, StretchSkew, CustomZoom, LoadFromUrl, SaveAs, EditColors, ManageStorage, ImgurUpload, History, HistoryTree)
 - **Help System**: Complete help viewer with table of contents and navigation
 - **i18n Support**: Internationalization with i18next, 26+ languages supported
-- **Recent Refactoring**: Canvas component cleaned up from ~760 lines to ~250 lines through hook extraction
+- **Recent Refactoring**: Canvas component cleaned up through hook extraction
 
 ## Architecture Overview
 
@@ -27,7 +27,7 @@ The project has successfully completed Phase 1 (Vite adoption) and is **nearly c
 
 ### React Architecture (`/new/`)
 - `src/new/main.jsx` - React entry point
-- `src/new/App.tsx` - Main app component with Zustand state management (~1000+ lines)
+- `src/new/App.tsx` - Main app component with Zustand state management
 - `src/react/components/` - UI components (Frame, ToolBox, ColorBox, Canvas, etc.)
 - `src/react/context/state/` - Zustand stores with IndexedDB persistence
 - `src/react/hooks/` - Custom hooks for canvas operations (drawing, selection, shapes, lifecycle, events)
@@ -97,9 +97,9 @@ The project has successfully completed Phase 1 (Vite adoption) and is **nearly c
 | `$ColorBox.js` | `ColorBox.tsx` | ✅ Full implementation |
 | `$FontBox.js` | `FontBox.tsx` + `FontBoxWindow.tsx` | ✅ Full implementation with floating window |
 | Layout chrome | `Frame.tsx` | ✅ Complete with menu bar and status bar |
-| Canvas | `Canvas.tsx` | ✅ Full implementation (~765 lines, all tools) |
+| Canvas | `Canvas.tsx` | ✅ Full implementation (all tools) |
 | Help System | `HelpWindow.tsx`, `HelpContents.tsx`, `HelpToolbar.tsx` | ✅ Complete with navigation |
-| Thumbnail | `ThumbnailWindow.tsx` | ✅ Real-time canvas preview (~200 lines) |
+| Thumbnail | `ThumbnailWindow.tsx` | ✅ Real-time canvas preview |
 
 #### UI Components ✅ COMPLETE
 - [x] Port menu system to React - **Full menu definitions in `menuDefinitions.ts`**
@@ -117,7 +117,7 @@ The project has successfully completed Phase 1 (Vite adoption) and is **nearly c
 - [x] Fix layout positioning - **Canvas and overlays properly aligned with .canvas-area padding**
 - [x] Extract canvas hooks - **`useCanvasLifecycle.ts`, `useAirbrushEffect.ts`, `useCanvasEventHandlers.ts`**
 - [x] Create canvas helpers - **`canvasHelpers.ts` for cursor, resize, selection operations**
-- [x] Refactor Canvas.tsx - **Reduced from ~760 lines to ~250 lines through better separation of concerns**
+- [x] Refactor Canvas.tsx - **Reduced through better separation of concerns**
 
 ### 3. State migration ✅ COMPLETE
 
@@ -238,18 +238,17 @@ All major dialogs are implemented in React:
 - `CustomZoomDialog.tsx` - Custom magnification levels
 - `LoadFromUrlDialog.tsx` - Load images from URL
 - `SaveAsDialog.tsx` - Save with format selection (PNG, BMP, JPEG, WebP, GIF)
-- `EditColorsDialog.tsx` - HSL color picker with custom colors (~520 lines)
+- `EditColorsDialog.tsx` - HSL color picker with custom colors
 - `ManageStorageDialog.tsx` - Storage management for saved states
 - `ImgurUploadDialog.tsx` - Upload to Imgur integration
 - `HistoryDialog.tsx` - Linear undo/redo history viewer
-- `HistoryTreeDialog.tsx` - Tree-based history with branching navigation (~284 lines, jQuery-faithful UI)
+- `HistoryTreeDialog.tsx` - Tree-based history with branching navigation
 
 #### Priority 5 - Advanced Features (NOT STARTED)
 1. Multi-user sessions (WebRTC/WebSocket)
 2. Speech recognition integration
 3. Eye gaze mode for accessibility
 4. Dynamic theme loading (CSS already theme-based)
-5. Localization system (i18n for 26 languages)
 
 ### 6. Migration sequencing
 
@@ -324,7 +323,7 @@ All major dialogs are implemented in React:
 | File | Purpose |
 |------|---------|
 | `src/new/main.jsx` | React entry point with store initialization |
-| `src/new/App.tsx` | Main app component (~1000+ lines) |
+| `src/new/App.tsx` | Main app component |
 
 #### State Management (Zustand)
 | File | Purpose |
@@ -340,48 +339,51 @@ All major dialogs are implemented in React:
 | `src/react/context/AppContext.tsx` | Legacy context (being phased out) |
 
 #### Components
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/react/components/Frame.tsx` | ~400 | Layout container with menu bar |
-| `src/react/components/ToolBox.tsx` | ~150 | Tool selection grid (16 tools) |
-| `src/react/components/ColorBox.tsx` | ~200 | Color palette selector |
-| `src/react/components/FontBox.tsx` | ~100 | Font selector (inline) |
-| `src/react/components/FontBoxWindow.tsx` | ~200 | Floating font window |
-| `src/react/components/Canvas.tsx` | ~250 | Main drawing canvas orchestrator (refactored from ~760 lines) |
-| `src/react/components/CanvasOverlay.tsx` | ~40 | Selection marching ants overlay |
-| `src/react/components/CanvasTextBox.tsx` | ~60 | Text input overlay |
-| `src/react/components/ToolOptions.tsx` | ~300 | Tool-specific settings panel |
-| `src/react/components/SelectionHandles.tsx` | ~280 | Resize handles for selections |
-| `src/react/components/CanvasResizeHandles.tsx` | ~315 | Canvas resize handles |
-| `src/react/components/HelperLayer.tsx` | ~100 | Helper layer for overlays |
-| `src/react/components/ThumbnailWindow.tsx` | ~200 | Real-time canvas thumbnail |
+| File | Purpose |
+|------|---------|
+| `src/react/components/Frame.tsx` | Layout container with menu bar |
+| `src/react/components/ToolBox.tsx` | Tool selection grid (16 tools) |
+| `src/react/components/ColorBox.tsx` | Color palette selector |
+| `src/react/components/FontBox.tsx` | Font selector (inline) |
+| `src/react/components/FontBoxWindow.tsx` | Floating font window |
+| `src/react/components/Canvas.tsx` | Main drawing canvas orchestrator |
+| `src/react/components/CanvasOverlay.tsx` | Selection marching ants overlay |
+| `src/react/components/CanvasTextBox.tsx` | Text input overlay |
+| `src/react/components/ToolOptions.tsx` | Tool-specific settings panel |
+| `src/react/components/SelectionHandles.tsx` | Resize handles for selections |
+| `src/react/components/CanvasResizeHandles.tsx` | Canvas resize handles |
+| `src/react/components/HelperLayer.tsx` | Helper layer for overlays |
+| `src/react/components/ThumbnailWindow.tsx` | Real-time canvas thumbnail |
 
 #### Help System Components
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/react/components/help/HelpWindow.tsx` | ~300 | Help viewer window |
-| `src/react/components/help/HelpContents.tsx` | ~150 | Table of contents tree |
-| `src/react/components/help/HelpContent.tsx` | ~100 | Content iframe wrapper |
-| `src/react/components/help/HelpToolbar.tsx` | ~150 | Navigation toolbar |
-| `src/react/components/help/ResizableSplitPane.tsx` | ~100 | Resizable pane splitter |
-| `src/react/utils/helpParser.ts` | ~200 | Help content parser |
+| File | Purpose |
+|------|---------|
+| `src/react/components/help/HelpWindow.tsx` | Help viewer window |
+| `src/react/components/help/HelpContents.tsx` | Table of contents tree |
+| `src/react/components/help/HelpContent.tsx` | Content iframe wrapper |
+| `src/react/components/help/HelpToolbar.tsx` | Navigation toolbar |
+| `src/react/components/help/ResizableSplitPane.tsx` | Resizable pane splitter |
+| `src/react/utils/helpParser.ts` | Help content parser |
 
 #### Dialog Components
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/react/components/dialogs/Dialog.tsx` | ~200 | Base modal dialog with drag |
-| `src/react/components/dialogs/AboutDialog.tsx` | ~100 | About Paint info |
-| `src/react/components/dialogs/AttributesDialog.tsx` | ~150 | Canvas size/units |
-| `src/react/components/dialogs/FlipRotateDialog.tsx` | ~120 | Flip/Rotate options |
-| `src/react/components/dialogs/StretchSkewDialog.tsx` | ~150 | Stretch/Skew values |
-| `src/react/components/dialogs/CustomZoomDialog.tsx` | ~100 | Custom zoom level |
-| `src/react/components/dialogs/LoadFromUrlDialog.tsx` | ~120 | Load from URL |
-| `src/react/components/dialogs/SaveAsDialog.tsx` | ~200 | Save with format picker |
-| `src/react/components/dialogs/EditColorsDialog.tsx` | ~520 | HSL color picker |
-| `src/react/components/dialogs/ManageStorageDialog.tsx` | ~250 | Storage management |
-| `src/react/components/dialogs/ImgurUploadDialog.tsx` | ~200 | Imgur integration |
-| `src/react/components/dialogs/HistoryDialog.tsx` | ~150 | Linear history viewer |
-| `src/react/components/dialogs/HistoryTreeDialog.tsx` | ~284 | Tree history with branching |
+| File | Purpose |
+|------|---------|
+| `src/react/components/dialogs/Dialog.tsx` | Base modal dialog with drag |
+| `src/react/components/dialogs/AboutDialog.tsx` | About Paint info |
+| `src/react/components/dialogs/AttributesDialog.tsx` | Canvas size/units |
+| `src/react/components/dialogs/FlipRotateDialog.tsx` | Flip/Rotate options |
+| `src/react/components/dialogs/StretchSkewDialog.tsx` | Stretch/Skew values |
+| `src/react/components/dialogs/CustomZoomDialog.tsx` | Custom zoom level |
+| `src/react/components/dialogs/LoadFromUrlDialog.tsx` | Load from URL |
+| `src/react/components/dialogs/SaveAsDialog.tsx` | Save with format picker |
+| `src/react/components/dialogs/EditColorsDialog.tsx` | HSL color picker |
+| `src/react/components/dialogs/ColorInputs.tsx` | Color input components |
+| `src/react/components/dialogs/ColorPickerCanvas.tsx` | Color picker canvas |
+| `src/react/components/dialogs/ManageStorageDialog.tsx` | Storage management |
+| `src/react/components/dialogs/ImgurUploadDialog.tsx` | Imgur integration |
+| `src/react/components/dialogs/HistoryDialog.tsx` | Linear history viewer |
+| `src/react/components/dialogs/HistoryTreeDialog.tsx` | Tree history with branching |
+| `src/react/components/dialogs/MessageBoxDialog.tsx` | Message box dialog |
 
 #### Menus
 | File | Purpose |
@@ -389,38 +391,38 @@ All major dialogs are implemented in React:
 | `src/react/menus/menuDefinitions.ts` | Full menu structure (File, Edit, View, Image, Colors, Help) |
 
 #### Custom Hooks
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/react/hooks/useCanvasDrawing.ts` | ~400 | Core drawing (point, line, fill, erase, airbrush, pickColor) |
-| `src/react/hooks/useCanvasSelection.ts` | ~440 | Rectangular/free-form selection with marching ants |
-| `src/react/hooks/useCanvasTextBox.ts` | ~150 | Text box creation and commit to canvas |
-| `src/react/hooks/useCanvasShapes.ts` | ~300 | Shape tools (line, rect, ellipse, rounded rect) with fill styles |
-| `src/react/hooks/useCanvasCurvePolygon.ts` | ~250 | Curve and polygon multi-click tools |
-| `src/react/hooks/useCanvasEventHandlers.ts` | ~445 | All canvas event handlers (pointer, text, context menu, keyboard) |
-| `src/react/hooks/useCanvasLifecycle.ts` | ~115 | Canvas initialization, persistence across remounts, cleanup |
-| `src/react/hooks/useAirbrushEffect.ts` | ~70 | Airbrush continuous spray effect with setInterval |
-| `src/react/hooks/useMenuActions.ts` | ~200 | Menu action handlers for Edit, View, Image menus |
-| `src/react/hooks/useSelectionOperations.ts` | ~200 | Selection manipulation (cut, copy, paste, drag, resize) |
+| File | Purpose |
+|------|---------|
+| `src/react/hooks/useCanvasDrawing.ts` | Core drawing (point, line, fill, erase, airbrush, pickColor) |
+| `src/react/hooks/useCanvasSelection.ts` | Rectangular/free-form selection with marching ants |
+| `src/react/hooks/useCanvasTextBox.ts` | Text box creation and commit to canvas |
+| `src/react/hooks/useCanvasShapes.ts` | Shape tools (line, rect, ellipse, rounded rect) with fill styles |
+| `src/react/hooks/useCanvasCurvePolygon.ts` | Curve and polygon multi-click tools |
+| `src/react/hooks/useCanvasEventHandlers.ts` | All canvas event handlers (pointer, text, context menu, keyboard) |
+| `src/react/hooks/useCanvasLifecycle.ts` | Canvas initialization, persistence across remounts, cleanup |
+| `src/react/hooks/useAirbrushEffect.ts` | Airbrush continuous spray effect with setInterval |
+| `src/react/hooks/useMenuActions.ts` | Menu action handlers for Edit, View, Image menus |
+| `src/react/hooks/useSelectionOperations.ts` | Selection manipulation (cut, copy, paste, drag, resize) |
 
 #### Utilities
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/react/utils/drawingUtils.ts` | ~460 | Drawing algorithms (bresenham, flood fill, etc.) |
-| `src/react/utils/imageTransforms.ts` | ~300 | Image operations (flip, rotate, stretch, skew) |
-| `src/react/utils/imageFormats.ts` | ~400 | Format encoding (PNG, BMP, JPEG, WebP, GIF) |
-| `src/react/utils/paletteFormats.ts` | ~300 | Palette I/O (GPL, JASC, RIFF PAL, hex) |
-| `src/react/utils/colorUtils.ts` | ~150 | Color manipulation (RGB↔HSL) |
-| `src/react/utils/historyTree.ts` | ~337 | Tree-based undo/redo with smart branching |
-| `src/react/utils/canvasHelpers.ts` | ~155 | Canvas utility functions (cursor styles, resize, selection bounds) |
-| `src/react/utils/viewBitmap.ts` | ~100 | Bitmap viewing utilities |
-| `src/react/data/palette.ts` | ~50 | Default color palette |
-| `src/react/data/basicColors.ts` | ~30 | Basic color constants |
+| File | Purpose |
+|------|---------|
+| `src/react/utils/drawingUtils.ts` | Drawing algorithms (bresenham, flood fill, etc.) |
+| `src/react/utils/imageTransforms.ts` | Image operations (flip, rotate, stretch, skew) |
+| `src/react/utils/imageFormats.ts` | Format encoding (PNG, BMP, JPEG, WebP, GIF) |
+| `src/react/utils/paletteFormats.ts` | Palette I/O (GPL, JASC, RIFF PAL, hex) |
+| `src/react/utils/colorUtils.ts` | Color manipulation (RGB↔HSL) |
+| `src/react/utils/historyTree.ts` | Tree-based undo/redo with smart branching |
+| `src/react/utils/canvasHelpers.ts` | Canvas utility functions (cursor styles, resize, selection bounds) |
+| `src/react/utils/viewBitmap.ts` | Bitmap viewing utilities |
+| `src/react/data/palette.ts` | Default color palette |
+| `src/react/data/basicColors.ts` | Basic color constants |
 
 #### i18n
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/react/i18n/i18n.ts` | ~93 | i18next configuration with language detection |
-| `src/react/i18n/languages.ts` | ~56 | Language metadata for 26+ supported languages |
+| File | Purpose |
+|------|---------|
+| `src/react/i18n/i18n.ts` | i18next configuration with language detection |
+| `src/react/i18n/languages.ts` | Language metadata for 26+ supported languages |
 
 ### Key State Interfaces (Zustand Stores)
 
@@ -529,7 +531,6 @@ npm run lint          # ESLint + TypeScript check
 - **Canvas Architecture** - Cleaned up and refactored:
   - Extracted reusable hooks: `useCanvasLifecycle`, `useAirbrushEffect`, `useCanvasEventHandlers`
   - Created `canvasHelpers.ts` utility module for cursor, resize, and selection operations
-  - Reduced Canvas.tsx from ~760 lines to ~250 lines
   - Better separation of concerns between UI, lifecycle, drawing logic, and event handling
 
 ### 🚧 Remaining Work
