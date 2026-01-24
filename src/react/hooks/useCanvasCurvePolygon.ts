@@ -105,6 +105,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 				// First point - save canvas state
 				curve.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				curve.active = true;
+				curve.button = button; // Store button for preview
 				curve.points = [
 					{ x, y },
 					{ x, y },
@@ -173,7 +174,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 
 			ctx.putImageData(curve.previewImageData, 0, 0);
 			const p = curve.points;
-			ctx.strokeStyle = primaryColor;
+			ctx.strokeStyle = getDrawColor(curve.button);
 			ctx.lineWidth = lineWidth;
 			ctx.beginPath();
 
@@ -190,7 +191,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			}
 			ctx.stroke();
 		},
-		[primaryColor, lineWidth],
+		[getDrawColor, lineWidth],
 	);
 
 	// Handle polygon click
@@ -200,7 +201,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			if (!canvas) return false;
 
 			const poly = polygonState.current;
-			const color = getDrawColor(0); // Always use primary color for stroke
+			const color = getDrawColor(poly.active ? poly.button : button); // Use stored button if active
 
 			// Detect double-click (same position within time window, like jQuery implementation)
 			const now = Date.now();
@@ -214,6 +215,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 				// First point - start a new polygon
 				poly.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				poly.active = true;
+				poly.button = button; // Store button for preview
 				poly.points = [{ x, y }];
 				saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
 				lastClickRef.current = { x, y, time: now };
@@ -252,8 +254,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 						if (poly.previewImageData) {
 							ctx.putImageData(poly.previewImageData, 0, 0);
 						}
-						const shapeFillColor = fillStyle === "fill" || fillStyle === "both" ? secondaryColor : null;
-						const strokeColor = fillStyle === "fill" ? null : color;
+						const { fillColor: shapeFillColor, strokeColor } = getShapeColors(fillStyle, color, secondaryColor);
 						drawPolygon(ctx, poly.points, strokeColor, shapeFillColor, lineWidth, true);
 						// Reset polygon state
 						poly.points = [];
@@ -283,7 +284,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			ctx.putImageData(poly.previewImageData, 0, 0);
 			// Draw polygon lines so far + line to current position
 			const allPoints = [...poly.points, { x, y }];
-			ctx.strokeStyle = primaryColor;
+			ctx.strokeStyle = getDrawColor(poly.button);
 			ctx.lineWidth = lineWidth;
 			ctx.beginPath();
 			ctx.moveTo(allPoints[0].x, allPoints[0].y);
@@ -292,7 +293,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			}
 			ctx.stroke();
 		},
-		[primaryColor, lineWidth],
+		[getDrawColor, lineWidth],
 	);
 
 	// Check if curve tool is active

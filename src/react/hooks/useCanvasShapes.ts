@@ -98,7 +98,7 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 
 	// Draw shape preview
 	const previewShape = useCallback(
-		(x: number, y: number, toolId: string, ctx: CanvasRenderingContext2D): void => {
+		(x: number, y: number, toolId: string, ctx: CanvasRenderingContext2D, shiftKey = false): void => {
 			if (!drawingState.current.isDrawing || !drawingState.current.previewImageData) return;
 
 			const { startX, startY, button, previewImageData } = drawingState.current;
@@ -106,8 +106,15 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 			// Restore original state before drawing preview
 			ctx.putImageData(previewImageData, 0, 0);
 
-			const width = x - startX;
-			const height = y - startY;
+			let width = x - startX;
+			let height = y - startY;
+
+			// Constrain to square/circle when Shift is held (for rectangle, ellipse, rounded rectangle)
+			if (shiftKey && toolId !== TOOL_IDS.LINE) {
+				const size = Math.max(Math.abs(width), Math.abs(height));
+				width = width >= 0 ? size : -size;
+				height = height >= 0 ? size : -size;
+			}
 			const color = getDrawColor(button);
 			const strokeWidth = lineWidth;
 
@@ -159,7 +166,7 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 
 	// Finalize shape drawing
 	const finalizeShape = useCallback(
-		(x: number, y: number, toolId: string, ctx: CanvasRenderingContext2D): void => {
+		(x: number, y: number, toolId: string, ctx: CanvasRenderingContext2D, shiftKey = false): void => {
 			if (!drawingState.current.isDrawing || !drawingState.current.previewImageData) {
 				drawingState.current.isDrawing = false;
 				return;
@@ -170,8 +177,15 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 			// Restore and draw final shape
 			ctx.putImageData(previewImageData, 0, 0);
 
-			const width = x - startX;
-			const height = y - startY;
+			let width = x - startX;
+			let height = y - startY;
+
+			// Constrain to square/circle when Shift is held (for rectangle, ellipse, rounded rectangle)
+			if (shiftKey && toolId !== TOOL_IDS.LINE) {
+				const size = Math.max(Math.abs(width), Math.abs(height));
+				width = width >= 0 ? size : -size;
+				height = height >= 0 ? size : -size;
+			}
 			const color = getDrawColor(button);
 			const strokeWidth = lineWidth;
 
