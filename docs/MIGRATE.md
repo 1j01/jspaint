@@ -2,7 +2,7 @@
 
 ## Current State (Updated January 24, 2026)
 
-The project has successfully completed Phase 1 (Vite adoption) and is **nearly complete** with Phase 2 (React migration):
+The project has successfully completed Phase 1 (Vite adoption) and Phase 2 (React migration) is **feature complete**:
 
 - **Build System**: Vite is fully configured with multi-page app support
 - **Legacy App**: Moved to `/old/` subdirectory, fully functional
@@ -244,12 +244,6 @@ All major dialogs are implemented in React:
 - `HistoryDialog.tsx` - Linear undo/redo history viewer
 - `HistoryTreeDialog.tsx` - Tree-based history with branching navigation
 
-#### Priority 5 - Advanced Features (NOT STARTED)
-1. Multi-user sessions (WebRTC/WebSocket)
-2. Speech recognition integration
-3. Eye gaze mode for accessibility
-4. Dynamic theme loading (CSS already theme-based)
-
 ### 6. Migration sequencing
 
 - [x] **Phase 0**: Vite build working, legacy app preserved
@@ -263,10 +257,9 @@ All major dialogs are implemented in React:
 - [x] **Phase 8**: Help system implementation - DONE
 - [x] **Phase 9**: i18n internationalization support - DONE
 - [x] **Phase 10**: Canvas refactoring and hook extraction - DONE
-- [ ] **Phase 11**: Testing and stabilization - IN PROGRESS
-- [ ] **Phase 12**: Performance optimization
-- [ ] **Phase 13**: jQuery removal (when React app is production-ready)
-- [ ] **Phase 14**: Advanced features (multi-user, speech, localization enhancements)
+- [ ] **Phase 11**: Testing and stabilization - ONGOING
+- [ ] **Phase 12**: Performance optimization - AS NEEDED
+- [ ] **Phase 13**: jQuery removal (archive `/old/` when React app is production-ready)
 
 ## Technical Decisions
 
@@ -516,7 +509,7 @@ npm run lint          # ESLint + TypeScript check
 
 ## Migration Progress Summary
 
-### ✅ Complete (98%+)
+### ✅ Feature Complete
 - **All 16 drawing tools** fully functional with all features
 - **State management** migrated to Zustand with IndexedDB persistence and optimized with useShallow
 - **All menus and dialogs** implemented in React
@@ -536,12 +529,11 @@ npm run lint          # ESLint + TypeScript check
 
 ### 🚧 Remaining Work
 - **Testing and bug fixes** - Thorough testing of all features for edge cases
-- **Performance optimization** - Canvas rendering, state updates, memory management
-- **Advanced features** - Multi-user, speech recognition, eye gaze (long-term)
+- **Performance optimization** - Canvas rendering, state updates, memory management (as needed)
+- **Legacy cleanup** - Archive `/old/` jQuery app once React version is production-ready
 
 ### 🎯 Next Steps
 1. **Comprehensive testing** - Test all tools, dialogs, and features for edge cases
 2. **Bug fixes** - Address any issues found during testing
-3. **Performance review** - Profile and optimize critical paths
-4. **Legacy cleanup** - Archive `/old/` jQuery app once React version is production-ready (keeping os-gui for Windows 98 UI)
-5. **Advanced features** - Multi-user sessions, accessibility enhancements, extended i18n features (long-term)
+3. **Performance review** - Profile and optimize critical paths as needed
+4. **Legacy cleanup** - Archive `/old/` jQuery app (keeping os-gui for Windows 98 UI)
