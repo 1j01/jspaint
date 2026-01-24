@@ -174,8 +174,7 @@ html, body, .jspaint {
 }
 .textbox-editor {
 	color: transparent !important;
-	background: transparent !important;
-	caret-color: black;
+	/* background and caret-color are controlled by inline styles */
 	z-index: 4; /* go above handles and .main-canvas */
 	outline: none;
 }
