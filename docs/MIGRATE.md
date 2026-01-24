@@ -1,6 +1,6 @@
 # Migration Roadmap
 
-## Current State (Updated December 30, 2024)
+## Current State (Updated January 24, 2026)
 
 The project has successfully completed Phase 1 (Vite adoption) and is **nearly complete** with Phase 2 (React migration):
 
@@ -333,6 +333,7 @@ All major dialogs are implemented in React:
 | `src/react/context/state/toolStore.ts` | Active tool, selection, text box state |
 | `src/react/context/state/canvasStore.ts` | Canvas size, history, clipboard |
 | `src/react/context/state/historyStore.ts` | Tree-based undo/redo with branching |
+| `src/react/context/state/aiStore.ts` | AI-related state and functionality |
 | `src/react/context/state/persistence.ts` | IndexedDB persistence layer |
 | `src/react/context/state/initialState.ts` | Default state values |
 | `src/react/context/state/useInitializeStores.ts` | Store initialization hook |
