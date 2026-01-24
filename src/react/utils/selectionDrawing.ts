@@ -1,4 +1,5 @@
 import type { Selection } from "../context/state/types";
+import { getRgbaFromColor } from "./colorUtils";
 
 /**
  * Draw selection overlay with marching ants animation
@@ -106,4 +107,85 @@ export function drawFreeFormPreview(
  */
 export function clearOverlay(overlayCtx: CanvasRenderingContext2D, width: number, height: number): void {
 	overlayCtx.clearRect(0, 0, width, height);
+}
+
+/**
+ * Apply transparency to imageData based on background color.
+ * Makes pixels matching the background color fully transparent.
+ * Used when drawOpaque is false (transparent selection mode).
+ *
+ * @param imageData - Source imageData to process
+ * @param backgroundColor - CSS color string for background color
+ * @param tolerance - Color matching tolerance (default 1)
+ * @returns New ImageData with transparency applied
+ */
+export function applyTransparencyToImageData(
+	imageData: ImageData,
+	backgroundColor: string,
+	tolerance: number = 1,
+): ImageData {
+	const [bgR, bgG, bgB] = getRgbaFromColor(backgroundColor);
+	const result = new ImageData(
+		new Uint8ClampedArray(imageData.data),
+		imageData.width,
+		imageData.height,
+	);
+
+	for (let i = 0; i < result.data.length; i += 4) {
+		const r = result.data[i];
+		const g = result.data[i + 1];
+		const b = result.data[i + 2];
+
+		// Check if pixel matches background color within tolerance
+		const rDiff = Math.abs(r - bgR);
+		const gDiff = Math.abs(g - bgG);
+		const bDiff = Math.abs(b - bgB);
+
+		if (rDiff <= tolerance && gDiff <= tolerance && bDiff <= tolerance) {
+			// Make pixel fully transparent
+			result.data[i + 3] = 0;
+		}
+	}
+
+	return result;
+}
+
+/**
+ * Commit selection imageData to canvas with optional transparency.
+ * When drawOpaque is false, background-colored pixels are made transparent
+ * and the selection is composited using drawImage for proper alpha blending.
+ *
+ * @param ctx - Canvas context to draw on
+ * @param imageData - Selection image data
+ * @param x - X position to draw at
+ * @param y - Y position to draw at
+ * @param drawOpaque - Whether to draw opaquely (false = transparent mode)
+ * @param backgroundColor - Background color for transparency matching
+ */
+export function commitSelectionToCanvas(
+	ctx: CanvasRenderingContext2D,
+	imageData: ImageData,
+	x: number,
+	y: number,
+	drawOpaque: boolean,
+	backgroundColor: string,
+): void {
+	if (drawOpaque) {
+		// Opaque mode: directly put imageData (replaces pixels)
+		ctx.putImageData(imageData, x, y);
+	} else {
+		// Transparent mode: apply transparency and composite with drawImage
+		const transparentData = applyTransparencyToImageData(imageData, backgroundColor);
+
+		// Create a temporary canvas to hold the transparent imageData
+		const tempCanvas = document.createElement("canvas");
+		tempCanvas.width = transparentData.width;
+		tempCanvas.height = transparentData.height;
+		const tempCtx = tempCanvas.getContext("2d");
+		if (tempCtx) {
+			tempCtx.putImageData(transparentData, 0, 0);
+			// Use drawImage for proper alpha compositing
+			ctx.drawImage(tempCanvas, x, y);
+		}
+	}
 }

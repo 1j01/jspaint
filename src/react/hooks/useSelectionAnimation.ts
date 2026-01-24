@@ -1,6 +1,8 @@
 import { useEffect, useRef, RefObject } from "react";
 import type { Selection } from "../context/state/types";
-import { drawSelectionOverlay } from "../utils/selectionDrawing";
+import { drawSelectionOverlay, applyTransparencyToImageData } from "../utils/selectionDrawing";
+import { useSettingsStore } from "../context/state/settingsStore";
+import { useColors } from "../context/state/useColors";
 
 interface UseSelectionAnimationProps {
 	selection: Selection | null;
@@ -31,6 +33,10 @@ interface UseSelectionAnimationProps {
 export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAnimationProps) {
 	const marchingAntsOffset = useRef(0);
 	const animationFrameId = useRef<number | null>(null);
+
+	// Get drawOpaque setting and secondary (background) color for transparent selection mode
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+	const { secondaryColor } = useColors();
 
 	// Clear overlay on mount
 	useEffect(() => {
@@ -63,14 +69,25 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 		const ctx = overlay.getContext("2d");
 		if (!ctx) return;
 
+		// Pre-process imageData for transparency mode (done once, not every frame)
+		let displayImageData: ImageData | null = null;
+		if (selection.imageData) {
+			if (!drawOpaque) {
+				// Transparent selection mode: make background-colored pixels transparent
+				displayImageData = applyTransparencyToImageData(selection.imageData, secondaryColor);
+			} else {
+				displayImageData = selection.imageData;
+			}
+		}
+
 		const animate = () => {
 			marchingAntsOffset.current = (marchingAntsOffset.current + 0.25) % 16;
 
 			ctx.clearRect(0, 0, overlay.width, overlay.height);
 
 			// Draw selection imageData (the actual content) if it exists
-			if (selection.imageData) {
-				ctx.putImageData(selection.imageData, selection.x, selection.y);
+			if (displayImageData) {
+				ctx.putImageData(displayImageData, selection.x, selection.y);
 			}
 
 			drawSelectionOverlay(ctx, selection, marchingAntsOffset.current);
@@ -85,5 +102,5 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 				cancelAnimationFrame(animationFrameId.current);
 			}
 		};
-	}, [selection, overlayRef]);
+	}, [selection, overlayRef, drawOpaque, secondaryColor]);
 }

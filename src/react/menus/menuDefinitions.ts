@@ -467,16 +467,12 @@ export function createMenus(actions: MenuActions): Record<string, MenuItem[]> {
 			{
 				label: "🌍 &Language",
 				description: "Changes the display language.",
-				submenu: () => {
-					const currentLang = actions.getCurrentLanguage();
-
-					return LANGUAGES.map((lang) => ({
-						label: `${lang.emoji} ${lang.name}`,
-						action: () => actions.extrasChangeLanguage(lang.code),
-						enabled: currentLang !== lang.code,
-						description: `Changes the language to ${lang.englishName || lang.name}.`,
-					}));
-				},
+				submenu: LANGUAGES.map((lang) => ({
+					label: `${lang.emoji} ${lang.name}`,
+					action: () => actions.extrasChangeLanguage(lang.code),
+					enabled: () => actions.getCurrentLanguage() !== lang.code,
+					description: `Changes the language to ${lang.englishName || lang.name}.`,
+				})),
 			},
 		],
 	};

@@ -1,6 +1,7 @@
 import { useCallback, useRef, RefObject } from "react";
 import type { Selection } from "../context/state/types";
-import { drawRectangularPreview, clearOverlay } from "../utils/selectionDrawing";
+import { drawRectangularPreview, clearOverlay, commitSelectionToCanvas } from "../utils/selectionDrawing";
+import { useSettingsStore } from "../context/state/settingsStore";
 
 interface UseRectangularSelectionProps {
 	canvasRef: RefObject<HTMLCanvasElement | null>;
@@ -77,6 +78,9 @@ export function useRectangularSelection({
 		dragOffsetY: 0,
 	});
 
+	// Get drawOpaque setting for transparent selection mode
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+
 	/**
 	 * Start a new rectangular selection or begin dragging existing selection
 	 * @param {number} x - Mouse X coordinate
@@ -106,7 +110,7 @@ export function useRectangularSelection({
 				} else {
 					// Click outside - commit the selection to canvas first
 					if (selection.imageData) {
-						ctx.putImageData(selection.imageData, selection.x, selection.y);
+						commitSelectionToCanvas(ctx, selection.imageData, selection.x, selection.y, drawOpaque, secondaryColor);
 					}
 					clearSelection();
 				}
@@ -129,7 +133,7 @@ export function useRectangularSelection({
 			};
 			return false;
 		},
-		[selection, clearSelection, saveState, canvasRef],
+		[selection, clearSelection, saveState, canvasRef, drawOpaque, secondaryColor],
 	);
 
 	/**

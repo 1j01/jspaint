@@ -1,6 +1,7 @@
 import { useCallback, useRef, RefObject } from "react";
 import type { Selection } from "../context/state/types";
-import { drawFreeFormPreview, clearOverlay } from "../utils/selectionDrawing";
+import { drawFreeFormPreview, clearOverlay, commitSelectionToCanvas } from "../utils/selectionDrawing";
+import { useSettingsStore } from "../context/state/settingsStore";
 
 interface UseFreeFormSelectionProps {
 	canvasRef: RefObject<HTMLCanvasElement | null>;
@@ -79,6 +80,9 @@ export function useFreeFormSelection({
 		dragOffsetY: 0,
 	});
 
+	// Get drawOpaque setting for transparent selection mode
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+
 	// Start a new free-form selection
 	const start = useCallback(
 		(x: number, y: number, ctx: CanvasRenderingContext2D): boolean => {
@@ -102,7 +106,7 @@ export function useFreeFormSelection({
 				} else {
 					// Commit selection
 					if (selection.imageData) {
-						ctx.putImageData(selection.imageData, selection.x, selection.y);
+						commitSelectionToCanvas(ctx, selection.imageData, selection.x, selection.y, drawOpaque, secondaryColor);
 					}
 					clearSelection();
 				}
@@ -126,7 +130,7 @@ export function useFreeFormSelection({
 			};
 			return false;
 		},
-		[selection, clearSelection, saveState, canvasRef],
+		[selection, clearSelection, saveState, canvasRef, drawOpaque, secondaryColor],
 	);
 
 	// Handle selection move (during drag or selection drawing)

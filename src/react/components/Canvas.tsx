@@ -23,6 +23,8 @@ import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
 import { useTreeHistory } from "../context/state/useTreeHistory";
 import { useUIStore } from "../context/state/uiStore";
 import { useToolStore, TOOL_IDS } from "../context/state/toolStore";
+import { useSettingsStore } from "../context/state/settingsStore";
+import { useColors } from "../context/state/useColors";
 import { saveSetting } from "../context/state/persistence";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
@@ -33,6 +35,7 @@ import { useCanvasLifecycle } from "../hooks/useCanvasLifecycle";
 import { useAirbrushEffect } from "../hooks/useAirbrushEffect";
 import { useCanvasEventHandlers } from "../hooks/useCanvasEventHandlers";
 import { getCanvasStyle, resizeSelection, prepareCanvasResize, restoreCanvasAfterResize } from "../utils/canvasHelpers";
+import { commitSelectionToCanvas } from "../utils/selectionDrawing";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
@@ -61,6 +64,8 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 	const { setCursorPosition } = useCursorPosition();
 	const { selection: currentSelection, setSelection } = useSelection();
 	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
+	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+	const { secondaryColor } = useColors();
 
 	// Overlay canvas ref for selection marching ants
 	const overlayRef = useRef<HTMLCanvasElement>(null);
@@ -204,7 +209,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 			if (isSelectionTool(prevToolId) && !isSelectionTool(selectedToolId)) {
 				const selection = useToolStore.getState().selection;
 				if (selection?.imageData && ctx) {
-					ctx.putImageData(selection.imageData, selection.x, selection.y);
+					commitSelectionToCanvas(ctx, selection.imageData, selection.x, selection.y, drawOpaque, secondaryColor);
 					useToolStore.getState().clearSelection();
 					saveHistoryState("Deselect");
 				}
@@ -224,7 +229,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 			// Update previous tool reference
 			prevToolIdRef.current = selectedToolId;
 		}
-	}, [selectedToolId, canvasRef, textBoxHook, saveHistoryState]);
+	}, [selectedToolId, canvasRef, textBoxHook, saveHistoryState, drawOpaque, secondaryColor]);
 
 	/**
 	 * Selection resize handler.
