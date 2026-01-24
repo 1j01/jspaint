@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Component } from "./Component";
 
 /**
@@ -95,6 +96,7 @@ export function ToolBox({
 	title,
 	children,
 }: ToolBoxProps) {
+	const { t } = useTranslation();
 	const tools = useMemo(() => ensureTools(toolsProp), [toolsProp]);
 
 	// Use selectedToolIds directly (controlled component - no internal state)
@@ -129,7 +131,7 @@ export function ToolBox({
 		onHoverChange?.(null);
 	}, [onHoverChange]);
 
-	const componentTitle = title || (isExtras ? "Extra Tools" : "Tools");
+	const componentTitle = title || (isExtras ? t("Extra Tools") : t("Tools"));
 	const className = ["tools-component", isExtras ? "extra-tools-component" : ""].filter(Boolean).join(" ");
 
 	return (
@@ -141,11 +143,17 @@ export function ToolBox({
 						tool.iconIndex != null
 							? ({ ...TOOL_ICON_STYLE, "--icon-index": tool.iconIndex } as React.CSSProperties)
 							: TOOL_ICON_STYLE;
+					// Translate tool name and description for i18n
+					const translatedTool = {
+						...tool,
+						name: t(tool.name),
+						description: t(tool.description),
+					};
 					return (
 						<div
 							key={tool.id}
 							className={["tool", isSelected ? "selected" : ""].filter(Boolean).join(" ")}
-							title={tool.name}
+							title={translatedTool.name}
 							role="button"
 							tabIndex={0}
 							aria-pressed={isSelected}
@@ -153,9 +161,9 @@ export function ToolBox({
 							onKeyDown={(e) => {
 								if (e.key === "Enter" || e.key === " ") selectTool(tool);
 							}}
-							onPointerEnter={() => handlePointerEnter(tool)}
+							onPointerEnter={() => handlePointerEnter(translatedTool)}
 							onPointerLeave={handlePointerLeave}
-							onFocus={() => handlePointerEnter(tool)}
+							onFocus={() => handlePointerEnter(translatedTool)}
 							onBlur={handlePointerLeave}
 						>
 							<span className="tool-icon" aria-hidden="true" style={iconStyle} />

@@ -1108,3 +1108,71 @@ body.resizing iframe {
         font-size: 10px;
         color: #666;
 }
+
+/* AI Side Panel */
+.ai-side-panel {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        height: 100%;
+        background: var(--ButtonFace, #c0c0c0);
+        border-left: 1px solid var(--ButtonShadow, #808080);
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+}
+
+.ai-side-panel-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 8px;
+        background: linear-gradient(180deg, #000080 0%, #1084d0 100%);
+        color: white;
+        flex-shrink: 0;
+}
+
+.ai-side-panel-title {
+        font-weight: bold;
+        font-size: 11px;
+}
+
+.ai-side-panel-buttons {
+        display: flex;
+        gap: 4px;
+}
+
+.ai-side-panel-button {
+        padding: 2px 8px;
+        font-size: 10px;
+        border: 1px outset var(--ButtonFace, #c0c0c0);
+        background: var(--ButtonFace, #c0c0c0);
+        color: var(--ButtonText, #000000);
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+}
+
+.ai-side-panel-button:hover {
+        background: var(--ButtonHilight, #ffffff);
+}
+
+.ai-side-panel-button:active {
+        border-style: inset;
+        background: var(--ButtonShadow, #808080);
+}
+
+.ai-side-panel-close {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 0 6px;
+        line-height: 1;
+}
+
+.ai-side-panel-error {
+        padding: 8px;
+        background: #ffebee;
+        border-bottom: 1px solid #f44336;
+        color: #c00;
+        font-size: 11px;
+}

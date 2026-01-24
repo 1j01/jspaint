@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState, useRef, useLayoutEffect, useEffect, KeyboardEvent, PointerEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { DEFAULT_PALETTE } from "../data/palette";
 import { Component } from "./Component";
 
@@ -91,6 +92,7 @@ export function ColorBox({
 	onEditRequest,
 	vertical = false,
 }: ColorBoxProps) {
+	const { t } = useTranslation();
 	const palette = useMemo(() => ensurePalette(paletteProp ?? DEFAULT_PALETTE), [paletteProp]);
 	const [foreground, setForeground] = useState(() => normalizeColor(initialPrimary, palette[0] ?? FALLBACK_PRIMARY));
 	const [background, setBackground] = useState(() =>
@@ -258,8 +260,8 @@ export function ColorBox({
 	);
 
 	return (
-		<Component title="Colors" className="colors-component" orientation={vertical ? "tall" : "wide"}>
-			<div className="color-box" role="group" aria-label="Color palette">
+		<Component title={t("Colors")} className="colors-component" orientation={vertical ? "tall" : "wide"}>
+			<div className="color-box" role="group" aria-label={t("Color palette")}>
 				{/* Current colors display - click to swap */}
 				<div
 					className="current-colors swatch"
@@ -283,7 +285,7 @@ export function ColorBox({
 				</div>
 
 				{/* Palette grid - sized to force 2-row layout */}
-				<div ref={paletteRef} className="palette" role="listbox" aria-label="Available colors">
+				<div ref={paletteRef} className="palette" role="listbox" aria-label={t("Available colors")}>
 					{palette.map((color, index) => (
 						<div
 							key={`${index}-${color}`}

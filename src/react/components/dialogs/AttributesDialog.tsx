@@ -3,6 +3,7 @@
  * Windows 98 Paint style dialog.
  */
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../../constants/canvas";
 
@@ -23,6 +24,7 @@ export interface AttributesDialogProps {
 }
 
 export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, currentHeight }: AttributesDialogProps) {
+	const { t } = useTranslation();
 	const [width, setWidth] = useState(currentWidth);
 	const [height, setHeight] = useState(currentHeight);
 	const [units, setUnits] = useState<"pixels" | "inches" | "cm">("pixels");
@@ -57,22 +59,22 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 	};
 
 	return (
-		<Dialog title="Attributes" isOpen={isOpen} onClose={onClose} className="dialog-window attributes-window">
+		<Dialog title={t("Attributes")} isOpen={isOpen} onClose={onClose} className="dialog-window attributes-window">
 			<form className="dialog-form">
 				<div>
 					{/* File info table */}
 					<table>
 						<tbody>
 							<tr>
-								<td>File last saved:</td>
-								<td>Not Available</td>
+								<td>{t("File last saved:")}</td>
+								<td>{t("Not Available")}</td>
 							</tr>
 							<tr>
-								<td>Size on disk:</td>
-								<td>Not Available</td>
+								<td>{t("Size on disk:")}</td>
+								<td>{t("Not Available")}</td>
 							</tr>
 							<tr>
-								<td>Resolution:</td>
+								<td>{t("Resolution:")}</td>
 								<td style={{ direction: "ltr" }}>72 x 72 dots per inch</td>
 							</tr>
 						</tbody>
@@ -80,7 +82,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 
 					{/* Width and Height inputs - directly in labels, not in fieldsets */}
 					<label>
-						Width:
+						{t("Width:")}
 						<input
 							type="number"
 							className="no-spinner inset-deep"
@@ -92,7 +94,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 						/>
 					</label>
 					<label>
-						Height:
+						{t("Height:")}
 						<input
 							type="number"
 							className="no-spinner inset-deep"
@@ -105,7 +107,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 					</label>
 
 					<fieldset>
-						<legend>Units</legend>
+						<legend>{t("Units")}</legend>
 						<div className="fieldset-body">
 							<div className="radio-field">
 								<input
@@ -115,7 +117,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 									checked={units === "inches"}
 									onChange={() => setUnits("inches")}
 								/>
-								<label htmlFor="unit-in">Inches</label>
+								<label htmlFor="unit-in">{t("Inches")}</label>
 							</div>
 							<div className="radio-field">
 								<input
@@ -125,7 +127,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 									checked={units === "cm"}
 									onChange={() => setUnits("cm")}
 								/>
-								<label htmlFor="unit-cm">Cm</label>
+								<label htmlFor="unit-cm">{t("Cm")}</label>
 							</div>
 							<div className="radio-field">
 								<input
@@ -135,13 +137,13 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 									checked={units === "pixels"}
 									onChange={() => setUnits("pixels")}
 								/>
-								<label htmlFor="unit-px">Pixels</label>
+								<label htmlFor="unit-px">{t("Pixels")}</label>
 							</div>
 						</div>
 					</fieldset>
 
 					<fieldset>
-						<legend>Colors</legend>
+						<legend>{t("Colors")}</legend>
 						<div className="fieldset-body">
 							<div className="radio-field">
 								<input
@@ -151,7 +153,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 									checked={colorMode === "blackAndWhite"}
 									onChange={() => setColorMode("blackAndWhite")}
 								/>
-								<label htmlFor="attribute-monochrome">Black and white</label>
+								<label htmlFor="attribute-monochrome">{t("Black and white")}</label>
 							</div>
 							<div className="radio-field">
 								<input
@@ -161,13 +163,13 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 									checked={colorMode === "color"}
 									onChange={() => setColorMode("color")}
 								/>
-								<label htmlFor="attribute-polychrome">Colors</label>
+								<label htmlFor="attribute-polychrome">{t("Colors")}</label>
 							</div>
 						</div>
 					</fieldset>
 
 					<fieldset>
-						<legend>Transparency</legend>
+						<legend>{t("Transparency")}</legend>
 						<div className="fieldset-body">
 							<div className="radio-field">
 								<input
@@ -177,7 +179,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 									checked={transparent === true}
 									onChange={() => setTransparent(true)}
 								/>
-								<label htmlFor="attribute-transparent">Transparent</label>
+								<label htmlFor="attribute-transparent">{t("Transparent")}</label>
 							</div>
 							<div className="radio-field">
 								<input
@@ -187,16 +189,16 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 									checked={transparent === false}
 									onChange={() => setTransparent(false)}
 								/>
-								<label htmlFor="attribute-opaque">Opaque</label>
+								<label htmlFor="attribute-opaque">{t("Opaque")}</label>
 							</div>
 						</div>
 					</fieldset>
 				</div>
 
 				<DialogButtons>
-					<button type="button" onClick={handleOk}>OK</button>
-					<button type="button" onClick={onClose}>Cancel</button>
-					<button type="button" onClick={handleDefault}>Default</button>
+					<button type="button" onClick={handleOk}>{t("OK")}</button>
+					<button type="button" onClick={onClose}>{t("Cancel")}</button>
+					<button type="button" onClick={handleDefault}>{t("Default")}</button>
 				</DialogButtons>
 			</form>
 		</Dialog>

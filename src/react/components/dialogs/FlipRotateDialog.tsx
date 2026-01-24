@@ -4,6 +4,7 @@
  * Matches legacy jQuery implementation structure.
  */
 import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
 export type FlipRotateAction =
@@ -20,6 +21,7 @@ export interface FlipRotateDialogProps {
 type ActionType = "flipHorizontal" | "flipVertical" | "rotate";
 
 export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogProps) {
+	const { t } = useTranslation();
 	const [selectedAction, setSelectedAction] = useState<ActionType>("flipHorizontal");
 	const [rotateAngle, setRotateAngle] = useState<number>(90);
 	const [customAngle, setCustomAngle] = useState<string>("");
@@ -53,11 +55,11 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 	const isRotateDisabled = selectedAction !== "rotate";
 
 	return (
-		<Dialog title="Flip and Rotate" isOpen={isOpen} onClose={onClose} className="dialog-window flip-and-rotate">
+		<Dialog title={t("Flip and Rotate")} isOpen={isOpen} onClose={onClose} className="dialog-window flip-and-rotate">
 			<form className="dialog-form">
 				<div>
 					<fieldset>
-						<legend>Flip or rotate</legend>
+						<legend>{t("Flip or rotate")}</legend>
 						<div className="radio-wrapper">
 							<input
 								ref={firstRadioRef}
@@ -68,7 +70,7 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								checked={selectedAction === "flipHorizontal"}
 								onChange={() => setSelectedAction("flipHorizontal")}
 							/>
-							<label htmlFor="flip-horizontal"><u>F</u>lip horizontal</label>
+							<label htmlFor="flip-horizontal">{t("Flip horizontal")}</label>
 						</div>
 						<div className="radio-wrapper">
 							<input
@@ -79,7 +81,7 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								checked={selectedAction === "flipVertical"}
 								onChange={() => setSelectedAction("flipVertical")}
 							/>
-							<label htmlFor="flip-vertical">Flip <u>v</u>ertical</label>
+							<label htmlFor="flip-vertical">{t("Flip vertical")}</label>
 						</div>
 						<div className="radio-wrapper">
 							<input
@@ -90,7 +92,7 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 								checked={selectedAction === "rotate"}
 								onChange={() => setSelectedAction("rotate")}
 							/>
-							<label htmlFor="rotate-by-angle"><u>R</u>otate by angle</label>
+							<label htmlFor="rotate-by-angle">{t("Rotate by angle")}</label>
 						</div>
 						<div className="sub-options" onClick={handleSubOptionsClick}>
 							<div className="radio-wrapper">
@@ -107,7 +109,7 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 									}}
 									disabled={isRotateDisabled}
 								/>
-								<label htmlFor="rotate-90"><u>9</u>0°</label>
+								<label htmlFor="rotate-90">90°</label>
 							</div>
 							<div className="radio-wrapper">
 								<input
@@ -123,7 +125,7 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 									}}
 									disabled={isRotateDisabled}
 								/>
-								<label htmlFor="rotate-180"><u>1</u>80°</label>
+								<label htmlFor="rotate-180">180°</label>
 							</div>
 							<div className="radio-wrapper">
 								<input
@@ -139,7 +141,7 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 									}}
 									disabled={isRotateDisabled}
 								/>
-								<label htmlFor="rotate-270"><u>2</u>70°</label>
+								<label htmlFor="rotate-270">270°</label>
 							</div>
 							<div className="radio-wrapper">
 								<input
@@ -170,14 +172,14 @@ export function FlipRotateDialog({ isOpen, onClose, onApply }: FlipRotateDialogP
 									style={{ width: "50px" }}
 									disabled={isRotateDisabled}
 								/>
-								<label htmlFor="custom-degrees">Degrees</label>
+								<label htmlFor="custom-degrees">{t("Degrees")}</label>
 							</div>
 						</div>
 					</fieldset>
 				</div>
 				<DialogButtons>
-					<button type="button" onClick={handleOk}>OK</button>
-					<button type="button" onClick={onClose}>Cancel</button>
+					<button type="button" onClick={handleOk}>{t("OK")}</button>
+					<button type="button" onClick={onClose}>{t("Cancel")}</button>
 				</DialogButtons>
 			</form>
 		</Dialog>

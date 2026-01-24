@@ -29,7 +29,7 @@ import { useDialogHandlers } from "../react/hooks/useDialogHandlers";
 import { useFontState } from "../react/hooks/useFontState";
 import { useCanvasHistory } from "../react/hooks/useCanvasHistory";
 import { useClipboardOperations } from "../react/hooks/useClipboardOperations";
-import { AIChatPanel } from "../react/components/ai/AIChatPanel";
+import { AISidePanel } from "../react/components/ai/AISidePanel";
 
 /**
  * Props for StoreInitializer component
@@ -317,6 +317,11 @@ function AppContent() {
 						</ToolBox>
 					) : null
 				}
+				rightContent={
+					showAIPanel ? (
+						<AISidePanel canvasRef={canvasRef} onClose={toggleAIPanel} />
+					) : null
+				}
 				bottomContent={
 					showColorBox ? (
 						<ColorBox
@@ -371,12 +376,6 @@ function AppContent() {
 			showThumbnail={showThumbnail}
 			toggleThumbnail={toggleThumbnail}
 			setTool={setTool}
-		/>
-
-		<AIChatPanel
-			canvasRef={canvasRef}
-			isOpen={showAIPanel}
-			onClose={toggleAIPanel}
 		/>
 	</>
 );

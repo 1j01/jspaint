@@ -3,6 +3,7 @@
  * Windows 98 Paint style dialog with transform icons.
  */
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
 export interface StretchSkewValues {
@@ -64,6 +65,7 @@ function TransformRow({ iconSrc, label, value, onChange, unit, min, max, default
 }
 
 export function StretchSkewDialog({ isOpen, onClose, onApply }: StretchSkewDialogProps) {
+	const { t } = useTranslation();
 	const [stretchHorizontal, setStretchHorizontal] = useState(100);
 	const [stretchVertical, setStretchVertical] = useState(100);
 	const [skewHorizontal, setSkewHorizontal] = useState(0);
@@ -80,16 +82,16 @@ export function StretchSkewDialog({ isOpen, onClose, onApply }: StretchSkewDialo
 	};
 
 	return (
-		<Dialog title="Stretch and Skew" isOpen={isOpen} onClose={onClose} className="dialog-window stretch-and-skew">
+		<Dialog title={t("Stretch and Skew")} isOpen={isOpen} onClose={onClose} className="dialog-window stretch-and-skew">
 			<form className="dialog-form">
 				<div>
 					<fieldset>
-						<legend>Stretch</legend>
+						<legend>{t("Stretch")}</legend>
 						<table>
 							<tbody>
 								<TransformRow
 									iconSrc="/images/transforms/stretch-x.png"
-									label="Horizontal:"
+									label={t("Horizontal:")}
 									value={stretchHorizontal}
 									onChange={setStretchHorizontal}
 									unit="%"
@@ -99,7 +101,7 @@ export function StretchSkewDialog({ isOpen, onClose, onApply }: StretchSkewDialo
 								/>
 								<TransformRow
 									iconSrc="/images/transforms/stretch-y.png"
-									label="Vertical:"
+									label={t("Vertical:")}
 									value={stretchVertical}
 									onChange={setStretchVertical}
 									unit="%"
@@ -111,25 +113,25 @@ export function StretchSkewDialog({ isOpen, onClose, onApply }: StretchSkewDialo
 						</table>
 					</fieldset>
 					<fieldset>
-						<legend>Skew</legend>
+						<legend>{t("Skew")}</legend>
 						<table>
 							<tbody>
 								<TransformRow
 									iconSrc="/images/transforms/skew-x.png"
-									label="Horizontal:"
+									label={t("Horizontal:")}
 									value={skewHorizontal}
 									onChange={setSkewHorizontal}
-									unit="Degrees"
+									unit={t("Degrees")}
 									min={-90}
 									max={90}
 									defaultValue={0}
 								/>
 								<TransformRow
 									iconSrc="/images/transforms/skew-y.png"
-									label="Vertical:"
+									label={t("Vertical:")}
 									value={skewVertical}
 									onChange={setSkewVertical}
-									unit="Degrees"
+									unit={t("Degrees")}
 									min={-90}
 									max={90}
 									defaultValue={0}
@@ -139,8 +141,8 @@ export function StretchSkewDialog({ isOpen, onClose, onApply }: StretchSkewDialo
 					</fieldset>
 				</div>
 				<DialogButtons>
-					<button type="button" onClick={handleOk}>OK</button>
-					<button type="button" onClick={onClose}>Cancel</button>
+					<button type="button" onClick={handleOk}>{t("OK")}</button>
+					<button type="button" onClick={onClose}>{t("Cancel")}</button>
 				</DialogButtons>
 			</form>
 		</Dialog>

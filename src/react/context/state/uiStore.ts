@@ -157,7 +157,7 @@ export const useUIStore = create<UIState>((set, get) => ({
 	showTextToolbar: false,
 	showGrid: false,
 	showThumbnail: false,
-	showAIPanel: false,
+	showAIPanel: true,
 	magnification: 1,
 	cursorPosition: null,
 
@@ -251,7 +251,7 @@ export const useUIStore = create<UIState>((set, get) => ({
 		const showTextToolbar = await loadSetting("showTextToolbar", false);
 		const showGrid = await loadSetting("showGrid", false);
 		const showThumbnail = await loadSetting("showThumbnail", false);
-		const showAIPanel = await loadSetting("showAIPanel", false);
+		const showAIPanel = await loadSetting("showAIPanel", true);
 		const magnification = await loadSetting("magnification", 1);
 
 		set({
