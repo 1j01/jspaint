@@ -126,8 +126,15 @@ export function getBrushPoints(size: number, shape: BrushShape = "circle"): Brus
 /**
  * Flood fill algorithm (scanline-based).
  * Fills a contiguous region of similar colors starting from a point.
- * Uses a tolerance of 2 to handle slight color variations.
  * Does nothing if clicking on the same color as the fill color.
+ *
+ * **Tolerance Note:**
+ * Uses a fixed tolerance of 2 (per RGB/A channel) to handle slight color variations
+ * that can occur from canvas anti-aliasing or JPEG compression artifacts.
+ * Classic MS Paint uses exact pixel matching (tolerance=0), but browser canvas
+ * rendering can introduce sub-pixel color differences, so a small tolerance
+ * prevents unexpected fill boundaries. This value is intentionally not
+ * configurable to match the original MS Paint behavior of having no tolerance UI.
  *
  * @param ctx - Canvas 2D rendering context to fill on
  * @param startX - Starting X coordinate (will be clamped to canvas bounds)
@@ -161,6 +168,7 @@ export function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY:
 	const [fillR, fillG, fillB, fillA] = getRgbaFromColor(fillColor);
 
 	// Don't fill if clicking on the same color
+	// Tolerance handles anti-aliasing artifacts (see JSDoc for rationale)
 	const tolerance = 2;
 	if (
 		Math.abs(fillR - startR) <= tolerance &&

@@ -120,13 +120,13 @@ Eraser draws with secondary color, which is correct MS Paint behavior. In classi
 
 jQuery approach is more robust for complex text layouts.
 
-#### 17. Missing Font Fallback
-React doesn't handle font loading failures. jQuery has fallback mechanisms.
+#### ~~17. Missing Font Fallback~~ ✅ FIXED
+React now validates font availability when fonts finish loading. Falls back to Liberation Sans → Arial → first available font, matching jQuery $FontBox.js behavior. Implemented in `FontBoxWindow.tsx`.
 
 ### Selection Tools
 
-#### 18. Free-Form Selection Bounds Rounding
-Uses asymmetric rounding (`Math.floor` for min, `Math.round` for dimensions) which could cause 1-pixel shifts.
+#### ~~18. Free-Form Selection Bounds Rounding~~ ✅ FIXED
+Fixed asymmetric rounding. Now uses `Math.floor(min)` + `Math.ceil(max)` consistently in both `useFreeFormSelection.ts` and `useRectangularSelection.ts` for complete pixel coverage without 1-pixel shifts.
 
 #### 19. Selection Clipboard Not Persisted
 Clipboard cleared on page refresh. Expected behavior but worth noting.
@@ -136,10 +136,10 @@ Debug `console.log()` statements have been removed from `useMenuActions.ts` and 
 
 ### Shape Tools
 
-#### 21. Click-to-Close Threshold Fixed
-**Location:** `src/react/hooks/useCanvasCurvePolygon.ts` line 246
+#### ~~21. Click-to-Close Threshold Fixed~~ ✅ FIXED
+**Location:** `src/react/hooks/useCanvasCurvePolygon.ts` line 252
 
-10px threshold for polygon close-on-click. Doesn't scale with magnification.
+10px threshold for polygon close-on-click now scales with magnification. Uses `10 / magnification` so the threshold feels consistent in screen pixels at any zoom level.
 
 #### 22. Double-Click Detection Simplistic
 Uses Euclidean distance with fixed timing. Could create false positives.
@@ -155,10 +155,10 @@ Full canvas `getImageData()` on every preview move. Could be slow on large canva
 
 ### Drawing Tools
 
-#### 26. Flood Fill Tolerance Hard-Coded
+#### ~~26. Flood Fill Tolerance Hard-Coded~~ ✅ DOCUMENTED
 **Location:** `src/react/utils/drawingUtils.ts` line 164
 
-Color tolerance of 2 is fixed, not configurable. Some Paint applications allow adjustment.
+Color tolerance of 2 is fixed, not configurable. This is intentional: classic MS Paint uses exact pixel matching (tolerance=0), but browser canvas rendering can introduce sub-pixel color differences from anti-aliasing or JPEG compression artifacts. The small tolerance prevents unexpected fill boundaries while matching MS Paint's behavior of having no tolerance UI. Documented in JSDoc.
 
 #### 27. Flood Fill Memory Usage
 Loads entire canvas ImageData into memory. Could cause issues on large canvases.
