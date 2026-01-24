@@ -49,7 +49,7 @@ npm run test:update-snapshots             # Update visual snapshots
 
 **Selector Hooks** - Located alongside stores (e.g., `useColors.ts`, `useBrushSettings.ts`). Use `useShallow` from Zustand to prevent unnecessary re-renders.
 
-**Persistence** - `persistence.ts` provides IndexedDB storage via the `idb` library. Stores are auto-saved: settings, UI state, and canvas history. Database name: `mcpaint-db`.
+**Persistence** - `persistence.ts` provides IndexedDB storage via the `idb` library. Stores are auto-saved: settings, UI state, and canvas history. Database name: `mcpaint-db`. See [docs/CANVAS_PERSISTENCE.md](docs/CANVAS_PERSISTENCE.md) for the two-tier persistence strategy (module-level + IndexedDB) and why canvas data must NOT be saved to IndexedDB in React cleanup functions.
 
 **Canvas Architecture** (`src/react/components/Canvas.tsx`):
 - Orchestrates specialized hooks for drawing, selection, shapes, text
