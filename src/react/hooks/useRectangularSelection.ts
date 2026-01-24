@@ -201,8 +201,9 @@ export function useRectangularSelection({
 				// Get the image data for the selection
 				const imageData = ctx.getImageData(selX, selY, selWidth, selHeight);
 
-				// DON'T fill with background color yet - that happens when selection is moved
-				// For now, just store the selection with its imageData
+				// Fill the selected area with background color (lift the selection from canvas)
+				ctx.fillStyle = secondaryColor;
+				ctx.fillRect(selX, selY, selWidth, selHeight);
 
 				setSelection({
 					x: selX,

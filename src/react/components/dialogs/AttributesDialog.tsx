@@ -1,5 +1,6 @@
 /**
  * Attributes dialog for changing canvas/image properties.
+ * Windows 98 Paint style dialog.
  */
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogButtons } from "./Dialog";
@@ -56,129 +57,141 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 	};
 
 	return (
-		<Dialog title="Attributes" isOpen={isOpen} onClose={onClose} width={380} className="dialog-window attributes-window">
+		<Dialog title="Attributes" isOpen={isOpen} onClose={onClose} className="dialog-window attributes-window">
 			<form className="dialog-form">
-				<div className="file-info">
-					<div className="file-info-row">
-						<span>File last saved:</span>
-						<span>Not Available</span>
-					</div>
-					<div className="file-info-row">
-						<span>Size on disk:</span>
-						<span>Not Available</span>
-					</div>
-					<div className="file-info-row">
-						<span>Resolution:</span>
-						<span>72 x 72 dots per inch</span>
-					</div>
+				<div>
+					{/* File info table */}
+					<table>
+						<tbody>
+							<tr>
+								<td>File last saved:</td>
+								<td>Not Available</td>
+							</tr>
+							<tr>
+								<td>Size on disk:</td>
+								<td>Not Available</td>
+							</tr>
+							<tr>
+								<td>Resolution:</td>
+								<td style={{ direction: "ltr" }}>72 x 72 dots per inch</td>
+							</tr>
+						</tbody>
+					</table>
+
+					{/* Width and Height inputs - directly in labels, not in fieldsets */}
+					<label>
+						Width:
+						<input
+							type="number"
+							className="no-spinner inset-deep"
+							value={width}
+							onChange={(e) => setWidth(parseInt(e.target.value) || 1)}
+							min={1}
+							max={9999}
+							style={{ width: "40px" }}
+						/>
+					</label>
+					<label>
+						Height:
+						<input
+							type="number"
+							className="no-spinner inset-deep"
+							value={height}
+							onChange={(e) => setHeight(parseInt(e.target.value) || 1)}
+							min={1}
+							max={9999}
+							style={{ width: "40px" }}
+						/>
+					</label>
+
+					<fieldset>
+						<legend>Units</legend>
+						<div className="fieldset-body">
+							<div className="radio-field">
+								<input
+									type="radio"
+									id="unit-in"
+									name="units"
+									checked={units === "inches"}
+									onChange={() => setUnits("inches")}
+								/>
+								<label htmlFor="unit-in">Inches</label>
+							</div>
+							<div className="radio-field">
+								<input
+									type="radio"
+									id="unit-cm"
+									name="units"
+									checked={units === "cm"}
+									onChange={() => setUnits("cm")}
+								/>
+								<label htmlFor="unit-cm">Cm</label>
+							</div>
+							<div className="radio-field">
+								<input
+									type="radio"
+									id="unit-px"
+									name="units"
+									checked={units === "pixels"}
+									onChange={() => setUnits("pixels")}
+								/>
+								<label htmlFor="unit-px">Pixels</label>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend>Colors</legend>
+						<div className="fieldset-body">
+							<div className="radio-field">
+								<input
+									type="radio"
+									id="attribute-monochrome"
+									name="colors"
+									checked={colorMode === "blackAndWhite"}
+									onChange={() => setColorMode("blackAndWhite")}
+								/>
+								<label htmlFor="attribute-monochrome">Black and white</label>
+							</div>
+							<div className="radio-field">
+								<input
+									type="radio"
+									id="attribute-polychrome"
+									name="colors"
+									checked={colorMode === "color"}
+									onChange={() => setColorMode("color")}
+								/>
+								<label htmlFor="attribute-polychrome">Colors</label>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend>Transparency</legend>
+						<div className="fieldset-body">
+							<div className="radio-field">
+								<input
+									type="radio"
+									id="attribute-transparent"
+									name="transparency"
+									checked={transparent === true}
+									onChange={() => setTransparent(true)}
+								/>
+								<label htmlFor="attribute-transparent">Transparent</label>
+							</div>
+							<div className="radio-field">
+								<input
+									type="radio"
+									id="attribute-opaque"
+									name="transparency"
+									checked={transparent === false}
+									onChange={() => setTransparent(false)}
+								/>
+								<label htmlFor="attribute-opaque">Opaque</label>
+							</div>
+						</div>
+					</fieldset>
 				</div>
-
-				<fieldset>
-					<legend>Image</legend>
-					<div className="fieldset-body">
-						<div className="input-row">
-							<label htmlFor="width-input">Width:</label>
-							<input
-								id="width-input"
-								type="number"
-								className="inset-deep"
-								value={width}
-								onChange={(e) => setWidth(parseInt(e.target.value) || 1)}
-								min={1}
-								max={9999}
-							/>
-						</div>
-						<div className="input-row">
-							<label htmlFor="height-input">Height:</label>
-							<input
-								id="height-input"
-								type="number"
-								className="inset-deep"
-								value={height}
-								onChange={(e) => setHeight(parseInt(e.target.value) || 1)}
-								min={1}
-								max={9999}
-							/>
-						</div>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Units</legend>
-					<div className="fieldset-body">
-						<div className="radio-row">
-							<input
-								type="radio"
-								id="units-inches"
-								name="units"
-								checked={units === "inches"}
-								onChange={() => setUnits("inches")}
-							/>
-							<label htmlFor="units-inches">Inches</label>
-						</div>
-						<div className="radio-row">
-							<input
-								type="radio"
-								id="units-cm"
-								name="units"
-								checked={units === "cm"}
-								onChange={() => setUnits("cm")}
-							/>
-							<label htmlFor="units-cm">Cm</label>
-						</div>
-						<div className="radio-row">
-							<input
-								type="radio"
-								id="units-pixels"
-								name="units"
-								checked={units === "pixels"}
-								onChange={() => setUnits("pixels")}
-							/>
-							<label htmlFor="units-pixels">Pixels</label>
-						</div>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Colors</legend>
-					<div className="fieldset-body">
-						<div className="radio-row">
-							<input
-								type="radio"
-								id="color-bw"
-								name="colorMode"
-								checked={colorMode === "blackAndWhite"}
-								onChange={() => setColorMode("blackAndWhite")}
-							/>
-							<label htmlFor="color-bw">Black and white</label>
-						</div>
-						<div className="radio-row">
-							<input
-								type="radio"
-								id="color-color"
-								name="colorMode"
-								checked={colorMode === "color"}
-								onChange={() => setColorMode("color")}
-							/>
-							<label htmlFor="color-color">Colors</label>
-						</div>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Transparency</legend>
-					<div className="fieldset-body">
-						<div className="checkbox-row">
-							<input
-								type="checkbox"
-								id="transparent-checkbox"
-								checked={transparent}
-								onChange={(e) => setTransparent(e.target.checked)}
-							/>
-							<label htmlFor="transparent-checkbox">Use transparency</label>
-						</div>
-					</div>
-				</fieldset>
 
 				<DialogButtons>
 					<button type="button" onClick={handleOk}>OK</button>

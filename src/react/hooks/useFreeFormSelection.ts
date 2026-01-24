@@ -230,17 +230,17 @@ export function useFreeFormSelection({
 						}
 					}
 
-// 					// Fill the selected area with background color
-// 					ctx.save();
-// 					ctx.beginPath();
-// 					ctx.moveTo(points[0].x, points[0].y);
-// 					for (let i = 1; i < points.length; i++) {
-// 						ctx.lineTo(points[i].x, points[i].y);
-// 					}
-// 					ctx.closePath();
-// 					ctx.fillStyle = secondaryColor;
-// 					ctx.fill();
-// 					ctx.restore();
+					// Fill the selected area with background color (lift the selection from canvas)
+					ctx.save();
+					ctx.beginPath();
+					ctx.moveTo(points[0].x, points[0].y);
+					for (let i = 1; i < points.length; i++) {
+						ctx.lineTo(points[i].x, points[i].y);
+					}
+					ctx.closePath();
+					ctx.fillStyle = secondaryColor;
+					ctx.fill();
+					ctx.restore();
 
 					// Clear overlay FIRST (before setting selection)
 					const overlay = overlayRef.current;

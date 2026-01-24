@@ -20,6 +20,8 @@ let cleanupBitmapView = () => {};
  * // Displays canvas fullscreen, exits on any interaction
  */
 export function viewBitmap(canvas: HTMLCanvasElement): void {
+	console.log("[viewBitmap] Called with canvas:", canvas, "width:", canvas?.width, "height:", canvas?.height);
+
 	// Cleanup any existing bitmap view
 	cleanupBitmapView();
 
@@ -43,9 +45,10 @@ export function viewBitmap(canvas: HTMLCanvasElement): void {
 	});
 
 	// Request fullscreen with vendor prefix support
+	console.log("[viewBitmap] Requesting fullscreen on div:", bitmapViewDiv);
 	if (bitmapViewDiv.requestFullscreen) {
 		bitmapViewDiv.requestFullscreen().catch((err) => {
-			// console.warn("Fullscreen request failed:", err);
+			console.warn("[viewBitmap] Fullscreen request failed:", err);
 		});
 	} else if ((bitmapViewDiv as any).webkitRequestFullscreen) {
 		(bitmapViewDiv as any).webkitRequestFullscreen();

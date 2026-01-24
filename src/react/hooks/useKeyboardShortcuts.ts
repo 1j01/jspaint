@@ -90,6 +90,11 @@ export function useKeyboardShortcuts(params: UseKeyboardShortcutsParams): void {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
+			// Debug log to verify handler is called
+			if (e.ctrlKey || e.metaKey) {
+				console.log("[useKeyboardShortcuts] KeyDown with modifier:", e.key, "ctrlKey:", e.ctrlKey, "metaKey:", e.metaKey);
+			}
+
 			// Don't handle shortcuts if typing in a text input
 			const target = e.target as HTMLElement;
 			if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
@@ -164,7 +169,8 @@ export function useKeyboardShortcuts(params: UseKeyboardShortcutsParams): void {
 			}
 
 			// Ctrl/Cmd+F for View Bitmap
-			if (isMod && e.key === "f") {
+			if (isMod && e.key.toLowerCase() === "f") {
+				console.log("[useKeyboardShortcuts] Ctrl+F detected, calling menuActions.viewBitmap()");
 				e.preventDefault();
 				menuActions.viewBitmap();
 				return;

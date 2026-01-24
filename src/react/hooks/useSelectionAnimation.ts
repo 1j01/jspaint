@@ -68,6 +68,11 @@ export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAni
 
 			ctx.clearRect(0, 0, overlay.width, overlay.height);
 
+			// Draw selection imageData (the actual content) if it exists
+			if (selection.imageData) {
+				ctx.putImageData(selection.imageData, selection.x, selection.y);
+			}
+
 			drawSelectionOverlay(ctx, selection, marchingAntsOffset.current);
 
 			animationFrameId.current = requestAnimationFrame(animate);

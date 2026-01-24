@@ -305,9 +305,12 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		viewToggleGrid: toggleGrid,
 		viewToggleThumbnail: toggleThumbnail,
 		viewBitmap: useCallback(() => {
+			console.log("[useMenuActions.viewBitmap] Called, canvasRef:", canvasRef, "current:", canvasRef.current);
 			const canvas = canvasRef.current;
 			if (canvas) {
 				showViewBitmap(canvas);
+			} else {
+				console.warn("[useMenuActions.viewBitmap] Canvas ref is null!");
 			}
 		}, [canvasRef]),
 		viewFullscreen: useCallback(() => {

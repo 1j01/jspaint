@@ -381,6 +381,58 @@ body.resizing canvas.main-canvas {
         padding: 4px 12px;
 }
 
+/* Flip and Rotate dialog - uses layout.css styles with radio-wrapper and sub-options classes */
+
+/* Attributes dialog */
+.attributes-window .dialog-form {
+        direction: ltr;
+}
+
+.attributes-window table {
+        margin-bottom: 10px;
+        border-collapse: collapse;
+}
+
+.attributes-window table td {
+        padding: 2px 8px 2px 0;
+}
+
+.attributes-window .dialog-form > label {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 10px;
+        margin-bottom: 10px;
+}
+
+.attributes-window .dialog-form > label input[type="number"] {
+        margin-left: 5px;
+}
+
+.attributes-window fieldset {
+        margin-top: 5px;
+        margin-bottom: 5px;
+}
+
+.attributes-window fieldset .fieldset-body {
+        display: grid;
+        grid-template-columns: calc(80px * 2) 80px;
+}
+
+.attributes-window fieldset:first-of-type .fieldset-body {
+        grid-template-columns: 80px 80px 80px;
+}
+
+.radio-field {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+}
+
+.radio-field label {
+        display: inline;
+        margin: 0;
+}
+
 .dialog-table {
         border-collapse: collapse;
 }

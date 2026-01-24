@@ -103,7 +103,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
-					drawing.drawPoint(ctx, x, y, color, 1);
+					drawing.drawPoint(ctx, x, y, color, size);
 					shapes.drawingState.current = {
 						...shapes.drawingState.current,
 						isDrawing: true,
@@ -155,11 +155,14 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 				case TOOL_IDS.TEXT:
 					if (textBoxHook.textBox?.isActive) {
-						// Save history if there's actual text to commit
-						if (textBoxHook.textBox.text.trim()) {
+						// Check for text BEFORE committing (commitTextBox clears the state)
+						const hasText = textBoxHook.textBox.text.trim();
+						// Commit first (draws text to canvas)
+						textBoxHook.commitTextBox();
+						// Save history AFTER commit so canvas state includes the text
+						if (hasText) {
 							saveHistoryState("Text");
 						}
-						textBoxHook.commitTextBox();
 					}
 					textBoxHook.startTextBox(x, y);
 					break;
@@ -394,11 +397,14 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 	const handleTextBlur = useCallback(() => {
 		setTimeout(() => {
 			if (textBoxHook.textBox?.isActive) {
-				// Only save history if there's actual text to commit
-				if (textBoxHook.textBox.text.trim()) {
+				// Check for text BEFORE committing (commitTextBox clears the state)
+				const hasText = textBoxHook.textBox.text.trim();
+				// Commit first (draws text to canvas)
+				textBoxHook.commitTextBox();
+				// Save history AFTER commit so canvas state includes the text
+				if (hasText) {
 					saveHistoryState("Text");
 				}
-				textBoxHook.commitTextBox();
 			}
 		}, 100);
 	}, [textBoxHook, saveHistoryState]);
