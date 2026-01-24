@@ -18,6 +18,7 @@ const staticAssets = [
 	{ src: "images", dest: "images" },
 	{ src: "lib", dest: "lib" },
 	{ src: "localization", dest: "localization" },
+	{ src: "public/locales/*", dest: "locales" },
 	{ src: "styles", dest: "styles" },
 	{ src: "svg-paint", dest: "svg-paint" },
 	{ src: "src", dest: "src" }, // Copy entire src directory for legacy app

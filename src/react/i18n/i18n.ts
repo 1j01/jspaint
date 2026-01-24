@@ -1,11 +1,14 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import HttpBackend from 'i18next-http-backend';
 
 // Initialize i18next for MCPaint
-// Loads translations from /public/locales/[lang]/translation.json
+// Loads translations from /locales/[lang]/translation.json
 
 i18n
+	// Load translations via HTTP
+	.use(HttpBackend)
 	// Detect user language from browser/localStorage
 	.use(LanguageDetector)
 	// Pass i18n instance to react-i18next
@@ -26,11 +29,6 @@ i18n
 		interpolation: {
 			// React already escapes values
 			escapeValue: false,
-			// Format function for variable substitution
-			// Matches jQuery's %1, %2, etc. pattern
-			format: function (value, format, lng) {
-				return value;
-			},
 		},
 
 		// Detection options
@@ -45,15 +43,15 @@ i18n
 			caches: ['localStorage'],
 		},
 
-		// Backend configuration (loads from /public/locales/)
+		// Backend configuration (loads from /locales/)
 		backend: {
-			loadPath: '/locales/{{lng}}/{{ns}}.json',
+			loadPath: '/locales/{{lng}}/translation.json',
 		},
 
 		// React-specific options
 		react: {
 			// Wait for translations to load before rendering
-			useSuspense: true,
+			useSuspense: false,
 		},
 
 		// Supported languages (26 languages from jQuery version)

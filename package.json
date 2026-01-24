@@ -69,6 +69,7 @@
   "dependencies": {
     "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-http-backend": "^3.0.2",
     "idb": "^8.0.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

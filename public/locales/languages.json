@@ -95,11 +95,11 @@
     "name": "Türkçe",
     "emoji": "🇹🇷"
   },
-  "uk": {
-    "name": "Українська",
-    "emoji": "🇺🇦"
+  "zh": {
+    "name": "简体中文",
+    "emoji": "🇨🇳"
   },
-  "zh-cn": {
+  "zh-simplified": {
     "name": "简体中文",
     "emoji": "🇨🇳"
   }
