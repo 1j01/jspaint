@@ -60,6 +60,7 @@ export interface MenuActions {
 	viewZoomCustom: () => void;
 	viewToggleGrid: () => void;
 	viewToggleThumbnail: () => void;
+	viewToggleAIPanel: () => void;
 	viewBitmap: () => void;
 	viewFullscreen: () => void;
 
@@ -96,6 +97,7 @@ export interface MenuActions {
 	isTextToolbarVisible: () => boolean;
 	isGridVisible: () => boolean;
 	isThumbnailVisible: () => boolean;
+	isAIPanelVisible: () => boolean;
 	isFullscreen: () => boolean;
 	isDrawOpaque: () => boolean;
 	getMagnification: () => number;
@@ -312,6 +314,14 @@ export function createMenus(actions: MenuActions, t: (key: string) => string = (
 					toggle: actions.viewToggleTextToolbar,
 				},
 			},
+			{
+				label: t("&AI Assistant"),
+				description: t("Shows or hides the AI assistant panel."),
+				checkbox: {
+					check: actions.isAIPanelVisible,
+					toggle: actions.viewToggleAIPanel,
+				},
+			},
 			MENU_DIVIDER,
 			{
 				label: t("&Zoom"),
@@ -522,6 +532,7 @@ export function createStubActions(): MenuActions {
 		viewZoomCustom: stub("View > Zoom > Custom"),
 		viewToggleGrid: stub("View > Zoom > Toggle Grid"),
 		viewToggleThumbnail: stub("View > Zoom > Toggle Thumbnail"),
+		viewToggleAIPanel: stub("View > Toggle AI Panel"),
 		viewBitmap: stub("View > View Bitmap"),
 		viewFullscreen: stub("View > Fullscreen"),
 
@@ -558,6 +569,7 @@ export function createStubActions(): MenuActions {
 		isTextToolbarVisible: () => false,
 		isGridVisible: () => false,
 		isThumbnailVisible: () => false,
+		isAIPanelVisible: () => false,
 		isFullscreen: () => false,
 		isDrawOpaque: () => true,
 		getMagnification: () => 1,

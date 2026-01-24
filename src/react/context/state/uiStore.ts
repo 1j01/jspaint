@@ -59,6 +59,11 @@ export interface UIState {
 	showThumbnail: boolean;
 
 	/**
+	 * Whether AI assistant panel is visible
+	 */
+	showAIPanel: boolean;
+
+	/**
 	 * Current zoom magnification level (1 = 100%, 2 = 200%, etc.)
 	 */
 	magnification: number;
@@ -104,6 +109,11 @@ export interface UIState {
 	toggleThumbnail: () => void;
 
 	/**
+	 * Toggle AI assistant panel visibility
+	 */
+	toggleAIPanel: () => void;
+
+	/**
 	 * Set zoom magnification level
 	 * @param {number} mag - Magnification level (1 = 100%, 2 = 200%, etc.)
 	 */
@@ -147,6 +157,7 @@ export const useUIStore = create<UIState>((set, get) => ({
 	showTextToolbar: false,
 	showGrid: false,
 	showThumbnail: false,
+	showAIPanel: false,
 	magnification: 1,
 	cursorPosition: null,
 
@@ -203,6 +214,12 @@ export const useUIStore = create<UIState>((set, get) => ({
 		saveSetting("showThumbnail", newValue);
 	},
 
+	toggleAIPanel: () => {
+		const newValue = !get().showAIPanel;
+		set({ showAIPanel: newValue });
+		saveSetting("showAIPanel", newValue);
+	},
+
 	setMagnification: (mag) => {
 		set({ magnification: mag });
 		saveSetting("magnification", mag);
@@ -234,6 +251,7 @@ export const useUIStore = create<UIState>((set, get) => ({
 		const showTextToolbar = await loadSetting("showTextToolbar", false);
 		const showGrid = await loadSetting("showGrid", false);
 		const showThumbnail = await loadSetting("showThumbnail", false);
+		const showAIPanel = await loadSetting("showAIPanel", false);
 		const magnification = await loadSetting("magnification", 1);
 
 		set({
@@ -243,6 +261,7 @@ export const useUIStore = create<UIState>((set, get) => ({
 			showTextToolbar,
 			showGrid,
 			showThumbnail,
+			showAIPanel,
 			magnification,
 		});
 	},

@@ -33,6 +33,7 @@ import { useMenuActions } from "../react/hooks/useMenuActions";
 import { useKeyboardShortcuts } from "../react/hooks/useKeyboardShortcuts";
 import { useDialogHandlers } from "../react/hooks/useDialogHandlers";
 import { useFontState } from "../react/hooks/useFontState";
+import { AIChatPanel } from "../react/components/ai/AIChatPanel";
 
 /**
  * Props for StoreInitializer component
@@ -183,12 +184,14 @@ function AppContent() {
 		showTextToolbar,
 		showGrid,
 		showThumbnail,
+		showAIPanel,
 		toggleToolBox,
 		toggleColorBox,
 		toggleStatusBar,
 		toggleTextToolbar,
 		toggleGrid,
 		toggleThumbnail,
+		toggleAIPanel,
 	} = useUIStore(useShallow(
 		(state) => ({
 			showToolBox: state.showToolBox,
@@ -197,12 +200,14 @@ function AppContent() {
 			showTextToolbar: state.showTextToolbar,
 			showGrid: state.showGrid,
 			showThumbnail: state.showThumbnail,
+			showAIPanel: state.showAIPanel,
 			toggleToolBox: state.toggleToolBox,
 			toggleColorBox: state.toggleColorBox,
 			toggleStatusBar: state.toggleStatusBar,
 			toggleTextToolbar: state.toggleTextToolbar,
 			toggleGrid: state.toggleGrid,
 			toggleThumbnail: state.toggleThumbnail,
+			toggleAIPanel: state.toggleAIPanel,
 		})
 	));
 
@@ -279,12 +284,14 @@ function AppContent() {
 		showTextToolbar,
 		showGrid,
 		showThumbnail,
+		showAIPanel,
 		toggleToolBox,
 		toggleColorBox,
 		toggleStatusBar,
 		toggleTextToolbar,
 		toggleGrid,
 		toggleThumbnail,
+		toggleAIPanel,
 		toggleDrawOpaque,
 		drawOpaque,
 		magnification,
@@ -397,6 +404,12 @@ function AppContent() {
 			showThumbnail={showThumbnail}
 			toggleThumbnail={toggleThumbnail}
 			setTool={setTool}
+		/>
+
+		<AIChatPanel
+			canvasRef={canvasRef}
+			isOpen={showAIPanel}
+			onClose={toggleAIPanel}
 		/>
 	</>
 );

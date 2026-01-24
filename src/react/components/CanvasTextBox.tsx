@@ -12,6 +12,12 @@ import {
 } from "../utils/resizeHandles";
 
 /**
+ * Line scale factor matching jQuery implementation (20/12 ≈ 1.667)
+ * This determines the line height as a multiplier of font size
+ */
+const LINE_SCALE = 20 / 12;
+
+/**
  * Props for CanvasTextBox component
  */
 interface CanvasTextBoxProps {
@@ -107,7 +113,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 			}
 		: { left: 0, top: 0 };
 
-	// Auto-size text box to fit content (matching legacy behavior)
+	// Auto-size text box to fit content (matching legacy jQuery behavior)
 	useEffect(() => {
 		const textarea = textareaRef.current;
 		if (!textarea) return;
@@ -115,44 +121,50 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		// Don't auto-resize while dragging or resizing manually
 		if (isDragging || isResizing) return;
 
-		// Temporarily reset dimensions to get accurate scroll measurements
+		// Match jQuery: only reset height, NOT width (resetting width causes text reflow issues)
 		const originalHeight = textarea.style.height;
 		const originalMinHeight = textarea.style.minHeight;
-		const originalWidth = textarea.style.width;
-		textarea.style.height = '';
-		textarea.style.width = '';
-		textarea.style.minHeight = '0px';
+		const originalBottom = textarea.style.bottom;
+		const originalRows = textarea.getAttribute("rows");
 
-		// Get scroll dimensions
+		// jQuery technique: reset height and set rows="1" to get minimum content height
+		textarea.style.height = '';
+		textarea.style.minHeight = '0px';
+		textarea.style.bottom = ''; // needed for when magnified
+		textarea.setAttribute("rows", "1");
+
+		// Get scroll dimensions (jQuery reads scrollHeight AFTER rows="1", scrollWidth directly)
 		const scrollHeight = textarea.scrollHeight;
 		const scrollWidth = textarea.scrollWidth;
 
 		// Restore original styles
 		textarea.style.height = originalHeight;
-		textarea.style.width = originalWidth;
 		textarea.style.minHeight = originalMinHeight;
+		textarea.style.bottom = originalBottom || '0';
+		if (originalRows) {
+			textarea.setAttribute("rows", originalRows);
+		} else {
+			textarea.removeAttribute("rows");
+		}
 
-		// In vertical mode, scrollWidth = character height (downward), scrollHeight = line width (leftward)
-		// We need to swap them because writing-mode rotates the coordinate system
+		// Calculate new dimensions
+		// jQuery: this.height = Math.max(scrollHeight, this.height); this.width = scrollWidth;
 		let newHeight, newWidth;
 		if (textBox.fontVertical) {
-			// Vertical: characters stack downward (use scrollWidth for height), lines go left (use scrollHeight for width)
+			// Vertical: characters stack downward, lines go left
 			newHeight = Math.max(scrollWidth, textBox.height);
-			newWidth = Math.max(scrollHeight, textBox.width);
+			newWidth = scrollHeight; // jQuery doesn't Math.max width, just uses scrollWidth directly
 		} else {
-			// Horizontal: normal behavior
+			// Horizontal: normal behavior matching jQuery
 			newHeight = Math.max(scrollHeight, textBox.height);
-			newWidth = Math.max(scrollWidth, textBox.width);
+			newWidth = scrollWidth; // jQuery: this.width = edit_textarea.scrollWidth (no Math.max)
 		}
 
-		// Only resize if dimensions changed by at least 2 pixels to avoid thrashing
-		const heightDiff = Math.abs(newHeight - textBox.height);
-		const widthDiff = Math.abs(newWidth - textBox.width);
-
-		if (heightDiff > 1 || widthDiff > 1) {
+		// Only resize if dimensions actually changed
+		if (newHeight !== textBox.height || newWidth !== textBox.width) {
 			onResize(Math.round(newWidth), Math.round(newHeight));
 		}
-	}, [textBox.text, textBox.fontVertical, isDragging, isResizing]);
+	}, [textBox.text, textBox.fontVertical, textBox.height, textBox.width, isDragging, isResizing, onResize]);
 
 	// Update canvas overlay when text changes
 	useEffect(() => {
@@ -180,7 +192,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 				ctx.textBaseline = "top";
 
 				const lines = textBox.text.split("\n");
-				const lineHeight = textBox.fontSize * 1.2;
+				const lineHeight = textBox.fontSize * LINE_SCALE;
 
 				if (textBox.fontVertical) {
 					// Vertical text: rotate context 90 degrees and render from upper-right
@@ -406,7 +418,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 		fontStyle: textBox.fontItalic ? "italic" : "normal",
 		textDecoration: textBox.fontUnderline ? "underline" : "none",
 		writingMode: textBox.fontVertical ? "vertical-rl" : undefined, // vertical-rl makes text flow right-to-left, matching canvas rotation
-		lineHeight: `${Math.round(textBox.fontSize * 1.2)}px`,
+		lineHeight: `${Math.round(textBox.fontSize * LINE_SCALE)}px`,
 		letterSpacing: textBox.fontVertical ? "0px" : undefined, // Tight spacing for vertical text
 		color: primaryColor, // Keep color for selection highlighting
 		WebkitTextFillColor: textBox.fontVertical ? "transparent" : undefined, // Hide text but show selection in vertical mode

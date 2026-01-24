@@ -23,7 +23,7 @@ interface UseMenuActionsParams {
 	selection: any;
 	copy: () => void;
 	cut: () => void;
-	paste: () => void;
+	paste: () => ImageData | undefined;
 	hasClipboard: boolean;
 	clearSelection: () => void;
 	handleSelectAll: () => void;
@@ -38,12 +38,14 @@ interface UseMenuActionsParams {
 	showTextToolbar: boolean;
 	showGrid: boolean;
 	showThumbnail: boolean;
+	showAIPanel: boolean;
 	toggleToolBox: () => void;
 	toggleColorBox: () => void;
 	toggleStatusBar: () => void;
 	toggleTextToolbar: () => void;
 	toggleGrid: () => void;
 	toggleThumbnail: () => void;
+	toggleAIPanel: () => void;
 	toggleDrawOpaque: () => void;
 	drawOpaque: boolean;
 	magnification: number;
@@ -80,12 +82,14 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		showTextToolbar,
 		showGrid,
 		showThumbnail,
+		showAIPanel,
 		toggleToolBox,
 		toggleColorBox,
 		toggleStatusBar,
 		toggleTextToolbar,
 		toggleGrid,
 		toggleThumbnail,
+		toggleAIPanel,
 		toggleDrawOpaque,
 		drawOpaque,
 		magnification,
@@ -304,6 +308,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		viewZoomCustom: useCallback(() => openDialog("customZoom"), [openDialog]),
 		viewToggleGrid: toggleGrid,
 		viewToggleThumbnail: toggleThumbnail,
+		viewToggleAIPanel: toggleAIPanel,
 		viewBitmap: useCallback(() => {
 			const canvas = canvasRef.current;
 			if (canvas) {
@@ -395,8 +400,8 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		helpAbout: useCallback(() => openDialog("about"), [openDialog]),
 
 		// State checks - these must return CURRENT values, not captured values
-		canUndo: useCallback(() => canUndo(), [canUndo]),
-		canRedo: useCallback(() => canRedo(), [canRedo]),
+		canUndo: useCallback(() => canUndo, [canUndo]),
+		canRedo: useCallback(() => canRedo, [canRedo]),
 		hasSelection: useCallback(() => hasSelection, [hasSelection]),
 		hasClipboard: useCallback(() => hasClipboard, [hasClipboard]),
 		isToolBoxVisible: useCallback(() => showToolBox, [showToolBox]),
@@ -405,6 +410,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		isTextToolbarVisible: useCallback(() => showTextToolbar, [showTextToolbar]),
 		isGridVisible: useCallback(() => showGrid, [showGrid]),
 		isThumbnailVisible: useCallback(() => showThumbnail, [showThumbnail]),
+		isAIPanelVisible: useCallback(() => showAIPanel, [showAIPanel]),
 		isFullscreen: () => !!document.fullscreenElement,
 		isDrawOpaque: useCallback(() => drawOpaque, [drawOpaque]),
 		getMagnification: useCallback(() => magnification, [magnification]),

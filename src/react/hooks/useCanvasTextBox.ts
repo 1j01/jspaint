@@ -4,6 +4,12 @@ import { useToolStore } from "../context/state/toolStore";
 import { useSettingsStore } from "../context/state/settingsStore";
 import type { TextBoxState } from "../context/state/types";
 
+/**
+ * Line scale factor matching jQuery implementation (20/12 ≈ 1.667)
+ * This determines the line height as a multiplier of font size
+ */
+const LINE_SCALE = 20 / 12;
+
 export interface TextBoxCreationState {
 	isCreating: boolean;
 	startX: number;
@@ -145,7 +151,7 @@ export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
 
 		// Split text into lines and draw each
 		const lines = textBox.text.split("\n");
-		const lineHeight = textBox.fontSize * 1.2;
+		const lineHeight = textBox.fontSize * LINE_SCALE;
 
 		if (textBox.fontVertical) {
 			// Vertical text: rotate context 90 degrees and render from upper-right
