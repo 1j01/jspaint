@@ -32,7 +32,7 @@ export function EditColorsDialog({
 	const [customColorIndex, setCustomColorIndex] = useState(0);
 
 	// Refs to track swatch elements for focus management
-	const swatchRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+	const swatchRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
 	// Canvas refs
 	const rainbowCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -78,7 +78,7 @@ export function EditColorsDialog({
 
 	// Callback ref to register swatch elements
 	const setSwatchRef = useCallback((color: string) => {
-		return (el: HTMLButtonElement | null) => {
+		return (el: HTMLDivElement | null) => {
 			if (el) {
 				swatchRefs.current.set(color, el);
 			} else {
@@ -158,14 +158,15 @@ export function EditColorsDialog({
 					<label htmlFor="basic-colors">Basic colors:</label>
 					<div id="basic-colors" className="color-grid">
 						{basicColors.map((color, index) => (
-							<button
+							<div
 								key={index}
-								type="button"
 								ref={setSwatchRef(color)}
-								className={`swatch inset-deep lightweight ${selectedColor === color ? "selected" : ""}`}
+								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
 								style={{ backgroundColor: color }}
 								onClick={() => handleColorSelect(color)}
 								title={color}
+								tabIndex={-1}
+								role="button"
 								aria-label={`Basic color ${index + 1}: ${color}`}
 							/>
 						))}
@@ -174,14 +175,15 @@ export function EditColorsDialog({
 					<label htmlFor="custom-colors">Custom colors:</label>
 					<div id="custom-colors" className="color-grid">
 						{customColors.map((color, index) => (
-							<button
+							<div
 								key={index}
-								type="button"
 								ref={setSwatchRef(color)}
-								className={`swatch inset-deep lightweight ${selectedColor === color ? "selected" : ""}`}
+								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
 								style={{ backgroundColor: color }}
 								onClick={() => handleColorSelect(color)}
 								title={color}
+								tabIndex={-1}
+								role="button"
 								aria-label={`Custom color ${index + 1}: ${color}`}
 							/>
 						))}

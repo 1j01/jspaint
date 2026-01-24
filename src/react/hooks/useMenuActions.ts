@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import type { MenuActions } from "../menus/menuDefinitions";
 import { useUIStore } from "../context/state/uiStore";
 import { loadImageFileToCanvas, createFileInput } from "../utils/fileOperations";
+import { viewBitmap as showViewBitmap } from "../utils/viewBitmap";
 import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../constants/canvas";
 
 interface UseMenuActionsParams {
@@ -306,8 +307,7 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 		viewBitmap: useCallback(() => {
 			const canvas = canvasRef.current;
 			if (canvas) {
-				const { viewBitmap } = require("../utils/viewBitmap");
-				viewBitmap(canvas);
+				showViewBitmap(canvas);
 			}
 		}, [canvasRef]),
 		viewFullscreen: useCallback(() => {
@@ -356,12 +356,10 @@ export function useMenuActions(params: UseMenuActionsParams): MenuActions {
 					const colors = await loadPaletteFile(file);
 					if (colors.length > 0) {
 						alert(`Loaded ${colors.length} colors from palette file.\n\nFull palette replacement coming soon. For now, you can use the Edit Colors dialog to manually add these colors.`);
-						// console.log("Loaded palette colors:", colors);
 					} else {
 						alert("No colors found in the palette file.");
 					}
 				} catch (error) {
-					// console.error("Failed to load palette:", error);
 					alert(`Failed to load palette: ${error instanceof Error ? error.message : "Unknown error"}`);
 				}
 			};

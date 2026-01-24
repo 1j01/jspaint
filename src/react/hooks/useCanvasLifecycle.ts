@@ -116,11 +116,9 @@ async function saveCanvasToIndexedDB(imageData: ImageData): Promise<void> {
 			width: imageData.width,
 			height: imageData.height,
 		};
-		console.log(`[useCanvasLifecycle] Saving to IndexedDB: ${canvasData.width}x${canvasData.height}`);
 		await saveSetting("savedCanvas", canvasData);
-		console.log("[useCanvasLifecycle] ✅ Saved to IndexedDB successfully");
-	} catch (error) {
-		console.error("[useCanvasLifecycle] Failed to save canvas to IndexedDB:", error);
+	} catch {
+		// Silently fail - not critical
 	}
 }
 
@@ -140,8 +138,7 @@ async function loadCanvasFromIndexedDB(): Promise<ImageData | null> {
 		// Reconstruct ImageData from saved format
 		const uint8Array = new Uint8ClampedArray(canvasData.data);
 		return new ImageData(uint8Array, canvasData.width, canvasData.height);
-	} catch (error) {
-		console.error("[useCanvasLifecycle] Failed to load canvas from IndexedDB:", error);
+	} catch {
 		return null;
 	}
 }
@@ -153,25 +150,18 @@ async function loadCanvasFromIndexedDB(): Promise<ImageData | null> {
  */
 export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 	useEffect(() => {
-		console.log("[useCanvasLifecycle] useEffect triggered");
 		const canvas = canvasRef.current;
 		if (!canvas) {
-			console.log("[useCanvasLifecycle] No canvas ref");
 			return;
 		}
 
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) {
-			console.log("[useCanvasLifecycle] No context");
 			return;
 		}
 
-		console.log(`[useCanvasLifecycle] Canvas dimensions: ${canvas.width}x${canvas.height}`);
-
 		// Async initialization function
 		const initializeCanvas = async () => {
-			console.log("[useCanvasLifecycle] Starting initialization...");
-
 			// Check if canvas already has content (e.g., from fileOpen)
 			// Sample a few pixels to detect if it's already been drawn to
 			const sampleData = ctx.getImageData(0, 0, Math.min(10, canvas.width), Math.min(10, canvas.height));
@@ -189,7 +179,6 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 			}
 
 			if (hasContent) {
-				console.log("[useCanvasLifecycle] Canvas already has content, skipping initialization");
 				canvasInitialized = true;
 				// Don't set loadedFromIndexedDB here - this could be fresh content from fileOpen
 				// and we still want to save/load from IndexedDB on actual page refresh
@@ -205,27 +194,21 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
 			// Priority 1: Restore from module-level savedCanvasData (component remount)
 			if (savedCanvasData) {
-				console.log("[useCanvasLifecycle] Restoring from savedCanvasData");
 				ctx.putImageData(savedCanvasData, 0, 0);
 				savedCanvasData = null;
 				canvasInitialized = true; // Mark as initialized
 				loadedFromIndexedDB = true; // Prevent IndexedDB from overwriting this
-				console.log("[useCanvasLifecycle] Restored from savedCanvasData");
 				return;
 			}
 
 			// Priority 2: Load from IndexedDB (page refresh) - only on first mount
 			if (!loadedFromIndexedDB) {
-				console.log("[useCanvasLifecycle] Attempting to load from IndexedDB...");
 				loadedFromIndexedDB = true;
 				const persistedCanvas = await loadCanvasFromIndexedDB();
 
 				if (persistedCanvas) {
-					console.log(`[useCanvasLifecycle] Found persisted canvas: ${persistedCanvas.width}x${persistedCanvas.height}`);
-					console.log(`[useCanvasLifecycle] Current canvas element: ${canvas.width}x${canvas.height}`);
 					// Check if dimensions match
 					if (persistedCanvas.width === canvas.width && persistedCanvas.height === canvas.height) {
-						console.log("[useCanvasLifecycle] Dimensions match, restoring from IndexedDB");
 						ctx.putImageData(persistedCanvas, 0, 0);
 						canvasInitialized = true;
 
@@ -235,23 +218,14 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 							useHistoryStore.getState().pushState(imageData, "Restored Document");
 							historyTreeInitialized = true;
 						}
-						console.log("[useCanvasLifecycle] Restored from IndexedDB");
 						return;
-					} else {
-						console.warn(`[useCanvasLifecycle] ⚠️ Dimension mismatch! Persisted: ${persistedCanvas.width}x${persistedCanvas.height}, Canvas: ${canvas.width}x${canvas.height}`);
-						console.log("[useCanvasLifecycle] Will initialize with white background instead");
 					}
 					// If dimensions don't match, fall through to white background initialization
-				} else {
-					console.log("[useCanvasLifecycle] No persisted canvas found");
 				}
-			} else {
-				console.log("[useCanvasLifecycle] Already loaded from IndexedDB on previous mount");
 			}
 
 			// Priority 3: Initialize with white background (only once)
 			if (!canvasInitialized) {
-				console.log("[useCanvasLifecycle] Initializing with white background");
 				ctx.fillStyle = "#ffffff";
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 				canvasInitialized = true;
@@ -285,7 +259,6 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 		//
 		// See top-of-file documentation for detailed explanation.
 		return () => {
-			console.log("[useCanvasLifecycle] Cleanup: saving to module-level only");
 			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 			savedCanvasData = imageData;
 			// ❌ DO NOT: saveCanvasToIndexedDB(imageData)

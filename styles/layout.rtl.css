@@ -465,16 +465,7 @@ whereas it breaks component docking calculations if used to shift the colors box
 .edit-colors-window .swatch {
 	width: 16px;
 	height: 13px;
-	display: flex;
-	/* Reset button styles for React implementation */
-	padding: 0;
-	margin: 0;
-	font: inherit;
 	cursor: pointer;
-	box-sizing: border-box;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
 }
 .edit-colors-window .window-content {
 	font-family: Tahoma, sans-serif;

@@ -487,7 +487,7 @@ export function createMenus(actions: MenuActions): Record<string, MenuItem[]> {
  * Replace with actual implementations.
  */
 export function createStubActions(): MenuActions {
-	const stub = (name: string) => () => console.log(`[Menu Action] ${name}`);
+	const stub = (_name: string) => () => {};
 
 	return {
 		// File menu
@@ -542,7 +542,7 @@ export function createStubActions(): MenuActions {
 		colorsSaveColors: stub("Colors > Save Colors"),
 
 		// Extras menu
-		extrasChangeLanguage: (lang: string) => console.log(`[Menu Action] Extras > Change Language to ${lang}`),
+		extrasChangeLanguage: (_lang: string) => {},
 		getCurrentLanguage: () => 'en',
 
 		// Help menu
