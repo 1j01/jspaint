@@ -11,7 +11,7 @@ export interface AboutDialogProps {
 
 export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
 	return (
-		<Dialog title="About Paint" isOpen={isOpen} onClose={onClose} width={420} icon="/images/icons/16x16.png">
+		<Dialog title="About Paint" isOpen={isOpen} onClose={onClose} width={420} icon="/images/icons/16x16.png" className="dialog-window about-paint-window">
 			<div className="about-paint-content">
 				<div className="about-paint-header">
 					<img src="/images/icons/128x128.png" width={128} height={128} className="about-paint-icon" alt="" />

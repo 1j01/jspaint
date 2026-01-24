@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-MCPaint is a pixel-perfect MS Paint clone web application with both legacy jQuery (`/old/`) and modern React (`/new/`) versions. The React version uses Vite, Zustand for state management, and IndexedDB for persistence.
+MCPaint is a pixel-perfect MS Paint clone web application with both legacy jQuery (`/old/`) and modern React (`/new/`) versions. The React version uses Vite, Zustand for state management, and IndexedDB for persistence. Based on [jspaint.app](https://jspaint.app), it recreates every tool and menu of MS Paint with high fidelity.
 
 ## Commands
 
@@ -108,9 +108,26 @@ Vite multi-page app with React Compiler enabled (`babel-plugin-react-compiler`).
 
 Free-Form Select, Rectangular Select, Eraser, Fill (flood fill), Pick Color (eyedropper), Magnifier (1x-8x zoom), Pencil, Brush, Airbrush, Text, Line (Bresenham), Curve (cubic bezier), Rectangle, Polygon, Ellipse, Rounded Rectangle.
 
+## Supported Formats
+
+**Images**: PNG (recommended), BMP (mono/16/256/24-bit), TIFF, PDF (read), WebP, GIF, JPEG, SVG (read), ICO (read).
+
+**Palettes**: RIFF PAL, GIMP GPL, Adobe ACO/ASE/ACT, Paint.NET TXT, Paint Shop Pro PAL, CSS/HTML color extraction, and more via [AnyPalette.js](https://github.com/1j01/anypalette.js).
+
 ## Access Points
 
 - http://localhost:1999/ - Workspace selector
 - http://localhost:1999/new/ - React app
 - http://localhost:1999/old/ - Legacy jQuery app
 - Tests run against http://localhost:11822/new/ (auto-started by Playwright)
+
+## Key Features Beyond MS Paint
+
+- Unlimited undo/redo with non-linear history tree (Edit > History)
+- Transparent image editing (Image > Attributes > Transparent)
+- Non-contiguous fill (Shift + Fill tool replaces color everywhere)
+- Crop to selection (Ctrl + selection)
+- Arbitrary angle rotation and zoom levels
+- Themes (Extras > Themes) including dark mode
+- Multi-language support (26 languages including RTL)
+- Accessibility: Dwell Clicker, Speech Recognition, Head Tracker

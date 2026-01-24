@@ -25,48 +25,55 @@ export function CustomZoomDialog({ isOpen, onClose, onApply, currentMagnificatio
 	};
 
 	return (
-		<Dialog title="Custom Zoom" isOpen={isOpen} onClose={onClose} width={250}>
-			<fieldset>
-				<legend>Zoom to</legend>
-				<div className="zoom-options">
-					{presetZooms.map((zoom) => (
-						<label key={zoom}>
+		<Dialog title="Custom Zoom" isOpen={isOpen} onClose={onClose} width={250} className="dialog-window custom-zoom-window">
+			<form className="dialog-form">
+				<fieldset>
+					<legend>Zoom to</legend>
+					<div className="fieldset-body">
+						{presetZooms.map((zoom) => (
+							<div className="radio-row" key={zoom}>
+								<input
+									type="radio"
+									id={`zoom-${zoom}`}
+									name="zoom"
+									checked={!useCustom && selectedZoom === zoom}
+									onChange={() => {
+										setSelectedZoom(zoom);
+										setUseCustom(false);
+									}}
+								/>
+								<label htmlFor={`zoom-${zoom}`}>{zoom}%</label>
+							</div>
+						))}
+						<div className="radio-row custom-zoom-row">
 							<input
 								type="radio"
+								id="zoom-custom"
 								name="zoom"
-								checked={!useCustom && selectedZoom === zoom}
-								onChange={() => {
-									setSelectedZoom(zoom);
-									setUseCustom(false);
-								}}
+								checked={useCustom}
+								onChange={() => setUseCustom(true)}
 							/>
-							{zoom}%
-						</label>
-					))}
-					<div className="custom-zoom-row">
-						<label>
-							<input type="radio" name="zoom" checked={useCustom} onChange={() => setUseCustom(true)} />
-							Custom:
-						</label>
-						<input
-							type="number"
-							value={customZoom}
-							onChange={(e) => {
-								setCustomZoom(parseInt(e.target.value) || 100);
-								setUseCustom(true);
-							}}
-							min={1}
-							max={8000}
-							style={{ width: 60 }}
-						/>
-						%
+							<label htmlFor="zoom-custom">Custom:</label>
+							<input
+								type="number"
+								className="inset-deep"
+								value={customZoom}
+								onChange={(e) => {
+									setCustomZoom(parseInt(e.target.value) || 100);
+									setUseCustom(true);
+								}}
+								min={1}
+								max={8000}
+							/>
+							%
+						</div>
 					</div>
-				</div>
-			</fieldset>
-			<DialogButtons>
-				<button onClick={handleOk}>OK</button>
-				<button onClick={onClose}>Cancel</button>
-			</DialogButtons>
+				</fieldset>
+				<DialogButtons>
+					<button type="button" onClick={handleOk}>OK</button>
+					<button type="button" onClick={onClose}>Cancel</button>
+				</DialogButtons>
+			</form>
 		</Dialog>
 	);
 }

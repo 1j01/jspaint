@@ -164,7 +164,7 @@ export interface DialogButtonsProps {
 }
 
 export function DialogButtons({ children }: DialogButtonsProps) {
-	return <div className="dialog-buttons" style={{ display: "flex", gap: "6px", marginTop: "12px" }}>{children}</div>;
+	return <div className="button-group">{children}</div>;
 }
 
 export default Dialog;

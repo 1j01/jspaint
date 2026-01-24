@@ -82,58 +82,44 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Manage Storage">
-			<div style={{ maxWidth: "600px", maxHeight: "400px" }}>
-				<p>
+		<Dialog isOpen={isOpen} onClose={onClose} title="Manage Storage" className="dialog-window manage-storage-window">
+			<div className="manage-storage-content">
+				<p className="manage-storage-description">
 					<strong>Local Storage:</strong> Images saved locally in your browser. These are separate from files
 					you've downloaded with <strong>File &gt; Save</strong>.
 				</p>
 
-				{loading && <p>Loading...</p>}
+				{loading && <p className="manage-storage-loading">Loading...</p>}
 
 				{!loading && storedImages.length === 0 && (
-					<p>
+					<p className="manage-storage-empty">
 						<em>No stored images found.</em>
 					</p>
 				)}
 
 				{!loading && storedImages.length > 0 && (
-					<div style={{ maxHeight: "300px", overflowY: "auto", border: "1px solid #ccc", padding: "5px" }}>
-						<table style={{ width: "100%", borderCollapse: "collapse" }}>
+					<div className="manage-storage-list inset-deep">
+						<table className="manage-storage-table">
 							<tbody>
 								{storedImages.map((img) => (
-									<tr key={img.key} style={{ borderBottom: "1px solid #eee" }}>
-										<td style={{ padding: "5px", width: "80px" }}>
-											<div
-												style={{
-													width: "64px",
-													height: "64px",
-													border: "2px inset",
-													overflow: "hidden",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-												}}
-											>
+									<tr key={img.key} className="manage-storage-row">
+										<td className="manage-storage-thumbnail-cell">
+											<div className="manage-storage-thumbnail inset-deep">
 												<img
 													src={img.thumbnail}
 													alt="Thumbnail"
-													style={{
-														maxWidth: "100%",
-														maxHeight: "100%",
-														imageRendering: "pixelated",
-													}}
+													className="manage-storage-image"
 												/>
 											</div>
 										</td>
-										<td style={{ padding: "5px" }}>
-											<div>{img.key.replace("image#", "")}</div>
-											<div style={{ fontSize: "0.9em", color: "#666" }}>
+										<td className="manage-storage-info-cell">
+											<div className="manage-storage-name">{img.key.replace("image#", "")}</div>
+											<div className="manage-storage-meta">
 												Stored locally
 											</div>
 										</td>
-										<td style={{ padding: "5px", width: "100px", textAlign: "right" }}>
-											<button onClick={() => handleRemove(img.key)}>Remove</button>
+										<td className="manage-storage-action-cell">
+											<button type="button" onClick={() => handleRemove(img.key)}>Remove</button>
 										</td>
 									</tr>
 								))}
@@ -142,15 +128,15 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 					</div>
 				)}
 
-				<p style={{ marginTop: "10px", fontSize: "0.9em", color: "#666" }}>
+				<p className="manage-storage-total">
 					Total: {storedImages.length} image(s)
 				</p>
 
 				<DialogButtons>
-					<button onClick={handleClearAll} disabled={storedImages.length === 0}>
+					<button type="button" onClick={handleClearAll} disabled={storedImages.length === 0}>
 						Clear All
 					</button>
-					<button onClick={onClose}>Close</button>
+					<button type="button" onClick={onClose}>Close</button>
 				</DialogButtons>
 			</div>
 		</Dialog>

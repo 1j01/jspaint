@@ -172,42 +172,30 @@ export function HistoryTreeDialog({
 	if (!isOpen || !rootNode) return null;
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Document History" width="400px">
-			<div style={{ display: "flex", flexDirection: "column", height: "500px" }}>
+		<Dialog isOpen={isOpen} onClose={onClose} title="Document History" width={400} className="dialog-window history-window">
+			<div className="history-dialog-content">
 				{/* View mode selector */}
-				<label style={{ margin: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+				<div className="view-mode-selector">
 					<select
 						className="inset-deep"
 						value={viewMode}
 						onChange={(e) => setViewMode(e.target.value as ViewMode)}
-						style={{
-							padding: "4px 8px",
-							fontSize: "11px",
-							fontFamily: "Arial, sans-serif",
-						}}
 					>
 						<option value="linear">Linear timeline</option>
 						<option value="tree">Tree</option>
 					</select>
-				</label>
+				</div>
 
 				{/* History list */}
 				<div
 					ref={listRef}
-					className="history-view"
+					className="history-view inset-deep"
 					tabIndex={0}
-					style={{
-						flex: 1,
-						overflow: "auto",
-						border: "2px inset",
-						background: "#fff",
-						margin: "0 10px 10px 10px",
-						outline: "none",
-					}}
 				>
 					{entries.map((entry) => {
 						const isRoot = entry.node.id === rootNode.id;
 						const displayName = `${entry.node.name || "Unknown"}${isRoot ? " (Start of History)" : ""}`;
+						const indentStyle = viewMode === "tree" ? { marginLeft: `${entry.depth * 8}px` } : undefined;
 
 						return (
 							<div
@@ -215,54 +203,16 @@ export function HistoryTreeDialog({
 								ref={entry.isCurrent ? currentEntryRef : undefined}
 								className={`history-entry ${entry.isCurrent ? "current" : ""} ${entry.isAncestorOfCurrent ? "ancestor-of-current" : ""}`}
 								onClick={() => handleEntryClick(entry.node.id)}
-								style={{
-									display: "flex",
-									alignItems: "center",
-									padding: "4px 8px",
-									cursor: "pointer",
-									marginLeft: viewMode === "tree" ? `${entry.depth * 8}px` : "0",
-									background: entry.isCurrent ? "#0a246a" : "transparent",
-									color: entry.isCurrent ? "#fff" : entry.isAncestorOfCurrent ? "#000" : "#000",
-									fontWeight: entry.isAncestorOfCurrent || entry.isCurrent ? "bold" : "normal",
-									fontSize: "11px",
-									fontFamily: "Arial, sans-serif",
-									userSelect: "none",
-								}}
-								onMouseEnter={(e) => {
-									if (!entry.isCurrent) {
-										e.currentTarget.style.background = "#e0e0e0";
-									}
-								}}
-								onMouseLeave={(e) => {
-									if (!entry.isCurrent) {
-										e.currentTarget.style.background = "transparent";
-									}
-								}}
+								style={indentStyle}
 							>
 								{/* Icon area (placeholder for now - icons can be added later) */}
-								<div
-									className="history-entry-icon-area"
-									style={{
-										width: "16px",
-										height: "16px",
-										marginRight: "6px",
-										flexShrink: 0,
-									}}
-								>
+								<div className="history-entry-icon-area">
 									{/* Icon would go here - for now just a bullet */}
-									<div
-										style={{
-											width: "6px",
-											height: "6px",
-											borderRadius: "50%",
-											background: entry.isCurrent ? "#fff" : "#000",
-											margin: "5px",
-										}}
-									/>
+									<div className={`history-entry-bullet ${entry.isCurrent ? "current" : ""}`} />
 								</div>
 
 								{/* Entry name */}
-								<div className="history-entry-name" style={{ flex: 1 }}>
+								<div className="history-entry-name">
 									{displayName}
 								</div>
 							</div>
@@ -271,14 +221,7 @@ export function HistoryTreeDialog({
 				</div>
 
 				{/* Help text */}
-				<div
-					style={{
-						fontSize: "10px",
-						color: "#666",
-						padding: "0 10px 10px 10px",
-						lineHeight: "1.4",
-					}}
-				>
+				<div className="history-help-text">
 					Click an entry to jump to that state. Use arrow keys to navigate.
 				</div>
 			</div>

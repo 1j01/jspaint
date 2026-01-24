@@ -40,31 +40,33 @@ export function LoadFromUrlDialog({ isOpen, onClose, onLoad }: LoadFromUrlDialog
 	};
 
 	return (
-		<Dialog title="Load From URL" isOpen={isOpen} onClose={handleClose} width={400}>
-			<div className="load-url-content">
-				<label htmlFor="url-input">Enter the URL of the image to load:</label>
-				<input
-					id="url-input"
-					type="url"
-					value={url}
-					onChange={(e) => {
-						setUrl(e.target.value);
-						setError(null);
-					}}
-					placeholder="https://example.com/image.png"
-					style={{ width: "100%", marginTop: 8 }}
-					autoFocus
-				/>
-				{error && (
-					<div className="error-message" style={{ color: "red", marginTop: 4 }}>
-						{error}
-					</div>
-				)}
-			</div>
-			<DialogButtons>
-				<button onClick={handleOk}>OK</button>
-				<button onClick={handleClose}>Cancel</button>
-			</DialogButtons>
+		<Dialog title="Load From URL" isOpen={isOpen} onClose={handleClose} width={400} className="dialog-window load-from-url-window">
+			<form className="dialog-form">
+				<div className="input-group">
+					<label htmlFor="url-input">Enter the URL of the image to load:</label>
+					<input
+						id="url-input"
+						type="url"
+						className="inset-deep"
+						value={url}
+						onChange={(e) => {
+							setUrl(e.target.value);
+							setError(null);
+						}}
+						placeholder="https://example.com/image.png"
+						autoFocus
+					/>
+					{error && (
+						<div className="error-message">
+							{error}
+						</div>
+					)}
+				</div>
+				<DialogButtons>
+					<button type="button" onClick={handleOk}>OK</button>
+					<button type="button" onClick={handleClose}>Cancel</button>
+				</DialogButtons>
+			</form>
 		</Dialog>
 	);
 }

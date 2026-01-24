@@ -56,55 +56,57 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 	};
 
 	return (
-		<Dialog title="Attributes" isOpen={isOpen} onClose={onClose} width={380}>
-			<div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-				<div style={{ display: "flex", justifyContent: "space-between" }}>
-					<span>File last saved:</span>
-					<span>Not Available</span>
-				</div>
-				<div style={{ display: "flex", justifyContent: "space-between" }}>
-					<span>Size on disk:</span>
-					<span>Not Available</span>
-				</div>
-				<div style={{ display: "flex", justifyContent: "space-between" }}>
-					<span>Resolution:</span>
-					<span>72 x 72 dots per inch</span>
+		<Dialog title="Attributes" isOpen={isOpen} onClose={onClose} width={380} className="dialog-window attributes-window">
+			<form className="dialog-form">
+				<div className="file-info">
+					<div className="file-info-row">
+						<span>File last saved:</span>
+						<span>Not Available</span>
+					</div>
+					<div className="file-info-row">
+						<span>Size on disk:</span>
+						<span>Not Available</span>
+					</div>
+					<div className="file-info-row">
+						<span>Resolution:</span>
+						<span>72 x 72 dots per inch</span>
+					</div>
 				</div>
 
-				<fieldset style={{ marginTop: "6px" }}>
+				<fieldset>
 					<legend>Image</legend>
-					<div style={{ display: "flex", gap: "12px" }}>
-						<div>
+					<div className="fieldset-body">
+						<div className="input-row">
 							<label htmlFor="width-input">Width:</label>
 							<input
 								id="width-input"
 								type="number"
+								className="inset-deep"
 								value={width}
 								onChange={(e) => setWidth(parseInt(e.target.value) || 1)}
 								min={1}
 								max={9999}
-								style={{ width: "70px", marginLeft: "4px" }}
 							/>
 						</div>
-						<div>
+						<div className="input-row">
 							<label htmlFor="height-input">Height:</label>
 							<input
 								id="height-input"
 								type="number"
+								className="inset-deep"
 								value={height}
 								onChange={(e) => setHeight(parseInt(e.target.value) || 1)}
 								min={1}
 								max={9999}
-								style={{ width: "70px", marginLeft: "4px" }}
 							/>
 						</div>
 					</div>
 				</fieldset>
 
-				<fieldset style={{ marginTop: "6px" }}>
+				<fieldset>
 					<legend>Units</legend>
-					<div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-						<div>
+					<div className="fieldset-body">
+						<div className="radio-row">
 							<input
 								type="radio"
 								id="units-inches"
@@ -114,7 +116,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 							/>
 							<label htmlFor="units-inches">Inches</label>
 						</div>
-						<div>
+						<div className="radio-row">
 							<input
 								type="radio"
 								id="units-cm"
@@ -124,7 +126,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 							/>
 							<label htmlFor="units-cm">Cm</label>
 						</div>
-						<div>
+						<div className="radio-row">
 							<input
 								type="radio"
 								id="units-pixels"
@@ -137,10 +139,10 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 					</div>
 				</fieldset>
 
-				<fieldset style={{ marginTop: "6px" }}>
+				<fieldset>
 					<legend>Colors</legend>
-					<div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-						<div>
+					<div className="fieldset-body">
+						<div className="radio-row">
 							<input
 								type="radio"
 								id="color-bw"
@@ -150,7 +152,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 							/>
 							<label htmlFor="color-bw">Black and white</label>
 						</div>
-						<div>
+						<div className="radio-row">
 							<input
 								type="radio"
 								id="color-color"
@@ -163,24 +165,27 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 					</div>
 				</fieldset>
 
-				<fieldset style={{ marginTop: "6px" }}>
+				<fieldset>
 					<legend>Transparency</legend>
-					<div>
-						<input
-							type="checkbox"
-							id="transparent-checkbox"
-							checked={transparent}
-							onChange={(e) => setTransparent(e.target.checked)}
-						/>
-						<label htmlFor="transparent-checkbox">Use transparency</label>
+					<div className="fieldset-body">
+						<div className="checkbox-row">
+							<input
+								type="checkbox"
+								id="transparent-checkbox"
+								checked={transparent}
+								onChange={(e) => setTransparent(e.target.checked)}
+							/>
+							<label htmlFor="transparent-checkbox">Use transparency</label>
+						</div>
 					</div>
 				</fieldset>
-			</div>
-			<DialogButtons>
-				<button onClick={handleOk}>OK</button>
-				<button onClick={onClose}>Cancel</button>
-				<button onClick={handleDefault}>Default</button>
-			</DialogButtons>
+
+				<DialogButtons>
+					<button type="button" onClick={handleOk}>OK</button>
+					<button type="button" onClick={onClose}>Cancel</button>
+					<button type="button" onClick={handleDefault}>Default</button>
+				</DialogButtons>
+			</form>
 		</Dialog>
 	);
 }

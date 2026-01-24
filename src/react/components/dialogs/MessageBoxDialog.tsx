@@ -117,7 +117,7 @@ export function MessageBoxDialog({
 			title={title}
 			width={400}
 			height="auto"
-			className="messagebox-dialog"
+			className="dialog-window messagebox-dialog"
 		>
 			<div className="messagebox-content" onKeyDown={handleKeyDown}>
 				<div className="messagebox-body">
@@ -137,10 +137,10 @@ export function MessageBoxDialog({
 				<div className="messagebox-buttons">
 					{buttons === "ok" && (
 						<button
+							type="button"
 							className={defaultButton === "ok" ? "default" : ""}
 							onClick={() => handleClose("ok")}
 							autoFocus={!defaultButton || defaultButton === "ok"}
-							style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 						>
 							OK
 						</button>
@@ -149,18 +149,18 @@ export function MessageBoxDialog({
 					{buttons === "okCancel" && (
 						<>
 							<button
+								type="button"
 								className={defaultButton === "ok" ? "default" : ""}
 								onClick={() => handleClose("ok")}
 								autoFocus={!defaultButton || defaultButton === "ok"}
-								style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 							>
 								OK
 							</button>
 							<button
+								type="button"
 								className={defaultButton === "cancel" ? "default" : ""}
 								onClick={() => handleClose("cancel")}
 								autoFocus={defaultButton === "cancel"}
-								style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 							>
 								Cancel
 							</button>
@@ -170,18 +170,18 @@ export function MessageBoxDialog({
 					{buttons === "yesNo" && (
 						<>
 							<button
+								type="button"
 								className={defaultButton === "yes" || !defaultButton ? "default" : ""}
 								onClick={() => handleClose("yes")}
 								autoFocus={!defaultButton || defaultButton === "yes"}
-								style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 							>
 								Yes
 							</button>
 							<button
+								type="button"
 								className={defaultButton === "no" ? "default" : ""}
 								onClick={() => handleClose("no")}
 								autoFocus={defaultButton === "no"}
-								style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 							>
 								No
 							</button>
@@ -191,26 +191,26 @@ export function MessageBoxDialog({
 					{buttons === "yesNoCancel" && (
 						<>
 							<button
+								type="button"
 								className={defaultButton === "yes" || !defaultButton ? "default" : ""}
 								onClick={() => handleClose("yes")}
 								autoFocus={!defaultButton || defaultButton === "yes"}
-								style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 							>
 								Yes
 							</button>
 							<button
+								type="button"
 								className={defaultButton === "no" ? "default" : ""}
 								onClick={() => handleClose("no")}
 								autoFocus={defaultButton === "no"}
-								style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 							>
 								No
 							</button>
 							<button
+								type="button"
 								className={defaultButton === "cancel" ? "default" : ""}
 								onClick={() => handleClose("cancel")}
 								autoFocus={defaultButton === "cancel"}
-								style={{ minWidth: 75, height: 23, margin: "16px 2px" }}
 							>
 								Cancel
 							</button>

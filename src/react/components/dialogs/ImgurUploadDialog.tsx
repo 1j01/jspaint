@@ -79,23 +79,15 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={handleClose} title="Upload to Imgur">
-			<div style={{ maxWidth: "500px" }}>
+		<Dialog isOpen={isOpen} onClose={handleClose} title="Upload to Imgur" className="dialog-window imgur-upload-window">
+			<div className="imgur-upload-content">
 				{!uploading && !uploadedUrl && imageDataUrl && (
 					<>
-						<div
-							style={{
-								maxWidth: "100%",
-								maxHeight: "300px",
-								overflow: "auto",
-								border: "2px inset",
-								marginBottom: "10px",
-							}}
-						>
+						<div className="imgur-preview-container inset-deep">
 							<img
 								src={imageDataUrl}
 								alt="Preview"
-								style={{ display: "block", maxWidth: "100%", imageRendering: "pixelated" }}
+								className="imgur-preview-image"
 							/>
 						</div>
 						<p>Click Upload to share your image on Imgur.</p>
@@ -103,16 +95,12 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 				)}
 
 				{uploading && (
-					<div>
+					<div className="imgur-uploading">
 						<p>Uploading...</p>
-						<div style={{ width: "100%", height: "20px", border: "2px inset", marginBottom: "10px" }}>
+						<div className="imgur-progress-container inset-deep">
 							<div
-								style={{
-									width: `${uploadProgress}%`,
-									height: "100%",
-									background: "blue",
-									transition: "width 0.3s",
-								}}
+								className="imgur-progress-bar"
+								style={{ width: `${uploadProgress}%` }}
 							/>
 						</div>
 						<p>{uploadProgress}%</p>
@@ -120,7 +108,7 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 				)}
 
 				{uploadedUrl && (
-					<div>
+					<div className="imgur-success">
 						<p>Upload successful!</p>
 						<p>
 							Image URL:{" "}
@@ -129,6 +117,7 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 							</a>
 						</p>
 						<button
+							type="button"
 							onClick={() => {
 								navigator.clipboard.writeText(uploadedUrl);
 								alert("URL copied to clipboard!");
@@ -140,18 +129,18 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 				)}
 
 				{error && (
-					<div style={{ color: "red", marginTop: "10px" }}>
+					<div className="imgur-error error-message">
 						<p>Error: {error}</p>
 					</div>
 				)}
 
 				<DialogButtons>
 					{uploadedUrl ? (
-						<button onClick={handleClose}>Close</button>
+						<button type="button" onClick={handleClose}>Close</button>
 					) : uploading ? null : (
 						<>
-							<button onClick={handleUpload}>Upload</button>
-							<button onClick={handleClose}>Cancel</button>
+							<button type="button" onClick={handleUpload}>Upload</button>
+							<button type="button" onClick={handleClose}>Cancel</button>
 						</>
 					)}
 				</DialogButtons>

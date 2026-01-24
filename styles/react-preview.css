@@ -739,3 +739,320 @@ body.resizing {
 body.resizing iframe {
         pointer-events: none;
 }
+
+/* History Tree Dialog */
+.history-dialog-content {
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+}
+
+.view-mode-selector {
+        margin: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+}
+
+.view-mode-selector select {
+        padding: 4px 8px;
+        font-size: 11px;
+        font-family: Arial, sans-serif;
+}
+
+/* Override history-view sizing when inside dialog */
+.history-window .history-view {
+        flex: 1;
+        width: auto;
+        height: auto;
+        margin: 0 10px 10px 10px;
+        outline: none;
+}
+
+.history-entry {
+        display: flex;
+        align-items: center;
+        padding: 4px 8px;
+        cursor: pointer;
+        background: transparent;
+        color: #000;
+        font-size: 11px;
+        font-family: Arial, sans-serif;
+        user-select: none;
+}
+
+.history-entry:hover {
+        background: #e0e0e0;
+}
+
+.history-entry.current {
+        background: #0a246a;
+        color: #fff;
+        font-weight: bold;
+}
+
+.history-entry.current:hover {
+        background: #0a246a;
+}
+
+.history-entry.ancestor-of-current {
+        font-weight: bold;
+}
+
+.history-entry-icon-area {
+        width: 16px;
+        height: 16px;
+        margin-right: 6px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+}
+
+.history-entry-bullet {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #000;
+}
+
+.history-entry-bullet.current {
+        background: #fff;
+}
+
+.history-entry-name {
+        flex: 1;
+}
+
+.history-help-text {
+        font-size: 10px;
+        color: #666;
+        padding: 0 10px 10px 10px;
+        line-height: 1.4;
+}
+
+/* Imgur Upload Dialog */
+.imgur-upload-content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 300px;
+}
+
+.imgur-upload-content p {
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.4;
+}
+
+.imgur-preview-container {
+        max-width: 100%;
+        max-height: 200px;
+        overflow: auto;
+        background: white;
+}
+
+.imgur-preview-image {
+        display: block;
+        max-width: 100%;
+        height: auto;
+}
+
+.imgur-uploading {
+        text-align: center;
+}
+
+.imgur-progress-container {
+        height: 20px;
+        background: white;
+        margin: 10px 0;
+}
+
+.imgur-progress-bar {
+        height: 100%;
+        background: #0a246a;
+        transition: width 0.1s ease;
+}
+
+.imgur-success {
+        background: #e8f5e9;
+        padding: 10px;
+        border: 1px solid #4caf50;
+}
+
+.imgur-success a {
+        color: #0000ee;
+        word-break: break-all;
+}
+
+.imgur-error {
+        background: #ffebee;
+        padding: 10px;
+        border: 1px solid #f44336;
+        color: #c00;
+}
+
+/* Linear History Dialog (legacy) */
+.history-linear-content {
+        max-width: 400px;
+}
+
+.history-linear-status {
+        margin: 0 0 10px 0;
+        font-size: 11px;
+        line-height: 1.4;
+}
+
+.history-linear-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 5px;
+        background: white;
+}
+
+.history-linear-empty {
+        margin: 10px;
+        font-size: 11px;
+        color: #666;
+}
+
+.history-linear-note {
+        margin: 10px 0 0 0;
+        font-size: 10px;
+        color: #666;
+        line-height: 1.4;
+}
+
+.history-state-preview {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        margin-bottom: 5px;
+        background: transparent;
+        border: 1px solid #ccc;
+        cursor: pointer;
+}
+
+.history-state-preview:hover {
+        background: #f0f0f0;
+}
+
+.history-state-preview.current {
+        background: #e0e0ff;
+        border: 2px solid blue;
+        cursor: default;
+}
+
+.history-state-thumbnail {
+        width: 64px;
+        height: 64px;
+        margin-right: 10px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+}
+
+.history-state-image {
+        max-width: 100%;
+        max-height: 100%;
+        image-rendering: pixelated;
+}
+
+.history-state-info {
+        flex: 1;
+}
+
+.history-state-name {
+        font-weight: bold;
+        font-size: 11px;
+}
+
+.history-state-dimensions {
+        font-size: 10px;
+        color: #666;
+        margin-top: 2px;
+}
+
+/* Manage Storage Dialog */
+.manage-storage-content {
+        max-width: 600px;
+}
+
+.manage-storage-description {
+        margin: 0 0 10px 0;
+        font-size: 11px;
+        line-height: 1.4;
+}
+
+.manage-storage-loading,
+.manage-storage-empty {
+        font-size: 11px;
+        color: #666;
+        margin: 10px 0;
+}
+
+.manage-storage-list {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 5px;
+        background: white;
+}
+
+.manage-storage-table {
+        width: 100%;
+        border-collapse: collapse;
+}
+
+.manage-storage-row {
+        border-bottom: 1px solid #eee;
+}
+
+.manage-storage-thumbnail-cell {
+        padding: 5px;
+        width: 80px;
+}
+
+.manage-storage-thumbnail {
+        width: 64px;
+        height: 64px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+}
+
+.manage-storage-image {
+        max-width: 100%;
+        max-height: 100%;
+        image-rendering: pixelated;
+}
+
+.manage-storage-info-cell {
+        padding: 5px;
+}
+
+.manage-storage-name {
+        font-size: 11px;
+        font-weight: bold;
+}
+
+.manage-storage-meta {
+        font-size: 10px;
+        color: #666;
+        margin-top: 2px;
+}
+
+.manage-storage-action-cell {
+        padding: 5px;
+        width: 100px;
+        text-align: right;
+}
+
+.manage-storage-total {
+        margin: 10px 0 0 0;
+        font-size: 10px;
+        color: #666;
+}

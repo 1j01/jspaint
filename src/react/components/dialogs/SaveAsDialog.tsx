@@ -57,32 +57,28 @@ export function SaveAsDialog({
 	);
 
 	return (
-		<Dialog title="Save As" isOpen={isOpen} onClose={onClose} width={400}>
-			<div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-				<div>
-					<label htmlFor="filename-input" style={{ display: "block", marginBottom: "4px" }}>
-						File name:
-					</label>
+		<Dialog title="Save As" isOpen={isOpen} onClose={onClose} width={400} className="dialog-window save-as">
+			<form className="dialog-form">
+				<div className="input-group">
+					<label htmlFor="filename-input">File name:</label>
 					<input
 						id="filename-input"
 						type="text"
+						className="inset-deep"
 						value={baseName}
 						onChange={(e) => setBaseName(e.target.value)}
 						onKeyDown={handleKeyDown}
 						autoFocus
-						style={{ width: "100%", boxSizing: "border-box" }}
 					/>
 				</div>
 
-				<div>
-					<label htmlFor="format-select" style={{ display: "block", marginBottom: "4px" }}>
-						Save as type:
-					</label>
+				<div className="input-group">
+					<label htmlFor="format-select">Save as type:</label>
 					<select
 						id="format-select"
+						className="inset-deep"
 						value={selectedFormat}
 						onChange={(e) => setSelectedFormat(e.target.value)}
-						style={{ width: "100%", boxSizing: "border-box" }}
 					>
 						{IMAGE_FORMATS.map((format) => (
 							<option key={format.formatID} value={format.formatID}>
@@ -92,17 +88,17 @@ export function SaveAsDialog({
 					</select>
 				</div>
 
-				<div style={{ fontSize: "11px", padding: "4px 0" }}>
+				<div className="filename-preview">
 					Full filename: <strong>{getFullFilename()}</strong>
 				</div>
-			</div>
 
-			<DialogButtons>
-				<button onClick={handleSave} disabled={!baseName.trim()}>
-					Save
-				</button>
-				<button onClick={onClose}>Cancel</button>
-			</DialogButtons>
+				<DialogButtons>
+					<button type="button" onClick={handleSave} disabled={!baseName.trim()}>
+						Save
+					</button>
+					<button type="button" onClick={onClose}>Cancel</button>
+				</DialogButtons>
+			</form>
 		</Dialog>
 	);
 }

@@ -152,7 +152,7 @@ export function EditColorsDialog({
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Edit Colors" width={expanded ? 435 : 254} className="edit-colors-window">
+		<Dialog isOpen={isOpen} onClose={onClose} title="Edit Colors" width={expanded ? 435 : 254} className="dialog-window edit-colors-window">
 			<div className="left-right-split">
 				<div className="left-side">
 					<label htmlFor="basic-colors">Basic colors:</label>
@@ -160,6 +160,7 @@ export function EditColorsDialog({
 						{basicColors.map((color, index) => (
 							<button
 								key={index}
+								type="button"
 								ref={setSwatchRef(color)}
 								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
 								style={{
@@ -179,6 +180,7 @@ export function EditColorsDialog({
 						{customColors.map((color, index) => (
 							<button
 								key={index}
+								type="button"
 								ref={setSwatchRef(color)}
 								className={`swatch inset-deep ${selectedColor === color ? "selected" : ""}`}
 								style={{
@@ -194,14 +196,14 @@ export function EditColorsDialog({
 					</div>
 
 					{!expanded && (
-						<button className="define-custom-colors-button" onClick={handleExpand}>
+						<button type="button" className="define-custom-colors-button" onClick={handleExpand}>
 							Define Custom Colors &gt;&gt;
 						</button>
 					)}
 
 					<div className="button-group">
-						<button onClick={handleOk}>OK</button>
-						<button onClick={onClose}>Cancel</button>
+						<button type="button" onClick={handleOk}>OK</button>
+						<button type="button" onClick={onClose}>Cancel</button>
 					</div>
 				</div>
 

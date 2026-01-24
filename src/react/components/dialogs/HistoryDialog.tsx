@@ -64,29 +64,21 @@ export function HistoryDialog({
 		return (
 			<div
 				key={index}
-				style={{
-					display: "flex",
-					alignItems: "center",
-					padding: "5px",
-					marginBottom: "5px",
-					background: isCurrent ? "#e0e0ff" : "transparent",
-					border: isCurrent ? "2px solid blue" : "1px solid #ccc",
-					cursor: isCurrent ? "default" : "pointer",
-				}}
+				className={`history-state-preview ${isCurrent ? "current" : ""}`}
 				onClick={() => !isCurrent && handleJumpToState(index)}
 			>
-				<div style={{ width: "64px", height: "64px", border: "2px inset", marginRight: "10px" }}>
+				<div className="history-state-thumbnail inset-deep">
 					<img
 						src={dataUrl}
 						alt={`State ${index}`}
-						style={{ maxWidth: "100%", maxHeight: "100%", imageRendering: "pixelated" }}
+						className="history-state-image"
 					/>
 				</div>
-				<div>
-					<div>
-						<strong>{isCurrent ? "Current State" : `State ${index}`}</strong>
+				<div className="history-state-info">
+					<div className="history-state-name">
+						{isCurrent ? "Current State" : `State ${index}`}
 					</div>
-					<div style={{ fontSize: "0.9em", color: "#666" }}>
+					<div className="history-state-dimensions">
 						{imageData.width} × {imageData.height}
 					</div>
 				</div>
@@ -95,16 +87,16 @@ export function HistoryDialog({
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Document History">
-			<div style={{ maxWidth: "400px", maxHeight: "500px" }}>
-				<p>
+		<Dialog isOpen={isOpen} onClose={onClose} title="Document History" className="dialog-window history-linear-window">
+			<div className="history-linear-content">
+				<p className="history-linear-status">
 					Click on a state to jump to that point in history. Current state: <strong>{currentIndex}</strong> of{" "}
 					<strong>{totalStates - 1}</strong>
 				</p>
 
-				<div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: "5px" }}>
+				<div className="history-linear-list inset-deep">
 					{totalStates === 1 ? (
-						<p>
+						<p className="history-linear-empty">
 							<em>No history available. Make some changes to see them here!</em>
 						</p>
 					) : (
@@ -127,13 +119,13 @@ export function HistoryDialog({
 					)}
 				</div>
 
-				<p style={{ marginTop: "10px", fontSize: "0.9em", color: "#666" }}>
+				<p className="history-linear-note">
 					<strong>Note:</strong> This is a simplified linear history view. The full version supports branching
 					history trees.
 				</p>
 
 				<DialogButtons>
-					<button onClick={onClose}>Close</button>
+					<button type="button" onClick={onClose}>Close</button>
 				</DialogButtons>
 			</div>
 		</Dialog>
