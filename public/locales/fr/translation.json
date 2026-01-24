@@ -129,6 +129,7 @@
   "Extras": "Extras",
   "🌍 &Language": "🌍 &Langue",
   "Changes the display language.": "Change la langue d'affichage.",
+  "Changes the language to {{name}}.": "Change la langue en {{name}}.",
   "&Tool Box": "B&oîte à outils",
   "Tool Box": "Boîte à outils",
   "&Color Box": "&Palette de couleurs ",
