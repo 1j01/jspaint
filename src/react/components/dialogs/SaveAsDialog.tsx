@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { IMAGE_FORMATS, getFileExtension, getFormatByExtension } from "../../utils/imageFormats";
 import { Dialog, DialogButtons } from "./Dialog";
 
@@ -19,6 +20,8 @@ export function SaveAsDialog({
 	onSave,
 	currentFilename = "untitled.png",
 }: SaveAsDialogProps) {
+	const { t } = useTranslation();
+
 	// Extract base name and current format from filename
 	const getBaseNameAndFormat = (filename: string) => {
 		const ext = getFileExtension(filename);
@@ -57,10 +60,10 @@ export function SaveAsDialog({
 	);
 
 	return (
-		<Dialog title="Save As" isOpen={isOpen} onClose={onClose} width={400} className="dialog-window save-as">
+		<Dialog title={t("Save As")} isOpen={isOpen} onClose={onClose} width={400} className="dialog-window save-as">
 			<form className="dialog-form">
 				<div className="input-group">
-					<label htmlFor="filename-input">File name:</label>
+					<label htmlFor="filename-input">{t("File name:")}</label>
 					<input
 						id="filename-input"
 						type="text"
@@ -73,7 +76,7 @@ export function SaveAsDialog({
 				</div>
 
 				<div className="input-group">
-					<label htmlFor="format-select">Save as type:</label>
+					<label htmlFor="format-select">{t("Save as type:")}</label>
 					<select
 						id="format-select"
 						className="inset-deep"
@@ -89,14 +92,14 @@ export function SaveAsDialog({
 				</div>
 
 				<div className="filename-preview">
-					Full filename: <strong>{getFullFilename()}</strong>
+					{t("Full filename:")} <strong>{getFullFilename()}</strong>
 				</div>
 
 				<DialogButtons>
 					<button type="button" onClick={handleSave} disabled={!baseName.trim()}>
-						Save
+						{t("Save")}
 					</button>
-					<button type="button" onClick={onClose}>Cancel</button>
+					<button type="button" onClick={onClose}>{t("Cancel")}</button>
 				</DialogButtons>
 			</form>
 		</Dialog>

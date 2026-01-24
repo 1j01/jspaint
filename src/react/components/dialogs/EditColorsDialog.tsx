@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import Dialog from "./Dialog";
 import { getRgbaFromColor } from "../../utils/colorUtils";
 import { basicColors } from "../../data/basicColors";
@@ -26,6 +27,7 @@ export function EditColorsDialog({
 	customColors: initialCustomColors,
 	onColorSelect,
 }: EditColorsDialogProps) {
+	const { t } = useTranslation();
 	const [expanded, setExpanded] = useState(false);
 	const [selectedColor, setSelectedColor] = useState(initialColor);
 	const [customColors, setCustomColors] = useState(initialCustomColors);
@@ -152,10 +154,10 @@ export function EditColorsDialog({
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Edit Colors" width={expanded ? 435 : 254} className="dialog-window edit-colors-window">
+		<Dialog isOpen={isOpen} onClose={onClose} title={t("Edit Colors")} width={expanded ? 435 : 254} className="dialog-window edit-colors-window">
 			<div className="left-right-split">
 				<div className="left-side">
-					<label htmlFor="basic-colors">Basic colors:</label>
+					<label htmlFor="basic-colors">{t("Basic colors:")}</label>
 					<div id="basic-colors" className="color-grid">
 						{basicColors.map((color, index) => (
 							<div
@@ -167,12 +169,12 @@ export function EditColorsDialog({
 								title={color}
 								tabIndex={-1}
 								role="button"
-								aria-label={`Basic color ${index + 1}: ${color}`}
+								aria-label={`${t("Basic color")} ${index + 1}: ${color}`}
 							/>
 						))}
 					</div>
 
-					<label htmlFor="custom-colors">Custom colors:</label>
+					<label htmlFor="custom-colors">{t("Custom colors:")}</label>
 					<div id="custom-colors" className="color-grid">
 						{customColors.map((color, index) => (
 							<div
@@ -184,20 +186,20 @@ export function EditColorsDialog({
 								title={color}
 								tabIndex={-1}
 								role="button"
-								aria-label={`Custom color ${index + 1}: ${color}`}
+								aria-label={`${t("Custom color")} ${index + 1}: ${color}`}
 							/>
 						))}
 					</div>
 
 					{!expanded && (
 						<button type="button" className="define-custom-colors-button" onClick={handleExpand}>
-							Define Custom Colors &gt;&gt;
+							{t("Define Custom Colors >>")}
 						</button>
 					)}
 
 					<div className="button-group">
-						<button type="button" onClick={handleOk}>OK</button>
-						<button type="button" onClick={onClose}>Cancel</button>
+						<button type="button" onClick={handleOk}>{t("OK")}</button>
+						<button type="button" onClick={onClose}>{t("Cancel")}</button>
 					</div>
 				</div>
 

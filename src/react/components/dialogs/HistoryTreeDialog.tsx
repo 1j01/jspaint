@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog } from "./Dialog";
 import type { HistoryNode } from "../../utils/historyTree";
 import { useCurrentHistoryNode } from "../../context/state/useCurrentHistoryNode";
@@ -80,6 +81,8 @@ export function HistoryTreeDialog({
 	currentNode: _currentNodeProp,  // Ignored - we get it from store
 	onNavigateToNode,
 }: HistoryTreeDialogProps) {
+	const { t } = useTranslation();
+
 	// Get current node directly from store to avoid prop drilling and unnecessary re-renders in parent
 	const currentNode = useCurrentHistoryNode();
 
@@ -172,7 +175,7 @@ export function HistoryTreeDialog({
 	if (!isOpen || !rootNode) return null;
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Document History" width={400} className="dialog-window history-window">
+		<Dialog isOpen={isOpen} onClose={onClose} title={t("Document History")} width={400} className="dialog-window history-window">
 			<div className="history-dialog-content">
 				{/* View mode selector */}
 				<div className="view-mode-selector">
@@ -181,8 +184,8 @@ export function HistoryTreeDialog({
 						value={viewMode}
 						onChange={(e) => setViewMode(e.target.value as ViewMode)}
 					>
-						<option value="linear">Linear timeline</option>
-						<option value="tree">Tree</option>
+						<option value="linear">{t("Linear timeline")}</option>
+						<option value="tree">{t("Tree")}</option>
 					</select>
 				</div>
 
@@ -194,7 +197,7 @@ export function HistoryTreeDialog({
 				>
 					{entries.map((entry) => {
 						const isRoot = entry.node.id === rootNode.id;
-						const displayName = `${entry.node.name || "Unknown"}${isRoot ? " (Start of History)" : ""}`;
+						const displayName = `${entry.node.name || t("Unknown")}${isRoot ? ` (${t("Start of History")})` : ""}`;
 						const indentStyle = viewMode === "tree" ? { marginLeft: `${entry.depth * 8}px` } : undefined;
 
 						return (
@@ -222,7 +225,7 @@ export function HistoryTreeDialog({
 
 				{/* Help text */}
 				<div className="history-help-text">
-					Click an entry to jump to that state. Use arrow keys to navigate.
+					{t("Click an entry to jump to that state. Use arrow keys to navigate.")}
 				</div>
 			</div>
 		</Dialog>

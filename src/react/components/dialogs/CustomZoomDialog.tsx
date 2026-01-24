@@ -2,6 +2,7 @@
  * Custom Zoom dialog for setting magnification level.
  */
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
 export interface CustomZoomDialogProps {
@@ -12,6 +13,7 @@ export interface CustomZoomDialogProps {
 }
 
 export function CustomZoomDialog({ isOpen, onClose, onApply, currentMagnification }: CustomZoomDialogProps) {
+	const { t } = useTranslation();
 	const [selectedZoom, setSelectedZoom] = useState(currentMagnification * 100);
 	const [customZoom, setCustomZoom] = useState(currentMagnification * 100);
 	const [useCustom, setUseCustom] = useState(false);
@@ -25,10 +27,10 @@ export function CustomZoomDialog({ isOpen, onClose, onApply, currentMagnificatio
 	};
 
 	return (
-		<Dialog title="Custom Zoom" isOpen={isOpen} onClose={onClose} width={250} className="dialog-window custom-zoom-window">
+		<Dialog title={t("Custom Zoom")} isOpen={isOpen} onClose={onClose} width={250} className="dialog-window custom-zoom-window">
 			<form className="dialog-form">
 				<fieldset>
-					<legend>Zoom to</legend>
+					<legend>{t("Zoom to")}</legend>
 					<div className="fieldset-body">
 						{presetZooms.map((zoom) => (
 							<div className="radio-row" key={zoom}>
@@ -53,7 +55,7 @@ export function CustomZoomDialog({ isOpen, onClose, onApply, currentMagnificatio
 								checked={useCustom}
 								onChange={() => setUseCustom(true)}
 							/>
-							<label htmlFor="zoom-custom">Custom:</label>
+							<label htmlFor="zoom-custom">{t("Custom:")}</label>
 							<input
 								type="number"
 								className="inset-deep"
@@ -70,8 +72,8 @@ export function CustomZoomDialog({ isOpen, onClose, onApply, currentMagnificatio
 					</div>
 				</fieldset>
 				<DialogButtons>
-					<button type="button" onClick={handleOk}>OK</button>
-					<button type="button" onClick={onClose}>Cancel</button>
+					<button type="button" onClick={handleOk}>{t("OK")}</button>
+					<button type="button" onClick={onClose}>{t("Cancel")}</button>
 				</DialogButtons>
 			</form>
 		</Dialog>

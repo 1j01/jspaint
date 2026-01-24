@@ -2,6 +2,7 @@
  * Load From URL dialog for loading images from the web.
  */
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
 export interface LoadFromUrlDialogProps {
@@ -11,12 +12,13 @@ export interface LoadFromUrlDialogProps {
 }
 
 export function LoadFromUrlDialog({ isOpen, onClose, onLoad }: LoadFromUrlDialogProps) {
+	const { t } = useTranslation();
 	const [url, setUrl] = useState("");
 	const [error, setError] = useState<string | null>(null);
 
 	const handleOk = () => {
 		if (!url.trim()) {
-			setError("Please enter a URL.");
+			setError(t("Please enter a URL."));
 			return;
 		}
 
@@ -24,7 +26,7 @@ export function LoadFromUrlDialog({ isOpen, onClose, onLoad }: LoadFromUrlDialog
 		try {
 			new URL(url);
 		} catch {
-			setError("Please enter a valid URL.");
+			setError(t("Please enter a valid URL."));
 			return;
 		}
 
@@ -40,10 +42,10 @@ export function LoadFromUrlDialog({ isOpen, onClose, onLoad }: LoadFromUrlDialog
 	};
 
 	return (
-		<Dialog title="Load From URL" isOpen={isOpen} onClose={handleClose} width={400} className="dialog-window load-from-url-window">
+		<Dialog title={t("Load From URL")} isOpen={isOpen} onClose={handleClose} width={400} className="dialog-window load-from-url-window">
 			<form className="dialog-form">
 				<div className="input-group">
-					<label htmlFor="url-input">Enter the URL of the image to load:</label>
+					<label htmlFor="url-input">{t("Enter the URL of the image to load:")}</label>
 					<input
 						id="url-input"
 						type="url"
@@ -63,8 +65,8 @@ export function LoadFromUrlDialog({ isOpen, onClose, onLoad }: LoadFromUrlDialog
 					)}
 				</div>
 				<DialogButtons>
-					<button type="button" onClick={handleOk}>OK</button>
-					<button type="button" onClick={handleClose}>Cancel</button>
+					<button type="button" onClick={handleOk}>{t("OK")}</button>
+					<button type="button" onClick={handleClose}>{t("Cancel")}</button>
 				</DialogButtons>
 			</form>
 		</Dialog>

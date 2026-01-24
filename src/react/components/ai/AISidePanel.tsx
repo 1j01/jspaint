@@ -4,6 +4,7 @@
  * Uses Windows 98 styling to match the rest of the application.
  */
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useAIChat } from "../../hooks/useAIChat";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
@@ -28,6 +29,7 @@ export interface AISidePanelProps {
  * @returns {JSX.Element} The rendered side panel
  */
 export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
+  const { t } = useTranslation();
   const { messages, isStreaming, isExecuting, streamContent, error, sendMessage, cancel, resetChat } = useAIChat({
     canvasRef,
     animationDelay: 50,
@@ -58,21 +60,21 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
     <div className="ai-side-panel">
       {/* Header */}
       <div className="ai-side-panel-header">
-        <span className="ai-side-panel-title">AI Assistant</span>
+        <span className="ai-side-panel-title">{t("AI Assistant")}</span>
         <div className="ai-side-panel-buttons">
           <button
             className="ai-side-panel-button"
             onClick={handleClear}
-            title="Clear chat"
-            aria-label="Clear chat"
+            title={t("Clear chat")}
+            aria-label={t("Clear chat")}
           >
-            Clear
+            {t("Clear")}
           </button>
           <button
             className="ai-side-panel-button ai-side-panel-close"
             onClick={handleClose}
-            title="Hide panel"
-            aria-label="Hide AI panel"
+            title={t("Hide panel")}
+            aria-label={t("Hide AI panel")}
           >
             ×
           </button>

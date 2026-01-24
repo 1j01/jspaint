@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
 interface ImgurUploadDialogProps {
@@ -13,6 +14,7 @@ interface ImgurUploadDialogProps {
  * Shows a preview and upload button
  */
 export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUploadDialogProps) {
+	const { t } = useTranslation();
 	const [uploading, setUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
@@ -79,24 +81,24 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={handleClose} title="Upload to Imgur" className="dialog-window imgur-upload-window">
+		<Dialog isOpen={isOpen} onClose={handleClose} title={t("Upload to Imgur")} className="dialog-window imgur-upload-window">
 			<div className="imgur-upload-content">
 				{!uploading && !uploadedUrl && imageDataUrl && (
 					<>
 						<div className="imgur-preview-container inset-deep">
 							<img
 								src={imageDataUrl}
-								alt="Preview"
+								alt={t("Preview")}
 								className="imgur-preview-image"
 							/>
 						</div>
-						<p>Click Upload to share your image on Imgur.</p>
+						<p>{t("Click Upload to share your image on Imgur.")}</p>
 					</>
 				)}
 
 				{uploading && (
 					<div className="imgur-uploading">
-						<p>Uploading...</p>
+						<p>{t("Uploading...")}</p>
 						<div className="imgur-progress-container inset-deep">
 							<div
 								className="imgur-progress-bar"
@@ -109,9 +111,9 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 
 				{uploadedUrl && (
 					<div className="imgur-success">
-						<p>Upload successful!</p>
+						<p>{t("Upload successful!")}</p>
 						<p>
-							Image URL:{" "}
+							{t("Image URL:")}{" "}
 							<a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
 								{uploadedUrl}
 							</a>
@@ -120,27 +122,27 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 							type="button"
 							onClick={() => {
 								navigator.clipboard.writeText(uploadedUrl);
-								alert("URL copied to clipboard!");
+								alert(t("URL copied to clipboard!"));
 							}}
 						>
-							Copy URL
+							{t("Copy URL")}
 						</button>
 					</div>
 				)}
 
 				{error && (
 					<div className="imgur-error error-message">
-						<p>Error: {error}</p>
+						<p>{t("Error:")} {error}</p>
 					</div>
 				)}
 
 				<DialogButtons>
 					{uploadedUrl ? (
-						<button type="button" onClick={handleClose}>Close</button>
+						<button type="button" onClick={handleClose}>{t("Close")}</button>
 					) : uploading ? null : (
 						<>
-							<button type="button" onClick={handleUpload}>Upload</button>
-							<button type="button" onClick={handleClose}>Cancel</button>
+							<button type="button" onClick={handleUpload}>{t("Upload")}</button>
+							<button type="button" onClick={handleClose}>{t("Cancel")}</button>
 						</>
 					)}
 				</DialogButtons>

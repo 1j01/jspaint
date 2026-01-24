@@ -3,6 +3,7 @@
  * Handles user input, send/cancel actions, and keyboard shortcuts.
  */
 import { useState, useCallback, useRef, useEffect, KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the ChatInput component

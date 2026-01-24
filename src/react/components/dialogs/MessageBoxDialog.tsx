@@ -6,6 +6,7 @@
  */
 
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog } from "./Dialog";
 import "./MessageBoxDialog.css";
 
@@ -72,6 +73,8 @@ export function MessageBoxDialog({
 	icon = "none",
 	defaultButton,
 }: MessageBoxDialogProps) {
+	const { t } = useTranslation();
+
 	const handleClose = useCallback(
 		(result: MessageBoxResult) => {
 			onClose(result);
@@ -141,7 +144,7 @@ export function MessageBoxDialog({
 							onClick={() => handleClose("ok")}
 							autoFocus={!defaultButton || defaultButton === "ok"}
 						>
-							OK
+							{t("OK")}
 						</button>
 					)}
 
@@ -153,7 +156,7 @@ export function MessageBoxDialog({
 								onClick={() => handleClose("ok")}
 								autoFocus={!defaultButton || defaultButton === "ok"}
 							>
-								OK
+								{t("OK")}
 							</button>
 							<button
 								type="button"
@@ -161,7 +164,7 @@ export function MessageBoxDialog({
 								onClick={() => handleClose("cancel")}
 								autoFocus={defaultButton === "cancel"}
 							>
-								Cancel
+								{t("Cancel")}
 							</button>
 						</>
 					)}
@@ -174,7 +177,7 @@ export function MessageBoxDialog({
 								onClick={() => handleClose("yes")}
 								autoFocus={!defaultButton || defaultButton === "yes"}
 							>
-								Yes
+								{t("Yes")}
 							</button>
 							<button
 								type="button"
@@ -182,7 +185,7 @@ export function MessageBoxDialog({
 								onClick={() => handleClose("no")}
 								autoFocus={defaultButton === "no"}
 							>
-								No
+								{t("No")}
 							</button>
 						</>
 					)}
@@ -195,7 +198,7 @@ export function MessageBoxDialog({
 								onClick={() => handleClose("yes")}
 								autoFocus={!defaultButton || defaultButton === "yes"}
 							>
-								Yes
+								{t("Yes")}
 							</button>
 							<button
 								type="button"
@@ -203,7 +206,7 @@ export function MessageBoxDialog({
 								onClick={() => handleClose("no")}
 								autoFocus={defaultButton === "no"}
 							>
-								No
+								{t("No")}
 							</button>
 							<button
 								type="button"
@@ -211,7 +214,7 @@ export function MessageBoxDialog({
 								onClick={() => handleClose("cancel")}
 								autoFocus={defaultButton === "cancel"}
 							>
-								Cancel
+								{t("Cancel")}
 							</button>
 						</>
 					)}

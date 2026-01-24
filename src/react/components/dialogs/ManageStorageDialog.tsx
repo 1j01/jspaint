@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
 interface StoredImage {
@@ -17,6 +18,7 @@ interface ManageStorageDialogProps {
  * Shows locally stored images and allows deletion
  */
 export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProps) {
+	const { t } = useTranslation();
 	const [storedImages, setStoredImages] = useState<StoredImage[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -60,40 +62,39 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 	};
 
 	const handleRemove = (key: string) => {
-		if (confirm(`Remove this image from local storage?`)) {
+		if (confirm(t("Remove this image from local storage?"))) {
 			try {
 				localStorage.removeItem(key);
 				setStoredImages(storedImages.filter((img) => img.key !== key));
 			} catch (err) {
-				alert(`Failed to remove image: ${err}`);
+				alert(t("Failed to remove image:") + ` ${err}`);
 			}
 		}
 	};
 
 	const handleClearAll = () => {
-		if (confirm(`Remove all ${storedImages.length} stored images?`)) {
+		if (confirm(t("Remove all {{count}} stored images?", { count: storedImages.length }))) {
 			try {
 				storedImages.forEach((img) => localStorage.removeItem(img.key));
 				setStoredImages([]);
 			} catch (err) {
-				alert(`Failed to clear storage: ${err}`);
+				alert(t("Failed to clear storage:") + ` ${err}`);
 			}
 		}
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Manage Storage" className="dialog-window manage-storage-window">
+		<Dialog isOpen={isOpen} onClose={onClose} title={t("Manage Storage")} className="dialog-window manage-storage-window">
 			<div className="manage-storage-content">
 				<p className="manage-storage-description">
-					<strong>Local Storage:</strong> Images saved locally in your browser. These are separate from files
-					you've downloaded with <strong>File &gt; Save</strong>.
+					<strong>{t("Local Storage:")}</strong> {t("Images saved locally in your browser. These are separate from files you've downloaded with")} <strong>{t("File > Save")}</strong>.
 				</p>
 
-				{loading && <p className="manage-storage-loading">Loading...</p>}
+				{loading && <p className="manage-storage-loading">{t("Loading...")}</p>}
 
 				{!loading && storedImages.length === 0 && (
 					<p className="manage-storage-empty">
-						<em>No stored images found.</em>
+						<em>{t("No stored images found.")}</em>
 					</p>
 				)}
 
@@ -107,7 +108,7 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 											<div className="manage-storage-thumbnail inset-deep">
 												<img
 													src={img.thumbnail}
-													alt="Thumbnail"
+													alt={t("Thumbnail")}
 													className="manage-storage-image"
 												/>
 											</div>
@@ -115,11 +116,11 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 										<td className="manage-storage-info-cell">
 											<div className="manage-storage-name">{img.key.replace("image#", "")}</div>
 											<div className="manage-storage-meta">
-												Stored locally
+												{t("Stored locally")}
 											</div>
 										</td>
 										<td className="manage-storage-action-cell">
-											<button type="button" onClick={() => handleRemove(img.key)}>Remove</button>
+											<button type="button" onClick={() => handleRemove(img.key)}>{t("Remove")}</button>
 										</td>
 									</tr>
 								))}
@@ -129,14 +130,14 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 				)}
 
 				<p className="manage-storage-total">
-					Total: {storedImages.length} image(s)
+					{t("Total:")} {storedImages.length} {t("image(s)")}
 				</p>
 
 				<DialogButtons>
 					<button type="button" onClick={handleClearAll} disabled={storedImages.length === 0}>
-						Clear All
+						{t("Clear All")}
 					</button>
-					<button type="button" onClick={onClose}>Close</button>
+					<button type="button" onClick={onClose}>{t("Close")}</button>
 				</DialogButtons>
 			</div>
 		</Dialog>
