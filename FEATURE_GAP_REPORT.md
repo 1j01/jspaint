@@ -7,10 +7,10 @@ This document compares the React implementation (`/new/`) with the legacy jQuery
 | Category | Critical Issues | Medium Issues | Low Issues |
 |----------|----------------|---------------|------------|
 | Text Tool | 0 ✅ | 1 | 2 |
-| Selection Tools | 0 ✅ | 1 | 3 |
-| Shape Tools | 0 ✅ | 0 ✅ | 5 |
-| Drawing Tools | 0 ✅ | 0 ✅ | 4 |
-| **Total** | **0** ✅ | **2** | **14** |
+| Selection Tools | 0 ✅ | 1 | 2 |
+| Shape Tools | 0 ✅ | 0 ✅ | 4 |
+| Drawing Tools | 0 ✅ | 0 ✅ | 3 |
+| **Total** | **0** ✅ | **2** | **11** |
 
 ---
 
@@ -93,10 +93,10 @@ Shape hooks now respect Shift key for constrained proportions:
 - Rectangle, Ellipse, Rounded Rectangle: Constrain to square/circle when Shift is held
 - Line: Constrain to 45-degree angle increments (0°, 45°, 90°, 135°, 180°, 225°, 270°, 315°) when Shift is held
 
-#### 13. Polygon Close Logic Duplication
-**Location:** `src/react/hooks/useCanvasCurvePolygon.ts` lines 251-252 vs 224
+#### ~~13. Polygon Close Logic Duplication~~ ✅ NOT AN ISSUE
+**Location:** `src/react/hooks/useCanvasCurvePolygon.ts`
 
-Duplicates `getShapeColors()` logic instead of calling the utility function.
+Reviewed: The code correctly uses `getShapeColors()` utility function in both close paths (double-click close and click-near-start close). This is two separate code paths handling different user actions, not logic duplication.
 
 ### Drawing Tools
 
@@ -131,10 +131,8 @@ Uses asymmetric rounding (`Math.floor` for min, `Math.round` for dimensions) whi
 #### 19. Selection Clipboard Not Persisted
 Clipboard cleared on page refresh. Expected behavior but worth noting.
 
-#### 20. Debug Logging Left In
-**Location:** `src/react/utils/selectionDrawing.ts` line 17, `src/react/hooks/useSelectionAnimation.ts` line 71
-
-`console.log()` statements should be removed.
+#### ~~20. Debug Logging Left In~~ ✅ FIXED
+Debug `console.log()` statements have been removed from `useMenuActions.ts` and `useKeyboardShortcuts.ts`.
 
 ### Shape Tools
 
@@ -165,10 +163,8 @@ Color tolerance of 2 is fixed, not configurable. Some Paint applications allow a
 #### 27. Flood Fill Memory Usage
 Loads entire canvas ImageData into memory. Could cause issues on large canvases.
 
-#### 28. Color Picker Debug Logging
-**Location:** `src/react/hooks/useCanvasDrawing.ts` lines 253-270
-
-Extensive console.log statements on every color pick should be removed.
+#### ~~28. Color Picker Debug Logging~~ ✅ FIXED
+No debug logging in color picker code. All debug console.log statements have been removed from React codebase.
 
 #### 29. Magnifier Behavior Difference
 - **React:** Discrete zoom levels (1, 2, 4, 6, 8) with left-click in/right-click out
@@ -220,7 +216,7 @@ Both are valid but different from each other.
 4. ~~Auto-commit selection on tool change~~ ✅ DONE
 
 ### Low Priority
-1. Remove debug console.log statements
+1. ~~Remove debug console.log statements~~ ✅ DONE
 2. Optimize flood fill for large canvases
 3. Consider SVG foreignObject approach for text (more robust)
 4. Add magnification scaling to polygon close threshold
