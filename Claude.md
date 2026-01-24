@@ -22,13 +22,13 @@ npm run lint-eslint      # ESLint only
 npm run format           # Format React code with Prettier
 
 # Testing (Playwright)
-npm run test                     # Run all Playwright tests
-npm run test -- tests/tools.spec.ts              # Run single test file
-npm run test -- -g "pencil tool"                 # Run tests matching pattern
-npm run test:headed              # Run tests with visible browser
-npm run test:ui                  # Open Playwright UI
-npm run test:debug               # Debug tests
-npm run test:update-snapshots    # Update visual snapshots
+npm run test                              # Run all Playwright tests
+npm run test -- tests/tools.spec.ts       # Run single test file
+npm run test -- -g "pencil tool"          # Run tests matching pattern
+npm run test:headed                       # Run tests with visible browser
+npm run test:ui                           # Open Playwright UI
+npm run test:debug                        # Debug tests
+npm run test:update-snapshots             # Update visual snapshots
 ```
 
 ## Architecture
@@ -43,6 +43,8 @@ npm run test:update-snapshots    # Update visual snapshots
 - `canvasStore.ts` - Canvas metadata (dimensions, file name)
 
 **Selector Hooks** - Located alongside stores (e.g., `useColors.ts`, `useBrushSettings.ts`). Use `useShallow` from Zustand to prevent unnecessary re-renders.
+
+**Persistence** - `persistence.ts` provides IndexedDB storage via the `idb` library. Stores are auto-saved: settings, UI state, and canvas history. Database name: `mcpaint-db`.
 
 **Canvas Architecture** (`src/react/components/Canvas.tsx`):
 - Orchestrates specialized hooks for drawing, selection, shapes, text
@@ -68,13 +70,24 @@ useCanvasEventHandlers({ canvasRef, drawingOps, shapeOps, selectionOps, ... });
 
 **Dialogs** - Portal-based in `src/react/components/dialogs/`. Rendered via `DialogManager` component based on `uiStore.dialogs` state.
 
+**i18n** - Uses i18next with translations in `/localization/`. All UI text uses `useTranslation()` hook. 26 languages supported including RTL (Arabic, Hebrew).
+
 ### Legacy jQuery App (`src/` root-level `.js` files)
 
-- `app.js` - Main orchestration
-- `functions.js` - Drawing functions
-- `tools.js` - Tool implementations
-- `menus.js` - Menu system
+- `app.js` - Main orchestration (~3400 lines)
+- `functions.js` - Drawing functions (~2200 lines)
+- `tools.js` - Tool implementations (~1600 lines)
+- `menus.js` - Menu system (~1550 lines)
 - `$*.js` files - jQuery component wrappers
+
+### Build System
+
+Vite multi-page app with React Compiler enabled (`babel-plugin-react-compiler`). Entry points:
+- `/index.html` - Workspace selector
+- `/new/index.html` - React app
+- `/old/` - Legacy app (copied as static files, not processed by Vite)
+
+**CSS RTL** - `styles/layout.css` is auto-processed by RTLCSS to generate `layout.rtl.css`. When editing layout styles, test RTL by switching language to Arabic or Hebrew.
 
 ## Code Conventions
 
@@ -100,3 +113,4 @@ Free-Form Select, Rectangular Select, Eraser, Fill (flood fill), Pick Color (eye
 - http://localhost:1999/ - Workspace selector
 - http://localhost:1999/new/ - React app
 - http://localhost:1999/old/ - Legacy jQuery app
+- Tests run against http://localhost:11822/new/ (auto-started by Playwright)
