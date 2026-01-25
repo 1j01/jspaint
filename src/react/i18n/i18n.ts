@@ -19,7 +19,7 @@ i18n
 		fallbackLng: 'en',
 
 		// Debug mode (disable for production)
-		debug: false,
+		debug: true,
 
 		// Namespace configuration
 		ns: ['translation'],
@@ -46,6 +46,8 @@ i18n
 		// Backend configuration (loads from /locales/)
 		backend: {
 			loadPath: '/locales/{{lng}}/translation.json',
+			// Add cache busting in development to ensure fresh translations
+			queryStringParams: { v: Date.now() },
 		},
 
 		// React-specific options

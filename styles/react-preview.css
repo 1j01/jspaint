@@ -89,12 +89,9 @@ body {
 
 /* Tool Options Panel */
 /* Note: width/height from layout.css (41px x 66px) must be preserved for proper brush grid layout */
+/* Don't add padding/gap here - it reduces available space and causes overflow */
 .tool-options {
         display: flex;
-        flex-direction: column;
-        gap: 2px;
-        padding: 2px;
-        background: var(--ButtonFace, #c0c0c0);
         box-sizing: border-box;
 }
 
