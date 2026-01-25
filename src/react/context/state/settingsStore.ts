@@ -312,8 +312,20 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
 	// Load persisted settings on app initialization
 	loadPersistedSettings: async () => {
-		const primaryColor = await loadSetting("primaryColor", DEFAULT_PALETTE[0]);
-		const secondaryColor = await loadSetting("secondaryColor", DEFAULT_PALETTE[14]);
+		let primaryColor = await loadSetting("primaryColor", DEFAULT_PALETTE[0]);
+		let secondaryColor = await loadSetting("secondaryColor", DEFAULT_PALETTE[14]);
+
+		// Validate colors - ensure they're not fully transparent
+		// Fix for bug where rgba(0,0,0,0) was being saved/loaded
+		if (primaryColor.includes('rgba') && primaryColor.includes(',0)')) {
+			console.warn('[settingsStore] Primary color was transparent, resetting to black');
+			primaryColor = DEFAULT_PALETTE[0]; // Black
+		}
+		if (secondaryColor.includes('rgba') && secondaryColor.includes(',0)')) {
+			console.warn('[settingsStore] Secondary color was transparent, resetting to white');
+			secondaryColor = DEFAULT_PALETTE[14]; // White
+		}
+
 		const brushSize = await loadSetting("brushSize", 4);
 		const brushShape = await loadSetting<"circle" | "square" | "reverse_diagonal" | "diagonal">("brushShape", "circle");
 		const eraserSize = await loadSetting("eraserSize", 8);

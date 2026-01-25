@@ -77,13 +77,6 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 	 */
 	const handlePointerDown = useCallback(
 		(e: React.PointerEvent<HTMLCanvasElement>) => {
-			console.log('[DEBUG] handlePointerDown called', {
-				target: (e.target as HTMLElement).className,
-				clientX: e.clientX,
-				clientY: e.clientY,
-				button: e.button
-			});
-
 			// Skip if clicking on handles (selection handles, canvas resize handles, etc.)
 			const target = e.target as HTMLElement;
 			if (
@@ -97,18 +90,10 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 			e.preventDefault();
 			const canvas = canvasRef.current;
-			if (!canvas) {
-				console.log('[DEBUG] No canvas ref!');
-				return;
-			}
+			if (!canvas) return;
 
 			const ctx = canvas.getContext("2d", { willReadFrequently: true });
-			if (!ctx) {
-				console.log('[DEBUG] No canvas context!');
-				return;
-			}
-
-			console.log('[DEBUG] Got canvas context, proceeding with tool action');
+			if (!ctx) return;
 
 			const { x, y } = drawing.getCanvasCoords(e);
 			const color = drawing.getDrawColor(e.button);
@@ -118,7 +103,6 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
-					console.log('[DEBUG] PENCIL tool - drawing point at', x, y, 'color:', color, 'size:', size);
 					drawing.drawPoint(ctx, x, y, color, size);
 					shapes.drawingState.current = {
 						...shapes.drawingState.current,

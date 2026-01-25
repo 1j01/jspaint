@@ -64,6 +64,7 @@
 	"Last Saved:": "Last Saved:",
 	"Size on disk:": "Size on disk:",
 	"Resolution:": "Resolution:",
+	"dots per inch": "dots per inch",
 	"Not Available": "Not Available",
 	"Not saved": "Not saved",
 
@@ -150,6 +151,9 @@
 	"Image URL:": "Image URL:",
 	"URL copied to clipboard!": "URL copied to clipboard!",
 	"Copy URL": "Copy URL",
+	"Upload failed": "Upload failed",
+	"Invalid response from Imgur": "Invalid response from Imgur",
+	"Network error": "Network error",
 	"Error:": "Error:",
 	"Upload": "Upload",
 

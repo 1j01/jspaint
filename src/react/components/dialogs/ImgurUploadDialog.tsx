@@ -30,43 +30,62 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 			const response = await fetch(imageDataUrl);
 			const blob = await response.blob();
 
-			// Simulate upload progress (in real implementation, use XMLHttpRequest for progress)
-			const progressInterval = setInterval(() => {
-				setUploadProgress((prev) => Math.min(prev + 10, 90));
-			}, 100);
-
-			// Upload to Imgur
-			// Note: You'll need to get a Client ID from https://api.imgur.com/oauth2/addclient
-			// For now, this is a placeholder that shows the UI flow
+			// Use XMLHttpRequest for progress tracking
 			const formData = new FormData();
 			formData.append("image", blob);
 
-			// This would be the actual upload:
-			// const uploadResponse = await fetch("https://api.imgur.com/3/image", {
-			// 	method: "POST",
-			// 	headers: {
-			// 		Authorization: "Client-ID YOUR_CLIENT_ID_HERE",
-			// 	},
-			// 	body: formData,
-			// });
+			const xhr = new XMLHttpRequest();
 
-			clearInterval(progressInterval);
-			setUploadProgress(100);
+			// Track upload progress
+			xhr.upload.addEventListener("progress", (event) => {
+				if (event.lengthComputable) {
+					const progress = Math.floor((event.loaded / event.total) * 100);
+					setUploadProgress(progress);
+				}
+			});
 
-			// For now, show a message that Imgur upload needs configuration
-			setError(
-				t("Imgur upload requires API configuration. Please set up an Imgur Client ID to enable uploads."),
-			);
+			// Handle response
+			const uploadPromise = new Promise<{ success: boolean; data: { link?: string; error?: string } }>((resolve, reject) => {
+				xhr.addEventListener("readystatechange", () => {
+					if (xhr.readyState === 4) {
+						if (xhr.status === 200) {
+							try {
+								const result = JSON.parse(xhr.responseText);
+								resolve(result);
+							} catch {
+								reject(new Error(t("Invalid response from Imgur")));
+							}
+						} else {
+							try {
+								const result = JSON.parse(xhr.responseText);
+								if (result.data?.error) {
+									reject(new Error(result.data.error));
+								} else {
+									reject(new Error(`${t("Upload failed")} (HTTP ${xhr.status})`));
+								}
+							} catch {
+								reject(new Error(`${t("Upload failed")} (HTTP ${xhr.status})`));
+							}
+						}
+					}
+				});
+				xhr.addEventListener("error", () => reject(new Error(t("Network error"))));
+			});
 
-			// In a real implementation:
-			// const result = await uploadResponse.json();
-			// if (result.success) {
-			// 	setUploadedUrl(result.data.link);
-			// } else {
-			// 	setError(result.data.error || "Upload failed");
-			// }
+			xhr.open("POST", "https://api.imgur.com/3/image", true);
+			xhr.setRequestHeader("Authorization", "Client-ID 203da2f300125a1");
+			xhr.setRequestHeader("Accept", "application/json");
+			xhr.send(formData);
+
+			const result = await uploadPromise;
+
+			if (result.success && result.data.link) {
+				setUploadedUrl(result.data.link);
+			} else {
+				setError(result.data.error || t("Upload failed"));
+			}
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Upload failed");
+			setError(err instanceof Error ? err.message : t("Upload failed"));
 		} finally {
 			setUploading(false);
 		}
