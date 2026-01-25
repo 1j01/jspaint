@@ -45,11 +45,13 @@ export function MessageList({ messages, streamContent, isStreaming }: MessageLis
       className="chat-message-list"
       style={{
         flex: 1,
-        overflowY: "auto",
+        overflowY: "scroll",
+        scrollbarGutter: "stable",
         padding: "8px",
         backgroundColor: "#ffffff",
         border: "2px inset #ffffff",
         minHeight: "100px",
+        boxSizing: "border-box",
       }}
     >
       {isEmpty ? (

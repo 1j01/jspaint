@@ -55,7 +55,7 @@ export function ImgurUploadDialog({ isOpen, onClose, imageDataUrl }: ImgurUpload
 
 			// For now, show a message that Imgur upload needs configuration
 			setError(
-				"Imgur upload requires API configuration. Please set up an Imgur Client ID to enable uploads.",
+				t("Imgur upload requires API configuration. Please set up an Imgur Client ID to enable uploads."),
 			);
 
 			// In a real implementation:

@@ -219,11 +219,11 @@ export function Frame({
 			return () => {};
 		}
 
-		let menuBar = store.get(menu) || null;
-		if (!menuBar) {
-			menuBar = MenuBar(menu);
-			store.set(menu, menuBar);
-		}
+		// Always create a fresh MenuBar when menu changes (e.g., on language change)
+		// Clear any cached MenuBar for this menu object first
+		store.delete(menu);
+		const menuBar = MenuBar(menu);
+		store.set(menu, menuBar);
 
 		const { element } = menuBar;
 		if (element.parentElement !== vertical) {
@@ -237,6 +237,8 @@ export function Frame({
 			if (element.parentElement === vertical) {
 				vertical.removeChild(element);
 			}
+			// Clean up the store entry to prevent memory leaks
+			store.delete(menu);
 		};
 	}, [menu]);
 

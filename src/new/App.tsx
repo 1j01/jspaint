@@ -98,7 +98,7 @@ function AppContent() {
 	// console.warn('[AppContent] 🎨 RENDER START');
 
 	// Get translation function for menu labels
-	const { t, i18n } = useTranslation();
+	const { t, i18n, ready } = useTranslation();
 
 	// Create canvas ref locally (was in AppProvider)
 	const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -268,8 +268,9 @@ function AppContent() {
 	});
 
 	// Create the menu structure
-	// Note: We include i18n.language in deps to force menu recreation on language change
-	const menu = useMemo(() => createMenus(menuActions, t), [menuActions, t, i18n.language]);
+	// Include i18n.language and ready in deps to force menu recreation on language change
+	// and after translations are loaded
+	const menu = useMemo(() => createMenus(menuActions, t), [menuActions, t, i18n.language, ready]);
 
 	// Handle keyboard shortcuts
 	useKeyboardShortcuts({

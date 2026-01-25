@@ -3,6 +3,7 @@
  * Displays a Windows 98-style tree structure of help topics.
  */
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { HelpItem } from "../../utils/helpParser";
 
 export interface HelpContentsProps {
@@ -117,6 +118,7 @@ export function HelpContents({
 	isLoading = false,
 	error = null,
 }: HelpContentsProps) {
+	const { t } = useTranslation();
 	// Track which folder is expanded (only ONE at a time, matching jQuery's $last_expanded)
 	const [expandedFolder, setExpandedFolder] = useState<string | null>(null);
 
@@ -138,7 +140,7 @@ export function HelpContents({
 	if (isLoading) {
 		return (
 			<div className="help-contents inset-deep">
-				<div className="help-contents-loading">Loading help contents...</div>
+				<div className="help-contents-loading">{t("Loading help contents...")}</div>
 			</div>
 		);
 	}
@@ -169,7 +171,7 @@ export function HelpContents({
 					tabIndex={0}
 					style={{ paddingLeft: "4px" }}
 				>
-					<span className="item-text">Welcome to Help</span>
+					<span className="item-text">{t("Welcome to Help")}</span>
 				</div>
 			</li>
 			{/* TOC items */}

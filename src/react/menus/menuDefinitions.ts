@@ -110,7 +110,7 @@ export interface MenuActions {
  * @param {MenuActions} actions - Menu action handlers
  * @param {(key: string) => string} t - Translation function from i18next
  */
-export function createMenus(actions: MenuActions, t: (key: string) => string = (key) => key): Record<string, MenuItem[]> {
+export function createMenus(actions: MenuActions, t: (key: string, options?: Record<string, unknown>) => string = (key) => key): Record<string, MenuItem[]> {
 	return {
 		[t("&File")]: [
 			{

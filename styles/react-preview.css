@@ -1170,13 +1170,3 @@ body.resizing iframe {
         padding: 1px 3px;
         line-height: 1;
 }
-
-.ai-side-panel-error {
-        padding: 8px;
-        background: var(--ButtonFace, #c0c0c0);
-        border: 1px solid;
-        border-color: var(--ButtonShadow, #808080) var(--ButtonHilight, #ffffff) var(--ButtonHilight, #ffffff) var(--ButtonShadow, #808080);
-        color: #800000;
-        font-size: 11px;
-        margin: 4px;
-}

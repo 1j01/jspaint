@@ -2,6 +2,7 @@
  * Execution progress component.
  * Shows a progress bar during command execution with current/total count.
  */
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the ExecutionProgress component
@@ -22,6 +23,8 @@ export interface ExecutionProgressProps {
  * @returns {JSX.Element | null} The rendered progress bar or null if not executing
  */
 export function ExecutionProgress({ current, total, isExecuting }: ExecutionProgressProps) {
+  const { t } = useTranslation();
+
   if (!isExecuting || total === 0) {
     return null;
   }
@@ -35,6 +38,7 @@ export function ExecutionProgress({ current, total, isExecuting }: ExecutionProg
         padding: "8px",
         borderTop: "1px solid #808080",
         backgroundColor: "#c0c0c0",
+        boxSizing: "border-box",
       }}
     >
       <div
@@ -45,7 +49,7 @@ export function ExecutionProgress({ current, total, isExecuting }: ExecutionProg
           color: "#000000",
         }}
       >
-        Executing command {current} of {total}...
+        {t("Executing command {{current}} of {{total}}...", { current, total })}
       </div>
       <div
         className="execution-progress-bar field"

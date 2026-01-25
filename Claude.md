@@ -24,15 +24,18 @@ npm run format           # Format React code with Prettier
 # Testing (Playwright - runs against React app at port 11822)
 npm run test                              # Run all Playwright tests
 npm run test -- tests/tools.spec.ts       # Run single test file
-npm run test -- tests/shape-tools.spec.ts # Run shape tools tests
+npm run test -- tests/dialogs/            # Run all dialog tests
 npm run test -- -g "pencil tool"          # Run tests matching pattern
 npm run test:headed                       # Run tests with visible browser
 npm run test:ui                           # Open Playwright UI
 npm run test:debug                        # Debug tests
 npm run test:update-snapshots             # Update visual snapshots
 
-# Available test files: tools, shape-tools, undo-redo, visual, magnifier,
-# help-window, menu-file, menu-edit, menu-view, menu-image, menu-colors, menu-help
+# Test organization:
+#   tests/*.spec.ts - Core tool and menu tests
+#   tests/dialogs/  - Dialog-specific tests (about, attributes, flip-rotate, etc.)
+#   tests/tools/    - Tool-specific test helpers
+#   tests/utils/    - Shared test utilities
 ```
 
 ## Architecture
@@ -84,7 +87,7 @@ useCanvasEventHandlers({ canvasRef, drawingOps, shapeOps, selectionOps, ... });
 
 **Dialogs** - Portal-based in `src/react/components/dialogs/`. Rendered via `DialogManager` component based on `uiStore.dialogs` state.
 
-**i18n** - Uses i18next with translations in `/localization/`. All UI text uses `useTranslation()` hook. 26 languages supported including RTL (Arabic, Hebrew).
+**i18n** - Uses i18next with JSON translations in `/public/locales/` (one `translation.json` per language). The `/localization/` directory contains legacy Windows .rc resource files used as source material. All UI text uses `useTranslation()` hook. 26 languages supported including RTL (Arabic, Hebrew).
 
 ### Legacy jQuery App (`src/` root-level `.js` files)
 

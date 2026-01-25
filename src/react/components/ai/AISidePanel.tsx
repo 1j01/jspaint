@@ -30,7 +30,7 @@ export interface AISidePanelProps {
  */
 export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
   const { t } = useTranslation();
-  const { messages, isStreaming, isExecuting, streamContent, error, sendMessage, cancel, resetChat } = useAIChat({
+  const { messages, isStreaming, isExecuting, streamContent, sendMessage, cancel, resetChat } = useAIChat({
     canvasRef,
     animationDelay: 50,
     onCommandError: (errorMsg) => {
@@ -80,9 +80,6 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
           </button>
         </div>
       </div>
-
-      {/* Error display */}
-      {error && <div className="ai-side-panel-error">{error}</div>}
 
       {/* Message list */}
       <MessageList messages={messages} streamContent={streamContent} isStreaming={isStreaming} />
