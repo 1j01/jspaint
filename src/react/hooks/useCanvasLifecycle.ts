@@ -150,18 +150,24 @@ async function loadCanvasFromIndexedDB(): Promise<ImageData | null> {
  */
 export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 	useEffect(() => {
+		console.log('[DEBUG useCanvasLifecycle] Effect running');
 		const canvas = canvasRef.current;
 		if (!canvas) {
+			console.log('[DEBUG useCanvasLifecycle] No canvas ref');
 			return;
 		}
 
 		const ctx = canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) {
+			console.log('[DEBUG useCanvasLifecycle] No canvas context');
 			return;
 		}
 
+		console.log('[DEBUG useCanvasLifecycle] Canvas ready, canvasInitialized:', canvasInitialized);
+
 		// Async initialization function
 		const initializeCanvas = async () => {
+			console.log('[DEBUG useCanvasLifecycle] initializeCanvas starting');
 			// Check if canvas already has content (e.g., from fileOpen)
 			// Sample a few pixels to detect if it's already been drawn to
 			const sampleData = ctx.getImageData(0, 0, Math.min(10, canvas.width), Math.min(10, canvas.height));
@@ -178,7 +184,10 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 				}
 			}
 
+			console.log('[DEBUG useCanvasLifecycle] hasContent:', hasContent);
+
 			if (hasContent) {
+				console.log('[DEBUG useCanvasLifecycle] Canvas has content, skipping init');
 				canvasInitialized = true;
 				// Don't set loadedFromIndexedDB here - this could be fresh content from fileOpen
 				// and we still want to save/load from IndexedDB on actual page refresh
@@ -226,6 +235,7 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
 			// Priority 3: Initialize with white background (only once)
 			if (!canvasInitialized) {
+				console.log('[DEBUG useCanvasLifecycle] Initializing with white background');
 				ctx.fillStyle = "#ffffff";
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 				canvasInitialized = true;
@@ -236,6 +246,8 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 					useHistoryStore.getState().pushState(initialImageData, "New Document");
 					historyTreeInitialized = true;
 				}
+			} else {
+				console.log('[DEBUG useCanvasLifecycle] Already initialized, skipping white background');
 			}
 		};
 
@@ -259,8 +271,10 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 		//
 		// See top-of-file documentation for detailed explanation.
 		return () => {
+			console.log('[DEBUG useCanvasLifecycle] Cleanup running - component unmounting');
 			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 			savedCanvasData = imageData;
+			console.log('[DEBUG useCanvasLifecycle] Saved canvas to module-level storage');
 			// ❌ DO NOT: saveCanvasToIndexedDB(imageData)
 			// ✅ IndexedDB saving is handled by Canvas.tsx saveHistoryState()
 		};

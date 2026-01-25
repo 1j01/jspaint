@@ -25,6 +25,11 @@ i18n
 		ns: ['translation'],
 		defaultNS: 'translation',
 
+		// Disable namespace separator since we use single namespace
+		// This prevents keys with colons (like "Width:") from being
+		// misinterpreted as namespace:key pairs
+		nsSeparator: false,
+
 		// Interpolation options
 		interpolation: {
 			// React already escapes values
