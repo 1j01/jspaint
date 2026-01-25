@@ -167,11 +167,12 @@ export function SelectionHandles({
 			newRect.current = { ...originalRect.current };
 
 			// Show ghost element
+			// Legacy code uses padding + 1 for ghost offsets (see OnCanvasSelection.js)
 			if (ghostRef.current) {
 				const padding = getContainerPadding();
 				ghostRef.current.style.display = "block";
-				ghostRef.current.style.left = `${selection.x * magnification + padding.left}px`;
-				ghostRef.current.style.top = `${selection.y * magnification + padding.top}px`;
+				ghostRef.current.style.left = `${selection.x * magnification + padding.left + 1}px`;
+				ghostRef.current.style.top = `${selection.y * magnification + padding.top + 1}px`;
 				ghostRef.current.style.width = `${selection.width * magnification}px`;
 				ghostRef.current.style.height = `${selection.height * magnification}px`;
 			}
@@ -228,10 +229,11 @@ export function SelectionHandles({
 			newRect.current = { x: newX, y: newY, width: newWidth, height: newHeight };
 
 			// Update ghost preview
+			// Legacy code uses padding + 1 for ghost offsets (see OnCanvasSelection.js)
 			if (ghostRef.current) {
 				const padding = getContainerPadding();
-				ghostRef.current.style.left = `${newX * magnification + padding.left}px`;
-				ghostRef.current.style.top = `${newY * magnification + padding.top}px`;
+				ghostRef.current.style.left = `${newX * magnification + padding.left + 1}px`;
+				ghostRef.current.style.top = `${newY * magnification + padding.top + 1}px`;
 				ghostRef.current.style.width = `${newWidth * magnification}px`;
 				ghostRef.current.style.height = `${newHeight * magnification}px`;
 			}

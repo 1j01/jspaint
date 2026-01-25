@@ -63,14 +63,6 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
         <div className="window-title-area">
           <span className="window-title">{t("AI Assistant")}</span>
         </div>
-        <button
-          className="window-close-button window-action-close window-button"
-          onClick={handleClose}
-          title={t("Hide panel")}
-          aria-label={t("Hide AI panel")}
-        >
-          <span className="window-button-icon"></span>
-        </button>
       </div>
 
       {/* Message list */}

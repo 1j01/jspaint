@@ -262,9 +262,10 @@ export function CanvasResizeHandles({
 		const grabSize = 32;
 		const outset = 0;
 		// Get dynamic padding from .canvas-area
+		// Legacy code uses padding + 1 for handle offsets (see app.js Handles constructor)
 		const padding = getContainerPadding();
-		const offsetLeft = padding.left;
-		const offsetTop = padding.top;
+		const offsetLeft = padding.left + 1;
+		const offsetTop = padding.top + 1;
 
 		const rect = { width: canvasWidth, height: canvasHeight };
 
@@ -337,11 +338,12 @@ export function CanvasResizeHandles({
 	};
 
 	// Render resize ghost outline when dragging - matching Handles.js
+	// Legacy code uses padding + 1 for ghost offsets (see app.js Handles constructor)
 	const ghostStyle: React.CSSProperties | undefined = ghostRect
 		? {
 				position: "absolute",
-				left: `${ghostRect.x * magnification + getContainerPadding().left}px`,
-				top: `${ghostRect.y * magnification + getContainerPadding().top}px`,
+				left: `${ghostRect.x * magnification + getContainerPadding().left + 1}px`,
+				top: `${ghostRect.y * magnification + getContainerPadding().top + 1}px`,
 				width: `${ghostRect.width * magnification - 2}px`,
 				height: `${ghostRect.height * magnification - 2}px`,
 				pointerEvents: "none",
