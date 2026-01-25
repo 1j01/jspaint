@@ -45,6 +45,7 @@ export function MessageList({ messages, streamContent, isStreaming }: MessageLis
       className="chat-message-list"
       style={{
         flex: 1,
+        overflowX: "hidden",
         overflowY: "scroll",
         scrollbarGutter: "stable",
         padding: "8px",

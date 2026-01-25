@@ -58,19 +58,19 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
 
   return (
     <div className="ai-side-panel">
-      {/* Header */}
-      <div className="ai-side-panel-header">
-        <span className="ai-side-panel-title">{t("AI Assistant")}</span>
-        <div className="ai-side-panel-buttons">
-          <button
-            className="ai-side-panel-button ai-side-panel-close"
-            onClick={handleClose}
-            title={t("Hide panel")}
-            aria-label={t("Hide AI panel")}
-          >
-            ×
-          </button>
+      {/* Header - using same structure as Dialog */}
+      <div className="window-titlebar ai-side-panel-titlebar">
+        <div className="window-title-area">
+          <span className="window-title">{t("AI Assistant")}</span>
         </div>
+        <button
+          className="window-close-button window-action-close window-button"
+          onClick={handleClose}
+          title={t("Hide panel")}
+          aria-label={t("Hide AI panel")}
+        >
+          <span className="window-button-icon"></span>
+        </button>
       </div>
 
       {/* Message list */}

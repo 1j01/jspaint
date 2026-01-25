@@ -89,6 +89,7 @@ export function ChatInput({
         borderTop: "1px solid #808080",
         backgroundColor: "#c0c0c0",
         boxSizing: "border-box",
+        flexShrink: 0,
       }}
     >
       <textarea

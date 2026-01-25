@@ -518,22 +518,28 @@ body.resizing canvas.main-canvas {
 }
 
 /* About dialog button group - matches jQuery: float: right, marginBottom: 10px */
-.about-paint-window .button-group {
+/* High specificity to override layout.css .dialog-window:not(...) .window-content .button-group */
+.dialog-window.about-paint-window:not(.horizontal-buttons):not(.edit-colors-window) .window-content .button-group {
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
+        align-items: center;
         padding-left: 0;
         margin-top: 5px;
         margin-bottom: 10px;
 }
 
-.about-ok-button {
+.dialog-window.about-paint-window:not(.horizontal-buttons):not(.edit-colors-window) .window-content .button-group .about-ok-button {
         min-width: 75px;
+        width: auto;
         height: 23px;
         padding: 4px 12px;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        flex-grow: 0;
 }
 
-.about-ok-button:focus {
+.dialog-window.about-paint-window .window-content .button-group .about-ok-button:focus {
         outline: 1px dotted #000;
         outline-offset: -4px;
 }
@@ -1127,53 +1133,10 @@ body.resizing iframe {
         border-left: 2px solid;
         border-left-color: var(--ButtonHilight, #ffffff);
         box-sizing: border-box;
-        font-family: Arial, sans-serif;
-        font-size: 11px;
         overflow: hidden;
 }
 
-.ai-side-panel-header {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding: 3px 4px;
-        background: linear-gradient(180deg, #000080 0%, #1084d0 100%);
-        color: white;
+/* AI Side Panel titlebar - extends standard window-titlebar */
+.ai-side-panel-titlebar {
         flex-shrink: 0;
-}
-
-.ai-side-panel-title {
-        font-weight: bold;
-        font-size: 11px;
-        margin-left: 2px;
-}
-
-.ai-side-panel-buttons {
-        display: flex;
-        gap: 2px;
-}
-
-.ai-side-panel-button {
-        min-width: 16px;
-        min-height: 14px;
-        padding: 1px 4px;
-        font-size: 11px;
-        border: 1px solid;
-        border-color: var(--ButtonHilight, #ffffff) var(--ButtonShadow, #808080) var(--ButtonShadow, #808080) var(--ButtonHilight, #ffffff);
-        background: var(--ButtonFace, #c0c0c0);
-        color: var(--ButtonText, #000000);
-        cursor: pointer;
-        font-family: Arial, sans-serif;
-}
-
-.ai-side-panel-button:active {
-        border-color: var(--ButtonShadow, #808080) var(--ButtonHilight, #ffffff) var(--ButtonHilight, #ffffff) var(--ButtonShadow, #808080);
-}
-
-.ai-side-panel-close {
-        font-size: 9px;
-        font-weight: bold;
-        padding: 1px 3px;
-        line-height: 1;
 }
