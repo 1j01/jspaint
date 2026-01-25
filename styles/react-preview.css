@@ -92,6 +92,7 @@ body {
 /* Don't add padding/gap here - it reduces available space and causes overflow */
 .tool-options {
         display: flex;
+        flex-direction: column;
         box-sizing: border-box;
 }
 

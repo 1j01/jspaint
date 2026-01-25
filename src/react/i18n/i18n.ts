@@ -19,7 +19,7 @@ i18n
 		fallbackLng: 'en',
 
 		// Debug mode (disable for production)
-		debug: true,
+		debug: false,
 
 		// Namespace configuration
 		ns: ['translation'],

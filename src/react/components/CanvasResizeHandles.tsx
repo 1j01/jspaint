@@ -132,6 +132,32 @@ export function CanvasResizeHandles({
 		return () => cancelAnimationFrame(rafId);
 	}, [canvasWidth, canvasHeight, magnification]);
 
+	// Force recalculation on mount after containerRef becomes available
+	// This fixes a timing issue where containerRef.current is null on first render
+	// because the parent's useEffect that sets it runs after the initial render
+	useEffect(() => {
+		// Schedule multiple updates to ensure containerRef is available
+		// First RAF might fire before parent's useEffect, so we add a second one
+		let rafId1: number;
+		let rafId2: number;
+
+		rafId1 = requestAnimationFrame(() => {
+			if (containerRef.current) {
+				forceUpdate((n) => n + 1);
+			} else {
+				// If still not available, try again
+				rafId2 = requestAnimationFrame(() => {
+					forceUpdate((n) => n + 1);
+				});
+			}
+		});
+
+		return () => {
+			cancelAnimationFrame(rafId1);
+			if (rafId2) cancelAnimationFrame(rafId2);
+		};
+	}, [containerRef]);
+
 	const handlePointerDown = useCallback(
 		(xAxis: HandleAxis, yAxis: HandleAxis, e: React.PointerEvent) => {
 			// In size-only mode, ignore top and left handles
