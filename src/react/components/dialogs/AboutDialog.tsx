@@ -18,25 +18,20 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
 				<div className="about-paint-header">
 					<img src="/images/icons/128x128.png" width={128} height={128} className="about-paint-icon" alt="" />
 					<div className="about-paint-beside-icon">
-						<h1 className="about-project-name">JS Paint</h1>
+						<h1 className="about-project-name">MCPaint</h1>
 						<div className="about-version">{t("Version")} 1.0.0+</div>
 					</div>
 					<button className="about-whats-new-button">{t("What's New?")}</button>
 				</div>
-				<p>
-					{t("MS Paint remake by")}{" "}
-					<a href="https://isaiahodhner.io/" target="_blank" rel="noopener noreferrer">
-						Isaiah Odhner
-					</a>
-				</p>
+				<p>{t("A web-based MS Paint clone.")}</p>
 				<p>
 					{t("Feedback:")}{" "}
-					<a href="https://github.com/evgenyvinnik/mcpaint/issues" target="_blank" rel="noopener noreferrer">
+					<a href="https://github.com/evgenyvinnik/mcpaint" target="_blank" rel="noopener noreferrer">
 						GitHub
 					</a>
 				</p>
 				<p>
-					<a href="/about.html" target="_blank" rel="noopener noreferrer">
+					<a href="https://www.mcpaint.app/" target="_blank" rel="noopener noreferrer">
 						{t("Homepage")}
 					</a>
 					{" · "}

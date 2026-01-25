@@ -3,6 +3,7 @@
  * Displays user or assistant messages with appropriate styling.
  * Shows command count for assistant messages with drawing commands.
  */
+import { useTranslation } from "react-i18next";
 import type { ChatMessage as ChatMessageType } from "../../types/ai";
 
 /**
@@ -20,6 +21,7 @@ export interface ChatMessageProps {
  * @returns {JSX.Element} The rendered chat message
  */
 export function ChatMessage({ message }: ChatMessageProps) {
+  const { t } = useTranslation();
   const isUser = message.role === "user";
   const hasCommands = message.commands && message.commands.length > 0;
 
@@ -60,8 +62,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             paddingRight: isUser ? "4px" : "0",
           }}
         >
-          {message.commands!.length} command
-          {message.commands!.length !== 1 ? "s" : ""} executed
+          {t("{{count}} command executed", { count: message.commands!.length })}
         </div>
       )}
     </div>

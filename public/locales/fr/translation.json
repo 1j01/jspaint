@@ -592,5 +592,17 @@
 	"&Edit Colors...": "&Edit Colors...",
 	"&Get Colors": "&Get Colors",
 	"&Save Colors": "&Save Colors",
-	"Loading help contents...": "Loading help contents..."
+	"Loading help contents...": "Loading help contents...",
+	"Version": "Version",
+	"What's New?": "What's New?",
+	"MS Paint remake by": "MS Paint remake by",
+	"Feedback:": "Feedback:",
+	"Homepage": "Homepage",
+	"MIT License": "MIT License",
+	"Privacy Policy": "Privacy Policy",
+	"Enter the URL of the image to load:": "Enter the URL of the image to load:",
+	"Please enter a URL.": "Please enter a URL.",
+	"Please enter a valid URL.": "Please enter a valid URL.",
+	"Imgur upload requires API configuration. Please set up an Imgur Client ID to enable uploads.": "Imgur upload requires API configuration. Please set up an Imgur Client ID to enable uploads.",
+	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}..."
 }
