@@ -228,7 +228,7 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 					onClick={handleClick}
 					style={{ paddingLeft: `${depth * 16}px`, cursor: "pointer" }}
 				>
-					{item.title}
+					{item.id === "welcome" ? t(item.title) : item.title}
 				</div>
 				{isFolder && (
 					<ul>

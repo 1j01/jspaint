@@ -21,7 +21,6 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
 						<h1 className="about-project-name">MCPaint</h1>
 						<div className="about-version">{t("Version")} 1.0.0+</div>
 					</div>
-					<button className="about-whats-new-button">{t("What's New?")}</button>
 				</div>
 				<p>{t("A web-based MS Paint clone.")}</p>
 				<p>
@@ -41,10 +40,6 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
 						rel="noopener noreferrer"
 					>
 						{t("MIT License")}
-					</a>
-					{" · "}
-					<a href="/privacy.html" target="_blank" rel="noopener noreferrer">
-						{t("Privacy Policy")}
 					</a>
 				</p>
 			</div>

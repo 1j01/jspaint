@@ -63,14 +63,6 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
         <span className="ai-side-panel-title">{t("AI Assistant")}</span>
         <div className="ai-side-panel-buttons">
           <button
-            className="ai-side-panel-button"
-            onClick={handleClear}
-            title={t("Clear chat")}
-            aria-label={t("Clear chat")}
-          >
-            {t("Clear")}
-          </button>
-          <button
             className="ai-side-panel-button ai-side-panel-close"
             onClick={handleClose}
             title={t("Hide panel")}
@@ -94,7 +86,7 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
       )}
 
       {/* Chat input */}
-      <ChatInput onSend={sendMessage} onCancel={cancel} isStreaming={isStreaming} isExecuting={isExecuting} />
+      <ChatInput onSend={sendMessage} onCancel={cancel} onClear={handleClear} isStreaming={isStreaming} isExecuting={isExecuting} />
     </div>
   );
 }

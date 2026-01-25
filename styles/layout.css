@@ -832,8 +832,18 @@ whereas it breaks component docking calculations if used to shift the colors box
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	background-color: pink; /* DEBUG */
-	border: 3px solid blue; /* DEBUG */
+}
+
+/* Split pane resizer for React help window */
+.help-window .resizer {
+	cursor: ew-resize;
+	width: 4px;
+	box-sizing: border-box;
+	background: var(--ButtonFace);
+	border-left: 1px solid var(--ButtonShadow);
+	box-shadow: inset 1px 0 0 var(--ButtonHilight);
+	z-index: 1;
+	flex-shrink: 0;
 }
 
 .help-window iframe {

@@ -460,6 +460,10 @@ body.resizing canvas.main-canvas {
 
 /* About Paint Dialog - matches legacy #about-paint styling */
 /* Legacy uses: $about_paint_window.$content.css({ padding: "15px" }) */
+.about-paint-window .window-content {
+        padding: 15px;
+}
+
 .about-paint-content {
         padding: 0;
 }
@@ -513,18 +517,20 @@ body.resizing canvas.main-canvas {
         margin-top: 2px;
 }
 
-.about-whats-new-button {
-        margin-left: auto;
-        align-self: center;
-        min-width: 100px;
-        min-height: 26px;
-        padding: 4px 8px;
+/* About dialog button group - matches jQuery: float: right, marginBottom: 10px */
+.about-paint-window .button-group {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding-left: 0;
+        margin-top: 5px;
+        margin-bottom: 10px;
 }
 
 .about-ok-button {
-        min-width: 100px;
-        min-height: 26px;
-        padding: 4px 8px;
+        min-width: 75px;
+        height: 23px;
+        padding: 4px 12px;
 }
 
 .about-ok-button:focus {
@@ -1123,6 +1129,7 @@ body.resizing iframe {
         box-sizing: border-box;
         font-family: Arial, sans-serif;
         font-size: 11px;
+        overflow: hidden;
 }
 
 .ai-side-panel-header {

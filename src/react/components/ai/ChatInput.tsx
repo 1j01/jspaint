@@ -13,6 +13,8 @@ export interface ChatInputProps {
   onSend: (message: string) => void;
   /** Callback when user cancels current operation */
   onCancel: () => void;
+  /** Callback when user clears the chat */
+  onClear: () => void;
   /** Whether the AI is currently streaming a response */
   isStreaming: boolean;
   /** Whether commands are currently being executed */
@@ -31,6 +33,7 @@ export interface ChatInputProps {
 export function ChatInput({
   onSend,
   onCancel,
+  onClear,
   isStreaming,
   isExecuting,
   placeholder,
@@ -128,16 +131,27 @@ export function ChatInput({
             {t("Cancel")}
           </button>
         ) : (
-          <button
-            className="chat-send-button"
-            onClick={handleSend}
-            disabled={!message.trim()}
-            style={{
-              minWidth: "70px",
-            }}
-          >
-            {t("Send")}
-          </button>
+          <>
+            <button
+              className="chat-clear-button"
+              onClick={onClear}
+              style={{
+                minWidth: "70px",
+              }}
+            >
+              {t("Clear")}
+            </button>
+            <button
+              className="chat-send-button"
+              onClick={handleSend}
+              disabled={!message.trim()}
+              style={{
+                minWidth: "70px",
+              }}
+            >
+              {t("Send")}
+            </button>
+          </>
         )}
       </div>
       <div

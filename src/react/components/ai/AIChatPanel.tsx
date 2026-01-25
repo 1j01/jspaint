@@ -5,6 +5,7 @@
  * Uses Windows 98 styling to match the rest of the application.
  */
 import { useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useAIChat } from "../../hooks/useAIChat";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
@@ -32,6 +33,7 @@ export interface AIChatPanelProps {
  * @returns {JSX.Element | null} The rendered panel or null if closed
  */
 export function AIChatPanel({ canvasRef, isOpen, onClose }: AIChatPanelProps) {
+  const { t } = useTranslation();
   const { messages, isStreaming, isExecuting, streamContent, error, sendMessage, cancel, resetChat } = useAIChat({
     canvasRef,
     animationDelay: 50,
@@ -108,20 +110,12 @@ export function AIChatPanel({ canvasRef, isOpen, onClose }: AIChatPanelProps) {
       <div className="window-titlebar" {...handleProps}>
         <img src="/images/icons/16x16.png" width={16} height={16} draggable={false} alt="" />
         <div className="window-title-area">
-          <span className="window-title">AI Assistant</span>
+          <span className="window-title">{t("AI Assistant")}</span>
         </div>
         <div className="window-buttons">
           <button
-            className="window-button window-button-minimize"
-            aria-label="Clear chat"
-            onClick={handleClear}
-            title="Clear chat"
-          >
-            <span style={{ fontSize: "10px" }}>C</span>
-          </button>
-          <button
             className="window-close-button window-action-close window-button"
-            aria-label="Close"
+            aria-label={t("Close")}
             onClick={handleClose}
           >
             <span className="window-button-icon"></span>
@@ -169,7 +163,7 @@ export function AIChatPanel({ canvasRef, isOpen, onClose }: AIChatPanelProps) {
         )}
 
         {/* Chat input */}
-        <ChatInput onSend={sendMessage} onCancel={cancel} isStreaming={isStreaming} isExecuting={isExecuting} />
+        <ChatInput onSend={sendMessage} onCancel={cancel} onClear={handleClear} isStreaming={isStreaming} isExecuting={isExecuting} />
       </div>
     </div>
   );
