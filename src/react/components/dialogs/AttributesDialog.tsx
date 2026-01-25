@@ -75,7 +75,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
 							</tr>
 							<tr>
 								<td>{t("Resolution:")}</td>
-								<td style={{ direction: "ltr" }}>72 x 72 dots per inch</td>
+								<td style={{ direction: "ltr" }}>72 x 72 {t("dots per inch")}</td>
 							</tr>
 						</tbody>
 					</table>
