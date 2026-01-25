@@ -57,7 +57,7 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
   }, [cancel, onClose]);
 
   return (
-    <div className="ai-side-panel">
+    <div className="ai-side-panel os-window focused">
       {/* Header - using same structure as Dialog */}
       <div className="window-titlebar ai-side-panel-titlebar">
         <div className="window-title-area">

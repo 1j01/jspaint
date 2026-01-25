@@ -1130,10 +1130,18 @@ body.resizing iframe {
         max-width: 300px;
         height: 100%;
         background: var(--ButtonFace, #c0c0c0);
-        border-left: 2px solid;
-        border-left-color: var(--ButtonHilight, #ffffff);
         box-sizing: border-box;
         overflow: hidden;
+}
+
+/* Override os-window styles for the side panel since it's embedded */
+.ai-side-panel.os-window {
+        position: relative;
+        border: none;
+        border-left: 2px solid;
+        border-left-color: var(--ButtonHilight, #ffffff);
+        padding: 0;
+        border-image: none;
 }
 
 /* AI Side Panel titlebar - extends standard window-titlebar */
