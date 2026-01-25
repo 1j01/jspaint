@@ -99,11 +99,12 @@ body {
 }
 
 /* Brush chooser grid layout - 3 columns × 4 rows of 10x10 canvases (12 total) */
+/* Must fit within tool-options container (41px × 66px from layout.css) */
 .choose-brush {
         display: flex;
         flex-flow: row wrap;
-        width: 36px;
-        height: 48px;
+        width: 100%;
+        max-width: 39px;
         justify-content: space-around;
         align-content: space-around;
 }
@@ -121,13 +122,15 @@ body {
         display: block;
 }
 
-/* Airbrush chooser - 3 spray pattern options in a row */
+/* Airbrush chooser - 3 spray pattern options stacked vertically */
+/* Each option ~24px wide × 23px tall, displayed in column to fit 41px container */
 .choose-airbrush-size {
         display: flex;
-        flex-flow: row wrap;
-        width: 72px;
-        justify-content: center;
-        align-content: flex-start;
+        flex-flow: column;
+        width: 100%;
+        max-width: 39px;
+        align-items: center;
+        justify-content: space-around;
 }
 
 .choose-airbrush-size .chooser-option {

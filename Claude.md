@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-MCPaint is a pixel-perfect MS Paint clone web application with both legacy jQuery (`/old/`) and modern React (`/new/`) versions. The React version uses Vite, Zustand for state management, and IndexedDB for persistence. Based on [jspaint.app](https://jspaint.app), it recreates every tool and menu of MS Paint with high fidelity.
+MCPaint is a pixel-perfect MS Paint clone web application with both legacy jQuery (`/old/`) and modern React (`/new/`) versions. The React version uses Vite with React Compiler enabled, Zustand for state management, and IndexedDB for persistence. Based on [jspaint.app](https://jspaint.app), it recreates every tool and menu of MS Paint with high fidelity. Deployed on Vercel with Edge Functions for AI features.
 
 ## Commands
 
@@ -36,6 +36,12 @@ npm run test:update-snapshots             # Update visual snapshots
 #   tests/dialogs/  - Dialog-specific tests (about, attributes, flip-rotate, etc.)
 #   tests/tools/    - Tool-specific test helpers
 #   tests/utils/    - Shared test utilities
+
+# Localization
+npm run update-localization  # Preprocess Windows .rc files to JSON
+
+# Code statistics
+npm run sloc                 # Compare legacy vs React implementation line counts
 ```
 
 ## Architecture
@@ -87,7 +93,7 @@ useCanvasEventHandlers({ canvasRef, drawingOps, shapeOps, selectionOps, ... });
 
 **Dialogs** - Portal-based in `src/react/components/dialogs/`. Rendered via `DialogManager` component based on `uiStore.dialogs` state.
 
-**i18n** - Uses i18next with JSON translations in `/public/locales/` (one `translation.json` per language). The `/localization/` directory contains legacy Windows .rc resource files used as source material. All UI text uses `useTranslation()` hook. 26 languages supported including RTL (Arabic, Hebrew).
+**i18n** - Uses i18next with JSON translations in `/public/locales/` (one `translation.json` per language). The `/localization/` directory contains legacy Windows .rc resource files used as source material; run `npm run update-localization` to regenerate JSON from .rc files. All UI text uses `useTranslation()` hook. 26 languages supported including RTL (Arabic, Hebrew).
 
 ### Legacy jQuery App (`src/` root-level `.js` files)
 
@@ -108,28 +114,39 @@ Vite multi-page app (`vite.config.js`) with React Compiler enabled (`babel-plugi
 
 ### AI Integration
 
-**Architecture** - Natural language canvas control via Claude API with Server-Sent Events (SSE):
+Natural language canvas control via Claude API with Server-Sent Events (SSE). See [docs/AI.md](docs/AI.md) for full command specifications.
+
+**Architecture**:
 - `api/ai/draw.ts` - Vercel Edge Function proxying Claude API with tool calling
 - `src/react/services/aiService.ts` - SSE client handling streaming responses
 - `src/react/hooks/useCommandExecutor.ts` - Maps AI commands to drawing utilities
 - `src/react/hooks/useAIChat.ts` - Combines store, service, and command execution
-- `src/react/components/ai/` - Chat UI components (AIChatPanel, MessageList, ChatInput, etc.)
+- `src/react/components/ai/` - Chat UI components (AIChatPanel, MessageList, ChatInput)
 
-**Command Types** (`src/react/types/ai.ts`) - 30+ drawing commands including:
-- Drawing: `pencil`, `brush`, `airbrush`, `eraser`, `line`, `curve`, `rectangle`, `ellipse`, `polygon`, `rounded_rectangle`
-- Tools: `fill`, `text`, `eyedropper`, `magnifier`
-- Selection: `select_rectangle`, `select_free_form`, `select_all`, `move_selection`, `copy`, `paste`, `clear_selection`
-- Transforms: `flip_horizontal`, `flip_vertical`, `rotate`, `stretch`, `skew`, `invert_colors`
-- Canvas: `clear_canvas`, `resize_canvas`, `crop_to_selection`
-- State: `set_color`, `set_brush_size`, `set_tool`, `undo`, `redo`
-- Batch: `batch_shapes` (multiple shapes in one command)
+**50+ Drawing Commands** including pencil, brush, shapes, selection, transforms, canvas operations, color management, and batch operations for complex drawings.
 
 **Environment Variables**:
 ```env
 ANTHROPIC_API_KEY=sk-ant-...  # Required for AI features
 ```
 
-**Access**: View > AI Assistant (or toggle via menu)
+**Access**: View > AI Assistant
+
+## Testing
+
+Playwright tests run against the React app at `http://localhost:11822/new/`. The test server starts automatically.
+
+**Writing Tests**:
+- Place new tests in `tests/` or `tests/dialogs/` for dialog-specific tests
+- Use helpers from `tests/utils/` (e.g., `canvasUtils.ts` for canvas interactions)
+- Tests support visual snapshots with `toHaveScreenshot()` (max 100 pixel diff allowed)
+- Run `npm run test:update-snapshots` after intentional visual changes
+
+**Test Configuration** (`playwright.config.ts`):
+- Chromium only (no Firefox/Safari)
+- 30s test timeout, 10s expect timeout
+- Screenshots/video captured on failure
+- Parallel execution locally, sequential on CI
 
 ## Code Conventions
 
