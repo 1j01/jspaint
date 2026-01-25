@@ -600,10 +600,10 @@
 	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}...",
 	"AI Assistant": "AI asistent",
 	"Clear chat": "Clear chat",
-	"Clear": "Clear",
+	"Clear": "Vymazať",
 	"Hide panel": "Hide panel",
 	"Hide AI panel": "Hide AI panel",
 	"Ask the AI to draw something!": "Ask the AI to draw something!",
 	"Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Try: \"Draw a red circle\" or \"Fill the canvas with blue\"",
-	"Describe what you want to draw...": "Describe what you want to draw..."
+	"Describe what you want to draw...": "Popíšte, čo chcete nakresliť..."
 }

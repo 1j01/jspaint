@@ -26,6 +26,8 @@ interface UseHelpNavigationReturn {
 	handleIframeLoad: (url: string) => void;
 	/** Mark next load as internal (from back/forward) */
 	markInternalNavigation: () => void;
+	/** Reset history with a new initial URL */
+	reset: (newInitialUrl: string) => void;
 }
 
 export function useHelpNavigation(options: UseHelpNavigationOptions): UseHelpNavigationReturn {
@@ -108,6 +110,16 @@ export function useHelpNavigation(options: UseHelpNavigationOptions): UseHelpNav
 		isInternalNavigationRef.current = true;
 	}, []);
 
+	/**
+	 * Reset history with a new initial URL.
+	 * Used when switching languages to start fresh.
+	 */
+	const reset = useCallback((newInitialUrl: string) => {
+		setHistory([newInitialUrl]);
+		setCurrentIndex(0);
+		isInternalNavigationRef.current = false;
+	}, []);
+
 	return {
 		currentUrl,
 		navigate,
@@ -117,6 +129,7 @@ export function useHelpNavigation(options: UseHelpNavigationOptions): UseHelpNav
 		canGoForward,
 		handleIframeLoad,
 		markInternalNavigation,
+		reset,
 	};
 }
 

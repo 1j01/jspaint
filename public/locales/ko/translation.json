@@ -564,6 +564,7 @@
 	"Forward": "앞으로",
 	"Options": "옵션",
 	"Web Help": "웹 도움말",
+	"Help Content": "도움말 내용",
 	"&Open...": "&Open...",
 	"Save &As...": "Save &As...",
 	"&Load From URL...": "&Load From URL...",
@@ -612,10 +613,10 @@
 	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}...",
 	"AI Assistant": "AI 어시스턴트",
 	"Clear chat": "Clear chat",
-	"Clear": "Clear",
+	"Clear": "지우기",
 	"Hide panel": "Hide panel",
 	"Hide AI panel": "Hide AI panel",
 	"Ask the AI to draw something!": "Ask the AI to draw something!",
 	"Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Try: \"Draw a red circle\" or \"Fill the canvas with blue\"",
-	"Describe what you want to draw...": "Describe what you want to draw..."
+	"Describe what you want to draw...": "그리고 싶은 것을 설명하세요..."
 }

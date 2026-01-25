@@ -567,6 +567,7 @@
 	"Forward": "前进",
 	"Options": "选项",
 	"Web Help": "网络帮助",
+	"Help Content": "帮助内容",
 	"&Open...": "&Open...",
 	"Save &As...": "Save &As...",
 	"&Load From URL...": "&Load From URL...",
@@ -615,10 +616,10 @@
 	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}...",
 	"AI Assistant": "AI 助手",
 	"Clear chat": "Clear chat",
-	"Clear": "Clear",
+	"Clear": "清除",
 	"Hide panel": "Hide panel",
 	"Hide AI panel": "Hide AI panel",
 	"Ask the AI to draw something!": "Ask the AI to draw something!",
 	"Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Try: \"Draw a red circle\" or \"Fill the canvas with blue\"",
-	"Describe what you want to draw...": "Describe what you want to draw..."
+	"Describe what you want to draw...": "描述您想要绘制的内容..."
 }

@@ -566,6 +566,7 @@
 	"Forward": "進む",
 	"Options": "オプション",
 	"Web Help": "Webヘルプ",
+	"Help Content": "ヘルプ コンテンツ",
 	"&Open...": "&Open...",
 	"Save &As...": "Save &As...",
 	"&Load From URL...": "&Load From URL...",
@@ -614,10 +615,10 @@
 	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}...",
 	"AI Assistant": "AIアシスタント",
 	"Clear chat": "Clear chat",
-	"Clear": "Clear",
+	"Clear": "クリア",
 	"Hide panel": "Hide panel",
 	"Hide AI panel": "Hide AI panel",
 	"Ask the AI to draw something!": "Ask the AI to draw something!",
 	"Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Try: \"Draw a red circle\" or \"Fill the canvas with blue\"",
-	"Describe what you want to draw...": "Describe what you want to draw..."
+	"Describe what you want to draw...": "描きたいものを説明してください..."
 }

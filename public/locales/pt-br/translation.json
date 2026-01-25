@@ -540,6 +540,7 @@
 	"Forward": "Avançar",
 	"Options": "Opções",
 	"Web Help": "Ajuda na Web",
+	"Help Content": "Conteúdo da ajuda",
 	"&Open...": "&Open...",
 	"Save &As...": "Save &As...",
 	"&Load From URL...": "&Load From URL...",
@@ -589,10 +590,10 @@
 	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}...",
 	"AI Assistant": "Assistente IA",
 	"Clear chat": "Clear chat",
-	"Clear": "Clear",
+	"Clear": "Limpar",
 	"Hide panel": "Hide panel",
 	"Hide AI panel": "Hide AI panel",
 	"Ask the AI to draw something!": "Ask the AI to draw something!",
 	"Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Try: \"Draw a red circle\" or \"Fill the canvas with blue\"",
-	"Describe what you want to draw...": "Describe what you want to draw..."
+	"Describe what you want to draw...": "Descreva o que você quer desenhar..."
 }

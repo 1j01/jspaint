@@ -198,6 +198,7 @@
 	"Forward": "Forward",
 	"Options": "Options",
 	"Web Help": "Web Help",
+	"Help Content": "Help Content",
 
 	"&File": "&File",
 	"&New": "&New",
@@ -338,5 +339,14 @@
 	"Send": "Send",
 
 	"{{count}} command executed_one": "{{count}} command executed",
-	"{{count}} command executed_other": "{{count}} commands executed"
+	"{{count}} command executed_other": "{{count}} commands executed",
+
+	"Something went wrong:": "Something went wrong:",
+	"Font settings": "Font settings",
+	"Font size in points": "Font size in points",
+	"Local font access denied or unavailable.": "Local font access denied or unavailable.",
+	"Using {{count}} font_one": "Using {{count}} font.",
+	"Using {{count}} font_other": "Using {{count}} fonts.",
+	"Font family": "Font family",
+	"Font size": "Font size"
 }

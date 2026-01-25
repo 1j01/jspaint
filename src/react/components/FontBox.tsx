@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState, Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 import { Component } from "./Component";
 
 // Extend Window interface for Local Font Access API
@@ -115,6 +116,7 @@ export function FontBox({
 	defaultFormatting,
 	onChange,
 }: FontBoxProps) {
+	const { t } = useTranslation();
 	const [availableFonts, setAvailableFonts] = useState(() => ensureFonts(fontsProp));
 	const [family, setFamily] = useState(defaultFamily);
 	const [size, setSize] = useState(defaultSize);
@@ -210,10 +212,10 @@ export function FontBox({
 	}, []);
 
 	return (
-		<Component title="Fonts" className="font-box-component" orientation="tall">
-			<form className="font-box" aria-label="Font settings" onSubmit={(event) => event.preventDefault()}>
+		<Component title={t("Fonts")} className="font-box-component" orientation="tall">
+			<form className="font-box" aria-label={t("Font settings")} onSubmit={(event) => event.preventDefault()}>
 				<label className="sr-only" htmlFor="font-family-select">
-					Font family
+					{t("Font family")}
 				</label>
 				<select
 					id="font-family-select"
@@ -229,7 +231,7 @@ export function FontBox({
 					))}
 				</select>
 				<label className="sr-only" htmlFor="font-size-input">
-					Font size
+					{t("Font size")}
 				</label>
 				<input
 					id="font-size-input"
@@ -238,9 +240,9 @@ export function FontBox({
 					max={200}
 					value={size}
 					onChange={(event) => setSize(Number(event.target.value) || defaultSize)}
-					aria-label="Font size in points"
+					aria-label={t("Font size in points")}
 				/>
-				<div className="font-style-toggles" role="toolbar" aria-label="Text formatting">
+				<div className="font-style-toggles" role="toolbar" aria-label={t("Text formatting")}>
 					<button
 						type="button"
 						className={bold ? "active" : ""}
@@ -277,9 +279,9 @@ export function FontBox({
 				</div>
 				<p id="font-family-status" className="font-status" aria-live="polite">
 					{loadingFonts
-						? "Loading fonts…"
-						: (fontError ??
-							`Using ${availableFonts.length} font${availableFonts.length === 1 ? "" : "s"}.`)}
+						? t("Loading fonts...")
+						: (fontError ? t(fontError) :
+							t("Using {{count}} font", { count: availableFonts.length }))}
 				</p>
 			</form>
 		</Component>

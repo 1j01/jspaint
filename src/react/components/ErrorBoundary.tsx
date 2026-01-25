@@ -1,4 +1,5 @@
 import { Component as ReactComponent, ErrorInfo, ReactNode } from "react";
+import i18n from "i18next";
 
 /**
  * Props for ErrorBoundary component
@@ -78,7 +79,7 @@ export class ErrorBoundary extends ReactComponent<ErrorBoundaryProps, ErrorBound
 		if (this.state.hasError) {
 			return (
 				<div style={{ padding: 20, color: "red", background: "white" }}>
-					<h2>Something went wrong:</h2>
+					<h2>{i18n.t("Something went wrong:")}</h2>
 					<pre>{this.state.error?.message}</pre>
 					<pre>{this.state.error?.stack}</pre>
 				</div>

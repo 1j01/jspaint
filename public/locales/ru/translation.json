@@ -549,6 +549,7 @@
 	"Forward": "Вперёд",
 	"Options": "Параметры",
 	"Web Help": "Справка в Интернете",
+	"Help Content": "Содержимое справки",
 	"&Open...": "&Open...",
 	"Save &As...": "Save &As...",
 	"&Load From URL...": "&Load From URL...",
@@ -597,10 +598,10 @@
 	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}...",
 	"AI Assistant": "ИИ-ассистент",
 	"Clear chat": "Clear chat",
-	"Clear": "Clear",
+	"Clear": "Очистить",
 	"Hide panel": "Hide panel",
 	"Hide AI panel": "Hide AI panel",
 	"Ask the AI to draw something!": "Ask the AI to draw something!",
 	"Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Try: \"Draw a red circle\" or \"Fill the canvas with blue\"",
-	"Describe what you want to draw...": "Describe what you want to draw..."
+	"Describe what you want to draw...": "Опишите, что вы хотите нарисовать..."
 }

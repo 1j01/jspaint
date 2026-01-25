@@ -3,6 +3,7 @@
  * Displays help pages in an isolated iframe.
  */
 import React, { useRef, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 export interface HelpContentProps {
 	/** URL to display */
@@ -21,6 +22,7 @@ export function HelpContent({
 	onLoad,
 	windowRef,
 }: HelpContentProps) {
+	const { t } = useTranslation();
 	const iframeRef = useRef<HTMLIFrameElement>(null);
 
 	// Construct full URL
@@ -127,7 +129,7 @@ export function HelpContent({
 			className="help-content-iframe inset-deep"
 			src={fullSrc}
 			onLoad={handleLoad}
-			title="Help Content"
+			title={t("Help Content")}
 			name="help-frame"
 			sandbox="allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-modals allow-popups"
 			style={{
