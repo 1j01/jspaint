@@ -203,7 +203,7 @@ function AppContent() {
 		[selectedToolId],
 	);
 
-	const statusMessage = hoveredTool?.description ?? activeTool?.description ?? DEFAULT_STATUS_TEXT;
+	const statusMessage = t(hoveredTool?.description ?? activeTool?.description ?? DEFAULT_STATUS_TEXT);
 
 	// Use dialog handlers hook
 	const dialogHandlers = useDialogHandlers({

@@ -14,6 +14,7 @@
  */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { parseHelpContents, type HelpItem } from "../../utils/helpParser";
 import { useDraggable } from "../../hooks/useDraggable";
 import { useResizable } from "../../hooks/useResizable";
@@ -34,6 +35,7 @@ const DEFAULT_PAGE = "/help/default.html";
 const WEB_HELP_PAGE = "/help/online_support.htm";
 
 export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
+	const { t } = useTranslation();
 	const contentRef = useRef<HTMLDivElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement>(null);
 	const contentsListRef = useRef<HTMLUListElement>(null);
@@ -285,25 +287,25 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 					alt=""
 				/>
 				<div className="window-title-area">
-					<span className="window-title">Paint Help</span>
+					<span className="window-title">{t("Paint Help")}</span>
 				</div>
 				<button
 					className="window-minimize-button window-action-minimize window-button"
-					aria-label="Minimize window"
+					aria-label={t("Minimize window")}
 					onClick={handleMinimize}
 				>
 					<span className="window-button-icon"></span>
 				</button>
 				<button
 					className="window-maximize-button window-action-maximize window-button"
-					aria-label="Maximize or restore window"
+					aria-label={t("Maximize or restore window")}
 					onClick={handleMaximize}
 				>
 					<span className="window-button-icon"></span>
 				</button>
 				<button
 					className="window-close-button window-action-close window-button"
-					aria-label="Close window"
+					aria-label={t("Close window")}
 					onClick={onClose}
 				>
 					<span className="window-button-icon"></span>
@@ -315,23 +317,23 @@ export function HelpWindow({ isOpen, onClose }: HelpWindowProps) {
 				{/* Toolbar */}
 				<div className="toolbar">
 					<button className="lightweight" onClick={handleToggleSidebar}>
-						<span>{sidebarVisible ? "Hide" : "Show"}</span>
+						<span>{sidebarVisible ? t("Hide") : t("Show")}</span>
 						<div className="icon" style={{ backgroundPosition: sidebarVisible ? "0px 0px" : "-275px 0px" }}></div>
 					</button>
 					<button className="lightweight" disabled={!canGoBack} onClick={goBack}>
-						<span>Back</span>
+						<span>{t("Back")}</span>
 						<div className="icon" style={{ backgroundPosition: "-55px 0px" }}></div>
 					</button>
 					<button className="lightweight" disabled={!canGoForward} onClick={goForward}>
-						<span>Forward</span>
+						<span>{t("Forward")}</span>
 						<div className="icon" style={{ backgroundPosition: "-110px 0px" }}></div>
 					</button>
 					<button className="lightweight" disabled>
-						<span>Options</span>
+						<span>{t("Options")}</span>
 						<div className="icon" style={{ backgroundPosition: "-165px 0px" }}></div>
 					</button>
 					<button className="lightweight" onClick={handleWebHelp}>
-						<span>Web Help</span>
+						<span>{t("Web Help")}</span>
 						<div className="icon" style={{ backgroundPosition: "-220px 0px" }}></div>
 					</button>
 				</div>

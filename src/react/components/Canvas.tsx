@@ -15,6 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useCursorPosition } from "../context/state/useCursorPosition";
 import { useHistory } from "../context/state/useHistory";
 import { useSelection } from "../context/state/useSelection";
@@ -56,6 +57,7 @@ import { CanvasResizeHandles } from "./CanvasResizeHandles";
  * @returns {JSX.Element} Canvas element with overlays and handles
  */
 export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObject<HTMLCanvasElement>; className?: string }) {
+	const { t } = useTranslation();
 	const { selectedToolId } = useTool();
 	const { saveState } = useHistory();
 	const { pushState: pushTreeState } = useTreeHistory();
@@ -297,7 +299,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 					eventHandlers.handlePointerLeave();
 				}}
 				onContextMenu={eventHandlers.handleContextMenu}
-				aria-label="Drawing canvas"
+				aria-label={t("Drawing canvas")}
 			/>
 			<CanvasOverlay ref={overlayRef} width={canvasWidth} height={canvasHeight} magnification={magnification} />
 			{currentSelection && (

@@ -12,6 +12,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
 
 /**
@@ -36,6 +37,7 @@ interface ThumbnailWindowProps {
  * @returns {JSX.Element | null} Window element or null if not visible
  */
 export function ThumbnailWindow({ visible, onClose, canvasRef }: ThumbnailWindowProps) {
+	const { t } = useTranslation();
 	const { canvasWidth, canvasHeight } = useCanvasDimensions();
 	const thumbnailCanvasRef = useRef<HTMLCanvasElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -167,9 +169,9 @@ export function ThumbnailWindow({ visible, onClose, canvasRef }: ThumbnailWindow
 			}}
 		>
 			<div className="title-bar">
-				<div className="title-bar-text">Thumbnail</div>
+				<div className="title-bar-text">{t("Thumbnail")}</div>
 				<div className="title-bar-controls">
-					<button aria-label="Close" onClick={onClose}></button>
+					<button aria-label={t("Close")} onClick={onClose}></button>
 				</div>
 			</div>
 			<div

@@ -3,6 +3,7 @@
  * Provides a scrollable container with auto-scroll on new messages.
  */
 import { useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { ChatMessage as ChatMessageType } from "../../types/ai";
 import { ChatMessage } from "./ChatMessage";
 import { StreamingMessage } from "./StreamingMessage";
@@ -26,6 +27,7 @@ export interface MessageListProps {
  * @returns {JSX.Element} The rendered message list
  */
 export function MessageList({ messages, streamContent, isStreaming }: MessageListProps) {
+  const { t } = useTranslation();
   const listRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new content arrives
@@ -65,8 +67,8 @@ export function MessageList({ messages, streamContent, isStreaming }: MessageLis
             padding: "20px",
           }}
         >
-          <div style={{ marginBottom: "8px" }}>Ask the AI to draw something!</div>
-          <div style={{ fontSize: "11px" }}>Try: "Draw a red circle in the center" or "Fill the canvas with blue"</div>
+          <div style={{ marginBottom: "8px" }}>{t("Ask the AI to draw something!")}</div>
+          <div style={{ fontSize: "11px" }}>{t("Try: \"Draw a red circle\" or \"Fill the canvas with blue\"")}</div>
         </div>
       ) : (
         <>

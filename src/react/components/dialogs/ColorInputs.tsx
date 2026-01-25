@@ -1,4 +1,5 @@
 import React, { RefObject } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ColorInputsProps {
 	resultCanvasRef: RefObject<HTMLCanvasElement>;
@@ -43,6 +44,7 @@ export function ColorInputs({
 	setSaturation,
 	setLuminosity,
 }: ColorInputsProps) {
+	const { t } = useTranslation();
 	const inputYSpacing = 22;
 
 	return (
@@ -70,7 +72,7 @@ export function ColorInputs({
 					top: 244,
 				}}
 			>
-				Color|Solid
+				{t("Color|Solid")}
 			</label>
 
 			{/* HSL inputs - column at left: 63 */}
@@ -86,7 +88,7 @@ export function ColorInputs({
 					lineHeight: "20px",
 				}}
 			>
-				Hue:
+				{t("Hue:")}
 			</label>
 			<input
 				type="text"
@@ -114,7 +116,7 @@ export function ColorInputs({
 					lineHeight: "20px",
 				}}
 			>
-				Sat:
+				{t("Sat:")}
 			</label>
 			<input
 				type="text"
@@ -142,7 +144,7 @@ export function ColorInputs({
 					lineHeight: "20px",
 				}}
 			>
-				Lum:
+				{t("Lum:")}
 			</label>
 			<input
 				type="text"
@@ -171,7 +173,7 @@ export function ColorInputs({
 					lineHeight: "20px",
 				}}
 			>
-				Red:
+				{t("Red:")}
 			</label>
 			<input
 				type="text"
@@ -199,7 +201,7 @@ export function ColorInputs({
 					lineHeight: "20px",
 				}}
 			>
-				Green:
+				{t("Green:")}
 			</label>
 			<input
 				type="text"
@@ -227,7 +229,7 @@ export function ColorInputs({
 					lineHeight: "20px",
 				}}
 			>
-				Blue:
+				{t("Blue:")}
 			</label>
 			<input
 				type="text"
@@ -249,7 +251,7 @@ export function ColorInputs({
 				type="button"
 				onClick={onAddToCustomColors}
 			>
-				Add To Custom Colors
+				{t("Add To Custom Colors")}
 			</button>
 		</>
 	);

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useBrushSettings } from "../context/state/useBrushSettings";
 import { useShapeSettings } from "../context/state/useShapeSettings";
 import { useTool } from "../context/state/useTool";
@@ -40,6 +41,7 @@ interface ToolOptionsProps {
  * </ToolBox>
  */
 export function ToolOptions({ className = "" }: ToolOptionsProps) {
+	const { t } = useTranslation();
 	const { selectedToolId } = useTool();
 	const { brushSize, brushShape, eraserSize, airbrushSize, setBrushSize, setBrushShape, setEraserSize, setAirbrushSize } =
 		useBrushSettings();
@@ -79,7 +81,7 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 
 	// Always use tool-options class for proper legacy CSS styling
 	return (
-		<div className={`tool-options ${className}`} role="toolbar" aria-label="Tool options">
+		<div className={`tool-options ${className}`} role="toolbar" aria-label={t("Tool options")}>
 			{hasOptions && (
 				<>
 					{showFillStyle && <FillStyleOptions fillStyle={fillStyle} onFillStyleChange={setFillStyle} />}

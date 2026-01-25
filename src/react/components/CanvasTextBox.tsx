@@ -1,4 +1,5 @@
 import React, { forwardRef, CSSProperties, ChangeEvent, KeyboardEvent, FocusEvent, useCallback, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { TextBoxState } from "../context/state/types";
 import { useSettingsStore } from "../context/state/settingsStore";
 import { useTextCanvasPreview, LINE_SCALE } from "../hooks/useTextCanvasPreview";
@@ -71,6 +72,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 	{ textBox, magnification, primaryColor, secondaryColor, onChange, onKeyDown, onBlur, onMove, onResize },
 	ref,
 ) {
+	const { t } = useTranslation();
 	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
 
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -239,7 +241,7 @@ export const CanvasTextBox = forwardRef<HTMLTextAreaElement, CanvasTextBoxProps>
 				onKeyDown={onKeyDown}
 				onBlur={onBlur}
 				style={textareaStyle}
-				aria-label="Text input"
+				aria-label={t("Text input")}
 				autoFocus
 			/>
 

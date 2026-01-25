@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
 interface HistoryDialogProps {
@@ -19,6 +20,7 @@ export function HistoryDialog({
 	redoStack,
 	onGoToState,
 }: HistoryDialogProps) {
+	const { t } = useTranslation();
 	// Current state is between undo and redo stacks
 	const currentIndex = undoStack.length;
 	const totalStates = undoStack.length + 1 + redoStack.length;
@@ -70,13 +72,13 @@ export function HistoryDialog({
 				<div className="history-state-thumbnail inset-deep">
 					<img
 						src={dataUrl}
-						alt={`State ${index}`}
+						alt={t("State {{index}}", { index })}
 						className="history-state-image"
 					/>
 				</div>
 				<div className="history-state-info">
 					<div className="history-state-name">
-						{isCurrent ? "Current State" : `State ${index}`}
+						{isCurrent ? t("Current State") : t("State {{index}}", { index })}
 					</div>
 					<div className="history-state-dimensions">
 						{imageData.width} × {imageData.height}
@@ -87,17 +89,17 @@ export function HistoryDialog({
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title="Document History" className="dialog-window history-linear-window">
+		<Dialog isOpen={isOpen} onClose={onClose} title={t("Document History")} className="dialog-window history-linear-window">
 			<div className="history-linear-content">
 				<p className="history-linear-status">
-					Click on a state to jump to that point in history. Current state: <strong>{currentIndex}</strong> of{" "}
+					{t("Click on a state to jump to that point in history. Current state:")} <strong>{currentIndex}</strong> {t("of")}{" "}
 					<strong>{totalStates - 1}</strong>
 				</p>
 
 				<div className="history-linear-list inset-deep">
 					{totalStates === 1 ? (
 						<p className="history-linear-empty">
-							<em>No history available. Make some changes to see them here!</em>
+							<em>{t("No history available. Make some changes to see them here!")}</em>
 						</p>
 					) : (
 						<>
@@ -120,12 +122,11 @@ export function HistoryDialog({
 				</div>
 
 				<p className="history-linear-note">
-					<strong>Note:</strong> This is a simplified linear history view. The full version supports branching
-					history trees.
+					<strong>{t("Note:")}</strong> {t("This is a simplified linear history view. The full version supports branching history trees.")}
 				</p>
 
 				<DialogButtons>
-					<button type="button" onClick={onClose}>Close</button>
+					<button type="button" onClick={onClose}>{t("Close")}</button>
 				</DialogButtons>
 			</div>
 		</Dialog>

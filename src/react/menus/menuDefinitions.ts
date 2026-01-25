@@ -35,6 +35,8 @@ export interface MenuActions {
 	fileUploadToImgur: () => void;
 	fileManageStorage: () => void;
 	filePrint: () => void;
+	fileSetWallpaperTiled: () => void;
+	fileSetWallpaperCentered: () => void;
 	fileExit: () => void;
 
 	// Edit menu
@@ -178,14 +180,12 @@ export function createMenus(actions: MenuActions, t: (key: string) => string = (
 			{
 				label: t("Set As &Wallpaper (Tiled)"),
 				description: t("Tiles this bitmap as the desktop background."),
-				disabled: true,
-				action: () => {},
+				action: actions.fileSetWallpaperTiled,
 			},
 			{
 				label: t("Set As Wallpaper (&Centered)"),
 				description: t("Centers this bitmap as the desktop background."),
-				disabled: true,
-				action: () => {},
+				action: actions.fileSetWallpaperCentered,
 			},
 			MENU_DIVIDER,
 			{
@@ -507,6 +507,8 @@ export function createStubActions(): MenuActions {
 		fileUploadToImgur: stub("File > Upload To Imgur"),
 		fileManageStorage: stub("File > Manage Storage"),
 		filePrint: stub("File > Print"),
+		fileSetWallpaperTiled: stub("File > Set As Wallpaper (Tiled)"),
+		fileSetWallpaperCentered: stub("File > Set As Wallpaper (Centered)"),
 		fileExit: stub("File > Exit"),
 
 		// Edit menu

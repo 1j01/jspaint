@@ -20,6 +20,8 @@ export interface FileMenuActions {
 	fileUploadToImgur: () => void;
 	fileManageStorage: () => void;
 	filePrint: () => void;
+	fileSetWallpaperTiled: () => void;
+	fileSetWallpaperCentered: () => void;
 	fileExit: () => void;
 }
 
@@ -126,6 +128,68 @@ export function useFileMenuActions(params: UseFileMenuActionsParams): FileMenuAc
 		}
 	}, []);
 
+	/**
+	 * Downloads the canvas image as a wallpaper file
+	 * @param {HTMLCanvasElement} sourceCanvas - The canvas to save
+	 * @param {string} suffix - Suffix for the filename (e.g., "tiled" or "centered")
+	 */
+	const downloadWallpaper = useCallback((sourceCanvas: HTMLCanvasElement, suffix: string) => {
+		const link = document.createElement("a");
+		link.download = `wallpaper-${suffix}.png`;
+		link.href = sourceCanvas.toDataURL("image/png");
+		link.click();
+	}, []);
+
+	/**
+	 * Creates a tiled wallpaper by repeating the canvas pattern to fill screen dimensions
+	 */
+	const fileSetWallpaperTiled = useCallback(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		// Create a canvas sized to the screen dimensions
+		const wallpaperCanvas = document.createElement("canvas");
+		wallpaperCanvas.width = window.screen.width;
+		wallpaperCanvas.height = window.screen.height;
+		const ctx = wallpaperCanvas.getContext("2d");
+		if (!ctx) return;
+
+		// Create a repeating pattern from the source canvas
+		const pattern = ctx.createPattern(canvas, "repeat");
+		if (pattern) {
+			ctx.fillStyle = pattern;
+			ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
+		}
+
+		downloadWallpaper(wallpaperCanvas, "tiled");
+	}, [canvasRef, downloadWallpaper]);
+
+	/**
+	 * Creates a centered wallpaper with the canvas centered on a background
+	 */
+	const fileSetWallpaperCentered = useCallback(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		// Create a canvas sized to the screen dimensions
+		const wallpaperCanvas = document.createElement("canvas");
+		wallpaperCanvas.width = window.screen.width;
+		wallpaperCanvas.height = window.screen.height;
+		const ctx = wallpaperCanvas.getContext("2d");
+		if (!ctx) return;
+
+		// Fill background with a neutral color (dark teal like classic Windows)
+		ctx.fillStyle = "#008080";
+		ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
+
+		// Center the canvas image
+		const x = Math.floor((wallpaperCanvas.width - canvas.width) / 2);
+		const y = Math.floor((wallpaperCanvas.height - canvas.height) / 2);
+		ctx.drawImage(canvas, x, y);
+
+		downloadWallpaper(wallpaperCanvas, "centered");
+	}, [canvasRef, downloadWallpaper]);
+
 	return {
 		fileNew,
 		fileOpen,
@@ -135,6 +199,8 @@ export function useFileMenuActions(params: UseFileMenuActionsParams): FileMenuAc
 		fileUploadToImgur,
 		fileManageStorage,
 		filePrint,
+		fileSetWallpaperTiled,
+		fileSetWallpaperCentered,
 		fileExit,
 	};
 }

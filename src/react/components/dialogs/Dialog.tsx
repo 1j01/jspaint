@@ -5,6 +5,7 @@
  */
 import React, { useEffect, useRef, useCallback, ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { useDraggable } from "../../hooks/useDraggable";
 
 export interface DialogProps {
@@ -35,6 +36,7 @@ export function Dialog({
 	modal = false,
 	className,
 }: DialogProps) {
+	const { t } = useTranslation();
 	const previousActiveElement = useRef<Element | null>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 
@@ -130,7 +132,7 @@ export function Dialog({
 				{showCloseButton && (
 					<button
 						className="window-close-button window-action-close window-button"
-						aria-label="Close"
+						aria-label={t("Close")}
 						onClick={(e) => {
 							e.stopPropagation();
 							onClose();

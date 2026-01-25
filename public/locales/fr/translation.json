@@ -456,5 +456,10 @@
   "Hide AI panel": "Masquer le panneau IA",
   "Type a message...": "Tapez un message...",
   "Send": "Envoyer",
-  "Stop": "Arrêter"
+  "Stop": "Arrêter",
+  "Describe what you want to draw...": "Décrivez ce que vous voulez dessiner...",
+  "Press Esc to cancel": "Appuyez sur Échap pour annuler",
+  "Ctrl+Enter to send": "Ctrl+Entrée pour envoyer",
+  "Ask the AI to draw something!": "Demandez à l'IA de dessiner quelque chose !",
+  "Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Essayez : \"Dessine un cercle rouge\" ou \"Remplis le canevas en bleu\""
 }

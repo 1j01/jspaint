@@ -11,6 +11,7 @@
  */
 import React, { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { useDraggable } from "../hooks/useDraggable";
 import { useSystemFonts } from "../hooks/useSystemFonts";
 import { useFontFallback } from "../hooks/useFontFallback";
@@ -76,6 +77,7 @@ export function FontBoxWindow({
 	textBoxRect,
 	magnification = 1,
 }: FontBoxWindowProps) {
+	const { t } = useTranslation();
 	const { fonts: availableFonts, loading: loadingFonts } = useSystemFonts();
 	const windowRef = useRef<HTMLDivElement>(null);
 	const [sizeInput, setSizeInput] = React.useState(fontState.size.toString());
@@ -216,15 +218,15 @@ export function FontBoxWindow({
 			className="font-box-window window os-window tool-window focused"
 			style={windowStyle}
 			role="dialog"
-			aria-label="Fonts"
+			aria-label={t("Fonts")}
 		>
 			<div className="window-titlebar" {...handleProps}>
 				<div className="window-title-area">
-					<span className="window-title">Fonts</span>
+					<span className="window-title">{t("Fonts")}</span>
 				</div>
 				<button
 					className="window-close-button window-action-close window-button"
-					aria-label="Close"
+					aria-label={t("Close")}
 					onClick={(e) => {
 						e.stopPropagation();
 						onClose();
@@ -239,7 +241,7 @@ export function FontBoxWindow({
 					{/* Font Family Dropdown */}
 					{loadingFonts ? (
 						<div className="font-family-select inset-deep" style={{ padding: "2px 4px", height: "21px" }}>
-							Loading fonts...
+							{t("Loading fonts...")}
 						</div>
 					) : (
 						<SelectWin98
@@ -251,7 +253,7 @@ export function FontBoxWindow({
 								label: font,
 								style: { fontFamily: font },
 							}))}
-							aria-label="Font Family"
+							aria-label={t("Font Family")}
 						/>
 					)}
 
@@ -264,19 +266,19 @@ export function FontBoxWindow({
 						onBlur={handleSizeBlur}
 						min={8}
 						max={72}
-						aria-label="Font Size"
+						aria-label={t("Font Size")}
 						style={{ maxWidth: 50 }}
 					/>
 
 					{/* Formatting Toggle Buttons */}
-					<div className="font-style-toggles" role="toolbar" aria-label="Text formatting">
+					<div className="font-style-toggles" role="toolbar" aria-label={t("Text formatting")}>
 						<button
 							type="button"
 							className={`toggle ${fontState.bold ? "selected" : ""}`}
 							onClick={toggleBold}
 							aria-pressed={fontState.bold}
-							aria-label="Bold"
-							title="Bold"
+							aria-label={t("Bold")}
+							title={t("Bold")}
 						>
 							<span className="icon" style={{ "--icon-index": 0 } as React.CSSProperties}></span>
 						</button>
@@ -285,8 +287,8 @@ export function FontBoxWindow({
 							className={`toggle ${fontState.italic ? "selected" : ""}`}
 							onClick={toggleItalic}
 							aria-pressed={fontState.italic}
-							aria-label="Italic"
-							title="Italic"
+							aria-label={t("Italic")}
+							title={t("Italic")}
 						>
 							<span className="icon" style={{ "--icon-index": 1 } as React.CSSProperties}></span>
 						</button>
@@ -295,8 +297,8 @@ export function FontBoxWindow({
 							className={`toggle ${fontState.underline ? "selected" : ""}`}
 							onClick={toggleUnderline}
 							aria-pressed={fontState.underline}
-							aria-label="Underline"
-							title="Underline"
+							aria-label={t("Underline")}
+							title={t("Underline")}
 						>
 							<span className="icon" style={{ "--icon-index": 2 } as React.CSSProperties}></span>
 						</button>
@@ -305,8 +307,8 @@ export function FontBoxWindow({
 							className={`toggle ${fontState.vertical ? "selected" : ""}`}
 							onClick={toggleVertical}
 							aria-pressed={fontState.vertical}
-							aria-label="Vertical Writing Mode"
-							title="Vertical Writing Mode (Far East fonts only)"
+							aria-label={t("Vertical Writing Mode")}
+							title={t("Vertical Writing Mode (Far East fonts only)")}
 						>
 							<span className="icon" style={{ "--icon-index": 3 } as React.CSSProperties}></span>
 						</button>

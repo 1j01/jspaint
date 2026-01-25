@@ -33,11 +33,13 @@ export function ChatInput({
   onCancel,
   isStreaming,
   isExecuting,
-  placeholder = "Describe what you want to draw...",
+  placeholder,
 }: ChatInputProps) {
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isBusy = isStreaming || isExecuting;
+  const placeholderText = placeholder || t("Describe what you want to draw...");
 
   /**
    * Handle sending the message
@@ -91,7 +93,7 @@ export function ChatInput({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={placeholder}
+        placeholder={placeholderText}
         disabled={isBusy}
         rows={3}
         style={{
@@ -122,7 +124,7 @@ export function ChatInput({
               minWidth: "70px",
             }}
           >
-            Cancel
+            {t("Cancel")}
           </button>
         ) : (
           <button
@@ -133,7 +135,7 @@ export function ChatInput({
               minWidth: "70px",
             }}
           >
-            Send
+            {t("Send")}
           </button>
         )}
       </div>
@@ -146,7 +148,7 @@ export function ChatInput({
           textAlign: "right",
         }}
       >
-        {isBusy ? "Press Esc to cancel" : "Ctrl+Enter to send"}
+        {isBusy ? t("Press Esc to cancel") : t("Ctrl+Enter to send")}
       </div>
     </div>
   );
