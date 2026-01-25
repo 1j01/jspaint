@@ -159,7 +159,7 @@ export function ChatInput({
         className="chat-input-hint"
         style={{
           fontSize: "10px",
-          color: "#666666",
+          color: "#000000",
           marginTop: "2px",
           textAlign: "right",
         }}

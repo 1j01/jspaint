@@ -64,7 +64,7 @@ export function MessageList({ messages, streamContent, isStreaming }: MessageLis
             alignItems: "center",
             justifyContent: "center",
             height: "100%",
-            color: "#808080",
+            color: "#000000",
             fontSize: "12px",
             textAlign: "center",
             padding: "20px",

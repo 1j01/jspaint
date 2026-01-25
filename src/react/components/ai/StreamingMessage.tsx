@@ -41,7 +41,7 @@ export function StreamingMessage({ content, isStreaming }: StreamingMessageProps
         style={{
           fontSize: "10px",
           fontWeight: "bold",
-          color: "#008000",
+          color: "#000000",
           marginBottom: "2px",
           paddingLeft: "2px",
         }}

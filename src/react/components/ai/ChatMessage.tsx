@@ -41,7 +41,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         style={{
           fontSize: "10px",
           fontWeight: "bold",
-          color: isUser ? "#000080" : "#008000",
+          color: "#000000",
           marginBottom: "2px",
           paddingLeft: isUser ? "0" : "2px",
           paddingRight: isUser ? "2px" : "0",
@@ -72,7 +72,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           className="chat-message-commands"
           style={{
             fontSize: "10px",
-            color: "#808080",
+            color: "#000000",
             marginTop: "2px",
             fontStyle: "italic",
             paddingLeft: isUser ? "0" : "2px",
