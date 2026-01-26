@@ -11,6 +11,7 @@ import { useSettingsStore } from "../context/state/settingsStore";
 import { useToolStore } from "../context/state/toolStore";
 import { useHistoryStore } from "../context/state/historyStore";
 import { useUIStore } from "../context/state/uiStore";
+import { saveSetting } from "../context/state/persistence";
 import { commandRegistry, type CommandContext } from "./commandHandlers";
 
 /**
@@ -206,6 +207,28 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
       }
 
       console.log("[CommandExecutor] Execution complete, results:", results.length);
+
+      // Save canvas state AFTER all commands executed
+      // This is critical for persistence - the pre-execution save (above) is for undo,
+      // but we also need to save the final state to IndexedDB for page refresh persistence
+      const ctxAfter = getContext();
+      if (ctxAfter && !cancelledRef.current) {
+        const canvasAfter = ctxAfter.canvas;
+        const imageDataAfter = ctxAfter.getImageData(0, 0, canvasAfter.width, canvasAfter.height);
+
+        // Push final state to history tree for proper undo/redo
+        historyStore.getState().pushState(imageDataAfter, "AI Commands Complete");
+
+        // Persist to IndexedDB for page refresh persistence
+        const canvasData = {
+          data: Array.from(imageDataAfter.data),
+          width: imageDataAfter.width,
+          height: imageDataAfter.height,
+        };
+        saveSetting("savedCanvas", canvasData);
+        console.log("[CommandExecutor] Canvas state saved to IndexedDB");
+      }
+
       isExecutingRef.current = false;
       onComplete?.();
 

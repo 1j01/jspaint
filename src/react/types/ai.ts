@@ -160,18 +160,31 @@ export interface EraserCommand {
 
 /**
  * Line command - draws a straight line
+ * Supports two parameter formats for flexibility:
+ * - startX/startY/endX/endY (primary format)
+ * - x1/y1/x2/y2 (alternative format from AI)
  */
 export interface LineCommand {
   tool: "line";
   params: {
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
+    startX?: number;
+    startY?: number;
+    endX?: number;
+    endY?: number;
+    /** Alternative: start X coordinate */
+    x1?: number;
+    /** Alternative: start Y coordinate */
+    y1?: number;
+    /** Alternative: end X coordinate */
+    x2?: number;
+    /** Alternative: end Y coordinate */
+    y2?: number;
     /** Outline color */
     color?: string;
     /** Line thickness 1-5 */
     width?: number;
+    /** Alternative: line thickness */
+    lineWidth?: number;
   };
 }
 
