@@ -348,6 +348,7 @@
 	"Failed to open document.": "Nem sikerült a dokumentumot megnyitni.",
 	"Failed to save document.": "A dokumentum mentése nem sikerült.",
 	"Save changes to %1?": "Menti %1 módosításait?",
+	"Save changes to {{filename}}?": "Menti {{filename}} módosításait?",
 	"Failed to create empty document.": "Nem sikerült üres dokumentumot létrehozni.",
 	"The file is too large to open.": "A fájl túl nagy a megnyitáshoz.",
 	"Could not start print job.": "Nem lehetett elindítani a nyomtatási feladatot.",

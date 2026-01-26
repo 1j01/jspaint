@@ -350,6 +350,7 @@
 	"Failed to open document.": "Το άνοιγμα του εγγράφου απέτυχε.",
 	"Failed to save document.": "Η αποθήκευση του εγγράφου απέτυχε.",
 	"Save changes to %1?": "Να αποθηκευτούν οι αλλαγές στο %1;",
+	"Save changes to {{filename}}?": "Να αποθηκευτούν οι αλλαγές στο {{filename}};",
 	"Failed to create empty document.": "Η δημιουργία κενού εγγράφου απέτυχε.",
 	"The file is too large to open.": "Δεν είναι δυνατό να ανοιχτεί το αρχείο γιατί είναι υπερβολικά μεγάλο.",
 	"Could not start print job.": "Δεν είναι δυνατό να ξεκινήσει η εργασία εκτύπωσης.",

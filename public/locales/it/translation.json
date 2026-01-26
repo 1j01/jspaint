@@ -362,6 +362,7 @@
 	"Failed to open document.": "Impossibile aprire il documento.",
 	"Failed to save document.": "Impossibile salvare il documento.",
 	"Save changes to %1?": "Salvare le modifiche apportate a %1?",
+	"Save changes to {{filename}}?": "Salvare le modifiche apportate a {{filename}}?",
 	"Failed to create empty document.": "Impossibile creare un documento vuoto.",
 	"The file is too large to open.": "File troppo grande per essere aperto.",
 	"Could not start print job.": "Impossibile avviare il processo di stampa.",

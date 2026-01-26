@@ -352,6 +352,7 @@
 	"Failed to open document.": "‏‏פתיחת המסמך נכשלה.",
 	"Failed to save document.": "‏‏שמירת המסמך נכשלה.",
 	"Save changes to %1?": "‏‏האם לשמור שינויים ב- %1?",
+	"Save changes to {{filename}}?": "‏‏האם לשמור שינויים ב- {{filename}}?",
 	"Failed to create empty document.": "‏‏יצירת מסמך ריק נכשלה.",
 	"The file is too large to open.": "‏‏הקובץ גדול מכדי שניתן יהיה לפתוח אותו.",
 	"Could not start print job.": "‏‏הפעלת עבודת הדפסה לא הצליחה.",

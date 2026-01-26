@@ -348,6 +348,7 @@
 	"Failed to open document.": "Не удалось открыть документ.",
 	"Failed to save document.": "Не удалось сохранить документ.",
 	"Save changes to %1?": "Сохранить изменения в файле \"%1\"?",
+	"Save changes to {{filename}}?": "Сохранить изменения в файле \"{{filename}}\"?",
 	"Failed to create empty document.": "Не удалось создать новый документ.",
 	"The file is too large to open.": "Не удалось открыть слишком большой файл.",
 	"Could not start print job.": "Не удалось запустить задание на печать.",

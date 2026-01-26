@@ -366,6 +366,7 @@
 	"Failed to open document.": "문서를 열 수 없습니다.",
 	"Failed to save document.": "문서를 저장할 수 없습니다.",
 	"Save changes to %1?": "%1의 변경 사항을 저장하시겠습니까?",
+	"Save changes to {{filename}}?": "{{filename}}의 변경 사항을 저장하시겠습니까?",
 	"Failed to create empty document.": "빈 문서를 만들 수 없습니다.",
 	"The file is too large to open.": "파일이 너무 커서 열 수 없습니다.",
 	"Could not start print job.": "인쇄 작업을 시작할 수 없습니다.",

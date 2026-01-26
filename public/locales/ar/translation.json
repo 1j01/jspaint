@@ -351,6 +351,7 @@
 	"Failed to open document.": "‏‏فشل فتح المستند.",
 	"Failed to save document.": "‏‏فشل حفظ المستند.",
 	"Save changes to %1?": "‏‏حفظ التغييرات في %1؟",
+	"Save changes to {{filename}}?": "‏‏حفظ التغييرات في {{filename}}؟",
 	"Failed to create empty document.": "‏‏فشل إنشاء مستند فارغ.",
 	"The file is too large to open.": "‏‏الملف كبير جداً بحيث لا يمكن فتحه.",
 	"Could not start print job.": "‏‏تعذّر بدء مهمة الطباعة.",

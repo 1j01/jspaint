@@ -346,6 +346,7 @@
 	"Failed to open document.": "Dokumentet kunne ikke åbnes.",
 	"Failed to save document.": "Dokumentet kunne ikke gemmes.",
 	"Save changes to %1?": "Skal ændringerne i %1 gemmes?",
+	"Save changes to {{filename}}?": "Skal ændringerne i {{filename}} gemmes?",
 	"Failed to create empty document.": "Der kunne ikke oprettes et tomt dokument.",
 	"The file is too large to open.": "Filen er for stor til at åbne.",
 	"Could not start print job.": "Udskriftsjob kunne ikke startes.",

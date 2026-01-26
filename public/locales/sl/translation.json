@@ -349,6 +349,7 @@
 	"Failed to open document.": "Dokumenta ni bilo mogoče odpreti.",
 	"Failed to save document.": "Dokumenta ni bilo mogoče shraniti.",
 	"Save changes to %1?": "Ali želite shraniti spremembe v %1?",
+	"Save changes to {{filename}}?": "Ali želite shraniti spremembe v {{filename}}?",
 	"Failed to create empty document.": "Praznega dokumenta ni bilo mogoče ustvariti.",
 	"The file is too large to open.": "Datoteke ni mogoče odpreti, ker je prevelika.",
 	"Could not start print job.": "Tiskalnega posla ni bilo mogoče začeti.",

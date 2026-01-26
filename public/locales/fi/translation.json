@@ -358,6 +358,7 @@
 	"Failed to open document.": "Tiedoston avaaminen epäonnistui.",
 	"Failed to save document.": "Tiedoston tallentaminen epäonnistui.",
 	"Save changes to %1?": "Tallennetaanko tiedoston %1 muutokset?",
+	"Save changes to {{filename}}?": "Tallennetaanko tiedoston {{filename}} muutokset?",
 	"Failed to create empty document.": "Tyhjän tiedoston luominen epäonnistui.",
 	"The file is too large to open.": "Tiedosto on liian suuri avattavaksi.",
 	"Could not start print job.": "Tulostustyötä ei voi aloittaa.",

@@ -21,18 +21,47 @@ export const handleLine: CommandHandler = (command: DrawingCommand, context: Com
     return { command, status: "failed", error: "Invalid command type", duration: Date.now() - startTime };
   }
 
-  const { startX, startY, endX, endY, color, width } = command.params;
-  const drawColor = color || settings.primaryColor;
-  const lineWidth = width || settings.lineWidth;
+  // Support both parameter formats: {x1,y1,x2,y2} and {startX,startY,endX,endY}
+  const params = command.params;
+  const x1 = params.x1 ?? params.startX;
+  const y1 = params.y1 ?? params.startY;
+  const x2 = params.x2 ?? params.endX;
+  const y2 = params.y2 ?? params.endY;
+  const drawColor = params.color || settings.primaryColor;
+  const lineWidth = params.width || params.lineWidth || settings.lineWidth || 1;
+
+  console.log("[handleLine] Drawing line from", x1, y1, "to", x2, y2, "color:", drawColor, "width:", lineWidth);
+  console.log("[handleLine] Canvas dimensions:", ctx.canvas.width, "x", ctx.canvas.height);
+  console.log("[handleLine] Canvas in DOM:", document.body.contains(ctx.canvas));
+  console.log("[handleLine] Canvas class:", ctx.canvas.className);
+
+  // Sample pixel before drawing
+  const beforePixel = ctx.getImageData(x1, y1, 1, 1);
+  console.log("[handleLine] Pixel before drawing at", x1, y1, ":", Array.from(beforePixel.data));
 
   ctx.save();
   ctx.strokeStyle = drawColor;
   ctx.lineWidth = lineWidth;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = 1;
   ctx.beginPath();
-  ctx.moveTo(startX, startY);
-  ctx.lineTo(endX, endY);
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
   ctx.stroke();
   ctx.restore();
+
+  // Sample pixel after drawing
+  const afterPixel = ctx.getImageData(x1, y1, 1, 1);
+  console.log("[handleLine] Pixel after drawing at", x1, y1, ":", Array.from(afterPixel.data));
+
+  // Check if pixels changed
+  const changed = beforePixel.data[0] !== afterPixel.data[0] ||
+                  beforePixel.data[1] !== afterPixel.data[1] ||
+                  beforePixel.data[2] !== afterPixel.data[2] ||
+                  beforePixel.data[3] !== afterPixel.data[3];
+  console.log("[handleLine] Pixels changed:", changed);
+
+  console.log("[handleLine] Line drawn successfully");
 
   return successResult(command, startTime);
 };

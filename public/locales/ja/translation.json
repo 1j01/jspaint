@@ -367,6 +367,7 @@
 	"Failed to open document.": "ドキュメントを開くことに失敗しました。",
 	"Failed to save document.": "ドキュメントの保存に失敗しました。",
 	"Save changes to %1?": "%1 への変更を保存しますか?",
+	"Save changes to {{filename}}?": "{{filename}} への変更を保存しますか?",
 	"Failed to create empty document.": "空のドキュメントの作成に失敗しました。",
 	"The file is too large to open.": "ファイルが大きすぎて開けません。",
 	"Could not start print job.": "印刷ジョブを開始できませんでした。",

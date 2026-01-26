@@ -337,6 +337,7 @@
 	"Failed to open document.": "Kan document niet openen.",
 	"Failed to save document.": "Kan document niet opslaan.",
 	"Save changes to %1?": "Wijzigingen in %1 opslaan?",
+	"Save changes to {{filename}}?": "Wijzigingen in {{filename}} opslaan?",
 	"Failed to create empty document.": "Kan geen leeg document maken.",
 	"The file is too large to open.": "Het bestand is te groot om te openen.",
 	"Could not start print job.": "Kan de afdruktaak niet starten.",

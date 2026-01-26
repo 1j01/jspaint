@@ -349,6 +349,7 @@
 	"Failed to open document.": "Dokument sa nepodarilo otvoriť.",
 	"Failed to save document.": "Dokument sa nepodarilo uložiť.",
 	"Save changes to %1?": "Uložiť zmeny do súboru %1?",
+	"Save changes to {{filename}}?": "Uložiť zmeny do súboru {{filename}}?",
 	"Failed to create empty document.": "Prázdny dokument sa nepodarilo vytvoriť.",
 	"The file is too large to open.": "Tento súbor sa nedá otvoriť. Je príliš veľký.",
 	"Could not start print job.": "Tlačovú úlohu sa nepodarilo spustiť.",

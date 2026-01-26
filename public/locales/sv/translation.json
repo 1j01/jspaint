@@ -358,6 +358,7 @@
 	"Failed to open document.": "Det gick inte att öppna dokumentet.",
 	"Failed to save document.": "Det gick inte att spara dokumentet.",
 	"Save changes to %1?": "Vill du spara ändringar till %1?",
+	"Save changes to {{filename}}?": "Vill du spara ändringar till {{filename}}?",
 	"Failed to create empty document.": "Det gick inte att skapa ett tomt dokument.",
 	"The file is too large to open.": "Filen är för stor för att kunna öppnas.",
 	"Could not start print job.": "Det gick inte att starta utskriften.",

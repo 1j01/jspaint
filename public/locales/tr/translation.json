@@ -359,6 +359,7 @@
 	"Failed to open document.": "Belge açılamadı.",
 	"Failed to save document.": "Belge kaydedilemedi.",
 	"Save changes to %1?": "%1 içindeki değişiklikler kaydedilsin mi?",
+	"Save changes to {{filename}}?": "{{filename}} içindeki değişiklikler kaydedilsin mi?",
 	"Failed to create empty document.": "Boş belge oluşturulamadı.",
 	"The file is too large to open.": "Dosya açılamayacak kadar büyük.",
 	"Could not start print job.": "Yazdırma işlemi başlatılamadı.",

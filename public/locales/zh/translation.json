@@ -370,6 +370,7 @@
 	"Failed to open document.": "開啟文件失敗。",
 	"Failed to save document.": "儲存文件失敗。",
 	"Save changes to %1?": "儲存變更到 %1？",
+	"Save changes to {{filename}}?": "儲存變更到 {{filename}}？",
 	"Failed to create empty document.": "建立空文件失敗。",
 	"The file is too large to open.": "檔案太大無法開啟。",
 	"Could not start print job.": "無法開始列印工作。",

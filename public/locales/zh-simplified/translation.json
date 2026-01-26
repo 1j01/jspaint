@@ -369,6 +369,7 @@
 	"Failed to open document.": "不能打开文件。",
 	"Failed to save document.": "不能保存文件。",
 	"Save changes to %1?": "将更改后的结果保存到 %1 吗？",
+	"Save changes to {{filename}}?": "将更改后的结果保存到 {{filename}} 吗？",
 	"Failed to create empty document.": "创建空文档失败。",
 	"The file is too large to open.": "文件太大，无法打开。",
 	"Could not start print job.": "无法开始打印作业。",

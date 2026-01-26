@@ -352,6 +352,7 @@
 	"Failed to open document.": "Error al abrir documento.",
 	"Failed to save document.": "Error al guardar documento.",
 	"Save changes to %1?": "¿Desea guardar los cambios en %1?",
+	"Save changes to {{filename}}?": "¿Desea guardar los cambios en {{filename}}?",
 	"Failed to create empty document.": "Error al crear un documento vacío.",
 	"The file is too large to open.": "No se puede abrir el archivo porque es demasiado grande.",
 	"Could not start print job.": "No se puede iniciar el trabajo de impresión.",
