@@ -37,10 +37,21 @@ export function ManageStorageDialog({ isOpen, onClose }: ManageStorageDialogProp
 			for (let i = 0; i < localStorage.length; i++) {
 				const key = localStorage.key(i);
 				if (key && key.startsWith("image#")) {
-					const data = localStorage.getItem(key);
+					let data = localStorage.getItem(key);
 					if (data) {
 						try {
-							// Extract thumbnail (first 1000 chars of data URL for preview)
+							// In legacy storage, values are JSON.stringify()'d; decode quoted strings.
+							if (data[0] === '"') {
+								const parsed = JSON.parse(data);
+								if (typeof parsed === "string") {
+									data = parsed;
+								}
+							}
+							// Only keep entries that look like data URLs to avoid broken previews.
+							if (!/^data:image\//i.test(data)) {
+								continue;
+							}
+
 							images.push({
 								key,
 								thumbnail: data,
