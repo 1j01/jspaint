@@ -4,13 +4,28 @@ import { drawOnCanvas, waitForAppLoaded } from "./utils/test-helpers";
 test.describe("Drawing Visibility", () => {
 	test("pencil tool produces visible black pixels", async ({ page }) => {
 		console.log("Starting visibility test");
+		page.on('console', msg => console.log(`[Browser] ${msg.text()}`));
 		await page.goto("");
 		await waitForAppLoaded(page);
+		
+		// Select pencil tool explicitly
+		await page.click('.tool[title="Pencil"]');
 
 		// 1. Verify start state: Center pixel should be White
 		const startPixel = await getCenterPixel(page);
 		console.log("Start pixel:", startPixel);
 		expect(startPixel).toEqual([255, 255, 255, 255]);
+
+		// DEBUG: Check what is at the center
+		await page.evaluate(() => {
+			const canvas = document.querySelector('canvas.main-canvas');
+			if (!canvas) return;
+			const rect = canvas.getBoundingClientRect();
+			const x = rect.left + rect.width / 2;
+			const y = rect.top + rect.height / 2;
+			const topElement = document.elementFromPoint(x, y);
+			console.log(`[Browser] Top element at center:`, topElement?.tagName, topElement?.className);
+		});
 
 		// 2. Draw a black line across the center
 		// Assuming default tool is Pencil and color is Black

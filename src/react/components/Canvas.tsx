@@ -16,31 +16,31 @@
 
 import React, { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { saveSetting } from "../context/state/persistence";
+import { useSettingsStore } from "../context/state/settingsStore";
+import { TOOL_IDS, useToolStore } from "../context/state/toolStore";
+import { useUIStore } from "../context/state/uiStore";
+import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
+import { useColors } from "../context/state/useColors";
 import { useCursorPosition } from "../context/state/useCursorPosition";
 import { useHistory } from "../context/state/useHistory";
 import { useSelection } from "../context/state/useSelection";
 import { useTool } from "../context/state/useTool";
-import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
 import { useTreeHistory } from "../context/state/useTreeHistory";
-import { useUIStore } from "../context/state/uiStore";
-import { useToolStore, TOOL_IDS } from "../context/state/toolStore";
-import { useSettingsStore } from "../context/state/settingsStore";
-import { useColors } from "../context/state/useColors";
-import { saveSetting } from "../context/state/persistence";
+import { useAirbrushEffect } from "../hooks/useAirbrushEffect";
 import { useCanvasCurvePolygon } from "../hooks/useCanvasCurvePolygon";
 import { useCanvasDrawing } from "../hooks/useCanvasDrawing";
+import { useCanvasEventHandlers } from "../hooks/useCanvasEventHandlers";
+import { useCanvasLifecycle } from "../hooks/useCanvasLifecycle";
 import { useCanvasSelection } from "../hooks/useCanvasSelection";
 import { useCanvasShapes } from "../hooks/useCanvasShapes";
 import { useCanvasTextBox } from "../hooks/useCanvasTextBox";
-import { useCanvasLifecycle } from "../hooks/useCanvasLifecycle";
-import { useAirbrushEffect } from "../hooks/useAirbrushEffect";
-import { useCanvasEventHandlers } from "../hooks/useCanvasEventHandlers";
-import { getCanvasStyle, resizeSelection, prepareCanvasResize, restoreCanvasAfterResize } from "../utils/canvasHelpers";
+import { getCanvasStyle, prepareCanvasResize, resizeSelection, restoreCanvasAfterResize } from "../utils/canvasHelpers";
 import { commitSelectionToCanvas } from "../utils/selectionDrawing";
 import { CanvasOverlay } from "./CanvasOverlay";
+import { CanvasResizeHandles } from "./CanvasResizeHandles";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
-import { CanvasResizeHandles } from "./CanvasResizeHandles";
 
 /**
  * Canvas component - the main drawing surface.
@@ -291,7 +291,12 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 				width={canvasWidth}
 				height={canvasHeight}
 				style={canvasStyle}
-				onPointerDown={eventHandlers.handlePointerDown}
+				onPointerDown={async (e) => {
+					console.log('[Canvas] inline onPointerDown');
+					eventHandlers.handlePointerDown(e);
+				}}
+				onMouseDown={() => console.log('[Canvas] inline onMouseDown')}
+				onPointerDownCapture={() => console.log('[Canvas] inline onPointerDownCapture')}
 				onPointerMove={eventHandlers.handlePointerMove}
 				onPointerUp={eventHandlers.handlePointerUp}
 				onPointerLeave={(e) => {

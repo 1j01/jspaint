@@ -66,7 +66,7 @@ export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(f
 				className="selection-overlay"
 				width={width}
 				height={height}
-				style={canvasStyle}
+				style={{ ...canvasStyle, pointerEvents: "none" }}
 				aria-hidden="true"
 			/>
 		</div>
