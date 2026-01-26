@@ -329,6 +329,8 @@ export function CanvasResizeHandles({
 			positions.grabRegion.width = middleEndX - sizeOnlyMiddleStartX;
 		} else {
 			// HANDLE_END
+			// Match legacy Handles.js: offset + (rect.width * magnification - hs / 2)
+			// This positions the handle centered on the edge (overlapping it)
 			positions.handle.left = rect.width * magnification - handleSize / 2 + offsetLeft;
 			positions.grabRegion.left = endStartX + offsetLeft;
 			positions.grabRegion.width = endEndX - endStartX;
@@ -364,6 +366,7 @@ export function CanvasResizeHandles({
 			positions.grabRegion.height = middleEndY - sizeOnlyMiddleStartY;
 		} else {
 			// HANDLE_END
+			// Match legacy Handles.js: offset + (rect.height * magnification - hs / 2)
 			positions.handle.top = rect.height * magnification - handleSize / 2 + offsetTop;
 			positions.grabRegion.top = endStartY + offsetTop;
 			positions.grabRegion.height = endEndY - endStartY;

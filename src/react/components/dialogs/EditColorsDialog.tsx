@@ -154,7 +154,7 @@ export function EditColorsDialog({
 	};
 
 	return (
-		<Dialog isOpen={isOpen} onClose={onClose} title={t("Edit Colors")} width={expanded ? 435 : 254} className="dialog-window edit-colors-window">
+		<Dialog isOpen={isOpen} onClose={onClose} title={t("Edit Colors")} width={expanded ? 465 : 254} className="dialog-window edit-colors-window">
 			<div className="left-right-split">
 				<div className="left-side">
 					<label htmlFor="basic-colors">{t("Basic colors:")}</label>

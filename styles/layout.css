@@ -499,7 +499,7 @@ whereas it breaks component docking calculations if used to shift the colors box
 	height: 298px;
 }
 .edit-colors-window .window-content .right-side {
-	width: 218px;
+	width: 248px;
 	position: relative;
 	padding-top: 7px;
 	padding-left: 10px/*rtl:ignore*/;
@@ -524,13 +524,17 @@ whereas it breaks component docking calculations if used to shift the colors box
 }
 .edit-colors-window .window-content .define-custom-colors-button {
 	margin-top: 13px;
-	width: 210px;
+	min-width: 210px;
+	width: auto;
+	white-space: nowrap;
 }
 .edit-colors-window .window-content .add-to-custom-colors-button {
 	position: absolute;
 	bottom: 5px;
 	right: 5px/*rtl:ignore*/;
-	width: 213px;
+	min-width: 213px;
+	width: auto;
+	white-space: nowrap;
 }
 .edit-colors-window .left-side label {
 	display: block;

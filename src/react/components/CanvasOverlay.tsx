@@ -40,15 +40,11 @@ export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(f
 	{ width, height, magnification },
 	ref,
 ) {
-	const shouldScale = Number.isFinite(magnification) && magnification !== 1;
 	const canvasStyle: CSSProperties = {
-		// Override CSS that sets width/height to 100% - we want pixel-perfect dimensions
-		width: `${width}px`,
-		height: `${height}px`,
-		// CSS already sets position: absolute; left: 0; top: 0; from layout.css
-		// Match main-canvas transform and transform-origin exactly
-		transform: shouldScale ? `scale(${magnification})` : undefined,
-		transformOrigin: shouldScale ? "top left" : undefined,
+		// Match legacy jQuery magnification behavior: scale via CSS size.
+		// This ensures scroll extents and handle positioning match the old implementation.
+		width: `${width * magnification}px`,
+		height: `${height * magnification}px`,
 	};
 
 	// Add positioning for z-index to work properly

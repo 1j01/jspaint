@@ -283,7 +283,13 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 
 
 	// Compute canvas style (cursor and magnification transform)
-	const canvasStyle = getCanvasStyle(selectedToolId, magnification);
+	const canvasStyle = {
+		...getCanvasStyle(selectedToolId, magnification),
+		// Match legacy jQuery implementation: magnification affects CSS size,
+		// which in turn drives scroll extents and handle positioning.
+		width: canvasWidth * magnification,
+		height: canvasHeight * magnification,
+	};
 
 	return (
 		<>

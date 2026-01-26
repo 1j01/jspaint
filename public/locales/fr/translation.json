@@ -613,4 +613,8 @@
 	"Please enter a valid URL.": "Veuillez entrer une URL valide.",
 	"Imgur upload requires API configuration. Please set up an Imgur Client ID to enable uploads.": "Le téléversement sur Imgur nécessite une configuration API. Veuillez configurer un ID client Imgur pour activer les téléversements.",
 	"Executing command {{current}} of {{total}}...": "Exécution de la commande {{current}} sur {{total}}..."
+,
+	"Tiles this bitmap as the desktop background.": "Mosaïque ce bitmap comme arrière-plan du bureau.",
+	"Centers this bitmap as the desktop background.": "Centre ce bitmap comme arrière-plan du bureau.",
+	"Shows or hides the AI assistant panel.": "Affiche ou masque le panneau de l’assistant IA."
 }

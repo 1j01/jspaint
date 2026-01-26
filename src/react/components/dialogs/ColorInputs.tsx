@@ -75,7 +75,7 @@ export function ColorInputs({
 				{t("Color|Solid")}
 			</label>
 
-			{/* HSL inputs - column at left: 63 */}
+			{/* HSL inputs - column at left: 63, labels widened to 55px for translations */}
 			<label
 				style={{
 					position: "absolute",
@@ -83,7 +83,7 @@ export function ColorInputs({
 					top: 202,
 					textAlign: "right",
 					display: "inline-block",
-					width: 40,
+					width: 55,
 					height: 20,
 					lineHeight: "20px",
 				}}
@@ -97,7 +97,7 @@ export function ColorInputs({
 				onChange={(e) => onHslInput(e.target.value, setHue, 360)}
 				style={{
 					position: "absolute",
-					left: 106,
+					left: 121,
 					top: 202,
 					width: 21,
 					height: 14,
@@ -111,7 +111,7 @@ export function ColorInputs({
 					top: 202 + inputYSpacing,
 					textAlign: "right",
 					display: "inline-block",
-					width: 40,
+					width: 55,
 					height: 20,
 					lineHeight: "20px",
 				}}
@@ -125,7 +125,7 @@ export function ColorInputs({
 				onChange={(e) => onHslInput(e.target.value, setSaturation, 100)}
 				style={{
 					position: "absolute",
-					left: 106,
+					left: 121,
 					top: 202 + inputYSpacing,
 					width: 21,
 					height: 14,
@@ -139,7 +139,7 @@ export function ColorInputs({
 					top: 202 + inputYSpacing * 2,
 					textAlign: "right",
 					display: "inline-block",
-					width: 40,
+					width: 55,
 					height: 20,
 					lineHeight: "20px",
 				}}
@@ -153,22 +153,22 @@ export function ColorInputs({
 				onChange={(e) => onHslInput(e.target.value, setLuminosity, 100)}
 				style={{
 					position: "absolute",
-					left: 106,
+					left: 121,
 					top: 202 + inputYSpacing * 2 + 1, // uneven spacing by 1px
 					width: 21,
 					height: 14,
 				}}
 			/>
 
-			{/* RGB inputs - column at left: 143 (63 + 80) */}
+			{/* RGB inputs - column at left: 158, labels widened to 55px for translations */}
 			<label
 				style={{
 					position: "absolute",
-					left: 143,
+					left: 158,
 					top: 202,
 					textAlign: "right",
 					display: "inline-block",
-					width: 40,
+					width: 55,
 					height: 20,
 					lineHeight: "20px",
 				}}
@@ -182,7 +182,7 @@ export function ColorInputs({
 				onChange={(e) => onRgbInput("r", e.target.value)}
 				style={{
 					position: "absolute",
-					left: 186,
+					left: 216,
 					top: 202,
 					width: 21,
 					height: 14,
@@ -192,11 +192,11 @@ export function ColorInputs({
 			<label
 				style={{
 					position: "absolute",
-					left: 143,
+					left: 158,
 					top: 202 + inputYSpacing,
 					textAlign: "right",
 					display: "inline-block",
-					width: 40,
+					width: 55,
 					height: 20,
 					lineHeight: "20px",
 				}}
@@ -210,7 +210,7 @@ export function ColorInputs({
 				onChange={(e) => onRgbInput("g", e.target.value)}
 				style={{
 					position: "absolute",
-					left: 186,
+					left: 216,
 					top: 202 + inputYSpacing,
 					width: 21,
 					height: 14,
@@ -220,11 +220,11 @@ export function ColorInputs({
 			<label
 				style={{
 					position: "absolute",
-					left: 143,
+					left: 158,
 					top: 202 + inputYSpacing * 2,
 					textAlign: "right",
 					display: "inline-block",
-					width: 40,
+					width: 55,
 					height: 20,
 					lineHeight: "20px",
 				}}
@@ -238,7 +238,7 @@ export function ColorInputs({
 				onChange={(e) => onRgbInput("b", e.target.value)}
 				style={{
 					position: "absolute",
-					left: 186,
+					left: 216,
 					top: 202 + inputYSpacing * 2 + 1, // uneven spacing by 1px
 					width: 21,
 					height: 14,
