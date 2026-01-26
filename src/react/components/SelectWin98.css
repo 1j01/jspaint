@@ -62,13 +62,18 @@
 	max-height: 200px;
 	overflow-y: auto;
 	z-index: 10000;
-	font-size: 11px;
+	font-size: 13px;
 }
 
 .select-win98-option {
 	padding: 2px 4px;
 	cursor: default;
 	white-space: nowrap;
+	color: black;
+	background-color: white;
+	display: block;
+	min-height: 16px;
+	line-height: 16px;
 }
 
 .select-win98-option:hover {
