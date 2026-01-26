@@ -272,7 +272,23 @@ function AppContent() {
 	// Create the menu structure
 	// Include i18n.language and ready in deps to force menu recreation on language change
 	// and after translations are loaded
-	const menu = useMemo(() => createMenus(menuActions, t), [menuActions, t, i18n.language, ready]);
+	const menuTranslationVersion = [
+		t("&File"),
+		t("&Edit"),
+		t("&View"),
+		t("&Image"),
+		t("&Colors"),
+		t("E&xtras"),
+		t("🌍 &Language"),
+		t("&Help"),
+	].join("|");
+	const menu = useMemo(
+		() => createMenus(menuActions, t),
+		// menuTranslationVersion changes when i18next finishes loading resources
+		// for the current language (fixes cases where i18n.language updates before
+		// translations are available for menu labels).
+		[menuActions, t, i18n.language, ready, menuTranslationVersion],
+	);
 
 	// Handle keyboard shortcuts
 	useKeyboardShortcuts({
@@ -313,7 +329,7 @@ function AppContent() {
 						<ToolBox
 							tools={TOOLBOX_ITEMS}
 							selectedToolIds={[selectedToolId]}
-							onSelectionChange={(toolIds) => setTool(toolIds[0])}
+							onSelectionChange={(toolIds) => setTool(toolIds[0] as typeof selectedToolId)}
 							onHoverChange={setHoveredTool}
 						>
 							<ToolOptions />

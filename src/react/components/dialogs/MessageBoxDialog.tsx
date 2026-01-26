@@ -118,7 +118,6 @@ export function MessageBoxDialog({
 			onClose={() => handleClose("cancel")}
 			title={title}
 			width={400}
-			height="auto"
 			className="dialog-window messagebox-dialog"
 		>
 			<div className="messagebox-content" onKeyDown={handleKeyDown}>

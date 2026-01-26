@@ -4,9 +4,13 @@
  */
 
 import { RefObject, useCallback } from "react";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../constants/canvas";
+import { useCanvasStore } from "../context/state/canvasStore";
+import { useHistoryStore } from "../context/state/historyStore";
+import { saveSetting } from "../context/state/persistence";
 import { useUIStore } from "../context/state/uiStore";
-import { loadImageFileToCanvas, createFileInput } from "../utils/fileOperations";
-import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../constants/canvas";
+import { createFileInput, loadImageFileToCanvas } from "../utils/fileOperations";
+import { cancelPendingCanvasRestore } from "./useCanvasLifecycle";
 
 /**
  * File menu actions interface
@@ -56,7 +60,6 @@ export interface UseFileMenuActionsParams {
 export function useFileMenuActions(params: UseFileMenuActionsParams): FileMenuActions {
 	const {
 		canvasRef,
-		saveState,
 		setCanvasSize,
 		setMagnification,
 		clearSelection,
@@ -71,43 +74,66 @@ export function useFileMenuActions(params: UseFileMenuActionsParams): FileMenuAc
 		} else {
 			// Fallback to confirm if callback not provided
 			if (confirm("Clear the current image and start new?")) {
+				cancelPendingCanvasRestore();
+				useHistoryStore.getState().clearHistory();
+				useCanvasStore.getState().clearHistory();
+				useCanvasStore.getState().setFileName("untitled");
+				useCanvasStore.getState().setSaved(true);
+				clearSelection();
+
 				// Reset canvas to default size (Windows XP: 512x384)
 				setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
+				const canvas = canvasRef.current;
+				if (!canvas) return;
+				canvas.width = DEFAULT_CANVAS_WIDTH;
+				canvas.height = DEFAULT_CANVAS_HEIGHT;
 
 				// Reset magnification to 1x (100%)
 				setMagnification(1);
 
-				// Fill with white on next frame after resize
-				requestAnimationFrame(() => {
-					const canvas = canvasRef.current;
-					if (canvas) {
-						const ctx = canvas.getContext("2d", { willReadFrequently: true });
-						if (ctx) {
-							ctx.fillStyle = "#FFFFFF";
-							ctx.fillRect(0, 0, canvas.width, canvas.height);
-							const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-							saveState(imageData);
-						}
-					}
+				const ctx = canvas.getContext("2d", { willReadFrequently: true });
+				if (!ctx) return;
+				ctx.fillStyle = "#FFFFFF";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				useHistoryStore.getState().initializeHistory(imageData, "New Document");
+				void saveSetting("savedCanvas", {
+					data: Array.from(imageData.data),
+					width: imageData.width,
+					height: imageData.height,
 				});
 			}
 		}
-	}, [onShowNewConfirm, canvasRef, setCanvasSize, saveState, setMagnification]);
+	}, [onShowNewConfirm, canvasRef, setCanvasSize, setMagnification, clearSelection]);
 
 	const fileOpen = useCallback(() => {
 		createFileInput(".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp", async (file) => {
 			try {
+				// Cancel any in-flight restore, and clear history BEFORE loading new content
+				cancelPendingCanvasRestore();
+				useHistoryStore.getState().clearHistory();
+				useCanvasStore.getState().clearHistory();
+				useCanvasStore.getState().setSaved(true);
+				
 				await loadImageFileToCanvas(file, canvasRef, {
 					onClearSelection: clearSelection,
 					onSetCanvasSize: setCanvasSize,
-					onSaveState: saveState,
+					onSaveState: (imageData) => {
+						// Initialize fresh history with the loaded image
+						useHistoryStore.getState().initializeHistory(imageData, "Loaded Image");
+						void saveSetting("savedCanvas", {
+							data: Array.from(imageData.data),
+							width: imageData.width,
+							height: imageData.height,
+						});
+					},
 				});
 			} catch (error) {
 				console.error("[fileOpen] Error loading file:", error);
 				alert(`Failed to load image: ${error instanceof Error ? error.message : "Unknown error"}`);
 			}
 		});
-	}, [canvasRef, saveState, setCanvasSize, clearSelection]);
+	}, [canvasRef, setCanvasSize, clearSelection]);
 
 	const fileSave = useCallback(() => {
 		const canvas = canvasRef.current;

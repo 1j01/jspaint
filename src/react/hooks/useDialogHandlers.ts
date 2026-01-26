@@ -1,21 +1,25 @@
-import { useCallback, RefObject } from "react";
-import type { FlipRotateAction } from "../components/dialogs/FlipRotateDialog";
-import type { StretchSkewValues } from "../components/dialogs/StretchSkewDialog";
+import { RefObject, useCallback } from "react";
 import type { AttributesValues } from "../components/dialogs/AttributesDialog";
+import type { FlipRotateAction } from "../components/dialogs/FlipRotateDialog";
 import type { MessageBoxResult } from "../components/dialogs/MessageBoxDialog";
+import type { StretchSkewValues } from "../components/dialogs/StretchSkewDialog";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../constants/canvas";
+import { useCanvasStore } from "../context/state/canvasStore";
+import { useHistoryStore } from "../context/state/historyStore";
+import { saveSetting } from "../context/state/persistence";
 import { TOOL_IDS } from "../context/state/types";
-import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../constants/canvas";
-import {
-	applyToCanvas,
-	flipHorizontal,
-	flipVertical,
-	invertColors,
-	rotate,
-	skew,
-	stretch,
-	transformCanvas,
-} from "../utils/imageTransforms";
 import { downloadCanvas } from "../utils/imageFormats";
+import {
+    applyToCanvas,
+    flipHorizontal,
+    flipVertical,
+    invertColors,
+    rotate,
+    skew,
+    stretch,
+    transformCanvas,
+} from "../utils/imageTransforms";
+import { cancelPendingCanvasRestore } from "./useCanvasLifecycle";
 
 interface UseDialogHandlersProps {
 	canvasRef: RefObject<HTMLCanvasElement>;
@@ -62,6 +66,7 @@ export function useDialogHandlers({
 	setCustomColors,
 	setMagnification,
 }: UseDialogHandlersProps) {
+
 	/**
 	 * Handle File > New confirmation
 	 * - "Yes": Save current canvas as file (download), then create new blank canvas
@@ -94,32 +99,43 @@ export function useDialogHandlers({
 					link.click();
 				}
 
-				// Reset canvas to default size (Windows XP: 512x384)
+				// Cancel any in-flight async restore from IndexedDB.
+				// This prevents the previous document from being restored after the user explicitly chose New.
+				cancelPendingCanvasRestore();
+
+				// Reset canvas size to default (Windows XP: 512x384)
 				setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
+				canvas.width = DEFAULT_CANVAS_WIDTH;
+				canvas.height = DEFAULT_CANVAS_HEIGHT;
 
 				// Reset magnification to 1x (100%)
 				setMagnification(1);
 
-				// Clear to white on next frame (after resize completes)
-				requestAnimationFrame(() => {
-					const canvas = canvasRef.current;
-					if (!canvas) return;
-					const ctx = canvas.getContext("2d", { willReadFrequently: true });
-					if (!ctx) return;
+				// Clear any active selection
+				clearSelection();
 
-					ctx.fillStyle = "#FFFFFF";
-					ctx.fillRect(0, 0, canvas.width, canvas.height);
+				// Reset document/file state (React store)
+				useCanvasStore.getState().setFileName("untitled");
+				useCanvasStore.getState().setSaved(true);
+				useCanvasStore.getState().clearHistory();
 
-					// Clear any active selection
-					clearSelection();
+				// Reset history systems and initialize fresh history with blank canvas
+				useHistoryStore.getState().clearHistory();
+				ctx.fillStyle = "#FFFFFF";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				useHistoryStore.getState().initializeHistory(imageData, "New Document");
 
-					// Save the new white canvas state to history
-					saveState();
+				// Persist the new blank document so refresh doesn't resurrect the previous image.
+				void saveSetting("savedCanvas", {
+					data: Array.from(imageData.data),
+					width: imageData.width,
+					height: imageData.height,
 				});
 			}
 			// If result === "cancel", do nothing
 		},
-		[canvasRef, saveState, setShowNewConfirm, setCanvasSize, clearSelection, setMagnification],
+		[canvasRef, setShowNewConfirm, setCanvasSize, clearSelection, setMagnification],
 	);
 
 	/**

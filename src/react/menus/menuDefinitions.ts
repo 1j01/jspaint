@@ -121,7 +121,7 @@ export function createMenus(actions: MenuActions, t: (key: string, options?: Rec
 				action: actions.fileNew,
 			},
 			{
-				label: t("&Open..."),
+				label: `${t("&Open")}...`,
 				shortcutLabel: "Ctrl+O",
 				ariaKeyShortcuts: "Control+O",
 				description: t("Opens an existing document."),
@@ -135,7 +135,7 @@ export function createMenus(actions: MenuActions, t: (key: string, options?: Rec
 				action: actions.fileSave,
 			},
 			{
-				label: t("Save &As..."),
+				label: `${t("Save &As")}...`,
 				shortcutLabel: "Ctrl+Shift+S",
 				ariaKeyShortcuts: "Control+Shift+S",
 				description: t("Saves the active document with a new name."),

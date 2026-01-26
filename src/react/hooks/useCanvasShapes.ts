@@ -1,7 +1,7 @@
 import { useCallback, useRef, RefObject } from "react";
 import { useColors } from "../context/state/useColors";
 import { useShapeSettings } from "../context/state/useShapeSettings";
-import { TOOL_IDS } from "../context/state/types";
+import { TOOL_IDS, type ToolId } from "../context/state/types";
 import { drawRectangle, drawEllipse, drawRoundedRectangle, getShapeColors } from "../utils/drawingUtils";
 
 export interface ShapeDrawingState {
@@ -20,7 +20,7 @@ interface UseCanvasShapesProps {
 }
 
 // Shape tool IDs
-const SHAPE_TOOLS = [TOOL_IDS.LINE, TOOL_IDS.RECTANGLE, TOOL_IDS.ELLIPSE, TOOL_IDS.ROUNDED_RECTANGLE];
+const SHAPE_TOOLS: readonly ToolId[] = [TOOL_IDS.LINE, TOOL_IDS.RECTANGLE, TOOL_IDS.ELLIPSE, TOOL_IDS.ROUNDED_RECTANGLE];
 
 /**
  * Hook for handling shape drawing tools (line, rectangle, ellipse, rounded rectangle)
@@ -70,7 +70,7 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 	});
 
 	// Check if a tool is a shape tool
-	const isShapeTool = useCallback((toolId: string): boolean => {
+	const isShapeTool = useCallback((toolId: ToolId): boolean => {
 		return SHAPE_TOOLS.includes(toolId);
 	}, []);
 
@@ -98,7 +98,7 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 
 	// Draw shape preview
 	const previewShape = useCallback(
-		(x: number, y: number, toolId: string, ctx: CanvasRenderingContext2D, shiftKey = false): void => {
+		(x: number, y: number, toolId: ToolId, ctx: CanvasRenderingContext2D, shiftKey = false): void => {
 			if (!drawingState.current.isDrawing || !drawingState.current.previewImageData) return;
 
 			const { startX, startY, button, previewImageData } = drawingState.current;
@@ -180,7 +180,7 @@ export function useCanvasShapes({ canvasRef, getDrawColor }: UseCanvasShapesProp
 
 	// Finalize shape drawing
 	const finalizeShape = useCallback(
-		(x: number, y: number, toolId: string, ctx: CanvasRenderingContext2D, shiftKey = false): void => {
+		(x: number, y: number, toolId: ToolId, ctx: CanvasRenderingContext2D, shiftKey = false): void => {
 			if (!drawingState.current.isDrawing || !drawingState.current.previewImageData) {
 				drawingState.current.isDrawing = false;
 				return;

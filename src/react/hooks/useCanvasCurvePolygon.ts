@@ -1,10 +1,9 @@
-import { useCallback, useRef, RefObject } from "react";
+import { RefObject, useCallback, useRef } from "react";
 import { useColors } from "../context/state/useColors";
-import { useShapeSettings } from "../context/state/useShapeSettings";
 import { useHistory } from "../context/state/useHistory";
 import { useMagnification } from "../context/state/useMagnification";
-import { TOOL_IDS } from "../context/state/types";
-import { drawPolygon, Point, getShapeColors } from "../utils/drawingUtils";
+import { useShapeSettings } from "../context/state/useShapeSettings";
+import { drawPolygon, getShapeColors, Point } from "../utils/drawingUtils";
 
 export interface CurveState {
 	points: Point[];

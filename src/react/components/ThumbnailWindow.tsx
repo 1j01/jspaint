@@ -95,31 +95,28 @@ export function ThumbnailWindow({ visible, onClose, canvasRef }: ThumbnailWindow
 		if (!thumbnailCanvas || !container) return;
 
 		// Handle device pixel ratio for crisp rendering
-		const resizeObserver = new ResizeObserver((entries) => {
+		const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
 			const entry = entries[0];
+			if (!entry) return;
 			let width: number;
 			let height: number;
 
-			// Use devicePixelContentBoxSize if available (Chrome)
-			if ("devicePixelContentBoxSize" in entry) {
-				const dpContentBox = entry.devicePixelContentBoxSize as any;
-				if (dpContentBox && dpContentBox[0]) {
-					width = dpContentBox[0].inlineSize;
-					height = dpContentBox[0].blockSize;
+			// Prefer device-pixel box size when the browser provides it.
+			// Note: DOM typings declare these properties, but at runtime browsers may
+			// provide empty arrays depending on support.
+			const dp = entry.devicePixelContentBoxSize?.[0];
+			if (dp) {
+				width = dp.inlineSize;
+				height = dp.blockSize;
+			} else {
+				const cb = entry.contentBoxSize?.[0];
+				if (cb) {
+					width = Math.round(cb.inlineSize * window.devicePixelRatio);
+					height = Math.round(cb.blockSize * window.devicePixelRatio);
 				} else {
-					// Fallback
 					width = Math.round(entry.contentRect.width * window.devicePixelRatio);
 					height = Math.round(entry.contentRect.height * window.devicePixelRatio);
 				}
-			} else if ("contentBoxSize" in entry) {
-				// Firefox fallback
-				const contentBox = entry.contentBoxSize as any;
-				width = Math.round(contentBox[0].inlineSize * window.devicePixelRatio);
-				height = Math.round(contentBox[0].blockSize * window.devicePixelRatio);
-			} else {
-				// Safari/iOS fallback
-				width = Math.round(entry.contentRect.width * window.devicePixelRatio);
-				height = Math.round(entry.contentRect.height * window.devicePixelRatio);
 			}
 
 			// Avoid zero dimensions (can happen when hidden)

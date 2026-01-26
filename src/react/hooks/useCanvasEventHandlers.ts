@@ -6,7 +6,7 @@
  */
 
 import { RefObject, useCallback } from "react";
-import { TOOL_IDS } from "../context/state/types";
+import { TOOL_IDS, type ToolId } from "../context/state/types";
 import { MAGNIFICATION_LEVELS, TOOL_NAMES } from "../utils/canvasHelpers";
 import type { useCanvasCurvePolygon } from "./useCanvasCurvePolygon";
 import type { useCanvasDrawing } from "./useCanvasDrawing";
@@ -16,7 +16,7 @@ import type { useCanvasTextBox } from "./useCanvasTextBox";
 
 interface UseCanvasEventHandlersParams {
 	canvasRef: RefObject<HTMLCanvasElement>;
-	selectedToolId: string;
+	selectedToolId: ToolId;
 	drawing: ReturnType<typeof useCanvasDrawing>;
 	selectionHook: ReturnType<typeof useCanvasSelection>;
 	textBoxHook: ReturnType<typeof useCanvasTextBox>;

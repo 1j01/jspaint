@@ -106,6 +106,27 @@ let historyTreeInitialized = false;
 let loadedFromIndexedDB = false;
 
 /**
+ * Monotonic token used to cancel any in-flight async restore.
+ * If this value changes while `initializeCanvas()` is awaiting IndexedDB,
+ * it will abort without restoring the previous document.
+ */
+let restoreToken = 0;
+
+/**
+ * Cancels any in-flight async canvas restore from IndexedDB.
+ * Intended for explicit user actions like File > New / Open.
+ */
+export function cancelPendingCanvasRestore() {
+	restoreToken += 1;
+	loadedFromIndexedDB = true;
+	savedCanvasData = null;
+	// Mark initialized so lifecycle won't re-fill/restore behind the user's back.
+	canvasInitialized = true;
+	// History will be re-initialized by the caller.
+	historyTreeInitialized = true;
+}
+
+/**
  * Save canvas content to IndexedDB for persistence across page refreshes
  */
 async function saveCanvasToIndexedDB(imageData: ImageData): Promise<void> {
@@ -172,6 +193,7 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
 		// Async initialization function
 		const initializeCanvas = async () => {
+			const tokenAtStart = restoreToken;
 			console.log('[Lifecycle] initializeCanvas starting');
 			// Check if canvas already has content (e.g., from fileOpen)
 			// Sample a few pixels to detect if it's already been drawn to
@@ -191,6 +213,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
 			console.log('[Lifecycle] hasContent:', hasContent);
 
+			if (tokenAtStart !== restoreToken) {
+				console.log("[Lifecycle] Restore canceled before init completed");
+				return;
+			}
+
 			if (hasContent) {
 				console.log('[Lifecycle] Canvas has content, skipping init');
 				canvasInitialized = true;
@@ -207,6 +234,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 			}
 
 			// Priority 1: Restore from module-level savedCanvasData (component remount)
+			if (tokenAtStart !== restoreToken) {
+				console.log("[Lifecycle] Restore canceled before module restore");
+				return;
+			}
+
 			if (savedCanvasData) {
 				console.log('[Lifecycle] Restoring from savedCanvasData');
 				ctx.putImageData(savedCanvasData, 0, 0);
@@ -221,6 +253,12 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 				console.log('[Lifecycle] Loading from IndexedDB');
 				loadedFromIndexedDB = true;
 				const persistedCanvas = await loadCanvasFromIndexedDB();
+
+				if (tokenAtStart !== restoreToken) {
+					console.log("[Lifecycle] Restore canceled during IndexedDB await");
+					return;
+				}
+
 				console.log('[Lifecycle] IndexedDB result:', persistedCanvas ? 'found' : 'null');
 
 				// CRITICAL: Check if user drew during the IndexedDB await BEFORE restoring
@@ -246,6 +284,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 					return;
 				}
 
+				if (tokenAtStart !== restoreToken) {
+					console.log("[Lifecycle] Restore canceled before applying persisted canvas");
+					return;
+				}
+
 				if (persistedCanvas) {
 					// Check if dimensions match
 					if (persistedCanvas.width === canvas.width && persistedCanvas.height === canvas.height) {
@@ -258,6 +301,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 								isValidContent = true;
 								break;
 							}
+						}
+
+						if (tokenAtStart !== restoreToken) {
+							console.log("[Lifecycle] Restore canceled before putImageData");
+							return;
 						}
 
 						if (isValidContent) {

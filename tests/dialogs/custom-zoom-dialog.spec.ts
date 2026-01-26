@@ -18,7 +18,7 @@ test.describe("Custom Zoom Dialog", () => {
 		const dialog = await openDialogFromSubmenu(page, "View", "Zoom", "Custom");
 
 		const title = await getDialogTitle(dialog);
-		expect(title.toLowerCase()).toContain("zoom") || expect(title.toLowerCase()).toContain("custom");
+		expect(title.toLowerCase()).toMatch(/zoom|custom/);
 
 		await closeDialog(dialog, "Cancel");
 	});

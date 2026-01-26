@@ -3,7 +3,7 @@ import { useBrushSettings } from "../context/state/useBrushSettings";
 import { useShapeSettings } from "../context/state/useShapeSettings";
 import { useTool } from "../context/state/useTool";
 import { useSettingsStore } from "../context/state/settingsStore";
-import { TOOL_IDS } from "../context/state/types";
+import { TOOL_IDS, type ToolId } from "../context/state/types";
 import { FillStyleOptions } from "./tooloptions/FillStyleOptions";
 import { LineWidthOptions } from "./tooloptions/LineWidthOptions";
 import { BrushSizeOptions } from "./tooloptions/BrushSizeOptions";
@@ -53,12 +53,17 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 
 	// Determine which options to show based on tool
 	// Shape tools show fill style only (matches original $ChooseShapeStyle)
-	const showFillStyle = [TOOL_IDS.RECTANGLE, TOOL_IDS.ELLIPSE, TOOL_IDS.ROUNDED_RECTANGLE, TOOL_IDS.POLYGON].includes(
-		selectedToolId,
-	);
+	const fillStyleTools: readonly ToolId[] = [
+		TOOL_IDS.RECTANGLE,
+		TOOL_IDS.ELLIPSE,
+		TOOL_IDS.ROUNDED_RECTANGLE,
+		TOOL_IDS.POLYGON,
+	];
+	const showFillStyle = fillStyleTools.includes(selectedToolId);
 
 	// Line/Curve tools show stroke size only (matches original $choose_stroke_size)
-	const showLineWidth = [TOOL_IDS.LINE, TOOL_IDS.CURVE].includes(selectedToolId);
+	const lineWidthTools: readonly ToolId[] = [TOOL_IDS.LINE, TOOL_IDS.CURVE];
+	const showLineWidth = lineWidthTools.includes(selectedToolId);
 
 	const showBrushSize = selectedToolId === TOOL_IDS.BRUSH;
 	const showEraserSize = selectedToolId === TOOL_IDS.ERASER;
@@ -67,7 +72,8 @@ export function ToolOptions({ className = "" }: ToolOptionsProps) {
 	// Transparency mode for Select and Text tools
 	// Note: Text tool shows ONLY transparency mode here. Text formatting (font, size, bold, italic, underline)
 	// is shown in the separate FontBoxWindow, matching the original MS Paint behavior.
-	const showTransparencyMode = [TOOL_IDS.SELECT, TOOL_IDS.FREE_FORM_SELECT, TOOL_IDS.TEXT].includes(selectedToolId);
+	const transparencyTools: readonly ToolId[] = [TOOL_IDS.SELECT, TOOL_IDS.FREE_FORM_SELECT, TOOL_IDS.TEXT];
+	const showTransparencyMode = transparencyTools.includes(selectedToolId);
 
 	// Handle brush change (size and shape together)
 	const handleBrushChange = (size: number, shape: typeof brushShape) => {
