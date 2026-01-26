@@ -16,7 +16,7 @@ const staticAssets = [
 	{ src: "audio", dest: "audio" },
 	{ src: "help", dest: "help" },
 	{ src: "images", dest: "images" },
-	{ src: "lib", dest: "lib" },
+	{ src: "lib/**/*", dest: "lib" },
 	{ src: "localization", dest: "localization" },
 	{ src: "public/locales/*", dest: "locales" },
 	{ src: "styles", dest: "styles" },

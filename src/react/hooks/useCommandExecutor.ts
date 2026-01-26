@@ -82,9 +82,11 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
   const executeCommand = useCallback(
     (command: DrawingCommand): CommandExecutionResult => {
       const startTime = Date.now();
+      console.log("[CommandExecutor] Executing command:", command.tool, command.params);
       const ctx = getContext();
 
       if (!ctx) {
+        console.error("[CommandExecutor] Canvas context not available");
         return {
           command,
           status: "failed",
@@ -96,6 +98,7 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
 
       // Check for passthrough commands that don't need processing
       if (PASSTHROUGH_COMMANDS.has(command.tool)) {
+        console.log("[CommandExecutor] Passthrough command:", command.tool);
         return {
           command,
           status: "completed",
@@ -106,6 +109,7 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
       // Look up handler in registry
       const handler = commandRegistry[command.tool];
       if (!handler) {
+        console.error("[CommandExecutor] Unknown command:", command.tool);
         return {
           command,
           status: "failed",
@@ -125,8 +129,11 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
       };
 
       try {
-        return handler(command, context);
+        const result = handler(command, context);
+        console.log("[CommandExecutor] Command result:", result.status);
+        return result;
       } catch (err) {
+        console.error("[CommandExecutor] Command error:", err);
         return {
           command,
           status: "failed",
@@ -145,11 +152,18 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
    */
   const executeCommands = useCallback(
     async (commands: DrawingCommand[]): Promise<CommandExecutionResult[]> => {
+      // If already executing, log and skip (commands will be picked up when done)
       if (isExecutingRef.current) {
-        onError?.("Execution already in progress");
+        console.log("[CommandExecutor] Execution already in progress, skipping");
         return [];
       }
 
+      if (commands.length === 0) {
+        console.log("[CommandExecutor] No commands to execute");
+        return [];
+      }
+
+      console.log("[CommandExecutor] Starting execution of", commands.length, "commands");
       isExecutingRef.current = true;
       cancelledRef.current = false;
 
@@ -182,7 +196,7 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
           currentCommand: commands[i],
         });
 
-        const result = await executeCommand(commands[i]);
+        const result = executeCommand(commands[i]);
         results.push(result);
 
         // Add delay for visual feedback
@@ -191,12 +205,13 @@ export function useCommandExecutor(options: CommandExecutorOptions) {
         }
       }
 
+      console.log("[CommandExecutor] Execution complete, results:", results.length);
       isExecutingRef.current = false;
       onComplete?.();
 
       return results;
     },
-    [executeCommand, getContext, historyStore, onProgress, onComplete, onError, animationDelay],
+    [executeCommand, getContext, historyStore, onProgress, onComplete, animationDelay],
   );
 
   /**

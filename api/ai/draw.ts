@@ -278,6 +278,7 @@ CURRENT CANVAS STATE:
 							switch (event.type) {
 								case "content_block_start":
 									if (event.content_block?.type === "tool_use") {
+										console.log("[AI API] Tool use block started:", event.content_block.name);
 										isCollectingToolInput = true;
 										toolInput = "";
 									}
@@ -301,8 +302,10 @@ CURRENT CANVAS STATE:
 
 								case "content_block_stop":
 									if (isCollectingToolInput && toolInput) {
+										console.log("[AI API] Tool input collected, length:", toolInput.length);
 										try {
 											const toolData = JSON.parse(toolInput);
+											console.log("[AI API] Parsed tool data, commands:", toolData.commands?.length || 0);
 											if (
 												toolData.commands &&
 												Array.isArray(toolData.commands)
@@ -315,7 +318,8 @@ CURRENT CANVAS STATE:
 													)
 												);
 											}
-										} catch {
+										} catch (parseErr) {
+											console.error("[AI API] Failed to parse tool JSON:", parseErr);
 											// Invalid tool JSON, ignore
 										}
 										isCollectingToolInput = false;
