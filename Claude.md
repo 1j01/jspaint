@@ -190,7 +190,7 @@ Run `npm run test:update-snapshots` after intentional visual changes.
 
 ## Key Features Beyond MS Paint
 
-- Unlimited undo/redo with non-linear history tree (Edit > History)
+- Unlimited undo/redo with non-linear history tree (Edit > History) - see `historyTree.ts`
 - Transparent image editing (Image > Attributes > Transparent)
 - Non-contiguous fill (Shift + Fill tool replaces color everywhere)
 - Crop to selection (Ctrl + selection)
