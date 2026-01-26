@@ -197,6 +197,42 @@ body,
 	background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
 }
 
+/* AI tool animation - highlights tool during AI command execution */
+.tool.ai-active {
+	animation: toolPulse 0.5s ease-in-out infinite alternate;
+	position: relative;
+}
+
+.tool.ai-active::after {
+	content: "";
+	position: absolute;
+	inset: -2px;
+	border: 2px solid var(--Hilight);
+	border-radius: 2px;
+	animation: toolGlow 0.5s ease-in-out infinite alternate;
+	pointer-events: none;
+}
+
+@keyframes toolPulse {
+	0% {
+		background-color: var(--ButtonFace);
+	}
+	100% {
+		background-color: color-mix(in srgb, var(--Hilight) 30%, var(--ButtonFace));
+	}
+}
+
+@keyframes toolGlow {
+	0% {
+		opacity: 0.5;
+		box-shadow: 0 0 2px var(--Hilight);
+	}
+	100% {
+		opacity: 1;
+		box-shadow: 0 0 8px var(--Hilight);
+	}
+}
+
 .tools {
 	height: 200px;
 	width: 50px;

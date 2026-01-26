@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Component } from "./Component";
+import { useAIStore } from "../context/state/aiStore";
 
 /**
  * Tool data structure
@@ -98,6 +99,7 @@ export function ToolBox({
 }: ToolBoxProps) {
   const { t } = useTranslation();
   const tools = useMemo(() => ensureTools(toolsProp), [toolsProp]);
+  const activeAITool = useAIStore((state) => state.activeAITool);
 
   // Use selectedToolIds directly (controlled component - no internal state)
   const selected = useMemo(() => {
@@ -139,6 +141,7 @@ export function ToolBox({
       <div className="tools" role="toolbar" aria-label={componentTitle}>
         {tools.map((tool) => {
           const isSelected = selected.includes(tool.id);
+          const isAIActive = activeAITool === tool.id;
           const iconStyle: React.CSSProperties =
             tool.iconIndex != null
               ? ({ ...TOOL_ICON_STYLE, "--icon-index": tool.iconIndex } as React.CSSProperties)
@@ -152,7 +155,9 @@ export function ToolBox({
           return (
             <div
               key={tool.id}
-              className={["tool", isSelected ? "selected" : ""].filter(Boolean).join(" ")}
+              className={["tool", isSelected ? "selected" : "", isAIActive ? "ai-active" : ""]
+                .filter(Boolean)
+                .join(" ")}
               title={translatedTool.name}
               role="button"
               tabIndex={0}

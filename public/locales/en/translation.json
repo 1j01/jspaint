@@ -336,6 +336,7 @@
 	"Executing command {{current}} of {{total}}...": "Executing command {{current}} of {{total}}...",
 
 	"AI Assistant": "AI Assistant",
+	"Thinking...": "Thinking...",
 	"Clear chat": "Clear chat",
 	"Clear": "Clear",
 	"Hide panel": "Hide panel",

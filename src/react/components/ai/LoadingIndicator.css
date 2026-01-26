@@ -1,0 +1,136 @@
+/**
+ * Windows 98 style loading indicator CSS
+ * Features animated hourglass and marquee progress bar
+ */
+
+.win98-loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  background-color: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  margin: 6px 0;
+}
+
+.win98-loading-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.win98-loading-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CSS-based hourglass animation */
+.win98-hourglass {
+  width: 16px;
+  height: 20px;
+  position: relative;
+  animation: hourglass-rotate 2s ease-in-out infinite;
+}
+
+.win98-hourglass::before,
+.win98-hourglass::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Top triangle of hourglass */
+.win98-hourglass::before {
+  top: 0;
+  border-width: 9px 8px 0 8px;
+  border-color: #000080 transparent transparent transparent;
+}
+
+/* Bottom triangle of hourglass */
+.win98-hourglass::after {
+  bottom: 0;
+  border-width: 0 8px 9px 8px;
+  border-color: transparent transparent #000080 transparent;
+}
+
+@keyframes hourglass-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.win98-loading-text {
+  font-size: 11px;
+  color: #000000;
+  font-weight: normal;
+}
+
+/* Progress bar container */
+.win98-progress-container {
+  width: 100%;
+  max-width: 200px;
+}
+
+.win98-progress-track {
+  height: 16px;
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #000000;
+  padding: 2px;
+  overflow: hidden;
+}
+
+.win98-progress-blocks {
+  display: flex;
+  gap: 2px;
+  height: 100%;
+  animation: progress-slide 1.5s linear infinite;
+  width: 200%;
+}
+
+.win98-progress-block {
+  width: 12px;
+  height: 100%;
+  background-color: #000080;
+  flex-shrink: 0;
+}
+
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+/* Alternative blink animation for the typing indicator */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

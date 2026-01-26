@@ -5,6 +5,21 @@
 
 import { create } from "zustand";
 import type { ChatMessage, DrawingCommand, ExecutionProgress } from "../../types/ai";
+import type { ToolId } from "./types";
+
+/**
+ * Virtual cursor position for animated AI drawing
+ */
+export interface VirtualCursorState {
+  /** Whether the cursor is visible */
+  visible: boolean;
+  /** X coordinate in canvas pixels */
+  x: number;
+  /** Y coordinate in canvas pixels */
+  y: number;
+  /** Current tool icon to display */
+  toolIcon: string;
+}
 
 /**
  * AI state interface
@@ -50,6 +65,16 @@ export interface AIState {
    * Error message if any operation failed
    */
   error: string | null;
+
+  /**
+   * Virtual cursor state for animated AI drawing
+   */
+  virtualCursor: VirtualCursorState;
+
+  /**
+   * Currently active AI tool (for UI highlighting)
+   */
+  activeAITool: ToolId | null;
 
   /**
    * Toggle AI panel visibility
@@ -141,6 +166,31 @@ export interface AIState {
    * Reset all AI state (for "New Chat" functionality)
    */
   resetState: () => void;
+
+  /**
+   * Set virtual cursor position
+   * @param {Partial<VirtualCursorState>} cursor - Cursor state updates
+   */
+  setVirtualCursor: (cursor: Partial<VirtualCursorState>) => void;
+
+  /**
+   * Show the virtual cursor at a position
+   * @param {number} x - X coordinate
+   * @param {number} y - Y coordinate
+   * @param {string} toolIcon - Tool icon name
+   */
+  showCursor: (x: number, y: number, toolIcon: string) => void;
+
+  /**
+   * Hide the virtual cursor
+   */
+  hideCursor: () => void;
+
+  /**
+   * Set the currently active AI tool for UI highlighting
+   * @param {ToolId | null} toolId - Tool ID or null to clear
+   */
+  setActiveAITool: (toolId: ToolId | null) => void;
 }
 
 /**
@@ -178,6 +228,16 @@ export const createAssistantMessage = (content: string, commands?: DrawingComman
 });
 
 /**
+ * Initial virtual cursor state
+ */
+const initialCursorState: VirtualCursorState = {
+  visible: false,
+  x: 0,
+  y: 0,
+  toolIcon: "pencil",
+};
+
+/**
  * Initial state values
  */
 const initialState = {
@@ -189,6 +249,8 @@ const initialState = {
   pendingCommands: [] as DrawingCommand[],
   executionProgress: null as ExecutionProgress | null,
   error: null as string | null,
+  virtualCursor: initialCursorState,
+  activeAITool: null as ToolId | null,
 };
 
 /**
@@ -276,5 +338,27 @@ export const useAIStore = create<AIState>((set, get) => ({
       // Keep panel visible if it was open
       showAIPanel: get().showAIPanel,
     });
+  },
+
+  setVirtualCursor: (cursor) => {
+    set((state) => ({
+      virtualCursor: { ...state.virtualCursor, ...cursor },
+    }));
+  },
+
+  showCursor: (x, y, toolIcon) => {
+    set({
+      virtualCursor: { visible: true, x, y, toolIcon },
+    });
+  },
+
+  hideCursor: () => {
+    set((state) => ({
+      virtualCursor: { ...state.virtualCursor, visible: false },
+    }));
+  },
+
+  setActiveAITool: (toolId) => {
+    set({ activeAITool: toolId });
   },
 }));

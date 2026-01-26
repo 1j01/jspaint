@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import type { ChatMessage as ChatMessageType } from "../../types/ai";
 import { ChatMessage } from "./ChatMessage";
 import { StreamingMessage } from "./StreamingMessage";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 /**
  * Props for the MessageList component
@@ -87,8 +88,10 @@ export function MessageList({ messages, streamContent, isStreaming }: MessageLis
             .map((msg) => (
               <ChatMessage key={msg.id} message={msg} />
             ))}
-          {/* Show streaming message if active */}
-          {isStreaming && <StreamingMessage content={streamContent} isStreaming={isStreaming} />}
+          {/* Show loading indicator when streaming starts but no content yet */}
+          {isStreaming && !streamContent && <LoadingIndicator isLoading={true} />}
+          {/* Show streaming message once content starts arriving */}
+          {isStreaming && streamContent && <StreamingMessage content={streamContent} isStreaming={isStreaming} />}
         </>
       )}
     </div>

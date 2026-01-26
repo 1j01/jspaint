@@ -39,6 +39,7 @@ import { getCanvasStyle, prepareCanvasResize, resizeSelection, restoreCanvasAfte
 import { commitSelectionToCanvas } from "../utils/selectionDrawing";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { CanvasResizeHandles } from "./CanvasResizeHandles";
+import { VirtualCursor } from "./VirtualCursor";
 import { CanvasTextBox } from "./CanvasTextBox";
 import { SelectionHandles } from "./SelectionHandles";
 
@@ -316,6 +317,7 @@ export function Canvas({
         aria-label={t("Drawing canvas")}
       />
       <CanvasOverlay ref={overlayRef} width={canvasWidth} height={canvasHeight} magnification={magnification} />
+      <VirtualCursor magnification={magnification} />
       {currentSelection && (
         <SelectionHandles selection={currentSelection} onResize={handleSelectionResize} containerRef={containerRef} />
       )}

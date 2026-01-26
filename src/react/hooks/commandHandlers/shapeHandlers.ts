@@ -42,7 +42,7 @@ export const handleLine: CommandHandler = (command: DrawingCommand, context: Com
   ctx.save();
   ctx.strokeStyle = drawColor;
   ctx.lineWidth = lineWidth;
-  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalCompositeOperation = "source-over";
   ctx.globalAlpha = 1;
   ctx.beginPath();
   ctx.moveTo(x1, y1);
@@ -55,10 +55,11 @@ export const handleLine: CommandHandler = (command: DrawingCommand, context: Com
   console.log("[handleLine] Pixel after drawing at", x1, y1, ":", Array.from(afterPixel.data));
 
   // Check if pixels changed
-  const changed = beforePixel.data[0] !== afterPixel.data[0] ||
-                  beforePixel.data[1] !== afterPixel.data[1] ||
-                  beforePixel.data[2] !== afterPixel.data[2] ||
-                  beforePixel.data[3] !== afterPixel.data[3];
+  const changed =
+    beforePixel.data[0] !== afterPixel.data[0] ||
+    beforePixel.data[1] !== afterPixel.data[1] ||
+    beforePixel.data[2] !== afterPixel.data[2] ||
+    beforePixel.data[3] !== afterPixel.data[3];
   console.log("[handleLine] Pixels changed:", changed);
 
   console.log("[handleLine] Line drawn successfully");
