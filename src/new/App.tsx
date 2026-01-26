@@ -179,7 +179,6 @@ function AppContent() {
 
   // Dialog state from uiStore
   const dialogs = useUIStore((state) => state.dialogs);
-  const openDialog = useUIStore((state) => state.openDialog);
   const closeDialog = useUIStore((state) => state.closeDialog);
 
   const activeTool = useMemo(

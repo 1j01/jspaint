@@ -1,5 +1,5 @@
-import { test, expect, type Page } from "@playwright/test";
-import { waitForAppLoaded, selectToolByIndex } from "./utils/test-helpers";
+import { expect, test, type Page } from "@playwright/test";
+import { selectToolByIndex, waitForAppLoaded } from "./utils/test-helpers";
 
 async function getCanvasScale(page: Page): Promise<number> {
   return await page.evaluate(() => {

@@ -1,5 +1,44 @@
-import React, { RefObject } from "react";
+import { RefObject } from "react";
 import { useTranslation } from "react-i18next";
+
+function abbreviateToThreeLetters(label: string): string {
+  // Remove common trailing punctuation (kept separate for consistent formatting)
+  const normalized = label.trim().replace(/[:\s]+$/u, "");
+  // Prefer letters over whitespace; keep Unicode code points intact
+  const lettersOnly = Array.from(normalized.replace(/\s+/gu, ""));
+  return lettersOnly.slice(0, 3).join("") || normalized;
+}
+
+function maybeAbbreviateWithColon(labelWithOptionalColon: string): string {
+  const normalized = labelWithOptionalColon.trim();
+  const withoutTrailingColon = normalized.replace(/[:\s]+$/u, "");
+  const letterCount = Array.from(withoutTrailingColon.replace(/\s+/gu, "")).length;
+
+  // Keep short labels as-is (e.g. Hue:, Sat:, Lum:, Red:, Blue:).
+  // Abbreviate only when translations are long and overflow the fixed layout.
+  if (letterCount <= 4) {
+    return normalized;
+  }
+
+  return `${abbreviateToThreeLetters(withoutTrailingColon)}:`;
+}
+
+function maybeAbbreviateColorSolid(label: string): string {
+  // Legacy UI uses a pipe separator, but some translations may omit it.
+  const normalized = label.trim();
+  const letterCount = Array.from(normalized.replace(/[\s|]/gu, "")).length;
+
+  // Keep the classic English label intact; abbreviate only if it gets long.
+  if (letterCount <= 12) {
+    return normalized;
+  }
+
+  if (normalized.includes("|")) {
+    const parts = normalized.split(/\s*\|\s*/u);
+    return parts.map((p) => abbreviateToThreeLetters(p)).join("|");
+  }
+  return abbreviateToThreeLetters(normalized);
+}
 
 interface ColorInputsProps {
   resultCanvasRef: RefObject<HTMLCanvasElement>;
@@ -47,6 +86,14 @@ export function ColorInputs({
   const { t } = useTranslation();
   const inputYSpacing = 22;
 
+  const colorSolidFull = t("Color|Solid");
+  const hueFull = t("Hue:");
+  const satFull = t("Sat:");
+  const lumFull = t("Lum:");
+  const redFull = t("Red:");
+  const greenFull = t("Green:");
+  const blueFull = t("Blue:");
+
   return (
     <>
       {/* Result canvas - shows current color */}
@@ -66,17 +113,22 @@ export function ColorInputs({
       {/* "Color|Solid" label */}
       <label
         htmlFor="color-solid-canvas"
+        title={colorSolidFull}
+        aria-label={colorSolidFull}
         style={{
           position: "absolute",
           left: 10,
           top: 244,
+          whiteSpace: "nowrap",
         }}
       >
-        {t("Color|Solid")}
+        {maybeAbbreviateColorSolid(colorSolidFull)}
       </label>
 
       {/* HSL inputs - column at left: 63, labels widened to 55px for translations */}
       <label
+        title={hueFull}
+        aria-label={hueFull}
         style={{
           position: "absolute",
           left: 63,
@@ -86,9 +138,10 @@ export function ColorInputs({
           width: 55,
           height: 20,
           lineHeight: "20px",
+          whiteSpace: "nowrap",
         }}
       >
-        {t("Hue:")}
+        {maybeAbbreviateWithColon(hueFull)}
       </label>
       <input
         type="text"
@@ -105,6 +158,8 @@ export function ColorInputs({
       />
 
       <label
+        title={satFull}
+        aria-label={satFull}
         style={{
           position: "absolute",
           left: 63,
@@ -114,9 +169,10 @@ export function ColorInputs({
           width: 55,
           height: 20,
           lineHeight: "20px",
+          whiteSpace: "nowrap",
         }}
       >
-        {t("Sat:")}
+        {maybeAbbreviateWithColon(satFull)}
       </label>
       <input
         type="text"
@@ -133,6 +189,8 @@ export function ColorInputs({
       />
 
       <label
+        title={lumFull}
+        aria-label={lumFull}
         style={{
           position: "absolute",
           left: 63,
@@ -142,9 +200,10 @@ export function ColorInputs({
           width: 55,
           height: 20,
           lineHeight: "20px",
+          whiteSpace: "nowrap",
         }}
       >
-        {t("Lum:")}
+        {maybeAbbreviateWithColon(lumFull)}
       </label>
       <input
         type="text"
@@ -162,6 +221,8 @@ export function ColorInputs({
 
       {/* RGB inputs - column at left: 158, labels widened to 55px for translations */}
       <label
+        title={redFull}
+        aria-label={redFull}
         style={{
           position: "absolute",
           left: 158,
@@ -171,9 +232,10 @@ export function ColorInputs({
           width: 55,
           height: 20,
           lineHeight: "20px",
+          whiteSpace: "nowrap",
         }}
       >
-        {t("Red:")}
+        {maybeAbbreviateWithColon(redFull)}
       </label>
       <input
         type="text"
@@ -190,6 +252,8 @@ export function ColorInputs({
       />
 
       <label
+        title={greenFull}
+        aria-label={greenFull}
         style={{
           position: "absolute",
           left: 158,
@@ -199,9 +263,10 @@ export function ColorInputs({
           width: 55,
           height: 20,
           lineHeight: "20px",
+          whiteSpace: "nowrap",
         }}
       >
-        {t("Green:")}
+        {maybeAbbreviateWithColon(greenFull)}
       </label>
       <input
         type="text"
@@ -218,6 +283,8 @@ export function ColorInputs({
       />
 
       <label
+        title={blueFull}
+        aria-label={blueFull}
         style={{
           position: "absolute",
           left: 158,
@@ -227,9 +294,10 @@ export function ColorInputs({
           width: 55,
           height: 20,
           lineHeight: "20px",
+          whiteSpace: "nowrap",
         }}
       >
-        {t("Blue:")}
+        {maybeAbbreviateWithColon(blueFull)}
       </label>
       <input
         type="text"
