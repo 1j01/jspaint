@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-MCPaint is a pixel-perfect MS Paint clone web application with both legacy jQuery (`/old/`) and modern React (`/new/`) versions. The React version uses Vite with React Compiler enabled, Zustand for state management, and IndexedDB for persistence. Based on [jspaint.app](https://jspaint.app), it recreates every tool and menu of MS Paint with high fidelity. Deployed on Vercel with Edge Functions for AI features.
+MCPaint is a pixel-perfect MS Paint clone web application with both legacy jQuery (`/old/`) and modern React (`/new/`) versions. The React version uses Vite with React Compiler enabled (`babel-plugin-react-compiler`), Zustand for state management, and IndexedDB for persistence. Based on [jspaint.app](https://jspaint.app), it recreates every tool and menu of MS Paint with high fidelity. Deployed on Vercel with Edge Functions for AI features.
+
+**Primary development target is the React app** (`/new/`). The legacy jQuery app is maintained for reference.
 
 ## Quick Start
 
@@ -134,11 +136,11 @@ Natural language canvas control via Claude API with Server-Sent Events (SSE). Se
 ANTHROPIC_API_KEY=sk-ant-...  # Required for AI features
 ```
 
-**Access**: View > AI Assistant
+**Access**: View > AI Assistant. See [docs/AI.md](docs/AI.md) for full command specifications (50+ drawing commands including batch operations, transforms, and color management).
 
 ## Testing
 
-Playwright tests run against the React app at `http://localhost:11822/new/`. The test server starts automatically.
+Playwright tests run against the React app at `http://localhost:11822/new/` (separate from dev server port 1999). The test server starts automatically via Playwright's `webServer` config.
 
 **Test Organization:**
 - `tests/*.spec.ts` - Core tool and menu tests
