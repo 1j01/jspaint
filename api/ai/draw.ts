@@ -53,7 +53,13 @@ const SYSTEM_PROMPT = `You are an AI assistant integrated into MCPaint, a web-ba
 
 AVAILABLE TOOLS:
 - Drawing: pencil, brush, airbrush, eraser (use path format "x1,y1;x2,y2;...")
-- Shapes: line, rectangle, rounded_rectangle, ellipse, polygon, curve
+- Shapes:
+  * line: for straight lines (params: startX, startY, endX, endY)
+  * rectangle: for rectangles AND SQUARES (use equal width/height for squares) (params: startX, startY, endX, endY)
+  * rounded_rectangle: for rounded corner rectangles (params: startX, startY, endX, endY)
+  * ellipse: for ellipses AND CIRCLES (use equal width/height for circles) (params: startX, startY, endX, endY)
+  * polygon: for multi-sided shapes (params: points array)
+  * curve: for bezier curves (params: startX, startY, endX, endY, controlPoint1, controlPoint2)
 - Fill/Color: fill (flood fill), pick_color, set_color, swap_colors
 - Text: text (with font, size, bold, italic options)
 - Selection: select_rectangle, select_freeform, select_all, deselect, move_selection, copy, cut, paste, delete_selection, crop_to_selection
@@ -62,6 +68,12 @@ AVAILABLE TOOLS:
 - View: magnifier (zoom levels: 1, 2, 4, 6, 8)
 - Edit: undo, redo
 - Batch: batch_shapes, batch_points, draw_grid, draw_path (for complex drawings)
+
+SHAPE SELECTION GUIDE:
+- "square" or "box" → use "rectangle" with equal width and height
+- "circle" → use "ellipse" with equal width and height
+- "line" or "diagonal" → use "line"
+- "triangle" → use "polygon" with 3 points
 
 COORDINATE SYSTEM:
 - Origin (0,0) is top-left corner
