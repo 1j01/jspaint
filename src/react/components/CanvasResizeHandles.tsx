@@ -133,10 +133,9 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
   useEffect(() => {
     // Schedule multiple updates to ensure containerRef is available
     // First RAF might fire before parent's useEffect, so we add a second one
-    let rafId1: number;
-    let rafId2: number;
+    let rafId2: number | null = null;
 
-    rafId1 = requestAnimationFrame(() => {
+    const rafId1 = requestAnimationFrame(() => {
       if (containerRef.current) {
         forceUpdate((n) => n + 1);
       } else {
@@ -149,7 +148,7 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
 
     return () => {
       cancelAnimationFrame(rafId1);
-      if (rafId2) cancelAnimationFrame(rafId2);
+      if (rafId2 != null) cancelAnimationFrame(rafId2);
     };
   }, [containerRef]);
 
@@ -214,20 +213,12 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
         height = Math.floor(originalRect.height - mouseCanvasY);
       }
 
-      let newRect = {
-        x: originalRect.x + deltaX,
-        y: originalRect.y + deltaY,
-        width,
-        height,
+      const newRect = {
+        x: Math.min(originalRect.x + deltaX, originalRect.x + originalRect.width),
+        y: Math.min(originalRect.y + deltaY, originalRect.y + originalRect.height),
+        width: Math.max(1, width),
+        height: Math.max(1, height),
       };
-
-      // Enforce minimum size
-      newRect.width = Math.max(1, newRect.width);
-      newRect.height = Math.max(1, newRect.height);
-
-      // Constrain position
-      newRect.x = Math.min(newRect.x, originalRect.x + originalRect.width);
-      newRect.y = Math.min(newRect.y, originalRect.y + originalRect.height);
 
       setGhostRect(newRect);
     },

@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
 const LOCALIZATION_DIR = path.join(__dirname, '../localization');
 const OUTPUT_DIR = path.join(__dirname, '../public/locales');
@@ -42,10 +43,13 @@ const LANGUAGE_METADATA = {
 	'zh-cn': { name: '简体中文', emoji: '🇨🇳' },
 };
 
-// Mock global function that localizations.js expects
-global.loaded_localizations = function(lang, translations) {
-	return translations;
-};
+// localizations.js expects a global callback named loaded_localizations.
+// We run the file in an isolated VM context and capture the returned mapping.
+const createLocalizationContext = () => ({
+	loaded_localizations: function(_lang, translations) {
+		return translations;
+	},
+});
 
 // Get list of language directories
 const langDirs = fs.readdirSync(LOCALIZATION_DIR)
@@ -74,8 +78,9 @@ langDirs.forEach(lang => {
 		// Load the localizations file
 		const content = fs.readFileSync(localizationFile, 'utf8');
 
-		// Execute the file to get the translations object
-		const translations = eval(content);
+		const translations = vm.runInNewContext(content, createLocalizationContext(), {
+			filename: localizationFile,
+		});
 
 		// Create output directory for this language
 		const outputLangDir = path.join(OUTPUT_DIR, lang);

@@ -16,7 +16,7 @@ function maybeAbbreviateWithColon(labelWithOptionalColon: string): string {
 
   // Keep short labels as-is (e.g. Hue:, Sat:, Lum:, Red:, Blue:).
   // Abbreviate only when translations are long and overflow the fixed layout.
-  if (letterCount <= 4) {
+  if (letterCount <= 6) {
     return normalized;
   }
 
@@ -125,7 +125,7 @@ export function ColorInputs({
         {maybeAbbreviateColorSolid(colorSolidFull)}
       </label>
 
-      {/* HSL inputs - column at left: 63, labels widened to 55px for translations */}
+      {/* HSL inputs - legacy positions */}
       <label
         title={hueFull}
         aria-label={hueFull}
@@ -135,7 +135,7 @@ export function ColorInputs({
           top: 202,
           textAlign: "right",
           display: "inline-block",
-          width: 55,
+          width: 40,
           height: 20,
           lineHeight: "20px",
           whiteSpace: "nowrap",
@@ -150,7 +150,7 @@ export function ColorInputs({
         onChange={(e) => onHslInput(e.target.value, setHue, 360)}
         style={{
           position: "absolute",
-          left: 121,
+          left: 106,
           top: 202,
           width: 21,
           height: 14,
@@ -166,7 +166,7 @@ export function ColorInputs({
           top: 202 + inputYSpacing,
           textAlign: "right",
           display: "inline-block",
-          width: 55,
+          width: 40,
           height: 20,
           lineHeight: "20px",
           whiteSpace: "nowrap",
@@ -181,7 +181,7 @@ export function ColorInputs({
         onChange={(e) => onHslInput(e.target.value, setSaturation, 100)}
         style={{
           position: "absolute",
-          left: 121,
+          left: 106,
           top: 202 + inputYSpacing,
           width: 21,
           height: 14,
@@ -197,7 +197,7 @@ export function ColorInputs({
           top: 202 + inputYSpacing * 2,
           textAlign: "right",
           display: "inline-block",
-          width: 55,
+          width: 40,
           height: 20,
           lineHeight: "20px",
           whiteSpace: "nowrap",
@@ -212,24 +212,24 @@ export function ColorInputs({
         onChange={(e) => onHslInput(e.target.value, setLuminosity, 100)}
         style={{
           position: "absolute",
-          left: 121,
+          left: 106,
           top: 202 + inputYSpacing * 2 + 1, // uneven spacing by 1px
           width: 21,
           height: 14,
         }}
       />
 
-      {/* RGB inputs - column at left: 158, labels widened to 55px for translations */}
+      {/* RGB inputs - legacy positions */}
       <label
         title={redFull}
         aria-label={redFull}
         style={{
           position: "absolute",
-          left: 158,
+          left: 143,
           top: 202,
           textAlign: "right",
           display: "inline-block",
-          width: 55,
+          width: 40,
           height: 20,
           lineHeight: "20px",
           whiteSpace: "nowrap",
@@ -244,7 +244,7 @@ export function ColorInputs({
         onChange={(e) => onRgbInput("r", e.target.value)}
         style={{
           position: "absolute",
-          left: 216,
+          left: 186,
           top: 202,
           width: 21,
           height: 14,
@@ -256,11 +256,11 @@ export function ColorInputs({
         aria-label={greenFull}
         style={{
           position: "absolute",
-          left: 158,
+          left: 143,
           top: 202 + inputYSpacing,
           textAlign: "right",
           display: "inline-block",
-          width: 55,
+          width: 40,
           height: 20,
           lineHeight: "20px",
           whiteSpace: "nowrap",
@@ -275,7 +275,7 @@ export function ColorInputs({
         onChange={(e) => onRgbInput("g", e.target.value)}
         style={{
           position: "absolute",
-          left: 216,
+          left: 186,
           top: 202 + inputYSpacing,
           width: 21,
           height: 14,
@@ -287,11 +287,11 @@ export function ColorInputs({
         aria-label={blueFull}
         style={{
           position: "absolute",
-          left: 158,
+          left: 143,
           top: 202 + inputYSpacing * 2,
           textAlign: "right",
           display: "inline-block",
-          width: 55,
+          width: 40,
           height: 20,
           lineHeight: "20px",
           whiteSpace: "nowrap",
@@ -306,7 +306,7 @@ export function ColorInputs({
         onChange={(e) => onRgbInput("b", e.target.value)}
         style={{
           position: "absolute",
-          left: 216,
+          left: 186,
           top: 202 + inputYSpacing * 2 + 1, // uneven spacing by 1px
           width: 21,
           height: 14,

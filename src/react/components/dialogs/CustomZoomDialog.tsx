@@ -1,7 +1,7 @@
 /**
  * Custom Zoom dialog for setting magnification level.
  */
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
@@ -67,7 +67,7 @@ export function CustomZoomDialog({ isOpen, onClose, onApply, currentMagnificatio
                 className="inset-deep"
                 value={customZoom}
                 onChange={(e) => {
-                  setCustomZoom(parseInt(e.target.value) || 100);
+                  setCustomZoom(parseInt(e.target.value, 10) || 100);
                   setUseCustom(true);
                 }}
                 min={1}

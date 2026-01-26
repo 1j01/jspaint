@@ -111,7 +111,7 @@ export function getFileExtension(filename: string): string {
  * const blob = await encodeToBlob(canvas, "png");
  * const jpegBlob = await encodeToBlob(canvas, "jpeg", 0.9);
  */
-export async function encodeToBlob(canvas: HTMLCanvasElement, formatId: string, quality?: number): Promise<Blob> {
+export function encodeToBlob(canvas: HTMLCanvasElement, formatId: string, quality?: number): Promise<Blob> {
   const format = IMAGE_FORMATS.find((f) => f.formatID === formatId);
 
   if (!format) {
@@ -475,7 +475,7 @@ export async function loadImageFile(file: File): Promise<ImageData> {
  * const imageData = await loadImageFromURL("https://example.com/image.png");
  * ctx.putImageData(imageData, 0, 0);
  */
-export async function loadImageFromURL(url: string): Promise<ImageData> {
+export function loadImageFromURL(url: string): Promise<ImageData> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous";

@@ -72,17 +72,12 @@ export function resolveHelpUrl(relativePath: string, basePath: string): string {
  * const tocFr = await parseHelpContents("/help/fr/mspaint.hhc");
  */
 export async function parseHelpContents(hhcPath: string): Promise<HelpItem[]> {
-  try {
-    const response = await fetch(hhcPath);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${hhcPath}: ${response.status}`);
-    }
-    const html = await response.text();
-    return parseHhcHtml(html, hhcPath);
-  } catch (error) {
-    // console.error("Failed to parse help contents:", error);
-    throw error;
+  const response = await fetch(hhcPath);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${hhcPath}: ${response.status}`);
   }
+  const html = await response.text();
+  return parseHhcHtml(html, hhcPath);
 }
 
 /**

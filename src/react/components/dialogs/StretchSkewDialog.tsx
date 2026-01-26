@@ -2,7 +2,7 @@
  * Stretch/Skew dialog for image transformations.
  * Windows 98 Paint style dialog with transform icons.
  */
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogButtons } from "./Dialog";
 
@@ -47,7 +47,7 @@ function TransformRow({ iconSrc, label, value, onChange, unit, min, max, default
           type="number"
           className="no-spinner inset-deep"
           value={value}
-          onChange={(e) => onChange(parseInt(e.target.value) || defaultValue)}
+          onChange={(e) => onChange(parseInt(e.target.value, 10) || defaultValue)}
           min={min}
           max={max}
           style={{ width: "40px" }}

@@ -10,9 +10,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dialog } from "./Dialog";
-import type { HistoryNode } from "../../utils/historyTree";
 import { useCurrentHistoryNode } from "../../context/state/useCurrentHistoryNode";
+import type { HistoryNode } from "../../utils/historyTree";
+import { Dialog } from "./Dialog";
 
 interface HistoryTreeDialogProps {
   isOpen: boolean;
@@ -97,7 +97,7 @@ export function HistoryTreeDialog({
     const allNodes = collectAllNodes(rootNode);
     const ancestors = new Set(getAncestors(currentNode).map((n) => n.id));
 
-    let result = allNodes.map((node) => ({
+    const result = allNodes.map((node) => ({
       node,
       isCurrent: node.id === currentNode?.id,
       isAncestorOfCurrent: ancestors.has(node.id),

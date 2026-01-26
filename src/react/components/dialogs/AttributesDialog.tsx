@@ -2,10 +2,10 @@
  * Attributes dialog for changing canvas/image properties.
  * Windows 98 Paint style dialog.
  */
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../constants/canvas";
 import { Dialog, DialogButtons } from "./Dialog";
-import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../../constants/canvas";
 
 export interface AttributesValues {
   width: number;
@@ -87,7 +87,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
               type="number"
               className="no-spinner inset-deep"
               value={width}
-              onChange={(e) => setWidth(parseInt(e.target.value) || 1)}
+              onChange={(e) => setWidth(parseInt(e.target.value, 10) || 1)}
               min={1}
               max={9999}
               style={{ width: "40px" }}
@@ -99,7 +99,7 @@ export function AttributesDialog({ isOpen, onClose, onApply, currentWidth, curre
               type="number"
               className="no-spinner inset-deep"
               value={height}
-              onChange={(e) => setHeight(parseInt(e.target.value) || 1)}
+              onChange={(e) => setHeight(parseInt(e.target.value, 10) || 1)}
               min={1}
               max={9999}
               style={{ width: "40px" }}

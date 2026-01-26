@@ -12,7 +12,7 @@
  * @param canvasRef - Reference to the canvas element
  * @param callbacks - Callbacks for success/error/state updates
  */
-export async function loadImageFileToCanvas(
+export function loadImageFileToCanvas(
   file: File,
   canvasRef: React.RefObject<HTMLCanvasElement>,
   callbacks: {

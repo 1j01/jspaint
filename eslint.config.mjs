@@ -1,9 +1,9 @@
 import js from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
+import prettierConfig from "eslint-config-prettier";
+import prettier from "eslint-plugin-prettier";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import prettier from "eslint-plugin-prettier";
-import prettierConfig from "eslint-config-prettier";
 
 /** @type {import("@types/eslint").Linter.FlatConfig[]} */
 export default [
@@ -147,7 +147,8 @@ export default [
 			// "@stylistic/line-comment-position": "off",
 			// "@stylistic/linebreak-style": "off",
 			// "@stylistic/lines-around-comment": ["error", ""], // TODO maybe (so many options...)
-			"@stylistic/lines-between-class-members": ["error", "never"],
+			// This conflicts with Prettier and creates lots of noisy failures.
+			"@stylistic/lines-between-class-members": "off",
 			// "@stylistic/max-len": ["error", ""], // TODO maybe along with changing export {} to individual exports
 			"@stylistic/max-statements-per-line": ["error", { "max": 4 }], // TODO: maybe decrease this
 			// TODO: lint .d.ts files, and ideally JSDoc comments
@@ -258,6 +259,25 @@ export default [
 			},
 		},
 	},
+	// Node scripts
+	{
+		files: ["scripts/**/*.mjs", "scripts/test-server.js"],
+		languageOptions: {
+			sourceType: "module",
+			globals: {
+				...globals.node,
+			},
+		},
+	},
+	{
+		files: ["scripts/**/*.cjs", "scripts/convert-localizations.js"],
+		languageOptions: {
+			sourceType: "commonjs",
+			globals: {
+				...globals.node,
+			},
+		},
+	},
 	// TypeScript/React configuration
 	...tseslint.configs.recommended.map((config) => ({
 		...config,
@@ -277,6 +297,9 @@ export default [
 		},
 		rules: {
 			"prettier/prettier": "warn",
+			// Alerts/confirms are used in a few places; prefer app dialogs, but don't
+			// block development on this rule.
+			"no-alert": "off",
 			"@typescript-eslint/no-unused-vars": ["warn", {
 				argsIgnorePattern: "^_",
 				varsIgnorePattern: "^_",

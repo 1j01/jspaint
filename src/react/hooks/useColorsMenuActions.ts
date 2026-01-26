@@ -40,7 +40,7 @@ export function useColorsMenuActions(params: UseColorsMenuActionsParams): Colors
 
   const colorsEditColors = useCallback(() => openDialog("editColors"), [openDialog]);
 
-  const colorsGetColors = useCallback(async () => {
+  const colorsGetColors = useCallback((): Promise<void> => {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".pal,.gpl,.txt,.hex";
@@ -63,6 +63,7 @@ export function useColorsMenuActions(params: UseColorsMenuActionsParams): Colors
       }
     };
     input.click();
+    return Promise.resolve();
   }, []);
 
   const colorsSaveColors = useCallback(async () => {
