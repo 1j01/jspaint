@@ -6,22 +6,22 @@ import { useShapeSettings } from "../context/state/useShapeSettings";
 import { drawPolygon, getShapeColors, Point } from "../utils/drawingUtils";
 
 export interface CurveState {
-	points: Point[];
-	previewImageData: ImageData | null;
-	active: boolean;
-	button: number; // Track which mouse button was used to start
+  points: Point[];
+  previewImageData: ImageData | null;
+  active: boolean;
+  button: number; // Track which mouse button was used to start
 }
 
 export interface PolygonState {
-	points: Point[];
-	previewImageData: ImageData | null;
-	active: boolean;
-	button: number; // Track which mouse button was used to start
+  points: Point[];
+  previewImageData: ImageData | null;
+  active: boolean;
+  button: number; // Track which mouse button was used to start
 }
 
 interface UseCanvasCurvePolygonProps {
-	canvasRef: RefObject<HTMLCanvasElement | null>;
-	getDrawColor: (button: number) => string;
+  canvasRef: RefObject<HTMLCanvasElement | null>;
+  getDrawColor: (button: number) => string;
 }
 
 /**
@@ -57,260 +57,260 @@ interface UseCanvasCurvePolygonProps {
  * }
  */
 export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurvePolygonProps) {
-	const { secondaryColor } = useColors();
-	const { fillStyle, lineWidth } = useShapeSettings();
-	const { saveState } = useHistory();
-	const { magnification } = useMagnification();
+  const { secondaryColor } = useColors();
+  const { fillStyle, lineWidth } = useShapeSettings();
+  const { saveState } = useHistory();
+  const { magnification } = useMagnification();
 
-	// Curve state
-	const curveState = useRef<CurveState>({
-		points: [],
-		previewImageData: null,
-		active: false,
-		button: 0,
-	});
+  // Curve state
+  const curveState = useRef<CurveState>({
+    points: [],
+    previewImageData: null,
+    active: false,
+    button: 0,
+  });
 
-	// Polygon state
-	const polygonState = useRef<PolygonState>({
-		points: [],
-		previewImageData: null,
-		active: false,
-		button: 0,
-	});
+  // Polygon state
+  const polygonState = useRef<PolygonState>({
+    points: [],
+    previewImageData: null,
+    active: false,
+    button: 0,
+  });
 
-	// Track last click for double-click detection (time + position)
-	const lastClickRef = useRef<{ x: number; y: number; time: number }>({
-		x: -Infinity,
-		y: -Infinity,
-		time: -Infinity,
-	});
+  // Track last click for double-click detection (time + position)
+  const lastClickRef = useRef<{ x: number; y: number; time: number }>({
+    x: -Infinity,
+    y: -Infinity,
+    time: -Infinity,
+  });
 
-	// Handle curve click
-	const handleCurveClick = useCallback(
-		(x: number, y: number, button: number, ctx: CanvasRenderingContext2D): boolean => {
-			const canvas = canvasRef.current;
-			if (!canvas) return false;
+  // Handle curve click
+  const handleCurveClick = useCallback(
+    (x: number, y: number, button: number, ctx: CanvasRenderingContext2D): boolean => {
+      const canvas = canvasRef.current;
+      if (!canvas) return false;
 
-			const curve = curveState.current;
-			const color = getDrawColor(curve.active ? curve.button : button);
-			const now = Date.now();
+      const curve = curveState.current;
+      const color = getDrawColor(curve.active ? curve.button : button);
+      const now = Date.now();
 
-			if (!curve.active) {
-				// First point - save canvas state
-				curve.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				curve.active = true;
-				curve.button = button; // Store button for preview
-				curve.points = [{ x, y }]; // Start point only; end point is set on the second click
-				void saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
-				lastClickRef.current = { x, y, time: now };
-				return true;
-			} else if (curve.points.length < 4) {
-				// Stage progression:
-				// 1 point: set end point
-				// 2 points: set first control point
-				// 3 points: set second control point and commit
-				curve.points.push({ x, y });
-				lastClickRef.current = { x, y, time: now };
+      if (!curve.active) {
+        // First point - save canvas state
+        curve.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        curve.active = true;
+        curve.button = button; // Store button for preview
+        curve.points = [{ x, y }]; // Start point only; end point is set on the second click
+        void saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        lastClickRef.current = { x, y, time: now };
+        return true;
+      } else if (curve.points.length < 4) {
+        // Stage progression:
+        // 1 point: set end point
+        // 2 points: set first control point
+        // 3 points: set second control point and commit
+        curve.points.push({ x, y });
+        lastClickRef.current = { x, y, time: now };
 
-				if (curve.points.length === 4) {
-					// Final point - commit the curve
-					if (curve.previewImageData) {
-						ctx.putImageData(curve.previewImageData, 0, 0);
-					}
-					// Draw final bezier curve
-					const p = curve.points;
-					ctx.strokeStyle = color;
-					ctx.lineWidth = lineWidth;
-					ctx.beginPath();
-					ctx.moveTo(p[0].x, p[0].y);
-					ctx.bezierCurveTo(p[2].x, p[2].y, p[3].x, p[3].y, p[1].x, p[1].y);
-					ctx.stroke();
-					// Reset curve state
-					curve.points = [];
-					curve.active = false;
-					curve.previewImageData = null;
-					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
-					return false;
-				}
-				return true;
-			}
-			return false;
-		},
-		[canvasRef, getDrawColor, lineWidth, saveState],
-	);
+        if (curve.points.length === 4) {
+          // Final point - commit the curve
+          if (curve.previewImageData) {
+            ctx.putImageData(curve.previewImageData, 0, 0);
+          }
+          // Draw final bezier curve
+          const p = curve.points;
+          ctx.strokeStyle = color;
+          ctx.lineWidth = lineWidth;
+          ctx.beginPath();
+          ctx.moveTo(p[0].x, p[0].y);
+          ctx.bezierCurveTo(p[2].x, p[2].y, p[3].x, p[3].y, p[1].x, p[1].y);
+          ctx.stroke();
+          // Reset curve state
+          curve.points = [];
+          curve.active = false;
+          curve.previewImageData = null;
+          lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
+          return false;
+        }
+        return true;
+      }
+      return false;
+    },
+    [canvasRef, getDrawColor, lineWidth, saveState],
+  );
 
-	// Preview curve during mouse move
-	const previewCurve = useCallback(
-		(x: number, y: number, ctx: CanvasRenderingContext2D): void => {
-			const curve = curveState.current;
-			if (!curve.active || !curve.previewImageData || curve.points.length < 1) return;
+  // Preview curve during mouse move
+  const previewCurve = useCallback(
+    (x: number, y: number, ctx: CanvasRenderingContext2D): void => {
+      const curve = curveState.current;
+      if (!curve.active || !curve.previewImageData || curve.points.length < 1) return;
 
-			ctx.putImageData(curve.previewImageData, 0, 0);
-			const p = curve.points;
-			ctx.strokeStyle = getDrawColor(curve.button);
-			ctx.lineWidth = lineWidth;
-			ctx.beginPath();
+      ctx.putImageData(curve.previewImageData, 0, 0);
+      const p = curve.points;
+      ctx.strokeStyle = getDrawColor(curve.button);
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
 
-			ctx.moveTo(p[0].x, p[0].y);
-			if (curve.points.length === 1) {
-				// Setting end point: preview straight line
-				ctx.lineTo(x, y);
-			} else if (curve.points.length === 2) {
-				// First bend: preview quadratic curve with control at cursor
-				ctx.quadraticCurveTo(x, y, p[1].x, p[1].y);
-			} else if (curve.points.length === 3) {
-				// Second bend: preview bezier curve with first control fixed and second at cursor
-				ctx.bezierCurveTo(p[2].x, p[2].y, x, y, p[1].x, p[1].y);
-			}
-			ctx.stroke();
-		},
-		[getDrawColor, lineWidth],
-	);
+      ctx.moveTo(p[0].x, p[0].y);
+      if (curve.points.length === 1) {
+        // Setting end point: preview straight line
+        ctx.lineTo(x, y);
+      } else if (curve.points.length === 2) {
+        // First bend: preview quadratic curve with control at cursor
+        ctx.quadraticCurveTo(x, y, p[1].x, p[1].y);
+      } else if (curve.points.length === 3) {
+        // Second bend: preview bezier curve with first control fixed and second at cursor
+        ctx.bezierCurveTo(p[2].x, p[2].y, x, y, p[1].x, p[1].y);
+      }
+      ctx.stroke();
+    },
+    [getDrawColor, lineWidth],
+  );
 
-	// Handle polygon click
-	const handlePolygonClick = useCallback(
-		(x: number, y: number, button: number, ctx: CanvasRenderingContext2D): boolean => {
-			const canvas = canvasRef.current;
-			if (!canvas) return false;
+  // Handle polygon click
+  const handlePolygonClick = useCallback(
+    (x: number, y: number, button: number, ctx: CanvasRenderingContext2D): boolean => {
+      const canvas = canvasRef.current;
+      if (!canvas) return false;
 
-			const poly = polygonState.current;
-			const color = getDrawColor(poly.active ? poly.button : button); // Use stored button if active
+      const poly = polygonState.current;
+      const color = getDrawColor(poly.active ? poly.button : button); // Use stored button if active
 
-			// Detect double-click (same position within time window, like jQuery implementation)
-			const now = Date.now();
-			const dx = x - lastClickRef.current.x;
-			const dy = y - lastClickRef.current.y;
-			const dt = now - lastClickRef.current.time;
-			const distance = Math.sqrt(dx * dx + dy * dy);
-			const isDoubleClick = distance < 4 && dt < 250; // Match jQuery: distance < 4.1010101 and dt < 250
+      // Detect double-click (same position within time window, like jQuery implementation)
+      const now = Date.now();
+      const dx = x - lastClickRef.current.x;
+      const dy = y - lastClickRef.current.y;
+      const dt = now - lastClickRef.current.time;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const isDoubleClick = distance < 4 && dt < 250; // Match jQuery: distance < 4.1010101 and dt < 250
 
-			if (!poly.active) {
-				// First point - start a new polygon
-				poly.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				poly.active = true;
-				poly.button = button; // Store button for preview
-				poly.points = [{ x, y }];
-				saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
-				lastClickRef.current = { x, y, time: now };
-				return true;
-			} else {
-				// Double-click or right-click closes the polygon
-				if ((isDoubleClick || button === 2) && poly.points.length > 2) {
-					// Close polygon - commit it
-					if (poly.previewImageData) {
-						ctx.putImageData(poly.previewImageData, 0, 0);
-					}
-					const { fillColor: shapeFillColor, strokeColor } = getShapeColors(fillStyle, color, secondaryColor);
-					drawPolygon(ctx, poly.points, strokeColor, shapeFillColor, lineWidth, true);
-					// Reset polygon state
-					poly.points = [];
-					poly.active = false;
-					poly.previewImageData = null;
-					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
-					return false;
-				} else if (button === 2) {
-					// Right-click with fewer than 3 points - cancel polygon
-					if (poly.previewImageData) {
-						ctx.putImageData(poly.previewImageData, 0, 0);
-					}
-					poly.points = [];
-					poly.active = false;
-					poly.previewImageData = null;
-					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
-					return false;
-				} else {
-					// Check if clicking near the starting point (close polygon)
-					// Scale threshold with magnification so it feels consistent in screen pixels
-					const start = poly.points[0];
-					const dist = Math.sqrt((x - start.x) ** 2 + (y - start.y) ** 2);
-					const closeThreshold = 10 / magnification;
-					if (dist < closeThreshold && poly.points.length > 2) {
-						// Close polygon - commit it
-						if (poly.previewImageData) {
-							ctx.putImageData(poly.previewImageData, 0, 0);
-						}
-						const { fillColor: shapeFillColor, strokeColor } = getShapeColors(fillStyle, color, secondaryColor);
-						drawPolygon(ctx, poly.points, strokeColor, shapeFillColor, lineWidth, true);
-						// Reset polygon state
-						poly.points = [];
-						poly.active = false;
-						poly.previewImageData = null;
-						lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
-						return false;
-					} else if (!isDoubleClick) {
-						// Single click not near start - add a new point
-						poly.points.push({ x, y });
-						lastClickRef.current = { x, y, time: now };
-						return true;
-					}
-				}
-			}
-			return false;
-		},
-		[canvasRef, getDrawColor, fillStyle, secondaryColor, lineWidth, saveState, magnification],
-	);
+      if (!poly.active) {
+        // First point - start a new polygon
+        poly.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        poly.active = true;
+        poly.button = button; // Store button for preview
+        poly.points = [{ x, y }];
+        saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        lastClickRef.current = { x, y, time: now };
+        return true;
+      } else {
+        // Double-click or right-click closes the polygon
+        if ((isDoubleClick || button === 2) && poly.points.length > 2) {
+          // Close polygon - commit it
+          if (poly.previewImageData) {
+            ctx.putImageData(poly.previewImageData, 0, 0);
+          }
+          const { fillColor: shapeFillColor, strokeColor } = getShapeColors(fillStyle, color, secondaryColor);
+          drawPolygon(ctx, poly.points, strokeColor, shapeFillColor, lineWidth, true);
+          // Reset polygon state
+          poly.points = [];
+          poly.active = false;
+          poly.previewImageData = null;
+          lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
+          return false;
+        } else if (button === 2) {
+          // Right-click with fewer than 3 points - cancel polygon
+          if (poly.previewImageData) {
+            ctx.putImageData(poly.previewImageData, 0, 0);
+          }
+          poly.points = [];
+          poly.active = false;
+          poly.previewImageData = null;
+          lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
+          return false;
+        } else {
+          // Check if clicking near the starting point (close polygon)
+          // Scale threshold with magnification so it feels consistent in screen pixels
+          const start = poly.points[0];
+          const dist = Math.sqrt((x - start.x) ** 2 + (y - start.y) ** 2);
+          const closeThreshold = 10 / magnification;
+          if (dist < closeThreshold && poly.points.length > 2) {
+            // Close polygon - commit it
+            if (poly.previewImageData) {
+              ctx.putImageData(poly.previewImageData, 0, 0);
+            }
+            const { fillColor: shapeFillColor, strokeColor } = getShapeColors(fillStyle, color, secondaryColor);
+            drawPolygon(ctx, poly.points, strokeColor, shapeFillColor, lineWidth, true);
+            // Reset polygon state
+            poly.points = [];
+            poly.active = false;
+            poly.previewImageData = null;
+            lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
+            return false;
+          } else if (!isDoubleClick) {
+            // Single click not near start - add a new point
+            poly.points.push({ x, y });
+            lastClickRef.current = { x, y, time: now };
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+    [canvasRef, getDrawColor, fillStyle, secondaryColor, lineWidth, saveState, magnification],
+  );
 
-	// Preview polygon during mouse move
-	const previewPolygon = useCallback(
-		(x: number, y: number, ctx: CanvasRenderingContext2D): void => {
-			const poly = polygonState.current;
-			if (!poly.active || !poly.previewImageData || poly.points.length === 0) return;
+  // Preview polygon during mouse move
+  const previewPolygon = useCallback(
+    (x: number, y: number, ctx: CanvasRenderingContext2D): void => {
+      const poly = polygonState.current;
+      if (!poly.active || !poly.previewImageData || poly.points.length === 0) return;
 
-			ctx.putImageData(poly.previewImageData, 0, 0);
-			// Draw polygon lines so far + line to current position
-			const allPoints = [...poly.points, { x, y }];
-			ctx.strokeStyle = getDrawColor(poly.button);
-			ctx.lineWidth = lineWidth;
-			ctx.beginPath();
-			ctx.moveTo(allPoints[0].x, allPoints[0].y);
-			for (let i = 1; i < allPoints.length; i++) {
-				ctx.lineTo(allPoints[i].x, allPoints[i].y);
-			}
-			ctx.stroke();
-		},
-		[getDrawColor, lineWidth],
-	);
+      ctx.putImageData(poly.previewImageData, 0, 0);
+      // Draw polygon lines so far + line to current position
+      const allPoints = [...poly.points, { x, y }];
+      ctx.strokeStyle = getDrawColor(poly.button);
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      ctx.moveTo(allPoints[0].x, allPoints[0].y);
+      for (let i = 1; i < allPoints.length; i++) {
+        ctx.lineTo(allPoints[i].x, allPoints[i].y);
+      }
+      ctx.stroke();
+    },
+    [getDrawColor, lineWidth],
+  );
 
-	// Check if curve tool is active
-	const isCurveActive = useCallback((): boolean => {
-		return curveState.current.active;
-	}, []);
+  // Check if curve tool is active
+  const isCurveActive = useCallback((): boolean => {
+    return curveState.current.active;
+  }, []);
 
-	// Check if polygon tool is active
-	const isPolygonActive = useCallback((): boolean => {
-		return polygonState.current.active;
-	}, []);
+  // Check if polygon tool is active
+  const isPolygonActive = useCallback((): boolean => {
+    return polygonState.current.active;
+  }, []);
 
-	// Reset curve state (for when switching tools)
-	const resetCurve = useCallback((): void => {
-		curveState.current = {
-			points: [],
-			previewImageData: null,
-			active: false,
-			button: 0,
-		};
-	}, []);
+  // Reset curve state (for when switching tools)
+  const resetCurve = useCallback((): void => {
+    curveState.current = {
+      points: [],
+      previewImageData: null,
+      active: false,
+      button: 0,
+    };
+  }, []);
 
-	// Reset polygon state (for when switching tools)
-	const resetPolygon = useCallback((): void => {
-		polygonState.current = {
-			points: [],
-			previewImageData: null,
-			active: false,
-			button: 0,
-		};
-	}, []);
+  // Reset polygon state (for when switching tools)
+  const resetPolygon = useCallback((): void => {
+    polygonState.current = {
+      points: [],
+      previewImageData: null,
+      active: false,
+      button: 0,
+    };
+  }, []);
 
-	return {
-		curveState,
-		polygonState,
-		handleCurveClick,
-		previewCurve,
-		handlePolygonClick,
-		previewPolygon,
-		isCurveActive,
-		isPolygonActive,
-		resetCurve,
-		resetPolygon,
-	};
+  return {
+    curveState,
+    polygonState,
+    handleCurveClick,
+    previewCurve,
+    handlePolygonClick,
+    previewPolygon,
+    isCurveActive,
+    isPolygonActive,
+    resetCurve,
+    resetPolygon,
+  };
 }

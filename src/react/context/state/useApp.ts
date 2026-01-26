@@ -9,13 +9,13 @@ import { useCanvasStore } from "./canvasStore";
  * @returns {{ state: { canvasWidth: number; canvasHeight: number } }} App state object
  */
 export function useApp() {
-	const canvasWidth = useCanvasStore((state) => state.canvasWidth);
-	const canvasHeight = useCanvasStore((state) => state.canvasHeight);
+  const canvasWidth = useCanvasStore((state) => state.canvasWidth);
+  const canvasHeight = useCanvasStore((state) => state.canvasHeight);
 
-	return {
-		state: {
-			canvasWidth,
-			canvasHeight,
-		},
-	};
+  return {
+    state: {
+      canvasWidth,
+      canvasHeight,
+    },
+  };
 }

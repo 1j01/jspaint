@@ -10,33 +10,33 @@ import { openDB, DBSchema, IDBPDatabase } from "idb";
  * Defines the structure of the MCPaint IndexedDB database
  */
 interface MCPaintDB extends DBSchema {
-	/**
-	 * Settings object store
-	 * Stores user preferences and configuration (key-value pairs)
-	 */
-	settings: {
-		key: string;
-		value: unknown;
-	};
-	/**
-	 * Canvas history object store
-	 * Stores canvas history entries for undo/redo functionality
-	 */
-	canvasHistory: {
-		key: string;
-		value: {
-			/** Timestamp when this state was saved */
-			timestamp: number;
-			/** Canvas image data as ArrayBuffer */
-			imageData: ArrayBuffer;
-			/** Canvas width in pixels */
-			width: number;
-			/** Canvas height in pixels */
-			height: number;
-		};
-		/** Index for querying by timestamp */
-		indexes: { "by-timestamp": number };
-	};
+  /**
+   * Settings object store
+   * Stores user preferences and configuration (key-value pairs)
+   */
+  settings: {
+    key: string;
+    value: unknown;
+  };
+  /**
+   * Canvas history object store
+   * Stores canvas history entries for undo/redo functionality
+   */
+  canvasHistory: {
+    key: string;
+    value: {
+      /** Timestamp when this state was saved */
+      timestamp: number;
+      /** Canvas image data as ArrayBuffer */
+      imageData: ArrayBuffer;
+      /** Canvas width in pixels */
+      width: number;
+      /** Canvas height in pixels */
+      height: number;
+    };
+    /** Index for querying by timestamp */
+    indexes: { "by-timestamp": number };
+  };
 }
 
 /** Database name */
@@ -53,24 +53,24 @@ let dbInstance: IDBPDatabase<MCPaintDB> | null = null;
  * @returns {Promise<IDBPDatabase<MCPaintDB>>} Database instance
  */
 async function initDB(): Promise<IDBPDatabase<MCPaintDB>> {
-	if (dbInstance) return dbInstance;
+  if (dbInstance) return dbInstance;
 
-	dbInstance = await openDB<MCPaintDB>(DB_NAME, DB_VERSION, {
-		upgrade(db) {
-			// Settings store for user preferences and UI state
-			if (!db.objectStoreNames.contains("settings")) {
-				db.createObjectStore("settings");
-			}
+  dbInstance = await openDB<MCPaintDB>(DB_NAME, DB_VERSION, {
+    upgrade(db) {
+      // Settings store for user preferences and UI state
+      if (!db.objectStoreNames.contains("settings")) {
+        db.createObjectStore("settings");
+      }
 
-			// Canvas history store for undo/redo with timestamps
-			if (!db.objectStoreNames.contains("canvasHistory")) {
-				const historyStore = db.createObjectStore("canvasHistory");
-				historyStore.createIndex("by-timestamp", "timestamp");
-			}
-		},
-	});
+      // Canvas history store for undo/redo with timestamps
+      if (!db.objectStoreNames.contains("canvasHistory")) {
+        const historyStore = db.createObjectStore("canvasHistory");
+        historyStore.createIndex("by-timestamp", "timestamp");
+      }
+    },
+  });
 
-	return dbInstance;
+  return dbInstance;
 }
 
 /**
@@ -80,12 +80,12 @@ async function initDB(): Promise<IDBPDatabase<MCPaintDB>> {
  * @returns {Promise<void>}
  */
 export async function saveSetting(key: string, value: unknown): Promise<void> {
-	try {
-		const db = await initDB();
-		await db.put("settings", value, key);
-	} catch (error) {
-		// console.error(`Failed to save setting ${key}:`, error);
-	}
+  try {
+    const db = await initDB();
+    await db.put("settings", value, key);
+  } catch (error) {
+    // console.error(`Failed to save setting ${key}:`, error);
+  }
 }
 
 /**
@@ -96,14 +96,14 @@ export async function saveSetting(key: string, value: unknown): Promise<void> {
  * @returns {Promise<T>} Setting value or default value
  */
 export async function loadSetting<T>(key: string, defaultValue: T): Promise<T> {
-	try {
-		const db = await initDB();
-		const value = await db.get("settings", key);
-		return value !== undefined ? (value as T) : defaultValue;
-	} catch (error) {
-		// console.error(`Failed to load setting ${key}:`, error);
-		return defaultValue;
-	}
+  try {
+    const db = await initDB();
+    const value = await db.get("settings", key);
+    return value !== undefined ? (value as T) : defaultValue;
+  } catch (error) {
+    // console.error(`Failed to load setting ${key}:`, error);
+    return defaultValue;
+  }
 }
 
 /**
@@ -112,12 +112,12 @@ export async function loadSetting<T>(key: string, defaultValue: T): Promise<T> {
  * @returns {Promise<void>}
  */
 export async function removeSetting(key: string): Promise<void> {
-	try {
-		const db = await initDB();
-		await db.delete("settings", key);
-	} catch (error) {
-		// console.error(`Failed to remove setting ${key}:`, error);
-	}
+  try {
+    const db = await initDB();
+    await db.delete("settings", key);
+  } catch (error) {
+    // console.error(`Failed to remove setting ${key}:`, error);
+  }
 }
 
 /**
@@ -127,23 +127,24 @@ export async function removeSetting(key: string): Promise<void> {
  * @param {ImageData} imageData - Canvas image data to save
  * @returns {Promise<void>}
  */
-export async function saveCanvasHistory(
-	id: string,
-	imageData: ImageData,
-): Promise<void> {
-	try {
-		const db = await initDB();
-		// Convert ImageData to ArrayBuffer for storage
-		const buffer = imageData.data.buffer;
-		await db.put("canvasHistory", {
-			timestamp: Date.now(),
-			imageData: buffer,
-			width: imageData.width,
-			height: imageData.height,
-		}, id);
-	} catch (error) {
-		// console.error(`Failed to save canvas history ${id}:`, error);
-	}
+export async function saveCanvasHistory(id: string, imageData: ImageData): Promise<void> {
+  try {
+    const db = await initDB();
+    // Convert ImageData to ArrayBuffer for storage
+    const buffer = imageData.data.buffer;
+    await db.put(
+      "canvasHistory",
+      {
+        timestamp: Date.now(),
+        imageData: buffer,
+        width: imageData.width,
+        height: imageData.height,
+      },
+      id,
+    );
+  } catch (error) {
+    // console.error(`Failed to save canvas history ${id}:`, error);
+  }
 }
 
 /**
@@ -153,18 +154,18 @@ export async function saveCanvasHistory(
  * @returns {Promise<ImageData | null>} Loaded ImageData or null if not found
  */
 export async function loadCanvasHistory(id: string): Promise<ImageData | null> {
-	try {
-		const db = await initDB();
-		const entry = await db.get("canvasHistory", id);
-		if (!entry) return null;
+  try {
+    const db = await initDB();
+    const entry = await db.get("canvasHistory", id);
+    if (!entry) return null;
 
-		// Reconstruct ImageData from stored buffer
-		const data = new Uint8ClampedArray(entry.imageData);
-		return new ImageData(data, entry.width, entry.height);
-	} catch (error) {
-		// console.error(`Failed to load canvas history ${id}:`, error);
-		return null;
-	}
+    // Reconstruct ImageData from stored buffer
+    const data = new Uint8ClampedArray(entry.imageData);
+    return new ImageData(data, entry.width, entry.height);
+  } catch (error) {
+    // console.error(`Failed to load canvas history ${id}:`, error);
+    return null;
+  }
 }
 
 /**
@@ -174,22 +175,22 @@ export async function loadCanvasHistory(id: string): Promise<ImageData | null> {
  * @returns {Promise<void>}
  */
 export async function cleanupCanvasHistory(keepCount: number = 50): Promise<void> {
-	try {
-		const db = await initDB();
-		const tx = db.transaction("canvasHistory", "readwrite");
-		const index = tx.store.index("by-timestamp");
-		const keys = await index.getAllKeys();
+  try {
+    const db = await initDB();
+    const tx = db.transaction("canvasHistory", "readwrite");
+    const index = tx.store.index("by-timestamp");
+    const keys = await index.getAllKeys();
 
-		// Remove oldest entries if we exceed the limit
-		if (keys.length > keepCount) {
-			const keysToDelete = keys.slice(0, keys.length - keepCount);
-			await Promise.all(keysToDelete.map(key => tx.store.delete(key)));
-		}
+    // Remove oldest entries if we exceed the limit
+    if (keys.length > keepCount) {
+      const keysToDelete = keys.slice(0, keys.length - keepCount);
+      await Promise.all(keysToDelete.map((key) => tx.store.delete(key)));
+    }
 
-		await tx.done;
-	} catch (error) {
-		// console.error("Failed to cleanup canvas history:", error);
-	}
+    await tx.done;
+  } catch (error) {
+    // console.error("Failed to cleanup canvas history:", error);
+  }
 }
 
 /**
@@ -198,11 +199,11 @@ export async function cleanupCanvasHistory(keepCount: number = 50): Promise<void
  * @returns {Promise<void>}
  */
 export async function clearAllData(): Promise<void> {
-	try {
-		const db = await initDB();
-		await db.clear("settings");
-		await db.clear("canvasHistory");
-	} catch (error) {
-		// console.error("Failed to clear all data:", error);
-	}
+  try {
+    const db = await initDB();
+    await db.clear("settings");
+    await db.clear("canvasHistory");
+  } catch (error) {
+    // console.error("Failed to clear all data:", error);
+  }
 }

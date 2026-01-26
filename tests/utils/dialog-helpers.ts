@@ -7,25 +7,21 @@ import { Page, Locator, expect } from "@playwright/test";
  * @param menuItem - Menu item text to click
  * @returns The dialog locator
  */
-export async function openDialogFromMenu(
-	page: Page,
-	menuName: string,
-	menuItem: string,
-): Promise<Locator> {
-	// Click the menu button
-	await page.locator(`.menu-button:has-text("${menuName}")`).click();
+export async function openDialogFromMenu(page: Page, menuName: string, menuItem: string): Promise<Locator> {
+  // Click the menu button
+  await page.locator(`.menu-button:has-text("${menuName}")`).click();
 
-	// Wait for menu popup to be visible
-	await page.waitForSelector(".menu-popup", { state: "visible" });
+  // Wait for menu popup to be visible
+  await page.waitForSelector(".menu-popup", { state: "visible" });
 
-	// Click the menu item
-	await page.locator(`.menu-popup .menu-item:has-text("${menuItem}")`).first().click();
+  // Click the menu item
+  await page.locator(`.menu-popup .menu-item:has-text("${menuItem}")`).first().click();
 
-	// Wait for dialog to appear
-	const dialog = page.locator(".window").last();
-	await expect(dialog).toBeVisible();
+  // Wait for dialog to appear
+  const dialog = page.locator(".window").last();
+  await expect(dialog).toBeVisible();
 
-	return dialog;
+  return dialog;
 }
 
 /**
@@ -37,29 +33,29 @@ export async function openDialogFromMenu(
  * @returns The dialog locator
  */
 export async function openDialogFromSubmenu(
-	page: Page,
-	menuName: string,
-	submenuName: string,
-	menuItem: string,
+  page: Page,
+  menuName: string,
+  submenuName: string,
+  menuItem: string,
 ): Promise<Locator> {
-	// Click the menu button
-	await page.locator(`.menu-button:has-text("${menuName}")`).click();
+  // Click the menu button
+  await page.locator(`.menu-button:has-text("${menuName}")`).click();
 
-	// Wait for menu popup to be visible
-	await page.waitForSelector(".menu-popup", { state: "visible" });
+  // Wait for menu popup to be visible
+  await page.waitForSelector(".menu-popup", { state: "visible" });
 
-	// Hover over submenu item to open submenu
-	await page.locator(`.menu-popup .menu-item:has-text("${submenuName}")`).first().hover();
+  // Hover over submenu item to open submenu
+  await page.locator(`.menu-popup .menu-item:has-text("${submenuName}")`).first().hover();
 
-	// Wait for submenu to appear and click the item
-	await page.waitForTimeout(100);
-	await page.locator(`.menu-popup .menu-item:has-text("${menuItem}")`).first().click();
+  // Wait for submenu to appear and click the item
+  await page.waitForTimeout(100);
+  await page.locator(`.menu-popup .menu-item:has-text("${menuItem}")`).first().click();
 
-	// Wait for dialog to appear
-	const dialog = page.locator(".window").last();
-	await expect(dialog).toBeVisible();
+  // Wait for dialog to appear
+  const dialog = page.locator(".window").last();
+  await expect(dialog).toBeVisible();
 
-	return dialog;
+  return dialog;
 }
 
 /**
@@ -68,8 +64,8 @@ export async function openDialogFromSubmenu(
  * @param buttonText - Button text to click (default: "OK")
  */
 export async function closeDialog(dialog: Locator, buttonText = "OK"): Promise<void> {
-	await dialog.locator(`button:has-text("${buttonText}")`).click();
-	await expect(dialog).not.toBeVisible();
+  await dialog.locator(`button:has-text("${buttonText}")`).click();
+  await expect(dialog).not.toBeVisible();
 }
 
 /**
@@ -77,8 +73,8 @@ export async function closeDialog(dialog: Locator, buttonText = "OK"): Promise<v
  * @param dialog - The dialog locator
  */
 export async function closeDialogWithX(dialog: Locator): Promise<void> {
-	await dialog.locator(".window-close-button, .title-bar-button.close").click();
-	await expect(dialog).not.toBeVisible();
+  await dialog.locator(".window-close-button, .title-bar-button.close").click();
+  await expect(dialog).not.toBeVisible();
 }
 
 /**
@@ -87,7 +83,7 @@ export async function closeDialogWithX(dialog: Locator): Promise<void> {
  * @returns The dialog title text
  */
 export async function getDialogTitle(dialog: Locator): Promise<string> {
-	return await dialog.locator(".window-title").textContent() || "";
+  return (await dialog.locator(".window-title").textContent()) || "";
 }
 
 /**
@@ -96,13 +92,9 @@ export async function getDialogTitle(dialog: Locator): Promise<string> {
  * @param inputSelector - CSS selector for the input (e.g., 'input[name="width"]')
  * @param value - The value to set
  */
-export async function setDialogNumberInput(
-	dialog: Locator,
-	inputSelector: string,
-	value: number,
-): Promise<void> {
-	const input = dialog.locator(inputSelector);
-	await input.fill(value.toString());
+export async function setDialogNumberInput(dialog: Locator, inputSelector: string, value: number): Promise<void> {
+  const input = dialog.locator(inputSelector);
+  await input.fill(value.toString());
 }
 
 /**
@@ -111,13 +103,9 @@ export async function setDialogNumberInput(
  * @param inputSelector - CSS selector for the input
  * @param value - The value to set
  */
-export async function setDialogTextInput(
-	dialog: Locator,
-	inputSelector: string,
-	value: string,
-): Promise<void> {
-	const input = dialog.locator(inputSelector);
-	await input.fill(value);
+export async function setDialogTextInput(dialog: Locator, inputSelector: string, value: string): Promise<void> {
+  const input = dialog.locator(inputSelector);
+  await input.fill(value);
 }
 
 /**
@@ -126,13 +114,10 @@ export async function setDialogTextInput(
  * @param inputSelector - CSS selector for the input
  * @returns The current value
  */
-export async function getDialogNumberInput(
-	dialog: Locator,
-	inputSelector: string,
-): Promise<number> {
-	const input = dialog.locator(inputSelector);
-	const value = await input.inputValue();
-	return parseInt(value, 10);
+export async function getDialogNumberInput(dialog: Locator, inputSelector: string): Promise<number> {
+  const input = dialog.locator(inputSelector);
+  const value = await input.inputValue();
+  return parseInt(value, 10);
 }
 
 /**
@@ -141,7 +126,7 @@ export async function getDialogNumberInput(
  * @param value - The radio input value to select
  */
 export async function selectRadioOption(dialog: Locator, value: string): Promise<void> {
-	await dialog.locator(`input[type="radio"][value="${value}"]`).check();
+  await dialog.locator(`input[type="radio"][value="${value}"]`).check();
 }
 
 /**
@@ -150,7 +135,7 @@ export async function selectRadioOption(dialog: Locator, value: string): Promise
  * @param labelText - The label text associated with the radio button
  */
 export async function selectRadioByLabel(dialog: Locator, labelText: string): Promise<void> {
-	await dialog.locator(`label:has-text("${labelText}") input[type="radio"]`).check();
+  await dialog.locator(`label:has-text("${labelText}") input[type="radio"]`).check();
 }
 
 /**
@@ -159,17 +144,13 @@ export async function selectRadioByLabel(dialog: Locator, labelText: string): Pr
  * @param selector - CSS selector for the checkbox
  * @param checked - Whether to check or uncheck
  */
-export async function setCheckbox(
-	dialog: Locator,
-	selector: string,
-	checked: boolean,
-): Promise<void> {
-	const checkbox = dialog.locator(selector);
-	if (checked) {
-		await checkbox.check();
-	} else {
-		await checkbox.uncheck();
-	}
+export async function setCheckbox(dialog: Locator, selector: string, checked: boolean): Promise<void> {
+  const checkbox = dialog.locator(selector);
+  if (checked) {
+    await checkbox.check();
+  } else {
+    await checkbox.uncheck();
+  }
 }
 
 /**
@@ -178,12 +159,8 @@ export async function setCheckbox(
  * @param selectSelector - CSS selector for the select element
  * @param value - The option value to select
  */
-export async function selectDropdownOption(
-	dialog: Locator,
-	selectSelector: string,
-	value: string,
-): Promise<void> {
-	await dialog.locator(selectSelector).selectOption(value);
+export async function selectDropdownOption(dialog: Locator, selectSelector: string, value: string): Promise<void> {
+  await dialog.locator(selectSelector).selectOption(value);
 }
 
 /**
@@ -192,7 +169,7 @@ export async function selectDropdownOption(
  * @param text - The text to check for
  */
 export async function verifyDialogContainsText(dialog: Locator, text: string): Promise<void> {
-	await expect(dialog).toContainText(text);
+  await expect(dialog).toContainText(text);
 }
 
 /**
@@ -201,7 +178,7 @@ export async function verifyDialogContainsText(dialog: Locator, text: string): P
  * @param timeout - Timeout in milliseconds (default: 5000)
  */
 export async function waitForDialogClosed(dialog: Locator, timeout = 5000): Promise<void> {
-	await expect(dialog).not.toBeVisible({ timeout });
+  await expect(dialog).not.toBeVisible({ timeout });
 }
 
 /**
@@ -210,13 +187,13 @@ export async function waitForDialogClosed(dialog: Locator, timeout = 5000): Prom
  * @returns Array of dialog locators
  */
 export async function getVisibleDialogs(page: Page): Promise<Locator[]> {
-	const dialogs = page.locator(".window:visible");
-	const count = await dialogs.count();
-	const result: Locator[] = [];
-	for (let i = 0; i < count; i++) {
-		result.push(dialogs.nth(i));
-	}
-	return result;
+  const dialogs = page.locator(".window:visible");
+  const count = await dialogs.count();
+  const result: Locator[] = [];
+  for (let i = 0; i < count; i++) {
+    result.push(dialogs.nth(i));
+  }
+  return result;
 }
 
 /**
@@ -225,7 +202,7 @@ export async function getVisibleDialogs(page: Page): Promise<Locator[]> {
  * @param buttonText - The button text to click
  */
 export async function clickDialogButton(dialog: Locator, buttonText: string): Promise<void> {
-	await dialog.locator(`button:has-text("${buttonText}")`).click();
+  await dialog.locator(`button:has-text("${buttonText}")`).click();
 }
 
 /**
@@ -235,12 +212,8 @@ export async function clickDialogButton(dialog: Locator, buttonText: string): Pr
  * @param timeout - Timeout in milliseconds
  * @returns The dialog locator
  */
-export async function waitForDialogWithTitle(
-	page: Page,
-	titleText: string,
-	timeout = 5000,
-): Promise<Locator> {
-	const dialog = page.locator(`.window:has(.window-title:has-text("${titleText}"))`);
-	await expect(dialog).toBeVisible({ timeout });
-	return dialog;
+export async function waitForDialogWithTitle(page: Page, titleText: string, timeout = 5000): Promise<Locator> {
+  const dialog = page.locator(`.window:has(.window-title:has-text("${titleText}"))`);
+  await expect(dialog).toBeVisible({ timeout });
+  return dialog;
 }

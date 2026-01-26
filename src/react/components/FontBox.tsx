@@ -4,58 +4,58 @@ import { Component } from "./Component";
 
 // Extend Window interface for Local Font Access API
 declare global {
-	interface Window {
-		queryLocalFonts?: () => Promise<{ family: string }[]>;
-	}
+  interface Window {
+    queryLocalFonts?: () => Promise<{ family: string }[]>;
+  }
 }
 
 /**
  * Font formatting state
  */
 interface FontFormattingState {
-	family: string;
-	size: number;
-	bold: boolean;
-	italic: boolean;
-	underline: boolean;
-	vertical: boolean;
+  family: string;
+  size: number;
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  vertical: boolean;
 }
 
 /**
  * Props for FontBox component
  */
 interface FontBoxProps {
-	/** List of available font families (auto-detected if not provided) */
-	fonts?: string[];
-	/** Default font family (default: "Arial") */
-	defaultFamily?: string;
-	/** Default font size in points (default: 12) */
-	defaultSize?: number;
-	/** Default formatting toggles */
-	defaultFormatting?: {
-		bold?: boolean;
-		italic?: boolean;
-		underline?: boolean;
-		vertical?: boolean;
-	};
-	/** Callback when font state changes */
-	onChange?: (state: FontFormattingState) => void;
+  /** List of available font families (auto-detected if not provided) */
+  fonts?: string[];
+  /** Default font family (default: "Arial") */
+  defaultFamily?: string;
+  /** Default font size in points (default: 12) */
+  defaultSize?: number;
+  /** Default formatting toggles */
+  defaultFormatting?: {
+    bold?: boolean;
+    italic?: boolean;
+    underline?: boolean;
+    vertical?: boolean;
+  };
+  /** Callback when font state changes */
+  onChange?: (state: FontFormattingState) => void;
 }
 
 /**
  * Fallback font list when Local Font Access API is unavailable
  */
 const FALLBACK_FONTS: string[] = [
-	"Arial",
-	"Calibri",
-	"Cambria",
-	"Courier New",
-	"Georgia",
-	"Helvetica",
-	"Liberation Sans",
-	"Times New Roman",
-	"Trebuchet MS",
-	"Verdana",
+  "Arial",
+  "Calibri",
+  "Cambria",
+  "Courier New",
+  "Georgia",
+  "Helvetica",
+  "Liberation Sans",
+  "Times New Roman",
+  "Trebuchet MS",
+  "Verdana",
 ];
 
 /**
@@ -66,8 +66,8 @@ const FALLBACK_FONTS: string[] = [
  * @returns {string[]} Unique, sorted font list
  */
 const ensureFonts = (fonts?: string[]): string[] => {
-	const source = !fonts || !fonts.length ? FALLBACK_FONTS : fonts;
-	return Array.from(new Set(source)).sort((a, b) => a.localeCompare(b));
+  const source = !fonts || !fonts.length ? FALLBACK_FONTS : fonts;
+  return Array.from(new Set(source)).sort((a, b) => a.localeCompare(b));
 };
 
 /**
@@ -110,182 +110,178 @@ const getFontLabel = (font: string): string => font.replace(/"/g, "").trim();
  * />
  */
 export function FontBox({
-	fonts: fontsProp,
-	defaultFamily = "Arial",
-	defaultSize = 12,
-	defaultFormatting,
-	onChange,
+  fonts: fontsProp,
+  defaultFamily = "Arial",
+  defaultSize = 12,
+  defaultFormatting,
+  onChange,
 }: FontBoxProps) {
-	const { t } = useTranslation();
-	const [availableFonts, setAvailableFonts] = useState(() => ensureFonts(fontsProp));
-	const [family, setFamily] = useState(defaultFamily);
-	const [size, setSize] = useState(defaultSize);
-	const [bold, setBold] = useState(defaultFormatting?.bold ?? false);
-	const [italic, setItalic] = useState(defaultFormatting?.italic ?? false);
-	const [underline, setUnderline] = useState(defaultFormatting?.underline ?? false);
-	const [vertical, setVertical] = useState(defaultFormatting?.vertical ?? false);
-	const [loadingFonts, setLoadingFonts] = useState(false);
-	const [fontError, setFontError] = useState<string | null>(null);
+  const { t } = useTranslation();
+  const [availableFonts, setAvailableFonts] = useState(() => ensureFonts(fontsProp));
+  const [family, setFamily] = useState(defaultFamily);
+  const [size, setSize] = useState(defaultSize);
+  const [bold, setBold] = useState(defaultFormatting?.bold ?? false);
+  const [italic, setItalic] = useState(defaultFormatting?.italic ?? false);
+  const [underline, setUnderline] = useState(defaultFormatting?.underline ?? false);
+  const [vertical, setVertical] = useState(defaultFormatting?.vertical ?? false);
+  const [loadingFonts, setLoadingFonts] = useState(false);
+  const [fontError, setFontError] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (!fontsProp || !fontsProp.length) {
-			let cancelled = false;
-			const loadFonts = async () => {
-				if (typeof window === "undefined") {
-					setAvailableFonts(ensureFonts(fontsProp));
-					return;
-				}
-				setLoadingFonts(true);
-				try {
-					if (window.queryLocalFonts) {
-						const fonts = await window.queryLocalFonts();
-						if (cancelled) {
-							return;
-						}
-						if (fonts.length) {
-							const names = fonts.map((font) => font.family).filter(Boolean);
-							setAvailableFonts(ensureFonts(names));
-							setFontError(null);
-							setLoadingFonts(false);
-							return;
-						}
-					}
-				} catch (error) {
-					if (!cancelled) {
-						// console.warn("Failed to enumerate local fonts", error);
-						setFontError("Local font access denied or unavailable.");
-					}
-				}
+  useEffect(() => {
+    if (!fontsProp || !fontsProp.length) {
+      let cancelled = false;
+      const loadFonts = async () => {
+        if (typeof window === "undefined") {
+          setAvailableFonts(ensureFonts(fontsProp));
+          return;
+        }
+        setLoadingFonts(true);
+        try {
+          if (window.queryLocalFonts) {
+            const fonts = await window.queryLocalFonts();
+            if (cancelled) {
+              return;
+            }
+            if (fonts.length) {
+              const names = fonts.map((font) => font.family).filter(Boolean);
+              setAvailableFonts(ensureFonts(names));
+              setFontError(null);
+              setLoadingFonts(false);
+              return;
+            }
+          }
+        } catch (error) {
+          if (!cancelled) {
+            // console.warn("Failed to enumerate local fonts", error);
+            setFontError("Local font access denied or unavailable.");
+          }
+        }
 
-				if (cancelled) {
-					return;
-				}
-				try {
-					if (typeof document !== "undefined" && document.fonts && document.fonts.size > 0) {
-						const names = Array.from(document.fonts).map((fontFace) => fontFace.family);
-						if (names.length) {
-							setAvailableFonts(ensureFonts(names));
-							setFontError(null);
-							setLoadingFonts(false);
-							return;
-						}
-					}
-				} catch (error) {
-					if (!cancelled) {
-						// console.warn("Unable to read document fonts", error);
-					}
-				}
+        if (cancelled) {
+          return;
+        }
+        try {
+          if (typeof document !== "undefined" && document.fonts && document.fonts.size > 0) {
+            const names = Array.from(document.fonts).map((fontFace) => fontFace.family);
+            if (names.length) {
+              setAvailableFonts(ensureFonts(names));
+              setFontError(null);
+              setLoadingFonts(false);
+              return;
+            }
+          }
+        } catch (error) {
+          if (!cancelled) {
+            // console.warn("Unable to read document fonts", error);
+          }
+        }
 
-				if (!cancelled) {
-					setAvailableFonts(ensureFonts(fontsProp));
-					setLoadingFonts(false);
-				}
-			};
+        if (!cancelled) {
+          setAvailableFonts(ensureFonts(fontsProp));
+          setLoadingFonts(false);
+        }
+      };
 
-			loadFonts();
-			return () => {
-				cancelled = true;
-			};
-		}
+      loadFonts();
+      return () => {
+        cancelled = true;
+      };
+    }
 
-		setAvailableFonts(ensureFonts(fontsProp));
-	}, [fontsProp]);
+    setAvailableFonts(ensureFonts(fontsProp));
+  }, [fontsProp]);
 
-	const formattingState = useMemo(
-		() => ({
-			family,
-			size,
-			bold,
-			italic,
-			underline,
-			vertical,
-		}),
-		[family, size, bold, italic, underline, vertical],
-	);
+  const formattingState = useMemo(
+    () => ({
+      family,
+      size,
+      bold,
+      italic,
+      underline,
+      vertical,
+    }),
+    [family, size, bold, italic, underline, vertical],
+  );
 
-	useEffect(() => {
-		onChange?.(formattingState);
-	}, [formattingState, onChange]);
+  useEffect(() => {
+    onChange?.(formattingState);
+  }, [formattingState, onChange]);
 
-	const toggle = useCallback((setter: Dispatch<SetStateAction<boolean>>) => {
-		setter((prev) => !prev);
-	}, []);
+  const toggle = useCallback((setter: Dispatch<SetStateAction<boolean>>) => {
+    setter((prev) => !prev);
+  }, []);
 
-	return (
-		<Component title={t("Fonts")} className="font-box-component" orientation="tall">
-			<form className="font-box" aria-label={t("Font settings")} onSubmit={(event) => event.preventDefault()}>
-				<label className="sr-only" htmlFor="font-family-select">
-					{t("Font family")}
-				</label>
-				<select
-					id="font-family-select"
-					className="font-family-select"
-					value={family}
-					onChange={(event) => setFamily(event.target.value)}
-					aria-describedby="font-family-status"
-				>
-					{availableFonts.map((font) => (
-						<option key={font} value={font} style={{ fontFamily: font }}>
-							{getFontLabel(font)}
-						</option>
-					))}
-				</select>
-				<label className="sr-only" htmlFor="font-size-input">
-					{t("Font size")}
-				</label>
-				<input
-					id="font-size-input"
-					type="number"
-					min={6}
-					max={200}
-					value={size}
-					onChange={(event) => setSize(Number(event.target.value) || defaultSize)}
-					aria-label={t("Font size in points")}
-				/>
-				<div className="font-style-toggles" role="toolbar" aria-label={t("Text formatting")}>
-					<button
-						type="button"
-						className={bold ? "active" : ""}
-						onClick={() => toggle(setBold)}
-						aria-pressed={bold}
-					>
-						B
-					</button>
-					<button
-						type="button"
-						className={italic ? "active" : ""}
-						onClick={() => toggle(setItalic)}
-						aria-pressed={italic}
-					>
-						I
-					</button>
-					<button
-						type="button"
-						className={underline ? "active" : ""}
-						onClick={() => toggle(setUnderline)}
-						aria-pressed={underline}
-					>
-						U
-					</button>
-					<button
-						type="button"
-						className={vertical ? "active" : ""}
-						onClick={() => toggle(setVertical)}
-						aria-pressed={vertical}
-						disabled
-					>
-						𖾓
-					</button>
-				</div>
-				<p id="font-family-status" className="font-status" aria-live="polite">
-					{loadingFonts
-						? t("Loading fonts...")
-						: (fontError ? t(fontError) :
-							t("Using {{count}} font", { count: availableFonts.length }))}
-				</p>
-			</form>
-		</Component>
-	);
+  return (
+    <Component title={t("Fonts")} className="font-box-component" orientation="tall">
+      <form className="font-box" aria-label={t("Font settings")} onSubmit={(event) => event.preventDefault()}>
+        <label className="sr-only" htmlFor="font-family-select">
+          {t("Font family")}
+        </label>
+        <select
+          id="font-family-select"
+          className="font-family-select"
+          value={family}
+          onChange={(event) => setFamily(event.target.value)}
+          aria-describedby="font-family-status"
+        >
+          {availableFonts.map((font) => (
+            <option key={font} value={font} style={{ fontFamily: font }}>
+              {getFontLabel(font)}
+            </option>
+          ))}
+        </select>
+        <label className="sr-only" htmlFor="font-size-input">
+          {t("Font size")}
+        </label>
+        <input
+          id="font-size-input"
+          type="number"
+          min={6}
+          max={200}
+          value={size}
+          onChange={(event) => setSize(Number(event.target.value) || defaultSize)}
+          aria-label={t("Font size in points")}
+        />
+        <div className="font-style-toggles" role="toolbar" aria-label={t("Text formatting")}>
+          <button type="button" className={bold ? "active" : ""} onClick={() => toggle(setBold)} aria-pressed={bold}>
+            B
+          </button>
+          <button
+            type="button"
+            className={italic ? "active" : ""}
+            onClick={() => toggle(setItalic)}
+            aria-pressed={italic}
+          >
+            I
+          </button>
+          <button
+            type="button"
+            className={underline ? "active" : ""}
+            onClick={() => toggle(setUnderline)}
+            aria-pressed={underline}
+          >
+            U
+          </button>
+          <button
+            type="button"
+            className={vertical ? "active" : ""}
+            onClick={() => toggle(setVertical)}
+            aria-pressed={vertical}
+            disabled
+          >
+            𖾓
+          </button>
+        </div>
+        <p id="font-family-status" className="font-status" aria-live="polite">
+          {loadingFonts
+            ? t("Loading fonts...")
+            : fontError
+              ? t(fontError)
+              : t("Using {{count}} font", { count: availableFonts.length })}
+        </p>
+      </form>
+    </Component>
+  );
 }
 
 export default FontBox;

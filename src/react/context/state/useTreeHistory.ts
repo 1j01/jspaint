@@ -23,27 +23,27 @@ import { useHistoryStore } from "./historyStore";
  * }} Tree history state and actions
  */
 export function useTreeHistory() {
-	const historyTree = useHistoryStore((state) => state.historyTree);
-	const getRoot = useHistoryStore((state) => state.getRoot);
-	const canUndo = useHistoryStore((state) => state.canUndo);
-	const canRedo = useHistoryStore((state) => state.canRedo);
-	const pushState = useHistoryStore((state) => state.pushState);
-	const undo = useHistoryStore((state) => state.undo);
-	const redo = useHistoryStore((state) => state.redo);
-	const goToNode = useHistoryStore((state) => state.goToNode);
-	const getAllNodes = useHistoryStore((state) => state.getAllNodes);
-	const pruneHistory = useHistoryStore((state) => state.pruneHistory);
+  const historyTree = useHistoryStore((state) => state.historyTree);
+  const getRoot = useHistoryStore((state) => state.getRoot);
+  const canUndo = useHistoryStore((state) => state.canUndo);
+  const canRedo = useHistoryStore((state) => state.canRedo);
+  const pushState = useHistoryStore((state) => state.pushState);
+  const undo = useHistoryStore((state) => state.undo);
+  const redo = useHistoryStore((state) => state.redo);
+  const goToNode = useHistoryStore((state) => state.goToNode);
+  const getAllNodes = useHistoryStore((state) => state.getAllNodes);
+  const pruneHistory = useHistoryStore((state) => state.pruneHistory);
 
-	return {
-		historyTree,
-		getRoot,
-		canUndo,
-		canRedo,
-		pushState,
-		undo,
-		redo,
-		goToNode,
-		getAllNodes,
-		pruneHistory,
-	};
+  return {
+    historyTree,
+    getRoot,
+    canUndo,
+    canRedo,
+    pushState,
+    undo,
+    redo,
+    goToNode,
+    getAllNodes,
+    pruneHistory,
+  };
 }

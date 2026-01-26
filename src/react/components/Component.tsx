@@ -4,14 +4,14 @@ import React, { useMemo, CSSProperties, ReactNode } from "react";
  * Props for Component wrapper
  */
 interface ComponentProps {
-	/** Component title (stored in data-component-title attribute) */
-	title: string;
-	/** CSS class name for component type (e.g., "tools-component", "colors-component") */
-	className?: string;
-	/** Layout orientation: "tall" for vertical, "wide" for horizontal */
-	orientation?: "tall" | "wide";
-	/** Component content */
-	children: ReactNode;
+  /** Component title (stored in data-component-title attribute) */
+  title: string;
+  /** CSS class name for component type (e.g., "tools-component", "colors-component") */
+  className?: string;
+  /** Layout orientation: "tall" for vertical, "wide" for horizontal */
+  orientation?: "tall" | "wide";
+  /** Component content */
+  children: ReactNode;
 }
 
 /**
@@ -35,30 +35,30 @@ interface ComponentProps {
  * </Component>
  */
 export function Component({ title, className = "", orientation = "tall", children }: ComponentProps) {
-	const resolvedClassName = useMemo(
-		() => ["component", className, orientation].filter(Boolean).join(" "),
-		[className, orientation],
-	);
+  const resolvedClassName = useMemo(
+    () => ["component", className, orientation].filter(Boolean).join(" "),
+    [className, orientation],
+  );
 
-	const style = useMemo((): CSSProperties => {
-		const baseStyle: CSSProperties = { touchAction: "none" };
-		if (className.includes("colors-component") && orientation === "wide") {
-			baseStyle.position = "relative";
-			const isRTL = typeof document !== "undefined" && document.documentElement.dir === "rtl";
-			if (isRTL) {
-				baseStyle.marginRight = 3;
-			} else {
-				baseStyle.marginLeft = 3;
-			}
-		}
-		return baseStyle;
-	}, [className, orientation]);
+  const style = useMemo((): CSSProperties => {
+    const baseStyle: CSSProperties = { touchAction: "none" };
+    if (className.includes("colors-component") && orientation === "wide") {
+      baseStyle.position = "relative";
+      const isRTL = typeof document !== "undefined" && document.documentElement.dir === "rtl";
+      if (isRTL) {
+        baseStyle.marginRight = 3;
+      } else {
+        baseStyle.marginLeft = 3;
+      }
+    }
+    return baseStyle;
+  }, [className, orientation]);
 
-	return (
-		<div className={resolvedClassName} data-component-title={title} style={style}>
-			{children}
-		</div>
-	);
+  return (
+    <div className={resolvedClassName} data-component-title={title} style={style}>
+      {children}
+    </div>
+  );
 }
 
 export default Component;

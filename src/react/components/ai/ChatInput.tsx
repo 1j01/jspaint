@@ -30,14 +30,7 @@ export interface ChatInputProps {
  * @param {ChatInputProps} props - Component props
  * @returns {JSX.Element} The rendered chat input
  */
-export function ChatInput({
-  onSend,
-  onCancel,
-  onClear,
-  isStreaming,
-  isExecuting,
-  placeholder,
-}: ChatInputProps) {
+export function ChatInput({ onSend, onCancel, onClear, isStreaming, isExecuting, placeholder }: ChatInputProps) {
   const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);

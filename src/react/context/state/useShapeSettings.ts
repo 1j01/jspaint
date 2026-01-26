@@ -13,15 +13,15 @@ import { useSettingsStore } from "./settingsStore";
  * }} Shape settings and actions
  */
 export function useShapeSettings() {
-	const fillStyle = useSettingsStore((state) => state.fillStyle);
-	const lineWidth = useSettingsStore((state) => state.lineWidth);
-	const setFillStyle = useSettingsStore((state) => state.setFillStyle);
-	const setLineWidth = useSettingsStore((state) => state.setLineWidth);
+  const fillStyle = useSettingsStore((state) => state.fillStyle);
+  const lineWidth = useSettingsStore((state) => state.lineWidth);
+  const setFillStyle = useSettingsStore((state) => state.setFillStyle);
+  const setLineWidth = useSettingsStore((state) => state.setLineWidth);
 
-	return {
-		fillStyle,
-		lineWidth,
-		setFillStyle,
-		setLineWidth,
-	};
+  return {
+    fillStyle,
+    lineWidth,
+    setFillStyle,
+    setLineWidth,
+  };
 }

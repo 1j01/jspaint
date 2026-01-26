@@ -9,12 +9,12 @@
  */
 
 export interface HelpItem {
-	id: string; // Unique identifier for each item
-	title: string; // Display name
-	url?: string; // URL path to the help page (resolved to absolute path)
-	name: string; // Original name from .hhc file
-	local?: string; // Original local path from .hhc file
-	children?: HelpItem[];
+  id: string; // Unique identifier for each item
+  title: string; // Display name
+  url?: string; // URL path to the help page (resolved to absolute path)
+  name: string; // Original name from .hhc file
+  local?: string; // Original local path from .hhc file
+  children?: HelpItem[];
 }
 
 /**
@@ -37,22 +37,22 @@ export interface HelpItem {
  * // Returns "/help/readme.html"
  */
 export function resolveHelpUrl(relativePath: string, basePath: string): string {
-	// Already absolute? Return as-is
-	if (relativePath.startsWith("/")) {
-		return relativePath;
-	}
+  // Already absolute? Return as-is
+  if (relativePath.startsWith("/")) {
+    return relativePath;
+  }
 
-	// Use URL API with a dummy origin for proper path resolution
-	// The URL API correctly handles "..", ".", and relative paths
-	try {
-		const baseUrl = new URL(basePath, "http://localhost");
-		const resolvedUrl = new URL(relativePath, baseUrl);
-		return resolvedUrl.pathname;
-	} catch {
-		// Fallback: simple directory extraction
-		const baseDir = basePath.substring(0, basePath.lastIndexOf("/") + 1);
-		return baseDir + relativePath;
-	}
+  // Use URL API with a dummy origin for proper path resolution
+  // The URL API correctly handles "..", ".", and relative paths
+  try {
+    const baseUrl = new URL(basePath, "http://localhost");
+    const resolvedUrl = new URL(relativePath, baseUrl);
+    return resolvedUrl.pathname;
+  } catch {
+    // Fallback: simple directory extraction
+    const baseDir = basePath.substring(0, basePath.lastIndexOf("/") + 1);
+    return baseDir + relativePath;
+  }
 }
 
 /**
@@ -72,17 +72,17 @@ export function resolveHelpUrl(relativePath: string, basePath: string): string {
  * const tocFr = await parseHelpContents("/help/fr/mspaint.hhc");
  */
 export async function parseHelpContents(hhcPath: string): Promise<HelpItem[]> {
-	try {
-		const response = await fetch(hhcPath);
-		if (!response.ok) {
-			throw new Error(`Failed to fetch ${hhcPath}: ${response.status}`);
-		}
-		const html = await response.text();
-		return parseHhcHtml(html, hhcPath);
-	} catch (error) {
-		// console.error("Failed to parse help contents:", error);
-		throw error;
-	}
+  try {
+    const response = await fetch(hhcPath);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${hhcPath}: ${response.status}`);
+    }
+    const html = await response.text();
+    return parseHhcHtml(html, hhcPath);
+  } catch (error) {
+    // console.error("Failed to parse help contents:", error);
+    throw error;
+  }
 }
 
 /**
@@ -98,16 +98,16 @@ export async function parseHelpContents(hhcPath: string): Promise<HelpItem[]> {
  * const items = parseHhcHtml(htmlString, "/help/mspaint.hhc");
  */
 export function parseHhcHtml(html: string, basePath: string = "/help/"): HelpItem[] {
-	const parser = new DOMParser();
-	const doc = parser.parseFromString(html, "text/html");
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
 
-	// Find the root UL element
-	const rootUl = doc.querySelector("body > ul");
-	if (!rootUl) {
-		return [];
-	}
+  // Find the root UL element
+  const rootUl = doc.querySelector("body > ul");
+  if (!rootUl) {
+    return [];
+  }
 
-	return parseUlElement(rootUl, "", basePath);
+  return parseUlElement(rootUl, "", basePath);
 }
 
 /**
@@ -121,21 +121,21 @@ export function parseHhcHtml(html: string, basePath: string = "/help/"): HelpIte
  * @returns Array of HelpItem objects for this level
  */
 function parseUlElement(ul: Element, prefix: string = "", basePath: string): HelpItem[] {
-	const items: HelpItem[] = [];
+  const items: HelpItem[] = [];
 
-	// Get direct LI children
-	const listItems = ul.querySelectorAll(":scope > li");
+  // Get direct LI children
+  const listItems = ul.querySelectorAll(":scope > li");
 
-	for (let i = 0; i < listItems.length; i++) {
-		const li = listItems[i];
-		const itemId = prefix ? `${prefix}-${i}` : `${i}`;
-		const item = parseLiElement(li, itemId, basePath);
-		if (item) {
-			items.push(item);
-		}
-	}
+  for (let i = 0; i < listItems.length; i++) {
+    const li = listItems[i];
+    const itemId = prefix ? `${prefix}-${i}` : `${i}`;
+    const item = parseLiElement(li, itemId, basePath);
+    if (item) {
+      items.push(item);
+    }
+  }
 
-	return items;
+  return items;
 }
 
 /**
@@ -150,41 +150,41 @@ function parseUlElement(ul: Element, prefix: string = "", basePath: string): Hel
  * @returns HelpItem object or null if invalid/empty
  */
 function parseLiElement(li: Element, id: string, basePath: string): HelpItem | null {
-	// Find the OBJECT element with sitemap data
-	const objectEl = li.querySelector(":scope > object");
-	if (!objectEl) {
-		return null;
-	}
+  // Find the OBJECT element with sitemap data
+  const objectEl = li.querySelector(":scope > object");
+  if (!objectEl) {
+    return null;
+  }
 
-	// Extract params from the object
-	const params = parseObjectParams(objectEl);
-	const name = params.Name || params.name;
+  // Extract params from the object
+  const params = parseObjectParams(objectEl);
+  const name = params.Name || params.name;
 
-	if (!name) {
-		return null;
-	}
+  if (!name) {
+    return null;
+  }
 
-	const local = params.Local || params.local;
+  const local = params.Local || params.local;
 
-	const item: HelpItem = {
-		id,
-		name: name.trim(),
-		title: name.trim(), // title is same as name
-		local,
-		// Resolve URL relative to .hhc file location - works for any directory structure
-		url: local ? resolveHelpUrl(local, basePath) : undefined,
-	};
+  const item: HelpItem = {
+    id,
+    name: name.trim(),
+    title: name.trim(), // title is same as name
+    local,
+    // Resolve URL relative to .hhc file location - works for any directory structure
+    url: local ? resolveHelpUrl(local, basePath) : undefined,
+  };
 
-	// Check for nested UL (children)
-	const childUl = li.querySelector(":scope > ul");
-	if (childUl) {
-		const children = parseUlElement(childUl, id, basePath);
-		if (children.length > 0) {
-			item.children = children;
-		}
-	}
+  // Check for nested UL (children)
+  const childUl = li.querySelector(":scope > ul");
+  if (childUl) {
+    const children = parseUlElement(childUl, id, basePath);
+    if (children.length > 0) {
+      item.children = children;
+    }
+  }
 
-	return item;
+  return item;
 }
 
 /**
@@ -196,18 +196,18 @@ function parseLiElement(li: Element, id: string, basePath: string): HelpItem | n
  * @returns Object mapping param names to their string values
  */
 function parseObjectParams(objectEl: Element): Record<string, string> {
-	const params: Record<string, string> = {};
-	const paramEls = objectEl.querySelectorAll("param");
+  const params: Record<string, string> = {};
+  const paramEls = objectEl.querySelectorAll("param");
 
-	for (const param of paramEls) {
-		const name = param.getAttribute("name");
-		const value = param.getAttribute("value");
-		if (name && value) {
-			params[name] = value;
-		}
-	}
+  for (const param of paramEls) {
+    const name = param.getAttribute("name");
+    const value = param.getAttribute("value");
+    if (name && value) {
+      params[name] = value;
+    }
+  }
 
-	return params;
+  return params;
 }
 
 export default parseHelpContents;

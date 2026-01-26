@@ -35,7 +35,7 @@ import { createMenus } from "../react/menus/menuDefinitions";
  * Props for StoreInitializer component
  */
 interface StoreInitializerProps {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 /**
@@ -47,30 +47,32 @@ interface StoreInitializerProps {
  * @returns {JSX.Element} Loading state or children once initialized
  */
 function StoreInitializer({ children }: StoreInitializerProps) {
-	const { isInitialized, error: storeInitError } = useInitializeStores();
+  const { isInitialized, error: storeInitError } = useInitializeStores();
 
-	// Show loading state while stores are initializing
-	if (!isInitialized) {
-		return (
-			<div style={{
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				height: '100vh',
-				fontFamily: 'Arial',
-				fontSize: '14px'
-			}}>
-				Loading persisted settings...
-			</div>
-		);
-	}
+  // Show loading state while stores are initializing
+  if (!isInitialized) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          fontFamily: "Arial",
+          fontSize: "14px",
+        }}
+      >
+        Loading persisted settings...
+      </div>
+    );
+  }
 
-	// Log initialization errors but continue (will use defaults)
-	if (storeInitError) {
-		// console.warn('[Store Init] Failed to load persisted settings, using defaults:', storeInitError);
-	}
+  // Log initialization errors but continue (will use defaults)
+  if (storeInitError) {
+    // console.warn('[Store Init] Failed to load persisted settings, using defaults:', storeInitError);
+  }
 
-	return <>{children}</>;
+  return <>{children}</>;
 }
 
 /**
@@ -95,309 +97,294 @@ function StoreInitializer({ children }: StoreInitializerProps) {
  * </StoreInitializer>
  */
 function AppContent() {
-	// console.warn('[AppContent] 🎨 RENDER START');
+  // console.warn('[AppContent] 🎨 RENDER START');
 
-	// Get translation function for menu labels
-	const { t, i18n, ready } = useTranslation();
+  // Get translation function for menu labels
+  const { t, i18n, ready } = useTranslation();
 
+  // Create canvas ref locally (was in AppProvider)
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
+  // Use Zustand hooks instead of AppContext
+  const { state } = useApp();
+  const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
+  const { selectedToolId, setTool } = useTool();
+  const { cursorPosition } = useCursorPosition();
 
-	// Create canvas ref locally (was in AppProvider)
-	const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  // Use extracted hooks for canvas history and clipboard
+  const { saveHistoryState, undo, redo, canUndo, canRedo, getRoot, goToNode } = useCanvasHistory({ canvasRef });
 
-	// Use Zustand hooks instead of AppContext
-	const { state } = useApp();
-	const { primaryColor, secondaryColor, palette, setPrimaryColor, setSecondaryColor } = useColors();
-	const { selectedToolId, setTool } = useTool();
-	const { cursorPosition } = useCursorPosition();
+  const { hasClipboard, hasSelection, selection, setSelection, clearSelection, copy, cut, paste } =
+    useClipboardOperations();
 
-	// Use extracted hooks for canvas history and clipboard
-	const {
-		saveHistoryState,
-		undo,
-		redo,
-		canUndo,
-		canRedo,
-		getRoot,
-		goToNode,
-	} = useCanvasHistory({ canvasRef });
+  // console.warn('[AppContent] 📦 All hooks called successfully');
 
-	const {
-		hasClipboard,
-		hasSelection,
-		selection,
-		setSelection,
-		clearSelection,
-		copy,
-		cut,
-		paste,
-	} = useClipboardOperations();
+  const { magnification, setMagnification } = useMagnification();
+  const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
 
-	// console.warn('[AppContent] 📦 All hooks called successfully');
+  // Use stores directly
+  const { textBox } = useToolStore(useShallow((state) => ({ textBox: state.textBox })));
 
-	const { magnification, setMagnification } = useMagnification();
-	const { canvasWidth, canvasHeight, setCanvasSize } = useCanvasDimensions();
+  // Use font state hook for FontBoxWindow integration
+  const { fontState, handleFontChange, showFontBox } = useFontState(selectedToolId, textBox?.isActive);
 
-	// Use stores directly
-	const { textBox } = useToolStore(useShallow(
-		(state) => ({ textBox: state.textBox })
-	));
+  const {
+    showToolBox,
+    showColorBox,
+    showStatusBar,
+    showTextToolbar,
+    showGrid,
+    showThumbnail,
+    showAIPanel,
+    toggleToolBox,
+    toggleColorBox,
+    toggleStatusBar,
+    toggleTextToolbar,
+    toggleGrid,
+    toggleThumbnail,
+    toggleAIPanel,
+  } = useUIStore(
+    useShallow((state) => ({
+      showToolBox: state.showToolBox,
+      showColorBox: state.showColorBox,
+      showStatusBar: state.showStatusBar,
+      showTextToolbar: state.showTextToolbar,
+      showGrid: state.showGrid,
+      showThumbnail: state.showThumbnail,
+      showAIPanel: state.showAIPanel,
+      toggleToolBox: state.toggleToolBox,
+      toggleColorBox: state.toggleColorBox,
+      toggleStatusBar: state.toggleStatusBar,
+      toggleTextToolbar: state.toggleTextToolbar,
+      toggleGrid: state.toggleGrid,
+      toggleThumbnail: state.toggleThumbnail,
+      toggleAIPanel: state.toggleAIPanel,
+    })),
+  );
 
-	// Use font state hook for FontBoxWindow integration
-	const { fontState, handleFontChange, showFontBox } = useFontState(selectedToolId, textBox?.isActive);
+  const { drawOpaque, toggleDrawOpaque } = useSettingsStore(
+    useShallow((state) => ({
+      drawOpaque: state.drawOpaque,
+      toggleDrawOpaque: state.toggleDrawOpaque,
+    })),
+  );
 
-	const {
-		showToolBox,
-		showColorBox,
-		showStatusBar,
-		showTextToolbar,
-		showGrid,
-		showThumbnail,
-		showAIPanel,
-		toggleToolBox,
-		toggleColorBox,
-		toggleStatusBar,
-		toggleTextToolbar,
-		toggleGrid,
-		toggleThumbnail,
-		toggleAIPanel,
-	} = useUIStore(useShallow(
-		(state) => ({
-			showToolBox: state.showToolBox,
-			showColorBox: state.showColorBox,
-			showStatusBar: state.showStatusBar,
-			showTextToolbar: state.showTextToolbar,
-			showGrid: state.showGrid,
-			showThumbnail: state.showThumbnail,
-			showAIPanel: state.showAIPanel,
-			toggleToolBox: state.toggleToolBox,
-			toggleColorBox: state.toggleColorBox,
-			toggleStatusBar: state.toggleStatusBar,
-			toggleTextToolbar: state.toggleTextToolbar,
-			toggleGrid: state.toggleGrid,
-			toggleThumbnail: state.toggleThumbnail,
-			toggleAIPanel: state.toggleAIPanel,
-		})
-	));
+  const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
 
-	const { drawOpaque, toggleDrawOpaque } = useSettingsStore(useShallow(
-		(state) => ({
-			drawOpaque: state.drawOpaque,
-			toggleDrawOpaque: state.toggleDrawOpaque,
-		})
-	));
+  // Custom colors state for the color editor
+  const [customColors, setCustomColors] = useState<string[]>(defaultCustomColors);
 
-	const [hoveredTool, setHoveredTool] = React.useState<Tool | null>(null);
+  // MessageBox state for File > New confirmation
+  const [showNewConfirm, setShowNewConfirm] = useState(false);
 
-	// Custom colors state for the color editor
-	const [customColors, setCustomColors] = useState<string[]>(defaultCustomColors);
+  // Dialog state from uiStore
+  const dialogs = useUIStore((state) => state.dialogs);
+  const openDialog = useUIStore((state) => state.openDialog);
+  const closeDialog = useUIStore((state) => state.closeDialog);
 
-	// MessageBox state for File > New confirmation
-	const [showNewConfirm, setShowNewConfirm] = useState(false);
+  const activeTool = useMemo(
+    () => TOOLBOX_ITEMS.find((tool) => tool.id === selectedToolId) ?? TOOLBOX_ITEMS[6],
+    [selectedToolId],
+  );
 
-	// Dialog state from uiStore
-	const dialogs = useUIStore((state) => state.dialogs);
-	const openDialog = useUIStore((state) => state.openDialog);
-	const closeDialog = useUIStore((state) => state.closeDialog);
+  const statusMessage = t(hoveredTool?.description ?? activeTool?.description ?? DEFAULT_STATUS_TEXT);
 
-	const activeTool = useMemo(
-		() => TOOLBOX_ITEMS.find((tool) => tool.id === selectedToolId) ?? TOOLBOX_ITEMS[6],
-		[selectedToolId],
-	);
+  // Use dialog handlers hook
+  const dialogHandlers = useDialogHandlers({
+    canvasRef,
+    saveState: saveHistoryState,
+    setCanvasSize,
+    canvasWidth,
+    canvasHeight,
+    secondaryColor,
+    setPrimaryColor,
+    setSelection,
+    clearSelection,
+    setTool,
+    goToNode,
+    setShowNewConfirm,
+    setCustomColors,
+    setMagnification,
+  });
 
-	const statusMessage = t(hoveredTool?.description ?? activeTool?.description ?? DEFAULT_STATUS_TEXT);
+  // Create menu actions using extracted hook
+  const menuActions = useMenuActions({
+    canvasRef,
+    saveState: saveHistoryState,
+    setCanvasSize,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    hasSelection,
+    selection,
+    copy,
+    cut,
+    paste,
+    hasClipboard,
+    clearSelection,
+    handleSelectAll: dialogHandlers.handleSelectAll,
+    handleInvertColors: dialogHandlers.handleInvertColors,
+    handleClearImage: dialogHandlers.handleClearImage,
+    secondaryColor,
+    setSelection,
+    setTool,
+    showToolBox,
+    showColorBox,
+    showStatusBar,
+    showTextToolbar,
+    showGrid,
+    showThumbnail,
+    showAIPanel,
+    toggleToolBox,
+    toggleColorBox,
+    toggleStatusBar,
+    toggleTextToolbar,
+    toggleGrid,
+    toggleThumbnail,
+    toggleAIPanel,
+    toggleDrawOpaque,
+    drawOpaque,
+    magnification,
+    setMagnification,
+    palette,
+    onShowNewConfirm: () => setShowNewConfirm(true),
+  });
 
-	// Use dialog handlers hook
-	const dialogHandlers = useDialogHandlers({
-		canvasRef,
-		saveState: saveHistoryState,
-		setCanvasSize,
-		canvasWidth,
-		canvasHeight,
-		secondaryColor,
-		setPrimaryColor,
-		setSelection,
-		clearSelection,
-		setTool,
-		goToNode,
-		setShowNewConfirm,
-		setCustomColors,
-		setMagnification,
-	});
+  // Create the menu structure
+  // Include i18n.language and ready in deps to force menu recreation on language change
+  // and after translations are loaded
+  const menuTranslationVersion = [
+    t("&File"),
+    t("&Edit"),
+    t("&View"),
+    t("&Image"),
+    t("&Colors"),
+    t("E&xtras"),
+    t("🌍 &Language"),
+    t("&Help"),
+    // Include some frequently-missed submenu labels so the menu refreshes
+    // when translation resources arrive after the initial render.
+    t("Zoom To &Window"),
+    t("&Fullscreen"),
+    t("Crop To Se&lection"),
+    t("Set As Wallpaper (&Centered)"),
+    t("&Load From URL..."),
+    t("&Upload To Imgur"),
+    t("&Print..."),
+  ].join("|");
+  const menu = useMemo(
+    () => createMenus(menuActions, t),
+    // menuTranslationVersion changes when i18next finishes loading resources
+    // for the current language (fixes cases where i18n.language updates before
+    // translations are available for menu labels).
+    [menuActions, t, i18n.language, ready, menuTranslationVersion],
+  );
 
-	// Create menu actions using extracted hook
-	const menuActions = useMenuActions({
-		canvasRef,
-		saveState: saveHistoryState,
-		setCanvasSize,
-		undo,
-		redo,
-		canUndo,
-		canRedo,
-		hasSelection,
-		selection,
-		copy,
-		cut,
-		paste,
-		hasClipboard,
-		clearSelection,
-		handleSelectAll: dialogHandlers.handleSelectAll,
-		handleInvertColors: dialogHandlers.handleInvertColors,
-		handleClearImage: dialogHandlers.handleClearImage,
-		secondaryColor,
-		setSelection,
-		setTool,
-		showToolBox,
-		showColorBox,
-		showStatusBar,
-		showTextToolbar,
-		showGrid,
-		showThumbnail,
-		showAIPanel,
-		toggleToolBox,
-		toggleColorBox,
-		toggleStatusBar,
-		toggleTextToolbar,
-		toggleGrid,
-		toggleThumbnail,
-		toggleAIPanel,
-		toggleDrawOpaque,
-		drawOpaque,
-		magnification,
-		setMagnification,
-		palette,
-		onShowNewConfirm: () => setShowNewConfirm(true),
-	});
+  // Handle keyboard shortcuts
+  useKeyboardShortcuts({
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+    setTool,
+    hasSelection,
+    copy,
+    cut,
+    paste,
+    hasClipboard,
+    clearSelection,
+    handleSelectAll: dialogHandlers.handleSelectAll,
+    handleInvertColors: dialogHandlers.handleInvertColors,
+    menuActions,
+    isTextToolActive: selectedToolId === TOOL_IDS.TEXT,
+    hasActiveTextBox: textBox?.isActive ?? false,
+  });
 
-	// Create the menu structure
-	// Include i18n.language and ready in deps to force menu recreation on language change
-	// and after translations are loaded
-	const menuTranslationVersion = [
-		t("&File"),
-		t("&Edit"),
-		t("&View"),
-		t("&Image"),
-		t("&Colors"),
-		t("E&xtras"),
-		t("🌍 &Language"),
-		t("&Help"),
-	].join("|");
-	const menu = useMemo(
-		() => createMenus(menuActions, t),
-		// menuTranslationVersion changes when i18next finishes loading resources
-		// for the current language (fixes cases where i18n.language updates before
-		// translations are available for menu labels).
-		[menuActions, t, i18n.language, ready, menuTranslationVersion],
-	);
+  // Format cursor position for status bar
+  const positionText = cursorPosition ? `${cursorPosition.x}, ${cursorPosition.y}` : "";
 
-	// Handle keyboard shortcuts
-	useKeyboardShortcuts({
-		canUndo,
-		canRedo,
-		undo,
-		redo,
-		setTool,
-		hasSelection,
-		copy,
-		cut,
-		paste,
-		hasClipboard,
-		clearSelection,
-		handleSelectAll: dialogHandlers.handleSelectAll,
-		handleInvertColors: dialogHandlers.handleInvertColors,
-		menuActions,
-		isTextToolActive: selectedToolId === TOOL_IDS.TEXT,
-		hasActiveTextBox: textBox?.isActive ?? false,
-	});
+  // Format selection or canvas size for status bar
+  const sizeText = selection
+    ? `${Math.abs(selection.width)}x${Math.abs(selection.height)}`
+    : `${state.canvasWidth}x${state.canvasHeight}`;
 
-	// Format cursor position for status bar
-	const positionText = cursorPosition ? `${cursorPosition.x}, ${cursorPosition.y}` : "";
+  // console.warn('[AppContent] 🎨 RENDER END - returning JSX');
 
-	// Format selection or canvas size for status bar
-	const sizeText = selection
-		? `${Math.abs(selection.width)}x${Math.abs(selection.height)}`
-		: `${state.canvasWidth}x${state.canvasHeight}`;
+  return (
+    <>
+      <Frame
+        menu={menu}
+        leftContent={
+          showToolBox ? (
+            <ToolBox
+              tools={TOOLBOX_ITEMS}
+              selectedToolIds={[selectedToolId]}
+              onSelectionChange={(toolIds) => setTool(toolIds[0] as typeof selectedToolId)}
+              onHoverChange={setHoveredTool}
+            >
+              <ToolOptions />
+            </ToolBox>
+          ) : null
+        }
+        rightContent={showAIPanel ? <AISidePanel canvasRef={canvasRef} onClose={toggleAIPanel} /> : null}
+        bottomContent={
+          showColorBox ? (
+            <ColorBox
+              palette={palette}
+              initialPrimary={primaryColor}
+              initialSecondary={secondaryColor}
+              onPrimaryChange={setPrimaryColor}
+              onSecondaryChange={setSecondaryColor}
+            />
+          ) : null
+        }
+        canvasContent={<Canvas canvasRef={canvasRef} key="main-canvas" />}
+        statusText={showStatusBar ? statusMessage : ""}
+        statusPosition={showStatusBar ? positionText : ""}
+        statusSize={showStatusBar ? sizeText : ""}
+      />
 
-	// console.warn('[AppContent] 🎨 RENDER END - returning JSX');
+      <MessageBoxDialog
+        isOpen={showNewConfirm}
+        onClose={dialogHandlers.handleNewConfirm}
+        title="Paint"
+        message="Save changes to Untitled?"
+        buttons="yesNoCancel"
+        icon="warning"
+        defaultButton="yes"
+      />
 
-	return (
-		<>
-			<Frame
-				menu={menu}
-				leftContent={
-					showToolBox ? (
-						<ToolBox
-							tools={TOOLBOX_ITEMS}
-							selectedToolIds={[selectedToolId]}
-							onSelectionChange={(toolIds) => setTool(toolIds[0] as typeof selectedToolId)}
-							onHoverChange={setHoveredTool}
-						>
-							<ToolOptions />
-						</ToolBox>
-					) : null
-				}
-				rightContent={
-					showAIPanel ? (
-						<AISidePanel canvasRef={canvasRef} onClose={toggleAIPanel} />
-					) : null
-				}
-				bottomContent={
-					showColorBox ? (
-						<ColorBox
-							palette={palette}
-							initialPrimary={primaryColor}
-							initialSecondary={secondaryColor}
-							onPrimaryChange={setPrimaryColor}
-							onSecondaryChange={setSecondaryColor}
-						/>
-					) : null
-				}
-				canvasContent={<Canvas canvasRef={canvasRef} key="main-canvas" />}
-				statusText={showStatusBar ? statusMessage : ""}
-				statusPosition={showStatusBar ? positionText : ""}
-				statusSize={showStatusBar ? sizeText : ""}
-			/>
-
-		<MessageBoxDialog
-			isOpen={showNewConfirm}
-			onClose={dialogHandlers.handleNewConfirm}
-			title="Paint"
-			message="Save changes to Untitled?"
-			buttons="yesNoCancel"
-			icon="warning"
-			defaultButton="yes"
-		/>
-
-		<DialogManager
-			dialogs={dialogs}
-			closeDialog={closeDialog}
-			handleFlipRotate={dialogHandlers.handleFlipRotate}
-			handleStretchSkew={dialogHandlers.handleStretchSkew}
-			handleAttributes={dialogHandlers.handleAttributes}
-			handleLoadFromUrl={dialogHandlers.handleLoadFromUrl}
-			handleSaveAs={dialogHandlers.handleSaveAs}
-			handleColorSelect={dialogHandlers.handleColorSelect}
-			handleHistoryNavigate={dialogHandlers.handleHistoryNavigate}
-			canvasWidth={canvasWidth}
-			canvasHeight={canvasHeight}
-			magnification={magnification}
-			setMagnification={setMagnification}
-			primaryColor={primaryColor}
-			customColors={customColors}
-			rootNode={getRoot()}
-			currentNode={null}  // Dialog will get this directly from store
-			canvasRef={canvasRef}
-			showFontBox={showFontBox}
-			toggleTextToolbar={toggleTextToolbar}
-			fontState={fontState}
-			handleFontChange={handleFontChange}
-			textBox={textBox}
-			showThumbnail={showThumbnail}
-			toggleThumbnail={toggleThumbnail}
-			setTool={setTool}
-		/>
-	</>
-);
+      <DialogManager
+        dialogs={dialogs}
+        closeDialog={closeDialog}
+        handleFlipRotate={dialogHandlers.handleFlipRotate}
+        handleStretchSkew={dialogHandlers.handleStretchSkew}
+        handleAttributes={dialogHandlers.handleAttributes}
+        handleLoadFromUrl={dialogHandlers.handleLoadFromUrl}
+        handleSaveAs={dialogHandlers.handleSaveAs}
+        handleColorSelect={dialogHandlers.handleColorSelect}
+        handleHistoryNavigate={dialogHandlers.handleHistoryNavigate}
+        canvasWidth={canvasWidth}
+        canvasHeight={canvasHeight}
+        magnification={magnification}
+        setMagnification={setMagnification}
+        primaryColor={primaryColor}
+        customColors={customColors}
+        rootNode={getRoot()}
+        currentNode={null} // Dialog will get this directly from store
+        canvasRef={canvasRef}
+        showFontBox={showFontBox}
+        toggleTextToolbar={toggleTextToolbar}
+        fontState={fontState}
+        handleFontChange={handleFontChange}
+        textBox={textBox}
+        showThumbnail={showThumbnail}
+        toggleThumbnail={toggleThumbnail}
+        setTool={setTool}
+      />
+    </>
+  );
 }
 
 /**
@@ -417,13 +404,13 @@ function AppContent() {
  * )
  */
 export function App() {
-	return (
-		<ErrorBoundary>
-			<StoreInitializer>
-				<AppContent />
-			</StoreInitializer>
-		</ErrorBoundary>
-	);
+  return (
+    <ErrorBoundary>
+      <StoreInitializer>
+        <AppContent />
+      </StoreInitializer>
+    </ErrorBoundary>
+  );
 }
 
 export default App;

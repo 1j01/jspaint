@@ -12,22 +12,22 @@ import { successResult } from "./types";
  * Undoes the specified number of steps
  */
 export const handleUndo: CommandHandler = (command: DrawingCommand, context: CommandContext) => {
-	const startTime = Date.now();
-	const { ctx, historyStore } = context;
+  const startTime = Date.now();
+  const { ctx, historyStore } = context;
 
-	if (command.tool !== "undo") {
-		return { command, status: "failed", error: "Invalid command type", duration: Date.now() - startTime };
-	}
+  if (command.tool !== "undo") {
+    return { command, status: "failed", error: "Invalid command type", duration: Date.now() - startTime };
+  }
 
-	const { steps = 1 } = command.params;
-	for (let i = 0; i < steps; i++) {
-		const node = historyStore.getState().undo();
-		if (node && node.imageData) {
-			ctx.putImageData(node.imageData, 0, 0);
-		}
-	}
+  const { steps = 1 } = command.params;
+  for (let i = 0; i < steps; i++) {
+    const node = historyStore.getState().undo();
+    if (node && node.imageData) {
+      ctx.putImageData(node.imageData, 0, 0);
+    }
+  }
 
-	return successResult(command, startTime);
+  return successResult(command, startTime);
 };
 
 /**
@@ -35,26 +35,26 @@ export const handleUndo: CommandHandler = (command: DrawingCommand, context: Com
  * Redoes the specified number of steps
  */
 export const handleRedo: CommandHandler = (command: DrawingCommand, context: CommandContext) => {
-	const startTime = Date.now();
-	const { ctx, historyStore } = context;
+  const startTime = Date.now();
+  const { ctx, historyStore } = context;
 
-	if (command.tool !== "redo") {
-		return { command, status: "failed", error: "Invalid command type", duration: Date.now() - startTime };
-	}
+  if (command.tool !== "redo") {
+    return { command, status: "failed", error: "Invalid command type", duration: Date.now() - startTime };
+  }
 
-	const { steps = 1 } = command.params;
-	for (let i = 0; i < steps; i++) {
-		const node = historyStore.getState().redo();
-		if (node && node.imageData) {
-			ctx.putImageData(node.imageData, 0, 0);
-		}
-	}
+  const { steps = 1 } = command.params;
+  for (let i = 0; i < steps; i++) {
+    const node = historyStore.getState().redo();
+    if (node && node.imageData) {
+      ctx.putImageData(node.imageData, 0, 0);
+    }
+  }
 
-	return successResult(command, startTime);
+  return successResult(command, startTime);
 };
 
 /** Map of edit command handlers */
 export const editHandlers: Record<string, CommandHandler> = {
-	undo: handleUndo,
-	redo: handleRedo,
+  undo: handleUndo,
+  redo: handleRedo,
 };

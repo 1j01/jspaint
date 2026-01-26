@@ -11,11 +11,11 @@ import { useUIStore } from "./uiStore";
  * }} Cursor position state and actions
  */
 export function useCursorPosition() {
-	const cursorPosition = useUIStore((state) => state.cursorPosition);
-	const setCursorPosition = useUIStore((state) => state.setCursorPosition);
+  const cursorPosition = useUIStore((state) => state.cursorPosition);
+  const setCursorPosition = useUIStore((state) => state.setCursorPosition);
 
-	return {
-		cursorPosition,
-		setCursorPosition,
-	};
+  return {
+    cursorPosition,
+    setCursorPosition,
+  };
 }

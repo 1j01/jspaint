@@ -14,18 +14,18 @@ import type { useUIStore } from "../../context/state/uiStore";
  * Contains all dependencies needed to execute drawing commands
  */
 export interface CommandContext {
-	/** Canvas 2D rendering context */
-	ctx: CanvasRenderingContext2D;
-	/** Canvas element */
-	canvas: HTMLCanvasElement;
-	/** Settings store accessor */
-	settingsStore: typeof useSettingsStore;
-	/** Tool store accessor */
-	toolStore: typeof useToolStore;
-	/** History store accessor */
-	historyStore: typeof useHistoryStore;
-	/** UI store accessor */
-	uiStore: typeof useUIStore;
+  /** Canvas 2D rendering context */
+  ctx: CanvasRenderingContext2D;
+  /** Canvas element */
+  canvas: HTMLCanvasElement;
+  /** Settings store accessor */
+  settingsStore: typeof useSettingsStore;
+  /** Tool store accessor */
+  toolStore: typeof useToolStore;
+  /** History store accessor */
+  historyStore: typeof useHistoryStore;
+  /** UI store accessor */
+  uiStore: typeof useUIStore;
 }
 
 /**
@@ -35,8 +35,8 @@ export interface CommandContext {
  * @returns Execution result
  */
 export type CommandHandler<T extends DrawingCommand = DrawingCommand> = (
-	command: T,
-	context: CommandContext,
+  command: T,
+  context: CommandContext,
 ) => CommandExecutionResult;
 
 /**
@@ -45,11 +45,11 @@ export type CommandHandler<T extends DrawingCommand = DrawingCommand> = (
  * @returns Array of points
  */
 export function parsePath(path: string): Point[] {
-	if (!path || path.trim() === "") return [];
-	return path.split(";").map((segment) => {
-		const [x, y] = segment.split(",").map(Number);
-		return { x: x || 0, y: y || 0 };
-	});
+  if (!path || path.trim() === "") return [];
+  return path.split(";").map((segment) => {
+    const [x, y] = segment.split(",").map(Number);
+    return { x: x || 0, y: y || 0 };
+  });
 }
 
 /**
@@ -58,11 +58,11 @@ export function parsePath(path: string): Point[] {
  * @returns RGBA values
  */
 export function hexToRgba(hex: string): [number, number, number, number] {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	if (result) {
-		return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16), 255];
-	}
-	return [0, 0, 0, 255];
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (result) {
+    return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16), 255];
+  }
+  return [0, 0, 0, 255];
 }
 
 /**
@@ -71,15 +71,15 @@ export function hexToRgba(hex: string): [number, number, number, number] {
  * @returns Settings store fill style
  */
 export function convertFillMode(fillMode?: string): "outline" | "fill" | "both" {
-	switch (fillMode) {
-		case "filled":
-			return "fill";
-		case "filled_with_outline":
-			return "both";
-		case "outline":
-		default:
-			return "outline";
-	}
+  switch (fillMode) {
+    case "filled":
+      return "fill";
+    case "filled_with_outline":
+      return "both";
+    case "outline":
+    default:
+      return "outline";
+  }
 }
 
 /**
@@ -89,11 +89,11 @@ export function convertFillMode(fillMode?: string): "outline" | "fill" | "both" 
  * @returns Success result
  */
 export function successResult(command: DrawingCommand, startTime: number): CommandExecutionResult {
-	return {
-		command,
-		status: "completed",
-		duration: Date.now() - startTime,
-	};
+  return {
+    command,
+    status: "completed",
+    duration: Date.now() - startTime,
+  };
 }
 
 /**
@@ -104,10 +104,10 @@ export function successResult(command: DrawingCommand, startTime: number): Comma
  * @returns Failure result
  */
 export function failedResult(command: DrawingCommand, error: string, startTime: number): CommandExecutionResult {
-	return {
-		command,
-		status: "failed",
-		error,
-		duration: Date.now() - startTime,
-	};
+  return {
+    command,
+    status: "failed",
+    error,
+    duration: Date.now() - startTime,
+  };
 }

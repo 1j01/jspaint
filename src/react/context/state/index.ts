@@ -48,14 +48,14 @@ export { useApp } from "./useApp";
  * Call this once on app startup
  */
 export async function initializeStores(): Promise<void> {
-	const settingsStore = await import("./settingsStore");
-	const uiStore = await import("./uiStore");
-	const canvasStore = await import("./canvasStore");
+  const settingsStore = await import("./settingsStore");
+  const uiStore = await import("./uiStore");
+  const canvasStore = await import("./canvasStore");
 
-	// Load settings from IndexedDB
-	await Promise.all([
-		settingsStore.useSettingsStore.getState().loadPersistedSettings(),
-		uiStore.useUIStore.getState().loadPersistedUIState(),
-		canvasStore.useCanvasStore.getState().loadPersistedCanvasState(),
-	]);
+  // Load settings from IndexedDB
+  await Promise.all([
+    settingsStore.useSettingsStore.getState().loadPersistedSettings(),
+    uiStore.useUIStore.getState().loadPersistedUIState(),
+    canvasStore.useCanvasStore.getState().loadPersistedCanvasState(),
+  ]);
 }

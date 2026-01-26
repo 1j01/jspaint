@@ -163,7 +163,13 @@ export function AIChatPanel({ canvasRef, isOpen, onClose }: AIChatPanelProps) {
         )}
 
         {/* Chat input */}
-        <ChatInput onSend={sendMessage} onCancel={cancel} onClear={handleClear} isStreaming={isStreaming} isExecuting={isExecuting} />
+        <ChatInput
+          onSend={sendMessage}
+          onCancel={cancel}
+          onClear={handleClear}
+          isStreaming={isStreaming}
+          isExecuting={isExecuting}
+        />
       </div>
     </div>
   );

@@ -16,22 +16,22 @@ import { useSelection } from "../context/state/useSelection";
  * Return type for the clipboard operations hook
  */
 interface UseClipboardOperationsReturn {
-	/** Whether clipboard has content */
-	hasClipboard: boolean;
-	/** Whether there is an active selection */
-	hasSelection: boolean;
-	/** Current selection state */
-	selection: ReturnType<typeof useSelection>["selection"];
-	/** Set selection state */
-	setSelection: ReturnType<typeof useSelection>["setSelection"];
-	/** Clear current selection */
-	clearSelection: ReturnType<typeof useSelection>["clearSelection"];
-	/** Copy current selection to clipboard */
-	copy: () => void;
-	/** Cut current selection to clipboard */
-	cut: () => void;
-	/** Get clipboard content for pasting */
-	paste: () => ImageData | null;
+  /** Whether clipboard has content */
+  hasClipboard: boolean;
+  /** Whether there is an active selection */
+  hasSelection: boolean;
+  /** Current selection state */
+  selection: ReturnType<typeof useSelection>["selection"];
+  /** Set selection state */
+  setSelection: ReturnType<typeof useSelection>["setSelection"];
+  /** Clear current selection */
+  clearSelection: ReturnType<typeof useSelection>["clearSelection"];
+  /** Copy current selection to clipboard */
+  copy: () => void;
+  /** Cut current selection to clipboard */
+  cut: () => void;
+  /** Get clipboard content for pasting */
+  paste: () => ImageData | null;
 }
 
 /**
@@ -55,47 +55,47 @@ interface UseClipboardOperationsReturn {
  * }
  */
 export function useClipboardOperations(): UseClipboardOperationsReturn {
-	const { selection, setSelection, clearSelection, hasSelection } = useSelection();
+  const { selection, setSelection, clearSelection, hasSelection } = useSelection();
 
-	// Clipboard actions using direct store access to avoid infinite loops
-	const clipboard = useToolStore((state) => state.clipboard);
-	const setClipboard = useToolStore((state) => state.setClipboard);
-	const hasClipboard = clipboard !== null;
+  // Clipboard actions using direct store access to avoid infinite loops
+  const clipboard = useToolStore((state) => state.clipboard);
+  const setClipboard = useToolStore((state) => state.setClipboard);
+  const hasClipboard = clipboard !== null;
 
-	/**
-	 * Copy current selection to clipboard
-	 * Only works if there is an active selection with ImageData
-	 */
-	const copy = useCallback(() => {
-		if (selection?.imageData) {
-			setClipboard(selection.imageData);
-		}
-	}, [selection, setClipboard]);
+  /**
+   * Copy current selection to clipboard
+   * Only works if there is an active selection with ImageData
+   */
+  const copy = useCallback(() => {
+    if (selection?.imageData) {
+      setClipboard(selection.imageData);
+    }
+  }, [selection, setClipboard]);
 
-	/**
-	 * Cut current selection to clipboard
-	 * Copies the selection ImageData (clearing is handled separately)
-	 */
-	const cut = useCallback(() => {
-		if (selection?.imageData) {
-			setClipboard(selection.imageData);
-		}
-	}, [selection, setClipboard]);
+  /**
+   * Cut current selection to clipboard
+   * Copies the selection ImageData (clearing is handled separately)
+   */
+  const cut = useCallback(() => {
+    if (selection?.imageData) {
+      setClipboard(selection.imageData);
+    }
+  }, [selection, setClipboard]);
 
-	/**
-	 * Get clipboard content for pasting
-	 * @returns {ImageData | null} The clipboard ImageData or null if empty
-	 */
-	const paste = useCallback(() => clipboard, [clipboard]);
+  /**
+   * Get clipboard content for pasting
+   * @returns {ImageData | null} The clipboard ImageData or null if empty
+   */
+  const paste = useCallback(() => clipboard, [clipboard]);
 
-	return {
-		hasClipboard,
-		hasSelection,
-		selection,
-		setSelection,
-		clearSelection,
-		copy,
-		cut,
-		paste,
-	};
+  return {
+    hasClipboard,
+    hasSelection,
+    selection,
+    setSelection,
+    clearSelection,
+    copy,
+    cut,
+    paste,
+  };
 }

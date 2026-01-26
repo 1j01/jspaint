@@ -16,29 +16,29 @@ import { cancelPendingCanvasRestore } from "./useCanvasLifecycle";
  * File menu actions interface
  */
 export interface FileMenuActions {
-	fileNew: () => void;
-	fileOpen: () => void;
-	fileSave: () => void;
-	fileSaveAs: () => void;
-	fileLoadFromUrl: () => void;
-	fileUploadToImgur: () => void;
-	fileManageStorage: () => void;
-	filePrint: () => void;
-	fileSetWallpaperTiled: () => void;
-	fileSetWallpaperCentered: () => void;
-	fileExit: () => void;
+  fileNew: () => void;
+  fileOpen: () => void;
+  fileSave: () => void;
+  fileSaveAs: () => void;
+  fileLoadFromUrl: () => void;
+  fileUploadToImgur: () => void;
+  fileManageStorage: () => void;
+  filePrint: () => void;
+  fileSetWallpaperTiled: () => void;
+  fileSetWallpaperCentered: () => void;
+  fileExit: () => void;
 }
 
 /**
  * Parameters for the file menu actions hook
  */
 export interface UseFileMenuActionsParams {
-	canvasRef: RefObject<HTMLCanvasElement>;
-	saveState: (imageData: ImageData) => void;
-	setCanvasSize: (width: number, height: number) => void;
-	setMagnification: (mag: number) => void;
-	clearSelection: () => void;
-	onShowNewConfirm?: () => void;
+  canvasRef: RefObject<HTMLCanvasElement>;
+  saveState: (imageData: ImageData) => void;
+  setCanvasSize: (width: number, height: number) => void;
+  setMagnification: (mag: number) => void;
+  clearSelection: () => void;
+  onShowNewConfirm?: () => void;
 }
 
 /**
@@ -58,176 +58,170 @@ export interface UseFileMenuActionsParams {
  * });
  */
 export function useFileMenuActions(params: UseFileMenuActionsParams): FileMenuActions {
-	const {
-		canvasRef,
-		setCanvasSize,
-		setMagnification,
-		clearSelection,
-		onShowNewConfirm,
-	} = params;
+  const { canvasRef, setCanvasSize, setMagnification, clearSelection, onShowNewConfirm } = params;
 
-	const openDialog = useUIStore((state) => state.openDialog);
+  const openDialog = useUIStore((state) => state.openDialog);
 
-	const fileNew = useCallback(() => {
-		if (onShowNewConfirm) {
-			onShowNewConfirm();
-		} else {
-			// Fallback to confirm if callback not provided
-			if (confirm("Clear the current image and start new?")) {
-				cancelPendingCanvasRestore();
-				useHistoryStore.getState().clearHistory();
-				useCanvasStore.getState().clearHistory();
-				useCanvasStore.getState().setFileName("untitled");
-				useCanvasStore.getState().setSaved(true);
-				clearSelection();
+  const fileNew = useCallback(() => {
+    if (onShowNewConfirm) {
+      onShowNewConfirm();
+    } else {
+      // Fallback to confirm if callback not provided
+      if (confirm("Clear the current image and start new?")) {
+        cancelPendingCanvasRestore();
+        useHistoryStore.getState().clearHistory();
+        useCanvasStore.getState().clearHistory();
+        useCanvasStore.getState().setFileName("untitled");
+        useCanvasStore.getState().setSaved(true);
+        clearSelection();
 
-				// Reset canvas to default size (Windows XP: 512x384)
-				setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
-				const canvas = canvasRef.current;
-				if (!canvas) return;
-				canvas.width = DEFAULT_CANVAS_WIDTH;
-				canvas.height = DEFAULT_CANVAS_HEIGHT;
+        // Reset canvas to default size (Windows XP: 512x384)
+        setCanvasSize(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        canvas.width = DEFAULT_CANVAS_WIDTH;
+        canvas.height = DEFAULT_CANVAS_HEIGHT;
 
-				// Reset magnification to 1x (100%)
-				setMagnification(1);
+        // Reset magnification to 1x (100%)
+        setMagnification(1);
 
-				const ctx = canvas.getContext("2d", { willReadFrequently: true });
-				if (!ctx) return;
-				ctx.fillStyle = "#FFFFFF";
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				useHistoryStore.getState().initializeHistory(imageData, "New Document");
-				void saveSetting("savedCanvas", {
-					data: Array.from(imageData.data),
-					width: imageData.width,
-					height: imageData.height,
-				});
-			}
-		}
-	}, [onShowNewConfirm, canvasRef, setCanvasSize, setMagnification, clearSelection]);
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (!ctx) return;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        useHistoryStore.getState().initializeHistory(imageData, "New Document");
+        void saveSetting("savedCanvas", {
+          data: Array.from(imageData.data),
+          width: imageData.width,
+          height: imageData.height,
+        });
+      }
+    }
+  }, [onShowNewConfirm, canvasRef, setCanvasSize, setMagnification, clearSelection]);
 
-	const fileOpen = useCallback(() => {
-		createFileInput(".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp", async (file) => {
-			try {
-				// Cancel any in-flight restore, and clear history BEFORE loading new content
-				cancelPendingCanvasRestore();
-				useHistoryStore.getState().clearHistory();
-				useCanvasStore.getState().clearHistory();
-				useCanvasStore.getState().setSaved(true);
-				
-				await loadImageFileToCanvas(file, canvasRef, {
-					onClearSelection: clearSelection,
-					onSetCanvasSize: setCanvasSize,
-					onSaveState: (imageData) => {
-						// Initialize fresh history with the loaded image
-						useHistoryStore.getState().initializeHistory(imageData, "Loaded Image");
-						void saveSetting("savedCanvas", {
-							data: Array.from(imageData.data),
-							width: imageData.width,
-							height: imageData.height,
-						});
-					},
-				});
-			} catch (error) {
-				console.error("[fileOpen] Error loading file:", error);
-				alert(`Failed to load image: ${error instanceof Error ? error.message : "Unknown error"}`);
-			}
-		});
-	}, [canvasRef, setCanvasSize, clearSelection]);
+  const fileOpen = useCallback(() => {
+    createFileInput(".png,.jpg,.jpeg,.bmp,image/png,image/jpeg,image/bmp", async (file) => {
+      try {
+        // Cancel any in-flight restore, and clear history BEFORE loading new content
+        cancelPendingCanvasRestore();
+        useHistoryStore.getState().clearHistory();
+        useCanvasStore.getState().clearHistory();
+        useCanvasStore.getState().setSaved(true);
 
-	const fileSave = useCallback(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-		const link = document.createElement("a");
-		link.download = "image.png";
-		link.href = canvas.toDataURL("image/png");
-		link.click();
-	}, [canvasRef]);
+        await loadImageFileToCanvas(file, canvasRef, {
+          onClearSelection: clearSelection,
+          onSetCanvasSize: setCanvasSize,
+          onSaveState: (imageData) => {
+            // Initialize fresh history with the loaded image
+            useHistoryStore.getState().initializeHistory(imageData, "Loaded Image");
+            void saveSetting("savedCanvas", {
+              data: Array.from(imageData.data),
+              width: imageData.width,
+              height: imageData.height,
+            });
+          },
+        });
+      } catch (error) {
+        console.error("[fileOpen] Error loading file:", error);
+        alert(`Failed to load image: ${error instanceof Error ? error.message : "Unknown error"}`);
+      }
+    });
+  }, [canvasRef, setCanvasSize, clearSelection]);
 
-	const fileSaveAs = useCallback(() => openDialog("saveAs"), [openDialog]);
-	const fileLoadFromUrl = useCallback(() => openDialog("loadFromUrl"), [openDialog]);
-	const fileUploadToImgur = useCallback(() => openDialog("imgurUpload"), [openDialog]);
-	const fileManageStorage = useCallback(() => openDialog("manageStorage"), [openDialog]);
-	const filePrint = useCallback(() => window.print(), []);
-	const fileExit = useCallback(() => {
-		if (confirm("Are you sure you want to exit?")) {
-			window.close();
-		}
-	}, []);
+  const fileSave = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const link = document.createElement("a");
+    link.download = "image.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }, [canvasRef]);
 
-	/**
-	 * Downloads the canvas image as a wallpaper file
-	 * @param {HTMLCanvasElement} sourceCanvas - The canvas to save
-	 * @param {string} suffix - Suffix for the filename (e.g., "tiled" or "centered")
-	 */
-	const downloadWallpaper = useCallback((sourceCanvas: HTMLCanvasElement, suffix: string) => {
-		const link = document.createElement("a");
-		link.download = `wallpaper-${suffix}.png`;
-		link.href = sourceCanvas.toDataURL("image/png");
-		link.click();
-	}, []);
+  const fileSaveAs = useCallback(() => openDialog("saveAs"), [openDialog]);
+  const fileLoadFromUrl = useCallback(() => openDialog("loadFromUrl"), [openDialog]);
+  const fileUploadToImgur = useCallback(() => openDialog("imgurUpload"), [openDialog]);
+  const fileManageStorage = useCallback(() => openDialog("manageStorage"), [openDialog]);
+  const filePrint = useCallback(() => window.print(), []);
+  const fileExit = useCallback(() => {
+    if (confirm("Are you sure you want to exit?")) {
+      window.close();
+    }
+  }, []);
 
-	/**
-	 * Creates a tiled wallpaper by repeating the canvas pattern to fill screen dimensions
-	 */
-	const fileSetWallpaperTiled = useCallback(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
+  /**
+   * Downloads the canvas image as a wallpaper file
+   * @param {HTMLCanvasElement} sourceCanvas - The canvas to save
+   * @param {string} suffix - Suffix for the filename (e.g., "tiled" or "centered")
+   */
+  const downloadWallpaper = useCallback((sourceCanvas: HTMLCanvasElement, suffix: string) => {
+    const link = document.createElement("a");
+    link.download = `wallpaper-${suffix}.png`;
+    link.href = sourceCanvas.toDataURL("image/png");
+    link.click();
+  }, []);
 
-		// Create a canvas sized to the screen dimensions
-		const wallpaperCanvas = document.createElement("canvas");
-		wallpaperCanvas.width = window.screen.width;
-		wallpaperCanvas.height = window.screen.height;
-		const ctx = wallpaperCanvas.getContext("2d");
-		if (!ctx) return;
+  /**
+   * Creates a tiled wallpaper by repeating the canvas pattern to fill screen dimensions
+   */
+  const fileSetWallpaperTiled = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-		// Create a repeating pattern from the source canvas
-		const pattern = ctx.createPattern(canvas, "repeat");
-		if (pattern) {
-			ctx.fillStyle = pattern;
-			ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
-		}
+    // Create a canvas sized to the screen dimensions
+    const wallpaperCanvas = document.createElement("canvas");
+    wallpaperCanvas.width = window.screen.width;
+    wallpaperCanvas.height = window.screen.height;
+    const ctx = wallpaperCanvas.getContext("2d");
+    if (!ctx) return;
 
-		downloadWallpaper(wallpaperCanvas, "tiled");
-	}, [canvasRef, downloadWallpaper]);
+    // Create a repeating pattern from the source canvas
+    const pattern = ctx.createPattern(canvas, "repeat");
+    if (pattern) {
+      ctx.fillStyle = pattern;
+      ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
+    }
 
-	/**
-	 * Creates a centered wallpaper with the canvas centered on a background
-	 */
-	const fileSetWallpaperCentered = useCallback(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
+    downloadWallpaper(wallpaperCanvas, "tiled");
+  }, [canvasRef, downloadWallpaper]);
 
-		// Create a canvas sized to the screen dimensions
-		const wallpaperCanvas = document.createElement("canvas");
-		wallpaperCanvas.width = window.screen.width;
-		wallpaperCanvas.height = window.screen.height;
-		const ctx = wallpaperCanvas.getContext("2d");
-		if (!ctx) return;
+  /**
+   * Creates a centered wallpaper with the canvas centered on a background
+   */
+  const fileSetWallpaperCentered = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-		// Fill background with a neutral color (dark teal like classic Windows)
-		ctx.fillStyle = "#008080";
-		ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
+    // Create a canvas sized to the screen dimensions
+    const wallpaperCanvas = document.createElement("canvas");
+    wallpaperCanvas.width = window.screen.width;
+    wallpaperCanvas.height = window.screen.height;
+    const ctx = wallpaperCanvas.getContext("2d");
+    if (!ctx) return;
 
-		// Center the canvas image
-		const x = Math.floor((wallpaperCanvas.width - canvas.width) / 2);
-		const y = Math.floor((wallpaperCanvas.height - canvas.height) / 2);
-		ctx.drawImage(canvas, x, y);
+    // Fill background with a neutral color (dark teal like classic Windows)
+    ctx.fillStyle = "#008080";
+    ctx.fillRect(0, 0, wallpaperCanvas.width, wallpaperCanvas.height);
 
-		downloadWallpaper(wallpaperCanvas, "centered");
-	}, [canvasRef, downloadWallpaper]);
+    // Center the canvas image
+    const x = Math.floor((wallpaperCanvas.width - canvas.width) / 2);
+    const y = Math.floor((wallpaperCanvas.height - canvas.height) / 2);
+    ctx.drawImage(canvas, x, y);
 
-	return {
-		fileNew,
-		fileOpen,
-		fileSave,
-		fileSaveAs,
-		fileLoadFromUrl,
-		fileUploadToImgur,
-		fileManageStorage,
-		filePrint,
-		fileSetWallpaperTiled,
-		fileSetWallpaperCentered,
-		fileExit,
-	};
+    downloadWallpaper(wallpaperCanvas, "centered");
+  }, [canvasRef, downloadWallpaper]);
+
+  return {
+    fileNew,
+    fileOpen,
+    fileSave,
+    fileSaveAs,
+    fileLoadFromUrl,
+    fileUploadToImgur,
+    fileManageStorage,
+    filePrint,
+    fileSetWallpaperTiled,
+    fileSetWallpaperCentered,
+    fileExit,
+  };
 }

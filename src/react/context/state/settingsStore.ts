@@ -13,196 +13,196 @@ import { DEFAULT_PALETTE } from "../../data/palette";
  * Stores all user preferences that should persist across sessions
  */
 export interface SettingsState {
-	/**
-	 * Primary (left-click) drawing color
-	 */
-	primaryColor: string;
+  /**
+   * Primary (left-click) drawing color
+   */
+  primaryColor: string;
 
-	/**
-	 * Secondary (right-click) drawing color
-	 */
-	secondaryColor: string;
+  /**
+   * Secondary (right-click) drawing color
+   */
+  secondaryColor: string;
 
-	/**
-	 * Color palette (array of hex color strings)
-	 */
-	palette: string[];
+  /**
+   * Color palette (array of hex color strings)
+   */
+  palette: string[];
 
-	/**
-	 * Brush tool size in pixels
-	 */
-	brushSize: number;
+  /**
+   * Brush tool size in pixels
+   */
+  brushSize: number;
 
-	/**
-	 * Brush shape style
-	 */
-	brushShape: "circle" | "square" | "reverse_diagonal" | "diagonal";
+  /**
+   * Brush shape style
+   */
+  brushShape: "circle" | "square" | "reverse_diagonal" | "diagonal";
 
-	/**
-	 * Pencil tool size in pixels
-	 */
-	pencilSize: number;
+  /**
+   * Pencil tool size in pixels
+   */
+  pencilSize: number;
 
-	/**
-	 * Eraser tool size in pixels
-	 */
-	eraserSize: number;
+  /**
+   * Eraser tool size in pixels
+   */
+  eraserSize: number;
 
-	/**
-	 * Airbrush tool size in pixels
-	 */
-	airbrushSize: number;
+  /**
+   * Airbrush tool size in pixels
+   */
+  airbrushSize: number;
 
-	/**
-	 * Shape fill style (outline, fill, or both)
-	 */
-	fillStyle: "outline" | "fill" | "both";
+  /**
+   * Shape fill style (outline, fill, or both)
+   */
+  fillStyle: "outline" | "fill" | "both";
 
-	/**
-	 * Line width for shape tools
-	 */
-	lineWidth: number;
+  /**
+   * Line width for shape tools
+   */
+  lineWidth: number;
 
-	/**
-	 * Font family for text tool
-	 */
-	fontFamily: string;
+  /**
+   * Font family for text tool
+   */
+  fontFamily: string;
 
-	/**
-	 * Font size for text tool in pixels
-	 */
-	fontSize: number;
+  /**
+   * Font size for text tool in pixels
+   */
+  fontSize: number;
 
-	/**
-	 * Whether text should be bold
-	 */
-	fontBold: boolean;
+  /**
+   * Whether text should be bold
+   */
+  fontBold: boolean;
 
-	/**
-	 * Whether text should be italic
-	 */
-	fontItalic: boolean;
+  /**
+   * Whether text should be italic
+   */
+  fontItalic: boolean;
 
-	/**
-	 * Whether text should be underlined
-	 */
-	fontUnderline: boolean;
+  /**
+   * Whether text should be underlined
+   */
+  fontUnderline: boolean;
 
-	/**
-	 * Whether text uses vertical writing mode (Far East fonts)
-	 */
-	fontVertical: boolean;
+  /**
+   * Whether text uses vertical writing mode (Far East fonts)
+   */
+  fontVertical: boolean;
 
-	/**
-	 * Whether text background should be transparent
-	 */
-	textTransparent: boolean;
+  /**
+   * Whether text background should be transparent
+   */
+  textTransparent: boolean;
 
-	/**
-	 * Default canvas width in pixels
-	 */
-	defaultCanvasWidth: number;
+  /**
+   * Default canvas width in pixels
+   */
+  defaultCanvasWidth: number;
 
-	/**
-	 * Default canvas height in pixels
-	 */
-	defaultCanvasHeight: number;
+  /**
+   * Default canvas height in pixels
+   */
+  defaultCanvasHeight: number;
 
-	/**
-	 * Whether to draw in opaque mode (vs transparent)
-	 */
-	drawOpaque: boolean;
+  /**
+   * Whether to draw in opaque mode (vs transparent)
+   */
+  drawOpaque: boolean;
 
-	/**
-	 * Set the primary drawing color
-	 * @param {string} color - Hex color string
-	 */
-	setPrimaryColor: (color: string) => void;
+  /**
+   * Set the primary drawing color
+   * @param {string} color - Hex color string
+   */
+  setPrimaryColor: (color: string) => void;
 
-	/**
-	 * Set the secondary drawing color
-	 * @param {string} color - Hex color string
-	 */
-	setSecondaryColor: (color: string) => void;
+  /**
+   * Set the secondary drawing color
+   * @param {string} color - Hex color string
+   */
+  setSecondaryColor: (color: string) => void;
 
-	/**
-	 * Swap primary and secondary colors
-	 */
-	swapColors: () => void;
+  /**
+   * Swap primary and secondary colors
+   */
+  swapColors: () => void;
 
-	/**
-	 * Set brush size
-	 * @param {number} size - Brush size in pixels
-	 */
-	setBrushSize: (size: number) => void;
+  /**
+   * Set brush size
+   * @param {number} size - Brush size in pixels
+   */
+  setBrushSize: (size: number) => void;
 
-	/**
-	 * Set brush shape
-	 * @param {("circle" | "square" | "reverse_diagonal" | "diagonal")} shape - Brush shape style
-	 */
-	setBrushShape: (shape: "circle" | "square" | "reverse_diagonal" | "diagonal") => void;
+  /**
+   * Set brush shape
+   * @param {("circle" | "square" | "reverse_diagonal" | "diagonal")} shape - Brush shape style
+   */
+  setBrushShape: (shape: "circle" | "square" | "reverse_diagonal" | "diagonal") => void;
 
-	/**
-	 * Set eraser size
-	 * @param {number} size - Eraser size in pixels
-	 */
-	setEraserSize: (size: number) => void;
+  /**
+   * Set eraser size
+   * @param {number} size - Eraser size in pixels
+   */
+  setEraserSize: (size: number) => void;
 
-	/**
-	 * Set airbrush size
-	 * @param {number} size - Airbrush size in pixels
-	 */
-	setAirbrushSize: (size: number) => void;
+  /**
+   * Set airbrush size
+   * @param {number} size - Airbrush size in pixels
+   */
+  setAirbrushSize: (size: number) => void;
 
-	/**
-	 * Set shape fill style
-	 * @param {("outline" | "fill" | "both")} style - Fill style
-	 */
-	setFillStyle: (style: "outline" | "fill" | "both") => void;
+  /**
+   * Set shape fill style
+   * @param {("outline" | "fill" | "both")} style - Fill style
+   */
+  setFillStyle: (style: "outline" | "fill" | "both") => void;
 
-	/**
-	 * Set line width for shape tools
-	 * @param {number} width - Line width in pixels
-	 */
-	setLineWidth: (width: number) => void;
+  /**
+   * Set line width for shape tools
+   * @param {number} width - Line width in pixels
+   */
+  setLineWidth: (width: number) => void;
 
-	/**
-	 * Set font family
-	 * @param {string} family - Font family name
-	 */
-	setFontFamily: (family: string) => void;
+  /**
+   * Set font family
+   * @param {string} family - Font family name
+   */
+  setFontFamily: (family: string) => void;
 
-	/**
-	 * Set font size
-	 * @param {number} size - Font size in pixels
-	 */
-	setFontSize: (size: number) => void;
+  /**
+   * Set font size
+   * @param {number} size - Font size in pixels
+   */
+  setFontSize: (size: number) => void;
 
-	/**
-	 * Set font style (bold, italic, underline, vertical)
-	 * @param {boolean} bold - Whether text should be bold
-	 * @param {boolean} italic - Whether text should be italic
-	 * @param {boolean} underline - Whether text should be underlined
-	 * @param {boolean} vertical - Whether text uses vertical writing mode
-	 */
-	setFontStyle: (bold: boolean, italic: boolean, underline: boolean, vertical: boolean) => void;
+  /**
+   * Set font style (bold, italic, underline, vertical)
+   * @param {boolean} bold - Whether text should be bold
+   * @param {boolean} italic - Whether text should be italic
+   * @param {boolean} underline - Whether text should be underlined
+   * @param {boolean} vertical - Whether text uses vertical writing mode
+   */
+  setFontStyle: (bold: boolean, italic: boolean, underline: boolean, vertical: boolean) => void;
 
-	/**
-	 * Set text transparency mode
-	 * @param {boolean} transparent - Whether text background should be transparent
-	 */
-	setTextTransparent: (transparent: boolean) => void;
+  /**
+   * Set text transparency mode
+   * @param {boolean} transparent - Whether text background should be transparent
+   */
+  setTextTransparent: (transparent: boolean) => void;
 
-	/**
-	 * Toggle draw opaque mode
-	 */
-	toggleDrawOpaque: () => void;
+  /**
+   * Toggle draw opaque mode
+   */
+  toggleDrawOpaque: () => void;
 
-	/**
-	 * Load all persisted settings from IndexedDB
-	 * @returns {Promise<void>}
-	 */
-	loadPersistedSettings: () => Promise<void>;
+  /**
+   * Load all persisted settings from IndexedDB
+   * @returns {Promise<void>}
+   */
+  loadPersistedSettings: () => Promise<void>;
 }
 
 /**
@@ -211,153 +211,153 @@ export interface SettingsState {
  * @returns {SettingsState} The settings store
  */
 export const useSettingsStore = create<SettingsState>((set, get) => ({
-	// Initial values
-	primaryColor: DEFAULT_PALETTE[0],
-	secondaryColor: DEFAULT_PALETTE[14],
-	palette: DEFAULT_PALETTE,
-	brushSize: 4,
-	brushShape: "circle",
-	pencilSize: 1,
-	eraserSize: 8,
-	airbrushSize: 9,
-	fillStyle: "outline",
-	lineWidth: 1,
-	fontFamily: "Arial",
-	fontSize: 12,
-	fontBold: false,
-	fontItalic: false,
-	fontUnderline: false,
-	fontVertical: false,
-	textTransparent: false,
-	defaultCanvasWidth: DEFAULT_CANVAS_WIDTH,
-	defaultCanvasHeight: DEFAULT_CANVAS_HEIGHT,
-	drawOpaque: true,
+  // Initial values
+  primaryColor: DEFAULT_PALETTE[0],
+  secondaryColor: DEFAULT_PALETTE[14],
+  palette: DEFAULT_PALETTE,
+  brushSize: 4,
+  brushShape: "circle",
+  pencilSize: 1,
+  eraserSize: 8,
+  airbrushSize: 9,
+  fillStyle: "outline",
+  lineWidth: 1,
+  fontFamily: "Arial",
+  fontSize: 12,
+  fontBold: false,
+  fontItalic: false,
+  fontUnderline: false,
+  fontVertical: false,
+  textTransparent: false,
+  defaultCanvasWidth: DEFAULT_CANVAS_WIDTH,
+  defaultCanvasHeight: DEFAULT_CANVAS_HEIGHT,
+  drawOpaque: true,
 
-	// Actions with persistence
-	setPrimaryColor: (color) => {
-		set({ primaryColor: color });
-		saveSetting("primaryColor", color);
-	},
+  // Actions with persistence
+  setPrimaryColor: (color) => {
+    set({ primaryColor: color });
+    saveSetting("primaryColor", color);
+  },
 
-	setSecondaryColor: (color) => {
-		set({ secondaryColor: color });
-		saveSetting("secondaryColor", color);
-	},
+  setSecondaryColor: (color) => {
+    set({ secondaryColor: color });
+    saveSetting("secondaryColor", color);
+  },
 
-	swapColors: () => {
-		const { primaryColor, secondaryColor } = get();
-		set({ primaryColor: secondaryColor, secondaryColor: primaryColor });
-		saveSetting("primaryColor", secondaryColor);
-		saveSetting("secondaryColor", primaryColor);
-	},
+  swapColors: () => {
+    const { primaryColor, secondaryColor } = get();
+    set({ primaryColor: secondaryColor, secondaryColor: primaryColor });
+    saveSetting("primaryColor", secondaryColor);
+    saveSetting("secondaryColor", primaryColor);
+  },
 
-	setBrushSize: (size) => {
-		set({ brushSize: size });
-		saveSetting("brushSize", size);
-	},
+  setBrushSize: (size) => {
+    set({ brushSize: size });
+    saveSetting("brushSize", size);
+  },
 
-	setBrushShape: (shape) => {
-		set({ brushShape: shape });
-		saveSetting("brushShape", shape);
-	},
+  setBrushShape: (shape) => {
+    set({ brushShape: shape });
+    saveSetting("brushShape", shape);
+  },
 
-	setEraserSize: (size) => {
-		set({ eraserSize: size });
-		saveSetting("eraserSize", size);
-	},
+  setEraserSize: (size) => {
+    set({ eraserSize: size });
+    saveSetting("eraserSize", size);
+  },
 
-	setAirbrushSize: (size) => {
-		set({ airbrushSize: size });
-		saveSetting("airbrushSize", size);
-	},
+  setAirbrushSize: (size) => {
+    set({ airbrushSize: size });
+    saveSetting("airbrushSize", size);
+  },
 
-	setFillStyle: (style) => {
-		set({ fillStyle: style });
-		saveSetting("fillStyle", style);
-	},
+  setFillStyle: (style) => {
+    set({ fillStyle: style });
+    saveSetting("fillStyle", style);
+  },
 
-	setLineWidth: (width) => {
-		set({ lineWidth: width });
-		saveSetting("lineWidth", width);
-	},
+  setLineWidth: (width) => {
+    set({ lineWidth: width });
+    saveSetting("lineWidth", width);
+  },
 
-	setFontFamily: (family) => {
-		set({ fontFamily: family });
-		saveSetting("fontFamily", family);
-	},
+  setFontFamily: (family) => {
+    set({ fontFamily: family });
+    saveSetting("fontFamily", family);
+  },
 
-	setFontSize: (size) => {
-		set({ fontSize: size });
-		saveSetting("fontSize", size);
-	},
+  setFontSize: (size) => {
+    set({ fontSize: size });
+    saveSetting("fontSize", size);
+  },
 
-	setFontStyle: (bold, italic, underline, vertical) => {
-		set({ fontBold: bold, fontItalic: italic, fontUnderline: underline, fontVertical: vertical });
-		saveSetting("fontBold", bold);
-		saveSetting("fontItalic", italic);
-		saveSetting("fontUnderline", underline);
-		saveSetting("fontVertical", vertical);
-	},
+  setFontStyle: (bold, italic, underline, vertical) => {
+    set({ fontBold: bold, fontItalic: italic, fontUnderline: underline, fontVertical: vertical });
+    saveSetting("fontBold", bold);
+    saveSetting("fontItalic", italic);
+    saveSetting("fontUnderline", underline);
+    saveSetting("fontVertical", vertical);
+  },
 
-	setTextTransparent: (transparent) => {
-		set({ textTransparent: transparent });
-		saveSetting("textTransparent", transparent);
-	},
+  setTextTransparent: (transparent) => {
+    set({ textTransparent: transparent });
+    saveSetting("textTransparent", transparent);
+  },
 
-	toggleDrawOpaque: () => {
-		const newValue = !get().drawOpaque;
-		set({ drawOpaque: newValue });
-		saveSetting("drawOpaque", newValue);
-	},
+  toggleDrawOpaque: () => {
+    const newValue = !get().drawOpaque;
+    set({ drawOpaque: newValue });
+    saveSetting("drawOpaque", newValue);
+  },
 
-	// Load persisted settings on app initialization
-	loadPersistedSettings: async () => {
-		let primaryColor = await loadSetting("primaryColor", DEFAULT_PALETTE[0]);
-		let secondaryColor = await loadSetting("secondaryColor", DEFAULT_PALETTE[14]);
+  // Load persisted settings on app initialization
+  loadPersistedSettings: async () => {
+    let primaryColor = await loadSetting("primaryColor", DEFAULT_PALETTE[0]);
+    let secondaryColor = await loadSetting("secondaryColor", DEFAULT_PALETTE[14]);
 
-		// Validate colors - ensure they're not fully transparent
-		// Fix for bug where rgba(0,0,0,0) was being saved/loaded
-		if (primaryColor.includes('rgba') && primaryColor.includes(',0)')) {
-			console.warn('[settingsStore] Primary color was transparent, resetting to black');
-			primaryColor = DEFAULT_PALETTE[0]; // Black
-		}
-		if (secondaryColor.includes('rgba') && secondaryColor.includes(',0)')) {
-			console.warn('[settingsStore] Secondary color was transparent, resetting to white');
-			secondaryColor = DEFAULT_PALETTE[14]; // White
-		}
+    // Validate colors - ensure they're not fully transparent
+    // Fix for bug where rgba(0,0,0,0) was being saved/loaded
+    if (primaryColor.includes("rgba") && primaryColor.includes(",0)")) {
+      console.warn("[settingsStore] Primary color was transparent, resetting to black");
+      primaryColor = DEFAULT_PALETTE[0]; // Black
+    }
+    if (secondaryColor.includes("rgba") && secondaryColor.includes(",0)")) {
+      console.warn("[settingsStore] Secondary color was transparent, resetting to white");
+      secondaryColor = DEFAULT_PALETTE[14]; // White
+    }
 
-		const brushSize = await loadSetting("brushSize", 4);
-		const brushShape = await loadSetting<"circle" | "square" | "reverse_diagonal" | "diagonal">("brushShape", "circle");
-		const eraserSize = await loadSetting("eraserSize", 8);
-		const airbrushSize = await loadSetting("airbrushSize", 9);
-		const fillStyle = await loadSetting<"outline" | "fill" | "both">("fillStyle", "outline");
-		const lineWidth = await loadSetting("lineWidth", 1);
-		const fontFamily = await loadSetting("fontFamily", "Arial");
-		const fontSize = await loadSetting("fontSize", 12);
-		const fontBold = await loadSetting("fontBold", false);
-		const fontItalic = await loadSetting("fontItalic", false);
-		const fontUnderline = await loadSetting("fontUnderline", false);
-		const fontVertical = await loadSetting("fontVertical", false);
-		const textTransparent = await loadSetting("textTransparent", false);
-		const drawOpaque = await loadSetting("drawOpaque", true);
+    const brushSize = await loadSetting("brushSize", 4);
+    const brushShape = await loadSetting<"circle" | "square" | "reverse_diagonal" | "diagonal">("brushShape", "circle");
+    const eraserSize = await loadSetting("eraserSize", 8);
+    const airbrushSize = await loadSetting("airbrushSize", 9);
+    const fillStyle = await loadSetting<"outline" | "fill" | "both">("fillStyle", "outline");
+    const lineWidth = await loadSetting("lineWidth", 1);
+    const fontFamily = await loadSetting("fontFamily", "Arial");
+    const fontSize = await loadSetting("fontSize", 12);
+    const fontBold = await loadSetting("fontBold", false);
+    const fontItalic = await loadSetting("fontItalic", false);
+    const fontUnderline = await loadSetting("fontUnderline", false);
+    const fontVertical = await loadSetting("fontVertical", false);
+    const textTransparent = await loadSetting("textTransparent", false);
+    const drawOpaque = await loadSetting("drawOpaque", true);
 
-		set({
-			primaryColor,
-			secondaryColor,
-			brushSize,
-			brushShape,
-			eraserSize,
-			airbrushSize,
-			fillStyle,
-			lineWidth,
-			fontFamily,
-			fontSize,
-			fontBold,
-			fontItalic,
-			fontUnderline,
-			fontVertical,
-			textTransparent,
-			drawOpaque,
-		});
-	},
+    set({
+      primaryColor,
+      secondaryColor,
+      brushSize,
+      brushShape,
+      eraserSize,
+      airbrushSize,
+      fillStyle,
+      lineWidth,
+      fontFamily,
+      fontSize,
+      fontBold,
+      fontItalic,
+      fontUnderline,
+      fontVertical,
+      textTransparent,
+      drawOpaque,
+    });
+  },
 }));

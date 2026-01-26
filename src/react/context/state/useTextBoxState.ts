@@ -9,5 +9,5 @@ import { useToolStore } from "./toolStore";
  * @returns {TextBoxState | null} Current text box state
  */
 export function useTextBoxState() {
-	return useToolStore((state) => state.textBox);
+  return useToolStore((state) => state.textBox);
 }

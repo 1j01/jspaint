@@ -24,35 +24,35 @@ import { useSettingsStore } from "./settingsStore";
  * }} View state and actions
  */
 export function useViewState() {
-	const showToolBox = useUIStore((state) => state.showToolBox);
-	const showColorBox = useUIStore((state) => state.showColorBox);
-	const showStatusBar = useUIStore((state) => state.showStatusBar);
-	const showTextToolbar = useUIStore((state) => state.showTextToolbar);
-	const showGrid = useUIStore((state) => state.showGrid);
-	const showThumbnail = useUIStore((state) => state.showThumbnail);
-	const toggleToolBox = useUIStore((state) => state.toggleToolBox);
-	const toggleColorBox = useUIStore((state) => state.toggleColorBox);
-	const toggleStatusBar = useUIStore((state) => state.toggleStatusBar);
-	const toggleTextToolbar = useUIStore((state) => state.toggleTextToolbar);
-	const toggleGrid = useUIStore((state) => state.toggleGrid);
-	const toggleThumbnail = useUIStore((state) => state.toggleThumbnail);
-	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
-	const toggleDrawOpaque = useSettingsStore((state) => state.toggleDrawOpaque);
+  const showToolBox = useUIStore((state) => state.showToolBox);
+  const showColorBox = useUIStore((state) => state.showColorBox);
+  const showStatusBar = useUIStore((state) => state.showStatusBar);
+  const showTextToolbar = useUIStore((state) => state.showTextToolbar);
+  const showGrid = useUIStore((state) => state.showGrid);
+  const showThumbnail = useUIStore((state) => state.showThumbnail);
+  const toggleToolBox = useUIStore((state) => state.toggleToolBox);
+  const toggleColorBox = useUIStore((state) => state.toggleColorBox);
+  const toggleStatusBar = useUIStore((state) => state.toggleStatusBar);
+  const toggleTextToolbar = useUIStore((state) => state.toggleTextToolbar);
+  const toggleGrid = useUIStore((state) => state.toggleGrid);
+  const toggleThumbnail = useUIStore((state) => state.toggleThumbnail);
+  const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+  const toggleDrawOpaque = useSettingsStore((state) => state.toggleDrawOpaque);
 
-	return {
-		showToolBox,
-		showColorBox,
-		showStatusBar,
-		showTextToolbar,
-		showGrid,
-		showThumbnail,
-		toggleToolBox,
-		toggleColorBox,
-		toggleStatusBar,
-		toggleTextToolbar,
-		toggleGrid,
-		toggleThumbnail,
-		drawOpaque,
-		toggleDrawOpaque,
-	};
+  return {
+    showToolBox,
+    showColorBox,
+    showStatusBar,
+    showTextToolbar,
+    showGrid,
+    showThumbnail,
+    toggleToolBox,
+    toggleColorBox,
+    toggleStatusBar,
+    toggleTextToolbar,
+    toggleGrid,
+    toggleThumbnail,
+    drawOpaque,
+    toggleDrawOpaque,
+  };
 }

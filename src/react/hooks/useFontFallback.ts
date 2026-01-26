@@ -15,26 +15,26 @@ import { useEffect } from "react";
  * Font state interface
  */
 interface FontState {
-	family: string;
-	size: number;
-	bold: boolean;
-	italic: boolean;
-	underline: boolean;
-	vertical: boolean;
+  family: string;
+  size: number;
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  vertical: boolean;
 }
 
 /**
  * Parameters for the font fallback hook
  */
 interface UseFontFallbackParams {
-	/** Whether fonts are still loading */
-	loadingFonts: boolean;
-	/** List of available fonts */
-	availableFonts: string[];
-	/** Current font state */
-	fontState: FontState;
-	/** Callback to update font state */
-	onFontChange: (state: FontState) => void;
+  /** Whether fonts are still loading */
+  loadingFonts: boolean;
+  /** List of available fonts */
+  availableFonts: string[];
+  /** Current font state */
+  fontState: FontState;
+  /** Callback to update font state */
+  onFontChange: (state: FontState) => void;
 }
 
 /**
@@ -55,45 +55,39 @@ interface UseFontFallbackParams {
  * // Will update family to "Arial" since "Unknown Font" is not available
  */
 export function useFontFallback({
-	loadingFonts,
-	availableFonts,
-	fontState,
-	onFontChange,
+  loadingFonts,
+  availableFonts,
+  fontState,
+  onFontChange,
 }: UseFontFallbackParams): void {
-	useEffect(() => {
-		// Wait for fonts to finish loading
-		if (loadingFonts || availableFonts.length === 0) return;
+  useEffect(() => {
+    // Wait for fonts to finish loading
+    if (loadingFonts || availableFonts.length === 0) return;
 
-		// Check if current font is in the available list (case-insensitive)
-		const normalizedFamily = fontState.family.toLowerCase();
-		const fontAvailable = availableFonts.some(
-			(font) => font.toLowerCase() === normalizedFamily
-		);
+    // Check if current font is in the available list (case-insensitive)
+    const normalizedFamily = fontState.family.toLowerCase();
+    const fontAvailable = availableFonts.some((font) => font.toLowerCase() === normalizedFamily);
 
-		if (!fontAvailable) {
-			// Font not available - apply fallback cascade like jQuery
-			// Try "Liberation Sans" first (common fallback)
-			const liberationSans = availableFonts.find(
-				(font) => font.toLowerCase() === "liberation sans"
-			);
-			if (liberationSans) {
-				onFontChange({ ...fontState, family: liberationSans });
-				return;
-			}
+    if (!fontAvailable) {
+      // Font not available - apply fallback cascade like jQuery
+      // Try "Liberation Sans" first (common fallback)
+      const liberationSans = availableFonts.find((font) => font.toLowerCase() === "liberation sans");
+      if (liberationSans) {
+        onFontChange({ ...fontState, family: liberationSans });
+        return;
+      }
 
-			// Try "Arial" as secondary fallback
-			const arial = availableFonts.find(
-				(font) => font.toLowerCase() === "arial"
-			);
-			if (arial) {
-				onFontChange({ ...fontState, family: arial });
-				return;
-			}
+      // Try "Arial" as secondary fallback
+      const arial = availableFonts.find((font) => font.toLowerCase() === "arial");
+      if (arial) {
+        onFontChange({ ...fontState, family: arial });
+        return;
+      }
 
-			// Fall back to first available font
-			if (availableFonts[0]) {
-				onFontChange({ ...fontState, family: availableFonts[0] });
-			}
-		}
-	}, [loadingFonts, availableFonts, fontState, onFontChange]);
+      // Fall back to first available font
+      if (availableFonts[0]) {
+        onFontChange({ ...fontState, family: availableFonts[0] });
+      }
+    }
+  }, [loadingFonts, availableFonts, fontState, onFontChange]);
 }

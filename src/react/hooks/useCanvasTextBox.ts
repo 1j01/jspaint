@@ -11,13 +11,13 @@ import type { TextBoxState } from "../context/state/types";
 const LINE_SCALE = 20 / 12;
 
 export interface TextBoxCreationState {
-	isCreating: boolean;
-	startX: number;
-	startY: number;
+  isCreating: boolean;
+  startX: number;
+  startY: number;
 }
 
 interface UseCanvasTextBoxProps {
-	canvasRef: RefObject<HTMLCanvasElement | null>;
+  canvasRef: RefObject<HTMLCanvasElement | null>;
 }
 
 /**
@@ -52,233 +52,233 @@ interface UseCanvasTextBoxProps {
  * textBox.commitTextBox();
  */
 export function useCanvasTextBox({ canvasRef }: UseCanvasTextBoxProps) {
-	const { primaryColor, secondaryColor } = useColors();
-	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+  const { primaryColor, secondaryColor } = useColors();
+  const drawOpaque = useSettingsStore((state) => state.drawOpaque);
 
-	// Use stores directly with individual selectors (no useShallow needed)
-	const textBox = useToolStore((state) => state.textBox);
-	const setTextBox = useToolStore((state) => state.setTextBox);
-	const clearTextBox = useToolStore((state) => state.clearTextBox);
+  // Use stores directly with individual selectors (no useShallow needed)
+  const textBox = useToolStore((state) => state.textBox);
+  const setTextBox = useToolStore((state) => state.setTextBox);
+  const clearTextBox = useToolStore((state) => state.clearTextBox);
 
-	const fontFamily = useSettingsStore((state) => state.fontFamily);
-	const fontSize = useSettingsStore((state) => state.fontSize);
-	const fontBold = useSettingsStore((state) => state.fontBold);
-	const fontItalic = useSettingsStore((state) => state.fontItalic);
-	const fontUnderline = useSettingsStore((state) => state.fontUnderline);
-	const fontVertical = useSettingsStore((state) => state.fontVertical);
+  const fontFamily = useSettingsStore((state) => state.fontFamily);
+  const fontSize = useSettingsStore((state) => state.fontSize);
+  const fontBold = useSettingsStore((state) => state.fontBold);
+  const fontItalic = useSettingsStore((state) => state.fontItalic);
+  const fontUnderline = useSettingsStore((state) => state.fontUnderline);
+  const fontVertical = useSettingsStore((state) => state.fontVertical);
 
-	// Text box creation state
-	const textBoxState = useRef<TextBoxCreationState>({
-		isCreating: false,
-		startX: 0,
-		startY: 0,
-	});
+  // Text box creation state
+  const textBoxState = useRef<TextBoxCreationState>({
+    isCreating: false,
+    startX: 0,
+    startY: 0,
+  });
 
-	/**
-	 * Start creating a text box
-	 * @param {number} x - Start X coordinate
-	 * @param {number} y - Start Y coordinate
-	 */
-	const startTextBox = useCallback((x: number, y: number): void => {
-		textBoxState.current = {
-			isCreating: true,
-			startX: x,
-			startY: y,
-		};
-	}, []);
+  /**
+   * Start creating a text box
+   * @param {number} x - Start X coordinate
+   * @param {number} y - Start Y coordinate
+   */
+  const startTextBox = useCallback((x: number, y: number): void => {
+    textBoxState.current = {
+      isCreating: true,
+      startX: x,
+      startY: y,
+    };
+  }, []);
 
-	/**
-	 * Finalize text box creation with final dimensions
-	 * Creates the text box state with minimum size constraints
-	 * @param {number} x - End X coordinate
-	 * @param {number} y - End Y coordinate
-	 */
-	const finalizeTextBox = useCallback(
-		(x: number, y: number): void => {
-			if (!textBoxState.current.isCreating) return;
+  /**
+   * Finalize text box creation with final dimensions
+   * Creates the text box state with minimum size constraints
+   * @param {number} x - End X coordinate
+   * @param {number} y - End Y coordinate
+   */
+  const finalizeTextBox = useCallback(
+    (x: number, y: number): void => {
+      if (!textBoxState.current.isCreating) return;
 
-			const { startX, startY } = textBoxState.current;
-			const width = Math.max(20, Math.abs(x - startX));
-			const height = Math.max(10, Math.abs(y - startY));
-			const boxX = Math.min(startX, x);
-			const boxY = Math.min(startY, y);
+      const { startX, startY } = textBoxState.current;
+      const width = Math.max(20, Math.abs(x - startX));
+      const height = Math.max(10, Math.abs(y - startY));
+      const boxX = Math.min(startX, x);
+      const boxY = Math.min(startY, y);
 
-			setTextBox({
-				x: boxX,
-				y: boxY,
-				width,
-				height,
-				text: "",
-				fontFamily,
-				fontSize,
-				fontBold,
-				fontItalic,
-				fontUnderline,
-				fontVertical,
-				isActive: true,
-			});
+      setTextBox({
+        x: boxX,
+        y: boxY,
+        width,
+        height,
+        text: "",
+        fontFamily,
+        fontSize,
+        fontBold,
+        fontItalic,
+        fontUnderline,
+        fontVertical,
+        isActive: true,
+      });
 
-		textBoxState.current.isCreating = false;
-	},
-	[fontFamily, fontSize, fontBold, fontItalic, fontUnderline, fontVertical, setTextBox],
-);
+      textBoxState.current.isCreating = false;
+    },
+    [fontFamily, fontSize, fontBold, fontItalic, fontUnderline, fontVertical, setTextBox],
+  );
 
-	/**
-	 * Commit text box to canvas
-	 * Renders the text with current font settings and clears the text box
-	 * Supports multi-line text, underline styling, and vertical text
-	 */
-	const commitTextBox = useCallback((): void => {
-		if (!textBox || !textBox.text.trim()) {
-			clearTextBox();
-			return;
-		}
+  /**
+   * Commit text box to canvas
+   * Renders the text with current font settings and clears the text box
+   * Supports multi-line text, underline styling, and vertical text
+   */
+  const commitTextBox = useCallback((): void => {
+    if (!textBox || !textBox.text.trim()) {
+      clearTextBox();
+      return;
+    }
 
-		const canvas = canvasRef.current;
-		if (!canvas) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) return;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return;
 
-		// Draw background if opaque mode is enabled (matching jQuery behavior)
-		if (drawOpaque) {
-			ctx.fillStyle = secondaryColor;
-			ctx.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
-		}
+    // Draw background if opaque mode is enabled (matching jQuery behavior)
+    if (drawOpaque) {
+      ctx.fillStyle = secondaryColor;
+      ctx.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
+    }
 
-		// Build font string
-		let fontStyle = "";
-		if (textBox.fontItalic) fontStyle += "italic ";
-		if (textBox.fontBold) fontStyle += "bold ";
-		fontStyle += `${textBox.fontSize}px ${textBox.fontFamily}`;
+    // Build font string
+    let fontStyle = "";
+    if (textBox.fontItalic) fontStyle += "italic ";
+    if (textBox.fontBold) fontStyle += "bold ";
+    fontStyle += `${textBox.fontSize}px ${textBox.fontFamily}`;
 
-		ctx.font = fontStyle;
-		ctx.fillStyle = primaryColor;
-		ctx.textBaseline = "top";
+    ctx.font = fontStyle;
+    ctx.fillStyle = primaryColor;
+    ctx.textBaseline = "top";
 
-		// Split text into lines and draw each
-		const lines = textBox.text.split("\n");
-		const lineHeight = textBox.fontSize * LINE_SCALE;
+    // Split text into lines and draw each
+    const lines = textBox.text.split("\n");
+    const lineHeight = textBox.fontSize * LINE_SCALE;
 
-		if (textBox.fontVertical) {
-			// Vertical text: rotate context 90 degrees and render from upper-right
-			ctx.save();
-			// Move to upper-right corner of text box, then rotate
-			ctx.translate(textBox.x + textBox.width, textBox.y);
-			ctx.rotate(Math.PI / 2); // Rotate 90 degrees clockwise
+    if (textBox.fontVertical) {
+      // Vertical text: rotate context 90 degrees and render from upper-right
+      ctx.save();
+      // Move to upper-right corner of text box, then rotate
+      ctx.translate(textBox.x + textBox.width, textBox.y);
+      ctx.rotate(Math.PI / 2); // Rotate 90 degrees clockwise
 
-			// Character spacing for vertical text (use fontSize for vertical stacking)
-			const charHeight = textBox.fontSize;
+      // Character spacing for vertical text (use fontSize for vertical stacking)
+      const charHeight = textBox.fontSize;
 
-			lines.forEach((line, lineIndex) => {
-				const chars = Array.from(line); // Handle multi-byte characters properly
-				const rotatedY = lineIndex * lineHeight; // Positive to go left in original coords
+      lines.forEach((line, lineIndex) => {
+        const chars = Array.from(line); // Handle multi-byte characters properly
+        const rotatedY = lineIndex * lineHeight; // Positive to go left in original coords
 
-				chars.forEach((char, charIndex) => {
-					// Characters go downward (positive X after rotation)
-					// Lines go leftward (positive Y moves left in original coords after 90° CW rotation)
-					const rotatedX = charIndex * charHeight;
-					ctx.fillText(char, rotatedX, rotatedY);
-				});
+        chars.forEach((char, charIndex) => {
+          // Characters go downward (positive X after rotation)
+          // Lines go leftward (positive Y moves left in original coords after 90° CW rotation)
+          const rotatedX = charIndex * charHeight;
+          ctx.fillText(char, rotatedX, rotatedY);
+        });
 
-				// Draw underline for the entire column (vertical line in display)
-				// In rotated space: X spans the column height, Y is offset to the left of the column
-				if (textBox.fontUnderline && chars.length > 0) {
-					const columnLength = chars.length * charHeight;
-					// Offset by fontSize + 2 in Y direction (appears to the left of text column in display)
-					ctx.fillRect(0, rotatedY + textBox.fontSize + 2, columnLength, 1);
-				}
-			});
+        // Draw underline for the entire column (vertical line in display)
+        // In rotated space: X spans the column height, Y is offset to the left of the column
+        if (textBox.fontUnderline && chars.length > 0) {
+          const columnLength = chars.length * charHeight;
+          // Offset by fontSize + 2 in Y direction (appears to the left of text column in display)
+          ctx.fillRect(0, rotatedY + textBox.fontSize + 2, columnLength, 1);
+        }
+      });
 
-			ctx.restore();
-		} else {
-			// Horizontal text: render normally
-			lines.forEach((line, index) => {
-				ctx.fillText(line, textBox.x, textBox.y + index * lineHeight);
+      ctx.restore();
+    } else {
+      // Horizontal text: render normally
+      lines.forEach((line, index) => {
+        ctx.fillText(line, textBox.x, textBox.y + index * lineHeight);
 
-				// Draw underline if needed
-				if (textBox.fontUnderline) {
-					const textWidth = ctx.measureText(line).width;
-					ctx.fillRect(textBox.x, textBox.y + index * lineHeight + textBox.fontSize + 1, textWidth, 1);
-				}
-			});
-		}
+        // Draw underline if needed
+        if (textBox.fontUnderline) {
+          const textWidth = ctx.measureText(line).width;
+          ctx.fillRect(textBox.x, textBox.y + index * lineHeight + textBox.fontSize + 1, textWidth, 1);
+        }
+      });
+    }
 
-		clearTextBox();
-	}, [textBox, primaryColor, secondaryColor, drawOpaque, canvasRef, clearTextBox]);
+    clearTextBox();
+  }, [textBox, primaryColor, secondaryColor, drawOpaque, canvasRef, clearTextBox]);
 
-	// Check if currently creating
-	const isCreating = useCallback((): boolean => {
-		return textBoxState.current.isCreating;
-	}, []);
+  // Check if currently creating
+  const isCreating = useCallback((): boolean => {
+    return textBoxState.current.isCreating;
+  }, []);
 
-	// Update text box text
-	const updateText = useCallback(
-		(newText: string): void => {
-			if (textBox) {
-				setTextBox({
-					...textBox,
-					text: newText,
-				});
-			}
-		},
-		[textBox, setTextBox],
-	);
+  // Update text box text
+  const updateText = useCallback(
+    (newText: string): void => {
+      if (textBox) {
+        setTextBox({
+          ...textBox,
+          text: newText,
+        });
+      }
+    },
+    [textBox, setTextBox],
+  );
 
-	// Move text box
-	const moveTextBox = useCallback(
-		(x: number, y: number): void => {
-			if (textBox) {
-				setTextBox({
-					...textBox,
-					x,
-					y,
-				});
-			}
-		},
-		[textBox, setTextBox],
-	);
+  // Move text box
+  const moveTextBox = useCallback(
+    (x: number, y: number): void => {
+      if (textBox) {
+        setTextBox({
+          ...textBox,
+          x,
+          y,
+        });
+      }
+    },
+    [textBox, setTextBox],
+  );
 
-	// Resize text box
-	const resizeTextBox = useCallback(
-		(width: number, height: number): void => {
-			if (textBox) {
-				setTextBox({
-					...textBox,
-					width,
-					height,
-				});
-			}
-		},
-		[textBox, setTextBox],
-	);
+  // Resize text box
+  const resizeTextBox = useCallback(
+    (width: number, height: number): void => {
+      if (textBox) {
+        setTextBox({
+          ...textBox,
+          width,
+          height,
+        });
+      }
+    },
+    [textBox, setTextBox],
+  );
 
-	// Get current drag bounds for preview
-	const getDragBounds = useCallback(():  { x: number; y: number; width: number; height: number } | null => {
-		if (!textBoxState.current.isCreating) return null;
-		return {
-			x: textBoxState.current.startX,
-			y: textBoxState.current.startY,
-			width: 0,
-			height: 0,
-		};
-	}, []);
+  // Get current drag bounds for preview
+  const getDragBounds = useCallback((): { x: number; y: number; width: number; height: number } | null => {
+    if (!textBoxState.current.isCreating) return null;
+    return {
+      x: textBoxState.current.startX,
+      y: textBoxState.current.startY,
+      width: 0,
+      height: 0,
+    };
+  }, []);
 
-	return {
-		textBox,
-		textBoxState,
-		startTextBox,
-		finalizeTextBox,
-		commitTextBox,
-		clearTextBox,
-		isCreating,
-		updateText,
-		moveTextBox,
-		resizeTextBox,
-		fontFamily,
-		fontSize,
-		fontBold,
-		fontItalic,
-		fontUnderline,
-	};
+  return {
+    textBox,
+    textBoxState,
+    startTextBox,
+    finalizeTextBox,
+    commitTextBox,
+    clearTextBox,
+    isCreating,
+    updateText,
+    moveTextBox,
+    resizeTextBox,
+    fontFamily,
+    fontSize,
+    fontBold,
+    fontItalic,
+    fontUnderline,
+  };
 }

@@ -11,5 +11,5 @@ import { useHistoryStore } from "./historyStore";
  * @returns {HistoryNode | null} Current history node
  */
 export function useCurrentHistoryNode() {
-	return useHistoryStore((state) => state.currentNode);
+  return useHistoryStore((state) => state.currentNode);
 }

@@ -24,43 +24,43 @@ import { getRgbaFromColor } from "./colorUtils";
  * });
  */
 export function bresenhamLine(
-	x0: number,
-	y0: number,
-	x1: number,
-	y1: number,
-	callback: (x: number, y: number) => void,
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number,
+  callback: (x: number, y: number) => void,
 ): void {
-	const dx = Math.abs(x1 - x0);
-	const dy = Math.abs(y1 - y0);
-	const sx = x0 < x1 ? 1 : -1;
-	const sy = y0 < y1 ? 1 : -1;
-	let err = dx - dy;
+  const dx = Math.abs(x1 - x0);
+  const dy = Math.abs(y1 - y0);
+  const sx = x0 < x1 ? 1 : -1;
+  const sy = y0 < y1 ? 1 : -1;
+  let err = dx - dy;
 
-	let currentX = x0;
-	let currentY = y0;
+  let currentX = x0;
+  let currentY = y0;
 
-	while (true) {
-		callback(currentX, currentY);
+  while (true) {
+    callback(currentX, currentY);
 
-		if (currentX === x1 && currentY === y1) break;
+    if (currentX === x1 && currentY === y1) break;
 
-		const e2 = 2 * err;
-		if (e2 > -dy) {
-			err -= dy;
-			currentX += sx;
-		}
-		if (e2 < dx) {
-			err += dx;
-			currentY += sy;
-		}
-	}
+    const e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      currentX += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      currentY += sy;
+    }
+  }
 }
 
 export type BrushShape = "circle" | "square" | "reverse_diagonal" | "diagonal";
 
 export interface BrushPoint {
-	x: number;
-	y: number;
+  x: number;
+  y: number;
 }
 
 /**
@@ -78,49 +78,49 @@ export interface BrushPoint {
  * // Returns points like [{x: 0, y: 0}, {x: -1, y: 0}, {x: 1, y: 0}, ...]
  */
 export function getBrushPoints(size: number, shape: BrushShape = "circle"): BrushPoint[] {
-	const points: BrushPoint[] = [];
-	const radius = Math.floor(size / 2);
+  const points: BrushPoint[] = [];
+  const radius = Math.floor(size / 2);
 
-	switch (shape) {
-		case "circle":
-			for (let y = -radius; y <= radius; y++) {
-				for (let x = -radius; x <= radius; x++) {
-					if (x * x + y * y <= radius * radius) {
-						points.push({ x, y });
-					}
-				}
-			}
-			break;
+  switch (shape) {
+    case "circle":
+      for (let y = -radius; y <= radius; y++) {
+        for (let x = -radius; x <= radius; x++) {
+          if (x * x + y * y <= radius * radius) {
+            points.push({ x, y });
+          }
+        }
+      }
+      break;
 
-		case "square":
-			for (let y = -radius; y <= radius; y++) {
-				for (let x = -radius; x <= radius; x++) {
-					points.push({ x, y });
-				}
-			}
-			break;
+    case "square":
+      for (let y = -radius; y <= radius; y++) {
+        for (let x = -radius; x <= radius; x++) {
+          points.push({ x, y });
+        }
+      }
+      break;
 
-		case "reverse_diagonal":
-			// Diagonal line from top-right to bottom-left (/)
-			for (let i = 0; i < size; i++) {
-				points.push({ x: radius - i, y: -radius + i });
-			}
-			break;
+    case "reverse_diagonal":
+      // Diagonal line from top-right to bottom-left (/)
+      for (let i = 0; i < size; i++) {
+        points.push({ x: radius - i, y: -radius + i });
+      }
+      break;
 
-		case "diagonal":
-			// Diagonal line from top-left to bottom-right (\)
-			for (let i = 0; i < size; i++) {
-				points.push({ x: -radius + i, y: -radius + i });
-			}
-			break;
-	}
+    case "diagonal":
+      // Diagonal line from top-left to bottom-right (\)
+      for (let i = 0; i < size; i++) {
+        points.push({ x: -radius + i, y: -radius + i });
+      }
+      break;
+  }
 
-	// Ensure at least one point (for size 1)
-	if (points.length === 0) {
-		points.push({ x: 0, y: 0 });
-	}
+  // Ensure at least one point (for size 1)
+  if (points.length === 0) {
+    points.push({ x: 0, y: 0 });
+  }
 
-	return points;
+  return points;
 }
 
 /**
@@ -147,104 +147,104 @@ export function getBrushPoints(size: number, shape: BrushShape = "circle"): Brus
  * floodFill(ctx, 50, 50, "#ff0000");
  */
 export function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY: number, fillColor: string): void {
-	const canvas = ctx.canvas;
-	const width = canvas.width;
-	const height = canvas.height;
+  const canvas = ctx.canvas;
+  const width = canvas.width;
+  const height = canvas.height;
 
-	const clampedStartX = Math.max(0, Math.min(Math.floor(startX), width - 1));
-	const clampedStartY = Math.max(0, Math.min(Math.floor(startY), height - 1));
+  const clampedStartX = Math.max(0, Math.min(Math.floor(startX), width - 1));
+  const clampedStartY = Math.max(0, Math.min(Math.floor(startY), height - 1));
 
-	const imageData = ctx.getImageData(0, 0, width, height);
-	const data = imageData.data;
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const data = imageData.data;
 
-	// Get start color
-	const startPos = (clampedStartY * width + clampedStartX) * 4;
-	const startR = data[startPos];
-	const startG = data[startPos + 1];
-	const startB = data[startPos + 2];
-	const startA = data[startPos + 3];
+  // Get start color
+  const startPos = (clampedStartY * width + clampedStartX) * 4;
+  const startR = data[startPos];
+  const startG = data[startPos + 1];
+  const startB = data[startPos + 2];
+  const startA = data[startPos + 3];
 
-	// Get fill color
-	const [fillR, fillG, fillB, fillA] = getRgbaFromColor(fillColor);
+  // Get fill color
+  const [fillR, fillG, fillB, fillA] = getRgbaFromColor(fillColor);
 
-	// Don't fill if clicking on the same color
-	// Tolerance handles anti-aliasing artifacts (see JSDoc for rationale)
-	const tolerance = 2;
-	if (
-		Math.abs(fillR - startR) <= tolerance &&
-		Math.abs(fillG - startG) <= tolerance &&
-		Math.abs(fillB - startB) <= tolerance &&
-		Math.abs(fillA - startA) <= tolerance
-	) {
-		return;
-	}
+  // Don't fill if clicking on the same color
+  // Tolerance handles anti-aliasing artifacts (see JSDoc for rationale)
+  const tolerance = 2;
+  if (
+    Math.abs(fillR - startR) <= tolerance &&
+    Math.abs(fillG - startG) <= tolerance &&
+    Math.abs(fillB - startB) <= tolerance &&
+    Math.abs(fillA - startA) <= tolerance
+  ) {
+    return;
+  }
 
-	const stack: [number, number][] = [[clampedStartX, clampedStartY]];
+  const stack: [number, number][] = [[clampedStartX, clampedStartY]];
 
-	const shouldFill = (pos: number): boolean => {
-		return (
-			Math.abs(data[pos] - startR) <= tolerance &&
-			Math.abs(data[pos + 1] - startG) <= tolerance &&
-			Math.abs(data[pos + 2] - startB) <= tolerance &&
-			Math.abs(data[pos + 3] - startA) <= tolerance
-		);
-	};
+  const shouldFill = (pos: number): boolean => {
+    return (
+      Math.abs(data[pos] - startR) <= tolerance &&
+      Math.abs(data[pos + 1] - startG) <= tolerance &&
+      Math.abs(data[pos + 2] - startB) <= tolerance &&
+      Math.abs(data[pos + 3] - startA) <= tolerance
+    );
+  };
 
-	const doFill = (pos: number): void => {
-		data[pos] = fillR;
-		data[pos + 1] = fillG;
-		data[pos + 2] = fillB;
-		data[pos + 3] = fillA;
-	};
+  const doFill = (pos: number): void => {
+    data[pos] = fillR;
+    data[pos + 1] = fillG;
+    data[pos + 2] = fillB;
+    data[pos + 3] = fillA;
+  };
 
-	while (stack.length > 0) {
-		const [x, y] = stack.pop()!;
+  while (stack.length > 0) {
+    const [x, y] = stack.pop()!;
 
-		// Go up to find the top of the fill area
-		let currentY = y;
-		while (currentY >= 0 && shouldFill((currentY * width + x) * 4)) {
-			currentY--;
-		}
-		currentY++;
-		let pixelPos = (currentY * width + x) * 4;
+    // Go up to find the top of the fill area
+    let currentY = y;
+    while (currentY >= 0 && shouldFill((currentY * width + x) * 4)) {
+      currentY--;
+    }
+    currentY++;
+    let pixelPos = (currentY * width + x) * 4;
 
-		let reachLeft = false;
-		let reachRight = false;
+    let reachLeft = false;
+    let reachRight = false;
 
-		// Fill downward
-		while (currentY < height && shouldFill(pixelPos)) {
-			doFill(pixelPos);
+    // Fill downward
+    while (currentY < height && shouldFill(pixelPos)) {
+      doFill(pixelPos);
 
-			// Check left
-			if (x > 0) {
-				if (shouldFill(pixelPos - 4)) {
-					if (!reachLeft) {
-						stack.push([x - 1, currentY]);
-						reachLeft = true;
-					}
-				} else {
-					reachLeft = false;
-				}
-			}
+      // Check left
+      if (x > 0) {
+        if (shouldFill(pixelPos - 4)) {
+          if (!reachLeft) {
+            stack.push([x - 1, currentY]);
+            reachLeft = true;
+          }
+        } else {
+          reachLeft = false;
+        }
+      }
 
-			// Check right
-			if (x < width - 1) {
-				if (shouldFill(pixelPos + 4)) {
-					if (!reachRight) {
-						stack.push([x + 1, currentY]);
-						reachRight = true;
-					}
-				} else {
-					reachRight = false;
-				}
-			}
+      // Check right
+      if (x < width - 1) {
+        if (shouldFill(pixelPos + 4)) {
+          if (!reachRight) {
+            stack.push([x + 1, currentY]);
+            reachRight = true;
+          }
+        } else {
+          reachRight = false;
+        }
+      }
 
-			currentY++;
-			pixelPos = (currentY * width + x) * 4;
-		}
-	}
+      currentY++;
+      pixelPos = (currentY * width + x) * 4;
+    }
+  }
 
-	ctx.putImageData(imageData, 0, 0);
+  ctx.putImageData(imageData, 0, 0);
 }
 
 /**
@@ -268,53 +268,53 @@ export function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY:
  * drawEllipse(ctx, 10, 10, 100, 50, "#000000", "#ff0000", 2);
  */
 export function drawEllipse(
-	ctx: CanvasRenderingContext2D,
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	strokeColor: string | null,
-	fillColor: string | null,
-	strokeWidth: number = 1,
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  strokeColor: string | null,
+  fillColor: string | null,
+  strokeWidth: number = 1,
 ): void {
-	// Normalize coordinates
-	let normX = x;
-	let normY = y;
-	let normWidth = width;
-	let normHeight = height;
+  // Normalize coordinates
+  let normX = x;
+  let normY = y;
+  let normWidth = width;
+  let normHeight = height;
 
-	if (normWidth < 0) {
-		normX += normWidth;
-		normWidth = -normWidth;
-	}
-	if (normHeight < 0) {
-		normY += normHeight;
-		normHeight = -normHeight;
-	}
+  if (normWidth < 0) {
+    normX += normWidth;
+    normWidth = -normWidth;
+  }
+  if (normHeight < 0) {
+    normY += normHeight;
+    normHeight = -normHeight;
+  }
 
-	if (normWidth < 2 || normHeight < 2) return;
+  if (normWidth < 2 || normHeight < 2) return;
 
-	const cx = normX + normWidth / 2;
-	const cy = normY + normHeight / 2;
-	const rx = normWidth / 2;
-	const ry = normHeight / 2;
+  const cx = normX + normWidth / 2;
+  const cy = normY + normHeight / 2;
+  const rx = normWidth / 2;
+  const ry = normHeight / 2;
 
-	// Fill first
-	if (fillColor) {
-		ctx.fillStyle = fillColor;
-		ctx.beginPath();
-		ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-		ctx.fill();
-	}
+  // Fill first
+  if (fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
-	// Stroke
-	if (strokeColor && strokeWidth > 0) {
-		ctx.strokeStyle = strokeColor;
-		ctx.lineWidth = strokeWidth;
-		ctx.beginPath();
-		ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-		ctx.stroke();
-	}
+  // Stroke
+  if (strokeColor && strokeWidth > 0) {
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = strokeWidth;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
 }
 
 /**
@@ -337,48 +337,48 @@ export function drawEllipse(
  * drawRectangle(ctx, 10, 10, 100, 50, "#000000", "#0000ff", 2);
  */
 export function drawRectangle(
-	ctx: CanvasRenderingContext2D,
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	strokeColor: string | null,
-	fillColor: string | null,
-	strokeWidth: number = 1,
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  strokeColor: string | null,
+  fillColor: string | null,
+  strokeWidth: number = 1,
 ): void {
-	// Normalize coordinates
-	let normX = x;
-	let normY = y;
-	let normWidth = width;
-	let normHeight = height;
+  // Normalize coordinates
+  let normX = x;
+  let normY = y;
+  let normWidth = width;
+  let normHeight = height;
 
-	if (normWidth < 0) {
-		normX += normWidth;
-		normWidth = -normWidth;
-	}
-	if (normHeight < 0) {
-		normY += normHeight;
-		normHeight = -normHeight;
-	}
+  if (normWidth < 0) {
+    normX += normWidth;
+    normWidth = -normWidth;
+  }
+  if (normHeight < 0) {
+    normY += normHeight;
+    normHeight = -normHeight;
+  }
 
-	// Fill first
-	if (fillColor) {
-		ctx.fillStyle = fillColor;
-		ctx.fillRect(normX, normY, normWidth, normHeight);
-	}
+  // Fill first
+  if (fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(normX, normY, normWidth, normHeight);
+  }
 
-	// Stroke - draw as filled rectangles for pixel-perfect rendering
-	if (strokeColor && strokeWidth > 0) {
-		ctx.fillStyle = strokeColor;
-		// Top
-		ctx.fillRect(normX, normY, normWidth, strokeWidth);
-		// Bottom
-		ctx.fillRect(normX, normY + normHeight - strokeWidth, normWidth, strokeWidth);
-		// Left
-		ctx.fillRect(normX, normY, strokeWidth, normHeight);
-		// Right
-		ctx.fillRect(normX + normWidth - strokeWidth, normY, strokeWidth, normHeight);
-	}
+  // Stroke - draw as filled rectangles for pixel-perfect rendering
+  if (strokeColor && strokeWidth > 0) {
+    ctx.fillStyle = strokeColor;
+    // Top
+    ctx.fillRect(normX, normY, normWidth, strokeWidth);
+    // Bottom
+    ctx.fillRect(normX, normY + normHeight - strokeWidth, normWidth, strokeWidth);
+    // Left
+    ctx.fillRect(normX, normY, strokeWidth, normHeight);
+    // Right
+    ctx.fillRect(normX + normWidth - strokeWidth, normY, strokeWidth, normHeight);
+  }
 }
 
 /**
@@ -398,29 +398,29 @@ export function drawRectangle(
  * sprayAirbrush(ctx, 100, 100, "#ff0000", 20);
  */
 export function sprayAirbrush(
-	ctx: CanvasRenderingContext2D,
-	x: number,
-	y: number,
-	color: string,
-	size: number = 10,
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  color: string,
+  size: number = 10,
 ): void {
-	const radius = size / 2;
-	const density = Math.floor(6 + radius / 5);
+  const radius = size / 2;
+  const density = Math.floor(6 + radius / 5);
 
-	ctx.fillStyle = color;
+  ctx.fillStyle = color;
 
-	for (let i = 0; i < density; i++) {
-		const rx = (Math.random() * 2 - 1) * radius;
-		const ry = (Math.random() * 2 - 1) * radius;
-		const distance = rx * rx + ry * ry;
+  for (let i = 0; i < density; i++) {
+    const rx = (Math.random() * 2 - 1) * radius;
+    const ry = (Math.random() * 2 - 1) * radius;
+    const distance = rx * rx + ry * ry;
 
-		// Only place dots within the circular radius
-		if (distance <= radius * radius) {
-			// Use bitwise OR for truncation toward zero (matches jQuery's ~~rx behavior)
-			// This differs from Math.floor which floors toward negative infinity
-			ctx.fillRect(x + (rx | 0), y + (ry | 0), 1, 1);
-		}
-	}
+    // Only place dots within the circular radius
+    if (distance <= radius * radius) {
+      // Use bitwise OR for truncation toward zero (matches jQuery's ~~rx behavior)
+      // This differs from Math.floor which floors toward negative infinity
+      ctx.fillRect(x + (rx | 0), y + (ry | 0), 1, 1);
+    }
+  }
 }
 
 /**
@@ -444,28 +444,28 @@ export function sprayAirbrush(
  * drawQuadraticCurve(ctx, 10, 10, 100, 10, 55, 50, "#000000", 2);
  */
 export function drawQuadraticCurve(
-	ctx: CanvasRenderingContext2D,
-	x1: number,
-	y1: number,
-	x2: number,
-	y2: number,
-	cpX: number,
-	cpY: number,
-	strokeColor: string,
-	strokeWidth: number = 1,
+  ctx: CanvasRenderingContext2D,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  cpX: number,
+  cpY: number,
+  strokeColor: string,
+  strokeWidth: number = 1,
 ): void {
-	ctx.strokeStyle = strokeColor;
-	ctx.lineWidth = strokeWidth;
-	ctx.lineCap = "round";
-	ctx.beginPath();
-	ctx.moveTo(x1, y1);
-	ctx.quadraticCurveTo(cpX, cpY, x2, y2);
-	ctx.stroke();
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = strokeWidth;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.quadraticCurveTo(cpX, cpY, x2, y2);
+  ctx.stroke();
 }
 
 export interface Point {
-	x: number;
-	y: number;
+  x: number;
+  y: number;
 }
 
 /**
@@ -487,38 +487,38 @@ export interface Point {
  * drawPolygon(ctx, points, "#000000", "#ffff00", 2, true);
  */
 export function drawPolygon(
-	ctx: CanvasRenderingContext2D,
-	points: Point[],
-	strokeColor: string | null,
-	fillColor: string | null,
-	strokeWidth: number = 1,
-	closed: boolean = true,
+  ctx: CanvasRenderingContext2D,
+  points: Point[],
+  strokeColor: string | null,
+  fillColor: string | null,
+  strokeWidth: number = 1,
+  closed: boolean = true,
 ): void {
-	if (points.length < 2) return;
+  if (points.length < 2) return;
 
-	ctx.beginPath();
-	ctx.moveTo(points[0].x, points[0].y);
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
 
-	for (let i = 1; i < points.length; i++) {
-		ctx.lineTo(points[i].x, points[i].y);
-	}
+  for (let i = 1; i < points.length; i++) {
+    ctx.lineTo(points[i].x, points[i].y);
+  }
 
-	if (closed) {
-		ctx.closePath();
-	}
+  if (closed) {
+    ctx.closePath();
+  }
 
-	// Fill first (so stroke is on top)
-	if (fillColor) {
-		ctx.fillStyle = fillColor;
-		ctx.fill();
-	}
+  // Fill first (so stroke is on top)
+  if (fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+  }
 
-	// Then stroke
-	if (strokeColor && strokeWidth > 0) {
-		ctx.strokeStyle = strokeColor;
-		ctx.lineWidth = strokeWidth;
-		ctx.stroke();
-	}
+  // Then stroke
+  if (strokeColor && strokeWidth > 0) {
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = strokeWidth;
+    ctx.stroke();
+  }
 }
 
 /**
@@ -542,59 +542,59 @@ export function drawPolygon(
  * drawRoundedRectangle(ctx, 10, 10, 100, 50, "#000000", "#00ff00", 2);
  */
 export function drawRoundedRectangle(
-	ctx: CanvasRenderingContext2D,
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	strokeColor: string | null,
-	fillColor: string | null,
-	strokeWidth: number = 1,
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  strokeColor: string | null,
+  fillColor: string | null,
+  strokeWidth: number = 1,
 ): void {
-	// Normalize coordinates
-	let normX = x;
-	let normY = y;
-	let normWidth = width;
-	let normHeight = height;
+  // Normalize coordinates
+  let normX = x;
+  let normY = y;
+  let normWidth = width;
+  let normHeight = height;
 
-	if (normWidth < 0) {
-		normX += normWidth;
-		normWidth = -normWidth;
-	}
-	if (normHeight < 0) {
-		normY += normHeight;
-		normHeight = -normHeight;
-	}
+  if (normWidth < 0) {
+    normX += normWidth;
+    normWidth = -normWidth;
+  }
+  if (normHeight < 0) {
+    normY += normHeight;
+    normHeight = -normHeight;
+  }
 
-	if (normWidth < 2 || normHeight < 2) return;
+  if (normWidth < 2 || normHeight < 2) return;
 
-	// Calculate radius - similar to MS Paint, max 8px, but limited by half the smaller dimension
-	const radius = Math.min(8, normWidth / 2, normHeight / 2);
+  // Calculate radius - similar to MS Paint, max 8px, but limited by half the smaller dimension
+  const radius = Math.min(8, normWidth / 2, normHeight / 2);
 
-	ctx.beginPath();
-	ctx.moveTo(normX + radius, normY);
-	ctx.lineTo(normX + normWidth - radius, normY);
-	ctx.quadraticCurveTo(normX + normWidth, normY, normX + normWidth, normY + radius);
-	ctx.lineTo(normX + normWidth, normY + normHeight - radius);
-	ctx.quadraticCurveTo(normX + normWidth, normY + normHeight, normX + normWidth - radius, normY + normHeight);
-	ctx.lineTo(normX + radius, normY + normHeight);
-	ctx.quadraticCurveTo(normX, normY + normHeight, normX, normY + normHeight - radius);
-	ctx.lineTo(normX, normY + radius);
-	ctx.quadraticCurveTo(normX, normY, normX + radius, normY);
-	ctx.closePath();
+  ctx.beginPath();
+  ctx.moveTo(normX + radius, normY);
+  ctx.lineTo(normX + normWidth - radius, normY);
+  ctx.quadraticCurveTo(normX + normWidth, normY, normX + normWidth, normY + radius);
+  ctx.lineTo(normX + normWidth, normY + normHeight - radius);
+  ctx.quadraticCurveTo(normX + normWidth, normY + normHeight, normX + normWidth - radius, normY + normHeight);
+  ctx.lineTo(normX + radius, normY + normHeight);
+  ctx.quadraticCurveTo(normX, normY + normHeight, normX, normY + normHeight - radius);
+  ctx.lineTo(normX, normY + radius);
+  ctx.quadraticCurveTo(normX, normY, normX + radius, normY);
+  ctx.closePath();
 
-	// Fill first
-	if (fillColor) {
-		ctx.fillStyle = fillColor;
-		ctx.fill();
-	}
+  // Fill first
+  if (fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+  }
 
-	// Then stroke
-	if (strokeColor && strokeWidth > 0) {
-		ctx.strokeStyle = strokeColor;
-		ctx.lineWidth = strokeWidth;
-		ctx.stroke();
-	}
+  // Then stroke
+  if (strokeColor && strokeWidth > 0) {
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = strokeWidth;
+    ctx.stroke();
+  }
 }
 
 /**
@@ -617,12 +617,12 @@ export function drawRoundedRectangle(
  * // Returns: { fillColor: "#ffffff", strokeColor: "#000000" }
  */
 export function getShapeColors(
-	fillStyle: "outline" | "fill" | "both",
-	drawColor: string,
-	secondaryColor: string,
+  fillStyle: "outline" | "fill" | "both",
+  drawColor: string,
+  secondaryColor: string,
 ): { fillColor: string | null; strokeColor: string | null } {
-	const fillColor = fillStyle === "fill" || fillStyle === "both" ? secondaryColor : null;
-	const strokeColor = fillStyle === "fill" ? null : drawColor;
+  const fillColor = fillStyle === "fill" || fillStyle === "both" ? secondaryColor : null;
+  const strokeColor = fillStyle === "fill" ? null : drawColor;
 
-	return { fillColor, strokeColor };
+  return { fillColor, strokeColor };
 }

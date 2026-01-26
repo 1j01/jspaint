@@ -4,12 +4,12 @@ import { CSSProperties, forwardRef } from "react";
  * Props for CanvasOverlay component
  */
 interface CanvasOverlayProps {
-	/** Canvas width in logical pixels (matches main canvas) */
-	width: number;
-	/** Canvas height in logical pixels (matches main canvas) */
-	height: number;
-	/** Magnification/zoom level (1 = 100%, 2 = 200%, etc.) */
-	magnification: number;
+  /** Canvas width in logical pixels (matches main canvas) */
+  width: number;
+  /** Canvas height in logical pixels (matches main canvas) */
+  height: number;
+  /** Magnification/zoom level (1 = 100%, 2 = 200%, etc.) */
+  magnification: number;
 }
 
 /**
@@ -37,36 +37,36 @@ interface CanvasOverlayProps {
  * />
  */
 export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(function CanvasOverlay(
-	{ width, height, magnification },
-	ref,
+  { width, height, magnification },
+  ref,
 ) {
-	const canvasStyle: CSSProperties = {
-		// Match legacy jQuery magnification behavior: scale via CSS size.
-		// This ensures scroll extents and handle positioning match the old implementation.
-		width: `${width * magnification}px`,
-		height: `${height * magnification}px`,
-	};
+  const canvasStyle: CSSProperties = {
+    // Match legacy jQuery magnification behavior: scale via CSS size.
+    // This ensures scroll extents and handle positioning match the old implementation.
+    width: `${width * magnification}px`,
+    height: `${height * magnification}px`,
+  };
 
-	// Add positioning for z-index to work properly
-	const wrapperStyle: CSSProperties = {
-		position: "absolute",
-		left: 0,
-		top: 0,
-		pointerEvents: "none",
-	};
+  // Add positioning for z-index to work properly
+  const wrapperStyle: CSSProperties = {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    pointerEvents: "none",
+  };
 
-	return (
-		<div className="helper-layer" style={wrapperStyle}>
-			<canvas
-				ref={ref}
-				className="selection-overlay"
-				width={width}
-				height={height}
-				style={{ ...canvasStyle, pointerEvents: "none" }}
-				aria-hidden="true"
-			/>
-		</div>
-	);
+  return (
+    <div className="helper-layer" style={wrapperStyle}>
+      <canvas
+        ref={ref}
+        className="selection-overlay"
+        width={width}
+        height={height}
+        style={{ ...canvasStyle, pointerEvents: "none" }}
+        aria-hidden="true"
+      />
+    </div>
+  );
 });
 
 export default CanvasOverlay;

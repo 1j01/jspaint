@@ -25,14 +25,14 @@ export const MAGNIFICATION_LEVELS = [1, 2, 4, 6, 8];
  * @returns CSS cursor value
  */
 export function getCursorForTool(selectedToolId: string): string {
-	switch (selectedToolId) {
-		case TOOL_IDS.MAGNIFIER:
-			return "zoom-in";
-		case TOOL_IDS.TEXT:
-			return "text";
-		default:
-			return "crosshair";
-	}
+  switch (selectedToolId) {
+    case TOOL_IDS.MAGNIFIER:
+      return "zoom-in";
+    case TOOL_IDS.TEXT:
+      return "text";
+    default:
+      return "crosshair";
+  }
 }
 
 /**
@@ -53,53 +53,53 @@ export function getCursorForTool(selectedToolId: string): string {
  * @returns Updated selection object with resized image data, or null if invalid
  */
 export function resizeSelection(
-	selection: {
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-		imageData: ImageData;
-	} | null,
-	newRect: { x: number; y: number; width: number; height: number }
+  selection: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    imageData: ImageData;
+  } | null,
+  newRect: { x: number; y: number; width: number; height: number },
 ): {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	imageData: ImageData;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  imageData: ImageData;
 } | null {
-	if (!selection || !selection.imageData) return null;
+  if (!selection || !selection.imageData) return null;
 
-	// Create a temporary canvas with the original selection
-	const tempCanvas = document.createElement("canvas");
-	tempCanvas.width = selection.imageData.width;
-	tempCanvas.height = selection.imageData.height;
-	const tempCtx = tempCanvas.getContext("2d");
-	if (!tempCtx) return null;
-	tempCtx.putImageData(selection.imageData, 0, 0);
+  // Create a temporary canvas with the original selection
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = selection.imageData.width;
+  tempCanvas.height = selection.imageData.height;
+  const tempCtx = tempCanvas.getContext("2d");
+  if (!tempCtx) return null;
+  tempCtx.putImageData(selection.imageData, 0, 0);
 
-	// Create a new canvas with the new size
-	const resizedCanvas = document.createElement("canvas");
-	resizedCanvas.width = newRect.width;
-	resizedCanvas.height = newRect.height;
-	const resizedCtx = resizedCanvas.getContext("2d");
-	if (!resizedCtx) return null;
+  // Create a new canvas with the new size
+  const resizedCanvas = document.createElement("canvas");
+  resizedCanvas.width = newRect.width;
+  resizedCanvas.height = newRect.height;
+  const resizedCtx = resizedCanvas.getContext("2d");
+  if (!resizedCtx) return null;
 
-	// Draw the original selection scaled to the new size
-	resizedCtx.drawImage(tempCanvas, 0, 0, newRect.width, newRect.height);
+  // Draw the original selection scaled to the new size
+  resizedCtx.drawImage(tempCanvas, 0, 0, newRect.width, newRect.height);
 
-	// Get the new image data
-	const newImageData = resizedCtx.getImageData(0, 0, newRect.width, newRect.height);
+  // Get the new image data
+  const newImageData = resizedCtx.getImageData(0, 0, newRect.width, newRect.height);
 
-	// Return the updated selection
-	return {
-		...selection,
-		x: newRect.x,
-		y: newRect.y,
-		width: newRect.width,
-		height: newRect.height,
-		imageData: newImageData,
-	};
+  // Return the updated selection
+  return {
+    ...selection,
+    x: newRect.x,
+    y: newRect.y,
+    width: newRect.width,
+    height: newRect.height,
+    imageData: newImageData,
+  };
 }
 
 /**
@@ -119,16 +119,16 @@ export function resizeSelection(
  * @returns Current canvas ImageData to restore after resize, or null if invalid
  */
 export function prepareCanvasResize(
-	canvas: HTMLCanvasElement,
-	currentWidth: number,
-	currentHeight: number
+  canvas: HTMLCanvasElement,
+  currentWidth: number,
+  currentHeight: number,
 ): ImageData | null {
-	const ctx = canvas.getContext("2d", { willReadFrequently: true });
-	if (!ctx) return null;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return null;
 
-	// Save current canvas content
-	const currentImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
-	return currentImageData;
+  // Save current canvas content
+  const currentImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
+  return currentImageData;
 }
 
 /**
@@ -144,20 +144,20 @@ export function prepareCanvasResize(
  * @param newHeight - New canvas height
  */
 export function restoreCanvasAfterResize(
-	canvas: HTMLCanvasElement,
-	imageData: ImageData,
-	newWidth: number,
-	newHeight: number
+  canvas: HTMLCanvasElement,
+  imageData: ImageData,
+  newWidth: number,
+  newHeight: number,
 ): void {
-	const ctx = canvas.getContext("2d", { willReadFrequently: true });
-	if (!ctx) return;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return;
 
-	// Fill with white background
-	ctx.fillStyle = "#ffffff";
-	ctx.fillRect(0, 0, newWidth, newHeight);
+  // Fill with white background
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, newWidth, newHeight);
 
-	// Restore the previous content
-	ctx.putImageData(imageData, 0, 0);
+  // Restore the previous content
+  ctx.putImageData(imageData, 0, 0);
 }
 
 /**
@@ -165,22 +165,22 @@ export function restoreCanvasAfterResize(
  * Used when saving operations to the undo/redo stack.
  */
 export const TOOL_NAMES: Record<string, string> = {
-	[TOOL_IDS.LINE]: "Line",
-	[TOOL_IDS.CURVE]: "Curve",
-	[TOOL_IDS.RECTANGLE]: "Rectangle",
-	[TOOL_IDS.ROUNDED_RECTANGLE]: "Rounded Rectangle",
-	[TOOL_IDS.ELLIPSE]: "Ellipse",
-	[TOOL_IDS.POLYGON]: "Polygon",
-	[TOOL_IDS.PENCIL]: "Pencil",
-	[TOOL_IDS.BRUSH]: "Brush",
-	[TOOL_IDS.ERASER]: "Eraser",
-	[TOOL_IDS.AIRBRUSH]: "Airbrush",
-	[TOOL_IDS.FILL]: "Fill",
-	[TOOL_IDS.PICK_COLOR]: "Pick Color",
-	[TOOL_IDS.SELECT]: "Select",
-	[TOOL_IDS.FREE_FORM_SELECT]: "Free-Form Select",
-	[TOOL_IDS.TEXT]: "Text",
-	[TOOL_IDS.MAGNIFIER]: "Magnifier",
+  [TOOL_IDS.LINE]: "Line",
+  [TOOL_IDS.CURVE]: "Curve",
+  [TOOL_IDS.RECTANGLE]: "Rectangle",
+  [TOOL_IDS.ROUNDED_RECTANGLE]: "Rounded Rectangle",
+  [TOOL_IDS.ELLIPSE]: "Ellipse",
+  [TOOL_IDS.POLYGON]: "Polygon",
+  [TOOL_IDS.PENCIL]: "Pencil",
+  [TOOL_IDS.BRUSH]: "Brush",
+  [TOOL_IDS.ERASER]: "Eraser",
+  [TOOL_IDS.AIRBRUSH]: "Airbrush",
+  [TOOL_IDS.FILL]: "Fill",
+  [TOOL_IDS.PICK_COLOR]: "Pick Color",
+  [TOOL_IDS.SELECT]: "Select",
+  [TOOL_IDS.FREE_FORM_SELECT]: "Free-Form Select",
+  [TOOL_IDS.TEXT]: "Text",
+  [TOOL_IDS.MAGNIFIER]: "Magnifier",
 };
 
 /**
@@ -192,7 +192,7 @@ export const TOOL_NAMES: Record<string, string> = {
  * @returns CSS style object for canvas element
  */
 export function getCanvasStyle(selectedToolId: string, magnification: number): React.CSSProperties {
-	return {
-		cursor: getCursorForTool(selectedToolId),
-	};
+  return {
+    cursor: getCursorForTool(selectedToolId),
+  };
 }

@@ -12,21 +12,21 @@ import { successResult } from "./types";
  * Changes the canvas zoom level
  */
 export const handleMagnifier: CommandHandler = (command: DrawingCommand, context: CommandContext) => {
-	const startTime = Date.now();
-	const { uiStore } = context;
+  const startTime = Date.now();
+  const { uiStore } = context;
 
-	if (command.tool !== "magnifier") {
-		return { command, status: "failed", error: "Invalid command type", duration: Date.now() - startTime };
-	}
+  if (command.tool !== "magnifier") {
+    return { command, status: "failed", error: "Invalid command type", duration: Date.now() - startTime };
+  }
 
-	const { zoom } = command.params;
-	const validZoom = [1, 2, 4, 6, 8].includes(zoom) ? zoom : 1;
-	uiStore.getState().setMagnification(validZoom as 1 | 2 | 4 | 6 | 8);
+  const { zoom } = command.params;
+  const validZoom = [1, 2, 4, 6, 8].includes(zoom) ? zoom : 1;
+  uiStore.getState().setMagnification(validZoom as 1 | 2 | 4 | 6 | 8);
 
-	return successResult(command, startTime);
+  return successResult(command, startTime);
 };
 
 /** Map of view command handlers */
 export const viewHandlers: Record<string, CommandHandler> = {
-	magnifier: handleMagnifier,
+  magnifier: handleMagnifier,
 };

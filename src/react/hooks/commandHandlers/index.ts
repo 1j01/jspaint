@@ -23,16 +23,16 @@ import { batchHandlers } from "./batchHandlers";
  * Maps all command tool names to their handlers
  */
 export const commandRegistry: Record<string, CommandHandler> = {
-	...freeformHandlers,
-	...shapeHandlers,
-	...colorHandlers,
-	...textHandlers,
-	...viewHandlers,
-	...selectionHandlers,
-	...transformHandlers,
-	...canvasHandlers,
-	...editHandlers,
-	...batchHandlers,
+  ...freeformHandlers,
+  ...shapeHandlers,
+  ...colorHandlers,
+  ...textHandlers,
+  ...viewHandlers,
+  ...selectionHandlers,
+  ...transformHandlers,
+  ...canvasHandlers,
+  ...editHandlers,
+  ...batchHandlers,
 };
 
 /**
@@ -41,7 +41,7 @@ export const commandRegistry: Record<string, CommandHandler> = {
  * @returns The handler function or undefined if not found
  */
 export function getCommandHandler(tool: string): CommandHandler | undefined {
-	return commandRegistry[tool];
+  return commandRegistry[tool];
 }
 
 /**
@@ -50,7 +50,7 @@ export function getCommandHandler(tool: string): CommandHandler | undefined {
  * @returns True if a handler exists for the tool
  */
 export function hasCommandHandler(tool: string): boolean {
-	return tool in commandRegistry;
+  return tool in commandRegistry;
 }
 
 // Re-export individual handler modules for direct access if needed

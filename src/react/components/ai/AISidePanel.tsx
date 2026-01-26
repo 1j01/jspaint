@@ -78,7 +78,13 @@ export function AISidePanel({ canvasRef, onClose }: AISidePanelProps) {
       )}
 
       {/* Chat input */}
-      <ChatInput onSend={sendMessage} onCancel={cancel} onClear={handleClear} isStreaming={isStreaming} isExecuting={isExecuting} />
+      <ChatInput
+        onSend={sendMessage}
+        onCancel={cancel}
+        onClear={handleClear}
+        isStreaming={isStreaming}
+        isExecuting={isExecuting}
+      />
     </div>
   );
 }

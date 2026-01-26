@@ -11,11 +11,11 @@ import { useUIStore } from "./uiStore";
  * }} Magnification state and actions
  */
 export function useMagnification() {
-	const magnification = useUIStore((state) => state.magnification);
-	const setMagnification = useUIStore((state) => state.setMagnification);
+  const magnification = useUIStore((state) => state.magnification);
+  const setMagnification = useUIStore((state) => state.setMagnification);
 
-	return {
-		magnification,
-		setMagnification,
-	};
+  return {
+    magnification,
+    setMagnification,
+  };
 }

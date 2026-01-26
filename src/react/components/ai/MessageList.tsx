@@ -71,7 +71,7 @@ export function MessageList({ messages, streamContent, isStreaming }: MessageLis
           }}
         >
           <div style={{ marginBottom: "8px" }}>{t("Ask the AI to draw something!")}</div>
-          <div style={{ fontSize: "11px" }}>{t("Try: \"Draw a red circle\" or \"Fill the canvas with blue\"")}</div>
+          <div style={{ fontSize: "11px" }}>{t('Try: "Draw a red circle" or "Fill the canvas with blue"')}</div>
         </div>
       ) : (
         <>

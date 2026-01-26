@@ -12,13 +12,13 @@ import { useCanvasStore } from "./canvasStore";
  * }} Canvas dimensions and actions
  */
 export function useCanvasDimensions() {
-	const canvasWidth = useCanvasStore((state) => state.canvasWidth);
-	const canvasHeight = useCanvasStore((state) => state.canvasHeight);
-	const setCanvasSize = useCanvasStore((state) => state.setCanvasSize);
+  const canvasWidth = useCanvasStore((state) => state.canvasWidth);
+  const canvasHeight = useCanvasStore((state) => state.canvasHeight);
+  const setCanvasSize = useCanvasStore((state) => state.setCanvasSize);
 
-	return {
-		canvasWidth,
-		canvasHeight,
-		setCanvasSize,
-	};
+  return {
+    canvasWidth,
+    canvasHeight,
+    setCanvasSize,
+  };
 }

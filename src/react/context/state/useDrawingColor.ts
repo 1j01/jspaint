@@ -9,5 +9,5 @@ import { useSettingsStore } from "./settingsStore";
  * @returns {string} Color to use for drawing (primary or secondary)
  */
 export function useDrawingColor(button: number = 0): string {
-	return useSettingsStore((state) => (button === 0 ? state.primaryColor : state.secondaryColor));
+  return useSettingsStore((state) => (button === 0 ? state.primaryColor : state.secondaryColor));
 }

@@ -4,23 +4,23 @@ import { drawFreeFormPreview, clearOverlay, commitSelectionToCanvas } from "../u
 import { useSettingsStore } from "../context/state/settingsStore";
 
 interface UseFreeFormSelectionProps {
-	canvasRef: RefObject<HTMLCanvasElement | null>;
-	overlayRef: RefObject<HTMLCanvasElement | null>;
-	selection: Selection | null;
-	secondaryColor: string;
-	setSelection: (selection: Selection) => void;
-	clearSelection: () => void;
-	saveState: (imageData: ImageData) => void;
+  canvasRef: RefObject<HTMLCanvasElement | null>;
+  overlayRef: RefObject<HTMLCanvasElement | null>;
+  selection: Selection | null;
+  secondaryColor: string;
+  setSelection: (selection: Selection) => void;
+  clearSelection: () => void;
+  saveState: (imageData: ImageData) => void;
 }
 
 interface FreeFormSelectionState {
-	isSelecting: boolean;
-	isDragging: boolean;
-	startX: number;
-	startY: number;
-	points: Array<{ x: number; y: number }>;
-	dragOffsetX: number;
-	dragOffsetY: number;
+  isSelecting: boolean;
+  isDragging: boolean;
+  startX: number;
+  startY: number;
+  points: Array<{ x: number; y: number }>;
+  dragOffsetX: number;
+  dragOffsetY: number;
 }
 
 /**
@@ -62,252 +62,252 @@ interface FreeFormSelectionState {
  * freeFormSelection.finalize(ctx);
  */
 export function useFreeFormSelection({
-	canvasRef,
-	overlayRef,
-	selection,
-	secondaryColor,
-	setSelection,
-	clearSelection,
-	saveState,
+  canvasRef,
+  overlayRef,
+  selection,
+  secondaryColor,
+  setSelection,
+  clearSelection,
+  saveState,
 }: UseFreeFormSelectionProps) {
-	const state = useRef<FreeFormSelectionState>({
-		isSelecting: false,
-		isDragging: false,
-		startX: 0,
-		startY: 0,
-		points: [],
-		dragOffsetX: 0,
-		dragOffsetY: 0,
-	});
+  const state = useRef<FreeFormSelectionState>({
+    isSelecting: false,
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    points: [],
+    dragOffsetX: 0,
+    dragOffsetY: 0,
+  });
 
-	// Get drawOpaque setting for transparent selection mode
-	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+  // Get drawOpaque setting for transparent selection mode
+  const drawOpaque = useSettingsStore((state) => state.drawOpaque);
 
-	// Start a new free-form selection
-	const start = useCallback(
-		(x: number, y: number, ctx: CanvasRenderingContext2D): boolean => {
-			// Check if clicking inside existing selection to drag it
-			if (selection && selection.path) {
-				// Simple bounding box check
-				const inSelection =
-					x >= selection.x &&
-					x < selection.x + selection.width &&
-					y >= selection.y &&
-					y < selection.y + selection.height;
+  // Start a new free-form selection
+  const start = useCallback(
+    (x: number, y: number, ctx: CanvasRenderingContext2D): boolean => {
+      // Check if clicking inside existing selection to drag it
+      if (selection && selection.path) {
+        // Simple bounding box check
+        const inSelection =
+          x >= selection.x &&
+          x < selection.x + selection.width &&
+          y >= selection.y &&
+          y < selection.y + selection.height;
 
-				if (inSelection) {
-					state.current = {
-						...state.current,
-						isDragging: true,
-						dragOffsetX: x - selection.x,
-						dragOffsetY: y - selection.y,
-					};
-					return true;
-				} else {
-					// Commit selection
-					if (selection.imageData) {
-						commitSelectionToCanvas(ctx, selection.imageData, selection.x, selection.y, drawOpaque, secondaryColor);
-					}
-					clearSelection();
-				}
-			}
+        if (inSelection) {
+          state.current = {
+            ...state.current,
+            isDragging: true,
+            dragOffsetX: x - selection.x,
+            dragOffsetY: y - selection.y,
+          };
+          return true;
+        } else {
+          // Commit selection
+          if (selection.imageData) {
+            commitSelectionToCanvas(ctx, selection.imageData, selection.x, selection.y, drawOpaque, secondaryColor);
+          }
+          clearSelection();
+        }
+      }
 
-			// Start a new free-form selection
-			const canvas = canvasRef.current;
-			if (canvas) {
-				const canvasCtx = canvas.getContext("2d");
-				if (canvasCtx) saveState(canvasCtx.getImageData(0, 0, canvas.width, canvas.height));
-			}
+      // Start a new free-form selection
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const canvasCtx = canvas.getContext("2d");
+        if (canvasCtx) saveState(canvasCtx.getImageData(0, 0, canvas.width, canvas.height));
+      }
 
-			state.current = {
-				isSelecting: true,
-				startX: x,
-				startY: y,
-				points: [{ x, y }],
-				isDragging: false,
-				dragOffsetX: 0,
-				dragOffsetY: 0,
-			};
-			return false;
-		},
-		[selection, clearSelection, saveState, canvasRef, drawOpaque, secondaryColor],
-	);
+      state.current = {
+        isSelecting: true,
+        startX: x,
+        startY: y,
+        points: [{ x, y }],
+        isDragging: false,
+        dragOffsetX: 0,
+        dragOffsetY: 0,
+      };
+      return false;
+    },
+    [selection, clearSelection, saveState, canvasRef, drawOpaque, secondaryColor],
+  );
 
-	// Handle selection move (during drag or selection drawing)
-	const move = useCallback(
-		(x: number, y: number): void => {
-			// Handle selection dragging
-			if (state.current.isDragging && selection) {
-				const newX = x - state.current.dragOffsetX;
-				const newY = y - state.current.dragOffsetY;
-				setSelection({
-					...selection,
-					x: newX,
-					y: newY,
-				});
-				return;
-			}
+  // Handle selection move (during drag or selection drawing)
+  const move = useCallback(
+    (x: number, y: number): void => {
+      // Handle selection dragging
+      if (state.current.isDragging && selection) {
+        const newX = x - state.current.dragOffsetX;
+        const newY = y - state.current.dragOffsetY;
+        setSelection({
+          ...selection,
+          x: newX,
+          y: newY,
+        });
+        return;
+      }
 
-			// Handle selection drawing
-			if (!state.current.isSelecting) return;
+      // Handle selection drawing
+      if (!state.current.isSelecting) return;
 
-			const overlay = overlayRef.current;
-			if (!overlay) return;
-			const overlayCtx = overlay.getContext("2d");
-			if (!overlayCtx) return;
+      const overlay = overlayRef.current;
+      if (!overlay) return;
+      const overlayCtx = overlay.getContext("2d");
+      if (!overlayCtx) return;
 
-			state.current.points.push({ x, y });
+      state.current.points.push({ x, y });
 
-			overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
-			drawFreeFormPreview(overlayCtx, state.current.points);
-		},
-		[selection, setSelection, overlayRef],
-	);
+      overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+      drawFreeFormPreview(overlayCtx, state.current.points);
+    },
+    [selection, setSelection, overlayRef],
+  );
 
-	// Finalize free-form selection
-	const finalize = useCallback(
-		(ctx: CanvasRenderingContext2D): void => {
-			if (state.current.isDragging) {
-				state.current.isDragging = false;
-				return;
-			}
+  // Finalize free-form selection
+  const finalize = useCallback(
+    (ctx: CanvasRenderingContext2D): void => {
+      if (state.current.isDragging) {
+        state.current.isDragging = false;
+        return;
+      }
 
-			if (!state.current.isSelecting) return;
+      if (!state.current.isSelecting) return;
 
-			const points = state.current.points;
+      const points = state.current.points;
 
-			if (points.length > 2) {
-				// Calculate bounding box
-				let minX = Infinity,
-					minY = Infinity,
-					maxX = -Infinity,
-					maxY = -Infinity;
-				for (const p of points) {
-					minX = Math.min(minX, p.x);
-					minY = Math.min(minY, p.y);
-					maxX = Math.max(maxX, p.x);
-					maxY = Math.max(maxY, p.y);
-				}
+      if (points.length > 2) {
+        // Calculate bounding box
+        let minX = Infinity,
+          minY = Infinity,
+          maxX = -Infinity,
+          maxY = -Infinity;
+        for (const p of points) {
+          minX = Math.min(minX, p.x);
+          minY = Math.min(minY, p.y);
+          maxX = Math.max(maxX, p.x);
+          maxY = Math.max(maxY, p.y);
+        }
 
-				// Round to integer pixel coordinates consistently
-				// Floor min coordinates, ceil max coordinates for complete pixel coverage
-				minX = Math.floor(minX);
-				minY = Math.floor(minY);
-				maxX = Math.ceil(maxX);
-				maxY = Math.ceil(maxY);
-				const selWidth = maxX - minX;
-				const selHeight = maxY - minY;
+        // Round to integer pixel coordinates consistently
+        // Floor min coordinates, ceil max coordinates for complete pixel coverage
+        minX = Math.floor(minX);
+        minY = Math.floor(minY);
+        maxX = Math.ceil(maxX);
+        maxY = Math.ceil(maxY);
+        const selWidth = maxX - minX;
+        const selHeight = maxY - minY;
 
-				if (selWidth > 0 && selHeight > 0) {
-					// Get the full area image data
-					const fullImageData = ctx.getImageData(minX, minY, selWidth, selHeight);
+        if (selWidth > 0 && selHeight > 0) {
+          // Get the full area image data
+          const fullImageData = ctx.getImageData(minX, minY, selWidth, selHeight);
 
-					// Create a mask for the free-form selection
-					const maskCanvas = document.createElement("canvas");
-					maskCanvas.width = selWidth;
-					maskCanvas.height = selHeight;
-					const maskCtx = maskCanvas.getContext("2d");
-					if (maskCtx) {
-						maskCtx.fillStyle = "#000000";
-						maskCtx.beginPath();
-						maskCtx.moveTo(points[0].x - minX, points[0].y - minY);
-						for (let i = 1; i < points.length; i++) {
-							maskCtx.lineTo(points[i].x - minX, points[i].y - minY);
-						}
-						maskCtx.closePath();
-						maskCtx.fill();
+          // Create a mask for the free-form selection
+          const maskCanvas = document.createElement("canvas");
+          maskCanvas.width = selWidth;
+          maskCanvas.height = selHeight;
+          const maskCtx = maskCanvas.getContext("2d");
+          if (maskCtx) {
+            maskCtx.fillStyle = "#000000";
+            maskCtx.beginPath();
+            maskCtx.moveTo(points[0].x - minX, points[0].y - minY);
+            for (let i = 1; i < points.length; i++) {
+              maskCtx.lineTo(points[i].x - minX, points[i].y - minY);
+            }
+            maskCtx.closePath();
+            maskCtx.fill();
 
-						const maskData = maskCtx.getImageData(0, 0, selWidth, selHeight);
+            const maskData = maskCtx.getImageData(0, 0, selWidth, selHeight);
 
-						// Apply mask to image data (fill transparent areas with background color)
-						// Parse secondaryColor to get RGB values
-						const bgColor = secondaryColor.startsWith("#") ? secondaryColor : "#ffffff";
-						const r = parseInt(bgColor.substring(1, 3), 16);
-						const g = parseInt(bgColor.substring(3, 5), 16);
-						const b = parseInt(bgColor.substring(5, 7), 16);
+            // Apply mask to image data (fill transparent areas with background color)
+            // Parse secondaryColor to get RGB values
+            const bgColor = secondaryColor.startsWith("#") ? secondaryColor : "#ffffff";
+            const r = parseInt(bgColor.substring(1, 3), 16);
+            const g = parseInt(bgColor.substring(3, 5), 16);
+            const b = parseInt(bgColor.substring(5, 7), 16);
 
-						for (let i = 0; i < fullImageData.data.length; i += 4) {
-							if (maskData.data[i + 3] === 0) {
-								// Fill with background color instead of making transparent
-								fullImageData.data[i] = r;
-								fullImageData.data[i + 1] = g;
-								fullImageData.data[i + 2] = b;
-								fullImageData.data[i + 3] = 255; // Fully opaque
-							}
-						}
-					}
+            for (let i = 0; i < fullImageData.data.length; i += 4) {
+              if (maskData.data[i + 3] === 0) {
+                // Fill with background color instead of making transparent
+                fullImageData.data[i] = r;
+                fullImageData.data[i + 1] = g;
+                fullImageData.data[i + 2] = b;
+                fullImageData.data[i + 3] = 255; // Fully opaque
+              }
+            }
+          }
 
-					// Fill the selected area with background color (lift the selection from canvas)
-					ctx.save();
-					ctx.beginPath();
-					ctx.moveTo(points[0].x, points[0].y);
-					for (let i = 1; i < points.length; i++) {
-						ctx.lineTo(points[i].x, points[i].y);
-					}
-					ctx.closePath();
-					ctx.fillStyle = secondaryColor;
-					ctx.fill();
-					ctx.restore();
+          // Fill the selected area with background color (lift the selection from canvas)
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(points[i].x, points[i].y);
+          }
+          ctx.closePath();
+          ctx.fillStyle = secondaryColor;
+          ctx.fill();
+          ctx.restore();
 
-					// Clear overlay FIRST (before setting selection)
-					const overlay = overlayRef.current;
-					if (overlay) {
-						const overlayCtx = overlay.getContext("2d");
-						if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
-					}
+          // Clear overlay FIRST (before setting selection)
+          const overlay = overlayRef.current;
+          if (overlay) {
+            const overlayCtx = overlay.getContext("2d");
+            if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+          }
 
-					state.current.isSelecting = false;
-					state.current.points = [];
+          state.current.isSelecting = false;
+          state.current.points = [];
 
-					setSelection({
-						x: minX,
-						y: minY,
-						width: selWidth,
-						height: selHeight,
-						imageData: fullImageData,
-						path: points.map((p) => ({ x: p.x - minX, y: p.y - minY })),
-					});
-				}
-			} else {
-				// Clear overlay if selection was too small
-				const overlay = overlayRef.current;
-				if (overlay) {
-					const overlayCtx = overlay.getContext("2d");
-					if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
-				}
-				state.current.isSelecting = false;
-				state.current.points = [];
-			}
-		},
-		[secondaryColor, setSelection, overlayRef],
-	);
+          setSelection({
+            x: minX,
+            y: minY,
+            width: selWidth,
+            height: selHeight,
+            imageData: fullImageData,
+            path: points.map((p) => ({ x: p.x - minX, y: p.y - minY })),
+          });
+        }
+      } else {
+        // Clear overlay if selection was too small
+        const overlay = overlayRef.current;
+        if (overlay) {
+          const overlayCtx = overlay.getContext("2d");
+          if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+        }
+        state.current.isSelecting = false;
+        state.current.points = [];
+      }
+    },
+    [secondaryColor, setSelection, overlayRef],
+  );
 
-	// Check if currently selecting or dragging
-	const isActive = useCallback((): boolean => {
-		return state.current.isSelecting || state.current.isDragging;
-	}, []);
+  // Check if currently selecting or dragging
+  const isActive = useCallback((): boolean => {
+    return state.current.isSelecting || state.current.isDragging;
+  }, []);
 
-	// Cancel current selection (clear preview)
-	const cancel = useCallback((): void => {
-		if (state.current.isSelecting || state.current.isDragging) {
-			// Clear overlay preview
-			const overlay = overlayRef.current;
-			if (overlay) {
-				const overlayCtx = overlay.getContext("2d");
-				if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
-			}
-			// Reset state
-			state.current.isSelecting = false;
-			state.current.isDragging = false;
-			state.current.points = [];
-		}
-	}, [overlayRef]);
+  // Cancel current selection (clear preview)
+  const cancel = useCallback((): void => {
+    if (state.current.isSelecting || state.current.isDragging) {
+      // Clear overlay preview
+      const overlay = overlayRef.current;
+      if (overlay) {
+        const overlayCtx = overlay.getContext("2d");
+        if (overlayCtx) clearOverlay(overlayCtx, overlay.width, overlay.height);
+      }
+      // Reset state
+      state.current.isSelecting = false;
+      state.current.isDragging = false;
+      state.current.points = [];
+    }
+  }, [overlayRef]);
 
-	return {
-		start,
-		move,
-		finalize,
-		isActive,
-		cancel,
-	};
+  return {
+    start,
+    move,
+    finalize,
+    isActive,
+    cancel,
+  };
 }

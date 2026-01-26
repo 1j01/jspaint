@@ -87,10 +87,10 @@ let savedCanvasData: ImageData | null = null;
  * Reset canvas initialization state (useful for testing)
  */
 export function resetCanvasLifecycle() {
-	canvasInitialized = false;
-	savedCanvasData = null;
-	loadedFromIndexedDB = false;
-	historyTreeInitialized = false;
+  canvasInitialized = false;
+  savedCanvasData = null;
+  loadedFromIndexedDB = false;
+  historyTreeInitialized = false;
 }
 
 /**
@@ -117,51 +117,51 @@ let restoreToken = 0;
  * Intended for explicit user actions like File > New / Open.
  */
 export function cancelPendingCanvasRestore() {
-	restoreToken += 1;
-	loadedFromIndexedDB = true;
-	savedCanvasData = null;
-	// Mark initialized so lifecycle won't re-fill/restore behind the user's back.
-	canvasInitialized = true;
-	// History will be re-initialized by the caller.
-	historyTreeInitialized = true;
+  restoreToken += 1;
+  loadedFromIndexedDB = true;
+  savedCanvasData = null;
+  // Mark initialized so lifecycle won't re-fill/restore behind the user's back.
+  canvasInitialized = true;
+  // History will be re-initialized by the caller.
+  historyTreeInitialized = true;
 }
 
 /**
  * Save canvas content to IndexedDB for persistence across page refreshes
  */
 async function saveCanvasToIndexedDB(imageData: ImageData): Promise<void> {
-	try {
-		// Convert ImageData to a serializable format
-		const canvasData = {
-			data: Array.from(imageData.data),
-			width: imageData.width,
-			height: imageData.height,
-		};
-		await saveSetting("savedCanvas", canvasData);
-	} catch {
-		// Silently fail - not critical
-	}
+  try {
+    // Convert ImageData to a serializable format
+    const canvasData = {
+      data: Array.from(imageData.data),
+      width: imageData.width,
+      height: imageData.height,
+    };
+    await saveSetting("savedCanvas", canvasData);
+  } catch {
+    // Silently fail - not critical
+  }
 }
 
 /**
  * Load canvas content from IndexedDB
  */
 async function loadCanvasFromIndexedDB(): Promise<ImageData | null> {
-	try {
-		const canvasData = await loadSetting<{
-			data: number[];
-			width: number;
-			height: number;
-		} | null>("savedCanvas", null);
+  try {
+    const canvasData = await loadSetting<{
+      data: number[];
+      width: number;
+      height: number;
+    } | null>("savedCanvas", null);
 
-		if (!canvasData) return null;
+    if (!canvasData) return null;
 
-		// Reconstruct ImageData from saved format
-		const uint8Array = new Uint8ClampedArray(canvasData.data);
-		return new ImageData(uint8Array, canvasData.width, canvasData.height);
-	} catch {
-		return null;
-	}
+    // Reconstruct ImageData from saved format
+    const uint8Array = new Uint8ClampedArray(canvasData.data);
+    return new ImageData(uint8Array, canvasData.width, canvasData.height);
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -170,211 +170,212 @@ async function loadCanvasFromIndexedDB(): Promise<ImageData | null> {
  * @param canvasRef - Reference to the canvas element
  */
 export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
-	useEffect(() => {
-		console.log('[Lifecycle] Effect running, canvasInitialized:', canvasInitialized);
-		const canvas = canvasRef.current;
-		if (!canvas) {
-			console.log('[Lifecycle] No canvas ref');
-			return;
-		}
+  useEffect(() => {
+    console.log("[Lifecycle] Effect running, canvasInitialized:", canvasInitialized);
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      console.log("[Lifecycle] No canvas ref");
+      return;
+    }
 
-		const ctx = canvas.getContext("2d", { willReadFrequently: true });
-		if (!ctx) {
-			console.log('[Lifecycle] No context');
-			return;
-		}
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (!ctx) {
+      console.log("[Lifecycle] No context");
+      return;
+    }
 
-		console.log('[Lifecycle] Canvas ready:', {
-			width: canvas.width,
-			height: canvas.height,
-			savedCanvasData: savedCanvasData ? 'exists' : 'null',
-			loadedFromIndexedDB,
-		});
+    console.log("[Lifecycle] Canvas ready:", {
+      width: canvas.width,
+      height: canvas.height,
+      savedCanvasData: savedCanvasData ? "exists" : "null",
+      loadedFromIndexedDB,
+    });
 
-		// Async initialization function
-		const initializeCanvas = async () => {
-			const tokenAtStart = restoreToken;
-			console.log('[Lifecycle] initializeCanvas starting');
-			// Check if canvas already has content (e.g., from fileOpen)
-			// Sample a few pixels to detect if it's already been drawn to
-			const sampleData = ctx.getImageData(0, 0, Math.min(10, canvas.width), Math.min(10, canvas.height));
-			let hasContent = false;
-			for (let i = 0; i < sampleData.data.length; i += 4) {
-				const r = sampleData.data[i];
-				const g = sampleData.data[i + 1];
-				const b = sampleData.data[i + 2];
-				const a = sampleData.data[i + 3];
-				// If we find any non-white, non-transparent pixel, canvas has content
-				if (!(r === 255 && g === 255 && b === 255) && a > 0) {
-					hasContent = true;
-					break;
-				}
-			}
+    // Async initialization function
+    const initializeCanvas = async () => {
+      const tokenAtStart = restoreToken;
+      console.log("[Lifecycle] initializeCanvas starting");
+      // Check if canvas already has content (e.g., from fileOpen)
+      // Sample a few pixels to detect if it's already been drawn to
+      const sampleData = ctx.getImageData(0, 0, Math.min(10, canvas.width), Math.min(10, canvas.height));
+      let hasContent = false;
+      for (let i = 0; i < sampleData.data.length; i += 4) {
+        const r = sampleData.data[i];
+        const g = sampleData.data[i + 1];
+        const b = sampleData.data[i + 2];
+        const a = sampleData.data[i + 3];
+        // If we find any non-white, non-transparent pixel, canvas has content
+        if (!(r === 255 && g === 255 && b === 255) && a > 0) {
+          hasContent = true;
+          break;
+        }
+      }
 
-			console.log('[Lifecycle] hasContent:', hasContent);
+      console.log("[Lifecycle] hasContent:", hasContent);
 
-			if (tokenAtStart !== restoreToken) {
-				console.log("[Lifecycle] Restore canceled before init completed");
-				return;
-			}
+      if (tokenAtStart !== restoreToken) {
+        console.log("[Lifecycle] Restore canceled before init completed");
+        return;
+      }
 
-			if (hasContent) {
-				console.log('[Lifecycle] Canvas has content, skipping init');
-				canvasInitialized = true;
-				// Don't set loadedFromIndexedDB here - this could be fresh content from fileOpen
-				// and we still want to save/load from IndexedDB on actual page refresh
+      if (hasContent) {
+        console.log("[Lifecycle] Canvas has content, skipping init");
+        canvasInitialized = true;
+        // Don't set loadedFromIndexedDB here - this could be fresh content from fileOpen
+        // and we still want to save/load from IndexedDB on actual page refresh
 
-				// Initialize history tree with existing canvas if needed
-				if (!historyTreeInitialized) {
-					const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-					useHistoryStore.getState().pushState(imageData, "Loaded Document");
-					historyTreeInitialized = true;
-				}
-				return;
-			}
+        // Initialize history tree with existing canvas if needed
+        if (!historyTreeInitialized) {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          useHistoryStore.getState().pushState(imageData, "Loaded Document");
+          historyTreeInitialized = true;
+        }
+        return;
+      }
 
-			// Priority 1: Restore from module-level savedCanvasData (component remount)
-			if (tokenAtStart !== restoreToken) {
-				console.log("[Lifecycle] Restore canceled before module restore");
-				return;
-			}
+      // Priority 1: Restore from module-level savedCanvasData (component remount)
+      if (tokenAtStart !== restoreToken) {
+        console.log("[Lifecycle] Restore canceled before module restore");
+        return;
+      }
 
-			if (savedCanvasData) {
-				console.log('[Lifecycle] Restoring from savedCanvasData');
-				ctx.putImageData(savedCanvasData, 0, 0);
-				savedCanvasData = null;
-				canvasInitialized = true; // Mark as initialized
-				loadedFromIndexedDB = true; // Prevent IndexedDB from overwriting this
-				return;
-			}
+      if (savedCanvasData) {
+        console.log("[Lifecycle] Restoring from savedCanvasData");
+        ctx.putImageData(savedCanvasData, 0, 0);
+        savedCanvasData = null;
+        canvasInitialized = true; // Mark as initialized
+        loadedFromIndexedDB = true; // Prevent IndexedDB from overwriting this
+        return;
+      }
 
-			// Priority 2: Load from IndexedDB (page refresh) - only on first mount
-			if (!loadedFromIndexedDB) {
-				console.log('[Lifecycle] Loading from IndexedDB');
-				loadedFromIndexedDB = true;
-				const persistedCanvas = await loadCanvasFromIndexedDB();
+      // Priority 2: Load from IndexedDB (page refresh) - only on first mount
+      if (!loadedFromIndexedDB) {
+        console.log("[Lifecycle] Loading from IndexedDB");
+        loadedFromIndexedDB = true;
+        const persistedCanvas = await loadCanvasFromIndexedDB();
 
-				if (tokenAtStart !== restoreToken) {
-					console.log("[Lifecycle] Restore canceled during IndexedDB await");
-					return;
-				}
+        if (tokenAtStart !== restoreToken) {
+          console.log("[Lifecycle] Restore canceled during IndexedDB await");
+          return;
+        }
 
-				console.log('[Lifecycle] IndexedDB result:', persistedCanvas ? 'found' : 'null');
+        console.log("[Lifecycle] IndexedDB result:", persistedCanvas ? "found" : "null");
 
-				// CRITICAL: Check if user drew during the IndexedDB await BEFORE restoring
-				// The initial content check only sampled the top-left corner, but the user
-				// could have drawn anywhere during the async operation. Check for any
-				// non-transparent pixel to avoid overwriting user's drawing.
-				const postAwaitData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				let userDrewDuringAwait = false;
-				for (let i = 3; i < postAwaitData.data.length; i += 4) {
-					if (postAwaitData.data[i] !== 0) { // Check alpha channel
-						userDrewDuringAwait = true;
-						break;
-					}
-				}
+        // CRITICAL: Check if user drew during the IndexedDB await BEFORE restoring
+        // The initial content check only sampled the top-left corner, but the user
+        // could have drawn anywhere during the async operation. Check for any
+        // non-transparent pixel to avoid overwriting user's drawing.
+        const postAwaitData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let userDrewDuringAwait = false;
+        for (let i = 3; i < postAwaitData.data.length; i += 4) {
+          if (postAwaitData.data[i] !== 0) {
+            // Check alpha channel
+            userDrewDuringAwait = true;
+            break;
+          }
+        }
 
-				if (userDrewDuringAwait) {
-					console.log('[Lifecycle] User drew during IndexedDB await, preserving their drawing');
-					canvasInitialized = true;
-					if (!historyTreeInitialized) {
-						useHistoryStore.getState().pushState(postAwaitData, "User Drawing");
-						historyTreeInitialized = true;
-					}
-					return;
-				}
+        if (userDrewDuringAwait) {
+          console.log("[Lifecycle] User drew during IndexedDB await, preserving their drawing");
+          canvasInitialized = true;
+          if (!historyTreeInitialized) {
+            useHistoryStore.getState().pushState(postAwaitData, "User Drawing");
+            historyTreeInitialized = true;
+          }
+          return;
+        }
 
-				if (tokenAtStart !== restoreToken) {
-					console.log("[Lifecycle] Restore canceled before applying persisted canvas");
-					return;
-				}
+        if (tokenAtStart !== restoreToken) {
+          console.log("[Lifecycle] Restore canceled before applying persisted canvas");
+          return;
+        }
 
-				if (persistedCanvas) {
-					// Check if dimensions match
-					if (persistedCanvas.width === canvas.width && persistedCanvas.height === canvas.height) {
-						// VALIDATION: Check if the persisted canvas is valid (not fully transparent)
-						// This fixes the bug where a previously saved corrupted state (transparent)
-						// would be restored, preventing the white background initialization.
-						let isValidContent = false;
-						for (let i = 3; i < persistedCanvas.data.length; i += 4) {
-							if (persistedCanvas.data[i] !== 0) {
-								isValidContent = true;
-								break;
-							}
-						}
+        if (persistedCanvas) {
+          // Check if dimensions match
+          if (persistedCanvas.width === canvas.width && persistedCanvas.height === canvas.height) {
+            // VALIDATION: Check if the persisted canvas is valid (not fully transparent)
+            // This fixes the bug where a previously saved corrupted state (transparent)
+            // would be restored, preventing the white background initialization.
+            let isValidContent = false;
+            for (let i = 3; i < persistedCanvas.data.length; i += 4) {
+              if (persistedCanvas.data[i] !== 0) {
+                isValidContent = true;
+                break;
+              }
+            }
 
-						if (tokenAtStart !== restoreToken) {
-							console.log("[Lifecycle] Restore canceled before putImageData");
-							return;
-						}
+            if (tokenAtStart !== restoreToken) {
+              console.log("[Lifecycle] Restore canceled before putImageData");
+              return;
+            }
 
-						if (isValidContent) {
-							console.log('[Lifecycle] Restoring from IndexedDB');
-							ctx.putImageData(persistedCanvas, 0, 0);
-							canvasInitialized = true;
+            if (isValidContent) {
+              console.log("[Lifecycle] Restoring from IndexedDB");
+              ctx.putImageData(persistedCanvas, 0, 0);
+              canvasInitialized = true;
 
-							// Initialize history tree with persisted canvas
-							if (!historyTreeInitialized) {
-								const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-								useHistoryStore.getState().pushState(imageData, "Restored Document");
-								historyTreeInitialized = true;
-							}
-							return;
-						} else {
-							console.log('[Lifecycle] Persisted canvas is fully transparent (invalid), skipping restore');
-						}
-					}
-					// If dimensions don't match or content is invalid, fall through to white background initialization
-				}
-			}
+              // Initialize history tree with persisted canvas
+              if (!historyTreeInitialized) {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                useHistoryStore.getState().pushState(imageData, "Restored Document");
+                historyTreeInitialized = true;
+              }
+              return;
+            } else {
+              console.log("[Lifecycle] Persisted canvas is fully transparent (invalid), skipping restore");
+            }
+          }
+          // If dimensions don't match or content is invalid, fall through to white background initialization
+        }
+      }
 
-			// Priority 3: Initialize with white background (only once)
-			if (!canvasInitialized) {
-				console.log('[Lifecycle] Filling with white background');
-				ctx.fillStyle = "#ffffff";
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-				canvasInitialized = true;
+      // Priority 3: Initialize with white background (only once)
+      if (!canvasInitialized) {
+        console.log("[Lifecycle] Filling with white background");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        canvasInitialized = true;
 
-				// Initialize history tree with blank canvas
-				if (!historyTreeInitialized) {
-					const initialImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-					useHistoryStore.getState().pushState(initialImageData, "New Document");
-					historyTreeInitialized = true;
-				}
-			}
-		};
+        // Initialize history tree with blank canvas
+        if (!historyTreeInitialized) {
+          const initialImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          useHistoryStore.getState().pushState(initialImageData, "New Document");
+          historyTreeInitialized = true;
+        }
+      }
+    };
 
-		initializeCanvas();
+    initializeCanvas();
 
-		// Cleanup: Save to module-level for component remount, but DON'T save to IndexedDB
-		//
-		// CRITICAL WARNING: Do NOT save to IndexedDB in this cleanup function!
-		//
-		// React may clear the canvas DOM before this cleanup runs, causing
-		// ctx.getImageData() to return empty/corrupted data. Saving this to
-		// IndexedDB would overwrite valid saved data with blank pixels.
-		//
-		// IndexedDB persistence is handled by Canvas.tsx saveHistoryState()
-		// which is called during actual drawing operations when we KNOW the
-		// canvas contains valid data.
-		//
-		// Module-level savedCanvasData is safe to update here because it's
-		// only used for immediate component remounts within the same page
-		// session (HMR, strict mode, etc.), not for page refresh recovery.
-		//
-		// See top-of-file documentation for detailed explanation.
-		return () => {
-			console.log('[Lifecycle] Cleanup running');
-			// Only save if we actually have valid initialized content
-			if (canvasInitialized) {
-				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				savedCanvasData = imageData;
-				console.log('[Lifecycle] Saved to module-level, size:', imageData.width, 'x', imageData.height);
-			} else {
-				console.log('[Lifecycle] Skipping save - canvas not initialized');
-			}
-			// ❌ DO NOT: saveCanvasToIndexedDB(imageData)
-			// ✅ IndexedDB saving is handled by Canvas.tsx saveHistoryState()
-		};
-	}, [canvasRef]);
+    // Cleanup: Save to module-level for component remount, but DON'T save to IndexedDB
+    //
+    // CRITICAL WARNING: Do NOT save to IndexedDB in this cleanup function!
+    //
+    // React may clear the canvas DOM before this cleanup runs, causing
+    // ctx.getImageData() to return empty/corrupted data. Saving this to
+    // IndexedDB would overwrite valid saved data with blank pixels.
+    //
+    // IndexedDB persistence is handled by Canvas.tsx saveHistoryState()
+    // which is called during actual drawing operations when we KNOW the
+    // canvas contains valid data.
+    //
+    // Module-level savedCanvasData is safe to update here because it's
+    // only used for immediate component remounts within the same page
+    // session (HMR, strict mode, etc.), not for page refresh recovery.
+    //
+    // See top-of-file documentation for detailed explanation.
+    return () => {
+      console.log("[Lifecycle] Cleanup running");
+      // Only save if we actually have valid initialized content
+      if (canvasInitialized) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        savedCanvasData = imageData;
+        console.log("[Lifecycle] Saved to module-level, size:", imageData.width, "x", imageData.height);
+      } else {
+        console.log("[Lifecycle] Skipping save - canvas not initialized");
+      }
+      // ❌ DO NOT: saveCanvasToIndexedDB(imageData)
+      // ✅ IndexedDB saving is handled by Canvas.tsx saveHistoryState()
+    };
+  }, [canvasRef]);
 }

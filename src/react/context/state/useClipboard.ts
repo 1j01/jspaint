@@ -16,37 +16,37 @@ import { useToolStore } from "./toolStore";
  * }} Clipboard state and actions
  */
 export function useClipboard() {
-	const clipboard = useToolStore((state) => state.clipboard);
-	const hasClipboard = clipboard !== null;
+  const clipboard = useToolStore((state) => state.clipboard);
+  const hasClipboard = clipboard !== null;
 
-	// Return stable object - no useMemo needed
-	return {
-		clipboard,
-		hasClipboard,
-		/**
-		 * Copy current selection to clipboard
-		 */
-		copy: () => {
-			const selection = useToolStore.getState().selection;
-			if (selection?.imageData) {
-				useToolStore.getState().setClipboard(selection.imageData);
-			}
-		},
-		/**
-		 * Cut current selection to clipboard
-		 */
-		cut: () => {
-			const selection = useToolStore.getState().selection;
-			if (selection?.imageData) {
-				useToolStore.getState().setClipboard(selection.imageData);
-			}
-		},
-		/**
-		 * Get clipboard contents for pasting
-		 * @returns {ImageData | undefined} Clipboard image data
-		 */
-		paste: () => {
-			return useToolStore.getState().clipboard || undefined;
-		},
-	};
+  // Return stable object - no useMemo needed
+  return {
+    clipboard,
+    hasClipboard,
+    /**
+     * Copy current selection to clipboard
+     */
+    copy: () => {
+      const selection = useToolStore.getState().selection;
+      if (selection?.imageData) {
+        useToolStore.getState().setClipboard(selection.imageData);
+      }
+    },
+    /**
+     * Cut current selection to clipboard
+     */
+    cut: () => {
+      const selection = useToolStore.getState().selection;
+      if (selection?.imageData) {
+        useToolStore.getState().setClipboard(selection.imageData);
+      }
+    },
+    /**
+     * Get clipboard contents for pasting
+     * @returns {ImageData | undefined} Clipboard image data
+     */
+    paste: () => {
+      return useToolStore.getState().clipboard || undefined;
+    },
+  };
 }

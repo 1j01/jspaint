@@ -11,12 +11,12 @@ import "../react/styles/select-win98.css";
 const mountNode = document.getElementById("root");
 
 if (!mountNode) {
-	throw new Error("Failed to find root container for React preview");
+  throw new Error("Failed to find root container for React preview");
 }
 
 const root = createRoot(mountNode);
 root.render(
-	<StrictMode>
-		<App />
-	</StrictMode>,
+  <StrictMode>
+    <App />
+  </StrictMode>,
 );

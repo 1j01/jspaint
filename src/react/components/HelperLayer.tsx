@@ -5,28 +5,28 @@ import { useUIStore } from "../context/state/uiStore";
  * Props for HelperLayer component
  */
 interface HelperLayerProps {
-	/** X position in canvas coordinates */
-	x: number;
-	/** Y position in canvas coordinates */
-	y: number;
-	/** Width in canvas pixels */
-	width: number;
-	/** Height in canvas pixels */
-	height: number;
-	/** Device pixel ratio for high-DPI rendering (default: 1) */
-	pixelRatio?: number;
+  /** X position in canvas coordinates */
+  x: number;
+  /** Y position in canvas coordinates */
+  y: number;
+  /** Width in canvas pixels */
+  width: number;
+  /** Height in canvas pixels */
+  height: number;
+  /** Device pixel ratio for high-DPI rendering (default: 1) */
+  pixelRatio?: number;
 }
 
 /**
  * Imperative handle exposed to parent components
  */
 export interface HelperLayerHandle {
-	/** Direct access to canvas element */
-	canvas: HTMLCanvasElement | null;
-	/** Get 2D rendering context */
-	getContext: () => CanvasRenderingContext2D | null;
-	/** Clear the entire canvas */
-	clear: () => void;
+  /** Direct access to canvas element */
+  canvas: HTMLCanvasElement | null;
+  /** Get 2D rendering context */
+  getContext: () => CanvasRenderingContext2D | null;
+  /** Clear the entire canvas */
+  clear: () => void;
 }
 
 /**
@@ -77,47 +77,51 @@ export interface HelperLayerHandle {
  * />
  */
 export const HelperLayer = forwardRef<HelperLayerHandle, HelperLayerProps>(function HelperLayer(
-	{ x, y, width, height, pixelRatio = 1 },
-	ref,
+  { x, y, width, height, pixelRatio = 1 },
+  ref,
 ) {
-	const magnification = useUIStore((state) => state.magnification);
-	const canvasRef = useRef<HTMLCanvasElement>(null);
+  const magnification = useUIStore((state) => state.magnification);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	// Expose imperative methods to parent
-	useImperativeHandle(ref, () => ({
-		canvas: canvasRef.current,
-		getContext: () => canvasRef.current?.getContext("2d") ?? null,
-		clear: () => {
-			const canvas = canvasRef.current;
-			if (canvas) {
-				const ctx = canvas.getContext("2d");
-				if (ctx) {
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-				}
-			}
-		},
-	}), []);
+  // Expose imperative methods to parent
+  useImperativeHandle(
+    ref,
+    () => ({
+      canvas: canvasRef.current,
+      getContext: () => canvasRef.current?.getContext("2d") ?? null,
+      clear: () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+      },
+    }),
+    [],
+  );
 
-	const style: CSSProperties = {
-		position: "absolute",
-		left: x * magnification,
-		top: y * magnification,
-		width: width * magnification,
-		height: height * magnification,
-		pointerEvents: "none",
-		imageRendering: "pixelated",
-	};
+  const style: CSSProperties = {
+    position: "absolute",
+    left: x * magnification,
+    top: y * magnification,
+    width: width * magnification,
+    height: height * magnification,
+    pointerEvents: "none",
+    imageRendering: "pixelated",
+  };
 
-	return (
-		<canvas
-			ref={canvasRef}
-			className="helper-layer"
-			width={width * pixelRatio}
-			height={height * pixelRatio}
-			style={style}
-			aria-hidden="true"
-		/>
-	);
+  return (
+    <canvas
+      ref={canvasRef}
+      className="helper-layer"
+      width={width * pixelRatio}
+      height={height * pixelRatio}
+      style={style}
+      aria-hidden="true"
+    />
+  );
 });
 
 export default HelperLayer;

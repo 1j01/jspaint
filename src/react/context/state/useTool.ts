@@ -11,11 +11,11 @@ import { useToolStore } from "./toolStore";
  * }} Tool state and actions
  */
 export function useTool() {
-	const selectedToolId = useToolStore((state) => state.selectedToolId);
-	const setTool = useToolStore((state) => state.setTool);
+  const selectedToolId = useToolStore((state) => state.selectedToolId);
+  const setTool = useToolStore((state) => state.setTool);
 
-	return {
-		selectedToolId,
-		setTool,
-	};
+  return {
+    selectedToolId,
+    setTool,
+  };
 }

@@ -13,31 +13,31 @@ import { useState, useEffect } from "react";
 
 // Extend Window interface for Local Font Access API and FontDetective
 declare global {
-	interface Window {
-		queryLocalFonts?: () => Promise<{ family: string }[]>;
-		FontDetective?: {
-			each: (callback: (font: { name: string; toString: () => string }) => void) => void;
-			all: (callback: (fonts: { name: string }[]) => void) => void;
-		};
-	}
+  interface Window {
+    queryLocalFonts?: () => Promise<{ family: string }[]>;
+    FontDetective?: {
+      each: (callback: (font: { name: string; toString: () => string }) => void) => void;
+      all: (callback: (fonts: { name: string }[]) => void) => void;
+    };
+  }
 }
 
 export const FALLBACK_FONTS: string[] = [
-	"Arial",
-	"Calibri",
-	"Cambria",
-	"Comic Sans MS",
-	"Courier New",
-	"Georgia",
-	"Helvetica",
-	"Impact",
-	"Liberation Sans",
-	"Lucida Console",
-	"Palatino Linotype",
-	"Tahoma",
-	"Times New Roman",
-	"Trebuchet MS",
-	"Verdana",
+  "Arial",
+  "Calibri",
+  "Cambria",
+  "Comic Sans MS",
+  "Courier New",
+  "Georgia",
+  "Helvetica",
+  "Impact",
+  "Liberation Sans",
+  "Lucida Console",
+  "Palatino Linotype",
+  "Tahoma",
+  "Times New Roman",
+  "Trebuchet MS",
+  "Verdana",
 ];
 
 /**
@@ -49,8 +49,8 @@ export const FALLBACK_FONTS: string[] = [
  * @returns Unique, sorted font list
  */
 function ensureFonts(fonts: string[]): string[] {
-	const source = !fonts || !fonts.length ? FALLBACK_FONTS : fonts;
-	return Array.from(new Set(source)).sort((a, b) => a.localeCompare(b));
+  const source = !fonts || !fonts.length ? FALLBACK_FONTS : fonts;
+  return Array.from(new Set(source)).sort((a, b) => a.localeCompare(b));
 }
 
 /**
@@ -79,97 +79,97 @@ function ensureFonts(fonts: string[]): string[] {
  * );
  */
 export function useSystemFonts() {
-	const [fonts, setFonts] = useState<string[]>(() => ensureFonts([]));
-	const [loading, setLoading] = useState(false);
+  const [fonts, setFonts] = useState<string[]>(() => ensureFonts([]));
+  const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		let cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-		const loadFonts = async () => {
-			// Skip if running on server
-			if (typeof window === "undefined") {
-				setFonts(ensureFonts([]));
-				return;
-			}
+    const loadFonts = async () => {
+      // Skip if running on server
+      if (typeof window === "undefined") {
+        setFonts(ensureFonts([]));
+        return;
+      }
 
-			setLoading(true);
+      setLoading(true);
 
-			/**
-			 * Helper to use FontDetective fallback
-			 * FontDetective incrementally detects fonts by testing character widths
-			 */
-			const useFontDetective = () => {
-				if (cancelled) return;
+      /**
+       * Helper to use FontDetective fallback
+       * FontDetective incrementally detects fonts by testing character widths
+       */
+      const useFontDetective = () => {
+        if (cancelled) return;
 
-				if (!window.FontDetective) {
-					// FontDetective not available, use fallback fonts
-					setFonts(ensureFonts([]));
-					setLoading(false);
-					return;
-				}
+        if (!window.FontDetective) {
+          // FontDetective not available, use fallback fonts
+          setFonts(ensureFonts([]));
+          setLoading(false);
+          return;
+        }
 
-				const detectedFonts: string[] = [];
+        const detectedFonts: string[] = [];
 
-				// FontDetective.each is called for each font as it's detected
-				window.FontDetective.each((font) => {
-					if (!cancelled) {
-						detectedFonts.push(font.name);
-						// Update incrementally as fonts are detected
-						setFonts(ensureFonts([...detectedFonts]));
-					}
-				});
+        // FontDetective.each is called for each font as it's detected
+        window.FontDetective.each((font) => {
+          if (!cancelled) {
+            detectedFonts.push(font.name);
+            // Update incrementally as fonts are detected
+            setFonts(ensureFonts([...detectedFonts]));
+          }
+        });
 
-				// FontDetective.all is called when detection is complete
-				window.FontDetective.all(() => {
-					if (!cancelled) {
-						setFonts(ensureFonts(detectedFonts));
-						setLoading(false);
-					}
-				});
-			};
+        // FontDetective.all is called when detection is complete
+        window.FontDetective.all(() => {
+          if (!cancelled) {
+            setFonts(ensureFonts(detectedFonts));
+            setLoading(false);
+          }
+        });
+      };
 
-			try {
-				// Try Local Font Access API first (Chrome/Edge 103+)
-				if (window.queryLocalFonts) {
-					const fontData = await window.queryLocalFonts();
-					if (cancelled) return;
+      try {
+        // Try Local Font Access API first (Chrome/Edge 103+)
+        if (window.queryLocalFonts) {
+          const fontData = await window.queryLocalFonts();
+          if (cancelled) return;
 
-					if (fontData.length) {
-						// Extract unique font family names
-						const familyNames = new Set<string>();
-						for (const font of fontData) {
-							if (!familyNames.has(font.family)) {
-								familyNames.add(font.family);
-							}
-						}
-						setFonts(ensureFonts(Array.from(familyNames)));
-						setLoading(false);
-						return;
-					} else {
-						// queryLocalFonts returned no fonts, fall back to FontDetective
-						useFontDetective();
-						return;
-					}
-				}
-			} catch (error) {
-				if (!cancelled) {
-					// queryLocalFonts failed, fall back to FontDetective
-					useFontDetective();
-					return;
-				}
-			}
+          if (fontData.length) {
+            // Extract unique font family names
+            const familyNames = new Set<string>();
+            for (const font of fontData) {
+              if (!familyNames.has(font.family)) {
+                familyNames.add(font.family);
+              }
+            }
+            setFonts(ensureFonts(Array.from(familyNames)));
+            setLoading(false);
+            return;
+          } else {
+            // queryLocalFonts returned no fonts, fall back to FontDetective
+            useFontDetective();
+            return;
+          }
+        }
+      } catch (error) {
+        if (!cancelled) {
+          // queryLocalFonts failed, fall back to FontDetective
+          useFontDetective();
+          return;
+        }
+      }
 
-			// No Local Font Access API, use FontDetective
-			useFontDetective();
-		};
+      // No Local Font Access API, use FontDetective
+      useFontDetective();
+    };
 
-		loadFonts();
+    loadFonts();
 
-		// Cleanup function to prevent state updates after unmount
-		return () => {
-			cancelled = true;
-		};
-	}, []);
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-	return { fonts, loading };
+  return { fonts, loading };
 }

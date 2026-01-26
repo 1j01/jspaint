@@ -12,89 +12,89 @@ import { saveCanvasHistory, loadCanvasHistory, cleanupCanvasHistory, saveSetting
  * Manages canvas document state and linear history (legacy undo/redo)
  */
 export interface CanvasState {
-	/**
-	 * Canvas width in pixels
-	 */
-	canvasWidth: number;
+  /**
+   * Canvas width in pixels
+   */
+  canvasWidth: number;
 
-	/**
-	 * Canvas height in pixels
-	 */
-	canvasHeight: number;
+  /**
+   * Canvas height in pixels
+   */
+  canvasHeight: number;
 
-	/**
-	 * Current file name
-	 */
-	fileName: string;
+  /**
+   * Current file name
+   */
+  fileName: string;
 
-	/**
-	 * Whether the canvas has been saved (no unsaved changes)
-	 */
-	saved: boolean;
+  /**
+   * Whether the canvas has been saved (no unsaved changes)
+   */
+  saved: boolean;
 
-	/**
-	 * Undo stack (stores IndexedDB IDs pointing to saved states)
-	 */
-	undoStack: string[];
+  /**
+   * Undo stack (stores IndexedDB IDs pointing to saved states)
+   */
+  undoStack: string[];
 
-	/**
-	 * Redo stack (stores IndexedDB IDs pointing to saved states)
-	 */
-	redoStack: string[];
+  /**
+   * Redo stack (stores IndexedDB IDs pointing to saved states)
+   */
+  redoStack: string[];
 
-	/**
-	 * Maximum number of history states to keep
-	 */
-	maxHistorySize: number;
+  /**
+   * Maximum number of history states to keep
+   */
+  maxHistorySize: number;
 
-	/**
-	 * Set canvas dimensions
-	 * @param {number} width - Canvas width in pixels
-	 * @param {number} height - Canvas height in pixels
-	 */
-	setCanvasSize: (width: number, height: number) => void;
+  /**
+   * Set canvas dimensions
+   * @param {number} width - Canvas width in pixels
+   * @param {number} height - Canvas height in pixels
+   */
+  setCanvasSize: (width: number, height: number) => void;
 
-	/**
-	 * Set file name
-	 * @param {string} name - File name
-	 */
-	setFileName: (name: string) => void;
+  /**
+   * Set file name
+   * @param {string} name - File name
+   */
+  setFileName: (name: string) => void;
 
-	/**
-	 * Set saved state
-	 * @param {boolean} saved - Whether the canvas is saved
-	 */
-	setSaved: (saved: boolean) => void;
+  /**
+   * Set saved state
+   * @param {boolean} saved - Whether the canvas is saved
+   */
+  setSaved: (saved: boolean) => void;
 
-	/**
-	 * Save current canvas state to history
-	 * @param {ImageData} imageData - Canvas image data to save
-	 * @returns {Promise<void>}
-	 */
-	saveState: (imageData: ImageData) => Promise<void>;
+  /**
+   * Save current canvas state to history
+   * @param {ImageData} imageData - Canvas image data to save
+   * @returns {Promise<void>}
+   */
+  saveState: (imageData: ImageData) => Promise<void>;
 
-	/**
-	 * Undo to previous state
-	 * @returns {Promise<ImageData | null>} Previous state image data, or null if no undo available
-	 */
-	undo: () => Promise<ImageData | null>;
+  /**
+   * Undo to previous state
+   * @returns {Promise<ImageData | null>} Previous state image data, or null if no undo available
+   */
+  undo: () => Promise<ImageData | null>;
 
-	/**
-	 * Redo to next state
-	 * @returns {Promise<ImageData | null>} Next state image data, or null if no redo available
-	 */
-	redo: () => Promise<ImageData | null>;
+  /**
+   * Redo to next state
+   * @returns {Promise<ImageData | null>} Next state image data, or null if no redo available
+   */
+  redo: () => Promise<ImageData | null>;
 
-	/**
-	 * Clear all history (undo and redo stacks)
-	 */
-	clearHistory: () => void;
+  /**
+   * Clear all history (undo and redo stacks)
+   */
+  clearHistory: () => void;
 
-	/**
-	 * Load persisted canvas state from IndexedDB
-	 * @returns {Promise<void>}
-	 */
-	loadPersistedCanvasState: () => Promise<void>;
+  /**
+   * Load persisted canvas state from IndexedDB
+   * @returns {Promise<void>}
+   */
+  loadPersistedCanvasState: () => Promise<void>;
 }
 
 /**
@@ -103,113 +103,114 @@ export interface CanvasState {
  * @returns {CanvasState} The canvas state store
  */
 export const useCanvasStore = create<CanvasState>((set, get) => ({
-	// Initial values (Windows XP MS Paint defaults)
-	canvasWidth: DEFAULT_CANVAS_WIDTH,
-	canvasHeight: DEFAULT_CANVAS_HEIGHT,
-	fileName: "untitled",
-	saved: true,
-	undoStack: [],
-	redoStack: [],
-	maxHistorySize: 50,
+  // Initial values (Windows XP MS Paint defaults)
+  canvasWidth: DEFAULT_CANVAS_WIDTH,
+  canvasHeight: DEFAULT_CANVAS_HEIGHT,
+  fileName: "untitled",
+  saved: true,
+  undoStack: [],
+  redoStack: [],
+  maxHistorySize: 50,
 
-	// Actions
-	setCanvasSize: (width, height) => {
-		set({ canvasWidth: width, canvasHeight: height, saved: false });
-		// Persist canvas dimensions
-		saveSetting("canvasWidth", width);
-		saveSetting("canvasHeight", height);
-	},
+  // Actions
+  setCanvasSize: (width, height) => {
+    set({ canvasWidth: width, canvasHeight: height, saved: false });
+    // Persist canvas dimensions
+    saveSetting("canvasWidth", width);
+    saveSetting("canvasHeight", height);
+  },
 
-	setFileName: (name) => {
-		set({ fileName: name });
-	},
+  setFileName: (name) => {
+    set({ fileName: name });
+  },
 
-	setSaved: (saved) => {
-		set({ saved });
-	},
+  setSaved: (saved) => {
+    set({ saved });
+  },
 
-	saveState: async (imageData) => {
-		const { undoStack, maxHistorySize } = get();
+  saveState: async (imageData) => {
+    const { undoStack, maxHistorySize } = get();
 
-		// Generate unique ID for this state
-		const stateId = `state-${Date.now()}-${Math.random()}`;
+    // Generate unique ID for this state
+    const stateId = `state-${Date.now()}-${Math.random()}`;
 
-		// Save to IndexedDB
-		await saveCanvasHistory(stateId, imageData);
+    // Save to IndexedDB
+    await saveCanvasHistory(stateId, imageData);
 
-		// Add to undo stack
-		const newUndoStack = [...undoStack, stateId];
+    // Add to undo stack
+    const newUndoStack = [...undoStack, stateId];
 
-		// Limit stack size
-		if (newUndoStack.length > maxHistorySize) {
-			newUndoStack.shift();
-		}
+    // Limit stack size
+    if (newUndoStack.length > maxHistorySize) {
+      newUndoStack.shift();
+    }
 
-		set({
-			undoStack: newUndoStack,
-			redoStack: [], // Clear redo stack on new action
-			saved: false,
-		});
+    set({
+      undoStack: newUndoStack,
+      redoStack: [], // Clear redo stack on new action
+      saved: false,
+    });
 
-		// Clean up old entries periodically
-		if (Math.random() < 0.1) { // 10% chance
-			cleanupCanvasHistory(maxHistorySize);
-		}
-	},
+    // Clean up old entries periodically
+    if (Math.random() < 0.1) {
+      // 10% chance
+      cleanupCanvasHistory(maxHistorySize);
+    }
+  },
 
-	undo: async () => {
-		const { undoStack, redoStack } = get();
+  undo: async () => {
+    const { undoStack, redoStack } = get();
 
-		if (undoStack.length === 0) return null;
+    if (undoStack.length === 0) return null;
 
-		const newUndoStack = [...undoStack];
-		const stateId = newUndoStack.pop();
+    const newUndoStack = [...undoStack];
+    const stateId = newUndoStack.pop();
 
-		if (!stateId) return null;
+    if (!stateId) return null;
 
-		// Load the state from IndexedDB
-		const imageData = await loadCanvasHistory(stateId);
+    // Load the state from IndexedDB
+    const imageData = await loadCanvasHistory(stateId);
 
-		if (imageData) {
-			set({
-				undoStack: newUndoStack,
-				redoStack: [...redoStack, stateId],
-			});
-		}
+    if (imageData) {
+      set({
+        undoStack: newUndoStack,
+        redoStack: [...redoStack, stateId],
+      });
+    }
 
-		return imageData;
-	},
+    return imageData;
+  },
 
-	redo: async () => {
-		const { undoStack, redoStack } = get();
+  redo: async () => {
+    const { undoStack, redoStack } = get();
 
-		if (redoStack.length === 0) return null;
+    if (redoStack.length === 0) return null;
 
-		const newRedoStack = [...redoStack];
-		const stateId = newRedoStack.pop();
+    const newRedoStack = [...redoStack];
+    const stateId = newRedoStack.pop();
 
-		if (!stateId) return null;
+    if (!stateId) return null;
 
-		// Load the state from IndexedDB
-		const imageData = await loadCanvasHistory(stateId);
+    // Load the state from IndexedDB
+    const imageData = await loadCanvasHistory(stateId);
 
-		if (imageData) {
-			set({
-				undoStack: [...undoStack, stateId],
-				redoStack: newRedoStack,
-			});
-		}
+    if (imageData) {
+      set({
+        undoStack: [...undoStack, stateId],
+        redoStack: newRedoStack,
+      });
+    }
 
-		return imageData;
-	},
+    return imageData;
+  },
 
-	clearHistory: () => {
-		set({ undoStack: [], redoStack: [] });
-	},
+  clearHistory: () => {
+    set({ undoStack: [], redoStack: [] });
+  },
 
-	loadPersistedCanvasState: async () => {
-		const canvasWidth = await loadSetting("canvasWidth", DEFAULT_CANVAS_WIDTH);
-		const canvasHeight = await loadSetting("canvasHeight", DEFAULT_CANVAS_HEIGHT);
-		set({ canvasWidth, canvasHeight });
-	},
+  loadPersistedCanvasState: async () => {
+    const canvasWidth = await loadSetting("canvasWidth", DEFAULT_CANVAS_WIDTH);
+    const canvasHeight = await loadSetting("canvasHeight", DEFAULT_CANVAS_HEIGHT);
+    set({ canvasWidth, canvasHeight });
+  },
 }));

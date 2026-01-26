@@ -9,14 +9,14 @@ export const CIRCULAR_BRUSH_SIZES = [7, 4, 1];
 export const OTHER_BRUSH_SIZES = [8, 5, 2];
 
 export interface BrushOption {
-	shape: BrushShape;
-	size: number;
+  shape: BrushShape;
+  size: number;
 }
 
 // Generate all brush options (matches legacy tool-options.js)
 export const BRUSH_OPTIONS: BrushOption[] = BRUSH_SHAPES.flatMap((shape) => {
-	const sizes = shape === "circle" ? CIRCULAR_BRUSH_SIZES : OTHER_BRUSH_SIZES;
-	return sizes.map((size) => ({ shape, size }));
+  const sizes = shape === "circle" ? CIRCULAR_BRUSH_SIZES : OTHER_BRUSH_SIZES;
+  return sizes.map((size) => ({ shape, size }));
 });
 
 // Eraser size options - matches original

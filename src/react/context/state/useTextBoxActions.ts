@@ -12,11 +12,11 @@ import { useToolStore } from "./toolStore";
  * }} Text box actions
  */
 export function useTextBoxActions() {
-	const setTextBox = useToolStore((state) => state.setTextBox);
-	const clearTextBox = useToolStore((state) => state.clearTextBox);
+  const setTextBox = useToolStore((state) => state.setTextBox);
+  const clearTextBox = useToolStore((state) => state.clearTextBox);
 
-	return {
-		setTextBox,
-		clearTextBox,
-	};
+  return {
+    setTextBox,
+    clearTextBox,
+  };
 }

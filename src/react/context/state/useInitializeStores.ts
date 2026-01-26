@@ -38,34 +38,34 @@ import { useCanvasStore } from "./canvasStore";
  * }
  */
 export function useInitializeStores() {
-	const [isInitialized, setIsInitialized] = useState(false);
-	const [error, setError] = useState<Error | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-	useEffect(() => {
-		/**
-		 * Load all store data from IndexedDB
-		 * @returns {Promise<void>}
-		 */
-		async function loadStores() {
-			try {
-				// Load persisted settings, UI state, and canvas state
-				await Promise.all([
-					useSettingsStore.getState().loadPersistedSettings(),
-					useUIStore.getState().loadPersistedUIState(),
-					useCanvasStore.getState().loadPersistedCanvasState(),
-				]);
+  useEffect(() => {
+    /**
+     * Load all store data from IndexedDB
+     * @returns {Promise<void>}
+     */
+    async function loadStores() {
+      try {
+        // Load persisted settings, UI state, and canvas state
+        await Promise.all([
+          useSettingsStore.getState().loadPersistedSettings(),
+          useUIStore.getState().loadPersistedUIState(),
+          useCanvasStore.getState().loadPersistedCanvasState(),
+        ]);
 
-				setIsInitialized(true);
-			} catch (err) {
-				// console.error("Failed to initialize stores:", err);
-				setError(err instanceof Error ? err : new Error("Unknown error"));
-				// Continue anyway - app will use default values
-				setIsInitialized(true);
-			}
-		}
+        setIsInitialized(true);
+      } catch (err) {
+        // console.error("Failed to initialize stores:", err);
+        setError(err instanceof Error ? err : new Error("Unknown error"));
+        // Continue anyway - app will use default values
+        setIsInitialized(true);
+      }
+    }
 
-		loadStores();
-	}, []);
+    loadStores();
+  }, []);
 
-	return { isInitialized, error };
+  return { isInitialized, error };
 }

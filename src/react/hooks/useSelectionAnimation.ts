@@ -5,8 +5,8 @@ import { useSettingsStore } from "../context/state/settingsStore";
 import { useColors } from "../context/state/useColors";
 
 interface UseSelectionAnimationProps {
-	selection: Selection | null;
-	overlayRef: RefObject<HTMLCanvasElement | null>;
+  selection: Selection | null;
+  overlayRef: RefObject<HTMLCanvasElement | null>;
 }
 
 /**
@@ -31,76 +31,76 @@ interface UseSelectionAnimationProps {
  * // and stops when selection is cleared
  */
 export function useSelectionAnimation({ selection, overlayRef }: UseSelectionAnimationProps) {
-	const marchingAntsOffset = useRef(0);
-	const animationFrameId = useRef<number | null>(null);
+  const marchingAntsOffset = useRef(0);
+  const animationFrameId = useRef<number | null>(null);
 
-	// Get drawOpaque setting and secondary (background) color for transparent selection mode
-	const drawOpaque = useSettingsStore((state) => state.drawOpaque);
-	const { secondaryColor } = useColors();
+  // Get drawOpaque setting and secondary (background) color for transparent selection mode
+  const drawOpaque = useSettingsStore((state) => state.drawOpaque);
+  const { secondaryColor } = useColors();
 
-	// Clear overlay on mount
-	useEffect(() => {
-		const overlay = overlayRef.current;
-		if (overlay) {
-			const ctx = overlay.getContext("2d");
-			if (ctx) ctx.clearRect(0, 0, overlay.width, overlay.height);
-		}
-	}, [overlayRef]);
+  // Clear overlay on mount
+  useEffect(() => {
+    const overlay = overlayRef.current;
+    if (overlay) {
+      const ctx = overlay.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, overlay.width, overlay.height);
+    }
+  }, [overlayRef]);
 
-	// Animate marching ants for selection
-	useEffect(() => {
-		if (!selection) {
-			if (animationFrameId.current) {
-				cancelAnimationFrame(animationFrameId.current);
-				animationFrameId.current = null;
-			}
-			// Clear overlay
-			const overlay = overlayRef.current;
-			if (overlay) {
-				const ctx = overlay.getContext("2d");
-				if (ctx) ctx.clearRect(0, 0, overlay.width, overlay.height);
-			}
-			return;
-		}
+  // Animate marching ants for selection
+  useEffect(() => {
+    if (!selection) {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = null;
+      }
+      // Clear overlay
+      const overlay = overlayRef.current;
+      if (overlay) {
+        const ctx = overlay.getContext("2d");
+        if (ctx) ctx.clearRect(0, 0, overlay.width, overlay.height);
+      }
+      return;
+    }
 
-		const overlay = overlayRef.current;
-		if (!overlay) return;
+    const overlay = overlayRef.current;
+    if (!overlay) return;
 
-		const ctx = overlay.getContext("2d");
-		if (!ctx) return;
+    const ctx = overlay.getContext("2d");
+    if (!ctx) return;
 
-		// Pre-process imageData for transparency mode (done once, not every frame)
-		let displayImageData: ImageData | null = null;
-		if (selection.imageData) {
-			if (!drawOpaque) {
-				// Transparent selection mode: make background-colored pixels transparent
-				displayImageData = applyTransparencyToImageData(selection.imageData, secondaryColor);
-			} else {
-				displayImageData = selection.imageData;
-			}
-		}
+    // Pre-process imageData for transparency mode (done once, not every frame)
+    let displayImageData: ImageData | null = null;
+    if (selection.imageData) {
+      if (!drawOpaque) {
+        // Transparent selection mode: make background-colored pixels transparent
+        displayImageData = applyTransparencyToImageData(selection.imageData, secondaryColor);
+      } else {
+        displayImageData = selection.imageData;
+      }
+    }
 
-		const animate = () => {
-			marchingAntsOffset.current = (marchingAntsOffset.current + 0.25) % 16;
+    const animate = () => {
+      marchingAntsOffset.current = (marchingAntsOffset.current + 0.25) % 16;
 
-			ctx.clearRect(0, 0, overlay.width, overlay.height);
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-			// Draw selection imageData (the actual content) if it exists
-			if (displayImageData) {
-				ctx.putImageData(displayImageData, selection.x, selection.y);
-			}
+      // Draw selection imageData (the actual content) if it exists
+      if (displayImageData) {
+        ctx.putImageData(displayImageData, selection.x, selection.y);
+      }
 
-			drawSelectionOverlay(ctx, selection, marchingAntsOffset.current);
+      drawSelectionOverlay(ctx, selection, marchingAntsOffset.current);
 
-			animationFrameId.current = requestAnimationFrame(animate);
-		};
+      animationFrameId.current = requestAnimationFrame(animate);
+    };
 
-		animate();
+    animate();
 
-		return () => {
-			if (animationFrameId.current) {
-				cancelAnimationFrame(animationFrameId.current);
-			}
-		};
-	}, [selection, overlayRef, drawOpaque, secondaryColor]);
+    return () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+    };
+  }, [selection, overlayRef, drawOpaque, secondaryColor]);
 }
