@@ -30,7 +30,7 @@ export interface FileMenuActions {
  */
 export interface UseFileMenuActionsParams {
 	canvasRef: RefObject<HTMLCanvasElement>;
-	saveState: () => void;
+	saveState: (imageData: ImageData) => void;
 	setCanvasSize: (width: number, height: number) => void;
 	setMagnification: (mag: number) => void;
 	clearSelection: () => void;
@@ -85,7 +85,8 @@ export function useFileMenuActions(params: UseFileMenuActionsParams): FileMenuAc
 						if (ctx) {
 							ctx.fillStyle = "#FFFFFF";
 							ctx.fillRect(0, 0, canvas.width, canvas.height);
-							saveState();
+							const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+							saveState(imageData);
 						}
 					}
 				});

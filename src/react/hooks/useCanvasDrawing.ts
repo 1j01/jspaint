@@ -122,32 +122,18 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			size: number,
 			shape: BrushShape = "circle",
 		): void => {
-			console.log('[DEBUG] drawPoint called:', { x, y, color, size, shape, canvasSize: { w: ctx.canvas.width, h: ctx.canvas.height } });
-
-			// Check if coordinates are within canvas bounds
-			if (x < 0 || y < 0 || x >= ctx.canvas.width || y >= ctx.canvas.height) {
-				console.log('[DEBUG] Coordinates out of bounds!');
-			}
-
+			// Ensure correct drawing mode
+			ctx.globalCompositeOperation = 'source-over';
+			ctx.globalAlpha = 1;
 			ctx.fillStyle = color;
-			console.log('[DEBUG] Set fillStyle to:', ctx.fillStyle);
 
 			if (size <= 1) {
 				ctx.fillRect(x, y, 1, 1);
-				console.log('[DEBUG] Drew single pixel at', x, y);
-
-				// Verify the pixel was drawn
-				const checkData = ctx.getImageData(x, y, 1, 1);
-				console.log('[DEBUG] Pixel data after draw:', Array.from(checkData.data));
 			} else {
 				const points = getBrushPoints(size, shape);
-				console.log('[DEBUG] Brush points count:', points.length);
 				for (const point of points) {
 					ctx.fillRect(x + point.x, y + point.y, 1, 1);
 				}
-				// Verify center pixel was drawn
-				const checkData = ctx.getImageData(x, y, 1, 1);
-				console.log('[DEBUG] Center pixel data after draw:', Array.from(checkData.data));
 			}
 		},
 		[],

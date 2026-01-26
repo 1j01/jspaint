@@ -52,27 +52,35 @@ export async function loadImageFileToCanvas(
 
 				// Actual image loading logic
 				const loadImageToCanvas = (canvas: HTMLCanvasElement, img: HTMLImageElement) => {
-					const ctx = canvas.getContext("2d", { willReadFrequently: true });
-					if (!ctx) {
-						throw new Error("Could not get 2d context");
-					}
-
 					// Clear any existing selection before loading new image
 					onClearSelection();
 
-					// Resize canvas to match image
-					canvas.width = img.width;
-					canvas.height = img.height;
-
-					// Draw the image
-					ctx.drawImage(img, 0, 0);
-
-					// Update canvas size in store
+					// CRITICAL: Update React state FIRST, then draw after React updates the DOM.
+					// If we set canvas.width/height directly and then call onSetCanvasSize,
+					// React will re-set the attributes during reconciliation, which clears
+					// the canvas and erases our drawn image.
+					//
+					// Order must be:
+					// 1. Update React state (onSetCanvasSize)
+					// 2. Wait for DOM update (requestAnimationFrame)
+					// 3. Draw image
 					onSetCanvasSize(img.width, img.height);
 
-					// Save to history AFTER drawing (so the new image is captured)
-					const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-					onSaveState(imageData);
+					// Wait for React to update the DOM with new dimensions
+					requestAnimationFrame(() => {
+						const ctx = canvas.getContext("2d", { willReadFrequently: true });
+						if (!ctx) {
+							console.error("Could not get 2d context after resize");
+							return;
+						}
+
+						// Now draw the image (canvas already has correct dimensions from React)
+						ctx.drawImage(img, 0, 0);
+
+						// Save to history AFTER drawing (so the new image is captured)
+						const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+						onSaveState(imageData);
+					});
 				};
 
 				// Start waiting for canvas
