@@ -109,7 +109,7 @@ export function SaveAsDialog({ isOpen, onClose, onSave, currentFilename = "untit
   );
 
   return (
-    <Dialog title={t("Save As")} isOpen={isOpen} onClose={onClose} width={400} className="dialog-window save-as">
+    <Dialog title={t("Save As")} isOpen={isOpen} onClose={onClose} width={480} className="dialog-window save-as">
       <form>
         <div>
           <label>

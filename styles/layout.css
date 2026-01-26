@@ -583,34 +583,27 @@ whereas it breaks component docking calculations if used to shift the colors box
 }
 
 .save-as .window-content > form > div {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 8px 10px;
+	align-items: center;
 }
 .save-as .window-content > form > div > label {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	margin-left: 10px;
+	display: contents;
 }
 .save-as .window-content > form > div > label > input,
 .save-as .window-content > form > div > label > select {
-	width: calc(100vw - 220px);
-	max-width: 230px;
-	float: right;
-	margin: 5px;
+	width: 100%;
+	max-width: 250px;
 	box-sizing: border-box;
 }
-.save-as .window-content > form > div > label:not(:first-of-type) {
-	margin-top: 8px;
-}
 .save-as .window-content {
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding: 12px 10px;
 }
 .save-as .window-content > form {
 	display: flex;
 	flex-direction: row;
+	gap: 15px;
 }
 .save-as .window-content > form > div:first-child {
 	flex: 1;
@@ -619,12 +612,10 @@ whereas it breaks component docking calculations if used to shift the colors box
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	padding-left: 10px;
-	padding-right: 5px;
+	gap: 6px;
 }
 .save-as .button-group button {
-	min-width: 75px;
-	margin: 5px 0;
+	min-width: 90px;
 }
 
 .font-box {
@@ -748,7 +739,7 @@ whereas it breaks component docking calculations if used to shift the colors box
 }
 
 /* Fix label ordering for RTL layout (display inline labels can get super out of order with the checkboxes/inputs - very confusing!) */
-.window:not(.edit-colors-window):not(.tracky-mouse-window) .window-content label {
+.window:not(.edit-colors-window):not(.tracky-mouse-window):not(.save-as) .window-content label {
 	display: inline-flex;
 	flex-direction: row;
 	direction: ltr;

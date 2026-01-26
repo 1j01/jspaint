@@ -32,7 +32,7 @@ interface MessageBoxDialogProps {
 function getIconImage(icon: MessageBoxIcon): string {
   switch (icon) {
     case "question":
-      return "/images/info-32x32-8bpp.png"; // Use info icon for questions
+      return "/images/question-32x32-8bpp.png";
     case "warning":
       return "/images/warning-32x32-8bpp.png";
     case "error":
