@@ -93,51 +93,23 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			if (!canvas) return false;
 
 			const curve = curveState.current;
-			const color = getDrawColor(button);
-
-			// Detect double-click
+			const color = getDrawColor(curve.active ? curve.button : button);
 			const now = Date.now();
-			const dx = x - lastClickRef.current.x;
-			const dy = y - lastClickRef.current.y;
-			const dt = now - lastClickRef.current.time;
-			const distance = Math.sqrt(dx * dx + dy * dy);
-			const isDoubleClick = distance < 4 && dt < 250;
 
 			if (!curve.active) {
 				// First point - save canvas state
 				curve.previewImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				curve.active = true;
 				curve.button = button; // Store button for preview
-				curve.points = [
-					{ x, y },
-					{ x, y },
-				]; // Start + end point
-				saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
+				curve.points = [{ x, y }]; // Start point only; end point is set on the second click
+				void saveState(ctx.getImageData(0, 0, canvas.width, canvas.height));
 				lastClickRef.current = { x, y, time: now };
 				return true;
 			} else if (curve.points.length < 4) {
-				// Double-click commits the curve early (straight line if < 4 points)
-				if (isDoubleClick && curve.points.length >= 2) {
-					if (curve.previewImageData) {
-						ctx.putImageData(curve.previewImageData, 0, 0);
-					}
-					// Draw line from start to end
-					const p = curve.points;
-					ctx.strokeStyle = color;
-					ctx.lineWidth = lineWidth;
-					ctx.beginPath();
-					ctx.moveTo(p[0].x, p[0].y);
-					ctx.lineTo(p[1].x, p[1].y);
-					ctx.stroke();
-					// Reset curve state
-					curve.points = [];
-					curve.active = false;
-					curve.previewImageData = null;
-					lastClickRef.current = { x: -Infinity, y: -Infinity, time: -Infinity };
-					return false;
-				}
-
-				// Add control point
+				// Stage progression:
+				// 1 point: set end point
+				// 2 points: set first control point
+				// 3 points: set second control point and commit
 				curve.points.push({ x, y });
 				lastClickRef.current = { x, y, time: now };
 
@@ -172,7 +144,7 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 	const previewCurve = useCallback(
 		(x: number, y: number, ctx: CanvasRenderingContext2D): void => {
 			const curve = curveState.current;
-			if (!curve.active || !curve.previewImageData || curve.points.length < 2) return;
+			if (!curve.active || !curve.previewImageData || curve.points.length < 1) return;
 
 			ctx.putImageData(curve.previewImageData, 0, 0);
 			const p = curve.points;
@@ -180,16 +152,16 @@ export function useCanvasCurvePolygon({ canvasRef, getDrawColor }: UseCanvasCurv
 			ctx.lineWidth = lineWidth;
 			ctx.beginPath();
 
-			if (curve.points.length === 2) {
-				// Just a line from start to end, following mouse for end point
-				ctx.moveTo(p[0].x, p[0].y);
+			ctx.moveTo(p[0].x, p[0].y);
+			if (curve.points.length === 1) {
+				// Setting end point: preview straight line
 				ctx.lineTo(x, y);
-				// Update the end point
-				curve.points[1] = { x, y };
-			} else if (curve.points.length === 3) {
-				// One control point
-				ctx.moveTo(p[0].x, p[0].y);
+			} else if (curve.points.length === 2) {
+				// First bend: preview quadratic curve with control at cursor
 				ctx.quadraticCurveTo(x, y, p[1].x, p[1].y);
+			} else if (curve.points.length === 3) {
+				// Second bend: preview bezier curve with first control fixed and second at cursor
+				ctx.bezierCurveTo(p[2].x, p[2].y, x, y, p[1].x, p[1].y);
 			}
 			ctx.stroke();
 		},

@@ -239,3 +239,59 @@ test.describe("Airbrush Tool", () => {
 		expect(hasContentAfter).toBe(true);
 	});
 });
+
+test.describe("Curve Tool", () => {
+	test.beforeEach(async ({ page }) => {
+		// Clear IndexedDB to ensure clean state
+		await page.goto("");
+		await page.evaluate(async () => {
+			const dbs = await window.indexedDB.databases();
+			for (const db of dbs) {
+				if (db.name) window.indexedDB.deleteDatabase(db.name);
+			}
+		});
+		await page.reload();
+		await waitForAppLoaded(page);
+	});
+
+	test("curve tool allows 4-click bezier curve", async ({ page }) => {
+		// Select curve tool (index 11)
+		await selectToolByIndex(page, 11);
+
+		// Verify canvas is initially white
+		const hasContentBefore = await canvasHasContent(page);
+		expect(hasContentBefore).toBe(false);
+
+		// Click 1: Start
+		await drawOnCanvas(page, {
+			start: { x: 0.1, y: 0.5 },
+			end: { x: 0.1, y: 0.5 }, // Click in place
+			steps: 1
+		});
+
+		// Click 2: End (drawing line)
+		await drawOnCanvas(page, {
+			start: { x: 0.9, y: 0.5 },
+			end: { x: 0.9, y: 0.5 }, 
+			steps: 1
+		});
+
+		// Click 3: Control 1
+		await drawOnCanvas(page, {
+			start: { x: 0.3, y: 0.2 }, // Upper left control
+			end: { x: 0.3, y: 0.2 },
+			steps: 1
+		});
+
+		// Click 4: Control 2
+		await drawOnCanvas(page, {
+			start: { x: 0.7, y: 0.8 }, // Lower right control
+			end: { x: 0.7, y: 0.8 },
+			steps: 1
+		});
+
+		// Verify curve was drawn (and committed)
+		const hasContentAfter = await canvasHasContent(page);
+		expect(hasContentAfter).toBe(true);
+	});
+});
