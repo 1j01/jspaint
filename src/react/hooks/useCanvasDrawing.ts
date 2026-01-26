@@ -1,10 +1,10 @@
-import { useCallback, RefObject } from "react";
+import { RefObject, useCallback } from "react";
+import { TOOL_IDS } from "../context/state/types";
 import { useBrushSettings } from "../context/state/useBrushSettings";
 import { useColors } from "../context/state/useColors";
-import { useTool } from "../context/state/useTool";
 import { useMagnification } from "../context/state/useMagnification";
-import { TOOL_IDS } from "../context/state/types";
-import { bresenhamLine, getBrushPoints, sprayAirbrush, floodFill, BrushShape } from "../utils/drawingUtils";
+import { useTool } from "../context/state/useTool";
+import { bresenhamLine, BrushShape, floodFill, getBrushPoints, sprayAirbrush } from "../utils/drawingUtils";
 
 /**
  * Hook for core canvas drawing operations
@@ -96,10 +96,14 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 
 			// When magnification != 1, CSS transform: scale() is applied with transform-origin: top left
 			// The click position is in screen space (scaled), so we divide by magnification to get canvas coords
-			return {
+			// When magnification != 1, CSS transform: scale() is applied with transform-origin: top left
+			// The click position is in screen space (scaled), so we divide by magnification to get canvas coords
+			const coords = {
 				x: Math.floor((e.clientX - rect.left) / magnification),
 				y: Math.floor((e.clientY - rect.top) / magnification),
 			};
+			console.log('[Debug] getCanvasCoords', { clientX: e.clientX, clientY: e.clientY, rectLeft: rect.left, rectTop: rect.top, magnification, res: coords });
+			return coords;
 		},
 		[canvasRef, magnification],
 	);
@@ -126,6 +130,8 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			ctx.globalCompositeOperation = 'source-over';
 			ctx.globalAlpha = 1;
 			ctx.fillStyle = color;
+
+			console.log('[Debug] drawPoint', { x, y, color, size, shape, ctxFillStyle: ctx.fillStyle });
 
 			if (size <= 1) {
 				ctx.fillRect(x, y, 1, 1);

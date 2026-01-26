@@ -8,11 +8,11 @@
 import { RefObject, useCallback } from "react";
 import { TOOL_IDS } from "../context/state/types";
 import { MAGNIFICATION_LEVELS, TOOL_NAMES } from "../utils/canvasHelpers";
+import type { useCanvasCurvePolygon } from "./useCanvasCurvePolygon";
 import type { useCanvasDrawing } from "./useCanvasDrawing";
 import type { useCanvasSelection } from "./useCanvasSelection";
-import type { useCanvasTextBox } from "./useCanvasTextBox";
 import type { useCanvasShapes } from "./useCanvasShapes";
-import type { useCanvasCurvePolygon } from "./useCanvasCurvePolygon";
+import type { useCanvasTextBox } from "./useCanvasTextBox";
 
 interface UseCanvasEventHandlersParams {
 	canvasRef: RefObject<HTMLCanvasElement>;
@@ -103,6 +103,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
+					console.log('[Debug] PENCIL down', { x, y, color, size });
 					drawing.drawPoint(ctx, x, y, color, size);
 					shapes.drawingState.current = {
 						...shapes.drawingState.current,

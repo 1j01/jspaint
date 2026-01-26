@@ -6,6 +6,16 @@ const { chromium } = require("playwright");
 	const page = await browser.newPage();
 	await page.goto(url, { waitUntil: "networkidle" });
 
+	// Attach a simple event probe in the page context
+	await page.evaluate(() => {
+		window.__mcpaintProbe = { pointerDown: 0, pointerMove: 0 };
+		const c = document.querySelector("canvas.main-canvas");
+		if (c) {
+			c.addEventListener("pointerdown", () => window.__mcpaintProbe.pointerDown++);
+			c.addEventListener("pointermove", () => window.__mcpaintProbe.pointerMove++);
+		}
+	});
+
 	const canvas = page.locator("canvas.main-canvas");
 	await canvas.waitFor({ state: "visible" });
 
@@ -26,7 +36,7 @@ const { chromium } = require("playwright");
 		);
 	};
 
-	const before = await sample(10, 10);
+	const before = await sample(20, 20);
 	console.log("pixel before", before);
 
 	const startX = box.x + 20;
@@ -36,7 +46,10 @@ const { chromium } = require("playwright");
 	await page.mouse.move(startX + 50, startY, { steps: 10 });
 	await page.mouse.up();
 
-	const after = await sample(10, 10);
+	const probe = await page.evaluate(() => window.__mcpaintProbe || null);
+	console.log("event probe", probe);
+
+	const after = await sample(20, 20);
 	console.log("pixel after", after);
 
 	await page.screenshot({ path: "playwright-draw-check.png", fullPage: true });
