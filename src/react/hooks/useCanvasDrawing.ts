@@ -162,6 +162,9 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			size: number,
 			shape: BrushShape = "circle",
 		): void => {
+			// Ensure correct drawing mode (some tools temporarily change these)
+			ctx.globalCompositeOperation = "source-over";
+			ctx.globalAlpha = 1;
 			ctx.fillStyle = color;
 
 			if (size <= 1) {
