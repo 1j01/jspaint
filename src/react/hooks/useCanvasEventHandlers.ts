@@ -103,7 +103,6 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
 
 			switch (selectedToolId) {
 				case TOOL_IDS.PENCIL:
-					console.log('[Debug] PENCIL down', { x, y, color, size });
 					drawing.drawPoint(ctx, x, y, color, size);
 					shapes.drawingState.current = {
 						...shapes.drawingState.current,

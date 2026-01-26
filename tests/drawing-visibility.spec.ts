@@ -8,6 +8,12 @@ test.describe("Drawing Visibility", () => {
 		await page.goto("");
 		await waitForAppLoaded(page);
 		
+		// DEBUG: Listen to all pointer events on window
+		await page.evaluate(() => {
+			window.addEventListener('pointerdown', (e) => console.log('[Window] pointerdown', e.target), { capture: true });
+			window.addEventListener('mousedown', (e) => console.log('[Window] mousedown', e.target), { capture: true });
+		});
+
 		// Select pencil tool explicitly
 		await page.click('.tool[title="Pencil"]');
 
@@ -29,9 +35,10 @@ test.describe("Drawing Visibility", () => {
 
 		// 2. Draw a black line across the center
 		// Assuming default tool is Pencil and color is Black
+		// Helper expects normalized coordinates (0-1)
 		await drawOnCanvas(page, {
-			start: { x: 50, y: 192 }, // Middle of 384 height
-			end: { x: 450, y: 192 },
+			start: { x: 50 / 512, y: 192 / 384 }, // Middle of 384 height
+			end: { x: 450 / 512, y: 192 / 384 },
 			steps: 20
 		});
 

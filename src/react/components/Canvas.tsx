@@ -280,6 +280,8 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 		[canvasRef, canvasWidth, canvasHeight, setCanvasSize, saveHistoryState],
 	);
 
+
+
 	// Compute canvas style (cursor and magnification transform)
 	const canvasStyle = getCanvasStyle(selectedToolId, magnification);
 
@@ -291,12 +293,7 @@ export function Canvas({ canvasRef, className = "" }: { canvasRef: React.RefObje
 				width={canvasWidth}
 				height={canvasHeight}
 				style={canvasStyle}
-				onPointerDown={async (e) => {
-					console.log('[Canvas] inline onPointerDown');
-					eventHandlers.handlePointerDown(e);
-				}}
-				onMouseDown={() => console.log('[Canvas] inline onMouseDown')}
-				onPointerDownCapture={() => console.log('[Canvas] inline onPointerDownCapture')}
+				onPointerDown={eventHandlers.handlePointerDown}
 				onPointerMove={eventHandlers.handlePointerMove}
 				onPointerUp={eventHandlers.handlePointerUp}
 				onPointerLeave={(e) => {

@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef, CSSProperties, ReactNode } from "react";
-import { DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT } from "../constants/canvas";
+import { CSSProperties, ReactNode, useEffect, useMemo, useRef } from "react";
 import "../../../lib/os-gui/MenuBar.js";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../constants/canvas";
 
 // Declare global types for os-gui MenuBar
 declare global {
