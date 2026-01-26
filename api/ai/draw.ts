@@ -110,16 +110,50 @@ function sseEvent(type: string, data: unknown): string {
 }
 
 export default async function handler(request: Request): Promise<Response> {
+	// Handle CORS preflight
+	if (request.method === "OPTIONS") {
+		return new Response(null, {
+			status: 200,
+			headers: {
+				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Methods": "POST, OPTIONS",
+				"Access-Control-Allow-Headers": "Content-Type",
+			},
+		});
+	}
+
 	// Only allow POST
 	if (request.method !== "POST") {
-		return new Response("Method not allowed", { status: 405 });
+		return new Response(JSON.stringify({ error: "Method not allowed" }), {
+			status: 405,
+			headers: { "Content-Type": "application/json" },
+		});
 	}
 
 	// Get API key from environment
 	const apiKey = process.env.ANTHROPIC_API_KEY;
 	if (!apiKey) {
+		console.error("[AI API] ANTHROPIC_API_KEY environment variable is not set");
 		return new Response(
-			JSON.stringify({ error: "API key not configured" }),
+			JSON.stringify({
+				error: "API key not configured",
+				details: "The ANTHROPIC_API_KEY environment variable is not set. Please add it in your Vercel project settings."
+			}),
+			{
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			}
+		);
+	}
+
+	// Validate API key format (should start with sk-ant-)
+	if (!apiKey.startsWith("sk-ant-")) {
+		console.error("[AI API] ANTHROPIC_API_KEY has invalid format");
+		return new Response(
+			JSON.stringify({
+				error: "Invalid API key format",
+				details: "The ANTHROPIC_API_KEY should start with 'sk-ant-'. Please check your Vercel environment variables."
+			}),
 			{
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -130,7 +164,8 @@ export default async function handler(request: Request): Promise<Response> {
 	let body: RequestBody;
 	try {
 		body = await request.json();
-	} catch {
+	} catch (e) {
+		console.error("[AI API] Invalid JSON in request body:", e);
 		return new Response(JSON.stringify({ error: "Invalid JSON" }), {
 			status: 400,
 			headers: { "Content-Type": "application/json" },
@@ -191,6 +226,7 @@ CURRENT CANVAS STATE:
 
 				if (!response.ok) {
 					const errorText = await response.text();
+					console.error("[AI API] Claude API error:", response.status, errorText);
 					controller.enqueue(
 						encoder.encode(
 							sseEvent("error", {
@@ -320,6 +356,7 @@ CURRENT CANVAS STATE:
 				);
 				controller.close();
 			} catch (error) {
+				console.error("[AI API] Stream error:", error);
 				controller.enqueue(
 					encoder.encode(
 						sseEvent("error", {
@@ -340,7 +377,8 @@ CURRENT CANVAS STATE:
 		headers: {
 			"Content-Type": "text/event-stream",
 			"Cache-Control": "no-cache",
-			Connection: "keep-alive",
+			"Connection": "keep-alive",
+			"Access-Control-Allow-Origin": "*",
 		},
 	});
 }
