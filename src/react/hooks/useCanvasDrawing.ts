@@ -102,7 +102,6 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 				x: Math.floor((e.clientX - rect.left) / magnification),
 				y: Math.floor((e.clientY - rect.top) / magnification),
 			};
-			console.log('[Debug] getCanvasCoords', { clientX: e.clientX, clientY: e.clientY, rectLeft: rect.left, rectTop: rect.top, magnification, res: coords });
 			return coords;
 		},
 		[canvasRef, magnification],
@@ -130,8 +129,6 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 			ctx.globalCompositeOperation = 'source-over';
 			ctx.globalAlpha = 1;
 			ctx.fillStyle = color;
-
-			console.log('[Debug] drawPoint', { x, y, color, size, shape, ctxFillStyle: ctx.fillStyle });
 
 			if (size <= 1) {
 				ctx.fillRect(x, y, 1, 1);

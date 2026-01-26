@@ -1,4 +1,4 @@
-import { forwardRef, CSSProperties } from "react";
+import { CSSProperties, forwardRef } from "react";
 
 /**
  * Props for CanvasOverlay component

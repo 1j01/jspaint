@@ -296,11 +296,15 @@ body.dragging iframe {
         pointer-events: none;
 }
 
-/* Ensure canvas always has white background */
+/* Ensure main canvas has white background */
+/* (Overlay canvases must stay transparent so they don't cover the drawing layer.) */
 /* More specific selector to override theme checkerboard pattern */
-.canvas-area > canvas.main-canvas,
+.canvas-area > canvas.main-canvas {
+        background-color: white !important;
+}
+
 .canvas-area > .helper-layer > canvas {
-	background-color: white !important;
+        background-color: transparent !important;
 }
 
 /* Ensure proper z-index stacking order for canvas layers */

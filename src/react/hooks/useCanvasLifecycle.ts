@@ -60,7 +60,7 @@
 
 import { RefObject, useEffect } from "react";
 import { useHistoryStore } from "../context/state/historyStore";
-import { saveSetting, loadSetting } from "../context/state/persistence";
+import { loadSetting, saveSetting } from "../context/state/persistence";
 
 /**
  * Module-level flag to track canvas initialization.
@@ -249,19 +249,34 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 				if (persistedCanvas) {
 					// Check if dimensions match
 					if (persistedCanvas.width === canvas.width && persistedCanvas.height === canvas.height) {
-						console.log('[Lifecycle] Restoring from IndexedDB');
-						ctx.putImageData(persistedCanvas, 0, 0);
-						canvasInitialized = true;
-
-						// Initialize history tree with persisted canvas
-						if (!historyTreeInitialized) {
-							const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-							useHistoryStore.getState().pushState(imageData, "Restored Document");
-							historyTreeInitialized = true;
+						// VALIDATION: Check if the persisted canvas is valid (not fully transparent)
+						// This fixes the bug where a previously saved corrupted state (transparent)
+						// would be restored, preventing the white background initialization.
+						let isValidContent = false;
+						for (let i = 3; i < persistedCanvas.data.length; i += 4) {
+							if (persistedCanvas.data[i] !== 0) {
+								isValidContent = true;
+								break;
+							}
 						}
-						return;
+
+						if (isValidContent) {
+							console.log('[Lifecycle] Restoring from IndexedDB');
+							ctx.putImageData(persistedCanvas, 0, 0);
+							canvasInitialized = true;
+
+							// Initialize history tree with persisted canvas
+							if (!historyTreeInitialized) {
+								const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+								useHistoryStore.getState().pushState(imageData, "Restored Document");
+								historyTreeInitialized = true;
+							}
+							return;
+						} else {
+							console.log('[Lifecycle] Persisted canvas is fully transparent (invalid), skipping restore');
+						}
 					}
-					// If dimensions don't match, fall through to white background initialization
+					// If dimensions don't match or content is invalid, fall through to white background initialization
 				}
 			}
 
@@ -302,9 +317,14 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 		// See top-of-file documentation for detailed explanation.
 		return () => {
 			console.log('[Lifecycle] Cleanup running');
-			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			savedCanvasData = imageData;
-			console.log('[Lifecycle] Saved to module-level, size:', imageData.width, 'x', imageData.height);
+			// Only save if we actually have valid initialized content
+			if (canvasInitialized) {
+				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				savedCanvasData = imageData;
+				console.log('[Lifecycle] Saved to module-level, size:', imageData.width, 'x', imageData.height);
+			} else {
+				console.log('[Lifecycle] Skipping save - canvas not initialized');
+			}
 			// ❌ DO NOT: saveCanvasToIndexedDB(imageData)
 			// ✅ IndexedDB saving is handled by Canvas.tsx saveHistoryState()
 		};

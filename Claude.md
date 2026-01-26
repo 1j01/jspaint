@@ -6,6 +6,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 MCPaint is a pixel-perfect MS Paint clone web application with both legacy jQuery (`/old/`) and modern React (`/new/`) versions. The React version uses Vite with React Compiler enabled, Zustand for state management, and IndexedDB for persistence. Based on [jspaint.app](https://jspaint.app), it recreates every tool and menu of MS Paint with high fidelity. Deployed on Vercel with Edge Functions for AI features.
 
+## Quick Start
+
+```bash
+npm i                    # Install dependencies
+npm run dev              # Start dev server (http://localhost:1999/new/)
+npm run lint             # Check for errors before committing
+npm run test             # Run Playwright tests
+```
+
+**Access Points:**
+- http://localhost:1999/ - Workspace selector
+- http://localhost:1999/new/ - React app (primary development)
+- http://localhost:1999/old/ - Legacy jQuery app
+- Tests run against http://localhost:11822/new/ (auto-started by Playwright)
+
 ## Commands
 
 ```bash
@@ -14,14 +29,13 @@ npm run dev              # Dev server with CSS watch (starts at port 1999)
 npm run build            # Production build to /dist/
 npm run preview          # Preview production build (port 4173)
 
-# Linting (runs all: cspell, tsc, eslint)
-npm run lint             # Run all linters
-npm run lint-tsc         # TypeScript checking for legacy code
+# Linting
+npm run lint             # Run all linters (cspell, tsc, eslint)
 npm run lint-tsc-react   # TypeScript checking for React code
 npm run lint-eslint      # ESLint only
 npm run format           # Format React code with Prettier
 
-# Testing (Playwright - runs against React app at port 11822)
+# Testing (Playwright)
 npm run test                              # Run all Playwright tests
 npm run test -- tests/tools.spec.ts       # Run single test file
 npm run test -- tests/dialogs/            # Run all dialog tests
@@ -31,16 +45,8 @@ npm run test:ui                           # Open Playwright UI
 npm run test:debug                        # Debug tests
 npm run test:update-snapshots             # Update visual snapshots
 
-# Test organization:
-#   tests/*.spec.ts - Core tool and menu tests
-#   tests/dialogs/  - Dialog-specific tests (about, attributes, flip-rotate, etc.)
-#   tests/tools/    - Tool-specific test helpers
-#   tests/utils/    - Shared test utilities
-
-# Localization
+# Other
 npm run update-localization  # Preprocess Windows .rc files to JSON
-
-# Code statistics
 npm run sloc                 # Compare legacy vs React implementation line counts
 ```
 
@@ -114,7 +120,7 @@ Vite multi-page app (`vite.config.js`) with React Compiler enabled (`babel-plugi
 
 ### AI Integration
 
-Natural language canvas control via Claude API with Server-Sent Events (SSE). See [docs/AI.md](docs/AI.md) for full command specifications.
+Natural language canvas control via Claude API with Server-Sent Events (SSE). See [docs/AI.md](docs/AI.md) for full command specifications (50+ drawing commands).
 
 **Architecture**:
 - `api/ai/draw.ts` - Vercel Edge Function proxying Claude API with tool calling
@@ -122,8 +128,6 @@ Natural language canvas control via Claude API with Server-Sent Events (SSE). Se
 - `src/react/hooks/useCommandExecutor.ts` - Maps AI commands to drawing utilities
 - `src/react/hooks/useAIChat.ts` - Combines store, service, and command execution
 - `src/react/components/ai/` - Chat UI components (AIChatPanel, MessageList, ChatInput)
-
-**50+ Drawing Commands** including pencil, brush, shapes, selection, transforms, canvas operations, color management, and batch operations for complex drawings.
 
 **Environment Variables**:
 ```env
@@ -136,17 +140,20 @@ ANTHROPIC_API_KEY=sk-ant-...  # Required for AI features
 
 Playwright tests run against the React app at `http://localhost:11822/new/`. The test server starts automatically.
 
-**Writing Tests**:
-- Place new tests in `tests/` or `tests/dialogs/` for dialog-specific tests
-- Use helpers from `tests/utils/` (e.g., `canvasUtils.ts` for canvas interactions)
-- Tests support visual snapshots with `toHaveScreenshot()` (max 100 pixel diff allowed)
-- Run `npm run test:update-snapshots` after intentional visual changes
+**Test Organization:**
+- `tests/*.spec.ts` - Core tool and menu tests
+- `tests/dialogs/` - Dialog-specific tests
+- `tests/tools/` - Tool-specific test helpers
+- `tests/utils/` - Shared test utilities (e.g., `canvasUtils.ts` for canvas interactions)
 
-**Test Configuration** (`playwright.config.ts`):
+**Configuration** (`playwright.config.ts`):
 - Chromium only (no Firefox/Safari)
 - 30s test timeout, 10s expect timeout
 - Screenshots/video captured on failure
 - Parallel execution locally, sequential on CI
+- Visual snapshots with `toHaveScreenshot()` (max 100 pixel diff allowed)
+
+Run `npm run test:update-snapshots` after intentional visual changes.
 
 ## Code Conventions
 
@@ -163,22 +170,15 @@ Playwright tests run against the React app at `http://localhost:11822/new/`. The
 - `@/*` → `src/*`
 - `@react/*` → `src/react/*`
 
-## 16 Drawing Tools
+## Drawing Tools
 
-Free-Form Select, Rectangular Select, Eraser, Fill (flood fill), Pick Color (eyedropper), Magnifier (1x-8x zoom), Pencil, Brush, Airbrush, Text, Line (Bresenham), Curve (cubic bezier), Rectangle, Polygon, Ellipse, Rounded Rectangle.
+16 tools: Free-Form Select, Rectangular Select, Eraser, Fill (flood fill), Pick Color (eyedropper), Magnifier (1x-8x zoom), Pencil, Brush, Airbrush, Text, Line (Bresenham), Curve (cubic bezier), Rectangle, Polygon, Ellipse, Rounded Rectangle.
 
 ## Supported Formats
 
 **Images**: PNG (recommended), BMP (mono/16/256/24-bit), TIFF, PDF (read), WebP, GIF, JPEG, SVG (read), ICO (read).
 
-**Palettes**: RIFF PAL, GIMP GPL, Adobe ACO/ASE/ACT, Paint.NET TXT, Paint Shop Pro PAL, CSS/HTML color extraction, and more via [AnyPalette.js](https://github.com/1j01/anypalette.js).
-
-## Access Points
-
-- http://localhost:1999/ - Workspace selector
-- http://localhost:1999/new/ - React app
-- http://localhost:1999/old/ - Legacy jQuery app
-- Tests run against http://localhost:11822/new/ (auto-started by Playwright)
+**Palettes**: RIFF PAL, GIMP GPL, Adobe ACO/ASE/ACT, Paint.NET TXT, Paint Shop Pro PAL, and more via [AnyPalette.js](https://github.com/1j01/anypalette.js).
 
 ## Debugging
 

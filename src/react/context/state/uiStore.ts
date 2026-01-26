@@ -4,7 +4,7 @@
  */
 
 import { create } from "zustand";
-import { saveSetting, loadSetting } from "./persistence";
+import { loadSetting, saveSetting } from "./persistence";
 
 /**
  * Dialog names for all available dialogs in the application

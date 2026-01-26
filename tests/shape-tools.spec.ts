@@ -1,15 +1,23 @@
 import { expect, test } from "@playwright/test";
 import {
-	canvasHasContent,
-	drawOnCanvas,
-	getCanvasDataUrl,
-	selectToolByIndex,
-	waitForAppLoaded,
+    canvasHasContent,
+    drawOnCanvas,
+    getCanvasDataUrl,
+    selectToolByIndex,
+    waitForAppLoaded,
 } from "./utils/test-helpers";
 
 test.describe("Fill Tool", () => {
 	test.beforeEach(async ({ page }) => {
+		// Clear IndexedDB to ensure clean state
 		await page.goto("");
+		await page.evaluate(async () => {
+			const dbs = await window.indexedDB.databases();
+			for (const db of dbs) {
+				if (db.name) window.indexedDB.deleteDatabase(db.name);
+			}
+		});
+		await page.reload();
 		await waitForAppLoaded(page);
 	});
 
@@ -35,7 +43,19 @@ test.describe("Fill Tool", () => {
 
 test.describe("Line Tool", () => {
 	test.beforeEach(async ({ page }) => {
+		// Clear IndexedDB to ensure clean state
 		await page.goto("");
+		await page.evaluate(async () => {
+			const dbs = await window.indexedDB.databases();
+			for (const db of dbs) {
+				if (db.name) window.indexedDB.deleteDatabase(db.name);
+			}
+		});
+		await page.reload();
+		
+		// Capture console logs for debugging
+		page.on('console', msg => console.log(`[Browser] ${msg.text()}`));
+		
 		await waitForAppLoaded(page);
 	});
 
@@ -61,7 +81,19 @@ test.describe("Line Tool", () => {
 
 test.describe("Rectangle Tool", () => {
 	test.beforeEach(async ({ page }) => {
+		// Clear IndexedDB to ensure clean state
 		await page.goto("");
+		await page.evaluate(async () => {
+			const dbs = await window.indexedDB.databases();
+			for (const db of dbs) {
+				if (db.name) window.indexedDB.deleteDatabase(db.name);
+			}
+		});
+		await page.reload();
+		
+		// Capture console logs for debugging
+		page.on('console', msg => console.log(`[Browser] ${msg.text()}`));
+		
 		await waitForAppLoaded(page);
 	});
 
@@ -87,7 +119,19 @@ test.describe("Rectangle Tool", () => {
 
 test.describe("Ellipse Tool", () => {
 	test.beforeEach(async ({ page }) => {
+		// Clear IndexedDB to ensure clean state
 		await page.goto("");
+		await page.evaluate(async () => {
+			const dbs = await window.indexedDB.databases();
+			for (const db of dbs) {
+				if (db.name) window.indexedDB.deleteDatabase(db.name);
+			}
+		});
+		await page.reload();
+		
+		// Capture console logs for debugging
+		page.on('console', msg => console.log(`[Browser] ${msg.text()}`));
+		
 		await waitForAppLoaded(page);
 	});
 
@@ -113,7 +157,19 @@ test.describe("Ellipse Tool", () => {
 
 test.describe("Pick Color Tool", () => {
 	test.beforeEach(async ({ page }) => {
+		// Clear IndexedDB to ensure clean state
 		await page.goto("");
+		await page.evaluate(async () => {
+			const dbs = await window.indexedDB.databases();
+			for (const db of dbs) {
+				if (db.name) window.indexedDB.deleteDatabase(db.name);
+			}
+		});
+		await page.reload();
+		
+		// Capture console logs for debugging
+		page.on('console', msg => console.log(`[Browser] ${msg.text()}`));
+		
 		await waitForAppLoaded(page);
 	});
 
@@ -148,7 +204,19 @@ test.describe("Pick Color Tool", () => {
 
 test.describe("Airbrush Tool", () => {
 	test.beforeEach(async ({ page }) => {
+		// Clear IndexedDB to ensure clean state
 		await page.goto("");
+		await page.evaluate(async () => {
+			const dbs = await window.indexedDB.databases();
+			for (const db of dbs) {
+				if (db.name) window.indexedDB.deleteDatabase(db.name);
+			}
+		});
+		await page.reload();
+		
+		// Capture console logs for debugging
+		page.on('console', msg => console.log(`[Browser] ${msg.text()}`));
+		
 		await waitForAppLoaded(page);
 	});
 
