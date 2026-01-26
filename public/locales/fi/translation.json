@@ -271,6 +271,8 @@
 	"File last saved:": "Viimeisin tallennus:",
 	"Not Available": "Ei tietoa",
 	"Size on disk:": "Koko levylle tallennettuna:",
+	"Resolution:": "Tarkkuus:",
+	"dots per inch": "pistettä tuumalla",
 	"%s bytes": "%s tavua",
 	"Painting": "Maalaus",
 	"Fonts": "Fontit",

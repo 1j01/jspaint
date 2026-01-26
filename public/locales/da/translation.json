@@ -259,6 +259,8 @@
 	"File last saved:": "Filen blev sidst gemt:",
 	"Not Available": "Ikke tilgængelig",
 	"Size on disk:": "Størrelse på disk:",
+	"Resolution:": "Opløsning:",
+	"dots per inch": "punkter pr. tomme",
 	"%s bytes": "%s byte",
 	"Painting": "Maler",
 	"Fonts": "Skrifttyper",

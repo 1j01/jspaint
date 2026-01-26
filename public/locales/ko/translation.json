@@ -279,6 +279,8 @@
 	"File last saved:": "마지막으로 저장된 파일:",
 	"Not Available": "사용할 수 없음",
 	"Size on disk:": "디스크 크기:",
+	"Resolution:": "해상도:",
+	"dots per inch": "인치당 도트 수",
 	"Painting": "페인팅",
 	"Bitmap": "비트맵",
 	"Fonts": "글꼴 크기",

@@ -272,6 +272,8 @@
 	"File last saved:": "Son kayıt tarihi:",
 	"Not Available": "Kullanım dışı",
 	"Size on disk:": "Diskteki boyutu:",
+	"Resolution:": "Çözünürlük:",
+	"dots per inch": "inç başına nokta",
 	"%s bytes": "%s bayt",
 	"Painting": "Boyama",
 	"Fonts": "Yazıtipleri",

@@ -280,6 +280,8 @@
 	"File last saved:": "上次保存的文件:",
 	"Not Available": "无法使用",
 	"Size on disk:": "磁盘大小:",
+	"Resolution:": "分辨率:",
+	"dots per inch": "每英寸点数",
 	"%s bytes": "%s 字节",
 	"Painting": "画图",
 	"Bitmap": "位图",

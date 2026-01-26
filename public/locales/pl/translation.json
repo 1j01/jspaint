@@ -261,6 +261,8 @@
 	"File last saved:": "Ostatnie zapisanie pliku:",
 	"Not Available": "Niedostępne",
 	"Size on disk:": "Rozmiar na dysku:",
+	"Resolution:": "Rozdzielczość:",
+	"dots per inch": "punktów na cal",
 	"%s bytes": "%s bajtów",
 	"Painting": "Malowanie",
 	"Fonts": "Czcionki",

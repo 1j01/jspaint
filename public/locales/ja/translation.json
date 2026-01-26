@@ -279,6 +279,8 @@
 	"File last saved:": "ファイルの最終保存:",
 	"Not Available": "利用できません",
 	"Size on disk:": "ディスク上のサイズ:",
+	"Resolution:": "解像度:",
+	"dots per inch": "ドット/インチ",
 	"%s bytes": "%s バイト",
 	"Painting": "絵",
 	"Bitmap": "ビットマップ",

@@ -264,6 +264,8 @@
 	"File last saved:": "הקובץ נשמר לאחרונה:",
 	"Not Available": "לא זמין",
 	"Size on disk:": "גודל בדיסק:",
+	"Resolution:": "רזולוציה:",
+	"dots per inch": "נקודות לאינץ׳",
 	"%s bytes": "%s בתים",
 	"Painting": "ציור",
 	"Bitmap": "מפת סיביות",

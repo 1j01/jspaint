@@ -271,6 +271,8 @@
 	"Save Colors": "Lagre farger",
 	"File last saved:": "Fil sist lagret:",
 	"Size on disk:": "Størrelse på disk:",
+	"Resolution:": "Oppløsning:",
+	"dots per inch": "punkter per tomme",
 	"Not Available": "Ikke tilgjengelig",
 	"%s bytes": "%s byte",
 	"Painting": "Maleri",

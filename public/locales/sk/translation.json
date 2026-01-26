@@ -261,6 +261,8 @@
 	"Save Colors": "Uložiť farby",
 	"File last saved:": "Posledné uloženie súboru: Nie je k dispozícii",
 	"Size on disk:": "Veľkosť disku: Nie je k dispozícii",
+	"Resolution:": "Rozlíšenie:",
+	"dots per inch": "bodov na palec",
 	"%s bytes": "%s bajtov",
 	"Painting": "Maľovať",
 	"Fonts": "Písma",

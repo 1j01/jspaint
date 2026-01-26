@@ -263,6 +263,8 @@
 	"File last saved:": "Τελευταία αποθήκευση:",
 	"Not Available": "Μη διαθέσιμη",
 	"Size on disk:": "Μέγεθος στο δίσκο:",
+	"Resolution:": "Ανάλυση:",
+	"dots per inch": "κουκκίδες ανά ίντσα",
 	"%s bytes": "%s byte",
 	"Painting": "Χρωματισμός",
 	"Fonts": "Γραμματοσειρές",

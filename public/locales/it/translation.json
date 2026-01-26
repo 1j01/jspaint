@@ -275,6 +275,8 @@
 	"File last saved:": "Ultimo salvataggio:",
 	"Not Available": "Non disponibile",
 	"Size on disk:": "Dimensioni su disco:",
+	"Resolution:": "Risoluzione:",
+	"dots per inch": "punti per pollice",
 	"%s bytes": "%s byte",
 	"Painting": "Disegno in corso",
 	"Fonts": "Tipi di carattere",

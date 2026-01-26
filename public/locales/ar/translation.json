@@ -262,6 +262,8 @@
 	"File last saved:": "‏‏آخر حفظ للملف:",
 	"Not Available": "غير متوفر",
 	"Size on disk:": "‏‏الحجم على القرص:",
+	"Resolution:": "الدقة:",
+	"dots per inch": "نقطة في البوصة",
 	"%s bytes": "%s بايت",
 	"Painting": "‏‏الرسم",
 	"Bitmap": "‏‏صورة نقطية",

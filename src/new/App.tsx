@@ -264,6 +264,7 @@ function AppContent() {
     t("&Help"),
     // Include some frequently-missed submenu labels so the menu refreshes
     // when translation resources arrive after the initial render.
+    t("&History"),
     t("Zoom To &Window"),
     t("&Fullscreen"),
     t("Crop To Se&lection"),

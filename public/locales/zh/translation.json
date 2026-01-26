@@ -280,6 +280,8 @@
 	"File last saved:": "上次儲存的檔案:",
 	"Not Available": "無法使用",
 	"Size on disk:": "磁碟大小:",
+	"Resolution:": "解析度:",
+	"dots per inch": "每英吋點數",
 	"%s bytes": "%s 位元組",
 	"Painting": "繪圖中",
 	"Bitmap": "點陣圖",

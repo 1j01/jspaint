@@ -262,6 +262,8 @@
 	"File last saved:": "Zadnjič shranjeno:",
 	"Not Available": "ni na voljo",
 	"Size on disk:": "Velikost na disku:",
+	"Resolution:": "Ločljivost:",
+	"dots per inch": "pik na palec",
 	"%s bytes": "%sB",
 	"Painting": "Slikanje",
 	"Fonts": "Pisave",
