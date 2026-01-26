@@ -121,25 +121,28 @@ body {
 }
 
 /* Airbrush chooser - 3 spray pattern options stacked vertically */
-/* Each option ~24px wide × 23px tall, displayed in column to fit 41px container */
-.choose-airbrush-size {
+/* Each option scaled to ~20x20px to fit in 41x66px tool-options container */
+.tool-options .choose-airbrush-size {
         display: flex;
-        flex-flow: column;
+        flex-flow: column !important; /* Override layout.css row wrap */
         width: 100%;
-        max-width: 39px;
+        height: 100%;
         align-items: center;
         justify-content: space-around;
+        gap: 1px;
 }
 
-.choose-airbrush-size .chooser-option {
+.tool-options .choose-airbrush-size .chooser-option {
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        padding: 1px;
 }
 
-.choose-airbrush-size .chooser-option canvas {
+.tool-options .choose-airbrush-size .chooser-option canvas {
         display: block;
+        image-rendering: pixelated;
 }
 
 .tool-options-section {
