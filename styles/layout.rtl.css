@@ -608,8 +608,23 @@ whereas it breaks component docking calculations if used to shift the colors box
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
+.save-as .window-content > form {
+	display: flex;
+	flex-direction: row;
+}
+.save-as .window-content > form > div:first-child {
+	flex: 1;
+}
+.save-as .window-content > form > .button-group {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	padding-right: 10px;
+	padding-left: 5px;
+}
 .save-as .button-group button {
-	margin: 5px;
+	min-width: 75px;
+	margin: 5px 0;
 }
 
 .font-box {
