@@ -192,9 +192,10 @@ export const TOOL_NAMES: Record<string, string> = {
  * @returns CSS style object for canvas element
  */
 export function getCanvasStyle(selectedToolId: string, magnification: number): React.CSSProperties {
+	const shouldScale = Number.isFinite(magnification) && magnification !== 1;
 	return {
 		cursor: getCursorForTool(selectedToolId),
-		transform: magnification > 1 ? `scale(${magnification})` : undefined,
-		transformOrigin: magnification > 1 ? "top left" : undefined,
+		transform: shouldScale ? `scale(${magnification})` : undefined,
+		transformOrigin: shouldScale ? "top left" : undefined,
 	};
 }

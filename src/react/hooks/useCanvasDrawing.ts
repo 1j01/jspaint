@@ -94,7 +94,7 @@ export function useCanvasDrawing(canvasRef: RefObject<HTMLCanvasElement | null>)
 
 			const rect = canvas.getBoundingClientRect();
 
-			// When magnification > 1, CSS transform: scale() is applied with transform-origin: top left
+			// When magnification != 1, CSS transform: scale() is applied with transform-origin: top left
 			// The click position is in screen space (scaled), so we divide by magnification to get canvas coords
 			return {
 				x: Math.floor((e.clientX - rect.left) / magnification),

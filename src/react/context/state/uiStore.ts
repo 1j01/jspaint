@@ -221,8 +221,10 @@ export const useUIStore = create<UIState>((set, get) => ({
 	},
 
 	setMagnification: (mag) => {
-		set({ magnification: mag });
-		saveSetting("magnification", mag);
+		// Support both zoom-in and zoom-out, but prevent invalid values (0/NaN/Infinity)
+		const normalized = Number.isFinite(mag) ? Math.min(8, Math.max(0.1, mag)) : 1;
+		set({ magnification: normalized });
+		saveSetting("magnification", normalized);
 	},
 
 	setCursorPosition: (position) => {
@@ -252,7 +254,10 @@ export const useUIStore = create<UIState>((set, get) => ({
 		const showGrid = await loadSetting("showGrid", false);
 		const showThumbnail = await loadSetting("showThumbnail", false);
 		const showAIPanel = await loadSetting("showAIPanel", true);
-		const magnification = await loadSetting("magnification", 1);
+		const rawMagnification = await loadSetting<unknown>("magnification", 1);
+		const magnification = typeof rawMagnification === "number" && Number.isFinite(rawMagnification)
+			? Math.min(8, Math.max(0.1, rawMagnification))
+			: 1;
 
 		set({
 			showToolBox,
