@@ -349,6 +349,7 @@
 	"Failed to open document.": "Dokument se nepodařilo otevřít.",
 	"Failed to save document.": "Dokument se nepodařilo uložit.",
 	"Save changes to %1?": "Chcete uložit změny v dokumentu %1?",
+	"Save changes to {{filename}}?": "Chcete uložit změny v dokumentu {{filename}}?",
 	"Failed to create empty document.": "Nepodařilo se vytvořit prázdný dokument.",
 	"The file is too large to open.": "Soubor je pro otevření příliš veliký.",
 	"Could not start print job.": "Tiskovou úlohu nelze zahájit.",
@@ -609,8 +610,7 @@
 	"Hide AI panel": "Skrýt AI panel",
 	"Ask the AI to draw something!": "Požádejte AI, aby něco nakreslila!",
 	"Try: \"Draw a red circle\" or \"Fill the canvas with blue\"": "Zkuste: \"Nakresli červený kruh\" nebo \"Vyplň plátno modrou\"",
-	"Describe what you want to draw...": "Popište, co chcete nakreslit..."
-,
+	"Describe what you want to draw...": "Popište, co chcete nakreslit...",
 	"Tiles this bitmap as the desktop background.": "Nastaví tento bitmapový obrázek dlaždicově jako pozadí plochy.",
 	"Centers this bitmap as the desktop background.": "Nastaví tento bitmapový obrázek jako pozadí plochy na střed.",
 	"Shows or hides the AI assistant panel.": "Zobrazí nebo skryje panel asistenta AI.",
