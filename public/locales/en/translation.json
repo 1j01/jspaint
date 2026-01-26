@@ -355,5 +355,9 @@
 	"Using {{count}} font_one": "Using {{count}} font.",
 	"Using {{count}} font_other": "Using {{count}} fonts.",
 	"Font family": "Font family",
-	"Font size": "Font size"
+	"Font size": "Font size",
+
+	"Paint": "Paint",
+	"Save changes to {{filename}}?": "Save changes to {{filename}}?",
+	"Untitled": "Untitled"
 }

@@ -616,5 +616,8 @@
 	"Executing command {{current}} of {{total}}...": "Exécution de la commande {{current}} sur {{total}}...",
 	"Tiles this bitmap as the desktop background.": "Mosaïque ce bitmap comme arrière-plan du bureau.",
 	"Centers this bitmap as the desktop background.": "Centre ce bitmap comme arrière-plan du bureau.",
-	"Shows or hides the AI assistant panel.": "Affiche ou masque le panneau de l’assistant IA."
+	"Shows or hides the AI assistant panel.": "Affiche ou masque le panneau de l'assistant IA.",
+	"Paint": "Paint",
+	"Save changes to {{filename}}?": "Enregistrer les modifications de {{filename}} ?",
+	"Untitled": "Sans titre"
 }

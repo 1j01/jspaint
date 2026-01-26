@@ -348,8 +348,8 @@ function AppContent() {
       <MessageBoxDialog
         isOpen={showNewConfirm}
         onClose={dialogHandlers.handleNewConfirm}
-        title="Paint"
-        message="Save changes to Untitled?"
+        title={t("Paint")}
+        message={t("Save changes to {{filename}}?", { filename: t("Untitled") })}
         buttons="yesNoCancel"
         icon="warning"
         defaultButton="yes"
