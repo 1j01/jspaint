@@ -112,7 +112,7 @@ function AppContent() {
   const { cursorPosition } = useCursorPosition();
 
   // Use extracted hooks for canvas history and clipboard
-  const { saveHistoryState, undo, redo, canUndo, canRedo, getRoot, goToNode } = useCanvasHistory({ canvasRef });
+  const { saveHistoryState, undo, redo, canUndo, canRedo, getRoot, goToNode, rootNode } = useCanvasHistory({ canvasRef });
 
   const { hasClipboard, hasSelection, selection, setSelection, clearSelection, copy, cut, paste } =
     useClipboardOperations();
@@ -372,7 +372,7 @@ function AppContent() {
         setMagnification={setMagnification}
         primaryColor={primaryColor}
         customColors={customColors}
-        rootNode={getRoot()}
+        rootNode={rootNode}
         currentNode={null} // Dialog will get this directly from store
         canvasRef={canvasRef}
         showFontBox={showFontBox}

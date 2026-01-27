@@ -636,6 +636,8 @@ whereas it breaks component docking calculations if used to shift the colors box
 }
 .main-canvas {
 	position: absolute;
+	left: 0;
+	top: 0;
 	z-index: 2;
 }
 .canvas-area .handle {

@@ -40,6 +40,8 @@ interface UseCanvasHistoryReturn {
   getRoot: ReturnType<typeof useTreeHistory>["getRoot"];
   /** Navigate to a specific history node */
   goToNode: ReturnType<typeof useTreeHistory>["goToNode"];
+  /** Root node of history tree (reactive - triggers re-render when tree changes) */
+  rootNode: ReturnType<ReturnType<typeof useTreeHistory>["getRoot"]>;
 }
 
 /**
@@ -64,6 +66,7 @@ interface UseCanvasHistoryReturn {
  */
 export function useCanvasHistory({ canvasRef }: UseCanvasHistoryParams): UseCanvasHistoryReturn {
   const {
+    historyTree,
     getRoot,
     goToNode,
     undo: undoTree,
@@ -74,6 +77,9 @@ export function useCanvasHistory({ canvasRef }: UseCanvasHistoryParams): UseCanv
   } = useTreeHistory();
 
   const { setCanvasSize } = useCanvasDimensions();
+
+  // Compute rootNode from historyTree (reactive - will trigger re-renders when tree changes)
+  const rootNode = historyTree?.getRoot() ?? null;
 
   /**
    * Save current canvas state to tree history
@@ -154,5 +160,6 @@ export function useCanvasHistory({ canvasRef }: UseCanvasHistoryParams): UseCanv
     pushTreeState,
     getRoot,
     goToNode,
+    rootNode,
   };
 }
