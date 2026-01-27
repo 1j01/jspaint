@@ -71,17 +71,18 @@ export function CustomZoomDialog({ isOpen, onClose, onApply, currentMagnificatio
                   checked={useCustom}
                   onChange={() => setUseCustom(true)}
                 />
-                <label htmlFor="zoom-custom">
+                <label>
                   <input
                     type="number"
                     name="really-custom-zoom-input"
                     className="inset-deep no-spinner"
-                    value={customZoom}
+                    value={customZoom || ""}
                     onChange={(e) => {
-                      setCustomZoom(parseInt(e.target.value, 10) || 100);
+                      const val = e.target.value;
+                      setCustomZoom(val === "" ? 0 : parseInt(val, 10));
                       setUseCustom(true);
                     }}
-                    onClick={() => setUseCustom(true)}
+                    onFocus={() => setUseCustom(true)}
                     min={10}
                     max={1000}
                   />

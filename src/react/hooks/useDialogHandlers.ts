@@ -8,6 +8,7 @@ import { useCanvasStore } from "../context/state/canvasStore";
 import { useHistoryStore } from "../context/state/historyStore";
 import { saveSetting } from "../context/state/persistence";
 import { TOOL_IDS } from "../context/state/types";
+import { prepareCanvasResize, restoreCanvasAfterResize } from "../utils/canvasHelpers";
 import { downloadCanvas } from "../utils/imageFormats";
 import {
   applyToCanvas,
@@ -250,12 +251,30 @@ export function useDialogHandlers({
    */
   const handleAttributes = useCallback(
     (values: AttributesValues) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
       if (values.width !== canvasWidth || values.height !== canvasHeight) {
         saveState();
+
+        // Save current canvas content before resize
+        const currentImageData = prepareCanvasResize(canvas, canvasWidth, canvasHeight);
+        if (!currentImageData) return;
+
+        // Update the Zustand store (triggers React re-render)
         setCanvasSize(values.width, values.height);
+
+        // Wait for React to update the DOM, then restore content
+        requestAnimationFrame(() => {
+          const resizedCanvas = canvasRef.current;
+          if (!resizedCanvas) return;
+
+          // Restore content with white background for new areas
+          restoreCanvasAfterResize(resizedCanvas, currentImageData, values.width, values.height);
+        });
       }
     },
-    [canvasWidth, canvasHeight, saveState, setCanvasSize],
+    [canvasRef, canvasWidth, canvasHeight, saveState, setCanvasSize],
   );
 
   /**
