@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCurrentHistoryNode } from "../../context/state/useCurrentHistoryNode";
 import type { HistoryNode } from "../../utils/historyTree";
+import { SelectWin98 } from "../SelectWin98";
 import { Dialog } from "./Dialog";
 
 interface HistoryTreeDialogProps {
@@ -205,10 +206,14 @@ export function HistoryTreeDialog({
       <div className="history-dialog-content">
         {/* View mode selector */}
         <div className="view-mode-selector">
-          <select className="inset-deep" value={viewMode} onChange={(e) => setViewMode(e.target.value as ViewMode)}>
-            <option value="linear">{t("Linear timeline")}</option>
-            <option value="tree">{t("Tree")}</option>
-          </select>
+          <SelectWin98
+            value={viewMode}
+            onChange={(value) => setViewMode(value as ViewMode)}
+            options={[
+              { value: "linear", label: t("Linear timeline") },
+              { value: "tree", label: t("Tree") },
+            ]}
+          />
         </div>
 
         {/* History list */}

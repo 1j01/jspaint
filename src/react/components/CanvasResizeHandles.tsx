@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useUIStore } from "../context/state/uiStore";
 import "./CanvasResizeHandles.css";
 
@@ -74,6 +74,12 @@ function getCursor(xAxis: HandleAxis, yAxis: HandleAxis): string {
   return "default";
 }
 
+/** Cached padding type */
+interface Padding {
+  left: number;
+  top: number;
+}
+
 /**
  * CanvasResizeHandles component - Resize handles for canvas
  * Provides draggable handles around the canvas to resize it, matching MS Paint behavior.
@@ -108,7 +114,13 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
   const magnification = useUIStore((state) => state.magnification);
   const [isDragging, setIsDragging] = useState(false);
   const [ghostRect, setGhostRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
-  const [, forceUpdate] = useState(0); // For forcing re-render when padding changes
+
+  // Cached padding to avoid calling getComputedStyle repeatedly
+  const paddingRef = useRef<Padding>({ left: 0, top: 0 });
+
+  // Render counter to trigger re-renders when padding needs update
+  const [renderKey, setRenderKey] = useState(0);
+
   const dragStateRef = useRef<{
     xAxis: HandleAxis;
     yAxis: HandleAxis;
@@ -117,31 +129,56 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
     originalRect: { x: number; y: number; width: number; height: number };
   } | null>(null);
 
-  // Force recalculation after canvas dimensions or magnification change
-  // This ensures padding is read AFTER the DOM has updated
+  // Store refs for stable event handlers (avoids recreating window listeners)
+  const magnificationRef = useRef(magnification);
+  const ghostRectRef = useRef(ghostRect);
+  const onResizeRef = useRef(onResize);
+
+  // Keep refs in sync with current values
+  magnificationRef.current = magnification;
+  ghostRectRef.current = ghostRect;
+  onResizeRef.current = onResize;
+
+  // Update cached padding when container or dimensions change
   useEffect(() => {
+    const updatePadding = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      const styles = window.getComputedStyle(container);
+      paddingRef.current = {
+        left: parseFloat(styles.paddingLeft) || 0,
+        top: parseFloat(styles.paddingTop) || 0,
+      };
+      setRenderKey((n) => n + 1);
+    };
+
     // Use requestAnimationFrame to ensure DOM has painted
-    const rafId = requestAnimationFrame(() => {
-      forceUpdate((n) => n + 1);
-    });
+    const rafId = requestAnimationFrame(updatePadding);
     return () => cancelAnimationFrame(rafId);
-  }, [canvasWidth, canvasHeight, magnification]);
+  }, [containerRef, canvasWidth, canvasHeight, magnification]);
 
   // Force recalculation on mount after containerRef becomes available
-  // This fixes a timing issue where containerRef.current is null on first render
-  // because the parent's useEffect that sets it runs after the initial render
   useEffect(() => {
-    // Schedule multiple updates to ensure containerRef is available
-    // First RAF might fire before parent's useEffect, so we add a second one
     let rafId2: number | null = null;
 
     const rafId1 = requestAnimationFrame(() => {
       if (containerRef.current) {
-        forceUpdate((n) => n + 1);
+        const styles = window.getComputedStyle(containerRef.current);
+        paddingRef.current = {
+          left: parseFloat(styles.paddingLeft) || 0,
+          top: parseFloat(styles.paddingTop) || 0,
+        };
+        setRenderKey((n) => n + 1);
       } else {
-        // If still not available, try again
         rafId2 = requestAnimationFrame(() => {
-          forceUpdate((n) => n + 1);
+          if (containerRef.current) {
+            const styles = window.getComputedStyle(containerRef.current);
+            paddingRef.current = {
+              left: parseFloat(styles.paddingLeft) || 0,
+              top: parseFloat(styles.paddingTop) || 0,
+            };
+            setRenderKey((n) => n + 1);
+          }
         });
       }
     });
@@ -181,66 +218,67 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
     [canvasWidth, canvasHeight],
   );
 
-  const handlePointerMove = useCallback(
-    (e: PointerEvent) => {
-      if (!isDragging || !dragStateRef.current) return;
+  // Stable pointer move handler using refs
+  const handlePointerMove = useCallback((e: PointerEvent) => {
+    if (!dragStateRef.current) return;
 
-      const { xAxis, yAxis, startMouseX, startMouseY, originalRect } = dragStateRef.current;
+    const { xAxis, yAxis, startMouseX, startMouseY, originalRect } = dragStateRef.current;
+    const mag = magnificationRef.current;
 
-      // Get mouse position in canvas coordinates
-      const mouseCanvasX = (e.clientX - startMouseX) / magnification;
-      const mouseCanvasY = (e.clientY - startMouseY) / magnification;
+    // Get mouse position in canvas coordinates
+    const mouseCanvasX = (e.clientX - startMouseX) / mag;
+    const mouseCanvasY = (e.clientY - startMouseY) / mag;
 
-      let deltaX = 0;
-      let deltaY = 0;
-      let width = originalRect.width;
-      let height = originalRect.height;
+    let deltaX = 0;
+    let deltaY = 0;
+    let width = originalRect.width;
+    let height = originalRect.height;
 
-      // Calculate new dimensions based on handle being dragged
-      if (xAxis === HANDLE_END) {
-        deltaX = 0;
-        width = Math.floor(originalRect.width + mouseCanvasX);
-      } else if (xAxis === HANDLE_START) {
-        deltaX = Math.floor(mouseCanvasX);
-        width = Math.floor(originalRect.width - mouseCanvasX);
-      }
+    // Calculate new dimensions based on handle being dragged
+    if (xAxis === HANDLE_END) {
+      deltaX = 0;
+      width = Math.floor(originalRect.width + mouseCanvasX);
+    } else if (xAxis === HANDLE_START) {
+      deltaX = Math.floor(mouseCanvasX);
+      width = Math.floor(originalRect.width - mouseCanvasX);
+    }
 
-      if (yAxis === HANDLE_END) {
-        deltaY = 0;
-        height = Math.floor(originalRect.height + mouseCanvasY);
-      } else if (yAxis === HANDLE_START) {
-        deltaY = Math.floor(mouseCanvasY);
-        height = Math.floor(originalRect.height - mouseCanvasY);
-      }
+    if (yAxis === HANDLE_END) {
+      deltaY = 0;
+      height = Math.floor(originalRect.height + mouseCanvasY);
+    } else if (yAxis === HANDLE_START) {
+      deltaY = Math.floor(mouseCanvasY);
+      height = Math.floor(originalRect.height - mouseCanvasY);
+    }
 
-      const newRect = {
-        x: Math.min(originalRect.x + deltaX, originalRect.x + originalRect.width),
-        y: Math.min(originalRect.y + deltaY, originalRect.y + originalRect.height),
-        width: Math.max(1, width),
-        height: Math.max(1, height),
-      };
+    const newRect = {
+      x: Math.min(originalRect.x + deltaX, originalRect.x + originalRect.width),
+      y: Math.min(originalRect.y + deltaY, originalRect.y + originalRect.height),
+      width: Math.max(1, width),
+      height: Math.max(1, height),
+    };
 
-      setGhostRect(newRect);
-    },
-    [isDragging, magnification],
-  );
+    setGhostRect(newRect);
+  }, []);
 
+  // Stable pointer up handler using refs
   const handlePointerUp = useCallback(() => {
-    if (!isDragging || !dragStateRef.current) return;
+    if (!dragStateRef.current) return;
 
     // Remove cursor from body
     document.body.style.cursor = "";
     document.body.classList.remove("cursor-bully");
 
-    if (ghostRect) {
+    const rect = ghostRectRef.current;
+    if (rect) {
       // Apply the resize - for size-only mode, we only change width/height
-      onResize(ghostRect.width, ghostRect.height);
+      onResizeRef.current(rect.width, rect.height);
     }
 
     setIsDragging(false);
     setGhostRect(null);
     dragStateRef.current = null;
-  }, [isDragging, ghostRect, onResize]);
+  }, []);
 
   // Add global pointer event listeners when dragging
   useEffect(() => {
@@ -255,27 +293,15 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
     };
   }, [isDragging, handlePointerMove, handlePointerUp]);
 
-  // Get container padding - recalculated on every render
-  // Note: Dependencies removed as they don't actually affect the computation
-  // The useEffect above ensures this is called after DOM updates
-  const getContainerPadding = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return { left: 0, top: 0 };
-    const styles = window.getComputedStyle(container);
-    return {
-      left: parseFloat(styles.paddingLeft) || 0,
-      top: parseFloat(styles.paddingTop) || 0,
-    };
-  }, [containerRef]);
+  // Get cached padding (no getComputedStyle call)
+  const padding = paddingRef.current;
 
   // Calculate handle and grab region positions - matching Handles.js logic exactly
-  const getHandlePositions = (xAxis: HandleAxis, yAxis: HandleAxis) => {
+  const getHandlePositions = useCallback((xAxis: HandleAxis, yAxis: HandleAxis) => {
     const handleSize = 3;
     const grabSize = 32;
     const outset = 4; // Matches app.js canvas_handles outset: 4
-    // Get dynamic padding from .canvas-area
-    // Note: Legacy uses padding + 1, but React canvas is positioned at left: 0 inside padding
-    const padding = getContainerPadding();
+    // Use cached padding (no getComputedStyle call)
     const offsetLeft = padding.left;
     const offsetTop = padding.top;
 
