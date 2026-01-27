@@ -174,20 +174,15 @@ export function useDialogHandlers({
       const dimensionsChanged = canvas.width !== result.width || canvas.height !== result.height;
 
       if (dimensionsChanged) {
-        // When dimensions change, we need to:
-        // 1. Update the Zustand store (triggers React re-render)
-        // 2. Wait for React to update the canvas element dimensions
-        // 3. THEN apply the image data (otherwise React clears it)
-        setCanvasSize(result.width, result.height);
+        // Set canvas dimensions directly (this clears the canvas)
+        canvas.width = result.width;
+        canvas.height = result.height;
 
-        // Use requestAnimationFrame to wait for React to update the DOM
-        requestAnimationFrame(() => {
-          const canvas = canvasRef.current;
-          if (!canvas) return;
-          const ctx = canvas.getContext("2d", { willReadFrequently: true });
-          if (!ctx) return;
-          ctx.putImageData(result, 0, 0);
-        });
+        // Apply the transformed image data
+        ctx.putImageData(result, 0, 0);
+
+        // Update the Zustand store (for status bar, other components)
+        setCanvasSize(result.width, result.height);
       } else {
         // Dimensions unchanged (flip or 180° rotation), apply directly
         applyToCanvas(ctx, result, false);
@@ -224,20 +219,15 @@ export function useDialogHandlers({
       const dimensionsChanged = canvas.width !== result.width || canvas.height !== result.height;
 
       if (dimensionsChanged) {
-        // When dimensions change, we need to:
-        // 1. Update the Zustand store (triggers React re-render)
-        // 2. Wait for React to update the canvas element dimensions
-        // 3. THEN apply the image data (otherwise React clears it)
-        setCanvasSize(result.width, result.height);
+        // Set canvas dimensions directly (this clears the canvas)
+        canvas.width = result.width;
+        canvas.height = result.height;
 
-        // Use requestAnimationFrame to wait for React to update the DOM
-        requestAnimationFrame(() => {
-          const canvas = canvasRef.current;
-          if (!canvas) return;
-          const ctx = canvas.getContext("2d", { willReadFrequently: true });
-          if (!ctx) return;
-          ctx.putImageData(result, 0, 0);
-        });
+        // Apply the transformed image data
+        ctx.putImageData(result, 0, 0);
+
+        // Update the Zustand store (for status bar, other components)
+        setCanvasSize(result.width, result.height);
       } else {
         // Dimensions unchanged, apply directly
         applyToCanvas(ctx, result, false);
@@ -261,17 +251,15 @@ export function useDialogHandlers({
         const currentImageData = prepareCanvasResize(canvas, canvasWidth, canvasHeight);
         if (!currentImageData) return;
 
-        // Update the Zustand store (triggers React re-render)
+        // Set canvas dimensions directly (this will clear the canvas)
+        canvas.width = values.width;
+        canvas.height = values.height;
+
+        // Restore content with white background for new areas
+        restoreCanvasAfterResize(canvas, currentImageData, values.width, values.height);
+
+        // Update the Zustand store (for status bar, other components)
         setCanvasSize(values.width, values.height);
-
-        // Wait for React to update the DOM, then restore content
-        requestAnimationFrame(() => {
-          const resizedCanvas = canvasRef.current;
-          if (!resizedCanvas) return;
-
-          // Restore content with white background for new areas
-          restoreCanvasAfterResize(resizedCanvas, currentImageData, values.width, values.height);
-        });
       }
     },
     [canvasRef, canvasWidth, canvasHeight, saveState, setCanvasSize],

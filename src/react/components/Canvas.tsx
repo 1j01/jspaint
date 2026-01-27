@@ -271,20 +271,18 @@ export function Canvas({
       const currentImageData = prepareCanvasResize(canvas, canvasWidth, canvasHeight);
       if (!currentImageData) return;
 
-      // Resize canvas (this will clear it)
+      // Set canvas dimensions directly (this clears the canvas)
+      canvas.width = width;
+      canvas.height = height;
+
+      // Restore content with white background
+      restoreCanvasAfterResize(canvas, currentImageData, width, height);
+
+      // Update the Zustand store (for status bar, other components)
       setCanvasSize(width, height);
 
-      // Restore the previous content on the next frame (after resize completes)
-      requestAnimationFrame(() => {
-        const resizedCanvas = canvasRef.current;
-        if (!resizedCanvas) return;
-
-        // Restore content with white background
-        restoreCanvasAfterResize(resizedCanvas, currentImageData, width, height);
-
-        // Save to history AFTER resize completes
-        saveHistoryState("Resize Canvas");
-      });
+      // Save to history
+      saveHistoryState("Resize Canvas");
     },
     [canvasRef, canvasWidth, canvasHeight, setCanvasSize, saveHistoryState],
   );
@@ -303,8 +301,6 @@ export function Canvas({
       <canvas
         ref={canvasRef}
         className="main-canvas"
-        width={canvasWidth}
-        height={canvasHeight}
         style={canvasStyle}
         onPointerDown={eventHandlers.handlePointerDown}
         onPointerMove={eventHandlers.handlePointerMove}

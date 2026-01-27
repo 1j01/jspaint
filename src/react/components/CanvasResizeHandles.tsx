@@ -274,10 +274,10 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
     const grabSize = 32;
     const outset = 4; // Matches app.js canvas_handles outset: 4
     // Get dynamic padding from .canvas-area
-    // Legacy code uses padding + 1 for handle offsets (see app.js Handles constructor)
+    // Note: Legacy uses padding + 1, but React canvas is positioned at left: 0 inside padding
     const padding = getContainerPadding();
-    const offsetLeft = padding.left + 1;
-    const offsetTop = padding.top + 1;
+    const offsetLeft = padding.left;
+    const offsetTop = padding.top;
 
     const rect = { width: canvasWidth, height: canvasHeight };
 
@@ -315,8 +315,9 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
       positions.grabRegion.width = middleEndX - sizeOnlyMiddleStartX;
     } else {
       // HANDLE_END
-      // Position handle at the right edge (not centered on it)
-      positions.handle.left = rect.width * magnification - handleSize + offsetLeft;
+      // Match legacy Handles.js: offset + (rect.width * magnification - hs / 2)
+      // Centers handle on the canvas edge
+      positions.handle.left = rect.width * magnification - handleSize / 2 + offsetLeft;
       positions.grabRegion.left = endStartX + offsetLeft;
       positions.grabRegion.width = endEndX - endStartX;
     }

@@ -59,6 +59,7 @@
  */
 
 import { RefObject, useEffect } from "react";
+import { useCanvasStore } from "../context/state/canvasStore";
 import { useHistoryStore } from "../context/state/historyStore";
 import { loadSetting, saveSetting } from "../context/state/persistence";
 
@@ -184,6 +185,16 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
     // Async initialization function
     const initializeCanvas = async () => {
       const tokenAtStart = restoreToken;
+
+      // Set initial canvas dimensions from Zustand store
+      // This is needed because we no longer use React props for width/height
+      // (to prevent React from clearing the canvas on re-renders)
+      const { canvasWidth, canvasHeight } = useCanvasStore.getState();
+      if (canvas.width !== canvasWidth || canvas.height !== canvasHeight) {
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+      }
+
       // Check if canvas already has content (e.g., from fileOpen)
       // Sample a few pixels to detect if it's already been drawn to
       const sampleData = ctx.getImageData(0, 0, Math.min(10, canvas.width), Math.min(10, canvas.height));
