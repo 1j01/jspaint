@@ -18,7 +18,7 @@ html, body, .jspaint {
 }
 .jspaint {
 	direction: rtl;
-	
+
 	box-sizing: border-box; /* for iPad fullscreen workaround, which adds padding to .jspaint; without this it hides the status bar */
 
 	/* prevent selection, especially for Safari on iOS/iPad, which likes to select random (nearest, kind of?) elements when long-pressing */
@@ -780,7 +780,7 @@ whereas it breaks component docking calculations if used to shift the colors box
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
-	padding: 10px 0 10px 12px;
+	padding: 10px 15px 10px 12px;
 }
 .custom-zoom-window .custom-zoom-buttons button {
 	min-width: 75px;
@@ -798,7 +798,7 @@ whereas it breaks component docking calculations if used to shift the colors box
 	width: 210px;
 	height: 75px;
 	padding: 10px 20px 10px 8px;
-	row-gap: 8px;
+	row-gap: 10px;
 	column-gap: 15px;
 }
 .custom-zoom-window bdi {
@@ -806,6 +806,9 @@ whereas it breaks component docking calculations if used to shift the colors box
 }
 .custom-zoom-window input[name="really-custom-zoom-input"] {
 	width: 50px;
+	vertical-align: middle;
+	position: relative;
+	top: -5px;
 }
 
 .radio-field {
