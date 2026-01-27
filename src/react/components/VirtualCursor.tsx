@@ -129,7 +129,7 @@ export function VirtualCursor({ magnification }: VirtualCursorProps): React.JSX.
   const showCrosshair = ["pencil", "line", "rectangle", "ellipse", "fill", "default"].includes(virtualCursor.toolIcon);
 
   return (
-    <div className="virtual-cursor-container" style={{ position: "absolute", left: 0, top: 0, pointerEvents: "none" }}>
+    <div className="virtual-cursor-container" style={{ position: "absolute", pointerEvents: "none" }}>
       <div className="virtual-cursor" style={cursorStyle}>
         {showCrosshair && <CrosshairCursor />}
       </div>

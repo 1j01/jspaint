@@ -172,7 +172,27 @@ export function HistoryTreeDialog({
     onNavigateToNode(nodeId);
   };
 
-  if (!isOpen || !rootNode) return null;
+  if (!isOpen) return null;
+
+  // Show message if no history available
+  if (!rootNode) {
+    return (
+      <Dialog
+        isOpen={isOpen}
+        onClose={onClose}
+        title={t("Document History")}
+        width={400}
+        className="dialog-window history-window"
+      >
+        <div className="history-dialog-content">
+          <p>{t("No history available. Make some changes to see them here.")}</p>
+          <button type="button" onClick={onClose}>
+            {t("Close")}
+          </button>
+        </div>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog

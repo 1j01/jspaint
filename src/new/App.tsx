@@ -315,6 +315,7 @@ function AppContent() {
     <>
       <Frame
         menu={menu}
+        magnification={magnification}
         leftContent={
           showToolBox ? (
             <ToolBox

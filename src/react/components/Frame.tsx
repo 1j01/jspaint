@@ -168,6 +168,8 @@ interface FrameProps {
   className?: string;
   /** Additional inline styles for root element */
   style?: CSSProperties;
+  /** Canvas magnification level (1 = 100%, 2 = 200%, etc.) */
+  magnification?: number;
 }
 
 /**
@@ -211,6 +213,7 @@ export function Frame({
   statusSize = "",
   className = "",
   style,
+  magnification = 1,
 }: FrameProps) {
   const verticalRef = useRef(null);
 
@@ -266,13 +269,22 @@ export function Frame({
     <div className="component-area bottom" aria-hidden="true" />
   );
 
+  // Add crisp pixel rendering class when zoomed in (matches jQuery implementation)
+  const canvasAreaClassName = useMemo(() => {
+    const classes = ["canvas-area", "inset-deep"];
+    if (magnification >= 3) {
+      classes.push("disable-aa-for-things-at-main-canvas-scale");
+    }
+    return classes.join(" ");
+  }, [magnification]);
+
   return (
     <div className={resolvedClassName} style={style} role="application">
       <div className="vertical" ref={verticalRef}>
         {resolvedTop}
         <div className="horizontal">
           {resolvedLeft}
-          <div className="canvas-area inset-deep">{resolvedCanvas}</div>
+          <div className={canvasAreaClassName}>{resolvedCanvas}</div>
           {resolvedRight}
         </div>
         {resolvedBottom}

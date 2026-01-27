@@ -221,9 +221,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
         // and we still want to save/load from IndexedDB on actual page refresh
 
         // Initialize history tree with existing canvas if needed
-        if (!historyTreeInitialized) {
+        // Check if history tree actually exists in the store (not just the flag)
+        const historyState = useHistoryStore.getState();
+        if (!historyState.historyTree) {
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          useHistoryStore.getState().pushState(imageData, "Loaded Document");
+          historyState.pushState(imageData, "Loaded Document");
           historyTreeInitialized = true;
         }
         return;
@@ -267,8 +269,10 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
 
         if (userDrewDuringAwait) {
           canvasInitialized = true;
-          if (!historyTreeInitialized) {
-            useHistoryStore.getState().pushState(postAwaitData, "User Drawing");
+          // Check if history tree actually exists in the store
+          const historyState = useHistoryStore.getState();
+          if (!historyState.historyTree) {
+            historyState.pushState(postAwaitData, "User Drawing");
             historyTreeInitialized = true;
           }
           return;
@@ -301,9 +305,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
               canvasInitialized = true;
 
               // Initialize history tree with persisted canvas
-              if (!historyTreeInitialized) {
+              // Check if history tree actually exists in the store
+              const historyState = useHistoryStore.getState();
+              if (!historyState.historyTree) {
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                useHistoryStore.getState().pushState(imageData, "Restored Document");
+                historyState.pushState(imageData, "Restored Document");
                 historyTreeInitialized = true;
               }
               return;

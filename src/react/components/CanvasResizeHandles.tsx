@@ -352,8 +352,9 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
       positions.grabRegion.height = middleEndY - sizeOnlyMiddleStartY;
     } else {
       // HANDLE_END
-      // Position handle at the bottom edge (not centered on it)
-      positions.handle.top = rect.height * magnification - handleSize + offsetTop;
+      // Match legacy Handles.js: offset + (rect.height * magnification - hs / 2)
+      // Centers handle on the canvas edge
+      positions.handle.top = rect.height * magnification - handleSize / 2 + offsetTop;
       positions.grabRegion.top = endStartY + offsetTop;
       positions.grabRegion.height = endEndY - endStartY;
     }
@@ -362,12 +363,11 @@ export function CanvasResizeHandles({ canvasWidth, canvasHeight, onResize, conta
   };
 
   // Render resize ghost outline when dragging - matching Handles.js
-  // Legacy code uses padding + 1 for ghost offsets (see app.js Handles constructor)
   const ghostStyle: React.CSSProperties | undefined = ghostRect
     ? {
         position: "absolute",
-        left: `${ghostRect.x * magnification + getContainerPadding().left + 1}px`,
-        top: `${ghostRect.y * magnification + getContainerPadding().top + 1}px`,
+        left: `${ghostRect.x * magnification + getContainerPadding().left}px`,
+        top: `${ghostRect.y * magnification + getContainerPadding().top}px`,
         width: `${ghostRect.width * magnification - 2}px`,
         height: `${ghostRect.height * magnification - 2}px`,
         pointerEvents: "none",

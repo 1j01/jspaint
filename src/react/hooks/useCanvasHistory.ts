@@ -9,6 +9,7 @@
  */
 
 import { useCallback, RefObject } from "react";
+import { useCanvasDimensions } from "../context/state/useCanvasDimensions";
 import { useTreeHistory } from "../context/state/useTreeHistory";
 
 /**
@@ -23,8 +24,8 @@ interface UseCanvasHistoryParams {
  * Return type for the canvas history hook
  */
 interface UseCanvasHistoryReturn {
-  /** Save current canvas state to history */
-  saveHistoryState: () => void;
+  /** Save current canvas state to history with optional operation name */
+  saveHistoryState: (operationName?: string) => void;
   /** Undo last action and restore canvas */
   undo: () => void;
   /** Redo last undone action and restore canvas */
@@ -72,11 +73,14 @@ export function useCanvasHistory({ canvasRef }: UseCanvasHistoryParams): UseCanv
     pushState: pushTreeState,
   } = useTreeHistory();
 
+  const { setCanvasSize } = useCanvasDimensions();
+
   /**
    * Save current canvas state to tree history
    * Captures the canvas ImageData and pushes to history tree
+   * @param operationName - Name of the operation for display in history dialog
    */
-  const saveHistoryState = useCallback(() => {
+  const saveHistoryState = useCallback((operationName: string = "Edit") => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -84,7 +88,7 @@ export function useCanvasHistory({ canvasRef }: UseCanvasHistoryParams): UseCanv
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
     // Save to tree history (used by Canvas component and dialogs)
-    pushTreeState(imageData, "Manual Save");
+    pushTreeState(imageData, operationName);
   }, [canvasRef, pushTreeState]);
 
   /**
@@ -94,12 +98,25 @@ export function useCanvasHistory({ canvasRef }: UseCanvasHistoryParams): UseCanv
   const undo = useCallback(() => {
     const node = undoTree();
     if (node && canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
-      if (ctx) {
-        ctx.putImageData(node.imageData, 0, 0);
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return;
+
+      // Check if canvas dimensions need to change
+      const nodeWidth = node.imageData.width;
+      const nodeHeight = node.imageData.height;
+
+      if (canvas.width !== nodeWidth || canvas.height !== nodeHeight) {
+        // Update canvas dimensions directly
+        canvas.width = nodeWidth;
+        canvas.height = nodeHeight;
+        // Update the Zustand store for status bar and other components
+        setCanvasSize(nodeWidth, nodeHeight);
       }
+
+      ctx.putImageData(node.imageData, 0, 0);
     }
-  }, [undoTree, canvasRef]);
+  }, [undoTree, canvasRef, setCanvasSize]);
 
   /**
    * Redo last undone action and restore canvas to next state
@@ -108,12 +125,25 @@ export function useCanvasHistory({ canvasRef }: UseCanvasHistoryParams): UseCanv
   const redo = useCallback(() => {
     const node = redoTree();
     if (node && canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
-      if (ctx) {
-        ctx.putImageData(node.imageData, 0, 0);
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return;
+
+      // Check if canvas dimensions need to change
+      const nodeWidth = node.imageData.width;
+      const nodeHeight = node.imageData.height;
+
+      if (canvas.width !== nodeWidth || canvas.height !== nodeHeight) {
+        // Update canvas dimensions directly
+        canvas.width = nodeWidth;
+        canvas.height = nodeHeight;
+        // Update the Zustand store for status bar and other components
+        setCanvasSize(nodeWidth, nodeHeight);
       }
+
+      ctx.putImageData(node.imageData, 0, 0);
     }
-  }, [redoTree, canvasRef]);
+  }, [redoTree, canvasRef, setCanvasSize]);
 
   return {
     saveHistoryState,

@@ -372,11 +372,24 @@ export function useDialogHandlers({
     (nodeId: string) => {
       const node = goToNode(nodeId);
       if (node && canvasRef.current) {
-        // Restore canvas from history node
-        const ctx = canvasRef.current.getContext("2d");
-        if (ctx) {
-          ctx.putImageData(node.imageData, 0, 0);
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        // Check if canvas dimensions need to change
+        const nodeWidth = node.imageData.width;
+        const nodeHeight = node.imageData.height;
+
+        if (canvas.width !== nodeWidth || canvas.height !== nodeHeight) {
+          // Update canvas dimensions directly
+          canvas.width = nodeWidth;
+          canvas.height = nodeHeight;
+          // Update the Zustand store for status bar and other components
+          setCanvasSize(nodeWidth, nodeHeight);
         }
+
+        // Restore canvas from history node
+        ctx.putImageData(node.imageData, 0, 0);
 
         // Restore selection if present
         if (node.selectionImageData) {
@@ -392,7 +405,7 @@ export function useDialogHandlers({
         }
       }
     },
-    [goToNode, canvasRef, setSelection, clearSelection],
+    [goToNode, canvasRef, setSelection, clearSelection, setCanvasSize],
   );
 
   return {

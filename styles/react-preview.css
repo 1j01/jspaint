@@ -311,12 +311,10 @@ body.dragging iframe {
 }
 
 /* Ensure proper z-index stacking order for canvas layers */
-/* Both canvases positioned identically at padding edge (0,0) */
+/* Canvas positioned inside padding area (like jQuery version) */
 canvas.main-canvas,
 .selection-overlay {
 	position: absolute !important;
-	left: 0 !important;
-	top: 0 !important;
 	/* Ensure transform-origin is the same for both when scaling */
 	transform-origin: top left !important;
 	/* Ensure no default browser spacing affects alignment */

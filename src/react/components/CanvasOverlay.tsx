@@ -48,10 +48,9 @@ export const CanvasOverlay = forwardRef<HTMLCanvasElement, CanvasOverlayProps>(f
   };
 
   // Add positioning for z-index to work properly
+  // Note: left/top not set - uses natural position inside parent padding
   const wrapperStyle: CSSProperties = {
     position: "absolute",
-    left: 0,
-    top: 0,
     pointerEvents: "none",
   };
 
