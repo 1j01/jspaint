@@ -142,7 +142,83 @@ export function useFileMenuActions(params: UseFileMenuActionsParams): FileMenuAc
   const fileLoadFromUrl = useCallback(() => openDialog("loadFromUrl"), [openDialog]);
   const fileUploadToImgur = useCallback(() => openDialog("imgurUpload"), [openDialog]);
   const fileManageStorage = useCallback(() => openDialog("manageStorage"), [openDialog]);
-  const filePrint = useCallback(() => window.print(), []);
+  const filePrint = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Create a new window with just the canvas image for clean printing
+    const printWindow = window.open("", "_blank", "width=800,height=600");
+    if (!printWindow) {
+      // Fallback to regular print if popup is blocked
+      window.print();
+      return;
+    }
+
+    // Get the canvas as a data URL
+    const imageDataUrl = canvas.toDataURL("image/png");
+
+    // Write a minimal HTML document with just the image
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Print - JS Paint</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: white;
+          }
+          img {
+            max-width: 100%;
+            height: auto;
+          }
+          @media print {
+            body {
+              display: block;
+            }
+            img {
+              max-width: 100%;
+              page-break-inside: avoid;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <img src="${imageDataUrl}" alt="Canvas Image" />
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+
+    // Wait for the image to load, then print
+    const img = printWindow.document.querySelector("img");
+    if (img) {
+      img.onload = () => {
+        printWindow.focus();
+        printWindow.print();
+        // Close the window after printing (with a small delay for the print dialog)
+        setTimeout(() => {
+          printWindow.close();
+        }, 1000);
+      };
+      // If image is already loaded (from cache), trigger print immediately
+      if (img.complete) {
+        printWindow.focus();
+        printWindow.print();
+        setTimeout(() => {
+          printWindow.close();
+        }, 1000);
+      }
+    }
+  }, [canvasRef]);
   const fileExit = useCallback(() => {
     if (confirm("Are you sure you want to exit?")) {
       window.close();

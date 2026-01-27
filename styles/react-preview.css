@@ -441,6 +441,33 @@ body.resizing canvas.main-canvas {
         margin: 0;
 }
 
+/* Custom Zoom Dialog - override generic .dialog styles */
+.dialog.custom-zoom-window .fieldset-body {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: repeat(3, auto);
+        grid-auto-flow: column;
+        row-gap: 4px;
+        column-gap: 20px;
+        padding: 4px 8px;
+}
+
+.dialog.custom-zoom-window .radio-field {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+}
+
+.dialog.custom-zoom-window .radio-field label {
+        display: inline;
+        margin: 0;
+        padding-left: 4px;
+}
+
+.dialog.custom-zoom-window .radio-field input[type="radio"] {
+        margin: 0;
+}
+
 .dialog-table {
         border-collapse: collapse;
 }
@@ -458,12 +485,6 @@ body.resizing canvas.main-canvas {
         display: flex;
         flex-direction: column;
         gap: 2px;
-}
-
-.custom-zoom-row {
-        display: flex;
-        align-items: center;
-        gap: 4px;
 }
 
 /* About Paint Dialog - matches legacy #about-paint styling */

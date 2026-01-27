@@ -56,6 +56,8 @@ npm run sloc                 # Compare legacy vs React implementation line count
 
 ### React App (`src/react/` and `src/new/`)
 
+**React Compiler** - The app uses `babel-plugin-react-compiler` for automatic optimization. Memoization via `useMemo`/`useCallback` is handled by the compiler.
+
 **State Management (Zustand)** - 6 modular stores in `src/react/context/state/`:
 - `toolStore.ts` - Active tool, selection, text box, clipboard
 - `settingsStore.ts` - Drawing settings (brush, eraser, shapes, fonts)
@@ -122,7 +124,7 @@ Vite multi-page app (`vite.config.js`) with React Compiler enabled (`babel-plugi
 
 ### AI Integration
 
-Natural language canvas control via Claude API with Server-Sent Events (SSE). See [docs/AI.md](docs/AI.md) for full command specifications (50+ drawing commands).
+Natural language canvas control via Claude API with Server-Sent Events (SSE). The AI can execute 50+ drawing commands covering all Paint functionality.
 
 **Architecture**:
 - `api/ai/draw.ts` - Vercel Edge Function proxying Claude API with tool calling
@@ -131,12 +133,14 @@ Natural language canvas control via Claude API with Server-Sent Events (SSE). Se
 - `src/react/hooks/useAIChat.ts` - Combines store, service, and command execution
 - `src/react/components/ai/` - Chat UI components (AIChatPanel, MessageList, ChatInput)
 
+**Command Categories**: drawing (16 tools), selection, canvas, color, edit, transform, view, batch operations.
+
 **Environment Variables**:
 ```env
 ANTHROPIC_API_KEY=sk-ant-...  # Required for AI features
 ```
 
-**Access**: View > AI Assistant. See [docs/AI.md](docs/AI.md) for full command specifications (50+ drawing commands including batch operations, transforms, and color management).
+**Access**: View > AI Assistant. See [docs/AI.md](docs/AI.md) for full command specifications and TypeScript interfaces.
 
 ## Testing
 
@@ -146,7 +150,11 @@ Playwright tests run against the React app at `http://localhost:11822/new/` (sep
 - `tests/*.spec.ts` - Core tool and menu tests
 - `tests/dialogs/` - Dialog-specific tests
 - `tests/tools/` - Tool-specific test helpers
-- `tests/utils/` - Shared test utilities (e.g., `canvasUtils.ts` for canvas interactions)
+- `tests/utils/` - Shared test utilities:
+  - `canvas-helpers.ts` - Canvas drawing and pixel verification
+  - `dialog-helpers.ts` - Dialog interaction utilities
+  - `selection-helpers.ts` - Selection tool helpers
+  - `test-helpers.ts` - Common setup and assertions
 
 **Configuration** (`playwright.config.ts`):
 - Chromium only (no Firefox/Safari)

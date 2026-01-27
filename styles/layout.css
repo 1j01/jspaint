@@ -768,20 +768,38 @@ whereas it breaks component docking calculations if used to shift the colors box
 	grid-template-columns: 80px 80px 80px;
 }
 
+.custom-zoom-window .custom-zoom-layout {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+}
+.custom-zoom-window .custom-zoom-content {
+	flex: 1;
+}
+.custom-zoom-window .custom-zoom-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	padding: 10px 12px 10px 0;
+}
+.custom-zoom-window .custom-zoom-buttons button {
+	min-width: 75px;
+}
 .custom-zoom-window .current-zoom {
-	margin: 10px 15px;
+	margin: 10px 12px;
 }
 .custom-zoom-window fieldset {
-	margin: 8px;
+	margin: 0 12px 10px 12px;
 	padding: 0;
 }
 .custom-zoom-window .fieldset-body {
 	display: flex;
 	flex-flow: column wrap;
-	width: 240px;
-	height: 70px;
-	padding: 12px 5px;
-	row-gap: 10px;
+	width: 210px;
+	height: 75px;
+	padding: 10px 8px 10px 20px;
+	row-gap: 8px;
+	column-gap: 15px;
 }
 .custom-zoom-window bdi {
 	margin: 0 10px;

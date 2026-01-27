@@ -15,6 +15,7 @@ import {
   flipVertical,
   invertColors,
   rotate,
+  rotateArbitrary,
   skew,
   stretch,
   transformCanvas,
@@ -155,12 +156,40 @@ export function useDialogHandlers({
       } else if (action.type === "flipVertical") {
         result = transformCanvas(ctx, flipVertical);
       } else {
-        result = transformCanvas(ctx, (data) => rotate(data, action.degrees));
+        // Check if this is a standard rotation (0, 90, 180, 270) or arbitrary angle
+        const normalizedDegrees = ((action.degrees % 360) + 360) % 360;
+        const isStandardRotation = normalizedDegrees === 0 || normalizedDegrees === 90 ||
+                                    normalizedDegrees === 180 || normalizedDegrees === 270;
+
+        if (isStandardRotation) {
+          result = transformCanvas(ctx, (data) => rotate(data, action.degrees));
+        } else {
+          // Use rotateArbitrary for custom angles (with white background for empty areas)
+          result = transformCanvas(ctx, (data) => rotateArbitrary(data, action.degrees));
+        }
       }
 
-      applyToCanvas(ctx, result, true);
-      if (canvas.width !== result.width || canvas.height !== result.height) {
+      // Check if dimensions changed (90/270 degree rotations or arbitrary rotations)
+      const dimensionsChanged = canvas.width !== result.width || canvas.height !== result.height;
+
+      if (dimensionsChanged) {
+        // When dimensions change, we need to:
+        // 1. Update the Zustand store (triggers React re-render)
+        // 2. Wait for React to update the canvas element dimensions
+        // 3. THEN apply the image data (otherwise React clears it)
         setCanvasSize(result.width, result.height);
+
+        // Use requestAnimationFrame to wait for React to update the DOM
+        requestAnimationFrame(() => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          if (!ctx) return;
+          ctx.putImageData(result, 0, 0);
+        });
+      } else {
+        // Dimensions unchanged (flip or 180° rotation), apply directly
+        applyToCanvas(ctx, result, false);
       }
     },
     [canvasRef, saveState, setCanvasSize],
@@ -190,8 +219,28 @@ export function useDialogHandlers({
         result = skew(result, values.skewHorizontal, values.skewVertical);
       }
 
-      applyToCanvas(ctx, result, true);
-      setCanvasSize(result.width, result.height);
+      // Check if dimensions changed
+      const dimensionsChanged = canvas.width !== result.width || canvas.height !== result.height;
+
+      if (dimensionsChanged) {
+        // When dimensions change, we need to:
+        // 1. Update the Zustand store (triggers React re-render)
+        // 2. Wait for React to update the canvas element dimensions
+        // 3. THEN apply the image data (otherwise React clears it)
+        setCanvasSize(result.width, result.height);
+
+        // Use requestAnimationFrame to wait for React to update the DOM
+        requestAnimationFrame(() => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          if (!ctx) return;
+          ctx.putImageData(result, 0, 0);
+        });
+      } else {
+        // Dimensions unchanged, apply directly
+        applyToCanvas(ctx, result, false);
+      }
     },
     [canvasRef, saveState, setCanvasSize],
   );
