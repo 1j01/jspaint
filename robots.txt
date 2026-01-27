@@ -1,0 +1,11 @@
+# robots.txt for JS Paint
+# https://jspaint.app
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://jspaint.app/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

@@ -26,6 +26,8 @@ const staticAssets = [
 	{ src: "browserconfig.xml", dest: "" },
 	{ src: "favicon.ico", dest: "" },
 	{ src: "manifest.webmanifest", dest: "" },
+	{ src: "robots.txt", dest: "" },
+	{ src: "sitemap.xml", dest: "" },
 	{ src: "CNAME", dest: "" },
 ];
 
