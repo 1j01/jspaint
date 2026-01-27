@@ -47,7 +47,6 @@ function parseSSEEvent(eventType: string, data: string): SSEEvent | null {
         return { type: "token", content: parsed.content || "" };
 
       case "commands":
-        console.log("[aiService] Parsed commands event:", parsed.commands);
         return { type: "commands", commands: parsed.commands || [] };
 
       case "progress":
@@ -58,15 +57,12 @@ function parseSSEEvent(eventType: string, data: string): SSEEvent | null {
         };
 
       case "done":
-        console.log("[aiService] Parsed done event");
         return { type: "done", message: parsed.message };
 
       case "error":
-        console.log("[aiService] Parsed error event:", parsed.message);
         return { type: "error", message: parsed.message || "Unknown error" };
 
       default:
-        console.log("[aiService] Unknown event type:", eventType);
         return null;
     }
   } catch (e) {

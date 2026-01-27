@@ -119,17 +119,14 @@ export function useAIChat(options: UseAIChatOptions): UseAIChatReturn {
   const executePendingCommands = useCallback(async () => {
     const commands = useAIStore.getState().pendingCommands;
     if (commands.length === 0) {
-      console.log("[useAIChat] executePendingCommands: no commands to execute");
       return;
     }
 
     // Check if already executing
     if (useAIStore.getState().isExecuting) {
-      console.log("[useAIChat] executePendingCommands: already executing, skipping");
       return;
     }
 
-    console.log("[useAIChat] executePendingCommands: executing", commands.length, "commands");
     setExecuting(true);
     await executeCommands(commands);
   }, [executeCommands, setExecuting]);
@@ -178,7 +175,6 @@ export function useAIChat(options: UseAIChatOptions): UseAIChatReturn {
         },
         onCommands: (commands) => {
           // Accumulate commands as they come in
-          console.log("[useAIChat] Received commands:", commands);
           accumulatedCommandsRef.current = [...accumulatedCommandsRef.current, ...commands];
           addPendingCommands(commands);
         },
@@ -191,7 +187,6 @@ export function useAIChat(options: UseAIChatOptions): UseAIChatReturn {
           // Update assistant message with final content
           const finalContent = message || useAIStore.getState().currentStreamContent;
           const commands = accumulatedCommandsRef.current;
-          console.log("[useAIChat] onDone - accumulated commands:", commands.length);
 
           if (currentAssistantMessageIdRef.current) {
             updateMessage(currentAssistantMessageIdRef.current, {
@@ -205,10 +200,7 @@ export function useAIChat(options: UseAIChatOptions): UseAIChatReturn {
 
           // Execute commands if any
           if (commands.length > 0) {
-            console.log("[useAIChat] Executing", commands.length, "commands");
             executePendingCommands();
-          } else {
-            console.log("[useAIChat] No commands to execute");
           }
         },
         onError: (errorMessage) => {

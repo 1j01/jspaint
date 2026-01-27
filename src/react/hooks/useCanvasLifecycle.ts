@@ -326,9 +326,11 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
         canvasInitialized = true;
 
         // Initialize history tree with blank canvas
-        if (!historyTreeInitialized) {
+        // Check if history tree actually exists in the store (not just the flag)
+        const historyState = useHistoryStore.getState();
+        if (!historyState.historyTree) {
           const initialImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          useHistoryStore.getState().pushState(initialImageData, "New Document");
+          historyState.pushState(initialImageData, "New Document");
           historyTreeInitialized = true;
         }
       }
