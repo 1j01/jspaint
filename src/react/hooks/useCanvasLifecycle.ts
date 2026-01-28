@@ -177,7 +177,7 @@ export function useCanvasLifecycle(canvasRef: RefObject<HTMLCanvasElement>) {
       return;
     }
 
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       return;
     }

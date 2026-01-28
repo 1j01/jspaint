@@ -124,9 +124,14 @@ export function getBrushPoints(size: number, shape: BrushShape = "circle"): Brus
 }
 
 /**
- * Flood fill algorithm (scanline-based).
+ * Flood fill algorithm (scanline-based) with chunked execution.
  * Fills a contiguous region of similar colors starting from a point.
  * Does nothing if clicking on the same color as the fill color.
+ *
+ * **Performance Optimization:**
+ * Uses chunked processing with requestIdleCallback (with setTimeout fallback)
+ * to avoid blocking the main thread during large fills. The fill operation
+ * is split into chunks of pixels processed per animation frame.
  *
  * **Tolerance Note:**
  * Uses a fixed tolerance of 2 (per RGB/A channel) to handle slight color variations
@@ -179,9 +184,16 @@ export function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY:
     return;
   }
 
+  // Track filled pixels to avoid revisiting
+  const filled = new Uint8Array(width * height);
+
   const stack: [number, number][] = [[clampedStartX, clampedStartY]];
 
-  const shouldFill = (pos: number): boolean => {
+  const shouldFill = (x: number, y: number): boolean => {
+    if (x < 0 || x >= width || y < 0 || y >= height) return false;
+    const idx = y * width + x;
+    if (filled[idx]) return false;
+    const pos = idx * 4;
     return (
       Math.abs(data[pos] - startR) <= tolerance &&
       Math.abs(data[pos + 1] - startG) <= tolerance &&
@@ -197,54 +209,96 @@ export function floodFill(ctx: CanvasRenderingContext2D, startX: number, startY:
     data[pos + 3] = fillA;
   };
 
-  while (stack.length > 0) {
-    const [x, y] = stack.pop()!;
+  // Process in chunks to avoid blocking the main thread
+  // For smaller regions, process synchronously; for larger ones, chunk
+  const CHUNK_SIZE = 5000; // Pixels per chunk
+  let pixelsProcessed = 0;
 
-    // Go up to find the top of the fill area
-    let currentY = y;
-    while (currentY >= 0 && shouldFill((currentY * width + x) * 4)) {
-      currentY--;
-    }
-    currentY++;
-    let pixelPos = (currentY * width + x) * 4;
+  const processChunk = (): boolean => {
+    const chunkStart = pixelsProcessed;
 
-    let reachLeft = false;
-    let reachRight = false;
+    while (stack.length > 0 && pixelsProcessed - chunkStart < CHUNK_SIZE) {
+      const [x, y] = stack.pop()!;
 
-    // Fill downward
-    while (currentY < height && shouldFill(pixelPos)) {
-      doFill(pixelPos);
+      // Skip if already filled or not matching color
+      if (!shouldFill(x, y)) continue;
 
-      // Check left
-      if (x > 0) {
-        if (shouldFill(pixelPos - 4)) {
-          if (!reachLeft) {
-            stack.push([x - 1, currentY]);
-            reachLeft = true;
-          }
-        } else {
-          reachLeft = false;
-        }
+      // Go up to find the top of the fill area
+      let currentY = y;
+      while (currentY > 0 && shouldFill(x, currentY - 1)) {
+        currentY--;
       }
 
-      // Check right
-      if (x < width - 1) {
-        if (shouldFill(pixelPos + 4)) {
-          if (!reachRight) {
-            stack.push([x + 1, currentY]);
-            reachRight = true;
-          }
-        } else {
-          reachRight = false;
-        }
-      }
+      let reachLeft = false;
+      let reachRight = false;
 
-      currentY++;
-      pixelPos = (currentY * width + x) * 4;
+      // Fill downward
+      while (currentY < height && shouldFill(x, currentY)) {
+        const idx = currentY * width + x;
+        const pixelPos = idx * 4;
+        filled[idx] = 1;
+        doFill(pixelPos);
+        pixelsProcessed++;
+
+        // Check left
+        if (x > 0) {
+          if (shouldFill(x - 1, currentY)) {
+            if (!reachLeft) {
+              stack.push([x - 1, currentY]);
+              reachLeft = true;
+            }
+          } else {
+            reachLeft = false;
+          }
+        }
+
+        // Check right
+        if (x < width - 1) {
+          if (shouldFill(x + 1, currentY)) {
+            if (!reachRight) {
+              stack.push([x + 1, currentY]);
+              reachRight = true;
+            }
+          } else {
+            reachRight = false;
+          }
+        }
+
+        currentY++;
+      }
     }
+
+    return stack.length === 0;
+  };
+
+  // For small fills, process synchronously
+  // For larger fills, use requestIdleCallback (with fallback)
+  const scheduleChunk = (callback: () => void) => {
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(() => callback(), { timeout: 50 });
+    } else {
+      setTimeout(callback, 0);
+    }
+  };
+
+  const processAllChunks = () => {
+    if (processChunk()) {
+      // Done - apply the result
+      ctx.putImageData(imageData, 0, 0);
+    } else {
+      // More to process
+      scheduleChunk(processAllChunks);
+    }
+  };
+
+  // Start processing - first chunk is synchronous for responsiveness
+  if (processChunk()) {
+    // Small fill completed synchronously
+    ctx.putImageData(imageData, 0, 0);
+  } else {
+    // Continue asynchronously
+    scheduleChunk(processAllChunks);
   }
-
-  ctx.putImageData(imageData, 0, 0);
 }
 
 /**

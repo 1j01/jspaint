@@ -5,7 +5,7 @@
  * Handles tool-specific interactions, drawing operations, and history saving.
  */
 
-import { RefObject, useCallback } from "react";
+import { RefObject, useCallback, useRef } from "react";
 import { TOOL_IDS, type ToolId } from "../context/state/types";
 import { MAGNIFICATION_LEVELS, TOOL_NAMES } from "../utils/canvasHelpers";
 import type { useCanvasCurvePolygon } from "./useCanvasCurvePolygon";
@@ -60,6 +60,28 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
     setMagnification,
   } = params;
 
+  // Throttle cursor position updates to reduce state changes
+  const cursorPositionRef = useRef<{ x: number; y: number } | null>(null);
+  const cursorUpdateFrameRef = useRef<number | null>(null);
+
+  const updateCursorPosition = useCallback(
+    (pos: { x: number; y: number } | null) => {
+      cursorPositionRef.current = pos;
+
+      // Cancel any pending update
+      if (cursorUpdateFrameRef.current !== null) {
+        cancelAnimationFrame(cursorUpdateFrameRef.current);
+      }
+
+      // Schedule update for next frame
+      cursorUpdateFrameRef.current = requestAnimationFrame(() => {
+        setCursorPosition(cursorPositionRef.current);
+        cursorUpdateFrameRef.current = null;
+      });
+    },
+    [setCursorPosition],
+  );
+
   /**
    * Pointer down event handler - initiates drawing operations.
    *
@@ -92,7 +114,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       const { x, y } = drawing.getCanvasCoords(e);
@@ -242,13 +264,13 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       const { x, y } = drawing.getCanvasCoords(e);
 
-      // Update cursor position for status bar
-      setCursorPosition({ x: Math.floor(x), y: Math.floor(y) });
+      // Update cursor position for status bar (throttled)
+      updateCursorPosition({ x: Math.floor(x), y: Math.floor(y) });
 
       // Handle selection
       if (selectionHook.isActive()) {
@@ -284,7 +306,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
         shapes.drawingState.current.lastY = y;
       }
     },
-    [canvasRef, drawing, setCursorPosition, selectionHook, selectedToolId, curvePolygon, shapes],
+    [canvasRef, drawing, updateCursorPosition, selectionHook, selectedToolId, curvePolygon, shapes],
   );
 
   /**
@@ -292,8 +314,8 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
    * Clears cursor position in state so the status bar shows no coordinates.
    */
   const handlePointerLeave = useCallback(() => {
-    setCursorPosition(null);
-  }, [setCursorPosition]);
+    updateCursorPosition(null);
+  }, [updateCursorPosition]);
 
   /**
    * Pointer up event handler - finalizes drawing operations.
@@ -310,7 +332,7 @@ export function useCanvasEventHandlers(params: UseCanvasEventHandlersParams): Ca
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       const { x, y } = drawing.getCanvasCoords(e);

@@ -1,10 +1,12 @@
 /**
  * Get all color-related state
  */
+import { useShallow } from "zustand/react/shallow";
 import { useSettingsStore } from "./settingsStore";
 
 /**
  * Hook to access color state and actions
+ * Uses useShallow to prevent re-renders when unrelated store properties change.
  * @returns {{
  *   primaryColor: string;
  *   secondaryColor: string;
@@ -15,19 +17,14 @@ import { useSettingsStore } from "./settingsStore";
  * }} Color state and actions
  */
 export function useColors() {
-  const primaryColor = useSettingsStore((state) => state.primaryColor);
-  const secondaryColor = useSettingsStore((state) => state.secondaryColor);
-  const palette = useSettingsStore((state) => state.palette);
-  const setPrimaryColor = useSettingsStore((state) => state.setPrimaryColor);
-  const setSecondaryColor = useSettingsStore((state) => state.setSecondaryColor);
-  const swapColors = useSettingsStore((state) => state.swapColors);
-
-  return {
-    primaryColor,
-    secondaryColor,
-    palette,
-    setPrimaryColor,
-    setSecondaryColor,
-    swapColors,
-  };
+  return useSettingsStore(
+    useShallow((state) => ({
+      primaryColor: state.primaryColor,
+      secondaryColor: state.secondaryColor,
+      palette: state.palette,
+      setPrimaryColor: state.setPrimaryColor,
+      setSecondaryColor: state.setSecondaryColor,
+      swapColors: state.swapColors,
+    })),
+  );
 }
