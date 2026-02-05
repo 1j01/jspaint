@@ -1544,6 +1544,21 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
 
+function update_about_paint_icon() {
+	const $icon = $("#about-paint-icon");
+	if (!$icon.length) {
+		return;
+	}
+	if (is_pride_month) {
+		$icon.attr("src", "./images/icons/gay-es-paint-128x128.png");
+	} else if (get_theme() === "windows-xp.css") {
+		$icon.attr("src", "./images/icons/xp-paint-128x128.png");
+	} else {
+		$icon.attr("src", "images/icons/128x128.png");
+	}
+}
+$G.on("theme-load", update_about_paint_icon);
+
 /** @type {OSGUI$Window} */
 let $news_window;
 const $this_version_news = $("#news");
@@ -1570,9 +1585,8 @@ function show_about_paint() {
 		minimizeButton: false,
 	});
 	$about_paint_window.addClass("about-paint squish");
-	if (is_pride_month) {
-		$("#about-paint-icon").attr("src", "./images/icons/gay-es-paint-128x128.png");
-	}
+
+	update_about_paint_icon();
 
 	$about_paint_window.$content.append($about_paint_content.show()).css({ padding: "15px" });
 
