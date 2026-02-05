@@ -1538,10 +1538,7 @@ progress.inset-deep:not([value])::-moz-progress-bar {
 
 /* About Paint Window */
 .about-paint .window-content {
-	margin-left: 1%;
-	margin-right: 1%;
     padding: 0 !important;
-    /* background: #ece9d8; */
     overflow: hidden; /* Prevent header from stretching outside window */
     -webkit-font-smoothing: antialiased !important;
 }
@@ -1550,7 +1547,7 @@ progress.inset-deep:not([value])::-moz-progress-bar {
 #about-paint-header {
     background: linear-gradient(to right, #6286e1, #9cb9f5, #6286e1);
     padding: 15px;
-    margin: 0 !important;
+    margin: 0 3px !important;
     box-sizing: border-box;
     position: relative;
     display: flex;
@@ -1582,6 +1579,7 @@ progress.inset-deep:not([value])::-moz-progress-bar {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-self: center;
     margin-left: 2px;
 }
 
@@ -1632,7 +1630,7 @@ progress.inset-deep:not([value])::-moz-progress-bar {
 
 /* Update status area */
 #jspaint-update-status-area {
-    margin: 8px 15px;
+    margin: 2px 0 0;
     font-family: "Tahoma", sans-serif;
     font-size: 11px;
 }
@@ -1640,6 +1638,8 @@ progress.inset-deep:not([value])::-moz-progress-bar {
 #maybe-outdated-line {
     font-style: italic;
     color: #666666;
+    margin-top: 0;
+    min-height: 0;
 }
 
 /* News button */
