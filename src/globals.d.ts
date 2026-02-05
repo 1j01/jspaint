@@ -449,8 +449,10 @@ interface Window {
 	// help.js
 	jQuery: JQueryStatic; // help.js reaches into iframe to use jQuery
 	MouseEvent: typeof MouseEvent; // help.js reaches into iframe and uses MouseEvent
-	applyTheme: (cssProperties: Record<string, string>, documentElement?: HTMLElement) => void; // this is defined in 98.js.org... does it actually exist [when running in 98.js.org]? btw HTMLHtmlElement would be more specific, but document.documentElement is typed as HTMLElement, so it'd just be annoying
+	applyTheme: (cssProperties: Record<string, string>, options?: { element?: HTMLElement, recurseIntoIframes?: boolean }) => void; // this is defined in 98.js.org... does it actually exist [when running in 98.js.org]? btw HTMLHtmlElement would be more specific, but document.documentElement is typed as HTMLElement, so it'd just be annoying
 	themeCSSProperties: Record<string, string>;
+	theme_file_name: string;
+	getThemeCSSProperties: (element: HTMLElement) => Record<string, string>;
 	// file-format-data.js
 	image_formats: ImageFileFormat[];
 	palette_formats: PaletteFileFormat[];

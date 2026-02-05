@@ -45,9 +45,28 @@ theme_link.href = href_for(current_theme);
 theme_link.id = "theme-link";
 document.head.appendChild(theme_link);
 
+/** @type {any} */
+const window_any = window;
+
+window_any.theme_file_name = current_theme;
+function update_theme_css_properties() {
+	if (window_any.getThemeCSSProperties) {
+		window_any.themeCSSProperties = window_any.getThemeCSSProperties(document.documentElement);
+	}
+}
+// Initial properties may not be ready if getThemeCSSProperties is defined later (lib/os-gui/parse-theme.js)
+setTimeout(update_theme_css_properties, 0);
+
 update_not_for_modern_theme();
 
 const get_theme = () => current_theme;
+
+const signal_theme_load = () => {
+	if (window_any.$) {
+		window_any.$(window).triggerHandler("theme-load");
+		window_any.$(window).trigger("resize"); // not exactly, but get dynamic cursor to update its offset
+	}
+};
 
 const set_theme = (theme) => {
 	current_theme = theme;
@@ -58,13 +77,12 @@ const set_theme = (theme) => {
 		grinch_button?.remove();
 	} catch (_error) { /* ignore */ }
 
-	const signal_theme_load = () => {
-		$(window).triggerHandler("theme-load");
-		$(window).trigger("resize"); // not exactly, but get dynamic cursor to update its offset
-	};
-
-	wait_for_theme_loaded(theme, signal_theme_load);
+	wait_for_theme_loaded(theme, () => {
+		signal_theme_load();
+		update_theme_css_properties();
+	});
 	theme_link.href = href_for(theme);
+	window_any.theme_file_name = theme;
 
 	update_not_for_modern_theme();
 

@@ -370,7 +370,15 @@ function $Iframe(options) {
 		// This try-catch may only be needed for running Cypress tests.
 		try {
 			if (window.themeCSSProperties && window.applyTheme) {
-				window.applyTheme(window.themeCSSProperties, iframe.contentDocument.documentElement);
+				window.applyTheme(window.themeCSSProperties, { element: iframe.contentDocument.documentElement, recurseIntoIframes: true });
+			}
+			if (window.theme_file_name) {
+				const theme_link = iframe.contentDocument.createElement("link");
+				theme_link.rel = "stylesheet";
+				theme_link.type = "text/css";
+				theme_link.href = `../styles/themes/${window.theme_file_name}`;
+				theme_link.id = "theme-link";
+				iframe.contentDocument.head.appendChild(theme_link);
 			}
 
 			// on Wayback Machine, and iframe's url not saved yet

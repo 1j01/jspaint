@@ -41,7 +41,12 @@
 .jspaint {
 	background: var(--ButtonFace);
 }
-body,
+body {
+	background: transparent;
+}
+.help-window iframe {
+	background: #fff;
+}
 .canvas-area {
 	background: var(--AppWorkspace);
 }

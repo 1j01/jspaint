@@ -1136,6 +1136,20 @@ const menus = {
 					enabled: () => get_theme() != "bubblegum.css",
 					description: localize("Makes JS Paint look like pearlescent bubblegum."),
 				},
+				{
+					emoji_icon: "🟦",
+					label: localize("Windows &XP"),
+					speech_recognition: [
+						"windows xp theme", "switch to windows xp theme", "use windows xp theme", "set theme to windows xp", "set theme windows xp", "switch to windows xp theme", "switch theme to windows xp", "switch theme windows xp",
+						"xp theme", "switch to xp theme", "use xp theme", "set theme to xp", "set theme xp", "switch to xp theme", "switch theme to xp", "switch theme xp",
+						"windows xp", "xp",
+					],
+					action: () => {
+						set_theme("windows-xp.css");
+					},
+					enabled: () => get_theme() != "windows-xp.css",
+					description: localize("Makes JS Paint look like Windows XP."),
+				},
 				// {
 				// 	emoji_icon: "🪐",
 				// 	label: localize("&Retro Futurist"),

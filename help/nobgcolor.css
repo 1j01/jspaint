@@ -4,6 +4,7 @@
 @import "../lib/os-gui/build/windows-98.css";
 
 body {
+	background: transparent;
 	font-size: 70%;
 	font-family: Verdana, Arial, Helvetica, "MS Sans Serif";
 }
