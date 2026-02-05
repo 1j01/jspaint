@@ -15,6 +15,7 @@ import { apply_image_transformation, draw_grid, draw_selection_box, flip_horizon
 import { show_imgur_uploader } from "./imgur.js";
 import { showMessageBox } from "./msgbox.js";
 import { localStore } from "./storage.js";
+import { get_theme } from "./theme.js";
 import { TOOL_CURVE, TOOL_FREE_FORM_SELECT, TOOL_POLYGON, TOOL_SELECT, TOOL_TEXT, tools } from "./tools.js";
 // `sessions.js` must be loaded after `app.js`
 // This would cause it to be loaded earlier, and error trying to access `undos`
@@ -747,6 +748,10 @@ function update_title() {
 
 	if (is_pride_month) {
 		$("link[rel~='icon']").attr("href", "./images/icons/gay-es-paint-16x16-light-outline.png");
+	} else if (get_theme() === "windows-xp.css") {
+		$("#about-paint-icon").attr("src", "./images/icons/xp-paint-128x128.png");
+	} else {
+		$("#about-paint-icon").attr("src", "images/icons/128x128.png");
 	}
 
 	if (window.setRepresentedFilename) {
@@ -1539,6 +1544,21 @@ function show_file_format_errors({ as_image_error, as_palette_error }) {
 let $about_paint_window;
 const $about_paint_content = $("#about-paint");
 
+function update_about_paint_icon() {
+	const $icon = $("#about-paint-icon");
+	if (!$icon.length) {
+		return;
+	}
+	if (is_pride_month) {
+		$icon.attr("src", "./images/icons/gay-es-paint-128x128.png");
+	} else if (get_theme() === "windows-xp.css") {
+		$icon.attr("src", "./images/icons/xp-paint-128x128.png");
+	} else {
+		$icon.attr("src", "images/icons/128x128.png");
+	}
+}
+$G.on("theme-load", update_about_paint_icon);
+
 /** @type {OSGUI$Window} */
 let $news_window;
 const $this_version_news = $("#news");
@@ -1565,9 +1585,8 @@ function show_about_paint() {
 		minimizeButton: false,
 	});
 	$about_paint_window.addClass("about-paint squish");
-	if (is_pride_month) {
-		$("#about-paint-icon").attr("src", "./images/icons/gay-es-paint-128x128.png");
-	}
+
+	update_about_paint_icon();
 
 	$about_paint_window.$content.append($about_paint_content.show()).css({ padding: "15px" });
 
@@ -1936,7 +1955,7 @@ function render_history_as_gif() {
 			$win.title("Rendered GIF");
 			const blob_url = URL.createObjectURL(blob);
 			$output.empty().append(
-				$(E("div")).addClass("inset-deep").append(
+				$(E("div")).addClass("inset-deep rendered-gif-preview").append(
 					$(E("img")).attr({
 						src: blob_url,
 						width,
@@ -2295,6 +2314,11 @@ function show_document_history() {
 	$mode_select.css({
 		margin: "10px",
 	});
+
+	// Hotfix for bug where the dropdown would close immediately when clicked in Chrome.
+	$mode_select[0].focus = () => { };
+	$w.$content[0].focus = () => { };
+
 	let mode = $mode_select.val();
 	$mode_select.on("change", () => {
 		mode = $mode_select.val();

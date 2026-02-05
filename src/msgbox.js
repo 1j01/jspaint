@@ -9,11 +9,13 @@
 // or, couldn't we just provide the default in a wrapper function, similar to how 98.js.org does it?
 
 import { make_window_supporting_scale } from "./$ToolWindow.js";
+import { get_theme } from "./theme.js";
 // import { localize } from "./app-localization.js";
 
 const exports = {};
 
 const CHORD_WAV_URL = "audio/chord.wav";
+const XP_EXCLAMATION_WAV_URL = "audio/XP_Exclamation.wav";
 
 try {
 	// <audio> element is simpler for sound effects,
@@ -21,8 +23,12 @@ try {
 	// It's very silly. Also, on subsequent plays, it only plays part of the sound.
 	// And Web Audio API is better for playing SFX anyway because it can play a sound overlapping with itself.
 	const audioContext = window.audioContext = window.audioContext || new AudioContext();
-	const audio_buffer_promise =
+	const chord_buffer_promise =
 		fetch(CHORD_WAV_URL)
+			.then((response) => response.arrayBuffer())
+			.then((array_buffer) => audioContext.decodeAudioData(array_buffer));
+	const xp_exclamation_buffer_promise =
+		fetch(XP_EXCLAMATION_WAV_URL)
 			.then((response) => response.arrayBuffer())
 			.then((array_buffer) => audioContext.decodeAudioData(array_buffer));
 	var play_chord = async function () {
@@ -31,7 +37,9 @@ try {
 		// so that it works the first time.
 		// (This only works if the message box is opened during a user gesture.)
 
-		const audio_buffer = await audio_buffer_promise;
+		// Use XP exclamation sound for Windows XP theme, default chord for all others
+		const is_xp_theme = get_theme() === "windows-xp.css";
+		const audio_buffer = await (is_xp_theme ? xp_exclamation_buffer_promise : chord_buffer_promise);
 		const source = audioContext.createBufferSource();
 		source.buffer = audio_buffer;
 		source.connect(audioContext.destination);
@@ -47,7 +55,7 @@ try {
  * @property {string} [message]
  * @property {string} [messageHTML]
  * @property {Array<{ label: string, value: string, default?: boolean, action?: () => void }>} [buttons]
- * @property {"error" | "warning" | "info" | "nuke"} [iconID]
+ * @property {"error" | "warning" | "info" | "question" | "nuke"} [iconID]
  * @property {OSGUIWindowOptions} [windowOptions]
  *
  * @typedef {Promise<string> & { $window: JQuery<Window>, $message: JQuery<HTMLDivElement>, promise: MessageBoxPromise }} MessageBoxPromise
@@ -91,8 +99,20 @@ function showMessageBox_implementation({
 				wordWrap: "break-word",
 			});
 		}
+		let icon_src = `images/${iconID}-32x32-8bpp.png`;
+		if (get_theme() === "windows-xp.css") {
+			if (iconID === "warning") {
+				icon_src = "images/warning-xp-32x32.png";
+			} else if (iconID === "error") {
+				icon_src = "images/error-xp-32x32.png";
+			} else if (iconID === "info") {
+				icon_src = "images/info-xp-32x32.png";
+			} else if (iconID === "question") {
+				icon_src = "images/question-xp-32x32.png";
+			}
+		}
 		$("<div>").append(
-			$("<img width='32' height='32'>").attr("src", `images/${iconID}-32x32-8bpp.png`).css({
+			$("<img width='32' height='32'>").attr("src", icon_src).css({
 				margin: "16px",
 				display: "block",
 			}),

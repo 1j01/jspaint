@@ -418,7 +418,15 @@ body {
 	padding-left: 8px;
 }
 
-body,
+body {
+	background: transparent;
+}
+.jspaint {
+	background: var(--window-background-color);
+}
+.help-window iframe {
+	background: #fff;
+}
 .canvas-area {
 	background: var(--canvas-area-background-color);
 }
