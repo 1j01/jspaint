@@ -323,7 +323,7 @@ Electron app features:
 - Basics:
   - Execution is blocked by default on Mac and Windows
     - On macOS you need to Ctrl+click the file and then say Open
-    - On Windows, you need to say "More info" and then "Run" (or "Run anyway"?)
+    - On Windows, you need to say "More info" and then "Run anyway"
     - I would need to pay a fee for code signing to avoid this. It's basically *security by extortion*.
   - There are no automatic updates. Apparently I would need to pay a fee for code signing to get this free service.
     - That said, **Help > About Paint** can tell you if JS Paint is out of date, at least in terms of news updates.
