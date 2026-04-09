@@ -46,6 +46,14 @@
 		// Maintaining current indentation for now, but could remove this for consistency.
 		"editor.detectIndentation": true,
 	},
+	"[yaml]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 2,
+	},
+	"[github-actions-workflow]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 2,
+	},
 	// Use local TypeScript version instead of the one bundled with VS Code.
 	// You may need to run "TypeScript: Select TypeScript Version..." and choose "Use workspace version"
 	// or that command might just set this setting for you, I'm not sure.

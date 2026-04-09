@@ -265,6 +265,8 @@ export default [
 			"prune-globals.js",
 			"cypress/plugins/index.js",
 			"localization/*.js",
+			"scripts/**/*.js",
+			"jspaint-bin.js",
 		],
 		"languageOptions": {
 			"sourceType": "commonjs",

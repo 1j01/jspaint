@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+	xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+	xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+	xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+	xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+>
+	<Identity Name="IsaiahOdhner.JSPaint"
+		Version="1.0.0.0"
+		Publisher="CN=CE6477EF-1F09-4D35-B865-45A402CC8784" />
+	<Properties>
+		<DisplayName>JS Paint</DisplayName>
+		<PublisherDisplayName>Isaiah Odhner</PublisherDisplayName>
+		<Description>MS Paint clone with extra features.</Description>
+		<!-- TODO: supposed to be 50x50 (I think) -->
+		<Logo>app/resources/app/images/icons/512x512.png</Logo>
+	</Properties>
+	<Dependencies>
+		<!-- TODO: real numbers... electron-windows-msix seems to treat
+		 the min version as an EXACT VERSION OF THE SDK THAT MUST EXIST
+		 It HAS logic to find the actual installed version, but how do we trigger that (fallback) logic? -->
+		<TargetDeviceFamily
+			Name="Windows.Desktop"
+			MinVersion="10.0.26100.0"
+			MaxVersionTested="10.0.26100.0" />
+	</Dependencies>
+	<Resources>
+		<Resource Language="en-US" />
+	</Resources>
+	<Capabilities>
+		<rescap:Capability Name="runFullTrust" />
+		<!-- might be needed for pasting image URLs or other features -->
+		<Capability Name="internetClient" />
+		<!-- microphone is probably needed for Extras > Speech Recognition -->
+		<DeviceCapability Name="microphone" />
+		<!-- for Tracky Mouse (Extras > Head Tracker) -->
+		<DeviceCapability Name="webcam" />
+	</Capabilities>
+	<Applications>
+		<Application
+			Id="JSPaint"
+			Executable="app/jspaint.exe"
+			uap10:RuntimeBehavior="packagedClassicApp"
+			uap10:TrustLevel="mediumIL">
+			<!-- TODO: proper icon sizes -->
+			<uap:VisualElements
+				DisplayName="JS Paint"
+				Description="MS Paint clone with extra features."
+				Square150x150Logo="app/resources/app/images/icons/512x512.png"
+				Square44x44Logo="app/resources/app/images/icons/512x512.png"
+				BackgroundColor="#FFFF00" />
+		</Application>
+	</Applications>
+</Package>

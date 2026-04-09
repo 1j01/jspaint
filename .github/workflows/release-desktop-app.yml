@@ -1,0 +1,59 @@
+name: Release Electron App
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+permissions:
+  id-token: write # Required for OIDC
+  contents: write # Required for creating releases
+jobs:
+  publish:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Build and upload binaries
+        run: npm run electron:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JSPAINT_OFFICIAL_RELEASE: "true"
+
+      - name: Extract changelog section
+        if: runner.os == 'Windows'
+        id: changelog
+        shell: bash
+        run: node scripts/release/extract-changelog.js >> $GITHUB_OUTPUT
+
+      - name: Update Release
+        if: runner.os == 'Windows'
+        uses: ncipollo/release-action@v1.20.0
+        with:
+          body: ${{ steps.changelog.outputs.changelog }}
+          allowUpdates: true
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true
+
+      # - name: Publish to Windows Store
+      #   uses: isaacrlevin/windows-store-action@25ac1ac31e3434add3fede11f458a453fe371fb0
+      #   with:
+      #     tenant-id: ${{ secrets.AZURE_AD_TENANT_ID }}
+      #     client-id: ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }}
+      #     client-secret: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+      #     app-id: ${{ secrets.STORE_APP_ID }}
+      #     package-path: "${{ github.workspace }}/out/make/msix/x64/JS Paint.msix"

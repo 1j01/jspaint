@@ -399,6 +399,10 @@ You can build for production with `npm run electron:make`
 There is a VS Code launch task for debugging the Electron main process.
 For the renderer process, you can use the embedded Chrome DevTools.
 
+It is also possible to run JS Paint without Electron Forge, using `npx jspaint`; this is nice for testing the CLI, e.g. `npx jspaint --help` or `npx jspaint images/98.js.org.svg`
+
+New releases are built in GitHub Actions. See [Release Process](./release-process.md).
+
 [Live Server]: https://github.com/1j01/live-server
 [Node.js]: https://nodejs.org/
 [electron-debug]: https://github.com/sindresorhus/electron-debug

@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const sharedDebRpmOptions = {
 	name: "jspaint",
 	productName: "JS Paint",
@@ -25,6 +27,8 @@ const sharedDebRpmOptions = {
 		"application/x-gimp-palette",
 	],
 };
+
+/** @type {import('@electron-forge/shared-types').ForgeConfig} */
 module.exports = {
 	packagerConfig: {
 		icon: "./images/icons/jspaint",
@@ -76,6 +80,19 @@ module.exports = {
 		// TODO: maybe
 		// https://electron.github.io/packager/main/interfaces/Options.html#darwinDarkModeSupport
 	},
+	hooks: {
+		// eslint-disable-next-line require-await
+		packageAfterCopy: async (_forgeConfig, buildPath) => {
+			// Add marker file for official releases built in CI
+			if (process.env.JSPAINT_OFFICIAL_RELEASE) {
+				const markerPath = require("path").join(buildPath, "official-release.txt");
+				fs.writeFileSync(markerPath, "This file marks this build as an official release.");
+				console.log("Created official release marker:", markerPath);
+			} else {
+				console.log("Not creating official release marker since JSPAINT_OFFICIAL_RELEASE is not set.");
+			}
+		},
+	},
 	makers: [
 		{
 			name: "@electron-forge/maker-squirrel",
@@ -87,6 +104,15 @@ module.exports = {
 				iconUrl: "https://raw.githubusercontent.com/1j01/jspaint/5af996478e28a32627794526ec9d25a799187119/images/icons/192x192.png",
 				setupIcon: "./images/icons/jspaint.ico",
 				loadingGif: "images/about/flagani.gif",
+			},
+		},
+		{
+			name: "@electron-forge/maker-msix",
+			config: {
+				appManifest: "./Package.appxmanifest",
+				logLevel: "debug",
+				// Windows Store supposedly allows certificates but they cause problems and won't be used anyway
+				sign: false,
 			},
 		},
 		{
@@ -114,6 +140,65 @@ module.exports = {
 				},
 			},
 		},
+		{
+			name: "@reforged/maker-appimage",
+			config: {
+				options: {
+					// No productDescription field?
+					// There is an option to specify a desktopFile...
+					// Note: For maker-deb, "bin" has to match "name" from the package.json of the electron app
+					bin: "jspaint",
+					name: "jspaint",
+					productName: "JS Paint",
+					genericName: "Image Editor",
+					homepage: "https://jspaint.app/about",
+					icon: "images/icons/512x512.png",
+					categories: [
+						"Graphics",
+					],
+					// TODO: specify mime types?
+					keywords: [
+						"paint",
+						"jspaint",
+						"mspaint",
+						"MS Paint",
+						"Microsoft Paint",
+						"Paintbrush",
+						"drawing tool",
+						"draw",
+						"art tool",
+						"image",
+						"image editor",
+						"picture",
+						"editor",
+						"edit",
+						"canvas",
+						"remake",
+						"recreation",
+						"clone",
+						"image editing",
+						"image editor",
+						"image manipulation",
+						"raster",
+						"graphics",
+						"graphics editing",
+						"graphics editor",
+						"retro",
+						"vaporwave",
+						"aesthetic",
+						"nostalgia",
+						"90s",
+						"1990s",
+						"electron app",
+						"png",
+						"tiff",
+						"jpeg",
+						"bmp",
+						"bitmap",
+					],
+				},
+			},
+		},
 	],
 	publishers: [
 		{
@@ -123,7 +208,7 @@ module.exports = {
 					owner: "1j01",
 					name: "jspaint",
 				},
-				prerelease: true,
+				prerelease: false,
 				draft: true,
 			},
 		},
