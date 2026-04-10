@@ -262,14 +262,13 @@
 							</a>
 						</li>
 						<li>
-							<!-- TODO: make this link primary, others secondary -->
 							<a id="download-link-linux-appimage"
 								href="https://github.com/1j01/jspaint/releases/download/v1.1.0-beta.1/JS-Paint-1.1.0-x64.AppImage"><span
 									class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
 										alt="Linux mascot Tux the penguin"></span>Download <span
 									class="big">.AppImage</span>
 								(x64)
-								for any Linux distribution
+								for Linux
 							</a>
 						</li>
 						<li>
@@ -336,22 +335,10 @@
 					"Windows": downloadLinkWindows,
 					"Mac": downloadLinkMac,
 					"iOS": downloadLinkMac,
-					"Linux": [downloadLinkLinuxAppImage, downloadLinkLinuxDeb, downloadLinkLinuxRpm],
+					"Linux": downloadLinkLinuxAppImage,
 				}[os] ?? downloadLinkViewAllReleases;
 				const downloadImageHTML = mainDownloadLink.innerHTML + "<br>";
-				if (specificLink instanceof Array) {
-					const mainDownloadLink2 = mainDownloadLink.cloneNode(true);
-					mainDownloadLink.parentNode.insertBefore(mainDownloadLink2, mainDownloadLink.nextSibling);
-
-					mainDownloadLink.href = specificLink[0].href;
-					mainDownloadLink.innerHTML = specificLink[0].innerHTML.replace("Download", downloadImageHTML);
-
-					mainDownloadLink2.href = specificLink[1].href;
-					mainDownloadLink2.innerHTML = specificLink[1].innerHTML.replace("Download", downloadImageHTML);
-
-					mainDownloadLink.querySelector(".big").style.fontSize = "1.5em";
-					mainDownloadLink2.querySelector(".big").style.fontSize = "1.5em";
-				} else if (specificLink) {
+				if (specificLink) {
 					mainDownloadLink.href = specificLink.href;
 					mainDownloadLink.innerHTML = specificLink.innerHTML.replace("Download", downloadImageHTML);
 				}
