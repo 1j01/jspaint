@@ -262,10 +262,9 @@
 							</a>
 						</li>
 						<li>
-							<!-- TODO: make sure the DL link is correct -->
 							<!-- TODO: make this link primary, others secondary -->
 							<a id="download-link-linux-appimage"
-								href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/JS.Paint.1.0.0-x64.AppImage"><span
+								href="https://github.com/1j01/jspaint/releases/download/v1.0.0-beta.1/JS-Paint-1.0.0-x64.AppImage"><span
 									class="os-icon"><img src="images/about/linuxlogo.gif" width="30" height="35"
 										alt="Linux mascot Tux the penguin"></span>Download <span
 									class="big">.AppImage</span>
@@ -305,6 +304,7 @@
 		<script>
 			const downloadLinkWindows = document.querySelector("#download-link-windows");
 			const downloadLinkMac = document.querySelector("#download-link-mac");
+			const downloadLinkLinuxAppImage = document.querySelector("#download-link-linux-appimage");
 			const downloadLinkLinuxDeb = document.querySelector("#download-link-linux-deb");
 			const downloadLinkLinuxRpm = document.querySelector("#download-link-linux-rpm");
 			const downloadLinkViewAllReleases = document.querySelector("#download-link-view-all-releases");
@@ -336,7 +336,7 @@
 					"Windows": downloadLinkWindows,
 					"Mac": downloadLinkMac,
 					"iOS": downloadLinkMac,
-					"Linux": [downloadLinkLinuxDeb, downloadLinkLinuxRpm],
+					"Linux": [downloadLinkLinuxAppImage, downloadLinkLinuxDeb, downloadLinkLinuxRpm],
 				}[os] ?? downloadLinkViewAllReleases;
 				const downloadImageHTML = mainDownloadLink.innerHTML + "<br>";
 				if (specificLink instanceof Array) {
