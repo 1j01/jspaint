@@ -19,8 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### App
 
 #### Added
-- **macOS menu bar integration** - this mirrors the menu bar in the app to the macOS menu bar
-- Enabled silly **Extras > Draw Randomly**
+- **AppImage** build for Linux (in addition to the existing .deb and .rpm builds)
+- **macOS menu bar integration** (the menu bar in the app is now mirrored to the macOS menu bar)
+- (Enabled silly **Extras > Draw Randomly**)
 - **Extras > Themes > Bubblegum**
 - **Extras > Head Tracker** powered by [Tracky Mouse](https://trackymouse.js.org)
 - **View > Text Toolbar** to toggle the Fonts box
@@ -62,7 +63,7 @@ allowing the Fonts box to list all installed fonts when using the Text tool.
 - Set up ESLint and improved code consistency
 - Added typechecking all across the codebase
 - Updated os-gui.js and tracky-mouse.js
-- Automated the desktop app release process with GitHub Actions and scripts developed for the Tracky Mouse project (
+- Automated the desktop app release process with GitHub Actions and scripts developed for the Tracky Mouse project (745852fa9c4af6fb7986e7515987da77c518707f)
 
 ### External
 - Added a [Privacy Policy](https://jspaint.app/privacy.html)
