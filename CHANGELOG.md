@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Fixed
 
-- Fix error from looking in the wrong place for menus when embedded (421fad7dc25c4d27caa46535a2641b12e49a9b18, 04804396e187b1bf4af9cc31ca449d18661f97ed)
+- Fixed error from looking in the wrong place for menus when embedded (421fad7dc25c4d27caa46535a2641b12e49a9b18, 04804396e187b1bf4af9cc31ca449d18661f97ed)
 
 ### App
 
@@ -32,29 +32,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved Imgur upload error dialogs (cbfc9cad47b3aa3c6a8acc6ce525b2b426608dca)
 - Split out "Eye Gaze Mode" into discrete features: "Enlarge UI", "Quick Undo Button", "Dwell Clicker"
   - You can now drag toolbars while the UI is enlarged (7094171b1644391f4ea3b3467865952c39427a4e)
-  - Limit scale of Tools/Colors boxes in Enlarge UI mode (431a53e1607fb797ca82ca0f79a3318e98cec8cf)
-- Change width/height separator to an 'x' in status bar (was a comma) (884f9ddaee32e1b0c8756c10ba1643076e8e1231)
-- Implement size status indicator for all tools (3500496b0801a52e05d5ae69f6f98bb09e477e86)
-- Add offset effect to pressed buttons in font box (10a32c77382b58b74d8728d2ca4b0126020b175a)
+  - Limited scale of Tools/Colors boxes in Enlarge UI mode (431a53e1607fb797ca82ca0f79a3318e98cec8cf)
+- Changed width/height separator to an 'x' in status bar (was a comma) (884f9ddaee32e1b0c8756c10ba1643076e8e1231)
+- Implemented size status indicator for all tools (3500496b0801a52e05d5ae69f6f98bb09e477e86)
+- Added offset effect to pressed buttons in font box (10a32c77382b58b74d8728d2ca4b0126020b175a)
 
 #### Fixed
-- Hide canvas border, in-progress polygons/curves, and fix size of document when printing (e558cc8a7bea1ec255c72011a9f24dd7c813127e, f0d08abaec698f72ac2c00f833a4c54c366092b3, dbee6258d351ef455eae3b3d01391c3a8b9eef47)
-- Fix drawing position misalignment with cursor (e34b257ec1726ad52b68705fca8920afd4730c1c)
-- Fix Help Topics window iframe being blocked by CSP (not sure if this was broken in the last release) (79481feee403d1737642fd40b72111223c0b210e)
-- Prompt to save changes when clicking **File > Exit** (e1bf0d73b59bb6a5a8a4404e2a2c4528d4b72566)
+- When printing, the canvas border and in-progress polygons/curves are now hidden, and the size of the document is fixed (e558cc8a7bea1ec255c72011a9f24dd7c813127e, f0d08abaec698f72ac2c00f833a4c54c366092b3, dbee6258d351ef455eae3b3d01391c3a8b9eef47)
+- Fixed drawing position misalignment with cursor (e34b257ec1726ad52b68705fca8920afd4730c1c)
+- Fixed Help Topics window iframe being blocked by CSP (not sure if this was actually broken in the last release) (79481feee403d1737642fd40b72111223c0b210e)
+- Fixed prompt to save changes when clicking **File > Exit** (e1bf0d73b59bb6a5a8a4404e2a2c4528d4b72566)
 - Fixed Shift+Insert, Ctrl+Insert, and Ctrl+Delete shortcuts (e3ef424d61e0621e36adeeaa37070d07cf7f5d29)
 - Fixed error handling for clipboard access (193404199b384532a945f382a56fa2deca679950)
-- Fix format selection when saving a palette in the Electron app (2f8f4e7c51a0c1b2d2d26828855d888e8ed641f9)
-- Fix default file name when saving selection with **Edit > Copy To** or **File > Set As Wallpaper** (fc59a369fd306bedc31611e6729f4fc2ae9e2cc0, 8f89d874a77cc8cf00e4731e3979ceaac070aad7)
-- Fix tiled checkboxes in Electron app in Enlarge UI mode (f367ce043a81c7fdea2c506fcf5aee1ac18b56e3)
-- Scale menus down as needed in Enlarge UI mode to fit all items 
-- Prevent opening image dropped on news window (77d341378f9a8d84f0f922ab6545e4cab5fca038)
-- Handle smooth scrolling for zooming with mousewheel/trackpad (170fc0531a772ad47f30e87b337eb6d1b1af836c)
-- Update electron to 20.3.12 (1d4bfd0b3aec3746e37c45249b163e784d1dfd17)
+- Fixed format selection when saving a palette in the Electron app (2f8f4e7c51a0c1b2d2d26828855d888e8ed641f9)
+- Fixed default file name when saving selection with **Edit > Copy To** or **File > Set As Wallpaper** (fc59a369fd306bedc31611e6729f4fc2ae9e2cc0, 8f89d874a77cc8cf00e4731e3979ceaac070aad7)
+- Fixed tiled checkboxes (a visual bug) in the Electron app in Enlarge UI mode (f367ce043a81c7fdea2c506fcf5aee1ac18b56e3)
+- Menus are now scaled down as needed in Enlarge UI mode to fit all items 
+- An image dropped on news window will no longer open the image in the app (77d341378f9a8d84f0f922ab6545e4cab5fca038)
+- Added handling for smooth scrolling for zooming with mousewheel/trackpad (170fc0531a772ad47f30e87b337eb6d1b1af836c)
+- Updated electron to 20.3.12 (1d4bfd0b3aec3746e37c45249b163e784d1dfd17)
   - This brings in Chrome 104 which supports the Local Font Access API,
 allowing the Fonts box to list all installed fonts when using the Text tool.
-- Fix fonts dropdown closing immediately when clicked in Chrome (bc07ca1bce9209cc0dbbccb667fa98cd7f7a52f8)
-- Fix centering About window on small screens (2aa2e66b8ba5927ee833b68480342f1d62477940)
+- Fixed fonts dropdown closing immediately when clicked in Chrome (bc07ca1bce9209cc0dbbccb667fa98cd7f7a52f8)
+- Fixed About window centering on small screens (2aa2e66b8ba5927ee833b68480342f1d62477940)
 
 ### Internal
 
