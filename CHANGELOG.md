@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Changed
 - Restructured About window content (7bc134226f9994cd68fd69d78fb0343f5c873d53, c1b407d9134af75533adb3fd3938a82d3a2d71dd, da994966ec2231743867f232d8e1fb334071b512, be03638fad35a51cacef5c4f524c81581c2be587)
+  - (It's now much more compact while including more information)
 - Improved Imgur upload error dialogs (cbfc9cad47b3aa3c6a8acc6ce525b2b426608dca)
 - Split out "Eye Gaze Mode" into discrete features: "Enlarge UI", "Quick Undo Button", "Dwell Clicker"
   - You can now drag toolbars while the UI is enlarged (7094171b1644391f4ea3b3467865952c39427a4e)
