@@ -71,7 +71,9 @@ allowing the Fonts box to list all installed fonts when using the Text tool.
 \*might not have been a problem in last release
 
 ## [1.0.0] - 2022-08-02
-### Added
+
+### Embedding API
+#### Added
 - `systemHooks` API for overriding file dialogs, file saving/loading, and Set as Wallpaper commands
 	- `systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => { ... };`
 	- `systemHooks.showOpenFileDialog = async ({ formats }) => { ... };`
@@ -86,6 +88,11 @@ allowing the Fonts box to list all installed fonts when using the Text tool.
 - function `set_language(language_code)` to switch languages, prompting the user to reload the application
 - You can use `.main-canvas` selector to access the canvas element.
 - URL parameter `#load:<URL>` to load a file from a URL
+
+### App
+#### Added
+- Most features of MS Paint
+- Lots more features
 
 [Unreleased]: https://github.com/1j01/jspaint/compare/v1.0.0...HEAD
 [1.1.0]: https://github.com/1j01/jspaint/compare/v1.0.0...v1.1.0
