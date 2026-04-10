@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+No changes here yet.
+
+## [1.1.0] - 2026-04-10
+
 ### Embedding API
 
 #### Changed
@@ -93,6 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Most features of MS Paint
 - Lots of extra features
 
-[Unreleased]: https://github.com/1j01/jspaint/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/1j01/jspaint/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/1j01/jspaint/compare/v1.0.0...v1.1.0
 [1.1.0]: https://github.com/1j01/jspaint/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/1j01/jspaint/releases/tag/v1.0.0
