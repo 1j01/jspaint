@@ -24,10 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Extras > Themes > Bubblegum**
 - **Extras > Head Tracker** powered by [Tracky Mouse](https://trackymouse.js.org)
 - **View > Text Toolbar** to toggle the Fonts box
-- Vertical text editing support
+- Vertical text editing support (find the option in the Text Toolbar, AKA Fonts box)
 
 #### Fixed
-- Hide canvas border, in-progress polygons/curves, and fix size of document when printing
+- Hide canvas border, in-progress polygons/curves, and fix size of document when printing (e558cc8a7bea1ec255c72011a9f24dd7c813127e, f0d08abaec698f72ac2c00f833a4c54c366092b3, dbee6258d351ef455eae3b3d01391c3a8b9eef47)
 - Fix drawing position misalignment with cursor (e34b257ec1726ad52b68705fca8920afd4730c1c)
 - Fix Help Topics window iframe being blocked by CSP\*
 - Prompt to save changes when clicking File > Exit (e1bf0d73b59bb6a5a8a4404e2a2c4528d4b72566)
@@ -50,7 +50,7 @@ allowing the Fonts box to list all installed fonts when using the Text tool.
 
 #### Changed
 - Restructured About window content (7bc134226f9994cd68fd69d78fb0343f5c873d53, c1b407d9134af75533adb3fd3938a82d3a2d71dd, da994966ec2231743867f232d8e1fb334071b512, be03638fad35a51cacef5c4f524c81581c2be587)
-- Improved Imgur upload error dialogs
+- Improved Imgur upload error dialogs (cbfc9cad47b3aa3c6a8acc6ce525b2b426608dca)
 - Split out "Eye Gaze Mode" into discrete features: "Enlarge UI", "Quick Undo Button", "Dwell Clicker"
 - Change width/height separator to an 'x' in status bar (was a comma) (884f9ddaee32e1b0c8756c10ba1643076e8e1231)
 - Implement size status indicator for all tools (3500496b0801a52e05d5ae69f6f98bb09e477e86)
