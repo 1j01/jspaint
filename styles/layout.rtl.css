@@ -132,6 +132,30 @@ html, body, .jspaint {
 .helper-layer {
 	z-index: 3;
 }
+.reference-image {
+	z-index: 2.5;
+	display: block !important;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	pointer-events: none;
+}
+.reference-image.hidden {
+	display: none !important;
+}
+.reference-image > canvas {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+}
+.reference-image .handle,
+.reference-image .grab-region {
+	pointer-events: all;
+}
 .selection,
 .textbox {
 	display: block !important; /* @TODO: reduce overzealous display: flex; */
