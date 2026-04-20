@@ -138,12 +138,12 @@ class ReferenceImage extends OnCanvasObject {
 
 	show() {
 		this._visible = true;
-		this.$el.show();
+		this.$el.removeClass("hidden");
 	}
 
 	hide() {
 		this._visible = false;
-		this.$el.hide();
+		this.$el.addClass("hidden");
 	}
 
 	toggle() {
