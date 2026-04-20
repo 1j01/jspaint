@@ -1,12 +1,13 @@
 // @ts-check
 // eslint-disable-next-line no-unused-vars
-/* global $thumbnail_window:writable, canvas_bounding_client_rect:writable, current_history_node:writable, file_format:writable, file_name:writable, helper_layer:writable, history_node_to_cancel_to:writable, magnification:writable, monochrome:writable, palette:writable, pointer:writable, return_to_magnification:writable, return_to_tools:writable, root_history_node:writable, saved:writable, selected_colors:writable, selected_tool:writable, selected_tools:writable, selection:writable, show_grid:writable, show_thumbnail:writable, system_file_handle:writable, textbox:writable, thumbnail_canvas:writable, tool_transparent_mode:writable, transparency:writable, undos:writable */
+/* global $thumbnail_window:writable, canvas_bounding_client_rect:writable, current_history_node:writable, file_format:writable, file_name:writable, helper_layer:writable, history_node_to_cancel_to:writable, magnification:writable, monochrome:writable, palette:writable, pointer:writable, reference_image:writable, return_to_magnification:writable, return_to_tools:writable, root_history_node:writable, saved:writable, selected_colors:writable, selected_tool:writable, selected_tools:writable, selection:writable, show_grid:writable, show_thumbnail:writable, system_file_handle:writable, textbox:writable, thumbnail_canvas:writable, tool_transparent_mode:writable, transparency:writable, undos:writable */
 /* global $canvas, $canvas_area, $colorbox, $status_text, $toolbox, $Window, AccessKeys, applyCSSProperties, decodeBMP, default_canvas_height, default_canvas_width, default_magnification, default_tool, enable_palette_loading_from_indexed_images, encodeBMP, localize, main_canvas, main_ctx, monochrome_palette, my_canvas_height, my_canvas_width, new_local_session, parseThemeFileString, pointer_active, pointers, polychrome_palette, redos, systemHooks, text_tool_font, update_fill_and_stroke_colors_and_lineWidth, UPNG, UTIF */
 
 import { $DialogWindow } from "./$ToolWindow.js";
 import { OnCanvasHelperLayer } from "./OnCanvasHelperLayer.js";
 import { OnCanvasSelection } from "./OnCanvasSelection.js";
 import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
+import { ReferenceImage } from "./ReferenceImage.js";
 // import { localize } from "./app-localization.js";
 import { default_palette } from "./color-data.js";
 import { image_formats } from "./file-format-data.js";
@@ -1811,6 +1812,96 @@ async function choose_file_to_paste() {
 		return;
 	}
 	show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."));
+}
+
+async function load_reference_image() {
+	const { file } = await systemHooks.showOpenFileDialog({ formats: image_formats });
+	if (file.type.match(/^image|application\/pdf/)) {
+		read_image_file(file, (error, info) => {
+			if (error) {
+				show_file_format_errors({ as_image_error: error });
+				return;
+			}
+			const img_or_canvas = info.image || make_canvas(info.image_data);
+
+			if (reference_image) {
+				reference_image.destroy();
+			}
+
+			const default_opacity = 0.5;
+			reference_image = new ReferenceImage(
+				Math.max(0, Math.ceil($canvas_area.scrollLeft() / magnification)),
+				Math.max(0, Math.ceil($canvas_area.scrollTop() / magnification)),
+				img_or_canvas,
+				default_opacity
+			);
+		});
+		return;
+	}
+	show_error_message(localize("This is not a valid bitmap file, or its format is not currently supported."));
+}
+
+function toggle_reference_image() {
+	if (reference_image) {
+		reference_image.toggle();
+	}
+}
+
+function remove_reference_image() {
+	if (reference_image) {
+		reference_image.destroy();
+		reference_image = null;
+	}
+}
+
+function set_reference_image_opacity(opacity) {
+	if (reference_image) {
+		reference_image.set_opacity(opacity);
+	}
+}
+
+function get_reference_image_opacity() {
+	return reference_image ? reference_image.get_opacity() : 0.5;
+}
+
+function is_reference_image_visible() {
+	return reference_image ? reference_image.is_visible() : false;
+}
+
+function has_reference_image() {
+	return reference_image != null;
+}
+
+function show_reference_image_opacity_window() {
+	if (!reference_image) {
+		return;
+	}
+
+	const $w = $DialogWindow(localize("Reference Image Opacity"));
+
+	$w.$main.append(`
+		<div style="padding: 10px;">
+			<label for="reference-opacity-slider">${localize("Opacity:")}</label>
+			<input type="range" id="reference-opacity-slider" min="10" max="100" value="${Math.round(reference_image.get_opacity() * 100)}" 
+				style="width: 200px; margin-left: 10px;" />
+			<span id="reference-opacity-value" style="margin-left: 10px;">${Math.round(reference_image.get_opacity() * 100)}%</span>
+		</div>
+	`);
+
+	const $slider = $w.$main.find("#reference-opacity-slider");
+	const $value = $w.$main.find("#reference-opacity-value");
+
+	$slider.on("input", () => {
+		const opacity = parseInt($slider.val()?.toString() || "50", 10) / 100;
+		reference_image.set_opacity(opacity);
+		$value.text(`${Math.round(opacity * 100)}%`);
+	});
+
+	$w.$Button(localize("OK"), () => {
+		$w.close();
+	});
+
+	$w.center();
 }
 
 /**
@@ -4224,9 +4315,9 @@ export {
 	$this_version_news,
 	apply_file_format_and_palette_info, are_you_sure, cancel, change_some_url_params, change_url_param, choose_file_to_paste, cleanup_bitmap_view, clear, confirm_overwrite_capability, delete_selection, deselect, detect_monochrome,
 	edit_copy, edit_cut, edit_paste, exit_fullscreen_if_ios, file_load_from_url, file_new, file_open, file_print, file_save,
-	file_save_as, getSelectionText, get_all_url_params, get_history_ancestors, get_tool_by_id, get_uris, get_url_param, go_to_history_node, handle_keyshortcuts, has_any_transparency, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, load_image_from_uri, load_theme_from_text, make_history_node, make_monochrome_palette, make_monochrome_pattern, make_opaque, make_or_update_undoable, make_stripe_pattern, meld_selection_into_canvas,
-	meld_textbox_into_canvas, open_from_file, open_from_image_info, paste, paste_image_from_file, please_enter_a_number, read_image_file, redo, render_canvas_view, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, sanity_check_blob, save_as_prompt, save_selection_to_file, select_all, select_tool, select_tools, set_all_url_params, set_magnification, show_about_paint, show_convert_to_black_and_white, show_custom_zoom_window, show_document_history, show_error_message, show_file_format_errors, show_multi_user_setup_dialog, show_news, show_resource_load_error_message, switch_to_polychrome_palette, toggle_grid,
-	toggle_thumbnail, try_exec_command, undo, undoable, update_canvas_rect, update_css_classes_for_conditional_messages, update_disable_aa, update_from_saved_file, update_helper_layer,
+	file_save_as, getSelectionText, get_all_url_params, get_history_ancestors, get_reference_image_opacity, get_tool_by_id, get_uris, get_url_param, go_to_history_node, handle_keyshortcuts, has_any_transparency, has_reference_image, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, is_reference_image_visible, load_image_from_uri, load_reference_image, load_theme_from_text, make_history_node, make_monochrome_palette, make_monochrome_pattern, make_opaque, make_or_update_undoable, make_stripe_pattern, meld_selection_into_canvas,
+	meld_textbox_into_canvas, open_from_file, open_from_image_info, paste, paste_image_from_file, please_enter_a_number, read_image_file, redo, remove_reference_image, render_canvas_view, render_history_as_gif, reset_canvas_and_history, reset_file, reset_selected_colors, resize_canvas_and_save_dimensions, resize_canvas_without_saving_dimensions, sanity_check_blob, save_as_prompt, save_selection_to_file, select_all, select_tool, select_tools, set_all_url_params, set_magnification, set_reference_image_opacity, show_about_paint, show_convert_to_black_and_white, show_custom_zoom_window, show_document_history, show_error_message, show_file_format_errors, show_multi_user_setup_dialog, show_news, show_reference_image_opacity_window, show_resource_load_error_message, switch_to_polychrome_palette, toggle_grid,
+	toggle_reference_image, toggle_thumbnail, try_exec_command, undo, undoable, update_canvas_rect, update_css_classes_for_conditional_messages, update_disable_aa, update_from_saved_file, update_helper_layer,
 	update_helper_layer_immediately, update_magnified_canvas_size, update_title, view_bitmap, write_image_file
 };
 // Temporary globals until all dependent code is converted to ES Modules

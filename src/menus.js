@@ -5,7 +5,7 @@
 import { OnCanvasTextBox } from "./OnCanvasTextBox.js";
 import { show_edit_colors_window } from "./edit-colors.js";
 import { palette_formats } from "./file-format-data.js";
-import { are_you_sure, change_url_param, choose_file_to_paste, clear, delete_selection, deselect, edit_copy, edit_cut, edit_paste, file_load_from_url, file_new, file_open, file_print, file_save, file_save_as, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, redo, render_history_as_gif, sanity_check_blob, save_selection_to_file, select_all, set_magnification, show_about_paint, show_custom_zoom_window, show_document_history, show_file_format_errors, show_multi_user_setup_dialog, show_news, toggle_grid, toggle_thumbnail, undo, view_bitmap } from "./functions.js";
+import { are_you_sure, change_url_param, choose_file_to_paste, clear, delete_selection, deselect, edit_copy, edit_cut, edit_paste, file_load_from_url, file_new, file_open, file_print, file_save, file_save_as, has_reference_image, image_attributes, image_flip_and_rotate, image_invert_colors, image_stretch_and_skew, is_reference_image_visible, load_reference_image, redo, remove_reference_image, render_history_as_gif, sanity_check_blob, save_selection_to_file, select_all, set_magnification, show_about_paint, show_custom_zoom_window, show_document_history, show_file_format_errors, show_multi_user_setup_dialog, show_news, show_reference_image_opacity_window, toggle_grid, toggle_reference_image, toggle_thumbnail, undo, view_bitmap } from "./functions.js";
 import { show_help } from "./help.js";
 import { $G, get_rgba_from_color, is_discord_embed } from "./helpers.js";
 import { show_imgur_uploader } from "./imgur.js";
@@ -606,6 +606,59 @@ const menus = {
 				},
 			},
 			description: localize("Makes the application take up the entire screen."),
+		},
+		MENU_DIVIDER,
+		{
+			emoji_icon: "📷",
+			label: localize("&Reference Image"),
+			submenu: [
+				{
+					label: localize("&Load Reference Image") + "...",
+					speech_recognition: [
+						"load reference image", "load reference",
+						"import reference image", "import reference",
+						"open reference image", "open reference",
+					],
+					action: () => { load_reference_image(); },
+					description: localize("Loads a reference image to trace over."),
+				},
+				{
+					label: localize("&Show Reference Image"),
+					speech_recognition: [
+						"toggle reference image", "toggle reference",
+						"show reference image", "show reference",
+						"hide reference image", "hide reference",
+					],
+					enabled: () => has_reference_image(),
+					checkbox: {
+						toggle: () => { toggle_reference_image(); },
+						check: () => is_reference_image_visible(),
+					},
+					description: localize("Shows or hides the reference image."),
+				},
+				{
+					label: localize("Reference Image &Opacity") + "...",
+					speech_recognition: [
+						"change reference image opacity", "change reference opacity",
+						"adjust reference image opacity", "adjust reference opacity",
+						"reference image transparency", "reference transparency",
+					],
+					enabled: () => has_reference_image(),
+					action: () => { show_reference_image_opacity_window(); },
+					description: localize("Adjusts the opacity of the reference image."),
+				},
+				{
+					label: localize("&Remove Reference Image"),
+					speech_recognition: [
+						"remove reference image", "remove reference",
+						"delete reference image", "delete reference",
+						"clear reference image", "clear reference",
+					],
+					enabled: () => has_reference_image(),
+					action: () => { remove_reference_image(); },
+					description: localize("Removes the reference image."),
+				},
+			],
 		},
 	],
 	[localize("&Image")]: [
