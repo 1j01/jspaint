@@ -73,25 +73,113 @@ function render_brush(ctx, shape, size) {
  * @param {boolean} fill - Whether to fill the shape.
  */
 function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
-	const center_x = x + w / 2;
-	const center_y = y + h / 2;
+	if (w < 0) { x += w; w = -w; }
+	if (h < 0) { y += h; h = -h; }
+
+	x = Math.round(x);
+	y = Math.round(y);
+	w = Math.round(w);
+	h = Math.round(h);
+
+	if (w < 1 || h < 1) {
+		return;
+	}
 
 	if (aliasing) {
-		const points = [];
-		const step = 0.05;
-		for (let theta = 0; theta < TAU; theta += step) {
-			points.push({
-				x: center_x + Math.cos(theta) * w / 2,
-				y: center_y + Math.sin(theta) * h / 2,
-			});
+		if (fill) {
+			draw_ellipse_mask(ctx, x, y, w, h, ctx.fillStyle, (pixel_x, pixel_y) => (
+				pixel_is_in_ellipse(pixel_x, pixel_y, x, y, w, h)
+			));
 		}
-		draw_polygon(ctx, points, stroke, fill);
+		if (stroke) {
+			const outer_inset = Math.floor(stroke_size / 2);
+			const inner_inset = Math.ceil(stroke_size / 2);
+			const outer_x = x - outer_inset;
+			const outer_y = y - outer_inset;
+			const outer_w = w + outer_inset * 2;
+			const outer_h = h + outer_inset * 2;
+			const inner_x = x + inner_inset;
+			const inner_y = y + inner_inset;
+			const inner_w = w - inner_inset * 2;
+			const inner_h = h - inner_inset * 2;
+
+			draw_ellipse_mask(ctx, outer_x, outer_y, outer_w, outer_h, ctx.strokeStyle, (pixel_x, pixel_y) => (
+				pixel_is_in_ellipse(pixel_x, pixel_y, outer_x, outer_y, outer_w, outer_h) &&
+				!pixel_is_in_ellipse(pixel_x, pixel_y, inner_x, inner_y, inner_w, inner_h)
+			));
+		}
 	} else {
+		const center_x = x + w / 2;
+		const center_y = y + h / 2;
+
 		ctx.beginPath();
 		ctx.ellipse(center_x, center_y, Math.abs(w / 2), Math.abs(h / 2), 0, 0, TAU, false);
-		ctx.stroke();
-		ctx.fill();
+		if (stroke) {
+			ctx.stroke();
+		}
+		if (fill) {
+			ctx.fill();
+		}
 	}
+}
+
+/**
+ * @param {number} pixel_x
+ * @param {number} pixel_y
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w
+ * @param {number} h
+ * @returns {boolean}
+ */
+function pixel_is_in_ellipse(pixel_x, pixel_y, x, y, w, h) {
+	if (w < 1 || h < 1) {
+		return false;
+	}
+
+	const radius_x = w / 2;
+	const radius_y = h / 2;
+	const normalized_x = (pixel_x + 0.5 - (x + radius_x)) / radius_x;
+	const normalized_y = (pixel_y + 0.5 - (y + radius_y)) / radius_y;
+
+	return normalized_x * normalized_x + normalized_y * normalized_y <= 1;
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w
+ * @param {number} h
+ * @param {string | CanvasPattern | CanvasGradient} swatch
+ * @param {(pixel_x: number, pixel_y: number) => boolean} include_pixel
+ */
+function draw_ellipse_mask(ctx, x, y, w, h, swatch, include_pixel) {
+	if (w < 1 || h < 1) {
+		return;
+	}
+
+	op_canvas_2d.width = w;
+	op_canvas_2d.height = h;
+
+	const image_data = op_ctx_2d.createImageData(w, h);
+	for (let pixel_y = 0; pixel_y < h; pixel_y += 1) {
+		for (let pixel_x = 0; pixel_x < w; pixel_x += 1) {
+			if (!include_pixel(x + pixel_x, y + pixel_y)) {
+				continue;
+			}
+
+			const index = (pixel_y * w + pixel_x) * 4;
+			image_data.data[index + 0] = 255;
+			image_data.data[index + 1] = 255;
+			image_data.data[index + 2] = 255;
+			image_data.data[index + 3] = 255;
+		}
+	}
+
+	op_ctx_2d.putImageData(image_data, 0, 0);
+	replace_colors_with_swatch(op_ctx_2d, swatch, x, y);
+	ctx.drawImage(op_canvas_2d, x, y);
 }
 
 /**
