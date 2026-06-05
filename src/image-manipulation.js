@@ -92,6 +92,11 @@ function draw_ellipse(ctx, x, y, w, h, stroke, fill) {
 			));
 		}
 		if (stroke) {
+			if (stroke_size <= 1) {
+				draw_ellipse_outline(ctx, x, y, w, h, ctx.strokeStyle);
+				return;
+			}
+
 			const outer_inset = Math.floor(stroke_size / 2);
 			const inner_inset = Math.ceil(stroke_size / 2);
 			const outer_x = x - outer_inset;
@@ -175,6 +180,89 @@ function draw_ellipse_mask(ctx, x, y, w, h, swatch, include_pixel) {
 			image_data.data[index + 2] = 255;
 			image_data.data[index + 3] = 255;
 		}
+	}
+
+	op_ctx_2d.putImageData(image_data, 0, 0);
+	replace_colors_with_swatch(op_ctx_2d, swatch, x, y);
+	ctx.drawImage(op_canvas_2d, x, y);
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w
+ * @param {number} h
+ * @param {string | CanvasPattern | CanvasGradient} swatch
+ */
+function draw_ellipse_outline(ctx, x, y, w, h, swatch) {
+	op_canvas_2d.width = w;
+	op_canvas_2d.height = h;
+
+	const image_data = op_ctx_2d.createImageData(w, h);
+	const set_pixel = (pixel_x, pixel_y) => {
+		const local_x = pixel_x - x;
+		const local_y = pixel_y - y;
+		if (local_x < 0 || local_y < 0 || local_x >= w || local_y >= h) {
+			return;
+		}
+		const index = (local_y * w + local_x) * 4;
+		image_data.data[index + 0] = 255;
+		image_data.data[index + 1] = 255;
+		image_data.data[index + 2] = 255;
+		image_data.data[index + 3] = 255;
+	};
+
+	let x0 = x;
+	let y0 = y;
+	let x1 = x + w - 1;
+	let y1 = y + h - 1;
+	let a = Math.abs(x1 - x0);
+	let b = Math.abs(y1 - y0);
+	let b1 = b & 1;
+	let dx = 4 * (1 - a) * b * b;
+	let dy = 4 * (b1 + 1) * a * a;
+	let err = dx + dy + b1 * a * a;
+
+	if (x0 > x1) {
+		x0 = x1;
+		x1 += a;
+	}
+	if (y0 > y1) {
+		y0 = y1;
+	}
+
+	y0 += Math.floor((b + 1) / 2);
+	y1 = y0 - b1;
+	a = 8 * a * a;
+	b1 = 8 * b * b;
+
+	do {
+		set_pixel(x1, y0);
+		set_pixel(x0, y0);
+		set_pixel(x0, y1);
+		set_pixel(x1, y1);
+
+		const e2 = 2 * err;
+		if (e2 <= dy) {
+			y0 += 1;
+			y1 -= 1;
+			err += dy += a;
+		}
+		if (e2 >= dx || 2 * err > dy) {
+			x0 += 1;
+			x1 -= 1;
+			err += dx += b1;
+		}
+	} while (x0 <= x1);
+
+	while (y0 - y1 < b) {
+		set_pixel(x0 - 1, y0);
+		set_pixel(x1 + 1, y0);
+		y0 += 1;
+		set_pixel(x0 - 1, y1);
+		set_pixel(x1 + 1, y1);
+		y1 -= 1;
 	}
 
 	op_ctx_2d.putImageData(image_data, 0, 0);
