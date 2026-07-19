@@ -60,7 +60,7 @@ const getMimeType = (format) => "mimeType" in format ? format.mimeType : `applic
  * This API may be removed at any time (and perhaps replaced by something based around postMessage)
  * The API is documented in the README.md file.
  */
-window.systemHooks = window.systemHooks || {};
+window.systemHooks = window.systemHooks || /** @type {SystemHooks} */ ({});
 /** @type {SystemHooks} */
 window.systemHookDefaults = {
 	// named to be distinct from various platform APIs (showSaveFilePicker, saveAs, electron's showSaveDialog; and saveFile is too ambiguous)

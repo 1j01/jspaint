@@ -94,7 +94,7 @@ async function write_blob_to_file_path(filePath, blob) {
 	return { responseCode, error };
 }
 
-window.systemHooks = window.systemHooks || {};
+window.systemHooks = window.systemHooks || /** @type {SystemHooks} */ ({});
 window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defaultPath, defaultFileFormatID: _unused, getBlob, savedCallbackUnreliable }) => {
 
 	// First filter in filters list determines default selected file type.
@@ -149,7 +149,7 @@ window.systemHooks.showSaveFileDialog = async ({ formats, defaultFileName, defau
 		newBlob: blob,
 	});
 };
-window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
+window.systemHooks.showOpenFileDialog = async ({ formats /*, defaultPath*/ }) => {
 	// @TODO: use categories for filters
 	// ideally this function should be generic to formats, so shouldn't do it here:
 	// const filters = image_format_categories(formats).map(({ name, extensions }) => ({ name, extensions }));
@@ -157,7 +157,7 @@ window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 	const { canceled, filePaths } = await ipcRenderer.invoke("show-open-dialog", {
 		title: localize("Open"),
 		filters,
-		defaultPath,
+		// defaultPath,
 	});
 	if (canceled) {
 		throw new Error("user canceled");

@@ -1477,7 +1477,7 @@ tools.forEach((tool) => {
 		// binary mask of the drawn area, either opaque white or transparent
 		tool.mask_canvas = null;
 
-		tool.init_mask_canvas = (_ctx, _x, _y) => {
+		tool.init_mask_canvas = () => {
 			if (!tool.mask_canvas) {
 				tool.mask_canvas = make_canvas(main_canvas.width, main_canvas.height);
 			}

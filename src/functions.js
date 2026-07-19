@@ -1007,7 +1007,7 @@ function open_from_image_info(info, callback, canceled, into_existing_session, f
 // Note: This function is part of the API.
 /**
  * @param {Blob} file
- * @param {UserFileHandle} source_file_handle
+ * @param {UserFileHandle} [source_file_handle]
  */
 function open_from_file(file, source_file_handle) {
 	// The browser isn't very smart about MIME types.

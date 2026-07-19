@@ -238,9 +238,9 @@ declare function are_you_sure(
 ): void;
 /**
  * @param {Blob} file
- * @param {UserFileHandle} source_file_handle
+ * @param {UserFileHandle} [source_file_handle]
  */
-declare function open_from_file(file: Blob, source_file_handle: UserFileHandle): void;
+declare function open_from_file(file: Blob, source_file_handle?: UserFileHandle): void;
 
 // msgbox.js
 declare function showMessageBox(options: MessageBoxOptions): Promise<string>;

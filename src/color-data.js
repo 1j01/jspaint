@@ -93,7 +93,7 @@ const custom_colors = [
 const lerp = (a, b, b_ness) => a + (b - a) * b_ness;
 
 const color_ramp = (num_colors, start_hsla, end_hsla) =>
-	Array(num_colors).fill().map((_undefined, ramp_index, array) => {
+	Array(num_colors).fill(undefined).map((_undefined, ramp_index, array) => {
 		// TODO: should this use (array.length - 1)?
 		const h = lerp(start_hsla[0], end_hsla[0], ramp_index / array.length);
 		const s = lerp(start_hsla[1], end_hsla[1], ramp_index / array.length);
