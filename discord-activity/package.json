@@ -20,6 +20,6 @@
     "npm-run-all2": "^6.0.0",
     "rimraf": "^5.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }

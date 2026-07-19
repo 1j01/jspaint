@@ -114,7 +114,7 @@
     "os-gui": "0.7.3",
     "rtlcss": "^4.1.1",
     "start-server-and-test": "^2.0.3",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "scripts": {
     "electron:start": "electron-forge start",
