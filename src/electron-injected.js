@@ -164,7 +164,12 @@ window.systemHooks.showOpenFileDialog = async ({ formats, defaultPath }) => {
 	}
 	const filePath = filePaths[0];
 	const file = await window.systemHooks.readBlobFromHandle(filePath);
-	return { file, fileHandle: filePath };
+	const format = get_format_from_extension(formats, filePath);
+	const fileWithType = format?.mimeType ? new File([file], file.name, {
+		type: format.mimeType,
+		lastModified: file.lastModified,
+	}) : file;
+	return { file: fileWithType, fileHandle: filePath };
 };
 
 window.systemHooks.writeBlobToHandle = async (filePath, blob) => {
