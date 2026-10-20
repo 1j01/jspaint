@@ -1405,14 +1405,12 @@ function initWebGL(canvas) {
 	try {
 		gl = canvas.getContext("webgl", { antialias: false });
 	} catch (error) {
-		// TODO: reload button for Electron app
-		show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.", error);
+		window.console?.warn("WebGL unavailable; using Canvas 2D rendering fallback.", error);
 		return;
 	}
 
 	if (!gl) {
-		// TODO: reload button for Electron app
-		show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
+		window.console?.warn("WebGL unavailable; using Canvas 2D rendering fallback.");
 		return;
 	}
 
@@ -1562,12 +1560,6 @@ export function draw_polygon(ctx, points, stroke, fill) {
  * @param {boolean} close_path - Whether to join the start and end points, forming a closed polygon.
  */
 function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
-	if (!gl) {
-		// TODO: reload button for Electron app
-		show_error_message("Failed to get WebGL context. You may need to refresh the web page, or restart your computer.");
-		return; // @TODO: don't pollute brush cache with empty brushes (also maybe fallback to 2D canvas rendering)
-	}
-
 	// this must be before stuff is done with op_canvas
 	// otherwise update_brush_for_drawing_lines calls render_brush calls draw_ellipse calls draw_polygon calls draw_polygon_or_line_strip
 	// trying to use the same op_canvas
@@ -1600,6 +1592,63 @@ function draw_polygon_or_line_strip(ctx, points, stroke, fill, close_path) {
 	y_max += 1;
 	x_min -= 1;
 	y_min -= 1;
+
+	if (!gl) {
+		if (fill) {
+			op_canvas_2d.width = x_max - x_min;
+			op_canvas_2d.height = y_max - y_min;
+			op_ctx_2d.beginPath();
+			op_ctx_2d.moveTo(points[0].x - x_min, points[0].y - y_min);
+			for (let i = 1; i < numPoints; i++) {
+				op_ctx_2d.lineTo(points[i].x - x_min, points[i].y - y_min);
+			}
+			if (close_path) {
+				op_ctx_2d.closePath();
+			}
+			op_ctx_2d.fillStyle = "white";
+			op_ctx_2d.fill();
+			replace_colors_with_swatch(op_ctx_2d, fill_color, x_min, y_min);
+			ctx.drawImage(op_canvas_2d, x_min, y_min);
+		}
+		if (stroke) {
+			const stroke_margin = stroke_size > 1 ? ~~(stroke_size * 1.1) : 0;
+			const op_canvas_x = x_min - stroke_margin;
+			const op_canvas_y = y_min - stroke_margin;
+			op_canvas_2d.width = x_max - x_min + stroke_margin * 2;
+			op_canvas_2d.height = y_max - y_min + stroke_margin * 2;
+			if (stroke_size > 1) {
+				op_ctx_2d.fillStyle = "white";
+				op_ctx_2d.strokeStyle = "white";
+				for (let i = 0; i < numPoints - (close_path ? 0 : 1); i++) {
+					const point_a = points[i];
+					const point_b = points[(i + 1) % numPoints];
+					draw_line_without_pattern_support(
+						op_ctx_2d,
+						point_a.x - op_canvas_x,
+						point_a.y - op_canvas_y,
+						point_b.x - op_canvas_x,
+						point_b.y - op_canvas_y,
+						stroke_size
+					);
+				}
+			} else {
+				op_ctx_2d.beginPath();
+				op_ctx_2d.moveTo(points[0].x - op_canvas_x, points[0].y - op_canvas_y);
+				for (let i = 1; i < numPoints; i++) {
+					op_ctx_2d.lineTo(points[i].x - op_canvas_x, points[i].y - op_canvas_y);
+				}
+				if (close_path) {
+					op_ctx_2d.closePath();
+				}
+				op_ctx_2d.strokeStyle = "white";
+				op_ctx_2d.lineWidth = stroke_size;
+				op_ctx_2d.stroke();
+			}
+			replace_colors_with_swatch(op_ctx_2d, stroke_color, op_canvas_x, op_canvas_y);
+			ctx.drawImage(op_canvas_2d, op_canvas_x, op_canvas_y);
+		}
+		return;
+	}
 
 	op_canvas_webgl.width = x_max - x_min;
 	op_canvas_webgl.height = y_max - y_min;
