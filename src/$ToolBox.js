@@ -10,6 +10,27 @@ import { get_theme } from "./theme.js";
 let theme_dev_blob_url;
 
 /**
+ * Activate a tool from a pointer/click interaction.
+ * Shared by click and pointerup so ChromeOS/Linux (and other quirky pointer stacks)
+ * still get reliable tool switching when the browser fails to synthesize a click.
+ * @param {Tool} tool
+ * @param {JQuery.Event | PointerEvent | MouseEvent} e
+ */
+function activate_tool_from_event(tool, e) {
+	const shiftKey = !!(e && /** @type {any} */ (e).shiftKey);
+	const ctrlKey = !!(e && /** @type {any} */ (e).ctrlKey);
+	if (shiftKey || ctrlKey) {
+		select_tool(tool, true);
+		return;
+	}
+	if (selected_tool === tool && tool.deselect) {
+		select_tools(return_to_tools);
+	} else {
+		select_tool(tool);
+	}
+}
+
+/**
  * @param {Tool[]} tools
  * @param {boolean=} is_extras
  * @returns {JQuery<HTMLDivElement> & I$ToolBox & I$Component}
@@ -30,6 +51,9 @@ function $ToolBox(tools, is_extras) {
 		tool.$button = $b;
 
 		$b.attr("title", tool.name);
+		// Improve accessibility + touch discoverability
+		$b.attr("role", "button");
+		$b.attr("tabindex", "0");
 
 		const $icon = $(E("span")).addClass("tool-icon");
 		$icon.appendTo($b);
@@ -59,15 +83,66 @@ function $ToolBox(tools, is_extras) {
 		update_css();
 		$G.on("theme-load resize", update_css);
 
-		$b.on("click", (e) => {
-			if (e.shiftKey || e.ctrlKey) {
-				select_tool(tool, true);
+		// ---- Reliable activation across pointer stacks (ChromeOS Linux fix) ----
+		// Some environments (notably ChromeOS Linux / certain Chrome builds) do not
+		// consistently synthesize a click event from a short tap. Color buttons already
+		// used pointerdown and worked; tool buttons only listened for click and failed.
+		// We accept both click and a short pointerup, with a small debounce so we don't
+		// double-activate when both fire.
+		let last_activate_ts = 0;
+		const ACTIVATE_DEBOUNCE_MS = 80;
+		let pointer_down_pos = /** @type {{ x: number, y: number } | null} */ (null);
+
+		const try_activate = (e) => {
+			const now = performance.now();
+			if (now - last_activate_ts < ACTIVATE_DEBOUNCE_MS) {
 				return;
 			}
-			if (selected_tool === tool && tool.deselect) {
-				select_tools(return_to_tools);
-			} else {
-				select_tool(tool);
+			last_activate_ts = now;
+			activate_tool_from_event(tool, e);
+		};
+
+		$b.on("click", (e) => {
+			try_activate(e);
+		});
+
+		$b.on("pointerdown", (e) => {
+			// Only primary button / touch / pen
+			if (e.button != null && e.button !== 0) {
+				return;
+			}
+			pointer_down_pos = { x: e.clientX, y: e.clientY };
+			$b.addClass("tool-pressed");
+		});
+
+		$b.on("pointerup", (e) => {
+			$b.removeClass("tool-pressed");
+			if (e.button != null && e.button !== 0) {
+				pointer_down_pos = null;
+				return;
+			}
+			if (!pointer_down_pos) {
+				return;
+			}
+			const dx = e.clientX - pointer_down_pos.x;
+			const dy = e.clientY - pointer_down_pos.y;
+			pointer_down_pos = null;
+			// Treat as a click if the pointer didn't drag far (allows slight jitter)
+			if (dx * dx + dy * dy <= 100) { // ~10px radius
+				try_activate(e);
+			}
+		});
+
+		$b.on("pointercancel pointerleave", () => {
+			$b.removeClass("tool-pressed");
+			pointer_down_pos = null;
+		});
+
+		// Keyboard activation (Enter / Space)
+		$b.on("keydown", (e) => {
+			if (e.key === "Enter" || e.key === " ") {
+				e.preventDefault();
+				try_activate(e);
 			}
 		});
 
@@ -144,4 +219,3 @@ if (dev_theme_tool_icons) {
 }
 
 export { $ToolBox };
-

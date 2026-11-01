@@ -1,0 +1,78 @@
+/*
+ * Huge Upgrade overrides for xclounkit234x/jspaint
+ * - Larger, more reliable tool hit targets (ChromeOS / touch / coarse pointer)
+ * - Clear pressed + selected feedback
+ * - Slightly improved menu button targets
+ * Loaded after classic/modern themes so it wins on specificity where needed.
+ */
+
+/* ---- Tool buttons: bigger hit area without breaking classic look ---- */
+.tools .tool {
+	min-width: 28px;
+	min-height: 28px;
+	cursor: pointer;
+	touch-action: manipulation; /* reduce 300ms delay / accidental gestures */
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Pressed state (pointerdown) */
+.tools .tool.tool-pressed {
+	filter: brightness(0.92);
+	outline: 1px solid rgba(0, 0, 0, 0.35);
+	outline-offset: -1px;
+}
+
+/* Selected tool stays obvious */
+.tools .tool.selected {
+	outline: 1px solid rgba(0, 0, 0, 0.55);
+	outline-offset: -1px;
+}
+
+/* Coarse pointer / touch: prefer even larger targets */
+@media (pointer: coarse), (hover: none) {
+	.tools .tool {
+		min-width: 36px;
+		min-height: 36px;
+	}
+	.tools-component {
+		height: auto;
+		min-height: 300px;
+	}
+}
+
+/* Menu bar: slightly easier to hit */
+.menu-button {
+	min-height: 28px;
+	padding-left: 10px;
+	padding-right: 10px;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+
+@media (pointer: coarse), (hover: none) {
+	.menu-button {
+		min-height: 36px;
+		padding-left: 14px;
+		padding-right: 14px;
+	}
+}
+
+/* Color buttons already worked via pointerdown; still improve touch size a bit */
+@media (pointer: coarse), (hover: none) {
+	.color-button,
+	.color-selection {
+		min-width: 18px;
+		min-height: 18px;
+	}
+}
+
+/* Focus visibility for keyboard users */
+.tools .tool:focus-visible {
+	outline: 2px solid #005fcc;
+	outline-offset: 1px;
+}
+
+/* Soften the "dead zone" feeling on the toolbox edge */
+.tools-component {
+	padding-bottom: 4px;
+}
