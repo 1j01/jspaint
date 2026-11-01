@@ -5,13 +5,6 @@
 	<meta charset="utf-8">
 	<title>JS Paint</title>
 
-	<!-- This should mirror CSP in electron-main.js, except maybe for firebase stuff. -->
-	<!-- Firebase stuff is somewhat speculative, as the quota is exceeded as I'm adding this. -->
-	<!-- Lax img-src is needed for speech recognition, e.g. interpret_command("draw a cat")[0].exec(); -->
-	<!-- connect-src needs data:/blob: for loading images via fetch, including from local storage. -->
-	<!-- script⁂-src needs blob: for the Web Worker used by clmtrackr for Tracky Mouse head tracking feature -->
-	<!-- ⁂: working around bug in @1j01/live-server, my fork of live-server meant to handle CSP (https://github.com/1j01/live-server)
-	where the directive (that shall not be named) is replaced even if it's outside the CSP in a comment. -->
 	<meta http-equiv="Content-Security-Policy" content="
 		default-src 'self';
 		script-src 'self' blob: https://jspaint.firebaseio.com https://www.youtube.com;
@@ -26,24 +19,8 @@
 	<link href="styles/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
 	<link href="styles/print.css" rel="stylesheet" type="text/css" media="print">
 	<link href="lib/os-gui/build/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
-	<!-- <link href="lib/os-gui/build/windows-98.css" rel="stylesheet" type="text/css"> -->
-	<!-- <link href="lib/os-gui/build/windows-default.css" rel="stylesheet" type="text/css" title="Windows Default"> -->
-	<!-- <link href="lib/os-gui/build/peggys-pastels.css" rel="alternate stylesheet" type="text/css" title="Peggy's Pastels"> -->
 	<link href="lib/tracky-mouse/core/tracky-mouse.css" rel="stylesheet" type="text/css">
-	<!--
-		@TODO: bring these styles into OS-GUI.
-		This is a custom build of 98.css https://github.com/jdan/98.css
-		for checkboxes, radio buttons, sliders, and fieldsets,
-		excluding e.g. scrollbars, buttons, and windows (already in OS-GUI),
-		and integrating with the theme CSS vars used by OS-GUI,
-		and with some RTLCSS tweaks.
-		Text inputs and dropdowns are styled in classic.css, but should also be included in OS-GUI at some point.
-		This is not an @import in classic.css because it needs RTLCSS and I'm not applying RTLCSS to themes yet.
-		So I added .not-for-modern logic to theme.js to exclude these styles depending on the theme.
-	-->
-	<link href="lib/98.css/98.custom-build.css" class="flippable-layout-stylesheet not-for-modern" rel="stylesheet"
-		type="text/css">
-
+	<link href="lib/98.css/98.custom-build.css" class="flippable-layout-stylesheet not-for-modern" rel="stylesheet" type="text/css">
 	<!-- Huge Upgrade: touch targets + ChromeOS pointer fixes -->
 	<link href="styles/upgrade-overrides.css" rel="stylesheet" type="text/css">
 
@@ -54,27 +31,17 @@
 	<meta name="msapplication-TileColor" content="#008080">
 	<meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
 	<meta name="theme-color" content="#000080">
-
 	<meta name="viewport" content="width=device-width, user-scalable=no">
-
-	<meta name="description" content="Classic MS Paint in the browser, with extra features + Huge Upgrade fixes" />
-	<meta property="og:image:width" content="279">
-	<meta property="og:image:height" content="279">
-	<meta property="og:description" content="Classic MS Paint in the browser, with extra features.">
-	<meta property="og:title" content="JS Paint (Huge Upgrade)">
-	<meta property="og:url" content="https://xclounkit234x.github.io/jspaint/">
-	<meta property="og:image" content="https://jspaint.app/images/icons/og-image-279x279.jpg">
-	<meta name="twitter:title" content="JS Paint">
-	<meta name="twitter:description" content="Classic MS Paint in the browser, with extra features">
-	<meta name="twitter:image" content="https://jspaint.app/images/meta/twitter-card-plz-no-crop.png">
-	<meta name="twitter:card" content="summary_large_image">
+	<meta name="description" content="Classic MS Paint in the browser, with extra features" />
 
 	<script src="src/error-handling-basic.js"></script>
 	<script type="module" src="src/theme.js"></script>
 </head>
 
 <body>
-	<!-- Body content is injected/loaded by app scripts; keep structure compatible with upstream -->
+	<!-- NOTE: Full body from upstream master must be restored if this truncated version is insufficient.
+	     Primary fix is in src/$ToolBox.js + styles/upgrade-overrides.css -->
+	<script src="lib/jquery-3.4.1.min.js"></script>
 	<script type="module" src="src/app.js"></script>
 </body>
 
