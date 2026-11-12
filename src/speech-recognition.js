@@ -7,7 +7,7 @@ import { deselect, get_tool_by_id, resize_canvas_without_saving_dimensions, sele
 import { $G, make_canvas } from "./helpers.js";
 import { menus } from "./menus.js";
 import { stopSimulatingGestures } from "./simulate-random-gestures.js";
-import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT, tools } from "./tools.js";
+import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_FILL, TOOL_FREE_FORM_SELECT, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_STAR, TOOL_TEXT, tools } from "./tools.js";
 
 export let speech_recognition_active = false;
 
@@ -1867,6 +1867,7 @@ if (speech_recognition_available) {
 							selected_tool.id === TOOL_CURVE ||
 							selected_tool.id === TOOL_RECTANGLE ||
 							selected_tool.id === TOOL_ROUNDED_RECTANGLE ||
+							selected_tool.id === TOOL_STAR ||
 							selected_tool.id === TOOL_ELLIPSE ||
 							selected_tool.id === TOOL_POLYGON
 						) {

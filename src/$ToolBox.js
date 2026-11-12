@@ -55,6 +55,16 @@ function $ToolBox(tools, is_extras) {
 				"--icon-index": i.toString(),
 			});
 			$icon.toggleClass("use-svg", use_svg);
+			if (tool.icon_svg) {
+				// Tools added beyond the original 16 aren't in the themes' icon sprite sheets,
+				// so use the tool's own icon instead of an offset into the sprite sheet.
+				$icon.css({
+					backgroundImage: `url("${tool.icon_svg}")`,
+					backgroundPosition: "0 0",
+					backgroundSize: "16px 16px",
+					backgroundRepeat: "no-repeat",
+				});
+			}
 		};
 		update_css();
 		$G.on("theme-load resize", update_css);

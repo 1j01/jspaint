@@ -672,7 +672,8 @@ type ToolID =
 	"TOOL_RECTANGLE" |
 	"TOOL_POLYGON" |
 	"TOOL_ELLIPSE" |
-	"TOOL_ROUNDED_RECTANGLE";
+	"TOOL_ROUNDED_RECTANGLE" |
+	"TOOL_STAR";
 
 // This is very silly!
 // This isn't a coherent API, but rather a layered set of functionality
@@ -694,6 +695,8 @@ interface Tool {
 	dynamic_preview_cursor?: boolean,
 	/** Indicates that the tool should be deselected after a single use. */
 	deselect?: boolean,
+	/** Custom toolbox icon (image URL), for tools not in the theme's tool icon sprite sheet. */
+	icon_svg?: string,
 	/** Used by Polygon tool. Indicates that the tool should use colors like point-to-point shape tools, even though it has different UI. */
 	shape_colors?: boolean,
 	/** Used for Curve, Line, Pencil tools. */

@@ -286,6 +286,12 @@ function get_help_folder_icon(file_name) {
  * @returns {HTMLImageElement}  an image element representing the tool
  */
 function get_icon_for_tool(tool) {
+	if (tool.icon_svg) {
+		// Tools added beyond the original 16 (e.g. Star) provide their own icon
+		const icon_img = new Image();
+		icon_img.src = tool.icon_svg;
+		return icon_img;
+	}
 	return get_help_folder_icon(tool.help_icon);
 }
 

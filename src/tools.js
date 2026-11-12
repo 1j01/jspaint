@@ -133,6 +133,7 @@ const TOOL_RECTANGLE = "TOOL_RECTANGLE";
 const TOOL_POLYGON = "TOOL_POLYGON";
 const TOOL_ELLIPSE = "TOOL_ELLIPSE";
 const TOOL_ROUNDED_RECTANGLE = "TOOL_ROUNDED_RECTANGLE";
+const TOOL_STAR = "TOOL_STAR";
 
 /** @type {Tool[]} */
 const tools = [{
@@ -1278,6 +1279,84 @@ const tools = [{
 		}
 	},
 	$options: $ChooseShapeStyle(),
+}, {
+	// Based on the Rectangle tool: like it, this only defines `shape()`,
+	// and the shared `if (tool.shape)` code below handles previewing, undo, and canceling.
+	id: TOOL_STAR,
+	name: localize("Star"),
+	speech_recognition: [
+		"star", "stars", "five pointed star", "5 pointed star", "pentagram",
+	],
+	help_icon: "p_rect.gif", // no star icon exists in the help folder; used for history/undo entries
+	// The toolbox sprite sheets only contain the 16 original tools, so this tool gets its own icon.
+	icon_svg: `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges"><polygon points="8,1 9.8,5.8 15,6 10.9,9.2 12.3,14.5 8,11.5 3.7,14.5 5.1,9.2 1,6 6.2,5.8" fill="#ffd700" stroke="#000" stroke-width="1" stroke-linejoin="miter"/></svg>`)}`,
+	description: localize("Draws a five-pointed star with the selected fill style."),
+	cursor: ["precise", [16, 16], "crosshair"],
+	shape(ctx, x, y, w, h) {
+		// Ratio of inner to outer radius for a regular five-pointed star (pentagram).
+		const inner_ratio = 0.382;
+
+		// Corners of a star with radius 1 centered at (0, 0), starting at the top (-90°)
+		// and alternating outer/inner corners every 36°.
+		const unit_points = [];
+		for (let i = 0; i < 10; i++) {
+			const angle = -Math.PI / 2 + i * Math.PI / 5;
+			const r = i % 2 === 0 ? 1 : inner_ratio;
+			unit_points.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r });
+		}
+		// The star isn't vertically symmetric (its bottom points are higher than its top point is tall),
+		// so measure its actual bounds, in order to make it fill the dragged box exactly.
+		const unit_min_x = Math.min(...unit_points.map((p) => p.x));
+		const unit_max_x = Math.max(...unit_points.map((p) => p.x));
+		const unit_min_y = Math.min(...unit_points.map((p) => p.y));
+		const unit_max_y = Math.max(...unit_points.map((p) => p.y));
+		const unit_w = unit_max_x - unit_min_x;
+		const unit_h = unit_max_y - unit_min_y;
+
+		// Hold Shift to draw a regular (non-stretched) star, keeping the drag direction.
+		// (app.js already constrains the box to a square for shape tools when Shift is held;
+		// fit the star within that square.)
+		if (shift) {
+			const scale = Math.min(Math.abs(w) / unit_w, Math.abs(h) / unit_h);
+			w = (w < 0 ? -1 : 1) * Math.round(scale * unit_w);
+			h = (h < 0 ? -1 : 1) * Math.round(scale * unit_h);
+		}
+
+		if (w < 0) { x += w; w = -w; }
+		if (h < 0) { y += h; h = -h; }
+
+		// Too small to be star-shaped; draw a solid block like the Rectangle tool does.
+		if (w < 3 || h < 3) {
+			ctx.fillStyle = ctx.strokeStyle;
+			ctx.fillRect(x, y, w, h);
+			return;
+		}
+
+		// Map the star's bounds onto the box, shrunk by `inset` on each side.
+		// (draw_polygon excludes the right/bottom edge, so mapping to x+w covers pixels x to x+w-1,
+		// the same pixels as fillRect(x, y, w, h).)
+		const get_star_points = (inset) => {
+			const box_x = x + inset;
+			const box_y = y + inset;
+			const box_w = Math.max(0, w - inset * 2);
+			const box_h = Math.max(0, h - inset * 2);
+			return unit_points.map((p) => ({
+				x: Math.round(box_x + (p.x - unit_min_x) / unit_w * box_w),
+				y: Math.round(box_y + (p.y - unit_min_y) / unit_h * box_h),
+			}));
+		};
+
+		if (w < stroke_size || h < stroke_size) {
+			// Too small for an outline to fit; draw a solid star in the outline color (like Ellipse does).
+			ctx.fillStyle = ctx.strokeStyle;
+			draw_polygon(ctx, get_star_points(0), false, true);
+		} else {
+			// Inset by half the stroke so the outline stays inside the dragged box.
+			const inset = this.$options.stroke ? ~~(stroke_size / 2) : 0;
+			draw_polygon(ctx, get_star_points(inset), this.$options.stroke, this.$options.fill);
+		}
+	},
+	$options: $ChooseShapeStyle(),
 }];
 
 /* eslint-enable no-restricted-syntax */
@@ -1594,7 +1673,7 @@ tools.forEach((tool) => {
 export {
 	TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER,
 	TOOL_FILL, TOOL_FREE_FORM_SELECT, TOOL_LINE, TOOL_MAGNIFIER,
-	TOOL_PENCIL, TOOL_PICK_COLOR, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_TEXT,
+	TOOL_PENCIL, TOOL_PICK_COLOR, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_STAR, TOOL_TEXT,
 	tools
 };
 // Temporary globals until all dependent code is converted to ES Modules

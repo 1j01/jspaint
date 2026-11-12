@@ -336,7 +336,8 @@ whereas it breaks component docking calculations if used to shift the colors box
 }
 
 .tools-component {
-	height: 273px;
+	/* min-height rather than height, so the toolbox grows to fit any tools beyond the original 16 (e.g. Star) */
+	min-height: 273px;
 	align-items: center;
 	padding-left: 4px;
 	padding-right: 2px;

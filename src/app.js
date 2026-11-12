@@ -19,7 +19,7 @@ import { stopSimulatingGestures } from "./simulate-random-gestures.js";
 import { disable_speech_recognition, enable_speech_recognition, trace_and_sketch_stop } from "./speech-recognition.js";
 import { localStore } from "./storage.js";
 import { get_theme, set_theme } from "./theme.js";
-import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, tools } from "./tools.js";
+import { TOOL_AIRBRUSH, TOOL_BRUSH, TOOL_CURVE, TOOL_ELLIPSE, TOOL_ERASER, TOOL_LINE, TOOL_PENCIL, TOOL_POLYGON, TOOL_RECTANGLE, TOOL_ROUNDED_RECTANGLE, TOOL_SELECT, TOOL_STAR, tools } from "./tools.js";
 
 // #region Exports
 
@@ -1035,6 +1035,7 @@ $G.on("keydown", (e) => {
 				selected_tool.id === TOOL_CURVE ||
 				selected_tool.id === TOOL_RECTANGLE ||
 				selected_tool.id === TOOL_ROUNDED_RECTANGLE ||
+				selected_tool.id === TOOL_STAR ||
 				selected_tool.id === TOOL_ELLIPSE ||
 				selected_tool.id === TOOL_POLYGON
 			) {
